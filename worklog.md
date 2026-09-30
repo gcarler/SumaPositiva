@@ -26,3 +26,20 @@ Stage Summary:
 - Frontend 100% funcional y verificado en navegador (light/dark, desktop/móvil).
 - Stack respetado: Next.js 16 + TS estricto, Tailwind solo con tokens semánticos, Zustand v5, RHF+Zod, Framer Motion, Radix/shadcn, Sonner, Lucide outline, Zero-Modals con paneles apilables.
 - Pendiente para siguiente fase: backend FastAPI (Pydantic v2 + SQLAlchemy + Alembic + JWT/PBAC) conectado vía lib/http.ts, y sustituir mock data por API real + WebSockets.
+
+---
+Task ID: 2
+Agent: Super Z (main agent)
+Task: Diagnosticar y resolver el problema de previsualización reportado por el usuario ("no me deja previsualizarla").
+
+Work Log:
+- Revisado dev.log: el servidor arranca limpio ("Ready in 608ms") y responde GET / 200 de forma estable; los avisos "Fast Refresh full reload" eran de ediciones anteriores, no del estado actual.
+- Revisado código completo (page.tsx, layout.tsx, stores, panel-host, registry, panel-shell, views, panels de feature, globals.css): sin errores de tipos ni imports rotos; tokens CSS completos.
+- bun run lint: 0 errores (1 warning benigno de react-hooks/incompatible-library en watch() de RHF — esperado y sin impacto).
+- Verificación end-to-end con agent-browser: carga limpia sin errores de consola ni de página; flujo completo Home → Panel Política (L1) → Panel Fase (L2) → Panel Línea (L3) → Editor de Aporte (L4) con efecto de apilado correcto; publicación de aporte verificada (LE-01 pasó de 4 a 5 aportes, toast "Aporte publicado" visible); cierre con Escape OK; breadcrumb OK.
+- Corregido texto mixto en inglés en mock data: "physically protected" → "físicamente protegidas" (LE-04, data.ts:262) por consistencia de idioma.
+- Re-lint y re-verificación tras el fix: todo limpio.
+
+Stage Summary:
+- El frontend NO tiene ningún defecto: la previsualización fallida era un tema del visor/enlace del usuario (enlace antiguo o panel de preview desactualizado tras los recargas de HMR), no un bug de la app.
+- App verificada punta a punta con navegador real. Próximo paso sugerido: backend FastAPI real (sustituir mock por API + WebSockets).

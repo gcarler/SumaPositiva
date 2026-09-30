@@ -259,7 +259,7 @@ export const POLITICAS_MOCK: PoliticaPublica[] = [
             codigo: "LE-04",
             titulo: "Infraestructura ciclista protegida y continua",
             descripcion:
-              "Red primaria de ciclorrutas physically protected, bicicletas públicas eléctricas y bicicleteros seguros en nodos de transporte y equipamientos.",
+              "Red primaria de ciclorrutas físicamente protegidas, bicicletas públicas eléctricas y bicicleteros seguros en nodos de transporte y equipamientos.",
             aportes: [
               {
                 id: "apo-001-2-4-1",
