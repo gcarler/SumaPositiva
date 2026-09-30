@@ -1,12 +1,17 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { X, ChevronRight } from "lucide-react";
+import { X, ChevronRight, Maximize2, Minimize2 } from "lucide-react";
 import type { ReactNode } from "react";
+import { usePanelStore } from "@/stores/panel-store";
 
 /**
  * PanelShell — contenedor base de todo panel Zero-Modals.
  * Header con breadcrumb + título, cuerpo scrollable y footer opcional.
+ *
+ * Controles de ventana (sin diálogos): Maximizar / Minimizar (restaurar
+ * al ancho por defecto) y Cerrar. El estado vive en la entrada del
+ * panel dentro del store global, por lo que sobrevive al apilado.
  */
 
 export interface Crumb {
@@ -16,7 +21,6 @@ export interface Crumb {
 }
 
 interface PanelShellProps {
-  width: number;
   entryKey: string;
   crumbs: Crumb[];
   kicker?: string;
@@ -30,7 +34,6 @@ interface PanelShellProps {
 }
 
 export function PanelShell({
-  width,
   entryKey,
   crumbs,
   kicker,
@@ -42,10 +45,14 @@ export function PanelShell({
   onCloseToKey,
   children,
 }: PanelShellProps) {
+  const maximized = usePanelStore(
+    (s) => s.entries.find((e) => e.key === entryKey)?.maximized ?? false
+  );
+  const toggleMaximized = usePanelStore((s) => s.toggleMaximized);
+
   return (
     <div
-      className="flex h-full flex-col border-l border-[var(--border)] bg-[var(--surface-0)] text-[var(--text-primary)]"
-      style={{ width: "100%", maxWidth: width }}
+      className="flex h-full w-full flex-col border-l border-[var(--border)] bg-[var(--surface-0)] text-[var(--text-primary)]"
       role="dialog"
       aria-label={title}
     >
@@ -105,6 +112,23 @@ export function PanelShell({
             </div>
             <div className="flex shrink-0 items-center gap-2">
               {actions}
+
+              {/* Maximizar / Minimizar (restaurar ancho por defecto) */}
+              <button
+                type="button"
+                onClick={() => toggleMaximized(entryKey)}
+                aria-label={maximized ? "Minimizar panel" : "Maximizar panel"}
+                title={maximized ? "Minimizar — ancho por defecto" : "Maximizar — toda la pantalla"}
+                className="flex size-8 items-center justify-center rounded-full border border-[var(--border)] text-[var(--text-secondary)] transition-all hover:border-[var(--border-strong)] hover:bg-[var(--surface-2)] hover:text-[var(--text-primary)]"
+              >
+                {maximized ? (
+                  <Minimize2 className="size-4" strokeWidth={1.5} />
+                ) : (
+                  <Maximize2 className="size-4" strokeWidth={1.5} />
+                )}
+              </button>
+
+              {/* Cerrar */}
               <button
                 type="button"
                 onClick={onClose}

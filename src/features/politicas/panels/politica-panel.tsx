@@ -28,7 +28,6 @@ export function PoliticaPanel({ entryKey, props }: { entryKey: string; props: { 
   if (!politica) {
     return (
       <PanelShell
-        width={780}
         entryKey={entryKey}
         crumbs={[{ label: "Políticas públicas" }]}
         title="Política no encontrada"
@@ -49,7 +48,6 @@ export function PoliticaPanel({ entryKey, props }: { entryKey: string; props: { 
 
   return (
     <PanelShell
-      width={780}
       entryKey={entryKey}
       crumbs={[{ label: "Políticas públicas" }]}
       kicker={SECTOR_META[politica.sector].label}

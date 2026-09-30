@@ -13,15 +13,20 @@ import { AnimatedPanel } from "./panel-shell";
  *
  * Efecto de apilado: los paneles inferiores se desplazan a la izquierda,
  * escalan levemente y se atenúan — el panel superior queda activo.
+ * El panel del tope puede MAXIMIZARSE (toda la pantalla) o volver a su
+ * ancho por defecto; la transición de ancho es CSS (max-width) para que
+ * sea fluida incluso combinada con el spring de entrada.
  */
 
 const BASE_Z = 60;
 const STEP_X = 46; // desplazamiento horizontal por nivel de profundidad
 const MAX_DEPTH = 4;
+const EASE_WIDTH = "cubic-bezier(0.22, 1, 0.36, 1)";
 
 export function PanelHost() {
   const entries = usePanelStore((s) => s.entries);
   const closeTop = usePanelStore((s) => s.closeTop);
+  const toggleMaximized = usePanelStore((s) => s.toggleMaximized);
   const open = entries.length > 0;
 
   /* Bloquear scroll del body mientras haya paneles */
@@ -35,14 +40,18 @@ export function PanelHost() {
     }
   }, [open]);
 
-  /* Escape cierra el panel superior */
+  /* Escape: si el panel del tope está maximizado, primero restaura;
+     en el siguiente Escape cierra. */
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && open) closeTop();
+      if (e.key !== "Escape" || entries.length === 0) return;
+      const top = entries[entries.length - 1];
+      if (top.maximized) toggleMaximized(top.key);
+      else closeTop();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [open, closeTop]);
+  }, [entries, closeTop, toggleMaximized]);
 
   return (
     <AnimatePresence>
@@ -72,11 +81,7 @@ export function PanelHost() {
                 <motion.div
                   key={entry.key}
                   className="absolute inset-y-0 right-0 w-full"
-                  style={{
-                    maxWidth: width,
-                    zIndex: i + 1,
-                    pointerEvents: depth === 0 ? "auto" : "none",
-                  }}
+                  style={{ zIndex: i + 1, pointerEvents: depth === 0 ? "auto" : "none" }}
                   initial={{ x: "100%" }}
                   animate={{
                     x: `calc(-${depth * STEP_X}px)`,
@@ -85,20 +90,30 @@ export function PanelHost() {
                   exit={{ x: "100%", transition: { duration: 0.28, ease: [0.32, 0, 0.67, 0] } }}
                   transition={{ type: "spring", stiffness: 320, damping: 34, mass: 0.9 }}
                 >
-                  <AnimatedPanel>
-                    <PanelComponent entryKey={entry.key} props={entry.props} />
-                  </AnimatedPanel>
+                  {/* Capa de geometría: ancho por defecto o maximizado.
+                      La transición vive aquí (CSS) para no pelear con el spring. */}
+                  <div
+                    className="relative ml-auto h-full"
+                    style={{
+                      maxWidth: entry.maximized ? "100vw" : `${width}px`,
+                      transition: `max-width 0.42s ${EASE_WIDTH}`,
+                    }}
+                  >
+                    <AnimatedPanel>
+                      <PanelComponent entryKey={entry.key} props={entry.props} />
+                    </AnimatedPanel>
 
-                  {/* Atenuado de paneles detrás */}
-                  {depth > 0 && (
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: Math.min(depth * 0.16, 0.4) }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.3 }}
-                      className="pointer-events-none absolute inset-0 bg-black"
-                    />
-                  )}
+                    {/* Atenuado de paneles detrás */}
+                    {depth > 0 && (
+                      <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: Math.min(depth * 0.16, 0.4) }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="pointer-events-none absolute inset-0 bg-black"
+                      />
+                    )}
+                  </div>
                 </motion.div>
               );
             })}

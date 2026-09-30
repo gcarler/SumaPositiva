@@ -9,7 +9,7 @@ import { create } from "zustand";
  * para navegación anidada (Política → Fase → Línea → Aporte).
  */
 
-export type PanelType = "politica" | "fase" | "linea" | "aportar";
+export type PanelType = "politica" | "fase" | "linea" | "aportar" | "sesion";
 
 /** Props tipadas por tipo de panel — imposible abrir un panel con props inválidas */
 export interface PanelPropsMap {
@@ -17,6 +17,8 @@ export interface PanelPropsMap {
   fase: { politicaId: string; faseId: string };
   linea: { politicaId: string; faseId: string; lineaId: string };
   aporte: { politicaId: string; faseId: string; lineaId: string };
+  /** Panel de sesión/identidad — no requiere props */
+  sesion: Record<string, never>;
 }
 
 export type PanelEntry<T extends PanelType = PanelType> = {
@@ -24,6 +26,8 @@ export type PanelEntry<T extends PanelType = PanelType> = {
   key: string;
   type: T;
   props: PanelPropsMap[T];
+  /** el panel del tope puede maximizarse a toda la pantalla */
+  maximized: boolean;
 };
 
 interface PanelState {
@@ -34,6 +38,8 @@ interface PanelState {
   /** cierra la pila hasta cierto panel (inclusive si `inclusive`), usado por breadcrumbs */
   closeToKey: (key: string, inclusive?: boolean) => void;
   closeAll: () => void;
+  /** alterna maximizado del panel por clave (uso previsto: panel del tope) */
+  toggleMaximized: (key: string) => void;
 }
 
 let seq = 0;
@@ -47,7 +53,7 @@ export const usePanelStore = create<PanelState>((set) => ({
       // límite de seguridad: máximo 5 paneles apilados
       entries: [
         ...s.entries.slice(-4),
-        { key: nextKey(type), type, props } as PanelEntry,
+        { key: nextKey(type), type, props, maximized: false } as PanelEntry,
       ],
     })),
 
@@ -62,6 +68,13 @@ export const usePanelStore = create<PanelState>((set) => ({
     }),
 
   closeAll: () => set({ entries: [] }),
+
+  toggleMaximized: (key) =>
+    set((s) => ({
+      entries: s.entries.map((e) =>
+        e.key === key ? { ...e, maximized: !e.maximized } : e
+      ),
+    })),
 }));
 
 /** Hook ergonómico para abrir paneles desde cualquier componente */

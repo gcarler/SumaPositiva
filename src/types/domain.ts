@@ -76,6 +76,10 @@ export interface Aporte {
   titulo: string;
   contenido: string;
   autor: string;
+  /** undefined = aporte anónimo (sin datos personales asociados) */
+  autorId?: string;
+  /** Fotos adjuntas como dataURL comprimido (cliente) — opcional */
+  fotos?: string[];
   fecha: string; // ISO
   votos: number;
   apoyado: boolean; // el usuario actual ya apoyó

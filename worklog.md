@@ -43,3 +43,39 @@ Work Log:
 Stage Summary:
 - El frontend NO tiene ningún defecto: la previsualización fallida era un tema del visor/enlace del usuario (enlace antiguo o panel de preview desactualizado tras los recargas de HMR), no un bug de la app.
 - App verificada punta a punta con navegador real. Próximo paso sugerido: backend FastAPI real (sustituir mock por API + WebSockets).
+
+---
+Task ID: 3
+Agent: Super Z (main agent)
+Task: Tres mejoras solicitadas por el usuario: (1) sesión anónima/identidad, (2) fotos en aportes, (3) maximizar/minimizar paneles Zero-Modals.
+
+Work Log:
+- session-store.ts (NUEVO): Zustand + persist (localStorage, polis-sesion-v1). Sesión con modo "anonimo" | "identidad" {nombre, email?, ciudad?}. Helper nombreParaPublicar().
+- lib/images.ts (NUEVO): fileToDataUrlComprimido (canvas → JPEG ≤1600px q0.82), validación de tipo/tamaño (5MB), MAX_FOTOS_POR_APORTE=4.
+- domain.ts: Aporte += autorId? (undefined = anónimo) y fotos? (dataURLs).
+- politicas-store.ts: crearAporte recibe autorId/fotos.
+- panel-store.ts: PanelEntry += maximized; toggleMaximized(key); PanelType += "sesion" (props Record<string, never>).
+- panel-host.tsx: geometría movida a capa interna con transición CSS de max-width (0.42s, easing expo) para maximizado fluido; overlay de atenuado dentro de la capa; Escape restaurar→cerrar.
+- panel-shell.tsx: botones Maximizar (Maximize2) / Minimizar (Minimize2) / Cerrar (X) leyendo estado por entryKey del store; eliminado width fijo (geometría centralizada en PANEL_WIDTHS del registry).
+- registry.tsx: SesionPanel (dynamic, ssr:false) + PANEL_WIDTHS.sesion=520.
+- sesion-panel.tsx (NUEVO): tarjeta de sesión actual + cerrar sesión; tarjetas radio Anónimo (VenetianMask) / Identidad (ScanFace); formulario RHF+Zod (nombre 3-40, email regex opcional, ciudad opcional); nota privacidad Ley 1581/2012; footer contextual.
+- topbar.tsx: SesionButton con useSyncExternalStore para hidratación segura (fix lint setState-in-effect); chip con avatar/iniciales + nombre; compacto en móvil (solo avatar).
+- aporte-editor-panel.tsx: sección "Tu identidad" (banner con Cambiar → push panel sesion; sin sesión exige elegirla y bloquea publicar); subida de fotos multi (input oculto + dropzone), previews con quitar, contador n/4, estado procesandoFotos; publish pasa autor/autorId/fotos.
+- linea-panel.tsx: AporteCard extraída; avatar AnonAvatar (máscara) vs InitialAvatar; contador de fotos con icono Images; VisorFotos inline (grid 3 miniaturas + "+N", visor expandido con prev/next/contador/cerrar — cero modales).
+- ui-bits.tsx: AnonAvatar, SesionAvatar, inicialesDe.
+- Mock data: "physically protected" → "físicamente protegidas".
+
+Bugs corregidos durante verificación:
+1. topbar: setState síncrono en useEffect (React Compiler error) → useSyncExternalStore(subscribeNoop, () => true, () => false).
+
+Verificación end-to-end (agent-browser):
+- Sesión: crear identidad "Santiago Bernal" → chip en topbar + persistencia tras reload; cambiar a anónimo desde panel apilado L5; toasts correctos.
+- Aporte con identidad + foto: preview comprimida, publicación, muro "5 aportes" con nombre + miniatura; visor inline abrir/cerrar OK.
+- Aporte anónimo: muro muestra "Ciudadano anónimo" con máscara (5 avatares venetian-mask en muro).
+- Maximizar: 780px→1280px (100vw) con icono Minimize2; minimizar vuelve a 780px; Escape maximizado restaura y luego cierra.
+- Móvil 390px (topbar compacto) y dark mode verificados.
+- Lint final: 0 errores (1 warning benigno RHF watch). Sin errores de consola.
+
+Stage Summary:
+- Las 3 mejoras están en producción con la estética minimalista y Zero-Modals intactos.
+- Pendiente: backend FastAPI para JWT real y almacenamiento de fotos (S3/minio) — la UI ya está preparada.

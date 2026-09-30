@@ -30,6 +30,10 @@ const AporteEditorPanel = dynamic(
   () => import("@/features/aportes/panels/aporte-editor-panel").then((m) => m.AporteEditorPanel),
   { ssr: false }
 );
+const SesionPanel = dynamic(
+  () => import("@/features/sesion/panels/sesion-panel").then((m) => m.SesionPanel),
+  { ssr: false }
+);
 
 export const PANEL_REGISTRY: Record<
   PanelType,
@@ -39,6 +43,7 @@ export const PANEL_REGISTRY: Record<
   fase: FasePanel as ComponentType<PanelComponentProps>,
   linea: LineaPanel as ComponentType<PanelComponentProps>,
   aporte: AporteEditorPanel as ComponentType<PanelComponentProps>,
+  sesion: SesionPanel as ComponentType<PanelComponentProps>,
 };
 
 /** Ancho del panel por tipo (px) — el stack decide responsividad */
@@ -47,4 +52,5 @@ export const PANEL_WIDTHS: Record<PanelType, number> = {
   fase: 720,
   linea: 720,
   aporte: 640,
+  sesion: 520,
 };

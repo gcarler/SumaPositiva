@@ -32,7 +32,6 @@ export function FasePanel({
   if (!fase || !politica) {
     return (
       <PanelShell
-        width={720}
         entryKey={entryKey}
         crumbs={[
           { label: "Políticas públicas", targetKey: parentKey },
@@ -53,7 +52,6 @@ export function FasePanel({
 
   return (
     <PanelShell
-      width={720}
       entryKey={entryKey}
       crumbs={[
         { label: politica.titulo, targetKey: parentKey },

@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { VenetianMask } from "lucide-react";
 import {
   ESTADO_FASE_META,
   ESTADO_META,
@@ -11,6 +12,7 @@ import {
   type TipoAporte,
   type TipoFase,
 } from "@/types/domain";
+import type { Sesion } from "@/stores/session-store";
 
 /* ---------- Chips de estado (dot + label, monocromáticos) ---------- */
 
@@ -89,18 +91,57 @@ export function FaseTipoTag({ tipo }: { tipo: TipoFase }) {
 
 /* ---------- Avatar de iniciales ---------- */
 
-export function InitialAvatar({ name }: { name: string }) {
-  const initials = name
+export function inicialesDe(nombre: string): string {
+  return nombre
     .split(" ")
     .slice(0, 2)
     .map((w) => w[0]?.toUpperCase() ?? "")
     .join("");
+}
+
+export function InitialAvatar({ name }: { name: string }) {
+  const initials = inicialesDe(name);
   return (
     <span
       className="flex size-7 shrink-0 select-none items-center justify-center rounded-full border border-[var(--border)] bg-[var(--surface-2)] text-[10px] font-semibold tracking-wide text-[var(--text-secondary)]"
       aria-hidden
     >
       {initials}
+    </span>
+  );
+}
+
+/** Avatar de aporte anónimo — máscara veneciana, monocromática */
+export function AnonAvatar() {
+  return (
+    <span
+      className="flex size-7 shrink-0 select-none items-center justify-center rounded-full border border-dashed border-[var(--border-strong)] bg-[var(--surface-2)] text-[var(--text-tertiary)]"
+      aria-hidden
+    >
+      <VenetianMask className="size-3.5" strokeWidth={1.5} />
+    </span>
+  );
+}
+
+/** Avatar según la sesión actual (topbar, panel de sesión, editor) */
+export function SesionAvatar({ sesion, size = "sm" }: { sesion: Sesion | null; size?: "sm" | "md" }) {
+  const dim = size === "md" ? "size-9" : "size-7";
+  if (!sesion || sesion.modo === "anonimo" || !sesion.identidad) {
+    return (
+      <span
+        className={`flex ${dim} shrink-0 select-none items-center justify-center rounded-full border border-dashed border-[var(--border-strong)] bg-[var(--surface-2)] text-[var(--text-tertiary)]`}
+        aria-hidden
+      >
+        <VenetianMask className={size === "md" ? "size-4" : "size-3.5"} strokeWidth={1.5} />
+      </span>
+    );
+  }
+  return (
+    <span
+      className={`flex ${dim} shrink-0 select-none items-center justify-center rounded-full border border-[var(--border)] bg-[var(--ember-soft)] text-[10px] font-semibold tracking-wide text-[var(--ember)]`}
+      aria-hidden
+    >
+      {inicialesDe(sesion.identidad.nombre)}
     </span>
   );
 }

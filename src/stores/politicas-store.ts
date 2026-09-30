@@ -39,6 +39,10 @@ interface PoliticasState {
     titulo: string;
     contenido: string;
     autor: string;
+    /** undefined = anónimo */
+    autorId?: string;
+    /** dataURLs comprimidos en cliente */
+    fotos?: string[];
   }) => Aporte | null;
   toggleApoyo: (lineaId: string, aporteId: string) => void;
 
@@ -59,7 +63,7 @@ export const usePoliticasStore = create<PoliticasState>((set, get) => ({
   setEstadoFiltro: (estadoFiltro) => set({ estadoFiltro }),
   setBusqueda: (busqueda) => set({ busqueda }),
 
-  crearAporte: ({ politicaId, lineaId, tipo, titulo, contenido, autor }) => {
+  crearAporte: ({ politicaId, lineaId, tipo, titulo, contenido, autor, autorId, fotos }) => {
     const aporte: Aporte = {
       id: `apo-nuevo-${++aporteSeq}`,
       lineaId,
@@ -67,6 +71,8 @@ export const usePoliticasStore = create<PoliticasState>((set, get) => ({
       titulo,
       contenido,
       autor,
+      autorId,
+      fotos: fotos && fotos.length > 0 ? fotos : undefined,
       fecha: new Date().toISOString(),
       votos: 0,
       apoyado: false,
