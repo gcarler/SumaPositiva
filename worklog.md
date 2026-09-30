@@ -79,3 +79,24 @@ Verificación end-to-end (agent-browser):
 Stage Summary:
 - Las 3 mejoras están en producción con la estética minimalista y Zero-Modals intactos.
 - Pendiente: backend FastAPI para JWT real y almacenamiento de fotos (S3/minio) — la UI ya está preparada.
+
+---
+Task ID: 4
+Agent: Super Z (main agent)
+Task: Re-verificación integral post-sesión anterior (petición "cómo vamos"): confirmar que las 3 mejoras siguen operativas tras reinicio de contexto.
+
+Work Log:
+- bun run lint: 0 errores (1 warning benigno RHF watch — conocido y sin impacto).
+- Servidor dev: HTTP 200 estable en localhost:3000.
+- Verificación end-to-end con agent-browser (navegador real):
+  1. Panel política abre con controles de ventana visibles (Maximizar ⤢ + Cerrar ✕).
+  2. Maximizar: panel pasa a 100% del viewport; icono cambia a Minimizar (⤡).
+  3. Minimizar: restaura ancho por defecto; apilado de 3-4 capas visible en todo momento (concepto intacto).
+  4. Panel de sesión: opciones radio "De forma anónima" / "Con mi identidad"; seleccionar anónimo → topbar muestra "Sesión: anónimo".
+  5. Editor de aporte (capa 5 del stack): sección "Tu identidad" con Ciudadano anónimo + botón Cambiar; sección "FOTOS (OPCIONAL)" con dropzone, contador 0/4 y nota de privacidad.
+  6. Sin errores de página ni de consola.
+- Limpieza de capturas temporales de verificación.
+
+Stage Summary:
+- Las 3 mejoras (ventana: maximizar/minimizar/cerrar; sesión anónima/identidad; fotos en aportes) confirmadas operativas en navegador real.
+- Siguiente paso disponible: backend FastAPI (JWT + WebSockets + almacenamiento de fotos).
