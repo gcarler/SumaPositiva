@@ -1,0 +1,63 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Fundamentos/Guía de uso" />
+
+# POLIS UI
+
+Un sistema de diseño compartido por la aplicación y Storybook. El código de los
+componentes vive en `src/shared/ui`; las variables semánticas y escalas viven en
+`src/shared/design-system/tokens.css`.
+
+## Cómo construir una pantalla
+
+1. Usa `PageHeader` para la cabecera, `SearchField` para búsqueda y `FilterChip` para filtros.
+2. Compón acciones con `Button`; usa `FormField` para asociar etiqueta, ayuda y error.
+3. Expresa carga con `Skeleton`, ausencia de datos con `EmptyState` y mensajes con `Notice`.
+4. Usa `SidePanel` para lectura y edición; la aplicación lo conecta a su host de paneles.
+5. Revisa la pantalla en ambos temas, a 360 px y con navegación por teclado.
+
+```tsx
+import { Button } from '@/shared/ui/button';
+import { FormField } from '@/shared/ui/form-field';
+import { Input } from '@/shared/ui/input';
+
+<FormField label="Nombre de la mesa" required error={error}>
+  {(control) => <Input {...control} value={name} onChange={onChange} />}
+</FormField>
+<Button type="submit" loading={saving} loadingLabel="Guardando…">
+  Crear mesa
+</Button>
+```
+
+## Convenciones
+
+| Área         | Regla                                                                                                         |
+| ------------ | ------------------------------------------------------------------------------------------------------------- |
+| Color        | Usa roles semánticos: `bg-surface-1`, `text-text-secondary`, `border-border`, `text-ember`.                   |
+| Acciones     | Una acción principal por contexto. `outline` para secundaria; `destructive` para consecuencias irreversibles. |
+| Formularios  | Etiqueta visible, campos obligatorios señalados, errores asociados al control y valor conservado.             |
+| Navegación   | El foco queda en el panel activo; Escape cierra un nivel y devuelve el foco.                                  |
+| Mensajes     | Describe qué ocurrió y cómo continuar. Evita promesas de persistencia cuando el flujo es de demostración.     |
+| Iconos       | Iconos decorativos con `aria-hidden`; controles de icono con `aria-label`.                                    |
+| Dependencias | La biblioteca no conoce stores, endpoints ni modelos del negocio.                                             |
+
+## Componentes de compatibilidad
+
+Los primitivos de Radix/shadcn siguen disponibles. `Dialog` y `AlertDialog` abren
+lateralmente. Para los flujos de la plataforma utiliza `SidePanel` y el host de
+paneles existente, que gestiona foco y apilado. La aplicación utiliza Sonner;
+`Toast` y el `Toaster` anterior se conservan como compatibilidad, sin crear un
+segundo sistema de notificaciones.
+
+## Pruebas y contribuciones
+
+Cada nuevo componente debe incluir una historia con su uso real y sus estados
+relevantes. Las historias se prueban en Chromium con Vitest; las comprobaciones de
+accesibilidad se ejecutan con el addon a11y. Las pruebas automatizadas no certifican
+por sí solas el cumplimiento completo de WCAG.
+
+```bash
+bun run storybook
+bun run storybook:build
+bun run ui:test
+```

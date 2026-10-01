@@ -1,0 +1,69 @@
+import { z } from "zod";
+import { apiFetch } from "@/core/http/api-client";
+
+export const usuarioSchema = z.object({
+  id: z.string().uuid(), correo: z.string().email(), nombres: z.string(), apellidos: z.string(),
+  codigo_rol: z.string(), permisos: z.array(z.string()), activo: z.boolean(),
+  nivel_identidad: z.string(), correo_verificado_en: z.string().nullable(),
+});
+export type Usuario = z.infer<typeof usuarioSchema>;
+export const rolSchema = z.object({ id: z.string().uuid(), codigo: z.string(), nombre: z.string(),
+  permisos: z.array(z.string()), sistema: z.boolean() });
+export type Rol = z.infer<typeof rolSchema>;
+export const tokenSchema = z.object({token_acceso: z.string(), expira_en: z.string(),
+  rol: z.string(), permisos: z.array(z.string()), nivel_identidad: z.string(), usuario: usuarioSchema});
+export type Login = z.infer<typeof tokenSchema>;
+const mensajeSchema = z.object({ mensaje: z.string() });
+export const sesionSchema = z.object({id: z.string().uuid(), creada_en: z.string(),
+  expira_en: z.string(), actual: z.boolean()});
+export type SesionRemota = z.infer<typeof sesionSchema>;
+export const eventoSchema = z.object({id: z.string().uuid(), actor_id: z.string().nullable(),
+  objetivo_id: z.string().nullable(), accion: z.string(), detalle: z.record(z.string(), z.unknown()),
+  creado_en: z.string()});
+export type Evento = z.infer<typeof eventoSchema>;
+
+async function consultar<T>(path: string, schema: z.ZodType<T>, options: Parameters<typeof apiFetch>[1] = {}) {
+  return schema.parse(await apiFetch<unknown>(`/identidad${path}`, options));
+}
+export const identidadApi = {
+  loginGoogle: (id_token: string) =>
+    consultar("/oauth/google", tokenSchema, { method: "POST", body: { id_token } }),
+  login: (correo: string, contrasena: string) => consultar("/login", tokenSchema,
+    { method: "POST", body: { correo, contrasena } }),
+  registrar: (datos: {correo: string; contrasena: string; nombres: string; apellidos: string}) =>
+    consultar("/registro", usuarioSchema, {method: "POST", body: datos}),
+  perfil: () => consultar("/perfil", usuarioSchema),
+  editarPerfil: (nombres: string, apellidos: string) => consultar("/perfil", usuarioSchema,
+    {method: "PATCH", body: {nombres, apellidos}}),
+  logout: () => consultar("/logout", mensajeSchema, {method: "POST"}),
+  sesiones: () => consultar("/sesiones", z.array(sesionSchema)),
+  revocarSesion: (id?: string) => consultar(id ? `/sesiones/${id}` : "/sesiones", mensajeSchema,
+    {method: "DELETE"}),
+  cambiarContrasena: (contrasena_actual: string, contrasena: string) => consultar("/contrasena",
+    mensajeSchema, {method: "POST", body: {contrasena_actual, contrasena}}),
+  solicitarRecuperacion: (correo: string) => consultar("/recuperacion/solicitar", mensajeSchema,
+    {method: "POST", body: {correo}}),
+  confirmarRecuperacion: (token: string, contrasena: string) => consultar("/recuperacion/confirmar",
+    mensajeSchema, {method: "POST", body: {token, contrasena}}),
+  solicitarVerificacion: () => consultar("/correo/solicitar", mensajeSchema, {method: "POST"}),
+  confirmarVerificacion: (token: string) => consultar("/correo/confirmar", mensajeSchema,
+    {method: "POST", body: {token}}),
+  usuarios: (busqueda = "", desplazamiento = 0) => consultar(
+    `/usuarios?${new URLSearchParams({busqueda, desplazamiento: String(desplazamiento), limite: "20"})}`,
+    z.object({total: z.number(), elementos: z.array(usuarioSchema)})),
+  crearUsuario: (datos: {correo: string; contrasena: string; nombres: string; apellidos: string;
+    codigo_rol: string; motivo: string}) => consultar("/usuarios", usuarioSchema, {method: "POST", body: datos}),
+  editarUsuario: (id: string, datos: {nombres: string; apellidos: string; codigo_rol: string;
+    activo: boolean; motivo: string}) => consultar(`/usuarios/${id}`, usuarioSchema,
+    {method: "PATCH", body: datos}),
+  revocarUsuario: (id: string) => consultar(`/usuarios/${id}/revocar`, mensajeSchema, {method: "POST"}),
+  roles: () => consultar("/roles", z.array(rolSchema)),
+  permisos: () => consultar("/permisos", z.record(z.string(), z.string())),
+  crearRol: (datos: {codigo: string; nombre: string; permisos: string[]; motivo: string}) =>
+    consultar("/roles", rolSchema, {method: "POST", body: datos}),
+  editarRol: (codigo: string, datos: {nombre: string; permisos: string[]; motivo: string}) =>
+    consultar(`/roles/${encodeURIComponent(codigo)}`, rolSchema, {method: "PATCH", body: datos}),
+  eliminarRol: (codigo: string, motivo: string) => consultar(
+    `/roles/${encodeURIComponent(codigo)}?${new URLSearchParams({motivo})}`, mensajeSchema, {method: "DELETE"}),
+  eventos: (desplazamiento = 0) => consultar(`/eventos?desplazamiento=${desplazamiento}`, z.array(eventoSchema)),
+};

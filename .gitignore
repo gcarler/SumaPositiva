@@ -52,3 +52,27 @@ prompt
 server.log
 # Skills directory
 /skills/
+# Python backend
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+!**/.env.example
+
+# UI documentation and browser reports
+storybook-static/
+playwright-report/
+test-results/
+
+# Backups and media uploads
+backups/*.dump
+backups/*.dump.sha256
+backups/*.tar
+backend/media/evidencias/*
+!backend/media/evidencias/.gitkeep
+
+# Temporary bridge and prompt files
+bridge/.*

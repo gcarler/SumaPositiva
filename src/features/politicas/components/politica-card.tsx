@@ -1,15 +1,15 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { ArrowUpRight, MessageSquare, Users } from "lucide-react";
-import { usePanels } from "@/stores/panel-store";
+import { usePanels } from "@/core/panels/panel-store";
 import {
   ESTADO_META,
   SECTOR_META,
   totalAportes,
   type PoliticaPublica,
-} from "@/types/domain";
-import { EstadoPoliticaChip } from "./ui-bits";
+} from "@/features/politicas/models/politicas";
+import { EstadoPoliticaChip } from "./politica-ui";
 
 /**
  * Tarjeta de Política Pública — entrada al sistema Zero-Modals (abre panel L1).
@@ -21,6 +21,7 @@ interface PoliticaCardProps {
 }
 
 export function PoliticaCard({ politica, index = 0 }: PoliticaCardProps) {
+  const reducedMotion = useReducedMotion();
   const { openPanel } = usePanels();
   const activa = politica.fases.find((f) => f.estado === "activa");
   const aportes = totalAportes(politica);
@@ -28,11 +29,11 @@ export function PoliticaCard({ politica, index = 0 }: PoliticaCardProps) {
   return (
     <motion.button
       type="button"
-      initial={{ opacity: 0, y: 14 }}
+      initial={reducedMotion ? false : { opacity: 0, y: 14 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.06, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
       onClick={() => openPanel("politica", { politicaId: politica.id })}
-      className="group relative flex w-full flex-col rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-5 text-left transition-all duration-300 hover:-translate-y-0.5 hover:border-[var(--border-strong)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.04)] dark:hover:shadow-[0_8px_30px_rgba(0,0,0,0.35)]"
+      className="ui-interactive-card group relative flex h-full w-full flex-col p-6 text-left"
     >
       {/* Cabecera */}
       <div className="flex items-center justify-between gap-3">
@@ -46,10 +47,10 @@ export function PoliticaCard({ politica, index = 0 }: PoliticaCardProps) {
       </div>
 
       {/* Contenido */}
-      <h3 className="mt-3 text-[15px] font-semibold leading-snug tracking-tight text-[var(--text-primary)]">
+      <h3 className="mt-4 text-base font-semibold leading-snug tracking-tight text-[var(--text-primary)]">
         {politica.titulo}
       </h3>
-      <p className="mt-1.5 line-clamp-2 text-[13px] leading-relaxed text-[var(--text-secondary)]">
+      <p className="mt-1.5 line-clamp-2 text-sm leading-relaxed text-[var(--text-secondary)]">
         {politica.resumen}
       </p>
 

@@ -1,14 +1,13 @@
 "use client";
 
+import { Button } from "@/shared/ui/button";
+
 import { ArrowRight, Network } from "lucide-react";
-import { PanelShell } from "@/components/panels/panel-shell";
-import { usePanels, usePanelStore } from "@/stores/panel-store";
-import { useFase, usePolitica } from "@/stores/politicas-store";
-import {
-  EstadoFaseChip,
-  FaseTipoTag,
-  HairlineProgress,
-} from "../components/ui-bits";
+import { PanelShell } from "@/core/panels/panel-shell";
+import { usePanels, usePanelStore } from "@/core/panels/panel-store";
+import { useFase, usePolitica } from "@/features/politicas/state/politicas-store";
+import { EstadoFaseChip, FaseTipoTag } from "@/features/politicas/components/politica-ui";
+import { HairlineProgress } from "@/shared/components/participation-ui";
 
 /**
  * Panel L2 — Fase del proceso con sus Líneas Estratégicas.
@@ -103,7 +102,7 @@ export function FasePanel({
             <ul className="space-y-2">
               {fase.lineas.map((linea) => (
                 <li key={linea.id}>
-                  <button
+                  <Button variant="unstyled" size="unstyled"
                     type="button"
                     onClick={() =>
                       openPanel("linea", {
@@ -140,7 +139,7 @@ export function FasePanel({
                         strokeWidth={1.5}
                       />
                     </div>
-                  </button>
+                  </Button>
                 </li>
               ))}
             </ul>

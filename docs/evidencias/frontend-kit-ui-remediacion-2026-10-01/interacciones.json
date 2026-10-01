@@ -1,0 +1,771 @@
+{
+  "fecha": "2026-10-01T17:02:49.574Z",
+  "entorno": "Componentes reales, API interceptada, Chromium, movimiento reducido",
+  "casos": [
+    {
+      "id": "formulario-con-dos-preguntas",
+      "tema": "light",
+      "ancho": 320,
+      "regiones": [
+        {
+          "nombre": "Nuevo Formulario",
+          "ancho": 319,
+          "contenido": 319
+        },
+        {
+          "nombre": "Contenido de Nuevo Formulario",
+          "ancho": 319,
+          "contenido": 319
+        }
+      ],
+      "desbordamientos": [],
+      "controles": [
+        {
+          "id": "_r_4_-titulo",
+          "etiqueta": "Título del Formulario",
+          "aria_label": null
+        },
+        {
+          "id": "_r_4_-descripcion",
+          "etiqueta": "Descripción",
+          "aria_label": null
+        },
+        {
+          "id": "_r_4_-new_1790874171300-texto",
+          "etiqueta": "Enunciado (1)",
+          "aria_label": null
+        },
+        {
+          "id": "_r_4_-new_1790874171300-tipo",
+          "etiqueta": "Tipo (1)",
+          "aria_label": null
+        },
+        {
+          "id": "_r_4_-new_1790874171468-texto",
+          "etiqueta": "Enunciado (2)",
+          "aria_label": null
+        },
+        {
+          "id": "_r_4_-new_1790874171468-tipo",
+          "etiqueta": "Tipo (2)",
+          "aria_label": null
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "infracciones": []
+    },
+    {
+      "id": "escenario-con-seleccion",
+      "tema": "light",
+      "ancho": 320,
+      "regiones": [
+        {
+          "nombre": "Registrar Escenario Especial",
+          "ancho": 319,
+          "contenido": 319
+        },
+        {
+          "nombre": "Contenido de Registrar Escenario Especial",
+          "ancho": 319,
+          "contenido": 319
+        }
+      ],
+      "desbordamientos": [],
+      "controles": [
+        {
+          "id": "_r_h_-titulo",
+          "etiqueta": "Título del Escenario",
+          "aria_label": null
+        },
+        {
+          "id": "_r_h_-tipo",
+          "etiqueta": "Tipo de Escenario",
+          "aria_label": null
+        },
+        {
+          "id": "_r_h_-fecha",
+          "etiqueta": "Fecha",
+          "aria_label": null
+        },
+        {
+          "id": "_r_h_-entidad",
+          "etiqueta": "Entidad Convocante",
+          "aria_label": null
+        },
+        {
+          "id": "_r_h_-hombres",
+          "etiqueta": "Hombres",
+          "aria_label": null
+        },
+        {
+          "id": "_r_h_-mujeres",
+          "etiqueta": "Mujeres",
+          "aria_label": null
+        },
+        {
+          "id": "_r_h_-otros",
+          "etiqueta": "Otros",
+          "aria_label": null
+        },
+        {
+          "id": "_r_h_-victimas",
+          "etiqueta": "Víctimas (Ley 1448)",
+          "aria_label": null
+        },
+        {
+          "id": "_r_h_-discapacidad",
+          "etiqueta": "Discapacidad (Ley 1618)",
+          "aria_label": null
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "infracciones": []
+    },
+    {
+      "id": "galeria-institucional-destacados",
+      "tema": "light",
+      "ancho": 320,
+      "regiones": [
+        {
+          "nombre": "Memoria Social y Testimonios",
+          "ancho": 319,
+          "contenido": 319
+        },
+        {
+          "nombre": "Contenido de Memoria Social y Testimonios",
+          "ancho": 319,
+          "contenido": 319
+        }
+      ],
+      "desbordamientos": [],
+      "controles": [
+        {
+          "id": "_r_13_",
+          "etiqueta": "Filtrar testimonios por territorio",
+          "aria_label": null
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "infracciones": []
+    },
+    {
+      "id": "mapa-enter-espacio-escape-retorno",
+      "tema": "light",
+      "ancho": 320,
+      "regiones": [
+        {
+          "nombre": "De la Virgen y Turística",
+          "ancho": 319,
+          "contenido": 319
+        },
+        {
+          "nombre": "Contenido de De la Virgen y Turística",
+          "ancho": 319,
+          "contenido": 319
+        }
+      ],
+      "desbordamientos": [],
+      "controles": [],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "infracciones": []
+    },
+    {
+      "id": "mesas-320",
+      "tema": "light",
+      "ancho": 320,
+      "regiones": [
+        {
+          "nombre": "MAIN",
+          "ancho": 320,
+          "contenido": 320
+        }
+      ],
+      "desbordamientos": [],
+      "controles": [
+        {
+          "id": "",
+          "etiqueta": "",
+          "aria_label": "Buscar mesas de trabajo"
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "infracciones": []
+    },
+    {
+      "id": "formulario-con-dos-preguntas",
+      "tema": "light",
+      "ancho": 1440,
+      "regiones": [
+        {
+          "nombre": "Nuevo Formulario",
+          "ancho": 779,
+          "contenido": 779
+        },
+        {
+          "nombre": "Contenido de Nuevo Formulario",
+          "ancho": 779,
+          "contenido": 779
+        }
+      ],
+      "desbordamientos": [],
+      "controles": [
+        {
+          "id": "_r_4_-titulo",
+          "etiqueta": "Título del Formulario",
+          "aria_label": null
+        },
+        {
+          "id": "_r_4_-descripcion",
+          "etiqueta": "Descripción",
+          "aria_label": null
+        },
+        {
+          "id": "_r_4_-new_1790874175697-texto",
+          "etiqueta": "Enunciado (1)",
+          "aria_label": null
+        },
+        {
+          "id": "_r_4_-new_1790874175697-tipo",
+          "etiqueta": "Tipo (1)",
+          "aria_label": null
+        },
+        {
+          "id": "_r_4_-new_1790874175903-texto",
+          "etiqueta": "Enunciado (2)",
+          "aria_label": null
+        },
+        {
+          "id": "_r_4_-new_1790874175903-tipo",
+          "etiqueta": "Tipo (2)",
+          "aria_label": null
+        }
+      ],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "infracciones": []
+    },
+    {
+      "id": "escenario-con-seleccion",
+      "tema": "light",
+      "ancho": 1440,
+      "regiones": [
+        {
+          "nombre": "Registrar Escenario Especial",
+          "ancho": 639,
+          "contenido": 639
+        },
+        {
+          "nombre": "Contenido de Registrar Escenario Especial",
+          "ancho": 639,
+          "contenido": 639
+        }
+      ],
+      "desbordamientos": [],
+      "controles": [
+        {
+          "id": "_r_h_-titulo",
+          "etiqueta": "Título del Escenario",
+          "aria_label": null
+        },
+        {
+          "id": "_r_h_-tipo",
+          "etiqueta": "Tipo de Escenario",
+          "aria_label": null
+        },
+        {
+          "id": "_r_h_-fecha",
+          "etiqueta": "Fecha",
+          "aria_label": null
+        },
+        {
+          "id": "_r_h_-entidad",
+          "etiqueta": "Entidad Convocante",
+          "aria_label": null
+        },
+        {
+          "id": "_r_h_-hombres",
+          "etiqueta": "Hombres",
+          "aria_label": null
+        },
+        {
+          "id": "_r_h_-mujeres",
+          "etiqueta": "Mujeres",
+          "aria_label": null
+        },
+        {
+          "id": "_r_h_-otros",
+          "etiqueta": "Otros",
+          "aria_label": null
+        },
+        {
+          "id": "_r_h_-victimas",
+          "etiqueta": "Víctimas (Ley 1448)",
+          "aria_label": null
+        },
+        {
+          "id": "_r_h_-discapacidad",
+          "etiqueta": "Discapacidad (Ley 1618)",
+          "aria_label": null
+        }
+      ],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "infracciones": []
+    },
+    {
+      "id": "galeria-institucional-destacados",
+      "tema": "light",
+      "ancho": 1440,
+      "regiones": [
+        {
+          "nombre": "Memoria Social y Testimonios",
+          "ancho": 819,
+          "contenido": 819
+        },
+        {
+          "nombre": "Contenido de Memoria Social y Testimonios",
+          "ancho": 819,
+          "contenido": 819
+        }
+      ],
+      "desbordamientos": [],
+      "controles": [
+        {
+          "id": "_r_15_",
+          "etiqueta": "Filtrar testimonios por territorio",
+          "aria_label": null
+        }
+      ],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "infracciones": []
+    },
+    {
+      "id": "mapa-enter-espacio-escape-retorno",
+      "tema": "light",
+      "ancho": 1440,
+      "regiones": [
+        {
+          "nombre": "De la Virgen y Turística",
+          "ancho": 503,
+          "contenido": 503
+        },
+        {
+          "nombre": "Contenido de De la Virgen y Turística",
+          "ancho": 503,
+          "contenido": 503
+        }
+      ],
+      "desbordamientos": [],
+      "controles": [],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "infracciones": []
+    },
+    {
+      "id": "mesas-320",
+      "tema": "light",
+      "ancho": 1440,
+      "regiones": [
+        {
+          "nombre": "MAIN",
+          "ancho": 1440,
+          "contenido": 1440
+        }
+      ],
+      "desbordamientos": [],
+      "controles": [],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "infracciones": []
+    },
+    {
+      "id": "formulario-con-dos-preguntas",
+      "tema": "dark",
+      "ancho": 320,
+      "regiones": [
+        {
+          "nombre": "Nuevo Formulario",
+          "ancho": 319,
+          "contenido": 319
+        },
+        {
+          "nombre": "Contenido de Nuevo Formulario",
+          "ancho": 319,
+          "contenido": 319
+        }
+      ],
+      "desbordamientos": [],
+      "controles": [
+        {
+          "id": "_r_4_-titulo",
+          "etiqueta": "Título del Formulario",
+          "aria_label": null
+        },
+        {
+          "id": "_r_4_-descripcion",
+          "etiqueta": "Descripción",
+          "aria_label": null
+        },
+        {
+          "id": "_r_4_-new_1790874181346-texto",
+          "etiqueta": "Enunciado (1)",
+          "aria_label": null
+        },
+        {
+          "id": "_r_4_-new_1790874181346-tipo",
+          "etiqueta": "Tipo (1)",
+          "aria_label": null
+        },
+        {
+          "id": "_r_4_-new_1790874181479-texto",
+          "etiqueta": "Enunciado (2)",
+          "aria_label": null
+        },
+        {
+          "id": "_r_4_-new_1790874181479-tipo",
+          "etiqueta": "Tipo (2)",
+          "aria_label": null
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "infracciones": []
+    },
+    {
+      "id": "escenario-con-seleccion",
+      "tema": "dark",
+      "ancho": 320,
+      "regiones": [
+        {
+          "nombre": "Registrar Escenario Especial",
+          "ancho": 319,
+          "contenido": 319
+        },
+        {
+          "nombre": "Contenido de Registrar Escenario Especial",
+          "ancho": 319,
+          "contenido": 319
+        }
+      ],
+      "desbordamientos": [],
+      "controles": [
+        {
+          "id": "_r_h_-titulo",
+          "etiqueta": "Título del Escenario",
+          "aria_label": null
+        },
+        {
+          "id": "_r_h_-tipo",
+          "etiqueta": "Tipo de Escenario",
+          "aria_label": null
+        },
+        {
+          "id": "_r_h_-fecha",
+          "etiqueta": "Fecha",
+          "aria_label": null
+        },
+        {
+          "id": "_r_h_-entidad",
+          "etiqueta": "Entidad Convocante",
+          "aria_label": null
+        },
+        {
+          "id": "_r_h_-hombres",
+          "etiqueta": "Hombres",
+          "aria_label": null
+        },
+        {
+          "id": "_r_h_-mujeres",
+          "etiqueta": "Mujeres",
+          "aria_label": null
+        },
+        {
+          "id": "_r_h_-otros",
+          "etiqueta": "Otros",
+          "aria_label": null
+        },
+        {
+          "id": "_r_h_-victimas",
+          "etiqueta": "Víctimas (Ley 1448)",
+          "aria_label": null
+        },
+        {
+          "id": "_r_h_-discapacidad",
+          "etiqueta": "Discapacidad (Ley 1618)",
+          "aria_label": null
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "infracciones": []
+    },
+    {
+      "id": "galeria-institucional-destacados",
+      "tema": "dark",
+      "ancho": 320,
+      "regiones": [
+        {
+          "nombre": "Memoria Social y Testimonios",
+          "ancho": 319,
+          "contenido": 319
+        },
+        {
+          "nombre": "Contenido de Memoria Social y Testimonios",
+          "ancho": 319,
+          "contenido": 319
+        }
+      ],
+      "desbordamientos": [],
+      "controles": [
+        {
+          "id": "_r_13_",
+          "etiqueta": "Filtrar testimonios por territorio",
+          "aria_label": null
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "infracciones": []
+    },
+    {
+      "id": "mapa-enter-espacio-escape-retorno",
+      "tema": "dark",
+      "ancho": 320,
+      "regiones": [
+        {
+          "nombre": "De la Virgen y Turística",
+          "ancho": 319,
+          "contenido": 319
+        },
+        {
+          "nombre": "Contenido de De la Virgen y Turística",
+          "ancho": 319,
+          "contenido": 319
+        }
+      ],
+      "desbordamientos": [],
+      "controles": [],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "infracciones": []
+    },
+    {
+      "id": "mesas-320",
+      "tema": "dark",
+      "ancho": 320,
+      "regiones": [
+        {
+          "nombre": "MAIN",
+          "ancho": 320,
+          "contenido": 320
+        }
+      ],
+      "desbordamientos": [],
+      "controles": [
+        {
+          "id": "",
+          "etiqueta": "",
+          "aria_label": "Buscar mesas de trabajo"
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "infracciones": []
+    },
+    {
+      "id": "formulario-con-dos-preguntas",
+      "tema": "dark",
+      "ancho": 1440,
+      "regiones": [
+        {
+          "nombre": "Nuevo Formulario",
+          "ancho": 779,
+          "contenido": 779
+        },
+        {
+          "nombre": "Contenido de Nuevo Formulario",
+          "ancho": 779,
+          "contenido": 779
+        }
+      ],
+      "desbordamientos": [],
+      "controles": [
+        {
+          "id": "_r_4_-titulo",
+          "etiqueta": "Título del Formulario",
+          "aria_label": null
+        },
+        {
+          "id": "_r_4_-descripcion",
+          "etiqueta": "Descripción",
+          "aria_label": null
+        },
+        {
+          "id": "_r_4_-new_1790874186046-texto",
+          "etiqueta": "Enunciado (1)",
+          "aria_label": null
+        },
+        {
+          "id": "_r_4_-new_1790874186046-tipo",
+          "etiqueta": "Tipo (1)",
+          "aria_label": null
+        },
+        {
+          "id": "_r_4_-new_1790874186252-texto",
+          "etiqueta": "Enunciado (2)",
+          "aria_label": null
+        },
+        {
+          "id": "_r_4_-new_1790874186252-tipo",
+          "etiqueta": "Tipo (2)",
+          "aria_label": null
+        }
+      ],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "infracciones": []
+    },
+    {
+      "id": "escenario-con-seleccion",
+      "tema": "dark",
+      "ancho": 1440,
+      "regiones": [
+        {
+          "nombre": "Registrar Escenario Especial",
+          "ancho": 639,
+          "contenido": 639
+        },
+        {
+          "nombre": "Contenido de Registrar Escenario Especial",
+          "ancho": 639,
+          "contenido": 639
+        }
+      ],
+      "desbordamientos": [],
+      "controles": [
+        {
+          "id": "_r_h_-titulo",
+          "etiqueta": "Título del Escenario",
+          "aria_label": null
+        },
+        {
+          "id": "_r_h_-tipo",
+          "etiqueta": "Tipo de Escenario",
+          "aria_label": null
+        },
+        {
+          "id": "_r_h_-fecha",
+          "etiqueta": "Fecha",
+          "aria_label": null
+        },
+        {
+          "id": "_r_h_-entidad",
+          "etiqueta": "Entidad Convocante",
+          "aria_label": null
+        },
+        {
+          "id": "_r_h_-hombres",
+          "etiqueta": "Hombres",
+          "aria_label": null
+        },
+        {
+          "id": "_r_h_-mujeres",
+          "etiqueta": "Mujeres",
+          "aria_label": null
+        },
+        {
+          "id": "_r_h_-otros",
+          "etiqueta": "Otros",
+          "aria_label": null
+        },
+        {
+          "id": "_r_h_-victimas",
+          "etiqueta": "Víctimas (Ley 1448)",
+          "aria_label": null
+        },
+        {
+          "id": "_r_h_-discapacidad",
+          "etiqueta": "Discapacidad (Ley 1618)",
+          "aria_label": null
+        }
+      ],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "infracciones": []
+    },
+    {
+      "id": "galeria-institucional-destacados",
+      "tema": "dark",
+      "ancho": 1440,
+      "regiones": [
+        {
+          "nombre": "Memoria Social y Testimonios",
+          "ancho": 819,
+          "contenido": 819
+        },
+        {
+          "nombre": "Contenido de Memoria Social y Testimonios",
+          "ancho": 819,
+          "contenido": 819
+        }
+      ],
+      "desbordamientos": [],
+      "controles": [
+        {
+          "id": "_r_15_",
+          "etiqueta": "Filtrar testimonios por territorio",
+          "aria_label": null
+        }
+      ],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "infracciones": []
+    },
+    {
+      "id": "mapa-enter-espacio-escape-retorno",
+      "tema": "dark",
+      "ancho": 1440,
+      "regiones": [
+        {
+          "nombre": "Cargando...",
+          "ancho": 503,
+          "contenido": 503
+        },
+        {
+          "nombre": "Contenido de Cargando...",
+          "ancho": 503,
+          "contenido": 503
+        }
+      ],
+      "desbordamientos": [],
+      "controles": [],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "infracciones": []
+    },
+    {
+      "id": "mesas-320",
+      "tema": "dark",
+      "ancho": 1440,
+      "regiones": [
+        {
+          "nombre": "MAIN",
+          "ancho": 1440,
+          "contenido": 1440
+        }
+      ],
+      "desbordamientos": [],
+      "controles": [],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "infracciones": []
+    }
+  ],
+  "errores": []
+}

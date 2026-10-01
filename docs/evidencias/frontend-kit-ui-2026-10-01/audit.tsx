@@ -1,0 +1,14 @@
+import React from 'react';
+import {createRoot} from 'react-dom/client';
+import {ThemeProvider} from 'next-themes';
+import {MotionConfig} from 'framer-motion';
+import {QueryProvider} from '@/app/_composition/query-provider';
+import Home from '@/app/page';
+import {PanelHost} from '@/app/_components/panel-host';
+import {usePanelStore} from '@/core/panels/panel-store';
+import {useNavigationStore} from '@/core/navigation/navigation-store';
+import {useSesionStore} from '@/features/sesion/state/session-store';
+import './audit.css';
+const admin={id:'00000000-0000-4000-8000-000000000001',rol_id:'00000000-0000-4000-8000-000000000002',correo:'auditoria@example.org',nivel_identidad:'declarada',nombres:'Auditoría',apellidos:'Local',activo:true,codigo_rol:'autoridad_distrital',permisos:['usuarios:leer','usuarios:gestionar','roles:gestionar','identidad:auditar','formularios:leer','formularios:gestionar','mesas:abrir','mesas:acuerdos','asistencia:verificar','auditoria:leer','aportes:priorizar','presupuesto:gestionar','indicadores:gestionar'],correo_verificado_en:null};
+window.audit={open:(type,props={})=>usePanelStore.getState().openPanel(type,props),close:()=>usePanelStore.getState().closeAll(),view:(vista)=>useNavigationStore.getState().setVista(vista),entries:()=>usePanelStore.getState().entries,login:()=>useSesionStore.getState().iniciarSesion({token_acceso:'solo-mock-auditoria',rol:admin.codigo_rol,nivel_identidad:'declarada',permisos:admin.permisos,expira_en:'2099-01-01T00:00:00Z',usuario:admin}),logout:()=>useSesionStore.getState().limpiarSesion(),admin};
+createRoot(document.getElementById('root')).render(<QueryProvider><ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}><MotionConfig reducedMotion="user"><Home/><PanelHost/></MotionConfig></ThemeProvider></QueryProvider>);

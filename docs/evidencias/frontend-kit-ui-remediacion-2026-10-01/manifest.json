@@ -1,0 +1,161 @@
+{
+  "fecha": "2026-10-01T17:04:59.908274+00:00",
+  "objeto": "Correcciones F01/F02/F04 y alternativa de teclado F13; ver sección 10 del informe",
+  "informe": "../../auditoria-frontend-kit-ui.md",
+  "informe_sha256": "2adefe1bcb3c1db9f1929c63e36674be9182c97a7727c0e84ae8e1b45b30a303",
+  "informe_original_sha256": "5a1cf83c1b3589d95badd1c60c8ced16bfa59c86db652e96f040b855f320205e",
+  "comandos": {
+    "bun run check": {
+      "exit_code": 0,
+      "log": "check.log"
+    },
+    "bun run build": {
+      "exit_code": 0,
+      "log": "build.log"
+    },
+    "bun run ui:test": {
+      "exit_code": 0,
+      "log": "ui-test.log"
+    },
+    "bun run storybook:build": {
+      "exit_code": 0,
+      "log": "storybook-build.log"
+    },
+    "node audit-run.mjs": {
+      "exit_code": 0,
+      "log": "navegador.log"
+    },
+    "node remediacion-run.mjs": {
+      "exit_code": 0,
+      "log": "interacciones.log"
+    }
+  },
+  "archivos": [
+    {
+      "archivo": "audit-run.mjs",
+      "bytes": 10682,
+      "sha256": "f3667ab9c6a9eef464fe9ea5951912f1ca40e465335b38c760e2f97722c36f0d"
+    },
+    {
+      "archivo": "audit.css",
+      "bytes": 146,
+      "sha256": "6e8ff9493f18cb35dcd77b34219887f70a154eac2dcf733051bfc9ff174b8866"
+    },
+    {
+      "archivo": "audit.tsx",
+      "bytes": 1819,
+      "sha256": "6436326e3eea1e59cb4f04ae9a104e4a1b206a87196591d4df1bfd2d94543bad"
+    },
+    {
+      "archivo": "build.log",
+      "bytes": 866,
+      "sha256": "f476913e1d320511b2387b83a04037bab098baff33f996b5fa16eff89ab9729a"
+    },
+    {
+      "archivo": "cambios.patch",
+      "bytes": 32667,
+      "sha256": "fbd1e3f5d94f0a1933ff4de60671c95f5b3854cb404ffe991ef94d5e75cecadf"
+    },
+    {
+      "archivo": "check.log",
+      "bytes": 197,
+      "sha256": "18f891ca40655f3ee2ea35460146b0fa28f4e274670b7460c0aba119c640ac94"
+    },
+    {
+      "archivo": "escenario-editor-320.png",
+      "bytes": 45037,
+      "sha256": "d9117d4b98fbd2ebabc2bf40036eb2296767313abdf9045a6c9da4236725728b"
+    },
+    {
+      "archivo": "formulario-editor-320.png",
+      "bytes": 30610,
+      "sha256": "36a9cb0bf042dd7f52948aef82fcb85ff73292b17833e2b62dd252fc1f2cf8bd"
+    },
+    {
+      "archivo": "formularios-320.png",
+      "bytes": 30624,
+      "sha256": "f7920fd075a37ebdb3e0dfc50ceb0b85402d6ce02af70ae54debcc3216e8b730"
+    },
+    {
+      "archivo": "galeria-dark-320.png",
+      "bytes": 51611,
+      "sha256": "606af06d907f9f187d9a1d0242bd2a91579f58d4510933f02f1068366905b0af"
+    },
+    {
+      "archivo": "galeria-light-320.png",
+      "bytes": 51168,
+      "sha256": "6af915235b05803f15a1b9972189e116c2271230c0c31178faee813b6d23cc2b"
+    },
+    {
+      "archivo": "index.html",
+      "bytes": 263,
+      "sha256": "bb326bfea803704a4fd76fdadb3b89886ee1df30b5fceca4b8a083fb09e24e73"
+    },
+    {
+      "archivo": "informe-original.md",
+      "bytes": 55325,
+      "sha256": "5a1cf83c1b3589d95badd1c60c8ced16bfa59c86db652e96f040b855f320205e"
+    },
+    {
+      "archivo": "interacciones.json",
+      "bytes": 18261,
+      "sha256": "4a70d20bb32fed6d610ec4f0b043c7326462f74c34ea4fa5a324e766759a43ac"
+    },
+    {
+      "archivo": "interacciones.log",
+      "bytes": 168,
+      "sha256": "ba9586a71f04961fcae436163d58c9d3397d8758216c127a731d5a57a8ebd2f0"
+    },
+    {
+      "archivo": "inventario.json",
+      "bytes": 21571,
+      "sha256": "c2ec4caa9c846a6b4dffb8bf070c43cb7ebf1cda6aa7ce875e2093e79f5eac42"
+    },
+    {
+      "archivo": "navegador.json",
+      "bytes": 89439,
+      "sha256": "dfd818f09063059cd81a3264d60d5f9aa2479858cdf8e04ef715c3b9a3010949"
+    },
+    {
+      "archivo": "navegador.log",
+      "bytes": 152,
+      "sha256": "3767e406e2661e9c79a9a7f8eba6eec6b54bbe455b336c195da0f7828cf66f9d"
+    },
+    {
+      "archivo": "papelografo-320.png",
+      "bytes": 50379,
+      "sha256": "543c55839e689f9d4274254ee2db343a639f7fa1772f5c6e8b104aaf1c95fb78"
+    },
+    {
+      "archivo": "remediacion-run.mjs",
+      "bytes": 7042,
+      "sha256": "585985ead221e258497004ae89a280a959d9793ee46657d148bf52f7ef8fbddb"
+    },
+    {
+      "archivo": "resumen.json",
+      "bytes": 944,
+      "sha256": "064ebdfc3f67e64099934c625ad591d65feb5099952b1f01ca471d90d99ac860"
+    },
+    {
+      "archivo": "src-remediacion.tar.gz",
+      "bytes": 173155,
+      "sha256": "d85963cfef168013eb7e8c0e8b891fe2af2a156a3fba4d4dcceda68d4adc955e"
+    },
+    {
+      "archivo": "storybook-build.log",
+      "bytes": 177024,
+      "sha256": "aa887fa4fa2c43da6bcad8953e303350b671b73dc244a8731a2060c663dc0198"
+    },
+    {
+      "archivo": "ui-test.log",
+      "bytes": 236,
+      "sha256": "ec057bc5a4f0be16dee59f06ed33215297b922bb7db3136e5edfb6fb132049ab"
+    },
+    {
+      "archivo": "vite.config.mts",
+      "bytes": 425,
+      "sha256": "e3a59c0cf3e647c792e17c5ac6999cafc45924576c86118b8b4408c747cffcf5"
+    }
+  ],
+  "limites": "Fixtures interceptadas; sin persistencia real, certificación WCAG ni dictamen independiente. Snapshot incluye cambios concurrentes que esta intervención no audita."
+}

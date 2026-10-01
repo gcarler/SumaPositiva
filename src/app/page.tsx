@@ -1,13 +1,17 @@
 "use client";
 
 import { useEffect } from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import { Topbar } from "@/components/layout/topbar";
-import { Footer } from "@/components/layout/footer";
-import { InicioView } from "@/components/views/inicio-view";
-import { ExplorarView } from "@/components/views/explorar-view";
-import { MesasView } from "@/components/views/mesas-view";
-import { usePoliticasStore } from "@/stores/politicas-store";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { Topbar } from "@/app/_components/topbar";
+import { Footer } from "@/shared/layout/footer";
+import { InicioView } from "@/features/politicas/views/inicio-view";
+import { ExplorarView } from "@/features/politicas/views/explorar-view";
+import { MesasView } from "@/features/mesas/views/mesas-view";
+import { GeovisorView } from "@/features/geovisor/views/geovisor-view";
+import { useNavigationStore } from "@/core/navigation/navigation-store";
+
+import { SidebarProvider } from "@/shared/ui/sidebar";
+import { SidebarInstitucional } from "@/app/_components/sidebar-institucional";
 
 /**
  * POLIS — Plataforma de Participación Ciudadana en Políticas Públicas.
@@ -18,37 +22,44 @@ import { usePoliticasStore } from "@/stores/politicas-store";
  */
 
 export default function Home() {
-  const vista = usePoliticasStore((s) => s.vista);
+  const reducedMotion = useReducedMotion();
+  const vista = useNavigationStore((s) => s.vista);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
   }, [vista]);
 
   return (
-    <div className="flex min-h-screen flex-col">
-      <Topbar />
+    <SidebarProvider id="polis-application">
+      <SidebarInstitucional />
+      <div className="flex min-h-screen flex-col flex-1 min-w-0">
+        <a className="ui-skip-link" href="#main-content">Saltar al contenido</a>
+        <Topbar />
 
-      <main className="flex-1">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={vista}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-          >
-            {vista === "inicio" ? (
-              <InicioView />
-            ) : vista === "mesas" ? (
-              <MesasView />
-            ) : (
-              <ExplorarView />
-            )}
-          </motion.div>
-        </AnimatePresence>
-      </main>
+        <main id="main-content" tabIndex={-1} className="flex-1">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={vista}
+              initial={reducedMotion ? false : { opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+            >
+              {vista === "inicio" ? (
+                <InicioView />
+              ) : vista === "mesas" ? (
+                <MesasView />
+              ) : vista === "geovisor" ? (
+                <GeovisorView />
+              ) : (
+                <ExplorarView />
+              )}
+            </motion.div>
+          </AnimatePresence>
+        </main>
 
-      <Footer />
-    </div>
+        <Footer />
+      </div>
+    </SidebarProvider>
   );
 }

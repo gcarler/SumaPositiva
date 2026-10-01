@@ -1,0 +1,34 @@
+"""Permisos reconocidos por la aplicación; los roles agrupan este catálogo."""
+
+PERMISOS = {
+    "mesas:deliberar": "Participar en deliberaciones",
+    "mesas:leer": "Consultar mesas",
+    "aportes:responder": "Responder aportes",
+    "auditoria:leer": "Consultar auditoría",
+    "formularios:leer": "Consultar formularios",
+    "formularios:gestionar": "Gestionar formularios",
+    "aportes:crear": "Publicar aportes",
+    "aportes:leer": "Consultar aportes",
+    "aportes:apoyar": "Respaldar aportes",
+    "aportes:priorizar": "Gestionar aportes",
+    "mesas:abrir": "Crear mesas y submesas",
+    "mesas:acuerdos": "Gestionar actas",
+    "asistencia:verificar": "Consultar y registrar participantes",
+    "instrumentos:gestionar": "Gestionar instrumentos",
+    "ia:analizar": "Ejecutar análisis IA",
+    "presupuesto:gestionar": "Gestionar presupuesto",
+    "indicadores:gestionar": "Gestionar indicadores",
+    "usuarios:leer": "Consultar usuarios y roles",
+    "usuarios:gestionar": "Crear y administrar usuarios",
+    "roles:gestionar": "Crear y administrar roles y permisos",
+    "identidad:auditar": "Consultar eventos de identidad",
+    "politicas:gestionar": "Gestionar fases y configuración de políticas públicas",
+    "testimonios:moderar": "Moderar y curar testimonios comunitarios",
+}
+ROLES_SISTEMA = {
+    "ciudadano",
+    "facilitador_mesa",
+    "autoridad_distrital",
+    "auditor_forense",
+    "administrador_identidades",
+}

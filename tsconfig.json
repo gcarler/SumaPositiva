@@ -34,9 +34,16 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    ".next/dev/types/**/*.ts"
+    ".next/dev/types/**/*.ts",
+    "**/*.mts",
+    ".storybook/**/*.ts",
+    ".storybook/**/*.tsx"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "examples",
+    "backend",
+    "venv",
+    "docs"
   ]
 }

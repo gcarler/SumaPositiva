@@ -1,0 +1,246 @@
+﻿🏛️ Arquitectura Modular de la Plataforma
+"Cartagena Seguridad Humana: Plataforma de Co-creación Ciudadana"
+
+
+1. Módulo de Diagnóstico Estadístico y Geovisor Conectado (GIS + Analytics)
+* Visualización Dinámica: Cifras clave organizadas bajo las 7 dimensiones de la Seguridad Humana (económica, alimentaria, salud, ambiental, personal, comunitaria y política)45.
+* Geovisor Territorial del Distrito de Cartagena: Mapa interactivo vectorizado con la división administrativa formal (Localidades, Unidades de Actuación Comunera - UAC, barrios, corregimientos e zona insular).
+* Conexión Bidireccional (Mapa ↔ Datos):
+   * Filtro desde el mapa: Al hacer clic en un barrio o localidad (ej. Localidad 2 - Virgen y Turística), las estadísticas de la pantalla se filtran automáticamente.
+   * Filtro desde los datos: Al seleccionar un indicador estadístico (ej. Conflictividad comunitaria o Riesgo ambiental), el mapa colorea dinámicamente las zonas críticas o con mayor concentración de reportes.
+* Descarga de Insumos: Capacidad de exportar reportes en PDF, CSV y mapas en capas para investigadores o veedurías16.
+________________
+
+
+2. Módulo de Participación Ciudadana por Fases y Líneas Estratégicas
+* Estructura por Fases de la Política:
+   * Fase 1: Alistamiento y Diagnóstico Participativo.
+   * Fase 2: Formulación de Alternativas y Líneas Estratégicas.
+   * Fase 3: Plan de Acción e Inversión.
+* Participación Modular: En cada fase, el ciudadano navega por las Líneas Estratégicas (ej. Prevención de violencias en jóvenes, Seguridad ambiental en la Ciénaga de la Virgen, Convivencia comunitaria).
+* Modalidad de Ingreso Dual:
+   * Usuario Autenticado (Logueado): Permite trazabilidad, perfilamiento del participante y seguimiento a sus propuestas.
+   * Usuario Anónimo: Elimina barreras de entrada para ciudadanos que temen opinar sobre problemáticas de seguridad en su territorio.
+* Aportes Estructurados: Los ciudadanos pueden calificar problemáticas, adjuntar observaciones, registrar alertas comunitarias y proponer soluciones concretas.
+________________
+
+
+3. Módulo de Gestión de Mesas de Trabajo y Trazabilidad en Campo (Panel para Funcionarios)
+* Perfilamiento de Servidores Públicos: Acceso seguro para coordinadores de mesa y facilitadores territoriales.
+* Sistematización Estructurada de Mesas y Submesas:
+   * Estructura de Árbol: Mesa Principal (ej. Mesa Poblacional) ➔ Submesa (ej. Primera Infancia y Adolescencia).
+   * Captura de Matriz de Diagnóstico: Para cada mesa se registran los problemas priorizados (ej. 5 problemas), sus causas (3 por problema) y sus efectos (3 por problema).
+   * Registro de Asistentes: Captura de datos sociodemográficos de los participantes (edad, género, grupo étnico, sector)17.
+* Contador de Participación en Tiempo Real: Métrico visible en el portal público que suma:
+* * ________________
+
+
+4. Módulo de Difusión Social y Agenda de Encuentros
+   * Calendario de Eventos y Mesas Territorializadas: Publicación con fecha, hora, lugar y mapa de ubicación de las próximas convocatorias en las 3 localidades de Cartagena.
+   * Botones de Difusión Un-Clic: Compartir fichas de convocatorias o resúmenes de mesas directamente por WhatsApp, Facebook o enlace directo.
+   * Descarga de Kits Pedagógicos: Fichas descargables para que líderes comunales (JAC, JAC insulares, grupos juveniles) repliquen las dinámicas en sus comunidades.
+________________
+
+
+5. Motor de Instrumentos y Encuestas (Módulo FormBuilder Tipo Google Forms)
+   * Gestor de Formularios Parametrizables:
+   * Creación de encuestas con múltiples tipos de pregunta (opción múltiple, escala Likert, texto libre, selección de ubicación en mapa, carga de archivos).
+   * Lógica condicional (saltos de preguntas según respuestas previas).
+   * Panel de Control y Analítica en Tiempo Real: Dashboard con gráficos de barras, tortas y tablas cruzadas para monitorear el avance de encuestas aplicadas en territorio.
+________________
+
+
+🎨 Estilo Visual y Experiencia de Usuario (UI/UX)
+   * Estética: Minimalista, High-Tech y Neutra. Fondo blanco/gris muy claro, tipografía sans-serif limpia (ej. Inter o Plus Jakarta Sans).
+   * Iconografía: Iconos de línea fina en formato monocromático (negro/gris oscuro), con acentos de color funcional únicamente para alertas o mapas (ej. verde para progreso, azul institucional para Cartagena, rojo/naranja para calor de datos).
+   * Rendimiento: Optimizado para conexiones móviles de bajo ancho de banda (3G/4G), garantizando carga rápida en teléfonos celulares de cualquier gama.
+________________
+
+
+🧠 ¿Qué me parece y cómo lo veo? (Evaluación)
+   1. Impacto Institucional: Le da a la Alcaldía Mayor de Cartagena una herramienta inédita de transparencia y legitimidad16. Evita que la política pública quede guardada en un PDF estático y la convierte en un proceso vivo.
+   2. Cumplimiento Normativo: Alinea perfectamente el proceso distrital con las exigencias del Decreto 037 de 2026 (que reglamenta la Política Pública de Convivencia y Seguridad Humana)18 y de la Ley 2272 de 20229, al garantizar participación activa, diagnóstico participativo y enfoque territorializado12.
+   3. Control de Sesgo: La combinación de formularios estructurados + geovisor + participación anónima garantiza una representación más equitativa de las zonas históricamente marginadas de Cartagena.
+________________
+
+
+💡 Siguientes pasos sugeridos: Si deseas avanzar en el diseño de esta propuesta, puedo ayudarte a elaborar:
+   1. El Documento de Especificaciones Técnicas y Funcionales (ETP) para licitación o desarrollo software.
+   2. El Esquema de Base de Datos y Flujo de Navegación de Usuarios.
+   3. La Matriz de Preguntas Tipo y Dimensiones para la fase de diagnóstico en Cartagena.
+¿Cuál de estos insumos te resultaría más útil para dar el siguiente paso?
+keep_pinGuardar en las notaskeep_pin
+copy
+thumb_up
+thumb_down
+estas seguro que así debería ser la plataforma, no le hizo falta nada? la politica que se va a formular es la: "Politica Publica de Humana de Seguridad Humana Integral" del Distrito de Cartagena de Indias, no quiero que se me quede nada por fuera a la luz de las leyes, decretos y procesdimientos en materia de politica publica.
+Thoughts
+expand_more
+Para garantizar que la plataforma de la "Política Pública de Seguridad Humana Integral" del Distrito de Cartagena de Indias cumpla estrictamente con el ciclo normativo y metodológico de políticas públicas en Colombia (normativa del DNP, Ley 2272 de 2022, Ley 2294 de 2023, Decreto 037 de 2026 y Decreto 1066 de 2015), sí es necesario incorporar componentes técnicos e institucionales clave que no deben quedar por fuera1more_horiz.
+Aunque la estructura inicial resolvía con éxito la participación y la visualización, la legislación colombiana y la metodología del Departamento Nacional de Planeación (DNP) exigen cumplir con instrumentos específicos de costeo, gestión de alertas, seguimiento a fondos territoriales y consulta étnica3more_horiz.
+________________
+
+
+🏛️ Módulos y Requisitos Adicionales para el Blindaje Normativo y Metodológico
+1. Módulo de Presupuestación, Costeo y Transparencia del FONSET
+   * Sustento Legal: El Decreto 037 de 2026 establece explícitamente la obligación de incorporar un Sistema de Seguimiento para los fondos de seguridad territoriales (FONSET) y vincular las metas de la política con los presupuestos plurianuales34.
+   * Funcionalidad en Plataforma:
+   * Matriz Plurianual de Inversiones (MPI): Cada línea estratégica y alternativa elegida debe poder costearse y asociarse a fuentes de financiación (Fondo Territorial de Seguridad - FONSET, Sistema General de Participaciones, Sistema General de Regalías - OCAD Paz, y Recursos Propios)3more_horiz.
+   * Ficha de Control Social a Inversiones: Visor público donde la ciudadanía puede verificar en qué proyectos y microterritorios de Cartagena se están invirtiendo los recursos del FONSET.
+2. Módulo del Índice de Conflictividad Social (ICS) y Alertas Tempranas (SAT / CIPRAT)
+   * Sustento Legal: El Decreto 037 de 2026 y el Decreto 1066 de 2015 disponen la obligatoriedad de integrar el Índice de Conflictividad Social y articular las respuestas locales con el Sistema de Alertas Tempranas (SAT) de la Defensoría del Pueblo y la CIPRAT6more_horiz.
+   * Funcionalidad en Plataforma:
+   * Tablero de Alertas Tempranas para Cartagena: Capa en el Geovisor que visibiliza las advertencias emitidas por la Defensoría del Pueblo para las 3 localidades y la zona insular de Cartagena.
+   * Registrador de Conflictividad Comunitaria: Permite a la Secretaría del Interior del Distrito mapear huelgas, bloqueos, riñas y tensiones comunitarias antes de que escalen a hechos delictivos.
+3. Módulo de Enfoque Diferencial Étnico y Registro de Consulta Previa
+   * Sustento Legal: Las leyes 2272 de 2022 y 2294 de 2023, junto con el Decreto 037 de 2026, obligan a garantizar el enfoque étnico y la participación activa de comunidades afrocolombianas, negras, raizales, palenqueras e indígenas2more_horiz.
+   * Funcionalidad en Plataforma:
+   * Gestor de Encuentros Étnicos y Protocolos: Registro diferenciado para las mesas de trabajo adelantadas con los Consejos Comunitarios de la zona insular y corregimental (ej. Barú, Pasacaballos, Bocachica, Tierra Bomba, La Boquilla).
+   * Trazabilidad de Acuerdos: Repositorio digital donde se cargan las actas, acuerdos y consentimientos derivados de los diálogos con autoridades tradicionales.
+4. Ajuste Territorial Específico del Distrito de Cartagena de Indias
+   * Sustento Legal y Operativo: Las políticas públicas territoriales deben responder a la división político-administrativa del ente territorial311.
+   * Funcionalidad en Plataforma:
+   * Capas de Desglose Geográfico: El mapa no solo debe mostrar localidades, sino descender a Unidades de Actuación Comunera (UAC), barrios, corregimientos y Zona Insular (Islas del Rosario, Barú, Tierra Bomba, Archipiélago de San Bernardo).
+   * Mapeo de Fenómenos Críticos de Cartagena: Capas de datos estructuradas para problemáticas específicas de la ciudad: Trata de personas y ESCNNA, Seguridad turística, Seguridad ambiental en cuerpos de agua (Ciénaga de la Virgen, Bahía de Cartagena) y Riesgo climático/erosión costera1112.
+5. Motor de Triaje Inteligente y Procesamiento de Lenguaje Natural (IA)
+   * Sustento Metodológico: En la fase de diagnóstico participativo del ciclo DNP se recolectan miles de aportes cuantitativos y cualitativos que corren el riesgo de traspapeilarse o sistematizarse con sesgo1113.
+   * Funcionalidad en Plataforma:
+   * Clasificador Automático de Problemas: Herramienta interna que lee los aportes de ciudadanos y mesas presenciales y los agrupa automáticamente por Dimensión de la Seguridad Humana (económica, alimentaria, salud, ambiental, personal, comunitaria, política) y según sus Causas y Efectos11more_horiz.
+________________
+
+
+🔄 Ciclo de Política Pública DNP reflejado en la Plataforma
+Fase del Ciclo de Política (DNP)11
+	Requisito Legal / Metodológico411
+	Módulo Correspondiente en la Plataforma
+	1. Alistamiento e Identificación
+	Mapeo de actores y agenda participativa1113.
+	Módulo de Agenda, Difusión Social y Registro de Mesas de Trabajo.
+	2. Diagnóstico Territorial
+	Línea de base, cartografía comunitaria e Índice de Conflictividad8more_horiz.
+	Geovisor Interactivo + Diagnóstico por las 7 Dimensiones de Seguridad Humana + Alertas SAT.
+	3. Formulación y Costeo
+	Matriz de Marco Lógico, líneas estratégicas y plan financiero (MPI / FONSET)3more_horiz.
+	Módulo de Propuestas Ciudadanas + Consultor de Proyectos y Matriz Plurianual de Inversiones.
+	4. Implementación y Gobernanza
+	Descentralización y corresponsabilidad institucional11more_horiz.
+	Panel de Control para Funcionarios, Alcaldías Locales y Fuerzas de Seguridad.
+	5. Seguimiento y Evaluación
+	Matriz de indicadores de producto e impacto y rendición de cuentas3more_horiz.
+	Dashboard de Indicadores de Resultado + Módulo de Control Social a Fondos de Seguridad.
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+# SYSTEM PROMPT: AI DATABASE ARCHITECT & POSTGRESQL/POSTGIS EXPERT
+
+
+## 1. ROL Y CONTEXTO
+Eres un **Arquitecto de Bases de Datos Senior y Especialista en PostgreSQL / PostGIS**. Tu objetivo es diseñar, implementar y optimizar la base de datos relacional/espacial para la plataforma de la **"Política Pública de Seguridad Humana Integral del Distrito de Cartagena de Indias"**.
+
+
+El sistema debe ser de nivel Enterprise: hiperflexible, altamente escalable, seguro, multitenant/multifase y con soporte geoespacial avanzado para el Distrito de Cartagena (incluyendo zona urbana, rural, corregimental e insular).
+
+
+---
+
+
+## 2. ARQUITECTURA Y PRINCIPIOS TÉCNICOS OBLIGATORIOS
+
+
+Deberás regirte estrictamente por las siguientes reglas arquitectónicas:
+
+
+1. **Claves Primarias:**
+   - Utilizar **UUIDv7** (time-ordered UUID) en todas las tablas para garantizar ordenamiento cronológico en índices B-Tree, alta velocidad en inserciones masivas y generación descentralizada.
+2. **Extensiones Requeridas:**
+   - `postgis` (Manejo de geometrías vectoriales EPSG:4326).
+   - `ltree` (Estructuras jerárquicas recursivas de profundidad infinita para mesas y submesas).
+   - `pgcrypto` (Cifrado de datos personales sensibles / Habeas Data).
+   - `pg_trgm` (Búsqueda difusa y rápida de texto en propuestas y diagnósticos).
+3. **Estructuras Jerárquicas Infinitas:**
+   - La tabla de mesas de trabajo (`workshops`) debe usar el tipo `ltree` para permitir `N` niveles de profundidad (Mesa Distrital -> Mesa Poblacional -> Submesa Primera Infancia -> Nodo Comunitario Barrio X) sin sobrecargar consultas recursivas.
+4. **Motor Polimórfico de Instrumentos:**
+   - El sistema no debe crear tablas rígidas por cada dinámica participativa. Debe implementar un motor basado en `instruments` e `instrument_nodes` con campos `JSONB` estructurados para soportar cualquier metodología (Árboles de Problemas Causa-Efecto, Matrices DOFA, Encuestas tipo Google Forms, Canvas, etc.).
+5. **Motor de Fases Infinitas (Lifecycle Engine):**
+   - Permitir la configuración dinámica de 3 a 1.000 fases de política pública (`policy_phases`), con reglas de negocio parametrizables en `JSONB`.
+6. **Grafo de Relación Universal ("Conectar todo con todo"):**
+   - Implementar una tabla `entity_relations` polimórfica que permita vincular cualquier entidad con otra (ej. *Aporte Ciudadano* -> *Causa de Árbol de Problemas* -> *Polígono en Mapa* -> *Indicador de Plan de Acción*).
+7. **Conexión Geoespacial Bidireccional (Cartagena):**
+   - Soporte para la división territorial: Distrito -> Localidades (1, 2 y 3) -> Unidades de Actuación Comunera (UAC) -> Barrios / Corregimientos / Zona Insular.
+   - Creación de índices espaciales `GIST` en todas las columnas de geometría (`point`, `multipolygon`).
+   - Uso de **Vistas Materializadas** con refresco asíncrono para garantizar que el filtrado entre Estadísticas <-> Mapa responda en menos de 50ms.
+
+
+---
+
+
+## 3. DOMINIOS Y TABLAS CORE A CONSTRUIR
+
+
+Deberás generar los scripts DDL SQL limpios, idempotentes (`CREATE TABLE IF NOT EXISTS`), comentados y optimizados para los siguientes dominios:
+
+
+### A. Dominio de Ciclo de Vida y Configuración (`policy_engine`)
+- `policy_phases` (Fases dinámicas de la política pública).
+- `human_security_dimensions` (Las 7 dimensiones de la Seguridad Humana: Económica, Alimentaria, Salud, Ambiental, Personal, Comunitaria, Política).
+- `strategic_lines` (Líneas estratégicas asociadas a fases y dimensiones).
+
+
+### B. Dominio Territorial y Geoespacial (`geo_spatial`)
+- `territories` (Jerarquía territorial de Cartagena con `geometry(MultiPolygon, 4326)` e índice GIST).
+- `territory_indicators` (Metadatos e indicadores estadísticos por territorio).
+- `spatial_layers` (Capas del geovisor: conflictividad, alertas SAT, FONSET).
+
+
+### C. Dominio de Participación y Aportes (`citizen_participation`)
+- `citizen_proposals` (Aportes ciudadanos con `location_point` opcional, soporte anónimo o logueado).
+- `proposal_interactions` (Apoyos, votos y comentarios con prevención de duplicados vía hash).
+
+
+### D. Dominio de Mesas de Trabajo y Jerarquías (`workshops_engine`)
+- `workshops` (Jerarquía de mesas y submesas usando `ltree` y `parent_id`).
+- `workshop_attendees` (Registro de participantes, demografía en `JSONB` y consentimiento de Habeas Data).
+
+
+### E. Dominio de Instrumentos Polimórficos (`instruments_engine`)
+- `instruments` (Definición del tipo de ejercicio: 'PROBLEM_TREE', 'SWOT', 'FORM', 'CANVAS').
+- `instrument_nodes` (Nodos del instrumento con `parent_node_id` para estructuras de árbol y `metadata` en `JSONB`).
+
+
+### F. Dominio de Grafo y Trazabilidad (`entity_graph`)
+- `entity_relations` (Tabla de acoplamiento universal entre entidades del sistema).
+- `audit_logs` (Registro inmutable de auditoría para cambios realizados por funcionarios).
+
+
+---
+
+
+## 4. REGLAS DE ENTREGA Y EJECUCIÓN
+
+
+Cuando te solicite componentes o tareas, debes entregar:
+1. **Scripts DDL SQL:** Compatibles con PostgreSQL 16+ y PostGIS 3+.
+2. **Restricciones de Integridad:** FKs con borrado en cascada controlado, restricciones `CHECK` y valores por defecto con UUIDv7.
+3. **Índices de Alto Rendimiento:** Índices B-Tree para FKs, índices GIST para PostGIS y `ltree`, e índices GIN para campos `JSONB` de consulta frecuente.
+4. **Documentación del Código:** Comentarios explicativos (`COMMENT ON TABLE`, `COMMENT ON COLUMN`) en español sobre la función de cada campo.
+
+
+---
+
+
+## 5. MODO DE INTERACCIÓN
+Inicia confirmando que has comprendido la arquitectura, el contexto del Distrito de Cartagena de Indias y los requerimientos Enterprise. Muestra un resumen de la estructura que vas a implementar y queda a la espera de mis órdenes específicas (ejemplo: *"Generar DDL de la fase 1"*, *"Crear funciones/triggers de auditoría"*, *"Diseñar vistas materializadas para el geovisor"*).
+
+
+________________

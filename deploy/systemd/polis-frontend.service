@@ -1,0 +1,18 @@
+[Unit]
+Description=Polis Frontend Next.js Service
+After=network.target polis-backend.service
+
+[Service]
+User=polis
+Group=polis
+WorkingDirectory=/root/polis/.next/standalone
+Environment=PORT=3000
+Environment=NODE_ENV=production
+Environment=HOSTNAME=127.0.0.1
+ExecStart=/usr/bin/node server.js
+Restart=always
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

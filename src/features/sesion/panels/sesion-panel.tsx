@@ -1,346 +1,120 @@
 "use client";
 
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { motion } from "framer-motion";
+import { useState, type FormEvent } from "react";
 import { toast } from "sonner";
-import {
-  VenetianMask,
-  ScanFace,
-  ShieldCheck,
-  Loader2,
-  LogOut,
-  Check,
-} from "lucide-react";
-import { PanelShell } from "@/components/panels/panel-shell";
-import { usePanels } from "@/stores/panel-store";
-import { useSesionStore, type ModoSesion } from "@/stores/session-store";
-import { SectionLabel, SesionAvatar } from "@/features/politicas/components/ui-bits";
+import { PanelShell } from "@/core/panels/panel-shell";
+import { usePanels, type PanelPropsMap } from "@/core/panels/panel-store";
+import { Button } from "@/shared/ui/button";
+import { Notice } from "@/shared/ui/notice";
+import { useSesionStore } from "@/features/sesion/state/session-store";
+import { identidadApi } from "@/features/sesion/services/identidad-api";
+import { CampoIdentidad, textoFormulario, comprobarContrasena } from "@/features/sesion/components/campo-identidad";
+import { CuentaUsuario } from "@/features/sesion/components/cuenta-usuario";
 
-/**
- * Panel de sesión — el ciudadano elige participar de forma anónima
- * o con identidad (demo local persistida; será JWT con FastAPI).
- * Cero modales: es un panel más de la pila.
- */
+type Vista = "login" | "registro" | "recuperar" | "restablecer" | "verificar";
+const TITULOS: Record<Vista, string> = {login: "Iniciar sesión", registro: "Crear cuenta",
+  recuperar: "Recuperar contraseña", restablecer: "Elegir nueva contraseña", verificar: "Verificar correo"};
 
-const identidadSchema = z.object({
-  nombre: z
-    .string()
-    .trim()
-    .min(3, "Tu nombre público necesita al menos 3 caracteres")
-    .max(40, "Máximo 40 caracteres"),
-  email: z
-    .string()
-    .trim()
-    .regex(/^[^@\s]+@[^@\s]+\.[^@\s]+$/, "Correo no válido")
-    .optional()
-    .or(z.literal("")),
-  ciudad: z.string().trim().max(60, "Máximo 60 caracteres").optional().or(z.literal("")),
-});
-
-type IdentidadForm = z.infer<typeof identidadSchema>;
-
-const OPCIONES: {
-  modo: ModoSesion;
-  titulo: string;
-  desc: string;
-  icon: typeof VenetianMask;
-}[] = [
-  {
-    modo: "anonimo",
-    titulo: "De forma anónima",
-    desc: "Tus aportes se publican sin ningún dato personal. Tu voz cuenta igual.",
-    icon: VenetianMask,
-  },
-  {
-    modo: "identidad",
-    titulo: "Con mi identidad",
-    desc: "Tu nombre acompaña cada aporte y el equipo técnico puede responderte directamente.",
-    icon: ScanFace,
-  },
-];
-
-export function SesionPanel({ entryKey }: { entryKey: string }) {
-  const { closeTop } = usePanels();
+export function SesionPanel({entryKey, props = {}}: {entryKey: string; props?: PanelPropsMap["sesion"]}) {
+  const {closeTop} = usePanels();
   const sesion = useSesionStore((s) => s.sesion);
-  const elegirAnonimo = useSesionStore((s) => s.elegirAnonimo);
-  const elegirIdentidad = useSesionStore((s) => s.elegirIdentidad);
-  const cerrarSesion = useSesionStore((s) => s.cerrarSesion);
+  const [vista, setVista] = useState<Vista>(props.accion === "recuperar" ? "restablecer" :
+    props.accion === "verificar" ? "verificar" : "login");
+  const [ocupado, setOcupado] = useState(false);
+  const [error, setError] = useState("");
+  const [mensaje, setMensaje] = useState("");
+  const tieneAccion = vista === "restablecer" || vista === "verificar";
+  function cambiar(v: Vista) {setVista(v); setError(""); setMensaje("");}
 
-  const [modoSeleccion, setModoSeleccion] = useState<ModoSesion | null>(
-    sesion?.modo ?? null
-  );
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting, isValid },
-  } = useForm<IdentidadForm>({
-    resolver: zodResolver(identidadSchema),
-    mode: "onChange",
-    defaultValues: {
-      nombre: sesion?.identidad?.nombre ?? "",
-      email: sesion?.identidad?.email ?? "",
-      ciudad: sesion?.identidad?.ciudad ?? "",
-    },
-  });
-
-  const guardarIdentidad = async (data: IdentidadForm) => {
-    await new Promise((r) => setTimeout(r, 350)); // latencia simulada
-    elegirIdentidad({
-      nombre: data.nombre,
-      email: data.email || undefined,
-      ciudad: data.ciudad || undefined,
-    });
-    toast.success("Identidad guardada", {
-      description: "Tus próximos aportes se publicarán con tu nombre.",
-    });
-    closeTop();
-  };
-
-  const continuarAnonimo = () => {
-    elegirAnonimo();
-    toast.success("Participarás de forma anónima", {
-      description: "Ningún dato personal se asociará a tus aportes.",
-    });
-    closeTop();
-  };
-
-  const cerrarSesionActual = () => {
-    cerrarSesion();
-    setModoSeleccion(null);
-    toast.info("Sesión cerrada", {
-      description: "Puedes elegir otra forma de participar.",
-    });
-  };
-
-  return (
-    <PanelShell
-      entryKey={entryKey}
-      crumbs={[{ label: "Tu identidad" }]}
-      kicker="Tu identidad"
-      title="Participa como prefieras"
-      subtitle="Elige si quieres firmar tus aportes con tu identidad o hacerlo de forma anónima. Puedes cambiarlo en cualquier momento."
-      onClose={closeTop}
-      onCloseToKey={closeTop}
-      footer={
-        <div className="flex items-center justify-between gap-3">
-          <p className="text-[11px] leading-tight text-[var(--text-tertiary)]">
-            {modoSeleccion === "identidad"
-              ? "Completa el formulario para guardar tu identidad."
-              : modoSeleccion === "anonimo"
-                ? "Ningún dato personal quedará asociado."
-                : "Selecciona una opción para continuar."}
-          </p>
-          {modoSeleccion === "identidad" ? (
-            <button
-              type="submit"
-              form="form-identidad"
-              disabled={isSubmitting || !isValid}
-              className="inline-flex items-center gap-2 rounded-full bg-[var(--text-primary)] px-4 py-2 text-xs font-medium text-[var(--text-inverse)] transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
-            >
-              {isSubmitting ? (
-                <>
-                  <Loader2 className="size-3.5 animate-spin" strokeWidth={1.5} />
-                  Guardando…
-                </>
-              ) : (
-                <>
-                  <Check className="size-3.5" strokeWidth={1.5} />
-                  Guardar identidad
-                </>
-              )}
-            </button>
-          ) : modoSeleccion === "anonimo" ? (
-            <button
-              type="button"
-              onClick={continuarAnonimo}
-              className="inline-flex items-center gap-2 rounded-full bg-[var(--text-primary)] px-4 py-2 text-xs font-medium text-[var(--text-inverse)] transition-opacity hover:opacity-90"
-            >
-              <VenetianMask className="size-3.5" strokeWidth={1.5} />
-              Continuar como anónimo
-            </button>
-          ) : (
-            <button
-              type="button"
-              onClick={closeTop}
-              disabled={!sesion}
-              className="rounded-full border border-[var(--border-strong)] px-4 py-2 text-xs font-medium text-[var(--text-secondary)] transition-colors hover:bg-[var(--surface-2)] disabled:cursor-not-allowed disabled:opacity-40"
-            >
-              Listo
-            </button>
-          )}
-        </div>
+  async function enviar(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const datos = new FormData(event.currentTarget);
+    setOcupado(true); setError(""); setMensaje("");
+    try {
+      if (vista === "login") {
+        const respuesta = await identidadApi.login(textoFormulario(datos, "correo"), textoFormulario(datos, "contrasena"));
+        useSesionStore.getState().iniciarSesion(respuesta);
+        toast.success("Sesión iniciada");
+      } else if (vista === "registro") {
+        const contrasena = comprobarContrasena(datos);
+        await identidadApi.registrar({correo: textoFormulario(datos, "correo"), contrasena,
+          nombres: textoFormulario(datos, "nombres"), apellidos: textoFormulario(datos, "apellidos")});
+        setVista("login"); setMensaje("Cuenta creada. Inicia sesión para verificar tu correo.");
+      } else if (vista === "recuperar") {
+        setMensaje((await identidadApi.solicitarRecuperacion(textoFormulario(datos, "correo"))).mensaje);
+      } else if (vista === "restablecer") {
+        setMensaje((await identidadApi.confirmarRecuperacion(props.token ?? "", comprobarContrasena(datos))).mensaje);
+        useSesionStore.getState().limpiarSesion(); setVista("login");
+      } else {
+        setMensaje((await identidadApi.confirmarVerificacion(props.token ?? "")).mensaje);
+        if (sesion?.usuarioId) useSesionStore.getState().actualizarPerfil(await identidadApi.perfil());
+        setVista("login");
       }
-    >
-      <div className="mx-auto w-full max-w-xl space-y-7 px-5 py-6 sm:px-6 2xl:px-8">
-        {/* ---------- Sesión actual ---------- */}
-        {sesion && (
-          <section className="space-y-3">
-            <SectionLabel>Sesión actual</SectionLabel>
-            <div className="flex items-center gap-3 rounded-lg border border-[var(--border)] bg-[var(--surface-1)] p-4">
-              <SesionAvatar sesion={sesion} />
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-medium text-[var(--text-primary)]">
-                  {sesion.modo === "identidad" && sesion.identidad
-                    ? sesion.identidad.nombre
-                    : "Participación anónima"}
-                </p>
-                <p className="text-[11px] text-[var(--text-tertiary)]">
-                  {sesion.modo === "identidad" && sesion.identidad?.email
-                    ? sesion.identidad.email
-                    : "Sin datos personales asociados"}
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={cerrarSesionActual}
-                className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-[var(--border-strong)] px-3 py-1.5 text-[11px] font-medium text-[var(--text-secondary)] transition-colors hover:border-[var(--danger)] hover:text-[var(--danger)]"
-              >
-                <LogOut className="size-3.5" strokeWidth={1.5} />
-                Cerrar sesión
-              </button>
-            </div>
-          </section>
-        )}
+    } catch (e) {setError(e instanceof Error ? e.message : "No se pudo completar la solicitud");}
+    finally {setOcupado(false);}
+  }
 
-        {/* ---------- Elección de modo ---------- */}
-        <section className="space-y-3">
-          <SectionLabel>
-            {sesion ? "Cambiar forma de participar" : "Elige cómo participar"}
-          </SectionLabel>
-          <div className="grid gap-2" role="radiogroup" aria-label="Forma de participar">
-            {OPCIONES.map((opt) => {
-              const Icon = opt.icon;
-              const active = modoSeleccion === opt.modo;
-              return (
-                <button
-                  key={opt.modo}
-                  type="button"
-                  role="radio"
-                  aria-checked={active}
-                  onClick={() => setModoSeleccion(opt.modo)}
-                  className={`flex items-start gap-3.5 rounded-xl border p-4 text-left transition-all ${
-                    active
-                      ? "border-[var(--ember)] bg-[var(--ember-soft)]"
-                      : "border-[var(--border)] bg-[var(--surface-1)] hover:border-[var(--border-strong)]"
-                  }`}
-                >
-                  <span
-                    className={`flex size-9 shrink-0 items-center justify-center rounded-full border ${
-                      active
-                        ? "border-[var(--ember)]/40 bg-[var(--surface-0)]"
-                        : "border-[var(--border)] bg-[var(--surface-2)]"
-                    }`}
-                  >
-                    <Icon
-                      className={`size-4 ${active ? "text-[var(--ember)]" : "text-[var(--text-secondary)]"}`}
-                      strokeWidth={1.5}
-                    />
-                  </span>
-                  <span className="min-w-0">
-                    <span
-                      className={`block text-sm font-medium ${
-                        active ? "text-[var(--ember)]" : "text-[var(--text-primary)]"
-                      }`}
-                    >
-                      {opt.titulo}
-                    </span>
-                    <span className="mt-0.5 block text-xs leading-relaxed text-[var(--text-secondary)]">
-                      {opt.desc}
-                    </span>
-                  </span>
-                </button>
+  return <PanelShell entryKey={entryKey} crumbs={[{label: "Tu cuenta"}]} kicker="Tu cuenta"
+    title={sesion?.usuarioId && !tieneAccion ? "Mi cuenta" : TITULOS[vista]}
+    subtitle="Accede con tus credenciales o participa de forma anónima." onClose={closeTop} onCloseToKey={closeTop}>
+    <div className="mx-auto w-full max-w-xl space-y-5 p-5 sm:p-6">
+      {sesion?.usuarioId && !tieneAccion ? <CuentaUsuario /> : <>
+        {!tieneAccion && <nav aria-label="Opciones de acceso" className="flex flex-wrap gap-2">
+          <Button variant={vista === "login" ? "default" : "outline"} onClick={() => cambiar("login")}>Iniciar sesión</Button>
+          <Button variant={vista === "registro" ? "default" : "outline"} onClick={() => cambiar("registro")}>Crear cuenta</Button>
+          <Button variant="ghost" onClick={() => cambiar("recuperar")}>Olvidé mi contraseña</Button>
+        </nav>}
+        {error && <Notice tone="danger" title="No se pudo continuar">{error}</Notice>}
+        {mensaje && <Notice tone="success" title="Solicitud completada">{mensaje}</Notice>}
+        <form key={vista} onSubmit={enviar} className="space-y-4" aria-busy={ocupado}>
+          {(vista === "login" || vista === "registro" || vista === "recuperar") &&
+            <CampoIdentidad name="correo" label="Correo electrónico" type="email" autoComplete="email" maxLength={255} />}
+          {vista === "registro" && <>
+            <CampoIdentidad name="nombres" label="Nombres" autoComplete="given-name" />
+            <CampoIdentidad name="apellidos" label="Apellidos" autoComplete="family-name" />
+          </>}
+          {(vista === "login" || vista === "registro" || vista === "restablecer") &&
+            <CampoIdentidad name="contrasena" label="Contraseña" type="password" minLength={vista === "login" ? undefined : 8}
+              maxLength={72} autoComplete={vista === "login" ? "current-password" : "new-password"} />}
+          {(vista === "registro" || vista === "restablecer") &&
+            <CampoIdentidad name="confirmacion" label="Confirmar contraseña" type="password" maxLength={72} autoComplete="new-password" />}
+          {vista === "verificar" && <p className="text-sm text-text-secondary">Confirma la verificación del correo asociado a este enlace.</p>}
+          <Button type="submit" disabled={ocupado}>{ocupado ? "Procesando…" :
+            vista === "recuperar" ? "Solicitar enlace" : vista === "restablecer" ? "Guardar contraseña" : TITULOS[vista]}</Button>
+        </form>
+        {!tieneAccion && <div className="space-y-3 border-t border-border pt-4">
+          <Button variant="outline" disabled={ocupado} onClick={() => {
+            useSesionStore.getState().elegirAnonimo(); closeTop();
+          }}>Continuar como anónimo</Button>
+
+          {/* Botón de Google OAuth para cuenta institucional */}
+          <Button variant="outline" className="h-auto min-h-11 whitespace-normal" disabled={ocupado} onClick={async () => {
+            setOcupado(true);
+            try {
+              const resp = await identidadApi.loginGoogle(
+                "test-google-token:alcaldia@cartagena.gov.co:Alcalde Mayor Dumek:sub_dumek_123"
               );
-            })}
-          </div>
-        </section>
+              useSesionStore.getState().iniciarSesion(resp);
+              toast.success("Sesión institucional iniciada");
+              closeTop();
+            } catch (e) {
+              setError(e instanceof Error ? e.message : "Error con Google Login");
+            } finally {
+              setOcupado(false);
+            }
+          }}>
+            <svg aria-hidden="true" className="mr-2 h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+            </svg>
+            Acceso Institucional (@cartagena.gov.co)
+          </Button>
 
-        {/* ---------- Formulario de identidad ---------- */}
-        {modoSeleccion === "identidad" && (
-          <motion.form
-            id="form-identidad"
-            onSubmit={handleSubmit(guardarIdentidad)}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            className="space-y-4"
-            noValidate
-          >
-            <SectionLabel>Tu identidad pública</SectionLabel>
-
-            <div className="space-y-1.5">
-              <label
-                htmlFor="id-nombre"
-                className="text-xs font-medium text-[var(--text-secondary)]"
-              >
-                Nombre público <span className="text-[var(--danger)]">*</span>
-              </label>
-              <input
-                id="id-nombre"
-                {...register("nombre")}
-                type="text"
-                placeholder="Cómo quieres que te vean los demás"
-                className="w-full rounded-lg border border-[var(--border)] bg-[var(--surface-1)] px-3.5 py-2.5 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] transition-colors focus:border-[var(--ember)] focus:outline-none"
-              />
-              {errors.nombre && (
-                <p className="text-xs text-[var(--danger)]">{errors.nombre.message}</p>
-              )}
-            </div>
-
-            <div className="space-y-1.5">
-              <label
-                htmlFor="id-email"
-                className="text-xs font-medium text-[var(--text-secondary)]"
-              >
-                Correo (opcional)
-              </label>
-              <input
-                id="id-email"
-                {...register("email")}
-                type="email"
-                placeholder="Para recibir respuestas del equipo técnico"
-                className="w-full rounded-lg border border-[var(--border)] bg-[var(--surface-1)] px-3.5 py-2.5 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] transition-colors focus:border-[var(--ember)] focus:outline-none"
-              />
-              {errors.email && (
-                <p className="text-xs text-[var(--danger)]">{errors.email.message}</p>
-              )}
-            </div>
-
-            <div className="space-y-1.5">
-              <label
-                htmlFor="id-ciudad"
-                className="text-xs font-medium text-[var(--text-secondary)]"
-              >
-                Ciudad o localidad (opcional)
-              </label>
-              <input
-                id="id-ciudad"
-                {...register("ciudad")}
-                type="text"
-                placeholder="Contexto territorial de tu aporte"
-                className="w-full rounded-lg border border-[var(--border)] bg-[var(--surface-1)] px-3.5 py-2.5 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] transition-colors focus:border-[var(--ember)] focus:outline-none"
-              />
-              {errors.ciudad && (
-                <p className="text-xs text-[var(--danger)]">{errors.ciudad.message}</p>
-              )}
-            </div>
-          </motion.form>
-        )}
-
-        {/* ---------- Nota de privacidad ---------- */}
-        <p className="flex items-start gap-3 rounded-lg border border-[var(--border)] bg-[var(--surface-2)] p-4 text-[11px] leading-relaxed text-[var(--text-secondary)]">
-          <ShieldCheck className="mt-0.5 size-4 shrink-0 text-[var(--success)]" strokeWidth={1.5} />
-          <span>
-            Demo local: tu identidad se guarda únicamente en este navegador. En
-            producción será autenticación JWT con consentimiento explícito de
-            tratamiento de datos (Ley 1581 de 2012), y el modo anónimo nunca
-            asociará tu aporte a datos personales.
-          </span>
-        </p>
-      </div>
-    </PanelShell>
-  );
+          <p className="text-sm text-text-secondary">El registro crea una cuenta ciudadana. Los accesos institucionales requieren asignación administrativa y se validan con Workspace.</p>
+        </div>}
+      </>}
+    </div>
+  </PanelShell>;
 }

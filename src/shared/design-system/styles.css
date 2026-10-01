@@ -1,0 +1,301 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "@fontsource-variable/geist/wght.css";
+@import "@fontsource-variable/geist-mono/wght.css";
+@import "./tokens.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ============================================================
+   POLIS — Sistema de Tokens Semánticos
+   Paleta monocromática sofisticada + acento "ember"
+   Regla inquebrantable: ningún color fijo en componentes.
+   ============================================================ */
+
+@theme inline {
+  /* --- Compatibilidad shadcn/ui (mapeada a tokens canónicos) --- */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success-soft: var(--success-soft);
+  --color-warning-soft: var(--warning-soft);
+  --color-danger-soft: var(--danger-soft);
+  --color-info-soft: var(--info-soft);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --shadow-card: var(--elevation-card);
+  --shadow-raised: var(--elevation-raised);
+  --shadow-panel: var(--elevation-panel);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* --- Tokens canónicos del sistema --- */
+  --color-surface-0: var(--surface-0);
+  --color-surface-1: var(--surface-1);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-tertiary: var(--text-tertiary);
+  --color-text-inverse: var(--text-inverse);
+  --color-border-hairline: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-ember: var(--ember);
+  --color-ember-soft: var(--ember-soft);
+  --color-ember-foreground: var(--ember-foreground);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-info: var(--info);
+  --color-overlay: var(--overlay);
+
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+    font-feature-settings: "cv11", "ss01";
+    letter-spacing: -0.011em;
+  }
+  ::selection {
+    background: var(--ember);
+    color: var(--ember-foreground);
+  }
+
+  /* Scrollbar minimalista */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--border-strong);
+  }
+
+  /* Utilidades tipográficas editoriales */
+  .label-micro {
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 550;
+    font-variant-numeric: tabular-nums;
+  }
+  .display-tight {
+    letter-spacing: -0.045em;
+    line-height: 0.98;
+  }
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Contenedor fluido full-screen: ocupa TODO el ancho con márgenes
+     que crecen proporcionalmente a la resolución (320px → 4K+). */
+  .container-fluid {
+    width: 100%;
+    padding-inline: clamp(1.25rem, 3.5vw, 4.5rem);
+  }
+
+  /* Grid de puntos sutil para secciones hero */
+  .bg-dotgrid {
+    background-image: radial-gradient(
+      var(--border-strong) 1px,
+      transparent 1px
+    );
+    background-size: 28px 28px;
+    mask-image: radial-gradient(
+      ellipse 90% 80% at 50% 40%,
+      black 30%,
+      transparent 75%
+    );
+  }
+
+  /* Papel de papelografo — grid de puntos uniforme, sin máscara.
+     Evoca la hoja de papel kraft donde se dibuja el árbol. */
+  .bg-papel {
+    background-image: radial-gradient(var(--border) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+
+  /* Texto con gradiente sutil */
+  .text-fade {
+    background: linear-gradient(
+      to bottom,
+      var(--text-primary) 55%,
+      var(--text-tertiary)
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+}
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+  .dark {
+    color-scheme: dark;
+  }
+  :where(button, a, input, textarea, select, [tabindex]):focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 3px;
+  }
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]) {
+    cursor: pointer;
+  }
+  [aria-invalid="true"] {
+    border-color: var(--danger);
+  }
+  :where(input, textarea, select):disabled {
+    cursor: not-allowed;
+  }
+}
+
+@layer components {
+  .ui-field-control {
+    width: 100%;
+    min-width: 0;
+    border: 1px solid var(--input);
+    border-radius: var(--radius);
+    background: var(--surface-1);
+    color: var(--text-primary);
+    padding: 0.625rem 0.875rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    transition:
+      border-color var(--duration-fast),
+      box-shadow var(--duration-fast);
+  }
+  .ui-field-control::placeholder {
+    color: var(--text-tertiary);
+  }
+  .ui-field-control:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+  .ui-field-control[aria-invalid="true"] {
+    border-color: var(--danger);
+  }
+  .ui-field-control:disabled {
+    opacity: 0.55;
+    background: var(--surface-2);
+  }
+  .ui-interactive-card {
+    border: 1px solid var(--border);
+    border-radius: calc(var(--radius) + 0.25rem);
+    background: var(--surface-1);
+    box-shadow: var(--elevation-card);
+    transition:
+      border-color var(--duration-normal),
+      box-shadow var(--duration-normal),
+      transform var(--duration-normal);
+  }
+  .ui-interactive-card:hover {
+    border-color: var(--border-strong);
+    box-shadow: var(--elevation-raised);
+    transform: translateY(-2px);
+  }
+  .ui-page-title {
+    font-size: clamp(2rem, 3.2vw, 3.75rem);
+    line-height: 1.08;
+    letter-spacing: -0.045em;
+    font-weight: 600;
+  }
+  .ui-section-title {
+    font-size: clamp(1.375rem, 2vw, 1.875rem);
+    line-height: 1.2;
+    letter-spacing: -0.025em;
+    font-weight: 600;
+  }
+  .ui-panel-body {
+    width: 100%;
+    margin-inline: auto;
+    padding: clamp(1.25rem, 2.2vw, 2.5rem);
+  }
+  .ui-panel-footer {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+  .ui-skip-link {
+    position: fixed;
+    z-index: 100;
+    top: 0.75rem;
+    left: 0.75rem;
+    transform: translateY(-200%);
+    border-radius: var(--radius);
+    background: var(--primary);
+    color: var(--primary-foreground);
+    padding: 0.75rem 1rem;
+  }
+  .ui-skip-link:focus {
+    transform: translateY(0);
+  }
+}
+
+@media (min-width: 768px) {
+  .ui-field-control {
+    font-size: 0.875rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+  .ui-interactive-card:hover {
+    transform: none;
+  }
+}

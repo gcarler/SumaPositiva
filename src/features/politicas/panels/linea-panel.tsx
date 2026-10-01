@@ -1,6 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { Button } from "@/shared/ui/button";
+import { Skeleton } from "@/shared/ui/skeleton";
+
+import { useEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from "react";
 import { formatDistanceToNow } from "date-fns";
 import { es } from "date-fns/locale";
 import {
@@ -11,17 +14,23 @@ import {
   ChevronLeft,
   ChevronRight,
   X,
+  RefreshCw,
 } from "lucide-react";
-import { PanelShell } from "@/components/panels/panel-shell";
-import { usePanels, usePanelStore } from "@/stores/panel-store";
+import { PanelShell } from "@/core/panels/panel-shell";
+import { usePanels, usePanelStore } from "@/core/panels/panel-store";
 import {
   useFase,
   useLinea,
   usePolitica,
   usePoliticasStore,
-} from "@/stores/politicas-store";
-import type { Aporte, LineaEstrategica } from "@/types/domain";
-import { SectionLabel, InitialAvatar, AnonAvatar, TipoAporteChip } from "../components/ui-bits";
+} from "@/features/politicas/state/politicas-store";
+import type { Aporte, LineaEstrategica } from "@/features/politicas/models/politicas";
+import { SectionLabel, InitialAvatar, AnonAvatar } from "@/shared/components/participation-ui";
+import { TipoAporteChip } from "@/features/politicas/components/politica-ui";
+import {
+  useAportes,
+  useRespaldarAporte,
+} from "@/features/aportes/services/use-aportes-queries";
 
 /**
  * Panel L3 — Línea Estratégica con el muro de Aportes Ciudadanos.
@@ -35,31 +44,74 @@ import { SectionLabel, InitialAvatar, AnonAvatar, TipoAporteChip } from "../comp
 
 function VisorFotos({ fotos }: { fotos: string[] }) {
   const [activa, setActiva] = useState<number | null>(null);
+  /* Selector del control que abrió el visor: devuelve el foco al cerrar. */
+  const openerSel = useRef<string | null>(null);
+  const cerrarRef = useRef<HTMLButtonElement>(null);
+  const thumbsRef = useRef<HTMLUListElement>(null);
+
+  useEffect(() => {
+    if (activa !== null) {
+      cerrarRef.current?.focus();
+    } else if (openerSel.current) {
+      const sel = openerSel.current;
+      openerSel.current = null;
+      thumbsRef.current?.querySelector<HTMLElement>(sel)?.focus();
+    }
+  }, [activa]);
+
+  const abrir = (i: number, selector: string) => {
+    openerSel.current = selector;
+    setActiva(i);
+  };
+
+  const mover = (paso: number) =>
+    setActiva((actual) =>
+      actual === null ? actual : (actual + paso + fotos.length) % fotos.length,
+    );
+
+  /* Escape cierra SOLO el visor (preventDefault evita que PanelHost cierre
+     el panel) y las flechas navegan mientras el foco está en el visor. */
+  const onVisorKeyDown = (e: ReactKeyboardEvent) => {
+    if (e.key === "Escape") {
+      e.preventDefault();
+      setActiva(null);
+    } else if (e.key === "ArrowLeft") {
+      e.preventDefault();
+      mover(-1);
+    } else if (e.key === "ArrowRight") {
+      e.preventDefault();
+      mover(1);
+    }
+  };
 
   if (activa === null) {
     const visibles = fotos.slice(0, 3);
     const extra = fotos.length - visibles.length;
     return (
-      <ul className="mt-3 grid grid-cols-3 gap-1.5">
+      <ul ref={thumbsRef} className="mt-3 grid grid-cols-3 gap-1.5">
         {visibles.map((src, i) => (
           <li key={`${i}-${src.slice(-16)}`} className="relative">
-            <button
+            <Button variant="unstyled" size="unstyled"
               type="button"
-              onClick={() => setActiva(i)}
+              data-foto-thumb={i}
+              onClick={() => abrir(i, `[data-foto-thumb="${i}"]`)}
               aria-label={`Ver foto ${i + 1} de ${fotos.length}`}
               className="block aspect-video w-full overflow-hidden rounded-md border border-[var(--border)] transition-opacity hover:opacity-85"
             >
               <img src={src} alt={`Foto ${i + 1} del aporte`} className="size-full object-cover" loading="lazy" />
-            </button>
+            </Button>
             {i === visibles.length - 1 && extra > 0 && (
-              <button
+              <Button variant="unstyled" size="unstyled"
                 type="button"
-                onClick={() => setActiva(visibles.length - 1)}
-                className="absolute inset-0 flex items-center justify-center rounded-md bg-black/45 text-xs font-semibold text-white transition-colors hover:bg-black/55"
+                data-foto-more
+                onClick={() =>
+                  abrir(visibles.length - 1, "[data-foto-more]")
+                }
+                className="absolute inset-0 flex items-center justify-center rounded-md bg-[var(--panel-dimmer)]/80 text-xs font-semibold text-[var(--ember-foreground)] transition-colors hover:bg-[var(--panel-dimmer)]/90"
                 aria-label={`Ver las ${extra} fotos restantes`}
               >
                 +{extra}
-              </button>
+              </Button>
             )}
           </li>
         ))}
@@ -68,7 +120,10 @@ function VisorFotos({ fotos }: { fotos: string[] }) {
   }
 
   return (
-    <div className="relative mt-3 overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--surface-2)]">
+    <div
+      className="relative mt-3 overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--surface-2)]"
+      onKeyDown={onVisorKeyDown}
+    >
       <img
         src={fotos[activa]}
         alt={`Foto ${activa + 1} de ${fotos.length}`}
@@ -76,39 +131,43 @@ function VisorFotos({ fotos }: { fotos: string[] }) {
       />
 
       {/* Contador */}
-      <span className="label-micro absolute bottom-2 left-1/2 -translate-x-1/2 rounded-full bg-[var(--surface-0)]/85 px-2.5 py-1 text-[var(--text-secondary)] backdrop-blur-sm tabular">
+      <span
+        aria-live="polite"
+        className="label-micro absolute bottom-2 left-1/2 -translate-x-1/2 rounded-full bg-[var(--surface-0)]/85 px-2.5 py-1 text-[var(--text-secondary)] backdrop-blur-sm tabular"
+      >
         {activa + 1} / {fotos.length}
       </span>
 
       {/* Cerrar visor */}
-      <button
+      <Button variant="unstyled" size="unstyled"
+        ref={cerrarRef}
         type="button"
         onClick={() => setActiva(null)}
         aria-label="Cerrar visor de fotos"
         className="absolute right-2 top-2 flex size-8 items-center justify-center rounded-full bg-[var(--surface-0)]/85 text-[var(--text-secondary)] backdrop-blur-sm transition-colors hover:text-[var(--text-primary)]"
       >
         <X className="size-4" strokeWidth={1.5} />
-      </button>
+      </Button>
 
       {/* Navegación */}
       {fotos.length > 1 && (
         <>
-          <button
+          <Button variant="unstyled" size="unstyled"
             type="button"
             onClick={() => setActiva((activa - 1 + fotos.length) % fotos.length)}
             aria-label="Foto anterior"
             className="absolute left-2 top-1/2 flex size-8 -translate-y-1/2 items-center justify-center rounded-full bg-[var(--surface-0)]/85 text-[var(--text-secondary)] backdrop-blur-sm transition-colors hover:text-[var(--text-primary)]"
           >
             <ChevronLeft className="size-4" strokeWidth={1.5} />
-          </button>
-          <button
+          </Button>
+          <Button variant="unstyled" size="unstyled"
             type="button"
             onClick={() => setActiva((activa + 1) % fotos.length)}
             aria-label="Foto siguiente"
             className="absolute right-2 top-1/2 flex size-8 -translate-y-1/2 items-center justify-center rounded-full bg-[var(--surface-0)]/85 text-[var(--text-secondary)] backdrop-blur-sm transition-colors hover:text-[var(--text-primary)]"
           >
             <ChevronRight className="size-4" strokeWidth={1.5} />
-          </button>
+          </Button>
         </>
       )}
     </div>
@@ -164,7 +223,7 @@ function AporteCard({
 
       {/* Apoyo */}
       <div className="mt-3.5 flex items-center gap-2">
-        <button
+        <Button variant="unstyled" size="unstyled"
           type="button"
           onClick={() => onApoyar(lineaId, aporte.id)}
           aria-pressed={aporte.apoyado}
@@ -181,7 +240,7 @@ function AporteCard({
             fill={aporte.apoyado ? "currentColor" : "none"}
           />
           <span className="tabular">{aporte.votos}</span>
-        </button>
+        </Button>
         <span className="text-[11px] text-[var(--text-tertiary)]">
           {aporte.apoyado ? "Tu apoyo está registrado" : "Apoya este aporte"}
         </span>
@@ -216,6 +275,56 @@ export function LineaPanel({
     (s) => s.entries.find((e) => e.type === "fase")?.key
   );
 
+  const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+  const UUID_CANONICO_LINEA = "01a0f61b-6252-73d5-b035-7671ed9cf089";
+  const lineaIdApi = UUID_REGEX.test(props.lineaId) ? props.lineaId : UUID_CANONICO_LINEA;
+
+  const {
+    data: dataAportesApi,
+    isLoading: cargandoAportes,
+    isError: errorAportes,
+    refetch: reintentarAportes,
+  } = useAportes({ linea_id: lineaIdApi });
+
+  const { mutate: mutarRespaldo } = useRespaldarAporte();
+
+  const handleApoyar = (lineaId: string, aporteId: string) => {
+    toggleApoyo(lineaId, aporteId);
+    if (UUID_REGEX.test(aporteId)) {
+      mutarRespaldo(aporteId);
+    }
+  };
+
+  const listaAportesCombinada: Aporte[] = useMemo(() => {
+    const apiItems = dataAportesApi?.elementos ?? [];
+    const mapeados: Aporte[] = apiItems.map((el) => ({
+      id: el.id,
+      lineaId: props.lineaId,
+      tipo: (el.tipo_aporte === "propuesta" || el.tipo_aporte === "anotacion" || el.tipo_aporte === "pregunta")
+        ? el.tipo_aporte
+        : "propuesta",
+      titulo: el.titulo,
+      contenido: el.descripcion,
+      autor: el.es_anonimo ? "Ciudadano Anónimo" : el.autor_nombre,
+      autorId: el.es_anonimo ? undefined : "identidad",
+      votos: el.apoyos_contador ?? 0,
+      apoyado: false,
+      fecha: el.creado_en,
+      fotos: Array.isArray(el.archivos_adjuntos)
+        ? el.archivos_adjuntos.filter((f): f is string => typeof f === "string")
+        : [],
+    }));
+
+    if (!linea?.aportes) return mapeados;
+    const combinados = [...mapeados];
+    for (const a of linea.aportes) {
+      if (!combinados.some((c) => c.id === a.id)) {
+        combinados.push(a);
+      }
+    }
+    return combinados;
+  }, [dataAportesApi, props.lineaId, linea]);
+
   if (!linea || !fase || !politica) {
     return (
       <PanelShell
@@ -245,7 +354,7 @@ export function LineaPanel({
       onClose={closeTop}
       onCloseToKey={closeToKey}
       footer={
-        <button
+        <Button variant="default" size="sm"
           type="button"
           onClick={() =>
             openPanel("aporte", {
@@ -254,11 +363,11 @@ export function LineaPanel({
               lineaId: props.lineaId,
             })
           }
-          className="group flex w-full items-center justify-center gap-2 rounded-full bg-[var(--text-primary)] py-2.5 text-xs font-medium text-[var(--text-inverse)] transition-opacity hover:opacity-90"
+          className="group w-full"
         >
           <MessageSquarePlus className="size-4" strokeWidth={1.5} />
           Aportar a esta línea
-        </button>
+        </Button>
       }
     >
       <div className="mx-auto w-full max-w-4xl space-y-6 px-5 py-6 sm:px-6 lg:px-8 2xl:px-10">
@@ -267,8 +376,8 @@ export function LineaPanel({
           <SectionLabel
             right={
               <span className="text-xs text-[var(--text-tertiary)] tabular">
-                {linea.aportes.length}{" "}
-                {linea.aportes.length === 1 ? "aporte" : "aportes"}
+                {listaAportesCombinada.length}{" "}
+                {listaAportesCombinada.length === 1 ? "aporte" : "aportes"}
               </span>
             }
           >
@@ -286,7 +395,29 @@ export function LineaPanel({
         <section className="space-y-3">
           <SectionLabel>Aportes ciudadanos</SectionLabel>
 
-          {linea.aportes.length === 0 ? (
+          {cargandoAportes ? (
+            <div className="space-y-3" role="status" aria-label="Cargando aportes ciudadanos">
+              <Skeleton className="h-28 w-full rounded-lg" />
+              <Skeleton className="h-28 w-full rounded-lg" />
+              <Skeleton className="h-28 w-full rounded-lg" />
+            </div>
+          ) : errorAportes ? (
+            <div className="rounded-lg border border-[var(--border)] bg-[var(--surface-2)] p-4 text-center">
+              <p className="text-sm text-[var(--text-secondary)]">
+                No se pudieron sincronizar los aportes con el servidor.
+              </p>
+              <Button
+                variant="outline"
+                size="sm"
+                type="button"
+                onClick={() => reintentarAportes()}
+                className="mt-3 inline-flex items-center gap-1.5"
+              >
+                <RefreshCw className="size-3.5" strokeWidth={1.5} />
+                Reintentar
+              </Button>
+            </div>
+          ) : listaAportesCombinada.length === 0 ? (
             <div className="rounded-lg border border-dashed border-[var(--border-strong)] px-6 py-10 text-center">
               <p className="text-sm text-[var(--text-secondary)]">
                 Todavía no hay aportes en esta línea.
@@ -297,12 +428,12 @@ export function LineaPanel({
             </div>
           ) : (
             <ul className="space-y-2">
-              {linea.aportes.map((aporte) => (
+              {listaAportesCombinada.map((aporte) => (
                 <AporteCard
                   key={aporte.id}
                   aporte={aporte}
                   lineaId={linea.id}
-                  onApoyar={toggleApoyo}
+                  onApoyar={handleApoyar}
                 />
               ))}
             </ul>

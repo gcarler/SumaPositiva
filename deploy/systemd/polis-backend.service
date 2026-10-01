@@ -1,0 +1,18 @@
+[Unit]
+Description=Polis Backend FastAPI Service
+After=network.target
+
+[Service]
+User=polis
+Group=polis
+WorkingDirectory=/root/polis/backend
+EnvironmentFile=/root/polis/backend/.env
+ExecStart=/root/polis/backend/.venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8000 --workers 2
+Restart=always
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target

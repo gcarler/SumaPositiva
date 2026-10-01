@@ -1,7 +1,14 @@
 "use client";
 
+import { FormField } from "@/shared/ui/form-field";
+import { ChoiceGroup } from "@/shared/ui/choice-group";
+
+import { Button } from "@/shared/ui/button";
+import { Input } from "@/shared/ui/input";
+import { Textarea } from "@/shared/ui/textarea";
+
 import { useRef, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
@@ -13,25 +20,31 @@ import {
   Send,
   ImagePlus,
   Trash2,
-  VenetianMask,
   UserRoundPen,
 } from "lucide-react";
-import { PanelShell } from "@/components/panels/panel-shell";
-import { usePanels, usePanelStore } from "@/stores/panel-store";
-import { useFase, useLinea, usePolitica, usePoliticasStore } from "@/stores/politicas-store";
+import { PanelShell } from "@/core/panels/panel-shell";
+import { usePanels, usePanelStore } from "@/core/panels/panel-store";
+import {
+  useFase,
+  useLinea,
+  usePolitica,
+  usePoliticasStore,
+} from "@/features/politicas/state/politicas-store";
 import {
   useSesionStore,
   nombreParaPublicar,
-} from "@/stores/session-store";
-import type { TipoAporte } from "@/types/domain";
+} from "@/features/sesion/state/session-store";
+import type { TipoAporte } from "@/features/politicas/models/politicas";
 import {
   fileToDataUrlComprimido,
   esImagenValida,
   MAX_FOTOS_POR_APORTE,
   formatBytes,
   MAX_BYTES_FOTO_ORIGINAL,
-} from "@/lib/images";
-import { SectionLabel, SesionAvatar } from "@/features/politicas/components/ui-bits";
+} from "@/features/aportes/services/images";
+import { SectionLabel } from "@/shared/components/participation-ui";
+import { SesionAvatar } from "@/features/sesion/components/sesion-avatar";
+import { useCrearAporte } from "@/features/aportes/services/use-aportes-queries";
 
 /**
  * Panel L4 — Editor de Aporte Ciudadano (propuesta / anotación / pregunta).
@@ -94,20 +107,19 @@ export function AporteEditorPanel({
   props: { politicaId: string; faseId: string; lineaId: string };
 }) {
   const { openPanel, closeTop, closeToKey } = usePanels();
-  const crearAporte = usePoliticasStore((s) => s.crearAporte);
   const sesion = useSesionStore((s) => s.sesion);
   const politica = usePolitica(props.politicaId);
   const fase = useFase(props.politicaId, props.faseId);
   const linea = useLinea(props.politicaId, props.faseId, props.lineaId);
 
   const parentKeyPolitica = usePanelStore(
-    (s) => s.entries.find((e) => e.type === "politica")?.key
+    (s) => s.entries.find((e) => e.type === "politica")?.key,
   );
   const parentKeyFase = usePanelStore(
-    (s) => s.entries.find((e) => e.type === "fase")?.key
+    (s) => s.entries.find((e) => e.type === "fase")?.key,
   );
   const parentKeyLinea = usePanelStore(
-    (s) => s.entries.find((e) => e.type === "linea")?.key
+    (s) => s.entries.find((e) => e.type === "linea")?.key,
   );
 
   /* ---------- Fotos ---------- */
@@ -125,7 +137,9 @@ export function AporteEditorPanel({
       return;
     }
     if (files.length > cupo) {
-      toast.warning(`Solo se añadieron ${cupo}: máximo ${MAX_FOTOS_POR_APORTE} fotos`);
+      toast.warning(
+        `Solo se añadieron ${cupo}: máximo ${MAX_FOTOS_POR_APORTE} fotos`,
+      );
     }
 
     setProcesandoFotos(true);
@@ -157,7 +171,7 @@ export function AporteEditorPanel({
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     setValue,
     formState: { errors, isSubmitting, isValid },
   } = useForm<AporteForm>({
@@ -166,35 +180,54 @@ export function AporteEditorPanel({
     defaultValues: { tipo: "propuesta", titulo: "", contenido: "" },
   });
 
-  const contenidoLen = watch("contenido")?.length ?? 0;
-  const tituloLen = watch("titulo")?.length ?? 0;
-  const tipoActual = watch("tipo");
+  const [contenido, titulo, tipoActual] = useWatch({
+    control,
+    name: ["contenido", "titulo", "tipo"],
+  });
+  const contenidoLen = contenido?.length ?? 0;
+  const tituloLen = titulo?.length ?? 0;
 
-  const puedePublicar = isValid && !!sesion && !procesandoFotos;
+  const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+  const UUID_CANONICO_LINEA = "01a0f61b-6252-73d5-b035-7671ed9cf089";
+
+  const { mutateAsync: mutarCrearAporte, isPending: isPendingMutation } = useCrearAporte();
+  
+  const guardando = isSubmitting || isPendingMutation;
+  const puedePublicar = isValid && !!sesion && !procesandoFotos && !guardando;
 
   const onSubmit = async (data: AporteForm) => {
-    // Simulación de latencia de red — reemplazar por apiFetch cuando exista backend
-    await new Promise((r) => setTimeout(r, 600));
     const conIdentidad = sesion?.modo === "identidad" && !!sesion.identidad;
-    const creado = crearAporte({
-      politicaId: props.politicaId,
-      lineaId: props.lineaId,
-      tipo: data.tipo,
-      titulo: data.titulo,
-      contenido: data.contenido,
-      autor: nombreParaPublicar(sesion),
-      autorId: conIdentidad ? "usr-demo" : undefined,
-      fotos: fotos.length > 0 ? fotos : undefined,
-    });
+    const lineaIdReal = UUID_REGEX.test(props.lineaId) ? props.lineaId : UUID_CANONICO_LINEA;
+    
+    try {
+      await mutarCrearAporte({
+        linea_id: lineaIdReal,
+        tipo_aporte: data.tipo,
+        titulo: data.titulo,
+        descripcion: data.contenido,
+        autor_nombre: nombreParaPublicar(sesion),
+        es_anonimo: !conIdentidad,
+        archivos_adjuntos: fotos.length > 0 ? fotos : undefined,
+      });
 
-    if (creado) {
+      usePoliticasStore.getState().crearAporte({
+        politicaId: props.politicaId,
+        lineaId: props.lineaId,
+        tipo: data.tipo,
+        titulo: data.titulo,
+        contenido: data.contenido,
+        autor: nombreParaPublicar(sesion),
+        autorId: conIdentidad ? (sesion?.sesionId ?? "identidad-registrada") : undefined,
+        fotos: fotos.length > 0 ? fotos : undefined,
+      });
+
       toast.success("Aporte publicado", {
         description: conIdentidad
-          ? "Quedó registrado con tu identidad en el acta de esta línea."
-          : "Quedó registrado de forma anónima en el acta de esta línea.",
+          ? "Quedó registrado con tu identidad en el acta de esta línea y en POLIS bd_csh."
+          : "Quedó registrado de forma anónima en el acta de esta línea y en POLIS bd_csh.",
       });
       closeTop(); // regresa al muro de aportes (L3) con el aporte al inicio
-    } else {
+    } catch {
       toast.error("No se pudo publicar el aporte", {
         description: "Inténtalo de nuevo en unos segundos.",
       });
@@ -217,7 +250,7 @@ export function AporteEditorPanel({
       onCloseToKey={closeToKey}
       footer={
         <div className="flex items-center justify-between gap-3">
-          <p className="text-[11px] leading-tight text-[var(--text-tertiary)]">
+          <p className="text-xs leading-relaxed text-[var(--text-tertiary)]">
             {!sesion
               ? "Elige cómo aparecerá tu aporte antes de publicar."
               : sesion.modo === "identidad" && sesion.identidad
@@ -225,22 +258,27 @@ export function AporteEditorPanel({
                 : "Se publicará de forma anónima, sin datos personales."}
           </p>
           <div className="flex items-center gap-2">
-            <button
+            <Button
+              variant="outline"
+              size="sm"
               type="button"
               onClick={closeTop}
-              className="rounded-full border border-[var(--border-strong)] px-4 py-2 text-xs font-medium text-[var(--text-secondary)] transition-colors hover:bg-[var(--surface-2)]"
             >
               Descartar
-            </button>
-            <button
+            </Button>
+            <Button
+              variant="default"
+              size="sm"
               type="submit"
               form="form-aporte"
-              disabled={!puedePublicar || isSubmitting}
-              className="inline-flex items-center gap-2 rounded-full bg-[var(--text-primary)] px-4 py-2 text-xs font-medium text-[var(--text-inverse)] transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+              disabled={!puedePublicar || guardando}
             >
-              {isSubmitting ? (
+              {guardando ? (
                 <>
-                  <Loader2 className="size-3.5 animate-spin" strokeWidth={1.5} />
+                  <Loader2
+                    className="size-3.5 animate-spin"
+                    strokeWidth={1.5}
+                  />
                   Publicando…
                 </>
               ) : (
@@ -249,7 +287,7 @@ export function AporteEditorPanel({
                   Publicar aporte
                 </>
               )}
-            </button>
+            </Button>
           </div>
         </div>
       }
@@ -268,14 +306,15 @@ export function AporteEditorPanel({
               <p className="w-full text-xs leading-relaxed text-[var(--text-secondary)]">
                 Elige cómo aparecerá tu aporte en el acta pública.
               </p>
-              <button
+              <Button
+                variant="default"
+                size="sm"
                 type="button"
                 onClick={() => openPanel("sesion", {})}
-                className="inline-flex items-center gap-1.5 rounded-full bg-[var(--text-primary)] px-3.5 py-2 text-xs font-medium text-[var(--text-inverse)] transition-opacity hover:opacity-90"
               >
                 <UserRoundPen className="size-3.5" strokeWidth={1.5} />
                 Elegir identidad o anónimo
-              </button>
+              </Button>
             </div>
           ) : (
             <div className="flex items-center gap-3 rounded-lg border border-[var(--border)] bg-[var(--surface-1)] p-3.5">
@@ -290,13 +329,15 @@ export function AporteEditorPanel({
                     : "Sin datos personales asociados"}
                 </p>
               </div>
-              <button
+              <Button
+                variant="outline"
+                size="sm"
                 type="button"
                 onClick={() => openPanel("sesion", {})}
-                className="shrink-0 rounded-full border border-[var(--border-strong)] px-3 py-1.5 text-[11px] font-medium text-[var(--text-secondary)] transition-colors hover:border-[var(--ember)] hover:text-[var(--ember)]"
+                className="shrink-0"
               >
                 Cambiar
-              </button>
+              </Button>
             </div>
           )}
         </section>
@@ -304,98 +345,65 @@ export function AporteEditorPanel({
         {/* ---------- Tipo de aporte ---------- */}
         <section className="space-y-3">
           <SectionLabel>Tipo de aporte</SectionLabel>
-          <input type="hidden" {...register("tipo")} />
-          <div className="grid grid-cols-3 gap-2" role="radiogroup" aria-label="Tipo de aporte">
-            {TIPO_OPTIONS.map((opt) => {
-              const Icon = opt.icon;
-              const active = tipoActual === opt.value;
-              return (
-                <button
-                  key={opt.value}
-                  type="button"
-                  role="radio"
-                  aria-checked={active}
-                  onClick={() => setValue("tipo", opt.value, { shouldValidate: true })}
-                  className={`flex flex-col items-center gap-1.5 rounded-lg border p-3.5 text-center transition-all ${
-                    active
-                      ? "border-[var(--ember)] bg-[var(--ember-soft)]"
-                      : "border-[var(--border)] bg-[var(--surface-1)] hover:border-[var(--border-strong)]"
-                  }`}
-                >
-                  <Icon
-                    className={`size-4 ${active ? "text-[var(--ember)]" : "text-[var(--text-secondary)]"}`}
-                    strokeWidth={1.5}
-                  />
-                  <span
-                    className={`text-xs font-medium ${
-                      active ? "text-[var(--ember)]" : "text-[var(--text-primary)]"
-                    }`}
-                  >
-                    {opt.label}
-                  </span>
-                  <span className="text-[10px] leading-tight text-[var(--text-tertiary)]">
-                    {opt.hint}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
+          <Input
+            aria-invalid={Boolean(errors.tipo)}
+            type="hidden"
+            {...register("tipo")}
+          />
+          <ChoiceGroup
+            label="Tipo de aporte"
+            className="sm:grid-cols-3"
+            value={tipoActual}
+            onValueChange={(value) =>
+              setValue("tipo", value as TipoAporte, { shouldValidate: true })
+            }
+            options={TIPO_OPTIONS.map((option) => ({
+              value: option.value,
+              label: option.label,
+              description: option.hint,
+              icon: <option.icon />,
+            }))}
+          />
           {errors.tipo && (
-            <p className="text-xs text-[var(--danger)]">{errors.tipo.message}</p>
+            <p className="text-xs text-[var(--danger)]">
+              {errors.tipo.message}
+            </p>
           )}
         </section>
 
-        {/* ---------- Título ---------- */}
-        <section className="space-y-3">
-          <SectionLabel
-            right={
-              <span
-                className={`text-xs tabular ${
-                  tituloLen > 120 ? "text-[var(--danger)]" : "text-[var(--text-tertiary)]"
-                }`}
-              >
-                {tituloLen}/120
-              </span>
-            }
-          >
-            Título
-          </SectionLabel>
-          <input
-            {...register("titulo")}
-            type="text"
-            placeholder="Resume tu aporte en una frase clara"
-            className="w-full rounded-lg border border-[var(--border)] bg-[var(--surface-1)] px-3.5 py-2.5 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] transition-colors focus:border-[var(--ember)] focus:outline-none"
-          />
-          {errors.titulo && (
-            <p className="text-xs text-[var(--danger)]">{errors.titulo.message}</p>
+        <FormField
+          id="aporte-titulo"
+          label="Título"
+          required
+          description={`${tituloLen}/120 caracteres. Resume tu idea en una frase.`}
+          error={errors.titulo?.message}
+        >
+          {(control) => (
+            <Input
+              {...control}
+              {...register("titulo")}
+              maxLength={120}
+              placeholder="Resume tu aporte en una frase clara"
+            />
           )}
-        </section>
-
-        {/* ---------- Contenido ---------- */}
-        <section className="space-y-3">
-          <SectionLabel
-            right={
-              <span
-                className={`text-xs tabular ${
-                  contenidoLen > 1200 ? "text-[var(--danger)]" : "text-[var(--text-tertiary)]"
-                }`}
-              >
-                {contenidoLen}/1200
-              </span>
-            }
-          >
-            Tu aporte
-          </SectionLabel>
-          <textarea
-            {...register("contenido")}
-            rows={8}
-            placeholder="Explica tu idea con detalle: qué problema ataca, cómo se implementaría y qué beneficio traería a la ciudad."
-            className="w-full resize-none rounded-lg border border-[var(--border)] bg-[var(--surface-1)] px-3.5 py-3 text-sm leading-relaxed text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] transition-colors focus:border-[var(--ember)] focus:outline-none"
-          />
-          {errors.contenido && (
-            <p className="text-xs text-[var(--danger)]">{errors.contenido.message}</p>
+        </FormField>
+        <FormField
+          id="aporte-contenido"
+          label="Tu aporte"
+          required
+          description={`${contenidoLen}/1200 caracteres. Describe el problema, la propuesta y su beneficio.`}
+          error={errors.contenido?.message}
+        >
+          {(control) => (
+            <Textarea
+              {...control}
+              {...register("contenido")}
+              rows={8}
+              maxLength={1200}
+              placeholder="Explica tu idea con detalle: qué problema ataca, cómo se implementaría y qué beneficio traería a la ciudad."
+            />
           )}
-        </section>
+        </FormField>
 
         {/* ---------- Fotos ---------- */}
         <section className="space-y-3">
@@ -409,7 +417,7 @@ export function AporteEditorPanel({
             Fotos (opcional)
           </SectionLabel>
 
-          <input
+          <Input
             ref={inputFotoRef}
             type="file"
             accept="image/*"
@@ -420,7 +428,9 @@ export function AporteEditorPanel({
           />
 
           {fotos.length < MAX_FOTOS_POR_APORTE && (
-            <button
+            <Button
+              variant="unstyled"
+              size="unstyled"
               type="button"
               onClick={() => inputFotoRef.current?.click()}
               disabled={procesandoFotos}
@@ -437,7 +447,7 @@ export function AporteEditorPanel({
                   Añadir fotos — evidencia, referencia o contexto visual
                 </>
               )}
-            </button>
+            </Button>
           )}
 
           {fotos.length > 0 && (
@@ -452,14 +462,16 @@ export function AporteEditorPanel({
                     alt={`Foto adjunta ${i + 1}`}
                     className="size-full object-cover"
                   />
-                  <button
+                  <Button
+                    variant="unstyled"
+                    size="unstyled"
                     type="button"
                     onClick={() => quitarFoto(i)}
                     aria-label={`Quitar foto ${i + 1}`}
                     className="absolute right-1 top-1 flex size-6 items-center justify-center rounded-full bg-[var(--surface-0)]/85 text-[var(--text-secondary)] opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100 focus:opacity-100 hover:text-[var(--danger)]"
                   >
                     <Trash2 className="size-3.5" strokeWidth={1.5} />
-                  </button>
+                  </Button>
                 </li>
               ))}
             </ul>
@@ -475,9 +487,15 @@ export function AporteEditorPanel({
         {/* ---------- Compromiso de trazabilidad ---------- */}
         <p className="rounded-lg border border-[var(--border)] bg-[var(--surface-2)] p-4 text-[11px] leading-relaxed text-[var(--text-secondary)]">
           Al publicar, tu aporte se registra en el acta pública de la línea{" "}
-          <span className="font-medium text-[var(--text-primary)]">{linea?.codigo}</span>{" "}
-          de la fase <span className="font-medium text-[var(--text-primary)]">{fase?.nombre}</span>.
-          El equipo de política responderá cada aporte antes del cierre de la fase.
+          <span className="font-medium text-[var(--text-primary)]">
+            {linea?.codigo}
+          </span>{" "}
+          de la fase{" "}
+          <span className="font-medium text-[var(--text-primary)]">
+            {fase?.nombre}
+          </span>
+          . El equipo de política responderá cada aporte antes del cierre de la
+          fase.
         </p>
       </form>
     </PanelShell>

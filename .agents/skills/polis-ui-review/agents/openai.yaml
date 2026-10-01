@@ -1,0 +1,6 @@
+interface:
+  display_name: "POLIS UI · Revisión"
+  short_description: "Revisar cambios y reglas del kit UI de POLIS"
+  default_prompt: "Usa $polis-ui-review para revisar este cambio frente a las reglas del kit UI de POLIS."
+policy:
+  allow_implicit_invocation: true

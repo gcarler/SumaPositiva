@@ -1,0 +1,636 @@
+{
+  "fecha": "2026-10-01T16:31:06.336Z",
+  "entorno": "Vite con componentes reales de src; API totalmente interceptada; sin escrituras externas",
+  "casos": [
+    {
+      "id": "testimonios-galeria",
+      "tema": "light",
+      "ancho": 320,
+      "infracciones": [
+        {
+          "id": "button-name",
+          "impacto": "critical",
+          "criterios": [
+            "wcag2a",
+            "wcag412"
+          ],
+          "descripcion": "Ensure buttons have discernible text",
+          "nodos": [
+            {
+              "target": [
+                ".border-input"
+              ],
+              "html": "<button type=\"button\" role=\"combobox\" aria-controls=\"radix-_r_5_\" aria-expanded=\"false\" aria-autocomplete=\"none\" dir=\"ltr\" data-state=\"closed\" data-slot=\"select-trigger\" data-size=\"sm\" class=\"border-input data-[p...\">",
+              "resumen": "Fix any of the following:\n  Element does not have inner text that is visible to screen readers\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+            }
+          ]
+        }
+      ],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Memoria Social y Testimonios",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Memoria Social y Testimonios",
+          "ancho": 319,
+          "contenido": 402,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "labels": [
+        {
+          "tipo": "button",
+          "id": "",
+          "label": "",
+          "aria_label": null,
+          "placeholder": null
+        }
+      ]
+    },
+    {
+      "id": "testimonio-editor",
+      "tema": "light",
+      "ancho": 320,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Compartir Testimonio Comunitario",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Compartir Testimonio Comunitario",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "labels": [
+        {
+          "tipo": "text",
+          "id": "nombre",
+          "label": "Nombre y Apellidos *",
+          "aria_label": null,
+          "placeholder": "Ej. Ana Rosa Gómez"
+        },
+        {
+          "tipo": "text",
+          "id": "organizacion",
+          "label": "Organización Comunitaria, JAC o Colectivo (Opcional)",
+          "aria_label": null,
+          "placeholder": "Ej. Junta de Acción Comunal Sector 19 de Febrero"
+        },
+        {
+          "tipo": "text",
+          "id": "titulo",
+          "label": "Título o Lema del Testimonio *",
+          "aria_label": null,
+          "placeholder": "Ej. La defensa de nuestros manglares y la pesca artesanal"
+        },
+        {
+          "tipo": "textarea",
+          "id": "relato",
+          "label": "Relato Testimonial o Memoria Social *",
+          "aria_label": null,
+          "placeholder": "Narra tu experiencia comunitaria, vivencias del territorio o propuestas prioritarias para la política pública..."
+        },
+        {
+          "tipo": "text",
+          "id": "foto",
+          "label": "URL de Fotografía Comunitaria o de Territorio (Opcional)",
+          "aria_label": null,
+          "placeholder": "https://..."
+        },
+        {
+          "tipo": "checkbox",
+          "id": "victima",
+          "label": "Víctima del conflicto armado (Ley 1448)",
+          "aria_label": null,
+          "placeholder": null
+        }
+      ]
+    },
+    {
+      "id": "testimonios-moderacion",
+      "tema": "light",
+      "ancho": 320,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Curaduría y Moderación de Testimonios",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Curaduría y Moderación de Testimonios",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "labels": []
+    },
+    {
+      "id": "testimonios-galeria",
+      "tema": "light",
+      "ancho": 1440,
+      "infracciones": [
+        {
+          "id": "button-name",
+          "impacto": "critical",
+          "criterios": [
+            "wcag2a",
+            "wcag412"
+          ],
+          "descripcion": "Ensure buttons have discernible text",
+          "nodos": [
+            {
+              "target": [
+                ".border-input"
+              ],
+              "html": "<button type=\"button\" role=\"combobox\" aria-controls=\"radix-_r_5_\" aria-expanded=\"false\" aria-autocomplete=\"none\" dir=\"ltr\" data-state=\"closed\" data-slot=\"select-trigger\" data-size=\"sm\" class=\"border-input data-[p...\">",
+              "resumen": "Fix any of the following:\n  Element does not have inner text that is visible to screen readers\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+            }
+          ]
+        }
+      ],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Memoria Social y Testimonios",
+          "ancho": 819,
+          "contenido": 819,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Memoria Social y Testimonios",
+          "ancho": 819,
+          "contenido": 819,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "labels": [
+        {
+          "tipo": "button",
+          "id": "",
+          "label": "",
+          "aria_label": null,
+          "placeholder": null
+        }
+      ]
+    },
+    {
+      "id": "testimonio-editor",
+      "tema": "light",
+      "ancho": 1440,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Compartir Testimonio Comunitario",
+          "ancho": 639,
+          "contenido": 639,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Compartir Testimonio Comunitario",
+          "ancho": 639,
+          "contenido": 639,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "labels": [
+        {
+          "tipo": "text",
+          "id": "nombre",
+          "label": "Nombre y Apellidos *",
+          "aria_label": null,
+          "placeholder": "Ej. Ana Rosa Gómez"
+        },
+        {
+          "tipo": "text",
+          "id": "organizacion",
+          "label": "Organización Comunitaria, JAC o Colectivo (Opcional)",
+          "aria_label": null,
+          "placeholder": "Ej. Junta de Acción Comunal Sector 19 de Febrero"
+        },
+        {
+          "tipo": "text",
+          "id": "titulo",
+          "label": "Título o Lema del Testimonio *",
+          "aria_label": null,
+          "placeholder": "Ej. La defensa de nuestros manglares y la pesca artesanal"
+        },
+        {
+          "tipo": "textarea",
+          "id": "relato",
+          "label": "Relato Testimonial o Memoria Social *",
+          "aria_label": null,
+          "placeholder": "Narra tu experiencia comunitaria, vivencias del territorio o propuestas prioritarias para la política pública..."
+        },
+        {
+          "tipo": "text",
+          "id": "foto",
+          "label": "URL de Fotografía Comunitaria o de Territorio (Opcional)",
+          "aria_label": null,
+          "placeholder": "https://..."
+        },
+        {
+          "tipo": "checkbox",
+          "id": "victima",
+          "label": "Víctima del conflicto armado (Ley 1448)",
+          "aria_label": null,
+          "placeholder": null
+        }
+      ]
+    },
+    {
+      "id": "testimonios-moderacion",
+      "tema": "light",
+      "ancho": 1440,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Curaduría y Moderación de Testimonios",
+          "ancho": 839,
+          "contenido": 839,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Curaduría y Moderación de Testimonios",
+          "ancho": 839,
+          "contenido": 839,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "labels": []
+    },
+    {
+      "id": "testimonios-galeria",
+      "tema": "dark",
+      "ancho": 320,
+      "infracciones": [
+        {
+          "id": "button-name",
+          "impacto": "critical",
+          "criterios": [
+            "wcag2a",
+            "wcag412"
+          ],
+          "descripcion": "Ensure buttons have discernible text",
+          "nodos": [
+            {
+              "target": [
+                ".border-input"
+              ],
+              "html": "<button type=\"button\" role=\"combobox\" aria-controls=\"radix-_r_5_\" aria-expanded=\"false\" aria-autocomplete=\"none\" dir=\"ltr\" data-state=\"closed\" data-slot=\"select-trigger\" data-size=\"sm\" class=\"border-input data-[p...\">",
+              "resumen": "Fix any of the following:\n  Element does not have inner text that is visible to screen readers\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+            }
+          ]
+        }
+      ],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Memoria Social y Testimonios",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Memoria Social y Testimonios",
+          "ancho": 319,
+          "contenido": 402,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "labels": [
+        {
+          "tipo": "button",
+          "id": "",
+          "label": "",
+          "aria_label": null,
+          "placeholder": null
+        }
+      ]
+    },
+    {
+      "id": "testimonio-editor",
+      "tema": "dark",
+      "ancho": 320,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Compartir Testimonio Comunitario",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Compartir Testimonio Comunitario",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "labels": [
+        {
+          "tipo": "text",
+          "id": "nombre",
+          "label": "Nombre y Apellidos *",
+          "aria_label": null,
+          "placeholder": "Ej. Ana Rosa Gómez"
+        },
+        {
+          "tipo": "text",
+          "id": "organizacion",
+          "label": "Organización Comunitaria, JAC o Colectivo (Opcional)",
+          "aria_label": null,
+          "placeholder": "Ej. Junta de Acción Comunal Sector 19 de Febrero"
+        },
+        {
+          "tipo": "text",
+          "id": "titulo",
+          "label": "Título o Lema del Testimonio *",
+          "aria_label": null,
+          "placeholder": "Ej. La defensa de nuestros manglares y la pesca artesanal"
+        },
+        {
+          "tipo": "textarea",
+          "id": "relato",
+          "label": "Relato Testimonial o Memoria Social *",
+          "aria_label": null,
+          "placeholder": "Narra tu experiencia comunitaria, vivencias del territorio o propuestas prioritarias para la política pública..."
+        },
+        {
+          "tipo": "text",
+          "id": "foto",
+          "label": "URL de Fotografía Comunitaria o de Territorio (Opcional)",
+          "aria_label": null,
+          "placeholder": "https://..."
+        },
+        {
+          "tipo": "checkbox",
+          "id": "victima",
+          "label": "Víctima del conflicto armado (Ley 1448)",
+          "aria_label": null,
+          "placeholder": null
+        }
+      ]
+    },
+    {
+      "id": "testimonios-moderacion",
+      "tema": "dark",
+      "ancho": 320,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Curaduría y Moderación de Testimonios",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Curaduría y Moderación de Testimonios",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "labels": []
+    },
+    {
+      "id": "testimonios-galeria",
+      "tema": "dark",
+      "ancho": 1440,
+      "infracciones": [
+        {
+          "id": "button-name",
+          "impacto": "critical",
+          "criterios": [
+            "wcag2a",
+            "wcag412"
+          ],
+          "descripcion": "Ensure buttons have discernible text",
+          "nodos": [
+            {
+              "target": [
+                ".border-input"
+              ],
+              "html": "<button type=\"button\" role=\"combobox\" aria-controls=\"radix-_r_5_\" aria-expanded=\"false\" aria-autocomplete=\"none\" dir=\"ltr\" data-state=\"closed\" data-slot=\"select-trigger\" data-size=\"sm\" class=\"border-input data-[p...\">",
+              "resumen": "Fix any of the following:\n  Element does not have inner text that is visible to screen readers\n  aria-label attribute does not exist or is empty\n  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty\n  Element has no title attribute\n  Element does not have an implicit (wrapped) <label>\n  Element does not have an explicit <label>\n  Element's default semantics were not overridden with role=\"none\" or role=\"presentation\""
+            }
+          ]
+        }
+      ],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Memoria Social y Testimonios",
+          "ancho": 819,
+          "contenido": 819,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Memoria Social y Testimonios",
+          "ancho": 819,
+          "contenido": 819,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "labels": [
+        {
+          "tipo": "button",
+          "id": "",
+          "label": "",
+          "aria_label": null,
+          "placeholder": null
+        }
+      ]
+    },
+    {
+      "id": "testimonio-editor",
+      "tema": "dark",
+      "ancho": 1440,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Compartir Testimonio Comunitario",
+          "ancho": 639,
+          "contenido": 639,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Compartir Testimonio Comunitario",
+          "ancho": 639,
+          "contenido": 639,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "labels": [
+        {
+          "tipo": "text",
+          "id": "nombre",
+          "label": "Nombre y Apellidos *",
+          "aria_label": null,
+          "placeholder": "Ej. Ana Rosa Gómez"
+        },
+        {
+          "tipo": "text",
+          "id": "organizacion",
+          "label": "Organización Comunitaria, JAC o Colectivo (Opcional)",
+          "aria_label": null,
+          "placeholder": "Ej. Junta de Acción Comunal Sector 19 de Febrero"
+        },
+        {
+          "tipo": "text",
+          "id": "titulo",
+          "label": "Título o Lema del Testimonio *",
+          "aria_label": null,
+          "placeholder": "Ej. La defensa de nuestros manglares y la pesca artesanal"
+        },
+        {
+          "tipo": "textarea",
+          "id": "relato",
+          "label": "Relato Testimonial o Memoria Social *",
+          "aria_label": null,
+          "placeholder": "Narra tu experiencia comunitaria, vivencias del territorio o propuestas prioritarias para la política pública..."
+        },
+        {
+          "tipo": "text",
+          "id": "foto",
+          "label": "URL de Fotografía Comunitaria o de Territorio (Opcional)",
+          "aria_label": null,
+          "placeholder": "https://..."
+        },
+        {
+          "tipo": "checkbox",
+          "id": "victima",
+          "label": "Víctima del conflicto armado (Ley 1448)",
+          "aria_label": null,
+          "placeholder": null
+        }
+      ]
+    },
+    {
+      "id": "testimonios-moderacion",
+      "tema": "dark",
+      "ancho": 1440,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Curaduría y Moderación de Testimonios",
+          "ancho": 839,
+          "contenido": 839,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Curaduría y Moderación de Testimonios",
+          "ancho": 839,
+          "contenido": 839,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "labels": []
+    }
+  ],
+  "interacciones": [],
+  "errores_js": []
+}

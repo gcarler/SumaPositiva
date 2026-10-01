@@ -1,0 +1,465 @@
+{
+  "version": "2.0",
+  "descripcion": "Catálogo oficial de tareas de POLIS certificado contra el Banco de Conocimiento y marco constitucional colombiano.",
+  "entregas": [
+    {
+      "id_entrega": "E2",
+      "titulo": "Primer flujo persistente y anclaje territorial",
+      "objetivo": "Consultar una política pública y publicar un aporte ciudadano persistente asociado a una de las 7 Dimensiones de Seguridad Humana y a un Territorio de Cartagena en bd_csh.",
+      "tareas": [
+        {
+          "id_tarea": "T2.1",
+          "titulo": "Modelos SQLAlchemy 2.0 y Migración Alembic de Políticas, Fases y Territorios",
+          "modulo_plan": "Entrega 2 — Hito 1, 2 y 3",
+          "rol_edd": "arquitecto / backend",
+          "auditores_eaf": ["forense-bd", "forense-backend", "forense-legal"],
+          "modulos_conocimiento": [
+            "knowledge-base/01_MARCO_CONSTITUCIONAL_Y_LEGAL.md",
+            "knowledge-base/03_METODOLOGIA_DNP_CONPES_MGA.md",
+            "knowledge-base/04_NIVELES_TERRITORIALES_Y_ACTOS_ADMINISTRATIVOS.md",
+            "knowledge-base/06_ARQUITECTURA_FUNCIONAL_PLATAFORMA_POLIS.md"
+          ],
+          "descripcion": "Consolidar los esquemas y tablas de motor_politicas y geodatos en migraciones versionadas oficiales de Alembic en backend/alembic/versions/ conectadas a la base nativa bd_csh (PostgreSQL 18). Implementar modelos declarativos SQLAlchemy 2.0 asíncronos y schemas Pydantic v2 en español estricto con UUIDv7.",
+          "criterios_aceptacion": [
+            "Migración 0002_motor_politicas_y_geodatos.py creada en Alembic y aplicada con éxito en bd_csh.",
+            "Modelos SQLAlchemy 2.0 en backend/app/modules/politicas/models.py y backend/app/modules/geodatos/models.py mapeando dimensiones_seguridad_humana, fases_politica, lineas_estrategicas y territorios.",
+            "Schemas Pydantic v2 en español con validación tipada.",
+            "Verificación de las 7 dimensiones ONU y los 15 territorios distritales con centroides PostGIS EPSG:4326.",
+            "Prueba de conexión y lectura asíncrona pasando sin errores."
+          ]
+        },
+        {
+          "id_tarea": "T2.2",
+          "titulo": "Persistencia de Aportes Ciudadanos con Enfoque Diferencial y Territorio",
+          "modulo_plan": "Entrega 2 — Hito 4",
+          "rol_edd": "backend / arquitecto",
+          "auditores_eaf": ["forense-bd", "forense-backend", "forense-legal"],
+          "modulos_conocimiento": [
+            "knowledge-base/02_LINEA_JURISPRUDENCIAL_CORTE_CONSTITUCIONAL.md",
+            "knowledge-base/04_NIVELES_TERRITORIALES_Y_ACTOS_ADMINISTRATIVOS.md",
+            "knowledge-base/05_HERRAMIENTAS_PARTICIPATIVAS_Y_ENFOQUES_DIFERENCIALES.md",
+            "knowledge-base/06_ARQUITECTURA_FUNCIONAL_PLATAFORMA_POLIS.md"
+          ],
+          "descripcion": "Crear el esquema de persistencia para aportes ciudadanos en participacion_ciudadana.propuestas_ciudadanas con vinculación a una dimensión de Seguridad Humana, territorio distrital opcional y metadatos de enfoque diferencial.",
+          "criterios_aceptacion": [
+            "Migración Alembic 0003_participacion_ciudadana.py creada y ejecutada en bd_csh.",
+            "Estructura de tabla con claves foráneas a lineas_estrategicas, dimensiones_seguridad_humana y territorios.",
+            "Campo metadata_enfoque JSONB para registrar grupo poblacional (etnia, género, juventud, víctimas Ley 1448/11).",
+            "Clave primaria UUIDv7 y soporte para soft-delete (activo BOOLEAN DEFAULT TRUE).",
+            "Endpoints POST y GET /api/v1/aportes con paginación, filtros por dimensión/territorio y serialización estricta."
+          ]
+        },
+        {
+          "id_tarea": "T2.3",
+          "titulo": "Sesión Anónima con Firma Digital y Contratos de API",
+          "modulo_plan": "Entrega 2 — Hito 5 y 6",
+          "rol_edd": "backend",
+          "auditores_eaf": ["forense-backend", "forense-legal"],
+          "modulos_conocimiento": [
+            "knowledge-base/01_MARCO_CONSTITUCIONAL_Y_LEGAL.md",
+            "knowledge-base/06_ARQUITECTURA_FUNCIONAL_PLATAFORMA_POLIS.md"
+          ],
+          "descripcion": "Implementar emisión de sesión anónima firmada mediante JWT (hash de IP con salt, sin almacenar IP en texto plano) para permitir participación sin fricciones pero con trazabilidad de sesión.",
+          "criterios_aceptacion": [
+            "Endpoint POST /api/v1/sesion/anonima que emita un token firmado con expiración.",
+            "Dependencia FastAPI de autenticación opcional que reconozca la sesión anónima.",
+            "Asociación obligatoria de la sesión anónima a cada aporte publicado.",
+            "Cumplimiento pericial de la Ley 1581 de 2012 de Habeas Data."
+          ]
+        },
+        {
+          "id_tarea": "T2.4",
+          "titulo": "Integración Frontend con TanStack Query y Drawers Zero-Modals",
+          "modulo_plan": "Entrega 2 — Hito 7",
+          "rol_edd": "frontend",
+          "auditores_eaf": ["forense-frontend", "forense-cicd"],
+          "modulos_conocimiento": [
+            "knowledge-base/06_ARQUITECTURA_FUNCIONAL_PLATAFORMA_POLIS.md"
+          ],
+          "descripcion": "Conectar las vistas y paneles laterales de aportes con los endpoints reales de la API FastAPI mediante TanStack Query, respetando la regla Zero-Modals y los tokens semánticos CSS.",
+          "criterios_aceptacion": [
+            "Servicios HTTP en src/features/politicas/services/ y src/features/aportes/services/ conectados a /api/v1/*.",
+            "Manejo reactivo de estados: cargando (skeletons), error con reintento, vacío y éxito.",
+            "Formulario de creación de aportes en el Drawer lateral persistiendo exitosamente en bd_csh.",
+            "bun run check y bun run build pasando con 0 errores y 0 warnings."
+          ]
+        },
+        {
+          "id_tarea": "T2.5",
+          "titulo": "Pruebas de Persistencia Extremo a Extremo",
+          "modulo_plan": "Entrega 2 — Hito 8",
+          "rol_edd": "backend / frontend",
+          "auditores_eaf": ["forense-backend", "forense-frontend", "forense-cicd"],
+          "modulos_conocimiento": [
+            "knowledge-base/06_ARQUITECTURA_FUNCIONAL_PLATAFORMA_POLIS.md"
+          ],
+          "descripcion": "Realizar la prueba de integración completa de la Entrega 2 demostrando que un aporte ciudadano creado desde la interfaz web sobrevive recargas y reinicios de servicios.",
+          "criterios_aceptacion": [
+            "Prueba automatizada o de integración extremo a extremo verificada.",
+            "Aporte persistido en la tabla participacion_ciudadana.propuestas_ciudadanas en bd_csh.",
+            "Criterio de aceptación de la Entrega 2 formalmente satisfecho."
+          ]
+        }
+      ]
+    },
+    {
+      "id_entrega": "E3",
+      "titulo": "Identidad, evidencia y ciclo de devolución de razones (C-150/15)",
+      "objetivo": "Implementar PBAC/RBAC, despojo ético de EXIF y el mecanismo vinculante de devolución de razones motivadas de la Sentencia C-150/15.",
+      "tareas": [
+        {
+          "id_tarea": "T3.1",
+          "titulo": "Niveles de Identidad Ciudadana y PBAC/RBAC",
+          "modulo_plan": "Entrega 3 — Hito 1 y 2",
+          "rol_edd": "backend",
+          "auditores_eaf": ["forense-backend", "forense-legal"],
+          "modulos_conocimiento": [
+            "knowledge-base/01_MARCO_CONSTITUCIONAL_Y_LEGAL.md",
+            "knowledge-base/06_ARQUITECTURA_FUNCIONAL_PLATAFORMA_POLIS.md"
+          ],
+          "descripcion": "Implementar roles estructurados y estados de identidad (Declarada, Autenticada, Verificada) con dependencias de seguridad FastAPI.",
+          "criterios_aceptacion": [
+            "Roles ciudadano, facilitador_mesa, autoridad_distrital, auditor_forense.",
+            "Decorador de permisos requerir_permiso funcionando."
+          ]
+        },
+        {
+          "id_tarea": "T3.2",
+          "titulo": "Evidencia Fotográfica Segura con Despojo EXIF (Pillow)",
+          "modulo_plan": "Entrega 3 — Hito 4",
+          "rol_edd": "backend",
+          "auditores_eaf": ["forense-backend", "forense-legal"],
+          "modulos_conocimiento": [
+            "knowledge-base/01_MARCO_CONSTITUCIONAL_Y_LEGAL.md"
+          ],
+          "descripcion": "Subida y procesamiento de imágenes con Pillow eliminando coordenadas GPS exactas para salvaguarda de líderes comunitarios.",
+          "criterios_aceptacion": [
+            "Imágenes procesadas sin EXIF residual.",
+            "Validación de tipos de archivo seguros y tamaño máximo."
+          ]
+        },
+        {
+          "id_tarea": "T3.3",
+          "titulo": "Ciclo de Devolución de Razones (Sentencia C-150 de 2015)",
+          "modulo_plan": "Entrega 3 — Hito 5",
+          "rol_edd": "backend / arquitecto",
+          "auditores_eaf": ["forense-legal", "forense-backend"],
+          "modulos_conocimiento": [
+            "knowledge-base/02_LINEA_JURISPRUDENCIAL_CORTE_CONSTITUCIONAL.md",
+            "knowledge-base/06_ARQUITECTURA_FUNCIONAL_PLATAFORMA_POLIS.md"
+          ],
+          "descripcion": "Garantía de respuesta motivada obligatoria ante propuestas no priorizadas o archivadas, con registro inmutable en auditoria.registros_auditoria.",
+          "criterios_aceptacion": [
+            "Prohibición de descarte silencioso en API.",
+            "Causales técnicas, jurídicas o fiscales obligatorias.",
+            "Trazabilidad pública para el proponente."
+          ]
+        },
+        {
+          "id_tarea": "T3.4",
+          "titulo": "Mecanismo de Apoyos y Votos Únicos con Restricción de Unicidad en BD",
+          "modulo_plan": "Entrega 3 — Hito 3",
+          "rol_edd": "backend / arquitecto",
+          "auditores_eaf": ["forense-bd", "forense-backend"],
+          "modulos_conocimiento": [
+            "knowledge-base/01_MARCO_CONSTITUCIONAL_Y_LEGAL.md",
+            "knowledge-base/06_ARQUITECTURA_FUNCIONAL_PLATAFORMA_POLIS.md"
+          ],
+          "descripcion": "Garantizar una única manifestación de respaldo o apoyo por participante por propuesta mediante tabla de apoyos con restricción UNIQUE compuesta en bd_csh, soportando sesiones anónimas y usuarios autenticados.",
+          "criterios_aceptacion": [
+            "Migración Alembic 0008_apoyos_unicos.py para tabla participacion_ciudadana.apoyos_propuestas con restricción UNIQUE (propuesta_id, sujeto_id).",
+            "Endpoint POST /api/v1/aportes/{id}/apoyar verificando respaldo previo y rechazando duplicados con HTTP 409 Conflict.",
+            "Actualización atómica del contador apoyos_contador en participacion_ciudadana.propuestas_ciudadanas.",
+            "Pruebas automatizadas en backend/tests/test_apoyos_unicos.py."
+          ]
+        },
+        {
+          "id_tarea": "T3.5",
+          "titulo": "Salvaguardas de Enfoque Étnico (Ley 70/93 y Convenio 169 OIT)",
+          "modulo_plan": "Entrega 3 — Hito 6",
+          "rol_edd": "backend / arquitecto",
+          "auditores_eaf": ["forense-legal", "forense-backend"],
+          "modulos_conocimiento": [
+            "knowledge-base/01_MARCO_CONSTITUCIONAL_Y_LEGAL.md",
+            "knowledge-base/02_LINEA_JURISPRUDENCIAL_CORTE_CONSTITUCIONAL.md",
+            "knowledge-base/04_NIVELES_TERRITORIALES_Y_ACTOS_ADMINISTRATIVOS.md",
+            "knowledge-base/05_HERRAMIENTAS_PARTICIPATIVAS_Y_ENFOQUES_DIFERENCIALES.md"
+          ],
+          "descripcion": "Marcado especial y salvaguarda de propuestas originadas en territorios étnicos y Consejos Comunitarios de Comunidades Negras (La Boquilla, Pasacaballos, Barú, Tierra Bomba) o Cabildos Indígenas con ruta diferenciada de consulta previa y flag de susceptibilidad de afectación directa.",
+          "criterios_aceptacion": [
+            "Identificación de territorios étnicos de Cartagena y vinculación automática o explícita de la condición étnica en participacion_ciudadana.propuestas_ciudadanas.",
+            "Banderas requiere_consulta_previa y ruta_etnica_diferenciada según jurisprudencia SU-123/18.",
+            "Filtros de consulta en API y trazabilidad.",
+            "Pruebas automatizadas en backend/tests/test_enfoque_etnico.py."
+          ]
+        }
+      ]
+    },
+    {
+      "id_entrega": "E4",
+      "titulo": "Mesas deliberativas, jerarquías ltree e instrumentos MGA",
+      "objetivo": "Implementar mesas de trabajo jerárquicas con PostgreSQL ltree y el Árbol de Problemas y Objetivos según metodología DNP.",
+      "tareas": [
+        {
+          "id_tarea": "T4.1",
+          "titulo": "Mesas de Trabajo Jerárquicas con Codificación Institucional y Extensión ltree",
+          "modulo_plan": "Entrega 4 — Hito 1",
+          "rol_edd": "arquitecto / backend",
+          "auditores_eaf": ["forense-bd", "forense-backend"],
+          "modulos_conocimiento": [
+            "knowledge-base/04_NIVELES_TERRITORIALES_Y_ACTOS_ADMINISTRATIVOS.md",
+            "knowledge-base/05_HERRAMIENTAS_PARTICIPATIVAS_Y_ENFOQUES_DIFERENCIALES.md",
+            "knowledge-base/06_ARQUITECTURA_FUNCIONAL_PLATAFORMA_POLIS.md"
+          ],
+          "descripcion": "Implementar el módulo completo de Mesas de Trabajo Deliberativas con Codificación Institucional (MT Territoriales, MR Rurales/Insulares, MP Poblacionales, MS Sectoriales, ME Especiales) y jerarquías de profundidad infinita mediante la extensión ltree de PostgreSQL 18. Mapear en SQLAlchemy 2.0 y exponer endpoints REST en FastAPI para consulta y creación jerárquica.",
+          "criterios_aceptacion": [
+            "Migración Alembic 0010_mesas_trabajo_ltree.py idempotente gestionando esquema mesas_trabajo y tabla mesas con columna ruta_jerarquica ltree e índice GIST.",
+            "Codificación estándar institucional y ciudadana: tipo_mesa, codigo_oficial, shortcode_ciudadano, lugar_nombre, fecha, horario, aforo y estado.",
+            "Soporte de jerarquía de submesas de profundidad infinita con operadores ltree (<@ descendientes, @> ancestros).",
+            "Módulo backend/app/modules/mesas con modelo SQLAlchemy, esquemas Pydantic v2, repositorio, servicio y router en /api/v1/mesas.",
+            "Endpoints GET /api/v1/mesas (filtros por tipo, estado, fecha, territorio, ancestro_ruta), GET /api/v1/mesas/{id}, POST /api/v1/mesas (creación de mesa o submesa con ruta calculada) y GET /api/v1/mesas/{id}/submesas.",
+            "Suite de pruebas automatizadas en backend/tests/test_mesas_ltree.py con 100% de éxito en pytest."
+          ]
+        },
+        {
+          "id_tarea": "T4.2",
+          "titulo": "Participantes, Quórum y Actas Comunitarias de Concertación",
+          "modulo_plan": "Entrega 4 — Hito 2",
+          "rol_edd": "backend / arquitecto",
+          "auditores_eaf": ["forense-legal", "forense-backend", "forense-bd"],
+          "modulos_conocimiento": [
+            "knowledge-base/01_MARCO_CONSTITUCIONAL_Y_LEGAL.md",
+            "knowledge-base/05_HERRAMIENTAS_PARTICIPATIVAS_Y_ENFOQUES_DIFERENCIALES.md"
+          ],
+          "descripcion": "Implementar el registro de asistencia y participantes a mesas deliberativas con quórum y roles (facilitador, relator, delegado_institucional, ciudadano), y el sistema inmutable de actas comunitarias de concertación con acuerdos, disensos, firma de facilitador y hash SHA-256 según Ley 1757/15 y Sentencia C-150/15.",
+          "criterios_aceptacion": [
+            "Migración Alembic 0011_participantes_y_actas.py creando mesas_trabajo.participantes_mesa y mesas_trabajo.actas_comunitarias con UUIDv7.",
+            "Registro de participantes con validación de quórum y roles oficiales.",
+            "Cierre formal del acta con hash SHA-256 e inmutabilidad garantizada.",
+            "Endpoints REST /api/v1/mesas/{id}/participantes y /api/v1/mesas/{id}/acta (creación, firma y consulta).",
+            "Suite de pruebas en backend/tests/test_actas_y_participantes.py aprobada al 100%."
+          ]
+        },
+        {
+          "id_tarea": "T4.3",
+          "titulo": "Motor de Instrumentos MGA: Árbol de Problemas y Conversión a Objetivos",
+          "modulo_plan": "Entrega 4 — Hito 3",
+          "rol_edd": "arquitecto / backend",
+          "auditores_eaf": ["forense-backend", "forense-legal"],
+          "modulos_conocimiento": [
+            "knowledge-base/03_METODOLOGIA_DNP_CONPES_MGA.md",
+            "knowledge-base/09_CASOS_ESTUDIO_Y_PLANTILLAS_SECTORIALES.md"
+          ],
+          "descripcion": "Modelo polimórfico en esquema motor_instrumentos para el Árbol de Problemas (causas directas/indirectas, problema central, efectos) y su conversión semántica guiada a Árbol de Objetivos (medios, objetivo central, fines) según la Metodología General Ajustada (MGA) del DNP.",
+          "criterios_aceptacion": [
+            "Esquema motor_instrumentos con tablas instrumentos y nodos_instrumento en bd_csh.",
+            "Conversión metodológica validada de Problemas a Objetivos.",
+            "Endpoints REST para manipulación y serialización del árbol.",
+            "Pruebas automatizadas en backend/tests/test_motor_mga.py."
+          ]
+        },
+        {
+          "id_tarea": "T4.4",
+          "titulo": "Plantillas Sectoriales Críticas de Cartagena y Conexión Frontend",
+          "modulo_plan": "Entrega 4 — Hito 4",
+          "rol_edd": "frontend / backend",
+          "auditores_eaf": ["forense-frontend", "forense-cicd"],
+          "modulos_conocimiento": [
+            "knowledge-base/09_CASOS_ESTUDIO_Y_PLANTILLAS_SECTORIALES.md"
+          ],
+          "descripcion": "Sembrar plantillas sectoriales de Cartagena (Prevención ESCNNA Centro Histórico, Saneamiento Ciénaga de la Virgen, Convivencia Localidad 2) y conectar los paneles laterales Zero-Modals con los endpoints reales.",
+          "criterios_aceptacion": [
+            "Semillas sectoriales cargadas en base de datos.",
+            "Integración de panels mesa-panel y papelografo-panel con TanStack Query.",
+            "bun run check y bun run build pasando con 0 errores."
+          ]
+        },
+        {
+          "id_tarea": "T4.5",
+          "titulo": "Colaboración Multiusuario, Control de Conflictos y Concurrencia",
+          "modulo_plan": "Entrega 4 — Hitos 5 y 6",
+          "rol_edd": "backend / frontend",
+          "auditores_eaf": ["forense-backend", "forense-cicd"],
+          "modulos_conocimiento": [
+            "knowledge-base/06_ARQUITECTURA_FUNCIONAL_PLATAFORMA_POLIS.md"
+          ],
+          "descripcion": "Implementar control de concurrencia optimista con versionamiento de nodos y pruebas de concurrencia de edición simultánea multiusuario.",
+          "criterios_aceptacion": [
+            "Control optimista de versiones (ETag / version_seq) en nodos.",
+            "Pruebas de concurrencia multi-sesión aprobadas.",
+            "Certificación completa de la Entrega 4."
+          ]
+        }
+      ]
+    },
+    {
+      "id_entrega": "E5",
+      "titulo": "Inteligencia artificial normativa, geovisor y operación continua",
+      "objetivo": "Desplegar el PolicyLifecycleGraph de LangGraph, el Geovisor PostGIS interactivo y la operación supervisada en producción.",
+      "tareas": [
+        {
+          "id_tarea": "T5.1",
+          "titulo": "Red Multi-Agente de IA (PydanticAI + LangGraph)",
+          "modulo_plan": "Entrega 5 — Hito 1",
+          "rol_edd": "ia / backend",
+          "auditores_eaf": ["forense-ia", "forense-legal"],
+          "modulos_conocimiento": [
+            "knowledge-base/02_LINEA_JURISPRUDENCIAL_CORTE_CONSTITUCIONAL.md",
+            "knowledge-base/03_METODOLOGIA_DNP_CONPES_MGA.md",
+            "knowledge-base/10_MANUAL_FACILITACION_Y_AGENTES_IA.md"
+          ],
+          "descripcion": "Orquestación cíclica con AgenteDiagnostico, AgenteJuridico, AgenteFiscal y AgenteDevolucionMotivada.",
+          "criterios_aceptacion": [
+            "StateGraph determinista sin bucles infinitos.",
+            "Salidas Pydantic v2 en español estricto sin alucinaciones."
+          ]
+        },
+        {
+          "id_tarea": "T5.2",
+          "titulo": "Geovisor Territorial Interactivo con Capas PostGIS",
+          "modulo_plan": "Entrega 5 — Hito 2",
+          "rol_edd": "arquitecto / frontend",
+          "auditores_eaf": ["forense-bd", "forense-frontend"],
+          "modulos_conocimiento": [
+            "knowledge-base/04_NIVELES_TERRITORIALES_Y_ACTOS_ADMINISTRATIVOS.md",
+            "knowledge-base/06_ARQUITECTURA_FUNCIONAL_PLATAFORMA_POLIS.md"
+          ],
+          "descripcion": "Visualización y filtrado territorial sobre polígonos de localidades e islas de Cartagena.",
+          "criterios_aceptacion": [
+            "Consultas PostGIS EPSG:4326 con índices GIST optimizados.",
+            "Latencia < 50ms en consultas espaciales."
+          ]
+        },
+        {
+          "id_tarea": "T5.3",
+          "titulo": "Sistema Presupuestal y Batería de Indicadores DNP",
+          "modulo_plan": "Entrega 5 — Hito 3",
+          "rol_edd": "backend / arquitecto",
+          "auditores_eaf": ["forense-bd", "forense-backend", "forense-legal"],
+          "modulos_conocimiento": [
+            "knowledge-base/01_MARCO_CONSTITUCIONAL_Y_LEGAL.md",
+            "knowledge-base/03_METODOLOGIA_DNP_CONPES_MGA.md",
+            "knowledge-base/06_ARQUITECTURA_FUNCIONAL_PLATAFORMA_POLIS.md"
+          ],
+          "descripcion": "Implementar el módulo de costeo presupuestal preliminar articulando alternativas de solución con fuentes de financiación colombianas (FONSET, SGP, SGR, Presupuesto Participativo) y el sistema de fichas técnicas de indicadores DNP (cadena de valor: Insumo -> Producto -> Resultado) con líneas base, metas y cálculo de avance.",
+          "criterios_aceptacion": [
+            "Migración Alembic para esquemas presupuestal e indicadores con UUIDv7 en bd_csh.",
+            "Asociación de fuentes de financiación (FONSET, SGP, SGR, Presupuesto Participativo) a líneas estratégicas o alternativas de solución.",
+            "Batería de fichas técnicas de indicadores DNP (Insumo, Producto, Resultado) con línea base, meta y periodicidad.",
+            "Endpoints REST /api/v1/presupuesto y /api/v1/indicadores en FastAPI.",
+            "Pruebas automatizadas en backend/tests/ con 100% de éxito."
+          ]
+        },
+        {
+          "id_tarea": "T5.4",
+          "titulo": "Despliegue, Respaldo Automatizado y Operación Supervisada",
+          "modulo_plan": "Entrega 5 — Hito 4",
+          "rol_edd": "arquitecto / backend",
+          "auditores_eaf": ["forense-cicd", "forense-bd", "forense-backend", "forense-frontend", "forense-legal", "forense-ia"],
+          "modulos_conocimiento": [
+            "knowledge-base/06_ARQUITECTURA_FUNCIONAL_PLATAFORMA_POLIS.md"
+          ],
+          "descripcion": "Configurar y verificar los servicios supervisados de producción (Next.js 16 standalone, FastAPI Uvicorn, PostgreSQL 18.6), scripts de respaldo automatizado de bd_csh (pg_dump -Fc) con procedimiento de restauración verificado, y auditoría forense integral de cierre de la plataforma POLIS.",
+          "criterios_aceptacion": [
+            "Servicios de producción operando y respondiendo a health checks /api/v1/health/ready.",
+            "Script de respaldo automatizado y prueba de restauración ejecutada con éxito.",
+            "Auditoría forense integral del EAF con todas las entregas (E1 a E5) certificadas CONFORME.",
+            "Plan de trabajo al 100% completado."
+          ]
+        }
+      ]
+    },
+    {
+      "id_entrega": "E6",
+      "titulo": "Suite Institucional del Funcionario, Gobernanza Multicanal y Sidebar Integral",
+      "objetivo": "Implementar la suite unificada de gestión institucional mediante Sidebar reactivo y paneles especializados para los 8 módulos operativos, incluyendo participación multicanal desagregada, Forms, control de fases y testimonios.",
+      "tareas": [
+        {
+          "id_tarea": "T6.1",
+          "titulo": "Sidebar Institucional y Navegación Basada en Roles (PBAC)",
+          "modulo_plan": "Entrega 6 — Hito 1",
+          "rol_edd": "frontend / arquitecto",
+          "auditores_eaf": ["forense-frontend", "forense-backend"],
+          "modulos_conocimiento": [
+            "knowledge-base/06_ARQUITECTURA_FUNCIONAL_PLATAFORMA_POLIS.md"
+          ],
+          "descripcion": "Integrar el componente Sidebar para perfiles institucionales (autoridad_distrital, facilitador_mesa, auditor_forense) con acceso a los 8 módulos y Drawers Zero-Modals.",
+          "criterios_aceptacion": [
+            "Sidebar reactivo visible únicamente para usuarios autenticados con rol institucional.",
+            "Navegación contextual a los 8 módulos operativos de POLIS.",
+            "Compatibilidad total con Zero-Modals y diseño responsivo."
+          ]
+        },
+        {
+          "id_tarea": "T6.2",
+          "titulo": "Módulo de Formularios y Consultas Ciudadanas (Forms)",
+          "modulo_plan": "Entrega 6 — Hito 2",
+          "rol_edd": "backend / frontend",
+          "auditores_eaf": ["forense-backend", "forense-frontend"],
+          "modulos_conocimiento": [
+            "knowledge-base/06_ARQUITECTURA_FUNCIONAL_PLATAFORMA_POLIS.md"
+          ],
+          "descripcion": "Catálogo de formularios creados, diseñador visual de consultas (FormBuilder) con Enfoque Diferencial y métricas analíticas de respuesta.",
+          "criterios_aceptacion": [
+            "CRUD de formularios de consulta territorial y sectorial.",
+            "Soporte de campos de enfoque diferencial y evidencias.",
+            "Panel de analítica y tabulación de respuestas."
+          ]
+        },
+        {
+          "id_tarea": "T6.3",
+          "titulo": "Registro de Asistencia y Participación Multicanal Desagregada",
+          "modulo_plan": "Entrega 6 — Hito 3",
+          "rol_edd": "backend / frontend",
+          "auditores_eaf": ["forense-backend", "forense-frontend", "forense-legal"],
+          "modulos_conocimiento": [
+            "knowledge-base/01_MARCO_CONSTITUCIONAL_Y_LEGAL.md",
+            "knowledge-base/06_ARQUITECTURA_FUNCIONAL_PLATAFORMA_POLIS.md"
+          ],
+          "descripcion": "Tablero unificado distrital que desagrega la participación en: Canal Web automático por Línea Estratégica, Canal Mesas de Trabajo por submesas y padrón de participantes con actas, y Canal Escenarios Especiales (consultas previas, talleres juveniles y foros gremiales).",
+          "criterios_aceptacion": [
+            "Métrica consolidada distrital sin duplicidades.",
+            "Desagregación analítica web por Línea Estratégica y dimensión.",
+            "Desagregación jerárquica territorial por mesa, submesa y participante.",
+            "Registro cuantificado de escenarios especiales de co-creación."
+          ]
+        },
+        {
+          "id_tarea": "T6.4",
+          "titulo": "Módulo de Testimonios Comunitarios y Memoria Social",
+          "modulo_plan": "Entrega 6 — Hito 4",
+          "rol_edd": "frontend / backend",
+          "auditores_eaf": ["forense-frontend", "forense-legal"],
+          "modulos_conocimiento": [
+            "knowledge-base/01_MARCO_CONSTITUCIONAL_Y_LEGAL.md"
+          ],
+          "descripcion": "Banco de testimonios comunitarios con identificación del ciudadano, territorio, relato textual/multimedia, moderación ética institucional y galería pública.",
+          "criterios_aceptacion": [
+            "Entidad y repositorio de testimonios comunitarios.",
+            "Panel de curaduría y moderación para funcionarios.",
+            "Visualización pública en la plataforma."
+          ]
+        },
+        {
+          "id_tarea": "T6.5",
+          "titulo": "Centro de Control de Fases DNP, Administración del Sistema y Autenticación Google OAuth",
+          "modulo_plan": "Entrega 6 — Hito 5",
+          "rol_edd": "backend / frontend",
+          "auditores_eaf": ["forense-backend", "forense-frontend", "forense-legal", "forense-cicd"],
+          "modulos_conocimiento": [
+            "knowledge-base/01_MARCO_CONSTITUCIONAL_Y_LEGAL.md",
+            "knowledge-base/03_METODOLOGIA_DNP_CONPES_MGA.md",
+            "knowledge-base/06_ARQUITECTURA_FUNCIONAL_PLATAFORMA_POLIS.md"
+          ],
+          "descripcion": "Interruptor maestro de apertura y cierre de fases de participación web DNP, autenticación institucional con Google OAuth 2.0 (SSO) para funcionarios, panel de gestión de roles y permisos PBAC, y consola de auditoría forense inmutable.",
+          "criterios_aceptacion": [
+            "Endpoint y panel UI para activar/desactivar fases de participación web en tiempo real.",
+            "Autenticación institucional con Google OAuth 2.0 (POST /api/v1/identidad/oauth/google) con verificación de id_token y asignación de roles PBAC.",
+            "Botón oficial de Google en panel de sesión institucional y gestión segura de roles sin escalamiento.",
+            "Monitoreo de registros de auditoría y respaldo del sistema."
+          ]
+        }
+      ]
+    }
+  ]
+}

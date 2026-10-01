@@ -1,0 +1,6 @@
+interface:
+  display_name: "POLIS UI · Construcción"
+  short_description: "Construir pantallas con el kit UI de POLIS"
+  default_prompt: "Usa $polis-ui-build para implementar esta pantalla respetando el kit UI de POLIS."
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,32 @@
+{
+  "escenarios": 92,
+  "interacciones_dirigidas": 20,
+  "infracciones_axe": 0,
+  "desbordamientos": 0,
+  "errores_js": 0,
+  "temas": [
+    "light",
+    "dark"
+  ],
+  "anchos": [
+    320,
+    1440
+  ],
+  "historias": 135,
+  "archivos_historia": 8,
+  "fuentes_snapshot": 148,
+  "archivos_correccion": [
+    "src/shared/ui/button.tsx",
+    "src/shared/ui/button.stories.tsx",
+    "src/shared/design-system/tokens.css",
+    "src/features/formularios/panels/formulario-editor-panel.tsx",
+    "src/features/formularios/panels/formularios-panel.tsx",
+    "src/features/participacion/panels/escenario-editor-panel.tsx",
+    "src/features/testimonios/panels/testimonios-galeria-panel.tsx",
+    "src/features/geovisor/components/geovisor-mapa.tsx",
+    "src/features/mesas/views/mesas-view.tsx",
+    "src/features/politicas/panels/politica-panel.tsx",
+    "src/features/sesion/panels/sesion-panel.tsx",
+    "src/app/_stories/platform.stories.tsx"
+  ]
+}

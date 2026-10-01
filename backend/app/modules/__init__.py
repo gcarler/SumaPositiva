@@ -1,0 +1,1 @@
+"""Funcionalidades agrupadas por dominio."""

@@ -1,17 +1,20 @@
 "use client";
 
+import { Button } from "@/shared/ui/button";
+import { Textarea } from "@/shared/ui/textarea";
+
 import { useState } from "react";
 import { toast } from "sonner";
 import {
   CornerDownRight,
-  Eraser,
   FileText,
   Trash2,
   Wand2,
 } from "lucide-react";
-import { PanelShell } from "@/components/panels/panel-shell";
-import { usePanels, type ArbolPanel } from "@/stores/panel-store";
-import { useMesa, useMesasStore, useSubMesa } from "@/stores/mesas-store";
+import { PanelShell } from "@/core/panels/panel-shell";
+import { usePanels, type ArbolPanel } from "@/core/panels/panel-store";
+import { useMesa, useMesasStore, useSubMesa } from "@/features/mesas/state/mesas-store";
+import { useMesaQuery, useActualizarSubMesa } from "@/features/mesas/services/use-mesas-queries";
 import {
   RAMA_META,
   contarNodos,
@@ -20,8 +23,8 @@ import {
   solucionesExistentes,
   type NodoArbol,
   type RamaArbol,
-} from "@/types/mesas";
-import type { PanelPropsMap } from "@/stores/panel-store";
+} from "@/features/mesas/models/mesas";
+import type { PanelPropsMap } from "@/core/panels/panel-store";
 
 /**
  * Papelografo digital — el lienzo donde cada submesa diligencia su
@@ -90,7 +93,7 @@ function NodoCard({
       style={{
         borderColor: primario ? "var(--border)" : "var(--border)",
         borderLeft: `3px solid ${primario ? meta.colorVar : "var(--border-strong)"}`,
-        boxShadow: primario ? "0 1px 2px oklch(0 0 0 / 0.04)" : undefined,
+        boxShadow: primario ? "var(--elevation-card)" : undefined,
       }}
     >
       <div className="flex items-center justify-between gap-2">
@@ -102,7 +105,7 @@ function NodoCard({
         </span>
         <div className="flex shrink-0 items-center gap-0.5">
           {primario && (
-            <button
+            <Button variant="unstyled" size="unstyled"
               type="button"
               onClick={() => onAgregarSecundaria(nodo.id)}
               title={`Añadir ${meta.singular} secundaria — pregunta «¿y por qué eso ocurre?»`}
@@ -110,9 +113,9 @@ function NodoCard({
               className="flex size-6 items-center justify-center rounded-md text-[var(--text-tertiary)] transition-colors hover:bg-[var(--surface-3)] hover:text-[var(--text-primary)]"
             >
               <CornerDownRight className="size-3.5" strokeWidth={1.5} />
-            </button>
+            </Button>
           )}
-          <button
+          <Button variant="unstyled" size="unstyled"
             type="button"
             onClick={() => onEliminar(nodo.id)}
             title="Eliminar nodo"
@@ -120,12 +123,12 @@ function NodoCard({
             className="flex size-6 items-center justify-center rounded-md text-[var(--text-tertiary)] transition-colors hover:bg-[var(--surface-3)] hover:text-[var(--danger)]"
           >
             <Trash2 className="size-3.5" strokeWidth={1.5} />
-          </button>
+          </Button>
         </div>
       </div>
 
       {editando ? (
-        <textarea
+        <Textarea
           autoFocus
           value={borrador}
           maxLength={MAX_TEXTO_NODO}
@@ -143,10 +146,10 @@ function NodoCard({
               onEditar(null);
             }
           }}
-          className="mt-1.5 w-full resize-none rounded-md border border-[var(--border-strong)] bg-[var(--surface-1)] px-2.5 py-2 text-[13px] leading-snug text-[var(--text-primary)] focus:border-[var(--ember)] focus:outline-none"
+          className="mt-1.5 w-full resize-none rounded-md border border-[var(--border-strong)] bg-[var(--surface-1)] px-2.5 py-2 text-[13px] leading-snug text-[var(--text-primary)] focus:border-[var(--ember)] "
         />
       ) : (
-        <button
+        <Button variant="unstyled" size="unstyled"
           type="button"
           onClick={comenzar}
           className={`mt-1 block w-full rounded-md px-1 py-0.5 text-left text-[13px] leading-snug transition-colors hover:bg-[var(--surface-2)] ${
@@ -156,7 +159,7 @@ function NodoCard({
           }`}
         >
           {nodo.texto || "Clic para escribir…"}
-        </button>
+        </Button>
       )}
     </div>
   );
@@ -245,14 +248,14 @@ function ColumnaArbol({
         ))}
       </ul>
 
-      <button
+      <Button variant="unstyled" size="unstyled"
         type="button"
         onClick={() => onAgregar(null)}
         className="flex w-full items-center justify-center gap-1.5 rounded-lg border border-dashed border-[var(--border-strong)] py-2.5 text-[11px] font-medium text-[var(--text-secondary)] transition-colors hover:bg-[var(--surface-2)] hover:text-[var(--text-primary)]"
       >
         <span aria-hidden className="text-sm leading-none">+</span>
         Añadir {meta.singular} {meta.genero === "f" ? "primaria" : "primario"}
-      </button>
+      </Button>
     </div>
   );
 }
@@ -271,8 +274,12 @@ export function PapelografoPanel({
   props: PanelPropsMap["papelografo"];
 }) {
   const { closeTop, closeToKey } = usePanels();
-  const mesa = useMesa(props.mesaId);
-  const submesa = useSubMesa(props.mesaId, props.submesaId);
+  const { data: mesaRemota } = useMesaQuery(props.mesaId);
+  const mesaLocal = useMesa(props.mesaId);
+  const mesa = mesaRemota ?? mesaLocal;
+  const submesaLocal = useSubMesa(props.mesaId, props.submesaId);
+  const submesa = mesa?.submesas?.find((s) => s.id === props.submesaId) ?? submesaLocal;
+  const mutarSubMesa = useActualizarSubMesa();
 
   const setTextoCentral = useMesasStore((s) => s.setTextoCentral);
   const setTextoNodo = useMesasStore((s) => s.setTextoNodo);
@@ -302,11 +309,10 @@ export function PapelografoPanel({
   }
 
   const esProblemas = tab === "problemas";
-  const arbolActivo = esProblemas ? submesa.arbolProblemas : submesa.arbolSoluciones;
   const ramaIzq: RamaArbol = esProblemas ? "causas" : "medios";
   const ramaDer: RamaArbol = esProblemas ? "efectos" : "fines";
-  const nodosIzq = esProblemas ? arbolActivo.causas : arbolActivo.medios;
-  const nodosDer = esProblemas ? arbolActivo.efectos : arbolActivo.fines;
+  const nodosIzq = esProblemas ? submesa.arbolProblemas.causas : submesa.arbolSoluciones.medios;
+  const nodosDer = esProblemas ? submesa.arbolProblemas.efectos : submesa.arbolSoluciones.fines;
 
   const centralActual = esProblemas
     ? submesa.arbolProblemas.problemaCentral
@@ -324,20 +330,34 @@ export function PapelografoPanel({
 
   /* ---------- acciones del papelografo ---------- */
 
-  const agregar = (rama: RamaArbol, parentId: string | null) => {
-    const id = agregarNodo(mesa.id, submesa.id, tab, rama, parentId);
-    if (id) setEditandoId(id);
+  const sincronizar = () => {
+    if (mesa && submesa) {
+      mutarSubMesa.mutate({ mesaId: mesa.id, subMesaId: submesa.id, subMesa: submesa });
+    }
   };
 
-  const guardarNodo = (rama: RamaArbol) => (nodoId: string, texto: string) =>
-    setTextoNodo(mesa.id, submesa.id, tab, rama, nodoId, texto);
+  const agregar = (rama: RamaArbol, parentId: string | null) => {
+    const id = agregarNodo(mesa.id, submesa.id, tab, rama, parentId);
+    if (id) {
+      setEditandoId(id);
+      sincronizar();
+    }
+  };
 
-  const eliminarNodoEn = (rama: RamaArbol) => (nodoId: string) =>
+  const guardarNodo = (rama: RamaArbol) => (nodoId: string, texto: string) => {
+    setTextoNodo(mesa.id, submesa.id, tab, rama, nodoId, texto);
+    sincronizar();
+  };
+
+  const eliminarNodoEn = (rama: RamaArbol) => (nodoId: string) => {
     eliminarNodo(mesa.id, submesa.id, tab, rama, nodoId);
+    sincronizar();
+  };
 
   const confirmarCentral = () => {
     setTextoCentral(mesa.id, submesa.id, tab, borradorCentral.trim());
     setEditandoCentral(false);
+    sincronizar();
   };
 
   const derivar = () => {
@@ -348,6 +368,7 @@ export function PapelografoPanel({
           "Las causas se convirtieron en medios y los efectos en fines. Ajusta la redacción con la voz de la submesa.",
       });
       cambiarTab("soluciones");
+      sincronizar();
     } else {
       toast.info("Ya existe un árbol de soluciones", {
         description: "Puedes seguirlo diligenciando en la pestaña correspondiente.",
@@ -375,11 +396,11 @@ export function PapelografoPanel({
       onCloseToKey={closeToKey}
       footer={
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <p className="text-[11px] leading-tight text-[var(--text-tertiary)] tabular">
+          <p className="text-xs leading-relaxed text-[var(--text-tertiary)] tabular">
             {resumenRamas} · {esProblemas ? p.total : s.total} nodos en el papel
           </p>
           {esProblemas && (
-            <button
+            <Button variant="default" size="sm"
               type="button"
               onClick={derivar}
               disabled={!centralActual.trim() || haySoluciones}
@@ -390,11 +411,11 @@ export function PapelografoPanel({
                     ? "Escribe primero el problema central"
                     : "Convierte causas en medios y efectos en fines"
               }
-              className="inline-flex shrink-0 items-center gap-2 rounded-full bg-[var(--text-primary)] px-4 py-2 text-xs font-medium text-[var(--text-inverse)] transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+              className="shrink-0"
             >
               <Wand2 className="size-3.5" strokeWidth={1.5} />
               Derivar árbol de soluciones
-            </button>
+            </Button>
           )}
         </div>
       }
@@ -413,7 +434,7 @@ export function PapelografoPanel({
                 { id: "soluciones", label: "Árbol de soluciones" },
               ] as const
             ).map((t) => (
-              <button
+              <Button variant="unstyled" size="unstyled"
                 key={t.id}
                 type="button"
                 role="tab"
@@ -426,7 +447,7 @@ export function PapelografoPanel({
                 }`}
               >
                 {t.label}
-              </button>
+              </Button>
             ))}
           </div>
           <p className="hidden text-[11px] text-[var(--text-tertiary)] sm:block">
@@ -465,7 +486,7 @@ export function PapelografoPanel({
                   </p>
 
                   {editandoCentral ? (
-                    <textarea
+                    <Textarea
                       autoFocus
                       value={borradorCentral}
                       maxLength={MAX_TEXTO_CENTRAL}
@@ -483,10 +504,10 @@ export function PapelografoPanel({
                           setEditandoCentral(false);
                         }
                       }}
-                      className="mt-2 w-full resize-none rounded-md border border-[var(--border-strong)] bg-[var(--surface-1)] px-3 py-2 text-center text-sm leading-snug text-[var(--text-primary)] focus:border-[var(--ember)] focus:outline-none"
+                      className="mt-2 w-full resize-none rounded-md border border-[var(--border-strong)] bg-[var(--surface-1)] px-3 py-2 text-center text-sm leading-snug text-[var(--text-primary)] focus:border-[var(--ember)] "
                     />
                   ) : (
-                    <button
+                    <Button variant="unstyled" size="unstyled"
                       type="button"
                       onClick={() => {
                         setBorradorCentral(centralActual);
@@ -500,7 +521,7 @@ export function PapelografoPanel({
                     >
                       {centralActual ||
                         `Clic para escribir el ${esProblemas ? "problema" : "objetivo"}…`}
-                    </button>
+                    </Button>
                   )}
 
                   <p className="mt-3 text-center text-[10px] leading-relaxed text-[var(--text-tertiary)]">
@@ -545,11 +566,10 @@ export function PapelografoPanel({
           <FileText className="mt-0.5 size-4 shrink-0 text-[var(--text-tertiary)]" strokeWidth={1.5} />
           <p className="text-[11px] leading-relaxed text-[var(--text-secondary)]">
             Cómo se diligencia: escriban primero el {esProblemas ? "problema" : "objetivo"}{" "}
-            central; luego agreguen tarjetas {RAMA_META[ramaIzq].label.toLowerCase()} ({" "}
-            {RAMA_META[ramaIzq].pregunta} ) y {RAMA_META[ramaDer].label.toLowerCase()} ({" "}
-            {RAMA_META[ramaDer].pregunta} ). Las tarjetas primarias cuelgan del centro; para
+            central; luego agreguen tarjetas {RAMA_META[ramaIzq].label.toLowerCase()} («{RAMA_META[ramaIzq].pregunta}») y{" "}
+            {RAMA_META[ramaDer].label.toLowerCase()} («{RAMA_META[ramaDer].pregunta}»). Las tarjetas primarias cuelgan del centro; para
             cada una pueden derivar tarjetas secundarias con el icono ↳ preguntando «¿y por
-            qué eso ocurre?». Eraser: para borrar una tarjeta usa el icono de basura —{" "}
+            qué eso ocurre?». Para borrar una tarjeta usa el icono de papelera —{" "}
             {esProblemas
               ? "cuando el árbol esté listo, derívalo a soluciones desde el pie del panel."
               : "este árbol alimenta el acta final de la mesa."}
@@ -560,5 +580,3 @@ export function PapelografoPanel({
   );
 }
 
-/* Eraser import se usa como icono visual de la nota si se requiere */
-void Eraser;

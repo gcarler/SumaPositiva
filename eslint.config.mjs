@@ -44,7 +44,21 @@ const eslintConfig = [...nextCoreWebVitals, ...nextTypescript, {
     "no-useless-escape": "off",
   },
 }, {
-  ignores: ["node_modules/**", ".next/**", "out/**", "build/**", "next-env.d.ts", "examples/**", "skills"]
+  ignores: ["node_modules/**", ".next/**", "out/**", "build/**", "next-env.d.ts", "examples/**", "backend/**", "venv/**", "storybook-static/**", "test-results/**", "playwright-report/**", "skills/**", "docs/**"]
+}, {
+  files: ["src/shared/**/*.{ts,tsx}"],
+  rules: {
+    "no-restricted-imports": ["error", {
+      patterns: [{ group: ["@/features/*", "@/core/*", "@/app/*"], message: "shared debe ser independiente de funcionalidades e infraestructura." }],
+    }],
+  },
+}, {
+  files: ["src/core/**/*.{ts,tsx}"],
+  rules: {
+    "no-restricted-imports": ["error", {
+      patterns: [{ group: ["@/features/*", "@/app/*"], message: "core no depende de features ni app; ensamblar en app/_composition." }],
+    }],
+  },
 }];
 
 export default eslintConfig;

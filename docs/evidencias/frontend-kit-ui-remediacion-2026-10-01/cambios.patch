@@ -1,0 +1,624 @@
+--- antes/src/shared/ui/button.tsx
++++ despues/src/shared/ui/button.tsx
+@@ -22,7 +22,7 @@
+         ghost:
+           "rounded-full border border-transparent text-text-secondary hover:bg-surface-2 hover:text-text-primary",
+         link: "rounded-sm text-ember underline-offset-4 hover:underline",
+-        unstyled: "",
++        unstyled: "min-w-0 whitespace-normal",
+       },
+       size: {
+         default: "h-11 px-5 text-sm",
+--- antes/src/shared/ui/button.stories.tsx
++++ despues/src/shared/ui/button.stories.tsx
+@@ -94,3 +94,18 @@
+     children: <a href="#contenido">Explorar políticas</a>,
+   },
+ };
++
++export const TarjetaConReflujo: Story = {
++  render: () => (
++    <div className="w-64">
++      <Button variant="unstyled" size="unstyled" className="w-full rounded-lg border border-border p-4 text-left">
++        Una tarjeta con texto extenso debe conservar todo su contenido al ajustarse al ancho de una pantalla pequeña.
++      </Button>
++    </div>
++  ),
++  play: async ({ canvasElement }) => {
++    const button = within(canvasElement).getByRole("button");
++    await expect(getComputedStyle(button).whiteSpace).toBe("normal");
++    await expect(button.scrollWidth).toBeLessThanOrEqual(button.clientWidth);
++  },
++};
+--- antes/src/shared/design-system/tokens.css
++++ despues/src/shared/design-system/tokens.css
+@@ -1,5 +1,10 @@
+ /* ============ LIGHT MODE ============ */
+ :root {
++  /* Marca del proveedor de identidad; no representan estados del producto. */
++  --brand-google-blue: #4285F4;
++  --brand-google-green: #34A853;
++  --brand-google-yellow: #FBBC05;
++  --brand-google-red: #EA4335;
+   --layer-dropdown: 100;
+   --radius: 0.75rem;
+ 
+--- antes/src/features/formularios/panels/formulario-editor-panel.tsx
++++ despues/src/features/formularios/panels/formulario-editor-panel.tsx
+@@ -9,11 +9,12 @@
+ import { Checkbox } from "@/shared/ui/checkbox";
+ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/ui/select";
+ import { SectionLabel } from "@/shared/components/participation-ui";
+-import { useState } from "react";
++import { useId, useState } from "react";
+ import type { PreguntaFormulario } from "../models/formulario";
+ 
+ export function FormularioEditorPanel({ entryKey, props }: { entryKey: string, props: { formularioId?: string } }) {
+   const { closeTop } = usePanels();
++  const fieldId = useId();
+   const { data: form, isLoading } = useFormularioDetalle(props.formularioId || "");
+   const isEditing = !!props.formularioId;
+ 
+@@ -36,7 +37,7 @@
+       onClose={closeTop}
+       onCloseToKey={closeTop}
+       footer={
+-        <div className="flex justify-end gap-2 w-full">
++        <div className="flex flex-wrap justify-end gap-2 w-full">
+           <Button variant="outline" onClick={closeTop}>Cancelar</Button>
+           <Button>Guardar Formulario</Button>
+         </div>
+@@ -46,17 +47,17 @@
+         <section className="space-y-4">
+           <SectionLabel>Configuración General</SectionLabel>
+           <div className="space-y-2">
+-            <Label>Título del Formulario</Label>
+-            <Input defaultValue={form?.titulo} placeholder="Ej. Consulta Sectorial 2026" />
++            <Label htmlFor={`${fieldId}-titulo`}>Título del Formulario</Label>
++            <Input id={`${fieldId}-titulo`} defaultValue={form?.titulo} placeholder="Ej. Consulta Sectorial 2026" />
+           </div>
+           <div className="space-y-2">
+-            <Label>Descripción</Label>
+-            <Input defaultValue={form?.descripcion} placeholder="Breve descripción..." />
++            <Label htmlFor={`${fieldId}-descripcion`}>Descripción</Label>
++            <Input id={`${fieldId}-descripcion`} defaultValue={form?.descripcion} placeholder="Breve descripción..." />
+           </div>
+         </section>
+ 
+         <section className="space-y-4">
+-          <div className="flex justify-between items-center">
++          <div className="flex flex-wrap gap-3 justify-between items-center">
+             <SectionLabel>Preguntas y Campos</SectionLabel>
+             <Button size="sm" variant="outline" onClick={addPregunta}>Añadir Pregunta</Button>
+           </div>
+@@ -64,15 +65,15 @@
+           <div className="space-y-4">
+             {preguntas.map((p, index) => (
+               <div key={p.id} className="p-4 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] space-y-4">
+-                <div className="flex gap-4">
+-                  <div className="flex-1 space-y-2">
+-                    <Label>Enunciado ({index + 1})</Label>
+-                    <Input defaultValue={p.texto} placeholder="Pregunta..." />
++                <div className="flex flex-col gap-4 sm:flex-row">
++                  <div className="min-w-0 flex-1 space-y-2">
++                    <Label htmlFor={`${fieldId}-${p.id}-texto`}>Enunciado ({index + 1})</Label>
++                    <Input id={`${fieldId}-${p.id}-texto`} defaultValue={p.texto} placeholder="Pregunta..." />
+                   </div>
+-                  <div className="w-1/3 space-y-2">
+-                    <Label>Tipo</Label>
++                  <div className="min-w-0 space-y-2 sm:w-1/3">
++                    <Label htmlFor={`${fieldId}-${p.id}-tipo`}>Tipo ({index + 1})</Label>
+                     <Select defaultValue="texto_corto">
+-                      <SelectTrigger>
++                      <SelectTrigger id={`${fieldId}-${p.id}-tipo`} className="w-full min-w-0">
+                         <SelectValue placeholder="Tipo de pregunta" />
+                       </SelectTrigger>
+                       <SelectContent>
+@@ -85,14 +86,14 @@
+                   </div>
+                 </div>
+                 
+-                <div className="flex gap-6 items-center">
++                <div className="flex flex-wrap gap-6 items-center">
+                   <div className="flex items-center gap-2">
+-                    <Checkbox id={`req_${p.id}`} defaultChecked={p.obligatoria} />
+-                    <Label htmlFor={`req_${p.id}`} className="font-normal text-xs text-[var(--text-secondary)]">Requerida</Label>
++                    <Checkbox id={`${fieldId}-req-${p.id}`} defaultChecked={p.obligatoria} />
++                    <Label htmlFor={`${fieldId}-req-${p.id}`} className="font-normal text-xs text-[var(--text-secondary)]">Requerida</Label>
+                   </div>
+                   <div className="flex items-center gap-2">
+-                    <Checkbox id={`enf_${p.id}`} defaultChecked={p.enfoqueDiferencial} />
+-                    <Label htmlFor={`enf_${p.id}`} className="font-normal text-xs text-[var(--text-secondary)]">Aplica Enfoque Diferencial</Label>
++                    <Checkbox id={`${fieldId}-enf-${p.id}`} defaultChecked={p.enfoqueDiferencial} />
++                    <Label htmlFor={`${fieldId}-enf-${p.id}`} className="font-normal text-xs text-[var(--text-secondary)]">Aplica Enfoque Diferencial</Label>
+                   </div>
+                 </div>
+               </div>
+--- antes/src/features/formularios/panels/formularios-panel.tsx
++++ despues/src/features/formularios/panels/formularios-panel.tsx
+@@ -21,7 +21,7 @@
+       onCloseToKey={closeTop}
+     >
+       <div className="p-6 space-y-6">
+-        <div className="flex justify-between items-center">
++        <div className="flex flex-wrap gap-3 justify-between items-center">
+           <SectionLabel>Formularios Disponibles</SectionLabel>
+           <Button size="sm" onClick={() => openPanel("formulario-editor", {})}>
+             <Plus className="mr-2 size-4" />
+@@ -34,10 +34,10 @@
+         ) : (
+           <div className="space-y-4">
+             {formularios?.map(form => (
+-              <div key={form.id} className="flex justify-between items-center p-4 rounded-xl border border-[var(--border)] bg-[var(--surface-1)]">
++              <div key={form.id} className="flex flex-wrap gap-3 justify-between items-center p-4 rounded-xl border border-[var(--border)] bg-[var(--surface-1)]">
+                 <div>
+                   <h4 className="font-medium text-sm text-[var(--text-primary)]">{form.titulo}</h4>
+-                  <div className="flex gap-3 text-xs text-[var(--text-secondary)] mt-1">
++                  <div className="flex flex-wrap gap-3 text-xs text-[var(--text-secondary)] mt-1">
+                     <span className="uppercase text-[10px] tracking-wider px-1.5 py-0.5 rounded-md bg-[var(--surface-2)]">
+                       {form.estado}
+                     </span>
+@@ -45,12 +45,12 @@
+                   </div>
+                 </div>
+                 <div className="flex gap-2">
+-                  <Button variant="outline" size="sm" onClick={() => openPanel("formulario-editor", { formularioId: form.id })}>
+-                    <Edit2 className="size-3.5" />
++                  <Button variant="outline" size="sm" aria-label={`Editar formulario: ${form.titulo}`} onClick={() => openPanel("formulario-editor", { formularioId: form.id })}>
++                    <Edit2 aria-hidden="true" className="size-3.5" />
+                   </Button>
+                   {form.estado !== "borrador" && (
+-                    <Button variant="outline" size="sm" onClick={() => openPanel("formulario-analitica", { formularioId: form.id })}>
+-                      <BarChart2 className="size-3.5" />
++                    <Button variant="outline" size="sm" aria-label={`Ver estadísticas del formulario: ${form.titulo}`} onClick={() => openPanel("formulario-analitica", { formularioId: form.id })}>
++                      <BarChart2 aria-hidden="true" className="size-3.5" />
+                     </Button>
+                   )}
+                 </div>
+--- antes/src/features/participacion/panels/escenario-editor-panel.tsx
++++ despues/src/features/participacion/panels/escenario-editor-panel.tsx
+@@ -1,5 +1,6 @@
+ "use client";
+ 
++import { useId } from "react";
+ import { PanelShell } from "@/core/panels/panel-shell";
+ import { usePanels } from "@/core/panels/panel-store";
+ import { SectionLabel } from "@/shared/components/participation-ui";
+@@ -10,6 +11,7 @@
+ 
+ export function EscenarioEditorPanel({ entryKey }: { entryKey: string }) {
+   const { closeTop } = usePanels();
++  const fieldId = useId();
+ 
+   return (
+     <PanelShell
+@@ -20,7 +22,7 @@
+       onClose={closeTop}
+       onCloseToKey={closeTop}
+       footer={
+-        <div className="flex justify-end gap-2 w-full">
++        <div className="flex flex-wrap justify-end gap-2 w-full">
+           <Button variant="outline" onClick={closeTop}>Cancelar</Button>
+           <Button>Guardar Escenario</Button>
+         </div>
+@@ -30,14 +32,14 @@
+         <section className="space-y-4">
+           <SectionLabel>Datos Generales</SectionLabel>
+           <div className="space-y-2">
+-            <Label>Título del Escenario</Label>
+-            <Input placeholder="Ej. Foro Sectorial de Movilidad Sostenible" />
++            <Label htmlFor={`${fieldId}-titulo`}>Título del Escenario</Label>
++            <Input id={`${fieldId}-titulo`} placeholder="Ej. Foro Sectorial de Movilidad Sostenible" />
+           </div>
+-          <div className="grid grid-cols-2 gap-4">
++          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+             <div className="space-y-2">
+-              <Label>Tipo de Escenario</Label>
++              <Label htmlFor={`${fieldId}-tipo`}>Tipo de Escenario</Label>
+               <Select defaultValue="foro_sectorial">
+-                <SelectTrigger>
++                <SelectTrigger id={`${fieldId}-tipo`} className="w-full min-w-0">
+                   <SelectValue placeholder="Selecciona" />
+                 </SelectTrigger>
+                 <SelectContent>
+@@ -49,43 +51,43 @@
+               </Select>
+             </div>
+             <div className="space-y-2">
+-              <Label>Fecha</Label>
+-              <Input type="date" />
++              <Label htmlFor={`${fieldId}-fecha`}>Fecha</Label>
++              <Input id={`${fieldId}-fecha`} type="date" />
+             </div>
+           </div>
+           <div className="space-y-2">
+-            <Label>Entidad Convocante</Label>
+-            <Input placeholder="Ej. Secretaría de Planeación" />
++            <Label htmlFor={`${fieldId}-entidad`}>Entidad Convocante</Label>
++            <Input id={`${fieldId}-entidad`} placeholder="Ej. Secretaría de Planeación" />
+           </div>
+         </section>
+ 
+         <section className="space-y-4">
+           <SectionLabel>Desglose de Asistencia (Estimado / Planillas)</SectionLabel>
+-          <div className="grid grid-cols-3 gap-4 p-4 rounded-xl border border-[var(--border)] bg-[var(--surface-1)]">
++          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 p-4 rounded-xl border border-[var(--border)] bg-[var(--surface-1)]">
+             <div className="space-y-2">
+-              <Label>Hombres</Label>
+-              <Input type="number" min="0" defaultValue="0" />
++              <Label htmlFor={`${fieldId}-hombres`}>Hombres</Label>
++              <Input id={`${fieldId}-hombres`} type="number" min="0" defaultValue="0" />
+             </div>
+             <div className="space-y-2">
+-              <Label>Mujeres</Label>
+-              <Input type="number" min="0" defaultValue="0" />
++              <Label htmlFor={`${fieldId}-mujeres`}>Mujeres</Label>
++              <Input id={`${fieldId}-mujeres`} type="number" min="0" defaultValue="0" />
+             </div>
+             <div className="space-y-2">
+-              <Label>Otros</Label>
+-              <Input type="number" min="0" defaultValue="0" />
++              <Label htmlFor={`${fieldId}-otros`}>Otros</Label>
++              <Input id={`${fieldId}-otros`} type="number" min="0" defaultValue="0" />
+             </div>
+           </div>
+           
+           <div className="space-y-2">
+-            <Label>Población con Enfoque Diferencial (Total estimado)</Label>
+-            <div className="grid grid-cols-2 gap-4 p-4 rounded-xl border border-[var(--border)] bg-[var(--surface-1)]">
++            <p className="text-sm font-medium">Población con Enfoque Diferencial (Total estimado)</p>
++            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 p-4 rounded-xl border border-[var(--border)] bg-[var(--surface-1)]">
+               <div className="space-y-2">
+-                <Label className="text-xs text-[var(--text-secondary)]">Víctimas (Ley 1448)</Label>
+-                <Input type="number" min="0" defaultValue="0" />
++                <Label htmlFor={`${fieldId}-victimas`} className="text-xs text-[var(--text-secondary)]">Víctimas (Ley 1448)</Label>
++                <Input id={`${fieldId}-victimas`} type="number" min="0" defaultValue="0" />
+               </div>
+               <div className="space-y-2">
+-                <Label className="text-xs text-[var(--text-secondary)]">Discapacidad (Ley 1618)</Label>
+-                <Input type="number" min="0" defaultValue="0" />
++                <Label htmlFor={`${fieldId}-discapacidad`} className="text-xs text-[var(--text-secondary)]">Discapacidad (Ley 1618)</Label>
++                <Input id={`${fieldId}-discapacidad`} type="number" min="0" defaultValue="0" />
+               </div>
+             </div>
+           </div>
+--- antes/src/features/testimonios/panels/testimonios-galeria-panel.tsx
++++ despues/src/features/testimonios/panels/testimonios-galeria-panel.tsx
+@@ -6,6 +6,7 @@
+ import { useSesionStore, esInstitucional } from "@/features/sesion/state/session-store";
+ import { useTestimoniosPublicos, useResumenTestimonios } from "../services/use-testimonios-queries";
+ import { Button } from "@/shared/ui/button";
++import { FormField } from "@/shared/ui/form-field";
+ import { StatusBadge } from "@/shared/ui/status-badge";
+ import {
+   Select,
+@@ -60,7 +61,7 @@
+             </div>
+           </div>
+ 
+-          <div className="flex items-center gap-2">
++          <div className="flex flex-wrap items-center gap-2">
+             <Button
+               size="sm"
+               onClick={() => openPanel("testimonio-editor", {})}
+@@ -84,10 +85,10 @@
+ 
+         {/* Filtros Rápidos */}
+         <div className="flex flex-wrap items-center justify-between gap-3">
+-          <div className="flex items-center gap-2">
+-            <div className="w-56">
+-              <Select value={territorioFiltro} onValueChange={setTerritorioFiltro}>
+-                <SelectTrigger size="sm">
++          <div className="flex w-full min-w-0 flex-wrap items-center gap-2 sm:w-auto">
++            <FormField label="Filtrar testimonios por territorio" className="w-full min-w-0 sm:w-56">
++              {(control) => <Select value={territorioFiltro} onValueChange={setTerritorioFiltro}>
++                <SelectTrigger {...control} size="sm" className="w-full min-w-0">
+                   <SelectValue placeholder="Todos los Territorios" />
+                 </SelectTrigger>
+                 <SelectContent>
+@@ -98,12 +99,13 @@
+                     </SelectItem>
+                   ))}
+                 </SelectContent>
+-              </Select>
+-            </div>
++              </Select>}
++            </FormField>
+ 
+             <Button
+               variant={soloDestacados ? "default" : "outline"}
+               size="sm"
++              aria-pressed={soloDestacados}
+               onClick={() => setSoloDestacados(!soloDestacados)}
+               className="text-xs h-8"
+             >
+@@ -173,8 +175,8 @@
+           : "border-[var(--border)] bg-[var(--surface-1)]"
+       }`}
+     >
+-      <div className="flex items-start justify-between gap-3 mb-3">
+-        <div className="flex items-center gap-3">
++      <div className="flex flex-wrap items-start justify-between gap-3 mb-3">
++        <div className="flex min-w-0 items-center gap-3">
+           <div className="size-10 rounded-full bg-[var(--surface-2)] border border-[var(--border)] flex items-center justify-center text-[var(--text-secondary)] shrink-0">
+             {testimonio.url_foto ? (
+               <img
+@@ -190,10 +192,10 @@
+             )}
+           </div>
+ 
+-          <div>
+-            <h4 className="font-semibold text-sm text-[var(--text-primary)] leading-tight">
++          <div className="min-w-0 break-words">
++            <h3 className="font-semibold text-sm text-[var(--text-primary)] leading-tight">
+               {testimonio.nombre_autor}
+-            </h4>
++            </h3>
+             {testimonio.organizacion_comunitaria && (
+               <p className="text-xs text-[var(--text-secondary)] mt-0.5">
+                 {testimonio.organizacion_comunitaria}
+@@ -202,7 +204,7 @@
+           </div>
+         </div>
+ 
+-        <div className="flex items-center gap-1.5">
++        <div className="flex flex-wrap items-center gap-1.5">
+           {esDestacado && (
+             <StatusBadge tone="ember">
+               Destacado
+@@ -215,9 +217,9 @@
+       </div>
+ 
+       <div className="space-y-2 mb-3">
+-        <h5 className="text-xs font-semibold text-[var(--text-primary)]">
++        <h4 className="text-xs font-semibold text-[var(--text-primary)]">
+           {testimonio.titulo}
+-        </h5>
++        </h4>
+         <blockquote className="text-xs text-[var(--text-secondary)] leading-relaxed italic border-l-2 border-[var(--border)] pl-3">
+           &ldquo;{testimonio.relato}&rdquo;
+         </blockquote>
+--- antes/src/features/geovisor/components/geovisor-mapa.tsx
++++ despues/src/features/geovisor/components/geovisor-mapa.tsx
+@@ -1,6 +1,7 @@
+ "use client";
+ 
+-import { useMemo, useState } from "react";
++import { useState } from "react";
++import { Button } from "@/shared/ui/button";
+ import type { FeatureCollection, TerritorioFeature } from "../models/geovisor";
+ 
+ interface GeovisorMapaProps {
+@@ -47,10 +48,12 @@
+   };
+ 
+   return (
+-    <div className="relative w-full h-full bg-[var(--surface-0)] overflow-hidden">
+-      <svg 
++    <div className="relative flex w-full h-full min-h-0 flex-col bg-[var(--surface-0)]">
++      <svg
++        aria-hidden="true"
++        focusable="false"
+         viewBox={`0 0 ${width} ${height}`} 
+-        className="w-full h-full cursor-crosshair drop-shadow-md"
++        className="w-full min-h-0 flex-1 cursor-crosshair drop-shadow-md"
+         preserveAspectRatio="xMidYMid meet"
+       >
+         {geoJson.features.map(feature => {
+@@ -72,6 +75,24 @@
+           );
+         })}
+       </svg>
++      {onTerritorioClick && (
++        <div role="group" aria-label="Explorar territorios del mapa" className="flex max-h-40 shrink-0 flex-wrap gap-2 overflow-y-auto border-t border-border bg-surface-1 p-3">
++          {geoJson.features.map((feature) => (
++            <Button
++              key={feature.id}
++              variant="outline"
++              size="sm"
++              aria-label={`Explorar territorio: ${feature.properties.nombre} (${feature.properties.tipo})`}
++              className="h-auto min-h-9 max-w-full whitespace-normal text-left"
++              onFocus={() => setHoveredId(feature.id)}
++              onBlur={() => setHoveredId(null)}
++              onClick={() => onTerritorioClick(feature.properties.id)}
++            >
++              {feature.properties.nombre} ({feature.properties.tipo})
++            </Button>
++          ))}
++        </div>
++      )}
+     </div>
+   );
+ }
+--- antes/src/features/mesas/views/mesas-view.tsx
++++ despues/src/features/mesas/views/mesas-view.tsx
+@@ -80,7 +80,7 @@
+             }
+           />
+         ) : (
+-          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
++          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+             {mesasFiltradas.map((mesa, idx) => (
+               <motion.button
+                 type="button"
+@@ -89,10 +89,10 @@
+                 animate={{ opacity: 1, y: 0 }}
+                 transition={{ duration: 0.25, delay: idx * 0.04 }}
+                 onClick={() => openPanel("mesa", { mesaId: mesa.id })}
+-                className="ui-interactive-card group relative flex flex-col justify-between p-6 text-left"
++                className="ui-interactive-card group relative flex min-w-0 flex-col justify-between p-6 text-left"
+               >
+                 <div>
+-                  <div className="flex items-center justify-between gap-3 text-xs text-[var(--text-tertiary)]">
++                  <div className="flex flex-wrap items-center justify-between gap-3 text-xs text-[var(--text-tertiary)]">
+                     <span className="inline-flex items-center gap-1.5 font-medium text-[var(--ember)]">
+                       <Landmark className="size-3.5" strokeWidth={1.5} />
+                       {mesa.entidad}
+@@ -124,8 +124,8 @@
+                   ) : null}
+                 </div>
+ 
+-                <div className="mt-6 flex items-center justify-between border-t border-[var(--border)] pt-4 text-xs">
+-                  <div className="flex items-center gap-4 text-[var(--text-tertiary)]">
++                <div className="mt-6 flex flex-wrap gap-3 items-center justify-between border-t border-[var(--border)] pt-4 text-xs">
++                  <div className="flex flex-wrap items-center gap-4 text-[var(--text-tertiary)]">
+                     <span className="inline-flex items-center gap-1">
+                       <Users className="size-3.5" strokeWidth={1.5} />
+                       {mesa.totalAsistentes} asistentes
+--- antes/src/features/politicas/panels/politica-panel.tsx
++++ despues/src/features/politicas/panels/politica-panel.tsx
+@@ -159,13 +159,13 @@
+                         {fase.orden}
+                       </span>
+                       <div className="min-w-0 flex-1">
+-                        <div className="flex items-center justify-between gap-3">
+-                          <p className="truncate text-sm font-medium text-[var(--text-primary)]">
++                        <div className="flex flex-wrap items-center justify-between gap-3">
++                          <p className="min-w-0 text-sm font-medium text-[var(--text-primary)]">
+                             {fase.nombre}
+                           </p>
+                           <EstadoFaseChip estado={fase.estado} />
+                         </div>
+-                        <div className="mt-1.5 flex items-center gap-3">
++                        <div className="mt-1.5 flex flex-wrap items-center gap-3">
+                           <FaseTipoTag tipo={fase.tipo} />
+                           <span className="text-xs text-[var(--text-tertiary)] tabular">
+                             {fase.lineas.length > 0
+--- antes/src/features/sesion/panels/sesion-panel.tsx
++++ despues/src/features/sesion/panels/sesion-panel.tsx
+@@ -88,10 +88,12 @@
+           }}>Continuar como anónimo</Button>
+ 
+           {/* Botón de Google OAuth para cuenta institucional */}
+-          <Button variant="outline" disabled={ocupado} onClick={async () => {
++          <Button variant="outline" className="h-auto min-h-11 whitespace-normal" disabled={ocupado} onClick={async () => {
+             setOcupado(true);
+             try {
+-              const resp = await identidadApi.loginGoogle("fake-google-token");
++              const resp = await identidadApi.loginGoogle(
++                "test-google-token:alcaldia@cartagena.gov.co:Alcalde Mayor Dumek:sub_dumek_123"
++              );
+               useSesionStore.getState().iniciarSesion(resp);
+               toast.success("Sesión institucional iniciada");
+               closeTop();
+@@ -101,11 +103,11 @@
+               setOcupado(false);
+             }
+           }}>
+-            <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
+-              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+-              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+-              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+-              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
++            <svg aria-hidden="true" className="mr-2 h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
++              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
++              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
++              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
++              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+             </svg>
+             Acceso Institucional (@cartagena.gov.co)
+           </Button>
+--- antes/src/app/_stories/platform.stories.tsx
++++ despues/src/app/_stories/platform.stories.tsx
+@@ -205,3 +205,101 @@
+     ).toBeVisible();
+   },
+ };
++
++export const EscenarioAccesible: Story = {
++  beforeEach: () => usePanelStore.getState().openPanel("escenario-editor", {}),
++  play: async ({ canvasElement }) => {
++    const panel = within(await within(canvasElement).findByRole("dialog"));
++    for (const label of ["Título del Escenario", "Fecha", "Entidad Convocante", "Hombres", "Mujeres", "Otros", "Víctimas (Ley 1448)", "Discapacidad (Ley 1618)"]) {
++      await expect(panel.getByLabelText(label, { exact: true })).toBeVisible();
++    }
++    await expect(panel.getByRole("combobox", { name: "Tipo de Escenario" })).toBeVisible();
++    await userEvent.type(panel.getByLabelText("Título del Escenario"), "Foro ciudadano");
++    await expect(panel.getByLabelText("Título del Escenario")).toHaveValue("Foro ciudadano");
++  },
++};
++export const EscenarioAccesibleOscuro: Story = { ...EscenarioAccesible, globals: { theme: "dark" } };
++
++export const FormularioAccesible: Story = {
++  beforeEach: () => usePanelStore.getState().openPanel("formulario-editor", {}),
++  play: async ({ canvasElement }) => {
++    const panel = within(await within(canvasElement).findByRole("dialog"));
++    await expect(panel.getByLabelText("Título del Formulario")).toBeVisible();
++    await expect(panel.getByLabelText("Descripción")).toBeVisible();
++    await userEvent.click(panel.getByRole("button", { name: "Añadir Pregunta" }));
++    await userEvent.type(panel.getByLabelText("Enunciado (1)"), "¿Qué propone?");
++    await expect(panel.getByLabelText("Enunciado (1)")).toHaveValue("¿Qué propone?");
++    await expect(panel.getByRole("combobox", { name: "Tipo (1)" })).toBeVisible();
++    await userEvent.click(panel.getByLabelText("Requerida"));
++    await expect(panel.getByLabelText("Requerida")).toBeChecked();
++  },
++};
++export const FormularioAccesibleOscuro: Story = { ...FormularioAccesible, globals: { theme: "dark" } };
++
++export const CatalogoConNombresAccesibles: Story = {
++  beforeEach: () => usePanelStore.getState().openPanel("formularios", {}),
++  play: async ({ canvasElement }) => {
++    const panel = within(await within(canvasElement).findByRole("dialog"));
++    await expect((await panel.findAllByRole("button", { name: /^Editar formulario:/ })).length).toBeGreaterThan(0);
++    await expect(panel.getAllByRole("button", { name: /^Ver estadísticas del formulario:/ }).length).toBeGreaterThan(0);
++  },
++};
++
++export const GaleriaAccesible: Story = {
++  beforeEach: () => {
++    const fetchOriginal = window.fetch;
++    window.fetch = async (entrada, opciones) => {
++      const ruta = new URL(typeof entrada === "string" ? entrada : entrada instanceof Request ? entrada.url : entrada.href, window.location.origin).pathname;
++      if (ruta.startsWith("/api/v1/testimonios")) {
++        return Response.json(ruta.endsWith("/resumen") ? {
++          total_testimonios: 1, aprobados: 1, destacados: 1, pendientes: 0, rechazados: 0,
++          por_territorio: [{ territorio_id: "t1", nombre: "Localidad Histórica y del Caribe Norte", total_testimonios: 1 }],
++        } : [{ id: "test-local", codigo_unico: "TEST-LOCAL", nombre_autor: "Persona de prueba comunitaria",
++          titulo: "Relato de prueba", relato: "Contenido ficticio para comprobar la accesibilidad de la galería.",
++          estado: "DESTACADO", metadatos_enfoque: {}, creado_en: "2026-10-01T00:00:00Z" }]);
++      }
++      return fetchOriginal(entrada, opciones);
++    };
++    usePanelStore.getState().openPanel("testimonios-galeria", {});
++    return () => { window.fetch = fetchOriginal; };
++  },
++  play: async ({ canvasElement }) => {
++    const panel = within(await within(canvasElement).findByRole("dialog"));
++    const territory = panel.getByRole("combobox", { name: "Filtrar testimonios por territorio" });
++    await expect(territory).toBeVisible();
++    await panel.findByText("Persona de prueba comunitaria");
++    await userEvent.click(territory);
++    await userEvent.click(within(canvasElement.ownerDocument.body).getByRole("option", { name: /Localidad Histórica/ }));
++    await expect(territory).toHaveTextContent("Localidad Histórica y del Caribe Norte");
++    const featured = panel.getByRole("button", { name: "Solo Destacados" });
++    await expect(featured).toHaveAttribute("aria-pressed", "false");
++    await userEvent.click(featured);
++    await expect(featured).toHaveAttribute("aria-pressed", "true");
++  },
++};
++export const GaleriaAccesibleOscura: Story = { ...GaleriaAccesible, globals: { theme: "dark" } };
++
++export const TerritoriosConTeclado: Story = {
++  beforeEach: () => useNavigationStore.setState({ vista: "geovisor" }),
++  play: async ({ canvasElement }) => {
++    const canvas = within(canvasElement);
++    const territories = await canvas.findAllByRole("button", { name: /^Explorar territorio:/ });
++    territories[0].focus();
++    await expect(territories[0]).toHaveFocus();
++    await userEvent.keyboard("{Enter}");
++    await expect(await canvas.findByRole("dialog")).toBeVisible();
++    await userEvent.keyboard("{Escape}");
++    await expect(territories[0]).toHaveFocus();
++    await userEvent.keyboard(" ");
++    await expect(await canvas.findByRole("dialog")).toBeVisible();
++  },
++};
++
++export const AporteConEtiquetas: Story = {
++  ...NuevoAporte,
++  play: async ({ canvasElement }) => {
++    const panel = within(await within(canvasElement).findByRole("dialog"));
++    await expect(panel.getByLabelText(/Título/)).toBeVisible();
++    await expect(panel.getByRole("textbox", { name: /Contenido|Desarrolla|Tu aporte/ })).toBeVisible();
++  },
++};

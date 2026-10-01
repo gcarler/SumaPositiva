@@ -1,5 +1,10 @@
 "use client";
 
+import { Button } from "@/shared/ui/button";
+import { Textarea } from "@/shared/ui/textarea";
+import { Input } from "@/shared/ui/input";
+import { FormField } from "@/shared/ui/form-field";
+
 import { useState } from "react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
@@ -16,28 +21,22 @@ import {
   Users,
   X,
 } from "lucide-react";
-import { PanelShell } from "@/components/panels/panel-shell";
-import { usePanels } from "@/stores/panel-store";
-import {
-  useMesa,
-  useMesasStore,
-  type SubMesaInput,
-} from "@/stores/mesas-store";
+import { PanelShell } from "@/core/panels/panel-shell";
+import { usePanels } from "@/core/panels/panel-store";
+import { useMesaQuery, useActualizarAcuerdos, useCrearSubMesa } from "@/features/mesas/services/use-mesas-queries";
+import { type SubMesaInput } from "@/features/mesas/state/mesas-store";
 import {
   estadoDiligenciamiento,
   resumenProblemas,
   resumenSoluciones,
-} from "@/types/mesas";
-import { SectionLabel } from "@/features/politicas/components/ui-bits";
+} from "@/features/mesas/models/mesas";
+import { SectionLabel } from "@/shared/components/participation-ui";
 
 /**
  * Panel de mesa de trabajo — el "acta viva" del área de trabajo.
  * Muestra los datos administrativos, los acuerdos de la plenaria y
  * las submesas; desde cada submesa se abre el papelografo.
  */
-
-const inputCls =
-  "w-full rounded-lg border border-[var(--border)] bg-[var(--surface-1)] px-3.5 py-2.5 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] transition-colors focus:border-[var(--ember)] focus:outline-none";
 
 const TONOS_ESTADO = {
   vacio: "text-[var(--text-tertiary)]",
@@ -53,9 +52,9 @@ export function MesaPanel({
   props: { mesaId: string };
 }) {
   const { openPanel, closeTop } = usePanels();
-  const mesa = useMesa(props.mesaId);
-  const setAcuerdosPlenaria = useMesasStore((s) => s.setAcuerdosPlenaria);
-  const crearSubMesa = useMesasStore((s) => s.crearSubMesa);
+  const { data: mesa, isLoading } = useMesaQuery(props.mesaId);
+  const mutarAcuerdos = useActualizarAcuerdos();
+  const mutarCrearSubMesa = useCrearSubMesa();
 
   /* acuerdos: borrador local, se confirma al salir del campo */
   const [acuerdosBorrador, setAcuerdosBorrador] = useState<string | null>(null);
@@ -84,11 +83,11 @@ export function MesaPanel({
   }
 
   const confirmarAcuerdos = () => {
-    setAcuerdosPlenaria(mesa.id, acuerdosValor);
+    mutarAcuerdos.mutate({ mesaId: mesa.id, acuerdos: acuerdosValor });
     toast.success("Acuerdos de plenaria guardados");
   };
 
-  const guardarSubMesa = () => {
+  const guardarSubMesa = async () => {
     const nombre = nombreSub.trim();
     if (nombre.length < 3) {
       toast.error("Nombra la submesa (mínimo 3 caracteres)");
@@ -102,18 +101,19 @@ export function MesaPanel({
       tema: temaSub.trim(),
       participantes: participantes && participantes > 0 ? participantes : null,
     };
-    const creada = crearSubMesa(mesa.id, input);
-    if (!creada) {
+    
+    try {
+      await mutarCrearSubMesa.mutateAsync({ mesaId: mesa.id, datos: input });
+      toast.success("Submesa creada", {
+        description: "Ábrela para diligenciar su papelografo.",
+      });
+      setNombreSub("");
+      setTemaSub("");
+      setParticipantesSub("");
+      setFormSubAbierto(false);
+    } catch {
       toast.error("No fue posible crear la submesa");
-      return;
     }
-    toast.success("Submesa creada", {
-      description: "Ábrela para diligenciar su papelografo.",
-    });
-    setNombreSub("");
-    setTemaSub("");
-    setParticipantesSub("");
-    setFormSubAbierto(false);
   };
 
   const conSoluciones = mesa.submesas.filter((sm) =>
@@ -131,19 +131,19 @@ export function MesaPanel({
       onCloseToKey={closeTop}
       footer={
         <div className="flex items-center justify-between gap-3">
-          <p className="text-[11px] leading-tight text-[var(--text-tertiary)]">
+          <p className="text-xs leading-relaxed text-[var(--text-tertiary)]">
             {mesa.submesas.length > 0
               ? `${mesa.submesas.length} ${mesa.submesas.length === 1 ? "submesa" : "submesas"} · ${conSoluciones} con árbol completo`
               : "Sin submesas todavía"}
           </p>
-          <button
+          <Button variant="outline" size="sm"
             type="button"
             onClick={() => openPanel("mesa-editor", { mesaId: mesa.id })}
-            className="inline-flex shrink-0 items-center gap-2 rounded-full border border-[var(--border-strong)] px-4 py-2 text-xs font-medium text-[var(--text-secondary)] transition-colors hover:bg-[var(--surface-2)] hover:text-[var(--text-primary)]"
+            className="shrink-0"
           >
             <Pencil className="size-3.5" strokeWidth={1.5} />
             Editar información
-          </button>
+          </Button>
         </div>
       }
     >
@@ -200,7 +200,7 @@ export function MesaPanel({
           >
             Plenaria de apertura — acuerdos
           </SectionLabel>
-          <textarea
+          <Textarea
             value={acuerdosValor}
             onChange={(e) => setAcuerdosBorrador(e.target.value)}
             onBlur={(e) => {
@@ -209,7 +209,7 @@ export function MesaPanel({
             rows={4}
             aria-label="Acuerdos de la plenaria de apertura"
             placeholder="Registra los acuerdos de la plenaria: qué problema se priorizó, cómo se repartieron los temas entre submesas y cuándo será la plenaria de cierre…"
-            className="min-h-[110px] w-full resize-y rounded-lg border border-[var(--border)] bg-[var(--surface-1)] px-4 py-3 text-sm leading-relaxed text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] transition-colors focus:border-[var(--ember)] focus:outline-none"
+            className="min-h-[110px] w-full resize-y rounded-lg border border-[var(--border)] bg-[var(--surface-1)] px-4 py-3 text-sm leading-relaxed text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] transition-colors focus:border-[var(--ember)] "
           />
           <p className="flex items-start gap-2 text-[11px] leading-relaxed text-[var(--text-tertiary)]">
             <ClipboardList className="mt-0.5 size-3.5 shrink-0" strokeWidth={1.5} />
@@ -222,15 +222,15 @@ export function MesaPanel({
         <section className="space-y-3">
           <SectionLabel
             right={
-              <button
+              <Button variant="default" size="default"
                 type="button"
                 onClick={() => setFormSubAbierto((v) => !v)}
                 aria-expanded={formSubAbierto}
-                className="inline-flex items-center gap-1.5 rounded-full bg-[var(--text-primary)] px-3 py-1.5 text-[11px] font-medium text-[var(--text-inverse)] transition-opacity hover:opacity-90"
+
               >
                 <Plus className="size-3.5" strokeWidth={1.5} />
                 Submesa
-              </button>
+              </Button>
             }
           >
             Submesas ({mesa.submesas.length})
@@ -249,67 +249,59 @@ export function MesaPanel({
               >
                 <div className="space-y-3 rounded-lg border border-[var(--border)] bg-[var(--surface-2)] p-4">
                   <div className="grid gap-3 sm:grid-cols-[1.4fr_1.4fr_0.7fr]">
-                    <div className="space-y-1">
-                      <label htmlFor="sub-nombre" className="text-xs font-medium text-[var(--text-secondary)]">
-                        Nombre <span className="text-[var(--danger)]">*</span>
-                      </label>
-                      <input
-                        id="sub-nombre"
-                        value={nombreSub}
-                        onChange={(e) => setNombreSub(e.target.value)}
-                        type="text"
-                        placeholder="Ej.: Entornos escolares seguros"
-                        className={inputCls}
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <label htmlFor="sub-tema" className="text-xs font-medium text-[var(--text-secondary)]">
-                        Tema asignado
-                      </label>
-                      <input
-                        id="sub-tema"
-                        value={temaSub}
-                        onChange={(e) => setTemaSub(e.target.value)}
-                        type="text"
-                        placeholder="Ej.: Rutas escolares y velocidad"
-                        className={inputCls}
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <label
-                        htmlFor="sub-participantes"
-                        className="text-xs font-medium text-[var(--text-secondary)]"
-                      >
-                        Participantes
-                      </label>
-                      <input
-                        id="sub-participantes"
-                        value={participantesSub}
-                        onChange={(e) => setParticipantesSub(e.target.value)}
-                        type="number"
-                        min={0}
-                        placeholder="0"
-                        className={`${inputCls} tabular`}
-                      />
-                    </div>
+                    <FormField id="sub-nombre" label="Nombre" required>
+                      {(field) => (
+                        <Input
+                          {...field}
+                          value={nombreSub}
+                          onChange={(e) => setNombreSub(e.target.value)}
+                          type="text"
+                          placeholder="Ej.: Entornos escolares seguros"
+                        />
+                      )}
+                    </FormField>
+                    <FormField id="sub-tema" label="Tema asignado">
+                      {(field) => (
+                        <Input
+                          {...field}
+                          value={temaSub}
+                          onChange={(e) => setTemaSub(e.target.value)}
+                          type="text"
+                          placeholder="Ej.: Rutas escolares y velocidad"
+                        />
+                      )}
+                    </FormField>
+                    <FormField id="sub-participantes" label="Participantes">
+                      {(field) => (
+                        <Input
+                          {...field}
+                          value={participantesSub}
+                          onChange={(e) => setParticipantesSub(e.target.value)}
+                          type="number"
+                          min={0}
+                          placeholder="0"
+                          className="tabular"
+                        />
+                      )}
+                    </FormField>
                   </div>
                   <div className="flex items-center justify-end gap-2">
-                    <button
+                    <Button variant="outline" size="sm"
                       type="button"
                       onClick={() => setFormSubAbierto(false)}
-                      className="inline-flex items-center gap-1.5 rounded-full border border-[var(--border-strong)] px-3.5 py-1.5 text-[11px] font-medium text-[var(--text-secondary)] transition-colors hover:bg-[var(--surface-3)]"
+
                     >
                       <X className="size-3.5" strokeWidth={1.5} />
                       Cancelar
-                    </button>
-                    <button
+                    </Button>
+                    <Button variant="default" size="default"
                       type="button"
                       onClick={guardarSubMesa}
-                      className="inline-flex items-center gap-1.5 rounded-full bg-[var(--text-primary)] px-3.5 py-1.5 text-[11px] font-medium text-[var(--text-inverse)] transition-opacity hover:opacity-90"
+
                     >
                       <Plus className="size-3.5" strokeWidth={1.5} />
                       Añadir submesa
-                    </button>
+                    </Button>
                   </div>
                 </div>
               </motion.div>
@@ -327,14 +319,14 @@ export function MesaPanel({
                 papelografo. Si la mesa trabaja como un solo grupo, crea una única submesa
                 llamada «Plenaria».
               </p>
-              <button
+              <Button variant="outline" size="sm"
                 type="button"
                 onClick={() => setFormSubAbierto(true)}
-                className="mt-1 inline-flex items-center gap-1.5 rounded-full border border-[var(--border-strong)] px-3.5 py-1.5 text-[11px] font-medium text-[var(--text-secondary)] transition-colors hover:bg-[var(--surface-2)] hover:text-[var(--text-primary)]"
+                className="mt-1"
               >
                 <Plus className="size-3.5" strokeWidth={1.5} />
                 Crear la primera submesa
-              </button>
+              </Button>
             </div>
           ) : (
             <div className="grid gap-3 sm:grid-cols-2">
@@ -343,7 +335,7 @@ export function MesaPanel({
                 const p = resumenProblemas(sm);
                 const s = resumenSoluciones(sm);
                 return (
-                  <button
+                  <Button variant="unstyled" size="unstyled"
                     key={sm.id}
                     type="button"
                     onClick={() =>
@@ -394,7 +386,7 @@ export function MesaPanel({
                     <span className={`label-micro ${TONOS_ESTADO[estado.tono]}`}>
                       {estado.label}
                     </span>
-                  </button>
+                  </Button>
                 );
               })}
             </div>

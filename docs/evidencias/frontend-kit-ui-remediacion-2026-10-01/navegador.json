@@ -1,0 +1,3762 @@
+{
+  "fecha": "2026-10-01T17:03:44.945Z",
+  "entorno": "Vite con componentes reales de src; API totalmente interceptada; sin escrituras externas",
+  "casos": [
+    {
+      "id": "vista-inicio",
+      "tema": "light",
+      "ancho": 320,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "MAIN",
+          "ancho": 320,
+          "contenido": 320,
+          "overflow": "visible"
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "labels": []
+    },
+    {
+      "id": "vista-explorar",
+      "tema": "light",
+      "ancho": 320,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "MAIN",
+          "ancho": 320,
+          "contenido": 320,
+          "overflow": "visible"
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "labels": [
+        {
+          "tipo": "search",
+          "id": "",
+          "label": "",
+          "aria_label": "Buscar políticas",
+          "placeholder": "Buscar por título, resumen o problema…"
+        }
+      ]
+    },
+    {
+      "id": "vista-mesas",
+      "tema": "light",
+      "ancho": 320,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "MAIN",
+          "ancho": 320,
+          "contenido": 320,
+          "overflow": "visible"
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "labels": [
+        {
+          "tipo": "search",
+          "id": "",
+          "label": "",
+          "aria_label": "Buscar mesas de trabajo",
+          "placeholder": "Buscar por nombre, entidad, lugar o facilitador…"
+        }
+      ]
+    },
+    {
+      "id": "vista-geovisor",
+      "tema": "light",
+      "ancho": 320,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "MAIN",
+          "ancho": 320,
+          "contenido": 320,
+          "overflow": "visible"
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "labels": []
+    },
+    {
+      "id": "politica",
+      "tema": "light",
+      "ancho": 320,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Plan de Movilidad Segura 2026–2039",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Plan de Movilidad Segura 2026–2039",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "labels": []
+    },
+    {
+      "id": "fase",
+      "tema": "light",
+      "ancho": 320,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Diagnóstico participativo",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Diagnóstico participativo",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "labels": []
+    },
+    {
+      "id": "linea",
+      "tema": "light",
+      "ancho": 320,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Puntos críticos de accidentalidad",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Puntos críticos de accidentalidad",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "labels": []
+    },
+    {
+      "id": "aporte",
+      "tema": "light",
+      "ancho": 320,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Nuevo aporte",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Nuevo aporte",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "labels": [
+        {
+          "tipo": "radio",
+          "id": "",
+          "label": "",
+          "aria_label": null,
+          "placeholder": null
+        },
+        {
+          "tipo": "radio",
+          "id": "",
+          "label": "",
+          "aria_label": null,
+          "placeholder": null
+        },
+        {
+          "tipo": "radio",
+          "id": "",
+          "label": "",
+          "aria_label": null,
+          "placeholder": null
+        },
+        {
+          "tipo": "text",
+          "id": "aporte-titulo",
+          "label": "Título*",
+          "aria_label": null,
+          "placeholder": "Resume tu aporte en una frase clara"
+        },
+        {
+          "tipo": "textarea",
+          "id": "aporte-contenido",
+          "label": "Tu aporte*",
+          "aria_label": null,
+          "placeholder": "Explica tu idea con detalle: qué problema ataca, cómo se implementaría y qué beneficio traería a la ciudad."
+        }
+      ]
+    },
+    {
+      "id": "sesion",
+      "tema": "light",
+      "ancho": 320,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Iniciar sesión",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Iniciar sesión",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "labels": [
+        {
+          "tipo": "email",
+          "id": "_r_m_",
+          "label": "Correo electrónico*",
+          "aria_label": null,
+          "placeholder": null
+        },
+        {
+          "tipo": "password",
+          "id": "_r_n_",
+          "label": "Contraseña*",
+          "aria_label": null,
+          "placeholder": null
+        }
+      ]
+    },
+    {
+      "id": "usuarios",
+      "tema": "light",
+      "ancho": 320,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Usuarios y permisos",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Usuarios y permisos",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "labels": [
+        {
+          "tipo": "text",
+          "id": "_r_10_",
+          "label": "Buscar por correo",
+          "aria_label": null,
+          "placeholder": null
+        }
+      ]
+    },
+    {
+      "id": "mesa",
+      "tema": "light",
+      "ancho": 320,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Mesa territorial de Movilidad Segura — Comuna 4",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Mesa territorial de Movilidad Segura — Comuna 4",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "labels": [
+        {
+          "tipo": "textarea",
+          "id": "",
+          "label": "",
+          "aria_label": "Acuerdos de la plenaria de apertura",
+          "placeholder": "Registra los acuerdos de la plenaria: qué problema se priorizó, cómo se repartieron los temas entre submesas y cuándo será la plenaria de cierre…"
+        }
+      ]
+    },
+    {
+      "id": "papelografo",
+      "tema": "light",
+      "ancho": 320,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Árbol de problemas",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Árbol de problemas",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "labels": []
+    },
+    {
+      "id": "mesa-editor",
+      "tema": "light",
+      "ancho": 320,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Crear mesa de trabajo",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Crear mesa de trabajo",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "labels": [
+        {
+          "tipo": "text",
+          "id": "mesa-nombre",
+          "label": "Nombre de la mesa*",
+          "aria_label": null,
+          "placeholder": "Ej.: Mesa territorial de Movilidad Segura"
+        },
+        {
+          "tipo": "text",
+          "id": "mesa-entidad",
+          "label": "Entidad que convoca*",
+          "aria_label": null,
+          "placeholder": "Dependencia o secretaría responsable"
+        },
+        {
+          "tipo": "date",
+          "id": "mesa-fecha",
+          "label": "Fecha*",
+          "aria_label": null,
+          "placeholder": ""
+        },
+        {
+          "tipo": "number",
+          "id": "mesa-asistentes",
+          "label": "Total de asistentes*",
+          "aria_label": null,
+          "placeholder": "Ej.: 47"
+        },
+        {
+          "tipo": "text",
+          "id": "mesa-lugar",
+          "label": "Lugar*",
+          "aria_label": null,
+          "placeholder": "Lugar de encuentro"
+        },
+        {
+          "tipo": "text",
+          "id": "mesa-facilitador",
+          "label": "Funcionario facilitador*",
+          "aria_label": null,
+          "placeholder": "Quien guía la dinámica"
+        }
+      ]
+    },
+    {
+      "id": "territorio",
+      "tema": "light",
+      "ancho": 320,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Histórica y del Caribe Norte",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Histórica y del Caribe Norte",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "labels": []
+    },
+    {
+      "id": "formularios",
+      "tema": "light",
+      "ancho": 320,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Catálogo de Formularios",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Catálogo de Formularios",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "labels": []
+    },
+    {
+      "id": "formulario-editor",
+      "tema": "light",
+      "ancho": 320,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Nuevo Formulario",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Nuevo Formulario",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "labels": [
+        {
+          "tipo": "text",
+          "id": "_r_1j_-titulo",
+          "label": "Título del Formulario",
+          "aria_label": null,
+          "placeholder": "Ej. Consulta Sectorial 2026"
+        },
+        {
+          "tipo": "text",
+          "id": "_r_1j_-descripcion",
+          "label": "Descripción",
+          "aria_label": null,
+          "placeholder": "Breve descripción..."
+        }
+      ]
+    },
+    {
+      "id": "formulario-editor-editar",
+      "tema": "light",
+      "ancho": 320,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Editar Formulario",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Editar Formulario",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "labels": [
+        {
+          "tipo": "text",
+          "id": "_r_1m_-titulo",
+          "label": "Título del Formulario",
+          "aria_label": null,
+          "placeholder": "Ej. Consulta Sectorial 2026"
+        },
+        {
+          "tipo": "text",
+          "id": "_r_1m_-descripcion",
+          "label": "Descripción",
+          "aria_label": null,
+          "placeholder": "Breve descripción..."
+        }
+      ]
+    },
+    {
+      "id": "formulario-analitica",
+      "tema": "light",
+      "ancho": 320,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Analítica de Formulario",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Analítica de Formulario",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "labels": []
+    },
+    {
+      "id": "participacion-multicanal",
+      "tema": "light",
+      "ancho": 320,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Tablero de Asistencia y Participación",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Tablero de Asistencia y Participación",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "labels": []
+    },
+    {
+      "id": "escenario-editor",
+      "tema": "light",
+      "ancho": 320,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Registrar Escenario Especial",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Registrar Escenario Especial",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "labels": [
+        {
+          "tipo": "text",
+          "id": "_r_22_-titulo",
+          "label": "Título del Escenario",
+          "aria_label": null,
+          "placeholder": "Ej. Foro Sectorial de Movilidad Sostenible"
+        },
+        {
+          "tipo": "button",
+          "id": "_r_22_-tipo",
+          "label": "Tipo de Escenario",
+          "aria_label": null,
+          "placeholder": null
+        },
+        {
+          "tipo": "date",
+          "id": "_r_22_-fecha",
+          "label": "Fecha",
+          "aria_label": null,
+          "placeholder": null
+        },
+        {
+          "tipo": "text",
+          "id": "_r_22_-entidad",
+          "label": "Entidad Convocante",
+          "aria_label": null,
+          "placeholder": "Ej. Secretaría de Planeación"
+        },
+        {
+          "tipo": "number",
+          "id": "_r_22_-hombres",
+          "label": "Hombres",
+          "aria_label": null,
+          "placeholder": null
+        },
+        {
+          "tipo": "number",
+          "id": "_r_22_-mujeres",
+          "label": "Mujeres",
+          "aria_label": null,
+          "placeholder": null
+        },
+        {
+          "tipo": "number",
+          "id": "_r_22_-otros",
+          "label": "Otros",
+          "aria_label": null,
+          "placeholder": null
+        },
+        {
+          "tipo": "number",
+          "id": "_r_22_-victimas",
+          "label": "Víctimas (Ley 1448)",
+          "aria_label": null,
+          "placeholder": null
+        },
+        {
+          "tipo": "number",
+          "id": "_r_22_-discapacidad",
+          "label": "Discapacidad (Ley 1618)",
+          "aria_label": null,
+          "placeholder": null
+        }
+      ]
+    },
+    {
+      "id": "testimonios-galeria",
+      "tema": "light",
+      "ancho": 320,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Memoria Social y Testimonios",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Memoria Social y Testimonios",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "labels": [
+        {
+          "tipo": "button",
+          "id": "_r_2b_",
+          "label": "Filtrar testimonios por territorio",
+          "aria_label": null,
+          "placeholder": null
+        }
+      ]
+    },
+    {
+      "id": "testimonio-editor",
+      "tema": "light",
+      "ancho": 320,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Compartir Testimonio Comunitario",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Compartir Testimonio Comunitario",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "labels": [
+        {
+          "tipo": "text",
+          "id": "nombre",
+          "label": "Nombre y Apellidos *",
+          "aria_label": null,
+          "placeholder": "Ej. Ana Rosa Gómez"
+        },
+        {
+          "tipo": "text",
+          "id": "organizacion",
+          "label": "Organización Comunitaria, JAC o Colectivo (Opcional)",
+          "aria_label": null,
+          "placeholder": "Ej. Junta de Acción Comunal Sector 19 de Febrero"
+        },
+        {
+          "tipo": "text",
+          "id": "titulo",
+          "label": "Título o Lema del Testimonio *",
+          "aria_label": null,
+          "placeholder": "Ej. La defensa de nuestros manglares y la pesca artesanal"
+        },
+        {
+          "tipo": "textarea",
+          "id": "relato",
+          "label": "Relato Testimonial o Memoria Social *",
+          "aria_label": null,
+          "placeholder": "Narra tu experiencia comunitaria, vivencias del territorio o propuestas prioritarias para la política pública..."
+        },
+        {
+          "tipo": "text",
+          "id": "foto",
+          "label": "URL de Fotografía Comunitaria o de Territorio (Opcional)",
+          "aria_label": null,
+          "placeholder": "https://..."
+        },
+        {
+          "tipo": "button",
+          "id": "etnia",
+          "label": "Pertenencia Étnica",
+          "aria_label": null,
+          "placeholder": null
+        },
+        {
+          "tipo": "checkbox",
+          "id": "",
+          "label": "",
+          "aria_label": null,
+          "placeholder": null
+        }
+      ]
+    },
+    {
+      "id": "testimonios-moderacion",
+      "tema": "light",
+      "ancho": 320,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Curaduría y Moderación de Testimonios",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Curaduría y Moderación de Testimonios",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "labels": []
+    },
+    {
+      "id": "vista-inicio",
+      "tema": "light",
+      "ancho": 1440,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "MAIN",
+          "ancho": 1440,
+          "contenido": 1440,
+          "overflow": "visible"
+        }
+      ],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "labels": []
+    },
+    {
+      "id": "vista-explorar",
+      "tema": "light",
+      "ancho": 1440,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "MAIN",
+          "ancho": 1440,
+          "contenido": 1440,
+          "overflow": "visible"
+        }
+      ],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "labels": [
+        {
+          "tipo": "search",
+          "id": "",
+          "label": "",
+          "aria_label": "Buscar políticas",
+          "placeholder": "Buscar por título, resumen o problema…"
+        }
+      ]
+    },
+    {
+      "id": "vista-mesas",
+      "tema": "light",
+      "ancho": 1440,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "MAIN",
+          "ancho": 1440,
+          "contenido": 1440,
+          "overflow": "visible"
+        }
+      ],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "labels": [
+        {
+          "tipo": "search",
+          "id": "",
+          "label": "",
+          "aria_label": "Buscar mesas de trabajo",
+          "placeholder": "Buscar por nombre, entidad, lugar o facilitador…"
+        }
+      ]
+    },
+    {
+      "id": "vista-geovisor",
+      "tema": "light",
+      "ancho": 1440,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "MAIN",
+          "ancho": 1440,
+          "contenido": 1440,
+          "overflow": "visible"
+        }
+      ],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "labels": []
+    },
+    {
+      "id": "politica",
+      "tema": "light",
+      "ancho": 1440,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Plan de Movilidad Segura 2026–2039",
+          "ancho": 779,
+          "contenido": 779,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Plan de Movilidad Segura 2026–2039",
+          "ancho": 779,
+          "contenido": 779,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "labels": []
+    },
+    {
+      "id": "fase",
+      "tema": "light",
+      "ancho": 1440,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Diagnóstico participativo",
+          "ancho": 719,
+          "contenido": 719,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Diagnóstico participativo",
+          "ancho": 719,
+          "contenido": 719,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "labels": []
+    },
+    {
+      "id": "linea",
+      "tema": "light",
+      "ancho": 1440,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Puntos críticos de accidentalidad",
+          "ancho": 719,
+          "contenido": 719,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Puntos críticos de accidentalidad",
+          "ancho": 719,
+          "contenido": 719,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "labels": []
+    },
+    {
+      "id": "aporte",
+      "tema": "light",
+      "ancho": 1440,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Nuevo aporte",
+          "ancho": 639,
+          "contenido": 639,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Nuevo aporte",
+          "ancho": 639,
+          "contenido": 639,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "labels": [
+        {
+          "tipo": "radio",
+          "id": "",
+          "label": "",
+          "aria_label": null,
+          "placeholder": null
+        },
+        {
+          "tipo": "radio",
+          "id": "",
+          "label": "",
+          "aria_label": null,
+          "placeholder": null
+        },
+        {
+          "tipo": "radio",
+          "id": "",
+          "label": "",
+          "aria_label": null,
+          "placeholder": null
+        },
+        {
+          "tipo": "text",
+          "id": "aporte-titulo",
+          "label": "Título*",
+          "aria_label": null,
+          "placeholder": "Resume tu aporte en una frase clara"
+        },
+        {
+          "tipo": "textarea",
+          "id": "aporte-contenido",
+          "label": "Tu aporte*",
+          "aria_label": null,
+          "placeholder": "Explica tu idea con detalle: qué problema ataca, cómo se implementaría y qué beneficio traería a la ciudad."
+        }
+      ]
+    },
+    {
+      "id": "sesion",
+      "tema": "light",
+      "ancho": 1440,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Iniciar sesión",
+          "ancho": 546,
+          "contenido": 546,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Iniciar sesión",
+          "ancho": 546,
+          "contenido": 546,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "labels": [
+        {
+          "tipo": "email",
+          "id": "_r_m_",
+          "label": "Correo electrónico*",
+          "aria_label": null,
+          "placeholder": null
+        },
+        {
+          "tipo": "password",
+          "id": "_r_n_",
+          "label": "Contraseña*",
+          "aria_label": null,
+          "placeholder": null
+        }
+      ]
+    },
+    {
+      "id": "usuarios",
+      "tema": "light",
+      "ancho": 1440,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Usuarios y permisos",
+          "ancho": 791,
+          "contenido": 791,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Usuarios y permisos",
+          "ancho": 791,
+          "contenido": 791,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "labels": [
+        {
+          "tipo": "text",
+          "id": "_r_12_",
+          "label": "Buscar por correo",
+          "aria_label": null,
+          "placeholder": null
+        }
+      ]
+    },
+    {
+      "id": "mesa",
+      "tema": "light",
+      "ancho": 1440,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Mesa territorial de Movilidad Segura — Comuna 4",
+          "ancho": 819,
+          "contenido": 819,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Mesa territorial de Movilidad Segura — Comuna 4",
+          "ancho": 819,
+          "contenido": 819,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "labels": [
+        {
+          "tipo": "textarea",
+          "id": "",
+          "label": "",
+          "aria_label": "Acuerdos de la plenaria de apertura",
+          "placeholder": "Registra los acuerdos de la plenaria: qué problema se priorizó, cómo se repartieron los temas entre submesas y cuándo será la plenaria de cierre…"
+        }
+      ]
+    },
+    {
+      "id": "papelografo",
+      "tema": "light",
+      "ancho": 1440,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Árbol de problemas",
+          "ancho": 1180,
+          "contenido": 1180,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Árbol de problemas",
+          "ancho": 1180,
+          "contenido": 1180,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "labels": []
+    },
+    {
+      "id": "mesa-editor",
+      "tema": "light",
+      "ancho": 1440,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Crear mesa de trabajo",
+          "ancho": 604,
+          "contenido": 604,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Crear mesa de trabajo",
+          "ancho": 604,
+          "contenido": 604,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "labels": [
+        {
+          "tipo": "text",
+          "id": "mesa-nombre",
+          "label": "Nombre de la mesa*",
+          "aria_label": null,
+          "placeholder": "Ej.: Mesa territorial de Movilidad Segura"
+        },
+        {
+          "tipo": "text",
+          "id": "mesa-entidad",
+          "label": "Entidad que convoca*",
+          "aria_label": null,
+          "placeholder": "Dependencia o secretaría responsable"
+        },
+        {
+          "tipo": "date",
+          "id": "mesa-fecha",
+          "label": "Fecha*",
+          "aria_label": null,
+          "placeholder": ""
+        },
+        {
+          "tipo": "number",
+          "id": "mesa-asistentes",
+          "label": "Total de asistentes*",
+          "aria_label": null,
+          "placeholder": "Ej.: 47"
+        },
+        {
+          "tipo": "text",
+          "id": "mesa-lugar",
+          "label": "Lugar*",
+          "aria_label": null,
+          "placeholder": "Lugar de encuentro"
+        },
+        {
+          "tipo": "text",
+          "id": "mesa-facilitador",
+          "label": "Funcionario facilitador*",
+          "aria_label": null,
+          "placeholder": "Quien guía la dinámica"
+        }
+      ]
+    },
+    {
+      "id": "territorio",
+      "tema": "light",
+      "ancho": 1440,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Histórica y del Caribe Norte",
+          "ancho": 503,
+          "contenido": 503,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Histórica y del Caribe Norte",
+          "ancho": 503,
+          "contenido": 503,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "labels": []
+    },
+    {
+      "id": "formularios",
+      "tema": "light",
+      "ancho": 1440,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Catálogo de Formularios",
+          "ancho": 819,
+          "contenido": 819,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Catálogo de Formularios",
+          "ancho": 819,
+          "contenido": 819,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "labels": []
+    },
+    {
+      "id": "formulario-editor",
+      "tema": "light",
+      "ancho": 1440,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Nuevo Formulario",
+          "ancho": 779,
+          "contenido": 779,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Nuevo Formulario",
+          "ancho": 779,
+          "contenido": 779,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "labels": [
+        {
+          "tipo": "text",
+          "id": "_r_1l_-titulo",
+          "label": "Título del Formulario",
+          "aria_label": null,
+          "placeholder": "Ej. Consulta Sectorial 2026"
+        },
+        {
+          "tipo": "text",
+          "id": "_r_1l_-descripcion",
+          "label": "Descripción",
+          "aria_label": null,
+          "placeholder": "Breve descripción..."
+        }
+      ]
+    },
+    {
+      "id": "formulario-editor-editar",
+      "tema": "light",
+      "ancho": 1440,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Editar Formulario",
+          "ancho": 779,
+          "contenido": 779,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Editar Formulario",
+          "ancho": 779,
+          "contenido": 779,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "labels": [
+        {
+          "tipo": "text",
+          "id": "_r_1o_-titulo",
+          "label": "Título del Formulario",
+          "aria_label": null,
+          "placeholder": "Ej. Consulta Sectorial 2026"
+        },
+        {
+          "tipo": "text",
+          "id": "_r_1o_-descripcion",
+          "label": "Descripción",
+          "aria_label": null,
+          "placeholder": "Breve descripción..."
+        }
+      ]
+    },
+    {
+      "id": "formulario-analitica",
+      "tema": "light",
+      "ancho": 1440,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Analítica de Formulario",
+          "ancho": 719,
+          "contenido": 719,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Analítica de Formulario",
+          "ancho": 719,
+          "contenido": 719,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "labels": []
+    },
+    {
+      "id": "participacion-multicanal",
+      "tema": "light",
+      "ancho": 1440,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Tablero de Asistencia y Participación",
+          "ancho": 879,
+          "contenido": 879,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Tablero de Asistencia y Participación",
+          "ancho": 879,
+          "contenido": 879,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "labels": []
+    },
+    {
+      "id": "escenario-editor",
+      "tema": "light",
+      "ancho": 1440,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Registrar Escenario Especial",
+          "ancho": 639,
+          "contenido": 639,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Registrar Escenario Especial",
+          "ancho": 639,
+          "contenido": 639,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "labels": [
+        {
+          "tipo": "text",
+          "id": "_r_24_-titulo",
+          "label": "Título del Escenario",
+          "aria_label": null,
+          "placeholder": "Ej. Foro Sectorial de Movilidad Sostenible"
+        },
+        {
+          "tipo": "button",
+          "id": "_r_24_-tipo",
+          "label": "Tipo de Escenario",
+          "aria_label": null,
+          "placeholder": null
+        },
+        {
+          "tipo": "date",
+          "id": "_r_24_-fecha",
+          "label": "Fecha",
+          "aria_label": null,
+          "placeholder": null
+        },
+        {
+          "tipo": "text",
+          "id": "_r_24_-entidad",
+          "label": "Entidad Convocante",
+          "aria_label": null,
+          "placeholder": "Ej. Secretaría de Planeación"
+        },
+        {
+          "tipo": "number",
+          "id": "_r_24_-hombres",
+          "label": "Hombres",
+          "aria_label": null,
+          "placeholder": null
+        },
+        {
+          "tipo": "number",
+          "id": "_r_24_-mujeres",
+          "label": "Mujeres",
+          "aria_label": null,
+          "placeholder": null
+        },
+        {
+          "tipo": "number",
+          "id": "_r_24_-otros",
+          "label": "Otros",
+          "aria_label": null,
+          "placeholder": null
+        },
+        {
+          "tipo": "number",
+          "id": "_r_24_-victimas",
+          "label": "Víctimas (Ley 1448)",
+          "aria_label": null,
+          "placeholder": null
+        },
+        {
+          "tipo": "number",
+          "id": "_r_24_-discapacidad",
+          "label": "Discapacidad (Ley 1618)",
+          "aria_label": null,
+          "placeholder": null
+        }
+      ]
+    },
+    {
+      "id": "testimonios-galeria",
+      "tema": "light",
+      "ancho": 1440,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Memoria Social y Testimonios",
+          "ancho": 819,
+          "contenido": 819,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Memoria Social y Testimonios",
+          "ancho": 819,
+          "contenido": 819,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "labels": [
+        {
+          "tipo": "button",
+          "id": "_r_2d_",
+          "label": "Filtrar testimonios por territorio",
+          "aria_label": null,
+          "placeholder": null
+        }
+      ]
+    },
+    {
+      "id": "testimonio-editor",
+      "tema": "light",
+      "ancho": 1440,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Compartir Testimonio Comunitario",
+          "ancho": 639,
+          "contenido": 639,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Compartir Testimonio Comunitario",
+          "ancho": 639,
+          "contenido": 639,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "labels": [
+        {
+          "tipo": "text",
+          "id": "nombre",
+          "label": "Nombre y Apellidos *",
+          "aria_label": null,
+          "placeholder": "Ej. Ana Rosa Gómez"
+        },
+        {
+          "tipo": "text",
+          "id": "organizacion",
+          "label": "Organización Comunitaria, JAC o Colectivo (Opcional)",
+          "aria_label": null,
+          "placeholder": "Ej. Junta de Acción Comunal Sector 19 de Febrero"
+        },
+        {
+          "tipo": "text",
+          "id": "titulo",
+          "label": "Título o Lema del Testimonio *",
+          "aria_label": null,
+          "placeholder": "Ej. La defensa de nuestros manglares y la pesca artesanal"
+        },
+        {
+          "tipo": "textarea",
+          "id": "relato",
+          "label": "Relato Testimonial o Memoria Social *",
+          "aria_label": null,
+          "placeholder": "Narra tu experiencia comunitaria, vivencias del territorio o propuestas prioritarias para la política pública..."
+        },
+        {
+          "tipo": "text",
+          "id": "foto",
+          "label": "URL de Fotografía Comunitaria o de Territorio (Opcional)",
+          "aria_label": null,
+          "placeholder": "https://..."
+        },
+        {
+          "tipo": "button",
+          "id": "etnia",
+          "label": "Pertenencia Étnica",
+          "aria_label": null,
+          "placeholder": null
+        },
+        {
+          "tipo": "checkbox",
+          "id": "",
+          "label": "",
+          "aria_label": null,
+          "placeholder": null
+        }
+      ]
+    },
+    {
+      "id": "testimonios-moderacion",
+      "tema": "light",
+      "ancho": 1440,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Curaduría y Moderación de Testimonios",
+          "ancho": 839,
+          "contenido": 839,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Curaduría y Moderación de Testimonios",
+          "ancho": 839,
+          "contenido": 839,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "labels": []
+    },
+    {
+      "id": "vista-inicio",
+      "tema": "dark",
+      "ancho": 320,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "MAIN",
+          "ancho": 320,
+          "contenido": 320,
+          "overflow": "visible"
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "labels": []
+    },
+    {
+      "id": "vista-explorar",
+      "tema": "dark",
+      "ancho": 320,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "MAIN",
+          "ancho": 320,
+          "contenido": 320,
+          "overflow": "visible"
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "labels": [
+        {
+          "tipo": "search",
+          "id": "",
+          "label": "",
+          "aria_label": "Buscar políticas",
+          "placeholder": "Buscar por título, resumen o problema…"
+        }
+      ]
+    },
+    {
+      "id": "vista-mesas",
+      "tema": "dark",
+      "ancho": 320,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "MAIN",
+          "ancho": 320,
+          "contenido": 320,
+          "overflow": "visible"
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "labels": [
+        {
+          "tipo": "search",
+          "id": "",
+          "label": "",
+          "aria_label": "Buscar mesas de trabajo",
+          "placeholder": "Buscar por nombre, entidad, lugar o facilitador…"
+        }
+      ]
+    },
+    {
+      "id": "vista-geovisor",
+      "tema": "dark",
+      "ancho": 320,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "MAIN",
+          "ancho": 320,
+          "contenido": 320,
+          "overflow": "visible"
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "labels": []
+    },
+    {
+      "id": "politica",
+      "tema": "dark",
+      "ancho": 320,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Plan de Movilidad Segura 2026–2039",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Plan de Movilidad Segura 2026–2039",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "labels": []
+    },
+    {
+      "id": "fase",
+      "tema": "dark",
+      "ancho": 320,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Diagnóstico participativo",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Diagnóstico participativo",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "labels": []
+    },
+    {
+      "id": "linea",
+      "tema": "dark",
+      "ancho": 320,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Puntos críticos de accidentalidad",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Puntos críticos de accidentalidad",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "labels": []
+    },
+    {
+      "id": "aporte",
+      "tema": "dark",
+      "ancho": 320,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Nuevo aporte",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Nuevo aporte",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "labels": [
+        {
+          "tipo": "radio",
+          "id": "",
+          "label": "",
+          "aria_label": null,
+          "placeholder": null
+        },
+        {
+          "tipo": "radio",
+          "id": "",
+          "label": "",
+          "aria_label": null,
+          "placeholder": null
+        },
+        {
+          "tipo": "radio",
+          "id": "",
+          "label": "",
+          "aria_label": null,
+          "placeholder": null
+        },
+        {
+          "tipo": "text",
+          "id": "aporte-titulo",
+          "label": "Título*",
+          "aria_label": null,
+          "placeholder": "Resume tu aporte en una frase clara"
+        },
+        {
+          "tipo": "textarea",
+          "id": "aporte-contenido",
+          "label": "Tu aporte*",
+          "aria_label": null,
+          "placeholder": "Explica tu idea con detalle: qué problema ataca, cómo se implementaría y qué beneficio traería a la ciudad."
+        }
+      ]
+    },
+    {
+      "id": "sesion",
+      "tema": "dark",
+      "ancho": 320,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Iniciar sesión",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Iniciar sesión",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "labels": [
+        {
+          "tipo": "email",
+          "id": "_r_m_",
+          "label": "Correo electrónico*",
+          "aria_label": null,
+          "placeholder": null
+        },
+        {
+          "tipo": "password",
+          "id": "_r_n_",
+          "label": "Contraseña*",
+          "aria_label": null,
+          "placeholder": null
+        }
+      ]
+    },
+    {
+      "id": "usuarios",
+      "tema": "dark",
+      "ancho": 320,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Usuarios y permisos",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Usuarios y permisos",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "labels": [
+        {
+          "tipo": "text",
+          "id": "_r_10_",
+          "label": "Buscar por correo",
+          "aria_label": null,
+          "placeholder": null
+        }
+      ]
+    },
+    {
+      "id": "mesa",
+      "tema": "dark",
+      "ancho": 320,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Mesa territorial de Movilidad Segura — Comuna 4",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Mesa territorial de Movilidad Segura — Comuna 4",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "labels": [
+        {
+          "tipo": "textarea",
+          "id": "",
+          "label": "",
+          "aria_label": "Acuerdos de la plenaria de apertura",
+          "placeholder": "Registra los acuerdos de la plenaria: qué problema se priorizó, cómo se repartieron los temas entre submesas y cuándo será la plenaria de cierre…"
+        }
+      ]
+    },
+    {
+      "id": "papelografo",
+      "tema": "dark",
+      "ancho": 320,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Árbol de problemas",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Árbol de problemas",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "labels": []
+    },
+    {
+      "id": "mesa-editor",
+      "tema": "dark",
+      "ancho": 320,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Crear mesa de trabajo",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Crear mesa de trabajo",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "labels": [
+        {
+          "tipo": "text",
+          "id": "mesa-nombre",
+          "label": "Nombre de la mesa*",
+          "aria_label": null,
+          "placeholder": "Ej.: Mesa territorial de Movilidad Segura"
+        },
+        {
+          "tipo": "text",
+          "id": "mesa-entidad",
+          "label": "Entidad que convoca*",
+          "aria_label": null,
+          "placeholder": "Dependencia o secretaría responsable"
+        },
+        {
+          "tipo": "date",
+          "id": "mesa-fecha",
+          "label": "Fecha*",
+          "aria_label": null,
+          "placeholder": ""
+        },
+        {
+          "tipo": "number",
+          "id": "mesa-asistentes",
+          "label": "Total de asistentes*",
+          "aria_label": null,
+          "placeholder": "Ej.: 47"
+        },
+        {
+          "tipo": "text",
+          "id": "mesa-lugar",
+          "label": "Lugar*",
+          "aria_label": null,
+          "placeholder": "Lugar de encuentro"
+        },
+        {
+          "tipo": "text",
+          "id": "mesa-facilitador",
+          "label": "Funcionario facilitador*",
+          "aria_label": null,
+          "placeholder": "Quien guía la dinámica"
+        }
+      ]
+    },
+    {
+      "id": "territorio",
+      "tema": "dark",
+      "ancho": 320,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Histórica y del Caribe Norte",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Histórica y del Caribe Norte",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "labels": []
+    },
+    {
+      "id": "formularios",
+      "tema": "dark",
+      "ancho": 320,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Catálogo de Formularios",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Catálogo de Formularios",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "labels": []
+    },
+    {
+      "id": "formulario-editor",
+      "tema": "dark",
+      "ancho": 320,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Nuevo Formulario",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Nuevo Formulario",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "labels": [
+        {
+          "tipo": "text",
+          "id": "_r_1j_-titulo",
+          "label": "Título del Formulario",
+          "aria_label": null,
+          "placeholder": "Ej. Consulta Sectorial 2026"
+        },
+        {
+          "tipo": "text",
+          "id": "_r_1j_-descripcion",
+          "label": "Descripción",
+          "aria_label": null,
+          "placeholder": "Breve descripción..."
+        }
+      ]
+    },
+    {
+      "id": "formulario-editor-editar",
+      "tema": "dark",
+      "ancho": 320,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Editar Formulario",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Editar Formulario",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "labels": [
+        {
+          "tipo": "text",
+          "id": "_r_1m_-titulo",
+          "label": "Título del Formulario",
+          "aria_label": null,
+          "placeholder": "Ej. Consulta Sectorial 2026"
+        },
+        {
+          "tipo": "text",
+          "id": "_r_1m_-descripcion",
+          "label": "Descripción",
+          "aria_label": null,
+          "placeholder": "Breve descripción..."
+        }
+      ]
+    },
+    {
+      "id": "formulario-analitica",
+      "tema": "dark",
+      "ancho": 320,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Analítica de Formulario",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Analítica de Formulario",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "labels": []
+    },
+    {
+      "id": "participacion-multicanal",
+      "tema": "dark",
+      "ancho": 320,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Tablero de Asistencia y Participación",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Tablero de Asistencia y Participación",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "labels": []
+    },
+    {
+      "id": "escenario-editor",
+      "tema": "dark",
+      "ancho": 320,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Registrar Escenario Especial",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Registrar Escenario Especial",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "labels": [
+        {
+          "tipo": "text",
+          "id": "_r_22_-titulo",
+          "label": "Título del Escenario",
+          "aria_label": null,
+          "placeholder": "Ej. Foro Sectorial de Movilidad Sostenible"
+        },
+        {
+          "tipo": "button",
+          "id": "_r_22_-tipo",
+          "label": "Tipo de Escenario",
+          "aria_label": null,
+          "placeholder": null
+        },
+        {
+          "tipo": "date",
+          "id": "_r_22_-fecha",
+          "label": "Fecha",
+          "aria_label": null,
+          "placeholder": null
+        },
+        {
+          "tipo": "text",
+          "id": "_r_22_-entidad",
+          "label": "Entidad Convocante",
+          "aria_label": null,
+          "placeholder": "Ej. Secretaría de Planeación"
+        },
+        {
+          "tipo": "number",
+          "id": "_r_22_-hombres",
+          "label": "Hombres",
+          "aria_label": null,
+          "placeholder": null
+        },
+        {
+          "tipo": "number",
+          "id": "_r_22_-mujeres",
+          "label": "Mujeres",
+          "aria_label": null,
+          "placeholder": null
+        },
+        {
+          "tipo": "number",
+          "id": "_r_22_-otros",
+          "label": "Otros",
+          "aria_label": null,
+          "placeholder": null
+        },
+        {
+          "tipo": "number",
+          "id": "_r_22_-victimas",
+          "label": "Víctimas (Ley 1448)",
+          "aria_label": null,
+          "placeholder": null
+        },
+        {
+          "tipo": "number",
+          "id": "_r_22_-discapacidad",
+          "label": "Discapacidad (Ley 1618)",
+          "aria_label": null,
+          "placeholder": null
+        }
+      ]
+    },
+    {
+      "id": "testimonios-galeria",
+      "tema": "dark",
+      "ancho": 320,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Memoria Social y Testimonios",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Memoria Social y Testimonios",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "labels": [
+        {
+          "tipo": "button",
+          "id": "_r_2b_",
+          "label": "Filtrar testimonios por territorio",
+          "aria_label": null,
+          "placeholder": null
+        }
+      ]
+    },
+    {
+      "id": "testimonio-editor",
+      "tema": "dark",
+      "ancho": 320,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Compartir Testimonio Comunitario",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Compartir Testimonio Comunitario",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "labels": [
+        {
+          "tipo": "text",
+          "id": "nombre",
+          "label": "Nombre y Apellidos *",
+          "aria_label": null,
+          "placeholder": "Ej. Ana Rosa Gómez"
+        },
+        {
+          "tipo": "text",
+          "id": "organizacion",
+          "label": "Organización Comunitaria, JAC o Colectivo (Opcional)",
+          "aria_label": null,
+          "placeholder": "Ej. Junta de Acción Comunal Sector 19 de Febrero"
+        },
+        {
+          "tipo": "text",
+          "id": "titulo",
+          "label": "Título o Lema del Testimonio *",
+          "aria_label": null,
+          "placeholder": "Ej. La defensa de nuestros manglares y la pesca artesanal"
+        },
+        {
+          "tipo": "textarea",
+          "id": "relato",
+          "label": "Relato Testimonial o Memoria Social *",
+          "aria_label": null,
+          "placeholder": "Narra tu experiencia comunitaria, vivencias del territorio o propuestas prioritarias para la política pública..."
+        },
+        {
+          "tipo": "text",
+          "id": "foto",
+          "label": "URL de Fotografía Comunitaria o de Territorio (Opcional)",
+          "aria_label": null,
+          "placeholder": "https://..."
+        },
+        {
+          "tipo": "button",
+          "id": "etnia",
+          "label": "Pertenencia Étnica",
+          "aria_label": null,
+          "placeholder": null
+        },
+        {
+          "tipo": "checkbox",
+          "id": "",
+          "label": "",
+          "aria_label": null,
+          "placeholder": null
+        }
+      ]
+    },
+    {
+      "id": "testimonios-moderacion",
+      "tema": "dark",
+      "ancho": 320,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Curaduría y Moderación de Testimonios",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Curaduría y Moderación de Testimonios",
+          "ancho": 319,
+          "contenido": 319,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 320,
+      "ancho_ventana": 320,
+      "labels": []
+    },
+    {
+      "id": "vista-inicio",
+      "tema": "dark",
+      "ancho": 1440,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "MAIN",
+          "ancho": 1440,
+          "contenido": 1440,
+          "overflow": "visible"
+        }
+      ],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "labels": []
+    },
+    {
+      "id": "vista-explorar",
+      "tema": "dark",
+      "ancho": 1440,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "MAIN",
+          "ancho": 1440,
+          "contenido": 1440,
+          "overflow": "visible"
+        }
+      ],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "labels": [
+        {
+          "tipo": "search",
+          "id": "",
+          "label": "",
+          "aria_label": "Buscar políticas",
+          "placeholder": "Buscar por título, resumen o problema…"
+        }
+      ]
+    },
+    {
+      "id": "vista-mesas",
+      "tema": "dark",
+      "ancho": 1440,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "MAIN",
+          "ancho": 1440,
+          "contenido": 1440,
+          "overflow": "visible"
+        }
+      ],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "labels": [
+        {
+          "tipo": "search",
+          "id": "",
+          "label": "",
+          "aria_label": "Buscar mesas de trabajo",
+          "placeholder": "Buscar por nombre, entidad, lugar o facilitador…"
+        }
+      ]
+    },
+    {
+      "id": "vista-geovisor",
+      "tema": "dark",
+      "ancho": 1440,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "MAIN",
+          "ancho": 1440,
+          "contenido": 1440,
+          "overflow": "visible"
+        }
+      ],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "labels": []
+    },
+    {
+      "id": "politica",
+      "tema": "dark",
+      "ancho": 1440,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Plan de Movilidad Segura 2026–2039",
+          "ancho": 779,
+          "contenido": 779,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Plan de Movilidad Segura 2026–2039",
+          "ancho": 779,
+          "contenido": 779,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "labels": []
+    },
+    {
+      "id": "fase",
+      "tema": "dark",
+      "ancho": 1440,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Diagnóstico participativo",
+          "ancho": 719,
+          "contenido": 719,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Diagnóstico participativo",
+          "ancho": 719,
+          "contenido": 719,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "labels": []
+    },
+    {
+      "id": "linea",
+      "tema": "dark",
+      "ancho": 1440,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Puntos críticos de accidentalidad",
+          "ancho": 719,
+          "contenido": 719,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Puntos críticos de accidentalidad",
+          "ancho": 719,
+          "contenido": 719,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "labels": []
+    },
+    {
+      "id": "aporte",
+      "tema": "dark",
+      "ancho": 1440,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Nuevo aporte",
+          "ancho": 639,
+          "contenido": 639,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Nuevo aporte",
+          "ancho": 639,
+          "contenido": 639,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "labels": [
+        {
+          "tipo": "radio",
+          "id": "",
+          "label": "",
+          "aria_label": null,
+          "placeholder": null
+        },
+        {
+          "tipo": "radio",
+          "id": "",
+          "label": "",
+          "aria_label": null,
+          "placeholder": null
+        },
+        {
+          "tipo": "radio",
+          "id": "",
+          "label": "",
+          "aria_label": null,
+          "placeholder": null
+        },
+        {
+          "tipo": "text",
+          "id": "aporte-titulo",
+          "label": "Título*",
+          "aria_label": null,
+          "placeholder": "Resume tu aporte en una frase clara"
+        },
+        {
+          "tipo": "textarea",
+          "id": "aporte-contenido",
+          "label": "Tu aporte*",
+          "aria_label": null,
+          "placeholder": "Explica tu idea con detalle: qué problema ataca, cómo se implementaría y qué beneficio traería a la ciudad."
+        }
+      ]
+    },
+    {
+      "id": "sesion",
+      "tema": "dark",
+      "ancho": 1440,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Iniciar sesión",
+          "ancho": 546,
+          "contenido": 546,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Iniciar sesión",
+          "ancho": 546,
+          "contenido": 546,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "labels": [
+        {
+          "tipo": "email",
+          "id": "_r_m_",
+          "label": "Correo electrónico*",
+          "aria_label": null,
+          "placeholder": null
+        },
+        {
+          "tipo": "password",
+          "id": "_r_n_",
+          "label": "Contraseña*",
+          "aria_label": null,
+          "placeholder": null
+        }
+      ]
+    },
+    {
+      "id": "usuarios",
+      "tema": "dark",
+      "ancho": 1440,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Usuarios y permisos",
+          "ancho": 791,
+          "contenido": 791,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Usuarios y permisos",
+          "ancho": 791,
+          "contenido": 791,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "labels": [
+        {
+          "tipo": "text",
+          "id": "_r_12_",
+          "label": "Buscar por correo",
+          "aria_label": null,
+          "placeholder": null
+        }
+      ]
+    },
+    {
+      "id": "mesa",
+      "tema": "dark",
+      "ancho": 1440,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Mesa territorial de Movilidad Segura — Comuna 4",
+          "ancho": 819,
+          "contenido": 819,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Mesa territorial de Movilidad Segura — Comuna 4",
+          "ancho": 819,
+          "contenido": 819,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "labels": [
+        {
+          "tipo": "textarea",
+          "id": "",
+          "label": "",
+          "aria_label": "Acuerdos de la plenaria de apertura",
+          "placeholder": "Registra los acuerdos de la plenaria: qué problema se priorizó, cómo se repartieron los temas entre submesas y cuándo será la plenaria de cierre…"
+        }
+      ]
+    },
+    {
+      "id": "papelografo",
+      "tema": "dark",
+      "ancho": 1440,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Árbol de problemas",
+          "ancho": 1180,
+          "contenido": 1180,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Árbol de problemas",
+          "ancho": 1180,
+          "contenido": 1180,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "labels": []
+    },
+    {
+      "id": "mesa-editor",
+      "tema": "dark",
+      "ancho": 1440,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Crear mesa de trabajo",
+          "ancho": 604,
+          "contenido": 604,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Crear mesa de trabajo",
+          "ancho": 604,
+          "contenido": 604,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "labels": [
+        {
+          "tipo": "text",
+          "id": "mesa-nombre",
+          "label": "Nombre de la mesa*",
+          "aria_label": null,
+          "placeholder": "Ej.: Mesa territorial de Movilidad Segura"
+        },
+        {
+          "tipo": "text",
+          "id": "mesa-entidad",
+          "label": "Entidad que convoca*",
+          "aria_label": null,
+          "placeholder": "Dependencia o secretaría responsable"
+        },
+        {
+          "tipo": "date",
+          "id": "mesa-fecha",
+          "label": "Fecha*",
+          "aria_label": null,
+          "placeholder": ""
+        },
+        {
+          "tipo": "number",
+          "id": "mesa-asistentes",
+          "label": "Total de asistentes*",
+          "aria_label": null,
+          "placeholder": "Ej.: 47"
+        },
+        {
+          "tipo": "text",
+          "id": "mesa-lugar",
+          "label": "Lugar*",
+          "aria_label": null,
+          "placeholder": "Lugar de encuentro"
+        },
+        {
+          "tipo": "text",
+          "id": "mesa-facilitador",
+          "label": "Funcionario facilitador*",
+          "aria_label": null,
+          "placeholder": "Quien guía la dinámica"
+        }
+      ]
+    },
+    {
+      "id": "territorio",
+      "tema": "dark",
+      "ancho": 1440,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Histórica y del Caribe Norte",
+          "ancho": 503,
+          "contenido": 503,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Histórica y del Caribe Norte",
+          "ancho": 503,
+          "contenido": 503,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "labels": []
+    },
+    {
+      "id": "formularios",
+      "tema": "dark",
+      "ancho": 1440,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Catálogo de Formularios",
+          "ancho": 819,
+          "contenido": 819,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Catálogo de Formularios",
+          "ancho": 819,
+          "contenido": 819,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "labels": []
+    },
+    {
+      "id": "formulario-editor",
+      "tema": "dark",
+      "ancho": 1440,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Nuevo Formulario",
+          "ancho": 779,
+          "contenido": 779,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Nuevo Formulario",
+          "ancho": 779,
+          "contenido": 779,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "labels": [
+        {
+          "tipo": "text",
+          "id": "_r_1l_-titulo",
+          "label": "Título del Formulario",
+          "aria_label": null,
+          "placeholder": "Ej. Consulta Sectorial 2026"
+        },
+        {
+          "tipo": "text",
+          "id": "_r_1l_-descripcion",
+          "label": "Descripción",
+          "aria_label": null,
+          "placeholder": "Breve descripción..."
+        }
+      ]
+    },
+    {
+      "id": "formulario-editor-editar",
+      "tema": "dark",
+      "ancho": 1440,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Editar Formulario",
+          "ancho": 779,
+          "contenido": 779,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Editar Formulario",
+          "ancho": 779,
+          "contenido": 779,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "labels": [
+        {
+          "tipo": "text",
+          "id": "_r_1o_-titulo",
+          "label": "Título del Formulario",
+          "aria_label": null,
+          "placeholder": "Ej. Consulta Sectorial 2026"
+        },
+        {
+          "tipo": "text",
+          "id": "_r_1o_-descripcion",
+          "label": "Descripción",
+          "aria_label": null,
+          "placeholder": "Breve descripción..."
+        }
+      ]
+    },
+    {
+      "id": "formulario-analitica",
+      "tema": "dark",
+      "ancho": 1440,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Analítica de Formulario",
+          "ancho": 719,
+          "contenido": 719,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Analítica de Formulario",
+          "ancho": 719,
+          "contenido": 719,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "labels": []
+    },
+    {
+      "id": "participacion-multicanal",
+      "tema": "dark",
+      "ancho": 1440,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Tablero de Asistencia y Participación",
+          "ancho": 879,
+          "contenido": 879,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Tablero de Asistencia y Participación",
+          "ancho": 879,
+          "contenido": 879,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "labels": []
+    },
+    {
+      "id": "escenario-editor",
+      "tema": "dark",
+      "ancho": 1440,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Registrar Escenario Especial",
+          "ancho": 639,
+          "contenido": 639,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Registrar Escenario Especial",
+          "ancho": 639,
+          "contenido": 639,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "labels": [
+        {
+          "tipo": "text",
+          "id": "_r_24_-titulo",
+          "label": "Título del Escenario",
+          "aria_label": null,
+          "placeholder": "Ej. Foro Sectorial de Movilidad Sostenible"
+        },
+        {
+          "tipo": "button",
+          "id": "_r_24_-tipo",
+          "label": "Tipo de Escenario",
+          "aria_label": null,
+          "placeholder": null
+        },
+        {
+          "tipo": "date",
+          "id": "_r_24_-fecha",
+          "label": "Fecha",
+          "aria_label": null,
+          "placeholder": null
+        },
+        {
+          "tipo": "text",
+          "id": "_r_24_-entidad",
+          "label": "Entidad Convocante",
+          "aria_label": null,
+          "placeholder": "Ej. Secretaría de Planeación"
+        },
+        {
+          "tipo": "number",
+          "id": "_r_24_-hombres",
+          "label": "Hombres",
+          "aria_label": null,
+          "placeholder": null
+        },
+        {
+          "tipo": "number",
+          "id": "_r_24_-mujeres",
+          "label": "Mujeres",
+          "aria_label": null,
+          "placeholder": null
+        },
+        {
+          "tipo": "number",
+          "id": "_r_24_-otros",
+          "label": "Otros",
+          "aria_label": null,
+          "placeholder": null
+        },
+        {
+          "tipo": "number",
+          "id": "_r_24_-victimas",
+          "label": "Víctimas (Ley 1448)",
+          "aria_label": null,
+          "placeholder": null
+        },
+        {
+          "tipo": "number",
+          "id": "_r_24_-discapacidad",
+          "label": "Discapacidad (Ley 1618)",
+          "aria_label": null,
+          "placeholder": null
+        }
+      ]
+    },
+    {
+      "id": "testimonios-galeria",
+      "tema": "dark",
+      "ancho": 1440,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Memoria Social y Testimonios",
+          "ancho": 819,
+          "contenido": 819,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Memoria Social y Testimonios",
+          "ancho": 819,
+          "contenido": 819,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "labels": [
+        {
+          "tipo": "button",
+          "id": "_r_2d_",
+          "label": "Filtrar testimonios por territorio",
+          "aria_label": null,
+          "placeholder": null
+        }
+      ]
+    },
+    {
+      "id": "testimonio-editor",
+      "tema": "dark",
+      "ancho": 1440,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Compartir Testimonio Comunitario",
+          "ancho": 639,
+          "contenido": 639,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Compartir Testimonio Comunitario",
+          "ancho": 639,
+          "contenido": 639,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "labels": [
+        {
+          "tipo": "text",
+          "id": "nombre",
+          "label": "Nombre y Apellidos *",
+          "aria_label": null,
+          "placeholder": "Ej. Ana Rosa Gómez"
+        },
+        {
+          "tipo": "text",
+          "id": "organizacion",
+          "label": "Organización Comunitaria, JAC o Colectivo (Opcional)",
+          "aria_label": null,
+          "placeholder": "Ej. Junta de Acción Comunal Sector 19 de Febrero"
+        },
+        {
+          "tipo": "text",
+          "id": "titulo",
+          "label": "Título o Lema del Testimonio *",
+          "aria_label": null,
+          "placeholder": "Ej. La defensa de nuestros manglares y la pesca artesanal"
+        },
+        {
+          "tipo": "textarea",
+          "id": "relato",
+          "label": "Relato Testimonial o Memoria Social *",
+          "aria_label": null,
+          "placeholder": "Narra tu experiencia comunitaria, vivencias del territorio o propuestas prioritarias para la política pública..."
+        },
+        {
+          "tipo": "text",
+          "id": "foto",
+          "label": "URL de Fotografía Comunitaria o de Territorio (Opcional)",
+          "aria_label": null,
+          "placeholder": "https://..."
+        },
+        {
+          "tipo": "button",
+          "id": "etnia",
+          "label": "Pertenencia Étnica",
+          "aria_label": null,
+          "placeholder": null
+        },
+        {
+          "tipo": "checkbox",
+          "id": "",
+          "label": "",
+          "aria_label": null,
+          "placeholder": null
+        }
+      ]
+    },
+    {
+      "id": "testimonios-moderacion",
+      "tema": "dark",
+      "ancho": 1440,
+      "infracciones": [],
+      "incompletos": [
+        {
+          "id": "color-contrast",
+          "nodos": 1
+        }
+      ],
+      "regiones": [
+        {
+          "elemento": "Curaduría y Moderación de Testimonios",
+          "ancho": 839,
+          "contenido": 839,
+          "overflow": "visible"
+        },
+        {
+          "elemento": "Contenido de Curaduría y Moderación de Testimonios",
+          "ancho": 839,
+          "contenido": 839,
+          "overflow": "auto"
+        }
+      ],
+      "ancho_documento": 1440,
+      "ancho_ventana": 1440,
+      "labels": []
+    }
+  ],
+  "interacciones": [
+    {
+      "id": "preguntas-edicion-light-320",
+      "valor": 1,
+      "esperado": "f1 tiene dos preguntas en el fallback; deben cargarse"
+    },
+    {
+      "id": "preguntas-edicion-light-1440",
+      "valor": 1,
+      "esperado": "f1 tiene dos preguntas en el fallback; deben cargarse"
+    },
+    {
+      "id": "preguntas-edicion-dark-320",
+      "valor": 1,
+      "esperado": "f1 tiene dos preguntas en el fallback; deben cargarse"
+    },
+    {
+      "id": "preguntas-edicion-dark-1440",
+      "valor": 1,
+      "esperado": "f1 tiene dos preguntas en el fallback; deben cargarse"
+    },
+    {
+      "id": "sidebar-trigger",
+      "ancho_antes": 280,
+      "ancho_despues": 280
+    },
+    {
+      "id": "sidebar-iconos-formularios",
+      "paneles": 0,
+      "submodulos_visibles": 0
+    },
+    {
+      "id": "sidebar-acordeon",
+      "aria_expanded": null,
+      "aria_controls": null
+    },
+    {
+      "id": "sidebar-resize",
+      "ancho": 450,
+      "separadores_teclado": 0
+    },
+    {
+      "id": "sidebar-oculto-restaurar",
+      "aside_visible": true
+    },
+    {
+      "id": "guardar-formulario",
+      "solicitudes_POST": 0
+    },
+    {
+      "id": "guardar-escenario",
+      "solicitudes_POST": 0
+    },
+    {
+      "id": "host-foco-inicial",
+      "foco": "dialog",
+      "fondo_inert": true
+    },
+    {
+      "id": "host-tab-escape-retorno",
+      "ultimo": "Acceso Institucional (@cartagena.gov.co)",
+      "primero": "Maximizar panel",
+      "retorno": true,
+      "fondo_inert": false
+    },
+    {
+      "id": "sidebar-movil",
+      "acceso_formularios": 0,
+      "panel": "Mi cuenta"
+    }
+  ],
+  "errores_js": []
+}

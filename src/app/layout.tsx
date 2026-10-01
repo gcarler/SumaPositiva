@@ -1,30 +1,25 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { MotionConfig } from "framer-motion";
 import { ThemeProvider } from "next-themes";
-import { Toaster } from "sonner";
+import { Toaster } from "@/shared/ui/sonner";
 import "./globals.css";
-import { PanelHost } from "@/components/panels/panel-host";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import { PanelHost } from "@/app/_components/panel-host";
+import { SesionSync } from "@/app/_composition/sesion-sync";
+import { QueryProvider } from "@/app/_composition/query-provider";
 
 export const metadata: Metadata = {
-  title: "POLIS — Participación Ciudadana en Políticas Públicas",
+  title: "POLIS — Política Pública de Seguridad Humana Integral de Cartagena",
   description:
-    "Explora las políticas públicas en curso, entra fase por fase y línea estratégica por línea estratégica, y deja tus propuestas, anotaciones y preguntas donde se toman las decisiones.",
+    "Plataforma distrital de participación ciudadana para la construcción de la Política Pública de Seguridad Humana Integral de Cartagena de Indias (Decreto Distrital 037 de 2026).",
   keywords: [
+    "seguridad humana integral",
+    "Cartagena de Indias",
     "participación ciudadana",
     "políticas públicas",
     "presupuesto participativo",
     "consulta pública",
     "deliberación",
+    "FONSET",
   ],
 };
 
@@ -43,32 +38,27 @@ export default function RootLayout({
   return (
     <html lang="es" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
+        className="antialiased bg-background text-foreground font-sans"
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          {children}
+        <QueryProvider>
+          <SesionSync />
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <MotionConfig reducedMotion="user">
+            {children}
 
-          {/* Zero-Modals: host global de paneles apilados */}
-          <PanelHost />
+            {/* Zero-Modals: host global de paneles apilados */}
+            <PanelHost />
 
-          {/* Notificaciones */}
-          <Toaster
-            position="bottom-right"
-            toastOptions={{
-              style: {
-                background: "var(--surface-1)",
-                color: "var(--text-primary)",
-                border: "1px solid var(--border)",
-                borderRadius: "12px",
-              },
-            }}
-          />
-        </ThemeProvider>
+            {/* Notificaciones */}
+            <Toaster />
+            </MotionConfig>
+          </ThemeProvider>
+        </QueryProvider>
       </body>
     </html>
   );

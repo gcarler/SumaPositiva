@@ -1,20 +1,16 @@
 "use client";
 
+import { Button } from "@/shared/ui/button";
+
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { ArrowRight, CalendarDays, MapPin, Users, FileText } from "lucide-react";
-import { PanelShell } from "@/components/panels/panel-shell";
-import { usePanels } from "@/stores/panel-store";
-import { usePolitica } from "@/stores/politicas-store";
-import { SECTOR_META, totalAportes, totalLineas } from "@/types/domain";
-import {
-  EstadoFaseChip,
-  EstadoPoliticaChip,
-  FaseTipoTag,
-  HairlineProgress,
-  SectionLabel,
-  SectorTag,
-} from "../components/ui-bits";
+import { PanelShell } from "@/core/panels/panel-shell";
+import { usePanels } from "@/core/panels/panel-store";
+import { usePolitica } from "@/features/politicas/state/politicas-store";
+import { SECTOR_META, totalAportes, totalLineas } from "@/features/politicas/models/politicas";
+import { EstadoFaseChip, EstadoPoliticaChip, FaseTipoTag } from "@/features/politicas/components/politica-ui";
+import { HairlineProgress, SectionLabel } from "@/shared/components/participation-ui";
 
 /**
  * Panel L1 — Detalle de la Política Pública.
@@ -61,16 +57,16 @@ export function PoliticaPanel({ entryKey, props }: { entryKey: string; props: { 
             <p className="text-xs text-[var(--text-tertiary)]">
               Fase activa: <span className="text-[var(--text-secondary)]">{activa.nombre}</span>
             </p>
-            <button
+            <Button variant="default" size="sm"
               type="button"
               onClick={() =>
                 openPanel("fase", { politicaId: politica.id, faseId: activa.id })
               }
-              className="group inline-flex items-center gap-2 rounded-full bg-[var(--text-primary)] px-4 py-2 text-xs font-medium text-[var(--text-inverse)] transition-opacity hover:opacity-90"
+              className="group"
             >
               Participar
               <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" strokeWidth={1.5} />
-            </button>
+            </Button>
           </div>
         ) : undefined
       }
@@ -138,7 +134,7 @@ export function PoliticaPanel({ entryKey, props }: { entryKey: string; props: { 
               const clickable = fase.lineas.length > 0;
               return (
                 <li key={fase.id}>
-                  <button
+                  <Button variant="unstyled" size="unstyled"
                     type="button"
                     disabled={!clickable}
                     onClick={() =>
@@ -163,13 +159,13 @@ export function PoliticaPanel({ entryKey, props }: { entryKey: string; props: { 
                         {fase.orden}
                       </span>
                       <div className="min-w-0 flex-1">
-                        <div className="flex items-center justify-between gap-3">
-                          <p className="truncate text-sm font-medium text-[var(--text-primary)]">
+                        <div className="flex flex-wrap items-center justify-between gap-3">
+                          <p className="min-w-0 text-sm font-medium text-[var(--text-primary)]">
                             {fase.nombre}
                           </p>
                           <EstadoFaseChip estado={fase.estado} />
                         </div>
-                        <div className="mt-1.5 flex items-center gap-3">
+                        <div className="mt-1.5 flex flex-wrap items-center gap-3">
                           <FaseTipoTag tipo={fase.tipo} />
                           <span className="text-xs text-[var(--text-tertiary)] tabular">
                             {fase.lineas.length > 0
@@ -190,7 +186,7 @@ export function PoliticaPanel({ entryKey, props }: { entryKey: string; props: { 
                         <HairlineProgress value={fase.progreso} />
                       </div>
                     )}
-                  </button>
+                  </Button>
                 </li>
               );
             })}

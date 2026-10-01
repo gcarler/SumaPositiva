@@ -1,0 +1,213 @@
+{
+  "contraste": [
+    {
+      "tema": "light",
+      "background": "oklch(1 0 0)",
+      "border": "oklch(0.155 0.005 90 / 0.22)",
+      "border_width": "1px",
+      "background_srgb": [
+        255,
+        255,
+        255
+      ],
+      "border_srgb": [
+        202,
+        202,
+        201
+      ],
+      "ratio": 1.6402492230633277
+    },
+    {
+      "tema": "dark",
+      "background": "oklch(0.178 0.006 270)",
+      "border": "oklch(1 0 0 / 0.2)",
+      "border_width": "1px",
+      "background_srgb": [
+        16,
+        17,
+        20
+      ],
+      "border_srgb": [
+        64,
+        65,
+        67
+      ],
+      "ratio": 1.847651263795207
+    }
+  ],
+  "teclado": [
+    {
+      "id": "mapa-svg",
+      "paths": 0,
+      "paths_click": 2,
+      "alternativas_territorios": 0
+    },
+    {
+      "id": "papelografo-flecha",
+      "foco": "Árbol de problemas",
+      "tabpanel": 0
+    },
+    {
+      "id": "formulario-pregunta-a11y",
+      "violaciones": [
+        {
+          "id": "button-name",
+          "nodos": [
+            [
+              ".data-\\[placeholder\\]\\:text-muted-foreground"
+            ]
+          ]
+        }
+      ]
+    }
+  ],
+  "overflow": [
+    {
+      "tipo": "politica",
+      "elementos": [
+        {
+          "tag": "SPAN",
+          "texto": "Próxima",
+          "white_space": "nowrap",
+          "ancho": 73,
+          "clase": "inline-flex items-center justify-center rounded-full border px-2 py-0.5 text-xs font-medium w-fit whitespace-nowrap shrink-0 [&>svg]:size-3 gap-1 [&>svg]:pointer-events-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive transition-[color,box-shadow] overflow-hidden text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground"
+        }
+      ]
+    },
+    {
+      "tipo": "fase",
+      "elementos": [
+        {
+          "tag": "P",
+          "texto": "Puntos críticos de accidentalidad",
+          "white_space": "nowrap",
+          "ancho": 646,
+          "clase": "text-sm font-medium leading-snug text-[var(--text-primary)]"
+        },
+        {
+          "tag": "P",
+          "texto": "Identificación participativa de los corredores e intersecciones donde se concentra la siniestralidad peatonal y ciclista",
+          "white_space": "nowrap",
+          "ancho": 646,
+          "clase": "mt-1.5 line-clamp-2 text-xs leading-relaxed text-[var(--text-secondary)]"
+        },
+        {
+          "tag": "P",
+          "texto": "3 aportes ciudadanos",
+          "white_space": "nowrap",
+          "ancho": 646,
+          "clase": "mt-2.5 text-xs text-[var(--text-tertiary)] tabular"
+        },
+        {
+          "tag": "P",
+          "texto": "Movilidad de cuidado",
+          "white_space": "nowrap",
+          "ancho": 831,
+          "clase": "text-sm font-medium leading-snug text-[var(--text-primary)]"
+        },
+        {
+          "tag": "P",
+          "texto": "Análisis de los trayectos de cuidado (acompañamientos, compras, salud) que hoy la planeación ignora por centrarse en des",
+          "white_space": "nowrap",
+          "ancho": 831,
+          "clase": "mt-1.5 line-clamp-2 text-xs leading-relaxed text-[var(--text-secondary)]"
+        },
+        {
+          "tag": "P",
+          "texto": "2 aportes ciudadanos",
+          "white_space": "nowrap",
+          "ancho": 831,
+          "clase": "mt-2.5 text-xs text-[var(--text-tertiary)] tabular"
+        }
+      ]
+    },
+    {
+      "tipo": "mesa",
+      "elementos": [
+        {
+          "tag": "BUTTON",
+          "texto": "Entornos escolares segurosRutas escolares, velocidad y señalización167 causas5 efectos4 solucionesÁrbol diligenciado",
+          "white_space": "nowrap",
+          "ancho": 336,
+          "clase": "shrink-0 items-center justify-center whitespace-nowrap font-medium duration-150 disabled:cursor-not-allowed disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-ring group flex flex-col gap-2.5 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-4 text-left transition-all hover:border-[var(--border-strong)] hover:bg-[var(--surface-2)]"
+        },
+        {
+          "tag": "BUTTON",
+          "texto": "Transporte público de calidadParadas, frecuencias y conexiones143 causas1 efectossin solucionesÁrbol diligenciado",
+          "white_space": "nowrap",
+          "ancho": 336,
+          "clase": "shrink-0 items-center justify-center whitespace-nowrap font-medium duration-150 disabled:cursor-not-allowed disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-ring group flex flex-col gap-2.5 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-4 text-left transition-all hover:border-[var(--border-strong)] hover:bg-[var(--surface-2)]"
+        },
+        {
+          "tag": "BUTTON",
+          "texto": "Habitabilidad vialAndenes, peatones y comercio en espacio público170 causas0 efectossin solucionesSin diligenciar",
+          "white_space": "nowrap",
+          "ancho": 336,
+          "clase": "shrink-0 items-center justify-center whitespace-nowrap font-medium duration-150 disabled:cursor-not-allowed disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-ring group flex flex-col gap-2.5 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-4 text-left transition-all hover:border-[var(--border-strong)] hover:bg-[var(--surface-2)]"
+        }
+      ]
+    },
+    {
+      "tipo": "papelografo",
+      "elementos": []
+    }
+  ],
+  "contratos": [
+    {
+      "tipo": "formulario-analitica",
+      "errores": [
+        "Cannot read properties of undefined (reading 'Ley 1448/11')"
+      ],
+      "paneles": 0
+    },
+    {
+      "tipo": "participacion-multicanal",
+      "errores": [
+        "Cannot read properties of undefined (reading 'toLocaleString')"
+      ],
+      "paneles": 0
+    }
+  ],
+  "sidebar": [
+    {
+      "ancho": 320,
+      "tema": "light",
+      "violaciones": [],
+      "documento": 320
+    },
+    {
+      "ancho": 320,
+      "tema": "dark",
+      "violaciones": [],
+      "documento": 320
+    },
+    {
+      "ancho": 768,
+      "tema": "light",
+      "violaciones": [],
+      "documento": 768
+    },
+    {
+      "ancho": 768,
+      "tema": "dark",
+      "violaciones": [],
+      "documento": 768
+    },
+    {
+      "ancho": 1440,
+      "tema": "light",
+      "violaciones": [],
+      "documento": 1440
+    },
+    {
+      "ancho": 1440,
+      "tema": "dark",
+      "violaciones": [],
+      "documento": 1440
+    }
+  ],
+  "errores_js": [
+    "Cannot read properties of undefined (reading 'Ley 1448/11')",
+    "Cannot read properties of undefined (reading 'toLocaleString')"
+  ]
+}
