@@ -10,7 +10,7 @@ import { QueryProvider } from "@/app/_composition/query-provider";
 export const metadata: Metadata = {
   title: "POLIS — Política Pública de Seguridad Humana Integral de Cartagena",
   description:
-    "Plataforma distrital de participación ciudadana para la construcción de la Política Pública de Seguridad Humana Integral de Cartagena de Indias (Decreto Distrital 037 de 2026).",
+    "Plataforma distrital de participación ciudadana para la construcción de la Política Pública de Seguridad Humana Integral de Cartagena de Indias (Decreto Nacional 037 de 2026).",
   keywords: [
     "seguridad humana integral",
     "Cartagena de Indias",

@@ -1,5 +1,5 @@
 # Plan de trabajo de POLIS (Versión 2.0)
-*Alineado con el Banco de Conocimiento, la Constitución Política de 1991, Ley Estatutaria 1757 de 2015, Sentencia C-150 de 2015 y Decreto Distrital 037 de 2026.*
+*Alineado con el Banco de Conocimiento, la Constitución Política de 1991, Ley Estatutaria 1757 de 2015, Sentencia C-150 de 2015 y Decreto Nacional 037 de 2026.*
 
 Este plan de trabajo rige el desarrollo y la auditoría pericial de la plataforma **POLIS** para la *Política Pública de Seguridad Humana Integral del Distrito de Cartagena de Indias*.
 
@@ -224,7 +224,7 @@ una entrega. Esta revisión no los reemite ni acredita su independencia.
 
 ### Validación de la Entrega 2 — 2026-10-01
 - **Modelos y Migraciones Alembic**: `0002_motor_politicas_y_geodatos.py`, `0003_participacion_ciudadana.py`, `0004_sesion_anonima.py` aplicadas en `bd_csh` con claves primarias UUIDv7 RFC 9562 y esquemas Spanish-First.
-- **Semilla Institucional**: 7 Dimensiones de Seguridad Humana (Decreto Distrital 037/26), 3 Fases del ciclo DNP y 15 Territorios distritales con centroides PostGIS EPSG:4326.
+- **Semilla Institucional**: 7 Dimensiones de Seguridad Humana (Decreto Nacional 037/26), 3 Fases del ciclo DNP y 15 Territorios distritales con centroides PostGIS EPSG:4326.
 - **Aportes y Enfoque Diferencial**: Persistencia completa en `participacion_ciudadana.propuestas_ciudadanas` con JSONB (`metadata_enfoque`: Ley 1448/11, Ley 1618/13, AL 01/23).
 - **Sesión Criptográfica Anónima**: Token Bearer JWT con huella irreversible HMAC-SHA256 respetando la Ley 1581/12 de Habeas Data.
 - **Integración Frontend Zero-Modals**: Conexión reactiva con `@tanstack/react-query`, 4 estados (skeletons, error con reintento, vacío, éxito con apoyos) en `PanelShell` / `PanelHost`.

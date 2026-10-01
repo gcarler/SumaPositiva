@@ -11,7 +11,7 @@ export const POLITICAS_MOCK: PoliticaPublica[] = [
     slug: "seguridad-humana-cartagena",
     titulo: "Política Pública de Seguridad Humana Integral de Cartagena 2026–2036",
     resumen:
-      "Construcción participativa de la Política Pública de Seguridad Humana Integral del Distrito de Cartagena de Indias (Decreto Distrital 037 de 2026), articulando las 7 Dimensiones ONU y la metodología DNP con anclaje territorial.",
+      "Construcción participativa de la Política Pública de Seguridad Humana Integral del Distrito de Cartagena de Indias (Decreto Nacional 037 de 2026), articulando las 7 Dimensiones ONU y la metodología DNP con anclaje territorial.",
     descripcion:
       "La Política Pública de Seguridad Humana Integral de Cartagena de Indias (2026–2036) adopta el paradigma multidimensional de la ONU, protegiendo las libertades fundamentales frente al miedo, la necesidad y la indignidad. Integra las 3 localidades urbanas y la zona corregimental e insular (La Boquilla, Pasacaballos, Tierrabomba, Barú, Bayunca) para transformar las causas estructurales de la violencia, la exclusión y la degradación ambiental.",
     problema:
