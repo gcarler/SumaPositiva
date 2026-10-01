@@ -1,3 +1,116 @@
+# Entrega Codex — /plataforma: gestión interna
+
+Fecha: 2026-10-01T21:14:56.940932+00:00.
+Commit de implementación y evidencia: `d03a9efbf8bda2dcb3b71308e872af8d8ec587f9`.
+Autor: implementación EDD; pendiente revisión independiente del EAF.
+
+## Resultado
+
+Creado el área interna `/plataforma` con dashboard, formularios, mesas, usuarios,
+geovisor, contenido y configuración. App ensambla; implementación y permisos
+viven en `features/plataforma`. Se reutilizan el kit UI, los stores existentes,
+el renderer de formularios y el único host de paneles laterales.
+
+- Sidebar fijo en escritorio mediante sticky, desplegable inline en móvil.
+- Header con nombre, rol, Mi cuenta y cerrar sesión.
+- Login email y callback Google de cuentas internas redirigen a `/plataforma` y
+  cierran el panel; ciudadanos permanecen en el portal.
+- Sin sesión o con sesión caducada: portal con `login=1` y panel de sesión.
+- Ciudadano o rol no clasificado: portal. Módulo fuera del rol: dashboard.
+- La sesión restaurada espera el perfil remoto; el rol persistido no prevalece
+  sobre el backend. Revocación, cuenta inactiva y expiración retiran acceso.
+- Portal opt-in: «Ir a la Plataforma»; volver al portal no fuerza redirección.
+- Protección de lectura también en paneles y acciones, además del menú.
+
+| Rol | Módulos |
+| --- | --- |
+| autoridad_distrital | Dashboard, Formularios, Mesas, Geovisor, Contenido |
+| facilitador_mesa | Dashboard, Mesas y Formularios en lectura |
+| auditor_forense | Dashboard, Formularios, Mesas, Geovisor, Contenido y Configuración; lectura |
+| administrador_identidades | Los siete módulos; acciones con permisos efectivos |
+| ciudadano / anónimo | Sin acceso |
+
+Usuarios y Roles se reserva al administrador, según la restricción explícita de
+producto, incluso para el auditor. La navegación no concede permisos nuevos a la
+API. Los roles personalizados conservan sus permisos API y su cuenta, pero necesitan
+una clasificación explícita para entrar a esta navegación.
+
+## Login Google y compatibilidad de identidad
+
+Se corrigió el intercambio de OAuth access token por el ID token entregado por
+`GoogleLogin`. Backend verifica firma/emisor/caducidad y audiencia configurada;
+se eliminaron el bypass de tokens ficticios y el fallback sin firma. El dominio
+ni el texto del correo elevan roles: cuentas nuevas son ciudadanas y las
+existentes conservan su rol administrativo asignado. Pruebas simulan el verificador
+solo dentro del test; no se añadió un bypass al servicio.
+
+Se reconoció el permiso ya introducido por mesas `mesas:fotos:subir` en el catálogo
+para evitar que el alta/asignación de usuarios rechazara roles existentes por
+«permisos desconocidos». No se ejecutaron migraciones de producción ni se
+concedieron privilegios por esa inclusión en el catálogo.
+
+## Verificación
+
+| Comprobación | Resultado |
+| --- | --- |
+| `bun run check` | Correcto: política UI, TypeScript y ESLint sin errores |
+| `bun run build` | Correcto; portal y siete rutas internas generadas |
+| `bun run ui:test` | 173 historias aprobadas, incluidas 19 de plataforma |
+| `bun run storybook:build` | Correcto |
+| Vitest plataforma + formularios | 55 pruebas aprobadas |
+| Google/transacciones en BD temporal | 14 pruebas aprobadas |
+| Identidad completa + Google, árbol actual | 38 pruebas aprobadas |
+| Ruff de cinco archivos backend de esta entrega | Correcto |
+| Navegador contra frontend reiniciado en puerto 3000 | 42 casos aprobados; API interceptada, sin escrituras reales |
+| Login y administración reales en FastAPI/PostgreSQL aislados | Alta, rol, asignación y revocación aprobados |
+| Callback Google, SDK interceptado y componentes reales | ID token, destinos interno/ciudadano y cierre aprobados |
+
+Navegador: siete rutas por los cuatro roles, rechazo ciudadano/anónimo, perfil
+remoto prevalente, token revocado, login email, navegación opt-in y salida. Axe
+WCAG 2.1 AA y reflujo en 320/1440 px, claro/oscuro: sin infracciones automatizadas
+ni overflow. Esto no constituye certificación completa WCAG.
+
+PostgreSQL temporal exclusivo: puerto 55439 y bases `polis_test_plataforma*`.
+La comprobación real en navegador utilizó API del snapshot `c0cfcf1` con los cambios
+de Google; pruebas posteriores de identidad se ejecutaron sobre el árbol actual.
+Sin envío real de correo y sin operaciones de prueba sobre la base de producción.
+
+## Activación y límites comprobados
+
+Se reiniciaron `polis-frontend.service` y `polis-backend.service`; ambos activos.
+Portal HTTP 200 y liveness API 200. Readiness API responde 503 por migraciones
+pendientes de los cambios paralelos de mesas/fotos: conexión y extensiones `ok`.
+No se aplicaron esas migraciones en producción como parte de esta entrega.
+El primer reinicio frontend coincidió con otro build que recreaba `.next`;
+se recuperó el servicio y se repitieron los 42 casos sobre el servicio activo.
+
+- Google en vivo requiere configurar el mismo cliente OAuth en frontend/backend
+  y sus orígenes autorizados. No se aportaron/configuraron credenciales reales.
+- Formularios y agenda de mesas conservan la demostración en memoria existente,
+  con aviso explícito de restablecimiento al recargar.
+- Territorio más activo es referencia demo; usuarios del dashboard conserva el
+  placeholder solicitado. Usuarios, alertas, contenido y geovisor consultan API.
+- Contenido reutiliza el control de fases existente y consulta líneas/aportes;
+  no incorpora un CRUD nuevo de líneas/aportes.
+- Configuración ofrece tema local, actualización de consultas y control de fases
+  según permiso; parámetros globales persistidos aún no están integrados.
+- Guard solicitado es de cliente: el HTML puede responder 200 antes de redirigir.
+  La autorización de datos/escrituras sigue siendo responsabilidad de FastAPI.
+- `bun run backend:check` global falla con 45 incidencias Ruff ajenas al alcance;
+  no se rebajaron controles ni se corrigieron masivamente cambios paralelos.
+- Se mantiene un aviso previo del optimizador CSS; no hay errores de compilación.
+
+Contrato: [docs/plataforma.md](../docs/plataforma.md).
+Evidencias y capturas: [plataforma-2026-10-01](../docs/evidencias/plataforma-2026-10-01/).
+Los cambios paralelos de fotos/geovisor se conservaron fuera del commit de plataforma.
+
+---
+
+## Histórico de entregas anteriores
+
+El contenido siguiente pertenece a tareas previas, no al alcance ni al dictamen
+de la entrega actual de plataforma.
+
 # Entrega Codex — Formularios POLIS
 
 Fecha: 2026-10-01T19:15:46.156954+00:00
