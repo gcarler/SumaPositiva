@@ -1,0 +1,9 @@
+El portal abre el panel de login solicitado: aprobado
+Login y permisos reales migrados, sin permisos ficticios: aprobado
+Pantalla de formularios abierta
+Constructor: guardar formulario activo con pregunta geográfica y texto: aprobado
+En HTTP: UUID funcional y GPS ofrece mapa/coordenadas como alternativa
+Panel ciudadano y mapa sin desbordamiento a 320 px: aprobado
+Respuesta de demostración con punto y descripción: aprobado
+Analítica y descarga GeoJSON vinculada a la respuesta: aprobado
+Sin errores JavaScript en el recorrido completo

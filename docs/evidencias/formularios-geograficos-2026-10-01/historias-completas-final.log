@@ -1,0 +1,12 @@
+$ vitest run --project storybook
+
+ RUN  v4.1.6 /root/polis
+
+9:40:26 PM [vite] (client) Re-optimizing dependencies because vite config has changed
+9:40:30 PM [vite] (client) [optimizer] scanning dependencies...
+9:40:34 PM [vite] (client) [optimizer] bundling dependencies...
+
+ Test Files  13 passed (13)
+      Tests  182 passed (182)
+   Start at  21:40:25
+   Duration  39.02s (transform 0ms, setup 40.61s, import 29.58s, tests 84.40s, environment 0ms)

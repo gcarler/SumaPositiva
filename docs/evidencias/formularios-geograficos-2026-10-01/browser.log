@@ -1,0 +1,6 @@
+Login y permisos reales migrados, sin permisos ficticios: aprobado
+Constructor: guardar formulario activo con pregunta geográfica y texto: aprobado
+Panel ciudadano y mapa sin desbordamiento a 320 px: aprobado
+Respuesta de demostración con punto y descripción: aprobado
+Analítica y descarga GeoJSON vinculada a la respuesta: aprobado
+Sin errores JavaScript en el recorrido completo
