@@ -28,6 +28,7 @@ export const componentCatalog = [
   { name: "filter-chip", source: "@/shared/ui/filter-chip", status: "ready" },
   { name: "form", source: "@/shared/ui/form", status: "ready" },
   { name: "form-field", source: "@/shared/ui/form-field", status: "ready" },
+  { name: "geovisor-charts", source: "@/features/geovisor/components/geovisor-charts", status: "ready" },
   { name: "hover-card", source: "@/shared/ui/hover-card", status: "ready" },
   { name: "input", source: "@/shared/ui/input", status: "ready" },
   { name: "input-otp", source: "@/shared/ui/input-otp", status: "ready" },

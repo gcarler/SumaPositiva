@@ -7,6 +7,9 @@
   --brand-google-red: #EA4335;
   --layer-dropdown: 100;
   --radius: 0.75rem;
+  --territory-loc-1: #e85d04;
+  --territory-loc-2: #f48c06;
+  --territory-loc-3: #dc2f02;
 
   /* Superficies */
   --background: oklch(0.985 0.002 90); /* blanco cálido */

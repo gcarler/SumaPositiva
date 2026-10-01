@@ -1,10 +1,20 @@
 import uuid
 from datetime import datetime
 
-from sqlalchemy import Boolean, DateTime, ForeignKey, Index, Integer, String, text
-from sqlalchemy.orm import relationship
+from sqlalchemy import (
+    Boolean,
+    CheckConstraint,
+    DateTime,
+    ForeignKey,
+    Index,
+    Integer,
+    String,
+    Text,
+    UniqueConstraint,
+    text,
+)
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
 
@@ -77,6 +87,15 @@ class FotoMesa(Base):
             "creado_en",
             postgresql_where=text("estado = 'PENDIENTE'"),
         ),
+        UniqueConstraint("evidencia_id", name="uq_fotos_mesa_evidencia"),
+        CheckConstraint(
+            "estado IN ('PENDIENTE', 'APROBADA', 'RECHAZADA')",
+            name="chk_fotos_mesa_estado",
+        ),
+        CheckConstraint(
+            "estado <> 'APROBADA' OR autorizacion_imagen",
+            name="chk_fotos_mesa_aprobacion_autorizada",
+        ),
         {"schema": "mesas_trabajo"},
     )
 
@@ -105,7 +124,7 @@ class FotoMesa(Base):
     estado: Mapped[str] = mapped_column(
         String(20), default="PENDIENTE", server_default=text("'PENDIENTE'"), nullable=False
     )
-    observacion_revision: Mapped[str | None] = mapped_column(String(1000), nullable=True)
+    observacion_revision: Mapped[str | None] = mapped_column(Text, nullable=True)
     revisada_por_id: Mapped[uuid.UUID | None] = mapped_column(
         UUID(as_uuid=True),
         ForeignKey("autenticacion.usuarios.id", ondelete="SET NULL"),

@@ -29,7 +29,14 @@ export type VariableMapa =
   | "hurtos"        // Hurtos a personas (abs, 2025)
   | "poblacion"     // Población estimada
   | "mesas"         // Mesas comunitarias realizadas
-  | "escnna";       // Alertas ESCNNA activas
+  | "escnna"       // Alertas ESCNNA activas
+  | "personal"
+  | "comunitaria"
+  | "economica"
+  | "ambiental"
+  | "alimentaria"
+  | "salud"
+  | "politica";
 
 export interface EstadisticasTerritorio {
   id: string;
@@ -221,6 +228,13 @@ export const VARIABLE_META: Record<
   poblacion: { label: "Población", unidad: "hab.", descripcion: "Estimado DANE 2025" },
   mesas: { label: "Mesas Comunitarias", unidad: "mesas", descripcion: "Mesas realizadas 2026" },
   escnna: { label: "Alertas ESCNNA", unidad: "alertas", descripcion: "Explotación sexual comercial NNA" },
+  personal: { label: "Seguridad Personal", unidad: "/100", descripcion: "Indicador derivado referencial" },
+  comunitaria: { label: "Seguridad Comunitaria", unidad: "/100", descripcion: "Indicador derivado referencial" },
+  economica: { label: "Seguridad Económica", unidad: "/100", descripcion: "Indicador derivado referencial" },
+  ambiental: { label: "Seguridad Ambiental", unidad: "/100", descripcion: "Indicador derivado referencial" },
+  alimentaria: { label: "Seguridad Alimentaria", unidad: "/100", descripcion: "Indicador derivado referencial" },
+  salud: { label: "Seguridad en Salud", unidad: "/100", descripcion: "Indicador derivado referencial" },
+  politica: { label: "Seguridad Política", unidad: "/100", descripcion: "Indicador derivado referencial" },
 };
 
 export const ESCALA_CHOROPLETH_PASOS = ["#2d6a4f", "#fcbf49", "#f77f00", "#e63946", "#d62828"] as const;
@@ -249,6 +263,20 @@ export function obtenerValorVariable(territorio: EstadisticasTerritorio, variabl
       return territorio.mesasRealizadas;
     case "escnna":
       return territorio.escnna;
+    case "personal":
+      return territorio.ish;
+    case "comunitaria":
+      return Math.max(0, 100 - territorio.alertas * 3);
+    case "economica":
+      return Math.max(0, 100 - territorio.hurtos / 50);
+    case "ambiental":
+      return 72 - (territorio.id === "loc-2" ? 15 : 0);
+    case "alimentaria":
+      return 65 + (territorio.tipo === "corregimiento" ? -10 : 5);
+    case "salud":
+      return Math.max(0, 100 - territorio.homicidios * 0.8);
+    case "politica":
+      return Math.max(0, 100 - territorio.escnna * 4);
     default:
       return 0;
   }

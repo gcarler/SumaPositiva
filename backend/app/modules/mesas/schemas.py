@@ -66,6 +66,57 @@ class MesaRespuesta(MesaBase):
     model_config = ConfigDict(from_attributes=True)
 
 
+class FotoMesaPublica(BaseModel):
+    id: uuid.UUID
+    archivo_url: str
+    descripcion: str = "Fotografía de la mesa aprobada por la institución"
+
+
+class MesaGeovisorRespuesta(BaseModel):
+    id: uuid.UUID
+    nombre: str
+    fecha: date | None
+    horario: str | None
+    estado: EstadoMesaLiteral
+    realizada: bool
+    total_asistentes: int
+    territorio_id: uuid.UUID | None
+    territorio_nombre: str | None
+    longitud_referencia: float | None
+    latitud_referencia: float | None
+    tipo_ubicacion: Literal["centroide_territorial_referencia"] | None
+    fotos: list[FotoMesaPublica] = Field(default_factory=list)
+
+
+class FotoMesaSubidaRespuesta(BaseModel):
+    id: uuid.UUID
+    estado: Literal["PENDIENTE"] = "PENDIENTE"
+    mensaje: str = "La fotografía quedó pendiente de revisión institucional."
+
+
+class FotoMesaRevision(BaseModel):
+    id: uuid.UUID
+    mesa_id: uuid.UUID
+    mesa_nombre: str
+    nombre_archivo_original: str
+    autorizacion_imagen: bool
+    creada_en: datetime
+    archivo_revision_url: str
+
+
+class FotoMesaModeracion(BaseModel):
+    estado: Literal["APROBADA", "RECHAZADA"]
+    observacion: str | None = Field(default=None, max_length=1000)
+
+
+class FotoMesaModeradaRespuesta(BaseModel):
+    id: uuid.UUID
+    mesa_id: uuid.UUID
+    estado: Literal["APROBADA", "RECHAZADA"]
+    observacion_revision: str | None
+    revisada_en: datetime
+
+
 class ParticipanteCrear(BaseModel):
     sujeto_id: str
     usuario_id: uuid.UUID | None = None

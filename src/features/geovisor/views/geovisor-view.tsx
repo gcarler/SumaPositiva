@@ -7,6 +7,7 @@ import { usePanels } from "@/core/panels/panel-store";
 import { GeovisorKpiBar } from "../components/geovisor-kpi-bar";
 import { GeovisorBiSidebar } from "../components/geovisor-bi-sidebar";
 import { GeovisorControles, type CapasConfig } from "../components/geovisor-controles";
+import { GeovisorCharts } from "../components/geovisor-charts";
 import type { VariableMapa } from "../data/estadisticas.data";
 import type { MapaCartagenaHandle } from "../components/mapa-cartagena";
 
@@ -122,6 +123,15 @@ export function GeovisorView() {
           />
         </div>
       </div>
+
+      <section aria-label="Análisis estadístico territorial">
+        <GeovisorCharts
+          territorioId={territorioId}
+          variableMapa={variableMapa}
+          onTerritorioChange={handleSelectTerritorio}
+          onVariableChange={setVariableMapa}
+        />
+      </section>
 
       {/* Footer de Metadatos de Fuentes Oficiales */}
       <div className="flex flex-wrap items-center justify-between gap-2 border-t border-[var(--border)] pt-3 text-xs text-[var(--text-tertiary)]">
