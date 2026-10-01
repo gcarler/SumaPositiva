@@ -80,94 +80,107 @@ export function InicioView() {
       {/* ================= HERO ================= */}
       <section className="relative overflow-hidden">
         <div className="bg-dotgrid absolute inset-0" aria-hidden />
-        <div className="relative mx-auto max-w-6xl px-5 pb-20 pt-16 md:px-8 md:pb-28 md:pt-24">
-          <motion.p
-            {...fadeUp}
-            transition={{ duration: 0.5 }}
-            className="flex items-center gap-2"
-          >
-            <span className="size-1.5 rounded-full bg-[var(--ember)]" aria-hidden />
-            <span className="label-micro text-[var(--text-secondary)]">
-              Plataforma de participación ciudadana
-            </span>
-          </motion.p>
-
-          <motion.h1
-            {...fadeUp}
-            transition={{ duration: 0.55, delay: 0.08 }}
-            className="display-tight mt-6 max-w-4xl text-[2.75rem] font-semibold text-[var(--text-primary)] md:text-[4.5rem]"
-          >
-            Las políticas públicas
-            <br />
-            <span className="text-fade">se construyen contigo.</span>
-          </motion.h1>
-
-          <motion.p
-            {...fadeUp}
-            transition={{ duration: 0.55, delay: 0.16 }}
-            className="mt-7 max-w-xl text-[15px] leading-relaxed text-[var(--text-secondary)] md:text-base"
-          >
-            Explora las políticas en curso, entra fase por fase y línea por línea, y deja
-            tu propuesta, anotación o pregunta exactamente donde se toma la decisión.
-            Cada aporte queda registrado y recibe respuesta oficial.
-          </motion.p>
-
-          <motion.div
-            {...fadeUp}
-            transition={{ duration: 0.55, delay: 0.24 }}
-            className="mt-9 flex flex-wrap items-center gap-3"
-          >
-            <button
-              type="button"
-              onClick={() => setVista("explorar")}
-              className="group inline-flex items-center gap-2 rounded-full bg-[var(--text-primary)] px-6 py-3 text-[13px] font-medium text-[var(--text-inverse)] transition-opacity hover:opacity-90"
-            >
-              Explorar políticas
-              <ArrowRight
-                className="size-4 transition-transform group-hover:translate-x-0.5"
-                strokeWidth={1.5}
-              />
-            </button>
-            <a
-              href="#metodologia"
-              className="inline-flex items-center gap-2 rounded-full border border-[var(--border-strong)] px-6 py-3 text-[13px] font-medium text-[var(--text-secondary)] transition-colors hover:bg-[var(--surface-2)] hover:text-[var(--text-primary)]"
-            >
-              Cómo funciona el proceso
-            </a>
-          </motion.div>
-
-          {/* Métricas vivas */}
-          <motion.dl
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="mt-16 grid grid-cols-2 overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--surface-1)] md:grid-cols-4"
-          >
-            {stats.map((s, i) => (
-              <div
-                key={s.label}
-                className={`px-6 py-6 ${i > 0 ? "border-l border-[var(--border)]" : ""} ${
-                  i >= 2 ? "max-md:border-t max-md:border-[var(--border)]" : ""
-                } ${i === 2 ? "max-md:border-l-0" : ""}`}
+        <div className="container-fluid relative pb-16 pt-14 md:pb-24 md:pt-20 lg:pb-28 lg:pt-24">
+          {/* En pantallas grandes el hero se divide: texto a la izquierda,
+              métricas vivas a la derecha — aprovecha todo el ancho sin
+              estirar la medida de lectura del texto. */}
+          <div className="grid gap-12 xl:grid-cols-12 xl:items-end xl:gap-16">
+            <div className="xl:col-span-7 2xl:col-span-8">
+              <motion.p
+                {...fadeUp}
+                transition={{ duration: 0.5 }}
+                className="flex items-center gap-2"
               >
-                <dd className="text-2xl font-semibold tracking-tight text-[var(--text-primary)] tabular md:text-3xl">
-                  {s.valor}
-                </dd>
-                <dt className="mt-1.5 text-[11px] uppercase tracking-[0.12em] text-[var(--text-tertiary)]">
-                  {s.label}
-                </dt>
-              </div>
-            ))}
-          </motion.dl>
+                <span className="size-1.5 rounded-full bg-[var(--ember)]" aria-hidden />
+                <span className="label-micro text-[var(--text-secondary)]">
+                  Plataforma de participación ciudadana
+                </span>
+              </motion.p>
+
+              <motion.h1
+                {...fadeUp}
+                transition={{ duration: 0.55, delay: 0.08 }}
+                className="display-tight mt-6 text-[clamp(2.5rem,4.2vw,5.75rem)] font-semibold text-[var(--text-primary)]"
+              >
+                Las políticas públicas
+                <br />
+                <span className="text-fade">se construyen contigo.</span>
+              </motion.h1>
+
+              <motion.p
+                {...fadeUp}
+                transition={{ duration: 0.55, delay: 0.16 }}
+                className="mt-7 max-w-xl text-[15px] leading-relaxed text-[var(--text-secondary)] md:text-base lg:text-lg"
+              >
+                Explora las políticas en curso, entra fase por fase y línea por línea, y deja
+                tu propuesta, anotación o pregunta exactamente donde se toma la decisión.
+                Cada aporte queda registrado y recibe respuesta oficial.
+              </motion.p>
+
+              <motion.div
+                {...fadeUp}
+                transition={{ duration: 0.55, delay: 0.24 }}
+                className="mt-9 flex flex-wrap items-center gap-3"
+              >
+                <button
+                  type="button"
+                  onClick={() => setVista("explorar")}
+                  className="group inline-flex items-center gap-2 rounded-full bg-[var(--text-primary)] px-6 py-3 text-[13px] font-medium text-[var(--text-inverse)] transition-opacity hover:opacity-90 lg:px-7 lg:py-3.5 lg:text-sm"
+                >
+                  Explorar políticas
+                  <ArrowRight
+                    className="size-4 transition-transform group-hover:translate-x-0.5"
+                    strokeWidth={1.5}
+                  />
+                </button>
+                <a
+                  href="#metodologia"
+                  className="inline-flex items-center gap-2 rounded-full border border-[var(--border-strong)] px-6 py-3 text-[13px] font-medium text-[var(--text-secondary)] transition-colors hover:bg-[var(--surface-2)] hover:text-[var(--text-primary)] lg:px-7 lg:py-3.5 lg:text-sm"
+                >
+                  Cómo funciona el proceso
+                </a>
+              </motion.div>
+            </div>
+
+            {/* Métricas vivas — columna derecha en xl, banda inferior en < xl.
+                Bordes por celda: móvil 2×2, md 4-en-fila, xl 2×2. */}
+            <motion.dl
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="grid grid-cols-2 overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--surface-1)] md:grid-cols-4 xl:col-span-5 xl:grid-cols-2 2xl:col-span-4"
+            >
+              {stats.map((s, i) => (
+                <div
+                  key={s.label}
+                  className={`px-6 py-6 lg:px-8 lg:py-8 ${
+                    [
+                      "",                                        // 0 — sin bordes
+                      "border-l",                                // 1 — derecha siempre
+                      "border-t md:border-l md:border-t-0 xl:border-t xl:border-l-0", // 2
+                      "border-l border-t md:border-t-0 xl:border-t",                   // 3
+                    ][i]
+                  }`}
+                >
+                  <dd className="text-2xl font-semibold tracking-tight text-[var(--text-primary)] tabular md:text-3xl xl:text-[2rem] 2xl:text-4xl">
+                    {s.valor}
+                  </dd>
+                  <dt className="mt-1.5 text-[11px] uppercase tracking-[0.12em] text-[var(--text-tertiary)]">
+                    {s.label}
+                  </dt>
+                </div>
+              ))}
+            </motion.dl>
+          </div>
         </div>
       </section>
 
       {/* ================= CONSULTAS ACTIVAS ================= */}
-      <section className="mx-auto max-w-6xl px-5 pb-20 md:px-8">
+      <section className="container-fluid pb-20 md:pb-24">
         <div className="mb-6 flex items-end justify-between gap-4">
           <div>
             <p className="label-micro text-[var(--ember)]">En curso</p>
-            <h2 className="mt-1.5 text-xl font-semibold tracking-tight text-[var(--text-primary)] md:text-2xl">
+            <h2 className="mt-1.5 text-xl font-semibold tracking-tight text-[var(--text-primary)] md:text-2xl lg:text-3xl">
               Consultas abiertas ahora
             </h2>
           </div>
@@ -184,7 +197,7 @@ export function InicioView() {
           </button>
         </div>
 
-        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-3 [grid-template-columns:repeat(auto-fit,minmax(min(100%,330px),720px))] [justify-content:space-between]">
           {destacadas.map((p, i) => (
             <PoliticaCard key={p.id} politica={p} index={i} />
           ))}
@@ -193,13 +206,13 @@ export function InicioView() {
 
       {/* ================= METODOLOGÍA ================= */}
       <section id="metodologia" className="border-t border-[var(--border)] bg-[var(--surface-2)]">
-        <div className="mx-auto max-w-6xl px-5 py-20 md:px-8">
+        <div className="container-fluid py-20 md:py-24">
           <p className="label-micro text-[var(--text-tertiary)]">Metodología</p>
-          <h2 className="display-tight mt-2 max-w-2xl text-3xl font-semibold text-[var(--text-primary)] md:text-4xl">
+          <h2 className="display-tight mt-2 max-w-2xl text-3xl font-semibold text-[var(--text-primary)] md:text-4xl lg:text-[2.75rem]">
             Cuatro momentos, una sola conversación.
           </h2>
 
-          <div className="mt-12 grid gap-x-8 gap-y-10 md:grid-cols-4">
+          <div className="mt-12 grid gap-x-8 gap-y-10 [grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),440px))] [justify-content:space-between]">
             {METODOLOGIA.map((paso, i) => {
               const Icon = paso.icon;
               return (

@@ -75,7 +75,7 @@ export function PoliticaPanel({ entryKey, props }: { entryKey: string; props: { 
         ) : undefined
       }
     >
-      <div className="space-y-8 px-6 py-6">
+      <div className="mx-auto w-full max-w-4xl space-y-8 px-5 py-6 sm:px-6 lg:px-8 2xl:px-10">
         {/* ---------- Meta ---------- */}
         <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
           <EstadoPoliticaChip estado={politica.estado} />

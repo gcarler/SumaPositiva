@@ -62,7 +62,7 @@ export function FasePanel({
       onClose={closeTop}
       onCloseToKey={closeToKey}
     >
-      <div className="space-y-8 px-6 py-6">
+      <div className="mx-auto w-full max-w-4xl space-y-8 px-5 py-6 sm:px-6 lg:px-8 2xl:px-10">
         {/* ---------- Contexto de la fase ---------- */}
         <section className="space-y-4">
           <div className="flex items-center gap-3">

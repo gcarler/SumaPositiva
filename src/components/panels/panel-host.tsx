@@ -90,12 +90,13 @@ export function PanelHost() {
                   exit={{ x: "100%", transition: { duration: 0.28, ease: [0.32, 0, 0.67, 0] } }}
                   transition={{ type: "spring", stiffness: 320, damping: 34, mass: 0.9 }}
                 >
-                  {/* Capa de geometría: ancho por defecto o maximizado.
-                      La transición vive aquí (CSS) para no pelear con el spring. */}
+                  {/* Capa de geometría: ancho por defecto (fluido, ver
+                      PANEL_WIDTHS) o maximizado. La transición vive aquí
+                      (CSS) para no pelear con el spring. */}
                   <div
                     className="relative ml-auto h-full"
                     style={{
-                      maxWidth: entry.maximized ? "100vw" : `${width}px`,
+                      maxWidth: entry.maximized ? "100vw" : width,
                       transition: `max-width 0.42s ${EASE_WIDTH}`,
                     }}
                   >

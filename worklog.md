@@ -100,3 +100,30 @@ Work Log:
 Stage Summary:
 - Las 3 mejoras (ventana: maximizar/minimizar/cerrar; sesión anónima/identidad; fotos en aportes) confirmadas operativas en navegador real.
 - Siguiente paso disponible: backend FastAPI (JWT + WebSockets + almacenamiento de fotos).
+
+---
+Task ID: 5
+Agent: Super Z (main agent)
+Task: Plataforma fullscreen: aprovechar todo el ancho de pantalla + adaptativa/responsive a cualquier resolución (petición explícita del usuario).
+
+Work Log:
+- globals.css: nueva utilidad `.container-fluid` — width 100% + padding-inline clamp(1.25rem, 3.5vw, 4.5rem); reemplaza a todos los `mx-auto max-w-6xl` (tope histórico de 1152px eliminado).
+- topbar.tsx / footer.tsx: contenedores ahora container-fluid (full-bleed).
+- inicio-view.tsx:
+  · Hero rediseñado fluido: en xl+ pasa a grid 12 col (texto 7/8 col + métricas 2×2 a la derecha, items-end); en <xl se apila como antes (md: 4-en-fila).
+  · Tipografía del H1 con clamp(2.5rem, 4.2vw, 5.75rem) — escala de móvil a 4K; max-w removido para que la columna controle la medida (2 líneas limpias en 1280–2560).
+  · Bordes de la grilla de métricas corregidos por breakpoint (2×2 móvil / 4-fila md / 2×2 xl) mediante lookup por índice.
+  · Grilla destacadas: auto-fit minmax(min(100%,330px),720px) + justify-content:space-between (full-bleed sin estirar tarjetas).
+  · Metodología: auto-fit minmax(min(100%,230px),440px) + space-between.
+- explorar-view.tsx: container-fluid; grilla auto-fill minmax(min(100%,340px),480px) + space-between (los resultados de búsqueda nunca se estiran a todo el ancho).
+- Paneles (registry/panel-host): PANEL_WIDTHS ahora strings CSS fluidos: min(clamp(BASE, vw%, TOPE), 100vw) — p.ej. política min(clamp(780px,52vw,1120px),100vw). En <BASE ocupa 100vw (móvil fullscreen); en desktop crece proporcional; tope de legibilidad en 4K. Maximizar sigue = 100vw.
+- panel-shell.tsx: paddings fluidos px-5 sm:px-6 lg:px-8 2xl:px-10 (header/footer).
+- Paneles internos (politica/fase/linea: max-w-4xl; aporte: max-w-2xl; sesion: max-w-xl): contenido centrado con mx-auto — medida de lectura controlada al maximizar o en ultrawide, sin cambio visual en el ancho por defecto.
+- BUG corregido (sesión anterior): PanelType decía "aportar" pero el sistema usa "aporte" — tsc fallaba (5 errores); el dev server lo toleraba en runtime. Fix: union corregida → tsc src/ = 0 errores.
+- Verificación agent-browser a 6 resoluciones: 390 (móvil, panel 100vw, métricas 2×2), 768 (4-fila métricas, 2-col cards), 1024 (2-col catálogo), 1280 (hero 2-col), 1920 (panel 52vw ≈ 998px, hero gigante 2 líneas, maximize OK, dark OK), 2560 (grillas space-between sin huecos feos, panel capped 1120px, metodología 4-col editorial). Maximizar/minimizar re-verificado en 1920. 0 errores de página/consola.
+- Lint final: 0 errores (1 warning benigno RHF watch). Capturas temporales eliminadas.
+
+Stage Summary:
+- POLIS es ahora full-bleed de 320px a 4K+: nada de cajas centradas de 1152px; padding/tipografía/grillas/paneles escalan con clamp()/vw.
+- El apilado Zero-Modals y el concepto de capas visibles quedan intactos; maximizar a pantalla completa sigue disponible por panel.
+- Pendiente: backend FastAPI (JWT + WebSockets + fotos) — la UI queda lista.

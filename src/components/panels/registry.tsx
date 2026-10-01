@@ -46,11 +46,18 @@ export const PANEL_REGISTRY: Record<
   sesion: SesionPanel as ComponentType<PanelComponentProps>,
 };
 
-/** Ancho del panel por tipo (px) — el stack decide responsividad */
-export const PANEL_WIDTHS: Record<PanelType, number> = {
-  politica: 780,
-  fase: 720,
-  linea: 720,
-  aporte: 640,
-  sesion: 520,
+/**
+ * Ancho del panel por tipo — fluido y adaptativo a cualquier resolución:
+ *   · Base: el ancho histórico (no cambia el look en portátiles 1280–1440).
+ *   · Ideal: % del viewport → crece proporcionalmente en pantallas grandes.
+ *   · Tope: límite de legibilidad en 4K / ultrawide.
+ *   · min(..., 100vw): en móvil el panel siempre ocupa toda la pantalla.
+ * El botón Maximizar sigue llevando el panel al 100% del viewport.
+ */
+export const PANEL_WIDTHS: Record<PanelType, string> = {
+  politica: "min(clamp(780px, 52vw, 1120px), 100vw)",
+  fase: "min(clamp(720px, 48vw, 1040px), 100vw)",
+  linea: "min(clamp(720px, 48vw, 1040px), 100vw)",
+  aporte: "min(clamp(640px, 44vw, 920px), 100vw)",
+  sesion: "min(clamp(520px, 38vw, 760px), 100vw)",
 };

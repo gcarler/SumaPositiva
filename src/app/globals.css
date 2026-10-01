@@ -195,6 +195,13 @@
     font-variant-numeric: tabular-nums;
   }
 
+  /* Contenedor fluido full-screen: ocupa TODO el ancho con márgenes
+     que crecen proporcionalmente a la resolución (320px → 4K+). */
+  .container-fluid {
+    width: 100%;
+    padding-inline: clamp(1.25rem, 3.5vw, 4.5rem);
+  }
+
   /* Grid de puntos sutil para secciones hero */
   .bg-dotgrid {
     background-image: radial-gradient(var(--border-strong) 1px, transparent 1px);

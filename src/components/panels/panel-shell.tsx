@@ -58,7 +58,7 @@ export function PanelShell({
     >
       {/* ---------- Header ---------- */}
       <header className="shrink-0 border-b border-[var(--border)] bg-[var(--surface-0)]/95 backdrop-blur-sm">
-        <div className="px-6 pt-5">
+        <div className="px-5 pt-5 sm:px-6 lg:px-8 2xl:px-10">
           {/* Breadcrumb */}
           <nav aria-label="Ruta de navegación" className="flex flex-wrap items-center gap-1">
             {crumbs.map((c, i) => (
@@ -149,7 +149,7 @@ export function PanelShell({
 
       {/* ---------- Footer ---------- */}
       {footer && (
-        <footer className="shrink-0 border-t border-[var(--border)] bg-[var(--surface-0)] px-6 py-4">
+        <footer className="shrink-0 border-t border-[var(--border)] bg-[var(--surface-0)] px-5 py-4 sm:px-6 lg:px-8 2xl:px-10">
           {footer}
         </footer>
       )}

@@ -175,7 +175,7 @@ export function SesionPanel({ entryKey }: { entryKey: string }) {
         </div>
       }
     >
-      <div className="space-y-7 px-6 py-6">
+      <div className="mx-auto w-full max-w-xl space-y-7 px-5 py-6 sm:px-6 2xl:px-8">
         {/* ---------- Sesión actual ---------- */}
         {sesion && (
           <section className="space-y-3">

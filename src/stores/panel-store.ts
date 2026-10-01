@@ -9,7 +9,7 @@ import { create } from "zustand";
  * para navegación anidada (Política → Fase → Línea → Aporte).
  */
 
-export type PanelType = "politica" | "fase" | "linea" | "aportar" | "sesion";
+export type PanelType = "politica" | "fase" | "linea" | "aporte" | "sesion";
 
 /** Props tipadas por tipo de panel — imposible abrir un panel con props inválidas */
 export interface PanelPropsMap {

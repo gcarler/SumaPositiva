@@ -38,13 +38,13 @@ export function ExplorarView() {
   };
 
   return (
-    <div className="mx-auto max-w-6xl px-5 py-14 md:px-8">
+    <div className="container-fluid py-12 md:py-14 lg:py-16">
       {/* Encabezado */}
       <p className="label-micro text-[var(--text-tertiary)]">Catálogo</p>
-      <h1 className="display-tight mt-2 text-3xl font-semibold text-[var(--text-primary)] md:text-4xl">
+      <h1 className="display-tight mt-2 text-3xl font-semibold text-[var(--text-primary)] md:text-4xl lg:text-5xl">
         Políticas públicas en proceso
       </h1>
-      <p className="mt-3 max-w-xl text-sm leading-relaxed text-[var(--text-secondary)]">
+      <p className="mt-3 max-w-xl text-sm leading-relaxed text-[var(--text-secondary)] md:text-[15px]">
         Cada política avanza por fases; dentro de cada fase puedes entrar a sus líneas
         estratégicas y aportar donde quieras hacerlo.
       </p>
@@ -143,7 +143,7 @@ export function ExplorarView() {
       ) : (
         <motion.div
           key={`${sectorFiltro}-${estadoFiltro}-${busqueda}`}
-          className="mt-4 grid gap-3 md:grid-cols-2 lg:grid-cols-3"
+          className="mt-4 grid gap-3 [grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),480px))] [justify-content:space-between]"
         >
           {politicas.map((p, i) => (
             <PoliticaCard key={p.id} politica={p} index={i} />
