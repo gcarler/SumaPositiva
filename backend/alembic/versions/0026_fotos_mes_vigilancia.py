@@ -28,10 +28,16 @@ def upgrade() -> None:
             creado_en TIMESTAMPTZ NOT NULL DEFAULT clock_timestamp(),
             CONSTRAINT chk_fotos_mesa_estado CHECK (estado IN ('PENDIENTE', 'APROBADA', 'RECHAZADA')),
             CONSTRAINT chk_fotos_mesa_aprobacion_autorizada CHECK (estado <> 'APROBADA' OR autorizacion_imagen)
-        );
-        CREATE INDEX idx_fotos_mesa_publicas ON mesas_trabajo.fotos_mesa (mesa_id, creado_en DESC) WHERE estado = 'APROBADA';
-        CREATE INDEX idx_fotos_mesa_revision ON mesas_trabajo.fotos_mesa (creado_en) WHERE estado = 'PENDIENTE';
-        COMMENT ON TABLE mesas_trabajo.fotos_mesa IS 'Relación de evidencias fotográficas sanitizadas de mesas; solo imágenes aprobadas se exponen públicamente.';
+        )
+    """))
+    op.execute(text("""
+        CREATE INDEX idx_fotos_mesa_publicas ON mesas_trabajo.fotos_mesa (mesa_id, creado_en DESC) WHERE estado = 'APROBADA'
+    """))
+    op.execute(text("""
+        CREATE INDEX idx_fotos_mesa_revision ON mesas_trabajo.fotos_mesa (creado_en) WHERE estado = 'PENDIENTE'
+    """))
+    op.execute(text("""
+        COMMENT ON TABLE mesas_trabajo.fotos_mesa IS 'Relación de evidencias fotográficas sanitizadas de mesas; solo imágenes aprobadas se exponen públicamente.'
     """))
 
 
