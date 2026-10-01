@@ -16,7 +16,7 @@
  * OBJETIVO CENTRAL ← MEDIOS → FINES.
  */
 
-export type EstadoMesa = "programada" | "en_curso" | "cerrada";
+export type EstadoMesa = "programada" | "en_curso" | "cerrada" | "cancelada";
 
 /** Nivel del nodo: primario cuelga del centro; secundario cuelga de un primario */
 export type NivelNodo = "primario" | "secundario";
@@ -97,6 +97,7 @@ export const ESTADO_MESA_META: Record<EstadoMesa, { label: string }> = {
   programada: { label: "Programada" },
   en_curso: { label: "En curso" },
   cerrada: { label: "Cerrada" },
+  cancelada: { label: "Cancelada" },
 };
 
 export const RAMA_META: Record<

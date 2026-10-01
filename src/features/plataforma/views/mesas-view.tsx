@@ -41,6 +41,9 @@ function mapearToneEstado(estado: EstadoMesa | string): {
   if (e === "cerrada" || e === "completada" || e === "finalizada") {
     return { tone: "success", label: "Completada" };
   }
+  if (e === "cancelada") {
+    return { tone: "neutral", label: "Cancelada" };
+  }
   return { tone: "info", label: "Programada" };
 }
 
@@ -497,6 +500,7 @@ export function MesasGestionView() {
                   <Button
                     variant="outline"
                     size="sm"
+                    aria-label={`Ver detalle de ${m.nombre}`}
                     className="flex-1 justify-center sm:flex-initial"
                     onClick={() =>
                       openPanel("mesa", { mesaId: m.id, soloLectura: !editar })
@@ -509,6 +513,7 @@ export function MesasGestionView() {
                     <Button
                       variant="ghost"
                       size="sm"
+                      aria-label={`Editar ${m.nombre}`}
                       onClick={() =>
                         openPanel("mesa-editor", { mesaId: m.id })
                       }
