@@ -89,8 +89,8 @@ function SesionButton() {
 
 const NAV: { id: VistaApp; label: string; labelCorto?: string }[] = [
   { id: "inicio", label: "Inicio" },
-  { id: "explorar", label: "Explorar políticas", labelCorto: "Explorar" },
-  { id: "mesas", label: "Mesas de trabajo", labelCorto: "Mesas" },
+  { id: "explorar", label: "Líneas Estratégicas", labelCorto: "Explorar" },
+  { id: "mesas", label: "Mesas de Trabajo", labelCorto: "Mesas" },
   { id: "geovisor", label: "Geovisor Territorial", labelCorto: "Geovisor" },
 ];
 
@@ -104,31 +104,34 @@ export function Topbar() {
       <div className="container-fluid grid grid-cols-[1fr_auto] items-center gap-y-3 py-3 md:flex md:h-20 md:justify-between md:py-0">
         <div className="flex items-center gap-3">
           {esInstitucional(sesion) && <SidebarTrigger className="-ml-2" />}
-          {/* Wordmark */}
+          {/* Wordmark Institucional */}
           <Button
             variant="unstyled"
-          size="unstyled"
-          type="button"
-          onClick={() => setVista("inicio")}
-          className="flex items-center gap-2.5"
-          aria-label="POLIS — Inicio"
-        >
-          <span className="flex size-7 items-center justify-center rounded-md bg-[var(--text-primary)]">
-            <Landmark
-              className="size-4 text-[var(--text-inverse)]"
-              strokeWidth={1.5}
-            />
-          </span>
-          <span className="flex items-baseline gap-1">
-            <span className="text-[15px] font-semibold tracking-[0.08em] text-[var(--text-primary)]">
-              POLIS
+            size="unstyled"
+            type="button"
+            onClick={() => setVista("inicio")}
+            className="flex items-center gap-2.5 text-left"
+            aria-label="Seguridad Humana Cartagena 2026–2036 — Inicio"
+          >
+            <span className="flex size-7 shrink-0 items-center justify-center rounded-md bg-[var(--text-primary)]">
+              <Landmark
+                className="size-4 text-[var(--text-inverse)]"
+                strokeWidth={1.5}
+              />
             </span>
-            <span
-              className="size-1 rounded-full bg-[var(--ember)]"
-              aria-hidden
-            />
-          </span>
-        </Button>
+            <span className="flex flex-col text-left leading-tight">
+              <span className="flex items-center gap-1 text-[13px] font-semibold tracking-tight text-[var(--text-primary)]">
+                Seguridad Humana
+                <span
+                  className="size-1 rounded-full bg-[var(--ember)]"
+                  aria-hidden
+                />
+              </span>
+              <span className="text-[11px] font-medium text-[var(--text-secondary)]">
+                Cartagena 2026–2036
+              </span>
+            </span>
+          </Button>
         </div>
 
         {/* Nav */}

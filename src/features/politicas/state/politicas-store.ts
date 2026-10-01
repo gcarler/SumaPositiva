@@ -127,6 +127,10 @@ export function selectPolitica(state: PoliticasState, id: string) {
   return state.politicas.find((p) => p.id === id);
 }
 
+export function usePoliticaPrincipal() {
+  return usePoliticasStore((s) => s.politicas[0]);
+}
+
 export function usePolitica(id: string) {
   return usePoliticasStore((s) => s.politicas.find((p) => p.id === id));
 }

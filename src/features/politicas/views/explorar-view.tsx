@@ -1,61 +1,92 @@
 "use client";
 
+import { useMemo, useState } from "react";
 import { PageHeader } from "@/shared/ui/page-header";
 import { SearchField } from "@/shared/ui/search-field";
 import { FilterChip } from "@/shared/ui/filter-chip";
 import { EmptyState } from "@/shared/ui/empty-state";
-
 import { Button } from "@/shared/ui/button";
-
-import { motion } from "framer-motion";
-import { Search, RotateCcw } from "lucide-react";
-import {
-  usePoliticasFiltradas,
-  usePoliticasStore,
-} from "@/features/politicas/state/politicas-store";
-import {
-  ESTADO_META,
-  SECTOR_META,
-  type EstadoPolitica,
-  type Sector,
-} from "@/features/politicas/models/politicas";
-import { PoliticaCard } from "@/features/politicas/components/politica-card";
+import { motion, useReducedMotion } from "framer-motion";
+import { Search, RotateCcw, ArrowUpRight, MessageSquare, Layers } from "lucide-react";
+import { usePoliticaPrincipal } from "@/features/politicas/state/politicas-store";
+import { usePanels } from "@/core/panels/panel-store";
+import type { LineaEstrategica, Fase } from "@/features/politicas/models/politicas";
 
 /**
- * Vista Explorar — catálogo de políticas con búsqueda y filtros.
- * Cada tarjeta abre el panel L1 (Zero-Modals).
+ * Vista Explorar — catálogo de líneas estratégicas de la Política Pública
+ * de Seguridad Humana Integral de Cartagena (2026–2036).
+ * Al hacer clic en una línea, se abre el panel lateral L3 (Zero-Modals).
  */
 
-const SECTORES = Object.entries(SECTOR_META) as [Sector, { label: string }][];
-const ESTADOS = Object.entries(ESTADO_META) as [
-  EstadoPolitica,
-  { label: string },
-][];
+interface LineaConFase extends LineaEstrategica {
+  faseNombre: string;
+  faseOrden: number;
+  faseEstado: string;
+}
 
 export function ExplorarView() {
-  const politicas = usePoliticasFiltradas();
-  const sectorFiltro = usePoliticasStore((s) => s.sectorFiltro);
-  const estadoFiltro = usePoliticasStore((s) => s.estadoFiltro);
-  const busqueda = usePoliticasStore((s) => s.busqueda);
-  const setSectorFiltro = usePoliticasStore((s) => s.setSectorFiltro);
-  const setEstadoFiltro = usePoliticasStore((s) => s.setEstadoFiltro);
-  const setBusqueda = usePoliticasStore((s) => s.setBusqueda);
+  const reducedMotion = useReducedMotion();
+  const politica = usePoliticaPrincipal();
+  const { openPanel } = usePanels();
 
-  const hayFiltros =
-    sectorFiltro !== "todos" || estadoFiltro !== "todos" || busqueda !== "";
+  const [faseFiltro, setFaseFiltro] = useState<string>("todas");
+  const [busqueda, setBusqueda] = useState<string>("");
+
+  /* Obtener todas las líneas estratégicas con su fase correspondiente */
+  const todasLasLineas = useMemo(() => {
+    if (!politica) return [];
+    const list: LineaConFase[] = [];
+    for (const fase of politica.fases) {
+      for (const linea of fase.lineas) {
+        list.push({
+          ...linea,
+          faseNombre: fase.nombre,
+          faseOrden: fase.orden,
+          faseEstado: fase.estado,
+        });
+      }
+    }
+    return list;
+  }, [politica]);
+
+  /* Fases disponibles para filtrar */
+  const fasesDisponibles = useMemo(() => {
+    if (!politica) return [];
+    return politica.fases.filter((f) => f.lineas.length > 0);
+  }, [politica]);
+
+  /* Filtro reactivo */
+  const lineasFiltradas = useMemo(() => {
+    const q = busqueda.trim().toLowerCase();
+    return todasLasLineas.filter((linea) => {
+      if (faseFiltro !== "todas" && linea.faseId !== faseFiltro) {
+        return false;
+      }
+      if (q) {
+        const texto = `${linea.codigo} ${linea.titulo} ${linea.descripcion} ${linea.faseNombre}`.toLowerCase();
+        if (!texto.includes(q)) return false;
+      }
+      return true;
+    });
+  }, [todasLasLineas, faseFiltro, busqueda]);
+
+  const hayFiltros = faseFiltro !== "todas" || busqueda !== "";
 
   const reset = () => {
-    setSectorFiltro("todos");
-    setEstadoFiltro("todos");
+    setFaseFiltro("todas");
     setBusqueda("");
   };
+
+  if (!politica) {
+    return null;
+  }
 
   return (
     <div className="container-fluid py-12 md:py-14 lg:py-16">
       <PageHeader
-        eyebrow="Catálogo"
-        title="Políticas públicas en proceso"
-        description="Cada política avanza por fases. Explora sus líneas estratégicas y aporta donde tu experiencia pueda hacer la diferencia."
+        eyebrow="Participación Ciudadana"
+        title="Líneas Estratégicas de Seguridad Humana"
+        description="Explora las fases y líneas de la Política Pública de Cartagena. Aporta propuestas, anotaciones y preguntas en cada línea estratégica."
       />
 
       {/* ---------- Filtros ---------- */}
@@ -63,71 +94,50 @@ export function ExplorarView() {
         {/* Búsqueda */}
         <SearchField
           className="max-w-lg"
-          label="Buscar políticas"
+          label="Buscar líneas estratégicas"
           value={busqueda}
           onValueChange={setBusqueda}
-          placeholder="Buscar por título, resumen o problema…"
+          placeholder="Buscar por código, título, fase o palabra clave…"
         />
 
-        {/* Estado */}
+        {/* Filtro por Fase DNP */}
         <div
           className="flex flex-wrap items-center gap-1.5"
           role="group"
-          aria-label="Filtrar por estado"
+          aria-label="Filtrar por fase DNP"
         >
           <FilterChip
-            active={estadoFiltro === "todos"}
-            onClick={() => setEstadoFiltro("todos")}
+            active={faseFiltro === "todas"}
+            onClick={() => setFaseFiltro("todas")}
           >
-            Todos los estados
+            Todas las fases
           </FilterChip>
-          {ESTADOS.map(([id, meta]) => (
+          {fasesDisponibles.map((fase: Fase) => (
             <FilterChip
-              key={id}
-              active={estadoFiltro === id}
+              key={fase.id}
+              active={faseFiltro === fase.id}
               onClick={() =>
-                setEstadoFiltro(estadoFiltro === id ? "todos" : id)
+                setFaseFiltro(faseFiltro === fase.id ? "todas" : fase.id)
               }
             >
-              {meta.label}
-            </FilterChip>
-          ))}
-        </div>
-
-        {/* Sector */}
-        <div
-          className="flex flex-wrap items-center gap-1.5"
-          role="group"
-          aria-label="Filtrar por sector"
-        >
-          <FilterChip
-            active={sectorFiltro === "todos"}
-            onClick={() => setSectorFiltro("todos")}
-          >
-            Todos los sectores
-          </FilterChip>
-          {SECTORES.map(([id, meta]) => (
-            <FilterChip
-              key={id}
-              active={sectorFiltro === id}
-              onClick={() =>
-                setSectorFiltro(sectorFiltro === id ? "todos" : id)
-              }
-            >
-              {meta.label}
+              Fase 0{fase.orden}: {fase.nombre}
             </FilterChip>
           ))}
         </div>
       </div>
 
-      <h2 className="sr-only">Resultados de políticas</h2>
-      {/* ---------- Resultados ---------- */}
+      <h2 className="sr-only">Resultados de líneas estratégicas</h2>
+
+      {/* ---------- Contador y Limpiar ---------- */}
       <div className="mt-8 flex items-center justify-between">
         <p
           className="text-xs text-[var(--text-tertiary)] tabular"
           aria-live="polite"
         >
-          {politicas.length} {politicas.length === 1 ? "política" : "políticas"}
+          {lineasFiltradas.length}{" "}
+          {lineasFiltradas.length === 1
+            ? "línea estratégica"
+            : "líneas estratégicas"}
         </p>
         {hayFiltros && (
           <Button
@@ -143,27 +153,82 @@ export function ExplorarView() {
         )}
       </div>
 
-      {politicas.length === 0 ? (
+      {/* ---------- Resultados ---------- */}
+      {lineasFiltradas.length === 0 ? (
         <EmptyState
           className="mt-6"
           icon={<Search />}
-          title="Sin resultados para estos filtros"
-          description="Prueba con otro término o ajusta los filtros para encontrar una política."
+          title="Sin resultados para esta búsqueda"
+          description="Prueba con otro término o selecciona otra fase para consultar las líneas disponibles."
           action={
             <Button variant="outline" onClick={reset}>
-              Ver todas las políticas
+              Ver todas las líneas
             </Button>
           }
         />
       ) : (
-        <motion.div
-          key={`${sectorFiltro}-${estadoFiltro}-${busqueda}`}
-          className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3"
-        >
-          {politicas.map((p, i) => (
-            <PoliticaCard key={p.id} politica={p} index={i} />
-          ))}
-        </motion.div>
+        <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {lineasFiltradas.map((linea, index) => {
+            const numAportes = linea.aportes.length;
+            return (
+              <motion.button
+                key={linea.id}
+                type="button"
+                initial={reducedMotion ? false : { opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  delay: index * 0.04,
+                  duration: 0.35,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+                onClick={() =>
+                  openPanel("linea", {
+                    politicaId: politica.id,
+                    faseId: linea.faseId,
+                    lineaId: linea.id,
+                  })
+                }
+                className="ui-interactive-card group relative flex h-full w-full flex-col justify-between p-6 text-left"
+              >
+                <div>
+                  {/* Cabecera de la tarjeta */}
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="inline-flex items-center gap-1.5 rounded bg-[var(--surface-2)] px-2 py-0.5 text-[11px] font-semibold tracking-wider text-[var(--ember)]">
+                      {linea.codigo}
+                    </span>
+                    <ArrowUpRight
+                      className="size-4 text-[var(--text-tertiary)] opacity-0 transition-all group-hover:translate-x-0.5 group-hover:opacity-100"
+                      strokeWidth={1.75}
+                    />
+                  </div>
+
+                  {/* Título y descripción */}
+                  <h3 className="mt-3.5 text-base font-semibold leading-snug tracking-tight text-[var(--text-primary)]">
+                    {linea.titulo}
+                  </h3>
+                  <p className="mt-2 line-clamp-3 text-xs leading-relaxed text-[var(--text-secondary)]">
+                    {linea.descripcion}
+                  </p>
+                </div>
+
+                {/* Pie con metadatos de Fase y Aportes */}
+                <div className="mt-6 flex items-center justify-between gap-3 border-t border-[var(--border)] pt-4 text-[11px] text-[var(--text-secondary)]">
+                  <div className="flex items-center gap-1.5 truncate">
+                    <Layers className="size-3.5 shrink-0 text-[var(--text-tertiary)]" />
+                    <span className="truncate">Fase 0{linea.faseOrden}</span>
+                  </div>
+
+                  <div className="flex items-center gap-1.5 font-medium tabular text-[var(--text-primary)]">
+                    <MessageSquare className="size-3.5 text-[var(--ember)]" />
+                    <span>
+                      {numAportes} {numAportes === 1 ? "aporte" : "aportes"}
+                    </span>
+                  </div>
+                </div>
+              </motion.button>
+            );
+          })}
+        </div>
       )}
     </div>
   );

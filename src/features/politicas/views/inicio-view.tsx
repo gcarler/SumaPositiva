@@ -1,93 +1,86 @@
 "use client";
 
-import { Button } from "@/shared/ui/button";
-
 import { motion, useReducedMotion } from "framer-motion";
 import {
   ArrowRight,
-  BadgeCheck,
-  MessagesSquare,
-  PenLine,
-  SearchCheck,
-  PanelsTopLeft,
+  MapPin,
+  Scale,
+  Compass,
+  FileCheck2,
 } from "lucide-react";
-import { usePoliticasStore } from "@/features/politicas/state/politicas-store";
+import { Button } from "@/shared/ui/button";
+import { StatusBadge, type StatusTone } from "@/shared/ui/status-badge";
+import { Progress } from "@/shared/ui/progress";
 import { useNavigationStore } from "@/core/navigation/navigation-store";
+import { usePoliticaPrincipal } from "@/features/politicas/state/politicas-store";
 import { totalAportes } from "@/features/politicas/models/politicas";
-import { PoliticaCard } from "@/features/politicas/components/politica-card";
-
-/**
- * Vista Inicio — hero editorial, métricas vivas, consultas activas
- * y explicación del proceso participativo.
- */
+import { DimensionesGrid } from "@/features/politicas/components/dimensiones-grid";
 
 const fadeUp = {
   initial: { opacity: 0, y: 20 },
   animate: { opacity: 1, y: 0 },
 };
 
-const METODOLOGIA = [
+const TERRITORIOS = [
   {
-    num: "01",
-    icon: SearchCheck,
-    titulo: "Diagnóstico",
-    desc: "La ciudad identifica y prioriza los problemas reales de cada territorio con evidencia y cartografía social.",
+    id: "loc-1",
+    nombre: "Localidad 1 — Histórica y del Caribe Norte",
+    descripcion:
+      "Centro Histórico, Getsemaní, San Diego, Cabrero, Marbella, Crespo, Canapote y barrios aledaños al borde costero norte.",
   },
   {
-    num: "02",
-    icon: PenLine,
-    titulo: "Formulación",
-    desc: "Las líneas estratégicas se abren para que cualquier ciudadano aporte propuestas, anotaciones y preguntas.",
+    id: "loc-2",
+    nombre: "Localidad 2 — De la Virgen y Turística",
+    descripcion:
+      "El Pozón, Olaya Herrera, Boston, La Esperanza, Fredonia y cuenca suroccidental de la Ciénaga de la Virgen.",
   },
   {
-    num: "03",
-    icon: MessagesSquare,
-    titulo: "Deliberación",
-    desc: "Los aportes se debaten, se apoyan y el equipo técnico responde uno a uno antes del cierre.",
+    id: "loc-3",
+    nombre: "Localidad 3 — Industrial y de la Bahía",
+    descripcion:
+      "Nelson Mandela, San José de los Campanos, Arroz Barato, Albornoz, Policarpa y zona de influencia portuario-industrial.",
   },
   {
-    num: "04",
-    icon: BadgeCheck,
-    titulo: "Trazabilidad",
-    desc: "Cada aporte queda en el acta oficial. El informe final muestra qué se incorporó y por qué.",
+    id: "rural-insular",
+    nombre: "Zona Corregimental e Insular",
+    descripcion:
+      "La Boquilla, Tierrabomba, Barú, Pasacaballos, Bayunca, Arroyo de Piedra y comunidades étnicas con consulta previa (Ley 70/93).",
   },
 ];
 
 export function InicioView() {
   const reducedMotion = useReducedMotion();
-  const politicas = usePoliticasStore((s) => s.politicas);
   const setVista = useNavigationStore((s) => s.setVista);
+  const politica = usePoliticaPrincipal();
 
-  const totalAportesCiudadanos = politicas.reduce((a, p) => a + totalAportes(p), 0);
-  const totalParticipantes = politicas.reduce((a, p) => a + p.participantes, 0);
-  const enConsulta = politicas.filter(
-    (p) => p.estado === "consulta_publica" || p.estado === "en_deliberacion"
-  ).length;
-  const totalLineas = politicas.reduce(
-    (a, p) => a + p.fases.reduce((x, f) => x + f.lineas.length, 0),
+  if (!politica) {
+    return null;
+  }
+
+  /* Métricas vivas requeridas */
+  const totalParticipantes = politica.participantes.toLocaleString("es-CO");
+  const totalAportesCiudadanos = totalAportes(politica).toLocaleString("es-CO");
+  const lineasConAportes = politica.fases.reduce(
+    (acc, f) => acc + f.lineas.filter((l) => l.aportes.length > 0).length,
     0
   );
-
-  const destacadas = politicas
-    .filter((p) => p.estado === "consulta_publica" || p.estado === "en_deliberacion")
-    .slice(0, 3);
+  const fasesCompletadas = politica.fases.filter(
+    (f) => f.estado === "completada"
+  ).length;
 
   const stats = [
-    { valor: enConsulta.toString().padStart(2, "0"), label: "Políticas en consulta" },
-    { valor: totalLineas.toString(), label: "Líneas estratégicas abiertas" },
-    { valor: totalAportesCiudadanos.toLocaleString("es-CO"), label: "Aportes ciudadanos" },
-    { valor: totalParticipantes.toLocaleString("es-CO"), label: "Personas participando" },
+    { valor: totalParticipantes, label: "Ciudadanos participando" },
+    { valor: totalAportesCiudadanos, label: "Aportes ciudadanos radicados" },
+    { valor: lineasConAportes.toString().padStart(2, "0"), label: "Líneas estratégicas abiertas" },
+    { valor: `${fasesCompletadas} de ${politica.fases.length}`, label: "Fases DNP completadas" },
   ];
 
   return (
-    <div>
-      {/* ================= HERO ================= */}
+    <div className="space-y-20 pb-20 md:space-y-28 md:pb-28">
+      {/* ================= HERO INSTITUCIONAL ================= */}
       <section className="relative overflow-hidden">
         <div className="bg-dotgrid absolute inset-0" aria-hidden />
-        <div className="container-fluid relative pb-16 pt-14 md:pb-24 md:pt-20 lg:pb-28 lg:pt-24">
-          {/* En pantallas grandes el hero se divide: texto a la izquierda,
-              métricas vivas a la derecha — aprovecha todo el ancho sin
-              estirar la medida de lectura del texto. */}
+        <div className="container-fluid relative pb-12 pt-12 md:pb-20 md:pt-16 lg:pb-24 lg:pt-20">
           <div className="grid gap-12 xl:grid-cols-12 xl:items-end xl:gap-16">
             <div className="xl:col-span-7 2xl:col-span-8">
               <motion.p
@@ -95,82 +88,96 @@ export function InicioView() {
                 transition={{ duration: 0.5 }}
                 className="flex items-center gap-2"
               >
-                <span className="size-1.5 rounded-full bg-[var(--ember)]" aria-hidden />
+                <span className="size-2 rounded-full bg-[var(--ember)]" aria-hidden />
                 <span className="label-micro text-[var(--text-secondary)]">
-                  Plataforma de participación ciudadana
+                  Distrito Turístico y Cultural de Cartagena de Indias
                 </span>
               </motion.p>
 
               <motion.h1
                 {...(reducedMotion ? { initial: false as const } : fadeUp)}
                 transition={{ duration: 0.55, delay: 0.08 }}
-                className="display-tight mt-6 text-[clamp(2.5rem,4.2vw,5.75rem)] font-semibold text-[var(--text-primary)]"
+                className="display-tight mt-6 text-[clamp(2.25rem,4vw,5.25rem)] font-semibold text-[var(--text-primary)]"
               >
-                Las políticas públicas
-                <br />
-                <span className="text-fade">se construyen contigo.</span>
+                Política Pública de Seguridad Humana Integral{" "}
+                <span className="text-fade block sm:inline">2026–2036</span>
               </motion.h1>
 
               <motion.p
                 {...(reducedMotion ? { initial: false as const } : fadeUp)}
                 transition={{ duration: 0.55, delay: 0.16 }}
-                className="mt-7 max-w-xl text-[15px] leading-relaxed text-[var(--text-secondary)] md:text-base lg:text-lg"
+                className="mt-6 max-w-2xl text-[15px] leading-relaxed text-[var(--text-secondary)] md:text-base lg:text-lg"
               >
-                Explora las políticas en curso, entra fase por fase y línea por línea, y deja
-                tu propuesta, anotación o pregunta exactamente donde se toma la decisión.
-                Cada aporte queda registrado y recibe respuesta oficial.
+                Garantizando las libertades frente al miedo, la necesidad y la indignidad mediante la
+                participación vinculante de la ciudadanía (Decreto Nacional 037 de 2026 — Sentencia C-150 de 2015).
               </motion.p>
 
+              {/* 3 Botones de acción */}
               <motion.div
                 {...(reducedMotion ? { initial: false as const } : fadeUp)}
                 transition={{ duration: 0.55, delay: 0.24 }}
-                className="mt-9 flex flex-wrap items-center gap-3"
+                className="mt-9 flex flex-wrap items-center gap-3.5"
               >
-                <Button variant="default" size="lg"
+                <Button
+                  variant="default"
+                  size="lg"
                   type="button"
                   onClick={() => setVista("explorar")}
                   className="group"
                 >
-                  Explorar políticas
+                  Dejar mi Aporte Territorial
                   <ArrowRight
                     className="size-4 transition-transform group-hover:translate-x-0.5"
-                    strokeWidth={1.5}
+                    strokeWidth={1.75}
                   />
                 </Button>
-                <a
-                  href="#metodologia"
-                  className="inline-flex items-center gap-2 rounded-full border border-[var(--border-strong)] px-6 py-3 text-[13px] font-medium text-[var(--text-secondary)] transition-colors hover:bg-[var(--surface-2)] hover:text-[var(--text-primary)] lg:px-7 lg:py-3.5 lg:text-sm"
+                <Button
+                  variant="outline"
+                  size="lg"
+                  type="button"
+                  asChild
                 >
-                  Cómo funciona el proceso
-                </a>
+                  <a href="#fases-dnp">
+                    <FileCheck2 className="size-4 text-[var(--text-secondary)]" strokeWidth={1.75} />
+                    Ver Diagnóstico Participativo
+                  </a>
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="lg"
+                  type="button"
+                  onClick={() => setVista("geovisor")}
+                  className="text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+                >
+                  <Compass className="size-4 text-[var(--ember)]" strokeWidth={1.75} />
+                  Geovisor de Seguridad
+                </Button>
               </motion.div>
             </div>
 
-            {/* Métricas vivas — columna derecha en xl, banda inferior en < xl.
-                Bordes por celda: móvil 2×2, md 4-en-fila, xl 2×2. */}
+            {/* Métricas vivas */}
             <motion.dl
               initial={reducedMotion ? false : { opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
+              transition={{ duration: 0.6, delay: 0.35 }}
               className="grid grid-cols-2 overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--surface-1)] md:grid-cols-4 xl:col-span-5 xl:grid-cols-2 2xl:col-span-4"
             >
               {stats.map((s, i) => (
                 <div
                   key={s.label}
-                  className={`flex flex-col-reverse px-6 py-6 lg:px-8 lg:py-8 ${
+                  className={`flex flex-col-reverse px-6 py-6 lg:px-7 lg:py-7 ${
                     [
-                      "",                                        // 0 — sin bordes
-                      "border-l",                                // 1 — derecha siempre
-                      "border-t md:border-l md:border-t-0 xl:border-t xl:border-l-0", // 2
-                      "border-l border-t md:border-t-0 xl:border-t",                   // 3
+                      "",
+                      "border-l border-[var(--border)]",
+                      "border-t border-[var(--border)] md:border-l md:border-t-0 xl:border-t xl:border-l-0",
+                      "border-l border-t border-[var(--border)] md:border-t-0 xl:border-t",
                     ][i]
                   }`}
                 >
-                  {/* HTML5 exige dt antes de dd; flex-col-reverse conserva el diseño */}
                   <dt className="mt-1.5 text-[11px] uppercase tracking-[0.12em] text-[var(--text-tertiary)]">
                     {s.label}
                   </dt>
-                  <dd className="text-2xl font-semibold tracking-tight text-[var(--text-primary)] tabular md:text-3xl xl:text-[2rem] 2xl:text-4xl">
+                  <dd className="text-2xl font-semibold tracking-tight text-[var(--text-primary)] tabular md:text-3xl xl:text-[1.85rem] 2xl:text-3xl">
                     {s.valor}
                   </dd>
                 </div>
@@ -180,83 +187,177 @@ export function InicioView() {
         </div>
       </section>
 
-      {/* ================= CONSULTAS ACTIVAS ================= */}
-      <section className="container-fluid pb-20 md:pb-24">
-        <div className="mb-6 flex items-end justify-between gap-4">
-          <div>
-            <p className="label-micro text-[var(--ember)]">En curso</p>
-            <h2 className="mt-1.5 text-xl font-semibold tracking-tight text-[var(--text-primary)] md:text-2xl lg:text-3xl">
-              Consultas abiertas ahora
+      {/* ================= 7 DIMENSIONES ONU ================= */}
+      <section id="dimensiones" className="container-fluid">
+        <div className="mb-8 max-w-2xl">
+          <p className="label-micro text-[var(--ember)]">Marco Multidimensional ONU</p>
+          <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[var(--text-primary)] md:text-3xl">
+            Las 7 Dimensiones de la Seguridad Humana
+          </h2>
+          <p className="mt-3 text-sm leading-relaxed text-[var(--text-secondary)] md:text-base">
+            La política pública territorializa las libertades frente al miedo, la necesidad y la
+            indignidad, organizando las alternativas ciudadanas en los siete ejes definidos por las Naciones Unidas.
+          </p>
+        </div>
+
+        <DimensionesGrid />
+      </section>
+
+      {/* ================= CICLO DNP ================= */}
+      <section id="fases-dnp" className="border-y border-[var(--border)] bg-[var(--surface-2)]">
+        <div className="container-fluid py-16 md:py-24">
+          <div className="mb-10 max-w-2xl">
+            <p className="label-micro text-[var(--text-tertiary)]">Metodología DNP & CONPES</p>
+            <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[var(--text-primary)] md:text-3xl">
+              Ciclo de Formulación de la Política
             </h2>
+            <p className="mt-3 text-sm leading-relaxed text-[var(--text-secondary)] md:text-base">
+              Progreso auditado y trazable de cada fase metodológica en el marco de la planeación
+              territorial de Cartagena de Indias.
+            </p>
           </div>
-          <Button variant="unstyled" size="unstyled"
+
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {politica.fases.map((fase) => {
+              let tone: StatusTone = "neutral";
+              let labelEstado = "Próxima";
+              if (fase.estado === "completada") {
+                tone = "success";
+                labelEstado = "Completada";
+              } else if (fase.estado === "activa") {
+                tone = "warning";
+                labelEstado = "En curso";
+              }
+
+              return (
+                <div
+                  key={fase.id}
+                  className="flex flex-col justify-between rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-6"
+                >
+                  <div>
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-xs font-semibold text-[var(--text-tertiary)] tabular">
+                        Fase 0{fase.orden}
+                      </span>
+                      <StatusBadge tone={tone}>{labelEstado}</StatusBadge>
+                    </div>
+
+                    <h3 className="mt-4 text-base font-semibold text-[var(--text-primary)]">
+                      {fase.nombre}
+                    </h3>
+                    <p className="mt-2.5 text-[13px] leading-relaxed text-[var(--text-secondary)]">
+                      {fase.descripcion}
+                    </p>
+                  </div>
+
+                  <div className="mt-6 border-t border-[var(--border)] pt-4">
+                    <div className="mb-2 flex items-center justify-between text-xs text-[var(--text-secondary)]">
+                      <span className="font-medium">Progreso</span>
+                      <span className="font-semibold tabular text-[var(--text-primary)]">
+                        {fase.progreso}%
+                      </span>
+                    </div>
+                    <Progress value={fase.progreso} />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ================= TERRITORIOS DE CARTAGENA ================= */}
+      <section className="container-fluid">
+        <div className="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-end">
+          <div className="max-w-2xl">
+            <p className="label-micro text-[var(--ember)]">Anclaje Territorial</p>
+            <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[var(--text-primary)] md:text-3xl">
+              Territorios de Cartagena de Indias
+            </h2>
+            <p className="mt-3 text-sm leading-relaxed text-[var(--text-secondary)] md:text-base">
+              Participación descentralizada en las tres localidades urbanas y la zona insular-corregimental
+              con salvaguardas de consulta previa.
+            </p>
+          </div>
+          <Button
+            variant="outline"
+            size="default"
             type="button"
-            onClick={() => setVista("explorar")}
-            className="group inline-flex items-center gap-1.5 text-[13px] font-medium text-[var(--text-secondary)] transition-colors hover:text-[var(--text-primary)]"
+            onClick={() => setVista("geovisor")}
+            className="self-start md:self-auto"
           >
-            Ver todas
-            <ArrowRight
-              className="size-3.5 transition-transform group-hover:translate-x-0.5"
-              strokeWidth={1.5}
-            />
+            <MapPin className="size-4 text-[var(--ember)]" />
+            Explorar en Geovisor
           </Button>
         </div>
 
-        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-          {destacadas.map((p, i) => (
-            <PoliticaCard key={p.id} politica={p} index={i} />
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {TERRITORIOS.map((terr) => (
+            <div
+              key={terr.id}
+              className="flex flex-col justify-between rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-6 transition-colors hover:border-[var(--border-strong)]"
+            >
+              <div>
+                <div className="flex size-9 items-center justify-center rounded-lg bg-[var(--surface-2)] text-[var(--ember)]">
+                  <MapPin className="size-4" strokeWidth={1.75} />
+                </div>
+                <h3 className="mt-4 text-[15px] font-semibold text-[var(--text-primary)]">
+                  {terr.nombre}
+                </h3>
+                <p className="mt-2 text-[13px] leading-relaxed text-[var(--text-secondary)]">
+                  {terr.descripcion}
+                </p>
+              </div>
+
+              <div className="mt-6 border-t border-[var(--border)] pt-4">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  type="button"
+                  onClick={() => setVista("geovisor")}
+                  className="w-full justify-between text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+                >
+                  <span>Ver en Geovisor</span>
+                  <ArrowRight className="size-3.5" />
+                </Button>
+              </div>
+            </div>
           ))}
         </div>
       </section>
 
-      {/* ================= METODOLOGÍA ================= */}
-      <section id="metodologia" className="border-t border-[var(--border)] bg-[var(--surface-2)]">
-        <div className="container-fluid py-20 md:py-24">
-          <p className="label-micro text-[var(--text-tertiary)]">Metodología</p>
-          <h2 className="display-tight mt-2 max-w-2xl text-3xl font-semibold text-[var(--text-primary)] md:text-4xl lg:text-[2.75rem]">
-            Cuatro momentos, una sola conversación.
-          </h2>
+      {/* ================= GARANTÍA C-150/15 ================= */}
+      <section className="container-fluid">
+        <div className="relative overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface-1)] p-8 md:p-12">
+          <div className="absolute right-0 top-0 -mr-16 -mt-16 size-64 rounded-full bg-[var(--ember)]/5 blur-3xl pointer-events-none" />
+          <div className="relative flex flex-col items-start justify-between gap-8 lg:flex-row lg:items-center">
+            <div className="max-w-3xl">
+              <div className="flex items-center gap-2 text-xs font-semibold text-[var(--ember)]">
+                <Scale className="size-4" strokeWidth={1.75} />
+                <span className="uppercase tracking-wider">Mandato Constitucional Vinculante</span>
+              </div>
+              <h2 className="mt-3 text-xl font-semibold tracking-tight text-[var(--text-primary)] md:text-2xl">
+                Garantía de Devolución de Razones — Sentencia C-150 de 2015
+              </h2>
+              <p className="mt-3 text-sm leading-relaxed text-[var(--text-secondary)] md:text-base">
+                Cada propuesta ciudadana recibe respuesta oficial con sustentación técnica antes del cierre de
+                la consulta pública. El Estado distrital no puede descartar aportes de forma silenciosa ni arbitraria.
+              </p>
+            </div>
 
-          <div className="mt-12 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
-            {METODOLOGIA.map((paso, i) => {
-              const Icon = paso.icon;
-              return (
-                <motion.div
-                  key={paso.num}
-                  initial={{ opacity: 1, y: 0 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-60px" }}
-                  transition={{ duration: 0.45, delay: i * 0.08 }}
-                  className="border-t border-[var(--border-strong)] pt-5"
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-semibold text-[var(--text-tertiary)] tabular">
-                      {paso.num}
-                    </span>
-                    <Icon className="size-4 text-[var(--text-secondary)]" strokeWidth={1.5} />
-                  </div>
-                  <h3 className="mt-4 text-[15px] font-semibold text-[var(--text-primary)]">
-                    {paso.titulo}
-                  </h3>
-                  <p className="mt-2 text-[13px] leading-relaxed text-[var(--text-secondary)]">
-                    {paso.desc}
-                  </p>
-                </motion.div>
-              );
-            })}
-          </div>
-
-          {/* Nota de arquitectura de interacción */}
-          <div className="mt-14 flex items-start gap-3.5 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-5">
-            <PanelsTopLeft className="mt-0.5 size-4 shrink-0 text-[var(--ember)]" strokeWidth={1.5} />
-            <p className="text-[13px] leading-relaxed text-[var(--text-secondary)]">
-              <span className="font-medium text-[var(--text-primary)]">
-                Navegación sin ventanas emergentes.
-              </span>{" "}
-              Todo el recorrido — política, fase, línea estratégica y aporte — sucede en
-              paneles laterales que se apilan: nunca pierdes el hilo de dónde estás, y
-              puedes retroceder nivel a nivel.
-            </p>
+            <Button
+              variant="default"
+              size="lg"
+              type="button"
+              onClick={() => setVista("explorar")}
+              className="shrink-0 group"
+            >
+              Consultar estado de mi propuesta
+              <ArrowRight
+                className="size-4 transition-transform group-hover:translate-x-0.5"
+                strokeWidth={1.75}
+              />
+            </Button>
           </div>
         </div>
       </section>
