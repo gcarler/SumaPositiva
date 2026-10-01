@@ -11,6 +11,15 @@ export default defineConfig({
     projects: [
       {
         extends: true,
+        resolve: { alias: { "@": path.join(dirname, "src") } },
+        test: {
+          name: "formularios",
+          environment: "node",
+          include: ["src/features/formularios/**/*.test.ts"],
+        },
+      },
+      {
+        extends: true,
         plugins: [
           storybookTest({ configDir: path.join(dirname, ".storybook") }),
         ],

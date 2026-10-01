@@ -1,0 +1,646 @@
+{
+  "fecha": "2026-10-01T19:11:55.266Z",
+  "casos": [
+    {
+      "id": "formularios{}",
+      "tema": "light",
+      "ancho": 320,
+      "infracciones": [],
+      "regiones": [
+        {
+          "nombre": "Catálogo de Formularios",
+          "ancho": 319,
+          "contenido": 319
+        },
+        {
+          "nombre": "Contenido de Catálogo de Formularios",
+          "ancho": 319,
+          "contenido": 319
+        }
+      ],
+      "documento": 320,
+      "desbordamientos": []
+    },
+    {
+      "id": "formulario-editor{}",
+      "tema": "light",
+      "ancho": 320,
+      "infracciones": [],
+      "regiones": [
+        {
+          "nombre": "Nuevo Formulario",
+          "ancho": 319,
+          "contenido": 319
+        },
+        {
+          "nombre": "Contenido de Nuevo Formulario",
+          "ancho": 319,
+          "contenido": 319
+        }
+      ],
+      "documento": 320,
+      "desbordamientos": []
+    },
+    {
+      "id": "formulario-editor{\"formularioId\":\"f1\"}",
+      "tema": "light",
+      "ancho": 320,
+      "infracciones": [],
+      "regiones": [
+        {
+          "nombre": "Editar Formulario",
+          "ancho": 319,
+          "contenido": 319
+        },
+        {
+          "nombre": "Contenido de Editar Formulario",
+          "ancho": 319,
+          "contenido": 319
+        }
+      ],
+      "documento": 320,
+      "desbordamientos": []
+    },
+    {
+      "id": "formulario-respuesta{\"formularioId\":\"f1\"}",
+      "tema": "light",
+      "ancho": 320,
+      "infracciones": [],
+      "regiones": [
+        {
+          "nombre": "Diagnóstico de Seguridad en mi Barrio",
+          "ancho": 319,
+          "contenido": 319
+        },
+        {
+          "nombre": "Contenido de Diagnóstico de Seguridad en mi Barrio",
+          "ancho": 319,
+          "contenido": 319
+        }
+      ],
+      "documento": 320,
+      "desbordamientos": []
+    },
+    {
+      "id": "formulario-analitica{\"formularioId\":\"f1\"}",
+      "tema": "light",
+      "ancho": 320,
+      "infracciones": [],
+      "regiones": [
+        {
+          "nombre": "Analítica de Formulario",
+          "ancho": 319,
+          "contenido": 319
+        },
+        {
+          "nombre": "Contenido de Analítica de Formulario",
+          "ancho": 319,
+          "contenido": 319
+        }
+      ],
+      "documento": 320,
+      "desbordamientos": []
+    },
+    {
+      "id": "preview",
+      "tema": "light",
+      "ancho": 320,
+      "infracciones": [],
+      "regiones": [
+        {
+          "nombre": "Editar Formulario",
+          "ancho": 319,
+          "contenido": 319
+        },
+        {
+          "nombre": "Contenido de Editar Formulario",
+          "ancho": 319,
+          "contenido": 319
+        }
+      ],
+      "documento": 320,
+      "desbordamientos": []
+    },
+    {
+      "id": "todos-los-tipos-respondidos",
+      "tema": "light",
+      "ancho": 320,
+      "infracciones": [],
+      "regiones": [
+        {
+          "nombre": "Todos los tipos",
+          "ancho": 319,
+          "contenido": 319
+        },
+        {
+          "nombre": "Contenido de Todos los tipos",
+          "ancho": 319,
+          "contenido": 319
+        }
+      ],
+      "documento": 320,
+      "desbordamientos": []
+    },
+    {
+      "id": "confirmacion",
+      "tema": "light",
+      "ancho": 320,
+      "infracciones": [],
+      "regiones": [
+        {
+          "nombre": "Todos los tipos",
+          "ancho": 319,
+          "contenido": 319
+        },
+        {
+          "nombre": "Contenido de Todos los tipos",
+          "ancho": 319,
+          "contenido": 319
+        }
+      ],
+      "documento": 320,
+      "desbordamientos": []
+    },
+    {
+      "id": "formularios{}",
+      "tema": "light",
+      "ancho": 1440,
+      "infracciones": [],
+      "regiones": [
+        {
+          "nombre": "Catálogo de Formularios",
+          "ancho": 819,
+          "contenido": 819
+        },
+        {
+          "nombre": "Contenido de Catálogo de Formularios",
+          "ancho": 819,
+          "contenido": 819
+        }
+      ],
+      "documento": 1440,
+      "desbordamientos": []
+    },
+    {
+      "id": "formulario-editor{}",
+      "tema": "light",
+      "ancho": 1440,
+      "infracciones": [],
+      "regiones": [
+        {
+          "nombre": "Nuevo Formulario",
+          "ancho": 779,
+          "contenido": 779
+        },
+        {
+          "nombre": "Contenido de Nuevo Formulario",
+          "ancho": 779,
+          "contenido": 779
+        }
+      ],
+      "documento": 1440,
+      "desbordamientos": []
+    },
+    {
+      "id": "formulario-editor{\"formularioId\":\"f1\"}",
+      "tema": "light",
+      "ancho": 1440,
+      "infracciones": [],
+      "regiones": [
+        {
+          "nombre": "Editar Formulario",
+          "ancho": 779,
+          "contenido": 779
+        },
+        {
+          "nombre": "Contenido de Editar Formulario",
+          "ancho": 779,
+          "contenido": 779
+        }
+      ],
+      "documento": 1440,
+      "desbordamientos": []
+    },
+    {
+      "id": "formulario-respuesta{\"formularioId\":\"f1\"}",
+      "tema": "light",
+      "ancho": 1440,
+      "infracciones": [],
+      "regiones": [
+        {
+          "nombre": "Diagnóstico de Seguridad en mi Barrio",
+          "ancho": 639,
+          "contenido": 639
+        },
+        {
+          "nombre": "Contenido de Diagnóstico de Seguridad en mi Barrio",
+          "ancho": 639,
+          "contenido": 639
+        }
+      ],
+      "documento": 1440,
+      "desbordamientos": []
+    },
+    {
+      "id": "formulario-analitica{\"formularioId\":\"f1\"}",
+      "tema": "light",
+      "ancho": 1440,
+      "infracciones": [],
+      "regiones": [
+        {
+          "nombre": "Analítica de Formulario",
+          "ancho": 719,
+          "contenido": 719
+        },
+        {
+          "nombre": "Contenido de Analítica de Formulario",
+          "ancho": 719,
+          "contenido": 719
+        }
+      ],
+      "documento": 1440,
+      "desbordamientos": []
+    },
+    {
+      "id": "preview",
+      "tema": "light",
+      "ancho": 1440,
+      "infracciones": [],
+      "regiones": [
+        {
+          "nombre": "Editar Formulario",
+          "ancho": 779,
+          "contenido": 779
+        },
+        {
+          "nombre": "Contenido de Editar Formulario",
+          "ancho": 779,
+          "contenido": 779
+        }
+      ],
+      "documento": 1440,
+      "desbordamientos": []
+    },
+    {
+      "id": "todos-los-tipos-respondidos",
+      "tema": "light",
+      "ancho": 1440,
+      "infracciones": [],
+      "regiones": [
+        {
+          "nombre": "Todos los tipos",
+          "ancho": 639,
+          "contenido": 639
+        },
+        {
+          "nombre": "Contenido de Todos los tipos",
+          "ancho": 639,
+          "contenido": 639
+        }
+      ],
+      "documento": 1440,
+      "desbordamientos": []
+    },
+    {
+      "id": "confirmacion",
+      "tema": "light",
+      "ancho": 1440,
+      "infracciones": [],
+      "regiones": [
+        {
+          "nombre": "Todos los tipos",
+          "ancho": 639,
+          "contenido": 639
+        },
+        {
+          "nombre": "Contenido de Todos los tipos",
+          "ancho": 639,
+          "contenido": 639
+        }
+      ],
+      "documento": 1440,
+      "desbordamientos": []
+    },
+    {
+      "id": "formularios{}",
+      "tema": "dark",
+      "ancho": 320,
+      "infracciones": [],
+      "regiones": [
+        {
+          "nombre": "Catálogo de Formularios",
+          "ancho": 319,
+          "contenido": 319
+        },
+        {
+          "nombre": "Contenido de Catálogo de Formularios",
+          "ancho": 319,
+          "contenido": 319
+        }
+      ],
+      "documento": 320,
+      "desbordamientos": []
+    },
+    {
+      "id": "formulario-editor{}",
+      "tema": "dark",
+      "ancho": 320,
+      "infracciones": [],
+      "regiones": [
+        {
+          "nombre": "Nuevo Formulario",
+          "ancho": 319,
+          "contenido": 319
+        },
+        {
+          "nombre": "Contenido de Nuevo Formulario",
+          "ancho": 319,
+          "contenido": 319
+        }
+      ],
+      "documento": 320,
+      "desbordamientos": []
+    },
+    {
+      "id": "formulario-editor{\"formularioId\":\"f1\"}",
+      "tema": "dark",
+      "ancho": 320,
+      "infracciones": [],
+      "regiones": [
+        {
+          "nombre": "Editar Formulario",
+          "ancho": 319,
+          "contenido": 319
+        },
+        {
+          "nombre": "Contenido de Editar Formulario",
+          "ancho": 319,
+          "contenido": 319
+        }
+      ],
+      "documento": 320,
+      "desbordamientos": []
+    },
+    {
+      "id": "formulario-respuesta{\"formularioId\":\"f1\"}",
+      "tema": "dark",
+      "ancho": 320,
+      "infracciones": [],
+      "regiones": [
+        {
+          "nombre": "Diagnóstico de Seguridad en mi Barrio",
+          "ancho": 319,
+          "contenido": 319
+        },
+        {
+          "nombre": "Contenido de Diagnóstico de Seguridad en mi Barrio",
+          "ancho": 319,
+          "contenido": 319
+        }
+      ],
+      "documento": 320,
+      "desbordamientos": []
+    },
+    {
+      "id": "formulario-analitica{\"formularioId\":\"f1\"}",
+      "tema": "dark",
+      "ancho": 320,
+      "infracciones": [],
+      "regiones": [
+        {
+          "nombre": "Analítica de Formulario",
+          "ancho": 319,
+          "contenido": 319
+        },
+        {
+          "nombre": "Contenido de Analítica de Formulario",
+          "ancho": 319,
+          "contenido": 319
+        }
+      ],
+      "documento": 320,
+      "desbordamientos": []
+    },
+    {
+      "id": "preview",
+      "tema": "dark",
+      "ancho": 320,
+      "infracciones": [],
+      "regiones": [
+        {
+          "nombre": "Editar Formulario",
+          "ancho": 319,
+          "contenido": 319
+        },
+        {
+          "nombre": "Contenido de Editar Formulario",
+          "ancho": 319,
+          "contenido": 319
+        }
+      ],
+      "documento": 320,
+      "desbordamientos": []
+    },
+    {
+      "id": "todos-los-tipos-respondidos",
+      "tema": "dark",
+      "ancho": 320,
+      "infracciones": [],
+      "regiones": [
+        {
+          "nombre": "Todos los tipos",
+          "ancho": 319,
+          "contenido": 319
+        },
+        {
+          "nombre": "Contenido de Todos los tipos",
+          "ancho": 319,
+          "contenido": 319
+        }
+      ],
+      "documento": 320,
+      "desbordamientos": []
+    },
+    {
+      "id": "confirmacion",
+      "tema": "dark",
+      "ancho": 320,
+      "infracciones": [],
+      "regiones": [
+        {
+          "nombre": "Todos los tipos",
+          "ancho": 319,
+          "contenido": 319
+        },
+        {
+          "nombre": "Contenido de Todos los tipos",
+          "ancho": 319,
+          "contenido": 319
+        }
+      ],
+      "documento": 320,
+      "desbordamientos": []
+    },
+    {
+      "id": "formularios{}",
+      "tema": "dark",
+      "ancho": 1440,
+      "infracciones": [],
+      "regiones": [
+        {
+          "nombre": "Catálogo de Formularios",
+          "ancho": 819,
+          "contenido": 819
+        },
+        {
+          "nombre": "Contenido de Catálogo de Formularios",
+          "ancho": 819,
+          "contenido": 819
+        }
+      ],
+      "documento": 1440,
+      "desbordamientos": []
+    },
+    {
+      "id": "formulario-editor{}",
+      "tema": "dark",
+      "ancho": 1440,
+      "infracciones": [],
+      "regiones": [
+        {
+          "nombre": "Nuevo Formulario",
+          "ancho": 779,
+          "contenido": 779
+        },
+        {
+          "nombre": "Contenido de Nuevo Formulario",
+          "ancho": 779,
+          "contenido": 779
+        }
+      ],
+      "documento": 1440,
+      "desbordamientos": []
+    },
+    {
+      "id": "formulario-editor{\"formularioId\":\"f1\"}",
+      "tema": "dark",
+      "ancho": 1440,
+      "infracciones": [],
+      "regiones": [
+        {
+          "nombre": "Editar Formulario",
+          "ancho": 779,
+          "contenido": 779
+        },
+        {
+          "nombre": "Contenido de Editar Formulario",
+          "ancho": 779,
+          "contenido": 779
+        }
+      ],
+      "documento": 1440,
+      "desbordamientos": []
+    },
+    {
+      "id": "formulario-respuesta{\"formularioId\":\"f1\"}",
+      "tema": "dark",
+      "ancho": 1440,
+      "infracciones": [],
+      "regiones": [
+        {
+          "nombre": "Diagnóstico de Seguridad en mi Barrio",
+          "ancho": 639,
+          "contenido": 639
+        },
+        {
+          "nombre": "Contenido de Diagnóstico de Seguridad en mi Barrio",
+          "ancho": 639,
+          "contenido": 639
+        }
+      ],
+      "documento": 1440,
+      "desbordamientos": []
+    },
+    {
+      "id": "formulario-analitica{\"formularioId\":\"f1\"}",
+      "tema": "dark",
+      "ancho": 1440,
+      "infracciones": [],
+      "regiones": [
+        {
+          "nombre": "Analítica de Formulario",
+          "ancho": 719,
+          "contenido": 719
+        },
+        {
+          "nombre": "Contenido de Analítica de Formulario",
+          "ancho": 719,
+          "contenido": 719
+        }
+      ],
+      "documento": 1440,
+      "desbordamientos": []
+    },
+    {
+      "id": "preview",
+      "tema": "dark",
+      "ancho": 1440,
+      "infracciones": [],
+      "regiones": [
+        {
+          "nombre": "Editar Formulario",
+          "ancho": 779,
+          "contenido": 779
+        },
+        {
+          "nombre": "Contenido de Editar Formulario",
+          "ancho": 779,
+          "contenido": 779
+        }
+      ],
+      "documento": 1440,
+      "desbordamientos": []
+    },
+    {
+      "id": "todos-los-tipos-respondidos",
+      "tema": "dark",
+      "ancho": 1440,
+      "infracciones": [],
+      "regiones": [
+        {
+          "nombre": "Todos los tipos",
+          "ancho": 639,
+          "contenido": 639
+        },
+        {
+          "nombre": "Contenido de Todos los tipos",
+          "ancho": 639,
+          "contenido": 639
+        }
+      ],
+      "documento": 1440,
+      "desbordamientos": []
+    },
+    {
+      "id": "confirmacion",
+      "tema": "dark",
+      "ancho": 1440,
+      "infracciones": [],
+      "regiones": [
+        {
+          "nombre": "Todos los tipos",
+          "ancho": 639,
+          "contenido": 639
+        },
+        {
+          "nombre": "Contenido de Todos los tipos",
+          "ancho": 639,
+          "contenido": 639
+        }
+      ],
+      "documento": 1440,
+      "desbordamientos": []
+    }
+  ],
+  "errores": []
+}

@@ -23,6 +23,8 @@ export type PanelType =
   | "formularios"
   | "formulario-editor"
   | "formulario-analitica"
+  | "formulario-preview"
+  | "formulario-respuesta"
   | "participacion-multicanal"
   | "escenario-editor"
   | "testimonios-galeria"
@@ -57,9 +59,11 @@ export interface PanelPropsMap {
   "mesa-editor": { mesaId?: string };
   /** Ficha técnica del territorio en el geovisor */
   territorio: { territorioId: string };
-  formularios: Record<string, never>;
+  formularios: { soloRespuesta?: boolean };
   "formulario-editor": { formularioId?: string };
   "formulario-analitica": { formularioId: string };
+  "formulario-preview": { borradorId: string };
+  "formulario-respuesta": { formularioId: string };
   "participacion-multicanal": { canalInicial?: string };
   "escenario-editor": Record<string, never>;
   "testimonios-galeria": { territorioId?: string };

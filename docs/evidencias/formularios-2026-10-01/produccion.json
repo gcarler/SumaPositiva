@@ -1,0 +1,22 @@
+{
+  "fecha": "2026-10-01T19:12:33.632Z",
+  "url": "http://127.0.0.1:3000/",
+  "api": "Intercepción completa; no se escriben respuestas en la API",
+  "casos": [
+    {
+      "ancho": 320,
+      "http": 200,
+      "catalogo_ciudadano": true,
+      "envio_local_confirmado": true,
+      "reflujo": 320
+    },
+    {
+      "ancho": 1440,
+      "http": 200,
+      "catalogo_ciudadano": true,
+      "envio_local_confirmado": true,
+      "reflujo": 1440
+    }
+  ],
+  "errores": []
+}

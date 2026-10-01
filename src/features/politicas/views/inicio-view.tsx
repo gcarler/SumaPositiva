@@ -257,7 +257,7 @@ export function InicioView() {
                         {fase.progreso}%
                       </span>
                     </div>
-                    <Progress value={fase.progreso} />
+                    <Progress aria-label={`Progreso de ${fase.nombre}`} value={fase.progreso} />
                   </div>
                 </div>
               );

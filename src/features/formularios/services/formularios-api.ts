@@ -1,21 +1,35 @@
-import { apiFetch } from "@/core/http/api-client";
-import type { Formulario, AnaliticaFormulario } from "../models/formulario";
-
-export async function listarFormularios(): Promise<Formulario[]> {
-  return apiFetch<Formulario[]>("/formularios");
+/** Explicit demonstration adapter. Never substitutes mock data for a failed API request.
+ * Server persistence requires its own matching DTO, permission and upload contract. */
+import {
+  useFormulariosStore,
+  type DatosRespuesta,
+} from "../state/formularios-store";
+import type { DatosFormulario, Formulario } from "../models/formulario";
+import { calcularAnalitica } from "./formulario-analitica";
+export async function listarFormularios() {
+  return useFormulariosStore.getState().formularios;
 }
-
-export async function obtenerFormulario(id: string): Promise<Formulario> {
-  return apiFetch<Formulario>(`/formularios/${id}`);
+export async function obtenerFormulario(id: string) {
+  const form = useFormulariosStore
+    .getState()
+    .formularios.find((f) => f.id === id);
+  if (!form) throw new Error("Formulario no encontrado.");
+  return form;
 }
-
-export async function crearFormulario(data: Omit<Formulario, "id" | "respuestasCount" | "creadoEn" | "actualizadoEn">): Promise<Formulario> {
-  return apiFetch<Formulario>("/formularios", {
-    method: "POST",
-    body: data,
-  });
+export async function crearFormulario(data: DatosFormulario) {
+  return useFormulariosStore.getState().crearFormulario(data);
 }
-
-export async function obtenerAnalitica(id: string): Promise<AnaliticaFormulario> {
-  return apiFetch<AnaliticaFormulario>(`/formularios/${id}/analitica`);
+export async function actualizarFormulario(
+  id: string,
+  data: Partial<Formulario>,
+) {
+  useFormulariosStore.getState().actualizarFormulario(id, data);
+  return obtenerFormulario(id);
+}
+export async function obtenerAnalitica(id: string) {
+  const form = await obtenerFormulario(id);
+  return calcularAnalitica(form, useFormulariosStore.getState().respuestas);
+}
+export async function enviarRespuesta(data: DatosRespuesta) {
+  useFormulariosStore.getState().enviarRespuesta(data);
 }

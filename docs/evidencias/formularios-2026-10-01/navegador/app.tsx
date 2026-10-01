@@ -1,0 +1,13 @@
+import React from 'react';
+import {createRoot} from 'react-dom/client';
+import {ThemeProvider} from 'next-themes';
+import {MotionConfig} from 'framer-motion';
+import {QueryProvider} from '@/app/_composition/query-provider';
+import {PanelHost} from '@/app/_components/panel-host';
+import {usePanelStore} from '@/core/panels/panel-store';
+import {useFormulariosStore} from '@/features/formularios/state/formularios-store';
+import {formularioVacio} from '@/features/formularios/models/formulario';
+import {Button} from '@/shared/ui/button';
+import './style.css';
+window.qa={open:(type,props)=>usePanelStore.getState().openPanel(type,props),close:()=>usePanelStore.getState().closeAll(),store:useFormulariosStore,empty:formularioVacio};
+createRoot(document.getElementById('root')).render(<QueryProvider><ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}><MotionConfig reducedMotion="user"><main id="polis-application"><h1>Pruebas de formularios</h1><Button onClick={()=>window.qa.open('formularios',{})}>Abrir Formularios</Button></main><PanelHost/></MotionConfig></ThemeProvider></QueryProvider>);

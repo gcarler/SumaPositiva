@@ -1,0 +1,29 @@
+import {chromium} from 'playwright';import assert from 'node:assert/strict';import {writeFile} from 'node:fs/promises';
+const browser=await chromium.launch();const results={fecha:new Date().toISOString(),casos:[],errores:[]};
+async function capture(page,id,theme,width){
+ const c=await page.evaluate(async()=>{
+ const root=document.querySelector('[data-slot=side-panel]:not([inert])');
+ const axe=await window.axe.run(root);const regions=[root,...root.querySelectorAll('[role=region]')].map(e=>({nombre:e.getAttribute('aria-label'),ancho:e.clientWidth,contenido:e.scrollWidth}));
+ const out=[...root.querySelectorAll('*')].filter(e=>e.getBoundingClientRect().right>innerWidth+.5&&e.getClientRects().length&&!e.closest('[inert]')).map(e=>({tag:e.tagName,cls:e.className,text:e.textContent.slice(0,60),right:e.getBoundingClientRect().right}));
+ return {infracciones:axe.violations.map(v=>({id:v.id,nodos:v.nodes.map(n=>({target:n.target,html:n.html}))})),regiones:regions,documento:document.documentElement.scrollWidth,desbordamientos:out};
+ });results.casos.push({id,tema:theme,ancho:width,...c});assert.equal(c.infracciones.length,0,id+' axe '+JSON.stringify(c.infracciones));assert.ok(c.documento<=width+1,id+' documento');for(const r of c.regiones)assert.ok(r.contenido<=r.ancho+1,id+' reflujo '+JSON.stringify(c.desbordamientos));
+}
+try{for(const theme of ['light','dark'])for(const width of [320,1440]){
+ const p=await browser.newPage({viewport:{width,height:1000},timezoneId:"America/Bogota",reducedMotion:'reduce'});p.on('pageerror',e=>results.errores.push(e.message));await p.route('**/api/v1/**',r=>r.fulfill({status:401,contentType:'application/json',body:'{}'}));
+ await p.goto('http://127.0.0.1:3202');await p.waitForFunction(()=>window.qa);await p.evaluate(t=>document.documentElement.classList.toggle('dark',t==='dark'),theme);await p.addScriptTag({path:'/root/polis/node_modules/axe-core/axe.min.js'});
+ for(const [id,props] of [['formularios',{}],['formulario-editor',{}],['formulario-editor',{formularioId:'f1'}],['formulario-respuesta',{formularioId:'f1'}],['formulario-analitica',{formularioId:'f1'}]]){
+  await p.evaluate(({id,props})=>{window.qa.close();window.qa.open(id,props);},{id,props});await p.getByRole('dialog').waitFor();await p.waitForTimeout(100);await capture(p,id+JSON.stringify(props),theme,width);
+ }
+ await p.evaluate(()=>{window.qa.close();window.qa.open('formulario-editor',{formularioId:'f1'});});await p.getByRole('dialog').waitFor();await p.getByLabel('Fecha de cierre',{exact:true}).fill('2026-12-01T18:30');assert.equal(await p.getByLabel('Fecha de cierre',{exact:true}).inputValue(),'2026-12-01T18:30');await p.getByRole('button',{name:'Vista Previa'}).click();assert.equal(await p.evaluate(()=>Object.values(window.qa.store.getState().previews)[0].configuracion.fechaCierre),'2026-12-01T23:30:00.000Z');await p.getByRole('dialog',{name:'Vista Previa',exact:true}).waitFor();await capture(p,'preview',theme,width);await p.keyboard.press('Escape');await p.getByRole('dialog',{name:'Editar Formulario',exact:true}).waitFor();
+ await p.evaluate(()=>{window.qa.close();const f={...window.qa.empty(),id:'todos',titulo:'Todos los tipos',estado:'activo',preguntas:['texto_corto','texto_largo','opcion_unica','opcion_multiple','lista_desplegable','likert','escala_lineal','fecha','hora','numero','carga_archivo','seccion','descripcion'].map((tipo,orden)=>({id:tipo,tipo,texto:'Pregunta '+tipo,obligatoria:false,orden,opciones:[{id:'a',texto:'Primera opción'},{id:'otro',texto:'Otro',esOtro:true}],escalaMin:1,escalaMax:5}))};window.qa.store.setState({formularios:[f],respuestas:[]});window.qa.open('formulario-respuesta',{formularioId:'todos'});});await p.getByRole('dialog').waitFor();
+ await p.getByLabel('Pregunta texto_corto',{exact:true}).fill('Texto de prueba');await p.getByLabel('Pregunta texto_largo',{exact:true}).fill('Texto largo de prueba');
+ await p.getByRole('radiogroup',{name:'Pregunta opcion_unica'}).getByRole('radio',{name:'Otro'}).click();await p.getByRole('textbox',{name:/^Otro: Pregunta opcion_unica/}).fill('Respuesta libre');
+ await p.getByLabel('Primera opción',{exact:true}).check();
+ await p.getByRole('combobox',{name:'Pregunta lista_desplegable'}).click();await p.getByRole('option',{name:'Primera opción',exact:true}).click();
+ await p.getByRole('radiogroup',{name:'Pregunta likert'}).getByRole('radio',{name:'3',exact:true}).click();await p.getByLabel('Pregunta escala_lineal',{exact:true}).focus();await p.keyboard.press('Home');await p.keyboard.press('ArrowRight');await p.keyboard.press('ArrowRight');
+ await p.getByLabel('Pregunta fecha',{exact:true}).fill('2026-10-10');await p.getByLabel('Pregunta hora',{exact:true}).fill('15:45');await p.getByLabel('Pregunta numero',{exact:true}).fill('5');
+ await p.getByLabel('Pregunta carga_archivo',{exact:true}).setInputFiles({name:'prueba.png',mimeType:'image/png',buffer:Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/l9sAAAAASUVORK5CYII=','base64')});await p.getByText('prueba.png',{exact:true}).waitFor();
+ await capture(p,'todos-los-tipos-respondidos',theme,width);if(width===320)await p.screenshot({path:'/tmp/polis-formularios-eaf/tipos-'+theme+'-320.png'});
+ await p.getByRole('button',{name:'Enviar respuestas',exact:true}).click();await p.getByText('Respuesta de prueba recibida',{exact:true}).waitFor();assert.equal(await p.evaluate(()=>Object.keys(window.qa.store.getState().respuestas[0].respuestas).length),11);await capture(p,'confirmacion',theme,width);
+ await p.close();console.log('Aprobado',theme,width);
+}assert.equal(results.errores.length,0);}catch(e){results.fallo=e.stack;process.exitCode=1;console.error(e);}finally{await writeFile('/tmp/polis-formularios-eaf/navegador.json',JSON.stringify(results,null,2));await browser.close();}

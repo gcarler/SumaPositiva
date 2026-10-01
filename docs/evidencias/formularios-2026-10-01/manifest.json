@@ -1,0 +1,56 @@
+{
+  "fecha": "2026-10-01T19:14:58.990236+00:00",
+  "alcance": "Frontend de demostración en memoria; no persistencia oficial ni escrituras a API durante pruebas de navegador.",
+  "base_git": "8345a68d2903fd550ec1b4ee82d79d6857daf4c4",
+  "resultados": {
+    "bun run check": 0,
+    "bun run build": 0,
+    "bunx vitest run --project formularios": {
+      "exit": 0,
+      "tests": 32
+    },
+    "bun run ui:test": {
+      "exit": 0,
+      "tests": 151
+    },
+    "bun run storybook:build": 0,
+    "navegador": {
+      "casos": 32,
+      "infracciones_axe": 0,
+      "desbordamientos": 0
+    },
+    "produccion": {
+      "casos": 2,
+      "http": 200
+    },
+    "servicio": "active"
+  },
+  "nota": "Build con aviso del optimizador CSS documentado; ningún error TypeScript. Pruebas del árbol de trabajo con cambios concurrentes ajenos preservados. Resultados automatizados no sustituyen auditoría EAF independiente.",
+  "sha256": {
+    "src/features/formularios/components/editor-fields.tsx": "f0d08391920c3df9ccbf0704e744612107950800759f681305f01ac2d286d59a",
+    "src/features/formularios/components/formulario-runtime.tsx": "9a6070f9249bcf0a9c34310f8c17d6aff790a9a6918ec344d1b5e0c0dd73bb31",
+    "src/features/formularios/components/pregunta-editor.tsx": "3f17a3db269182ef21dc1c6db76c9facffaca0859c1173721a82c315024a2336",
+    "src/features/formularios/components/pregunta-respuesta.tsx": "a2558da39f6b3c03d50ecf5cde1d2945b1154befa80aee62c5562bf9ca068525",
+    "src/features/formularios/components/texto-formato.tsx": "eee9d25e150768503fc7c9268cfdc57e859c35a17d4f8876222e476078356458",
+    "src/features/formularios/data/formularios.mock.ts": "f161760a5afa3899580e16da3c782a9b3e7d7327398c110553a931f4e3628a7d",
+    "src/features/formularios/models/formulario.ts": "0ecce12ae820b1ed78c82b288b03563597c35c0c5547f8cd9ff1122838e978df",
+    "src/features/formularios/panels/formulario-analitica-panel.tsx": "fb8265920f65fd3fec56686cca54b13b517983841322766b76fc3d93801f0c33",
+    "src/features/formularios/panels/formulario-editor-panel.tsx": "2472ebfdc16e40f96535f555d2be0872cdf52d09d0f4c6419ecc8b820b0b3af0",
+    "src/features/formularios/panels/formulario-preview-panel.tsx": "22f6c4090e55c1d1e35adeb451e72b0621843997ad52287bfc292ce4452aeeac",
+    "src/features/formularios/panels/formulario-respuesta-panel.tsx": "3713dc9b43932368ebe29e5ad3d5b346609f10d125a6d66adb46f004c8681875",
+    "src/features/formularios/panels/formularios-panel.tsx": "d37f7f2ab41c1b38618a1c398b11e1aeb8a71f51c81bda60af70e715af099f05",
+    "src/features/formularios/services/formulario-analitica.ts": "43fb0ff274e974a0574e19d44ba3e3466685bb4f9c3c9dcc56743e3aae6d9c6c",
+    "src/features/formularios/services/formulario-engine.test.ts": "e6bb125aaef38a3d2ac240d1577638d59cdcb1dd67374dd173f5f8f7cde67dd2",
+    "src/features/formularios/services/formulario-engine.ts": "e46aeb9292b3a1e5b3dab8eda3e59bc994df757e9e6e660cb35862c0c18c2260",
+    "src/features/formularios/services/formularios-api.ts": "d699be86b1599b8dd051f0fc6aef8e87f03f74fe7544a3cc103bb4222f0d869c",
+    "src/features/formularios/services/use-formularios-queries.ts": "fe0057b4ed42f90e2b261238c284216b24ec55c1a238493f5657901bdef1541d",
+    "src/features/formularios/state/formularios-store.ts": "c90deae9ddf58fb42e0a8a72729b9b336e437f81981794a866fafe9fb41a78e8",
+    "src/app/_stories/formularios.stories.tsx": "a35a33e518886cc0d5b0fe6cde1467b6c71edb677fe7c61dd6f6d7bb7e03ef36",
+    "src/app/_stories/platform.stories.tsx": "fede1d8aa0923fcc4da6f2087b92cfdd8958dd092b17daa3bdd067eb5971b613",
+    "src/app/_components/topbar.tsx": "c5806e5358d616601f30f9846dcff3704e38ea8af4a2c5307f3bb004283bb3ad",
+    "src/app/_composition/panel-registry.tsx": "93ef32e840796dcde8871e958cdd9a68bc19f3db32c55671da8fdded02c1eb03",
+    "src/core/panels/panel-store.ts": "0ba7a59dd89b3a9c422337eac19c2a5fb34961c8faff2fbff9e5d115ef02bf57",
+    "src/features/politicas/views/inicio-view.tsx": "bc6c8ff276867ac7dbcbcd210803238fec1811e57b0cb29261377a1d85ab1a3a",
+    "vitest.config.mts": "f13a1a5de2107641f46b4ea10858749de76b8e71cca9b29a333505f48f2a867a"
+  }
+}

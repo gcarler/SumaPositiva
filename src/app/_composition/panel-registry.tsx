@@ -68,6 +68,9 @@ const FormularioAnaliticaPanel = dynamic(
   { ssr: false }
 );
 
+const FormularioPreviewPanel = dynamic(() => import("@/features/formularios/panels/formulario-preview-panel").then(m => m.FormularioPreviewPanel), {ssr: false});
+const FormularioRespuestaPanel = dynamic(() => import("@/features/formularios/panels/formulario-respuesta-panel").then(m => m.FormularioRespuestaPanel), {ssr: false});
+
 const ParticipacionMulticanalPanel = dynamic(
   () => import("@/features/participacion/panels/participacion-multicanal-panel").then((m) => m.ParticipacionMulticanalPanel),
   { ssr: false }
@@ -116,6 +119,8 @@ export const PANEL_REGISTRY: Record<
   formularios: FormulariosPanel as ComponentType<PanelComponentProps>,
   "formulario-editor": FormularioEditorPanel as ComponentType<PanelComponentProps>,
   "formulario-analitica": FormularioAnaliticaPanel as ComponentType<PanelComponentProps>,
+  "formulario-preview": FormularioPreviewPanel as ComponentType<PanelComponentProps>,
+  "formulario-respuesta": FormularioRespuestaPanel as ComponentType<PanelComponentProps>,
   "participacion-multicanal": ParticipacionMulticanalPanel as ComponentType<PanelComponentProps>,
   "escenario-editor": EscenarioEditorPanel as ComponentType<PanelComponentProps>,
   "testimonios-galeria": TestimoniosGaleriaPanel as ComponentType<PanelComponentProps>,
@@ -148,6 +153,8 @@ export const PANEL_WIDTHS: Record<PanelType, string> = {
   formularios: "min(clamp(820px, 56vw, 1240px), 100vw)",
   "formulario-editor": "min(clamp(780px, 52vw, 1120px), 100vw)",
   "formulario-analitica": "min(clamp(720px, 48vw, 1040px), 100vw)",
+  "formulario-preview": "min(clamp(640px, 44vw, 920px), 100vw)",
+  "formulario-respuesta": "min(clamp(640px, 44vw, 920px), 100vw)",
   "participacion-multicanal": "min(clamp(880px, 60vw, 1340px), 100vw)",
   "escenario-editor": "min(clamp(640px, 44vw, 920px), 100vw)",
   "testimonios-galeria": "min(clamp(820px, 56vw, 1240px), 100vw)",

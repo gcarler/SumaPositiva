@@ -1,0 +1,6 @@
+Reinicio autorizado de polis-frontend.service ejecutado previamente con salida 0.
+Fecha de comprobación: 2026-10-01T19:14:58.989392+00:00
+systemctl is-active polis-frontend.service
+active
+curl http://127.0.0.1:3000/
+200

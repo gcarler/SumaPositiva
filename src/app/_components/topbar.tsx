@@ -95,6 +95,7 @@ const NAV: { id: VistaApp; label: string; labelCorto?: string }[] = [
 ];
 
 export function Topbar() {
+  const {openPanel} = usePanels();
   const vista = useNavigationStore((s) => s.vista);
   const setVista = useNavigationStore((s) => s.setVista);
   const sesion = useSesionStore((s) => s.sesion);
@@ -136,7 +137,7 @@ export function Topbar() {
 
         {/* Nav */}
         <nav
-          className="order-3 col-span-2 flex items-center gap-1 overflow-x-auto md:order-none"
+          className="order-3 col-span-2 flex min-w-0 flex-wrap items-center gap-1 md:order-none"
           aria-label="Navegación principal"
         >
           {NAV.map((item) => {
@@ -162,6 +163,7 @@ export function Topbar() {
               </Button>
             );
           })}
+          <Button variant="unstyled" size="unstyled" className="rounded-full px-3 py-2.5 text-xs font-medium text-text-secondary hover:bg-surface-2 md:text-sm" onClick={() => openPanel("formularios", {soloRespuesta: true})}>Formularios</Button>
         </nav>
 
         {/* Acciones */}

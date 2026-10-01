@@ -1,0 +1,29 @@
+$ next build && cp -r .next/static .next/standalone/.next/ && cp -r public .next/standalone/
+▲ Next.js 16.1.3 (Turbopack)
+- Environments: .env
+
+  Creating an optimized production build ...
+Found 1 warning while optimizing generated CSS:
+
+[2m│   }[22m
+[2m│   .\[\&_\[stroke\=\\\'\#fff\\\'\]\]\:stroke-transparent {[22m
+[2m│[22m     & [stroke=\'#fff\'] {
+[2m┆[22m                 [33m[2m^--[22m Unexpected token IDHash("fff'")[39m
+[2m┆[22m
+[2m│       stroke: transparent;[22m
+[2m│     }[22m
+
+✓ Compiled successfully in 8.1s
+  Running TypeScript ...
+  Collecting page data using 7 workers ...
+  Generating static pages using 7 workers (0/3) ...
+✓ Generating static pages using 7 workers (3/3) in 402.4ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+└ ○ /_not-found
+
+
+○  (Static)  prerendered as static content
+

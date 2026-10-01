@@ -230,8 +230,8 @@ export const FormularioAccesible: Story = {
     await userEvent.type(panel.getByLabelText("Enunciado (1)"), "¿Qué propone?");
     await expect(panel.getByLabelText("Enunciado (1)")).toHaveValue("¿Qué propone?");
     await expect(panel.getByRole("combobox", { name: "Tipo (1)" })).toBeVisible();
-    await userEvent.click(panel.getByLabelText("Requerida"));
-    await expect(panel.getByLabelText("Requerida")).toBeChecked();
+    await userEvent.click(panel.getByLabelText("Requerida (1)"));
+    await expect(panel.getByLabelText("Requerida (1)")).toBeChecked();
   },
 };
 export const FormularioAccesibleOscuro: Story = { ...FormularioAccesible, globals: { theme: "dark" } };
@@ -283,7 +283,7 @@ export const TerritoriosConTeclado: Story = {
   beforeEach: () => useNavigationStore.setState({ vista: "geovisor" }),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const territories = await canvas.findAllByRole("button", { name: /^Explorar territorio:/ });
+    const territories = await canvas.findAllByRole("button", { name: /^(Explorar territorio:|Abrir ficha territorial:)/ });
     territories[0].focus();
     await expect(territories[0]).toHaveFocus();
     await userEvent.keyboard("{Enter}");
