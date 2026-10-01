@@ -1,0 +1,34 @@
+{
+  "fecha": "2026-10-01T19:51:16.502405+00:00",
+  "alcance": "Tres observaciones menores EAF sobre commit 1151830. Solo frontend, sin integración real de persistencia ni uploads.",
+  "resultados": {
+    "bun run check": 0,
+    "bun run build": 0,
+    "bun run storybook:build": 0,
+    "bunx vitest run --project formularios": {
+      "exit": 0,
+      "tests": 33
+    },
+    "historias_formularios": {
+      "exit": 0,
+      "tests": 14
+    },
+    "historias_ampliadas": {
+      "exit": 1,
+      "tests_aprobados": 37,
+      "tests_fallidos": 1,
+      "fallo": "Territorios Con Teclado: cambios concurrentes del geovisor; OpenLayers no interpreta rgba(0.48, 0.1, 240, 0.9) y falta botón territorial."
+    }
+  },
+  "notas": [
+    "Build conserva aviso de optimización CSS conocido en selector stroke.",
+    "Conservar mínimo como origen del paso numérico; comparación estricta con residuo < 1 a escala 1e9.",
+    "Se preservaron cambios ajenos y no se modificaron checks ni exclusiones."
+  ],
+  "sha256": {
+    "src/features/formularios/services/formulario-engine.ts": "f97ff60b150e0bb14e1920837db9b2dfb0ba926a7a1ffc68c1436506d795ec31",
+    "src/features/formularios/services/formulario-engine.test.ts": "6b27e89a9e6ddbf83c30ebfede60a7dcfebfc30d96de72f8c19277b4f6af2ffe",
+    "src/features/formularios/state/formularios-store.ts": "6ce3c80cfa5c18479e011014fd1e574c219f99d0057eef88d32e7bf00dfebfa1",
+    "src/features/formularios/components/pregunta-respuesta.tsx": "15856b8d0c3235507a1d8f29af7a1aa6defd25ec7c09ca1a944f12a0de096bad"
+  }
+}

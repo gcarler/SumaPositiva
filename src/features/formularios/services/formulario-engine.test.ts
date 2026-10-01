@@ -82,6 +82,36 @@ describe("Validaciones de respuesta", () => {
       expect(validarPregunta(p, value)).toBeDefined();
     expect(validarPregunta(p, "2.5")).toBeUndefined();
   });
+  test("pasos decimales: tolera redondeo y conserva el origen del mínimo", () => {
+    for (const [paso, minValor, valor] of [
+      [0.5, 0, "2.5"],
+      [0.1, 0, String(0.1 + 0.2)],
+      [0.1, 0.05, "0.35"],
+      [0.1, -0.15, "0.15"],
+      [1e-9, 0, "3e-9"],
+    ] as const) {
+      expect(
+        validarPregunta(
+          pregunta("numero", { paso, validacion: { minValor } }),
+          valor,
+        ),
+      ).toBeUndefined();
+    }
+    for (const [paso, minValor, valor] of [
+      [0.5, 0, "0.50000001"],
+      [0.1, 0, "0.25"],
+      [0.1, 0.05, "0.3"],
+      [0.1, -0.15, "-0.1"],
+      [2e-9, 0, "3e-9"],
+    ] as const) {
+      expect(
+        validarPregunta(
+          pregunta("numero", { paso, validacion: { minValor } }),
+          valor,
+        ),
+      ).toBeDefined();
+    }
+  });
   test("fecha y hora reales", () => {
     expect(validarPregunta(pregunta("fecha"), "2026-02-30")).toBeDefined();
     expect(validarPregunta(pregunta("fecha"), "2028-02-29")).toBeUndefined();

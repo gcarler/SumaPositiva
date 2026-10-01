@@ -36,6 +36,8 @@ const verificar = (form: Formulario) => {
   const errors = validarFormulario(form);
   if (errors.length) throw new Error(errors.join(" "));
 };
+// DEMO: datos en RAM. Integrar FastAPI /api/v1/formularios, /{id}/respuestas y /{id}/analitica
+// mediante services/formularios-api.ts para persistir en bd_csh, adaptando DTOs y permisos.
 export const useFormulariosStore = create<FormulariosState>((set, get) => ({
   ...copia(),
   identidadAnonima: "anonimo-demo",

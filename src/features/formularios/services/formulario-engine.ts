@@ -198,9 +198,15 @@ export function validarPregunta(
     if (min !== undefined && n < min) return error(`El mínimo es ${min}.`);
     if (max !== undefined && n > max) return error(`El máximo es ${max}.`);
     const paso = p.paso ?? 1;
+    const desplazamiento = (n - (min ?? 0)) * 1e9;
+    const pasoEscalado = paso * 1e9;
     if (
-      Math.abs((n - (min ?? 0)) / paso - Math.round((n - (min ?? 0)) / paso)) >
-      1e-7
+      !(
+        Math.abs(
+          desplazamiento -
+            Math.round(desplazamiento / pasoEscalado) * pasoEscalado,
+        ) < 1
+      )
     )
       return error(`Usa incrementos de ${paso}.`);
   }

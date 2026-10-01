@@ -326,6 +326,8 @@ export function PreguntaRespuesta({
                       setCargando(true);
                       ocupado(true);
                       try {
+                        // DEMO: base64 en RAM; en producción subir a MinIO/S3 y guardar la URL
+                        // retornada por el servicio de upload, en lugar del contenido en Zustand.
                         const contenido = await new Promise<string>(
                           (resolve, reject) => {
                             const reader = new FileReader();
