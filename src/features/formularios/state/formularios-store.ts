@@ -1,4 +1,5 @@
 "use client";
+import { v4 as uuid } from "uuid";
 import { create } from "zustand";
 import type {
   DatosFormulario,
@@ -45,7 +46,7 @@ export const useFormulariosStore = create<FormulariosState>((set, get) => ({
     const ahora = new Date().toISOString();
     const form: Formulario = {
       ...structuredClone(datos),
-      id: crypto.randomUUID(),
+      id: uuid(),
       respuestasCount: 0,
       creadoEn: ahora,
       actualizadoEn: ahora,
@@ -100,7 +101,7 @@ export const useFormulariosStore = create<FormulariosState>((set, get) => ({
     if (Object.keys(errors).length)
       throw new Error(Object.values(errors).join(" "));
     const respuesta: RespuestaCiudadana = {
-      id: anterior?.id ?? crypto.randomUUID(),
+      id: anterior?.id ?? uuid(),
       formularioId: form.id,
       sesionId: datos.sesionId,
       respuestas: structuredClone(respuestasEfectivas(form, datos.respuestas)),

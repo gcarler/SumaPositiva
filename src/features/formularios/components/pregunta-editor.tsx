@@ -1,3 +1,4 @@
+import { v4 as uuid } from "uuid";
 import { Button } from "@/shared/ui/button";
 import { ArrowUp, ArrowDown, Trash2, Copy } from "lucide-react";
 import { TextoEditor, OpcionEditor, MarcaEditor } from "./editor-fields";
@@ -124,8 +125,8 @@ export function PreguntaEditor({
             patch({
               tipo: tipo as TipoPregunta,
               opciones: p.opciones ?? [
-                { id: crypto.randomUUID(), texto: "Opción 1" },
-                { id: crypto.randomUUID(), texto: "Opción 2" },
+                { id: uuid(), texto: "Opción 1" },
+                { id: uuid(), texto: "Opción 2" },
               ],
               escalaMin: p.escalaMin ?? 1,
               escalaMax: p.escalaMax ?? 5,
@@ -244,10 +245,7 @@ export function PreguntaEditor({
               variant="outline"
               onClick={() =>
                 patch({
-                  opciones: [
-                    ...(p.opciones ?? []),
-                    { id: crypto.randomUUID(), texto: "" },
-                  ],
+                  opciones: [...(p.opciones ?? []), { id: uuid(), texto: "" }],
                 })
               }
             >
@@ -261,7 +259,7 @@ export function PreguntaEditor({
                 patch({
                   opciones: [
                     ...(p.opciones ?? []),
-                    { id: crypto.randomUUID(), texto: "Otro", esOtro: true },
+                    { id: uuid(), texto: "Otro", esOtro: true },
                   ],
                 })
               }

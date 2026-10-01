@@ -1,4 +1,5 @@
 "use client";
+import { v4 as uuid } from "uuid";
 import { useState } from "react";
 import { toast } from "sonner";
 import { PanelShell } from "@/core/panels/panel-shell";
@@ -196,7 +197,7 @@ function Constructor({
                   secciones: [
                     ...form.secciones,
                     {
-                      id: crypto.randomUUID(),
+                      id: uuid(),
                       titulo: `Sección ${form.secciones.length + 1}`,
                       descripcion: "",
                       orden: form.secciones.length,
@@ -266,7 +267,7 @@ function Constructor({
                   preguntas: [
                     ...form.preguntas,
                     {
-                      id: crypto.randomUUID(),
+                      id: uuid(),
                       tipo: "texto_corto",
                       texto: "",
                       obligatoria: false,
@@ -299,7 +300,7 @@ function Constructor({
                 const items = [...form.preguntas];
                 items.splice(index + 1, 0, {
                   ...structuredClone(p),
-                  id: crypto.randomUUID(),
+                  id: uuid(),
                   texto: p.texto + " (copia)",
                 });
                 patch({ preguntas: normalizar(items) });

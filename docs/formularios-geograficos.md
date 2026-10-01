@@ -39,3 +39,9 @@ DTO de los 14 tipos, secciones, lógica y puntos antes de conectar este flujo a
 La migración `0028_formularios_admin` corrige la ausencia de permisos del
 administrador. La unión `0029_merge_formularios_fotos` conserva una sola cabeza
 con la rama concurrente de fotografías; no agrega permisos adicionales.
+
+El constructor genera identificadores con `uuid` (dependencia existente), que
+puede usar `crypto.getRandomValues` cuando `crypto.randomUUID` no está disponible.
+Esto permite añadir preguntas, secciones, opciones, duplicar y registrar respuestas
+en el acceso HTTP indicado por el usuario. La corrección no elimina el requisito
+HTTPS del GPS ni sustituye la validación de sesión y permisos.
