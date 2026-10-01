@@ -1,4 +1,4 @@
-import { MesasGestionView } from "@/features/plataforma/views/mesas-view";
+import { AgendaMesasView } from "@/features/plataforma/views/agenda-mesas-view";
 export default function Page() {
-  return <MesasGestionView />;
+  return <AgendaMesasView />;
 }
