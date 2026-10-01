@@ -57,22 +57,17 @@ export function InicioView() {
     return null;
   }
 
-  /* Métricas vivas requeridas */
-  const totalParticipantes = politica.participantes.toLocaleString("es-CO");
-  const totalAportesCiudadanos = totalAportes(politica).toLocaleString("es-CO");
-  const lineasConAportes = politica.fases.reduce(
-    (acc, f) => acc + f.lineas.filter((l) => l.aportes.length > 0).length,
-    0
-  );
+  /* Métricas reales — solo datos verificables */
+  const totalLineas = politica.fases.reduce((acc, f) => acc + f.lineas.length, 0);
   const fasesCompletadas = politica.fases.filter(
     (f) => f.estado === "completada"
   ).length;
 
   const stats = [
-    { valor: totalParticipantes, label: "Ciudadanos participando" },
-    { valor: totalAportesCiudadanos, label: "Aportes ciudadanos radicados" },
-    { valor: lineasConAportes.toString().padStart(2, "0"), label: "Líneas estratégicas abiertas" },
-    { valor: `${fasesCompletadas} de ${politica.fases.length}`, label: "Fases DNP completadas" },
+    { valor: totalLineas.toString(), label: "Líneas estratégicas" },
+    { valor: `${fasesCompletadas} de ${politica.fases.length}`, label: "Fases DNP en curso" },
+    { valor: "2026–2036", label: "Vigencia de la política" },
+    { valor: "3 + Insular", label: "Localidades cubiertas" },
   ];
 
   return (

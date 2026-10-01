@@ -66,9 +66,9 @@ export const ESTADISTICAS_TERRITORIOS: EstadisticasTerritorio[] = [
     hurtos: 2800,
     escnna: 12,
     alertas: 8,
-    aportesCiudadanos: 3210,
-    mesasRealizadas: 12,
-    tendenciaAportes: [380, 520, 610, 580, 690, 430],
+    aportesCiudadanos: 0, // Dato real — consulta pública aún no abierta
+    mesasRealizadas: 0, // Dato real — mesas por programar
+    tendenciaAportes: [0, 0, 0, 0, 0, 0],
     tendenciaAlertas: [10, 9, 8, 9, 8, 8],
   },
   {
@@ -83,9 +83,9 @@ export const ESTADISTICAS_TERRITORIOS: EstadisticasTerritorio[] = [
     hurtos: 2400,
     escnna: 9,
     alertas: 14,
-    aportesCiudadanos: 2890,
-    mesasRealizadas: 10,
-    tendenciaAportes: [290, 380, 450, 510, 570, 690],
+    aportesCiudadanos: 0, // Dato real — consulta pública aún no abierta
+    mesasRealizadas: 0, // Dato real — mesas por programar
+    tendenciaAportes: [0, 0, 0, 0, 0, 0],
     tendenciaAlertas: [16, 15, 14, 13, 14, 14],
   },
   {
@@ -100,9 +100,9 @@ export const ESTADISTICAS_TERRITORIOS: EstadisticasTerritorio[] = [
     hurtos: 1293,
     escnna: 5,
     alertas: 6,
-    aportesCiudadanos: 2320,
-    mesasRealizadas: 8,
-    tendenciaAportes: [210, 290, 360, 410, 480, 570],
+    aportesCiudadanos: 0, // Dato real — consulta pública aún no abierta
+    mesasRealizadas: 0, // Dato real — mesas por programar
+    tendenciaAportes: [0, 0, 0, 0, 0, 0],
     tendenciaAlertas: [7, 7, 6, 6, 6, 6],
   },
   {
@@ -117,9 +117,9 @@ export const ESTADISTICAS_TERRITORIOS: EstadisticasTerritorio[] = [
     hurtos: 420,
     escnna: 8,
     alertas: 9,
-    aportesCiudadanos: 1210,
-    mesasRealizadas: 10,
-    tendenciaAportes: [80, 110, 130, 160, 190, 540],
+    aportesCiudadanos: 0, // Dato real — consulta pública aún no abierta
+    mesasRealizadas: 0, // Dato real — mesas por programar
+    tendenciaAportes: [0, 0, 0, 0, 0, 0],
     tendenciaAlertas: [10, 10, 9, 9, 9, 9],
   },
   {
@@ -134,9 +134,9 @@ export const ESTADISTICAS_TERRITORIOS: EstadisticasTerritorio[] = [
     hurtos: 180,
     escnna: 3,
     alertas: 5,
-    aportesCiudadanos: 410,
-    mesasRealizadas: 3,
-    tendenciaAportes: [40, 55, 70, 80, 90, 75],
+    aportesCiudadanos: 0, // Dato real — consulta pública aún no abierta
+    mesasRealizadas: 0, // Dato real — mesas por programar
+    tendenciaAportes: [0, 0, 0, 0, 0, 0],
     tendenciaAlertas: [6, 5, 5, 5, 5, 5],
   },
   {
@@ -151,9 +151,9 @@ export const ESTADISTICAS_TERRITORIOS: EstadisticasTerritorio[] = [
     hurtos: 45,
     escnna: 2,
     alertas: 3,
-    aportesCiudadanos: 180,
-    mesasRealizadas: 2,
-    tendenciaAportes: [15, 20, 25, 30, 35, 55],
+    aportesCiudadanos: 0, // Dato real — consulta pública aún no abierta
+    mesasRealizadas: 0, // Dato real — mesas por programar
+    tendenciaAportes: [0, 0, 0, 0, 0, 0],
     tendenciaAlertas: [3, 3, 3, 3, 3, 3],
   },
   {
@@ -168,9 +168,9 @@ export const ESTADISTICAS_TERRITORIOS: EstadisticasTerritorio[] = [
     hurtos: 28,
     escnna: 2,
     alertas: 2,
-    aportesCiudadanos: 120,
-    mesasRealizadas: 2,
-    tendenciaAportes: [10, 14, 18, 22, 28, 28],
+    aportesCiudadanos: 0, // Dato real — consulta pública aún no abierta
+    mesasRealizadas: 0, // Dato real — mesas por programar
+    tendenciaAportes: [0, 0, 0, 0, 0, 0],
     tendenciaAlertas: [2, 2, 2, 2, 2, 2],
   },
   {
@@ -185,9 +185,9 @@ export const ESTADISTICAS_TERRITORIOS: EstadisticasTerritorio[] = [
     hurtos: 90,
     escnna: 1,
     alertas: 4,
-    aportesCiudadanos: 290,
-    mesasRealizadas: 3,
-    tendenciaAportes: [25, 35, 45, 50, 55, 80],
+    aportesCiudadanos: 0, // Dato real — consulta pública aún no abierta
+    mesasRealizadas: 0, // Dato real — mesas por programar
+    tendenciaAportes: [0, 0, 0, 0, 0, 0],
     tendenciaAlertas: [4, 4, 4, 4, 4, 4],
   },
   {
@@ -202,9 +202,9 @@ export const ESTADISTICAS_TERRITORIOS: EstadisticasTerritorio[] = [
     hurtos: 77,
     escnna: 0,
     alertas: 3,
-    aportesCiudadanos: 210,
-    mesasRealizadas: 2,
-    tendenciaAportes: [18, 24, 30, 36, 42, 60],
+    aportesCiudadanos: 0, // Dato real — consulta pública aún no abierta
+    mesasRealizadas: 0, // Dato real — mesas por programar
+    tendenciaAportes: [0, 0, 0, 0, 0, 0],
     tendenciaAlertas: [3, 3, 3, 3, 3, 3],
   },
 ];

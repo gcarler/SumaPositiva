@@ -21,7 +21,7 @@ export const POLITICAS_MOCK: PoliticaPublica[] = [
     cobertura: "Distrito de Cartagena: 3 Localidades urbanas, 11 corregimientos y zonas insulares",
     fechaInicio: "2026-02-01",
     fechaCierre: "2026-12-31",
-    participantes: 8420,
+    participantes: 0, // Dato real — la consulta pública acaba de abrirse
     fases: [
       {
         id: "fase-001-1",
