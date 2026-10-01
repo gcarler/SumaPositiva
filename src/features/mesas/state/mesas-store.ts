@@ -3,6 +3,7 @@
 import { create } from "zustand";
 import { MESAS_MOCK } from "@/features/mesas/data/mesas.mock";
 import { AGENDA_MESAS } from "@/features/mesas/data/agenda.data";
+import { CONTENIDO_MESAS } from "@/features/mesas/data/agenda-contenido.data";
 import type {
   ArbolKind,
   EstadoMesa,
@@ -190,7 +191,14 @@ const MESAS_AGENDA_INICIAL: MesaDeTrabajo[] = AGENDA_MESAS.map((m) => ({
     ? "cancelada"
     : "programada") satisfies EstadoMesa,
   plenaria: { acuerdos: "" },
-  submesas: [],
+  submesas: (CONTENIDO_MESAS[m.id]?.submesasSugeridas ?? []).map((ss, idx) => ({
+    id: `${m.id}-sm-${idx + 1}`,
+    nombre: ss.nombre,
+    tema: ss.tema,
+    participantes: ss.participantes,
+    arbolProblemas: ARBOL_PROBLEMAS_VACIO,
+    arbolSoluciones: ARBOL_SOLUCIONES_VACIO,
+  })),
 }));
 
 export const useMesasStore = create<MesasState>((set, get) => ({

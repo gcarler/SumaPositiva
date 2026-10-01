@@ -34,6 +34,7 @@ import {
   resumenProblemas,
   resumenSoluciones,
 } from "@/features/mesas/models/mesas";
+import { CONTENIDO_MESAS } from "@/features/mesas/data/agenda-contenido.data";
 import { SectionLabel } from "@/shared/components/participation-ui";
 
 /**
@@ -125,6 +126,8 @@ export function MesaPanel({
     (sm) => estadoDiligenciamiento(sm).tono === "completo",
   ).length;
 
+  const contenido = CONTENIDO_MESAS[mesa.id];
+
   return (
     <PanelShell
       entryKey={entryKey}
@@ -215,6 +218,82 @@ export function MesaPanel({
             </div>
           </dl>
         </section>
+
+        {/* ---------- Contenido de la mesa ---------- */}
+        {contenido && (
+          <section className="space-y-6">
+            {/* Propósito */}
+            <div className="rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-5">
+              <SectionLabel>Propósito de la mesa</SectionLabel>
+              <p className="mt-2 text-sm leading-relaxed text-[var(--text-secondary)]">
+                {contenido.proposito}
+              </p>
+            </div>
+
+            {/* Orden del día */}
+            <div>
+              <SectionLabel>Agenda del día</SectionLabel>
+              <ol className="mt-2 space-y-1.5 text-sm text-[var(--text-secondary)]">
+                {contenido.ordenDelDia.map((item, i) => (
+                  <li key={i} className="flex gap-2">
+                    <span className="font-bold tabular-nums text-[var(--ember)]">
+                      {i + 1}.
+                    </span>
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ol>
+            </div>
+
+            {/* Preguntas orientadoras */}
+            <div>
+              <SectionLabel>Preguntas orientadoras</SectionLabel>
+              <ul className="mt-2 space-y-2">
+                {contenido.preguntasOrientadoras.map((p, i) => (
+                  <li
+                    key={i}
+                    className="rounded-lg bg-[var(--surface-2)] px-4 py-2.5 text-sm italic text-[var(--text-primary)]"
+                  >
+                    &ldquo;{p}&rdquo;
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Resultados esperados */}
+            <div>
+              <SectionLabel>Resultados esperados</SectionLabel>
+              <ul className="mt-2 space-y-1">
+                {contenido.resultadosEsperados.map((r, i) => (
+                  <li
+                    key={i}
+                    className="flex items-start gap-2 text-sm text-[var(--text-secondary)]"
+                  >
+                    <span className="mt-0.5 text-[var(--ember)]">→</span>
+                    <span>{r}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Marco normativo */}
+            {contenido.marcoNormativo && contenido.marcoNormativo.length > 0 && (
+              <div>
+                <SectionLabel>Marco normativo</SectionLabel>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {contenido.marcoNormativo.map((n) => (
+                    <span
+                      key={n}
+                      className="rounded-full border border-[var(--border)] bg-[var(--surface-2)] px-3 py-1 text-xs text-[var(--text-tertiary)]"
+                    >
+                      {n}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </section>
+        )}
 
         {/* ---------- Plenaria ---------- */}
         <section className="space-y-3">
