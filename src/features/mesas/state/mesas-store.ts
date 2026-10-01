@@ -186,6 +186,8 @@ const MESAS_AGENDA_INICIAL: MesaDeTrabajo[] = AGENDA_MESAS.map((m) => ({
     ? "cerrada"
     : m.estado === "en_curso"
     ? "en_curso"
+    : m.estado === "cancelada"
+    ? "cancelada"
     : "programada") satisfies EstadoMesa,
   plenaria: { acuerdos: "" },
   submesas: [],

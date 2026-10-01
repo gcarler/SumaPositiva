@@ -159,7 +159,20 @@ export const AGENDA_MESAS: MesaAgenda[] = [
     dimensionesONU: ["Seguridad Alimentaria", "Seguridad Comunitaria"],
   },
 
-  // Día 3 (oct 22): Santa Ana · Tierrabomba · Bocachica
+  // Día 3 (oct 22): Barú · Santa Ana · Tierrabomba · Bocachica
+  {
+    id: "mr-007b",
+    tipo: "rural_insular",
+    nombre: "Mesa Insular — Barú y Comunidades del Archipiélago",
+    territorio: "Isla de Barú",
+    lugar: "Institución Educativa de Barú",
+    fecha: "2026-10-22",
+    horaInicio: "07:30", horaFin: "10:00",
+    estado: "programada",
+    dimensionesONU: ["Seguridad Alimentaria", "Seguridad Ambiental", "Seguridad Comunitaria"],
+    responsable: "Consejo Comunitario de Barú",
+    observaciones: "Mesa con protocolo diferencial étnico — Comunidad afrodescendiente. Requiere Consulta Previa conforme Convenio 169 OIT y Sentencia SU-123/18. Coordinar con Consejo Comunitario con anterioridad mínima de 30 días.",
+  },
   {
     id: "mr-007",
     tipo: "rural_insular",
@@ -220,6 +233,18 @@ export const AGENDA_MESAS: MesaAgenda[] = [
     estado: "programada",
     dimensionesONU: ["Seguridad Ambiental", "Seguridad Alimentaria"],
     observaciones: "La isla más alejada — logística especial requerida",
+  },
+  {
+    id: "mr-012",
+    tipo: "rural_insular",
+    nombre: "Mesa Rural e Insular — Barú",
+    territorio: "Corregimiento de Barú",
+    lugar: "Institución Educativa de Barú",
+    fecha: "2026-10-24",
+    horaInicio: "09:00", horaFin: "12:00",
+    estado: "programada",
+    dimensionesONU: ["Seguridad Ambiental", "Seguridad Económica", "Seguridad Comunitaria"],
+    observaciones: "Comunidad étnica afrodescendiente — énfasis en sostenibilidad costera y consulta comunitaria",
   },
 
   // ── MESAS POBLACIONALES — nov 5, 6, 12, 13 ───────────────────────
@@ -474,7 +499,7 @@ export const AGENDA_MESAS: MesaAgenda[] = [
     estado: "programada" as EstadoMesa,
     dimensionesONU: ["Seguridad Personal", "Seguridad Comunitaria", "Seguridad Económica", "Seguridad Ambiental", "Seguridad Alimentaria", "Seguridad de la Salud", "Seguridad Política"],
     responsable: "Alcaldía Mayor de Cartagena — Secretaría de Planeación Distrital",
-    observaciones: "Sesión plenaria de cierre de la consulta pública. Presentación de resultados, acuerdos distritales y hoja de ruta 2026-2036. Asistencia abierta a todos los participantes de las mesas.",
+    observaciones: "Sesión plenaria de cierre de la consulta pública. Incluye espacio formal de devolución ciudadana motivada (Sentencia C-150/15): presentación de resultados consolidados, respuesta institucional fundamentada a cada eje temático y firma del Acta de Compromisos 2026-2036. Asistencia abierta a todos los participantes de las mesas.",
   },
 ];
 
