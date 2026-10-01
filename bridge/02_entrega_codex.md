@@ -25,7 +25,7 @@ el renderer de formularios y el único host de paneles laterales.
 | Rol | Módulos |
 | --- | --- |
 | autoridad_distrital | Dashboard, Formularios, Mesas, Geovisor, Contenido |
-| facilitador_mesa | Dashboard, Mesas y Formularios en lectura |
+| facilitador_mesa | Dashboard y Mesas; Formularios en lectura |
 | auditor_forense | Dashboard, Formularios, Mesas, Geovisor, Contenido y Configuración; lectura |
 | administrador_identidades | Los siete módulos; acciones con permisos efectivos |
 | ciudadano / anónimo | Sin acceso |
