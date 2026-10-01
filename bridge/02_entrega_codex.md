@@ -1,3 +1,91 @@
+# Entrega Codex — Formularios geográficos y desbloqueo de creación
+
+Fecha: 2026-10-01. Implementación EDD; revisión independiente pendiente del EAF.
+Implementación geográfica y migraciones incluidas en `2e4d370721dd2f20873cb9d829381b12f010c88b`
+por una integración concurrente del workspace. Corrección final HTTP: `529c729f48f169e68b192c0ca5153e5884dd7adb`.
+No se reescribió el commit concurrente.
+
+## Resultado y causas corregidas
+
+El administrador no tenía `formularios:gestionar` en su rol persistido. Las
+historias usaban un perfil con permisos superiores al rol real y ocultaban el
+problema. La revisión `0028_formularios_admin` agrega únicamente
+`formularios:leer` y `formularios:gestionar`; las historias ahora reflejan los ocho
+permisos reales del administrador. Se mantiene la comprobación por permiso.
+
+En la dirección HTTP suministrada, `crypto.randomUUID` no estaba disponible y
+«Añadir Pregunta» fallaba. Se utiliza la dependencia existente `uuid`, con
+aleatoriedad criptográfica compatible con ese contexto, para preguntas, secciones,
+opciones, duplicados, formularios y respuestas. Se verificó este fallo en el
+navegador público antes de corregirlo.
+
+Se incorpora **Ubicación geográfica**, el 14.º tipo, en constructor, renderer,
+vista previa y panel ciudadano. Permite marcar el mapa, moverlo con teclado y
+marcar el centro, introducir coordenadas o solicitar GPS. El punto está vinculado
+a la respuesta y pregunta, con referencia, origen y precisión cuando corresponde.
+La validación rechaza puntos incompletos o fuera de rango y respeta la lógica
+condicional. La analítica muestra coordenadas legibles, CSV y exportación GeoJSON.
+
+Se usan controles y tokens del kit, etiquetas asociadas, errores anunciados,
+controles de mapa accesibles, ambos temas, 320 px y paneles laterales. La solicitud
+GPS bloquea el envío mientras está pendiente, no sobrescribe una edición posterior
+y no modifica componentes desmontados. GPS denegado y mapa no disponible conservan
+las alternativas de captura. No se crean modales centrados.
+
+## Persistencia y autorización
+
+La actualización del rol y el evento de auditoría se escriben en una sola
+transacción Alembic. Tablas: `autenticacion.roles` y `eventos_identidad`.
+Se probaron rollback tras escrituras efectivas, idempotencia, downgrade,
+conservación de otros roles y creación autorizada de un formulario en la API,
+observada desde otra conexión; anónimo 401, ciudadano/auditor 403, administrador 201.
+
+En la base de operación se activó **solo `0028_formularios_admin`**, desde `0026`.
+No se aplicaron `0027` ni la unión `0029`; esas revisiones pertenecen a la integración
+concurrente de fotografías. No se crearon cuentas ni formularios de prueba allí.
+El frontend fue recompilado y el servicio reiniciado; portal y ruta formularios
+responden 200. La prueba del frontend publicado interceptó la API para usar un
+backend y una base `polis_test*` exclusivos; no acredita recolección persistente
+del constructor en producción.
+
+## Validación reproducible y límites
+
+Evidencia: [resumen y logs](../docs/evidencias/formularios-geograficos-2026-10-01/resumen.json).
+
+- `bun run check`: kit, TypeScript y ESLint aprobados.
+- `bun run build` y `bun run storybook:build`: aprobados.
+- Suite completa UI: 182 historias aprobadas, incluyendo axe y nueve historias
+  geográficas: coordenadas, mapa/limpieza, obligatoriedad, invalidez, previa,
+  oscuro, 320 px, GPS y GPS denegado. Después del ajuste HTTP se repitieron las
+  182 historias completas y las pruebas de dominio.
+- Dominio: 69 pruebas aprobadas.
+- Identidad, formularios y acceso: 89 pruebas aprobadas en base aislada.
+- Migración, guardas y transacciones: 27 pruebas aprobadas.
+- `upgrade head`, `alembic check`, `downgrade base` y reconstrucción:
+  prueba de integración aprobada. Se conservó una cabeza única con `0029`.
+- Ruff y formato de los tres archivos backend propios: aprobados.
+- `bun run backend:check` global: **no aprobado**, detenido por 45 errores Ruff
+  en archivos fuera de esos tres cambios; ese comando no llega a ejecutar pytest.
+  Las suites indicadas se ejecutaron directamente y sí pasaron. No se rebajaron
+  guardas ni se emitió un dictamen global de conformidad.
+- Navegador Chromium local y URL pública HTTP: login con permisos reales de rol
+  migrado, creación, respuesta con punto, alternativa GPS en HTTP, reflujo a 320 px
+  y descarga GeoJSON verificada; sin errores JavaScript.
+
+**El constructor sigue en demostración, con datos en RAM que se pierden al
+recargar.** La API existente usa otro DTO: queda pendiente integrar los 14 tipos,
+secciones, lógica y ubicación con `bd_csh`, publicar enlaces ciudadanos y
+sincronizar con el geovisor. No se impone una geocerca municipal. El GPS requiere
+HTTPS y permiso; no se garantizan exactitud ni precisión del dispositivo.
+Las pruebas automáticas de accesibilidad no constituyen certificación WCAG.
+
+Uso: recargar `/plataforma/formularios`, entrar con administrador, pulsar
+**Crear Formulario**, añadir pregunta y seleccionar **Ubicación geográfica**.
+Contrato detallado: [formularios geográficos](../docs/formularios-geograficos.md).
+
+
+---
+
 # Entrega Codex — /plataforma: gestión interna
 
 Fecha: 2026-10-01T21:14:56.940932+00:00.

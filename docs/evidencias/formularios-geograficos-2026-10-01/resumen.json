@@ -1,0 +1,35 @@
+{
+  "fecha": "2026-10-01T21:43:23.059911+00:00",
+  "implementacion_commit": "2e4d370721dd2f20873cb9d829381b12f010c88b",
+  "frontend": {
+    "check": "aprobado",
+    "build": "aprobado",
+    "storybook_build": "aprobado",
+    "historias": 182,
+    "dominio": 69,
+    "navegador_local": "login real en API/base aislada; crear, responder, analítica y GeoJSON; 320px; sin errores JS",
+    "navegador_publico": "HTTP seguridadhumanaintegral.org; API interceptada hacia base aislada polis_test*: login, constructor, respuesta, 320px, GPS sin contexto seguro, GeoJSON y sin errores JS"
+  },
+  "backend": {
+    "permiso_real_admin": "formularios:leer + formularios:gestionar",
+    "integracion_formularios_identidad_acceso": 89,
+    "migracion_y_transacciones": 27,
+    "upgrade_check_downgrade_reconstruccion": "aprobado en base polis_test*",
+    "ruff_archivos_propios": "aprobado",
+    "backend_check_global": "bloqueado por 45 errores Ruff ajenos a los tres archivos propios; pytest global no se ejecuta desde ese script"
+  },
+  "produccion": {
+    "revision_aplicada": "0028_formularios_admin",
+    "aplicacion_migracion": "solo esta rama; no aplicar fotos 0027 ni unión 0029",
+    "estado_frontend": "active",
+    "portal_http": 200,
+    "formularios_http": 200
+  },
+  "limites": [
+    "constructor y respuestas en RAM, no persistencia oficial",
+    "GPS requiere contexto seguro y permiso",
+    "no geocerca municipal ni sincronización automática con geovisor",
+    "dictamen independiente corresponde al EAF"
+  ],
+  "correccion_http_commit": "529c729f48f169e68b192c0ca5153e5884dd7adb"
+}
