@@ -442,7 +442,7 @@ export const AGENDA_MESAS: MesaAgenda[] = [
     nombre: "Mesa Sectorial — Transparencia y Cultura Ciudadana",
     territorio: "Distrito de Cartagena",
     lugar: "SENA Plaza de la Aduana",
-    fecha: "2026-12-03",
+    fecha: "2026-12-04",
     horaInicio: "08:30", horaFin: "12:00",
     estado: "programada",
     dimensionesONU: ["Seguridad Política", "Seguridad Comunitaria"],
@@ -453,12 +453,28 @@ export const AGENDA_MESAS: MesaAgenda[] = [
     nombre: "Mesa Sectorial — Construcción de Paz y Reconciliación",
     territorio: "Distrito de Cartagena",
     lugar: "ARN — Manga, Callejón Santa Clara, Cra 19 N 24A-93",
-    fecha: "2026-12-03",
+    fecha: "2026-12-04",
     horaInicio: "14:30", horaFin: "17:00",
     estado: "programada",
     dimensionesONU: ["Seguridad Personal", "Seguridad Política", "Seguridad Comunitaria"],
     responsable: "Agencia para la Reincorporación y la Normalización (ARN)",
     observaciones: "Mesa especial de construcción de paz — enfoque diferencial étnico y de género",
+  },
+
+  // ── PLENARIA DE CIERRE — 11 de diciembre ─────────────────────────
+  {
+    id: "pc-001",
+    tipo: "territorial" as TipoMesa,
+    nombre: "Plenaria de Cierre — Consolidación de Aportes Ciudadanos",
+    territorio: "Distrito de Cartagena",
+    lugar: "Centro de Convenciones de Cartagena de Indias",
+    fecha: "2026-12-11",
+    horaInicio: "08:00",
+    horaFin: "17:00",
+    estado: "programada" as EstadoMesa,
+    dimensionesONU: ["Seguridad Personal", "Seguridad Comunitaria", "Seguridad Económica", "Seguridad Ambiental", "Seguridad Alimentaria", "Seguridad de la Salud", "Seguridad Política"],
+    responsable: "Alcaldía Mayor de Cartagena — Secretaría de Planeación Distrital",
+    observaciones: "Sesión plenaria de cierre de la consulta pública. Presentación de resultados, acuerdos distritales y hoja de ruta 2026-2036. Asistencia abierta a todos los participantes de las mesas.",
   },
 ];
 

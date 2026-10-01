@@ -2,8 +2,10 @@
 
 import { create } from "zustand";
 import { MESAS_MOCK } from "@/features/mesas/data/mesas.mock";
+import { AGENDA_MESAS } from "@/features/mesas/data/agenda.data";
 import type {
   ArbolKind,
+  EstadoMesa,
   ArbolSoluciones,
   MesaDeTrabajo,
   NodoArbol,
@@ -26,6 +28,13 @@ export interface MesaInput {
   entidad: string;
   facilitador: string;
   totalAsistentes: number;
+  horario?: string;
+  descripcion?: string;
+  dimensionOnu?: string;
+  estado?: import("@/features/mesas/models/mesas").EstadoMesa;
+  tipoMesa?: string;
+  codigoOficial?: string;
+  shortcodeCiudadano?: string;
 }
 
 export interface SubMesaInput {
@@ -160,8 +169,31 @@ let subMesaSeq = 1000;
 const ARBOL_PROBLEMAS_VACIO = { problemaCentral: "", causas: [], efectos: [] };
 const ARBOL_SOLUCIONES_VACIO: ArbolSoluciones = { objetivoCentral: "", medios: [], fines: [] };
 
+const MESAS_AGENDA_INICIAL: MesaDeTrabajo[] = AGENDA_MESAS.map((m) => ({
+  id: m.id,
+  nombre: m.nombre,
+  fecha: m.fecha,
+  lugar: m.lugar,
+  entidad: m.responsable ?? "Secretaría de Planeación Distrital",
+  facilitador: "",
+  totalAsistentes: 0,
+  horario: `${m.horaInicio} – ${m.horaFin}`,
+  descripcion: m.observaciones ?? "",
+  dimensionOnu: m.dimensionesONU[0] ?? "",
+  tipoMesa: m.tipo,
+  codigoOficial: m.id.toUpperCase(),
+  estado: (m.estado === "realizada"
+    ? "cerrada"
+    : m.estado === "en_curso"
+    ? "en_curso"
+    : "programada") satisfies EstadoMesa,
+  plenaria: { acuerdos: "" },
+  submesas: [],
+}));
+
 export const useMesasStore = create<MesasState>((set, get) => ({
-  mesas: MESAS_MOCK,
+  mesas: [...MESAS_AGENDA_INICIAL, ...MESAS_MOCK],
+
 
   /* ---------- Mesa ---------- */
 
@@ -169,9 +201,9 @@ export const useMesasStore = create<MesasState>((set, get) => ({
     const mesa: MesaDeTrabajo = {
       id: `mesa-nueva-${++mesaSeq}`,
       ...input,
-      plenaria: { acuerdos: "" },
+      plenaria: { acuerdos: input.descripcion || "" },
       submesas: [],
-      estado: "programada",
+      estado: input.estado || "programada",
     };
     set((s) => ({ mesas: [mesa, ...s.mesas] }));
     return mesa;
