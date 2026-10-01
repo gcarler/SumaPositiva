@@ -29,12 +29,35 @@ export function GeovisorMapa({ geoJson, onTerritorioClick, capasActivas }: Geovi
   };
 
   const getPath = (feature: TerritorioFeature) => {
-    if (feature.geometry.type !== "Polygon") return "";
-    const coords = feature.geometry.coordinates[0];
-    return coords.map((coord: any, i: number) => {
-      const [x, y] = project(coord[0], coord[1]);
-      return `${i === 0 ? "M" : "L"} ${x} ${y}`;
-    }).join(" ") + " Z";
+    if (feature.geometry.type === "Polygon") {
+      const coords = feature.geometry.coordinates[0];
+      if (!coords) return "";
+      return (
+        coords
+          .map((coord: any, i: number) => {
+            const [x, y] = project(coord[0], coord[1]);
+            return `${i === 0 ? "M" : "L"} ${x} ${y}`;
+          })
+          .join(" ") + " Z"
+      );
+    }
+    if (feature.geometry.type === "MultiPolygon") {
+      return feature.geometry.coordinates
+        .map((poly: any) => {
+          const coords = poly[0];
+          if (!coords) return "";
+          return (
+            coords
+              .map((coord: any, i: number) => {
+                const [x, y] = project(coord[0], coord[1]);
+                return `${i === 0 ? "M" : "L"} ${x} ${y}`;
+              })
+              .join(" ") + " Z"
+          );
+        })
+        .join(" ");
+    }
+    return "";
   };
 
   const getColor = (feature: TerritorioFeature) => {
