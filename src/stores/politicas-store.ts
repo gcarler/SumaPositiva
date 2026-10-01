@@ -18,7 +18,7 @@ import type {
  * y las mutaciones se sincronizarán vía WebSockets.
  */
 
-export type VistaApp = "inicio" | "explorar";
+export type VistaApp = "inicio" | "explorar" | "mesas";
 
 interface PoliticasState {
   politicas: PoliticaPublica[];

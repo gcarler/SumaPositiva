@@ -9,7 +9,18 @@ import { create } from "zustand";
  * para navegación anidada (Política → Fase → Línea → Aporte).
  */
 
-export type PanelType = "politica" | "fase" | "linea" | "aporte" | "sesion";
+export type PanelType =
+  | "politica"
+  | "fase"
+  | "linea"
+  | "aporte"
+  | "sesion"
+  | "mesa"
+  | "papelografo"
+  | "mesa-editor";
+
+/** Árbol que se diligencia en el papelografo */
+export type ArbolPanel = "problemas" | "soluciones";
 
 /** Props tipadas por tipo de panel — imposible abrir un panel con props inválidas */
 export interface PanelPropsMap {
@@ -19,6 +30,18 @@ export interface PanelPropsMap {
   aporte: { politicaId: string; faseId: string; lineaId: string };
   /** Panel de sesión/identidad — no requiere props */
   sesion: Record<string, never>;
+  /** Área de trabajo: detalle de una mesa (plenaria + submesas) */
+  mesa: { mesaId: string };
+  /** Papelografo: editor de árbol de problemas / soluciones de una submesa */
+  papelografo: {
+    mesaId: string;
+    submesaId: string;
+    arbol: ArbolPanel;
+    /** key del panel de mesa para el breadcrumb de regreso */
+    fromKey?: string;
+  };
+  /** Crear (sin mesaId) o editar una mesa de trabajo */
+  "mesa-editor": { mesaId?: string };
 }
 
 export type PanelEntry<T extends PanelType = PanelType> = {

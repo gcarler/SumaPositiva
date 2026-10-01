@@ -209,6 +209,13 @@
     mask-image: radial-gradient(ellipse 90% 80% at 50% 40%, black 30%, transparent 75%);
   }
 
+  /* Papel de papelografo — grid de puntos uniforme, sin máscara.
+     Evoca la hoja de papel kraft donde se dibuja el árbol. */
+  .bg-papel {
+    background-image: radial-gradient(var(--border) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+
   /* Texto con gradiente sutil */
   .text-fade {
     background: linear-gradient(to bottom, var(--text-primary) 55%, var(--text-tertiary));

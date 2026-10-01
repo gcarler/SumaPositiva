@@ -6,6 +6,7 @@ import { Topbar } from "@/components/layout/topbar";
 import { Footer } from "@/components/layout/footer";
 import { InicioView } from "@/components/views/inicio-view";
 import { ExplorarView } from "@/components/views/explorar-view";
+import { MesasView } from "@/components/views/mesas-view";
 import { usePoliticasStore } from "@/stores/politicas-store";
 
 /**
@@ -36,7 +37,13 @@ export default function Home() {
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
           >
-            {vista === "inicio" ? <InicioView /> : <ExplorarView />}
+            {vista === "inicio" ? (
+              <InicioView />
+            ) : vista === "mesas" ? (
+              <MesasView />
+            ) : (
+              <ExplorarView />
+            )}
           </motion.div>
         </AnimatePresence>
       </main>

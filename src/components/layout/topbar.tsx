@@ -78,9 +78,10 @@ function SesionButton() {
   );
 }
 
-const NAV: { id: VistaApp; label: string }[] = [
+const NAV: { id: VistaApp; label: string; labelCorto?: string }[] = [
   { id: "inicio", label: "Inicio" },
-  { id: "explorar", label: "Explorar políticas" },
+  { id: "explorar", label: "Explorar políticas", labelCorto: "Explorar" },
+  { id: "mesas", label: "Mesas de trabajo", labelCorto: "Mesas" },
 ];
 
 export function Topbar() {
@@ -124,7 +125,8 @@ export function Topbar() {
                 }`}
                 aria-current={active ? "page" : undefined}
               >
-                {item.label}
+                <span className="hidden md:inline">{item.label}</span>
+                <span className="md:hidden">{item.labelCorto ?? item.label}</span>
               </button>
             );
           })}
