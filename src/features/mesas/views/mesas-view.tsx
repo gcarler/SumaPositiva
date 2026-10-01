@@ -3,7 +3,6 @@
 import { PageHeader } from "@/shared/ui/page-header";
 import { SearchField } from "@/shared/ui/search-field";
 import { EmptyState } from "@/shared/ui/empty-state";
-
 import { Button } from "@/shared/ui/button";
 
 import { useState } from "react";
@@ -14,7 +13,6 @@ import {
   CalendarDays,
   Landmark,
   MapPin,
-  Plus,
   Users,
   Users2,
   ArrowRight,
@@ -23,9 +21,9 @@ import { useMesasStore } from "@/features/mesas/state/mesas-store";
 import { usePanels } from "@/core/panels/panel-store";
 
 /**
- * Vista de Mesas de Trabajo — Área de trabajo participativa.
- * Muestra el catálogo de mesas deliberativas y permite crear nuevas.
- * Siguiendo la arquitectura Zero-Modals, cada tarjeta abre el panel correspondiente.
+ * Vista pública de Mesas de Trabajo — SOLO LECTURA.
+ * La creación y gestión de mesas es exclusiva de /plataforma.
+ * El ciudadano puede consultar las mesas y ver su detalle.
  */
 
 export function MesasView() {
@@ -51,12 +49,6 @@ export function MesasView() {
         eyebrow="Área de trabajo"
         title="Mesas de trabajo"
         description="Espacios de deliberación para construir acuerdos y documentar árboles de problemas y soluciones, en comunidad."
-        action={
-          <Button onClick={() => openPanel("mesa-editor", {})}>
-            <Plus className="size-4" aria-hidden="true" />
-            Crear mesa
-          </Button>
-        }
       />
       <SearchField
         className="mt-8 max-w-lg"
@@ -72,7 +64,7 @@ export function MesasView() {
           <EmptyState
             icon={<Users2 />}
             title="No se encontraron mesas de trabajo"
-            description="Prueba con otro término o crea una mesa para comenzar a construir acuerdos."
+            description="Prueba con otro término de búsqueda."
             action={
               <Button variant="outline" onClick={() => setBusqueda("")}>
                 Limpiar búsqueda
