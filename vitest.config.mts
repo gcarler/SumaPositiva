@@ -32,7 +32,7 @@ export default defineConfig({
       },
       {
         extends: true,
-        optimizeDeps: { include: ["next/link"] },
+        optimizeDeps: { include: ["next/link", "ol/Feature", "ol/geom/Point"] },
         plugins: [
           storybookTest({ configDir: path.join(dirname, ".storybook") }),
         ],

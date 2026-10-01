@@ -2,15 +2,24 @@ import uuid
 from datetime import date
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, File, Form, Request, UploadFile, status
+from fastapi.responses import FileResponse
 
+from app.core.config import Settings
 from app.core.database import SessionDependency
+from app.modules.evidencia.service import EvidenciaService
+from app.modules.identidad.deps import SujetoAutenticadoDep
 from app.modules.identidad.deps import requerir_permiso
 from app.modules.mesas.repository import MesaRepository
 from app.modules.mesas.schemas import (
     ActaCierre,
     ActaCrear,
     ActaRespuesta,
+    FotoMesaModeracion,
+    FotoMesaModeradaRespuesta,
+    FotoMesaRevision,
+    FotoMesaSubidaRespuesta,
+    MesaGeovisorRespuesta,
     MesaCrear,
     MesaRespuesta,
     ParticipanteCrear,
@@ -27,6 +36,14 @@ def get_mesa_service(session: SessionDependency) -> MesaService:
 
 
 MesaServiceDep = Annotated[MesaService, Depends(get_mesa_service)]
+
+
+def get_evidencia_service(session: SessionDependency, request: Request) -> EvidenciaService:
+    settings = getattr(request.app.state, "settings", None) or Settings()
+    return EvidenciaService(session, settings)
+
+
+EvidenciaServiceDep = Annotated[EvidenciaService, Depends(get_evidencia_service)]
 
 
 @router.post(
@@ -47,6 +64,64 @@ async def crear_mesa(datos: MesaCrear, service: MesaServiceDep):
 )
 async def crear_submesa(mesa_id: uuid.UUID, datos: SubMesaCrear, service: MesaServiceDep):
     return await service.crear_submesa(mesa_id, datos)
+
+
+@router.get("/geovisor", response_model=list[MesaGeovisorRespuesta])
+async def listar_mesas_geovisor(service: EvidenciaServiceDep):
+    return await service.listar_mesas_geovisor()
+
+
+@router.post(
+    "/{mesa_id}/fotos",
+    response_model=FotoMesaSubidaRespuesta,
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(requerir_permiso("mesas:fotos:subir", nivel_minimo="declarada"))],
+)
+async def subir_foto_mesa(
+    mesa_id: uuid.UUID,
+    sujeto: SujetoAutenticadoDep,
+    service: EvidenciaServiceDep,
+    archivo: Annotated[UploadFile, File(description="Imagen JPEG, PNG o WebP")],
+    autorizacion_imagen: Annotated[bool, Form(description="Confirma que cuenta con autorización para publicar esta imagen")],
+):
+    return await service.guardar_foto_mesa(mesa_id, archivo, sujeto, autorizacion_imagen)
+
+
+@router.get(
+    "/fotos/pendientes",
+    response_model=list[FotoMesaRevision],
+    dependencies=[Depends(requerir_permiso("testimonios:moderar", nivel_minimo="declarada"))],
+)
+async def listar_fotos_pendientes(service: EvidenciaServiceDep):
+    return await service.listar_fotos_pendientes()
+
+
+@router.post(
+    "/fotos/{foto_id}/revision",
+    response_model=FotoMesaModeradaRespuesta,
+    dependencies=[Depends(requerir_permiso("testimonios:moderar", nivel_minimo="declarada"))],
+)
+async def revisar_foto_mesa(
+    foto_id: uuid.UUID,
+    datos: FotoMesaModeracion,
+    sujeto: SujetoAutenticadoDep,
+    service: EvidenciaServiceDep,
+):
+    return await service.moderar_foto_mesa(foto_id, datos, sujeto)
+
+
+@router.get(
+    "/fotos/{foto_id}/revision/archivo",
+    response_class=FileResponse,
+    dependencies=[Depends(requerir_permiso("testimonios:moderar", nivel_minimo="declarada"))],
+)
+async def archivo_foto_revision(
+    foto_id: uuid.UUID,
+    sujeto: SujetoAutenticadoDep,
+    service: EvidenciaServiceDep,
+):
+    ruta, mime = await service.obtener_archivo_para_revision(foto_id, sujeto)
+    return FileResponse(path=ruta, media_type=mime)
 
 
 @router.get("", response_model=list[MesaRespuesta])

@@ -35,11 +35,13 @@ Contrato y activación: [usuarios y acceso](identidad.md).
 | instrumentos:gestionar | autoridad_distrital, facilitador_mesa | declarada |
 | ia:analizar | autoridad_distrital, facilitador_mesa | declarada |
 | mesas:abrir | autoridad_distrital, facilitador_mesa | declarada |
+| mesas:fotos:subir | autoridad_distrital, facilitador_mesa | declarada |
 | mesas:acuerdos | autoridad_distrital, facilitador_mesa | declarada |
 | asistencia:verificar | autoridad_distrital, facilitador_mesa | declarada |
 | aportes:priorizar | autoridad_distrital | declarada |
 | aportes:responder | autoridad_distrital | declarada |
-| formularios:gestionar | autoridad_distrital, facilitador_mesa | declarada |
+| formularios:leer | autoridad_distrital, facilitador_mesa, administrador_identidades, auditor_forense | declarada |
+| formularios:gestionar | autoridad_distrital, facilitador_mesa, administrador_identidades | declarada |
 | testimonios:moderar | autoridad_distrital, facilitador_mesa | declarada |
 | politicas:gestionar | autoridad_distrital, administrador_identidades | declarada |
 | auditoria:leer | autoridad_distrital, administrador_identidades, auditor_forense | declarada |
@@ -70,7 +72,7 @@ La última columna explica la excepción pública o la condición adicional.
 | POST | /api/v1/auditoria/respaldos/ejecutar | permiso:auditoria:leer@declarada | Ejecución supervisada de respaldo en caliente de la base de datos. |
 | POST | /api/v1/evidencias/subir | sujeto | Autor tomado del token; imagen validada y EXIF eliminado. |
 | GET | /api/v1/evidencias/{id} | publico | Evidencia de participación publicada y sanitizada; EXIF eliminado no garantiza anonimato visual. |
-| GET | /api/v1/evidencias/{id}/archivo | publico | Evidencia de participación publicada y sanitizada; EXIF eliminado no garantiza anonimato visual. |
+| GET | /api/v1/evidencias/{id}/archivo | publico | Evidencia de participación publicada y sanitizada; fotos de mesa solo tras aprobación; EXIF eliminado no garantiza anonimato visual. |
 | GET | /api/v1/formularios | publico | Consulta pública de formularios activos de participación. |
 | POST | /api/v1/formularios | permiso:formularios:gestionar@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |
 | DELETE | /api/v1/formularios/{id} | permiso:formularios:gestionar@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |
@@ -133,6 +135,11 @@ La última columna explica la excepción pública o la condición adicional.
 | DELETE | /api/v1/instrumentos/{instrumento_id}/nodos/{nodo_id} | permiso:instrumentos:gestionar@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |
 | PUT | /api/v1/instrumentos/{instrumento_id}/nodos/{nodo_id} | permiso:instrumentos:gestionar@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |
 | GET | /api/v1/mesas | publico | Convocatorias y actas de deliberación pública; participantes nominales están protegidos. |
+| GET | /api/v1/mesas/geovisor | publico | Estado agregado y centroides territoriales de referencia; solo fotos aprobadas. |
+| POST | /api/v1/mesas/{mesa_id}/fotos | permiso:mesas:fotos:subir@declarada | Imagen saneada, autorización declarada y vínculo atómico; queda pendiente de moderación. |
+| GET | /api/v1/mesas/fotos/pendientes | permiso:testimonios:moderar@declarada | Cola de revisión institucional; no expone imágenes en lectura pública. |
+| POST | /api/v1/mesas/fotos/{foto_id}/revision | permiso:testimonios:moderar@declarada | Revisión institucional única; solo aprobación autorizada se expone al público. |
+| GET | /api/v1/mesas/fotos/{foto_id}/revision/archivo | permiso:testimonios:moderar@declarada | Archivo pendiente accesible solo para moderación institucional. |
 | POST | /api/v1/mesas | permiso:mesas:abrir@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |
 | GET | /api/v1/mesas/{mesa_id} | publico | Convocatorias y actas de deliberación pública; participantes nominales están protegidos. |
 | GET | /api/v1/mesas/{mesa_id}/acta | publico | Convocatorias y actas de deliberación pública; participantes nominales están protegidos. |
@@ -182,6 +189,8 @@ revisión de privacidad de campos, imágenes, logs, rate limiting, revocación,
 cuentas históricas o atribuciones institucionales. EXIF eliminado no prueba
 consentimiento ni elimina información identificable visible. EAF debe declarar
 estos límites en el dictamen correspondiente.
+
+
 
 ## Navegación interna
 

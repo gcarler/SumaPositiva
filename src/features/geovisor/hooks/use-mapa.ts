@@ -16,6 +16,7 @@ import Style from "ol/style/Style";
 import Text from "ol/style/Text";
 import { fromLonLat } from "ol/proj";
 import type { Geometry } from "ol/geom";
+import Point from "ol/geom/Point";
 import { GEOJSON_TERRITORIOS } from "../data/territorios.geojson";
 import {
   type VariableMapa,
@@ -27,11 +28,12 @@ import {
 } from "../data/estadisticas.data";
 import { BARRIOS_CARTAGENA, type Barrio } from "../data/barrios.data";
 import type { CapasConfig } from "../components/geovisor-controles";
+import type { MesaGeovisor } from "../services/mesas-geovisor-api";
 
 export interface HoverInfo {
   id: string;
   nombre: string;
-  tipo: "localidad" | "corregimiento" | "isla" | "barrio";
+  tipo: "localidad" | "corregimiento" | "isla" | "barrio" | "mesa";
   ish?: number;
   poblacion?: number;
   aportes?: number;
@@ -53,6 +55,9 @@ export interface UseMapaOptions {
   barrioSeleccionado?: string | null;
   variableMapa?: VariableMapa;
   capasVisibles?: CapasConfig;
+  mesas?: MesaGeovisor[];
+  mesaSeleccionadaId?: string | null;
+  onSelectMesa?: (mesaId: string) => void;
 }
 
 /**
@@ -164,6 +169,9 @@ export function useMapa({
     puntos: true,
     etiquetas: true,
   },
+  mesas = [],
+  mesaSeleccionadaId = null,
+  onSelectMesa,
 }: UseMapaOptions) {
   const mapaRef = useRef<Map | null>(null);
   const [cargando, setCargando] = useState(true);
@@ -175,15 +183,35 @@ export function useMapa({
 
   const fuenteTerritoriosRef = useRef<VectorSource<Feature> | null>(null);
   const fuenteBarriosRef = useRef<VectorSource<Feature> | null>(null);
+  const fuentePuntosRef = useRef<VectorSource<Feature> | null>(null);
+  const fuenteMesasRef = useRef<VectorSource<Feature> | null>(null);
+  const mesasRef = useRef(mesas);
+  const mesaSeleccionadaRef = useRef(mesaSeleccionadaId);
 
   useEffect(() => {
     localidadRef.current = localidadId;
     barrioRef.current = barrioSeleccionado;
     variableRef.current = variableMapa;
     capasRef.current = capasVisibles;
+    mesasRef.current = mesas;
+    mesaSeleccionadaRef.current = mesaSeleccionadaId;
 
+    if (fuenteMesasRef.current) {
+      fuenteMesasRef.current.clear(true);
+      const features = new GeoJSON().readFeatures({
+        type: "FeatureCollection",            features: mesas.map((mesa) => ({
+          type: "Feature",
+          id: mesa.id,
+          geometry: mesa.longitud_referencia !== null && mesa.latitud_referencia !== null
+            ? { type: "Point", coordinates: [mesa.longitud_referencia, mesa.latitud_referencia] }
+            : null,
+          properties: { id: mesa.id, nombre: mesa.nombre, realizada: mesa.realizada, total_asistentes: mesa.total_asistentes, horario: mesa.horario, tipo: "mesa" },
+        })).filter((feature) => feature.geometry !== null),
+      }, { dataProjection: "EPSG:4326", featureProjection: "EPSG:3857" });
+      fuenteMesasRef.current.addFeatures(features);
+    }
     mapaRef.current?.getLayers().forEach((layer) => layer.changed());
-  }, [localidadId, barrioSeleccionado, variableMapa, capasVisibles]);
+  }, [localidadId, barrioSeleccionado, variableMapa, capasVisibles, mesas, mesaSeleccionadaId]);
 
   // Manejo de foco al cambiar localidad
   useEffect(() => {
@@ -207,7 +235,12 @@ export function useMapa({
           padding: [60, 60, 60, 60],
         });
       }
+      return;
     }
+    const punto = fuentePuntosRef.current?.getFeatures().find((feature) => feature.get("id") === localidadId);
+    const geometriaPunto = punto?.getGeometry();
+    const coordenada = geometriaPunto instanceof Point ? geometriaPunto.getCoordinates() : undefined;
+    if (coordenada) mapaRef.current.getView().animate({ center: coordenada, zoom: 13.5, duration: 500 });
   }, [localidadId]);
 
   // Manejo de foco al seleccionar un barrio
@@ -353,6 +386,38 @@ export function useMapa({
 
     /* 3. Capa de Puntos de Alertas SAT */
     const capaPuntos = crearCapaPuntosAlertas(localidadRef, capasRef);
+    fuentePuntosRef.current = capaPuntos.getSource() ?? null;
+    const fuenteMesas = new VectorSource<Feature>();
+    fuenteMesasRef.current = fuenteMesas;
+    const puntosMesas = new GeoJSON().readFeatures({
+      type: "FeatureCollection",
+      features: mesasRef.current.map((mesa) => ({
+        type: "Feature",
+        id: mesa.id,
+        geometry: mesa.longitud_referencia !== null && mesa.latitud_referencia !== null
+          ? { type: "Point", coordinates: [mesa.longitud_referencia, mesa.latitud_referencia] }
+          : null,
+        properties: { id: mesa.id, nombre: mesa.nombre, realizada: mesa.realizada, total_asistentes: mesa.total_asistentes, horario: mesa.horario, tipo: "mesa" },
+      })).filter((feature) => feature.geometry !== null),
+    }, { dataProjection: "EPSG:4326", featureProjection: "EPSG:3857" });
+    fuenteMesas.addFeatures(puntosMesas);
+    const capaMesas = new VectorLayer({
+      source: fuenteMesas,
+      zIndex: 20,
+      declutter: true,
+      style: (feature) => {
+        const realizada = feature.get("realizada") === true;
+        const seleccionada = String(feature.get("id")) === mesaSeleccionadaRef.current;
+        const estilos = getComputedStyle(document.documentElement);
+        const color = estilos.getPropertyValue(realizada ? "--success" : "--warning").trim();
+        const superficie = estilos.getPropertyValue("--surface-1").trim();
+        const texto = estilos.getPropertyValue("--text-primary").trim();
+        return new Style({
+          image: new CircleStyle({ radius: seleccionada ? 11 : 8, fill: new Fill({ color }), stroke: new Stroke({ color: superficie, width: seleccionada ? 3 : 2 }) }),
+          text: new Text({ text: String(feature.get("nombre") ?? "Mesa"), offsetY: -17, font: "600 11px Geist, sans-serif", fill: new Fill({ color: texto }), stroke: new Stroke({ color: superficie, width: 3 }), overflow: true }),
+        });
+      },
+    });
 
     const mapa = new Map({
       target,
@@ -361,6 +426,7 @@ export function useMapa({
         capaTerritorios,
         capaBarrios,
         capaPuntos,
+        capaMesas,
       ],
       view: new View({
         center: fromLonLat([-75.5144, 10.391]),
@@ -400,6 +466,11 @@ export function useMapa({
     const handleClick = (event: { pixel: number[] }) => {
       const feature = featureAtPixel(event.pixel);
       if (!feature) return;
+      if (feature.get("tipo") === "mesa") {
+        const idMesa = feature.get("id");
+        if (typeof idMesa === "string") onSelectMesa?.(idMesa);
+        return;
+      }
 
       const id = feature.get("id");
       if (typeof id === "string") {
@@ -431,7 +502,7 @@ export function useMapa({
       const feature = featureAtPixel(pixel);
       target.style.cursor = feature ? "pointer" : "grab";
 
-      const todasLasCapas = [capaTerritorios, capaBarrios, capaPuntos];
+      const todasLasCapas = [capaTerritorios, capaBarrios, capaPuntos, capaMesas];
       todasLasCapas.forEach((capa) => {
         capa.getSource()?.getFeatures().forEach((elemento) => {
           const hovered = elemento === feature;
@@ -449,6 +520,13 @@ export function useMapa({
 
       const id = String(feature.get("id") ?? "");
       const nombre = String(feature.get("nombre") ?? "");
+      if (feature.get("tipo") === "mesa") {
+        const mesa = mesasRef.current.find((item) => item.id === id);
+        if (mesa) {
+          onHoverInfo({ id: mesa.id, nombre: `${mesa.nombre} · ${mesa.realizada ? "Realizada" : "No realizada"} · ${mesa.total_asistentes} asistentes${mesa.horario ? ` · ${mesa.horario}` : ""}`, tipo: "mesa", pixel });
+          return;
+        }
+      }
       const stats = ESTADISTICAS_TERRITORIOS.find((t) => t.id === id || t.nombre === nombre);
 
       if (stats) {
@@ -496,8 +574,10 @@ export function useMapa({
       mapa.un("pointermove", handlePointerMove);
       mapa.setTarget(undefined);
       mapaRef.current = null;
+      fuenteMesasRef.current = null;
+      fuentePuntosRef.current = null;
     };
-  }, [target, onSelectTerritorio, onSelectBarrio, onHoverInfo]);
+  }, [target, onSelectTerritorio, onSelectBarrio, onHoverInfo, onSelectMesa]);
 
   // Controles del mapa
   const zoomIn = useCallback(() => {

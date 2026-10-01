@@ -50,7 +50,7 @@ function encabezado(titulo: string, territorio: EstadisticasTerritorio, etiqueta
   );
 }
 
-function valorDimensiones(territorio: EstadisticasTerritorio): number[] {
+export function valorDimensiones(territorio: EstadisticasTerritorio): number[] {
   return DIMENSIONES.map(({ variable }) => obtenerValorVariable(territorio, variable));
 }
 
@@ -104,10 +104,10 @@ function RadarChart({
   }, [territorio.id, reducedMotion]);
 
   return (
-    <div className="relative mx-auto w-full max-w-[250px]" aria-label={`Perfil derivado del territorio ${territorio.nombre}`}>
+    <div className="relative mx-auto w-full max-w-[250px]">
       <svg viewBox={`0 0 ${size} ${size}`} role="img" aria-label="Radar de siete dimensiones derivadas, escala de cero a cien" className="h-auto w-full overflow-visible">
         {[25, 50, 75, 100].map((nivel) => (
-          <polygon key={nivel} points={puntosPoligono(Array(7).fill(nivel), center, radius)} fill="none" stroke="var(--border)" strokeWidth="1" />
+          <polygon key={nivel} points={puntosPoligono(Array.from({ length: 7 }, () => nivel), center, radius)} fill="none" stroke="var(--border)" strokeWidth="1" />
         ))}
         {vertices.map((vertice) => (
           <line key={vertice.label} x1={center} y1={center} x2={vertice.x} y2={vertice.y} stroke="var(--border)" strokeWidth="1" />
@@ -139,7 +139,6 @@ function RadarChart({
           title={`${vertice.label}: ${Math.round(valores[indice])}/100`}
           onMouseEnter={() => onVariableChange(vertice.variable)}
           onFocus={() => onVariableChange(vertice.variable)}
-          onClick={() => onVariableChange(vertice.variable)}
         >
           {Math.round(valores[indice])}
         </Button>
@@ -179,8 +178,7 @@ function RankingChart({
 
   return (
     <div className="relative">
-      <div className="mb-2 flex justify-between text-[10px] text-[var(--text-tertiary)]"><span>Territorio</span><span>{meta.label} · {meta.unidad}</span></div>
-      <div className="space-y-2">
+      <div className="mb-2 flex justify-between text-[10px] text-[var(--text-tertiary)]"><span>Territorio</span><span>{meta.label} · {meta.unidad}</span></div>        <div className="space-y-2">
         {territorios.map((item) => {
           const valor = obtenerValorVariable(item, variableMapa);
           const activo = territorioId === item.id;
@@ -251,7 +249,7 @@ function TendenciaChart({ territorio, reducedMotion }: { territorio: Estadistica
             const bounds = event.currentTarget.ownerSVGElement?.getBoundingClientRect();
             if (bounds) setTooltip({ x: event.clientX - bounds.left, y: event.clientY - bounds.top, text: `${MESES[index]} 2026 · ${point.value} alertas` });
           }} onFocus={() => setTooltip({ x: point.x / width * 100, y: point.y / height * 100, text: `${MESES[index]} 2026 · ${point.value} alertas` })}>
-            <circle cx={point.x} cy={point.y} r="11" fill="transparent" tabIndex={0} role="img" aria-label={`${MESES[index]} de 2026: ${point.value} alertas`} />
+            <circle cx={point.x} cy={point.y} r="11" fill="transparent" tabIndex={0} role="img" aria-label={`${MESES[index]} de 2026: ${point.value} alertas`} onBlur={() => setTooltip(null)} />
             <circle cx={point.x} cy={point.y} r="3.5" fill="var(--surface-1)" stroke="var(--ember)" strokeWidth="2" />
           </g>
         ))}
@@ -296,7 +294,7 @@ function DonutChart({ territorioId, variableMapa, onTerritorioChange, reducedMot
 
   return (
     <div className="relative" onMouseLeave={() => setTooltip(null)}>
-      <svg viewBox="0 0 220 190" role="img" aria-label="Distribución referencial de población por localidad" className="mx-auto w-full max-w-[260px] overflow-visible">
+      <svg viewBox="0 0 220 190" role="group" aria-label="Distribución referencial de población por localidad" className="mx-auto w-full max-w-[260px] overflow-visible">
         {segmentos.map(({ item, portion, start, end }) => {
           const selected = territorioId === item.id;
           const middle = (start + end) / 2;
@@ -311,7 +309,7 @@ function DonutChart({ territorioId, variableMapa, onTerritorioChange, reducedMot
               stroke={colors[item.id as (typeof LOCALIDADES)[number]]}
               strokeWidth={selected ? 29 : 24}
               strokeLinecap="butt"
-              className="cursor-pointer transition-all hover:opacity-80 focus-visible:outline-none"
+              className="cursor-pointer transition-all hover:opacity-80 focus-visible:stroke-[var(--text-primary)]"
               style={{ transitionDuration: reducedMotion ? "0ms" : "300ms" }}
               tabIndex={0}
               role="button"

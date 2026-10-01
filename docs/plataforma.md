@@ -104,3 +104,13 @@ No se han desactivado controles para aprobarlos; EAF conserva la revisión indep
 Los servicios frontend/backend fueron reiniciados. Portal HTTP 200 y API liveness
 200; readiness de API devuelve 503 por migraciones pendientes de cambios paralelos
 (database y extensions `ok`). No se ejecutaron migraciones en la base de producción.
+
+## Constructor geográfico y acceso administrativo
+
+La revisión `0028_formularios_admin` concede al administrador los permisos reales
+`formularios:leer` y `formularios:gestionar`, con eventos de auditoría en la misma
+transacción. La navegación continúa comprobando permisos vigentes. No concede
+permisos de mesas ni de presupuesto por extensión.
+
+El constructor permite añadir una pregunta **Ubicación geográfica** junto a las
+preguntas existentes; ver [captura y exportación geográfica](formularios-geograficos.md).

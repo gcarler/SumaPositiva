@@ -82,6 +82,7 @@ class MesaGeovisorRespuesta(BaseModel):
     total_asistentes: int
     territorio_id: uuid.UUID | None
     territorio_nombre: str | None
+    territorio_codigo: str | None
     longitud_referencia: float | None
     latitud_referencia: float | None
     tipo_ubicacion: Literal["centroide_territorial_referencia"] | None

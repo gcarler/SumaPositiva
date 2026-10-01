@@ -9,6 +9,7 @@ export type TipoPregunta =
   | "fecha"
   | "hora"
   | "numero"
+  | "ubicacion_geografica"
   | "carga_archivo"
   | "seccion"
   | "descripcion";
@@ -24,6 +25,7 @@ export const TIPOS_PREGUNTA: Record<TipoPregunta, string> = {
   fecha: "Fecha",
   hora: "Hora",
   numero: "Número",
+  ubicacion_geografica: "Ubicación geográfica",
   carga_archivo: "Archivo",
   seccion: "Sección",
   descripcion: "Descripción",

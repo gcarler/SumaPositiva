@@ -24,6 +24,7 @@ const tipos: TipoPregunta[] = [
   "hora",
   "numero",
   "carga_archivo",
+  "ubicacion_geografica",
   "seccion",
   "descripcion",
 ];

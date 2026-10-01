@@ -24,6 +24,7 @@ import { useMapa, type HoverInfo } from "../hooks/use-mapa";
 import type { VariableMapa } from "../data/estadisticas.data";
 import { ESTADISTICAS_TERRITORIOS } from "../data/estadisticas.data";
 import type { CapasConfig } from "./geovisor-controles";
+import type { MesaGeovisor } from "../services/mesas-geovisor-api";
 
 export interface MapaCartagenaHandle {
   exportarPng: () => void;
@@ -36,6 +37,9 @@ interface MapaCartagenaProps {
   onSelectBarrio?: (barrio: string) => void;
   variableMapa?: VariableMapa;
   capasVisibles?: CapasConfig;
+  mesas?: MesaGeovisor[];
+  mesaSeleccionadaId?: string | null;
+  onSelectMesa?: (mesaId: string) => void;
 }
 
 const LOCALIDADES = [
@@ -66,6 +70,9 @@ const MapaCartagena = forwardRef<MapaCartagenaHandle, MapaCartagenaProps>(functi
       puntos: true,
       etiquetas: true,
     },
+    mesas = [],
+    mesaSeleccionadaId = null,
+    onSelectMesa,
   },
   ref,
 ) {
@@ -97,6 +104,9 @@ const MapaCartagena = forwardRef<MapaCartagenaHandle, MapaCartagenaProps>(functi
     barrioSeleccionado,
     variableMapa,
     capasVisibles,
+    mesas,
+    mesaSeleccionadaId,
+    onSelectMesa,
   });
 
   useImperativeHandle(ref, () => ({

@@ -7,6 +7,7 @@ import {
   useFormularioDetalle,
   useFormularioAnalitica,
 } from "../services/use-formularios-queries";
+import { descargarGeoJson } from "../services/ubicacion-geografica";
 import { descargarCsv } from "../services/formulario-analitica";
 import { useFormulariosStore } from "../state/formularios-store";
 export function FormularioAnaliticaPanel({
@@ -29,13 +30,23 @@ export function FormularioAnaliticaPanel({
       onClose={closeTop}
       onCloseToKey={closeTop}
       footer={
-        <Button
-          variant="outline"
-          disabled={!form}
-          onClick={() => form && descargarCsv(form, respuestas)}
-        >
-          Exportar CSV
-        </Button>
+        <div className="flex flex-wrap gap-2">
+          <Button
+            variant="outline"
+            disabled={!form}
+            onClick={() => form && descargarCsv(form, respuestas)}
+          >
+            Exportar CSV
+          </Button>
+          {form?.preguntas.some((p) => p.tipo === "ubicacion_geografica") && (
+            <Button
+              variant="outline"
+              onClick={() => descargarGeoJson(form, respuestas)}
+            >
+              Exportar puntos GeoJSON
+            </Button>
+          )}
+        </div>
       }
     >
       <div className="space-y-6 p-6">
@@ -104,6 +115,7 @@ export function FormularioAnaliticaPanel({
                       "fecha",
                       "hora",
                       "carga_archivo",
+                      "ubicacion_geografica",
                     ].includes(p.tipo) ? (
                       <ul className="space-y-2 text-sm">
                         {rp.ultimas.map((v, i) => (

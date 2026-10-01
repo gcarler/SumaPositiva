@@ -18,7 +18,7 @@ def upgrade() -> None:
         CREATE TABLE mesas_trabajo.fotos_mesa (
             id UUID PRIMARY KEY DEFAULT public.generar_uuid_v7(),
             mesa_id UUID NOT NULL REFERENCES mesas_trabajo.mesas(id) ON DELETE CASCADE,
-            evidencia_id UUID NOT NULL UNIQUE REFERENCES participacion_ciudadana.evidencias_multimedia(id) ON DELETE CASCADE,
+            evidencia_id UUID NOT NULL REFERENCES participacion_ciudadana.evidencias_multimedia(id) ON DELETE CASCADE,
             subido_por_id UUID REFERENCES autenticacion.usuarios(id) ON DELETE SET NULL,
             autorizacion_imagen BOOLEAN NOT NULL,
             estado VARCHAR(20) NOT NULL DEFAULT 'PENDIENTE',
@@ -26,6 +26,7 @@ def upgrade() -> None:
             revisada_por_id UUID REFERENCES autenticacion.usuarios(id) ON DELETE SET NULL,
             revisada_en TIMESTAMPTZ,
             creado_en TIMESTAMPTZ NOT NULL DEFAULT clock_timestamp(),
+            CONSTRAINT uq_fotos_mesa_evidencia UNIQUE (evidencia_id),
             CONSTRAINT chk_fotos_mesa_estado CHECK (estado IN ('PENDIENTE', 'APROBADA', 'RECHAZADA')),
             CONSTRAINT chk_fotos_mesa_aprobacion_autorizada CHECK (estado <> 'APROBADA' OR autorizacion_imagen)
         )

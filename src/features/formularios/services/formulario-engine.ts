@@ -1,3 +1,4 @@
+import { leerPunto } from "./ubicacion-geografica";
 import type {
   ArchivoRespuesta,
   Formulario,
@@ -220,6 +221,10 @@ export function validarPregunta(
   }
   if (p.tipo === "hora" && !/^([01]\d|2[0-3]):[0-5]\d$/.test(valor))
     return error("Introduce una hora válida.");
+  if (p.tipo === "ubicacion_geografica" && !leerPunto(valor))
+    return error(
+      "Selecciona un punto válido o introduce latitud y longitud válidas.",
+    );
   if (p.tipo === "carga_archivo") {
     const a = leerArchivo(valor);
     if (!a) return error("Selecciona un archivo válido.");

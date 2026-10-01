@@ -1,3 +1,4 @@
+import dynamic from "next/dynamic";
 import { TextoFormato } from "./texto-formato";
 import { useId, useState, useRef } from "react";
 import { FormField } from "@/shared/ui/form-field";
@@ -21,6 +22,14 @@ import {
   mezclar,
   esInformativa,
 } from "../services/formulario-engine";
+
+const UbicacionPregunta = dynamic(
+  () => import("./ubicacion-pregunta").then((m) => m.UbicacionPregunta),
+  {
+    ssr: false,
+    loading: () => <p role="status">Preparando selector de ubicación…</p>,
+  },
+);
 
 export function PreguntaRespuesta({
   pregunta: p,
@@ -64,6 +73,16 @@ export function PreguntaRespuesta({
   const elegir = (v: string) =>
     cambiar(opciones.some((o) => o.id === v && o.esOtro) ? v + ":" : v);
   const archivo = text ? leerArchivo(text) : undefined;
+  if (p.tipo === "ubicacion_geografica")
+    return (
+      <UbicacionPregunta
+        pregunta={p}
+        valor={text}
+        error={error}
+        cambiar={cambiar}
+        ocupado={ocupado}
+      />
+    );
   if (esInformativa(p))
     return (
       <section className="space-y-2 border-l-2 border-ember pl-4">

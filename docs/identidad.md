@@ -29,8 +29,10 @@ por migraciones para conservar el contrato normativo. Los roles personalizados
 agrupan permisos del [catálogo y matriz](permisos-api.md); su alcance actual es
 global. No existe delegación por mesa o territorio en este alcance.
 
-El administrador de identidades recibe administración de cuentas/roles e historial;
-no recibe automáticamente gestión de presupuestos, mesas u otros dominios.
+El administrador de identidades recibe administración de cuentas/roles e historial.
+Desde `0028_formularios_admin` también recibe lectura y gestión de formularios,
+conforme al área interna solicitada. No recibe automáticamente gestión de
+presupuestos, mesas u otros dominios.
 El auditor forense puede leer usuarios, roles y eventos, sin modificarlos.
 Verificar un correo no acredita identidad personal o nombramiento institucional;
 se conserva la distinción con el nivel de identidad.

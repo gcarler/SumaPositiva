@@ -15,8 +15,10 @@ from sqlalchemy import (
 )
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.schema import conv
 
 from app.core.database import Base
+from app.modules.mesas.models import Mesa
 
 
 class EvidenciaMultimedia(Base):
@@ -79,7 +81,7 @@ class FotoMesa(Base):
         Index(
             "idx_fotos_mesa_publicas",
             "mesa_id",
-            "creado_en",
+            text("creado_en DESC"),
             postgresql_where=text("estado = 'APROBADA'"),
         ),
         Index(
@@ -90,13 +92,16 @@ class FotoMesa(Base):
         UniqueConstraint("evidencia_id", name="uq_fotos_mesa_evidencia"),
         CheckConstraint(
             "estado IN ('PENDIENTE', 'APROBADA', 'RECHAZADA')",
-            name="chk_fotos_mesa_estado",
+            name=conv("chk_fotos_mesa_estado"),
         ),
         CheckConstraint(
             "estado <> 'APROBADA' OR autorizacion_imagen",
-            name="chk_fotos_mesa_aprobacion_autorizada",
+            name=conv("chk_fotos_mesa_aprobacion_autorizada"),
         ),
-        {"schema": "mesas_trabajo"},
+        {
+            "schema": "mesas_trabajo",
+            "comment": "Relación de evidencias fotográficas sanitizadas de mesas; solo imágenes aprobadas se exponen públicamente.",
+        },
     )
 
     id: Mapped[uuid.UUID] = mapped_column(
@@ -112,7 +117,6 @@ class FotoMesa(Base):
     evidencia_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
         ForeignKey("participacion_ciudadana.evidencias_multimedia.id", ondelete="CASCADE"),
-        unique=True,
         nullable=False,
     )
     subido_por_id: Mapped[uuid.UUID | None] = mapped_column(
@@ -136,3 +140,4 @@ class FotoMesa(Base):
     )
 
     evidencia: Mapped["EvidenciaMultimedia"] = relationship(back_populates="fotos_mesa")
+    mesa: Mapped["Mesa"] = relationship("Mesa", back_populates="fotos")

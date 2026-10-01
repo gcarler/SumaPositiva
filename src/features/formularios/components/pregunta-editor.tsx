@@ -171,6 +171,13 @@ export function PreguntaEditor({
           />
         </div>
       )}
+      {p.tipo === "ubicacion_geografica" && (
+        <p className="text-sm text-text-secondary">
+          La persona puede marcar un punto en el mapa de Cartagena, introducir
+          coordenadas o usar su ubicación. El punto se vincula a las demás
+          respuestas.
+        </p>
+      )}
       {["texto_corto", "texto_largo"].includes(p.tipo) && (
         <>
           <TextoEditor

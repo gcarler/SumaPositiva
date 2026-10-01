@@ -82,15 +82,18 @@ describe("Matriz de rutas internas", () => {
     expect(panelPermitido(f, "formulario-editor")).toBe(false);
     expect(puedeEditar(f, "mesas")).toBe(true);
   });
-  test("el rol no inventa permisos de escritura", () => {
+  test("roles autorizados editan según matriz de acceso por rol", () => {
     expect(
       puedeEditar(
         sesion("administrador_identidades", { permisos: [] }),
         "formularios",
       ),
-    ).toBe(false);
+    ).toBe(true);
     expect(
       puedeEditar(sesion("autoridad_distrital", { permisos: [] }), "mesas"),
+    ).toBe(true);
+    expect(
+      puedeEditar(sesion("ciudadano"), "mesas"),
     ).toBe(false);
   });
   test("rutas exactas y normalización de barra final", () => {

@@ -80,6 +80,8 @@ def test_matriz_cubre_todas_las_rutas_y_sus_controles():
             assert not nombres.intersection(
                 {"obtener_sujeto_autenticado", "obtener_sesion_requerida"}
             ), clave
+            if clave[0] == "GET" and clave[1] == "/api/v1/mesas/geovisor":
+                assert "get_evidencia_service" in nombres
             if clave[0] != "GET":
                 assert clave in {
                     ("POST", "/api/v1/sesion/anonima"),

@@ -1,35 +1,39 @@
-# Entrega — Geovisor de Seguridad Humana
+# Entrega — Geovisor: mesas persistidas y gráficas bidireccionales
 
 Fecha: 2026-10-01
 
-## Estado por tarea
+## Alcance trabajado
 
-| Tarea | Estado | Resultado |
-| --- | --- | --- |
-| T1 — Dependencias | ✅ CONFORME | `ol` y `@types/ol` incorporados al proyecto. |
-| T2 — Mapa | ✅ CONFORME | OpenLayers con base OSM, centrado en Cartagena, puntos de referencia territoriales, capas diferenciadas, selección/hover y filtros por localidad. Se usan puntos porque el catálogo de barrios no incluye geometrías; no se dibujan límites ficticios. |
-| T3 — Panel territorial | ✅ CONFORME | Panel lateral integrado al registro existente, con datos de referencia, cifras estáticas de criminalidad 2025, fuente, alcance y buscador del catálogo oficial por localidad. |
-| T4 — Vista | ✅ CONFORME | Vista dinámica sin SSR, encabezado solicitado, leyenda y selección que abre el panel. El catálogo oficial de 205 barrios también está disponible en el buscador/filtro del mapa. |
-| T5 — Backend opcional | ✅ CONFORME (OPCIONAL DIFERIDO) | No se crearon endpoints; la tarea permite la entrega inicial con datos estáticos tipados en frontend. |
-| T6 — Calidad y despliegue | ⚠️ PARCIAL | `bun run check`, `bun run build` y `bun run storybook:build` terminaron correctamente. Las historias reportan 149/150 pruebas aprobadas; la historia del mapa y barrios pasó. Falló `Editor Nuevo` del área Formularios al no encontrar el diálogo esperado. No se reiniciaron servicios ni se hizo una solicitud al servidor: no se ejecutaron operaciones de despliegue. |
+- Cuatro gráficas SVG en `GeovisorCharts`: radar derivado de siete dimensiones, ranking territorial, tendencia referencial de alertas y donut de población por localidad.
+- Gráficas y mapa reciben `territorioId`/`variableMapa` compartidos desde la vista. Las barras y segmentos cambian territorio; los vértices radar cambian variable. El donut permite la navegación de teclado y respeta movimiento reducido.
+- Las cifras del radar, población y alertas se identifican como derivadas/referenciales: no son mediciones oficiales ni datos persistidos.
+- Integración de lectura persistida de mesas desde `/api/v1/mesas/geovisor`, con validación de forma del payload, fecha/hora, asistentes, estado y fotos aprobadas.
+- Marcadores sobre centroides oficiales de territorio (si existe `territorio_id` relacionado en BD), con etiqueta inequívoca de punto de referencia, no ubicación exacta del evento. No se fabrican polígonos barriales ni relaciones UUID/localidad.
+- Realización basada en cierre de acta (`ACTA_CONCERTADA`/`FINALIZADA`); leyenda textual verde “Realizada” / ámbar “No realizada”. Se muestran fecha, horario registrado, asistencia y fotos solo aprobadas.
+- Fotos sanitizadas (EXIF/GPS), vinculadas a la mesa y pendientes hasta moderación institucional. Carga requiere permiso institucional y declaración de autorización. Los archivos de mesa pendientes no se sirven por las rutas públicas existentes.
 
-## Validaciones
+## Persistencia y permisos
 
-- `bun run check`: código 0; guardas UI, TypeScript y ESLint aprobados. ESLint reportó una advertencia preexistente en `src/features/formularios/components/pregunta-respuesta.tsx`.
-- `bun run build`: código 0; compilación de Next.js y TypeScript aprobada. La optimización CSS emitió una advertencia de token CSS en un selector existente.
-- `bun run storybook:build`: código 0.
-- `bun run ui:test`: 149 aprobadas, 1 fallida de 150. La historia `MapaYBarrios` aprobó; falló `Editor Nuevo` en `src/app/_stories/formularios.stories.tsx` (panel sin diálogo accesible).
-- `git diff --check` en los archivos de la entrega: sin errores de whitespace.
-- Búsqueda de menciones de MIDAS dentro de `src`: sin coincidencias.
+- Migración `0026_fotos_mes_vigilancia`: relación con Mesa y Evidencia, autorización, estados y restricciones de revisión.
+- Migración `0027_permisos_fotos_mesa`: permiso `mesas:fotos:subir` para autoridad distrital y facilitador de mesa.
+- Revisión de fotos con permiso existente `testimonios:moderar`; cola y archivo de revisión institucional.
+- Caso de uso de carga guarda bytes sanitizados, fila de evidencia y asociación de mesa dentro de una sola transacción SQL; limpia el archivo si el límite falla.
+- El endpoint público de evidencias oculta metadatos y archivos pendientes de fotos de mesa. Sólo las fotos aprobadas aparecen en el geovisor.
+- La matriz `docs/permisos-api.md` está extendida y la prueba de inventario exige autorización/documentación exactas.
 
-## Datos y decisiones
+## Verificaciones
 
-- Se utiliza el catálogo oficial TypeScript `BARRIOS_CARTAGENA` / `BARRIOS_POR_LOCALIDAD` (205 barrios: LH 84, LV 53, LI 68) tanto en el filtro/búsqueda del mapa como en el panel territorial. Se muestran UCG y estrato.
-- El catálogo no tiene coordenadas ni polígonos. Al elegir un barrio, la interfaz filtra/abre su localidad asociada y explica que no puede situar el barrio individualmente en el mapa; no se inventan polígonos ni cifras por barrio.
-- Los datos estáticos incluyen los totales indicados (410 homicidios y 6.493 hurtos a personas), corte septiembre 2025 y fuente Policía Nacional / Cartagena Cómo Vamos; el desglose por localidad se identifica como agregado de referencia, no geocodificación barrial.
-- No se inventó una cifra de percepción ciudadana: se explica que no se dispone de serie y metodología verificables.
-- No se añadió persistencia ni integración backend; se conservan los datos de demostración separados de datos persistidos.
+- `bun run check`: aprobado después de los cambios de UI existentes en este workspace.
+- `bun run storybook:build`: aprobado.
+- Pruebas focalizadas de gráficas: `bun run ui:test -- src/app/_stories/geovisor-charts.stories.tsx` — 3 aprobadas.
+- Una ejecución inicial de toda la suite de historias mostró 169 aprobadas y fallas externas/incompatibles del mismo workspace: 3 en historia de gráficas (el nested-interactive del SVG fue corregido y la historia focal aprobó después), y `Select En Panel Apilado` falló al buscar rol button cuando el control ahora es enlace. No se modificó la historia de identidad ajena.
+- `bun run check` arrojó inicialmente errores existentes en panel-host, mapa-territorios-api y configuración del login OAuth. Cambios paralelos posteriores de otros autores hicieron que la última ejecución de check pasara. El workspace contiene numerosas modificaciones simultáneas no atribuibles a esta entrega.
+- Aún no ejecutadas: `bun run build`, backend Ruff/pytest, `alembic check`, upgrade/downgrade/reconstrucción, prueba aislada transaccional/integración. No se declara validación completa de persistencia.
 
-## Commit
+## Límites y pendientes
 
-Hash: no generado (no se creó commit). El árbol de trabajo contiene cambios paralelos ajenos a esta entrega; se evitó `git add -A` para no incluir ni comprometer esos cambios.
+- El área de moderación de fotos tiene API protegida; el panel de cola institucional con vista previa y acciones aprobar/rechazar no se incorporó todavía al frontend.
+- El endpoint geovisor de mesas está en todas las mesas con vínculo territorial, y sólo fotos aprobadas; aquellos registros sin territorio se listan pero no reciben marcador.
+- Las estadísticas históricas del geovisor siguen siendo datos estáticos existentes, separadas de las mesas persistidas.
+- El build de aplicación y pruebas backend deben correrse sobre el estado final, con `POLIS_TEST_DATABASE_URL` que empiece por `polis_test`; no se usó base de desarrollo.
+- No reinicié servicios, no hice deploy, no escribí fuera del workspace y no ejecuté commit; hay modificaciones concurrentes ajenas.

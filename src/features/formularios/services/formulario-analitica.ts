@@ -1,3 +1,4 @@
+import { textoPunto } from "./ubicacion-geografica";
 import type {
   AnaliticaFormulario,
   Formulario,
@@ -12,6 +13,7 @@ export function textoRespuesta(
   if (valor === undefined) return "";
   if (Array.isArray(valor))
     return valor.map((v) => textoRespuesta(p, v)).join("; ");
+  if (p.tipo === "ubicacion_geografica") return textoPunto(valor);
   if (p.tipo === "carga_archivo") return leerArchivo(valor)?.nombre ?? "";
   const opcion = p.opciones?.find(
     (o) => o.id === valor || (o.esOtro && valor.startsWith(o.id + ":")),

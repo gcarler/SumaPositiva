@@ -9,10 +9,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
 import { Check, Plus } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
 import { PanelShell } from "@/core/panels/panel-shell";
 import { usePanels } from "@/core/panels/panel-store";
 import { useMesa, useMesasStore } from "@/features/mesas/state/mesas-store";
 import { useSesionStore } from "@/features/sesion/state/session-store";
+import { crearMesaRemota } from "@/features/mesas/services/mesas-api";
+import { MESAS_KEYS } from "@/features/mesas/services/use-mesas-queries";
 
 /**
  * Panel editor de mesa de trabajo — crear (sin mesaId) o editar.
@@ -60,6 +63,7 @@ export function MesaEditorPanel({
   props: { mesaId?: string };
 }) {
   const { closeTop, openPanel } = usePanels();
+  const queryClient = useQueryClient();
   const crearMesa = useMesasStore((s) => s.crearMesa);
   const actualizarMesa = useMesasStore((s) => s.actualizarMesa);
   const mesaEditada = useMesa(props.mesaId ?? "");
@@ -86,10 +90,10 @@ export function MesaEditorPanel({
   });
 
   const guardar = async (data: MesaForm) => {
-    await new Promise((r) => setTimeout(r, 300)); // latencia simulada
-
     if (esEdicion && props.mesaId) {
       actualizarMesa(props.mesaId, data);
+      queryClient.invalidateQueries({ queryKey: MESAS_KEYS.all });
+      queryClient.invalidateQueries({ queryKey: MESAS_KEYS.detail(props.mesaId) });
       toast.success("Mesa actualizada", {
         description: "Los datos de la mesa quedaron al día.",
       });
@@ -98,6 +102,18 @@ export function MesaEditorPanel({
     }
 
     const mesa = crearMesa(data);
+    crearMesaRemota(data)
+      .then((remota) => {
+        if (remota?.id) {
+          actualizarMesa(mesa.id, {
+            codigoOficial: remota.codigoOficial,
+            shortcodeCiudadano: remota.shortcodeCiudadano,
+          });
+          queryClient.invalidateQueries({ queryKey: MESAS_KEYS.all });
+        }
+      })
+      .catch(() => {});
+
     toast.success("Mesa creada", {
       description: "Registra la plenaria y crea las submesas para empezar.",
     });

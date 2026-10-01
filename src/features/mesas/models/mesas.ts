@@ -81,6 +81,14 @@ export interface MesaDeTrabajo {
   plenaria: { acuerdos: string };
   submesas: SubMesa[];
   estado: EstadoMesa;
+  codigoOficial?: string;
+  shortcodeCiudadano?: string;
+  tipoMesa?: string;
+  horario?: string;
+  modalidad?: string;
+  sha256Acta?: string | null;
+  descripcion?: string;
+  dimensionOnu?: string;
 }
 
 /* ---------- Metadatos de presentación ---------- */

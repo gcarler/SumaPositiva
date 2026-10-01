@@ -1,13 +1,16 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useCallback, useState, useRef } from "react";
+import { useCallback, useMemo, useState, useRef } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { listarMesasGeovisor } from "../services/mesas-geovisor-api";
 import { PageHeader } from "@/shared/ui/page-header";
 import { usePanels } from "@/core/panels/panel-store";
 import { GeovisorKpiBar } from "../components/geovisor-kpi-bar";
 import { GeovisorBiSidebar } from "../components/geovisor-bi-sidebar";
 import { GeovisorControles, type CapasConfig } from "../components/geovisor-controles";
 import { GeovisorCharts } from "../components/geovisor-charts";
+import { MesasGeovisor } from "../components/mesas-geovisor";
 import type { VariableMapa } from "../data/estadisticas.data";
 import type { MapaCartagenaHandle } from "../components/mapa-cartagena";
 
@@ -31,6 +34,13 @@ export function GeovisorView() {
   const mapaRef = useRef<MapaCartagenaHandle | null>(null);
 
   const [territorioId, setTerritorioId] = useState<string>("todas");
+  const [mesaIdSeleccionada, setMesaIdSeleccionada] = useState<string | null>(null);
+  const { data: mesasGeovisor = [] } = useQuery({
+    queryKey: ["geovisor", "mesas"],
+    queryFn: listarMesasGeovisor,
+    staleTime: 30_000,
+    retry: 1,
+  });
   const [barrioSeleccionado, setBarrioSeleccionado] = useState<string | null>(null);
   const [variableMapa, setVariableMapa] = useState<VariableMapa>("ish");
 
@@ -67,6 +77,11 @@ export function GeovisorView() {
     },
     [openPanel],
   );
+
+  const mesasDelTerritorio = useMemo(() => {
+    if (territorioId === "todas") return mesasGeovisor;
+    return mesasGeovisor.filter((mesa) => mesa.territorio_codigo?.toLowerCase() === territorioId.toLowerCase());
+  }, [mesasGeovisor, territorioId]);
 
   const handleExportarPng = useCallback(() => {
     mapaRef.current?.exportarPng();
@@ -110,6 +125,9 @@ export function GeovisorView() {
             onSelectBarrio={handleSelectBarrio}
             variableMapa={variableMapa}
             capasVisibles={capas}
+            mesas={mesasDelTerritorio}
+            mesaSeleccionadaId={mesaIdSeleccionada}
+            onSelectMesa={setMesaIdSeleccionada}
           />
         </div>
 
@@ -123,6 +141,15 @@ export function GeovisorView() {
           />
         </div>
       </div>
+
+      <MesasGeovisor
+        mesas={mesasGeovisor}
+        isLoading={false}
+        isError={false}
+        error={null}
+        seleccionada={mesaIdSeleccionada}
+        onSeleccionar={setMesaIdSeleccionada}
+      />
 
       <section aria-label="Análisis estadístico territorial">
         <GeovisorCharts

@@ -150,6 +150,11 @@ class Mesa(Base):
         back_populates="mesa",
         cascade="all, delete-orphan",
     )
+    fotos: Mapped[list["FotoMesa"]] = relationship(
+        "FotoMesa",
+        back_populates="mesa",
+        cascade="all, delete-orphan",
+    )
 
 
 class ParticipanteMesa(Base):

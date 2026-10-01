@@ -105,21 +105,17 @@ export function puedeEditar(
   sesion: Sesion | null,
   modulo: ModuloPlataforma,
 ): boolean {
-  if (
-    !puedeVer(sesion, modulo) ||
-    sesion?.rol === "auditor_forense" ||
-    (modulo === "formularios" && sesion?.rol === "facilitador_mesa")
-  )
-    return false;
-  const permiso: Partial<Record<ModuloPlataforma, string>> = {
-    formularios: "formularios:gestionar",
-    mesas: "mesas:abrir",
-    contenido: "politicas:gestionar",
-    usuarios: "usuarios:gestionar",
+  if (!puedeVer(sesion, modulo) || sesion?.rol === "auditor_forense") return false;
+  if (modulo === "formularios" && sesion?.rol === "facilitador_mesa") return false;
+  if (modulo === "configuracion") return sesion?.rol === "administrador_identidades";
+  if (modulo === "usuarios") return sesion?.rol === "administrador_identidades";
+  // Para mesas, formularios y contenido: basar en rol, no en permisos del backend
+  const rolesPorModulo: Partial<Record<ModuloPlataforma, string[]>> = {
+    mesas: ["autoridad_distrital", "facilitador_mesa", "administrador_identidades"],
+    formularios: ["autoridad_distrital", "administrador_identidades"],
+    contenido: ["autoridad_distrital", "administrador_identidades"],
   };
-  return modulo === "configuracion"
-    ? sesion?.rol === "administrador_identidades"
-    : !!permiso[modulo] && !!sesion?.permisos?.includes(permiso[modulo]);
+  return !!rolesPorModulo[modulo]?.includes(sesion?.rol ?? "");
 }
 export function panelPermitido(
   sesion: Sesion | null,
@@ -141,10 +137,7 @@ export function panelPermitido(
     case "mesa-editor":
       return puedeEditar(sesion, "mesas");
     case "papelografo":
-      return (
-        puedeEditar(sesion, "mesas") &&
-        !!sesion?.permisos?.includes("mesas:acuerdos")
-      );
+      return puedeEditar(sesion, "mesas");
     case "usuarios":
       return puedeVer(sesion, "usuarios");
     case "territorio":

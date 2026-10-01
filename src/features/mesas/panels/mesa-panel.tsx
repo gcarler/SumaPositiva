@@ -331,7 +331,6 @@ export function MesaPanel({
                       <X className="size-3.5" strokeWidth={1.5} />
                       Cancelar
                     </Button>
-                    !soloLectura &&{" "}
                     <Button
                       variant="default"
                       size="default"

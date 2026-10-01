@@ -72,16 +72,17 @@ async function once<T>(
   signal?.addEventListener("abort", onAbort, { once: true });
 
   const tokenPeticion = bearerToken;
+  const esMultipart = typeof FormData !== "undefined" && body instanceof FormData;
   try {
     const res = await fetch(url, {
       method,
       signal: controller.signal,
       headers: {
-        "Content-Type": "application/json",
+        ...(!esMultipart ? { "Content-Type": "application/json" } : {}),
         ...(bearerToken ? { Authorization: `Bearer ${bearerToken}` } : {}),
         ...headers,
       },
-      body: body !== undefined ? JSON.stringify(body) : undefined,
+      body: body !== undefined ? (esMultipart ? body : JSON.stringify(body)) : undefined,
     });
 
     if (!res.ok) {

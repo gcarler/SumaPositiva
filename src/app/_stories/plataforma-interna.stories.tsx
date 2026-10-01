@@ -37,8 +37,9 @@ const perfil: Usuario = {
     "roles:gestionar",
     "politicas:gestionar",
     "formularios:gestionar",
-    "mesas:abrir",
-    "mesas:acuerdos",
+    "formularios:leer",
+    "identidad:auditar",
+    "auditoria:leer",
   ],
 };
 const apiOriginal = { ...plataformaApi };
