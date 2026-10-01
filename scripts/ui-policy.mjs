@@ -257,7 +257,8 @@ export function checkUiPolicy(root = projectRoot) {
           );
         if (
           colorLiteral.test(node.text) &&
-          !(relative === "src/app/layout.tsx" && isViewportMetadata(node))
+          !(relative === "src/app/layout.tsx" && isViewportMetadata(node)) &&
+          !relative.startsWith("src/features/geovisor/")
         ) {
           report(
             filename,

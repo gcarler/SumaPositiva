@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import Feature from "ol/Feature";
 import Map from "ol/Map";
 import View from "ol/View";
@@ -16,50 +16,93 @@ import Style from "ol/style/Style";
 import Text from "ol/style/Text";
 import { fromLonLat } from "ol/proj";
 import type { Geometry } from "ol/geom";
-import { TERRITORIOS_CARTAGENA } from "../data/territorios.data";
-import type { Territorio } from "../data/territorios.data";
+import { GEOJSON_TERRITORIOS } from "../data/territorios.geojson";
+import {
+  type VariableMapa,
+  VARIABLE_META,
+  ESTADISTICAS_TERRITORIOS,
+  obtenerValorVariable,
+  interpolarColor,
+  type EstadisticasTerritorio,
+} from "../data/estadisticas.data";
+import { BARRIOS_CARTAGENA, type Barrio } from "../data/barrios.data";
+import type { CapasConfig } from "../components/geovisor-controles";
 
-const COLORES_POR_LOCALIDAD: Record<string, string> = {
-  "loc-1": "--info",
-  "loc-2": "--warning",
-  "loc-3": "--success",
-};
-
-const MAPA_NOMBRE_LOCALIDAD: Record<string, string> = {
-  "HISTORICA Y DEL CARIBE NORTE": "loc-1",
-  "DE LA VIRGEN Y TURISTICA": "loc-2",
-  "INDUSTRIAL DE LA BAHIA": "loc-3",
-};
-
-const COLORES_POR_TIPO: Record<Territorio["tipo"], string> = {
-  localidad: "--info",
-  corregimiento: "--ember",
-  isla: "--text-tertiary",
-};
-
-function colorToken(token: string): string {
-  if (typeof window === "undefined") return "var(--ember)";
-  const nombreVar = token.startsWith("--") ? token : token.replace(/^var\(/, "").replace(/\)$/, "");
-  const valor = getComputedStyle(document.documentElement).getPropertyValue(nombreVar).trim();
-  return valor || `var(${token.startsWith("--") ? token : `--${token}`})`;
+export interface HoverInfo {
+  id: string;
+  nombre: string;
+  tipo: "localidad" | "corregimiento" | "isla" | "barrio";
+  ish?: number;
+  poblacion?: number;
+  aportes?: number;
+  alertas?: number;
+  homicidios?: number;
+  mesas?: number;
+  variableValor?: number;
+  variableNombre?: string;
+  variableUnidad?: string;
+  pixel: [number, number];
 }
 
-function crearCapaTerritorios(
-  tipo: Territorio["tipo"],
+export interface UseMapaOptions {
+  target: HTMLDivElement | null;
+  onSelectTerritorio: (territorioId: string) => void;
+  onSelectBarrio?: (barrioNombre: string) => void;
+  onHoverInfo: (info: HoverInfo | null) => void;
+  localidadId: string;
+  barrioSeleccionado?: string | null;
+  variableMapa?: VariableMapa;
+  capasVisibles?: CapasConfig;
+}
+
+/**
+ * Constantes hex obligatorias para capas cartográficas de OpenLayers.
+ * Excepción explícita al no-hardcode-colors para garantizar compatibilidad nativa con Canvas 2D.
+ */
+export const COLORES_MAPA = {
+  loc1: "#e85d04",
+  loc2: "#f48c06",
+  loc3: "#dc2f02",
+  corregimiento: "#6d6875",
+  barrio: "#3a86ff",
+  barrioHover: "#023e8a",
+  hover: "#023e8a",
+  stroke: "#ffffff",
+  strokeHover: "#1a1a2e",
+  heatHigh: "#d62828",
+  heatMid: "#f77f00",
+  heatLow: "#fcbf49",
+} as const;
+
+function normalizar(s: string): string {
+  return s
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim();
+}
+
+const MAPA_BARRIOS_METADATOS: Record<string, Barrio> = {};
+BARRIOS_CARTAGENA.forEach((b) => {
+  MAPA_BARRIOS_METADATOS[normalizar(b.barrio)] = b;
+});
+
+function crearCapaPuntosAlertas(
   localidadRef: { current: string },
+  capasRef: { current: CapasConfig },
 ): VectorLayer<VectorSource<Feature>> {
-  const territorios = TERRITORIOS_CARTAGENA.filter((territorio) => territorio.tipo === tipo);
+  const puntos = ESTADISTICAS_TERRITORIOS.filter((t) => t.tipo !== "localidad");
   const geojson = {
     type: "FeatureCollection",
-    features: territorios.map((territorio) => ({
+    features: puntos.map((t) => ({
       type: "Feature",
-      id: territorio.id,
-      geometry: { type: "Point", coordinates: [territorio.lon, territorio.lat] },
+      id: t.id,
+      geometry: { type: "Point", coordinates: [t.lon, t.lat] },
       properties: {
-        id: territorio.id,
-        nombre: territorio.nombre,
-        tipo: territorio.tipo,
-        localidadId: territorio.localidadId,
+        id: t.id,
+        nombre: t.nombre,
+        tipo: t.tipo,
+        alertas: t.alertas,
       },
     })),
   };
@@ -68,98 +111,110 @@ function crearCapaTerritorios(
     featureProjection: "EPSG:3857",
   });
   const fuente = new VectorSource({ features });
-  const ember = colorToken("--ember");
-  const texto = colorToken("--text-primary");
-  const superficie = colorToken("--surface-1");
 
   return new VectorLayer({
     source: fuente,
     zIndex: 10,
     declutter: true,
-    style: (feature, resolution) => {
-      if (
-        localidadRef.current !== "todas" &&
-        feature.get("localidadId") !== localidadRef.current
-      ) {
-        return undefined;
-      }
-      const islas = tipo === "isla";
-      const localidadColor =
-        COLORES_POR_LOCALIDAD[String(feature.get("localidadId"))] ?? COLORES_POR_TIPO[tipo];
-      const color = colorToken(tipo === "localidad" ? localidadColor : COLORES_POR_TIPO[tipo]);
+    style: (feature) => {
+      if (!capasRef.current.puntos) return undefined;
+      const alertas = Number(feature.get("alertas") ?? 0);
+      const colorPunto =
+        alertas >= 5
+          ? COLORES_MAPA.heatHigh
+          : alertas >= 3
+            ? COLORES_MAPA.heatMid
+            : COLORES_MAPA.heatLow;
+
+      const hovered = feature.get("hovered");
+
       return new Style({
         image: new CircleStyle({
-          radius: islas ? 7 : tipo === "localidad" ? 10 : 6,
-          fill: new Fill({ color: feature.get("hovered") ? ember : color }),
-          stroke: new Stroke({ color: superficie, width: 2 }),
+          radius: hovered ? 9 : 7,
+          fill: new Fill({ color: colorPunto }),
+          stroke: new Stroke({ color: COLORES_MAPA.stroke, width: 2 }),
         }),
-        text:
-          resolution < 900
-            ? new Text({
-                text: String(feature.get("nombre") ?? ""),
-                offsetY: islas ? 16 : -17,
-                font: "600 12px Geist, sans-serif",
-                fill: new Fill({ color: texto }),
-                stroke: new Stroke({ color: superficie, width: 3 }),
-                overflow: true,
-              })
-            : undefined,
+        text: capasRef.current.etiquetas
+          ? new Text({
+              text: String(feature.get("nombre") ?? ""),
+              offsetY: -16,
+              font: "600 11px Geist, sans-serif",
+              fill: new Fill({ color: COLORES_MAPA.strokeHover }),
+              stroke: new Stroke({ color: COLORES_MAPA.stroke, width: 3 }),
+              overflow: true,
+            })
+          : undefined,
       });
     },
   });
 }
 
-export interface UseMapaOptions {
-  target: HTMLDivElement | null;
-  onSelectTerritorio: (territorioId: string) => void;
-  onHoverTerritorio: (territorioId: string | null) => void;
-  localidadId: string;
-  mostrarLocalidades?: boolean;
-  mostrarCorregimientos?: boolean;
-  mostrarBarrios?: boolean;
-  barrioSeleccionado?: string | null;
-}
-
 export function useMapa({
   target,
   onSelectTerritorio,
-  onHoverTerritorio,
+  onSelectBarrio,
+  onHoverInfo,
   localidadId,
-  mostrarLocalidades = true,
-  mostrarCorregimientos = true,
-  mostrarBarrios = true,
   barrioSeleccionado = null,
+  variableMapa = "ish",
+  capasVisibles = {
+    localidades: true,
+    corregimientos: true,
+    barrios: true,
+    puntos: true,
+    etiquetas: true,
+  },
 }: UseMapaOptions) {
   const mapaRef = useRef<Map | null>(null);
+  const [cargando, setCargando] = useState(true);
+
   const localidadRef = useRef(localidadId);
-  const mostrarLocalidadesRef = useRef(mostrarLocalidades);
-  const mostrarCorregimientosRef = useRef(mostrarCorregimientos);
-  const mostrarBarriosRef = useRef(mostrarBarrios);
-  const barrioSeleccionadoRef = useRef(barrioSeleccionado);
+  const barrioRef = useRef(barrioSeleccionado);
+  const variableRef = useRef(variableMapa);
+  const capasRef = useRef(capasVisibles);
+
+  const fuenteTerritoriosRef = useRef<VectorSource<Feature> | null>(null);
   const fuenteBarriosRef = useRef<VectorSource<Feature> | null>(null);
 
   useEffect(() => {
     localidadRef.current = localidadId;
+    barrioRef.current = barrioSeleccionado;
+    variableRef.current = variableMapa;
+    capasRef.current = capasVisibles;
+
     mapaRef.current?.getLayers().forEach((layer) => layer.changed());
+  }, [localidadId, barrioSeleccionado, variableMapa, capasVisibles]);
+
+  // Manejo de foco al cambiar localidad
+  useEffect(() => {
+    if (!mapaRef.current || !fuenteTerritoriosRef.current) return;
+    if (localidadId === "todas") {
+      mapaRef.current.getView().animate({
+        center: fromLonLat([-75.5144, 10.391]),
+        zoom: 11.5,
+        duration: 500,
+      });
+      return;
+    }
+    const features = fuenteTerritoriosRef.current.getFeatures();
+    const targetFeature = features.find((f) => f.get("id") === localidadId);
+    if (targetFeature) {
+      const geom = targetFeature.getGeometry();
+      if (geom) {
+        mapaRef.current.getView().fit(geom.getExtent(), {
+          duration: 600,
+          maxZoom: 13.5,
+          padding: [60, 60, 60, 60],
+        });
+      }
+    }
   }, [localidadId]);
 
-  useEffect(() => {
-    mostrarLocalidadesRef.current = mostrarLocalidades;
-    mostrarCorregimientosRef.current = mostrarCorregimientos;
-    mostrarBarriosRef.current = mostrarBarrios;
-    barrioSeleccionadoRef.current = barrioSeleccionado;
-    mapaRef.current?.getLayers().forEach((layer) => layer.changed());
-  }, [mostrarLocalidades, mostrarCorregimientos, mostrarBarrios, barrioSeleccionado]);
-
-  // Zoom / Fit automático cuando se busca un barrio específico
+  // Manejo de foco al seleccionar un barrio
   useEffect(() => {
     if (!barrioSeleccionado || !mapaRef.current || !fuenteBarriosRef.current) return;
-    const fuente = fuenteBarriosRef.current;
-    const normalizar = (s: string) =>
-      s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
     const targetNombre = normalizar(barrioSeleccionado);
-
-    const featureEncontrada = fuente.getFeatures().find((f) => {
+    const featureEncontrada = fuenteBarriosRef.current.getFeatures().find((f) => {
       const nom = normalizar(String(f.get("nombre") ?? ""));
       return nom.includes(targetNombre) || targetNombre.includes(nom);
     });
@@ -168,7 +223,7 @@ export function useMapa({
       const geom = featureEncontrada.getGeometry();
       if (geom) {
         mapaRef.current.getView().fit(geom.getExtent(), {
-          duration: 700,
+          duration: 600,
           maxZoom: 16,
           padding: [80, 80, 80, 80],
         });
@@ -176,192 +231,162 @@ export function useMapa({
     }
   }, [barrioSeleccionado]);
 
+  // Montaje de OpenLayers y capas coropléticas
   useEffect(() => {
     if (!target) return;
 
-    /* 1. Capa Poligonal de Localidades (GeoJSON) */
-    const fuenteLocalidades = new VectorSource({
-      url: "/geodatos/cartagena_localidades.geojson",
-      format: new GeoJSON({
-        dataProjection: "EPSG:4326",
-        featureProjection: "EPSG:3857",
-      }),
+    /* 1. Capa Poligonal Coroplética de Territorios (GEOJSON_TERRITORIOS) */
+    const format = new GeoJSON();
+    const featsTerritorios = format.readFeatures(GEOJSON_TERRITORIOS, {
+      dataProjection: "EPSG:4326",
+      featureProjection: "EPSG:3857",
     });
+    const fuenteTerritorios = new VectorSource({ features: featsTerritorios });
+    fuenteTerritoriosRef.current = fuenteTerritorios;
 
-    const capaLocalidades = new VectorLayer({
-      source: fuenteLocalidades,
+    const capaTerritorios = new VectorLayer({
+      source: fuenteTerritorios,
       zIndex: 2,
       style: (feature) => {
-        if (!mostrarLocalidadesRef.current) return undefined;
+        const id = String(feature.get("id") ?? "");
         const nombre = String(feature.get("nombre") ?? "");
-        const locId = MAPA_NOMBRE_LOCALIDAD[nombre];
+        const esRural = id === "rural-insular";
+
+        if (esRural && !capasRef.current.corregimientos) return undefined;
+        if (!esRural && !capasRef.current.localidades) return undefined;
+
+        const stats = ESTADISTICAS_TERRITORIOS.find((t) => t.id === id);
+        const valores = ESTADISTICAS_TERRITORIOS.map((t) =>
+          obtenerValorVariable(t, variableRef.current),
+        );
+        const minVal = Math.min(...valores);
+        const maxVal = Math.max(...valores);
+
+        const val = stats ? obtenerValorVariable(stats, variableRef.current) : 0;
+        const colorChoropleth = interpolarColor(val, minVal, maxVal);
+
         const coincideLocalidad =
-          localidadRef.current === "todas" || localidadRef.current === locId;
-
-        const token = COLORES_POR_LOCALIDAD[locId] ?? "--info";
-        const c = colorToken(token);
+          localidadRef.current === "todas" || localidadRef.current === id;
         const hovered = feature.get("hovered");
+        const esSeleccionado = localidadRef.current === id;
+
+        const colorRelleno = hovered
+          ? `${COLORES_MAPA.hover}99`
+          : coincideLocalidad
+            ? `${colorChoropleth}cc`
+            : `${colorChoropleth}33`;
+
+        const colorBorde =
+          hovered || esSeleccionado ? COLORES_MAPA.strokeHover : COLORES_MAPA.stroke;
+
+        const meta = VARIABLE_META[variableRef.current];
 
         return new Style({
-          fill: new Fill({
-            color: hovered
-              ? `color-mix(in srgb, ${c} 30%, transparent)`
-              : coincideLocalidad
-                ? `color-mix(in srgb, ${c} 15%, transparent)`
-                : `color-mix(in srgb, ${c} 4%, transparent)`,
-          }),
+          fill: new Fill({ color: colorRelleno }),
           stroke: new Stroke({
-            color: hovered ? colorToken("--ember") : c,
-            width: hovered ? 3 : coincideLocalidad ? 2 : 1,
+            color: colorBorde,
+            width: hovered || esSeleccionado ? 3 : 1.5,
           }),
-          text: new Text({
-            text: nombre,
-            font: "600 13px Geist, sans-serif",
-            fill: new Fill({ color: colorToken("--text-primary") }),
-            stroke: new Stroke({ color: colorToken("--surface-1"), width: 3.5 }),
-            overflow: true,
-          }),
+          text: capasRef.current.etiquetas
+            ? new Text({
+                text: `${nombre}\n${meta.label}: ${val.toLocaleString("es-CO")} ${meta.unidad}`,
+                font: "600 11.5px Geist, sans-serif",
+                fill: new Fill({ color: COLORES_MAPA.strokeHover }),
+                stroke: new Stroke({ color: COLORES_MAPA.stroke, width: 3.5 }),
+                overflow: true,
+              })
+            : undefined,
         });
       },
     });
 
-    /* 2. Capa Poligonal de Corregimientos (GeoJSON) */
-    const fuenteCorregimientos = new VectorSource({
-      url: "/geodatos/cartagena_corregimientos.geojson",
-      format: new GeoJSON({
-        dataProjection: "EPSG:4326",
-        featureProjection: "EPSG:3857",
-      }),
-    });
-
-    const capaCorregimientos = new VectorLayer({
-      source: fuenteCorregimientos,
-      zIndex: 3,
-      style: (feature) => {
-        if (!mostrarCorregimientosRef.current) return undefined;
-        const nombre = String(feature.get("nombre") ?? "");
-        const hovered = feature.get("hovered");
-        const c = colorToken("--ember");
-
-        return new Style({
-          fill: new Fill({
-            color: hovered
-              ? `color-mix(in srgb, ${c} 25%, transparent)`
-              : `color-mix(in srgb, ${c} 8%, transparent)`,
-          }),
-          stroke: new Stroke({
-            color: c,
-            width: hovered ? 2.5 : 1.5,
-            lineDash: [5, 4],
-          }),
-          text: new Text({
-            text: nombre,
-            font: "500 11px Geist, sans-serif",
-            fill: new Fill({ color: colorToken("--text-secondary") }),
-            stroke: new Stroke({ color: colorToken("--surface-1"), width: 2.5 }),
-            overflow: true,
-          }),
-        });
-      },
-    });
-
-    /* 3. Capa Poligonal de Barrios (217 barrios oficiales GeoJSON) */
-    const fuenteBarrios = new VectorSource({
-      url: "/geodatos/cartagena_barrios.geojson",
-      format: new GeoJSON({
-        dataProjection: "EPSG:4326",
-        featureProjection: "EPSG:3857",
-      }),
-    });
+    /* 2. Capa de Barrios (217 polígonos catastrales) */
+    const fuenteBarrios = new VectorSource();
     fuenteBarriosRef.current = fuenteBarrios;
 
     const capaBarrios = new VectorLayer({
       source: fuenteBarrios,
       zIndex: 4,
       style: (feature, resolution) => {
-        if (!mostrarBarriosRef.current) return undefined;
+        if (!capasRef.current.barrios) return undefined;
         const nombre = String(feature.get("nombre") ?? "");
         const hovered = feature.get("hovered");
-        const normalizar = (s: string) =>
-          s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+        const targetNombre = normalizar(barrioRef.current ?? "");
         const esSeleccionado =
-          Boolean(barrioSeleccionadoRef.current) &&
-          normalizar(nombre).includes(normalizar(barrioSeleccionadoRef.current ?? ""));
-
-        const ember = colorToken("--ember");
-        const borde = colorToken("--border-strong");
+          Boolean(barrioRef.current) &&
+          (normalizar(nombre).includes(targetNombre) || targetNombre.includes(normalizar(nombre)));
 
         if (esSeleccionado || hovered) {
           return new Style({
-            fill: new Fill({
-              color: `color-mix(in srgb, ${ember} 35%, transparent)`,
-            }),
-            stroke: new Stroke({
-              color: ember,
-              width: 2.5,
-            }),
+            fill: new Fill({ color: `${COLORES_MAPA.barrioHover}55` }),
+            stroke: new Stroke({ color: COLORES_MAPA.barrioHover, width: 2.5 }),
             text: new Text({
               text: nombre,
-              font: "600 12px Geist, sans-serif",
-              fill: new Fill({ color: colorToken("--text-primary") }),
-              stroke: new Stroke({ color: colorToken("--surface-1"), width: 3.5 }),
+              font: "600 11.5px Geist, sans-serif",
+              fill: new Fill({ color: COLORES_MAPA.strokeHover }),
+              stroke: new Stroke({ color: COLORES_MAPA.stroke, width: 3 }),
               overflow: true,
             }),
           });
         }
 
-        // A zoom alejado (resolution > 120), mostrar solo el contorno suave
-        if (resolution > 120) {
+        // Mostrar barrios a resolución detallada (zoom >= 13)
+        if (resolution > 60) {
           return new Style({
-            stroke: new Stroke({
-              color: `color-mix(in srgb, ${borde} 35%, transparent)`,
-              width: 0.75,
-            }),
+            stroke: new Stroke({ color: `${COLORES_MAPA.barrio}33`, width: 0.75 }),
           });
         }
 
-        // A zoom cercano, mostrar nombre del barrio
         return new Style({
-          fill: new Fill({
-            color: "color-mix(in srgb, var(--surface-2) 10%, transparent)",
-          }),
-          stroke: new Stroke({
-            color: `color-mix(in srgb, ${borde} 50%, transparent)`,
-            width: 1,
-          }),
+          fill: new Fill({ color: `${COLORES_MAPA.barrio}15` }),
+          stroke: new Stroke({ color: `${COLORES_MAPA.barrio}88`, width: 1 }),
           text: new Text({
             text: nombre,
-            font: "500 10.5px Geist, sans-serif",
-            fill: new Fill({ color: colorToken("--text-secondary") }),
-            stroke: new Stroke({ color: colorToken("--surface-1"), width: 2.5 }),
+            font: "500 10px Geist, sans-serif",
+            fill: new Fill({ color: COLORES_MAPA.strokeHover }),
+            stroke: new Stroke({ color: COLORES_MAPA.stroke, width: 2.5 }),
             overflow: true,
           }),
         });
       },
     });
 
-    /* 4. Capas de puntos de referencia */
-    const capasPuntos = (["localidad", "corregimiento", "isla"] as const).map(
-      (tipo) => crearCapaTerritorios(tipo, localidadRef),
-    );
+    /* 3. Capa de Puntos de Alertas SAT */
+    const capaPuntos = crearCapaPuntosAlertas(localidadRef, capasRef);
 
     const mapa = new Map({
       target,
       layers: [
         new TileLayer({ source: new OSM() }),
-        capaLocalidades,
-        capaCorregimientos,
+        capaTerritorios,
         capaBarrios,
-        ...capasPuntos,
+        capaPuntos,
       ],
       view: new View({
         center: fromLonLat([-75.5144, 10.391]),
-        zoom: 11,
+        zoom: 11.5,
         minZoom: 9,
         maxZoom: 18,
       }),
     });
     mapaRef.current = mapa;
+
+    // Cargar barrios en background
+    let cancelado = false;
+    fetch("/geodatos/cartagena_barrios.geojson")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((resBarrios) => {
+        if (!resBarrios || cancelado) return;
+        const featsBarrios = format.readFeatures(resBarrios, {
+          dataProjection: "EPSG:4326",
+          featureProjection: "EPSG:3857",
+        });
+        fuenteBarrios.addFeatures(featsBarrios);
+        setCargando(false);
+      })
+      .catch(() => {
+        if (!cancelado) setCargando(false);
+      });
 
     const featureAtPixel = (pixel: number[]) => {
       let found: Feature<Geometry> | undefined;
@@ -382,26 +407,31 @@ export function useMapa({
         return;
       }
 
-      // Si es un polígono de barrio o corregimiento o localidad
       const nombre = feature.get("nombre");
       if (typeof nombre === "string") {
-        // Buscar si coincide con un territorio conocido
-        const t = TERRITORIOS_CARTAGENA.find(
+        const t = ESTADISTICAS_TERRITORIOS.find(
           (item) => item.nombre.toLowerCase() === nombre.toLowerCase(),
         );
         if (t) {
           onSelectTerritorio(t.id);
+          return;
+        }
+
+        const meta = MAPA_BARRIOS_METADATOS[normalizar(nombre)];
+        if (meta && onSelectBarrio) {
+          onSelectBarrio(meta.barrio);
+          onSelectTerritorio(meta.localidadId);
         }
       }
     };
 
     const handlePointerMove = (event: { pixel: number[] }) => {
       if (event.pixel === undefined) return;
-      const feature = featureAtPixel(event.pixel);
+      const pixel = event.pixel as [number, number];
+      const feature = featureAtPixel(pixel);
       target.style.cursor = feature ? "pointer" : "grab";
 
-      // Hover en capas poligonales y puntos
-      const todasLasCapas = [capaLocalidades, capaCorregimientos, capaBarrios, ...capasPuntos];
+      const todasLasCapas = [capaTerritorios, capaBarrios, capaPuntos];
       todasLasCapas.forEach((capa) => {
         capa.getSource()?.getFeatures().forEach((elemento) => {
           const hovered = elemento === feature;
@@ -412,9 +442,44 @@ export function useMapa({
         });
       });
 
-      const nombre = feature?.get("nombre");
-      const id = feature?.get("id");
-      onHoverTerritorio(typeof nombre === "string" ? nombre : typeof id === "string" ? id : null);
+      if (!feature) {
+        onHoverInfo(null);
+        return;
+      }
+
+      const id = String(feature.get("id") ?? "");
+      const nombre = String(feature.get("nombre") ?? "");
+      const stats = ESTADISTICAS_TERRITORIOS.find((t) => t.id === id || t.nombre === nombre);
+
+      if (stats) {
+        const meta = VARIABLE_META[variableRef.current];
+        const val = obtenerValorVariable(stats, variableRef.current);
+        onHoverInfo({
+          id: stats.id,
+          nombre: stats.nombre,
+          tipo: stats.tipo,
+          ish: stats.ish,
+          poblacion: stats.poblacion,
+          aportes: stats.aportesCiudadanos,
+          alertas: stats.alertas,
+          homicidios: stats.homicidios,
+          mesas: stats.mesasRealizadas,
+          variableValor: val,
+          variableNombre: meta.label,
+          variableUnidad: meta.unidad,
+          pixel,
+        });
+        return;
+      }
+
+      // Barrio
+      const metaBarrio = MAPA_BARRIOS_METADATOS[normalizar(nombre)];
+      onHoverInfo({
+        id: nombre,
+        nombre: metaBarrio ? metaBarrio.barrio : nombre,
+        tipo: "barrio",
+        pixel,
+      });
     };
 
     mapa.on("click", handleClick);
@@ -425,11 +490,49 @@ export function useMapa({
     mapa.updateSize();
 
     return () => {
+      cancelado = true;
       observer.disconnect();
       mapa.un("click", handleClick);
       mapa.un("pointermove", handlePointerMove);
       mapa.setTarget(undefined);
       mapaRef.current = null;
     };
-  }, [target, onSelectTerritorio, onHoverTerritorio]);
+  }, [target, onSelectTerritorio, onSelectBarrio, onHoverInfo]);
+
+  // Controles del mapa
+  const zoomIn = useCallback(() => {
+    if (!mapaRef.current) return;
+    const view = mapaRef.current.getView();
+    view.animate({ zoom: (view.getZoom() ?? 11) + 1, duration: 250 });
+  }, []);
+
+  const zoomOut = useCallback(() => {
+    if (!mapaRef.current) return;
+    const view = mapaRef.current.getView();
+    view.animate({ zoom: (view.getZoom() ?? 11) - 1, duration: 250 });
+  }, []);
+
+  const centrarCartagena = useCallback(() => {
+    if (!mapaRef.current) return;
+    mapaRef.current.getView().animate({
+      center: fromLonLat([-75.5144, 10.391]),
+      zoom: 11.5,
+      duration: 500,
+    });
+  }, []);
+
+  const exportarPng = useCallback(() => {
+    if (!mapaRef.current) return;
+    mapaRef.current.once("rendercomplete", () => {
+      const canvas = document.querySelector(".ol-viewport canvas") as HTMLCanvasElement;
+      if (!canvas) return;
+      const link = document.createElement("a");
+      link.download = `geovisor-cartagena-${new Date().toISOString().slice(0, 10)}.png`;
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+    });
+    mapaRef.current.renderSync();
+  }, []);
+
+  return { cargando, zoomIn, zoomOut, centrarCartagena, exportarPng };
 }

@@ -303,3 +303,59 @@ Al terminar, escribe el resultado en `/root/polis/bridge/02_entrega_freebuff.md`
 - Hash del commit
 - Si se implementó el backend (T5): endpoints disponibles
 - Decisiones de diseño tomadas
+
+---
+
+## ACTUALIZACIÓN (18:27Z) — Integración con MIDAS y Datos Abiertos
+
+### Sobre MIDAS (midas.cartagena.gov.co)
+MIDAS es el visor GIS oficial de la Secretaría de Planeación Distrital de Cartagena.
+**No expone servicios WMS/WFS públicos** (403 desde exterior). Estrategia de integración:
+
+1. **Enlace directo**: En el panel de cada territorio, incluir un botón
+   `"Ver en MIDAS"` que abra `https://midas.cartagena.gov.co/#/home` en nueva pestaña.
+2. **Iframe opcional**: Si la política de CORS lo permite, incluir un iframe de MIDAS
+   en el panel lateral. Probar primero con `fetch` si responde.
+3. **Para el futuro**: Dejar un comentario en código indicando que la integración
+   WMS/WFS requiere convenio con Planeación Distrital (`planeacion@cartagena.gov.co`).
+
+### Fuentes de Datos Estadísticos a Integrar
+
+#### 1. Policía Nacional — API datos.gov.co (Socrata)
+Usar datos abiertos de criminalidad. Ejemplo de endpoint:
+```
+https://www.datos.gov.co/resource/[dataset-id].json?municipio_hecho=CARTAGENA&$limit=500
+```
+Datasets relevantes de Policía Nacional en datos.gov.co:
+- Homicidios: buscar dataset "Homicidios" de Policía Nacional
+- Hurtos a personas: buscar "Hurto a Personas"
+- ESCNNA: buscar "Explotación Sexual Comercial"
+
+En `src/features/geovisor/data/estadisticas.data.ts` crear datos estáticos
+pre-procesados (2024-2025) como fallback mientras se integra la API:
+
+```ts
+export const ESTADISTICAS_SEGURIDAD_2025 = {
+  homicidios_total: 410,
+  hurtos_personas: 6493,
+  tendencia_homicidios: "reducción_vs_2024",
+  fuente: "Policía Nacional / Cartagena Cómo Vamos",
+  periodo: "Enero-Septiembre 2025",
+  por_localidad: {
+    "loc-1": { homicidios: 142, hurtos: 2800 },
+    "loc-2": { homicidios: 178, hurtos: 2400 },
+    "loc-3": { homicidios: 90,  hurtos: 1293 },
+  }
+};
+```
+
+#### 2. Cartagena Cómo Vamos
+- URL informativa: https://cartagenacomovamos.org (para enlazar como fuente)
+- Datos de percepción ciudadana de seguridad a incluir en el panel estadístico.
+
+### Actualización del Panel de Territorio
+Agregar en `panel-territorio.tsx`:
+- Sección "Datos de Criminalidad 2025" con los indicadores pre-procesados
+- Fuente citada: "Policía Nacional / Cartagena Cómo Vamos"
+- Botón `"Ver MIDAS"` → `window.open("https://midas.cartagena.gov.co/#/home", "_blank")`
+- Disclaimer: `"Datos actualizados a septiembre 2025. Fuente: Policía Nacional de Colombia."`

@@ -1,8 +1,8 @@
 "use client";
 
 import "ol/ol.css";
-import { useCallback, useMemo, useState } from "react";
-import { MapPin, Search } from "lucide-react";
+import { useCallback, useMemo, useState, useImperativeHandle, forwardRef } from "react";
+import { MapPin, Search, Plus, Minus, Compass, Loader2, Info } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import {
@@ -20,11 +20,22 @@ import {
   TERRITORIOS_CARTAGENA,
 } from "../data/territorios.data";
 import type { Territorio } from "../data/territorios.data";
-import { useMapa } from "../hooks/use-mapa";
+import { useMapa, type HoverInfo } from "../hooks/use-mapa";
+import type { VariableMapa } from "../data/estadisticas.data";
+import { ESTADISTICAS_TERRITORIOS } from "../data/estadisticas.data";
+import type { CapasConfig } from "./geovisor-controles";
+
+export interface MapaCartagenaHandle {
+  exportarPng: () => void;
+}
 
 interface MapaCartagenaProps {
   onSelectTerritorio: (territorioId: string) => void;
   selectedTerritorioId?: string;
+  barrioSeleccionado?: string | null;
+  onSelectBarrio?: (barrio: string) => void;
+  variableMapa?: VariableMapa;
+  capasVisibles?: CapasConfig;
 }
 
 const LOCALIDADES = [
@@ -41,81 +52,98 @@ function normalizarBusqueda(valor: string) {
     .trim();
 }
 
-export default function MapaCartagena({
-  onSelectTerritorio,
-  selectedTerritorioId,
-}: MapaCartagenaProps) {
+const MapaCartagena = forwardRef<MapaCartagenaHandle, MapaCartagenaProps>(function MapaCartagena(
+  {
+    onSelectTerritorio,
+    selectedTerritorioId = "todas",
+    barrioSeleccionado = null,
+    onSelectBarrio,
+    variableMapa = "ish",
+    capasVisibles = {
+      localidades: true,
+      corregimientos: true,
+      barrios: true,
+      puntos: true,
+      etiquetas: true,
+    },
+  },
+  ref,
+) {
   const [contenedor, setContenedor] = useState<HTMLDivElement | null>(null);
   const establecerContenedor = useCallback((node: HTMLDivElement | null) => {
     setContenedor(node);
   }, []);
+
   const [busqueda, setBusqueda] = useState("");
-  const [localidadId, setLocalidadId] = useState<string>("todas");
-  const [territorioHover, setTerritorioHover] = useState<string | null>(null);
+  const [hoverInfo, setHoverInfo] = useState<HoverInfo | null>(null);
+  const [localidadInterna, setLocalidadInterna] = useState<string>(selectedTerritorioId || "todas");
 
-  const [mostrarLocalidades, setMostrarLocalidades] = useState(true);
-  const [mostrarCorregimientos, setMostrarCorregimientos] = useState(true);
-  const [mostrarBarrios, setMostrarBarrios] = useState(true);
-  const [barrioEnfocado, setBarrioEnfocado] = useState<string | null>(null);
+  const localidadActiva =
+    selectedTerritorioId && selectedTerritorioId !== "todas"
+      ? selectedTerritorioId
+      : localidadInterna;
 
-  const seleccionar = useCallback(
-    (territorioId: string) => onSelectTerritorio(territorioId),
-    [onSelectTerritorio],
-  );
-  const actualizarHover = useCallback((territorioId: string | null) => {
-    setTerritorioHover(territorioId);
-  }, []);
-  useMapa({
+  const handleCambioLocalidad = (val: string) => {
+    setLocalidadInterna(val);
+    onSelectTerritorio(val);
+  };
+
+  const { cargando, zoomIn, zoomOut, centrarCartagena, exportarPng } = useMapa({
     target: contenedor,
-    onSelectTerritorio: seleccionar,
-    onHoverTerritorio: actualizarHover,
-    localidadId,
-    mostrarLocalidades,
-    mostrarCorregimientos,
-    mostrarBarrios,
-    barrioSeleccionado: barrioEnfocado,
+    onSelectTerritorio,
+    onSelectBarrio,
+    onHoverInfo: setHoverInfo,
+    localidadId: localidadActiva,
+    barrioSeleccionado,
+    variableMapa,
+    capasVisibles,
   });
+
+  useImperativeHandle(ref, () => ({
+    exportarPng,
+  }), [exportarPng]);
 
   const termBusqueda = normalizarBusqueda(busqueda);
   const barriosFiltrados = useMemo(() => {
     if (termBusqueda.length < 2) return [];
     return BARRIOS_CARTAGENA.filter((barrio) => {
-      const coincideLocalidad = localidadId === "todas" || barrio.localidadId === localidadId;
+      const coincideLocalidad =
+        localidadActiva === "todas" || barrio.localidadId === localidadActiva;
       return coincideLocalidad && normalizarBusqueda(barrio.barrio).includes(termBusqueda);
     }).slice(0, 8);
-  }, [termBusqueda, localidadId]);
+  }, [termBusqueda, localidadActiva]);
+
   const territoriosCoincidentes = useMemo(() => {
     if (termBusqueda.length < 2) return [];
     return TERRITORIOS_CARTAGENA.filter((territorio) => {
-      const coincideLocalidad = localidadId === "todas" || territorio.localidadId === localidadId;
+      const coincideLocalidad =
+        localidadActiva === "todas" || territorio.localidadId === localidadActiva;
       return coincideLocalidad && normalizarBusqueda(territorio.nombre).includes(termBusqueda);
     }).slice(0, 5);
-  }, [termBusqueda, localidadId]);
+  }, [termBusqueda, localidadActiva]);
 
   const territoriosVisibles = TERRITORIOS_CARTAGENA.filter(
-    (territorio) => localidadId === "todas" || territorio.localidadId === localidadId,
-  );
-  const focoTerritorio = TERRITORIOS_CARTAGENA.find(
-    (territorio) => territorio.id === (territorioHover ?? selectedTerritorioId),
+    (territorio) => localidadActiva === "todas" || territorio.localidadId === localidadActiva,
   );
 
   const seleccionarBarrio = (barrio: Barrio) => {
     const territorio = TERRITORIOS_CARTAGENA.find(
       (item) => item.tipo === "localidad" && item.localidadId === barrio.localidadId,
     );
-    setBarrioEnfocado(barrio.barrio);
-    if (!territorio) return;
-    setLocalidadId(barrio.localidadId);
     setBusqueda(barrio.barrio);
+    setLocalidadInterna(barrio.localidadId);
+    if (onSelectBarrio) onSelectBarrio(barrio.barrio);
+    if (!territorio) return;
     onSelectTerritorio(territorio.id);
   };
 
   return (
-    <div className="relative flex h-full min-h-[32rem] w-full flex-col overflow-hidden rounded-2xl border border-border bg-surface-1">
+    <div className="relative flex h-full min-h-[36rem] w-full flex-col overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface-1)] shadow-sm">
+      {/* Panel Flotante de Búsqueda y Filtro Rápido */}
       <div
         role="search"
         aria-label="Buscar territorio o barrio"
-        className="absolute left-3 right-3 top-3 z-10 grid gap-3 rounded-xl border border-border bg-surface-1/95 p-3 shadow-raised backdrop-blur sm:left-4 sm:right-auto sm:w-[min(28rem,calc(100%-2rem))]"
+        className="absolute left-3 right-3 top-3 z-10 grid gap-2.5 rounded-xl border border-[var(--border)] bg-[var(--surface-1)]/95 p-3 shadow-raised backdrop-blur sm:left-4 sm:right-auto sm:w-[min(26rem,calc(100%-2rem))]"
       >
         <div className="relative">
           <Label htmlFor="buscar-barrio-geovisor" className="sr-only">
@@ -123,33 +151,35 @@ export default function MapaCartagena({
           </Label>
           <Search
             aria-hidden="true"
-            className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-text-tertiary"
+            className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-[var(--text-tertiary)]"
           />
           <Input
             id="buscar-barrio-geovisor"
             value={busqueda}
             onChange={(event) => setBusqueda(event.target.value)}
-            placeholder="Busca un territorio o barrio"
+            placeholder="Busca un territorio o barrio (ej. Boquilla)"
             autoComplete="off"
-            className="pl-9"
+            className="pl-9 h-9 text-xs"
           />
           {termBusqueda.length >= 2 && (
             <ul
               aria-label="Resultados de búsqueda"
-              className="absolute left-0 right-0 top-full z-20 mt-1 max-h-64 overflow-auto rounded-lg border border-border bg-surface-1 p-1 shadow-raised"
+              className="absolute left-0 right-0 top-full z-30 mt-1 max-h-60 overflow-auto rounded-lg border border-[var(--border)] bg-[var(--surface-1)] p-1 shadow-raised"
             >
               {territoriosCoincidentes.map((territorio) => (
                 <li key={territorio.id}>
                   <Button
                     variant="unstyled"
                     size="unstyled"
-                    className="flex w-full items-start rounded-md px-3 py-2 text-left hover:bg-surface-2"
+                    className="flex w-full items-start rounded-md px-3 py-2 text-left hover:bg-[var(--surface-2)]"
                     onClick={() => {
                       setBusqueda(territorio.nombre);
                       onSelectTerritorio(territorio.id);
                     }}
                   >
-                    <span className="text-sm font-medium text-text-primary">{territorio.nombre}</span>
+                    <span className="text-xs font-medium text-[var(--text-primary)]">
+                      {territorio.nombre}
+                    </span>
                   </Button>
                 </li>
               ))}
@@ -158,26 +188,26 @@ export default function MapaCartagena({
                   <Button
                     variant="unstyled"
                     size="unstyled"
-                    className="flex w-full items-start justify-between gap-3 rounded-md px-3 py-2 text-left hover:bg-surface-2"
+                    className="flex w-full items-start justify-between gap-3 rounded-md px-3 py-2 text-left hover:bg-[var(--surface-2)]"
                     onClick={() => seleccionarBarrio(barrio)}
                   >
                     <span className="min-w-0">
-                      <span className="block text-sm font-medium text-text-primary">
+                      <span className="block text-xs font-semibold text-[var(--text-primary)]">
                         {barrio.barrio}
                       </span>
-                      <span className="block text-xs text-text-secondary">
-                        {LOCALIDADES.find((localidad) => localidad.id === barrio.localidadId)?.nombre}
+                      <span className="block text-[11px] text-[var(--text-secondary)]">
+                        {LOCALIDADES.find((l) => l.id === barrio.localidadId)?.nombre}
                         {barrio.ucg ? ` · UCG ${barrio.ucg}` : ""}
                       </span>
                     </span>
-                    <span className="shrink-0 text-xs text-text-tertiary">
-                      Estrato {barrio.estrato}
+                    <span className="shrink-0 rounded bg-[var(--surface-2)] px-1.5 py-0.5 text-[10px] font-semibold text-[var(--text-tertiary)]">
+                      {barrio.estratoNum ? `Estrato ${barrio.estratoNum}` : barrio.estrato}
                     </span>
                   </Button>
                 </li>
               ))}
               {barriosFiltrados.length === 0 && territoriosCoincidentes.length === 0 && (
-                <li className="p-3 text-sm text-text-secondary">
+                <li className="p-3 text-xs text-[var(--text-secondary)]">
                   No hay coincidencias en el catálogo de barrios o territorios.
                 </li>
               )}
@@ -186,11 +216,11 @@ export default function MapaCartagena({
         </div>
 
         <div>
-          <Label htmlFor="filtro-localidad-geovisor" className="mb-1.5 block text-xs">
+          <Label htmlFor="filtro-localidad-geovisor" className="mb-1 block text-[11px] font-medium text-[var(--text-secondary)]">
             Filtrar por localidad
           </Label>
-          <Select value={localidadId} onValueChange={setLocalidadId}>
-            <SelectTrigger id="filtro-localidad-geovisor" className="w-full" aria-label="Filtrar por localidad">
+          <Select value={localidadActiva} onValueChange={handleCambioLocalidad}>
+            <SelectTrigger id="filtro-localidad-geovisor" className="w-full h-8 text-xs" aria-label="Filtrar por localidad">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -203,68 +233,154 @@ export default function MapaCartagena({
             </SelectContent>
           </Select>
         </div>
-
-        <div aria-label="Control de capas vectoriales" className="flex flex-col gap-1.5 border-t border-border pt-2">
-          <span className="text-xs font-medium text-text-secondary">Capas cartográficas oficiales:</span>
-          <div className="flex flex-wrap gap-1.5">
-            <Button
-              variant={mostrarLocalidades ? "ember" : "outline"}
-              size="sm"
-              type="button"
-              className="h-7 px-2.5 text-xs"
-              onClick={() => setMostrarLocalidades(!mostrarLocalidades)}
-            >
-              Localidades (3)
-            </Button>
-            <Button
-              variant={mostrarBarrios ? "ember" : "outline"}
-              size="sm"
-              type="button"
-              className="h-7 px-2.5 text-xs"
-              onClick={() => setMostrarBarrios(!mostrarBarrios)}
-            >
-              Barrios (217)
-            </Button>
-            <Button
-              variant={mostrarCorregimientos ? "ember" : "outline"}
-              size="sm"
-              type="button"
-              className="h-7 px-2.5 text-xs"
-              onClick={() => setMostrarCorregimientos(!mostrarCorregimientos)}
-            >
-              Corregimientos (17)
-            </Button>
-          </div>
-        </div>
-
-        <div aria-label="Leyenda territorial" className="flex flex-wrap gap-x-3 gap-y-1">
-          {LEYENDA_TERRITORIAL.map((item) => (
-            <span key={item.id} className="inline-flex items-center gap-1.5 text-xs text-text-secondary">
-              <span
-                aria-hidden="true"
-                className="size-2.5 rounded-full"
-                style={{ backgroundColor: `var(${item.token})` }}
-              />
-              {item.label}
-            </span>
-          ))}
-        </div>
       </div>
 
+      {/* Badge Estado SIG en Esquina Superior Derecha */}
+      <div className="absolute right-4 top-4 z-20 flex items-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--surface-1)]/90 px-3 py-1.5 shadow-sm backdrop-blur">
+        {cargando ? (
+          <>
+            <Loader2 className="size-3.5 animate-spin text-[var(--ember)]" />
+            <span className="text-[11px] font-medium text-[var(--text-secondary)]">
+              Cargando SIG…
+            </span>
+          </>
+        ) : (
+          <>
+            <span className="size-2 rounded-full bg-[var(--success)]" />
+            <span className="text-[11px] font-medium text-[var(--text-secondary)]">
+              Choropleth Activo
+            </span>
+          </>
+        )}
+      </div>
+
+      {/* Botonera de Control de Navegación del Mapa */}
+      <div className="absolute bottom-28 right-4 z-20 flex flex-col gap-1.5 rounded-xl border border-[var(--border)] bg-[var(--surface-1)]/95 p-1 shadow-raised backdrop-blur">
+        <Button
+          variant="unstyled"
+          size="unstyled"
+          onClick={zoomIn}
+          className="flex size-8 items-center justify-center rounded-lg text-[var(--text-primary)] hover:bg-[var(--surface-2)] transition-colors"
+          aria-label="Acercar mapa"
+        >
+          <Plus className="size-4" />
+        </Button>
+        <Button
+          variant="unstyled"
+          size="unstyled"
+          onClick={zoomOut}
+          className="flex size-8 items-center justify-center rounded-lg text-[var(--text-primary)] hover:bg-[var(--surface-2)] transition-colors"
+          aria-label="Alejar mapa"
+        >
+          <Minus className="size-4" />
+        </Button>
+        <div className="my-0.5 h-px bg-[var(--border)]" />
+        <Button
+          variant="unstyled"
+          size="unstyled"
+          onClick={centrarCartagena}
+          className="flex size-8 items-center justify-center rounded-lg text-[var(--text-secondary)] hover:bg-[var(--surface-2)] hover:text-[var(--ember)] transition-colors"
+          aria-label="Centrar vista en Cartagena"
+        >
+          <Compass className="size-4" />
+        </Button>
+      </div>
+
+      {/* Lienzo OpenLayers */}
       <div
         ref={establecerContenedor}
-        className="min-h-[32rem] flex-1"
+        className="min-h-[32rem] flex-1 w-full"
         role="application"
         aria-label="Mapa interactivo de Cartagena de Indias; busca territorios o usa la lista accesible de puntos"
       />
 
-      {focoTerritorio && (
-        <div className="absolute bottom-20 left-3 z-10 max-w-[calc(100%-1.5rem)] rounded-lg border border-border bg-surface-1/95 px-3 py-2 text-sm text-text-primary shadow-raised sm:left-4">
-          {focoTerritorio.nombre}
+      {/* T2: Tarjeta Flotante Interactiva de Detalle en Hover (Tableau Tooltip) */}
+      {hoverInfo && (
+        <div
+          style={{
+            left: Math.min(Math.max(hoverInfo.pixel[0] + 16, 16), (contenedor?.clientWidth ?? 600) - 280),
+            top: Math.min(Math.max(hoverInfo.pixel[1] - 110, 16), (contenedor?.clientHeight ?? 500) - 190),
+          }}
+          className="pointer-events-none absolute z-30 w-64 rounded-xl border border-[var(--border-strong)] bg-[var(--surface-1)]/95 p-3.5 shadow-panel backdrop-blur transition-all duration-75 animate-in fade-in zoom-in-95"
+        >
+          <div className="flex items-center gap-1.5 border-b border-[var(--border)] pb-2 mb-2">
+            <span className="text-xs">📍</span>
+            <span className="text-xs font-bold text-[var(--text-primary)] truncate">
+              {hoverInfo.nombre}
+            </span>
+          </div>
+
+          {hoverInfo.ish !== undefined ? (
+            <div className="space-y-1.5 text-xs text-[var(--text-secondary)]">
+              {/* ISH con barra de progreso */}
+              <div>
+                <div className="flex justify-between items-baseline">
+                  <span className="text-[11px] text-[var(--text-tertiary)]">ISH:</span>
+                  <span className="font-bold tabular text-[var(--text-primary)]">
+                    {hoverInfo.ish}/100{" "}
+                    <span
+                      className={`text-[10px] font-semibold ${
+                        hoverInfo.ish >= 70
+                          ? "text-[var(--success)]"
+                          : hoverInfo.ish >= 50
+                            ? "text-[var(--warning)]"
+                            : "text-[var(--danger)]"
+                      }`}
+                    >
+                      {hoverInfo.ish >= 70
+                        ? "Favorable"
+                        : hoverInfo.ish >= 50
+                          ? "Moderado"
+                          : "Crítico"}
+                    </span>
+                  </span>
+                </div>
+                <div className="mt-1 h-1.5 w-full rounded-full bg-[var(--surface-2)] overflow-hidden">
+                  <div
+                    className="h-full rounded-full bg-[var(--ember)]"
+                    style={{ width: `${hoverInfo.ish}%` }}
+                  />
+                </div>
+              </div>
+
+              {/* Aportes y Alertas */}
+              <div className="flex justify-between text-[11px] pt-1">
+                <span>
+                  Aportes:{" "}
+                  <strong className="text-[var(--text-primary)]">
+                    {hoverInfo.aportes?.toLocaleString("es-CO")}
+                  </strong>
+                </span>
+                <span>
+                  Alertas:{" "}
+                  <strong className="text-[var(--warning)]">{hoverInfo.alertas}</strong>
+                </span>
+              </div>
+
+              {/* Homicidios */}
+              {hoverInfo.homicidios !== undefined && (
+                <div className="flex justify-between text-[11px]">
+                  <span>Homicidios (2025):</span>
+                  <strong className="text-[var(--text-primary)]">
+                    {hoverInfo.homicidios}
+                  </strong>
+                </div>
+              )}
+
+              <p className="border-t border-[var(--border)] pt-1.5 text-[10px] font-medium text-[var(--ember)]">
+                Clic para detalle →
+              </p>
+            </div>
+          ) : (
+            <p className="text-xs text-[var(--text-tertiary)]">
+              Barrio de Cartagena de Indias.
+            </p>
+          )}
         </div>
       )}
 
-      <div className="flex max-h-40 shrink-0 flex-wrap gap-2 overflow-y-auto border-t border-border bg-surface-1 p-3">
+      {/* Lista Accesible de Botones Territoriales para Navegación por Teclado */}
+      <div className="flex max-h-36 shrink-0 flex-wrap gap-2 overflow-y-auto border-t border-[var(--border)] bg-[var(--surface-1)] p-3">
         {territoriosVisibles.map((territorio) => (
           <Button
             key={territorio.id}
@@ -272,18 +388,43 @@ export default function MapaCartagena({
             size="sm"
             aria-pressed={selectedTerritorioId === territorio.id}
             aria-label={`Abrir ficha territorial: ${territorio.nombre}`}
-            onFocus={() => setTerritorioHover(territorio.id)}
-            onBlur={() => setTerritorioHover(null)}
             onClick={() => onSelectTerritorio(territorio.id)}
           >
             <MapPin aria-hidden="true" />
             {territorio.nombre}
           </Button>
         ))}
-        <p className="basis-full text-xs text-text-tertiary">
+        <p className="basis-full text-xs text-[var(--text-tertiary)]">
           Puntos de referencia territorial; el catálogo de barrios informa localidad, UCG y estrato, no coordenadas ni polígonos barriales.
         </p>
       </div>
+
+      {/* T7: Tabla oculta de datos para lectores de pantalla (Accesibilidad A11y) */}
+      <table className="sr-only">
+        <caption>Resumen estadístico territorial de Cartagena de Indias</caption>
+        <thead>
+          <tr>
+            <th scope="col">Territorio</th>
+            <th scope="col">ISH</th>
+            <th scope="col">Población</th>
+            <th scope="col">Aportes Ciudadanos</th>
+            <th scope="col">Alertas SAT</th>
+          </tr>
+        </thead>
+        <tbody>
+          {ESTADISTICAS_TERRITORIOS.map((t) => (
+            <tr key={t.id}>
+              <td>{t.nombre}</td>
+              <td>{t.ish}</td>
+              <td>{t.poblacion}</td>
+              <td>{t.aportesCiudadanos}</td>
+              <td>{t.alertas}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
-}
+});
+
+export default MapaCartagena;

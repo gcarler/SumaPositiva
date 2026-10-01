@@ -1,93 +1,141 @@
 "use client";
 
-import { useCapasGeovisor } from "../services/use-geovisor-queries";
-import type { FiltroTerritorial, TipoTerritorio } from "../models/geovisor";
+import { Layers, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import { Label } from "@/shared/ui/label";
 import { Checkbox } from "@/shared/ui/checkbox";
+import {
+  type VariableMapa,
+  VARIABLE_META,
+  ESCALA_CHOROPLETH_PASOS,
+  ESTADISTICAS_TERRITORIOS,
+  obtenerValorVariable,
+} from "../data/estadisticas.data";
+
+export interface CapasConfig {
+  localidades: boolean;
+  corregimientos: boolean;
+  barrios: boolean;
+  puntos: boolean;
+  etiquetas: boolean;
+}
 
 interface GeovisorControlesProps {
-  filtros: FiltroTerritorial;
-  onFiltrosChange: (filtros: FiltroTerritorial) => void;
-  capasActivas: string[];
-  onCapasChange: (capas: string[]) => void;
+  capas: CapasConfig;
+  onToggleCapa: (capa: keyof CapasConfig) => void;
+  variableMapa: VariableMapa;
 }
 
 export function GeovisorControles({
-  filtros,
-  onFiltrosChange,
-  capasActivas,
-  onCapasChange
+  capas,
+  onToggleCapa,
+  variableMapa,
 }: GeovisorControlesProps) {
-  const { data: capas } = useCapasGeovisor();
+  const meta = VARIABLE_META[variableMapa];
 
-  const toggleCapa = (id: string) => {
-    if (capasActivas.includes(id)) {
-      onCapasChange(capasActivas.filter(c => c !== id));
-    } else {
-      onCapasChange([...capasActivas, id]);
-    }
-  };
-
-  const setTipo = (tipo: TipoTerritorio | undefined) => {
-    onFiltrosChange({ ...filtros, tipo });
-  };
+  // Cálculo de min y max para la leyenda dinámica
+  const valores = ESTADISTICAS_TERRITORIOS.map((t) => obtenerValorVariable(t, variableMapa));
+  const minVal = Math.min(...valores);
+  const maxVal = Math.max(...valores);
 
   return (
-    <div className="absolute top-4 left-4 z-10 w-72 bg-[var(--surface-1)] border border-[var(--border)] rounded-xl shadow-lg p-4 space-y-4">
-      <h3 className="font-semibold text-sm text-[var(--text-primary)]">Controles Geovisor</h3>
-      
-      <div className="space-y-2">
-        <Label className="text-[var(--text-secondary)]">Filtro Territorial</Label>
-        <div className="flex flex-wrap gap-2">
-          <Button 
-            variant={filtros.tipo === undefined ? "default" : "outline"} 
-            size="sm" 
-            className="text-xs"
-            onClick={() => setTipo(undefined)}
-          >Todos</Button>
-          <Button 
-            variant={filtros.tipo === "LOCALIDAD" ? "default" : "outline"} 
-            size="sm" 
-            className="text-xs"
-            onClick={() => setTipo("LOCALIDAD")}
-          >Localidades</Button>
-          <Button 
-            variant={filtros.tipo === "CORREGIMIENTO" ? "default" : "outline"} 
-            size="sm" 
-            className="text-xs"
-            onClick={() => setTipo("CORREGIMIENTO")}
-          >Corregimientos</Button>
-        </div>
+    <div className="flex flex-col gap-4 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-4 shadow-sm">
+      <div className="flex items-center gap-2 border-b border-[var(--border)] pb-2.5">
+        <Layers className="size-4 text-[var(--ember)]" />
+        <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)]">
+          Control de Capas SIG
+        </h3>
       </div>
 
-      <div className="space-y-2">
-        <Label className="text-[var(--text-secondary)]">Capas Temáticas</Label>
-        <div className="flex flex-col gap-2">
-          {capas?.map(capa => (
-            <div key={capa.id} className="flex items-center gap-2">
-              <Checkbox 
-                id={`capa-${capa.id}`}
-                checked={capasActivas.includes(capa.slug)}
-                onCheckedChange={() => toggleCapa(capa.slug)}
-              />
-              <Label htmlFor={`capa-${capa.id}`} className="flex items-center gap-1.5 cursor-pointer text-xs font-normal">
-                <span className="w-2.5 h-2.5 rounded-full inline-block" style={{ backgroundColor: capa.color_hex }} />
-                {capa.nombre}
-              </Label>
-            </div>
-          ))}
+      {/* Lista de Toggles de Capas */}
+      <div className="space-y-2.5 text-xs">
+        <Label htmlFor="capa-localidades" className="flex items-center justify-between gap-2 cursor-pointer hover:text-[var(--text-primary)] text-[var(--text-secondary)] font-normal">
           <div className="flex items-center gap-2">
-              <Checkbox 
-                id="capa-calor-ics"
-                checked={capasActivas.includes("calor_ics")}
-                onCheckedChange={() => toggleCapa("calor_ics")}
-              />
-              <Label htmlFor="capa-calor-ics" className="flex items-center gap-1.5 cursor-pointer text-xs font-normal">
-                <span className="w-2.5 h-2.5 rounded-full inline-block" style={{ backgroundColor: "color-mix(in srgb, var(--danger) 50%, transparent)" }} />
-                Mapa de Calor ICS
-              </Label>
+            <Checkbox
+              checked={capas.localidades}
+              onCheckedChange={() => onToggleCapa("localidades")}
+              id="capa-localidades"
+            />
+            <span className="font-medium text-xs">Localidades (3)</span>
           </div>
+          <span className="size-2 rounded-full" style={{ backgroundColor: "#e85d04" }} />
+        </Label>
+
+        <Label htmlFor="capa-corregimientos" className="flex items-center justify-between gap-2 cursor-pointer hover:text-[var(--text-primary)] text-[var(--text-secondary)] font-normal">
+          <div className="flex items-center gap-2">
+            <Checkbox
+              checked={capas.corregimientos}
+              onCheckedChange={() => onToggleCapa("corregimientos")}
+              id="capa-corregimientos"
+            />
+            <span className="font-medium text-xs">Corregimientos e Islas</span>
+          </div>
+          <span className="size-2 rounded-full" style={{ backgroundColor: "#6d6875" }} />
+        </Label>
+
+        <Label htmlFor="capa-barrios" className="flex items-center justify-between gap-2 cursor-pointer hover:text-[var(--text-primary)] text-[var(--text-secondary)] font-normal">
+          <div className="flex items-center gap-2">
+            <Checkbox
+              checked={capas.barrios}
+              onCheckedChange={() => onToggleCapa("barrios")}
+              id="capa-barrios"
+            />
+            <span className="font-medium text-xs">Barrios Catastrales (217)</span>
+          </div>
+          <span className="size-2 rounded-full" style={{ backgroundColor: "#3a86ff" }} />
+        </Label>
+
+        <Label htmlFor="capa-puntos" className="flex items-center justify-between gap-2 cursor-pointer hover:text-[var(--text-primary)] text-[var(--text-secondary)] font-normal">
+          <div className="flex items-center gap-2">
+            <Checkbox
+              checked={capas.puntos}
+              onCheckedChange={() => onToggleCapa("puntos")}
+              id="capa-puntos"
+            />
+            <span className="font-medium text-xs">Puntos de Alerta SAT</span>
+          </div>
+          <span className="size-2 rounded-full" style={{ backgroundColor: "#d62828" }} />
+        </Label>
+
+        <Label htmlFor="capa-etiquetas" className="flex items-center justify-between gap-2 cursor-pointer hover:text-[var(--text-primary)] text-[var(--text-secondary)] font-normal">
+          <div className="flex items-center gap-2">
+            <Checkbox
+              checked={capas.etiquetas}
+              onCheckedChange={() => onToggleCapa("etiquetas")}
+              id="capa-etiquetas"
+            />
+            <span className="font-medium text-xs">Etiquetas y Nombres</span>
+          </div>
+          <span className="text-[10px] text-[var(--text-tertiary)]">Aa</span>
+        </Label>
+      </div>
+
+      {/* Leyenda Dinámica Coroplética */}
+      <div className="border-t border-[var(--border)] pt-3 space-y-2">
+        <div className="flex items-center justify-between text-xs">
+          <span className="font-semibold text-[var(--text-primary)] truncate">
+            {meta.label}
+          </span>
+          <span className="text-[11px] font-medium text-[var(--text-tertiary)] shrink-0">
+            {meta.unidad}
+          </span>
+        </div>
+
+        {/* Gradiente de 5 pasos */}
+        <div className="grid grid-cols-5 gap-1 h-3 rounded overflow-hidden">
+          {ESCALA_CHOROPLETH_PASOS.map((color, idx) => (
+            <div
+              key={idx}
+              className="h-full w-full"
+              style={{ backgroundColor: color }}
+              title={`Nivel ${idx + 1}`}
+            />
+          ))}
+        </div>
+
+        <div className="flex justify-between text-[10px] text-[var(--text-tertiary)] tabular">
+          <span>Min: {minVal.toLocaleString("es-CO")}</span>
+          <span>Max: {maxVal.toLocaleString("es-CO")}</span>
         </div>
       </div>
     </div>

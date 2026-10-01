@@ -20,3 +20,236 @@ export const ESTADISTICAS_SEGURIDAD_2025 = {
     "loc-3": { homicidios: 90, hurtos: 1293 },
   } satisfies Record<string, EstadisticasLocalidad2025>,
 } as const;
+
+export type VariableMapa =
+  | "ish"           // Índice de Seguridad Humana (0–100)
+  | "participacion" // Aportes ciudadanos por territorio
+  | "alertas"       // Alertas SAT/CIPRAT activas
+  | "homicidios"    // Tasa homicidios por 100k hab (2025)
+  | "hurtos"        // Hurtos a personas (abs, 2025)
+  | "poblacion"     // Población estimada
+  | "mesas"         // Mesas comunitarias realizadas
+  | "escnna";       // Alertas ESCNNA activas
+
+export interface EstadisticasTerritorio {
+  id: string;
+  nombre: string;
+  tipo: "localidad" | "corregimiento" | "isla";
+  lon: number;
+  lat: number;
+  // Demografía
+  poblacion: number;
+  // Seguridad Humana
+  ish: number;           // Índice 0-100
+  homicidios: number;    // tasa por 100k hab 2025
+  hurtos: number;        // absoluto 2025
+  escnna: number;        // alertas activas
+  alertas: number;       // SAT/CIPRAT activas
+  // Participación
+  aportesCiudadanos: number;
+  mesasRealizadas: number;
+  // Tendencia (últimos 6 meses: may-oct 2026)
+  tendenciaAportes: number[];  // [mayo, jun, jul, ago, sep, oct]
+  tendenciaAlertas: number[];
+}
+
+export const ESTADISTICAS_TERRITORIOS: EstadisticasTerritorio[] = [
+  {
+    id: "loc-1",
+    nombre: "Localidad 1 — Histórica y del Caribe Norte",
+    tipo: "localidad",
+    lon: -75.5506,
+    lat: 10.4236,
+    poblacion: 331000,
+    ish: 62,
+    homicidios: 42.9,
+    hurtos: 2800,
+    escnna: 12,
+    alertas: 8,
+    aportesCiudadanos: 3210,
+    mesasRealizadas: 12,
+    tendenciaAportes: [380, 520, 610, 580, 690, 430],
+    tendenciaAlertas: [10, 9, 8, 9, 8, 8],
+  },
+  {
+    id: "loc-2",
+    nombre: "Localidad 2 — De la Virgen y Turística",
+    tipo: "localidad",
+    lon: -75.485,
+    lat: 10.448,
+    poblacion: 448000,
+    ish: 54,
+    homicidios: 39.7,
+    hurtos: 2400,
+    escnna: 9,
+    alertas: 14,
+    aportesCiudadanos: 2890,
+    mesasRealizadas: 10,
+    tendenciaAportes: [290, 380, 450, 510, 570, 690],
+    tendenciaAlertas: [16, 15, 14, 13, 14, 14],
+  },
+  {
+    id: "loc-3",
+    nombre: "Localidad 3 — Industrial y de la Bahía",
+    tipo: "localidad",
+    lon: -75.52,
+    lat: 10.325,
+    poblacion: 278000,
+    ish: 58,
+    homicidios: 32.4,
+    hurtos: 1293,
+    escnna: 5,
+    alertas: 6,
+    aportesCiudadanos: 2320,
+    mesasRealizadas: 8,
+    tendenciaAportes: [210, 290, 360, 410, 480, 570],
+    tendenciaAlertas: [7, 7, 6, 6, 6, 6],
+  },
+  {
+    id: "rural-insular",
+    nombre: "Zona Corregimental e Insular",
+    tipo: "corregimiento",
+    lon: -75.52,
+    lat: 10.4,
+    poblacion: 50000,
+    ish: 48,
+    homicidios: 20.0,
+    hurtos: 420,
+    escnna: 8,
+    alertas: 9,
+    aportesCiudadanos: 1210,
+    mesasRealizadas: 10,
+    tendenciaAportes: [80, 110, 130, 160, 190, 540],
+    tendenciaAlertas: [10, 10, 9, 9, 9, 9],
+  },
+  {
+    id: "cor-boquilla",
+    nombre: "La Boquilla",
+    tipo: "corregimiento",
+    lon: -75.4672,
+    lat: 10.4783,
+    poblacion: 18500,
+    ish: 49,
+    homicidios: 16.2,
+    hurtos: 180,
+    escnna: 3,
+    alertas: 5,
+    aportesCiudadanos: 410,
+    mesasRealizadas: 3,
+    tendenciaAportes: [40, 55, 70, 80, 90, 75],
+    tendenciaAlertas: [6, 5, 5, 5, 5, 5],
+  },
+  {
+    id: "cor-tierrabomba",
+    nombre: "Tierrabomba",
+    tipo: "isla",
+    lon: -75.56,
+    lat: 10.34,
+    poblacion: 6200,
+    ish: 45,
+    homicidios: 16.1,
+    hurtos: 45,
+    escnna: 2,
+    alertas: 3,
+    aportesCiudadanos: 180,
+    mesasRealizadas: 2,
+    tendenciaAportes: [15, 20, 25, 30, 35, 55],
+    tendenciaAlertas: [3, 3, 3, 3, 3, 3],
+  },
+  {
+    id: "cor-baru",
+    nombre: "Barú",
+    tipo: "isla",
+    lon: -75.59,
+    lat: 10.23,
+    poblacion: 3800,
+    ish: 43,
+    homicidios: 13.2,
+    hurtos: 28,
+    escnna: 2,
+    alertas: 2,
+    aportesCiudadanos: 120,
+    mesasRealizadas: 2,
+    tendenciaAportes: [10, 14, 18, 22, 28, 28],
+    tendenciaAlertas: [2, 2, 2, 2, 2, 2],
+  },
+  {
+    id: "cor-pasacaballos",
+    nombre: "Pasacaballos",
+    tipo: "corregimiento",
+    lon: -75.505,
+    lat: 10.28,
+    poblacion: 12000,
+    ish: 51,
+    homicidios: 25.0,
+    hurtos: 90,
+    escnna: 1,
+    alertas: 4,
+    aportesCiudadanos: 290,
+    mesasRealizadas: 3,
+    tendenciaAportes: [25, 35, 45, 50, 55, 80],
+    tendenciaAlertas: [4, 4, 4, 4, 4, 4],
+  },
+  {
+    id: "cor-bayunca",
+    nombre: "Bayunca",
+    tipo: "corregimiento",
+    lon: -75.42,
+    lat: 10.52,
+    poblacion: 9500,
+    ish: 56,
+    homicidios: 10.5,
+    hurtos: 77,
+    escnna: 0,
+    alertas: 3,
+    aportesCiudadanos: 210,
+    mesasRealizadas: 2,
+    tendenciaAportes: [18, 24, 30, 36, 42, 60],
+    tendenciaAlertas: [3, 3, 3, 3, 3, 3],
+  },
+];
+
+export const VARIABLE_META: Record<
+  VariableMapa,
+  { label: string; unidad: string; descripcion: string }
+> = {
+  ish: { label: "Índice de Seguridad Humana", unidad: "/100", descripcion: "Índice compuesto 0-100" },
+  participacion: { label: "Participación Ciudadana", unidad: "aportes", descripcion: "Total aportes radicados" },
+  alertas: { label: "Alertas SAT/CIPRAT", unidad: "alertas", descripcion: "Alertas tempranas activas" },
+  homicidios: { label: "Tasa de Homicidios", unidad: "x 100k", descripcion: "Por 100.000 hab. 2025" },
+  hurtos: { label: "Hurtos a Personas", unidad: "casos", descripcion: "Casos absolutos 2025" },
+  poblacion: { label: "Población", unidad: "hab.", descripcion: "Estimado DANE 2025" },
+  mesas: { label: "Mesas Comunitarias", unidad: "mesas", descripcion: "Mesas realizadas 2026" },
+  escnna: { label: "Alertas ESCNNA", unidad: "alertas", descripcion: "Explotación sexual comercial NNA" },
+};
+
+export const ESCALA_CHOROPLETH_PASOS = ["#2d6a4f", "#fcbf49", "#f77f00", "#e63946", "#d62828"] as const;
+
+export function interpolarColor(valor: number, min: number, max: number): string {
+  const t = max === min ? 0.5 : Math.max(0, Math.min(1, (valor - min) / (max - min)));
+  const idx = Math.min(Math.floor(t * (ESCALA_CHOROPLETH_PASOS.length - 1)), ESCALA_CHOROPLETH_PASOS.length - 2);
+  return ESCALA_CHOROPLETH_PASOS[idx];
+}
+
+export function obtenerValorVariable(territorio: EstadisticasTerritorio, variable: VariableMapa): number {
+  switch (variable) {
+    case "ish":
+      return territorio.ish;
+    case "participacion":
+      return territorio.aportesCiudadanos;
+    case "alertas":
+      return territorio.alertas;
+    case "homicidios":
+      return territorio.homicidios;
+    case "hurtos":
+      return territorio.hurtos;
+    case "poblacion":
+      return territorio.poblacion;
+    case "mesas":
+      return territorio.mesasRealizadas;
+    case "escnna":
+      return territorio.escnna;
+    default:
+      return 0;
+  }
+}
