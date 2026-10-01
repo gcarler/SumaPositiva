@@ -95,7 +95,6 @@ const NAV: { id: VistaApp; label: string; labelCorto?: string }[] = [
 ];
 
 export function Topbar() {
-  const {openPanel} = usePanels();
   const vista = useNavigationStore((s) => s.vista);
   const setVista = useNavigationStore((s) => s.setVista);
   const sesion = useSesionStore((s) => s.sesion);
@@ -163,7 +162,6 @@ export function Topbar() {
               </Button>
             );
           })}
-          <Button variant="unstyled" size="unstyled" className="rounded-full px-3 py-2.5 text-xs font-medium text-text-secondary hover:bg-surface-2 md:text-sm" onClick={() => openPanel("formularios", {soloRespuesta: true})}>Formularios</Button>
         </nav>
 
         {/* Acciones */}
