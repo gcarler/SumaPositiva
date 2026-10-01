@@ -1,0 +1,15 @@
+{
+  "frontend": "active",
+  "backend": "active",
+  "portal_http": 200,
+  "api_live_http": 200,
+  "api_ready_http": 503,
+  "readiness": {
+    "database": "ok",
+    "extensions": "ok",
+    "migrations": "pending"
+  },
+  "migraciones_produccion_ejecutadas": false,
+  "navegador_base": "http://127.0.0.1:3000",
+  "build_id": "n7JqITAHm8-cX0zHQDhAP"
+}

@@ -43,10 +43,10 @@ export interface PanelPropsMap {
   linea: { politicaId: string; faseId: string; lineaId: string };
   aporte: { politicaId: string; faseId: string; lineaId: string };
   /** Panel de sesión/identidad — no requiere props */
-  sesion: {accion?: "recuperar" | "verificar"; token?: string};
+  sesion: { accion?: "recuperar" | "verificar"; token?: string };
   usuarios: Record<string, never>;
   /** Área de trabajo: detalle de una mesa (plenaria + submesas) */
-  mesa: { mesaId: string };
+  mesa: { mesaId: string; soloLectura?: boolean };
   /** Papelografo: editor de árbol de problemas / soluciones de una submesa */
   papelografo: {
     mesaId: string;
@@ -59,7 +59,7 @@ export interface PanelPropsMap {
   "mesa-editor": { mesaId?: string };
   /** Ficha técnica del territorio en el geovisor */
   territorio: { territorioId: string };
-  formularios: { soloRespuesta?: boolean };
+  formularios: { soloRespuesta?: boolean; soloLectura?: boolean };
   "formulario-editor": { formularioId?: string };
   "formulario-analitica": { formularioId: string };
   "formulario-preview": { borradorId: string };
@@ -109,8 +109,7 @@ export const usePanelStore = create<PanelState>((set) => ({
       ],
     })),
 
-  closeTop: () =>
-    set((s) => ({ entries: s.entries.slice(0, -1) })),
+  closeTop: () => set((s) => ({ entries: s.entries.slice(0, -1) })),
 
   closeToKey: (key, inclusive = false) =>
     set((s) => {
@@ -124,7 +123,7 @@ export const usePanelStore = create<PanelState>((set) => ({
   toggleMaximized: (key) =>
     set((s) => ({
       entries: s.entries.map((e) =>
-        e.key === key ? { ...e, maximized: !e.maximized } : e
+        e.key === key ? { ...e, maximized: !e.maximized } : e,
       ),
     })),
 }));

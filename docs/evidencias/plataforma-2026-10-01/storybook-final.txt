@@ -1,0 +1,35 @@
+$ storybook build --disable-telemetry
+
+┌  Building storybook v10.6.1
+│
+◇  Cleaning outputDir: storybook-static
+│
+◇  Loading presets
+│
+◇  Building manager..
+│
+●  Building open services..
+│
+[Avisos intermedios de dependencias omitidos; log completo temporal en /tmp/polis-plataforma-eaf/storybook-final.log]
+│  ╭─[ node_modules/framer-motion/dist/es/render/html/use-props.mjs:1:1 ]
+│  │
+│  1 │ "use client";
+│  │ ──────┬──────
+│  │       ╰──────── module level directive may not be preserved
+│  │
+│  │ Help: For more information, see ]8;;https://rolldown.rs/in-depth/directives#other-directiveshttps://rolldown.rs/in-depth/d...]8;;
+│  ───╯
+
+│
+▲  Vite [INEFFECTIVE_DYNAMIC_IMPORT]
+│  src/features/geovisor/components/mapa-territorios-api.tsx is
+│  dynamically imported by
+│  src/features/plataforma/views/geovisor-view.tsx but also statically
+│  imported by src/app/_stories/plataforma-interna.stories.tsx, dynamic
+│  import will not move module into another chunk.
+
+│  Vite ✓ built in 8.51s
+│
+◇  Output directory: /root/polis/storybook-static
+│
+└  Storybook build completed successfully

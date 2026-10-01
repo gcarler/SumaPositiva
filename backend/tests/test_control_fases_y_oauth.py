@@ -1,31 +1,90 @@
 """Pruebas para [T6.5]: Control de Fases DNP, Google OAuth y Auditoría Forense/Respaldos."""
 
+import asyncio
+import uuid
+
 import pytest
 from fastapi.testclient import TestClient
+from google.oauth2 import id_token as google_id_token
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import create_async_engine
 
 from app.core.config import Settings
 from app.main import create_app
 
 
 @pytest.fixture
-def client(database_url: str):
-    settings = Settings(_env_file=None, environment="test", database_url=database_url)
+def client(database_url: str, monkeypatch):
+    settings = Settings(
+        _env_file=None,
+        environment="test",
+        database_url=database_url,
+        google_client_id="cliente-google-exclusivo-pruebas",
+    )
+
+    def verificar(token, request, audience, **kwargs):
+        assert audience == settings.google_client_id
+        _, correo, nombre, sub = token.split(":")
+        return {
+            "email": correo,
+            "name": nombre,
+            "given_name": nombre.split()[0],
+            "family_name": " ".join(nombre.split()[1:]),
+            "sub": sub,
+            "email_verified": True,
+            "hd": "cartagena.gov.co" if correo.endswith("@cartagena.gov.co") else None,
+        }
+
+    monkeypatch.setattr(google_id_token, "verify_oauth2_token", verificar)
     app = create_app(settings)
     with TestClient(app) as test_client:
         yield test_client
 
 
-def test_oauth_google_funcionario_institucional(client: TestClient):
+def preparar_autoridad(client, database_url, correo):
+    assert "polis_test" in database_url
+    local, dominio = correo.split("@")
+    correo = f"{local}-{uuid.uuid4().hex}@{dominio}"
+    registro = client.post(
+        "/api/v1/identidad/registro",
+        json={
+            "correo": correo,
+            "contrasena": "ClavePruebaGoogle2026*",
+            "nombres": "Autoridad",
+            "apellidos": "Prueba",
+        },
+    )
+    assert registro.status_code == 201, registro.text
+
+    async def asignar():
+        engine = create_async_engine(database_url)
+        try:
+            async with engine.begin() as connection:
+                await connection.execute(
+                    text("""UPDATE autenticacion.usuarios SET rol_id=
+                    (SELECT id FROM autenticacion.roles WHERE codigo='autoridad_distrital')
+                    WHERE id=:id"""),
+                    {"id": uuid.UUID(registro.json()["id"])},
+                )
+        finally:
+            await engine.dispose()
+
+    asyncio.run(asignar())
+    return correo
+
+
+def test_oauth_google_funcionario_institucional(client: TestClient, database_url):
     """Verifica autenticación Google OAuth para funcionario con dominio @cartagena.gov.co."""
-    id_token = "test-google-token:alcaldia@cartagena.gov.co:Alcalde Mayor Dumek:sub_dumek_123"
+    correo = preparar_autoridad(client, database_url, "alcaldia@cartagena.gov.co")
+    id_token = f"test-google-token:{correo}:Alcalde Mayor Dumek:sub_dumek_123"
     resp = client.post("/api/v1/identidad/oauth/google", json={"id_token": id_token})
     assert resp.status_code == 200, resp.text
     data = resp.json()
 
     assert "token_acceso" in data
     assert data["rol"] == "autoridad_distrital"
-    assert data["nivel_identidad"] == "verificada"
-    assert data["usuario"]["correo"] == "alcaldia@cartagena.gov.co"
+    assert data["nivel_identidad"] == "declarada"
+    assert data["usuario"]["correo"] == correo
     assert "politicas:gestionar" in data["permisos"]
     assert "auditoria:leer" in data["permisos"]
 
@@ -39,14 +98,15 @@ def test_oauth_google_ciudadano_general(client: TestClient):
 
     assert "token_acceso" in data
     assert data["rol"] == "ciudadano"
-    assert data["nivel_identidad"] == "autenticada"
+    assert data["nivel_identidad"] == "declarada"
     assert data["usuario"]["correo"] == "ciudadano.cartagenero@gmail.com"
 
 
-def test_control_fases_dnp_conmutar_web(client: TestClient):
+def test_control_fases_dnp_conmutar_web(client: TestClient, database_url):
     """Verifica el interruptor maestro de activación/desactivación de fases web DNP."""
     # 1. Login institucional para obtener token con permiso politicas:gestionar
-    id_token = "test-google-token:planeacion@cartagena.gov.co:Secretario Planeacion:sub_plan_789"
+    correo = preparar_autoridad(client, database_url, "planeacion@cartagena.gov.co")
+    id_token = f"test-google-token:{correo}:Secretario Planeacion:sub_plan_789"
     resp_auth = client.post("/api/v1/identidad/oauth/google", json={"id_token": id_token})
     assert resp_auth.status_code == 200
     token = resp_auth.json()["token_acceso"]
@@ -81,10 +141,11 @@ def test_control_fases_dnp_conmutar_web(client: TestClient):
     assert resp_reactivar.json()["habilitada_web"] is True
 
 
-def test_auditoria_y_supervision_respaldos(client: TestClient):
+def test_auditoria_y_supervision_respaldos(client: TestClient, database_url):
     """Verifica consulta de registros de auditoría forense y catálogo de respaldos."""
     # Login como autoridad_distrital
-    id_token = "test-google-token:seguridad@cartagena.gov.co:Secretario Seguridad:sub_seg_999"
+    correo = preparar_autoridad(client, database_url, "seguridad@cartagena.gov.co")
+    id_token = f"test-google-token:{correo}:Secretario Seguridad:sub_seg_999"
     resp_auth = client.post("/api/v1/identidad/oauth/google", json={"id_token": id_token})
     assert resp_auth.status_code == 200
     token = resp_auth.json()["token_acceso"]
@@ -104,3 +165,64 @@ def test_auditoria_y_supervision_respaldos(client: TestClient):
     assert "directorio" in data_respaldos
     assert "respaldos" in data_respaldos
     assert data_respaldos["total_respaldos"] >= 1
+
+
+def test_google_no_promueve_por_dominio(client):
+    resp = client.post(
+        "/api/v1/identidad/oauth/google",
+        json={"id_token": "test-google-token:admin.nuevo@cartagena.gov.co:Admin Nuevo:sub_nuevo"},
+    )
+    assert resp.status_code == 200, resp.text
+    assert resp.json()["rol"] == "ciudadano"
+    assert "usuarios:gestionar" not in resp.json()["permisos"]
+
+
+def test_google_rollback_usuario_y_sesion(client, database_url, monkeypatch):
+    """Un fallo posterior a crear sesión revierte todo, observado desde otra conexión."""
+    from fastapi import HTTPException
+
+    from app.modules.identidad.repository import IdentidadRepository
+
+    async def contar():
+        engine = create_async_engine(database_url)
+        try:
+            async with engine.connect() as connection:
+                return (
+                    await connection.execute(
+                        text("SELECT count(*) FROM autenticacion.sesiones_usuario")
+                    )
+                ).scalar_one()
+        finally:
+            await engine.dispose()
+
+    antes = asyncio.run(contar())
+    original = IdentidadRepository.registrar_evento
+
+    async def fallar(self, accion, *args, **kwargs):
+        if accion == "login_oauth_google":
+            raise HTTPException(503, "Fallo controlado después de crear sesión")
+        return await original(self, accion, *args, **kwargs)
+
+    monkeypatch.setattr(IdentidadRepository, "registrar_evento", fallar)
+    correo = f"rollback-google-{uuid.uuid4().hex}@gmail.com"
+    respuesta = client.post(
+        "/api/v1/identidad/oauth/google",
+        json={"id_token": f"test-google-token:{correo}:Rollback Prueba:sub_rollback"},
+    )
+    assert respuesta.status_code == 503
+    assert asyncio.run(contar()) == antes
+
+    async def buscar():
+        engine = create_async_engine(database_url)
+        try:
+            async with engine.connect() as connection:
+                return (
+                    await connection.execute(
+                        text("SELECT count(*) FROM autenticacion.usuarios WHERE correo=:correo"),
+                        {"correo": correo},
+                    )
+                ).scalar_one()
+        finally:
+            await engine.dispose()
+
+    assert asyncio.run(buscar()) == 0

@@ -1,0 +1,346 @@
+{
+  "api": "interceptada; sin escrituras reales",
+  "resultados": [
+    {
+      "caso": "Menú y guardas de las siete rutas: administrador_identidades",
+      "resultado": "aprobado"
+    },
+    {
+      "caso": "Menú y guardas de las siete rutas: autoridad_distrital",
+      "resultado": "aprobado"
+    },
+    {
+      "caso": "Menú y guardas de las siete rutas: facilitador_mesa",
+      "resultado": "aprobado"
+    },
+    {
+      "caso": "Menú y guardas de las siete rutas: auditor_forense",
+      "resultado": "aprobado"
+    },
+    {
+      "caso": "Acceso privado rechazado: sin sesión",
+      "resultado": "aprobado"
+    },
+    {
+      "caso": "Acceso privado rechazado: ciudadano",
+      "resultado": "aprobado"
+    },
+    {
+      "caso": "Perfil remoto prevalece: {\"remoto\":\"ciudadano\"}",
+      "resultado": "aprobado"
+    },
+    {
+      "caso": "Perfil remoto prevalece: {\"estadoPerfil\":401}",
+      "resultado": "aprobado"
+    },
+    {
+      "caso": "Login email, navegación opt-in y logout: administrador_identidades",
+      "resultado": "aprobado"
+    },
+    {
+      "caso": "Login email, navegación opt-in y logout: ciudadano",
+      "resultado": "aprobado"
+    },
+    {
+      "caso": "dashboard 320px light",
+      "axe": [],
+      "overflow": {
+        "ancho": 320,
+        "contenido": 320,
+        "exceden": []
+      }
+    },
+    {
+      "caso": "/formularios 320px light",
+      "axe": [],
+      "overflow": {
+        "ancho": 320,
+        "contenido": 320,
+        "exceden": []
+      }
+    },
+    {
+      "caso": "/mesas 320px light",
+      "axe": [],
+      "overflow": {
+        "ancho": 320,
+        "contenido": 320,
+        "exceden": []
+      }
+    },
+    {
+      "caso": "/geovisor 320px light",
+      "axe": [],
+      "overflow": {
+        "ancho": 320,
+        "contenido": 320,
+        "exceden": []
+      }
+    },
+    {
+      "caso": "/usuarios 320px light",
+      "axe": [],
+      "overflow": {
+        "ancho": 320,
+        "contenido": 320,
+        "exceden": []
+      }
+    },
+    {
+      "caso": "/contenido 320px light",
+      "axe": [],
+      "overflow": {
+        "ancho": 320,
+        "contenido": 320,
+        "exceden": []
+      }
+    },
+    {
+      "caso": "/configuracion 320px light",
+      "axe": [],
+      "overflow": {
+        "ancho": 320,
+        "contenido": 320,
+        "exceden": []
+      }
+    },
+    {
+      "caso": "Portal opt-in 320px light",
+      "axe": [],
+      "overflow": {
+        "ancho": 320,
+        "contenido": 320,
+        "exceden": [
+          "DIV.absolute right-0 top-0 -mr-16 -mt-16 size-64 rounded-full bg-[var(--ember)]/5 blur-3xl pointer-events-none",
+          "BUTTON.inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium transition-[background,color,border-color,box-shadow] duration-150 disabled:cursor-not-allowed disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-ring rounded-full border border-transparent bg-primary text-primary-foreground hover:bg-primary/90 h-12 px-6 text-sm shrink-0 group",
+          "svg.[object SVGAnimatedString]"
+        ]
+      }
+    },
+    {
+      "caso": "dashboard 320px dark",
+      "axe": [],
+      "overflow": {
+        "ancho": 320,
+        "contenido": 320,
+        "exceden": []
+      }
+    },
+    {
+      "caso": "/formularios 320px dark",
+      "axe": [],
+      "overflow": {
+        "ancho": 320,
+        "contenido": 320,
+        "exceden": []
+      }
+    },
+    {
+      "caso": "/mesas 320px dark",
+      "axe": [],
+      "overflow": {
+        "ancho": 320,
+        "contenido": 320,
+        "exceden": []
+      }
+    },
+    {
+      "caso": "/geovisor 320px dark",
+      "axe": [],
+      "overflow": {
+        "ancho": 320,
+        "contenido": 320,
+        "exceden": []
+      }
+    },
+    {
+      "caso": "/usuarios 320px dark",
+      "axe": [],
+      "overflow": {
+        "ancho": 320,
+        "contenido": 320,
+        "exceden": []
+      }
+    },
+    {
+      "caso": "/contenido 320px dark",
+      "axe": [],
+      "overflow": {
+        "ancho": 320,
+        "contenido": 320,
+        "exceden": []
+      }
+    },
+    {
+      "caso": "/configuracion 320px dark",
+      "axe": [],
+      "overflow": {
+        "ancho": 320,
+        "contenido": 320,
+        "exceden": []
+      }
+    },
+    {
+      "caso": "Portal opt-in 320px dark",
+      "axe": [],
+      "overflow": {
+        "ancho": 320,
+        "contenido": 320,
+        "exceden": [
+          "DIV.absolute right-0 top-0 -mr-16 -mt-16 size-64 rounded-full bg-[var(--ember)]/5 blur-3xl pointer-events-none",
+          "BUTTON.inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium transition-[background,color,border-color,box-shadow] duration-150 disabled:cursor-not-allowed disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-ring rounded-full border border-transparent bg-primary text-primary-foreground hover:bg-primary/90 h-12 px-6 text-sm shrink-0 group",
+          "svg.[object SVGAnimatedString]"
+        ]
+      }
+    },
+    {
+      "caso": "dashboard 1440px light",
+      "axe": [],
+      "overflow": {
+        "ancho": 1440,
+        "contenido": 1440,
+        "exceden": []
+      }
+    },
+    {
+      "caso": "/formularios 1440px light",
+      "axe": [],
+      "overflow": {
+        "ancho": 1440,
+        "contenido": 1440,
+        "exceden": []
+      }
+    },
+    {
+      "caso": "/mesas 1440px light",
+      "axe": [],
+      "overflow": {
+        "ancho": 1440,
+        "contenido": 1440,
+        "exceden": []
+      }
+    },
+    {
+      "caso": "/geovisor 1440px light",
+      "axe": [],
+      "overflow": {
+        "ancho": 1440,
+        "contenido": 1440,
+        "exceden": []
+      }
+    },
+    {
+      "caso": "/usuarios 1440px light",
+      "axe": [],
+      "overflow": {
+        "ancho": 1440,
+        "contenido": 1440,
+        "exceden": []
+      }
+    },
+    {
+      "caso": "/contenido 1440px light",
+      "axe": [],
+      "overflow": {
+        "ancho": 1440,
+        "contenido": 1440,
+        "exceden": []
+      }
+    },
+    {
+      "caso": "/configuracion 1440px light",
+      "axe": [],
+      "overflow": {
+        "ancho": 1440,
+        "contenido": 1440,
+        "exceden": []
+      }
+    },
+    {
+      "caso": "Portal opt-in 1440px light",
+      "axe": [],
+      "overflow": {
+        "ancho": 1440,
+        "contenido": 1440,
+        "exceden": [
+          "DIV.absolute right-0 top-0 -mr-16 -mt-16 size-64 rounded-full bg-[var(--ember)]/5 blur-3xl pointer-events-none"
+        ]
+      }
+    },
+    {
+      "caso": "dashboard 1440px dark",
+      "axe": [],
+      "overflow": {
+        "ancho": 1440,
+        "contenido": 1440,
+        "exceden": []
+      }
+    },
+    {
+      "caso": "/formularios 1440px dark",
+      "axe": [],
+      "overflow": {
+        "ancho": 1440,
+        "contenido": 1440,
+        "exceden": []
+      }
+    },
+    {
+      "caso": "/mesas 1440px dark",
+      "axe": [],
+      "overflow": {
+        "ancho": 1440,
+        "contenido": 1440,
+        "exceden": []
+      }
+    },
+    {
+      "caso": "/geovisor 1440px dark",
+      "axe": [],
+      "overflow": {
+        "ancho": 1440,
+        "contenido": 1440,
+        "exceden": []
+      }
+    },
+    {
+      "caso": "/usuarios 1440px dark",
+      "axe": [],
+      "overflow": {
+        "ancho": 1440,
+        "contenido": 1440,
+        "exceden": []
+      }
+    },
+    {
+      "caso": "/contenido 1440px dark",
+      "axe": [],
+      "overflow": {
+        "ancho": 1440,
+        "contenido": 1440,
+        "exceden": []
+      }
+    },
+    {
+      "caso": "/configuracion 1440px dark",
+      "axe": [],
+      "overflow": {
+        "ancho": 1440,
+        "contenido": 1440,
+        "exceden": []
+      }
+    },
+    {
+      "caso": "Portal opt-in 1440px dark",
+      "axe": [],
+      "overflow": {
+        "ancho": 1440,
+        "contenido": 1440,
+        "exceden": [
+          "DIV.absolute right-0 top-0 -mr-16 -mt-16 size-64 rounded-full bg-[var(--ember)]/5 blur-3xl pointer-events-none"
+        ]
+      }
+    }
+  ],
+  "errores_js": []
+}

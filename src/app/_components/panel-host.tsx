@@ -1,6 +1,14 @@
 "use client";
 
 import { useEffect } from "react";
+import { usePathname } from "next/navigation";
+import { useSesionStore } from "@/features/sesion/state/session-store";
+import {
+  panelPermitido,
+  puedeEditar,
+} from "@/features/plataforma/models/acceso";
+import { PanelShell } from "@/core/panels/panel-shell";
+import { Notice } from "@/shared/ui/notice";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { usePanelStore } from "@/core/panels/panel-store";
 import {
@@ -27,6 +35,11 @@ const MAX_DEPTH = 4;
 const EASE_WIDTH = "cubic-bezier(0.22, 1, 0.36, 1)";
 
 export function PanelHost() {
+  const ruta = usePathname();
+  const sesion = useSesionStore((s) => s.sesion);
+  const cargando = useSesionStore((s) => s.cargando);
+  const errorSesion = useSesionStore((s) => s.errorSesion);
+  const interno = ruta?.startsWith("/plataforma") ?? false;
   const entries = usePanelStore((s) => s.entries);
   const closeTop = usePanelStore((s) => s.closeTop);
   const toggleMaximized = usePanelStore((s) => s.toggleMaximized);
@@ -205,10 +218,43 @@ export function PanelHost() {
                     }}
                   >
                     <AnimatedPanel>
-                      <PanelComponent
-                        entryKey={entry.key}
-                        props={entry.props}
-                      />
+                      {interno &&
+                      (cargando ||
+                        errorSesion ||
+                        !panelPermitido(sesion, entry.type)) ? (
+                        <PanelShell
+                          entryKey={entry.key}
+                          crumbs={[{ label: "Plataforma" }]}
+                          title="Acceso restringido"
+                          onClose={closeTop}
+                          onCloseToKey={closeTop}
+                        >
+                          <div className="p-6">
+                            <Notice tone="warning" title="Acción no disponible">
+                              La sesión o el rol actual no permite esta acción.
+                            </Notice>
+                          </div>
+                        </PanelShell>
+                      ) : (
+                        <PanelComponent
+                          entryKey={entry.key}
+                          props={
+                            interno &&
+                            (entry.type === "mesa" ||
+                              entry.type === "formularios")
+                              ? {
+                                  ...entry.props,
+                                  soloLectura: !puedeEditar(
+                                    sesion,
+                                    entry.type === "mesa"
+                                      ? "mesas"
+                                      : "formularios",
+                                  ),
+                                }
+                              : entry.props
+                          }
+                        />
+                      )}
                     </AnimatedPanel>
 
                     {/* Atenuado de paneles detrás */}

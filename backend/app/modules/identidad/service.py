@@ -118,87 +118,52 @@ class IdentidadService:
             )
 
     def _verificar_google_token(self, id_token: str) -> dict:
-        """Verifica el token de Google Identity o decodifica tokens de prueba institucional."""
-        if id_token.startswith("test-google-token"):
-            partes = id_token.split(":")
-            correo = partes[1] if len(partes) > 1 else "funcionario@cartagena.gov.co"
-            nombre = partes[2] if len(partes) > 2 else "Funcionario Institucional"
-            sub = partes[3] if len(partes) > 3 else "google-mock-sub-12345"
-            return {
-                "email": correo.strip().lower(),
-                "name": nombre,
-                "given_name": nombre.split()[0] if nombre else "Funcionario",
-                "family_name": (
-                    " ".join(nombre.split()[1:]) if len(nombre.split()) > 1 else "Distrital"
-                ),
-                "sub": sub,
-                "email_verified": True,
-                "hd": correo.split("@")[1] if "@" in correo else "cartagena.gov.co",
-            }
-
+        """Verificar firma, emisor, caducidad y audiencia; nunca decodificar sin firma."""
+        audiencia = self.settings.google_client_id
+        if not audiencia or audiencia.startswith("PENDIENTE"):
+            raise HTTPException(503, "Acceso con Google no configurado")
         try:
             from google.auth.transport import requests as google_requests
             from google.oauth2 import id_token as google_id_token
 
             claims = google_id_token.verify_oauth2_token(
-                id_token, google_requests.Request(), clock_skew_in_seconds=10
+                id_token,
+                google_requests.Request(),
+                audience=audiencia,
+                clock_skew_in_seconds=10,
             )
+            if not claims.get("sub") or claims.get("email_verified") is not True:
+                raise ValueError("Identidad de Google no verificada")
             return claims
         except Exception:
-            try:
-                from jose import jwt
-
-                claims = jwt.get_unverified_claims(id_token)
-                if "email" in claims:
-                    claims.setdefault("email_verified", True)
-                    return claims
-            except Exception:
-                pass
             raise HTTPException(401, "Token de Google inválido o expirado") from None
 
     async def autenticar_google_oauth(self, peticion: GoogleOAuthPeticion) -> TokenRespuesta:
-        claims = self._verificar_google_token(peticion.id_token)
+        claims = await asyncio.to_thread(self._verificar_google_token, peticion.id_token)
         correo = str(claims.get("email", "")).strip().lower()
         if not correo:
             raise HTTPException(400, "El token de Google no contiene un correo electrónico válido")
         if claims.get("email_verified") is False:
             raise HTTPException(400, "El correo de Google no se encuentra verificado")
 
-        # Asignación de roles PBAC según pertenencia institucional
-        es_institucional = correo.endswith("@cartagena.gov.co") or claims.get("hd") == (
-            "cartagena.gov.co"
-        )
-        if es_institucional:
-            nivel_identidad = "verificada"
-            if any(k in correo for k in ["alcaldia", "despacho", "planeacion", "seguridad"]):
-                codigo_rol = "autoridad_distrital"
-            elif any(k in correo for k in ["facilitador", "mesa"]):
-                codigo_rol = "facilitador_mesa"
-            elif any(k in correo for k in ["auditor", "control"]):
-                codigo_rol = "auditor_forense"
-            elif "admin" in correo:
-                codigo_rol = "administrador_identidades"
-            else:
-                codigo_rol = "autoridad_distrital"
-        else:
-            nivel_identidad = "autenticada"
-            codigo_rol = "ciudadano"
+        # El proveedor autentica la cuenta; el rol institucional lo asigna la administración.
+        # Un dominio o texto del correo no concede privilegios ni cambia un rol existente.
+        codigo_rol = "ciudadano"
+        nivel_identidad = "declarada"
+        if not correo.endswith("@gmail.com") and not claims.get("hd"):
+            raise HTTPException(403, "Esta cuenta requiere iniciar sesión con correo y contraseña")
 
         async with transaction(self.repo.session):
             usuario = await self.repo.obtener_usuario_por_correo(correo)
             if usuario:
                 usuario = await self.repo.obtener_usuario_por_id(usuario.id, bloquear=True)
+                google_sub = (usuario.metadatos or {}).get("google_sub")
+                if google_sub and google_sub != claims.get("sub"):
+                    raise HTTPException(403, "La cuenta de Google no corresponde a este usuario")
                 if not usuario.activo:
                     raise HTTPException(403, "Usuario inactivo")
                 if not usuario.correo_verificado_en:
                     usuario.correo_verificado_en = datetime.now(UTC)
-                if es_institucional and usuario.rol.codigo == "ciudadano":
-                    rol_inst = await self.repo.obtener_rol_por_codigo(codigo_rol)
-                    if rol_inst:
-                        usuario.rol_id = rol_inst.id
-                        usuario.nivel_identidad = "verificada"
-                        await self.repo.session.flush()
-                        usuario = await self.repo.obtener_usuario_por_id(usuario.id)
             else:
                 rol = await self.repo.obtener_rol_por_codigo(codigo_rol)
                 if not rol:
@@ -217,7 +182,9 @@ class IdentidadService:
                     apellidos=apellidos,
                     rol_id=rol.id,
                     nivel_identidad=nivel_identidad,
-                    hash_contrasena=_HASH_FICTICIO,
+                    hash_contrasena=await asyncio.to_thread(
+                        obtener_hash_contrasena, uuid.uuid4().hex
+                    ),
                     metadatos={"origen": "google_oauth", "google_sub": claims.get("sub")},
                 )
 

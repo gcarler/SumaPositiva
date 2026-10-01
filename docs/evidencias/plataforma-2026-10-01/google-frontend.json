@@ -1,0 +1,19 @@
+{
+  "sdk": "Google Identity Services interceptado para pruebas; componente GoogleLogin y SesionPanel reales",
+  "resultados": [
+    {
+      "rol": "administrador_identidades",
+      "credencial": "ID token recibido del callback oficial",
+      "destino": "/plataforma",
+      "panel": "cerrado",
+      "resultado": "aprobado"
+    },
+    {
+      "rol": "ciudadano",
+      "credencial": "ID token recibido del callback oficial",
+      "destino": "/",
+      "panel": "cerrado",
+      "resultado": "aprobado"
+    }
+  ]
+}

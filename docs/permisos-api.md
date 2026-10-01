@@ -97,7 +97,7 @@ La última columna explica la excepción pública o la condición adicional.
 | POST | /api/v1/identidad/correo/solicitar | sujeto | Envía enlace solo al correo de la cuenta autenticada, con límites de intentos. |
 | GET | /api/v1/identidad/eventos | permiso:identidad:auditar@declarada | Eventos paginados de identidad sin contraseñas o tokens. |
 | POST | /api/v1/identidad/login | publico | Intercambio de credenciales por token; no concede roles adicionales. |
-| POST | /api/v1/identidad/oauth/google | publico | Autenticación institucional Google OAuth 2.0 y federación de identidad. |
+| POST | /api/v1/identidad/oauth/google | publico | Login mediante ID token verificado para audiencia configurada; conserva el rol existente y crea cuentas nuevas solo como ciudadano. |
 | POST | /api/v1/identidad/logout | sujeto | Revoca la sesión actual de la cuenta registrada. |
 | GET | /api/v1/identidad/perfil | sujeto | Solo perfil propio de usuario registrado; sesión anónima denegada. |
 | PATCH | /api/v1/identidad/perfil | sujeto | El usuario edita exclusivamente su nombre; no acepta cambios de rol o permisos. |
@@ -183,3 +183,10 @@ cuentas históricas o atribuciones institucionales. EXIF eliminado no prueba
 consentimiento ni elimina información identificable visible. EAF debe declarar
 estos límites en el dictamen correspondiente.
 
+## Navegación interna
+
+Las rutas Next.js `/plataforma/*` se clasifican por sesión y rol en
+[plataforma](plataforma.md). No añaden permisos a roles ni cambian los controles
+de los endpoints. El acceso a Usuarios y Roles en esta navegación se limita a
+`administrador_identidades`; el auditor conserva sus permisos de lectura por API,
+pero esta ruta administrativa no aparece en su menú.

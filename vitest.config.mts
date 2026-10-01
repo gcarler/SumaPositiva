@@ -13,6 +13,18 @@ export default defineConfig({
         extends: true,
         resolve: { alias: { "@": path.join(dirname, "src") } },
         test: {
+          name: "plataforma",
+          environment: "node",
+          include: [
+            "src/features/plataforma/**/*.test.ts",
+            "src/features/sesion/services/sincronizar-sesion.test.ts",
+          ],
+        },
+      },
+      {
+        extends: true,
+        resolve: { alias: { "@": path.join(dirname, "src") } },
+        test: {
           name: "formularios",
           environment: "node",
           include: ["src/features/formularios/**/*.test.ts"],
@@ -20,6 +32,7 @@ export default defineConfig({
       },
       {
         extends: true,
+        optimizeDeps: { include: ["next/link"] },
         plugins: [
           storybookTest({ configDir: path.join(dirname, ".storybook") }),
         ],

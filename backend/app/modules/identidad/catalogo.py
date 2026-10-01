@@ -12,6 +12,7 @@ PERMISOS = {
     "aportes:apoyar": "Respaldar aportes",
     "aportes:priorizar": "Gestionar aportes",
     "mesas:abrir": "Crear mesas y submesas",
+    "mesas:fotos:subir": "Subir fotografías de mesas para moderación",
     "mesas:acuerdos": "Gestionar actas",
     "asistencia:verificar": "Consultar y registrar participantes",
     "instrumentos:gestionar": "Gestionar instrumentos",

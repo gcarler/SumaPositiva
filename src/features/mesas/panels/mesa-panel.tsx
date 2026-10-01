@@ -23,7 +23,11 @@ import {
 } from "lucide-react";
 import { PanelShell } from "@/core/panels/panel-shell";
 import { usePanels } from "@/core/panels/panel-store";
-import { useMesaQuery, useActualizarAcuerdos, useCrearSubMesa } from "@/features/mesas/services/use-mesas-queries";
+import {
+  useMesaQuery,
+  useActualizarAcuerdos,
+  useCrearSubMesa,
+} from "@/features/mesas/services/use-mesas-queries";
 import { type SubMesaInput } from "@/features/mesas/state/mesas-store";
 import {
   estadoDiligenciamiento,
@@ -49,9 +53,10 @@ export function MesaPanel({
   props,
 }: {
   entryKey: string;
-  props: { mesaId: string };
+  props: { mesaId: string; soloLectura?: boolean };
 }) {
   const { openPanel, closeTop } = usePanels();
+  const soloLectura = props.soloLectura ?? false;
   const { data: mesa, isLoading } = useMesaQuery(props.mesaId);
   const mutarAcuerdos = useActualizarAcuerdos();
   const mutarCrearSubMesa = useCrearSubMesa();
@@ -101,7 +106,7 @@ export function MesaPanel({
       tema: temaSub.trim(),
       participantes: participantes && participantes > 0 ? participantes : null,
     };
-    
+
     try {
       await mutarCrearSubMesa.mutateAsync({ mesaId: mesa.id, datos: input });
       toast.success("Submesa creada", {
@@ -116,8 +121,8 @@ export function MesaPanel({
     }
   };
 
-  const conSoluciones = mesa.submesas.filter((sm) =>
-    estadoDiligenciamiento(sm).tono === "completo"
+  const conSoluciones = mesa.submesas.filter(
+    (sm) => estadoDiligenciamiento(sm).tono === "completo",
   ).length;
 
   return (
@@ -136,14 +141,18 @@ export function MesaPanel({
               ? `${mesa.submesas.length} ${mesa.submesas.length === 1 ? "submesa" : "submesas"} · ${conSoluciones} con árbol completo`
               : "Sin submesas todavía"}
           </p>
-          <Button variant="outline" size="sm"
-            type="button"
-            onClick={() => openPanel("mesa-editor", { mesaId: mesa.id })}
-            className="shrink-0"
-          >
-            <Pencil className="size-3.5" strokeWidth={1.5} />
-            Editar información
-          </Button>
+          {!soloLectura && (
+            <Button
+              variant="outline"
+              size="sm"
+              type="button"
+              onClick={() => openPanel("mesa-editor", { mesaId: mesa.id })}
+              className="shrink-0"
+            >
+              <Pencil className="size-3.5" strokeWidth={1.5} />
+              Editar información
+            </Button>
+          )}
         </div>
       }
     >
@@ -155,19 +164,29 @@ export function MesaPanel({
             <div className="space-y-1">
               <dt className="label-micro text-[var(--text-tertiary)]">Fecha</dt>
               <dd className="inline-flex items-center gap-1.5 text-sm font-medium text-[var(--text-primary)] tabular">
-                <CalendarDays className="size-3.5 shrink-0 text-[var(--text-tertiary)]" strokeWidth={1.5} />
+                <CalendarDays
+                  className="size-3.5 shrink-0 text-[var(--text-tertiary)]"
+                  strokeWidth={1.5}
+                />
                 {format(new Date(mesa.fecha), "d MMM yyyy", { locale: es })}
               </dd>
             </div>
             <div className="space-y-1">
-              <dt className="label-micro text-[var(--text-tertiary)]">Asistentes</dt>
+              <dt className="label-micro text-[var(--text-tertiary)]">
+                Asistentes
+              </dt>
               <dd className="inline-flex items-center gap-1.5 text-sm font-medium text-[var(--text-primary)] tabular">
-                <Users className="size-3.5 shrink-0 text-[var(--text-tertiary)]" strokeWidth={1.5} />
+                <Users
+                  className="size-3.5 shrink-0 text-[var(--text-tertiary)]"
+                  strokeWidth={1.5}
+                />
                 {mesa.totalAsistentes.toLocaleString("es-CO")}
               </dd>
             </div>
             <div className="col-span-2 space-y-1 sm:col-span-1">
-              <dt className="label-micro text-[var(--text-tertiary)]">Facilitador</dt>
+              <dt className="label-micro text-[var(--text-tertiary)]">
+                Facilitador
+              </dt>
               <dd className="truncate text-sm font-medium text-[var(--text-primary)]">
                 {mesa.facilitador}
               </dd>
@@ -175,14 +194,22 @@ export function MesaPanel({
             <div className="col-span-2 space-y-1">
               <dt className="label-micro text-[var(--text-tertiary)]">Lugar</dt>
               <dd className="inline-flex items-start gap-1.5 text-sm font-medium text-[var(--text-primary)]">
-                <MapPin className="mt-0.5 size-3.5 shrink-0 text-[var(--text-tertiary)]" strokeWidth={1.5} />
+                <MapPin
+                  className="mt-0.5 size-3.5 shrink-0 text-[var(--text-tertiary)]"
+                  strokeWidth={1.5}
+                />
                 {mesa.lugar}
               </dd>
             </div>
             <div className="col-span-2 space-y-1">
-              <dt className="label-micro text-[var(--text-tertiary)]">Entidad</dt>
+              <dt className="label-micro text-[var(--text-tertiary)]">
+                Entidad
+              </dt>
               <dd className="inline-flex items-start gap-1.5 text-sm font-medium text-[var(--text-primary)]">
-                <Landmark className="mt-0.5 size-3.5 shrink-0 text-[var(--text-tertiary)]" strokeWidth={1.5} />
+                <Landmark
+                  className="mt-0.5 size-3.5 shrink-0 text-[var(--text-tertiary)]"
+                  strokeWidth={1.5}
+                />
                 {mesa.entidad}
               </dd>
             </div>
@@ -194,17 +221,19 @@ export function MesaPanel({
           <SectionLabel
             right={
               <span className="text-[10px] uppercase tracking-[0.12em] text-[var(--text-tertiary)]">
-                Se guarda al salir del campo
+                {soloLectura ? "Solo lectura" : "Se guarda al salir del campo"}
               </span>
             }
           >
             Plenaria de apertura — acuerdos
           </SectionLabel>
           <Textarea
+            readOnly={soloLectura}
             value={acuerdosValor}
             onChange={(e) => setAcuerdosBorrador(e.target.value)}
             onBlur={(e) => {
-              if (e.target.value !== mesa.plenaria.acuerdos) confirmarAcuerdos();
+              if (!soloLectura && e.target.value !== mesa.plenaria.acuerdos)
+                confirmarAcuerdos();
             }}
             rows={4}
             aria-label="Acuerdos de la plenaria de apertura"
@@ -212,9 +241,13 @@ export function MesaPanel({
             className="min-h-[110px] w-full resize-y rounded-lg border border-[var(--border)] bg-[var(--surface-1)] px-4 py-3 text-sm leading-relaxed text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] transition-colors focus:border-[var(--ember)] "
           />
           <p className="flex items-start gap-2 text-[11px] leading-relaxed text-[var(--text-tertiary)]">
-            <ClipboardList className="mt-0.5 size-3.5 shrink-0" strokeWidth={1.5} />
-            Los acuerdos de la plenaria orientan el trabajo de cada submesa: en ellas se
-            desarrolla el papelografo (árbol de problemas y de soluciones).
+            <ClipboardList
+              className="mt-0.5 size-3.5 shrink-0"
+              strokeWidth={1.5}
+            />
+            Los acuerdos de la plenaria orientan el trabajo de cada submesa: en
+            ellas se desarrolla el papelografo (árbol de problemas y de
+            soluciones).
           </p>
         </section>
 
@@ -222,15 +255,18 @@ export function MesaPanel({
         <section className="space-y-3">
           <SectionLabel
             right={
-              <Button variant="default" size="default"
-                type="button"
-                onClick={() => setFormSubAbierto((v) => !v)}
-                aria-expanded={formSubAbierto}
-
-              >
-                <Plus className="size-3.5" strokeWidth={1.5} />
-                Submesa
-              </Button>
+              !soloLectura && (
+                <Button
+                  variant="default"
+                  size="default"
+                  type="button"
+                  onClick={() => setFormSubAbierto((v) => !v)}
+                  aria-expanded={formSubAbierto}
+                >
+                  <Plus className="size-3.5" strokeWidth={1.5} />
+                  Submesa
+                </Button>
+              )
             }
           >
             Submesas ({mesa.submesas.length})
@@ -238,7 +274,7 @@ export function MesaPanel({
 
           {/* Formulario inline de submesa */}
           <AnimatePresence initial={false}>
-            {formSubAbierto && (
+            {formSubAbierto && !soloLectura && (
               <motion.div
                 key="form-submesa"
                 initial={{ opacity: 0, height: 0 }}
@@ -286,18 +322,21 @@ export function MesaPanel({
                     </FormField>
                   </div>
                   <div className="flex items-center justify-end gap-2">
-                    <Button variant="outline" size="sm"
+                    <Button
+                      variant="outline"
+                      size="sm"
                       type="button"
                       onClick={() => setFormSubAbierto(false)}
-
                     >
                       <X className="size-3.5" strokeWidth={1.5} />
                       Cancelar
                     </Button>
-                    <Button variant="default" size="default"
+                    !soloLectura &&{" "}
+                    <Button
+                      variant="default"
+                      size="default"
                       type="button"
                       onClick={guardarSubMesa}
-
                     >
                       <Plus className="size-3.5" strokeWidth={1.5} />
                       Añadir submesa
@@ -315,18 +354,22 @@ export function MesaPanel({
                 Esta mesa aún no tiene submesas
               </p>
               <p className="max-w-md text-xs leading-relaxed text-[var(--text-secondary)]">
-                En la plenaria se acuerdan los temas y luego cada submesa desarrolla su
-                papelografo. Si la mesa trabaja como un solo grupo, crea una única submesa
-                llamada «Plenaria».
+                En la plenaria se acuerdan los temas y luego cada submesa
+                desarrolla su papelografo. Si la mesa trabaja como un solo
+                grupo, crea una única submesa llamada «Plenaria».
               </p>
-              <Button variant="outline" size="sm"
-                type="button"
-                onClick={() => setFormSubAbierto(true)}
-                className="mt-1"
-              >
-                <Plus className="size-3.5" strokeWidth={1.5} />
-                Crear la primera submesa
-              </Button>
+              {!soloLectura && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  type="button"
+                  onClick={() => setFormSubAbierto(true)}
+                  className="mt-1"
+                >
+                  <Plus className="size-3.5" strokeWidth={1.5} />
+                  Crear la primera submesa
+                </Button>
+              )}
             </div>
           ) : (
             <div className="grid gap-3 sm:grid-cols-2">
@@ -335,8 +378,11 @@ export function MesaPanel({
                 const p = resumenProblemas(sm);
                 const s = resumenSoluciones(sm);
                 return (
-                  <Button variant="unstyled" size="unstyled"
+                  <Button
+                    variant="unstyled"
+                    size="unstyled"
                     key={sm.id}
+                    disabled={soloLectura}
                     type="button"
                     onClick={() =>
                       openPanel("papelografo", {
@@ -379,11 +425,15 @@ export function MesaPanel({
                             : "text-[var(--text-tertiary)]"
                         }
                       >
-                        {s.total > 0 ? `${s.total} soluciones` : "sin soluciones"}
+                        {s.total > 0
+                          ? `${s.total} soluciones`
+                          : "sin soluciones"}
                       </span>
                     </div>
 
-                    <span className={`label-micro ${TONOS_ESTADO[estado.tono]}`}>
+                    <span
+                      className={`label-micro ${TONOS_ESTADO[estado.tono]}`}
+                    >
                       {estado.label}
                     </span>
                   </Button>

@@ -153,7 +153,7 @@ export const NavegacionConTeclado: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const trigger = canvas.getByRole("button", {
-      name: /Abrir panel de sesión/i,
+      name: /^Iniciar sesión$/i,
     });
     await userEvent.click(trigger);
     const dialog = await canvas.findByRole("dialog");

@@ -1,0 +1,14 @@
+{
+  "resultado": "aprobado",
+  "base": "polis_test_plataforma_snapshot",
+  "comprobaciones": [
+    "Login real Next.js → FastAPI → PostgreSQL: aprobado",
+    "Alta administrativa y listado persistido desde interfaz: aprobado",
+    "Creación de rol personalizado con permiso desde interfaz: aprobado",
+    "Asignación de rol con Select del kit y autorización real: aprobado",
+    "Logout en interfaz y rechazo del token anterior en API: aprobado",
+    "Rol delegado mantiene su cuenta sin acceso a las rutas internas no asignadas: aprobado",
+    "Sesión institucional móvil 320 px sin overflow ni errores JS: aprobado"
+  ],
+  "errores_js": []
+}

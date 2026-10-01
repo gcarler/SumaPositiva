@@ -1,0 +1,3 @@
+bun run backend:check: exit 1, 45 incidencias Ruff en archivos fuera de esta entrega.
+No ejecuta etapas posteriores al fallo Ruff.
+Archivos de esta entrega: Ruff correcto, 38 pruebas de identidad correctas en base aislada.

@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+import { puedeEntrar } from "@/features/plataforma/models/acceso";
 import { Button } from "@/shared/ui/button";
 
 import { useSyncExternalStore } from "react";
@@ -8,8 +10,7 @@ import { Moon, Sun, Landmark, UserRound } from "lucide-react";
 import { useNavigationStore } from "@/core/navigation/navigation-store";
 import type { VistaApp } from "@/core/navigation/navigation-store";
 import { usePanels } from "@/core/panels/panel-store";
-import { SidebarTrigger } from "@/shared/ui/sidebar";
-import { useSesionStore, esInstitucional } from "@/features/sesion/state/session-store";
+import { useSesionStore } from "@/features/sesion/state/session-store";
 import { SesionAvatar } from "@/features/sesion/components/sesion-avatar";
 
 /**
@@ -59,10 +60,10 @@ function SesionButton() {
         size="sm"
         type="button"
         onClick={abrir}
-        aria-label="Abrir panel de sesión"
+        aria-label="Iniciar sesión"
       >
         <UserRound className="size-3.5" strokeWidth={1.5} />
-        <span className="hidden sm:inline">Participar</span>
+        <span>Iniciar sesión</span>
       </Button>
     );
   }
@@ -101,9 +102,8 @@ export function Topbar() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-[var(--border)] bg-[var(--background)]/85 backdrop-blur-md">
-      <div className="container-fluid grid grid-cols-[1fr_auto] items-center gap-y-3 py-3 md:flex md:h-20 md:justify-between md:py-0">
+      <div className="container-fluid grid grid-cols-1 sm:grid-cols-[minmax(0,1fr)_auto] items-center gap-y-3 py-3 md:flex md:h-20 md:justify-between md:py-0">
         <div className="flex items-center gap-3">
-          {esInstitucional(sesion) && <SidebarTrigger className="-ml-2" />}
           {/* Wordmark Institucional */}
           <Button
             variant="unstyled"
@@ -136,7 +136,7 @@ export function Topbar() {
 
         {/* Nav */}
         <nav
-          className="order-3 col-span-2 flex min-w-0 flex-wrap items-center gap-1 md:order-none"
+          className="order-3 col-span-1 sm:col-span-2 flex min-w-0 flex-wrap items-center gap-1 md:order-none"
           aria-label="Navegación principal"
         >
           {NAV.map((item) => {
@@ -165,7 +165,17 @@ export function Topbar() {
         </nav>
 
         {/* Acciones */}
-        <div className="flex items-center justify-end gap-2">
+        <div className="flex flex-wrap items-center justify-end gap-2">
+          {puedeEntrar(sesion) && (
+            <Button
+              asChild
+              variant="outline"
+              size="sm"
+              className="h-auto min-h-9 whitespace-normal text-center"
+            >
+              <Link href="/plataforma">Ir a la Plataforma →</Link>
+            </Button>
+          )}
           <SesionButton />
           <ThemeToggle />
         </div>

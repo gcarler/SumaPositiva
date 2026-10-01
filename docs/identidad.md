@@ -188,3 +188,36 @@ interfaz, comprueba sesión restaurada y revocación, y genera resultado JSON y 
 captura móvil. No elimina automáticamente cuentas ni bases. Utilizar una instancia
 nueva o limpiar solo los datos generados en esa base aislada antes de repetir.
 La captura y resultados no contienen la contraseña ni el JWT.
+
+
+## Área interna `/plataforma` — 2026-10-01
+
+El portal `/` permanece público y no redirige automáticamente por tener una sesión.
+Los logins exitosos de cuentas internas navegan a `/plataforma`; los ciudadanos
+permanecen en `/`. El botón «Ir a la Plataforma» es voluntario y solo aparece para
+una cuenta interna activa. La gestión deja de montarse en el sidebar del portal.
+
+El guard del cliente espera la restauración desde `sessionStorage` y la consulta
+remota del perfil. Una sesión ausente, anónima, caducada o revocada regresa a
+`/?login=1`, que abre el panel de sesión. Ciudadanos y roles desconocidos no acceden.
+Un fallo de red no confirma el rol local: bloquea el área y permite reintentar.
+La API conserva la autorización efectiva; los enlaces y guards no la sustituyen.
+
+Google utiliza `GoogleLogin` de Google Identity Services y envía `credential`
+(ID token), en lugar de un access token. El servidor verifica firma, emisor,
+caducidad y audiencia mediante `google-auth`, con `POLIS_GOOGLE_CLIENT_ID`.
+Requiere `sub` y correo verificado; rechaza tokens de prueba o decodificados sin
+firma. Nuevas cuentas se crean como ciudadano; ninguna palabra o dominio del
+correo asigna roles institucionales. Cuentas ya administradas conservan su rol.
+Para vincular por correo se exige Gmail o un dominio Workspace verificado;
+cuentas externas sin `hd` usan correo/contraseña. Un `google_sub` ya registrado
+no se sustituye por un sujeto diferente.
+
+Configurar `NEXT_PUBLIC_GOOGLE_CLIENT_ID` y `POLIS_GOOGLE_CLIENT_ID` con el mismo
+cliente real, además de los orígenes autorizados en Google. Sin configuración,
+la UI mantiene disponible correo/contraseña y la API de Google responde 503.
+No se configuraron credenciales del proveedor en esta entrega.
+
+La autorización de rutas y el modo lectura están en [plataforma](plataforma.md).
+La validación de Google sigue la [documentación del proveedor](https://developers.google.com/identity/gsi/web/guides/verify-google-id-token)
+y la [API del componente](https://github.com/MomenSherif/react-oauth/tree/master/packages/%40react-oauth/google).

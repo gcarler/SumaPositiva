@@ -11,7 +11,6 @@ import { GeovisorView } from "@/features/geovisor/views/geovisor-view";
 import { useNavigationStore } from "@/core/navigation/navigation-store";
 
 import { SidebarProvider } from "@/shared/ui/sidebar";
-import { SidebarInstitucional } from "@/app/_components/sidebar-institucional";
 
 /**
  * POLIS — Plataforma de Participación Ciudadana en Políticas Públicas.
@@ -31,9 +30,10 @@ export default function Home() {
 
   return (
     <SidebarProvider id="polis-application">
-      <SidebarInstitucional />
       <div className="flex min-h-screen flex-col flex-1 min-w-0">
-        <a className="ui-skip-link" href="#main-content">Saltar al contenido</a>
+        <a className="ui-skip-link" href="#main-content">
+          Saltar al contenido
+        </a>
         <Topbar />
 
         <main id="main-content" tabIndex={-1} className="flex-1">

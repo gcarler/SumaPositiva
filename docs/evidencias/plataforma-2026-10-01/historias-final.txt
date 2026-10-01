@@ -1,0 +1,9 @@
+$ vitest run --project storybook
+
+ RUN  v4.1.6 /root/polis
+
+
+ Test Files  12 passed (12)
+      Tests  173 passed (173)
+   Start at  21:04:01
+   Duration  29.86s (transform 0ms, setup 29.11s, import 21.29s, tests 52.04s, environment 0ms)

@@ -29,6 +29,8 @@ class Settings(BaseSettings):
     jwt_algorithm: str = "HS256"
     jwt_expiracion_horas: int = 24
 
+    google_client_id: str | None = None
+
     identidad_url_publica: str = "https://seguridadhumanaintegral.org"
     smtp_host: str | None = None
     smtp_port: int = Field(default=587, ge=1, le=65535)
