@@ -1,5 +1,6 @@
 import { z } from "zod";
 import type { Formulario, RespuestaCiudadana } from "../models/formulario";
+import { fotosSchema } from "./fotos-respuesta";
 
 const puntoSchema = z.object({
   type: z.literal("Point"),
@@ -10,6 +11,8 @@ const puntoSchema = z.object({
   origen: z.enum(["mapa", "coordenadas", "gps"]).optional(),
   precisionMetros: z.number().finite().nonnegative().optional(),
   referencia: z.string().max(240).optional(),
+  barrio: z.string().max(240).optional(),
+  fotos: fotosSchema.optional(),
 });
 export type PuntoRespuesta = z.infer<typeof puntoSchema>;
 export function leerPunto(
@@ -59,6 +62,8 @@ export function generarGeoJson(
                     referencia: punto.referencia ?? "",
                     origen: punto.origen ?? "coordenadas",
                     precisionMetros: punto.precisionMetros ?? null,
+                    barrio: punto.barrio ?? "",
+                    cantidadFotos: punto.fotos?.length ?? 0,
                   },
                 },
               ]

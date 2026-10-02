@@ -1,4 +1,4 @@
-"""Contrato persistente del constructor; compatible con sus catorce tipos."""
+"""Contrato persistente del constructor; compatible con sus quince tipos."""
 
 import re
 from datetime import datetime
@@ -18,6 +18,7 @@ Tipos = Literal[
     "hora",
     "numero",
     "ubicacion_geografica",
+    "foto_multiple",
     "carga_archivo",
     "seccion",
     "descripcion",
@@ -48,6 +49,11 @@ class PreguntaConstructor(BaseModel):
     escalaMin: FiniteFloat | None = None
     escalaMax: FiniteFloat | None = None
     paso: FiniteFloat | None = Field(default=None, gt=0)
+    permitirFotos: bool = False
+    maxFotos: int = Field(default=5, ge=1, le=5)
+    labelFotos: str | None = None
+    dimensionOrigenId: str | None = None
+    localidadDestinoId: str | None = None
 
 
 class ConfiguracionConstructor(BaseModel):
@@ -61,6 +67,7 @@ class ConfiguracionConstructor(BaseModel):
     requiereAutenticacion: bool = False
     mostrarBarraProgreso: bool = True
     ordenAleatorio: bool = False
+    respuestaAnonima: bool = False
 
     @field_validator("fechaCierre")
     @classmethod
@@ -75,6 +82,7 @@ class ConfiguracionConstructor(BaseModel):
 class DocumentoFormulario(BaseModel):
     model_config = ConfigDict(extra="forbid")
     id: str = "nuevo"
+    idPersistido: str | None = None
     origenDatos: Literal["demo", "api"] | None = None
     titulo: str = Field(min_length=1, max_length=250)
     descripcion: str = Field(default="", max_length=20000)

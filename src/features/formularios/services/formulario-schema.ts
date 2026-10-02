@@ -1,6 +1,7 @@
 import { z } from "zod";
 export const formularioSchema = z.object({
   id: z.string(),
+  idPersistido: z.string().uuid().optional(),
   origenDatos: z.enum(["demo", "api"]).optional(),
   titulo: z.string(),
   descripcion: z.string(),
@@ -29,6 +30,7 @@ export const formularioSchema = z.object({
         "hora",
         "numero",
         "ubicacion_geografica",
+        "foto_multiple",
         "carga_archivo",
         "seccion",
         "descripcion",
@@ -85,9 +87,15 @@ export const formularioSchema = z.object({
       tiposArchivo: z.enum(["imagen", "pdf", "cualquiera"]).optional(),
       enfoqueDiferencial: z.boolean().optional(),
       seccionId: z.string().optional(),
+      permitirFotos: z.boolean().optional(),
+      maxFotos: z.number().int().min(1).max(5).optional(),
+      labelFotos: z.string().optional(),
+      dimensionOrigenId: z.string().optional(),
+      localidadDestinoId: z.string().optional(),
     }),
   ),
   configuracion: z.object({
+    respuestaAnonima: z.boolean().optional(),
     slug: z.string(),
     urlPublica: z.string(),
     mensajeConfirmacion: z.string(),

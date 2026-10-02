@@ -1,14 +1,11 @@
 import "server-only";
 import { cache } from "react";
-import { FORMULARIOS_MOCK } from "../data/formularios.mock";
 import { formularioSchema } from "./formulario-schema";
 import type { Formulario } from "../models/formulario";
 const base = () =>
   `${process.env.POLIS_BACKEND_URL ?? "http://127.0.0.1:8000"}/api/v1/formularios/publicos`;
 export const obtenerFormularioPublico = cache(
   async (slug: string): Promise<Formulario | "borrador" | null> => {
-    const ejemplo = FORMULARIOS_MOCK.find((f) => f.configuracion.slug === slug);
-    if (ejemplo) return structuredClone(ejemplo);
     const r = await fetch(`${base()}/${encodeURIComponent(slug)}`, {
       next: { revalidate: 60 },
     });
@@ -27,7 +24,7 @@ export async function slugsPublicados(): Promise<string[]> {
   const forms = formularioSchema.array().parse(await r.json());
   return [
     ...new Set(
-      [...FORMULARIOS_MOCK, ...forms]
+      forms
         .filter((f) => f.estado === "activo")
         .map((f) => f.configuracion.slug),
     ),

@@ -128,6 +128,8 @@ class FormularioService:
         formulario_id: uuid.UUID,
         sujeto_id: uuid.UUID,
         datos: RespuestaFormularioCrear,
+        *,
+        es_anonimo: bool = False,
     ) -> RespuestaFormularioLectura:
         async with transaction(self.session):
             f = await self.repo.obtener_por_id(formulario_id)
@@ -155,6 +157,11 @@ class FormularioService:
                 )
 
             if f.documento_constructor:
+                if (
+                    f.documento_constructor["configuracion"].get("respuestaAnonima")
+                    and not es_anonimo
+                ):
+                    raise HTTPException(403, "Este reporte requiere una sesión anónima")
                 datos.datos_respuesta = validar_respuestas(
                     f.documento_constructor, datos.datos_respuesta
                 )

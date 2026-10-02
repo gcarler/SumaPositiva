@@ -1,6 +1,7 @@
 "use client";
 import { ApiError } from "@/core/http/api-client";
 import { Landmark } from "lucide-react";
+import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
@@ -11,7 +12,6 @@ import { FormularioRuntime } from "../components/formulario-runtime";
 import type { Formulario } from "../models/formulario";
 import { formulariosRemotos } from "../services/formularios-remotos";
 import { motivoCierre } from "../services/formulario-engine";
-import { useFormulariosStore } from "../state/formularios-store";
 export function FormularioPublicoPage({
   slug,
   inicial,
@@ -25,7 +25,6 @@ export function FormularioPublicoPage({
   const sesion = useSesionStore((s) => s.sesion);
   const cargando = useSesionStore((s) => s.cargando);
   const [confirmado, setConfirmado] = useState(false);
-  const demo = inicial?.origenDatos === "demo";
   const privado = borrador && !!sesion?.usuarioId;
   const consulta = useQuery({
     queryKey: [
@@ -39,7 +38,7 @@ export function FormularioPublicoPage({
         ? formulariosRemotos.privado(slug)
         : formulariosRemotos.publico(slug),
     initialData: inicial,
-    enabled: !demo && (!borrador || privado),
+    enabled: !borrador || privado,
     refetchOnWindowFocus: true,
     retry: 1,
   });
@@ -82,12 +81,6 @@ export function FormularioPublicoPage({
             Este borrador no admite respuestas públicas.
           </Notice>
         )}
-        {demo && (
-          <Notice title="Ejemplo de demostración">
-            Este ejemplo no registra información oficialmente. Sus respuestas se
-            conservan únicamente durante esta sesión.
-          </Notice>
-        )}
         {consulta.isPending || !form ? (
           <p role={consulta.error ? "alert" : "status"}>
             {consulta.error
@@ -108,7 +101,7 @@ export function FormularioPublicoPage({
               }{" "}
               preguntas
             </p>
-            {consulta.error && !demo ? (
+            {consulta.error ? (
               <Notice tone="danger" title="No se pudo verificar la publicación">
                 Reintenta antes de responder.{" "}
                 <Button
@@ -120,9 +113,7 @@ export function FormularioPublicoPage({
               </Notice>
             ) : confirmado ? (
               <div role="status">
-                <h2 className="font-semibold">
-                  {demo ? "Respuesta de prueba recibida" : "Respuesta recibida"}
-                </h2>
+                <h2 className="font-semibold">Respuesta recibida</h2>
                 <p className="whitespace-pre-wrap">
                   {form.configuracion.mensajeConfirmacion}
                 </p>
@@ -138,21 +129,12 @@ export function FormularioPublicoPage({
                   etiquetaEnvio="Enviar respuesta"
                   preview={borrador}
                   enviar={async (respuestas, enfoque) => {
-                    if (demo)
-                      useFormulariosStore.getState().enviarRespuesta({
-                        formularioId: form.id,
-                        respuestas,
-                        enfoqueDiferencial: enfoque,
-                        sesionId:
-                          useFormulariosStore.getState().identidadAnonima,
-                      });
-                    else
-                      await formulariosRemotos.enviar(
-                        form,
-                        respuestas,
-                        enfoque,
-                      );
+                    await formulariosRemotos.enviar(form, respuestas, enfoque);
                     setConfirmado(true);
+                    if (form.configuracion.slug === "reporte-inseguridad")
+                      toast.success(
+                        "Reporte recibido. Gracias por participar.",
+                      );
                   }}
                 />
               </>

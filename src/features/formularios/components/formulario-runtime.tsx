@@ -215,6 +215,8 @@ export function FormularioRuntime({
               error={errores[p.id]}
               cambiar={(v) => cambiar(p.id, v)}
               ocupado={(v) => setOcupados((o) => ({ ...o, [p.id]: v }))}
+              contexto={respuestas}
+              cambiarRelacionada={cambiar}
             />
           </div>
         ))}

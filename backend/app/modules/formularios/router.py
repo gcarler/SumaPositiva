@@ -149,7 +149,7 @@ async def enviar_respuesta(
     sujeto: SujetoAutenticadoDep,
     service: FormularioServiceDep,
 ):
-    return await service.enviar_respuesta(id, sujeto.sujeto_id, datos)
+    return await service.enviar_respuesta(id, sujeto.sujeto_id, datos, es_anonimo=sujeto.es_anonimo)
 
 
 @router.get(

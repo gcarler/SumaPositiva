@@ -1,0 +1,9 @@
+
+ RUN  v4.1.6 /root/polis
+
+Port 63315 is in use, trying another one...
+
+ Test Files  4 passed (4)
+      Tests  35 passed (35)
+   Start at  04:19:44
+   Duration  26.06s (transform 0ms, setup 12.66s, import 7.92s, tests 21.37s, environment 0ms)

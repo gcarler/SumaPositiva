@@ -1,3 +1,4 @@
+import { FORMULARIOS_MOCK, RESPUESTAS_MOCK } from "@/features/formularios/data/formularios.mock";
 import { simularApiFormularios } from "./formularios-mock-api";
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { expect, userEvent, within, waitFor, fn } from "storybook/test";
@@ -92,7 +93,7 @@ const meta = {
     const restaurarApiFormularios = simularApiFormularios();
     const anterior = useSesionStore.getState();
     usePanelStore.getState().closeAll();
-    useFormulariosStore.getState().reiniciarDemo();
+    useFormulariosStore.setState({formularios: structuredClone(FORMULARIOS_MOCK).map(f => ({...f, origenDatos: "api"})), respuestas: structuredClone(RESPUESTAS_MOCK), previews: {}});
     autenticar();
     Object.assign(plataformaApi, {
       territorios: fn(async () => [

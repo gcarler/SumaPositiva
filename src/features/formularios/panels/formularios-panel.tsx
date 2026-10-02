@@ -46,8 +46,8 @@ export function FormulariosContenido({
   return (
     <div className="p-6 space-y-6">
       <p className="text-xs text-text-secondary">
-        Los nuevos formularios se guardan en POLIS. Los ejemplos de demostración
-        se identifican en cada tarjeta.
+        Los formularios y sus respuestas se conservan en la base de datos de
+        POLIS.
       </p>
       {error && (
         <p role="alert" className="text-sm text-danger">
@@ -84,11 +84,7 @@ export function FormulariosContenido({
                       {form.estado}
                     </span>
                     <span>{form.respuestasCount} respuestas</span>
-                    <span>
-                      {form.origenDatos === "api"
-                        ? "Guardado en POLIS"
-                        : "Ejemplo de demostración"}
-                    </span>
+                    <span>Guardado en POLIS</span>
                   </div>
                 </div>
                 <div className="flex flex-wrap gap-2">
@@ -180,7 +176,7 @@ export function FormulariosContenido({
                 {eliminarId === form.id && !soloLectura && (
                   <div className="w-full space-y-2">
                     <p className="text-sm">
-                      Se eliminarán el formulario y sus respuestas de prueba.
+                      Se eliminarán el formulario y sus respuestas registradas.
                       ¿Continuar?
                     </p>
                     <div className="flex flex-wrap gap-2">

@@ -16,6 +16,9 @@ import {
   SelectValue,
 } from "@/shared/ui/select";
 import type { PreguntaFormulario } from "../models/formulario";
+import { PreguntaUbicacionFotos } from "./pregunta-ubicacion-fotos";
+import { FotosPregunta } from "./fotos-pregunta";
+import { leerFotos } from "../services/fotos-respuesta";
 import {
   imagenSegura,
   leerArchivo,
@@ -37,12 +40,16 @@ export function PreguntaRespuesta({
   error,
   cambiar,
   ocupado,
+  contexto = {},
+  cambiarRelacionada,
 }: {
   pregunta: PreguntaFormulario;
   valor: string | string[] | undefined;
   error?: string;
   cambiar: (v: string | string[]) => void;
   ocupado: (v: boolean) => void;
+  contexto?: Record<string, string | string[]>;
+  cambiarRelacionada?: (id: string, valor: string) => void;
 }) {
   const id = useId();
   const archivoInput = useRef<HTMLInputElement>(null);
@@ -73,6 +80,39 @@ export function PreguntaRespuesta({
   const elegir = (v: string) =>
     cambiar(opciones.some((o) => o.id === v && o.esOtro) ? v + ":" : v);
   const archivo = text ? leerArchivo(text) : undefined;
+  if (p.tipo === "foto_multiple")
+    return (
+      <FotosPregunta
+        fotos={leerFotos(valor)}
+        cambiar={cambiar}
+        maxFotos={p.maxFotos}
+        label={p.labelFotos ?? p.texto}
+        ocupado={ocupado}
+        error={error}
+        required={p.obligatoria}
+      />
+    );
+  if (p.tipo === "ubicacion_geografica" && p.permitirFotos) {
+    const dimension = p.dimensionOrigenId
+      ? contexto[p.dimensionOrigenId]
+      : undefined;
+    const localidadDestinoId = p.localidadDestinoId;
+    return (
+      <PreguntaUbicacionFotos
+        pregunta={p}
+        valor={text}
+        error={error}
+        cambiar={cambiar}
+        ocupado={ocupado}
+        dimension={typeof dimension === "string" ? dimension : undefined}
+        cambiarLocalidad={
+          localidadDestinoId
+            ? (v) => cambiarRelacionada?.(localidadDestinoId, v)
+            : undefined
+        }
+      />
+    );
+  }
   if (p.tipo === "ubicacion_geografica")
     return (
       <UbicacionPregunta
@@ -383,8 +423,7 @@ export function PreguntaRespuesta({
                     }}
                   />
                   <p className="text-xs text-text-secondary">
-                    Máximo 2 MB. Archivo de prueba, conservado solo en esta
-                    sesión.
+                    Máximo 2 MB. El archivo se registra al enviar la respuesta.
                   </p>
                   {fileError && (
                     <Button

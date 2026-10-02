@@ -104,11 +104,7 @@ function Constructor({
         id: editando ? form.id : undefined,
         datos: form,
       });
-      toast.success(
-        guardado.origenDatos === "demo"
-          ? "Ejemplo guardado localmente"
-          : "Formulario guardado",
-      );
+      toast.success("Formulario guardado");
       if (
         guardado.origenDatos === "api" &&
         !(await formulariosRemotos.revalidar(guardado))
@@ -158,9 +154,8 @@ function Constructor({
     >
       <div className="space-y-6 p-6">
         <p className="text-xs text-text-secondary">
-          {inicial.origenDatos === "demo"
-            ? "Ejemplo de demostración: las ediciones son locales y no cambian su enlace público."
-            : "Al guardar, el formulario se conserva en POLIS. Activo significa publicado y accesible sin login mediante su URL."}
+          Al guardar, el formulario se conserva en POLIS. Activo significa
+          publicado y accesible sin login mediante su URL.
         </p>
         {!!errores.length && (
           <div

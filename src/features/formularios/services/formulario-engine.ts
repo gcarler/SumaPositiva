@@ -1,4 +1,5 @@
 import { leerPunto } from "./ubicacion-geografica";
+import { errorFotos } from "./fotos-respuesta";
 import type {
   ArchivoRespuesta,
   Formulario,
@@ -156,6 +157,10 @@ export function validarPregunta(
       return error("Escribe el texto de Otro.");
     return;
   }
+  if (p.tipo === "foto_multiple") {
+    const mensaje = errorFotos(valor, p.maxFotos ?? 5);
+    return mensaje ? error(mensaje) : undefined;
+  }
   if (typeof valor !== "string")
     return error("El valor no corresponde al tipo de pregunta.");
   if (["opcion_unica", "lista_desplegable"].includes(p.tipo)) {
@@ -225,6 +230,10 @@ export function validarPregunta(
     return error(
       "Selecciona un punto válido o introduce latitud y longitud válidas.",
     );
+  if (p.tipo === "ubicacion_geografica" && p.permitirFotos) {
+    const mensaje = errorFotos(leerPunto(valor)?.fotos ?? [], p.maxFotos ?? 5);
+    if (mensaje) return error(mensaje);
+  }
   if (p.tipo === "carga_archivo") {
     const a = leerArchivo(valor);
     if (!a) return error("Selecciona un archivo válido.");
@@ -318,6 +327,11 @@ export function validarFormulario(form: Formulario): string[] {
     )
       errors.push(`${name}: completa las opciones.`);
     const v = p.validacion ?? {};
+    if (
+      p.maxFotos !== undefined &&
+      (!Number.isInteger(p.maxFotos) || p.maxFotos < 1 || p.maxFotos > 5)
+    )
+      errors.push(`${name}: máximo de fotos inválido (1 a 5).`);
     if (
       v.minLongitud !== undefined &&
       v.maxLongitud !== undefined &&

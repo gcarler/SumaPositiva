@@ -60,9 +60,14 @@ function delay(ms: number): Promise<void> {
 async function once<T>(
   url: string,
   opts: ApiFetchOptions,
-  signal?: AbortSignal
+  signal?: AbortSignal,
 ): Promise<T> {
-  const { method = "GET", body, headers = {}, timeoutMs = DEFAULT_TIMEOUT } = opts;
+  const {
+    method = "GET",
+    body,
+    headers = {},
+    timeoutMs = DEFAULT_TIMEOUT,
+  } = opts;
 
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
@@ -71,8 +76,15 @@ async function once<T>(
   const onAbort = () => controller.abort();
   signal?.addEventListener("abort", onAbort, { once: true });
 
-  const tokenPeticion = bearerToken;
-  const esMultipart = typeof FormData !== "undefined" && body instanceof FormData;
+  // Un token explícito (p. ej. reporte anónimo) no invalida otra sesión activa.
+  const tokenPeticion =
+    headers.Authorization === undefined
+      ? bearerToken
+      : headers.Authorization.startsWith("Bearer ")
+        ? headers.Authorization.slice(7)
+        : null;
+  const esMultipart =
+    typeof FormData !== "undefined" && body instanceof FormData;
   try {
     const res = await fetch(url, {
       method,
@@ -82,7 +94,12 @@ async function once<T>(
         ...(bearerToken ? { Authorization: `Bearer ${bearerToken}` } : {}),
         ...headers,
       },
-      body: body !== undefined ? (esMultipart ? body : JSON.stringify(body)) : undefined,
+      body:
+        body !== undefined
+          ? esMultipart
+            ? body
+            : JSON.stringify(body)
+          : undefined,
     });
 
     if (!res.ok) {
@@ -92,8 +109,13 @@ async function once<T>(
       } catch {
         /* respuesta sin cuerpo JSON */
       }
-      const message = detail !== null && typeof detail === "object" && "detail" in detail
-        && typeof detail.detail === "string" ? detail.detail : `Error ${res.status}: ${res.statusText}`;
+      const message =
+        detail !== null &&
+        typeof detail === "object" &&
+        "detail" in detail &&
+        typeof detail.detail === "string"
+          ? detail.detail
+          : `Error ${res.status}: ${res.statusText}`;
       if (res.status === 401 && tokenPeticion && bearerToken === tokenPeticion)
         unauthorizedHandler?.();
       throw new ApiError(res.status, message, detail);
@@ -120,7 +142,7 @@ async function once<T>(
  */
 export async function apiFetch<T>(
   path: string,
-  opts: ApiFetchOptions = {}
+  opts: ApiFetchOptions = {},
 ): Promise<T> {
   const baseUrl = opts.baseUrl ?? "/api/v1";
   const url = `${baseUrl}${path}`;

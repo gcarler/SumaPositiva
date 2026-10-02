@@ -9,6 +9,8 @@ from decimal import Decimal, InvalidOperation
 
 from fastapi import HTTPException
 
+from app.modules.formularios.geo_respuesta import validar_fotos
+
 
 def cumple(regla, respuestas):
     dato = respuestas.get(regla.get("preguntaOrigenId"))
@@ -87,6 +89,30 @@ def efectivas(documento, respuestas):
 
 
 def validar_respuestas(documento, respuestas):
+    # Aceptar el contrato estructurado del punto; las reglas trabajan sobre texto.
+    if isinstance(respuestas, dict):
+        respuestas = dict(respuestas)
+        for p in documento["preguntas"]:
+            dato = respuestas.get(p["id"])
+            if (
+                p["tipo"] == "ubicacion_geografica"
+                and p.get("permitirFotos")
+                and isinstance(dato, dict)
+            ):
+                try:
+                    if dato["tipo"] != "ubicacion_geografica":
+                        raise ValueError("Tipo incorrecto")
+                    punto = dato["valor"]
+                    respuestas[p["id"]] = json.dumps(
+                        {
+                            "type": "Point",
+                            "coordinates": [punto["lng"], punto["lat"]],
+                            "barrio": punto.get("barrio", ""),
+                            "fotos": punto.get("fotos", []),
+                        }
+                    )
+                except (KeyError, TypeError, ValueError) as error:
+                    raise HTTPException(422, "Punto geográfico inválido") from error
     if not isinstance(respuestas, dict) or any(
         not isinstance(v, (str, list))
         or (isinstance(v, list) and any(not isinstance(item, str) for item in v))
@@ -106,6 +132,9 @@ def validar_respuestas(documento, respuestas):
                 error("Esta pregunta es obligatoria")
             continue
         tipo = p["tipo"]
+        if tipo == "foto_multiple":
+            datos[p["id"]] = validar_fotos(valor, p.get("maxFotos", 5))
+            continue
         if tipo != "opcion_multiple" and not isinstance(valor, str):
             error("Tipo de respuesta incorrecto")
         if tipo in ("opcion_unica", "opcion_multiple", "lista_desplegable"):
@@ -198,6 +227,20 @@ def validar_respuestas(documento, respuestas):
                     error("Punto geográfico inválido")
             except (ValueError, TypeError, KeyError):
                 error("Punto geográfico inválido")
+            if p.get("permitirFotos"):
+                fotos = validar_fotos(punto.get("fotos", []), p.get("maxFotos", 5))
+                barrio = punto.get("barrio")
+                if barrio is not None and (not isinstance(barrio, str) or len(barrio) > 240):
+                    error("Barrio inválido")
+                datos[p["id"]] = {
+                    "tipo": "ubicacion_geografica",
+                    "valor": {
+                        "lat": coords[1],
+                        "lng": coords[0],
+                        "fotos": fotos,
+                        **({"barrio": barrio} if barrio else {}),
+                    },
+                }
         if tipo == "carga_archivo":
             try:
                 archivo = json.loads(valor)

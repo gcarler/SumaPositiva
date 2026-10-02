@@ -1,4 +1,5 @@
 import { textoPunto } from "./ubicacion-geografica";
+import { leerFotos } from "./fotos-respuesta";
 import type {
   AnaliticaFormulario,
   Formulario,
@@ -11,6 +12,7 @@ export function textoRespuesta(
   valor: string | string[] | undefined,
 ): string {
   if (valor === undefined) return "";
+  if (p.tipo === "foto_multiple") return `${leerFotos(valor).length} fotos`;
   if (Array.isArray(valor))
     return valor.map((v) => textoRespuesta(p, v)).join("; ");
   if (p.tipo === "ubicacion_geografica") return textoPunto(valor);

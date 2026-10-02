@@ -3,7 +3,7 @@ import { formularioVacio, type Formulario } from "../models/formulario";
 import { validarPregunta, respuestasEfectivas } from "./formulario-engine";
 import { generarGeoJson, leerPunto } from "./ubicacion-geografica";
 import { generarCsv } from "./formulario-analitica";
-import { useFormulariosStore } from "../state/formularios-store";
+import { useFormulariosDemoStore as useFormulariosStore } from "../data/formularios-demo-store";
 const p = {
   id: "punto",
   tipo: "ubicacion_geografica" as const,
@@ -133,13 +133,11 @@ describe("Punto geográfico en formularios", () => {
         formularios: [structuredClone(form)],
         respuestas: [],
       });
-      useFormulariosStore
-        .getState()
-        .enviarRespuesta({
-          formularioId: "geo",
-          respuestas: { punto },
-          enfoqueDiferencial: "Ninguno",
-        });
+      useFormulariosStore.getState().enviarRespuesta({
+        formularioId: "geo",
+        respuestas: { punto },
+        enfoqueDiferencial: "Ninguno",
+      });
       const [r] = useFormulariosStore.getState().respuestas;
       expect(r.formularioId).toBe("geo");
       expect(leerPunto(r.respuestas.punto)?.coordinates).toEqual([

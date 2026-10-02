@@ -38,6 +38,8 @@
   --warning: oklch(0.48 0.1 75);
   --danger: oklch(0.52 0.19 25);
   --info: oklch(0.48 0.1 240);
+  --role-authority: oklch(0.46 0.13 300);
+  --role-authority-soft: color-mix(in oklch, var(--role-authority) 10%, var(--surface-1));
 
   --overlay: oklch(0.15 0.005 90 / 32%);
 
@@ -86,6 +88,8 @@
   --warning: oklch(0.78 0.14 75);
   --danger: oklch(0.68 0.19 25);
   --info: oklch(0.7 0.11 240);
+  --role-authority: oklch(0.76 0.12 300);
+  --role-authority-soft: color-mix(in oklch, var(--role-authority) 16%, var(--surface-1));
 
   --overlay: oklch(0 0 0 / 55%);
 
@@ -139,4 +143,20 @@
   --elevation-raised: 0 8px 32px oklch(0 0 0 / 24%);
   --elevation-panel: -12px 0 48px oklch(0 0 0 / 30%);
   --destructive-foreground: oklch(0.13 0.02 25);
+}
+
+/* Categorías del reporte ciudadano: los marcadores también muestran icono y texto. */
+:root {
+  --reporte-personal: var(--danger);
+  --reporte-convivencia: var(--ember);
+  --reporte-ambiental: var(--success);
+  --reporte-economica: oklch(0.88 0.17 95);
+  --reporte-alimentaria: oklch(0.55 0.2 300);
+  --reporte-politica: var(--info);
+  --reporte-alertas: oklch(0.2 0 0);
+}
+.dark {
+  --reporte-economica: oklch(0.88 0.17 95);
+  --reporte-alimentaria: oklch(0.75 0.16 300);
+  --reporte-alertas: oklch(0.2 0 0);
 }

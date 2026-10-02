@@ -10,6 +10,7 @@ export type TipoPregunta =
   | "hora"
   | "numero"
   | "ubicacion_geografica"
+  | "foto_multiple"
   | "carga_archivo"
   | "seccion"
   | "descripcion";
@@ -26,6 +27,7 @@ export const TIPOS_PREGUNTA: Record<TipoPregunta, string> = {
   hora: "Hora",
   numero: "Número",
   ubicacion_geografica: "Ubicación geográfica",
+  foto_multiple: "Fotos múltiples",
   carga_archivo: "Archivo",
   seccion: "Sección",
   descripcion: "Descripción",
@@ -52,7 +54,14 @@ export interface LogicaCondicional {
   preguntaDestinoId?: string;
   seccionDestinoId?: string;
 }
-export interface PreguntaFormulario {
+export interface ConfiguracionPregunta {
+  permitirFotos?: boolean;
+  maxFotos?: number;
+  labelFotos?: string;
+  dimensionOrigenId?: string;
+  localidadDestinoId?: string;
+}
+export interface PreguntaFormulario extends ConfiguracionPregunta {
   id: string;
   tipo: TipoPregunta;
   texto: string;
@@ -81,6 +90,7 @@ export interface SeccionFormulario {
   orden: number;
 }
 export interface ConfiguracionFormulario {
+  respuestaAnonima?: boolean;
   slug: string;
   urlPublica: string;
   mensajeConfirmacion: string;
@@ -92,6 +102,7 @@ export interface ConfiguracionFormulario {
   ordenAleatorio: boolean;
 }
 export interface Formulario {
+  idPersistido?: string;
   origenDatos?: "demo" | "api";
   id: string;
   titulo: string;

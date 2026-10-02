@@ -1,3 +1,6 @@
+import { FORMULARIOS_MOCK, RESPUESTAS_MOCK } from "@/features/formularios/data/formularios.mock";
+import { useFormulariosStore } from "@/features/formularios/state/formularios-store";
+import { simularApiFormularios } from "./formularios-mock-api";
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { expect, userEvent, waitFor, within } from "storybook/test";
 import { QueryProvider } from "@/app/_composition/query-provider";
@@ -26,6 +29,9 @@ const meta = {
     },
   },
   beforeEach: () => {
+    const restaurarFormularios = simularApiFormularios();
+    const cacheAnterior = useFormulariosStore.getState();
+    useFormulariosStore.setState({formularios: structuredClone(FORMULARIOS_MOCK).map(f=>({...f, origenDatos:"api"})), respuestas: structuredClone(RESPUESTAS_MOCK)});
     const fetchOriginal = window.fetch;
     // Aislar las pantallas de demostración: las consultas leen el store de la historia.
     window.fetch = async (entrada, opciones) => {
@@ -54,6 +60,8 @@ const meta = {
     useSesionStore.setState({ sesion: null });
     return () => {
       window.fetch = fetchOriginal;
+      restaurarFormularios();
+      useFormulariosStore.setState(cacheAnterior);
       usePanelStore.getState().closeAll();
       useSesionStore.setState({ sesion: null });
     };
@@ -236,6 +244,9 @@ export const CatalogoConNombresAccesibles: Story = {
 
 export const GaleriaAccesible: Story = {
   beforeEach: () => {
+    const restaurarFormularios = simularApiFormularios();
+    const cacheAnterior = useFormulariosStore.getState();
+    useFormulariosStore.setState({formularios: structuredClone(FORMULARIOS_MOCK).map(f=>({...f, origenDatos:"api"})), respuestas: structuredClone(RESPUESTAS_MOCK)});
     const fetchOriginal = window.fetch;
     window.fetch = async (entrada, opciones) => {
       const ruta = new URL(typeof entrada === "string" ? entrada : entrada instanceof Request ? entrada.url : entrada.href, window.location.origin).pathname;

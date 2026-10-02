@@ -1,3 +1,5 @@
+import { simularApiFormularios } from "./formularios-mock-api";
+import { formulariosRemotos } from "@/features/formularios/services/formularios-remotos";
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { expect, userEvent, within } from "storybook/test";
 import { QueryProvider } from "@/app/_composition/query-provider";
@@ -12,7 +14,7 @@ import {
 const form: Formulario = {
   ...formularioVacio(),
   id: "publico-demo",
-  origenDatos: "demo",
+  origenDatos: "api",
   titulo: "Consulta ciudadana",
   descripcion: "Participa desde un enlace compartido.",
   estado: "activo",
@@ -35,6 +37,8 @@ const meta = {
   title: "Plataforma/Formularios públicos",
   parameters: { layout: "fullscreen", polis: { screen: true } },
   beforeEach: () => {
+    const restaurar = simularApiFormularios();
+    formulariosRemotos.publico = async () => structuredClone(form);
     const anterior = useFormulariosStore.getState();
     const sesion = useSesionStore.getState();
     useFormulariosStore.setState({
@@ -43,6 +47,7 @@ const meta = {
     });
     useSesionStore.setState({ sesion: null, cargando: false });
     return () => {
+      restaurar();
       useFormulariosStore.setState(anterior);
       useSesionStore.setState(sesion);
     };
@@ -74,9 +79,7 @@ export const EnviarSinLogin: Story = {
       "Mejorar el alumbrado",
     );
     await userEvent.click(c.getByRole("button", { name: "Enviar respuesta" }));
-    await expect(
-      await c.findByText("Respuesta de prueba recibida"),
-    ).toBeVisible();
+    await expect(await c.findByText("Respuesta recibida")).toBeVisible();
     expect(
       useFormulariosStore.getState().respuestas[0].respuestas.detalle,
     ).toBe("Mejorar el alumbrado");

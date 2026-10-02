@@ -1,0 +1,1 @@
+{"estado":"aprobado","dimensiones":7,"fotos":5,"arrastre":true,"reflujo320":true,"post":201,"id":"01a0fad5-2ba8-7e16-a85e-22b73e3ca202"}

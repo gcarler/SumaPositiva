@@ -2,7 +2,7 @@ import { v4 as uuid } from "uuid";
 import { formulariosRemotos } from "./formularios-remotos";
 import { generarSlug, urlFormulario } from "./formulario-url";
 import { validarFormulario } from "./formulario-engine";
-/** Ejemplos aislados y transporte persistente. Nunca se sustituye un fallo de API por mocks. */
+/** Transporte persistente. Nunca se sustituye un fallo de API por datos locales. */
 import {
   useFormulariosStore,
   type DatosRespuesta,
@@ -10,7 +10,7 @@ import {
 import type { DatosFormulario, Formulario } from "../models/formulario";
 import { calcularAnalitica } from "./formulario-analitica";
 export async function listarFormularios() {
-  return useFormulariosStore.getState().formularios;
+  return formulariosRemotos.listar();
 }
 export async function obtenerFormulario(id: string) {
   const form = useFormulariosStore
@@ -52,10 +52,6 @@ export async function actualizarFormulario(
   data: Partial<Formulario>,
 ) {
   const actual = await obtenerFormulario(id);
-  if (actual.origenDatos !== "api") {
-    useFormulariosStore.getState().actualizarFormulario(id, data);
-    return obtenerFormulario(id);
-  }
   const siguiente = {
     ...actual,
     ...structuredClone(data),
@@ -84,23 +80,22 @@ export async function actualizarFormulario(
 }
 export async function obtenerAnalitica(id: string) {
   const form = await obtenerFormulario(id);
-  return calcularAnalitica(form, useFormulariosStore.getState().respuestas);
+  return calcularAnalitica(
+    form,
+    await formulariosRemotos.respuestas(id, form.idPersistido),
+  );
 }
 export async function enviarRespuesta(data: DatosRespuesta) {
   const form = await obtenerFormulario(data.formularioId);
-  if (form.origenDatos === "api") {
-    await formulariosRemotos.enviar(
-      form,
-      data.respuestas,
-      data.enfoqueDiferencial,
-    );
-    return;
-  }
-  useFormulariosStore.getState().enviarRespuesta(data);
+  await formulariosRemotos.enviar(
+    form,
+    data.respuestas,
+    data.enfoqueDiferencial,
+  );
 }
 
 export async function eliminarFormulario(id: string) {
   const form = await obtenerFormulario(id);
-  if (form.origenDatos === "api") await formulariosRemotos.eliminar(id);
+  await formulariosRemotos.eliminar(form.idPersistido ?? id);
   useFormulariosStore.getState().eliminarFormulario(id);
 }

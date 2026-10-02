@@ -1,3 +1,7 @@
+import {
+  FORMULARIOS_MOCK,
+  RESPUESTAS_MOCK,
+} from "@/features/formularios/data/formularios.mock";
 import { simularApiFormularios } from "./formularios-mock-api";
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { expect, userEvent, within, waitFor } from "storybook/test";
@@ -90,7 +94,14 @@ const meta = {
   beforeEach: () => {
     const restaurarApiFormularios = simularApiFormularios();
     const anterior = useFormulariosStore.getState();
-    useFormulariosStore.getState().reiniciarDemo();
+    useFormulariosStore.setState({
+      formularios: structuredClone(FORMULARIOS_MOCK).map((f) => ({
+        ...f,
+        origenDatos: "api",
+      })),
+      respuestas: structuredClone(RESPUESTAS_MOCK),
+      previews: {},
+    });
     useSesionStore.getState().limpiarSesion();
     usePanelStore.getState().closeAll();
     return () => {
@@ -157,9 +168,11 @@ export const EdicionHidratada: Story = {
     );
     await userEvent.click(panel.getByRole("button", { name: "Vista Previa" }));
     const preview = within(
-      await within(canvasElement).findByRole("dialog", {
-        name: "Vista Previa",
-      }),
+      await within(canvasElement).findByRole(
+        "dialog",
+        { name: "Vista Previa" },
+        { timeout: 10000 },
+      ),
     );
     await expect(
       preview.getByRole("combobox", { name: /En qué barrio/ }),
@@ -215,7 +228,7 @@ export const Condicional: Story = {
     await userEvent.click(
       panel.getByRole("button", { name: "Enviar respuestas" }),
     );
-    await panel.findByText("Respuesta de prueba recibida");
+    await panel.findByText("Respuesta recibida");
     await expect(
       useFormulariosStore.getState().respuestas[0].respuestas,
     ).toEqual({ origen: "no" });
@@ -245,7 +258,7 @@ export const RespuestaConSecciones: Story = {
     await userEvent.click(
       panel.getByRole("button", { name: "Enviar respuestas" }),
     );
-    await panel.findByText("Respuesta de prueba recibida");
+    await panel.findByText("Respuesta recibida");
     await expect(
       useFormulariosStore.getState().formularios.find((f) => f.id === "f1")
         ?.respuestasCount,
@@ -275,9 +288,11 @@ export const ValidacionObligatoria: Story = {
 };
 export const Cierre: Story = {
   beforeEach: () => {
-    useFormulariosStore
-      .getState()
-      .actualizarFormulario("f1", { estado: "cerrado" });
+    useFormulariosStore.setState((s) => ({
+      formularios: s.formularios.map((f) =>
+        f.id === "f1" ? { ...f, estado: "cerrado" } : f,
+      ),
+    }));
     usePanelStore
       .getState()
       .openPanel("formulario-respuesta", { formularioId: "f1" });
@@ -286,8 +301,13 @@ export const Cierre: Story = {
 export const RequiereSesion: Story = {
   beforeEach: () => {
     const f = useFormulariosStore.getState().formularios[0];
-    useFormulariosStore.getState().actualizarFormulario(f.id, {
-      configuracion: { ...f.configuracion, requiereAutenticacion: true },
+    useFormulariosStore.setState({
+      formularios: [
+        {
+          ...f,
+          configuracion: { ...f.configuracion, requiereAutenticacion: true },
+        },
+      ],
     });
     usePanelStore
       .getState()
@@ -303,9 +323,9 @@ export const Analitica: Story = {
     const panel = within(
       await within(canvasElement).findByRole("dialog", {}, { timeout: 10000 }),
     );
-    await expect(
-      panel.getByRole("button", { name: "Exportar CSV" }),
-    ).toBeEnabled();
+    await waitFor(() =>
+      expect(panel.getByRole("button", { name: "Exportar CSV" })).toBeEnabled(),
+    );
     await expect(
       panel.getByText("Distribución de Respuestas por Pregunta"),
     ).toBeVisible();

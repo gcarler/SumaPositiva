@@ -338,6 +338,22 @@ export function PreguntaEditor({
           }
         />
       )}
+      {p.tipo === "ubicacion_geografica" && (
+        <MarcaEditor
+          label={`Permitir fotos junto al punto (${index + 1})`}
+          value={p.permitirFotos ?? false}
+          onChange={(permitirFotos) => patch({ permitirFotos })}
+        />
+      )}
+      {(p.tipo === "foto_multiple" ||
+        (p.tipo === "ubicacion_geografica" && p.permitirFotos)) && (
+        <TextoEditor
+          label={`Máximo de fotos (${index + 1})`}
+          type="number"
+          value={p.maxFotos ?? 5}
+          onChange={(v) => patch({ maxFotos: Number(v) })}
+        />
+      )}
       {!esInformativa(p) && (
         <TextoEditor
           label={`Mensaje de error (${index + 1})`}

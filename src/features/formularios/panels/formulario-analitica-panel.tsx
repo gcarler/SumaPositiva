@@ -55,9 +55,7 @@ export function FormularioAnaliticaPanel({
     >
       <div className="space-y-6 p-6">
         <p className="text-xs text-text-secondary">
-          {form?.origenDatos === "api"
-            ? "Analítica de respuestas guardadas en POLIS."
-            : "Analítica de respuestas de demostración de esta sesión."}
+          Analítica de respuestas guardadas en POLIS.
         </p>
         {form && <CompartirFormulario form={form} />}
         {!form || !stats ? (

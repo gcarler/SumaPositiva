@@ -21,9 +21,7 @@ export function FormularioRespuestaPanel({
   const { closeTop, openPanel } = usePanels();
   const { data: form, error } = useFormularioDetalle(props.formularioId);
   const sesion = useSesionStore((s) => s.sesion);
-  const [anonimoId] = useState(
-    () => useFormulariosStore.getState().identidadAnonima,
-  );
+  const [anonimoId] = useState(() => crypto.randomUUID());
   const identidad = sesion?.usuarioId ?? sesion?.sesionId ?? anonimoId;
   const anterior = useFormulariosStore((s) =>
     s.respuestas.find(
@@ -55,17 +53,11 @@ export function FormularioRespuestaPanel({
     >
       <div className="space-y-6 p-6">
         <p className="text-xs text-text-secondary">
-          {form?.origenDatos === "api"
-            ? "Tu respuesta se registra en POLIS al enviarla."
-            : "Demostración: las respuestas de prueba se eliminan al recargar."}
+          Tu respuesta se registra en POLIS al enviarla.
         </p>
         {confirmacion && form ? (
           <div role="status">
-            <h3 className="font-semibold">
-              {form.origenDatos === "api"
-                ? "Respuesta recibida"
-                : "Respuesta de prueba recibida"}
-            </h3>
+            <h3 className="font-semibold">Respuesta recibida</h3>
             <p className="whitespace-pre-wrap">
               {form.configuracion.mensajeConfirmacion}
             </p>

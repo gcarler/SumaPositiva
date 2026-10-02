@@ -9,7 +9,9 @@ import VectorSource from "ol/source/Vector";
 import OSM from "ol/source/OSM";
 import Feature from "ol/Feature";
 import Point from "ol/geom/Point";
-import { Circle, Fill, Stroke, Style } from "ol/style";
+import { Circle, Fill, Stroke, Style, Text } from "ol/style";
+import Modify from "ol/interaction/Modify";
+import { DIMENSIONES_REPORTE } from "../data/reporte-inseguridad";
 import { fromLonLat, toLonLat } from "ol/proj";
 import { z } from "zod";
 import { Button } from "@/shared/ui/button";
@@ -23,7 +25,7 @@ import {
 } from "../services/ubicacion-geografica";
 import type { PreguntaFormulario } from "../models/formulario";
 
-const CENTRO_CARTAGENA = [-75.5144, 10.391];
+const CENTRO_CARTAGENA = [-75.4794, 10.391];
 const borradorSchema = z.object({
   coordinates: z.tuple([
     z.union([z.string(), z.number()]),
@@ -47,12 +49,14 @@ export function UbicacionPregunta({
   error,
   cambiar,
   ocupado,
+  dimension,
 }: {
   pregunta: PreguntaFormulario;
   valor: string;
   error?: string;
   cambiar: (valor: string) => void;
   ocupado?: (valor: boolean) => void;
+  dimension?: string;
 }) {
   const id = useId();
   const target = useRef<HTMLDivElement>(null);
@@ -62,6 +66,8 @@ export function UbicacionPregunta({
   const ocupacion = useRef(ocupado);
   const montado = useRef(true);
   const valorActual = useRef(valor);
+  const dimensionActual = useRef(dimension);
+  const actualizarEstilo = useRef<() => void>(() => {});
   const [gps, setGps] = useState(false);
   const [mensaje, setMensaje] = useState("");
   const [sinMapa, setSinMapa] = useState(false);
@@ -72,6 +78,10 @@ export function UbicacionPregunta({
     cambio.current = cambiar;
     valorActual.current = valor;
   }, [cambiar, valor, ocupado]);
+  useEffect(() => {
+    dimensionActual.current = dimension;
+    actualizarEstilo.current();
+  }, [dimension]);
   useEffect(() => {
     montado.current = true;
     return () => {
@@ -95,15 +105,27 @@ export function UbicacionPregunta({
       const [r, g, b] = ctx.getImageData(0, 0, 1, 1).data;
       return [r, g, b, 1];
     };
-    const estilo = () =>
-      new Style({
+    const estilo = () => {
+      const categoria = DIMENSIONES_REPORTE.find(
+        (d) => d.id === dimensionActual.current,
+      );
+      return new Style({
         image: new Circle({
-          radius: 9,
-          fill: new Fill({ color: color("--ember") }),
+          radius: categoria ? 15 : 9,
+          fill: new Fill({ color: color(categoria?.token ?? "--ember") }),
           stroke: new Stroke({ color: color("--surface-1"), width: 3 }),
         }),
+        text: categoria
+          ? new Text({
+              text: categoria.icono,
+              font: "16px sans-serif",
+              fill: new Fill({ color: color("--text-primary") }),
+            })
+          : undefined,
       });
+    };
     const layer = new VectorLayer({ source, style: estilo() });
+    actualizarEstilo.current = () => layer.setStyle(estilo());
     const osm = new OSM();
     const tiles = new TileLayer({ source: osm });
     const tileError = () => setSinMapa(true);
@@ -119,6 +141,22 @@ export function UbicacionPregunta({
       }),
     });
     mapa.current = actual;
+    const modificar = new Modify({ source, style: () => estilo() });
+    actual.addInteraction(modificar);
+    modificar.on("modifyend", () => {
+      const geometria = source.getFeatures()[0]?.getGeometry();
+      if (!geometria) return;
+      cambio.current(
+        JSON.stringify({
+          type: "Point",
+          coordinates: toLonLat(geometria.getCoordinates()).map((n) =>
+            Number(n.toFixed(6)),
+          ),
+          origen: "mapa",
+          referencia: borrador(valorActual.current).referencia,
+        }),
+      );
+    });
     if (inicial)
       source.addFeature(
         new Feature(new Point(fromLonLat(inicial.coordinates))),
@@ -149,6 +187,7 @@ export function UbicacionPregunta({
       actual.setTarget(undefined);
       mapa.current = null;
       fuente.current = null;
+      actualizarEstilo.current = () => {};
     };
   }, []);
   useEffect(() => {
@@ -220,6 +259,7 @@ export function UbicacionPregunta({
       role="group"
       aria-labelledby={`${id}-titulo`}
       aria-describedby={error ? `${id}-error` : undefined}
+      data-dimension={dimension}
     >
       <h3 id={`${id}-titulo`} className="text-sm font-medium">
         {pregunta.texto}
@@ -227,6 +267,13 @@ export function UbicacionPregunta({
       </h3>
       {pregunta.descripcion && (
         <p className="text-sm text-text-secondary">{pregunta.descripcion}</p>
+      )}
+      {dimension && (
+        <p className="text-xs text-text-secondary">
+          Categoría del marcador:{" "}
+          {DIMENSIONES_REPORTE.find((d) => d.id === dimension)?.nombre ??
+            "Sin categoría"}
+        </p>
       )}
       <p id={`${id}-instrucciones`} className="text-xs text-text-secondary">
         Marca un punto de Cartagena. Con teclado, mueve el mapa con las flechas

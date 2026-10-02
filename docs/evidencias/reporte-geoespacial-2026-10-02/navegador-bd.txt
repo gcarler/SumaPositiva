@@ -1,0 +1,2 @@
+Nueva conexión: coordenadas y cinco fotos confirmadas en PostgreSQL.
+Respuesta de QA eliminada exclusivamente de la base polis_test.

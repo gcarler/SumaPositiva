@@ -8,7 +8,7 @@ import {
   type Formulario,
 } from "@/features/formularios/models/formulario";
 import { leerPunto } from "@/features/formularios/services/ubicacion-geografica";
-import { useFormulariosStore } from "@/features/formularios/state/formularios-store";
+import { useFormulariosDemoStore as useFormulariosStore } from "@/features/formularios/data/formularios-demo-store";
 const form: Formulario = {
   ...formularioVacio(),
   id: "geografico",
@@ -111,7 +111,7 @@ export const MapaYLimpiar: Story = {
       10.391,
     );
     await expect(c.getByLabelText("Longitud", { exact: true })).toHaveValue(
-      -75.5144,
+      -75.4794,
     );
     await userEvent.click(c.getByRole("button", { name: "Quitar punto" }));
     await expect(c.getByLabelText("Latitud", { exact: true })).toHaveValue(

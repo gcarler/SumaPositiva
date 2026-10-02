@@ -26,11 +26,8 @@ export function useFormularios() {
   });
   useEffect(() => {
     if (remoto.data)
-      useFormulariosStore.setState((s) => ({
-        formularios: [
-          ...s.formularios.filter((f) => f.origenDatos !== "api"),
-          ...remoto.data!,
-        ],
+      useFormulariosStore.setState(() => ({
+        formularios: remoto.data!,
       }));
   }, [remoto.data]);
   return { data, isLoading: remoto.isFetching, error: remoto.error };
@@ -47,26 +44,25 @@ export function useFormularioDetalle(id: string) {
 }
 export function useFormularioAnalitica(id: string) {
   const { data: form, error } = useFormularioDetalle(id);
-  const respuestas = useFormulariosStore((s) => s.respuestas);
   const remoto = useQuery({
     queryKey: [...FORMULARIOS_KEYS.analitica(id), "respuestas"],
-    queryFn: () => formulariosRemotos.respuestas(id),
-    enabled: form?.origenDatos === "api",
+    queryFn: () => formulariosRemotos.respuestas(id, form?.idPersistido),
+    enabled: !!form,
   });
-  const registros = form?.origenDatos === "api" ? remoto.data : respuestas;
+  const registros = remoto.data;
   const data = useMemo(
     () => (form && registros ? calcularAnalitica(form, registros) : undefined),
     [form, registros],
   );
   useEffect(() => {
-    if (form?.origenDatos === "api" && remoto.data)
+    if (form && remoto.data)
       useFormulariosStore.setState((s) => ({
         respuestas: [
           ...s.respuestas.filter((r) => r.formularioId !== id),
           ...remoto.data!,
         ],
       }));
-  }, [form?.origenDatos, id, remoto.data]);
+  }, [form, id, remoto.data]);
   return { data, isLoading: remoto.isFetching, error: error ?? remoto.error };
 }
 export function useGuardarFormulario() {

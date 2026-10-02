@@ -1,0 +1,469 @@
+{
+  "id": "reporte-ciudadano-geoespacial",
+  "origenDatos": "api",
+  "titulo": "Reporte Ciudadano de Casos de Seguridad Humana",
+  "descripcion": "Ayúdanos a mapear los casos que afectan la seguridad en tu barrio. Tu reporte es anónimo y contribuye al diagnóstico de la Política Pública de Seguridad Humana Integral de Cartagena 2026–2036.",
+  "estado": "activo",
+  "preguntas": [
+    {
+      "id": "P1",
+      "tipo": "lista_desplegable",
+      "texto": "¿Qué tipo de situación deseas reportar?",
+      "obligatoria": true,
+      "orden": 0,
+      "opciones": [
+        {
+          "id": "d1",
+          "texto": "1. Seguridad Personal y Ciudadana"
+        },
+        {
+          "id": "d2",
+          "texto": "2. Convivencia y Seguridad Comunitaria"
+        },
+        {
+          "id": "d3",
+          "texto": "3. Seguridad Ambiental y del Entorno"
+        },
+        {
+          "id": "d4",
+          "texto": "4. Seguridad Económica y Medios de Vida"
+        },
+        {
+          "id": "d5",
+          "texto": "5. Seguridad Alimentaria y Sanitaria"
+        },
+        {
+          "id": "d6",
+          "texto": "6. Seguridad Política e Institucional"
+        },
+        {
+          "id": "d7",
+          "texto": "7. Alertas Tempranas y Gestión de Crisis"
+        }
+      ]
+    },
+    {
+      "id": "P2-D1",
+      "tipo": "lista_desplegable",
+      "texto": "Especifica el caso — Seguridad Personal y Ciudadana",
+      "obligatoria": true,
+      "orden": 1,
+      "opciones": [
+        {
+          "id": "d1-1",
+          "texto": "Homicidio / Asesinato / Sicariato"
+        },
+        {
+          "id": "d1-2",
+          "texto": "Atentado con arma de fuego o arma cortopunzante"
+        },
+        {
+          "id": "d1-3",
+          "texto": "Heridos / Lesiones personales"
+        },
+        {
+          "id": "d1-4",
+          "texto": "Amenazas directas o extorsión (Vacunas, Gota a gota)"
+        },
+        {
+          "id": "d1-5",
+          "texto": "Secuestro o retención ilegal"
+        },
+        {
+          "id": "d1-6",
+          "texto": "Hurto a personas (atraco, raponazo en vía pública)"
+        },
+        {
+          "id": "d1-7",
+          "texto": "Hurto a residencias"
+        },
+        {
+          "id": "d1-8",
+          "texto": "Hurto a establecimientos comerciales o turísticos"
+        },
+        {
+          "id": "d1-9",
+          "texto": "Hurto de vehículos, motocicletas o autopartes"
+        },
+        {
+          "id": "d1-10",
+          "texto": "Robos en transporte público o taxis"
+        },
+        {
+          "id": "d1-11",
+          "texto": "Punto de venta/distribución de drogas (Olla/expendio)"
+        },
+        {
+          "id": "d1-12",
+          "texto": "Consumo y distribución en entornos escolares o parques infantiles"
+        },
+        {
+          "id": "d1-13",
+          "texto": "Tráfico, alquiler o porte ilegal de armas de fuego"
+        },
+        {
+          "id": "d1-14",
+          "texto": "Explotación Sexual Comercial de NNA (ESCNNA)"
+        },
+        {
+          "id": "d1-15",
+          "texto": "Trata de personas (explotación laboral o prostitución forzada)"
+        },
+        {
+          "id": "d1-16",
+          "texto": "Inducción de menores al delito o la mendicidad"
+        }
+      ],
+      "logica": [
+        {
+          "preguntaOrigenId": "P1",
+          "operador": "igual",
+          "valor": "d1",
+          "accion": "mostrar"
+        }
+      ]
+    },
+    {
+      "id": "P2-D2",
+      "tipo": "lista_desplegable",
+      "texto": "Especifica el caso — Convivencia y Seguridad Comunitaria",
+      "obligatoria": true,
+      "orden": 2,
+      "opciones": [
+        {
+          "id": "d2-1",
+          "texto": "Violencia intrafamiliar (física, psicológica, económica)"
+        },
+        {
+          "id": "d2-2",
+          "texto": "Acoso sexual u hostigamiento en espacio público o transporte"
+        },
+        {
+          "id": "d2-3",
+          "texto": "Violencia o discriminación contra población LGBTIQ+"
+        },
+        {
+          "id": "d2-4",
+          "texto": "Riñas o enfrentamientos colectivos entre sectores / pandillas"
+        },
+        {
+          "id": "d2-5",
+          "texto": "Alteración de la tranquilidad por ruido excesivo"
+        },
+        {
+          "id": "d2-6",
+          "texto": "Consumo de alcohol/drogas perturbando espacios públicos familiares"
+        },
+        {
+          "id": "d2-7",
+          "texto": "Ocupación o bloqueo indebido de vías públicas o andenes"
+        },
+        {
+          "id": "d2-8",
+          "texto": "Tensiones o disputas vecinales graves"
+        },
+        {
+          "id": "d2-9",
+          "texto": "Amenazas a líderes comunales, JAC o defensores de DD.HH."
+        },
+        {
+          "id": "d2-10",
+          "texto": "Acoso escolar sistemático (Bullying)"
+        },
+        {
+          "id": "d2-11",
+          "texto": "Reclutamiento de jóvenes por estructuras criminales"
+        }
+      ],
+      "logica": [
+        {
+          "preguntaOrigenId": "P1",
+          "operador": "igual",
+          "valor": "d2",
+          "accion": "mostrar"
+        }
+      ]
+    },
+    {
+      "id": "P2-D3",
+      "tipo": "lista_desplegable",
+      "texto": "Especifica el caso — Seguridad Ambiental y del Entorno",
+      "obligatoria": true,
+      "orden": 3,
+      "opciones": [
+        {
+          "id": "d3-1",
+          "texto": "Arrojamiento ilegal de basuras en caños, Ciénaga, bahía o playas"
+        },
+        {
+          "id": "d3-2",
+          "texto": "Tala o quema de manglares / Deforestación"
+        },
+        {
+          "id": "d3-3",
+          "texto": "Contaminación de cuerpos de agua por vertimientos ilegales"
+        },
+        {
+          "id": "d3-4",
+          "texto": "Pesca ilegal o tráfico de fauna silvestre protegida"
+        },
+        {
+          "id": "d3-5",
+          "texto": "Punto ciego o falta de alumbrado público (zona de alto riesgo)"
+        },
+        {
+          "id": "d3-6",
+          "texto": "Lote enmontado o edificación en ruina usada como refugio criminal"
+        },
+        {
+          "id": "d3-7",
+          "texto": "Riesgo de inundación por obstrucción de canales o arroyos"
+        },
+        {
+          "id": "d3-8",
+          "texto": "Riesgo de erosión costera, deslizamiento o falla geológica"
+        }
+      ],
+      "logica": [
+        {
+          "preguntaOrigenId": "P1",
+          "operador": "igual",
+          "valor": "d3",
+          "accion": "mostrar"
+        }
+      ]
+    },
+    {
+      "id": "P2-D4",
+      "tipo": "lista_desplegable",
+      "texto": "Especifica el caso — Seguridad Económica y Medios de Vida",
+      "obligatoria": true,
+      "orden": 4,
+      "opciones": [
+        {
+          "id": "d4-1",
+          "texto": "Estafa o cobro abusivo a turistas o ciudadanos"
+        },
+        {
+          "id": "d4-2",
+          "texto": "Extorsión o cobro de peajes informales a vendedores o comerciantes"
+        },
+        {
+          "id": "d4-3",
+          "texto": "Presión o cobro intimidatorio de prestamistas (Gota a gota)"
+        },
+        {
+          "id": "d4-4",
+          "texto": "Destrucción o hurto de activos productivos (pesca, lanchas, puestos)"
+        },
+        {
+          "id": "d4-5",
+          "texto": "Desalojo forzado o desplazamiento de unidades productivas informales"
+        }
+      ],
+      "logica": [
+        {
+          "preguntaOrigenId": "P1",
+          "operador": "igual",
+          "valor": "d4",
+          "accion": "mostrar"
+        }
+      ]
+    },
+    {
+      "id": "P2-D5",
+      "tipo": "lista_desplegable",
+      "texto": "Especifica el caso — Seguridad Alimentaria y Sanitaria",
+      "obligatoria": true,
+      "orden": 5,
+      "opciones": [
+        {
+          "id": "d5-1",
+          "texto": "Focos de insalubridad o plagas (aguas estancadas, criaderos de dengue)"
+        },
+        {
+          "id": "d5-2",
+          "texto": "Venta de alimentos en mal estado o licores adulterados"
+        },
+        {
+          "id": "d5-3",
+          "texto": "Faltantes o cortes prolongados de agua potable"
+        },
+        {
+          "id": "d5-4",
+          "texto": "Alerta por desnutrición aguda en niños o adultos mayores"
+        },
+        {
+          "id": "d5-5",
+          "texto": "Fallas graves en comedores comunitarios o programa PAE"
+        }
+      ],
+      "logica": [
+        {
+          "preguntaOrigenId": "P1",
+          "operador": "igual",
+          "valor": "d5",
+          "accion": "mostrar"
+        }
+      ]
+    },
+    {
+      "id": "P2-D6",
+      "tipo": "lista_desplegable",
+      "texto": "Especifica el caso — Seguridad Política e Institucional",
+      "obligatoria": true,
+      "orden": 6,
+      "opciones": [
+        {
+          "id": "d6-1",
+          "texto": "Abuso de la fuerza o maltrato por servidores públicos o agentes de seguridad"
+        },
+        {
+          "id": "d6-2",
+          "texto": "Exigencia de sobornos o corrupción en trámites distritales"
+        },
+        {
+          "id": "d6-3",
+          "texto": "Barreras para denunciar o revictimización en entidades públicas"
+        },
+        {
+          "id": "d6-4",
+          "texto": "Impedimento del ejercicio del voto o constreñimiento electoral"
+        },
+        {
+          "id": "d6-5",
+          "texto": "Restricciones o agresiones contra libertad de expresión o protesta pacífica"
+        }
+      ],
+      "logica": [
+        {
+          "preguntaOrigenId": "P1",
+          "operador": "igual",
+          "valor": "d6",
+          "accion": "mostrar"
+        }
+      ]
+    },
+    {
+      "id": "P2-D7",
+      "tipo": "lista_desplegable",
+      "texto": "Especifica el caso — Alertas Tempranas y Gestión de Crisis",
+      "obligatoria": true,
+      "orden": 7,
+      "opciones": [
+        {
+          "id": "d7-1",
+          "texto": "Presencia o panfletos de Grupos Armados Organizados (GAO)"
+        },
+        {
+          "id": "d7-2",
+          "texto": "Desplazamiento forzado intraurbano o confinamiento de sectores"
+        },
+        {
+          "id": "d7-3",
+          "texto": "Alerta de emergencia por desastre natural o evento climático extremo"
+        }
+      ],
+      "logica": [
+        {
+          "preguntaOrigenId": "P1",
+          "operador": "igual",
+          "valor": "d7",
+          "accion": "mostrar"
+        }
+      ]
+    },
+    {
+      "id": "P3",
+      "tipo": "opcion_unica",
+      "texto": "¿Con qué frecuencia ocurre esta situación en el lugar?",
+      "obligatoria": true,
+      "orden": 8,
+      "opciones": [
+        {
+          "id": "frecuencia-1",
+          "texto": "Es la primera vez que ocurre"
+        },
+        {
+          "id": "frecuencia-2",
+          "texto": "Ocurre ocasionalmente (1-2 veces por mes)"
+        },
+        {
+          "id": "frecuencia-3",
+          "texto": "Ocurre frecuentemente (1-2 veces por semana)"
+        },
+        {
+          "id": "frecuencia-4",
+          "texto": "Ocurre todos los días"
+        },
+        {
+          "id": "frecuencia-5",
+          "texto": "Ya ocurrió y no ha vuelto a pasar"
+        }
+      ]
+    },
+    {
+      "id": "P4",
+      "tipo": "texto_largo",
+      "texto": "Describe brevemente lo que ocurrió (opcional — no incluyas datos personales)",
+      "obligatoria": false,
+      "orden": 9,
+      "placeholder": "Ej.: El miércoles en la noche un grupo de personas...",
+      "validacion": {
+        "maxLongitud": 500
+      }
+    },
+    {
+      "id": "P5",
+      "tipo": "ubicacion_geografica",
+      "texto": "Marca el punto exacto donde ocurre la situación",
+      "descripcion": "Haz clic en el mapa para ubicar el caso. Puedes arrastrar el marcador para ajustar la posición.",
+      "obligatoria": true,
+      "orden": 10,
+      "permitirFotos": true,
+      "maxFotos": 5,
+      "labelFotos": "Adjunta fotos del lugar como evidencia (máx. 5, opcionales)",
+      "dimensionOrigenId": "P1",
+      "localidadDestinoId": "P6"
+    },
+    {
+      "id": "P6",
+      "tipo": "lista_desplegable",
+      "texto": "¿En qué localidad ocurre?",
+      "obligatoria": false,
+      "orden": 11,
+      "opciones": [
+        {
+          "id": "localidad-1",
+          "texto": "Localidad 1 — Histórica y del Caribe Norte"
+        },
+        {
+          "id": "localidad-2",
+          "texto": "Localidad 2 — De la Virgen y Turística"
+        },
+        {
+          "id": "localidad-3",
+          "texto": "Localidad 3 — Industrial y de la Bahía"
+        },
+        {
+          "id": "localidad-4",
+          "texto": "Zona Rural o Insular"
+        }
+      ]
+    }
+  ],
+  "secciones": [],
+  "configuracion": {
+    "slug": "reporte-inseguridad",
+    "urlPublica": "https://seguridadhumanaintegral.org/f/reporte-inseguridad",
+    "mensajeConfirmacion": "Reporte recibido. Gracias por contribuir al diagnóstico de seguridad humana de Cartagena.",
+    "permitirEdicion": false,
+    "requiereAutenticacion": false,
+    "respuestaAnonima": true,
+    "mostrarBarraProgreso": true,
+    "ordenAleatorio": false
+  },
+  "respuestasCount": 0,
+  "creadoEn": "2026-10-02T00:00:00Z",
+  "actualizadoEn": "2026-10-02T00:00:00Z"
+}

@@ -214,3 +214,9 @@ Responder usa una sesión cívica emitida sin registro; no requiere login ciudad
 | GET | /api/v1/formularios/constructor/slug/{slug} | permiso:formularios:leer@declarada | Vista previa privada de borradores; sin publicación implícita. |
 | POST | /api/v1/formularios/constructor | permiso:formularios:gestionar@declarada | Persistir el documento completo y asignar slug único. |
 | PUT | /api/v1/formularios/constructor/{id} | permiso:formularios:gestionar@declarada | Actualizar documento conservando slug y URL pública. |
+
+### Reporte ciudadano geoespacial y publicación de respuestas
+
+`POST /api/v1/formularios/{id}/respuestas` mantiene la sesión técnica exigida por el módulo. Cuando `configuracion.respuestaAnonima=true`, se rechaza además una identidad institucional (403); el cliente solicita un token anónimo sin cerrar la cuenta interna. El instrumento `reporte-inseguridad` aplica esa condición. Su publicación pública fue solicitada expresamente como formulario ciudadano; publicar sus preguntas no autoriza publicar respuestas.
+
+`GET /api/v1/formularios/{id}/respuestas` y `/{id}/analitica` siguen exigiendo `formularios:leer@declarada`. No existe API de publicación ciudadana de respuestas. Los permisos dedicados de revisión y aprobación son una propuesta pendiente en [reportes-revision-publicacion.md](reportes-revision-publicacion.md), no permisos ya concedidos.

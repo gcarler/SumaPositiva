@@ -2,7 +2,12 @@ import { afterEach, beforeEach, expect, test, vi } from "vitest";
 import { identidadApi, type Usuario } from "./identidad-api";
 import { sincronizarSesion } from "./sincronizar-sesion";
 import { useSesionStore } from "../state/session-store";
-import { ApiError } from "@/core/http/api-client";
+import {
+  apiFetch,
+  setBearerToken,
+  setUnauthorizedHandler,
+  ApiError,
+} from "@/core/http/api-client";
 const usuario: Usuario = {
   id: "01900000-0000-7000-8000-000000000001",
   correo: "prueba@example.org",
@@ -91,4 +96,37 @@ test("un perfil de cuenta desactivada limpia el acceso", async () => {
   });
   await sincronizarSesion();
   expect(useSesionStore.getState().sesion).toBeNull();
+});
+
+test("un 401 del envío anónimo no cierra la sesión institucional", async () => {
+  const cerrar = vi.fn();
+  setBearerToken("institucional");
+  setUnauthorizedHandler(cerrar);
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(
+      async () =>
+        new Response("{}", {
+          status: 401,
+          headers: { "Content-Type": "application/json" },
+        }),
+    ),
+  );
+  try {
+    await expect(
+      apiFetch("/prueba", {
+        headers: { Authorization: "Bearer anonimo" },
+        retry: { retries: 0 },
+      }),
+    ).rejects.toBeInstanceOf(ApiError);
+    expect(cerrar).not.toHaveBeenCalled();
+    await expect(
+      apiFetch("/prueba", { retry: { retries: 0 } }),
+    ).rejects.toBeInstanceOf(ApiError);
+    expect(cerrar).toHaveBeenCalledOnce();
+  } finally {
+    vi.unstubAllGlobals();
+    setUnauthorizedHandler(null);
+    setBearerToken(null);
+  }
 });

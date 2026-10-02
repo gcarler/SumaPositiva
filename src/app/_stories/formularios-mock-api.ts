@@ -21,7 +21,27 @@ export function simularApiFormularios() {
           .getState()
           .respuestas.filter((r) => r.formularioId === id),
       ),
-    enviar: async () => {},
+    enviar: async (
+      form: Parameters<typeof formulariosRemotos.enviar>[0],
+      respuestas: Parameters<typeof formulariosRemotos.enviar>[1],
+    ) => {
+      useFormulariosStore.setState((s) => ({
+        formularios: s.formularios.map((f) =>
+          f.id === form.id
+            ? { ...f, respuestasCount: f.respuestasCount + 1 }
+            : f,
+        ),
+        respuestas: [
+          ...s.respuestas,
+          {
+            id: crypto.randomUUID(),
+            formularioId: form.id,
+            respuestas: structuredClone(respuestas),
+            enviadoEn: new Date().toISOString(),
+          },
+        ],
+      }));
+    },
   } satisfies Partial<typeof formulariosRemotos>);
   return () => Object.assign(formulariosRemotos, anterior);
 }

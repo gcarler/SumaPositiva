@@ -53,7 +53,12 @@ class ConstructorService:
                     "configuracion": {},
                 }
             )
-        doc.id = str(formulario.id)
+        doc.id = (
+            "reporte-ciudadano-geoespacial"
+            if formulario.codigo == "REPORTE-CIUDADANO-GEOESPACIAL"
+            else str(formulario.id)
+        )
+        doc.idPersistido = str(formulario.id)
         doc.origenDatos = "api"
         doc.titulo, doc.descripcion = formulario.titulo, formulario.descripcion
         doc.estado = {v: k for k, v in ESTADOS.items()}[formulario.estado]
