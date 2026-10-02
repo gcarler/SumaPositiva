@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import { useCallback, useMemo, useState, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { listarMesasGeovisor } from "../services/mesas-geovisor-api";
+import { listarMesasGeovisor, type MesaGeovisor } from "../services/mesas-geovisor-api";
 import { PageHeader } from "@/shared/ui/page-header";
 import { usePanels } from "@/core/panels/panel-store";
 import { GeovisorKpiBar } from "../components/geovisor-kpi-bar";
@@ -87,6 +87,16 @@ export function GeovisorView() {
     mapaRef.current?.exportarPng();
   }, []);
 
+  const handleLocalizarMesaEnMapa = useCallback((mesa: MesaGeovisor) => {
+    setMesaIdSeleccionada(mesa.id);
+    if (mesa.territorio_codigo) {
+      setTerritorioId(mesa.territorio_codigo);
+    }
+    if (typeof window !== "undefined") {
+      window.scrollTo({ top: 380, behavior: "smooth" });
+    }
+  }, []);
+
   return (
     <div className="container-fluid space-y-4 py-5 md:py-6">
       <PageHeader
@@ -149,6 +159,7 @@ export function GeovisorView() {
         error={null}
         seleccionada={mesaIdSeleccionada}
         onSeleccionar={setMesaIdSeleccionada}
+        onLocalizarEnMapa={handleLocalizarMesaEnMapa}
       />
 
       <section aria-label="Análisis estadístico territorial">
