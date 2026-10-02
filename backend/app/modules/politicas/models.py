@@ -237,3 +237,7 @@ class LineaEstrategica(Base):
         "DimensionSeguridadHumana",
         back_populates="lineas_estrategicas",
     )
+
+    @property
+    def sublineas(self):
+        return (self.metadatos or {}).get("sublineas", [])

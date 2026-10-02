@@ -1,0 +1,21 @@
+$ bun run ui:check && bun run typecheck && bun run lint
+$ node scripts/ui-policy.mjs
+POLIS UI: controles, tokens, capas, inventario, historias y política a11y correctos.
+$ tsc --noEmit
+$ eslint .
+
+/root/polis/src/features/geovisor/components/mesas-datagrid/mesas-datagrid.tsx
+  113:17  warning  Compilation Skipped: Use of incompatible library
+
+This API returns functions which cannot be memoized without leading to stale UI. To prevent this, by default React Compiler will skip memoizing this component/hook. However, you may see issues if values from this API are passed to other components/hooks that are memoized.
+
+/root/polis/src/features/geovisor/components/mesas-datagrid/mesas-datagrid.tsx:113:17
+  111 |   const columns = useMemo(() => crearColumnasDataGrid(handlers), [handlers]);
+  112 |
+> 113 |   const table = useReactTable({
+      |                 ^^^^^^^^^^^^^ TanStack Table's `useReactTable()` API returns functions that cannot be memoized safely
+  114 |     data: datosFiltrados,
+  115 |     columns,
+  116 |     state: {  react-hooks/incompatible-library
+
+✖ 1 problem (0 errors, 1 warning)

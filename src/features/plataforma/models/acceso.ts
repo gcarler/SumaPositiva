@@ -196,6 +196,8 @@ export function panelPermitido(
       return puedeVer(sesion, "usuarios");
     case "territorio":
       return puedeVer(sesion, "geovisor");
+    case "linea-editor":
+      return !!sesion?.permisos?.includes("politicas:gestionar") && sesion.rol !== "auditor_forense";
     case "fases-control":
       return puedeEditar(sesion, "contenido");
     case "auditoria-consola":

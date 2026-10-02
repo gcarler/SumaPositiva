@@ -1,0 +1,9 @@
+$ vitest run --project storybook src/app/_stories/lineas-estrategicas.stories.tsx
+
+ RUN  v4.1.6 /root/polis
+
+
+ Test Files  1 passed (1)
+      Tests  8 passed (8)
+   Start at  14:04:33
+   Duration  15.35s (transform 0ms, setup 2.39s, import 481ms, tests 2.79s, environment 0ms)

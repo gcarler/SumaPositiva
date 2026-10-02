@@ -3,7 +3,7 @@ from datetime import date, datetime
 from decimal import Decimal
 from typing import Any
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 
 class DimensionSeguridadHumanaBase(BaseModel):
@@ -131,17 +131,49 @@ class LineaEstrategicaBase(BaseModel):
     metadatos: dict[str, Any] = Field(default_factory=dict, description="Metadatos en JSONB")
 
 
-class LineaEstrategicaCreate(LineaEstrategicaBase):
-    """Esquema de creación para línea estratégica."""
+class SublineaSchema(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True, extra="forbid")
+    codigo: str = Field(min_length=1, max_length=50)
+    titulo: str = Field(min_length=1, max_length=300)
+    descripcion: str = Field(default="", max_length=10000)
+    meta_cuatrienal: str | None = Field(default=None, max_length=2000)
+    indicador_nombre: str | None = Field(default=None, max_length=500)
+    actor_coresponsable: str | None = Field(default=None, max_length=250)
 
-    pass
+
+class LineaEstrategicaCreate(LineaEstrategicaBase):
+    model_config = ConfigDict(str_strip_whitespace=True, extra="forbid")
+    dimension_id: uuid.UUID
+    codigo: str = Field(pattern=r"^LE-[0-9]{2,}$", max_length=50)
+    titulo: str = Field(min_length=1, max_length=300)
+    descripcion: str = Field(min_length=1, max_length=10000)
+    entidad_lider: str = Field(min_length=1, max_length=250)
+    costo_estimado: Decimal = Field(default=Decimal("0"), ge=0, max_digits=18, decimal_places=2)
+    sublineas: list[SublineaSchema] = Field(default_factory=list, max_length=200)
+
+    @model_validator(mode="after")
+    def jerarquia_valida(self):
+        import re
+
+        codigos = [s.codigo for s in self.sublineas]
+        if len(codigos) != len(set(codigos)):
+            raise ValueError("Los códigos de sublínea deben ser únicos")
+        if any(not re.fullmatch(re.escape(self.codigo) + r"\.[1-9][0-9]*", c) for c in codigos):
+            raise ValueError("Cada sublínea debe usar el código padre seguido de . y un número")
+        if not self.fuentes_financiacion or any(not f.strip() for f in self.fuentes_financiacion):
+            raise ValueError("Indique al menos una fuente de financiación")
+        if "sublineas" in self.metadatos:
+            raise ValueError("Use el campo sublineas, no metadatos.sublineas")
+        return self
+
+
+class LineaEstrategicaUpdate(LineaEstrategicaCreate):
+    """PUT reemplaza los campos editables; preserva otros metadatos existentes."""
 
 
 class LineaEstrategicaRead(LineaEstrategicaBase):
-    """Esquema de lectura para línea estratégica."""
-
     id: uuid.UUID
     creado_en: datetime
     actualizado_en: datetime
-
+    sublineas: list[SublineaSchema] = Field(default_factory=list)
     model_config = ConfigDict(from_attributes=True)

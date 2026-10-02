@@ -220,3 +220,14 @@ Responder usa una sesión cívica emitida sin registro; no requiere login ciudad
 `POST /api/v1/formularios/{id}/respuestas` mantiene la sesión técnica exigida por el módulo. Cuando `configuracion.respuestaAnonima=true`, se rechaza además una identidad institucional (403); el cliente solicita un token anónimo sin cerrar la cuenta interna. El instrumento `reporte-inseguridad` aplica esa condición. Su publicación pública fue solicitada expresamente como formulario ciudadano; publicar sus preguntas no autoriza publicar respuestas.
 
 `GET /api/v1/formularios/{id}/respuestas` y `/{id}/analitica` siguen exigiendo `formularios:leer@declarada`. No existe API de publicación ciudadana de respuestas. Los permisos dedicados de revisión y aprobación son una propuesta pendiente en [reportes-revision-publicacion.md](reportes-revision-publicacion.md), no permisos ya concedidos.
+
+## Constructor de líneas y sublíneas — decisión 2026-10-02
+
+| Método | Ruta | Control | Motivo o condición |
+| --- | --- | --- | --- |
+| POST | /api/v1/politicas/lineas | permiso:politicas:gestionar@declarada | Dimensión canónica activa y fase existente; código único por fase; sublíneas hijas válidas. |
+| PUT | /api/v1/politicas/lineas/{id} | permiso:politicas:gestionar@declarada | Validación jerárquica y conservación de metadatos ajenos al editor. |
+| DELETE | /api/v1/politicas/lineas/{id} | permiso:politicas:gestionar@declarada | 409 si hay aportes, mesas, indicadores, asignaciones o instrumentos vinculados. |
+| GET | /api/v1/politicas/lineas/gestion | roles:autoridad_distrital,administrador_identidades,auditor_forense | Catálogo administrativo completo, incluidas líneas inactivas; auditor solo lectura. |
+
+El listado público existente sigue mostrando líneas activas. No se conceden nuevos permisos ni se modifican roles. El editor administrativo no publica respuestas ciudadanas.

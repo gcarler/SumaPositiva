@@ -1,0 +1,12 @@
+{
+  "/": "200",
+  "/plataforma/contenido": "200",
+  "/api/v1/politicas/lineas": "200",
+  "/api/v1/politicas/lineas/gestion": "401",
+  "POST sin token": "401",
+  "contrato_sublineas": true,
+  "servicios": [
+    "active",
+    "active"
+  ]
+}

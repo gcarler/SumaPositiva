@@ -1,5 +1,6 @@
 "use client";
 
+import { ArquitecturaPolitica } from "@/features/politicas/components/arquitectura-politica";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -121,8 +122,9 @@ export function ContenidoView() {
         }
       />
 
-      <Tabs defaultValue="noticias" className="space-y-6">
-        <TabsList>
+      <Tabs defaultValue="arquitectura" className="space-y-6">
+        <TabsList className="h-auto flex-wrap">
+          <TabsTrigger value="arquitectura">Dimensiones, Líneas y Sublíneas</TabsTrigger>
           <TabsTrigger value="noticias" className="gap-2">
             <Newspaper className="size-4" />
             <span>Noticias y Comunicados ({totalNoticias})</span>
@@ -134,6 +136,7 @@ export function ContenidoView() {
         </TabsList>
 
         {/* ================= PESTAÑA: NOTICIAS Y COMUNICADOS ================= */}
+        <TabsContent value="arquitectura"><ArquitecturaPolitica /></TabsContent>
         <TabsContent value="noticias" className="space-y-6">
           {/* Métricas editoriales */}
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

@@ -5,7 +5,7 @@ from sqlalchemy import func, select
 
 from app.core.database import SessionDependency
 from app.core.transactions import transaction
-from app.modules.identidad.deps import SujetoAutenticadoDep, requerir_permiso
+from app.modules.identidad.deps import SujetoAutenticadoDep, requerir_permiso, requerir_rol
 from app.modules.politicas.models import (
     DimensionSeguridadHumana,
     FasePolitica,
@@ -16,8 +16,11 @@ from app.modules.politicas.schemas import (
     FaseConmutarPeticion,
     FaseControlLectura,
     FasePoliticaRead,
+    LineaEstrategicaCreate,
     LineaEstrategicaRead,
+    LineaEstrategicaUpdate,
 )
+from app.modules.politicas.service import LineaService
 
 router = APIRouter(prefix="/politicas", tags=["motor-politicas"])
 
@@ -130,7 +133,8 @@ async def conmutar_fase(
             if datos.estado not in estados_validos:
                 raise HTTPException(
                     status_code=422,
-                    detail=f"Estado no válido. Debe ser uno de: {', '.join(sorted(estados_validos))}",
+                    detail="Estado no válido. Debe ser uno de: "
+                    + ", ".join(sorted(estados_validos)),
                 )
             fase.estado = datos.estado
 
@@ -150,3 +154,43 @@ async def conmutar_fase(
             habilitada_web=habilitada,
             total_lineas=total_lineas,
         )
+
+
+@router.post(
+    "/lineas",
+    response_model=LineaEstrategicaRead,
+    status_code=201,
+    dependencies=[Depends(requerir_permiso("politicas:gestionar", "declarada"))],
+)
+async def crear_linea(datos: LineaEstrategicaCreate, session: SessionDependency):
+    return await LineaService(session).guardar(datos)
+
+
+@router.put(
+    "/lineas/{id}",
+    response_model=LineaEstrategicaRead,
+    dependencies=[Depends(requerir_permiso("politicas:gestionar", "declarada"))],
+)
+async def actualizar_linea(
+    id: uuid.UUID, datos: LineaEstrategicaUpdate, session: SessionDependency
+):
+    return await LineaService(session).guardar(datos, id)
+
+
+@router.delete(
+    "/lineas/{id}", dependencies=[Depends(requerir_permiso("politicas:gestionar", "declarada"))]
+)
+async def eliminar_linea(id: uuid.UUID, session: SessionDependency):
+    return await LineaService(session).eliminar(id)
+
+
+@router.get(
+    "/lineas/gestion",
+    response_model=list[LineaEstrategicaRead],
+    dependencies=[
+        Depends(requerir_rol("autoridad_distrital", "administrador_identidades", "auditor_forense"))
+    ],
+)
+async def listar_lineas_gestion(session: SessionDependency):
+    result = await session.execute(select(LineaEstrategica).order_by(LineaEstrategica.orden))
+    return [LineaEstrategicaRead.model_validate(linea) for linea in result.scalars()]

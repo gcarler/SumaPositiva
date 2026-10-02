@@ -1,0 +1,725 @@
+$ vitest run --project storybook
+
+ RUN  v4.1.6 /root/polis
+
+2:00:16 PM [vite] (client) [console.error] The result of getSnapshot should be cached to avoid an infinite loop
+2:00:18 PM [vite] (client) [Unhandled error] Error: Maximum update depth exceeded. This can happen when a component repeatedly calls setState inside componentWillUpdate or componentDidUpdate. React limits the number of nested updates to prevent infinite loops.
+ > getRootForUpdatedFiber node_modules/next/dist/compiled/react-dom/cjs/react-dom-client.development.js:4901:10
+ > enqueueConcurrentHookUpdate node_modules/next/dist/compiled/react-dom/cjs/react-dom-client.development.js:4861:13
+ > dispatchSetStateInternal node_modules/next/dist/compiled/react-dom/cjs/react-dom-client.development.js:9493:17
+ > dispatchSetState node_modules/next/dist/compiled/react-dom/cjs/react-dom-client.development.js:9453:6
+ > setRef node_modules/@radix-ui/react-compose-refs/dist/index.mjs:5:11
+ > node_modules/@radix-ui/react-compose-refs/dist/index.mjs:14:22
+ > node_modules/@radix-ui/react-compose-refs/dist/index.mjs:13:26
+ > setRef node_modules/@radix-ui/react-compose-refs/dist/index.mjs:5:11
+ > node_modules/@radix-ui/react-compose-refs/dist/index.mjs:14:22
+
+2:00:18 PM [vite] (client) [console.error] Error: Uncaught Error: Maximum update depth exceeded. This can happen when a component repeatedly calls setState inside componentWillUpdate or componentDidUpdate. React limits the number of nested updates to prevent infinite loops.
+    at throwUnhandlerError (http://localhost:63315/@fs/root/polis/node_modules/@vitest/browser/dist/client/error-catcher.js:38:33)
+    at defaultOnUncaughtError (http://localhost:63315/node_modules/.cache/storybook/10.6.1/9235025c563353d6d3a19b922eb2271caa7cfe6210b502e2394eeb1606768bd0/sb-vitest/deps/client-CifY2zQk.js?v=d84acfbc:5426:4)
+    at logUncaughtError (http://localhost:63315/node_modules/.cache/storybook/10.6.1/9235025c563353d6d3a19b922eb2271caa7cfe6210b502e2394eeb1606768bd0/sb-vitest/deps/client-CifY2zQk.js?v=d84acfbc:5456:6)
+    at runWithFiberInDEV (http://localhost:63315/node_modules/.cache/storybook/10.6.1/9235025c563353d6d3a19b922eb2271caa7cfe6210b502e2394eeb1606768bd0/sb-vitest/deps/client-CifY2zQk.js?v=d84acfbc:920:66)
+    at lane.callback (http://localhost:63315/node_modules/.cache/storybook/10.6.1/9235025c563353d6d3a19b922eb2271caa7cfe6210b502e2394eeb1606768bd0/sb-vitest/deps/client-CifY2zQk.js?v=d84acfbc:5484:5)
+    at callCallback (http://localhost:63315/node_modules/.cache/storybook/10.6.1/9235025c563353d6d3a19b922eb2271caa7cfe6210b502e2394eeb1606768bd0/sb-vitest/deps/client-CifY2zQk.js?v=d84acfbc:4253:13)
+    at commitCallbacks (http://localhost:63315/node_modules/.cache/storybook/10.6.1/9235025c563353d6d3a19b922eb2271caa7cfe6210b502e2394eeb1606768bd0/sb-vitest/deps/client-CifY2zQk.js?v=d84acfbc:4261:127)
+    at runWithFiberInDEV (http://localhost:63315/node_modules/.cache/storybook/10.6.1/9235025c563353d6d3a19b922eb2271caa7cfe6210b502e2394eeb1606768bd0/sb-vitest/deps/client-CifY2zQk.js?v=d84acfbc:920:123)
+    at commitLayoutEffectOnFiber (http://localhost:63315/node_modules/.cache/storybook/10.6.1/9235025c563353d6d3a19b922eb2271caa7cfe6210b502e2394eeb1606768bd0/sb-vitest/deps/client-CifY2zQk.js?v=d84acfbc:7446:8)
+    at flushLayoutEffects (http://localhost:63315/node_modules/.cache/storybook/10.6.1/9235025c563353d6d3a19b922eb2271caa7cfe6210b502e2394eeb1606768bd0/sb-vitest/deps/client-CifY2zQk.js?v=d84acfbc:9320:112)
+2:00:18 PM [vite] (client) [console.warn] An error occurred in the <button> component.
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries.
+
+stderr | src/app/_stories/platform.stories.tsx > Crear Mesa Completa
+The result of getSnapshot should be cached to avoid an infinite loop
+stderr | src/app/_stories/platform.stories.tsx > Crear Mesa Completa
+[Error: Uncaught Error: Maximum update depth exceeded. This can happen when a component repeatedly calls setState inside componentWillUpdate or componentDidUpdate. React limits the number of nested updates to prevent infinite loops.]
+stderr | src/app/_stories/platform.stories.tsx > Crear Mesa Completa
+An error occurred in the <button> component.
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries.
+
+ ❯ |storybook (chromium)| src/app/_stories/platform.stories.tsx (24 tests | 3 failed) 23924ms
+   × Crear Mesa Completa 4482ms
+   × Formulario Accesible 1216ms
+   × Territorios Con Teclado 1763ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  |storybook (chromium)| src/app/_stories/platform.stories.tsx > Crear Mesa Completa
+TestingLibraryElementError:
+Click to debug the error directly in Storybook: http://localhost:6006/?path=/story/plataforma-pantallas--crear-mesa-completa&addonPanel=storybook/interactions/panel
+
+Unable to find role="dialog" and name "Mesa de convivencia barrial"
+
+Ignored nodes: comments, script, style
+<div />
+
+Ignored nodes: comments, script, style
+<div />
+ ❯ waitForWrapper node_modules/@testing-library/dom/dist/@testing-library/dom.esm.js:1127:26
+ ❯ node_modules/@testing-library/dom/dist/@testing-library/dom.esm.js:1207:11
+ ❯ findByRole src/app/_stories/platform.stories.tsx:146:2
+    144|     useNavigationStore.setState({ vista: "mesas" });
+    145|     usePanelStore.getState().openPanel("mesa-editor", {});
+    146|   },
+       |  ^
+    147| };
+    148| export const Papelografo: Story = {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  |storybook (chromium)| src/app/_stories/platform.stories.tsx > Formulario Accesible
+TestingLibraryElementError:
+Click to debug the error directly in Storybook: http://localhost:6006/?path=/story/plataforma-pantallas--formulario-accesible&addonPanel=storybook/interactions/panel
+
+Unable to find role="dialog"
+
+Ignored nodes: comments, script, style
+<div>
+  <div
+    class="bg-background font-sans text-foreground"
+    lang="es"
+  >
+    <div
+      class="group/sidebar-wrapper has-data-[variant=inset]:bg-sidebar flex min-h-svh w-full"
+      data-slot="sidebar-wrapper"
+      id="polis-application"
+      inert=""
+      style="--sidebar-width: 16rem; --sidebar-width-icon: 3rem;"
+    >
+      <div
+        class="flex min-h-screen flex-col flex-1 min-w-0"
+      >
+        <a
+          class="ui-skip-link"
+          href="#main-content"
+        >
+          Saltar al contenido
+        </a>
+        <header
+          class="sticky top-0 z-40 border-b border-[var(--border)] bg-[var(--background)]/85 backdrop-blur-md"
+        >
+          <div
+            class="container-fluid grid grid-cols-1 sm:grid-cols-[minmax(0,1fr)_auto] items-center gap-y-3 py-3 md:flex md:h-20 md:justify-between md:py-0"
+          >
+            <div
+              class="flex items-center gap-3"
+            >
+              <button
+                aria-label="Seguridad Humana Cartagena 2026–2036 — Inicio"
+                class="shrink-0 justify-center font-medium transition-[background,color,border-color,box-shadow] duration-150 disabled:cursor-not-allowed disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-ring min-w-0 whitespace-normal flex items-center gap-2.5 text-left"
+                data-slot="button"
+                type="button"
+              >
+                <span
+                  class="flex size-7 shrink-0 items-center justify-center rounded-md bg-[var(--text-primary)]"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="lucide lucide-landmark size-4 text-[var(--text-inverse)]"
+                    fill="none"
+                    height="24"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="1.5"
+                    viewBox="0 0 24 24"
+                    width="24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M10 18v-7"
+                    />
+                    <path
+                      d="M11.12 2.198a2 2 0 0 1 1.76.006l7.866 3.847c.476.233.31.949-.22.949H3.474c-.53 0-.695-.716-.22-.949z"
+                    />
+                    <path
+                      d="M14 18v-7"
+                    />
+                    <path
+                      d="M18 18v-7"
+                    />
+                    <path
+                      d="M3 22h18"
+                    />
+                    <path
+                      d="M6 18v-7"
+                    />
+                  </svg>
+                </span>
+                <span
+                  class="flex flex-col text-left leading-tight"
+                >
+                  <span
+                    class="flex items-center gap-1 text-[13px] font-semibold tracking-tight text-[var(--text-primary)]"
+                  >
+                    Seguridad Humana
+                    <span
+                      aria-hidden="true"
+                      class="size-1 rounded-full bg-[var(--ember)]"
+                    />
+                  </span>
+                  <span
+                    class="text-[11px] font-medium text-[var(--text-secondary)]"
+                  >
+                    Cartagena 2026–2036
+                  </span>
+                </span>
+              </button>
+            </div>
+            <nav
+              aria-label="Navegación principal"
+              class="order-3 col-span-1 sm:col-span-2 flex min-w-0 flex-wrap items-center gap-1 md:order-none"
+            >
+              <button
+                aria-current="page"
+                class="inline-flex shrink-0 items-center justify-center gap-2 duration-150 disabled:cursor-not-allowed disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-ring min-w-0 whitespace-normal rounded-full px-3 py-2.5 text-xs font-medium transition-colors md:text-sm sm:px-3.5 bg-[var(--surface-3)] text-[var(--text-primary)]"
+                data-slot="button"
+                type="button"
+              >
+                <span
+                  class="hidden md:inline"
+                >
+                  Inicio
+                </span>
+                <span
+                  class="md:hidden"
+                >
+                  Inicio
+                </span>
+              </button>
+              <button
+                class="inline-flex shrink-0 items-center justify-center gap-2 duration-150 disabled:cursor-not-allowed disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-ring min-w-0 whitespace-normal rounded-full px-3 py-2.5 text-xs font-medium transition-colors md:text-sm sm:px-3.5 text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"
+                data-slot="button"
+                type="button"
+              >
+                <span
+                  class="hidden md:inline"
+                >
+                  Líneas Estratégicas
+                </span>
+                <span
+                  class="md:hidden"
+                >
+                  Explorar
+                </span>
+              </button>
+              <button
+                class="inline-flex shrink-0 items-center justify-center gap-2 duration-150 disabled:cursor-not-allowed disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-ring min-w-0 whitespace-normal rounded-full px-3 py-2.5 text-xs font-medium transition-colors md:text-sm sm:px-3.5 text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"
+                data-slot="button"
+                type="button"
+              >
+                <span
+                  class="hidden md:inline"
+                >
+                  Mesas de Trabajo
+                </span>
+                <span
+                  class="md:hidden"
+                >
+                  Mesas
+                </span>
+              </button>
+              <button
+                class="inline-flex shrink-0 items-center justify-center gap-2 duration-150 disabled:cursor-not-allowed disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-ring min-w-0 whitespace-normal rounded-full px-3 py-2.5 text-xs font-medium transition-colors md:text-sm sm:px-3.5 text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"
+                data-slot="button"
+                type="button"
+              >
+                <span...
+
+Ignored nodes: comments, script, style
+<div>
+  <div
+    class="bg-background font-sans text-foreground"
+    lang="es"
+  >
+    <div
+      class="group/sidebar-wrapper has-data-[variant=inset]:bg-sidebar flex min-h-svh w-full"
+      data-slot="sidebar-wrapper"
+      id="polis-application"
+      inert=""
+      style="--sidebar-width: 16rem; --sidebar-width-icon: 3rem;"
+    >
+      <div
+        class="flex min-h-screen flex-col flex-1 min-w-0"
+      >
+        <a
+          class="ui-skip-link"
+          href="#main-content"
+        >
+          Saltar al contenido
+        </a>
+        <header
+          class="sticky top-0 z-40 border-b border-[var(--border)] bg-[var(--background)]/85 backdrop-blur-md"
+        >
+          <div
+            class="container-fluid grid grid-cols-1 sm:grid-cols-[minmax(0,1fr)_auto] items-center gap-y-3 py-3 md:flex md:h-20 md:justify-between md:py-0"
+          >
+            <div
+              class="flex items-center gap-3"
+            >
+              <button
+                aria-label="Seguridad Humana Cartagena 2026–2036 — Inicio"
+                class="shrink-0 justify-center font-medium transition-[background,color,border-color,box-shadow] duration-150 disabled:cursor-not-allowed disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-ring min-w-0 whitespace-normal flex items-center gap-2.5 text-left"
+                data-slot="button"
+                type="button"
+              >
+                <span
+                  class="flex size-7 shrink-0 items-center justify-center rounded-md bg-[var(--text-primary)]"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="lucide lucide-landmark size-4 text-[var(--text-inverse)]"
+                    fill="none"
+                    height="24"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="1.5"
+                    viewBox="0 0 24 24"
+                    width="24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M10 18v-7"
+                    />
+                    <path
+                      d="M11.12 2.198a2 2 0 0 1 1.76.006l7.866 3.847c.476.233.31.949-.22.949H3.474c-.53 0-.695-.716-.22-.949z"
+                    />
+                    <path
+                      d="M14 18v-7"
+                    />
+                    <path
+                      d="M18 18v-7"
+                    />
+                    <path
+                      d="M3 22h18"
+                    />
+                    <path
+                      d="M6 18v-7"
+                    />
+                  </svg>
+                </span>
+                <span
+                  class="flex flex-col text-left leading-tight"
+                >
+                  <span
+                    class="flex items-center gap-1 text-[13px] font-semibold tracking-tight text-[var(--text-primary)]"
+                  >
+                    Seguridad Humana
+                    <span
+                      aria-hidden="true"
+                      class="size-1 rounded-full bg-[var(--ember)]"
+                    />
+                  </span>
+                  <span
+                    class="text-[11px] font-medium text-[var(--text-secondary)]"
+                  >
+                    Cartagena 2026–2036
+                  </span>
+                </span>
+              </button>
+            </div>
+            <nav
+              aria-label="Navegación principal"
+              class="order-3 col-span-1 sm:col-span-2 flex min-w-0 flex-wrap items-center gap-1 md:order-none"
+            >
+              <button
+                aria-current="page"
+                class="inline-flex shrink-0 items-center justify-center gap-2 duration-150 disabled:cursor-not-allowed disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-ring min-w-0 whitespace-normal rounded-full px-3 py-2.5 text-xs font-medium transition-colors md:text-sm sm:px-3.5 bg-[var(--surface-3)] text-[var(--text-primary)]"
+                data-slot="button"
+                type="button"
+              >
+                <span
+                  class="hidden md:inline"
+                >
+                  Inicio
+                </span>
+                <span
+                  class="md:hidden"
+                >
+                  Inicio
+                </span>
+              </button>
+              <button
+                class="inline-flex shrink-0 items-center justify-center gap-2 duration-150 disabled:cursor-not-allowed disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-ring min-w-0 whitespace-normal rounded-full px-3 py-2.5 text-xs font-medium transition-colors md:text-sm sm:px-3.5 text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"
+                data-slot="button"
+                type="button"
+              >
+                <span
+                  class="hidden md:inline"
+                >
+                  Líneas Estratégicas
+                </span>
+                <span
+                  class="md:hidden"
+                >
+                  Explorar
+                </span>
+              </button>
+              <button
+                class="inline-flex shrink-0 items-center justify-center gap-2 duration-150 disabled:cursor-not-allowed disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-ring min-w-0 whitespace-normal rounded-full px-3 py-2.5 text-xs font-medium transition-colors md:text-sm sm:px-3.5 text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"
+                data-slot="button"
+                type="button"
+              >
+                <span
+                  class="hidden md:inline"
+                >
+                  Mesas de Trabajo
+                </span>
+                <span
+                  class="md:hidden"
+                >
+                  Mesas
+                </span>
+              </button>
+              <button
+                class="inline-flex shrink-0 items-center justify-center gap-2 duration-150 disabled:cursor-not-allowed disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-ring min-w-0 whitespace-normal rounded-full px-3 py-2.5 text-xs font-medium transition-colors md:text-sm sm:px-3.5 text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"
+                data-slot="button"
+                type="button"
+              >
+                <span...
+ ❯ waitForWrapper node_modules/@testing-library/dom/dist/@testing-library/dom.esm.js:1127:26
+ ❯ node_modules/@testing-library/dom/dist/@testing-library/dom.esm.js:1207:11
+ ❯ findByRole src/app/_stories/platform.stories.tsx:168:37
+    166|     await userEvent.click(trigger);
+    167|     const dialog = await canvas.findByRole("dialog");
+    168|     await expect(dialog).toHaveFocus();
+       |                                     ^
+    169|     await expect(
+    170|       canvasElement.querySelector("#polis-application"),
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  |storybook (chromium)| src/app/_stories/platform.stories.tsx > Territorios Con Teclado
+TestingLibraryElementError:
+Click to debug the error directly in Storybook: http://localhost:6006/?path=/story/plataforma-pantallas--territorios-con-teclado&addonPanel=storybook/interactions/panel
+
+Unable to find role="button" and name `/^(Explorar territorio:|Abrir ficha territorial:)/`
+
+Ignored nodes: comments, script, style
+<div>
+  <div
+    class="bg-background font-sans text-foreground"
+    lang="es"
+  >
+    <div
+      class="group/sidebar-wrapper has-data-[variant=inset]:bg-sidebar flex min-h-svh w-full"
+      data-slot="sidebar-wrapper"
+      id="polis-application"
+      style="--sidebar-width: 16rem; --sidebar-width-icon: 3rem;"
+    >
+      <div
+        class="flex min-h-screen flex-col flex-1 min-w-0"
+      >
+        <a
+          class="ui-skip-link"
+          href="#main-content"
+        >
+          Saltar al contenido
+        </a>
+        <header
+          class="sticky top-0 z-40 border-b border-[var(--border)] bg-[var(--background)]/85 backdrop-blur-md"
+        >
+          <div
+            class="container-fluid grid grid-cols-1 sm:grid-cols-[minmax(0,1fr)_auto] items-center gap-y-3 py-3 md:flex md:h-20 md:justify-between md:py-0"
+          >
+            <div
+              class="flex items-center gap-3"
+            >
+              <button
+                aria-label="Seguridad Humana Cartagena 2026–2036 — Inicio"
+                class="shrink-0 justify-center font-medium transition-[background,color,border-color,box-shadow] duration-150 disabled:cursor-not-allowed disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-ring min-w-0 whitespace-normal flex items-center gap-2.5 text-left"
+                data-slot="button"
+                type="button"
+              >
+                <span
+                  class="flex size-7 shrink-0 items-center justify-center rounded-md bg-[var(--text-primary)]"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="lucide lucide-landmark size-4 text-[var(--text-inverse)]"
+                    fill="none"
+                    height="24"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="1.5"
+                    viewBox="0 0 24 24"
+                    width="24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M10 18v-7"
+                    />
+                    <path
+                      d="M11.12 2.198a2 2 0 0 1 1.76.006l7.866 3.847c.476.233.31.949-.22.949H3.474c-.53 0-.695-.716-.22-.949z"
+                    />
+                    <path
+                      d="M14 18v-7"
+                    />
+                    <path
+                      d="M18 18v-7"
+                    />
+                    <path
+                      d="M3 22h18"
+                    />
+                    <path
+                      d="M6 18v-7"
+                    />
+                  </svg>
+                </span>
+                <span
+                  class="flex flex-col text-left leading-tight"
+                >
+                  <span
+                    class="flex items-center gap-1 text-[13px] font-semibold tracking-tight text-[var(--text-primary)]"
+                  >
+                    Seguridad Humana
+                    <span
+                      aria-hidden="true"
+                      class="size-1 rounded-full bg-[var(--ember)]"
+                    />
+                  </span>
+                  <span
+                    class="text-[11px] font-medium text-[var(--text-secondary)]"
+                  >
+                    Cartagena 2026–2036
+                  </span>
+                </span>
+              </button>
+            </div>
+            <nav
+              aria-label="Navegación principal"
+              class="order-3 col-span-1 sm:col-span-2 flex min-w-0 flex-wrap items-center gap-1 md:order-none"
+            >
+              <button
+                class="inline-flex shrink-0 items-center justify-center gap-2 duration-150 disabled:cursor-not-allowed disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-ring min-w-0 whitespace-normal rounded-full px-3 py-2.5 text-xs font-medium transition-colors md:text-sm sm:px-3.5 text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"
+                data-slot="button"
+                type="button"
+              >
+                <span
+                  class="hidden md:inline"
+                >
+                  Inicio
+                </span>
+                <span
+                  class="md:hidden"
+                >
+                  Inicio
+                </span>
+              </button>
+              <button
+                class="inline-flex shrink-0 items-center justify-center gap-2 duration-150 disabled:cursor-not-allowed disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-ring min-w-0 whitespace-normal rounded-full px-3 py-2.5 text-xs font-medium transition-colors md:text-sm sm:px-3.5 text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"
+                data-slot="button"
+                type="button"
+              >
+                <span
+                  class="hidden md:inline"
+                >
+                  Líneas Estratégicas
+                </span>
+                <span
+                  class="md:hidden"
+                >
+                  Explorar
+                </span>
+              </button>
+              <button
+                class="inline-flex shrink-0 items-center justify-center gap-2 duration-150 disabled:cursor-not-allowed disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-ring min-w-0 whitespace-normal rounded-full px-3 py-2.5 text-xs font-medium transition-colors md:text-sm sm:px-3.5 text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"
+                data-slot="button"
+                type="button"
+              >
+                <span
+                  class="hidden md:inline"
+                >
+                  Mesas de Trabajo
+                </span>
+                <span
+                  class="md:hidden"
+                >
+                  Mesas
+                </span>
+              </button>
+              <button
+                aria-current="page"
+                class="inline-flex shrink-0 items-center justify-center gap-2 duration-150 disabled:cursor-not-allowed disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-ring min-w-0 whitespace-normal rounded-full px-3 py-2.5 text-xs font-medium transition-colors md:text-sm sm:px-3.5 bg-[var(--surface-3)] text-[var(--text-primary)]"
+                data-slot="button"
+                type="button"
+              >
+                <span
+              ...
+
+Ignored nodes: comments, script, style
+<div>
+  <div
+    class="bg-background font-sans text-foreground"
+    lang="es"
+  >
+    <div
+      class="group/sidebar-wrapper has-data-[variant=inset]:bg-sidebar flex min-h-svh w-full"
+      data-slot="sidebar-wrapper"
+      id="polis-application"
+      style="--sidebar-width: 16rem; --sidebar-width-icon: 3rem;"
+    >
+      <div
+        class="flex min-h-screen flex-col flex-1 min-w-0"
+      >
+        <a
+          class="ui-skip-link"
+          href="#main-content"
+        >
+          Saltar al contenido
+        </a>
+        <header
+          class="sticky top-0 z-40 border-b border-[var(--border)] bg-[var(--background)]/85 backdrop-blur-md"
+        >
+          <div
+            class="container-fluid grid grid-cols-1 sm:grid-cols-[minmax(0,1fr)_auto] items-center gap-y-3 py-3 md:flex md:h-20 md:justify-between md:py-0"
+          >
+            <div
+              class="flex items-center gap-3"
+            >
+              <button
+                aria-label="Seguridad Humana Cartagena 2026–2036 — Inicio"
+                class="shrink-0 justify-center font-medium transition-[background,color,border-color,box-shadow] duration-150 disabled:cursor-not-allowed disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-ring min-w-0 whitespace-normal flex items-center gap-2.5 text-left"
+                data-slot="button"
+                type="button"
+              >
+                <span
+                  class="flex size-7 shrink-0 items-center justify-center rounded-md bg-[var(--text-primary)]"
+                >
+                  <svg
+                    aria-hidden="true"
+                    class="lucide lucide-landmark size-4 text-[var(--text-inverse)]"
+                    fill="none"
+                    height="24"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="1.5"
+                    viewBox="0 0 24 24"
+                    width="24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M10 18v-7"
+                    />
+                    <path
+                      d="M11.12 2.198a2 2 0 0 1 1.76.006l7.866 3.847c.476.233.31.949-.22.949H3.474c-.53 0-.695-.716-.22-.949z"
+                    />
+                    <path
+                      d="M14 18v-7"
+                    />
+                    <path
+                      d="M18 18v-7"
+                    />
+                    <path
+                      d="M3 22h18"
+                    />
+                    <path
+                      d="M6 18v-7"
+                    />
+                  </svg>
+                </span>
+                <span
+                  class="flex flex-col text-left leading-tight"
+                >
+                  <span
+                    class="flex items-center gap-1 text-[13px] font-semibold tracking-tight text-[var(--text-primary)]"
+                  >
+                    Seguridad Humana
+                    <span
+                      aria-hidden="true"
+                      class="size-1 rounded-full bg-[var(--ember)]"
+                    />
+                  </span>
+                  <span
+                    class="text-[11px] font-medium text-[var(--text-secondary)]"
+                  >
+                    Cartagena 2026–2036
+                  </span>
+                </span>
+              </button>
+            </div>
+            <nav
+              aria-label="Navegación principal"
+              class="order-3 col-span-1 sm:col-span-2 flex min-w-0 flex-wrap items-center gap-1 md:order-none"
+            >
+              <button
+                class="inline-flex shrink-0 items-center justify-center gap-2 duration-150 disabled:cursor-not-allowed disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-ring min-w-0 whitespace-normal rounded-full px-3 py-2.5 text-xs font-medium transition-colors md:text-sm sm:px-3.5 text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"
+                data-slot="button"
+                type="button"
+              >
+                <span
+                  class="hidden md:inline"
+                >
+                  Inicio
+                </span>
+                <span
+                  class="md:hidden"
+                >
+                  Inicio
+                </span>
+              </button>
+              <button
+                class="inline-flex shrink-0 items-center justify-center gap-2 duration-150 disabled:cursor-not-allowed disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-ring min-w-0 whitespace-normal rounded-full px-3 py-2.5 text-xs font-medium transition-colors md:text-sm sm:px-3.5 text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"
+                data-slot="button"
+                type="button"
+              >
+                <span
+                  class="hidden md:inline"
+                >
+                  Líneas Estratégicas
+                </span>
+                <span
+                  class="md:hidden"
+                >
+                  Explorar
+                </span>
+              </button>
+              <button
+                class="inline-flex shrink-0 items-center justify-center gap-2 duration-150 disabled:cursor-not-allowed disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-ring min-w-0 whitespace-normal rounded-full px-3 py-2.5 text-xs font-medium transition-colors md:text-sm sm:px-3.5 text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"
+                data-slot="button"
+                type="button"
+              >
+                <span
+                  class="hidden md:inline"
+                >
+                  Mesas de Trabajo
+                </span>
+                <span
+                  class="md:hidden"
+                >
+                  Mesas
+                </span>
+              </button>
+              <button
+                aria-current="page"
+                class="inline-flex shrink-0 items-center justify-center gap-2 duration-150 disabled:cursor-not-allowed disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-ring min-w-0 whitespace-normal rounded-full px-3 py-2.5 text-xs font-medium transition-colors md:text-sm sm:px-3.5 bg-[var(--surface-3)] text-[var(--text-primary)]"
+                data-slot="button"
+                type="button"
+              >
+                <span
+              ...
+ ❯ waitForWrapper node_modules/@testing-library/dom/dist/@testing-library/dom.esm.js:1127:26
+ ❯ node_modules/@testing-library/dom/dist/@testing-library/dom.esm.js:1207:11
+ ❯ findAllByRole src/app/_stories/platform.stories.tsx:228:38
+    226|     await userEvent.click(panel.getByRole("button", { name: "Añadir Pr…
+    227|     await userEvent.type(panel.getByLabelText("Enunciado (1)"), "¿Qué …
+    228|     await expect(panel.getByLabelText("Enunciado (1)")).toHaveValue("¿…
+       |                                      ^
+    229|     await expect(panel.getByRole("combobox", { name: "Tipo (1)" })).to…
+    230|     await userEvent.click(panel.getByLabelText("Requerida (1)"));
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed | 15 passed (16)
+      Tests  3 failed | 196 passed (199)
+   Start at  13:59:37
+   Duration  53.21s (transform 0ms, setup 51.96s, import 59.18s, tests 123.47s, environment 0ms)
+
+error: script "ui:test" exited with code 1
