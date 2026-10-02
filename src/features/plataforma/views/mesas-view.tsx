@@ -505,7 +505,7 @@ export function MesasGestionView() {
                     onClick={() =>
                       openPanel("mesa", {
                         mesaId: m.id,
-                        soloLectura: sesion?.rol === "auditor_forense",
+                        soloLectura: !editar,
                       })
                     }
                   >

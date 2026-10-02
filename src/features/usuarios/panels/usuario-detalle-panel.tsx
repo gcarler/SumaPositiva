@@ -7,6 +7,7 @@ import { PanelShell } from "@/core/panels/panel-shell";
 import { usePanels } from "@/core/panels/panel-store";
 import type { PanelComponentProps } from "@/app/_composition/panel-registry";
 import { useUsuariosStore, type RolPlataforma } from "@/features/usuarios/state/usuarios-store";
+import { tienePermiso, useSesionStore } from "@/features/sesion/state/session-store";
 import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
 
@@ -46,6 +47,8 @@ export function UsuarioDetallePanel({ entryKey, props }: PanelComponentProps) {
   const usuarioId = "usuarioId" in props ? props.usuarioId : "";
   const usuario = useUsuariosStore((state) => state.getById(usuarioId));
   const cambiarActivo = useUsuariosStore((state) => state.cambiarActivo);
+  const sesion = useSesionStore((state) => state.sesion);
+  const puedeGestionar = tienePermiso(sesion, "usuarios:gestionar");
   const { closeTop, openPanel } = usePanels();
   const iniciales = useMemo(() => usuario?.nombre.split(/\s+/).slice(0, 2).map((parte) => parte[0]).join("").toLocaleUpperCase("es") ?? "US", [usuario?.nombre]);
 
@@ -118,14 +121,14 @@ export function UsuarioDetallePanel({ entryKey, props }: PanelComponentProps) {
           <p className="text-xs text-text-tertiary">Actividad de ejemplo para esta vista demostrativa.</p>
         </section>
 
-        <section className="flex flex-col gap-2 border-t border-border pt-5 sm:flex-row sm:flex-wrap">
+        {puedeGestionar && <section className="flex flex-col gap-2 border-t border-border pt-5 sm:flex-row sm:flex-wrap">
           <Button onClick={() => openPanel("usuario-editor", { usuarioId: usuario.id })}>Editar rol y módulos</Button>
           <Button variant="outline" onClick={() => {
             cambiarActivo(usuario.id, !usuario.activo);
             toast.success(usuario.activo ? "Cuenta desactivada" : "Cuenta activada");
           }}><UserRoundX className="size-4" aria-hidden="true" />{usuario.activo ? "Desactivar cuenta" : "Activar cuenta"}</Button>
           <Button variant="outline" onClick={() => toast.success("Solicitud de restablecimiento registrada (demo)")}><KeyRound className="size-4" aria-hidden="true" />Restablecer acceso</Button>
-        </section>
+        </section>}
       </div>
     </PanelShell>
   );

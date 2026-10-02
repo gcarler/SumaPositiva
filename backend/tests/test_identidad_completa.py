@@ -337,11 +337,19 @@ def test_roles_personalizados_permisos_vigentes_y_proteccion(contexto):
     datos = {
         "codigo": codigo,
         "nombre": "Operador de prueba",
-        "permisos": ["usuarios:leer"],
+        "permisos": [
+            "usuarios:leer",
+            "formularios:leer",
+            "formularios:gestionar",
+            "geovisor:leer",
+            "contenido:leer",
+            "configuracion:gestionar",
+        ],
         "motivo": "Configuración autorizada de prueba",
     }
     crear = client.post("/api/v1/identidad/roles", headers=admin_headers, json=datos)
     assert crear.status_code == 201, crear.text
+    assert set(datos["permisos"]).issubset(crear.json()["permisos"])
     roles_creados.append(codigo)
     usuario, headers, _ = registrar(codigo)
     assert client.get("/api/v1/identidad/usuarios", headers=headers).status_code == 200

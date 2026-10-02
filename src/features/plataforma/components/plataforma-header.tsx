@@ -7,13 +7,15 @@ import { Button } from "@/shared/ui/button";
 import { Notice } from "@/shared/ui/notice";
 import { useSesionStore } from "@/features/sesion/state/session-store";
 import { usePanelStore } from "@/core/panels/panel-store";
-import { ROLES } from "../models/acceso";
+import { modulosPermitidos, puedeEditar, ROLES } from "../models/acceso";
 export function PlataformaHeader() {
   const sesion = useSesionStore((s) => s.sesion);
   const router = useRouter();
   const cache = useQueryClient();
   const [ocupado, setOcupado] = useState(false);
   const [error, setError] = useState("");
+  const modulos = modulosPermitidos(sesion);
+  const soloLectura = modulos.length > 0 && modulos.every((modulo) => !puedeEditar(sesion, modulo.id));
   async function salir() {
     setOcupado(true);
     setError("");
@@ -37,8 +39,8 @@ export function PlataformaHeader() {
             {sesion?.identidad?.nombre ?? "Usuario"}
           </p>
           <p className="text-sm text-text-secondary">
-            {ROLES[sesion?.rol ?? ""] ?? "Sin rol interno"}
-            {sesion?.rol === "auditor_forense" ? " · Solo lectura" : ""}
+            {ROLES[sesion?.rol ?? ""] ?? sesion?.rol?.replaceAll("_", " ") ?? "Sin rol interno"}
+            {soloLectura ? " · Solo lectura" : ""}
           </p>
         </div>
         <div className="flex flex-wrap gap-2">

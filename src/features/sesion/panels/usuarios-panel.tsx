@@ -157,6 +157,7 @@ function EditorRol({rol, catalogo, ocupado, guardar, eliminar, cancelar}: {rol: 
   eliminar: (motivo: string) => Promise<void>; cancelar: () => void}) {
   const [seleccionados, setSeleccionados] = useState(rol?.permisos ?? []);
   const [accion, setAccion] = useState<"guardar" | "eliminar">("guardar");
+  const gruposPermisos = agruparPermisos(catalogo);
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault(); const datos = new FormData(event.currentTarget);
     if (accion === "eliminar") void eliminar(textoFormulario(datos, "motivo"));
@@ -166,16 +167,54 @@ function EditorRol({rol, catalogo, ocupado, guardar, eliminar, cancelar}: {rol: 
     <h3 className="font-semibold text-text-primary">{rol ? "Editar rol" : "Nuevo rol"}</h3>
     {!rol && <CampoIdentidad name="codigo" label="Código del rol" minLength={3} maxLength={50} />}
     <CampoIdentidad name="nombre" label="Nombre del rol" defaultValue={rol?.nombre} minLength={3} />
-    <fieldset className="space-y-2"><legend className="mb-2 font-medium text-text-primary">Permisos concedidos</legend>
-      {Object.entries(catalogo).map(([codigo, nombre]) => <div key={codigo} className="flex items-start gap-3">
-        <Checkbox id={`permiso-${codigo}`} checked={seleccionados.includes(codigo)} onCheckedChange={(checked) =>
-          setSeleccionados((p) => checked === true ? [...p, codigo] : p.filter((v) => v !== codigo))} />
-        <Label htmlFor={`permiso-${codigo}`} className="break-words text-sm text-text-secondary">{nombre} ({codigo})</Label>
-      </div>)}
+    <fieldset className="space-y-4"><legend className="mb-2 font-medium text-text-primary">Permisos por módulo</legend>
+      <p className="text-sm text-text-secondary">Selecciona solo las acciones necesarias. Un rol personalizado limita el acceso a las áreas y operaciones concedidas.</p>
+      {gruposPermisos.map(({modulo, permisos}) => <section key={modulo} className="space-y-2 rounded-xl border border-border p-4">
+        <h4 className="text-sm font-semibold text-text-primary">{modulo}</h4>
+        {permisos.map(([codigo, nombre]) => <div key={codigo} className="flex items-start gap-3">
+          <Checkbox id={`permiso-${codigo}`} checked={seleccionados.includes(codigo)} onCheckedChange={(checked) =>
+            setSeleccionados((p) => checked === true ? [...p, codigo] : p.filter((v) => v !== codigo))} />
+          <Label htmlFor={`permiso-${codigo}`} className="break-words text-sm text-text-secondary">{nombre}<span className="ml-1 text-xs text-text-tertiary">({codigo})</span></Label>
+        </div>)}
+      </section>)}
     </fieldset>
     <CampoIdentidad name="motivo" label="Motivo del cambio" minLength={10} maxLength={500} />
     <div className="flex flex-wrap gap-2"><Button type="submit" disabled={ocupado} onClick={() => setAccion("guardar")}>Guardar rol</Button>
       {rol && <Button type="submit" variant="destructive" disabled={ocupado} onClick={() => setAccion("eliminar")}>Eliminar rol sin usuarios</Button>}
       <Button type="button" variant="outline" disabled={ocupado} onClick={cancelar}>Cancelar</Button></div>
   </form>;
+}
+
+function agruparPermisos(catalogo: Record<string, string>) {
+  const nombres: Record<string, string> = {
+    formularios: "Formularios e instrumentos",
+    instrumentos: "Formularios e instrumentos",
+    geovisor: "Geovisor",
+    mesas: "Mesas y asistencia",
+    asistencia: "Mesas y asistencia",
+    contenido: "Contenido y política pública",
+    politicas: "Contenido y política pública",
+    testimonios: "Contenido y política pública",
+    configuracion: "Configuración",
+    usuarios: "Usuarios, roles y auditoría",
+    roles: "Usuarios, roles y auditoría",
+    identidad: "Usuarios, roles y auditoría",
+    auditoria: "Usuarios, roles y auditoría",
+    aportes: "Aportes ciudadanos",
+    ia: "Análisis asistido",
+    presupuesto: "Presupuesto",
+    indicadores: "Indicadores",
+  };
+  const grupos = new Map<string, [string, string][]>();
+  for (const [codigo, nombre] of Object.entries(catalogo)) {
+    const prefijo = codigo.split(":", 1)[0];
+    const modulo = nombres[prefijo] ?? "Otros permisos";
+    grupos.set(modulo, [...(grupos.get(modulo) ?? []), [codigo, nombre]]);
+  }
+  return [...grupos.entries()]
+    .sort(([a], [b]) => a.localeCompare(b, "es"))
+    .map(([modulo, permisos]) => ({
+      modulo,
+      permisos: permisos.sort(([a], [b]) => a.localeCompare(b, "es")),
+    }));
 }

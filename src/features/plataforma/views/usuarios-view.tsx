@@ -33,7 +33,8 @@ export function UsuariosGestionView() {
   const { openPanel } = usePanels();
   const [busqueda, setBusqueda] = useState("");
   const [rolFiltro, setRolFiltro] = useState<RolPlataforma | "todos">("todos");
-  const permitido = sesion?.rol === "administrador_identidades" && tienePermiso(sesion, "usuarios:leer");
+  const permitido = tienePermiso(sesion, "usuarios:leer");
+  const puedeGestionar = tienePermiso(sesion, "usuarios:gestionar");
   const filtrados = useMemo(() => {
     const query = busqueda.trim().toLocaleLowerCase("es");
     return usuarios.filter((usuario) => {
@@ -51,7 +52,7 @@ export function UsuariosGestionView() {
 
   return (
     <div className="space-y-6">
-      <PageHeader title="Usuarios y roles" description="Administra accesos, responsabilidades y cuentas institucionales." action={permitido ? <Button onClick={() => openPanel("usuario-invitar", {})}><UserPlus className="size-4" aria-hidden="true" />Invitar usuario</Button> : undefined} />
+      <PageHeader title="Usuarios y roles" description="Administra accesos, responsabilidades y cuentas institucionales." action={puedeGestionar ? <Button onClick={() => openPanel("usuario-invitar", {})}><UserPlus className="size-4" aria-hidden="true" />Invitar usuario</Button> : undefined} />
       {!permitido ? (
         <Notice tone="warning" title="Permiso requerido">Se requiere una sesión administradora con permiso de lectura de usuarios.</Notice>
       ) : (
@@ -88,7 +89,7 @@ export function UsuariosGestionView() {
               <span>Usuario</span><span>Correo electrónico</span><span>Rol</span><span>Último acceso</span><span className="sr-only">Acciones</span>
             </div>
             <div className="space-y-3 md:space-y-0">
-              {filtrados.map((usuario) => <FilaUsuario key={usuario.id} usuario={usuario} abrirDetalle={() => openPanel("usuario-detalle", { usuarioId: usuario.id })} editar={() => openPanel("usuario-editor", { usuarioId: usuario.id })} />)}
+              {filtrados.map((usuario) => <FilaUsuario key={usuario.id} usuario={usuario} abrirDetalle={() => openPanel("usuario-detalle", { usuarioId: usuario.id })} editar={puedeGestionar ? () => openPanel("usuario-editor", { usuarioId: usuario.id }) : undefined} />)}
               {filtrados.length === 0 && <div className="rounded-xl border border-dashed border-border p-8 text-center"><p className="font-medium">No hay coincidencias</p><p className="mt-1 text-sm text-text-secondary">Prueba con otro nombre, correo o rol.</p></div>}
             </div>
             <div className="flex items-center justify-between border-t border-border pt-4 text-sm text-text-secondary"><span>Mostrando {filtrados.length} de {usuarios.length} cuentas de demo</span><span>Actualizado ahora</span></div>
@@ -101,7 +102,7 @@ export function UsuariosGestionView() {
   );
 }
 
-function FilaUsuario({ usuario, abrirDetalle, editar }: { usuario: UsuarioPlatafoma; abrirDetalle: () => void; editar: () => void }) {
+function FilaUsuario({ usuario, abrirDetalle, editar }: { usuario: UsuarioPlatafoma; abrirDetalle: () => void; editar?: () => void }) {
   const rol = rolMeta[usuario.rol];
   const iniciales = usuario.nombre.split(/\s+/).slice(0, 2).map((parte) => parte[0]).join("").toLocaleUpperCase("es");
   return (
@@ -119,7 +120,7 @@ function FilaUsuario({ usuario, abrirDetalle, editar }: { usuario: UsuarioPlataf
       <div><p className="text-xs text-text-tertiary md:hidden">Último acceso</p><p className="text-sm text-text-secondary">{usuario.ultimoAcceso ? haceCuanto(usuario.ultimoAcceso) : "Nunca"}</p></div>
       <div className="flex justify-end gap-2 border-t border-border pt-3 md:border-0 md:pt-0">
         <Button variant="outline" size="sm" className="md:hidden" onClick={abrirDetalle}>Ver perfil<ChevronRight className="size-4" aria-hidden="true" /></Button>
-        <Button variant="ghost" size="icon-sm" onClick={editar} aria-label={`Editar ${usuario.nombre}`}><Pencil className="size-4" aria-hidden="true" /></Button>
+        {editar && <Button variant="ghost" size="icon-sm" onClick={editar} aria-label={`Editar ${usuario.nombre}`}><Pencil className="size-4" aria-hidden="true" /></Button>}
       </div>
     </article>
   );

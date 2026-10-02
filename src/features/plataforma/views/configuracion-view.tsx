@@ -31,7 +31,7 @@ export function ConfiguracionView() {
   return (
     <div className="space-y-6">
       <PageHeader title="Configuración" description="Preferencias de trabajo y parámetros generales de POLIS." action={<Button variant="outline" disabled={!editar} onClick={() => { void cache.invalidateQueries(); toast.success("Consultas actualizadas"); }}><RefreshCw className="size-4" aria-hidden="true" />Actualizar consultas</Button>} />
-      {!editar && <Notice title="Solo lectura">Puedes consultar estos parámetros. Los cambios requieren el rol administrador de identidades.</Notice>}
+      {!editar && <Notice title="Solo lectura">Puedes consultar estos parámetros. Los cambios requieren el permiso de gestión de configuración.</Notice>}
       <Notice tone="info" title="Alcance de esta configuración">Las preferencias de tema se guardan localmente. Los parámetros distritales y de despliegue se muestran como referencia; su modificación se administra por los canales de configuración autorizados.</Notice>
 
       <div className="grid gap-4 xl:grid-cols-2">

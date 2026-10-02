@@ -12,17 +12,22 @@
 | facilitador_mesa | Consulta | Lectura | Gestión* | — | — | — | — |
 | auditor_forense | Consulta | Lectura | Lectura | Lectura | Lectura | — | Lectura |
 | administrador_identidades | Consulta | Gestión* | Gestión* | Consulta | Gestión* | Gestión* | Gestión |
+| rol personalizado | Según permisos asignados | Según permisos asignados | Según permisos asignados | `geovisor:leer` | Según permisos asignados | `usuarios:leer` | Según permisos asignados |
 
 `*` Las acciones requieren además el permiso correspondiente de la sesión:
 `formularios:gestionar`, `mesas:abrir`, `mesas:acuerdos`, `politicas:gestionar` o
-permisos de identidad. Entrar a un módulo no concede permisos nuevos a la API.
-Los roles personalizados no acceden a esta navegación hasta contar con una
-clasificación explícita; mantienen sus permisos de API y su cuenta en el portal.
+permisos de identidad. Los roles personalizados obtienen enlaces y edición según
+su catálogo de permisos vigente. Los permisos de gestión de la API siguen siendo
+la autoridad para cada escritura; la navegación no los amplía. Por ejemplo,
+`formularios:leer` y `formularios:gestionar` conceden acceso de gestión a Formularios
+sin conceder acceso a Mesas, Usuarios o Geovisor.
 
-La ruta de usuarios se limita al administrador por la instrucción de producto,
-aunque el auditor mantiene lectura de identidad en la API. Configuración es
-consultable por el auditor, sin controles de escritura. El modo lectura también
-se aplica a paneles abiertos: no basta ocultar el enlace del sidebar.
+Usuarios y Roles requiere `usuarios:leer`; invitar, editar y revocar requieren
+`usuarios:gestionar`, y administrar perfiles requiere `roles:gestionar`. La API
+evita que un delegado conceda permisos que no posee o se asigne permisos
+administrativos. Configuración es consultable por el auditor, sin controles de
+escritura. El modo lectura también se aplica a paneles abiertos: no basta ocultar
+el enlace del sidebar.
 
 ## Sesión y navegación
 
@@ -61,6 +66,12 @@ un guard de servidor ni cookies HttpOnly.
   quienes poseen permisos. No añade un CRUD de líneas/aportes nuevo.
 - Configuración: tema del navegador, actualización de consultas y enlace al control
   de fases. No existe integración de parámetros globales persistidos en esta versión.
+
+Los perfiles reutilizables se crean y asignan desde Usuarios y Roles. Los permisos
+de Lectura habilitan la vista; permisos como `formularios:gestionar`,
+`mesas:abrir` y `politicas:gestionar` habilitan acciones concretas. Geovisor y las
+preferencias de Configuración solo ofrecen lectura o comportamiento local en esta
+versión; no representan escrituras protegidas en API.
 
 Google requiere cliente y orígenes configurados, según [identidad](identidad.md).
 No se introducen credenciales, elevaciones de rol ni persistencia paralela.

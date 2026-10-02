@@ -47,7 +47,7 @@ describe("Matriz de rutas internas", () => {
     ["administrador_identidades", MODULOS.map((m) => m.id)],
     ["rol_desconocido", []],
   ] as const)("%s: enlaces y acceso directo coinciden", (rol, esperados) => {
-    const actual = sesion(rol);
+    const actual = sesion(rol, rol === "rol_desconocido" ? { permisos: [] } : {});
     expect(modulosPermitidos(actual).map((m) => m.id)).toEqual(esperados);
     for (const m of MODULOS)
       expect(puedeVer(actual, m.id)).toBe(esperados.some((v) => v === m.id));
@@ -81,6 +81,39 @@ describe("Matriz de rutas internas", () => {
     expect(puedeEditar(f, "formularios")).toBe(false);
     expect(panelPermitido(f, "formulario-editor")).toBe(false);
     expect(puedeEditar(f, "mesas")).toBe(true);
+  });
+  test("perfil personalizado administra solo los módulos concedidos", () => {
+    const administradorFormularios = sesion("admin_formularios", {
+      permisos: ["formularios:leer", "formularios:gestionar"],
+    });
+    expect(puedeEntrar(administradorFormularios)).toBe(true);
+    expect(modulosPermitidos(administradorFormularios).map((modulo) => modulo.id)).toEqual([
+      "dashboard",
+      "formularios",
+    ]);
+    expect(puedeEditar(administradorFormularios, "formularios")).toBe(true);
+    expect(puedeVer(administradorFormularios, "mesas")).toBe(false);
+    expect(puedeEditar(administradorFormularios, "usuarios")).toBe(false);
+    expect(panelPermitido(administradorFormularios, "formulario-editor")).toBe(true);
+    expect(panelPermitido(administradorFormularios, "mesa-editor")).toBe(false);
+
+    const lectorGeovisor = sesion("lector_geovisor", { permisos: ["geovisor:leer"] });
+    expect(modulosPermitidos(lectorGeovisor).map((modulo) => modulo.id)).toEqual([
+      "dashboard",
+      "geovisor",
+    ]);
+    expect(puedeEditar(lectorGeovisor, "geovisor")).toBe(false);
+
+    const adminConfiguracion = sesion("admin_configuracion", {
+      permisos: ["configuracion:leer", "configuracion:gestionar"],
+    });
+    expect(puedeEditar(adminConfiguracion, "configuracion")).toBe(true);
+    expect(panelPermitido(adminConfiguracion, "fases-control")).toBe(false);
+
+    const adminInstrumentos = sesion("admin_instrumentos", {
+      permisos: ["instrumentos:gestionar"],
+    });
+    expect(puedeEditar(adminInstrumentos, "formularios")).toBe(true);
   });
   test("roles autorizados editan según matriz de acceso por rol", () => {
     expect(

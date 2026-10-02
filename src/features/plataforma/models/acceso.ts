@@ -71,6 +71,43 @@ const ACCESO: Record<string, readonly ModuloPlataforma[]> = {
   ],
   administrador_identidades: MODULOS.map((m) => m.id),
 };
+
+/** Las sesiones de roles personalizados reciben acceso a partir del catálogo API. */
+const PERMISOS_POR_MODULO: Record<ModuloPlataforma, readonly string[]> = {
+  dashboard: [
+    "formularios:leer", "formularios:gestionar", "geovisor:leer",
+    "mesas:leer", "mesas:deliberar", "mesas:abrir", "mesas:acuerdos",
+    "mesas:fotos:subir", "asistencia:verificar", "usuarios:leer",
+    "usuarios:gestionar", "roles:gestionar", "identidad:auditar",
+    "contenido:leer", "politicas:gestionar",
+    "testimonios:moderar", "configuracion:leer", "configuracion:gestionar",
+  ],
+  formularios: [
+    "formularios:leer",
+    "formularios:gestionar",
+    "instrumentos:gestionar",
+  ],
+  geovisor: ["geovisor:leer"],
+  mesas: [
+    "mesas:leer", "mesas:deliberar", "mesas:abrir", "mesas:acuerdos",
+    "mesas:fotos:subir", "asistencia:verificar",
+  ],
+  usuarios: ["usuarios:leer", "usuarios:gestionar", "roles:gestionar", "identidad:auditar"],
+  contenido: ["contenido:leer", "politicas:gestionar", "testimonios:moderar"],
+  configuracion: ["configuracion:leer", "configuracion:gestionar"],
+};
+
+const PERMISOS_EDICION: Record<ModuloPlataforma, readonly string[]> = {
+  dashboard: [],
+  formularios: ["formularios:gestionar", "instrumentos:gestionar"],
+  geovisor: [],
+  mesas: ["mesas:abrir", "mesas:acuerdos", "mesas:fotos:subir", "asistencia:verificar"],
+  usuarios: ["usuarios:gestionar", "roles:gestionar"],
+  contenido: ["politicas:gestionar", "testimonios:moderar"],
+  configuracion: ["configuracion:gestionar"],
+};
+
+const PERMISOS_PLATAFORMA = new Set(Object.values(PERMISOS_POR_MODULO).flat());
 export function sesionActiva(
   sesion: Sesion | null,
   ahora = Date.now(),
@@ -85,18 +122,25 @@ export function sesionActiva(
   );
 }
 export function puedeEntrar(sesion: Sesion | null): boolean {
-  return sesionActiva(sesion) && !!ACCESO[sesion?.rol ?? ""];
+  if (!sesionActiva(sesion)) return false;
+  if (sesion?.rol === "ciudadano") return false;
+  if (ACCESO[sesion?.rol ?? ""]) return true;
+  return (sesion?.permisos ?? []).some((permiso) => PERMISOS_PLATAFORMA.has(permiso));
 }
 export function modulosPermitidos(sesion: Sesion | null) {
   return puedeEntrar(sesion)
-    ? MODULOS.filter((m) => ACCESO[sesion?.rol ?? ""].includes(m.id))
+    ? MODULOS.filter((modulo) => puedeVer(sesion, modulo.id))
     : [];
 }
 export function puedeVer(
   sesion: Sesion | null,
   modulo: ModuloPlataforma,
 ): boolean {
-  return modulosPermitidos(sesion).some((m) => m.id === modulo);
+  if (!puedeEntrar(sesion)) return false;
+  const accesosPorRol = ACCESO[sesion?.rol ?? ""];
+  if (accesosPorRol) return accesosPorRol.includes(modulo);
+  const permisos = new Set(sesion?.permisos ?? []);
+  return PERMISOS_POR_MODULO[modulo].some((permiso) => permisos.has(permiso));
 }
 export function moduloDeRuta(ruta: string): ModuloPlataforma | undefined {
   return MODULOS.find((m) => m.ruta === ruta.replace(/\/$/, ""))?.id;
@@ -105,17 +149,22 @@ export function puedeEditar(
   sesion: Sesion | null,
   modulo: ModuloPlataforma,
 ): boolean {
-  if (!puedeVer(sesion, modulo) || sesion?.rol === "auditor_forense") return false;
-  if (modulo === "formularios" && sesion?.rol === "facilitador_mesa") return false;
-  if (modulo === "configuracion") return sesion?.rol === "administrador_identidades";
-  if (modulo === "usuarios") return sesion?.rol === "administrador_identidades";
-  // Para mesas, formularios y contenido: basar en rol, no en permisos del backend
-  const rolesPorModulo: Partial<Record<ModuloPlataforma, string[]>> = {
-    mesas: ["autoridad_distrital", "facilitador_mesa", "administrador_identidades"],
-    formularios: ["autoridad_distrital", "administrador_identidades"],
-    contenido: ["autoridad_distrital", "administrador_identidades"],
-  };
-  return !!rolesPorModulo[modulo]?.includes(sesion?.rol ?? "");
+  if (!puedeVer(sesion, modulo)) return false;
+  const accesosPorRol = ACCESO[sesion?.rol ?? ""];
+  if (accesosPorRol) {
+    if (sesion?.rol === "auditor_forense") return false;
+    if (modulo === "formularios" && sesion?.rol === "facilitador_mesa") return false;
+    if (modulo === "configuracion" || modulo === "usuarios")
+      return sesion?.rol === "administrador_identidades";
+    const rolesPorModulo: Partial<Record<ModuloPlataforma, string[]>> = {
+      mesas: ["autoridad_distrital", "facilitador_mesa", "administrador_identidades"],
+      formularios: ["autoridad_distrital", "administrador_identidades"],
+      contenido: ["autoridad_distrital", "administrador_identidades"],
+    };
+    return !!rolesPorModulo[modulo]?.includes(sesion?.rol ?? "");
+  }
+  const permisos = new Set(sesion?.permisos ?? []);
+  return PERMISOS_EDICION[modulo].some((permiso) => permisos.has(permiso));
 }
 export function panelPermitido(
   sesion: Sesion | null,
@@ -139,16 +188,16 @@ export function panelPermitido(
     case "papelografo":
       return puedeEditar(sesion, "mesas");
     case "usuarios":
+      return puedeVer(sesion, "usuarios");
     case "usuario-invitar":
     case "usuario-editor":
+      return puedeEditar(sesion, "usuarios");
     case "usuario-detalle":
       return puedeVer(sesion, "usuarios");
     case "territorio":
       return puedeVer(sesion, "geovisor");
     case "fases-control":
-      return (
-        puedeEditar(sesion, "contenido") || puedeEditar(sesion, "configuracion")
-      );
+      return puedeEditar(sesion, "contenido");
     case "auditoria-consola":
       return (
         puedeEntrar(sesion) &&
