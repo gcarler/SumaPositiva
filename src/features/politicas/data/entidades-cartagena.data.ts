@@ -1,6 +1,7 @@
 /**
- * POLIS — Catálogo Oficial de Dependencias de la Alcaldía Mayor de Cartagena de Indias (2026)
- * Fuente: Planes de Acción 2026 y Plan de Desarrollo 2024–2027 "Cartagena Ciudad de Derechos".
+ * POLIS — Censo Completo de Dependencias y Entes Descentralizados de Cartagena (2026)
+ * Fuente Oficial: Informe de Seguimiento a Planes de Acción 2026 a corte 30 de junio de 2026
+ * Plan de Desarrollo Distrital "Cartagena Ciudad de Derechos" (2024–2027).
  * Articulado con las 7 Dimensiones de Seguridad Humana (Decreto 037 de 2026 del Ministerio del Interior).
  */
 
@@ -9,13 +10,15 @@ export interface DependenciaDistrital {
   codigo: string;
   nombre: string;
   sigla?: string;
-  tipo: "secretaria" | "ente_descentralizado" | "unidad_asesora" | "alcaldia_local";
-  dimensionesPrincipales: string[]; // Códigos de dimensión: "personal", "ambiental", etc.
-  descripcion: string;
+  tipo: "secretaria" | "ente_descentralizado" | "unidad_asesora" | "alcaldia_local" | "empresa_industrial" | "institucion_educativa";
+  dimensionesPrincipales: string[]; // "personal", "comunitaria", "ambiental", "economica", "alimentaria", "salud", "politica", "crisis"
+  competenciaSeguridadHumana: string;
 }
 
 export const DEPENDENCIAS_CARTAGENA_2026: DependenciaDistrital[] = [
-  // --- SECRETARÍAS DEL DESPACHO ---
+  // ==========================================
+  // 1. SECRETARÍAS DEL DESPACHO
+  // ==========================================
   {
     id: "dep-sicc",
     codigo: "SICC",
@@ -23,16 +26,16 @@ export const DEPENDENCIAS_CARTAGENA_2026: DependenciaDistrital[] = [
     nombre: "Secretaría del Interior y Convivencia Ciudadana",
     tipo: "secretaria",
     dimensionesPrincipales: ["personal", "comunitaria", "crisis"],
-    descripcion: "Orden público, desarme, prevención del delito, convivencia ciudadana y articulación con MECAR y Distriseguridad.",
+    competenciaSeguridadHumana: "Orden público, desarticulación de ollas/microtráfico, desarme barrial, convivencia ciudadana (Ley 1801) y articulación con MECAR y Distriseguridad.",
   },
   {
     id: "dep-participacion",
     codigo: "SPD",
-    sigla: "SPD",
+    sigla: "PARTICIPACION",
     nombre: "Secretaría de Participación y Desarrollo Social",
     tipo: "secretaria",
     dimensionesPrincipales: ["comunitaria", "alimentaria", "economica"],
-    descripcion: "Poblaciones vulnerables, equidad de género, juventud, adulto mayor, comunidades étnicas y desarrollo rural (UMATA).",
+    competenciaSeguridadHumana: "Poblaciones diferenciales (mujeres, niñez, juventud, adulto mayor, discapacidad, LGBTIQ+), asuntos étnicos afro/indígenas y desarrollo agropecuario (UMATA).",
   },
   {
     id: "dep-planeacion",
@@ -41,16 +44,16 @@ export const DEPENDENCIAS_CARTAGENA_2026: DependenciaDistrital[] = [
     nombre: "Secretaría de Planeación Distrital",
     tipo: "secretaria",
     dimensionesPrincipales: ["politica", "economica", "ambiental"],
-    descripcion: "Dirección estratégica del desarrollo, formulación CONPES distrital, POT, SISBEN y seguimiento al Plan de Desarrollo.",
+    competenciaSeguridadHumana: "Dirección estratégica distrital, adopción de políticas CONPES, ordenamiento territorial (POT), focalización Sisbén y seguimiento del PDD.",
   },
   {
     id: "dep-educacion",
     codigo: "SED",
-    sigla: "SED",
+    sigla: "EDUCACION",
     nombre: "Secretaría de Educación Distrital",
     tipo: "secretaria",
     dimensionesPrincipales: ["personal", "alimentaria", "comunitaria"],
-    descripcion: "Entornos escolares protegidos, permanencia estudiantil, Programa de Alimentación Escolar (PAE) y calidad educativa.",
+    competenciaSeguridadHumana: "Entornos escolares seguros, prevención del acoso (bullying) y drogas, permanencia estudiantil y Programa de Alimentación Escolar (PAE).",
   },
   {
     id: "dep-turismo",
@@ -59,7 +62,7 @@ export const DEPENDENCIAS_CARTAGENA_2026: DependenciaDistrital[] = [
     nombre: "Secretaría de Turismo",
     tipo: "secretaria",
     dimensionesPrincipales: ["personal", "economica"],
-    descripcion: "Prevención estricta de ESCNNA en entornos turísticos, formalización del sector y control a cobros excesivos.",
+    competenciaSeguridadHumana: "Prevención estricta de ESCNNA en entornos turísticos, playas y zona insular (Barú/Rosario), y control de cobros abusivos a turistas.",
   },
   {
     id: "dep-hacienda",
@@ -68,7 +71,7 @@ export const DEPENDENCIAS_CARTAGENA_2026: DependenciaDistrital[] = [
     nombre: "Secretaría de Hacienda Distrital",
     tipo: "secretaria",
     dimensionesPrincipales: ["economica", "politica"],
-    descripcion: "Gestión presupuestal, administración de fondos especiales (FONSET) y consistencia fiscal plurianual.",
+    competenciaSeguridadHumana: "Consistencia fiscal, recaudación distrital y administración de los recursos del Fondo de Seguridad Territorial (FONSET).",
   },
   {
     id: "dep-infraestructura",
@@ -77,7 +80,7 @@ export const DEPENDENCIAS_CARTAGENA_2026: DependenciaDistrital[] = [
     nombre: "Secretaría de Infraestructura",
     tipo: "secretaria",
     dimensionesPrincipales: ["ambiental", "personal"],
-    descripcion: "Malla vial, infraestructura comunitaria, canalización de arroyos y alumbrado público en zonas oscuras.",
+    competenciaSeguridadHumana: "Recuperación de malla vial, canalización de canales pluviales mariales y expansión de alumbrado público LED en zonas oscuras.",
   },
   {
     id: "dep-general",
@@ -86,10 +89,12 @@ export const DEPENDENCIAS_CARTAGENA_2026: DependenciaDistrital[] = [
     nombre: "Secretaría General",
     tipo: "secretaria",
     dimensionesPrincipales: ["politica"],
-    descripcion: "Gobernanza interna, contratación pública transparente y atención al ciudadano.",
+    competenciaSeguridadHumana: "Gobernanza institucional, atención ciudadana, contratación pública transparente y gestión documental distrital.",
   },
 
-  // --- ENTIDADES DESCENTRALIZADAS ---
+  // ==========================================
+  // 2. DEPARTAMENTOS ADMINISTRATIVOS Y ENTES DESCENTRALIZADOS
+  // ==========================================
   {
     id: "dep-dadis",
     codigo: "DADIS",
@@ -97,7 +102,7 @@ export const DEPENDENCIAS_CARTAGENA_2026: DependenciaDistrital[] = [
     nombre: "Departamento Administrativo Distrital de Salud",
     tipo: "ente_descentralizado",
     dimensionesPrincipales: ["salud", "alimentaria"],
-    descripcion: "Atención primaria en salud, epidemiología (control de dengue), salud mental e inspección sanitaria de alimentos.",
+    competenciaSeguridadHumana: "Atención primaria, salud mental para jóvenes, control epidemiológico de dengue/zika, inspección sanitaria de alimentos y reducción de desnutrición.",
   },
   {
     id: "dep-epa",
@@ -106,7 +111,7 @@ export const DEPENDENCIAS_CARTAGENA_2026: DependenciaDistrital[] = [
     nombre: "Establecimiento Público Ambiental (EPA Cartagena)",
     tipo: "ente_descentralizado",
     dimensionesPrincipales: ["ambiental"],
-    descripcion: "Autoridad ambiental urbana: saneamiento de la Ciénaga de la Virgen, control de vertimientos y protección de manglares.",
+    competenciaSeguridadHumana: "Autoridad ambiental urbana: saneamiento de la Ciénaga de la Virgen, control de vertimientos ilegales, calidad del aire y protección de manglares.",
   },
   {
     id: "dep-datt",
@@ -115,7 +120,7 @@ export const DEPENDENCIAS_CARTAGENA_2026: DependenciaDistrital[] = [
     nombre: "Departamento Administrativo de Tránsito y Transporte",
     tipo: "ente_descentralizado",
     dimensionesPrincipales: ["personal", "ambiental"],
-    descripcion: "Seguridad vial, control operativo del transporte, Visión Cero fatalidades y movilidad sostenible.",
+    competenciaSeguridadHumana: "Seguridad vial, control operativo al transporte informal riesgoso, Visión Cero fatalidades y pacificación de vías barriales.",
   },
   {
     id: "dep-pes",
@@ -124,7 +129,7 @@ export const DEPENDENCIAS_CARTAGENA_2026: DependenciaDistrital[] = [
     nombre: "Plan de Emergencia Social - Pedro Romero",
     tipo: "ente_descentralizado",
     dimensionesPrincipales: ["economica", "alimentaria"],
-    descripcion: "Superación de la pobreza extrema, seguridad alimentaria en comedores comunitarios y bancarización popular contra el 'gota a gota'.",
+    competenciaSeguridadHumana: "Superación de la pobreza extrema, red de comedores comunitarios, bancarización comunitaria contra el 'gota a gota' y habitabilidad básica.",
   },
   {
     id: "dep-corvivienda",
@@ -133,7 +138,16 @@ export const DEPENDENCIAS_CARTAGENA_2026: DependenciaDistrital[] = [
     nombre: "Fondo de Vivienda de Interés Social y Reforma Urbana",
     tipo: "ente_descentralizado",
     dimensionesPrincipales: ["economica", "ambiental"],
-    descripcion: "Mejoramiento integral de vivienda, titulación de predios y reasentamiento de familias en zonas de alto riesgo.",
+    competenciaSeguridadHumana: "Mejoramiento integral de vivienda, titulación de predios y reasentamiento digno de familias en zonas de alto riesgo de deslizamiento o inundación.",
+  },
+  {
+    id: "dep-ider",
+    codigo: "IDER",
+    sigla: "IDER",
+    nombre: "Instituto Distrital de Deporte y Recreación",
+    tipo: "ente_descentralizado",
+    dimensionesPrincipales: ["comunitaria", "personal"],
+    competenciaSeguridadHumana: "Prevención de la violencia juvenil y reclutamiento mediante escuelas deportivas, 'barrismo social', adecuación de canchas y uso del tiempo libre.",
   },
   {
     id: "dep-idaccc",
@@ -142,7 +156,7 @@ export const DEPENDENCIAS_CARTAGENA_2026: DependenciaDistrital[] = [
     nombre: "Instituto Distrital de Acción Comunal y Ciudadana de Cartagena",
     tipo: "ente_descentralizado",
     dimensionesPrincipales: ["comunitaria", "politica"],
-    descripcion: "Fortalecimiento técnico y organizativo de las Juntas de Acción Comunal (JAC) y liderazgos de base.",
+    competenciaSeguridadHumana: "Fortalecimiento organizativo y garantías para los dignatarios de las Juntas de Acción Comunal (JAC) y organizaciones de base ciudadana.",
   },
   {
     id: "dep-ipcc",
@@ -151,7 +165,16 @@ export const DEPENDENCIAS_CARTAGENA_2026: DependenciaDistrital[] = [
     nombre: "Instituto de Patrimonio y Cultura de Cartagena",
     tipo: "ente_descentralizado",
     dimensionesPrincipales: ["comunitaria"],
-    descripcion: "Preservación del patrimonio cultural, fomento artístico comunitario y fortalecimiento de identidades afro e insulares.",
+    competenciaSeguridadHumana: "Apropiación cultural comunitaria, salvaguardia del patrimonio afrodescendiente e insular y convivencia pacífica a través del arte.",
+  },
+  {
+    id: "dep-etcar",
+    codigo: "ETCAR",
+    sigla: "ETCAR",
+    nombre: "Escuela Taller Cartagena de Indias",
+    tipo: "ente_descentralizado",
+    dimensionesPrincipales: ["personal", "comunitaria", "economica"],
+    competenciaSeguridadHumana: "Custodia y dinamización social de las Fortificaciones y Murallas de Cartagena, erradicación de focos de inseguridad en baluartes y formación técnica a jóvenes.",
   },
   {
     id: "dep-distriseguridad",
@@ -160,10 +183,30 @@ export const DEPENDENCIAS_CARTAGENA_2026: DependenciaDistrital[] = [
     nombre: "Distriseguridad",
     tipo: "ente_descentralizado",
     dimensionesPrincipales: ["personal", "crisis"],
-    descripcion: "Tecnología para la seguridad, cámaras de videovigilancia, alarmas comunitarias y apoyo logístico a la fuerza pública.",
+    competenciaSeguridadHumana: "Tecnología para la seguridad ciudadana: red de cámaras de videovigilancia, alarmas comunitarias, radioenlaces y apoyo logístico al C4 de la Policía.",
+  },
+  {
+    id: "dep-transcaribe",
+    codigo: "TRANSCARIBE",
+    sigla: "TRANSCARIBE",
+    nombre: "Transcaribe S.A. (Sistema Integrado de Transporte Masivo)",
+    tipo: "empresa_industrial",
+    dimensionesPrincipales: ["personal", "ambiental"],
+    competenciaSeguridadHumana: "Seguridad y prevención del acoso a mujeres en estaciones y buses, conectividad con zonas periféricas e intermodalidad limpia.",
+  },
+  {
+    id: "dep-colmayor",
+    codigo: "COLMAYOR",
+    sigla: "U MAYOR",
+    nombre: "Institución Universitaria Mayor de Cartagena",
+    tipo: "institucion_educativa",
+    dimensionesPrincipales: ["economica", "comunitaria"],
+    competenciaSeguridadHumana: "Oferta de educación superior técnica y tecnológica orientada a jóvenes de sectores vulnerables para romper ciclos de delincuencia.",
   },
 
-  // --- UNIDADES ASESORAS Y ESPECIALES ---
+  // ==========================================
+  // 3. UNIDADES ASESORAS Y GERENCIAS ESPECIALES
+  // ==========================================
   {
     id: "dep-oagrd",
     codigo: "OAGRD",
@@ -171,7 +214,16 @@ export const DEPENDENCIAS_CARTAGENA_2026: DependenciaDistrital[] = [
     nombre: "Oficina Asesora para la Gestión del Riesgo de Desastres",
     tipo: "unidad_asesora",
     dimensionesPrincipales: ["crisis", "ambiental"],
-    descripcion: "Prevención y atención de emergencias, inundaciones, deslizamientos en La Popa y respuesta a desastres climáticos.",
+    competenciaSeguridadHumana: "Prevención, mitigación y respuesta ante emergencias climáticas, alertas por inundaciones, marejadas y deslizamientos en laderas de La Popa.",
+  },
+  {
+    id: "dep-bomberos",
+    codigo: "BOMBEROS",
+    sigla: "BOMBEROS",
+    nombre: "Cuerpo Oficial de Bomberos de Cartagena",
+    tipo: "unidad_asesora",
+    dimensionesPrincipales: ["crisis", "personal"],
+    competenciaSeguridadHumana: "Atención y control de incendios estructurales y forestales en manglares, rescates acuáticos y contingencias en zona industrial de Mamonal.",
   },
   {
     id: "dep-gepm",
@@ -180,7 +232,16 @@ export const DEPENDENCIAS_CARTAGENA_2026: DependenciaDistrital[] = [
     nombre: "Gerencia de Espacio Público y Movilidad",
     tipo: "unidad_asesora",
     dimensionesPrincipales: ["personal", "economica"],
-    descripcion: "Recuperación, sostenibilidad y regulación del espacio público, y concertación con el comercio informal.",
+    competenciaSeguridadHumana: "Sostenibilidad y pacificación del espacio público, andenes peatonales y acuerdos de formalización con asociaciones de vendedores ambulantes.",
+  },
+  {
+    id: "dep-gerencia-centro",
+    codigo: "GCH",
+    sigla: "CENTRO HISTORICO",
+    nombre: "Gerencia de Centro Histórico",
+    tipo: "unidad_asesora",
+    dimensionesPrincipales: ["personal", "comunitaria"],
+    competenciaSeguridadHumana: "Articulación interinstitucional para la seguridad en el Centro Histórico, San Diego y Getsemaní: rumba segura, control de ruido y orden urbano.",
   },
   {
     id: "dep-escuela-gob",
@@ -189,10 +250,21 @@ export const DEPENDENCIAS_CARTAGENA_2026: DependenciaDistrital[] = [
     nombre: "Escuela de Gobierno y Liderazgo",
     tipo: "unidad_asesora",
     dimensionesPrincipales: ["comunitaria", "politica"],
-    descripcion: "Cultura ciudadana, ética pública y pedagogía comunitaria de la no violencia.",
+    competenciaSeguridadHumana: "Pedagogía ciudadana de la legalidad, desarme de palabras, cultura tributaria y formación de líderes comunitarios en derechos humanos.",
+  },
+  {
+    id: "dep-tic",
+    codigo: "OTIC",
+    sigla: "TIC",
+    nombre: "Oficina Asesora de Informática y Telecomunicaciones (TIC)",
+    tipo: "unidad_asesora",
+    dimensionesPrincipales: ["politica", "personal"],
+    competenciaSeguridadHumana: "Zonas WiFi comunitarias seguras, alfabetización digital barrial, infraestructura tecnológica de datos abiertos y ciberseguridad distrital.",
   },
 
-  // --- ALCALDÍAS LOCALES ---
+  // ==========================================
+  // 4. ALCALDÍAS LOCALES (GOBERNANZA TERRITORIAL)
+  // ==========================================
   {
     id: "dep-loc-1",
     codigo: "ALC-LOC-1",
@@ -200,7 +272,7 @@ export const DEPENDENCIAS_CARTAGENA_2026: DependenciaDistrital[] = [
     nombre: "Alcaldía Local 1: Histórica y del Caribe Norte",
     tipo: "alcaldia_local",
     dimensionesPrincipales: ["comunitaria", "personal"],
-    descripcion: "Administración territorial local del Centro Histórico, San Diego, Getsemaní, Bocagrande, La Boquilla y zona insular norte.",
+    competenciaSeguridadHumana: "Gobierno de proximidad en Centro Histórico, Getsemaní, Bocagrande, Castillogrande, La Boquilla, Manzanillo e Islas del Rosario.",
   },
   {
     id: "dep-loc-2",
@@ -209,7 +281,7 @@ export const DEPENDENCIAS_CARTAGENA_2026: DependenciaDistrital[] = [
     nombre: "Alcaldía Local 2: De la Virgen y Turística",
     tipo: "alcaldia_local",
     dimensionesPrincipales: ["comunitaria", "personal", "ambiental"],
-    descripcion: "Administración territorial local de Olaya Herrera, El Pozón, Boston, La Esperanza y entorno de la Ciénaga de la Virgen.",
+    competenciaSeguridadHumana: "Gobierno de proximidad en Olaya Herrera, El Pozón, Boston, La Esperanza, Fredonia y entorno de la Ciénaga de la Virgen.",
   },
   {
     id: "dep-loc-3",
@@ -218,6 +290,6 @@ export const DEPENDENCIAS_CARTAGENA_2026: DependenciaDistrital[] = [
     nombre: "Alcaldía Local 3: Industrial y de la Bahía",
     tipo: "alcaldia_local",
     dimensionesPrincipales: ["comunitaria", "personal", "economica"],
-    descripcion: "Administración territorial local de Nelson Mandela, El Socorro, San José de los Campanos, Pasacaballos y zona de Barú.",
+    competenciaSeguridadHumana: "Gobierno de proximidad en Nelson Mandela, San José de los Campanos, Pasacaballos, Membrillal, Albornoz y territorio de Barú.",
   },
 ];
