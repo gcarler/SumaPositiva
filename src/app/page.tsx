@@ -10,6 +10,7 @@ import { MesasView } from "@/features/mesas/views/mesas-view";
 import { GeovisorView } from "@/features/geovisor/views/geovisor-view";
 import { NoticiasView } from "@/features/noticias/views/noticias-view";
 import { TestimoniosView } from "@/features/testimonios/views/testimonios-view";
+import { DimensionesView } from "@/features/politicas/views/dimensiones-view";
 import { useNavigationStore } from "@/core/navigation/navigation-store";
 
 import { SidebarProvider } from "@/shared/ui/sidebar";
@@ -49,6 +50,8 @@ export default function Home() {
             >
               {vista === "inicio" ? (
                 <InicioView />
+              ) : vista === "dimensiones" ? (
+                <DimensionesView />
               ) : vista === "mesas" ? (
                 <MesasView />
               ) : vista === "geovisor" ? (

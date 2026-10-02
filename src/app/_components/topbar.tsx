@@ -91,6 +91,7 @@ function SesionButton() {
 const NAV: { id: VistaApp; label: string; labelCorto?: string }[] = [
   { id: "inicio", label: "Inicio" },
   { id: "explorar", label: "Líneas Estratégicas", labelCorto: "Explorar" },
+  { id: "dimensiones", label: "Dimensiones y Entidades", labelCorto: "Dimensiones" },
   { id: "mesas", label: "Mesas de Trabajo", labelCorto: "Mesas" },
   { id: "geovisor", label: "Geovisor Territorial", labelCorto: "Geovisor" },
   { id: "noticias", label: "Noticias", labelCorto: "Noticias" },
