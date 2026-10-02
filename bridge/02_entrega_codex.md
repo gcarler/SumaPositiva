@@ -1,3 +1,26 @@
+# Entrega Codex — Calidad de formularios, CRUD y PostgreSQL
+
+Fecha: 2026-10-02T13:39:28.806235+00:00
+Commit de implementación: `1f514b299ff796e450fd33df9580e47358238c85`
+Estado: CORREGIDO Y VERIFICADO EN EL ALCANCE. Dictamen independiente EAF/agy pendiente.
+
+- Revisión HTTP, permisos, CRUD constructor/legado, persistencia JSONB, constraints/FK/índices y función UUID. No hay SP de negocio de formularios en el inventario inspeccionado; las transacciones pertenecen al servicio FastAPI.
+- Corregida analítica de opciones del constructor y denominadores condicionales; validaciones legadas y bolsa de evidencias no pueden eludir controles del formulario.
+- Conservación: con respuestas no se cambian preguntas/secciones ni se elimina el formulario. API 409 y FK RESTRICT; debe cerrarse para preservar datos.
+- Migraciones 32 y 33 aplicadas; seis CHECK. Verificados upgrade/check/downgrade/reconstrucción aislados y conservación de datos existentes.
+- 96 pruebas aprobadas + 1 prueba de migraciones. Lint/formato del módulo y migraciones aprobados. `bun run check` y `bun run build` aprobados con advertencias previas documentadas.
+- Backend reiniciado con correcciones finales. HTTPS `/f/reporte-inseguridad` → 200, slug inexistente → 404; respuestas/analítica sin token → 401. Backend, frontend y Nginx activos.
+- Pruebas con escritura únicamente en bases `polis_test*`. Producción: inventario y lectura HTTP, sin respuestas sintéticas.
+
+Informe: [docs/calidad-formulario-geoespacial.md](../docs/calidad-formulario-geoespacial.md).
+Evidencias: `docs/evidencias/calidad-formularios-2026-10-02/`.
+
+Limitaciones pendientes: moderación/aprobación y capa de reportes del geovisor; paginación y prueba de carga; almacenamiento de objetos/EXIF; validación de pertenencia geográfica en servidor. Respuestas siguen internas. El control global `bun run backend:check` se detiene en 45 errores Ruff ajenos a formularios; no se declara aprobación global.
+
+---
+
+## Entrega anterior — contexto de implementación
+
 # Entrega Codex — Reporte geoespacial y formularios persistentes
 
 Fecha: 2026-10-02T04:22:10.855258+00:00
