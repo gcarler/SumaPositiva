@@ -8,7 +8,7 @@ import { Badge } from "@/shared/ui/badge";
 import { Switch } from "@/shared/ui/switch";
 import { Label } from "@/shared/ui/label";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { AnimatePresence, motion } from "framer-motion";
@@ -137,6 +137,17 @@ export function MesaPanel({
     mesa?.modoRelatoria ?? "hibrido"
   );
 
+  /* Registro de Asistencia Digital con QR en Puerta */
+  const registrosMesa = useRegistrosMesa(props.mesaId);
+  const registrarAsistente = useAsistenciaStore((s) => s.registrarAsistente);
+  const eliminarRegistro = useAsistenciaStore((s) => s.eliminarRegistro);
+  const exportarPlanillaCSV = useAsistenciaStore((s) => s.exportarPlanillaCSV);
+
+  const [filtroEnfoque, setFiltroEnfoque] = useState<string>("todos");
+  const [busquedaAsistente, setBusquedaAsistente] = useState("");
+  const [cartelModalAbierto, setCartelModalAbierto] = useState(false);
+  const [formManualAbierto, setFormManualAbierto] = useState(false);
+
   const [prevMesaId, setPrevMesaId] = useState(props.mesaId);
   if (prevMesaId !== props.mesaId) {
     setPrevMesaId(props.mesaId);
@@ -150,17 +161,6 @@ export function MesaPanel({
     setCartelModalAbierto(false);
     setFormManualAbierto(false);
   }
-
-  /* Registro de Asistencia Digital con QR en Puerta */
-  const registrosMesa = useRegistrosMesa(props.mesaId);
-  const registrarAsistente = useAsistenciaStore((s) => s.registrarAsistente);
-  const eliminarRegistro = useAsistenciaStore((s) => s.eliminarRegistro);
-  const exportarPlanillaCSV = useAsistenciaStore((s) => s.exportarPlanillaCSV);
-
-  const [filtroEnfoque, setFiltroEnfoque] = useState<string>("todos");
-  const [busquedaAsistente, setBusquedaAsistente] = useState("");
-  const [cartelModalAbierto, setCartelModalAbierto] = useState(false);
-  const [formManualAbierto, setFormManualAbierto] = useState(false);
 
   // Formulario manual rápido
   const [manualNombre, setManualNombre] = useState("");
@@ -177,6 +177,24 @@ export function MesaPanel({
   const [nombreSub, setNombreSub] = useState("");
   const [temaSub, setTemaSub] = useState("");
   const [participantesSub, setParticipantesSub] = useState("");
+
+  const registrosFiltrados = useMemo(() => {
+    return registrosMesa.filter((r) => {
+      const matchEnfoque = filtroEnfoque === "todos" || r.enfoqueDiferencial === filtroEnfoque;
+      const term = busquedaAsistente.toLowerCase().trim();
+      const matchBusqueda =
+        !term ||
+        r.nombreCompleto.toLowerCase().includes(term) ||
+        r.numeroDocumento.toLowerCase().includes(term) ||
+        r.organizacionOBarrio.toLowerCase().includes(term);
+      return matchEnfoque && matchBusqueda;
+    });
+  }, [registrosMesa, filtroEnfoque, busquedaAsistente]);
+
+  const resumenEnfoques = useMemo(
+    () => calcularResumenEnfoques(registrosMesa),
+    [registrosMesa]
+  );
 
   if (!mesa) {
     return (
@@ -307,24 +325,6 @@ export function MesaPanel({
       }
     }
   };
-
-  const registrosFiltrados = useMemo(() => {
-    return registrosMesa.filter((r) => {
-      const matchEnfoque = filtroEnfoque === "todos" || r.enfoqueDiferencial === filtroEnfoque;
-      const term = busquedaAsistente.toLowerCase().trim();
-      const matchBusqueda =
-        !term ||
-        r.nombreCompleto.toLowerCase().includes(term) ||
-        r.numeroDocumento.toLowerCase().includes(term) ||
-        r.organizacionOBarrio.toLowerCase().includes(term);
-      return matchEnfoque && matchBusqueda;
-    });
-  }, [registrosMesa, filtroEnfoque, busquedaAsistente]);
-
-  const resumenEnfoques = useMemo(
-    () => calcularResumenEnfoques(registrosMesa),
-    [registrosMesa]
-  );
 
   const urlAsistencia = typeof window !== "undefined"
     ? `${window.location.origin}/asistencia/${mesa.id}`
@@ -614,7 +614,7 @@ export function MesaPanel({
           <div className="grid grid-cols-1 md:grid-cols-12 gap-4 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-4 sm:p-5">
             {/* Columna QR */}
             <div className="md:col-span-5 flex flex-col items-center justify-center rounded-lg border border-[var(--border)] bg-[var(--surface-2)]/40 p-4 text-center">
-              <div className="relative rounded-xl border-2 border-white bg-white p-2.5 shadow-md">
+              <div className="relative rounded-xl border-2 border-[var(--border)] bg-[var(--surface-0)] p-2.5 shadow-md">
                 <img
                   src={urlQrImg}
                   alt={`QR Asistencia ${mesa.nombre}`}
@@ -1050,42 +1050,42 @@ export function MesaPanel({
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm"
+              className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--surface-0)]/80 p-4 backdrop-blur-sm"
             >
               <motion.div
                 initial={{ scale: 0.95, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.95, opacity: 0 }}
-                className="relative w-full max-w-lg rounded-2xl border border-[var(--border)] bg-white p-8 text-neutral-900 shadow-2xl space-y-6 text-center"
+                className="relative w-full max-w-lg rounded-2xl border border-[var(--border)] bg-[var(--surface-1)] p-8 text-[var(--text-primary)] shadow-2xl space-y-6 text-center"
               >
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => setCartelModalAbierto(false)}
-                  className="absolute right-4 top-4 text-neutral-500 hover:text-black"
+                  className="absolute right-4 top-4 text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
                 >
                   <X className="size-5" />
                 </Button>
 
                 <div className="space-y-1">
-                  <p className="text-xs font-bold uppercase tracking-widest text-neutral-500">
+                  <p className="text-xs font-bold uppercase tracking-widest text-[var(--text-tertiary)]">
                     Alcaldía Mayor de Cartagena de Indias
                   </p>
-                  <h2 className="text-lg font-black text-black">
+                  <h2 className="text-lg font-black text-[var(--text-primary)]">
                     POLÍTICA PÚBLICA DE SEGURIDAD HUMANA INTEGRAL
                   </h2>
-                  <Badge variant="outline" className="mt-1 border-neutral-300 text-neutral-700">
+                  <Badge variant="outline" className="mt-1">
                     Registro Oficial de Asistencia en Puerta
                   </Badge>
                 </div>
 
-                <div className="rounded-xl border border-neutral-200 bg-neutral-50 p-3 space-y-1">
-                  <p className="font-bold text-sm text-black">{mesa.nombre}</p>
-                  <p className="text-xs text-neutral-600">{mesa.lugar}</p>
+                <div className="rounded-xl border border-[var(--border)] bg-[var(--surface-2)]/60 p-3 space-y-1">
+                  <p className="font-bold text-sm text-[var(--text-primary)]">{mesa.nombre}</p>
+                  <p className="text-xs text-[var(--text-secondary)]">{mesa.lugar}</p>
                 </div>
 
                 {/* Gran código QR */}
-                <div className="mx-auto flex size-64 items-center justify-center rounded-2xl border-4 border-black bg-white p-3 shadow-lg">
+                <div className="mx-auto flex size-64 items-center justify-center rounded-2xl border-4 border-[var(--border-strong)] bg-[var(--surface-0)] p-3 shadow-lg">
                   <img
                     src={`https://api.qrserver.com/v1/create-qr-code/?size=320x320&data=${encodeURIComponent(urlAsistencia)}`}
                     alt="QR Cartel Asistencia"
@@ -1093,16 +1093,16 @@ export function MesaPanel({
                   />
                 </div>
 
-                <div className="space-y-1 text-xs text-neutral-700">
-                  <p className="font-bold text-sm text-black">
+                <div className="space-y-1 text-xs text-[var(--text-secondary)]">
+                  <p className="font-bold text-sm text-[var(--text-primary)]">
                     Apunta con la cámara de tu celular para registrarte
                   </p>
-                  <p className="font-mono text-[11px] text-neutral-500 truncate max-w-sm mx-auto">
+                  <p className="font-mono text-[11px] text-[var(--text-tertiary)] truncate max-w-sm mx-auto">
                     {urlAsistencia}
                   </p>
                 </div>
 
-                <div className="flex gap-2 pt-2 border-t border-neutral-200">
+                <div className="flex gap-2 pt-2 border-t border-[var(--border)]">
                   <Button
                     variant="outline"
                     className="w-1/2"

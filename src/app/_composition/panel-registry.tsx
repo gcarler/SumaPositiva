@@ -22,6 +22,7 @@ const FasePanel = dynamic(
   () => import("@/features/politicas/panels/fase-panel").then((m) => m.FasePanel),
   { ssr: false }
 );
+const LineaEditorPanel = dynamic(() => import("@/features/politicas/panels/linea-editor-panel").then(m => m.LineaEditorPanel));
 const LineaPanel = dynamic(
   () => import("@/features/politicas/panels/linea-panel").then((m) => m.LineaPanel),
   { ssr: false }
@@ -133,6 +134,7 @@ export const PANEL_REGISTRY: Record<
 > = {
   politica: PoliticaPanel as ComponentType<PanelComponentProps>,
   fase: FasePanel as ComponentType<PanelComponentProps>,
+  "linea-editor": LineaEditorPanel as ComponentType<PanelComponentProps>,
   linea: LineaPanel as ComponentType<PanelComponentProps>,
   aporte: AporteEditorPanel as ComponentType<PanelComponentProps>,
   sesion: SesionPanel as ComponentType<PanelComponentProps>,
@@ -173,6 +175,7 @@ export const PANEL_REGISTRY: Record<
 export const PANEL_WIDTHS: Record<PanelType, string> = {
   politica: "min(clamp(780px, 52vw, 1120px), 100vw)",
   fase: "min(clamp(720px, 48vw, 1040px), 100vw)",
+  "linea-editor": "min(820px, 100vw)",
   linea: "min(clamp(720px, 48vw, 1040px), 100vw)",
   aporte: "min(clamp(640px, 44vw, 920px), 100vw)",
   sesion: "min(clamp(520px, 38vw, 760px), 100vw)",

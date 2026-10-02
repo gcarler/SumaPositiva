@@ -145,7 +145,7 @@ export function AsistenciaCliente({ mesaId }: { mesaId: string }) {
       <header className="border-b border-[var(--border)] bg-[var(--surface-1)] py-3 px-4">
         <div className="mx-auto flex max-w-lg items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="flex size-9 items-center justify-center rounded-lg bg-[var(--ember)] text-white font-bold text-sm shadow-sm">
+            <div className="flex size-9 items-center justify-center rounded-lg bg-[var(--ember)] text-[var(--surface-0)] font-bold text-sm shadow-sm">
               <Building2 className="size-5" />
             </div>
             <div>

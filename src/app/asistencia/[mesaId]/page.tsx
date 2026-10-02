@@ -24,10 +24,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   return {
     title: `${titulo} | POLIS Cartagena`,
-    description,
+    description: descripcion,
     openGraph: {
       title: titulo,
-      description,
+      description: descripcion,
       siteName: "POLIS Cartagena — Seguridad Humana Integral",
     },
   };

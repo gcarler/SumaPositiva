@@ -12,6 +12,7 @@ import { create } from "zustand";
 export type PanelType =
   | "politica"
   | "fase"
+  | "linea-editor"
   | "linea"
   | "aporte"
   | "sesion"
@@ -47,6 +48,7 @@ export type ArbolPanel = "problemas" | "soluciones";
 export interface PanelPropsMap {
   politica: { politicaId: string };
   fase: { politicaId: string; faseId: string };
+  "linea-editor": { lineaId?: string };
   linea: { politicaId: string; faseId: string; lineaId: string };
   aporte: { politicaId: string; faseId: string; lineaId: string };
   /** Panel de sesión/identidad — no requiere props */

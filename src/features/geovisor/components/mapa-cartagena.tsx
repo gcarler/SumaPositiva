@@ -310,83 +310,174 @@ const MapaCartagena = forwardRef<MapaCartagenaHandle, MapaCartagenaProps>(functi
       {hoverInfo && (
         <div
           style={{
-            left: Math.min(Math.max(hoverInfo.pixel[0] + 16, 16), (contenedor?.clientWidth ?? 600) - 280),
-            top: Math.min(Math.max(hoverInfo.pixel[1] - 110, 16), (contenedor?.clientHeight ?? 500) - 190),
+            left: Math.min(Math.max(hoverInfo.pixel[0] + 16, 16), (contenedor?.clientWidth ?? 600) - 300),
+            top: Math.min(Math.max(hoverInfo.pixel[1] - 120, 16), (contenedor?.clientHeight ?? 500) - 230),
           }}
-          className="pointer-events-none absolute z-30 w-64 rounded-xl border border-[var(--border-strong)] bg-[var(--surface-1)]/95 p-3.5 shadow-panel backdrop-blur transition-all duration-75 animate-in fade-in zoom-in-95"
+          className="pointer-events-auto absolute z-30 w-72 rounded-xl border border-[var(--border-strong)] bg-[var(--surface-1)]/95 p-3.5 shadow-panel backdrop-blur transition-all duration-75 animate-in fade-in zoom-in-95"
         >
-          <div className="flex items-center gap-1.5 border-b border-[var(--border)] pb-2 mb-2">
-            <span className="text-xs">📍</span>
-            <span className="text-xs font-bold text-[var(--text-primary)] truncate">
-              {hoverInfo.nombre}
-            </span>
-          </div>
+          {hoverInfo.tipo === "mesa" ? (
+            <div className="space-y-2 text-xs">
+              {/* Semáforo badge */}
+              <div className="flex items-center justify-between border-b border-[var(--border)] pb-2">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-tertiary)]">
+                  Mesa de Trabajo
+                </span>
+                {(() => {
+                  const est = hoverInfo.mesaDetalle?.estado?.toUpperCase();
+                  const realizada =
+                    hoverInfo.mesaDetalle?.realizada === true ||
+                    est === "FINALIZADA" ||
+                    est === "ACTA_CONCERTADA" ||
+                    est === "REALIZADA";
+                  const enCurso = est === "EN_DELIBERACION" || est === "EN_CURSO";
 
-          {hoverInfo.ish !== undefined ? (
-            <div className="space-y-1.5 text-xs text-[var(--text-secondary)]">
-              {/* ISH con barra de progreso */}
-              <div>
-                <div className="flex justify-between items-baseline">
-                  <span className="text-[11px] text-[var(--text-tertiary)]">ISH:</span>
-                  <span className="font-bold tabular text-[var(--text-primary)]">
-                    {hoverInfo.ish}/100{" "}
-                    <span
-                      className={`text-[10px] font-semibold ${
-                        hoverInfo.ish >= 70
-                          ? "text-[var(--success)]"
-                          : hoverInfo.ish >= 50
-                            ? "text-[var(--warning)]"
-                            : "text-[var(--danger)]"
-                      }`}
-                    >
-                      {hoverInfo.ish >= 70
-                        ? "Favorable"
-                        : hoverInfo.ish >= 50
-                          ? "Moderado"
-                          : "Crítico"}
+                  if (realizada) {
+                    return (
+                      <span className="inline-flex items-center gap-1 rounded-full bg-[var(--success)]/15 px-2 py-0.5 text-[10px] font-bold text-[var(--success)]">
+                        🟢 Realizada / Cerrada
+                      </span>
+                    );
+                  }
+                  if (enCurso) {
+                    return (
+                      <span className="inline-flex items-center gap-1 rounded-full bg-[var(--info)]/15 px-2 py-0.5 text-[10px] font-bold text-[var(--info)]">
+                        🔵 En curso
+                      </span>
+                    );
+                  }
+                  return (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-[var(--ember)]/15 px-2 py-0.5 text-[10px] font-bold text-[var(--ember)]">
+                      🟡 Programada
                     </span>
-                  </span>
-                </div>
-                <div className="mt-1 h-1.5 w-full rounded-full bg-[var(--surface-2)] overflow-hidden">
-                  <div
-                    className="h-full rounded-full bg-[var(--ember)]"
-                    style={{ width: `${hoverInfo.ish}%` }}
-                  />
-                </div>
+                  );
+                })()}
               </div>
 
-              {/* Aportes y Alertas */}
-              <div className="flex justify-between text-[11px] pt-1">
-                <span>
-                  Aportes:{" "}
-                  <strong className="text-[var(--text-primary)]">
-                    {hoverInfo.aportes?.toLocaleString("es-CO")}
-                  </strong>
-                </span>
-                <span>
-                  Alertas:{" "}
-                  <strong className="text-[var(--warning)]">{hoverInfo.alertas}</strong>
-                </span>
-              </div>
+              {/* Nombre de la mesa */}
+              <p className="font-bold text-xs text-[var(--text-primary)] leading-snug">
+                {hoverInfo.nombre}
+              </p>
 
-              {/* Homicidios */}
-              {hoverInfo.homicidios !== undefined && (
-                <div className="flex justify-between text-[11px]">
-                  <span>Homicidios (2025):</span>
-                  <strong className="text-[var(--text-primary)]">
-                    {hoverInfo.homicidios}
-                  </strong>
-                </div>
+              {/* Territorio */}
+              {hoverInfo.mesaDetalle?.territorio && (
+                <p className="text-[11px] text-[var(--text-secondary)] flex items-center gap-1">
+                  <MapPin className="size-3 text-[var(--text-tertiary)] shrink-0" />
+                  <span className="truncate">{hoverInfo.mesaDetalle.territorio}</span>
+                </p>
               )}
 
-              <p className="border-t border-[var(--border)] pt-1.5 text-[10px] font-medium text-[var(--ember)]">
-                Clic para detalle →
-              </p>
+              {/* Fecha y horario */}
+              <div className="flex items-center justify-between text-[11px] border-t border-[var(--border)] pt-1.5 text-[var(--text-secondary)]">
+                <span>{hoverInfo.mesaDetalle?.fecha || "2026-10-15"}</span>
+                <span className="font-medium text-[var(--text-primary)]">
+                  {hoverInfo.mesaDetalle?.horario || "08:30 – 12:00"}
+                </span>
+              </div>
+
+              {/* Asistentes y aforo */}
+              <div className="flex items-center justify-between text-[11px] border-t border-[var(--border)] pt-1.5">
+                <span>
+                  Asistentes:{" "}
+                  <strong className="text-[var(--text-primary)] font-mono">
+                    {hoverInfo.mesaDetalle?.asistentes ?? 0}
+                  </strong>
+                </span>
+                <span>
+                  Aforo:{" "}
+                  <strong className="text-[var(--text-secondary)] font-mono">
+                    {hoverInfo.mesaDetalle?.aforo ?? 80}
+                  </strong>
+                </span>
+              </div>
+
+              {/* Botón Ver Detalle / Acta */}
+              <div className="border-t border-[var(--border)] pt-2">
+                <Button
+                  variant="ember"
+                  size="sm"
+                  className="w-full text-xs font-semibold h-7 shadow-sm"
+                  onClick={() => openPanel("mesa", { mesaId: hoverInfo.id })}
+                >
+                  Ver Detalle / Acta →
+                </Button>
+              </div>
             </div>
           ) : (
-            <p className="text-xs text-[var(--text-tertiary)]">
-              Barrio de Cartagena de Indias.
-            </p>
+            <>
+              <div className="flex items-center gap-1.5 border-b border-[var(--border)] pb-2 mb-2">
+                <span className="text-xs">📍</span>
+                <span className="text-xs font-bold text-[var(--text-primary)] truncate">
+                  {hoverInfo.nombre}
+                </span>
+              </div>
+
+              {hoverInfo.ish !== undefined ? (
+                <div className="space-y-1.5 text-xs text-[var(--text-secondary)]">
+                  {/* ISH con barra de progreso */}
+                  <div>
+                    <div className="flex justify-between items-baseline">
+                      <span className="text-[11px] text-[var(--text-tertiary)]">ISH:</span>
+                      <span className="font-bold tabular text-[var(--text-primary)]">
+                        {hoverInfo.ish}/100{" "}
+                        <span
+                          className={`text-[10px] font-semibold ${
+                            hoverInfo.ish >= 70
+                              ? "text-[var(--success)]"
+                              : hoverInfo.ish >= 50
+                                ? "text-[var(--warning)]"
+                                : "text-[var(--danger)]"
+                          }`}
+                        >
+                          {hoverInfo.ish >= 70
+                            ? "Favorable"
+                            : hoverInfo.ish >= 50
+                              ? "Moderado"
+                              : "Crítico"}
+                        </span>
+                      </span>
+                    </div>
+                    <div className="mt-1 h-1.5 w-full rounded-full bg-[var(--surface-2)] overflow-hidden">
+                      <div
+                        className="h-full rounded-full bg-[var(--ember)]"
+                        style={{ width: `${hoverInfo.ish}%` }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Aportes y Alertas */}
+                  <div className="flex justify-between text-[11px] pt-1">
+                    <span>
+                      Aportes:{" "}
+                      <strong className="text-[var(--text-primary)]">
+                        {hoverInfo.aportes?.toLocaleString("es-CO")}
+                      </strong>
+                    </span>
+                    <span>
+                      Alertas:{" "}
+                      <strong className="text-[var(--warning)]">{hoverInfo.alertas}</strong>
+                    </span>
+                  </div>
+
+                  {/* Homicidios */}
+                  {hoverInfo.homicidios !== undefined && (
+                    <div className="flex justify-between text-[11px]">
+                      <span>Homicidios (2025):</span>
+                      <strong className="text-[var(--text-primary)]">
+                        {hoverInfo.homicidios}
+                      </strong>
+                    </div>
+                  )}
+
+                  <p className="border-t border-[var(--border)] pt-1.5 text-[10px] font-medium text-[var(--ember)]">
+                    Clic para detalle →
+                  </p>
+                </div>
+              ) : (
+                <p className="text-xs text-[var(--text-tertiary)]">
+                  Barrio de Cartagena de Indias.
+                </p>
+              )}
+            </>
           )}
         </div>
       )}

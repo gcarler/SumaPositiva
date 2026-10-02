@@ -54,17 +54,17 @@ export const ENFOQUES_DIFERENCIALES_LABELS: Record<EnfoqueDiferencial, string> =
 
 export const ENFOQUES_DIFERENCIALES_BADGES: Record<EnfoqueDiferencial, { etiqueta: string; color: string }> = {
   ninguno: { etiqueta: "General", color: "var(--text-secondary)" },
-  afrodescendiente: { etiqueta: "Afrodescendiente", color: "#d97706" },
-  palenquero: { etiqueta: "Palenquero", color: "#ca8a04" },
-  raizal: { etiqueta: "Raizal", color: "#059669" },
-  indigena: { etiqueta: "Indígena", color: "#b45309" },
-  rrom: { etiqueta: "Rrom", color: "#7c3aed" },
-  victima_conflicto: { etiqueta: "Víctima del Conflicto", color: "#dc2626" },
-  discapacidad: { etiqueta: "Discapacidad", color: "#0284c7" },
-  adulto_mayor: { etiqueta: "Persona Mayor", color: "#475569" },
-  juventud: { etiqueta: "Juventud", color: "#16a34a" },
-  mujeres: { etiqueta: "Mujeres", color: "#db2777" },
-  lgbtiq: { etiqueta: "LGBTIQ+", color: "#9333ea" },
+  afrodescendiente: { etiqueta: "Afrodescendiente", color: "var(--ember)" },
+  palenquero: { etiqueta: "Palenquero", color: "var(--warning)" },
+  raizal: { etiqueta: "Raizal", color: "var(--success)" },
+  indigena: { etiqueta: "Indígena", color: "var(--ember)" },
+  rrom: { etiqueta: "Rrom", color: "var(--info)" },
+  victima_conflicto: { etiqueta: "Víctima del Conflicto", color: "var(--danger)" },
+  discapacidad: { etiqueta: "Discapacidad", color: "var(--info)" },
+  adulto_mayor: { etiqueta: "Persona Mayor", color: "var(--text-tertiary)" },
+  juventud: { etiqueta: "Juventud", color: "var(--success)" },
+  mujeres: { etiqueta: "Mujeres", color: "var(--ember)" },
+  lgbtiq: { etiqueta: "LGBTIQ+", color: "var(--info)" },
 };
 
 export const TIPOS_DOCUMENTO_LABELS: Record<TipoDocumento, string> = {

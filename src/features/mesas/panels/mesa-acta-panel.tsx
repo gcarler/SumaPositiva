@@ -8,18 +8,9 @@ import {
   Printer,
   Share2,
   Building2,
-  CalendarDays,
-  Clock,
-  MapPin,
-  Users,
-  ShieldCheck,
-  FileCheck2,
   Scale,
-  CheckCircle,
-  FileText,
 } from "lucide-react";
 import { Button } from "@/shared/ui/button";
-import { Badge } from "@/shared/ui/badge";
 import { PanelShell } from "@/core/panels/panel-shell";
 import { usePanels } from "@/core/panels/panel-store";
 import { useMesasStore } from "@/features/mesas/state/mesas-store";
@@ -159,11 +150,11 @@ export function MesaActaPanel({
         @media print {
           @page {
             size: letter portrait;
-            margin: 1.8cm 1.5cm 1.8cm 1.5cm;
+            margin: 1.6cm 1.4cm 1.6cm 1.4cm;
           }
           body {
-            background: white !important;
-            color: #111827 !important;
+            background-color: #ffffff !important;
+            color: #000000 !important;
             font-size: 11pt !important;
           }
           nav, header, footer, aside, button, .no-print, [role="dialog"] > div:first-child {
@@ -179,7 +170,13 @@ export function MesaActaPanel({
             padding: 0 !important;
             box-shadow: none !important;
             border: none !important;
-            background: white !important;
+            background: #ffffff !important;
+            color: #000000 !important;
+          }
+          #documento-acta-oficial * {
+            color: #000000 !important;
+            border-color: #333333 !important;
+            background-color: transparent !important;
           }
           .page-break-avoid {
             break-inside: avoid !important;
@@ -216,39 +213,39 @@ export function MesaActaPanel({
         {/* DOCUMENTO PRINCIPAL DEL ACTA */}
         <article
           id="documento-acta-oficial"
-          className="rounded-2xl border border-[var(--border)] bg-[var(--surface-1)] p-6 sm:p-10 shadow-sm print:border-none print:p-0 print:shadow-none space-y-8"
+          className="rounded-2xl border border-[var(--border)] bg-[var(--surface-1)] p-6 sm:p-10 shadow-sm space-y-8"
         >
           {/* =========================================================
               ENCABEZADO INSTITUCIONAL
              ========================================================= */}
-          <header className="border-b-2 border-black/80 pb-6 text-center space-y-2.5 page-break-avoid">
+          <header className="border-b-2 border-[var(--border-strong)] pb-6 text-center space-y-2.5 page-break-avoid">
             <div className="flex items-center justify-center gap-3">
-              <div className="flex size-11 items-center justify-center rounded-xl bg-black text-white font-bold">
-                <Building2 className="size-6 text-white" />
+              <div className="flex size-11 items-center justify-center rounded-xl bg-[var(--surface-2)] text-[var(--text-primary)] font-bold">
+                <Building2 className="size-6 text-[var(--ember)]" />
               </div>
               <div className="text-left">
-                <p className="text-xs font-bold uppercase tracking-widest text-[var(--text-primary)] print:text-black">
+                <p className="text-xs font-bold uppercase tracking-widest text-[var(--text-primary)]">
                   Alcaldía Mayor de Cartagena de Indias
                 </p>
-                <p className="text-xs font-semibold text-[var(--text-secondary)] print:text-neutral-700">
+                <p className="text-xs font-semibold text-[var(--text-secondary)]">
                   Secretaría de Planeación Distrital • Dirección de Participación
                 </p>
               </div>
             </div>
 
             <div className="pt-2">
-              <span className="inline-block rounded-full border border-black/30 px-3 py-0.5 text-[10px] font-mono uppercase tracking-widest text-[var(--text-secondary)] print:text-black">
+              <span className="inline-block rounded-full border border-[var(--border)] px-3 py-0.5 text-[10px] font-mono uppercase tracking-widest text-[var(--text-secondary)]">
                 POLIS • SISTEMA DISTRITAL DE SEGURIDAD HUMANA INTEGRAL
               </span>
-              <h1 className="mt-2 text-xl sm:text-2xl font-black uppercase tracking-tight text-[var(--text-primary)] print:text-black">
+              <h1 className="mt-2 text-xl sm:text-2xl font-black uppercase tracking-tight text-[var(--text-primary)]">
                 Acta de Consulta Ciudadana
               </h1>
-              <p className="text-sm font-semibold text-[var(--ember)] print:text-black">
+              <p className="text-sm font-semibold text-[var(--ember)]">
                 POLÍTICA PÚBLICA DE SEGURIDAD HUMANA INTEGRAL (2026–2036)
               </p>
             </div>
 
-            <p className="mx-auto max-w-2xl text-[11px] leading-relaxed italic text-[var(--text-secondary)] print:text-neutral-700 border-t border-[var(--border)] print:border-black/20 pt-2">
+            <p className="mx-auto max-w-2xl text-[11px] leading-relaxed italic text-[var(--text-secondary)] border-t border-[var(--border)] pt-2">
               En cumplimiento del Decreto 037 de 2026 del Ministerio del Interior, la Ley Estatutaria 1757 de 2015 de Participación Ciudadana y las garantías de devolución motivada de la Sentencia C-150 de 2015 de la Corte Constitucional de Colombia.
             </p>
           </header>
@@ -257,84 +254,84 @@ export function MesaActaPanel({
               1. DATOS ADMINISTRATIVOS
              ========================================================= */}
           <section className="space-y-3 page-break-avoid">
-            <div className="flex items-center gap-2 border-b border-[var(--border)] print:border-black/30 pb-1">
-              <span className="flex size-5 items-center justify-center rounded-full bg-[var(--ember)] text-white text-[11px] font-bold print:bg-black">
+            <div className="flex items-center gap-2 border-b border-[var(--border)] pb-1">
+              <span className="flex size-5 items-center justify-center rounded-full bg-[var(--ember)] text-[var(--surface-0)] text-[11px] font-bold">
                 1
               </span>
-              <h2 className="text-sm font-bold uppercase tracking-wider text-[var(--text-primary)] print:text-black">
+              <h2 className="text-sm font-bold uppercase tracking-wider text-[var(--text-primary)]">
                 Datos Administrativos y de Convocatoria
               </h2>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs rounded-xl border border-[var(--border)] print:border-black/30 p-4 bg-[var(--surface-2)]/40 print:bg-transparent">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs rounded-xl border border-[var(--border)] p-4 bg-[var(--surface-2)]/40">
               <div className="space-y-1">
-                <span className="font-semibold text-[var(--text-tertiary)] print:text-neutral-600 block uppercase text-[10px]">
+                <span className="font-semibold text-[var(--text-tertiary)] block uppercase text-[10px]">
                   Código Oficial
                 </span>
-                <span className="font-mono font-bold text-[var(--text-primary)] print:text-black text-sm">
+                <span className="font-mono font-bold text-[var(--text-primary)] text-sm">
                   {mesa.codigoOficial || `ACTA-${mesa.id.toUpperCase()}`}
                 </span>
               </div>
 
               <div className="space-y-1">
-                <span className="font-semibold text-[var(--text-tertiary)] print:text-neutral-600 block uppercase text-[10px]">
+                <span className="font-semibold text-[var(--text-tertiary)] block uppercase text-[10px]">
                   Fecha de Realización
                 </span>
-                <span className="font-medium text-[var(--text-primary)] print:text-black capitalize">
+                <span className="font-medium text-[var(--text-primary)] capitalize">
                   {fechaFormateada}
                 </span>
               </div>
 
               <div className="space-y-1">
-                <span className="font-semibold text-[var(--text-tertiary)] print:text-neutral-600 block uppercase text-[10px]">
+                <span className="font-semibold text-[var(--text-tertiary)] block uppercase text-[10px]">
                   Horario Sesión
                 </span>
-                <span className="font-medium text-[var(--text-primary)] print:text-black">
+                <span className="font-medium text-[var(--text-primary)]">
                   {mesa.horario || "08:30 – 12:00"}
                 </span>
               </div>
 
               <div className="space-y-1">
-                <span className="font-semibold text-[var(--text-tertiary)] print:text-neutral-600 block uppercase text-[10px]">
+                <span className="font-semibold text-[var(--text-tertiary)] block uppercase text-[10px]">
                   Estado del Acta
                 </span>
-                <span className="font-bold text-[var(--success)] print:text-black uppercase">
+                <span className="font-bold text-[var(--success)] uppercase">
                   {mesa.estado === "cerrada" ? "Cerrada y Validada" : "En Concertación"}
                 </span>
               </div>
 
-              <div className="col-span-2 space-y-1 pt-2 border-t border-[var(--border)] print:border-black/20">
-                <span className="font-semibold text-[var(--text-tertiary)] print:text-neutral-600 block uppercase text-[10px]">
+              <div className="col-span-2 space-y-1 pt-2 border-t border-[var(--border)]">
+                <span className="font-semibold text-[var(--text-tertiary)] block uppercase text-[10px]">
                   Nombre de la Mesa
                 </span>
-                <span className="font-bold text-[var(--text-primary)] print:text-black">
+                <span className="font-bold text-[var(--text-primary)]">
                   {mesa.nombre}
                 </span>
               </div>
 
-              <div className="col-span-2 space-y-1 pt-2 border-t border-[var(--border)] print:border-black/20">
-                <span className="font-semibold text-[var(--text-tertiary)] print:text-neutral-600 block uppercase text-[10px]">
+              <div className="col-span-2 space-y-1 pt-2 border-t border-[var(--border)]">
+                <span className="font-semibold text-[var(--text-tertiary)] block uppercase text-[10px]">
                   Territorio / Localidad
                 </span>
-                <span className="text-[var(--text-primary)] print:text-black">
+                <span className="text-[var(--text-primary)]">
                   {mesaAgenda?.territorio || "Distrito de Cartagena"}
                 </span>
               </div>
 
-              <div className="col-span-2 space-y-1 pt-2 border-t border-[var(--border)] print:border-black/20">
-                <span className="font-semibold text-[var(--text-tertiary)] print:text-neutral-600 block uppercase text-[10px]">
+              <div className="col-span-2 space-y-1 pt-2 border-t border-[var(--border)]">
+                <span className="font-semibold text-[var(--text-tertiary)] block uppercase text-[10px]">
                   Lugar / Sede de Encuentro
                 </span>
-                <span className="text-[var(--text-primary)] print:text-black">
+                <span className="text-[var(--text-primary)]">
                   {mesa.lugar}
                 </span>
               </div>
 
-              <div className="col-span-2 space-y-1 pt-2 border-t border-[var(--border)] print:border-black/20">
-                <span className="font-semibold text-[var(--text-tertiary)] print:text-neutral-600 block uppercase text-[10px]">
+              <div className="col-span-2 space-y-1 pt-2 border-t border-[var(--border)]">
+                <span className="font-semibold text-[var(--text-tertiary)] block uppercase text-[10px]">
                   Entidades Convocantes y Facilitación
                 </span>
-                <span className="text-[var(--text-primary)] print:text-black">
+                <span className="text-[var(--text-primary)]">
                   {mesa.entidad} • Facilitador: {mesa.facilitador || "Equipo Técnico SPD"}
                 </span>
               </div>
@@ -345,21 +342,21 @@ export function MesaActaPanel({
               2. PARTICIPACIÓN Y QUÓRUM
              ========================================================= */}
           <section className="space-y-3 page-break-avoid">
-            <div className="flex items-center gap-2 border-b border-[var(--border)] print:border-black/30 pb-1">
-              <span className="flex size-5 items-center justify-center rounded-full bg-[var(--ember)] text-white text-[11px] font-bold print:bg-black">
+            <div className="flex items-center gap-2 border-b border-[var(--border)] pb-1">
+              <span className="flex size-5 items-center justify-center rounded-full bg-[var(--ember)] text-[var(--surface-0)] text-[11px] font-bold">
                 2
               </span>
-              <h2 className="text-sm font-bold uppercase tracking-wider text-[var(--text-primary)] print:text-black">
+              <h2 className="text-sm font-bold uppercase tracking-wider text-[var(--text-primary)]">
                 Participación, Quórum y Enfoque Diferencial
               </h2>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <div className="rounded-xl border border-[var(--border)] print:border-black/30 p-3 bg-[var(--surface-2)]/30 print:bg-transparent text-center">
-                <span className="text-[10px] font-semibold uppercase text-[var(--text-tertiary)] print:text-neutral-600 block">
+              <div className="rounded-xl border border-[var(--border)] p-3 bg-[var(--surface-2)]/30 text-center">
+                <span className="text-[10px] font-semibold uppercase text-[var(--text-tertiary)] block">
                   Total Asistentes Registrados
                 </span>
-                <span className="text-2xl font-black text-[var(--text-primary)] print:text-black">
+                <span className="text-2xl font-black text-[var(--text-primary)]">
                   {totalAsistentes}
                 </span>
                 <span className="text-[10px] text-[var(--text-secondary)] block mt-0.5">
@@ -367,11 +364,11 @@ export function MesaActaPanel({
                 </span>
               </div>
 
-              <div className="rounded-xl border border-[var(--border)] print:border-black/30 p-3 bg-[var(--surface-2)]/30 print:bg-transparent text-center">
-                <span className="text-[10px] font-semibold uppercase text-[var(--text-tertiary)] print:text-neutral-600 block">
+              <div className="rounded-xl border border-[var(--border)] p-3 bg-[var(--surface-2)]/30 text-center">
+                <span className="text-[10px] font-semibold uppercase text-[var(--text-tertiary)] block">
                   Plenaria vs Submesas
                 </span>
-                <span className="text-sm font-bold text-[var(--text-primary)] print:text-black mt-1 block">
+                <span className="text-sm font-bold text-[var(--text-primary)] mt-1 block">
                   {mesa.asistentesPlenaria ?? mesa.asistentesPlenaaria ?? Math.round(totalAsistentes * 0.4)} en Plenaria
                 </span>
                 <span className="text-[10px] text-[var(--text-secondary)] block">
@@ -379,22 +376,22 @@ export function MesaActaPanel({
                 </span>
               </div>
 
-              <div className="rounded-xl border border-[var(--border)] print:border-black/30 p-3 bg-[var(--surface-2)]/30 print:bg-transparent text-center">
-                <span className="text-[10px] font-semibold uppercase text-[var(--text-tertiary)] print:text-neutral-600 block">
+              <div className="rounded-xl border border-[var(--border)] p-3 bg-[var(--surface-2)]/30 text-center">
+                <span className="text-[10px] font-semibold uppercase text-[var(--text-tertiary)] block">
                   Aforo de Capacidad
                 </span>
-                <span className="text-sm font-bold text-[var(--text-primary)] print:text-black mt-1 block">
+                <span className="text-sm font-bold text-[var(--text-primary)] mt-1 block">
                   {mesa.aforo ? `${mesa.aforo} personas máx.` : "Capacidad regulada"}
                 </span>
-                <span className="text-[10px] text-[var(--success)] print:text-black block font-medium">
+                <span className="text-[10px] text-[var(--success)] block font-medium">
                   Planilla Digital en Puerta
                 </span>
               </div>
             </div>
 
             {/* Resumen por Enfoque Diferencial */}
-            <div className="rounded-xl border border-[var(--border)] print:border-black/30 p-3 bg-[var(--surface-2)]/20 print:bg-transparent">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-tertiary)] print:text-black block mb-2">
+            <div className="rounded-xl border border-[var(--border)] p-3 bg-[var(--surface-2)]/20">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-tertiary)] block mb-2">
                 Desglose Poblacional y Étnico (Ley 1757 / DNP):
               </span>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
@@ -403,12 +400,12 @@ export function MesaActaPanel({
                   .map(([enf, count]) => (
                     <div
                       key={enf}
-                      className="flex items-center justify-between rounded-lg border border-[var(--border)] print:border-black/20 px-2.5 py-1 bg-[var(--surface-1)] print:bg-transparent"
+                      className="flex items-center justify-between rounded-lg border border-[var(--border)] px-2.5 py-1 bg-[var(--surface-1)]"
                     >
-                      <span className="text-[11px] text-[var(--text-secondary)] print:text-black truncate">
+                      <span className="text-[11px] text-[var(--text-secondary)] truncate">
                         {ENFOQUES_DIFERENCIALES_LABELS[enf]}
                       </span>
-                      <span className="font-bold text-[var(--text-primary)] print:text-black ml-1.5 font-mono">
+                      <span className="font-bold text-[var(--text-primary)] ml-1.5 font-mono">
                         {count} ({resumenEnfoques.porcentajes[enf]}%)
                       </span>
                     </div>
@@ -426,20 +423,20 @@ export function MesaActaPanel({
               3. ACUERDOS DE LA PLENARIA DE APERTURA
              ========================================================= */}
           <section className="space-y-3 page-break-avoid">
-            <div className="flex items-center gap-2 border-b border-[var(--border)] print:border-black/30 pb-1">
-              <span className="flex size-5 items-center justify-center rounded-full bg-[var(--ember)] text-white text-[11px] font-bold print:bg-black">
+            <div className="flex items-center gap-2 border-b border-[var(--border)] pb-1">
+              <span className="flex size-5 items-center justify-center rounded-full bg-[var(--ember)] text-[var(--surface-0)] text-[11px] font-bold">
                 3
               </span>
-              <h2 className="text-sm font-bold uppercase tracking-wider text-[var(--text-primary)] print:text-black">
+              <h2 className="text-sm font-bold uppercase tracking-wider text-[var(--text-primary)]">
                 Acuerdos de la Plenaria de Apertura
               </h2>
             </div>
 
-            <div className="rounded-xl border border-[var(--border)] print:border-black/30 p-4 bg-[var(--surface-2)]/30 print:bg-transparent text-xs sm:text-sm leading-relaxed text-[var(--text-secondary)] print:text-black">
+            <div className="rounded-xl border border-[var(--border)] p-4 bg-[var(--surface-2)]/30 text-xs sm:text-sm leading-relaxed text-[var(--text-secondary)]">
               {mesa.plenaria.acuerdos?.trim() ? (
                 <p className="whitespace-pre-line">{mesa.plenaria.acuerdos}</p>
               ) : (
-                <p className="italic text-[var(--text-tertiary)] print:text-neutral-700">
+                <p className="italic text-[var(--text-tertiary)]">
                   La plenaria de apertura acordó trabajar con metodología de marco lógico participativo, priorizando las problemáticas críticas de convivencia, protección de la vida y garantías socioeconómicas territoriales bajo los 7 ejes de Seguridad Humana de la ONU.
                 </p>
               )}
@@ -450,32 +447,32 @@ export function MesaActaPanel({
               4. MATRIZ DE MARCO LÓGICO (MML)
              ========================================================= */}
           <section className="space-y-3 page-break-avoid">
-            <div className="flex items-center gap-2 border-b border-[var(--border)] print:border-black/30 pb-1">
-              <span className="flex size-5 items-center justify-center rounded-full bg-[var(--ember)] text-white text-[11px] font-bold print:bg-black">
+            <div className="flex items-center gap-2 border-b border-[var(--border)] pb-1">
+              <span className="flex size-5 items-center justify-center rounded-full bg-[var(--ember)] text-[var(--surface-0)] text-[11px] font-bold">
                 4
               </span>
-              <h2 className="text-sm font-bold uppercase tracking-wider text-[var(--text-primary)] print:text-black">
+              <h2 className="text-sm font-bold uppercase tracking-wider text-[var(--text-primary)]">
                 Matriz de Marco Lógico (MML) — Árbol de Problemas y Soluciones
               </h2>
             </div>
 
             {/* Tabla MML formateada */}
-            <div className="overflow-x-auto rounded-xl border border-[var(--border)] print:border-black text-xs">
+            <div className="overflow-x-auto rounded-xl border border-[var(--border)] text-xs">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="bg-[var(--surface-2)] print:bg-neutral-100 border-b border-[var(--border)] print:border-black text-[11px] uppercase tracking-wider">
-                    <th className="p-2.5 font-bold text-[var(--text-primary)] print:text-black w-1/4 border-r border-[var(--border)] print:border-black">
+                  <tr className="bg-[var(--surface-2)] border-b border-[var(--border)] text-[11px] uppercase tracking-wider">
+                    <th className="p-2.5 font-bold text-[var(--text-primary)] w-1/4 border-r border-[var(--border)]">
                       Dimensión / Eje
                     </th>
-                    <th className="p-2.5 font-bold text-[var(--text-primary)] print:text-black w-3/8 border-r border-[var(--border)] print:border-black">
+                    <th className="p-2.5 font-bold text-[var(--text-primary)] w-3/8 border-r border-[var(--border)]">
                       Diagnóstico: Causas y Problema
                     </th>
-                    <th className="p-2.5 font-bold text-[var(--text-primary)] print:text-black w-3/8">
+                    <th className="p-2.5 font-bold text-[var(--text-primary)] w-3/8">
                       Propuesta: Medios y Fines
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[var(--border)] print:divide-black">
+                <tbody className="divide-y divide-[var(--border)]">
                   {mesa.submesas.length > 0 ? (
                     mesa.submesas.map((sm, index) => {
                       const probCentral =
@@ -486,33 +483,33 @@ export function MesaActaPanel({
                       const medios = sm.arbolSoluciones.medios.map((m) => m.texto).join("; ") || "Medios y programas sugeridos";
 
                       return (
-                        <tr key={sm.id} className={index % 2 === 1 ? "bg-[var(--surface-2)]/30 print:bg-neutral-50" : ""}>
-                          <td className="p-2.5 font-semibold text-[var(--text-primary)] print:text-black border-r border-[var(--border)] print:border-black align-top">
+                        <tr key={sm.id} className={index % 2 === 1 ? "bg-[var(--surface-2)]/30" : ""}>
+                          <td className="p-2.5 font-semibold text-[var(--text-primary)] border-r border-[var(--border)] align-top">
                             <div>{sm.nombre}</div>
-                            <span className="text-[10px] text-[var(--text-tertiary)] print:text-neutral-600 block mt-0.5">
+                            <span className="text-[10px] text-[var(--text-tertiary)] block mt-0.5">
                               {sm.tema || "Eje temático"}
                             </span>
                           </td>
-                          <td className="p-2.5 border-r border-[var(--border)] print:border-black align-top space-y-1">
+                          <td className="p-2.5 border-r border-[var(--border)] align-top space-y-1">
                             <div>
-                              <strong className="text-[var(--text-primary)] print:text-black block text-[11px]">
+                              <strong className="text-[var(--text-primary)] block text-[11px]">
                                 Problema Central:
                               </strong>
                               <span>{probCentral}</span>
                             </div>
-                            <div className="pt-1 text-[11px] text-[var(--text-secondary)] print:text-neutral-700">
+                            <div className="pt-1 text-[11px] text-[var(--text-secondary)]">
                               <span className="font-semibold">Causas raíz: </span>
                               {causas}
                             </div>
                           </td>
                           <td className="p-2.5 align-top space-y-1">
                             <div>
-                              <strong className="text-[var(--text-primary)] print:text-black block text-[11px]">
+                              <strong className="text-[var(--text-primary)] block text-[11px]">
                                 Objetivo / Solución:
                               </strong>
                               <span>{objCentral}</span>
                             </div>
-                            <div className="pt-1 text-[11px] text-[var(--text-secondary)] print:text-neutral-700">
+                            <div className="pt-1 text-[11px] text-[var(--text-secondary)]">
                               <span className="font-semibold">Medios de acción: </span>
                               {medios}
                             </div>
@@ -522,10 +519,10 @@ export function MesaActaPanel({
                     })
                   ) : (
                     <tr>
-                      <td className="p-2.5 font-semibold text-[var(--text-primary)] print:text-black border-r border-[var(--border)] print:border-black align-top">
+                      <td className="p-2.5 font-semibold text-[var(--text-primary)] border-r border-[var(--border)] align-top">
                         {mesa.dimensionOnu || "Seguridad Humana General"}
                       </td>
-                      <td className="p-2.5 border-r border-[var(--border)] print:border-black align-top space-y-1">
+                      <td className="p-2.5 border-r border-[var(--border)] align-top space-y-1">
                         <strong className="block text-[11px]">Problema Priorizado:</strong>
                         <span>
                           {contenido?.proposito ||
@@ -549,16 +546,16 @@ export function MesaActaPanel({
               5. INFORME Y RELATORÍA COMUNITARIA
              ========================================================= */}
           <section className="space-y-3 page-break-avoid">
-            <div className="flex items-center gap-2 border-b border-[var(--border)] print:border-black/30 pb-1">
-              <span className="flex size-5 items-center justify-center rounded-full bg-[var(--ember)] text-white text-[11px] font-bold print:bg-black">
+            <div className="flex items-center gap-2 border-b border-[var(--border)] pb-1">
+              <span className="flex size-5 items-center justify-center rounded-full bg-[var(--ember)] text-[var(--surface-0)] text-[11px] font-bold">
                 5
               </span>
-              <h2 className="text-sm font-bold uppercase tracking-wider text-[var(--text-primary)] print:text-black">
+              <h2 className="text-sm font-bold uppercase tracking-wider text-[var(--text-primary)]">
                 Memoria Técnica y Relatoría Comunitaria
               </h2>
             </div>
 
-            <div className="rounded-xl border border-[var(--border)] print:border-black/30 p-4 bg-[var(--surface-2)]/30 print:bg-transparent text-xs sm:text-sm leading-relaxed text-[var(--text-secondary)] print:text-black space-y-2">
+            <div className="rounded-xl border border-[var(--border)] p-4 bg-[var(--surface-2)]/30 text-xs sm:text-sm leading-relaxed text-[var(--text-secondary)] space-y-2">
               {mesa.informe?.trim() ? (
                 <p className="whitespace-pre-line">{mesa.informe}</p>
               ) : (
@@ -573,16 +570,16 @@ export function MesaActaPanel({
               6. COMPROMISOS Y DEVOLUCIÓN CIUDADANA
              ========================================================= */}
           <section className="space-y-3 page-break-avoid">
-            <div className="flex items-center gap-2 border-b border-[var(--border)] print:border-black/30 pb-1">
-              <span className="flex size-5 items-center justify-center rounded-full bg-[var(--ember)] text-white text-[11px] font-bold print:bg-black">
+            <div className="flex items-center gap-2 border-b border-[var(--border)] pb-1">
+              <span className="flex size-5 items-center justify-center rounded-full bg-[var(--ember)] text-[var(--surface-0)] text-[11px] font-bold">
                 6
               </span>
-              <h2 className="text-sm font-bold uppercase tracking-wider text-[var(--text-primary)] print:text-black">
+              <h2 className="text-sm font-bold uppercase tracking-wider text-[var(--text-primary)]">
                 Compromisos y Garantías de Devolución Ciudadana (Sentencia C-150/15)
               </h2>
             </div>
 
-            <div className="rounded-xl border border-[var(--border)] print:border-black/30 p-4 bg-[var(--surface-2)]/30 print:bg-transparent text-xs leading-relaxed space-y-2 text-[var(--text-secondary)] print:text-black">
+            <div className="rounded-xl border border-[var(--border)] p-4 bg-[var(--surface-2)]/30 text-xs leading-relaxed space-y-2 text-[var(--text-secondary)]">
               <p>
                 En aplicación estricta de la Ley Estatutaria 1757 de 2015 y la jurisprudencia de la Corte Constitucional (Sentencia C-150 de 2015), la Administración Distrital asume los siguientes compromisos vinculantes:
               </p>
@@ -604,72 +601,72 @@ export function MesaActaPanel({
               7. CUADRO DE FIRMAS
              ========================================================= */}
           <section className="space-y-4 page-break-avoid pt-4">
-            <div className="flex items-center gap-2 border-b border-[var(--border)] print:border-black/30 pb-1">
-              <span className="flex size-5 items-center justify-center rounded-full bg-[var(--ember)] text-white text-[11px] font-bold print:bg-black">
+            <div className="flex items-center gap-2 border-b border-[var(--border)] pb-1">
+              <span className="flex size-5 items-center justify-center rounded-full bg-[var(--ember)] text-[var(--surface-0)] text-[11px] font-bold">
                 7
               </span>
-              <h2 className="text-sm font-bold uppercase tracking-wider text-[var(--text-primary)] print:text-black">
+              <h2 className="text-sm font-bold uppercase tracking-wider text-[var(--text-primary)]">
                 Constancia y Cuadro Oficial de Firmas
               </h2>
             </div>
 
-            <p className="text-xs text-[var(--text-secondary)] print:text-neutral-700 italic">
+            <p className="text-xs text-[var(--text-secondary)] italic">
               En constancia de lo anterior y para dar fe de la veracidad y legitimidad del proceso deliberativo, firman los delegados de la jornada:
             </p>
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6">
               {/* Firma 1 */}
               <div className="flex flex-col justify-end text-center space-y-1">
-                <div className="border-b-2 border-black/80 pb-8 h-16" />
-                <span className="text-xs font-bold text-[var(--text-primary)] print:text-black block pt-1">
+                <div className="border-b-2 border-[var(--border-strong)] pb-8 h-16" />
+                <span className="text-xs font-bold text-[var(--text-primary)] block pt-1">
                   Facilitador Líder
                 </span>
-                <span className="text-[10px] text-[var(--text-tertiary)] print:text-neutral-600 block">
+                <span className="text-[10px] text-[var(--text-tertiary)] block">
                   {mesa.facilitador || "Alcaldía de Cartagena"}
                 </span>
-                <span className="text-[9px] text-[var(--text-tertiary)] print:text-neutral-500 block">
+                <span className="text-[9px] text-[var(--text-tertiary)] block">
                   C.C. ___________________
                 </span>
               </div>
 
               {/* Firma 2 */}
               <div className="flex flex-col justify-end text-center space-y-1">
-                <div className="border-b-2 border-black/80 pb-8 h-16" />
-                <span className="text-xs font-bold text-[var(--text-primary)] print:text-black block pt-1">
+                <div className="border-b-2 border-[var(--border-strong)] pb-8 h-16" />
+                <span className="text-xs font-bold text-[var(--text-primary)] block pt-1">
                   Relator Técnico
                 </span>
-                <span className="text-[10px] text-[var(--text-tertiary)] print:text-neutral-600 block">
+                <span className="text-[10px] text-[var(--text-tertiary)] block">
                   Equipo Metodológico SPD
                 </span>
-                <span className="text-[9px] text-[var(--text-tertiary)] print:text-neutral-500 block">
+                <span className="text-[9px] text-[var(--text-tertiary)] block">
                   C.C. ___________________
                 </span>
               </div>
 
               {/* Firma 3 */}
               <div className="flex flex-col justify-end text-center space-y-1">
-                <div className="border-b-2 border-black/80 pb-8 h-16" />
-                <span className="text-xs font-bold text-[var(--text-primary)] print:text-black block pt-1">
+                <div className="border-b-2 border-[var(--border-strong)] pb-8 h-16" />
+                <span className="text-xs font-bold text-[var(--text-primary)] block pt-1">
                   Representante Comunitario / JAC
                 </span>
-                <span className="text-[10px] text-[var(--text-tertiary)] print:text-neutral-600 block">
+                <span className="text-[10px] text-[var(--text-tertiary)] block">
                   Delegado Comunitario Territorial
                 </span>
-                <span className="text-[9px] text-[var(--text-tertiary)] print:text-neutral-500 block">
+                <span className="text-[9px] text-[var(--text-tertiary)] block">
                   C.C. ___________________
                 </span>
               </div>
 
               {/* Firma 4 */}
               <div className="flex flex-col justify-end text-center space-y-1">
-                <div className="border-b-2 border-black/80 pb-8 h-16" />
-                <span className="text-xs font-bold text-[var(--text-primary)] print:text-black block pt-1">
+                <div className="border-b-2 border-[var(--border-strong)] pb-8 h-16" />
+                <span className="text-xs font-bold text-[var(--text-primary)] block pt-1">
                   Delegado Enfoque Diferencial
                 </span>
-                <span className="text-[10px] text-[var(--text-tertiary)] print:text-neutral-600 block">
+                <span className="text-[10px] text-[var(--text-tertiary)] block">
                   Sector Social / Étnico
                 </span>
-                <span className="text-[9px] text-[var(--text-tertiary)] print:text-neutral-500 block">
+                <span className="text-[9px] text-[var(--text-tertiary)] block">
                   C.C. ___________________
                 </span>
               </div>
@@ -677,7 +674,7 @@ export function MesaActaPanel({
           </section>
 
           {/* Pie del documento impreso */}
-          <footer className="border-t border-[var(--border)] print:border-black/30 pt-4 text-center text-[10px] text-[var(--text-tertiary)] print:text-neutral-500 page-break-avoid">
+          <footer className="border-t border-[var(--border)] pt-4 text-center text-[10px] text-[var(--text-tertiary)] page-break-avoid">
             <p>
               POLIS Cartagena • Código de Verificación Digital: POLIS-SHA256-{mesa.id.toUpperCase()}-VERIFIED • Página 1 de 1
             </p>
