@@ -86,7 +86,7 @@ Los árboles de problemas y soluciones de esta sesión ya están disponibles en 
     etiquetas: ["decreto", "marco-juridico", "c-150-2015", "planeacion-distrital"],
     contenido: `## Respaldo jurídico e institucional a 10 años
 
-Con la expedición del **Decreto Distrital 037 de 2026**, la administración distrital garantiza que la Política Pública de Seguridad Humana Integral trascienda los periodos de gobierno y se convierta en una política de Estado para Cartagena.
+Con la adopción de los lineamientos del **Decreto 037 de 2026 del Ministerio del Interior**, la administración distrital garantiza que la Política Pública de Seguridad Humana Integral trascienda los periodos de gobierno y se convierta en una política de Estado para Cartagena.
 
 ### Aspectos jurídicos destacados
 

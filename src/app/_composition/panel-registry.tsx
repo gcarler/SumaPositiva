@@ -58,6 +58,10 @@ const MesaEditorPanel = dynamic(
   () => import("@/features/mesas/panels/mesa-editor-panel").then((m) => m.MesaEditorPanel),
   { ssr: false }
 );
+const MesaActaPanel = dynamic(
+  () => import("@/features/mesas/panels/mesa-acta-panel").then((m) => m.MesaActaPanel),
+  { ssr: false }
+);
 const TerritorioPanel = dynamic(
   () => import("@/features/geovisor/panels/territorio-panel").then((m) => m.TerritorioPanel),
   { ssr: false }
@@ -155,6 +159,7 @@ export const PANEL_REGISTRY: Record<
   noticia: NoticiaPanel as ComponentType<PanelComponentProps>,
   "noticia-editor": NoticiaEditorPanel as ComponentType<PanelComponentProps>,
   "testimonio-nuevo": TestimonioNuevoPanel as ComponentType<PanelComponentProps>,
+  "mesa-acta": MesaActaPanel as ComponentType<PanelComponentProps>,
 };
 
 /**
@@ -176,6 +181,7 @@ export const PANEL_WIDTHS: Record<PanelType, string> = {
   "usuario-editor": "min(clamp(620px, 48vw, 900px), 100vw)",
   "usuario-detalle": "min(clamp(620px, 48vw, 900px), 100vw)",
   mesa: "min(clamp(820px, 56vw, 1240px), 100vw)",
+  "mesa-acta": "min(clamp(880px, 60vw, 1340px), 100vw)",
   // el papelografo es el lienzo más ancho: el árbol necesita aire
   papelografo: "min(clamp(1080px, 82vw, 1760px), 100vw)",
   "mesa-editor": "min(clamp(560px, 42vw, 800px), 100vw)",

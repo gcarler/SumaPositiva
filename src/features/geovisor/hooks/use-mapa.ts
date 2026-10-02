@@ -44,6 +44,15 @@ export interface HoverInfo {
   variableNombre?: string;
   variableUnidad?: string;
   pixel: [number, number];
+  mesaDetalle?: {
+    territorio: string;
+    fecha: string;
+    horario: string;
+    asistentes: number;
+    aforo: number;
+    estado: string;
+    realizada: boolean;
+  };
 }
 
 export interface UseMapaOptions {
@@ -199,13 +208,25 @@ export function useMapa({
     if (fuenteMesasRef.current) {
       fuenteMesasRef.current.clear(true);
       const features = new GeoJSON().readFeatures({
-        type: "FeatureCollection",            features: mesas.map((mesa) => ({
+        type: "FeatureCollection",
+        features: mesas.map((mesa) => ({
           type: "Feature",
           id: mesa.id,
           geometry: mesa.longitud_referencia !== null && mesa.latitud_referencia !== null
             ? { type: "Point", coordinates: [mesa.longitud_referencia, mesa.latitud_referencia] }
             : null,
-          properties: { id: mesa.id, nombre: mesa.nombre, realizada: mesa.realizada, total_asistentes: mesa.total_asistentes, horario: mesa.horario, tipo: "mesa" },
+          properties: {
+            id: mesa.id,
+            nombre: mesa.nombre,
+            realizada: mesa.realizada,
+            estado: mesa.estado,
+            total_asistentes: mesa.total_asistentes,
+            horario: mesa.horario,
+            fecha: mesa.fecha,
+            territorio_nombre: mesa.territorio_nombre,
+            aforo: mesa.aforo ?? 80,
+            tipo: "mesa",
+          },
         })).filter((feature) => feature.geometry !== null),
       }, { dataProjection: "EPSG:4326", featureProjection: "EPSG:3857" });
       fuenteMesasRef.current.addFeatures(features);
@@ -397,7 +418,18 @@ export function useMapa({
         geometry: mesa.longitud_referencia !== null && mesa.latitud_referencia !== null
           ? { type: "Point", coordinates: [mesa.longitud_referencia, mesa.latitud_referencia] }
           : null,
-        properties: { id: mesa.id, nombre: mesa.nombre, realizada: mesa.realizada, total_asistentes: mesa.total_asistentes, horario: mesa.horario, tipo: "mesa" },
+        properties: {
+          id: mesa.id,
+          nombre: mesa.nombre,
+          realizada: mesa.realizada,
+          estado: mesa.estado,
+          total_asistentes: mesa.total_asistentes,
+          horario: mesa.horario,
+          fecha: mesa.fecha,
+          territorio_nombre: mesa.territorio_nombre,
+          aforo: mesa.aforo ?? 80,
+          tipo: "mesa",
+        },
       })).filter((feature) => feature.geometry !== null),
     }, { dataProjection: "EPSG:4326", featureProjection: "EPSG:3857" });
     fuenteMesas.addFeatures(puntosMesas);
@@ -406,15 +438,47 @@ export function useMapa({
       zIndex: 20,
       declutter: true,
       style: (feature) => {
-        const realizada = feature.get("realizada") === true;
+        const estado = String(feature.get("estado") ?? "").toUpperCase();
+        const realizada =
+          feature.get("realizada") === true ||
+          estado === "FINALIZADA" ||
+          estado === "ACTA_CONCERTADA" ||
+          estado === "REALIZADA";
+        const enCurso = estado === "EN_DELIBERACION" || estado === "EN_CURSO";
         const seleccionada = String(feature.get("id")) === mesaSeleccionadaRef.current;
-        const estilos = getComputedStyle(document.documentElement);
-        const color = estilos.getPropertyValue(realizada ? "--success" : "--warning").trim();
-        const superficie = estilos.getPropertyValue("--surface-1").trim();
-        const texto = estilos.getPropertyValue("--text-primary").trim();
+        const hovered = feature.get("hovered") === true;
+
+        // Semáforo:
+        // 🟢 Verde: Mesa Realizada / Cerrada
+        // 🔵 Azul: Mesa en Curso
+        // 🟡 Amarillo / Ember: Mesa Programada
+        const color = realizada
+          ? "#16a34a"
+          : enCurso
+          ? "#2563eb"
+          : "#e85d04";
+
+        const radius = seleccionada ? 12 : hovered ? 10 : 8;
+
         return new Style({
-          image: new CircleStyle({ radius: seleccionada ? 11 : 8, fill: new Fill({ color }), stroke: new Stroke({ color: superficie, width: seleccionada ? 3 : 2 }) }),
-          text: new Text({ text: String(feature.get("nombre") ?? "Mesa"), offsetY: -17, font: "600 11px Geist, sans-serif", fill: new Fill({ color: texto }), stroke: new Stroke({ color: superficie, width: 3 }), overflow: true }),
+          image: new CircleStyle({
+            radius,
+            fill: new Fill({ color }),
+            stroke: new Stroke({
+              color: "#ffffff",
+              width: seleccionada ? 3.5 : hovered ? 2.5 : 2,
+            }),
+          }),
+          text: capasRef.current.etiquetas
+            ? new Text({
+                text: String(feature.get("nombre") ?? "Mesa"),
+                offsetY: -18,
+                font: "600 11px Geist, sans-serif",
+                fill: new Fill({ color: "#111827" }),
+                stroke: new Stroke({ color: "#ffffff", width: 3 }),
+                overflow: true,
+              })
+            : undefined,
         });
       },
     });
@@ -523,7 +587,21 @@ export function useMapa({
       if (feature.get("tipo") === "mesa") {
         const mesa = mesasRef.current.find((item) => item.id === id);
         if (mesa) {
-          onHoverInfo({ id: mesa.id, nombre: `${mesa.nombre} · ${mesa.realizada ? "Realizada" : "No realizada"} · ${mesa.total_asistentes} asistentes${mesa.horario ? ` · ${mesa.horario}` : ""}`, tipo: "mesa", pixel });
+          onHoverInfo({
+            id: mesa.id,
+            nombre: mesa.nombre,
+            tipo: "mesa",
+            pixel,
+            mesaDetalle: {
+              territorio: mesa.territorio_nombre || "Distrito de Cartagena",
+              fecha: mesa.fecha || "Por confirmar",
+              horario: mesa.horario || "08:30 – 12:00",
+              asistentes: mesa.total_asistentes,
+              aforo: mesa.aforo ?? 80,
+              estado: mesa.estado,
+              realizada: mesa.realizada,
+            },
+          });
           return;
         }
       }

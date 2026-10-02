@@ -25,6 +25,7 @@ import type { VariableMapa } from "../data/estadisticas.data";
 import { ESTADISTICAS_TERRITORIOS } from "../data/estadisticas.data";
 import type { CapasConfig } from "./geovisor-controles";
 import type { MesaGeovisor } from "../services/mesas-geovisor-api";
+import { usePanels } from "@/core/panels/panel-store";
 
 export interface MapaCartagenaHandle {
   exportarPng: () => void;
@@ -76,6 +77,7 @@ const MapaCartagena = forwardRef<MapaCartagenaHandle, MapaCartagenaProps>(functi
   },
   ref,
 ) {
+  const { openPanel } = usePanels();
   const [contenedor, setContenedor] = useState<HTMLDivElement | null>(null);
   const establecerContenedor = useCallback((node: HTMLDivElement | null) => {
     setContenedor(node);

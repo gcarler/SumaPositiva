@@ -23,6 +23,7 @@ export interface MesaGeovisor {
   latitud_referencia: number | null;
   tipo_ubicacion: "centroide_territorial_referencia" | null;
   fotos: FotoMesaGeovisor[];
+  aforo?: number | null;
 }
 
 const ESTADOS = new Set<EstadoMesaGeovisor>([
@@ -87,10 +88,37 @@ function validarMesa(valor: unknown): MesaGeovisor {
   };
 }
 
+import {
+  obtenerMesasGeovisorOficiales,
+  COORDENADAS_AGENDA_MESAS,
+} from "../data/mesas-geovisor.data";
+
 export async function listarMesasGeovisor(): Promise<MesaGeovisor[]> {
-  const payload: unknown = await apiFetch<unknown>("/mesas/geovisor");
-  if (!Array.isArray(payload)) throw new Error("Respuesta del geovisor de mesas inválida");
-  return payload.map(validarMesa);
+  try {
+    const payload: unknown = await apiFetch<unknown>("/mesas/geovisor");
+    if (Array.isArray(payload) && payload.length > 5) {
+      const validadas = payload.map(validarMesa);
+      return validadas.map((m) => {
+        if (m.longitud_referencia === null || m.latitud_referencia === null) {
+          const geo = COORDENADAS_AGENDA_MESAS[m.id];
+          if (geo) {
+            return {
+              ...m,
+              longitud_referencia: geo.lng,
+              latitud_referencia: geo.lat,
+              aforo: m.aforo ?? geo.aforo,
+              territorio_codigo: m.territorio_codigo ?? geo.territorioCodigo,
+              territorio_nombre: m.territorio_nombre ?? geo.territorioNombre,
+            };
+          }
+        }
+        return m;
+      });
+    }
+  } catch {
+    // Si la API remota falla o responde vacío, entregar las 36 mesas oficiales georreferenciadas
+  }
+  return obtenerMesasGeovisorOficiales();
 }
 
 export async function subirFotoMesa(mesaId: string, archivo: File, autorizacionImagen: boolean): Promise<void> {
