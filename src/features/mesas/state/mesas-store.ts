@@ -14,6 +14,7 @@ import type {
   SubMesa,
   EntidadResponsable,
   PersonaResponsable,
+  AdjuntoMesa,
 } from "@/features/mesas/models/mesas";
 import { uidNodo } from "@/features/mesas/models/mesas";
 
@@ -31,6 +32,7 @@ export interface MesaInput {
   entidad?: string;
   facilitador?: string;
   totalAsistentes?: number;
+  asistentesPlenaaria?: number | null;
   horario?: string;
   descripcion?: string;
   dimensionOnu?: string;
@@ -44,6 +46,7 @@ export interface MesaInput {
   aforo?: number;
   entidades?: EntidadResponsable[];
   responsables?: PersonaResponsable[];
+  adjuntos?: AdjuntoMesa[];
 }
 
 export interface SubMesaInput {
@@ -60,11 +63,16 @@ interface MesasState {
   actualizarMesa: (mesaId: string, patch: Partial<MesaInput & { informe?: string }>) => void;
   setAcuerdosPlenaria: (mesaId: string, acuerdos: string) => void;
   setInformeMesa: (mesaId: string, informe: string) => void;
+  setAsistentesPlenaria: (mesaId: string, cantidad: number | null) => void;
   eliminarMesa: (mesaId: string) => void;
+  agregarAdjuntoMesa: (mesaId: string, adjunto: AdjuntoMesa) => void;
+  eliminarAdjuntoMesa: (mesaId: string, adjuntoId: string) => void;
 
   /* Submesas */
   crearSubMesa: (mesaId: string, input: SubMesaInput) => SubMesa | null;
   eliminarSubMesa: (mesaId: string, submesaId: string) => void;
+  agregarAdjuntoSubMesa: (mesaId: string, subMesaId: string, adjunto: AdjuntoMesa) => void;
+  eliminarAdjuntoSubMesa: (mesaId: string, subMesaId: string, adjuntoId: string) => void;
 
   /* Papelografo */
   setTextoCentral: (
@@ -230,6 +238,8 @@ export const useMesasStore = create<MesasState>((set, get) => ({
       entidad: entidadDerivada,
       facilitador: facilitadorDerivado,
       totalAsistentes: input.totalAsistentes ?? 0,
+      asistentesPlenaaria: input.asistentesPlenaaria ?? null,
+      asistentesPlenaria: input.asistentesPlenaaria ?? null,
       plenaria: { acuerdos: input.descripcion || "" },
       submesas: [],
       estado: input.estado || "programada",
@@ -238,6 +248,7 @@ export const useMesasStore = create<MesasState>((set, get) => ({
       coordenadas: input.coordenadas,
       urlMapa: input.urlMapa,
       aforo: input.aforo,
+      adjuntos: input.adjuntos ?? [],
     };
     set((s) => ({ mesas: [mesa, ...s.mesas] }));
     return mesa;
@@ -279,8 +290,39 @@ export const useMesasStore = create<MesasState>((set, get) => ({
       ),
     })),
 
+  setAsistentesPlenaria: (mesaId, cantidad) =>
+    set((s) => ({
+      mesas: s.mesas.map((m) =>
+        m.id === mesaId
+          ? {
+              ...m,
+              asistentesPlenaaria: cantidad,
+              asistentesPlenaria: cantidad,
+            }
+          : m
+      ),
+    })),
+
   eliminarMesa: (mesaId) =>
     set((s) => ({ mesas: s.mesas.filter((m) => m.id !== mesaId) })),
+
+  agregarAdjuntoMesa: (mesaId, adjunto) =>
+    set((s) => ({
+      mesas: s.mesas.map((m) =>
+        m.id === mesaId
+          ? { ...m, adjuntos: [...(m.adjuntos ?? []), adjunto] }
+          : m
+      ),
+    })),
+
+  eliminarAdjuntoMesa: (mesaId, adjuntoId) =>
+    set((s) => ({
+      mesas: s.mesas.map((m) =>
+        m.id === mesaId
+          ? { ...m, adjuntos: (m.adjuntos ?? []).filter((a) => a.id !== adjuntoId) }
+          : m
+      ),
+    })),
 
   /* ---------- Submesas ---------- */
 
@@ -290,6 +332,8 @@ export const useMesasStore = create<MesasState>((set, get) => ({
       nombre: input.nombre,
       tema: input.tema,
       participantes: input.participantes,
+      asistentesPresenciales: null,
+      adjuntos: [],
       arbolProblemas: { ...ARBOL_PROBLEMAS_VACIO, causas: [], efectos: [] },
       arbolSoluciones: { ...ARBOL_SOLUCIONES_VACIO, medios: [], fines: [] },
     };
@@ -309,6 +353,41 @@ export const useMesasStore = create<MesasState>((set, get) => ({
     set((s) => ({
       mesas: s.mesas.map((m) =>
         m.id === mesaId ? { ...m, submesas: m.submesas.filter((sm) => sm.id !== submesaId) } : m
+      ),
+    })),
+
+  agregarAdjuntoSubMesa: (mesaId, subMesaId, adjunto) =>
+    set((s) => ({
+      mesas: s.mesas.map((m) =>
+        m.id === mesaId
+          ? {
+              ...m,
+              submesas: m.submesas.map((sm) =>
+                sm.id === subMesaId
+                  ? { ...sm, adjuntos: [...(sm.adjuntos ?? []), adjunto] }
+                  : sm
+              ),
+            }
+          : m
+      ),
+    })),
+
+  eliminarAdjuntoSubMesa: (mesaId, subMesaId, adjuntoId) =>
+    set((s) => ({
+      mesas: s.mesas.map((m) =>
+        m.id === mesaId
+          ? {
+              ...m,
+              submesas: m.submesas.map((sm) =>
+                sm.id === subMesaId
+                  ? {
+                      ...sm,
+                      adjuntos: (sm.adjuntos ?? []).filter((a) => a.id !== adjuntoId),
+                    }
+                  : sm
+              ),
+            }
+          : m
       ),
     })),
 

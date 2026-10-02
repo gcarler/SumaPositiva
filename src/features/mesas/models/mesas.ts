@@ -52,6 +52,17 @@ export interface ArbolSoluciones {
   fines: NodoArbol[];
 }
 
+export interface AdjuntoMesa {
+  id: string;
+  nombre: string;           // "Acta firmada.pdf"
+  tipo: "documento" | "imagen" | "audio" | "video" | "otro";
+  mimeType: string;         // "application/pdf" | "image/jpeg" | etc.
+  tamaño: number;           // bytes
+  url: string;              // URL de descarga (local blob o remota)
+  subidoEn: string;         // ISO timestamp
+  subidoPor?: string;       // nombre del usuario
+}
+
 export interface SubMesa {
   id: string;
   nombre: string;
@@ -59,6 +70,8 @@ export interface SubMesa {
   tema: string;
   /** Participantes que se sientan en esta submesa (opcional) */
   participantes: number | null;
+  asistentesPresenciales?: number | null;  // asistentes reales al finalizar
+  adjuntos?: AdjuntoMesa[];
   arbolProblemas: ArbolProblemas;
   arbolSoluciones: ArbolSoluciones;
   /** Secuencia de versión para control de concurrencia optimista (409/412) */
@@ -91,6 +104,8 @@ export interface MesaDeTrabajo {
   /** Funcionario facilitador de la dinámica - legacy */
   facilitador: string;
   totalAsistentes: number;
+  asistentesPlenaaria?: number | null;  // solo quienes fueron a plenaria, no a submesas
+  asistentesPlenaria?: number | null;
   /** Acuerdos y notas de la plenaria de apertura */
   plenaria: { acuerdos: string };
   submesas: SubMesa[];
@@ -110,6 +125,14 @@ export interface MesaDeTrabajo {
   aforo?: number;
   entidades?: EntidadResponsable[];
   responsables?: PersonaResponsable[];
+  adjuntos?: AdjuntoMesa[];
+}
+
+export function calcularTotalAsistentes(mesa: MesaDeTrabajo): number {
+  if (mesa.submesas.length === 0) return mesa.totalAsistentes ?? 0;
+  const sumSubmesas = mesa.submesas.reduce((acc, sm) => acc + (sm.participantes ?? 0), 0);
+  const plenaria = mesa.asistentesPlenaaria ?? mesa.asistentesPlenaria ?? 0;
+  return sumSubmesas + plenaria;
 }
 
 /* ---------- Metadatos de presentación ---------- */

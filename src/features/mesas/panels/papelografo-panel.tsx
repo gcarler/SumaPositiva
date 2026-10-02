@@ -25,6 +25,8 @@ import {
   type RamaArbol,
 } from "@/features/mesas/models/mesas";
 import type { PanelPropsMap } from "@/core/panels/panel-store";
+import { AdjuntosZona } from "@/features/mesas/components/adjuntos-zona";
+import { useSesionStore } from "@/features/sesion/state/session-store";
 
 /**
  * Papelografo digital — el lienzo donde cada submesa diligencia su
@@ -276,10 +278,13 @@ export function PapelografoPanel({
   const { closeTop, closeToKey } = usePanels();
   const { data: mesaRemota } = useMesaQuery(props.mesaId);
   const mesaLocal = useMesa(props.mesaId);
-  const mesa = mesaRemota ?? mesaLocal;
+  const mesa = mesaLocal ?? mesaRemota;
   const submesaLocal = useSubMesa(props.mesaId, props.submesaId);
-  const submesa = mesa?.submesas?.find((s) => s.id === props.submesaId) ?? submesaLocal;
+  const submesa = submesaLocal ?? mesa?.submesas?.find((s) => s.id === props.submesaId);
   const mutarSubMesa = useActualizarSubMesa();
+
+  const sesion = useSesionStore((s) => s.sesion);
+  const soloLectura = sesion?.rol === "auditor_forense";
 
   const setTextoCentral = useMesasStore((s) => s.setTextoCentral);
   const setTextoNodo = useMesasStore((s) => s.setTextoNodo);
@@ -575,6 +580,16 @@ export function PapelografoPanel({
               : "este árbol alimenta el acta final de la mesa."}
           </p>
         </div>
+
+        {/* ---------- Adjuntos de la submesa ---------- */}
+        <section className="space-y-3">
+          <AdjuntosZona
+            adjuntos={submesa.adjuntos ?? []}
+            onAgregar={(adj) => useMesasStore.getState().agregarAdjuntoSubMesa(props.mesaId, props.submesaId, adj)}
+            onEliminar={(adjId) => useMesasStore.getState().eliminarAdjuntoSubMesa(props.mesaId, props.submesaId, adjId)}
+            soloLectura={soloLectura}
+          />
+        </section>
       </div>
     </PanelShell>
   );

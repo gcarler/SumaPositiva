@@ -30,16 +30,19 @@ import {
   useActualizarAcuerdos,
   useActualizarInforme,
   useCrearSubMesa,
+  useActualizarAsistentesPlenaria,
 } from "@/features/mesas/services/use-mesas-queries";
 import { useMesasStore, type SubMesaInput } from "@/features/mesas/state/mesas-store";
 import { useSesionStore } from "@/features/sesion/state/session-store";
 import {
+  calcularTotalAsistentes,
   estadoDiligenciamiento,
   resumenProblemas,
   resumenSoluciones,
 } from "@/features/mesas/models/mesas";
 import { CONTENIDO_MESAS } from "@/features/mesas/data/agenda-contenido.data";
 import { SectionLabel } from "@/shared/components/participation-ui";
+import { AdjuntosZona } from "@/features/mesas/components/adjuntos-zona";
 
 /**
  * Panel de mesa de trabajo — el "acta viva" del área de trabajo.
@@ -70,11 +73,12 @@ export function MesaPanel({
   const mesaStore = useMesasStore((s) =>
     s.mesas.find((m) => m.id === props.mesaId)
   );
-  const mesa = mesaRemota ?? mesaStore;
+  const mesa = mesaStore ?? mesaRemota;
 
   const mutarAcuerdos = useActualizarAcuerdos();
   const mutarInforme = useActualizarInforme();
   const mutarCrearSubMesa = useCrearSubMesa();
+  const mutarAsistentesPlenaria = useActualizarAsistentesPlenaria();
 
   /* acuerdos: borrador local, se confirma al salir del campo o con botón */
   const [acuerdosBorrador, setAcuerdosBorrador] = useState<string | null>(null);
@@ -84,11 +88,15 @@ export function MesaPanel({
   const [informeBorrador, setInformeBorrador] = useState<string | null>(null);
   const informeValor = informeBorrador ?? mesa?.informe ?? "";
 
+  /* asistentes plenaria borrador local */
+  const [asistentesPlenariaBorrador, setAsistentesPlenariaBorrador] = useState<number | null | undefined>(undefined);
+
   const [prevMesaId, setPrevMesaId] = useState(props.mesaId);
   if (prevMesaId !== props.mesaId) {
     setPrevMesaId(props.mesaId);
     setAcuerdosBorrador(null);
     setInformeBorrador(null);
+    setAsistentesPlenariaBorrador(undefined);
   }
 
   /* formulario inline de submesa */
@@ -210,12 +218,43 @@ export function MesaPanel({
               <dt className="label-micro text-[var(--text-tertiary)]">
                 Asistentes
               </dt>
-              <dd className="inline-flex items-center gap-1.5 text-sm font-medium text-[var(--text-primary)] tabular">
-                <Users
-                  className="size-3.5 shrink-0 text-[var(--text-tertiary)]"
-                  strokeWidth={1.5}
-                />
-                {mesa.totalAsistentes.toLocaleString("es-CO")}
+              <dd className="text-sm font-medium text-[var(--text-primary)]">
+                {mesa.submesas.length > 0 ? (
+                  <div className="space-y-0.5">
+                    {(mesa.asistentesPlenaaria != null || mesa.asistentesPlenaria != null) && (
+                      <div className="flex gap-2 text-xs text-[var(--text-secondary)]">
+                        <span>Plenaria:</span>
+                        <span className="font-medium tabular">
+                          {mesa.asistentesPlenaaria ?? mesa.asistentesPlenaria}
+                        </span>
+                      </div>
+                    )}
+                    {mesa.submesas.map(
+                      (sm) =>
+                        sm.participantes != null && (
+                          <div
+                            key={sm.id}
+                            className="flex gap-2 text-xs text-[var(--text-secondary)]"
+                          >
+                            <span className="truncate max-w-[120px]">{sm.nombre}:</span>
+                            <span className="font-medium tabular">{sm.participantes}</span>
+                          </div>
+                        )
+                    )}
+                    <div className="flex gap-2 text-sm font-semibold text-[var(--text-primary)] border-t border-[var(--border)] pt-1 tabular">
+                      <span>Total:</span>
+                      <span>{calcularTotalAsistentes(mesa)}</span>
+                    </div>
+                  </div>
+                ) : (
+                  <span className="inline-flex items-center gap-1.5 tabular">
+                    <Users
+                      className="size-3.5 shrink-0 text-[var(--text-tertiary)]"
+                      strokeWidth={1.5}
+                    />
+                    {mesa.totalAsistentes.toLocaleString("es-CO")}
+                  </span>
+                )}
               </dd>
             </div>
             {mesa.aforo ? (
@@ -444,6 +483,42 @@ export function MesaPanel({
             placeholder="Registra los acuerdos de la plenaria: qué problema se priorizó, cómo se repartieron los temas entre submesas y cuándo será la plenaria de cierre…"
             className="min-h-[110px] w-full resize-y rounded-lg border border-[var(--border)] bg-[var(--surface-1)] px-4 py-3 text-sm leading-relaxed text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] transition-colors focus:border-[var(--ember)]"
           />
+          {/* Asistentes solo en plenaria */}
+          <div className="pt-2">
+            <FormField
+              id="asistentes-plenaria-input"
+              label="Personas en plenaria (sin contar submesas)"
+              description="Registra cuántas personas asistieron solo a la plenaria (no a submesas temáticas)."
+            >
+              {(controlProps) => (
+                <Input
+                  {...controlProps}
+                  type="number"
+                  min={0}
+                  readOnly={soloLectura}
+                  placeholder="0"
+                  value={
+                    asistentesPlenariaBorrador !== undefined
+                      ? (asistentesPlenariaBorrador ?? "")
+                      : (mesa.asistentesPlenaaria ?? mesa.asistentesPlenaria ?? "")
+                  }
+                  onChange={(e) => {
+                    const val = e.target.value === "" ? null : Math.max(0, Math.floor(Number(e.target.value)));
+                    setAsistentesPlenariaBorrador(val);
+                  }}
+                  onBlur={() => {
+                    if (asistentesPlenariaBorrador !== undefined && !soloLectura) {
+                      useMesasStore.getState().setAsistentesPlenaria(mesa.id, asistentesPlenariaBorrador);
+                      mutarAsistentesPlenaria.mutate({ mesaId: mesa.id, cantidad: asistentesPlenariaBorrador });
+                      toast.success("Asistentes en plenaria actualizados");
+                    }
+                  }}
+                  className="max-w-[200px] tabular bg-[var(--surface-1)]"
+                />
+              )}
+            </FormField>
+          </div>
+
           <p className="flex items-start gap-2 text-[11px] leading-relaxed text-[var(--text-tertiary)]">
             <ClipboardList
               className="mt-0.5 size-3.5 shrink-0"
@@ -691,6 +766,17 @@ export function MesaPanel({
               })}
             </div>
           )}
+        </section>
+
+        {/* ---------- Adjuntos de la mesa ---------- */}
+        <section className="space-y-3">
+          <SectionLabel>Adjuntos de la mesa</SectionLabel>
+          <AdjuntosZona
+            adjuntos={mesa.adjuntos ?? []}
+            onAgregar={(adj) => useMesasStore.getState().agregarAdjuntoMesa(mesa.id, adj)}
+            onEliminar={(adjId) => useMesasStore.getState().eliminarAdjuntoMesa(mesa.id, adjId)}
+            soloLectura={soloLectura}
+          />
         </section>
       </div>
     </PanelShell>

@@ -4,6 +4,8 @@ import {
   actualizarAcuerdosPlenaria, actualizarInformeMesa, crearSubMesa, actualizarSubMesa
 } from "./mesas-api";
 import type { SubMesa } from "@/features/mesas/models/mesas";
+import { useMesasStore } from "@/features/mesas/state/mesas-store";
+import { apiFetch } from "@/core/http/api-client";
 
 export const MESAS_KEYS = {
   all: ["mesas"] as const,
@@ -70,11 +72,46 @@ export function useActualizarInforme() {
 export function useCrearSubMesa() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async ({ mesaId, datos }: { mesaId: string; datos: { nombre: string; tema: string } }) => {
+    mutationFn: async ({
+      mesaId,
+      datos,
+    }: {
+      mesaId: string;
+      datos: { nombre: string; tema: string; participantes?: number | null };
+    }) => {
       return crearSubMesa(mesaId, datos);
     },
     onSuccess: (_, { mesaId }) => {
+      // Actualizar el cache de TanStack Query con los datos del store
+      const mesaActualizada = useMesasStore.getState().mesas.find((m) => m.id === mesaId);
+      if (mesaActualizada) {
+        queryClient.setQueryData(MESAS_KEYS.detail(mesaId), mesaActualizada);
+      }
+      queryClient.invalidateQueries({ queryKey: MESAS_KEYS.all });
+    },
+  });
+}
+
+export function useActualizarAsistentesPlenaria() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ mesaId, cantidad }: { mesaId: string; cantidad: number | null }) => {
+      useMesasStore.getState().setAsistentesPlenaria(mesaId, cantidad);
+      try {
+        await apiFetch(`/api/v1/mesas/${mesaId}`, {
+          method: "PATCH",
+          body: JSON.stringify({ metadatos: { asistentesPlenaaria: cantidad } }),
+        });
+      } catch {}
+      return cantidad;
+    },
+    onSuccess: (_, { mesaId }) => {
+      const mesaActualizada = useMesasStore.getState().mesas.find((m) => m.id === mesaId);
+      if (mesaActualizada) {
+        queryClient.setQueryData(MESAS_KEYS.detail(mesaId), mesaActualizada);
+      }
       queryClient.invalidateQueries({ queryKey: MESAS_KEYS.detail(mesaId) });
+      queryClient.invalidateQueries({ queryKey: MESAS_KEYS.all });
     },
   });
 }

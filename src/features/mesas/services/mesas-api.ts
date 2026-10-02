@@ -205,45 +205,30 @@ export async function actualizarInformeMesa(
 export async function crearSubMesa(
   mesaId: string,
   datos: { nombre: string; tema: string; participantes?: number | null }
-): Promise<SubMesa> {
-  const subLocal = useMesasStore.getState().crearSubMesa(mesaId, {
+): Promise<SubMesa | null> {
+  // 1. Crear en el store local inmediatamente
+  const sub = useMesasStore.getState().crearSubMesa(mesaId, {
     nombre: datos.nombre,
     tema: datos.tema,
     participantes: datos.participantes ?? null,
   });
+  if (!sub) return null;
 
+  // 2. Intentar sincronizar con backend (fire and forget)
   try {
-    const remota = await apiFetch<SubMesa>(`/mesas/${mesaId}/submesas`, {
+    await apiFetch(`/api/v1/mesas/${mesaId}/submesas`, {
       method: "POST",
-      body: {
-        slug: datos.nombre.toLowerCase().replace(/\s+/g, "-"),
+      body: JSON.stringify({
         nombre: datos.nombre,
-        tipo_mesa: "TEMATICA",
-        codigo_oficial: `SUB-${mesaId.slice(0, 4)}-${Date.now().toString().slice(-4)}`,
-        shortcode_ciudadano: `SM-${Date.now().toString().slice(-3)}`,
-        metadatos: { tema: datos.tema },
-      },
+        tema: datos.tema,
+        participantes: datos.participantes ?? null,
+      }),
     });
-    return remota;
   } catch {
-    if (subLocal) return subLocal;
-    return {
-      id: `submesa-${Date.now()}`,
-      nombre: datos.nombre,
-      tema: datos.tema,
-      participantes: 0,
-      arbolProblemas: {
-        problemaCentral: "",
-        causas: [],
-        efectos: [],
-      },
-      arbolSoluciones: {
-        objetivoCentral: "",
-        medios: [],
-        fines: [],
-      },
-    };
+    /* silencioso — el store local ya tiene los datos */
   }
+
+  return sub;
 }
 
 /**
@@ -335,10 +320,7 @@ export async function fallbackListarMesas(): Promise<MesaDeTrabajo[]> {
 }
 
 export async function fallbackObtenerMesa(mesaId: string): Promise<MesaDeTrabajo> {
-  const storeMesas = useMesasStore.getState().mesas;
-  const fromStore = storeMesas.find((x) => x.id === mesaId);
-  if (fromStore) return fromStore;
-  const m = MESAS_MOCK.find((x) => x.id === mesaId);
-  if (!m) throw new Error("Mesa no encontrada en mock");
-  return m;
+  const mesa = useMesasStore.getState().mesas.find((m) => m.id === mesaId);
+  if (!mesa) throw new Error(`Mesa ${mesaId} no encontrada`);
+  return mesa; // retorna referencia viva del store
 }
