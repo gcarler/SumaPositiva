@@ -13,6 +13,14 @@ export const NOTICIAS_MOCK: Noticia[] = [
     autor: "Secretaría de Planeación Distrital",
     publicadaEn: "2026-03-15T08:00:00Z",
     destacada: true,
+    ordenPrioridad: 1,
+    estado: "publicada",
+    videoUrl: "https://www.youtube.com/watch?v=ScMzIvxBSi4",
+    galeria: [
+      "https://images.unsplash.com/photo-1577495508048-b635879837f1?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=800&q=80",
+    ],
     etiquetas: ["politica-publica", "mesas-de-trabajo", "cartagena-2026", "participacion"],
     contenido: `## Un nuevo paradigma de seguridad para el Distrito
 
@@ -42,6 +50,12 @@ Las conclusiones de cada sesión se certificarán mediante actas digitales abier
     autor: "Equipo de Facilitación POLIS",
     publicadaEn: "2026-03-18T14:30:00Z",
     destacada: false,
+    ordenPrioridad: 2,
+    estado: "publicada",
+    galeria: [
+      "https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=800&q=80",
+    ],
     etiquetas: ["localidad-1", "centro-historico", "participacion", "seguridad-ciudadana"],
     contenido: `## Convivencia barrial y protección del patrimonio residencial
 
@@ -67,6 +81,8 @@ Los árboles de problemas y soluciones de esta sesión ya están disponibles en 
     autor: "Alcaldía Mayor de Cartagena",
     publicadaEn: "2026-03-20T10:00:00Z",
     destacada: false,
+    ordenPrioridad: 3,
+    estado: "publicada",
     etiquetas: ["decreto", "marco-juridico", "c-150-2015", "planeacion-distrital"],
     contenido: `## Respaldo jurídico e institucional a 10 años
 
@@ -90,6 +106,8 @@ Con la expedición del **Decreto Distrital 037 de 2026**, la administración dis
     autor: "Dirección de Asuntos Étnicos y Rurales",
     publicadaEn: "2026-03-22T09:00:00Z",
     destacada: false,
+    ordenPrioridad: 4,
+    estado: "publicada",
     etiquetas: ["rural-insular", "tierrabomba", "baru", "la-boquilla", "etnico"],
     contenido: `## Las voces del territorio insular son protagonistas
 
@@ -114,6 +132,8 @@ Para registrar delegaciones o solicitar transporte comunitario, contactar al equ
     autor: "Secretaría de Planeación Distrital",
     publicadaEn: "2026-03-25T16:00:00Z",
     destacada: false,
+    ordenPrioridad: 5,
+    estado: "publicada",
     etiquetas: ["diagnostico", "balance-participacion", "indicadores", "dnp"],
     contenido: `## Consolidación de datos y diagnósticos sectoriales
 
@@ -139,6 +159,9 @@ Este consolidado servirá de insumo para la redacción del primer borrador del d
     autor: "Consejos Comunitarios de la Bahía e Islas",
     publicadaEn: "2026-03-28T11:00:00Z",
     destacada: true,
+    ordenPrioridad: 6,
+    estado: "publicada",
+    videoUrl: "https://www.youtube.com/watch?v=ScMzIvxBSi4",
     etiquetas: ["comunidades-negras", "consulta-previa", "seguridad-alimentaria", "autogestion"],
     contenido: `## Autonomía territorial y salvaguarda cultural
 

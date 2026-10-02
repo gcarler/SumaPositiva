@@ -11,6 +11,8 @@ import {
   Quote,
   Sparkles,
   Plus,
+  Play,
+  Layers,
 } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import { Badge } from "@/shared/ui/badge";
@@ -18,7 +20,10 @@ import { StatusBadge, type StatusTone } from "@/shared/ui/status-badge";
 import { Progress } from "@/shared/ui/progress";
 import { useNavigationStore } from "@/core/navigation/navigation-store";
 import { usePanels } from "@/core/panels/panel-store";
-import { useNoticiasStore } from "@/features/noticias/state/noticias-store";
+import {
+  useNoticiasStore,
+  noticiasPublicadasOrdenadas,
+} from "@/features/noticias/state/noticias-store";
 import { useTestimoniosStore } from "@/features/testimonios/state/testimonios-store";
 import { usePoliticaPrincipal } from "@/features/politicas/state/politicas-store";
 import { totalAportes } from "@/features/politicas/models/politicas";
@@ -64,7 +69,7 @@ export function InicioView() {
   const noticias = useNoticiasStore((s) => s.noticias);
   const testimonios = useTestimoniosStore((s) => s.testimonios);
 
-  const ultimasNoticias = noticias.slice(0, 3);
+  const ultimasNoticias = noticiasPublicadasOrdenadas(noticias).slice(0, 3);
   const testimoniosDestacados = testimonios
     .filter((t) => t.destacado)
     .slice(0, 2);
@@ -388,6 +393,23 @@ export function InicioView() {
                           </Badge>
                         </div>
                       )}
+                      <div className="absolute bottom-2 left-2 flex items-center gap-1">
+                        <Badge variant="outline" className="text-[10px] bg-[var(--surface-1)]/90 backdrop-blur-xs">
+                          Prioridad #{n.ordenPrioridad}
+                        </Badge>
+                        {n.videoUrl && (
+                          <Badge variant="secondary" className="text-[10px] shadow-sm gap-1">
+                            <Play className="size-2.5 fill-current" />
+                            Video
+                          </Badge>
+                        )}
+                        {n.galeria && n.galeria.length > 0 && (
+                          <Badge variant="secondary" className="text-[10px] shadow-sm gap-1">
+                            <Layers className="size-2.5" />
+                            {n.galeria.length}
+                          </Badge>
+                        )}
+                      </div>
                     </div>
                   )}
 

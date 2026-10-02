@@ -10,9 +10,18 @@ import {
   Sparkles,
   Newspaper,
   Tag,
+  Plus,
+  Play,
+  Layers,
+  Edit3,
 } from "lucide-react";
 import { usePanels } from "@/core/panels/panel-store";
-import { useNoticiasStore } from "../state/noticias-store";
+import { useSesionStore } from "@/features/sesion/state/session-store";
+import { puedeEditar } from "@/features/plataforma/models/acceso";
+import {
+  useNoticiasStore,
+  noticiasPublicadasOrdenadas,
+} from "../state/noticias-store";
 import type { CategoriaNoticia, Noticia } from "../models/noticia";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
@@ -32,21 +41,38 @@ const CATEGORIAS: { id: CategoriaNoticia | "todas"; label: string; tone: StatusT
 export function NoticiasView() {
   const reducedMotion = useReducedMotion();
   const { openPanel } = usePanels();
+  const sesion = useSesionStore((s) => s.sesion);
+  const esEditor = puedeEditar(sesion, "contenido");
+
   const noticias = useNoticiasStore((s) => s.noticias);
   const filtroCategoria = useNoticiasStore((s) => s.filtroCategoria);
   const setFiltro = useNoticiasStore((s) => s.setFiltro);
   const busqueda = useNoticiasStore((s) => s.busqueda);
   const setBusqueda = useNoticiasStore((s) => s.setBusqueda);
 
-  // Noticia destacada para el Hero (primera destacada o primera del listado)
+  // Lista base: para el público general, solo noticias publicadas ordenadas por prioridad
+  // Para editores, se listan todas
+  const noticiasBase = useMemo(() => {
+    if (esEditor) {
+      return [...noticias].sort((a, b) => {
+        const ordA = a.ordenPrioridad ?? 999;
+        const ordB = b.ordenPrioridad ?? 999;
+        if (ordA !== ordB) return ordA - ordB;
+        return new Date(b.publicadaEn).getTime() - new Date(a.publicadaEn).getTime();
+      });
+    }
+    return noticiasPublicadasOrdenadas(noticias);
+  }, [noticias, esEditor]);
+
+  // Noticia destacada para el Hero (primera destacada publicada o primera del listado)
   const noticiaDestacada = useMemo(
-    () => noticias.find((n) => n.destacada) || noticias[0],
-    [noticias]
+    () => noticiasBase.find((n) => n.destacada) || noticiasBase[0],
+    [noticiasBase]
   );
 
   // Filtrado reactivo por categoría y texto de búsqueda
   const noticiasFiltradas = useMemo(() => {
-    return noticias.filter((n) => {
+    return noticiasBase.filter((n) => {
       const matchCat =
         filtroCategoria === "todas" ? true : n.categoria === filtroCategoria;
       const matchSearch = busqueda.trim()
@@ -56,7 +82,7 @@ export function NoticiasView() {
         : true;
       return matchCat && matchSearch;
     });
-  }, [noticias, filtroCategoria, busqueda]);
+  }, [noticiasBase, filtroCategoria, busqueda]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -87,11 +113,23 @@ export function NoticiasView() {
                 className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[var(--background)]/80 via-[var(--background)]/30 to-transparent lg:hidden" />
-              <div className="absolute top-4 left-4 flex items-center gap-2">
+              <div className="absolute top-4 left-4 flex flex-wrap items-center gap-2">
                 <Badge variant="ember" className="gap-1 shadow-md">
                   <Sparkles className="size-3" />
                   Noticia Destacada
                 </Badge>
+                {noticiaDestacada.videoUrl && (
+                  <Badge variant="secondary" className="gap-1 shadow-md">
+                    <Play className="size-3 fill-current" />
+                    Video
+                  </Badge>
+                )}
+                {noticiaDestacada.galeria && noticiaDestacada.galeria.length > 0 && (
+                  <Badge variant="secondary" className="gap-1 shadow-md">
+                    <Layers className="size-3" />
+                    {noticiaDestacada.galeria.length} Fotos
+                  </Badge>
+                )}
               </div>
             </div>
 
@@ -110,6 +148,9 @@ export function NoticiasView() {
                       year: "numeric",
                     })}
                   </span>
+                  <Badge variant="outline" className="text-[10px]">
+                    Prioridad #{noticiaDestacada.ordenPrioridad}
+                  </Badge>
                 </div>
 
                 <h1 className="text-2xl font-bold tracking-tight text-[var(--text-primary)] sm:text-3xl lg:text-[1.85rem] leading-tight">
@@ -126,7 +167,7 @@ export function NoticiasView() {
                 </div>
               </div>
 
-              <div className="mt-8 pt-4 border-t border-[var(--border)]">
+              <div className="mt-8 pt-4 border-t border-[var(--border)] flex flex-wrap items-center gap-3">
                 <Button
                   variant="default"
                   size="lg"
@@ -136,6 +177,17 @@ export function NoticiasView() {
                   <span>Leer artículo completo</span>
                   <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
                 </Button>
+                {esEditor && (
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    onClick={() => openPanel("noticia-editor", { noticiaId: noticiaDestacada.id })}
+                    className="gap-1.5"
+                  >
+                    <Edit3 className="size-4" />
+                    <span>Editar</span>
+                  </Button>
+                )}
               </div>
             </div>
           </div>
@@ -146,9 +198,22 @@ export function NoticiasView() {
       <section className="space-y-4">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
-            <h2 className="text-xl font-bold tracking-tight text-[var(--text-primary)] md:text-2xl">
-              Actualidad y Avances de la Política Pública
-            </h2>
+            <div className="flex items-center gap-3">
+              <h2 className="text-xl font-bold tracking-tight text-[var(--text-primary)] md:text-2xl">
+                Actualidad y Avances de la Política Pública
+              </h2>
+              {esEditor && (
+                <Button
+                  variant="default"
+                  size="sm"
+                  onClick={() => openPanel("noticia-editor", {})}
+                  className="gap-1.5"
+                >
+                  <Plus className="size-3.5" />
+                  <span>Crear Noticia</span>
+                </Button>
+              )}
+            </div>
             <p className="text-xs text-[var(--text-secondary)] mt-1">
               Registro documental e institucional de las 33 mesas de trabajo en Cartagena
             </p>
@@ -217,7 +282,12 @@ export function NoticiasView() {
             className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
           >
             {noticiasFiltradas.map((noticia) => (
-              <NoticiaCard key={noticia.id} noticia={noticia} variants={itemVariants} />
+              <NoticiaCard
+                key={noticia.id}
+                noticia={noticia}
+                variants={itemVariants}
+                esEditor={esEditor}
+              />
             ))}
           </motion.div>
         )}
@@ -229,9 +299,11 @@ export function NoticiasView() {
 function NoticiaCard({
   noticia,
   variants,
+  esEditor,
 }: {
   noticia: Noticia;
   variants: any;
+  esEditor: boolean;
 }) {
   const { openPanel } = usePanels();
 
@@ -255,10 +327,29 @@ function NoticiaCard({
               alt={noticia.titulo}
               className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
             />
-            {noticia.destacada && (
-              <div className="absolute top-2.5 right-2.5">
+            <div className="absolute top-2.5 right-2.5 flex flex-wrap items-center gap-1.5">
+              {noticia.destacada && (
                 <Badge variant="ember" className="text-[10px] shadow-sm">
                   Destacada
+                </Badge>
+              )}
+              {noticia.videoUrl && (
+                <Badge variant="secondary" className="text-[10px] shadow-sm gap-1">
+                  <Play className="size-2.5 fill-current" />
+                  Video
+                </Badge>
+              )}
+              {noticia.galeria && noticia.galeria.length > 0 && (
+                <Badge variant="secondary" className="text-[10px] shadow-sm gap-1">
+                  <Layers className="size-2.5" />
+                  {noticia.galeria.length}
+                </Badge>
+              )}
+            </div>
+            {noticia.ordenPrioridad && (
+              <div className="absolute bottom-2 left-2">
+                <Badge variant="outline" className="text-[10px] bg-[var(--surface-1)]/90 backdrop-blur-xs">
+                  Prioridad #{noticia.ordenPrioridad}
                 </Badge>
               </div>
             )}
@@ -296,10 +387,26 @@ function NoticiaCard({
           <span className="text-[11px] text-[var(--text-tertiary)] truncate max-w-[170px]">
             {noticia.autor}
           </span>
-          <span className="inline-flex items-center gap-1 font-medium text-[var(--ember)] group-hover:underline">
-            <span>Leer más</span>
-            <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
-          </span>
+          <div className="flex items-center gap-2">
+            {esEditor && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  openPanel("noticia-editor", { noticiaId: noticia.id });
+                }}
+                className="size-7 p-0 hover:text-[var(--ember)]"
+                aria-label="Editar noticia"
+              >
+                <Edit3 className="size-3.5" />
+              </Button>
+            )}
+            <span className="inline-flex items-center gap-1 font-medium text-[var(--ember)] group-hover:underline">
+              <span>Leer más</span>
+              <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
+            </span>
+          </div>
         </div>
       </div>
     </motion.article>

@@ -36,6 +36,7 @@ export type PanelType =
   | "usuario-editor"
   | "usuario-detalle"
   | "noticia"
+  | "noticia-editor"
   | "testimonio-nuevo";
 
 /** Árbol que se diligencia en el papelografo */
@@ -80,6 +81,7 @@ export interface PanelPropsMap {
   "usuario-editor": { usuarioId: string };
   "usuario-detalle": { usuarioId: string };
   noticia: { noticiaId: string };
+  "noticia-editor": { noticiaId?: string };
   "testimonio-nuevo": Record<string, never>;
 }
 
