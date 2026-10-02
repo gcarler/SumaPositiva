@@ -139,6 +139,9 @@ export function panelPermitido(
     case "papelografo":
       return puedeEditar(sesion, "mesas");
     case "usuarios":
+    case "usuario-invitar":
+    case "usuario-editor":
+    case "usuario-detalle":
       return puedeVer(sesion, "usuarios");
     case "territorio":
       return puedeVer(sesion, "geovisor");

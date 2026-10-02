@@ -221,7 +221,18 @@ export const Usuarios: Story = {
   ),
   play: async ({ canvasElement }) => {
     const c = within(canvasElement);
-    await expect(await c.findByText("1 usuarios registrados.")).toBeVisible();
+    await expect(await c.findByText("Mostrando 8 de 8 cuentas de demo")).toBeVisible();
+    await userEvent.click(c.getByRole("button", { name: "Invitar usuario" }));
+    await expect(await c.findByRole("dialog", { name: "Invitar usuario" })).toBeVisible();
+    await userEvent.type(c.getByLabelText(/Nombre completo/), "Prueba Cartagena");
+    await userEvent.type(c.getByLabelText(/Correo electrónico/), "prueba@cartagena.gov.co");
+    await userEvent.click(c.getByRole("button", { name: "Enviar invitación" }));
+    await expect(await c.findAllByText("prueba@cartagena.gov.co")).toHaveLength(2);
+    await userEvent.click(c.getAllByRole("button", { name: /Ana Pérez/ })[0]);
+    await expect(await c.findByRole("dialog", { name: "Perfil y accesos" })).toBeVisible();
+    await expect(c.getByText("Actividad reciente")).toBeVisible();
+    await userEvent.click(c.getByRole("button", { name: "Editar rol y módulos" }));
+    await expect(await c.findByRole("dialog", { name: "Editar usuario" })).toBeVisible();
   },
 };
 export const Contenido: Story = {
@@ -247,6 +258,12 @@ export const Configuracion: Story = {
       <PanelHost />
     </QueryProvider>
   ),
+  play: async ({ canvasElement }) => {
+    const c = within(canvasElement);
+    await expect(c.getByRole("heading", { name: "Seguridad e identidad" })).toBeVisible();
+    await expect(c.getByLabelText("Latitud")).toHaveValue("10.3997");
+    await expect(c.getByText("@cartagena.gov.co")).toBeVisible();
+  },
 };
 export const GeovisorReal: Story = {
   parameters: { nextjs: { navigation: { pathname: "/plataforma/geovisor" } } },
