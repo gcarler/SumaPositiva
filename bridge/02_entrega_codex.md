@@ -1,74 +1,57 @@
-# Entrega Codex — Calidad de formularios, CRUD y PostgreSQL
+# Entrega Codex — Constructor de líneas y sublíneas estratégicas
 
-Fecha: 2026-10-02T13:39:28.806235+00:00
-Commit de implementación: `1f514b299ff796e450fd33df9580e47358238c85`
-Estado: CORREGIDO Y VERIFICADO EN EL ALCANCE. Dictamen independiente EAF/agy pendiente.
-
-- Revisión HTTP, permisos, CRUD constructor/legado, persistencia JSONB, constraints/FK/índices y función UUID. No hay SP de negocio de formularios en el inventario inspeccionado; las transacciones pertenecen al servicio FastAPI.
-- Corregida analítica de opciones del constructor y denominadores condicionales; validaciones legadas y bolsa de evidencias no pueden eludir controles del formulario.
-- Conservación: con respuestas no se cambian preguntas/secciones ni se elimina el formulario. API 409 y FK RESTRICT; debe cerrarse para preservar datos.
-- Migraciones 32 y 33 aplicadas; seis CHECK. Verificados upgrade/check/downgrade/reconstrucción aislados y conservación de datos existentes.
-- 96 pruebas aprobadas + 1 prueba de migraciones. Lint/formato del módulo y migraciones aprobados. `bun run check` y `bun run build` aprobados con advertencias previas documentadas.
-- Backend reiniciado con correcciones finales. HTTPS `/f/reporte-inseguridad` → 200, slug inexistente → 404; respuestas/analítica sin token → 401. Backend, frontend y Nginx activos.
-- Pruebas con escritura únicamente en bases `polis_test*`. Producción: inventario y lectura HTTP, sin respuestas sintéticas.
-
-Informe: [docs/calidad-formulario-geoespacial.md](../docs/calidad-formulario-geoespacial.md).
-Evidencias: `docs/evidencias/calidad-formularios-2026-10-02/`.
-
-Limitaciones pendientes: moderación/aprobación y capa de reportes del geovisor; paginación y prueba de carga; almacenamiento de objetos/EXIF; validación de pertenencia geográfica en servidor. Respuestas siguen internas. El control global `bun run backend:check` se detiene en 45 errores Ruff ajenos a formularios; no se declara aprobación global.
-
----
-
-## Entrega anterior — contexto de implementación
-
-# Entrega Codex — Reporte geoespacial y formularios persistentes
-
-Fecha: 2026-10-02T04:22:10.855258+00:00
-Commit de implementación: `b61ce3eacd2c31753e8424e875afa4f7a5290164`
-Estado: IMPLEMENTADO Y VERIFICADO EN ALCANCE. Revisión independiente de EAF/agy pendiente.
+Fecha: 2026-10-02T14:10:29.074399+00:00
+Commit de implementación: `841ce7de2be69e37f6571cddeebb7d13afa07024`
+Estado: IMPLEMENTADO, VERIFICADO Y DESPLEGADO EN EL ALCANCE. Dictamen independiente EAF/agy pendiente.
 
 ## Resultado
 
-- Los formularios de producto usan exclusivamente FastAPI/PostgreSQL: catálogo, páginas públicas, creación, edición, eliminación, envío y analítica. Zustand inicia vacío como caché; no hay confirmación local ni sustitución de fallos por mocks. Los ejemplos quedan exclusivamente en pruebas e historias. No se importaron respuestas ficticias a la base ni se borraron registros reales.
-- Migración 0031 publica el instrumento institucional solicitado, id de negocio `reporte-ciudadano-geoespacial`, slug `reporte-inseguridad`, UUID persistido `4ecd649a-6764-4d62-8ddb-1bcecd342031`. Siete dimensiones, 53 subcategorías, frecuencia, descripción opcional, ubicación y localidad; seis preguntas visibles por dimensión.
-- OpenLayers/OSM: selección y arrastre de punto, marcador por dimensión con token y símbolo, coordenadas editables, identificación de barrio/localidad por cartografía con alternativa manual.
-- Hasta cinco fotos JPEG/PNG/WebP de 5 MB por foto; previews, eliminar y reemplazar, bloqueo de seis. Servidor valida contenido y tamaño. Ubicación y fotos se guardan realmente como objeto JSONB, no solo en RAM.
-- Formulario anónimo incluso si el ciudadano tiene una cuenta interna abierta: el envío técnico anónimo conserva la sesión institucional. Un 401 de ese envío no cierra otra cuenta.
-- Nginx acepta 40 MB solo en formularios, para cubrir base64; su configuración pasó `nginx -t` y se recargó. Next tiene el mismo límite de proxy.
-
-## Recepción, revisores y publicación
-
-Hay geovisor ciudadano en el portal y administrativo en `/plataforma/geovisor`. Las respuestas **no se publican automáticamente** en ninguno. Actualmente pueden leerlas los roles con `formularios:leer`: autoridad, facilitador, administrador y auditor. **No existe aún bandeja de moderación ni autorización individual de publicación**.
-
-Se revisó y documentó el diseño: recibido interno → revisión por equipo designado → validado interno → publicación exclusiva del administrador → retiro si corresponde. Requiere permisos específicos, expediente/historial transaccional y proyección pública separada de coordenadas, fotos y narración originales. La capa de reportes en mapas sigue futura según el alcance de la tarea. Ver `docs/reportes-revision-publicacion.md`.
+- Jerarquía dimensión canónica → línea estratégica → sublínea/proyecto. Nuevas escrituras exigen una de las siete dimensiones activas y una fase DNP existente.
+- Backend: `SublineaSchema`, Create/Update/Read, JSONB `metadatos["sublineas"]`, service/repository transaccionales; sin modificar migraciones aplicadas ni crear otra persistencia.
+- POST/PUT/DELETE con `politicas:gestionar`; lectura administrativa completa por roles autorizados. Código único por fase y códigos hijos coherentes. Metadatos y campos opcionales omitidos del editor se conservan.
+- Eliminación bloqueada con 409 si hay aportes, mesas, indicadores, presupuesto o instrumentos vinculados; alternativa de desactivar sin borrar el expediente.
+- Panel lateral `linea-editor`, React Hook Form + Zod + useFieldArray. Dimensión visual con iconos/tokens; fase, problema, objetivo, entidad, financiación, costo y sublíneas dinámicas.
+- **Entidad Líder usa `DEPENDENCIAS_CARTAGENA_2026` de `src/features/politicas/data/entidades-cartagena.data.ts`**, según la nota del usuario. Se conserva una entidad histórica como opción al editar.
+- `/plataforma/contenido`: pestaña principal Dimensiones, Líneas y Sublíneas; siete tarjetas, acordeones y tabla de hijos. Creación/edición por panel; eliminación con confirmación contextual Zero-Modals.
+- Exportación CSV con protección anti-fórmulas y JSON jerárquico, incluyendo líneas inactivas y registros históricos sin dimensión.
+- Registro del panel, ancho y guard de acceso integrados. El auditor tiene lectura y carece de botones de escritura.
 
 ## Validación
 
-- `bun run check`: aprobado, 0 errores TS y 0 violaciones UI. Warning previo de TanStack/React Compiler en geovisor.
-- `bun run build`: aprobado; output SSG contiene `/f/reporte-inseguridad` y solo formularios realmente publicados en la base.
-- `bun run storybook:build`: aprobado.
-- Lógica, persistencia frontend y sesión: 83 pruebas aprobadas.
-- Historias del alcance formularios: 35/35 aprobadas.
-- Backend formularios/URLs/reporte: 33 pruebas aprobadas. Prueba de respuesta confirmada desde otra conexión y rollback completo tras fallo posterior al flush.
-- Migraciones/URLs: 26 pruebas aprobadas, incluyendo upgrade, check, downgrade base y reconstrucción en base aislada `polis_test_reporte_20261002`.
-- Navegador contra build y API aislados: 7 categorías condicionales, clic/arrastre, fotos 3+2, máximo 5, eliminar/reemplazar, envío 201, confirmación y 320 px claro/oscuro. Una conexión nueva confirmó coordenadas y cinco fotos. Respuesta QA eliminada de polis_test; no se enviaron respuestas de prueba a producción.
-- Backend y frontend reiniciados y servicios activos.
+| Comprobación | Resultado |
+| --- | --- |
+| Backend constructor, permisos y transacciones | **99 aprobadas**, 32,24 s; persistencia leída desde una conexión nueva. |
+| Integración PostgreSQL/migraciones | **1 aprobada**, 7,08 s, base aislada `polis_test_lineas_migraciones_20261002`. |
+| Historias del módulo y accesibilidad | **8/8 aprobadas**; incluye 320 px claro/oscuro, panel, Tab, Escape y retorno del foco. |
+| Lint y formato específicos | Aprobados, 7 archivos backend. |
+| `bun run check` | Aprobado, 0 errores TS/UI/ESLint; warning previo TanStack/React Compiler. |
+| `bun run build` | Aprobado; incluye `/plataforma/contenido`. Warning CSS previo. |
+| `bun run storybook:build` | Aprobado; advertencias de empaquetado documentadas. |
+| `bun run ui:test` global | 196/199 aprobadas en esa ejecución; tres fallos fuera del módulo en `platform.stories.tsx`. |
+| `bun run backend:check` global | Detenido por **44 errores Ruff fuera del módulo de políticas**; no se declara aprobación global. |
 
-HTTPS verificado sin omitir validación TLS:
+Los tres fallos globales de historias corresponden a Crear Mesa Completa, Formulario Accesible y Territorios Con Teclado. La prueba global se ejecutó antes de añadir las últimas historias de móvil y navegación, verificadas después en las 8 del módulo. No se deshabilitaron checks ni se modificaron historias ajenas para simular éxito.
 
-| Ruta | Resultado |
-|---|---|
-| https://seguridadhumanaintegral.org/f/reporte-inseguridad | 200 |
-| `/f/diagnostico-barrio-2026`, antiguo ejemplo sin registro | 404 |
-| `/f/no-existe` | 404 |
-| GET respuestas del reporte sin token | 401 |
-| POST JSON 2 MB sin token | 401, sin escritura y sin antiguo bloqueo 413 del proxy |
+Pruebas negativas: dimensión/fase inexistente, títulos/códigos/costo inválidos, códigos hijos duplicados o ajenos, fuentes vacías y metadatos alternativos de sublíneas. Atomicidad: fallo tras flush en alta/edición/borrado, fallo de commit y cancelación; sin cambios residuales. Dos creaciones simultáneas con igual código producen 201/409 y una sola fila. Cuenta real de auditor en `polis_test`: GET 200 y POST/PUT/DELETE 403.
 
-## Observaciones de las suites generales
+Las escrituras sintéticas se limitaron a `polis_test*`; no se introdujeron líneas o proyectos de ejemplo en producción.
 
-- `bun run ui:test`: 193/194 aprobadas; falló `Plataforma/Administración interna > Usuarios`, modificada por otra entrega concurrente. Las historias de formularios pasaron. No se deshabilitaron guardas ni axe.
-- `bun run backend:check`: 45 errores Ruff preexistentes fuera del alcance; impiden llegar a pytest por ese comando. Ruff de formularios/migración/nuevas pruebas pasa y se ejecutó la regresión focalizada separadamente.
-- El build mantiene un warning CSS previo del selector de gráficos `stroke='#fff'`; compiló correctamente.
+## Despliegue comprobado
 
-Documentos: `docs/formularios-persistencia.md`, `docs/reportes-revision-publicacion.md`, `docs/permisos-api.md`.
-Evidencia reproducible y capturas: `docs/evidencias/reporte-geoespacial-2026-10-02/`.
+Frontend y backend reiniciados y activos. HTTPS con validación TLS:
+
+- `/` → 200.
+- `/plataforma/contenido` → 200 (cascarón Next sujeto a guard de sesión del cliente).
+- `/api/v1/politicas/lineas` → 200, contrato con `sublineas` como array.
+- `/api/v1/politicas/lineas/gestion` sin token → 401.
+- POST `/api/v1/politicas/lineas` sin token → 401.
+
+Informe: [docs/lineas-sublineas-estrategicas.md](../docs/lineas-sublineas-estrategicas.md).
+Evidencias: `docs/evidencias/lineas-estrategicas-2026-10-02/`.
+Matriz: `docs/permisos-api.md`.
+
+## Límites metodológicos
+
+No se afirma que la jerarquía de tres niveles o los códigos LE sean texto literal del Decreto 037: se documenta como diseño solicitado para POLIS, articulado con la norma y las siete áreas PNUD. Meta e indicador son campos de planificación, no una ficha técnica validada del banco de indicadores ni registro BPIN. El costo es estimado, no ejecución presupuestal. La relación con árboles de objetivos es metodológica; no se crea automáticamente un vínculo a nodos del árbol.
+
+La tabla histórica mantiene dimensión nullable por compatibilidad; las rutas nuevas la exigen. La unicidad de código por fase se serializa en el servicio, sin nueva restricción que rompa históricos. La lectura administrativa completa se reserva a los tres roles documentados. La entrega no autoriza publicar respuestas ciudadanas ni añade la moderación de reportes pendientes.
