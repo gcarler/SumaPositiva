@@ -345,12 +345,18 @@ export function MesaEditorPanel({
       onClose={closeTop}
       onCloseToKey={closeTop}
       footer={
-        <div className="flex items-center justify-between gap-3">
-          <p className="hidden max-w-xs text-xs leading-relaxed text-[var(--text-secondary)] sm:block">
+        <div className="flex flex-col-reverse gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <p className="hidden text-xs text-[var(--text-secondary)] sm:block">
             La Sección 1 es obligatoria para guardar.
           </p>
-          <div className="ml-auto flex gap-2">
-            <Button variant="outline" size="sm" type="button" onClick={closeTop}>
+          <div className="flex gap-2 sm:ml-auto">
+            <Button
+              variant="outline"
+              size="sm"
+              type="button"
+              onClick={closeTop}
+              className="flex-1 sm:flex-none"
+            >
               Cancelar
             </Button>
             <Button
@@ -360,6 +366,7 @@ export function MesaEditorPanel({
               disabled={!isValid}
               loading={isSubmitting}
               loadingLabel="Guardando…"
+              className="flex-1 sm:flex-none"
             >
               {esEdicion ? (
                 <Check className="size-4" />
@@ -372,7 +379,7 @@ export function MesaEditorPanel({
         </div>
       }
     >
-      <div className="ui-panel-body mx-auto max-w-2xl space-y-6">
+      <div className="ui-panel-body w-full space-y-6 px-4 sm:px-6 lg:px-8 2xl:px-10">
         {/* Barra de progreso de configuración */}
         <div className="flex flex-col gap-2 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-4">
           <div className="flex items-center justify-between text-xs">
@@ -405,20 +412,20 @@ export function MesaEditorPanel({
               onClick={() => setSeccion1Abierta((prev) => !prev)}
               className="flex w-full items-center justify-between gap-3 p-4 text-left transition-colors hover:bg-[var(--surface-2)]"
             >
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 flex-1 min-w-0">
                 <span className="flex size-7 shrink-0 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--surface-2)] text-xs font-semibold text-[var(--text-secondary)]">
                   1
                 </span>
-                <div>
-                  <p className="text-sm font-semibold text-[var(--text-primary)]">
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-semibold text-[var(--text-primary)] truncate">
                     Información básica
                   </p>
-                  <p className="text-xs text-[var(--text-secondary)]">
+                  <p className="text-xs text-[var(--text-secondary)] truncate">
                     Nombre, fecha, horario y lugar de encuentro
                   </p>
                 </div>
               </div>
-              <div className="flex items-center gap-2.5">
+              <div className="flex items-center gap-2.5 shrink-0">
                 {seccion1Valida ? (
                   <Badge variant="success" className="text-[11px]">
                     Completado ✓
@@ -445,12 +452,13 @@ export function MesaEditorPanel({
                   transition={{ duration: 0.22 }}
                   className="border-t border-[var(--border)] p-4 sm:p-5"
                 >
-                  <div className="space-y-4">
+                  <div className="grid gap-4 grid-cols-1 sm:grid-cols-3 lg:grid-cols-4">
                     <FormField
                       id="mesa-nombre"
                       label="Nombre de la mesa"
                       required
                       error={errors.nombre?.message}
+                      className="col-span-full"
                     >
                       {(controlProps) => (
                         <Input
@@ -461,58 +469,60 @@ export function MesaEditorPanel({
                       )}
                     </FormField>
 
-                    <div className="grid gap-4 sm:grid-cols-3">
-                      <FormField
-                        id="mesa-fecha"
-                        label="Fecha"
-                        required
-                        error={errors.fecha?.message}
-                      >
-                        {(controlProps) => (
-                          <Input
-                            {...controlProps}
-                            type="date"
-                            {...register("fecha")}
-                          />
-                        )}
-                      </FormField>
+                    <FormField
+                      id="mesa-fecha"
+                      label="Fecha"
+                      required
+                      error={errors.fecha?.message}
+                      className="col-span-1 sm:col-span-1 lg:col-span-2"
+                    >
+                      {(controlProps) => (
+                        <Input
+                          {...controlProps}
+                          type="date"
+                          {...register("fecha")}
+                        />
+                      )}
+                    </FormField>
 
-                      <FormField
-                        id="mesa-hora-inicio"
-                        label="Hora de inicio"
-                        error={errors.horaInicio?.message}
-                      >
-                        {(controlProps) => (
-                          <Input
-                            {...controlProps}
-                            type="time"
-                            placeholder="08:30"
-                            {...register("horaInicio")}
-                          />
-                        )}
-                      </FormField>
+                    <FormField
+                      id="mesa-hora-inicio"
+                      label="Hora de inicio"
+                      error={errors.horaInicio?.message}
+                      className="col-span-1 sm:col-span-1"
+                    >
+                      {(controlProps) => (
+                        <Input
+                          {...controlProps}
+                          type="time"
+                          placeholder="08:30"
+                          {...register("horaInicio")}
+                        />
+                      )}
+                    </FormField>
 
-                      <FormField
-                        id="mesa-hora-fin"
-                        label="Hora de fin"
-                        error={errors.horaFin?.message}
-                      >
-                        {(controlProps) => (
-                          <Input
-                            {...controlProps}
-                            type="time"
-                            placeholder="12:00"
-                            {...register("horaFin")}
-                          />
-                        )}
-                      </FormField>
-                    </div>
+                    <FormField
+                      id="mesa-hora-fin"
+                      label="Hora de fin"
+                      error={errors.horaFin?.message}
+                      className="col-span-1 sm:col-span-1"
+                    >
+                      {(controlProps) => (
+                        <Input
+                          {...controlProps}
+                          type="time"
+                          placeholder="12:00"
+                          {...register("horaFin")}
+                        />
+                      )}
+                    </FormField>
 
                     <FormField
                       id="mesa-lugar"
                       label="Lugar"
                       required
                       error={errors.lugar?.message}
+                      className="col-span-full"
                     >
                       {(controlProps) => (
                         <Input
@@ -529,6 +539,7 @@ export function MesaEditorPanel({
                         label="Total de asistentes confirmados"
                         error={errors.totalAsistentes?.message}
                         description="Disponible para mesas cerradas con planilla de asistencia."
+                        className="col-span-full sm:col-span-2"
                       >
                         {(controlProps) => (
                           <Input
@@ -560,20 +571,20 @@ export function MesaEditorPanel({
               onClick={() => setSeccion2Abierta((prev) => !prev)}
               className="flex w-full items-center justify-between gap-3 p-4 text-left transition-colors hover:bg-[var(--surface-2)]"
             >
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 flex-1 min-w-0">
                 <span className="flex size-7 shrink-0 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--surface-2)] text-xs font-semibold text-[var(--text-secondary)]">
                   2
                 </span>
-                <div>
-                  <p className="text-sm font-semibold text-[var(--text-primary)]">
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-semibold text-[var(--text-primary)] truncate">
                     Entidades y personas responsables
                   </p>
-                  <p className="text-xs text-[var(--text-secondary)]">
+                  <p className="text-xs text-[var(--text-secondary)] truncate">
                     Dependencias organizadoras y equipo facilitador
                   </p>
                 </div>
               </div>
-              <div className="flex items-center gap-2.5">
+              <div className="flex items-center gap-2.5 shrink-0">
                 {seccion2Iniciada ? (
                   <Badge variant="success" className="text-[11px]">
                     Completado ✓
@@ -598,9 +609,10 @@ export function MesaEditorPanel({
                   animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
                   transition={{ duration: 0.22 }}
-                  className="border-t border-[var(--border)] p-4 sm:p-5 space-y-6"
+                  className="border-t border-[var(--border)] p-4 sm:p-5"
                 >
-                  {/* Entidades */}
+                  <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                    {/* Entidades */}
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <div>
@@ -638,9 +650,9 @@ export function MesaEditorPanel({
                         {entidadFields.map((item, index) => (
                           <div
                             key={item.id}
-                            className="flex flex-col gap-2 rounded-lg border border-[var(--border)] bg-[var(--surface-2)] p-3 sm:flex-row sm:items-center"
+                            className="flex flex-col gap-2 rounded-lg border border-[var(--border)] bg-[var(--surface-2)] p-3 sm:flex-row sm:items-start"
                           >
-                            <div className="flex-1">
+                            <div className="flex-1 min-w-0">
                               <FormField
                                 id={`entidad-nombre-${item.id}`}
                                 label="Nombre de la entidad"
@@ -686,7 +698,7 @@ export function MesaEditorPanel({
                               )}
                             </FormField>
                           </div>
-                          <div className="sm:pt-5">
+                          <div className="sm:pt-6">
                             <Button
                               variant="ghost"
                               size="sm"
@@ -705,7 +717,7 @@ export function MesaEditorPanel({
                 </div>
 
                 {/* Personas responsables */}
-                <div className="space-y-3 pt-4 border-t border-[var(--border)]">
+                <div className="space-y-3 pt-6 border-t border-[var(--border)] lg:border-t-0 lg:pt-0">
                   <div className="flex items-center justify-between">
                     <div>
                       <h4 className="text-xs font-semibold uppercase tracking-wider text-[var(--text-tertiary)]">
@@ -745,8 +757,8 @@ export function MesaEditorPanel({
                           key={item.id}
                           className="flex flex-col gap-3 rounded-lg border border-[var(--border)] bg-[var(--surface-2)] p-3"
                         >
-                          <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-                            <div className="flex-1">
+                          <div className="flex flex-col gap-2 sm:flex-row sm:items-start">
+                            <div className="flex-1 min-w-0">
                               <FormField
                                 id={`resp-nombre-${item.id}`}
                                 label="Nombre y apellido"
@@ -778,7 +790,7 @@ export function MesaEditorPanel({
                                 )}
                               </FormField>
                             </div>
-                            <div className="sm:pt-5">
+                            <div className="sm:pt-6">
                               <Button
                                 variant="ghost"
                                 size="sm"
@@ -817,8 +829,9 @@ export function MesaEditorPanel({
                     </div>
                   )}
                 </div>
-              </motion.div>
-            )}
+              </div>
+            </motion.div>
+          )}
           </AnimatePresence>
         </div>
 
@@ -830,20 +843,20 @@ export function MesaEditorPanel({
             onClick={() => setSeccion3Abierta((prev) => !prev)}
             className="flex w-full items-center justify-between gap-3 p-4 text-left transition-colors hover:bg-[var(--surface-2)]"
           >
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 flex-1 min-w-0">
               <span className="flex size-7 shrink-0 items-center justify-center rounded-full border border-[var(--border)] bg-[var(--surface-2)] text-xs font-semibold text-[var(--text-secondary)]">
                 3
               </span>
-              <div>
-                <p className="text-sm font-semibold text-[var(--text-primary)]">
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-semibold text-[var(--text-primary)] truncate">
                   Ubicación y logística
                 </p>
-                <p className="text-xs text-[var(--text-secondary)]">
+                <p className="text-xs text-[var(--text-secondary)] truncate">
                   Enlace de mapas, geolocalización y capacidad de aforo
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-2.5">
+            <div className="flex items-center gap-2.5 shrink-0">
               {seccion3Iniciada ? (
                 <Badge variant="success" className="text-[11px]">
                   Completado ✓
@@ -868,39 +881,65 @@ export function MesaEditorPanel({
                 animate={{ opacity: 1, height: "auto" }}
                 exit={{ opacity: 0, height: 0 }}
                 transition={{ duration: 0.22 }}
-                className="border-t border-[var(--border)] p-4 sm:p-5 space-y-4"
+                className="border-t border-[var(--border)] p-4 sm:p-5"
               >
-                <FormField
-                  id="mesa-url-mapa"
-                  label="Enlace al mapa (Google Maps / Waze / OSM)"
-                  error={errors.urlMapa?.message}
-                  description="Pega un enlace de Google Maps con ubicación; las coordenadas se detectarán automáticamente."
-                >
-                  {(controlProps) => (
-                    <Input
-                      {...controlProps}
-                      type="url"
-                      placeholder="https://maps.google.com/... o enlace Waze / OSM"
-                      {...register("urlMapa")}
-                    />
+                <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+                  <FormField
+                    id="mesa-url-mapa"
+                    label="Enlace al mapa (Google Maps / Waze / OSM)"
+                    error={errors.urlMapa?.message}
+                    description="Pega un enlace de Google Maps con ubicación; las coordenadas se detectarán automáticamente."
+                    className="col-span-full sm:col-span-2 lg:col-span-2"
+                  >
+                    {(controlProps) => (
+                      <Input
+                        {...controlProps}
+                        type="url"
+                        placeholder="https://maps.google.com/... o enlace Waze / OSM"
+                        {...register("urlMapa")}
+                      />
+                    )}
+                  </FormField>
+
+                  <FormField
+                    id="mesa-aforo"
+                    label="Capacidad máxima del lugar (aforo)"
+                    error={errors.aforo?.message}
+                    description="Número máximo de participantes permitidos en el espacio."
+                    className="col-span-full sm:col-span-2 lg:col-span-1"
+                  >
+                    {(controlProps) => (
+                      <Input
+                        {...controlProps}
+                        type="number"
+                        min={1}
+                        max={100000}
+                        placeholder="Ej.: 120"
+                        {...register("aforo", {
+                          setValueAs: (v) =>
+                            v === "" || v === null || isNaN(Number(v))
+                              ? undefined
+                              : Number(v),
+                        })}
+                      />
+                    )}
+                  </FormField>
+
+                  {coordsDetectadas && (
+                    <div className="col-span-full flex items-center gap-2 rounded-lg border border-[var(--border)] bg-[var(--surface-2)] p-3 text-xs text-[var(--success)] font-medium">
+                      <MapPin className="size-4 shrink-0 text-[var(--success)]" />
+                      <span>
+                        📍 Coordenadas detectadas: {coordsDetectadas.lat.toFixed(6)},{" "}
+                        {coordsDetectadas.lng.toFixed(6)}
+                      </span>
+                    </div>
                   )}
-                </FormField>
 
-                {coordsDetectadas && (
-                  <div className="flex items-center gap-2 rounded-lg border border-[var(--border)] bg-[var(--surface-2)] p-3 text-xs text-[var(--success)] font-medium">
-                    <MapPin className="size-4 shrink-0 text-[var(--success)]" />
-                    <span>
-                      📍 Coordenadas detectadas: {coordsDetectadas.lat.toFixed(6)},{" "}
-                      {coordsDetectadas.lng.toFixed(6)}
-                    </span>
-                  </div>
-                )}
-
-                <div className="grid gap-4 sm:grid-cols-2">
                   <FormField
                     id="mesa-lat"
                     label="Latitud (opcional)"
                     error={errors.coordenadas?.lat?.message}
+                    className="col-span-1"
                   >
                     {(controlProps) => (
                       <Input
@@ -922,6 +961,7 @@ export function MesaEditorPanel({
                     id="mesa-lng"
                     label="Longitud (opcional)"
                     error={errors.coordenadas?.lng?.message}
+                    className="col-span-1"
                   >
                     {(controlProps) => (
                       <Input
@@ -939,29 +979,6 @@ export function MesaEditorPanel({
                     )}
                   </FormField>
                 </div>
-
-                <FormField
-                  id="mesa-aforo"
-                  label="Capacidad máxima del lugar (aforo)"
-                  error={errors.aforo?.message}
-                  description="Número máximo de participantes permitidos en el espacio."
-                >
-                  {(controlProps) => (
-                    <Input
-                      {...controlProps}
-                      type="number"
-                      min={1}
-                      max={100000}
-                      placeholder="Ej.: 120"
-                      {...register("aforo", {
-                        setValueAs: (v) =>
-                          v === "" || v === null || isNaN(Number(v))
-                            ? undefined
-                            : Number(v),
-                      })}
-                    />
-                  )}
-                </FormField>
               </motion.div>
             )}
           </AnimatePresence>
