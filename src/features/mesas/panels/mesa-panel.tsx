@@ -226,7 +226,8 @@ export function MesaPanel({
               <dd className="text-sm font-medium text-[var(--text-primary)]">
                 {mesa.submesas.length > 0 ? (
                   <div className="space-y-0.5">
-                    {(mesa.asistentesPlenaaria != null || mesa.asistentesPlenaria != null) && (
+                    {(mesa.asistentesPlenaaria != null || mesa.asistentesPlenaria != null) &&
+                      ((mesa.asistentesPlenaaria ?? mesa.asistentesPlenaria) ?? 0) > 0 && (
                       <div className="flex gap-2 text-xs text-[var(--text-secondary)]">
                         <span>Plenaria:</span>
                         <span className="font-medium tabular">
@@ -695,7 +696,11 @@ export function MesaPanel({
                     {calcularTotalAsistentes(mesa)} personas
                   </span>
                   <span className="text-[11px] text-[var(--text-tertiary)]">
-                    Plenaria ({mesa.asistentesPlenaaria ?? mesa.asistentesPlenaria ?? 0}) + Submesas ({mesa.submesas.reduce((acc, sm) => acc + (sm.participantes ?? 0), 0)})
+                    {(mesa.asistentesPlenaaria ?? mesa.asistentesPlenaria ?? 0) === 0
+                      ? `Sumatoria de submesas (${mesa.submesas.reduce((acc, sm) => acc + (sm.participantes ?? 0), 0)})`
+                      : mesa.submesas.reduce((acc, sm) => acc + (sm.participantes ?? 0), 0) === 0
+                      ? `Asistentes en plenaria (${mesa.asistentesPlenaaria ?? mesa.asistentesPlenaria})`
+                      : `Plenaria (${mesa.asistentesPlenaaria ?? mesa.asistentesPlenaria}) + Submesas (${mesa.submesas.reduce((acc, sm) => acc + (sm.participantes ?? 0), 0)})`}
                   </span>
                 </div>
               )}

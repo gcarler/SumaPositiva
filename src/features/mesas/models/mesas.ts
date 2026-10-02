@@ -130,20 +130,37 @@ export interface MesaDeTrabajo {
 }
 
 export function calcularTotalAsistentes(mesa: MesaDeTrabajo): number {
-  if (mesa.submesas.length === 0) return mesa.totalAsistentes ?? 0;
+  const plenaria = mesa.asistentesPlenaaria ?? mesa.asistentesPlenaria ?? 0;
+  const sumSubmesas = mesa.submesas.reduce((acc, sm) => acc + (sm.participantes ?? 0), 0);
+
+  // 1. Viceversa: Si no hay submesas o las submesas no tienen participantes registrados
+  if (mesa.submesas.length === 0 || sumSubmesas === 0) {
+    if (plenaria > 0) return plenaria;
+    return mesa.totalAsistentes ?? 0;
+  }
+
+  // 2. Si no se cuentan asistentes a la plenaria (plenaria = 0):
+  // la cantidad de asistentes es igual a la sumatoria de las submesas
+  if (plenaria === 0) {
+    if (!mesa.conteoIndependiente && mesa.totalAsistentes && mesa.totalAsistentes > 0) {
+      return mesa.totalAsistentes;
+    }
+    return sumSubmesas;
+  }
+
+  // 3. Cuando se cuentan tanto plenaria como submesas:
   if (mesa.conteoIndependiente) {
-    const sumSubmesas = mesa.submesas.reduce((acc, sm) => acc + (sm.participantes ?? 0), 0);
-    const plenaria = mesa.asistentesPlenaaria ?? mesa.asistentesPlenaria ?? 0;
+    // Modo A: Grupos distintos -> Suma plenaria + Σ submesas
     return sumSubmesas + plenaria;
   }
-  // Mismo grupo (no duplicar):
+
+  // Modo B: Mismo grupo (no duplicar) -> Total manual del facilitador o grupo mayor
   if (mesa.totalAsistentes && mesa.totalAsistentes > 0) {
     return mesa.totalAsistentes;
   }
-  const plenaria = mesa.asistentesPlenaaria ?? mesa.asistentesPlenaria ?? 0;
   const maxSub = mesa.submesas.reduce((max, sm) => Math.max(max, sm.participantes ?? 0), 0);
   const mayor = Math.max(plenaria, maxSub);
-  return mayor > 0 ? mayor : (mesa.totalAsistentes ?? 0);
+  return mayor > 0 ? mayor : sumSubmesas;
 }
 
 /* ---------- Metadatos de presentación ---------- */
