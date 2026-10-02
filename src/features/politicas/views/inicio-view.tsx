@@ -13,6 +13,7 @@ import {
   Plus,
   Play,
   Layers,
+  BarChart3,
 } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import { Badge } from "@/shared/ui/badge";
@@ -28,6 +29,8 @@ import { useTestimoniosStore } from "@/features/testimonios/state/testimonios-st
 import { usePoliticaPrincipal } from "@/features/politicas/state/politicas-store";
 import { totalAportes } from "@/features/politicas/models/politicas";
 import { DimensionesGrid } from "@/features/politicas/components/dimensiones-grid";
+import { EnrutadorCiudadanoInteligente } from "@/features/politicas/components/enrutador-ciudadano-inteligente";
+import { FlujoInversionGobernanza } from "@/features/politicas/components/flujo-inversion-gobernanza";
 
 const fadeUp = {
   initial: { opacity: 0, y: 20 },
@@ -168,6 +171,16 @@ export function InicioView() {
                   <Compass className="size-4 text-[var(--ember)]" strokeWidth={1.75} />
                   Geovisor de Seguridad
                 </Button>
+                <Button
+                  variant="outline"
+                  size="lg"
+                  type="button"
+                  onClick={() => openPanel("rendicion-cuentas", {})}
+                  className="gap-2 border-[var(--border)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+                >
+                  <BarChart3 className="size-4 text-[var(--ember)]" strokeWidth={1.75} />
+                  Rendición de Cuentas 2026
+                </Button>
               </motion.div>
             </div>
 
@@ -217,6 +230,11 @@ export function InicioView() {
         </div>
 
         <DimensionesGrid />
+      </section>
+
+      {/* ================= PILAR 1: ENRUTADOR CIUDADANO INTELIGENTE ================= */}
+      <section id="enrutador-ciudadano" className="container-fluid">
+        <EnrutadorCiudadanoInteligente />
       </section>
 
       {/* ================= CICLO DNP ================= */}
@@ -340,6 +358,11 @@ export function InicioView() {
             </div>
           ))}
         </div>
+      </section>
+
+      {/* ================= PILAR 2: FLUJO DE INVERSIÓN Y GOBERNANZA ================= */}
+      <section id="gobernanza-flujo" className="container-fluid">
+        <FlujoInversionGobernanza />
       </section>
 
       {/* ================= ACTUALIDAD & VOCES CIUDADANAS (NOTICIAS + TESTIMONIOS) ================= */}

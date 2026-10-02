@@ -127,6 +127,10 @@ const TestimonioNuevoPanel = dynamic(
   () => import("@/features/testimonios/panels/testimonio-nuevo-panel").then((m) => m.TestimonioNuevoPanel),
   { ssr: false }
 );
+const RendicionCuentasPanel = dynamic(
+  () => import("@/features/politicas/panels/rendicion-cuentas-panel").then((m) => m.RendicionCuentasPanel),
+  { ssr: false }
+);
 
 export const PANEL_REGISTRY: Record<
   PanelType,
@@ -162,6 +166,7 @@ export const PANEL_REGISTRY: Record<
   "noticia-editor": NoticiaEditorPanel as ComponentType<PanelComponentProps>,
   "testimonio-nuevo": TestimonioNuevoPanel as ComponentType<PanelComponentProps>,
   "mesa-acta": MesaActaPanel as ComponentType<PanelComponentProps>,
+  "rendicion-cuentas": RendicionCuentasPanel as ComponentType<PanelComponentProps>,
 };
 
 /**
@@ -204,4 +209,5 @@ export const PANEL_WIDTHS: Record<PanelType, string> = {
   noticia: "min(clamp(780px, 52vw, 1120px), 100vw)",
   "noticia-editor": "min(clamp(820px, 56vw, 1240px), 100vw)",
   "testimonio-nuevo": "min(clamp(640px, 44vw, 920px), 100vw)",
+  "rendicion-cuentas": "min(clamp(840px, 58vw, 1280px), 100vw)",
 };

@@ -6,7 +6,7 @@ import { Button } from "@/shared/ui/button";
 
 import { useSyncExternalStore } from "react";
 import { useTheme } from "next-themes";
-import { Moon, Sun, Landmark, UserRound } from "lucide-react";
+import { Moon, Sun, Landmark, UserRound, BarChart3 } from "lucide-react";
 import { useNavigationStore } from "@/core/navigation/navigation-store";
 import type { VistaApp } from "@/core/navigation/navigation-store";
 import { usePanels } from "@/core/panels/panel-store";
@@ -101,6 +101,7 @@ export function Topbar() {
   const vista = useNavigationStore((s) => s.vista);
   const setVista = useNavigationStore((s) => s.setVista);
   const sesion = useSesionStore((s) => s.sesion);
+  const { openPanel } = usePanels();
 
   return (
     <header className="sticky top-0 z-40 border-b border-[var(--border)] bg-[var(--background)]/85 backdrop-blur-md">
@@ -168,6 +169,17 @@ export function Topbar() {
 
         {/* Acciones */}
         <div className="flex flex-wrap items-center justify-end gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            type="button"
+            onClick={() => openPanel("rendicion-cuentas", {})}
+            className="gap-1.5 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] border-[var(--border)]"
+            title="Ver Semáforo de Cumplimiento Real 2026 de las 27 dependencias"
+          >
+            <BarChart3 className="size-3.5 text-[var(--ember)]" />
+            <span className="hidden sm:inline">Rendición 2026</span>
+          </Button>
           {puedeEntrar(sesion) && (
             <Button
               asChild

@@ -11,6 +11,10 @@ import {
   SelectValue,
 } from "@/shared/ui/select";
 import { PreguntaRespuesta } from "./pregunta-respuesta";
+import {
+  TimbradoCompetenciaLegal,
+  calcularCompetenciaLegalReporte,
+} from "./timbrado-competencia-legal";
 import type { Formulario, ValoresRespuesta } from "../models/formulario";
 import {
   destinoSeccion,
@@ -130,8 +134,16 @@ export function FormularioRuntime({
     }
     setEnviando(true);
     try {
-      if (!preview)
-        await enviar(respuestasEfectivas(form, respuestas), enfoque);
+      if (!preview) {
+        const payload = respuestasEfectivas(form, respuestas);
+        if (form.configuracion.slug === "reporte-inseguridad") {
+          const timbrado = calcularCompetenciaLegalReporte(respuestas);
+          if (timbrado) {
+            payload["_competencia_legal"] = `${timbrado.secretariaLider} en articulación con ${timbrado.entidadesAliadas}. Marco: ${timbrado.marcoIntervencion}. ${timbrado.fundamentoLegal}.`;
+          }
+        }
+        await enviar(payload, enfoque);
+      }
       setEnviado(true);
     } catch (e) {
       setErrorEnvio(
@@ -220,6 +232,12 @@ export function FormularioRuntime({
             />
           </div>
         ))}
+        {form.configuracion.slug === "reporte-inseguridad" && (
+          <TimbradoCompetenciaLegal
+            respuestas={respuestas}
+            slug={form.configuracion.slug}
+          />
+        )}
         {!porPagina.length && (
           <p className="text-sm text-text-secondary">
             Esta sección no tiene preguntas visibles.

@@ -7,9 +7,10 @@ import { FilterChip } from "@/shared/ui/filter-chip";
 import { EmptyState } from "@/shared/ui/empty-state";
 import { Button } from "@/shared/ui/button";
 import { motion, useReducedMotion } from "framer-motion";
-import { Search, RotateCcw, ArrowUpRight, MessageSquare, Layers } from "lucide-react";
+import { Search, RotateCcw, ArrowUpRight, MessageSquare, Layers, Building2 } from "lucide-react";
 import { usePoliticaPrincipal } from "@/features/politicas/state/politicas-store";
 import { usePanels } from "@/core/panels/panel-store";
+import { FlujoInversionGobernanza } from "@/features/politicas/components/flujo-inversion-gobernanza";
 import type { LineaEstrategica, Fase } from "@/features/politicas/models/politicas";
 
 /**
@@ -31,6 +32,7 @@ export function ExplorarView() {
 
   const [faseFiltro, setFaseFiltro] = useState<string>("todas");
   const [busqueda, setBusqueda] = useState<string>("");
+  const [pestana, setPestana] = useState<"lineas" | "gobernanza">("lineas");
 
   /* Obtener todas las líneas estratégicas con su fase correspondiente */
   const todasLasLineas = useMemo(() => {
@@ -85,12 +87,42 @@ export function ExplorarView() {
     <div className="container-fluid py-12 md:py-14 lg:py-16">
       <PageHeader
         eyebrow="Participación Ciudadana"
-        title="Líneas Estratégicas de Seguridad Humana"
-        description="Explora las fases y líneas de la Política Pública de Cartagena. Aporta propuestas, anotaciones y preguntas en cada línea estratégica."
+        title="Líneas Estratégicas y Gobernanza Distrital"
+        description="Explora las fases y líneas de la Política Pública de Cartagena, o visualiza cómo las 27 dependencias y sus presupuestos atienden las 7 dimensiones de seguridad humana."
       />
 
-      {/* ---------- Filtros ---------- */}
-      <div className="mt-10 space-y-4">
+      {/* ---------- Selector de Pestañas ---------- */}
+      <div className="mt-8 flex flex-wrap items-center gap-2 border-b border-[var(--border)] pb-4">
+        <Button
+          variant={pestana === "lineas" ? "default" : "outline"}
+          size="sm"
+          type="button"
+          onClick={() => setPestana("lineas")}
+          className="gap-2"
+        >
+          <Layers className="size-4" />
+          <span>Líneas Estratégicas ({todasLasLineas.length})</span>
+        </Button>
+        <Button
+          variant={pestana === "gobernanza" ? "default" : "outline"}
+          size="sm"
+          type="button"
+          onClick={() => setPestana("gobernanza")}
+          className="gap-2"
+        >
+          <Building2 className="size-4" />
+          <span>Mapa de Inversión y Gobernanza (27 Dependencias)</span>
+        </Button>
+      </div>
+
+      {pestana === "gobernanza" ? (
+        <div className="mt-8">
+          <FlujoInversionGobernanza />
+        </div>
+      ) : (
+        <>
+          {/* ---------- Filtros ---------- */}
+          <div className="mt-8 space-y-4">
         {/* Búsqueda */}
         <SearchField
           className="max-w-lg"
@@ -229,6 +261,8 @@ export function ExplorarView() {
             );
           })}
         </div>
+      )}
+        </>
       )}
     </div>
   );
