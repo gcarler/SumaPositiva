@@ -126,13 +126,24 @@ export interface MesaDeTrabajo {
   entidades?: EntidadResponsable[];
   responsables?: PersonaResponsable[];
   adjuntos?: AdjuntoMesa[];
+  conteoIndependiente?: boolean; // default: false (mismo grupo)
 }
 
 export function calcularTotalAsistentes(mesa: MesaDeTrabajo): number {
   if (mesa.submesas.length === 0) return mesa.totalAsistentes ?? 0;
-  const sumSubmesas = mesa.submesas.reduce((acc, sm) => acc + (sm.participantes ?? 0), 0);
+  if (mesa.conteoIndependiente) {
+    const sumSubmesas = mesa.submesas.reduce((acc, sm) => acc + (sm.participantes ?? 0), 0);
+    const plenaria = mesa.asistentesPlenaaria ?? mesa.asistentesPlenaria ?? 0;
+    return sumSubmesas + plenaria;
+  }
+  // Mismo grupo (no duplicar):
+  if (mesa.totalAsistentes && mesa.totalAsistentes > 0) {
+    return mesa.totalAsistentes;
+  }
   const plenaria = mesa.asistentesPlenaaria ?? mesa.asistentesPlenaria ?? 0;
-  return sumSubmesas + plenaria;
+  const maxSub = mesa.submesas.reduce((max, sm) => Math.max(max, sm.participantes ?? 0), 0);
+  const mayor = Math.max(plenaria, maxSub);
+  return mayor > 0 ? mayor : (mesa.totalAsistentes ?? 0);
 }
 
 /* ---------- Metadatos de presentación ---------- */

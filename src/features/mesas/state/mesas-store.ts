@@ -47,6 +47,7 @@ export interface MesaInput {
   entidades?: EntidadResponsable[];
   responsables?: PersonaResponsable[];
   adjuntos?: AdjuntoMesa[];
+  conteoIndependiente?: boolean;
 }
 
 export interface SubMesaInput {
@@ -64,6 +65,7 @@ interface MesasState {
   setAcuerdosPlenaria: (mesaId: string, acuerdos: string) => void;
   setInformeMesa: (mesaId: string, informe: string) => void;
   setAsistentesPlenaria: (mesaId: string, cantidad: number | null) => void;
+  setConteoIndependiente: (mesaId: string, conteoIndependiente: boolean) => void;
   eliminarMesa: (mesaId: string) => void;
   agregarAdjuntoMesa: (mesaId: string, adjunto: AdjuntoMesa) => void;
   eliminarAdjuntoMesa: (mesaId: string, adjuntoId: string) => void;
@@ -249,6 +251,7 @@ export const useMesasStore = create<MesasState>((set, get) => ({
       urlMapa: input.urlMapa,
       aforo: input.aforo,
       adjuntos: input.adjuntos ?? [],
+      conteoIndependiente: input.conteoIndependiente ?? false,
     };
     set((s) => ({ mesas: [mesa, ...s.mesas] }));
     return mesa;
@@ -300,6 +303,13 @@ export const useMesasStore = create<MesasState>((set, get) => ({
               asistentesPlenaria: cantidad,
             }
           : m
+      ),
+    })),
+
+  setConteoIndependiente: (mesaId, conteoIndependiente) =>
+    set((s) => ({
+      mesas: s.mesas.map((m) =>
+        m.id === mesaId ? { ...m, conteoIndependiente } : m
       ),
     })),
 

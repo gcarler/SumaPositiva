@@ -5,6 +5,8 @@ import { Textarea } from "@/shared/ui/textarea";
 import { Input } from "@/shared/ui/input";
 import { FormField } from "@/shared/ui/form-field";
 import { Badge } from "@/shared/ui/badge";
+import { Switch } from "@/shared/ui/switch";
+import { Label } from "@/shared/ui/label";
 
 import { useState } from "react";
 import { format } from "date-fns";
@@ -90,6 +92,8 @@ export function MesaPanel({
 
   /* asistentes plenaria borrador local */
   const [asistentesPlenariaBorrador, setAsistentesPlenariaBorrador] = useState<number | null | undefined>(undefined);
+  /* total asistentes manual borrador local (para conteoIndependiente = false) */
+  const [totalAsistentesBorrador, setTotalAsistentesBorrador] = useState<number | null | undefined>(undefined);
 
   const [prevMesaId, setPrevMesaId] = useState(props.mesaId);
   if (prevMesaId !== props.mesaId) {
@@ -97,6 +101,7 @@ export function MesaPanel({
     setAcuerdosBorrador(null);
     setInformeBorrador(null);
     setAsistentesPlenariaBorrador(undefined);
+    setTotalAsistentesBorrador(undefined);
   }
 
   /* formulario inline de submesa */
@@ -245,6 +250,9 @@ export function MesaPanel({
                       <span>Total:</span>
                       <span>{calcularTotalAsistentes(mesa)}</span>
                     </div>
+                    <div className="text-[10px] text-[var(--text-tertiary)] italic">
+                      {mesa.conteoIndependiente ? "Suma independiente" : "Mismo grupo (no duplicado)"}
+                    </div>
                   </div>
                 ) : (
                   <span className="inline-flex items-center gap-1.5 tabular">
@@ -252,7 +260,7 @@ export function MesaPanel({
                       className="size-3.5 shrink-0 text-[var(--text-tertiary)]"
                       strokeWidth={1.5}
                     />
-                    {mesa.totalAsistentes.toLocaleString("es-CO")}
+                    {calcularTotalAsistentes(mesa).toLocaleString("es-CO")}
                   </span>
                 )}
               </dd>
@@ -483,42 +491,6 @@ export function MesaPanel({
             placeholder="Registra los acuerdos de la plenaria: qué problema se priorizó, cómo se repartieron los temas entre submesas y cuándo será la plenaria de cierre…"
             className="min-h-[110px] w-full resize-y rounded-lg border border-[var(--border)] bg-[var(--surface-1)] px-4 py-3 text-sm leading-relaxed text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] transition-colors focus:border-[var(--ember)]"
           />
-          {/* Asistentes solo en plenaria */}
-          <div className="pt-2">
-            <FormField
-              id="asistentes-plenaria-input"
-              label="Personas en plenaria (sin contar submesas)"
-              description="Registra cuántas personas asistieron solo a la plenaria (no a submesas temáticas)."
-            >
-              {(controlProps) => (
-                <Input
-                  {...controlProps}
-                  type="number"
-                  min={0}
-                  readOnly={soloLectura}
-                  placeholder="0"
-                  value={
-                    asistentesPlenariaBorrador !== undefined
-                      ? (asistentesPlenariaBorrador ?? "")
-                      : (mesa.asistentesPlenaaria ?? mesa.asistentesPlenaria ?? "")
-                  }
-                  onChange={(e) => {
-                    const val = e.target.value === "" ? null : Math.max(0, Math.floor(Number(e.target.value)));
-                    setAsistentesPlenariaBorrador(val);
-                  }}
-                  onBlur={() => {
-                    if (asistentesPlenariaBorrador !== undefined && !soloLectura) {
-                      useMesasStore.getState().setAsistentesPlenaria(mesa.id, asistentesPlenariaBorrador);
-                      mutarAsistentesPlenaria.mutate({ mesaId: mesa.id, cantidad: asistentesPlenariaBorrador });
-                      toast.success("Asistentes en plenaria actualizados");
-                    }
-                  }}
-                  className="max-w-[200px] tabular bg-[var(--surface-1)]"
-                />
-              )}
-            </FormField>
-          </div>
-
           <p className="flex items-start gap-2 text-[11px] leading-relaxed text-[var(--text-tertiary)]">
             <ClipboardList
               className="mt-0.5 size-3.5 shrink-0"
@@ -528,6 +500,207 @@ export function MesaPanel({
             ellas se desarrolla el papelografo (árbol de problemas y de
             soluciones).
           </p>
+        </section>
+
+        {/* ---------- Contabilización y registro de asistentes ---------- */}
+        <section className="space-y-3">
+          <SectionLabel>Contabilización de asistentes</SectionLabel>
+          <div className="space-y-4 rounded-lg border border-[var(--border)] bg-[var(--surface-1)] p-4">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <h4 className="text-sm font-semibold text-[var(--text-primary)]">
+                  Modo de contabilización de asistentes
+                </h4>
+                <p className="text-xs text-[var(--text-secondary)]">
+                  Define si las personas de plenaria y submesas son el mismo grupo o grupos independientes.
+                </p>
+              </div>
+              <div className="flex items-center gap-3 shrink-0">
+                <Label htmlFor="switch-conteo-independiente" className="text-xs font-medium text-[var(--text-secondary)]">
+                  {mesa.conteoIndependiente ? "Sumar por separado" : "Mismo grupo"}
+                </Label>
+                <Switch
+                  id="switch-conteo-independiente"
+                  disabled={soloLectura}
+                  checked={!!mesa.conteoIndependiente}
+                  onCheckedChange={(checked) => {
+                    useMesasStore.getState().setConteoIndependiente(mesa.id, checked);
+                    toast.success(
+                      checked
+                        ? "Modo activado: Sumar plenaria y submesas por separado"
+                        : "Modo activado: Mismo grupo en plenaria y submesas"
+                    );
+                  }}
+                />
+              </div>
+            </div>
+
+            {/* Opciones con radio/toggle visual */}
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <Button
+                variant="unstyled"
+                size="unstyled"
+                type="button"
+                disabled={soloLectura}
+                onClick={() => {
+                  if (mesa.conteoIndependiente) {
+                    useMesasStore.getState().setConteoIndependiente(mesa.id, false);
+                    toast.success("Modo activado: Mismo grupo en plenaria y submesas");
+                  }
+                }}
+                className={`flex flex-col items-start gap-1.5 rounded-lg border p-3 text-left transition-colors ${
+                  !mesa.conteoIndependiente
+                    ? "border-[var(--ember)] bg-[var(--surface-2)]"
+                    : "border-[var(--border)] bg-[var(--surface-0)] hover:bg-[var(--surface-1)] opacity-75"
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <span
+                    className={`flex size-4 shrink-0 items-center justify-center rounded-full border ${
+                      !mesa.conteoIndependiente
+                        ? "border-[var(--ember)] bg-[var(--ember)] text-[var(--surface-0)]"
+                        : "border-[var(--border-strong)] bg-transparent"
+                    }`}
+                  >
+                    {!mesa.conteoIndependiente && <span className="size-1.5 rounded-full bg-[var(--surface-0)]" />}
+                  </span>
+                  <span className="text-xs font-semibold text-[var(--text-primary)]">
+                    Mismo grupo de personas en plenaria y submesas (no duplicar)
+                  </span>
+                </div>
+                <p className="pl-6 text-[11px] leading-relaxed text-[var(--text-secondary)]">
+                  Las mismas personas van a plenaria y a las submesas. Total = el valor que el facilitador defina (o el mayor grupo).
+                </p>
+              </Button>
+
+              <Button
+                variant="unstyled"
+                size="unstyled"
+                type="button"
+                disabled={soloLectura}
+                onClick={() => {
+                  if (!mesa.conteoIndependiente) {
+                    useMesasStore.getState().setConteoIndependiente(mesa.id, true);
+                    toast.success("Modo activado: Sumar plenaria y submesas por separado");
+                  }
+                }}
+                className={`flex flex-col items-start gap-1.5 rounded-lg border p-3 text-left transition-colors ${
+                  mesa.conteoIndependiente
+                    ? "border-[var(--ember)] bg-[var(--surface-2)]"
+                    : "border-[var(--border)] bg-[var(--surface-0)] hover:bg-[var(--surface-1)] opacity-75"
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <span
+                    className={`flex size-4 shrink-0 items-center justify-center rounded-full border ${
+                      mesa.conteoIndependiente
+                        ? "border-[var(--ember)] bg-[var(--ember)] text-[var(--surface-0)]"
+                        : "border-[var(--border-strong)] bg-transparent"
+                    }`}
+                  >
+                    {mesa.conteoIndependiente && <span className="size-1.5 rounded-full bg-[var(--surface-0)]" />}
+                  </span>
+                  <span className="text-xs font-semibold text-[var(--text-primary)]">
+                    Sumar plenaria y submesas por separado (son grupos distintos)
+                  </span>
+                </div>
+                <p className="pl-6 text-[11px] leading-relaxed text-[var(--text-secondary)]">
+                  Los asistentes de plenaria y submesas son personas distintas. Total = Asistentes plenaria + Σ Asistentes submesas.
+                </p>
+              </Button>
+            </div>
+
+            {/* Campos de captura de asistentes */}
+            <div className="grid grid-cols-1 gap-4 border-t border-[var(--border)] pt-3 sm:grid-cols-2">
+              <FormField
+                id="asistentes-plenaria-input"
+                label={
+                  mesa.conteoIndependiente
+                    ? "Personas en plenaria (sin contar submesas)"
+                    : "Asistentes en plenaria de apertura"
+                }
+                description={
+                  mesa.conteoIndependiente
+                    ? "Se sumará al conteo de submesas."
+                    : "Asistencia registrada durante la apertura comunitaria."
+                }
+              >
+                {(controlProps) => (
+                  <Input
+                    {...controlProps}
+                    type="number"
+                    min={0}
+                    readOnly={soloLectura}
+                    placeholder="0"
+                    value={
+                      asistentesPlenariaBorrador !== undefined
+                        ? (asistentesPlenariaBorrador ?? "")
+                        : (mesa.asistentesPlenaaria ?? mesa.asistentesPlenaria ?? "")
+                    }
+                    onChange={(e) => {
+                      const val = e.target.value === "" ? null : Math.max(0, Math.floor(Number(e.target.value)));
+                      setAsistentesPlenariaBorrador(val);
+                    }}
+                    onBlur={() => {
+                      if (asistentesPlenariaBorrador !== undefined && !soloLectura) {
+                        useMesasStore.getState().setAsistentesPlenaria(mesa.id, asistentesPlenariaBorrador);
+                        mutarAsistentesPlenaria.mutate({ mesaId: mesa.id, cantidad: asistentesPlenariaBorrador });
+                        toast.success("Asistentes en plenaria actualizados");
+                      }
+                    }}
+                    className="w-full tabular bg-[var(--surface-0)]"
+                  />
+                )}
+              </FormField>
+
+              {!mesa.conteoIndependiente ? (
+                <FormField
+                  id="total-asistentes-manual-input"
+                  label="Total de asistentes definido por facilitador"
+                  description="Total de participantes únicos de la jornada completa."
+                >
+                  {(controlProps) => (
+                    <Input
+                      {...controlProps}
+                      type="number"
+                      min={0}
+                      readOnly={soloLectura}
+                      placeholder={String(calcularTotalAsistentes(mesa))}
+                      value={
+                        totalAsistentesBorrador !== undefined
+                          ? (totalAsistentesBorrador ?? "")
+                          : (mesa.totalAsistentes ?? "")
+                      }
+                      onChange={(e) => {
+                        const val = e.target.value === "" ? null : Math.max(0, Math.floor(Number(e.target.value)));
+                        setTotalAsistentesBorrador(val);
+                      }}
+                      onBlur={() => {
+                        if (totalAsistentesBorrador !== undefined && !soloLectura) {
+                          const nuevoTotal = totalAsistentesBorrador ?? 0;
+                          useMesasStore.getState().actualizarMesa(mesa.id, { totalAsistentes: nuevoTotal });
+                          toast.success("Total de asistentes actualizado");
+                        }
+                      }}
+                      className="w-full tabular bg-[var(--surface-0)]"
+                    />
+                  )}
+                </FormField>
+              ) : (
+                <div className="flex flex-col justify-center rounded-lg border border-dashed border-[var(--border)] bg-[var(--surface-0)] p-3">
+                  <span className="text-xs font-medium text-[var(--text-secondary)]">
+                    Total calculado automáticamente:
+                  </span>
+                  <span className="text-xl font-bold text-[var(--text-primary)] tabular">
+                    {calcularTotalAsistentes(mesa)} personas
+                  </span>
+                  <span className="text-[11px] text-[var(--text-tertiary)]">
+                    Plenaria ({mesa.asistentesPlenaaria ?? mesa.asistentesPlenaria ?? 0}) + Submesas ({mesa.submesas.reduce((acc, sm) => acc + (sm.participantes ?? 0), 0)})
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
         </section>
 
         {/* ---------- Informe y relatoría final de la mesa ---------- */}
