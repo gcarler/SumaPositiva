@@ -1,3 +1,86 @@
+# Entrega Codex — URL pública compartible por formulario
+
+Fecha: 2026-10-02T03:32:25+00:00
+Commit de implementación: `459ed7720ea3e80618b8a59e0b5bd57bc0eb1689`
+Estado: IMPLEMENTADO; QA solicitado aprobado. HTTPS público pendiente de certificado válido.
+Revisión preventiva de EDD; dictamen independiente del EAF pendiente.
+
+## Funcionalidad entregada
+
+- Ruta `/f/[slug]` con SSG de publicados, nuevos enlaces sin recompilar,
+  revalidación y metadata OpenGraph con imagen institucional disponible.
+- Slug único y estable; cambiar el título conserva la URL canónica HTTPS.
+- Página pública institucional, formulario completo con los 14 tipos, envío sin
+  cuenta y confirmación. El envío real usa una sesión anónima emitida silenciosamente.
+- Sección **Compartir formulario**: WhatsApp, Telegram, correo, copiar y QR;
+  botón **Compartir** en las tarjetas activas de `/plataforma/formularios`.
+- Nuevos formularios y respuestas persistidos mediante FastAPI/PostgreSQL.
+  Borradores protegidos, vista previa autorizada sin envío y cierre aplicado en servidor.
+- Migración `0030_url_formularios`, validación de respuestas efectivas, límite
+  concurrente y rollback tras escrituras reales. Permisos documentados por endpoint.
+- CI provisiona API y base de pruebas para consultar el catálogo durante SSG.
+
+Para compartir: en `/plataforma/formularios`, guardar con estado **Activo** y
+pulsar **Compartir**. Los dos ejemplos históricos siguen identificados como
+**demostración**; las respuestas de esos ejemplos permanecen en memoria.
+
+## QA y despliegue
+
+- `bun run check`: aprobado, sin errores TypeScript o ESLint.
+- `bun run build`: aprobado; `/f/[slug]` aparece como SSG, con los dos ejemplos
+  y los dos formularios publicados existentes en la API.
+- `bun run storybook:build`: aprobado; 41 historias del alcance aprobadas.
+- 71 pruebas de dominio/sesión y 107 pruebas backend del alcance aprobadas.
+- Migraciones en base vacía: upgrade/check/downgrade base/reconstrucción,
+  incluida validación con registros anteriores, aprobados (86 pruebas).
+- Navegadores independientes: crear desde el editor, copiar y compartir, abrir
+  sin login, enviar un punto y texto, recargar, consultar analítica y exportar
+  GeoJSON desde respuestas persistidas. Sin errores JavaScript; reflujo a 320 px.
+- Borrador sin sesión vuelve a `/`; vista previa autorizada no admite envío.
+  Publicar y renombrar actualizan el enlace sin build; cerrado rechaza respuestas.
+- Base del servidor en revisión `0030_url_formularios`, dos registros existentes
+  conservados y restricción única presente. Se aplicaron los prerrequisitos
+  pendientes de la rama de fotografías y la unión `0029`, sin alterar revisiones históricas.
+- Backend y frontend reiniciados. Nginx recargado tras `nginx -t`: excepción exacta
+  para el endpoint protegido de invalidación Next, sin JWT devuelve 401 por el dominio.
+
+| Ruta local, puerto 3000 | HTTP |
+| --- | --- |
+| `/f/diagnostico-barrio-2026` | 200 |
+| `/f/priorizacion-dimensiones-2026` | 200 |
+| `/f/no-existe` | 404 |
+| `/og-image.png` | 200 |
+
+Los dos enlaces de ejemplo también se comprobaron con navegador por el dominio
+HTTP: renderizan sin login y sin desbordamiento a 320 px.
+
+## Pendientes y límites observados
+
+**HTTPS:** el dominio usa un certificado autofirmado; `curl` devuelve error 60.
+HTTP funciona, pero los enlaces HTTPS canónicos no quedan acreditados para difusión
+ni previews de WhatsApp hasta instalar un certificado público válido. Se consultó
+la ubicación o gestión del certificado existente; no se desactivó TLS ni se sustituyó
+la URL canónica por HTTP.
+
+Checks globales fuera de Formularios: 45 errores Ruff; pytest global con 232
+aprobadas y dos fallos en Fotografías/Identidad; UI global con 189 aprobadas y un
+fallo de `TerritoriosConTeclado`. `alembic check` del servidor detecta diferencias
+previas de Mesas/Fotografías; Formularios no presenta diferencias. Se conservan
+los logs y no se rebajaron las guardas. No se declara conformidad global del proyecto.
+
+Archivos: base64 hasta 2 MB en JSONB; MinIO/S3 no está integrado. Los puntos
+persistidos se exportan, pero no se incorporan automáticamente al geovisor.
+
+Documentación: `docs/formularios-publicos.md`.
+Evidencia: `docs/evidencias/formularios-publicos-2026-10-02/README.md`.
+No se crearon cuentas o respuestas de QA en producción; datos de prueba y
+credenciales estuvieron exclusivamente en bases y archivos temporales aislados.
+Se conservaron los cambios y commits concurrentes de Mesas.
+
+---
+
+## Entrega anterior conservada
+
 # Entrega Codex — Formularios geográficos y desbloqueo de creación
 
 Fecha: 2026-10-01. Implementación EDD; revisión independiente pendiente del EAF.
