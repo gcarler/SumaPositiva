@@ -14,6 +14,7 @@ import {
   ArrowRight,
   CalendarDays,
   ClipboardList,
+  FileText,
   Landmark,
   MapPin,
   Pencil,
@@ -26,9 +27,11 @@ import { usePanels } from "@/core/panels/panel-store";
 import {
   useMesaQuery,
   useActualizarAcuerdos,
+  useActualizarInforme,
   useCrearSubMesa,
 } from "@/features/mesas/services/use-mesas-queries";
-import { type SubMesaInput } from "@/features/mesas/state/mesas-store";
+import { useMesasStore, type SubMesaInput } from "@/features/mesas/state/mesas-store";
+import { useSesionStore } from "@/features/sesion/state/session-store";
 import {
   estadoDiligenciamiento,
   resumenProblemas,
@@ -57,14 +60,35 @@ export function MesaPanel({
   props: { mesaId: string; soloLectura?: boolean };
 }) {
   const { openPanel, closeTop } = usePanels();
-  const soloLectura = props.soloLectura ?? false;
-  const { data: mesa, isLoading } = useMesaQuery(props.mesaId);
+  const sesion = useSesionStore((s) => s.sesion);
+  const soloLectura =
+    sesion?.rol === "auditor_forense" ||
+    (props.soloLectura === true && sesion?.rol === "ciudadano");
+
+  const { data: mesaRemota } = useMesaQuery(props.mesaId);
+  const mesaStore = useMesasStore((s) =>
+    s.mesas.find((m) => m.id === props.mesaId)
+  );
+  const mesa = mesaRemota ?? mesaStore;
+
   const mutarAcuerdos = useActualizarAcuerdos();
+  const mutarInforme = useActualizarInforme();
   const mutarCrearSubMesa = useCrearSubMesa();
 
-  /* acuerdos: borrador local, se confirma al salir del campo */
+  /* acuerdos: borrador local, se confirma al salir del campo o con botón */
   const [acuerdosBorrador, setAcuerdosBorrador] = useState<string | null>(null);
   const acuerdosValor = acuerdosBorrador ?? mesa?.plenaria.acuerdos ?? "";
+
+  /* informe: borrador local, se confirma al salir del campo o con botón */
+  const [informeBorrador, setInformeBorrador] = useState<string | null>(null);
+  const informeValor = informeBorrador ?? mesa?.informe ?? "";
+
+  const [prevMesaId, setPrevMesaId] = useState(props.mesaId);
+  if (prevMesaId !== props.mesaId) {
+    setPrevMesaId(props.mesaId);
+    setAcuerdosBorrador(null);
+    setInformeBorrador(null);
+  }
 
   /* formulario inline de submesa */
   const [formSubAbierto, setFormSubAbierto] = useState(false);
@@ -89,8 +113,15 @@ export function MesaPanel({
   }
 
   const confirmarAcuerdos = () => {
+    useMesasStore.getState().setAcuerdosPlenaria(mesa.id, acuerdosValor);
     mutarAcuerdos.mutate({ mesaId: mesa.id, acuerdos: acuerdosValor });
     toast.success("Acuerdos de plenaria guardados");
+  };
+
+  const confirmarInforme = () => {
+    useMesasStore.getState().setInformeMesa(mesa.id, informeValor);
+    mutarInforme.mutate({ mesaId: mesa.id, informe: informeValor });
+    toast.success("Informe y relatoría de la mesa guardado");
   };
 
   const guardarSubMesa = async () => {
@@ -299,9 +330,23 @@ export function MesaPanel({
         <section className="space-y-3">
           <SectionLabel
             right={
-              <span className="text-[10px] uppercase tracking-[0.12em] text-[var(--text-tertiary)]">
-                {soloLectura ? "Solo lectura" : "Se guarda al salir del campo"}
-              </span>
+              <div className="flex items-center gap-3">
+                <span className="text-[10px] uppercase tracking-[0.12em] text-[var(--text-tertiary)]">
+                  {soloLectura ? "Solo lectura" : "Se guarda al salir del campo"}
+                </span>
+                {!soloLectura && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    type="button"
+                    onClick={confirmarAcuerdos}
+                    className="h-7 text-xs"
+                  >
+                    <ClipboardList className="size-3.5" strokeWidth={1.5} />
+                    Guardar acuerdos
+                  </Button>
+                )}
+              </div>
             }
           >
             Plenaria de apertura — acuerdos
@@ -317,7 +362,7 @@ export function MesaPanel({
             rows={4}
             aria-label="Acuerdos de la plenaria de apertura"
             placeholder="Registra los acuerdos de la plenaria: qué problema se priorizó, cómo se repartieron los temas entre submesas y cuándo será la plenaria de cierre…"
-            className="min-h-[110px] w-full resize-y rounded-lg border border-[var(--border)] bg-[var(--surface-1)] px-4 py-3 text-sm leading-relaxed text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] transition-colors focus:border-[var(--ember)] "
+            className="min-h-[110px] w-full resize-y rounded-lg border border-[var(--border)] bg-[var(--surface-1)] px-4 py-3 text-sm leading-relaxed text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] transition-colors focus:border-[var(--ember)]"
           />
           <p className="flex items-start gap-2 text-[11px] leading-relaxed text-[var(--text-tertiary)]">
             <ClipboardList
@@ -327,6 +372,53 @@ export function MesaPanel({
             Los acuerdos de la plenaria orientan el trabajo de cada submesa: en
             ellas se desarrolla el papelografo (árbol de problemas y de
             soluciones).
+          </p>
+        </section>
+
+        {/* ---------- Informe y relatoría final de la mesa ---------- */}
+        <section className="space-y-3">
+          <SectionLabel
+            right={
+              <div className="flex items-center gap-3">
+                <span className="text-[10px] uppercase tracking-[0.12em] text-[var(--text-tertiary)]">
+                  {soloLectura ? "Solo lectura" : "Se guarda al salir del campo"}
+                </span>
+                {!soloLectura && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    type="button"
+                    onClick={confirmarInforme}
+                    className="h-7 text-xs"
+                  >
+                    <FileText className="size-3.5" strokeWidth={1.5} />
+                    Guardar informe
+                  </Button>
+                )}
+              </div>
+            }
+          >
+            Informe y relatoría de la mesa
+          </SectionLabel>
+          <Textarea
+            readOnly={soloLectura}
+            value={informeValor}
+            onChange={(e) => setInformeBorrador(e.target.value)}
+            onBlur={(e) => {
+              if (!soloLectura && e.target.value !== (mesa.informe ?? ""))
+                confirmarInforme();
+            }}
+            rows={5}
+            aria-label="Informe y relatoría de la mesa"
+            placeholder="Registra aquí el informe o relatoría final de la mesa: síntesis de discusiones, hallazgos comunitarios, compromisos adquiridos y recomendaciones para el CONPES distrital…"
+            className="min-h-[120px] w-full resize-y rounded-lg border border-[var(--border)] bg-[var(--surface-1)] px-4 py-3 text-sm leading-relaxed text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] transition-colors focus:border-[var(--ember)]"
+          />
+          <p className="flex items-start gap-2 text-[11px] leading-relaxed text-[var(--text-tertiary)]">
+            <FileText
+              className="mt-0.5 size-3.5 shrink-0"
+              strokeWidth={1.5}
+            />
+            El informe consolida el acta comunitaria y la memoria técnica de la mesa para la formulación de la política pública.
           </p>
         </section>
 

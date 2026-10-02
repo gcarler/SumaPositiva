@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { 
   listarMesas, obtenerMesa, fallbackListarMesas, fallbackObtenerMesa, 
-  actualizarAcuerdosPlenaria, crearSubMesa, actualizarSubMesa
+  actualizarAcuerdosPlenaria, actualizarInformeMesa, crearSubMesa, actualizarSubMesa
 } from "./mesas-api";
 import type { SubMesa } from "@/features/mesas/models/mesas";
 
@@ -46,6 +46,19 @@ export function useActualizarAcuerdos() {
   return useMutation({
     mutationFn: async ({ mesaId, acuerdos }: { mesaId: string; acuerdos: string }) => {
       return actualizarAcuerdosPlenaria(mesaId, acuerdos);
+    },
+    onSuccess: (_, { mesaId }) => {
+      queryClient.invalidateQueries({ queryKey: MESAS_KEYS.detail(mesaId) });
+      queryClient.invalidateQueries({ queryKey: MESAS_KEYS.all });
+    },
+  });
+}
+
+export function useActualizarInforme() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ mesaId, informe }: { mesaId: string; informe: string }) => {
+      return actualizarInformeMesa(mesaId, informe);
     },
     onSuccess: (_, { mesaId }) => {
       queryClient.invalidateQueries({ queryKey: MESAS_KEYS.detail(mesaId) });

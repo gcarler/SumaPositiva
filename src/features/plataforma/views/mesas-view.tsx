@@ -503,7 +503,10 @@ export function MesasGestionView() {
                     aria-label={`Ver detalle de ${m.nombre}`}
                     className="flex-1 justify-center sm:flex-initial"
                     onClick={() =>
-                      openPanel("mesa", { mesaId: m.id, soloLectura: !editar })
+                      openPanel("mesa", {
+                        mesaId: m.id,
+                        soloLectura: sesion?.rol === "auditor_forense",
+                      })
                     }
                   >
                     Ver detalle

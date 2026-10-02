@@ -36,6 +36,7 @@ export interface MesaInput {
   tipoMesa?: string;
   codigoOficial?: string;
   shortcodeCiudadano?: string;
+  informe?: string;
 }
 
 export interface SubMesaInput {
@@ -49,8 +50,9 @@ interface MesasState {
 
   /* Mesa */
   crearMesa: (input: MesaInput) => MesaDeTrabajo;
-  actualizarMesa: (mesaId: string, patch: Partial<MesaInput>) => void;
+  actualizarMesa: (mesaId: string, patch: Partial<MesaInput & { informe?: string }>) => void;
   setAcuerdosPlenaria: (mesaId: string, acuerdos: string) => void;
+  setInformeMesa: (mesaId: string, informe: string) => void;
   eliminarMesa: (mesaId: string) => void;
 
   /* Submesas */
@@ -228,6 +230,13 @@ export const useMesasStore = create<MesasState>((set, get) => ({
     set((s) => ({
       mesas: s.mesas.map((m) =>
         m.id === mesaId ? { ...m, plenaria: { ...m.plenaria, acuerdos } } : m
+      ),
+    })),
+
+  setInformeMesa: (mesaId, informe) =>
+    set((s) => ({
+      mesas: s.mesas.map((m) =>
+        m.id === mesaId ? { ...m, informe } : m
       ),
     })),
 

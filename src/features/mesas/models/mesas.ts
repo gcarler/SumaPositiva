@@ -89,6 +89,7 @@ export interface MesaDeTrabajo {
   sha256Acta?: string | null;
   descripcion?: string;
   dimensionOnu?: string;
+  informe?: string;
 }
 
 /* ---------- Metadatos de presentación ---------- */

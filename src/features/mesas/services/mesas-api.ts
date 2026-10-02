@@ -1,5 +1,6 @@
 import { apiFetch } from "@/core/http/api-client";
 import type { MesaDeTrabajo, SubMesa, EstadoMesa } from "@/features/mesas/models/mesas";
+import { useMesasStore } from "@/features/mesas/state/mesas-store";
 
 function normalizarEstado(estado?: string): EstadoMesa {
   const e = (estado || "").toLowerCase();
@@ -141,6 +142,9 @@ export async function actualizarAcuerdosPlenaria(
   mesaId: string,
   acuerdos: string
 ): Promise<MesaDeTrabajo> {
+  // Sincronizar inmediatamente en el store local
+  useMesasStore.getState().setAcuerdosPlenaria(mesaId, acuerdos);
+
   try {
     const resp = await apiFetch<any>(`/mesas/${mesaId}/acta`, {
       method: "POST",
@@ -152,9 +156,43 @@ export async function actualizarAcuerdosPlenaria(
     });
     return normalizarMesaBackend(resp);
   } catch {
+    const storeMesa = useMesasStore.getState().mesas.find((x) => x.id === mesaId);
+    if (storeMesa) {
+      return storeMesa;
+    }
     const m = MESAS_MOCK.find((x) => x.id === mesaId);
     if (m) {
       m.plenaria.acuerdos = acuerdos;
+      return m;
+    }
+    throw new Error("Mesa no encontrada");
+  }
+}
+
+/**
+ * Actualiza el informe y relatoría final de una mesa.
+ */
+export async function actualizarInformeMesa(
+  mesaId: string,
+  informe: string
+): Promise<MesaDeTrabajo> {
+  // Sincronizar inmediatamente en el store local
+  useMesasStore.getState().setInformeMesa(mesaId, informe);
+
+  try {
+    const resp = await apiFetch<any>(`/mesas/${mesaId}`, {
+      method: "PATCH",
+      body: { metadatos: { informe } },
+    });
+    return normalizarMesaBackend(resp);
+  } catch {
+    const storeMesa = useMesasStore.getState().mesas.find((x) => x.id === mesaId);
+    if (storeMesa) {
+      return storeMesa;
+    }
+    const m = MESAS_MOCK.find((x) => x.id === mesaId);
+    if (m) {
+      m.informe = informe;
       return m;
     }
     throw new Error("Mesa no encontrada");
@@ -166,10 +204,16 @@ export async function actualizarAcuerdosPlenaria(
  */
 export async function crearSubMesa(
   mesaId: string,
-  datos: { nombre: string; tema: string }
+  datos: { nombre: string; tema: string; participantes?: number | null }
 ): Promise<SubMesa> {
+  const subLocal = useMesasStore.getState().crearSubMesa(mesaId, {
+    nombre: datos.nombre,
+    tema: datos.tema,
+    participantes: datos.participantes ?? null,
+  });
+
   try {
-    return await apiFetch<SubMesa>(`/mesas/${mesaId}/submesas`, {
+    const remota = await apiFetch<SubMesa>(`/mesas/${mesaId}/submesas`, {
       method: "POST",
       body: {
         slug: datos.nombre.toLowerCase().replace(/\s+/g, "-"),
@@ -180,7 +224,9 @@ export async function crearSubMesa(
         metadatos: { tema: datos.tema },
       },
     });
+    return remota;
   } catch {
+    if (subLocal) return subLocal;
     return {
       id: `submesa-${Date.now()}`,
       nombre: datos.nombre,
@@ -283,11 +329,16 @@ export async function convertirAObjetivos(instrumentoId: string) {
 import { MESAS_MOCK } from "@/features/mesas/data/mesas.mock";
 
 export async function fallbackListarMesas(): Promise<MesaDeTrabajo[]> {
+  const storeMesas = useMesasStore.getState().mesas;
+  if (storeMesas && storeMesas.length > 0) return storeMesas;
   return MESAS_MOCK;
 }
 
 export async function fallbackObtenerMesa(mesaId: string): Promise<MesaDeTrabajo> {
-  const m = MESAS_MOCK.find(x => x.id === mesaId);
+  const storeMesas = useMesasStore.getState().mesas;
+  const fromStore = storeMesas.find((x) => x.id === mesaId);
+  if (fromStore) return fromStore;
+  const m = MESAS_MOCK.find((x) => x.id === mesaId);
   if (!m) throw new Error("Mesa no encontrada en mock");
   return m;
 }
