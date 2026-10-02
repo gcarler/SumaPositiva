@@ -1,4 +1,4 @@
-# Entrega agy2 — Mesa Editor Pro
-Fecha: 2026-10-02T02:57:30Z
-Commit: c92abaaae4985aa0fc6cdb6199a6027e3ed03f22
+# Entrega agy2 — Fix submesas + asistentes + adjuntos
+Fecha: 2026-10-02T03:30:00Z
+Commit: 00b870298a0b06b528a49c288921dfdfc7ec968f
 Estado: CONFORME
