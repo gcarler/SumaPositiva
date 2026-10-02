@@ -75,9 +75,9 @@ La última columna explica la excepción pública o la condición adicional.
 | GET | /api/v1/evidencias/{id}/archivo | publico | Evidencia de participación publicada y sanitizada; fotos de mesa solo tras aprobación; EXIF eliminado no garantiza anonimato visual. |
 | GET | /api/v1/formularios | publico | Consulta pública de formularios activos de participación. |
 | POST | /api/v1/formularios | permiso:formularios:gestionar@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |
-| DELETE | /api/v1/formularios/{id} | permiso:formularios:gestionar@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |
+| DELETE | /api/v1/formularios/{id} | permiso:formularios:gestionar@declarada | Solo formularios sin respuestas; 409 si existen. Conservar el registro mediante cierre. |
 | GET | /api/v1/formularios/{id} | publico | Consulta pública de formularios activos de participación. |
-| PUT | /api/v1/formularios/{id} | permiso:formularios:gestionar@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |
+| PUT | /api/v1/formularios/{id} | permiso:formularios:gestionar@declarada | Validar estado y esquema; 409 si intenta cambiar preguntas de un formulario con respuestas. |
 | GET | /api/v1/formularios/{id}/analitica | permiso:formularios:leer@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |
 | GET | /api/v1/formularios/{id}/respuestas | permiso:formularios:leer@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |
 | POST | /api/v1/formularios/{id}/respuestas | sujeto | Un envío por sujeto; datos estructurados y enfoque diferencial. |
@@ -213,7 +213,7 @@ Responder usa una sesión cívica emitida sin registro; no requiere login ciudad
 | GET | /api/v1/formularios/constructor | permiso:formularios:leer@declarada | Gestión interna; incluye borradores para roles autorizados. |
 | GET | /api/v1/formularios/constructor/slug/{slug} | permiso:formularios:leer@declarada | Vista previa privada de borradores; sin publicación implícita. |
 | POST | /api/v1/formularios/constructor | permiso:formularios:gestionar@declarada | Persistir el documento completo y asignar slug único. |
-| PUT | /api/v1/formularios/constructor/{id} | permiso:formularios:gestionar@declarada | Actualizar documento conservando slug y URL pública. |
+| PUT | /api/v1/formularios/constructor/{id} | permiso:formularios:gestionar@declarada | Actualizar documento conservando slug y URL pública; 409 al cambiar preguntas o secciones si existen respuestas. |
 
 ### Reporte ciudadano geoespacial y publicación de respuestas
 

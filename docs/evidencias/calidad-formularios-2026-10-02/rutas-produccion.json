@@ -1,0 +1,12 @@
+{
+  "/f/reporte-inseguridad": "200",
+  "/f/no-existe": "404",
+  "/api/v1/formularios/publicos/reporte-inseguridad": "200",
+  "/api/v1/formularios/4ecd649a-6764-4d62-8ddb-1bcecd342031/respuestas": "401",
+  "/api/v1/formularios/4ecd649a-6764-4d62-8ddb-1bcecd342031/analitica": "401",
+  "servicios": [
+    "active",
+    "active",
+    "active"
+  ]
+}

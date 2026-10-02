@@ -2,31 +2,58 @@ import uuid
 from datetime import datetime
 from typing import Any, Literal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 TipoPregunta = Literal["texto_libre", "opcion_unica", "opcion_multiple", "escala_likert"]
 
 
 class PreguntaEsquema(BaseModel):
-    id: str = Field(..., description="Identificador único de la pregunta en el formulario")
-    texto: str = Field(..., description="Enunciado de la pregunta")
+    model_config = ConfigDict(str_strip_whitespace=True)
+    id: str = Field(
+        ...,
+        min_length=1,
+        max_length=100,
+        description="Identificador único de la pregunta en el formulario",
+    )
+    texto: str = Field(..., min_length=1, max_length=10000, description="Enunciado de la pregunta")
     tipo: TipoPregunta = Field(..., description="Tipo de control de respuesta")
     opciones: list[str] = Field(default_factory=list, description="Opciones válidas para selección")
     ayuda: str | None = Field(None, description="Texto de ayuda o guía para el ciudadano")
     obligatoria: bool = Field(True, description="Indica si la respuesta es requerida")
 
 
+def validar_esquema(preguntas):
+    if preguntas is None:
+        return preguntas
+    ids = [p.id for p in preguntas]
+    if len(set(ids)) != len(ids):
+        raise ValueError("Las preguntas necesitan identificadores únicos")
+    for p in preguntas:
+        if p.tipo in ("opcion_unica", "opcion_multiple") and not p.opciones:
+            raise ValueError("La selección necesita opciones")
+        if any(not o.strip() for o in p.opciones) or len(set(p.opciones)) != len(p.opciones):
+            raise ValueError("Las opciones deben ser distintas y no vacías")
+    return preguntas
+
+
 class FormularioCrear(BaseModel):
-    codigo: str = Field(..., max_length=50, description="Código mnemónico único del formulario")
-    titulo: str = Field(..., max_length=250, description="Título público de la consulta")
+    model_config = ConfigDict(str_strip_whitespace=True)
+    codigo: str = Field(
+        ..., min_length=1, max_length=50, description="Código mnemónico único del formulario"
+    )
+    titulo: str = Field(
+        ..., min_length=1, max_length=250, description="Título público de la consulta"
+    )
     descripcion: str = Field(..., description="Descripción y justificación del formulario")
     dimension_id: uuid.UUID | None = Field(
         None, description="Dimensión de seguridad humana asociada"
     )
     territorio_id: uuid.UUID | None = Field(None, description="Territorio focalizado de Cartagena")
-    estado: str = Field(default="PUBLICADO", description="Estado: BORRADOR, PUBLICADO, CERRADO")
+    estado: Literal["BORRADOR", "PUBLICADO", "CERRADO"] = Field(
+        default="PUBLICADO", description="Estado: BORRADOR, PUBLICADO, CERRADO"
+    )
     esquema_preguntas: list[PreguntaEsquema] = Field(
-        ..., description="Lista de preguntas del formulario"
+        ..., min_length=1, max_length=500, description="Lista de preguntas del formulario"
     )
     enfoque_diferencial_habilitado: bool = Field(
         True, description="Habilita preguntas de enfoque diferencial"
@@ -34,13 +61,28 @@ class FormularioCrear(BaseModel):
     permite_evidencias: bool = Field(True, description="Permite adjuntar evidencias fotográficas")
     fecha_cierre: datetime | None = Field(None, description="Fecha límite de participación")
 
+    @field_validator("esquema_preguntas")
+    @classmethod
+    def validar_preguntas(cls, valor):
+        return validar_esquema(valor)
+
 
 class FormularioActualizar(BaseModel):
-    titulo: str | None = Field(None, max_length=250)
+    model_config = ConfigDict(str_strip_whitespace=True)
+    titulo: str | None = Field(None, min_length=1, max_length=250)
     descripcion: str | None = None
-    estado: str | None = Field(None, description="BORRADOR, PUBLICADO, CERRADO")
-    esquema_preguntas: list[PreguntaEsquema] | None = None
+    estado: Literal["BORRADOR", "PUBLICADO", "CERRADO"] | None = Field(
+        None, description="BORRADOR, PUBLICADO, CERRADO"
+    )
+    esquema_preguntas: list[PreguntaEsquema] | None = Field(
+        default=None, min_length=1, max_length=500
+    )
     fecha_cierre: datetime | None = None
+
+    @field_validator("esquema_preguntas")
+    @classmethod
+    def validar_preguntas(cls, valor):
+        return validar_esquema(valor)
 
 
 class FormularioRespuesta(BaseModel):
@@ -75,6 +117,19 @@ class RespuestaFormularioCrear(BaseModel):
     territorio_id: uuid.UUID | None = Field(
         None, description="Territorio donde reside el participante"
     )
+
+    @field_validator("datos_enfoque")
+    @classmethod
+    def enfoque_escalar(cls, valor):
+        if any(v is not None and not isinstance(v, (str, bool)) for v in valor.values()):
+            raise ValueError("Las variables de enfoque deben ser texto, booleanos o null")
+        for clave in ("etnia", "genero", "grupo_etario"):
+            if clave in valor and not isinstance(valor[clave], str):
+                raise ValueError(f"{clave} debe ser texto")
+        for clave in ("victima_conflicto", "discapacidad"):
+            if clave in valor and not isinstance(valor[clave], bool):
+                raise ValueError(f"{clave} debe ser booleano")
+        return valor
 
 
 class RespuestaFormularioLectura(BaseModel):

@@ -11,6 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.transactions import transaction
 from app.modules.formularios.constructor_schemas import DocumentoFormulario
+from app.modules.formularios.errors import error_integridad
 from app.modules.formularios.models import FormularioConsulta
 from app.modules.formularios.repository import FormularioRepository
 
@@ -90,13 +91,22 @@ class ConstructorService:
         try:
             async with transaction(self.session):
                 if formulario_id:
-                    f = await self.repo.obtener_por_id(formulario_id)
+                    f = await self.repo.obtener_por_id(formulario_id, bloquear=True)
                     if not f:
                         raise HTTPException(404, "Formulario no encontrado")
                 else:
                     f = FormularioConsulta(
                         codigo="FORM-" + uuid.uuid4().hex, slug=generar_slug(datos.titulo)
                     )
+                if formulario_id and await self.repo.contar_respuestas(f.id):
+                    anterior = await self.documento(f)
+                    if [p.model_dump(mode="json", exclude_none=True) for p in datos.preguntas] != [
+                        p.model_dump(mode="json", exclude_none=True) for p in anterior.preguntas
+                    ] or datos.secciones != anterior.secciones:
+                        raise HTTPException(
+                            409,
+                            "El formulario tiene respuestas: conserve sus preguntas y secciones",
+                        )
                 f.titulo, f.descripcion = datos.titulo.strip(), datos.descripcion
                 f.estado = ESTADOS[datos.estado]
                 fecha = datos.configuracion.fechaCierre
@@ -106,7 +116,18 @@ class ConstructorService:
                 f.actualizado_en = datetime.now(UTC)
                 datos.configuracion.slug = f.slug
                 datos.configuracion.urlPublica = f"{ORIGEN}/f/{f.slug}"
-                f.documento_constructor = datos.model_dump(mode="json", exclude_none=True)
+                f.documento_constructor = datos.model_dump(
+                    mode="json",
+                    exclude_none=True,
+                    exclude={
+                        "id",
+                        "idPersistido",
+                        "origenDatos",
+                        "respuestasCount",
+                        "creadoEn",
+                        "actualizadoEn",
+                    },
+                )
                 f.esquema_preguntas = [
                     p.model_dump(mode="json", exclude_none=True) for p in datos.preguntas
                 ]
@@ -115,6 +136,6 @@ class ConstructorService:
                 await self.repo.guardar(f)
                 return await self.documento(f)
         except IntegrityError as error:
-            raise HTTPException(
-                409, "El identificador del formulario ya está registrado"
+            raise error_integridad(
+                error, "El identificador del formulario ya está registrado"
             ) from error

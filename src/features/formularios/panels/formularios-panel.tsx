@@ -176,8 +176,8 @@ export function FormulariosContenido({
                 {eliminarId === form.id && !soloLectura && (
                   <div className="w-full space-y-2">
                     <p className="text-sm">
-                      Se eliminarán el formulario y sus respuestas registradas.
-                      ¿Continuar?
+                      Solo se eliminan formularios sin respuestas. Si ya tiene
+                      respuestas, ciérralo para conservarlas. ¿Continuar?
                     </p>
                     <div className="flex flex-wrap gap-2">
                       {soloLectura && (

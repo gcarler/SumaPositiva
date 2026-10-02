@@ -1,0 +1,212 @@
+{
+  "restricciones": [
+    {
+      "conname": "ck_formularios_consulta_documento_objeto",
+      "definicion": "CHECK (((documento_constructor IS NULL) OR (jsonb_typeof(documento_constructor) = 'object'::text)))"
+    },
+    {
+      "conname": "ck_formularios_consulta_estado_valido",
+      "definicion": "CHECK (((estado)::text = ANY ((ARRAY['BORRADOR'::character varying, 'PUBLICADO'::character varying, 'CERRADO'::character varying])::text[])))"
+    },
+    {
+      "conname": "ck_formularios_consulta_preguntas_array",
+      "definicion": "CHECK ((jsonb_typeof(esquema_preguntas) = 'array'::text))"
+    },
+    {
+      "conname": "ck_respuestas_formulario_datos_objeto",
+      "definicion": "CHECK ((jsonb_typeof(datos_respuesta) = 'object'::text))"
+    },
+    {
+      "conname": "ck_respuestas_formulario_enfoque_objeto",
+      "definicion": "CHECK ((jsonb_typeof(datos_enfoque) = 'object'::text))"
+    },
+    {
+      "conname": "ck_respuestas_formulario_evidencias_array",
+      "definicion": "CHECK ((jsonb_typeof(evidencias) = 'array'::text))"
+    },
+    {
+      "conname": "fk_respuestas_formulario_formulario_id_formularios_consulta",
+      "definicion": "FOREIGN KEY (formulario_id) REFERENCES participacion_ciudadana.formularios_consulta(id) ON DELETE RESTRICT"
+    },
+    {
+      "conname": "formularios_consulta_actualizado_en_not_null",
+      "definicion": "NOT NULL actualizado_en"
+    },
+    {
+      "conname": "formularios_consulta_codigo_key",
+      "definicion": "UNIQUE (codigo)"
+    },
+    {
+      "conname": "formularios_consulta_codigo_not_null",
+      "definicion": "NOT NULL codigo"
+    },
+    {
+      "conname": "formularios_consulta_creado_en_not_null",
+      "definicion": "NOT NULL creado_en"
+    },
+    {
+      "conname": "formularios_consulta_descripcion_not_null",
+      "definicion": "NOT NULL descripcion"
+    },
+    {
+      "conname": "formularios_consulta_dimension_id_fkey",
+      "definicion": "FOREIGN KEY (dimension_id) REFERENCES motor_politicas.dimensiones_seguridad_humana(id) ON DELETE SET NULL"
+    },
+    {
+      "conname": "formularios_consulta_enfoque_diferencial_habilitado_not_null",
+      "definicion": "NOT NULL enfoque_diferencial_habilitado"
+    },
+    {
+      "conname": "formularios_consulta_esquema_preguntas_not_null",
+      "definicion": "NOT NULL esquema_preguntas"
+    },
+    {
+      "conname": "formularios_consulta_estado_not_null",
+      "definicion": "NOT NULL estado"
+    },
+    {
+      "conname": "formularios_consulta_id_not_null",
+      "definicion": "NOT NULL id"
+    },
+    {
+      "conname": "formularios_consulta_permite_evidencias_not_null",
+      "definicion": "NOT NULL permite_evidencias"
+    },
+    {
+      "conname": "formularios_consulta_pkey",
+      "definicion": "PRIMARY KEY (id)"
+    },
+    {
+      "conname": "formularios_consulta_slug_not_null",
+      "definicion": "NOT NULL slug"
+    },
+    {
+      "conname": "formularios_consulta_territorio_id_fkey",
+      "definicion": "FOREIGN KEY (territorio_id) REFERENCES geodatos.territorios(id) ON DELETE SET NULL"
+    },
+    {
+      "conname": "formularios_consulta_titulo_not_null",
+      "definicion": "NOT NULL titulo"
+    },
+    {
+      "conname": "respuestas_formulario_creado_en_not_null",
+      "definicion": "NOT NULL creado_en"
+    },
+    {
+      "conname": "respuestas_formulario_datos_enfoque_not_null",
+      "definicion": "NOT NULL datos_enfoque"
+    },
+    {
+      "conname": "respuestas_formulario_datos_respuesta_not_null",
+      "definicion": "NOT NULL datos_respuesta"
+    },
+    {
+      "conname": "respuestas_formulario_evidencias_not_null",
+      "definicion": "NOT NULL evidencias"
+    },
+    {
+      "conname": "respuestas_formulario_formulario_id_not_null",
+      "definicion": "NOT NULL formulario_id"
+    },
+    {
+      "conname": "respuestas_formulario_id_not_null",
+      "definicion": "NOT NULL id"
+    },
+    {
+      "conname": "respuestas_formulario_pkey",
+      "definicion": "PRIMARY KEY (id)"
+    },
+    {
+      "conname": "respuestas_formulario_sujeto_id_not_null",
+      "definicion": "NOT NULL sujeto_id"
+    },
+    {
+      "conname": "respuestas_formulario_territorio_id_fkey",
+      "definicion": "FOREIGN KEY (territorio_id) REFERENCES geodatos.territorios(id) ON DELETE SET NULL"
+    },
+    {
+      "conname": "uq_formulario_slug",
+      "definicion": "UNIQUE (slug)"
+    },
+    {
+      "conname": "uq_respuesta_formulario_sujeto",
+      "definicion": "UNIQUE (formulario_id, sujeto_id)"
+    }
+  ],
+  "indices": [
+    {
+      "tablename": "formularios_consulta",
+      "indexname": "formularios_consulta_codigo_key",
+      "indexdef": "CREATE UNIQUE INDEX formularios_consulta_codigo_key ON participacion_ciudadana.formularios_consulta USING btree (codigo)"
+    },
+    {
+      "tablename": "formularios_consulta",
+      "indexname": "formularios_consulta_pkey",
+      "indexdef": "CREATE UNIQUE INDEX formularios_consulta_pkey ON participacion_ciudadana.formularios_consulta USING btree (id)"
+    },
+    {
+      "tablename": "formularios_consulta",
+      "indexname": "idx_formularios_codigo",
+      "indexdef": "CREATE INDEX idx_formularios_codigo ON participacion_ciudadana.formularios_consulta USING btree (codigo)"
+    },
+    {
+      "tablename": "formularios_consulta",
+      "indexname": "idx_formularios_dimension",
+      "indexdef": "CREATE INDEX idx_formularios_dimension ON participacion_ciudadana.formularios_consulta USING btree (dimension_id)"
+    },
+    {
+      "tablename": "formularios_consulta",
+      "indexname": "idx_formularios_estado",
+      "indexdef": "CREATE INDEX idx_formularios_estado ON participacion_ciudadana.formularios_consulta USING btree (estado)"
+    },
+    {
+      "tablename": "formularios_consulta",
+      "indexname": "idx_formularios_territorio",
+      "indexdef": "CREATE INDEX idx_formularios_territorio ON participacion_ciudadana.formularios_consulta USING btree (territorio_id)"
+    },
+    {
+      "tablename": "respuestas_formulario",
+      "indexname": "idx_respuestas_formulario",
+      "indexdef": "CREATE INDEX idx_respuestas_formulario ON participacion_ciudadana.respuestas_formulario USING btree (formulario_id)"
+    },
+    {
+      "tablename": "respuestas_formulario",
+      "indexname": "idx_respuestas_sujeto",
+      "indexdef": "CREATE INDEX idx_respuestas_sujeto ON participacion_ciudadana.respuestas_formulario USING btree (sujeto_id)"
+    },
+    {
+      "tablename": "respuestas_formulario",
+      "indexname": "respuestas_formulario_pkey",
+      "indexdef": "CREATE UNIQUE INDEX respuestas_formulario_pkey ON participacion_ciudadana.respuestas_formulario USING btree (id)"
+    },
+    {
+      "tablename": "formularios_consulta",
+      "indexname": "uq_formulario_slug",
+      "indexdef": "CREATE UNIQUE INDEX uq_formulario_slug ON participacion_ciudadana.formularios_consulta USING btree (slug)"
+    },
+    {
+      "tablename": "respuestas_formulario",
+      "indexname": "uq_respuesta_formulario_sujeto",
+      "indexdef": "CREATE UNIQUE INDEX uq_respuesta_formulario_sujeto ON participacion_ciudadana.respuestas_formulario USING btree (formulario_id, sujeto_id)"
+    }
+  ],
+  "triggers": [],
+  "funciones": [
+    {
+      "funcion": "generar_uuid_v7()",
+      "security_definer": false,
+      "configuracion": null,
+      "definicion": "CREATE OR REPLACE FUNCTION public.generar_uuid_v7()\n RETURNS uuid\n LANGUAGE plpgsql\nAS $function$\n    DECLARE\n      v_time timestamp with time zone := clock_timestamp();\n      v_epoch bigint;\n      v_bytes bytea;\n    BEGIN\n      v_epoch := (extract(epoch from v_time) * 1000)::bigint;\n      v_bytes := gen_random_bytes(16);\n      v_bytes := set_byte(v_bytes, 0, (v_epoch >> 40 & 255)::int);\n      v_bytes := set_byte(v_bytes, 1, (v_epoch >> 32 & 255)::int);\n      v_bytes := set_byte(v_bytes, 2, (v_epoch >> 24 & 255)::int);\n      v_bytes := set_byte(v_bytes, 3, (v_epoch >> 16 & 255)::int);\n      v_bytes := set_byte(v_bytes, 4, (v_epoch >> 8 & 255)::int);\n      v_bytes := set_byte(v_bytes, 5, (v_epoch & 255)::int);\n      v_bytes := set_byte(v_bytes, 6, ((get_byte(v_bytes, 6) & 15) | 112)::int);\n      v_bytes := set_byte(v_bytes, 8, ((get_byte(v_bytes, 8) & 63) | 128)::int);\n      RETURN encode(v_bytes, 'hex')::uuid;\n    END;\n    $function$\n"
+    }
+  ],
+  "datos_incompatibles": [
+    {
+      "formularios_invalidos": 0
+    }
+  ],
+  "respuestas_incompatibles": [
+    {
+      "respuestas_invalidas": 0
+    }
+  ]
+}

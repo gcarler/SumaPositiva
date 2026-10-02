@@ -27,8 +27,12 @@ class FormularioRepository:
         result = await self.session.execute(stmt)
         return list(result.scalars().all())
 
-    async def obtener_por_id(self, formulario_id: uuid.UUID) -> FormularioConsulta | None:
+    async def obtener_por_id(
+        self, formulario_id: uuid.UUID, *, bloquear: bool = False
+    ) -> FormularioConsulta | None:
         stmt = select(FormularioConsulta).where(FormularioConsulta.id == formulario_id)
+        if bloquear:
+            stmt = stmt.with_for_update().execution_options(populate_existing=True)
         result = await self.session.execute(stmt)
         return result.scalar_one_or_none()
 

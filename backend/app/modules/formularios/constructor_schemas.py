@@ -99,6 +99,12 @@ class DocumentoFormulario(BaseModel):
         ids = [p.id for p in self.preguntas]
         if len(ids) != len(set(ids)):
             raise ValueError("Las preguntas deben tener identificadores únicos")
+        if len({p.orden for p in self.preguntas}) != len(self.preguntas):
+            raise ValueError("El orden de las preguntas debe ser único")
+        if not any(p.tipo not in ("seccion", "descripcion") for p in self.preguntas):
+            raise ValueError("Añada al menos una pregunta de respuesta")
+        if self.configuracion.respuestaAnonima and self.configuracion.requiereAutenticacion:
+            raise ValueError("Una respuesta anónima no puede exigir cuenta autenticada")
         secciones = [s.get("id") for s in self.secciones]
         if any(not isinstance(s, str) or not s for s in secciones):
             raise ValueError("Secciones inválidas")
@@ -114,6 +120,13 @@ class DocumentoFormulario(BaseModel):
         for pregunta in self.preguntas:
             if pregunta.tipo not in ("seccion", "descripcion") and not pregunta.texto.strip():
                 raise ValueError("Enunciado vacío")
+            if (
+                pregunta.tipo in ("opcion_unica", "opcion_multiple", "lista_desplegable")
+                and not pregunta.opciones
+            ):
+                raise ValueError("La selección necesita opciones")
+            if any("esOtro" in o and not isinstance(o["esOtro"], bool) for o in pregunta.opciones):
+                raise ValueError("esOtro debe ser booleano")
             ids_opciones = [o.get("id") for o in pregunta.opciones]
             if any(not isinstance(i, str) or not i.strip() for i in ids_opciones) or len(
                 ids_opciones
@@ -127,6 +140,19 @@ class DocumentoFormulario(BaseModel):
             validacion = (
                 pregunta.validacion.model_dump(exclude_none=True) if pregunta.validacion else {}
             )
+            for minimo, maximo in (("minLongitud", "maxLongitud"), ("minValor", "maxValor")):
+                if (
+                    minimo in validacion
+                    and maximo in validacion
+                    and validacion[minimo] > validacion[maximo]
+                ):
+                    raise ValueError("El mínimo no puede superar el máximo")
+            if (
+                pregunta.escalaMin is not None
+                and pregunta.escalaMax is not None
+                and pregunta.escalaMin > pregunta.escalaMax
+            ):
+                raise ValueError("Escala invertida")
             if validacion.get("patron"):
                 try:
                     re.compile(validacion["patron"])
@@ -144,6 +170,12 @@ class DocumentoFormulario(BaseModel):
         for p in self.preguntas:
             if p.seccionId and p.seccionId not in secciones:
                 raise ValueError("Sección de pregunta inexistente")
+            if p.dimensionOrigenId and (
+                p.dimensionOrigenId not in orden or orden[p.dimensionOrigenId] >= orden[p.id]
+            ):
+                raise ValueError("La dimensión debe referenciar una pregunta anterior")
+            if p.localidadDestinoId and p.localidadDestinoId not in orden:
+                raise ValueError("La localidad debe referenciar una pregunta existente")
             for r in p.logica:
                 origen, destino = r.get("preguntaOrigenId"), r.get("preguntaDestinoId", p.id)
                 if origen not in orden or destino not in orden or orden[origen] >= orden[destino]:

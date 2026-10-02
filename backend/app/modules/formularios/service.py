@@ -1,13 +1,15 @@
 import uuid
 from datetime import UTC, datetime
-from typing import Any
 
 from fastapi import HTTPException, status
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.transactions import transaction
+from app.modules.formularios.analitica import tabular_pregunta
+from app.modules.formularios.constructor_service import ConstructorService
 from app.modules.formularios.constructor_validation import validar_respuestas
+from app.modules.formularios.errors import error_integridad
 from app.modules.formularios.models import FormularioConsulta, RespuestaFormulario
 from app.modules.formularios.repository import FormularioRepository
 from app.modules.formularios.schemas import (
@@ -78,14 +80,17 @@ class FormularioService:
                 permite_evidencias=datos.permite_evidencias,
                 fecha_cierre=datos.fecha_cierre,
             )
-            creado = await self.repo.crear(nuevo)
+            try:
+                creado = await self.repo.crear(nuevo)
+            except IntegrityError as error:
+                raise error_integridad(error, "El código del formulario ya existe") from error
             return FormularioRespuesta.model_validate(creado)
 
     async def actualizar_formulario(
         self, formulario_id: uuid.UUID, datos: FormularioActualizar
     ) -> FormularioRespuesta:
         async with transaction(self.session):
-            f = await self.repo.obtener_por_id(formulario_id)
+            f = await self.repo.obtener_por_id(formulario_id, bloquear=True)
             if not f:
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
@@ -102,10 +107,18 @@ class FormularioService:
             if datos.estado is not None:
                 f.estado = datos.estado
             if datos.esquema_preguntas is not None:
+                if (
+                    await self.repo.contar_respuestas(f.id)
+                    and [p.model_dump() for p in datos.esquema_preguntas] != f.esquema_preguntas
+                ):
+                    raise HTTPException(
+                        409, "El formulario tiene respuestas: conserve sus preguntas"
+                    )
                 f.esquema_preguntas = [p.model_dump() for p in datos.esquema_preguntas]
-            if datos.fecha_cierre is not None:
+            if "fecha_cierre" in datos.model_fields_set:
                 f.fecha_cierre = datos.fecha_cierre
 
+            f.actualizado_en = datetime.now(UTC)
             await self.session.flush()
             conteo = await self.repo.contar_respuestas(f.id)
             dto = FormularioRespuesta.model_validate(f)
@@ -114,11 +127,15 @@ class FormularioService:
 
     async def eliminar_formulario(self, formulario_id: uuid.UUID) -> dict[str, str]:
         async with transaction(self.session):
-            f = await self.repo.obtener_por_id(formulario_id)
+            f = await self.repo.obtener_por_id(formulario_id, bloquear=True)
             if not f:
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
                     detail=f"Formulario con id {formulario_id} no encontrado",
+                )
+            if await self.repo.contar_respuestas(f.id):
+                raise HTTPException(
+                    409, "El formulario tiene respuestas: ciérrelo para conservar el registro"
                 )
             await self.repo.eliminar(f)
             return {"mensaje": f"Formulario {formulario_id} eliminado exitosamente"}
@@ -132,17 +149,12 @@ class FormularioService:
         es_anonimo: bool = False,
     ) -> RespuestaFormularioLectura:
         async with transaction(self.session):
-            f = await self.repo.obtener_por_id(formulario_id)
+            f = await self.repo.obtener_por_id(formulario_id, bloquear=True)
             if not f:
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
                     detail=f"Formulario con id {formulario_id} no encontrado",
                 )
-
-            if f.documento_constructor:
-                f = await self.repo.obtener_por_slug(f.slug, bloquear=True)
-                if not f:
-                    raise HTTPException(404, "Formulario no encontrado")
 
             if f.estado != "PUBLICADO":
                 raise HTTPException(
@@ -156,6 +168,10 @@ class FormularioService:
                     detail="El periodo de participación para esta consulta ha concluido",
                 )
 
+            if datos.evidencias and (f.documento_constructor or not f.permite_evidencias):
+                raise HTTPException(
+                    422, "Adjunte evidencias únicamente mediante los campos autorizados"
+                )
             if f.documento_constructor:
                 if (
                     f.documento_constructor["configuracion"].get("respuestaAnonima")
@@ -166,18 +182,27 @@ class FormularioService:
                     f.documento_constructor, datos.datos_respuesta
                 )
             else:
-                # Validar preguntas obligatorias
-                for preg in f.esquema_preguntas:
-                    pid = preg.get("id")
-                    obligatoria = preg.get("obligatoria", True)
-                    if obligatoria and (
-                        pid not in datos.datos_respuesta
-                        or datos.datos_respuesta[pid] in (None, "", [])
+                # Conservar números del contrato legado, validando también opciones y escalas.
+                documento = (await ConstructorService(self.session).documento(f)).model_dump(
+                    mode="json", exclude_none=True
+                )
+                originales = {
+                    p["id"]: datos.datos_respuesta[p["id"]]
+                    for p in f.esquema_preguntas
+                    if p["id"] in datos.datos_respuesta
+                    and datos.datos_respuesta[p["id"]] is not None
+                }
+                valores = dict(originales)
+                for p in f.esquema_preguntas:
+                    v = valores.get(p["id"])
+                    if (
+                        p["tipo"] == "escala_likert"
+                        and isinstance(v, (int, float))
+                        and not isinstance(v, bool)
                     ):
-                        raise HTTPException(
-                            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-                            detail=f"La pregunta '{preg.get('texto', pid)}' es obligatoria",
-                        )
+                        valores[p["id"]] = str(v)
+                efectivas = validar_respuestas(documento, valores)
+                datos.datos_respuesta = {k: originales[k] for k in efectivas}
 
             # Verificar si ya existe respuesta del sujeto
             existente = await self.repo.obtener_respuesta_sujeto(formulario_id, sujeto_id)
@@ -215,9 +240,8 @@ class FormularioService:
                 guardada = await self.repo.guardar_respuesta(nueva_respuesta)
                 return RespuestaFormularioLectura.model_validate(guardada)
             except IntegrityError as error:
-                raise HTTPException(
-                    status_code=status.HTTP_409_CONFLICT,
-                    detail="El participante ya ha enviado una respuesta a esta consulta.",
+                raise error_integridad(
+                    error, "El participante ya ha enviado una respuesta"
                 ) from error
 
     async def listar_respuestas(self, formulario_id: uuid.UUID) -> list[RespuestaFormularioLectura]:
@@ -241,73 +265,7 @@ class FormularioService:
         respuestas = await self.repo.listar_respuestas(formulario_id)
         total = len(respuestas)
 
-        # Tabulación por preguntas
-        tabulacion: dict[str, Any] = {}
-        for preg in f.esquema_preguntas:
-            pid = preg["id"]
-            tipo = preg.get("tipo", "texto_libre")
-            texto = preg.get("texto", "")
-
-            if tipo == "opcion_unica":
-                conteos = {opc: 0 for opc in preg.get("opciones", [])}
-                for r in respuestas:
-                    val = r.datos_respuesta.get(pid)
-                    if val in conteos:
-                        conteos[val] += 1
-                porcentajes = {
-                    opc: round((cnt / total * 100), 1) if total > 0 else 0.0
-                    for opc, cnt in conteos.items()
-                }
-                tabulacion[pid] = {
-                    "texto": texto,
-                    "tipo": tipo,
-                    "conteos": conteos,
-                    "porcentajes": porcentajes,
-                }
-            elif tipo == "opcion_multiple":
-                conteos = {opc: 0 for opc in preg.get("opciones", [])}
-                for r in respuestas:
-                    vals = r.datos_respuesta.get(pid, [])
-                    if isinstance(vals, list):
-                        for v in vals:
-                            if v in conteos:
-                                conteos[v] += 1
-                tabulacion[pid] = {
-                    "texto": texto,
-                    "tipo": tipo,
-                    "conteos": conteos,
-                }
-            elif tipo == "escala_likert":
-                valores_escala = {str(i): 0 for i in range(1, 6)}
-                suma = 0
-                respondidos = 0
-                for r in respuestas:
-                    val = r.datos_respuesta.get(pid)
-                    if val is not None:
-                        sval = str(val)
-                        if sval in valores_escala:
-                            valores_escala[sval] += 1
-                            suma += int(sval)
-                            respondidos += 1
-                promedio = round(suma / respondidos, 2) if respondidos > 0 else 0.0
-                tabulacion[pid] = {
-                    "texto": texto,
-                    "tipo": tipo,
-                    "distribucion": valores_escala,
-                    "promedio": promedio,
-                }
-            else:  # texto_libre
-                muestras = []
-                for r in respuestas:
-                    val = r.datos_respuesta.get(pid)
-                    if val and isinstance(val, str) and len(val.strip()) > 0:
-                        muestras.append(val.strip())
-                tabulacion[pid] = {
-                    "texto": texto,
-                    "tipo": tipo,
-                    "total_aportes_texto": len(muestras),
-                    "muestras": muestras[:5],
-                }
+        tabulacion = {p["id"]: tabular_pregunta(p, respuestas) for p in f.esquema_preguntas}
 
         # Desglose enfoque diferencial (Ley 1448/11, Ley 1618/13)
         desglose_enfoque: dict[str, dict[str, int]] = {

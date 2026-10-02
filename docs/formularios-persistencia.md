@@ -30,3 +30,11 @@ location /api/v1/formularios/ {
 ```
 
 La configuración exacta del proxy pertenece al entorno operativo; el límite de cinco fotos y 5 MB por foto se valida también en la API.
+
+## Integridad y conservación del registro — revisión 2026-10-02
+
+Las migraciones `0032_integridad_formularios` y `0033_conservar_respuestas` agregan seis restricciones CHECK para estados y formas JSONB, y sustituyen la eliminación en cascada por una clave foránea `ON DELETE RESTRICT`. La API devuelve 409 al intentar borrar un formulario con respuestas; debe cerrarse para conservar el registro. Una vez recibidas respuestas, tampoco admite cambios de preguntas ni secciones, aunque permite actualizar título, descripción y estado.
+
+Crear, modificar, responder y eliminar usan la transacción del servicio. Las operaciones que modifican un formulario existente bloquean su fila con `FOR UPDATE`, incluyendo las rutas legadas. Esto serializa las comprobaciones del límite de respuestas, cierre y eliminación. La respuesta HTTP de éxito se prepara antes del commit; un fallo revierte la operación.
+
+Los metadatos de identidad, origen, fechas y contadores del DTO se reconstruyen desde PostgreSQL; no se aceptan como autoridad los enviados por el cliente. Las rutas legadas también validan opciones y escalas. Coordenadas, límites de fotos y preguntas condicionales se comprueban antes de escribir. Los detalles de prueba y límites están en [calidad-formulario-geoespacial.md](calidad-formulario-geoespacial.md).
