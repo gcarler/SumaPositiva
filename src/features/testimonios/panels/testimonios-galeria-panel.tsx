@@ -241,8 +241,8 @@ function TestimonioCard({ testimonio }: { testimonio: Testimonio }) {
           )}
         </div>
 
-        <time dateTime={testimonio.creado_en}>
-          {new Date(testimonio.creado_en).toLocaleDateString("es-CO", {
+        <time dateTime={testimonio.creado_en || testimonio.creadoEn}>
+          {new Date(testimonio.creado_en || testimonio.creadoEn).toLocaleDateString("es-CO", {
             day: "numeric",
             month: "short",
             year: "numeric",

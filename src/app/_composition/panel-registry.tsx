@@ -38,6 +38,14 @@ const UsuariosPanel = dynamic(
   () => import("@/features/sesion/panels/usuarios-panel").then((m) => m.UsuariosPanel),
   { ssr: false }
 );
+const UsuarioInvitarPanel = dynamic(
+  () => import("@/features/usuarios/panels/usuario-editor-panel").then((m) => m.UsuarioEditorPanel),
+  { ssr: false }
+);
+const UsuarioDetallePanel = dynamic(
+  () => import("@/features/usuarios/panels/usuario-detalle-panel").then((m) => m.UsuarioDetallePanel),
+  { ssr: false }
+);
 const MesaPanel = dynamic(
   () => import("@/features/mesas/panels/mesa-panel").then((m) => m.MesaPanel),
   { ssr: false }
@@ -102,6 +110,15 @@ const AuditoriaConsolaPanel = dynamic(
   { ssr: false }
 );
 
+const NoticiaPanel = dynamic(
+  () => import("@/features/noticias/panels/noticia-panel").then((m) => m.NoticiaPanel),
+  { ssr: false }
+);
+const TestimonioNuevoPanel = dynamic(
+  () => import("@/features/testimonios/panels/testimonio-nuevo-panel").then((m) => m.TestimonioNuevoPanel),
+  { ssr: false }
+);
+
 export const PANEL_REGISTRY: Record<
   PanelType,
   ComponentType<PanelComponentProps>
@@ -112,6 +129,9 @@ export const PANEL_REGISTRY: Record<
   aporte: AporteEditorPanel as ComponentType<PanelComponentProps>,
   sesion: SesionPanel as ComponentType<PanelComponentProps>,
   usuarios: UsuariosPanel as ComponentType<PanelComponentProps>,
+  "usuario-invitar": ((props: PanelComponentProps) => <UsuarioInvitarPanel {...props} mode="invite" />) as ComponentType<PanelComponentProps>,
+  "usuario-editor": ((props: PanelComponentProps) => <UsuarioInvitarPanel {...props} mode="edit" />) as ComponentType<PanelComponentProps>,
+  "usuario-detalle": UsuarioDetallePanel as ComponentType<PanelComponentProps>,
   mesa: MesaPanel as ComponentType<PanelComponentProps>,
   papelografo: PapelografoPanel as ComponentType<PanelComponentProps>,
   "mesa-editor": MesaEditorPanel as ComponentType<PanelComponentProps>,
@@ -128,6 +148,8 @@ export const PANEL_REGISTRY: Record<
   "testimonios-moderacion": TestimoniosModeracionPanel as ComponentType<PanelComponentProps>,
   "fases-control": FasesControlPanel as ComponentType<PanelComponentProps>,
   "auditoria-consola": AuditoriaConsolaPanel as ComponentType<PanelComponentProps>,
+  noticia: NoticiaPanel as ComponentType<PanelComponentProps>,
+  "testimonio-nuevo": TestimonioNuevoPanel as ComponentType<PanelComponentProps>,
 };
 
 /**
@@ -145,6 +167,9 @@ export const PANEL_WIDTHS: Record<PanelType, string> = {
   aporte: "min(clamp(640px, 44vw, 920px), 100vw)",
   sesion: "min(clamp(520px, 38vw, 760px), 100vw)",
   usuarios: "min(clamp(720px, 55vw, 1040px), 100vw)",
+  "usuario-invitar": "min(clamp(620px, 48vw, 900px), 100vw)",
+  "usuario-editor": "min(clamp(620px, 48vw, 900px), 100vw)",
+  "usuario-detalle": "min(clamp(620px, 48vw, 900px), 100vw)",
   mesa: "min(clamp(820px, 56vw, 1240px), 100vw)",
   // el papelografo es el lienzo más ancho: el árbol necesita aire
   papelografo: "min(clamp(1080px, 82vw, 1760px), 100vw)",
@@ -162,4 +187,6 @@ export const PANEL_WIDTHS: Record<PanelType, string> = {
   "testimonios-moderacion": "min(clamp(840px, 58vw, 1280px), 100vw)",
   "fases-control": "min(clamp(640px, 44vw, 920px), 100vw)",
   "auditoria-consola": "min(clamp(780px, 52vw, 1120px), 100vw)",
+  noticia: "min(clamp(780px, 52vw, 1120px), 100vw)",
+  "testimonio-nuevo": "min(clamp(640px, 44vw, 920px), 100vw)",
 };

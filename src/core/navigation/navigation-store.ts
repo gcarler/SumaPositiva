@@ -2,7 +2,7 @@
 
 import { create } from "zustand";
 
-export type VistaApp = "inicio" | "explorar" | "mesas" | "geovisor";
+export type VistaApp = "inicio" | "explorar" | "mesas" | "geovisor" | "noticias" | "testimonios";
 
 interface NavigationState {
   vista: VistaApp;

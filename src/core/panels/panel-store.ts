@@ -31,7 +31,12 @@ export type PanelType =
   | "testimonio-editor"
   | "testimonios-moderacion"
   | "fases-control"
-  | "auditoria-consola";
+  | "auditoria-consola"
+  | "usuario-invitar"
+  | "usuario-editor"
+  | "usuario-detalle"
+  | "noticia"
+  | "testimonio-nuevo";
 
 /** Árbol que se diligencia en el papelografo */
 export type ArbolPanel = "problemas" | "soluciones";
@@ -71,6 +76,11 @@ export interface PanelPropsMap {
   "testimonios-moderacion": { estadoInicial?: string };
   "fases-control": Record<string, never>;
   "auditoria-consola": Record<string, never>;
+  "usuario-invitar": Record<string, never>;
+  "usuario-editor": { usuarioId: string };
+  "usuario-detalle": { usuarioId: string };
+  noticia: { noticiaId: string };
+  "testimonio-nuevo": Record<string, never>;
 }
 
 export type PanelEntry<T extends PanelType = PanelType> = {

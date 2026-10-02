@@ -120,7 +120,7 @@ export function TestimoniosModeracionPanel({ entryKey }: { entryKey: string }) {
                       )}
                     </div>
 
-                    <EstadoBadge estado={t.estado} />
+                    <EstadoBadge estado={t.estado || "PENDIENTE"} />
                   </div>
 
                   <div className="space-y-1">
@@ -157,8 +157,8 @@ export function TestimoniosModeracionPanel({ entryKey }: { entryKey: string }) {
                       )}
                     </div>
 
-                    <time dateTime={t.creado_en}>
-                      {new Date(t.creado_en).toLocaleDateString("es-CO", {
+                    <time dateTime={t.creado_en || t.creadoEn}>
+                      {new Date(t.creado_en || t.creadoEn).toLocaleDateString("es-CO", {
                         day: "numeric",
                         month: "short",
                         year: "numeric",

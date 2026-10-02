@@ -93,6 +93,8 @@ const NAV: { id: VistaApp; label: string; labelCorto?: string }[] = [
   { id: "explorar", label: "Líneas Estratégicas", labelCorto: "Explorar" },
   { id: "mesas", label: "Mesas de Trabajo", labelCorto: "Mesas" },
   { id: "geovisor", label: "Geovisor Territorial", labelCorto: "Geovisor" },
+  { id: "noticias", label: "Noticias", labelCorto: "Noticias" },
+  { id: "testimonios", label: "Testimonios", labelCorto: "Testimonios" },
 ];
 
 export function Topbar() {

@@ -8,6 +8,8 @@ import { InicioView } from "@/features/politicas/views/inicio-view";
 import { ExplorarView } from "@/features/politicas/views/explorar-view";
 import { MesasView } from "@/features/mesas/views/mesas-view";
 import { GeovisorView } from "@/features/geovisor/views/geovisor-view";
+import { NoticiasView } from "@/features/noticias/views/noticias-view";
+import { TestimoniosView } from "@/features/testimonios/views/testimonios-view";
 import { useNavigationStore } from "@/core/navigation/navigation-store";
 
 import { SidebarProvider } from "@/shared/ui/sidebar";
@@ -51,6 +53,10 @@ export default function Home() {
                 <MesasView />
               ) : vista === "geovisor" ? (
                 <GeovisorView />
+              ) : vista === "noticias" ? (
+                <NoticiasView />
+              ) : vista === "testimonios" ? (
+                <TestimoniosView />
               ) : (
                 <ExplorarView />
               )}
