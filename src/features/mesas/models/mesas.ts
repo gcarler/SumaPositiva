@@ -67,14 +67,28 @@ export interface SubMesa {
   etag?: string;
 }
 
+export interface EntidadResponsable {
+  id: string;          // nanoid o uuid-v4
+  nombre: string;      // "Secretaría de Participación Ciudadana"
+  rol: string;         // "Convocante" | "Coorganizadora" | "Aliada" | "Apoyo técnico" | string
+}
+
+export interface PersonaResponsable {
+  id: string;
+  nombre: string;      // "Carlos Pérez"
+  cargo: string;       // "Secretario de Participación"
+  entidadId?: string;  // Referencia a EntidadResponsable.id
+  esFacilitador: boolean;
+}
+
 export interface MesaDeTrabajo {
   id: string;
   nombre: string;
   fecha: string; // ISO (yyyy-mm-dd)
   lugar: string;
-  /** Entidad / dependencia que convoca (funcionarios responsables) */
+  /** Entidad / dependencia que convoca (funcionarios responsables) - legacy */
   entidad: string;
-  /** Funcionario facilitador de la dinámica */
+  /** Funcionario facilitador de la dinámica - legacy */
   facilitador: string;
   totalAsistentes: number;
   /** Acuerdos y notas de la plenaria de apertura */
@@ -90,6 +104,12 @@ export interface MesaDeTrabajo {
   descripcion?: string;
   dimensionOnu?: string;
   informe?: string;
+  // Nuevos campos Mesa Editor Pro:
+  coordenadas?: { lat: number; lng: number };
+  urlMapa?: string;
+  aforo?: number;
+  entidades?: EntidadResponsable[];
+  responsables?: PersonaResponsable[];
 }
 
 /* ---------- Metadatos de presentación ---------- */

@@ -175,19 +175,8 @@ export const CrearMesaCompleta: Story = {
       panel.getByLabelText(/Nombre de la mesa/),
       "Mesa de convivencia barrial",
     );
-    await userEvent.type(
-      panel.getByLabelText(/Entidad que convoca/),
-      "Secretaría de Participación",
-    );
     await userEvent.type(panel.getByLabelText(/Fecha/), "2026-10-15");
-    const attendees = panel.getByLabelText(/Total de asistentes/);
-    await userEvent.clear(attendees);
-    await userEvent.type(attendees, "24");
     await userEvent.type(panel.getByLabelText(/Lugar/), "Casa de la cultura");
-    await userEvent.type(
-      panel.getByLabelText(/Funcionario facilitador/),
-      "Ana Torres",
-    );
     const submit = panel.getByRole("button", { name: "Crear mesa" });
     await waitFor(() => expect(submit).toBeEnabled());
     await userEvent.click(submit);

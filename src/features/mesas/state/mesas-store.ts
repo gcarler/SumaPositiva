@@ -12,6 +12,8 @@ import type {
   NodoArbol,
   RamaArbol,
   SubMesa,
+  EntidadResponsable,
+  PersonaResponsable,
 } from "@/features/mesas/models/mesas";
 import { uidNodo } from "@/features/mesas/models/mesas";
 
@@ -26,17 +28,22 @@ export interface MesaInput {
   nombre: string;
   fecha: string;
   lugar: string;
-  entidad: string;
-  facilitador: string;
-  totalAsistentes: number;
+  entidad?: string;
+  facilitador?: string;
+  totalAsistentes?: number;
   horario?: string;
   descripcion?: string;
   dimensionOnu?: string;
-  estado?: import("@/features/mesas/models/mesas").EstadoMesa;
+  estado?: EstadoMesa;
   tipoMesa?: string;
   codigoOficial?: string;
   shortcodeCiudadano?: string;
   informe?: string;
+  coordenadas?: { lat: number; lng: number };
+  urlMapa?: string;
+  aforo?: number;
+  entidades?: EntidadResponsable[];
+  responsables?: PersonaResponsable[];
 }
 
 export interface SubMesaInput {
@@ -210,12 +217,27 @@ export const useMesasStore = create<MesasState>((set, get) => ({
   /* ---------- Mesa ---------- */
 
   crearMesa: (input) => {
+    const entidadDerivada = input.entidades?.[0]?.nombre ?? input.entidad ?? "";
+    const facilitadorDerivado =
+      input.responsables?.find((r) => r.esFacilitador)?.nombre ??
+      input.responsables?.[0]?.nombre ??
+      input.facilitador ??
+      "";
+
     const mesa: MesaDeTrabajo = {
       id: `mesa-nueva-${++mesaSeq}`,
       ...input,
+      entidad: entidadDerivada,
+      facilitador: facilitadorDerivado,
+      totalAsistentes: input.totalAsistentes ?? 0,
       plenaria: { acuerdos: input.descripcion || "" },
       submesas: [],
       estado: input.estado || "programada",
+      entidades: input.entidades ?? [],
+      responsables: input.responsables ?? [],
+      coordenadas: input.coordenadas,
+      urlMapa: input.urlMapa,
+      aforo: input.aforo,
     };
     set((s) => ({ mesas: [mesa, ...s.mesas] }));
     return mesa;
@@ -223,7 +245,24 @@ export const useMesasStore = create<MesasState>((set, get) => ({
 
   actualizarMesa: (mesaId, patch) =>
     set((s) => ({
-      mesas: s.mesas.map((m) => (m.id === mesaId ? { ...m, ...patch } : m)),
+      mesas: s.mesas.map((m) => {
+        if (m.id !== mesaId) return m;
+        const entidad =
+          patch.entidades && patch.entidades.length > 0
+            ? patch.entidades[0].nombre
+            : (patch.entidad ?? m.entidad);
+        const facilitador =
+          patch.responsables && patch.responsables.length > 0
+            ? (patch.responsables.find((r) => r.esFacilitador)?.nombre ??
+              patch.responsables[0].nombre)
+            : (patch.facilitador ?? m.facilitador);
+        return {
+          ...m,
+          ...patch,
+          entidad,
+          facilitador,
+        };
+      }),
     })),
 
   setAcuerdosPlenaria: (mesaId, acuerdos) =>

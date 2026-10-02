@@ -4,6 +4,7 @@ import { Button } from "@/shared/ui/button";
 import { Textarea } from "@/shared/ui/textarea";
 import { Input } from "@/shared/ui/input";
 import { FormField } from "@/shared/ui/form-field";
+import { Badge } from "@/shared/ui/badge";
 
 import { useState } from "react";
 import { format } from "date-fns";
@@ -217,22 +218,42 @@ export function MesaPanel({
                 {mesa.totalAsistentes.toLocaleString("es-CO")}
               </dd>
             </div>
+            {mesa.aforo ? (
+              <div className="space-y-1">
+                <dt className="label-micro text-[var(--text-tertiary)]">Aforo</dt>
+                <dd className="text-sm font-medium text-[var(--text-primary)] tabular">
+                  {mesa.aforo.toLocaleString("es-CO")} personas
+                </dd>
+              </div>
+            ) : null}
             <div className="col-span-2 space-y-1 sm:col-span-1">
               <dt className="label-micro text-[var(--text-tertiary)]">
                 Facilitador
               </dt>
               <dd className="truncate text-sm font-medium text-[var(--text-primary)]">
-                {mesa.facilitador}
+                {mesa.facilitador || "Por asignar"}
               </dd>
             </div>
             <div className="col-span-2 space-y-1">
               <dt className="label-micro text-[var(--text-tertiary)]">Lugar</dt>
-              <dd className="inline-flex items-start gap-1.5 text-sm font-medium text-[var(--text-primary)]">
-                <MapPin
-                  className="mt-0.5 size-3.5 shrink-0 text-[var(--text-tertiary)]"
-                  strokeWidth={1.5}
-                />
-                {mesa.lugar}
+              <dd className="flex flex-col items-start gap-1 text-sm font-medium text-[var(--text-primary)]">
+                <span className="inline-flex items-start gap-1.5">
+                  <MapPin
+                    className="mt-0.5 size-3.5 shrink-0 text-[var(--text-tertiary)]"
+                    strokeWidth={1.5}
+                  />
+                  <span>{mesa.lugar}</span>
+                </span>
+                {mesa.urlMapa && (
+                  <a
+                    href={mesa.urlMapa}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-xs text-[var(--ember)] hover:underline font-medium"
+                  >
+                    📍 Ver en el mapa →
+                  </a>
+                )}
               </dd>
             </div>
             <div className="col-span-2 space-y-1">
@@ -244,9 +265,68 @@ export function MesaPanel({
                   className="mt-0.5 size-3.5 shrink-0 text-[var(--text-tertiary)]"
                   strokeWidth={1.5}
                 />
-                {mesa.entidad}
+                <span>{mesa.entidad || "Distrito de Cartagena"}</span>
               </dd>
             </div>
+
+            {/* Múltiples entidades responsables */}
+            {mesa.entidades && mesa.entidades.length > 0 && (
+              <div className="col-span-full border-t border-[var(--border)] pt-3">
+                <dt className="label-micro text-[var(--text-tertiary)] mb-2">
+                  Entidades convocantes y aliadas ({mesa.entidades.length})
+                </dt>
+                <dd className="flex flex-wrap gap-2">
+                  {mesa.entidades.map((ent) => (
+                    <span
+                      key={ent.id}
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--border)] bg-[var(--surface-2)] px-2.5 py-1 text-xs text-[var(--text-primary)]"
+                    >
+                      <Landmark className="size-3 text-[var(--text-tertiary)]" />
+                      <span className="font-medium">{ent.nombre}</span>
+                      <Badge
+                        variant="outline"
+                        className="text-[10px] py-0 px-1.5 font-normal text-[var(--text-secondary)]"
+                      >
+                        {ent.rol}
+                      </Badge>
+                    </span>
+                  ))}
+                </dd>
+              </div>
+            )}
+
+            {/* Múltiples personas responsables */}
+            {mesa.responsables && mesa.responsables.length > 0 && (
+              <div className="col-span-full border-t border-[var(--border)] pt-3">
+                <dt className="label-micro text-[var(--text-tertiary)] mb-2">
+                  Equipo responsable ({mesa.responsables.length})
+                </dt>
+                <dd className="flex flex-wrap gap-2">
+                  {mesa.responsables.map((resp) => (
+                    <span
+                      key={resp.id}
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--border)] bg-[var(--surface-2)] px-2.5 py-1 text-xs text-[var(--text-primary)]"
+                    >
+                      <Users className="size-3 text-[var(--text-tertiary)]" />
+                      <span className="font-medium">{resp.nombre}</span>
+                      {resp.cargo && (
+                        <span className="text-[var(--text-tertiary)]">
+                          ({resp.cargo})
+                        </span>
+                      )}
+                      {resp.esFacilitador && (
+                        <Badge
+                          variant="ember"
+                          className="text-[10px] py-0 px-1.5 font-medium"
+                        >
+                          Facilitador
+                        </Badge>
+                      )}
+                    </span>
+                  ))}
+                </dd>
+              </div>
+            )}
           </dl>
         </section>
 
