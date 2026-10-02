@@ -7,6 +7,7 @@ import { CONTENIDO_MESAS } from "@/features/mesas/data/agenda-contenido.data";
 import type {
   ArbolKind,
   EstadoMesa,
+  ArbolProblemas,
   ArbolSoluciones,
   MesaDeTrabajo,
   NodoArbol,
@@ -16,7 +17,7 @@ import type {
   PersonaResponsable,
   AdjuntoMesa,
 } from "@/features/mesas/models/mesas";
-import { uidNodo } from "@/features/mesas/models/mesas";
+import { uidNodo, calcularTotalAsistentes } from "@/features/mesas/models/mesas";
 
 /**
  * POLIS — Store del Área de Trabajo (mesas públicas + papelografo).
@@ -70,6 +71,18 @@ interface MesasState {
   agregarAdjuntoMesa: (mesaId: string, adjunto: AdjuntoMesa) => void;
   eliminarAdjuntoMesa: (mesaId: string, adjuntoId: string) => void;
 
+  /* Relatoría y Matriz de Árbol a nivel de Mesa */
+  setArbolProblemasMesa: (mesaId: string, arbol: ArbolProblemas) => void;
+  setArbolSolucionesMesa: (mesaId: string, arbol: ArbolSoluciones) => void;
+  setModoRelatoriaMesa: (mesaId: string, modo: "narrativo" | "matriz" | "hibrido") => void;
+  consolidarArbolesSubmesas: (mesaId: string) => {
+    causasCopiadas: number;
+    efectosCopiados: number;
+    mediosCopiados: number;
+    finesCopiados: number;
+  };
+  generarBorradorRelatoriaDesdeMatriz: (mesaId: string) => string;
+
   /* Submesas */
   crearSubMesa: (mesaId: string, input: SubMesaInput) => SubMesa | null;
   eliminarSubMesa: (mesaId: string, submesaId: string) => void;
@@ -77,6 +90,8 @@ interface MesasState {
   eliminarAdjuntoSubMesa: (mesaId: string, subMesaId: string, adjuntoId: string) => void;
 
   /* Papelografo */
+  setArbolProblemasSubMesa: (mesaId: string, submesaId: string, arbol: ArbolProblemas) => void;
+  setArbolSolucionesSubMesa: (mesaId: string, submesaId: string, arbol: ArbolSoluciones) => void;
   setTextoCentral: (
     mesaId: string,
     submesaId: string,
@@ -334,6 +349,322 @@ export const useMesasStore = create<MesasState>((set, get) => ({
       ),
     })),
 
+  /* ---------- Relatoría y Matriz de Árbol a nivel de Mesa ---------- */
+
+  setArbolProblemasMesa: (mesaId, arbol) =>
+    set((s) => ({
+      mesas: s.mesas.map((m) =>
+        m.id === mesaId ? { ...m, arbolProblemas: arbol } : m
+      ),
+    })),
+
+  setArbolSolucionesMesa: (mesaId, arbol) =>
+    set((s) => ({
+      mesas: s.mesas.map((m) =>
+        m.id === mesaId ? { ...m, arbolSoluciones: arbol } : m
+      ),
+    })),
+
+  setModoRelatoriaMesa: (mesaId, modo) =>
+    set((s) => ({
+      mesas: s.mesas.map((m) =>
+        m.id === mesaId ? { ...m, modoRelatoria: modo } : m
+      ),
+    })),
+
+  consolidarArbolesSubmesas: (mesaId) => {
+    const mesa = get().mesas.find((m) => m.id === mesaId);
+    if (!mesa || !mesa.submesas || mesa.submesas.length === 0) {
+      return { causasCopiadas: 0, efectosCopiados: 0, mediosCopiados: 0, finesCopiados: 0 };
+    }
+
+    const arbolP: ArbolProblemas = mesa.arbolProblemas ?? {
+      problemaCentral: mesa.nombre,
+      causas: [],
+      efectos: [],
+    };
+    const arbolS: ArbolSoluciones = mesa.arbolSoluciones ?? {
+      objetivoCentral: "",
+      medios: [],
+      fines: [],
+    };
+
+    let causasCopiadas = 0;
+    let efectosCopiados = 0;
+    let mediosCopiados = 0;
+    let finesCopiados = 0;
+
+    const nuevasCausas = [...arbolP.causas];
+    const nuevosEfectos = [...arbolP.efectos];
+    const nuevosMedios = [...arbolS.medios];
+    const nuevosFines = [...arbolS.fines];
+
+    for (const sm of mesa.submesas) {
+      // Consolidar causas
+      for (const c of sm.arbolProblemas?.causas ?? []) {
+        if (!nuevasCausas.some((nc) => nc.texto.trim().toLowerCase() === c.texto.trim().toLowerCase())) {
+          nuevasCausas.push({
+            ...c,
+            id: uidNodo(),
+            metadatos: {
+              ...c.metadatos,
+              origenSubmesaId: sm.id,
+              origenSubmesaNombre: sm.nombre,
+            },
+            hijos: (c.hijos || []).map((h) => ({
+              ...h,
+              id: uidNodo(),
+              metadatos: {
+                ...h.metadatos,
+                origenSubmesaId: sm.id,
+                origenSubmesaNombre: sm.nombre,
+              },
+              hijos: [],
+            })),
+          });
+          causasCopiadas++;
+        }
+      }
+      // Consolidar efectos
+      for (const e of sm.arbolProblemas?.efectos ?? []) {
+        if (!nuevosEfectos.some((ne) => ne.texto.trim().toLowerCase() === e.texto.trim().toLowerCase())) {
+          nuevosEfectos.push({
+            ...e,
+            id: uidNodo(),
+            metadatos: {
+              ...e.metadatos,
+              origenSubmesaId: sm.id,
+              origenSubmesaNombre: sm.nombre,
+            },
+            hijos: (e.hijos || []).map((h) => ({
+              ...h,
+              id: uidNodo(),
+              metadatos: {
+                ...h.metadatos,
+                origenSubmesaId: sm.id,
+                origenSubmesaNombre: sm.nombre,
+              },
+              hijos: [],
+            })),
+          });
+          efectosCopiados++;
+        }
+      }
+      // Consolidar medios
+      for (const mItem of sm.arbolSoluciones?.medios ?? []) {
+        if (!nuevosMedios.some((nm) => nm.texto.trim().toLowerCase() === mItem.texto.trim().toLowerCase())) {
+          nuevosMedios.push({
+            ...mItem,
+            id: uidNodo(),
+            metadatos: {
+              ...mItem.metadatos,
+              origenSubmesaId: sm.id,
+              origenSubmesaNombre: sm.nombre,
+            },
+            hijos: (mItem.hijos || []).map((h) => ({
+              ...h,
+              id: uidNodo(),
+              metadatos: {
+                ...h.metadatos,
+                origenSubmesaId: sm.id,
+                origenSubmesaNombre: sm.nombre,
+              },
+              hijos: [],
+            })),
+          });
+          mediosCopiados++;
+        }
+      }
+      // Consolidar fines
+      for (const f of sm.arbolSoluciones?.fines ?? []) {
+        if (!nuevosFines.some((nf) => nf.texto.trim().toLowerCase() === f.texto.trim().toLowerCase())) {
+          nuevosFines.push({
+            ...f,
+            id: uidNodo(),
+            metadatos: {
+              ...f.metadatos,
+              origenSubmesaId: sm.id,
+              origenSubmesaNombre: sm.nombre,
+            },
+            hijos: (f.hijos || []).map((h) => ({
+              ...h,
+              id: uidNodo(),
+              metadatos: {
+                ...h.metadatos,
+                origenSubmesaId: sm.id,
+                origenSubmesaNombre: sm.nombre,
+              },
+              hijos: [],
+            })),
+          });
+          finesCopiados++;
+        }
+      }
+    }
+
+    set((s) => ({
+      mesas: s.mesas.map((m) =>
+        m.id === mesaId
+          ? {
+              ...m,
+              arbolProblemas: {
+                ...arbolP,
+                causas: nuevasCausas,
+                efectos: nuevosEfectos,
+              },
+              arbolSoluciones: {
+                ...arbolS,
+                medios: nuevosMedios,
+                fines: nuevosFines,
+              },
+            }
+          : m
+      ),
+    }));
+
+    return { causasCopiadas, efectosCopiados, mediosCopiados, finesCopiados };
+  },
+
+  generarBorradorRelatoriaDesdeMatriz: (mesaId) => {
+    const mesa = get().mesas.find((m) => m.id === mesaId);
+    if (!mesa) return "";
+
+    const ap = mesa.arbolProblemas;
+    const as = mesa.arbolSoluciones;
+    const totalAsistentes = calcularTotalAsistentes(mesa);
+
+    const lineas: string[] = [];
+    lineas.push(`# INFORME TÉCNICO Y RELATORÍA TERRITORIAL`);
+    lineas.push(`**Mesa de Trabajo:** ${mesa.nombre}`);
+    lineas.push(`**Código / Referencia:** ${mesa.codigoOficial ?? mesa.id}`);
+    lineas.push(`**Fecha:** ${mesa.fecha || "No registrada"} | **Lugar:** ${mesa.lugar || "No registrado"}`);
+    lineas.push(`**Facilitador / Responsable:** ${mesa.facilitador || mesa.entidad}`);
+    lineas.push(`**Participación Ciudadana Total:** ${totalAsistentes} asistentes registrados`);
+    lineas.push("");
+    lineas.push("---");
+    lineas.push("");
+
+    lineas.push(`## 1. DIAGNÓSTICO TERRITORIAL ESTRUCTURAL (ÁRBOL DE PROBLEMAS)`);
+    lineas.push(
+      `Conforme a la metodología DNP y CONPES de Marco Lógico, la deliberación territorial identificó el siguiente núcleo problemático y sus causas directas e indirectas:`
+    );
+    lineas.push("");
+    const probCentral = ap?.problemaCentral?.trim() || "Definición pendiente de concertación territorial";
+    lineas.push(`### 1.1 Problema Central Priorizado`);
+    lineas.push(`> **${probCentral}**`);
+    lineas.push("");
+
+    lineas.push(`### 1.2 Causas Estructurales y Directas`);
+    if (ap && ap.causas.length > 0) {
+      for (const [idx, c] of ap.causas.entries()) {
+        const crit = c.metadatos?.criticidad ? ` [Criticidad: ${c.metadatos.criticidad.toUpperCase()}]` : "";
+        const dim = c.metadatos?.dimensionOnu ? ` [Dimensión: ${c.metadatos.dimensionOnu}]` : "";
+        const sub = c.metadatos?.origenSubmesaNombre ? ` *(Fuente: Submesa ${c.metadatos.origenSubmesaNombre})*` : "";
+        lineas.push(`${idx + 1}. **${c.texto}**${crit}${dim}${sub}`);
+        if (c.hijos && c.hijos.length > 0) {
+          for (const h of c.hijos) {
+            lineas.push(`   - Causa secundaria: ${h.texto}`);
+          }
+        }
+      }
+    } else {
+      lineas.push(`*No se han registrado causas específicas en la matriz de diagnóstico.*`);
+    }
+    lineas.push("");
+
+    lineas.push(`### 1.3 Efectos e Impactos Territoriales Observados`);
+    if (ap && ap.efectos.length > 0) {
+      for (const [idx, e] of ap.efectos.entries()) {
+        const crit = e.metadatos?.criticidad ? ` [Impacto: ${e.metadatos.criticidad.toUpperCase()}]` : "";
+        const dim = e.metadatos?.dimensionOnu ? ` [Dimensión: ${e.metadatos.dimensionOnu}]` : "";
+        lineas.push(`${idx + 1}. ${e.texto}${crit}${dim}`);
+        if (e.hijos && e.hijos.length > 0) {
+          for (const h of e.hijos) {
+            lineas.push(`   - Efecto derivado: ${h.texto}`);
+          }
+        }
+      }
+    } else {
+      lineas.push(`*No se han registrado efectos en el árbol de diagnóstico.*`);
+    }
+    lineas.push("");
+
+    lineas.push(`## 2. MARCO ESTRATÉGICO Y OBJETIVOS DE POLÍTICA (ÁRBOL DE SOLUCIONES)`);
+    lineas.push(
+      `Mediante la transformación positiva del árbol de problemas, se proyectan los siguientes objetivos y vías de intervención:`
+    );
+    lineas.push("");
+    const objCentral = as?.objetivoCentral?.trim() || "Definición de objetivo central concertado";
+    lineas.push(`### 2.1 Objetivo Central de Transformación`);
+    lineas.push(`> **${objCentral}**`);
+    lineas.push("");
+
+    lineas.push(`### 2.2 Medios y Acciones Priorizadas`);
+    if (as && as.medios.length > 0) {
+      for (const [idx, mItem] of as.medios.entries()) {
+        const actor = mItem.metadatos?.actorResponsable ? ` [Responsable: ${mItem.metadatos.actorResponsable}]` : "";
+        const dim = mItem.metadatos?.dimensionOnu ? ` [Dimensión: ${mItem.metadatos.dimensionOnu}]` : "";
+        const sub = mItem.metadatos?.origenSubmesaNombre ? ` *(Fuente: Submesa ${mItem.metadatos.origenSubmesaNombre})*` : "";
+        lineas.push(`${idx + 1}. **${mItem.texto}**${actor}${dim}${sub}`);
+        if (mItem.hijos && mItem.hijos.length > 0) {
+          for (const h of mItem.hijos) {
+            lineas.push(`   - Medio operativo complementario: ${h.texto}`);
+          }
+        }
+      }
+    } else {
+      lineas.push(`*No se han formulado medios o líneas de intervención en la matriz.*`);
+    }
+    lineas.push("");
+
+    lineas.push(`### 2.3 Fines e Impactos Esperados en Seguridad Humana`);
+    if (as && as.fines.length > 0) {
+      for (const [idx, f] of as.fines.entries()) {
+        lineas.push(`${idx + 1}. ${f.texto}`);
+        if (f.hijos && f.hijos.length > 0) {
+          for (const h of f.hijos) {
+            lineas.push(`   - Fin superior de sostenibilidad: ${h.texto}`);
+          }
+        }
+      }
+    } else {
+      lineas.push(`*No se han formulado fines en la matriz.*`);
+    }
+    lineas.push("");
+
+    lineas.push(`## 3. RESUMEN DE LA MATRIZ DE MARCO LÓGICO INTEGRADA`);
+    lineas.push(`| N° | Causa Raíz (Problema) | Medio Estratégico (Solución) | Impacto / Fin Esperado |`);
+    lineas.push(`|---|---|---|---|`);
+    const numFilas = Math.max(ap?.causas.length || 0, as?.medios.length || 0);
+    if (numFilas > 0) {
+      for (let i = 0; i < numFilas; i++) {
+        const causa = ap?.causas[i]?.texto || "—";
+        const medio = as?.medios[i]?.texto || "—";
+        const fin = as?.fines[i]?.texto || ap?.efectos[i]?.texto || "—";
+        lineas.push(`| ${i + 1} | ${causa.replace(/\|/g, "/")} | ${medio.replace(/\|/g, "/")} | ${fin.replace(/\|/g, "/")} |`);
+      }
+    } else {
+      lineas.push(`| 1 | Pendiente de consolidación | Pendiente de consolidación | Pendiente de consolidación |`);
+    }
+    lineas.push("");
+
+    lineas.push(`## 4. CONCLUSIONES Y ACUERDOS DE LA JORNADA`);
+    lineas.push(
+      mesa.plenaria?.acuerdos?.trim() ||
+        "La mesa concluyó la sesión con la formulación de los compromisos consignados en la matriz."
+    );
+
+    const borradorGenerado = lineas.join("\n");
+    // Actualizar informe en el store
+    set((s) => ({
+      mesas: s.mesas.map((m) =>
+        m.id === mesaId ? { ...m, informe: borradorGenerado } : m
+      ),
+    }));
+
+    return borradorGenerado;
+  },
+
   /* ---------- Submesas ---------- */
 
   crearSubMesa: (mesaId, input) => {
@@ -402,6 +733,22 @@ export const useMesasStore = create<MesasState>((set, get) => ({
     })),
 
   /* ---------- Papelografo ---------- */
+
+  setArbolProblemasSubMesa: (mesaId, submesaId, arbol) =>
+    set((s) =>
+      mapSubMesa(s, mesaId, submesaId, (sub) => ({
+        ...sub,
+        arbolProblemas: arbol,
+      }))
+    ),
+
+  setArbolSolucionesSubMesa: (mesaId, submesaId, arbol) =>
+    set((s) =>
+      mapSubMesa(s, mesaId, submesaId, (sub) => ({
+        ...sub,
+        arbolSoluciones: arbol,
+      }))
+    ),
 
   setTextoCentral: (mesaId, submesaId, arbol, texto) =>
     set((s) =>

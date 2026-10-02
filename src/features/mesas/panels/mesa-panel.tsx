@@ -18,10 +18,13 @@ import {
   CalendarDays,
   ClipboardList,
   FileText,
+  FolderSync,
   Landmark,
+  Layers,
   MapPin,
   Pencil,
   Plus,
+  Sparkles,
   Users,
   X,
 } from "lucide-react";
@@ -41,10 +44,13 @@ import {
   estadoDiligenciamiento,
   resumenProblemas,
   resumenSoluciones,
+  type ArbolProblemas,
+  type ArbolSoluciones,
 } from "@/features/mesas/models/mesas";
 import { CONTENIDO_MESAS } from "@/features/mesas/data/agenda-contenido.data";
 import { SectionLabel } from "@/shared/components/participation-ui";
 import { AdjuntosZona } from "@/features/mesas/components/adjuntos-zona";
+import { MatrizArbolRelatoria } from "@/features/mesas/components/matriz-arbol-relatoria";
 
 /**
  * Panel de mesa de trabajo — el "acta viva" del área de trabajo.
@@ -95,6 +101,11 @@ export function MesaPanel({
   /* total asistentes manual borrador local (para conteoIndependiente = false) */
   const [totalAsistentesBorrador, setTotalAsistentesBorrador] = useState<number | null | undefined>(undefined);
 
+  /* modo de relatoría (narrativo | matriz | hibrido) */
+  const [modoRelatoriaLocal, setModoRelatoriaLocal] = useState<"narrativo" | "matriz" | "hibrido">(
+    mesa?.modoRelatoria ?? "hibrido"
+  );
+
   const [prevMesaId, setPrevMesaId] = useState(props.mesaId);
   if (prevMesaId !== props.mesaId) {
     setPrevMesaId(props.mesaId);
@@ -102,6 +113,7 @@ export function MesaPanel({
     setInformeBorrador(null);
     setAsistentesPlenariaBorrador(undefined);
     setTotalAsistentesBorrador(undefined);
+    setModoRelatoriaLocal(mesa?.modoRelatoria ?? "hibrido");
   }
 
   /* formulario inline de submesa */
@@ -136,6 +148,42 @@ export function MesaPanel({
     useMesasStore.getState().setInformeMesa(mesa.id, informeValor);
     mutarInforme.mutate({ mesaId: mesa.id, informe: informeValor });
     toast.success("Informe y relatoría de la mesa guardado");
+  };
+
+  const handleConsolidarSubmesas = () => {
+    const res = useMesasStore.getState().consolidarArbolesSubmesas(mesa.id);
+    if (
+      res.causasCopiadas === 0 &&
+      res.efectosCopiados === 0 &&
+      res.mediosCopiados === 0 &&
+      res.finesCopiados === 0
+    ) {
+      toast.info("No se encontraron nuevos nodos en las submesas para consolidar.");
+    } else {
+      toast.success(
+        `Árboles consolidados: +${res.causasCopiadas} causas, +${res.efectosCopiados} efectos, +${res.mediosCopiados} medios y +${res.finesCopiados} fines.`
+      );
+    }
+  };
+
+  const handleGenerarBorradorTecnico = () => {
+    const borrador = useMesasStore.getState().generarBorradorRelatoriaDesdeMatriz(mesa.id);
+    setInformeBorrador(borrador);
+    mutarInforme.mutate({ mesaId: mesa.id, informe: borrador });
+    toast.success("Borrador técnico de relatoría generado conforme a lineamientos DNP.");
+  };
+
+  const handleActualizarProblemasMesa = (arbol: ArbolProblemas) => {
+    useMesasStore.getState().setArbolProblemasMesa(mesa.id, arbol);
+  };
+
+  const handleActualizarSolucionesMesa = (arbol: ArbolSoluciones) => {
+    useMesasStore.getState().setArbolSolucionesMesa(mesa.id, arbol);
+  };
+
+  const handleCambiarModoRelatoria = (nuevoModo: "narrativo" | "matriz" | "hibrido") => {
+    setModoRelatoriaLocal(nuevoModo);
+    useMesasStore.getState().setModoRelatoriaMesa(mesa.id, nuevoModo);
   };
 
   const guardarSubMesa = async () => {
@@ -709,50 +757,164 @@ export function MesaPanel({
         </section>
 
         {/* ---------- Informe y relatoría final de la mesa ---------- */}
-        <section className="space-y-3">
+        <section className="space-y-4">
           <SectionLabel
             right={
-              <div className="flex items-center gap-3">
-                <span className="text-[10px] uppercase tracking-[0.12em] text-[var(--text-tertiary)]">
-                  {soloLectura ? "Solo lectura" : "Se guarda al salir del campo"}
-                </span>
-                {!soloLectura && (
+              <div className="flex flex-wrap items-center gap-2">
+                {/* Selector segmentado de modo de relatoría */}
+                <div className="flex items-center rounded-lg border border-[var(--border)] bg-[var(--surface-2)] p-0.5 text-xs">
                   <Button
-                    variant="outline"
-                    size="sm"
+                    variant="unstyled"
+                    size="unstyled"
                     type="button"
-                    onClick={confirmarInforme}
-                    className="h-7 text-xs"
+                    onClick={() => handleCambiarModoRelatoria("narrativo")}
+                    className={`rounded px-2.5 py-1 text-xs font-medium transition-colors ${
+                      modoRelatoriaLocal === "narrativo"
+                        ? "bg-[var(--surface-0)] text-[var(--text-primary)] shadow-xs"
+                        : "text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"
+                    }`}
                   >
-                    <FileText className="size-3.5" strokeWidth={1.5} />
-                    Guardar informe
+                    📝 Relatoría narrativa
                   </Button>
+                  <Button
+                    variant="unstyled"
+                    size="unstyled"
+                    type="button"
+                    onClick={() => handleCambiarModoRelatoria("matriz")}
+                    className={`rounded px-2.5 py-1 text-xs font-medium transition-colors ${
+                      modoRelatoriaLocal === "matriz"
+                        ? "bg-[var(--surface-0)] text-[var(--text-primary)] shadow-xs"
+                        : "text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"
+                    }`}
+                  >
+                    🌳 Matriz de Diagnóstico y Soluciones
+                  </Button>
+                  <Button
+                    variant="unstyled"
+                    size="unstyled"
+                    type="button"
+                    onClick={() => handleCambiarModoRelatoria("hibrido")}
+                    className={`rounded px-2.5 py-1 text-xs font-medium transition-colors ${
+                      modoRelatoriaLocal === "hibrido"
+                        ? "bg-[var(--surface-0)] text-[var(--text-primary)] shadow-xs"
+                        : "text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"
+                    }`}
+                  >
+                    Híbrido
+                  </Button>
+                </div>
+
+                {!soloLectura && (
+                  <>
+                    {mesa.submesas && mesa.submesas.length > 0 && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        type="button"
+                        onClick={handleConsolidarSubmesas}
+                        className="h-7 gap-1 text-xs text-[var(--ember)]"
+                        title="Importar y unificar causas, efectos, medios y fines de todas las submesas"
+                      >
+                        <FolderSync className="size-3.5" strokeWidth={1.5} />
+                        Importar y consolidar desde submesas
+                      </Button>
+                    )}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      type="button"
+                      onClick={handleGenerarBorradorTecnico}
+                      className="h-7 gap-1 text-xs text-[var(--success)]"
+                      title="Generar borrador técnico de relatoría conforme a lineamientos DNP / CONPES desde la matriz"
+                    >
+                      <Sparkles className="size-3.5" strokeWidth={1.5} />
+                      Generar borrador DNP
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      type="button"
+                      onClick={confirmarInforme}
+                      className="h-7 text-xs"
+                    >
+                      <FileText className="size-3.5" strokeWidth={1.5} />
+                      Guardar informe
+                    </Button>
+                  </>
                 )}
               </div>
             }
           >
             Informe y relatoría de la mesa
           </SectionLabel>
-          <Textarea
-            readOnly={soloLectura}
-            value={informeValor}
-            onChange={(e) => setInformeBorrador(e.target.value)}
-            onBlur={(e) => {
-              if (!soloLectura && e.target.value !== (mesa.informe ?? ""))
-                confirmarInforme();
-            }}
-            rows={5}
-            aria-label="Informe y relatoría de la mesa"
-            placeholder="Registra aquí el informe o relatoría final de la mesa: síntesis de discusiones, hallazgos comunitarios, compromisos adquiridos y recomendaciones para el CONPES distrital…"
-            className="min-h-[120px] w-full resize-y rounded-lg border border-[var(--border)] bg-[var(--surface-1)] px-4 py-3 text-sm leading-relaxed text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] transition-colors focus:border-[var(--ember)]"
-          />
-          <p className="flex items-start gap-2 text-[11px] leading-relaxed text-[var(--text-tertiary)]">
-            <FileText
-              className="mt-0.5 size-3.5 shrink-0"
-              strokeWidth={1.5}
+
+          {/* Si el modo es matriz o híbrido, renderizar la matriz de árbol */}
+          {(modoRelatoriaLocal === "matriz" || modoRelatoriaLocal === "hibrido") && (
+            <MatrizArbolRelatoria
+              mesaId={mesa.id}
+              mesaNombre={mesa.nombre}
+              localidad={mesa.lugar || "Cartagena de Indias"}
+              onGenerarSintesisNarrativa={handleGenerarBorradorTecnico}
+              arbolProblemas={
+                mesa.arbolProblemas ?? {
+                  problemaCentral: mesa.nombre,
+                  causas: [],
+                  efectos: [],
+                }
+              }
+              arbolSoluciones={
+                mesa.arbolSoluciones ?? {
+                  objetivoCentral: "",
+                  medios: [],
+                  fines: [],
+                }
+              }
+              onActualizarProblemas={handleActualizarProblemasMesa}
+              onActualizarSoluciones={handleActualizarSolucionesMesa}
+              readOnly={soloLectura}
+              submesasDisponibles={(mesa.submesas ?? []).map((sm) => ({
+                id: sm.id,
+                nombre: sm.nombre,
+              }))}
+              onConsolidarSubmesas={
+                mesa.submesas && mesa.submesas.length > 0 ? handleConsolidarSubmesas : undefined
+              }
             />
-            El informe consolida el acta comunitaria y la memoria técnica de la mesa para la formulación de la política pública.
-          </p>
+          )}
+
+          {/* Si el modo es narrativo o híbrido, renderizar el editor narrativo */}
+          {(modoRelatoriaLocal === "narrativo" || modoRelatoriaLocal === "hibrido") && (
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-semibold text-[var(--text-secondary)]">
+                  Memoria técnica y relatoría narrativa (Redacción formal DNP / CONPES)
+                </span>
+                <span className="text-[10px] uppercase tracking-[0.12em] text-[var(--text-tertiary)]">
+                  {soloLectura ? "Solo lectura" : "Se guarda al salir del campo"}
+                </span>
+              </div>
+              <Textarea
+                readOnly={soloLectura}
+                value={informeValor}
+                onChange={(e) => setInformeBorrador(e.target.value)}
+                onBlur={(e) => {
+                  if (!soloLectura && e.target.value !== (mesa.informe ?? ""))
+                    confirmarInforme();
+                }}
+                rows={6}
+                aria-label="Informe y relatoría de la mesa"
+                placeholder="Registra aquí el informe o relatoría final de la mesa: síntesis de discusiones, hallazgos comunitarios, compromisos adquiridos y recomendaciones para el CONPES distrital…"
+                className="min-h-[140px] w-full resize-y rounded-lg border border-[var(--border)] bg-[var(--surface-1)] px-4 py-3 font-mono text-xs leading-relaxed text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] transition-colors focus:border-[var(--ember)]"
+              />
+              <p className="flex items-start gap-2 text-[11px] leading-relaxed text-[var(--text-tertiary)]">
+                <FileText
+                  className="mt-0.5 size-3.5 shrink-0"
+                  strokeWidth={1.5}
+                />
+                El informe consolida el acta comunitaria y la memoria técnica de la mesa para la formulación de la política pública.
+              </p>
+            </div>
+          )}
         </section>
 
         {/* ---------- Submesas ---------- */}

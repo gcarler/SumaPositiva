@@ -1,48 +1,71 @@
-# Entrega agy2 — Módulos Noticias y Testimonios Pro (Auditoría Administrativa y Multimedia)
-Fecha: 2026-10-02T04:27:53Z
-Commit: 3e5fc2b90019c8beb11c743b67b4fb1c8a811536
+# Entrega agy2 — Matriz de Árbol de Problemas y Soluciones + Analítica de Datos para Mesas de Trabajo
+Fecha: 2026-10-02T13:25:00Z
 Estado: CONFORME
 
-## Módulos y Mejoras Implementadas
+## Resumen Ejecutivo
+Se implementó exitosamente la matriz interactiva del Árbol de Problemas y Soluciones (Marco Lógico DNP / MGA / CONPES) con soporte de ciclo de vida completo tanto para **mesas principales** como para **submesas**, incorporando un motor de estructuración de información al 100% para **analítica de datos** (exportación CSV normalizado, esquema JSON estructurado y generación asistida de síntesis narrativa).
 
-### 1. Modelo Extendido (`src/features/noticias/models/noticia.ts`)
-- Estados de publicación: `"publicada" | "borrador" | "archivada"` (`EstadoNoticia`).
-- Orden de prioridad numérico: `ordenPrioridad: number` (1 = máxima prioridad).
-- Multimedia completo: `galeria?: string[]` y `videoUrl?: string` (YouTube, Vimeo o MP4).
-- Tipo `NoticiaInput` para creación y edición.
+---
 
-### 2. Store con Ciclo de Vida Editorial (`src/features/noticias/state/noticias-store.ts`)
-- CRUD reactivo: `crearNoticia`, `actualizarNoticia`, `eliminarNoticia`.
-- Control de visibilidad: `cambiarEstado` (`publicada`, `borrador`, `archivada`).
-- Priorización: `reordenarPrioridad`.
-- Selector determinista: `noticiasPublicadasOrdenadas(s)` (filtra `estado === "publicada"` y ordena por `ordenPrioridad ASC`, luego fecha DESC).
+## 1. Modelo de Datos para Analítica (`src/features/mesas/models/mesas.ts`)
+- **`NodoArbolEstructurado`**:
+  - `id: string`
+  - `texto: string`
+  - `tipo: "problema_central" | "causa_directa" | "causa_indirecta" | "efecto_directo" | "efecto_indirecto" | "medio" | "fin" | "objetivo_central"`
+  - `dimensionOnu?: string` (7 dimensiones ONU para cruce transversal)
+  - `criticidad?: "alta" | "media" | "baja"`
+  - `actorResponsable?: string` (dependencia distrital o comunitaria)
+  - `parentId?: string` (trazabilidad jerárquica)
+  - `mesaId?: string`, `subMesaId?: string`
+- **`MatrizMesaData`**: Contenedor normalizado con `problemaCentral`, `dimensionPrincipal`, `causas`, `efectos`, `objetivoCentral`, `medios`, `fines`, y `resumenTabular`.
+- **Compatibilidad**: Integración en `MesaDeTrabajo` y `SubMesa` mediante `arbolProblemas`, `arbolSoluciones` y `matrizArbol`.
+- **Utilidades de analítica**:
+  - `arbolesAMatrizEstructurada`: Convierte estructuras jerárquicas en modelos tabulares normalizados.
+  - `generarCSVMatrizEstructurada`: Exportador RFC 4180 con columnas `mesa_id`, `mesa_nombre`, `localidad`, `tipo_nodo`, `descripcion`, `dimension_onu`, `criticidad`, `responsable`.
 
-### 3. Panel Editor Zero-Modals L4 (`src/features/noticias/panels/noticia-editor-panel.tsx`)
-- Modos creación (`noticiaId === undefined`) y edición.
-- Campos: Título, resumen, contenido en Markdown, categoría, autor, estado, orden de prioridad y switch de destacada en Home.
-- Portada: URL o carga directa de imagen con previsualización.
-- Galería: subida múltiple de fotos de soporte con miniaturas y eliminación instantánea.
-- Video: URL con previsualización reactiva embebida.
-- Etiquetas temáticas dinámicas.
-- Registrado como `"noticia-editor"` en `panel-store.ts` y `panel-registry.tsx`.
+---
 
-### 4. Soporte Multimedia y Acceso Editorial
-- `NoticiaVideoPlayer` (`src/features/noticias/components/noticia-video-player.tsx`): reproductor responsivo para YouTube nocookie, Vimeo y direct MP4.
-- `NoticiaPanel` (`src/features/noticias/panels/noticia-panel.tsx`): visualización de video, galería fotográfica con lightbox/zoom y botón de edición directa para roles autorizados.
-- `NoticiasView` (`src/features/noticias/views/noticias-view.tsx`): badges multimedia (`Play` para video, `Layers` para galería), botón `+ Crear Noticia` para editores y filtrado según permisos.
+## 2. Componente de Matriz Interactiva (`src/features/mesas/components/matriz-arbol-relatoria.tsx`)
+- **Pestaña Diagnóstico (Árbol de Problemas):**
+  - Problema central territorial con selector de Dimensión ONU principal.
+  - Causas raíz y directas con selector de criticidad (Alta / Media / Baja), selector de dimensión ONU y causas secundarias encadenadas.
+  - Efectos e impactos territoriales observados con dimensión ONU.
+- **Pestaña Propuestas (Árbol de Soluciones):**
+  - Objetivo central de transformación positiva con botón "⚡ Proyectar desde diagnóstico".
+  - Medios y líneas de acción con campo de actor institucional/comunitario responsable y dimensión ONU.
+  - Fines y propósitos superiores de sostenibilidad territorial.
+- **Pestaña Matriz Tabular (Marco Lógico MML):**
+  - Cuadrícula de 6 columnas correlacionando: `#` ➔ `Causa Raíz` ➔ `Efecto Territorial` ➔ `Medio / Acción` ➔ `Fin Esperado` ➔ `Dimensión ONU`.
+  - Resumen métrico superior: total causas, efectos, medios, fines y porcentaje de cobertura causal.
+- **Barra de Analítica y Datos:**
+  - 📊 **Botón "Exportar datos (CSV)"**: Descarga directa de la matriz en CSV para PowerBI, Excel, Python o R.
+  - 📋 **Botón "Copiar JSON estructurado"**: Copia el payload estructurado al portapapeles para pipelines de IA (LangGraph/PydanticAI).
+  - ⚡ **Botón "Generar síntesis narrativa"**: Dispara la síntesis técnica en formato DNP.
 
-### 5. Gestión Administrativa en Plataforma (`src/features/plataforma/views/contenido-view.tsx`)
-- Pestaña "Noticias y Comunicados" en `/plataforma/contenido`:
-  - Métricas ejecutivas (total, publicadas, borradores, con multimedia).
-  - Tabla con miniatura, título, categoría, estado con alternancia rápida, prioridad, fecha y acciones (ver, editar, eliminar).
-  - Botón `+ Nueva Noticia` que abre el panel editor.
+---
 
-### 6. Home Inteligente (`src/features/politicas/views/inicio-view.tsx`)
-- Filtrado estricto por `estado === "publicada"` mediante `noticiasPublicadasOrdenadas`.
-- Ordenación por `ordenPrioridad ASC` asegurando las noticias más importantes de primero.
-- Badges visuales de prioridad y multimedia en cada card del Home.
+## 3. Integración en `MesaPanel` (`src/features/mesas/panels/mesa-panel.tsx`)
+- Sección "Informe y relatoría de la mesa" enriquecida con selector segmentado de modo:
+  - 📝 **Relatoría narrativa**: Textarea con redacción técnica.
+  - 🌳 **Matriz de Diagnóstico y Soluciones**: Renderiza `<MatrizArbolRelatoria />`.
+  - **Híbrido**: Vista simultánea con matriz y memoria técnica.
+- **Botón 📥 "Importar y consolidar desde submesas"**: Unifica automáticamente causas, efectos, medios y fines de todas las submesas en la matriz de la mesa principal.
+- **Botón ⚡ "Generar borrador DNP"**: Convierte los datos de la matriz en una relatoría técnica estructurada con formato DNP / CONPES.
 
-## Verificación de Calidad (QA)
-- `bun run check`: 0 errores TypeScript, 0 advertencias críticas, 0 violaciones a UI policy.
-- `bun run build`: Build de producción exitoso en Turbopack (14 rutas estáticas/dinámicas).
-- `polis-frontend.service`: Servicio reiniciado y respondiendo HTTP 200 en http://127.0.0.1:3000.
+---
+
+## 4. Integración en `PapelografoPanel` (`src/features/mesas/panels/papelografo-panel.tsx`)
+- Selector de formato en la barra superior de cada submesa:
+  - 🖼️ **Lienzo interactivo**: Canvas con tarjetas estilo papelógrafo digital.
+  - 📊 **Ver en Matriz Tabular / Exportar datos**: Despliega la matriz interactiva para la submesa con herramientas de exportación CSV/JSON.
+
+---
+
+## 5. Control de Calidad y Pruebas
+1. **Verificación TypeScript y UI Policy**:
+   - `bun run check`: 0 errores TypeScript, 0 violaciones a la estricta política Zero-Modals y de tokens CSS (`scripts/ui-policy.mjs`).
+2. **Build de Producción**:
+   - `bun run build`: Compilación exitosa en Turbopack (14 rutas estáticas y dinámicas compiladas).
+3. **Servicio y Disponibilidad**:
+   - `sudo systemctl restart polis-frontend.service`
+   - `curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:3000`: Retorna código `200` OK.

@@ -8,6 +8,8 @@ import { toast } from "sonner";
 import {
   CornerDownRight,
   FileText,
+  LayoutGrid,
+  Table as TableIcon,
   Trash2,
   Wand2,
 } from "lucide-react";
@@ -21,11 +23,14 @@ import {
   resumenProblemas,
   resumenSoluciones,
   solucionesExistentes,
+  type ArbolProblemas,
+  type ArbolSoluciones,
   type NodoArbol,
   type RamaArbol,
 } from "@/features/mesas/models/mesas";
 import type { PanelPropsMap } from "@/core/panels/panel-store";
 import { AdjuntosZona } from "@/features/mesas/components/adjuntos-zona";
+import { MatrizArbolRelatoria } from "@/features/mesas/components/matriz-arbol-relatoria";
 import { useSesionStore } from "@/features/sesion/state/session-store";
 
 /**
@@ -291,8 +296,11 @@ export function PapelografoPanel({
   const agregarNodo = useMesasStore((s) => s.agregarNodo);
   const eliminarNodo = useMesasStore((s) => s.eliminarNodo);
   const derivarSoluciones = useMesasStore((s) => s.derivarSoluciones);
+  const setArbolProblemasSubMesa = useMesasStore((s) => s.setArbolProblemasSubMesa);
+  const setArbolSolucionesSubMesa = useMesasStore((s) => s.setArbolSolucionesSubMesa);
 
   const [tab, setTab] = useState<TabArbol>(props.arbol);
+  const [vistaFormato, setVistaFormato] = useState<"lienzo" | "matriz">("lienzo");
   const [editandoId, setEditandoId] = useState<string | null>(null);
   const [editandoCentral, setEditandoCentral] = useState(false);
   const [borradorCentral, setBorradorCentral] = useState("");
@@ -381,6 +389,24 @@ export function PapelografoPanel({
     }
   };
 
+  const handleActualizarProblemasSubMesa = (arbol: ArbolProblemas) => {
+    setArbolProblemasSubMesa(mesa.id, submesa.id, arbol);
+    mutarSubMesa.mutate({
+      mesaId: mesa.id,
+      subMesaId: submesa.id,
+      subMesa: { ...submesa, arbolProblemas: arbol },
+    });
+  };
+
+  const handleActualizarSolucionesSubMesa = (arbol: ArbolSoluciones) => {
+    setArbolSolucionesSubMesa(mesa.id, submesa.id, arbol);
+    mutarSubMesa.mutate({
+      mesaId: mesa.id,
+      subMesaId: submesa.id,
+      subMesa: { ...submesa, arbolSoluciones: arbol },
+    });
+  };
+
   const crumbs = [
     { label: "Mesas de trabajo" },
     { label: mesa.nombre, targetKey: props.fromKey },
@@ -426,160 +452,221 @@ export function PapelografoPanel({
       }
     >
       <div className="mx-auto w-full max-w-[1440px] space-y-5 px-4 py-6 sm:px-6 lg:px-10">
-        {/* ---------- Pestañas ---------- */}
+        {/* ---------- Barra superior de navegación y formato de vista ---------- */}
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <div
-            className="inline-flex rounded-full border border-[var(--border)] bg-[var(--surface-2)] p-1"
-            role="tablist"
-            aria-label="Elegir árbol a diligenciar"
-          >
-            {(
-              [
-                { id: "problemas", label: "Árbol de problemas" },
-                { id: "soluciones", label: "Árbol de soluciones" },
-              ] as const
-            ).map((t) => (
-              <Button variant="unstyled" size="unstyled"
-                key={t.id}
-                type="button"
-                role="tab"
-                aria-selected={tab === t.id}
-                onClick={() => cambiarTab(t.id)}
-                className={`rounded-full px-3.5 py-1.5 text-[11px] font-medium transition-colors sm:text-xs ${
-                  tab === t.id
-                    ? "bg-[var(--surface-0)] text-[var(--text-primary)] shadow-sm"
-                    : "text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"
-                }`}
+          {vistaFormato === "lienzo" ? (
+            <div className="flex flex-wrap items-center gap-3">
+              <div
+                className="inline-flex rounded-full border border-[var(--border)] bg-[var(--surface-2)] p-1"
+                role="tablist"
+                aria-label="Elegir árbol a diligenciar"
               >
-                {t.label}
-              </Button>
-            ))}
+                {(
+                  [
+                    { id: "problemas", label: "Árbol de problemas" },
+                    { id: "soluciones", label: "Árbol de soluciones" },
+                  ] as const
+                ).map((t) => (
+                  <Button variant="unstyled" size="unstyled"
+                    key={t.id}
+                    type="button"
+                    role="tab"
+                    aria-selected={tab === t.id}
+                    onClick={() => cambiarTab(t.id)}
+                    className={`rounded-full px-3.5 py-1.5 text-[11px] font-medium transition-colors sm:text-xs ${
+                      tab === t.id
+                        ? "bg-[var(--surface-0)] text-[var(--text-primary)] shadow-sm"
+                        : "text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"
+                    }`}
+                  >
+                    {t.label}
+                  </Button>
+                ))}
+              </div>
+              <p className="hidden text-[11px] text-[var(--text-tertiary)] sm:block">
+                {esProblemas
+                  ? "Causas a la izquierda, efectos a la derecha; cada tarjeta admite derivadas."
+                  : "Los medios atacan las causas; los fines materializan el objetivo."}
+              </p>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-semibold text-[var(--text-primary)]">
+                Vista Matriz DNP / Marco Lógico
+              </span>
+              <span className="text-[11px] text-[var(--text-tertiary)]">
+                Estructuración causal tabular y marco lógico para la relatoría técnica
+              </span>
+            </div>
+          )}
+
+          {/* Selector de formato: Lienzo vs Matriz */}
+          <div className="flex items-center rounded-lg border border-[var(--border)] bg-[var(--surface-2)] p-0.5 text-xs">
+            <Button
+              variant="unstyled"
+              size="unstyled"
+              type="button"
+              onClick={() => setVistaFormato("lienzo")}
+              className={`flex items-center gap-1.5 rounded px-2.5 py-1 text-xs font-medium transition-colors ${
+                vistaFormato === "lienzo"
+                  ? "bg-[var(--surface-0)] text-[var(--text-primary)] shadow-xs"
+                  : "text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"
+              }`}
+            >
+              <LayoutGrid className="size-3.5" strokeWidth={1.5} />
+              Lienzo interactivo
+            </Button>
+            <Button
+              variant="unstyled"
+              size="unstyled"
+              type="button"
+              onClick={() => setVistaFormato("matriz")}
+              className={`flex items-center gap-1.5 rounded px-2.5 py-1 text-xs font-medium transition-colors ${
+                vistaFormato === "matriz"
+                  ? "bg-[var(--surface-0)] text-[var(--text-primary)] shadow-xs"
+                  : "text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"
+              }`}
+            >
+              <TableIcon className="size-3.5" strokeWidth={1.5} />
+              Ver en Matriz Tabular / Exportar datos
+            </Button>
           </div>
-          <p className="hidden text-[11px] text-[var(--text-tertiary)] sm:block">
-            {esProblemas
-              ? "Causes a la izquierda, efectos a la derecha; cada tarjeta admite derivadas."
-              : "Los medios atacan las causas; los fines materializan el objetivo."}
-          </p>
         </div>
 
-        {/* ---------- El papel ---------- */}
-        <div className="bg-papel rounded-2xl border border-[var(--border)] bg-[var(--surface-0)] px-4 py-8 sm:px-6 lg:px-8">
-          <div className="flex flex-col gap-10 lg:grid lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:items-center lg:gap-0">
-            {/* Centro (primero en móvil, centro en desktop) */}
-            <div className="order-1 flex justify-center lg:order-2">
-              <div className="relative w-full max-w-[300px] sm:max-w-[340px]">
-                {/* conectores hacia las ramas */}
-                <span
-                  className="absolute right-full top-1/2 hidden h-px w-8 bg-[var(--border-strong)] lg:block"
-                  aria-hidden
-                />
-                <span
-                  className="absolute left-full top-1/2 hidden h-px w-8 bg-[var(--border-strong)] lg:block"
-                  aria-hidden
-                />
-                <div
-                  className="rounded-xl border-2 bg-[var(--surface-0)] p-5 shadow-sm"
-                  style={{
-                    borderColor: esProblemas ? "var(--danger)" : "var(--success)",
-                  }}
-                >
-                  <p
-                    className="label-micro text-center"
-                    style={{ color: esProblemas ? "var(--danger)" : "var(--success)" }}
-                  >
-                    {esProblemas ? "Problema central" : "Objetivo central"}
-                  </p>
-
-                  {editandoCentral ? (
-                    <Textarea
-                      autoFocus
-                      value={borradorCentral}
-                      maxLength={MAX_TEXTO_CENTRAL}
-                      rows={4}
-                      aria-label={`Texto del ${esProblemas ? "problema" : "objetivo"} central`}
-                      onChange={(e) => setBorradorCentral(e.target.value)}
-                      onBlur={confirmarCentral}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" && !e.shiftKey) {
-                          e.preventDefault();
-                          confirmarCentral();
-                        }
-                        if (e.key === "Escape") {
-                          e.preventDefault();
-                          setEditandoCentral(false);
-                        }
-                      }}
-                      className="mt-2 w-full resize-none rounded-md border border-[var(--border-strong)] bg-[var(--surface-1)] px-3 py-2 text-center text-sm leading-snug text-[var(--text-primary)] focus:border-[var(--ember)] "
+        {/* ---------- Contenido principal: Matriz MML o Lienzo de papel ---------- */}
+        {vistaFormato === "matriz" ? (
+          <MatrizArbolRelatoria
+            mesaId={`${mesa.id}-${submesa.id}`}
+            mesaNombre={`${mesa.nombre} · Submesa: ${submesa.nombre}`}
+            localidad={mesa.lugar || "Cartagena de Indias"}
+            arbolProblemas={submesa.arbolProblemas}
+            arbolSoluciones={submesa.arbolSoluciones}
+            onActualizarProblemas={handleActualizarProblemasSubMesa}
+            onActualizarSoluciones={handleActualizarSolucionesSubMesa}
+            readOnly={soloLectura}
+          />
+        ) : (
+          <>
+            {/* ---------- El papel ---------- */}
+            <div className="bg-papel rounded-2xl border border-[var(--border)] bg-[var(--surface-0)] px-4 py-8 sm:px-6 lg:px-8">
+              <div className="flex flex-col gap-10 lg:grid lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:items-center lg:gap-0">
+                {/* Centro (primero en móvil, centro en desktop) */}
+                <div className="order-1 flex justify-center lg:order-2">
+                  <div className="relative w-full max-w-[300px] sm:max-w-[340px]">
+                    {/* conectores hacia las ramas */}
+                    <span
+                      className="absolute right-full top-1/2 hidden h-px w-8 bg-[var(--border-strong)] lg:block"
+                      aria-hidden
                     />
-                  ) : (
-                    <Button variant="unstyled" size="unstyled"
-                      type="button"
-                      onClick={() => {
-                        setBorradorCentral(centralActual);
-                        setEditandoCentral(true);
+                    <span
+                      className="absolute left-full top-1/2 hidden h-px w-8 bg-[var(--border-strong)] lg:block"
+                      aria-hidden
+                    />
+                    <div
+                      className="rounded-xl border-2 bg-[var(--surface-0)] p-5 shadow-sm"
+                      style={{
+                        borderColor: esProblemas ? "var(--danger)" : "var(--success)",
                       }}
-                      className={`mt-2 block w-full rounded-md px-1 py-0.5 text-center text-sm font-semibold leading-snug transition-colors hover:bg-[var(--surface-2)] ${
-                        centralActual
-                          ? "text-[var(--text-primary)]"
-                          : "italic font-normal text-[var(--text-tertiary)]"
-                      }`}
                     >
-                      {centralActual ||
-                        `Clic para escribir el ${esProblemas ? "problema" : "objetivo"}…`}
-                    </Button>
-                  )}
+                      <p
+                        className="label-micro text-center"
+                        style={{ color: esProblemas ? "var(--danger)" : "var(--success)" }}
+                      >
+                        {esProblemas ? "Problema central" : "Objetivo central"}
+                      </p>
 
-                  <p className="mt-3 text-center text-[10px] leading-relaxed text-[var(--text-tertiary)]">
-                    {esProblemas
-                      ? "Una sola frase, acordada en plenaria."
-                      : "La meta a la que contribuyen los medios."}
-                  </p>
+                      {editandoCentral ? (
+                        <Textarea
+                          autoFocus
+                          value={borradorCentral}
+                          maxLength={MAX_TEXTO_CENTRAL}
+                          rows={4}
+                          aria-label={`Texto del ${esProblemas ? "problema" : "objetivo"} central`}
+                          onChange={(e) => setBorradorCentral(e.target.value)}
+                          onBlur={confirmarCentral}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" && !e.shiftKey) {
+                              e.preventDefault();
+                              confirmarCentral();
+                            }
+                            if (e.key === "Escape") {
+                              e.preventDefault();
+                              setEditandoCentral(false);
+                            }
+                          }}
+                          className="mt-2 w-full resize-none rounded-md border border-[var(--border-strong)] bg-[var(--surface-1)] px-3 py-2 text-center text-sm leading-snug text-[var(--text-primary)] focus:border-[var(--ember)] "
+                        />
+                      ) : (
+                        <Button variant="unstyled" size="unstyled"
+                          type="button"
+                          onClick={() => {
+                            setBorradorCentral(centralActual);
+                            setEditandoCentral(true);
+                          }}
+                          className={`mt-2 block w-full rounded-md px-1 py-0.5 text-center text-sm font-semibold leading-snug transition-colors hover:bg-[var(--surface-2)] ${
+                            centralActual
+                              ? "text-[var(--text-primary)]"
+                              : "italic font-normal text-[var(--text-tertiary)]"
+                          }`}
+                        >
+                          {centralActual ||
+                            `Clic para escribir el ${esProblemas ? "problema" : "objetivo"}…`}
+                        </Button>
+                      )}
+
+                      <p className="mt-3 text-center text-[10px] leading-relaxed text-[var(--text-tertiary)]">
+                        {esProblemas
+                          ? "Una sola frase, acordada en plenaria."
+                          : "La meta a la que contribuyen los medios."}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Rama izquierda: causas / medios */}
+                <div className="order-2 min-w-0 lg:order-1">
+                  <ColumnaArbol
+                    rama={ramaIzq}
+                    nodos={nodosIzq}
+                    editandoId={editandoId}
+                    onEditar={setEditandoId}
+                    onGuardar={guardarNodo(ramaIzq)}
+                    onEliminar={eliminarNodoEn(ramaIzq)}
+                    onAgregar={(parentId) => agregar(ramaIzq, parentId)}
+                  />
+                </div>
+
+                {/* Rama derecha: efectos / fines */}
+                <div className="order-3 min-w-0">
+                  <ColumnaArbol
+                    rama={ramaDer}
+                    nodos={nodosDer}
+                    editandoId={editandoId}
+                    onEditar={setEditandoId}
+                    onGuardar={guardarNodo(ramaDer)}
+                    onEliminar={eliminarNodoEn(ramaDer)}
+                    onAgregar={(parentId) => agregar(ramaDer, parentId)}
+                  />
                 </div>
               </div>
             </div>
 
-            {/* Rama izquierda: causas / medios */}
-            <div className="order-2 min-w-0 lg:order-1">
-              <ColumnaArbol
-                rama={ramaIzq}
-                nodos={nodosIzq}
-                editandoId={editandoId}
-                onEditar={setEditandoId}
-                onGuardar={guardarNodo(ramaIzq)}
-                onEliminar={eliminarNodoEn(ramaIzq)}
-                onAgregar={(parentId) => agregar(ramaIzq, parentId)}
-              />
+            {/* ---------- Nota metodológica ---------- */}
+            <div className="flex items-start gap-3 rounded-lg border border-[var(--border)] bg-[var(--surface-2)] p-4">
+              <FileText className="mt-0.5 size-4 shrink-0 text-[var(--text-tertiary)]" strokeWidth={1.5} />
+              <p className="text-[11px] leading-relaxed text-[var(--text-secondary)]">
+                Cómo se diligencia: escriban primero el {esProblemas ? "problema" : "objetivo"}{" "}
+                central; luego agreguen tarjetas {RAMA_META[ramaIzq].label.toLowerCase()} («{RAMA_META[ramaIzq].pregunta}») y{" "}
+                {RAMA_META[ramaDer].label.toLowerCase()} («{RAMA_META[ramaDer].pregunta}»). Las tarjetas primarias cuelgan del centro; para
+                cada una pueden derivar tarjetas secundarias con el icono ↳ preguntando «¿y por
+                qué eso ocurre?». Para borrar una tarjeta usa el icono de papelera —{" "}
+                {esProblemas
+                  ? "cuando el árbol esté listo, derívalo a soluciones desde el pie del panel."
+                  : "este árbol alimenta el acta final de la mesa."}
+              </p>
             </div>
-
-            {/* Rama derecha: efectos / fines */}
-            <div className="order-3 min-w-0">
-              <ColumnaArbol
-                rama={ramaDer}
-                nodos={nodosDer}
-                editandoId={editandoId}
-                onEditar={setEditandoId}
-                onGuardar={guardarNodo(ramaDer)}
-                onEliminar={eliminarNodoEn(ramaDer)}
-                onAgregar={(parentId) => agregar(ramaDer, parentId)}
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* ---------- Nota metodológica ---------- */}
-        <div className="flex items-start gap-3 rounded-lg border border-[var(--border)] bg-[var(--surface-2)] p-4">
-          <FileText className="mt-0.5 size-4 shrink-0 text-[var(--text-tertiary)]" strokeWidth={1.5} />
-          <p className="text-[11px] leading-relaxed text-[var(--text-secondary)]">
-            Cómo se diligencia: escriban primero el {esProblemas ? "problema" : "objetivo"}{" "}
-            central; luego agreguen tarjetas {RAMA_META[ramaIzq].label.toLowerCase()} («{RAMA_META[ramaIzq].pregunta}») y{" "}
-            {RAMA_META[ramaDer].label.toLowerCase()} («{RAMA_META[ramaDer].pregunta}»). Las tarjetas primarias cuelgan del centro; para
-            cada una pueden derivar tarjetas secundarias con el icono ↳ preguntando «¿y por
-            qué eso ocurre?». Para borrar una tarjeta usa el icono de papelera —{" "}
-            {esProblemas
-              ? "cuando el árbol esté listo, derívalo a soluciones desde el pie del panel."
-              : "este árbol alimenta el acta final de la mesa."}
-          </p>
-        </div>
+          </>
+        )}
 
         {/* ---------- Adjuntos de la submesa ---------- */}
         <section className="space-y-3">
