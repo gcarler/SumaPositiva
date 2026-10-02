@@ -1,405 +1,51 @@
-# Entrega Codex — URL pública compartible por formulario
+# Entrega Codex — Reporte geoespacial y formularios persistentes
 
-Fecha: 2026-10-02T03:32:25+00:00
-Commit de implementación: `459ed7720ea3e80618b8a59e0b5bd57bc0eb1689`
-Estado: IMPLEMENTADO; QA solicitado aprobado. HTTPS público pendiente de certificado válido.
-Revisión preventiva de EDD; dictamen independiente del EAF pendiente.
-
-## Funcionalidad entregada
-
-- Ruta `/f/[slug]` con SSG de publicados, nuevos enlaces sin recompilar,
-  revalidación y metadata OpenGraph con imagen institucional disponible.
-- Slug único y estable; cambiar el título conserva la URL canónica HTTPS.
-- Página pública institucional, formulario completo con los 14 tipos, envío sin
-  cuenta y confirmación. El envío real usa una sesión anónima emitida silenciosamente.
-- Sección **Compartir formulario**: WhatsApp, Telegram, correo, copiar y QR;
-  botón **Compartir** en las tarjetas activas de `/plataforma/formularios`.
-- Nuevos formularios y respuestas persistidos mediante FastAPI/PostgreSQL.
-  Borradores protegidos, vista previa autorizada sin envío y cierre aplicado en servidor.
-- Migración `0030_url_formularios`, validación de respuestas efectivas, límite
-  concurrente y rollback tras escrituras reales. Permisos documentados por endpoint.
-- CI provisiona API y base de pruebas para consultar el catálogo durante SSG.
-
-Para compartir: en `/plataforma/formularios`, guardar con estado **Activo** y
-pulsar **Compartir**. Los dos ejemplos históricos siguen identificados como
-**demostración**; las respuestas de esos ejemplos permanecen en memoria.
-
-## QA y despliegue
-
-- `bun run check`: aprobado, sin errores TypeScript o ESLint.
-- `bun run build`: aprobado; `/f/[slug]` aparece como SSG, con los dos ejemplos
-  y los dos formularios publicados existentes en la API.
-- `bun run storybook:build`: aprobado; 41 historias del alcance aprobadas.
-- 71 pruebas de dominio/sesión y 107 pruebas backend del alcance aprobadas.
-- Migraciones en base vacía: upgrade/check/downgrade base/reconstrucción,
-  incluida validación con registros anteriores, aprobados (86 pruebas).
-- Navegadores independientes: crear desde el editor, copiar y compartir, abrir
-  sin login, enviar un punto y texto, recargar, consultar analítica y exportar
-  GeoJSON desde respuestas persistidas. Sin errores JavaScript; reflujo a 320 px.
-- Borrador sin sesión vuelve a `/`; vista previa autorizada no admite envío.
-  Publicar y renombrar actualizan el enlace sin build; cerrado rechaza respuestas.
-- Base del servidor en revisión `0030_url_formularios`, dos registros existentes
-  conservados y restricción única presente. Se aplicaron los prerrequisitos
-  pendientes de la rama de fotografías y la unión `0029`, sin alterar revisiones históricas.
-- Backend y frontend reiniciados. Nginx recargado tras `nginx -t`: excepción exacta
-  para el endpoint protegido de invalidación Next, sin JWT devuelve 401 por el dominio.
-
-| Ruta local, puerto 3000 | HTTP |
-| --- | --- |
-| `/f/diagnostico-barrio-2026` | 200 |
-| `/f/priorizacion-dimensiones-2026` | 200 |
-| `/f/no-existe` | 404 |
-| `/og-image.png` | 200 |
-
-Los dos enlaces de ejemplo también se comprobaron con navegador por el dominio
-HTTP: renderizan sin login y sin desbordamiento a 320 px.
-
-## Pendientes y límites observados
-
-**HTTPS:** el dominio usa un certificado autofirmado; `curl` devuelve error 60.
-HTTP funciona, pero los enlaces HTTPS canónicos no quedan acreditados para difusión
-ni previews de WhatsApp hasta instalar un certificado público válido. Se consultó
-la ubicación o gestión del certificado existente; no se desactivó TLS ni se sustituyó
-la URL canónica por HTTP.
-
-Checks globales fuera de Formularios: 45 errores Ruff; pytest global con 232
-aprobadas y dos fallos en Fotografías/Identidad; UI global con 189 aprobadas y un
-fallo de `TerritoriosConTeclado`. `alembic check` del servidor detecta diferencias
-previas de Mesas/Fotografías; Formularios no presenta diferencias. Se conservan
-los logs y no se rebajaron las guardas. No se declara conformidad global del proyecto.
-
-Archivos: base64 hasta 2 MB en JSONB; MinIO/S3 no está integrado. Los puntos
-persistidos se exportan, pero no se incorporan automáticamente al geovisor.
-
-Documentación: `docs/formularios-publicos.md`.
-Evidencia: `docs/evidencias/formularios-publicos-2026-10-02/README.md`.
-No se crearon cuentas o respuestas de QA en producción; datos de prueba y
-credenciales estuvieron exclusivamente en bases y archivos temporales aislados.
-Se conservaron los cambios y commits concurrentes de Mesas.
-
----
-
-## Entrega anterior conservada
-
-# Entrega Codex — Formularios geográficos y desbloqueo de creación
-
-Fecha: 2026-10-01. Implementación EDD; revisión independiente pendiente del EAF.
-Implementación geográfica y migraciones incluidas en `2e4d370721dd2f20873cb9d829381b12f010c88b`
-por una integración concurrente del workspace. Corrección final HTTP: `529c729f48f169e68b192c0ca5153e5884dd7adb`.
-No se reescribió el commit concurrente.
-
-## Resultado y causas corregidas
-
-El administrador no tenía `formularios:gestionar` en su rol persistido. Las
-historias usaban un perfil con permisos superiores al rol real y ocultaban el
-problema. La revisión `0028_formularios_admin` agrega únicamente
-`formularios:leer` y `formularios:gestionar`; las historias ahora reflejan los ocho
-permisos reales del administrador. Se mantiene la comprobación por permiso.
-
-En la dirección HTTP suministrada, `crypto.randomUUID` no estaba disponible y
-«Añadir Pregunta» fallaba. Se utiliza la dependencia existente `uuid`, con
-aleatoriedad criptográfica compatible con ese contexto, para preguntas, secciones,
-opciones, duplicados, formularios y respuestas. Se verificó este fallo en el
-navegador público antes de corregirlo.
-
-Se incorpora **Ubicación geográfica**, el 14.º tipo, en constructor, renderer,
-vista previa y panel ciudadano. Permite marcar el mapa, moverlo con teclado y
-marcar el centro, introducir coordenadas o solicitar GPS. El punto está vinculado
-a la respuesta y pregunta, con referencia, origen y precisión cuando corresponde.
-La validación rechaza puntos incompletos o fuera de rango y respeta la lógica
-condicional. La analítica muestra coordenadas legibles, CSV y exportación GeoJSON.
-
-Se usan controles y tokens del kit, etiquetas asociadas, errores anunciados,
-controles de mapa accesibles, ambos temas, 320 px y paneles laterales. La solicitud
-GPS bloquea el envío mientras está pendiente, no sobrescribe una edición posterior
-y no modifica componentes desmontados. GPS denegado y mapa no disponible conservan
-las alternativas de captura. No se crean modales centrados.
-
-## Persistencia y autorización
-
-La actualización del rol y el evento de auditoría se escriben en una sola
-transacción Alembic. Tablas: `autenticacion.roles` y `eventos_identidad`.
-Se probaron rollback tras escrituras efectivas, idempotencia, downgrade,
-conservación de otros roles y creación autorizada de un formulario en la API,
-observada desde otra conexión; anónimo 401, ciudadano/auditor 403, administrador 201.
-
-En la base de operación se activó **solo `0028_formularios_admin`**, desde `0026`.
-No se aplicaron `0027` ni la unión `0029`; esas revisiones pertenecen a la integración
-concurrente de fotografías. No se crearon cuentas ni formularios de prueba allí.
-El frontend fue recompilado y el servicio reiniciado; portal y ruta formularios
-responden 200. La prueba del frontend publicado interceptó la API para usar un
-backend y una base `polis_test*` exclusivos; no acredita recolección persistente
-del constructor en producción.
-
-## Validación reproducible y límites
-
-Evidencia: [resumen y logs](../docs/evidencias/formularios-geograficos-2026-10-01/resumen.json).
-
-- `bun run check`: kit, TypeScript y ESLint aprobados.
-- `bun run build` y `bun run storybook:build`: aprobados.
-- Suite completa UI: 182 historias aprobadas, incluyendo axe y nueve historias
-  geográficas: coordenadas, mapa/limpieza, obligatoriedad, invalidez, previa,
-  oscuro, 320 px, GPS y GPS denegado. Después del ajuste HTTP se repitieron las
-  182 historias completas y las pruebas de dominio.
-- Dominio: 69 pruebas aprobadas.
-- Identidad, formularios y acceso: 89 pruebas aprobadas en base aislada.
-- Migración, guardas y transacciones: 27 pruebas aprobadas.
-- `upgrade head`, `alembic check`, `downgrade base` y reconstrucción:
-  prueba de integración aprobada. Se conservó una cabeza única con `0029`.
-- Ruff y formato de los tres archivos backend propios: aprobados.
-- `bun run backend:check` global: **no aprobado**, detenido por 45 errores Ruff
-  en archivos fuera de esos tres cambios; ese comando no llega a ejecutar pytest.
-  Las suites indicadas se ejecutaron directamente y sí pasaron. No se rebajaron
-  guardas ni se emitió un dictamen global de conformidad.
-- Navegador Chromium local y URL pública HTTP: login con permisos reales de rol
-  migrado, creación, respuesta con punto, alternativa GPS en HTTP, reflujo a 320 px
-  y descarga GeoJSON verificada; sin errores JavaScript.
-
-**El constructor sigue en demostración, con datos en RAM que se pierden al
-recargar.** La API existente usa otro DTO: queda pendiente integrar los 14 tipos,
-secciones, lógica y ubicación con `bd_csh`, publicar enlaces ciudadanos y
-sincronizar con el geovisor. No se impone una geocerca municipal. El GPS requiere
-HTTPS y permiso; no se garantizan exactitud ni precisión del dispositivo.
-Las pruebas automáticas de accesibilidad no constituyen certificación WCAG.
-
-Uso: recargar `/plataforma/formularios`, entrar con administrador, pulsar
-**Crear Formulario**, añadir pregunta y seleccionar **Ubicación geográfica**.
-Contrato detallado: [formularios geográficos](../docs/formularios-geograficos.md).
-
-
----
-
-# Entrega Codex — /plataforma: gestión interna
-
-Fecha: 2026-10-01T21:14:56.940932+00:00.
-Commit de implementación y evidencia: `d03a9efbf8bda2dcb3b71308e872af8d8ec587f9`.
-Autor: implementación EDD; pendiente revisión independiente del EAF.
+Fecha: 2026-10-02T04:22:10.855258+00:00
+Commit de implementación: `b61ce3eacd2c31753e8424e875afa4f7a5290164`
+Estado: IMPLEMENTADO Y VERIFICADO EN ALCANCE. Revisión independiente de EAF/agy pendiente.
 
 ## Resultado
 
-Creado el área interna `/plataforma` con dashboard, formularios, mesas, usuarios,
-geovisor, contenido y configuración. App ensambla; implementación y permisos
-viven en `features/plataforma`. Se reutilizan el kit UI, los stores existentes,
-el renderer de formularios y el único host de paneles laterales.
+- Los formularios de producto usan exclusivamente FastAPI/PostgreSQL: catálogo, páginas públicas, creación, edición, eliminación, envío y analítica. Zustand inicia vacío como caché; no hay confirmación local ni sustitución de fallos por mocks. Los ejemplos quedan exclusivamente en pruebas e historias. No se importaron respuestas ficticias a la base ni se borraron registros reales.
+- Migración 0031 publica el instrumento institucional solicitado, id de negocio `reporte-ciudadano-geoespacial`, slug `reporte-inseguridad`, UUID persistido `4ecd649a-6764-4d62-8ddb-1bcecd342031`. Siete dimensiones, 53 subcategorías, frecuencia, descripción opcional, ubicación y localidad; seis preguntas visibles por dimensión.
+- OpenLayers/OSM: selección y arrastre de punto, marcador por dimensión con token y símbolo, coordenadas editables, identificación de barrio/localidad por cartografía con alternativa manual.
+- Hasta cinco fotos JPEG/PNG/WebP de 5 MB por foto; previews, eliminar y reemplazar, bloqueo de seis. Servidor valida contenido y tamaño. Ubicación y fotos se guardan realmente como objeto JSONB, no solo en RAM.
+- Formulario anónimo incluso si el ciudadano tiene una cuenta interna abierta: el envío técnico anónimo conserva la sesión institucional. Un 401 de ese envío no cierra otra cuenta.
+- Nginx acepta 40 MB solo en formularios, para cubrir base64; su configuración pasó `nginx -t` y se recargó. Next tiene el mismo límite de proxy.
 
-- Sidebar fijo en escritorio mediante sticky, desplegable inline en móvil.
-- Header con nombre, rol, Mi cuenta y cerrar sesión.
-- Login email y callback Google de cuentas internas redirigen a `/plataforma` y
-  cierran el panel; ciudadanos permanecen en el portal.
-- Sin sesión o con sesión caducada: portal con `login=1` y panel de sesión.
-- Ciudadano o rol no clasificado: portal. Módulo fuera del rol: dashboard.
-- La sesión restaurada espera el perfil remoto; el rol persistido no prevalece
-  sobre el backend. Revocación, cuenta inactiva y expiración retiran acceso.
-- Portal opt-in: «Ir a la Plataforma»; volver al portal no fuerza redirección.
-- Protección de lectura también en paneles y acciones, además del menú.
+## Recepción, revisores y publicación
 
-| Rol | Módulos |
-| --- | --- |
-| autoridad_distrital | Dashboard, Formularios, Mesas, Geovisor, Contenido |
-| facilitador_mesa | Dashboard y Mesas; Formularios en lectura |
-| auditor_forense | Dashboard, Formularios, Mesas, Geovisor, Contenido y Configuración; lectura |
-| administrador_identidades | Los siete módulos; acciones con permisos efectivos |
-| ciudadano / anónimo | Sin acceso |
+Hay geovisor ciudadano en el portal y administrativo en `/plataforma/geovisor`. Las respuestas **no se publican automáticamente** en ninguno. Actualmente pueden leerlas los roles con `formularios:leer`: autoridad, facilitador, administrador y auditor. **No existe aún bandeja de moderación ni autorización individual de publicación**.
 
-Usuarios y Roles se reserva al administrador, según la restricción explícita de
-producto, incluso para el auditor. La navegación no concede permisos nuevos a la
-API. Los roles personalizados conservan sus permisos API y su cuenta, pero necesitan
-una clasificación explícita para entrar a esta navegación.
-
-## Login Google y compatibilidad de identidad
-
-Se corrigió el intercambio de OAuth access token por el ID token entregado por
-`GoogleLogin`. Backend verifica firma/emisor/caducidad y audiencia configurada;
-se eliminaron el bypass de tokens ficticios y el fallback sin firma. El dominio
-ni el texto del correo elevan roles: cuentas nuevas son ciudadanas y las
-existentes conservan su rol administrativo asignado. Pruebas simulan el verificador
-solo dentro del test; no se añadió un bypass al servicio.
-
-Se reconoció el permiso ya introducido por mesas `mesas:fotos:subir` en el catálogo
-para evitar que el alta/asignación de usuarios rechazara roles existentes por
-«permisos desconocidos». No se ejecutaron migraciones de producción ni se
-concedieron privilegios por esa inclusión en el catálogo.
-
-## Verificación
-
-| Comprobación | Resultado |
-| --- | --- |
-| `bun run check` | Correcto: política UI, TypeScript y ESLint sin errores |
-| `bun run build` | Correcto; portal y siete rutas internas generadas |
-| `bun run ui:test` | 173 historias aprobadas, incluidas 19 de plataforma |
-| `bun run storybook:build` | Correcto |
-| Vitest plataforma + formularios | 55 pruebas aprobadas |
-| Google/transacciones en BD temporal | 14 pruebas aprobadas |
-| Identidad completa + Google, árbol actual | 38 pruebas aprobadas |
-| Ruff de cinco archivos backend de esta entrega | Correcto |
-| Navegador contra frontend reiniciado en puerto 3000 | 42 casos aprobados; API interceptada, sin escrituras reales |
-| Login y administración reales en FastAPI/PostgreSQL aislados | Alta, rol, asignación y revocación aprobados |
-| Callback Google, SDK interceptado y componentes reales | ID token, destinos interno/ciudadano y cierre aprobados |
-
-Navegador: siete rutas por los cuatro roles, rechazo ciudadano/anónimo, perfil
-remoto prevalente, token revocado, login email, navegación opt-in y salida. Axe
-WCAG 2.1 AA y reflujo en 320/1440 px, claro/oscuro: sin infracciones automatizadas
-ni overflow. Esto no constituye certificación completa WCAG.
-
-PostgreSQL temporal exclusivo: puerto 55439 y bases `polis_test_plataforma*`.
-La comprobación real en navegador utilizó API del snapshot `c0cfcf1` con los cambios
-de Google; pruebas posteriores de identidad se ejecutaron sobre el árbol actual.
-Sin envío real de correo y sin operaciones de prueba sobre la base de producción.
-
-## Activación y límites comprobados
-
-Se reiniciaron `polis-frontend.service` y `polis-backend.service`; ambos activos.
-Portal HTTP 200 y liveness API 200. Readiness API responde 503 por migraciones
-pendientes de los cambios paralelos de mesas/fotos: conexión y extensiones `ok`.
-No se aplicaron esas migraciones en producción como parte de esta entrega.
-El primer reinicio frontend coincidió con otro build que recreaba `.next`;
-se recuperó el servicio y se repitieron los 42 casos sobre el servicio activo.
-
-- Google en vivo requiere configurar el mismo cliente OAuth en frontend/backend
-  y sus orígenes autorizados. No se aportaron/configuraron credenciales reales.
-- Formularios y agenda de mesas conservan la demostración en memoria existente,
-  con aviso explícito de restablecimiento al recargar.
-- Territorio más activo es referencia demo; usuarios del dashboard conserva el
-  placeholder solicitado. Usuarios, alertas, contenido y geovisor consultan API.
-- Contenido reutiliza el control de fases existente y consulta líneas/aportes;
-  no incorpora un CRUD nuevo de líneas/aportes.
-- Configuración ofrece tema local, actualización de consultas y control de fases
-  según permiso; parámetros globales persistidos aún no están integrados.
-- Guard solicitado es de cliente: el HTML puede responder 200 antes de redirigir.
-  La autorización de datos/escrituras sigue siendo responsabilidad de FastAPI.
-- `bun run backend:check` global falla con 45 incidencias Ruff ajenas al alcance;
-  no se rebajaron controles ni se corrigieron masivamente cambios paralelos.
-- Se mantiene un aviso previo del optimizador CSS; no hay errores de compilación.
-
-Contrato: [docs/plataforma.md](../docs/plataforma.md).
-Evidencias y capturas: [plataforma-2026-10-01](../docs/evidencias/plataforma-2026-10-01/).
-Los cambios paralelos de fotos/geovisor se conservaron fuera del commit de plataforma.
-
----
-
-## Histórico de entregas anteriores
-
-El contenido siguiente pertenece a tareas previas, no al alcance ni al dictamen
-de la entrega actual de plataforma.
-
-# Entrega Codex — Formularios POLIS
-
-Fecha: 2026-10-01T19:15:46.156954+00:00
-Commit de implementación y evidencia: `1151830c3756017fdb27b3bff98381a487fc10fd`.
-
-## Resultado urgente: TypeScript y build corregidos
-
-Los cuatro diagnósticos reportados quedaron resueltos, sin supresiones de tipos ni relajación de checks:
-
-1. `formulario-respuesta-panel.tsx` importa `../state/formularios-store`; el archivo existe y exporta el store.
-2. Todas las preguntas de demostración incluyen `orden`. Los mocks se centralizaron en `data/formularios.mock.ts`.
-3. Ambos formularios incluyen `secciones` y `configuracion` completas y tipadas.
-4. La analítica se calcula desde respuestas registradas y devuelve `AnaliticaFormulario`, con resultados por pregunta compatibles con el modelo; ya no usa el mock incompatible del hook.
-
-Se ejecutó literalmente `bun run check 2>&1 | grep "error TS"`: sin coincidencias. El código de salida 1 corresponde a `grep` sin coincidencias; el check completo se verificó por separado con salida 0.
-
-## Estado T1–T6
-
-La conformidad indicada se limita al frontend de demostración solicitado en T5. Los datos son ficticios y se conservan en memoria; esta entrega no integra persistencia oficial del backend ni certifica paridad integral con el servicio Google Forms.
-
-| Tarea | Estado | Resultado verificable |
-|---|---|---|
-| T1 | ✅ CONFORME | Modelo ampliado, tipos, secciones, validaciones, reglas condicionales, configuración y respuestas individuales. |
-| T2 | ✅ CONFORME | Constructor con controles por tipo, CRUD de secciones/opciones, Otro, orden aleatorio, imágenes, ↑↓, duplicación, lógica y configuración; vista previa en subpanel lateral. |
-| T3 | ✅ CONFORME | Respuesta ciudadana por secciones, validación inmediata, condiciones, progreso, archivos con vista previa, autenticación/cierre/cupo y confirmación configurable. Registro y acceso público desde la barra superior. |
-| T4 | ✅ CONFORME | Distribuciones, promedios, mínimos/máximos, últimas cinco respuestas, enfoque diferencial y descarga CSV real de respuestas locales. |
-| T5 | ✅ CONFORME | Zustand con CRUD y respuestas; dos formularios de Seguridad Humana, tres respuestas ficticias; importación de los 205 barrios de BARRIOS_CARTAGENA y siete dimensiones ONU. |
-| T6 | ✅ CONFORME | Check, builds y pruebas aprobados; frontend reiniciado, servicio activo, HTTP 200; commit realizado. |
-
-## Tipos implementados
-
-`texto_corto`, `texto_largo`, `opcion_unica`, `opcion_multiple`, `lista_desplegable`, `likert`, `escala_lineal`, `fecha`, `hora`, `numero`, `carga_archivo`, `seccion`, `descripcion`.
-
-La especificación anuncia 12 tipos, pero enumera 13: se implementaron los 13 enumerados, de los que 11 capturan respuestas y dos son bloques informativos.
+Se revisó y documentó el diseño: recibido interno → revisión por equipo designado → validado interno → publicación exclusiva del administrador → retiro si corresponde. Requiere permisos específicos, expediente/historial transaccional y proyección pública separada de coordenadas, fotos y narración originales. La capa de reportes en mapas sigue futura según el alcance de la tarea. Ver `docs/reportes-revision-publicacion.md`.
 
 ## Validación
 
-`bun run check` — salida 0:
+- `bun run check`: aprobado, 0 errores TS y 0 violaciones UI. Warning previo de TanStack/React Compiler en geovisor.
+- `bun run build`: aprobado; output SSG contiene `/f/reporte-inseguridad` y solo formularios realmente publicados en la base.
+- `bun run storybook:build`: aprobado.
+- Lógica, persistencia frontend y sesión: 83 pruebas aprobadas.
+- Historias del alcance formularios: 35/35 aprobadas.
+- Backend formularios/URLs/reporte: 33 pruebas aprobadas. Prueba de respuesta confirmada desde otra conexión y rollback completo tras fallo posterior al flush.
+- Migraciones/URLs: 26 pruebas aprobadas, incluyendo upgrade, check, downgrade base y reconstrucción en base aislada `polis_test_reporte_20261002`.
+- Navegador contra build y API aislados: 7 categorías condicionales, clic/arrastre, fotos 3+2, máximo 5, eliminar/reemplazar, envío 201, confirmación y 320 px claro/oscuro. Una conexión nueva confirmó coordenadas y cinco fotos. Respuesta QA eliminada de polis_test; no se enviaron respuestas de prueba a producción.
+- Backend y frontend reiniciados y servicios activos.
 
-```text
-$ bun run ui:check && bun run typecheck && bun run lint
-$ node scripts/ui-policy.mjs
-POLIS UI: controles, tokens, capas, inventario, historias y política a11y correctos.
-$ tsc --noEmit
-$ eslint .
-```
+HTTPS verificado sin omitir validación TLS:
 
-`bun run build` — salida 0, extracto de salida:
-
-```text
-✓ Compiled successfully in 8.1s
-  Running TypeScript ...
-  Collecting page data using 7 workers ...
-  Generating static pages using 7 workers (0/3) ...
-✓ Generating static pages using 7 workers (3/3) in 402.4ms
-  Finalizing page optimization ...
-
-Route (app)
-┌ ○ /
-└ ○ /_not-found
-```
-
-El build no presenta errores de TypeScript. Conserva un aviso del optimizador CSS en un selector `stroke='#fff'`; no se presenta como un build sin avisos.
-
-| Comprobación adicional | Resultado |
+| Ruta | Resultado |
 |---|---|
-| Dominio (`bunx vitest run --project formularios`) | 32/32 pruebas aprobadas. |
-| Historias (`bun run ui:test`) | 151/151 pruebas aprobadas, 10 archivos. |
-| `bun run storybook:build` | Salida 0. |
-| Navegador Chromium | 32 casos, claro/oscuro y 320/1440 px: sin infracciones axe, desbordamientos ni errores de ejecución observados. |
-| Frontend compilado | Dos flujos ciudadanos completos a 320/1440 px, incluyendo envío, confirmación y bloqueo de duplicados locales. API interceptada; sin escrituras reales. |
-| Servicio | Reinicio con salida 0; `systemctl is-active polis-frontend.service`: `active`; HTTP local: `200`. |
+| https://seguridadhumanaintegral.org/f/reporte-inseguridad | 200 |
+| `/f/diagnostico-barrio-2026`, antiguo ejemplo sin registro | 404 |
+| `/f/no-existe` | 404 |
+| GET respuestas del reporte sin token | 401 |
+| POST JSON 2 MB sin token | 401, sin escritura y sin antiguo bloqueo 413 del proxy |
 
-[Evidencia y reproducción](../docs/evidencias/formularios-2026-10-01/README.md). [Manifiesto de resultados y hashes SHA-256](../docs/evidencias/formularios-2026-10-01/manifest.json). Los logs completos de check/build y las capturas se conservan en ese directorio.
+## Observaciones de las suites generales
 
-## Decisiones de diseño y límites
+- `bun run ui:test`: 193/194 aprobadas; falló `Plataforma/Administración interna > Usuarios`, modificada por otra entrega concurrente. Las historias de formularios pasaron. No se deshabilitaron guardas ni axe.
+- `bun run backend:check`: 45 errores Ruff preexistentes fuera del alcance; impiden llegar a pytest por ese comando. Ruff de formularios/migración/nuevas pruebas pasa y se ejecutó la regresión focalizada separadamente.
+- El build mantiene un warning CSS previo del selector de gráficos `stroke='#fff'`; compiló correctamente.
 
-- Se reutilizan controles del kit, tokens y el host de paneles existente. No se añadieron modales centrados. Formularios e historias usan el mismo renderer.
-- La vista previa utiliza una instantánea del borrador y nunca registra respuestas. Guardar y responder sí actualizan el store local y su analítica.
-- Mostrar exige que se cumplan todas las condiciones configuradas; ocultar aplica si alguna se cumple. Las dependencias deben apuntar a preguntas anteriores y los saltos a secciones posteriores, evitando ciclos. Se excluyen del envío respuestas ocultas o de secciones omitidas.
-- La edición permitida reemplaza la respuesta de esa identidad sin aumentar el contador; el cupo se valida contra el estado actual. La fecha de cierre se guarda en ISO/UTC y se muestra en hora local.
-- El texto enriquecido permite negrita, cursiva y saltos de línea sin insertar HTML. Imágenes de preguntas requieren URL HTTP(S). Archivos se validan por tipo y tamaño máximo de 2 MB; se muestran y almacenan solamente en memoria, sin upload a servidor.
-- CSV usa BOM, escape de celdas y protección frente a fórmulas; exporta todas las respuestas locales y no incluye identificadores de sesión.
-- El modo demostración está indicado en la interfaz. Recargar restablece los datos; la identidad anónima y la prevención de duplicados son locales. La autenticación se consulta al enviar, pero autorización, cuotas y antirrepetición reales requieren implementación y validación del servidor antes de utilizar datos ciudadanos reales.
-- Se preservaron los cambios concurrentes ajenos. El commit incluye exclusivamente el módulo, sus integraciones y evidencia. Las 151 historias se ejecutaron sobre el árbol de trabajo que también contenía esos cambios concurrentes.
-- Esta entrega constituye evidencia del implementador; no es un dictamen independiente del EAF ni una certificación completa WCAG.
-
-## Ajuste posterior: formularios como función interna
-
-Por instrucción del usuario se retiró el botón «Formularios» del menú público del landing. Este ajuste sustituye la referencia anterior al acceso desde la barra superior. La gestión y el constructor permanecen en el menú institucional «Formularios y Consultas», con su visibilidad por sesión y permisos existentes.
-
-Commit: `8b1ca21780e6ed918c31b5b419cfbc32d21b1289` (solo dos líneas retiradas de Topbar).
-
-Validación: check, build de Next y build de Storybook con salida 0; 151 historias aprobadas en la ejecución final. La primera ejecución paralela tuvo un timeout al cargar la vista previa, y el reintento completo aprobó sin cambios en pruebas. Navegador sobre producción: ausencia del menú público y sin desbordamiento, claro/oscuro a 320/1440 px. Frontend reiniciado, servicio activo y HTTP 200.
-
-## Cierre de observaciones menores EAF — 2026-10-01T19:51:40.633404+00:00
-
-Dictamen recibido del EAF sobre `1151830`: **CONFORME CON OBSERVACIONES MENORES**. Se atendieron las tres acciones solicitadas.
-
-Commit de correcciones y evidencia: `21754fe1889e293863549d58285ded05a66b0e31`.
-
-| Observación | Estado | Corrección |
-|---|---|---|
-| 1. Modo demo | ✅ ATENDIDA | Comentario en `formularios-store.ts`: datos en RAM; integración mediante `services/formularios-api.ts` con FastAPI `/api/v1/formularios`, respuestas y analítica para persistir en `bd_csh`, adaptando DTOs y permisos. |
-| 2. Paso decimal | ✅ CORREGIDA | `validarPregunta` escala desplazamiento y paso a `1e9` y exige residuo absoluto menor que 1. Se conserva el mínimo como origen de los incrementos, evitando cambiar el contrato de `step`. |
-| 3. Archivos en RAM | ✅ ATENDIDA | Comentario junto a la lectura base64: en producción subir el archivo a MinIO/S3 mediante el servicio de upload y guardar su URL de retorno en lugar del contenido en Zustand. |
-
-Se añadió una prueba de regresión con casos de paso 0.5, 0.1, suma `0.1 + 0.2`, mínimos positivos y negativos, valores fuera del incremento y pasos pequeños. La implementación sigue siendo de demostración; los comentarios no implementan la integración de producción.
-
-### Comprobaciones de esta corrección
-
-- `bun run check`: salida 0 (reglas UI, TypeScript y ESLint).
-- `bun run build`: salida 0, sin errores TypeScript. Conserva el aviso conocido del optimizador CSS sobre el selector `stroke`.
-- `bun run storybook:build`: salida 0.
-- `bunx vitest run --project formularios`: 33 pruebas aprobadas.
-- `bunx vitest run --project storybook src/app/_stories/formularios.stories.tsx`: 14 historias aprobadas.
-- Comprobación ampliada con historias de plataforma: 37 aprobadas y una fallida (`Territorios Con Teclado`). El fallo proviene de cambios concurrentes del geovisor: OpenLayers no interpreta `rgba(0.48, 0.1, 240, 0.9)` y no se encuentra el botón territorial. Se preservaron esos cambios ajenos; no se presenta esta ejecución ampliada como aprobada ni se modificaron pruebas o exclusiones.
-
-[Evidencia de las observaciones y hashes](../docs/evidencias/formularios-2026-10-01/observaciones-eaf/manifest.json). Las salidas completas se conservan en el mismo directorio.
-
-La corrección no modifica backend ni ejecuta un nuevo reinicio del servicio. Los resultados anteriores de 32 pruebas/151 historias corresponden a sus respectivos snapshots históricos; esta sección registra la validación actual de las observaciones.
+Documentos: `docs/formularios-persistencia.md`, `docs/reportes-revision-publicacion.md`, `docs/permisos-api.md`.
+Evidencia reproducible y capturas: `docs/evidencias/reporte-geoespacial-2026-10-02/`.
