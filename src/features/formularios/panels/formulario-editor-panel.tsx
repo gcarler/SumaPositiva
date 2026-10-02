@@ -17,6 +17,7 @@ import {
   type PreguntaFormulario,
 } from "../models/formulario";
 import { validarFormulario } from "../services/formulario-engine";
+import { formulariosRemotos } from "../services/formularios-remotos";
 import {
   useFormularioDetalle,
   useGuardarFormulario,
@@ -99,11 +100,23 @@ function Constructor({
     setErrores(errors);
     if (errors.length) return;
     try {
-      await guardar.mutateAsync({
+      const guardado = await guardar.mutateAsync({
         id: editando ? form.id : undefined,
         datos: form,
       });
-      toast.success("Formulario de demostración guardado");
+      toast.success(
+        guardado.origenDatos === "demo"
+          ? "Ejemplo guardado localmente"
+          : "Formulario guardado",
+      );
+      if (
+        guardado.origenDatos === "api" &&
+        !(await formulariosRemotos.revalidar(guardado))
+      ) {
+        toast.warning(
+          "El formulario está guardado. El enlace público puede tardar hasta un minuto en actualizarse.",
+        );
+      }
       closeTop();
     } catch (e) {
       setErrores([
@@ -145,8 +158,9 @@ function Constructor({
     >
       <div className="space-y-6 p-6">
         <p className="text-xs text-text-secondary">
-          Demostración: los formularios y respuestas de prueba se conservan
-          durante esta sesión de la aplicación; no se registran oficialmente.
+          {inicial.origenDatos === "demo"
+            ? "Ejemplo de demostración: las ediciones son locales y no cambian su enlace público."
+            : "Al guardar, el formulario se conserva en POLIS. Activo significa publicado y accesible sin login mediante su URL."}
         </p>
         {!!errores.length && (
           <div

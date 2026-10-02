@@ -55,12 +55,17 @@ export function FormularioRespuestaPanel({
     >
       <div className="space-y-6 p-6">
         <p className="text-xs text-text-secondary">
-          Demostración: tus respuestas de prueba no se registran oficialmente y
-          se eliminan al recargar la aplicación.
+          {form?.origenDatos === "api"
+            ? "Tu respuesta se registra en POLIS al enviarla."
+            : "Demostración: las respuestas de prueba se eliminan al recargar."}
         </p>
         {confirmacion && form ? (
           <div role="status">
-            <h3 className="font-semibold">Respuesta de prueba recibida</h3>
+            <h3 className="font-semibold">
+              {form.origenDatos === "api"
+                ? "Respuesta recibida"
+                : "Respuesta de prueba recibida"}
+            </h3>
             <p className="whitespace-pre-wrap">
               {form.configuracion.mensajeConfirmacion}
             </p>

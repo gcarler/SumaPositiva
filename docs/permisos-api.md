@@ -78,8 +78,8 @@ La última columna explica la excepción pública o la condición adicional.
 | DELETE | /api/v1/formularios/{id} | permiso:formularios:gestionar@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |
 | GET | /api/v1/formularios/{id} | publico | Consulta pública de formularios activos de participación. |
 | PUT | /api/v1/formularios/{id} | permiso:formularios:gestionar@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |
-| GET | /api/v1/formularios/{id}/analitica | permiso:formularios:gestionar@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |
-| GET | /api/v1/formularios/{id}/respuestas | permiso:formularios:gestionar@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |
+| GET | /api/v1/formularios/{id}/analitica | permiso:formularios:leer@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |
+| GET | /api/v1/formularios/{id}/respuestas | permiso:formularios:leer@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |
 | POST | /api/v1/formularios/{id}/respuestas | sujeto | Un envío por sujeto; datos estructurados y enfoque diferencial. |
 | GET | /api/v1/geodatos/capas | publico | Consulta pública de catálogos y resultados de política para transparencia. |
 | GET | /api/v1/geodatos/territorios | publico | Consulta pública de catálogos y resultados de política para transparencia. |
@@ -199,3 +199,18 @@ Las rutas Next.js `/plataforma/*` se clasifican por sesión y rol en
 de los endpoints. El acceso a Usuarios y Roles en esta navegación se limita a
 `administrador_identidades`; el auditor conserva sus permisos de lectura por API,
 pero esta ruta administrativa no aparece en su menú.
+
+## URLs de formularios — decisión de producto 2026-10-02
+
+La URL compartible solicitada autoriza consultar formularios publicados sin login.
+Los borradores se excluyen del listado público y se consultan por el canal privado.
+Responder usa una sesión cívica emitida sin registro; no requiere login ciudadano.
+
+| Método | Ruta | Control | Motivo o condición |
+| --- | --- | --- | --- |
+| GET | /api/v1/formularios/publicos | publico | Catálogo publicado para SSG; excluye borradores y datos de respuestas. |
+| GET | /api/v1/formularios/publicos/{slug} | publico | Formulario compartido por slug; borrador 403, inexistente 404; cerrado no admite envíos. |
+| GET | /api/v1/formularios/constructor | permiso:formularios:leer@declarada | Gestión interna; incluye borradores para roles autorizados. |
+| GET | /api/v1/formularios/constructor/slug/{slug} | permiso:formularios:leer@declarada | Vista previa privada de borradores; sin publicación implícita. |
+| POST | /api/v1/formularios/constructor | permiso:formularios:gestionar@declarada | Persistir el documento completo y asignar slug único. |
+| PUT | /api/v1/formularios/constructor/{id} | permiso:formularios:gestionar@declarada | Actualizar documento conservando slug y URL pública. |

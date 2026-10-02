@@ -1,0 +1,104 @@
+import { z } from "zod";
+export const formularioSchema = z.object({
+  id: z.string(),
+  origenDatos: z.enum(["demo", "api"]).optional(),
+  titulo: z.string(),
+  descripcion: z.string(),
+  estado: z.enum(["borrador", "activo", "cerrado"]),
+  secciones: z.array(
+    z.object({
+      id: z.string(),
+      titulo: z.string(),
+      descripcion: z.string().optional(),
+      orden: z.number(),
+    }),
+  ),
+  preguntas: z.array(
+    z.object({
+      id: z.string(),
+      texto: z.string(),
+      tipo: z.enum([
+        "texto_corto",
+        "texto_largo",
+        "opcion_unica",
+        "opcion_multiple",
+        "lista_desplegable",
+        "likert",
+        "escala_lineal",
+        "fecha",
+        "hora",
+        "numero",
+        "ubicacion_geografica",
+        "carga_archivo",
+        "seccion",
+        "descripcion",
+      ]),
+      obligatoria: z.boolean(),
+      orden: z.number(),
+      descripcion: z.string().optional(),
+      placeholder: z.string().optional(),
+      imagenUrl: z.string().optional(),
+      opciones: z
+        .array(
+          z.object({
+            id: z.string(),
+            texto: z.string(),
+            esOtro: z.boolean().optional(),
+          }),
+        )
+        .optional(),
+      opcionesAleatorias: z.boolean().optional(),
+      validacion: z
+        .object({
+          obligatoria: z.boolean().optional(),
+          minLongitud: z.number().optional(),
+          maxLongitud: z.number().optional(),
+          minValor: z.number().optional(),
+          maxValor: z.number().optional(),
+          patron: z.string().optional(),
+          mensajeError: z.string().optional(),
+        })
+        .optional(),
+      logica: z
+        .array(
+          z.object({
+            preguntaOrigenId: z.string(),
+            operador: z.enum([
+              "igual",
+              "no_igual",
+              "contiene",
+              "mayor_que",
+              "menor_que",
+            ]),
+            valor: z.string(),
+            accion: z.enum(["mostrar", "ocultar", "ir_a_seccion"]),
+            preguntaDestinoId: z.string().optional(),
+            seccionDestinoId: z.string().optional(),
+          }),
+        )
+        .optional(),
+      escalaMin: z.number().optional(),
+      escalaMax: z.number().optional(),
+      etiquetaMin: z.string().optional(),
+      etiquetaMax: z.string().optional(),
+      paso: z.number().optional(),
+      tiposArchivo: z.enum(["imagen", "pdf", "cualquiera"]).optional(),
+      enfoqueDiferencial: z.boolean().optional(),
+      seccionId: z.string().optional(),
+    }),
+  ),
+  configuracion: z.object({
+    slug: z.string(),
+    urlPublica: z.string(),
+    mensajeConfirmacion: z.string(),
+    limiteRespuestas: z.number().optional(),
+    fechaCierre: z.string().optional(),
+    permitirEdicion: z.boolean(),
+    requiereAutenticacion: z.boolean(),
+    mostrarBarraProgreso: z.boolean(),
+    ordenAleatorio: z.boolean(),
+  }),
+  respuestasCount: z.number(),
+  creadoEn: z.string(),
+  actualizadoEn: z.string(),
+});

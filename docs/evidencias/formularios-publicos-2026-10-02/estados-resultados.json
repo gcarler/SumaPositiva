@@ -1,0 +1,10 @@
+{
+  "resultados": [
+    "Borrador sin sesión redirige a / y no muestra preguntas privadas",
+    "Usuario autorizado ve borrador en vista previa sin envío público",
+    "Invalidación Next exige identidad y permiso: 401 anónimo, 403 sesión sin gestión",
+    "Publicar un borrador actualiza su URL inmediatamente sin otro build",
+    "Renombrar conserva slug y muestra contenido actualizado",
+    "Cierre: página informa cierre y backend rechaza envíos"
+  ]
+}

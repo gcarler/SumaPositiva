@@ -1,0 +1,652 @@
+$ uv run --project backend ruff check backend && uv run --project backend ruff format --check backend && uv run --project backend pytest backend/tests
+I001 [*] Import block is un-sorted or un-formatted
+  --> backend/alembic/versions/0025_control_fases_y_oauth.py:8:1
+   |
+ 6 |   """
+ 7 |
+ 8 | / from sqlalchemy import text
+ 9 | | from alembic import op
+   | |______________________^
+10 |
+11 |   revision = "0025_control_fases_y_oauth"
+   |
+help: Organize imports
+   |
+8  | from sqlalchemy import text
+9  +
+10 | from alembic import op
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> backend/alembic/versions/0026_fotos_mes_vigilancia.py:7:1
+   |
+ 5 |   """
+ 6 |
+ 7 | / from alembic import op
+ 8 | | from sqlalchemy import text
+   | |___________________________^
+ 9 |
+10 |   revision = "0026_fotos_mes_vigilancia"
+   |
+help: Organize imports
+   |
+6  |
+   - from alembic import op
+7  | from sqlalchemy import text
+8  |
+9  + from alembic import op
+10 +
+11 | revision = "0026_fotos_mes_vigilancia"
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> backend/alembic/versions/0027_permisos_fotos_mesa.py:7:1
+   |
+ 5 |   """
+ 6 |
+ 7 | / from alembic import op
+ 8 | | from sqlalchemy import text
+   | |___________________________^
+ 9 |
+10 |   revision = "0027_permisos_fotos_mesa"
+   |
+help: Organize imports
+   |
+6  |
+   - from alembic import op
+7  | from sqlalchemy import text
+8  |
+9  + from alembic import op
+10 +
+11 | revision = "0027_permisos_fotos_mesa"
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> backend/app/api/router.py:1:1
+   |
+ 1 | / from fastapi import APIRouter
+ 2 | |
+ 3 | | from app.modules.aportes.router import router as aportes_router
+ 4 | | from app.modules.evidencia.router import router as evidencia_router
+ 5 | | from app.modules.formularios.router import router as formularios_router
+ 6 | | from app.modules.geodatos.router import router as geodatos_router
+ 7 | | from app.modules.health.router import router as health_router
+ 8 | | from app.modules.ia.router import router as ia_router
+ 9 | | from app.modules.identidad.router import router as identidad_router
+10 | | from app.modules.indicadores.router import router as indicadores_router
+11 | | from app.modules.instrumentos.router import router as instrumentos_router
+12 | | from app.modules.mesas.router import router as mesas_router
+13 | | from app.modules.participacion.router import router as participacion_router
+14 | | from app.modules.politicas.router import router as politicas_router
+15 | | from app.modules.presupuesto.router import router as presupuesto_router
+16 | | from app.modules.sesion.router import router as sesion_router
+17 | | from app.modules.testimonios.router import router as testimonios_router
+18 | | from app.modules.auditoria.router import router as auditoria_router
+   | |___________________________________________________________________^
+19 |
+20 |   api_router = APIRouter(prefix="/api/v1")
+   |
+help: Organize imports
+   |
+3  | from app.modules.aportes.router import router as aportes_router
+4  + from app.modules.auditoria.router import router as auditoria_router
+5  | from app.modules.evidencia.router import router as evidencia_router
+--------------------------------------------------------------------------------
+18 | from app.modules.testimonios.router import router as testimonios_router
+   - from app.modules.auditoria.router import router as auditoria_router
+19 |
+   |
+
+E501 Line too long (101 > 100)
+   --> backend/app/modules/auditoria/router.py:134:101
+    |
+132 |     script_path = Path("/root/polis/scripts/respaldo_bd.sh")
+133 |     if not script_path.exists():
+134 |         raise HTTPException(status_code=500, detail="Script de respaldo no encontrado en el sistema")
+    |                                                                                                     ^
+135 |
+136 |     proceso = await asyncio.create_subprocess_exec(
+    |
+
+E501 Line too long (101 > 100)
+   --> backend/app/modules/auditoria/router.py:153:101
+    |
+151 |     archivos_dump = sorted(BACKUP_DIR.glob("*.dump"), key=os.path.getmtime, reverse=True)
+152 |     if not archivos_dump:
+153 |         raise HTTPException(status_code=500, detail="No se encontró el archivo de respaldo generado")
+    |                                                                                                     ^
+154 |
+155 |     mas_reciente = archivos_dump[0]
+    |
+
+E501 Line too long (114 > 100)
+   --> backend/app/modules/auditoria/router.py:174:101
+    |
+172 |             usuario_id=sujeto.sujeto_id,
+173 |             causal="tecnica",
+174 |             justificacion_motivada=f"Respaldo manual en caliente ejecutado por {sujeto.rol}: {mas_reciente.name}",
+    |                                                                                                     ^^^^^^^^^^^^^^
+175 |             metadatos={
+176 |                 "archivo": mas_reciente.name,
+    |
+
+E501 Line too long (132 > 100)
+   --> backend/app/modules/evidencia/models.py:103:101
+    |
+101 |         {
+102 |             "schema": "mesas_trabajo",
+103 |             "comment": "Relación de evidencias fotográficas sanitizadas de mesas; solo imágenes aprobadas se exponen públicamente.",
+    |                                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+104 |         },
+105 |     )
+    |
+
+E501 Line too long (160 > 100)
+  --> backend/app/modules/evidencia/repository.py:38:101
+   |
+36 | …
+37 | …
+38 | …r | None, str | None, float | None, float | None, FotoMesa | None, EvidenciaMultimedia | None]]:
+   |                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+39 | …
+40 | …
+   |
+
+E501 Line too long (113 > 100)
+  --> backend/app/modules/evidencia/repository.py:66:101
+   |
+64 |         return result.scalar_one_or_none()
+65 |
+66 |     async def foto_revision_con_archivo(self, foto_id: uuid.UUID) -> tuple[FotoMesa, EvidenciaMultimedia] | None:
+   |                                                                                                     ^^^^^^^^^^^^^
+67 |         result = await self.session.execute(
+68 |             select(FotoMesa, EvidenciaMultimedia)
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> backend/app/modules/evidencia/service.py:1:1
+   |
+ 1 | / import re
+ 2 | | import uuid
+ 3 | | from datetime import UTC, datetime
+ 4 | | from pathlib import Path
+ 5 | |
+ 6 | | from fastapi import HTTPException, UploadFile, status
+ 7 | | from sqlalchemy.ext.asyncio import AsyncSession
+ 8 | |
+ 9 | | from app.core.config import Settings
+10 | | from app.core.transactions import transaction
+11 | | from app.modules.evidencia.models import EvidenciaMultimedia, FotoMesa
+12 | | from app.modules.mesas.models import Mesa
+13 | | from app.modules.evidencia.repository import EvidenciaRepository
+14 | | from app.modules.evidencia.sanitizer import sanitizar_imagen_bytes
+15 | | from app.modules.evidencia.schemas import EvidenciaRespuesta
+16 | | from app.modules.identidad.schemas import SujetoAutenticadoContexto
+17 | | from app.modules.mesas.schemas import (
+18 | |     FotoMesaModeracion,
+19 | |     FotoMesaModeradaRespuesta,
+20 | |     FotoMesaPublica,
+21 | |     FotoMesaRevision,
+22 | |     FotoMesaSubidaRespuesta,
+23 | |     MesaGeovisorRespuesta,
+24 | | )
+25 | | from app.modules.sesion.security import generar_uuidv7
+   | |______________________________________________________^
+help: Organize imports
+   |
+11 | from app.modules.evidencia.models import EvidenciaMultimedia, FotoMesa
+   - from app.modules.mesas.models import Mesa
+12 | from app.modules.evidencia.repository import EvidenciaRepository
+13 | from app.modules.evidencia.sanitizer import sanitizar_imagen_bytes
+14 | from app.modules.evidencia.schemas import EvidenciaRespuesta
+15 | from app.modules.identidad.schemas import SujetoAutenticadoContexto
+16 + from app.modules.mesas.models import Mesa
+17 | from app.modules.mesas.schemas import (
+   |
+
+E501 Line too long (102 > 100)
+  --> backend/app/modules/evidencia/service.py:37:101
+   |
+35 |         self.max_bytes = settings.tamano_maximo_archivo_mb * 1024 * 1024
+36 |
+37 |     async def _sanitizar_y_guardar_archivo(self, archivo: UploadFile) -> tuple[Path, uuid.UUID, dict]:
+   |                                                                                                     ^^
+38 |         if archivo.content_type not in self.settings.tipos_mime_permitidos:
+39 |             raise HTTPException(
+   |
+
+E501 Line too long (102 > 100)
+  --> backend/app/modules/evidencia/service.py:84:101
+   |
+82 |                 archivo_salida.write(bytes_limpios)
+83 |         except FileExistsError as error:
+84 |             raise HTTPException(status_code=409, detail="Conflicto al almacenar evidencia") from error
+   |                                                                                                     ^^
+85 |         metadatos["nombre_seguro"] = nombre_seguro
+86 |         metadatos["ruta"] = ruta_archivo
+   |
+
+E501 Line too long (107 > 100)
+   --> backend/app/modules/evidencia/service.py:148:101
+    |
+146 |     ) -> FotoMesaSubidaRespuesta:
+147 |         if not autorizacion_imagen:
+148 |             raise HTTPException(status_code=422, detail="Se requiere autorización para publicar la imagen")
+    |                                                                                                     ^^^^^^^
+149 |         ruta, _, metadatos = await self._sanitizar_y_guardar_archivo(archivo)
+150 |         try:
+    |
+
+E501 Line too long (110 > 100)
+   --> backend/app/modules/evidencia/service.py:185:101
+    |
+183 |                 raise HTTPException(status_code=409, detail="La fotografía ya fue revisada")
+184 |             if datos.estado == "APROBADA" and not foto.autorizacion_imagen:
+185 |                 raise HTTPException(status_code=422, detail="No se puede aprobar una imagen sin autorización")
+    |                                                                                                     ^^^^^^^^^^
+186 |             foto.estado = datos.estado
+187 |             foto.observacion_revision = datos.observacion
+    |
+
+E501 Line too long (128 > 100)
+   --> backend/app/modules/evidencia/service.py:249:101
+    |
+247 |                     longitud_referencia=float(longitud) if longitud is not None else None,
+248 |                     latitud_referencia=float(latitud) if latitud is not None else None,
+249 |                     tipo_ubicacion="centroide_territorial_referencia" if longitud is not None and latitud is not None else None,
+    |                                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+250 |                     fotos=[],
+251 |                 )
+    |
+
+E501 Line too long (125 > 100)
+   --> backend/app/modules/evidencia/service.py:299:101
+    |
+297 |         ruta = Path(modelo.ruta_almacenamiento)
+298 |         if not ruta.exists():
+299 |             raise HTTPException(status_code=404, detail="El archivo físico sanitizado no se encuentra en el almacenamiento.")
+    |                                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^
+300 |         return ruta, modelo.tipo_mime
+    |
+
+F821 Undefined name `FotoMesa`
+   --> backend/app/modules/mesas/models.py:153:25
+    |
+151 |         cascade="all, delete-orphan",
+152 |     )
+153 |     fotos: Mapped[list["FotoMesa"]] = relationship(
+    |                         ^^^^^^^^
+154 |         "FotoMesa",
+155 |         back_populates="mesa",
+    |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> backend/app/modules/mesas/router.py:1:1
+   |
+ 1 | / import uuid
+ 2 | | from datetime import date
+ 3 | | from typing import Annotated
+ 4 | |
+ 5 | | from fastapi import APIRouter, Depends, File, Form, Request, UploadFile, status
+ 6 | | from fastapi.responses import FileResponse
+ 7 | |
+ 8 | | from app.core.config import Settings
+ 9 | | from app.core.database import SessionDependency
+10 | | from app.modules.evidencia.service import EvidenciaService
+11 | | from app.modules.identidad.deps import SujetoAutenticadoDep
+12 | | from app.modules.identidad.deps import requerir_permiso
+13 | | from app.modules.mesas.repository import MesaRepository
+14 | | from app.modules.mesas.schemas import (
+15 | |     ActaCierre,
+16 | |     ActaCrear,
+17 | |     ActaRespuesta,
+18 | |     FotoMesaModeracion,
+19 | |     FotoMesaModeradaRespuesta,
+20 | |     FotoMesaRevision,
+21 | |     FotoMesaSubidaRespuesta,
+22 | |     MesaGeovisorRespuesta,
+23 | |     MesaCrear,
+24 | |     MesaRespuesta,
+25 | |     ParticipanteCrear,
+26 | |     ParticipanteRespuesta,
+27 | |     SubMesaCrear,
+28 | | )
+29 | | from app.modules.mesas.service import MesaService
+   | |_________________________________________________^
+30 |
+31 |   router = APIRouter(prefix="/mesas", tags=["mesas-trabajo"])
+   |
+help: Organize imports
+   |
+10 | from app.modules.evidencia.service import EvidenciaService
+   - from app.modules.identidad.deps import SujetoAutenticadoDep
+   - from app.modules.identidad.deps import requerir_permiso
+11 + from app.modules.identidad.deps import SujetoAutenticadoDep, requerir_permiso
+12 | from app.modules.mesas.repository import MesaRepository
+--------------------------------------------------------------------------------
+20 |     FotoMesaSubidaRespuesta,
+21 +     MesaCrear,
+22 |     MesaGeovisorRespuesta,
+   -     MesaCrear,
+23 |     MesaRespuesta,
+   |
+
+E501 Line too long (125 > 100)
+  --> backend/app/modules/mesas/router.py:85:101
+   |
+83 |     service: EvidenciaServiceDep,
+84 |     archivo: Annotated[UploadFile, File(description="Imagen JPEG, PNG o WebP")],
+85 |     autorizacion_imagen: Annotated[bool, Form(description="Confirma que cuenta con autorización para publicar esta imagen")],
+   |                                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^
+86 | ):
+87 |     return await service.guardar_foto_mesa(mesa_id, archivo, sujeto, autorizacion_imagen)
+   |
+
+F401 [*] `datetime.date` imported but unused
+ --> backend/app/modules/participacion/repository.py:2:22
+  |
+1 | import uuid
+2 | from datetime import date
+  |                      ^^^^
+3 | from typing import Any
+  |
+help: Remove unused import: `datetime.date`
+  |
+1 | import uuid
+  - from datetime import date
+2 | from typing import Any
+  |
+
+F401 [*] `sqlalchemy.func` imported but unused
+ --> backend/app/modules/participacion/repository.py:5:24
+  |
+3 | from typing import Any
+4 |
+5 | from sqlalchemy import func, select, text
+  |                        ^^^^
+6 | from sqlalchemy.ext.asyncio import AsyncSession
+7 | from sqlalchemy.orm import selectinload
+  |
+help: Remove unused import: `sqlalchemy.func`
+  |
+4 |
+  - from sqlalchemy import func, select, text
+5 + from sqlalchemy import select, text
+6 | from sqlalchemy.ext.asyncio import AsyncSession
+  |
+
+E501 Line too long (103 > 100)
+  --> backend/app/modules/participacion/repository.py:74:101
+   |
+72 |             ) unificados;
+73 |         """)
+74 |         participantes_unicos_identificados = (await self.session.execute(sql_unificados)).scalar() or 0
+   |                                                                                                     ^^^
+75 |
+76 |         # 4. Total Asistentes Canal 3 (Escenarios Especiales)
+   |
+
+E501 Line too long (122 > 100)
+  --> backend/app/modules/participacion/repository.py:96:101
+   |
+94 |                 t.nombre AS territorio,
+95 |                 t.codigo AS codigo_territorio,
+96 |                 COALESCE(web_c.conteo, 0) + COALESCE(mesas_c.conteo, 0) + COALESCE(esc_c.conteo, 0) AS total_participacion
+   |                                                                                                     ^^^^^^^^^^^^^^^^^^^^^^
+97 |             FROM geodatos.territorios t
+98 |             LEFT JOIN (
+   |
+
+E501 Line too long (105 > 100)
+   --> backend/app/modules/participacion/repository.py:147:101
+    |
+145 |         sql_totales = text("""
+146 |             SELECT
+147 |                 (SELECT COUNT(*) FROM participacion_ciudadana.propuestas_ciudadanas WHERE activo = true),
+    |                                                                                                     ^^^^^
+148 |                 (SELECT COUNT(*) FROM participacion_ciudadana.apoyos_propuestas),
+149 |                 (SELECT COUNT(*) FROM participacion_ciudadana.respuestas_formulario);
+    |
+
+E501 Line too long (113 > 100)
+   --> backend/app/modules/participacion/repository.py:271:101
+    |
+269 |                 COUNT(*) FILTER (WHERE mesa_padre_id IS NOT NULL) AS submesas,
+270 |                 (SELECT COUNT(*) FROM mesas_trabajo.participantes_mesa) AS total_participantes,
+271 |                 (SELECT COUNT(DISTINCT sujeto_id) FROM mesas_trabajo.participantes_mesa) AS unicos_participantes,
+    |                                                                                                     ^^^^^^^^^^^^^
+272 |                 (SELECT COUNT(*) FROM mesas_trabajo.actas_comunitarias WHERE estado IN ('CONCERTADA', 'PUBLICADA')) AS actas_cerradas
+273 |             FROM mesas_trabajo.mesas;
+    |
+
+E501 Line too long (133 > 100)
+   --> backend/app/modules/participacion/repository.py:272:101
+    |
+270 |                 (SELECT COUNT(*) FROM mesas_trabajo.participantes_mesa) AS total_participantes,
+271 |                 (SELECT COUNT(DISTINCT sujeto_id) FROM mesas_trabajo.participantes_mesa) AS unicos_participantes,
+272 |                 (SELECT COUNT(*) FROM mesas_trabajo.actas_comunitarias WHERE estado IN ('CONCERTADA', 'PUBLICADA')) AS actas_cerradas
+    |                                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+273 |             FROM mesas_trabajo.mesas;
+274 |         """)
+    |
+
+E501 Line too long (155 > 100)
+   --> backend/app/modules/participacion/repository.py:292:101
+    |
+290 | …
+291 | …
+292 | …itarias a WHERE a.mesa_id = m.id AND a.estado IN ('CONCERTADA', 'PUBLICADA')) AS acta_firmada
+    |                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+293 | …
+294 | …torio_id
+    |
+
+E501 Line too long (102 > 100)
+   --> backend/app/modules/participacion/repository.py:315:101
+    |
+313 |             LEFT JOIN mesas_trabajo.participantes_mesa p ON p.mesa_id = m.id
+314 |             WHERE m.mesa_padre_id IS NOT NULL
+315 |             GROUP BY m.id, m.mesa_padre_id, m.codigo_oficial, m.nombre, m.ruta_jerarquica, m.tipo_mesa
+    |                                                                                                     ^^
+316 |             ORDER BY m.nombre ASC;
+317 |         """)
+    |
+
+E501 Line too long (105 > 100)
+  --> backend/app/modules/participacion/router.py:37:101
+   |
+35 | @router.get("/canal-web", response_model=DesgloseCanalWeb)
+36 | async def obtener_desglose_canal_web(service: ParticipacionServiceDep):
+37 |     """Retorna la desagregación analítica del Canal Web por línea estratégica, dimensión y territorio."""
+   |                                                                                                     ^^^^^
+38 |     return await service.obtener_desglose_canal_web()
+   |
+
+E501 Line too long (102 > 100)
+  --> backend/app/modules/participacion/router.py:43:101
+   |
+41 | @router.get("/canal-mesas", response_model=DesgloseCanalMesas)
+42 | async def obtener_desglose_canal_mesas(service: ParticipacionServiceDep):
+43 |     """Retorna la desagregación jerárquica del Canal Mesas territoriales (ltree), submesas y actas."""
+   |                                                                                                     ^^
+44 |     return await service.obtener_desglose_canal_mesas()
+   |
+
+F401 [*] `typing.Any` imported but unused
+ --> backend/app/modules/participacion/service.py:3:20
+  |
+1 | import uuid
+2 | from datetime import UTC, datetime
+3 | from typing import Any
+  |                    ^^^
+4 |
+5 | from fastapi import HTTPException, status
+  |
+help: Remove unused import: `typing.Any`
+  |
+2 | from datetime import UTC, datetime
+  - from typing import Any
+3 |
+  |
+
+E501 Line too long (102 > 100)
+   --> backend/app/modules/politicas/router.py:133:101
+    |
+131 |                 raise HTTPException(
+132 |                     status_code=422,
+133 |                     detail=f"Estado no válido. Debe ser uno de: {', '.join(sorted(estados_validos))}",
+    |                                                                                                     ^^
+134 |                 )
+135 |             fase.estado = datos.estado
+    |
+
+F401 [*] `sqlalchemy.func` imported but unused
+ --> backend/app/modules/testimonios/repository.py:5:30
+  |
+3 | from typing import Any
+4 |
+5 | from sqlalchemy import case, func, select, text
+  |                              ^^^^
+6 | from sqlalchemy.ext.asyncio import AsyncSession
+7 | from sqlalchemy.orm import selectinload
+  |
+help: Remove unused import: `sqlalchemy.func`
+  |
+4 |
+  - from sqlalchemy import case, func, select, text
+5 + from sqlalchemy import case, select, text
+6 | from sqlalchemy.ext.asyncio import AsyncSession
+  |
+
+E501 Line too long (106 > 100)
+   --> backend/app/modules/testimonios/repository.py:146:101
+    |
+144 |             FROM geodatos.territorios t
+145 |             LEFT JOIN participacion_ciudadana.testimonios_comunitarios tc
+146 |                 ON tc.territorio_id = t.id AND tc.activo = true AND tc.estado IN ('APROBADO', 'DESTACADO')
+    |                                                                                                     ^^^^^^
+147 |             GROUP BY t.id, t.codigo, t.nombre
+148 |             ORDER BY total_testimonios DESC, t.nombre ASC;
+    |
+
+F401 [*] `fastapi.Query` imported but unused
+ --> backend/app/modules/testimonios/router.py:4:41
+  |
+2 | from typing import Annotated
+3 |
+4 | from fastapi import APIRouter, Depends, Query, status
+  |                                         ^^^^^
+5 |
+6 | from app.core.database import SessionDependency
+  |
+help: Remove unused import: `fastapi.Query`
+  |
+3 |
+  - from fastapi import APIRouter, Depends, Query, status
+4 + from fastapi import APIRouter, Depends, status
+5 |
+  |
+
+F401 [*] `typing.Any` imported but unused
+ --> backend/app/modules/testimonios/service.py:2:20
+  |
+1 | import uuid
+2 | from typing import Any
+  |                    ^^^
+3 |
+4 | from fastapi import HTTPException, status
+  |
+help: Remove unused import: `typing.Any`
+  |
+1 | import uuid
+  - from typing import Any
+2 |
+  |
+
+E501 Line too long (102 > 100)
+   --> backend/app/modules/testimonios/service.py:105:101
+    |
+103 |                 raise HTTPException(
+104 |                     status_code=status.HTTP_400_BAD_REQUEST,
+105 |                     detail="Estado de moderación inválido. Debe ser APROBADO, DESTACADO o RECHAZADO.",
+    |                                                                                                     ^^
+106 |                 )
+    |
+
+E501 Line too long (113 > 100)
+   --> backend/app/modules/testimonios/service.py:113:101
+    |
+111 |                 raise HTTPException(
+112 |                     status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+113 |                     detail="El rechazo de un testimonio comunitario exige un motivo de moderación fundamentado.",
+    |                                                                                                     ^^^^^^^^^^^^^
+114 |                 )
+    |
+
+E501 Line too long (133 > 100)
+   --> backend/tests/test_fotos_mesas.py:177:101
+    |
+175 |         async with engine.connect() as connection:
+176 |             assert await connection.scalar(
+177 |                 text("SELECT count(*) FROM participacion_ciudadana.evidencias_multimedia WHERE nombre_archivo_original = 'mesa.png'")
+    |                                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+178 |             ) == 0
+179 |             assert await connection.scalar(
+    |
+
+E501 Line too long (162 > 100)
+   --> backend/tests/test_fotos_mesas.py:180:101
+    |
+178 | …
+179 | …
+180 | …sa AS foto JOIN mesas_trabajo.mesas AS mesa ON mesa.id = foto.mesa_id WHERE mesa.id = :mesa_id"),
+    |                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+181 | …
+182 | …
+    |
+
+E501 Line too long (105 > 100)
+  --> backend/tests/test_participacion_multicanal.py:48:101
+   |
+47 |     # Verificación matemática estricta:
+48 |     # Gran Total = Sujetos Identificados Unificados (Canal 1 ∪ Canal 2) + Asistentes Escenarios (Canal 3)
+   |                                                                                                     ^^^^^
+49 |     gran_total = datos["gran_total_participantes_distrital"]
+50 |     unificados = datos["participantes_unicos_identificados"]
+   |
+
+E501 Line too long (106 > 100)
+   --> backend/tests/test_participacion_multicanal.py:141:101
+    |
+139 |     public_client: TestClient,
+140 | ):
+141 |     """Verifica la creación y actualización con permiso asistencia:verificar y denegación a ciudadanos."""
+    |                                                                                                     ^^^^^^
+142 |     codigo_nuevo = f"ESC-TEST-{uuid.uuid4().hex[:8]}"
+    |
+
+E501 Line too long (103 > 100)
+   --> backend/tests/test_participacion_multicanal.py:156:101
+    |
+154 |             "mujeres_lideresas": 25,
+155 |         },
+156 |         "sintesis_acuerdos": "Acuerdos de salvaguarda cultural y ordenamiento de playas comunitarias.",
+    |                                                                                                     ^^^
+157 |         "estado": "REALIZADO",
+158 |     }
+    |
+
+E501 Line too long (165 > 100)
+  --> backend/tests/test_testimonios_comunitarios.py:75:101
+   |
+73 | …nidad de Pasacaballos",
+74 | …iente",
+75 | …lítica pública debe priorizar el empleo local en la zona industrial sin contaminar nuestra bahía.",
+   |                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+76 | …
+77 | …
+   |
+
+Found 45 errors.
+[*] 12 fixable with the `--fix` option.
+error: script "backend:check" exited with code 1

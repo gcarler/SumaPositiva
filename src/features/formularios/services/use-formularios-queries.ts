@@ -1,7 +1,8 @@
+import { formulariosRemotos } from "./formularios-remotos";
 import { useSesionStore } from "@/features/sesion/state/session-store";
 import type { DatosRespuesta } from "../state/formularios-store";
-import { useMemo } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useEffect, useMemo } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useFormulariosStore } from "../state/formularios-store";
 import {
   crearFormulario,
@@ -17,7 +18,22 @@ export const FORMULARIOS_KEYS = {
 };
 export function useFormularios() {
   const data = useFormulariosStore((s) => s.formularios);
-  return { data, isLoading: false, error: null };
+  const sesion = useSesionStore((s) => s.sesion);
+  const remoto = useQuery({
+    queryKey: FORMULARIOS_KEYS.all,
+    queryFn: formulariosRemotos.listar,
+    enabled: !!sesion?.usuarioId,
+  });
+  useEffect(() => {
+    if (remoto.data)
+      useFormulariosStore.setState((s) => ({
+        formularios: [
+          ...s.formularios.filter((f) => f.origenDatos !== "api"),
+          ...remoto.data!,
+        ],
+      }));
+  }, [remoto.data]);
+  return { data, isLoading: remoto.isFetching, error: remoto.error };
 }
 export function useFormularioDetalle(id: string) {
   const data = useFormulariosStore((s) =>
@@ -32,20 +48,41 @@ export function useFormularioDetalle(id: string) {
 export function useFormularioAnalitica(id: string) {
   const { data: form, error } = useFormularioDetalle(id);
   const respuestas = useFormulariosStore((s) => s.respuestas);
+  const remoto = useQuery({
+    queryKey: [...FORMULARIOS_KEYS.analitica(id), "respuestas"],
+    queryFn: () => formulariosRemotos.respuestas(id),
+    enabled: form?.origenDatos === "api",
+  });
+  const registros = form?.origenDatos === "api" ? remoto.data : respuestas;
   const data = useMemo(
-    () => (form ? calcularAnalitica(form, respuestas) : undefined),
-    [form, respuestas],
+    () => (form && registros ? calcularAnalitica(form, registros) : undefined),
+    [form, registros],
   );
-  return { data, isLoading: false, error };
+  useEffect(() => {
+    if (form?.origenDatos === "api" && remoto.data)
+      useFormulariosStore.setState((s) => ({
+        respuestas: [
+          ...s.respuestas.filter((r) => r.formularioId !== id),
+          ...remoto.data!,
+        ],
+      }));
+  }, [form?.origenDatos, id, remoto.data]);
+  return { data, isLoading: remoto.isFetching, error: error ?? remoto.error };
 }
 export function useGuardarFormulario() {
+  const cache = useQueryClient();
   return useMutation({
+    onSuccess: () =>
+      cache.invalidateQueries({ queryKey: FORMULARIOS_KEYS.all }),
     mutationFn: ({ id, datos }: { id?: string; datos: DatosFormulario }) =>
       id ? actualizarFormulario(id, datos) : crearFormulario(datos),
   });
 }
 export function useEnviarRespuesta() {
+  const cache = useQueryClient();
   return useMutation({
+    onSuccess: () =>
+      cache.invalidateQueries({ queryKey: FORMULARIOS_KEYS.all }),
     mutationFn: (datos: DatosRespuesta) => {
       const sesion = useSesionStore.getState().sesion;
       const autenticado =

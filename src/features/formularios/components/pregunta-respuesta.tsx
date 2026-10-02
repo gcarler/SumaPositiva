@@ -345,8 +345,9 @@ export function PreguntaRespuesta({
                       setCargando(true);
                       ocupado(true);
                       try {
-                        // DEMO: base64 en RAM; en producción subir a MinIO/S3 y guardar la URL
-                        // retornada por el servicio de upload, en lugar del contenido en Zustand.
+                        // El control codifica base64; en ejemplos vive en RAM y en formularios
+                        // API se persiste en JSONB. Migrar a MinIO/S3 con URL de retorno
+                        // antes de ampliar el límite actual de 2 MB por archivo.
                         const contenido = await new Promise<string>(
                           (resolve, reject) => {
                             const reader = new FileReader();

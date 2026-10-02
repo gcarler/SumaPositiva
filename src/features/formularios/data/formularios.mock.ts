@@ -17,6 +17,7 @@ const dimensiones = [
 export const FORMULARIOS_MOCK: Formulario[] = [
   {
     id: "f1",
+    origenDatos: "demo",
     titulo: "Diagnóstico de Seguridad en mi Barrio",
     descripcion:
       "Instrumento de prueba para conocer las condiciones de Seguridad Humana en el territorio.",
@@ -97,13 +98,19 @@ export const FORMULARIOS_MOCK: Formulario[] = [
         seccionId: "experiencia",
       },
     ],
-    configuracion: { ...CONFIGURACION_INICIAL },
+    configuracion: {
+      ...CONFIGURACION_INICIAL,
+      slug: "diagnostico-barrio-2026",
+      urlPublica:
+        "https://seguridadhumanaintegral.org/f/diagnostico-barrio-2026",
+    },
     respuestasCount: 2,
     creadoEn: fecha,
     actualizadoEn: fecha,
   },
   {
     id: "f2",
+    origenDatos: "demo",
     titulo: "Priorización de Líneas Estratégicas",
     descripcion:
       "Valora las siete dimensiones de Seguridad Humana y las propuestas de mayor impacto. Datos de demostración.",
@@ -154,7 +161,12 @@ export const FORMULARIOS_MOCK: Formulario[] = [
         validacion: { maxLongitud: 2000 },
       },
     ],
-    configuracion: { ...CONFIGURACION_INICIAL },
+    configuracion: {
+      ...CONFIGURACION_INICIAL,
+      slug: "priorizacion-dimensiones-2026",
+      urlPublica:
+        "https://seguridadhumanaintegral.org/f/priorizacion-dimensiones-2026",
+    },
     respuestasCount: 1,
     creadoEn: fecha,
     actualizadoEn: fecha,

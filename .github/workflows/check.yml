@@ -7,6 +7,24 @@ on:
 jobs:
   frontend:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgis/postgis:16-3.5
+        env:
+          POSTGRES_DB: polis_test_frontend
+          POSTGRES_USER: polis
+          POSTGRES_PASSWORD: polis_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U polis -d polis_test_frontend"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+    env:
+      POLIS_ENVIRONMENT: test
+      POLIS_DATABASE_URL: postgresql+asyncpg://polis:polis_test@127.0.0.1:5432/polis_test_frontend
+      POLIS_BACKEND_URL: http://127.0.0.1:8000
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
@@ -15,6 +33,20 @@ jobs:
       - run: bun install --frozen-lockfile
       - run: bun run check
       - run: bun run ui:policy:test
+      - uses: astral-sh/setup-uv@v6
+      - run: uv sync --project backend --python 3.12 --locked
+      - run: bun run backend:migrate
+      - name: API de pruebas para generar formularios publicados
+        run: |
+          uv run --project backend uvicorn app.main:app --app-dir backend --host 127.0.0.1 --port 8000 > /tmp/polis-api.log 2>&1 &
+          for intento in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:8000/api/v1/health/ready; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/polis-api.log
+          exit 1
       - run: bun run build
       - run: bun run storybook:build
       - run: bunx playwright install --with-deps chromium

@@ -1,0 +1,6 @@
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+proxy /api/formularios/revalidar sin JWT: 401
+HTTP /f/diagnostico-barrio-2026: 200
+HTTPS con validación TLS /f/diagnostico-barrio-2026: 000
+TLS: certificado autofirmado; curl rechaza verificación (error 60).

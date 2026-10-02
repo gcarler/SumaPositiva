@@ -1,5 +1,8 @@
-/** Explicit demonstration adapter. Never substitutes mock data for a failed API request.
- * Server persistence requires its own matching DTO, permission and upload contract. */
+import { v4 as uuid } from "uuid";
+import { formulariosRemotos } from "./formularios-remotos";
+import { generarSlug, urlFormulario } from "./formulario-url";
+import { validarFormulario } from "./formulario-engine";
+/** Ejemplos aislados y transporte persistente. Nunca se sustituye un fallo de API por mocks. */
 import {
   useFormulariosStore,
   type DatosRespuesta,
@@ -17,19 +20,87 @@ export async function obtenerFormulario(id: string) {
   return form;
 }
 export async function crearFormulario(data: DatosFormulario) {
-  return useFormulariosStore.getState().crearFormulario(data);
+  const slug = generarSlug(data.titulo);
+  const ahora = new Date().toISOString();
+  const form: Formulario = {
+    ...structuredClone(data),
+    id: uuid(),
+    configuracion: {
+      ...data.configuracion,
+      slug,
+      urlPublica: urlFormulario(slug),
+    },
+    respuestasCount: 0,
+    creadoEn: ahora,
+    actualizadoEn: ahora,
+    origenDatos: "api",
+  };
+  if (form.estado === "activo" && form.configuracion.requiereAutenticacion)
+    throw new Error(
+      "Los formularios publicados son públicos: desactiva el requisito de autenticación.",
+    );
+  const errores = validarFormulario(form);
+  if (errores.length) throw new Error(errores.join(" "));
+  const guardado = await formulariosRemotos.crear(form);
+  useFormulariosStore.setState((s) => ({
+    formularios: [...s.formularios, guardado],
+  }));
+  return guardado;
 }
 export async function actualizarFormulario(
   id: string,
   data: Partial<Formulario>,
 ) {
-  useFormulariosStore.getState().actualizarFormulario(id, data);
-  return obtenerFormulario(id);
+  const actual = await obtenerFormulario(id);
+  if (actual.origenDatos !== "api") {
+    useFormulariosStore.getState().actualizarFormulario(id, data);
+    return obtenerFormulario(id);
+  }
+  const siguiente = {
+    ...actual,
+    ...structuredClone(data),
+    id: actual.id,
+    configuracion: {
+      ...actual.configuracion,
+      ...data.configuracion,
+      slug: actual.configuracion.slug,
+      urlPublica: actual.configuracion.urlPublica,
+    },
+  };
+  if (
+    siguiente.estado === "activo" &&
+    siguiente.configuracion.requiereAutenticacion
+  )
+    throw new Error(
+      "Los formularios publicados son públicos: desactiva el requisito de autenticación.",
+    );
+  const errores = validarFormulario(siguiente);
+  if (errores.length) throw new Error(errores.join(" "));
+  const guardado = await formulariosRemotos.actualizar(siguiente);
+  useFormulariosStore.setState((s) => ({
+    formularios: s.formularios.map((f) => (f.id === id ? guardado : f)),
+  }));
+  return guardado;
 }
 export async function obtenerAnalitica(id: string) {
   const form = await obtenerFormulario(id);
   return calcularAnalitica(form, useFormulariosStore.getState().respuestas);
 }
 export async function enviarRespuesta(data: DatosRespuesta) {
+  const form = await obtenerFormulario(data.formularioId);
+  if (form.origenDatos === "api") {
+    await formulariosRemotos.enviar(
+      form,
+      data.respuestas,
+      data.enfoqueDiferencial,
+    );
+    return;
+  }
   useFormulariosStore.getState().enviarRespuesta(data);
+}
+
+export async function eliminarFormulario(id: string) {
+  const form = await obtenerFormulario(id);
+  if (form.origenDatos === "api") await formulariosRemotos.eliminar(id);
+  useFormulariosStore.getState().eliminarFormulario(id);
 }

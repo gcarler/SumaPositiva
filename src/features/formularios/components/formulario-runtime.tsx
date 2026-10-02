@@ -27,10 +27,12 @@ export function FormularioRuntime({
   inicial = {},
   enviar,
   preview = false,
+  etiquetaEnvio = "Enviar respuestas",
 }: {
   form: Formulario;
   inicial?: ValoresRespuesta;
   preview?: boolean;
+  etiquetaEnvio?: string;
   enviar: (respuestas: ValoresRespuesta, enfoque: string) => Promise<void>;
 }) {
   const [respuestas, setRespuestas] = useState<ValoresRespuesta>(() =>
@@ -276,7 +278,7 @@ export function FormularioRuntime({
               ? "Siguiente"
               : preview
                 ? "Simular envío"
-                : "Enviar respuestas"}
+                : etiquetaEnvio}
           </Button>
         </div>
       </form>

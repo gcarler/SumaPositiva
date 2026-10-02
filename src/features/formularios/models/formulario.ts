@@ -81,6 +81,8 @@ export interface SeccionFormulario {
   orden: number;
 }
 export interface ConfiguracionFormulario {
+  slug: string;
+  urlPublica: string;
   mensajeConfirmacion: string;
   limiteRespuestas?: number;
   fechaCierre?: string;
@@ -90,6 +92,7 @@ export interface ConfiguracionFormulario {
   ordenAleatorio: boolean;
 }
 export interface Formulario {
+  origenDatos?: "demo" | "api";
   id: string;
   titulo: string;
   descripcion: string;
@@ -133,8 +136,9 @@ export interface AnaliticaFormulario {
   respuestasPorPregunta: RespuestaAnalitica[];
 }
 export const CONFIGURACION_INICIAL: ConfiguracionFormulario = {
-  mensajeConfirmacion:
-    "Gracias por participar. Tu respuesta de prueba ha sido recibida.",
+  slug: "",
+  urlPublica: "",
+  mensajeConfirmacion: "Gracias por participar. Tu respuesta ha sido recibida.",
   permitirEdicion: false,
   requiereAutenticacion: false,
   mostrarBarraProgreso: true,

@@ -1,4 +1,5 @@
 "use client";
+import { CompartirFormulario } from "../components/compartir-formulario";
 import { PanelShell } from "@/core/panels/panel-shell";
 import { usePanels } from "@/core/panels/panel-store";
 import { Button } from "@/shared/ui/button";
@@ -19,7 +20,9 @@ export function FormularioAnaliticaPanel({
 }) {
   const { closeTop } = usePanels();
   const { data: form, error } = useFormularioDetalle(props.formularioId);
-  const { data: stats } = useFormularioAnalitica(props.formularioId);
+  const { data: stats, error: errorStats } = useFormularioAnalitica(
+    props.formularioId,
+  );
   const respuestas = useFormulariosStore((s) => s.respuestas);
   return (
     <PanelShell
@@ -33,7 +36,7 @@ export function FormularioAnaliticaPanel({
         <div className="flex flex-wrap gap-2">
           <Button
             variant="outline"
-            disabled={!form}
+            disabled={!form || !stats}
             onClick={() => form && descargarCsv(form, respuestas)}
           >
             Exportar CSV
@@ -41,6 +44,7 @@ export function FormularioAnaliticaPanel({
           {form?.preguntas.some((p) => p.tipo === "ubicacion_geografica") && (
             <Button
               variant="outline"
+              disabled={!stats}
               onClick={() => descargarGeoJson(form, respuestas)}
             >
               Exportar puntos GeoJSON
@@ -51,10 +55,15 @@ export function FormularioAnaliticaPanel({
     >
       <div className="space-y-6 p-6">
         <p className="text-xs text-text-secondary">
-          Analítica de respuestas de demostración de esta sesión.
+          {form?.origenDatos === "api"
+            ? "Analítica de respuestas guardadas en POLIS."
+            : "Analítica de respuestas de demostración de esta sesión."}
         </p>
+        {form && <CompartirFormulario form={form} />}
         {!form || !stats ? (
-          <p role="alert">{error?.message ?? "No hay datos del formulario."}</p>
+          <p role="alert">
+            {error?.message ?? errorStats?.message ?? "Cargando analítica…"}
+          </p>
         ) : (
           <>
             <section className="rounded-xl border border-border bg-surface-1 p-4">

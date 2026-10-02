@@ -1,3 +1,4 @@
+import { simularApiFormularios } from "./formularios-mock-api";
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { expect, userEvent, within, waitFor, fn } from "storybook/test";
 import { getRouter } from "@storybook/nextjs-vite/navigation.mock";
@@ -88,6 +89,7 @@ const meta = {
     nextjs: { appDirectory: true, navigation: { pathname: "/plataforma" } },
   },
   beforeEach: () => {
+    const restaurarApiFormularios = simularApiFormularios();
     const anterior = useSesionStore.getState();
     usePanelStore.getState().closeAll();
     useFormulariosStore.getState().reiniciarDemo();
@@ -123,6 +125,7 @@ const meta = {
       perfil: fn(async () => perfil),
     });
     return () => {
+      restaurarApiFormularios();
       Object.assign(plataformaApi, apiOriginal);
       Object.assign(identidadApi, identidadOriginal);
       usePanelStore.getState().closeAll();

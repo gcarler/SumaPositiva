@@ -1,4 +1,6 @@
 "use client";
+import { toast } from "sonner";
+import { eliminarFormulario } from "../services/formularios-api";
 
 import { PanelShell } from "@/core/panels/panel-shell";
 import { usePanels } from "@/core/panels/panel-store";
@@ -39,14 +41,19 @@ export function FormulariosContenido({
   soloLectura?: boolean;
 }) {
   const { openPanel } = usePanels();
-  const { data: formularios, isLoading } = useFormularios();
+  const { data: formularios, isLoading, error } = useFormularios();
   const [eliminarId, setEliminarId] = useState<string>();
   return (
     <div className="p-6 space-y-6">
       <p className="text-xs text-text-secondary">
-        Demostración: formularios y respuestas de prueba de esta sesión. No se
-        registran oficialmente.
+        Los nuevos formularios se guardan en POLIS. Los ejemplos de demostración
+        se identifican en cada tarjeta.
       </p>
+      {error && (
+        <p role="alert" className="text-sm text-danger">
+          No se pudo consultar el catálogo guardado: {error.message}
+        </p>
+      )}
       <div className="flex flex-wrap gap-3 justify-between items-center">
         <SectionLabel>Formularios Disponibles</SectionLabel>
         {!soloRespuesta && !soloLectura && (
@@ -77,6 +84,11 @@ export function FormulariosContenido({
                       {form.estado}
                     </span>
                     <span>{form.respuestasCount} respuestas</span>
+                    <span>
+                      {form.origenDatos === "api"
+                        ? "Guardado en POLIS"
+                        : "Ejemplo de demostración"}
+                    </span>
                   </div>
                 </div>
                 <div className="flex flex-wrap gap-2">
@@ -124,6 +136,20 @@ export function FormulariosContenido({
                           <Edit2 aria-hidden="true" className="size-3.5" />
                         </Button>
                       )}
+                      {form.estado === "activo" &&
+                        form.configuracion.urlPublica && (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() =>
+                              openPanel("formulario-analitica", {
+                                formularioId: form.id,
+                              })
+                            }
+                          >
+                            Compartir
+                          </Button>
+                        )}
                       {form.estado !== "borrador" && (
                         <Button
                           variant="outline"
@@ -177,11 +203,17 @@ export function FormulariosContenido({
                       <Button
                         size="sm"
                         variant="destructive"
-                        onClick={() => {
-                          useFormulariosStore
-                            .getState()
-                            .eliminarFormulario(form.id);
-                          setEliminarId(undefined);
+                        onClick={async () => {
+                          try {
+                            await eliminarFormulario(form.id);
+                            setEliminarId(undefined);
+                          } catch (error) {
+                            toast.error(
+                              error instanceof Error
+                                ? error.message
+                                : "No se pudo eliminar el formulario",
+                            );
+                          }
                         }}
                       >
                         Confirmar eliminación

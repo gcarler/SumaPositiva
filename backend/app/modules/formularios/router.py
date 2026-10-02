@@ -4,6 +4,8 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, status
 
 from app.core.database import SessionDependency
+from app.modules.formularios.constructor_schemas import DocumentoFormulario
+from app.modules.formularios.constructor_service import ConstructorService
 from app.modules.formularios.schemas import (
     AnaliticaFormularioRespuesta,
     FormularioActualizar,
@@ -46,6 +48,61 @@ async def crear_formulario(
     service: FormularioServiceDep,
 ):
     return await service.crear_formulario(datos)
+
+
+@router.get("/publicos", response_model=list[DocumentoFormulario], response_model_exclude_none=True)
+async def listar_publicos(session: SessionDependency):
+    return await ConstructorService(session).listar(publico=True)
+
+
+@router.get(
+    "/publicos/{slug}", response_model=DocumentoFormulario, response_model_exclude_none=True
+)
+async def obtener_publico(slug: str, session: SessionDependency):
+    return await ConstructorService(session).obtener(slug, publico=True)
+
+
+@router.get(
+    "/constructor",
+    response_model=list[DocumentoFormulario],
+    response_model_exclude_none=True,
+    dependencies=[Depends(requerir_permiso("formularios:leer", nivel_minimo="declarada"))],
+)
+async def listar_constructor(session: SessionDependency):
+    return await ConstructorService(session).listar()
+
+
+@router.get(
+    "/constructor/slug/{slug}",
+    response_model=DocumentoFormulario,
+    response_model_exclude_none=True,
+    dependencies=[Depends(requerir_permiso("formularios:leer", nivel_minimo="declarada"))],
+)
+async def obtener_constructor(slug: str, session: SessionDependency):
+    return await ConstructorService(session).obtener(slug)
+
+
+@router.post(
+    "/constructor",
+    response_model=DocumentoFormulario,
+    response_model_exclude_none=True,
+    status_code=201,
+    dependencies=[Depends(requerir_permiso("formularios:gestionar", nivel_minimo="declarada"))],
+)
+async def crear_constructor(datos: DocumentoFormulario, session: SessionDependency):
+    return await ConstructorService(session).guardar(datos)
+
+
+@router.put(
+    "/constructor/{id}",
+    response_model=DocumentoFormulario,
+    response_model_exclude_none=True,
+    dependencies=[Depends(requerir_permiso("formularios:gestionar", nivel_minimo="declarada"))],
+)
+async def actualizar_constructor(
+    id: uuid.UUID, datos: DocumentoFormulario, session: SessionDependency
+):
+    return await ConstructorService(session).guardar(datos, id)
 
 
 @router.get("/{id}", response_model=FormularioRespuesta)
@@ -98,7 +155,7 @@ async def enviar_respuesta(
 @router.get(
     "/{id}/respuestas",
     response_model=list[RespuestaFormularioLectura],
-    dependencies=[Depends(requerir_permiso("formularios:gestionar", nivel_minimo="declarada"))],
+    dependencies=[Depends(requerir_permiso("formularios:leer", nivel_minimo="declarada"))],
 )
 async def listar_respuestas(
     id: uuid.UUID,
@@ -110,7 +167,7 @@ async def listar_respuestas(
 @router.get(
     "/{id}/analitica",
     response_model=AnaliticaFormularioRespuesta,
-    dependencies=[Depends(requerir_permiso("formularios:gestionar", nivel_minimo="declarada"))],
+    dependencies=[Depends(requerir_permiso("formularios:leer", nivel_minimo="declarada"))],
 )
 async def obtener_analitica(
     id: uuid.UUID,

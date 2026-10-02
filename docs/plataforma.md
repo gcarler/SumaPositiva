@@ -49,7 +49,9 @@ un guard de servidor ni cookies HttpOnly.
   más activo como referencia de demostración. Alertas ciudadanas consultadas en
   la API. Usuarios registrados conserva el placeholder solicitado.
 - Formularios: renderer/listado compartido con el módulo entregado; construcción,
-  vista previa y analítica. Datos de demostración en memoria.
+  vista previa y analítica. Los nuevos formularios y respuestas se persisten en la
+  API y tienen enlace público; los dos ejemplos conservan el modo de demostración.
+  Véase [Formularios públicos](formularios-publicos.md).
 - Mesas: agenda/editor existentes en memoria, identificados como demostración;
   panel de acuerdos existente y protección de lectura.
 - Usuarios y Roles: directorio real de identidad y panel existente de administración.

@@ -76,3 +76,14 @@ class FormularioRepository:
         )
         result = await self.session.execute(stmt)
         return result.scalar_one() or 0
+
+    async def obtener_por_slug(self, slug: str, *, bloquear: bool = False):
+        stmt = select(FormularioConsulta).where(FormularioConsulta.slug == slug)
+        if bloquear:
+            stmt = stmt.with_for_update().execution_options(populate_existing=True)
+        return (await self.session.execute(stmt)).scalar_one_or_none()
+
+    async def guardar(self, formulario: FormularioConsulta):
+        await self.session.flush()
+        await self.session.refresh(formulario)
+        return formulario

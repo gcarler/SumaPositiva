@@ -30,11 +30,11 @@ sus identificadores de respuesta/pregunta, fecha, referencia, origen y precisió
 no incorpora las respuestas de otras preguntas. Puede abrirse en un geovisor GIS.
 No se afirma que los puntos ya aparezcan automáticamente en el geovisor de POLIS.
 
-**Límite vigente:** el constructor y las respuestas permanecen en memoria en modo
-demostración; se pierden al recargar. No deben usarse aún para recolección oficial.
-La API persistente existente utiliza un contrato anterior: hace falta adaptar los
-DTO de los 14 tipos, secciones, lógica y puntos antes de conectar este flujo a
-`bd_csh`. También faltan publicación pública y sincronización con el geovisor.
+Los formularios nuevos y sus respuestas geográficas se persisten mediante FastAPI
+y PostgreSQL; pueden compartirse por `/f/<slug>`. Los dos ejemplos históricos
+conservan el modo de demostración en memoria. Véase
+[Formularios públicos](formularios-publicos.md) para acceso, transacciones y límites.
+La sincronización automática con el geovisor permanece fuera de esta entrega.
 
 La migración `0028_formularios_admin` corrige la ausencia de permisos del
 administrador. La unión `0029_merge_formularios_fotos` conserva una sola cabeza

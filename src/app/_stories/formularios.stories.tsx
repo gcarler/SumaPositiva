@@ -1,3 +1,4 @@
+import { simularApiFormularios } from "./formularios-mock-api";
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { expect, userEvent, within, waitFor } from "storybook/test";
 import { QueryProvider } from "@/app/_composition/query-provider";
@@ -87,11 +88,13 @@ const meta = {
   title: "Plataforma/Formularios",
   parameters: { layout: "fullscreen", polis: { screen: true } },
   beforeEach: () => {
+    const restaurarApiFormularios = simularApiFormularios();
     const anterior = useFormulariosStore.getState();
     useFormulariosStore.getState().reiniciarDemo();
     useSesionStore.getState().limpiarSesion();
     usePanelStore.getState().closeAll();
     return () => {
+      restaurarApiFormularios();
       usePanelStore.getState().closeAll();
       useFormulariosStore.setState(anterior);
       useSesionStore.getState().limpiarSesion();

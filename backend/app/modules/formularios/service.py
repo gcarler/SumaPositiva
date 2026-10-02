@@ -7,6 +7,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.transactions import transaction
+from app.modules.formularios.constructor_validation import validar_respuestas
 from app.modules.formularios.models import FormularioConsulta, RespuestaFormulario
 from app.modules.formularios.repository import FormularioRepository
 from app.modules.formularios.schemas import (
@@ -30,7 +31,9 @@ class FormularioService:
         dimension_id: uuid.UUID | None = None,
         territorio_id: uuid.UUID | None = None,
     ) -> list[FormularioRespuesta]:
-        formularios = await self.repo.listar(estado, dimension_id, territorio_id)
+        if estado and estado != "PUBLICADO":
+            raise HTTPException(403, "Los borradores solo se consultan desde gestión")
+        formularios = await self.repo.listar("PUBLICADO", dimension_id, territorio_id)
         respuestas_dto = []
         for f in formularios:
             conteo = await self.repo.contar_respuestas(f.id)
@@ -46,6 +49,8 @@ class FormularioService:
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail=f"Formulario con id {formulario_id} no encontrado",
             )
+        if f.estado != "PUBLICADO":
+            raise HTTPException(403, "Formulario no publicado")
         conteo = await self.repo.contar_respuestas(f.id)
         dto = FormularioRespuesta.model_validate(f)
         dto.total_respuestas = conteo
@@ -62,6 +67,7 @@ class FormularioService:
 
             nuevo = FormularioConsulta(
                 codigo=datos.codigo,
+                slug="consulta-" + uuid.uuid4().hex,
                 titulo=datos.titulo,
                 descripcion=datos.descripcion,
                 dimension_id=datos.dimension_id,
@@ -85,6 +91,9 @@ class FormularioService:
                     status_code=status.HTTP_404_NOT_FOUND,
                     detail=f"Formulario con id {formulario_id} no encontrado",
                 )
+
+            if f.documento_constructor:
+                raise HTTPException(409, "Edite este formulario mediante el constructor")
 
             if datos.titulo is not None:
                 f.titulo = datos.titulo
@@ -128,6 +137,11 @@ class FormularioService:
                     detail=f"Formulario con id {formulario_id} no encontrado",
                 )
 
+            if f.documento_constructor:
+                f = await self.repo.obtener_por_slug(f.slug, bloquear=True)
+                if not f:
+                    raise HTTPException(404, "Formulario no encontrado")
+
             if f.estado != "PUBLICADO":
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
@@ -140,25 +154,46 @@ class FormularioService:
                     detail="El periodo de participación para esta consulta ha concluido",
                 )
 
-            # Validar preguntas obligatorias
-            for preg in f.esquema_preguntas:
-                pid = preg.get("id")
-                obligatoria = preg.get("obligatoria", True)
-                if obligatoria and (
-                    pid not in datos.datos_respuesta or datos.datos_respuesta[pid] in (None, "", [])
-                ):
-                    raise HTTPException(
-                        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-                        detail=f"La pregunta '{preg.get('texto', pid)}' es obligatoria",
-                    )
+            if f.documento_constructor:
+                datos.datos_respuesta = validar_respuestas(
+                    f.documento_constructor, datos.datos_respuesta
+                )
+            else:
+                # Validar preguntas obligatorias
+                for preg in f.esquema_preguntas:
+                    pid = preg.get("id")
+                    obligatoria = preg.get("obligatoria", True)
+                    if obligatoria and (
+                        pid not in datos.datos_respuesta
+                        or datos.datos_respuesta[pid] in (None, "", [])
+                    ):
+                        raise HTTPException(
+                            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                            detail=f"La pregunta '{preg.get('texto', pid)}' es obligatoria",
+                        )
 
             # Verificar si ya existe respuesta del sujeto
             existente = await self.repo.obtener_respuesta_sujeto(formulario_id, sujeto_id)
+            if (
+                existente
+                and f.documento_constructor
+                and f.documento_constructor["configuracion"].get("permitirEdicion")
+            ):
+                existente.datos_respuesta = datos.datos_respuesta
+                existente.datos_enfoque = datos.datos_enfoque
+                await self.session.flush()
+                return RespuestaFormularioLectura.model_validate(existente)
             if existente:
                 raise HTTPException(
                     status_code=status.HTTP_409_CONFLICT,
                     detail="El participante ya ha enviado una respuesta a esta consulta.",
                 )
+
+            limite = (
+                (f.documento_constructor or {}).get("configuracion", {}).get("limiteRespuestas")
+            )
+            if limite and await self.repo.contar_respuestas(f.id) >= limite:
+                raise HTTPException(409, "Se alcanzó el límite de respuestas")
 
             nueva_respuesta = RespuestaFormulario(
                 formulario_id=formulario_id,

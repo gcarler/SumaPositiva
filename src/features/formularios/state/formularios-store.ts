@@ -1,4 +1,5 @@
 "use client";
+import { generarSlug, urlFormulario } from "../services/formulario-url";
 import { v4 as uuid } from "uuid";
 import { create } from "zustand";
 import type {
@@ -37,15 +38,23 @@ const verificar = (form: Formulario) => {
   const errors = validarFormulario(form);
   if (errors.length) throw new Error(errors.join(" "));
 };
-// DEMO: datos en RAM. Integrar FastAPI /api/v1/formularios, /{id}/respuestas y /{id}/analitica
-// mediante services/formularios-api.ts para persistir en bd_csh, adaptando DTOs y permisos.
+// Los ejemplos y la vista previa son locales. Los nuevos formularios usan
+// services/formularios-api.ts → FastAPI /constructor y /{id}/respuestas;
+// este store mantiene la caché UI, no sustituye la persistencia de PostgreSQL.
 export const useFormulariosStore = create<FormulariosState>((set, get) => ({
   ...copia(),
   identidadAnonima: "anonimo-demo",
   crearFormulario: (datos) => {
     const ahora = new Date().toISOString();
+    const slug = generarSlug(datos.titulo);
     const form: Formulario = {
       ...structuredClone(datos),
+      configuracion: {
+        ...structuredClone(datos.configuracion),
+        slug,
+        urlPublica: urlFormulario(slug),
+      },
+      origenDatos: "demo",
       id: uuid(),
       respuestasCount: 0,
       creadoEn: ahora,
@@ -62,6 +71,12 @@ export const useFormulariosStore = create<FormulariosState>((set, get) => ({
       ...actual,
       ...structuredClone(cambios),
       id: actual.id,
+      configuracion: {
+        ...actual.configuracion,
+        ...cambios.configuracion,
+        slug: actual.configuracion.slug,
+        urlPublica: actual.configuracion.urlPublica,
+      },
       creadoEn: actual.creadoEn,
       respuestasCount: actual.respuestasCount,
       actualizadoEn: new Date().toISOString(),

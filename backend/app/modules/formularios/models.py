@@ -12,6 +12,7 @@ from app.core.database import Base
 class FormularioConsulta(Base):
     __tablename__ = "formularios_consulta"
     __table_args__ = (
+        UniqueConstraint("slug", name="uq_formulario_slug"),
         Index("idx_formularios_codigo", "codigo", postgresql_include=[]),
         Index("idx_formularios_dimension", "dimension_id", postgresql_include=[]),
         Index("idx_formularios_territorio", "territorio_id", postgresql_include=[]),
@@ -23,6 +24,8 @@ class FormularioConsulta(Base):
         UUID(as_uuid=True), primary_key=True, server_default=text("public.generar_uuid_v7()")
     )
     codigo: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
+    slug: Mapped[str] = mapped_column(String(80), nullable=False)
+    documento_constructor: Mapped[dict[str, Any] | None] = mapped_column(JSONB, nullable=True)
     titulo: Mapped[str] = mapped_column(String(250), nullable=False)
     descripcion: Mapped[str] = mapped_column(Text, nullable=False)
     dimension_id: Mapped[uuid.UUID | None] = mapped_column(

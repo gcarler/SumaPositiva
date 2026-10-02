@@ -1,0 +1,7 @@
+Login real y creación desde constructor: formulario persistido, HTTP 201
+URL canónica, copia confirmada y enlaces WhatsApp/Telegram/correo/QR disponibles
+Navegador ciudadano independiente, sin login ni desbordamiento a 320 px
+Respuesta ciudadana con punto enviada y confirmada: HTTP 201
+Después de recargar: analítica y GeoJSON leen la respuesta persistida
+Otro navegador tras recarga conserva formulario, OpenGraph, imagen y 404 correcto
+Sin errores JavaScript en el recorrido

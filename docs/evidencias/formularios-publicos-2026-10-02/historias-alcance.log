@@ -1,0 +1,7 @@
+RUN  v4.1.6 /root/polis
+
+
+ Test Files  3 passed (3)
+      Tests  41 passed (41)
+   Start at  03:25:55
+   Duration  32.38s (transform 0ms, setup 3.65s, import 1.27s, tests 16.07s, environment 0ms)
