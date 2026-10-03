@@ -1,26 +1,26 @@
 # DICTAMEN DE REVISIÓN FORENSE Y CONTROL DE CALIDAD (EAF)
-**Fecha/Hora**: 2026-10-03 18:28:00 UTC
-**Módulo Auditado**: Fase de Formulación Estratégica — Hito F-1 (Banco Distrital de Alternativas de Solución MGA `/plataforma/alternativas`)
-**Commits Evaluados**: `a2dd2db`, `bd9d5fb`, `83e0e45`
+**Fecha/Hora**: 2026-10-03 19:04:00 UTC
+**Módulo Auditado**: Fase de Formulación Estratégica — Hito F-2 (Evaluación de Viabilidad Jurídica y Fiscal con IA `/plataforma/alternativas`)
+**Commits Evaluados**: `cc35304`, `f039c1d`
 **Responsable de Entrega**: `agy2` (Equipo de Desarrollo EDD)
 **Evaluador**: Antigravity (Orquestador Central / Auditoría Forense EAF)
 **Resultado**: CONFORME (Aprobado sin objeciones)
 
 ---
 
-## 1. Verificación Metodológica y Rigor de Formulación Pública (MGA/DNP)
-* **Alineación con la Metodología General Ajustada (DNP)**:
-  - Creación del nuevo módulo `/plataforma/alternativas` como Banco Distrital de Alternativas de Solución.
-  - Sembrado oficial de 8 alternativas de política pública estructuradas para las problemáticas prioritarias de Cartagena:
-    1. `ALT-ESCNNA-01`: Ruta Segura y Protección Integral contra ESCNNA ($4.500M COP — FONSET + Cooperación).
-    2. `ALT-CONV-02`: Programa Jóvenes Constructores de Paz ($6.200M COP — FONSET + SGP).
-    3. `ALT-AMB-03`: Restauración Ecoterritorial Ciénaga de la Virgen ($12.000M COP — SGR + ICLD).
-    4. `ALT-CUID-04`: Red Distrital de Manzanas del Cuidado ($3.800M COP — SGP + Presupuesto Participativo).
-    5. `ALT-INS-05`: Centro de Innovación Tecnológica para Jóvenes Insulares (Tierrabomba/Barú — $2.900M COP).
-    6. `ALT-SEG-06`: Videovigilancia Inteligente LPR y Alarmas Comunitarias ($8.500M COP — FONSET).
-    7. `ALT-ECON-07`: Fondo Popular contra el "Gota a Gota" en Bazurto ($3.500M COP — ICLD).
-    8. `ALT-ETN-08`: Seguridad Alimentaria y Fortalecimiento de Consejos Comunitarios (Ley 70/93 — $2.400M COP).
-  - Vinculación obligatoria con objetivos centrales MGA, sectores de inversión, dimensiones ONU, horizontes de ejecución (1–10 años) y activación de salvaguardas de Consulta Previa (Convenio 169 OIT y Ley 70 de 1993).
+## 1. Verificación Metodológica, Jurídica y Fiscal (MGA / LOOT / MFMP)
+* **Alineación con el Bloque de Constitucionalidad y Marco Legal**:
+  - Botón "Evaluar Viabilidad IA" en cada alternativa del Banco Distrital de Soluciones en `/plataforma/alternativas`.
+  - Integración en frontend y servicio con los motores de Inteligencia Artificial del backend FastAPI:
+    - **`POST /api/v1/ia/juridico` (`AgenteJuridico`)**:
+      - Control estricto de competencias bajo la Ley Orgánica 1454 de 2011 (LOOT) y Ley 715 de 2001 (competencia distrital de Cartagena vs departamental/nacional).
+      - Salvaguarda preceptiva de Consulta Previa bajo el Convenio 169 de la OIT y Ley 70 de 1993: Alerta automática y condición vinculante para iniciativas en territorios colectivos de comunidades negras de Cartagena (La Boquilla, Pasacaballos, Tierrabomba, Barú).
+      - Control de no regresividad en derechos económicos, sociales, culturales y ambientales (DESCA).
+    - **`POST /api/v1/ia/fiscal` (`AgenteFiscal`)**:
+      - Análisis de riesgo y sostenibilidad conforme a la Ley 819 de 2003 (Marco Fiscal de Mediano Plazo - MFMP).
+      - Cruce de fuentes de financiamiento idóneas (FONSET para seguridad humana y convivencia pacífica, SGP, SGR, ICLD).
+      - Alerta pericial de Vigencias Futuras Excepcionales (Ley 1483 de 2011): Requisito imperativo de autorización previa del Concejo Distrital de Cartagena cuando el horizonte de ejecución trasciende el período cuatrienal de gobierno.
+  - Veredicto consolidado tipado: `VIABLE`, `VIABLE_CONDICIONADA` (con salvaguardas explícitas) e `INVIABLE`.
 
 ---
 
@@ -28,22 +28,23 @@
 * **UI Policy Guard (`scripts/ui-policy.mjs`)**:
   - **Aprobado con 0 infracciones**.
   - Regla UI004 verificada (desacoplamiento de props en `panel-store.ts`).
-  - Cero modales flotantes nativos.
-  - 100% variables y tokens semánticos CSS (`var(--surface-1)`, `var(--border)`, `var(--text-primary)`, `var(--ember)`, semáforos cromáticos).
-  - Exportación CSV pericial con sanitización contra inyección de fórmulas OWASP (`=`, `+`, `-`, `@`, `\t`, `\r`).
+  - Cero diálogos modales o popups centrados.
+  - 100% variables y tokens semánticos CSS (`var(--surface-1)`, `var(--border)`, `var(--text-primary)`, `var(--ember)`, badges cromáticos de viabilidad).
+  - Exportación técnica en JSON estructurado para archivo probatorio.
 * **Zero-Modals**:
-  - Cumplimiento total. El panel lateral `alternativa-editor` se monta sobre `PanelShell`, registrado en `panel-registry.tsx` y `panel-store.ts`, con ancho fluido `min(clamp(720px, 50vw, 1020px), 100vw)`.
-  - Modo estricto de solo lectura con inhabilitación de inputs y aviso pericial para el rol `auditor_forense`.
+  - Cumplimiento total. El panel lateral `evaluacion-viabilidad` se monta sobre `PanelShell`, registrado en `panel-registry.tsx` y `panel-store.ts`, con ancho adaptativo `min(clamp(780px, 52vw, 1100px), 100vw)`.
+  - Botón para aplicar el veredicto en el store actualizando el estado de la alternativa en tiempo real.
 * **Pruebas Automatizadas y Quality Gates**:
+  - `bun test src/features/alternativas/services/viabilidad-api.test.ts`: 6 pruebas unitarias aprobadas (31 aserciones).
   - `bun test src/features/alternativas/state/alternativas-store.test.ts`: 12 pruebas aprobadas (39 aserciones).
-  - `bun test src/features/plataforma/models/acceso.test.ts`: 17 pruebas aprobadas (137 aserciones).
-  - Total suite probada: **29 pruebas aprobadas, 0 fallos**.
+  - `bun test src/features/plataforma/models/acceso.test.ts`: 17 pruebas aprobadas (138 aserciones).
+  - Total suite: **35 pruebas aprobadas, 0 fallos**.
   - `bun run check`: Aprobado (0 errores TypeScript, 0 errores ESLint).
 * **Compilación y Despliegue en Producción**:
-  - `bun run build`: 54 rutas generadas con Turbopack (incluyendo `/plataforma/alternativas`).
+  - `bun run build`: 54 rutas generadas con Turbopack sin errores.
   - `systemctl is-active polis-frontend.service`: Activo y respondiendo **HTTP 200 OK** en `http://127.0.0.1:3000/plataforma/alternativas`.
 
 ---
 
 ## 3. Dictamen Final
-**CONFORME**. El Hito F-1 queda certificado formalmente. La plataforma cuenta ahora con un Banco Distrital de Alternativas MGA plenamente operativo, testeado y desplegado.
+**CONFORME**. El Hito F-2 queda certificado. La plataforma POLIS dispone ahora de un mecanismo de evaluación pericial automatizada de viabilidad jurídica y fiscal rigurosamente articulado a la legislación colombiana y al Distrito de Cartagena de Indias.
