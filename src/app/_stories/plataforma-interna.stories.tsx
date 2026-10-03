@@ -84,6 +84,30 @@ function autenticar(rol = "administrador_identidades") {
     expira_en: "2099-01-01T00:00:00Z",
   });
 }
+function simularApiTestimonios() {
+  const fetchOriginal = window.fetch;
+  window.fetch = async (input, opciones) => {
+    const url = new URL(
+      typeof input === "string" ? input : input instanceof URL ? input.href : input.url,
+      window.location.origin,
+    );
+    if (url.pathname === "/api/v1/testimonios/resumen") {
+      return Response.json({
+        total_testimonios: 0,
+        aprobados: 0,
+        destacados: 0,
+        pendientes: 0,
+        rechazados: 0,
+        por_territorio: [],
+      });
+    }
+    if (url.pathname === "/api/v1/testimonios/gestion") return Response.json([]);
+    return fetchOriginal(input, opciones);
+  };
+  return () => {
+    window.fetch = fetchOriginal;
+  };
+}
 const meta = {
   title: "Plataforma/Administración interna",
   parameters: {
@@ -93,6 +117,7 @@ const meta = {
   },
   beforeEach: () => {
     const restaurarApiFormularios = simularApiFormularios();
+    const restaurarApiTestimonios = simularApiTestimonios();
     const anterior = useSesionStore.getState();
     usePanelStore.getState().closeAll();
     useFormulariosStore.setState({formularios: structuredClone(FORMULARIOS_MOCK).map(f => ({...f, origenDatos: "api"})), respuestas: structuredClone(RESPUESTAS_MOCK), previews: {}});
@@ -129,6 +154,7 @@ const meta = {
     });
     return () => {
       restaurarApiFormularios();
+      restaurarApiTestimonios();
       Object.assign(plataformaApi, apiOriginal);
       Object.assign(identidadApi, identidadOriginal);
       usePanelStore.getState().closeAll();
@@ -278,6 +304,7 @@ export const Testimonios: Story = {
     const c = within(canvasElement);
     await expect(c.getByRole("heading", { name: "Moderación de Testimonios" })).toBeVisible();
     await expect(c.getByRole("region", { name: "Cola de moderación de testimonios" })).toBeVisible();
+    await expect(await c.findByText("No hay testimonios en estado pendiente en este momento.")).toBeVisible();
   },
 };
 export const Configuracion: Story = {
@@ -294,6 +321,8 @@ export const Configuracion: Story = {
   ),
   play: async ({ canvasElement }) => {
     const c = within(canvasElement);
+    await expect(c.getByRole("link", { name: "Noticias" })).toBeVisible();
+    await expect(c.getByRole("link", { name: "Testimonios" })).toBeVisible();
     await expect(c.getByRole("heading", { name: "Seguridad e identidad" })).toBeVisible();
     await expect(c.getByLabelText("Latitud")).toHaveValue("10.3997");
     await expect(c.getByText("@cartagena.gov.co")).toBeVisible();
