@@ -11,6 +11,7 @@ import {
   FileJson,
   BarChart3,
   GitBranch,
+  MapPin,
 } from "lucide-react";
 import { toast } from "sonner";
 import { PageHeader } from "@/shared/ui/page-header";
@@ -32,6 +33,7 @@ import {
 import { DiagnosticoKpis } from "../components/diagnostico-kpis";
 import { LineaBaseTabla } from "../components/linea-base-tabla";
 import { ArbolProblemasView } from "../components/arbol-problemas-view";
+import { GeodiagnosticoTerritorialView } from "../components/geodiagnostico-territorial-view";
 import { listarFichasIndicadores } from "../services/indicadores-api";
 import type { FichaIndicador, TipoIndicador } from "../models/indicador";
 
@@ -46,7 +48,9 @@ function sanitizarCsv(valor: string | number | undefined | null): string {
 
 export function DiagnosticoView() {
   const [indicadores, setIndicadores] = useState<FichaIndicador[]>([]);
-  const [modoVista, setModoVista] = useState<"linea_base" | "arbol_mga">("linea_base");
+  const [modoVista, setModoVista] = useState<
+    "linea_base" | "arbol_mga" | "geodiagnostico"
+  >("linea_base");
   const [cargando, setCargando] = useState(true);
   const [busqueda, setBusqueda] = useState("");
   const [tipoFiltro, setTipoFiltro] = useState<TipoIndicador | "todos">("todos");
@@ -189,17 +193,23 @@ export function DiagnosticoView() {
           eyebrow={
             modoVista === "linea_base"
               ? "Línea Base Cuantitativa · Metodología DNP / MGA"
-              : "Metodología General Ajustada (MGA) · Validación Causal DNP"
+              : modoVista === "arbol_mga"
+                ? "Metodología General Ajustada (MGA) · Validación Causal DNP"
+                : "Geodiagnóstico Territorial · Cartagena de Indias"
           }
           title={
             modoVista === "linea_base"
               ? "Diagnóstico Situacional y Línea Base — Seguridad Humana Cartagena 2026"
-              : "Árbol de Problemas y Soluciones Distrital — Cartagena 2026"
+              : modoVista === "arbol_mga"
+                ? "Árbol de Problemas y Soluciones Distrital — Cartagena 2026"
+                : "Perfiles Analíticos y Fichas de Vulnerabilidad por UCG y Corregimiento"
           }
           description={
             modoVista === "linea_base"
               ? "Matriz oficial de indicadores de resultado, producto e insumo para el seguimiento técnico y auditoría pericial a las 7 dimensiones de la política pública."
-              : "Estructura causal de problemas, causas, efectos y formulación de objetivos con validación del Agente IA DNP articulado al Plan de Desarrollo Distrital."
+              : modoVista === "arbol_mga"
+                ? "Estructura causal de problemas, causas, efectos y formulación de objetivos con validación del Agente IA DNP articulado al Plan de Desarrollo Distrital."
+                : "Caracterización territorial multidimensional, equipamientos, alertas tempranas SAT y enfoque étnico Ley 70 de 1993 en las 3 localidades distritales."
           }
         />
 
@@ -247,9 +257,9 @@ export function DiagnosticoView() {
         )}
       </div>
 
-      {/* Conmutador de Modos: Línea Base vs Árbol MGA */}
+      {/* Conmutador de Modos: Línea Base vs Árbol MGA vs Geodiagnóstico */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-xl border border-border bg-surface-1 p-2">
-        <div className="inline-flex rounded-lg border border-border bg-surface-2 p-1">
+        <div className="inline-flex flex-wrap rounded-lg border border-border bg-surface-2 p-1 gap-1">
           <Button
             variant={modoVista === "linea_base" ? "default" : "ghost"}
             size="sm"
@@ -274,14 +284,30 @@ export function DiagnosticoView() {
             }`}
           >
             <GitBranch className="size-3.5 text-ember" aria-hidden="true" />
-            <span>Árbol de Problemas y Soluciones MGA</span>
+            <span>Árbol de Problemas MGA</span>
+          </Button>
+          <Button
+            variant={modoVista === "geodiagnostico" ? "default" : "ghost"}
+            size="sm"
+            onClick={() => setModoVista("geodiagnostico")}
+            className={`h-8 gap-2 text-xs font-semibold transition-all ${
+              modoVista === "geodiagnostico"
+                ? "bg-surface-3 text-text-primary shadow-xs"
+                : "text-text-secondary hover:text-text-primary"
+            }`}
+          >
+            <MapPin className="size-3.5 text-ember" aria-hidden="true" />
+            <span>Geodiagnóstico Territorial</span>
           </Button>
         </div>
 
         <div className="text-2xs text-text-tertiary px-2">
-          {modoVista === "linea_base"
-            ? "Metodología DNP: Indicadores cuantitativos de resultado, producto e insumo"
-            : "Metodología General Ajustada (MGA): Estructura causal y validación IA DNP"}
+          {modoVista === "linea_base" &&
+            "Metodología DNP: Indicadores cuantitativos de resultado, producto e insumo"}
+          {modoVista === "arbol_mga" &&
+            "Metodología General Ajustada (MGA): Estructura causal y validación IA DNP"}
+          {modoVista === "geodiagnostico" &&
+            "Geodiagnóstico: Fichas de vulnerabilidad UCGs, corregimientos e islas (Ley 70/93)"}
         </div>
       </div>
 
@@ -374,8 +400,10 @@ export function DiagnosticoView() {
             onMedicionRegistrada={cargarDatos}
           />
         </>
-      ) : (
+      ) : modoVista === "arbol_mga" ? (
         <ArbolProblemasView />
+      ) : (
+        <GeodiagnosticoTerritorialView />
       )}
     </div>
   );

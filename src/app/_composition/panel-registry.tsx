@@ -147,6 +147,10 @@ const ValidacionMgaPanel = dynamic(
   () => import("@/features/diagnostico/panels/validacion-mga-panel").then((m) => m.ValidacionMgaPanel),
   { ssr: false }
 );
+const FichaTerritorialPanel = dynamic(
+  () => import("@/features/diagnostico/panels/ficha-territorial-panel").then((m) => m.FichaTerritorialPanel),
+  { ssr: false }
+);
 
 export const PANEL_REGISTRY: Record<
   PanelType,
@@ -187,6 +191,7 @@ export const PANEL_REGISTRY: Record<
   "actor-editor": ActorEditorPanel as ComponentType<PanelComponentProps>,
   "medicion-editor": MedicionEditorPanel as ComponentType<PanelComponentProps>,
   "validacion-mga": ValidacionMgaPanel as ComponentType<PanelComponentProps>,
+  "ficha-territorial": FichaTerritorialPanel as ComponentType<PanelComponentProps>,
 };
 
 /**
@@ -234,4 +239,5 @@ export const PANEL_WIDTHS: Record<PanelType, string> = {
   "actor-editor": "min(clamp(640px, 48vw, 920px), 100vw)",
   "medicion-editor": "min(clamp(640px, 48vw, 920px), 100vw)",
   "validacion-mga": "min(clamp(780px, 52vw, 1120px), 100vw)",
+  "ficha-territorial": "min(clamp(720px, 50vw, 1040px), 100vw)",
 };
