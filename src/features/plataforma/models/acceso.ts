@@ -263,6 +263,7 @@ export function panelPermitido(
     case "alternativa-editor":
       return puedeEditar(sesion, "alternativas");
     case "evaluacion-viabilidad":
+    case "asignacion-presupuestal":
       return puedeVer(sesion, "alternativas");
     default:
       return false;

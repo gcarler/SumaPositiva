@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useState, useMemo } from "react";
 import { toast } from "sonner";
 import {
   Plus,
@@ -10,6 +10,8 @@ import {
   FileJson,
   Download,
   Filter,
+  Lightbulb,
+  Coins,
 } from "lucide-react";
 import { PageHeader } from "@/shared/ui/page-header";
 import { Button } from "@/shared/ui/button";
@@ -32,6 +34,7 @@ import { useSesionStore } from "@/features/sesion/state/session-store";
 import { puedeEditar } from "@/features/plataforma/models/acceso";
 import { AlternativasKpis } from "../components/alternativas-kpis";
 import { AlternativasTabla } from "../components/alternativas-tabla";
+import { CosteoPresupuestalView } from "../components/costeo-presupuestal-view";
 import {
   useAlternativasStore,
   calcularKPIsAlternativas,
@@ -57,6 +60,7 @@ function sanitizarCsv(valor: string | number | undefined | null): string {
 }
 
 export function AlternativasView() {
+  const [modoVista, setModoVista] = useState<"banco_mga" | "costeo_presupuesto">("banco_mga");
   const { openPanel } = usePanels();
   const sesion = useSesionStore((s) => s.sesion);
   const puedeEditarUsuario = puedeEditar(sesion, "alternativas");
@@ -165,47 +169,92 @@ export function AlternativasView() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <PageHeader
           eyebrow="Fase 2: Formulación Estratégica · MGA DNP"
-          title="Banco Distrital de Alternativas de Solución MGA"
-          description="Iniciativas, programas e intervenciones transformadoras derivadas del diagnóstico distrital y priorizadas para la Política Pública de Seguridad Humana Integral de Cartagena de Indias 2026."
+          title={
+            modoVista === "banco_mga"
+              ? "Banco Distrital de Alternativas de Solución MGA"
+              : "Tablero de Costeo Presupuestal y Plan Financiero"
+          }
+          description={
+            modoVista === "banco_mga"
+              ? "Iniciativas, programas e intervenciones transformadoras derivadas del diagnóstico distrital y priorizadas para la Política Pública de Seguridad Humana Integral de Cartagena de Indias 2026."
+              : "Programación cuatrienal de recursos distritales (FONSET, SGP, SGR, ICLD y Presupuesto Participativo) articulados a las iniciativas del banco de alternativas MGA."
+          }
         />
 
-        <div className="flex flex-wrap items-center gap-2">
-          {/* Menú de exportación */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" className="gap-2 text-xs">
-                <Download className="h-4 w-4" />
-                <span>Exportar</span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={exportarCSV} className="gap-2 text-xs">
-                <FileSpreadsheet className="h-4 w-4" />
-                <span>Exportar CSV (Excel / OWASP)</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={exportarJSON} className="gap-2 text-xs">
-                <FileJson className="h-4 w-4" />
-                <span>Exportar JSON Estructurado</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+        {modoVista === "banco_mga" && (
+          <div className="flex flex-wrap items-center gap-2">
+            {/* Menú de exportación */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm" className="gap-2 text-xs">
+                  <Download className="h-4 w-4" />
+                  <span>Exportar</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={exportarCSV} className="gap-2 text-xs">
+                  <FileSpreadsheet className="h-4 w-4" />
+                  <span>Exportar CSV (Excel / OWASP)</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={exportarJSON} className="gap-2 text-xs">
+                  <FileJson className="h-4 w-4" />
+                  <span>Exportar JSON Estructurado</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
 
-          {/* Botón Nueva Alternativa */}
-          {puedeEditarUsuario && (
-            <Button
-              onClick={handleAbrirCrear}
-              size="sm"
-              className="gap-2 text-xs font-medium"
-            >
-              <Plus className="h-4 w-4" />
-              <span>Nueva Alternativa</span>
-            </Button>
-          )}
+            {/* Botón Nueva Alternativa */}
+            {puedeEditarUsuario && (
+              <Button
+                onClick={handleAbrirCrear}
+                size="sm"
+                className="gap-2 text-xs font-medium"
+              >
+                <Plus className="h-4 w-4" />
+                <span>Nueva Alternativa</span>
+              </Button>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Conmutador de Modos: Banco MGA vs Costeo Presupuestal */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-xl border border-border bg-surface-1 p-2">
+        <div className="inline-flex flex-wrap rounded-lg border border-border bg-surface-2 p-1 gap-1">
+          <Button
+            variant={modoVista === "banco_mga" ? "default" : "ghost"}
+            size="sm"
+            onClick={() => setModoVista("banco_mga")}
+            className={`h-8 gap-2 text-xs font-semibold transition-all ${
+              modoVista === "banco_mga"
+                ? "bg-surface-3 text-text-primary shadow-xs"
+                : "text-text-secondary hover:text-text-primary"
+            }`}
+          >
+            <Lightbulb className="size-3.5 text-ember" aria-hidden="true" />
+            <span>Banco de Alternativas MGA</span>
+          </Button>
+          <Button
+            variant={modoVista === "costeo_presupuesto" ? "default" : "ghost"}
+            size="sm"
+            onClick={() => setModoVista("costeo_presupuesto")}
+            className={`h-8 gap-2 text-xs font-semibold transition-all ${
+              modoVista === "costeo_presupuesto"
+                ? "bg-surface-3 text-text-primary shadow-xs"
+                : "text-text-secondary hover:text-text-primary"
+            }`}
+          >
+            <Coins className="size-3.5 text-ember" aria-hidden="true" />
+            <span>Costeo y Plan Financiero</span>
+          </Button>
         </div>
       </div>
 
-      {/* Tarjetas KPI de Financiamiento y Cobertura */}
-      <AlternativasKpis kpis={kpis} />
+      {/* Contenido condicional según pestaña */}
+      {modoVista === "banco_mga" ? (
+        <>
+          {/* Tarjetas KPI de Financiamiento y Cobertura */}
+          <AlternativasKpis kpis={kpis} />
 
       {/* Barra de Filtros Multicriterio */}
       <div className="flex flex-col gap-3 rounded-xl border border-border bg-surface-1 p-4 shadow-sm">
@@ -348,6 +397,10 @@ export function AlternativasView() {
         alternativas={alternativasFiltradas}
         puedeEditar={puedeEditarUsuario}
       />
+        </>
+      ) : (
+        <CosteoPresupuestalView />
+      )}
     </div>
   );
 }

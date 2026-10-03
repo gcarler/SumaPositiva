@@ -47,7 +47,8 @@ export type PanelType =
   | "validacion-mga"
   | "ficha-territorial"
   | "alternativa-editor"
-  | "evaluacion-viabilidad";
+  | "evaluacion-viabilidad"
+  | "asignacion-presupuestal";
 
 /** Árbol que se diligencia en el papelografo */
 export type ArbolPanel = "problemas" | "soluciones";
@@ -141,6 +142,12 @@ export interface PanelPropsMap {
   "evaluacion-viabilidad": {
     alternativaId: string;
     soloLectura?: boolean;
+  };
+  "asignacion-presupuestal": {
+    alternativaId?: string;
+    asignacionId?: string;
+    soloLectura?: boolean;
+    onAsignacionGuardada?: () => void;
   };
 }
 
