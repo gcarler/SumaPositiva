@@ -2,6 +2,9 @@
 Fecha: 2026-10-03T01:52:00Z
 Estado: CONFORME PARA AUDITORÍA FORENSE (EAF)
 Responsable: agy2
+Commits:
+- `b1254e8` feat(fuentes): módulo de seguimiento, radicación y control de fuentes de información
+- `cee3b96` test(fuentes): incluir pruebas de store y metricas en proyecto vitest plataforma
 
 ## 1. Resumen Ejecutivo
 Se desarrolló e integró exitosamente el nuevo módulo de gestión interna **`fuentes`** (`/plataforma/fuentes`) en la plataforma **POLIS**, orientado al monitoreo, radicación, trazabilidad pericial y control de cumplimiento de las fuentes de información primarias y secundarias (locales, nacionales e internacionales) requeridas para la formulación técnica de la Política Pública de Seguridad Humana Integral de Cartagena de Indias (Decreto 037 de 2026 del Ministerio del Interior).
