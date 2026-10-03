@@ -1,51 +1,50 @@
 # DICTAMEN DE REVISIÓN FORENSE Y CONTROL DE CALIDAD (EAF)
-**Fecha/Hora**: 2026-10-03 22:45:00 UTC
-**Módulo Auditado**: Fase 3: Plan de Acción y Seguimiento — Hito PAS-1 (Matriz de Compromisos Institucionales y Metas Cuatrienales)
-**Commits Evaluados**: `df8f5ce`, `b15303a`, `df96c04`
+**Fecha/Hora**: 2026-10-03 22:50:00 UTC
+**Módulo Auditado**: Fase 3: Plan de Acción y Seguimiento — Hito PAS-2 (Tablero SINERGIA DNP y Cadena de Valor Causal)
+**Commits Evaluados**: `303568c`, `2033390`
 **Responsable de Entrega**: `agy2` (Equipo de Desarrollo EDD)
 **Evaluador**: Antigravity (Orquestador Central / Auditoría Forense EAF)
 **Resultado**: CONFORME (Aprobado con distinción pericial)
 
 ---
 
-## 1. Verificación Metodológica e Institucional (DNP / MIPG / Decreto 037/2026)
-* **Alineación con la Política Pública de Seguridad Humana de Cartagena de Indias**:
-  - Creación del nuevo módulo interno `/plataforma/seguimiento` con control de acceso RBAC estricto en `acceso.ts` y enlace representativo en `plataforma-sidebar.tsx`.
-  - Catálogo canónico territorial con los 10 compromisos institucionales estructurados de Cartagena (`compromisos-pas.data.ts`), cubriendo:
-    1. `PAS-SEC-01`: Ruta de Detección Temprana y Protección contra ESCNNA (Distriseguridad / Sec. Interior; $1.200M COP/año).
-    2. `PAS-JUV-02`: Capacitación e Inserción Laboral para Jóvenes en Riesgo de Pandillismo (Sec. de Participación; $1.800M COP/año).
-    3. `PAS-SEG-03`: Mantenimiento y Conectividad de 250 Cámaras LPR y Centros de Monitoreo (Secotic / Distriseguridad; $2.000M COP/año).
-    4. `PAS-ALUM-04`: Instalación de 4.800 Luminarias LED en Puntos Críticos y Zonas de Miedo (Secretaría General; $1.500M COP/año).
-    5. `PAS-AMB-05`: Limpieza de Canales, Drenajes y Reforestación Comunitaria en Ciénaga de la Virgen (EPA Cartagena / OAGRD; $3.000M COP/año).
-    6. `PAS-POL-06`: Fortalecimiento Operativo y Dotación a 60 Frentes Locales de Seguridad (Policía MECAR / Sec. Interior; $400M COP/año).
-    7. `PAS-CUID-07`: Puesta en Marcha de 2 Manzanas del Cuidado y Centros de Vida (Sec. de Participación / DADIS; $950M COP/año).
-    8. `PAS-DES-08`: Mediación Comunitaria y Desarme Social en 12 Barrios Priorizados (Sec. Interior; $1.100M COP/año).
-    9. `PAS-BAZ-09`: Microcrédito Popular y Formalización de 800 Comerciantes en Mercado de Bazurto (Sec. de Hacienda; $850M COP/año).
-    10. `PAS-ETN-10`: Proyectos Productivos y Salvaguarda Étnica con Consejos Comunitarios (Asuntos Étnicos / Participación; $600M COP/año).
-  - Presupuesto anual consolidado en la matriz: **$13.400 MM COP**.
+## 1. Verificación Metodológica e Institucional (DNP / SINERGIA / Decreto 037/2026)
+* **Cadena de Valor Causal Articulada**:
+  - Implementación en `/plataforma/seguimiento` de la navegación por pestañas (`Tabs`):
+    - Tab 1: Matriz de Compromisos Institucionales PAS (10 compromisos distritales, $13.400 MM COP/año).
+    - Tab 2: Tablero SINERGIA DNP (Cadena de Valor Causal: Insumos ➔ Productos ➔ Resultados).
+  - Integración en tiempo real con los endpoints de FastAPI (`GET /api/v1/indicadores/cadena-valor`, `GET /api/v1/indicadores/fichas/{id}`, `POST /api/v1/indicadores/fichas/{id}/mediciones`).
+  - Catálogo canónico oficial con los 8 indicadores distritales estructurados de Cartagena:
+    - **Insumos (2)**: `IND-INS-01` (Presupuesto FONSET), `IND-INS-02` (Mantenimiento Cámaras LPR).
+    - **Productos (3)**: `IND-PROD-01` (Frentes de Seguridad Ciudadana), `IND-PROD-02` (Luminarias LED en puntos críticos), `IND-PROD-03` (Jóvenes capacitados tecnológicamente).
+    - **Resultados de Impacto (3)**: `IND-RES-01` (Tasa de Homicidios por 100k hab), `IND-RES-02` (Tasa de Hurtos a Personas), `IND-RES-03` (Percepción de Inseguridad en barrios priorizados).
+* **Algoritmo Adaptativo de Cumplimiento DNP**:
+  - Distinción matemática formal entre indicadores de sentido ascendente vs descendente:
+    - Indicadores descendentes (delitos/homicidios/victimización): la disminución del delito respecto a la línea base computa como avance positivo hacia la meta cuatrienal.
+  - Semáforos cromáticos SINERGIA certificados: verde ($\ge 80\%$), ámbar ($50\% - 79\%$), rojo ($< 50\%$).
 
 ---
 
 ## 2. Auditoría Técnica de Frontend y UI Policy
 * **UI Policy Guard (`scripts/ui-policy.mjs`)**:
   - **Aprobado con 0 infracciones**.
-  - Regla UI004 verificada (desacoplamiento total de tipos en `panel-store.ts`).
-  - Cero diálogos modales o ventanas emergentes nativas; 100% controles `@/shared/ui/*`.
-  - 100% variables y tokens semánticos CSS (`var(--surface-1)`, `var(--border)`, semáforos cromáticos `bg-success`, `bg-warning`, `bg-danger`, `bg-accent`).
+  - Regla UI004 verificada (desacoplamiento de props en `panel-store.ts`).
+  - Cero diálogos modales o popups flotantes; 100% controles `@/shared/ui/*`.
+  - 100% variables y tokens semánticos CSS (`var(--surface-1)`, `var(--border)`, `bg-success`, `bg-warning`, `bg-danger`).
 * **Zero-Modals**:
-  - Panel lateral `compromiso-editor` montado sobre `PanelShell`, registrado en `panel-registry.tsx` y `panel-store.ts`, con ancho fluido responsivo.
-  - Modo estricto de solo lectura inmutable para el rol `auditor_forense` con formulario deshabilitado y notificación pericial de trazabilidad.
+  - Panel lateral `indicador-detalle` montado sobre `PanelShell`, registrado dinámicamente en `panel-registry.tsx` y `panel-store.ts`, con ancho fluido responsivo.
+  - Modo estricto de solo lectura inmutable para el rol `auditor_forense` con inhabilitación de inputs y badge pericial de trazabilidad.
 * **Manejo del Estado Reactivo y Pruebas Unitarias**:
-  - `compromisos-store.ts` con Zustand: lógica de agregación, actualización de avances cuantitativos y cualitativos, cálculo analítico de KPIs y motor de filtrado multicriterio.
-  - Suite de pruebas `compromisos-store.test.ts`: 11 pruebas pasando (41 aserciones).
-  - Suite de control de acceso `acceso.test.ts`: 18 pruebas pasando (189 aserciones).
-  - Suite global de la plataforma: **159 pass, 0 fail (778 aserciones)** en 17 archivos de prueba.
+  - `cadena-valor-store.ts` con Zustand: cálculo reactivo, carga resiliente y mutación de mediciones.
+  - Pruebas unitarias de cadena de valor: **7 pass, 0 fail (40 aserciones)**.
+  - Suite de control de acceso `acceso.test.ts`: **18 pass, 0 fail (193 aserciones)**.
+  - Suite global de pruebas: **166 pass, 0 fail (822 aserciones)** en 18 suites.
 * **Compilación y Despliegue en Producción**:
-  - Compilación Turbopack exitosa en Next.js (57 rutas estáticas y dinámicas generadas).
+  - Compilación Turbopack exitosa en 12.4s.
   - `systemctl restart polis-frontend.service`: servicio activo.
   - Verificación HTTP en vivo: `curl http://127.0.0.1:3000/plataforma/seguimiento` devuelve **HTTP 200 OK**.
 
 ---
 
 ## 3. Dictamen Final
-**CONFORME**. El Hito PAS-1 queda formalmente certificado sin observaciones. Se ordena la activación inmediata del **Hito PAS-2: Tablero SINERGIA DNP y Cadena de Valor (Insumo $\rightarrow$ Producto $\rightarrow$ Resultado)** para mantener el ritmo ininterrumpido del plan director.
+**CONFORME**. El Hito PAS-2 queda formalmente certificado. Se ordena la activación inmediata del **Hito PAS-3: Rendición de Cuentas y Devolución Motivada Ciudadana (Sentencia C-150 de 2015 y Ley 1757 de 2015)** para culminar integralmente la Fase 3 del Plan de Acción y Seguimiento.
