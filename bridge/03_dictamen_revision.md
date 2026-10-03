@@ -1,23 +1,26 @@
 # DICTAMEN DE REVISIÓN FORENSE Y CONTROL DE CALIDAD (EAF)
-**Fecha/Hora**: 2026-10-03 17:50:00 UTC
-**Módulo Auditado**: Fase de Diagnóstico — Hito D-3 (Geodiagnóstico Territorial y Fichas de Vulnerabilidad por UCG)
-**Commits Evaluados**: `d4fcda5`, `29ed689`
+**Fecha/Hora**: 2026-10-03 18:28:00 UTC
+**Módulo Auditado**: Fase de Formulación Estratégica — Hito F-1 (Banco Distrital de Alternativas de Solución MGA `/plataforma/alternativas`)
+**Commits Evaluados**: `a2dd2db`, `bd9d5fb`, `83e0e45`
 **Responsable de Entrega**: `agy2` (Equipo de Desarrollo EDD)
 **Evaluador**: Antigravity (Orquestador Central / Auditoría Forense EAF)
 **Resultado**: CONFORME (Aprobado sin objeciones)
 
 ---
 
-## 1. Verificación de Política Pública y Fidelidad Territorial
-* **Alineación con la Ley 1617 de 2013 (Estatuto Distrital de Cartagena) y Decreto Nacional 037 de 2026**:
-  - Implementación del tercer modo de exploración analítica en `/plataforma/diagnostico`: **"Geodiagnóstico Territorial"**.
-  - Cobertura exhaustiva de los 15 territorios distritales de Cartagena de Indias:
-    - 3 Localidades urbanas (Localidad 1: Histórica y Caribe Norte; Localidad 2: De la Virgen y Turística; Localidad 3: Industrial y de la Bahía).
-    - Zonas críticas por UCG: UCG 1 (Centro/Manga), UCG 4 y 5 (Torices/Canapote), UCG 6 (Olaya Herrera Central/Boston), UCG 7 (El Pozón/Fredonia), UCG 8 y 9 (Nelson Mandela/Campanos), UCG 11 y 12 (Mamonal/Albornoz).
-    - Territorios Colectivos y Corregimientos con Salvaguarda Étnica bajo la Ley 70 de 1993 y Convenio 169 de la OIT: La Boquilla, Tierrabomba (Caño del Oro, Bocachica, Punta Arenas), Barú (Ararca, Santa Ana), Pasacaballos, Bayunca y Pontezuela, Arroyo de Piedra.
-* **Focalización y Métricas Multidimensionales**:
-  - Semáforos de riesgo validados: Alto (rojo), Medio (amarillo), Moderado (verde).
-  - Trazabilidad de Necesidades Básicas Insatisfechas (% NBI), población vulnerable, alertas tempranas SAT de la Defensoría del Pueblo, equipamientos institucionales y déficit de presencia estatal.
+## 1. Verificación Metodológica y Rigor de Formulación Pública (MGA/DNP)
+* **Alineación con la Metodología General Ajustada (DNP)**:
+  - Creación del nuevo módulo `/plataforma/alternativas` como Banco Distrital de Alternativas de Solución.
+  - Sembrado oficial de 8 alternativas de política pública estructuradas para las problemáticas prioritarias de Cartagena:
+    1. `ALT-ESCNNA-01`: Ruta Segura y Protección Integral contra ESCNNA ($4.500M COP — FONSET + Cooperación).
+    2. `ALT-CONV-02`: Programa Jóvenes Constructores de Paz ($6.200M COP — FONSET + SGP).
+    3. `ALT-AMB-03`: Restauración Ecoterritorial Ciénaga de la Virgen ($12.000M COP — SGR + ICLD).
+    4. `ALT-CUID-04`: Red Distrital de Manzanas del Cuidado ($3.800M COP — SGP + Presupuesto Participativo).
+    5. `ALT-INS-05`: Centro de Innovación Tecnológica para Jóvenes Insulares (Tierrabomba/Barú — $2.900M COP).
+    6. `ALT-SEG-06`: Videovigilancia Inteligente LPR y Alarmas Comunitarias ($8.500M COP — FONSET).
+    7. `ALT-ECON-07`: Fondo Popular contra el "Gota a Gota" en Bazurto ($3.500M COP — ICLD).
+    8. `ALT-ETN-08`: Seguridad Alimentaria y Fortalecimiento de Consejos Comunitarios (Ley 70/93 — $2.400M COP).
+  - Vinculación obligatoria con objetivos centrales MGA, sectores de inversión, dimensiones ONU, horizontes de ejecución (1–10 años) y activación de salvaguardas de Consulta Previa (Convenio 169 OIT y Ley 70 de 1993).
 
 ---
 
@@ -25,20 +28,22 @@
 * **UI Policy Guard (`scripts/ui-policy.mjs`)**:
   - **Aprobado con 0 infracciones**.
   - Regla UI004 verificada (desacoplamiento de props en `panel-store.ts`).
-  - Cero modales flotantes o diálogos nativos.
+  - Cero modales flotantes nativos.
   - 100% variables y tokens semánticos CSS (`var(--surface-1)`, `var(--border)`, `var(--text-primary)`, `var(--ember)`, semáforos cromáticos).
-  - Componentes del Design Kit reutilizados (`@/shared/ui/button`, `@/shared/ui/badge`, `@/shared/ui/input`, `@/shared/ui/select`).
+  - Exportación CSV pericial con sanitización contra inyección de fórmulas OWASP (`=`, `+`, `-`, `@`, `\t`, `\r`).
 * **Zero-Modals**:
-  - Cumplimiento total. El panel lateral `ficha-territorial` se monta sobre `PanelShell`, registrado en `panel-registry.tsx` y `panel-store.ts`, adaptativo y con exportación pericial a JSON.
+  - Cumplimiento total. El panel lateral `alternativa-editor` se monta sobre `PanelShell`, registrado en `panel-registry.tsx` y `panel-store.ts`, con ancho fluido `min(clamp(720px, 50vw, 1020px), 100vw)`.
+  - Modo estricto de solo lectura con inhabilitación de inputs y aviso pericial para el rol `auditor_forense`.
 * **Pruebas Automatizadas y Quality Gates**:
-  - `bun test src/features/diagnostico/services/territorios-api.test.ts`: 6 pruebas aprobadas (16 aserciones).
-  - Suite de diagnóstico combinada (territorios + MGA + indicadores + acceso): **37 pruebas aprobadas al 100% (239 aserciones)**.
+  - `bun test src/features/alternativas/state/alternativas-store.test.ts`: 12 pruebas aprobadas (39 aserciones).
+  - `bun test src/features/plataforma/models/acceso.test.ts`: 17 pruebas aprobadas (137 aserciones).
+  - Total suite probada: **29 pruebas aprobadas, 0 fallos**.
   - `bun run check`: Aprobado (0 errores TypeScript, 0 errores ESLint).
 * **Compilación y Despliegue en Producción**:
-  - `bun run build`: 53 rutas generadas con Turbopack sin errores.
-  - `systemctl is-active polis-frontend.service`: Activo y respondiendo **HTTP 200 OK** en `http://127.0.0.1:3000/plataforma/diagnostico`.
+  - `bun run build`: 54 rutas generadas con Turbopack (incluyendo `/plataforma/alternativas`).
+  - `systemctl is-active polis-frontend.service`: Activo y respondiendo **HTTP 200 OK** en `http://127.0.0.1:3000/plataforma/alternativas`.
 
 ---
 
 ## 3. Dictamen Final
-**CONFORME**. El Hito D-3 queda certificado y cerrado satisfactoriamente. Con esta entrega, los tres componentes estructurales del Diagnóstico Situacional (Línea Base Cuantitativa DNP, Árbol de Problemas MGA y Geodiagnóstico Territorial) se encuentran plenamente integrados y operativos en la plataforma POLIS.
+**CONFORME**. El Hito F-1 queda certificado formalmente. La plataforma cuenta ahora con un Banco Distrital de Alternativas MGA plenamente operativo, testeado y desplegado.
