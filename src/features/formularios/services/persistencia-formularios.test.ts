@@ -24,7 +24,14 @@ beforeEach(() =>
     previews: {},
   }),
 );
-afterEach(() => vi.restoreAllMocks());
+afterEach(() => {
+  vi.restoreAllMocks();
+  useFormulariosStore.setState({
+    formularios: [],
+    respuestas: [],
+    previews: {},
+  });
+});
 test("un fallo al crear no inventa un formulario local", async () => {
   vi.spyOn(formulariosRemotos, "crear").mockRejectedValue(
     new Error("API no disponible"),

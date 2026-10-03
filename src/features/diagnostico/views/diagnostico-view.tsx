@@ -9,6 +9,8 @@ import {
   Download,
   FileSpreadsheet,
   FileJson,
+  BarChart3,
+  GitBranch,
 } from "lucide-react";
 import { toast } from "sonner";
 import { PageHeader } from "@/shared/ui/page-header";
@@ -29,6 +31,7 @@ import {
 } from "@/shared/ui/dropdown-menu";
 import { DiagnosticoKpis } from "../components/diagnostico-kpis";
 import { LineaBaseTabla } from "../components/linea-base-tabla";
+import { ArbolProblemasView } from "../components/arbol-problemas-view";
 import { listarFichasIndicadores } from "../services/indicadores-api";
 import type { FichaIndicador, TipoIndicador } from "../models/indicador";
 
@@ -43,6 +46,7 @@ function sanitizarCsv(valor: string | number | undefined | null): string {
 
 export function DiagnosticoView() {
   const [indicadores, setIndicadores] = useState<FichaIndicador[]>([]);
+  const [modoVista, setModoVista] = useState<"linea_base" | "arbol_mga">("linea_base");
   const [cargando, setCargando] = useState(true);
   const [busqueda, setBusqueda] = useState("");
   const [tipoFiltro, setTipoFiltro] = useState<TipoIndicador | "todos">("todos");
@@ -182,139 +186,197 @@ export function DiagnosticoView() {
       {/* Cabecera institucional y acciones */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <PageHeader
-          eyebrow="Línea Base Cuantitativa · Metodología DNP / MGA"
-          title="Diagnóstico Situacional y Línea Base — Seguridad Humana Cartagena 2026"
-          description="Matriz oficial de indicadores de resultado, producto e insumo para el seguimiento técnico y auditoría pericial a las 7 dimensiones de la política pública."
+          eyebrow={
+            modoVista === "linea_base"
+              ? "Línea Base Cuantitativa · Metodología DNP / MGA"
+              : "Metodología General Ajustada (MGA) · Validación Causal DNP"
+          }
+          title={
+            modoVista === "linea_base"
+              ? "Diagnóstico Situacional y Línea Base — Seguridad Humana Cartagena 2026"
+              : "Árbol de Problemas y Soluciones Distrital — Cartagena 2026"
+          }
+          description={
+            modoVista === "linea_base"
+              ? "Matriz oficial de indicadores de resultado, producto e insumo para el seguimiento técnico y auditoría pericial a las 7 dimensiones de la política pública."
+              : "Estructura causal de problemas, causas, efectos y formulación de objetivos con validación del Agente IA DNP articulado al Plan de Desarrollo Distrital."
+          }
         />
 
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={cargarDatos}
-            disabled={cargando}
-            className="h-8 gap-1.5 text-xs"
-          >
-            <RotateCw
-              className={`size-3.5 ${cargando ? "animate-spin" : ""}`}
-              aria-hidden="true"
-            />
-            <span>Actualizar</span>
-          </Button>
-
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" className="h-8 gap-1.5 text-xs">
-                <Download className="size-3.5" aria-hidden="true" />
-                <span>Exportar</span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuItem
-                onClick={handleExportarCsv}
-                className="gap-2 cursor-pointer"
-              >
-                <FileSpreadsheet className="size-4" aria-hidden="true" />
-                <span>Exportar CSV (Excel)</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={handleExportarJson}
-                className="gap-2 cursor-pointer"
-              >
-                <FileJson className="size-4" aria-hidden="true" />
-                <span>Exportar JSON</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      </div>
-
-      {/* Tarjetas KPI de resumen */}
-      <DiagnosticoKpis indicadores={indicadores} />
-
-      {/* Barra de Filtros y Búsqueda */}
-      <div className="space-y-3 rounded-xl border border-border bg-surface-1 p-4">
-        <div className="flex items-center justify-between gap-2 border-b border-border pb-2.5">
-          <div className="flex items-center gap-2 text-xs font-semibold text-text-primary">
-            <Filter className="size-3.5 text-ember" aria-hidden="true" />
-            <span>Filtros y Búsqueda en Línea Base DNP</span>
-          </div>
-          {hayFiltrosActivos && (
+        {modoVista === "linea_base" && (
+          <div className="flex items-center gap-2">
             <Button
-              variant="ghost"
+              variant="outline"
               size="sm"
-              onClick={limpiarFiltros}
-              className="h-7 text-xs text-text-secondary hover:text-text-primary gap-1.5"
+              onClick={cargarDatos}
+              disabled={cargando}
+              className="h-8 gap-1.5 text-xs"
             >
-              <RotateCcw className="size-3" aria-hidden="true" />
-              <span>Limpiar filtros</span>
+              <RotateCw
+                className={`size-3.5 ${cargando ? "animate-spin" : ""}`}
+                aria-hidden="true"
+              />
+              <span>Actualizar</span>
             </Button>
-          )}
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm" className="h-8 gap-1.5 text-xs">
+                  <Download className="size-3.5" aria-hidden="true" />
+                  <span>Exportar</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem
+                  onClick={handleExportarCsv}
+                  className="gap-2 cursor-pointer"
+                >
+                  <FileSpreadsheet className="size-4" aria-hidden="true" />
+                  <span>Exportar CSV (Excel)</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={handleExportarJson}
+                  className="gap-2 cursor-pointer"
+                >
+                  <FileJson className="size-4" aria-hidden="true" />
+                  <span>Exportar JSON</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        )}
+      </div>
+
+      {/* Conmutador de Modos: Línea Base vs Árbol MGA */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-xl border border-border bg-surface-1 p-2">
+        <div className="inline-flex rounded-lg border border-border bg-surface-2 p-1">
+          <Button
+            variant={modoVista === "linea_base" ? "default" : "ghost"}
+            size="sm"
+            onClick={() => setModoVista("linea_base")}
+            className={`h-8 gap-2 text-xs font-semibold transition-all ${
+              modoVista === "linea_base"
+                ? "bg-surface-3 text-text-primary shadow-xs"
+                : "text-text-secondary hover:text-text-primary"
+            }`}
+          >
+            <BarChart3 className="size-3.5 text-ember" aria-hidden="true" />
+            <span>Línea Base Cuantitativa</span>
+          </Button>
+          <Button
+            variant={modoVista === "arbol_mga" ? "default" : "ghost"}
+            size="sm"
+            onClick={() => setModoVista("arbol_mga")}
+            className={`h-8 gap-2 text-xs font-semibold transition-all ${
+              modoVista === "arbol_mga"
+                ? "bg-surface-3 text-text-primary shadow-xs"
+                : "text-text-secondary hover:text-text-primary"
+            }`}
+          >
+            <GitBranch className="size-3.5 text-ember" aria-hidden="true" />
+            <span>Árbol de Problemas y Soluciones MGA</span>
+          </Button>
         </div>
 
-        <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-4">
-          {/* Búsqueda por texto libre */}
-          <div className="relative sm:col-span-2">
-            <Search
-              className="absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-text-tertiary pointer-events-none"
-              aria-hidden="true"
-            />
-            <Input
-              type="search"
-              placeholder="Buscar por código DNP, nombre de indicador, fuente o responsable..."
-              value={busqueda}
-              onChange={(e) => setBusqueda(e.target.value)}
-              className="pl-8 text-xs"
-            />
-          </div>
-
-          {/* Filtro por Tipo de Indicador */}
-          <div>
-            <Select
-              value={tipoFiltro}
-              onValueChange={(val) =>
-                setTipoFiltro(val as TipoIndicador | "todos")
-              }
-            >
-              <SelectTrigger className="text-xs">
-                <SelectValue placeholder="Tipo de indicador" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="todos">Todos los tipos</SelectItem>
-                <SelectItem value="resultado">Resultado</SelectItem>
-                <SelectItem value="impacto">Impacto</SelectItem>
-                <SelectItem value="producto">Producto</SelectItem>
-                <SelectItem value="insumo">Insumo</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Filtro por Periodicidad */}
-          <div>
-            <Select
-              value={periodicidadFiltro}
-              onValueChange={(val) => setPeriodicidadFiltro(val)}
-            >
-              <SelectTrigger className="text-xs">
-                <SelectValue placeholder="Periodicidad" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="todas">Todas las periodicidades</SelectItem>
-                <SelectItem value="Mensual">Mensual</SelectItem>
-                <SelectItem value="Trimestral">Trimestral</SelectItem>
-                <SelectItem value="Semestral">Semestral</SelectItem>
-                <SelectItem value="Anual">Anual</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+        <div className="text-2xs text-text-tertiary px-2">
+          {modoVista === "linea_base"
+            ? "Metodología DNP: Indicadores cuantitativos de resultado, producto e insumo"
+            : "Metodología General Ajustada (MGA): Estructura causal y validación IA DNP"}
         </div>
       </div>
 
-      {/* Tabla de indicadores de línea base */}
-      <LineaBaseTabla
-        indicadores={indicadoresFiltrados}
-        onMedicionRegistrada={cargarDatos}
-      />
+      {modoVista === "linea_base" ? (
+        <>
+          {/* Tarjetas KPI de resumen */}
+          <DiagnosticoKpis indicadores={indicadores} />
+
+          {/* Barra de Filtros y Búsqueda */}
+          <div className="space-y-3 rounded-xl border border-border bg-surface-1 p-4">
+            <div className="flex items-center justify-between gap-2 border-b border-border pb-2.5">
+              <div className="flex items-center gap-2 text-xs font-semibold text-text-primary">
+                <Filter className="size-3.5 text-ember" aria-hidden="true" />
+                <span>Filtros y Búsqueda en Línea Base DNP</span>
+              </div>
+              {hayFiltrosActivos && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={limpiarFiltros}
+                  className="h-7 text-xs text-text-secondary hover:text-text-primary gap-1.5"
+                >
+                  <RotateCcw className="size-3" aria-hidden="true" />
+                  <span>Limpiar filtros</span>
+                </Button>
+              )}
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-4">
+              {/* Búsqueda por texto libre */}
+              <div className="relative sm:col-span-2">
+                <Search
+                  className="absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-text-tertiary pointer-events-none"
+                  aria-hidden="true"
+                />
+                <Input
+                  type="search"
+                  placeholder="Buscar por código DNP, nombre de indicador, fuente o responsable..."
+                  value={busqueda}
+                  onChange={(e) => setBusqueda(e.target.value)}
+                  className="pl-8 text-xs"
+                />
+              </div>
+
+              {/* Filtro por Tipo de Indicador */}
+              <div>
+                <Select
+                  value={tipoFiltro}
+                  onValueChange={(val) =>
+                    setTipoFiltro(val as TipoIndicador | "todos")
+                  }
+                >
+                  <SelectTrigger className="text-xs">
+                    <SelectValue placeholder="Tipo de indicador" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="todos">Todos los tipos</SelectItem>
+                    <SelectItem value="resultado">Resultado</SelectItem>
+                    <SelectItem value="impacto">Impacto</SelectItem>
+                    <SelectItem value="producto">Producto</SelectItem>
+                    <SelectItem value="insumo">Insumo</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Filtro por Periodicidad */}
+              <div>
+                <Select
+                  value={periodicidadFiltro}
+                  onValueChange={(val) => setPeriodicidadFiltro(val)}
+                >
+                  <SelectTrigger className="text-xs">
+                    <SelectValue placeholder="Periodicidad" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="todas">Todas las periodicidades</SelectItem>
+                    <SelectItem value="Mensual">Mensual</SelectItem>
+                    <SelectItem value="Trimestral">Trimestral</SelectItem>
+                    <SelectItem value="Semestral">Semestral</SelectItem>
+                    <SelectItem value="Anual">Anual</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </div>
+
+          {/* Tabla de indicadores de línea base */}
+          <LineaBaseTabla
+            indicadores={indicadoresFiltrados}
+            onMedicionRegistrada={cargarDatos}
+          />
+        </>
+      ) : (
+        <ArbolProblemasView />
+      )}
     </div>
   );
 }

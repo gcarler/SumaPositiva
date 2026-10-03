@@ -102,16 +102,14 @@ test("un 401 del envío anónimo no cierra la sesión institucional", async () =
   const cerrar = vi.fn();
   setBearerToken("institucional");
   setUnauthorizedHandler(cerrar);
-  vi.stubGlobal(
-    "fetch",
-    vi.fn(
-      async () =>
-        new Response("{}", {
-          status: 401,
-          headers: { "Content-Type": "application/json" },
-        }),
-    ),
-  );
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = vi.fn(
+    async () =>
+      new Response("{}", {
+        status: 401,
+        headers: { "Content-Type": "application/json" },
+      }),
+  ) as unknown as typeof fetch;
   try {
     await expect(
       apiFetch("/prueba", {
@@ -125,7 +123,7 @@ test("un 401 del envío anónimo no cierra la sesión institucional", async () =
     ).rejects.toBeInstanceOf(ApiError);
     expect(cerrar).toHaveBeenCalledOnce();
   } finally {
-    vi.unstubAllGlobals();
+    globalThis.fetch = originalFetch;
     setUnauthorizedHandler(null);
     setBearerToken(null);
   }

@@ -4,24 +4,22 @@
 **Prioridad**: ALTA
 **Responsable de Ejecución**: `agy2`
 **Auditor**: Antigravity (EAF)
-**Documento Detallado**: `bridge/01_tarea_agy2_diagnostico_fase1.md`
+**Documento Detallado**: `bridge/01_tarea_agy2_diagnostico_fase2.md`
 **Plan Rector**: `bridge/00_plan_maestro_fase_diagnostico.md`
 
 ---
 
 ## Módulo Asignado
-**Fase de Diagnóstico — Hito D-0 (Purga Pericial de Mock) e Hito D-1 (Línea Base Cuantitativa DNP)**
+**Fase de Diagnóstico — Hito D-2 (Árbol de Problemas Distrital MGA y Validación Causal IA DNP)**
 
 Consulta la especificación técnica completa y los estándares de auditoría en:
-`/root/polis/bridge/01_tarea_agy2_diagnostico_fase1.md`
+`/root/polis/bridge/01_tarea_agy2_diagnostico_fase2.md`
 
 ### Resumen de Entregables Requeridos:
-1. **Hito D-0**: Depuración integral de `src/features/politicas/data/politicas.mock.ts` eliminando residuos de movilidad de otras ciudades y sembrando líneas y aportes 100% reales de las 3 Localidades y Corregimientos de Cartagena (ESCNNA, fronteras invisibles en Olaya/Pozón/Mandela, Ciénaga de la Virgen, Bazurto).
-2. **Hito D-1**:
-   - `src/features/plataforma/models/acceso.ts` y `acceso.test.ts` (módulo `diagnostico`).
-   - `src/features/plataforma/components/plataforma-sidebar.tsx` (ícono `BarChart3`).
-   - `src/app/plataforma/diagnostico/page.tsx` (ruta Next.js).
-   - Vista `src/features/diagnostico/views/diagnostico-view.tsx`, KPIs (`diagnostico-kpis.tsx`) y tabla (`linea-base-tabla.tsx`) consumiendo la API real `/api/v1/indicadores/fichas`.
-   - Panel Zero-Modals `medicion-editor` (`medicion-editor-panel.tsx`) registrado en `panel-registry.tsx` y `panel-store.ts`.
-3. Quality gates: `bun run check`, `node scripts/ui-policy.mjs`, `bun test`, `bun run build`, reinicio del frontend y HTTP 200 en `/plataforma/diagnostico`.
-4. Informe en `bridge/02_entrega_agy2.md` y commit formal en git.
+1. Conmutador en `src/features/diagnostico/views/diagnostico-view.tsx` entre **Línea Base Cuantitativa** y **Árbol de Problemas y Soluciones MGA**.
+2. Componente visualizador `src/features/diagnostico/components/arbol-problemas-view.tsx` con jerarquía MGA (Problema Central, Causas, Efectos, y conmutación a Árbol de Objetivos).
+3. Conexión de evaluación causal hacia `POST /api/v1/ia/diagnostico` con botón "Validar con Agente IA DNP".
+4. Panel lateral Zero-Modals `validacion-mga-panel.tsx` montado sobre `PanelShell`, registrado en `panel-registry.tsx` y `panel-store.ts` con ID `"validacion-mga"`.
+5. Servicio `src/features/diagnostico/services/mga-api.ts` y pruebas unitarias `mga-api.test.ts`.
+6. Quality gates: `bun run check`, `node scripts/ui-policy.mjs`, `bun test`, `bun run build`, reinicio de `polis-frontend.service` y HTTP 200 en `/plataforma/diagnostico`.
+7. Informe en `bridge/02_entrega_agy2.md` y commit formal en git.

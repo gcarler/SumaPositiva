@@ -43,7 +43,8 @@ export type PanelType =
   | "rendicion-cuentas"
   | "fuente-editor"
   | "actor-editor"
-  | "medicion-editor";
+  | "medicion-editor"
+  | "validacion-mga";
 
 /** Árbol que se diligencia en el papelografo */
 export type ArbolPanel = "problemas" | "soluciones";
@@ -100,6 +101,30 @@ export interface PanelPropsMap {
     nombreIndicador?: string;
     unidadMedida?: string;
     soloLectura?: boolean;
+  };
+  "validacion-mga": {
+    resultado: {
+      evaluacion_id: string;
+      politica_id: string;
+      es_valido: boolean;
+      puntaje_coherencia: number;
+      analisis_sintaxis: Array<{
+        texto_original: string;
+        cumple_sintaxis: boolean;
+        tipo_nodo: string;
+        sintaxis_esperada: string;
+        texto_corregido_sugerido: string;
+        observacion_metodologica: string;
+      }>;
+      problema_central_optimizado: string;
+      objetivo_central_derivado: string;
+      arbol_problemas_estructurado: Record<string, unknown>;
+      arbol_objetivos_derivado: Record<string, unknown>;
+      recomendaciones_dnp: string[];
+      resumen_ejecutivo: string;
+    };
+    instrumentoNombre?: string;
+    arbolTipo?: "problemas" | "objetivos";
   };
 }
 

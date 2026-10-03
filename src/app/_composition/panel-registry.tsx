@@ -143,6 +143,10 @@ const MedicionEditorPanel = dynamic(
   () => import("@/features/diagnostico/panels/medicion-editor-panel").then((m) => m.MedicionEditorPanel),
   { ssr: false }
 );
+const ValidacionMgaPanel = dynamic(
+  () => import("@/features/diagnostico/panels/validacion-mga-panel").then((m) => m.ValidacionMgaPanel),
+  { ssr: false }
+);
 
 export const PANEL_REGISTRY: Record<
   PanelType,
@@ -182,6 +186,7 @@ export const PANEL_REGISTRY: Record<
   "fuente-editor": FuenteEditorPanel as ComponentType<PanelComponentProps>,
   "actor-editor": ActorEditorPanel as ComponentType<PanelComponentProps>,
   "medicion-editor": MedicionEditorPanel as ComponentType<PanelComponentProps>,
+  "validacion-mga": ValidacionMgaPanel as ComponentType<PanelComponentProps>,
 };
 
 /**
@@ -228,4 +233,5 @@ export const PANEL_WIDTHS: Record<PanelType, string> = {
   "fuente-editor": "min(clamp(640px, 48vw, 920px), 100vw)",
   "actor-editor": "min(clamp(640px, 48vw, 920px), 100vw)",
   "medicion-editor": "min(clamp(640px, 48vw, 920px), 100vw)",
+  "validacion-mga": "min(clamp(780px, 52vw, 1120px), 100vw)",
 };
