@@ -39,6 +39,12 @@ export const MODULOS = [
     descripcion: "Fases, líneas y participación en la política.",
   },
   {
+    id: "fuentes",
+    ruta: "/plataforma/fuentes",
+    titulo: "Fuentes",
+    descripcion: "Monitoreo, radicación y cumplimiento de fuentes primarias y secundarias.",
+  },
+  {
     id: "configuracion",
     ruta: "/plataforma/configuracion",
     titulo: "Configuración",
@@ -59,6 +65,7 @@ const ACCESO: Record<string, readonly ModuloPlataforma[]> = {
     "mesas",
     "geovisor",
     "contenido",
+    "fuentes",
   ],
   facilitador_mesa: ["dashboard", "mesas", "formularios"],
   auditor_forense: [
@@ -68,6 +75,7 @@ const ACCESO: Record<string, readonly ModuloPlataforma[]> = {
     "geovisor",
     "contenido",
     "configuracion",
+    "fuentes",
   ],
   administrador_identidades: MODULOS.map((m) => m.id),
 };
@@ -81,6 +89,7 @@ const PERMISOS_POR_MODULO: Record<ModuloPlataforma, readonly string[]> = {
     "usuarios:gestionar", "roles:gestionar", "identidad:auditar",
     "contenido:leer", "politicas:gestionar",
     "testimonios:moderar", "configuracion:leer", "configuracion:gestionar",
+    "fuentes:leer", "fuentes:gestionar",
   ],
   formularios: [
     "formularios:leer",
@@ -94,6 +103,7 @@ const PERMISOS_POR_MODULO: Record<ModuloPlataforma, readonly string[]> = {
   ],
   usuarios: ["usuarios:leer", "usuarios:gestionar", "roles:gestionar", "identidad:auditar"],
   contenido: ["contenido:leer", "politicas:gestionar", "testimonios:moderar"],
+  fuentes: ["fuentes:leer", "fuentes:gestionar"],
   configuracion: ["configuracion:leer", "configuracion:gestionar"],
 };
 
@@ -104,6 +114,7 @@ const PERMISOS_EDICION: Record<ModuloPlataforma, readonly string[]> = {
   mesas: ["mesas:abrir", "mesas:acuerdos", "mesas:fotos:subir", "asistencia:verificar"],
   usuarios: ["usuarios:gestionar", "roles:gestionar"],
   contenido: ["politicas:gestionar", "testimonios:moderar"],
+  fuentes: ["fuentes:gestionar"],
   configuracion: ["configuracion:gestionar"],
 };
 
@@ -160,6 +171,7 @@ export function puedeEditar(
       mesas: ["autoridad_distrital", "facilitador_mesa", "administrador_identidades"],
       formularios: ["autoridad_distrital", "administrador_identidades"],
       contenido: ["autoridad_distrital", "administrador_identidades"],
+      fuentes: ["autoridad_distrital", "administrador_identidades"],
     };
     return !!rolesPorModulo[modulo]?.includes(sesion?.rol ?? "");
   }
@@ -206,6 +218,8 @@ export function panelPermitido(
         !!sesion?.permisos?.includes("auditoria:leer") &&
         sesion.rol !== "auditor_forense"
       );
+    case "fuente-editor":
+      return puedeEditar(sesion, "fuentes");
     default:
       return false;
   }

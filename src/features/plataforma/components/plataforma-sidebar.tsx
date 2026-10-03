@@ -9,6 +9,7 @@ import {
   Handshake,
   Users,
   FileText,
+  Database,
   Settings,
   ArrowLeft,
   Menu,
@@ -23,6 +24,7 @@ export const ICONOS = {
   mesas: Handshake,
   usuarios: Users,
   contenido: FileText,
+  fuentes: Database,
   configuracion: Settings,
 } satisfies Record<ModuloPlataforma, typeof Home>;
 export function PlataformaSidebar() {

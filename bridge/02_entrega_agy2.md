@@ -1,67 +1,77 @@
-# Entrega agy2 — Nuevo Módulo y Menú: "Dimensiones y Dependencias" (POLIS)
-Fecha: 2026-10-02T19:23:00Z
-Estado: CONFORME
+# Entrega agy2 — Módulo de Plataforma: "Fuentes de Información" (/plataforma/fuentes)
+Fecha: 2026-10-03T01:52:00Z
+Estado: CONFORME PARA AUDITORÍA FORENSE (EAF)
+Responsable: agy2
 
-## Resumen Ejecutivo
-Se implementó con éxito el nuevo módulo y menú de alto impacto institucional **"Dimensiones y Entidades"** en la plataforma POLIS, conectando de forma interactiva las **7 Dimensiones de Seguridad Humana (Decreto 037 de 2026 del Ministerio del Interior) + Eje Transversal de Crisis** con las **27 dependencias oficiales** de la Alcaldía Mayor de Cartagena de Indias y sus Planes de Acción 2026:
+## 1. Resumen Ejecutivo
+Se desarrolló e integró exitosamente el nuevo módulo de gestión interna **`fuentes`** (`/plataforma/fuentes`) en la plataforma **POLIS**, orientado al monitoreo, radicación, trazabilidad pericial y control de cumplimiento de las fuentes de información primarias y secundarias (locales, nacionales e internacionales) requeridas para la formulación técnica de la Política Pública de Seguridad Humana Integral de Cartagena de Indias (Decreto 037 de 2026 del Ministerio del Interior).
 
-1. **Integración en la Navegación y Menú Principal**:
-   - `src/core/navigation/navigation-store.ts`: Ampliación del tipo `VistaApp` para incluir `"dimensiones"`.
-   - `src/app/_components/topbar.tsx`: Incorporación de `{ id: "dimensiones", label: "Dimensiones y Entidades", labelCorto: "Dimensiones" }` al arreglo `NAV`, con diseño responsivo, etiquetas adaptables y estado activo destacado.
-   - `src/app/page.tsx`: Importación e integración de `<DimensionesView />` con transición suave `AnimatePresence`.
-
-2. **Nueva Vista Interactiva de Nivel Profesional (`src/features/politicas/views/dimensiones-view.tsx`)**:
-   - **Cabecera Institucional**: Título *"Dimensiones de Seguridad Humana y Estructura Distrital"*, marco legal (Decreto 037 de 2026 y PDD 2024–2027 *"Cartagena Ciudad de Derechos"*), y métricas consolidadas (8 dimensiones/ejes, 27 dependencias, 38.8% avance promedio auditado al 30 de junio de 2026).
-   - **Conmutador de 2 Modos de Exploración**:
-     - 🧭 **Modo A: "Por Dimensiones ONU"**: Enfoque temático por derecho y problemática.
-     - 🏛️ **Modo B: "Por Dependencias Distritales"**: Enfoque institucional por entidad ejecutora.
-   - **Buscador Rápido en Vivo**: Filtrado reactivo en cliente por tema, palabra clave, titular o sigla.
-
-3. **Modo A: Por Dimensiones ONU (Las 7 Dimensiones + Crisis)**:
-   - Carrusel de 8 pestañas con código (`D1` a `D8`), ícono vectorial y lema oficial.
-   - **🏛️ Ficha de la Entidad Líder (Destacada)**:
-     - Distintivo dorado *"ENTIDAD LÍDER LEGALMENTE RESPONSABLE"*.
-     - Nombre institucional, sigla, titular del gabinete distrital (Bruno Hernández, Mauricio Rodríguez, Álex Tejada, Camilo Rey, etc.).
-     - Misión oficial en el Plan de Acción 2026.
-     - Presupuesto asignado 2026 con desglose de fuentes (FONSET, SGP, ICLD, Regalías).
-     - Canales directos de atención ciudadana (dirección física, PBX, correo oficial).
-     - Botón de auditoría directa que abre el panel lateral Zero-Modals `rendicion-cuentas`.
-   - **🤝 Mosaico de Entidades Corresponsables**:
-     - Tarjetas individuales para cada entidad con su rol específico y proyecto clave en la dimensión seleccionada.
-     - Porcentaje auditado de cumplimiento y botón *"Auditar"*.
-   - **📋 Metas Cuatrienales Priorizadas y CTA 1-Clic**:
-     - Listado de metas estratégicas cuatrienales de la dimensión.
-     - Botón de acción *"Crear Reporte Formal"* que redirige a `/f/reporte-inseguridad` precargando la categoría.
-
-4. **Modo B: Por Dependencias Distritales (Las 27 Entidades Oficiales)**:
-   - Filtros por tipología: *Todas las Entidades (27)*, *Secretarías (8)*, *Descentralizados (10)*, *Oficinas Asesoras (4)* y *Alcaldías Locales (3)*.
-   - Filtros por semáforo de cumplimiento: *Todos*, *🟢 ≥40%*, *🟡 25–39%*, *🔴 <25%*.
-   - Mosaico de tarjetas por dependencia con:
-     - Nombre, sigla, tipo institucional y titular.
-     - Barra de progreso cromática del avance del Plan de Acción a 30 de junio de 2026.
-     - **Matriz de Participación en Dimensiones**: Insignias doradas con corona (`Crown`) para las dimensiones donde es **Líder**, e insignias secundarias para las dimensiones donde es **Corresponsable**.
-     - Competencia de seguridad humana y presupuesto asignado.
-     - Botón *"Rendición"* que abre `openPanel("rendicion-cuentas", { dependenciaId: dep.id })`.
-
-5. **Base de Datos y Relaciones Enriquecidas (`src/features/politicas/data/dimensiones-detalle.data.ts`)**:
-   - Catálogo `DIMENSIONES_DETALLE_2026` con metadatos completos, proyectos de corresponsabilidad y metas cuatrienales.
-   - Mapeo `GABINETE_TITULARES` con los nombres y cargos de los miembros del gabinete distrital de Cartagena 2024–2027.
-   - Función auxiliar `obtenerEntidadConTitular` que computa dinámicamente roles de líder y corresponsable.
+El módulo se encuentra plenamente operativo en el entorno de producción (`http://127.0.0.1:3000/plataforma/fuentes`), respaldado por pruebas de acceso, modelo de datos tipado, catálogo sembrado exhaustivo, store reactivo con cálculo de KPIs, datagrid con exportación segura (CSV y JSON anti-fórmula injection), y panel de edición Zero-Modals apilable.
 
 ---
 
-## Control de Calidad y Verificación Técnica
-- **UI Policy Guard (`node scripts/ui-policy.mjs`)**:
-  - Superado con **0 infracciones**.
-  - Estricto uso de controles encapsulados `@/shared/ui/button` e `input`.
-  - Cero colores Tailwind literales; uso exclusivo de variables y tokens semánticos CSS (`--surface-*`, `--text-*`, `--ember`, `--border`, etc.).
-  - Cumplimiento estricto del estándar Zero-Modals (paneles laterales integrados sin diálogos modales flotantes).
-- **TypeScript y Linters (`bun run check`)**:
-  - `tsc --noEmit`: 0 errores.
-  - `eslint .`: 0 errores (1 warning preexistente en react compiler para datagrid).
-- **Compilación de Producción (`bun run build`)**:
-  - Turbopack compiló exitosamente las 50 rutas estáticas y SSG en 10.3s.
-  - Sincronización exitosa de assets estáticos a `.next/standalone/`.
-- **Despliegue y Verificación en Vivo**:
-  - `sudo systemctl restart polis-frontend.service`: Servicio frontend activo y en ejecución.
-  - Verificación `curl -s -o /dev/null -w "%{http_code}\n" http://127.0.0.1:3000` ➔ **200 OK**.
+## 2. Componentes y Entregables Implementados
+
+### 2.1 Control de Acceso y Navegación
+* **`src/features/plataforma/models/acceso.ts`**:
+  * Incorporado `fuentes` a `MODULOS` con ruta `/plataforma/fuentes`, título *"Fuentes"* y descripción institucional.
+  * Habilitado en la matriz `ACCESO` para roles: `autoridad_distrital`, `auditor_forense` y `administrador_identidades`.
+  * Catálogo de permisos: `PERMISOS_POR_MODULO.fuentes` (`fuentes:leer`, `fuentes:gestionar`), `PERMISOS_EDICION.fuentes` (`fuentes:gestionar`).
+  * Protección de edición: `puedeEditar(sesion, "fuentes")` autoriza a `autoridad_distrital` y `administrador_identidades`, y bloquea escritura a `auditor_forense` y `facilitador_mesa`.
+  * Autorización de panel: `panelPermitido` autoriza `"fuente-editor"` validando permisos de sesión.
+* **`src/features/plataforma/models/acceso.test.ts`**:
+  * Actualizada la suite de pruebas unitarias cubriendo la matriz completa de módulos por rol y denegación de edición para auditores. **17 pruebas pasando (99 assertions)**.
+* **`src/features/plataforma/components/plataforma-sidebar.tsx`**:
+  * Importado ícono `Database` de `lucide-react` y asignado a `ICONOS.fuentes`.
+* **`src/app/plataforma/fuentes/page.tsx`**:
+  * Ruta de página del App Router que renderiza `<FuentesView />`.
+
+### 2.2 Modelo de Datos y Catálogo Oficial (`src/features/fuentes/`)
+* **`src/features/fuentes/models/fuente.ts`**:
+  * Tipos rigurosos: `TipoFuente` (`primaria` | `secundaria`), `AmbitoFuente` (`local` | `nacional` | `internacional`), `EstadoEntrega` (`entregada` | `en_termino` | `incompleta` | `vencida_sin_entrega` | `requerimiento_insistencia`), `ResponsableContacto` e interfaz `FuenteInformacion`.
+* **`src/features/fuentes/data/fuentes-iniciales.data.ts`**:
+  * Catálogo sembrado con 18 fuentes oficiales articuladas al contexto real de Cartagena:
+    * **Locales**: MECAR - SIEDCO (Local), Medicina Legal (Seccional Bolívar), DADIS - SIVIGILA, Distriseguridad (Línea 123 / CCTV), EPA Cartagena, OAGRD (Puntos críticos y riesgo costero), Cartagena Cómo Vamos (EPC 2025), Mesas de Diálogo POLIS 2026 (Actas y árboles MGA).
+    * **Nacionales**: DANE - ECSC, DANE - GEIH, DANE - IPM, DNP - Terridata, Fiscalía General - SPOA, Medicina Legal - Forensis Nacional, Defensoría del Pueblo - SAT (Alertas Tempranas), Unidad para las Víctimas - RUV.
+    * **Internacionales**: PNUD (Marco de Seguridad Humana), UNODC (Monitoreo Portuario y Tráfico Ilícito).
+  * Distribución realista de estados de entrega para probar alertas y semaforización.
+* **`src/features/fuentes/state/fuentes-store.ts`**:
+  * Store Zustand con acciones: `setFiltros`, `limpiarFiltros`, `getById`, `actualizarFuente`, `agregarFuente`, `resetearFuentes`.
+  * Selectores computados: `useFuentesFiltradas()` (filtrado multifactorial por texto, ámbito, estado, dimensión) y `useFuentesMetricas()` (conteos por estado, alertas críticas y tasa de cumplimiento %).
+* **`src/features/fuentes/state/fuentes-store.test.ts`**:
+  * Suite de pruebas unitarias verificando carga, actualización de radicados, filtrado y creación de fuentes. **4 pruebas pasando (14 assertions)**.
+
+### 2.3 Interfaz de Usuario y Vistas
+* **`src/features/fuentes/components/fuentes-kpis.tsx`**:
+  * 5 tarjetas semánticas métricas con iconos vectoriales: *Entregadas* (verde), *En Término* (azul info), *Incompletas* (amarillo advertencia), *Vencidas / Requerimiento Insistido* (rojo alerta) y *Tasa de Cumplimiento Global* (ember acento).
+* **`src/features/fuentes/components/fuentes-datagrid.tsx`**:
+  * Tabla con tipografía tabular, insignias semánticas de estado (`Badge`), enlaces directos a recursos, radicado con fechas límite y botón de acción *"Gestionar"*.
+  * Exportador a **CSV** con sanitización contra inyección de fórmulas (`OWASP CSV Injection`) y exportador a **JSON**.
+* **`src/features/plataforma/views/fuentes-view.tsx`**:
+  * Vista principal con cabecera `PageHeader`, barra multifunción de búsqueda en vivo y selects para Ámbito, Estado y Dimensión de Seguridad, con botón de limpieza reactivo.
+* **Panel Lateral Zero-Modals (`src/features/fuentes/panels/fuente-editor-panel.tsx`)**:
+  * Montado sobre `PanelShell`. Integra ficha técnica descriptiva, control de radicado y fechas, resumen de datos entregados, URL de repositorios, datos de contacto institucional y campo para observaciones periciales de calidad.
+  * Respeta permisos: si el usuario es `auditor_forense` o no posee `fuentes:gestionar`, el formulario se presenta con banner informativo de solo lectura y controles inhabilitados.
+* **Registro de Paneles**:
+  * `src/core/panels/panel-store.ts`: Agregado `"fuente-editor"` al tipo `PanelType`, a `PanelPropsMap` y configurado ancho adaptativo `min(clamp(640px, 48vw, 920px), 100vw)` en `PANEL_WIDTHS`.
+  * `src/app/_composition/panel-registry.tsx`: Importación dinámica con `{ ssr: false }` y registro en `PANEL_REGISTRY`.
+
+---
+
+## 3. Verificación Técnica y Cumplimiento de Políticas EAF
+
+1. **Política UI (`node scripts/ui-policy.mjs`)**:
+   * **0 infracciones**. Cumplimiento estricto del Kit UI: botones, inputs, badges y selects encapsulados; ningún elemento nativo prohibido; cero colores Tailwind hardcodeados; 100% variables y tokens semánticos CSS (`--surface-1`, `--border`, `--ember`, `--text-primary`, etc.).
+2. **Chequeo de Tipos y Linters (`bun run check`)**:
+   * `ui:check`: Aprobado.
+   * `tsc --noEmit`: Aprobado sin errores.
+   * `eslint .`: Aprobado (0 errores).
+3. **Pruebas Automatizadas**:
+   * `bun test src/features/plataforma/models/acceso.test.ts`: **17 pass, 0 fail**.
+   * `bun test src/features/fuentes/state/fuentes-store.test.ts`: **4 pass, 0 fail**.
+4. **Compilación de Producción Turbopack (`bun run build`)**:
+   * Compilado exitoso en 10.7s. 51 rutas generadas, incluyendo `/plataforma/fuentes` como ruta estática pre-renderizada.
+   * Copia íntegra de `.next/static` y `public` al directorio `.next/standalone/`.
+5. **Servicio y Disponibilidad en Vivo**:
+   * `systemctl restart polis-frontend.service` ejecutado.
+   * Comprobación HTTP 200 en `http://127.0.0.1:3000` y `http://127.0.0.1:3000/plataforma/fuentes`.
