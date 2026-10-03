@@ -451,7 +451,7 @@ export function PapelografoPanel({
         </div>
       }
     >
-      <div className="mx-auto w-full max-w-[1440px] space-y-5 px-4 py-6 sm:px-6 lg:px-10">
+      <div className="w-full space-y-5 px-4 py-6 sm:px-6 lg:px-10">
         {/* ---------- Barra superior de navegación y formato de vista ---------- */}
         <div className="flex flex-wrap items-center justify-between gap-3">
           {vistaFormato === "lienzo" ? (

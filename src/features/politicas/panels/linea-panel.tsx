@@ -370,7 +370,7 @@ export function LineaPanel({
         </Button>
       }
     >
-      <div className="mx-auto w-full max-w-4xl space-y-6 px-5 py-6 sm:px-6 lg:px-8 2xl:px-10">
+      <div className="w-full space-y-6 px-5 py-6 sm:px-6 lg:px-8 2xl:px-10">
         {/* ---------- Contexto de la línea ---------- */}
         <section className="space-y-3">
           <SectionLabel

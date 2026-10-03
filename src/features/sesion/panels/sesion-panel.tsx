@@ -153,7 +153,7 @@ export function SesionPanel({
       onClose={closeTop}
       onCloseToKey={closeTop}
     >
-      <div className="mx-auto w-full max-w-xl space-y-5 p-5 sm:p-6">
+      <div className="w-full space-y-5 p-5 sm:p-6">
         {sesion?.usuarioId && !tieneAccion ? (
           <CuentaUsuario />
         ) : (
