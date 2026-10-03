@@ -45,7 +45,7 @@ import { plataformaApi } from "../services/plataforma-api";
 import { EstadoConsulta } from "../components/estado-consulta";
 import { puedeEditar } from "../models/acceso";
 
-export function ContenidoView() {
+export function ContenidoView({ soloNoticias = false }: { soloNoticias?: boolean } = {}) {
   const sesion = useSesionStore((s) => s.sesion);
   const { openPanel } = usePanels();
   const esEditor = puedeEditar(sesion, "contenido");
@@ -60,14 +60,17 @@ export function ContenidoView() {
   const fases = useQuery({
     queryKey: ["plataforma", "fases"],
     queryFn: plataformaApi.fases,
+    enabled: !soloNoticias,
   });
   const lineas = useQuery({
     queryKey: ["plataforma", "lineas"],
     queryFn: plataformaApi.lineas,
+    enabled: !soloNoticias,
   });
   const aportes = useQuery({
     queryKey: ["plataforma", "aportes"],
     queryFn: () => plataformaApi.aportes(),
+    enabled: !soloNoticias,
   });
 
   const totalNoticias = noticias.length;
@@ -78,6 +81,7 @@ export function ContenidoView() {
   ).length;
 
   const handleEliminar = (id: string, titulo: string) => {
+    if (!esEditor) return;
     if (confirm(`¿Eliminar la noticia "${titulo}"?`)) {
       eliminarNoticia(id);
       toast.success("Noticia eliminada correctamente");
@@ -85,6 +89,7 @@ export function ContenidoView() {
   };
 
   const handleAlternarEstado = (noticia: Noticia) => {
+    if (!esEditor) return;
     const nuevo: EstadoNoticia =
       noticia.estado === "publicada" ? "borrador" : "publicada";
     cambiarEstado(noticia.id, nuevo);
@@ -96,18 +101,22 @@ export function ContenidoView() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Gestión de Contenido y Comunicación"
-        description="Administración editorial de noticias, comunicados institucionales y fases metodológicas de la política pública."
+        title={soloNoticias ? "Gestión de Noticias" : "Gestión de Contenido y Comunicación"}
+        description={soloNoticias
+          ? "Crea, revisa, publica y organiza las noticias y comunicados institucionales."
+          : "Administración editorial de noticias, comunicados institucionales y fases metodológicas de la política pública."}
         action={
           esEditor && (
             <div className="flex flex-wrap items-center gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => openPanel("fases-control", {})}
-              >
-                Control de Fases DNP
-              </Button>
+              {!soloNoticias && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => openPanel("fases-control", {})}
+                >
+                  Control de Fases DNP
+                </Button>
+              )}
               <Button
                 variant="default"
                 size="sm"
@@ -122,21 +131,23 @@ export function ContenidoView() {
         }
       />
 
-      <Tabs defaultValue="arquitectura" className="space-y-6">
-        <TabsList className="h-auto flex-wrap">
-          <TabsTrigger value="arquitectura">Dimensiones, Líneas y Sublíneas</TabsTrigger>
-          <TabsTrigger value="noticias" className="gap-2">
-            <Newspaper className="size-4" />
-            <span>Noticias y Comunicados ({totalNoticias})</span>
-          </TabsTrigger>
-          <TabsTrigger value="dnp" className="gap-2">
-            <DnpIcon className="size-4" />
-            <span>Estructura DNP & Metodología</span>
-          </TabsTrigger>
-        </TabsList>
+      <Tabs defaultValue={soloNoticias ? "noticias" : "arquitectura"} className="space-y-6">
+        {!soloNoticias && (
+          <TabsList className="h-auto flex-wrap">
+            <TabsTrigger value="arquitectura">Dimensiones, Líneas y Sublíneas</TabsTrigger>
+            <TabsTrigger value="noticias" className="gap-2">
+              <Newspaper className="size-4" />
+              <span>Noticias y Comunicados ({totalNoticias})</span>
+            </TabsTrigger>
+            <TabsTrigger value="dnp" className="gap-2">
+              <DnpIcon className="size-4" />
+              <span>Estructura DNP & Metodología</span>
+            </TabsTrigger>
+          </TabsList>
+        )}
 
         {/* ================= PESTAÑA: NOTICIAS Y COMUNICADOS ================= */}
-        <TabsContent value="arquitectura"><ArquitecturaPolitica /></TabsContent>
+        {!soloNoticias && <TabsContent value="arquitectura"><ArquitecturaPolitica /></TabsContent>}
         <TabsContent value="noticias" className="space-y-6">
           {/* Métricas editoriales */}
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -167,7 +178,7 @@ export function ContenidoView() {
           </div>
 
           {/* Tabla de Noticias */}
-          <div className="rounded-xl border border-[var(--border)] bg-[var(--surface-1)] overflow-hidden">
+          <div className="min-w-0 overflow-x-auto rounded-xl border border-[var(--border)] bg-[var(--surface-1)]">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -247,18 +258,18 @@ export function ContenidoView() {
 
                           {/* Estado */}
                           <TableCell>
-                            <Button
-                              variant="unstyled"
-                              size="unstyled"
-                              type="button"
-                              onClick={() => handleAlternarEstado(n)}
-                              title="Haz clic para alternar estado"
-                              className="cursor-pointer"
-                            >
-                              <StatusBadge tone={toneEstado}>
-                                {n.estado.toUpperCase()}
-                              </StatusBadge>
-                            </Button>
+                              {esEditor ? <Button
+                                variant="unstyled"
+                                size="unstyled"
+                                type="button"
+                                onClick={() => handleAlternarEstado(n)}
+                                title="Haz clic para alternar estado"
+                                className="cursor-pointer"
+                              >
+                                <StatusBadge tone={toneEstado}>
+                                  {n.estado.toUpperCase()}
+                                </StatusBadge>
+                              </Button> : <StatusBadge tone={toneEstado}>{n.estado.toUpperCase()}</StatusBadge>}
                           </TableCell>
 
                           {/* Multimedia */}
@@ -300,27 +311,32 @@ export function ContenidoView() {
                                 onClick={() => openPanel("noticia", { noticiaId: n.id })}
                                 className="size-8 p-0"
                                 title="Ver vista previa pública"
+                                aria-label={`Vista previa de ${n.titulo}`}
                               >
                                 <Eye className="size-4" />
                               </Button>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => openPanel("noticia-editor", { noticiaId: n.id })}
-                                className="size-8 p-0 text-[var(--ember)]"
-                                title="Editar noticia"
-                              >
-                                <Edit3 className="size-4" />
-                              </Button>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => handleEliminar(n.id, n.titulo)}
-                                className="size-8 p-0 text-[var(--danger)]"
-                                title="Eliminar noticia"
-                              >
-                                <Trash2 className="size-4" />
-                              </Button>
+                              {esEditor && <>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => openPanel("noticia-editor", { noticiaId: n.id })}
+                                  className="size-8 p-0 text-[var(--ember)]"
+                                  title="Editar noticia"
+                                  aria-label={`Editar ${n.titulo}`}
+                                >
+                                  <Edit3 className="size-4" />
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => handleEliminar(n.id, n.titulo)}
+                                  className="size-8 p-0 text-[var(--danger)]"
+                                  title="Eliminar noticia"
+                                  aria-label={`Eliminar ${n.titulo}`}
+                                >
+                                  <Trash2 className="size-4" />
+                                </Button>
+                              </>}
                             </div>
                           </TableCell>
                         </TableRow>
@@ -333,7 +349,7 @@ export function ContenidoView() {
         </TabsContent>
 
         {/* ================= PESTAÑA: ESTRUCTURA DNP ================= */}
-        <TabsContent value="dnp" className="space-y-6">
+        {!soloNoticias && <TabsContent value="dnp" className="space-y-6">
           <section className="space-y-3">
             <h2 className="text-lg font-semibold">Fases Metodológicas</h2>
             <EstadoConsulta
@@ -392,7 +408,7 @@ export function ContenidoView() {
             </ul>
             {aportes.data?.total === 0 && <p className="text-sm text-[var(--text-secondary)]">No hay aportes registrados.</p>}
           </section>
-        </TabsContent>
+        </TabsContent>}
       </Tabs>
     </div>
   );

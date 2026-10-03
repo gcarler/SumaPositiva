@@ -9,19 +9,40 @@ import {
   useTestimoniosGestion,
 } from "../services/use-testimonios-queries";
 import { Button } from "@/shared/ui/button";
+import { FormField } from "@/shared/ui/form-field";
 import { StatusBadge } from "@/shared/ui/status-badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 import { Textarea } from "@/shared/ui/textarea";
 import { CheckCircle2, Sparkles, XCircle, ShieldAlert, MapPin, Tag } from "lucide-react";
-import type { EstadoTestimonio, Testimonio } from "../models/testimonio";
+import type { EstadoTestimonio } from "../models/testimonio";
 
 export function TestimoniosModeracionPanel({ entryKey }: { entryKey: string }) {
   const { closeTop } = usePanels();
+  return (
+    <PanelShell
+      entryKey={entryKey}
+      title="Curaduría y Moderación de Testimonios"
+      subtitle="Filtro ético institucional y salvaguardas de memoria social"
+      crumbs={[{ label: "Memoria Social" }, { label: "Curaduría Institucional" }]}
+      onClose={closeTop}
+      onCloseToKey={closeTop}
+    >
+      <TestimoniosModeracionContenido />
+    </PanelShell>
+  );
+}
+
+export function TestimoniosModeracionContenido() {
   const [tabEstado, setTabEstado] = useState<string>("PENDIENTE");
   const [rechazandoId, setRechazandoId] = useState<string | null>(null);
   const [motivoRechazo, setMotivoRechazo] = useState<string>("");
 
-  const { data: testimonios, isLoading } = useTestimoniosGestion({
+  const {
+    data: testimonios,
+    isLoading,
+    isError,
+    refetch,
+  } = useTestimoniosGestion({
     estado: tabEstado === "TODOS" ? undefined : tabEstado,
   });
 
@@ -62,17 +83,17 @@ export function TestimoniosModeracionPanel({ entryKey }: { entryKey: string }) {
   };
 
   return (
-    <PanelShell
-      entryKey={entryKey}
-      title="Curaduría y Moderación de Testimonios"
-      subtitle="Filtro ético institucional y salvaguardas de memoria social"
-      crumbs={[{ label: "Memoria Social" }, { label: "Curaduría Institucional" }]}
-      onClose={closeTop}
-      onCloseToKey={closeTop}
-    >
-      <div className="p-6 space-y-6">
+      <div className="space-y-6 p-4 sm:p-6">
+        {isError && (
+          <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-danger/30 bg-danger-soft p-4 text-sm text-text-primary">
+            <p role="alert">No se pudieron cargar los testimonios para moderación.</p>
+            <Button variant="outline" size="sm" onClick={() => void refetch()}>
+              Reintentar
+            </Button>
+          </div>
+        )}
         <Tabs value={tabEstado} onValueChange={setTabEstado} className="w-full">
-          <TabsList className="w-full grid grid-cols-4 mb-4">
+          <TabsList className="mb-4 grid w-full grid-cols-2 sm:grid-cols-4">
             <TabsTrigger value="PENDIENTE" className="text-xs">
               Pendientes
             </TabsTrigger>
@@ -172,6 +193,7 @@ export function TestimoniosModeracionPanel({ entryKey }: { entryKey: string }) {
                       <Button
                         size="sm"
                         variant="outline"
+                        disabled={moderarMutation.isPending}
                         onClick={() => handleModerar(t.id, "APROBADO")}
                         className="text-xs h-8"
                       >
@@ -184,6 +206,7 @@ export function TestimoniosModeracionPanel({ entryKey }: { entryKey: string }) {
                       <Button
                         size="sm"
                         variant="outline"
+                        disabled={moderarMutation.isPending}
                         onClick={() => handleModerar(t.id, "DESTACADO")}
                         className="text-xs h-8 text-[var(--ember)] border-[var(--border)]"
                       >
@@ -196,6 +219,7 @@ export function TestimoniosModeracionPanel({ entryKey }: { entryKey: string }) {
                       <Button
                         size="sm"
                         variant="outline"
+                        disabled={moderarMutation.isPending}
                         onClick={() => {
                           setRechazandoId(rechazandoId === t.id ? null : t.id);
                           setMotivoRechazo("");
@@ -211,21 +235,32 @@ export function TestimoniosModeracionPanel({ entryKey }: { entryKey: string }) {
                   {/* Subformulario desplegable de Rechazo con Motivo Obligatorio */}
                   {rechazandoId === t.id && (
                     <div className="p-3 rounded-lg border border-destructive/30 bg-destructive/5 space-y-2 mt-2">
-                      <div className="flex items-center gap-1.5 text-xs font-semibold text-destructive">
+                      <div className="flex items-center gap-1.5 text-xs font-semibold text-danger">
                         <ShieldAlert className="size-4" />
                         Justificación Obligatoria del Rechazo
                       </div>
-                      <Textarea
-                        rows={2}
-                        placeholder="Explica la razón ética o de pertinencia para rechazar este testimonio (mínimo 5 caracteres)..."
-                        value={motivoRechazo}
-                        onChange={(e) => setMotivoRechazo(e.target.value)}
-                        className="text-xs"
-                      />
+                      <FormField
+                        label="Motivo del rechazo"
+                        description="Explica la razón ética o de pertinencia (mínimo 5 caracteres)."
+                        error={motivoRechazo.trim().length > 0 && motivoRechazo.trim().length < 5
+                          ? "Escribe al menos 5 caracteres."
+                          : undefined}
+                      >
+                        {(control) => (
+                          <Textarea
+                            {...control}
+                            rows={2}
+                            value={motivoRechazo}
+                            onChange={(e) => setMotivoRechazo(e.target.value)}
+                            className="text-xs"
+                          />
+                        )}
+                      </FormField>
                       <div className="flex justify-end gap-2">
                         <Button
                           size="sm"
                           variant="outline"
+                          disabled={moderarMutation.isPending}
                           onClick={() => setRechazandoId(null)}
                           className="text-xs h-7"
                         >
@@ -234,7 +269,7 @@ export function TestimoniosModeracionPanel({ entryKey }: { entryKey: string }) {
                         <Button
                           size="sm"
                           variant="destructive"
-                          disabled={motivoRechazo.trim().length < 5}
+                          disabled={motivoRechazo.trim().length < 5 || moderarMutation.isPending}
                           onClick={() => handleModerar(t.id, "RECHAZADO", motivoRechazo.trim())}
                           className="text-xs h-7"
                         >
@@ -253,7 +288,6 @@ export function TestimoniosModeracionPanel({ entryKey }: { entryKey: string }) {
           </TabsContent>
         </Tabs>
       </div>
-    </PanelShell>
   );
 }
 

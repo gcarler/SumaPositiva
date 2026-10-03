@@ -48,7 +48,8 @@ export type PanelType =
   | "ficha-territorial"
   | "alternativa-editor"
   | "evaluacion-viabilidad"
-  | "asignacion-presupuestal";
+  | "asignacion-presupuestal"
+  | "compromiso-editor";
 
 /** Árbol que se diligencia en el papelografo */
 export type ArbolPanel = "problemas" | "soluciones";
@@ -148,6 +149,12 @@ export interface PanelPropsMap {
     asignacionId?: string;
     soloLectura?: boolean;
     onAsignacionGuardada?: () => void;
+  };
+  "compromiso-editor": {
+    compromisoId?: string | null;
+    modo?: "crear" | "editar" | "ver";
+    soloLectura?: boolean;
+    onGuardado?: () => void;
   };
 }
 

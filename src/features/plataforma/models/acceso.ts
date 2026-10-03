@@ -39,6 +39,18 @@ export const MODULOS = [
     descripcion: "Fases, líneas y participación en la política.",
   },
   {
+    id: "noticias",
+    ruta: "/plataforma/noticias",
+    titulo: "Noticias",
+    descripcion: "Edición, publicación y organización de noticias institucionales.",
+  },
+  {
+    id: "testimonios",
+    ruta: "/plataforma/testimonios",
+    titulo: "Testimonios",
+    descripcion: "Curaduría y moderación de relatos comunitarios.",
+  },
+  {
     id: "fuentes",
     ruta: "/plataforma/fuentes",
     titulo: "Fuentes",
@@ -63,6 +75,12 @@ export const MODULOS = [
     descripcion: "Banco de proyectos y alternativas de solución formuladas bajo metodología MGA/DNP.",
   },
   {
+    id: "seguimiento",
+    ruta: "/plataforma/seguimiento",
+    titulo: "Seguimiento PAS",
+    descripcion: "Plan de Acción y Seguimiento de compromisos institucionales y metas cuatrienales.",
+  },
+  {
     id: "configuracion",
     ruta: "/plataforma/configuracion",
     titulo: "Configuración",
@@ -83,23 +101,28 @@ const ACCESO: Record<string, readonly ModuloPlataforma[]> = {
     "mesas",
     "geovisor",
     "contenido",
+    "noticias",
+    "testimonios",
     "fuentes",
     "actores",
     "diagnostico",
     "alternativas",
+    "seguimiento",
   ],
-  facilitador_mesa: ["dashboard", "mesas", "formularios", "actores"],
+  facilitador_mesa: ["dashboard", "mesas", "formularios", "actores", "testimonios"],
   auditor_forense: [
     "dashboard",
     "formularios",
     "mesas",
     "geovisor",
     "contenido",
+    "noticias",
     "configuracion",
     "fuentes",
     "actores",
     "diagnostico",
     "alternativas",
+    "seguimiento",
   ],
   administrador_identidades: MODULOS.map((m) => m.id),
 };
@@ -117,6 +140,7 @@ const PERMISOS_POR_MODULO: Record<ModuloPlataforma, readonly string[]> = {
     "actores:leer", "actores:gestionar",
     "diagnostico:leer", "diagnostico:gestionar",
     "alternativas:leer", "alternativas:gestionar",
+    "seguimiento:leer", "seguimiento:gestionar",
   ],
   formularios: [
     "formularios:leer",
@@ -129,11 +153,14 @@ const PERMISOS_POR_MODULO: Record<ModuloPlataforma, readonly string[]> = {
     "mesas:fotos:subir", "asistencia:verificar",
   ],
   usuarios: ["usuarios:leer", "usuarios:gestionar", "roles:gestionar", "identidad:auditar"],
-  contenido: ["contenido:leer", "politicas:gestionar", "testimonios:moderar"],
+  contenido: ["contenido:leer", "politicas:gestionar"],
+  noticias: ["contenido:leer", "politicas:gestionar"],
+  testimonios: ["testimonios:moderar"],
   fuentes: ["fuentes:leer", "fuentes:gestionar"],
   actores: ["actores:leer", "actores:gestionar"],
   diagnostico: ["diagnostico:leer", "diagnostico:gestionar"],
   alternativas: ["alternativas:leer", "alternativas:gestionar"],
+  seguimiento: ["seguimiento:leer", "seguimiento:gestionar"],
   configuracion: ["configuracion:leer", "configuracion:gestionar"],
 };
 
@@ -143,11 +170,14 @@ const PERMISOS_EDICION: Record<ModuloPlataforma, readonly string[]> = {
   geovisor: [],
   mesas: ["mesas:abrir", "mesas:acuerdos", "mesas:fotos:subir", "asistencia:verificar"],
   usuarios: ["usuarios:gestionar", "roles:gestionar"],
-  contenido: ["politicas:gestionar", "testimonios:moderar"],
+  contenido: ["politicas:gestionar"],
+  noticias: ["politicas:gestionar"],
+  testimonios: ["testimonios:moderar"],
   fuentes: ["fuentes:gestionar"],
   actores: ["actores:gestionar"],
   diagnostico: ["diagnostico:gestionar"],
   alternativas: ["alternativas:gestionar"],
+  seguimiento: ["seguimiento:gestionar"],
   configuracion: ["configuracion:gestionar"],
 };
 
@@ -204,10 +234,13 @@ export function puedeEditar(
       mesas: ["autoridad_distrital", "facilitador_mesa", "administrador_identidades"],
       formularios: ["autoridad_distrital", "administrador_identidades"],
       contenido: ["autoridad_distrital", "administrador_identidades"],
+      noticias: ["autoridad_distrital", "administrador_identidades"],
+      testimonios: ["autoridad_distrital", "facilitador_mesa", "administrador_identidades"],
       fuentes: ["autoridad_distrital", "administrador_identidades"],
       actores: ["autoridad_distrital", "facilitador_mesa", "administrador_identidades"],
       diagnostico: ["autoridad_distrital", "administrador_identidades"],
       alternativas: ["autoridad_distrital", "administrador_identidades"],
+      seguimiento: ["autoridad_distrital", "administrador_identidades"],
     };
     return !!rolesPorModulo[modulo]?.includes(sesion?.rol ?? "");
   }
@@ -248,6 +281,12 @@ export function panelPermitido(
       return !!sesion?.permisos?.includes("politicas:gestionar") && sesion.rol !== "auditor_forense";
     case "fases-control":
       return puedeEditar(sesion, "contenido");
+    case "noticia":
+      return puedeVer(sesion, "noticias");
+    case "noticia-editor":
+      return puedeEditar(sesion, "noticias");
+    case "testimonios-moderacion":
+      return puedeEditar(sesion, "testimonios");
     case "auditoria-consola":
       return (
         puedeEntrar(sesion) &&
@@ -265,6 +304,8 @@ export function panelPermitido(
     case "evaluacion-viabilidad":
     case "asignacion-presupuestal":
       return puedeVer(sesion, "alternativas");
+    case "compromiso-editor":
+      return puedeVer(sesion, "seguimiento");
     default:
       return false;
   }

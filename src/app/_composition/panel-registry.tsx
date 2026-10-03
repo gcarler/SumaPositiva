@@ -163,6 +163,10 @@ const AsignacionPresupuestalPanel = dynamic(
   () => import("@/features/alternativas/panels/asignacion-presupuestal-panel").then((m) => m.AsignacionPresupuestalPanel),
   { ssr: false }
 );
+const CompromisoEditorPanel = dynamic(
+  () => import("@/features/seguimiento/panels/compromiso-editor-panel").then((m) => m.CompromisoEditorPanel),
+  { ssr: false }
+);
 
 export const PANEL_REGISTRY: Record<
   PanelType,
@@ -207,6 +211,7 @@ export const PANEL_REGISTRY: Record<
   "alternativa-editor": AlternativaEditorPanel as ComponentType<PanelComponentProps>,
   "evaluacion-viabilidad": EvaluacionViabilidadPanel as ComponentType<PanelComponentProps>,
   "asignacion-presupuestal": AsignacionPresupuestalPanel as ComponentType<PanelComponentProps>,
+  "compromiso-editor": CompromisoEditorPanel as ComponentType<PanelComponentProps>,
 };
 
 /**
@@ -258,4 +263,5 @@ export const PANEL_WIDTHS: Record<PanelType, string> = {
   "alternativa-editor": "min(clamp(720px, 50vw, 1020px), 100vw)",
   "evaluacion-viabilidad": "min(clamp(780px, 52vw, 1100px), 100vw)",
   "asignacion-presupuestal": "min(clamp(680px, 48vw, 980px), 100vw)",
+  "compromiso-editor": "min(clamp(720px, 50vw, 1020px), 100vw)",
 };

@@ -30,9 +30,9 @@ describe("Matriz de rutas internas", () => {
     ["ciudadano", []],
     [
       "autoridad_distrital",
-      ["dashboard", "formularios", "geovisor", "mesas", "contenido", "fuentes", "actores", "diagnostico", "alternativas"],
+      ["dashboard", "formularios", "geovisor", "mesas", "contenido", "noticias", "testimonios", "fuentes", "actores", "diagnostico", "alternativas", "seguimiento"],
     ],
-    ["facilitador_mesa", ["dashboard", "formularios", "mesas", "actores"]],
+    ["facilitador_mesa", ["dashboard", "formularios", "mesas", "testimonios", "actores"]],
     [
       "auditor_forense",
       [
@@ -41,10 +41,12 @@ describe("Matriz de rutas internas", () => {
         "geovisor",
         "mesas",
         "contenido",
+        "noticias",
         "fuentes",
         "actores",
         "diagnostico",
         "alternativas",
+        "seguimiento",
         "configuracion",
       ],
     ],
@@ -92,6 +94,34 @@ describe("Matriz de rutas internas", () => {
     expect(puedeEditar(f, "mesas")).toBe(true);
     expect(puedeEditar(f, "actores")).toBe(true);
     expect(panelPermitido(f, "actor-editor")).toBe(true);
+    expect(puedeEditar(f, "testimonios")).toBe(true);
+    expect(panelPermitido(f, "testimonios-moderacion")).toBe(true);
+    expect(puedeVer(f, "noticias")).toBe(false);
+  });
+  test("noticias y testimonios tienen permisos y paneles separados", () => {
+    const autoridad = sesion("autoridad_distrital", { permisos: [] });
+    expect(puedeVer(autoridad, "noticias")).toBe(true);
+    expect(puedeEditar(autoridad, "noticias")).toBe(true);
+    expect(panelPermitido(autoridad, "noticia")).toBe(true);
+    expect(panelPermitido(autoridad, "noticia-editor")).toBe(true);
+    expect(panelPermitido(autoridad, "testimonios-moderacion")).toBe(true);
+
+    const lector = sesion("lector_contenido", { permisos: ["contenido:leer"] });
+    expect(puedeVer(lector, "noticias")).toBe(true);
+    expect(puedeEditar(lector, "noticias")).toBe(false);
+    expect(puedeVer(lector, "testimonios")).toBe(false);
+    expect(panelPermitido(lector, "noticia-editor")).toBe(false);
+    expect(panelPermitido(lector, "testimonios-moderacion")).toBe(false);
+
+    const moderador = sesion("moderador_testimonios", {
+      permisos: ["testimonios:moderar"],
+    });
+    expect(modulosPermitidos(moderador).map((modulo) => modulo.id)).toEqual([
+      "dashboard",
+      "testimonios",
+    ]);
+    expect(panelPermitido(moderador, "testimonios-moderacion")).toBe(true);
+    expect(panelPermitido(moderador, "noticia-editor")).toBe(false);
   });
   test("perfil personalizado administra solo los módulos concedidos", () => {
     const administradorFormularios = sesion("admin_formularios", {
@@ -202,11 +232,36 @@ describe("Matriz de rutas internas", () => {
     expect(
       panelPermitido(sesion("ciudadano"), "asignacion-presupuestal"),
     ).toBe(false);
+    expect(
+      puedeEditar(
+        sesion("administrador_identidades", { permisos: [] }),
+        "seguimiento",
+      ),
+    ).toBe(true);
+    expect(
+      puedeEditar(sesion("autoridad_distrital", { permisos: [] }), "seguimiento"),
+    ).toBe(true);
+    expect(
+      puedeEditar(sesion("ciudadano"), "seguimiento"),
+    ).toBe(false);
+    expect(
+      panelPermitido(sesion("autoridad_distrital"), "compromiso-editor"),
+    ).toBe(true);
+    expect(
+      panelPermitido(sesion("auditor_forense"), "compromiso-editor"),
+    ).toBe(true);
+    expect(
+      panelPermitido(sesion("ciudadano"), "compromiso-editor"),
+    ).toBe(false);
   });
   test("rutas exactas y normalización de barra final", () => {
     expect(moduloDeRuta("/plataforma/mesas/")).toBe("mesas");
     expect(moduloDeRuta("/plataforma/alternativas")).toBe("alternativas");
     expect(moduloDeRuta("/plataforma/alternativas/")).toBe("alternativas");
+    expect(moduloDeRuta("/plataforma/seguimiento")).toBe("seguimiento");
+    expect(moduloDeRuta("/plataforma/seguimiento/")).toBe("seguimiento");
+    expect(moduloDeRuta("/plataforma/noticias")).toBe("noticias");
+    expect(moduloDeRuta("/plataforma/testimonios/")).toBe("testimonios");
     expect(moduloDeRuta("/plataforma/usuarios/desconocido")).toBeUndefined();
   });
 });

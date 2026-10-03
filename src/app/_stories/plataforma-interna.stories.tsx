@@ -12,6 +12,8 @@ import { MesasGestionView } from "@/features/plataforma/views/mesas-view";
 import { UsuariosGestionView } from "@/features/plataforma/views/usuarios-view";
 import { GeovisorAdministrativoView } from "@/features/plataforma/views/geovisor-view";
 import { ContenidoView } from "@/features/plataforma/views/contenido-view";
+import { NoticiasPlataformaView } from "@/features/plataforma/views/noticias-view";
+import { TestimoniosPlataformaView } from "@/features/plataforma/views/testimonios-view";
 import { ConfiguracionView } from "@/features/plataforma/views/configuracion-view";
 import { PlataformaSidebar } from "@/features/plataforma/components/plataforma-sidebar";
 import { PlataformaHeader } from "@/features/plataforma/components/plataforma-header";
@@ -245,6 +247,38 @@ export const Contenido: Story = {
       <PanelHost />
     </QueryProvider>
   ),
+};
+export const Noticias: Story = {
+  parameters: { nextjs: { navigation: { pathname: "/plataforma/noticias" } } },
+  render: () => (
+    <QueryProvider>
+      <PlataformaShell>
+        <NoticiasPlataformaView />
+      </PlataformaShell>
+      <PanelHost />
+    </QueryProvider>
+  ),
+  play: async ({ canvasElement }) => {
+    const c = within(canvasElement);
+    await expect(c.getByRole("heading", { name: "Gestión de Noticias" })).toBeVisible();
+    await expect(c.getByRole("button", { name: /Nueva Noticia/ })).toBeVisible();
+  },
+};
+export const Testimonios: Story = {
+  parameters: { nextjs: { navigation: { pathname: "/plataforma/testimonios" } } },
+  render: () => (
+    <QueryProvider>
+      <PlataformaShell>
+        <TestimoniosPlataformaView />
+      </PlataformaShell>
+      <PanelHost />
+    </QueryProvider>
+  ),
+  play: async ({ canvasElement }) => {
+    const c = within(canvasElement);
+    await expect(c.getByRole("heading", { name: "Moderación de Testimonios" })).toBeVisible();
+    await expect(c.getByRole("region", { name: "Cola de moderación de testimonios" })).toBeVisible();
+  },
 };
 export const Configuracion: Story = {
   parameters: {
