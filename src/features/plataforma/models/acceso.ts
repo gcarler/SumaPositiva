@@ -262,6 +262,8 @@ export function panelPermitido(
       return puedeEditar(sesion, "diagnostico");
     case "alternativa-editor":
       return puedeEditar(sesion, "alternativas");
+    case "evaluacion-viabilidad":
+      return puedeVer(sesion, "alternativas");
     default:
       return false;
   }

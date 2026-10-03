@@ -1,8 +1,10 @@
-# Entrega agy2 — Fase 2: Formulación Estratégica (Hito F-1: Banco Distrital de Alternativas MGA)
-Fecha: 2026-10-03T18:00:00Z
+# Entrega agy2 — Fase 2: Formulación Estratégica (Hito F-2: Evaluación de Viabilidad Jurídica y Fiscal con IA)
+Fecha: 2026-10-03T18:35:00Z
 Estado: CONFORME PARA AUDITORÍA FORENSE (EAF)
 Responsable: agy2
 Commits:
+- `PENDIENTE_HASH` feat(formulacion): evaluacion de viabilidad juridica y fiscal con IA para alternativas MGA
+- `e8f9de9` docs(audit): dictamen de calidad EAF sobre hito F-1 de formulacion (a2dd2db)
 - `a2dd2db` feat(formulacion): modulo de alternativas MGA y banco de soluciones para cartagena
 - `3933f95` docs(audit): dictamen de calidad EAF sobre hito D-3 de diagnostico (d4fcda5)
 - `d4fcda5` feat(diagnostico): modulo de geodiagnostico territorial y fichas de vulnerabilidad por UCG (auditado y aprobado)
@@ -11,68 +13,57 @@ Commits:
 
 ---
 
-## 1. Resumen Ejecutivo de la Entrega (Hito F-1)
-En estricto cumplimiento del documento rector `bridge/00_plan_maestro_fase_formulacion.md` y la especificación técnica `bridge/01_tarea_agy2_formulacion_fase1.md`, se implementó y desplegó en la plataforma el nuevo módulo institucional **`alternativas`** (`/plataforma/alternativas`), habilitando el **Banco Distrital de Alternativas de Solución MGA (DNP)** para la Política Pública de Seguridad Humana Integral de Cartagena de Indias 2026.
+## 1. Resumen Ejecutivo de la Entrega (Hito F-2)
+En estricto cumplimiento del documento rector `bridge/00_plan_maestro_fase_formulacion.md` y la especificación técnica `bridge/01_tarea_agy2_formulacion_fase2.md`, se implementó y desplegó en el módulo institucional de alternativas (`/plataforma/alternativas`) la infraestructura pericial de **Evaluación de Viabilidad Jurídica y Fiscal asistida por Inteligencia Artificial y Agentes Especializados**, alineada con la metodología MGA del DNP, el régimen constitucional y fiscal de Cartagena de Indias (Distrito Especial, Ley 1617 de 2013), el Marco Fiscal de Mediano Plazo (MFMP) y el bloque de constitucionalidad.
 
 ### Principales Logros Técnicos:
-1. **Control de Acceso y Navegación Institucional (`acceso.ts`, `acceso.test.ts`, `plataforma-sidebar.tsx`)**:
-   - Módulo `alternativas` (`/plataforma/alternativas`) incorporado en `MODULOS`.
-   - Autorizado para roles: `autoridad_distrital`, `auditor_forense` y `administrador_identidades`.
-   - Permisos granulares: `alternativas:leer` y `alternativas:gestionar`.
-   - Edición habilitada exclusivamente para `autoridad_distrital` y `administrador_identidades` (el `auditor_forense` opera en modo de supervisión técnica de solo lectura inmutable).
-   - Panel `alternativa-editor` autorizado bajo regla de gestión.
-   - Ícono representativo `Lightbulb` integrado en `PlataformaSidebar`.
-   - Suite de pruebas de acceso ampliada con 17 pruebas y 137 aserciones aprobadas al 100%.
+1. **Acción de Evaluación Asistida por IA en Tabla (`alternativas-tabla.tsx`)**:
+   - Incorporación de botón ergonómico con ícono `Scale` y tooltip contextual *"Evaluar Viabilidad IA"* en cada fila del DataGrid de alternativas.
+   - Activación directa del panel lateral Zero-Modals mediante `openPanel("evaluacion-viabilidad", { alternativaId: alt.id })`.
 
-2. **Catálogo Canónico Oficial de Iniciativas (`alternativas-canonicas.data.ts`)**:
-   - Sembradas 8 alternativas estratégicas MGA formuladas directamente sobre las problemáticas territoriales diagnosticadas:
-     1. `ALT-ESCNNA-01`: *Ruta Distrital Segura y Protección Integral contra la ESCNNA en Entornos Turísticos y Escolares* (Centro Histórico, Bocagrande, Playa Blanca; $4.500M COP; FONSET, Cooperación, SGP; Priorizada).
-     2. `ALT-CONV-02`: *Programa Integral de Desarme Social, Oportunidades y Mediación Comunitaria "Jóvenes Constructores de Paz"* (Olaya Herrera, El Pozón, Mandela; $6.200M COP; FONSET, SGP; Priorizada).
-     3. `ALT-AMB-03`: *Plan de Restauración Ecoterritorial, Borde de Protección y Drenajes en la Ciénaga de la Virgen* (Bajamar Olaya, Boston, Candelaria; $12.000M COP; SGR, ICLD; Viable).
-     4. `ALT-CUID-04`: *Red Distrital de Manzanas del Cuidado y Centros de Día Comunitarios para Mujeres Cuidadoras* (Localidades 2 y 3; $3.800M COP; SGP, Presupuesto Participativo; Viable).
-     5. `ALT-INS-05`: *Centro de Innovación Tecnológica, Bilingüismo y Emprendimiento Náutico para Jóvenes Insulares* (Tierrabomba y Barú; Ley 70/93, Consulta Previa; $2.900M COP; SGR, Cooperación; Requiere ajustes).
-     6. `ALT-SEG-06`: *Modernización del Sistema de Videovigilancia LPR, Alarmas Comunitarias y Conectividad Policial Inteligente* (Localidades 1, 2 y 3; $8.500M COP; FONSET; En formulación).
-     7. `ALT-ECON-07`: *Fondo de Financiamiento Popular y Microcrédito Comunitario contra el "Gota a Gota" en el Mercado de Bazurto* (Bazurto y comercio popular; $3.500M COP; ICLD, Fondo Emprender; Viable).
-     8. `ALT-ETN-08`: *Plan de Fortalecimiento Institucional y Seguridad Alimentaria para Consejos Comunitarios de Comunidades Negras* (La Boquilla, Pasacaballos, Barú; Ley 70/93, Consulta Previa; $2.400M COP; SGP, SGR; Priorizada).
+2. **Servicio y Motores Periciales de Viabilidad (`viabilidad-api.ts`, `viabilidad.ts`)**:
+   - Modelado tipado exhaustivo de entradas y resultados periciales: competencias distritales (Ley 1454/11 LOOT, Ley 1617/13 Distrito Especial, Ley 715/01 SGP), riesgo fiscal (bajo, medio, alto, crítico), vigencias futuras (ordinarias Ley 819/03, excepcionales Ley 1483/11), salvaguardas de Consulta Previa (Convenio 169 OIT, Ley 70 de 1993) y principio de no regresividad de derechos DESCA (Art. 2 PIDESC, Sentencia T-025/04).
+   - Integración dual: consumo de endpoints de backend `POST /api/v1/ia/juridico` (Agente Jurídico) y `POST /api/v1/ia/fiscal` (Agente Fiscal) a través de `apiFetch()`.
+   - Motores analíticos de contingencia determinista calibrados para Cartagena de Indias ante ausencia de conectividad con servicios de LLM o backend:
+     - **Agente Jurídico**: Detección de competencias distritales, exigencia obligatoria de Consulta Previa y salvaguardas etnoterritoriales ante iniciativas con `requiere_consulta_previa === true` o sector étnico comunitario (como `ALT-INS-05` y `ALT-ETN-08`), y control de no regresividad en derechos sociales.
+     - **Agente Fiscal**: Validación de techos presupuestales distritales, desglose analítico de fuentes autorizadas (FONSET Ley 418/97 & Ley 2272/22, SGP Ley 715/01, SGR Ley 2056/20, ICLD), y detección automática de superación de periodo de gobierno (`horizonte_anios > 4`), disparando la alerta de Vigencias Futuras Excepcionales (Ley 1483 de 2011) que exige aprobación del Concejo Distrital y declaratoria de importancia estratégica por el CONFIS distrital.
+     - **Orquestador Integral**: Computa el dictamen consolidado (`VIABLE`, `VIABLE CON CONDICIONES` o `INVIABLE`) sintetizando recomendaciones vinculantes.
 
-3. **Store Reactivo Zustand y Suite de Pruebas (`alternativas-store.ts`, `alternativas-store.test.ts`)**:
-   - Store con persistencia y catálogo canónico.
-   - Mutaciones tipadas: `agregarAlternativa`, `actualizarAlternativa`, `eliminarAlternativa`, `cambiarEstado`, `setFiltros`, `limpiarFiltros`.
-   - Filtros multicriterio: sector MGA (7 sectores), línea estratégica distrital (LE-01 a LE-04), dimensión de seguridad humana (7 dimensiones ONU), estado de viabilidad (5 estados) y enfoque étnico (Ley 70 de 1993 y Consulta Previa obligatoria).
-   - Motor de cálculo de KPIs: Total de proyectos (8), inversión cuatrienal total ($43.800 millones COP), proyectos viables/priorizados (6 de 8, 75%), cobertura étnica (2 proyectos) y horizonte medio de ejecución (3.9 años).
-   - Suite de 12 pruebas unitarias específicas aprobadas (39 aserciones).
+3. **Panel Lateral Zero-Modals (`evaluacion-viabilidad-panel.tsx`)**:
+   - Registrado como `"evaluacion-viabilidad"` en `panel-store.ts` y cargado dinámicamente en `panel-registry.tsx` con ancho fluido `min(clamp(780px, 52vw, 1100px), 100vw)`.
+   - Montado estrictamente sobre `PanelShell`, cumpliendo al 100% con la regla UI004 (cero acoplamientos prohibidos en el core de paneles) y la política de diseño institucional (0 modales, tokens semánticos CSS, componentes del Design Kit `@/shared/ui/*`).
+   - Componentes interactivos:
+     - Cabecera analítica con selector de alternativa, resumen ejecutivo y badge consolidado de veredicto.
+     - Botón de reevaluación con estados de carga (`Loader2`).
+     - Tarjeta del **Agente Jurídico**: nivel de competencia distrital, fundamento normativo, análisis de regresividad DESCA y bloque de alerta roja/ámbar de Consulta Previa obligatoria (Convenio 169 OIT).
+     - Tarjeta del **Agente Fiscal**: semáforo de riesgo fiscal, desglose porcentual y monetario de fuentes de financiamiento, y bloque de alerta para Vigencias Futuras Excepcionales (Ley 1483/11).
+     - Botón de impacto institucional *"Aplicar Veredicto MGA al Banco"* que actualiza inmediatamente el estado de viabilidad de la iniciativa en `alternativas-store.ts`.
+     - Exportación pericial del expediente completo a JSON formateado.
+     - Modo de solo lectura pericial inmutable respetado para roles supervisores.
 
-4. **Componentes y Vistas (`src/features/alternativas/`)**:
-   - `AlternativasView`: Cabecera `PageHeader`, botón protegido "Nueva Alternativa", menú de exportación a CSV (sanitizado contra inyección de fórmulas OWASP) y JSON, barra reactiva de filtros y resumen dinámico de resultados.
-   - `AlternativasKpis`: 5 tarjetas semánticas KPI con tokens cromáticos (`text-accent`, `text-success`, `text-ember`, `text-warning`, `text-text-muted`).
-   - `AlternativasTabla`: DataGrid con códigos, títulos, descripciones, sectores MGA, dimensiones ONU, líneas estratégicas, costo en pesos colombianos, horizonte en años, insignias de viabilidad y botón ergonómico para apertura de panel Zero-Modals.
+4. **Control de Acceso y Autorizaciones (`acceso.ts`, `acceso.test.ts`)**:
+   - Autorizado el panel `"evaluacion-viabilidad"` para usuarios con acceso al módulo de alternativas.
+   - Verificado el rol `auditor_forense` con permisos de auditoría técnica.
+   - Suite de pruebas ampliada a 17 pruebas y 138 aserciones (100% aprobadas).
 
-5. **Panel Lateral Zero-Modals (`alternativa-editor-panel.tsx`)**:
-   - Registrado como `"alternativa-editor"` en `panel-store.ts` y cargado dinámicamente en `panel-registry.tsx` con ancho fluido `min(clamp(720px, 50vw, 1020px), 100vw)` bajo estricta conformidad con la regla UI004.
-   - Formulario completo para registrar o modificar alternativas: código, sector, estado, nombre, descripción técnica, línea estratégica, dimensión ONU, objetivo del árbol MGA, territorio de cobertura, población estimada beneficiaria, estimación financiera cuatrienal, horizonte en años, selector de fuentes autorizadas (FONSET, SGP, SGR, ICLD, Presupuesto Participativo, Cooperación, Fondo Emprender) y switch de activación de Consulta Previa (Ley 70/93).
-   - Bloqueo pericial: cuando un usuario con rol `auditor_forense` o sin permisos de escritura abre la ficha, los controles se inhabilitan y se despliega el aviso pericial de solo lectura.
-   - Botón de exportación técnica individual a JSON.
+5. **Pruebas Unitarias Automatizadas (`viabilidad-api.test.ts`)**:
+   - 6 pruebas unitarias exhaustivas con 31 aserciones cubriendo competencias LOOT/Ley 1617, salvaguardas OIT 169, viabilidad fiscal MFMP, alertas de vigencias futuras Ley 1483/11 y orquestación integral de alternativas ordinarias y condicionadas.
 
 ---
 
-## 2. Archivos Creados y Modificados (Hito F-1)
+## 2. Archivos Creados y Modificados (Hito F-2)
 
 | Archivo | Rol en el Sistema |
 |---|---|
-| `src/features/plataforma/models/acceso.ts` | Registro del módulo `alternativas`, permisos de lectura y gestión, rol por módulo y autorización del panel `alternativa-editor`. |
-| `src/features/plataforma/models/acceso.test.ts` | Suite de pruebas unitarias actualizada verificando permisos, acceso por rol y restricciones del auditor. |
-| `src/features/plataforma/components/plataforma-sidebar.tsx` | Registro del ícono `Lightbulb` para el módulo de alternativas en la barra lateral. |
-| `src/core/panels/panel-store.ts` | Registro autónomo del tipo `"alternativa-editor"` en `PanelType` y `PanelPropsMap` (UI004 compliant). |
-| `src/app/_composition/panel-registry.tsx` | Dynamic import de `AlternativaEditorPanel`, registro en `PANEL_REGISTRY` y asignación de ancho fluido en `PANEL_WIDTHS`. |
-| `src/features/alternativas/models/alternativa.ts` | Definición de tipos TypeScript (`AlternativaSolucion`, `EstadoAlternativa`, `SectorMGA`) y catálogos de metadatos normativos. |
-| `src/features/alternativas/data/alternativas-canonicas.data.ts` | Catálogo canónico con las 8 alternativas oficiales formuladas para Cartagena de Indias. |
-| `src/features/alternativas/state/alternativas-store.ts` | Store Zustand con mutaciones, filtros multicriterio y cálculo analítico de KPIs. |
-| `src/features/alternativas/state/alternativas-store.test.ts` | Suite de pruebas automatizadas (12 pruebas, 39 aserciones) para store, filtros y cálculos. |
-| `src/features/alternativas/components/alternativas-kpis.tsx` | Componente de 5 tarjetas KPI con tokens semánticos de diseño. |
-| `src/features/alternativas/components/alternativas-tabla.tsx` | DataGrid interactivo con badges de viabilidad, salvaguarda de consulta previa y acciones. |
-| `src/features/alternativas/panels/alternativa-editor-panel.tsx` | Panel lateral Zero-Modals montado sobre `PanelShell` con formulario completo, bloqueo a auditores y exportación JSON. |
-| `src/features/alternativas/views/alternativas-view.tsx` | Vista principal con cabecera, filtros, KPIs, DataGrid y exportación CSV/JSON. |
-| `src/app/plataforma/alternativas/page.tsx` | Ruta App Router de Next.js montando la vista. |
+| `src/features/alternativas/models/viabilidad.ts` | Modelos de datos TypeScript, enums de veredictos, fuentes, riesgos y contratos de agentes IA. |
+| `src/features/alternativas/services/viabilidad-api.ts` | Servicio de evaluación jurídica y fiscal, conectores API y motores analíticos de contingencia distrital. |
+| `src/features/alternativas/services/viabilidad-api.test.ts` | Suite de pruebas unitarias automatizadas (6 pruebas, 31 aserciones) para motores de viabilidad. |
+| `src/features/alternativas/panels/evaluacion-viabilidad-panel.tsx` | Panel lateral Zero-Modals montado sobre `PanelShell`, tarjetas de agentes, veredicto consolidado y mutación en store. |
+| `src/features/alternativas/components/alternativas-tabla.tsx` | Incorporación de la acción pericial "Evaluar Viabilidad IA" con ícono `Scale`. |
+| `src/core/panels/panel-store.ts` | Registro del tipo `"evaluacion-viabilidad"` y sus props tipadas bajo estricto cumplimiento de UI004. |
+| `src/app/_composition/panel-registry.tsx` | Dynamic import de `EvaluacionViabilidadPanel`, registro en `PANEL_REGISTRY` y asignación de ancho fluido. |
+| `src/features/plataforma/models/acceso.ts` | Autorización del panel `"evaluacion-viabilidad"` en `panelPermitido`. |
+| `src/features/plataforma/models/acceso.test.ts` | Suite de pruebas de acceso actualizada verificando autorización del nuevo panel lateral. |
 
 ---
 
@@ -84,14 +75,14 @@ En estricto cumplimiento del documento rector `bridge/00_plan_maestro_fase_formu
 | **Chequeo de Tipos** | `bun run typecheck` (`tsc --noEmit`) | **0 errores**. TypeScript estricto, sin tipos `any`. |
 | **Linter** | `bun run lint` (`eslint .`) | **0 errores** (1 advertencia preexistente en TanStack table de geovisor). |
 | **Quality Gate Global** | `bun run check` | **Aprobado (Exit code 0)**. |
-| **Pruebas Automatizadas Unitarias** | `bun test` | **134 pass, 0 fail (620 assertions)** en 14 suites de prueba. |
-| **Pruebas del Módulo Alternativas** | `bun test src/features/alternativas/state/alternativas-store.test.ts` | **12 pass, 0 fail (39 assertions)**. |
-| **Pruebas de Control de Acceso** | `bun test src/features/plataforma/models/acceso.test.ts` | **17 pass, 0 fail (137 assertions)**. |
-| **Compilación de Producción** | `bun run build` (Turbopack) | **Compilado exitoso en 11.0s**. 54 rutas generadas (incluye `/plataforma/alternativas`), standalone sincronizado. |
+| **Pruebas Automatizadas Unitarias** | `bun test` | **140 pass, 0 fail (652 assertions)** en 15 suites de prueba. |
+| **Pruebas de Viabilidad IA** | `bun test src/features/alternativas/services/viabilidad-api.test.ts` | **6 pass, 0 fail (31 assertions)**. |
+| **Pruebas de Control de Acceso** | `bun test src/features/plataforma/models/acceso.test.ts` | **17 pass, 0 fail (138 assertions)**. |
+| **Compilación de Producción** | `bun run build` (Turbopack) | **Compilado exitoso en 10.5s**. 54 rutas generadas, standalone sincronizado. |
 | **Servicio de Producción** | `systemctl restart polis-frontend.service` | **Activo y en ejecución**. |
 | **Verificación de Endpoint** | `curl -s -o /dev/null -w "%{http_code}\n" http://127.0.0.1:3000/plataforma/alternativas` | **HTTP 200 OK**. |
 
 ---
 
 ## 4. Dictamen de Entrega para EAF
-La entrega del **Hito F-1** se encuentra lista para su verificación pericial, superando exhaustivamente los estándares metodológicos de la MGA/DNP, la arquitectura Zero-Modals, la tokenización semántica y el marco de gobernanza territorial de Cartagena de Indias. Se deja formalmente a disposición del Auditor Forense (Antigravity EAF).
+La entrega del **Hito F-2 (Evaluación de Viabilidad Jurídica y Fiscal con IA)** se encuentra completada y verificada de conformidad con las directrices del EAF. Se deja a disposición del Auditor Forense (Antigravity EAF) para su respectiva auditoría pericial y emisión del dictamen de calidad.

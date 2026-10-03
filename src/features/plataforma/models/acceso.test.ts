@@ -82,6 +82,7 @@ describe("Matriz de rutas internas", () => {
     ] as const)
       expect(panelPermitido(auditor, p)).toBe(false);
     expect(panelPermitido(auditor, "formulario-analitica")).toBe(true);
+    expect(panelPermitido(auditor, "evaluacion-viabilidad")).toBe(true);
     expect(panelPermitido(auditor, "usuarios")).toBe(false);
   });
   test("facilitador consulta formularios y gestiona mesas y actores", () => {

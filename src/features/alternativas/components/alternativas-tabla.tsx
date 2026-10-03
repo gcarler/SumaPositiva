@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { FileEdit, ShieldAlert, Sparkles, MapPin, Eye } from "lucide-react";
+import { FileEdit, ShieldAlert, Sparkles, MapPin, Eye, Scale } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import { Badge } from "@/shared/ui/badge";
 import {
@@ -41,6 +41,13 @@ export function AlternativasTabla({
     openPanel("alternativa-editor", {
       alternativaId: alt.id,
       modo: puedeEditar ? "editar" : "ver",
+      soloLectura: !puedeEditar,
+    });
+  };
+
+  const handleEvaluarViabilidad = (alt: AlternativaSolucion) => {
+    openPanel("evaluacion-viabilidad", {
+      alternativaId: alt.id,
       soloLectura: !puedeEditar,
     });
   };
@@ -86,7 +93,7 @@ export function AlternativasTabla({
               <TableHead className="w-[140px] text-center font-semibold text-text-primary">
                 Viabilidad MGA
               </TableHead>
-              <TableHead className="w-[110px] text-right font-semibold text-text-primary">
+              <TableHead className="w-[210px] text-right font-semibold text-text-primary">
                 Acciones
               </TableHead>
             </TableRow>
@@ -188,25 +195,39 @@ export function AlternativasTabla({
 
                   {/* Acciones */}
                   <TableCell className="text-right">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="gap-1.5 text-xs font-medium"
-                      onClick={() => handleAbrirPanel(alt)}
-                      aria-label={`${puedeEditar ? "Editar" : "Ver"} alternativa ${alt.codigo}`}
-                    >
-                      {puedeEditar ? (
-                        <>
-                          <FileEdit className="h-3.5 w-3.5" />
-                          <span>Editar</span>
-                        </>
-                      ) : (
-                        <>
-                          <Eye className="h-3.5 w-3.5" />
-                          <span>Ficha</span>
-                        </>
-                      )}
-                    </Button>
+                    <div className="flex items-center justify-end gap-1.5">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="gap-1 text-xs font-medium text-accent border-accent/30 hover:bg-accent-soft"
+                        onClick={() => handleEvaluarViabilidad(alt)}
+                        aria-label={`Evaluar viabilidad con IA para ${alt.codigo}`}
+                        title="Evaluar viabilidad jurídica y fiscal con Agentes IA DNP"
+                      >
+                        <Scale className="h-3.5 w-3.5" />
+                        <span>Evaluar IA</span>
+                      </Button>
+
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="gap-1.5 text-xs font-medium"
+                        onClick={() => handleAbrirPanel(alt)}
+                        aria-label={`${puedeEditar ? "Editar" : "Ver"} alternativa ${alt.codigo}`}
+                      >
+                        {puedeEditar ? (
+                          <>
+                            <FileEdit className="h-3.5 w-3.5" />
+                            <span>Editar</span>
+                          </>
+                        ) : (
+                          <>
+                            <Eye className="h-3.5 w-3.5" />
+                            <span>Ficha</span>
+                          </>
+                        )}
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               );

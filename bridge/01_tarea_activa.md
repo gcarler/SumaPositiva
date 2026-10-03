@@ -4,27 +4,21 @@
 **Prioridad**: ALTA
 **Responsable de Ejecución**: `agy2`
 **Auditor**: Antigravity (EAF)
-**Documento Detallado**: `bridge/01_tarea_agy2_formulacion_fase1.md`
+**Documento Detallado**: `bridge/01_tarea_agy2_formulacion_fase2.md`
 **Plan Rector**: `bridge/00_plan_maestro_fase_formulacion.md`
 
 ---
 
 ## Módulo Asignado
-**Fase de Formulación Estratégica — Hito F-1 (Banco Distrital de Alternativas de Solución MGA)**
+**Fase de Formulación Estratégica — Hito F-2 (Evaluación de Viabilidad Jurídica y Fiscal con IA)**
 
 Consulta la especificación técnica completa y los estándares de auditoría en:
-`/root/polis/bridge/01_tarea_agy2_formulacion_fase1.md`
+`/root/polis/bridge/01_tarea_agy2_formulacion_fase2.md`
 
 ### Resumen de Entregables Requeridos:
-1. `src/features/plataforma/models/acceso.ts` y `acceso.test.ts` (módulo `alternativas`).
-2. `src/features/plataforma/components/plataforma-sidebar.tsx` (ícono `Lightbulb`).
-3. `src/app/plataforma/alternativas/page.tsx` (ruta App Router).
-4. Catálogo canónico `src/features/alternativas/data/alternativas-canonicas.data.ts` con 8 alternativas oficiales de Cartagena.
-5. Vistas y componentes en `src/features/alternativas/`:
-   - `alternativas-view.tsx`
-   - `alternativas-kpis.tsx`
-   - `alternativas-tabla.tsx`
-   - Panel lateral Zero-Modals `alternativa-editor-panel.tsx` (registrado en `panel-store.ts` y `panel-registry.tsx`).
-6. Store y pruebas: `alternativas-store.ts` y `alternativas-store.test.ts`.
-7. Quality gates: `bun run check`, `node scripts/ui-policy.mjs`, `bun test`, `bun run build`, reinicio de `polis-frontend.service` y HTTP 200 en `/plataforma/alternativas`.
-8. Informe en `bridge/02_entrega_agy2.md` y commit formal en git.
+1. Botón "Evaluar Viabilidad IA" en cada fila de `alternativas-tabla.tsx`.
+2. Conexión de API con `POST /api/v1/ia/juridico` y `POST /api/v1/ia/fiscal`.
+3. Panel lateral Zero-Modals `evaluacion-viabilidad-panel.tsx` montado sobre `PanelShell`, registrado en `panel-registry.tsx` y `panel-store.ts` con ID `"evaluacion-viabilidad"`.
+4. Servicio `viabilidad-api.ts` y pruebas unitarias `viabilidad-api.test.ts`.
+5. Quality gates: `bun run check`, `node scripts/ui-policy.mjs`, `bun test`, `bun run build`, reinicio de `polis-frontend.service` y HTTP 200 en `/plataforma/alternativas`.
+6. Informe en `bridge/02_entrega_agy2.md` y commit formal en git.
