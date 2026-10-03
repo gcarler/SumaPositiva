@@ -1,86 +1,82 @@
-# Entrega agy2 — Fase 3: Plan de Acción y Seguimiento (Hito PAS-1: Matriz de Compromisos Institucionales)
-Fecha: 2026-10-03T22:42:00Z
+# Entrega agy2 — Fase 3: Plan de Acción y Seguimiento (Hito PAS-2: Tablero SINERGIA DNP y Cadena de Valor)
+Fecha: 2026-10-03T22:49:00Z
 Estado: CONFORME PARA AUDITORÍA FORENSE (EAF)
 Responsable: agy2
 Commits:
+- `303568c` feat(seguimiento): tablero sinergia DNP y cadena de valor insumo-producto-resultado
+- `df96c04` test(stories): estabilizar mocks y aserciones en historias de testimonios y noticias
+- `b15303a` docs(seguimiento): registrar entrega pericial hito PAS-1
 - `df8f5ce` feat(seguimiento): modulo PAS de matriz de compromisos y metas cuatrienales
 - `78a0681` docs(plan): plan maestro de la fase 3 plan de accion y seguimiento PAS SINERGIA
-- `6a3e9ce` docs(audit): dictamen de calidad EAF sobre hito F-3 de formulacion (4e7be37)
-- `f5c24fc` docs(formulacion): registrar entrega pericial hito F-3
-- `4e7be37` feat(formulacion): tablero de costeo presupuestal y asignacion de fuentes de financiacion
 
 ---
 
-## 1. Resumen Ejecutivo de la Entrega (Hito PAS-1)
-En estricto cumplimiento del documento rector `bridge/00_plan_maestro_fase_pas.md` y la especificación pericial `bridge/01_tarea_agy2_pas_fase1.md`, se implementó y desplegó en la plataforma institucional el nuevo módulo interno **`seguimiento`** (`/plataforma/seguimiento`), correspondiente a la **Matriz de Compromisos Institucionales y Seguimiento Cuatrienal (PAS)** para la Política Pública de Seguridad Humana Integral de Cartagena de Indias 2026–2036, alineado con las metodologías DNP/SINERGIA, MIPG y Ley 152 de 1994.
+## 1. Resumen Ejecutivo de la Entrega (Hito PAS-2)
+En estricto cumplimiento del documento rector `bridge/00_plan_maestro_fase_pas.md` y la especificación pericial `bridge/01_tarea_agy2_pas_fase2.md`, se implementó y desplegó en el módulo institucional `/plataforma/seguimiento` el **Tablero SINERGIA DNP y Cadena de Valor Causal (Insumo ➔ Producto ➔ Resultado)** para la Política Pública de Seguridad Humana Integral de Cartagena de Indias 2026–2036, conectando con los endpoints reales del backend FastAPI (`/api/v1/indicadores/cadena-valor` y `/api/v1/indicadores/fichas/{id}/mediciones`), integrando el panel lateral Zero-Modals `"indicador-detalle"` y el cómputo adaptativo del avance para indicadores ascendentes y descendentes.
 
 ### Principales Logros Técnicos:
-1. **Control de Acceso y Navegación Institucional (`acceso.ts`, `plataforma-sidebar.tsx`)**:
-   - Módulo `seguimiento` (`/plataforma/seguimiento`) registrado en la matriz institucional `MODULOS`.
-   - Habilitado para los roles: `autoridad_distrital`, `auditor_forense` y `administrador_identidades`.
-   - Permisos granulares: `seguimiento:leer` y `seguimiento:gestionar`. Autoridades y administradores poseen facultad de edición/gestión, mientras que los auditores forenses operan bajo estricto modo de solo lectura.
-   - Ícono representativo `CheckSquare` integrado en el sidebar oficial de la plataforma interna.
-   - Suite de pruebas `acceso.test.ts` actualizada y 100% pasando (18 pruebas, 189 aserciones).
+1. **Navegación Institucional por Pestañas (`seguimiento-view.tsx`)**:
+   - Integración de pestañas mediante componentes accesibles `Tabs`, `TabsList`, `TabsTrigger`, `TabsContent` (`@/shared/ui/tabs`):
+     - **Tab 1: "Matriz de Compromisos PAS"**: Matriz cuatrienal de compromisos institucionales por secretaría distrital, KPIs de ejecución y presupuesto anual ($13.400 MM COP), DataGrid interactivo y exportación CSV/JSON.
+     - **Tab 2: "Cadena de Valor SINERGIA (DNP)"**: Nueva visualización lógica de causalidad técnica articulada en 3 eslabones.
+   - Textos de contexto metodológico dinámicos en `PageHeader` según la pestaña activa.
 
-2. **Catálogo Canónico Institucional de Cartagena (`compromisos-pas.data.ts`, `compromiso.ts`)**:
-   - Modelado tipado de `CompromisoInstitucional`, `EstadoCompromiso`, `KpisSeguimiento` y metadatos periciales.
-   - Sembrado canónico con los **10 compromisos institucionales estructurados** del Distrito de Cartagena:
-     1. `PAS-SEC-01`: Ruta de Detección Temprana y Protección contra ESCNNA (Distriseguridad / Sec. Interior; $1.200M COP/año).
-     2. `PAS-JUV-02`: Capacitación e Inserción Laboral para Jóvenes en Riesgo de Pandillismo (Sec. de Participación; $1.800M COP/año).
-     3. `PAS-SEG-03`: Mantenimiento y Conectividad de 250 Cámaras LPR y Centros de Monitoreo (Secotic / Distriseguridad; $2.000M COP/año).
-     4. `PAS-ALUM-04`: Instalación de 4.800 Luminarias LED en Puntos Críticos y Zonas de Miedo (Secretaría General; $1.500M COP/año).
-     5. `PAS-AMB-05`: Limpieza de Canales, Drenajes y Reforestación Comunitaria en Ciénaga de la Virgen (EPA Cartagena / OAGRD; $3.000M COP/año).
-     6. `PAS-POL-06`: Fortalecimiento Operativo y Dotación a 60 Frentes Locales de Seguridad (Policía MECAR / Sec. Interior; $400M COP/año).
-     7. `PAS-CUID-07`: Puesta en Marcha de 2 Manzanas del Cuidado y Centros de Vida (Sec. de Participación / DADIS; $950M COP/año).
-     8. `PAS-DES-08`: Mediación Comunitaria y Desarme Social en 12 Barrios Priorizados (Sec. Interior; $1.100M COP/año).
-     9. `PAS-BAZ-09`: Microcrédito Popular y Formalización de 800 Comerciantes en Mercado de Bazurto (Sec. de Hacienda; $850M COP/año).
-     10. `PAS-ETN-10`: Proyectos Productivos y Salvaguarda Étnica con Consejos Comunitarios (Asuntos Étnicos / Participación; $600M COP/año).
-   - Presupuesto anual consolidado de la matriz: **$13.400.000.000 COP ($13.400 MM COP)**.
+2. **Modelos de Datos y Lógica de Avance DNP (`indicador-dnp.ts`)**:
+   - Tipado riguroso: `TipoIndicador`, `SentidoEsperado`, `FichaIndicadorDnp`, `CadenaValorData`, `MedicionIndicadorInput`, `MedicionIndicadorRespuesta`.
+   - **Algoritmo de Cálculo Adaptativo de Avance (`calcularAvancePorcentaje`)**:
+     - *Sentido Ascendente* (recursos, luminarias, frentes): `((valorActual - lineaBase) / (meta - lineaBase)) * 100` con protección ante denominadores nulos.
+     - *Sentido Descendente* (delitos, homicidios, hurtos, percepción de inseguridad): `((lineaBase - valorActual) / (lineaBase - meta)) * 100`, donde una reducción respecto a la línea base representa avance positivo hacia la meta.
+   - **Semáforos Cromáticos SINERGIA (`obtenerSemaforoAvance`)**:
+     - $\ge 80\%$: *Óptimo* (`bg-success`, `text-success`).
+     - $50\% - 79\%$: *En Alerta* (`bg-warning`, `text-warning`).
+     - $< 50\%$: *Crítico* (`bg-danger`, `text-danger`).
 
-3. **Gestor de Estado Reactivo (`compromisos-store.ts`, `compromisos-store.test.ts`)**:
-   - Store Zustand con soporte para creación (`agregarCompromiso`), actualización de avance (`actualizarAvance`), cambio de estado (`cambiarEstado`), eliminación y filtros multicriterio.
-   - Cálculo determinista de KPIs consolidados (`calcularKpisSeguimiento`) y motor de filtrado reactivo (`filtrarCompromisos`).
-   - 11 pruebas unitarias automatizadas con 41 aserciones, 100% pasando.
+3. **Servicio Frontend de Integración (`cadena-valor-api.ts`)**:
+   - Consumo de `GET /api/v1/indicadores/cadena-valor` mediante `apiFetch`.
+   - Fallback canónico tipado idéntico a la base de datos de Cartagena (`CADENA_VALOR_CANONICA_CARTAGENA`), garantizando resiliencia absoluta en entornos aislados o pruebas unitarias:
+     - **Insumos (2)**: `IND-INS-01` (Presupuesto FONSET), `IND-INS-02` (Mantenimiento cámaras LPR).
+     - **Productos (3)**: `IND-PROD-01` (Frentes de seguridad), `IND-PROD-02` (Luminarias LED), `IND-PROD-03` (Jóvenes capacitados).
+     - **Resultados de Impacto (3)**: `IND-RES-01` (Tasa de homicidios), `IND-RES-02` (Tasa de hurtos), `IND-RES-03` (Percepción de inseguridad).
+   - Servicio para consulta de fichas y registro de mediciones cuantitativas/cualitativas (`POST /api/v1/indicadores/fichas/{id}/mediciones`).
 
-4. **Componentes y Vistas del Módulo (`seguimiento-view.tsx`, `seguimiento-kpis.tsx`, `compromisos-tabla.tsx`)**:
-   - `PageHeader` institucional con contexto temporal y territorial (Cartagena de Indias 2026–2036).
-   - Botón *"Nuevo Compromiso"* con validación de permisos de edición en tiempo de ejecución.
-   - Menú de exportación pericial a CSV (sanitizado contra vulnerabilidades de inyección de fórmulas OWASP) y JSON estructurado.
-   - **4 Tarjetas Semánticas KPI**:
-     - *Total Compromisos PAS*: 10 iniciativas con indicador de presupuesto anual consolidado ($13.400 MM COP).
-     - *En Ejecución / Cumplidos*: porcentaje y fracción respecto al total.
-     - *En Riesgo o Retrasados*: semáforo de alerta temprana.
-     - *Cumplimiento Cuatrienal*: porcentaje medio cuatrienal con barra de progreso reactiva.
-   - Barra de filtros con buscador full-text, selector de entidades distritales de Cartagena y selector de estados de cumplimiento.
-   - DataGrid interactivo con barras de avance cromáticas (`bg-success`, `bg-accent`, `bg-warning`, `bg-danger`), badges de estado DNP y acción de gestión/consulta de avance.
+4. **Componente Visual Cadena de Valor (`cadena-valor-tab.tsx`)**:
+   - Cabecera explicativa con badges metodológicos oficiales: *DNP*, *SINERGIA*, *MIPG*, *Decreto Distrital 037/2026*.
+   - Diagrama articulado de 3 columnas temáticas con conectores causales `Insumos ➔ Productos ➔ Resultados`.
+   - Tarjetas de indicador con código DNP, tipo, nombre, entidad responsable, sentido esperado con badge dinámico, desglose numérico (Línea Base vs Meta 2029 vs Valor Actual), barra de progreso cromática y botón *"Ver Ficha Técnica DNP"*.
 
-5. **Panel Lateral Zero-Modals (`compromiso-editor-panel.tsx`)**:
-   - ID: `"compromiso-editor"`.
-   - Registrado en `panel-store.ts` y cargado dinámicamente en `panel-registry.tsx` con ancho fluido `min(clamp(720px, 50vw, 1020px), 100vw)`, cumpliendo la Regla UI004.
-   - Formulario para actualización de avance cuantitativo (valor medido, unidad de medida, cálculo de porcentaje en tiempo real).
-   - Selector de estado de cumplimiento, reporte cualitativo y URL de evidencia documental para auditoría.
-   - Modo de solo lectura pericial inmutable con campos deshabilitados para el rol `auditor_forense`.
+5. **Panel Lateral Zero-Modals Ficha Técnica DNP (`indicador-detalle-panel.tsx`)**:
+   - ID: `"indicador-detalle"`.
+   - Montado sobre `PanelShell`, registrado en `panel-store.ts` y cargado dinámicamente en `panel-registry.tsx` con ancho fluido `min(clamp(720px, 50vw, 1000px), 100vw)`, cumpliendo la Regla UI004.
+   - Detalle exhaustivo: definición metodológica oficial, fórmula matemática de cálculo, periodicidad, entidad responsable y fuente oficial de datos de Cartagena.
+   - Cuadro comparativo de cumplimiento y avance cuatrienal con semáforo DNP.
+   - Formulario para registro de avance cuantitativo (período, fecha de corte, valor medido, observaciones técnicas y URL de evidencia pericial).
+   - **Modo solo lectura inmutable**: Si el usuario autenticado tiene el rol `auditor_forense`, el formulario se inhabilita mostrando el banner de inspección pericial inmutable.
+
+6. **Control de Acceso y Autorizaciones (`acceso.ts`, `acceso.test.ts`)**:
+   - Panel `"indicador-detalle"` autorizado en `panelPermitido` para los roles: `autoridad_distrital`, `auditor_forense` y `administrador_identidades`.
+   - Suite de pruebas de acceso actualizada (18 pruebas, 193 aserciones, 100% pasando).
+
+7. **Store Reactivo y Pruebas Unitarias (`cadena-valor-store.ts`, `cadena-valor-store.test.ts`)**:
+   - Store Zustand con gestión de estado de carga, selección de indicador y mutación de mediciones con recálculo dinámico.
+   - Suite de pruebas unitarias cubriendo carga de indicadores, fórmulas ascendentes y descendentes, semáforos DNP y mutaciones (7 pruebas, 40 aserciones, 100% pasando).
 
 ---
 
-## 2. Archivos Creados y Modificados (Hito PAS-1)
+## 2. Archivos Creados y Modificados (Hito PAS-2)
 
 | Archivo | Rol en el Sistema |
 |---|---|
-| `src/features/seguimiento/models/compromiso.ts` | Modelos de datos TypeScript, enums de estado, interfaces de compromisos, KPIs y catálogo de entidades distritales. |
-| `src/features/seguimiento/data/compromisos-pas.data.ts` | Catálogo canónico con los 10 compromisos institucionales estructurados de Cartagena de Indias. |
-| `src/features/seguimiento/state/compromisos-store.ts` | Store Zustand con mutaciones reactivas, filtrado multicriterio y cálculo analítico de KPIs. |
-| `src/features/seguimiento/state/compromisos-store.test.ts` | Suite de pruebas unitarias automatizadas (11 pruebas, 41 aserciones) para lógica del store PAS. |
-| `src/features/seguimiento/panels/compromiso-editor-panel.tsx` | Panel lateral Zero-Modals montado sobre `PanelShell`, actualización de avances y protección para auditores. |
-| `src/features/seguimiento/components/seguimiento-kpis.tsx` | 4 tarjetas KPI semánticas con desglose presupuestal y barra de cumplimiento cuatrienal. |
-| `src/features/seguimiento/components/compromisos-tabla.tsx` | DataGrid interactivo con barras cromáticas de avance, badges de estado y apertura de panel. |
-| `src/features/seguimiento/views/seguimiento-view.tsx` | Vista principal del módulo con cabecera, filtros, exportación CSV/JSON y tabla interactiva. |
-| `src/app/plataforma/seguimiento/page.tsx` | Ruta Next.js App Router para `/plataforma/seguimiento`. |
-| `src/core/panels/panel-store.ts` | Registro desacoplado de `"compromiso-editor"` en `PanelType` y `PanelPropsMap` (UI004 compliant). |
-| `src/app/_composition/panel-registry.tsx` | Dynamic import de `CompromisoEditorPanel`, registro en `PANEL_REGISTRY` y ancho en `PANEL_WIDTHS`. |
-| `src/features/plataforma/models/acceso.ts` | Registro del módulo `seguimiento` en `MODULOS`, control de roles, permisos y autorización en `panelPermitido`. |
-| `src/features/plataforma/models/acceso.test.ts` | Pruebas de control de acceso actualizadas verificando módulo y panel lateral (18 pruebas, 189 aserciones). |
-| `src/features/plataforma/components/plataforma-sidebar.tsx` | Enlace de navegación con ícono `CheckSquare` para el módulo `seguimiento`. |
+| `src/features/seguimiento/models/indicador-dnp.ts` | Modelos de datos TypeScript de la Cadena de Valor DNP, funciones de cálculo de avance ascendente/descendente y semáforos. |
+| `src/features/seguimiento/services/cadena-valor-api.ts` | Servicio cliente API para endpoints de indicadores, normalizadores y catálogo canónico fallback de Cartagena. |
+| `src/features/seguimiento/state/cadena-valor-store.ts` | Store Zustand reactivo para la Cadena de Valor SINERGIA y registro de mediciones. |
+| `src/features/seguimiento/state/cadena-valor-store.test.ts` | Suite de pruebas unitarias automatizadas (7 pruebas, 40 aserciones) para lógica DNP y cálculos causales. |
+| `src/features/seguimiento/components/cadena-valor-tab.tsx` | Componente de visualización causal en 3 columnas articuladas (Insumos ➔ Productos ➔ Resultados). |
+| `src/features/seguimiento/panels/indicador-detalle-panel.tsx` | Panel lateral Zero-Modals con ficha técnica DNP, fórmula matemática, metas y formulario de mediciones con modo auditor. |
+| `src/features/seguimiento/views/seguimiento-view.tsx` | Navegación por pestañas (Tabs): Matriz de Compromisos PAS vs Cadena de Valor SINERGIA. |
+| `src/core/panels/panel-store.ts` | Registro desacoplado de `"indicador-detalle"` en `PanelType` y `PanelPropsMap` (UI004 compliant). |
+| `src/app/_composition/panel-registry.tsx` | Dynamic import de `IndicadorDetallePanel`, registro en `PANEL_REGISTRY` y ancho en `PANEL_WIDTHS`. |
+| `src/features/plataforma/models/acceso.ts` | Autorización del panel `"indicador-detalle"` en `panelPermitido`. |
+| `src/features/plataforma/models/acceso.test.ts` | Pruebas de acceso actualizadas con aserciones para `"indicador-detalle"` (18 pruebas, 193 aserciones). |
 
 ---
 
@@ -92,14 +88,15 @@ En estricto cumplimiento del documento rector `bridge/00_plan_maestro_fase_pas.m
 | **Chequeo de Tipos** | `bun run typecheck` (`tsc --noEmit`) | **0 errores**. TypeScript estricto, sin tipos `any`. |
 | **Linter** | `bun run lint` (`eslint .`) | **0 errores** (1 advertencia preexistente en tabla de geovisor). |
 | **Quality Gate Global** | `bun run check` | **Aprobado (Exit code 0)**. |
-| **Pruebas Automatizadas Unitarias** | `bun test` | **159 pass, 0 fail (778 assertions)** en 17 suites de prueba. |
+| **Pruebas Automatizadas Unitarias** | `bun test` | **166 pass, 0 fail (822 assertions)** en 18 suites de prueba. |
+| **Pruebas de Cadena de Valor DNP** | `bun test src/features/seguimiento/state/cadena-valor-store.test.ts` | **7 pass, 0 fail (40 assertions)**. |
 | **Pruebas de Store PAS** | `bun test src/features/seguimiento/state/compromisos-store.test.ts` | **11 pass, 0 fail (41 assertions)**. |
-| **Pruebas de Control de Acceso** | `bun test src/features/plataforma/models/acceso.test.ts` | **18 pass, 0 fail (189 assertions)**. |
-| **Compilación de Producción** | `bun run build` (Turbopack) | **Compilado exitoso en 11.0s**. 57 rutas generadas, `/plataforma/seguimiento` pre-renderizada como estática, standalone sincronizado. |
+| **Pruebas de Control de Acceso** | `bun test src/features/plataforma/models/acceso.test.ts` | **18 pass, 0 fail (193 assertions)**. |
+| **Compilación de Producción** | `bun run build` (Turbopack) | **Compilado exitoso en 12.4s**. 57 rutas generadas, `/plataforma/seguimiento` pre-renderizada como estática. |
 | **Servicio de Producción** | `systemctl restart polis-frontend.service` | **Activo y en ejecución**. |
 | **Verificación de Endpoint** | `curl -s -o /dev/null -w "%{http_code}\n" http://127.0.0.1:3000/plataforma/seguimiento` | **HTTP 200 OK**. |
 
 ---
 
 ## 4. Dictamen de Entrega para EAF
-La entrega del **Hito PAS-1 (Matriz de Compromisos Institucionales y Metas Cuatrienales)** se encuentra 100% completada y verificada de conformidad con las directrices del EAF. Se deja formalmente a disposición del Auditor Forense (Antigravity EAF) para su respectiva auditoría pericial y emisión del dictamen de calidad.
+La entrega del **Hito PAS-2 (Tablero SINERGIA DNP y Cadena de Valor Causal: Insumo ➔ Producto ➔ Resultado)** se encuentra 100% completada y verificada de conformidad con las directrices del EAF. Se deja formalmente a disposición del Auditor Forense (Antigravity EAF) para su respectiva auditoría pericial y emisión del dictamen de calidad.
