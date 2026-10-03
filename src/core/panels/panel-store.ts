@@ -45,7 +45,8 @@ export type PanelType =
   | "actor-editor"
   | "medicion-editor"
   | "validacion-mga"
-  | "ficha-territorial";
+  | "ficha-territorial"
+  | "alternativa-editor";
 
 /** Árbol que se diligencia en el papelografo */
 export type ArbolPanel = "problemas" | "soluciones";
@@ -129,6 +130,11 @@ export interface PanelPropsMap {
   };
   "ficha-territorial": {
     territorioId: string;
+    soloLectura?: boolean;
+  };
+  "alternativa-editor": {
+    alternativaId?: string | null;
+    modo?: "crear" | "editar" | "ver";
     soloLectura?: boolean;
   };
 }

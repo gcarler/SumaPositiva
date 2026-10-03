@@ -30,7 +30,7 @@ describe("Matriz de rutas internas", () => {
     ["ciudadano", []],
     [
       "autoridad_distrital",
-      ["dashboard", "formularios", "geovisor", "mesas", "contenido", "fuentes", "actores", "diagnostico"],
+      ["dashboard", "formularios", "geovisor", "mesas", "contenido", "fuentes", "actores", "diagnostico", "alternativas"],
     ],
     ["facilitador_mesa", ["dashboard", "formularios", "mesas", "actores"]],
     [
@@ -44,6 +44,7 @@ describe("Matriz de rutas internas", () => {
         "fuentes",
         "actores",
         "diagnostico",
+        "alternativas",
         "configuracion",
       ],
     ],
@@ -77,6 +78,7 @@ describe("Matriz de rutas internas", () => {
       "fuente-editor",
       "actor-editor",
       "medicion-editor",
+      "alternativa-editor",
     ] as const)
       expect(panelPermitido(auditor, p)).toBe(false);
     expect(panelPermitido(auditor, "formulario-analitica")).toBe(true);
@@ -172,9 +174,26 @@ describe("Matriz de rutas internas", () => {
     expect(
       puedeEditar(sesion("ciudadano"), "diagnostico"),
     ).toBe(false);
+    expect(
+      puedeEditar(
+        sesion("administrador_identidades", { permisos: [] }),
+        "alternativas",
+      ),
+    ).toBe(true);
+    expect(
+      puedeEditar(sesion("autoridad_distrital", { permisos: [] }), "alternativas"),
+    ).toBe(true);
+    expect(
+      puedeEditar(sesion("ciudadano"), "alternativas"),
+    ).toBe(false);
+    expect(
+      panelPermitido(sesion("autoridad_distrital"), "alternativa-editor"),
+    ).toBe(true);
   });
   test("rutas exactas y normalización de barra final", () => {
     expect(moduloDeRuta("/plataforma/mesas/")).toBe("mesas");
+    expect(moduloDeRuta("/plataforma/alternativas")).toBe("alternativas");
+    expect(moduloDeRuta("/plataforma/alternativas/")).toBe("alternativas");
     expect(moduloDeRuta("/plataforma/usuarios/desconocido")).toBeUndefined();
   });
 });

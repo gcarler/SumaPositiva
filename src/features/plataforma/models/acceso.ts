@@ -57,6 +57,12 @@ export const MODULOS = [
     descripcion: "Línea base cuantitativa, brechas por dimensión e indicadores oficiales DNP.",
   },
   {
+    id: "alternativas",
+    ruta: "/plataforma/alternativas",
+    titulo: "Alternativas MGA",
+    descripcion: "Banco de proyectos y alternativas de solución formuladas bajo metodología MGA/DNP.",
+  },
+  {
     id: "configuracion",
     ruta: "/plataforma/configuracion",
     titulo: "Configuración",
@@ -80,6 +86,7 @@ const ACCESO: Record<string, readonly ModuloPlataforma[]> = {
     "fuentes",
     "actores",
     "diagnostico",
+    "alternativas",
   ],
   facilitador_mesa: ["dashboard", "mesas", "formularios", "actores"],
   auditor_forense: [
@@ -92,6 +99,7 @@ const ACCESO: Record<string, readonly ModuloPlataforma[]> = {
     "fuentes",
     "actores",
     "diagnostico",
+    "alternativas",
   ],
   administrador_identidades: MODULOS.map((m) => m.id),
 };
@@ -108,6 +116,7 @@ const PERMISOS_POR_MODULO: Record<ModuloPlataforma, readonly string[]> = {
     "fuentes:leer", "fuentes:gestionar",
     "actores:leer", "actores:gestionar",
     "diagnostico:leer", "diagnostico:gestionar",
+    "alternativas:leer", "alternativas:gestionar",
   ],
   formularios: [
     "formularios:leer",
@@ -124,6 +133,7 @@ const PERMISOS_POR_MODULO: Record<ModuloPlataforma, readonly string[]> = {
   fuentes: ["fuentes:leer", "fuentes:gestionar"],
   actores: ["actores:leer", "actores:gestionar"],
   diagnostico: ["diagnostico:leer", "diagnostico:gestionar"],
+  alternativas: ["alternativas:leer", "alternativas:gestionar"],
   configuracion: ["configuracion:leer", "configuracion:gestionar"],
 };
 
@@ -137,6 +147,7 @@ const PERMISOS_EDICION: Record<ModuloPlataforma, readonly string[]> = {
   fuentes: ["fuentes:gestionar"],
   actores: ["actores:gestionar"],
   diagnostico: ["diagnostico:gestionar"],
+  alternativas: ["alternativas:gestionar"],
   configuracion: ["configuracion:gestionar"],
 };
 
@@ -196,6 +207,7 @@ export function puedeEditar(
       fuentes: ["autoridad_distrital", "administrador_identidades"],
       actores: ["autoridad_distrital", "facilitador_mesa", "administrador_identidades"],
       diagnostico: ["autoridad_distrital", "administrador_identidades"],
+      alternativas: ["autoridad_distrital", "administrador_identidades"],
     };
     return !!rolesPorModulo[modulo]?.includes(sesion?.rol ?? "");
   }
@@ -248,6 +260,8 @@ export function panelPermitido(
       return puedeEditar(sesion, "actores");
     case "medicion-editor":
       return puedeEditar(sesion, "diagnostico");
+    case "alternativa-editor":
+      return puedeEditar(sesion, "alternativas");
     default:
       return false;
   }
