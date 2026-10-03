@@ -45,6 +45,12 @@ export const MODULOS = [
     descripcion: "Monitoreo, radicación y cumplimiento de fuentes primarias y secundarias.",
   },
   {
+    id: "actores",
+    ruta: "/plataforma/actores",
+    titulo: "Actores",
+    descripcion: "Mapeo, caracterización socio-territorial y matriz de involucramiento de actores clave.",
+  },
+  {
     id: "configuracion",
     ruta: "/plataforma/configuracion",
     titulo: "Configuración",
@@ -66,8 +72,9 @@ const ACCESO: Record<string, readonly ModuloPlataforma[]> = {
     "geovisor",
     "contenido",
     "fuentes",
+    "actores",
   ],
-  facilitador_mesa: ["dashboard", "mesas", "formularios"],
+  facilitador_mesa: ["dashboard", "mesas", "formularios", "actores"],
   auditor_forense: [
     "dashboard",
     "formularios",
@@ -76,6 +83,7 @@ const ACCESO: Record<string, readonly ModuloPlataforma[]> = {
     "contenido",
     "configuracion",
     "fuentes",
+    "actores",
   ],
   administrador_identidades: MODULOS.map((m) => m.id),
 };
@@ -90,6 +98,7 @@ const PERMISOS_POR_MODULO: Record<ModuloPlataforma, readonly string[]> = {
     "contenido:leer", "politicas:gestionar",
     "testimonios:moderar", "configuracion:leer", "configuracion:gestionar",
     "fuentes:leer", "fuentes:gestionar",
+    "actores:leer", "actores:gestionar",
   ],
   formularios: [
     "formularios:leer",
@@ -104,6 +113,7 @@ const PERMISOS_POR_MODULO: Record<ModuloPlataforma, readonly string[]> = {
   usuarios: ["usuarios:leer", "usuarios:gestionar", "roles:gestionar", "identidad:auditar"],
   contenido: ["contenido:leer", "politicas:gestionar", "testimonios:moderar"],
   fuentes: ["fuentes:leer", "fuentes:gestionar"],
+  actores: ["actores:leer", "actores:gestionar"],
   configuracion: ["configuracion:leer", "configuracion:gestionar"],
 };
 
@@ -115,6 +125,7 @@ const PERMISOS_EDICION: Record<ModuloPlataforma, readonly string[]> = {
   usuarios: ["usuarios:gestionar", "roles:gestionar"],
   contenido: ["politicas:gestionar", "testimonios:moderar"],
   fuentes: ["fuentes:gestionar"],
+  actores: ["actores:gestionar"],
   configuracion: ["configuracion:gestionar"],
 };
 
@@ -172,6 +183,7 @@ export function puedeEditar(
       formularios: ["autoridad_distrital", "administrador_identidades"],
       contenido: ["autoridad_distrital", "administrador_identidades"],
       fuentes: ["autoridad_distrital", "administrador_identidades"],
+      actores: ["autoridad_distrital", "facilitador_mesa", "administrador_identidades"],
     };
     return !!rolesPorModulo[modulo]?.includes(sesion?.rol ?? "");
   }
@@ -220,6 +232,8 @@ export function panelPermitido(
       );
     case "fuente-editor":
       return puedeEditar(sesion, "fuentes");
+    case "actor-editor":
+      return puedeEditar(sesion, "actores");
     default:
       return false;
   }

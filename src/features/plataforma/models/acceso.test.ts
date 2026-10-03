@@ -30,9 +30,9 @@ describe("Matriz de rutas internas", () => {
     ["ciudadano", []],
     [
       "autoridad_distrital",
-      ["dashboard", "formularios", "geovisor", "mesas", "contenido", "fuentes"],
+      ["dashboard", "formularios", "geovisor", "mesas", "contenido", "fuentes", "actores"],
     ],
-    ["facilitador_mesa", ["dashboard", "formularios", "mesas"]],
+    ["facilitador_mesa", ["dashboard", "formularios", "mesas", "actores"]],
     [
       "auditor_forense",
       [
@@ -42,6 +42,7 @@ describe("Matriz de rutas internas", () => {
         "mesas",
         "contenido",
         "fuentes",
+        "actores",
         "configuracion",
       ],
     ],
@@ -73,16 +74,19 @@ describe("Matriz de rutas internas", () => {
       "papelografo",
       "fases-control",
       "fuente-editor",
+      "actor-editor",
     ] as const)
       expect(panelPermitido(auditor, p)).toBe(false);
     expect(panelPermitido(auditor, "formulario-analitica")).toBe(true);
     expect(panelPermitido(auditor, "usuarios")).toBe(false);
   });
-  test("facilitador consulta formularios y gestiona mesas", () => {
+  test("facilitador consulta formularios y gestiona mesas y actores", () => {
     const f = sesion("facilitador_mesa");
     expect(puedeEditar(f, "formularios")).toBe(false);
     expect(panelPermitido(f, "formulario-editor")).toBe(false);
     expect(puedeEditar(f, "mesas")).toBe(true);
+    expect(puedeEditar(f, "actores")).toBe(true);
+    expect(panelPermitido(f, "actor-editor")).toBe(true);
   });
   test("perfil personalizado administra solo los módulos concedidos", () => {
     const administradorFormularios = sesion("admin_formularios", {
@@ -137,10 +141,22 @@ describe("Matriz de rutas internas", () => {
       ),
     ).toBe(true);
     expect(
+      puedeEditar(
+        sesion("administrador_identidades", { permisos: [] }),
+        "actores",
+      ),
+    ).toBe(true);
+    expect(
+      puedeEditar(sesion("autoridad_distrital", { permisos: [] }), "actores"),
+    ).toBe(true);
+    expect(
       puedeEditar(sesion("ciudadano"), "mesas"),
     ).toBe(false);
     expect(
       puedeEditar(sesion("ciudadano"), "fuentes"),
+    ).toBe(false);
+    expect(
+      puedeEditar(sesion("ciudadano"), "actores"),
     ).toBe(false);
   });
   test("rutas exactas y normalización de barra final", () => {

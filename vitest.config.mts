@@ -18,6 +18,7 @@ export default defineConfig({
           include: [
             "src/features/plataforma/**/*.test.ts",
             "src/features/fuentes/**/*.test.ts",
+            "src/features/actores/**/*.test.ts",
             "src/features/sesion/services/sincronizar-sesion.test.ts",
           ],
         },

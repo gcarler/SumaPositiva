@@ -41,7 +41,8 @@ export type PanelType =
   | "testimonio-nuevo"
   | "mesa-acta"
   | "rendicion-cuentas"
-  | "fuente-editor";
+  | "fuente-editor"
+  | "actor-editor";
 
 /** Árbol que se diligencia en el papelografo */
 export type ArbolPanel = "problemas" | "soluciones";
@@ -91,6 +92,7 @@ export interface PanelPropsMap {
   "mesa-acta": { mesaId: string };
   "rendicion-cuentas": { dependenciaId?: string };
   "fuente-editor": { fuenteId: string; soloLectura?: boolean };
+  "actor-editor": { actorId?: string; soloLectura?: boolean };
 }
 
 export type PanelEntry<T extends PanelType = PanelType> = {

@@ -25,6 +25,7 @@ export const ICONOS = {
   usuarios: Users,
   contenido: FileText,
   fuentes: Database,
+  actores: Users,
   configuracion: Settings,
 } satisfies Record<ModuloPlataforma, typeof Home>;
 export function PlataformaSidebar() {

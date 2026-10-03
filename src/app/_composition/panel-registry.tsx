@@ -135,6 +135,10 @@ const FuenteEditorPanel = dynamic(
   () => import("@/features/fuentes/panels/fuente-editor-panel").then((m) => m.FuenteEditorPanel),
   { ssr: false }
 );
+const ActorEditorPanel = dynamic(
+  () => import("@/features/actores/panels/actor-editor-panel").then((m) => m.ActorEditorPanel),
+  { ssr: false }
+);
 
 export const PANEL_REGISTRY: Record<
   PanelType,
@@ -172,6 +176,7 @@ export const PANEL_REGISTRY: Record<
   "mesa-acta": MesaActaPanel as ComponentType<PanelComponentProps>,
   "rendicion-cuentas": RendicionCuentasPanel as ComponentType<PanelComponentProps>,
   "fuente-editor": FuenteEditorPanel as ComponentType<PanelComponentProps>,
+  "actor-editor": ActorEditorPanel as ComponentType<PanelComponentProps>,
 };
 
 /**
@@ -216,4 +221,5 @@ export const PANEL_WIDTHS: Record<PanelType, string> = {
   "testimonio-nuevo": "min(clamp(640px, 44vw, 920px), 100vw)",
   "rendicion-cuentas": "min(clamp(840px, 58vw, 1280px), 100vw)",
   "fuente-editor": "min(clamp(640px, 48vw, 920px), 100vw)",
+  "actor-editor": "min(clamp(640px, 48vw, 920px), 100vw)",
 };
