@@ -12,9 +12,11 @@ import {
   CheckSquare,
   Layers,
   Scale,
+  AlertTriangle,
 } from "lucide-react";
 import { PageHeader } from "@/shared/ui/page-header";
 import { Button } from "@/shared/ui/button";
+import { Badge } from "@/shared/ui/badge";
 import { Input } from "@/shared/ui/input";
 import {
   Select,
@@ -69,6 +71,7 @@ export function SeguimientoView() {
   const filtros = useCompromisosStore((s) => s.filtros);
   const setFiltros = useCompromisosStore((s) => s.setFiltros);
   const limpiarFiltros = useCompromisosStore((s) => s.limpiarFiltros);
+  const esContingencia = useCompromisosStore((s) => s.esContingencia);
 
   const cargarCompromisos = useCompromisosStore((s) => s.cargarCompromisos);
   const cargarCadenaValor = useCadenaValorStore((s) => s.cargarCadenaValor);
@@ -230,6 +233,26 @@ export function SeguimientoView() {
           </div>
         )}
       </div>
+
+      {/* Banner de Modo Contingencia (OBS-01) */}
+      {esContingencia && (
+        <div className="flex items-center gap-3 rounded-xl border border-warning/30 bg-warning/10 p-3.5 text-xs text-text-primary">
+          <AlertTriangle className="h-5 w-5 shrink-0 text-warning" />
+          <div className="flex-1">
+            <div className="flex items-center gap-2">
+              <span className="font-semibold text-warning">
+                Modo Contingencia Local
+              </span>
+              <Badge variant="warning" className="text-[10px]">
+                Datos de Contingencia
+              </Badge>
+            </div>
+            <p className="mt-0.5 text-text-muted">
+              El servicio central de compromisos no se encuentra disponible. Se está visualizando el catálogo canónico en memoria; las operaciones de escritura están protegidas para evitar inconsistencias de persistencia.
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Navegación por Pestañas */}
       <Tabs

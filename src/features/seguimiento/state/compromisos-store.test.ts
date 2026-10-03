@@ -1,14 +1,16 @@
-import { describe, expect, test, beforeEach } from "vitest";
+import { describe, expect, test, beforeEach, vi } from "vitest";
 import {
   useCompromisosStore,
   calcularKpisSeguimiento,
   filtrarCompromisos,
 } from "./compromisos-store";
 import { COMPROMISOS_PAS_CANONICOS } from "../data/compromisos-pas.data";
+import * as compromisosApi from "../services/compromisos-api";
 
 describe("Plan de Acción y Seguimiento (PAS) — Matriz de Compromisos (Hito PAS-1 / AUD-01)", () => {
   beforeEach(() => {
     useCompromisosStore.getState().restablecerCanonicos();
+    vi.restoreAllMocks();
   });
 
   describe("Catálogo Canónico y KPIs Cuatrienales", () => {
@@ -103,9 +105,84 @@ describe("Plan de Acción y Seguimiento (PAS) — Matriz de Compromisos (Hito PA
     });
   });
 
-  describe("Mutaciones del Store Zustand con Persistencia", () => {
-    test("agrega un nuevo compromiso institucional con ID único", async () => {
-      const nuevo = await useCompromisosStore.getState().agregarCompromiso({
+  describe("Control de Fallos y No Mutación Silenciosa (OBS-01)", () => {
+    test("si PATCH /avance falla en backend, no altera el store, registra error y devuelve false", async () => {
+      const spy = vi
+        .spyOn(compromisosApi, "actualizarAvanceCompromisoApi")
+        .mockRejectedValueOnce(new Error("403 Forbidden: No autorizado para gestionar compromisos"));
+
+      const original = useCompromisosStore.getState().getById("pas-001");
+      const avanceOriginal = original?.avance_cuatrienal_valor;
+      const estadoOriginal = original?.estado;
+
+      const exito = await useCompromisosStore.getState().actualizarAvance("pas-001", {
+        avance_cuatrienal_valor: 999,
+        estado: "cumplido",
+      });
+
+      expect(exito).toBe(false);
+      expect(useCompromisosStore.getState().error).toContain("403 Forbidden");
+
+      // Verificar que el estado del store NO mutó
+      const noMutado = useCompromisosStore.getState().getById("pas-001");
+      expect(noMutado?.avance_cuatrienal_valor).toBe(avanceOriginal);
+      expect(noMutado?.estado).toBe(estadoOriginal);
+
+      spy.mockRestore();
+    });
+
+    test("si POST /compromisos falla en backend, no agrega elemento, registra error y devuelve null", async () => {
+      const spy = vi
+        .spyOn(compromisosApi, "crearCompromisoApi")
+        .mockRejectedValueOnce(new Error("500 Internal Server Error"));
+
+      const longitudInicial = useCompromisosStore.getState().compromisos.length;
+
+      const resultado = await useCompromisosStore.getState().agregarCompromiso({
+        codigo: "PAS-FAIL-01",
+        nombre: "Compromiso Fallido",
+        descripcion: "No debe crearse",
+        entidad_responsable: "Distriseguridad",
+        linea_estrategica_codigo: "LE-01",
+        alternativa_mga_codigo: "ALT-SEG-06",
+        indicador_asociado_codigo: "IND-PROD-01",
+        meta_cuatrienal_descripcion: "Meta",
+        meta_cuatrienal_valor: 10,
+        unidad_medida: "U",
+        avance_cuatrienal_valor: 0,
+        porcentaje_cumplimiento: 0,
+        presupuesto_anual_cop: 0,
+        vigencias_programadas: [2026],
+        estado: "programado",
+        fecha_corte_ultimo_reporte: "2026-10-01",
+      });
+
+      expect(resultado).toBeNull();
+      expect(useCompromisosStore.getState().error).toContain("500 Internal Server Error");
+      expect(useCompromisosStore.getState().compromisos.length).toBe(longitudInicial);
+
+      spy.mockRestore();
+    });
+
+    test("si DELETE /compromisos falla en backend, no elimina el elemento y devuelve false", async () => {
+      const spy = vi
+        .spyOn(compromisosApi, "eliminarCompromisoApi")
+        .mockRejectedValueOnce(new Error("403 Forbidden"));
+
+      const exito = await useCompromisosStore.getState().eliminarCompromiso("pas-001");
+
+      expect(exito).toBe(false);
+      expect(useCompromisosStore.getState().error).toContain("403 Forbidden");
+      expect(useCompromisosStore.getState().getById("pas-001")).toBeDefined();
+
+      spy.mockRestore();
+    });
+  });
+
+  describe("Mutaciones Exitosas del Store", () => {
+    test("agrega un nuevo compromiso cuando el backend responde satisfactoriamente", async () => {
+      const fakeCompromiso = {
+        id: "pas-uuid-12345",
         codigo: "PAS-TEST-99",
         nombre: "Compromiso de Prueba",
         descripcion: "Descripción de prueba",
@@ -120,16 +197,41 @@ describe("Plan de Acción y Seguimiento (PAS) — Matriz de Compromisos (Hito PA
         porcentaje_cumplimiento: 20,
         presupuesto_anual_cop: 250000000,
         vigencias_programadas: [2026],
-        estado: "en_ejecucion",
+        estado: "en_ejecucion" as const,
         fecha_corte_ultimo_reporte: "2026-10-01",
-      });
+      };
 
-      expect(nuevo.id).toBeDefined();
+      const spy = vi
+        .spyOn(compromisosApi, "crearCompromisoApi")
+        .mockResolvedValueOnce(fakeCompromiso);
+
+      const nuevo = await useCompromisosStore.getState().agregarCompromiso(fakeCompromiso);
+
+      expect(nuevo).not.toBeNull();
+      expect(nuevo?.id).toBe("pas-uuid-12345");
       expect(useCompromisosStore.getState().compromisos.length).toBe(11);
-      expect(useCompromisosStore.getState().getById(nuevo.id)).toBeDefined();
+      expect(useCompromisosStore.getState().getById("pas-uuid-12345")).toBeDefined();
+
+      spy.mockRestore();
     });
 
-    test("actualiza avance cuatrienal recalculando porcentaje de cumplimiento", async () => {
+    test("actualiza avance cuatrienal cuando el backend responde satisfactoriamente", async () => {
+      const original = useCompromisosStore.getState().getById("pas-001")!;
+      const fakeActualizado = {
+        ...original,
+        avance_cuatrienal_valor: 100,
+        porcentaje_cumplimiento: 100,
+        estado: "cumplido" as const,
+        metadatos: {
+          ...original.metadatos,
+          observacion_cualitativa: "Cobertura al 100% alcanzada en todas las zonas turísticas.",
+        },
+      };
+
+      const spy = vi
+        .spyOn(compromisosApi, "actualizarAvanceCompromisoApi")
+        .mockResolvedValueOnce(fakeActualizado);
+
       const exito = await useCompromisosStore.getState().actualizarAvance("pas-001", {
         avance_cuatrienal_valor: 100,
         observacion_cualitativa: "Cobertura al 100% alcanzada en todas las zonas turísticas.",
@@ -140,20 +242,8 @@ describe("Plan de Acción y Seguimiento (PAS) — Matriz de Compromisos (Hito PA
       expect(actualizado?.avance_cuatrienal_valor).toBe(100);
       expect(actualizado?.porcentaje_cumplimiento).toBe(100);
       expect(actualizado?.estado).toBe("cumplido");
-      expect(actualizado?.metadatos?.observacion_cualitativa).toContain("Cobertura al 100%");
-    });
 
-    test("cambia el estado de un compromiso", async () => {
-      const exito = await useCompromisosStore.getState().cambiarEstado("pas-005", "retrasado");
-      expect(exito).toBe(true);
-      expect(useCompromisosStore.getState().getById("pas-005")?.estado).toBe("retrasado");
-    });
-
-    test("elimina un compromiso del plan de acción", async () => {
-      const exito = await useCompromisosStore.getState().eliminarCompromiso("pas-010");
-      expect(exito).toBe(true);
-      expect(useCompromisosStore.getState().compromisos.length).toBe(9);
-      expect(useCompromisosStore.getState().getById("pas-010")).toBeUndefined();
+      spy.mockRestore();
     });
 
     test("gestiona filtros y restablece valores iniciales", () => {

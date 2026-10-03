@@ -31,19 +31,26 @@ async def listar_compromisos(
     entidad: str | None = Query(None, description="Filtrar por entidad distrital"),
     estado: str | None = Query(None, description="Filtrar por estado"),
 ):
-    """Listar compromisos institucionales del PAS Cartagena con filtros opcionales."""
+    """Listar compromisos institucionales del PAS Cartagena con filtros opcionales.
+    
+    NOTA DE AUDITORÍA FORENSE (Ley 1712/14 y Ley 1757/15):
+    La lectura de compromisos institucionales, metas y avances es intencionalmente de acceso
+    público irrestricto conforme al principio de máxima publicidad y transparencia activa.
+    Las operaciones de escritura (POST, PATCH, PUT, DELETE) requieren obligatoriamente
+    el permiso institucional 'seguimiento:gestionar'.
+    """
     return await service.listar_compromisos(busqueda=busqueda, entidad=entidad, estado=estado)
 
 
 @router.get("/kpis", response_model=KpisSeguimientoRespuesta)
 async def obtener_kpis_seguimiento(service: CompromisosServiceDep):
-    """Obtener KPIs consolidados de seguimiento del PAS."""
+    """Obtener KPIs consolidados de seguimiento del PAS (acceso público para veedurías cívicas)."""
     return await service.obtener_kpis()
 
 
 @router.get("/{id_o_codigo}", response_model=CompromisoPASRespuesta)
 async def obtener_compromiso(id_o_codigo: str, service: CompromisosServiceDep):
-    """Consultar un compromiso específico por UUID o por código institucional."""
+    """Consultar un compromiso específico por UUID o código institucional (acceso público para control social)."""
     return await service.obtener_compromiso(id_o_codigo)
 
 

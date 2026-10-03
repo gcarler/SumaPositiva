@@ -110,10 +110,11 @@ export interface CompromisosStoreState {
   cargando: boolean;
   guardando: boolean;
   error: string | null;
+  esContingencia: boolean;
 
   // Acciones
   cargarCompromisos: () => Promise<void>;
-  agregarCompromiso: (datos: Omit<CompromisoInstitucional, "id">) => Promise<CompromisoInstitucional>;
+  agregarCompromiso: (datos: Omit<CompromisoInstitucional, "id">) => Promise<CompromisoInstitucional | null>;
   actualizarAvance: (id: string, actualizacion: CompromisoActualizarAvance) => Promise<boolean>;
   cambiarEstado: (id: string, nuevoEstado: EstadoCompromiso) => Promise<boolean>;
   eliminarCompromiso: (id: string) => Promise<boolean>;
@@ -129,14 +130,24 @@ export const useCompromisosStore = create<CompromisosStoreState>((set, get) => (
   cargando: false,
   guardando: false,
   error: null,
+  esContingencia: false,
 
   cargarCompromisos: async () => {
     set({ cargando: true, error: null });
     try {
-      const datos = await listarCompromisosApi();
-      set({ compromisos: datos, cargando: false });
+      const res = await listarCompromisosApi();
+      set({
+        compromisos: res.datos,
+        esContingencia: res.esContingencia,
+        cargando: false,
+      });
     } catch (err) {
-      set({ error: (err as Error).message, cargando: false });
+      set({
+        compromisos: COMPROMISOS_PAS_CANONICOS,
+        esContingencia: true,
+        error: (err as Error).message || "Fallo de conexión",
+        cargando: false,
+      });
     }
   },
 
@@ -150,28 +161,19 @@ export const useCompromisosStore = create<CompromisosStoreState>((set, get) => (
       }));
       return creado;
     } catch (err) {
-      // Fallback local en memoria ante entornos aislados
-      const meta = datos.meta_cuatrienal_valor || 1;
-      const porcentaje = Math.min(
-        100,
-        Math.max(0, Math.round(((datos.avance_cuatrienal_valor || 0) / meta) * 100))
-      );
-      const fallbackLocal: CompromisoInstitucional = {
-        ...datos,
-        id: `pas-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
-        porcentaje_cumplimiento: porcentaje,
-      };
-      set((state) => ({
-        compromisos: [fallbackLocal, ...state.compromisos],
-        guardando: false,
-      }));
-      return fallbackLocal;
+      const mensaje = (err as Error).message || "Error al persistir compromiso en backend";
+      set({ guardando: false, error: mensaje });
+      // OBS-01: Prohibido mutar estado local ante fallo en backend
+      return null;
     }
   },
 
   actualizarAvance: async (id, actualizacion) => {
     const actual = get().getById(id);
-    if (!actual) return false;
+    if (!actual) {
+      set({ error: `Compromiso '${id}' no encontrado` });
+      return false;
+    }
 
     set({ guardando: true, error: null });
     try {
@@ -183,53 +185,20 @@ export const useCompromisosStore = create<CompromisosStoreState>((set, get) => (
         guardando: false,
       }));
       return true;
-    } catch {
-      // Fallback local en memoria
-      const nuevoAvance = actualizacion.avance_cuatrienal_valor;
-      const meta = actual.meta_cuatrienal_valor || 1;
-      const porcentaje = Math.min(100, Math.max(0, Math.round((nuevoAvance / meta) * 100)));
-
-      let nuevoEstado: EstadoCompromiso = actualizacion.estado ?? actual.estado;
-      if (!actualizacion.estado) {
-        if (porcentaje >= 100) nuevoEstado = "cumplido";
-        else if (porcentaje < 30) nuevoEstado = "retrasado";
-        else if (porcentaje < 50) nuevoEstado = "en_riesgo";
-        else nuevoEstado = "en_ejecucion";
-      }
-
-      set((state) => ({
-        compromisos: state.compromisos.map((c) =>
-          c.id === id || c.codigo === id
-            ? {
-                ...c,
-                avance_cuatrienal_valor: nuevoAvance,
-                porcentaje_cumplimiento: porcentaje,
-                estado: nuevoEstado,
-                fecha_corte_ultimo_reporte:
-                  actualizacion.fecha_corte_ultimo_reporte ??
-                  new Date().toISOString().split("T")[0],
-                metadatos: {
-                  ...c.metadatos,
-                  ...(actualizacion.observacion_cualitativa
-                    ? { observacion_cualitativa: actualizacion.observacion_cualitativa }
-                    : {}),
-                  ...(actualizacion.url_evidencia
-                    ? { url_evidencia: actualizacion.url_evidencia }
-                    : {}),
-                  fecha_modificacion: new Date().toISOString(),
-                },
-              }
-            : c
-        ),
-        guardando: false,
-      }));
-      return true;
+    } catch (err) {
+      const mensaje = (err as Error).message || "Error al actualizar avance en backend";
+      set({ guardando: false, error: mensaje });
+      // OBS-01: Prohibido mutar estado local ante fallo en backend
+      return false;
     }
   },
 
   cambiarEstado: async (id, nuevoEstado) => {
     const actual = get().getById(id);
-    if (!actual) return false;
+    if (!actual) {
+      set({ error: `Compromiso '${id}' no encontrado` });
+      return false;
+    }
 
     set({ guardando: true, error: null });
     try {
@@ -244,20 +213,20 @@ export const useCompromisosStore = create<CompromisosStoreState>((set, get) => (
         guardando: false,
       }));
       return true;
-    } catch {
-      set((state) => ({
-        compromisos: state.compromisos.map((c) =>
-          c.id === id || c.codigo === id ? { ...c, estado: nuevoEstado } : c
-        ),
-        guardando: false,
-      }));
-      return true;
+    } catch (err) {
+      const mensaje = (err as Error).message || "Error al cambiar estado en backend";
+      set({ guardando: false, error: mensaje });
+      // OBS-01: Prohibido mutar estado local ante fallo en backend
+      return false;
     }
   },
 
   eliminarCompromiso: async (id) => {
     const existe = get().getById(id);
-    if (!existe) return false;
+    if (!existe) {
+      set({ error: `Compromiso '${id}' no encontrado` });
+      return false;
+    }
 
     set({ guardando: true, error: null });
     try {
@@ -267,12 +236,11 @@ export const useCompromisosStore = create<CompromisosStoreState>((set, get) => (
         guardando: false,
       }));
       return true;
-    } catch {
-      set((state) => ({
-        compromisos: state.compromisos.filter((c) => c.id !== id && c.codigo !== id),
-        guardando: false,
-      }));
-      return true;
+    } catch (err) {
+      const mensaje = (err as Error).message || "Error al eliminar compromiso en backend";
+      set({ guardando: false, error: mensaje });
+      // OBS-01: Prohibido mutar estado local ante fallo en backend
+      return false;
     }
   },
 
@@ -297,6 +265,7 @@ export const useCompromisosStore = create<CompromisosStoreState>((set, get) => (
       cargando: false,
       guardando: false,
       error: null,
+      esContingencia: false,
     });
   },
 }));

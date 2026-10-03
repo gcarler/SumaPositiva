@@ -110,7 +110,7 @@ export function CompromisoEditorPanel({
           setGuardando(false);
           return;
         }
-        await agregarCompromiso({
+        const creado = await agregarCompromiso({
           codigo: codigo.trim().toUpperCase(),
           nombre: nombre.trim(),
           descripcion: descripcion.trim() || nombre.trim(),
@@ -133,15 +133,27 @@ export function CompromisoEditorPanel({
             registrado_por: sesion?.usuario ?? "sistema",
           },
         });
+        if (!creado) {
+          const errMsg = useCompromisosStore.getState().error || "Fallo en la persistencia del backend";
+          toast.error(`Error al registrar compromiso: ${errMsg}`);
+          setGuardando(false);
+          return;
+        }
         toast.success(`Compromiso ${codigo} registrado en el Plan de Acción y Seguimiento.`);
       } else if (compromisoId) {
-        await actualizarAvance(compromisoId, {
+        const exito = await actualizarAvance(compromisoId, {
           avance_cuatrienal_valor: avanceValor,
           estado,
           fecha_corte_ultimo_reporte: fechaCorte,
           observacion_cualitativa: observacion,
           url_evidencia: urlEvidencia,
         });
+        if (!exito) {
+          const errMsg = useCompromisosStore.getState().error || "Fallo en la persistencia del backend";
+          toast.error(`Error al actualizar avance: ${errMsg}`);
+          setGuardando(false);
+          return;
+        }
         toast.success(
           `Avance de ${compromiso?.codigo} actualizado al ${porcentajeCalculado}% (${estado}).`
         );

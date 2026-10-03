@@ -5,16 +5,22 @@ import type {
 } from "../models/compromiso";
 import { COMPROMISOS_PAS_CANONICOS } from "../data/compromisos-pas.data";
 
+export interface ListadoCompromisosRespuesta {
+  datos: CompromisoInstitucional[];
+  esContingencia: boolean;
+  origen: "backend" | "contingencia";
+}
+
 /**
  * Servicio API para Gestión y Persistencia de Compromisos del PAS (Hito PAS-1 / AUD-01).
- * Conecta con el backend PostgreSQL (/api/v1/compromisos) con fallback al catálogo canónico.
+ * Conecta con el backend PostgreSQL (/api/v1/compromisos).
  */
 
 export async function listarCompromisosApi(filtros?: {
   busqueda?: string;
   entidad?: string;
   estado?: string;
-}): Promise<CompromisoInstitucional[]> {
+}): Promise<ListadoCompromisosRespuesta> {
   try {
     const params = new URLSearchParams();
     if (filtros?.busqueda) params.set("busqueda", filtros.busqueda);
@@ -24,24 +30,32 @@ export async function listarCompromisosApi(filtros?: {
     const query = params.toString();
     const endpoint = `/api/v1/compromisos${query ? `?${query}` : ""}`;
     const data = await apiFetch<CompromisoInstitucional[]>(endpoint);
-    if (Array.isArray(data) && data.length > 0) {
-      return data;
+    // Si la API responde con un array (incluso vacío []), es respuesta legítima del backend
+    if (Array.isArray(data)) {
+      return {
+        datos: data,
+        esContingencia: false,
+        origen: "backend",
+      };
     }
-    return COMPROMISOS_PAS_CANONICOS;
+    // Formato anómalo
+    return {
+      datos: COMPROMISOS_PAS_CANONICOS,
+      esContingencia: true,
+      origen: "contingencia",
+    };
   } catch (error) {
-    console.warn("Fallo al conectar con /api/v1/compromisos, utilizando catálogo canónico fallback:", error);
-    return COMPROMISOS_PAS_CANONICOS;
+    console.warn("Fallo al conectar con /api/v1/compromisos, utilizando catálogo de contingencia:", error);
+    return {
+      datos: COMPROMISOS_PAS_CANONICOS,
+      esContingencia: true,
+      origen: "contingencia",
+    };
   }
 }
 
 export async function obtenerCompromisoApi(idOcodigo: string): Promise<CompromisoInstitucional> {
-  try {
-    return await apiFetch<CompromisoInstitucional>(`/api/v1/compromisos/${idOcodigo}`);
-  } catch {
-    const fallback = COMPROMISOS_PAS_CANONICOS.find((c) => c.id === idOcodigo || c.codigo === idOcodigo);
-    if (fallback) return fallback;
-    throw new Error(`Compromiso '${idOcodigo}' no encontrado.`);
-  }
+  return await apiFetch<CompromisoInstitucional>(`/api/v1/compromisos/${idOcodigo}`);
 }
 
 export async function crearCompromisoApi(
