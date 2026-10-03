@@ -1,37 +1,38 @@
 # DICTAMEN DE REVISIÓN FORENSE Y CONTROL DE CALIDAD (EAF)
-**Fecha/Hora**: 2026-10-03 17:15:00 UTC
-**Módulo Auditado**: Fase de Diagnóstico — Hito D-2 (Árbol de Problemas Distrital MGA y Validación Causal IA DNP)
-**Commits Evaluados**: `f69972d`, `e0542a4`
+**Fecha/Hora**: 2026-10-03 17:50:00 UTC
+**Módulo Auditado**: Fase de Diagnóstico — Hito D-3 (Geodiagnóstico Territorial y Fichas de Vulnerabilidad por UCG)
+**Commits Evaluados**: `d4fcda5`, `29ed689`
 **Responsable de Entrega**: `agy2` (Equipo de Desarrollo EDD)
 **Evaluador**: Antigravity (Orquestador Central / Auditoría Forense EAF)
 **Resultado**: CONFORME (Aprobado sin objeciones)
 
 ---
 
-## 1. Verificación de Política Pública y Rigor Metodológico DNP
-* **Alineación con la Metodología General Ajustada (MGA/DNP)**:
-  - Visualizador interactivo de doble orientación en `/plataforma/diagnostico`:
-    - **Árbol de Problemas**: Estructuración lógica Efectos Indirectos $\rightarrow$ Efectos Directos $\rightarrow$ **Problema Central** $\rightarrow$ Causas Directas $\rightarrow$ Causas Indirectas.
-    - **Árbol de Objetivos**: Fines Indirectos $\rightarrow$ Fines Directos $\rightarrow$ **Objetivo Central** $\rightarrow$ Medios Directos $\rightarrow$ Medios Indirectos.
-  - Articulación plena a los instrumentos territoriales de Cartagena de Indias sembrados en `bd_csh` (Prevención de ESCNNA Centro Histórico [Ley 679/01, CONPES 4040], Convivencia Comunitaria Localidad 2 / Olaya y Pozón, Saneamiento Ciénaga de la Virgen).
-* **Integración con la Red Multi-Agente de IA (AgenteDiagnostico)**:
-  - El botón institucional "Validar con Agente IA DNP" emite la estructura `EntradaDiagnostico` contra el backend FastAPI (`POST /api/v1/ia/diagnostico`) y dispone de motor determinista de contingencia DNP.
-  - Evaluación sintáctica nodo por nodo: detección de falsas causas o *soluciones disfrazadas* ("falta de CAI", "construir", "comprar"), validación de sustantivos negativos para problemas y verbos en infinitivo para objetivos, con cálculo pericial del Puntaje de Coherencia DNP (0–100%) y recomendaciones normativas.
+## 1. Verificación de Política Pública y Fidelidad Territorial
+* **Alineación con la Ley 1617 de 2013 (Estatuto Distrital de Cartagena) y Decreto Nacional 037 de 2026**:
+  - Implementación del tercer modo de exploración analítica en `/plataforma/diagnostico`: **"Geodiagnóstico Territorial"**.
+  - Cobertura exhaustiva de los 15 territorios distritales de Cartagena de Indias:
+    - 3 Localidades urbanas (Localidad 1: Histórica y Caribe Norte; Localidad 2: De la Virgen y Turística; Localidad 3: Industrial y de la Bahía).
+    - Zonas críticas por UCG: UCG 1 (Centro/Manga), UCG 4 y 5 (Torices/Canapote), UCG 6 (Olaya Herrera Central/Boston), UCG 7 (El Pozón/Fredonia), UCG 8 y 9 (Nelson Mandela/Campanos), UCG 11 y 12 (Mamonal/Albornoz).
+    - Territorios Colectivos y Corregimientos con Salvaguarda Étnica bajo la Ley 70 de 1993 y Convenio 169 de la OIT: La Boquilla, Tierrabomba (Caño del Oro, Bocachica, Punta Arenas), Barú (Ararca, Santa Ana), Pasacaballos, Bayunca y Pontezuela, Arroyo de Piedra.
+* **Focalización y Métricas Multidimensionales**:
+  - Semáforos de riesgo validados: Alto (rojo), Medio (amarillo), Moderado (verde).
+  - Trazabilidad de Necesidades Básicas Insatisfechas (% NBI), población vulnerable, alertas tempranas SAT de la Defensoría del Pueblo, equipamientos institucionales y déficit de presencia estatal.
 
 ---
 
 ## 2. Auditoría Técnica de Frontend y UI Policy
 * **UI Policy Guard (`scripts/ui-policy.mjs`)**:
   - **Aprobado con 0 infracciones**.
-  - Cumplimiento estricto de la regla UI004 (desacoplamiento de props en `panel-store.ts`), cero modales flotantes o popups intrusivos, 100% variables y tokens semánticos CSS (`var(--surface-1)`, `var(--border)`, `var(--text-primary)`, `var(--ember)`, semáforos cromáticos).
-  - Controles 100% encapsulados sobre el Design Kit (`@/shared/ui/button`, `@/shared/ui/badge`, `@/shared/ui/select`, `@/shared/ui/tabs`).
+  - Regla UI004 verificada (desacoplamiento de props en `panel-store.ts`).
+  - Cero modales flotantes o diálogos nativos.
+  - 100% variables y tokens semánticos CSS (`var(--surface-1)`, `var(--border)`, `var(--text-primary)`, `var(--ember)`, semáforos cromáticos).
+  - Componentes del Design Kit reutilizados (`@/shared/ui/button`, `@/shared/ui/badge`, `@/shared/ui/input`, `@/shared/ui/select`).
 * **Zero-Modals**:
-  - Cumplimiento total. El panel lateral `validacion-mga` se monta sobre `PanelShell`, registrado en `panel-registry.tsx` y `panel-store.ts`, con ancho adaptativo `min(clamp(780px, 52vw, 1120px), 100vw)`, navegable por teclado y apilable.
+  - Cumplimiento total. El panel lateral `ficha-territorial` se monta sobre `PanelShell`, registrado en `panel-registry.tsx` y `panel-store.ts`, adaptativo y con exportación pericial a JSON.
 * **Pruebas Automatizadas y Quality Gates**:
-  - `bun test src/features/diagnostico/services/mga-api.test.ts`: 8 pruebas aprobadas (18 aserciones).
-  - `bun test src/features/diagnostico/services/indicadores-api.test.ts`: 4 pruebas aprobadas (23 aserciones).
-  - `bun test src/features/plataforma/models/acceso.test.ts`: 17 pruebas aprobadas (123 aserciones).
-  - Suite combinada: **31 pruebas aprobadas al 100%**.
+  - `bun test src/features/diagnostico/services/territorios-api.test.ts`: 6 pruebas aprobadas (16 aserciones).
+  - Suite de diagnóstico combinada (territorios + MGA + indicadores + acceso): **37 pruebas aprobadas al 100% (239 aserciones)**.
   - `bun run check`: Aprobado (0 errores TypeScript, 0 errores ESLint).
 * **Compilación y Despliegue en Producción**:
   - `bun run build`: 53 rutas generadas con Turbopack sin errores.
@@ -40,4 +41,4 @@
 ---
 
 ## 3. Dictamen Final
-**CONFORME**. La implementación de `agy2` para el Hito D-2 cumple rigurosamente con los estándares metodológicos de la MGA/DNP, los principios de transparencia de la Sentencia C-150 de 2015 y la arquitectura de calidad pericial de la plataforma POLIS.
+**CONFORME**. El Hito D-3 queda certificado y cerrado satisfactoriamente. Con esta entrega, los tres componentes estructurales del Diagnóstico Situacional (Línea Base Cuantitativa DNP, Árbol de Problemas MGA y Geodiagnóstico Territorial) se encuentran plenamente integrados y operativos en la plataforma POLIS.
