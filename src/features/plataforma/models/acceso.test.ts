@@ -30,7 +30,7 @@ describe("Matriz de rutas internas", () => {
     ["ciudadano", []],
     [
       "autoridad_distrital",
-      ["dashboard", "formularios", "geovisor", "mesas", "contenido", "fuentes", "actores"],
+      ["dashboard", "formularios", "geovisor", "mesas", "contenido", "fuentes", "actores", "diagnostico"],
     ],
     ["facilitador_mesa", ["dashboard", "formularios", "mesas", "actores"]],
     [
@@ -43,6 +43,7 @@ describe("Matriz de rutas internas", () => {
         "contenido",
         "fuentes",
         "actores",
+        "diagnostico",
         "configuracion",
       ],
     ],
@@ -75,6 +76,7 @@ describe("Matriz de rutas internas", () => {
       "fases-control",
       "fuente-editor",
       "actor-editor",
+      "medicion-editor",
     ] as const)
       expect(panelPermitido(auditor, p)).toBe(false);
     expect(panelPermitido(auditor, "formulario-analitica")).toBe(true);
@@ -150,6 +152,15 @@ describe("Matriz de rutas internas", () => {
       puedeEditar(sesion("autoridad_distrital", { permisos: [] }), "actores"),
     ).toBe(true);
     expect(
+      puedeEditar(
+        sesion("administrador_identidades", { permisos: [] }),
+        "diagnostico",
+      ),
+    ).toBe(true);
+    expect(
+      puedeEditar(sesion("autoridad_distrital", { permisos: [] }), "diagnostico"),
+    ).toBe(true);
+    expect(
       puedeEditar(sesion("ciudadano"), "mesas"),
     ).toBe(false);
     expect(
@@ -157,6 +168,9 @@ describe("Matriz de rutas internas", () => {
     ).toBe(false);
     expect(
       puedeEditar(sesion("ciudadano"), "actores"),
+    ).toBe(false);
+    expect(
+      puedeEditar(sesion("ciudadano"), "diagnostico"),
     ).toBe(false);
   });
   test("rutas exactas y normalización de barra final", () => {

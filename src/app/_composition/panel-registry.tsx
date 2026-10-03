@@ -139,6 +139,10 @@ const ActorEditorPanel = dynamic(
   () => import("@/features/actores/panels/actor-editor-panel").then((m) => m.ActorEditorPanel),
   { ssr: false }
 );
+const MedicionEditorPanel = dynamic(
+  () => import("@/features/diagnostico/panels/medicion-editor-panel").then((m) => m.MedicionEditorPanel),
+  { ssr: false }
+);
 
 export const PANEL_REGISTRY: Record<
   PanelType,
@@ -177,6 +181,7 @@ export const PANEL_REGISTRY: Record<
   "rendicion-cuentas": RendicionCuentasPanel as ComponentType<PanelComponentProps>,
   "fuente-editor": FuenteEditorPanel as ComponentType<PanelComponentProps>,
   "actor-editor": ActorEditorPanel as ComponentType<PanelComponentProps>,
+  "medicion-editor": MedicionEditorPanel as ComponentType<PanelComponentProps>,
 };
 
 /**
@@ -222,4 +227,5 @@ export const PANEL_WIDTHS: Record<PanelType, string> = {
   "rendicion-cuentas": "min(clamp(840px, 58vw, 1280px), 100vw)",
   "fuente-editor": "min(clamp(640px, 48vw, 920px), 100vw)",
   "actor-editor": "min(clamp(640px, 48vw, 920px), 100vw)",
+  "medicion-editor": "min(clamp(640px, 48vw, 920px), 100vw)",
 };

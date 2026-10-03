@@ -4,23 +4,24 @@
 **Prioridad**: ALTA
 **Responsable de Ejecución**: `agy2`
 **Auditor**: Antigravity (EAF)
-**Documento Detallado**: `bridge/01_tarea_agy2_modulo_actores.md`
+**Documento Detallado**: `bridge/01_tarea_agy2_diagnostico_fase1.md`
+**Plan Rector**: `bridge/00_plan_maestro_fase_diagnostico.md`
 
 ---
 
 ## Módulo Asignado
-**Módulo de Mapeo y Caracterización de Actores (`/plataforma/actores`)**
+**Fase de Diagnóstico — Hito D-0 (Purga Pericial de Mock) e Hito D-1 (Línea Base Cuantitativa DNP)**
 
 Consulta la especificación técnica completa y los estándares de auditoría en:
-`/root/polis/bridge/01_tarea_agy2_modulo_actores.md`
+`/root/polis/bridge/01_tarea_agy2_diagnostico_fase1.md`
 
 ### Resumen de Entregables Requeridos:
-1. `src/features/plataforma/models/acceso.ts` y `acceso.test.ts` (módulo `actores` con permisos RBAC).
-2. `src/features/plataforma/components/plataforma-sidebar.tsx` (icono `Users`).
-3. `src/app/plataforma/actores/page.tsx` (ruta en App Router).
-4. `src/features/actores/models/actor.ts`, `data/actores-iniciales.data.ts`, `state/actores-store.ts`.
-5. `src/features/plataforma/views/actores-view.tsx`, `components/actores-kpis.tsx`, `components/actores-matriz.tsx` (Matriz 2x2 Poder vs Interés), `components/actores-datagrid.tsx`.
-6. Panel Zero-Modals `actor-editor` en `src/features/actores/panels/actor-editor-panel.tsx` registrado en `panel-registry.tsx` y `panel-store.ts`.
-7. Suite de pruebas: `acceso.test.ts` y `actores-store.test.ts`.
-8. Verificación de calidad: `bun run check`, `node scripts/ui-policy.mjs`, `bun run build`, reinicio supervisado de `polis-frontend.service` y HTTP 200 en `/plataforma/actores`.
-9. Informe formal en `bridge/02_entrega_agy2.md` y commit formal en git.
+1. **Hito D-0**: Depuración integral de `src/features/politicas/data/politicas.mock.ts` eliminando residuos de movilidad de otras ciudades y sembrando líneas y aportes 100% reales de las 3 Localidades y Corregimientos de Cartagena (ESCNNA, fronteras invisibles en Olaya/Pozón/Mandela, Ciénaga de la Virgen, Bazurto).
+2. **Hito D-1**:
+   - `src/features/plataforma/models/acceso.ts` y `acceso.test.ts` (módulo `diagnostico`).
+   - `src/features/plataforma/components/plataforma-sidebar.tsx` (ícono `BarChart3`).
+   - `src/app/plataforma/diagnostico/page.tsx` (ruta Next.js).
+   - Vista `src/features/diagnostico/views/diagnostico-view.tsx`, KPIs (`diagnostico-kpis.tsx`) y tabla (`linea-base-tabla.tsx`) consumiendo la API real `/api/v1/indicadores/fichas`.
+   - Panel Zero-Modals `medicion-editor` (`medicion-editor-panel.tsx`) registrado en `panel-registry.tsx` y `panel-store.ts`.
+3. Quality gates: `bun run check`, `node scripts/ui-policy.mjs`, `bun test`, `bun run build`, reinicio del frontend y HTTP 200 en `/plataforma/diagnostico`.
+4. Informe en `bridge/02_entrega_agy2.md` y commit formal en git.

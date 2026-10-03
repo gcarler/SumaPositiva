@@ -42,7 +42,8 @@ export type PanelType =
   | "mesa-acta"
   | "rendicion-cuentas"
   | "fuente-editor"
-  | "actor-editor";
+  | "actor-editor"
+  | "medicion-editor";
 
 /** Árbol que se diligencia en el papelografo */
 export type ArbolPanel = "problemas" | "soluciones";
@@ -93,6 +94,13 @@ export interface PanelPropsMap {
   "rendicion-cuentas": { dependenciaId?: string };
   "fuente-editor": { fuenteId: string; soloLectura?: boolean };
   "actor-editor": { actorId?: string; soloLectura?: boolean };
+  "medicion-editor": {
+    fichaId: string;
+    codigoIndicador?: string;
+    nombreIndicador?: string;
+    unidadMedida?: string;
+    soloLectura?: boolean;
+  };
 }
 
 export type PanelEntry<T extends PanelType = PanelType> = {

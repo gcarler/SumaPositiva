@@ -51,6 +51,12 @@ export const MODULOS = [
     descripcion: "Mapeo, caracterización socio-territorial y matriz de involucramiento de actores clave.",
   },
   {
+    id: "diagnostico",
+    ruta: "/plataforma/diagnostico",
+    titulo: "Diagnóstico",
+    descripcion: "Línea base cuantitativa, brechas por dimensión e indicadores oficiales DNP.",
+  },
+  {
     id: "configuracion",
     ruta: "/plataforma/configuracion",
     titulo: "Configuración",
@@ -73,6 +79,7 @@ const ACCESO: Record<string, readonly ModuloPlataforma[]> = {
     "contenido",
     "fuentes",
     "actores",
+    "diagnostico",
   ],
   facilitador_mesa: ["dashboard", "mesas", "formularios", "actores"],
   auditor_forense: [
@@ -84,6 +91,7 @@ const ACCESO: Record<string, readonly ModuloPlataforma[]> = {
     "configuracion",
     "fuentes",
     "actores",
+    "diagnostico",
   ],
   administrador_identidades: MODULOS.map((m) => m.id),
 };
@@ -99,6 +107,7 @@ const PERMISOS_POR_MODULO: Record<ModuloPlataforma, readonly string[]> = {
     "testimonios:moderar", "configuracion:leer", "configuracion:gestionar",
     "fuentes:leer", "fuentes:gestionar",
     "actores:leer", "actores:gestionar",
+    "diagnostico:leer", "diagnostico:gestionar",
   ],
   formularios: [
     "formularios:leer",
@@ -114,6 +123,7 @@ const PERMISOS_POR_MODULO: Record<ModuloPlataforma, readonly string[]> = {
   contenido: ["contenido:leer", "politicas:gestionar", "testimonios:moderar"],
   fuentes: ["fuentes:leer", "fuentes:gestionar"],
   actores: ["actores:leer", "actores:gestionar"],
+  diagnostico: ["diagnostico:leer", "diagnostico:gestionar"],
   configuracion: ["configuracion:leer", "configuracion:gestionar"],
 };
 
@@ -126,6 +136,7 @@ const PERMISOS_EDICION: Record<ModuloPlataforma, readonly string[]> = {
   contenido: ["politicas:gestionar", "testimonios:moderar"],
   fuentes: ["fuentes:gestionar"],
   actores: ["actores:gestionar"],
+  diagnostico: ["diagnostico:gestionar"],
   configuracion: ["configuracion:gestionar"],
 };
 
@@ -184,6 +195,7 @@ export function puedeEditar(
       contenido: ["autoridad_distrital", "administrador_identidades"],
       fuentes: ["autoridad_distrital", "administrador_identidades"],
       actores: ["autoridad_distrital", "facilitador_mesa", "administrador_identidades"],
+      diagnostico: ["autoridad_distrital", "administrador_identidades"],
     };
     return !!rolesPorModulo[modulo]?.includes(sesion?.rol ?? "");
   }
@@ -234,6 +246,8 @@ export function panelPermitido(
       return puedeEditar(sesion, "fuentes");
     case "actor-editor":
       return puedeEditar(sesion, "actores");
+    case "medicion-editor":
+      return puedeEditar(sesion, "diagnostico");
     default:
       return false;
   }

@@ -10,6 +10,7 @@ import {
   Users,
   FileText,
   Database,
+  BarChart3,
   Settings,
   ArrowLeft,
   Menu,
@@ -26,6 +27,7 @@ export const ICONOS = {
   contenido: FileText,
   fuentes: Database,
   actores: Users,
+  diagnostico: BarChart3,
   configuracion: Settings,
 } satisfies Record<ModuloPlataforma, typeof Home>;
 export function PlataformaSidebar() {
