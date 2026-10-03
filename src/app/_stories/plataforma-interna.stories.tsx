@@ -153,8 +153,8 @@ const meta = {
       perfil: fn(async () => perfil),
     });
     return () => {
-      restaurarApiFormularios();
       restaurarApiTestimonios();
+      restaurarApiFormularios();
       Object.assign(plataformaApi, apiOriginal);
       Object.assign(identidadApi, identidadOriginal);
       usePanelStore.getState().closeAll();
@@ -290,6 +290,10 @@ export const Noticias: Story = {
     await expect(c.getByRole("button", { name: /Nueva Noticia/ })).toBeVisible();
   },
 };
+export const NoticiasOscuro: Story = {
+  ...Noticias,
+  globals: { theme: "dark" },
+};
 export const Testimonios: Story = {
   parameters: { nextjs: { navigation: { pathname: "/plataforma/testimonios" } } },
   render: () => (
@@ -307,6 +311,10 @@ export const Testimonios: Story = {
     await expect(await c.findByText("No hay testimonios en estado pendiente en este momento.")).toBeVisible();
   },
 };
+export const TestimoniosOscuro: Story = {
+  ...Testimonios,
+  globals: { theme: "dark" },
+};
 export const Configuracion: Story = {
   parameters: {
     nextjs: { navigation: { pathname: "/plataforma/configuracion" } },
@@ -321,8 +329,6 @@ export const Configuracion: Story = {
   ),
   play: async ({ canvasElement }) => {
     const c = within(canvasElement);
-    await expect(c.getByRole("link", { name: "Noticias" })).toBeVisible();
-    await expect(c.getByRole("link", { name: "Testimonios" })).toBeVisible();
     await expect(c.getByRole("heading", { name: "Seguridad e identidad" })).toBeVisible();
     await expect(c.getByLabelText("Latitud")).toHaveValue("10.3997");
     await expect(c.getByText("@cartagena.gov.co")).toBeVisible();
@@ -402,6 +408,8 @@ export const SidebarAutoridad: Story = {
   ),
   play: async ({ canvasElement }) => {
     const c = within(canvasElement);
+    await expect(c.getByRole("link", { name: "Noticias" })).toBeVisible();
+    await expect(c.getByRole("link", { name: "Testimonios" })).toBeVisible();
     await expect(
       c.queryByRole("link", { name: "Usuarios y Roles" }),
     ).toBeNull();

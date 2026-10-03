@@ -305,6 +305,7 @@ export function panelPermitido(
     case "asignacion-presupuestal":
       return puedeVer(sesion, "alternativas");
     case "compromiso-editor":
+    case "indicador-detalle":
       return puedeVer(sesion, "seguimiento");
     default:
       return false;

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { toast } from "sonner";
 import {
   Plus,
@@ -9,6 +9,8 @@ import {
   FileSpreadsheet,
   FileJson,
   Download,
+  CheckSquare,
+  Layers,
 } from "lucide-react";
 import { PageHeader } from "@/shared/ui/page-header";
 import { Button } from "@/shared/ui/button";
@@ -26,16 +28,19 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/shared/ui/dropdown-menu";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/shared/ui/tabs";
 import { usePanels } from "@/core/panels/panel-store";
 import { useSesionStore } from "@/features/sesion/state/session-store";
 import { puedeEditar } from "@/features/plataforma/models/acceso";
 import { SeguimientoKpis } from "../components/seguimiento-kpis";
 import { CompromisosTabla } from "../components/compromisos-tabla";
+import { CadenaValorTab } from "../components/cadena-valor-tab";
 import {
   useCompromisosStore,
   calcularKpisSeguimiento,
   filtrarCompromisos,
 } from "../state/compromisos-store";
+import { useCadenaValorStore } from "../state/cadena-valor-store";
 import type { EstadoCompromiso } from "../models/compromiso";
 import {
   ESTADOS_COMPROMISO,
@@ -52,6 +57,7 @@ function sanitizarCsv(valor: string | number | undefined | null): string {
 }
 
 export function SeguimientoView() {
+  const [tabActiva, setTabActiva] = useState<string>("matriz_compromisos");
   const { openPanel } = usePanels();
   const sesion = useSesionStore((s) => s.sesion);
   const puedeEditarUsuario = puedeEditar(sesion, "seguimiento");
@@ -60,6 +66,12 @@ export function SeguimientoView() {
   const filtros = useCompromisosStore((s) => s.filtros);
   const setFiltros = useCompromisosStore((s) => s.setFiltros);
   const limpiarFiltros = useCompromisosStore((s) => s.limpiarFiltros);
+
+  const cargarCadenaValor = useCadenaValorStore((s) => s.cargarCadenaValor);
+
+  useEffect(() => {
+    void cargarCadenaValor();
+  }, [cargarCadenaValor]);
 
   const kpis = useMemo(() => calcularKpisSeguimiento(compromisos), [compromisos]);
 
@@ -159,139 +171,183 @@ export function SeguimientoView() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <PageHeader
           eyebrow="Plan de Acción y Seguimiento (PAS) · Cartagena de Indias 2026–2036"
-          title="Matriz de Compromisos Institucionales"
-          description="Monitoreo de metas cuatrienales, asignación presupuestal y avance de gestión por secretarías del Distrito para la Seguridad Humana Integral."
+          title={
+            tabActiva === "matriz_compromisos"
+              ? "Matriz de Compromisos Institucionales"
+              : "Cadena de Valor DNP / SINERGIA"
+          }
+          description={
+            tabActiva === "matriz_compromisos"
+              ? "Monitoreo de metas cuatrienales, asignación presupuestal y avance de gestión por secretarías del Distrito para la Seguridad Humana Integral."
+              : "Estructuración lógica de causalidad técnica: Insumos financieros y operativos articulados a Productos entregados y Resultados transformadores de impacto en Cartagena."
+          }
         />
 
-        <div className="flex flex-wrap items-center gap-2">
-          {/* Menú de exportación pericial */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" className="gap-2 text-xs">
-                <Download className="h-4 w-4" />
-                <span>Exportar</span>
+        {tabActiva === "matriz_compromisos" && (
+          <div className="flex flex-wrap items-center gap-2">
+            {/* Menú de exportación pericial */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm" className="gap-2 text-xs">
+                  <Download className="h-4 w-4" />
+                  <span>Exportar</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={exportarCSV} className="gap-2 text-xs">
+                  <FileSpreadsheet className="h-4 w-4" />
+                  <span>Exportar CSV (Excel / OWASP)</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={exportarJSON} className="gap-2 text-xs">
+                  <FileJson className="h-4 w-4" />
+                  <span>Exportar JSON Estructurado</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            {/* Botón Nuevo Compromiso */}
+            {puedeEditarUsuario && (
+              <Button
+                onClick={handleAbrirCrear}
+                size="sm"
+                className="gap-2 text-xs font-medium"
+              >
+                <Plus className="h-4 w-4" />
+                <span>Nuevo Compromiso</span>
               </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={exportarCSV} className="gap-2 text-xs">
-                <FileSpreadsheet className="h-4 w-4" />
-                <span>Exportar CSV (Excel / OWASP)</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={exportarJSON} className="gap-2 text-xs">
-                <FileJson className="h-4 w-4" />
-                <span>Exportar JSON Estructurado</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-
-          {/* Botón Nuevo Compromiso */}
-          {puedeEditarUsuario && (
-            <Button
-              onClick={handleAbrirCrear}
-              size="sm"
-              className="gap-2 text-xs font-medium"
-            >
-              <Plus className="h-4 w-4" />
-              <span>Nuevo Compromiso</span>
-            </Button>
-          )}
-        </div>
+            )}
+          </div>
+        )}
       </div>
 
-      {/* Tarjetas KPI de Seguimiento */}
-      <SeguimientoKpis kpis={kpis} />
-
-      {/* Barra de Filtros Multicriterio */}
-      <div className="flex flex-col gap-3 rounded-xl border border-border bg-surface-1 p-4 shadow-sm">
-        <div className="flex flex-wrap items-center gap-3">
-          {/* Buscador reactivo */}
-          <div className="relative min-w-[240px] flex-1">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
-            <Input
-              value={filtros.busqueda}
-              onChange={(e) => setFiltros({ busqueda: e.target.value })}
-              placeholder="Buscar por código, nombre, indicador o alternativa MGA..."
-              className="pl-9 text-xs"
-            />
-          </div>
-
-          {/* Filtro Entidad Responsable */}
-          <div className="w-[220px]">
-            <Select
-              value={filtros.entidad}
-              onValueChange={(val) => setFiltros({ entidad: val })}
+      {/* Navegación por Pestañas */}
+      <Tabs
+        value={tabActiva}
+        onValueChange={setTabActiva}
+        className="w-full space-y-6"
+      >
+        <div className="rounded-xl border border-border bg-surface-1 p-2">
+          <TabsList className="bg-surface-2 p-1 border border-border">
+            <TabsTrigger
+              value="matriz_compromisos"
+              className="gap-2 text-xs data-[state=active]:bg-surface-1 data-[state=active]:text-text-primary"
             >
-              <SelectTrigger className="text-xs">
-                <SelectValue placeholder="Entidad responsable" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="todas" className="text-xs">
-                  Todas las entidades
-                </SelectItem>
-                {ENTIDADES_DISTRITALES_CARTAGENA.map((entidad) => (
-                  <SelectItem key={entidad} value={entidad} className="text-xs">
-                    {entidad}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Filtro Estado de Cumplimiento */}
-          <div className="w-[180px]">
-            <Select
-              value={filtros.estado}
-              onValueChange={(val) =>
-                setFiltros({ estado: val as EstadoCompromiso | "todos" })
-              }
+              <CheckSquare className="h-3.5 w-3.5 text-accent" />
+              <span>Matriz de Compromisos PAS</span>
+            </TabsTrigger>
+            <TabsTrigger
+              value="cadena_valor"
+              className="gap-2 text-xs data-[state=active]:bg-surface-1 data-[state=active]:text-text-primary"
             >
-              <SelectTrigger className="text-xs">
-                <SelectValue placeholder="Estado de cumplimiento" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="todos" className="text-xs">
-                  Todos los estados
-                </SelectItem>
-                {Object.entries(ESTADOS_COMPROMISO).map(([key, info]) => (
-                  <SelectItem key={key} value={key} className="text-xs">
-                    {info.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Botón Limpiar Filtros */}
-          {hayFiltrosActivos && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={limpiarFiltros}
-              className="h-9 gap-1.5 px-3 text-xs text-text-muted hover:text-text-primary"
-            >
-              <RotateCcw className="h-3.5 w-3.5" />
-              <span>Limpiar filtros</span>
-            </Button>
-          )}
+              <Layers className="h-3.5 w-3.5 text-ember" />
+              <span>Cadena de Valor SINERGIA (DNP)</span>
+            </TabsTrigger>
+          </TabsList>
         </div>
 
-        {/* Resumen de resultados filtrados */}
-        <div className="flex items-center justify-between text-xs text-text-muted">
-          <span>
-            Mostrando{" "}
-            <strong className="text-text-primary">
-              {compromisosFiltrados.length}
-            </strong>{" "}
-            de {compromisos.length} compromisos institucionales
-          </span>
-        </div>
-      </div>
+        {/* Tab 1: Matriz de Compromisos PAS */}
+        <TabsContent value="matriz_compromisos" className="space-y-6 outline-none">
+          {/* Tarjetas KPI de Seguimiento */}
+          <SeguimientoKpis kpis={kpis} />
 
-      {/* DataGrid interactivo de Compromisos */}
-      <CompromisosTabla
-        compromisos={compromisosFiltrados}
-        puedeEditar={puedeEditarUsuario}
-      />
+          {/* Barra de Filtros Multicriterio */}
+          <div className="flex flex-col gap-3 rounded-xl border border-border bg-surface-1 p-4 shadow-sm">
+            <div className="flex flex-wrap items-center gap-3">
+              {/* Buscador reactivo */}
+              <div className="relative min-w-[240px] flex-1">
+                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
+                <Input
+                  value={filtros.busqueda}
+                  onChange={(e) => setFiltros({ busqueda: e.target.value })}
+                  placeholder="Buscar por código, nombre, indicador o alternativa MGA..."
+                  className="pl-9 text-xs"
+                />
+              </div>
+
+              {/* Filtro Entidad Responsable */}
+              <div className="w-[220px]">
+                <Select
+                  value={filtros.entidad}
+                  onValueChange={(val) => setFiltros({ entidad: val })}
+                >
+                  <SelectTrigger className="text-xs">
+                    <SelectValue placeholder="Entidad responsable" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="todas" className="text-xs">
+                      Todas las entidades
+                    </SelectItem>
+                    {ENTIDADES_DISTRITALES_CARTAGENA.map((entidad) => (
+                      <SelectItem key={entidad} value={entidad} className="text-xs">
+                        {entidad}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Filtro Estado de Cumplimiento */}
+              <div className="w-[180px]">
+                <Select
+                  value={filtros.estado}
+                  onValueChange={(val) =>
+                    setFiltros({ estado: val as EstadoCompromiso | "todos" })
+                  }
+                >
+                  <SelectTrigger className="text-xs">
+                    <SelectValue placeholder="Estado de cumplimiento" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="todos" className="text-xs">
+                      Todos los estados
+                    </SelectItem>
+                    {Object.entries(ESTADOS_COMPROMISO).map(([key, info]) => (
+                      <SelectItem key={key} value={key} className="text-xs">
+                        {info.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Botón Limpiar Filtros */}
+              {hayFiltrosActivos && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={limpiarFiltros}
+                  className="h-9 gap-1.5 px-3 text-xs text-text-muted hover:text-text-primary"
+                >
+                  <RotateCcw className="h-3.5 w-3.5" />
+                  <span>Limpiar filtros</span>
+                </Button>
+              )}
+            </div>
+
+            {/* Resumen de resultados filtrados */}
+            <div className="flex items-center justify-between text-xs text-text-muted">
+              <span>
+                Mostrando{" "}
+                <strong className="text-text-primary">
+                  {compromisosFiltrados.length}
+                </strong>{" "}
+                de {compromisos.length} compromisos institucionales
+              </span>
+            </div>
+          </div>
+
+          {/* DataGrid interactivo de Compromisos */}
+          <CompromisosTabla
+            compromisos={compromisosFiltrados}
+            puedeEditar={puedeEditarUsuario}
+          />
+        </TabsContent>
+
+        {/* Tab 2: Cadena de Valor SINERGIA */}
+        <TabsContent value="cadena_valor" className="space-y-6 outline-none">
+          <CadenaValorTab puedeEditar={puedeEditarUsuario} />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

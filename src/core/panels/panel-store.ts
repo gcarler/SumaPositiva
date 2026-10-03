@@ -49,7 +49,8 @@ export type PanelType =
   | "alternativa-editor"
   | "evaluacion-viabilidad"
   | "asignacion-presupuestal"
-  | "compromiso-editor";
+  | "compromiso-editor"
+  | "indicador-detalle";
 
 /** Árbol que se diligencia en el papelografo */
 export type ArbolPanel = "problemas" | "soluciones";
@@ -155,6 +156,11 @@ export interface PanelPropsMap {
     modo?: "crear" | "editar" | "ver";
     soloLectura?: boolean;
     onGuardado?: () => void;
+  };
+  "indicador-detalle": {
+    indicadorId?: string | null;
+    soloLectura?: boolean;
+    onMedicionGuardada?: () => void;
   };
 }
 

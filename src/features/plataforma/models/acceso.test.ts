@@ -253,6 +253,18 @@ describe("Matriz de rutas internas", () => {
     expect(
       panelPermitido(sesion("ciudadano"), "compromiso-editor"),
     ).toBe(false);
+    expect(
+      panelPermitido(sesion("autoridad_distrital"), "indicador-detalle"),
+    ).toBe(true);
+    expect(
+      panelPermitido(sesion("auditor_forense"), "indicador-detalle"),
+    ).toBe(true);
+    expect(
+      panelPermitido(sesion("administrador_identidades"), "indicador-detalle"),
+    ).toBe(true);
+    expect(
+      panelPermitido(sesion("ciudadano"), "indicador-detalle"),
+    ).toBe(false);
   });
   test("rutas exactas y normalización de barra final", () => {
     expect(moduloDeRuta("/plataforma/mesas/")).toBe("mesas");

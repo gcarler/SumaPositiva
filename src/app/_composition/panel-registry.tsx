@@ -167,6 +167,10 @@ const CompromisoEditorPanel = dynamic(
   () => import("@/features/seguimiento/panels/compromiso-editor-panel").then((m) => m.CompromisoEditorPanel),
   { ssr: false }
 );
+const IndicadorDetallePanel = dynamic(
+  () => import("@/features/seguimiento/panels/indicador-detalle-panel").then((m) => m.IndicadorDetallePanel),
+  { ssr: false }
+);
 
 export const PANEL_REGISTRY: Record<
   PanelType,
@@ -212,6 +216,7 @@ export const PANEL_REGISTRY: Record<
   "evaluacion-viabilidad": EvaluacionViabilidadPanel as ComponentType<PanelComponentProps>,
   "asignacion-presupuestal": AsignacionPresupuestalPanel as ComponentType<PanelComponentProps>,
   "compromiso-editor": CompromisoEditorPanel as ComponentType<PanelComponentProps>,
+  "indicador-detalle": IndicadorDetallePanel as ComponentType<PanelComponentProps>,
 };
 
 /**
@@ -264,4 +269,5 @@ export const PANEL_WIDTHS: Record<PanelType, string> = {
   "evaluacion-viabilidad": "min(clamp(780px, 52vw, 1100px), 100vw)",
   "asignacion-presupuestal": "min(clamp(680px, 48vw, 980px), 100vw)",
   "compromiso-editor": "min(clamp(720px, 50vw, 1020px), 100vw)",
+  "indicador-detalle": "min(clamp(720px, 50vw, 1000px), 100vw)",
 };
