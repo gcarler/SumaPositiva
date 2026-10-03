@@ -171,6 +171,10 @@ const IndicadorDetallePanel = dynamic(
   () => import("@/features/seguimiento/panels/indicador-detalle-panel").then((m) => m.IndicadorDetallePanel),
   { ssr: false }
 );
+const DevolucionDetallePanel = dynamic(
+  () => import("@/features/seguimiento/panels/devolucion-detalle-panel").then((m) => m.DevolucionDetallePanel),
+  { ssr: false }
+);
 
 export const PANEL_REGISTRY: Record<
   PanelType,
@@ -217,6 +221,7 @@ export const PANEL_REGISTRY: Record<
   "asignacion-presupuestal": AsignacionPresupuestalPanel as ComponentType<PanelComponentProps>,
   "compromiso-editor": CompromisoEditorPanel as ComponentType<PanelComponentProps>,
   "indicador-detalle": IndicadorDetallePanel as ComponentType<PanelComponentProps>,
+  "devolucion-detalle": DevolucionDetallePanel as ComponentType<PanelComponentProps>,
 };
 
 /**
@@ -270,4 +275,5 @@ export const PANEL_WIDTHS: Record<PanelType, string> = {
   "asignacion-presupuestal": "min(clamp(680px, 48vw, 980px), 100vw)",
   "compromiso-editor": "min(clamp(720px, 50vw, 1020px), 100vw)",
   "indicador-detalle": "min(clamp(720px, 50vw, 1000px), 100vw)",
+  "devolucion-detalle": "min(clamp(720px, 50vw, 1020px), 100vw)",
 };

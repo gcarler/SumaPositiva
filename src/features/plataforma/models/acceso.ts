@@ -306,6 +306,7 @@ export function panelPermitido(
       return puedeVer(sesion, "alternativas");
     case "compromiso-editor":
     case "indicador-detalle":
+    case "devolucion-detalle":
       return puedeVer(sesion, "seguimiento");
     default:
       return false;

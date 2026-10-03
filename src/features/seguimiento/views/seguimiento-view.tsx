@@ -11,6 +11,7 @@ import {
   Download,
   CheckSquare,
   Layers,
+  Scale,
 } from "lucide-react";
 import { PageHeader } from "@/shared/ui/page-header";
 import { Button } from "@/shared/ui/button";
@@ -35,12 +36,14 @@ import { puedeEditar } from "@/features/plataforma/models/acceso";
 import { SeguimientoKpis } from "../components/seguimiento-kpis";
 import { CompromisosTabla } from "../components/compromisos-tabla";
 import { CadenaValorTab } from "../components/cadena-valor-tab";
+import { RendicionCuentasTab } from "../components/rendicion-cuentas-tab";
 import {
   useCompromisosStore,
   calcularKpisSeguimiento,
   filtrarCompromisos,
 } from "../state/compromisos-store";
 import { useCadenaValorStore } from "../state/cadena-valor-store";
+import { useDevolucionStore } from "../state/devolucion-store";
 import type { EstadoCompromiso } from "../models/compromiso";
 import {
   ESTADOS_COMPROMISO,
@@ -68,10 +71,12 @@ export function SeguimientoView() {
   const limpiarFiltros = useCompromisosStore((s) => s.limpiarFiltros);
 
   const cargarCadenaValor = useCadenaValorStore((s) => s.cargarCadenaValor);
+  const cargarDevolucion = useDevolucionStore((s) => s.cargarDatos);
 
   useEffect(() => {
     void cargarCadenaValor();
-  }, [cargarCadenaValor]);
+    void cargarDevolucion();
+  }, [cargarCadenaValor, cargarDevolucion]);
 
   const kpis = useMemo(() => calcularKpisSeguimiento(compromisos), [compromisos]);
 
@@ -174,12 +179,16 @@ export function SeguimientoView() {
           title={
             tabActiva === "matriz_compromisos"
               ? "Matriz de Compromisos Institucionales"
-              : "Cadena de Valor DNP / SINERGIA"
+              : tabActiva === "cadena_valor"
+              ? "Cadena de Valor DNP / SINERGIA"
+              : "Rendición de Cuentas y Devolución Ciudadana"
           }
           description={
             tabActiva === "matriz_compromisos"
               ? "Monitoreo de metas cuatrienales, asignación presupuestal y avance de gestión por secretarías del Distrito para la Seguridad Humana Integral."
-              : "Estructuración lógica de causalidad técnica: Insumos financieros y operativos articulados a Productos entregados y Resultados transformadores de impacto en Cartagena."
+              : tabActiva === "cadena_valor"
+              ? "Estructuración lógica de causalidad técnica: Insumos financieros y operativos articulados a Productos entregados y Resultados transformadores de impacto en Cartagena."
+              : "Garantía del deber de motivación sustancial y proscripción del descarte silencioso conforme a la Sentencia C-150 de 2015 y la Ley Estatutaria 1757 de 2015."
           }
         />
 
@@ -241,6 +250,13 @@ export function SeguimientoView() {
             >
               <Layers className="h-3.5 w-3.5 text-ember" />
               <span>Cadena de Valor SINERGIA (DNP)</span>
+            </TabsTrigger>
+            <TabsTrigger
+              value="rendicion_cuentas"
+              className="gap-2 text-xs data-[state=active]:bg-surface-1 data-[state=active]:text-text-primary"
+            >
+              <Scale className="h-3.5 w-3.5 text-info" />
+              <span>Rendición de Cuentas (C-150/15)</span>
             </TabsTrigger>
           </TabsList>
         </div>
@@ -346,6 +362,11 @@ export function SeguimientoView() {
         {/* Tab 2: Cadena de Valor SINERGIA */}
         <TabsContent value="cadena_valor" className="space-y-6 outline-none">
           <CadenaValorTab puedeEditar={puedeEditarUsuario} />
+        </TabsContent>
+
+        {/* Tab 3: Rendición de Cuentas y Devolución Ciudadana */}
+        <TabsContent value="rendicion_cuentas" className="space-y-6 outline-none">
+          <RendicionCuentasTab puedeEditar={puedeEditarUsuario} />
         </TabsContent>
       </Tabs>
     </div>
