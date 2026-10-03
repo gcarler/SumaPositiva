@@ -70,13 +70,15 @@ export function SeguimientoView() {
   const setFiltros = useCompromisosStore((s) => s.setFiltros);
   const limpiarFiltros = useCompromisosStore((s) => s.limpiarFiltros);
 
+  const cargarCompromisos = useCompromisosStore((s) => s.cargarCompromisos);
   const cargarCadenaValor = useCadenaValorStore((s) => s.cargarCadenaValor);
   const cargarDevolucion = useDevolucionStore((s) => s.cargarDatos);
 
   useEffect(() => {
+    void cargarCompromisos();
     void cargarCadenaValor();
     void cargarDevolucion();
-  }, [cargarCadenaValor, cargarDevolucion]);
+  }, [cargarCompromisos, cargarCadenaValor, cargarDevolucion]);
 
   const kpis = useMemo(() => calcularKpisSeguimiento(compromisos), [compromisos]);
 

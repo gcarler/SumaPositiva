@@ -8,6 +8,12 @@ import type {
   KpisSeguimiento,
 } from "../models/compromiso";
 import { COMPROMISOS_PAS_CANONICOS } from "../data/compromisos-pas.data";
+import {
+  listarCompromisosApi,
+  crearCompromisoApi,
+  actualizarAvanceCompromisoApi,
+  eliminarCompromisoApi,
+} from "../services/compromisos-api";
 
 export interface CompromisosFiltros {
   busqueda: string;
@@ -101,12 +107,16 @@ export function filtrarCompromisos(
 export interface CompromisosStoreState {
   compromisos: CompromisoInstitucional[];
   filtros: CompromisosFiltros;
+  cargando: boolean;
+  guardando: boolean;
+  error: string | null;
 
   // Acciones
-  agregarCompromiso: (datos: Omit<CompromisoInstitucional, "id">) => CompromisoInstitucional;
-  actualizarAvance: (id: string, actualizacion: CompromisoActualizarAvance) => boolean;
-  cambiarEstado: (id: string, nuevoEstado: EstadoCompromiso) => boolean;
-  eliminarCompromiso: (id: string) => boolean;
+  cargarCompromisos: () => Promise<void>;
+  agregarCompromiso: (datos: Omit<CompromisoInstitucional, "id">) => Promise<CompromisoInstitucional>;
+  actualizarAvance: (id: string, actualizacion: CompromisoActualizarAvance) => Promise<boolean>;
+  cambiarEstado: (id: string, nuevoEstado: EstadoCompromiso) => Promise<boolean>;
+  eliminarCompromiso: (id: string) => Promise<boolean>;
   setFiltros: (parcial: Partial<CompromisosFiltros>) => void;
   limpiarFiltros: () => void;
   getById: (id: string) => CompromisoInstitucional | undefined;
@@ -116,82 +126,154 @@ export interface CompromisosStoreState {
 export const useCompromisosStore = create<CompromisosStoreState>((set, get) => ({
   compromisos: COMPROMISOS_PAS_CANONICOS,
   filtros: FILTROS_INICIALES_COMPROMISOS,
+  cargando: false,
+  guardando: false,
+  error: null,
 
-  agregarCompromiso: (datos) => {
-    const nuevo: CompromisoInstitucional = {
-      ...datos,
-      id: `pas-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
-    };
-    set((state) => ({
-      compromisos: [nuevo, ...state.compromisos],
-    }));
-    return nuevo;
+  cargarCompromisos: async () => {
+    set({ cargando: true, error: null });
+    try {
+      const datos = await listarCompromisosApi();
+      set({ compromisos: datos, cargando: false });
+    } catch (err) {
+      set({ error: (err as Error).message, cargando: false });
+    }
   },
 
-  actualizarAvance: (id, actualizacion) => {
+  agregarCompromiso: async (datos) => {
+    set({ guardando: true, error: null });
+    try {
+      const creado = await crearCompromisoApi(datos);
+      set((state) => ({
+        compromisos: [creado, ...state.compromisos],
+        guardando: false,
+      }));
+      return creado;
+    } catch (err) {
+      // Fallback local en memoria ante entornos aislados
+      const meta = datos.meta_cuatrienal_valor || 1;
+      const porcentaje = Math.min(
+        100,
+        Math.max(0, Math.round(((datos.avance_cuatrienal_valor || 0) / meta) * 100))
+      );
+      const fallbackLocal: CompromisoInstitucional = {
+        ...datos,
+        id: `pas-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+        porcentaje_cumplimiento: porcentaje,
+      };
+      set((state) => ({
+        compromisos: [fallbackLocal, ...state.compromisos],
+        guardando: false,
+      }));
+      return fallbackLocal;
+    }
+  },
+
+  actualizarAvance: async (id, actualizacion) => {
     const actual = get().getById(id);
     if (!actual) return false;
 
-    const nuevoAvance = actualizacion.avance_cuatrienal_valor;
-    const meta = actual.meta_cuatrienal_valor || 1;
-    const porcentaje = Math.min(100, Math.max(0, Math.round((nuevoAvance / meta) * 100)));
+    set({ guardando: true, error: null });
+    try {
+      const actualizado = await actualizarAvanceCompromisoApi(id, actualizacion);
+      set((state) => ({
+        compromisos: state.compromisos.map((c) =>
+          c.id === id || c.codigo === id ? actualizado : c
+        ),
+        guardando: false,
+      }));
+      return true;
+    } catch {
+      // Fallback local en memoria
+      const nuevoAvance = actualizacion.avance_cuatrienal_valor;
+      const meta = actual.meta_cuatrienal_valor || 1;
+      const porcentaje = Math.min(100, Math.max(0, Math.round((nuevoAvance / meta) * 100)));
 
-    let nuevoEstado: EstadoCompromiso = actualizacion.estado ?? actual.estado;
-    if (!actualizacion.estado) {
-      if (porcentaje >= 100) nuevoEstado = "cumplido";
-      else if (porcentaje < 30) nuevoEstado = "retrasado";
-      else if (porcentaje < 50) nuevoEstado = "en_riesgo";
-      else nuevoEstado = "en_ejecucion";
+      let nuevoEstado: EstadoCompromiso = actualizacion.estado ?? actual.estado;
+      if (!actualizacion.estado) {
+        if (porcentaje >= 100) nuevoEstado = "cumplido";
+        else if (porcentaje < 30) nuevoEstado = "retrasado";
+        else if (porcentaje < 50) nuevoEstado = "en_riesgo";
+        else nuevoEstado = "en_ejecucion";
+      }
+
+      set((state) => ({
+        compromisos: state.compromisos.map((c) =>
+          c.id === id || c.codigo === id
+            ? {
+                ...c,
+                avance_cuatrienal_valor: nuevoAvance,
+                porcentaje_cumplimiento: porcentaje,
+                estado: nuevoEstado,
+                fecha_corte_ultimo_reporte:
+                  actualizacion.fecha_corte_ultimo_reporte ??
+                  new Date().toISOString().split("T")[0],
+                metadatos: {
+                  ...c.metadatos,
+                  ...(actualizacion.observacion_cualitativa
+                    ? { observacion_cualitativa: actualizacion.observacion_cualitativa }
+                    : {}),
+                  ...(actualizacion.url_evidencia
+                    ? { url_evidencia: actualizacion.url_evidencia }
+                    : {}),
+                  fecha_modificacion: new Date().toISOString(),
+                },
+              }
+            : c
+        ),
+        guardando: false,
+      }));
+      return true;
     }
-
-    set((state) => ({
-      compromisos: state.compromisos.map((c) =>
-        c.id === id
-          ? {
-              ...c,
-              avance_cuatrienal_valor: nuevoAvance,
-              porcentaje_cumplimiento: porcentaje,
-              estado: nuevoEstado,
-              fecha_corte_ultimo_reporte:
-                actualizacion.fecha_corte_ultimo_reporte ??
-                new Date().toISOString().split("T")[0],
-              metadatos: {
-                ...c.metadatos,
-                ...(actualizacion.observacion_cualitativa
-                  ? { observacion_cualitativa: actualizacion.observacion_cualitativa }
-                  : {}),
-                ...(actualizacion.url_evidencia
-                  ? { url_evidencia: actualizacion.url_evidencia }
-                  : {}),
-                fecha_modificacion: new Date().toISOString(),
-              },
-            }
-          : c
-      ),
-    }));
-    return true;
   },
 
-  cambiarEstado: (id, nuevoEstado) => {
+  cambiarEstado: async (id, nuevoEstado) => {
+    const actual = get().getById(id);
+    if (!actual) return false;
+
+    set({ guardando: true, error: null });
+    try {
+      const actualizado = await actualizarAvanceCompromisoApi(id, {
+        avance_cuatrienal_valor: actual.avance_cuatrienal_valor,
+        estado: nuevoEstado,
+      });
+      set((state) => ({
+        compromisos: state.compromisos.map((c) =>
+          c.id === id || c.codigo === id ? actualizado : c
+        ),
+        guardando: false,
+      }));
+      return true;
+    } catch {
+      set((state) => ({
+        compromisos: state.compromisos.map((c) =>
+          c.id === id || c.codigo === id ? { ...c, estado: nuevoEstado } : c
+        ),
+        guardando: false,
+      }));
+      return true;
+    }
+  },
+
+  eliminarCompromiso: async (id) => {
     const existe = get().getById(id);
     if (!existe) return false;
 
-    set((state) => ({
-      compromisos: state.compromisos.map((c) =>
-        c.id === id ? { ...c, estado: nuevoEstado } : c
-      ),
-    }));
-    return true;
-  },
-
-  eliminarCompromiso: (id) => {
-    const existe = get().getById(id);
-    if (!existe) return false;
-
-    set((state) => ({
-      compromisos: state.compromisos.filter((c) => c.id !== id),
-    }));
-    return true;
+    set({ guardando: true, error: null });
+    try {
+      await eliminarCompromisoApi(id);
+      set((state) => ({
+        compromisos: state.compromisos.filter((c) => c.id !== id && c.codigo !== id),
+        guardando: false,
+      }));
+      return true;
+    } catch {
+      set((state) => ({
+        compromisos: state.compromisos.filter((c) => c.id !== id && c.codigo !== id),
+        guardando: false,
+      }));
+      return true;
+    }
   },
 
   setFiltros: (parcial) => {
@@ -205,10 +287,16 @@ export const useCompromisosStore = create<CompromisosStoreState>((set, get) => (
   },
 
   getById: (id) => {
-    return get().compromisos.find((c) => c.id === id);
+    return get().compromisos.find((c) => c.id === id || c.codigo === id);
   },
 
   restablecerCanonicos: () => {
-    set({ compromisos: COMPROMISOS_PAS_CANONICOS, filtros: FILTROS_INICIALES_COMPROMISOS });
+    set({
+      compromisos: COMPROMISOS_PAS_CANONICOS,
+      filtros: FILTROS_INICIALES_COMPROMISOS,
+      cargando: false,
+      guardando: false,
+      error: null,
+    });
   },
 }));

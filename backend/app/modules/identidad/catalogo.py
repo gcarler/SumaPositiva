@@ -29,6 +29,8 @@ PERMISOS = {
     "identidad:auditar": "Consultar eventos de identidad",
     "politicas:gestionar": "Gestionar fases y configuración de políticas públicas",
     "testimonios:moderar": "Moderar y curar testimonios comunitarios",
+    "seguimiento:leer": "Consultar compromisos y seguimiento PAS",
+    "seguimiento:gestionar": "Gestionar compromisos e hitos del PAS",
 }
 ROLES_SISTEMA = {
     "ciudadano",

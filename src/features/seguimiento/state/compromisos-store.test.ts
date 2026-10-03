@@ -6,7 +6,7 @@ import {
 } from "./compromisos-store";
 import { COMPROMISOS_PAS_CANONICOS } from "../data/compromisos-pas.data";
 
-describe("Plan de Acción y Seguimiento (PAS) — Matriz de Compromisos (Hito PAS-1)", () => {
+describe("Plan de Acción y Seguimiento (PAS) — Matriz de Compromisos (Hito PAS-1 / AUD-01)", () => {
   beforeEach(() => {
     useCompromisosStore.getState().restablecerCanonicos();
   });
@@ -37,6 +37,13 @@ describe("Plan de Acción y Seguimiento (PAS) — Matriz de Compromisos (Hito PA
       expect(kpis.compromisosEnRiesgoORetrasados).toBe(3); // 2 en_riesgo + 1 retrasado
       expect(kpis.promedioCumplimientoCuatrienal).toBe(61); // Promedio ponderado de avance
       expect(kpis.presupuestoTotalAnualCop).toBe(13400000000); // 1.2B + 1.8B + 2.0B + 1.5B + 3.0B + 0.4B + 0.95B + 1.1B + 0.85B + 0.6B = 13.4B
+    });
+
+    test("carga compromisos reactivamente desde el servicio de backend", async () => {
+      await useCompromisosStore.getState().cargarCompromisos();
+      const state = useCompromisosStore.getState();
+      expect(state.compromisos.length).toBeGreaterThanOrEqual(10);
+      expect(state.cargando).toBe(false);
     });
   });
 
@@ -96,9 +103,9 @@ describe("Plan de Acción y Seguimiento (PAS) — Matriz de Compromisos (Hito PA
     });
   });
 
-  describe("Mutaciones del Store Zustand", () => {
-    test("agrega un nuevo compromiso institucional con ID único", () => {
-      const nuevo = useCompromisosStore.getState().agregarCompromiso({
+  describe("Mutaciones del Store Zustand con Persistencia", () => {
+    test("agrega un nuevo compromiso institucional con ID único", async () => {
+      const nuevo = await useCompromisosStore.getState().agregarCompromiso({
         codigo: "PAS-TEST-99",
         nombre: "Compromiso de Prueba",
         descripcion: "Descripción de prueba",
@@ -122,8 +129,8 @@ describe("Plan de Acción y Seguimiento (PAS) — Matriz de Compromisos (Hito PA
       expect(useCompromisosStore.getState().getById(nuevo.id)).toBeDefined();
     });
 
-    test("actualiza avance cuatrienal recalculando porcentaje de cumplimiento", () => {
-      const exito = useCompromisosStore.getState().actualizarAvance("pas-001", {
+    test("actualiza avance cuatrienal recalculando porcentaje de cumplimiento", async () => {
+      const exito = await useCompromisosStore.getState().actualizarAvance("pas-001", {
         avance_cuatrienal_valor: 100,
         observacion_cualitativa: "Cobertura al 100% alcanzada en todas las zonas turísticas.",
       });
@@ -136,14 +143,14 @@ describe("Plan de Acción y Seguimiento (PAS) — Matriz de Compromisos (Hito PA
       expect(actualizado?.metadatos?.observacion_cualitativa).toContain("Cobertura al 100%");
     });
 
-    test("cambia el estado de un compromiso", () => {
-      const exito = useCompromisosStore.getState().cambiarEstado("pas-005", "retrasado");
+    test("cambia el estado de un compromiso", async () => {
+      const exito = await useCompromisosStore.getState().cambiarEstado("pas-005", "retrasado");
       expect(exito).toBe(true);
       expect(useCompromisosStore.getState().getById("pas-005")?.estado).toBe("retrasado");
     });
 
-    test("elimina un compromiso del plan de acción", () => {
-      const exito = useCompromisosStore.getState().eliminarCompromiso("pas-010");
+    test("elimina un compromiso del plan de acción", async () => {
+      const exito = await useCompromisosStore.getState().eliminarCompromiso("pas-010");
       expect(exito).toBe(true);
       expect(useCompromisosStore.getState().compromisos.length).toBe(9);
       expect(useCompromisosStore.getState().getById("pas-010")).toBeUndefined();

@@ -96,54 +96,64 @@ export function CompromisoEditorPanel({
     Math.max(0, Math.round((avanceValor / (metaObjetivo || 1)) * 100))
   );
 
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    if (esSoloLectura) return;
+  const [guardando, setGuardando] = useState(false);
 
-    if (esModoCrear) {
-      if (!nombre.trim()) {
-        toast.error("El nombre del compromiso es obligatorio.");
-        return;
-      }
-      agregarCompromiso({
-        codigo: codigo.trim().toUpperCase(),
-        nombre: nombre.trim(),
-        descripcion: descripcion.trim() || nombre.trim(),
-        entidad_responsable: entidad,
-        linea_estrategica_codigo: "LE-01",
-        alternativa_mga_codigo: "ALT-ESCNNA-01",
-        indicador_asociado_codigo: "IND-PROD-01",
-        meta_cuatrienal_descripcion: `Alcanzar ${metaValor} ${unidadMedida}`,
-        meta_cuatrienal_valor: metaValor,
-        unidad_medida: unidadMedida,
-        avance_cuatrienal_valor: avanceValor,
-        porcentaje_cumplimiento: porcentajeCalculado,
-        presupuesto_anual_cop: presupuestoAnual,
-        vigencias_programadas: [2026, 2027, 2028, 2029],
-        estado,
-        fecha_corte_ultimo_reporte: fechaCorte,
-        metadatos: {
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (esSoloLectura || guardando) return;
+
+    setGuardando(true);
+    try {
+      if (esModoCrear) {
+        if (!nombre.trim()) {
+          toast.error("El nombre del compromiso es obligatorio.");
+          setGuardando(false);
+          return;
+        }
+        await agregarCompromiso({
+          codigo: codigo.trim().toUpperCase(),
+          nombre: nombre.trim(),
+          descripcion: descripcion.trim() || nombre.trim(),
+          entidad_responsable: entidad,
+          linea_estrategica_codigo: "LE-01",
+          alternativa_mga_codigo: "ALT-ESCNNA-01",
+          indicador_asociado_codigo: "IND-PROD-01",
+          meta_cuatrienal_descripcion: `Alcanzar ${metaValor} ${unidadMedida}`,
+          meta_cuatrienal_valor: metaValor,
+          unidad_medida: unidadMedida,
+          avance_cuatrienal_valor: avanceValor,
+          porcentaje_cumplimiento: porcentajeCalculado,
+          presupuesto_anual_cop: presupuestoAnual,
+          vigencias_programadas: [2026, 2027, 2028, 2029],
+          estado,
+          fecha_corte_ultimo_reporte: fechaCorte,
+          metadatos: {
+            observacion_cualitativa: observacion,
+            url_evidencia: urlEvidencia,
+            registrado_por: sesion?.usuario ?? "sistema",
+          },
+        });
+        toast.success(`Compromiso ${codigo} registrado en el Plan de Acción y Seguimiento.`);
+      } else if (compromisoId) {
+        await actualizarAvance(compromisoId, {
+          avance_cuatrienal_valor: avanceValor,
+          estado,
+          fecha_corte_ultimo_reporte: fechaCorte,
           observacion_cualitativa: observacion,
           url_evidencia: urlEvidencia,
-          registrado_por: sesion?.usuario ?? "sistema",
-        },
-      });
-      toast.success(`Compromiso ${codigo} registrado en el Plan de Acción y Seguimiento.`);
-    } else if (compromisoId) {
-      actualizarAvance(compromisoId, {
-        avance_cuatrienal_valor: avanceValor,
-        estado,
-        fecha_corte_ultimo_reporte: fechaCorte,
-        observacion_cualitativa: observacion,
-        url_evidencia: urlEvidencia,
-      });
-      toast.success(
-        `Avance de ${compromiso?.codigo} actualizado al ${porcentajeCalculado}% (${estado}).`
-      );
-    }
+        });
+        toast.success(
+          `Avance de ${compromiso?.codigo} actualizado al ${porcentajeCalculado}% (${estado}).`
+        );
+      }
 
-    props.onGuardado?.();
-    closeTop();
+      props.onGuardado?.();
+      closeTop();
+    } catch (err) {
+      toast.error(`Error al persistir compromiso: ${(err as Error).message || "Acción denegada"}`);
+    } finally {
+      setGuardando(false);
+    }
   };
 
   const handleExportarJson = () => {
@@ -507,11 +517,18 @@ export function CompromisoEditorPanel({
           {!esSoloLectura && (
             <Button
               type="submit"
+              disabled={guardando}
               size="sm"
-              className="h-9 px-4 text-xs gap-1.5 bg-ember hover:bg-ember/90 text-text-inverse font-semibold"
+              className="h-9 px-4 text-xs gap-1.5 bg-ember hover:bg-ember/90 text-text-inverse font-semibold disabled:opacity-50"
             >
               <CheckCircle2 className="size-3.5" aria-hidden="true" />
-              <span>{esModoCrear ? "Registrar Compromiso" : "Actualizar Avance Institucional"}</span>
+              <span>
+                {guardando
+                  ? "Guardando..."
+                  : esModoCrear
+                  ? "Registrar Compromiso"
+                  : "Actualizar Avance Institucional"}
+              </span>
             </Button>
           )}
         </div>
