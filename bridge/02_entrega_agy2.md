@@ -1,83 +1,86 @@
-# Entrega agy2 — Fase 2: Formulación Estratégica (Hito F-3: Costeo Presupuestal y Asignación de Fuentes)
-Fecha: 2026-10-03T19:11:00Z
+# Entrega agy2 — Fase 3: Plan de Acción y Seguimiento (Hito PAS-1: Matriz de Compromisos Institucionales)
+Fecha: 2026-10-03T22:42:00Z
 Estado: CONFORME PARA AUDITORÍA FORENSE (EAF)
 Responsable: agy2
 Commits:
+- `df8f5ce` feat(seguimiento): modulo PAS de matriz de compromisos y metas cuatrienales
+- `78a0681` docs(plan): plan maestro de la fase 3 plan de accion y seguimiento PAS SINERGIA
+- `6a3e9ce` docs(audit): dictamen de calidad EAF sobre hito F-3 de formulacion (4e7be37)
+- `f5c24fc` docs(formulacion): registrar entrega pericial hito F-3
 - `4e7be37` feat(formulacion): tablero de costeo presupuestal y asignacion de fuentes de financiacion
-- `3fcd887` docs(audit): dictamen de calidad EAF sobre hito F-2 de formulacion (cc35304)
-- `f039c1d` docs(formulacion): registrar entrega pericial hito F-2
-- `cc35304` feat(formulacion): evaluacion de viabilidad juridica y fiscal con IA para alternativas MGA
-- `e8f9de9` docs(audit): dictamen de calidad EAF sobre hito F-1 de formulacion (a2dd2db)
-- `a2dd2db` feat(formulacion): modulo de alternativas MGA y banco de soluciones para cartagena
 
 ---
 
-## 1. Resumen Ejecutivo de la Entrega (Hito F-3)
-En estricto cumplimiento del documento rector `bridge/00_plan_maestro_fase_formulacion.md` y la especificación pericial `bridge/01_tarea_agy2_formulacion_fase3.md`, se implementó y desplegó en el módulo institucional `/plataforma/alternativas` el **Tablero de Costeo Presupuestal y Asignación de Fuentes de Financiación Cuatrienal (FONSET/SGP/SGR/ICLD/Presupuesto Participativo)**, integrando la conexión con los endpoints reales del backend FastAPI, el panel lateral Zero-Modals `"asignacion-presupuestal"`, y el control fiscal de vigencias futuras conforme a la Ley 819 de 2003 (MFMP) y la Ley 1483 de 2011 (Vigencias Futuras Excepcionales en Cartagena de Indias).
+## 1. Resumen Ejecutivo de la Entrega (Hito PAS-1)
+En estricto cumplimiento del documento rector `bridge/00_plan_maestro_fase_pas.md` y la especificación pericial `bridge/01_tarea_agy2_pas_fase1.md`, se implementó y desplegó en la plataforma institucional el nuevo módulo interno **`seguimiento`** (`/plataforma/seguimiento`), correspondiente a la **Matriz de Compromisos Institucionales y Seguimiento Cuatrienal (PAS)** para la Política Pública de Seguridad Humana Integral de Cartagena de Indias 2026–2036, alineado con las metodologías DNP/SINERGIA, MIPG y Ley 152 de 1994.
 
 ### Principales Logros Técnicos:
-1. **Conmutador de Navegación Institucional (`alternativas-view.tsx`)**:
-   - Cabecera reactiva con alternador pericial entre:
-     - 💡 **"Banco de Alternativas MGA"**: DataGrid de iniciativas con evaluación asistida por IA jurídica y fiscal.
-     - 💰 **"Costeo y Plan Financiero"**: Tablero presupuestal, matriz de asignaciones y distribución plurianual.
-   - Textos de contexto y botones de acción dinámicos según el modo seleccionado.
+1. **Control de Acceso y Navegación Institucional (`acceso.ts`, `plataforma-sidebar.tsx`)**:
+   - Módulo `seguimiento` (`/plataforma/seguimiento`) registrado en la matriz institucional `MODULOS`.
+   - Habilitado para los roles: `autoridad_distrital`, `auditor_forense` y `administrador_identidades`.
+   - Permisos granulares: `seguimiento:leer` y `seguimiento:gestionar`. Autoridades y administradores poseen facultad de edición/gestión, mientras que los auditores forenses operan bajo estricto modo de solo lectura.
+   - Ícono representativo `CheckSquare` integrado en el sidebar oficial de la plataforma interna.
+   - Suite de pruebas `acceso.test.ts` actualizada y 100% pasando (18 pruebas, 189 aserciones).
 
-2. **Componente Tablero Financiero Distrital (`costeo-presupuestal-view.tsx`)**:
-   - **4 Tarjetas KPI Presupuestales Semánticas**:
-     - *Presupuesto Total Asignado*: cálculo consolidado en miles de millones de COP.
-     - *Recursos FONSET*: asignación específica a seguridad ciudadana, orden público y convivencia (Leyes 418/97 y 2272/22).
-     - *Transferencias SGP y SGR*: transferencias directas de la Nación y regalías (Leyes 715/01 y 2056/20).
-     - *Vigencias Futuras*: recursos comprometidos más allá de la vigencia actual (2027 a 2029).
-   - **Desglose de Fuentes y Distribución Plurianual**:
-     - Barras de distribución porcentual y montos por cada una de las 5 fuentes oficiales sembradas en `bd_csh`.
-     - Plan plurianual por vigencia (2026, 2027, 2028 y 2029) con badges de alerta de vigencia futura.
-   - **DataGrid de Asignaciones Presupuestales**:
-     - Visualización tabular con columnas: Alternativa MGA vinculada, Código BPIN, Fuente Distrital, Vigencia Fiscal, Monto Asignado en COP con formato de moneda, Condición Fiscal (Ordinaria / VF Excepcional Ley 1483/11) y botón de inspección pericial.
-     - Filtros multicriterio: búsqueda por texto (BPIN, alternativa, fuente, justificación), filtro por fuente oficial, filtro por año de vigencia y filtro por condición de vigencia futura.
-     - Menú de exportación a CSV (sanitizado contra inyección de fórmulas OWASP) y JSON estructurado para fines de trazabilidad fiscal.
+2. **Catálogo Canónico Institucional de Cartagena (`compromisos-pas.data.ts`, `compromiso.ts`)**:
+   - Modelado tipado de `CompromisoInstitucional`, `EstadoCompromiso`, `KpisSeguimiento` y metadatos periciales.
+   - Sembrado canónico con los **10 compromisos institucionales estructurados** del Distrito de Cartagena:
+     1. `PAS-SEC-01`: Ruta de Detección Temprana y Protección contra ESCNNA (Distriseguridad / Sec. Interior; $1.200M COP/año).
+     2. `PAS-JUV-02`: Capacitación e Inserción Laboral para Jóvenes en Riesgo de Pandillismo (Sec. de Participación; $1.800M COP/año).
+     3. `PAS-SEG-03`: Mantenimiento y Conectividad de 250 Cámaras LPR y Centros de Monitoreo (Secotic / Distriseguridad; $2.000M COP/año).
+     4. `PAS-ALUM-04`: Instalación de 4.800 Luminarias LED en Puntos Críticos y Zonas de Miedo (Secretaría General; $1.500M COP/año).
+     5. `PAS-AMB-05`: Limpieza de Canales, Drenajes y Reforestación Comunitaria en Ciénaga de la Virgen (EPA Cartagena / OAGRD; $3.000M COP/año).
+     6. `PAS-POL-06`: Fortalecimiento Operativo y Dotación a 60 Frentes Locales de Seguridad (Policía MECAR / Sec. Interior; $400M COP/año).
+     7. `PAS-CUID-07`: Puesta en Marcha de 2 Manzanas del Cuidado y Centros de Vida (Sec. de Participación / DADIS; $950M COP/año).
+     8. `PAS-DES-08`: Mediación Comunitaria y Desarme Social en 12 Barrios Priorizados (Sec. Interior; $1.100M COP/año).
+     9. `PAS-BAZ-09`: Microcrédito Popular y Formalización de 800 Comerciantes en Mercado de Bazurto (Sec. de Hacienda; $850M COP/año).
+     10. `PAS-ETN-10`: Proyectos Productivos y Salvaguarda Étnica con Consejos Comunitarios (Asuntos Étnicos / Participación; $600M COP/año).
+   - Presupuesto anual consolidado de la matriz: **$13.400.000.000 COP ($13.400 MM COP)**.
 
-3. **Panel Lateral Zero-Modals (`asignacion-presupuestal-panel.tsx`)**:
-   - Registrado como `"asignacion-presupuestal"` en `panel-store.ts` y cargado dinámicamente en `panel-registry.tsx` con ancho fluido `min(clamp(680px, 48vw, 980px), 100vw)`, cumpliendo al 100% con la **Regla UI004** (desacoplamiento total del core de paneles).
-   - Formulario completo para formalizar asignaciones presupuestales:
-     - Selector de Iniciativa MGA asociada con tarjeta de metadatos (costo cuatrienal, horizonte, territorio).
-     - Selector de Fuente de Financiación cargado desde el backend `/api/v1/presupuesto/fuentes`.
-     - Monto en pesos COP con previsualización formateada en tiempo real.
-     - Año de vigencia fiscal (2026 a 2029) con activación automática de alerta de vigencia futura.
-     - Switch de Vigencia Futura con selector de tipo (*Ordinaria* Ley 819/03 vs *Excepcional* Ley 1483/11).
-     - Banner pericial vinculante: si la vigencia es Excepcional, se advierte de la obligación imperativa de contar con aprobación del Concejo Distrital de Cartagena y declaratoria estratégica del CONFIS distrital.
-     - Código BPIN preliminar y justificación técnica vinculante.
-     - Modo de solo lectura pericial inmutable respetado para roles supervisores y auditores forenses.
-     - Exportación pericial del expediente de asignación a JSON.
+3. **Gestor de Estado Reactivo (`compromisos-store.ts`, `compromisos-store.test.ts`)**:
+   - Store Zustand con soporte para creación (`agregarCompromiso`), actualización de avance (`actualizarAvance`), cambio de estado (`cambiarEstado`), eliminación y filtros multicriterio.
+   - Cálculo determinista de KPIs consolidados (`calcularKpisSeguimiento`) y motor de filtrado reactivo (`filtrarCompromisos`).
+   - 11 pruebas unitarias automatizadas con 41 aserciones, 100% pasando.
 
-4. **Modelos de Datos y Servicio de API (`presupuesto.ts`, `presupuesto-api.ts`)**:
-   - Modelado tipado de `FuenteFinanciacion`, `AsignacionPresupuestal`, `AsignacionPresupuestalCrear`, `ResumenCosteo` y `KpisPresupuesto`.
-   - Conectores `apiFetch()` con los endpoints `/api/v1/presupuesto/fuentes`, `/api/v1/presupuesto/asignaciones`, `/api/v1/presupuesto/resumen-costeo` y mutación `POST /api/v1/presupuesto/asignaciones`.
-   - Mecanismos de contingencia determinista calibrados para garantizar funcionamiento ininterrumpido en entornos aislados o de testing.
-   - Algoritmos matemáticos de cómputo de KPIs y agregaciones plurianuales.
+4. **Componentes y Vistas del Módulo (`seguimiento-view.tsx`, `seguimiento-kpis.tsx`, `compromisos-tabla.tsx`)**:
+   - `PageHeader` institucional con contexto temporal y territorial (Cartagena de Indias 2026–2036).
+   - Botón *"Nuevo Compromiso"* con validación de permisos de edición en tiempo de ejecución.
+   - Menú de exportación pericial a CSV (sanitizado contra vulnerabilidades de inyección de fórmulas OWASP) y JSON estructurado.
+   - **4 Tarjetas Semánticas KPI**:
+     - *Total Compromisos PAS*: 10 iniciativas con indicador de presupuesto anual consolidado ($13.400 MM COP).
+     - *En Ejecución / Cumplidos*: porcentaje y fracción respecto al total.
+     - *En Riesgo o Retrasados*: semáforo de alerta temprana.
+     - *Cumplimiento Cuatrienal*: porcentaje medio cuatrienal con barra de progreso reactiva.
+   - Barra de filtros con buscador full-text, selector de entidades distritales de Cartagena y selector de estados de cumplimiento.
+   - DataGrid interactivo con barras de avance cromáticas (`bg-success`, `bg-accent`, `bg-warning`, `bg-danger`), badges de estado DNP y acción de gestión/consulta de avance.
 
-5. **Control de Acceso y Autorizaciones (`acceso.ts`, `acceso.test.ts`)**:
-   - Panel `"asignacion-presupuestal"` integrado en `panelPermitido` bajo el módulo `alternativas`.
-   - Suite de pruebas ampliada y verificada al 100% (17 pruebas, 142 aserciones).
-
-6. **Suite de Pruebas Unitarias Automatizadas (`presupuesto-api.test.ts`)**:
-   - 7 pruebas unitarias exhaustivas con 34 aserciones cubriendo normalización de fuentes, normalización de asignaciones con enlace a fuentes, cálculo de KPIs distritales, agregación de resúmenes plurianuales, y consumo de APIs con fallback resiliente.
+5. **Panel Lateral Zero-Modals (`compromiso-editor-panel.tsx`)**:
+   - ID: `"compromiso-editor"`.
+   - Registrado en `panel-store.ts` y cargado dinámicamente en `panel-registry.tsx` con ancho fluido `min(clamp(720px, 50vw, 1020px), 100vw)`, cumpliendo la Regla UI004.
+   - Formulario para actualización de avance cuantitativo (valor medido, unidad de medida, cálculo de porcentaje en tiempo real).
+   - Selector de estado de cumplimiento, reporte cualitativo y URL de evidencia documental para auditoría.
+   - Modo de solo lectura pericial inmutable con campos deshabilitados para el rol `auditor_forense`.
 
 ---
 
-## 2. Archivos Creados y Modificados (Hito F-3)
+## 2. Archivos Creados y Modificados (Hito PAS-1)
 
 | Archivo | Rol en el Sistema |
 |---|---|
-| `src/features/alternativas/models/presupuesto.ts` | Modelos de datos TypeScript, enums de fuentes, vigencias futuras, contratos de API y catálogos canónicos de Cartagena. |
-| `src/features/alternativas/services/presupuesto-api.ts` | Servicio cliente API para endpoints de presupuesto, normalizadores, cálculo analítico de KPIs y fallback resiliente. |
-| `src/features/alternativas/services/presupuesto-api.test.ts` | Suite de pruebas unitarias automatizadas (7 pruebas, 34 aserciones) para lógica financiera y presupuesto. |
-| `src/features/alternativas/panels/asignacion-presupuestal-panel.tsx` | Panel lateral Zero-Modals montado sobre `PanelShell`, formulario de asignación, alertas de Ley 1483/11 y exportación JSON. |
-| `src/features/alternativas/components/costeo-presupuestal-view.tsx` | Componente de tablero financiero: 4 tarjetas KPI, distribución plurianual, DataGrid de asignaciones y filtros multicriterio. |
-| `src/features/alternativas/views/alternativas-view.tsx` | Conmutador de cabecera entre "Banco de Alternativas MGA" y "Costeo y Plan Financiero". |
-| `src/core/panels/panel-store.ts` | Registro autónomo de `"asignacion-presupuestal"` en `PanelType` y `PanelPropsMap` (UI004 compliant). |
-| `src/app/_composition/panel-registry.tsx` | Dynamic import de `AsignacionPresupuestalPanel`, registro en `PANEL_REGISTRY` y asignación de ancho fluido en `PANEL_WIDTHS`. |
-| `src/features/plataforma/models/acceso.ts` | Autorización del panel `"asignacion-presupuestal"` en `panelPermitido`. |
-| `src/features/plataforma/models/acceso.test.ts` | Pruebas de acceso actualizadas verificando autorización del panel para autoridades y auditores forenses. |
+| `src/features/seguimiento/models/compromiso.ts` | Modelos de datos TypeScript, enums de estado, interfaces de compromisos, KPIs y catálogo de entidades distritales. |
+| `src/features/seguimiento/data/compromisos-pas.data.ts` | Catálogo canónico con los 10 compromisos institucionales estructurados de Cartagena de Indias. |
+| `src/features/seguimiento/state/compromisos-store.ts` | Store Zustand con mutaciones reactivas, filtrado multicriterio y cálculo analítico de KPIs. |
+| `src/features/seguimiento/state/compromisos-store.test.ts` | Suite de pruebas unitarias automatizadas (11 pruebas, 41 aserciones) para lógica del store PAS. |
+| `src/features/seguimiento/panels/compromiso-editor-panel.tsx` | Panel lateral Zero-Modals montado sobre `PanelShell`, actualización de avances y protección para auditores. |
+| `src/features/seguimiento/components/seguimiento-kpis.tsx` | 4 tarjetas KPI semánticas con desglose presupuestal y barra de cumplimiento cuatrienal. |
+| `src/features/seguimiento/components/compromisos-tabla.tsx` | DataGrid interactivo con barras cromáticas de avance, badges de estado y apertura de panel. |
+| `src/features/seguimiento/views/seguimiento-view.tsx` | Vista principal del módulo con cabecera, filtros, exportación CSV/JSON y tabla interactiva. |
+| `src/app/plataforma/seguimiento/page.tsx` | Ruta Next.js App Router para `/plataforma/seguimiento`. |
+| `src/core/panels/panel-store.ts` | Registro desacoplado de `"compromiso-editor"` en `PanelType` y `PanelPropsMap` (UI004 compliant). |
+| `src/app/_composition/panel-registry.tsx` | Dynamic import de `CompromisoEditorPanel`, registro en `PANEL_REGISTRY` y ancho en `PANEL_WIDTHS`. |
+| `src/features/plataforma/models/acceso.ts` | Registro del módulo `seguimiento` en `MODULOS`, control de roles, permisos y autorización en `panelPermitido`. |
+| `src/features/plataforma/models/acceso.test.ts` | Pruebas de control de acceso actualizadas verificando módulo y panel lateral (18 pruebas, 189 aserciones). |
+| `src/features/plataforma/components/plataforma-sidebar.tsx` | Enlace de navegación con ícono `CheckSquare` para el módulo `seguimiento`. |
 
 ---
 
@@ -85,18 +88,18 @@ En estricto cumplimiento del documento rector `bridge/00_plan_maestro_fase_formu
 
 | Quality Gate | Comando de Validación | Resultado Pericial |
 |---|---|---|
-| **Política de UI POLIS** | `node scripts/ui-policy.mjs` | **0 violaciones** (100% controles del Design Kit `@/shared/ui/*`, cero modales o dialogs flotantes, 100% tokens semánticos CSS, regla UI004 verificada sin acoplamientos prohibidos). |
+| **Política de UI POLIS** | `node scripts/ui-policy.mjs` | **0 violaciones** (100% controles `@/shared/ui/*`, cero modales o dialogs flotantes, 100% tokens semánticos CSS, regla UI004 verificada sin acoplamientos prohibidos). |
 | **Chequeo de Tipos** | `bun run typecheck` (`tsc --noEmit`) | **0 errores**. TypeScript estricto, sin tipos `any`. |
 | **Linter** | `bun run lint` (`eslint .`) | **0 errores** (1 advertencia preexistente en tabla de geovisor). |
 | **Quality Gate Global** | `bun run check` | **Aprobado (Exit code 0)**. |
-| **Pruebas Automatizadas Unitarias** | `bun test` | **147 pass, 0 fail (690 assertions)** en 16 suites de prueba. |
-| **Pruebas de Presupuesto y Costeo** | `bun test src/features/alternativas/services/presupuesto-api.test.ts` | **7 pass, 0 fail (34 assertions)**. |
-| **Pruebas de Control de Acceso** | `bun test src/features/plataforma/models/acceso.test.ts` | **17 pass, 0 fail (142 assertions)**. |
-| **Compilación de Producción** | `bun run build` (Turbopack) | **Compilado exitoso en 13.7s**. 54 rutas generadas, standalone sincronizado. |
+| **Pruebas Automatizadas Unitarias** | `bun test` | **159 pass, 0 fail (778 assertions)** en 17 suites de prueba. |
+| **Pruebas de Store PAS** | `bun test src/features/seguimiento/state/compromisos-store.test.ts` | **11 pass, 0 fail (41 assertions)**. |
+| **Pruebas de Control de Acceso** | `bun test src/features/plataforma/models/acceso.test.ts` | **18 pass, 0 fail (189 assertions)**. |
+| **Compilación de Producción** | `bun run build` (Turbopack) | **Compilado exitoso en 11.0s**. 57 rutas generadas, `/plataforma/seguimiento` pre-renderizada como estática, standalone sincronizado. |
 | **Servicio de Producción** | `systemctl restart polis-frontend.service` | **Activo y en ejecución**. |
-| **Verificación de Endpoint** | `curl -s -o /dev/null -w "%{http_code}\n" http://127.0.0.1:3000/plataforma/alternativas` | **HTTP 200 OK**. |
+| **Verificación de Endpoint** | `curl -s -o /dev/null -w "%{http_code}\n" http://127.0.0.1:3000/plataforma/seguimiento` | **HTTP 200 OK**. |
 
 ---
 
 ## 4. Dictamen de Entrega para EAF
-La entrega del **Hito F-3 (Costeo Presupuestal y Asignación de Fuentes FONSET/SGP/SGR)** se encuentra 100% completada y verificada de conformidad con las directrices del EAF. Se deja formalmente a disposición del Auditor Forense (Antigravity EAF) para su respectiva auditoría pericial y emisión del dictamen de calidad.
+La entrega del **Hito PAS-1 (Matriz de Compromisos Institucionales y Metas Cuatrienales)** se encuentra 100% completada y verificada de conformidad con las directrices del EAF. Se deja formalmente a disposición del Auditor Forense (Antigravity EAF) para su respectiva auditoría pericial y emisión del dictamen de calidad.
