@@ -1,59 +1,16 @@
-# DICTAMEN DE REVISIÓN FORENSE Y CONTROL DE CALIDAD (EAF)
-**Fecha/Hora**: 2026-10-03 22:56:30 UTC
-**Módulo Auditado**: Fase 3: Plan de Acción y Seguimiento — Hito PAS-3 (Rendición de Cuentas y Devolución Motivada Ciudadana - Sentencia C-150/15 y Ley 1757/15)
-**Commits Evaluados**: `99f618e`, `d216625`
-**Responsable de Entrega**: `agy2` (Equipo de Desarrollo EDD)
-**Evaluador**: Antigravity (Orquestador Central / Auditoría Forense EAF)
-**Resultado**: CONFORME (Aprobado con distinción pericial máxima — Fase 3 Completada al 100%)
+# DICTAMEN EAF — AUD-01 (Persistencia de compromisos PAS)
+**Fecha**: 2026-10-03 · **Commits**: `905a5a5`, `2dd2db5`(entrega) · **Evaluador**: Antigravity (EAF)
+**Resultado**: CONFORME PARCIAL — 1 observación BLOQUEANTE (se reabre solo el frontend)
 
----
+## Verificado (evidencia propia)
+- `GET /api/v1/compromisos` en vivo → 10 registros en BD; rutas `/compromisos`, `/kpis`, `/{id}`, `/{id}/avance` presentes en OpenAPI.
+- Migración `0034` y módulo backend completo; `pytest tests/test_compromisos_pas.py` con base de prueba → 3 passed (persistencia + auditoría + sesión auditor).
 
-## 1. Verificación Metodológica, Jurídica y Constitucional (C-150/15 / Ley 1757/15 / Decreto 037/2026)
-* **Garantía del Deber de Motivación Sustancial y Proscripción del Descarte Silencioso**:
-  - Integración de la tercera pestaña en `/plataforma/seguimiento`: **Tab 3: "Rendición de Cuentas (C-150/15)"**.
-  - Conexión con `GET /api/v1/participacion/consolidado`, reflejando la participación ciudadana real de Cartagena:
-    - **968 participantes consolidados** (209 canal web, 189 mesas comunitarias, 570 escenarios poblacionales y gremiales).
-    - Desglose territorial riguroso (Centro Histórico, La Boquilla, El Pozón, Olaya Herrera, etc.).
-  - Matriz de correspondencia entre aportes ciudadanos y compromisos del PAS:
-    - **Tasa de Incorporación Efectiva del 62.5%** sobre las iniciativas territoriales evaluadas.
-    - 100% de las propuestas no incorporadas cuentan con motivación sustancial explícita y causal taxativa conforme a la jurisprudencia de la Sentencia C-150 de 2015:
-      - `INCOMPETENCIA_LEGAL_LOOT` (Ley 1454/11): Competencia exclusiva de orden nacional (ANI / INPEC / USPEC).
-      - `RESTRICCION_FISCAL_MFMP` (Ley 819/03): Incompatibilidad con sostenibilidad presupuestal y techos de endeudamiento.
-      - `REQUERIMIENTO_CONSULTA_PREVIA` (Convenio 169 OIT): Salvaguarda para comunidades afrodescendientes e indígenas.
-      - `DUPLICIDAD_PROGRAMATICA` e `INCOMPATIBILIDAD_NORMATIVA` (patrimonio UNESCO y espacio público Ley 1801/16).
-  - Integración con el motor de IA de devolución `POST /api/v1/ia/devolucion` con fallback determinista de contingencia.
+## Observación bloqueante (OBS-01)
+`compromisos-store.ts` conserva `catch` que, ante un fallo del backend, **muta el estado local y devuelve `true`** (`actualizarAvance` ~l.186, `cambiarEstado` ~l.247, `eliminarCompromiso` ~l.270). El usuario ve "guardado" sin persistencia ni auditoría: el mismo defecto de origen de AUD-01 (y de AUD-02a). Además `compromisos-api.ts` devuelve el catálogo canónico si la API falla o devuelve lista vacía, sin avisar.
 
----
-
-## 2. Auditoría Técnica de Frontend y UI Policy
-* **UI Policy Guard (`scripts/ui-policy.mjs`)**:
-  - **Aprobado con 0 infracciones**.
-  - Regla UI004 verificada (desacoplamiento de props en `panel-store.ts`).
-  - Cero diálogos modales o popups flotantes; 100% controles del Design Kit (`@/shared/ui/*`).
-  - 100% variables y tokens semánticos CSS (`var(--surface-1)`, `var(--border)`, semáforos cromáticos).
-* **Zero-Modals**:
-  - Panel lateral `devolucion-detalle` montado sobre `PanelShell`, registrado dinámicamente en `panel-registry.tsx` y `panel-store.ts`, adaptativo y fluido.
-  - Modo estricto de solo lectura inmutable para el rol `auditor_forense` con banner de inspección pericial inmutable.
-  - Exportación pericial en CSV (sanitizado contra inyección de fórmulas OWASP) y JSON estructurado.
-* **Manejo del Estado Reactivo y Pruebas Unitarias**:
-  - `devolucion-store.ts` con Zustand: gestión de propuestas, filtros multicriterio, evaluación con IA y trazabilidad cívica.
-  - Suite de pruebas de devolución: **7 pass, 0 fail (65 aserciones)**.
-  - Suite de control de acceso `acceso.test.ts`: **18 pass, 0 fail (197 aserciones)**.
-  - Suite global de pruebas: **173 pass, 0 fail (891 aserciones)** en 19 suites de prueba.
-* **Compilación y Despliegue en Producción**:
-  - Compilación Turbopack exitosa en 12.2s (57 rutas generadas).
-  - `systemctl restart polis-frontend.service`: servicio activo.
-  - Verificación HTTP en vivo: `curl http://127.0.0.1:3000/plataforma/seguimiento` devuelve **HTTP 200 OK**.
-
----
-
-## 3. Dictamen Final y Consolidación de Fase 3 (PAS / SINERGIA)
-**CONFORME**. El Hito PAS-3 queda formalmente certificado. Con este dictamen, la **Fase 3: Plan de Acción y Seguimiento (PAS / SINERGIA)** ha culminado exitosamente en sus tres pilares rectores:
-1. **Hito PAS-1**: Matriz de Compromisos Institucionales y Metas Cuatrienales ($13.400 MM COP/año).
-2. **Hito PAS-2**: Tablero SINERGIA DNP y Cadena de Valor Causal (Insumos ➔ Productos ➔ Resultados).
-3. **Hito PAS-3**: Rendición de Cuentas y Devolución Motivada Ciudadana (Sentencia C-150/15 y Ley 1757/15).
-
-La plataforma POLIS cuenta ahora con el ciclo integral de la Política Pública de Seguridad Humana Integral de Cartagena de Indias 2026–2036 operativo de extremo a extremo:
-- **Fase 1: Diagnóstico Situacional (Hitos D-0, D-1, D-2, D-3)**: 100% CONFORME.
-- **Fase 2: Formulación Estratégica (Hitos F-1, F-2, F-3)**: 100% CONFORME.
-- **Fase 3: Plan de Acción y Seguimiento (Hitos PAS-1, PAS-2, PAS-3)**: 100% CONFORME.
+## Corrección exigida
+1. En escrituras: si la API falla → `error` en el store, NO mutar estado, devolver `false`, toast con causa (401/403/5xx).
+2. En lectura: si se usa catálogo de contingencia, marcarlo (`origen: "contingencia"`) y mostrar banner visible; lista vacía legítima no debe sustituirse por el catálogo.
+3. Test que demuestre: POST/PATCH fallido → estado intacto y `false`.
+4. Observación menor: `GET /compromisos` responde 200 sin sesión; documentar si es lectura pública intencional.
