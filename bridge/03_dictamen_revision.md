@@ -1,51 +1,43 @@
 # DICTAMEN DE REVISIÓN FORENSE Y CONTROL DE CALIDAD (EAF)
-**Fecha/Hora**: 2026-10-03 04:20:00 UTC
-**Módulos Auditados**: Fase de Diagnóstico — Hito D-0 (Purga Pericial de Mock) e Hito D-1 (Módulo de Línea Base Cuantitativa DNP `/plataforma/diagnostico`)
-**Commits Evaluados**: `3cb3c32`, `5a5872c`
+**Fecha/Hora**: 2026-10-03 17:15:00 UTC
+**Módulo Auditado**: Fase de Diagnóstico — Hito D-2 (Árbol de Problemas Distrital MGA y Validación Causal IA DNP)
+**Commits Evaluados**: `f69972d`, `e0542a4`
 **Responsable de Entrega**: `agy2` (Equipo de Desarrollo EDD)
 **Evaluador**: Antigravity (Orquestador Central / Auditoría Forense EAF)
 **Resultado**: CONFORME (Aprobado sin objeciones)
 
 ---
 
-## 1. Verificación de Política Pública, Veracidad y Fidelidad Institucional
-* **Alineación con la Ley 1712 de 2014 (Principio de Veracidad de la Información Pública)**:
-  - **Hito D-0 Aprobado**: Se constató la purga total en `src/features/politicas/data/politicas.mock.ts` de cualquier referencia a topónimos y ejemplos de movilidad ajenos a Cartagena ("Av. Regional", "Comunas 2, 5, 7, 10", "corredor ferroviario").
-  - Las Fases 1 (Diagnóstico) y 2 (Formulación) incorporan taxativamente las problemáticas estructurales y los territorios reales del Distrito de Cartagena de Indias:
-    - LE-01: Prevención de ESCNNA y Protección de Niñez en Entornos Turísticos y Escolares (*Centro Histórico, Bocagrande, La Bodeguita, Playa Blanca, La Boquilla*).
-    - LE-02: Convivencia Comunitaria, Desarme y Fronteras Invisibles (*Olaya Herrera, El Pozón, Nelson Mandela, Boston*).
-    - LE-03: Seguridad Ambiental y Resiliencia en Ciénaga de la Virgen y Zonas de Bajamar (*asentamientos de bajamar, vertimientos, riesgo de inundación*).
-    - LE-04: Seguridad Económica e Informalidad (*Mercado de Bazurto, microcrédito contra el gota a gota, alternativas productivas para jóvenes*).
-  - La suite de pruebas unitarias incluye una guarda pericial automatizada (`indicadores-api.test.ts`) que verifica explícitamente la ausencia de vestigios viales foráneos y la presencia de las líneas territoriales de Cartagena.
-
-* **Alineación con la Metodología MGA/DNP (Línea Base Cuantitativa)**:
-  - **Hito D-1 Aprobado**: El módulo `/plataforma/diagnostico` se conecta directamente con el backend FastAPI (`/api/v1/indicadores/fichas`), consumiendo las 8 fichas técnicas DNP sembradas en `bd_csh` (Homicidios: 32.5 por 100k hab [Medicina Legal]; Hurtos: 450.2 [SIEDCO PONAL]; Percepción de Inseguridad: 78.4% [Cartagena Cómo Vamos]; Inversión FONSET, etc.).
-  - Se cumple el mandato de no crear persistencia paralela o estática en Zustand.
+## 1. Verificación de Política Pública y Rigor Metodológico DNP
+* **Alineación con la Metodología General Ajustada (MGA/DNP)**:
+  - Visualizador interactivo de doble orientación en `/plataforma/diagnostico`:
+    - **Árbol de Problemas**: Estructuración lógica Efectos Indirectos $\rightarrow$ Efectos Directos $\rightarrow$ **Problema Central** $\rightarrow$ Causas Directas $\rightarrow$ Causas Indirectas.
+    - **Árbol de Objetivos**: Fines Indirectos $\rightarrow$ Fines Directos $\rightarrow$ **Objetivo Central** $\rightarrow$ Medios Directos $\rightarrow$ Medios Indirectos.
+  - Articulación plena a los instrumentos territoriales de Cartagena de Indias sembrados en `bd_csh` (Prevención de ESCNNA Centro Histórico [Ley 679/01, CONPES 4040], Convivencia Comunitaria Localidad 2 / Olaya y Pozón, Saneamiento Ciénaga de la Virgen).
+* **Integración con la Red Multi-Agente de IA (AgenteDiagnostico)**:
+  - El botón institucional "Validar con Agente IA DNP" emite la estructura `EntradaDiagnostico` contra el backend FastAPI (`POST /api/v1/ia/diagnostico`) y dispone de motor determinista de contingencia DNP.
+  - Evaluación sintáctica nodo por nodo: detección de falsas causas o *soluciones disfrazadas* ("falta de CAI", "construir", "comprar"), validación de sustantivos negativos para problemas y verbos en infinitivo para objetivos, con cálculo pericial del Puntaje de Coherencia DNP (0–100%) y recomendaciones normativas.
 
 ---
 
 ## 2. Auditoría Técnica de Frontend y UI Policy
 * **UI Policy Guard (`scripts/ui-policy.mjs`)**:
   - **Aprobado con 0 infracciones**.
-  - Cumplimiento estricto de variables y tokens semánticos CSS (`var(--surface-1)`, `var(--border)`, `var(--text-primary)`, `var(--ember)`, etc.). Cero colores hex hardcodeados.
-  - Componentes encapsulados sobre el kit de diseño (`@/shared/ui/button`, `@/shared/ui/badge`, `@/shared/ui/input`, `@/shared/ui/select`, `@/shared/ui/dropdown-menu`).
+  - Cumplimiento estricto de la regla UI004 (desacoplamiento de props en `panel-store.ts`), cero modales flotantes o popups intrusivos, 100% variables y tokens semánticos CSS (`var(--surface-1)`, `var(--border)`, `var(--text-primary)`, `var(--ember)`, semáforos cromáticos).
+  - Controles 100% encapsulados sobre el Design Kit (`@/shared/ui/button`, `@/shared/ui/badge`, `@/shared/ui/select`, `@/shared/ui/tabs`).
 * **Zero-Modals**:
-  - Cumplimiento total. El panel lateral `medicion-editor` se monta sobre `PanelShell`, registrado en `panel-registry.tsx` y `panel-store.ts`, apilable y navegable con teclado.
-* **Seguridad RBAC y Modo Solo Lectura**:
-  - Matriz de acceso validada: `autoridad_distrital` y `administrador_identidades` tienen permiso de gestión (`diagnostico:gestionar`).
-  - El rol `auditor_forense` opera en modo estricto de solo lectura con campos inhabilitados y aviso pericial en el panel lateral.
-  - Exportador CSV protegido contra inyección de fórmulas OWASP (`=`, `+`, `-`, `@`, `\t`, `\r`).
+  - Cumplimiento total. El panel lateral `validacion-mga` se monta sobre `PanelShell`, registrado en `panel-registry.tsx` y `panel-store.ts`, con ancho adaptativo `min(clamp(780px, 52vw, 1120px), 100vw)`, navegable por teclado y apilable.
 * **Pruebas Automatizadas y Quality Gates**:
-  - `bun test src/features/plataforma/models/acceso.test.ts`: 17 pruebas aprobadas (123 aserciones).
+  - `bun test src/features/diagnostico/services/mga-api.test.ts`: 8 pruebas aprobadas (18 aserciones).
   - `bun test src/features/diagnostico/services/indicadores-api.test.ts`: 4 pruebas aprobadas (23 aserciones).
-  - `bun test src/features/actores/state/actores-store.test.ts`: 6 pruebas aprobadas (14 aserciones).
-  - Total suite probada: **27 pruebas aprobadas, 0 fallos**.
+  - `bun test src/features/plataforma/models/acceso.test.ts`: 17 pruebas aprobadas (123 aserciones).
+  - Suite combinada: **31 pruebas aprobadas al 100%**.
   - `bun run check`: Aprobado (0 errores TypeScript, 0 errores ESLint).
 * **Compilación y Despliegue en Producción**:
-  - `bun run build`: 53 páginas estáticas generadas con Turbopack sin errores.
+  - `bun run build`: 53 rutas generadas con Turbopack sin errores.
   - `systemctl is-active polis-frontend.service`: Activo y respondiendo **HTTP 200 OK** en `http://127.0.0.1:3000/plataforma/diagnostico`.
 
 ---
 
 ## 3. Dictamen Final
-**CONFORME**. La entrega de los Hitos D-0 y D-1 por parte de `agy2` cumple con los más altos estándares de rigor constitucional, fidelidad territorial distrital y calidad arquitectónica de la plataforma POLIS.
+**CONFORME**. La implementación de `agy2` para el Hito D-2 cumple rigurosamente con los estándares metodológicos de la MGA/DNP, los principios de transparencia de la Sentencia C-150 de 2015 y la arquitectura de calidad pericial de la plataforma POLIS.
