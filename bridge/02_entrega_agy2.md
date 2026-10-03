@@ -3,7 +3,7 @@ Fecha: 2026-10-03T19:11:00Z
 Estado: CONFORME PARA AUDITORÍA FORENSE (EAF)
 Responsable: agy2
 Commits:
-- `PENDIENTE_HASH` feat(formulacion): tablero de costeo presupuestal y asignacion de fuentes de financiacion
+- `4e7be37` feat(formulacion): tablero de costeo presupuestal y asignacion de fuentes de financiacion
 - `3fcd887` docs(audit): dictamen de calidad EAF sobre hito F-2 de formulacion (cc35304)
 - `f039c1d` docs(formulacion): registrar entrega pericial hito F-2
 - `cc35304` feat(formulacion): evaluacion de viabilidad juridica y fiscal con IA para alternativas MGA
