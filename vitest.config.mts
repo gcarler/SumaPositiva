@@ -17,6 +17,7 @@ export default defineConfig({
           environment: "node",
           include: [
             "src/features/plataforma/**/*.test.ts",
+            "src/features/fuentes/**/*.test.ts",
             "src/features/sesion/services/sincronizar-sesion.test.ts",
           ],
         },
