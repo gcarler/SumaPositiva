@@ -3,7 +3,7 @@ Fecha: 2026-10-03T18:00:00Z
 Estado: CONFORME PARA AUDITORÍA FORENSE (EAF)
 Responsable: agy2
 Commits:
-- `d3a958f` feat(formulacion): modulo de alternativas MGA y banco de soluciones para cartagena
+- `a2dd2db` feat(formulacion): modulo de alternativas MGA y banco de soluciones para cartagena
 - `3933f95` docs(audit): dictamen de calidad EAF sobre hito D-3 de diagnostico (d4fcda5)
 - `d4fcda5` feat(diagnostico): modulo de geodiagnostico territorial y fichas de vulnerabilidad por UCG (auditado y aprobado)
 - `a7393dd` docs(audit): dictamen de calidad EAF sobre hito D-2 de diagnostico (f69972d)
