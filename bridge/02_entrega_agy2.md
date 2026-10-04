@@ -619,6 +619,108 @@ En atención al dictamen del EAF en `bridge/03_dictamen_revision.md`:
   - En `docs/operacion.md`, se añadió la subsección *"Limitaciones operativas del Rate Limiting en memoria y escalamiento horizontal (OBS-10)"*, documentando el particionamiento de ventanas en despliegues multi-worker y prescribiendo el uso de PostgreSQL (`LimiteAcceso`) o Redis distribuido para concurrencia masiva.
   - **Prueba Automatizada**: Se incorporó el test de integración `test_limite_tasa_sesion_anonima_endpoint_429()` en `test_aud06_perfil_produccion.py`, verificando que peticiones que superen el umbral configurado reciban fehacientemente `HTTP 429 Too Many Requests` con encabezado `Retry-After`.
 
+---
+
+# Tarea AUD-13: Restitución de Integridad Forense en Compromisos PAS — Proscripción Absoluta de Avances Fabricados (Reapertura Crítica AUD-01)
+**Fecha**: 2026-10-04T01:13:00Z  
+**Estado**: CONFORME PARA AUDITORÍA FORENSE (EAF)  
+**Responsable**: agy2 (Equipo de Desarrollo EDD)  
+**Plan de Auditoría**: `bridge/00_plan_auditoria_plataforma.md`  
+**Especificación**: `bridge/01_tarea_agy2_aud_13.md`  
+**Commit**:
+- `1815335` fix(aud-13): restituir compromisos PAS sin datos fabricados, F3 gating null, merge alembic 0038 y KPIs con reporte
+
+---
+
+## 1. Resumen Ejecutivo de la Solución (AUD-13)
+
+En respuesta a la auditoría pericial que detectó la siembra de porcentajes de avance fabricados (35%-95%), observaciones cualitativas ficticias, BPINs no verificados y URLs sin correspondencia en la migración `0034_matriz_compromisos_pas.py` (lo que provocaba que la Fase 3 del Gating DNP reportara un falso 61.40% de avance), se ejecutó la erradicación total de cualquier dato simulado y la restitución pericial del estado real "Sin reporte":
+
+### 1. Migración de Saneamiento y Restitución (`0037_restituir_compromisos_pas_sin_datos_fabricados.py`):
+- Purgó completamente los avances, porcentajes, observaciones cualitativas, BPINs ficticios y URLs inventadas sembrados en `seguimiento.compromisos_pas`.
+- Restituyó los 10 compromisos canónicos distritales (derivados del Decreto Nacional 037 de 2026 y la matriz técnica de líneas estratégicas de Cartagena) a su estado fáctico legal:
+  - `avance_cuatrienal_valor = NULL`
+  - `porcentaje_cumplimiento = NULL`
+  - `fecha_corte_ultimo_reporte = NULL`
+  - `presupuesto_anual_cop = NULL`
+  - `estado = 'sin_reporte'`
+  - Metadatos limpios: `{"fuente": "Decreto Nacional 037 de 2026 y Banco de Conocimiento PAS Cartagena (docs/lineas-sublineas-estrategicas.md)", "estado_reporte": "sin_reporte"}`.
+
+### 2. Coordinación de Migraciones y Fusión Alembic (`0038_merge_heads.py`):
+- Concurrencia resuelta: la rama paralela del agente codex introdujo `0037_noticias_institucionales.py`. Se creó la migración formal de merge `0038_merge_heads.py` uniendo ambas revisiones (`down_revision = ('0037_restituir_compromisos_pas', '0037_noticias_institucionales')`).
+- Se verificó que `alembic heads` reporte exactamente **1 cabeza** (`0038_merge_heads`).
+- Se preservaron intactos los archivos del otro agente y se restauró la comprobación estricta de migración única en `backend/app/core/migrations.py` y `backend/app/modules/health/service.py` (`EXPECTED_REVISION = ScriptDirectory.get_current_head()`).
+
+### 3. Backend: Modelos, Esquemas y Gating DNP Honesto:
+- **Modelos y Esquemas** (`backend/app/modules/compromisos/models.py`, `schemas.py`):
+  - `avance_cuatrienal_valor`, `porcentaje_cumplimiento`, `presupuesto_anual_cop` y `fecha_corte_ultimo_reporte` tipados estrictamente como `float | None` y `date | None`.
+  - Nuevo estado oficial `sin_reporte` incorporado en `EstadoCompromisoType`.
+  - Esquema de KPIs `KpisSeguimientoRespuesta` incluye `compromisosConReporte`, `compromisosSinReporte` y `promedioCumplimientoCuatrienal: float | None`.
+- **Servicio de Compromisos** (`backend/app/modules/compromisos/service.py`):
+  - `obtener_kpis` calcula el promedio cuatrienal **únicamente** sobre compromisos con reporte oficial verificado (`WHERE porcentaje_cumplimiento IS NOT NULL AND estado != 'sin_reporte'`). Ante cero compromisos con reporte, devuelve `promedioCumplimientoCuatrienal = None` (`null` en JSON).
+  - `actualizar_avance` preserva el estado `None` si no se remite una medición numérica, previniendo la inyección accidental de ceros.
+- **Gating de Fases DNP** (`backend/app/modules/politicas/gating.py`):
+  - El cálculo empírico de la **Fase 3: Plan de Acción e Inversión (FONSET / MPI)** filtra compromisos con reporte real verificado. Al no existir reportes en producción, la función retorna honestamente `None` (`null` en JSON en `/api/v1/politicas/fases`), en lugar del 61.40% derivado de datos ficticios.
+
+### 4. Frontend: Estado Honestamente Vacío y Señalética "Sin Reporte":
+- **Catálogo Canónico y Store Zustand** (`compromisos-pas.data.ts`, `compromisos-store.ts`, `compromiso.ts`):
+  - Los 10 compromisos canónicos inician con `null` en ejecución y estado `sin_reporte`.
+  - `calcularKpisSeguimiento` calcula el promedio únicamente sobre filas con reporte verificado, devolviendo `promedioCumplimientoCuatrienal: null` y desglosando `compromisosConReporte: 0` y `compromisosSinReporte: 10`.
+- **Componentes Visuales**:
+  - `seguimiento-kpis.tsx`: La tarjeta de Promedio Cuatrienal muestra `"Sin reporte"` (no "0%" ni porcentajes artificiales) con subtítulo `"0 de 10 con reporte"`.
+  - `compromisos-tabla.tsx`: Fichas sin reporte muestran `"Sin reporte / Sin medición"` con badge neutral en lugar de barras de progreso ficticias al 0%. Se implementó el badge visible `DEMO` para cualquier dato con `es_demostracion=True`.
+  - `fases-control-panel.tsx` y `compromiso-editor-panel.tsx`: Compatibilidad total con valores nulos de progreso y presupuesto sin lanzar excepciones.
+
+### 5. Script de Demostración para Desarrollo (`scripts/sembrar_compromisos_demo.py`):
+- Script autónomo con permisos de ejecución (`chmod +x`) para sembrar datos simulados únicamente en entornos locales/demo.
+- Marca taxativamente `es_demostracion=True` en metadatos, prefijo obligatorio `DEMOSTRACIÓN: ...`, sin URLs apócrifas, sin BPINs falsos y sin funcionarios ficticios.
+- Soporta la bandera `--limpiar` para restituir inmediatamente el esquema a `"Sin reporte"`.
+
+### 6. Suite de Pruebas Automatizadas de Integridad Forense:
+- `backend/tests/test_integridad_compromisos.py`:
+  - `test_base_de_datos_compromisos_sin_avances_fabricados`: Verifica en SQL que ninguna fila institucional contenga avances, BPINs ni observaciones fabricadas.
+  - `test_gating_fase_3_devuelve_null_sin_reportes_verificados`: Verifica que la Fase 3 del gating devuelva `None` ante ausencia de reportes oficiales.
+  - `test_kpis_promedio_cuatrienal_ignora_compromisos_sin_reporte`: Verifica el cálculo honesto de KPIs y promedio ponderado solo sobre reportes reales.
+  - `test_migraciones_sin_datos_fabricados_en_produccion`: Analiza el AST de todas las migraciones en `alembic/versions/` prohibiendo inserciones de funcionarios ficticios, BPINs inventados y URLs no verificables en Cartagena.
+- `src/features/seguimiento/state/compromisos-store.test.ts`:
+  - Valida el cálculo de KPIs con 0 reportes (`promedio = null`, 10 sin reporte) y con reportes parciales (cálculo ponderado exacto).
+
+---
+
+## 2. Auditoría Pericial de Proveniencia en Migraciones Alembic (Requisito 7)
+
+Se realizó un escrutinio forense exhaustivo sobre el historial completo de migraciones (`backend/alembic/versions/0001_*.py` a `0038_merge_heads.py`):
+
+| Migración | Contenido Auditado | Dictamen Forense |
+|---|---|---|
+| `0001` a `0033` | Extensiones PostGIS, esquemas DDL (mesas, geodatos, políticas, aportes, auth, auditoría, presupuesto). | **CONFORME**: Estrictamente DDL y catálogos normativos (roles, dimensiones). Cero datos ficticios. |
+| `0034_matriz_compromisos_pas.py` | Creó `seguimiento.compromisos_pas` e insertó 10 filas con avances (35-95%), observaciones inventadas y BPINs simulados. | **NO CONFORME (ORIGEN OBS-13)**: Hallazgo auditado. Saneado integralmente por `0037`. |
+| `0035_semillero_mediciones_indicadores.py` | Sembró mediciones con funcionarios ficticios y URLs inventadas en `indicadores.mediciones_indicador`. | **NO CONFORME (ORIGEN OBS-02)**: Saneado integralmente por migración `0036`. |
+| `0036_restituir_mediciones_limpias.py` | TRUNCATE de mediciones ficticias y restitución limpia sin datos fabricados. | **CONFORME**: Migración pericial de saneamiento. |
+| `0037_noticias_institucionales.py` | Esquema DDL para noticias institucionales (agente codex). | **CONFORME**: Estructura DDL limpia sin inserción de datos espurios. |
+| `0037_restituir_compromisos_pas_sin_datos_fabricados.py` | Limpieza pericial de avances, porcentajes, BPINs y observaciones en `seguimiento.compromisos_pas`. | **CONFORME**: Migración pericial de saneamiento. |
+| `0038_merge_heads.py` | Fusión estructural de ramas de migración sin mutaciones de datos. | **CONFORME**: Merge puro de control de versiones. |
+
+**Conclusión pericial**: Ninguna otra migración contiene datos cualitativos o cuantitativos fabricados.
+
+---
+
+## 3. Matriz de Validación de Quality Gates (AUD-13)
+
+| Quality Gate | Comando de Validación | Resultado Pericial |
+|---|---|---|
+| **Política de UI POLIS** | `node scripts/ui-policy.mjs` | **0 violaciones** (100% controles Design Kit, cero modales, tokens semánticos). |
+| **Chequeo de Tipos y Lint Frontend** | `bun run check` | **Aprobado (0 errores)** en TypeScript estricto y ESLint. |
+| **Pruebas Automatizadas Frontend** | `bun test src/features/seguimiento src/features/politicas` | **50 pass, 0 fail** (compromisos, devolución C-150, cadena de valor y control de fases). |
+| **Pruebas Automatizadas Backend** | `pytest tests/test_integridad_compromisos.py tests/test_compromisos_pas.py tests/test_aud05_gating_fases.py tests/test_health.py` | **20 pass, 0 fail** contra la base de datos de pruebas (`polis_test_plataforma_20261001`). |
+| **Alembic Heads Unificado** | `alembic -c backend/alembic.ini heads` | **Exactamente 1 head**: `0038_merge_heads (head)`. |
+| **Alembic Upgrade en BD de Prueba** | `alembic -c backend/alembic.ini current` | **0038_merge_heads (head) (mergepoint)**. |
+| **Verificación de Base de Datos Real (`bd_csh`)** | SQL `COUNT(*)` en aportes y compromisos | **179 aportes reales en `/aportes` y 10 compromisos en `bd_csh` (intacta)**. |
+| **Endpoint Compromisos en Vivo** | `curl http://127.0.0.1:8000/api/v1/compromisos` | **HTTP 200 OK**: 10 compromisos con `avance: null`, `porcentaje: null`, `estado: "sin_reporte"`, cero BPINs ficticios. |
+| **Endpoint Fases Gating en Vivo** | `curl http://127.0.0.1:8000/api/v1/politicas/fases` | **HTTP 200 OK**: Fase 3 reporta honestamente `progreso_porcentaje: null`. |
+| **Ruta Frontend Seguimiento en Vivo** | `curl http://127.0.0.1:3000/plataforma/seguimiento` | **HTTP 200 OK**. |
+
+
 
 
 
