@@ -141,3 +141,6 @@ Verificado de forma forense e independiente:
 3. Script `scripts/sembrar_fuentes_demo.py` cuenta con la guarda de seguridad estricta contra `bd_csh` (`--confirmar-bd-destino`).
 4. Pruebas backend dedicadas: 5 pruebas aprobadas (`test_migracion_0042_cero_radicados_y_solo_por_solicitar`, RBAC 401/403, validación de payload y auditoría).
 5. Frontend: `bun test` 248 passed, `ui-policy` OK, `tsc --noEmit` y `eslint .` limpios (0 errores / advertencias).
+
+## Dictamen EDIT-04 — CONFORME (commit 55c6f22)
+Verificado: `PATCH /api/v1/indicadores/fichas/{id}` protegido por `indicadores:gestionar`; salvaguarda metodológica inquebrantable (intento de modificar fórmula, método de cálculo o línea base retorna 400 Bad Request); registro de auditoría institucional persistido; frontend enriquecido con sección colapsable de metadatos institucionales y enlace técnico; pruebas backend 6 passed; pruebas frontend de seguimiento 44 passed; `bun test` global 248 passed.
