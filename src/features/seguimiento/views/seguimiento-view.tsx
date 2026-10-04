@@ -35,6 +35,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/shared/ui/tabs";
 import { usePanels } from "@/core/panels/panel-store";
 import { useSesionStore } from "@/features/sesion/state/session-store";
 import { puedeEditar } from "@/features/plataforma/models/acceso";
+import { useFases } from "@/features/politicas/services/use-politicas-queries";
 import { SeguimientoKpis } from "../components/seguimiento-kpis";
 import { CompromisosTabla } from "../components/compromisos-tabla";
 import { CadenaValorTab } from "../components/cadena-valor-tab";
@@ -66,6 +67,19 @@ export function SeguimientoView() {
   const { openPanel } = usePanels();
   const sesion = useSesionStore((s) => s.sesion);
   const puedeEditarUsuario = puedeEditar(sesion, "seguimiento");
+
+  // Gating de Fases DNP (AUD-05): en fase preparatoria solo los admins pueden modificar
+  const { data: fases } = useFases();
+  const fase3 = fases?.find((f) => f.codigo === "FASE_3_PLAN_ACCION");
+  const fase3Activa = fase3?.estado === "activa";
+  const esAdmin =
+    sesion?.rol === "autoridad_distrital" ||
+    sesion?.rol === "administrador_identidades";
+
+  const puedeEditarEfectivo = fase3Activa
+    ? puedeEditarUsuario
+    : esAdmin && puedeEditarUsuario;
+  const esPreparatoria = fase3?.estado === "preparatoria";
 
   const compromisos = useCompromisosStore((s) => s.compromisos);
   const filtros = useCompromisosStore((s) => s.filtros);
@@ -220,7 +234,7 @@ export function SeguimientoView() {
             </DropdownMenu>
 
             {/* Botón Nuevo Compromiso */}
-            {puedeEditarUsuario && (
+            {puedeEditarEfectivo && (
               <Button
                 onClick={handleAbrirCrear}
                 size="sm"
@@ -233,6 +247,26 @@ export function SeguimientoView() {
           </div>
         )}
       </div>
+
+      {/* Banner de Gating en Fase Preparatoria (AUD-05) */}
+      {esPreparatoria && (
+        <div
+          role="status"
+          className="flex items-start gap-3 rounded-xl border border-warning/30 bg-warning-soft p-4 text-xs text-text-primary"
+        >
+          <AlertTriangle className="h-5 w-5 shrink-0 text-warning mt-0.5" />
+          <div className="space-y-1">
+            <span className="font-semibold text-warning text-sm">
+              Fase 3 en Etapa Preparatoria — Módulo en Modo Consulta
+            </span>
+            <p className="text-text-secondary leading-relaxed pt-0.5">
+              {esAdmin
+                ? "La Fase 3 (Plan de Acción y Seguimiento PAS / SINERGIA) se encuentra en alistamiento. Como autoridad o administrador distrital, cuenta con permisos institucionales de configuración y cargue de metas previo a la apertura pública."
+                : "La Fase 3 (Plan de Acción y Seguimiento PAS / SINERGIA) se encuentra actualmente en etapa preparatoria. La creación y edición de compromisos institucionales está reservada a la administración distrital hasta la activación oficial de la fase."}
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Banner de Modo Contingencia (OBS-01) */}
       {esContingencia && (
@@ -380,18 +414,18 @@ export function SeguimientoView() {
           {/* DataGrid interactivo de Compromisos */}
           <CompromisosTabla
             compromisos={compromisosFiltrados}
-            puedeEditar={puedeEditarUsuario}
+            puedeEditar={puedeEditarEfectivo}
           />
         </TabsContent>
 
         {/* Tab 2: Cadena de Valor SINERGIA */}
         <TabsContent value="cadena_valor" className="space-y-6 outline-none">
-          <CadenaValorTab puedeEditar={puedeEditarUsuario} />
+          <CadenaValorTab puedeEditar={puedeEditarEfectivo} />
         </TabsContent>
 
         {/* Tab 3: Rendición de Cuentas y Devolución Ciudadana */}
         <TabsContent value="rendicion_cuentas" className="space-y-6 outline-none">
-          <RendicionCuentasTab puedeEditar={puedeEditarUsuario} />
+          <RendicionCuentasTab puedeEditar={puedeEditarEfectivo} />
         </TabsContent>
       </Tabs>
     </div>

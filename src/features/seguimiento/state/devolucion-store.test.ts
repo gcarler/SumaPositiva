@@ -5,7 +5,8 @@ import {
 } from "./devolucion-store";
 import {
   PROPUESTAS_DEVOLUCION_CARTAGENA,
-  CONSOLIDADO_PARTICIPACION_FALLBACK,
+  CONSOLIDADO_PARTICIPACION_VACIO,
+  CONSOLIDADO_PARTICIPACION_DEMO_FIXTURE,
   mapearAporteAPropuesta,
   type AporteBackend,
 } from "../services/devolucion-api";
@@ -45,12 +46,29 @@ describe("Rendición de Cuentas y Devolución Motivada Ciudadana (Hito PAS-3 / A
     });
   });
 
-  describe("Consolidado Estadístico Multicanal de Cartagena", () => {
-    test("computa métricas de participación oficial", () => {
-      expect(CONSOLIDADO_PARTICIPACION_FALLBACK.gran_total_participantes_distrital).toBe(968);
-      expect(CONSOLIDADO_PARTICIPACION_FALLBACK.total_canal_web).toBe(209);
-      expect(CONSOLIDADO_PARTICIPACION_FALLBACK.total_canal_mesas).toBe(189);
-      expect(CONSOLIDADO_PARTICIPACION_FALLBACK.total_canal_escenarios).toBe(570);
+  describe("Consolidado Estadístico Multicanal de Cartagena (OBS-07)", () => {
+    test("el fixture de demostración contiene las métricas del piloto", () => {
+      expect(CONSOLIDADO_PARTICIPACION_DEMO_FIXTURE.gran_total_participantes_distrital).toBe(968);
+      expect(CONSOLIDADO_PARTICIPACION_DEMO_FIXTURE.total_canal_web).toBe(209);
+      expect(CONSOLIDADO_PARTICIPACION_DEMO_FIXTURE.total_canal_mesas).toBe(189);
+      expect(CONSOLIDADO_PARTICIPACION_DEMO_FIXTURE.total_canal_escenarios).toBe(570);
+    });
+
+    test("OBS-07: CONSOLIDADO_PARTICIPACION_VACIO no contiene cifras codificadas ni desglose inventado", () => {
+      expect(CONSOLIDADO_PARTICIPACION_VACIO.gran_total_participantes_distrital).toBe(0);
+      expect(CONSOLIDADO_PARTICIPACION_VACIO.participantes_unicos_identificados).toBe(0);
+      expect(CONSOLIDADO_PARTICIPACION_VACIO.total_canal_web).toBe(0);
+      expect(CONSOLIDADO_PARTICIPACION_VACIO.total_canal_mesas).toBe(0);
+      expect(CONSOLIDADO_PARTICIPACION_VACIO.total_canal_escenarios).toBe(0);
+      expect(CONSOLIDADO_PARTICIPACION_VACIO.desglose_territorial_agregado).toEqual([]);
+    });
+
+    test("OBS-07: estado inicial y restablecer inician con consolidado vacío (0s), sin inyectar 968", () => {
+      useDevolucionStore.getState().restablecer();
+      const state = useDevolucionStore.getState();
+      expect(state.consolidado.gran_total_participantes_distrital).toBe(0);
+      expect(state.consolidado.total_canal_web).toBe(0);
+      expect(state.consolidado.desglose_territorial_agregado).toHaveLength(0);
     });
   });
 

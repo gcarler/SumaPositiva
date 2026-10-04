@@ -13,6 +13,7 @@ from app.modules.compromisos.schemas import (
 )
 from app.modules.compromisos.service import CompromisosService
 from app.modules.identidad.deps import SujetoAutenticadoDep, requerir_permiso
+from app.modules.politicas.gating import verificar_escritura_fase
 
 router = APIRouter(prefix="/compromisos", tags=["Compromisos PAS"])
 
@@ -64,8 +65,10 @@ async def crear_compromiso(
     datos: CompromisoPASCrear,
     service: CompromisosServiceDep,
     sujeto: SujetoAutenticadoDep,
+    session: SessionDependency,
 ):
     """Crear un nuevo compromiso en el Plan de Acción y Seguimiento con registro de auditoría."""
+    await verificar_escritura_fase("FASE_3_PLAN_ACCION", sujeto, session)
     return await service.crear_compromiso(datos, actor_id=sujeto.sujeto_id)
 
 
@@ -79,8 +82,10 @@ async def actualizar_avance(
     datos: CompromisoPASActualizarAvance,
     service: CompromisosServiceDep,
     sujeto: SujetoAutenticadoDep,
+    session: SessionDependency,
 ):
     """Actualizar avance cuantitativo/cualitativo de un compromiso con registro de auditoría forense."""
+    await verificar_escritura_fase("FASE_3_PLAN_ACCION", sujeto, session)
     return await service.actualizar_avance(id_o_codigo, datos, actor_id=sujeto.sujeto_id)
 
 
@@ -94,8 +99,10 @@ async def actualizar_compromiso(
     datos: CompromisoPASActualizar,
     service: CompromisosServiceDep,
     sujeto: SujetoAutenticadoDep,
+    session: SessionDependency,
 ):
     """Actualizar campos generales de un compromiso institucional."""
+    await verificar_escritura_fase("FASE_3_PLAN_ACCION", sujeto, session)
     return await service.actualizar_compromiso(id_o_codigo, datos, actor_id=sujeto.sujeto_id)
 
 
@@ -108,6 +115,8 @@ async def eliminar_compromiso(
     id_o_codigo: str,
     service: CompromisosServiceDep,
     sujeto: SujetoAutenticadoDep,
+    session: SessionDependency,
 ):
     """Eliminar un compromiso institucional con registro previo en auditoría forense."""
+    await verificar_escritura_fase("FASE_3_PLAN_ACCION", sujeto, session)
     await service.eliminar_compromiso(id_o_codigo, actor_id=sujeto.sujeto_id)

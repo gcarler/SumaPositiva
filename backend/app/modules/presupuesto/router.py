@@ -4,7 +4,8 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, status
 
 from app.core.database import SessionDependency
-from app.modules.identidad.deps import requerir_permiso
+from app.modules.identidad.deps import SujetoAutenticadoDep, requerir_permiso
+from app.modules.politicas.gating import verificar_escritura_fase
 from app.modules.presupuesto.repository import PresupuestoRepository
 from app.modules.presupuesto.schemas import (
     AsignacionPresupuestalCrear,
@@ -43,7 +44,13 @@ async def obtener_fuente(id: uuid.UUID, service: PresupuestoServiceDep):
     status_code=status.HTTP_201_CREATED,
     dependencies=[Depends(requerir_permiso("presupuesto:gestionar", nivel_minimo="declarada"))],
 )
-async def crear_asignacion(datos: AsignacionPresupuestalCrear, service: PresupuestoServiceDep):
+async def crear_asignacion(
+    datos: AsignacionPresupuestalCrear,
+    service: PresupuestoServiceDep,
+    session: SessionDependency,
+    sujeto: SujetoAutenticadoDep,
+):
+    await verificar_escritura_fase("FASE_2_FORMULACION", sujeto, session)
     return await service.crear_asignacion(datos)
 
 

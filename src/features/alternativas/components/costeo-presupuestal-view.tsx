@@ -69,10 +69,15 @@ function sanitizarCsv(valor: string | number | undefined | null): string {
   return `"${str}"`;
 }
 
-export function CosteoPresupuestalView() {
+interface CosteoPresupuestalViewProps {
+  puedeEditar?: boolean;
+}
+
+export function CosteoPresupuestalView({ puedeEditar: puedeEditarProp }: CosteoPresupuestalViewProps = {}) {
   const { openPanel } = usePanels();
   const sesion = useSesionStore((s) => s.sesion);
-  const puedeEditarUsuario = puedeEditar(sesion, "alternativas");
+  const puedeEditarUsuario =
+    puedeEditarProp !== undefined ? puedeEditarProp : puedeEditar(sesion, "alternativas");
 
   const [asignaciones, setAsignaciones] = useState<AsignacionPresupuestal[]>([]);
   const [fuentes, setFuentes] = useState<FuenteFinanciacion[]>([]);

@@ -125,7 +125,28 @@ export const PROPUESTAS_DEVOLUCION_CARTAGENA: PropuestaDevolucion[] = [
   },
 ];
 
-export const CONSOLIDADO_PARTICIPACION_FALLBACK: ConsolidadoParticipacionData = {
+export const CONSOLIDADO_PARTICIPACION_VACIO: ConsolidadoParticipacionData = {
+  gran_total_participantes_distrital: 0,
+  participantes_unicos_identificados: 0,
+  total_canal_web: 0,
+  total_canal_mesas: 0,
+  total_canal_escenarios: 0,
+  porcentaje_canal_web: 0,
+  porcentaje_canal_mesas: 0,
+  porcentaje_canal_escenarios: 0,
+  desglose_territorial_agregado: [],
+  total_propuestas: 0,
+  total_incorporadas: 0,
+  total_no_incorporadas: 0,
+  tasa_incorporacion_efectiva: 0,
+  fecha_corte: "",
+};
+
+/** Alias para compatibilidad hacia atrás: ante contingencia retorna estado vacío sin datos inventados */
+export const CONSOLIDADO_PARTICIPACION_FALLBACK = CONSOLIDADO_PARTICIPACION_VACIO;
+
+/** Fixture explícito de demostración para pruebas aisladas de integración */
+export const CONSOLIDADO_PARTICIPACION_DEMO_FIXTURE: ConsolidadoParticipacionData = {
   gran_total_participantes_distrital: 968,
   participantes_unicos_identificados: 398,
   total_canal_web: 209,
@@ -154,41 +175,45 @@ export const CONSOLIDADO_PARTICIPACION_FALLBACK: ConsolidadoParticipacionData = 
 
 /**
  * Consulta el consolidado estadístico de participación multicanal de Cartagena.
+ * OBS-07: Ante fallo de API o ausencia de conexión, retorna consolidado vacío con ceros y sin datos ficticios.
  */
 export async function obtenerConsolidadoParticipacion(): Promise<ConsolidadoParticipacionData> {
   try {
     const raw = await apiFetch<Record<string, unknown>>("/participacion/consolidado");
     if (raw && raw.gran_total_participantes_distrital !== undefined) {
-      const totalProps = PROPUESTAS_DEVOLUCION_CARTAGENA.length;
-      const incorp = PROPUESTAS_DEVOLUCION_CARTAGENA.filter(
-        (p) => p.estado_incorporacion !== "NO_INCORPORADA_MOTIVADA"
-      ).length;
-      const noIncorp = totalProps - incorp;
+      const granTotal = Number(raw.gran_total_participantes_distrital ?? 0);
+      const totalWeb = Number(raw.total_canal_web ?? 0);
+      const totalMesas = Number(raw.total_canal_mesas ?? 0);
+      const totalEscenarios = Number(raw.total_canal_escenarios ?? 0);
+      const participantesUnicos = Number(raw.participantes_unicos_identificados ?? 0);
+
+      const porcWeb = granTotal > 0 ? Number(raw.porcentaje_canal_web ?? (totalWeb / granTotal) * 100) : 0;
+      const porcMesas = granTotal > 0 ? Number(raw.porcentaje_canal_mesas ?? (totalMesas / granTotal) * 100) : 0;
+      const porcEscenarios = granTotal > 0 ? Number(raw.porcentaje_canal_escenarios ?? (totalEscenarios / granTotal) * 100) : 0;
 
       return {
-        gran_total_participantes_distrital: Number(raw.gran_total_participantes_distrital ?? 968),
-        participantes_unicos_identificados: Number(raw.participantes_unicos_identificados ?? 398),
-        total_canal_web: Number(raw.total_canal_web ?? 209),
-        total_canal_mesas: Number(raw.total_canal_mesas ?? 189),
-        total_canal_escenarios: Number(raw.total_canal_escenarios ?? 570),
-        porcentaje_canal_web: Number(raw.porcentaje_canal_web ?? 21.59),
-        porcentaje_canal_mesas: Number(raw.porcentaje_canal_mesas ?? 19.52),
-        porcentaje_canal_escenarios: Number(raw.porcentaje_canal_escenarios ?? 58.88),
+        gran_total_participantes_distrital: granTotal,
+        participantes_unicos_identificados: participantesUnicos,
+        total_canal_web: totalWeb,
+        total_canal_mesas: totalMesas,
+        total_canal_escenarios: totalEscenarios,
+        porcentaje_canal_web: Number(porcWeb.toFixed(2)),
+        porcentaje_canal_mesas: Number(porcMesas.toFixed(2)),
+        porcentaje_canal_escenarios: Number(porcEscenarios.toFixed(2)),
         desglose_territorial_agregado:
-          (raw.desglose_territorial_agregado as ConsolidadoParticipacionData["desglose_territorial_agregado"]) ??
-          CONSOLIDADO_PARTICIPACION_FALLBACK.desglose_territorial_agregado,
-        total_propuestas: totalProps,
-        total_incorporadas: incorp,
-        total_no_incorporadas: noIncorp,
-        tasa_incorporacion_efectiva: Math.round((incorp / totalProps) * 100),
+          (raw.desglose_territorial_agregado as ConsolidadoParticipacionData["desglose_territorial_agregado"]) ?? [],
+        total_propuestas: Number(raw.total_propuestas ?? 0),
+        total_incorporadas: Number(raw.total_incorporadas ?? 0),
+        total_no_incorporadas: Number(raw.total_no_incorporadas ?? 0),
+        tasa_incorporacion_efectiva: Number(raw.tasa_incorporacion_efectiva ?? 0),
         fecha_corte: String(raw.fecha_corte ?? new Date().toISOString()),
       };
     }
   } catch (err) {
-    console.warn("Fallo al consultar /participacion/consolidado, utilizando fallback:", err);
+    console.warn("Fallo al consultar /participacion/consolidado, utilizando consolidado vacío:", err);
   }
 
-  return CONSOLIDADO_PARTICIPACION_FALLBACK;
+  return CONSOLIDADO_PARTICIPACION_VACIO;
 }
 
 export interface AporteBackend {

@@ -10,7 +10,7 @@ import type {
 import { CAUSALES_DESCARTE_INFO } from "../models/devolucion";
 import {
   PROPUESTAS_DEVOLUCION_CARTAGENA,
-  CONSOLIDADO_PARTICIPACION_FALLBACK,
+  CONSOLIDADO_PARTICIPACION_VACIO,
   obtenerConsolidadoParticipacion,
   listarAportesReales,
   consultarDevolucionAporteApi,
@@ -100,7 +100,7 @@ export interface DevolucionStoreState {
 
 export const useDevolucionStore = create<DevolucionStoreState>((set, get) => ({
   propuestas: [],
-  consolidado: CONSOLIDADO_PARTICIPACION_FALLBACK,
+  consolidado: CONSOLIDADO_PARTICIPACION_VACIO,
   cargando: true,
   guardando: false,
   error: null,
@@ -127,6 +127,7 @@ export const useDevolucionStore = create<DevolucionStoreState>((set, get) => ({
       if (resAportes.esContingencia) {
         set({
           propuestas: [],
+          consolidado: CONSOLIDADO_PARTICIPACION_VACIO,
           totalAportes: 0,
           totalRespondidos: 0,
           totalPendientes: 0,
@@ -159,6 +160,7 @@ export const useDevolucionStore = create<DevolucionStoreState>((set, get) => ({
     } catch (err) {
       set({
         propuestas: [],
+        consolidado: CONSOLIDADO_PARTICIPACION_VACIO,
         totalAportes: 0,
         totalRespondidos: 0,
         totalPendientes: 0,
@@ -299,7 +301,7 @@ export const useDevolucionStore = create<DevolucionStoreState>((set, get) => ({
   restablecer: () => {
     set({
       propuestas: [],
-      consolidado: CONSOLIDADO_PARTICIPACION_FALLBACK,
+      consolidado: CONSOLIDADO_PARTICIPACION_VACIO,
       cargando: false,
       guardando: false,
       error: null,

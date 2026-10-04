@@ -127,3 +127,43 @@ permisos de mesas ni de presupuesto por extensión.
 
 El constructor permite añadir una pregunta **Ubicación geográfica** junto a las
 preguntas existentes; ver [captura y exportación geográfica](formularios-geograficos.md).
+
+## Gobernanza de Fases DNP, Gating de Módulos y Recálculo Dinámico de Progreso (AUD-05)
+
+### 1. Correspondencia Módulos ↔ Ciclo de Fases DNP
+
+El ciclo de planeación participativa de la Política Pública de Seguridad Humana de Cartagena de Indias articula tres fases canónicas con módulos específicos de la plataforma:
+
+| Fase DNP | Código | Módulos Gobernados | Entidades y Datos de Respaldo |
+| --- | --- | --- | --- |
+| **Fase 1: Alistamiento y Diagnóstico Participativo** | `FASE_1_DIAGNOSTICO` | `/plataforma/mesas`, `/plataforma/geovisor`, aportes ciudadanos multicanal | `mesas_trabajo.mesas`, `participacion_ciudadana.propuestas_ciudadanas`, `geodatos.territorios` |
+| **Fase 2: Formulación Estratégica (MGA)** | `FASE_2_FORMULACION` | `/plataforma/alternativas` (Banco MGA y Costeo Presupuestal) | `motor_politicas.lineas_estrategicas`, `presupuesto.asignaciones_presupuestales` |
+| **Fase 3: Plan de Acción e Inversión (PAS)** | `FASE_3_PLAN_ACCION` | `/plataforma/seguimiento` (Compromisos PAS, Cadena de Valor SINERGIA, Rendición Cuentas C-150) | `seguimiento.compromisos_pas`, `indicadores.fichas_tecnicas_indicadores`, `indicadores.mediciones_indicador` |
+
+### 2. Reglas de Gating y Control de Acceso por Estado de Fase
+
+El conmutador de fases DNP no es solo declarativo; gobierna de manera efectiva los permisos y la presentación en interfaz:
+
+- **Etapa `preparatoria` (o no `activa`)**:
+  - **Frontend**: Los módulos Alternativas (`/plataforma/alternativas`) y Seguimiento (`/plataforma/seguimiento`) despliegan un banner institucional en alerta (`AlertTriangle`), notificando que la fase se encuentra en alistamiento institucional y opera en **Modo Consulta / Solo Lectura** para usuarios no administradores.
+  - **Permisos de Escritura**: Los botones de creación ("Nueva Alternativa", "Nueva Asignación", "Nuevo Compromiso") y controles de edición se ocultan o bloquean para usuarios que no sean administradores distritales (`autoridad_distrital` o `administrador_identidades`). Los administradores distritales conservan facultades de estructuración técnica previa a la apertura pública.
+  - **Backend**: Los endpoints de mutación (`POST /politicas/lineas`, `PUT /politicas/lineas/{id}`, `DELETE /politicas/lineas/{id}`, `POST /presupuesto/asignaciones`, `POST /compromisos`, `PATCH /compromisos/{id}/avance`, `PUT /compromisos/{id}`, `DELETE /compromisos/{id}`) ejecutan `verificar_escritura_fase()`. Si la fase correspondiente no está en estado `activa`, rechazan la solicitud con `HTTP 403 Forbidden` indicando la causal taxativa de etapa preparatoria a cualquier sujeto no administrador.
+- **Etapa `activa`**:
+  - El módulo correspondiente se abre para todos los usuarios con el permiso operativo (`alternativas:gestionar`, `presupuesto:gestionar`, `seguimiento:gestionar`). No se despliega banner restrictivo y la interfaz refleja operatividad plena.
+- **Etapas `en_revision`, `cerrada`, `archivada`**:
+  - Los módulos pasan a modo congelado de auditoría forense, impidiendo alteraciones posteriores no autorizadas.
+
+### 3. Recálculo Dinámico de Progreso Empírico (`progreso_porcentaje`)
+
+En cumplimiento de los principios de transparencia activa (Ley 1712/14) e integridad forense, se proscribe el uso de porcentajes codificados o desacoplados de la evidencia empírica. `progreso_porcentaje` en `GET /politicas/fases` y `GET /politicas/fases/control` se recalcula en vivo desde la base de datos:
+
+1. **Fase 1 (Diagnóstico Participativo)**:
+   $$\text{Progreso} = \frac{\text{Total Mesas con Acta Concertada}}{\text{Total Mesas Distritales Programadas}} \times 100$$
+   *(Ejemplo verificado: 42 mesas concertadas sobre 194 programadas = 21.65%)*.
+2. **Fase 2 (Formulación Estratégica)**:
+   $$\text{Progreso} = \frac{\text{Dimensiones de Seguridad Humana con Líneas Activas}}{7\text{ Dimensiones Canónicas ONU/DNP}} \times 100$$
+   *(Ejemplo verificado: 1 dimensión formulada sobre 7 = 14.29%)*.
+3. **Fase 3 (Plan de Acción y Seguimiento PAS)**:
+   $$\text{Progreso} = \text{Promedio de Cumplimiento Cuatrienal de Compromisos PAS} = \text{AVG}(\text{porcentaje\_cumplimiento})$$
+   *(Ejemplo verificado: 10 compromisos en ejecución con promedio de 61.40%)*.
+

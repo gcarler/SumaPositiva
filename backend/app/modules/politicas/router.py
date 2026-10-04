@@ -6,6 +6,7 @@ from sqlalchemy import func, select
 from app.core.database import SessionDependency
 from app.core.transactions import transaction
 from app.modules.identidad.deps import SujetoAutenticadoDep, requerir_permiso, requerir_rol
+from app.modules.politicas.gating import calcular_progreso_real_fases, verificar_escritura_fase
 from app.modules.politicas.models import (
     DimensionSeguridadHumana,
     FasePolitica,
@@ -44,15 +45,21 @@ async def listar_dimensiones(
     "/fases",
     response_model=list[FasePoliticaRead],
     summary="Listar fases del ciclo de política",
-    description="Retorna las fases configuradas del ciclo de planeación de la política pública.",
+    description="Retorna las fases configuradas con recálculo dinámico de progreso real (AUD-05).",
 )
 async def listar_fases(
     session: SessionDependency,
 ) -> list[FasePoliticaRead]:
+    progresos = await calcular_progreso_real_fases(session)
     stmt = select(FasePolitica).order_by(FasePolitica.orden)
     result = await session.execute(stmt)
     fases = result.scalars().all()
-    return [FasePoliticaRead.model_validate(f) for f in fases]
+    salida = []
+    for f in fases:
+        if f.codigo in progresos:
+            f.progreso_porcentaje = progresos[f.codigo]
+        salida.append(FasePoliticaRead.model_validate(f))
+    return salida
 
 
 @router.get(
@@ -83,6 +90,7 @@ async def listar_lineas(
 async def listar_fases_control(
     session: SessionDependency,
 ) -> list[FaseControlLectura]:
+    progresos = await calcular_progreso_real_fases(session)
     stmt = (
         select(FasePolitica, func.count(LineaEstrategica.id).label("total_lineas"))
         .outerjoin(LineaEstrategica, LineaEstrategica.fase_id == FasePolitica.id)
@@ -93,6 +101,8 @@ async def listar_fases_control(
     filas = result.all()
     salida = []
     for fase, total_lineas in filas:
+        if fase.codigo in progresos:
+            fase.progreso_porcentaje = progresos[fase.codigo]
         reglas = fase.reglas_participacion or {}
         habilitada = bool(reglas.get("habilitada_web", fase.estado == "activa"))
         item = FaseControlLectura(
@@ -138,6 +148,10 @@ async def conmutar_fase(
                 )
             fase.estado = datos.estado
 
+        progresos = await calcular_progreso_real_fases(session)
+        if fase.codigo in progresos:
+            fase.progreso_porcentaje = progresos[fase.codigo]
+
         session.add(fase)
         await session.flush()
 
@@ -162,7 +176,12 @@ async def conmutar_fase(
     status_code=201,
     dependencies=[Depends(requerir_permiso("politicas:gestionar", "declarada"))],
 )
-async def crear_linea(datos: LineaEstrategicaCreate, session: SessionDependency):
+async def crear_linea(
+    datos: LineaEstrategicaCreate,
+    session: SessionDependency,
+    sujeto: SujetoAutenticadoDep,
+):
+    await verificar_escritura_fase("FASE_2_FORMULACION", sujeto, session)
     return await LineaService(session).guardar(datos)
 
 
@@ -172,15 +191,25 @@ async def crear_linea(datos: LineaEstrategicaCreate, session: SessionDependency)
     dependencies=[Depends(requerir_permiso("politicas:gestionar", "declarada"))],
 )
 async def actualizar_linea(
-    id: uuid.UUID, datos: LineaEstrategicaUpdate, session: SessionDependency
+    id: uuid.UUID,
+    datos: LineaEstrategicaUpdate,
+    session: SessionDependency,
+    sujeto: SujetoAutenticadoDep,
 ):
+    await verificar_escritura_fase("FASE_2_FORMULACION", sujeto, session)
     return await LineaService(session).guardar(datos, id)
 
 
 @router.delete(
-    "/lineas/{id}", dependencies=[Depends(requerir_permiso("politicas:gestionar", "declarada"))]
+    "/lineas/{id}",
+    dependencies=[Depends(requerir_permiso("politicas:gestionar", "declarada"))],
 )
-async def eliminar_linea(id: uuid.UUID, session: SessionDependency):
+async def eliminar_linea(
+    id: uuid.UUID,
+    session: SessionDependency,
+    sujeto: SujetoAutenticadoDep,
+):
+    await verificar_escritura_fase("FASE_2_FORMULACION", sujeto, session)
     return await LineaService(session).eliminar(id)
 
 

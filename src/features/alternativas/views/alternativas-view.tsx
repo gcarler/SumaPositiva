@@ -12,6 +12,7 @@ import {
   Filter,
   Lightbulb,
   Coins,
+  AlertTriangle,
 } from "lucide-react";
 import { PageHeader } from "@/shared/ui/page-header";
 import { Button } from "@/shared/ui/button";
@@ -32,6 +33,7 @@ import {
 import { usePanels } from "@/core/panels/panel-store";
 import { useSesionStore } from "@/features/sesion/state/session-store";
 import { puedeEditar } from "@/features/plataforma/models/acceso";
+import { useFases } from "@/features/politicas/services/use-politicas-queries";
 import { AlternativasKpis } from "../components/alternativas-kpis";
 import { AlternativasTabla } from "../components/alternativas-tabla";
 import { CosteoPresupuestalView } from "../components/costeo-presupuestal-view";
@@ -64,6 +66,19 @@ export function AlternativasView() {
   const { openPanel } = usePanels();
   const sesion = useSesionStore((s) => s.sesion);
   const puedeEditarUsuario = puedeEditar(sesion, "alternativas");
+
+  // Gating de Fases DNP (AUD-05): en fase preparatoria solo los admins pueden modificar
+  const { data: fases } = useFases();
+  const fase2 = fases?.find((f) => f.codigo === "FASE_2_FORMULACION");
+  const fase2Activa = fase2?.estado === "activa";
+  const esAdmin =
+    sesion?.rol === "autoridad_distrital" ||
+    sesion?.rol === "administrador_identidades";
+
+  const puedeEditarEfectivo = fase2Activa
+    ? puedeEditarUsuario
+    : esAdmin && puedeEditarUsuario;
+  const esPreparatoria = fase2?.estado === "preparatoria";
 
   const alternativas = useAlternativasStore((s) => s.alternativas);
   const filtros = useAlternativasStore((s) => s.filtros);
@@ -204,7 +219,7 @@ export function AlternativasView() {
             </DropdownMenu>
 
             {/* Botón Nueva Alternativa */}
-            {puedeEditarUsuario && (
+            {puedeEditarEfectivo && (
               <Button
                 onClick={handleAbrirCrear}
                 size="sm"
@@ -217,6 +232,26 @@ export function AlternativasView() {
           </div>
         )}
       </div>
+
+      {/* Banner de Gating en Fase Preparatoria (AUD-05) */}
+      {esPreparatoria && (
+        <div
+          role="status"
+          className="flex items-start gap-3 rounded-xl border border-warning/30 bg-warning-soft p-4 text-xs text-text-primary"
+        >
+          <AlertTriangle className="h-5 w-5 shrink-0 text-warning mt-0.5" />
+          <div className="space-y-1">
+            <span className="font-semibold text-warning text-sm">
+              Fase 2 en Etapa Preparatoria — Módulo en Modo Consulta
+            </span>
+            <p className="text-text-secondary leading-relaxed pt-0.5">
+              {esAdmin
+                ? "La Fase 2 de Formulación Estratégica se encuentra en alistamiento. Como autoridad o administrador distrital, cuenta con permisos para estructurar alternativas antes de la apertura pública de la fase."
+                : "La Fase 2 de Formulación Estratégica se encuentra actualmente en etapa preparatoria. La creación y edición de alternativas MGA está reservada a la administración distrital hasta la activación oficial de la fase."}
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Conmutador de Modos: Banco MGA vs Costeo Presupuestal */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-xl border border-border bg-surface-1 p-2">
@@ -395,11 +430,11 @@ export function AlternativasView() {
       {/* DataGrid interactivo de Alternativas */}
       <AlternativasTabla
         alternativas={alternativasFiltradas}
-        puedeEditar={puedeEditarUsuario}
+        puedeEditar={puedeEditarEfectivo}
       />
         </>
       ) : (
-        <CosteoPresupuestalView />
+        <CosteoPresupuestalView puedeEditar={puedeEditarEfectivo} />
       )}
     </div>
   );
