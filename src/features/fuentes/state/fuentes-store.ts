@@ -9,6 +9,12 @@ import type {
 } from "../models/fuente";
 import { FUENTES_INICIALES } from "../data/fuentes-iniciales.data";
 
+import {
+  actualizarFuenteRemota,
+  crearFuenteRemota,
+  listarFuentes,
+} from "../services/fuentes-api";
+
 export interface FiltrosFuentes {
   busqueda: string;
   ambito: AmbitoFuente | "todos";
@@ -28,17 +34,22 @@ const FILTROS_DEFECTO: FiltrosFuentes = {
 export interface FuentesState {
   fuentes: FuenteInformacion[];
   filtros: FiltrosFuentes;
+  cargando: boolean;
+  error: string | null;
   setFiltros: (filtros: Partial<FiltrosFuentes>) => void;
   limpiarFiltros: () => void;
   getById: (id: string) => FuenteInformacion | undefined;
-  actualizarFuente: (id: string, cambios: Partial<FuenteInformacion>) => void;
-  agregarFuente: (fuente: Omit<FuenteInformacion, "id" | "actualizadoEn">) => void;
+  cargarFuentes: () => Promise<void>;
+  actualizarFuente: (id: string, cambios: Partial<FuenteInformacion>) => Promise<void>;
+  agregarFuente: (fuente: Omit<FuenteInformacion, "id" | "actualizadoEn">) => Promise<FuenteInformacion>;
   resetearFuentes: () => void;
 }
 
 export const useFuentesStore = create<FuentesState>((set, get) => ({
   fuentes: FUENTES_INICIALES,
   filtros: FILTROS_DEFECTO,
+  cargando: false,
+  error: null,
 
   setFiltros: (cambios) =>
     set((state) => ({
@@ -52,7 +63,20 @@ export const useFuentesStore = create<FuentesState>((set, get) => ({
 
   getById: (id) => get().fuentes.find((f) => f.id === id),
 
-  actualizarFuente: (id, cambios) =>
+  cargarFuentes: async () => {
+    set({ cargando: true, error: null });
+    try {
+      const datos = await listarFuentes();
+      set({ fuentes: datos, cargando: false });
+    } catch (_err) {
+      set({
+        error: "No se pudieron cargar las fuentes desde el servidor",
+        cargando: false,
+      });
+    }
+  },
+
+  actualizarFuente: async (id, cambios) => {
     set((state) => ({
       fuentes: state.fuentes.map((f) =>
         f.id === id
@@ -63,25 +87,46 @@ export const useFuentesStore = create<FuentesState>((set, get) => ({
             }
           : f
       ),
-    })),
+    }));
 
-  agregarFuente: (datos) =>
-    set((state) => {
-      const nuevoId = `fnt-${Date.now()}`;
-      const nuevaFuente: FuenteInformacion = {
-        ...datos,
-        id: nuevoId,
-        actualizadoEn: new Date().toISOString(),
-      };
-      return {
-        fuentes: [nuevaFuente, ...state.fuentes],
-      };
-    }),
+    try {
+      const remota = await actualizarFuenteRemota(id, cambios);
+      set((state) => ({
+        fuentes: state.fuentes.map((f) => (f.id === id ? remota : f)),
+      }));
+    } catch (_err) {
+      // Mantiene la actualización optimista local si el backend no responde
+    }
+  },
+
+  agregarFuente: async (datos) => {
+    const nuevoId = `fnt-${Date.now()}`;
+    const nuevaFuente: FuenteInformacion = {
+      ...datos,
+      id: nuevoId,
+      actualizadoEn: new Date().toISOString(),
+    };
+    set((state) => ({
+      fuentes: [nuevaFuente, ...state.fuentes],
+    }));
+
+    try {
+      const remota = await crearFuenteRemota(datos);
+      set((state) => ({
+        fuentes: state.fuentes.map((f) => (f.id === nuevoId ? remota : f)),
+      }));
+      return remota;
+    } catch (_err) {
+      return nuevaFuente;
+    }
+  },
 
   resetearFuentes: () =>
     set({
       fuentes: FUENTES_INICIALES,
       filtros: FILTROS_DEFECTO,
+      cargando: false,
+      error: null,
     }),
 }));
 

@@ -63,6 +63,8 @@ export function FuenteEditorPanel({ entryKey, props }: PanelComponentProps<"fuen
     fuente?.responsableContacto?.telefono ?? ""
   );
 
+  const [guardando, setGuardando] = useState(false);
+
   if (!fuente) {
     return (
       <PanelShell
@@ -84,33 +86,42 @@ export function FuenteEditorPanel({ entryKey, props }: PanelComponentProps<"fuen
     );
   }
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!tienePermisoEscritura) {
       toast.error("No tienes permisos para modificar fuentes de información");
       return;
     }
 
-    actualizarFuente(fuente.id, {
-      radicadoSolicitud: radicado.trim() || undefined,
-      fechaSolicitud: fechaSolicitud || undefined,
-      fechaLimiteRespuesta: fechaLimite || undefined,
-      estadoEntrega,
-      datosEntregadosResumen: datosResumen.trim() || undefined,
-      archivoAdjuntoUrl: archivoUrl.trim() || undefined,
-      observacionesCalidad: observaciones.trim() || undefined,
-      responsableContacto: contactoNombre.trim()
-        ? {
-            nombre: contactoNombre.trim(),
-            cargo: contactoCargo.trim(),
-            email: contactoEmail.trim(),
-            telefono: contactoTelefono.trim() || undefined,
-          }
-        : fuente.responsableContacto,
-    });
+    setGuardando(true);
+    try {
+      await actualizarFuente(fuente.id, {
+        radicadoSolicitud: radicado.trim() || undefined,
+        fechaSolicitud: fechaSolicitud || undefined,
+        fechaLimiteRespuesta: fechaLimite || undefined,
+        estadoEntrega,
+        datosEntregadosResumen: datosResumen.trim() || undefined,
+        archivoAdjuntoUrl: archivoUrl.trim() || undefined,
+        observacionesCalidad: observaciones.trim() || undefined,
+        responsableContacto: contactoNombre.trim()
+          ? {
+              nombre: contactoNombre.trim(),
+              cargo: contactoCargo.trim(),
+              email: contactoEmail.trim(),
+              telefono: contactoTelefono.trim() || undefined,
+            }
+          : fuente.responsableContacto,
+      });
 
-    toast.success(`Fuente ${fuente.codigo} actualizada con éxito`);
-    closeTop();
+      toast.success(`Fuente ${fuente.codigo} actualizada con éxito`);
+      closeTop();
+    } catch (_err) {
+      toast.error("Error al actualizar la fuente", {
+        description: "No se pudo sincronizar la solicitud con el servidor.",
+      });
+    } finally {
+      setGuardando(false);
+    }
   };
 
   return (
@@ -386,7 +397,12 @@ export function FuenteEditorPanel({ entryKey, props }: PanelComponentProps<"fuen
             {tienePermisoEscritura ? "Cancelar" : "Cerrar"}
           </Button>
           {tienePermisoEscritura && (
-            <Button variant="default" type="submit">
+            <Button
+              variant="default"
+              type="submit"
+              loading={guardando}
+              loadingLabel="Guardando…"
+            >
               Guardar Cambios
             </Button>
           )}

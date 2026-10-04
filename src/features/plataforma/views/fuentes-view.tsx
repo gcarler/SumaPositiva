@@ -1,5 +1,6 @@
 "use client";
 
+import {useEffect} from "react";
 import {Search, RotateCcw, Filter} from "lucide-react";
 import {PageHeader} from "@/shared/ui/page-header";
 import {Button} from "@/shared/ui/button";
@@ -17,6 +18,10 @@ import {useFuentesStore} from "@/features/fuentes/state/fuentes-store";
 import type {AmbitoFuente, EstadoEntrega} from "@/features/fuentes/models/fuente";
 
 export function FuentesView() {
+  useEffect(() => {
+    void useFuentesStore.getState().cargarFuentes();
+  }, []);
+
   const filtros = useFuentesStore((s) => s.filtros);
   const setFiltros = useFuentesStore((s) => s.setFiltros);
   const limpiarFiltros = useFuentesStore((s) => s.limpiarFiltros);

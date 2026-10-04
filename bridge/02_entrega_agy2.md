@@ -2004,3 +2004,98 @@ Se implementó el ciclo completo de dinamización relacional y gestión:
 | **Pipeline Completo Check** | `bun run check` | **100% aprobado** (ui:check, typecheck, lint). |
 | **Aislamiento de Codex** | `git status` | Archivos de codex (`noticias`, `testimonios`, backend) estrictamente intactos. |
 | **Restricción E2E y Migraciones** | N/A | No se ejecutaron migraciones sobre `bd_csh`, no se realizó `git push`, y no se ejecutó suite E2E completa (a la espera de indicación de EAF). |
+
+---
+
+## Tarea EDIT-03: Persistencia Backend para Solicitudes Oficiales a Fuentes de Información
+**Fecha**: 2026-10-04T04:38:00Z  
+**Estado**: LISTA PARA AUDITAR (EAF)  
+**Responsable**: agy2 (Equipo de Desarrollo EDD)  
+**Especificación**: `bridge/01_tarea_agy2_edit_03.md`  
+**Referencia Backlog**: `bridge/04_backlog_editabilidad.md` (Ítem 3)
+
+---
+
+### 1. Resumen Ejecutivo de la Solución (EDIT-03)
+En el dictamen AUD-18 se constató que la radicación y actualización de requerimientos oficiales de información a entidades distritales y nacionales (MECAR, Medicina Legal, DADIS, Distriseguridad, CCV, DANE, DNP, etc.) operaba exclusivamente en memoria efímera del store Zustand del cliente (`fuentes-store.ts`), perdiéndose cualquier radicado u observación al recargar el navegador.
+
+Se implementó el ciclo integral de persistencia relacional con auditoría forense inmutable:
+1. **Migración Relacional e Índices (`backend/alembic/versions/0042_modulo_fuentes_informacion.py`)**:
+   - `down_revision = "0041_modulo_agendas_mesas"`.
+   - Creación de tabla `auditoria.fuentes_informacion` con:
+     - `id VARCHAR(50) PRIMARY KEY`
+     - `codigo VARCHAR(50) NOT NULL UNIQUE` (ej. `FNT-LOC-001` .. `FNT-INT-002`)
+     - `entidad VARCHAR(255) NOT NULL`
+     - `nombre_fuente VARCHAR(255) NOT NULL`
+     - `tipo VARCHAR(30) NOT NULL DEFAULT 'secundaria'`
+     - `ambito VARCHAR(30) NOT NULL DEFAULT 'local'`
+     - `dimension_seguridad VARCHAR(50) NOT NULL DEFAULT 'personal'`
+     - `periodicidad VARCHAR(30) NOT NULL DEFAULT 'mensual'`
+     - `radicado_solicitud VARCHAR(100)`
+     - `fecha_solicitud DATE`, `fecha_limite_respuesta DATE`
+     - `estado_entrega VARCHAR(50) NOT NULL DEFAULT 'en_termino'`
+     - `variables_solicitadas JSONB NOT NULL DEFAULT '[]'::jsonb`
+     - `resumen_datos TEXT`, `archivo_adjunto_url TEXT`
+     - `responsable_contacto JSONB NOT NULL DEFAULT '{}'::jsonb`
+     - `observaciones_calidad TEXT`, `actualizado_por VARCHAR(100)`
+     - `creado_en TIMESTAMPTZ`, `actualizado_en TIMESTAMPTZ`
+   - Índices de consulta sobre `codigo`, `entidad`, `estado_entrega`, `radicado_solicitud`.
+   - Permisos RBAC: `fuentes:leer` y `fuentes:gestionar` para `autoridad_distrital` y `administrador_identidades`; `fuentes:leer` para roles consultores.
+   - Sembrado canónico e idempotente (`ON CONFLICT (id) DO NOTHING`) de las 18 fuentes oficiales preexistentes de Cartagena sin inventar datos.
+2. **Backend Domain (Módulo `backend/app/modules/fuentes/`)**:
+   - `models.py`: Modelo SQLAlchemy `FuenteInformacion` en esquema `auditoria`.
+   - `schemas.py`: Schemas Pydantic con tipado estricto `FuenteInformacionCrear`, `FuenteInformacionActualizar`, `FuenteInformacionRespuesta`, `KpisFuentesRespuesta`.
+   - `repository.py`: Consultas parametrizadas asíncronas con ordenamiento, filtros multicriterio, bloqueo pesimista `with_for_update()` y cálculo de KPIs.
+   - `service.py`: Gestión transaccional atómica bajo `transaction(session)` con **registro inmutable de auditoría forense** en `auditoria.registros_auditoria` para cada creación, actualización o eliminación con causal técnica motivada.
+   - `router.py`: Endpoints REST `GET /api/v1/fuentes`, `GET /api/v1/fuentes/kpis`, `GET /api/v1/fuentes/{id}`, `POST /api/v1/fuentes` (protegido con `fuentes:gestionar`), `PATCH /api/v1/fuentes/{id}` (protegido con `fuentes:gestionar`), `DELETE /api/v1/fuentes/{id}`.
+   - Montado de router en `backend/app/main.py` de forma aislada sin tocar archivos de Codex.
+3. **Frontend Cliente y Capa de Estado**:
+   - `src/features/fuentes/services/fuentes-api.ts`: Cliente HTTP con `listarFuentes`, `obtenerFuente`, `obtenerKpisFuentes`, `crearFuenteRemota`, `actualizarFuenteRemota`, `eliminarFuenteRemota`, con fallback resiliente a `FUENTES_INICIALES`.
+   - `src/features/fuentes/services/fuentes-api.test.ts`: 9 pruebas unitarias cubriendo normalización, listados con filtros, fallback resiliente, creación POST, actualización PATCH y borrado DELETE.
+   - `src/features/fuentes/state/fuentes-store.ts`: Store reactivo Zustand con `cargarFuentes()`, sincronización remota asíncrona y preservación optimista.
+   - `src/features/fuentes/panels/fuente-editor-panel.tsx`: Actualización con estado `guardando`, loading feedback en botón de guardado y feedback sonner.
+   - `src/features/plataforma/views/fuentes-view.tsx`: Invocación de `cargarFuentes()` en `useEffect` al montar la vista de fuentes.
+4. **Subsanación OBS-20 / OBS-22**:
+   - Corrección en `bridge/04_backlog_editabilidad.md`: conteo canónico de 36 mesas en lugar de 43.
+   - Actualización de `docs/despliegue-produccion.md`: inclusión de migraciones 0041 y 0042 en el registro histórico y salvaguarda condicional de despliegue.
+
+---
+
+### 2. Matriz de Archivos Creados y Modificados (EDIT-03)
+
+| Archivo | Tipo | Descripción de la Modificación |
+|---|---|---|
+| `backend/alembic/versions/0042_modulo_fuentes_informacion.py` | **Nuevo** | Migración Alembic: tabla `auditoria.fuentes_informacion`, índices, RBAC y semillero de 18 fuentes. |
+| `backend/app/modules/fuentes/__init__.py` | **Nuevo** | Módulo de fuentes oficiales. |
+| `backend/app/modules/fuentes/models.py` | **Nuevo** | Modelo ORM SQLAlchemy `FuenteInformacion`. |
+| `backend/app/modules/fuentes/schemas.py` | **Nuevo** | Schemas Pydantic `FuenteInformacionCrear`, `FuenteInformacionActualizar`, `FuenteInformacionRespuesta`, `KpisFuentesRespuesta`. |
+| `backend/app/modules/fuentes/repository.py` | **Nuevo** | Repositorio con consultas asíncronas, bloqueo `with_for_update()` y métricas de cumplimiento. |
+| `backend/app/modules/fuentes/service.py` | **Nuevo** | Servicio con transaccionalidad atómica y registro inmutable en `auditoria.registros_auditoria`. |
+| `backend/app/modules/fuentes/router.py` | **Nuevo** | Router FastAPI `/api/v1/fuentes` protegido con `fuentes:gestionar`. |
+| `backend/app/main.py` | **Modificación** | Montaje de `fuentes_router` bajo `/api/v1` aislando cambios de Codex. |
+| `backend/tests/test_fuentes_informacion.py` | **Nuevo** | Batería pytest (2 tests) en `polis_test`: ciclo CRUD, persistencia, trazabilidad en auditoría forense y 401/403. |
+| `src/features/fuentes/services/fuentes-api.ts` | **Nuevo** | Cliente HTTP tipado con normalización y fallback resiliente. |
+| `src/features/fuentes/services/fuentes-api.test.ts` | **Nuevo** | 9 pruebas unitarias de API: normalización, listados, fallback, POST, PATCH y DELETE. |
+| `src/features/fuentes/state/fuentes-store.ts` | **Modificación** | Store Zustand con `cargarFuentes()`, sincronización remota y persistencia de errores. |
+| `src/features/fuentes/panels/fuente-editor-panel.tsx` | **Modificación** | Formulario asíncrono con estado `guardando` y botón con spinner accesible. |
+| `src/features/plataforma/views/fuentes-view.tsx` | **Modificación** | Carga reactiva de fuentes en `useEffect`. |
+| `bridge/04_backlog_editabilidad.md` | **Modificación** | Corrección textual de conteo canónico de mesas (36 mesas, OBS-22). |
+| `docs/despliegue-produccion.md` | **Modificación** | Incorporación de migraciones 0041 y 0042 en el runbook de producción. |
+| `bridge/01_tarea_activa.md` | **Modificación** | Estado actualizado a EDIT-03 LISTA PARA AUDITAR. |
+| `bridge/02_entrega_agy2.md` | **Modificación** | Reporte pericial de entrega EDIT-03. |
+
+---
+
+### 3. Matriz de Quality Gates y Verificación Pericial (EDIT-03)
+
+| Quality Gate | Comando de Validación | Resultado Pericial |
+|---|---|---|
+| **Pruebas Backend Pytest (`polis_test`)** | `backend/.venv/bin/pytest backend/tests/test_fuentes_informacion.py backend/tests/test_mesas_agenda.py backend/tests/test_mesas_ltree.py` | **5 passed in 6.29s** (fuentes, agendas, mesas; auditoría forense inmutable y RBAC verificados). |
+| **Pruebas Frontend Fuentes API** | `bun test src/features/fuentes/services/fuentes-api.test.ts` | **9 pass, 0 fail (38 expect calls)**. |
+| **Suite Completa Frontend** | `bun test` | **245 pass, 0 fail (1111 expect calls)** en 27 suites de prueba. |
+| **Política de UI POLIS** | `bun run ui:check` (`node scripts/ui-policy.mjs`) | **0 violaciones** (uso estricto de Textarea, Input, FormField, PanelShell de `@/shared/ui`). |
+| **Chequeo de Tipos TypeScript** | `bun run typecheck` (`tsc --noEmit`) | **0 errores** de compilación estricta. |
+| **Linting ESLint** | `bun run lint` (`eslint .`) | **0 errores, 0 advertencias** (`no-unused-vars: error`, `ban-ts-comment: error`). |
+| **Pipeline Completo Check** | `bun run check` | **100% aprobado** (ui:check, typecheck, lint). |
+| **Aislamiento de Codex** | `git status` | Archivos de codex (`noticias`, `testimonios`, backend) estrictamente intactos. |
+| **Restricción E2E y Migraciones** | N/A | No se ejecutaron migraciones sobre `bd_csh`, no se realizó `git push`, y no se ejecutó suite E2E completa (a la espera de indicación de EAF). |

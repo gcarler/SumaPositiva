@@ -67,7 +67,7 @@ A continuación se formalizan los huecos de editabilidad identificados, prioriza
 - **Prioridad**: **MEDIA**
 - **Clasificación**: Modelo de Datos & UI Management
 - **Diagnóstico del Hueco**:
-  - El cronograma de 43 mesas territoriales, poblacionales y sectoriales reside en una constante estática de TypeScript ([`src/features/mesas/data/agenda.data.ts:50`](file:///root/polis/src/features/mesas/data/agenda.data.ts#L50)).
+  - El cronograma de 36 mesas territoriales, poblacionales y sectoriales reside en una constante estática de TypeScript ([`src/features/mesas/data/agenda.data.ts:50`](file:///root/polis/src/features/mesas/data/agenda.data.ts#L50)).
   - La interfaz no ofrece mecanismos para que los facilitadores puedan reprogramar fechas, actualizar sedes comunitarias o registrar nuevas mesas sectoriales sobrevenidas.
 - **Alcance Propuesto**:
   1. *Base de Datos & Backend*:

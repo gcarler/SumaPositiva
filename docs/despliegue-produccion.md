@@ -174,7 +174,7 @@ echo "Revisión head en código:   $HEAD_REV"
 ```
 
 > [!NOTE]
-> **Estado de `bd_csh` (OBS-20)**: En el entorno de producción actual, la base de datos `bd_csh` **ya se encuentra en la versión `0040_modulo_actores_estrategicos (head)`**. Por tanto, las revisiones históricas 0037 a 0040 ya fueron aplicadas exitosamente con anterioridad.
+> **Estado de `bd_csh` (OBS-20 / OBS-22)**: En el entorno de producción actual, la base de datos `bd_csh` se encuentra en la versión `0040_modulo_actores_estrategicos`. Las revisiones de editabilidad 0041 (`0041_modulo_agendas_mesas`) y 0042 (`0042_modulo_fuentes_informacion`) quedan preparadas en código con fallback resiliente en frontend y se aplicarán sobre `bd_csh` en la ventana de mantenimiento programado con servicios detenidos y respaldo previo.
 
 #### 7.2. Ejecución condicional de migraciones
 La ejecución de `alembic upgrade head` debe ser **condicional**: si la base de datos ya se encuentra en `head`, el paso de migración se omite para evitar bloqueos innecesarios:
@@ -196,8 +196,8 @@ else
 fi
 ```
 
-#### 7.3. Registro histórico de la cadena de migraciones (0036 a 0040)
-Como referencia técnica para aprovisionamiento de entornos nuevos o procedimientos de recuperación/restauración, las 5 revisiones que componen esta cadena son:
+#### 7.3. Registro histórico de la cadena de migraciones (0036 a 0042)
+Como referencia técnica para aprovisionamiento de entornos nuevos o procedimientos de recuperación/restauración, las revisiones que componen esta cadena son:
 
 1. **`0037_restituir_compromisos_pas`** (`0037_restituir_compromisos_pas_sin_datos_fabricados.py`):
    - *Propósito forense (AUD-13)*: Modifica columnas de la tabla `seguimiento.compromisos_pas` para permitir valores `NULL` en `avance_cuatrienal_valor`, `porcentaje_cumplimiento`, `fecha_corte_ultimo_reporte` y `presupuesto_anual_cop`.
@@ -211,8 +211,12 @@ Como referencia técnica para aprovisionamiento de entornos nuevos o procedimien
    - *Punto de convergencia (mergepoint)*: Unifica las ramas paralelas `0037_restituir_compromisos_pas` y `0037_noticias_institucionales` en un único head cohesivo sin efectos colaterales de esquema.
 4. **`0039_corregir_fuente_metas`** (`0039_corregir_fuente_metas_propuestas_compromisos.py`):
    - *Alineación de procedencia (OBS-11)*: Actualiza los metadatos JSONB de todos los compromisos PAS para declarar explícitamente: `"Catálogo propuesto por el equipo, PENDIENTE de validación institucional, no proviene del Decreto 037"`, con bandera `meta_validada=false` y alerta `propuesta_sin_validar`.
-5. **`0040_modulo_actores_estrategicos`** (`0040_modulo_actores_estrategicos.py` - Head actual):
+5. **`0040_modulo_actores_estrategicos`** (`0040_modulo_actores_estrategicos.py`):
    - *Persistencia de gobernanza (AUD-14)*: Crea la tabla `participacion_ciudadana.actores_estrategicos` con clave primaria UUID v7, índice único en `codigo`, índices en `tipo`, `territorio` y `es_demostracion`. Permite el mapeo y registro persistente de actores territoriales sin PII pre-cargada.
+6. **`0041_modulo_agendas_mesas`** (`0041_modulo_agendas_mesas.py` - EDIT-02):
+   - *Dinamización de cronograma*: Crea la tabla `mesas_trabajo.agendas` con clave primaria `VARCHAR(50)`, índices por tipo, estado y fecha, sembrando las 36 mesas oficiales canónicas de Cartagena sin invención de datos.
+7. **`0042_modulo_fuentes_informacion`** (`0042_modulo_fuentes_informacion.py` - EDIT-03):
+   - *Trazabilidad de solicitudes a fuentes*: Crea la tabla `auditoria.fuentes_informacion` con radicado, entidad, fechas y estado de entrega, incorporando las 18 fuentes oficiales de Cartagena y asignando permisos RBAC `fuentes:leer` y `fuentes:gestionar`.
 
 ### Paso 8: Arranque de Servicios
 Iniciar nuevamente los servicios de backend y frontend bajo supervisión de systemd:
