@@ -5,6 +5,7 @@ from typing import Any, Literal
 from pydantic import BaseModel, ConfigDict, Field
 
 EstadoCompromisoType = Literal[
+    "sin_reporte",
     "programado",
     "en_ejecucion",
     "cumplido",
@@ -24,12 +25,12 @@ class CompromisoPASBase(BaseModel):
     meta_cuatrienal_descripcion: str
     meta_cuatrienal_valor: float = Field(..., gt=0)
     unidad_medida: str = Field(..., max_length=50)
-    avance_cuatrienal_valor: float = Field(default=0, ge=0)
-    porcentaje_cumplimiento: float = Field(default=0, ge=0, le=100)
-    presupuesto_anual_cop: float = Field(default=0, ge=0)
+    avance_cuatrienal_valor: float | None = Field(default=None, ge=0)
+    porcentaje_cumplimiento: float | None = Field(default=None, ge=0, le=100)
+    presupuesto_anual_cop: float | None = Field(default=None, ge=0)
     vigencias_programadas: list[int] = Field(default_factory=list)
-    estado: EstadoCompromisoType = "programado"
-    fecha_corte_ultimo_reporte: date = Field(default_factory=date.today)
+    estado: EstadoCompromisoType = "sin_reporte"
+    fecha_corte_ultimo_reporte: date | None = None
     metadatos: dict[str, Any] = Field(default_factory=dict)
 
 
@@ -38,7 +39,7 @@ class CompromisoPASCrear(CompromisoPASBase):
 
 
 class CompromisoPASActualizarAvance(BaseModel):
-    avance_cuatrienal_valor: float = Field(..., ge=0)
+    avance_cuatrienal_valor: float | None = Field(default=None, ge=0)
     estado: EstadoCompromisoType | None = None
     fecha_corte_ultimo_reporte: date | None = None
     observacion_cualitativa: str | None = None
@@ -74,7 +75,9 @@ class CompromisoPASRespuesta(CompromisoPASBase):
 
 class KpisSeguimientoRespuesta(BaseModel):
     totalCompromisos: int
+    compromisosConReporte: int = 0
+    compromisosSinReporte: int = 0
     compromisosEnEjecucionOCumplidos: int
     compromisosEnRiesgoORetrasados: int
-    promedioCumplimientoCuatrienal: float
-    presupuestoTotalAnualCop: float
+    promedioCumplimientoCuatrienal: float | None = None
+    presupuestoTotalAnualCop: float = 0.0

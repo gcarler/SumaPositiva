@@ -123,7 +123,7 @@ export function FasesControlPanel({ entryKey }: { entryKey: string }) {
                           ? "Habilitada (Aportes Activos)"
                           : "Cerrada al público"}
                       </span>
-                      {fase.progreso_porcentaje > 0 && (
+                      {fase.progreso_porcentaje != null && fase.progreso_porcentaje > 0 && (
                         <span className="ml-2 font-mono text-[10px]">
                           • {fase.progreso_porcentaje}% avance
                         </span>

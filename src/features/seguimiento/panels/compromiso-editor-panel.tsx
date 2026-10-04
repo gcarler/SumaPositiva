@@ -82,7 +82,8 @@ export function CompromisoEditorPanel({
   const [unidadMedida, setUnidadMedida] = useState<string>("Porcentaje");
   const [presupuestoAnual, setPresupuestoAnual] = useState<number>(1000000000);
 
-  const formatoMoneda = (val: number) => {
+  const formatoMoneda = (val: number | null | undefined) => {
+    if (val === null || val === undefined) return "No asignado";
     return new Intl.NumberFormat("es-CO", {
       style: "currency",
       currency: "COP",

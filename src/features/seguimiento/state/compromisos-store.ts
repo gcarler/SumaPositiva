@@ -36,15 +36,18 @@ export function calcularKpisSeguimiento(
   if (total === 0) {
     return {
       totalCompromisos: 0,
+      compromisosConReporte: 0,
+      compromisosSinReporte: 0,
       compromisosEnEjecucionOCumplidos: 0,
       compromisosEnRiesgoORetrasados: 0,
-      promedioCumplimientoCuatrienal: 0,
+      promedioCumplimientoCuatrienal: null,
       presupuestoTotalAnualCop: 0,
     };
   }
 
   let enEjecucionOCumplidos = 0;
   let enRiesgoORetrasados = 0;
+  let compromisosConReporte = 0;
   let sumaCumplimiento = 0;
   let sumaPresupuesto = 0;
 
@@ -55,14 +58,30 @@ export function calcularKpisSeguimiento(
       enRiesgoORetrasados++;
     }
 
-    sumaCumplimiento += c.porcentaje_cumplimiento;
-    sumaPresupuesto += c.presupuesto_anual_cop;
+    if (
+      c.porcentaje_cumplimiento !== null &&
+      c.porcentaje_cumplimiento !== undefined &&
+      c.estado !== "sin_reporte"
+    ) {
+      compromisosConReporte++;
+      sumaCumplimiento += c.porcentaje_cumplimiento;
+    }
+
+    if (c.presupuesto_anual_cop !== null && c.presupuesto_anual_cop !== undefined) {
+      sumaPresupuesto += c.presupuesto_anual_cop;
+    }
   }
 
-  const promedio = Math.round(sumaCumplimiento / total);
+  const compromisosSinReporte = total - compromisosConReporte;
+  const promedio =
+    compromisosConReporte > 0
+      ? Math.round(sumaCumplimiento / compromisosConReporte)
+      : null;
 
   return {
     totalCompromisos: total,
+    compromisosConReporte,
+    compromisosSinReporte,
     compromisosEnEjecucionOCumplidos: enEjecucionOCumplidos,
     compromisosEnRiesgoORetrasados: enRiesgoORetrasados,
     promedioCumplimientoCuatrienal: promedio,

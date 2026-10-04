@@ -5,6 +5,7 @@
  */
 
 export type EstadoCompromiso =
+  | "sin_reporte"
   | "programado"
   | "en_ejecucion"
   | "cumplido"
@@ -23,13 +24,15 @@ export interface CompromisoInstitucional {
   meta_cuatrienal_descripcion: string;
   meta_cuatrienal_valor: number;
   unidad_medida: string;
-  avance_cuatrienal_valor: number;
-  porcentaje_cumplimiento: number; // 0 - 100
-  presupuesto_anual_cop: number;
+  avance_cuatrienal_valor: number | null;
+  porcentaje_cumplimiento: number | null; // null si no tiene reporte
+  presupuesto_anual_cop: number | null;
   vigencias_programadas: number[];
   estado: EstadoCompromiso;
-  fecha_corte_ultimo_reporte: string;
+  fecha_corte_ultimo_reporte: string | null;
   metadatos?: {
+    fuente?: string;
+    es_demostracion?: boolean;
     responsable_cargo?: string;
     bpin_relacionado?: string;
     observacion_cualitativa?: string;
@@ -40,18 +43,20 @@ export interface CompromisoInstitucional {
 }
 
 export interface CompromisoActualizarAvance {
-  avance_cuatrienal_valor: number;
+  avance_cuatrienal_valor?: number | null;
   estado?: EstadoCompromiso;
-  fecha_corte_ultimo_reporte?: string;
+  fecha_corte_ultimo_reporte?: string | null;
   observacion_cualitativa?: string;
   url_evidencia?: string;
 }
 
 export interface KpisSeguimiento {
   totalCompromisos: number;
+  compromisosConReporte: number;
+  compromisosSinReporte: number;
   compromisosEnEjecucionOCumplidos: number;
   compromisosEnRiesgoORetrasados: number;
-  promedioCumplimientoCuatrienal: number;
+  promedioCumplimientoCuatrienal: number | null;
   presupuestoTotalAnualCop: number;
 }
 
@@ -65,6 +70,13 @@ export const ESTADOS_COMPROMISO: Record<
     descripcion: string;
   }
 > = {
+  sin_reporte: {
+    label: "Sin reporte",
+    colorClase: "text-text-muted",
+    badgeClase: "text-text-muted bg-surface-2 border-border",
+    badgeVariant: "outline",
+    descripcion: "Compromiso programático sin reporte de ejecución verificado a la fecha.",
+  },
   cumplido: {
     label: "Cumplido",
     colorClase: "text-success",

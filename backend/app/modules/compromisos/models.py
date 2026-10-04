@@ -37,23 +37,23 @@ class CompromisoPAS(Base):
     meta_cuatrienal_descripcion: Mapped[str] = mapped_column(Text, nullable=False)
     meta_cuatrienal_valor: Mapped[float] = mapped_column(Numeric(14, 4), nullable=False)
     unidad_medida: Mapped[str] = mapped_column(String(50), nullable=False)
-    avance_cuatrienal_valor: Mapped[float] = mapped_column(
-        Numeric(14, 4), server_default=text("0"), nullable=False
+    avance_cuatrienal_valor: Mapped[float | None] = mapped_column(
+        Numeric(14, 4), server_default=None, nullable=True
     )
-    porcentaje_cumplimiento: Mapped[float] = mapped_column(
-        Numeric(6, 2), server_default=text("0"), nullable=False
+    porcentaje_cumplimiento: Mapped[float | None] = mapped_column(
+        Numeric(6, 2), server_default=None, nullable=True
     )
-    presupuesto_anual_cop: Mapped[float] = mapped_column(
-        Numeric(16, 2), server_default=text("0"), nullable=False
+    presupuesto_anual_cop: Mapped[float | None] = mapped_column(
+        Numeric(16, 2), server_default=None, nullable=True
     )
     vigencias_programadas: Mapped[list[int]] = mapped_column(
         JSONB, server_default=text("'[]'::jsonb"), nullable=False
     )
     estado: Mapped[str] = mapped_column(
-        String(30), server_default="programado", nullable=False
+        String(30), server_default="sin_reporte", nullable=False
     )
-    fecha_corte_ultimo_reporte: Mapped[date] = mapped_column(
-        Date, server_default=text("CURRENT_DATE"), nullable=False
+    fecha_corte_ultimo_reporte: Mapped[date | None] = mapped_column(
+        Date, server_default=None, nullable=True
     )
     metadatos: Mapped[dict[str, Any]] = mapped_column(
         JSONB, server_default=text("'{}'::jsonb"), nullable=False

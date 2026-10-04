@@ -21,31 +21,46 @@ export function SeguimientoKpis({ kpis }: SeguimientoKpisProps) {
     {
       titulo: "Total Compromisos PAS",
       valor: kpis.totalCompromisos,
-      subtexto: `Presupuesto anual: ${formatCopMilesMillones(kpis.presupuestoTotalAnualCop)}`,
+      subtexto:
+        kpis.presupuestoTotalAnualCop > 0
+          ? `Presupuesto anual: ${formatCopMilesMillones(kpis.presupuestoTotalAnualCop)}`
+          : "Sin presupuesto oficial reportado",
       icono: CheckSquare,
       estiloIcono: "text-accent bg-accent-soft",
     },
     {
       titulo: "En Ejecución / Cumplidos",
       valor: `${kpis.compromisosEnEjecucionOCumplidos} / ${kpis.totalCompromisos}`,
-      subtexto: `${kpis.totalCompromisos > 0 ? Math.round((kpis.compromisosEnEjecucionOCumplidos / kpis.totalCompromisos) * 100) : 0}% de la matriz institucional`,
+      subtexto: `${kpis.compromisosConReporte} de ${kpis.totalCompromisos} con reporte oficial`,
       icono: Activity,
       estiloIcono: "text-success bg-success-soft",
     },
     {
       titulo: "En Riesgo o Retrasados",
       valor: kpis.compromisosEnRiesgoORetrasados,
-      subtexto: kpis.compromisosEnRiesgoORetrasados > 0 ? "Requieren ajuste o alerta temprana" : "Sin rezago crítico detectado",
+      subtexto:
+        kpis.compromisosEnRiesgoORetrasados > 0
+          ? "Requieren ajuste o alerta temprana"
+          : "Sin rezago crítico detectado",
       icono: AlertTriangle,
-      estiloIcono: kpis.compromisosEnRiesgoORetrasados > 0 ? "text-danger bg-danger-soft" : "text-text-muted bg-surface-2",
+      estiloIcono:
+        kpis.compromisosEnRiesgoORetrasados > 0
+          ? "text-danger bg-danger-soft"
+          : "text-text-muted bg-surface-2",
     },
     {
       titulo: "Cumplimiento Cuatrienal",
-      valor: `${kpis.promedioCumplimientoCuatrienal}%`,
-      subtexto: "Promedio ponderado cuatrienal",
+      valor:
+        kpis.promedioCumplimientoCuatrienal !== null
+          ? `${kpis.promedioCumplimientoCuatrienal}%`
+          : "Sin reporte",
+      subtexto:
+        kpis.promedioCumplimientoCuatrienal !== null
+          ? "Promedio de compromisos con reporte"
+          : `${kpis.compromisosConReporte} de ${kpis.totalCompromisos} con reporte`,
       icono: Percent,
       estiloIcono: "text-ember bg-ember-soft",
-      mostrarProgreso: true,
+      mostrarProgreso: kpis.promedioCumplimientoCuatrienal !== null,
       progreso: kpis.promedioCumplimientoCuatrienal,
     },
   ];

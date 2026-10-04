@@ -78,14 +78,20 @@ async def calcular_progreso_real_fases(session: AsyncSession) -> dict[str, Decim
         logger.error("Error SQL calculando progreso empírico de FASE_2_FORMULACION: %s", err)
         progresos["FASE_2_FORMULACION"] = None
 
-    # 3. Plan de Acción / Seguimiento: promedio de cumplimiento de compromisos PAS
+    # 3. Plan de Acción / Seguimiento: promedio de cumplimiento de compromisos PAS que tengan reporte real
     try:
         res_f3 = await session.execute(
-            text("SELECT coalesce(avg(porcentaje_cumplimiento), 0) FROM seguimiento.compromisos_pas")
+            text(
+                "SELECT avg(porcentaje_cumplimiento) "
+                "FROM seguimiento.compromisos_pas "
+                "WHERE porcentaje_cumplimiento IS NOT NULL AND estado != 'sin_reporte'"
+            )
         )
         promedio = res_f3.scalar()
         if promedio is not None:
             progresos["FASE_3_PLAN_ACCION"] = round(Decimal(str(promedio)), 2)
+        else:
+            progresos["FASE_3_PLAN_ACCION"] = None
     except Exception as err:
         logger.error("Error SQL calculando progreso empírico de FASE_3_PLAN_ACCION: %s", err)
         progresos["FASE_3_PLAN_ACCION"] = None

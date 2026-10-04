@@ -5,6 +5,7 @@ import {
   filtrarCompromisos,
 } from "./compromisos-store";
 import { COMPROMISOS_PAS_CANONICOS } from "../data/compromisos-pas.data";
+import type { EstadoCompromiso } from "../models/compromiso";
 import * as compromisosApi from "../services/compromisos-api";
 
 describe("Plan de Acción y Seguimiento (PAS) — Matriz de Compromisos (Hito PAS-1 / AUD-01)", () => {
@@ -35,10 +36,33 @@ describe("Plan de Acción y Seguimiento (PAS) — Matriz de Compromisos (Hito PA
       const kpis = calcularKpisSeguimiento(COMPROMISOS_PAS_CANONICOS);
 
       expect(kpis.totalCompromisos).toBe(10);
-      expect(kpis.compromisosEnEjecucionOCumplidos).toBe(7); // 6 en_ejecucion + 1 cumplido
-      expect(kpis.compromisosEnRiesgoORetrasados).toBe(3); // 2 en_riesgo + 1 retrasado
-      expect(kpis.promedioCumplimientoCuatrienal).toBe(61); // Promedio ponderado de avance
-      expect(kpis.presupuestoTotalAnualCop).toBe(13400000000); // 1.2B + 1.8B + 2.0B + 1.5B + 3.0B + 0.4B + 0.95B + 1.1B + 0.85B + 0.6B = 13.4B
+      expect(kpis.compromisosConReporte).toBe(0);
+      expect(kpis.compromisosSinReporte).toBe(10);
+      expect(kpis.compromisosEnEjecucionOCumplidos).toBe(0);
+      expect(kpis.compromisosEnRiesgoORetrasados).toBe(0);
+      expect(kpis.promedioCumplimientoCuatrienal).toBeNull();
+      expect(kpis.presupuestoTotalAnualCop).toBe(0);
+    });
+
+    test("computa promedio y conteos correctamente cuando existen compromisos con reporte real", () => {
+      const conReportes = [
+        ...COMPROMISOS_PAS_CANONICOS.slice(0, 2).map((c, i) => ({
+          ...c,
+          avance_cuatrienal_valor: (i + 1) * 50,
+          porcentaje_cumplimiento: i === 0 ? 50 : 80,
+          presupuesto_anual_cop: 1000000000,
+          estado: (i === 0 ? "en_ejecucion" : "cumplido") as EstadoCompromiso,
+        })),
+        ...COMPROMISOS_PAS_CANONICOS.slice(2),
+      ];
+
+      const kpis = calcularKpisSeguimiento(conReportes);
+      expect(kpis.totalCompromisos).toBe(10);
+      expect(kpis.compromisosConReporte).toBe(2);
+      expect(kpis.compromisosSinReporte).toBe(8);
+      expect(kpis.compromisosEnEjecucionOCumplidos).toBe(2);
+      expect(kpis.promedioCumplimientoCuatrienal).toBe(65); // (50 + 80) / 2
+      expect(kpis.presupuestoTotalAnualCop).toBe(2000000000);
     });
 
     test("carga compromisos reactivamente desde el servicio de backend", async () => {
@@ -74,14 +98,14 @@ describe("Plan de Acción y Seguimiento (PAS) — Matriz de Compromisos (Hito PA
     });
 
     test("filtra por Estado de Cumplimiento", () => {
-      const enRiesgo = filtrarCompromisos(COMPROMISOS_PAS_CANONICOS, {
+      const sinReporte = filtrarCompromisos(COMPROMISOS_PAS_CANONICOS, {
         busqueda: "",
         entidad: "todas",
         linea: "todas",
-        estado: "en_riesgo",
+        estado: "sin_reporte",
       });
 
-      expect(enRiesgo.length).toBe(2); // PAS-AMB-05 y PAS-DES-08
+      expect(sinReporte.length).toBe(10);
     });
 
     test("busca por texto en código, nombre, entidad y descripción de meta", () => {

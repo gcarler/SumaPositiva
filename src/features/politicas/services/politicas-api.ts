@@ -11,7 +11,7 @@ export interface FaseControlApi {
   codigo: string;
   nombre: string;
   estado: string;
-  progreso_porcentaje: number;
+  progreso_porcentaje: number | null;
   habilitada_web: boolean;
   total_lineas?: number;
   orden?: number;
@@ -38,7 +38,7 @@ export interface FasePoliticaApi {
   nombre: string;
   descripcion?: string | null;
   estado: string;
-  progreso_porcentaje: number | string;
+  progreso_porcentaje: number | string | null;
   fecha_inicio?: string | null;
   fecha_cierre?: string | null;
   reglas_participacion?: Record<string, unknown>;
@@ -130,7 +130,10 @@ export async function listarFasesControlApi(): Promise<FaseControlApi[]> {
           codigo: f.codigo,
           nombre: f.nombre,
           estado: f.estado,
-          progreso_porcentaje: Number(f.progreso_porcentaje) || 0,
+          progreso_porcentaje:
+            f.progreso_porcentaje !== null && f.progreso_porcentaje !== undefined
+              ? Number(f.progreso_porcentaje)
+              : null,
           habilitada_web: Boolean(
             (f.reglas_participacion as { habilitada_web?: boolean } | undefined)
               ?.habilitada_web ?? (f.estado === "activa")

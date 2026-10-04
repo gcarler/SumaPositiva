@@ -47,11 +47,16 @@ class CompromisosService:
             )
 
         meta = datos.meta_cuatrienal_valor if datos.meta_cuatrienal_valor > 0 else 1.0
-        porcentaje = (
-            datos.porcentaje_cumplimiento
-            if datos.porcentaje_cumplimiento > 0
-            else min(100.0, max(0.0, round((datos.avance_cuatrienal_valor / meta) * 100.0, 2)))
-        )
+        if datos.avance_cuatrienal_valor is not None:
+            porcentaje = (
+                datos.porcentaje_cumplimiento
+                if datos.porcentaje_cumplimiento is not None
+                else min(100.0, max(0.0, round((datos.avance_cuatrienal_valor / meta) * 100.0, 2)))
+            )
+            estado = datos.estado if datos.estado != "sin_reporte" else "en_ejecucion"
+        else:
+            porcentaje = None
+            estado = datos.estado
 
         compromiso = CompromisoPAS(
             codigo=datos.codigo.strip().upper(),
@@ -101,13 +106,19 @@ class CompromisosService:
     ) -> CompromisoPAS:
         compromiso = await self.obtener_compromiso(id_o_codigo)
 
-        meta = float(compromiso.meta_cuatrienal_valor) if compromiso.meta_cuatrienal_valor > 0 else 1.0
-        nuevo_avance = float(datos.avance_cuatrienal_valor)
-        porcentaje = min(100.0, max(0.0, round((nuevo_avance / meta) * 100.0, 2)))
+        if datos.avance_cuatrienal_valor is not None:
+            meta = float(compromiso.meta_cuatrienal_valor) if compromiso.meta_cuatrienal_valor > 0 else 1.0
+            nuevo_avance = float(datos.avance_cuatrienal_valor)
+            porcentaje = min(100.0, max(0.0, round((nuevo_avance / meta) * 100.0, 2)))
+            compromiso.avance_cuatrienal_valor = nuevo_avance
+            compromiso.porcentaje_cumplimiento = porcentaje
+        else:
+            nuevo_avance = compromiso.avance_cuatrienal_valor
+            porcentaje = compromiso.porcentaje_cumplimiento
 
         if datos.estado:
             nuevo_estado = datos.estado
-        else:
+        elif porcentaje is not None:
             if porcentaje >= 100.0:
                 nuevo_estado = "cumplido"
             elif porcentaje < 30.0:
@@ -116,9 +127,9 @@ class CompromisosService:
                 nuevo_estado = "en_riesgo"
             else:
                 nuevo_estado = "en_ejecucion"
+        else:
+            nuevo_estado = compromiso.estado
 
-        compromiso.avance_cuatrienal_valor = nuevo_avance
-        compromiso.porcentaje_cumplimiento = porcentaje
         compromiso.estado = nuevo_estado
         if datos.fecha_corte_ultimo_reporte:
             compromiso.fecha_corte_ultimo_reporte = datos.fecha_corte_ultimo_reporte
@@ -218,11 +229,20 @@ class CompromisosService:
         if total == 0:
             return KpisSeguimientoRespuesta(
                 totalCompromisos=0,
+                compromisosConReporte=0,
+                compromisosSinReporte=0,
                 compromisosEnEjecucionOCumplidos=0,
                 compromisosEnRiesgoORetrasados=0,
-                promedioCumplimientoCuatrienal=0,
-                presupuestoTotalAnualCop=0,
+                promedioCumplimientoCuatrienal=None,
+                presupuestoTotalAnualCop=0.0,
             )
+
+        con_reporte = [
+            c for c in compromisos
+            if c.porcentaje_cumplimiento is not None and c.estado != "sin_reporte"
+        ]
+        total_con_reporte = len(con_reporte)
+        sin_reporte = total - total_con_reporte
 
         en_ejecucion_o_cumplidos = sum(
             1 for c in compromisos if c.estado in ("cumplido", "en_ejecucion")
@@ -230,13 +250,23 @@ class CompromisosService:
         en_riesgo_o_retrasados = sum(
             1 for c in compromisos if c.estado in ("en_riesgo", "retrasado")
         )
-        suma_cumplimiento = sum(float(c.porcentaje_cumplimiento) for c in compromisos)
-        suma_presupuesto = sum(float(c.presupuesto_anual_cop) for c in compromisos)
+        promedio = (
+            round(sum(float(c.porcentaje_cumplimiento) for c in con_reporte) / total_con_reporte, 1)
+            if total_con_reporte > 0
+            else None
+        )
+        suma_presupuesto = sum(
+            float(c.presupuesto_anual_cop or 0)
+            for c in compromisos
+            if c.presupuesto_anual_cop is not None
+        )
 
         return KpisSeguimientoRespuesta(
             totalCompromisos=total,
+            compromisosConReporte=total_con_reporte,
+            compromisosSinReporte=sin_reporte,
             compromisosEnEjecucionOCumplidos=en_ejecucion_o_cumplidos,
             compromisosEnRiesgoORetrasados=en_riesgo_o_retrasados,
-            promedioCumplimientoCuatrienal=round(suma_cumplimiento / total, 1),
+            promedioCumplimientoCuatrienal=promedio,
             presupuestoTotalAnualCop=suma_presupuesto,
         )
