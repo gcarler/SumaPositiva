@@ -30,7 +30,7 @@ import {useQueryClient} from "@tanstack/react-query";
 import {PanelShell} from "@/core/panels/panel-shell";
 import {usePanels} from "@/core/panels/panel-store";
 import {useMesa, useMesasStore, type MesaInput} from "@/features/mesas/state/mesas-store";
-import {crearMesaRemota} from "@/features/mesas/services/mesas-api";
+import {actualizarMesaRemota, crearMesaRemota} from "@/features/mesas/services/mesas-api";
 import {MESAS_KEYS} from "@/features/mesas/services/use-mesas-queries";
 
 /**
@@ -290,6 +290,14 @@ export function MesaEditorPanel({
 
     if (esEdicion && props.mesaId) {
       actualizarMesa(props.mesaId, mesaPayload);
+      try {
+        const remota = await actualizarMesaRemota(props.mesaId, mesaPayload);
+        if (remota?.id) {
+          actualizarMesa(props.mesaId, remota);
+        }
+      } catch (err) {
+        console.warn("No se pudo persistir la mesa en el servidor:", err);
+      }
       queryClient.invalidateQueries({ queryKey: MESAS_KEYS.all });
       queryClient.invalidateQueries({
         queryKey: MESAS_KEYS.detail(props.mesaId),

@@ -1,6 +1,6 @@
 import { apiFetch } from "@/core/http/api-client";
 import type { MesaDeTrabajo, SubMesa, EstadoMesa } from "@/features/mesas/models/mesas";
-import { useMesasStore } from "@/features/mesas/state/mesas-store";
+import { useMesasStore, type MesaInput } from "@/features/mesas/state/mesas-store";
 
 function normalizarEstado(estado?: string): EstadoMesa {
   const e = (estado || "").toLowerCase();
@@ -194,6 +194,50 @@ export async function crearMesaRemota(datos: {
   };
   const resp = await apiFetch<MesaBackendResponse>("/mesas", {
     method: "POST",
+    body,
+  });
+  return normalizarMesaBackend(resp);
+}
+
+/**
+ * Actualiza los datos de una mesa en el backend remoto (PATCH /mesas/{mesa_id}).
+ */
+export async function actualizarMesaRemota(
+  mesaId: string,
+  datos: Partial<MesaInput>
+): Promise<MesaDeTrabajo> {
+  const body: Record<string, unknown> = {};
+
+  if (datos.nombre !== undefined) body.nombre = datos.nombre;
+  if (datos.lugar !== undefined) {
+    body.lugar = datos.lugar;
+    body.lugar_nombre = datos.lugar;
+  }
+  if (datos.fecha !== undefined) body.fecha = datos.fecha;
+  if (datos.horario !== undefined) body.horario = datos.horario;
+  if (datos.aforo !== undefined) body.aforo_maximo = Number(datos.aforo);
+  if (datos.totalAsistentes !== undefined) body.total_asistentes = Number(datos.totalAsistentes);
+  if (datos.tipoMesa !== undefined) body.tipo_mesa = datos.tipoMesa;
+  if (datos.entidad !== undefined) body.entidad_responsable = datos.entidad;
+  if (datos.facilitador !== undefined) body.facilitador_principal = datos.facilitador;
+
+  const metadatos: Record<string, unknown> = {};
+  if (datos.entidad !== undefined) metadatos.entidad = datos.entidad;
+  if (datos.facilitador !== undefined) metadatos.facilitador = datos.facilitador;
+  if (datos.lugar !== undefined) metadatos.lugar = datos.lugar;
+  if (datos.entidades !== undefined) metadatos.entidades = datos.entidades;
+  if (datos.responsables !== undefined) metadatos.responsables = datos.responsables;
+  if (datos.coordenadas !== undefined) metadatos.coordenadas = datos.coordenadas;
+  if (datos.urlMapa !== undefined) metadatos.urlMapa = datos.urlMapa;
+  if (datos.totalAsistentes !== undefined) metadatos.totalAsistentes = datos.totalAsistentes;
+  if (datos.informe !== undefined) metadatos.informe = datos.informe;
+
+  if (Object.keys(metadatos).length > 0) {
+    body.metadatos = metadatos;
+  }
+
+  const resp = await apiFetch<MesaBackendResponse>(`/mesas/${mesaId}`, {
+    method: "PATCH",
     body,
   });
   return normalizarMesaBackend(resp);

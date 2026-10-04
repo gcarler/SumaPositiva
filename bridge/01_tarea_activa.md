@@ -3,7 +3,7 @@
 **Última actualización**: 2026-10-04  
 **Responsable activo**: agy2 (EDD)  
 **Auditor independiente**: EAF  
-**Tarea en curso / entregada**: `AUD-18` (Matriz de evidencia de editabilidad/configurabilidad, backlog formal de huecos y subsanación OBS-20 en runbook)
+**Tarea en curso / entregada**: `EDIT-01` (Persistencia Backend para Edición de Metadatos de Mesas de Trabajo)
 
 ---
 
@@ -28,7 +28,19 @@
 | **AUD-15** | Erradicación de mocks en stores de producción | **CONFORME** | `2c6af60`: Retiro de `MESAS_MOCK` y `AGENDA_INICIAL`. |
 | **AUD-16** | Endurecimiento ESLint (`no-unused-vars` error, `ban-ts-comment` error) y barrido de docs/ | **CONFORME CON OBS-19** | `9faa78e`: 0 errores, 0 warnings. OBS-19: exclusión de noticias/testimonios a retirar al cerrar Codex. |
 | **AUD-17** | Runbook de despliegue en producción, plan de consolidación git y corrección de contadores | **CONFORME CON OBS-20** | `b5f3ca6`: Subsanada OBS-20 haciendo condicional el paso de migraciones. |
-| **AUD-18** | Matriz pericial de evidencia de editabilidad/configurabilidad y backlog de huecos | **ENTREGADA / LISTA PARA AUDITAR** | Matriz con evidencia archivo:línea y tests para 10 capacidades, `bridge/04_backlog_editabilidad.md` y subsanación OBS-20 en runbook. |
+| **AUD-18** | Matriz pericial de evidencia de editabilidad/configurabilidad y backlog de huecos | **CONFORME** | `f41fd90`: Matriz con evidencia archivo:línea y tests para 10 capacidades, `bridge/04_backlog_editabilidad.md` y subsanación OBS-20 en runbook. |
+
+---
+
+## Backlog de Editabilidad y Configurabilidad (EDIT-01 .. EDIT-05)
+
+| ID | Prioridad | Tarea / Alcance | Estado | Pruebas / Validación |
+|:---|:---:|:---|:---:|:---|
+| **EDIT-01** | **ALTA** | Persistencia Backend para Edición de Metadatos de Mesas (`PATCH /api/v1/mesas/{id}`) | **ENTREGADA / LISTA PARA AUDITAR** | `test_mesas_ltree.py::test_actualizar_mesa_persistencia`, `mesas-api.test.ts`, `bun run check`. |
+| **EDIT-02** | **MEDIA** | Modelo Relacional y CRUD Dinámico de Agenda de Mesas | **PENDIENTE** | Siguiente en orden de ejecución. |
+| **EDIT-03** | **MEDIA** | Persistencia en PostgreSQL para Catálogo de Fuentes de Información | **PENDIENTE** | Siguiente en orden de ejecución. |
+| **EDIT-04** | **BAJA** | Endpoint de Actualización Controlada para Fichas Técnicas DNP | **PENDIENTE** | Siguiente en orden de ejecución. |
+| **EDIT-05** | **BAJA** | Integración y Cierre de Módulos de Noticias y Testimonios (Codex) | **BLOQUEADA (CODEX)** | No tocar archivos de Codex. |
 
 ---
 
@@ -36,3 +48,4 @@
 - **Entrega de agy2**: `bridge/02_entrega_agy2.md`
 - **Dictámenes de EAF**: `bridge/03_dictamen_revision.md`
 - **Backlog de Editabilidad**: `bridge/04_backlog_editabilidad.md`
+- **Especificaciones de Tareas EDIT**: `bridge/01_tarea_agy2_edit_01.md` .. `05.md`

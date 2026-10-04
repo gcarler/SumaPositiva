@@ -16,6 +16,7 @@ from app.modules.mesas.schemas import (
     ActaCierre,
     ActaCrear,
     ActaRespuesta,
+    MesaActualizar,
     MesaCrear,
     MesaRespuesta,
     ParticipanteCrear,
@@ -148,6 +149,70 @@ class MesaService:
 
             mesa_creada = await self.repository.crear(mesa)
             return MesaRespuesta.model_validate(mesa_creada)
+
+    async def actualizar_mesa(self, mesa_id: uuid.UUID, datos: MesaActualizar) -> MesaRespuesta:
+        async with transaction(self.repository.session):
+            mesa = await self.repository.obtener_para_actualizar(mesa_id)
+            if not mesa:
+                raise HTTPException(status.HTTP_404_NOT_FOUND, detail="Mesa no encontrada")
+
+            if datos.nombre is not None:
+                mesa.nombre = datos.nombre
+
+            lugar = datos.lugar_nombre if datos.lugar_nombre is not None else datos.lugar
+            if lugar is not None:
+                mesa.lugar_nombre = lugar
+
+            if datos.fecha is not None:
+                mesa.fecha = datos.fecha
+
+            if datos.horario is not None:
+                mesa.horario = datos.horario
+
+            aforo = datos.aforo_maximo if datos.aforo_maximo is not None else datos.aforo_esperado
+            if aforo is not None:
+                mesa.aforo_maximo = aforo
+
+            if datos.total_asistentes is not None:
+                mesa.total_asistentes = datos.total_asistentes
+
+            if datos.modalidad is not None:
+                mesa.modalidad = datos.modalidad
+
+            if datos.estado is not None:
+                mesa.estado = datos.estado
+
+            if datos.tipo_mesa is not None:
+                mesa.tipo_mesa = datos.tipo_mesa
+
+            if datos.linea_id is not None:
+                mesa.linea_id = datos.linea_id
+
+            if datos.dimension_id is not None:
+                mesa.dimension_id = datos.dimension_id
+
+            if datos.territorio_id is not None:
+                mesa.territorio_id = datos.territorio_id
+
+            if datos.facilitador_id is not None:
+                mesa.facilitador_id = datos.facilitador_id
+
+            # Sincronización y combinación atómica de metadatos JSONB
+            nuevos_metadatos = dict(mesa.metadatos or {})
+            if datos.metadatos is not None:
+                nuevos_metadatos.update(datos.metadatos)
+            if datos.entidad_responsable is not None:
+                nuevos_metadatos["entidad"] = datos.entidad_responsable
+            if datos.facilitador_principal is not None:
+                nuevos_metadatos["facilitador"] = datos.facilitador_principal
+            if lugar is not None:
+                nuevos_metadatos["lugar"] = lugar
+            mesa.metadatos = nuevos_metadatos
+
+            mesa.actualizado_en = datetime.now(UTC)
+
+            mesa_actualizada = await self.repository.actualizar_mesa(mesa)
+            return MesaRespuesta.model_validate(mesa_actualizada)
 
     async def obtener_mesa(self, mesa_id: uuid.UUID) -> MesaRespuesta:
         mesa = await self.repository.obtener_por_id(mesa_id)

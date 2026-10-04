@@ -114,3 +114,79 @@ async def test_mesas_ltree_jerarquia(database_url: str, cabeceras_gestion):
         assert resp_individual.status_code == 200
         assert resp_individual.json()["id"] == raiz_id
         assert resp_individual.json()["codigo_oficial"] == f"MT-{test_id}"
+
+
+async def test_actualizar_mesa_persistencia(database_url: str, cabeceras_gestion):
+    """EDIT-01: Verifica persistencia remota de edición de metadatos de mesas en PostgreSQL."""
+    settings = Settings(_env_file=None, environment="test", database_url=database_url)
+    app = create_app(settings)
+
+    with TestClient(app, headers=cabeceras_gestion) as client:
+        test_id = uuid.uuid4().hex[:6]
+
+        # 1. Crear mesa inicial
+        resp_crear = client.post(
+            "/api/v1/mesas",
+            json={
+                "tipo_mesa": "TERRITORIAL",
+                "codigo_oficial": f"MT-{test_id}-EDIT",
+                "shortcode_ciudadano": f"MT{test_id}E",
+                "nombre": "Mesa Territorial Original",
+                "lugar_nombre": "Colegio Mayor de Bolivar",
+                "fecha": "2026-10-10",
+                "horario": "08:00 - 12:00",
+                "aforo_maximo": 50,
+                "estado": "PROGRAMADA",
+                "modalidad": "PRESENCIAL",
+            },
+        )
+        assert resp_crear.status_code == 201
+        mesa = resp_crear.json()
+        mesa_id = mesa["id"]
+
+        # 2. Actualizar metadatos mediante PATCH
+        datos_actualizacion = {
+            "nombre": "Mesa Territorial San Francisco - Movilidad y Convivencia",
+            "lugar": "Centro Cultural Las Palmeras, Salon Comunal",
+            "fecha": "2026-10-15",
+            "horario": "09:00 - 13:00",
+            "aforo_esperado": 85,
+            "entidad_responsable": "Secretaria del Interior y Convivencia",
+            "facilitador_principal": "Dra. Patricia Gomez",
+            "modalidad": "HIBRIDA_DIGITAL",
+        }
+
+        resp_patch = client.patch(f"/api/v1/mesas/{mesa_id}", json=datos_actualizacion)
+        assert resp_patch.status_code == 200
+        mesa_actualizada = resp_patch.json()
+
+        assert mesa_actualizada["id"] == mesa_id
+        assert mesa_actualizada["nombre"] == "Mesa Territorial San Francisco - Movilidad y Convivencia"
+        assert mesa_actualizada["lugar_nombre"] == "Centro Cultural Las Palmeras, Salon Comunal"
+        assert mesa_actualizada["fecha"] == "2026-10-15"
+        assert mesa_actualizada["horario"] == "09:00 - 13:00"
+        assert mesa_actualizada["aforo_maximo"] == 85
+        assert mesa_actualizada["modalidad"] == "HIBRIDA_DIGITAL"
+        assert mesa_actualizada["metadatos"]["entidad"] == "Secretaria del Interior y Convivencia"
+        assert mesa_actualizada["metadatos"]["facilitador"] == "Dra. Patricia Gomez"
+        assert mesa_actualizada["metadatos"]["lugar"] == "Centro Cultural Las Palmeras, Salon Comunal"
+
+        # 3. Verificar persistencia tras recarga mediante GET directo a BD
+        resp_get = client.get(f"/api/v1/mesas/{mesa_id}")
+        assert resp_get.status_code == 200
+        mesa_persistida = resp_get.json()
+
+        assert mesa_persistida["nombre"] == "Mesa Territorial San Francisco - Movilidad y Convivencia"
+        assert mesa_persistida["lugar_nombre"] == "Centro Cultural Las Palmeras, Salon Comunal"
+        assert mesa_persistida["fecha"] == "2026-10-15"
+        assert mesa_persistida["horario"] == "09:00 - 13:00"
+        assert mesa_persistida["aforo_maximo"] == 85
+        assert mesa_persistida["modalidad"] == "HIBRIDA_DIGITAL"
+        assert mesa_persistida["metadatos"]["entidad"] == "Secretaria del Interior y Convivencia"
+        assert mesa_persistida["metadatos"]["facilitador"] == "Dra. Patricia Gomez"
+
+        # 4. Manejo de errores: 404 si la mesa no existe
+        random_id = str(uuid.uuid4())
+        resp_404 = client.patch(f"/api/v1/mesas/{random_id}", json={"nombre": "No existe"})
+        assert resp_404.status_code == 404
+        assert "no encontrada" in resp_404.json()["detail"].lower()

@@ -1856,3 +1856,76 @@ En [`docs/despliegue-produccion.md`](../docs/despliegue-produccion.md), se actua
 | **Restricción de Ejecución** | N/A | No se ejecutaron migraciones sobre `bd_csh`, no se hizo `git push`, y no se corrieron suites de `pytest` ni `check:e2e`. |
 
 
+
+
+---
+
+## Entrega de Tarea: EDIT-01 — Persistencia Backend para Edición de Metadatos de Mesas de Trabajo
+
+**Fecha**: 2026-10-04  
+**Responsable**: agy2 (EDD)  
+**Auditor independiente**: EAF  
+**Prioridad**: ALTA  
+**Estado**: Entregado y listo para auditoría pericial  
+**Especificación**: `bridge/01_tarea_agy2_edit_01.md` / `bridge/04_backlog_editabilidad.md` (Ítem 1)
+
+---
+
+### 1. Resumen Ejecutivo de la Tarea EDIT-01
+
+En cumplimiento estricto de la directiva de editabilidad de la plataforma, se subsanó el hueco de persistencia identificado en AUD-18 respecto a las Mesas de Trabajo:
+
+1. **Diagnóstico Resuelto**:
+   - Anteriormente, en `src/features/mesas/panels/mesa-editor-panel.tsx:291-302`, al guardar la edición de una mesa existente (`esEdicion === true`), el formulario únicamente mutaba el estado en memoria de Zustand (`actualizarMesa(...)`).
+   - Dado que el backend carecía de endpoint de actualización REST (`PATCH` o `PUT`), al reiniciar la sesión o recargar el navegador (`F5`), la mesa retornaba a sus valores originales en PostgreSQL.
+
+2. **Implementación de Extremo a Extremo**:
+   - **Backend Schema (`backend/app/modules/mesas/schemas.py`)**:
+     - Se definió `MesaActualizar(BaseModel)` con campos opcionales validados: `nombre`, `lugar_nombre`, `lugar`, `fecha`, `horario`, `aforo_maximo`, `aforo_esperado`, `total_asistentes`, `modalidad`, `estado`, `tipo_mesa`, `linea_id`, `dimension_id`, `territorio_id`, `facilitador_id`, `entidad_responsable`, `facilitador_principal` y `metadatos`.
+   - **Backend Servicio y Transaccionalidad (`backend/app/modules/mesas/service.py`)**:
+     - Se implementó `actualizar_mesa(mesa_id, datos)` dentro del bloque seguro `async with transaction(session)`.
+     - Utiliza `MesaRepository.obtener_para_actualizar(mesa_id)` (`SELECT ... FOR UPDATE`) para evitar condiciones de carrera concurrentes.
+     - Gestiona la asignación atómica de atributos escalares y la combinación segura del diccionario JSONB de `metadatos` (preservando configuraciones preexistentes e incorporando entidad convocante, facilitador institucional y ubicación).
+     - Actualiza el sello temporal `actualizado_en` a `datetime.now(UTC)`.
+     - Conecta directamente con el repositorio preexistente `MesaRepository.actualizar_mesa(mesa)`.
+   - **Backend Router API (`backend/app/modules/mesas/router.py`)**:
+     - Se expuso el endpoint `PATCH /api/v1/mesas/{mesa_id}`, respondiendo con `MesaRespuesta`.
+     - Blindado con la dependencia institucional `Depends(requerir_permiso("mesas:abrir", nivel_minimo="declarada"))`.
+   - **Frontend API Client (`src/features/mesas/services/mesas-api.ts`)**:
+     - Se implementó la función exportada `actualizarMesaRemota(mesaId, datos)` que construye el payload serializable, envía la petición HTTP `PATCH /mesas/{mesaId}` vía `apiFetch` y normaliza la respuesta con `normalizarMesaBackend`.
+   - **Frontend Panel Binding (`src/features/mesas/panels/mesa-editor-panel.tsx`)**:
+     - En la función `guardar()` para `esEdicion && props.mesaId`, se incorporó la llamada asíncrona a `await actualizarMesaRemota(props.mesaId, mesaPayload)`.
+     - Mantiene reactividad optimista instantánea en el store local Zustand y sincroniza con los datos devueltos por el servidor.
+     - Invalida selectivamente las queries de React Query (`MESAS_KEYS.all` y `MESAS_KEYS.detail`) para refrescar las listas y vistas en tiempo real.
+
+---
+
+### 2. Matriz de Archivos Creados y Modificados (EDIT-01)
+
+| Archivo | Tipo de Intervención | Descripción de la Modificación |
+|---|---|---|
+| `backend/app/modules/mesas/schemas.py` | **Modificación** | Incorporación del schema Pydantic `MesaActualizar` con tipado estricto y validaciones de rango. |
+| `backend/app/modules/mesas/service.py` | **Modificación** | Implementación del método transaccional `actualizar_mesa` con bloqueo pesimista y fusión de metadatos. |
+| `backend/app/modules/mesas/router.py` | **Modificación** | Exposición del endpoint `PATCH /api/v1/mesas/{mesa_id}` con control de acceso `mesas:abrir`. |
+| `backend/tests/test_mesas_ltree.py` | **Modificación** | Adición del test `test_actualizar_mesa_persistencia` validando ciclo completo, persistencia en BD y error 404. |
+| `src/features/mesas/services/mesas-api.ts` | **Modificación** | Función cliente `actualizarMesaRemota(mesaId, datos)` tipada con `Partial<MesaInput>`. |
+| `src/features/mesas/services/mesas-api.test.ts` | **Nuevo archivo** | Pruebas unitarias de consumo HTTP `PATCH` y normalización de mesas de trabajo. |
+| `src/features/mesas/panels/mesa-editor-panel.tsx` | **Modificación** | Conexión asíncrona de `actualizarMesaRemota` en el flujo de guardado de edición. |
+| `bridge/01_tarea_activa.md` | **Modificación** | Actualización de estado: AUD-18 CONFORME, EDIT-01 entregada y backlog de editabilidad reflejado. |
+| `bridge/02_entrega_agy2.md` | **Modificación** | Registro pericial completo de la entrega EDIT-01. |
+
+---
+
+### 3. Matriz de Quality Gates y Verificación Pericial (EDIT-01)
+
+| Quality Gate | Comando de Validación | Resultado Pericial |
+|---|---|---|
+| **Pruebas Backend Pytest (`polis_test`)** | `backend/.venv/bin/pytest backend/tests/test_mesas_ltree.py` | **2 passed in 4.44s** (`test_mesas_ltree_jerarquia` y `test_actualizar_mesa_persistencia`). |
+| **Pruebas Frontend Mesas API** | `bun test src/features/mesas/services/mesas-api.test.ts` | **2 pass, 0 fail (22 expect calls)**. |
+| **Suite Completa Frontend** | `bun test` | **229 pass, 0 fail (1039 expect calls)** en 25 suites de prueba. |
+| **Política de UI POLIS** | `bun run ui:check` (`node scripts/ui-policy.mjs`) | **0 violaciones** (Design Kit, Zero-Modals, semántica y accesibilidad). |
+| **Chequeo de Tipos TypeScript** | `bun run typecheck` (`tsc --noEmit`) | **0 errores** de compilación estricta. |
+| **Linting ESLint** | `bun run lint` (`eslint .`) | **0 errores, 0 advertencias** (con `no-unused-vars: error` y `ban-ts-comment: error`). |
+| **Pipeline Completo Check** | `bun run check` | **100% aprobado** (ui:check, typecheck, lint). |
+| **Aislamiento de Codex** | `git status` | Archivos de codex (`noticias`, `testimonios`, backend) estrictamente intactos. |
+| **Restricción E2E y Migraciones** | N/A | No se ejecutaron migraciones sobre `bd_csh`, no se realizó `git push`, y no se ejecutó suite E2E completa (a la espera de indicación de EAF). |

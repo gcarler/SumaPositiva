@@ -19,6 +19,7 @@ from app.modules.mesas.schemas import (
     FotoMesaModeradaRespuesta,
     FotoMesaRevision,
     FotoMesaSubidaRespuesta,
+    MesaActualizar,
     MesaGeovisorRespuesta,
     MesaCrear,
     MesaRespuesta,
@@ -139,6 +140,19 @@ async def listar_mesas(
 @router.get("/{mesa_id}", response_model=MesaRespuesta)
 async def obtener_mesa(mesa_id: uuid.UUID, service: MesaServiceDep):
     return await service.obtener_mesa(mesa_id)
+
+
+@router.patch(
+    "/{mesa_id}",
+    response_model=MesaRespuesta,
+    dependencies=[Depends(requerir_permiso("mesas:abrir", nivel_minimo="declarada"))],
+)
+async def actualizar_mesa(
+    mesa_id: uuid.UUID,
+    datos: MesaActualizar,
+    service: MesaServiceDep,
+):
+    return await service.actualizar_mesa(mesa_id, datos)
 
 
 @router.get("/{mesa_id}/submesas", response_model=list[MesaRespuesta])

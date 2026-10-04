@@ -35,6 +35,27 @@ class MesaCrear(MesaBase):
     pass
 
 
+class MesaActualizar(BaseModel):
+    nombre: str | None = Field(default=None, min_length=1, max_length=250)
+    lugar_nombre: str | None = Field(default=None, max_length=300)
+    lugar: str | None = Field(default=None, max_length=300)
+    fecha: date | None = None
+    horario: str | None = Field(default=None, max_length=100)
+    aforo_maximo: int | None = Field(default=None, ge=0)
+    aforo_esperado: int | None = Field(default=None, ge=0)
+    total_asistentes: int | None = Field(default=None, ge=0)
+    modalidad: ModalidadLiteral | None = None
+    estado: EstadoMesaLiteral | None = None
+    tipo_mesa: TipoMesaLiteral | None = None
+    linea_id: uuid.UUID | None = None
+    dimension_id: uuid.UUID | None = None
+    territorio_id: uuid.UUID | None = None
+    facilitador_id: uuid.UUID | None = None
+    entidad_responsable: str | None = Field(default=None, max_length=300)
+    facilitador_principal: str | None = Field(default=None, max_length=300)
+    metadatos: dict[str, Any] | None = None
+
+
 class SubMesaCrear(BaseModel):
     slug: str
     nombre: str
