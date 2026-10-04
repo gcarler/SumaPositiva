@@ -334,26 +334,24 @@ export function DevolucionDetallePanel({
                 </div>
               </div>
 
-              {causalInfo && (
-                <div className="rounded-lg border border-border bg-surface-2 p-3 text-xs space-y-2">
-                  <div>
-                    <span className="text-[11px] text-text-muted">Causal Jurídica Taxativa:</span>
-                    <p className="font-semibold text-text-primary mt-0.5">{causalInfo.label}</p>
-                  </div>
-                  <div>
-                    <span className="text-[11px] text-text-muted">Fundamento Legal / Constitucional:</span>
-                    <p className="font-mono text-[11px] text-text-secondary mt-0.5">
-                      {propuesta.norma_invocada ?? causalInfo.norma}
-                    </p>
-                  </div>
-                  <div>
-                    <span className="text-[11px] text-text-muted">Ruta o Canal de Gestión Alternativo:</span>
-                    <p className="text-text-primary font-medium mt-0.5">
-                      {propuesta.ruta_alternativa ?? causalInfo.canalSugerido}
-                    </p>
-                  </div>
+              <div className="rounded-lg border border-border bg-surface-2 p-3 text-xs space-y-2">
+                <div>
+                  <span className="text-[11px] text-text-muted">Causal Jurídica Taxativa:</span>
+                  <p className="font-semibold text-text-primary mt-0.5">{causalInfo?.label ?? "Causal no registrada"}</p>
                 </div>
-              )}
+                <div>
+                  <span className="text-[11px] text-text-muted">Fundamento Legal / Constitucional:</span>
+                  <p className="font-mono text-[11px] text-text-secondary mt-0.5">
+                    {propuesta.norma_invocada ?? causalInfo?.norma ?? "Pendiente de tipificación motivada (Sentencia C-150 de 2015)"}
+                  </p>
+                </div>
+                <div>
+                  <span className="text-[11px] text-text-muted">Ruta o Canal de Gestión Alternativo:</span>
+                  <p className="text-text-primary font-medium mt-0.5">
+                    {propuesta.ruta_alternativa ?? causalInfo?.canalSugerido ?? "Secretaría de Participación y Desarrollo Social"}
+                  </p>
+                </div>
+              </div>
 
               {/* Trazabilidad Forense de Auditoría */}
               {historialDevoluciones[propuesta.id] && historialDevoluciones[propuesta.id].length > 0 && (

@@ -259,12 +259,13 @@ export function mapearAporteAPropuesta(aporte: AporteBackend): PropuestaDevoluci
     estadoIncorporacion = "SIN_RESPUESTA";
   }
 
-  const causal = (aporte.metadatos?.causal as CausalDescarteTaxativa) || (aporte.estado === "rechazado" ? "tecnica" : undefined);
+  const rawCausal = aporte.metadatos?.causal as CausalDescarteTaxativa | undefined;
+  const causal: CausalDescarteTaxativa | undefined =
+    rawCausal || (aporte.estado === "rechazado" ? "no_registrada" : undefined);
   const motivacion =
     (aporte.metadatos?.justificacion_motivada as string) ||
-    (aporte.estado === "rechazado"
-      ? "Esta propuesta presenta inconsistencias metodologicas graves y por lo tanto se rechaza."
-      : undefined);
+    (aporte.metadatos?.motivo as string) ||
+    (aporte.estado === "rechazado" ? "Causal no registrada" : undefined);
 
   const territorio =
     aporte.territorio_nombre ||
@@ -340,22 +341,13 @@ export async function listarAportesReales(): Promise<ResultadoAportesReales> {
       origen: "api",
     };
   } catch (err) {
-    console.warn("Fallo al conectar con /api/v1/aportes, activando contingencia institucional:", err);
-    const respondidos = PROPUESTAS_DEVOLUCION_CARTAGENA.filter(
-      (p) => p.estado_incorporacion !== "SIN_RESPUESTA"
-    ).length;
-    const pendientes = PROPUESTAS_DEVOLUCION_CARTAGENA.length - respondidos;
-    const tasaRespuesta =
-      PROPUESTAS_DEVOLUCION_CARTAGENA.length > 0
-        ? Math.round((respondidos / PROPUESTAS_DEVOLUCION_CARTAGENA.length) * 1000) / 10
-        : 0;
-
+    console.warn("Fallo al conectar con /api/v1/aportes, reportando estado sin conexión:", err);
     return {
-      propuestas: PROPUESTAS_DEVOLUCION_CARTAGENA,
-      total: PROPUESTAS_DEVOLUCION_CARTAGENA.length,
-      respondidos,
-      pendientes,
-      tasaRespuesta,
+      propuestas: [],
+      total: 0,
+      respondidos: 0,
+      pendientes: 0,
+      tasaRespuesta: 0,
       esContingencia: true,
       origen: "contingencia",
     };

@@ -3,30 +3,31 @@ import {
   useDevolucionStore,
   filtrarPropuestas,
 } from "./devolucion-store";
-import { PROPUESTAS_DEVOLUCION_CARTAGENA } from "../services/devolucion-api";
+import {
+  PROPUESTAS_DEVOLUCION_CARTAGENA,
+  CONSOLIDADO_PARTICIPACION_FALLBACK,
+  mapearAporteAPropuesta,
+  type AporteBackend,
+} from "../services/devolucion-api";
 
-describe("Rendición de Cuentas y Devolución Motivada Ciudadana (Hito PAS-3)", () => {
+describe("Rendición de Cuentas y Devolución Motivada Ciudadana (Hito PAS-3 / AUD-03)", () => {
   beforeEach(() => {
     useDevolucionStore.getState().restablecer();
   });
 
-  describe("Proscripción Absoluta del Descarte Silencioso (Sentencia C-150 de 2015)", () => {
-    test("carga exactamente las 8 propuestas comunitarias canónicas de Cartagena", () => {
-      const { propuestas } = useDevolucionStore.getState();
-      expect(propuestas).toHaveLength(8);
+  describe("Fixture Canónico de Devolución (Storybook / Pruebas)", () => {
+    test("contiene exactamente las 8 propuestas comunitarias estructuradas de Cartagena", () => {
+      expect(PROPUESTAS_DEVOLUCION_CARTAGENA).toHaveLength(8);
 
-      const codigos = propuestas.map((p) => p.codigo);
+      const codigos = PROPUESTAS_DEVOLUCION_CARTAGENA.map((p) => p.codigo);
       expect(codigos).toContain("PROP-POZON-01");
       expect(codigos).toContain("PROP-OLAYA-02");
       expect(codigos).toContain("PROP-MANDELA-04");
       expect(codigos).toContain("PROP-BARU-07");
     });
 
-    test("garantiza que el 100% de las propuestas cuentan con estado explícito y razón vinculante", () => {
-      const { propuestas } = useDevolucionStore.getState();
-
-      for (const p of propuestas) {
-        // Ninguna propuesta queda en estado indefinido o descartada sin razón
+    test("garantiza que el 100% de las propuestas del fixture cuentan con estado explícito y razón vinculante", () => {
+      for (const p of PROPUESTAS_DEVOLUCION_CARTAGENA) {
         expect(["INCORPORADA_TOTAL", "INCORPORADA_PARCIAL", "NO_INCORPORADA_MOTIVADA"]).toContain(
           p.estado_incorporacion
         );
@@ -45,17 +46,11 @@ describe("Rendición de Cuentas y Devolución Motivada Ciudadana (Hito PAS-3)", 
   });
 
   describe("Consolidado Estadístico Multicanal de Cartagena", () => {
-    test("computa métricas de participación y tasa de incorporación", () => {
-      const { consolidado } = useDevolucionStore.getState();
-
-      expect(consolidado.gran_total_participantes_distrital).toBe(968);
-      expect(consolidado.total_canal_web).toBe(209);
-      expect(consolidado.total_canal_mesas).toBe(189);
-      expect(consolidado.total_canal_escenarios).toBe(570);
-      expect(consolidado.total_propuestas).toBe(8);
-      expect(consolidado.total_incorporadas).toBe(5);
-      expect(consolidado.total_no_incorporadas).toBe(3);
-      expect(consolidado.tasa_incorporacion_efectiva).toBeGreaterThanOrEqual(60);
+    test("computa métricas de participación oficial", () => {
+      expect(CONSOLIDADO_PARTICIPACION_FALLBACK.gran_total_participantes_distrital).toBe(968);
+      expect(CONSOLIDADO_PARTICIPACION_FALLBACK.total_canal_web).toBe(209);
+      expect(CONSOLIDADO_PARTICIPACION_FALLBACK.total_canal_mesas).toBe(189);
+      expect(CONSOLIDADO_PARTICIPACION_FALLBACK.total_canal_escenarios).toBe(570);
     });
   });
 
@@ -133,13 +128,126 @@ describe("Rendición de Cuentas y Devolución Motivada Ciudadana (Hito PAS-3)", 
     });
   });
 
-  describe("AUD-03: Integración de Aportes Reales y Registro de Devolución Motivada", () => {
-    test("mapea y clasifica propuestas con estado SIN_RESPUESTA", () => {
-      const { propuestas, totalAportes, totalRespondidos, totalPendientes } = useDevolucionStore.getState();
-      expect(totalAportes).toBeGreaterThanOrEqual(8);
-      expect(totalRespondidos + totalPendientes).toBe(totalAportes);
+  describe("OBS-05: Proscripción Absoluta de Cifras Ficticias y Estado Inicial Vacío", () => {
+    test("estado inicial del store es lista vacía, 0 aportes, tasa 0% y cargando=true (OBS-05)", () => {
+      useDevolucionStore.getState().restablecer();
+      const state = useDevolucionStore.getState();
+
+      expect(state.propuestas).toHaveLength(0);
+      expect(state.totalAportes).toBe(0);
+      expect(state.totalRespondidos).toBe(0);
+      expect(state.totalPendientes).toBe(0);
+      expect(state.tasaRespuestaMotivada).toBe(0);
+      expect(state.esContingencia).toBe(false);
+      expect(state.error).toBeNull();
     });
 
+    test("ante fallo de conexión en cargarDatos, establece lista vacía, tasa 0% y error explícito sin inyectar datos ficticios (OBS-05)", async () => {
+      const spyApi = vi.spyOn(
+        await import("../services/devolucion-api"),
+        "listarAportesReales"
+      ).mockResolvedValueOnce({
+        propuestas: [],
+        total: 0,
+        respondidos: 0,
+        pendientes: 0,
+        tasaRespuesta: 0,
+        esContingencia: true,
+        origen: "contingencia",
+      });
+
+      const store = useDevolucionStore.getState();
+      await store.cargarDatos();
+
+      const state = useDevolucionStore.getState();
+      expect(state.propuestas).toHaveLength(0);
+      expect(state.totalAportes).toBe(0);
+      expect(state.totalRespondidos).toBe(0);
+      expect(state.totalPendientes).toBe(0);
+      expect(state.tasaRespuestaMotivada).toBe(0);
+      expect(state.esContingencia).toBe(true);
+      expect(state.error).toContain("Sin conexión");
+      expect(state.cargando).toBe(false);
+
+      spyApi.mockRestore();
+    });
+
+    test("restablecer devuelve el store a lista vacía y 0 en todas las cifras (OBS-05)", () => {
+      useDevolucionStore.setState({
+        propuestas: PROPUESTAS_DEVOLUCION_CARTAGENA,
+        totalAportes: 8,
+        totalRespondidos: 5,
+        totalPendientes: 3,
+        tasaRespuestaMotivada: 62.5,
+      });
+
+      useDevolucionStore.getState().restablecer();
+
+      const state = useDevolucionStore.getState();
+      expect(state.propuestas).toHaveLength(0);
+      expect(state.totalAportes).toBe(0);
+      expect(state.totalRespondidos).toBe(0);
+      expect(state.totalPendientes).toBe(0);
+      expect(state.tasaRespuestaMotivada).toBe(0);
+    });
+  });
+
+  describe("OBS-06: Prohibición de Asumir Causal Técnica si Falta en Metadatos", () => {
+    test("mapearAporteAPropuesta asigna 'no_registrada' y no inventa 'tecnica' cuando un aporte rechazado carece de causal (OBS-06)", () => {
+      const aporteRechazadoSinCausal: AporteBackend = {
+        id: "01a0f7c7-73b0-73e5-a155-bbbadca96658",
+        tipo_aporte: "propuesta",
+        titulo: "Propuesta de Seguridad en Barú",
+        descripcion: "Instalación de cámaras y patrullajes marítimos en corregimientos insulares.",
+        autor_nombre: "Líder Comunitario",
+        es_anonimo: false,
+        estado: "rechazado",
+        activo: true,
+        apoyos_contador: 12,
+        territorio_nombre: "Isla de Barú",
+        metadatos: {}, // Sin causal en metadatos
+        creado_en: "2026-03-20T10:00:00Z",
+        actualizado_en: "2026-03-25T12:00:00Z",
+      };
+
+      const propuesta = mapearAporteAPropuesta(aporteRechazadoSinCausal);
+
+      expect(propuesta.estado_incorporacion).toBe("NO_INCORPORADA_MOTIVADA");
+      // OBS-06: PROHIBIDO inventar "tecnica"
+      expect(propuesta.causal_descarte).toBe("no_registrada");
+      expect(propuesta.causal_descarte).not.toBe("tecnica");
+      expect(propuesta.motivacion_sustancial).toBe("Causal no registrada");
+    });
+
+    test("mapearAporteAPropuesta preserva la causal explícita cuando sí está presente en metadatos", () => {
+      const aporteConCausalExplicita: AporteBackend = {
+        id: "01a0f7c7-73b0-73e5-a155-bbbadca96659",
+        tipo_aporte: "propuesta",
+        titulo: "Reforma al Código Penal en Cartagena",
+        descripcion: "Modificación de penas privativas de la libertad.",
+        autor_nombre: "Colectivo Jurídico",
+        es_anonimo: false,
+        estado: "rechazado",
+        activo: true,
+        apoyos_contador: 5,
+        territorio_nombre: "Centro Histórico",
+        metadatos: {
+          causal: "juridica",
+          justificacion_motivada: "La materia penal corresponde a reserva de ley estatutaria y competencia exclusiva del Congreso.",
+        },
+        creado_en: "2026-03-20T10:00:00Z",
+        actualizado_en: "2026-03-25T12:00:00Z",
+      };
+
+      const propuesta = mapearAporteAPropuesta(aporteConCausalExplicita);
+
+      expect(propuesta.estado_incorporacion).toBe("NO_INCORPORADA_MOTIVADA");
+      expect(propuesta.causal_descarte).toBe("juridica");
+      expect(propuesta.motivacion_sustancial).toContain("reserva de ley estatutaria");
+    });
+  });
+
+  describe("AUD-03: Integración de Aportes Reales y Registro de Devolución Motivada", () => {
     test("filtra por estado SIN_RESPUESTA correctamente", () => {
       const propuestasConSinRespuesta = [
         ...PROPUESTAS_DEVOLUCION_CARTAGENA,

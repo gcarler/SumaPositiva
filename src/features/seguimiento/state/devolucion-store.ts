@@ -99,21 +99,17 @@ export interface DevolucionStoreState {
 }
 
 export const useDevolucionStore = create<DevolucionStoreState>((set, get) => ({
-  propuestas: PROPUESTAS_DEVOLUCION_CARTAGENA,
+  propuestas: [],
   consolidado: CONSOLIDADO_PARTICIPACION_FALLBACK,
-  cargando: false,
+  cargando: true,
   guardando: false,
   error: null,
   esContingencia: false,
   origenDatos: "api",
-  totalAportes: PROPUESTAS_DEVOLUCION_CARTAGENA.length,
-  totalRespondidos: PROPUESTAS_DEVOLUCION_CARTAGENA.filter(
-    (p) => p.estado_incorporacion !== "SIN_RESPUESTA"
-  ).length,
-  totalPendientes: PROPUESTAS_DEVOLUCION_CARTAGENA.filter(
-    (p) => p.estado_incorporacion === "SIN_RESPUESTA"
-  ).length,
-  tasaRespuestaMotivada: 62.5,
+  totalAportes: 0,
+  totalRespondidos: 0,
+  totalPendientes: 0,
+  tasaRespuestaMotivada: 0,
   filtros: FILTROS_INICIALES_DEVOLUCION,
   propuestaSeleccionadaId: null,
   historialDevoluciones: {},
@@ -128,6 +124,21 @@ export const useDevolucionStore = create<DevolucionStoreState>((set, get) => ({
         listarAportesReales(),
       ]);
 
+      if (resAportes.esContingencia) {
+        set({
+          propuestas: [],
+          totalAportes: 0,
+          totalRespondidos: 0,
+          totalPendientes: 0,
+          tasaRespuestaMotivada: 0,
+          esContingencia: true,
+          origenDatos: "contingencia",
+          cargando: false,
+          error: "Sin conexión, no hay datos disponibles del servidor central",
+        });
+        return;
+      }
+
       set({
         consolidado: {
           ...consolidado,
@@ -141,13 +152,21 @@ export const useDevolucionStore = create<DevolucionStoreState>((set, get) => ({
         totalRespondidos: resAportes.respondidos,
         totalPendientes: resAportes.pendientes,
         tasaRespuestaMotivada: resAportes.tasaRespuesta,
-        esContingencia: resAportes.esContingencia,
-        origenDatos: resAportes.origen,
+        esContingencia: false,
+        origenDatos: "api",
         cargando: false,
       });
     } catch (err) {
       set({
-        error: err instanceof Error ? err.message : "Error al cargar datos de devolución",
+        propuestas: [],
+        totalAportes: 0,
+        totalRespondidos: 0,
+        totalPendientes: 0,
+        tasaRespuestaMotivada: 0,
+        error:
+          err instanceof Error
+            ? err.message
+            : "Sin conexión, no hay datos disponibles del servidor central",
         cargando: false,
         esContingencia: true,
         origenDatos: "contingencia",
@@ -279,21 +298,17 @@ export const useDevolucionStore = create<DevolucionStoreState>((set, get) => ({
 
   restablecer: () => {
     set({
-      propuestas: PROPUESTAS_DEVOLUCION_CARTAGENA,
+      propuestas: [],
       consolidado: CONSOLIDADO_PARTICIPACION_FALLBACK,
       cargando: false,
       guardando: false,
       error: null,
       esContingencia: false,
       origenDatos: "api",
-      totalAportes: PROPUESTAS_DEVOLUCION_CARTAGENA.length,
-      totalRespondidos: PROPUESTAS_DEVOLUCION_CARTAGENA.filter(
-        (p) => p.estado_incorporacion !== "SIN_RESPUESTA"
-      ).length,
-      totalPendientes: PROPUESTAS_DEVOLUCION_CARTAGENA.filter(
-        (p) => p.estado_incorporacion === "SIN_RESPUESTA"
-      ).length,
-      tasaRespuestaMotivada: 62.5,
+      totalAportes: 0,
+      totalRespondidos: 0,
+      totalPendientes: 0,
+      tasaRespuestaMotivada: 0,
       filtros: FILTROS_INICIALES_DEVOLUCION,
       propuestaSeleccionadaId: null,
       historialDevoluciones: {},

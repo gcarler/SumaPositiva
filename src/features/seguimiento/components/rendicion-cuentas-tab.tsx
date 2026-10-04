@@ -298,10 +298,10 @@ export function RendicionCuentasTab({ puedeEditar }: RendicionCuentasTabProps) {
           <AlertTriangle className="h-5 w-5 shrink-0 text-warning mt-0.5" />
           <div className="space-y-1">
             <span className="font-semibold text-warning text-sm">
-              Modo Contingencia Activo: Catálogo de Contingencia (8 propuestas)
+              Sin conexión con el servidor central
             </span>
             <p className="text-text-secondary leading-relaxed pt-0.5">
-              No fue posible recuperar los 179 aportes en vivo desde /api/v1/aportes. Se ha activado el catálogo institucional de contingencia con trazabilidad territorial.
+              No fue posible recuperar los aportes en vivo desde /api/v1/aportes. La plataforma de control social no presenta datos ni cifras ficticias en cumplimiento estricto del mandato de integridad forense.
             </p>
           </div>
         </div>
@@ -528,7 +528,7 @@ export function RendicionCuentasTab({ puedeEditar }: RendicionCuentasTabProps) {
                       ) : (
                         <div className="flex flex-col gap-0.5 text-xs">
                           <span className="font-semibold text-danger">
-                            {infoCausal?.label ?? "No incorporada"}
+                            {infoCausal?.label ?? "Causal no registrada"}
                           </span>
                           <span className="line-clamp-1 text-[11px] text-text-muted">
                             {p.motivacion_sustancial ?? infoCausal?.norma}

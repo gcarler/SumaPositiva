@@ -18,7 +18,8 @@ export type CausalDescarteTaxativa =
   | "INCOMPATIBILIDAD_NORMATIVA"
   | "tecnica"
   | "juridica"
-  | "presupuestal";
+  | "presupuestal"
+  | "no_registrada";
 
 export interface PropuestaDevolucion {
   id: string;
@@ -116,6 +117,12 @@ export const CAUSALES_DESCARTE_INFO: Record<
     norma: "Ley 819 de 2003 (Marco Fiscal de Mediano Plazo) y Decreto 111/96",
     canalSugerido: "Secretaría de Hacienda Distrital / Presupuesto Participativo",
     descripcion: "Supera el techo presupuestal distrital o carece de fuente de financiación compatible con el MFMP.",
+  },
+  no_registrada: {
+    label: "Causal no registrada",
+    norma: "Pendiente de tipificación motivada (Sentencia C-150 de 2015)",
+    canalSugerido: "Secretaría de Participación y Desarrollo Social",
+    descripcion: "La propuesta comunitaria fue desestimada sin asentar la causal taxativa en los metadatos oficiales.",
   },
 };
 
