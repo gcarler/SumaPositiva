@@ -65,6 +65,28 @@ class FichaTecnicaIndicador(Base):
         DateTime(timezone=True), server_default=text("clock_timestamp()"), nullable=False
     )
 
+    @property
+    def tiene_mediciones(self) -> bool:
+        if isinstance(self.metadatos, dict) and self.metadatos.get("tiene_mediciones") is not None:
+            return bool(self.metadatos.get("tiene_mediciones"))
+        return float(self.valor_actual or 0) > 0 or float(self.porcentaje_avance or 0) > 0
+
+    @property
+    def fecha_corte_ultimo_reporte(self) -> Any:
+        if isinstance(self.metadatos, dict) and self.metadatos.get("fecha_corte_ultimo_reporte"):
+            try:
+                from datetime import date
+                return date.fromisoformat(str(self.metadatos["fecha_corte_ultimo_reporte"]))
+            except Exception:
+                return None
+        return None
+
+    @property
+    def periodo_ultimo_reporte(self) -> str | None:
+        if isinstance(self.metadatos, dict):
+            return self.metadatos.get("periodo_ultimo_reporte")
+        return None
+
 
 class MedicionIndicador(Base):
     __tablename__ = "mediciones_indicador"

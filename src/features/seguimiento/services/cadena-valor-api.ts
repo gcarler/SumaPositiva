@@ -7,6 +7,12 @@ import type {
 } from "../models/indicador-dnp";
 import { calcularAvancePorcentaje } from "../models/indicador-dnp";
 
+export interface CadenaValorRespuestaApi {
+  datos: CadenaValorData;
+  esContingencia: boolean;
+  origen: "api" | "contingencia";
+}
+
 export const CADENA_VALOR_CANONICA_CARTAGENA: CadenaValorData = {
   insumo: [
     {
@@ -31,6 +37,9 @@ export const CADENA_VALOR_CANONICA_CARTAGENA: CadenaValorData = {
       metadatos: { programa_dnp: "Seguridad y Convivencia Ciudadana" },
       valor_actual: 2500000000,
       porcentaje_avance: 50,
+      tiene_mediciones: true,
+      fecha_corte_ultimo_reporte: "2026-03-31",
+      periodo_ultimo_reporte: "2026-Q1",
       creado_en: "2026-10-01T14:11:20.704899Z",
       actualizado_en: "2026-10-01T14:11:20.704899Z",
     },
@@ -54,8 +63,11 @@ export const CADENA_VALOR_CANONICA_CARTAGENA: CadenaValorData = {
       fuente_datos: "Secotic / Distriseguridad",
       responsable_reporte: "Secretaría del Interior",
       metadatos: { tecnologia: "LPR y Videoanalítica" },
-      valor_actual: 500000000,
-      porcentaje_avance: 0,
+      valor_actual: 950000000,
+      porcentaje_avance: 30,
+      tiene_mediciones: true,
+      fecha_corte_ultimo_reporte: "2026-06-30",
+      periodo_ultimo_reporte: "2026-S1",
       creado_en: "2026-10-01T14:11:20.705258Z",
       actualizado_en: "2026-10-01T14:11:20.705258Z",
     },
@@ -81,8 +93,11 @@ export const CADENA_VALOR_CANONICA_CARTAGENA: CadenaValorData = {
       fuente_datos: "Policía Metropolitana de Cartagena (MECAR)",
       responsable_reporte: "Distriseguridad",
       metadatos: { tipo_cobertura: "Barrios vulnerables y UCG críticas" },
-      valor_actual: 55,
-      porcentaje_avance: 18.18,
+      valor_actual: 58,
+      porcentaje_avance: 23.64,
+      tiene_mediciones: true,
+      fecha_corte_ultimo_reporte: "2026-06-30",
+      periodo_ultimo_reporte: "2026-S1",
       creado_en: "2026-10-01T14:11:20.705280Z",
       actualizado_en: "2026-10-01T14:11:20.705280Z",
     },
@@ -106,8 +121,11 @@ export const CADENA_VALOR_CANONICA_CARTAGENA: CadenaValorData = {
       fuente_datos: "Concesión de Alumbrado Público Cartagena",
       responsable_reporte: "Secretaría General (Alumbrado Público)",
       metadatos: { sector: "Infraestructura Urbana" },
-      valor_actual: 2400,
-      porcentaje_avance: 25,
+      valor_actual: 2640,
+      porcentaje_avance: 30,
+      tiene_mediciones: true,
+      fecha_corte_ultimo_reporte: "2026-06-30",
+      periodo_ultimo_reporte: "2026-Q2",
       creado_en: "2026-10-01T14:11:20.705292Z",
       actualizado_en: "2026-10-01T14:11:20.705292Z",
     },
@@ -131,8 +149,11 @@ export const CADENA_VALOR_CANONICA_CARTAGENA: CadenaValorData = {
       fuente_datos: "Secotic / Secretaría de Participación",
       responsable_reporte: "Secretaría de Participación y Desarrollo Social",
       metadatos: { poblacion_focalizada: "Jóvenes en riesgo de pandillismo" },
-      valor_actual: 1250,
-      porcentaje_avance: 30,
+      valor_actual: 1350,
+      porcentaje_avance: 34,
+      tiene_mediciones: true,
+      fecha_corte_ultimo_reporte: "2026-06-30",
+      periodo_ultimo_reporte: "2026-S1",
       creado_en: "2026-10-01T14:11:20.705303Z",
       actualizado_en: "2026-10-01T14:11:20.705303Z",
     },
@@ -160,6 +181,9 @@ export const CADENA_VALOR_CANONICA_CARTAGENA: CadenaValorData = {
       metadatos: { tipo_impacto: "Vida e Integridad" },
       valor_actual: 28.75,
       porcentaje_avance: 50,
+      tiene_mediciones: true,
+      fecha_corte_ultimo_reporte: "2026-08-31",
+      periodo_ultimo_reporte: "2026-08",
       creado_en: "2026-10-01T14:11:20.705314Z",
       actualizado_en: "2026-10-01T14:11:20.705314Z",
     },
@@ -183,8 +207,11 @@ export const CADENA_VALOR_CANONICA_CARTAGENA: CadenaValorData = {
       fuente_datos: "SIEDCO - Policía Nacional",
       responsable_reporte: "Secretaría del Interior y Convivencia",
       metadatos: { tipo_impacto: "Seguridad Ciudadana" },
-      valor_actual: 390.1,
-      porcentaje_avance: 40.01,
+      valor_actual: 385.0,
+      porcentaje_avance: 43.41,
+      tiene_mediciones: true,
+      fecha_corte_ultimo_reporte: "2026-08-31",
+      periodo_ultimo_reporte: "2026-08",
       creado_en: "2026-10-01T14:11:20.705324Z",
       actualizado_en: "2026-10-01T14:11:20.705324Z",
     },
@@ -208,18 +235,16 @@ export const CADENA_VALOR_CANONICA_CARTAGENA: CadenaValorData = {
       fuente_datos: "Encuesta de Percepción Ciudadana — Cartagena Cómo Vamos",
       responsable_reporte: "Secretaría del Interior y Convivencia",
       metadatos: { instrumento_origen: "Encuesta de Percepción y Convivencia" },
-      valor_actual: 69.2,
-      porcentaje_avance: 50,
+      valor_actual: 68.2,
+      porcentaje_avance: 55.43,
+      tiene_mediciones: true,
+      fecha_corte_ultimo_reporte: "2026-07-31",
+      periodo_ultimo_reporte: "2026-Anual",
       creado_en: "2026-10-01T14:11:20.705334Z",
       actualizado_en: "2026-10-01T14:11:20.705334Z",
     },
   ],
 };
-
-// Almacén en memoria para cuando se trabaja offline o durante pruebas unitarias
-const memoriaCadenaValor: CadenaValorData = JSON.parse(
-  JSON.stringify(CADENA_VALOR_CANONICA_CARTAGENA)
-);
 
 function normalizarFicha(item: Record<string, unknown>): FichaIndicadorDnp {
   const lineaBase = Number(item.linea_base_valor ?? 0);
@@ -227,6 +252,22 @@ function normalizarFicha(item: Record<string, unknown>): FichaIndicadorDnp {
   const valorActual = Number(item.valor_actual ?? 0);
   const sentido = (item.sentido_esperado as FichaIndicadorDnp["sentido_esperado"]) ?? "ascendente";
   const avanceCalculado = calcularAvancePorcentaje(valorActual, lineaBase, meta, sentido);
+
+  const tieneMed = item.tiene_mediciones !== undefined
+    ? Boolean(item.tiene_mediciones)
+    : (valorActual > 0 || Number(item.porcentaje_avance ?? 0) > 0 || Boolean(item.fecha_corte_ultimo_reporte));
+
+  const fechaCorte = item.fecha_corte_ultimo_reporte
+    ? String(item.fecha_corte_ultimo_reporte)
+    : (item.metadatos && typeof item.metadatos === "object" && (item.metadatos as Record<string, unknown>).fecha_corte_ultimo_reporte
+      ? String((item.metadatos as Record<string, unknown>).fecha_corte_ultimo_reporte)
+      : null);
+
+  const periodo = item.periodo_ultimo_reporte
+    ? String(item.periodo_ultimo_reporte)
+    : (item.metadatos && typeof item.metadatos === "object" && (item.metadatos as Record<string, unknown>).periodo_ultimo_reporte
+      ? String((item.metadatos as Record<string, unknown>).periodo_ultimo_reporte)
+      : null);
 
   return {
     id: String(item.id),
@@ -250,6 +291,9 @@ function normalizarFicha(item: Record<string, unknown>): FichaIndicadorDnp {
     metadatos: (item.metadatos as Record<string, unknown>) ?? {},
     valor_actual: valorActual,
     porcentaje_avance: item.porcentaje_avance !== undefined ? Number(item.porcentaje_avance) : avanceCalculado,
+    tiene_mediciones: tieneMed,
+    fecha_corte_ultimo_reporte: fechaCorte,
+    periodo_ultimo_reporte: periodo,
     creado_en: item.creado_en ? String(item.creado_en) : undefined,
     actualizado_en: item.actualizado_en ? String(item.actualizado_en) : undefined,
   };
@@ -257,23 +301,32 @@ function normalizarFicha(item: Record<string, unknown>): FichaIndicadorDnp {
 
 /**
  * Obtiene la Cadena de Valor SINERGIA DNP completa desde el backend FastAPI.
- * Aplica fallback canónico estructurado si no hay red o backend.
+ * Si el backend está disponible, devuelve los datos de la base de datos PostgreSQL con esContingencia: false.
+ * Si ocurre un error de red o de API, retorna el catálogo canónico marcando esContingencia: true (AUD-02).
  */
-export async function obtenerCadenaValor(): Promise<CadenaValorData> {
+export async function obtenerCadenaValor(): Promise<CadenaValorRespuestaApi> {
   try {
     const raw = await apiFetch<CadenaValorData>("/indicadores/cadena-valor");
     if (raw && (raw.insumo?.length || raw.producto?.length || raw.resultado?.length)) {
       return {
-        insumo: (raw.insumo ?? []).map((x) => normalizarFicha(x as unknown as Record<string, unknown>)),
-        producto: (raw.producto ?? []).map((x) => normalizarFicha(x as unknown as Record<string, unknown>)),
-        resultado: (raw.resultado ?? []).map((x) => normalizarFicha(x as unknown as Record<string, unknown>)),
+        datos: {
+          insumo: (raw.insumo ?? []).map((x) => normalizarFicha(x as unknown as Record<string, unknown>)),
+          producto: (raw.producto ?? []).map((x) => normalizarFicha(x as unknown as Record<string, unknown>)),
+          resultado: (raw.resultado ?? []).map((x) => normalizarFicha(x as unknown as Record<string, unknown>)),
+        },
+        esContingencia: false,
+        origen: "api",
       };
     }
   } catch (err) {
-    console.warn("No fue posible consultar /indicadores/cadena-valor, utilizando fallback canónico:", err);
+    console.warn("No fue posible consultar /indicadores/cadena-valor, utilizando catálogo de contingencia:", err);
   }
 
-  return memoriaCadenaValor;
+  return {
+    datos: CADENA_VALOR_CANONICA_CARTAGENA,
+    esContingencia: true,
+    origen: "contingencia",
+  };
 }
 
 /**
@@ -286,68 +339,31 @@ export async function obtenerFichaIndicador(id: string): Promise<FichaIndicadorD
       return normalizarFicha(raw);
     }
   } catch {
-    // Buscar en memoria fallback
+    // Buscar en catálogo de contingencia
   }
 
   const todos = [
-    ...memoriaCadenaValor.insumo,
-    ...memoriaCadenaValor.producto,
-    ...memoriaCadenaValor.resultado,
+    ...CADENA_VALOR_CANONICA_CARTAGENA.insumo,
+    ...CADENA_VALOR_CANONICA_CARTAGENA.producto,
+    ...CADENA_VALOR_CANONICA_CARTAGENA.resultado,
   ];
   return todos.find((x) => x.id === id || x.codigo === id) ?? null;
 }
 
 /**
  * Registra una medición de avance cuantitativo y cualitativo en la ficha DNP.
+ * AUD-02: NO captura errores silenciosamente; si la API falla, relanza la excepción
+ * para que el store registre el fallo y no mute su estado en memoria.
  */
 export async function registrarMedicionIndicador(
   indicadorId: string,
   datos: MedicionIndicadorInput
 ): Promise<MedicionIndicadorRespuesta> {
-  try {
-    const res = await apiFetch<MedicionIndicadorRespuesta>(
-      `/indicadores/fichas/${indicadorId}/mediciones`,
-      {
-        method: "POST",
-        body: datos,
-      }
-    );
-    if (res && res.id) {
-      return res;
+  return await apiFetch<MedicionIndicadorRespuesta>(
+    `/indicadores/fichas/${indicadorId}/mediciones`,
+    {
+      method: "POST",
+      body: datos,
     }
-  } catch (err) {
-    console.warn("Fallo al persistir medición en backend, guardando en memoria local:", err);
-  }
-
-  // Actualizar indicador en memoria
-  const todos = [
-    ...memoriaCadenaValor.insumo,
-    ...memoriaCadenaValor.producto,
-    ...memoriaCadenaValor.resultado,
-  ];
-  const ind = todos.find((x) => x.id === indicadorId || x.codigo === indicadorId);
-  if (ind) {
-    ind.valor_actual = datos.valor_medido;
-    ind.porcentaje_avance = calcularAvancePorcentaje(
-      Number(datos.valor_medido),
-      Number(ind.linea_base_valor),
-      Number(ind.meta_cuatrienio),
-      ind.sentido_esperado
-    );
-    ind.actualizado_en = new Date().toISOString();
-  }
-
-  return {
-    id: `med-${Date.now()}`,
-    indicador_id: indicadorId,
-    periodo: datos.periodo,
-    fecha_corte: datos.fecha_corte,
-    valor_medido: datos.valor_medido,
-    avance_acumulado: datos.valor_medido,
-    observaciones: datos.observaciones,
-    evidencia_documental_url: datos.evidencia_documental_url,
-    registrado_por: datos.registrado_por,
-    creado_en: new Date().toISOString(),
-    actualizado_en: new Date().toISOString(),
-  };
+  );
 }

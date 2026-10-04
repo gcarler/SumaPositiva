@@ -77,6 +77,12 @@ class IndicadoresService:
 
             ficha.valor_actual = datos.valor_medido
             ficha.porcentaje_avance = porcentaje
+            ficha.metadatos = {
+                **(ficha.metadatos or {}),
+                "tiene_mediciones": True,
+                "fecha_corte_ultimo_reporte": str(datos.fecha_corte),
+                "periodo_ultimo_reporte": datos.periodo,
+            }
 
             medicion = MedicionIndicador(
                 indicador_id=ficha.id,

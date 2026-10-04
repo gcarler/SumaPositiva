@@ -105,10 +105,11 @@ export function IndicadorDetallePanel({
         props?.onMedicionGuardada?.();
         closeTop();
       } else {
-        toast.error("No fue posible guardar la medición del indicador.");
+        const errorMsg = useCadenaValorStore.getState().error;
+        toast.error(errorMsg || "No fue posible guardar la medición del indicador.");
       }
-    } catch {
-      toast.error("Error al procesar la medición.");
+    } catch (err) {
+      toast.error((err as Error).message || "Error al procesar la medición.");
     } finally {
       setGuardando(false);
     }

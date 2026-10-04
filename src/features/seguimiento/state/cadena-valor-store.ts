@@ -16,7 +16,9 @@ import { calcularAvancePorcentaje } from "../models/indicador-dnp";
 export interface CadenaValorStoreState {
   cadenaValor: CadenaValorData;
   cargando: boolean;
+  guardando: boolean;
   error: string | null;
+  esContingencia: boolean;
   indicadorSeleccionadoId: string | null;
 
   // Acciones
@@ -33,17 +35,31 @@ export interface CadenaValorStoreState {
 export const useCadenaValorStore = create<CadenaValorStoreState>((set, get) => ({
   cadenaValor: CADENA_VALOR_CANONICA_CARTAGENA,
   cargando: false,
+  guardando: false,
   error: null,
+  esContingencia: false,
   indicadorSeleccionadoId: null,
 
   cargarCadenaValor: async () => {
     set({ cargando: true, error: null });
     try {
-      const datos = await obtenerCadenaValor();
-      set({ cadenaValor: datos, cargando: false });
+      const res = await obtenerCadenaValor();
+      set({
+        cadenaValor: res.datos,
+        esContingencia: res.esContingencia,
+        cargando: false,
+        error: res.esContingencia
+          ? "Modo contingencia: utilizando catálogo local de indicadores"
+          : null,
+      });
     } catch (err) {
       set({
-        error: err instanceof Error ? err.message : "Error al cargar la Cadena de Valor SINERGIA",
+        cadenaValor: CADENA_VALOR_CANONICA_CARTAGENA,
+        esContingencia: true,
+        error:
+          err instanceof Error
+            ? err.message
+            : "Error al cargar la Cadena de Valor SINERGIA",
         cargando: false,
       });
     }
@@ -54,10 +70,11 @@ export const useCadenaValorStore = create<CadenaValorStoreState>((set, get) => (
   },
 
   registrarMedicion: async (indicadorId, medicion) => {
+    set({ guardando: true, error: null });
     try {
       await registrarMedicionIndicador(indicadorId, medicion);
 
-      // Actualizar localmente el estado reactivo del store
+      // AUD-02: Actualizar localmente el estado reactivo del store SOLO si la API tuvo éxito
       const actual = get().cadenaValor;
       const actualizarLista = (lista: FichaIndicadorDnp[]) =>
         lista.map((ind) => {
@@ -73,6 +90,9 @@ export const useCadenaValorStore = create<CadenaValorStoreState>((set, get) => (
               ...ind,
               valor_actual: nuevoAvance,
               porcentaje_avance: porcentaje,
+              tiene_mediciones: true,
+              fecha_corte_ultimo_reporte: medicion.fecha_corte,
+              periodo_ultimo_reporte: medicion.periodo,
               actualizado_en: new Date().toISOString(),
             };
           }
@@ -85,10 +105,16 @@ export const useCadenaValorStore = create<CadenaValorStoreState>((set, get) => (
           producto: actualizarLista(actual.producto),
           resultado: actualizarLista(actual.resultado),
         },
+        guardando: false,
+        error: null,
       });
 
       return true;
-    } catch {
+    } catch (err) {
+      // AUD-02: Prohibido mutar estado local ante fallo en backend
+      const mensaje =
+        err instanceof Error ? err.message : "Error al registrar medición en backend";
+      set({ guardando: false, error: mensaje });
       return false;
     }
   },
@@ -107,7 +133,9 @@ export const useCadenaValorStore = create<CadenaValorStoreState>((set, get) => (
     set({
       cadenaValor: CADENA_VALOR_CANONICA_CARTAGENA,
       cargando: false,
+      guardando: false,
       error: null,
+      esContingencia: false,
       indicadorSeleccionadoId: null,
     });
   },

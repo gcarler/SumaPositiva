@@ -1,6 +1,5 @@
 "use client";
 
-import { useMemo } from "react";
 import {
   Coins,
   PackageCheck,
@@ -10,8 +9,8 @@ import {
   TrendingDown,
   Building2,
   FileText,
-  Activity,
-  Sparkles,
+  Calendar,
+  AlertTriangle,
 } from "lucide-react";
 import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
@@ -30,6 +29,7 @@ interface CadenaValorTabProps {
 export function CadenaValorTab({ puedeEditar }: CadenaValorTabProps) {
   const { openPanel } = usePanels();
   const cadenaValor = useCadenaValorStore((s) => s.cadenaValor);
+  const esContingencia = useCadenaValorStore((s) => s.esContingencia);
 
   const handleAbrirFicha = (ind: FichaIndicadorDnp) => {
     openPanel("indicador-detalle", {
@@ -73,6 +73,10 @@ export function CadenaValorTab({ puedeEditar }: CadenaValorTabProps) {
         {/* Lista de Fichas de Indicadores */}
         <div className="flex-1 p-3 space-y-3 overflow-y-auto">
           {indicadores.map((ind) => {
+            const tieneMedicion =
+              ind.tiene_mediciones === true ||
+              (Number(ind.valor_actual) > 0 && ind.tiene_mediciones !== false);
+
             const avance = calcularAvancePorcentaje(
               Number(ind.valor_actual),
               Number(ind.linea_base_valor),
@@ -92,9 +96,15 @@ export function CadenaValorTab({ puedeEditar }: CadenaValorTabProps) {
                     <span className="font-mono text-xs font-semibold text-accent">
                       {ind.codigo}
                     </span>
-                    <Badge variant={semaforo.badgeVariant} className="text-[10px] py-0 px-1.5">
-                      {semaforo.label} ({avance}%)
-                    </Badge>
+                    {tieneMedicion ? (
+                      <Badge variant={semaforo.badgeVariant} className="text-[10px] py-0 px-1.5">
+                        {semaforo.label} ({avance}%)
+                      </Badge>
+                    ) : (
+                      <Badge variant="outline" className="text-[10px] py-0 px-1.5 text-text-muted">
+                        Sin medición
+                      </Badge>
+                    )}
                   </div>
 
                   <h4 className="mt-1.5 text-xs font-semibold text-text-primary leading-snug">
@@ -122,8 +132,10 @@ export function CadenaValorTab({ puedeEditar }: CadenaValorTabProps) {
                     </div>
                     <div>
                       <span className="text-text-muted">Actual</span>
-                      <p className="font-mono font-bold text-text-primary">
-                        {Number(ind.valor_actual).toLocaleString("es-CO")}
+                      <p className={`font-mono font-bold ${tieneMedicion ? "text-text-primary" : "text-text-muted"}`}>
+                        {tieneMedicion
+                          ? Number(ind.valor_actual).toLocaleString("es-CO")
+                          : "Sin medición"}
                       </p>
                     </div>
                   </div>
@@ -132,8 +144,12 @@ export function CadenaValorTab({ puedeEditar }: CadenaValorTabProps) {
                   <div className="mt-2.5">
                     <div className="h-1.5 w-full overflow-hidden rounded-full bg-surface-1">
                       <div
-                        className={`h-full rounded-full transition-all duration-300 ${semaforo.colorBarra}`}
-                        style={{ width: `${Math.min(100, Math.max(0, avance))}%` }}
+                        className={`h-full rounded-full transition-all duration-300 ${
+                          tieneMedicion ? semaforo.colorBarra : "bg-border"
+                        }`}
+                        style={{
+                          width: `${tieneMedicion ? Math.min(100, Math.max(0, avance)) : 0}%`,
+                        }}
                       />
                     </div>
                     <div className="mt-1 flex items-center justify-between text-[10px] text-text-muted">
@@ -147,6 +163,13 @@ export function CadenaValorTab({ puedeEditar }: CadenaValorTabProps) {
                         {esAscendente ? "Ascendente" : "Descendente"}
                       </span>
                     </div>
+
+                    {ind.fecha_corte_ultimo_reporte && (
+                      <div className="mt-1 flex items-center gap-1 text-[10px] text-text-muted">
+                        <Calendar className="h-2.5 w-2.5 shrink-0" />
+                        <span>Corte: {ind.fecha_corte_ultimo_reporte}</span>
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -172,6 +195,26 @@ export function CadenaValorTab({ puedeEditar }: CadenaValorTabProps) {
 
   return (
     <div className="space-y-4">
+      {/* Banner de Modo Contingencia (AUD-02) */}
+      {esContingencia && (
+        <div className="flex items-center gap-3 rounded-xl border border-warning/30 bg-warning/10 p-3.5 text-xs text-text-primary">
+          <AlertTriangle className="h-5 w-5 shrink-0 text-warning" />
+          <div className="flex-1">
+            <div className="flex items-center gap-2">
+              <span className="font-semibold text-warning">
+                Modo Contingencia Local
+              </span>
+              <Badge variant="warning" className="text-[10px]">
+                Datos de Contingencia
+              </Badge>
+            </div>
+            <p className="mt-0.5 text-text-muted">
+              El servicio central de indicadores no se encuentra disponible. Se está visualizando el catálogo canónico en memoria; las operaciones de registro de mediciones están protegidas para evitar inconsistencias de persistencia.
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Banner de Contexto Metodológico DNP */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-xl border border-border bg-surface-1 p-4 shadow-xs">
         <div>
@@ -188,6 +231,16 @@ export function CadenaValorTab({ puedeEditar }: CadenaValorTabProps) {
             <Badge variant="outline" className="text-[10px]">
               Decreto Distrital 037/2026
             </Badge>
+            {esContingencia ? (
+              <Badge variant="warning" className="text-[10px]">
+                Catálogo de Contingencia
+              </Badge>
+            ) : (
+              <Badge variant="outline" className="text-[10px] text-success border-success/30 flex items-center gap-1">
+                <span className="h-1.5 w-1.5 rounded-full bg-success animate-pulse inline-block" />
+                Datos en Vivo (PostgreSQL)
+              </Badge>
+            )}
           </div>
           <p className="mt-1.5 text-xs text-text-secondary max-w-3xl">
             Estructuración lógica de causalidad para la Seguridad Humana Integral: los <strong>Insumos</strong> financieros y operativos permiten generar <strong>Productos</strong> y bienes públicos que impactan directamente en los <strong>Resultados</strong> de vida, tranquilidad y convivencia ciudadana en Cartagena de Indias.

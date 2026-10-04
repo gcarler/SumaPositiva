@@ -34,6 +34,9 @@ class FichaIndicadorRespuesta(FichaIndicadorCrear):
     id: uuid.UUID
     valor_actual: Decimal
     porcentaje_avance: Decimal
+    tiene_mediciones: bool = False
+    fecha_corte_ultimo_reporte: date | None = None
+    periodo_ultimo_reporte: str | None = None
     creado_en: datetime
     actualizado_en: datetime
     model_config = ConfigDict(from_attributes=True)

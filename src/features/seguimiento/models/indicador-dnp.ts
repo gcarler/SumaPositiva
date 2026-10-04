@@ -29,6 +29,9 @@ export interface FichaIndicadorDnp {
   metadatos?: Record<string, unknown>;
   valor_actual: number | string;
   porcentaje_avance: number | string;
+  tiene_mediciones?: boolean;
+  fecha_corte_ultimo_reporte?: string | null;
+  periodo_ultimo_reporte?: string | null;
   creado_en?: string;
   actualizado_en?: string;
 }

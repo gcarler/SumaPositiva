@@ -1,13 +1,15 @@
-import { describe, test, expect, beforeEach } from "vitest";
+import { describe, test, expect, beforeEach, vi } from "vitest";
 import { useCadenaValorStore } from "./cadena-valor-store";
 import {
   calcularAvancePorcentaje,
   obtenerSemaforoAvance,
 } from "../models/indicador-dnp";
+import * as cadenaValorApi from "../services/cadena-valor-api";
 
-describe("Tablero SINERGIA DNP y Cadena de Valor (Hito PAS-2)", () => {
+describe("Tablero SINERGIA DNP y Cadena de Valor (Hito PAS-2 / AUD-02)", () => {
   beforeEach(() => {
     useCadenaValorStore.getState().restablecer();
+    vi.restoreAllMocks();
   });
 
   describe("Estructura de la Cadena de Valor de Cartagena", () => {
@@ -101,8 +103,54 @@ describe("Tablero SINERGIA DNP y Cadena de Valor (Hito PAS-2)", () => {
     });
   });
 
-  describe("Mutaciones y Registro de Mediciones", () => {
-    test("registra una medición cuantitativa y actualiza el valor y porcentaje de avance", async () => {
+  describe("Carga de Datos y Modo Contingencia (AUD-02)", () => {
+    test("marca esContingencia en false cuando el backend responde correctamente", async () => {
+      vi.spyOn(cadenaValorApi, "obtenerCadenaValor").mockResolvedValueOnce({
+        datos: cadenaValorApi.CADENA_VALOR_CANONICA_CARTAGENA,
+        esContingencia: false,
+        origen: "api",
+      });
+
+      const store = useCadenaValorStore.getState();
+      await store.cargarCadenaValor();
+
+      const state = useCadenaValorStore.getState();
+      expect(state.esContingencia).toBe(false);
+      expect(state.cargando).toBe(false);
+      expect(state.error).toBeNull();
+    });
+
+    test("activa esContingencia en true cuando el backend está caído o responde con error", async () => {
+      vi.spyOn(cadenaValorApi, "obtenerCadenaValor").mockResolvedValueOnce({
+        datos: cadenaValorApi.CADENA_VALOR_CANONICA_CARTAGENA,
+        esContingencia: true,
+        origen: "contingencia",
+      });
+
+      const store = useCadenaValorStore.getState();
+      await store.cargarCadenaValor();
+
+      const state = useCadenaValorStore.getState();
+      expect(state.esContingencia).toBe(true);
+      expect(state.cargando).toBe(false);
+      expect(state.error).toContain("Modo contingencia");
+    });
+  });
+
+  describe("Mutaciones y Registro de Mediciones (AUD-02)", () => {
+    test("registra una medición cuantitativa y actualiza el valor y porcentaje de avance cuando la API tiene éxito", async () => {
+      vi.spyOn(cadenaValorApi, "registrarMedicionIndicador").mockResolvedValueOnce({
+        id: "med-001",
+        indicador_id: "IND-PROD-01",
+        periodo: "2026-S1",
+        fecha_corte: "2026-06-30",
+        valor_medido: 75,
+        avance_acumulado: 54.55,
+        registrado_por: "Equipo de Seguridad Distrital",
+        creado_en: "2026-06-30T10:00:00Z",
+        actualizado_en: "2026-06-30T10:00:00Z",
+      });
+
       const store = useCadenaValorStore.getState();
 
       const ok = await store.registrarMedicion("IND-PROD-01", {
@@ -119,8 +167,42 @@ describe("Tablero SINERGIA DNP y Cadena de Valor (Hito PAS-2)", () => {
       const actualizado = useCadenaValorStore.getState().getIndicadorById("IND-PROD-01");
       expect(actualizado).toBeDefined();
       expect(actualizado?.valor_actual).toBe(75);
+      expect(actualizado?.tiene_mediciones).toBe(true);
       // LB: 45, Meta: 100, Actual: 75 -> ((75 - 45) / 55) * 100 = 54.55%
       expect(Number(actualizado?.porcentaje_avance)).toBeCloseTo(54.55, 1);
+    });
+
+    test("AUD-02: un POST fallido de medición NO altera el store, guarda error y retorna false", async () => {
+      // Mockear fallo de red o 403 Forbidden del backend
+      vi.spyOn(cadenaValorApi, "registrarMedicionIndicador").mockRejectedValueOnce(
+        new Error("HTTP 403: El rol auditor_forense no tiene permiso para registrar mediciones")
+      );
+
+      const store = useCadenaValorStore.getState();
+      const antes = store.getIndicadorById("IND-INS-02");
+      const valorAntes = antes?.valor_actual;
+      const avanceAntes = antes?.porcentaje_avance;
+
+      // Intentar registrar medición con fallo simulado
+      const ok = await store.registrarMedicion("IND-INS-02", {
+        periodo: "2026-S2",
+        fecha_corte: "2026-12-31",
+        valor_medido: 1500000000,
+        observaciones: "Intento no autorizado o con error de red",
+        registrado_por: "auditor_forense",
+      });
+
+      // Debe retornar false
+      expect(ok).toBe(false);
+
+      // El store NO debe haber mutado el valor ni el avance
+      const despues = useCadenaValorStore.getState().getIndicadorById("IND-INS-02");
+      expect(despues?.valor_actual).toBe(valorAntes);
+      expect(despues?.porcentaje_avance).toBe(avanceAntes);
+
+      // El store debe registrar el mensaje de error del backend
+      expect(useCadenaValorStore.getState().error).toContain("403");
+      expect(useCadenaValorStore.getState().guardando).toBe(false);
     });
 
     test("selecciona y deselecciona indicador activo", () => {
