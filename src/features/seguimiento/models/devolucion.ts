@@ -7,14 +7,18 @@
 export type EstadoIncorporacion =
   | "INCORPORADA_TOTAL"
   | "INCORPORADA_PARCIAL"
-  | "NO_INCORPORADA_MOTIVADA";
+  | "NO_INCORPORADA_MOTIVADA"
+  | "SIN_RESPUESTA";
 
 export type CausalDescarteTaxativa =
   | "INCOMPETENCIA_LEGAL_LOOT"
   | "RESTRICCION_FISCAL_MFMP"
   | "REQUERIMIENTO_CONSULTA_PREVIA"
   | "DUPLICIDAD_PROGRAMATICA"
-  | "INCOMPATIBILIDAD_NORMATIVA";
+  | "INCOMPATIBILIDAD_NORMATIVA"
+  | "tecnica"
+  | "juridica"
+  | "presupuestal";
 
 export interface PropuestaDevolucion {
   id: string;
@@ -95,6 +99,24 @@ export const CAUSALES_DESCARTE_INFO: Record<
     canalSugerido: "Mesa Técnica de Co-diseño Institucional",
     descripcion: "Plantea medidas incompatibles con garantías constitucionales de derechos humanos o normas de orden público.",
   },
+  tecnica: {
+    label: "Inconsistencia Técnica / Metodológica",
+    norma: "Metodología General Ajustada (MGA) y Lineamientos DNP",
+    canalSugerido: "Mesa Técnica de Co-diseño Institucional",
+    descripcion: "La propuesta presenta inconsistencias metodológicas o de viabilidad técnica que impiden su adopción directa.",
+  },
+  juridica: {
+    label: "Incompetencia Legal / Restricción Jurídica",
+    norma: "Artículos 286 y 287 C.P. y Ley 1454 de 2011 (LOOT)",
+    canalSugerido: "Secretaría del Interior y Convivencia Ciudadana",
+    descripcion: "La iniciativa desborda el marco de competencias legales asignadas al Distrito de Cartagena de Indias.",
+  },
+  presupuestal: {
+    label: "Restricción Presupuestal / Fiscal",
+    norma: "Ley 819 de 2003 (Marco Fiscal de Mediano Plazo) y Decreto 111/96",
+    canalSugerido: "Secretaría de Hacienda Distrital / Presupuesto Participativo",
+    descripcion: "Supera el techo presupuestal distrital o carece de fuente de financiación compatible con el MFMP.",
+  },
 };
 
 export const ESTADOS_INCORPORACION_INFO: Record<
@@ -123,5 +145,11 @@ export const ESTADOS_INCORPORACION_INFO: Record<
     badgeVariant: "destructive",
     colorClase: "text-danger bg-danger-soft border-danger/30",
     descripcion: "No incorporada con motivación sustancial y causal jurídica expresa (Sentencia C-150/15).",
+  },
+  SIN_RESPUESTA: {
+    label: "Sin Respuesta (Pendiente)",
+    badgeVariant: "secondary",
+    colorClase: "text-text-muted bg-surface-2 border-border",
+    descripcion: "Propuesta ciudadana radicada pendiente de respuesta institucional conforme a la Sentencia C-150/15.",
   },
 };

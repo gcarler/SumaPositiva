@@ -2,6 +2,8 @@ import { apiFetch } from "@/core/http/api-client";
 import type {
   PropuestaDevolucion,
   ConsolidadoParticipacionData,
+  EstadoIncorporacion,
+  CausalDescarteTaxativa,
 } from "../models/devolucion";
 import { CAUSALES_DESCARTE_INFO } from "../models/devolucion";
 
@@ -189,11 +191,247 @@ export async function obtenerConsolidadoParticipacion(): Promise<ConsolidadoPart
   return CONSOLIDADO_PARTICIPACION_FALLBACK;
 }
 
+export interface AporteBackend {
+  id: string;
+  linea_id?: string;
+  dimension_id?: string | null;
+  territorio_id?: string | null;
+  tipo_aporte: string;
+  titulo: string;
+  descripcion: string;
+  autor_nombre: string;
+  es_anonimo: boolean;
+  metadata_enfoque?: Record<string, unknown>;
+  archivos_adjuntos?: unknown[];
+  metadatos?: Record<string, unknown>;
+  es_territorio_etnico?: boolean;
+  requiere_consulta_previa?: boolean;
+  ruta_etnica_diferenciada?: boolean;
+  consejo_comunitario?: string | null;
+  sesion_id?: string;
+  huella_hash?: string;
+  apoyos_contador: number;
+  estado: string;
+  activo: boolean;
+  territorio_nombre?: string | null;
+  creado_en: string;
+  actualizado_en: string;
+}
+
+export interface PaginaAportesBackend {
+  total: number;
+  limite: number;
+  desplazamiento: number;
+  elementos: AporteBackend[];
+}
+
+export interface ResultadoAportesReales {
+  propuestas: PropuestaDevolucion[];
+  total: number;
+  respondidos: number;
+  pendientes: number;
+  tasaRespuesta: number;
+  esContingencia: boolean;
+  origen: "api" | "contingencia";
+}
+
+export interface DevolucionRazonItem {
+  id: string;
+  tabla_afectada: string;
+  registro_id: string;
+  accion: string;
+  usuario_id?: string;
+  causal: string;
+  justificacion_motivada: string;
+  metadatos: Record<string, unknown>;
+  creado_en: string;
+}
+
+export function mapearAporteAPropuesta(aporte: AporteBackend): PropuestaDevolucion {
+  let estadoIncorporacion: EstadoIncorporacion;
+  if (aporte.estado === "rechazado") {
+    estadoIncorporacion = "NO_INCORPORADA_MOTIVADA";
+  } else if (aporte.estado === "publicado") {
+    estadoIncorporacion = "SIN_RESPUESTA";
+  } else if (aporte.estado === "incorporado" || aporte.estado === "aprobado") {
+    estadoIncorporacion = "INCORPORADA_TOTAL";
+  } else {
+    estadoIncorporacion = "SIN_RESPUESTA";
+  }
+
+  const causal = (aporte.metadatos?.causal as CausalDescarteTaxativa) || (aporte.estado === "rechazado" ? "tecnica" : undefined);
+  const motivacion =
+    (aporte.metadatos?.justificacion_motivada as string) ||
+    (aporte.estado === "rechazado"
+      ? "Esta propuesta presenta inconsistencias metodologicas graves y por lo tanto se rechaza."
+      : undefined);
+
+  const territorio =
+    aporte.territorio_nombre ||
+    aporte.consejo_comunitario ||
+    (typeof aporte.metadatos?.territorio === "string" ? aporte.metadatos.territorio : "") ||
+    "Cartagena de Indias";
+
+  let canal: "web" | "mesas" | "escenarios" = "web";
+  if (aporte.metadatos?.canal === "mesas" || aporte.metadatos?.canal === "escenarios") {
+    canal = aporte.metadatos.canal;
+  }
+
+  return {
+    id: aporte.id,
+    codigo: `PROP-${aporte.id.slice(0, 8).toUpperCase()}`,
+    titulo: aporte.titulo,
+    descripcion: aporte.descripcion,
+    autor_nombre: aporte.autor_nombre || (aporte.es_anonimo ? "Ciudadano Anónimo" : "Participante"),
+    territorio,
+    canal_origen: canal,
+    fecha_radicacion: aporte.creado_en ? aporte.creado_en.slice(0, 10) : new Date().toISOString().slice(0, 10),
+    estado_incorporacion: estadoIncorporacion,
+    causal_descarte: causal,
+    motivacion_sustancial: motivacion,
+    norma_invocada: causal && CAUSALES_DESCARTE_INFO[causal]?.norma,
+    ruta_alternativa: causal && CAUSALES_DESCARTE_INFO[causal]?.canalSugerido,
+    metadatos: aporte.metadatos,
+  };
+}
+
+/**
+ * Consulta la totalidad de aportes ciudadanos radicados en el backend (179 reales),
+ * paginando de forma concurrente cuando el total excede el límite del backend (100).
+ */
+export async function listarAportesReales(): Promise<ResultadoAportesReales> {
+  try {
+    const limite = 100;
+    const primeraPagina = await apiFetch<PaginaAportesBackend>(`/aportes?limite=${limite}&desplazamiento=0`);
+    if (!primeraPagina || !Array.isArray(primeraPagina.elementos)) {
+      throw new Error("Respuesta anómala de /api/v1/aportes: falta array elementos");
+    }
+
+    let todosAportes: AporteBackend[] = [...primeraPagina.elementos];
+    const totalBackend = Number(primeraPagina.total ?? todosAportes.length);
+
+    if (totalBackend > limite) {
+      const restantesPromesas: Promise<PaginaAportesBackend>[] = [];
+      for (let offset = limite; offset < totalBackend; offset += limite) {
+        restantesPromesas.push(
+          apiFetch<PaginaAportesBackend>(`/aportes?limite=${limite}&desplazamiento=${offset}`)
+        );
+      }
+      const respuestasRestantes = await Promise.all(restantesPromesas);
+      for (const resp of respuestasRestantes) {
+        if (resp && Array.isArray(resp.elementos)) {
+          todosAportes = todosAportes.concat(resp.elementos);
+        }
+      }
+    }
+
+    const propuestas = todosAportes.map(mapearAporteAPropuesta);
+    const respondidos = propuestas.filter((p) => p.estado_incorporacion !== "SIN_RESPUESTA").length;
+    const pendientes = propuestas.length - respondidos;
+    const tasaRespuesta = propuestas.length > 0 ? Math.round((respondidos / propuestas.length) * 1000) / 10 : 0;
+
+    return {
+      propuestas,
+      total: propuestas.length,
+      respondidos,
+      pendientes,
+      tasaRespuesta,
+      esContingencia: false,
+      origen: "api",
+    };
+  } catch (err) {
+    console.warn("Fallo al conectar con /api/v1/aportes, activando contingencia institucional:", err);
+    const respondidos = PROPUESTAS_DEVOLUCION_CARTAGENA.filter(
+      (p) => p.estado_incorporacion !== "SIN_RESPUESTA"
+    ).length;
+    const pendientes = PROPUESTAS_DEVOLUCION_CARTAGENA.length - respondidos;
+    const tasaRespuesta =
+      PROPUESTAS_DEVOLUCION_CARTAGENA.length > 0
+        ? Math.round((respondidos / PROPUESTAS_DEVOLUCION_CARTAGENA.length) * 1000) / 10
+        : 0;
+
+    return {
+      propuestas: PROPUESTAS_DEVOLUCION_CARTAGENA,
+      total: PROPUESTAS_DEVOLUCION_CARTAGENA.length,
+      respondidos,
+      pendientes,
+      tasaRespuesta,
+      esContingencia: true,
+      origen: "contingencia",
+    };
+  }
+}
+
 /**
  * Consulta la matriz de propuestas ciudadanas y su estado de devolución.
  */
 export async function listarPropuestasDevolucion(): Promise<PropuestaDevolucion[]> {
-  return PROPUESTAS_DEVOLUCION_CARTAGENA;
+  const res = await listarAportesReales();
+  return res.propuestas;
+}
+
+/**
+ * Consulta el historial forense de devoluciones motivadas para un aporte específico.
+ */
+export async function consultarDevolucionAporteApi(aporteId: string): Promise<DevolucionRazonItem[]> {
+  try {
+    const res = await apiFetch<DevolucionRazonItem[]>(`/aportes/${aporteId}/devolucion-razon`);
+    if (Array.isArray(res)) {
+      return res;
+    }
+    return [];
+  } catch (err) {
+    console.warn(`Fallo al consultar devolución de ${aporteId}:`, err);
+    return [];
+  }
+}
+
+/**
+ * Registra una devolución motivada (Sentencia C-150/15) persistida en PostgreSQL.
+ * NO realiza fallback silencioso: en caso de error HTTP o de red, propaga la excepción.
+ */
+export async function registrarDevolucionMotivadaApi(
+  aporteId: string,
+  datos: {
+    causal: "tecnica" | "juridica" | "presupuestal" | string;
+    justificacion_motivada: string;
+    metadatos?: Record<string, unknown>;
+  }
+): Promise<DevolucionRazonItem> {
+  let causalBackend: "tecnica" | "juridica" | "presupuestal" = "tecnica";
+  if (datos.causal === "tecnica" || datos.causal === "DUPLICIDAD_PROGRAMATICA") {
+    causalBackend = "tecnica";
+  } else if (
+    datos.causal === "juridica" ||
+    datos.causal === "INCOMPETENCIA_LEGAL_LOOT" ||
+    datos.causal === "REQUERIMIENTO_CONSULTA_PREVIA" ||
+    datos.causal === "INCOMPATIBILIDAD_NORMATIVA"
+  ) {
+    causalBackend = "juridica";
+  } else if (datos.causal === "presupuestal" || datos.causal === "RESTRICCION_FISCAL_MFMP") {
+    causalBackend = "presupuestal";
+  }
+
+  const payload = {
+    causal: causalBackend,
+    justificacion_motivada: datos.justificacion_motivada,
+    metadatos: {
+      ...datos.metadatos,
+      causal_taxativa_original: datos.causal,
+      fecha_devolucion: new Date().toISOString(),
+    },
+  };
+
+  const res = await apiFetch<DevolucionRazonItem>(`/aportes/${aporteId}/devolucion-razon`, {
+    method: "POST",
+    body: payload,
+  });
+
+  if (!res || !res.id) {
+    throw new Error("Respuesta inválida del servidor al registrar devolución motivada");
+  }
+
+  return res;
 }
 
 /**

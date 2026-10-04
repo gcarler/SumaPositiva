@@ -18,6 +18,9 @@ import {
   CheckCircle2,
   Percent,
   Bot,
+  ChevronLeft,
+  ChevronRight,
+  AlertTriangle,
 } from "lucide-react";
 import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
@@ -72,6 +75,11 @@ export function RendicionCuentasTab({ puedeEditar }: RendicionCuentasTabProps) {
 
   const propuestas = useDevolucionStore((s) => s.propuestas);
   const consolidado = useDevolucionStore((s) => s.consolidado);
+  const totalAportes = useDevolucionStore((s) => s.totalAportes);
+  const totalRespondidos = useDevolucionStore((s) => s.totalRespondidos);
+  const totalPendientes = useDevolucionStore((s) => s.totalPendientes);
+  const tasaRespuestaMotivada = useDevolucionStore((s) => s.tasaRespuestaMotivada);
+  const esContingencia = useDevolucionStore((s) => s.esContingencia);
   const filtros = useDevolucionStore((s) => s.filtros);
   const setFiltros = useDevolucionStore((s) => s.setFiltros);
   const limpiarFiltros = useDevolucionStore((s) => s.limpiarFiltros);
@@ -79,10 +87,31 @@ export function RendicionCuentasTab({ puedeEditar }: RendicionCuentasTabProps) {
   const resultadoIa = useDevolucionStore((s) => s.resultadoIa);
   const ejecutarEvaluacionIa = useDevolucionStore((s) => s.ejecutarEvaluacionIa);
 
+  const [paginaActual, setPaginaActual] = useState(1);
+  const [tamanoPagina, setTamanoPagina] = useState(20);
+
   const propuestasFiltradas = useMemo(
     () => filtrarPropuestas(propuestas, filtros),
     [propuestas, filtros]
   );
+
+  const totalPaginas = Math.max(1, Math.ceil(propuestasFiltradas.length / tamanoPagina));
+  const paginaValida = Math.min(paginaActual, totalPaginas);
+
+  const propuestasPaginadas = useMemo(() => {
+    const inicio = (paginaValida - 1) * tamanoPagina;
+    return propuestasFiltradas.slice(inicio, inicio + tamanoPagina);
+  }, [propuestasFiltradas, paginaValida, tamanoPagina]);
+
+  const handleCambiarFiltro = (parcial: Partial<typeof filtros>) => {
+    setFiltros(parcial);
+    setPaginaActual(1);
+  };
+
+  const handleLimpiarFiltros = () => {
+    limpiarFiltros();
+    setPaginaActual(1);
+  };
 
   const territoriosUnicos = useMemo(() => {
     const set = new Set(propuestas.map((p) => p.territorio));
@@ -236,27 +265,47 @@ export function RendicionCuentasTab({ puedeEditar }: RendicionCuentasTabProps) {
 
         <div className="flex flex-col justify-between rounded-xl border border-border bg-surface-1 p-4 shadow-xs">
           <div className="flex items-start justify-between">
-            <span className="text-xs font-medium text-text-muted">Tasa de Incorporación</span>
+            <span className="text-xs font-medium text-text-muted">Respuesta Motivada (C-150)</span>
             <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-success-soft text-success">
               <Percent className="h-4 w-4" />
             </span>
           </div>
           <div className="mt-3">
-            <div className="text-2xl font-bold text-text-primary">
-              {consolidado.tasa_incorporacion_efectiva}%
+            <div className="flex items-baseline gap-2">
+              <span className="text-2xl font-bold text-text-primary">
+                {tasaRespuestaMotivada}%
+              </span>
+              <span className="text-xs text-text-muted">
+                ({totalRespondidos}/{totalAportes})
+              </span>
             </div>
             <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-surface-2">
               <div
                 className="h-full rounded-full bg-success transition-all duration-300"
-                style={{ width: `${consolidado.tasa_incorporacion_efectiva}%` }}
+                style={{ width: `${Math.min(100, Math.max(0, tasaRespuestaMotivada))}%` }}
               />
             </div>
             <p className="mt-1 text-xs text-text-muted">
-              {consolidado.total_incorporadas} incorporadas · {consolidado.total_no_incorporadas} motivadas
+              {totalRespondidos} respondidos · {totalPendientes} sin respuesta
             </p>
           </div>
         </div>
       </div>
+
+      {/* Banner de Contingencia si la API de aportes no responde */}
+      {esContingencia && (
+        <div className="flex items-start gap-3 rounded-xl border border-warning/30 bg-warning-soft p-4 text-xs text-text-primary">
+          <AlertTriangle className="h-5 w-5 shrink-0 text-warning mt-0.5" />
+          <div className="space-y-1">
+            <span className="font-semibold text-warning text-sm">
+              Modo Contingencia Activo: Catálogo de Contingencia (8 propuestas)
+            </span>
+            <p className="text-text-secondary leading-relaxed pt-0.5">
+              No fue posible recuperar los 179 aportes en vivo desde /api/v1/aportes. Se ha activado el catálogo institucional de contingencia con trazabilidad territorial.
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Banner de Dictamen IA C-150 si fue ejecutado */}
       {resultadoIa && (
@@ -281,7 +330,7 @@ export function RendicionCuentasTab({ puedeEditar }: RendicionCuentasTabProps) {
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
             <Input
               value={filtros.busqueda}
-              onChange={(e) => setFiltros({ busqueda: e.target.value })}
+              onChange={(e) => handleCambiarFiltro({ busqueda: e.target.value })}
               placeholder="Buscar por código, título, territorio o palabra clave..."
               className="pl-9 text-xs"
             />
@@ -291,7 +340,7 @@ export function RendicionCuentasTab({ puedeEditar }: RendicionCuentasTabProps) {
           <div className="w-[200px]">
             <Select
               value={filtros.territorio}
-              onValueChange={(val) => setFiltros({ territorio: val })}
+              onValueChange={(val) => handleCambiarFiltro({ territorio: val })}
             >
               <SelectTrigger className="text-xs">
                 <SelectValue placeholder="Territorio de origen" />
@@ -310,11 +359,11 @@ export function RendicionCuentasTab({ puedeEditar }: RendicionCuentasTabProps) {
           </div>
 
           {/* Filtro Estado Incorporación */}
-          <div className="w-[210px]">
+          <div className="w-[220px]">
             <Select
               value={filtros.estado}
               onValueChange={(val) =>
-                setFiltros({ estado: val as EstadoIncorporacion | "todos" })
+                handleCambiarFiltro({ estado: val as EstadoIncorporacion | "todos" })
               }
             >
               <SelectTrigger className="text-xs">
@@ -338,7 +387,7 @@ export function RendicionCuentasTab({ puedeEditar }: RendicionCuentasTabProps) {
             <Button
               variant="ghost"
               size="sm"
-              onClick={limpiarFiltros}
+              onClick={handleLimpiarFiltros}
               className="h-9 gap-1.5 px-3 text-xs text-text-muted hover:text-text-primary"
             >
               <RotateCcw className="h-3.5 w-3.5" />
@@ -417,8 +466,13 @@ export function RendicionCuentasTab({ puedeEditar }: RendicionCuentasTabProps) {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {propuestasFiltradas.map((p) => {
-                const infoEstado = ESTADOS_INCORPORACION_INFO[p.estado_incorporacion];
+              {propuestasPaginadas.map((p) => {
+                const infoEstado = ESTADOS_INCORPORACION_INFO[p.estado_incorporacion] ?? {
+                  label: p.estado_incorporacion,
+                  badgeVariant: "secondary" as const,
+                  colorClase: "",
+                  descripcion: "",
+                };
                 const infoCausal = p.causal_descarte
                   ? CAUSALES_DESCARTE_INFO[p.causal_descarte]
                   : null;
@@ -458,13 +512,17 @@ export function RendicionCuentasTab({ puedeEditar }: RendicionCuentasTabProps) {
                       </Badge>
                     </TableCell>
                     <TableCell>
-                      {p.estado_incorporacion !== "NO_INCORPORADA_MOTIVADA" ? (
+                      {p.estado_incorporacion === "SIN_RESPUESTA" ? (
+                        <span className="text-[11px] text-text-muted italic">
+                          Pendiente de motivación institucional (C-150)
+                        </span>
+                      ) : p.estado_incorporacion !== "NO_INCORPORADA_MOTIVADA" ? (
                         <div className="flex flex-col gap-0.5 text-xs">
                           <span className="font-mono font-semibold text-accent">
-                            {p.compromiso_pas_codigo}
+                            {p.compromiso_pas_codigo || "Articulada al PAS"}
                           </span>
                           <span className="text-[11px] text-text-muted truncate">
-                            {p.compromiso_pas_nombre}
+                            {p.compromiso_pas_nombre || "Meta distrital"}
                           </span>
                         </div>
                       ) : (
@@ -473,7 +531,7 @@ export function RendicionCuentasTab({ puedeEditar }: RendicionCuentasTabProps) {
                             {infoCausal?.label ?? "No incorporada"}
                           </span>
                           <span className="line-clamp-1 text-[11px] text-text-muted">
-                            {infoCausal?.norma}
+                            {p.motivacion_sustancial ?? infoCausal?.norma}
                           </span>
                         </div>
                       )}
@@ -486,7 +544,11 @@ export function RendicionCuentasTab({ puedeEditar }: RendicionCuentasTabProps) {
                         className="gap-1.5 text-xs h-8"
                       >
                         <FileText className="h-3.5 w-3.5" />
-                        <span>Ver Ficha C-150</span>
+                        <span>
+                          {p.estado_incorporacion === "SIN_RESPUESTA" && puedeEditar
+                            ? "Motivar C-150"
+                            : "Ver Ficha C-150"}
+                        </span>
                       </Button>
                     </TableCell>
                   </TableRow>
@@ -494,6 +556,72 @@ export function RendicionCuentasTab({ puedeEditar }: RendicionCuentasTabProps) {
               })}
             </TableBody>
           </Table>
+        </div>
+
+        {/* Controles de Paginación */}
+        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border bg-surface-1 px-4 py-3 text-xs text-text-muted">
+          <div className="flex items-center gap-2">
+            <span>Filas por página:</span>
+            <Select
+              value={String(tamanoPagina)}
+              onValueChange={(val) => {
+                setTamanoPagina(Number(val));
+                setPaginaActual(1);
+              }}
+            >
+              <SelectTrigger className="h-8 w-[70px] text-xs">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="10" className="text-xs">10</SelectItem>
+                <SelectItem value="20" className="text-xs">20</SelectItem>
+                <SelectItem value="50" className="text-xs">50</SelectItem>
+                <SelectItem value="100" className="text-xs">100</SelectItem>
+              </SelectContent>
+            </Select>
+            <span className="ml-2">
+              Mostrando{" "}
+              <strong className="text-text-primary">
+                {propuestasFiltradas.length === 0
+                  ? 0
+                  : (paginaValida - 1) * tamanoPagina + 1}
+              </strong>
+              {" - "}
+              <strong className="text-text-primary">
+                {Math.min(paginaValida * tamanoPagina, propuestasFiltradas.length)}
+              </strong>{" "}
+              de <strong className="text-text-primary">{propuestasFiltradas.length}</strong>
+            </span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <span>
+              Página <strong className="text-text-primary">{paginaValida}</strong> de{" "}
+              <strong className="text-text-primary">{totalPaginas}</strong>
+            </span>
+            <div className="flex items-center gap-1">
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-8 w-8 p-0"
+                disabled={paginaValida <= 1}
+                onClick={() => setPaginaActual((p) => Math.max(1, p - 1))}
+              >
+                <ChevronLeft className="h-4 w-4" />
+                <span className="sr-only">Anterior</span>
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-8 w-8 p-0"
+                disabled={paginaValida >= totalPaginas}
+                onClick={() => setPaginaActual((p) => Math.min(totalPaginas, p + 1))}
+              >
+                <ChevronRight className="h-4 w-4" />
+                <span className="sr-only">Siguiente</span>
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

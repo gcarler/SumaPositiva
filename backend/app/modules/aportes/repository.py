@@ -6,6 +6,7 @@ from typing import Any
 
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from app.modules.aportes.models import PropuestaCiudadana
 from app.modules.aportes.schemas import PropuestaCiudadanaCreate, PropuestaCiudadanaUpdate
@@ -118,6 +119,7 @@ class AporteRepository:
         # Obtener página
         datos_query = (
             select(PropuestaCiudadana)
+            .options(selectinload(PropuestaCiudadana.territorio))
             .order_by(PropuestaCiudadana.creado_en.desc())
             .limit(limite)
             .offset(desplazamiento)

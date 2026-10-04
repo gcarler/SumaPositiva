@@ -1,4 +1,4 @@
-import { describe, test, expect, beforeEach } from "vitest";
+import { describe, test, expect, beforeEach, vi } from "vitest";
 import {
   useDevolucionStore,
   filtrarPropuestas,
@@ -130,6 +130,139 @@ describe("Rendición de Cuentas y Devolución Motivada Ciudadana (Hito PAS-3)", 
       expect(state.evaluandoIa).toBe(false);
       expect(state.resultadoIa).toBeDefined();
       expect(state.resultadoIa).toContain("C-150");
+    });
+  });
+
+  describe("AUD-03: Integración de Aportes Reales y Registro de Devolución Motivada", () => {
+    test("mapea y clasifica propuestas con estado SIN_RESPUESTA", () => {
+      const { propuestas, totalAportes, totalRespondidos, totalPendientes } = useDevolucionStore.getState();
+      expect(totalAportes).toBeGreaterThanOrEqual(8);
+      expect(totalRespondidos + totalPendientes).toBe(totalAportes);
+    });
+
+    test("filtra por estado SIN_RESPUESTA correctamente", () => {
+      const propuestasConSinRespuesta = [
+        ...PROPUESTAS_DEVOLUCION_CARTAGENA,
+        {
+          id: "prop-pendiente-01",
+          codigo: "PROP-PEND-01",
+          titulo: "Propuesta sin respuesta aún",
+          descripcion: "Descripción de propuesta pendiente",
+          autor_nombre: "Ciudadano",
+          territorio: "El Pozón",
+          canal_origen: "web" as const,
+          fecha_radicacion: "2026-03-30",
+          estado_incorporacion: "SIN_RESPUESTA" as const,
+        },
+      ];
+
+      const filtradas = filtrarPropuestas(propuestasConSinRespuesta, {
+        busqueda: "",
+        territorio: "todos",
+        estado: "SIN_RESPUESTA",
+      });
+
+      expect(filtradas).toHaveLength(1);
+      expect(filtradas[0].codigo).toBe("PROP-PEND-01");
+    });
+
+    test("AUD-03: mutación exitosa pasa de SIN_RESPUESTA a NO_INCORPORADA_MOTIVADA y recalcula KPIs", async () => {
+      useDevolucionStore.setState({
+        propuestas: [
+          {
+            id: "prop-test-01",
+            codigo: "PROP-TEST-01",
+            titulo: "Iniciativa de prueba",
+            descripcion: "Descripción de prueba para devolución",
+            autor_nombre: "Ciudadano",
+            territorio: "La Boquilla",
+            canal_origen: "web",
+            fecha_radicacion: "2026-04-01",
+            estado_incorporacion: "SIN_RESPUESTA",
+          },
+        ],
+        totalAportes: 1,
+        totalRespondidos: 0,
+        totalPendientes: 1,
+        tasaRespuestaMotivada: 0,
+      });
+
+      const store = useDevolucionStore.getState();
+      const spyApi = vi.spyOn(
+        await import("../services/devolucion-api"),
+        "registrarDevolucionMotivadaApi"
+      ).mockResolvedValueOnce({
+        id: "reg-audit-01",
+        tabla_afectada: "participacion_ciudadana.propuestas_ciudadanas",
+        registro_id: "prop-test-01",
+        accion: "DEVOLUCION_MOTIVADA",
+        causal: "tecnica",
+        justificacion_motivada: "Justificación motivada sustancial con más de 20 caracteres para prueba.",
+        metadatos: {},
+        creado_en: new Date().toISOString(),
+      });
+
+      const res = await store.registrarDevolucionMotivada("prop-test-01", {
+        causal: "tecnica",
+        justificacion_motivada: "Justificación motivada sustancial con más de 20 caracteres para prueba.",
+      });
+
+      expect(res.exito).toBe(true);
+      const state = useDevolucionStore.getState();
+      const propActualizada = state.getById("prop-test-01");
+      expect(propActualizada?.estado_incorporacion).toBe("NO_INCORPORADA_MOTIVADA");
+      expect(propActualizada?.causal_descarte).toBe("tecnica");
+      expect(state.totalRespondidos).toBe(1);
+      expect(state.totalPendientes).toBe(0);
+      expect(state.tasaRespuestaMotivada).toBe(100);
+
+      spyApi.mockRestore();
+    });
+
+    test("AUD-03: si la API falla al registrar devolución, NO muta el store, registra error y retorna false (anti-silent-fallback)", async () => {
+      useDevolucionStore.setState({
+        propuestas: [
+          {
+            id: "prop-test-fallo",
+            codigo: "PROP-FALLO-01",
+            titulo: "Iniciativa que fallará",
+            descripcion: "Descripción para verificar no mutación",
+            autor_nombre: "Ciudadano",
+            territorio: "El Pozón",
+            canal_origen: "web",
+            fecha_radicacion: "2026-04-01",
+            estado_incorporacion: "SIN_RESPUESTA",
+          },
+        ],
+        totalAportes: 1,
+        totalRespondidos: 0,
+        totalPendientes: 1,
+        tasaRespuestaMotivada: 0,
+        error: null,
+      });
+
+      const store = useDevolucionStore.getState();
+      const spyApi = vi.spyOn(
+        await import("../services/devolucion-api"),
+        "registrarDevolucionMotivadaApi"
+      ).mockRejectedValueOnce(new Error("HTTP 403 Forbidden: Permiso insuficiente"));
+
+      const res = await store.registrarDevolucionMotivada("prop-test-fallo", {
+        causal: "juridica",
+        justificacion_motivada: "Justificación motivada válida pero con rechazo de permisos en el servidor.",
+      });
+
+      expect(res.exito).toBe(false);
+      expect(res.error).toContain("403 Forbidden");
+
+      const state = useDevolucionStore.getState();
+      const propSinCambio = state.getById("prop-test-fallo");
+      expect(propSinCambio?.estado_incorporacion).toBe("SIN_RESPUESTA");
+      expect(state.totalRespondidos).toBe(0);
+      expect(state.totalPendientes).toBe(1);
+      expect(state.error).toContain("403 Forbidden");
+
+      spyApi.mockRestore();
     });
   });
 });

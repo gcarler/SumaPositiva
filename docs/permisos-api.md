@@ -45,6 +45,7 @@ Contrato y activación: [usuarios y acceso](identidad.md).
 | testimonios:moderar | autoridad_distrital, facilitador_mesa | declarada |
 | politicas:gestionar | autoridad_distrital, administrador_identidades | declarada |
 | auditoria:leer | autoridad_distrital, administrador_identidades, auditor_forense | declarada |
+| seguimiento:gestionar | autoridad_distrital, administrador_identidades | declarada |
 
 Los roles ciudadano, ciudadano anónimo y auditor forense no reciben permisos de
 gestión institucional. El registro público solo admite ciudadano. Asignaciones
@@ -70,6 +71,13 @@ La última columna explica la excepción pública o la condición adicional.
 | GET | /api/v1/auditoria/registros | permiso:auditoria:leer@declarada | Consulta forense inmutable de razones motivadas y trazabilidad. |
 | GET | /api/v1/auditoria/respaldos | permiso:auditoria:leer@declarada | Supervisión de copias de seguridad lógicas y verificación de hash SHA-256. |
 | POST | /api/v1/auditoria/respaldos/ejecutar | permiso:auditoria:leer@declarada | Ejecución supervisada de respaldo en caliente de la base de datos. |
+| GET | /api/v1/compromisos | publico | Máxima publicidad y transparencia activa de compromisos PAS Cartagena. |
+| POST | /api/v1/compromisos | permiso:seguimiento:gestionar@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |
+| GET | /api/v1/compromisos/kpis | publico | Consulta pública de KPIs consolidados de seguimiento del PAS. |
+| DELETE | /api/v1/compromisos/{id_o_codigo} | permiso:seguimiento:gestionar@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |
+| GET | /api/v1/compromisos/{id_o_codigo} | publico | Consulta pública de compromiso por UUID o código para control social. |
+| PATCH | /api/v1/compromisos/{id_o_codigo}/avance | permiso:seguimiento:gestionar@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |
+| PUT | /api/v1/compromisos/{id_o_codigo} | permiso:seguimiento:gestionar@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |
 | POST | /api/v1/evidencias/subir | sujeto | Autor tomado del token; imagen validada y EXIF eliminado. |
 | GET | /api/v1/evidencias/{id} | publico | Evidencia de participación publicada y sanitizada; EXIF eliminado no garantiza anonimato visual. |
 | GET | /api/v1/evidencias/{id}/archivo | publico | Evidencia de participación publicada y sanitizada; fotos de mesa solo tras aprobación; EXIF eliminado no garantiza anonimato visual. |

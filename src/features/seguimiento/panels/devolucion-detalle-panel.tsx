@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import {
   FileText,
@@ -15,12 +16,23 @@ import {
   ExternalLink,
   Download,
   ShieldCheck,
+  Send,
+  Clock,
 } from "lucide-react";
 import { PanelShell } from "@/core/panels/panel-shell";
 import { usePanels } from "@/core/panels/panel-store";
 import type { PanelComponentProps } from "@/app/_composition/panel-registry";
 import { Button } from "@/shared/ui/button";
 import { Badge } from "@/shared/ui/badge";
+import { Label } from "@/shared/ui/label";
+import { Textarea } from "@/shared/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/shared/ui/select";
 import { useSesionStore } from "@/features/sesion/state/session-store";
 import { useDevolucionStore } from "../state/devolucion-store";
 import {
@@ -43,6 +55,40 @@ export function DevolucionDetallePanel({
       ? s.propuestas.find((p) => p.id === propuestaId || p.codigo === propuestaId) ?? null
       : null
   );
+
+  const registrarDevolucionMotivada = useDevolucionStore((s) => s.registrarDevolucionMotivada);
+  const cargarHistorialDevolucion = useDevolucionStore((s) => s.cargarHistorialDevolucion);
+  const historialDevoluciones = useDevolucionStore((s) => s.historialDevoluciones);
+  const guardando = useDevolucionStore((s) => s.guardando);
+
+  const [causalSeleccionada, setCausalSeleccionada] = useState<string>("tecnica");
+  const [justificacionTexto, setJustificacionTexto] = useState<string>("");
+
+  useEffect(() => {
+    if (propuesta?.id) {
+      cargarHistorialDevolucion(propuesta.id);
+    }
+  }, [propuesta?.id, cargarHistorialDevolucion]);
+
+  const handleRadicarDevolucion = async () => {
+    if (!propuesta) return;
+    if (justificacionTexto.trim().length < 20) {
+      toast.error("La justificación motivada debe contener al menos 20 caracteres sustanciales.");
+      return;
+    }
+
+    const res = await registrarDevolucionMotivada(propuesta.id, {
+      causal: causalSeleccionada,
+      justificacion_motivada: justificacionTexto.trim(),
+    });
+
+    if (res.exito) {
+      toast.success("Devolución motivada radicada y registrada en auditoría forense conforme a la Sentencia C-150/15.");
+      setJustificacionTexto("");
+    } else {
+      toast.error(res.error || "No fue posible radicar la devolución motivada.");
+    }
+  };
 
   const exportarExpedienteJSON = () => {
     if (!propuesta) return;
@@ -173,36 +219,105 @@ export function DevolucionDetallePanel({
             </Badge>
           </div>
 
-          {/* Caso 1: Incorporada Total o Parcial */}
-          {propuesta.estado_incorporacion !== "NO_INCORPORADA_MOTIVADA" ? (
-            <div className="space-y-3">
-              <div className="flex items-start gap-2.5 rounded-lg border border-success/30 bg-success-soft p-3.5 text-xs text-text-primary">
-                <CheckCircle2 className="h-5 w-5 shrink-0 text-success mt-0.5" />
-                <div>
-                  <span className="font-semibold text-success">
-                    Propuesta Acogida en el Plan de Acción y Seguimiento
+          {/* Caso 1: Sin Respuesta (Pendiente de Motivación C-150) */}
+          {propuesta.estado_incorporacion === "SIN_RESPUESTA" ? (
+            <div className="space-y-4">
+              <div className="flex items-start gap-2.5 rounded-lg border border-warning/30 bg-warning-soft p-3.5 text-xs text-text-primary">
+                <Clock className="h-5 w-5 shrink-0 text-warning mt-0.5" />
+                <div className="space-y-1">
+                  <span className="font-semibold text-warning">
+                    Propuesta Ciudadana Pendiente de Respuesta
                   </span>
-                  <p className="mt-1 text-text-secondary leading-relaxed">
-                    {propuesta.motivacion_sustancial}
+                  <p className="text-text-secondary leading-relaxed pt-0.5">
+                    Esta iniciativa comunitaria no cuenta aún con respuesta formal. Conforme al deber de motivación sustancial (Sentencia C-150 de 2015), la administración distrital no puede descartar silenciosamente este aporte ciudadano.
                   </p>
                 </div>
               </div>
 
-              {propuesta.compromiso_pas_codigo && (
-                <div className="rounded-lg border border-border bg-surface-2 p-3 text-xs space-y-1">
-                  <span className="text-text-muted text-[11px]">Compromiso Institucional Articulado:</span>
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="font-mono font-semibold text-accent">
-                      {propuesta.compromiso_pas_codigo}
-                    </span>
-                    <span className="text-text-primary font-medium truncate">
-                      {propuesta.compromiso_pas_nombre}
-                    </span>
+              {esAuditor ? (
+                <div className="rounded-lg border border-dashed border-border bg-surface-2 p-3 text-[11px] text-text-muted">
+                  Modo Auditor: La emisión de devoluciones motivadas está reservada a la autoridad distrital competente.
+                </div>
+              ) : (
+                <div className="rounded-xl border border-accent/30 bg-surface-2/60 p-4 text-xs space-y-3">
+                  <div className="flex items-center gap-2 font-semibold text-text-primary">
+                    <Scale className="h-4 w-4 text-accent" />
+                    <span>Radicar Devolución Motivada (C-150/15)</span>
                   </div>
+                  <p className="text-[11px] text-text-muted leading-relaxed">
+                    Seleccione la causal jurídica o técnica taxativa y redacte los fundamentos sustanciales que motivan la no incorporación en el PAS.
+                  </p>
+
+                  <div className="space-y-1.5">
+                    <Label className="text-[11px] font-medium text-text-secondary">
+                      Causal Taxativa de No Incorporación:
+                    </Label>
+                    <Select
+                      value={causalSeleccionada}
+                      onValueChange={setCausalSeleccionada}
+                    >
+                      <SelectTrigger className="text-xs">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="tecnica" className="text-xs">
+                          Inconsistencia Técnica / Metodológica (MGA)
+                        </SelectItem>
+                        <SelectItem value="juridica" className="text-xs">
+                          Incompetencia Legal / Restricción Jurídica (LOOT)
+                        </SelectItem>
+                        <SelectItem value="presupuestal" className="text-xs">
+                          Restricción Presupuestal / Fiscal (MFMP)
+                        </SelectItem>
+                        <SelectItem value="INCOMPETENCIA_LEGAL_LOOT" className="text-xs">
+                          Incompetencia Legal LOOT (Ley 1454/11)
+                        </SelectItem>
+                        <SelectItem value="RESTRICCION_FISCAL_MFMP" className="text-xs">
+                          Restricción Fiscal MFMP (Ley 819/03)
+                        </SelectItem>
+                        <SelectItem value="REQUERIMIENTO_CONSULTA_PREVIA" className="text-xs">
+                          Requiere Consulta Previa (Convenio 169 OIT)
+                        </SelectItem>
+                        <SelectItem value="DUPLICIDAD_PROGRAMATICA" className="text-xs">
+                          Duplicidad Programática (Ley 489/98)
+                        </SelectItem>
+                        <SelectItem value="INCOMPATIBILIDAD_NORMATIVA" className="text-xs">
+                          Incompatibilidad Normativa (Ley 1801/16)
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <Label className="text-[11px] font-medium text-text-secondary">
+                      Justificación Sustancial Motivada (mínimo 20 caracteres):
+                    </Label>
+                    <Textarea
+                      value={justificacionTexto}
+                      onChange={(e) => setJustificacionTexto(e.target.value)}
+                      placeholder="Redacte la motivación sustantiva y el fundamento legal que justifica la no incorporación..."
+                      className="text-xs min-h-[90px]"
+                    />
+                    <div className="flex justify-between text-[10px] text-text-muted">
+                      <span>{justificacionTexto.trim().length} / 20 caracteres mínimos</span>
+                      {justificacionTexto.trim().length < 20 && (
+                        <span className="text-warning">Mínimo 20 caracteres requeridos</span>
+                      )}
+                    </div>
+                  </div>
+
+                  <Button
+                    onClick={handleRadicarDevolucion}
+                    disabled={guardando || justificacionTexto.trim().length < 20}
+                    className="w-full gap-2 text-xs"
+                  >
+                    <Send className="h-3.5 w-3.5" />
+                    <span>{guardando ? "Radicando Devolución..." : "Radicar Devolución en Auditoría Forense"}</span>
+                  </Button>
                 </div>
               )}
             </div>
-          ) : (
+          ) : propuesta.estado_incorporacion === "NO_INCORPORADA_MOTIVADA" ? (
             /* Caso 2: No Incorporada con Causal Taxativa */
             <div className="space-y-3">
               <div className="flex items-start gap-2.5 rounded-lg border border-danger/30 bg-danger-soft p-3.5 text-xs text-text-primary">
@@ -236,6 +351,56 @@ export function DevolucionDetallePanel({
                     <p className="text-text-primary font-medium mt-0.5">
                       {propuesta.ruta_alternativa ?? causalInfo.canalSugerido}
                     </p>
+                  </div>
+                </div>
+              )}
+
+              {/* Trazabilidad Forense de Auditoría */}
+              {historialDevoluciones[propuesta.id] && historialDevoluciones[propuesta.id].length > 0 && (
+                <div className="rounded-lg border border-border bg-surface-2 p-3 text-xs space-y-2">
+                  <span className="text-[11px] font-semibold text-accent">
+                    Registro Forense de Devolución (PostgreSQL):
+                  </span>
+                  {historialDevoluciones[propuesta.id].map((reg) => (
+                    <div key={reg.id} className="border-t border-border pt-1.5 text-[11px] space-y-0.5">
+                      <div className="flex items-center justify-between text-text-muted">
+                        <span>Acción: <strong className="text-text-primary">{reg.accion}</strong></span>
+                        <span>{new Date(reg.creado_en).toLocaleString("es-CO")}</span>
+                      </div>
+                      <div className="text-text-secondary">
+                        Causal: <strong className="text-text-primary uppercase">{reg.causal}</strong>
+                      </div>
+                      <p className="text-text-muted italic">{reg.justificacion_motivada}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ) : (
+            /* Caso 3: Incorporada Total o Parcial */
+            <div className="space-y-3">
+              <div className="flex items-start gap-2.5 rounded-lg border border-success/30 bg-success-soft p-3.5 text-xs text-text-primary">
+                <CheckCircle2 className="h-5 w-5 shrink-0 text-success mt-0.5" />
+                <div>
+                  <span className="font-semibold text-success">
+                    Propuesta Acogida en el Plan de Acción y Seguimiento
+                  </span>
+                  <p className="mt-1 text-text-secondary leading-relaxed">
+                    {propuesta.motivacion_sustancial || "Iniciativa comunitaria articulada a los compromisos del PAS."}
+                  </p>
+                </div>
+              </div>
+
+              {propuesta.compromiso_pas_codigo && (
+                <div className="rounded-lg border border-border bg-surface-2 p-3 text-xs space-y-1">
+                  <span className="text-text-muted text-[11px]">Compromiso Institucional Articulado:</span>
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="font-mono font-semibold text-accent">
+                      {propuesta.compromiso_pas_codigo}
+                    </span>
+                    <span className="text-text-primary font-medium truncate">
+                      {propuesta.compromiso_pas_nombre}
+                    </span>
                   </div>
                 </div>
               )}

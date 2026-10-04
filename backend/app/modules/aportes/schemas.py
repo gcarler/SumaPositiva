@@ -180,6 +180,7 @@ class PropuestaCiudadanaRead(PropuestaCiudadanaBase):
     apoyos_contador: int = Field(default=0, description="Contador de respaldos ciudadanos")
     estado: str = Field(..., description="Estado actual de tramitación o devolución")
     activo: bool = Field(default=True, description="Bandera para soft-delete")
+    territorio_nombre: str | None = Field(default=None, description="Nombre del territorio asociado")
     creado_en: datetime
     actualizado_en: datetime
 

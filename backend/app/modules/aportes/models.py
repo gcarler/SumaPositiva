@@ -211,6 +211,20 @@ class PropuestaCiudadana(Base):
         "Territorio",
     )
 
+    @property
+    def territorio_nombre(self) -> str | None:
+        if self.consejo_comunitario:
+            return self.consejo_comunitario
+        from sqlalchemy import inspect
+        state = inspect(self)
+        if "territorio" in state.dict:
+            rel = state.dict["territorio"]
+            if rel and hasattr(rel, "nombre"):
+                return rel.nombre
+        if isinstance(self.metadatos, dict) and self.metadatos.get("territorio"):
+            return str(self.metadatos["territorio"])
+        return None
+
 
 class ApoyoPropuesta(Base):
     """Modelo ORM para apoyos/respaldos únicos a propuestas."""
