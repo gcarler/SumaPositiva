@@ -304,29 +304,22 @@ export async function crearSubMesa(
   mesaId: string,
   datos: { nombre: string; tema: string; participantes?: number | null }
 ): Promise<SubMesa | null> {
-  // 1. Crear en el store local inmediatamente
-  const sub = useMesasStore.getState().crearSubMesa(mesaId, {
+  // 1. Persistir primero en backend; si falla, el error se propaga (sin retorno simulado)
+  const creada = await apiFetch<{ id: string }>(`/api/v1/mesas/${mesaId}/submesas`, {
+    method: "POST",
+    body: JSON.stringify({
+      nombre: datos.nombre,
+      metadatos: { tema: datos.tema, participantes: datos.participantes ?? null },
+    }),
+  });
+
+  // 2. Reflejar en el store local solo tras confirmación del servidor
+  return useMesasStore.getState().crearSubMesa(mesaId, {
+    id: creada.id,
     nombre: datos.nombre,
     tema: datos.tema,
     participantes: datos.participantes ?? null,
   });
-  if (!sub) return null;
-
-  // 2. Intentar sincronizar con backend (fire and forget)
-  try {
-    await apiFetch(`/api/v1/mesas/${mesaId}/submesas`, {
-      method: "POST",
-      body: JSON.stringify({
-        nombre: datos.nombre,
-        tema: datos.tema,
-        participantes: datos.participantes ?? null,
-      }),
-    });
-  } catch {
-    /* silencioso — el store local ya tiene los datos */
-  }
-
-  return sub;
 }
 
 /**
@@ -342,7 +335,8 @@ export async function listarSubmesas(mesaId: string): Promise<SubMesa[]> {
 }
 
 /**
- * Actualiza la submesa con el árbol.
+ * Persiste la submesa (nombre + contenido del papelógrafo en metadatos) en el backend.
+ * Los errores (incluido 409/412) se propagan; nunca se devuelve un resultado simulado.
  */
 export async function actualizarSubMesa(
   mesaId: string,
@@ -353,24 +347,22 @@ export async function actualizarSubMesa(
   if (subMesa.etag) {
     headers["If-Match"] = subMesa.etag;
   }
-  
-  try {
-    return await apiFetch<SubMesa>(`/mesas/${mesaId}/submesas/${subMesaId}`, {
-      method: "PUT",
-      body: subMesa,
-      headers,
-    });
-  } catch (err: unknown) {
-    if (
-      err &&
-      typeof err === "object" &&
-      "status" in err &&
-      ((err as { status: number }).status === 409 || (err as { status: number }).status === 412)
-    ) {
-      throw err;
-    }
-    return subMesa;
-  }
+
+  await apiFetch(`/mesas/${mesaId}/submesas/${subMesaId}`, {
+    method: "PUT",
+    body: {
+      nombre: subMesa.nombre,
+      metadatos: {
+        tema: subMesa.tema,
+        participantes: subMesa.participantes,
+        arbolProblemas: subMesa.arbolProblemas,
+        arbolSoluciones: subMesa.arbolSoluciones,
+        matrizArbol: subMesa.matrizArbol ?? null,
+      },
+    },
+    headers,
+  });
+  return subMesa;
 }
 
 /**
@@ -378,44 +370,6 @@ export async function actualizarSubMesa(
  */
 export async function listarInstrumentos(mesaId: string): Promise<InstrumentoBackendResponse[]> {
   return apiFetch<InstrumentoBackendResponse[]>(`/instrumentos?mesa_id=${mesaId}`);
-}
-
-export async function actualizarArbol(
-  instrumentoId: string,
-  arbol: Record<string, unknown>
-): Promise<InstrumentoBackendResponse> {
-  return apiFetch<InstrumentoBackendResponse>(`/instrumentos/${instrumentoId}/arbol`, {
-    method: "PUT",
-    body: arbol,
-  });
-}
-
-export async function actualizarNodos(
-  instrumentoId: string,
-  nodos: { etag?: string; [key: string]: unknown }
-): Promise<unknown> {
-  const headers: Record<string, string> = {};
-  if (nodos.etag) {
-    headers["If-Match"] = nodos.etag;
-  }
-
-  try {
-    return await apiFetch<unknown>(`/instrumentos/${instrumentoId}/nodos`, {
-      method: "PUT",
-      body: nodos,
-      headers,
-    });
-  } catch (err: unknown) {
-    if (
-      err &&
-      typeof err === "object" &&
-      "status" in err &&
-      ((err as { status: number }).status === 409 || (err as { status: number }).status === 412)
-    ) {
-      throw err;
-    }
-    return nodos;
-  }
 }
 
 export async function convertirAObjetivos(instrumentoId: string): Promise<InstrumentoBackendResponse> {

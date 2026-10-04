@@ -77,6 +77,11 @@ export function useCrearSubMesa() {
     }) => {
       return crearSubMesa(mesaId, datos);
     },
+    onError: () => {
+      toast.error("No se pudo crear la submesa", {
+        description: "El servidor no confirmó la creación.",
+      });
+    },
     onSuccess: (_, { mesaId }) => {
       // Actualizar el cache de TanStack Query con los datos del store
       const mesaActualizada = useMesasStore.getState().mesas.find((m) => m.id === mesaId);
@@ -137,9 +142,10 @@ export function useActualizarSubMesa() {
           });
           throw err;
         }
-        // Fallback for missing backend or offline
-        console.warn("Fallback: backend no disponible", err);
-        return subMesa;
+        toast.error("No se pudo guardar la submesa", {
+          description: "El servidor no confirmó el guardado. Los cambios no se han persistido.",
+        });
+        throw err;
       }
     },
     onSuccess: (_, { mesaId }) => {

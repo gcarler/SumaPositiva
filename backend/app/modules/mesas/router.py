@@ -213,6 +213,23 @@ async def actualizar_mesa(
     return await service.actualizar_mesa(mesa_id, datos, sujeto=sujeto)
 
 
+@router.put(
+    "/{mesa_id}/submesas/{submesa_id}",
+    response_model=MesaRespuesta,
+)
+async def actualizar_submesa(
+    mesa_id: uuid.UUID,
+    submesa_id: uuid.UUID,
+    datos: MesaActualizar,
+    sujeto: Annotated[
+        SujetoAutenticadoContexto,
+        Depends(requerir_permiso("mesas:abrir", nivel_minimo="declarada")),
+    ],
+    service: MesaServiceDep,
+):
+    return await service.actualizar_submesa(mesa_id, submesa_id, datos, sujeto=sujeto)
+
+
 @router.get("/{mesa_id}/submesas", response_model=list[MesaRespuesta])
 async def obtener_submesas(mesa_id: uuid.UUID, service: MesaServiceDep):
     return await service.listar_submesas(mesa_id)

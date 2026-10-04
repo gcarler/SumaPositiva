@@ -49,6 +49,8 @@ export interface MesaInput {
 }
 
 export interface SubMesaInput {
+  /** Id asignado por el backend (si se omite, se genera uno local) */
+  id?: string;
   nombre: string;
   tema: string;
   participantes: number | null;
@@ -647,7 +649,7 @@ export const useMesasStore = create<MesasState>((set, get) => ({
 
   crearSubMesa: (mesaId, input) => {
     const sub: SubMesa = {
-      id: `sm-nueva-${++subMesaSeq}`,
+      id: input.id ?? `sm-nueva-${++subMesaSeq}`,
       nombre: input.nombre,
       tema: input.tema,
       participantes: input.participantes,

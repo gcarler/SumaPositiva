@@ -57,11 +57,11 @@ class MesaActualizar(BaseModel):
 
 
 class SubMesaCrear(BaseModel):
-    slug: str
+    slug: str | None = None
     nombre: str
-    tipo_mesa: TipoMesaLiteral
-    codigo_oficial: str
-    shortcode_ciudadano: str
+    tipo_mesa: TipoMesaLiteral | None = None
+    codigo_oficial: str | None = None
+    shortcode_ciudadano: str | None = None
     lugar_nombre: str | None = None
     fecha: date | None = None
     horario: str | None = None

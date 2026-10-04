@@ -176,6 +176,7 @@ La última columna explica la excepción pública o la condición adicional.
 | POST | /api/v1/mesas/{mesa_id}/participantes | permiso:asistencia:verificar@declarada | Registro nominal de asistencia reservado a gestión de mesa. |
 | GET | /api/v1/mesas/{mesa_id}/submesas | publico | Convocatorias y actas de deliberación pública; participantes nominales están protegidos. |
 | POST | /api/v1/mesas/{mesa_id}/submesas | permiso:mesas:abrir@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |
+| PUT | /api/v1/mesas/{mesa_id}/submesas/{submesa_id} | permiso:mesas:abrir@declarada | Gestión autorizada según permiso o rol; valida que la submesa pertenezca a la mesa y aplica salvaguardas de propiedad (OBS-21). |
 | GET | /api/v1/participacion/canal-escenarios | publico | Consulta pública de catálogos y resultados de política para transparencia. |
 | GET | /api/v1/participacion/canal-mesas | publico | Consulta pública de catálogos y resultados de política para transparencia. |
 | GET | /api/v1/participacion/canal-web | publico | Consulta pública de catálogos y resultados de política para transparencia. |

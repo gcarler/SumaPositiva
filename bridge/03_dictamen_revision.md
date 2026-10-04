@@ -245,3 +245,9 @@ Auditoría independiente BD ↔ Backend ↔ Frontend, verificada por el EAF cont
 
 **Perímetro:** auditoría de solo lectura; cero cambios de código, cero escrituras en BD, Codex intacto, sin push.
 **Estado de los hallazgos:** reportados, sin corregir. Requieren decisión del supervisor (aplicar migraciones 0041–0043 en ventana, purga de datos de prueba en `bd_csh`, PUT faltantes, retiro de fallbacks silenciosos).
+
+## CIERRE POST-AUD-19 (coordinador, 2026-10-04)
+1. Migraciones 0041–0043 aplicadas en `bd_csh` (respaldo `backups/bd_csh_20261004_211208.dump`, servicios detenidos); `/mesas/agendas`, `/fuentes`, `/alternativas` → 200.
+2. Cuentas de `autenticacion.usuarios` intactas (413), a petición del usuario.
+3. Nuevo `PUT /api/v1/mesas/{mesa_id}/submesas/{submesa_id}` (404 si no pertenece al padre; mismas salvaguardas OBS-21; fusión de `metadatos`). `SubMesaCrear` deriva slug/tipo/códigos del padre. Frontend: retirados retornos simulados en `crearSubMesa`/`actualizarSubMesa`/`useActualizarSubMesa`; eliminados `actualizarArbol`/`actualizarNodos` (sin consumidores). Pruebas: `test_mesas_submesas_put.py`, `bun test` 279, `bun run check`, access_policy OK.
+Abiertos: H-04 (otros fallbacks silenciosos), H-05, H-06 (`/politicas`), H-07 (drift `mesas_trabajo.mesas`), datos de prueba restantes, H-09.

@@ -142,18 +142,42 @@ class MesaService:
             if not padre:
                 raise HTTPException(status.HTTP_404_NOT_FOUND, detail="Mesa padre no encontrada")
 
-            slug_saneado = self._sanitizar_ltree(datos.slug)
+            sufijo = uuid.uuid4().hex[:8]
+            base_slug = self._sanitizar_ltree(datos.slug or datos.nombre).strip("_")[:40] or "sub"
+            slug_saneado = base_slug if datos.slug else f"{base_slug}_{sufijo}"
             ruta = f"{padre.ruta_jerarquica}.{slug_saneado}"
 
             datos_dict = datos.model_dump(exclude={"slug"})
+            datos_dict["tipo_mesa"] = datos.tipo_mesa or padre.tipo_mesa
+            datos_dict["codigo_oficial"] = (
+                datos.codigo_oficial or f"{padre.codigo_oficial[:70]}-S{sufijo}"
+            )
+            datos_dict["shortcode_ciudadano"] = (
+                datos.shortcode_ciudadano or f"{padre.shortcode_ciudadano[:30]}-S{sufijo}"
+            )
             mesa = Mesa(**datos_dict)
             prefijo_padre = padre.slug or self._sanitizar_ltree(padre.shortcode_ciudadano)
-            mesa.slug = f"{prefijo_padre}-{slug_saneado}"
+            mesa.slug = f"{prefijo_padre}-{slug_saneado}"[:100]
             mesa.mesa_padre_id = padre.id
             mesa.ruta_jerarquica = ruta
 
             mesa_creada = await self.repository.crear(mesa)
             return MesaRespuesta.model_validate(mesa_creada)
+
+    async def actualizar_submesa(
+        self,
+        padre_id: uuid.UUID,
+        submesa_id: uuid.UUID,
+        datos: MesaActualizar,
+        sujeto: SujetoAutenticadoContexto | None = None,
+    ) -> MesaRespuesta:
+        submesa = await self.repository.obtener_por_id(submesa_id)
+        if not submesa or submesa.mesa_padre_id != padre_id:
+            raise HTTPException(
+                status.HTTP_404_NOT_FOUND,
+                detail="Submesa no encontrada en la mesa indicada",
+            )
+        return await self.actualizar_mesa(submesa_id, datos, sujeto=sujeto)
 
     async def actualizar_mesa(
         self,
