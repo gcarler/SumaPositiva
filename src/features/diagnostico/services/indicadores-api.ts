@@ -5,7 +5,6 @@ import type {
   MedicionIndicadorCrear,
   MedicionIndicadorRespuesta,
 } from "../models/indicador";
-import { INDICADORES_FALLBACK } from "../data/indicadores-fallback.data";
 
 export function normalizarFicha(item: Record<string, unknown>): FichaIndicador {
   return {
@@ -35,29 +34,28 @@ export function normalizarFicha(item: Record<string, unknown>): FichaIndicador {
   };
 }
 
+/**
+ * Consulta el catálogo de fichas de indicadores desde PostgreSQL (/api/v1/indicadores/fichas).
+ * Backend es la fuente de verdad. Erradicado fallback silencioso (H-04).
+ */
 export async function listarFichasIndicadores(): Promise<FichaIndicador[]> {
-  try {
-    const raw = await apiFetch<Record<string, unknown>[]>("/indicadores/fichas");
-    if (Array.isArray(raw) && raw.length > 0) {
-      return raw.map(normalizarFicha);
-    }
-    return INDICADORES_FALLBACK;
-  } catch (error) {
-    console.warn("Fallo al consultar /api/v1/indicadores/fichas, utilizando catálogo fallback:", error);
-    return INDICADORES_FALLBACK;
+  const raw = await apiFetch<Record<string, unknown>[]>("/indicadores/fichas");
+  if (Array.isArray(raw)) {
+    return raw.map(normalizarFicha);
   }
+  return [];
 }
 
-export async function obtenerFichaIndicador(id: string): Promise<FichaIndicador | undefined> {
-  try {
-    const raw = await apiFetch<Record<string, unknown>>(`/indicadores/fichas/${id}`);
-    if (raw && raw.id) {
-      return normalizarFicha(raw);
-    }
-  } catch (error) {
-    console.warn(`Fallo al consultar ficha ${id}:`, error);
+/**
+ * Consulta el detalle de una ficha técnica de indicador por ID desde PostgreSQL.
+ * Erradicado fallback silencioso (H-04).
+ */
+export async function obtenerFichaIndicador(id: string): Promise<FichaIndicador> {
+  const raw = await apiFetch<Record<string, unknown>>(`/indicadores/fichas/${id}`);
+  if (raw && raw.id) {
+    return normalizarFicha(raw);
   }
-  return INDICADORES_FALLBACK.find((f) => f.id === id);
+  throw new Error(`Ficha de indicador ${id} no encontrada`);
 }
 
 export async function registrarMedicionIndicador(

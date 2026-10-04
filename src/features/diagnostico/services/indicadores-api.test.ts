@@ -1,5 +1,9 @@
-import { describe, expect, test } from "vitest";
-import { normalizarFicha } from "./indicadores-api";
+import { describe, expect, test, vi, afterEach } from "vitest";
+import {
+  normalizarFicha,
+  listarFichasIndicadores,
+  obtenerFichaIndicador,
+} from "./indicadores-api";
 import { INDICADORES_FALLBACK } from "../data/indicadores-fallback.data";
 import { POLITICAS_MOCK } from "@/features/politicas/__fixtures__/politicas.fixture";
 
@@ -110,4 +114,84 @@ describe("Diagnóstico y Línea Base Cuantitativa DNP", () => {
       expect(fase2?.lineas.length).toBe(4);
     });
   });
+
+  describe("Consumo de API y Erradicación de Fallbacks Silenciosos (H-04)", () => {
+    const originalFetch = globalThis.fetch;
+
+    afterEach(() => {
+      globalThis.fetch = originalFetch;
+    });
+
+    test("listarFichasIndicadores retorna datos de la API cuando responde exitosamente", async () => {
+      const mockApi = [
+        {
+          id: "ind-test-1",
+          codigo: "IND-RES-01",
+          nombre: "Indicador Prueba",
+          tipo_indicador: "resultado",
+          linea_base_valor: "10",
+        },
+      ];
+
+      vi.spyOn(globalThis, "fetch").mockImplementation(async () => {
+        return new Response(JSON.stringify(mockApi), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        });
+      });
+
+      const fichas = await listarFichasIndicadores();
+      expect(fichas).toHaveLength(1);
+      expect(fichas[0].id).toBe("ind-test-1");
+      expect(fichas[0].codigo).toBe("IND-RES-01");
+    });
+
+    test("listarFichasIndicadores devuelve arreglo vacío cuando el backend responde vacío (H-04)", async () => {
+      vi.spyOn(globalThis, "fetch").mockImplementation(async () => {
+        return new Response(JSON.stringify([]), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        });
+      });
+
+      const fichas = await listarFichasIndicadores();
+      expect(fichas).toEqual([]);
+    });
+
+    test("listarFichasIndicadores propaga error cuando el backend falla (H-04)", async () => {
+      vi.spyOn(globalThis, "fetch").mockImplementation(async () => {
+        throw new Error("Fallo de conexión al backend");
+      });
+
+      await expect(listarFichasIndicadores()).rejects.toThrow("Fallo de conexión al backend");
+    });
+
+    test("obtenerFichaIndicador retorna la ficha si existe remotamente", async () => {
+      const mockFicha = {
+        id: "ind-01-uuid",
+        codigo: "IND-RES-01",
+        nombre: "Tasa de Homicidios",
+      };
+
+      vi.spyOn(globalThis, "fetch").mockImplementation(async () => {
+        return new Response(JSON.stringify(mockFicha), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        });
+      });
+
+      const ficha = await obtenerFichaIndicador("ind-01-uuid");
+      expect(ficha.id).toBe("ind-01-uuid");
+      expect(ficha.codigo).toBe("IND-RES-01");
+    });
+
+    test("obtenerFichaIndicador propaga excepción cuando responde 404 (H-04)", async () => {
+      vi.spyOn(globalThis, "fetch").mockImplementation(async () => {
+        return new Response("Not Found", { status: 404 });
+      });
+
+      await expect(obtenerFichaIndicador("ind-inexistente")).rejects.toThrow();
+    });
+  });
 });
+

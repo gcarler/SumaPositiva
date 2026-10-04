@@ -106,21 +106,40 @@ describe("Costeo Presupuestal y Asignación de Fuentes MGA (Hito F-3)", () => {
       expect(asignaciones.length).toBeGreaterThan(0);
     });
 
-    test("crearAsignacionPresupuestal genera registro válido y consistente", async () => {
-      const nueva = await crearAsignacionPresupuestal({
-        fuente_financiacion_id: "01a0f7ce-31fe-791b-8076-412a21d6544f",
-        monto_estimado: 750000000,
-        anio_vigencia: 2026,
-        es_vigencia_futura: false,
-        codigo_bpin: "BPIN-2026-CTG-TEST",
-        justificacion: "Prueba unitaria de asignación",
-        metadatos: { test: true },
-      });
+    test("crearAsignacionPresupuestal propaga error ante fallo de autenticación o backend (H-04)", async () => {
+      const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
+        new Response(JSON.stringify({ detail: "No autorizado" }), {
+          status: 401,
+          headers: { "Content-Type": "application/json" },
+        })
+      );
 
-      expect(nueva.id).toBeDefined();
-      expect(nueva.monto_estimado).toBe(750000000);
-      expect(nueva.codigo_bpin).toBe("BPIN-2026-CTG-TEST");
-      expect(nueva.es_vigencia_futura).toBe(false);
+      await expect(
+        crearAsignacionPresupuestal({
+          fuente_financiacion_id: "01a0f7ce-31fe-791b-8076-412a21d6544f",
+          monto_estimado: 750000000,
+          anio_vigencia: 2026,
+          es_vigencia_futura: false,
+          codigo_bpin: "BPIN-2026-CTG-TEST",
+          justificacion: "Prueba unitaria de asignación",
+          metadatos: { test: true },
+        })
+      ).rejects.toThrow();
+
+      fetchSpy.mockRestore();
+    });
+
+    test("listarFuentesFinanciacion devuelve lista vacía si el backend responde vacío (H-04)", async () => {
+      const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
+        new Response(JSON.stringify([]), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        })
+      );
+
+      const res = await listarFuentesFinanciacion();
+      expect(res).toEqual([]);
+      fetchSpy.mockRestore();
     });
 
     test("listarFuentesFinanciacion consume exitosamente la API real cuando el backend responde 200", async () => {

@@ -1,6 +1,5 @@
 import { apiFetch } from "@/core/http/api-client";
 import {
-  AGENDA_MESAS,
   type MesaAgenda,
   type TipoMesa,
   type EstadoMesa,
@@ -50,44 +49,35 @@ export function normalizarAgendaBackend(raw: AgendaBackendResponse): MesaAgenda 
 
 /**
  * Consulta el cronograma completo de agendas de mesas desde PostgreSQL.
- * Fallback a AGENDA_MESAS si la API no responde.
+ * Backend es la fuente de verdad (FastAPI /api/v1/mesas/agendas). Erradicado fallback silencioso (H-04).
  */
 export async function listarAgendas(filtros?: {
   tipo?: string;
   estado?: string;
   fecha?: string;
 }): Promise<MesaAgenda[]> {
-  try {
-    const params = new URLSearchParams();
-    if (filtros?.tipo) params.set("tipo", filtros.tipo);
-    if (filtros?.estado) params.set("estado", filtros.estado);
-    if (filtros?.fecha) params.set("fecha", filtros.fecha);
+  const params = new URLSearchParams();
+  if (filtros?.tipo) params.set("tipo", filtros.tipo);
+  if (filtros?.estado) params.set("estado", filtros.estado);
+  if (filtros?.fecha) params.set("fecha", filtros.fecha);
 
-    const query = params.toString() ? `?${params.toString()}` : "";
-    const resp = await apiFetch<AgendaBackendResponse[]>(`/mesas/agendas${query}`);
-    if (Array.isArray(resp) && resp.length > 0) {
-      return resp.map(normalizarAgendaBackend);
-    }
-  } catch {
-    // Fallback transparente
+  const query = params.toString() ? `?${params.toString()}` : "";
+  const resp = await apiFetch<AgendaBackendResponse[]>(`/mesas/agendas${query}`);
+  if (Array.isArray(resp)) {
+    return resp.map(normalizarAgendaBackend);
   }
-  return AGENDA_MESAS;
+  return [];
 }
 
 /**
  * Consulta el detalle de una mesa de la agenda por su ID.
+ * Erradicado fallback silencioso a catálogo estático (H-04).
  */
 export async function obtenerAgenda(agendaId: string): Promise<MesaAgenda> {
-  try {
-    const resp = await apiFetch<AgendaBackendResponse>(`/mesas/agendas/${agendaId}`);
-    if (resp && resp.id) {
-      return normalizarAgendaBackend(resp);
-    }
-  } catch {
-    // Fallback
+  const resp = await apiFetch<AgendaBackendResponse>(`/mesas/agendas/${agendaId}`);
+  if (resp && resp.id) {
+    return normalizarAgendaBackend(resp);
   }
-  const estatica = AGENDA_MESAS.find((m) => m.id === agendaId);
-  if (estatica) return estatica;
   throw new Error(`Agenda ${agendaId} no encontrada`);
 }
 

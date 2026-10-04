@@ -2,7 +2,6 @@
 
 import { create } from "zustand";
 import {
-  AGENDA_MESAS,
   type MesaAgenda,
 } from "@/features/mesas/data/agenda.data";
 import {
@@ -28,7 +27,7 @@ interface AgendaState {
 }
 
 export const useAgendaStore = create<AgendaState>((set, get) => ({
-  agendas: AGENDA_MESAS,
+  agendas: [],
   cargando: false,
   error: null,
 
@@ -36,22 +35,20 @@ export const useAgendaStore = create<AgendaState>((set, get) => ({
     set({ cargando: true, error: null });
     try {
       const remotas = await listarAgendas();
-      if (Array.isArray(remotas) && remotas.length > 0) {
-        set({ agendas: remotas, cargando: false });
-        return remotas;
-      }
-      set({ cargando: false });
-      return get().agendas;
+      set({ agendas: remotas, cargando: false });
+      return remotas;
     } catch (err) {
+      const mensaje = err instanceof Error ? err.message : "Error al cargar agendas";
       set({
-        error: err instanceof Error ? err.message : "Error al cargar agendas",
+        error: mensaje,
         cargando: false,
       });
-      return get().agendas;
+      throw err;
     }
   },
 
   actualizarAgenda: async (id, cambios) => {
+    const estadoPrevio = get().agendas;
     // 1. Mutación optimista en el cliente
     set((state) => ({
       agendas: state.agendas.map((item) =>
@@ -68,42 +65,18 @@ export const useAgendaStore = create<AgendaState>((set, get) => ({
       }));
       return persistida;
     } catch (err) {
-      console.warn("No se pudo sincronizar agenda en el backend:", err);
-      const actual = get().agendas.find((a) => a.id === id);
-      if (actual) return actual;
+      // Revertir mutación optimista ante falla de persistencia en backend (H-04)
+      set({ agendas: estadoPrevio });
       throw err;
     }
   },
 
   crearAgenda: async (datos) => {
-    try {
-      const creada = await crearAgendaRemota(datos);
-      set((state) => ({
-        agendas: [...state.agendas, creada],
-      }));
-      return creada;
-    } catch (_err) {
-      // Fallback local
-      const id = datos.id || `ms-${Date.now().toString(36)}`;
-      const nueva: MesaAgenda = {
-        id,
-        tipo: datos.tipo || "sectorial",
-        nombre: datos.nombre,
-        territorio: datos.territorio || "Distrito de Cartagena",
-        lugar: datos.lugar,
-        fecha: datos.fecha,
-        horaInicio: datos.horaInicio || "08:30",
-        horaFin: datos.horaFin || "12:00",
-        estado: datos.estado || "programada",
-        dimensionesONU: datos.dimensionesONU || ["Seguridad Personal"],
-        responsable: datos.responsable,
-        observaciones: datos.observaciones,
-      };
-      set((state) => ({
-        agendas: [...state.agendas, nueva],
-      }));
-      return nueva;
-    }
+    const creada = await crearAgendaRemota(datos);
+    set((state) => ({
+      agendas: [...state.agendas, creada],
+    }));
+    return creada;
   },
 
   obtenerAgendaPorId: (id) => {

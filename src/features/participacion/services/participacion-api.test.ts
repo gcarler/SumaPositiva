@@ -338,12 +338,10 @@ describe("Participación Multicanal — Alineación de Rutas y Esquemas (EDIT-07
       expect(resultado.total_asistentes).toBe(80);
     });
 
-    test("resiliencia: llamadas ante fallo de red retornan fallback canónico sin quebrar la UI", async () => {
+    test("erradicación de fallback: ante fallo de red propaga el error (H-04)", async () => {
       fetchSpy.mockRejectedValueOnce(new Error("Network Error"));
 
-      const consolidado = await obtenerConsolidado();
-      expect(consolidado).toBeDefined();
-      expect(consolidado.gran_total_participantes_distrital).toBeGreaterThan(0);
+      await expect(obtenerConsolidado()).rejects.toThrow("Network Error");
     });
   });
 });

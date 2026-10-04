@@ -6,15 +6,9 @@ import type {
   ResumenCosteo,
   KpisPresupuesto,
 } from "../models/presupuesto";
-import {
-  FUENTES_FINANCIACION_FALLBACK,
-  ASIGNACIONES_FALLBACK,
-} from "../models/presupuesto";
 
 /** Mapa rápido de fuentes para asociar nombres y códigos en normalización */
-const FUENTES_MAP_DEFAULT = new Map<string, FuenteFinanciacion>(
-  FUENTES_FINANCIACION_FALLBACK.map((f) => [f.id, f])
-);
+const FUENTES_MAP_DEFAULT = new Map<string, FuenteFinanciacion>();
 
 export function normalizarFuente(item: Record<string, unknown>): FuenteFinanciacion {
   return {
@@ -64,98 +58,64 @@ export function normalizarAsignacion(
 
 /**
  * Consulta el catálogo de fuentes de financiación oficiales desde el backend FastAPI
- * (/api/v1/presupuesto/fuentes). Aplica catálogo canónico pericial en caso de falla de red.
+ * (/api/v1/presupuesto/fuentes). Backend es la fuente de verdad (H-04).
  */
 export async function listarFuentesFinanciacion(): Promise<FuenteFinanciacion[]> {
-  try {
-    const raw = await apiFetch<Record<string, unknown>[]>("/presupuesto/fuentes");
-    if (Array.isArray(raw) && raw.length > 0) {
-      return raw.map(normalizarFuente);
-    }
-    return FUENTES_FINANCIACION_FALLBACK;
-  } catch (error) {
-    console.warn("Fallo al consultar /api/v1/presupuesto/fuentes, utilizando catálogo fallback:", error);
-    return FUENTES_FINANCIACION_FALLBACK;
+  const raw = await apiFetch<Record<string, unknown>[]>("/presupuesto/fuentes");
+  if (Array.isArray(raw)) {
+    return raw.map(normalizarFuente);
   }
+  return [];
 }
 
 /**
  * Lista las asignaciones presupuestales vigentes desde el backend FastAPI
- * (/api/v1/presupuesto/asignaciones).
+ * (/api/v1/presupuesto/asignaciones). Backend es la fuente de verdad (H-04).
  */
 export async function listarAsignacionesPresupuestales(): Promise<AsignacionPresupuestal[]> {
-  try {
-    const fuentes = await listarFuentesFinanciacion();
-    const fuentesMap = new Map(fuentes.map((f) => [f.id, f]));
+  const fuentes = await listarFuentesFinanciacion();
+  const fuentesMap = new Map(fuentes.map((f) => [f.id, f]));
 
-    const raw = await apiFetch<Record<string, unknown>[]>("/presupuesto/asignaciones");
-    if (Array.isArray(raw) && raw.length > 0) {
-      return raw.map((item) => normalizarAsignacion(item, fuentesMap));
-    }
-    return ASIGNACIONES_FALLBACK;
-  } catch (error) {
-    console.warn("Fallo al consultar /api/v1/presupuesto/asignaciones, utilizando catálogo fallback:", error);
-    return ASIGNACIONES_FALLBACK;
+  const raw = await apiFetch<Record<string, unknown>[]>("/presupuesto/asignaciones");
+  if (Array.isArray(raw)) {
+    return raw.map((item) => normalizarAsignacion(item, fuentesMap));
   }
+  return [];
 }
 
 /**
  * Obtiene el resumen consolidado de costeo por fuente y vigencia
- * (/api/v1/presupuesto/resumen-costeo).
+ * (/api/v1/presupuesto/resumen-costeo). Erradicado fallback calculado sobre datos estáticos (H-04).
  */
 export async function obtenerResumenCosteo(): Promise<ResumenCosteo> {
-  try {
-    const raw = await apiFetch<Record<string, unknown>>("/presupuesto/resumen-costeo");
-    if (raw && raw.total_asignado !== undefined) {
-      return {
-        total_asignado: Number(raw.total_asignado),
-        por_fuente: Array.isArray(raw.por_fuente)
-          ? (raw.por_fuente as Array<{ fuente: string; total: number }>)
-          : [],
-        por_vigencia: Array.isArray(raw.por_vigencia)
-          ? (raw.por_vigencia as Array<{ vigencia: number; total: number }>)
-          : [],
-      };
-    }
-  } catch (error) {
-    console.warn("Fallo al consultar /api/v1/presupuesto/resumen-costeo, calculando localmente:", error);
+  const raw = await apiFetch<Record<string, unknown>>("/presupuesto/resumen-costeo");
+  if (raw && raw.total_asignado !== undefined) {
+    return {
+      total_asignado: Number(raw.total_asignado),
+      por_fuente: Array.isArray(raw.por_fuente)
+        ? (raw.por_fuente as Array<{ fuente: string; total: number }>)
+        : [],
+      por_vigencia: Array.isArray(raw.por_vigencia)
+        ? (raw.por_vigencia as Array<{ vigencia: number; total: number }>)
+        : [],
+    };
   }
-
-  // Cálculo de contingencia determinista sobre asignaciones fallback
-  return calcularResumenDesdeAsignaciones(ASIGNACIONES_FALLBACK);
+  throw new Error("Respuesta inválida al consultar resumen de costeo");
 }
 
 /**
  * Registra una nueva asignación presupuestal en el backend FastAPI
- * (/api/v1/presupuesto/asignaciones).
+ * (/api/v1/presupuesto/asignaciones). Erradicada creación simulada en memoria (H-04).
  */
 export async function crearAsignacionPresupuestal(
   datos: AsignacionPresupuestalCrear
 ): Promise<AsignacionPresupuestal> {
-  try {
-    const res = await apiFetch<Record<string, unknown>>("/presupuesto/asignaciones", {
-      method: "POST",
-      body: {
-        fuente_financiacion_id: datos.fuente_financiacion_id,
-        linea_estrategica_id: datos.linea_estrategica_id ?? null,
-        nodo_instrumento_id: datos.nodo_instrumento_id ?? null,
-        monto_estimado: datos.monto_estimado,
-        anio_vigencia: datos.anio_vigencia,
-        es_vigencia_futura: datos.es_vigencia_futura,
-        tipo_vigencia_futura: datos.tipo_vigencia_futura ?? null,
-        codigo_bpin: datos.codigo_bpin ?? null,
-        justificacion: datos.justificacion,
-        metadatos: datos.metadatos ?? {},
-      },
-    });
-
-    return normalizarAsignacion(res);
-  } catch (error) {
-    console.warn("No fue posible guardar en backend /api/v1/presupuesto/asignaciones, creando en memoria:", error);
-    // Modo resiliente en memoria para auditoría y pruebas
-    const nuevaAsignacion: AsignacionPresupuestal = {
-      id: `asig-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
+  const res = await apiFetch<Record<string, unknown>>("/presupuesto/asignaciones", {
+    method: "POST",
+    body: {
       fuente_financiacion_id: datos.fuente_financiacion_id,
+      linea_estrategica_id: datos.linea_estrategica_id ?? null,
+      nodo_instrumento_id: datos.nodo_instrumento_id ?? null,
       monto_estimado: datos.monto_estimado,
       anio_vigencia: datos.anio_vigencia,
       es_vigencia_futura: datos.es_vigencia_futura,
@@ -163,10 +123,10 @@ export async function crearAsignacionPresupuestal(
       codigo_bpin: datos.codigo_bpin ?? null,
       justificacion: datos.justificacion,
       metadatos: datos.metadatos ?? {},
-      creado_en: new Date().toISOString(),
-    };
-    return normalizarAsignacion(nuevaAsignacion as unknown as Record<string, unknown>);
-  }
+    },
+  });
+
+  return normalizarAsignacion(res);
 }
 
 /**

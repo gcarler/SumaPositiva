@@ -89,42 +89,31 @@ function validarMesa(valor: unknown): MesaGeovisor {
 }
 
 import {
-  obtenerMesasGeovisorOficiales,
   COORDENADAS_AGENDA_MESAS,
 } from "../data/mesas-geovisor.data";
-import { listarAgendas } from "@/features/mesas/services/agenda-api";
 
 export async function listarMesasGeovisor(): Promise<MesaGeovisor[]> {
-  try {
-    const payload: unknown = await apiFetch<unknown>("/mesas/geovisor");
-    if (Array.isArray(payload) && payload.length > 5) {
-      const validadas = payload.map(validarMesa);
-      return validadas.map((m) => {
-        if (m.longitud_referencia === null || m.latitud_referencia === null) {
-          const geo = COORDENADAS_AGENDA_MESAS[m.id];
-          if (geo) {
-            return {
-              ...m,
-              longitud_referencia: geo.lng,
-              latitud_referencia: geo.lat,
-              aforo: m.aforo ?? geo.aforo,
-              territorio_codigo: m.territorio_codigo ?? geo.territorioCodigo,
-              territorio_nombre: m.territorio_nombre ?? geo.territorioNombre,
-            };
-          }
+  const payload: unknown = await apiFetch<unknown>("/mesas/geovisor");
+  if (Array.isArray(payload)) {
+    const validadas = payload.map(validarMesa);
+    return validadas.map((m) => {
+      if (m.longitud_referencia === null || m.latitud_referencia === null) {
+        const geo = COORDENADAS_AGENDA_MESAS[m.id];
+        if (geo) {
+          return {
+            ...m,
+            longitud_referencia: geo.lng,
+            latitud_referencia: geo.lat,
+            aforo: m.aforo ?? geo.aforo,
+            territorio_codigo: m.territorio_codigo ?? geo.territorioCodigo,
+            territorio_nombre: m.territorio_nombre ?? geo.territorioNombre,
+          };
         }
-        return m;
-      });
-    }
-  } catch {
-    // Si la API remota falla o responde vacío, entregar las mesas oficiales georreferenciadas
+      }
+      return m;
+    });
   }
-  try {
-    const agendas = await listarAgendas();
-    return obtenerMesasGeovisorOficiales(agendas);
-  } catch {
-    return obtenerMesasGeovisorOficiales();
-  }
+  return [];
 }
 
 export async function subirFotoMesa(mesaId: string, archivo: File, autorizacionImagen: boolean): Promise<void> {

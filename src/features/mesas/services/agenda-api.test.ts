@@ -7,7 +7,6 @@ import {
   normalizarAgendaBackend,
   type AgendaBackendResponse,
 } from "./agenda-api";
-import { AGENDA_MESAS } from "../data/agenda.data";
 
 describe("Gestión remota de Cronograma de Agendas de Mesas (EDIT-02)", () => {
   const originalFetch = globalThis.fetch;
@@ -83,14 +82,24 @@ describe("Gestión remota de Cronograma de Agendas de Mesas (EDIT-02)", () => {
       expect(items[0].nombre).toBe("Mesa 1");
     });
 
-    test("aplica fallback a AGENDA_MESAS ante error de red o backend no disponible", async () => {
+    test("propaga excepción ante error de red o backend no disponible (H-04)", async () => {
       vi.spyOn(globalThis, "fetch").mockImplementation(async () => {
         throw new Error("Network connection failed");
       });
 
+      await expect(listarAgendas()).rejects.toThrow("Network connection failed");
+    });
+
+    test("retorna arreglo vacío si el backend devuelve lista vacía (H-04)", async () => {
+      vi.spyOn(globalThis, "fetch").mockImplementation(async () => {
+        return new Response(JSON.stringify([]), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        });
+      });
+
       const items = await listarAgendas();
-      expect(items).toEqual(AGENDA_MESAS);
-      expect(items.length).toBe(36);
+      expect(items).toEqual([]);
     });
   });
 
@@ -120,14 +129,12 @@ describe("Gestión remota de Cronograma de Agendas de Mesas (EDIT-02)", () => {
       expect(agenda.estado).toBe("en_curso");
     });
 
-    test("aplica fallback a AGENDA_MESAS para ID conocido si la API falla", async () => {
+    test("propaga excepción cuando la API responde 404 (H-04)", async () => {
       vi.spyOn(globalThis, "fetch").mockImplementation(async () => {
         return new Response("Not Found", { status: 404 });
       });
 
-      const agenda = await obtenerAgenda("mt-001");
-      expect(agenda).toBeDefined();
-      expect(agenda.id).toBe("mt-001");
+      await expect(obtenerAgenda("mt-001")).rejects.toThrow();
     });
   });
 

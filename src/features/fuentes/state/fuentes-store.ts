@@ -77,6 +77,7 @@ export const useFuentesStore = create<FuentesState>((set, get) => ({
   },
 
   actualizarFuente: async (id, cambios) => {
+    const estadoPrevio = get().fuentes;
     set((state) => ({
       fuentes: state.fuentes.map((f) =>
         f.id === id
@@ -94,31 +95,19 @@ export const useFuentesStore = create<FuentesState>((set, get) => ({
       set((state) => ({
         fuentes: state.fuentes.map((f) => (f.id === id ? remota : f)),
       }));
-    } catch (_err) {
-      // Mantiene la actualización optimista local si el backend no responde
+    } catch (err) {
+      // Revertir mutación optimista ante error de backend (H-04)
+      set({ fuentes: estadoPrevio });
+      throw err;
     }
   },
 
   agregarFuente: async (datos) => {
-    const nuevoId = `fnt-${Date.now()}`;
-    const nuevaFuente: FuenteInformacion = {
-      ...datos,
-      id: nuevoId,
-      actualizadoEn: new Date().toISOString(),
-    };
+    const remota = await crearFuenteRemota(datos);
     set((state) => ({
-      fuentes: [nuevaFuente, ...state.fuentes],
+      fuentes: [remota, ...state.fuentes],
     }));
-
-    try {
-      const remota = await crearFuenteRemota(datos);
-      set((state) => ({
-        fuentes: state.fuentes.map((f) => (f.id === nuevoId ? remota : f)),
-      }));
-      return remota;
-    } catch (_err) {
-      return nuevaFuente;
-    }
+    return remota;
   },
 
   resetearFuentes: () =>

@@ -9,7 +9,6 @@ import {
   normalizarFuenteBackend,
   type FuenteBackendResponse,
 } from "./fuentes-api";
-import { FUENTES_INICIALES } from "../data/fuentes-iniciales.data";
 
 describe("Gestión remota de Fuentes de Información y Solicitudes Oficiales (EDIT-03)", () => {
   const originalFetch = globalThis.fetch;
@@ -93,14 +92,24 @@ describe("Gestión remota de Fuentes de Información y Solicitudes Oficiales (ED
       expect(fuentes[0].codigo).toBe("FNT-TEST-001");
     });
 
-    test("aplica fallback resiliente a FUENTES_INICIALES vacías ante desconexión", async () => {
+    test("propaga excepción ante fallo de red o desconexión (H-04)", async () => {
       vi.spyOn(globalThis, "fetch").mockImplementation(async () => {
         throw new Error("Network offline");
       });
 
+      await expect(listarFuentes()).rejects.toThrow("Network offline");
+    });
+
+    test("retorna arreglo vacío si el backend devuelve lista vacía (H-04)", async () => {
+      vi.spyOn(globalThis, "fetch").mockImplementation(async () => {
+        return new Response(JSON.stringify([]), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        });
+      });
+
       const fuentes = await listarFuentes();
-      expect(fuentes).toEqual(FUENTES_INICIALES);
-      expect(fuentes.length).toBe(0);
+      expect(fuentes).toEqual([]);
     });
   });
 
@@ -135,7 +144,7 @@ describe("Gestión remota de Fuentes de Información y Solicitudes Oficiales (ED
         return new Response("Not Found", { status: 404 });
       });
 
-      await expect(obtenerFuente("fnt-inexistente")).rejects.toThrow("no encontrada");
+      await expect(obtenerFuente("fnt-inexistente")).rejects.toThrow();
     });
   });
 

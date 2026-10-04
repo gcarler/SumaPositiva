@@ -6,7 +6,6 @@ import {
   type ResponsableContacto,
   type TipoFuente,
 } from "../models/fuente";
-import { FUENTES_INICIALES } from "../data/fuentes-iniciales.data";
 
 export interface FuenteBackendResponse {
   id: string;
@@ -84,7 +83,7 @@ export function normalizarFuenteBackend(raw: FuenteBackendResponse): FuenteInfor
 
 /**
  * Consulta el catálogo de fuentes oficiales de información en PostgreSQL.
- * Fallback a FUENTES_INICIALES ante desconexión o fallo de API.
+ * Backend es la fuente de verdad (FastAPI /api/v1/fuentes). Erradicado fallback silencioso (H-04).
  */
 export async function listarFuentes(filtros?: {
   ambito?: string;
@@ -93,73 +92,43 @@ export async function listarFuentes(filtros?: {
   tipo?: string;
   busqueda?: string;
 }): Promise<FuenteInformacion[]> {
-  try {
-    const params = new URLSearchParams();
-    if (filtros?.ambito && filtros.ambito !== "todos") params.set("ambito", filtros.ambito);
-    if (filtros?.estado && filtros.estado !== "todos") params.set("estado", filtros.estado);
-    if (filtros?.dimension && filtros.dimension !== "todas") params.set("dimension", filtros.dimension);
-    if (filtros?.tipo && filtros.tipo !== "todos") params.set("tipo", filtros.tipo);
-    if (filtros?.busqueda) params.set("buscar", filtros.busqueda.trim());
+  const params = new URLSearchParams();
+  if (filtros?.ambito && filtros.ambito !== "todos") params.set("ambito", filtros.ambito);
+  if (filtros?.estado && filtros.estado !== "todos") params.set("estado", filtros.estado);
+  if (filtros?.dimension && filtros.dimension !== "todas") params.set("dimension", filtros.dimension);
+  if (filtros?.tipo && filtros.tipo !== "todos") params.set("tipo", filtros.tipo);
+  if (filtros?.busqueda) params.set("buscar", filtros.busqueda.trim());
 
-    const query = params.toString() ? `?${params.toString()}` : "";
-    const resp = await apiFetch<FuenteBackendResponse[]>(`/fuentes${query}`);
-    if (Array.isArray(resp)) {
-      return resp.map(normalizarFuenteBackend);
-    }
-  } catch {
-    // Fallback transparente a FUENTES_INICIALES
+  const query = params.toString() ? `?${params.toString()}` : "";
+  const resp = await apiFetch<FuenteBackendResponse[]>(`/fuentes${query}`);
+  if (Array.isArray(resp)) {
+    return resp.map(normalizarFuenteBackend);
   }
-  return FUENTES_INICIALES;
+  return [];
 }
 
 /**
- * Obtiene el detalle de una fuente por su ID.
+ * Obtiene el detalle de una fuente por su ID desde PostgreSQL.
+ * Erradicado fallback silencioso (H-04).
  */
 export async function obtenerFuente(fuenteId: string): Promise<FuenteInformacion> {
-  try {
-    const resp = await apiFetch<FuenteBackendResponse>(`/fuentes/${fuenteId}`);
-    if (resp && resp.id) {
-      return normalizarFuenteBackend(resp);
-    }
-  } catch {
-    // Fallback local
+  const resp = await apiFetch<FuenteBackendResponse>(`/fuentes/${fuenteId}`);
+  if (resp && resp.id) {
+    return normalizarFuenteBackend(resp);
   }
-  const estatica = FUENTES_INICIALES.find((f) => f.id === fuenteId);
-  if (estatica) return estatica;
   throw new Error(`Fuente ${fuenteId} no encontrada`);
 }
 
 /**
  * Consulta las métricas y KPIs de cumplimiento de fuentes en backend.
+ * Erradicado fallback calculado en cliente (H-04).
  */
 export async function obtenerKpisFuentes(): Promise<KpisFuentesBackend> {
-  try {
-    const resp = await apiFetch<KpisFuentesBackend>("/fuentes/kpis");
-    if (resp && typeof resp.total === "number") {
-      return resp;
-    }
-  } catch {
-    // Fallback calculado
+  const resp = await apiFetch<KpisFuentesBackend>("/fuentes/kpis");
+  if (resp && typeof resp.total === "number") {
+    return resp;
   }
-  const total = FUENTES_INICIALES.length;
-  const entregadas = FUENTES_INICIALES.filter((f) => f.estadoEntrega === "entregada").length;
-  const enTermino = FUENTES_INICIALES.filter((f) => f.estadoEntrega === "en_termino").length;
-  const incompletas = FUENTES_INICIALES.filter((f) => f.estadoEntrega === "incompleta").length;
-  const vencidas = FUENTES_INICIALES.filter((f) => f.estadoEntrega === "vencida_sin_entrega").length;
-  const requerimiento = FUENTES_INICIALES.filter(
-    (f) => f.estadoEntrega === "requerimiento_insistencia"
-  ).length;
-
-  return {
-    total,
-    entregadas,
-    en_termino: enTermino,
-    incompletas,
-    vencidas,
-    requerimiento_insistencia: requerimiento,
-    atencion_critica: vencidas + requerimiento,
-    porcentaje_cumplimiento: total > 0 ? Math.round((entregadas / total) * 100) : 0,
-  };
+  throw new Error("No fue posible obtener los KPIs de fuentes desde el servidor");
 }
 
 /**

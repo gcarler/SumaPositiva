@@ -7,27 +7,18 @@ import type {
   DesgloseCanalEscenarios,
   EscenarioEspecialCrear,
 } from "../models/participacion";
-import {
-  MOCK_CONSOLIDADO,
-  MOCK_WEB,
-  MOCK_MESAS,
-  MOCK_ESCENARIOS,
-} from "../__fixtures__/participacion.fixture";
-
 export function normalizarConsolidado(raw: Partial<TableroConsolidado> | null | undefined): TableroConsolidado {
-  if (!raw) return MOCK_CONSOLIDADO;
+  const granTotal = Number(raw?.gran_total_participantes_distrital ?? raw?.totalCartageneros ?? 0);
+  const web = Number(raw?.total_canal_web ?? raw?.participacionWeb ?? 0);
+  const mesas = Number(raw?.total_canal_mesas ?? raw?.participacionMesas ?? 0);
+  const escenarios = Number(raw?.total_canal_escenarios ?? raw?.participacionEscenarios ?? 0);
+  const unicos = Number(raw?.participantes_unicos_identificados ?? granTotal);
 
-  const granTotal = Number(raw.gran_total_participantes_distrital ?? raw.totalCartageneros ?? 0);
-  const web = Number(raw.total_canal_web ?? raw.participacionWeb ?? 0);
-  const mesas = Number(raw.total_canal_mesas ?? raw.participacionMesas ?? 0);
-  const escenarios = Number(raw.total_canal_escenarios ?? raw.participacionEscenarios ?? 0);
-  const unicos = Number(raw.participantes_unicos_identificados ?? granTotal);
+  const pctWeb = raw?.porcentaje_canal_web ?? (granTotal > 0 ? Number(((web / granTotal) * 100).toFixed(2)) : 0);
+  const pctMesas = raw?.porcentaje_canal_mesas ?? (granTotal > 0 ? Number(((mesas / granTotal) * 100).toFixed(2)) : 0);
+  const pctEscenarios = raw?.porcentaje_canal_escenarios ?? (granTotal > 0 ? Number(((escenarios / granTotal) * 100).toFixed(2)) : 0);
 
-  const pctWeb = raw.porcentaje_canal_web ?? (granTotal > 0 ? Number(((web / granTotal) * 100).toFixed(2)) : 0);
-  const pctMesas = raw.porcentaje_canal_mesas ?? (granTotal > 0 ? Number(((mesas / granTotal) * 100).toFixed(2)) : 0);
-  const pctEscenarios = raw.porcentaje_canal_escenarios ?? (granTotal > 0 ? Number(((escenarios / granTotal) * 100).toFixed(2)) : 0);
-
-  const fechaCorte = raw.fecha_corte ?? raw.ultimaActualizacion ?? new Date().toISOString();
+  const fechaCorte = raw?.fecha_corte ?? raw?.ultimaActualizacion ?? new Date().toISOString();
 
   return {
     gran_total_participantes_distrital: granTotal,
@@ -38,7 +29,7 @@ export function normalizarConsolidado(raw: Partial<TableroConsolidado> | null | 
     porcentaje_canal_web: pctWeb,
     porcentaje_canal_mesas: pctMesas,
     porcentaje_canal_escenarios: pctEscenarios,
-    desglose_territorial_agregado: raw.desglose_territorial_agregado ?? [],
+    desglose_territorial_agregado: raw?.desglose_territorial_agregado ?? [],
     fecha_corte: fechaCorte,
 
     // Compatibilidad UI
@@ -46,7 +37,7 @@ export function normalizarConsolidado(raw: Partial<TableroConsolidado> | null | 
     participacionWeb: web,
     participacionMesas: mesas,
     participacionEscenarios: escenarios,
-    desglose: raw.desglose ?? {
+    desglose: raw?.desglose ?? {
       hombres: Math.round(granTotal * 0.46),
       mujeres: Math.round(granTotal * 0.53),
       otros: Math.round(granTotal * 0.01),
@@ -60,15 +51,13 @@ export function normalizarConsolidado(raw: Partial<TableroConsolidado> | null | 
 }
 
 export function normalizarDesgloseWeb(raw: Partial<DesgloseWeb> | null | undefined): DesgloseWeb {
-  if (!raw) return MOCK_WEB;
-
-  const totalAportes = Number(raw.total_aportes ?? raw.totalAportes ?? 0);
-  const porLinea = raw.por_linea_estrategica ?? [];
-  const porDimension = raw.por_dimension ?? [];
-  const porTerritorio = raw.por_territorio ?? [];
+  const totalAportes = Number(raw?.total_aportes ?? raw?.totalAportes ?? 0);
+  const porLinea = raw?.por_linea_estrategica ?? [];
+  const porDimension = raw?.por_dimension ?? [];
+  const porTerritorio = raw?.por_territorio ?? [];
 
   // Reconstruir mapas porLineaEstrategica y porDimension para retrocompatibilidad UI
-  const porLineaMap: Record<string, number> = raw.porLineaEstrategica ? { ...raw.porLineaEstrategica } : {};
+  const porLineaMap: Record<string, number> = raw?.porLineaEstrategica ? { ...raw.porLineaEstrategica } : {};
   if (porLinea.length > 0) {
     for (const item of porLinea) {
       const key = item.titulo || item.codigo;
@@ -78,7 +67,7 @@ export function normalizarDesgloseWeb(raw: Partial<DesgloseWeb> | null | undefin
     }
   }
 
-  const porDimensionMap: Record<string, number> = raw.porDimension ? { ...raw.porDimension } : {};
+  const porDimensionMap: Record<string, number> = raw?.porDimension ? { ...raw.porDimension } : {};
   if (porDimension.length > 0) {
     for (const item of porDimension) {
       const key = item.nombre || item.codigo;
@@ -90,9 +79,9 @@ export function normalizarDesgloseWeb(raw: Partial<DesgloseWeb> | null | undefin
 
   return {
     total_aportes: totalAportes,
-    total_apoyos: Number(raw.total_apoyos ?? 0),
-    total_respuestas_formularios: Number(raw.total_respuestas_formularios ?? 0),
-    participantes_unicos_web: Number(raw.participantes_unicos_web ?? 0),
+    total_apoyos: Number(raw?.total_apoyos ?? 0),
+    total_respuestas_formularios: Number(raw?.total_respuestas_formularios ?? 0),
+    participantes_unicos_web: Number(raw?.participantes_unicos_web ?? 0),
     por_linea_estrategica: porLinea,
     por_dimension: porDimension,
     por_territorio: porTerritorio,
@@ -105,12 +94,10 @@ export function normalizarDesgloseWeb(raw: Partial<DesgloseWeb> | null | undefin
 }
 
 export function normalizarDesgloseMesas(raw: Partial<DesgloseMesas> | null | undefined): DesgloseMesas {
-  if (!raw) return MOCK_MESAS;
+  const totalParticipantes = Number(raw?.total_participantes ?? raw?.totalAsistentes ?? 0);
+  const jerarquia = raw?.jerarquia_mesas ?? [];
 
-  const totalParticipantes = Number(raw.total_participantes ?? raw.totalAsistentes ?? 0);
-  const jerarquia = raw.jerarquia_mesas ?? [];
-
-  const porMesaMap: Record<string, number> = raw.porMesa ? { ...raw.porMesa } : {};
+  const porMesaMap: Record<string, number> = raw?.porMesa ? { ...raw.porMesa } : {};
   if (jerarquia.length > 0) {
     for (const item of jerarquia) {
       const key = item.nombre || item.codigo;
@@ -121,11 +108,11 @@ export function normalizarDesgloseMesas(raw: Partial<DesgloseMesas> | null | und
   }
 
   return {
-    total_mesas_principales: Number(raw.total_mesas_principales ?? 0),
-    total_submesas: Number(raw.total_submesas ?? 0),
+    total_mesas_principales: Number(raw?.total_mesas_principales ?? 0),
+    total_submesas: Number(raw?.total_submesas ?? 0),
     total_participantes: totalParticipantes,
-    participantes_unicos_mesas: Number(raw.participantes_unicos_mesas ?? totalParticipantes),
-    total_actas_cerradas: Number(raw.total_actas_cerradas ?? 0),
+    participantes_unicos_mesas: Number(raw?.participantes_unicos_mesas ?? totalParticipantes),
+    total_actas_cerradas: Number(raw?.total_actas_cerradas ?? 0),
     jerarquia_mesas: jerarquia,
 
     // Compatibilidad UI
@@ -179,68 +166,38 @@ export function normalizarEscenario(raw: Partial<EscenarioEspecial>): EscenarioE
 }
 
 export async function obtenerConsolidado(): Promise<TableroConsolidado> {
-  try {
-    const raw = await apiFetch<Partial<TableroConsolidado>>("/participacion/consolidado");
-    return normalizarConsolidado(raw);
-  } catch (error) {
-    console.warn("Aviso de contingencia: fallo al consultar /participacion/consolidado, usando datos canónicos locales", error);
-    return normalizarConsolidado(MOCK_CONSOLIDADO);
-  }
+  const raw = await apiFetch<Partial<TableroConsolidado>>("/participacion/consolidado");
+  return normalizarConsolidado(raw);
 }
 
 export async function obtenerDesgloseWeb(): Promise<DesgloseWeb> {
-  try {
-    const raw = await apiFetch<Partial<DesgloseWeb>>("/participacion/canal-web");
-    return normalizarDesgloseWeb(raw);
-  } catch (error) {
-    console.warn("Aviso de contingencia: fallo al consultar /participacion/canal-web, usando datos canónicos locales", error);
-    return normalizarDesgloseWeb(MOCK_WEB);
-  }
+  const raw = await apiFetch<Partial<DesgloseWeb>>("/participacion/canal-web");
+  return normalizarDesgloseWeb(raw);
 }
 
 export async function obtenerDesgloseMesas(): Promise<DesgloseMesas> {
-  try {
-    const raw = await apiFetch<Partial<DesgloseMesas>>("/participacion/canal-mesas");
-    return normalizarDesgloseMesas(raw);
-  } catch (error) {
-    console.warn("Aviso de contingencia: fallo al consultar /participacion/canal-mesas, usando datos canónicos locales", error);
-    return normalizarDesgloseMesas(MOCK_MESAS);
-  }
+  const raw = await apiFetch<Partial<DesgloseMesas>>("/participacion/canal-mesas");
+  return normalizarDesgloseMesas(raw);
 }
 
 export async function obtenerDesgloseEscenarios(): Promise<DesgloseCanalEscenarios> {
-  try {
-    const raw = await apiFetch<{
-      total_escenarios: number;
-      total_asistentes: number;
-      por_tipo: Record<string, number>;
-      escenarios: Partial<EscenarioEspecial>[];
-    }>("/participacion/canal-escenarios");
-    return {
-      total_escenarios: raw.total_escenarios ?? 0,
-      total_asistentes: raw.total_asistentes ?? 0,
-      por_tipo: raw.por_tipo ?? {},
-      escenarios: (raw.escenarios ?? []).map(normalizarEscenario),
-    };
-  } catch (error) {
-    console.warn("Aviso de contingencia: fallo al consultar /participacion/canal-escenarios, usando datos canónicos locales", error);
-    return {
-      total_escenarios: MOCK_ESCENARIOS.length,
-      total_asistentes: MOCK_ESCENARIOS.reduce((acc, e) => acc + (e.asistentes ?? e.total_asistentes ?? 0), 0),
-      por_tipo: { FORO_GREMIAL: 300 },
-      escenarios: MOCK_ESCENARIOS.map(normalizarEscenario),
-    };
-  }
+  const raw = await apiFetch<{
+    total_escenarios: number;
+    total_asistentes: number;
+    por_tipo: Record<string, number>;
+    escenarios: Partial<EscenarioEspecial>[];
+  }>("/participacion/canal-escenarios");
+  return {
+    total_escenarios: raw.total_escenarios ?? 0,
+    total_asistentes: raw.total_asistentes ?? 0,
+    por_tipo: raw.por_tipo ?? {},
+    escenarios: (raw.escenarios ?? []).map(normalizarEscenario),
+  };
 }
 
 export async function listarEscenarios(): Promise<EscenarioEspecial[]> {
-  try {
-    const raw = await apiFetch<Partial<EscenarioEspecial>[]>("/participacion/escenarios-especiales");
-    return (raw ?? []).map(normalizarEscenario);
-  } catch (error) {
-    console.warn("Aviso de contingencia: fallo al consultar /participacion/escenarios-especiales, usando datos canónicos locales", error);
-    return MOCK_ESCENARIOS.map(normalizarEscenario);
-  }
+  const raw = await apiFetch<Partial<EscenarioEspecial>[]>("/participacion/escenarios-especiales");
+  return (raw ?? []).map(normalizarEscenario);
 }
 
 export async function guardarEscenario(
