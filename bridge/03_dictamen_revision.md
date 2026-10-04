@@ -105,3 +105,9 @@ Verificado: `no-explicit-any` pasa a `error` y `eslint .` sin errores ni adverte
 Aceptado tras verificación independiente: 0 apariciones de la contraseña en código/tests/scripts; `jwt_secret_key` obligatorio; `.env` y `*.db` fuera del índice; scripts demo apuntan a `polis_demo`; servicios y lecturas de producción OK (aportes=179).
 **Defecto:** `pytest` en `polis_test` falla `tests/test_identidad_completa.py::test_configuracion_insegura_no_habilita_identidad_en_produccion` (DID NOT RAISE; también en aislamiento). El test dependía del default retirado; debe fijar explícitamente `jwt_secret_key` con el literal inseguro en entorno production y verificar 503, no debilitar la guarda. Además debe correrse el pytest COMPLETO (la corrida -x se detuvo en 243 pasados) y demostrarse la negativa de los scripts demo contra `bd_csh` con un test.
 **Pendiente OBS-17 (antes del remoto):** la contraseña sigue en el historial git; rotar según `docs/rotacion-secretos.md`.
+
+## Dictamen AUD-11b — CONFORME (commit 32577a0)
+Verificado por mí: `pytest` completo en `polis_test` = **391 passed, 0 fallos**; test de guarda de producción corregido sin debilitar la guarda; tests de guardas de scripts demo añadidos. Pendiente OBS-17 (rotar contraseña/JWT antes del remoto; el historial git la contiene).
+
+## Dictamen AUD-12 — CONFORME (commit e1c9345)
+Verificado: una sola implementación `sanitizarCsv` en `src/shared/lib/csv.ts` (alias `escaparCsv`/`celdaCsv`); los consumidores la importan; `tsc`, `eslint`, `ui-policy` OK; `bun test` 227 pass. OBS-18 (baja): el prefijo `'` también se aplica a números negativos exportados (`-5`), aceptable por seguridad pero debe documentarse para analistas.
