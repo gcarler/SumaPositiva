@@ -514,6 +514,7 @@ En atención a los hallazgos de auditoría sobre la falta de gating en los módu
 **Plan de Auditoría**: `bridge/00_plan_auditoria_plataforma.md`  
 **Especificación**: `bridge/01_tarea_agy2_aud_06.md`  
 **Commits**:
+- `333547d` fix(aud-06): subsanar OBS-08 (gating log y null), OBS-09 (clave unica y test isolation) y OBS-10 (documentacion rate limit)
 - `4c4f539` feat(aud-06): endurecimiento de perfil de produccion, CORS restringido, cookies seguras y checklist operativo
 
 ---
@@ -589,6 +590,35 @@ En respuesta al hallazgo de auditoría de severidad MEDIA sobre la exposición p
 | **Verificación de CORS Rechazo en Vivo** | `curl -X OPTIONS -H "Origin: http://localhost:3000" http://127.0.0.1:8000/api/v1/health/live` | **HTTP 400 Bad Request (Disallowed CORS origin)**. |
 | **Verificación de CORS Autorizado en Vivo** | `curl -X OPTIONS -H "Origin: https://seguridadhumanaintegral.org" http://127.0.0.1:8000/api/v1/health/live` | **HTTP 200 OK (access-control-allow-origin presente)**. |
 | **Servicio Backend en Producción** | `systemctl status polis-backend` | **Activo y operativo en modo producción**. |
+
+---
+
+## 4. Subsanación de Observaciones EAF (OBS-08, OBS-09 y OBS-10)
+
+En atención al dictamen del EAF en `bridge/03_dictamen_revision.md`:
+
+### 1. Subsanación OBS-09 (CRÍTICA de Seguridad — Clave Única y Aislamiento de Entorno):
+- **Causa**: El commit `4c4f539` intentó armonizar tests permitiendo una lista de claves de verificación alternativa (`polis_secreto_super_seguro_cartagena_2026`) en entornos de desarrollo, constituyendo una vulnerabilidad de bypass de autenticación.
+- **Acción Correctiva**:
+  - Reversión total en `backend/app/modules/identidad/security.py` y `backend/app/modules/sesion/security.py`: ahora se verifica **exclusiva y estrictamente contra una sola clave**: `config.jwt_secret_key` o `settings.jwt_secret_key`. Cero fallbacks en código.
+  - Aislamiento en pruebas: `backend/tests/conftest.py` define variables de entorno a nivel de sesión (`POLIS_ENVIRONMENT="test"`, `POLIS_JWT_SECRET_KEY`, `POLIS_IP_SALT`), garantizando que la suite de pruebas nunca dependa de las credenciales de producción ni debilite la lógica del servidor.
+  - Se purgó cualquier rastro de la clave por defecto en las funciones de decodificación.
+  - **Prueba Automatizada**: Se incorporó el test `test_token_firmado_con_otra_clave_rechazado_401()` en `test_aud06_perfil_produccion.py`, validando que un token forjado o firmado con otra clave sea rechazado con `HTTP 401 Unauthorized` tanto en decodificación como en endpoints protegidos.
+
+### 2. Subsanación OBS-08 (Media — Integridad de Gating de Fases):
+- **Causa**: En `backend/app/modules/politicas/gating.py`, los bloques de cálculo empírico de fases utilizaban `except Exception: pass`, silenciando fallos SQL y devolviendo `0.00` artificialmente.
+- **Acción Correctiva**:
+  - Se reemplazó el `pass` por registro explícito con `logger.error("Error SQL calculando progreso empírico de FASE_...: %s", err)`.
+  - Ante fallo SQL, el progreso de la fase se asigna formalmente como `None` (`null` en JSON), indicando honestamente "sin datos" o fallo de consulta.
+  - Se ajustó el esquema `FasePoliticaBase` (`Decimal | None`) y el router para soportar y propagar `null`.
+  - **Prueba Automatizada**: Se añadió el test unitario `test_error_sql_en_gating_devuelve_null_y_registra_log(caplog)` en `test_aud06_perfil_produccion.py`, verificando que al fallar la consulta SQL se devuelva `None` en las fases y se emita el log de error correspondiente.
+
+### 3. Subsanación OBS-10 (Media — Documentación de Rate Limiting y Caso 429):
+- **Causa**: El limitador de tasa de sesiones anónimas y de IA opera en memoria por proceso Uvicorn, requiriendo documentación de límites operacionales para despliegues con múltiples workers o balanceadores.
+- **Acción Correctiva**:
+  - En `docs/operacion.md`, se añadió la subsección *"Limitaciones operativas del Rate Limiting en memoria y escalamiento horizontal (OBS-10)"*, documentando el particionamiento de ventanas en despliegues multi-worker y prescribiendo el uso de PostgreSQL (`LimiteAcceso`) o Redis distribuido para concurrencia masiva.
+  - **Prueba Automatizada**: Se incorporó el test de integración `test_limite_tasa_sesion_anonima_endpoint_429()` en `test_aud06_perfil_produccion.py`, verificando que peticiones que superen el umbral configurado reciban fehacientemente `HTTP 429 Too Many Requests` con encabezado `Retry-After`.
+
 
 
 
