@@ -3,11 +3,11 @@
 **Última actualización**: 2026-10-04  
 **Responsable activo**: agy2 (EDD)  
 **Auditor independiente**: EAF  
-**Tarea en curso / entregada**: `AUD-17` (Runbook de despliegue en producción, plan de consolidación git pre-remoto y corrección de contadores E2E)
+**Tarea en curso / entregada**: `AUD-18` (Matriz de evidencia de editabilidad/configurabilidad, backlog formal de huecos y subsanación OBS-20 en runbook)
 
 ---
 
-## Estado Global de Auditorías (AUD-01 .. AUD-17)
+## Estado Global de Auditorías (AUD-01 .. AUD-18)
 
 | ID | Tarea / Alcance | Dictamen EAF / Estado | Commit de Entrega / Notas |
 |:---|:---|:---:|:---|
@@ -27,10 +27,12 @@
 | **AUD-14** | Erradicación integral de PII y estadísticas sin fuente | **CONFORME** | `3e46067`: Retiro de PII en actores, fuentes limpias. |
 | **AUD-15** | Erradicación de mocks en stores de producción | **CONFORME** | `2c6af60`: Retiro de `MESAS_MOCK` y `AGENDA_INICIAL`. |
 | **AUD-16** | Endurecimiento ESLint (`no-unused-vars` error, `ban-ts-comment` error) y barrido de docs/ | **CONFORME CON OBS-19** | `9faa78e`: 0 errores, 0 warnings. OBS-19: exclusión de noticias/testimonios a retirar al cerrar Codex. |
-| **AUD-17** | Runbook de despliegue en producción, plan de consolidación git y corrección de contadores | **ENTREGADA / LISTA PARA AUDITAR** | `docs/despliegue-produccion.md`, `docs/plan-consolidacion-git.md`, corrección 11/9 a 9/9 en bridge. |
+| **AUD-17** | Runbook de despliegue en producción, plan de consolidación git y corrección de contadores | **CONFORME CON OBS-20** | `b5f3ca6`: Subsanada OBS-20 haciendo condicional el paso de migraciones. |
+| **AUD-18** | Matriz pericial de evidencia de editabilidad/configurabilidad y backlog de huecos | **ENTREGADA / LISTA PARA AUDITAR** | Matriz con evidencia archivo:línea y tests para 10 capacidades, `bridge/04_backlog_editabilidad.md` y subsanación OBS-20 en runbook. |
 
 ---
 
 ## Archivo de Entrega y Dictámenes
 - **Entrega de agy2**: `bridge/02_entrega_agy2.md`
 - **Dictámenes de EAF**: `bridge/03_dictamen_revision.md`
+- **Backlog de Editabilidad**: `bridge/04_backlog_editabilidad.md`

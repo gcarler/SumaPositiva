@@ -156,24 +156,48 @@ bun run build
 test -f /root/polis/.next/standalone/server.js && echo "Build standalone verificado OK"
 ```
 
-### Paso 7: Comprobación y Aplicación de Migraciones Alembic sobre `bd_csh`
+### Paso 7: Comprobación y Aplicación Condicional de Migraciones Alembic sobre `bd_csh` (OBS-20)
 
 > [!CAUTION]
 > Asegúrese de que los servicios `polis-backend` y `polis-frontend` sigan **detenidos** antes de continuar.
 
-#### 7.1. Verificación previa en solo lectura
-Inspeccionar el historial de migraciones y la versión actual registrada en la base de datos:
+#### 7.1. Verificación en solo lectura del estado de la base de datos
+Inspeccionar la versión actual registrada en `bd_csh` y compararla contra la cabeza del repositorio (`heads`):
 
 ```bash
-# Consultar versión actual registrada en bd_csh:
-PYTHONPATH=backend backend/.venv/bin/alembic -c backend/alembic.ini current
+# Consultar versión actual registrada en bd_csh y head del repositorio:
+CURRENT_REV=$(PYTHONPATH=backend backend/.venv/bin/alembic -c backend/alembic.ini current 2>/dev/null | awk '{print $1}')
+HEAD_REV=$(PYTHONPATH=backend backend/.venv/bin/alembic -c backend/alembic.ini heads 2>/dev/null | awk '{print $1}')
 
-# Inspeccionar la cadena histórica completa:
-PYTHONPATH=backend backend/.venv/bin/alembic -c backend/alembic.ini history --verbose -r 0036:head
+echo "Revisión actual en bd_csh: $CURRENT_REV"
+echo "Revisión head en código:   $HEAD_REV"
 ```
 
-#### 7.2. Cadena de migraciones pendientes que se aplican (desde 0036 a 0040):
-El proceso de actualización aplica exactamente las siguientes 5 revisiones en secuencia:
+> [!NOTE]
+> **Estado de `bd_csh` (OBS-20)**: En el entorno de producción actual, la base de datos `bd_csh` **ya se encuentra en la versión `0040_modulo_actores_estrategicos (head)`**. Por tanto, las revisiones históricas 0037 a 0040 ya fueron aplicadas exitosamente con anterioridad.
+
+#### 7.2. Ejecución condicional de migraciones
+La ejecución de `alembic upgrade head` debe ser **condicional**: si la base de datos ya se encuentra en `head`, el paso de migración se omite para evitar bloqueos innecesarios:
+
+```bash
+if [ "$CURRENT_REV" = "$HEAD_REV" ]; then
+    echo "✔ La base de datos bd_csh ya está en la cabeza ($CURRENT_REV). No hay migraciones pendientes; se omite el paso."
+else
+    echo "⚠ Migraciones pendientes detectadas ($CURRENT_REV -> $HEAD_REV). Ejecutando alembic upgrade head..."
+    PYTHONPATH=backend backend/.venv/bin/alembic -c backend/alembic.ini upgrade head
+    
+    # Verificar que alcanzó la cabeza:
+    POST_REV=$(PYTHONPATH=backend backend/.venv/bin/alembic -c backend/alembic.ini current 2>/dev/null | awk '{print $1}')
+    if [ "$POST_REV" != "$HEAD_REV" ]; then
+        echo "❌ Error: La base de datos quedó en $POST_REV (esperado: $HEAD_REV). Iniciar rollback."
+        exit 1
+    fi
+    echo "✔ Migración completada exitosamente a $POST_REV."
+fi
+```
+
+#### 7.3. Registro histórico de la cadena de migraciones (0036 a 0040)
+Como referencia técnica para aprovisionamiento de entornos nuevos o procedimientos de recuperación/restauración, las 5 revisiones que componen esta cadena son:
 
 1. **`0037_restituir_compromisos_pas`** (`0037_restituir_compromisos_pas_sin_datos_fabricados.py`):
    - *Propósito forense (AUD-13)*: Modifica columnas de la tabla `seguimiento.compromisos_pas` para permitir valores `NULL` en `avance_cuatrienal_valor`, `porcentaje_cumplimiento`, `fecha_corte_ultimo_reporte` y `presupuesto_anual_cop`.
@@ -189,19 +213,6 @@ El proceso de actualización aplica exactamente las siguientes 5 revisiones en s
    - *Alineación de procedencia (OBS-11)*: Actualiza los metadatos JSONB de todos los compromisos PAS para declarar explícitamente: `"Catálogo propuesto por el equipo, PENDIENTE de validación institucional, no proviene del Decreto 037"`, con bandera `meta_validada=false` y alerta `propuesta_sin_validar`.
 5. **`0040_modulo_actores_estrategicos`** (`0040_modulo_actores_estrategicos.py` - Head actual):
    - *Persistencia de gobernanza (AUD-14)*: Crea la tabla `participacion_ciudadana.actores_estrategicos` con clave primaria UUID v7, índice único en `codigo`, índices en `tipo`, `territorio` y `es_demostracion`. Permite el mapeo y registro persistente de actores territoriales sin PII pre-cargada.
-
-#### 7.3. Ejecución de la migración
-Ejecutar la migración hacia la cabeza del grafo:
-
-```bash
-PYTHONPATH=backend backend/.venv/bin/alembic -c backend/alembic.ini upgrade head
-```
-
-#### 7.4. Verificación de cabeza post-migración
-```bash
-PYTHONPATH=backend backend/.venv/bin/alembic -c backend/alembic.ini current
-# Debe certificar: '0040_modulo_actores_estrategicos (head)'
-```
 
 ### Paso 8: Arranque de Servicios
 Iniciar nuevamente los servicios de backend y frontend bajo supervisión de systemd:

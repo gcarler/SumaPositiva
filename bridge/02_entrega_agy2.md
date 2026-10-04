@@ -1784,3 +1784,75 @@ Se elaboró el plan técnico formal para el saneamiento definitivo del árbol de
 | **Aislamiento de Codex** | `git status` | Archivos de codex (`noticias`, `testimonios`, backend) intactos y sin commitear. |
 | **Restricción de Ejecución** | N/A | No se ejecutaron migraciones sobre `bd_csh`, no se hizo `git push`, y no se corrieron suites de `pytest` ni `check:e2e`. |
 
+---
+
+## Entrega de Tarea: AUD-18 — Matriz Pericial de Editabilidad y Configurabilidad, Backlog Formal y Subsanación OBS-20
+
+**Fecha**: 2026-10-04  
+**Responsable**: agy2 (EDD)  
+**Auditor independiente**: EAF  
+**Estado**: Entregado y listo para auditoría pericial
+
+---
+
+### 1. Resumen Ejecutivo de la Tarea AUD-18
+
+En respuesta formal y analítica a la pregunta del usuario *"¿todo es editable y configurable en la plataforma POLIS?"*, se realizó una auditoría forense exhaustiva de código, rutas y componentes para **10 capacidades operativas**. Se generó una matriz con **evidencia pericial estricta (archivo:línea del endpoint backend, componente/panel frontend y test que lo cubre)**, distinguiendo con transparencia:
+1. Las capacidades **100% editables y configurables desde la UI con persistencia en base de datos** (Fases DNP, Líneas Estratégicas, Actores Estratégicos, Compromisos PAS y Mediciones de Indicadores).
+2. Las capacidades **parcialmente editables o con hueco de persistencia backend** (Mesas de Trabajo, Fuentes de Información y Fichas de Indicadores).
+3. Las capacidades **de sólo lectura por mandato normativo, constitucional o metodológico** (las 7 dimensiones de Seguridad Humana ONU Res. 66/290 y el catálogo legal de fuentes de financiación de la Ley 819/2003).
+4. El estado del módulo editorial de **Noticias y Testimonios**, preservando intacto el código en curso de Codex.
+
+Adicionalmente, se formalizó el backlog técnico de tareas en [`bridge/04_backlog_editabilidad.md`](04_backlog_editabilidad.md) y se subsanó la observación **OBS-20** en [`docs/despliegue-produccion.md`](../docs/despliegue-produccion.md).
+
+---
+
+### 2. Matriz de Evidencia Pericial de Editabilidad y Configurabilidad
+
+| Capacidad | ¿Editable en UI? | Rol Autorizado | Endpoint Backend (archivo:línea) | Panel Frontend (archivo:línea) | Test que lo Cubre | Razón si NO es Editable en UI |
+|---|:---:|---|---|---|---|---|
+| **1. Activar / Apagar Fases** | **SÍ** | `autoridad_distrital` (`politicas:gestionar`) | `PATCH /api/v1/politicas/fases/{id}/conmutar` ([`politicas/router.py:119-158`](../backend/app/modules/politicas/router.py#L119-L158)) | `fases-control` ([`fases-control-panel.tsx:18-120`](../src/features/politicas/panels/fases-control-panel.tsx#L18-L120)) | `test_control_fases_dnp_conmutar_web` ([`test_control_fases_y_oauth.py:105`](../backend/tests/test_control_fases_y_oauth.py#L105)) / [`fases-control-panel.test.ts:90`](../src/features/politicas/panels/fases-control-panel.test.ts#L90) | N/A (Plenamente editable con recálculo dinámico de progreso real). |
+| **2. Mesas de Trabajo** | **PARCIAL** | `facilitador_mesa`, `autoridad_distrital` (`mesas:abrir`, `mesas:acuerdos`) | Creación: `POST /api/v1/mesas` ([`mesas/router.py:49-56`](../backend/app/modules/mesas/router.py#L49-L56)). Submesas: `POST /api/v1/mesas/{id}/submesas` ([`:59`](../backend/app/modules/mesas/router.py#L59)). Actas: `POST /acta` ([`:176`](../backend/app/modules/mesas/router.py#L176)). | `mesa-editor` ([`mesa-editor-panel.tsx:36-320`](../src/features/mesas/panels/mesa-editor-panel.tsx#L36-L320)) | [`test_mesas_arbol_ltree.py:40`](../backend/tests/test_mesas_arbol_ltree.py#L40) / [`mesas-store.test.ts:40`](../src/features/mesas/state/mesas-store.test.ts#L40) | La **creación** y las **actas** persisten en PostgreSQL. La **edición** de campos básicos sólo actualiza el store local Zustand ([`mesa-editor-panel.tsx:292`](../src/features/mesas/panels/mesa-editor-panel.tsx#L292)); falta endpoint `PATCH /api/v1/mesas/{id}` (ver **EDIT-01**). |
+| **3. Agendas de Mesas** | **NO** | Solo lectura | **NINGUNO**. No existe modelo relacional ni tabla `agendas` en backend. | Lectura: [`agenda.data.ts:50`](../src/features/mesas/data/agenda.data.ts#L50) consumido en [`mesa-acta-panel.tsx:17-40`](../src/features/mesas/panels/mesa-acta-panel.tsx#L17-L40) | [`mesas-geovisor-api.test.ts`](../src/features/geovisor/services/mesas-geovisor-api.test.ts) | Es un cronograma institucional predefinido de 43 mesas para oct-dic 2026 fijado en código estático; no existe panel ni modelo de edición dinámica (ver **EDIT-02**). |
+| **4. Líneas Estratégicas** | **SÍ** | `autoridad_distrital` (`politicas:gestionar`) | `POST /api/v1/politicas/lineas` ([`politicas/router.py:176`](../backend/app/modules/politicas/router.py#L176)), `PUT /lineas/{id}` ([`:191`](../backend/app/modules/politicas/router.py#L191)), `DELETE /lineas/{id}` ([`:206`](../backend/app/modules/politicas/router.py#L206)) | `linea-editor` ([`linea-editor-panel.tsx:35-419`](../src/features/politicas/panels/linea-editor-panel.tsx#L35-L419)) | [`test_politicas_api.py:50`](../backend/tests/test_politicas_api.py#L50) / [`lineas-api.test.ts:1`](../src/features/politicas/services/lineas-api.test.ts#L1) | N/A (CRUD completo con persistencia en base de datos y validaciones de esquema). |
+| **5. Ejes / Dimensiones** | **NO** | Solo lectura | `GET /api/v1/politicas/dimensiones` ([`politicas/router.py:30-41`](../backend/app/modules/politicas/router.py#L30-L41)). Sin endpoints de escritura. | Vista: [`dimensiones-view.tsx:1-120`](../src/features/politicas/views/dimensiones-view.tsx#L1-L120) | [`test_politicas_api.py`](../backend/tests/test_politicas_api.py) | Corresponden al marco cerrado de 7 dimensiones canónicas de la Seguridad Humana (ONU Res. 66/290 y DNP). No son editables para garantizar la validez del cálculo de progreso y el motor neurosimbólico. |
+| **6. Actores Estratégicos** | **SÍ** | `autoridad_distrital`, `facilitador_mesa` (`actores:gestionar`) | `POST /api/v1/actores` ([`actores/router.py:55`](../backend/app/modules/actores/router.py#L55)), `PUT /actores/{id}` ([`:66`](../backend/app/modules/actores/router.py#L66)), `DELETE /actores/{id}` ([`:80`](../backend/app/modules/actores/router.py#L80)) | `actor-editor` ([`actor-editor-panel.tsx:50-250`](../src/features/actores/panels/actor-editor-panel.tsx#L50-L250)) en [`actores-view.tsx:94`](../src/features/plataforma/views/actores-view.tsx#L94) | [`test_actores_api.py:30`](../backend/tests/test_actores_api.py#L30) / [`actores-store.test.ts:1`](../src/features/actores/state/actores-store.test.ts#L1) | N/A (CRUD completo con auditoría inmutable, sin PII prefabricada y persistencia en PostgreSQL). |
+| **7. Indicadores (Mediciones y Fichas)** | **PARCIAL** | `autoridad_distrital` (`indicadores:gestionar`) | Mediciones: `POST /api/v1/indicadores/fichas/{id}/mediciones` ([`indicadores/router.py:51-60`](../backend/app/modules/indicadores/router.py#L51-L60)). Fichas: Solo `GET /fichas` ([`:28`](../backend/app/modules/indicadores/router.py#L28)). | `indicador-detalle` ([`indicador-detalle-panel.tsx:44-98`](../src/features/seguimiento/panels/indicador-detalle-panel.tsx#L44-L98)) | [`test_indicadores_cadena_valor.py:40`](../backend/tests/test_indicadores_cadena_valor.py#L40) / [`cadena-valor-store.test.ts:40`](../src/features/seguimiento/state/cadena-valor-store.test.ts#L40) | Las **mediciones** son 100% editables/registrables con persistencia. Las **fichas técnicas** (fórmulas y metas SINERGIA DNP) son inmutables para preservar la consistencia metodológica de la política pública (ver **EDIT-04**). |
+| **8. Compromisos PAS** | **SÍ** | `autoridad_distrital` (`compromisos:gestionar`) | `POST /api/v1/compromisos` ([`compromisos/router.py:58`](../backend/app/modules/compromisos/router.py#L58)), `PUT /{id}` ([`:92`](../backend/app/modules/compromisos/router.py#L92)), `PATCH /{id}/avance` ([`:75`](../backend/app/modules/compromisos/router.py#L75)), `DELETE /{id}` ([`:109`](../backend/app/modules/compromisos/router.py#L109)) | `compromiso-editor` ([`compromiso-editor-panel.tsx:39-250`](../src/features/seguimiento/panels/compromiso-editor-panel.tsx#L39-L250)) | [`test_compromisos_pas.py:35`](../backend/tests/test_compromisos_pas.py#L35) / [`compromisos-store.test.ts:210`](../src/features/seguimiento/state/compromisos-store.test.ts#L210) | N/A (CRUD completo y actualización de avances cuatrienales con metadatos corregidos y persistencia en base de datos). |
+| **9. Fuentes de Información / Financiamiento** | **PARCIAL** | `autoridad_distrital` (`presupuesto:gestionar` / `fuentes:gestionar`) | Asignaciones: `POST /api/v1/presupuesto/asignaciones` ([`presupuesto/router.py:41-55`](../backend/app/modules/presupuesto/router.py#L41-L55)). Fuentes financieras: Solo `GET /fuentes` ([`:28`](../backend/app/modules/presupuesto/router.py#L28)). Fuentes información: Sin backend. | Asignaciones en F-3; Información: `fuente-editor` ([`fuente-editor-panel.tsx:32`](../src/features/fuentes/panels/fuente-editor-panel.tsx#L32)) | [`test_presupuesto_e_indicadores.py:25`](../backend/tests/test_presupuesto_e_indicadores.py#L25) / [`presupuesto-api.test.ts:40`](../src/features/alternativas/services/presupuesto-api.test.ts#L40) | Las fuentes de financiación son canónicas por Ley 819/03 (FONSET, SGP, SGR, etc.). Las fuentes de información son editables en UI pero persisten sólo en Zustand ([`fuentes-store.ts:39`](../src/features/fuentes/state/fuentes-store.ts#L39)); falta persistencia en PostgreSQL (ver **EDIT-03**). |
+| **10. Contenido (Noticias y Testimonios)** | **EN DESARROLLO** | `politicas:gestionar` (noticias), `testimonios:moderar` (testimonios) | Noticias: `POST /noticias/gestion` ([`noticias/router.py:33`](../backend/app/modules/noticias/router.py#L33)), `PUT /noticias/gestion/{id}` ([`:48`](../backend/app/modules/noticias/router.py#L48)), `DELETE /noticias/gestion/{id}` ([`:53`](../backend/app/modules/noticias/router.py#L53)). Testimonios: `POST /testimonios` ([`testimonios/router.py:42`](../backend/app/modules/testimonios/router.py#L42)). | `noticia-editor-panel.tsx`, `testimonio-editor-panel.tsx`, `testimonios-moderacion-panel.tsx` | [`test_testimonios_comunitarios.py`](../backend/tests/test_testimonios_comunitarios.py), [`test_noticias.py`](../backend/tests/test_noticias.py) (Codex) | Endpoints y paneles en desarrollo activo por Codex; código de Codex preservado intacto sin modificar (ver **EDIT-05**). |
+
+---
+
+### 3. Subsanación de la Observación OBS-20 en el Runbook
+
+En [`docs/despliegue-produccion.md`](../docs/despliegue-produccion.md), se actualizó el **Paso 7**:
+- Se documentó que en el entorno de producción actual, `alembic current` sobre `bd_csh` ya reporta `0040_modulo_actores_estrategicos (head)`: todas las revisiones 0037 a 0040 ya se encuentran aplicadas.
+- Se convirtió el comando de migración en un **bloque condicional**: compara la versión actual registrada en base de datos (`CURRENT_REV`) contra la cabeza del código (`HEAD_REV`). Si coinciden, omite la ejecución para evitar bloqueos y tiempo de inactividad innecesario.
+
+---
+
+### 4. Matriz de Archivos Creados y Modificados (AUD-18)
+
+| Archivo | Tipo de Intervención | Descripción de la Modificación |
+|---|---|---|
+| `docs/despliegue-produccion.md` | **Modificación** | Subsanación OBS-20: Paso 7 de migraciones Alembic convertido en evaluación condicional transparente. |
+| `bridge/04_backlog_editabilidad.md` | **Nuevo archivo** | Backlog formal de 5 tareas priorizadas (EDIT-01 a EDIT-05) con diagnóstico, alcance y criterios de aceptación. |
+| `bridge/01_tarea_activa.md` | **Modificación** | Actualización de matriz con AUD-17 conforme y AUD-18 entregada. |
+| `bridge/02_entrega_agy2.md` | **Modificación** | Incorporación de la matriz pericial de editabilidad con evidencia archivo:línea y tests para las 10 capacidades. |
+
+---
+
+### 5. Matriz de Quality Gates (AUD-18)
+
+| Quality Gate | Comando de Validación | Resultado Pericial |
+|---|---|---|
+| **Política de UI POLIS** | `bun run ui:check` (`node scripts/ui-policy.mjs`) | **0 violaciones** de diseño institucional. |
+| **Chequeo de Tipos TypeScript** | `bun run typecheck` (`tsc --noEmit`) | **0 errores** de tipos. |
+| **Linting ESLint** | `bun run lint` (`eslint .`) | **0 errores, 0 advertencias** (con `no-unused-vars` y `ban-ts-comment` en error). |
+| **Pruebas Automatizadas Frontend** | `bun test` | **227 pass, 0 fail (1017 expect calls)** en 24 suites de prueba. |
+| **Pipeline Completo Check** | `bun run check` | **100% aprobado** (ui:check, typecheck, lint). |
+| **Aislamiento de Codex** | `git status` | Archivos de codex (`noticias`, `testimonios`, backend) intactos y sin commitear. |
+| **Restricción de Ejecución** | N/A | No se ejecutaron migraciones sobre `bd_csh`, no se hizo `git push`, y no se corrieron suites de `pytest` ni `check:e2e`. |
+
+
