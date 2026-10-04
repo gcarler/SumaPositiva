@@ -88,8 +88,8 @@ export const ESTADOS_COMPROMISO: Record<
   },
   en_ejecucion: {
     label: "En Ejecución",
-    colorClase: "text-accent",
-    badgeClase: "text-accent bg-accent/10 border-accent/20",
+    colorClase: "text-info",
+    badgeClase: "text-info bg-info/10 border-info/20",
     badgeVariant: "info",
     descripcion: "Actividades operativas en curso dentro de los cronogramas programados.",
   },

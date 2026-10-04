@@ -150,10 +150,10 @@ export function DevolucionDetallePanel({
       <div className="space-y-6 p-4 sm:p-6">
         {/* Banner de Modo Solo Lectura para Auditor Forense */}
         {esAuditor && (
-          <div className="flex items-center gap-3 rounded-lg border border-accent/30 bg-accent-soft p-3.5 text-xs text-text-primary">
-            <ShieldCheck className="h-5 w-5 shrink-0 text-accent" />
+          <div className="flex items-center gap-3 rounded-lg border border-border bg-surface-2 p-3.5 text-xs text-text-primary">
+            <ShieldCheck className="h-5 w-5 shrink-0 text-ember" />
             <div>
-              <span className="font-semibold text-accent">
+              <span className="font-semibold text-text-primary">
                 Inspección Pericial — Solo Lectura
               </span>
               <p className="mt-0.5 text-text-muted">
@@ -167,7 +167,7 @@ export function DevolucionDetallePanel({
         <div className="rounded-xl border border-border bg-surface-1 p-4 shadow-xs space-y-3">
           <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border pb-3">
             <div className="flex items-center gap-2">
-              <span className="font-mono text-xs font-semibold text-accent">
+              <span className="font-mono text-xs font-semibold text-text-primary">
                 {propuesta.codigo}
               </span>
               <Badge variant={estadoInfo.badgeVariant}>
@@ -199,7 +199,7 @@ export function DevolucionDetallePanel({
         {/* Contenido Original de la Propuesta Ciudadana */}
         <div className="rounded-xl border border-border bg-surface-1 p-4 shadow-xs space-y-2">
           <div className="flex items-center gap-2 font-semibold text-sm text-text-primary">
-            <FileText className="h-4 w-4 text-accent" />
+            <FileText className="h-4 w-4 text-ember" />
             <span>Texto Original de la Propuesta Radicada</span>
           </div>
           <div className="rounded-lg bg-surface-2 p-3 text-xs leading-relaxed text-text-secondary">
@@ -239,9 +239,9 @@ export function DevolucionDetallePanel({
                   Modo Auditor: La emisión de devoluciones motivadas está reservada a la autoridad distrital competente.
                 </div>
               ) : (
-                <div className="rounded-xl border border-accent/30 bg-surface-2/60 p-4 text-xs space-y-3">
+                <div className="rounded-xl border border-border bg-surface-2/60 p-4 text-xs space-y-3">
                   <div className="flex items-center gap-2 font-semibold text-text-primary">
-                    <Scale className="h-4 w-4 text-accent" />
+                    <Scale className="h-4 w-4 text-ember" />
                     <span>Radicar Devolución Motivada (C-150/15)</span>
                   </div>
                   <p className="text-[11px] text-text-muted leading-relaxed">
@@ -256,7 +256,7 @@ export function DevolucionDetallePanel({
                       value={causalSeleccionada}
                       onValueChange={setCausalSeleccionada}
                     >
-                      <SelectTrigger className="text-xs">
+                      <SelectTrigger aria-label="Causal Taxativa de No Incorporación" className="text-xs">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -356,7 +356,7 @@ export function DevolucionDetallePanel({
               {/* Trazabilidad Forense de Auditoría */}
               {historialDevoluciones[propuesta.id] && historialDevoluciones[propuesta.id].length > 0 && (
                 <div className="rounded-lg border border-border bg-surface-2 p-3 text-xs space-y-2">
-                  <span className="text-[11px] font-semibold text-accent">
+                  <span className="text-[11px] font-semibold text-text-primary">
                     Registro Forense de Devolución (PostgreSQL):
                   </span>
                   {historialDevoluciones[propuesta.id].map((reg) => (
@@ -393,7 +393,7 @@ export function DevolucionDetallePanel({
                 <div className="rounded-lg border border-border bg-surface-2 p-3 text-xs space-y-1">
                   <span className="text-text-muted text-[11px]">Compromiso Institucional Articulado:</span>
                   <div className="flex items-center justify-between gap-2">
-                    <span className="font-mono font-semibold text-accent">
+                    <span className="font-mono font-semibold text-text-primary">
                       {propuesta.compromiso_pas_codigo}
                     </span>
                     <span className="text-text-primary font-medium truncate">

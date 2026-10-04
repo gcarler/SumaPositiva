@@ -215,7 +215,7 @@ export function RendicionCuentasTab({ puedeEditar }: RendicionCuentasTabProps) {
         <div className="flex flex-col justify-between rounded-xl border border-border bg-surface-1 p-4 shadow-xs">
           <div className="flex items-start justify-between">
             <span className="text-xs font-medium text-text-muted">Total Participantes</span>
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent-soft text-accent">
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-ember-soft text-ember">
               <Users className="h-4 w-4" />
             </span>
           </div>
@@ -279,7 +279,14 @@ export function RendicionCuentasTab({ puedeEditar }: RendicionCuentasTabProps) {
                 ({totalRespondidos}/{totalAportes})
               </span>
             </div>
-            <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-surface-2">
+            <div
+              role="progressbar"
+              aria-valuenow={tasaRespuestaMotivada}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-label={`Tasa de respuesta motivada C-150: ${tasaRespuestaMotivada}%`}
+              className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-surface-2"
+            >
               <div
                 className="h-full rounded-full bg-success transition-all duration-300"
                 style={{ width: `${Math.min(100, Math.max(0, tasaRespuestaMotivada))}%` }}
@@ -309,10 +316,10 @@ export function RendicionCuentasTab({ puedeEditar }: RendicionCuentasTabProps) {
 
       {/* Banner de Dictamen IA C-150 si fue ejecutado */}
       {resultadoIa && (
-        <div className="flex items-start gap-3 rounded-xl border border-accent/30 bg-accent-soft p-4 text-xs text-text-primary">
-          <Bot className="h-5 w-5 shrink-0 text-accent mt-0.5" />
+        <div className="flex items-start gap-3 rounded-xl border border-border bg-surface-2 p-4 text-xs text-text-primary">
+          <Bot className="h-5 w-5 shrink-0 text-ember mt-0.5" />
           <div className="space-y-1">
-            <span className="font-semibold text-accent text-sm">
+            <span className="font-semibold text-text-primary text-sm">
               Dictamen Oficial del Agente IA DNP — Cumplimiento C-150/15
             </span>
             <p className="text-text-secondary leading-relaxed pt-0.5">
@@ -327,11 +334,12 @@ export function RendicionCuentasTab({ puedeEditar }: RendicionCuentasTabProps) {
         <div className="flex flex-wrap items-center justify-between gap-3">
           {/* Buscador */}
           <div className="relative min-w-[240px] flex-1">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" aria-hidden="true" />
             <Input
               value={filtros.busqueda}
               onChange={(e) => handleCambiarFiltro({ busqueda: e.target.value })}
               placeholder="Buscar por código, título, territorio o palabra clave..."
+              aria-label="Buscar propuestas comunitarias por código, título, territorio o palabra clave"
               className="pl-9 text-xs"
             />
           </div>
@@ -342,7 +350,7 @@ export function RendicionCuentasTab({ puedeEditar }: RendicionCuentasTabProps) {
               value={filtros.territorio}
               onValueChange={(val) => handleCambiarFiltro({ territorio: val })}
             >
-              <SelectTrigger className="text-xs">
+              <SelectTrigger className="text-xs" aria-label="Filtrar por territorio de origen">
                 <SelectValue placeholder="Territorio de origen" />
               </SelectTrigger>
               <SelectContent>
@@ -366,7 +374,7 @@ export function RendicionCuentasTab({ puedeEditar }: RendicionCuentasTabProps) {
                 handleCambiarFiltro({ estado: val as EstadoIncorporacion | "todos" })
               }
             >
-              <SelectTrigger className="text-xs">
+              <SelectTrigger className="text-xs" aria-label="Filtrar por estado de incorporación">
                 <SelectValue placeholder="Estado de incorporación" />
               </SelectTrigger>
               <SelectContent>
@@ -388,9 +396,10 @@ export function RendicionCuentasTab({ puedeEditar }: RendicionCuentasTabProps) {
               variant="ghost"
               size="sm"
               onClick={handleLimpiarFiltros}
+              aria-label="Limpiar filtros de propuestas"
               className="h-9 gap-1.5 px-3 text-xs text-text-muted hover:text-text-primary"
             >
-              <RotateCcw className="h-3.5 w-3.5" />
+              <RotateCcw className="h-3.5 w-3.5" aria-hidden="true" />
               <span>Limpiar</span>
             </Button>
           )}
@@ -401,17 +410,23 @@ export function RendicionCuentasTab({ puedeEditar }: RendicionCuentasTabProps) {
             size="sm"
             onClick={handleEvaluarIa}
             disabled={evaluandoIa}
-            className="gap-1.5 text-xs text-accent border-accent/30"
+            aria-label="Evaluar devolución ciudadana con agente IA DNP"
+            className="gap-1.5 text-xs text-text-primary border-border hover:bg-surface-2"
           >
-            <Bot className="h-4 w-4" />
+            <Bot className="h-4 w-4 text-ember" aria-hidden="true" />
             <span>{evaluandoIa ? "Evaluando con IA..." : "Evaluar Devolución IA"}</span>
           </Button>
 
           {/* Menú Exportar */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" className="gap-2 text-xs">
-                <Download className="h-4 w-4" />
+              <Button
+                variant="outline"
+                size="sm"
+                className="gap-2 text-xs"
+                aria-label="Exportar matriz de devolución ciudadana"
+              >
+                <Download className="h-4 w-4" aria-hidden="true" />
                 <span>Exportar</span>
               </Button>
             </DropdownMenuTrigger>
@@ -433,7 +448,7 @@ export function RendicionCuentasTab({ puedeEditar }: RendicionCuentasTabProps) {
             Mostrando <strong className="text-text-primary">{propuestasFiltradas.length}</strong> de{" "}
             {propuestas.length} propuestas comunitarias radicadas
           </span>
-          <span className="text-[11px] text-accent">
+          <span className="text-[11px] text-text-secondary">
             Proscripción del descarte silencioso · Sentencia C-150 de 2015
           </span>
         </div>
@@ -442,25 +457,28 @@ export function RendicionCuentasTab({ puedeEditar }: RendicionCuentasTabProps) {
       {/* DataGrid Interactivo de Propuestas y Devolución */}
       <div className="overflow-hidden rounded-xl border border-border bg-surface-1 shadow-sm">
         <div className="overflow-x-auto">
-          <Table>
+          <Table aria-label="Matriz de rendición de cuentas y devolución ciudadana C-150">
+            <caption className="sr-only">
+              Matriz de propuestas ciudadanas y estado de motivación sustancial C-150
+            </caption>
             <TableHeader>
               <TableRow className="border-b border-border bg-surface-2 hover:bg-surface-2">
-                <TableHead className="w-[130px] font-semibold text-text-primary">
+                <TableHead scope="col" className="w-[130px] font-semibold text-text-primary">
                   Código
                 </TableHead>
-                <TableHead className="min-w-[280px] font-semibold text-text-primary">
+                <TableHead scope="col" className="min-w-[280px] font-semibold text-text-primary">
                   Propuesta Comunitaria
                 </TableHead>
-                <TableHead className="w-[160px] font-semibold text-text-primary">
+                <TableHead scope="col" className="w-[160px] font-semibold text-text-primary">
                   Territorio y Canal
                 </TableHead>
-                <TableHead className="w-[180px] text-center font-semibold text-text-primary">
+                <TableHead scope="col" className="w-[180px] text-center font-semibold text-text-primary">
                   Estado Incorporación
                 </TableHead>
-                <TableHead className="min-w-[220px] font-semibold text-text-primary">
+                <TableHead scope="col" className="min-w-[220px] font-semibold text-text-primary">
                   Compromiso PAS o Causal C-150
                 </TableHead>
-                <TableHead className="w-[150px] text-right font-semibold text-text-primary">
+                <TableHead scope="col" className="w-[150px] text-right font-semibold text-text-primary">
                   Acción
                 </TableHead>
               </TableRow>
@@ -482,7 +500,7 @@ export function RendicionCuentasTab({ puedeEditar }: RendicionCuentasTabProps) {
                     key={p.id}
                     className="border-b border-border transition-colors hover:bg-surface-2/60"
                   >
-                    <TableCell className="font-mono text-xs font-semibold text-accent">
+                    <TableCell className="font-mono text-xs font-semibold text-text-primary">
                       {p.codigo}
                     </TableCell>
                     <TableCell>
@@ -498,7 +516,7 @@ export function RendicionCuentasTab({ puedeEditar }: RendicionCuentasTabProps) {
                     <TableCell>
                       <div className="flex flex-col gap-1 text-xs">
                         <div className="flex items-center gap-1.5 text-text-primary font-medium">
-                          <MapPin className="h-3 w-3 shrink-0 text-text-muted" />
+                          <MapPin className="h-3 w-3 shrink-0 text-text-muted" aria-hidden="true" />
                           <span>{p.territorio}</span>
                         </div>
                         <Badge variant="outline" className="text-[10px] w-fit uppercase">
@@ -518,7 +536,7 @@ export function RendicionCuentasTab({ puedeEditar }: RendicionCuentasTabProps) {
                         </span>
                       ) : p.estado_incorporacion !== "NO_INCORPORADA_MOTIVADA" ? (
                         <div className="flex flex-col gap-0.5 text-xs">
-                          <span className="font-mono font-semibold text-accent">
+                          <span className="font-mono font-semibold text-text-primary">
                             {p.compromiso_pas_codigo || "Articulada al PAS"}
                           </span>
                           <span className="text-[11px] text-text-muted truncate">
@@ -541,9 +559,10 @@ export function RendicionCuentasTab({ puedeEditar }: RendicionCuentasTabProps) {
                         variant="outline"
                         size="sm"
                         onClick={() => handleAbrirFicha(p)}
+                        aria-label={`${p.estado_incorporacion === "SIN_RESPUESTA" && puedeEditar ? "Motivar respuesta C-150 para propuesta" : "Ver ficha C-150 de"} ${p.codigo}`}
                         className="gap-1.5 text-xs h-8"
                       >
-                        <FileText className="h-3.5 w-3.5" />
+                        <FileText className="h-3.5 w-3.5" aria-hidden="true" />
                         <span>
                           {p.estado_incorporacion === "SIN_RESPUESTA" && puedeEditar
                             ? "Motivar C-150"
@@ -569,7 +588,7 @@ export function RendicionCuentasTab({ puedeEditar }: RendicionCuentasTabProps) {
                 setPaginaActual(1);
               }}
             >
-              <SelectTrigger className="h-8 w-[70px] text-xs">
+              <SelectTrigger className="h-8 w-[70px] text-xs" aria-label="Seleccionar filas por página">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -606,8 +625,9 @@ export function RendicionCuentasTab({ puedeEditar }: RendicionCuentasTabProps) {
                 className="h-8 w-8 p-0"
                 disabled={paginaValida <= 1}
                 onClick={() => setPaginaActual((p) => Math.max(1, p - 1))}
+                aria-label="Ir a la página anterior"
               >
-                <ChevronLeft className="h-4 w-4" />
+                <ChevronLeft className="h-4 w-4" aria-hidden="true" />
                 <span className="sr-only">Anterior</span>
               </Button>
               <Button
@@ -616,8 +636,9 @@ export function RendicionCuentasTab({ puedeEditar }: RendicionCuentasTabProps) {
                 className="h-8 w-8 p-0"
                 disabled={paginaValida >= totalPaginas}
                 onClick={() => setPaginaActual((p) => Math.min(totalPaginas, p + 1))}
+                aria-label="Ir a la página siguiente"
               >
-                <ChevronRight className="h-4 w-4" />
+                <ChevronRight className="h-4 w-4" aria-hidden="true" />
                 <span className="sr-only">Siguiente</span>
               </Button>
             </div>

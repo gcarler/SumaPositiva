@@ -216,7 +216,12 @@ export function SeguimientoView() {
             {/* Menú de exportación pericial */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm" className="gap-2 text-xs">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="gap-2 text-xs"
+                  aria-label="Exportar compromisos institucionales"
+                >
                   <Download className="h-4 w-4" />
                   <span>Exportar</span>
                 </Button>
@@ -239,6 +244,7 @@ export function SeguimientoView() {
                 onClick={handleAbrirCrear}
                 size="sm"
                 className="gap-2 text-xs font-medium"
+                aria-label="Crear nuevo compromiso institucional PAS"
               >
                 <Plus className="h-4 w-4" />
                 <span>Nuevo Compromiso</span>
@@ -295,12 +301,15 @@ export function SeguimientoView() {
         className="w-full space-y-6"
       >
         <div className="rounded-xl border border-border bg-surface-1 p-2">
-          <TabsList className="bg-surface-2 p-1 border border-border">
+          <TabsList
+            aria-label="Pestañas del Plan de Acción y Seguimiento"
+            className="bg-surface-2 p-1 border border-border"
+          >
             <TabsTrigger
               value="matriz_compromisos"
               className="gap-2 text-xs data-[state=active]:bg-surface-1 data-[state=active]:text-text-primary"
             >
-              <CheckSquare className="h-3.5 w-3.5 text-accent" />
+              <CheckSquare className="h-3.5 w-3.5 text-ember" />
               <span>Matriz de Compromisos PAS</span>
             </TabsTrigger>
             <TabsTrigger
@@ -330,11 +339,12 @@ export function SeguimientoView() {
             <div className="flex flex-wrap items-center gap-3">
               {/* Buscador reactivo */}
               <div className="relative min-w-[240px] flex-1">
-                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
+                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" aria-hidden="true" />
                 <Input
                   value={filtros.busqueda}
                   onChange={(e) => setFiltros({ busqueda: e.target.value })}
                   placeholder="Buscar por código, nombre, indicador o alternativa MGA..."
+                  aria-label="Buscar compromisos por código, nombre, indicador o alternativa MGA"
                   className="pl-9 text-xs"
                 />
               </div>
@@ -345,7 +355,7 @@ export function SeguimientoView() {
                   value={filtros.entidad}
                   onValueChange={(val) => setFiltros({ entidad: val })}
                 >
-                  <SelectTrigger className="text-xs">
+                  <SelectTrigger className="text-xs" aria-label="Filtrar por entidad responsable">
                     <SelectValue placeholder="Entidad responsable" />
                   </SelectTrigger>
                   <SelectContent>
@@ -369,7 +379,7 @@ export function SeguimientoView() {
                     setFiltros({ estado: val as EstadoCompromiso | "todos" })
                   }
                 >
-                  <SelectTrigger className="text-xs">
+                  <SelectTrigger className="text-xs" aria-label="Filtrar por estado de cumplimiento">
                     <SelectValue placeholder="Estado de cumplimiento" />
                   </SelectTrigger>
                   <SelectContent>
@@ -391,9 +401,10 @@ export function SeguimientoView() {
                   variant="ghost"
                   size="sm"
                   onClick={limpiarFiltros}
+                  aria-label="Limpiar filtros de búsqueda"
                   className="h-9 gap-1.5 px-3 text-xs text-text-muted hover:text-text-primary"
                 >
-                  <RotateCcw className="h-3.5 w-3.5" />
+                  <RotateCcw className="h-3.5 w-3.5" aria-hidden="true" />
                   <span>Limpiar filtros</span>
                 </Button>
               )}

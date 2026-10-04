@@ -26,7 +26,7 @@ export function SeguimientoKpis({ kpis }: SeguimientoKpisProps) {
           ? `Presupuesto anual: ${formatCopMilesMillones(kpis.presupuestoTotalAnualCop)}`
           : "Sin presupuesto oficial reportado",
       icono: CheckSquare,
-      estiloIcono: "text-accent bg-accent-soft",
+      estiloIcono: "text-ember bg-ember-soft",
     },
     {
       titulo: "En Ejecución / Cumplidos",
@@ -66,7 +66,11 @@ export function SeguimientoKpis({ kpis }: SeguimientoKpisProps) {
   ];
 
   return (
-    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+    <div
+      role="region"
+      aria-label="Indicadores clave de seguimiento"
+      className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4"
+    >
       {tarjetas.map((t) => {
         const Icono = t.icono;
         return (
@@ -90,7 +94,14 @@ export function SeguimientoKpis({ kpis }: SeguimientoKpisProps) {
                 {t.valor}
               </div>
               {t.mostrarProgreso && (
-                <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-surface-2">
+                <div
+                  role="progressbar"
+                  aria-valuenow={t.progreso ?? 0}
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  aria-label={`${t.titulo}: ${t.progreso}%`}
+                  className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-surface-2"
+                >
                   <div
                     className="h-full rounded-full bg-ember transition-all duration-300"
                     style={{ width: `${Math.min(100, Math.max(0, t.progreso ?? 0))}%` }}

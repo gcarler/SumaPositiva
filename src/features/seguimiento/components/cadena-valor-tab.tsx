@@ -58,9 +58,9 @@ export function CadenaValorTab({ puedeEditar }: CadenaValorTabProps) {
                 <Icono className="h-4 w-4" />
               </span>
               <div>
-                <h3 className="text-sm font-bold text-text-primary tracking-tight">
+                <h2 className="text-sm font-bold text-text-primary tracking-tight">
                   {titulo}
-                </h3>
+                </h2>
                 <p className="text-[11px] text-text-muted">{subtitulo}</p>
               </div>
             </div>
@@ -99,7 +99,7 @@ export function CadenaValorTab({ puedeEditar }: CadenaValorTabProps) {
                           DEMO
                         </Badge>
                       )}
-                      <span className="font-mono text-xs font-semibold text-accent">
+                      <span className="font-mono text-xs font-semibold text-text-primary">
                         {ind.codigo}
                       </span>
                     </div>
@@ -114,12 +114,12 @@ export function CadenaValorTab({ puedeEditar }: CadenaValorTabProps) {
                     )}
                   </div>
 
-                  <h4 className="mt-1.5 text-xs font-semibold text-text-primary leading-snug">
+                  <h3 className="mt-1.5 text-xs font-semibold text-text-primary leading-snug">
                     {ind.nombre}
-                  </h4>
+                  </h3>
 
                   <div className="mt-2 flex items-center gap-1.5 text-[11px] text-text-muted">
-                    <Building2 className="h-3 w-3 shrink-0" />
+                    <Building2 className="h-3 w-3 shrink-0" aria-hidden="true" />
                     <span className="truncate">{ind.responsable_reporte}</span>
                   </div>
 
@@ -133,7 +133,7 @@ export function CadenaValorTab({ puedeEditar }: CadenaValorTabProps) {
                     </div>
                     <div>
                       <span className="text-text-muted">Meta 2029</span>
-                      <p className="font-mono font-semibold text-accent">
+                      <p className="font-mono font-semibold text-text-primary">
                         {Number(ind.meta_cuatrienio).toLocaleString("es-CO")}
                       </p>
                     </div>
@@ -149,7 +149,14 @@ export function CadenaValorTab({ puedeEditar }: CadenaValorTabProps) {
 
                   {/* Barra de Progreso */}
                   <div className="mt-2.5">
-                    <div className="h-1.5 w-full overflow-hidden rounded-full bg-surface-1">
+                    <div
+                      role="progressbar"
+                      aria-valuenow={tieneMedicion ? avance : 0}
+                      aria-valuemin={0}
+                      aria-valuemax={100}
+                      aria-label={`Porcentaje de avance del indicador ${ind.codigo}: ${tieneMedicion ? `${avance}%` : "Sin medición"}`}
+                      className="h-1.5 w-full overflow-hidden rounded-full bg-surface-1"
+                    >
                       <div
                         className={`h-full rounded-full transition-all duration-300 ${
                           tieneMedicion ? semaforo.colorBarra : "bg-border"
@@ -163,9 +170,9 @@ export function CadenaValorTab({ puedeEditar }: CadenaValorTabProps) {
                       <span>Unidad: {ind.unidad_medida}</span>
                       <span className="flex items-center gap-0.5">
                         {esAscendente ? (
-                          <TrendingUp className="h-2.5 w-2.5 text-success" />
+                          <TrendingUp className="h-2.5 w-2.5 text-success" aria-hidden="true" />
                         ) : (
-                          <TrendingDown className="h-2.5 w-2.5 text-info" />
+                          <TrendingDown className="h-2.5 w-2.5 text-info" aria-hidden="true" />
                         )}
                         {esAscendente ? "Ascendente" : "Descendente"}
                       </span>
@@ -173,7 +180,7 @@ export function CadenaValorTab({ puedeEditar }: CadenaValorTabProps) {
 
                     {ind.fecha_corte_ultimo_reporte && (
                       <div className="mt-1 flex items-center gap-1 text-[10px] text-text-muted">
-                        <Calendar className="h-2.5 w-2.5 shrink-0" />
+                        <Calendar className="h-2.5 w-2.5 shrink-0" aria-hidden="true" />
                         <span>Corte: {ind.fecha_corte_ultimo_reporte}</span>
                       </div>
                     )}
@@ -186,9 +193,10 @@ export function CadenaValorTab({ puedeEditar }: CadenaValorTabProps) {
                     variant="outline"
                     size="sm"
                     onClick={() => handleAbrirFicha(ind)}
+                    aria-label={`Ver ficha técnica DNP del indicador ${ind.codigo} ${ind.nombre}`}
                     className="h-7 gap-1 text-[11px] w-full justify-center"
                   >
-                    <FileText className="h-3 w-3" />
+                    <FileText className="h-3 w-3" aria-hidden="true" />
                     <span>Ver Ficha Técnica DNP</span>
                   </Button>
                 </div>
@@ -226,7 +234,7 @@ export function CadenaValorTab({ puedeEditar }: CadenaValorTabProps) {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-xl border border-border bg-surface-1 p-4 shadow-xs">
         <div>
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs font-semibold text-accent uppercase tracking-wider">
+            <span className="text-xs font-semibold text-ember uppercase tracking-wider">
               Metodología DNP · Cadena de Valor
             </span>
             <Badge variant="outline" className="text-[10px]">
@@ -244,7 +252,7 @@ export function CadenaValorTab({ puedeEditar }: CadenaValorTabProps) {
               </Badge>
             ) : (
               <Badge variant="outline" className="text-[10px] text-success border-success/30 flex items-center gap-1">
-                <span className="h-1.5 w-1.5 rounded-full bg-success animate-pulse inline-block" />
+                <span className="h-1.5 w-1.5 rounded-full bg-success animate-pulse inline-block" aria-hidden="true" />
                 Datos en Vivo (PostgreSQL)
               </Badge>
             )}
@@ -256,9 +264,9 @@ export function CadenaValorTab({ puedeEditar }: CadenaValorTabProps) {
 
         <div className="hidden lg:flex items-center gap-1.5 shrink-0 px-3 py-1.5 rounded-lg border border-border bg-surface-2 text-xs font-medium text-text-muted">
           <span>Insumos</span>
-          <ArrowRight className="h-3.5 w-3.5 text-accent" />
+          <ArrowRight className="h-3.5 w-3.5 text-text-muted" aria-hidden="true" />
           <span>Productos</span>
-          <ArrowRight className="h-3.5 w-3.5 text-ember" />
+          <ArrowRight className="h-3.5 w-3.5 text-text-muted" aria-hidden="true" />
           <span>Resultados</span>
         </div>
       </div>
@@ -271,8 +279,8 @@ export function CadenaValorTab({ puedeEditar }: CadenaValorTabProps) {
           "insumo",
           cadenaValor.insumo,
           Coins,
-          "bg-accent-soft/30",
-          "bg-accent-soft text-accent"
+          "bg-surface-2",
+          "bg-surface-3 text-text-primary"
         )}
 
         {renderColumna(

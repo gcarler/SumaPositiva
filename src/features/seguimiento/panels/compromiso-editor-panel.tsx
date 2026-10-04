@@ -232,7 +232,7 @@ export function CompromisoEditorPanel({
                 Compromiso Institucional
               </span>
               <div className="flex items-center gap-2 flex-wrap">
-                <Badge variant="outline" className="border-border text-accent font-mono text-[10px]">
+                <Badge variant="outline" className="border-border text-text-primary font-mono text-[10px]">
                   {compromiso.codigo}
                 </Badge>
                 {compromiso.metadatos?.meta_validada === false && (
@@ -302,7 +302,7 @@ export function CompromisoEditorPanel({
                       onValueChange={setEntidad}
                       disabled={esSoloLectura}
                     >
-                      <SelectTrigger id={id} className="w-full text-xs bg-surface-2 border-border">
+                      <SelectTrigger id={id} aria-label="Entidad Distrital Responsable" className="w-full text-xs bg-surface-2 border-border">
                         <SelectValue placeholder="Seleccione entidad..." />
                       </SelectTrigger>
                       <SelectContent>
@@ -408,7 +408,14 @@ export function CompromisoEditorPanel({
             </div>
 
             {/* Barra de progreso interactiva */}
-            <div className="w-full h-2 rounded-full bg-surface-3 overflow-hidden">
+            <div
+              role="progressbar"
+              aria-valuenow={porcentajeCalculado}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-label="Porcentaje de avance calculado"
+              className="w-full h-2 rounded-full bg-surface-3 overflow-hidden"
+            >
               <div
                 className={`h-full transition-all duration-300 ${
                   porcentajeCalculado >= 100
@@ -446,7 +453,7 @@ export function CompromisoEditorPanel({
                   onValueChange={(val) => setEstado(val as EstadoCompromiso)}
                   disabled={esSoloLectura}
                 >
-                  <SelectTrigger id={id} className="w-full bg-surface-2 border-border text-xs">
+                  <SelectTrigger id={id} aria-label="Estado de Cumplimiento" className="w-full bg-surface-2 border-border text-xs">
                     <SelectValue placeholder="Estado..." />
                   </SelectTrigger>
                   <SelectContent>

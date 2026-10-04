@@ -1,7 +1,7 @@
 "use client";
 
+import { useEffect, useRef, type ReactNode } from "react";
 import { motion, useIsPresent, useReducedMotion } from "framer-motion";
-import type { ReactNode } from "react";
 import { usePanelStore } from "@/core/panels/panel-store";
 import { SidePanel } from "@/shared/ui/side-panel";
 
@@ -30,6 +30,31 @@ export function PanelShell({
   onCloseToKey,
   ...props
 }: PanelShellProps) {
+  const previousFocusRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    previousFocusRef.current = document.activeElement as HTMLElement | null;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.stopPropagation();
+        props.onClose();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      if (
+        previousFocusRef.current &&
+        typeof previousFocusRef.current.focus === "function"
+      ) {
+        previousFocusRef.current.focus();
+      }
+    };
+  }, [props.onClose]);
+
   const maximized = usePanelStore(
     (state) =>
       state.entries.find((entry) => entry.key === entryKey)?.maximized ?? false,

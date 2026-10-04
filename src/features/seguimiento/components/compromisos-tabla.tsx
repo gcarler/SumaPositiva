@@ -1,6 +1,17 @@
 "use client";
 
-import { CheckSquare, FileEdit, Eye, AlertCircle, Building2 } from "lucide-react";
+import {
+  CheckSquare,
+  FileEdit,
+  Eye,
+  AlertCircle,
+  Building2,
+  CheckCircle2,
+  Clock,
+  AlertTriangle,
+  HelpCircle,
+  Activity,
+} from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import { Badge } from "@/shared/ui/badge";
 import {
@@ -14,6 +25,22 @@ import {
 import { usePanels } from "@/core/panels/panel-store";
 import type { CompromisoInstitucional } from "../models/compromiso";
 import { ESTADOS_COMPROMISO } from "../models/compromiso";
+
+function obtenerIconoEstado(estado: string) {
+  switch (estado) {
+    case "cumplido":
+      return CheckCircle2;
+    case "en_riesgo":
+      return AlertTriangle;
+    case "retrasado":
+      return AlertCircle;
+    case "sin_reporte":
+      return HelpCircle;
+    case "en_ejecucion":
+    default:
+      return Activity;
+  }
+}
 
 interface CompromisosTablaProps {
   compromisos: CompromisoInstitucional[];
@@ -65,31 +92,34 @@ export function CompromisosTabla({
   return (
     <div className="overflow-hidden rounded-xl border border-border bg-surface-1 shadow-sm">
       <div className="overflow-x-auto">
-        <Table>
+        <Table aria-label="Matriz de compromisos institucionales PAS">
+          <caption className="sr-only">
+            Matriz de compromisos institucionales PAS con avance cuatrienal y presupuesto anual
+          </caption>
           <TableHeader>
             <TableRow className="border-b border-border bg-surface-2 hover:bg-surface-2">
-              <TableHead className="w-[120px] font-semibold text-text-primary">
+              <TableHead scope="col" className="w-[120px] font-semibold text-text-primary">
                 Código
               </TableHead>
-              <TableHead className="min-w-[280px] font-semibold text-text-primary">
+              <TableHead scope="col" className="min-w-[280px] font-semibold text-text-primary">
                 Compromiso Institucional y Meta
               </TableHead>
-              <TableHead className="w-[190px] font-semibold text-text-primary">
+              <TableHead scope="col" className="w-[190px] font-semibold text-text-primary">
                 Entidad Responsable
               </TableHead>
-              <TableHead className="w-[150px] font-semibold text-text-primary">
+              <TableHead scope="col" className="w-[150px] font-semibold text-text-primary">
                 Línea / MGA
               </TableHead>
-              <TableHead className="w-[180px] font-semibold text-text-primary">
+              <TableHead scope="col" className="w-[180px] font-semibold text-text-primary">
                 Avance Cuatrienal
               </TableHead>
-              <TableHead className="w-[130px] text-center font-semibold text-text-primary">
+              <TableHead scope="col" className="w-[130px] text-center font-semibold text-text-primary">
                 Estado
               </TableHead>
-              <TableHead className="w-[150px] text-right font-semibold text-text-primary">
+              <TableHead scope="col" className="w-[150px] text-right font-semibold text-text-primary">
                 Presupuesto Anual
               </TableHead>
-              <TableHead className="w-[160px] text-right font-semibold text-text-primary">
+              <TableHead scope="col" className="w-[160px] text-right font-semibold text-text-primary">
                 Acciones
               </TableHead>
             </TableRow>
@@ -101,13 +131,14 @@ export function CompromisosTabla({
                 badgeVariant: "default" as const,
               };
               const colorProgreso = getProgressColor(c.porcentaje_cumplimiento, c.estado);
+              const IconoEstado = obtenerIconoEstado(c.estado);
 
               return (
                 <TableRow
                   key={c.id}
                   className="border-b border-border transition-colors hover:bg-surface-2/60"
                 >
-                  <TableCell className="font-mono text-xs font-semibold text-accent">
+                  <TableCell className="font-mono text-xs font-semibold text-text-primary">
                     <div className="flex items-center gap-1.5">
                       <span>{c.codigo}</span>
                       {c.metadatos?.es_demostracion && (
@@ -136,7 +167,7 @@ export function CompromisosTabla({
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-1.5">
-                      <Building2 className="h-3.5 w-3.5 shrink-0 text-text-muted" />
+                      <Building2 className="h-3.5 w-3.5 shrink-0 text-text-muted" aria-hidden="true" />
                       <Badge variant="outline" className="text-xs">
                         {c.entidad_responsable}
                       </Badge>
@@ -168,7 +199,14 @@ export function CompromisosTabla({
                             {c.porcentaje_cumplimiento}%
                           </span>
                         </div>
-                        <div className="h-2 w-full overflow-hidden rounded-full bg-surface-2">
+                        <div
+                          role="progressbar"
+                          aria-valuenow={c.porcentaje_cumplimiento}
+                          aria-valuemin={0}
+                          aria-valuemax={100}
+                          aria-label={`Porcentaje de avance del compromiso ${c.codigo}: ${c.porcentaje_cumplimiento}%`}
+                          className="h-2 w-full overflow-hidden rounded-full bg-surface-2"
+                        >
                           <div
                             className={`h-full rounded-full transition-all duration-300 ${colorProgreso}`}
                             style={{
@@ -180,8 +218,9 @@ export function CompromisosTabla({
                     )}
                   </TableCell>
                   <TableCell className="text-center">
-                    <Badge variant={infoEstado.badgeVariant}>
-                      {infoEstado.label}
+                    <Badge variant={infoEstado.badgeVariant} className="gap-1 inline-flex items-center">
+                      <IconoEstado className="h-3 w-3 shrink-0" aria-hidden="true" />
+                      <span>{infoEstado.label}</span>
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right font-mono text-xs font-medium text-text-primary">
@@ -192,16 +231,17 @@ export function CompromisosTabla({
                       variant={puedeEditar ? "default" : "outline"}
                       size="sm"
                       onClick={() => handleAbrirPanel(c)}
+                      aria-label={`${puedeEditar ? "Gestionar avance de" : "Ver detalle de"} compromiso ${c.codigo}`}
                       className="gap-1.5 text-xs"
                     >
                       {puedeEditar ? (
                         <>
-                          <FileEdit className="h-3.5 w-3.5" />
+                          <FileEdit className="h-3.5 w-3.5" aria-hidden="true" />
                           <span>Gestionar Avance</span>
                         </>
                       ) : (
                         <>
-                          <Eye className="h-3.5 w-3.5" />
+                          <Eye className="h-3.5 w-3.5" aria-hidden="true" />
                           <span>Ver Detalle</span>
                         </>
                       )}

@@ -984,6 +984,87 @@ En respuesta al dictamen del Equipo de Auditoría Forense (EAF) sobre el hallazg
 | **Endpoint de Actores en Vivo** | `curl -s http://127.0.0.1:8000/api/v1/actores` | `[]` (**HTTP 200 OK**, arreglo vacío legítimo). |
 | **Frontend de Actores en Vivo** | `curl -sI http://127.0.0.1:3000/plataforma/actores` | **HTTP 200 OK**. |
 
+---
+
+# Tarea AUD-08: Accesibilidad del Módulo Seguimiento
+**Fecha**: 2026-10-04T02:11:00Z
+**Estado**: CONFORME PARA AUDITORÍA FORENSE (EAF)
+**Severidad**: MEDIA
+**Responsable**: agy2 (Equipo de Desarrollo EDD)
+**Plan de Auditoría**: `bridge/00_plan_auditoria_plataforma.md`
+**Especificación**: `bridge/01_tarea_agy2_aud_08.md`
+
+## 1. Resumen Ejecutivo de la Solución (AUD-08)
+En estricto cumplimiento de los estándares WCAG 2.1 AA y del mandato de inclusión del Plan de Auditoría de la Plataforma, se subsanó integralmente la accesibilidad en la ruta `/plataforma/seguimiento`.
+
+Se implementó el script automatizado de auditoría pericial `scripts/auditar_a11y_seguimiento.mjs` utilizando Playwright Chromium y el motor `axe-core` (WCAG 2.0 A/AA, WCAG 2.1 A/AA y Best Practices), cubriendo de forma exhaustiva las tres pestañas y los tres paneles laterales.
+
+### Logros Técnicos Principales:
+
+1. **Gestión Completa de Foco y Navegación por Teclado (`src/core/panels/panel-shell.tsx`)**:
+   - Se añadió captura del elemento activo previo (`previousFocusRef`) al montar el panel.
+   - Al desmontar el panel (cierre), el foco retorna automáticamente al elemento invocador.
+   - Se implementó escucha del evento `keydown` para cerrar el panel con la tecla `Escape`.
+
+2. **Roles de Barras de Progreso (`role="progressbar"`) con Valores y Nombres Accesibles**:
+   - `src/features/seguimiento/components/compromisos-tabla.tsx`: Barras de avance cuatrienal con `role="progressbar"`, `aria-valuenow`, `aria-valuemin={0}`, `aria-valuemax={100}` y `aria-label` detallado con el código del compromiso.
+   - `src/features/seguimiento/components/seguimiento-kpis.tsx`: Barra de avance global cuatrienal con `role="progressbar"`, `aria-valuenow` y `aria-label`.
+   - `src/features/seguimiento/components/cadena-valor-tab.tsx`: Barras de avance de indicadores con `role="progressbar"`, `aria-valuenow` y `aria-label`.
+   - `src/features/seguimiento/components/rendicion-cuentas-tab.tsx`: Barra de tasa de respuesta motivada C-150 con `role="progressbar"`, `aria-valuenow` y `aria-label`.
+   - `src/features/seguimiento/panels/compromiso-editor-panel.tsx`: Barra interactiva con `role="progressbar"`, `aria-valuenow`, `aria-label`.
+   - `src/features/seguimiento/panels/indicador-detalle-panel.tsx`: Barra acumulada con `role="progressbar"`, `aria-valuenow`, `aria-label`.
+
+3. **Semáforos y Estados Inclusivos (Sin Dependencia Exclusiva del Color)**:
+   - Los indicadores de estado combinan ahora texto descriptivo, iconos SVG identificables (`CheckCircle2`, `Activity`, `AlertTriangle`, `AlertCircle`, `HelpCircle`) y tono semántico.
+   - En `src/features/seguimiento/models/compromiso.ts`, el estado `en_ejecucion` fue ajustado de `text-accent` a `text-info`, garantizando contraste suficiente.
+
+4. **Estructura Semántica de Tablas y Jerarquía de Encabezados**:
+   - Las tablas de compromisos y de propuestas C-150 incorporan `aria-label`, `<caption className="sr-only">` y encabezados de columna con `scope="col"`.
+   - Jerarquía corregida en `cadena-valor-tab.tsx` (`h2` para columnas, `h3` para indicadores) y en paneles (`h3` para subtítulos subordinados al `h2` del `PanelShell`).
+
+5. **Nombres Accesibles en Controles Interactivos**:
+   - Se asignaron `aria-label` descriptivos a todos los botones de icono, botones de acción por fila, inputs de búsqueda y filtros `SelectTrigger`.
+
+6. **Remediación de Contraste WCAG AA**:
+   - Erradicación sistemática de `text-accent` en elementos textuales de la interfaz de seguimiento (que resolvía a un color claro de superficie), sustituido por `text-text-primary`, `text-ember` o `text-info`.
+
+---
+
+## 2. Archivos Creados y Modificados (AUD-08)
+
+| Archivo | Rol en el Sistema |
+|---|---|
+| `scripts/auditar_a11y_seguimiento.mjs` | Script de auditoría automatizada con Playwright Chromium y axe-core. |
+| `src/core/panels/panel-shell.tsx` | Gestión de foco (guardado/restauración) y captura de tecla Escape para cierre accesible. |
+| `src/features/seguimiento/views/seguimiento-view.tsx` | Accesibilidad en TabsList, buscador, filtros SelectTrigger y botones de exportación y creación. |
+| `src/features/seguimiento/components/compromisos-tabla.tsx` | Tablas accesibles (caption, scope="col", aria-label), barras role="progressbar" y semáforos texto+icono. |
+| `src/features/seguimiento/components/seguimiento-kpis.tsx` | Barra de progreso accesible con role="progressbar" y contraste en contenedores de iconos. |
+| `src/features/seguimiento/components/cadena-valor-tab.tsx` | Jerarquía de encabezados (h2/h3), barras role="progressbar" y remediación de contraste. |
+| `src/features/seguimiento/components/rendicion-cuentas-tab.tsx` | Tabla accesible de propuestas C-150, SelectTriggers etiquetados, botones con aria-label y contraste en banners IA. |
+| `src/features/seguimiento/models/compromiso.ts` | Sustitución de `text-accent` por `text-info` de alto contraste en estado `en_ejecucion`. |
+| `src/features/seguimiento/panels/compromiso-editor-panel.tsx` | Barra interactiva role="progressbar", SelectTriggers con aria-label y remediación de contraste. |
+| `src/features/seguimiento/panels/indicador-detalle-panel.tsx` | Jerarquía de encabezados (h3), barra role="progressbar", botón de enlace externo etiquetado y contraste pericial. |
+| `src/features/seguimiento/panels/devolucion-detalle-panel.tsx` | SelectTrigger de causales etiquetado y contraste en expediente pericial. |
+
+---
+
+## 3. Matriz de Validación de Quality Gates (AUD-08)
+
+| Quality Gate | Comando de Validación | Resultado Pericial |
+|---|---|---|
+| **Auditoría Axe Pestaña 1 (Compromisos PAS)** | `node scripts/auditar_a11y_seguimiento.mjs` | **0 violaciones (Críticas/Serias: 0)** |
+| **Auditoría Axe Pestaña 2 (Cadena de Valor)** | `node scripts/auditar_a11y_seguimiento.mjs` | **0 violaciones (Críticas/Serias: 0)** |
+| **Auditoría Axe Pestaña 3 (Rendición C-150)** | `node scripts/auditar_a11y_seguimiento.mjs` | **0 violaciones (Críticas/Serias: 0)** |
+| **Auditoría Axe Panel 1 (Devolución Detalle)** | `node scripts/auditar_a11y_seguimiento.mjs` | **0 violaciones (Críticas/Serias: 0)** |
+| **Auditoría Axe Panel 2 (Indicador Detalle)** | `node scripts/auditar_a11y_seguimiento.mjs` | **0 violaciones (Críticas/Serias: 0)** |
+| **Auditoría Axe Panel 3 (Compromiso Editor)** | `node scripts/auditar_a11y_seguimiento.mjs` | **0 violaciones (Críticas/Serias: 0)** |
+| **Total Violaciones Axe Críticas o Serias** | `node scripts/auditar_a11y_seguimiento.mjs` | **0 violaciones en todo el módulo Seguimiento** |
+| **Política de UI POLIS** | `node scripts/ui-policy.mjs` | **0 violaciones** (100% controles Design Kit, cero modales, tokens semánticos). |
+| **Chequeo de Tipos y Lint Frontend** | `bun run check` | **Aprobado (0 errores)** en TypeScript estricto y ESLint. |
+| **Pruebas Automatizadas Frontend** | `bun test` | **211 pass, 0 fail (979 aserciones)** en 22 archivos. |
+| **Servicios en Producción** | `systemctl status polis-frontend` | **Activo y operativo (PID actualizado con build de producción)**. |
+| **Respuesta HTTP en Vivo** | `curl -sI http://127.0.0.1:3000/plataforma/seguimiento` | **HTTP 200 OK**. |
+
 
 
 

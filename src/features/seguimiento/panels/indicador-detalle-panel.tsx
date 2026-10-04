@@ -158,10 +158,10 @@ export function IndicadorDetallePanel({
       <div className="space-y-6 p-4 sm:p-6">
         {/* Banner de Modo Solo Lectura para Auditor Forense */}
         {esAuditor && (
-          <div className="flex items-center gap-3 rounded-lg border border-accent/30 bg-accent-soft p-3.5 text-xs text-text-primary">
-            <ShieldCheck className="h-5 w-5 shrink-0 text-accent" />
+          <div className="flex items-center gap-3 rounded-lg border border-border bg-surface-2 p-3.5 text-xs text-text-primary">
+            <ShieldCheck className="h-5 w-5 shrink-0 text-ember" />
             <div>
-              <span className="font-semibold text-accent">
+              <span className="font-semibold text-text-primary">
                 Modo de Inspección Pericial — Solo Lectura
               </span>
               <p className="mt-0.5 text-text-muted">
@@ -223,7 +223,7 @@ export function IndicadorDetallePanel({
           {/* Definición Metodológica */}
           <div className="mt-4 rounded-lg bg-surface-2 p-3 text-xs">
             <div className="flex items-center gap-1.5 font-semibold text-text-primary">
-              <FileText className="h-3.5 w-3.5 text-accent" />
+              <FileText className="h-3.5 w-3.5 text-ember" />
               <span>Definición Metodológica Oficial</span>
             </div>
             <p className="mt-1 leading-relaxed text-text-secondary">
@@ -246,10 +246,10 @@ export function IndicadorDetallePanel({
         {/* Tarjeta de Línea Base vs Meta vs Avance Cuatrienal */}
         <div className="rounded-xl border border-border bg-surface-1 p-4 shadow-xs space-y-4">
           <div className="flex items-center justify-between">
-            <h4 className="text-sm font-semibold text-text-primary flex items-center gap-2">
-              <Activity className="h-4 w-4 text-accent" />
+            <h3 className="text-sm font-semibold text-text-primary flex items-center gap-2">
+              <Activity className="h-4 w-4 text-ember" />
               <span>Balance de Cumplimiento Cuatrienal (2026–2029)</span>
-            </h4>
+            </h3>
             <Badge variant={semaforo.badgeVariant}>{semaforo.label}</Badge>
           </div>
 
@@ -264,7 +264,7 @@ export function IndicadorDetallePanel({
 
             <div className="rounded-lg bg-surface-2 p-2.5">
               <span className="text-[11px] text-text-muted">Meta Cuatrienio</span>
-              <p className="mt-1 font-mono text-sm font-bold text-accent">
+              <p className="mt-1 font-mono text-sm font-bold text-ember">
                 {Number(indicador.meta_cuatrienio).toLocaleString("es-CO")}
               </p>
               <span className="text-[10px] text-text-muted">{indicador.unidad_medida}</span>
@@ -285,7 +285,14 @@ export function IndicadorDetallePanel({
               <span className="text-text-muted">Porcentaje de Avance Acumulado:</span>
               <span className="font-mono font-bold text-text-primary">{avanceSimulado}%</span>
             </div>
-            <div className="h-2 w-full overflow-hidden rounded-full bg-surface-2">
+            <div
+              role="progressbar"
+              aria-valuenow={avanceSimulado}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-label="Porcentaje de avance acumulado"
+              className="h-2 w-full overflow-hidden rounded-full bg-surface-2"
+            >
               <div
                 className={`h-full rounded-full transition-all duration-300 ${semaforo.colorBarra}`}
                 style={{ width: `${Math.min(100, Math.max(0, avanceSimulado))}%` }}
@@ -297,10 +304,10 @@ export function IndicadorDetallePanel({
         {/* Sección de Registro de Nueva Medición */}
         <div className="rounded-xl border border-border bg-surface-1 p-4 shadow-xs space-y-4">
           <div className="flex items-center gap-2 border-b border-border pb-3">
-            <Layers className="h-4 w-4 text-accent" />
-            <h4 className="text-sm font-semibold text-text-primary">
+            <Layers className="h-4 w-4 text-ember" />
+            <h3 className="text-sm font-semibold text-text-primary">
               {esAuditor ? "Registro Oficial de Medición" : "Actualizar Medición de Avance"}
-            </h4>
+            </h3>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
@@ -384,6 +391,7 @@ export function IndicadorDetallePanel({
                     type="button"
                     variant="outline"
                     size="sm"
+                    aria-label="Abrir enlace de evidencia en nueva pestaña"
                     className="shrink-0"
                     onClick={() => window.open(urlEvidencia, "_blank")}
                   >
