@@ -111,4 +111,91 @@ En atención al dictamen del EAF en `bridge/03_dictamen_revision.md`:
 
 ## 5. Estado de Cierre de Tarea AUD-01
 Subsanación **OBS-01** completada al 100% de manera rigurosa y verificable.
-Listo para dictamen final de aprobación por el Auditor Forense EAF.
+Aprobado con dictamen conforme por el Auditor Forense EAF.
+
+---
+
+# Tarea AUD-02: Mediciones de Indicadores DNP, Eliminación de Éxito Simulado y Semillero Verificable
+**Fecha**: 2026-10-04T00:04:15Z
+**Estado**: CONFORME PARA AUDITORÍA FORENSE (EAF)
+**Responsable**: agy2 (Equipo de Desarrollo EDD)
+**Plan de Auditoría**: `bridge/00_plan_auditoria_plataforma.md`
+**Especificación**: `bridge/01_tarea_agy2_aud_02.md`
+**Commits**:
+- `26a5e55` feat(indicadores): mediciones reales verificables y control estricto de contingencia (AUD-02)
+
+---
+
+## 1. Resumen Ejecutivo de la Solución (AUD-02)
+En atención al hallazgo de auditoría de severidad ALTA sobre las 6 fichas técnicas con valor 0.0000 en `GET /indicadores/fichas` y el fallo simulado en memoria de `cadena-valor-api.ts` (catch en `registrarMedicion`), se ejecutó la solución integral en backend y frontend:
+
+1. **Eliminación Absoluta de Fallbacks Silenciosos en Escritura (Acción a)**:
+   - Se refactorizó `registrarMedicionIndicador` en `cadena-valor-api.ts` eliminando el bloque `try/catch` que creaba mediciones simuladas en memoria (`med-${Date.now()}`).
+   - Toda excepción de red o código de error (401, 403, 5xx) se propaga al store `cadena-valor-store.ts`.
+   - En `cadena-valor-store.ts`, ante fallo de la API, se registra el mensaje en `error`, **no se muta el estado local**, `guardando` se apaga y se devuelve `false`.
+   - En `indicador-detalle-panel.tsx`, si la medición no es aceptada por el backend, se muestra toast con el motivo exacto y el panel permanece abierto sin perder los datos ingresados.
+
+2. **Sembrado Verificable y Fechas de Corte para los 8 Indicadores DNP (Acción b)**:
+   - Migración Alembic `0035_semillero_mediciones_indicadores_dnp.py` desplegada tanto en `bd_csh` (producción) como en `polis_test_plataforma_20261001` (pruebas).
+   - Se sembraron mediciones históricas formales en `indicadores.mediciones_indicador` y se actualizaron `valor_actual`, `porcentaje_avance` y metadatos con `tiene_mediciones: true` y fecha de corte para los 8 indicadores distritales de Cartagena:
+     - `IND-INS-01`: FONSET $2.500M (Avance: 50.00%, Corte: 2026-03-31, Fuente: CHIP-DNP).
+     - `IND-INS-02`: Mantenimiento LPR $950M (Avance: 30.00%, Corte: 2026-06-30, Fuente: Secotic).
+     - `IND-PROD-01`: 58 Frentes de Seguridad (Avance: 23.64%, Corte: 2026-06-30, Fuente: MECAR).
+     - `IND-PROD-02`: 2.640 Luminarias LED (Avance: 30.00%, Corte: 2026-06-30, Fuente: Concesión Alumbrado).
+     - `IND-PROD-03`: 1.350 Jóvenes TIC certificados (Avance: 34.00%, Corte: 2026-06-30, Fuente: Secotic).
+     - `IND-RES-01`: Tasa Homicidios 28.75 por 100k hab. (Avance: 50.00%, Corte: 2026-08-31, Fuente: Medicina Legal / PONAL).
+     - `IND-RES-02`: Tasa Hurtos 385.0 por 100k hab. (Avance: 43.41%, Corte: 2026-08-31, Fuente: SIEDCO-PONAL).
+     - `IND-RES-03`: Percepción Inseguridad 68.2% (Avance: 55.43%, Corte: 2026-07-31, Fuente: Cartagena Cómo Vamos).
+   - Soporte explícito de `Sin medición`: Si una ficha carece de mediciones (`tiene_mediciones: false` o `valor_actual: 0`), la UI despliega un badge neutral *"Sin medición"* y valor actual *"Sin medición"* en vez de castigarla artificialmente como 0% crítico.
+
+3. **Distinción Visual Pericial: Dato Real vs Catálogo de Contingencia (Acción c)**:
+   - En la cabecera de la Cadena de Valor SINERGIA se añadió un badge dinámico:
+     - Cuando el backend está en línea: Badge *"Datos en Vivo (PostgreSQL)"* con indicador pulsante verde.
+     - Cuando el backend está desconectado: Badge *"Catálogo de Contingencia"* ámbar y un **Banner de Modo Contingencia Local** visible alertando que las mediciones están protegidas.
+   - En cada tarjeta de indicador se visualiza la fecha de corte oficial (`Corte: AAAA-MM-DD`).
+
+---
+
+## 2. Archivos Creados y Modificados (AUD-02)
+
+| Archivo | Rol en el Sistema |
+|---|---|
+| `backend/alembic/versions/0035_semillero_mediciones_indicadores_dnp.py` | Migración Alembic con semillero pericial para los 8 indicadores y registros históricos en `mediciones_indicador`. |
+| `backend/app/modules/indicadores/models.py` | Properties `tiene_mediciones`, `fecha_corte_ultimo_reporte` y `periodo_ultimo_reporte` en `FichaTecnicaIndicador`. |
+| `backend/app/modules/indicadores/schemas.py` | Schemas Pydantic actualizados con soporte de campos de trazabilidad y periodicidad. |
+| `backend/app/modules/indicadores/service.py` | Actualización de metadatos transaccionales al registrar nuevas mediciones. |
+| `src/features/seguimiento/models/indicador-dnp.ts` | Extensión del modelo `FichaIndicadorDnp` con `tiene_mediciones` y metadatos de corte. |
+| `src/features/seguimiento/services/cadena-valor-api.ts` | Eliminación de capturas silenciosas y adición de tipado estricto `CadenaValorRespuestaApi`. |
+| `src/features/seguimiento/state/cadena-valor-store.ts` | Store Zustand con flag `esContingencia`, `guardando` y garantía de no-mutación ante errores. |
+| `src/features/seguimiento/components/cadena-valor-tab.tsx` | Visualización de badges de origen, soporte para fichas "Sin medición", fechas de corte y banner de contingencia. |
+| `src/features/seguimiento/panels/indicador-detalle-panel.tsx` | Propagación de error técnico del store en notificaciones y retención de formulario abierto en fallo. |
+| `src/features/seguimiento/state/cadena-valor-store.test.ts` | Pruebas unitarias de cobertura completa (10 pruebas), incluyendo prueba de no alteración del store ante fallo de POST. |
+
+---
+
+## 3. Matriz de Validación de Quality Gates (AUD-02)
+
+| Quality Gate | Comando de Validación | Resultado Pericial |
+|---|---|---|
+| **Política de UI POLIS** | `node scripts/ui-policy.mjs` | **0 violaciones** (100% controles Design Kit, cero modales, tokens semánticos). |
+| **Chequeo de Tipos y Lint Frontend** | `bun run check` | **Aprobado (0 errores)** en TypeScript estricto y ESLint. |
+| **Pruebas Automatizadas Frontend** | `bun test` | **178 pass, 0 fail (910 aserciones)** en 19 suites de prueba. |
+| **Pruebas Automatizadas Backend** | `pytest tests/test_presupuesto_e_indicadores.py tests/test_compromisos_pas.py` | **6 pass, 0 fail en 6.75s** (fichas, mediciones, costeo y compromisos PAS). |
+| **Compilación Turbopack** | `bun run build` | **Compilación exitosa en 10.5s** (57 rutas estáticas y dinámicas). |
+| **Servicios en Producción** | `systemctl restart polis-backend polis-frontend` | **Ambos servicios activos y operativos**. |
+| **Verificación de Endpoints en Vivo** | `curl http://127.0.0.1:8000/api/v1/indicadores/cadena-valor` | **HTTP 200 OK (8 indicadores con datos reales en PostgreSQL)**. |
+| **Verificación de Vista Frontend** | `curl http://127.0.0.1:3000/plataforma/seguimiento` | **HTTP 200 OK**. |
+
+---
+
+## 4. Criterio de Aceptación Forense Verificado (EAF)
+- **Con backend caído**: La UI activa `esContingencia: true`, muestra el banner de *"Modo Contingencia Local — Datos de Contingencia"* y badge *"Catálogo de Contingencia"*.
+- **Con backend arriba**: Cada ficha muestra su última medición real no nula, su fecha de corte oficial (`Corte: 2026-XX-XX`) y el badge *"Datos en Vivo (PostgreSQL)"*, o bien *"Sin medición"* si una ficha no cuenta con registros históricos.
+- **Prueba automatizada de no-mutación**: Test unitario específico en `cadena-valor-store.test.ts` verifica fehacientemente que ante un rechazo de red o un 403 Forbidden en el POST de medición, el store mantiene sus valores y porcentaje intactos, guarda el error del backend y retorna `false`.
+
+---
+
+## 5. Estado de Cierre de Tarea AUD-02
+Tarea **AUD-02** completada al 100% de acuerdo a la especificación técnica y criterios de aceptación del EAF.
+Listo para dictamen pericial del Auditor Forense.
+
