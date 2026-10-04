@@ -227,3 +227,21 @@ Verificado de forma forense e independiente:
 
 
 
+
+## Dictamen AUD-19 — CONFORME CON OBSERVACIONES (commit f95a10a)
+Auditoría independiente BD ↔ Backend ↔ Frontend, verificada por el EAF contra `bd_csh` y el backend en vivo.
+
+**Confirmado por el EAF (evidencia propia):**
+1. H-01: `alembic_version` en `bd_csh` = `0040_modulo_actores_estrategicos`; head del repo = `0043`. `GET /mesas/agendas`, `/fuentes` y `/alternativas` responden HTTP 500.
+2. H-02: contaminación real en `bd_csh`: 413 usuarios (≈407 con correo `*_HEX@cartagena.gov.co`), 227 propuestas, 128 instrumentos y 14 asignaciones presupuestales (7 pares duplicados).
+3. H-03: el frontend llama `PUT /mesas/{id}/submesas/{id}`, `PUT /instrumentos/{id}/arbol` y `PUT /instrumentos/{id}/nodos`; el backend solo expone `PUT /instrumentos/{id}` y `PUT /instrumentos/{id}/nodos/{nodo_id}`, y las submesas solo con POST/GET. `actualizarSubMesa` (mesas-api.ts:372) y `actualizarNodos` (mesas-api.ts:417) devuelven el objeto local ante el error.
+4. H-06: `GET /api/v1/politicas` responde 404; `politicas-api.ts:109` lo invoca.
+5. H-09: `motor_politicas.lineas_estrategicas` tiene 1 fila.
+
+**Observaciones (imprecisiones del informe, no invalidan los hallazgos):**
+- OBS-23: el informe afirma 411 de 413 usuarios sintéticos. El EAF cuenta ≈407 con sufijo hexadecimal; las otras 6 cuentas incluyen `admin@`, `alcaldia@`, `ciudadano@` y `facilitador@` (posibles cuentas demo) que deben clasificarse antes de cualquier purga.
+- OBS-24: `actualizarArbol` (PUT inexistente) no tiene consumidores y no captura el error; es código muerto, no una mutación silenciosa como sugiere H-03. Las mutaciones silenciosas verificadas son solo `actualizarSubMesa` y `actualizarNodos`.
+- OBS-25: el informe indica "PostgreSQL 16" y "9 esquemas" (lista 11); el motor es PostgreSQL 18.6.
+
+**Perímetro:** auditoría de solo lectura; cero cambios de código, cero escrituras en BD, Codex intacto, sin push.
+**Estado de los hallazgos:** reportados, sin corregir. Requieren decisión del supervisor (aplicar migraciones 0041–0043 en ventana, purga de datos de prueba en `bd_csh`, PUT faltantes, retiro de fallbacks silenciosos).
