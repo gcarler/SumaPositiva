@@ -1,7 +1,6 @@
 import { apiFetch } from "@/core/http/api-client";
 import { useSesionStore } from "@/features/sesion/state/session-store";
 import type { ActorEstrategico, ContactoActor } from "../models/actor";
-import { ACTORES_INICIALES } from "../data/actores-iniciales.data";
 
 export function normalizarActor(item: Record<string, unknown>): ActorEstrategico {
   const contactoRaw = (item.contacto as Record<string, unknown>) ?? {};
@@ -45,24 +44,19 @@ export async function listarActoresApi(params?: {
   buscar?: string;
   es_demostracion?: boolean;
 }): Promise<ActorEstrategico[]> {
-  try {
-    const query = new URLSearchParams();
-    if (params?.tipo) query.set("tipo", params.tipo);
-    if (params?.territorio) query.set("territorio", params.territorio);
-    if (params?.buscar) query.set("buscar", params.buscar);
-    if (params?.es_demostracion !== undefined) query.set("es_demostracion", String(params.es_demostracion));
+  const query = new URLSearchParams();
+  if (params?.tipo) query.set("tipo", params.tipo);
+  if (params?.territorio) query.set("territorio", params.territorio);
+  if (params?.buscar) query.set("buscar", params.buscar);
+  if (params?.es_demostracion !== undefined) query.set("es_demostracion", String(params.es_demostracion));
 
-    const qs = query.toString();
-    const endpoint = qs ? `/actores?${qs}` : "/actores";
-    const res = await apiFetch<Record<string, unknown>[]>(endpoint);
-    if (Array.isArray(res)) {
-      return res.map(normalizarActor);
-    }
-    return ACTORES_INICIALES;
-  } catch (error) {
-    console.warn("Fallo al listar actores desde API, utilizando catálogo de contingencia:", error);
-    return ACTORES_INICIALES;
+  const qs = query.toString();
+  const endpoint = qs ? `/actores?${qs}` : "/actores";
+  const res = await apiFetch<Record<string, unknown>[]>(endpoint);
+  if (Array.isArray(res)) {
+    return res.map(normalizarActor);
   }
+  return [];
 }
 
 export async function crearActorApi(

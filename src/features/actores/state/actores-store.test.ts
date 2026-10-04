@@ -75,6 +75,16 @@ describe("Actores Store & Matriz de Involucramiento (AUD-14)", () => {
       expect(actores[0].es_demostracion).toBe(true);
     });
 
+    test("Ante fallo del backend al listar actores, propaga error y no inyecta catálogo estático (OBS-27 / H-04)", async () => {
+      vi.spyOn(globalThis, "fetch").mockRejectedValueOnce(new Error("Network Error - Connection Refused"));
+
+      await useActoresStore.getState().cargarActores();
+      const state = useActoresStore.getState();
+      expect(state.actores).toEqual([]);
+      expect(state.error).toContain("Network Error");
+      expect(state.cargando).toBe(false);
+    });
+
     test("Agrega un nuevo actor tras respuesta exitosa de API", async () => {
       const nuevoMock = {
         id: "act-01a0f820-0001",

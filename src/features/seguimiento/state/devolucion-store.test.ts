@@ -190,6 +190,23 @@ describe("Rendición de Cuentas y Devolución Motivada Ciudadana (Hito PAS-3 / A
       spyApi.mockRestore();
     });
 
+    test("ante fallo de API en obtenerConsolidadoParticipacion, propaga error a cargarDatos sin inventar cifras (OBS-27 / H-04)", async () => {
+      const spyConsolidado = vi.spyOn(
+        await import("../services/devolucion-api"),
+        "obtenerConsolidadoParticipacion"
+      ).mockRejectedValueOnce(new Error("HTTP 500 Internal Server Error"));
+
+      const store = useDevolucionStore.getState();
+      await store.cargarDatos();
+
+      const state = useDevolucionStore.getState();
+      expect(state.error).toContain("HTTP 500");
+      expect(state.consolidado.gran_total_participantes_distrital).toBe(0);
+      expect(state.cargando).toBe(false);
+
+      spyConsolidado.mockRestore();
+    });
+
     test("restablecer devuelve el store a lista vacía y 0 en todas las cifras (OBS-05)", () => {
       useDevolucionStore.setState({
         propuestas: PROPUESTAS_DEVOLUCION_CARTAGENA,
