@@ -31,3 +31,10 @@ El requisito de AUD-02 era "mediciones reales verificables **o** 'Sin medición'
 - OBS-06 (baja): `causal` se asume "tecnica" cuando falta en metadatos; mostrar "causal no registrada" en lugar de inventarla.
 
 Acción: agy2 corrige OBS-04, OBS-05, OBS-06 (commit pequeño) y continúa AUD-04 sin esperar.
+
+---
+## Dictamen EAF — Cierre OBS-04/05/06 y AUD-04 — 2026-10-04
+- **AUD-02 CERRADA: CONFORME** (OBS-04 verificado: `test_integridad_mediciones.py` 2/2 verde con `backend/.venv`, sin plugin, usando asyncio.run).
+- **AUD-03 CERRADA: CONFORME** (OBS-05 propuestas: estado inicial `[]`, sin catálogo en fallback; OBS-06 ok).
+  - **OBS-07 (baja, absorber en AUD-05):** `CONSOLIDADO_PARTICIPACION_FALLBACK` (968/398/209/…, desglose territorial hardcodeado) sigue siendo estado inicial/fallback del consolidado y defaults `?? 968`. Ante fallo mostrar "sin datos"/ceros con banner, no cifras codificadas.
+- **AUD-04 CONFORME:** hook `use-fases-control.ts` con reversión en error, errores 401/403/404/422/5xx diferenciados, sin "modo simulación" ni catálogo de fases; `bun test src/features/politicas` 9/9; `/politicas/fases` devuelve 3 fases reales.
