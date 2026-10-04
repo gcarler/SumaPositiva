@@ -428,14 +428,21 @@ async def test_nuevos_modulos_revierten_si_falla_la_respuesta(sessions, monkeypa
             respuesta = FichaIndicadorRespuesta
         elif caso == "formulario":
             from app.modules.formularios.models import FormularioConsulta
-            from app.modules.formularios.schemas import FormularioCrear, FormularioRespuesta
+            from app.modules.formularios.schemas import FormularioCrear, FormularioRespuesta, PreguntaEsquema
             from app.modules.formularios.service import FormularioService
 
             datos = FormularioCrear(
                 codigo=f"ROLLBACK-{uuid.uuid4()}",
                 titulo="Formulario Rollback",
                 descripcion="Prueba rollback formularios",
-                esquema_preguntas=[],
+                esquema_preguntas=[
+                    PreguntaEsquema(
+                        id="p1",
+                        texto="¿Pregunta de prueba?",
+                        tipo="texto_libre",
+                        obligatoria=False,
+                    )
+                ],
             )
             servicio = FormularioService(session)
 

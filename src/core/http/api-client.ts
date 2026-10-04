@@ -135,6 +135,29 @@ async function once<T>(
   }
 }
 
+export function resolverBaseUrl(baseUrlParam?: string): string {
+  if (baseUrlParam) return baseUrlParam;
+  const envUrl =
+    (typeof process !== "undefined" &&
+      (process.env?.NEXT_PUBLIC_API_URL || process.env?.POLIS_API_BASE_URL)) ||
+    "";
+  if (envUrl) return envUrl;
+  if (typeof window !== "undefined") return "/api/v1";
+  return "http://127.0.0.1:8000/api/v1";
+}
+
+export function construirUrl(path: string, baseUrlParam?: string): string {
+  if (path.startsWith("http://") || path.startsWith("https://")) {
+    return path;
+  }
+  const base = resolverBaseUrl(baseUrlParam).replace(/\/+$/, "");
+  const cleanPath = path.replace(/^\/+/, "");
+  if (base.endsWith("/api/v1") && cleanPath.startsWith("api/v1/")) {
+    return `${base.slice(0, -7)}/${cleanPath}`;
+  }
+  return `${base}/${cleanPath}`;
+}
+
 /**
  * Primitiva única de comunicación con el backend.
  * - GET sin reintentos destructivos; mutaciones reintentan solo en 5xx/timeout.
@@ -144,8 +167,7 @@ export async function apiFetch<T>(
   path: string,
   opts: ApiFetchOptions = {},
 ): Promise<T> {
-  const baseUrl = opts.baseUrl ?? "/api/v1";
-  const url = `${baseUrl}${path}`;
+  const url = construirUrl(path, opts.baseUrl);
   const { retry, ...rest } = opts;
   const cfg: RetryConfig = { ...DEFAULT_RETRY, ...retry };
   const isMutation = (rest.method ?? "GET") !== "GET";

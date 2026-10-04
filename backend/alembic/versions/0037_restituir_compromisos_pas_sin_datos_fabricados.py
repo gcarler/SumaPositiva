@@ -57,25 +57,27 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
-    conn = op.get_bind()
-    conn.execute(
-        text("""
-            UPDATE seguimiento.compromisos_pas
-            SET avance_cuatrienal_valor = COALESCE(avance_cuatrienal_valor, 0),
-                porcentaje_cumplimiento = COALESCE(porcentaje_cumplimiento, 0),
-                presupuesto_anual_cop = COALESCE(presupuesto_anual_cop, 0),
-                fecha_corte_ultimo_reporte = COALESCE(fecha_corte_ultimo_reporte, CURRENT_DATE),
-                estado = CASE WHEN estado = 'sin_reporte' THEN 'programado' ELSE estado END;
-
-            ALTER TABLE seguimiento.compromisos_pas
-            ALTER COLUMN avance_cuatrienal_valor SET DEFAULT 0,
-            ALTER COLUMN avance_cuatrienal_valor SET NOT NULL,
-            ALTER COLUMN porcentaje_cumplimiento SET DEFAULT 0,
-            ALTER COLUMN porcentaje_cumplimiento SET NOT NULL,
-            ALTER COLUMN fecha_corte_ultimo_reporte SET DEFAULT CURRENT_DATE,
-            ALTER COLUMN fecha_corte_ultimo_reporte SET NOT NULL,
-            ALTER COLUMN presupuesto_anual_cop SET DEFAULT 0,
-            ALTER COLUMN presupuesto_anual_cop SET NOT NULL,
-            ALTER COLUMN estado SET DEFAULT 'programado';
-        """)
+    op.execute(
+        """
+        UPDATE seguimiento.compromisos_pas
+        SET avance_cuatrienal_valor = COALESCE(avance_cuatrienal_valor, 0),
+            porcentaje_cumplimiento = COALESCE(porcentaje_cumplimiento, 0),
+            presupuesto_anual_cop = COALESCE(presupuesto_anual_cop, 0),
+            fecha_corte_ultimo_reporte = COALESCE(fecha_corte_ultimo_reporte, CURRENT_DATE),
+            estado = CASE WHEN estado = 'sin_reporte' THEN 'programado' ELSE estado END
+        """
+    )
+    op.execute(
+        """
+        ALTER TABLE seguimiento.compromisos_pas
+        ALTER COLUMN avance_cuatrienal_valor SET DEFAULT 0,
+        ALTER COLUMN avance_cuatrienal_valor SET NOT NULL,
+        ALTER COLUMN porcentaje_cumplimiento SET DEFAULT 0,
+        ALTER COLUMN porcentaje_cumplimiento SET NOT NULL,
+        ALTER COLUMN fecha_corte_ultimo_reporte SET DEFAULT CURRENT_DATE,
+        ALTER COLUMN fecha_corte_ultimo_reporte SET NOT NULL,
+        ALTER COLUMN presupuesto_anual_cop SET DEFAULT 0,
+        ALTER COLUMN presupuesto_anual_cop SET NOT NULL,
+        ALTER COLUMN estado SET DEFAULT 'programado'
+        """
     )

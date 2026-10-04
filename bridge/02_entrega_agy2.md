@@ -772,6 +772,84 @@ Conforme a la instrucción del EAF, se realizó el barrido pericial completo de 
 | `src/features/fuentes/data/fuentes-iniciales.data.ts` | Compendio normativo distrital y nacional | **Trazable** | Normativa verificable (Constitución 1991, Ley 1757/2015, Decreto 037/2026, Sentencia C-150/2015). |
 | `src/features/mesas/data/agenda.data.ts` y `agenda-contenido.data.ts` | Momentos de diálogo en mesas | **Trazable** | Metodología oficial de facilitación comunitaria participativa. |
 
+---
+
+# Tarea AUD-07: Cobertura Efectiva de Pruebas — Automatización de BD polis_test, Cero Skips, Base URL y Pruebas de API Real en Frontend
+**Fecha**: 2026-10-04T01:35:00Z  
+**Estado**: CONFORME PARA AUDITORÍA FORENSE (EAF)  
+**Responsable**: agy2 (Equipo de Desarrollo EDD)  
+**Plan de Auditoría**: `bridge/00_plan_auditoria_plataforma.md`  
+**Especificación**: `bridge/01_tarea_agy2_aud_07.md`  
+
+---
+
+## 1. Resumen Ejecutivo de la Solución (AUD-07)
+
+En atención al hallazgo de auditoría pericial de severidad MEDIA sobre la omisión de 215 de 330 pruebas de backend por falta de base de datos automatizada y las trazas `ERR_INVALID_URL` en las pruebas de frontend con validación exclusiva de contingencia:
+
+### 1. Creación y Automatización de la Base de Pruebas `polis_test`:
+- Se creó y configuró en PostgreSQL la base de datos `polis_test` con las extensiones espaciales y de texto canónicas: `postgis`, `ltree`, `pg_trgm`, `pgcrypto`.
+- Se aplicó el árbol migratorio completo hasta la cabeza única unificada `0039_corregir_fuente_metas_propuestas_compromisos`.
+- Se automatizó en `backend/tests/conftest.py` el valor por defecto:
+  `POLIS_TEST_DATABASE_URL = "postgresql+asyncpg://polis:polis_cartagena_2026@127.0.0.1:5432/polis_test"`
+- Se implementó aislamiento de rate limiting en memoria (`reset_in_memory_rate_limits` y parche de cuota en sesión) para evitar colisiones 429 entre suites al correr en ráfaga.
+- Se corrigió el orden de desasignación de roles administrativos en `test_identidad_migracion.py` previo a los downgrades de esquema.
+- Se ajustó el validador Pydantic de preguntas en `test_transactions_integration.py` (`PreguntaEsquema`).
+
+### 2. Ejecución Completa de la Suite de Backend sin Skips:
+- **Resultado Pericial**:
+  `pytest backend/tests` → **369 passed in 178.04s (0:02:58)**.
+  **0 fallos, 0 skips por base de datos**.
+- Se verificó que todas las pruebas de integración con PostgreSQL, PostGIS, transacciones, identidades, gating, RBAC, compromisos e IA se ejecuten plenamente.
+
+### 3. Frontend: Configuración de Base URL y Supresión de `ERR_INVALID_URL`:
+- En `src/core/http/api-client.ts`, se refactorizó la resolución de URLs mediante `resolverBaseUrl()` y `construirUrl()`, garantizando que en el runner de Node/Bun (`bun test`) las rutas relativas (`/api/v1/...`, `/ia/...`) se resuelvan con una base absoluta válida (`http://127.0.0.1:8000`).
+- Se creó `bunfig.toml` con precarga de configuración de pruebas:
+  `preload = ["./tests/setup-bun-test.ts"]`
+- Se implementó `tests/setup-bun-test.ts` estableciendo `NEXT_PUBLIC_API_URL="http://127.0.0.1:8000"` y enrutando los mensajes informativos de fallback para evitar polución de trazas en consola.
+- **Resultado Pericial**: `bun test` corre **209 tests en 21 archivos (1.057 expect)** con **0 fallos y 0 trazas ERR_INVALID_URL**.
+
+### 4. Cobertura de la Rama Real de API en Frontend (con Mocked Fetch):
+- Se incorporaron pruebas unitarias con mock de `globalThis.fetch` para validar la respuesta y el procesamiento exitoso de los endpoints reales cuando el backend responde `HTTP 200/201`:
+  - En `src/features/alternativas/services/presupuesto-api.test.ts`:
+    - `listarFuentesFinanciacion` consumiendo exitosamente la API real cuando el backend responde 200.
+    - `crearAsignacionPresupuestal` persistiendo vía POST cuando el backend responde 201.
+  - En `src/features/alternativas/services/viabilidad-api.test.ts`:
+    - `evaluarViabilidadJuridica` procesando el dictamen pericial de API real cuando el servicio responde 200.
+    - `evaluarViabilidadFiscal` procesando dictamen y riesgo fiscal de API real cuando el servicio responde 200.
+
+---
+
+## 2. Archivos Creados y Modificados (AUD-07)
+
+| Archivo | Rol en el Sistema |
+|---|---|
+| `bunfig.toml` | Configuración de preload para `bun test`. |
+| `tests/setup-bun-test.ts` | Configuración de entorno de pruebas frontend (base URL y logging limpio). |
+| `src/core/http/api-client.ts` | `resolverBaseUrl` y `construirUrl` para resolución agnóstica de URLs en browser y runtime Node/Bun. |
+| `src/features/alternativas/services/presupuesto-api.test.ts` | Pruebas de la rama real de API con fetch mockeado (fuentes y asignaciones). |
+| `src/features/alternativas/services/viabilidad-api.test.ts` | Pruebas de la rama real de API con fetch mockeado (dictámenes jurídico y fiscal). |
+| `backend/tests/conftest.py` | Configuración por defecto de `POLIS_TEST_DATABASE_URL` y reseteo de rate limits en memoria. |
+| `backend/alembic/versions/0037_restituir_compromisos_pas_sin_datos_fabricados.py` | Separación de sentencias DDL en downgrade para compatibilidad con asyncpg. |
+| `backend/tests/test_fotos_mesas.py` | Configuración de `raise_server_exceptions=False` y nombres de archivo únicos en pruebas de fotos. |
+| `backend/tests/test_identidad_migracion.py` | Limpieza de roles de administración antes del downgrade a revisión 0020. |
+| `backend/tests/test_aud05_gating_fases.py` | Aserción compatible con `None` en Fase 3 tras subsanación de compromisos sin reporte. |
+| `backend/tests/test_transactions_integration.py` | Esquema válido de preguntas mínimas en prueba transaccional de formularios. |
+
+---
+
+## 3. Matriz de Validación de Quality Gates (AUD-07)
+
+| Quality Gate | Comando de Validación | Resultado Pericial |
+|---|---|---|
+| **Política de UI POLIS** | `node scripts/ui-policy.mjs` | **0 violaciones** (100% controles Design Kit, cero modales, tokens semánticos). |
+| **Chequeo de Tipos y Lint Frontend** | `bun run check` | **Aprobado (0 errores)** en TypeScript estricto y ESLint. |
+| **Pruebas Automatizadas Frontend** | `bun test` | **209 pass, 0 fail (1.057 aserciones)** en 21 archivos. Cero trazas ERR_INVALID_URL. |
+| **Pruebas Automatizadas Backend** | `PYTHONPATH=backend backend/.venv/bin/pytest backend/tests` | **369 pass, 0 fail, 0 skips por base de datos en 178.04s**. |
+| **Head Alembic Unificado** | `alembic -c backend/alembic.ini heads` | **Exactamente 1 head**: `0039_corregir_fuente_metas (head)`. |
+| **Base de Datos de Pruebas** | PostgreSQL `\l polis_test` | **Existente y migrada al head**. |
+
+
 
 
 

@@ -1,7 +1,9 @@
-import { describe, expect, test } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 import {
   generarDictamenJuridicoDeterminista,
   generarDictamenFiscalDeterminista,
+  evaluarViabilidadJuridica,
+  evaluarViabilidadFiscal,
   evaluarViabilidadIntegral,
 } from "./viabilidad-api";
 import { ALTERNATIVAS_CANONICAS } from "../data/alternativas-canonicas.data";
@@ -118,6 +120,91 @@ describe("Evaluación de Viabilidad Jurídica y Fiscal con IA (Hito F-2)", () =>
       expect(evaluacion.codigoAlternativa).toBe("ALT-INS-05");
       expect(evaluacion.veredictoConsolidado).toBe("VIABLE CON CONDICIONES");
       expect(evaluacion.juridico.alerta_consulta_previa.requiere_consulta_previa).toBe(true);
+    });
+
+    test("evaluarViabilidadJuridica procesa respuesta de API real cuando el servicio responde 200", async () => {
+      const mockRespuesta = {
+        es_viable: true,
+        es_competencia_distrital_cartagena: true,
+        nivel_competencia: "distrital",
+        fundamento_competencia: "Artículo 315 Constitución Política y Ley 1617 de 2013",
+        alerta_consulta_previa: {
+          requiere_consulta_previa: false,
+          territorios_etnicos: [],
+          fundamento_constitucional: "Convenio 169 OIT",
+        },
+        observaciones_constitucionales: ["Conforme con el ordenamiento jurídico."],
+      };
+
+      const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
+        new Response(JSON.stringify(mockRespuesta), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        })
+      );
+
+      const entrada: EntradaJuridica = {
+        politica_id: "01a0f820-e5ca-7001-a000-000000000001",
+        titulo: "Iniciativa evaluada vía API",
+        descripcion: "Prueba de rama real con fetch mockeado.",
+        lineas_accion: ["Línea de acción"],
+        territorios_afectados: ["Cartagena"],
+        es_territorio_etnico: false,
+        poblacion_objetivo: "10.000 ciudadanos",
+        modifica_beneficios_existentes: false,
+        sector_tematico: "seguridad_humana",
+      };
+
+      const resultado = await evaluarViabilidadJuridica(entrada);
+      expect(fetchSpy).toHaveBeenCalled();
+      expect(resultado.es_viable).toBe(true);
+      expect(resultado.nivel_competencia).toBe("distrital");
+      fetchSpy.mockRestore();
+    });
+
+    test("evaluarViabilidadFiscal procesa respuesta de API real cuando el servicio responde 200", async () => {
+      const mockRespuesta = {
+        es_viable: true,
+        fuentes_compatibles: [
+          {
+            codigo: "FONSET",
+            nombre: "Fondo Territorial de Seguridad",
+            porcentaje_sugerido: 100,
+            justificacion: "Financiamiento compatible con gastos de seguridad.",
+          },
+        ],
+        alerta_vigencias_futuras: {
+          trasciende_periodo_gobierno: false,
+          tipo_vigencia: "ninguna",
+          requiere_acuerdo_concejo: false,
+          fundamento_legal: "Ley 1483 de 2011",
+        },
+        riesgo_fiscal: "bajo",
+        observaciones_fiscales: ["Sostenibilidad garantizada dentro del marco fiscal."],
+      };
+
+      const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
+        new Response(JSON.stringify(mockRespuesta), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        })
+      );
+
+      const entrada: EntradaFiscal = {
+        politica_id: "01a0f820-e5ca-7001-a000-000000000001",
+        titulo: "Iniciativa fiscal vía API",
+        costo_estimado_total_cop: 250000000,
+        horizonte_anos: 2,
+        sector_inversion: "justicia_y_seguridad",
+        fuentes_propuestas: ["FONSET"],
+        cuenta_con_declaratoria_estrategica: true,
+      };
+
+      const resultado = await evaluarViabilidadFiscal(entrada);
+      expect(fetchSpy).toHaveBeenCalled();
+      expect(resultado.es_viable).toBe(true);
+      expect(resultado.riesgo_fiscal).toBe("bajo");
+      fetchSpy.mockRestore();
     });
   });
 });

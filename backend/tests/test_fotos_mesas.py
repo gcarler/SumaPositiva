@@ -145,7 +145,7 @@ async def test_fallo_tras_insertar_evidencia_revierte_y_compensa_archivo(
         raise ValueError("fallo simulado después del flush de la asociación")
 
     monkeypatch.setattr(EvidenciaRepository, "guardar_foto_mesa", fallar_despues_de_flush)
-    with TestClient(app) as client:
+    with TestClient(app, raise_server_exceptions=False) as client:
         codigo = uuid.uuid4().hex[:10]
         mesa_response = client.post(
             "/api/v1/mesas",
@@ -159,10 +159,11 @@ async def test_fallo_tras_insertar_evidencia_revierte_y_compensa_archivo(
         )
         assert mesa_response.status_code == 201, mesa_response.text
         mesa_id = mesa_response.json()["id"]
+        nombre_archivo = f"mesa-{codigo}.png"
         subida = client.post(
             f"/api/v1/mesas/{mesa_id}/fotos",
             headers=cabeceras_gestion,
-            files={"archivo": ("mesa.png", imagen_png(), "image/png")},
+            files={"archivo": (nombre_archivo, imagen_png(), "image/png")},
             data={"autorizacion_imagen": "true"},
         )
         assert subida.status_code == 500
@@ -174,7 +175,8 @@ async def test_fallo_tras_insertar_evidencia_revierte_y_compensa_archivo(
     try:
         async with engine.connect() as connection:
             assert await connection.scalar(
-                text("SELECT count(*) FROM participacion_ciudadana.evidencias_multimedia WHERE nombre_archivo_original = 'mesa.png'")
+                text("SELECT count(*) FROM participacion_ciudadana.evidencias_multimedia WHERE nombre_archivo_original = :nombre"),
+                {"nombre": nombre_archivo},
             ) == 0
             assert await connection.scalar(
                 text("SELECT count(*) FROM mesas_trabajo.fotos_mesa AS foto JOIN mesas_trabajo.mesas AS mesa ON mesa.id = foto.mesa_id WHERE mesa.id = :mesa_id"),

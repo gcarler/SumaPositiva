@@ -4,10 +4,14 @@ import asyncio
 import os
 from pathlib import Path
 
-# Configuración uniforme de entorno de pruebas para aislamiento forense (AUD-06 / OBS-09)
+# Configuración uniforme de entorno de pruebas para aislamiento forense (AUD-06 / OBS-09 / AUD-07)
 os.environ.setdefault("POLIS_ENVIRONMENT", "test")
 os.environ.setdefault("POLIS_JWT_SECRET_KEY", "polis_secreto_super_seguro_cartagena_2026")
 os.environ.setdefault("POLIS_IP_SALT", "polis_salt_habeas_data_2026")
+os.environ.setdefault(
+    "POLIS_TEST_DATABASE_URL",
+    "postgresql+asyncpg://polis:polis_cartagena_2026@127.0.0.1:5432/polis_test",
+)
 
 import pytest
 from alembic.config import Config
@@ -32,9 +36,26 @@ def prepared_test_database():
         # La suite de límites usa valores explícitos bajos; las regresiones no comparten cuota.
         patch.setenv("POLIS_IDENTIDAD_LIMITE_IP", "10000")
         patch.setenv("POLIS_IDENTIDAD_LIMITE_CUENTA", "1000")
+        patch.setenv("POLIS_SESION_ANONIMA_LIMITE_IP", "10000")
         config = Config(str(Path(__file__).resolve().parents[1] / "alembic.ini"))
         command.upgrade(config, "head")
         yield url
+
+
+@pytest.fixture(autouse=True)
+def reset_in_memory_rate_limits():
+    """Limpia contadores en memoria entre tests para evitar 429 cruzados en la suite."""
+    try:
+        from app.modules.sesion.router import _limite_ip_memoria
+        _limite_ip_memoria.clear()
+    except Exception:
+        pass
+    yield
+    try:
+        from app.modules.sesion.router import _limite_ip_memoria
+        _limite_ip_memoria.clear()
+    except Exception:
+        pass
 
 
 @pytest.fixture

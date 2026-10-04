@@ -1,4 +1,4 @@
-import { describe, expect, test } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 import {
   normalizarFuente,
   normalizarAsignacion,
@@ -121,6 +121,68 @@ describe("Costeo Presupuestal y Asignación de Fuentes MGA (Hito F-3)", () => {
       expect(nueva.monto_estimado).toBe(750000000);
       expect(nueva.codigo_bpin).toBe("BPIN-2026-CTG-TEST");
       expect(nueva.es_vigencia_futura).toBe(false);
+    });
+
+    test("listarFuentesFinanciacion consume exitosamente la API real cuando el backend responde 200", async () => {
+      const mockFuentes = [
+        {
+          id: "f-01",
+          codigo: "FONSET",
+          nombre: "Fondo Territorial de Seguridad",
+          sigla: "FONSET",
+          tipo: "fondo_especial",
+          base_legal: "Ley 418 de 1997",
+          es_especifica_seguridad: true,
+          activa: true,
+        },
+      ];
+
+      const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
+        new Response(JSON.stringify(mockFuentes), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        })
+      );
+
+      const resultado = await listarFuentesFinanciacion();
+      expect(fetchSpy).toHaveBeenCalled();
+      expect(resultado.length).toBe(1);
+      expect(resultado[0].codigo).toBe("FONSET");
+      fetchSpy.mockRestore();
+    });
+
+    test("crearAsignacionPresupuestal persiste vía POST cuando el backend responde 201", async () => {
+      const mockRespuesta = {
+        id: "asig-123",
+        fuente_financiacion_id: "01a0f7ce-31fe-791b-8076-412a21d6544f",
+        monto_estimado: 500000000,
+        anio_vigencia: 2026,
+        es_vigencia_futura: false,
+        codigo_bpin: "BPIN-2026-REAL",
+        justificacion: "Asignación real confirmada",
+        metadatos: {},
+      };
+
+      const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
+        new Response(JSON.stringify(mockRespuesta), {
+          status: 201,
+          headers: { "Content-Type": "application/json" },
+        })
+      );
+
+      const creada = await crearAsignacionPresupuestal({
+        fuente_financiacion_id: "01a0f7ce-31fe-791b-8076-412a21d6544f",
+        monto_estimado: 500000000,
+        anio_vigencia: 2026,
+        es_vigencia_futura: false,
+        codigo_bpin: "BPIN-2026-REAL",
+        justificacion: "Asignación real confirmada",
+      });
+
+      expect(fetchSpy).toHaveBeenCalled();
+      expect(creada.id).toBe("asig-123");
+      expect(creada.codigo_bpin).toBe("BPIN-2026-REAL");
+      fetchSpy.mockRestore();
     });
   });
 });

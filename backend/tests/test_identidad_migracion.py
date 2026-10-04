@@ -16,6 +16,20 @@ pytestmark = pytest.mark.integration
 def test_upgrade_conserva_usuario_previo_y_downgrade_protege_admin(database_url, monkeypatch):
     monkeypatch.setenv("POLIS_DATABASE_URL", database_url)
     config = Config(str(Path(__file__).resolve().parents[1] / "alembic.ini"))
+
+    async def limpiar_admins():
+        engine = create_async_engine(database_url)
+        try:
+            async with engine.begin() as connection:
+                await connection.execute(
+                    text("""UPDATE autenticacion.usuarios SET rol_id=(
+                    SELECT id FROM autenticacion.roles WHERE codigo='ciudadano')
+                    WHERE rol_id=(SELECT id FROM autenticacion.roles WHERE codigo='administrador_identidades')""")
+                )
+        finally:
+            await engine.dispose()
+
+    asyncio.run(limpiar_admins())
     command.downgrade(config, "0020_formularios_y_consultas")
     usuario_id = uuid.uuid4()
     correo = f"Legado-{uuid.uuid4().hex}@Example.org"
