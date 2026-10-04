@@ -38,7 +38,7 @@ async function ejecutar() {
     setBearerToken(sesion.token_acceso);
 
     console.log("2. Consultando líneas estratégicas disponibles...");
-    const lineas = await apiFetch<any[]>("/politicas/lineas");
+    const lineas = await apiFetch<Array<{ id: string }>>("/politicas/lineas");
     if (lineas.length === 0) {
       console.error("❌ No hay líneas estratégicas creadas en la base de datos.");
       return;
@@ -60,7 +60,7 @@ async function ejecutar() {
 
     console.log("4. Listando aportes para la línea estratégica...");
     const paginacion = await listarAportes({ linea_id: lineaId });
-    const encontrado = paginacion.elementos.find((a: any) => a.id === nuevoAporte.id);
+    const encontrado = paginacion.elementos.find((a) => a.id === nuevoAporte.id);
     if (encontrado) {
       console.log("✅ El aporte persiste en la base de datos y se recupera correctamente.");
     } else {
@@ -73,7 +73,7 @@ async function ejecutar() {
     console.log("✅ Aporte respaldado. Apoyos actuales:", respaldo.apoyos_contador);
 
     console.log("🎉 Prueba E2E completada exitosamente.");
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("❌ Error durante la prueba E2E:");
     console.error(error);
     process.exit(1);

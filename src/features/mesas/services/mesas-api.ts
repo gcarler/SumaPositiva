@@ -9,7 +9,71 @@ function normalizarEstado(estado?: string): EstadoMesa {
   return "programada";
 }
 
-function normalizarSubMesa(s: any): SubMesa {
+export interface SubMesaBackendResponse {
+  id: string;
+  nombre: string;
+  tema?: string;
+  participantes?: number | null;
+  total_asistentes?: number | null;
+  arbolProblemas?: SubMesa["arbolProblemas"];
+  arbolSoluciones?: SubMesa["arbolSoluciones"];
+  version_seq?: number;
+  etag?: string;
+  metadatos?: {
+    tema?: string;
+    [key: string]: unknown;
+  };
+}
+
+export interface MesaBackendResponse {
+  id: string;
+  nombre: string;
+  fecha?: string;
+  lugar_nombre?: string;
+  lugar?: string;
+  entidad?: string;
+  facilitador?: string;
+  total_asistentes?: number | null;
+  totalAsistentes?: number | null;
+  aforo_maximo?: number;
+  plenaria?: { acuerdos?: string };
+  submesas?: SubMesaBackendResponse[];
+  estado?: string;
+  codigo_oficial?: string;
+  shortcode_ciudadano?: string;
+  tipo_mesa?: string;
+  horario?: string;
+  modalidad?: string;
+  sha256_acta?: string;
+  metadatos?: {
+    lugar?: string;
+    entidad?: string;
+    facilitador?: string;
+    acuerdos?: string;
+    informe?: string;
+    totalAsistentes?: number;
+    [key: string]: unknown;
+  };
+}
+
+export interface ActaBackendResponse {
+  numero_acta?: string;
+  resumen_deliberacion?: string;
+  acuerdos?: Array<{ detalle: string }>;
+  [key: string]: unknown;
+}
+
+export interface InstrumentoBackendResponse {
+  id: string;
+  mesa_id?: string;
+  tipo?: string;
+  arbol?: Record<string, unknown>;
+  nodos?: Record<string, unknown>;
+  etag?: string;
+  [key: string]: unknown;
+}
+
+function normalizarSubMesa(s: SubMesaBackendResponse): SubMesa {
   return {
     id: s.id,
     nombre: s.nombre,
@@ -30,7 +94,7 @@ function normalizarSubMesa(s: any): SubMesa {
   };
 }
 
-export function normalizarMesaBackend(b: any): MesaDeTrabajo {
+export function normalizarMesaBackend(b: MesaBackendResponse): MesaDeTrabajo {
   const submesas = Array.isArray(b.submesas) ? b.submesas.map(normalizarSubMesa) : [];
   return {
     id: b.id,
@@ -40,7 +104,7 @@ export function normalizarMesaBackend(b: any): MesaDeTrabajo {
     entidad: b.metadatos?.entidad || b.entidad || (b.tipo_mesa ? `Mesa ${b.tipo_mesa}` : "Distrito de Cartagena"),
     facilitador: b.metadatos?.facilitador || b.facilitador || "Facilitador Institucional",
     totalAsistentes: b.total_asistentes ?? b.totalAsistentes ?? b.aforo_maximo ?? 0,
-    plenaria: b.plenaria || { acuerdos: b.metadatos?.acuerdos || "" },
+    plenaria: { acuerdos: b.plenaria?.acuerdos || (b.metadatos?.acuerdos as string | undefined) || "" },
     submesas,
     estado: normalizarEstado(b.estado),
     codigoOficial: b.codigo_oficial,
@@ -57,7 +121,7 @@ export function normalizarMesaBackend(b: any): MesaDeTrabajo {
  */
 export async function listarMesas(): Promise<MesaDeTrabajo[]> {
   try {
-    const raw = await apiFetch<any[]>("/mesas");
+    const raw = await apiFetch<MesaBackendResponse[]>("/mesas");
     if (Array.isArray(raw) && raw.length > 0) {
       return raw.map(normalizarMesaBackend);
     }
@@ -72,18 +136,18 @@ export async function listarMesas(): Promise<MesaDeTrabajo[]> {
  */
 export async function obtenerMesa(mesaId: string): Promise<MesaDeTrabajo> {
   try {
-    const raw = await apiFetch<any>(`/mesas/${mesaId}`);
+    const raw = await apiFetch<MesaBackendResponse>(`/mesas/${mesaId}`);
     let submesas: SubMesa[] = [];
     try {
-      const subsRaw = await apiFetch<any[]>(`/mesas/${mesaId}/submesas`);
+      const subsRaw = await apiFetch<SubMesaBackendResponse[]>(`/mesas/${mesaId}/submesas`);
       if (Array.isArray(subsRaw)) {
         submesas = subsRaw.map(normalizarSubMesa);
       }
     } catch {}
     let acuerdos = "";
     try {
-      const acta = await apiFetch<any>(`/mesas/${mesaId}/acta`);
-      acuerdos = (acta.acuerdos || []).map((a: any) => a.detalle).join("\n") || acta.resumen_deliberacion || "";
+      const acta = await apiFetch<ActaBackendResponse>(`/mesas/${mesaId}/acta`);
+      acuerdos = (acta.acuerdos || []).map((a: { detalle: string }) => a.detalle).join("\n") || acta.resumen_deliberacion || "";
     } catch {}
     return normalizarMesaBackend({
       ...raw,
@@ -128,7 +192,7 @@ export async function crearMesaRemota(datos: {
       totalAsistentes: Number(datos.totalAsistentes) || 0,
     },
   };
-  const resp = await apiFetch<any>("/mesas", {
+  const resp = await apiFetch<MesaBackendResponse>("/mesas", {
     method: "POST",
     body,
   });
@@ -146,7 +210,7 @@ export async function actualizarAcuerdosPlenaria(
   useMesasStore.getState().setAcuerdosPlenaria(mesaId, acuerdos);
 
   try {
-    const resp = await apiFetch<any>(`/mesas/${mesaId}/acta`, {
+    await apiFetch<ActaBackendResponse>(`/mesas/${mesaId}/acta`, {
       method: "POST",
       body: {
         numero_acta: `ACTA-${mesaId.slice(0, 8)}`,
@@ -175,7 +239,7 @@ export async function actualizarInformeMesa(
   useMesasStore.getState().setInformeMesa(mesaId, informe);
 
   try {
-    const resp = await apiFetch<any>(`/mesas/${mesaId}`, {
+    const resp = await apiFetch<MesaBackendResponse>(`/mesas/${mesaId}`, {
       method: "PATCH",
       body: { metadatos: { informe } },
     });
@@ -252,8 +316,13 @@ export async function actualizarSubMesa(
       body: subMesa,
       headers,
     });
-  } catch (err: any) {
-    if (err.status === 409 || err.status === 412) {
+  } catch (err: unknown) {
+    if (
+      err &&
+      typeof err === "object" &&
+      "status" in err &&
+      ((err as { status: number }).status === 409 || (err as { status: number }).status === 412)
+    ) {
       throw err;
     }
     return subMesa;
@@ -263,39 +332,50 @@ export async function actualizarSubMesa(
 /**
  * Endpoints de instrumentos (papelografo)
  */
-export async function listarInstrumentos(mesaId: string) {
-  return apiFetch<any[]>(`/instrumentos?mesa_id=${mesaId}`);
+export async function listarInstrumentos(mesaId: string): Promise<InstrumentoBackendResponse[]> {
+  return apiFetch<InstrumentoBackendResponse[]>(`/instrumentos?mesa_id=${mesaId}`);
 }
 
-export async function actualizarArbol(instrumentoId: string, arbol: any) {
-  return apiFetch<any>(`/instrumentos/${instrumentoId}/arbol`, {
+export async function actualizarArbol(
+  instrumentoId: string,
+  arbol: Record<string, unknown>
+): Promise<InstrumentoBackendResponse> {
+  return apiFetch<InstrumentoBackendResponse>(`/instrumentos/${instrumentoId}/arbol`, {
     method: "PUT",
     body: arbol,
   });
 }
 
-export async function actualizarNodos(instrumentoId: string, nodos: any) {
+export async function actualizarNodos(
+  instrumentoId: string,
+  nodos: { etag?: string; [key: string]: unknown }
+): Promise<unknown> {
   const headers: Record<string, string> = {};
   if (nodos.etag) {
     headers["If-Match"] = nodos.etag;
   }
 
   try {
-    return await apiFetch<any>(`/instrumentos/${instrumentoId}/nodos`, {
+    return await apiFetch<unknown>(`/instrumentos/${instrumentoId}/nodos`, {
       method: "PUT",
       body: nodos,
       headers,
     });
-  } catch (err: any) {
-    if (err.status === 409 || err.status === 412) {
+  } catch (err: unknown) {
+    if (
+      err &&
+      typeof err === "object" &&
+      "status" in err &&
+      ((err as { status: number }).status === 409 || (err as { status: number }).status === 412)
+    ) {
       throw err;
     }
     return nodos;
   }
 }
 
-export async function convertirAObjetivos(instrumentoId: string) {
-  return apiFetch<any>(`/instrumentos/${instrumentoId}/convertir-a-objetivos`, {
+export async function convertirAObjetivos(instrumentoId: string): Promise<InstrumentoBackendResponse> {
+  return apiFetch<InstrumentoBackendResponse>(`/instrumentos/${instrumentoId}/convertir-a-objetivos`, {
     method: "POST",
   });
 }

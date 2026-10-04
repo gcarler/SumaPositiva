@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/shared/ui/button";
-import type { FeatureCollection, TerritorioFeature } from "../models/geovisor";
+import type { FeatureCollection, TerritorioFeature, GeoJSONPosition } from "../models/geovisor";
 
 interface GeovisorMapaProps {
   geoJson: FeatureCollection;
@@ -30,11 +30,12 @@ export function GeovisorMapa({ geoJson, onTerritorioClick, capasActivas }: Geovi
 
   const getPath = (feature: TerritorioFeature) => {
     if (feature.geometry.type === "Polygon") {
-      const coords = feature.geometry.coordinates[0];
+      const polygonCoords = feature.geometry.coordinates as GeoJSONPosition[][];
+      const coords = polygonCoords[0];
       if (!coords) return "";
       return (
         coords
-          .map((coord: any, i: number) => {
+          .map((coord: GeoJSONPosition, i: number) => {
             const [x, y] = project(coord[0], coord[1]);
             return `${i === 0 ? "M" : "L"} ${x} ${y}`;
           })
@@ -42,13 +43,14 @@ export function GeovisorMapa({ geoJson, onTerritorioClick, capasActivas }: Geovi
       );
     }
     if (feature.geometry.type === "MultiPolygon") {
-      return feature.geometry.coordinates
-        .map((poly: any) => {
+      const multiCoords = feature.geometry.coordinates as GeoJSONPosition[][][];
+      return multiCoords
+        .map((poly: GeoJSONPosition[][]) => {
           const coords = poly[0];
           if (!coords) return "";
           return (
             coords
-              .map((coord: any, i: number) => {
+              .map((coord: GeoJSONPosition, i: number) => {
                 const [x, y] = project(coord[0], coord[1]);
                 return `${i === 0 ? "M" : "L"} ${x} ${y}`;
               })

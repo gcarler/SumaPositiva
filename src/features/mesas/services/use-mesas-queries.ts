@@ -116,8 +116,13 @@ export function useActualizarSubMesa() {
     mutationFn: async ({ mesaId, subMesaId, subMesa }: { mesaId: string; subMesaId: string; subMesa: SubMesa }) => {
       try {
         return await actualizarSubMesa(mesaId, subMesaId, subMesa);
-      } catch (err: any) {
-        if (err.status === 409 || err.status === 412) {
+      } catch (err: unknown) {
+        if (
+          err &&
+          typeof err === "object" &&
+          "status" in err &&
+          ((err as { status: number }).status === 409 || (err as { status: number }).status === 412)
+        ) {
           toast.error("Conflicto de edición", {
             description: "El contenido fue modificado en otra sesión. Por favor recarga para sincronizar los cambios.",
             duration: 8000,

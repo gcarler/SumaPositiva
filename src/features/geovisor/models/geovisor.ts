@@ -1,8 +1,15 @@
 export type TipoTerritorio = "LOCALIDAD" | "UCOMUNERA" | "CORREGIMIENTO" | "ISLA";
 
+export type GeoJSONPosition = [number, number] | [number, number, number];
+export type GeoJSONCoordinates =
+  | GeoJSONPosition
+  | GeoJSONPosition[]
+  | GeoJSONPosition[][]
+  | GeoJSONPosition[][][];
+
 export interface GeoJSONGeometry {
-  type: string;
-  coordinates: any[];
+  type: "Point" | "MultiPoint" | "LineString" | "MultiLineString" | "Polygon" | "MultiPolygon" | string;
+  coordinates: GeoJSONCoordinates;
 }
 
 export interface IndicadorSeguridad {
