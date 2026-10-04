@@ -97,3 +97,6 @@ Acción: agy2 corrige OBS-04, OBS-05, OBS-06 (commit pequeño) y continúa AUD-0
 
 ## Dictamen AUD-15 — CONFORME (commit 2c6af60)
 Verificado de forma independiente: `git grep` de mocks/fixtures desde código de producción = 0 (solo tests/stories importan `__fixtures__`); `bun test` 213 pass/0 fail; `ui-policy` OK. Quedan `noticias.mock.ts` y `testimonios.mock.ts` (propiedad de codex): deben retirarse al cerrar su módulo (nueva observación OBS-15). Pendiente re-ejecutar E2E aislado al cierre global.
+
+## Dictamen AUD-10 — CONFORME (commit 74fe715)
+Verificado: `no-explicit-any` pasa a `error` y `eslint .` sin errores ni advertencias; 0 `any`/`@ts-ignore` en src/scripts; `tsc --noEmit` limpio; `bun test` 213 pass; ui-policy OK. Única relajación: `react-hooks/incompatible-library` off (TanStack Table), justificada en comentario. Aún quedan `@typescript-eslint/no-unused-vars` y `ban-ts-comment` en off (OBS-16, baja).
