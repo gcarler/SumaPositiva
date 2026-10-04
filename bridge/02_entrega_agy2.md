@@ -2884,3 +2884,208 @@ Para resolver de manera definitiva la multiplicidad y optimizar la experiencia c
 - **Optimización de Animación**: Limitar el retraso de Framer Motion con `Math.min(idx * 0.03, 0.2)` para evitar que las tarjetas tarden segundos en aparecer.
 
 ---
+
+---
+
+### Entrega de Tarea AUD-19: Auditoría BD ↔ Backend ↔ Frontend
+
+**Fecha**: 2026-10-04  
+**Responsable**: agy2 (EDD - Equipo de Desarrollo)  
+**Supervisor**: EAF  
+**Clasificación**: Auditoría pericial de coherencia fullstack (solo lectura)  
+**Objetivo**: Realizar una auditoría técnica forense e independiente de la cadena de datos completa de POLIS: `PostgreSQL (bd_csh)` ↔ `FastAPI (backend/app/modules/*)` ↔ `Frontend (src/features/*)`.
+
+---
+
+#### 1. Resumen Ejecutivo y Dictamen Global
+
+Tras la auditoría forense integral de los 34 modelos relacionales, 166 operaciones de endpoints FastAPI y más de 90 invocaciones cliente `apiFetch` en el frontend, se determina que la arquitectura troncal de POLIS presenta una estructura de esquemas y modelos sólida y bien tipada, pero arrastra **tres brechas estructurales críticas**, **cuatro inconsistencias de severidad alta** y varios patrones de **fallback silencioso** que enmascaran fallas de persistencia ante los usuarios y auditores.
+
+##### Hallazgos Principales por Severidad:
+1. **CRÍTICO — Desfase de Migraciones Alembic en Producción (`bd_csh`)**: La base de datos de producción `bd_csh` permanece en la revisión `0040_modulo_actores_estrategicos`, mientras que el repositorio se encuentra en `0043_modulo_banco_alternativas`. Las migraciones `0041`, `0042` y `0043` **no han sido aplicadas**. En consecuencia, tres endpoints troncales (`GET /api/v1/mesas/agendas`, `GET /api/v1/fuentes` y `GET /api/v1/alternativas`) devuelven error HTTP 500 (`UndefinedTableError`) al ser consultados contra `bd_csh`.
+2. **CRÍTICO — Contaminación Masiva de Tablas Troncales por Pruebas Automatizadas en `bd_csh`**: Debido a ejecuciones de `pytest` anteriores al aislamiento de `polis_test`, `bd_csh` alberga cientos de registros sintéticos: **411 de los 413 usuarios** son fixtures (`login_test_*`, `test_*`), **220 de las 227 propuestas ciudadanas** son repeticiones de prueba, las **128 entidades de `motor_instrumentos.instrumentos`** son árboles de prueba con sufijos hexadecimales aleatorios, y **las 14 asignaciones presupuestales** son 7 pares idénticos duplicados.
+3. **CRÍTICO — Rutas de Escritura Inexistentes en Backend con Simulación Frontend de Éxito**: El cliente frontend invoca rutas de mutación que no existen en FastAPI: `PUT /api/v1/mesas/{id}/submesas/{id}` (FastAPI solo expone POST y GET), `PUT /api/v1/instrumentos/{id}/arbol` (FastAPI solo expone GET) y `PUT /api/v1/instrumentos/{id}/nodos` (FastAPI solo expone mutación unitaria `PUT .../nodos/{nodo_id}`). Peor aún: el frontend intercepta la excepción HTTP 404/405 y **retorna silenciosamente el objeto local**, haciendo creer al usuario que los cambios se guardaron en la base de datos.
+4. **ALTO — Enmascaramiento de Fallas Mediante Fallbacks Silenciosos**: Múltiples servicios (`agenda-api.ts`, `fuentes-api.ts`, `indicadores-api.ts`, `mga-api.ts`, `presupuesto-api.ts`, `participacion-api.ts`) capturan errores de red o caídas de PostgreSQL devolviendo colecciones estáticas en memoria sin levantar un banner de contingencia visible al usuario. Esto oculta que las tablas de agendas o fuentes no existen en `bd_csh`.
+5. **ALTO — Dualidad y Conflicto de Fuentes de Verdad en Mesas de Trabajo**: El portal público (`/`, `MesasView`) consulta `mesas_trabajo.mesas` (33 mesas tras saneamiento de INV-MESAS), mientras que el Geovisor (`/geovisor`) y la Planilla de Asistencia (`/asistencia/[mesaId]`) consumen la agenda deliberativa de 36 mesas (`mesas_trabajo.agendas` / `AGENDA_MESAS`). No existe correspondencia de claves primarias ni sincronización de estados entre ambas fuentes.
+6. **ALTO — Llamada a Ruta Inexistente `GET /api/v1/politicas`**: El hook `use-politicas-queries.ts` invoca `listarPoliticas()` en `politicas-api.ts`, la cual llama a `/politicas`. Dicha ruta no existe en el backend (FastAPI solo dispone de `/politicas/dimensiones`, `/fases` y `/lineas`), generando un 404 silencioso atrapado por `try/catch` que devuelve un arreglo vacío.
+7. **ALTO — Desviación de Esquema por Columnas Legadas en `mesas_trabajo.mesas`**: Existen 14 columnas en `bd_csh` heredadas del script inicial `04_mesas_trabajo_360.sql` que no están mapeadas en el modelo SQLAlchemy `Mesa` (`aforo_presencial`, `metadata`, `dimension_principal_id`, `total_asistentes_presenciales`, etc.), conviviendo como columnas redundantes sin mantenimiento.
+
+---
+
+#### 2. Matriz Fullstack de Coherencia por Módulo (Base de Datos ↔ Backend ↔ Frontend)
+
+Evaluación en vivo ejecutada contra `bd_csh` (PostgreSQL 127.0.0.1:5432) y FastAPI (entorno development montado con `POLIS_DATABASE_URL` apuntando a `bd_csh`):
+
+| Módulo | Tabla(s) en `bd_csh` | Filas BD | Endpoint FastAPI | Cliente Frontend (`src/features/*`) | Estado | Evidencia Técnica Verificable |
+|:---|:---|:---:|:---|:---|:---:|:---|
+| **Mesas de Trabajo** | `mesas_trabajo.mesas` | 33 | `GET /api/v1/mesas` | `mesas-api.ts#L118` (`listarMesas`) | **OK** | 33 mesas canónicas tras INV-MESAS. Endpoint responde HTTP 200 con 33 items exactos. |
+| **Submesas (Escritura)** | `mesas_trabajo.mesas` (`mesa_padre_id`) | 0 | `PUT /api/v1/mesas/{id}/submesas/{subId}` *(Inexistente)* | `mesas-api.ts#L358` (`actualizarSubMesa`) | **BRECHA CRÍTICA** | Backend solo tiene `POST` y `GET /submesas` ([`mesas/router.py#L63`](file:///root/polis/backend/app/modules/mesas/router.py#L63)). Frontend llama `PUT` inexistente y en [`mesas-api.ts#L372`](file:///root/polis/src/features/mesas/services/mesas-api.ts#L372) atrapa el error y retorna `subMesa` en memoria silenciosamente. |
+| **Agendas de Mesas** | `mesas_trabajo.agendas` *(No existe en `bd_csh`)* | 0 *(Sin tabla)* | `GET /api/v1/mesas/agendas` | `agenda-api.ts#L67` (`listarAgendas`) | **BRECHA CRÍTICA** | Migración 0041 pendiente. Endpoint lanza `ProgrammingError` (HTTP 500). Frontend en [`agenda-api.ts#L74`](file:///root/polis/src/features/mesas/services/agenda-api.ts#L74) oculta el 500 y retorna `AGENDA_MESAS` (36 estáticas) sin advertencia. |
+| **Asistencia Presencial** | `mesas_trabajo.participantes_mesa` | 0 | `POST /api/v1/mesas/{id}/participantes` | `asistencia-api.ts#L116` (`registrarAsistenteMesa`) | **OK CON OBSERVACIÓN** | Requiere permiso `asistencia:verificar`. En modo offline/sin credencial, [`asistencia-store.ts`](file:///root/polis/src/features/mesas/state/asistencia-store.ts) encola localmente con badge visible. |
+| **Aportes Ciudadanos** | `participacion_ciudadana.propuestas_ciudadanas` | 227 | `GET /api/v1/aportes` | `aportes-api.ts#L65` (`listarAportesApi`) | **RIESGO CONTAMINACIÓN** | BD tiene 227 filas (140 publicado/activo, 39 rechazado/activo, 48 inactivos soft-deleted). Endpoint filtra `activo=true` y retorna 179 registros. Más de 170 son repeticiones de pytest. |
+| **Formularios de Consulta** | `participacion_ciudadana.formularios_consulta` | 3 | `GET /api/v1/formularios` | `formularios-remotos.ts#L85` (`formulariosRemotos.listar`) | **OK** | 3 formularios activos en BD corresponden exactamente a los 3 recibidos en HTTP 200 por el constructor. |
+| **Políticas - Fases** | `motor_politicas.fases_politica` | 3 | `GET /api/v1/politicas/fases` | `politicas-api.ts#L87` (`listarFases`) | **OK** | 3 fases institucionales DNP (Fase 1, 2 y 3). Paridad 100% entre BD, endpoint y UI. |
+| **Políticas - Control Fases** | `motor_politicas.fases_politica` | 3 | `GET /api/v1/politicas/fases/control` | `politicas-api.ts#L123` (`listarFasesControl`) | **OK** | Endpoint protegido por permiso `politicas:gestionar`. Frontend cae limpiamente a ruta pública si el usuario no tiene rol directivo. |
+| **Políticas - Catálogo Raíz** | N/A | - | `GET /api/v1/politicas` *(Inexistente)* | `politicas-api.ts#L109` (`listarPoliticas`) | **BRECHA ALTA** | `usePoliticasQueries` llama a `/politicas`, el cual no existe en FastAPI ([`politicas/router.py`](file:///root/polis/backend/app/modules/politicas/router.py)). Retorna 404 atrapado en `catch` que devuelve `[]`. |
+| **Políticas - Dimensiones** | `motor_politicas.dimensiones_seguridad_humana` | 7 | `GET /api/v1/politicas/dimensiones` | `politicas-api.ts#L75` (`listarDimensiones`) | **OK** | 7 dimensiones canónicas ONU/DNP de Seguridad Humana. Paridad 100%. |
+| **Políticas - Líneas** | `motor_politicas.lineas_estrategicas` | 1 | `GET /api/v1/politicas/lineas` | `politicas-api.ts#L98` (`listarLineas`) | **RIESGO INCONSISTENCIA** | BD contiene solo 1 línea (`LINEA-01: Seguridad Humana y Convivencia`), mientras que `politicas.data.ts` declara 4 líneas canónicas en el frontend. |
+| **Actores Estratégicos** | `participacion_ciudadana.actores_estrategicos` | 0 | `GET /api/v1/actores` | `actores-api.ts#L71` (`listarActores`) | **OK** | Tabla creada en migración 0040. Vacía en BD (0 filas), endpoint devuelve 200 con `[]`. Paridad exacta sin PII fabricada (AUD-14). |
+| **Fuentes de Información** | `auditoria.fuentes_informacion` *(No existe en `bd_csh`)* | 0 *(Sin tabla)* | `GET /api/v1/fuentes` | `fuentes-api.ts#L105` (`listarFuentes`) | **BRECHA CRÍTICA** | Migración 0042 pendiente. Endpoint lanza HTTP 500 (`UndefinedTableError`). Frontend en [`fuentes-api.ts#L112`](file:///root/polis/src/features/fuentes/services/fuentes-api.ts#L112) oculta la falla y retorna `FUENTES_INICIALES` (`[]`). |
+| **Banco de Alternativas MGA** | `motor_politicas.banco_alternativas` *(No existe en `bd_csh`)* | 0 *(Sin tabla)* | `GET /api/v1/alternativas` | `alternativas-api.ts#L108` (`listarAlternativas`) | **CONTINGENCIA CONTROLADA** | Migración 0043 pendiente en `bd_csh`. Endpoint lanza HTTP 500. Frontend en [`alternativas-store.ts#L185`](file:///root/polis/src/features/alternativas/state/alternativas-store.ts#L185) activa `esContingencia: true` y muestra banner de advertencia con `ALTERNATIVAS_CANONICAS` (6). |
+| **Seguimiento PAS** | `seguimiento.compromisos_pas` | 10 | `GET /api/v1/compromisos` | `compromisos-api.ts#L45` (`listarCompromisosApi`) | **OK** | 10 compromisos institucionales canónicos sembrados (`PAS-SEC-01` a `PAS-ETN-10`). Paridad 100% y persistencia auditada (AUD-01/13). |
+| **Fichas Técnicas DNP** | `indicadores.fichas_tecnicas_indicadores` | 8 | `GET /api/v1/indicadores/fichas` | `indicadores-api.ts#L40` (`listarFichasIndicadores`) | **OK CON RIESGO FALLBACK** | 8 fichas oficiales DNP en BD. Endpoint devuelve 8. Sin embargo, en [`indicadores-api.ts#L44`](file:///root/polis/src/features/diagnostico/services/indicadores-api.ts#L44), ante error o lista vacía, cae silenciosamente a `INDICADORES_FALLBACK`. |
+| **Mediciones de Indicadores** | `indicadores.mediciones_indicador` | 0 | `GET /api/v1/indicadores/cadena-valor` | `cadena-valor-api.ts#L22` (`obtenerCadenaValorApi`) | **OK** | 0 mediciones en BD. Endpoint estructura la matriz con 0 mediciones. Paridad exacta. |
+| **Instrumentos MGA** | `motor_instrumentos.instrumentos` | 128 | `GET /api/v1/instrumentos` | `mesas-api.ts#L380` (`listarInstrumentos`) | **RIESGO CONTAMINACIÓN** | 128 registros en BD, todos fixtures sintéticos de pytest con sufijos hex. Endpoint los expone todos. |
+| **Árbol MGA (Escritura)** | `motor_instrumentos.nodos_instrumento` | 337 | `PUT /api/v1/instrumentos/{id}/arbol` *(Inexistente)* | `mesas-api.ts#L387` (`actualizarArbol`) | **BRECHA CRÍTICA** | Backend solo tiene `GET /{id}/arbol` ([`instrumentos/router.py#L79`](file:///root/polis/backend/app/modules/instrumentos/router.py#L79)). El frontend llama a un `PUT` inexistente (405 Method Not Allowed). |
+| **Nodos MGA (Escritura Masiva)** | `motor_instrumentos.nodos_instrumento` | 337 | `PUT /api/v1/instrumentos/{id}/nodos` *(Inexistente)* | `mesas-api.ts#L403` (`actualizarNodos`) | **BRECHA CRÍTICA** | Backend solo tiene `POST .../nodos` (crear 1 nodo) y `PUT .../nodos/{nodo_id}` (actualizar 1 nodo). Frontend llama `PUT .../nodos` (405) y en [`mesas-api.ts#L417`](file:///root/polis/src/features/mesas/services/mesas-api.ts#L417) retorna silenciosamente `nodos` locales. |
+| **Territorios Geográficos** | `geodatos.territorios` | 15 | `GET /api/v1/geodatos/territorios` | `geovisor-api.ts#L65` (`obtenerTerritorios`) | **OK** | 15 territorios distritales. Paridad 100%. *(Nota: frontend importa además geometrías estáticas desde `territorios.data.ts`)*. |
+| **Presupuesto - Fuentes** | `presupuesto.fuentes_financiacion` | 5 | `GET /api/v1/presupuesto/fuentes` | `presupuesto-api.ts#L71` (`listarFuentesFinanciacion`) | **OK CON RIESGO FALLBACK** | 5 fuentes financieras canónicas (FONSET, SGP, SGR, etc.). Paridad 100%. Ante falla, cae silenciosamente a `FUENTES_FINANCIACION_FALLBACK`. |
+| **Presupuesto - Asignaciones** | `presupuesto.asignaciones_presupuestales` | 14 | `GET /api/v1/presupuesto/asignaciones` | `presupuesto-api.ts#L91` (`listarAsignacionesPresupuestales`) | **RIESGO CONTAMINACIÓN** | 14 registros correspondientes a 7 pares duplicados de prueba ("Cámaras de seguridad" y "Megacolegio fase 2") inyectados el 2026-10-01. |
+| **Participación - Tablero** | `participacion_ciudadana.propuestas_ciudadanas` | 227 | `GET /api/v1/participacion/consolidado` | `participacion-api.ts#L183` (`obtenerConsolidado`) | **OK CON RIESGO FALLBACK** | Endpoint agrega estadísticas multicanal. En caso de error, [`participacion-api.ts#L187`](file:///root/polis/src/features/participacion/services/participacion-api.ts#L187) usa `MOCK_CONSOLIDADO` sin banner de contingencia. |
+| **Participación - Escenarios** | `participacion_ciudadana.escenarios_especiales` | 3 | `GET /api/v1/participacion/escenarios-especiales` | `participacion-api.ts#L238` (`listarEscenarios`) | **OK** | 3 escenarios de diálogo registrados. Paridad exacta. |
+| **Identidad / Usuarios** | `autenticacion.usuarios` | 413 | `GET /api/v1/identidad/usuarios` | `identidad-api.ts#L51` (`identidadApi.usuarios`) | **RIESGO CONTAMINACIÓN** | Endpoint protegido por RBAC (`requerir_permiso("usuarios:administrar")`). Retorna 401 si no hay token admin. 411 de los 413 usuarios son artefactos sintéticos de tests. |
+
+---
+
+#### 3. Auditoría Detallada: Base de Datos ↔ Backend (Sección 3.1)
+
+##### 3.1.1. Inventario de Tablas vs Modelos SQLAlchemy
+Se verificó el catálogo completo de tablas en `bd_csh` (PostgreSQL 16) mediante consultas a `information_schema.tables` y su correspondencia con los modelos declarados en `backend/app/modules/*/models.py`:
+- **Total esquemas de aplicación**: 9 (`auditoria`, `autenticacion`, `comunicacion`, `geodatos`, `indicadores`, `mesas_trabajo`, `motor_instrumentos`, `motor_politicas`, `participacion_ciudadana`, `presupuesto`, `seguimiento`).
+- **Total tablas existentes en `bd_csh`**: 34 tablas de aplicación + `public.alembic_version`.
+- **Tablas sin modelo SQLAlchemy**: **0 tablas huérfanas**. Todas las tablas existentes en `bd_csh` poseen una clase declarada en SQLAlchemy con mapeo activo.
+- **Modelos SQLAlchemy sin tabla en `bd_csh` (Brecha por migraciones pendientes)**:
+  1. `MesaAgenda` (`backend/app/modules/mesas/models.py#L187`): Requiere tabla `mesas_trabajo.agendas` (definida en migración `0041`).
+  2. `FuenteInformacion` (`backend/app/modules/fuentes/models.py#L32`): Requiere tabla `auditoria.fuentes_informacion` (definida en migración `0042`).
+  3. `BancoAlternativas` (`backend/app/modules/alternativas/models.py#L21`): Requiere tabla `motor_politicas.banco_alternativas` (definida en migración `0043`).
+
+##### 3.1.2. Estado de Alembic y Migraciones Pendientes
+- Consulta en `bd_csh`: `SELECT version_num FROM public.alembic_version;`  
+  **Resultado actual en `bd_csh`**: `0040_modulo_actores_estrategicos`.
+- **Head del repositorio**: `0043_modulo_banco_alternativas`.
+- **Migraciones pendientes de aplicar en `bd_csh`**:
+  1. `0041_modulo_agendas_mesas.py`: Crea `mesas_trabajo.agendas` y siembra las 36 mesas del cronograma oficial. *(Efecto: `/api/v1/mesas/agendas` falla con HTTP 500 en producción)*.
+  2. `0042_modulo_fuentes_informacion.py`: Crea `auditoria.fuentes_informacion` y permisos asociados. *(Efecto: `/api/v1/fuentes` falla con HTTP 500 en producción)*.
+  3. `0043_modulo_banco_alternativas.py`: Crea `motor_politicas.banco_alternativas`, permisos y sembrado canónico. *(Efecto: `/api/v1/alternativas` falla con HTTP 500 en producción)*.
+
+##### 3.1.3. Columnas del Modelo vs Columnas Reales (Esquema Drift y Duplicidades Legadas)
+Al cotejar la introspección de columnas de PostgreSQL con las definiciones de los modelos SQLAlchemy:
+- **`mesas_trabajo.mesas`**: Presenta **14 columnas huérfanas legadas** introducidas por el script primigenio [`bd/scripts/04_mesas_trabajo_360.sql`](file:///root/polis/bd/scripts/04_mesas_trabajo_360.sql) que nunca fueron adoptadas por el modelo [`Mesa`](file:///root/polis/backend/app/modules/mesas/models.py#L23):
+  - `aforo_presencial` (duplicado legado de `aforo_maximo`).
+  - `metadata` (duplicado legado de `metadatos`).
+  - `dimension_principal_id` (duplicado legado de `dimension_id`).
+  - `total_asistentes_presenciales`, `total_asistentes_digitales`, `total_propuestas_producidas` (duplicados legados de `total_asistentes`).
+  - `facilitador_responsable`, `relator_comunitario` (duplicados legados en desuso; el modelo usa `facilitador_id` referenciando a `usuarios`).
+  - `acta_pdf_url`, `coordenadas`, `es_consulta_previa`, `enlace_streaming`, `enfoque_poblacional`, `descripcion`.
+- **Resto de tablas (33 tablas)**: Presentan **100% de paridad** en tipos de datos, nulabilidad y llaves foráneas entre SQLAlchemy y PostgreSQL.
+
+##### 3.1.4. Rastreo Forense de Datos de Prueba / Sintéticos en `bd_csh`
+Se ejecutó un barrido en todas las tablas de `bd_csh` buscando patrones de polución (`test_%`, `pytest`, hashes hex de 6 caracteres):
+1. **`autenticacion.usuarios`**: Total 413 usuarios.
+   - **411 usuarios sintéticos de pytest**: 42 correos tipo `login_test_{hex}@cartagena.gov.co`, cientos de `ciudadano_{hex}@cartagena.gov.co`, `autoridad_{hex}@cartagena.gov.co`, `test_concurrente_{hex}@cartagena.gov.co`.
+   - **2 usuarios canónicos permanentes**: `admin@cartagena.gov.co` y `cgonzalezr1988@gmail.com`.
+2. **`participacion_ciudadana.propuestas_ciudadanas`**: Total 227 propuestas.
+   - **~220 propuestas sintéticas repetidas**: 40x "Propuesta para probar devolucion", 36x "Propuesta Apoyos", 30x "Propuesta desde territorio etnico", 30x "Propuesta de ciudadana indigena", 28x "Protección de manglares y pesca artesanal en La Boquilla", 4x "Implementación E2E Persistencia Segura".
+   - 48 propuestas marcadas con `activo = false` producto de pruebas de borrado lógico.
+3. **`motor_instrumentos.instrumentos`**: Total 128 instrumentos y 337 nodos.
+   - **100% registros sintéticos**: Creados por tests con sufijos aleatorios ("Inst de Concurrencia faccfc", "Test Personalizado 810da4", "Árbol de Soluciones Sistema del Cuidado 79f716").
+4. **`presupuesto.asignaciones_presupuestales`**: Total 14 asignaciones.
+   - **Contaminación por duplicación**: 7 ejecuciones idénticas de pruebas el 2026-10-01 inyectaron exactamente el mismo par ("Cámaras de seguridad" por $50,000,000 en 2026 y "Megacolegio fase 2" por $150,000,000 en 2027).
+5. **Tablas Canónicas Limpias**:
+   - `seguimiento.compromisos_pas`: 10 registros canónicos (`PAS-SEC-01` a `PAS-ETN-10`).
+   - `presupuesto.fuentes_financiacion`: 5 fuentes canónicas (FONSET, SGP, SGR, etc.).
+   - `geodatos.territorios`: 15 territorios distritales oficiales.
+   - `motor_politicas.dimensiones_seguridad_humana`: 7 dimensiones canónicas.
+   - `mesas_trabajo.mesas`: 33 mesas canónicas limpias tras la intervención pericial de INV-MESAS.
+
+---
+
+#### 4. Auditoría Detallada: Backend ↔ Frontend (Sección 3.2)
+
+##### 4.1. Inventario de Rutas, Endpoints Inexistentes y Huérfanos
+El backend FastAPI expone 166 operaciones endpoint. El frontend utiliza un total de 96 invocaciones `apiFetch`.
+
+###### A. Endpoints que el Frontend llama pero NO existen en Backend (Riesgo 404 / 405):
+1. **`PUT /api/v1/mesas/{mesaId}/submesas/{subMesaId}`** ([`mesas-api.ts#L358`](file:///root/polis/src/features/mesas/services/mesas-api.ts#L358)):
+   - **Causa**: FastAPI solo tiene `POST /submesas` y `GET /submesas` en [`mesas/router.py#L63`](file:///root/polis/backend/app/modules/mesas/router.py#L63).
+   - **Comportamiento**: Al intentar actualizar una submesa, la API responde 405 Method Not Allowed. El frontend en la línea 372 captura el error y retorna la submesa en memoria, ocultando el fallo.
+2. **`PUT /api/v1/instrumentos/{instrumentoId}/arbol`** ([`mesas-api.ts#L387`](file:///root/polis/src/features/mesas/services/mesas-api.ts#L387)):
+   - **Causa**: FastAPI solo define `GET /{instrumento_id}/arbol` en [`instrumentos/router.py#L79`](file:///root/polis/backend/app/modules/instrumentos/router.py#L79). No existe endpoint para reemplazar el árbol completo vía PUT.
+3. **`PUT /api/v1/instrumentos/{instrumentoId}/nodos`** ([`mesas-api.ts#L403`](file:///root/polis/src/features/mesas/services/mesas-api.ts#L403)):
+   - **Causa**: FastAPI solo expone `PUT /instrumentos/{instrumento_id}/nodos/{nodo_id}` (actualización de un único nodo). No existe endpoint masivo en la raíz de nodos.
+4. **`GET /api/v1/politicas`** ([`politicas-api.ts#L109`](file:///root/polis/src/features/politicas/services/politicas-api.ts#L109)):
+   - **Causa**: Invocado por `listarPoliticas()` en `use-politicas-queries.ts#L54`. FastAPI no tiene ruta raíz `/politicas`, únicamente subrutas (`/dimensiones`, `/fases`, `/lineas`). Produce un 404 continuo en consola.
+
+###### B. Endpoints de Backend sin Consumidor en Frontend (Huérfanos):
+1. **`POST /api/v1/evidencias/subir`**: Endpoint diseñado para despojar metadatos EXIF y GPS de fotografías comunitarias (Ley 1581 de 2012). Nunca es invocado por el frontend (las vistas usan enlaces directos o presigned URLs).
+2. **`POST /api/v1/ia/ciclo-politica`**: Endpoint de evaluación integral de ciclo de políticas no enlazado a ningún botón o vista del frontend.
+3. **`GET /api/v1/identidad/eventos`** y **`GET /api/v1/identidad/acceso-restringido`**: Endpoints de prueba y telemetría interna sin pantalla asociada.
+
+##### 4.2. Análisis de Contratos DTO (Backend `schemas.py` vs Frontend Interfaces)
+- **Módulo Mesas (`MesaRespuesta` vs `MesaBackendResponse`)**:
+  - El backend devuelve `facilitador_id: UUID | None`. El frontend espera `facilitador: string`. Al no realizarse un JOIN en backend con `autenticacion.usuarios`, el frontend debe recurrir a `b.metadatos?.facilitador || "Facilitador Institucional"`.
+  - El frontend espera `b.submesas` embebido en la respuesta de la mesa principal. El backend no embebe submesas en `MesaRespuesta`, obligando al frontend en [`mesas-api.ts#L142`](file:///root/polis/src/features/mesas/services/mesas-api.ts#L142) a realizar un segundo llamado `GET /mesas/{id}/submesas`.
+- **Módulo Compromisos PAS (`CompromisoPASRespuesta` vs `CompromisoInstitucional`)**:
+  - Contrato 100% alineado. Campos monetarios (`presupuesto_anual_cop`), porcentuales y códigos institucionales coinciden de forma estricta.
+- **Módulo Alternativas MGA (`AlternativaRead` vs `AlternativaMGA`)**:
+  - Contrato 100% alineado tras EDIT-09. Mapeo estricto de campos MGA, enfoques diferenciales y códigos de línea/dimensión.
+
+##### 4.3. Auditoría de Fallbacks Silenciosos en Frontend
+Se clasificaron los fallbacks presentes en `src/features/` bajo el criterio pericial de contingencia explícita vs riesgo de datos falsos:
+
+| Archivo y Línea | Mecanismo de Fallback | Clasificación | Impacto / Riesgo |
+|:---|:---|:---:|:---|
+| [`agenda-api.ts#L71-L74`](file:///root/polis/src/features/mesas/services/agenda-api.ts#L71-L74) | Atrapa error de `/mesas/agendas` y retorna `AGENDA_MESAS` (36 estáticas). | **RIESGO DE DATOS FALSOS** | Si la BD falla o no tiene la tabla (como ocurre ahora en `bd_csh`), el usuario ve 36 agendas estáticas sin saber que la base de datos está caída. |
+| [`fuentes-api.ts#L109-L112`](file:///root/polis/src/features/fuentes/services/fuentes-api.ts#L109-L112) | Atrapa error de `/fuentes` y retorna `FUENTES_INICIALES` (`[]`). | **RIESGO DE OCULTAMIENTO** | La vista de fuentes aparece completamente vacía (0 fuentes) en lugar de informar un error 500 de base de datos. |
+| [`indicadores-api.ts#L45-L48`](file:///root/polis/src/features/diagnostico/services/indicadores-api.ts#L45-L48) | Atrapa error o lista vacía de `/indicadores/fichas` y retorna `INDICADORES_FALLBACK`. | **RIESGO DE DATOS FALSOS** | Si la tabla de indicadores está caída, la UI muestra los 8 indicadores estáticos con datos históricos sin advertencia. |
+| [`presupuesto-api.ts#L76, L96, L120`](file:///root/polis/src/features/alternativas/services/presupuesto-api.ts#L76) | Atrapa errores en fuentes, asignaciones y resumen de costeo retornando catálogos fallback. | **RIESGO DE DATOS FALSOS** | Se presentan cifras presupuestales estáticas sin advertir fallo de conexión. |
+| [`participacion-api.ts#L185-L243`](file:///root/polis/src/features/participacion/services/participacion-api.ts#L185-L243) | Atrapa errores en consolidado, web, mesas y escenarios retornando constantes `MOCK_*`. | **RIESGO DE DATOS FALSOS** | El tablero de participación muestra métricas fabricadas (ej. 300 asistentes en foro gremial) ante caídas de la API. |
+| [`mesas-api.ts#L372, L417`](file:///root/polis/src/features/mesas/services/mesas-api.ts#L372) | En `actualizarSubMesa` y `actualizarNodos`, atrapa error y retorna el objeto recibido. | **MUTACIÓN SILENCIOSA FALSA** | El usuario cree que guardó su submesa o árbol MGA en el servidor, pero el servidor nunca lo persistió. |
+| [`alternativas-store.ts#L183`](file:///root/polis/src/features/alternativas/state/alternativas-store.ts#L183) | Atrapa error de `/alternativas`, fija `esContingencia: true` y muestra banner UI. | **LEGÍTIMO (CONTINGENCIA EXPLÍCITA)** | Patrón ejemplar: la UI avisa formalmente al usuario que opera en modo contingencia y permite reintentar. |
+| [`asistencia-store.ts#L122`](file:///root/polis/src/features/mesas/state/asistencia-store.ts#L122) | Encola en IndexedDB/local storage con `pendienteSincronizacion: true` y muestra badge. | **LEGÍTIMO (OFFLINE-FIRST RESILIENTE)** | Patrón conforme: resguarda la planilla comunitaria en puerta sin perder datos. |
+
+##### 4.4. Duplicidad de Fuentes de Información
+1. **Mesas vs Agendas**: Dos conceptos solapados. `MesasView` consulta `mesas_trabajo.mesas` (33 registros tras INV-MESAS), mientras que `Geovisor` y `/asistencia` consultan `mesas_trabajo.agendas` / `AGENDA_MESAS` (36 registros). Poseen esquemas diferentes, identificadores diferentes y ciclos de vida inconexos.
+2. **Noticias y Testimonios (Codex vs PostgreSQL)**: Las vistas de noticias y testimonios consumen enrutadores con almacenamiento en memoria del Codex ([`backend/app/modules/noticias/router.py`](file:///root/polis/backend/app/modules/noticias/router.py)), mientras que en PostgreSQL existen las tablas `comunicacion.noticias` (0 filas) y `participacion_ciudadana.testimonios_comunitarios` (4 filas) completamente desaprovechadas.
+3. **Cartografía Territorial**: `geodatos.territorios` en PostgreSQL contiene 15 polígonos, pero el frontend en múltiples vistas importa directamente los archivos estáticos `territorios.data.ts` y `barrios.data.ts`, duplicando la definición espacial.
+
+---
+
+#### 5. Auditoría de Seguridad y Permisos RBAC (Sección 3.3)
+
+Se examinaron las 45 operaciones de escritura (`POST`, `PUT`, `PATCH`, `DELETE`) registradas en FastAPI mediante análisis sintáctico de dependencias e inspectores de inyección:
+- **37 endpoints de escritura protegidos estrictamente por RBAC**: Requieren token JWT con permisos explícitos (`mesas:gestionar`, `seguimiento:gestionar`, `alternativas:gestionar`, `instrumentos:gestionar`, etc.) o contexto de sujeto autenticado con nivel mínimo `declarada`.
+- **8 endpoints de escritura públicos justificados por diseño**:
+  1. `POST /api/v1/sesion/anonima`: Emisión de token temporal firmado para navegación ciudadana sin registro.
+  2. `POST /api/v1/aportes`: Radicación ciudadana de propuestas (exige token de sesión anónima firmado en cabecera `Authorization`).
+  3. `POST /api/v1/aportes/{id}/apoyar`: Respaldo ciudadano a iniciativas con control de rate limit.
+  4. `POST /api/v1/identidad/login`: Autenticación con credenciales.
+  5. `POST /api/v1/identidad/registro`: Registro de nuevos ciudadanos.
+  6. `POST /api/v1/identidad/oauth/google`: Autenticación federada.
+  7. `POST /api/v1/identidad/recuperacion/solicitar` y `/confirmar`: Flujo de restablecimiento de contraseña.
+- **Dictamen de Permisos**: **CONFORME**. No se detectaron endpoints administrativos de mutación expuestos al público sin validación de roles o permisos.
+
+---
+
+#### 6. Lista Priorizada de Hallazgos y Recomendaciones Técnicas
+
+| ID | Prioridad | Módulo Afectado | Descripción del Hallazgo | Evidencia Verificable | Recomendación Concreta (Sin Corregir) |
+|:---|:---:|:---|:---|:---|:---|
+| **H-01** | **CRÍTICO** | Base de Datos / Alembic | `bd_csh` está desfasada en versión Alembic `0040` vs `0043` del repositorio. Las tablas `agendas`, `fuentes_informacion` y `banco_alternativas` no existen. Tres endpoints troncales devuelven 500. | `SELECT version_num FROM alembic_version;` -> `0040_modulo_actores_estrategicos`. `curl /api/v1/mesas/agendas` -> HTTP 500. | Ejecutar en producción el paso controlado de migraciones `alembic upgrade head` (0041, 0042, 0043) una vez verificado el aislamiento de datos. |
+| **H-02** | **CRÍTICO** | Base de Datos / Calidad | Contaminación masiva de datos en producción por ejecución indebida de pytest sobre `bd_csh` (411 usuarios falsos, 220 propuestas repetidas, 128 instrumentos falsos, 14 asignaciones duplicadas). | Consultas SQL: 411 usuarios con correo `test_*`/`login_test_*`; 40 propuestas "Propuesta para probar devolucion"; instrumentos con sufijos hex. | Diseñar y aplicar un script SQL de depuración pericial (`sanitizar_bd_csh.sql`) para purgar usuarios de prueba, propuestas clonadas y árboles de test sin afectar datos canónicos. |
+| **H-03** | **CRÍTICO** | Mesas e Instrumentos | Frontend invoca métodos PUT inexistentes en backend (`PUT .../submesas/{id}`, `PUT .../arbol`, `PUT .../nodos`) y captura el error simulando éxito en memoria. | [`mesas-api.ts#L358, L387, L403`](file:///root/polis/src/features/mesas/services/mesas-api.ts#L358); [`mesas/router.py`](file:///root/polis/backend/app/modules/mesas/router.py); [`instrumentos/router.py`](file:///root/polis/backend/app/modules/instrumentos/router.py). | Implementar en backend los endpoints PUT faltantes con soporte de ETag/concurrencia y eliminar el retorno simulado en el frontend, arrojando el error de forma explícita. |
+| **H-04** | **ALTO** | Frontend / Servicios | Enmascaramiento de fallas con fallbacks silenciosos en `agenda-api.ts`, `fuentes-api.ts`, `indicadores-api.ts`, `presupuesto-api.ts` y `participacion-api.ts`. | [`agenda-api.ts#L74`](file:///root/polis/src/features/mesas/services/agenda-api.ts#L74); [`fuentes-api.ts#L112`](file:///root/polis/src/features/fuentes/services/fuentes-api.ts#L112); [`indicadores-api.ts#L47`](file:///root/polis/src/features/diagnostico/services/indicadores-api.ts#L47). | Adoptar en todos los servicios el patrón estricto de contingencia de `alternativas-store.ts` (`esContingencia: true` + banner de alerta visual en UI + botón de reintento). |
+| **H-05** | **ALTO** | Mesas de Trabajo / UX | Dualidad de fuentes de verdad: `MesasView` consume `mesas_trabajo.mesas` (33) mientras que Geovisor y Asistencia consumen `agendas` / `AGENDA_MESAS` (36). | [`MesasView`](file:///root/polis/src/features/mesas/views/mesas-view.tsx); [`agenda-api.ts`](file:///root/polis/src/features/mesas/services/agenda-api.ts); [`mesas-geovisor-api.ts`](file:///root/polis/src/features/geovisor/services/mesas-geovisor-api.ts). | Unificar ambas fuentes haciendo que `mesas_trabajo.mesas` se vincule 1:1 con `mesas_trabajo.agendas` o consolidar la vista pública para que consuma la agenda oficial aprobada. |
+| **H-06** | **ALTO** | Políticas Públicas | Endpoint inexistente `GET /api/v1/politicas` llamado en bucle por `usePoliticasQueries`. | [`politicas-api.ts#L109`](file:///root/polis/src/features/politicas/services/politicas-api.ts#L109); [`use-politicas-queries.ts#L54`](file:///root/polis/src/features/politicas/services/use-politicas-queries.ts#L54). | Retirar la llamada a `/politicas` o implementar un endpoint agregador en `politicas/router.py` que consolide dimensiones, fases y líneas. |
+| **H-07** | **ALTO** | Esquema BD / Mesas | 14 columnas legadas huérfanas en `mesas_trabajo.mesas` sin mapeo en SQLAlchemy (`aforo_presencial`, `metadata`, `dimension_principal_id`, etc.). | `\d mesas_trabajo.mesas` vs [`Mesa` en `mesas/models.py`](file:///root/polis/backend/app/modules/mesas/models.py#L23). | Generar migración Alembic que elimine (`DROP COLUMN`) las columnas legadas obsoletas una vez respaldados los metadatos. |
+| **H-08** | **MEDIO** | Evidencias / Seguridad | El endpoint de sanitización EXIF/GPS `POST /evidencias/subir` no tiene consumidor en el frontend. | [`evidencia/router.py#L27`](file:///root/polis/backend/app/modules/evidencia/router.py#L27); búsqueda en `src/` sin llamadas a `/evidencias/subir`. | Conectar el cargador de fotos ciudadanas (`fotos-pregunta.tsx`, `aporte-editor-panel.tsx`) a este endpoint para garantizar protección de datos de líderes sociales. |
+| **H-09** | **MEDIO** | Políticas / Líneas | Desalineación de líneas estratégicas: BD contiene solo 1 línea (`LINEA-01`), mientras que el frontend declara 4 líneas canónicas. | `SELECT COUNT(*) FROM motor_politicas.lineas_estrategicas;` -> 1; [`politicas.data.ts`](file:///root/polis/src/features/politicas/data/politicas.data.ts) -> 4 líneas. | Sembrar las 3 líneas restantes en `motor_politicas.lineas_estrategicas` o sincronizar las constantes del frontend. |
+| **H-10** | **MEDIO** | Noticias y Testimonios | Módulos operan sobre stores volátiles de Codex en lugar de persistir en `comunicacion.noticias` y `participacion_ciudadana.testimonios_comunitarios`. | [`noticias/router.py`](file:///root/polis/backend/app/modules/noticias/router.py); [`testimonios/router.py`](file:///root/polis/backend/app/modules/testimonios/router.py). | Desbloquear y ejecutar la tarea EDIT-05 para cablear ambos módulos a PostgreSQL cuando el supervisor autorice intervenir Codex. |
+| **H-11** | **BAJO** | Mesas / Contrato DTO | `MesaRespuesta` envía `facilitador_id` (UUID) pero no el nombre del facilitador; frontend recurre a valor genérico. | [`mesas/schemas.py#L112`](file:///root/polis/backend/app/modules/mesas/schemas.py#L112); [`mesas-api.ts#L105`](file:///root/polis/src/features/mesas/services/mesas-api.ts#L105). | Incorporar en `MesaRespuesta` una propiedad `facilitador_nombre` mediante join con `autenticacion.usuarios`. |
+| **H-12** | **BAJO** | RBAC / Transparencia | Cobertura total de permisos en endpoints de escritura; 8 endpoints públicos documentados y restringidos a casos de uso legítimos. | Script de inspección AST/FastAPI dependencies. | Mantener las políticas de RBAC actuales y verificar periódicamente que ninguna nueva mutación carezca de autorización. |
+
+---
+
+#### 7. Conclusión de la Auditoría AUD-19
+
+La auditoría AUD-19 evidencia que POLIS ha alcanzado una madurez funcional destacada en sus módulos recientemente armonizados (compromisos PAS, diagnóstico, mesas saneadas, alternativas MGA y formularios), pero requiere una intervención planificada de **saneamiento de datos en `bd_csh`**, la **aplicación de las migraciones pendientes 0041-0043**, la **corrección de rutas inexistentes en el cliente de mesas e instrumentos**, y la **eliminación de fallbacks silenciosos** para garantizar transparencia técnica total y fidelidad con los mandatos de la Ley 1712 de 2014 y la Sentencia C-150 de 2015.

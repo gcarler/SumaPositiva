@@ -1,9 +1,9 @@
 # TAREA ACTIVA — EDD (agy2)
 
 **Última actualización**: 2026-10-04  
-**Responsable activo**: agy2 (EDD - en ejecución)  
+**Responsable activo**: agy2 (EDD - entrega completada)  
 **Auditor independiente**: EAF  
-**Tarea Activa**: `AUD-19` — Auditoría de coherencia Base de Datos ↔ Backend ↔ Frontend (solo lectura)  
+**Tarea Activa**: `AUD-19` — Auditoría de coherencia Base de Datos ↔ Backend ↔ Frontend (solo lectura) — **ENTREGADA / LISTA PARA AUDITAR**  
 **Especificación**: `bridge/01_tarea_agy2_audit_db_backend_frontend.md`  
 **Última tarea cerrada**: `INV-MESAS / EDIT-10` (**CONFORME**) — Saneamiento de Base de Datos, Filtro de Jerarquía y Rediseño UX de Mesas de Trabajo (279/279 bun tests passed, 9/9 pytest passed, 0 errores en check)
 
@@ -14,7 +14,7 @@
 
 ---
 
-## Estado Global de Auditorías (AUD-01 .. AUD-18)
+## Estado Global de Auditorías (AUD-01 .. AUD-19)
 
 | ID | Tarea / Alcance | Dictamen EAF / Estado | Commit de Entrega / Notas |
 |:---|:---|:---:|:---|
@@ -36,6 +36,7 @@
 | **AUD-16** | Endurecimiento ESLint (`no-unused-vars` error, `ban-ts-comment` error) y barrido de docs/ | **CONFORME CON OBS-19** | `9faa78e`: 0 errores, 0 warnings. OBS-19: exclusión de noticias/testimonios a retirar al cerrar Codex. |
 | **AUD-17** | Runbook de despliegue en producción, plan de consolidación git y corrección de contadores | **CONFORME CON OBS-20** | `b5f3ca6`: Subsanada OBS-20 haciendo condicional el paso de migraciones. |
 | **AUD-18** | Matriz pericial de evidencia de editabilidad/configurabilidad y backlog de huecos | **CONFORME** | `f41fd90`: Matriz con evidencia archivo:línea y tests para 10 capacidades, `bridge/04_backlog_editabilidad.md` y subsanación OBS-20 en runbook. |
+| **AUD-19** | Auditoría de coherencia Base de Datos ↔ Backend ↔ Frontend | **ENTREGADA / LISTA PARA AUDITAR** | Documentado en `02_entrega_agy2.md`. Matriz fullstack de coherencia, live verification contra `bd_csh`, catálogo de fallbacks y 12 hallazgos priorizados. |
 
 ---
 
