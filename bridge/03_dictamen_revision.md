@@ -100,3 +100,8 @@ Verificado de forma independiente: `git grep` de mocks/fixtures desde código de
 
 ## Dictamen AUD-10 — CONFORME (commit 74fe715)
 Verificado: `no-explicit-any` pasa a `error` y `eslint .` sin errores ni advertencias; 0 `any`/`@ts-ignore` en src/scripts; `tsc --noEmit` limpio; `bun test` 213 pass; ui-policy OK. Única relajación: `react-hooks/incompatible-library` off (TanStack Table), justificada en comentario. Aún quedan `@typescript-eslint/no-unused-vars` y `ban-ts-comment` en off (OBS-16, baja).
+
+## Dictamen AUD-11 — NO CONFORME por 1 regresión (commit 499affd)
+Aceptado tras verificación independiente: 0 apariciones de la contraseña en código/tests/scripts; `jwt_secret_key` obligatorio; `.env` y `*.db` fuera del índice; scripts demo apuntan a `polis_demo`; servicios y lecturas de producción OK (aportes=179).
+**Defecto:** `pytest` en `polis_test` falla `tests/test_identidad_completa.py::test_configuracion_insegura_no_habilita_identidad_en_produccion` (DID NOT RAISE; también en aislamiento). El test dependía del default retirado; debe fijar explícitamente `jwt_secret_key` con el literal inseguro en entorno production y verificar 503, no debilitar la guarda. Además debe correrse el pytest COMPLETO (la corrida -x se detuvo en 243 pasados) y demostrarse la negativa de los scripts demo contra `bd_csh` con un test.
+**Pendiente OBS-17 (antes del remoto):** la contraseña sigue en el historial git; rotar según `docs/rotacion-secretos.md`.
