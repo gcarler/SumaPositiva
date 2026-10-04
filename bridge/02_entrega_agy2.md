@@ -2698,3 +2698,189 @@ En atención al mandato pericial de erradicar la persistencia puramente en memor
 | **Verificación de Esquema Alembic** | `POLIS_DATABASE_URL=... alembic check` | **0 diffs** ("No new upgrade operations detected"). |
 | **Aislamiento de Módulos Codex** | `git status` | Archivos de noticias y testimonios estrictamente intactos. |
 | **Salvaguarda de Base de Datos** | N/A | Cero migraciones ejecutadas sobre `bd_csh`, cero push a remoto. |
+
+
+---
+
+# Tarea INV-MESAS: Auditoría y Diagnóstico del Catálogo de Mesas en Sitio Público
+
+**Fecha**: 2026-10-04T18:45:00Z  
+**Estado**: INFORME PERICIAL ENTREGADO  
+**Responsable**: agy2 (Equipo de Desarrollo EDD)  
+**Supervisor / Auditor**: EAF  
+**Prioridad**: ALTA (UX / Consistencia de Datos Públicos)  
+**Especificación**: `bridge/01_tarea_agy2_investigacion_mesas_publicas.md`  
+
+---
+
+### 1. Resumen Ejecutivo del Diagnóstico
+
+El usuario reportó que al ingresar a la sección pública **"Mesas de Trabajo"** del sitio (`https://seguridadhumanaintegral.org/`), se despliega una cantidad abrumadora de mesas ("muchísimas mesas"), generando una sobrecarga cognitiva severa y una experiencia degradada.
+
+La investigación forense y técnica realizada por `agy2` confirma el hallazgo y revela la concurrencia de **tres factores estructurales**:
+
+1. **Contaminación Histórica por Pruebas Automatizadas en `bd_csh`**: De las **194 mesas** existentes en la tabla `mesas_trabajo.mesas`, **161 (83%) son registros sintéticos generados por ejecuciones de Pytest** el 1 de octubre de 2026 (antes de aislar estrictamente las pruebas en `polis_test`).
+2. **Aplanamiento Indebido de la Jerarquía `ltree`**: De las 194 filas, **61 son submesas técnicas** (`mesa_padre_id IS NOT NULL`). El endpoint `GET /api/v1/mesas` no filtra por `mesa_padre_id IS NULL`, exponiendo submesas ("Mesa de Prevención", "Mesa Temática de Seguridad") como si fueran mesas territoriales autónomas.
+3. **Disociación Arquitectónica con el Cronograma Oficial de 36 Mesas**: Mientras el cronograma oficial de participación ciudadana de Cartagena (15 oct – 11 dic 2026) consta exactamente de **36 mesas canónicas** (modeladas en `AGENDA_MESAS` y la tabla `mesas_trabajo.agendas`), la vista pública `MesasView` consume la tabla de trabajo interno `mesas_trabajo.mesas`, renderizando 194 tarjetas en una lista plana infinita sin paginación ni pestañas.
+
+---
+
+### 2. Conteo Exacto en la Vista Pública
+
+#### 2.1. Flujo de Navegación y Consumo de Datos
+- **Ruta Pública**: [`src/app/_components/topbar.tsx`](file:///root/polis/src/app/_components/topbar.tsx) define en la barra superior:
+  ```ts
+  { id: "mesas", label: "Mesas de Trabajo", labelCorto: "Mesas" }
+  ```
+- **Montaje en Página Principal**: [`src/app/page.tsx`](file:///root/polis/src/app/page.tsx#L55-L56) renderiza condicionalmente:
+  ```tsx
+  vista === "mesas" ? <MesasView /> : ...
+  ```
+- **Consumo API**: [`src/features/mesas/views/mesas-view.tsx`](file:///root/polis/src/features/mesas/views/mesas-view.tsx#L32-L34):
+  ```tsx
+  const { data: mesasRemotas } = useMesas();
+  const mesasStore = useMesasStore((s) => s.mesas);
+  const mesas = mesasRemotas ?? mesasStore;
+  ```
+  `useMesas()` invoca `listarMesas()` ([`mesas-api.ts:122`](file:///root/polis/src/features/mesas/services/mesas-api.ts#L122)), la cual despacha una petición HTTP `GET /api/v1/mesas` sin parámetros de paginación ni filtros.
+- **Backend FastAPI**: [`backend/app/modules/mesas/router.py:182`](file:///root/polis/backend/app/modules/mesas/router.py#L182) delega a `MesaRepository.listar()`, ejecutando:
+  ```sql
+  SELECT * FROM mesas_trabajo.mesas ORDER BY mesas_trabajo.mesas.creado_en;
+  ```
+- **Resultado en Cliente**: El endpoint retorna un arreglo JSON con **194 objetos**.
+- **Tarjetas en DOM**: La vista ejecuta `mesasFiltradas.map((mesa, idx) => <motion.button ... />)`, instanciando **194 tarjetas interactivas completas** simultáneamente en el árbol de renderizado del navegador.
+
+---
+
+### 3. Desglose Pericial en Base de Datos PostgreSQL
+
+Consultas forenses ejecutadas en el motor PostgreSQL 18.6 de producción (`bd_csh`) y en el entorno de pruebas (`polis_test`):
+
+#### 3.1. Totales por Base de Datos
+| Base de Datos | Total Filas en `mesas_trabajo.mesas` | Estado / Rol |
+|---|:---:|---|
+| `polis_test` | **0** | Aislada, limpia, utilizada exclusivamente para pruebas transaccionales con rollback o truncado. |
+| `bd_csh` | **194** | Base de datos de producción conectada al backend activo de la plataforma. |
+
+#### 3.2. Desglose por Tipo de Mesa (`tipo_mesa`) y Jerarquía (`mesa_padre_id`)
+```sql
+SELECT tipo_mesa, 
+       CASE WHEN mesa_padre_id IS NULL THEN 'RAIZ' ELSE 'SUBMESA' END as jerarquia, 
+       count(*) 
+FROM mesas_trabajo.mesas 
+GROUP BY 1, 2 ORDER BY 1, 2;
+```
+| `tipo_mesa` | Jerarquía | Conteo | Observación Pericial |
+|---|:---:|:---:|---|
+| **TERRITORIAL** | RAIZ | **61** | 3 mesas oficiales + 58 mesas generadas por suites de prueba. |
+| **SECTORIAL** | RAIZ | **32** | 11 mesas oficiales + 21 mesas generadas por `test_actas_y_participantes.py`. |
+| **SECTORIAL** | SUBMESA | **61** | 61 submesas temáticas derivadas (`MT-{hex}-SEG` y `MT-{hex}-SEG-PREV`). |
+| **POBLACIONAL** | RAIZ | **29** | 8 mesas oficiales + 21 mesas generadas por `test_actas_y_participantes.py`. |
+| **RURAL_INSULAR** | RAIZ | **11** | 11 mesas oficiales rurales e insulares sembradas originalmente. |
+| **TOTAL** | — | **194** | **133 Mesas Raíz + 61 Submesas** |
+
+#### 3.3. Desglose por Estado del Ciclo de Vida
+| Estado | Conteo | Asistentes Registrados | Con Hash Criptográfico (`sha256_acta`) |
+|---|:---:|:---:|:---:|
+| **PROGRAMADA** | **152** | 63 | 0 |
+| **ACTA_CONCERTADA** | **42** | 126 (3 por mesa) | 42 (100%) |
+| **TOTAL** | **194** | **189** | **42** |
+
+*Hallazgo crítico*: Las **42 mesas con acta concertada** corresponden **exactamente a 21 mesas `MS-SALUD-{hex}` y 21 mesas `MP-ETN-{hex}`** generadas por pruebas automatizadas de integridad forense y cierre de actas criptográficas. Ninguna mesa territorial ni rural/insular de la vida real tiene acta concertada en este momento.
+
+---
+
+### 4. Causa Raíz de la Multiplicidad
+
+El análisis del historial de inserciones y marcas temporales (`creado_en`) en `bd_csh` permite reconstruir con precisión milimétrica el origen de las 194 mesas:
+
+```sql
+SELECT date_trunc('hour', creado_en) as hora, count(*) 
+FROM mesas_trabajo.mesas 
+GROUP BY 1 ORDER BY 1;
+```
+
+#### 4.1. Cronología de Inserción
+1. **2026-10-01 05:00 UTC (33 mesas)**: Sembrado canónico inicial ejecutado por [`bd/scripts/04_mesas_trabajo_360.sql`](file:///root/polis/bd/scripts/04_mesas_trabajo_360.sql). Todas poseen UUIDv7 determinista con prefijo `01a0f5fe-...` (ej. `MT-L01-01`, `MR-RUR-01`, `MP-POB-01`, `MS-SEC-01`).
+2. **2026-10-01 07:00 a 14:00 UTC (161 mesas)**: Inyección masiva proveniente de la ejecución de suites de prueba de backend (`pytest`) que corrían contra `bd_csh` antes de que se implementara la directiva de entorno de pruebas estricto (`POLIS_TEST_DATABASE_URL` / `polis_test`):
+   - **`test_mesas_ltree.py`**: En cada iteración crea un árbol de 3 mesas con código aleatorio:
+     - `MT-{hex}` ("Mesa Territorial Centro")
+     - `MT-{hex}-SEG` ("Mesa Tematica de Seguridad", submesa nivel 1)
+     - `MT-{hex}-SEG-PREV` ("Mesa de Prevencion", submesa nivel 2)
+     Esto generó **~92 registros** (30 árboles completos + 1 parcial).
+   - **`test_actas_y_participantes.py`**: En cada iteración de prueba de quórum y actas crea 3 mesas:
+     - 21 ejecuciones de `test_registro_participantes_y_unicidad` crearon **21 mesas `MT-PART-{hex}`** ("Mesa de Participacion Comunitaria").
+     - 21 ejecuciones de `test_flujo_acta_comunitaria_y_cierre_sha256` crearon **21 mesas `MS-SALUD-{hex}`** ("Mesa Sectorial de Salud y Bienestar").
+     - 21 ejecuciones de `test_integridad_forense_inmutable_bloquea_update_y_delete` crearon **21 mesas `MP-ETN-{hex}`** ("Mesa Poblacional Étnica").
+   - **Pruebas de Integración Varias**: 6 registros adicionales (`MT-TEST-001`, `MT-MUQ8RDVD`, `MT-3acb87-ACTA`, `MT-2ae417-ACTA`, etc.).
+
+#### 4.2. Relación con las 36 Mesas del Cronograma Oficial (`mesas_trabajo.agendas`)
+- En la tarea **EDIT-02** y el **Hito F**, se consolidó el cronograma ciudadano oficial de Cartagena: **36 mesas deliberativas** (del 15 de octubre al 11 de diciembre de 2026), documentadas en [`src/features/mesas/data/agenda.data.ts`](file:///root/polis/src/features/mesas/data/agenda.data.ts):
+  - **4 Mesas Territoriales** (Localidades 1, 2, 3 y Zona de Expansión).
+  - **13 Mesas Rurales e Insulares** (Arroyo de Piedra, Arroyo Grande, Bayunca, La Boquilla, Pasacaballos, Pontezuela, Punta Canoa, Barú, Bocachica, Caño del Oro, Isla Fuerte, Islas del Rosario, Tierra Bomba).
+  - **8 Mesas Poblacionales** (Adulto Mayor, Infancia y Adolescencia, Juventudes, Mujeres y Género, Personas con Discapacidad, Víctimas del Conflicto, Población LGBTIQ+, Comunidades Negras y Étnicas).
+  - **11 Mesas Sectoriales** (Cultura, Deporte, Salud, Educación, Movilidad, Servicios Públicos, Seguridad, Ambiente, Desarrollo Económico, Transparencia, Paz).
+- Estas 36 mesas están respaldadas por la migración `0041_modulo_agendas_mesas.py` (tabla `mesas_trabajo.agendas`), y son las que consumen el Geovisor (`/geovisor`) y la Planilla Pública de Asistencia (`/asistencia/[mesaId]`).
+- **Problema de Enrutamiento de Datos**: La vista pública de navegación principal (`/`) apunta a `MesasView` (`mesas_trabajo.mesas`) en lugar del cronograma oficial de 36 mesas (`mesas_trabajo.agendas`). El ciudadano ve el basurero técnico de 194 tablas en lugar del cronograma oficial de 36 fechas.
+
+---
+
+### 5. Diagnóstico de Rendimiento y Experiencia de Usuario (UX)
+
+| Aspecto Evaluado | Hallazgo Pericial | Severidad |
+|---|---|:---:|
+| **Sobrecarga Cognitiva y Nombres Duplicados** | **157 de las 194 mesas (81%) tienen nombres exactamente repetidos**: 33 "Mesa Territorial Centro", 31 "Mesa Tematica de Seguridad", 30 "Mesa de Prevencion", 21 "Mesa Sectorial de Salud y Bienestar", 21 "Mesa Poblacional Étnica", 21 "Mesa de Participacion Comunitaria". Para un ciudadano cartagenero, la lista parece un catálogo roto o bucle infinito. | **CRÍTICA** |
+| **Exposición de Submesas sin Contexto** | 61 submesas técnicas se muestran como tarjetas autónomas con lugares genéricos ("Alcaldía", "Plaza Central") sin indicar a qué localidad o mesa territorial pertenecen. | **ALTA** |
+| **Retardo en Animaciones Framer Motion** | La tarjeta en la posición `idx` tiene `delay: idx * 0.04s`. Para la tarjeta 194, el retraso de renderizado es de **7.76 segundos**, obligando al usuario a esperar casi 8 segundos para que la lista termine de animarse. | **MEDIA** |
+| **Ausencia de Paginación** | Las 194 tarjetas se inyectan en el DOM simultáneamente en una cuadrícula CSS de 3 columnas (`grid-cols-1 md:grid-cols-2 lg:grid-cols-3`), consumiendo recursos de renderizado innecesarios en dispositivos móviles. | **ALTA** |
+| **Falta de Filtros por Categoría / Territorio** | La vista solo ofrece un buscador de texto libre (`SearchField`). No cuenta con pestañas por tipo de mesa (Territoriales, Rurales, Poblacionales, Sectoriales) ni selector de localidad. | **ALTA** |
+| **Llamado a la Acción Inconsistente ("Ver acta ->")** | Todas las tarjetas terminan con el texto *"Ver acta ->"*, pero 152 mesas no tienen acta ni acuerdos registrados. Al hacer clic, se abre un panel con pestañas vacías. | **MEDIA** |
+
+---
+
+### 6. Propuestas Técnicas de Solución
+
+Para resolver de manera definitiva la multiplicidad y optimizar la experiencia ciudadana, se formulan las siguientes recomendaciones estructuradas en 3 fases:
+
+#### Propuesta 1: Saneamiento de Base de Datos en Producción (`bd_csh`)
+- **Acción**: Elaborar un script SQL pericial de depuración ([`bd/scripts/sanitizar_mesas_test.sql`](file:///root/polis/bd/scripts/sanitizar_mesas_test.sql)) para que el perito/auditor lo ejecute sobre `bd_csh`.
+- **Criterio de exclusión**:
+  ```sql
+  DELETE FROM mesas_trabajo.mesas 
+  WHERE codigo_oficial LIKE 'MT-PART-%'
+     OR codigo_oficial LIKE 'MS-SALUD-%'
+     OR codigo_oficial LIKE 'MP-ETN-%'
+     OR codigo_oficial ~ '^MT-[a-f0-9]{6}'
+     OR codigo_oficial IN ('MT-TEST-001', 'MT-MUQ8RDVD', 'MT-3acb87-ACTA', 'MT-2ae417-ACTA', 'MT-aa3d2d', 'MT-39ec32');
+  ```
+  *(Las actas comunitarias y participantes en cascada asociados a estas mesas de prueba se purgan limpiamente gracias a `ON DELETE CASCADE`)*.
+- **Resultado**: La tabla `mesas_trabajo.mesas` se reduce inmediatamente de 194 a **33 mesas canónicas limpias**.
+
+#### Propuesta 2: Filtro de Jerarquía en Backend (`GET /api/v1/mesas`)
+- **Acción**: En [`backend/app/modules/mesas/repository.py`](file:///root/polis/backend/app/modules/mesas/repository.py#L49), condicionar la consulta para que, por defecto, devuelva únicamente mesas de primer nivel (`mesa_padre_id IS NULL`):
+  ```python
+  if solo_raiz:
+      stmt = stmt.where(Mesa.mesa_padre_id.is_(None))
+  ```
+- **Resultado**: Las submesas nunca contaminarán el catálogo público general; solo serán consultables mediante `GET /api/v1/mesas/{id}/submesas` o dentro de la ficha de detalle de la mesa padre.
+
+#### Propuesta 3: Articulación Fullstack con el Cronograma de 36 Mesas
+- **Acción**: Unificar la vista pública `MesasView` con el catálogo oficial de **36 mesas de agenda** (`mesas_trabajo.agendas` / `AGENDA_MESAS`):
+  1. La vista consulta `GET /api/v1/mesas/agendas` (o sincroniza el estado de las 36 mesas en el store).
+  2. Cada tarjeta enlaza de forma transparente:
+     - Registro de asistencia ciudadana (`/asistencia/[mesaId]`).
+     - Geovisor territorial (`/geovisor?mesaId=...`).
+     - Ficha técnica y acta de concertación cuando la mesa pasa a estado `realizada`.
+- **Resultado**: Se garantiza paridad 100% entre el menú "Mesas de Trabajo", el "Geovisor Territorial" y la "Planilla de Asistencia".
+
+#### Propuesta 4: Rediseño UX y Controles en `MesasView`
+- **Pestañas por Tipo de Mesa**: Selector superior con contadores tipo pill:
+  - `Todas (36)` | `Territoriales (4)` | `Rurales e Insulares (13)` | `Poblacionales (8)` | `Sectoriales (11)`
+- **Paginación Amigable**: Mostrar 12 tarjetas por página con controles de navegación estándar.
+- **Badges Semánticos de Estado**:
+  - `Programada` (Ember/Neutro con fecha clara).
+  - `En curso` (Azul/Pulsante).
+  - `Acta Concertada` (Verde con enlace directo al acta).
+- **Optimización de Animación**: Limitar el retraso de Framer Motion con `Math.min(idx * 0.03, 0.2)` para evitar que las tarjetas tarden segundos en aparecer.
+
+---
