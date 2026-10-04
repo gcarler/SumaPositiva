@@ -241,3 +241,8 @@ class LineaEstrategica(Base):
     @property
     def sublineas(self):
         return (self.metadatos or {}).get("sublineas", [])
+
+
+# Registro de modelos de formulación relacionados (EDIT-09)
+from app.modules.alternativas.models import BancoAlternativas  # noqa: E402, F401
+

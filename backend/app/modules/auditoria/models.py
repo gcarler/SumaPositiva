@@ -56,3 +56,8 @@ class RegistroAuditoria(Base):
         server_default=text("clock_timestamp()"),
         nullable=False,
     )
+
+
+# Modelos adicionales en esquema auditoria
+from app.modules.fuentes.models import FuenteInformacion  # noqa: E402, F401
+

@@ -56,6 +56,7 @@ export function AlternativaEditorPanel({
   );
   const agregarAlternativa = useAlternativasStore((s) => s.agregarAlternativa);
   const actualizarAlternativa = useAlternativasStore((s) => s.actualizarAlternativa);
+  const guardando = useAlternativasStore((s) => s.guardando);
 
   const esModoEdicion = !!alternativa;
   const esAuditor = sesion?.rol === "auditor_forense";
@@ -140,9 +141,9 @@ export function AlternativaEditorPanel({
     toast.success("Ficha técnica exportada a JSON correctamente.");
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!tienePermisoEscritura) return;
+    if (!tienePermisoEscritura || guardando) return;
 
     if (!nombre.trim()) {
       toast.error("El nombre de la alternativa es obligatorio.");
@@ -162,7 +163,7 @@ export function AlternativaEditorPanel({
     }
 
     if (esModoEdicion && alternativaId) {
-      actualizarAlternativa(alternativaId, {
+      const exito = await actualizarAlternativa(alternativaId, {
         codigo: codigo.trim().toUpperCase(),
         nombre: nombre.trim(),
         descripcion: descripcion.trim(),
@@ -178,9 +179,15 @@ export function AlternativaEditorPanel({
         estado,
         requiere_consulta_previa: requiereConsultaPrevia,
       });
-      toast.success(`Alternativa ${codigo} actualizada correctamente.`);
+      if (exito) {
+        toast.success(`Alternativa ${codigo} actualizada correctamente en PostgreSQL.`);
+        closeTop();
+      } else {
+        const err = useAlternativasStore.getState().error;
+        toast.error(err || "Error al actualizar la iniciativa en el servidor.");
+      }
     } else {
-      agregarAlternativa({
+      const nuevoId = await agregarAlternativa({
         codigo: codigo.trim().toUpperCase(),
         nombre: nombre.trim(),
         descripcion: descripcion.trim(),
@@ -196,10 +203,14 @@ export function AlternativaEditorPanel({
         estado,
         requiere_consulta_previa: requiereConsultaPrevia,
       });
-      toast.success(`Alternativa ${codigo} registrada en el Banco Distrital.`);
+      if (nuevoId) {
+        toast.success(`Alternativa ${codigo} registrada y persistida en el Banco Distrital.`);
+        closeTop();
+      } else {
+        const err = useAlternativasStore.getState().error;
+        toast.error(err || "Error al registrar la iniciativa en el servidor.");
+      }
     }
-
-    closeTop();
   };
 
   return (
@@ -561,11 +572,16 @@ export function AlternativaEditorPanel({
                 type="submit"
                 variant="default"
                 size="sm"
+                disabled={guardando}
                 className="gap-1.5 text-xs font-medium"
               >
                 <CheckCircle2 className="h-3.5 w-3.5" />
                 <span>
-                  {esModoEdicion ? "Guardar Cambios" : "Registrar en Banco MGA"}
+                  {guardando
+                    ? "Guardando..."
+                    : esModoEdicion
+                    ? "Guardar Cambios"
+                    : "Registrar en Banco MGA"}
                 </span>
               </Button>
             )}

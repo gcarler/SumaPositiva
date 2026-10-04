@@ -1,6 +1,6 @@
 "use client";
 
-import {useState, useMemo} from "react";
+import {useState, useMemo, useEffect} from "react";
 import {toast} from "sonner";
 import {
   Plus,
@@ -76,6 +76,12 @@ export function AlternativasView() {
   const filtros = useAlternativasStore((s) => s.filtros);
   const setFiltros = useAlternativasStore((s) => s.setFiltros);
   const limpiarFiltros = useAlternativasStore((s) => s.limpiarFiltros);
+  const esContingencia = useAlternativasStore((s) => s.esContingencia);
+  const cargarAlternativas = useAlternativasStore((s) => s.cargarAlternativas);
+
+  useEffect(() => {
+    void cargarAlternativas();
+  }, [cargarAlternativas]);
 
   const kpis = useMemo(() => calcularKPIsAlternativas(alternativas), [alternativas]);
 
@@ -240,6 +246,24 @@ export function AlternativasView() {
               {esAdmin
                 ? "La Fase 2 de Formulación Estratégica se encuentra en alistamiento. Como autoridad o administrador distrital, cuenta con permisos para estructurar alternativas antes de la apertura pública de la fase."
                 : "La Fase 2 de Formulación Estratégica se encuentra actualmente en etapa preparatoria. La creación y edición de alternativas MGA está reservada a la administración distrital hasta la activación oficial de la fase."}
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* Banner de Modo Contingencia */}
+      {esContingencia && (
+        <div
+          role="status"
+          className="flex items-start gap-3 rounded-xl border border-warning/40 bg-warning-soft p-4 text-xs text-text-primary"
+        >
+          <AlertTriangle className="h-5 w-5 shrink-0 text-warning mt-0.5" />
+          <div className="space-y-1">
+            <span className="font-semibold text-warning text-sm">
+              Modo Contingencia Local — Banco de Alternativas MGA
+            </span>
+            <p className="text-text-secondary leading-relaxed pt-0.5">
+              Sin conexión con el servicio central de PostgreSQL. Se presentan las iniciativas canónicas en modo lectura de contingencia.
             </p>
           </div>
         </div>

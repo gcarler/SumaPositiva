@@ -98,11 +98,13 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         return response
 
     from app.modules.actores.router import router as actores_router
+    from app.modules.alternativas.router import router as alternativas_router
     from app.modules.fuentes.router import router as fuentes_router
 
     application.include_router(api_router)
     application.include_router(actores_router, prefix="/api/v1")
     application.include_router(fuentes_router, prefix="/api/v1")
+    application.include_router(alternativas_router, prefix="/api/v1")
     return application
 
 

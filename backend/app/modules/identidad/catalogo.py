@@ -33,6 +33,8 @@ PERMISOS = {
     "seguimiento:gestionar": "Gestionar compromisos e hitos del PAS",
     "fuentes:leer": "Consultar catálogo oficial de fuentes de información",
     "fuentes:gestionar": "Gestionar fuentes de información y solicitudes oficiales",
+    "alternativas:leer": "Consultar iniciativas y alternativas MGA",
+    "alternativas:gestionar": "Gestionar alternativas e iniciativas MGA",
 }
 ROLES_SISTEMA = {
     "ciudadano",

@@ -49,6 +49,8 @@ Contrato y activación: [usuarios y acceso](identidad.md).
 | contenido:leer | autoridad_distrital, administrador_identidades, auditor_forense | declarada |
 | fuentes:gestionar | autoridad_distrital, administrador_identidades | declarada |
 | fuentes:leer | autoridad_distrital, administrador_identidades, auditor_forense, facilitador_mesa, ciudadano | declarada |
+| alternativas:gestionar | autoridad_distrital, administrador_identidades | declarada |
+| alternativas:leer | autoridad_distrital, administrador_identidades, auditor_forense, facilitador_mesa, ciudadano | declarada |
 
 Los roles ciudadano, ciudadano anónimo y auditor forense no reciben permisos de
 gestión institucional. El registro público solo admite ciudadano. Asignaciones
@@ -275,3 +277,14 @@ El listado público existente sigue mostrando líneas activas. No se conceden nu
 | POST | /api/v1/actores | permiso:politicas:gestionar@declarada | Registro de actor con validación de procedencia y trazabilidad de auditoría. |
 | PUT | /api/v1/actores/{id} | permiso:politicas:gestionar@declarada | Actualización de caracterización y acciones con registro inmutable. |
 | DELETE | /api/v1/actores/{id} | permiso:politicas:gestionar@declarada | Desactivación o retiro con justificación técnica obligatoria en auditoría. |
+
+## Banco de Alternativas de Solución MGA — decisión EDIT-09
+
+| Método | Ruta | Control | Motivo o condición |
+| --- | --- | --- | --- |
+| GET | /api/v1/alternativas | publico | Catálogo público del banco distrital de alternativas MGA para deliberación ciudadana. |
+| GET | /api/v1/alternativas/{id_o_codigo} | publico | Ficha técnica pública de iniciativa de solución MGA por identificador o código. |
+| POST | /api/v1/alternativas | permiso:alternativas:gestionar@declarada | Formular iniciativa en el Banco Distrital de Alternativas MGA con gating de Fase 2. |
+| PATCH | /api/v1/alternativas/{id} | permiso:alternativas:gestionar@declarada | Actualización controlada de iniciativa con trazabilidad de auditoría inmutable. |
+| DELETE | /api/v1/alternativas/{id} | permiso:alternativas:gestionar@declarada | Retiro de alternativa con validación de dependencias en compromisos PAS. |
+

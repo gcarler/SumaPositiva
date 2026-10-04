@@ -7,6 +7,12 @@ import type {
   SectorMGA,
 } from "../models/alternativa";
 import { ALTERNATIVAS_CANONICAS } from "../data/alternativas-canonicas.data";
+import {
+  listarAlternativasApi,
+  crearAlternativaApi,
+  actualizarAlternativaApi,
+  eliminarAlternativaApi,
+} from "../services/alternativas-api";
 
 export interface FiltrosAlternativas {
   busqueda: string;
@@ -97,10 +103,10 @@ export function filtrarAlternativas(
       return false;
     }
     // Filtro por enfoque étnico (Ley 70/93)
-    if (filtros.enfoqueEtnico === "solo_etnicos" && !alt.requiere_consulta_previa) {
+    if (filtros.enfoqueEtnico === "solo_etnicos" && !alt.requiere_consulta_previa && alt.sector !== "etnico_comunitario") {
       return false;
     }
-    if (filtros.enfoqueEtnico === "no_etnicos" && alt.requiere_consulta_previa) {
+    if (filtros.enfoqueEtnico === "no_etnicos" && (alt.requiere_consulta_previa || alt.sector === "etnico_comunitario")) {
       return false;
     }
     // Búsqueda textual
@@ -122,24 +128,35 @@ export function filtrarAlternativas(
 export interface AlternativasState {
   alternativas: AlternativaSolucion[];
   filtros: FiltrosAlternativas;
+  cargando: boolean;
+  guardando: boolean;
+  error: string | null;
+  esContingencia: boolean;
+
   setFiltros: (filtros: Partial<FiltrosAlternativas>) => void;
   limpiarFiltros: () => void;
   getById: (id: string) => AlternativaSolucion | undefined;
+  cargarAlternativas: () => Promise<void>;
   agregarAlternativa: (
     datos: Omit<AlternativaSolucion, "id" | "creado_en" | "actualizado_en">
-  ) => string;
+  ) => Promise<string | null>;
   actualizarAlternativa: (
     id: string,
-    cambios: Partial<AlternativaSolucion>
-  ) => void;
-  eliminarAlternativa: (id: string) => void;
-  cambiarEstado: (id: string, nuevoEstado: EstadoAlternativa) => void;
+    cambios: Partial<AlternativaSolucion>,
+    justificacion?: string
+  ) => Promise<boolean>;
+  eliminarAlternativa: (id: string) => Promise<boolean>;
+  cambiarEstado: (id: string, nuevoEstado: EstadoAlternativa) => Promise<boolean>;
   resetearAlternativas: () => void;
 }
 
 export const useAlternativasStore = create<AlternativasState>((set, get) => ({
   alternativas: ALTERNATIVAS_CANONICAS,
   filtros: FILTROS_DEFECTO_ALTERNATIVAS,
+  cargando: false,
+  guardando: false,
+  error: null,
+  esContingencia: false,
 
   setFiltros: (cambios) =>
     set((state) => ({
@@ -151,57 +168,95 @@ export const useAlternativasStore = create<AlternativasState>((set, get) => ({
       filtros: FILTROS_DEFECTO_ALTERNATIVAS,
     }),
 
-  getById: (id) => get().alternativas.find((a) => a.id === id),
+  getById: (id) =>
+    get().alternativas.find((a) => a.id === id || a.codigo === id),
 
-  agregarAlternativa: (datos) => {
-    const nuevoId = `alt-${Date.now()}`;
-    const ahora = new Date().toISOString();
-    const nuevaAlternativa: AlternativaSolucion = {
-      ...datos,
-      id: nuevoId,
-      creado_en: ahora,
-      actualizado_en: ahora,
-    };
-    set((state) => ({
-      alternativas: [nuevaAlternativa, ...state.alternativas],
-    }));
-    return nuevoId;
+  cargarAlternativas: async () => {
+    set({ cargando: true, error: null });
+    try {
+      const res = await listarAlternativasApi(get().filtros);
+      set({
+        alternativas: res.datos,
+        esContingencia: res.esContingencia,
+        cargando: false,
+      });
+    } catch (err) {
+      set({
+        alternativas: ALTERNATIVAS_CANONICAS,
+        esContingencia: true,
+        error: (err as Error).message || "Fallo de conexión",
+        cargando: false,
+      });
+    }
   },
 
-  actualizarAlternativa: (id, cambios) =>
-    set((state) => ({
-      alternativas: state.alternativas.map((a) =>
-        a.id === id
-          ? {
-              ...a,
-              ...cambios,
-              actualizado_en: new Date().toISOString(),
-            }
-          : a
-      ),
-    })),
+  agregarAlternativa: async (datos) => {
+    set({ guardando: true, error: null });
+    try {
+      const creada = await crearAlternativaApi(datos);
+      set((state) => ({
+        alternativas: [creada, ...state.alternativas],
+        guardando: false,
+      }));
+      return creada.id;
+    } catch (err) {
+      const mensaje = (err as Error).message || "Error al persistir alternativa en el servidor";
+      set({ guardando: false, error: mensaje });
+      // Prohibición absoluta de mutación silenciosa en error
+      return null;
+    }
+  },
 
-  eliminarAlternativa: (id) =>
-    set((state) => ({
-      alternativas: state.alternativas.filter((a) => a.id !== id),
-    })),
+  actualizarAlternativa: async (id, cambios, justificacion) => {
+    set({ guardando: true, error: null });
+    try {
+      const actualizada = await actualizarAlternativaApi(id, cambios, justificacion);
+      set((state) => ({
+        alternativas: state.alternativas.map((a) =>
+          a.id === id || a.codigo === id ? actualizada : a
+        ),
+        guardando: false,
+      }));
+      return true;
+    } catch (err) {
+      const mensaje = (err as Error).message || "Error al actualizar alternativa en el servidor";
+      set({ guardando: false, error: mensaje });
+      // Prohibición absoluta de mutación silenciosa en error
+      return false;
+    }
+  },
 
-  cambiarEstado: (id, nuevoEstado) =>
-    set((state) => ({
-      alternativas: state.alternativas.map((a) =>
-        a.id === id
-          ? {
-              ...a,
-              estado: nuevoEstado,
-              actualizado_en: new Date().toISOString(),
-            }
-          : a
-      ),
-    })),
+  eliminarAlternativa: async (id) => {
+    set({ guardando: true, error: null });
+    try {
+      await eliminarAlternativaApi(id);
+      set((state) => ({
+        alternativas: state.alternativas.filter((a) => a.id !== id && a.codigo !== id),
+        guardando: false,
+      }));
+      return true;
+    } catch (err) {
+      const mensaje = (err as Error).message || "Error al eliminar alternativa en el servidor";
+      set({ guardando: false, error: mensaje });
+      return false;
+    }
+  },
+
+  cambiarEstado: async (id, nuevoEstado) => {
+    return await get().actualizarAlternativa(
+      id,
+      { estado: nuevoEstado },
+      `Cambio de estado MGA a '${nuevoEstado}'`
+    );
+  },
 
   resetearAlternativas: () =>
     set({
       alternativas: ALTERNATIVAS_CANONICAS,
       filtros: FILTROS_DEFECTO_ALTERNATIVAS,
+      error: null,
+      esContingencia: false,
+      cargando: false,
+      guardando: false,
     }),
 }));

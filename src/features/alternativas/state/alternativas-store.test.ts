@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, test } from "vitest";
+import { beforeEach, afterEach, describe, expect, test, vi } from "vitest";
 import {
   calcularKPIsAlternativas,
   filtrarAlternativas,
@@ -7,9 +7,16 @@ import {
 } from "./alternativas-store";
 import { ALTERNATIVAS_CANONICAS } from "../data/alternativas-canonicas.data";
 
-describe("Banco Distrital de Alternativas MGA — Cartagena (Hito F-1)", () => {
+describe("Banco Distrital de Alternativas MGA — Cartagena (Hito F-1 & EDIT-09)", () => {
+  const originalFetch = globalThis.fetch;
+
   beforeEach(() => {
+    vi.restoreAllMocks();
     useAlternativasStore.getState().resetearAlternativas();
+  });
+
+  afterEach(() => {
+    globalThis.fetch = originalFetch;
   });
 
   describe("Catálogo Canónico Oficial y KPIs", () => {
@@ -111,9 +118,83 @@ describe("Banco Distrital de Alternativas MGA — Cartagena (Hito F-1)", () => {
     });
   });
 
-  describe("Mutaciones del Store Zustand", () => {
-    test("agrega una nueva alternativa de solución con ID único", () => {
-      const nuevoId = useAlternativasStore.getState().agregarAlternativa({
+  describe("Carga y Contingencia Asíncrona (EDIT-09)", () => {
+    test("cargarAlternativas actualiza el estado desde backend con esContingencia=false", async () => {
+      const mockItems = [
+        {
+          id: "01a0f810-e5ca-7001-a001-000000000001",
+          codigo: "ALT-ESCNNA-01",
+          nombre: "Ruta Distrital Segura",
+          descripcion: "Prevención",
+          sector: "proteccion_nna",
+          costo_estimado_cop: 4500000000,
+          horizonte_anios: 4,
+          estado: "priorizada",
+          requiere_consulta_previa: false,
+          poblacion_objetivo_estimada: 14500,
+          creado_en: "2026-10-01T10:00:00Z",
+          actualizado_en: "2026-10-04T12:00:00Z",
+        },
+      ];
+
+      vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
+        new Response(JSON.stringify(mockItems), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        })
+      );
+
+      await useAlternativasStore.getState().cargarAlternativas();
+
+      const estado = useAlternativasStore.getState();
+      expect(estado.alternativas).toHaveLength(1);
+      expect(estado.alternativas[0].codigo).toBe("ALT-ESCNNA-01");
+      expect(estado.esContingencia).toBe(false);
+      expect(estado.cargando).toBe(false);
+      expect(estado.error).toBeNull();
+    });
+
+    test("cargarAlternativas conmuta a catálogo local y esContingencia=true ante fallo de red", async () => {
+      vi.spyOn(globalThis, "fetch").mockImplementation(() => {
+        throw new Error("Conexión rehusada");
+      });
+
+      await useAlternativasStore.getState().cargarAlternativas();
+
+      const estado = useAlternativasStore.getState();
+      expect(estado.alternativas).toEqual(ALTERNATIVAS_CANONICAS);
+      expect(estado.esContingencia).toBe(true);
+      expect(estado.cargando).toBe(false);
+    });
+  });
+
+  describe("Mutaciones del Store Zustand con Persistencia Real (EDIT-09)", () => {
+    test("agrega una nueva alternativa de solución con persistencia remota", async () => {
+      const mockCreado = {
+        id: "01a0f810-e5ca-7001-a001-000000000099",
+        codigo: "ALT-TEST-99",
+        nombre: "Iniciativa de Prueba Comunitaria",
+        descripcion: "Descripción técnica de prueba pericial para el store.",
+        sector: "seguridad_convivencia",
+        linea_estrategica_codigo: "LE-01",
+        dimension_codigo: "comunitaria",
+        costo_estimado_cop: 1000000000,
+        horizonte_anios: 2,
+        estado: "en_formulacion",
+        requiere_consulta_previa: false,
+        poblacion_objetivo_estimada: 5000,
+        creado_en: "2026-10-04T12:00:00Z",
+        actualizado_en: "2026-10-04T12:00:00Z",
+      };
+
+      vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
+        new Response(JSON.stringify(mockCreado), {
+          status: 201,
+          headers: { "Content-Type": "application/json" },
+        })
+      );
+
+      const nuevoId = await useAlternativasStore.getState().agregarAlternativa({
         codigo: "ALT-TEST-99",
         nombre: "Iniciativa de Prueba Comunitaria",
         descripcion: "Descripción técnica de prueba pericial para el store.",
@@ -130,45 +211,142 @@ describe("Banco Distrital de Alternativas MGA — Cartagena (Hito F-1)", () => {
         requiere_consulta_previa: false,
       });
 
-      expect(nuevoId).toBeDefined();
-      const actual = useAlternativasStore.getState().getById(nuevoId);
+      expect(nuevoId).toBe("01a0f810-e5ca-7001-a001-000000000099");
+      const actual = useAlternativasStore.getState().getById("01a0f810-e5ca-7001-a001-000000000099");
       expect(actual).toBeDefined();
       expect(actual?.codigo).toBe("ALT-TEST-99");
       expect(useAlternativasStore.getState().alternativas.length).toBe(9);
     });
 
-    test("actualiza datos de una iniciativa existente", () => {
+    test("anti-silent-fallback: previene mutación local si la persistencia remota falla al agregar", async () => {
+      vi.spyOn(globalThis, "fetch").mockImplementation(() => {
+        throw new Error("HTTP 500: Error interno de base de datos");
+      });
+
+      const res = await useAlternativasStore.getState().agregarAlternativa({
+        codigo: "ALT-FAIL-01",
+        nombre: "Iniciativa Fallida",
+        descripcion: "No debe mutar store",
+        sector: "seguridad_convivencia",
+        linea_estrategica_codigo: "LE-01",
+        dimension_id: "comunitaria",
+        objetivo_central_mga: "Objetivo",
+        territorio_cobertura: "Cartagena",
+        poblacion_objetivo_estimada: 100,
+        costo_estimado_cop: 100000,
+        horizonte_anios: 1,
+        fuentes_financiacion_sugeridas: [],
+        estado: "en_formulacion",
+        requiere_consulta_previa: false,
+      });
+
+      expect(res).toBeNull();
+      expect(useAlternativasStore.getState().alternativas.length).toBe(8);
+      expect(useAlternativasStore.getState().error).toBeDefined();
+      expect(useAlternativasStore.getState().getById("ALT-FAIL-01")).toBeUndefined();
+    });
+
+    test("actualiza datos de una iniciativa existente con persistencia", async () => {
       const store = useAlternativasStore.getState();
       const idObjetivo = "alt-01a0f810-e5ca-7001-a001-000000000001";
 
-      store.actualizarAlternativa(idObjetivo, {
+      const mockActualizado = {
+        id: idObjetivo,
+        codigo: "ALT-ESCNNA-01",
+        nombre: "Ruta Distrital Segura",
+        descripcion: "",
+        sector: "proteccion_nna",
+        costo_estimado_cop: 5000000000,
+        horizonte_anios: 5,
+        estado: "priorizada",
+        requiere_consulta_previa: false,
+        creado_en: "2026-10-01T10:00:00Z",
+        actualizado_en: "2026-10-04T12:00:00Z",
+      };
+
+      vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
+        new Response(JSON.stringify(mockActualizado), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        })
+      );
+
+      const exito = await store.actualizarAlternativa(idObjetivo, {
         costo_estimado_cop: 5000000000,
         horizonte_anios: 5,
       });
 
+      expect(exito).toBe(true);
       const modificado = useAlternativasStore.getState().getById(idObjetivo);
       expect(modificado?.costo_estimado_cop).toBe(5000000000);
       expect(modificado?.horizonte_anios).toBe(5);
     });
 
-    test("cambia el estado de viabilidad de una alternativa", () => {
+    test("cambia el estado de viabilidad de una alternativa", async () => {
       const store = useAlternativasStore.getState();
       const idObjetivo = "alt-01a0f810-e5ca-7001-a001-000000000005"; // ALT-INS-05 (requiere_ajustes)
 
-      store.cambiarEstado(idObjetivo, "viable");
+      const mockActualizado = {
+        id: idObjetivo,
+        codigo: "ALT-INS-05",
+        nombre: "Centro de Formación Tecnológica",
+        descripcion: "",
+        sector: "educacion_cultura",
+        costo_estimado_cop: 2900000000,
+        horizonte_anios: 4,
+        estado: "viable",
+        requiere_consulta_previa: true,
+        creado_en: "2026-10-01T10:00:00Z",
+        actualizado_en: "2026-10-04T12:00:00Z",
+      };
+
+      vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
+        new Response(JSON.stringify(mockActualizado), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        })
+      );
+
+      const exito = await store.cambiarEstado(idObjetivo, "viable");
+      expect(exito).toBe(true);
 
       const modificado = useAlternativasStore.getState().getById(idObjetivo);
       expect(modificado?.estado).toBe("viable");
     });
 
-    test("elimina una alternativa del banco distrital", () => {
+    test("elimina una alternativa del banco distrital", async () => {
       const store = useAlternativasStore.getState();
       const idObjetivo = "alt-01a0f810-e5ca-7001-a001-000000000008";
 
-      store.eliminarAlternativa(idObjetivo);
+      vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
+        new Response(null, { status: 204 })
+      );
 
+      const exito = await store.eliminarAlternativa(idObjetivo);
+      expect(exito).toBe(true);
       expect(useAlternativasStore.getState().alternativas.length).toBe(7);
       expect(useAlternativasStore.getState().getById(idObjetivo)).toBeUndefined();
+    });
+
+    test("anti-silent-fallback: previene eliminación si el backend retorna 409 por dependencias", async () => {
+      const store = useAlternativasStore.getState();
+      const idObjetivo = "alt-01a0f810-e5ca-7001-a001-000000000001";
+
+      vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
+        new Response(
+          JSON.stringify({
+            detail: "No se puede eliminar la alternativa: está vinculada a 2 compromiso(s) del Plan de Acción y Seguimiento (PAS).",
+          }),
+          { status: 409, headers: { "Content-Type": "application/json" } }
+        )
+      );
+
+      const exito = await store.eliminarAlternativa(idObjetivo);
+      expect(exito).toBe(false);
+      // El estado debe conservar el elemento
+      expect(useAlternativasStore.getState().alternativas.length).toBe(8);
+      expect(useAlternativasStore.getState().getById(idObjetivo)).toBeDefined();
+      expect(useAlternativasStore.getState().error).toContain("vinculada");
     });
 
     test("gestiona filtros y limpieza de estado", () => {

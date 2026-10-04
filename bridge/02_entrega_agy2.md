@@ -2586,3 +2586,115 @@ En atención al mandato de auditoría forense para erradicar la persistencia pur
 | **Aislamiento de Módulos Codex** | `git status` | Archivos de noticias y testimonios estrictamente intactos. |
 | **Salvaguarda de Base de Datos** | N/A | Cero migraciones ejecutadas sobre `bd_csh`, cero push a remoto. |
 
+
+---
+
+# Tarea EDIT-09: Modelo Relacional y Persistencia del Banco de Alternativas MGA
+
+**Fecha**: 2026-10-04T13:38:00Z  
+**Estado**: LISTA PARA AUDITORÍA PERICIAL (EAF)  
+**Responsable**: agy2 (Equipo de Desarrollo EDD)  
+**Prioridad**: MEDIA (Persistencia Real y Trazabilidad del Banco Distrital de Alternativas de Solución MGA)  
+**Especificación**: `bridge/01_tarea_agy2_edit_09.md`  
+
+---
+
+### 1. Resumen de la Solución e Integración Fullstack (EDIT-09)
+
+En atención al mandato pericial de erradicar la persistencia puramente en memoria y mock estática en el Banco de Alternativas de Solución MGA, se diseñó, migró e integró la persistencia relacional completa fullstack:
+
+1. **Migración Alembic 0043 (`backend/alembic/versions/0043_modulo_banco_alternativas.py`)**:
+   - `down_revision = "0042_modulo_fuentes_informacion"`.
+   - Creación de tabla `motor_politicas.banco_alternativas`:
+     - Clave primaria `id UUID PRIMARY KEY DEFAULT gen_random_uuid()`.
+     - Identificador único `codigo VARCHAR(50) UNIQUE NOT NULL`.
+     - Datos descriptivos: `nombre`, `descripcion`, `sector`, `objetivo_central`, `territorio_cobertura`.
+     - Relaciones foráneas normalizadas: `linea_estrategica_id REFERENCES motor_politicas.lineas_estrategicas(id) ON DELETE SET NULL`, `linea_estrategica_codigo VARCHAR(20)`, `dimension_id REFERENCES motor_politicas.dimensiones_seguridad(codigo) ON DELETE SET NULL`.
+     - Formulación financiera y temporal: `costo_estimado_cop NUMERIC(15, 2) NOT NULL DEFAULT 0.00`, `horizonte_anios INT NOT NULL DEFAULT 4`.
+     - Estado del ciclo de vida MGA: `estado VARCHAR(30) NOT NULL DEFAULT 'en_formulacion'`.
+     - Salvaguarda constitucional étnica: `requiere_consulta_previa BOOLEAN NOT NULL DEFAULT FALSE`.
+     - Enfoques y metadatos: `territorios_focalizados JSONB NOT NULL DEFAULT '[]'`, `fuentes_financiacion_sugeridas JSONB NOT NULL DEFAULT '[]'`, `metadatos JSONB NOT NULL DEFAULT '{}'`, `poblacion_objetivo_estimada INT NOT NULL DEFAULT 0`.
+     - Marcas temporales de auditoría: `creado_en` y `actualizado_en` gobernadas por `clock_timestamp()`.
+   - Índices de rendimiento pericial creados sobre: `codigo`, `sector`, `estado`, `linea_estrategica_id`, `dimension_id`.
+   - Sembrado canónico oficial: Las 8 iniciativas oficiales de Cartagena (`ALT-ESCNNA-01` a `ALT-ETN-08`) sembradas con idempotencia pericial (`ON CONFLICT (codigo) DO NOTHING`).
+   - Asignación de permisos RBAC en catálogo y roles de sistema: `alternativas:leer` y `alternativas:gestionar`.
+
+2. **Módulo Backend Integral `backend/app/modules/alternativas/`**:
+   - `models.py`: Modelo SQLAlchemy `BancoAlternativas` registrado en metadatos para paridad total Alembic.
+   - `schemas.py`: Esquemas Pydantic para creación, actualización, consulta paginada/filtrada y respuesta DTO.
+   - `repository.py`: Consultas optimizadas con filtros multicriterio (sector, línea, dimensión, estado, enfoque étnico, búsqueda textual), método `contar_compromisos_pas_vinculados` mediante inspección de `seguimiento.compromisos_pas` y operaciones de escritura transaccional.
+   - `service.py`:
+     - **Gating de Fases DNP**: En fase 2 `preparatoria`, restringe la formulación exclusivamente a roles institucionales autorizados (`autoridad_distrital`, `administrador_identidades`); en fase `activa` permite formulación a todo rol con permiso `alternativas:gestionar`.
+     - **Auditoría Forense Inmutable**: Cada operación `crear`, `actualizar` o `eliminar` genera un evento inmutable en `auditoria.registros_auditoria` con hash criptográfico SHA-256 encadenado y snapshot de metadatos.
+     - **Integridad Referencial y Restricción PAS**: Valida que una alternativa vinculada a compromisos PAS no pueda ser retirada, emitiendo un error explícito HTTP 409 Conflict.
+   - `router.py`: 5 rutas RESTful en `/api/v1/alternativas`:
+     - `GET /api/v1/alternativas`: Catálogo público filtrable.
+     - `GET /api/v1/alternativas/{id_o_codigo}`: Consulta por UUID o código MGA canónico.
+     - `POST /api/v1/alternativas`: Registro de iniciativa con RBAC `alternativas:gestionar`.
+     - `PATCH /api/v1/alternativas/{id}`: Edición controlada con justificación motivada.
+     - `DELETE /api/v1/alternativas/{id}`: Retiro de iniciativa con validación PAS.
+
+3. **Cliente API y Store Zustand con Anti-Silent-Fallback (`src/features/alternativas/`)**:
+   - `services/alternativas-api.ts`: Cliente HTTP desacoplado con mapeo bidireccional DTO/dominio y detección de modo contingencia.
+   - `state/alternativas-store.ts`:
+     - Acciones asíncronas `cargarAlternativas()`, `agregarAlternativa()`, `actualizarAlternativa()`, `eliminarAlternativa()`, `cambiarEstado()`.
+     - **Anti-Silent-Fallback**: Prohibición absoluta de mutar el estado local de Zustand si la solicitud HTTP falla o el servidor rechaza la transacción (mantiene integridad entre memoria y PostgreSQL).
+     - Flag reactivo `esContingencia` para activación de salvaguardas visuales en UI.
+   - `views/alternativas-view.tsx`: Carga asíncrona automática al montar la vista y despliegue de banner oficial de Modo Contingencia ante caídas de red.
+   - `panels/alternativa-editor-panel.tsx`: Formulario reactivo asíncrono con bloqueo por `guardando`, notificaciones toast informando persistencia en PostgreSQL y retención del panel ante fallos de servidor.
+
+4. **Suite de Pruebas Automatizadas y Calidad**:
+   - `src/features/alternativas/services/alternativas-api.test.ts`: 8 pruebas unitarias aprobadas al 100%.
+   - `src/features/alternativas/state/alternativas-store.test.ts`: 12 pruebas unitarias aprobadas al 100% validando persistencia, fallback y anti-silent-fallback (error 500 y 409).
+   - `backend/tests/test_alternativas_mga.py`: 4 pruebas de integración en `polis_test` validando catálogo público, resolución por ID/código, ciclo CRUD con auditoría y bloqueo de eliminación por compromisos PAS.
+   - Total frontend: 279 pruebas aprobadas en 30 suites (`bun test`).
+   - Total backend: 94 pruebas aprobadas en `test_alternativas_mga.py`, `test_access_policy.py`, `test_database_integration.py`.
+   - Pipeline de calidad `bun run check`: 0 errores en `ui:check`, `typecheck` y `lint`.
+   - Verificación de esquema `alembic check` en `polis_test`: 0 diffs ("No new upgrade operations detected").
+
+---
+
+### 2. Matriz de Archivos Modificados y Creados (EDIT-09)
+
+| Archivo | Tipo | Descripción de la Modificación |
+|---|---|---|
+| `backend/alembic/versions/0043_modulo_banco_alternativas.py` | **Creación** | Migración relacional con tabla `banco_alternativas`, índices, seed canónico y permisos RBAC. |
+| `backend/app/modules/alternativas/__init__.py` | **Creación** | Declaración de paquete del módulo alternativas. |
+| `backend/app/modules/alternativas/models.py` | **Creación** | Modelo SQLAlchemy `BancoAlternativas` con tipos relacionales y JSONB. |
+| `backend/app/modules/alternativas/schemas.py` | **Creación** | Esquemas Pydantic de entrada, salida, filtros y validación de tipos. |
+| `backend/app/modules/alternativas/repository.py` | **Creación** | Repositorio asíncrono con filtros multicriterio, consulta PAS y operaciones transaccionales. |
+| `backend/app/modules/alternativas/service.py` | **Creación** | Servicio con gating Fase 2 DNP, auditoría SHA-256 encadenada y bloqueo PAS 409. |
+| `backend/app/modules/alternativas/router.py` | **Creación** | Endpoints RESTful con RBAC estricto `alternativas:gestionar` / `alternativas:leer`. |
+| `backend/app/modules/politicas/models.py` | **Modificación** | Registro de `BancoAlternativas` para descubrimiento de metadatos en Alembic. |
+| `backend/app/modules/auditoria/models.py` | **Modificación** | Importación de `FuenteInformacion` para resolución de paridad en esquema auditoría. |
+| `backend/app/modules/identidad/catalogo.py` | **Modificación** | Registro de permisos `alternativas:leer` y `alternativas:gestionar`. |
+| `backend/app/main.py` | **Modificación** | Registro de `alternativas_router` bajo prefijo `/api/v1`. |
+| `backend/tests/test_alternativas_mga.py` | **Creación** | 4 pruebas de integración de endpoints, RBAC, auditoría y restricción PAS. |
+| `docs/permisos-api.md` | **Modificación** | Documentación de rutas, métodos, controles y permisos del módulo de alternativas MGA. |
+| `src/features/alternativas/services/alternativas-api.ts` | **Creación** | Cliente HTTP con adaptadores DTO y soporte de contingencia offline. |
+| `src/features/alternativas/services/alternativas-api.test.ts` | **Creación** | Suite de 8 pruebas unitarias sobre operaciones HTTP y adaptadores DTO. |
+| `src/features/alternativas/state/alternativas-store.ts` | **Modificación** | Métodos asíncronos de persistencia real, anti-silent-fallback y flag de contingencia. |
+| `src/features/alternativas/state/alternativas-store.test.ts` | **Modificación** | 12 pruebas unitarias de KPIs, filtros, mutaciones remotas, contingencia y anti-silent-fallback. |
+| `src/features/alternativas/views/alternativas-view.tsx` | **Modificación** | Carga asíncrona de alternativas al montar y banner visual de contingencia. |
+| `src/features/alternativas/panels/alternativa-editor-panel.tsx` | **Modificación** | Envío asíncrono con bloqueo durante persistencia y toasts de confirmación PostgreSQL. |
+| `bridge/01_tarea_activa.md` | **Modificación** | Actualización de estado de EDIT-09 a ENTREGADA / LISTA PARA AUDITAR. |
+| `bridge/02_entrega_agy2.md` | **Modificación** | Registro del informe pericial de entrega de EDIT-09. |
+
+---
+
+### 3. Matriz de Quality Gates Periciales (EDIT-09)
+
+| Quality Gate | Comando de Validación | Resultado Pericial |
+|---|---|---|
+| **Pruebas Unitarias Alternativas API y Store** | `bun test src/features/alternativas/` | **47 pass, 0 fail (184 expect calls)** en 176ms. |
+| **Suite Completa Frontend Bun Test** | `bun test` | **279 pass, 0 fail (1272 expect calls)** en 30 suites de prueba. |
+| **Política de UI POLIS** | `bun run ui:check` (`node scripts/ui-policy.mjs`) | **0 violaciones** (100% componentes Design Kit, cero modales, tokens semánticos). |
+| **Chequeo de Tipos TypeScript** | `bun run typecheck` (`tsc --noEmit`) | **0 errores** de tipado estricto. |
+| **Linting Frontend ESLint** | `bun run lint` (`eslint .`) | **0 errores, 0 advertencias**. |
+| **Pipeline Global Check** | `bun run check` | **100% aprobado** (código 0). |
+| **Pruebas de Alternativas Backend (`polis_test`)** | `backend/.venv/bin/pytest backend/tests/test_alternativas_mga.py` | **4 passed in 4.54s** (catálogo público, detalle, CRUD con RBAC y bloqueo PAS). |
+| **Control de Acceso y RBAC** | `backend/.venv/bin/pytest backend/tests/test_access_policy.py` | **89 passed in 13.90s** (política de permisos intacta, 100% conforme). |
+| **Integración de Base de Datos y Paridad** | `backend/.venv/bin/pytest backend/tests/test_database_integration.py` | **1 passed in 1.93s** (readiness y migraciones conformes). |
+| **Verificación de Esquema Alembic** | `POLIS_DATABASE_URL=... alembic check` | **0 diffs** ("No new upgrade operations detected"). |
+| **Aislamiento de Módulos Codex** | `git status` | Archivos de noticias y testimonios estrictamente intactos. |
+| **Salvaguarda de Base de Datos** | N/A | Cero migraciones ejecutadas sobre `bd_csh`, cero push a remoto. |

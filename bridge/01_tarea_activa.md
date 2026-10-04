@@ -3,7 +3,7 @@
 **Última actualización**: 2026-10-04  
 **Responsable activo**: agy2 (EDD)  
 **Auditor independiente**: EAF  
-**Tarea en curso**: `EDIT-09` (**EN CURSO**) — Modelo Relacional y Persistencia del Banco de Alternativas MGA  
+**Tarea en curso**: `EDIT-09` (**ENTREGADA / LISTA PARA AUDITAR**) — Modelo Relacional y Persistencia del Banco de Alternativas MGA  
 **Última tarea cerrada**: `EDIT-08` (**CONFORME**) — Cableado de Asistencia Pública Directa a PostgreSQL (267/267 bun tests passed, 90/90 backend pytest passed)
 
 
@@ -49,7 +49,7 @@
 | **EDIT-06** | **CRÍTICA** | Armonización Integral de Pruebas Backend y Paridad de Esquema Alembic | **CONFORME** | Dictamen EAF en `03_dictamen_revision.md`. 414/414 pytest passed, 0 diffs en alembic check, 248 bun test pass. |
 | **EDIT-07** | **ALTA** | Alineación de Rutas y Esquemas en Participación Multicanal | **CONFORME** | Dictamen EAF en `03_dictamen_revision.md`. Endpoints alineados (`/canal-web`, `/canal-mesas`, `/canal-escenarios`, `/escenarios-especiales`), DTOs normalizados, 259/259 bun tests pass, bun run check limpio. |
 | **EDIT-08** | **ALTA** | Cableado de Asistencia Pública Directa a PostgreSQL | **CONFORME** | Dictamen EAF en `03_dictamen_revision.md`. Planilla pública `/asistencia/[mesaId]` persistiendo en `mesas_trabajo.participantes_mesa` con resolución UUID/código, resiliencia offline en store/UI, 267 bun tests pass (8 nuevos en asistencia-api), 90 passed en backend pytest, bun run check 0 errores. |
-| **EDIT-09** | **MEDIA** | Modelo Relacional y Persistencia del Banco de Alternativas MGA | **EN CURSO** | Especificación en `bridge/01_tarea_agy2_edit_09.md`. Asignada a agy2. |
+| **EDIT-09** | **MEDIA** | Modelo Relacional y Persistencia del Banco de Alternativas MGA | **ENTREGADA / LISTA PARA AUDITAR** | Especificación en `bridge/01_tarea_agy2_edit_09.md`. Migración 0043 en polis_test, 5 endpoints REST, RBAC, auditoría forense inmutable, gating Fase 2, restricción PAS 409, 279 bun tests pass (8 nuevos en alternativas-api, store actualizado con contingencia/anti-silent-fallback), 94 pytest pass, bun run check 0 errores, 0 diffs alembic check. |
 
 
 
