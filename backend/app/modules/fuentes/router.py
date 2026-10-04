@@ -61,11 +61,11 @@ async def obtener_fuente(id: str, service: FuentesServiceDep):
 )
 async def crear_fuente(
     datos: FuenteInformacionCrear,
-    service: FuentesServiceDep,
     sujeto: Annotated[
         SujetoAutenticadoContexto,
         Depends(requerir_permiso("fuentes:gestionar", "declarada")),
     ],
+    service: FuentesServiceDep,
 ):
     """Radica o crea una nueva fuente de información oficial con auditoría inmutable."""
     return await service.crear_fuente(datos, usuario_id=sujeto.sujeto_id)
@@ -78,11 +78,11 @@ async def crear_fuente(
 async def actualizar_fuente(
     id: str,
     cambios: FuenteInformacionActualizar,
-    service: FuentesServiceDep,
     sujeto: Annotated[
         SujetoAutenticadoContexto,
         Depends(requerir_permiso("fuentes:gestionar", "declarada")),
     ],
+    service: FuentesServiceDep,
 ):
     """Actualiza radicados, fechas de entrega, observaciones y estados de una fuente."""
     return await service.actualizar_fuente(id, cambios, usuario_id=sujeto.sujeto_id)
@@ -94,11 +94,11 @@ async def actualizar_fuente(
 )
 async def eliminar_fuente(
     id: str,
-    service: FuentesServiceDep,
     sujeto: Annotated[
         SujetoAutenticadoContexto,
         Depends(requerir_permiso("fuentes:gestionar", "declarada")),
     ],
+    service: FuentesServiceDep,
 ):
     """Elimina una fuente de información registrando el evento en auditoría forense."""
     await service.eliminar_fuente(id, usuario_id=sujeto.sujeto_id)

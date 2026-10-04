@@ -95,11 +95,11 @@ async def listar_agendas(
 )
 async def crear_agenda(
     datos: AgendaCrear,
-    service: MesaServiceDep,
     sujeto: Annotated[
         SujetoAutenticadoContexto,
         Depends(requerir_permiso("mesas:abrir", nivel_minimo="declarada")),
     ],
+    service: MesaServiceDep,
 ):
     return await service.crear_agenda(datos, sujeto=sujeto)
 
@@ -116,11 +116,11 @@ async def obtener_agenda(agenda_id: str, service: MesaServiceDep):
 async def actualizar_agenda(
     agenda_id: str,
     datos: AgendaActualizar,
-    service: MesaServiceDep,
     sujeto: Annotated[
         SujetoAutenticadoContexto,
         Depends(requerir_permiso("mesas:abrir", nivel_minimo="declarada")),
     ],
+    service: MesaServiceDep,
 ):
     return await service.actualizar_agenda(agenda_id, datos, sujeto=sujeto)
 
@@ -203,11 +203,11 @@ async def obtener_mesa(mesa_id: uuid.UUID, service: MesaServiceDep):
 async def actualizar_mesa(
     mesa_id: uuid.UUID,
     datos: MesaActualizar,
-    service: MesaServiceDep,
     sujeto: Annotated[
         SujetoAutenticadoContexto,
         Depends(requerir_permiso("mesas:abrir", nivel_minimo="declarada")),
     ],
+    service: MesaServiceDep,
 ):
     return await service.actualizar_mesa(mesa_id, datos, sujeto=sujeto)
 

@@ -31,6 +31,8 @@ PERMISOS = {
     "testimonios:moderar": "Moderar y curar testimonios comunitarios",
     "seguimiento:leer": "Consultar compromisos y seguimiento PAS",
     "seguimiento:gestionar": "Gestionar compromisos e hitos del PAS",
+    "fuentes:leer": "Consultar catálogo oficial de fuentes de información",
+    "fuentes:gestionar": "Gestionar fuentes de información y solicitudes oficiales",
 }
 ROLES_SISTEMA = {
     "ciudadano",

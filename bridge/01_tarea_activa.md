@@ -3,7 +3,7 @@
 **Última actualización**: 2026-10-04  
 **Responsable activo**: agy2 (EDD)  
 **Auditor independiente**: EAF  
-**Tarea en curso / entregada**: `EDIT-01b` (CONFORME) — Todas las tareas de editabilidad asignadas (EDIT-01..04) cerradas con conformidad
+**Tarea en curso / entregada**: `EDIT-06` (ENTREGADA / LISTA PARA AUDITAR) — Armonización Integral de Pruebas Backend y Paridad de Esquema Alembic (414/414 pytest passed, 0 fallos)
 
 ---
 
@@ -41,6 +41,7 @@
 | **EDIT-03b** | **CRÍTICA** | Subsanación de Sembrado y Erradicación de Datos Fabricados en Catálogo de Fuentes | **CONFORME** | Dictamen EAF en `03_dictamen_revision.md`. |
 | **EDIT-04** | **BAJA** | Endpoint de Actualización Controlada para Fichas Técnicas DNP | **CONFORME** | Dictamen EAF en `03_dictamen_revision.md`. |
 | **EDIT-05** | **BAJA** | Integración y Cierre de Módulos de Noticias y Testimonios (Codex) | **BLOQUEADA (CODEX)** | No tocar archivos de Codex. |
+| **EDIT-06** | **CRÍTICA** | Armonización Integral de Pruebas Backend y Paridad de Esquema Alembic | **LISTA PARA AUDITAR** | 414/414 pytest passed, 0 diffs en alembic check, 248 bun test pass. |
 
 ---
 

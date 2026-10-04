@@ -44,11 +44,11 @@ async def obtener_ficha(id: uuid.UUID, service: IndicadoresServiceDep):
 async def actualizar_ficha(
     id: uuid.UUID,
     datos: FichaIndicadorActualizar,
-    service: IndicadoresServiceDep,
     sujeto: Annotated[
         SujetoAutenticadoContexto,
         Depends(requerir_permiso("indicadores:gestionar", nivel_minimo="declarada")),
     ],
+    service: IndicadoresServiceDep,
 ):
     """Actualiza metadatos institucionales de la ficha DNP salvaguardando la fórmula matemática y línea base."""
     return await service.actualizar_ficha(id, datos, usuario_id=sujeto.sujeto_id)
