@@ -307,7 +307,11 @@ function normalizarFicha(item: Record<string, unknown>): FichaIndicadorDnp {
 export async function obtenerCadenaValor(): Promise<CadenaValorRespuestaApi> {
   try {
     const raw = await apiFetch<CadenaValorData>("/indicadores/cadena-valor");
-    if (raw && (raw.insumo?.length || raw.producto?.length || raw.resultado?.length)) {
+    if (
+      raw &&
+      typeof raw === "object" &&
+      (Array.isArray(raw.insumo) || Array.isArray(raw.producto) || Array.isArray(raw.resultado))
+    ) {
       return {
         datos: {
           insumo: (raw.insumo ?? []).map((x) => normalizarFicha(x as unknown as Record<string, unknown>)),
