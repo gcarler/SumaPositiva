@@ -423,5 +423,88 @@ En atención al hallazgo de auditoría de severidad MEDIA sobre `fases-control-p
 | **Verificación de Endpoints en Vivo** | `curl http://127.0.0.1:8000/api/v1/politicas/fases` | **HTTP 200 OK (3 fases reales)**. |
 | **Verificación de Vista Frontend** | `curl http://127.0.0.1:3000/plataforma/seguimiento` | **HTTP 200 OK**. |
 
+---
+
+# Tarea AUD-05: Coherencia de Fases DNP con Alternativas y Seguimiento, Recálculo de Progreso y Subsanación OBS-07
+**Fecha**: 2026-10-04T00:43:00Z  
+**Estado**: CONFORME PARA AUDITORÍA FORENSE (EAF)  
+**Responsable**: agy2 (Equipo de Desarrollo EDD)  
+**Plan de Auditoría**: `bridge/00_plan_auditoria_plataforma.md`  
+**Especificación**: `bridge/01_tarea_agy2_aud_05.md`  
+**Commits**:
+- `b282cf0` feat(aud-05): coherencia de fases con gating en alternativas y seguimiento, recalculo de progreso y subsanacion OBS-07
+
+---
+
+## 1. Resumen Ejecutivo de la Solución (AUD-05)
+
+En atención a los hallazgos de auditoría sobre la falta de gating en los módulos gobernados por las fases del ciclo DNP y porcentajes de avance codificados estáticamente (`35%`, `0%`, `0%`), junto con la observación pendiente **OBS-07**:
+
+### 1. Gating de Módulos según Estado de Fase DNP (Acción a):
+- **Alternativas (`/plataforma/alternativas` ↔ `FASE_2_FORMULACION`)**:
+  - Si la fase se encuentra en estado `preparatoria` (o no `activa`), se renderiza un banner institucional de advertencia (`AlertTriangle`), notificando que la fase está en preparación y opera en **Modo Consulta / Solo Lectura** para usuarios no administradores.
+  - Para usuarios no administradores, se oculta el botón "Nueva Alternativa", se deshabilitan las acciones de mutación en la tabla de alternativas y se inhabilita "Nueva Asignación" en el submódulo de Costeo Presupuestal.
+  - Los administradores distritales (`autoridad_distrital`, `administrador_identidades`) conservan permisos plenos para la estructuración y costeo previo a la apertura pública.
+- **Seguimiento (`/plataforma/seguimiento` ↔ `FASE_3_PLAN_ACCION`)**:
+  - Si la fase está en estado `preparatoria` (o no `activa`), se despliega un banner de advertencia (`AlertTriangle`) indicando modo consulta para no administradores.
+  - Se oculta el botón "Nuevo Compromiso" y se desactivan los controles de edición en compromisos PAS, cadena de valor y rendición de cuentas para roles no autorizados.
+- **Backend Gating (`verificar_escritura_fase`)**:
+  - Implementado en `backend/app/modules/politicas/gating.py` e integrado en:
+    - `POST /politicas/lineas`, `PUT /politicas/lineas/{id}`, `DELETE /politicas/lineas/{id}` (Fase 2)
+    - `POST /presupuesto/asignaciones` (Fase 2)
+    - `POST /compromisos`, `PATCH /compromisos/{id}/avance`, `PUT /compromisos/{id}`, `DELETE /compromisos/{id}` (Fase 3)
+  - Rechaza con `HTTP 403 Forbidden` cualquier mutación si la fase no está en estado `activa`, a menos que el actor sea administrador distrital.
+
+### 2. Recálculo Dinámico de Progreso Empírico (`progreso_porcentaje`) (Acción b):
+- Se eliminaron por completo las cifras sintéticas codificadas (35%, 0%, 0%).
+- La función `calcular_progreso_real_fases(session)` computa en vivo desde la base de datos:
+  - **Fase 1 (Diagnóstico Participativo)**: Porcentaje de mesas con acta concertada sobre el total de mesas distritales registradas ($42 / 194 = 21.65\%$).
+  - **Fase 2 (Formulación Estratégica)**: Porcentaje de dimensiones de seguridad humana con líneas estratégicas activas formuladas sobre las 7 dimensiones canónicas ($1 / 7 = 14.29\%$).
+  - **Fase 3 (Plan de Acción e Inversión)**: Promedio aritmético del porcentaje de cumplimiento cuatrienal de los compromisos PAS ($61.40\%$).
+- Tanto `GET /politicas/fases` como `GET /politicas/fases/control` retornan estos valores calculados en tiempo real.
+
+### 3. Subsanación de Observación OBS-07:
+- En `devolucion-api.ts` y `devolucion-store.ts`, se eliminaron los números hardcoded (`968`, `398`, `209`, `189`, `570`) y los defaults sintéticos (`?? 968`).
+- Se definió `CONSOLIDADO_PARTICIPACION_VACIO` (totales en 0 y arrays vacíos).
+- Ante fallo de red o caída de API, el store muestra honestamente un estado en ceros puros acompañado del banner de contingencia, erradicando cifras ficticias.
+- Los datos de prueba quedaron confinados exclusivamente a fixtures para pruebas unitarias.
+
+### 4. Documentación de Reglas de Fases (Acción c):
+- Actualizado `docs/plataforma.md` con la sección detallada sobre correspondencia de módulos, reglas de gating por rol y fórmulas empíricas de progreso.
+
+---
+
+## 2. Archivos Creados y Modificados (AUD-05)
+
+| Archivo | Rol en el Sistema |
+|---|---|
+| `backend/app/modules/politicas/gating.py` | Recálculo dinámico de progreso real de fases y verificación pericial de escritura (`verificar_escritura_fase`). |
+| `backend/app/modules/politicas/router.py` | Inyección de progreso real en `/fases` y `/fases/control`, y gating en mutación de líneas estratégicas. |
+| `backend/app/modules/presupuesto/router.py` | Gating de fase 2 en creación de asignaciones presupuestales. |
+| `backend/app/modules/compromisos/router.py` | Gating de fase 3 en creación, actualización y eliminación de compromisos PAS. |
+| `backend/tests/test_aud05_gating_fases.py` | Tests automatizados de recálculo dinámico, rechazo 403 en fase preparatoria y bypass administrativo. |
+| `src/features/alternativas/views/alternativas-view.tsx` | Banner informativo de fase preparatoria y gating reactivo de creación/edición de alternativas. |
+| `src/features/alternativas/components/costeo-presupuestal-view.tsx` | Prop `puedeEditar` para deshabilitar controles de asignación presupuestal en modo solo lectura. |
+| `src/features/alternativas/views/alternativas-gating.test.ts` | Tests unitarios de verificación de gating de alternativas por rol y estado de fase. |
+| `src/features/seguimiento/views/seguimiento-view.tsx` | Banner informativo de fase preparatoria y gating de creación/edición de compromisos PAS. |
+| `src/features/seguimiento/services/devolucion-api.ts` | Subsanación OBS-07: `CONSOLIDADO_PARTICIPACION_VACIO` y eliminación de defaults `968`. |
+| `src/features/seguimiento/state/devolucion-store.ts` | Subsanación OBS-07: inicialización y fallback en ceros puros. |
+| `src/features/seguimiento/state/devolucion-store.test.ts` | Pruebas de OBS-07 verificando estado vacío y cero datos sintéticos. |
+| `docs/plataforma.md` | Documentación técnica de gobernanza de fases, gating y fórmulas de progreso empírico. |
+
+---
+
+## 3. Matriz de Validación de Quality Gates (AUD-05)
+
+| Quality Gate | Comando de Validación | Resultado Pericial |
+|---|---|---|
+| **Política de UI POLIS** | `node scripts/ui-policy.mjs` | **0 violaciones** (100% controles Design Kit, cero modales, tokens semánticos). |
+| **Chequeo de Tipos y Lint Frontend** | `bun run check` | **Aprobado (0 errores)** en TypeScript estricto y ESLint. |
+| **Pruebas Automatizadas Frontend** | `bun test src/features/alternativas src/features/seguimiento src/features/politicas` | **80 pass, 0 fail** en suites de alternativas, seguimiento y políticas. |
+| **Pruebas Automatizadas Backend** | `pytest tests/test_aud05_gating_fases.py tests/test_access_policy.py` | **79 pass, 0 fail (2 skipped)** (gating, recálculo y RBAC). |
+| **Compilación Turbopack** | `bun run build` | **Compilación exitosa en 11.2s** (57 rutas estáticas y dinámicas). |
+| **Verificación de Endpoints en Vivo** | `curl http://127.0.0.1:8000/api/v1/politicas/fases` | **HTTP 200 OK (Fase 1: 21.65%, Fase 2: 14.29%, Fase 3: 61.40%)**. |
+
+
 
 
