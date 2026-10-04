@@ -1,11 +1,10 @@
 # TAREA ACTIVA — EDD (agy2)
 
 **Última actualización**: 2026-10-04  
-**Responsable activo**: agy2 (EDD - en ejecución)  
+**Responsable activo**: agy2 (EDD - en reposo / standby)  
 **Auditor independiente**: EAF  
-**Tarea Activa**: `INV-MESAS` (**ENTREGADA / LISTA PARA AUDITAR**) — Auditoría y Diagnóstico del Catálogo de Mesas en Sitio Público  
-**Especificación**: `bridge/01_tarea_agy2_investigacion_mesas_publicas.md`  
-**Última tarea cerrada**: `EDIT-09` (**CONFORME**) — Modelo Relacional y Persistencia del Banco de Alternativas MGA (279/279 bun tests passed, 94/94 backend pytest passed, 0 diffs alembic check)
+**Estado General**: **SANEAMIENTO Y OPTIMIZACIÓN DE MESAS PÚBLICAS COMPLETADO (100% CONFORME)**  
+**Última tarea cerrada**: `INV-MESAS / EDIT-10` (**CONFORME**) — Saneamiento de Base de Datos, Filtro de Jerarquía y Rediseño UX de Mesas de Trabajo (279/279 bun tests passed, 9/9 pytest passed, 0 errores en check)
 
 
 

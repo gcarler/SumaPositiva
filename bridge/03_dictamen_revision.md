@@ -202,6 +202,28 @@ Verificado de forma forense e independiente:
 7. Quality gates frontend: `bun test` aprueba **279 pass / 0 fail (1272 expect calls)** en 30 suites; `bun run check` limpio con **0 errores y 0 advertencias**.
 8. Aislamiento pericial: Módulos de Codex estrictamente intactos; `bd_csh` sin migraciones prematuras (a aplicar en ventana de despliegue según runbook); cero push a remoto.
 
+## Dictamen INV-MESAS / EDIT-10 — CONFORME (commits f69e745, c88052d, 070bc99)
+Verificado de forma forense e independiente:
+1. Diagnóstico e investigación pericial: `agy2` documentó rigurosamente la causa raíz de la sobrecarga de 194 mesas (161 registros sintéticos inyectados por suites pytest el 2026-10-01, aplanamiento de 61 submesas y 81% de nombres duplicados).
+2. Saneamiento de Base de Datos (`bd_csh`): Ejecutado script pericial `bd/scripts/sanitizar_mesas_test.sql` con manejo de foreign keys restrictivas y suspensión temporal del trigger de inmutabilidad C-150. Se purgaron exactamente 161 mesas de prueba, quedando exactamente las **33 mesas canónicas oficiales** de Cartagena (`id LIKE '01a0f5fe%'`, 11 sectoriales, 11 rurales/insulares, 8 poblacionales, 3 territoriales).
+3. Filtro de Jerarquía en Backend: Se incorporó el parámetro `solo_raiz: bool = True` en `MesaRepository.listar()` (`repository.py`), `MesaService.listar_mesas()` (`service.py`) y endpoint `GET /api/v1/mesas` (`router.py`). Las submesas nunca contaminan el catálogo público.
+4. Rediseño UX y Experiencia de Usuario:
+   - `src/features/mesas/views/mesas-view.tsx` refactorizado con pestañas semánticas por categoría (Todas, Territoriales, Rurales/Insulares, Poblacionales, Sectoriales) con contadores Badge.
+   - Paginación dinámica de 12 tarjetas por página con controles de navegación amigables.
+   - Animación Framer Motion acotada a retardo máximo de 0.2s (`Math.min(idx * 0.025, 0.2)`).
+   - Botón directo de "Asistencia" enlazando a la planilla pública comunitaria (`/asistencia/[mesaId]`).
+   - Botón de acceso directo al Geovisor Territorial.
+5. Quality Gates Aprobados:
+   - `bun run check`: **100% aprobado** (UI policy con 0 infracciones, tipado TypeScript 0 errores, ESLint 0 errores/warnings).
+   - `bun test`: **279 pass / 0 fail (1272 expect calls)** en 30 suites.
+   - `pytest` backend: **9/9 pass** en `backend/tests/test_mesas*`.
+   - Compilación Next.js Turbopack: 57/57 rutas prerenderizadas exitosamente.
+   - Servicios reiniciados y activos (`polis-backend` y `polis-frontend`).
+6. Verificación HTTP en Vivo:
+   - Endpoint `GET /api/v1/mesas` devuelve exactamente 33 mesas canónicas.
+   - Assets CSS y JS del home y plataforma respondiendo con HTTP 200 OK.
+7. Salvaguardas: Archivos de Codex (`noticias` y `testimonios`) estrictamente intactos. Cero push a remoto.
+
 
 
 
