@@ -16,6 +16,8 @@
  * OBJETIVO CENTRAL ← MEDIOS → FINES.
  */
 
+import { sanitizarCsv as escaparCSV } from "@/shared/lib/csv";
+
 export type EstadoMesa = "programada" | "en_curso" | "cerrada" | "cancelada";
 
 /** Nivel del nodo: primario cuelga del centro; secundario cuelga de un primario */
@@ -492,12 +494,6 @@ export function arbolesAMatrizEstructurada(params: {
     fines: finesEstructurados,
     resumenTabular,
   };
-}
-
-/** Escapa cadenas para exportación CSV segura (RFC 4180) */
-function escaparCSV(valor: string | undefined | null): string {
-  if (valor === undefined || valor === null) return '""';
-  return `"${String(valor).replace(/"/g, '""').replace(/\r?\n/g, " ")}"`;
 }
 
 /** Exporta matriz a formato CSV normalizado para análisis en Excel, PowerBI, Python o R */

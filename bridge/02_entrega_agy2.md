@@ -1482,3 +1482,93 @@ En respuesta al dictamen emitido por EAF sobre AUD-11, se subsanó la regresión
 | **Pruebas de Guardas de Seguridad** | `pytest test_aud11_scripts_seguridad.py` | **16 passed en 0.75s** (rechazo estricto sobre `bd_csh` verificado). |
 | **Suite Completa Backend** | `PYTHONPATH=. .venv/bin/pytest -q` | **391 passed, 0 failed, 0 skipped en 180.70s** (100% verde). |
 | **Aislamiento de Cambios** | `git status` | Solo rutas explícitas de AUD-11b; cero interferencia con codex. |
+
+---
+
+## Tarea AUD-12: Unificación y Blindaje de Utilidades de Exportación CSV
+**Fecha**: 2026-10-04T03:48:30Z  
+**Estado**: CONFORME PARA AUDITORÍA FORENSE (EAF)  
+**Responsable**: agy2 (Equipo de Desarrollo EDD)  
+**Plan de Auditoría**: `bridge/00_plan_auditoria_plataforma.md`  
+**Especificación**: `bridge/01_tarea_agy2_aud_12.md`  
+
+---
+
+### 1. Resumen Ejecutivo de la Solución (AUD-12)
+
+En cumplimiento de la especificación de AUD-12 sobre la duplicación dispersa de utilidades de exportación CSV y el riesgo de inconsistencia ante parches de seguridad, se centralizó y blindó la exportación CSV en toda la plataforma:
+
+1. **Módulo Centralizado de Exportación CSV (`src/shared/lib/csv.ts`)**:
+   - Se diseñó e implementó un módulo compartido con funciones tipadas para serialización, sanitización y descarga de archivos tabulares.
+   - **Blindaje contra Inyección de Fórmulas CSV (OWASP CSV / Spreadsheet Formula Injection)**:
+     - Neutraliza de manera determinista los prefijos ejecutables: `=`, `+`, `-`, `@`, `\t` (tabulación) y `\r` (retorno de carro), incluso cuando están precedidos por espacios en blanco (`/^[\s]*[=+\-@\t\r]/`).
+     - Antepone de forma segura una comilla simple (`'`) para forzar a procesadores como Microsoft Excel, LibreOffice Calc y Google Sheets a interpretar la celda como texto plano en lugar de código ejecutable.
+   - **Escapado Estándar RFC 4180**: Duplica comillas dobles internas (`""`), envuelve celdas entre comillas y gestiona valores nulos (`null`, `undefined`) devolviendo celdas vacías (`'""'`).
+   - **Utilidades Complementarias**:
+     - `sanitizarCsv(valor: unknown)`: Sanitización atómica de celda.
+     - `escaparCsv`: Alias oficial para interoperabilidad.
+     - `formatearFilaCsv(celdas, separador)`: Conversión limpia de arreglo de celdas a fila delimitada.
+     - `generarCsv(encabezados, filas, opciones)`: Generación de contenido con soporte opcional para marca BOM UTF-8 (`\uFEFF`), garantizando apertura directa sin distorsión de tildes ni caracteres especiales en Excel.
+     - `descargarCsv(contenido, nombreArchivo)`: Disparo de descarga con revocación controlada de ObjectURL.
+
+2. **Suite de Pruebas Unitarias Exhaustiva (`src/shared/lib/csv.test.ts`)**:
+   - 14 casos de prueba automatizados con Vitest/Bun cubriendo:
+     - Valores nulos y no definidos (`null`, `undefined`).
+     - Cadenas con tildes, números enteros, decimales y booleanos.
+     - Escapado de comillas dobles internas.
+     - Vectores de ataque con prefijos `=`, `+`, `-`, `@`, `\t`, `\r`.
+     - Inyecciones ofuscadas con espacios iniciales (` =SUM(A1)`, `   +100`, `  @macro`).
+     - Formateo de filas con delimitador por defecto (`;`) y personalizado (`,`).
+     - Generación de CSV con y sin BOM UTF-8.
+
+3. **Erradicación de Duplicados en Todas las Vistas y Componentes**:
+   - Se reemplazaron todas las implementaciones ad-hoc y duplicadas de `sanitizarCsv` y `escaparCsv`, pasando a importar exclusivamente de `@/shared/lib/csv`:
+     - `src/features/diagnostico/views/diagnostico-view.tsx`
+     - `src/features/seguimiento/views/seguimiento-view.tsx`
+     - `src/features/seguimiento/components/rendicion-cuentas-tab.tsx`
+     - `src/features/alternativas/views/alternativas-view.tsx`
+     - `src/features/alternativas/components/costeo-presupuestal-view.tsx`
+     - `src/features/actores/components/actores-datagrid.tsx`
+     - `src/features/fuentes/components/fuentes-datagrid.tsx`
+     - `src/features/geovisor/components/mesas-datagrid/datagrid-export.ts`
+     - `src/features/mesas/models/mesas.ts`
+     - `src/features/mesas/state/asistencia-store.ts`
+     - `src/features/formularios/services/formulario-analitica.ts`
+     - `src/features/politicas/services/lineas-export.ts`
+   - **Verificación de Duplicados**: `git grep -n "function sanitizarCsv" src/` arroja **0 resultados** fuera de la definición canónica en `csv.ts`.
+
+---
+
+### 2. Archivos Creados y Modificados (AUD-12)
+
+| Archivo | Rol en el Sistema |
+|---|---|
+| `src/shared/lib/csv.ts` | Módulo canónico de sanitización OWASP, generación y descarga CSV. |
+| `src/shared/lib/csv.test.ts` | 14 pruebas unitarias de sanitización, prefijos de inyección y formato. |
+| `src/features/diagnostico/views/diagnostico-view.tsx` | Eliminación de función local; importación de `sanitizarCsv` centralizada. |
+| `src/features/seguimiento/views/seguimiento-view.tsx` | Eliminación de función local; importación de `sanitizarCsv` centralizada. |
+| `src/features/seguimiento/components/rendicion-cuentas-tab.tsx` | Eliminación de función local; importación de `sanitizarCsv` centralizada. |
+| `src/features/alternativas/views/alternativas-view.tsx` | Eliminación de función local; importación de `sanitizarCsv` centralizada. |
+| `src/features/alternativas/components/costeo-presupuestal-view.tsx` | Eliminación de función local; importación de `sanitizarCsv` centralizada. |
+| `src/features/actores/components/actores-datagrid.tsx` | Eliminación de función local; importación de `sanitizarCsv` centralizada. |
+| `src/features/fuentes/components/fuentes-datagrid.tsx` | Eliminación de función local; importación de `sanitizarCsv` centralizada. |
+| `src/features/geovisor/components/mesas-datagrid/datagrid-export.ts` | Reemplazo de escaparCsv inseguro por `escaparCsv` de `@/shared/lib/csv`. |
+| `src/features/mesas/models/mesas.ts` | Reemplazo de escaparCSV local por importación de `@/shared/lib/csv`. |
+| `src/features/mesas/state/asistencia-store.ts` | Reemplazo de escapeCSV local por importación de `@/shared/lib/csv`. |
+| `src/features/formularios/services/formulario-analitica.ts` | Unificación de `celdaCsv` referenciando `sanitizarCsv` de `@/shared/lib/csv`. |
+| `src/features/politicas/services/lineas-export.ts` | Reemplazo de lógica inline por `sanitizarCsv` de `@/shared/lib/csv`. |
+| `bridge/02_entrega_agy2.md` | Registro pericial de la entrega y validaciones de AUD-12. |
+
+---
+
+### 3. Matriz de Validación de Quality Gates (AUD-12)
+
+| Quality Gate | Comando de Validación | Resultado Pericial |
+|---|---|---|
+| **Verificación de Duplicación** | `git grep -n "function sanitizarCsv" src/` | **0 coincidencias** (única definición en `src/shared/lib/csv.ts`). |
+| **Pruebas de Utilidades CSV** | `bun test src/shared/lib/csv.test.ts` | **14 pass, 0 fail (36 expect calls)**. |
+| **Pruebas Automatizadas Frontend** | `bun test` | **227 pass, 0 fail (1017 expect calls)** en 24 suites. |
+| **Política de UI POLIS** | `node scripts/ui-policy.mjs` | **0 violaciones** (Design Kit, cero modales, a11y). |
+| **Chequeo de Tipos TypeScript** | `bun run typecheck` (`tsc --noEmit`) | **0 errores** de compilación estricta. |
+| **Linting ESLint** | `bun run lint` (`eslint .`) | **0 errores, 0 warnings** con `no-explicit-any: error`. |
+| **Pipeline Completo Check** | `bun run check` | **100% aprobado** (ui:check, typecheck, lint). |

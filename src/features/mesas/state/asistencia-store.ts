@@ -11,6 +11,7 @@ import {
   TIPOS_DOCUMENTO_LABELS,
   GENEROS_LABELS,
 } from "@/features/mesas/models/asistencia";
+import { sanitizarCsv as escapeCSV } from "@/shared/lib/csv";
 
 export type NuevoAsistenteInput = Omit<RegistroAsistencia, "id" | "horaRegistro">;
 
@@ -269,12 +270,6 @@ export const useAsistenciaStore = create<AsistenciaState>()(
           "Correo Electrónico",
           "Submesa Asignada",
         ];
-
-        const escapeCSV = (val: string | undefined | null) => {
-          if (val === undefined || val === null) return '""';
-          const str = String(val).replace(/"/g, '""');
-          return `"${str}"`;
-        };
 
         const filas = lista.map((reg, index) => {
           const fechaStr = new Date(reg.horaRegistro).toLocaleString("es-CO");

@@ -36,15 +36,7 @@ import { ArbolProblemasView } from "../components/arbol-problemas-view";
 import { GeodiagnosticoTerritorialView } from "../components/geodiagnostico-territorial-view";
 import { listarFichasIndicadores } from "../services/indicadores-api";
 import type { FichaIndicador, TipoIndicador } from "../models/indicador";
-
-function sanitizarCsv(valor: string | number | undefined | null): string {
-  if (valor === undefined || valor === null) return '""';
-  let str = String(valor).replace(/"/g, '""');
-  if (/^[=+\-@\t\r]/.test(str)) {
-    str = `'${str}`;
-  }
-  return `"${str}"`;
-}
+import { sanitizarCsv } from "@/shared/lib/csv";
 
 export function DiagnosticoView() {
   const [indicadores, setIndicadores] = useState<FichaIndicador[]>([]);

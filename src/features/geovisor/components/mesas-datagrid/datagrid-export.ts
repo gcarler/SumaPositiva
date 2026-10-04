@@ -1,10 +1,5 @@
 import type { MesaGeovisor } from "../../services/mesas-geovisor-api";
-
-function escaparCsv(valor: unknown): string {
-  if (valor === null || valor === undefined) return '""';
-  const texto = String(valor).replace(/"/g, '""');
-  return `"${texto}"`;
-}
+import { escaparCsv } from "@/shared/lib/csv";
 
 /**
  * Genera y descarga un archivo CSV con la lista de mesas visible/filtrada en el DataGrid.

@@ -1,4 +1,5 @@
 import type { LineaPersistida } from "./lineas-api";
+import { sanitizarCsv } from "@/shared/lib/csv";
 type Dimension = { id: string; codigo: string; nombre: string };
 export function matrizPolitica(
   dimensiones: Dimension[],
@@ -67,11 +68,7 @@ export function matrizCsv(dimensiones: Dimension[], lineas: LineaPersistida[]) {
   }
   return filas
     .map((f) =>
-      Array.from({ length: encabezados.length }, (_, i) => {
-        let s = String(f[i] ?? "");
-        if (/^[\s]*[=+\-@]/.test(s)) s = "'" + s;
-        return '"' + s.replaceAll('"', '""') + '"';
-      }).join(","),
+      Array.from({ length: encabezados.length }, (_, i) => sanitizarCsv(f[i])).join(","),
     )
     .join("\r\n");
 }

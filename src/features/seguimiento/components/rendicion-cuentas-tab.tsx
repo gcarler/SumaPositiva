@@ -56,18 +56,10 @@ import {
   ESTADOS_INCORPORACION_INFO,
   CAUSALES_DESCARTE_INFO,
 } from "../models/devolucion";
+import { sanitizarCsv } from "@/shared/lib/csv";
 
 interface RendicionCuentasTabProps {
   puedeEditar: boolean;
-}
-
-function sanitizarCsv(valor: string | number | undefined | null): string {
-  if (valor === undefined || valor === null) return '""';
-  let str = String(valor).replace(/"/g, '""');
-  if (/^[=+\-@\t\r]/.test(str)) {
-    str = `'${str}`;
-  }
-  return `"${str}"`;
 }
 
 export function RendicionCuentasTab({ puedeEditar }: RendicionCuentasTabProps) {

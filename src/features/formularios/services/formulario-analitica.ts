@@ -7,6 +7,7 @@ import type {
   RespuestaCiudadana,
 } from "../models/formulario";
 import { esInformativa, leerArchivo } from "./formulario-engine";
+import { sanitizarCsv } from "@/shared/lib/csv";
 export function textoRespuesta(
   p: PreguntaFormulario,
   valor: string | string[] | undefined,
@@ -84,10 +85,7 @@ export function calcularAnalitica(
   };
 }
 /** Escape delimiters and prevent formula execution in spreadsheet consumers. */
-export function celdaCsv(valor: string) {
-  const seguro = /^[\s]*[=+@-]/.test(valor) ? "'" + valor : valor;
-  return '"' + seguro.replaceAll('"', '""') + '"';
-}
+export const celdaCsv = sanitizarCsv;
 export function generarCsv(
   form: Formulario,
   todas: RespuestaCiudadana[],

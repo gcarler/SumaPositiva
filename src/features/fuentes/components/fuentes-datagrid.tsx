@@ -22,16 +22,7 @@ import {
 import { usePanels } from "@/core/panels/panel-store";
 import type { EstadoEntrega, FuenteInformacion } from "../models/fuente";
 import { useFuentesFiltradas, useFuentesStore } from "../state/fuentes-store";
-
-function sanitizarCsv(valor: string | number | undefined | null): string {
-  if (valor === undefined || valor === null) return '""';
-  let str = String(valor).replace(/"/g, '""');
-  // Prevenir inyección de fórmulas CSV (OWASP)
-  if (/^[=+\-@\t\r]/.test(str)) {
-    str = `'${str}`;
-  }
-  return `"${str}"`;
-}
+import { sanitizarCsv } from "@/shared/lib/csv";
 
 function formatearEstado(estado: EstadoEntrega): {
   etiqueta: string;
