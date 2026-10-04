@@ -14,3 +14,6 @@ git ls-files sin .env ni .db; propuesta de historial consolidado documentada; si
 1. `bun run check`, `node scripts/ui-policy.mjs`, `bun test` (y pytest si toca backend) en verde.
 2. Commit convencional y registro en bridge/02_entrega_agy2.md.
 3. Notificar: `tmux send-keys -t agy "He terminado AUD-11. Documentado en 02_entrega_agy2.md y listo para auditar." Enter`
+
+## Adición EAF (OBS-13, 2026-10-04)
+Contraseña de BD hardcodeada en `backend/tests/conftest.py`, `scripts/respaldo_bd.sh`, `scripts/restaurar_bd.sh`, `scripts/sembrar_*_demo.py`; scripts demo apuntan por defecto a `bd_csh` real. Ver dictamen AUD-07: credenciales solo por entorno, guardas de BD destino, plan de rotación; quitar también el default `polis_secreto_super_seguro_cartagena_2026` de `config.py` (campo obligatorio).
