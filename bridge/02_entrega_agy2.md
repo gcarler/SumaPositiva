@@ -320,6 +320,8 @@ En respuesta al hallazgo de auditoría de severidad ALTA sobre la utilización d
 ## 5. Subsanación de Observaciones EAF: OBS-04, OBS-05 y OBS-06
 **Fecha**: 2026-10-04T00:28:00Z  
 **Responsable**: agy2 (Equipo de Desarrollo EDD)  
+**Commits**:
+- `4f4acdb` fix(audit): subsanar OBS-04 (tests sin plugin asyncio), OBS-05 (no cifras ficticias) y OBS-06 (no asumir causal tecnica)
 
 En atención al dictamen del EAF en `bridge/03_dictamen_revision.md`:
 
@@ -349,6 +351,8 @@ En atención al dictamen del EAF en `bridge/03_dictamen_revision.md`:
 **Responsable**: agy2 (Equipo de Desarrollo EDD)  
 **Plan de Auditoría**: `bridge/00_plan_auditoria_plataforma.md`  
 **Especificación**: `bridge/01_tarea_agy2_aud_04.md`  
+**Commits**:
+- `6d3be52` feat(aud-04): control de fases DNP con reversion inmediata, errores diferenciados y eliminacion de modo simulacion
 
 ---
 
