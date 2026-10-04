@@ -79,54 +79,32 @@ def crear_token_sesion(
 
 def decodificar_token_sesion(token: str, settings: Settings) -> SesionContexto:
     """Verifica y decodifica un token JWT de sesión."""
-    claves_a_probar = [settings.jwt_secret_key]
-    if settings.environment != "production":
-        clave_defecto = "polis_secreto_super_seguro_cartagena_2026"
-        if clave_defecto not in claves_a_probar:
-            claves_a_probar.append(clave_defecto)
-        try:
-            clave_env = Settings().jwt_secret_key
-            if clave_env not in claves_a_probar:
-                claves_a_probar.append(clave_env)
-        except Exception:
-            pass
+    try:
+        payload = jwt.decode(
+            token,
+            settings.jwt_secret_key,
+            algorithms=[settings.jwt_algorithm],
+        )
+    except jwt.ExpiredSignatureError as err:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="La sesión cívica ha expirado. Por favor solicite una nueva sesión.",
+            headers={"WWW-Authenticate": "Bearer"},
+        ) from err
+    except jwt.PyJWTError as err:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Firma digital o token de sesión inválido.",
+            headers={"WWW-Authenticate": "Bearer"},
+        ) from err
 
-    ultimo_error = None
-    for clave in claves_a_probar:
-        try:
-            payload = jwt.decode(
-                token,
-                clave,
-                algorithms=[settings.jwt_algorithm],
-            )
-            sesion_uuid = uuid.UUID(payload["sesion_id"])
-            expira_dt = datetime.fromtimestamp(payload["exp"], tz=UTC)
+    sesion_uuid = uuid.UUID(payload["sesion_id"])
+    expira_dt = datetime.fromtimestamp(payload["exp"], tz=UTC)
 
-            return SesionContexto(
-                sesion_id=sesion_uuid,
-                huella_hash=payload["huella_hash"],
-                rol=payload.get("rol", "ciudadano_anonimo"),
-                expira_en=expira_dt,
-                es_anonimo=True,
-            )
-        except jwt.ExpiredSignatureError as err:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="La sesión cívica ha expirado. Por favor solicite una nueva sesión.",
-                headers={"WWW-Authenticate": "Bearer"},
-            ) from err
-        except jwt.InvalidSignatureError as err:
-            ultimo_error = err
-            continue
-        except jwt.PyJWTError as err:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Firma digital o token de sesión inválido.",
-                headers={"WWW-Authenticate": "Bearer"},
-            ) from err
-
-    raise HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Firma digital o token de sesión inválido.",
-        headers={"WWW-Authenticate": "Bearer"},
-    ) from ultimo_error
+    return SesionContexto(
+        sesion_id=sesion_uuid,
+        huella_hash=payload["huella_hash"],
+        rol=payload.get("rol", "ciudadano_anonimo"),
+        expira_en=expira_dt,
+        es_anonimo=True,
+    )

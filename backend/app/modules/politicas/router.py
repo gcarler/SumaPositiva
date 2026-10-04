@@ -56,9 +56,10 @@ async def listar_fases(
     fases = result.scalars().all()
     salida = []
     for f in fases:
+        item = FasePoliticaRead.model_validate(f)
         if f.codigo in progresos:
-            f.progreso_porcentaje = progresos[f.codigo]
-        salida.append(FasePoliticaRead.model_validate(f))
+            item.progreso_porcentaje = progresos[f.codigo]
+        salida.append(item)
     return salida
 
 
@@ -101,12 +102,13 @@ async def listar_fases_control(
     filas = result.all()
     salida = []
     for fase, total_lineas in filas:
+        item_base = FasePoliticaRead.model_validate(fase)
         if fase.codigo in progresos:
-            fase.progreso_porcentaje = progresos[fase.codigo]
+            item_base.progreso_porcentaje = progresos[fase.codigo]
         reglas = fase.reglas_participacion or {}
         habilitada = bool(reglas.get("habilitada_web", fase.estado == "activa"))
         item = FaseControlLectura(
-            **FasePoliticaRead.model_validate(fase).model_dump(),
+            **item_base.model_dump(),
             habilitada_web=habilitada,
             total_lineas=total_lineas,
         )

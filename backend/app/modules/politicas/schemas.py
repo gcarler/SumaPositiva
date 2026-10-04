@@ -47,11 +47,11 @@ class FasePoliticaBase(BaseModel):
         max_length=50,
         description="Estado: preparatoria, activa, en_revision, cerrada, archivada",
     )
-    progreso_porcentaje: Decimal = Field(
+    progreso_porcentaje: Decimal | None = Field(
         default=Decimal("0.00"),
         ge=0,
         le=100,
-        description="Porcentaje de avance (0 a 100)",
+        description="Porcentaje de avance (0 a 100), o None si no hay datos o falla el cálculo",
     )
     fecha_inicio: date | None = Field(default=None, description="Fecha programada de inicio")
     fecha_cierre: date | None = Field(default=None, description="Fecha límite de participación")

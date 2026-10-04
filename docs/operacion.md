@@ -100,3 +100,13 @@ Para certificar el paso de la plataforma POLIS a un entorno de producción segur
 | **Rate Limiting de IA** | Salvaguarda de cómputo en `/api/v1/ia/*` (LangGraph / multi-agente). | Dependencia `limitar_tasa_ia` (30 peticiones / min por actor). | Exceso de llamadas devuelve `HTTP 429` protegiendo los agentes DNP. |
 | **Higiene de Logs** | Nivel `INFO` o superior (cero `DEBUG` en producción) y sin datos personales. | Clamping de nivel de log en `main.py` y middleware `log_request` sanitizado. | Logs solo registran plantillas de ruta, status HTTP y latencia en ms. |
 
+### Limitaciones operativas del Rate Limiting en memoria y escalamiento horizontal (OBS-10)
+
+Los controles de tasa por IP implementados en memoria de proceso (como `verificar_tasa_ip` en `/sesion/anonima` y la caché de ventana deslizante en `/ia/*`) operan por instancia de proceso worker (Gunicorn / Uvicorn worker):
+1. **Entorno monoproceso / desarrollo**: La ventana deslizante en memoria ofrece protección estricta contra ráfagas y denegación de servicio sin latencia de red adicional.
+2. **Entorno multiproceso / producción horizontal**: Al desplegar múltiples workers Uvicorn o réplicas en clúster Kubernetes / contenedor:
+   - Las ventanas en memoria quedan particionadas entre los workers locales (el tráfico balanceado por round-robin distribuye el contador entre procesos independientes).
+   - Para garantizar un tope global sincronizado en despliegues con alta concurrencia o múltiples réplicas, debe activarse la persistencia de control de tasa en base de datos PostgreSQL (`LimiteAcceso` gestionado por SQLAlchemy) o integrarse un almacén compartido de baja latencia como Redis (`redis-py` con algoritmos de token bucket o sliding log).
+   - Los encabezados estándar `Retry-After` informan al cliente la ventana de espera requerida ante respuestas `429 Too Many Requests`.
+
+

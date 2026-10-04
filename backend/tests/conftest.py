@@ -4,6 +4,11 @@ import asyncio
 import os
 from pathlib import Path
 
+# Configuración uniforme de entorno de pruebas para aislamiento forense (AUD-06 / OBS-09)
+os.environ.setdefault("POLIS_ENVIRONMENT", "test")
+os.environ.setdefault("POLIS_JWT_SECRET_KEY", "polis_secreto_super_seguro_cartagena_2026")
+os.environ.setdefault("POLIS_IP_SALT", "polis_salt_habeas_data_2026")
+
 import pytest
 from alembic.config import Config
 from sqlalchemy import text

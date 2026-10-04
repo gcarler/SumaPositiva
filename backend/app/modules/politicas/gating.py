@@ -23,10 +23,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.modules.identidad.schemas import SujetoAutenticadoContexto
 from app.modules.politicas.models import FasePolitica
 
+import logging
+
+logger = logging.getLogger("polis.politicas.gating")
 ROLES_ADMIN_DISTRITAL = {"autoridad_distrital", "administrador_identidades"}
 
 
-async def calcular_progreso_real_fases(session: AsyncSession) -> dict[str, Decimal]:
+async def calcular_progreso_real_fases(session: AsyncSession) -> dict[str, Decimal | None]:
     """Calcula el progreso real (%) de cada fase del ciclo de política pública
     a partir de la evidencia empírica en base de datos (AUD-05 / EAF):
     - FASE_1_DIAGNOSTICO: % de mesas concertadas respecto a la agenda total programada.
@@ -34,11 +37,12 @@ async def calcular_progreso_real_fases(session: AsyncSession) -> dict[str, Decim
       con líneas estratégicas formuladas y activas.
     - FASE_3_PLAN_ACCION: Promedio de avance cuatrienal de compromisos PAS
       (seguimiento.compromisos_pas.porcentaje_cumplimiento).
+    Ante error SQL, se registra en log y se retorna None (null / sin datos) en vez de 0.00 silencioso (OBS-08).
     """
-    progresos = {
-        "FASE_1_DIAGNOSTICO": Decimal("0.00"),
-        "FASE_2_FORMULACION": Decimal("0.00"),
-        "FASE_3_PLAN_ACCION": Decimal("0.00"),
+    progresos: dict[str, Decimal | None] = {
+        "FASE_1_DIAGNOSTICO": None,
+        "FASE_2_FORMULACION": None,
+        "FASE_3_PLAN_ACCION": None,
     }
 
     # 1. Diagnóstico Participativo: mesas de trabajo concertadas vs total
@@ -54,8 +58,11 @@ async def calcular_progreso_real_fases(session: AsyncSession) -> dict[str, Decim
             progresos["FASE_1_DIAGNOSTICO"] = round(
                 Decimal(fila_f1[0]) / Decimal(fila_f1[1]) * 100, 2
             )
-    except Exception:
-        pass
+        else:
+            progresos["FASE_1_DIAGNOSTICO"] = Decimal("0.00")
+    except Exception as err:
+        logger.error("Error SQL calculando progreso empírico de FASE_1_DIAGNOSTICO: %s", err)
+        progresos["FASE_1_DIAGNOSTICO"] = None
 
     # 2. Formulación: dimensiones con líneas estratégicas activas respecto a las 7 dimensiones canónicas
     try:
@@ -67,8 +74,9 @@ async def calcular_progreso_real_fases(session: AsyncSession) -> dict[str, Decim
         )
         dims_activas = res_f2.scalar() or 0
         progresos["FASE_2_FORMULACION"] = round(Decimal(dims_activas) / Decimal(7) * 100, 2)
-    except Exception:
-        pass
+    except Exception as err:
+        logger.error("Error SQL calculando progreso empírico de FASE_2_FORMULACION: %s", err)
+        progresos["FASE_2_FORMULACION"] = None
 
     # 3. Plan de Acción / Seguimiento: promedio de cumplimiento de compromisos PAS
     try:
@@ -78,8 +86,9 @@ async def calcular_progreso_real_fases(session: AsyncSession) -> dict[str, Decim
         promedio = res_f3.scalar()
         if promedio is not None:
             progresos["FASE_3_PLAN_ACCION"] = round(Decimal(str(promedio)), 2)
-    except Exception:
-        pass
+    except Exception as err:
+        logger.error("Error SQL calculando progreso empírico de FASE_3_PLAN_ACCION: %s", err)
+        progresos["FASE_3_PLAN_ACCION"] = None
 
     return progresos
 
