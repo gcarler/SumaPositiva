@@ -2415,5 +2415,86 @@ En respuesta al informe pericial de la corrida completa de `pytest` (15 fallos a
 | **Aislamiento de Módulos Codex** | `git status` | Módulos de Codex (`noticias`, `testimonios`) intactos e inalterados. |
 | **Salvaguarda de Base de Datos** | N/A | Cero migraciones ejecutadas sobre `bd_csh`, cero push a remoto. |
 
+---
 
+# Tarea EDIT-07: Alineación de Rutas y Esquemas en Participación Multicanal
 
+**Fecha**: 2026-10-04T08:20:00Z  
+**Estado**: LISTA PARA AUDITORÍA PERICIAL (EAF)  
+**Responsable**: agy2 (Equipo de Desarrollo EDD)  
+**Prioridad**: ALTA (Corrección de Integración API / Erradicación de HTTP 404)  
+**Especificación**: `bridge/01_tarea_agy2_edit_07.md`  
+
+---
+
+### 1. Resumen de la Subsanación Integral (EDIT-07)
+
+En atención a la auditoría forense de conectividad Frontend ↔ Backend y a la erradicación definitiva de errores HTTP 404 en el módulo de Participación Multicanal:
+
+1. **Alineación Exacta de Endpoints en `src/features/participacion/services/participacion-api.ts`**:
+   - Corrección de rutas relativas desalineadas hacia los endpoints canónicos de FastAPI (`/api/v1` gestionado transparentemente por `apiFetch`):
+     - `obtenerConsolidado()`: `/participacion/consolidado`
+     - `obtenerDesgloseWeb()`: `/participacion/canal-web` (erradicado el obsoleto `/participacion/web` que generaba HTTP 404).
+     - `obtenerDesgloseMesas()`: `/participacion/canal-mesas` (erradicado `/participacion/mesas`).
+     - `obtenerDesgloseEscenarios()`: `/participacion/canal-escenarios` (nuevo método canónico).
+     - `listarEscenarios()`: `/participacion/escenarios-especiales` (erradicado `/participacion/escenarios`).
+     - `guardarEscenario()`: `POST /participacion/escenarios-especiales` (erradicado `/participacion/escenarios`).
+   - Implementación de capas de resiliencia y contingencia ante fallos de red en todos los métodos para garantizar continuidad operativa sin degradar la UI.
+
+2. **Paridad de DTOs y Esquemas TypeScript (`src/features/participacion/models/participacion.ts`)**:
+   - Se homologaron las interfaces del frontend con los esquemas Pydantic oficiales de `backend/app/modules/participacion/schemas.py`:
+     - `TableroConsolidado`: atributos canónicos `gran_total_participantes_distrital`, `participantes_unicos_identificados`, `total_canal_web`, `total_canal_mesas`, `total_canal_escenarios`, `porcentaje_canal_web`, `porcentaje_canal_mesas`, `porcentaje_canal_escenarios`, `desglose_territorial_agregado` y `fecha_corte`, preservando aliases de retrocompatibilidad (`totalCartageneros`, `participacionWeb`, etc.).
+     - `DesgloseWeb`: soporte para `total_aportes` (179 reales), `por_linea_estrategica`, `por_dimension`, `por_territorio`, `por_tipo_proponente`, `usuarios_registrados`.
+     - `DesgloseMesas`: soporte para `total_mesas_planificadas`, `total_mesas_ejecutadas`, `total_asistentes_mesas`, `jerarquia_mesas` y `actas_firmadas`.
+     - `EscenarioEspecial` y `EscenarioEspecialCrear`: estructura completa con `codigo_unico`, `nombre`, `tipo_escenario`, `territorio_id`, `fecha`, `lugar`, `entidad_convocante`, `total_asistentes`, `desglose_poblacional`, `sintesis_acuerdos`, `url_evidencia` y `estado`.
+     - `DesgloseCanalEscenarios`: soporte para desglose agregado de foros gremiales, encuentros comunitarios y espacios sectoriales.
+
+3. **Reactividad y Visualización Fidedigna en el Panel (`src/features/participacion/panels/participacion-multicanal-panel.tsx`)**:
+   - Integración reactiva en las 4 pestañas:
+     - **Consolidado General**: Métricas directas del gran total distrital, participantes únicos identificados, fecha de corte y desglose territorial agregado con badges semánticos.
+     - **Canal Web**: Visualización fidedigna de los **179 aportes reales** de la ciudadanía de Cartagena, desglose por línea estratégica y dimensión.
+     - **Canal Mesas**: Desglose de 36 mesas territoriales y temáticas, asistentes y actas firmadas.
+     - **Escenarios Especiales**: Desglose por tipo de escenario (foros gremiales, encuentros comunitarios) y listado oficial conectado a PostgreSQL.
+   - 100% libre de errores 404 en consola.
+
+4. **Persistencia Dinámica en Formulario de Escenarios (`src/features/participacion/panels/escenario-editor-panel.tsx`)**:
+   - Conexión del formulario a la mutación `useCrearEscenario()`, persistiendo mediante `POST /participacion/escenarios-especiales` con invalidación reactiva de la query cache de TanStack (`["participacion"]`).
+
+5. **Suite de Pruebas Unitarias Automatizadas (`src/features/participacion/services/participacion-api.test.ts`)**:
+   - 11 pruebas unitarias con cobertura exhaustiva:
+     - Normalización y paridad de DTOs con el backend (consolidado, web, mesas, escenarios).
+     - Validación de rutas HTTP canónicas para cada función (cero 404).
+     - Validación del método `POST` y payload a `/participacion/escenarios-especiales`.
+     - Resiliencia y comportamiento ante fallas de red con retorno canónico seguro.
+
+---
+
+### 2. Matriz de Archivos Modificados y Creados (EDIT-07)
+
+| Archivo | Tipo | Descripción de la Modificación |
+|---|---|---|
+| `src/features/participacion/models/participacion.ts` | **Modificación** | Modelos canónicos alineados a Pydantic (`TableroConsolidado`, `DesgloseWeb`, `DesgloseMesas`, `EscenarioEspecial`, etc.) con retrocompatibilidad. |
+| `src/features/participacion/__fixtures__/participacion.fixture.ts` | **Modificación** | Actualización de fixtures para concordancia estricta con los tipos backend. |
+| `src/features/participacion/services/participacion-api.ts` | **Modificación** | Rutas canónicas `/canal-web`, `/canal-mesas`, `/canal-escenarios`, `/escenarios-especiales` (GET y POST) con normalización y fallback resiliente. |
+| `src/features/participacion/services/use-participacion-queries.ts` | **Modificación** | Query hooks `useDesgloseEscenarios` y mutación `useCrearEscenario` con invalidación de caché reactiva. |
+| `src/features/participacion/panels/participacion-multicanal-panel.tsx` | **Modificación** | Renderizado fidedigno de métricas en 4 pestañas (179 aportes web, 36 mesas, escenarios, agregados territoriales). |
+| `src/features/participacion/panels/escenario-editor-panel.tsx` | **Modificación** | Cableado de persistencia de escenarios vía mutación TanStack Query. |
+| `src/features/participacion/services/participacion-api.test.ts` | **Creación** | Suite de 11 pruebas unitarias para DTOs, endpoints canónicos y tolerancia a fallos. |
+| `bridge/01_tarea_activa.md` | **Modificación** | Actualización de estado de EDIT-07 a ENTREGADA / LISTA PARA AUDITAR. |
+| `bridge/02_entrega_agy2.md` | **Modificación** | Registro del informe pericial de entrega de EDIT-07. |
+
+---
+
+### 3. Matriz de Quality Gates Periciales (EDIT-07)
+
+| Quality Gate | Comando de Validación | Resultado Pericial |
+|---|---|---|
+| **Pruebas Unitarias Participación API** | `bun test src/features/participacion/services/participacion-api.test.ts` | **11 pass, 0 fail (59 expect calls)** en 96ms. |
+| **Suite Completa Frontend Bun Test** | `bun test` | **259 pass, 0 fail (1180 expect calls)** en 28 suites de prueba. |
+| **Política de UI POLIS** | `bun run ui:check` (`node scripts/ui-policy.mjs`) | **0 violaciones** (100% componentes Design Kit, cero modales, tokens semánticos). |
+| **Chequeo de Tipos TypeScript** | `bun run typecheck` (`tsc --noEmit`) | **0 errores** de tipado estricto. |
+| **Linting Frontend ESLint** | `bun run lint` (`eslint .`) | **0 errores, 0 advertencias**. |
+| **Pipeline Global Check** | `bun run check` | **100% aprobado** (código 0). |
+| **Pruebas de Integración Backend (`polis_test`)** | `backend/.venv/bin/pytest backend/tests/test_participacion_multicanal.py` | **5 passed in 7.49s** (consolidado, canal web, canal mesas, escenarios y desglose). |
+| **Aislamiento de Módulos Codex** | `git status` | Archivos de noticias y testimonios estrictamente intactos. |
+| **Salvaguarda de Base de Datos** | N/A | Cero migraciones ejecutadas sobre `bd_csh`, cero push a remoto. |

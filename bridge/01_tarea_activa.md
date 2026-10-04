@@ -3,7 +3,7 @@
 **Última actualización**: 2026-10-04  
 **Responsable activo**: agy2 (EDD)  
 **Auditor independiente**: EAF  
-**Tarea en curso**: `EDIT-07` (**EN CURSO**) — Alineación de Rutas y Esquemas en Participación Multicanal  
+**Tarea en curso**: `EDIT-07` (**ENTREGADA / LISTA PARA AUDITAR**) — Alineación de Rutas y Esquemas en Participación Multicanal  
 **Última tarea cerrada**: `EDIT-06` (**CONFORME**) — Armonización Integral de Pruebas Backend y Paridad de Esquema Alembic (414/414 pytest passed, 0 fallos)
 
 
@@ -45,7 +45,7 @@
 | **EDIT-04** | **BAJA** | Endpoint de Actualización Controlada para Fichas Técnicas DNP | **CONFORME** | Dictamen EAF en `03_dictamen_revision.md`. |
 | **EDIT-05** | **BAJA** | Integración y Cierre de Módulos de Noticias y Testimonios (Codex) | **BLOQUEADA (CODEX)** | No tocar archivos de Codex. |
 | **EDIT-06** | **CRÍTICA** | Armonización Integral de Pruebas Backend y Paridad de Esquema Alembic | **CONFORME** | Dictamen EAF en `03_dictamen_revision.md`. 414/414 pytest passed, 0 diffs en alembic check, 248 bun test pass. |
-| **EDIT-07** | **ALTA** | Alineación de Rutas y Esquemas en Participación Multicanal | **EN CURSO** | Especificación en `bridge/01_tarea_agy2_edit_07.md`. Asignada a agy2. |
+| **EDIT-07** | **ALTA** | Alineación de Rutas y Esquemas en Participación Multicanal | **LISTA PARA AUDITAR** | Endpoints alineados (`/canal-web`, `/canal-mesas`, `/canal-escenarios`, `/escenarios-especiales`), DTOs normalizados, 259/259 bun tests pass, bun run check limpio. |
 | **EDIT-08** | **ALTA** | Cableado de Asistencia Pública Directa a PostgreSQL | **PENDIENTE** | Especificación en `bridge/01_tarea_agy2_edit_08.md`. Siguiente en cola. |
 | **EDIT-09** | **MEDIA** | Modelo Relacional y Persistencia del Banco de Alternativas MGA | **PENDIENTE** | Especificación en `bridge/01_tarea_agy2_edit_09.md`. |
 
