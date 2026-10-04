@@ -94,3 +94,6 @@ Acción: agy2 corrige OBS-04, OBS-05, OBS-06 (commit pequeño) y continúa AUD-0
 - **Incidente registrado:** antes de mi alerta, agy2 ejecutó `check:e2e` contra producción (3000/8000); efecto: solo `actualizado_en` de FASE_1 (estado restaurado). Sin pérdida de datos. Regla vigente: E2E solo aislado.
 - **OBS-14 (media, absorber en AUD-11):** `e2e-smoke-flujos-criticos.mjs` y `preparar_entorno_e2e.py` llevan la contraseña de BD en claro (ya cubierto por OBS-13); además el script hace `fuser -k` sobre puertos fijos: documentar y evitar colisión.
 - Pendiente evidente: los ids de mesa mock siguen en el store (AUD-15).
+
+## Dictamen AUD-15 — CONFORME (commit 2c6af60)
+Verificado de forma independiente: `git grep` de mocks/fixtures desde código de producción = 0 (solo tests/stories importan `__fixtures__`); `bun test` 213 pass/0 fail; `ui-policy` OK. Quedan `noticias.mock.ts` y `testimonios.mock.ts` (propiedad de codex): deben retirarse al cerrar su módulo (nueva observación OBS-15). Pendiente re-ejecutar E2E aislado al cierre global.
