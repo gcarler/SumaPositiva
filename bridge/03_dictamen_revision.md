@@ -111,3 +111,6 @@ Verificado por mí: `pytest` completo en `polis_test` = **391 passed, 0 fallos**
 
 ## Dictamen AUD-12 — CONFORME (commit e1c9345)
 Verificado: una sola implementación `sanitizarCsv` en `src/shared/lib/csv.ts` (alias `escaparCsv`/`celdaCsv`); los consumidores la importan; `tsc`, `eslint`, `ui-policy` OK; `bun test` 227 pass. OBS-18 (baja): el prefijo `'` también se aplica a números negativos exportados (`-5`), aceptable por seguridad pero debe documentarse para analistas.
+
+## Dictamen AUD-16 — CONFORME (commit 9faa78e)
+Verificado: `no-unused-vars` y `ban-ts-comment` en `error`; `eslint .`, `tsc`, `ui-policy` limpios; `bun test` 227 pass; 0 `eslint-disable`/`@ts-ignore` en src; archivos de codex intactos; readiness prod `ready` (migrations ok); `01_tarea_activa.md` actualizado. **OBS-19 (media):** `eslint.config.mjs` ahora IGNORA `src/features/noticias/**` y `testimonios/**`; esas carpetas quedan sin lint y deben reincorporarse al cerrar el módulo de codex (no entregar el proyecto con la exclusión).
