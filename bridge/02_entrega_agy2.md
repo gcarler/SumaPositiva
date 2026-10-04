@@ -505,6 +505,92 @@ En atención a los hallazgos de auditoría sobre la falta de gating en los módu
 | **Compilación Turbopack** | `bun run build` | **Compilación exitosa en 11.2s** (57 rutas estáticas y dinámicas). |
 | **Verificación de Endpoints en Vivo** | `curl http://127.0.0.1:8000/api/v1/politicas/fases` | **HTTP 200 OK (Fase 1: 21.65%, Fase 2: 14.29%, Fase 3: 61.40%)**. |
 
+---
+
+# Tarea AUD-06: Perfil de Producción — Docs/OpenAPI Off, CORS Restringido, Cookies Seguras y Checklist Operativo
+**Fecha**: 2026-10-04T00:53:00Z  
+**Estado**: CONFORME PARA AUDITORÍA FORENSE (EAF)  
+**Responsable**: agy2 (Equipo de Desarrollo EDD)  
+**Plan de Auditoría**: `bridge/00_plan_auditoria_plataforma.md`  
+**Especificación**: `bridge/01_tarea_agy2_aud_06.md`  
+**Commits**:
+- `4c4f539` feat(aud-06): endurecimiento de perfil de produccion, CORS restringido, cookies seguras y checklist operativo
+
+---
+
+## 1. Resumen Ejecutivo de la Solución (AUD-06)
+
+En respuesta al hallazgo de auditoría de severidad MEDIA sobre la exposición pública de `/api/v1/docs` y `/api/v1/openapi.json` con entorno `development`, se ejecutó el endurecimiento pericial integral del perfil productivo:
+
+### 1. Deshabilitación de Documentación OpenAPI en Producción (Criterio de Aceptación a):
+- Se configuró formalmente `POLIS_ENVIRONMENT=production` en el archivo de entorno del servicio backend (`backend/.env`).
+- Con este perfil activo, FastAPI inicializa `docs_url=None`, `redoc_url=None` y `openapi_url=None`.
+- **Verificación en vivo**: Tanto `curl http://127.0.0.1:8000/api/v1/docs` como `curl http://127.0.0.1:8000/api/v1/openapi.json` devuelven fehacientemente `HTTP 404 Not Found` (`{"detail":"Not Found"}`).
+
+### 2. Política Estricta de CORS Restringido al Dominio (Criterio de Aceptación b):
+- Se implementó la propiedad `cors_origins_efectivos` en `backend/app/core/config.py` y se configuró en `CORSMiddleware`.
+- En perfil `production`, la configuración filtra y proscribe taxativamente orígenes no seguros (`http://`), `localhost` y `127.0.0.1`, restringiendo las peticiones CORS a los dominios institucionales oficiales autorizados:
+  - `https://seguridadhumanaintegral.org`
+  - `https://www.seguridadhumanaintegral.org`
+- **Verificación en vivo**:
+  - `OPTIONS` con `Origin: http://localhost:3000` devuelve `HTTP 400 Bad Request` (`Disallowed CORS origin`).
+  - `OPTIONS` con `Origin: https://malicious-attacker.com` devuelve `HTTP 400 Bad Request` (`Disallowed CORS origin`).
+  - `OPTIONS` con `Origin: https://seguridadhumanaintegral.org` devuelve `HTTP 200 OK` con cabeceras `access-control-allow-origin: https://seguridadhumanaintegral.org` y `access-control-allow-credentials: true`.
+
+### 3. Cookies con Directivas `Secure`, `HttpOnly` y `SameSite` (Criterio de Aceptación c):
+- **Backend**:
+  - Se implementó en `backend/app/main.py` el middleware `security_headers_and_cookies_middleware`, el cual inspecciona dinámicamente cualquier cabecera `Set-Cookie` saliente e inyecta obligatoriamente las directivas `; SameSite=Lax` y `; Secure` bajo perfil de producción o conexiones HTTPS.
+  - En `/api/v1/identidad/login` y `/api/v1/identidad/oauth/google`, se emite la cookie de sesión cívica `polis_session` con `httponly=True`, `secure=True`, `samesite="lax"`, garantizando persistencia segura adicional al token Bearer. En `/logout` se elimina limpiamente.
+- **Frontend**:
+  - En `src/shared/ui/sidebar.tsx`, la cookie cliente `sidebar_state` fue actualizada para incluir explícitamente `; SameSite=Lax` y `; Secure` cuando la conexión opera bajo protocolo HTTPS (`window.location.protocol === 'https:'`).
+
+### 4. Secretos Fuera del Repositorio y Validación Criptográfica:
+- Los archivos de entorno (`.env`) permanecen protegidos e ignorados por git (`.gitignore`).
+- Se generaron secretos criptográficos aleatorios de alta entropía (64 caracteres hexadecimales) para `POLIS_JWT_SECRET_KEY` y `POLIS_IP_SALT`.
+- El validador `validar_configuracion_identidad` en `backend/app/modules/identidad/security.py` garantiza que si la plataforma se arranca en modo producción con secretos de desarrollo o por defecto, se inhabilita el acceso con `HTTP 503` exigiendo la configuración obligatoria de credenciales seguras.
+
+### 5. Límites de Tasa (Rate Limiting) en Endpoints Públicos y de IA:
+- **Sesión anónima deliberativa (`/api/v1/sesion/anonima`)**: Ventana deslizante de control por IP que limita a 30 emisiones cada 15 minutos (`sesion_anonima_limite_ip`), respondiendo `HTTP 429 Too Many Requests` con cabecera `Retry-After` ante ráfagas de abuso.
+- **Agentes Multi-Agente de IA (`/api/v1/ia/*`)**: Dependencia global `limitar_tasa_ia` que protege los 5 endpoints del subsistema (`/diagnostico`, `/juridico`, `/fiscal`, `/devolucion`, `/ciclo-politica`) con un límite de 30 consultas por minuto por actor (`ia_limite_ip`), previniendo saturación computacional del orquestador LangGraph.
+
+### 6. Documento de Operación Actualizado (`docs/operacion.md`):
+- Se incorporó la sección pericial completa **"Checklist de Despliegue Productivo (AUD-06)"**, documentando los 8 controles obligatorios, sus mecanismos de código y los comandos de verificación forense.
+
+---
+
+## 2. Archivos Creados y Modificados (AUD-06)
+
+| Archivo | Rol en el Sistema |
+|---|---|
+| `backend/app/core/config.py` | Propiedades `cors_origins_efectivos`, `cookie_secure`, `cookie_samesite` y parámetros de rate limit. |
+| `backend/app/main.py` | Clamping de logging DEBUG en producción, CORS efectivo y middleware de seguridad para cookies y headers. |
+| `backend/app/modules/identidad/router.py` | Emisión de cookie segura `polis_session` (`HttpOnly`, `Secure`, `SameSite=Lax`) en login/oauth y revocación en logout. |
+| `backend/app/modules/identidad/security.py` | Armonización criptográfica de decodificación de tokens en entornos de prueba y producción. |
+| `backend/app/modules/sesion/router.py` | Limitador de tasa (rate limiting) para emisiones de sesiones anónimas deliberativas (30 / 15 min). |
+| `backend/app/modules/sesion/security.py` | Armonización criptográfica de decodificación de tokens de sesión cívica. |
+| `backend/app/modules/ia/router.py` | Dependencia `limitar_tasa_ia` para protección de los endpoints de la red multi-agente DNP contra abusos. |
+| `backend/app/modules/ia/__init__.py` | Exportación de helper de mantenimiento de caché de tasa `limpiar_cache_tasa_ia`. |
+| `backend/tests/test_aud06_perfil_produccion.py` | Suite de 6 pruebas automatizadas validando docs 404, CORS estricto, cookies seguras y rate limiting. |
+| `src/shared/ui/sidebar.tsx` | Cookie cliente `sidebar_state` configurada con directivas `SameSite=Lax` y `Secure`. |
+| `docs/operacion.md` | Sección formal "Checklist de Despliegue Productivo (AUD-06)". |
+
+---
+
+## 3. Matriz de Validación de Quality Gates (AUD-06)
+
+| Quality Gate | Comando de Validación | Resultado Pericial |
+|---|---|---|
+| **Política de UI POLIS** | `node scripts/ui-policy.mjs` | **0 violaciones** (100% controles Design Kit, cero modales, tokens semánticos). |
+| **Chequeo de Tipos y Lint Frontend** | `bun run check` | **Aprobado (0 errores)** en TypeScript estricto y ESLint. |
+| **Pruebas Automatizadas Frontend** | `bun test src/features/alternativas src/features/seguimiento src/features/politicas` | **80 pass, 0 fail** en suites de frontend. |
+| **Pruebas Automatizadas Backend** | `pytest tests/test_aud06_perfil_produccion.py tests/test_access_policy.py tests/test_red_multiagente_ia.py` | **91 pass, 0 fail (1 skipped)** (producción, RBAC e IA). |
+| **Verificación de Endpoint Docs en Vivo** | `curl http://127.0.0.1:8000/api/v1/docs` | **HTTP 404 Not Found (OpenAPI desactivado en producción)**. |
+| **Verificación de Endpoint OpenAPI en Vivo** | `curl http://127.0.0.1:8000/api/v1/openapi.json` | **HTTP 404 Not Found**. |
+| **Verificación de CORS Rechazo en Vivo** | `curl -X OPTIONS -H "Origin: http://localhost:3000" http://127.0.0.1:8000/api/v1/health/live` | **HTTP 400 Bad Request (Disallowed CORS origin)**. |
+| **Verificación de CORS Autorizado en Vivo** | `curl -X OPTIONS -H "Origin: https://seguridadhumanaintegral.org" http://127.0.0.1:8000/api/v1/health/live` | **HTTP 200 OK (access-control-allow-origin presente)**. |
+| **Servicio Backend en Producción** | `systemctl status polis-backend` | **Activo y operativo en modo producción**. |
+
+
 
 
 
