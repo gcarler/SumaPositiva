@@ -53,8 +53,11 @@ class MesaRepository:
         fecha: date | None = None,
         territorio_id: uuid.UUID | None = None,
         ancestro_ruta: str | None = None,
+        solo_raiz: bool = True,
     ) -> Sequence[Mesa]:
         stmt = select(Mesa)
+        if solo_raiz and not ancestro_ruta:
+            stmt = stmt.where(Mesa.mesa_padre_id.is_(None))
         if tipo_mesa:
             stmt = stmt.where(Mesa.tipo_mesa == tipo_mesa)
         if estado:

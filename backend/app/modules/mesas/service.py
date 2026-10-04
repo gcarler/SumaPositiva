@@ -301,10 +301,11 @@ class MesaService:
         fecha: date | None = None,
         territorio_id: uuid.UUID | None = None,
         ancestro_ruta: str | None = None,
+        solo_raiz: bool = True,
     ) -> list[MesaRespuesta]:
         if ancestro_ruta is not None:
             self._validar_ruta_ltree(ancestro_ruta)
-        mesas = await self.repository.listar(tipo_mesa, estado, fecha, territorio_id, ancestro_ruta)
+        mesas = await self.repository.listar(tipo_mesa, estado, fecha, territorio_id, ancestro_ruta, solo_raiz)
         return [MesaRespuesta.model_validate(m) for m in mesas]
 
     async def listar_submesas(self, mesa_id: uuid.UUID) -> list[MesaRespuesta]:

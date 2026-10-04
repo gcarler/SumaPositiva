@@ -187,8 +187,9 @@ async def listar_mesas(
     fecha: date | None = None,
     territorio_id: uuid.UUID | None = None,
     ancestro_ruta: str | None = None,
+    solo_raiz: bool = True,
 ):
-    return await service.listar_mesas(tipo_mesa, estado, fecha, territorio_id, ancestro_ruta)
+    return await service.listar_mesas(tipo_mesa, estado, fecha, territorio_id, ancestro_ruta, solo_raiz)
 
 
 @router.get("/{mesa_id}", response_model=MesaRespuesta)
