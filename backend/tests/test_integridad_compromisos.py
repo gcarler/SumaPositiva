@@ -51,8 +51,11 @@ def test_base_de_datos_compromisos_sin_avances_fabricados(database_url: str):
                         assert "bpin_relacionado" not in (meta or {}), f"Compromiso {cod} contiene BPIN ficticio"
                         assert "observacion_cualitativa" not in (meta or {}), f"Compromiso {cod} contiene observación inventada"
 
-                        # 3. Metadatos deben contener cita de procedencia
-                        assert "fuente" in (meta or {}), f"Compromiso {cod} carece de trazabilidad de fuente legal"
+                        # 3. Metadatos deben contener cita honesta de catálogo propuesto (OBS-11)
+                        fuente = (meta or {}).get("fuente", "")
+                        assert "Catálogo propuesto por el equipo" in fuente, f"Compromiso {cod} debe citar catálogo propuesto"
+                        assert "no proviene del Decreto 037" in fuente, f"Compromiso {cod} debe aclarar que no proviene del Decreto 037"
+                        assert (meta or {}).get("meta_validada") is False, f"Compromiso {cod} debe marcar meta_validada=False"
                     else:
                         assert meta.get("observacion_cualitativa", "").startswith("DEMOSTRACIÓN:"), (
                             f"Compromiso demo {cod} debe marcar su observación como DEMOSTRACIÓN"

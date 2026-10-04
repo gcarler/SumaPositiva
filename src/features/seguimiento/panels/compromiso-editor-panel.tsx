@@ -231,9 +231,17 @@ export function CompromisoEditorPanel({
                 <CheckSquare className="size-3.5 text-ember" aria-hidden="true" />
                 Compromiso Institucional
               </span>
-              <Badge variant="outline" className="border-border text-accent font-mono text-[10px]">
-                {compromiso.codigo}
-              </Badge>
+              <div className="flex items-center gap-2 flex-wrap">
+                <Badge variant="outline" className="border-border text-accent font-mono text-[10px]">
+                  {compromiso.codigo}
+                </Badge>
+                {compromiso.metadatos?.meta_validada === false && (
+                  <Badge variant="outline" className="text-[10px] text-warning border-warning/30 bg-warning/10 gap-1">
+                    <AlertTriangle className="size-3 text-warning" aria-hidden="true" />
+                    Meta propuesta (sin validar)
+                  </Badge>
+                )}
+              </div>
             </div>
 
             <div className="space-y-1.5">
@@ -258,6 +266,11 @@ export function CompromisoEditorPanel({
                 <DollarSign className="size-3 text-text-muted" aria-hidden="true" />
                 {formatoMoneda(compromiso.presupuesto_anual_cop)} / año
               </Badge>
+              {compromiso.metadatos?.fuente && (
+                <div className="w-full text-[11px] text-text-muted italic pt-1">
+                  Fuente: {compromiso.metadatos.fuente}
+                </div>
+              )}
             </div>
           </div>
         ) : (

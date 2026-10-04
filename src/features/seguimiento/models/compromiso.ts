@@ -32,6 +32,8 @@ export interface CompromisoInstitucional {
   fecha_corte_ultimo_reporte: string | null;
   metadatos?: {
     fuente?: string;
+    meta_validada?: boolean;
+    alerta_fuente?: string;
     es_demostracion?: boolean;
     responsable_cargo?: string;
     bpin_relacionado?: string;

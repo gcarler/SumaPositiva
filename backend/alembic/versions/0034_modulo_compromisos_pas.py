@@ -1,5 +1,13 @@
 """Crear modulo de compromisos institucionales del PAS y asignar permisos.
 
+ADVERTENCIA DE INTEGRIDAD / AUDITORÍA FORENSE (OBS-11 / OBS-12 / OBS-13):
+Esta migración sembró históricamente porcentajes de avance simulados (35%-95%),
+observaciones cualitativas ficticias y BPINs no verificados, así como una
+atribución indebida al Decreto 037 de 2026.
+Dichos datos fueron PURGADOS Y RESTITUIDOS formalmente por las migraciones
+0037 y 0039. Las metas descritas constituyen un catálogo propuesto por el
+equipo técnico, PENDIENTE de validación institucional distrital formal.
+
 Revision ID: 0034_compromisos_pas
 Revises: 0033_conservar_respuestas
 Create Date: 2026-10-03 23:50:00.000000

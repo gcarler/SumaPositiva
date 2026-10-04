@@ -118,10 +118,17 @@ export function CompromisosTabla({
                     </div>
                   </TableCell>
                   <TableCell>
-                    <div className="flex flex-col gap-0.5">
-                      <span className="font-medium text-text-primary">
-                        {c.nombre}
-                      </span>
+                    <div className="flex flex-col gap-1">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="font-medium text-text-primary">
+                          {c.nombre}
+                        </span>
+                        {c.metadatos?.meta_validada === false && (
+                          <Badge variant="outline" className="text-[10px] text-warning border-warning/30 bg-warning/10">
+                            Meta propuesta (sin validar)
+                          </Badge>
+                        )}
+                      </div>
                       <span className="line-clamp-2 text-xs text-text-muted">
                         {c.meta_cuatrienal_descripcion}
                       </span>

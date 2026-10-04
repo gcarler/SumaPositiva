@@ -32,6 +32,15 @@ describe("Plan de Acción y Seguimiento (PAS) — Matriz de Compromisos (Hito PA
       expect(codigos).toContain("PAS-ETN-10");
     });
 
+    test("los compromisos canónicos llevan metadatos de propuesta no validada y sin atribución falsa al Decreto 037 (OBS-11)", () => {
+      const state = useCompromisosStore.getState();
+      for (const comp of state.compromisos) {
+        expect(comp.metadatos?.fuente).toContain("Catálogo propuesto por el equipo");
+        expect(comp.metadatos?.fuente).toContain("no proviene del Decreto 037");
+        expect(comp.metadatos?.meta_validada).toBe(false);
+      }
+    });
+
     test("computa KPIs de cumplimiento, alertas y presupuesto anual distrital", () => {
       const kpis = calcularKpisSeguimiento(COMPROMISOS_PAS_CANONICOS);
 
