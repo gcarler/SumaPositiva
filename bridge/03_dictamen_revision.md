@@ -114,3 +114,6 @@ Verificado: una sola implementación `sanitizarCsv` en `src/shared/lib/csv.ts` (
 
 ## Dictamen AUD-16 — CONFORME (commit 9faa78e)
 Verificado: `no-unused-vars` y `ban-ts-comment` en `error`; `eslint .`, `tsc`, `ui-policy` limpios; `bun test` 227 pass; 0 `eslint-disable`/`@ts-ignore` en src; archivos de codex intactos; readiness prod `ready` (migrations ok); `01_tarea_activa.md` actualizado. **OBS-19 (media):** `eslint.config.mjs` ahora IGNORA `src/features/noticias/**` y `testimonios/**`; esas carpetas quedan sin lint y deben reincorporarse al cerrar el módulo de codex (no entregar el proyecto con la exclusión).
+
+## Dictamen AUD-17 — CONFORME CON OBS-20 (commit b5f3ca6)
+Runbook y plan de consolidación coherentes con `alembic history` (revisiones y `downgrade 0036_restituir_mediciones` existen). **OBS-20:** el runbook trata 0037–0040 como "pendientes", pero `alembic current` sobre bd_csh ya reporta `0040_modulo_actores_estrategicos (head)`: las migraciones YA están aplicadas; corregir el runbook (paso condicional: si current=head, omitir). Mención literal de la contraseña antigua en `plan-consolidacion-git.md` aceptable solo mientras se rota; retirar tras la rotación.
