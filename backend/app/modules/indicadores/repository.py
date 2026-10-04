@@ -21,6 +21,24 @@ class IndicadoresRepository:
         )
         return res.scalar_one_or_none()
 
+    async def obtener_ficha_para_actualizar(
+        self, id: uuid.UUID
+    ) -> FichaTecnicaIndicador | None:
+        res = await self.session.execute(
+            select(FichaTecnicaIndicador)
+            .where(FichaTecnicaIndicador.id == id)
+            .with_for_update()
+        )
+        return res.scalar_one_or_none()
+
+    async def actualizar_ficha(
+        self, ficha: FichaTecnicaIndicador
+    ) -> FichaTecnicaIndicador:
+        self.session.add(ficha)
+        await self.session.flush()
+        await self.session.refresh(ficha)
+        return ficha
+
     async def crear_ficha(self, ficha: FichaTecnicaIndicador) -> FichaTecnicaIndicador:
         self.session.add(ficha)
         await self.session.flush()

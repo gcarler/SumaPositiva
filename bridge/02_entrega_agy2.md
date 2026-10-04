@@ -2184,5 +2184,87 @@ En estricta atención al dictamen del auditor EAF, se procedió a subsanar de ra
 | **Linting ESLint** | `bun run lint` (`eslint .`) | **0 errores, 0 advertencias**. |
 | **Pipeline Completo Check** | `bun run check` | **Aprobado con código 0**. |
 | **Protección contra bd_csh** | `scripts/sembrar_fuentes_demo.py` | Guarda `validar_bd_destino()` bloquea y aborta ejecución contra `bd_csh`. Base de datos de producción intacta. |
-| **Aislamiento de Codex** | `git status` | Archivos de codex estrictamente intactos. |
+| **Aislamiento de Codex** | `git status` | Archivos de codex strictly intactos. |
 | **Historial Git** | Git | Commit nuevo atómico sin reescribir historial previo. |
+
+---
+
+# Tarea EDIT-04: Configuración de Metadatos de Fichas de Indicadores Distritales DNP
+
+**Fecha**: 2026-10-04T05:00:00Z  
+**Estado**: LISTA PARA AUDITORÍA PERICIAL (EAF)  
+**Responsable**: agy2 (Equipo de Desarrollo EDD)  
+**Especificación**: `bridge/01_tarea_agy2_edit_04.md`  
+**Prioridad**: BAJA (Mejora Funcional de Seguimiento)  
+**Criterio de Aceptación**: Actualización del enlace técnico institucional sin riesgo de alteración de fórmulas oficiales DNP.
+
+---
+
+### 1. Resumen de la Implementación (EDIT-04)
+
+Conforme a la especificación de `bridge/01_tarea_agy2_edit_04.md`:
+
+1. **Exposición del Endpoint `PATCH /api/v1/indicadores/fichas/{id}`**:
+   - Protegido con `requerir_permiso("indicadores:gestionar", nivel_minimo="declarada")` (exclusivo para `autoridad_distrital` y `administrador_identidades`).
+   - Bloqueo pesimista `obtener_ficha_para_actualizar(id)` bajo transacción atómica.
+   - Permite la actualización de metadatos administrativos e institucionales:
+     - `responsable_reporte`: Dependencia distrital responsable (e.g. Secretaría del Interior y Convivencia).
+     - `fuente_datos`: Sistema de información oficial de origen (e.g. SIEDCO / MECAR).
+     - `periodicidad`: Ciclo de actualización (e.g. Trimestral, Semestral).
+     - `metadatos`: Diccionario JSON de atributos de enlace técnico institucional (`contacto_tecnico`, `email_contacto`, `telefono_contacto`, `fecha_proxima_actualizacion`).
+2. **Salvaguarda Metodológica DNP Contra Alteración de Fórmulas o Línea Base**:
+   - En el backend (`IndicadoresService.actualizar_ficha`), se implementó una **guarda inviolable**: si el payload intenta enviar valores para `linea_base_valor`, `linea_base_anio`, `metodo_calculo` o `formula` (sea en los campos raíz o inyectados dentro del diccionario `metadatos`), la petición es rechazada de inmediato con `HTTP 400 Bad Request` indicando la salvaguarda institucional explícita.
+   - Estos parámetros oficiales del DNP permanecen estrictamente inmutables para preservar la integridad legal y pericial del plan de desarrollo.
+3. **Registro Inmutable de Auditoría Forense**:
+   - Cada actualización exitosa genera automáticamente un registro inmutable en `auditoria.registros_auditoria` con:
+     - `accion = "ACTUALIZAR_METADATOS_FICHA_INDICADOR"`
+     - `tabla_afectada = "indicadores.fichas_tecnicas_indicadores"`
+     - `causal = "tecnica"`
+     - `justificacion_motivada` con el código del indicador DNP.
+     - `metadatos` detallando la lista de campos modificados y valores resultantes.
+4. **Interfaz de Usuario Frontend Accesible (Zero-Modals, Design Kit)**:
+   - En `src/features/seguimiento/panels/indicador-detalle-panel.tsx`, se añadió la sección colapsable interactiva accesible **"Metadatos Institucionales y Enlace Técnico"** mediante botón `<Button variant="ghost">` con `aria-expanded`, chevron animado y badge de estado.
+   - Despliega formulario integrado en el panel lateral (cumpliendo con la política de Cero Modales) usando componentes estándar del Design Kit (`FormField`, `Input`, `Button`).
+   - Muestra banner informativo de salvaguarda metodológica DNP que educa al funcionario sobre la inmutabilidad de la fórmula matemática y la línea base histórica.
+   - Estado de solo lectura automático para perfiles con rol `auditor_forense`.
+   - Botón de guardado con feedback visual (`guardandoMetadatos`, spinner y toast accesible).
+5. **Capa de Servicios y Estado Reactivo**:
+   - `src/features/seguimiento/services/cadena-valor-api.ts`: Función `actualizarFichaIndicador` con tipado `FichaIndicadorActualizarInput`.
+   - `src/features/seguimiento/state/cadena-valor-store.ts`: Acción `actualizarMetadatosFicha` en Zustand. Si la llamada al backend falla o es rechazada por salvaguarda DNP, el estado local no muta (garantía de integridad AUD-02).
+   - `docs/permisos-api.md`: Documentación de la ruta `PATCH /api/v1/indicadores/fichas/{id}`.
+
+---
+
+### 2. Matriz de Archivos Modificados y Creados (EDIT-04)
+
+| Archivo | Tipo | Descripción de la Modificación |
+|---|---|---|
+| `backend/app/modules/indicadores/schemas.py` | **Modificación** | Schema Pydantic `FichaIndicadorActualizar` con campos institucionales y captura para salvaguarda DNP. |
+| `backend/app/modules/indicadores/repository.py` | **Modificación** | Métodos `obtener_ficha_para_actualizar` (bloqueo `with_for_update`) y `actualizar_ficha`. |
+| `backend/app/modules/indicadores/service.py` | **Modificación** | Lógica de negocio con guarda de salvaguarda DNP (400 ante intentos de alterar fórmula/línea base) y auditoría inmutable. |
+| `backend/app/modules/indicadores/router.py` | **Modificación** | Endpoint `PATCH /api/v1/indicadores/fichas/{id}` protegido con `indicadores:gestionar`. |
+| `backend/tests/test_indicadores_metadatos.py` | **Nuevo** | 3 pruebas pytest: actualización exitosa y verificación de auditoría SQL, rechazo HTTP 400 por salvaguarda DNP, y seguridad RBAC 401/404. |
+| `src/features/seguimiento/services/cadena-valor-api.ts` | **Modificación** | Función cliente `actualizarFichaIndicador` tipada. |
+| `src/features/seguimiento/state/cadena-valor-store.ts` | **Modificación** | Acción `actualizarMetadatosFicha` con manejo atómico y preservación ante fallos. |
+| `src/features/seguimiento/panels/indicador-detalle-panel.tsx` | **Modificación** | Sección colapsable accesible de metadatos institucionales con Cero Modales. |
+| `src/features/seguimiento/state/cadena-valor-store.test.ts` | **Modificación** | 2 pruebas unitarias para actualización exitosa y rechazo ante fallo backend. |
+| `docs/permisos-api.md` | **Modificación** | Documentación de la ruta `PATCH /api/v1/indicadores/fichas/{id}`. |
+| `bridge/01_tarea_activa.md` | **Modificación** | Estado actualizado a EDIT-04 ENTREGADA / LISTA PARA AUDITAR. |
+| `bridge/02_entrega_agy2.md` | **Modificación** | Documentación completa de la entrega EDIT-04. |
+
+---
+
+### 3. Matriz de Quality Gates Periciales (EDIT-04)
+
+| Quality Gate | Comando de Validación | Resultado Pericial |
+|---|---|---|
+| **Pruebas Backend Pytest (`polis_test`)** | `backend/.venv/bin/pytest backend/tests/test_indicadores_metadatos.py` | **3 passed in 6.04s** (actualización exitosa + auditoría forense, salvaguarda DNP 400, seguridad 401/404). |
+| **Pruebas Frontend Cadena de Valor Store** | `bun test src/features/seguimiento/state/cadena-valor-store.test.ts` | **9 pass, 0 fail (36 expect calls)**. |
+| **Suite Completa Frontend** | `bun test` | **248 pass, 0 fail (1121 expect calls)** en 27 archivos de prueba. |
+| **Política de UI POLIS** | `bun run ui:check` (`node scripts/ui-policy.mjs`) | **0 violaciones** (100% componentes Design Kit, cero modales, tokens semánticos). |
+| **Chequeo de Tipos TypeScript** | `bun run typecheck` (`tsc --noEmit`) | **0 errores** de compilación estricta. |
+| **Linting ESLint** | `bun run lint` (`eslint .`) | **0 errores, 0 advertencias**. |
+| **Pipeline Completo Check** | `bun run check` | **100% aprobado** (ui:check, typecheck, lint). |
+| **Aislamiento de Codex** | `git status` | Archivos de codex (`noticias`, `testimonios`, backend) estrictamente intactos. |
+| **Salvaguarda de Base de Datos** | N/A | Cero migraciones ejecutadas sobre `bd_csh`, cero push a remoto. |
+

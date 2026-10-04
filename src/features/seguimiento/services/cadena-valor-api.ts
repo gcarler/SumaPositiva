@@ -371,3 +371,29 @@ export async function registrarMedicionIndicador(
     }
   );
 }
+
+export interface FichaIndicadorActualizarInput {
+  responsable_reporte?: string;
+  fuente_datos?: string;
+  periodicidad?: string;
+  metadatos?: Record<string, unknown>;
+}
+
+/**
+ * Actualiza los metadatos institucionales de la ficha DNP (EDIT-04).
+ * Salvaguarda: las fórmulas y línea base histórica permanecen inmutables.
+ */
+export async function actualizarFichaIndicador(
+  indicadorId: string,
+  datos: FichaIndicadorActualizarInput
+): Promise<FichaIndicadorDnp> {
+  const raw = await apiFetch<Record<string, unknown>>(
+    `/indicadores/fichas/${indicadorId}`,
+    {
+      method: "PATCH",
+      body: datos,
+    }
+  );
+  return normalizarFicha(raw);
+}
+

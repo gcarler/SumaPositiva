@@ -215,5 +215,67 @@ describe("Tablero SINERGIA DNP y Cadena de Valor (Hito PAS-2 / AUD-02)", () => {
       store.seleccionarIndicador(null);
       expect(useCadenaValorStore.getState().indicadorSeleccionadoId).toBeNull();
     });
+
+    test("actualiza metadatos institucionales de la ficha DNP cuando la API responde exitosamente (EDIT-04)", async () => {
+      const indicadorExistente = useCadenaValorStore.getState().getIndicadorById("IND-INS-01")!;
+      const lbOriginal = indicadorExistente.linea_base_valor;
+      const formulaOriginal = indicadorExistente.metodo_calculo;
+
+      vi.spyOn(cadenaValorApi, "actualizarFichaIndicador").mockResolvedValueOnce({
+        ...indicadorExistente,
+        responsable_reporte: "Secretaría del Interior y Convivencia",
+        fuente_datos: "MECAR SIEDCO",
+        periodicidad: "Trimestral",
+        metadatos: {
+          ...indicadorExistente.metadatos,
+          contacto_tecnico: "Ing. Enlace",
+          email_contacto: "enlace@cartagena.gov.co",
+        },
+        actualizado_en: "2026-10-04T12:00:00Z",
+      });
+
+      const store = useCadenaValorStore.getState();
+      const ok = await store.actualizarMetadatosFicha("IND-INS-01", {
+        responsable_reporte: "Secretaría del Interior y Convivencia",
+        fuente_datos: "MECAR SIEDCO",
+        periodicidad: "Trimestral",
+        metadatos: {
+          contacto_tecnico: "Ing. Enlace",
+          email_contacto: "enlace@cartagena.gov.co",
+        },
+      });
+
+      expect(ok).toBe(true);
+
+      const actualizado = useCadenaValorStore.getState().getIndicadorById("IND-INS-01");
+      expect(actualizado?.responsable_reporte).toBe("Secretaría del Interior y Convivencia");
+      expect(actualizado?.fuente_datos).toBe("MECAR SIEDCO");
+      expect(actualizado?.periodicidad).toBe("Trimestral");
+      expect(actualizado?.metadatos?.contacto_tecnico).toBe("Ing. Enlace");
+      // Salvaguarda: fórmulas y línea base DNP intactas
+      expect(actualizado?.linea_base_valor).toBe(lbOriginal);
+      expect(actualizado?.metodo_calculo).toBe(formulaOriginal);
+    });
+
+    test("AUD-02: un PATCH fallido de metadatos NO altera el store, guarda error y retorna false", async () => {
+      vi.spyOn(cadenaValorApi, "actualizarFichaIndicador").mockRejectedValueOnce(
+        new Error("HTTP 400: Salvaguarda institucional: Prohibido modificar fórmula o línea base DNP")
+      );
+
+      const store = useCadenaValorStore.getState();
+      const antes = store.getIndicadorById("IND-INS-01");
+      const respAntes = antes?.responsable_reporte;
+
+      const ok = await store.actualizarMetadatosFicha("IND-INS-01", {
+        responsable_reporte: "Intento no permitido",
+      });
+
+      expect(ok).toBe(false);
+
+      const despues = useCadenaValorStore.getState().getIndicadorById("IND-INS-01");
+      expect(despues?.responsable_reporte).toBe(respAntes);
+      expect(useCadenaValorStore.getState().error).toContain("Salvaguarda institucional");
+      expect(useCadenaValorStore.getState().guardando).toBe(false);
+    });
   });
 });

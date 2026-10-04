@@ -134,6 +134,7 @@ La última columna explica la excepción pública o la condición adicional.
 | GET | /api/v1/indicadores/fichas | publico | Consulta pública de catálogos y resultados de política para transparencia. |
 | POST | /api/v1/indicadores/fichas | permiso:indicadores:gestionar@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |
 | GET | /api/v1/indicadores/fichas/{id} | publico | Consulta pública de catálogos y resultados de política para transparencia. |
+| PATCH | /api/v1/indicadores/fichas/{id} | permiso:indicadores:gestionar@declarada | Actualización controlada de metadatos institucionales y enlaces técnicos (DNP inmutable). |
 | POST | /api/v1/indicadores/fichas/{id}/mediciones | permiso:indicadores:gestionar@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |
 | GET | /api/v1/instrumentos | publico | Consulta pública de instrumentos y árboles de formulación. |
 | POST | /api/v1/instrumentos | permiso:instrumentos:gestionar@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |

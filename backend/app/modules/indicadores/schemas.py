@@ -30,6 +30,21 @@ class FichaIndicadorCrear(BaseModel):
     metadatos: dict[str, Any] = Field(default_factory=dict)
 
 
+class FichaIndicadorActualizar(BaseModel):
+    responsable_reporte: str | None = Field(default=None, max_length=250)
+    fuente_datos: str | None = Field(default=None, max_length=250)
+    periodicidad: str | None = Field(default=None, max_length=50)
+    metadatos: dict[str, Any] | None = None
+
+    # Salvaguarda metodológica DNP: campos capturados para rechazo explícito (HTTP 400)
+    linea_base_valor: Any | None = None
+    linea_base_anio: Any | None = None
+    metodo_calculo: Any | None = None
+    formula: Any | None = None
+
+    model_config = ConfigDict(extra="ignore")
+
+
 class FichaIndicadorRespuesta(FichaIndicadorCrear):
     id: uuid.UUID
     valor_actual: Decimal

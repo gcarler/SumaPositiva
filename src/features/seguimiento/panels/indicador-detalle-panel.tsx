@@ -13,7 +13,9 @@ import {
   TrendingUp,
   TrendingDown,
   ExternalLink,
-  Layers
+  Layers,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
 import {PanelShell} from "@/core/panels/panel-shell";
 import {usePanels} from "@/core/panels/panel-store";
@@ -42,6 +44,7 @@ export function IndicadorDetallePanel({
 
   const getIndicadorById = useCadenaValorStore((s) => s.getIndicadorById);
   const registrarMedicionStore = useCadenaValorStore((s) => s.registrarMedicion);
+  const actualizarMetadatosFichaStore = useCadenaValorStore((s) => s.actualizarMetadatosFicha);
 
   const indicador = useMemo(() => {
     if (!props?.indicadorId) return null;
@@ -58,11 +61,71 @@ export function IndicadorDetallePanel({
   const [urlEvidencia, setUrlEvidencia] = useState("");
   const [guardando, setGuardando] = useState(false);
 
+  // Estado de metadatos institucionales (EDIT-04)
+  const [metadatosAbierto, setMetadatosAbierto] = useState(false);
+  const [responsableReporte, setResponsableReporte] = useState("");
+  const [fuenteDatos, setFuenteDatos] = useState("");
+  const [periodicidad, setPeriodicidad] = useState("");
+  const [contactoTecnico, setContactoTecnico] = useState("");
+  const [emailContacto, setEmailContacto] = useState("");
+  const [telefonoContacto, setTelefonoContacto] = useState("");
+  const [fechaProximaActualizacion, setFechaProximaActualizacion] = useState("");
+  const [guardandoMetadatos, setGuardandoMetadatos] = useState(false);
+
   useEffect(() => {
     if (indicador) {
       setValorMedido(Number(indicador.valor_actual));
+      setResponsableReporte(indicador.responsable_reporte || "");
+      setFuenteDatos(indicador.fuente_datos || "");
+      setPeriodicidad(indicador.periodicidad || "");
+      const meta = (indicador.metadatos as Record<string, unknown>) || {};
+      setContactoTecnico(typeof meta.contacto_tecnico === "string" ? meta.contacto_tecnico : "");
+      setEmailContacto(typeof meta.email_contacto === "string" ? meta.email_contacto : "");
+      setTelefonoContacto(typeof meta.telefono_contacto === "string" ? meta.telefono_contacto : "");
+      setFechaProximaActualizacion(
+        typeof meta.fecha_proxima_actualizacion === "string" ? meta.fecha_proxima_actualizacion : ""
+      );
     }
   }, [indicador]);
+
+  const handleGuardarMetadatos = async () => {
+    if (!indicador) return;
+    if (!responsableReporte.trim()) {
+      toast.error("La dependencia responsable del reporte es obligatoria.");
+      return;
+    }
+    if (!fuenteDatos.trim()) {
+      toast.error("La fuente oficial de datos es obligatoria.");
+      return;
+    }
+
+    setGuardandoMetadatos(true);
+    try {
+      const exito = await actualizarMetadatosFichaStore(indicador.id, {
+        responsable_reporte: responsableReporte.trim(),
+        fuente_datos: fuenteDatos.trim(),
+        periodicidad: periodicidad.trim() || undefined,
+        metadatos: {
+          ...(indicador.metadatos || {}),
+          contacto_tecnico: contactoTecnico.trim() || undefined,
+          email_contacto: emailContacto.trim() || undefined,
+          telefono_contacto: telefonoContacto.trim() || undefined,
+          fecha_proxima_actualizacion: fechaProximaActualizacion.trim() || undefined,
+        },
+      });
+
+      if (exito) {
+        toast.success(`Metadatos de ${indicador.codigo} actualizados exitosamente.`);
+      } else {
+        const errorMsg = useCadenaValorStore.getState().error;
+        toast.error(errorMsg || "No fue posible actualizar los metadatos institucionales.");
+      }
+    } catch (err) {
+      toast.error((err as Error).message || "Error al actualizar metadatos institucionales.");
+    } finally {
+      setGuardandoMetadatos(false);
+    }
+  };
 
   const avanceSimulado = useMemo(() => {
     if (!indicador) return 0;
@@ -240,6 +303,175 @@ export function IndicadorDetallePanel({
               {indicador.metodo_calculo}
             </code>
           </div>
+        </div>
+
+        {/* Sección Colapsable: Metadatos Institucionales (EDIT-04) */}
+        <div className="rounded-xl border border-border bg-surface-1 shadow-xs overflow-hidden">
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={() => setMetadatosAbierto((prev) => !prev)}
+            className="flex h-auto w-full items-center justify-between rounded-none p-4 text-left font-normal transition-colors hover:bg-surface-2/50"
+            aria-expanded={metadatosAbierto}
+          >
+            <div className="flex items-center gap-2.5">
+              <Building2 className="h-4 w-4 text-ember shrink-0" />
+              <div>
+                <h3 className="text-sm font-semibold text-text-primary">
+                  Metadatos Institucionales y Enlace Técnico
+                </h3>
+                <p className="text-xs text-text-muted">
+                  Configuración de dependencia distrital, enlace técnico, fuente y periodicidad
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              <Badge variant="outline" className="text-[11px]">
+                {metadatosAbierto ? "Ocultar" : "Configurar"}
+              </Badge>
+              {metadatosAbierto ? (
+                <ChevronUp className="h-4 w-4 text-text-muted" />
+              ) : (
+                <ChevronDown className="h-4 w-4 text-text-muted" />
+              )}
+            </div>
+          </Button>
+
+          {metadatosAbierto && (
+            <div className="space-y-4 border-t border-border bg-surface-1 p-4">
+              {/* Salvaguarda metodológica DNP */}
+              <div className="flex items-start gap-2.5 rounded-lg border border-border bg-surface-2 p-3 text-xs">
+                <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-success" />
+                <div className="leading-relaxed text-text-secondary">
+                  <strong className="font-semibold text-text-primary">
+                    Salvaguarda Metodológica DNP:
+                  </strong>{" "}
+                  El método de cálculo matemático y la línea base histórica del DNP ({indicador.linea_base_anio}:{" "}
+                  {Number(indicador.linea_base_valor).toLocaleString("es-CO")} {indicador.unidad_medida}) son
+                  inmutables por salvaguarda legal pericial. Solo los enlaces técnicos y periodicidades
+                  institucionales son editables.
+                </div>
+              </div>
+
+              <div className="grid gap-3 sm:grid-cols-2">
+                <FormField label="Dependencia Responsable del Reporte">
+                  {({ id }) => (
+                    <Input
+                      id={id}
+                      value={responsableReporte}
+                      onChange={(e) => setResponsableReporte(e.target.value)}
+                      disabled={esAuditor || guardandoMetadatos}
+                      placeholder="Ej. Secretaría del Interior"
+                      className="text-xs"
+                    />
+                  )}
+                </FormField>
+
+                <FormField label="Fuente Oficial de Datos">
+                  {({ id }) => (
+                    <Input
+                      id={id}
+                      value={fuenteDatos}
+                      onChange={(e) => setFuenteDatos(e.target.value)}
+                      disabled={esAuditor || guardandoMetadatos}
+                      placeholder="Ej. SIEDCO / MECAR"
+                      className="text-xs"
+                    />
+                  )}
+                </FormField>
+              </div>
+
+              <div className="grid gap-3 sm:grid-cols-2">
+                <FormField label="Periodicidad de Reporte">
+                  {({ id }) => (
+                    <Input
+                      id={id}
+                      value={periodicidad}
+                      onChange={(e) => setPeriodicidad(e.target.value)}
+                      disabled={esAuditor || guardandoMetadatos}
+                      placeholder="Ej. Trimestral, Semestral, Anual"
+                      className="text-xs"
+                    />
+                  )}
+                </FormField>
+
+                <FormField label="Fecha Próxima Actualización Programada">
+                  {({ id }) => (
+                    <Input
+                      id={id}
+                      type="date"
+                      value={fechaProximaActualizacion}
+                      onChange={(e) => setFechaProximaActualizacion(e.target.value)}
+                      disabled={esAuditor || guardandoMetadatos}
+                      className="text-xs"
+                    />
+                  )}
+                </FormField>
+              </div>
+
+              <div className="grid gap-3 sm:grid-cols-3">
+                <FormField label="Nombre Enlace Técnico">
+                  {({ id }) => (
+                    <Input
+                      id={id}
+                      value={contactoTecnico}
+                      onChange={(e) => setContactoTecnico(e.target.value)}
+                      disabled={esAuditor || guardandoMetadatos}
+                      placeholder="Funcionario enlace"
+                      className="text-xs"
+                    />
+                  )}
+                </FormField>
+
+                <FormField label="Correo Institucional">
+                  {({ id }) => (
+                    <Input
+                      id={id}
+                      type="email"
+                      value={emailContacto}
+                      onChange={(e) => setEmailContacto(e.target.value)}
+                      disabled={esAuditor || guardandoMetadatos}
+                      placeholder="enlace@cartagena.gov.co"
+                      className="text-xs"
+                    />
+                  )}
+                </FormField>
+
+                <FormField label="Teléfono / Extensión">
+                  {({ id }) => (
+                    <Input
+                      id={id}
+                      value={telefonoContacto}
+                      onChange={(e) => setTelefonoContacto(e.target.value)}
+                      disabled={esAuditor || guardandoMetadatos}
+                      placeholder="+57 605 6411370"
+                      className="text-xs"
+                    />
+                  )}
+                </FormField>
+              </div>
+
+              {!esAuditor && (
+                <div className="flex justify-end pt-2 border-t border-border">
+                  <Button
+                    type="button"
+                    variant="default"
+                    size="sm"
+                    onClick={handleGuardarMetadatos}
+                    disabled={guardandoMetadatos}
+                    className="gap-1.5"
+                  >
+                    <Save className="h-3.5 w-3.5" />
+                    <span>
+                      {guardandoMetadatos
+                        ? "Guardando Metadatos..."
+                        : "Guardar Metadatos Institucionales"}
+                    </span>
+                  </Button>
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Tarjeta de Línea Base vs Meta vs Avance Cuatrienal */}

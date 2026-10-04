@@ -5,9 +5,11 @@ from fastapi import APIRouter, Depends, HTTPException, status
 
 from app.core.database import SessionDependency
 from app.modules.identidad.deps import requerir_permiso
+from app.modules.identidad.schemas import SujetoAutenticadoContexto
 from app.modules.indicadores.repository import IndicadoresRepository
 from app.modules.indicadores.schemas import (
     CadenaValorRespuesta,
+    FichaIndicadorActualizar,
     FichaIndicadorCrear,
     FichaIndicadorRespuesta,
     MedicionIndicadorCrear,
@@ -36,6 +38,20 @@ async def obtener_ficha(id: uuid.UUID, service: IndicadoresServiceDep):
     if not ficha:
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail="Ficha no encontrada")
     return ficha
+
+
+@router.patch("/fichas/{id}", response_model=FichaIndicadorRespuesta)
+async def actualizar_ficha(
+    id: uuid.UUID,
+    datos: FichaIndicadorActualizar,
+    service: IndicadoresServiceDep,
+    sujeto: Annotated[
+        SujetoAutenticadoContexto,
+        Depends(requerir_permiso("indicadores:gestionar", nivel_minimo="declarada")),
+    ],
+):
+    """Actualiza metadatos institucionales de la ficha DNP salvaguardando la fórmula matemática y línea base."""
+    return await service.actualizar_ficha(id, datos, usuario_id=sujeto.sujeto_id)
 
 
 @router.post(

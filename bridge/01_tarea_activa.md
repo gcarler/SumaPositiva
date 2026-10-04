@@ -3,7 +3,7 @@
 **Última actualización**: 2026-10-04  
 **Responsable activo**: agy2 (EDD)  
 **Auditor independiente**: EAF  
-**Tarea en curso / entregada**: `EDIT-03b` (Subsanación Pericial: Erradicación de Datos Fabricados en Fuentes)
+**Tarea en curso / entregada**: `EDIT-04` (Configuración de Metadatos de Fichas de Indicadores Distritales DNP)
 
 ---
 
@@ -38,8 +38,8 @@
 |:---|:---:|:---|:---:|:---|
 | **EDIT-01** | **ALTA** | Persistencia Backend para Edición de Metadatos de Mesas (`PATCH /api/v1/mesas/{id}`) | **CONFORME CON OBS-21** | `3dc7d1f`. OBS-21 programada para EDIT-01b tras EDIT-04. |
 | **EDIT-02** | **MEDIA** | Modelo Relacional y CRUD Dinámico de Agenda de Mesas | **CONFORME CON OBS-22** | `9b82221`. Subsanada OBS-22 (0041 en runbook, corrección a 36 mesas). |
-| **EDIT-03b** | **CRÍTICA** | Subsanación de Sembrado y Erradicación de Datos Fabricados en Catálogo de Fuentes | **ENTREGADA / LISTA PARA AUDITAR** | Migración 0042 sin solicitudes falsas (`por_solicitar`, radicados/fechas NULL), script demo con guarda anti `bd_csh`, fixtures a `__fixtures__`, 5 tests backend en `test_fuentes_informacion.py` (5 passed), `bun test` (248 passed), `bun run check` (0 errores). |
-| **EDIT-04** | **BAJA** | Endpoint de Actualización Controlada para Fichas Técnicas DNP | **EN CURSO / LISTA PARA COMMIT** | Implementación completa lista para commit y entrega tras dictamen EDIT-03b. |
+| **EDIT-03b** | **CRÍTICA** | Subsanación de Sembrado y Erradicación de Datos Fabricados en Catálogo de Fuentes | **CONFORME / LISTA PARA AUDITAR** | `4d81eae`. Cero radicados inventados, fixtures a `__fixtures__`, guarda anti-`bd_csh`, 5 tests backend. |
+| **EDIT-04** | **BAJA** | Endpoint de Actualización Controlada para Fichas Técnicas DNP | **ENTREGADA / LISTA PARA AUDITAR** | `PATCH /api/v1/indicadores/fichas/{id}` con salvaguarda DNP estricta (400 si altera fórmulas o línea base), auditoría forense inmutable, sección colapsable accesible en front, `test_indicadores_metadatos.py` (3 passed), `bun test` (248 passed), `bun run check` (0 errores). |
 | **EDIT-05** | **BAJA** | Integración y Cierre de Módulos de Noticias y Testimonios (Codex) | **BLOQUEADA (CODEX)** | No tocar archivos de Codex. |
 
 ---

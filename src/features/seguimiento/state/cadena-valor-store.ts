@@ -10,6 +10,8 @@ import {
   CADENA_VALOR_CANONICA_CARTAGENA,
   obtenerCadenaValor,
   registrarMedicionIndicador,
+  actualizarFichaIndicador,
+  type FichaIndicadorActualizarInput,
 } from "../services/cadena-valor-api";
 import { calcularAvancePorcentaje } from "../models/indicador-dnp";
 
@@ -27,6 +29,10 @@ export interface CadenaValorStoreState {
   registrarMedicion: (
     indicadorId: string,
     medicion: MedicionIndicadorInput
+  ) => Promise<boolean>;
+  actualizarMetadatosFicha: (
+    indicadorId: string,
+    cambios: FichaIndicadorActualizarInput
   ) => Promise<boolean>;
   getIndicadorById: (id: string) => FichaIndicadorDnp | undefined;
   restablecer: () => void;
@@ -114,6 +120,53 @@ export const useCadenaValorStore = create<CadenaValorStoreState>((set, get) => (
       // AUD-02: Prohibido mutar estado local ante fallo en backend
       const mensaje =
         err instanceof Error ? err.message : "Error al registrar medición en backend";
+      set({ guardando: false, error: mensaje });
+      return false;
+    }
+  },
+
+  actualizarMetadatosFicha: async (indicadorId, cambios) => {
+    set({ guardando: true, error: null });
+    try {
+      const fichaActualizada = await actualizarFichaIndicador(indicadorId, cambios);
+
+      const actual = get().cadenaValor;
+      const actualizarLista = (lista: FichaIndicadorDnp[]) =>
+        lista.map((ind) => {
+          if (ind.id === indicadorId || ind.codigo === indicadorId) {
+            return {
+              ...ind,
+              ...fichaActualizada,
+              responsable_reporte: fichaActualizada.responsable_reporte ?? ind.responsable_reporte,
+              fuente_datos: fichaActualizada.fuente_datos ?? ind.fuente_datos,
+              periodicidad: fichaActualizada.periodicidad ?? ind.periodicidad,
+              metadatos: {
+                ...(ind.metadatos || {}),
+                ...(fichaActualizada.metadatos || {}),
+              },
+              actualizado_en: fichaActualizada.actualizado_en ?? new Date().toISOString(),
+            };
+          }
+          return ind;
+        });
+
+      set({
+        cadenaValor: {
+          insumo: actualizarLista(actual.insumo),
+          producto: actualizarLista(actual.producto),
+          resultado: actualizarLista(actual.resultado),
+        },
+        guardando: false,
+        error: null,
+      });
+
+      return true;
+    } catch (err) {
+      // AUD-02: Prohibido mutar estado local ante fallo en backend
+      const mensaje =
+        err instanceof Error
+          ? err.message
+          : "Error al actualizar metadatos institucionales del indicador";
       set({ guardando: false, error: mensaje });
       return false;
     }
