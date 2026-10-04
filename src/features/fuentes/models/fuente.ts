@@ -1,6 +1,7 @@
 export type TipoFuente = "primaria" | "secundaria";
 export type AmbitoFuente = "local" | "nacional" | "internacional";
 export type EstadoEntrega =
+  | "por_solicitar"
   | "entregada"
   | "en_termino"
   | "incompleta"

@@ -1,34 +1,46 @@
 import { describe, expect, test, beforeEach } from "vitest";
 import { useFuentesStore } from "./fuentes-store";
+import { FUENTES_INICIALES as FIXTURES_FUENTES } from "../__fixtures__/fuentes-iniciales.fixture";
 
-describe("Fuentes Store & Metrics", () => {
+describe("Fuentes Store & Metrics (EDIT-03b / AUD-14)", () => {
   beforeEach(() => {
     useFuentesStore.getState().resetearFuentes();
   });
 
-  test("Carga las fuentes iniciales correctamente", () => {
+  test("Inicia con catálogo vacío en producción conforme a la regla de cero datos fabricados", () => {
     const { fuentes } = useFuentesStore.getState();
-    expect(fuentes.length).toBeGreaterThanOrEqual(18);
+    expect(fuentes).toHaveLength(0);
 
-    const mecar = fuentes.find((f) => f.codigo === "FNT-LOC-001");
-    expect(mecar).toBeDefined();
-    expect(mecar?.entidad).toContain("MECAR");
-    expect(mecar?.estadoEntrega).toBe("entregada");
+    // Los datos simulados de demostración residen exclusivamente en __fixtures__
+    expect(FIXTURES_FUENTES).toHaveLength(18);
   });
 
-  test("Actualiza el estado y datos de una fuente", () => {
+  test("Actualiza el estado y datos de una fuente", async () => {
     const store = useFuentesStore.getState();
-    const id = "fnt-loc-04"; // Distriseguridad
 
-    store.actualizarFuente(id, {
-      radicadoSolicitud: "DIST-MOD-2026-999",
-      estadoEntrega: "entregada",
-      datosEntregadosResumen: "Base de datos CAD 123 entregada completa",
+    // 1. Agregar una fuente institucional
+    const creada = await store.agregarFuente({
+      codigo: "FNT-LOC-004",
+      entidad: "Distriseguridad",
+      nombreFuente: "Línea 123 y Monitoreo",
+      tipo: "primaria",
+      ambito: "local",
+      dimensionSeguridad: "crisis",
+      periodicidad: "mensual",
+      estadoEntrega: "por_solicitar",
+      variablesSolicitadas: ["Llamadas 123"],
     });
 
-    const actualizada = useFuentesStore.getState().getById(id);
+    // 2. Actualizar radicado formal
+    await store.actualizarFuente(creada.id, {
+      radicadoSolicitud: "DIST-MOD-2026-999",
+      estadoEntrega: "en_termino",
+      datosEntregadosResumen: "Base de datos CAD 123 requerida",
+    });
+
+    const actualizada = useFuentesStore.getState().getById(creada.id);
     expect(actualizada?.radicadoSolicitud).toBe("DIST-MOD-2026-999");
-    expect(actualizada?.estadoEntrega).toBe("entregada");
+    expect(actualizada?.estadoEntrega).toBe("en_termino");
     expect(actualizada?.datosEntregadosResumen).toContain("Base de datos CAD 123");
   });
 
@@ -48,11 +60,11 @@ describe("Fuentes Store & Metrics", () => {
     expect(filtrosLimpios.estado).toBe("todos");
   });
 
-  test("Agrega una nueva fuente al catálogo", () => {
+  test("Agrega una nueva fuente al catálogo", async () => {
     const store = useFuentesStore.getState();
     const totalInicial = store.fuentes.length;
 
-    store.agregarFuente({
+    await store.agregarFuente({
       codigo: "FNT-NUEVA-001",
       entidad: "Entidad de Prueba Distrital",
       nombreFuente: "Registro de Prueba",
@@ -60,7 +72,7 @@ describe("Fuentes Store & Metrics", () => {
       ambito: "local",
       dimensionSeguridad: "personal",
       periodicidad: "mensual",
-      estadoEntrega: "en_termino",
+      estadoEntrega: "por_solicitar",
       variablesSolicitadas: ["Variable A", "Variable B"],
     });
 

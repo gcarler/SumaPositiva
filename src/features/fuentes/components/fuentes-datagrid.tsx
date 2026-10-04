@@ -38,6 +38,8 @@ function formatearEstado(estado: EstadoEntrega): {
       return { etiqueta: "Vencida sin Entrega", variante: "destructive" };
     case "requerimiento_insistencia":
       return { etiqueta: "Insistencia Radicada", variante: "ember" };
+    case "por_solicitar":
+      return { etiqueta: "Por Solicitar", variante: "info" };
     default:
       return { etiqueta: estado, variante: "info" };
   }

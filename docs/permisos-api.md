@@ -47,6 +47,8 @@ Contrato y activación: [usuarios y acceso](identidad.md).
 | auditoria:leer | autoridad_distrital, administrador_identidades, auditor_forense | declarada |
 | seguimiento:gestionar | autoridad_distrital, administrador_identidades | declarada |
 | contenido:leer | autoridad_distrital, administrador_identidades, auditor_forense | declarada |
+| fuentes:gestionar | autoridad_distrital, administrador_identidades | declarada |
+| fuentes:leer | autoridad_distrital, administrador_identidades, auditor_forense, facilitador_mesa, ciudadano | declarada |
 
 Los roles ciudadano, ciudadano anónimo y auditor forense no reciben permisos de
 gestión institucional. El registro público solo admite ciudadano. Asignaciones
@@ -184,6 +186,12 @@ La última columna explica la excepción pública o la condición adicional.
 | GET | /api/v1/presupuesto/fuentes | publico | Consulta pública de catálogos y resultados de política para transparencia. |
 | GET | /api/v1/presupuesto/fuentes/{id} | publico | Consulta pública de catálogos y resultados de política para transparencia. |
 | GET | /api/v1/presupuesto/resumen-costeo | publico | Consulta pública de catálogos y resultados de política para transparencia. |
+| GET | /api/v1/fuentes | publico | Consulta pública de fuentes institucionales y solicitudes para transparencia ciudadana (Ley 1712/14). |
+| GET | /api/v1/fuentes/kpis | publico | Métricas agregadas de cumplimiento en solicitudes oficiales para veeduría y rendición de cuentas. |
+| GET | /api/v1/fuentes/{id} | publico | Ficha técnica de fuente y estado oficial de solicitud para control social. |
+| POST | /api/v1/fuentes | permiso:fuentes:gestionar@declarada | Radicación oficial de solicitud formal de información a entidades. |
+| PATCH | /api/v1/fuentes/{id} | permiso:fuentes:gestionar@declarada | Actualización de radicado, plazos y estado de entrega de solicitud oficial. |
+| DELETE | /api/v1/fuentes/{id} | permiso:fuentes:gestionar@declarada | Eliminación técnica de requerimiento oficial con auditoría forense inmutable. |
 | POST | /api/v1/sesion/anonima | publico | Emisión pública para participación sin cuenta registrada. |
 | GET | /api/v1/sesion/verificar | sesion | Sesión cívica anónima o registrada; token obligatorio y vigencia de la cuenta. |
 | GET | /api/v1/testimonios | publico | Consulta pública de relatos de memoria social y testimonios comunitarios. |

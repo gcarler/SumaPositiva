@@ -93,14 +93,14 @@ describe("Gestión remota de Fuentes de Información y Solicitudes Oficiales (ED
       expect(fuentes[0].codigo).toBe("FNT-TEST-001");
     });
 
-    test("aplica fallback resiliente a FUENTES_INICIALES ante desconexión", async () => {
+    test("aplica fallback resiliente a FUENTES_INICIALES vacías ante desconexión", async () => {
       vi.spyOn(globalThis, "fetch").mockImplementation(async () => {
         throw new Error("Network offline");
       });
 
       const fuentes = await listarFuentes();
       expect(fuentes).toEqual(FUENTES_INICIALES);
-      expect(fuentes.length).toBe(18);
+      expect(fuentes.length).toBe(0);
     });
   });
 
@@ -115,7 +115,7 @@ describe("Gestión remota de Fuentes de Información y Solicitudes Oficiales (ED
         ambito: "local",
         dimension_seguridad: "personal",
         periodicidad: "mensual",
-        estado_entrega: "entregada",
+        estado_entrega: "por_solicitar",
       };
 
       vi.spyOn(globalThis, "fetch").mockImplementation(async () => {
@@ -130,14 +130,12 @@ describe("Gestión remota de Fuentes de Información y Solicitudes Oficiales (ED
       expect(fuente.codigo).toBe("FNT-LOC-001");
     });
 
-    test("aplica fallback a FUENTES_INICIALES si la API responde 404", async () => {
+    test("arroja error si la API responde 404 y no existe en catálogo", async () => {
       vi.spyOn(globalThis, "fetch").mockImplementation(async () => {
         return new Response("Not Found", { status: 404 });
       });
 
-      const fuente = await obtenerFuente("fnt-loc-01");
-      expect(fuente).toBeDefined();
-      expect(fuente.codigo).toBe("FNT-LOC-001");
+      await expect(obtenerFuente("fnt-inexistente")).rejects.toThrow("no encontrada");
     });
   });
 
@@ -275,6 +273,16 @@ describe("Gestión remota de Fuentes de Información y Solicitudes Oficiales (ED
       await eliminarFuenteRemota("fnt-test-01");
       expect(capturedUrl).toContain("/fuentes/fnt-test-01");
       expect(capturedMethod).toBe("DELETE");
+    });
+  });
+
+  describe("Fixtures aisladas (EDIT-03b / AUD-15)", () => {
+    test("los fixtures para historias y pruebas aisladas existen en __fixtures__", async () => {
+      const { FUENTES_INICIALES: FIXTURES } = await import(
+        "../__fixtures__/fuentes-iniciales.fixture"
+      );
+      expect(FIXTURES).toHaveLength(18);
+      expect(FIXTURES[0].codigo).toBe("FNT-LOC-001");
     });
   });
 });

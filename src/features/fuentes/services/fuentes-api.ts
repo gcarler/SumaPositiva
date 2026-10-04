@@ -103,7 +103,7 @@ export async function listarFuentes(filtros?: {
 
     const query = params.toString() ? `?${params.toString()}` : "";
     const resp = await apiFetch<FuenteBackendResponse[]>(`/fuentes${query}`);
-    if (Array.isArray(resp) && resp.length > 0) {
+    if (Array.isArray(resp)) {
       return resp.map(normalizarFuenteBackend);
     }
   } catch {

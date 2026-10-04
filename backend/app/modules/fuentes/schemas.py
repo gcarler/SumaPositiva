@@ -5,6 +5,7 @@ from pydantic import BaseModel, ConfigDict, Field
 TipoFuenteLiteral = Literal["primaria", "secundaria"]
 AmbitoFuenteLiteral = Literal["local", "nacional", "internacional"]
 EstadoEntregaLiteral = Literal[
+    "por_solicitar",
     "entregada",
     "en_termino",
     "incompleta",
@@ -81,5 +82,6 @@ class KpisFuentesRespuesta(BaseModel):
     incompletas: int
     vencidas: int
     requerimiento_insistencia: int
+    por_solicitar: int = 0
     atencion_critica: int
     porcentaje_cumplimiento: int

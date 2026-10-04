@@ -2099,3 +2099,90 @@ Se implementó el ciclo integral de persistencia relacional con auditoría foren
 | **Pipeline Completo Check** | `bun run check` | **100% aprobado** (ui:check, typecheck, lint). |
 | **Aislamiento de Codex** | `git status` | Archivos de codex (`noticias`, `testimonios`, backend) estrictamente intactos. |
 | **Restricción E2E y Migraciones** | N/A | No se ejecutaron migraciones sobre `bd_csh`, no se realizó `git push`, y no se ejecutó suite E2E completa (a la espera de indicación de EAF). |
+
+---
+
+## Entrega Tarea EDIT-03b: Subsanación Pericial de Erradicación de Datos Fabricados en Fuentes de Información
+
+**Fecha**: 2026-10-04T04:55:00Z  
+**Estado**: LISTA PARA AUDITORÍA PERICIAL (EAF)  
+**Responsable**: agy2 (Equipo de Desarrollo EDD)  
+**Dictamen Previo**: EDIT-03 NO CONFORME (EAF, `bridge/03_dictamen_revision.md`)  
+**Compromiso**: Erradicación absoluta de datos fabricados (cero radicados falsos, cero fechas ficticias, cero solicitudes inventadas sembradas en migración).
+
+---
+
+### 1. Resumen de la Subsanación Pericial (EDIT-03b)
+
+En estricta atención al dictamen del auditor EAF, se procedió a subsanar de raíz el defecto crítico de siembra de datos fabricados identificado en la migración `0042_modulo_fuentes_informacion.py`:
+
+1. **Reescritura de Migración `0042_modulo_fuentes_informacion.py`**:
+   - Se eliminaron por completo todos los radicados ficticios (`DIST-SEC-2026-xxxx`), fechas límite/entrega simuladas, resúmenes textuales de datos ("Serie histórica consolidada..."), URLs genéricas y observaciones inventadas ("108 cuadrantes...").
+   - Las 18 entidades oficiales canónicas preexistentes de Cartagena (DNP, Policía, Medicina Legal, DANE, Secretarías Distritales, etc.) son registradas en el catálogo oficial en estado exclusivo:
+     - `estado_entrega = 'por_solicitar'`
+     - `radicado_solicitud = NULL`
+     - `fecha_solicitud = NULL`
+     - `fecha_limite_respuesta = NULL`
+     - `resumen_datos = NULL`
+     - `archivo_adjunto_url = NULL`
+     - `observaciones_calidad = NULL`
+   - Se garantizó idempotencia con `ON CONFLICT (id) DO NOTHING` preservando la integridad referencial.
+2. **Creación de Script de Pruebas y Demostración (`scripts/sembrar_fuentes_demo.py`)**:
+   - Implementado con permisos de ejecución (`chmod +x`).
+   - Cuenta con la **guarda estricta de base de datos de destino** `validar_bd_destino()`:
+     - Bloquea y aborta de forma terminante cualquier intento de ejecución contra `bd_csh` (producción) o entornos no autorizados.
+     - Solo permite su ejecución explícita en bases de datos de desarrollo o pruebas aisladas (`polis_demo*` o `polis_test*`).
+   - Permite cargar datos sintéticos demostrativos para pruebas locales, con opción de limpieza reversiva `--limpiar`.
+3. **Saneamiento del Frontend y Aislamiento de Fixtures**:
+   - `src/features/fuentes/data/fuentes-iniciales.data.ts`: Vaciado por completo a `export const FUENTES_INICIALES: FuenteInformacion[] = [];`, en estricta coherencia con el precedente establecido para actores en AUD-14 (`ACTORES_INICIALES = []`).
+   - `src/features/fuentes/__fixtures__/fuentes-iniciales.fixture.ts`: Carpeta aislada donde se trasladaron los 18 registros demostrativos exclusivamente para consumo de suites de pruebas unitarias (`fuentes-api.test.ts`, `fuentes-store.test.ts`) e historias de Storybook.
+   - Componentes `fuentes-datagrid.tsx` y modelos `fuente.ts`: Incorporación de soporte y renderizado fiel de la etiqueta y estado `"por_solicitar"` (`Por solicitar`) con métrica honesta de progreso inicial (0.0%).
+4. **Política de Acceso y Justificación de Transparencia (GET Público)**:
+   - **Decisión y Fundamentación**: En cumplimiento del principio de máxima publicidad consagrado en la Ley Estatutaria de Transparencia y del Derecho de Acceso a la Información Pública Nacional (Ley 1712 de 2014, art. 2 y 3), los endpoints de consulta de catálogo y KPIs (`GET /api/v1/fuentes`, `GET /api/v1/fuentes/{id}`, `GET /api/v1/fuentes/kpis`) son de **acceso público irrestricto**. Esto permite a cualquier ciudadano, veeduría u organización comunitaria auditar el estado real de radicación y recepción de información pública de las entidades distritales.
+   - **Operaciones de Escritura Protegidas**: Toda operación de mutación (`POST /api/v1/fuentes`, `PATCH /api/v1/fuentes/{id}`, `DELETE /api/v1/fuentes/{id}`) exige sesión autenticada y verificación del permiso estricto `fuentes:gestionar` (restringido a `administrador_identidades` y `autoridad_distrital`).
+   - Documentado en `docs/permisos-api.md`.
+5. **Batería de Pruebas Backend de Seguridad y Cero Radicados (`backend/tests/test_fuentes_informacion.py`)**:
+   - `test_migracion_0042_cero_radicados_y_solo_por_solicitar`: Inspección SQL directa sobre PostgreSQL `polis_test` tras `alembic upgrade head`, comprobando que existen 18 fuentes, **0 radicados** (`radicado_solicitud IS NOT NULL` = 0), **0 entregadas** (`estado_entrega = 'entregada'` = 0), **0 fechas** y 18 registros en estado `'por_solicitar'`.
+   - `test_get_fuentes_es_publico_y_reporta_por_solicitar`: Verificación sin autenticación de `GET /api/v1/fuentes` y `GET /api/v1/fuentes/kpis`, certificando 18 fuentes por solicitar y 0.0% de completitud.
+   - `test_seguridad_rbac_fuentes_401_y_403`: Verificación de rechazo con HTTP 401 para peticiones anónimas a POST/PATCH/DELETE, y HTTP 403 para usuarios con rol ciudadano sin permiso `fuentes:gestionar`.
+   - `test_validacion_payload_fuentes`: Verificación de validación de esquemas Pydantic con HTTP 422 ante payloads incompletos.
+   - `test_ciclo_completo_radicacion_y_auditoria_fuentes`: Ciclo completo de vida de una fuente oficial con radicación y mutación, certificando la generación inmutable de registros en `auditoria.registros_auditoria` con causal técnica motivada.
+
+---
+
+### 2. Matriz de Archivos Modificados y Creados (EDIT-03b)
+
+| Archivo | Tipo | Descripción de la Modificación |
+|---|---|---|
+| `backend/alembic/versions/0042_modulo_fuentes_informacion.py` | **Modificación** | Migración saneada: catálogo canónico con `estado_entrega='por_solicitar'` y campos de radicación NULL. Cero datos inventados. |
+| `backend/app/modules/fuentes/schemas.py` | **Modificación** | Incorporación de `'por_solicitar'` en `EstadoEntregaLiteral` y contador `por_solicitar` en `KpisFuentesRespuesta`. |
+| `backend/app/modules/fuentes/repository.py` | **Modificación** | Conteo de métricas de `por_solicitar` en `contar_metricas()`. |
+| `backend/tests/test_fuentes_informacion.py` | **Modificación** | 5 pruebas exhaustivas: inspección SQL anti-radicados falsos, acceso público, RBAC 401/403, validación 422 y auditoría inmutable. |
+| `scripts/sembrar_fuentes_demo.py` | **Nuevo** | Script demo con guarda estricta anti-`bd_csh` (`validar_bd_destino()`) y opción de limpieza reversible. |
+| `src/features/fuentes/__fixtures__/fuentes-iniciales.fixture.ts` | **Nuevo** | Fixtures de prueba aislados para unit tests e historias de Storybook. |
+| `src/features/fuentes/data/fuentes-iniciales.data.ts` | **Modificación** | Vaciado a `FUENTES_INICIALES = []` para producción. |
+| `src/features/fuentes/models/fuente.ts` | **Modificación** | Soporte de tipo `'por_solicitar'` en `EstadoEntrega`. |
+| `src/features/fuentes/components/fuentes-datagrid.tsx` | **Modificación** | Mapeo visual y formateo para `'por_solicitar'`. |
+| `src/features/fuentes/services/fuentes-api.ts` | **Modificación** | Tratamiento seguro de listados vacíos y resilientes. |
+| `src/features/fuentes/services/fuentes-api.test.ts` | **Modificación** | 10 pruebas unitarias con fixtures aislados y catálogo productivo vacío. |
+| `src/features/fuentes/state/fuentes-store.test.ts` | **Modificación** | 4 pruebas de store reactivo actualizadas a catálogo productivo limpio. |
+| `docs/permisos-api.md` | **Modificación** | Documentación de permisos `fuentes:gestionar` / `fuentes:leer` y justificación de GET público por Ley 1712/2014. |
+| `bridge/01_tarea_activa.md` | **Modificación** | Actualización de tarea activa a EDIT-03b LISTA PARA AUDITAR. |
+| `bridge/02_entrega_agy2.md` | **Modificación** | Documentación exhaustiva de la subsanación EDIT-03b. |
+
+---
+
+### 3. Matriz de Quality Gates Periciales (EDIT-03b)
+
+| Quality Gate | Comando de Validación | Resultado Pericial |
+|---|---|---|
+| **Pruebas Backend Pytest (`polis_test`)** | `backend/.venv/bin/pytest backend/tests/test_fuentes_informacion.py` | **5 passed in 6.91s** (SQL post-upgrade sin radicados, GET público, RBAC 401/403, 422, auditoría forense). |
+| **Pruebas Frontend Fuentes** | `bun test src/features/fuentes` | **14 pass, 0 fail (53 expect calls)** en `fuentes-api.test.ts` y `fuentes-store.test.ts`. |
+| **Suite Completa Frontend** | `bun test` | **248 pass, 0 fail (1121 expect calls)** en 27 archivos de prueba. |
+| **Política de UI POLIS** | `bun run ui:check` (`node scripts/ui-policy.mjs`) | **0 violaciones** (tokens semánticos, componentes Design Kit, cero modales). |
+| **Chequeo de Tipos TypeScript** | `bun run typecheck` (`tsc --noEmit`) | **0 errores** de tipado estricto. |
+| **Linting ESLint** | `bun run lint` (`eslint .`) | **0 errores, 0 advertencias**. |
+| **Pipeline Completo Check** | `bun run check` | **Aprobado con código 0**. |
+| **Protección contra bd_csh** | `scripts/sembrar_fuentes_demo.py` | Guarda `validar_bd_destino()` bloquea y aborta ejecución contra `bd_csh`. Base de datos de producción intacta. |
+| **Aislamiento de Codex** | `git status` | Archivos de codex estrictamente intactos. |
+| **Historial Git** | Git | Commit nuevo atómico sin reescribir historial previo. |

@@ -92,6 +92,9 @@ class FuentesRepository:
             func.count(FuenteInformacion.id)
             .filter(FuenteInformacion.estado_entrega == "requerimiento_insistencia")
             .label("requerimiento_insistencia"),
+            func.count(FuenteInformacion.id)
+            .filter(FuenteInformacion.estado_entrega == "por_solicitar")
+            .label("por_solicitar"),
         )
         result = await self.session.execute(query)
         fila = result.one()
@@ -101,6 +104,7 @@ class FuentesRepository:
         incompletas = fila.incompletas or 0
         vencidas = fila.vencidas or 0
         req = fila.requerimiento_insistencia or 0
+        por_sol = fila.por_solicitar or 0
         atencion_critica = vencidas + req
         cumplimiento = round((entregadas / total) * 100) if total > 0 else 0
 
@@ -111,6 +115,7 @@ class FuentesRepository:
             "incompletas": incompletas,
             "vencidas": vencidas,
             "requerimiento_insistencia": req,
+            "por_solicitar": por_sol,
             "atencion_critica": atencion_critica,
             "porcentaje_cumplimiento": cumplimiento,
         }

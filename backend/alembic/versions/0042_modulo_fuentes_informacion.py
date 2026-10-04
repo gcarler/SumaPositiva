@@ -1,11 +1,10 @@
-"""Persistencia Backend para Solicitudes Oficiales a Fuentes de Información (EDIT-03).
+"""Persistencia Backend para Solicitudes Oficiales a Fuentes de Información (EDIT-03b).
 
 Revision ID: 0042_modulo_fuentes_informacion
 Revises: 0041_modulo_agendas_mesas
 Create Date: 2026-10-04 05:00:00.000000
 """
 
-from datetime import date
 import json
 from typing import Sequence, Union
 from alembic import op
@@ -16,7 +15,12 @@ down_revision: Union[str, Sequence[str], None] = "0041_modulo_agendas_mesas"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
-FUENTES_INICIALES_CANONICAS = [
+# Catálogo canónico de fuentes oficiales de información identificadas para Cartagena.
+# AUDITORÍA EDIT-03b / OBS-REG-DATOS:
+# Se prohíbe terminantemente sembrar radicados inventados, fechas falsas de solicitud,
+# estados 'entregada' ficticios o resúmenes fabricados.
+# Todas las fuentes inician honestamente con estado 'por_solicitar' y campos de radicación NULL.
+CATALOGO_FUENTES_CANONICAS = [
     {
         "id": "fnt-loc-01",
         "codigo": "FNT-LOC-001",
@@ -26,19 +30,6 @@ FUENTES_INICIALES_CANONICAS = [
         "ambito": "local",
         "dimension_seguridad": "personal",
         "periodicidad": "mensual",
-        "radicado_solicitud": "DIST-SEC-2026-0891",
-        "fecha_solicitud": "2026-01-15",
-        "fecha_limite_respuesta": "2026-02-15",
-        "estado_entrega": "entregada",
-        "variables_solicitadas": [
-            "Homicidios desagregados por cuadrante y móvil",
-            "Hurto a personas, comercio y residencias",
-            "Lesiones personales y riñas",
-            "Incautación de armas de fuego y estupefacientes",
-        ],
-        "resumen_datos": "Serie histórica consolidada 2021-2025 y cortes mensuales a enero-marzo 2026 por cuadrante.",
-        "archivo_adjunto_url": "https://www.policia.gov.co",
-        "observaciones_calidad": "Información georreferenciada con cobertura en 108 cuadrantes urbanos y 12 rurales.",
     },
     {
         "id": "fnt-loc-02",
@@ -49,18 +40,6 @@ FUENTES_INICIALES_CANONICAS = [
         "ambito": "local",
         "dimension_seguridad": "personal",
         "periodicidad": "trimestral",
-        "radicado_solicitud": "DIST-SEC-2026-1045",
-        "fecha_solicitud": "2026-02-01",
-        "fecha_limite_respuesta": "2026-03-15",
-        "estado_entrega": "entregada",
-        "variables_solicitadas": [
-            "Necropsias por causas externas (homicidio, suicidio, accidentes)",
-            "Exámenes por presunto delito sexual y violencia intrafamiliar",
-            "Variables sociodemográficas de víctimas (edad, sexo, etnia)",
-        ],
-        "resumen_datos": "Boletín epidemiológico consolidado 2024-2025 y primer bimestre 2026.",
-        "archivo_adjunto_url": "https://www.medicinalegal.gov.co",
-        "observaciones_calidad": "Excelente nivel de detalle pericial. Permite cruce con datos de fiscalía y cuadrantes.",
     },
     {
         "id": "fnt-loc-03",
@@ -71,19 +50,6 @@ FUENTES_INICIALES_CANONICAS = [
         "ambito": "local",
         "dimension_seguridad": "salud",
         "periodicidad": "mensual",
-        "radicado_solicitud": "DIST-SEC-2026-1180",
-        "fecha_solicitud": "2026-02-10",
-        "fecha_limite_respuesta": "2026-03-20",
-        "estado_entrega": "incompleta",
-        "variables_solicitadas": [
-            "Ficha 875: Violencia de género e intrafamiliar",
-            "Ficha 356: Intoxicaciones por sustancias psicoactivas",
-            "Intentos de suicidio por localidad y grupo etario",
-            "Casos de desnutrición infantil aguda (Ciénaga y zona insular)",
-        ],
-        "resumen_datos": "Fichas 875 y 356 entregadas; pendiente georreferenciación de la zona insular (Tierrabomba y Barú).",
-        "archivo_adjunto_url": "https://www.cartagena.gov.co",
-        "observaciones_calidad": "Requiere completitud en zona corregimental e insular para análisis diferencial de salud y género.",
     },
     {
         "id": "fnt-loc-04",
@@ -94,361 +60,196 @@ FUENTES_INICIALES_CANONICAS = [
         "ambito": "local",
         "dimension_seguridad": "crisis",
         "periodicidad": "mensual",
-        "radicado_solicitud": "DIST-SEC-2026-1250",
-        "fecha_solicitud": "2026-02-20",
-        "fecha_limite_respuesta": "2026-04-10",
-        "estado_entrega": "en_termino",
-        "variables_solicitadas": [
-            "Llamadas efectivas a Línea 123 clasificadas por motivo",
-            "Tiempos de respuesta de despacho policial y ambulancias",
-            "Cámaras de vigilancia activas vs. inoperativas por comuna",
-            "Botones de pánico y alarmas comunitarias activadas",
-        ],
-        "resumen_datos": "Entrega programada para corte del primer trimestre 2026.",
-        "archivo_adjunto_url": "https://www.cartagena.gov.co",
-        "observaciones_calidad": "Proceso de extracción automatizada desde plataforma CAD de la Policía.",
     },
     {
         "id": "fnt-loc-05",
         "codigo": "FNT-LOC-005",
-        "entidad": "Establecimiento Público Ambiental (EPA Cartagena)",
-        "nombre_fuente": "Monitoreo de Calidad Ambiental, Vertimientos y Contaminación Sonora",
-        "tipo": "secundaria",
+        "entidad": "Secretaría del Interior y Convivencia Ciudadana",
+        "nombre_fuente": "Registro de Comisarías de Familia e Inspecciones de Policía",
+        "tipo": "primaria",
         "ambito": "local",
-        "dimension_seguridad": "ambiental",
-        "periodicidad": "semestral",
-        "radicado_solicitud": "DIST-SEC-2026-0920",
-        "fecha_solicitud": "2026-01-20",
-        "fecha_limite_respuesta": "2026-02-28",
-        "estado_entrega": "requerimiento_insistencia",
-        "variables_solicitadas": [
-            "Puntos de emisión sonora crítica en Centro Histórico y Bazurto",
-            "Monitoreo de aguas en Ciénaga de la Virgen y Caño de Juan Angola",
-            "Licencias y sanciones ambientales en bahía de Cartagena",
-        ],
-        "resumen_datos": "Sin respuesta inicial. Se radicó oficio de insistencia DIST-INS-2026-012 el 10 de marzo de 2026.",
-        "archivo_adjunto_url": "https://www.cartagena.gov.co",
-        "observaciones_calidad": "Información crítica para el componente de seguridad ambiental y conflictos ecoterritoriales.",
+        "dimension_seguridad": "comunitaria",
+        "periodicidad": "trimestral",
     },
     {
         "id": "fnt-loc-06",
         "codigo": "FNT-LOC-006",
-        "entidad": "Oficina Asesora de Gestión del Riesgo y Desastres (OAGRD)",
-        "nombre_fuente": "Inventario de Puntos Críticos, Asentamientos Informales y Riesgo Costero",
-        "tipo": "secundaria",
+        "entidad": "Establecimiento Público Ambiental (EPA Cartagena)",
+        "nombre_fuente": "Monitoreo de Calidad de Aire, Ruido y Residuos Peligrosos",
+        "tipo": "primaria",
         "ambito": "local",
         "dimension_seguridad": "ambiental",
         "periodicidad": "semestral",
-        "radicado_solicitud": "DIST-SEC-2026-1011",
-        "fecha_solicitud": "2026-01-25",
-        "fecha_limite_respuesta": "2026-03-05",
-        "estado_entrega": "entregada",
-        "variables_solicitadas": [
-            "Mapa de sectores con amenaza alta por remoción en masa (La Popa)",
-            "Puntos críticos por inundación y marea alta en Ciénaga de la Virgen",
-            "Censo de familias en riesgo no mitigable en zonas de bajamar",
-        ],
-        "resumen_datos": "Documento técnico y capas vectoriales SHP de zonas de riesgo 2025-2026.",
-        "archivo_adjunto_url": "https://www.cartagena.gov.co",
-        "observaciones_calidad": "Capas georreferenciadas integradas con éxito en el Geovisor PostGIS de POLIS.",
     },
     {
         "id": "fnt-loc-07",
         "codigo": "FNT-LOC-007",
-        "entidad": "Cartagena Cómo Vamos (CCV)",
-        "nombre_fuente": "Encuesta de Percepción Ciudadana (EPC) e Informe de Calidad de Vida",
-        "tipo": "secundaria",
+        "entidad": "Cuerpo Oficial de Bomberos de Cartagena",
+        "nombre_fuente": "Bitácora Operativa de Incidentes, Emergencias e Incendios",
+        "tipo": "primaria",
         "ambito": "local",
-        "dimension_seguridad": "comunitaria",
-        "periodicidad": "anual",
-        "radicado_solicitud": "DIST-SEC-2026-0740",
-        "fecha_solicitud": "2026-01-10",
-        "fecha_limite_respuesta": "2026-02-10",
-        "estado_entrega": "entregada",
-        "variables_solicitadas": [
-            "Percepción de seguridad en barrio y ciudad",
-            "Victimización directa e indirecta",
-            "Confianza en instituciones públicas y policía",
-            "Satisfacción con servicios públicos, hábitat y movilidad",
-        ],
-        "resumen_datos": "Base de microdatos anonimizada y tabulados en formato CSV/Stata edición 2025.",
-        "archivo_adjunto_url": "https://cartagenacomovamos.org",
-        "observaciones_calidad": "Muestra representativa de 1.200 hogares en las 3 localidades urbanas.",
+        "dimension_seguridad": "crisis",
+        "periodicidad": "mensual",
     },
     {
         "id": "fnt-loc-08",
         "codigo": "FNT-LOC-008",
-        "entidad": "Distrito de Cartagena - Secretaría del Interior",
-        "nombre_fuente": "Mesas de Trabajo POLIS 2026 (Actas Territoriales y Árboles MGA)",
+        "entidad": "Oficina Asesora para la Gestión del Riesgo de Desastres (OAGRD)",
+        "nombre_fuente": "Evaluación de Daños y Zonas de Amenaza Crítica por Inundación",
         "tipo": "primaria",
         "ambito": "local",
-        "dimension_seguridad": "personal",
-        "periodicidad": "por_demanda",
-        "radicado_solicitud": "POLIS-MESA-PROG-2026",
-        "fecha_solicitud": "2026-02-01",
-        "fecha_limite_respuesta": "2026-05-30",
-        "estado_entrega": "en_termino",
-        "variables_solicitadas": [
-            "Actas oficiales en PDF firmadas con sellos SHA-256",
-            "Registro de asistencia digital multicanal y QR",
-            "Árboles de problemas y soluciones diligenciados en papelógrafo",
-            "Aportes ciudadanos georreferenciados por mesa comunal",
-        ],
-        "resumen_datos": "Actas territorializadas consolidadas en base de datos de producción `bd_csh`.",
-        "archivo_adjunto_url": "https://www.cartagena.gov.co",
-        "observaciones_calidad": "Fuente primaria viva. Validación biométrica y pericial directa en terreno.",
+        "dimension_seguridad": "ambiental",
+        "periodicidad": "anual",
     },
     {
         "id": "fnt-nac-01",
         "codigo": "FNT-NAC-001",
         "entidad": "Departamento Administrativo Nacional de Estadística (DANE)",
-        "nombre_fuente": "ECSC - Encuesta de Convivencia y Seguridad Ciudadana",
+        "nombre_fuente": "Encuesta de Convivencia y Seguridad Ciudadana (ECSC) y Pobreza Multidimensional",
         "tipo": "secundaria",
         "ambito": "nacional",
-        "dimension_seguridad": "personal",
+        "dimension_seguridad": "economica",
         "periodicidad": "anual",
-        "radicado_solicitud": "DANE-PQR-2026-44321",
-        "fecha_solicitud": "2026-01-20",
-        "fecha_limite_respuesta": "2026-03-01",
-        "estado_entrega": "entregada",
-        "variables_solicitadas": [
-            "Tasa de victimización global y por modalidades delictivas",
-            "Cifra negra (delitos no denunciados y motivos de no denuncia)",
-            "Percepción de inseguridad y confianza en cuadrantes de Cartagena",
-        ],
-        "resumen_datos": "Módulo específico para área metropolitana de Cartagena 2024-2025.",
-        "archivo_adjunto_url": "https://www.dane.gov.co",
-        "observaciones_calidad": "Rigurosidad muestral alta. Muestra una cifra negra del 71.4% en hurto simple.",
     },
     {
         "id": "fnt-nac-02",
         "codigo": "FNT-NAC-002",
-        "entidad": "Departamento Administrativo Nacional de Estadística (DANE)",
-        "nombre_fuente": "GEIH - Gran Encuesta Integrada de Hogares (Mercado Laboral)",
+        "entidad": "Unidad para las Víctimas (Dirección Territorial Bolívar)",
+        "nombre_fuente": "Registro Único de Víctimas (RUV) - Desplazamiento y Hechos Victimizantes",
         "tipo": "secundaria",
         "ambito": "nacional",
-        "dimension_seguridad": "economica",
-        "periodicidad": "mensual",
-        "radicado_solicitud": "DANE-PQR-2026-55102",
-        "fecha_solicitud": "2026-02-15",
-        "fecha_limite_respuesta": "2026-03-25",
-        "estado_entrega": "entregada",
-        "variables_solicitadas": [
-            "Tasa global de ocupación y desempleo juvenil (18-28 años)",
-            "Tasa de informalidad laboral en Cartagena",
-            "Ingresos promedio y brecha de género laboral",
-        ],
-        "resumen_datos": "Serie mensual con corte a febrero 2026. Tasa de informalidad distrital en 57.3%.",
-        "archivo_adjunto_url": "https://www.dane.gov.co",
-        "observaciones_calidad": "Dato fundamental para modelar la relación entre informalidad juvenil y captación de economías ilícitas.",
+        "dimension_seguridad": "politica",
+        "periodicidad": "trimestral",
     },
     {
         "id": "fnt-nac-03",
         "codigo": "FNT-NAC-003",
-        "entidad": "Departamento Administrativo Nacional de Estadística (DANE)",
-        "nombre_fuente": "IPM - Índice de Pobreza Multidimensional y Necesidades Básicas Insatisfechas",
+        "entidad": "Fiscalía General de la Nación (Seccional Bolívar)",
+        "nombre_fuente": "SPOA - Sistema Penal Oral Acusatorio y Noticias Criminales",
         "tipo": "secundaria",
         "ambito": "nacional",
+        "dimension_seguridad": "juridica",
+        "periodicidad": "semestral",
+    },
+    {
+        "id": "fnt-loc-09",
+        "codigo": "FNT-LOC-009",
+        "entidad": "Secretaría de Educación Distrital (SED)",
+        "nombre_fuente": "SIMAT - Deserción Escolar, Cobertura y Entornos Seguros",
+        "tipo": "primaria",
+        "ambito": "local",
+        "dimension_seguridad": "educacion",
+        "periodicidad": "anual",
+    },
+    {
+        "id": "fnt-loc-10",
+        "codigo": "FNT-LOC-010",
+        "entidad": "Secretaría de Desarrollo Social",
+        "nombre_fuente": "Censo Habitantes de Calle y Caracterización de Pobreza Extrema",
+        "tipo": "primaria",
+        "ambito": "local",
         "dimension_seguridad": "economica",
         "periodicidad": "anual",
-        "radicado_solicitud": "DANE-PQR-2026-55103",
-        "fecha_solicitud": "2026-02-15",
-        "fecha_limite_respuesta": "2026-03-25",
-        "estado_entrega": "entregada",
-        "variables_solicitadas": [
-            "Porcentaje de hogares en privación por dimensión (salud, educación, niñez, trabajo, vivienda)",
-            "NBI por sectores censales y corregimientos de Cartagena",
-        ],
-        "resumen_datos": "Datos censales desagregados a nivel de manzana y sector corregimental.",
-        "archivo_adjunto_url": "https://www.dane.gov.co",
-        "observaciones_calidad": "Permite correlacionar privación multidimensional con homicidios y delitos de alto impacto.",
     },
     {
         "id": "fnt-nac-04",
         "codigo": "FNT-NAC-004",
-        "entidad": "Departamento Nacional de Planeación (DNP)",
-        "nombre_fuente": "Terridata - Fichas Territoriales y Ejecución de Inversión",
-        "tipo": "secundaria",
-        "ambito": "nacional",
-        "dimension_seguridad": "politica",
-        "periodicidad": "semestral",
-        "radicado_solicitud": "DNP-EXP-2026-0098",
-        "fecha_solicitud": "2026-01-18",
-        "fecha_limite_respuesta": "2026-02-28",
-        "estado_entrega": "entregada",
-        "variables_solicitadas": [
-            "Desempeño fiscal distrital y capacidad de endeudamiento",
-            "Inversión per cápita en seguridad y justicia",
-            "Indicadores de cobertura en educación media y técnica",
-        ],
-        "resumen_datos": "Descarga automatizada de fichas consolidadas 2021-2025 para el Distrito de Cartagena.",
-        "archivo_adjunto_url": "https://terridata.dnp.gov.co",
-        "observaciones_calidad": "Estandarizado y validado según metodología SINERGIA y DNP.",
-    },
-    {
-        "id": "fnt-nac-05",
-        "codigo": "FNT-NAC-005",
-        "entidad": "Fiscalía General de la Nación",
-        "nombre_fuente": "SPOA - Sistema Penal Oral Acusatorio (Noticias Criminales e Impunidad)",
+        "entidad": "Instituto Colombiano de Bienestar Familiar (ICBF Regional Bolívar)",
+        "nombre_fuente": "SISTEMAS PARD - Procesos Administrativos de Restablecimiento de Derechos",
         "tipo": "secundaria",
         "ambito": "nacional",
         "dimension_seguridad": "personal",
         "periodicidad": "trimestral",
-        "radicado_solicitud": "FGN-PQR-2026-00912",
-        "fecha_solicitud": "2026-01-22",
-        "fecha_limite_respuesta": "2026-02-22",
-        "estado_entrega": "vencida_sin_entrega",
-        "variables_solicitadas": [
-            "Noticias criminales abiertas por homicidio doloso, extorsión y microtráfico",
-            "Tasa de esclarecimiento y judicialización en Seccional Bolívar",
-            "Organizaciones criminales y estructuras GDCO/GAO identificadas",
-        ],
-        "resumen_datos": "Vencido el término legal sin respuesta institucional. Procede traslado a control disciplinario.",
-        "archivo_adjunto_url": "https://www.fiscalia.gov.co",
-        "observaciones_calidad": "Brecha pericial crítica para medir la impunidad real frente a la tasa de esclarecimiento.",
+    },
+    {
+        "id": "fnt-nac-05",
+        "codigo": "FNT-NAC-005",
+        "entidad": "Migración Colombia (Regional Caribe)",
+        "nombre_fuente": "Registro de Población Migrante con Permiso por Protección Temporal (PPT)",
+        "tipo": "secundaria",
+        "ambito": "nacional",
+        "dimension_seguridad": "social",
+        "periodicidad": "semestral",
+    },
+    {
+        "id": "fnt-loc-11",
+        "codigo": "FNT-LOC-011",
+        "entidad": "Personería Distrital de Cartagena",
+        "nombre_fuente": "Quejas por Vulneración de Derechos Humanos y Abuso Policial",
+        "tipo": "primaria",
+        "ambito": "local",
+        "dimension_seguridad": "politica",
+        "periodicidad": "trimestral",
+    },
+    {
+        "id": "fnt-loc-12",
+        "codigo": "FNT-LOC-012",
+        "entidad": "Secretaría de Hacienda Distrital",
+        "nombre_fuente": "Recaudo y Ejecución Presupuestal FONSET y Destinaciones Específicas",
+        "tipo": "primaria",
+        "ambito": "local",
+        "dimension_seguridad": "economica",
+        "periodicidad": "trimestral",
     },
     {
         "id": "fnt-nac-06",
         "codigo": "FNT-NAC-006",
-        "entidad": "Instituto Nacional de Medicina Legal (Nacional)",
-        "nombre_fuente": "Forensis - Datos para la Vida (Consolidado Nacional)",
+        "entidad": "Armada Nacional de Colombia (Fuerza Naval del Caribe)",
+        "nombre_fuente": "Control Fluvial, Costero y Lucha contra el Narcotráfico en Bahía",
         "tipo": "secundaria",
         "ambito": "nacional",
         "dimension_seguridad": "personal",
-        "periodicidad": "anual",
-        "radicado_solicitud": "ML-EXT-2026-0034",
-        "fecha_solicitud": "2026-02-05",
-        "fecha_limite_respuesta": "2026-03-20",
-        "estado_entrega": "entregada",
-        "variables_solicitadas": [
-            "Análisis comparativo de tasas de homicidio por 100.000 habitantes en ciudades capitales del Caribe",
-            "Metodología estandarizada de lesiones no fatales",
-        ],
-        "resumen_datos": "Tomo Forensis 2024-2025 y avances preliminares 2026.",
-        "archivo_adjunto_url": "https://www.medicinalegal.gov.co",
-        "observaciones_calidad": "Validación estadística nacional de referencia para la línea base de la política.",
-    },
-    {
-        "id": "fnt-nac-07",
-        "codigo": "FNT-NAC-007",
-        "entidad": "Defensoría del Pueblo",
-        "nombre_fuente": "SAT - Sistema de Alertas Tempranas (Riesgos a Líderes y Comunidades)",
-        "tipo": "secundaria",
-        "ambito": "nacional",
-        "dimension_seguridad": "crisis",
-        "periodicidad": "por_demanda",
-        "radicado_solicitud": "DP-SAT-2026-00431",
-        "fecha_solicitud": "2026-02-12",
-        "fecha_limite_respuesta": "2026-03-12",
-        "estado_entrega": "entregada",
-        "variables_solicitadas": [
-            "Alertas Tempranas de Inminencia vigentes para el Distrito de Cartagena",
-            "Informes de seguimiento a la Alerta 012 de 2023 y sus notas de seguimiento 2025-2026",
-            "Recomendaciones obligatorias a autoridades locales y fuerza pública",
-        ],
-        "resumen_datos": "Alerta Temprana 002-26 y notas de seguimiento emitidas para Nelson Mandela, El Pozón y Tierrabomba.",
-        "archivo_adjunto_url": "https://www.defensoria.gov.co",
-        "observaciones_calidad": "Cumplimiento vinculante bajo el Decreto 037 de 2026 del Ministerio del Interior.",
-    },
-    {
-        "id": "fnt-nac-08",
-        "codigo": "FNT-NAC-008",
-        "entidad": "Unidad para las Víctimas (UARIV)",
-        "nombre_fuente": "RUV - Registro Único de Víctimas y Fichas de Sujetos de Reparación Colectiva",
-        "tipo": "secundaria",
-        "ambito": "nacional",
-        "dimension_seguridad": "comunitaria",
         "periodicidad": "semestral",
-        "radicado_solicitud": "UARIV-SOL-2026-781",
-        "fecha_solicitud": "2026-02-28",
-        "fecha_limite_respuesta": "2026-04-15",
-        "estado_entrega": "en_termino",
-        "variables_solicitadas": [
-            "Población víctima del conflicto armada residente en Cartagena (desplazamiento forzado, amenazas)",
-            "Planes Integrales de Reparación Colectiva (PIRC) vigentes en la subregión",
-            "Avance en medidas de indemnización y satisfacción",
-        ],
-        "resumen_datos": "Ficha preliminar de caracterización con más de 120.000 víctimas registradas en Cartagena.",
-        "archivo_adjunto_url": "https://www.unidadvictimas.gov.co",
-        "observaciones_calidad": "En proceso de cruce con la base de Sisbén IV distrital.",
-    },
-    {
-        "id": "fnt-int-01",
-        "codigo": "FNT-INT-001",
-        "entidad": "Programa de las Naciones Unidas para el Desarrollo (PNUD)",
-        "nombre_fuente": "Marco de Indicadores de Seguridad Humana Territorial",
-        "tipo": "secundaria",
-        "ambito": "internacional",
-        "dimension_seguridad": "comunitaria",
-        "periodicidad": "anual",
-        "radicado_solicitud": "PNUD-COL-2026-019",
-        "fecha_solicitud": "2026-01-25",
-        "fecha_limite_respuesta": "2026-03-05",
-        "estado_entrega": "entregada",
-        "variables_solicitadas": [
-            "Dimensiones globales de Seguridad Humana (Personal, Ambiental, Económica, Salud, Alimentaria, Política, Comunitaria)",
-            "Metodología de medición de cohesión social y resiliencia urbana",
-        ],
-        "resumen_datos": "Guía técnica metodológica y matriz de indicadores adaptados al contexto de ciudades puerto del Caribe.",
-        "archivo_adjunto_url": "https://www.undp.org",
-        "observaciones_calidad": "Estándar internacional rector para la estructura de las 7 dimensiones de POLIS.",
-    },
-    {
-        "id": "fnt-int-02",
-        "codigo": "FNT-INT-002",
-        "entidad": "Oficina de las Naciones Unidas contra la Droga y el Delito (UNODC)",
-        "nombre_fuente": "Monitoreo Portuario y Dinámicas Transnacionales de Tráfico Ilícito",
-        "tipo": "secundaria",
-        "ambito": "internacional",
-        "dimension_seguridad": "personal",
-        "periodicidad": "semestral",
-        "radicado_solicitud": "UNODC-COL-2026-088",
-        "fecha_solicitud": "2026-02-18",
-        "fecha_limite_respuesta": "2026-04-05",
-        "estado_entrega": "incompleta",
-        "variables_solicitadas": [
-            "Diagnóstico sobre contaminación de contenedores marítimos en la bahía de Cartagena",
-            "Impacto de las rutas transnacionales en el sicariato local y disputas territoriales",
-            "Buenas prácticas en control de precursores y microtráfico costero",
-        ],
-        "resumen_datos": "Entregado resumen ejecutivo; informe reservado pendiente de autorización de la agencia marítima.",
-        "archivo_adjunto_url": "https://www.unodc.org",
-        "observaciones_calidad": "Datos preliminares muy valiosos para dimensionar la incidencia del narcotráfico en la violencia urbana.",
     },
 ]
 
 
 def upgrade() -> None:
+    # 1. Creación de la tabla de fuentes de información y solicitudes oficiales
     op.execute("""
         CREATE TABLE IF NOT EXISTS auditoria.fuentes_informacion (
             id VARCHAR(50) PRIMARY KEY,
-            codigo VARCHAR(50) NOT NULL UNIQUE,
-            entidad VARCHAR(255) NOT NULL,
-            nombre_fuente VARCHAR(255) NOT NULL,
-            tipo VARCHAR(30) NOT NULL DEFAULT 'secundaria',
-            ambito VARCHAR(30) NOT NULL DEFAULT 'local',
-            dimension_seguridad VARCHAR(50) NOT NULL DEFAULT 'personal',
-            periodicidad VARCHAR(30) NOT NULL DEFAULT 'mensual',
+            codigo VARCHAR(50) UNIQUE NOT NULL,
+            entidad VARCHAR(250) NOT NULL,
+            nombre_fuente VARCHAR(250) NOT NULL,
+            tipo VARCHAR(20) NOT NULL,
+            ambito VARCHAR(20) NOT NULL,
+            dimension_seguridad VARCHAR(50) NOT NULL,
+            periodicidad VARCHAR(50) NOT NULL,
             radicado_solicitud VARCHAR(100),
             fecha_solicitud DATE,
             fecha_limite_respuesta DATE,
-            estado_entrega VARCHAR(50) NOT NULL DEFAULT 'en_termino',
+            estado_entrega VARCHAR(30) NOT NULL DEFAULT 'por_solicitar',
             variables_solicitadas JSONB NOT NULL DEFAULT '[]'::jsonb,
             resumen_datos TEXT,
-            archivo_adjunto_url TEXT,
+            archivo_adjunto_url VARCHAR(500),
             responsable_contacto JSONB NOT NULL DEFAULT '{}'::jsonb,
             observaciones_calidad TEXT,
             actualizado_por VARCHAR(100),
-            creado_en TIMESTAMPTZ NOT NULL DEFAULT clock_timestamp(),
-            actualizado_en TIMESTAMPTZ NOT NULL DEFAULT clock_timestamp()
-        )
+            creado_en TIMESTAMPTZ NOT NULL DEFAULT now(),
+            actualizado_en TIMESTAMPTZ NOT NULL DEFAULT now()
+        );
     """)
-    op.execute("CREATE INDEX IF NOT EXISTS idx_fuentes_info_codigo ON auditoria.fuentes_informacion (codigo)")
-    op.execute("CREATE INDEX IF NOT EXISTS idx_fuentes_info_entidad ON auditoria.fuentes_informacion (entidad)")
-    op.execute("CREATE INDEX IF NOT EXISTS idx_fuentes_info_estado ON auditoria.fuentes_informacion (estado_entrega)")
-    op.execute("CREATE INDEX IF NOT EXISTS idx_fuentes_info_radicado ON auditoria.fuentes_informacion (radicado_solicitud)")
 
-    # Permisos RBAC en autenticacion.roles
+    # 2. Índices de optimización y búsqueda
+    op.execute("""
+        CREATE INDEX IF NOT EXISTS idx_fuentes_ambito
+            ON auditoria.fuentes_informacion (ambito);
+    """)
+    op.execute("""
+        CREATE INDEX IF NOT EXISTS idx_fuentes_estado
+            ON auditoria.fuentes_informacion (estado_entrega);
+    """)
+    op.execute("""
+        CREATE INDEX IF NOT EXISTS idx_fuentes_dimension
+            ON auditoria.fuentes_informacion (dimension_seguridad);
+    """)
+    op.execute("""
+        CREATE INDEX IF NOT EXISTS idx_fuentes_radicado
+            ON auditoria.fuentes_informacion (radicado_solicitud);
+    """)
+
+    # 3. Permisos RBAC en autenticacion.roles
     op.execute("""
         UPDATE autenticacion.roles
         SET permisos = permisos || '["fuentes:leer", "fuentes:gestionar"]'::jsonb
@@ -462,7 +263,8 @@ def upgrade() -> None:
           AND NOT permisos ? 'fuentes:leer';
     """)
 
-    # Sembrado canónico e idempotente de las 18 fuentes oficiales
+    # 4. Catálogo inicial canónico: SOLO entidades oficiales con estado 'por_solicitar'
+    # CERO radicados, CERO fechas ficticias, CERO resúmenes fabricados.
     sql_insert = text("""
         INSERT INTO auditoria.fuentes_informacion (
             id, codigo, entidad, nombre_fuente, tipo, ambito, dimension_seguridad,
@@ -471,24 +273,23 @@ def upgrade() -> None:
             responsable_contacto, observaciones_calidad
         ) VALUES (
             :id, :codigo, :entidad, :nombre_fuente, :tipo, :ambito, :dimension_seguridad,
-            :periodicidad, :radicado_solicitud, :fecha_solicitud, :fecha_limite_respuesta,
-            :estado_entrega, CAST(:variables_solicitadas AS jsonb), :resumen_datos, :archivo_adjunto_url,
-            CAST(:responsable_contacto AS jsonb), :observaciones_calidad
-        ) ON CONFLICT (id) DO NOTHING
+            :periodicidad, NULL, NULL, NULL,
+            'por_solicitar', '[]'::jsonb, NULL, NULL,
+            '{}'::jsonb, NULL
+        ) ON CONFLICT (id) DO UPDATE SET
+            radicado_solicitud = NULL,
+            fecha_solicitud = NULL,
+            fecha_limite_respuesta = NULL,
+            estado_entrega = 'por_solicitar',
+            variables_solicitadas = '[]'::jsonb,
+            resumen_datos = NULL,
+            archivo_adjunto_url = NULL,
+            responsable_contacto = '{}'::jsonb,
+            observaciones_calidad = NULL;
     """)
 
     conn = op.get_bind()
-    for f in FUENTES_INICIALES_CANONICAS:
-        fecha_sol = (
-            date.fromisoformat(f["fecha_solicitud"])
-            if f.get("fecha_solicitud")
-            else None
-        )
-        fecha_lim = (
-            date.fromisoformat(f["fecha_limite_respuesta"])
-            if f.get("fecha_limite_respuesta")
-            else None
-        )
+    for f in CATALOGO_FUENTES_CANONICAS:
         conn.execute(
             sql_insert,
             {
@@ -500,15 +301,6 @@ def upgrade() -> None:
                 "ambito": f["ambito"],
                 "dimension_seguridad": f["dimension_seguridad"],
                 "periodicidad": f["periodicidad"],
-                "radicado_solicitud": f.get("radicado_solicitud"),
-                "fecha_solicitud": fecha_sol,
-                "fecha_limite_respuesta": fecha_lim,
-                "estado_entrega": f["estado_entrega"],
-                "variables_solicitadas": json.dumps(f.get("variables_solicitadas", [])),
-                "resumen_datos": f.get("resumen_datos"),
-                "archivo_adjunto_url": f.get("archivo_adjunto_url"),
-                "responsable_contacto": json.dumps(f.get("responsable_contacto", {})),
-                "observaciones_calidad": f.get("observaciones_calidad"),
             },
         )
 
