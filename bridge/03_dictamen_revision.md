@@ -168,3 +168,14 @@ Verificado de forma forense e independiente:
 8. Servicios en vivo: backend `/health/live` y `/health/ready` ambos OK; frontend responde 200 OK.
 9. Respeto estricto del perímetro de trabajo: Cero modificaciones a los módulos de Codex (`testimonios`, `noticias`); cero operaciones sobre `bd_csh`; cero commits con credenciales; cero operaciones remotas.
 
+## Dictamen EDIT-07 — CONFORME (commit e918743)
+Verificado de forma forense e independiente:
+1. Erradicación total de errores HTTP 404 en participación multicanal: Rutas en `src/features/participacion/services/participacion-api.ts` alineadas con FastAPI (`/participacion/canal-web`, `/participacion/canal-mesas`, `/participacion/escenarios-especiales`).
+2. Paridad estricta de esquemas DTO: `src/features/participacion/models/participacion.ts` y sus fixtures adaptados fielmente a los esquemas Pydantic del backend (`TableroConsolidado`, `DesgloseCanalWeb`, `DesgloseCanalMesas`, `DesgloseCanalEscenarios`).
+3. Reactividad y renderizado: `participacion-multicanal-panel.tsx` renderiza las 4 pestañas consumiendo datos reales de PostgreSQL (179 aportes ciudadanos reales, 36 mesas, escenarios territoriales).
+4. Pruebas unitarias dedicadas: Creada la suite `src/features/participacion/services/participacion-api.test.ts` con 11/11 pruebas aprobadas.
+5. Calidad frontend: `bun test` aprueba **259 pass / 0 fail (1180 expect calls)** en 28 suites; `bun run check` limpio con **0 errores y 0 advertencias**.
+6. Pruebas backend: `pytest backend/tests/test_participacion_multicanal.py` con **5 passed in 7.53s** en `polis_test`.
+7. Aislamiento estricto: Módulos de Codex intactos e inalterados; cero operaciones sobre `bd_csh`; cero git push.
+
+
