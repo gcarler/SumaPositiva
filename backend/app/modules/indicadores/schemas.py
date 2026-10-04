@@ -49,6 +49,9 @@ class MedicionIndicadorCrear(BaseModel):
     observaciones: str | None = None
     evidencia_documental_url: str | None = Field(default=None, max_length=500)
     registrado_por: str = Field(..., max_length=150)
+    es_demostracion: bool = Field(
+        default=False, description="Bandera para identificar mediciones de prueba o demostración"
+    )
 
 
 class MedicionIndicadorRespuesta(MedicionIndicadorCrear):

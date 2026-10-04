@@ -93,9 +93,16 @@ export function CadenaValorTab({ puedeEditar }: CadenaValorTabProps) {
               >
                 <div>
                   <div className="flex items-center justify-between gap-1.5">
-                    <span className="font-mono text-xs font-semibold text-accent">
-                      {ind.codigo}
-                    </span>
+                    <div className="flex items-center gap-1.5">
+                      {(ind.es_demostracion || (ind.metadatos?.es_demostracion as boolean)) && (
+                        <Badge variant="warning" className="text-[10px] py-0 px-1 font-bold">
+                          DEMO
+                        </Badge>
+                      )}
+                      <span className="font-mono text-xs font-semibold text-accent">
+                        {ind.codigo}
+                      </span>
+                    </div>
                     {tieneMedicion ? (
                       <Badge variant={semaforo.badgeVariant} className="text-[10px] py-0 px-1.5">
                         {semaforo.label} ({avance}%)

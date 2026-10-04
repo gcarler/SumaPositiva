@@ -2,7 +2,7 @@ import uuid
 from datetime import datetime
 from typing import Any
 
-from sqlalchemy import Date, DateTime, ForeignKey, Index, Integer, Numeric, String, Text, text
+from sqlalchemy import Boolean, Date, DateTime, ForeignKey, Index, Integer, Numeric, String, Text, text
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -110,6 +110,9 @@ class MedicionIndicador(Base):
     observaciones: Mapped[str | None] = mapped_column(Text, nullable=True)
     evidencia_documental_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
     registrado_por: Mapped[str] = mapped_column(String(150), nullable=False)
+    es_demostracion: Mapped[bool] = mapped_column(
+        Boolean, default=False, server_default=text("false"), nullable=False
+    )
     creado_en: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=text("clock_timestamp()"), nullable=False
     )

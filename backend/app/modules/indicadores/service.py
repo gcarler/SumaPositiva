@@ -93,6 +93,7 @@ class IndicadoresService:
                 observaciones=datos.observaciones,
                 evidencia_documental_url=datos.evidencia_documental_url,
                 registrado_por=datos.registrado_por,
+                es_demostracion=datos.es_demostracion,
             )
             resultado = await self.repository.registrar_medicion(medicion, ficha)
             return MedicionIndicadorRespuesta.model_validate(resultado)

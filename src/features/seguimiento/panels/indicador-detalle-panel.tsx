@@ -175,6 +175,11 @@ export function IndicadorDetallePanel({
         <div className="rounded-xl border border-border bg-surface-1 p-4 shadow-xs">
           <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border pb-3">
             <div className="flex items-center gap-2">
+              {(indicador.es_demostracion || (indicador.metadatos?.es_demostracion as boolean)) && (
+                <Badge variant="warning" className="text-xs font-bold">
+                  DATOS DE DEMOSTRACIÓN
+                </Badge>
+              )}
               <Badge variant="outline" className="font-mono text-xs uppercase">
                 {indicador.tipo_indicador}
               </Badge>

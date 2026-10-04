@@ -30,6 +30,7 @@ export interface FichaIndicadorDnp {
   valor_actual: number | string;
   porcentaje_avance: number | string;
   tiene_mediciones?: boolean;
+  es_demostracion?: boolean;
   fecha_corte_ultimo_reporte?: string | null;
   periodo_ultimo_reporte?: string | null;
   creado_en?: string;
@@ -49,12 +50,14 @@ export interface MedicionIndicadorInput {
   observaciones?: string;
   evidencia_documental_url?: string;
   registrado_por: string;
+  es_demostracion?: boolean;
 }
 
 export interface MedicionIndicadorRespuesta extends MedicionIndicadorInput {
   id: string;
   indicador_id: string;
   avance_acumulado: number;
+  es_demostracion?: boolean;
   creado_en: string;
   actualizado_en: string;
 }
