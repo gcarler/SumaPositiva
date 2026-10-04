@@ -47,6 +47,34 @@ class Settings(BaseSettings):
     tamano_maximo_archivo_mb: int = 10
     tipos_mime_permitidos: list[str] = ["image/jpeg", "image/png", "image/webp"]
 
+    sesion_anonima_limite_ip: int = Field(default=30, ge=1)
+    ia_limite_ip: int = Field(default=30, ge=1)
+
+    @property
+    def cors_origins_efectivos(self) -> list[str]:
+        if self.environment == "production":
+            # En producción únicamente se permiten orígenes HTTPS seguros excluyendo localhost y 127.0.0.1
+            filtrados = [
+                o.strip()
+                for o in self.cors_origins
+                if o.startswith("https://") and "localhost" not in o and "127.0.0.1" not in o
+            ]
+            if not filtrados:
+                return [
+                    "https://seguridadhumanaintegral.org",
+                    "https://www.seguridadhumanaintegral.org",
+                ]
+            return filtrados
+        return self.cors_origins
+
+    @property
+    def cookie_secure(self) -> bool:
+        return self.environment == "production"
+
+    @property
+    def cookie_samesite(self) -> Literal["lax", "strict", "none"]:
+        return "lax"
+
     @property
     def async_database_url(self) -> str:
         # Normalize standard PostgreSQL URLs for the asyncpg driver.

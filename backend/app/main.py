@@ -14,8 +14,11 @@ logger = logging.getLogger("polis.http")
 
 def create_app(settings: Settings | None = None) -> FastAPI:
     settings = settings or Settings()
+    log_level = settings.log_level
+    if settings.environment == "production" and log_level == "DEBUG":
+        log_level = "INFO"
     logging.basicConfig(
-        level=settings.log_level, format="%(asctime)s %(levelname)s %(name)s %(message)s"
+        level=log_level, format="%(asctime)s %(levelname)s %(name)s %(message)s"
     )
 
     @asynccontextmanager
@@ -38,10 +41,46 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     )
     application.add_middleware(
         CORSMiddleware,
-        allow_origins=settings.cors_origins,
+        allow_origins=settings.cors_origins_efectivos,
+        allow_credentials=True,
         allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE"],
-        allow_headers=["Content-Type", "Authorization"],
+        allow_headers=["Content-Type", "Authorization", "Accept"],
     )
+
+    @application.middleware("http")
+    async def security_headers_and_cookies_middleware(request: Request, call_next):
+        response = await call_next(request)
+        is_https = (
+            request.url.scheme == "https"
+            or request.headers.get("x-forwarded-proto") == "https"
+        )
+        is_prod = settings.environment == "production"
+
+        if is_prod or is_https:
+            response.headers.setdefault("X-Content-Type-Options", "nosniff")
+            response.headers.setdefault("X-Frame-Options", "DENY")
+            response.headers.setdefault("Referrer-Policy", "strict-origin-when-cross-origin")
+            if is_https:
+                response.headers.setdefault(
+                    "Strict-Transport-Security", "max-age=31536000; includeSubDomains"
+                )
+
+        if "set-cookie" in response.headers:
+            raw_headers = response.raw_headers
+            nuevos_headers = []
+            for nombre, valor in raw_headers:
+                if nombre.lower() == b"set-cookie":
+                    cookie_str = valor.decode("latin1", errors="replace")
+                    if "samesite" not in cookie_str.lower():
+                        cookie_str += "; SameSite=Lax"
+                    if (is_prod or is_https) and "secure" not in cookie_str.lower():
+                        cookie_str += "; Secure"
+                    nuevos_headers.append((nombre, cookie_str.encode("latin1")))
+                else:
+                    nuevos_headers.append((nombre, valor))
+            response.raw_headers = nuevos_headers
+
+        return response
 
     @application.middleware("http")
     async def log_request(request: Request, call_next):

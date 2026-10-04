@@ -1,8 +1,10 @@
 """Rutas FastAPI para la emisión y verificación de sesiones anónimas con firma digital."""
 
+from collections import defaultdict
+import time
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Request, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 
 from app.core.config import Settings
 from app.core.database import SessionDependency
@@ -12,6 +14,18 @@ from app.modules.sesion.schemas import SesionAnonimaRespuesta, SesionContexto
 from app.modules.sesion.service import SesionService
 
 router = APIRouter(prefix="/sesion", tags=["sesion-anonima"])
+
+_limite_ip_memoria: dict[str, list[float]] = defaultdict(list)
+
+
+def verificar_tasa_ip(ip: str, maximo: int, ventana: int = 900) -> bool:
+    ahora = time.time()
+    marcas = [t for t in _limite_ip_memoria[ip] if ahora - t < ventana]
+    if len(marcas) >= maximo:
+        return False
+    marcas.append(ahora)
+    _limite_ip_memoria[ip] = marcas
+    return True
 
 
 def get_sesion_service(session: SessionDependency) -> SesionService:
@@ -51,6 +65,16 @@ async def emitir_sesion_anonima(
     service: SesionServiceDep,
 ) -> SesionAnonimaRespuesta:
     ip_cliente = extraer_ip_cliente(request)
+    settings = request.app.state.settings
+    limite = getattr(settings, "sesion_anonima_limite_ip", 30)
+    ventana = getattr(settings, "identidad_ventana_segundos", 900)
+    if not verificar_tasa_ip(ip_cliente, limite, ventana):
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail="Demasiadas solicitudes de sesión anónima. Inténtalo más tarde.",
+            headers={"Retry-After": str(ventana)},
+        )
+
     user_agent = request.headers.get("user-agent")
     return await service.emitir_sesion_anonima(ip_cliente, user_agent)
 

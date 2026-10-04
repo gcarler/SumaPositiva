@@ -6,9 +6,11 @@ completo gobernado por LangGraph y PydanticAI.
 
 from __future__ import annotations
 
+from collections import defaultdict
+import time
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 
 from app.modules.ia.schemas import (
     EntradaCicloPolitica,
@@ -25,7 +27,43 @@ from app.modules.ia.schemas import (
 from app.modules.ia.service import ServicioIA, obtener_servicio_ia
 from app.modules.identidad.deps import requerir_permiso
 
-router = APIRouter(prefix="/ia", tags=["Inteligencia Artificial y Gobernanza Multi-Agente"])
+_ia_limite_memoria: dict[str, list[float]] = defaultdict(list)
+
+
+def verificar_tasa_ia(actor: str, maximo: int, ventana: int = 60) -> bool:
+    ahora = time.time()
+    marcas = [t for t in _ia_limite_memoria[actor] if ahora - t < ventana]
+    if len(marcas) >= maximo:
+        return False
+    marcas.append(ahora)
+    _ia_limite_memoria[actor] = marcas
+    return True
+
+
+def limpiar_cache_tasa_ia() -> None:
+    """Limpia el caché de control de tasa en memoria (útil para pruebas)."""
+    _ia_limite_memoria.clear()
+
+
+async def limitar_tasa_ia(request: Request):
+    settings = request.app.state.settings
+    limite = getattr(settings, "ia_limite_ip", 30)
+    client_ip = request.client.host if request.client else "127.0.0.1"
+    auth_header = request.headers.get("authorization", "")
+    actor_id = auth_header[-16:] if auth_header else client_ip
+    if not verificar_tasa_ia(actor_id, limite, 60):
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail="Límite de solicitudes de IA excedido. Por favor espere antes de continuar.",
+            headers={"Retry-After": "60"},
+        )
+
+
+router = APIRouter(
+    prefix="/ia",
+    tags=["Inteligencia Artificial y Gobernanza Multi-Agente"],
+    dependencies=[Depends(limitar_tasa_ia)],
+)
 
 
 @router.post(

@@ -1,7 +1,7 @@
 import uuid
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, Query, Request
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response
 
 from app.core.database import SessionDependency
 from app.modules.identidad.catalogo import PERMISOS
@@ -57,15 +57,55 @@ async def registrar_usuario(datos: UsuarioCreacion, request: Request, service: I
 
 
 @router.post("/login", response_model=TokenRespuesta)
-async def login_usuario(datos: LoginPeticion, request: Request, service: IdentidadServiceDep):
+async def login_usuario(
+    datos: LoginPeticion,
+    request: Request,
+    response: Response,
+    service: IdentidadServiceDep,
+):
     await service.limitar("login", request.client.host if request.client else "local", datos.correo)
-    return await service.autenticar_usuario(datos)
+    resultado = await service.autenticar_usuario(datos)
+    es_seguro = (
+        request.app.state.settings.environment == "production"
+        or request.url.scheme == "https"
+        or request.headers.get("x-forwarded-proto") == "https"
+    )
+    response.set_cookie(
+        key="polis_session",
+        value=resultado.token_acceso,
+        max_age=request.app.state.settings.jwt_expiracion_horas * 3600,
+        httponly=True,
+        secure=es_seguro,
+        samesite="lax",
+        path="/",
+    )
+    return resultado
 
 
 @router.post("/oauth/google", response_model=TokenRespuesta)
-async def login_google(datos: GoogleOAuthPeticion, request: Request, service: IdentidadServiceDep):
+async def login_google(
+    datos: GoogleOAuthPeticion,
+    request: Request,
+    response: Response,
+    service: IdentidadServiceDep,
+):
     await service.limitar("login_google", request.client.host if request.client else "local")
-    return await service.autenticar_google_oauth(datos)
+    resultado = await service.autenticar_google_oauth(datos)
+    es_seguro = (
+        request.app.state.settings.environment == "production"
+        or request.url.scheme == "https"
+        or request.headers.get("x-forwarded-proto") == "https"
+    )
+    response.set_cookie(
+        key="polis_session",
+        value=resultado.token_acceso,
+        max_age=request.app.state.settings.jwt_expiracion_horas * 3600,
+        httponly=True,
+        secure=es_seguro,
+        samesite="lax",
+        path="/",
+    )
+    return resultado
 
 
 @router.get("/perfil", response_model=UsuarioLectura)
@@ -83,9 +123,15 @@ async def editar_perfil(
 
 
 @router.post("/logout", response_model=MensajeRespuesta)
-async def logout(sujeto: SujetoAutenticadoDep, service: IdentidadServiceDep):
+async def logout(
+    sujeto: SujetoAutenticadoDep,
+    response: Response,
+    service: IdentidadServiceDep,
+):
     exigir_usuario(sujeto)
-    return await service.cerrar_sesiones(sujeto, sujeto.sesion_id)
+    resultado = await service.cerrar_sesiones(sujeto, sujeto.sesion_id)
+    response.delete_cookie(key="polis_session", path="/")
+    return resultado
 
 
 @router.get("/sesiones", response_model=list[SesionLectura])

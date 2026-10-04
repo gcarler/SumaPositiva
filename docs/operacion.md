@@ -84,3 +84,19 @@ web/API con permiso `usuarios:gestionar`, motivo y registro de evento. No promov
 cuentas existentes mediante cambios SQL improvisados. Los permisos de rol se
 consultan de nuevo en cada petición; ya no es necesario esperar un nuevo login
 para retirar un permiso. La activación invalida tokens de usuario antiguos.
+
+## Checklist de Despliegue Productivo (AUD-06)
+
+Para certificar el paso de la plataforma POLIS a un entorno de producción seguro y conforme a las exigencias de auditoría forense institucional:
+
+| Control | Requisito Productivo | Mecanismo de Implementación | Verificación Forense |
+|---|---|---|---|
+| **Entorno de Ejecución** | `POLIS_ENVIRONMENT=production` | Variable en `/root/polis/backend/.env` y systemd service. | `curl http://127.0.0.1:8000/api/v1/docs` devuelve `404 Not Found`. |
+| **OpenAPI / Docs** | Deshabilitado en producción (`docs_url=None`, `openapi_url=None`). | FastAPI inicializado condicionalmente en `create_app()`. | `/api/v1/docs` y `/api/v1/openapi.json` inaccesibles para usuarios externos. |
+| **CORS Restringido** | Prohibido `localhost`, `127.0.0.1` y HTTP no cifrado. Permitido solo dominio institucional HTTPS. | `cors_origins_efectivos` en `backend/app/core/config.py` y `CORSMiddleware`. | `curl -X OPTIONS -H "Origin: http://localhost:3000"` recibe `400 Disallowed CORS origin`. |
+| **Cookies Seguras** | Atributos `Secure`, `HttpOnly` y `SameSite=Lax` en toda cookie de sesión o UI. | Inyección en `/identidad/login`, `sidebar.tsx` y `security_headers_and_cookies_middleware`. | Cabecera `Set-Cookie` inspeccionada contiene directivas `Secure; SameSite=Lax`. |
+| **Secretos Fuera de Repo** | Cero contraseñas, sales o llaves privadas en git. | `.env` explícitamente ignorado en `.gitignore`; `.env.example` con placeholders. | `git check-ignore backend/.env` confirma exclusión activa. |
+| **Rate Limiting Público** | Prevención de abuso en endpoints abiertos (`/sesion/anonima`, `/identidad/*`). | Ventanas deslizantes y `LimiteAcceso` (30 peticiones / 15 min). | Peticiones recurrentes devuelven `429 Too Many Requests` con `Retry-After`. |
+| **Rate Limiting de IA** | Salvaguarda de cómputo en `/api/v1/ia/*` (LangGraph / multi-agente). | Dependencia `limitar_tasa_ia` (30 peticiones / min por actor). | Exceso de llamadas devuelve `HTTP 429` protegiendo los agentes DNP. |
+| **Higiene de Logs** | Nivel `INFO` o superior (cero `DEBUG` en producción) y sin datos personales. | Clamping de nivel de log en `main.py` y middleware `log_request` sanitizado. | Logs solo registran plantillas de ruta, status HTTP y latencia en ms. |
+

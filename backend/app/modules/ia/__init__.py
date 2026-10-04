@@ -18,7 +18,7 @@ from app.modules.ia.agentes import (
     AgenteJuridico,
 )
 from app.modules.ia.grafo import EstadoCicloPolitica, PolicyLifecycleGraph
-from app.modules.ia.router import router
+from app.modules.ia.router import limpiar_cache_tasa_ia, router
 from app.modules.ia.service import ServicioIA, obtener_servicio_ia
 
 __all__ = [
@@ -31,4 +31,5 @@ __all__ = [
     "ServicioIA",
     "obtener_servicio_ia",
     "router",
+    "limpiar_cache_tasa_ia",
 ]
