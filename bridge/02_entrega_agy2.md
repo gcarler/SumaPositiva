@@ -2268,3 +2268,73 @@ Conforme a la especificación de `bridge/01_tarea_agy2_edit_04.md`:
 | **Aislamiento de Codex** | `git status` | Archivos de codex (`noticias`, `testimonios`, backend) estrictamente intactos. |
 | **Salvaguarda de Base de Datos** | N/A | Cero migraciones ejecutadas sobre `bd_csh`, cero push a remoto. |
 
+---
+
+# Tarea EDIT-01b: Subsanación Pericial de Auditoría Forense y Restricción de Roles en Mesas y Agendas (OBS-21 / OBS-22)
+
+**Fecha**: 2026-10-04T05:05:00Z  
+**Estado**: LISTA PARA AUDITORÍA PERICIAL (EAF)  
+**Responsable**: agy2 (Equipo de Desarrollo EDD)  
+**Dictámenes Previos**: OBS-21 en EDIT-01 y OBS-22 en EDIT-02 (`bridge/03_dictamen_revision.md`)  
+**Compromiso**: Trazabilidad forense inmutable de mutaciones en mesas/agendas y blindaje RBAC estricto contra manipulación de campos sensibles.
+
+---
+
+### 1. Resumen de la Subsanación Pericial (EDIT-01b)
+
+En cumplimiento de las observaciones OBS-21 y OBS-22 emitidas por el auditor independiente EAF:
+
+1. **Registro Inmutable de Auditoría Forense en Mutaciones de Mesas y Agendas (OBS-21 a / OBS-22)**:
+   - Se conectó el servicio de mesas (`MesaService`) con `RegistroAuditoria` en el esquema `auditoria`:
+     - **Actualización de Mesas (`PATCH /api/v1/mesas/{id}`)**: Registra automáticamente evento inmutable con `accion = "ACTUALIZAR_METADATOS_MESA"`, `tabla_afectada = "mesas_trabajo.mesas"`, `registro_id = mesa.id`, `usuario_id = sujeto.sujeto_id`, `causal = "tecnica"` y diccionario `metadatos` detallando la nómina de `campos_modificados`.
+     - **Creación de Agendas (`POST /api/v1/mesas/agendas`)**: Registra evento `CREAR_AGENDA_MESA` en `mesas_trabajo.mesas_agendas` con identificador UUID determinista (`uuid5`).
+     - **Actualización de Agendas (`PATCH /api/v1/mesas/agendas/{id}`)**: Registra evento `ACTUALIZAR_AGENDA_MESA` con lista de campos modificados y nuevo estado.
+2. **Restricción de Campos Sensibles y Control de Propiedad (OBS-21 c)**:
+   - **Salvaguarda de Asistentes (`total_asistentes`)**: Prohibición explícita de modificación mediante `PATCH /api/v1/mesas/{id}`. Cualquier intento de enviar `total_asistentes` en el payload es rechazado inmediatamente con `HTTP 400 Bad Request`, garantizando que este valor se calcule de forma exclusiva y reproducible a partir de las actas de cierre y listas de asistencia verificadas.
+   - **Control de Propiedad de Mesa (HTTP 403 Forbidden)**: Para usuarios con rol `facilitador_mesa` que poseen permiso `mesas:abrir`, se restringe la edición únicamente a las mesas donde dicho funcionario esté asignado como facilitador principal (`mesa.facilitador_id == sujeto.sujeto_id`). Si intenta modificar una mesa asignada a otro facilitador, el backend deniega la operación con `HTTP 403 Forbidden`.
+   - **Inmutabilidad de Facilitadores y Estados por Terceros (HTTP 403 Forbidden)**: Un usuario con rol `facilitador_mesa` no puede reasignar el campo `facilitador_id` a otra persona ni puede alterar el campo `estado` oficial de la mesa; estas facultades quedan reservadas taxativamente a la `autoridad_distrital` o al `administrador_identidades`. Intentos no autorizados retornan `HTTP 403 Forbidden`.
+3. **Actualización de Documentación de Permisos (`docs/permisos-api.md`) (OBS-21 b / OBS-22)**:
+   - Se documentaron formalmente los endpoints sin pisar modificaciones de Codex:
+     - `PATCH /api/v1/mesas/{mesa_id}` (`permiso:mesas:abrir@declarada`): Edición de metadatos con control de propiedad (403), restricción de campos sensibles (asistentes deriva de actas) y auditoría.
+     - `GET /api/v1/mesas/agendas` (`publico`): Consulta pública del cronograma.
+     - `GET /api/v1/mesas/agendas/{agenda_id}` (`publico`): Consulta de detalle de mesa en agenda.
+     - `POST /api/v1/mesas/agendas` (`permiso:mesas:abrir@declarada`): Programación dinámica de nueva mesa en agenda con auditoría forense inmutable.
+     - `PATCH /api/v1/mesas/agendas/{agenda_id}` (`permiso:mesas:abrir@declarada`): Reprogramación y actualización de estado de agenda con auditoría forense.
+4. **Batería de Pruebas de Seguridad y Auditoría (`backend/tests/test_mesas_seguridad_auditoria.py`)**:
+   - 6 pruebas exhaustivas en `polis_test`:
+     - `test_actualizacion_mesa_autoridad_genera_auditoria_sql`: Verificación SQL directa de persistencia de auditoría tras actualización de mesa por autoridad.
+     - `test_salvaguarda_total_asistentes_rechaza_400`: Verificación de rechazo 400 ante intento de mutar asistentes.
+     - `test_facilitador_mesa_control_propiedad_403`: Verificación de rechazo 403 cuando Facilitador B intenta mutar mesa de Facilitador A.
+     - `test_facilitador_mesa_prohibido_reasignar_facilitador_o_estado_403`: Verificación de rechazo 403 cuando un facilitador intenta reasignar facilitadores o alterar el estado oficial.
+     - `test_facilitador_mesa_edita_su_propia_mesa_exitosamente`: Verificación de éxito 200 y registro de auditoría con su propio `usuario_id` al actualizar sus metadatos operativos permitidos.
+     - `test_auditoria_agendas_mesas_crear_y_actualizar`: Verificación SQL de trazabilidad forense para agendas creadas y actualizadas.
+
+---
+
+### 2. Matriz de Archivos Modificados y Creados (EDIT-01b)
+
+| Archivo | Tipo | Descripción de la Modificación |
+|---|---|---|
+| `backend/app/modules/mesas/service.py` | **Modificación** | Incorporación de auditoría forense inmutable (`RegistroAuditoria`), rechazo 400 de `total_asistentes`, control de propiedad y restricción de reasignación y estados con 403. |
+| `backend/app/modules/mesas/router.py` | **Modificación** | Inyección de dependencia de contexto autenticado `sujeto: SujetoAutenticadoContexto` en `actualizar_mesa`, `crear_agenda` y `actualizar_agenda`. |
+| `backend/tests/test_mesas_seguridad_auditoria.py` | **Nuevo** | Suite de 6 pruebas unitarias/integración de seguridad, propiedad 403, salvaguarda 400 y auditoría SQL directa. |
+| `docs/permisos-api.md` | **Modificación** | Documentación de endpoints de agendas y PATCH de mesas sin pisar archivos de Codex. |
+| `bridge/01_tarea_activa.md` | **Modificación** | Tarea activa actualizada a EDIT-01b ENTREGADA / LISTA PARA AUDITAR. |
+| `bridge/02_entrega_agy2.md` | **Modificación** | Documentación completa de la subsanación pericial EDIT-01b. |
+
+---
+
+### 3. Matriz de Quality Gates Periciales (EDIT-01b)
+
+| Quality Gate | Comando de Validación | Resultado Pericial |
+|---|---|---|
+| **Pruebas Backend Pytest (`polis_test`)** | `backend/.venv/bin/pytest backend/tests/test_mesas_seguridad_auditoria.py backend/tests/test_mesas_agenda.py backend/tests/test_mesas_ltree.py` | **9 passed in 13.73s** (6 nuevas pruebas de seguridad/auditoría + 3 existentes de agendas y ltree). |
+| **Suite Completa Frontend** | `bun test` | **248 pass, 0 fail (1121 expect calls)** en 27 archivos de prueba. |
+| **Política de UI POLIS** | `bun run ui:check` (`node scripts/ui-policy.mjs`) | **0 violaciones**. |
+| **Chequeo de Tipos TypeScript** | `bun run typecheck` (`tsc --noEmit`) | **0 errores** de tipado estricto. |
+| **Linting ESLint** | `bun run lint` (`eslint .`) | **0 errores, 0 advertencias**. |
+| **Pipeline Completo Check** | `bun run check` | **100% aprobado** (código 0). |
+| **Aislamiento de Codex** | `git status` | Archivos de codex strictly intactos. |
+| **Salvaguarda de Base de Datos** | N/A | Cero migraciones ejecutadas sobre `bd_csh`, cero push a remoto. |
+
+

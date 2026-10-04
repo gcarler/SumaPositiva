@@ -3,7 +3,7 @@
 **Última actualización**: 2026-10-04  
 **Responsable activo**: agy2 (EDD)  
 **Auditor independiente**: EAF  
-**Tarea en curso / entregada**: `EDIT-04` (Configuración de Metadatos de Fichas de Indicadores Distritales DNP)
+**Tarea en curso / entregada**: `EDIT-01b` (Subsanación Pericial: Auditoría Forense y Restricción de Roles en Mesas y Agendas - OBS-21 / OBS-22)
 
 ---
 
@@ -36,10 +36,10 @@
 
 | ID | Prioridad | Tarea / Alcance | Estado | Pruebas / Validación |
 |:---|:---:|:---|:---:|:---|
-| **EDIT-01** | **ALTA** | Persistencia Backend para Edición de Metadatos de Mesas (`PATCH /api/v1/mesas/{id}`) | **CONFORME CON OBS-21** | `3dc7d1f`. OBS-21 programada para EDIT-01b tras EDIT-04. |
-| **EDIT-02** | **MEDIA** | Modelo Relacional y CRUD Dinámico de Agenda de Mesas | **CONFORME CON OBS-22** | `9b82221`. Subsanada OBS-22 (0041 en runbook, corrección a 36 mesas). |
-| **EDIT-03b** | **CRÍTICA** | Subsanación de Sembrado y Erradicación de Datos Fabricados en Catálogo de Fuentes | **CONFORME / LISTA PARA AUDITAR** | `4d81eae`. Cero radicados inventados, fixtures a `__fixtures__`, guarda anti-`bd_csh`, 5 tests backend. |
-| **EDIT-04** | **BAJA** | Endpoint de Actualización Controlada para Fichas Técnicas DNP | **ENTREGADA / LISTA PARA AUDITAR** | `PATCH /api/v1/indicadores/fichas/{id}` con salvaguarda DNP estricta (400 si altera fórmulas o línea base), auditoría forense inmutable, sección colapsable accesible en front, `test_indicadores_metadatos.py` (3 passed), `bun test` (248 passed), `bun run check` (0 errores). |
+| **EDIT-01b** | **ALTA** | Subsanación Pericial: Auditoría Forense y Restricción de Roles/Propiedad en Mesas y Agendas (OBS-21 / OBS-22) | **ENTREGADA / LISTA PARA AUDITAR** | `RegistroAuditoria` inmutable en mesas y agendas, rechazo 400 de `total_asistentes`, restricción de propiedad y roles con 403, documentación en `docs/permisos-api.md`, `test_mesas_seguridad_auditoria.py` (6 passed), `bun test` (248 passed), `bun run check` (0 errores). |
+| **EDIT-02** | **MEDIA** | Modelo Relacional y CRUD Dinámico de Agenda de Mesas | **CONFORME CON OBS-22** | `9b82221`. Subsanada OBS-22 (0041 en runbook, corrección a 36 mesas, auditoría forense en EDIT-01b). |
+| **EDIT-03b** | **CRÍTICA** | Subsanación de Sembrado y Erradicación de Datos Fabricados en Catálogo de Fuentes | **CONFORME** | Dictamen EAF en `03_dictamen_revision.md`. |
+| **EDIT-04** | **BAJA** | Endpoint de Actualización Controlada para Fichas Técnicas DNP | **CONFORME** | Dictamen EAF en `03_dictamen_revision.md`. |
 | **EDIT-05** | **BAJA** | Integración y Cierre de Módulos de Noticias y Testimonios (Codex) | **BLOQUEADA (CODEX)** | No tocar archivos de Codex. |
 
 ---

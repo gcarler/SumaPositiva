@@ -10,6 +10,8 @@ from fastapi import HTTPException, status
 from sqlalchemy.exc import IntegrityError
 
 from app.core.transactions import transaction
+from app.modules.auditoria.models import RegistroAuditoria
+from app.modules.identidad.schemas import SujetoAutenticadoContexto
 from app.modules.mesas.models import ActaComunitaria, Mesa, MesaAgenda, ParticipanteMesa
 from app.modules.mesas.repository import MesaRepository
 from app.modules.mesas.schemas import (
@@ -153,61 +155,112 @@ class MesaService:
             mesa_creada = await self.repository.crear(mesa)
             return MesaRespuesta.model_validate(mesa_creada)
 
-    async def actualizar_mesa(self, mesa_id: uuid.UUID, datos: MesaActualizar) -> MesaRespuesta:
+    async def actualizar_mesa(
+        self,
+        mesa_id: uuid.UUID,
+        datos: MesaActualizar,
+        sujeto: SujetoAutenticadoContexto | None = None,
+    ) -> MesaRespuesta:
+        # Salvaguarda pericial (OBS-21): total_asistentes debe derivar de actas/asistencia
+        if datos.total_asistentes is not None:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=(
+                    "Salvaguarda pericial: El total de asistentes se deriva exclusivamente del "
+                    "registro oficial de actas y listas de asistencia verificadas; no es modificable directamente."
+                ),
+            )
+
         async with transaction(self.repository.session):
             mesa = await self.repository.obtener_para_actualizar(mesa_id)
             if not mesa:
                 raise HTTPException(status.HTTP_404_NOT_FOUND, detail="Mesa no encontrada")
 
-            if datos.nombre is not None:
+            # Control de propiedad y roles sensibles (OBS-21)
+            if sujeto is not None:
+                es_admin = sujeto.rol in ("autoridad_distrital", "administrador_identidades")
+                if not es_admin:
+                    # Facilitador_mesa solo puede editar mesas asignadas a su propio usuario
+                    if mesa.facilitador_id is not None and mesa.facilitador_id != sujeto.sujeto_id:
+                        raise HTTPException(
+                            status_code=status.HTTP_403_FORBIDDEN,
+                            detail="No cuenta con autorización para modificar una mesa asignada a otro facilitador.",
+                        )
+                    # Facilitador_mesa no puede reasignar facilitador_id
+                    if datos.facilitador_id is not None and datos.facilitador_id != sujeto.sujeto_id:
+                        raise HTTPException(
+                            status_code=status.HTTP_403_FORBIDDEN,
+                            detail="Solo la autoridad distrital cuenta con permisos para reasignar el facilitador de la mesa.",
+                        )
+                    # Facilitador_mesa no puede alterar el estado oficial
+                    if datos.estado is not None and datos.estado != mesa.estado:
+                        raise HTTPException(
+                            status_code=status.HTTP_403_FORBIDDEN,
+                            detail="Solo la autoridad distrital cuenta con permisos para modificar el estado de la mesa.",
+                        )
+
+            campos_modificados: list[str] = []
+            if datos.nombre is not None and datos.nombre != mesa.nombre:
                 mesa.nombre = datos.nombre
+                campos_modificados.append("nombre")
 
             lugar = datos.lugar_nombre if datos.lugar_nombre is not None else datos.lugar
-            if lugar is not None:
+            if lugar is not None and lugar != mesa.lugar_nombre:
                 mesa.lugar_nombre = lugar
+                campos_modificados.append("lugar_nombre")
 
-            if datos.fecha is not None:
+            if datos.fecha is not None and datos.fecha != mesa.fecha:
                 mesa.fecha = datos.fecha
+                campos_modificados.append("fecha")
 
-            if datos.horario is not None:
+            if datos.horario is not None and datos.horario != mesa.horario:
                 mesa.horario = datos.horario
+                campos_modificados.append("horario")
 
             aforo = datos.aforo_maximo if datos.aforo_maximo is not None else datos.aforo_esperado
-            if aforo is not None:
+            if aforo is not None and aforo != mesa.aforo_maximo:
                 mesa.aforo_maximo = aforo
+                campos_modificados.append("aforo_maximo")
 
-            if datos.total_asistentes is not None:
-                mesa.total_asistentes = datos.total_asistentes
-
-            if datos.modalidad is not None:
+            if datos.modalidad is not None and datos.modalidad != mesa.modalidad:
                 mesa.modalidad = datos.modalidad
+                campos_modificados.append("modalidad")
 
-            if datos.estado is not None:
+            if datos.estado is not None and datos.estado != mesa.estado:
                 mesa.estado = datos.estado
+                campos_modificados.append("estado")
 
-            if datos.tipo_mesa is not None:
+            if datos.tipo_mesa is not None and datos.tipo_mesa != mesa.tipo_mesa:
                 mesa.tipo_mesa = datos.tipo_mesa
+                campos_modificados.append("tipo_mesa")
 
-            if datos.linea_id is not None:
+            if datos.linea_id is not None and datos.linea_id != mesa.linea_id:
                 mesa.linea_id = datos.linea_id
+                campos_modificados.append("linea_id")
 
-            if datos.dimension_id is not None:
+            if datos.dimension_id is not None and datos.dimension_id != mesa.dimension_id:
                 mesa.dimension_id = datos.dimension_id
+                campos_modificados.append("dimension_id")
 
-            if datos.territorio_id is not None:
+            if datos.territorio_id is not None and datos.territorio_id != mesa.territorio_id:
                 mesa.territorio_id = datos.territorio_id
+                campos_modificados.append("territorio_id")
 
-            if datos.facilitador_id is not None:
+            if datos.facilitador_id is not None and datos.facilitador_id != mesa.facilitador_id:
                 mesa.facilitador_id = datos.facilitador_id
+                campos_modificados.append("facilitador_id")
 
             # Sincronización y combinación atómica de metadatos JSONB
             nuevos_metadatos = dict(mesa.metadatos or {})
             if datos.metadatos is not None:
                 nuevos_metadatos.update(datos.metadatos)
+                campos_modificados.append("metadatos")
             if datos.entidad_responsable is not None:
                 nuevos_metadatos["entidad"] = datos.entidad_responsable
+                campos_modificados.append("entidad_responsable")
             if datos.facilitador_principal is not None:
                 nuevos_metadatos["facilitador"] = datos.facilitador_principal
+                campos_modificados.append("facilitador_principal")
             if lugar is not None:
                 nuevos_metadatos["lugar"] = lugar
             mesa.metadatos = nuevos_metadatos
@@ -215,6 +268,24 @@ class MesaService:
             mesa.actualizado_en = datetime.now(UTC)
 
             mesa_actualizada = await self.repository.actualizar_mesa(mesa)
+
+            # Registro inmutable de auditoría forense (OBS-21)
+            auditoria = RegistroAuditoria(
+                tabla_afectada="mesas_trabajo.mesas",
+                registro_id=mesa_actualizada.id,
+                accion="ACTUALIZAR_METADATOS_MESA",
+                usuario_id=sujeto.sujeto_id if sujeto else None,
+                causal="tecnica",
+                justificacion_motivada=f"Actualización de metadatos de mesa {mesa_actualizada.codigo_oficial or mesa_actualizada.nombre}",
+                metadatos={
+                    "mesa_id": str(mesa_actualizada.id),
+                    "codigo_oficial": mesa_actualizada.codigo_oficial,
+                    "campos_modificados": campos_modificados,
+                },
+            )
+            self.repository.session.add(auditoria)
+            await self.repository.session.flush()
+
             return MesaRespuesta.model_validate(mesa_actualizada)
 
     async def obtener_mesa(self, mesa_id: uuid.UUID) -> MesaRespuesta:
@@ -482,7 +553,11 @@ class MesaService:
             )
         return AgendaRespuesta.model_validate(agenda)
 
-    async def crear_agenda(self, datos: AgendaCrear) -> AgendaRespuesta:
+    async def crear_agenda(
+        self,
+        datos: AgendaCrear,
+        sujeto: SujetoAutenticadoContexto | None = None,
+    ) -> AgendaRespuesta:
         async with transaction(self.repository.session):
             agenda_id = datos.id or f"m-{uuid.uuid4().hex[:8]}"
             existente = await self.repository.obtener_agenda_por_id(agenda_id)
@@ -496,9 +571,35 @@ class MesaService:
             datos_dict["id"] = agenda_id
             agenda = MesaAgenda(**datos_dict)
             creada = await self.repository.crear_agenda(agenda)
+
+            # Registro de auditoría forense inmutable (OBS-22)
+            agenda_uuid = uuid.uuid5(uuid.NAMESPACE_DNS, f"mesas_agendas:{creada.id}")
+            auditoria = RegistroAuditoria(
+                tabla_afectada="mesas_trabajo.mesas_agendas",
+                registro_id=agenda_uuid,
+                accion="CREAR_AGENDA_MESA",
+                usuario_id=sujeto.sujeto_id if sujeto else None,
+                causal="tecnica",
+                justificacion_motivada=f"Programación de mesa en agenda {creada.id} - {creada.nombre}",
+                metadatos={
+                    "agenda_id": creada.id,
+                    "tipo": creada.tipo,
+                    "nombre": creada.nombre,
+                    "fecha": str(creada.fecha),
+                    "lugar": creada.lugar,
+                },
+            )
+            self.repository.session.add(auditoria)
+            await self.repository.session.flush()
+
             return AgendaRespuesta.model_validate(creada)
 
-    async def actualizar_agenda(self, agenda_id: str, datos: AgendaActualizar) -> AgendaRespuesta:
+    async def actualizar_agenda(
+        self,
+        agenda_id: str,
+        datos: AgendaActualizar,
+        sujeto: SujetoAutenticadoContexto | None = None,
+    ) -> AgendaRespuesta:
         async with transaction(self.repository.session):
             agenda = await self.repository.obtener_agenda_para_actualizar(agenda_id)
             if not agenda:
@@ -507,30 +608,61 @@ class MesaService:
                     detail=f"Agenda de mesa '{agenda_id}' no encontrada",
                 )
 
-            if datos.tipo is not None:
+            campos_modificados: list[str] = []
+            if datos.tipo is not None and datos.tipo != agenda.tipo:
                 agenda.tipo = datos.tipo
-            if datos.nombre is not None:
+                campos_modificados.append("tipo")
+            if datos.nombre is not None and datos.nombre != agenda.nombre:
                 agenda.nombre = datos.nombre
-            if datos.territorio is not None:
+                campos_modificados.append("nombre")
+            if datos.territorio is not None and datos.territorio != agenda.territorio:
                 agenda.territorio = datos.territorio
-            if datos.lugar is not None:
+                campos_modificados.append("territorio")
+            if datos.lugar is not None and datos.lugar != agenda.lugar:
                 agenda.lugar = datos.lugar
-            if datos.fecha is not None:
+                campos_modificados.append("lugar")
+            if datos.fecha is not None and datos.fecha != agenda.fecha:
                 agenda.fecha = datos.fecha
-            if datos.hora_inicio is not None:
+                campos_modificados.append("fecha")
+            if datos.hora_inicio is not None and datos.hora_inicio != agenda.hora_inicio:
                 agenda.hora_inicio = datos.hora_inicio
-            if datos.hora_fin is not None:
+                campos_modificados.append("hora_inicio")
+            if datos.hora_fin is not None and datos.hora_fin != agenda.hora_fin:
                 agenda.hora_fin = datos.hora_fin
-            if datos.estado is not None:
+                campos_modificados.append("hora_fin")
+            if datos.estado is not None and datos.estado != agenda.estado:
                 agenda.estado = datos.estado
-            if datos.dimensiones_onu is not None:
+                campos_modificados.append("estado")
+            if datos.dimensiones_onu is not None and datos.dimensiones_onu != agenda.dimensiones_onu:
                 agenda.dimensiones_onu = datos.dimensiones_onu
-            if datos.responsable is not None:
+                campos_modificados.append("dimensiones_onu")
+            if datos.responsable is not None and datos.responsable != agenda.responsable:
                 agenda.responsable = datos.responsable
-            if datos.observaciones is not None:
+                campos_modificados.append("responsable")
+            if datos.observaciones is not None and datos.observaciones != agenda.observaciones:
                 agenda.observaciones = datos.observaciones
+                campos_modificados.append("observaciones")
 
             agenda.actualizado_en = datetime.now(UTC)
             actualizada = await self.repository.actualizar_agenda(agenda)
+
+            # Registro de auditoría forense inmutable (OBS-22)
+            agenda_uuid = uuid.uuid5(uuid.NAMESPACE_DNS, f"mesas_agendas:{actualizada.id}")
+            auditoria = RegistroAuditoria(
+                tabla_afectada="mesas_trabajo.mesas_agendas",
+                registro_id=agenda_uuid,
+                accion="ACTUALIZAR_AGENDA_MESA",
+                usuario_id=sujeto.sujeto_id if sujeto else None,
+                causal="tecnica",
+                justificacion_motivada=f"Actualización de agenda de mesa {actualizada.id}",
+                metadatos={
+                    "agenda_id": actualizada.id,
+                    "campos_modificados": campos_modificados,
+                    "estado": actualizada.estado,
+                },
+            )
+            self.repository.session.add(auditoria)
+            await self.repository.session.flush()
+
             return AgendaRespuesta.model_validate(actualizada)
 

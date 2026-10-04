@@ -8,8 +8,8 @@ from fastapi.responses import FileResponse
 from app.core.config import Settings
 from app.core.database import SessionDependency
 from app.modules.evidencia.service import EvidenciaService
-from app.modules.identidad.deps import SujetoAutenticadoDep
-from app.modules.identidad.deps import requerir_permiso
+from app.modules.identidad.deps import SujetoAutenticadoDep, requerir_permiso
+from app.modules.identidad.schemas import SujetoAutenticadoContexto
 from app.modules.mesas.repository import MesaRepository
 from app.modules.mesas.schemas import (
     ActaCierre,
@@ -92,10 +92,16 @@ async def listar_agendas(
     "/agendas",
     response_model=AgendaRespuesta,
     status_code=status.HTTP_201_CREATED,
-    dependencies=[Depends(requerir_permiso("mesas:abrir", nivel_minimo="declarada"))],
 )
-async def crear_agenda(datos: AgendaCrear, service: MesaServiceDep):
-    return await service.crear_agenda(datos)
+async def crear_agenda(
+    datos: AgendaCrear,
+    service: MesaServiceDep,
+    sujeto: Annotated[
+        SujetoAutenticadoContexto,
+        Depends(requerir_permiso("mesas:abrir", nivel_minimo="declarada")),
+    ],
+):
+    return await service.crear_agenda(datos, sujeto=sujeto)
 
 
 @router.get("/agendas/{agenda_id}", response_model=AgendaRespuesta)
@@ -106,14 +112,17 @@ async def obtener_agenda(agenda_id: str, service: MesaServiceDep):
 @router.patch(
     "/agendas/{agenda_id}",
     response_model=AgendaRespuesta,
-    dependencies=[Depends(requerir_permiso("mesas:abrir", nivel_minimo="declarada"))],
 )
 async def actualizar_agenda(
     agenda_id: str,
     datos: AgendaActualizar,
     service: MesaServiceDep,
+    sujeto: Annotated[
+        SujetoAutenticadoContexto,
+        Depends(requerir_permiso("mesas:abrir", nivel_minimo="declarada")),
+    ],
 ):
-    return await service.actualizar_agenda(agenda_id, datos)
+    return await service.actualizar_agenda(agenda_id, datos, sujeto=sujeto)
 
 
 
@@ -190,14 +199,17 @@ async def obtener_mesa(mesa_id: uuid.UUID, service: MesaServiceDep):
 @router.patch(
     "/{mesa_id}",
     response_model=MesaRespuesta,
-    dependencies=[Depends(requerir_permiso("mesas:abrir", nivel_minimo="declarada"))],
 )
 async def actualizar_mesa(
     mesa_id: uuid.UUID,
     datos: MesaActualizar,
     service: MesaServiceDep,
+    sujeto: Annotated[
+        SujetoAutenticadoContexto,
+        Depends(requerir_permiso("mesas:abrir", nivel_minimo="declarada")),
+    ],
 ):
-    return await service.actualizar_mesa(mesa_id, datos)
+    return await service.actualizar_mesa(mesa_id, datos, sujeto=sujeto)
 
 
 @router.get("/{mesa_id}/submesas", response_model=list[MesaRespuesta])

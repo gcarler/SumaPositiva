@@ -147,6 +147,10 @@ La última columna explica la excepción pública o la condición adicional.
 | DELETE | /api/v1/instrumentos/{instrumento_id}/nodos/{nodo_id} | permiso:instrumentos:gestionar@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |
 | PUT | /api/v1/instrumentos/{instrumento_id}/nodos/{nodo_id} | permiso:instrumentos:gestionar@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |
 | GET | /api/v1/mesas | publico | Convocatorias y actas de deliberación pública; participantes nominales están protegidos. |
+| GET | /api/v1/mesas/agendas | publico | Consulta pública de cronograma de agendas de mesas de trabajo (EDIT-02). |
+| GET | /api/v1/mesas/agendas/{agenda_id} | publico | Consulta pública de detalle de mesa en agenda. |
+| POST | /api/v1/mesas/agendas | permiso:mesas:abrir@declarada | Programación de nueva mesa en agenda con auditoría forense inmutable. |
+| PATCH | /api/v1/mesas/agendas/{agenda_id} | permiso:mesas:abrir@declarada | Reprogramación y actualización de estado de agenda con auditoría forense inmutable. |
 | GET | /api/v1/mesas/geovisor | publico | Estado agregado y centroides territoriales de referencia; solo fotos aprobadas. |
 | POST | /api/v1/mesas/{mesa_id}/fotos | permiso:mesas:fotos:subir@declarada | Imagen saneada, autorización declarada y vínculo atómico; queda pendiente de moderación. |
 | GET | /api/v1/mesas/fotos/pendientes | permiso:testimonios:moderar@declarada | Cola de revisión institucional; no expone imágenes en lectura pública. |
@@ -154,6 +158,7 @@ La última columna explica la excepción pública o la condición adicional.
 | GET | /api/v1/mesas/fotos/{foto_id}/revision/archivo | permiso:testimonios:moderar@declarada | Archivo pendiente accesible solo para moderación institucional. |
 | POST | /api/v1/mesas | permiso:mesas:abrir@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |
 | GET | /api/v1/mesas/{mesa_id} | publico | Convocatorias y actas de deliberación pública; participantes nominales están protegidos. |
+| PATCH | /api/v1/mesas/{mesa_id} | permiso:mesas:abrir@declarada | Edición de metadatos de mesa con control de propiedad (403), restricción de campos sensibles (asistentes deriva de actas) y auditoría. |
 | GET | /api/v1/mesas/{mesa_id}/acta | publico | Convocatorias y actas de deliberación pública; participantes nominales están protegidos. |
 | GET | /api/v1/noticias | publico | Consulta pública; contiene solo artículos publicados. |
 | GET | /api/v1/noticias/{slug} | publico | Consulta por slug; borradores y archivadas responden 404. |
