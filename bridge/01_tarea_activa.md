@@ -1,67 +1,14 @@
-# TAREA ACTIVA — EDD (agy2)
+# TAREA ACTIVA — EDIT-11 (asignada a agy2; revisión: agy/coordinador)
 
-**Última actualización**: 2026-10-04  
-**Responsable activo**: agy2 (EDD - entrega completada)  
-**Auditor independiente**: EAF  
-**Tarea Activa**: `AUD-19` — Auditoría de coherencia Base de Datos ↔ Backend ↔ Frontend (solo lectura) — **ENTREGADA / LISTA PARA AUDITAR**  
-**Especificación**: `bridge/01_tarea_agy2_audit_db_backend_frontend.md`  
-**Última tarea cerrada**: `INV-MESAS / EDIT-10` (**CONFORME**) — Saneamiento de Base de Datos, Filtro de Jerarquía y Rediseño UX de Mesas de Trabajo (279/279 bun tests passed, 9/9 pytest passed, 0 errores en check)
+Contexto: cierre post-AUD-19 en `bridge/03_dictamen_revision.md` (commit 3d1648f). Pendientes de la auditoría:
 
+## Alcance
+1. **H-04**: retirar fallbacks/retornos simulados silenciosos del frontend en agenda, fuentes, indicadores, presupuesto y participación (`src/features/**/services/*-api.ts` y hooks). Regla: el backend es la fuente de verdad; ante error, propagar y mostrar toast; solo permitir lectura vacía si el backend responde vacío. Si un endpoint que el front llama no existe, implementarlo en backend (con test y matriz `docs/permisos-api.md`) o eliminar la llamada muerta.
+2. **H-06**: `GET /api/v1/politicas` (404) llamado desde `src/features/politicas/services/politicas-api.ts:109`: implementar el endpoint o corregir la ruta real.
+3. **Datos de prueba (SOLO propuesta, NO ejecutar)**: listar en un informe `bridge/` qué propuestas (227), instrumentos (128/337 nodos) y asignaciones presupuestales (14, 7 duplicadas) son de prueba, con el criterio de identificación y la consulta SQL. La purga la autoriza el usuario después de revisión.
 
-
-
-
-
----
-
-## Estado Global de Auditorías (AUD-01 .. AUD-19)
-
-| ID | Tarea / Alcance | Dictamen EAF / Estado | Commit de Entrega / Notas |
-|:---|:---|:---:|:---|
-| **AUD-01** | Compromisos PAS con persistencia real en backend | **CONFORME** | Absorbido y cerrado en AUD-13 y AUD-14. |
-| **AUD-02** | Mediciones de indicadores DNP con persistencia backend | **CONFORME** | Dictamen EAF en `03_dictamen_revision.md`. |
-| **AUD-03** | Rendición de cuentas C-150 conectada a aportes reales | **CONFORME** | Dictamen EAF en `03_dictamen_revision.md`. |
-| **AUD-04** | Control de fases DNP sin simulación y con reversión | **CONFORME** | Dictamen EAF en `03_dictamen_revision.md`. |
-| **AUD-05** | Gating estricto de transición y coherencia entre fases | **CONFORME** | Dictamen EAF en `03_dictamen_revision.md`. |
-| **AUD-06** | Transaccionalidad de escritura y consistencia MGA | **CONFORME** | Dictamen EAF en `03_dictamen_revision.md`. |
-| **AUD-07** | Cobertura y aislamiento de pruebas backend (369 passed) | **CONFORME CON OBS-13** | OBS-13 absorbida en AUD-11. |
-| **AUD-08** | Accesibilidad WCAG AA y axe-core real (0 violaciones) | **CONFORME** | Verificado en 3 pestañas y paneles. |
-| **AUD-09** | Suite E2E de flujos críticos en entorno aislado (8100/3100) | **CONFORME CON OBS-14** | 9 flujos reales aprobados. OBS-14 absorbida en AUD-11. |
-| **AUD-10** | Tipado estricto TypeScript: `no-explicit-any` en error | **CONFORME CON OBS-16** | 0 `any` en src/scripts. OBS-16 absorbida en AUD-16. |
-| **AUD-11 / 11b** | Higiene de repositorio, retiro de secretos y guardas demo | **CONFORME** | `32577a0`: Pytest 391/391 pass. OBS-17 pendiente antes de remoto. |
-| **AUD-12** | Centralización y blindaje de utilidades CSV seguras | **CONFORME** | `e1c9345`: Módulo único `src/shared/lib/csv.ts`, 227 bun tests. |
-| **AUD-13** | Integridad de compromisos PAS y saneamiento de BD | **CONFORME** | Eliminación de BPIN/metas sin validar. OBS-11/12 cerradas. |
-| **AUD-14** | Erradicación integral de PII y estadísticas sin fuente | **CONFORME** | `3e46067`: Retiro de PII en actores, fuentes limpias. |
-| **AUD-15** | Erradicación de mocks en stores de producción | **CONFORME** | `2c6af60`: Retiro de `MESAS_MOCK` y `AGENDA_INICIAL`. |
-| **AUD-16** | Endurecimiento ESLint (`no-unused-vars` error, `ban-ts-comment` error) y barrido de docs/ | **CONFORME CON OBS-19** | `9faa78e`: 0 errores, 0 warnings. OBS-19: exclusión de noticias/testimonios a retirar al cerrar Codex. |
-| **AUD-17** | Runbook de despliegue en producción, plan de consolidación git y corrección de contadores | **CONFORME CON OBS-20** | `b5f3ca6`: Subsanada OBS-20 haciendo condicional el paso de migraciones. |
-| **AUD-18** | Matriz pericial de evidencia de editabilidad/configurabilidad y backlog de huecos | **CONFORME** | `f41fd90`: Matriz con evidencia archivo:línea y tests para 10 capacidades, `bridge/04_backlog_editabilidad.md` y subsanación OBS-20 en runbook. |
-| **AUD-19** | Auditoría de coherencia Base de Datos ↔ Backend ↔ Frontend | **ENTREGADA / LISTA PARA AUDITAR** | Documentado en `02_entrega_agy2.md`. Matriz fullstack de coherencia, live verification contra `bd_csh`, catálogo de fallbacks y 12 hallazgos priorizados. |
-
----
-
-## Backlog de Editabilidad y Configurabilidad (EDIT-01 .. EDIT-05)
-
-| ID | Prioridad | Tarea / Alcance | Estado | Pruebas / Validación |
-|:---|:---:|:---|:---:|:---|
-| **EDIT-01b** | **ALTA** | Subsanación Pericial: Auditoría Forense y Restricción de Roles/Propiedad en Mesas y Agendas (OBS-21 / OBS-22) | **CONFORME** | Dictamen EAF en `03_dictamen_revision.md`. OBS-21 y OBS-22 cerradas exitosamente (`136f29d`). |
-| **EDIT-02** | **MEDIA** | Modelo Relacional y CRUD Dinámico de Agenda de Mesas | **CONFORME CON OBS-22** | `9b82221`. Subsanada OBS-22 (0041 en runbook, corrección a 36 mesas, auditoría forense en EDIT-01b). |
-| **EDIT-03b** | **CRÍTICA** | Subsanación de Sembrado y Erradicación de Datos Fabricados en Catálogo de Fuentes | **CONFORME** | Dictamen EAF en `03_dictamen_revision.md`. |
-| **EDIT-04** | **BAJA** | Endpoint de Actualización Controlada para Fichas Técnicas DNP | **CONFORME** | Dictamen EAF en `03_dictamen_revision.md`. |
-| **EDIT-05** | **BAJA** | Integración y Cierre de Módulos de Noticias y Testimonios (Codex) | **BLOQUEADA (CODEX)** | No tocar archivos de Codex. |
-| **EDIT-06** | **CRÍTICA** | Armonización Integral de Pruebas Backend y Paridad de Esquema Alembic | **CONFORME** | Dictamen EAF en `03_dictamen_revision.md`. 414/414 pytest passed, 0 diffs en alembic check, 248 bun test pass. |
-| **EDIT-07** | **ALTA** | Alineación de Rutas y Esquemas en Participación Multicanal | **CONFORME** | Dictamen EAF en `03_dictamen_revision.md`. Endpoints alineados (`/canal-web`, `/canal-mesas`, `/canal-escenarios`, `/escenarios-especiales`), DTOs normalizados, 259/259 bun tests pass, bun run check limpio. |
-| **EDIT-08** | **ALTA** | Cableado de Asistencia Pública Directa a PostgreSQL | **CONFORME** | Dictamen EAF en `03_dictamen_revision.md`. Planilla pública `/asistencia/[mesaId]` persistiendo en `mesas_trabajo.participantes_mesa` con resolución UUID/código, resiliencia offline en store/UI, 267 bun tests pass (8 nuevos en asistencia-api), 90 passed en backend pytest, bun run check 0 errores. |
-| **EDIT-09** | **MEDIA** | Modelo Relacional y Persistencia del Banco de Alternativas MGA | **CONFORME** | Dictamen EAF en `03_dictamen_revision.md`. Migración 0043 en polis_test, 5 endpoints REST, RBAC, auditoría forense inmutable, gating Fase 2, restricción PAS 409, 279 bun tests pass (8 nuevos en alternativas-api, store con anti-silent-fallback), 94 pytest pass, bun run check 0 errores, 0 diffs alembic check. |
-
-
-
-
----
-
-## Archivo de Entrega y Dictámenes
-- **Entrega de agy2**: `bridge/02_entrega_agy2.md`
-- **Dictámenes de EAF**: `bridge/03_dictamen_revision.md`
-- **Backlog de Editabilidad**: `bridge/04_backlog_editabilidad.md`
-- **Especificaciones de Tareas EDIT**: `bridge/01_tarea_agy2_edit_01.md` .. `09.md`
-
+## Reglas
+- Cero `git push`. No tocar archivos de Codex (noticias, testimonios, `backend/alembic/env.py`, `backend/app/api/router.py`, `panel-store.ts`, `contenido-view.tsx`). `git add` de archivos concretos, nunca `-A`.
+- NO tocar `autenticacion.usuarios` ni ejecutar DELETE en `bd_csh`.
+- Gates: `bun run check`, `bun test`, pytest de los módulos afectados + `test_access_policy.py`, `alembic check` en `polis_test`, `bun run build` + `systemctl restart polis-frontend polis-backend`.
+- Commits atómicos por hallazgo. Al terminar, escribir resultado en `bridge/02_resultado_agy2.md` (evidencia: comandos y salidas) y avisar a `agy`.
