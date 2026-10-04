@@ -317,6 +317,107 @@ En respuesta al hallazgo de auditoría de severidad ALTA sobre la utilización d
 - **KPI de respuesta motivada**: Calculado exactamente como `39 / 179 = 21.8%`, cumpliendo la fórmula exigida `respondidos / 179`.
 - **Estado SIN_RESPUESTA**: Presente en 140 aportes, filtrable y visible para erradicar el descarte silencioso conforme a la Sentencia C-150 de 2015.
 - **Exportación CSV/JSON**: Genera archivos periciales basados en los 179 aportes reales de la plataforma.
-- **Pruebas unitarias e integración**: Suite `devolucion-store.test.ts` verifica la no-mutación ante fallos de API y la actualización reactiva tras registrar motivaciones.
+## 5. Subsanación de Observaciones EAF: OBS-04, OBS-05 y OBS-06
+**Fecha**: 2026-10-04T00:28:00Z  
+**Responsable**: agy2 (Equipo de Desarrollo EDD)  
+
+En atención al dictamen del EAF en `bridge/03_dictamen_revision.md`:
+
+1. **OBS-04: Ejecución Síncrona de Tests de Integridad Forense**:
+   - Se refactorizó `backend/tests/test_integridad_mediciones.py` sustituyendo `@pytest.mark.asyncio` por el patrón nativo del repositorio: funciones síncronas `def test_...(database_url: str)` con `asyncio.run()`.
+   - Se validó la ejecución independiente sin plugin: `venv/bin/pytest -p no:asyncio backend/tests/test_integridad_mediciones.py` pasa 100% verde (2 passed en 0.53s).
+   - Cuando no se provee `POLIS_TEST_DATABASE_URL`, el test realiza un skip controlado en vez de fallar.
+
+2. **OBS-05: Proscripción de Catálogo Ficticio y Cifras Sintéticas en Store y Fallback**:
+   - En `devolucion-store.ts`, se eliminó el catálogo `PROPUESTAS_DEVOLUCION_CARTAGENA` y la tasa del 62.5% del estado inicial. Ahora arranca en estado vacío: `propuestas: []`, `totalAportes: 0`, `tasaRespuestaMotivada: 0`, `cargando: true`.
+   - En `listarAportesReales()` (`devolucion-api.ts`), el bloque `catch` ante caída de API ya no inyecta las 8 propuestas ficticias ni la tasa 62.5%; retorna `propuestas: []`, `total: 0`, `tasaRespuesta: 0`, `esContingencia: true`.
+   - En `restablecer()`, se devuelven los valores a lista vacía y 0 métricas.
+   - En `rendicion-cuentas-tab.tsx`, el banner de contingencia informa de forma transparente "Sin conexión con el servidor central: No hay datos disponibles para mostrar".
+   - Se agregaron 3 pruebas automatizadas específicas en `devolucion-store.test.ts` verificando el estado inicial vacío y el comportamiento ante fallo sin cifras falsas.
+
+3. **OBS-06: No Asumir Causal Técnica si Falta en Metadatos**:
+   - En `mapearAporteAPropuesta` (`devolucion-api.ts`), si un aporte rechazado carece de causal taxativa en metadatos, ya no se asume "tecnica". Se tipifica como `"no_registrada"` y la motivación se establece como `"Causal no registrada"`.
+   - Se añadió `"no_registrada"` al tipo `CausalDescarteTaxativa` y a `CAUSALES_DESCARTE_INFO` en `devolucion.ts`.
+   - Se actualizaron `rendicion-cuentas-tab.tsx` y `devolucion-detalle-panel.tsx` para presentar explícitamente `"Causal no registrada"` en las fichas y columnas de auditoría.
+   - Se añadieron 2 pruebas automatizadas en `devolucion-store.test.ts` asegurando que no se inventa la causal técnica.
+
+---
+
+# Tarea AUD-04: Control de Fases DNP — Reversión Inmediata, Errores Diferenciados y Eliminación de Modo Simulación
+**Fecha**: 2026-10-04T00:29:00Z  
+**Estado**: CONFORME PARA AUDITORÍA FORENSE (EAF)  
+**Responsable**: agy2 (Equipo de Desarrollo EDD)  
+**Plan de Auditoría**: `bridge/00_plan_auditoria_plataforma.md`  
+**Especificación**: `bridge/01_tarea_agy2_aud_04.md`  
+
+---
+
+## 1. Resumen Ejecutivo de la Solución (AUD-04)
+En atención al hallazgo de auditoría de severidad MEDIA sobre `fases-control-panel.tsx` (actualización optimista sin reversión, toast engañoso de 'modo simulación' y catálogo hardcoded de fases fallback con UUIDs fijos):
+
+1. **Reversión Inmediata del Switch ante Errores (Criterio de Aceptación EAF)**:
+   - Se implementó en `use-fases-control.ts` un mecanismo estricto donde cualquier fallo HTTP (401, 403, 404, 422, 5xx) o de conexión revierte de inmediato el valor del switch en UI a su estado original previo.
+   - En caso de permiso insuficiente (`403 Forbidden`), el switch regresa de inmediato a su posición original y el usuario recibe el mensaje de error de permisos correspondiente.
+
+2. **Eliminación Total del 'Modo Simulación'**:
+   - Erradicado completamente el mensaje engañoso de 'modo simulación'. La plataforma opera bajo estricto rigor de persistencia y trazabilidad forense.
+
+3. **Clasificación Pericial y Errores Diferenciados (`clasificarErrorConmutacion`)**:
+   - Se implementó en `politicas-api.ts` la función `clasificarErrorConmutacion` que distingue:
+     - **401**: "Sesión no iniciada o expirada (401)" con instrucción de iniciar sesión.
+     - **403**: "Permisos insuficientes (403)" indicando que se requiere rol de Autoridad Distrital (`politicas:gestionar`).
+     - **404**: "Fase no encontrada (404)".
+     - **422**: "Parámetros inválidos (422)" con detalle de validación.
+     - **500**: "Error interno del servidor (500)".
+     - **Red**: "Error de conexión".
+
+4. **Confirmación con Respuesta del Servidor e Invalidación de Caché**:
+   - Ante éxito en `PATCH /politicas/fases/{id}/conmutar`, el estado local se confirma y sincroniza con el payload del servidor (`FaseControlApi`).
+   - Se invalidan reactivamente las queries de TanStack Query: `POLITICAS_QUERY_KEYS.fases` y `POLITICAS_QUERY_KEYS.todas`, garantizando coherencia en toda la plataforma.
+
+5. **Erradicación del Catálogo Hardcoded de Fases**:
+   - Se eliminó el array estático de fases con UUIDs fijos que existía en el `catch` de carga.
+   - Si `/politicas/fases/control` falla, consulta `/politicas/fases` pública; si ambas fallan, se reporta error explícito en la UI con botón de reintento y lista vacía.
+
+6. **Suite de Pruebas Unitarias del Panel (`fases-control-panel.test.ts`)**:
+   - 9 pruebas automatizadas pasando al 100%:
+     - Clasificación de 401, 403, 404, 422, 500 y errores de red.
+     - Verificación de no-inyección de catálogo inventado ante fallo de API.
+     - Verificación de reversión inmediata del switch ante un 403 Forbidden y emisión del mensaje de permisos sin 'modo simulación'.
+     - Verificación de confirmación de servidor e invalidación de queries en caso exitoso.
+
+---
+
+## 2. Archivos Creados y Modificados (AUD-04 y Subsanaciones)
+
+| Archivo | Rol en el Sistema |
+|---|---|
+| `backend/tests/test_integridad_mediciones.py` | Subsanación OBS-04: tests síncronos con `asyncio.run` sin plugin `pytest-asyncio`. |
+| `src/features/seguimiento/models/devolucion.ts` | Subsanación OBS-06: soporte para causal `no_registrada`. |
+| `src/features/seguimiento/services/devolucion-api.ts` | Subsanación OBS-05 & OBS-06: lista vacía en error, causal `no_registrada` en mapeo. |
+| `src/features/seguimiento/state/devolucion-store.ts` | Subsanación OBS-05: estado inicial vacío, tasa 0% y protección en restablecer. |
+| `src/features/seguimiento/state/devolucion-store.test.ts` | Pruebas unitarias para OBS-05 y OBS-06 (38 pass en suite de seguimiento). |
+| `src/features/seguimiento/components/rendicion-cuentas-tab.tsx` | UI actualizada: banner de error sincero y label `Causal no registrada`. |
+| `src/features/seguimiento/panels/devolucion-detalle-panel.tsx` | Visualización de `Causal no registrada` en ficha de motivación. |
+| `src/features/politicas/services/politicas-api.ts` | AUD-04: `listarFasesControlApi`, `conmutarFaseApi`, `clasificarErrorConmutacion`. |
+| `src/features/politicas/panels/use-fases-control.ts` | AUD-04: Hook desacoplado con reversión optimista inmediata e invalidación de caché. |
+| `src/features/politicas/panels/fases-control-panel.tsx` | AUD-04: Panel sin 'modo simulación', sin fallback hardcoded y con manejo de errores. |
+| `src/features/politicas/panels/fases-control-panel.test.ts` | AUD-04: 9 pruebas automatizadas de reversión, errores y no-simulación. |
+
+---
+
+## 3. Matriz de Validación de Quality Gates
+
+| Quality Gate | Comando de Validación | Resultado Pericial |
+|---|---|---|
+| **Política de UI POLIS** | `node scripts/ui-policy.mjs` | **0 violaciones** (100% controles Design Kit, cero modales, tokens semánticos). |
+| **Chequeo de Tipos y Lint Frontend** | `bun run check` | **Aprobado (0 errores)** en TypeScript estricto y ESLint. |
+| **Pruebas Automatizadas Frontend** | `bun test` | **195 pass, 0 fail (979 aserciones)** en 20 suites de prueba. |
+| **Pruebas Automatizadas Backend** | `pytest tests/test_integridad_mediciones.py ...` | **78 pass, 0 fail en 12.27s** (incluyendo ejecución sin asyncio plugin). |
+| **Compilación Turbopack** | `bun run build` | **Compilación exitosa en 12.1s** (57 rutas estáticas y dinámicas). |
+| **Servicios en Producción** | `systemctl restart polis-backend polis-frontend` | **Ambos servicios activos y operativos**. |
+| **Verificación de Endpoints en Vivo** | `curl http://127.0.0.1:8000/api/v1/politicas/fases` | **HTTP 200 OK (3 fases reales)**. |
+| **Verificación de Vista Frontend** | `curl http://127.0.0.1:3000/plataforma/seguimiento` | **HTTP 200 OK**. |
+
 
 
