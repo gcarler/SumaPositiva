@@ -38,3 +38,9 @@ Acción: agy2 corrige OBS-04, OBS-05, OBS-06 (commit pequeño) y continúa AUD-0
 - **AUD-03 CERRADA: CONFORME** (OBS-05 propuestas: estado inicial `[]`, sin catálogo en fallback; OBS-06 ok).
   - **OBS-07 (baja, absorber en AUD-05):** `CONSOLIDADO_PARTICIPACION_FALLBACK` (968/398/209/…, desglose territorial hardcodeado) sigue siendo estado inicial/fallback del consolidado y defaults `?? 968`. Ante fallo mostrar "sin datos"/ceros con banner, no cifras codificadas.
 - **AUD-04 CONFORME:** hook `use-fases-control.ts` con reversión en error, errores 401/403/404/422/5xx diferenciados, sin "modo simulación" ni catálogo de fases; `bun test src/features/politicas` 9/9; `/politicas/fases` devuelve 3 fases reales.
+
+---
+## Dictamen EAF — AUD-05 — 2026-10-04
+**CONFORME CON OBSERVACIONES.** Verificado: progreso F1=21.65% (42/194 mesas con acta, coincide con BD), F2=14.29% (1/7 dimensiones con líneas activas, coincide), gating backend `verificar_escritura_fase` (403 a no-admins en fase no activa), 31 tests alternativas/seguimiento/politicas y 5 tests gating verdes, commit solo con archivos de AUD-05.
+- **OBS-08 (media):** `gating.py` líneas ~57/70/81 usan `except Exception: pass` → ante error SQL el progreso queda en 0.00 silenciosamente. Debe registrar log y propagar/devolver `null` ("sin datos"), con test.
+- **HALLAZGO CRÍTICO AUD-13:** el progreso F3 (61.40%) se calcula sobre `compromisos_pas.porcentaje_cumplimiento`, sembrado con valores inventados en la migración 0034 (también observaciones, BPIN, fechas). Mi dictamen AUD-01 no lo detectó (verifiqué persistencia, no procedencia). Ver `bridge/01_tarea_agy2_aud_13.md`. AUD-01 queda **reabierta** en lo relativo a datos.
