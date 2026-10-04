@@ -1,9 +1,11 @@
 # TAREA ACTIVA — EDD (agy2)
 
 **Última actualización**: 2026-10-04  
-**Responsable activo**: agy2 (EDD)  
+**Responsable activo**: agy2 (EDD - en reposo)  
 **Auditor independiente**: EAF  
-**Tarea en curso / entregada**: `EDIT-06` (ENTREGADA / LISTA PARA AUDITAR) — Armonización Integral de Pruebas Backend y Paridad de Esquema Alembic (414/414 pytest passed, 0 fallos)
+**Estado General**: **AUDITORÍA INTEGRAL Y BACKLOG DE EDITABILIDAD COMPLETADOS (100% CONFORME)**  
+**Tarea cerrada**: `EDIT-06` (**CONFORME**) — Armonización Integral de Pruebas Backend y Paridad de Esquema Alembic (414/414 pytest passed, 0 fallos)
+
 
 ---
 
@@ -41,7 +43,8 @@
 | **EDIT-03b** | **CRÍTICA** | Subsanación de Sembrado y Erradicación de Datos Fabricados en Catálogo de Fuentes | **CONFORME** | Dictamen EAF en `03_dictamen_revision.md`. |
 | **EDIT-04** | **BAJA** | Endpoint de Actualización Controlada para Fichas Técnicas DNP | **CONFORME** | Dictamen EAF en `03_dictamen_revision.md`. |
 | **EDIT-05** | **BAJA** | Integración y Cierre de Módulos de Noticias y Testimonios (Codex) | **BLOQUEADA (CODEX)** | No tocar archivos de Codex. |
-| **EDIT-06** | **CRÍTICA** | Armonización Integral de Pruebas Backend y Paridad de Esquema Alembic | **LISTA PARA AUDITAR** | 414/414 pytest passed, 0 diffs en alembic check, 248 bun test pass. |
+| **EDIT-06** | **CRÍTICA** | Armonización Integral de Pruebas Backend y Paridad de Esquema Alembic | **CONFORME** | Dictamen EAF en `03_dictamen_revision.md`. 414/414 pytest passed, 0 diffs en alembic check, 248 bun test pass. |
+
 
 ---
 

@@ -155,3 +155,16 @@ Verificado de forma forense e independiente:
    - Mutaciones de agenda (`POST /api/v1/mesas/agendas` y `PATCH /api/v1/mesas/agendas/{id}`) generan eventos de auditoría institucional inmutable.
    - `docs/permisos-api.md` documenta rigurosamente todos los métodos PATCH/POST de mesas y agendas sin perturbar el trabajo paralelo de Codex.
 3. Pruebas: `backend/tests/test_mesas_seguridad_auditoria.py` con 6/6 passed; `bun test` 248 passed; gates limpios.
+
+## Dictamen EDIT-06 — CONFORME (commit 52b90ac)
+Verificado de forma forense e independiente:
+1. Permisos canónicos: `"fuentes:leer"` y `"fuentes:gestionar"` integrados formalmente en `backend/app/modules/identidad/catalogo.py:PERMISOS`, eliminando la excepción `HTTP 422: La lista contiene permisos desconocidos`. Verificado en `test_identidad_completa.py`: 24/24 passed.
+2. Paridad rigurosa DDL ORM / Alembic: Alineación de longitudes de campos VARCHAR (`entidad`, `nombre_fuente`, `tipo`, `ambito`, `periodicidad`, `estado_entrega`, `archivo_adjunto_url`) e índices sobre el esquema `auditoria` en `backend/app/modules/fuentes/models.py`. Verificado en `test_database_integration.py` (`alembic check`): 0 diffs detectados, 1/1 passed.
+3. Aserción de avance dinámico: Actualizada en `backend/tests/test_politicas_y_geodatos.py` validando que `progreso_porcentaje >= Decimal("0.00")` computado en tiempo real desde la BD en lugar de asumir semillas obsoletas. Verificado: 5/5 passed.
+4. Salvaguarda de acceso a persistencia: Inyección de `sujeto: SujetoAutenticadoContexto` antecede a dependencias de servicio en enrutadores de mesas, fuentes e indicadores, garantizando que solicitudes no autorizadas sean rechazadas con 401/403 antes de tocar la sesión de base de datos. Verificado en `test_access_policy.py`: 86/86 passed.
+5. Cobertura global backend en `polis_test`: **414 passed in 206s (0:03:26), 0 fallos, 0 omitidos**.
+6. Quality gates frontend: `bun run check` (UI policy, TypeScript estricto, ESLint) con **0 errores / 0 advertencias**; `bun test` con **248 passed (0 fail, 1121 expect calls)**; `bun run build` exitoso (57 rutas compiladas con Turbopack).
+7. Suite E2E aislada (`bun run check:e2e`): **9/9 flujos aprobados con persistencia verificada tras recarga** y **0 violaciones serias/críticas axe-core** en 8 vistas de plataforma.
+8. Servicios en vivo: backend `/health/live` y `/health/ready` ambos OK; frontend responde 200 OK.
+9. Respeto estricto del perímetro de trabajo: Cero modificaciones a los módulos de Codex (`testimonios`, `noticias`); cero operaciones sobre `bd_csh`; cero commits con credenciales; cero operaciones remotas.
+
