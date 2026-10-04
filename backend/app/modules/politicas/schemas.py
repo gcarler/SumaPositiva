@@ -203,6 +203,14 @@ class FasePoliticaResumen(BaseModel):
 
 
 class PoliticaPublicaRead(BaseModel):
+    """Representación canónica institucional de la Política Pública de Seguridad Humana de Cartagena (Decreto 037/2026).
+    
+    Los atributos institucionales (título, resumen, problema, sector, cobertura y fechas) corresponden
+    a la definición canónica distrital oficial. Las fases metodológicas DNP y líneas estratégicas
+    se hidratan dinámicamente desde motor_politicas.fases_politica y motor_politicas.lineas_estrategicas,
+    mientras que el número de participantes se calcula dinámicamente desde las fuentes de participación multicanal.
+    """
+
     id: str = "pol-001"
     slug: str = "seguridad-humana-cartagena"
     titulo: str = "Política Pública de Seguridad Humana Integral de Cartagena 2026–2036"
@@ -230,7 +238,10 @@ class PoliticaPublicaRead(BaseModel):
     cobertura: str = "Distrito de Cartagena: 3 Localidades urbanas, 11 corregimientos y zonas insulares"
     fecha_inicio: str = Field(default="2026-02-01", alias="fechaInicio")
     fecha_cierre: str = Field(default="2026-12-31", alias="fechaCierre")
-    participantes: int = 0
+    participantes: int | None = Field(
+        default=None,
+        description="Conteo consolidado de participantes únicos identificados en la formulación, o None si no está disponible",
+    )
     fases: list[FasePoliticaResumen] = Field(default_factory=list)
     model_config = ConfigDict(populate_by_name=True)
 

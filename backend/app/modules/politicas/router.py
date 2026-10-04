@@ -1,7 +1,7 @@
 import uuid
 
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy import func, select
+from sqlalchemy import func, select, text
 
 from app.core.database import SessionDependency
 from app.core.transactions import transaction
@@ -32,12 +32,54 @@ router = APIRouter(prefix="/politicas", tags=["motor-politicas"])
 @router.get(
     "",
     response_model=list[PoliticaPublicaRead],
-    summary="Listar políticas públicas distritales",
-    description="Retorna el catálogo de políticas públicas distritales con sus fases canónicas y progreso dinámico real.",
+    summary="Listar políticas públicas distritales (Catálogo Canónico Oficial)",
+    description=(
+        "Retorna la Política Pública de Seguridad Humana Integral de Cartagena de Indias "
+        "2026–2036 (Decreto 037 de 2026). Sus atributos identitarios institucionales son canónicos, "
+        "mientras que sus fases metodológicas DNP y líneas estratégicas son hidratadas dinámicamente "
+        "desde motor_politicas, su progreso porcentual es calculado en tiempo real y sus participantes "
+        "únicos son computados desde las fuentes de participación multicanal."
+    ),
 )
 async def listar_politicas(
     session: SessionDependency,
 ) -> list[PoliticaPublicaRead]:
+    """Catálogo canónico oficial de la Política Pública de Cartagena de Indias.
+    
+    Declara explícitamente los atributos identitarios de pol-001 (Decreto 037 de 2026),
+    hidratando dinámicamente fases metodológicas DNP, líneas estratégicas, avance ponderado
+    y el número consolidado de participantes únicos deduplicados entre canales.
+    """
+    # 1. Cómputo dinámico de participantes únicos consolidados (Canales 1, 2 y formularios)
+    sql_participantes = text("""
+        SELECT COUNT(DISTINCT id_identificado) FROM (
+            SELECT CAST(sesion_id AS text) AS id_identificado 
+            FROM participacion_ciudadana.propuestas_ciudadanas 
+            WHERE sesion_id IS NOT NULL AND activo = true
+            UNION
+            SELECT CAST(sujeto_id AS text) 
+            FROM participacion_ciudadana.apoyos_propuestas 
+            WHERE sujeto_id IS NOT NULL
+            UNION
+            SELECT CAST(sujeto_id AS text) 
+            FROM participacion_ciudadana.respuestas_formulario 
+            WHERE sujeto_id IS NOT NULL
+            UNION
+            SELECT CAST(sujeto_id AS text) 
+            FROM mesas_trabajo.participantes_mesa 
+            WHERE sujeto_id IS NOT NULL
+            UNION
+            SELECT CAST(usuario_id AS text) 
+            FROM mesas_trabajo.participantes_mesa 
+            WHERE usuario_id IS NOT NULL
+        ) unificados;
+    """)
+    try:
+        conteo_raw = (await session.execute(sql_participantes)).scalar()
+        total_participantes: int | None = int(conteo_raw) if conteo_raw is not None else None
+    except Exception:
+        total_participantes = None
+
     progresos = await calcular_progreso_real_fases(session)
     stmt_fases = select(FasePolitica).order_by(FasePolitica.orden)
     result_fases = await session.execute(stmt_fases)
@@ -103,6 +145,7 @@ async def listar_politicas(
         id="pol-001",
         slug="seguridad-humana-cartagena",
         titulo="Política Pública de Seguridad Humana Integral de Cartagena 2026–2036",
+        participantes=total_participantes,
         fases=fases_resumen,
     )
     return [politica]
