@@ -1,6 +1,6 @@
 "use client";
 // Fixture exclusiva de pruebas y Storybook. No importar desde código de producto.
-import { FORMULARIOS_MOCK, RESPUESTAS_MOCK } from "./formularios.mock";
+import { FORMULARIOS_MOCK, RESPUESTAS_MOCK } from "./formularios.fixture";
 import { generarSlug, urlFormulario } from "../services/formulario-url";
 import { v4 as uuid } from "uuid";
 import { create } from "zustand";

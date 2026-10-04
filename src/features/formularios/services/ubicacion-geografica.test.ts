@@ -3,7 +3,7 @@ import { formularioVacio, type Formulario } from "../models/formulario";
 import { validarPregunta, respuestasEfectivas } from "./formulario-engine";
 import { generarGeoJson, leerPunto } from "./ubicacion-geografica";
 import { generarCsv } from "./formulario-analitica";
-import { useFormulariosDemoStore as useFormulariosStore } from "../data/formularios-demo-store";
+import { useFormulariosDemoStore as useFormulariosStore } from "../__fixtures__/formularios-demo-store";
 const p = {
   id: "punto",
   tipo: "ubicacion_geografica" as const,

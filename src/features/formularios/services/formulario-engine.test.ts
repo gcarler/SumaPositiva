@@ -17,7 +17,7 @@ import {
   mezclar,
 } from "./formulario-engine";
 import { calcularAnalitica, generarCsv } from "./formulario-analitica";
-import { useFormulariosDemoStore as useFormulariosStore } from "../data/formularios-demo-store";
+import { useFormulariosDemoStore as useFormulariosStore } from "../__fixtures__/formularios-demo-store";
 import { BARRIOS_CARTAGENA } from "@/features/geovisor/data/barrios.data";
 const pregunta = (
   tipo: TipoPregunta = "texto_corto",

@@ -1,9 +1,6 @@
 "use client";
 
 import { create } from "zustand";
-import { MESAS_MOCK } from "@/features/mesas/data/mesas.mock";
-import { AGENDA_MESAS } from "@/features/mesas/data/agenda.data";
-import { CONTENIDO_MESAS } from "@/features/mesas/data/agenda-contenido.data";
 import type {
   ArbolKind,
   EstadoMesa,
@@ -59,6 +56,12 @@ export interface SubMesaInput {
 
 interface MesasState {
   mesas: MesaDeTrabajo[];
+  cargando: boolean;
+  error: string | null;
+
+  setMesas: (mesas: MesaDeTrabajo[]) => void;
+  setCargando: (cargando: boolean) => void;
+  setError: (error: string | null) => void;
 
   /* Mesa */
   crearMesa: (input: MesaInput) => MesaDeTrabajo;
@@ -204,39 +207,14 @@ let subMesaSeq = 1000;
 const ARBOL_PROBLEMAS_VACIO = { problemaCentral: "", causas: [], efectos: [] };
 const ARBOL_SOLUCIONES_VACIO: ArbolSoluciones = { objetivoCentral: "", medios: [], fines: [] };
 
-const MESAS_AGENDA_INICIAL: MesaDeTrabajo[] = AGENDA_MESAS.map((m) => ({
-  id: m.id,
-  nombre: m.nombre,
-  fecha: m.fecha,
-  lugar: m.lugar,
-  entidad: m.responsable ?? "Secretaría de Planeación Distrital",
-  facilitador: "",
-  totalAsistentes: 0,
-  horario: `${m.horaInicio} – ${m.horaFin}`,
-  descripcion: m.observaciones ?? "",
-  dimensionOnu: m.dimensionesONU[0] ?? "",
-  tipoMesa: m.tipo,
-  codigoOficial: m.id.toUpperCase(),
-  estado: (m.estado === "realizada"
-    ? "cerrada"
-    : m.estado === "en_curso"
-    ? "en_curso"
-    : m.estado === "cancelada"
-    ? "cancelada"
-    : "programada") satisfies EstadoMesa,
-  plenaria: { acuerdos: "" },
-  submesas: (CONTENIDO_MESAS[m.id]?.submesasSugeridas ?? []).map((ss, idx) => ({
-    id: `${m.id}-sm-${idx + 1}`,
-    nombre: ss.nombre,
-    tema: ss.tema,
-    participantes: ss.participantes,
-    arbolProblemas: ARBOL_PROBLEMAS_VACIO,
-    arbolSoluciones: ARBOL_SOLUCIONES_VACIO,
-  })),
-}));
-
 export const useMesasStore = create<MesasState>((set, get) => ({
-  mesas: [...MESAS_AGENDA_INICIAL, ...MESAS_MOCK],
+  mesas: [],
+  cargando: false,
+  error: null,
+
+  setMesas: (mesas) => set({ mesas, cargando: false, error: null }),
+  setCargando: (cargando) => set({ cargando }),
+  setError: (error) => set({ error, cargando: false }),
 
 
   /* ---------- Mesa ---------- */

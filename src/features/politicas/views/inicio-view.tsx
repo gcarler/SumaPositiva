@@ -21,13 +21,10 @@ import { StatusBadge, type StatusTone } from "@/shared/ui/status-badge";
 import { Progress } from "@/shared/ui/progress";
 import { useNavigationStore } from "@/core/navigation/navigation-store";
 import { usePanels } from "@/core/panels/panel-store";
-import {
-  useNoticiasStore,
-  noticiasPublicadasOrdenadas,
-} from "@/features/noticias/state/noticias-store";
-import { useTestimoniosStore } from "@/features/testimonios/state/testimonios-store";
-import { usePoliticaPrincipal } from "@/features/politicas/state/politicas-store";
-import { totalAportes } from "@/features/politicas/models/politicas";
+import { noticiasPublicadasOrdenadas } from "@/features/noticias/state/noticias-store";
+import { useNoticiasPublicas } from "@/features/noticias/services/use-noticias-queries";
+import { useTestimoniosPublicos } from "@/features/testimonios/services/use-testimonios-queries";
+import { useFases, useLineas } from "@/features/politicas/services/use-politicas-queries";
 import { DimensionesGrid } from "@/features/politicas/components/dimensiones-grid";
 import { EnrutadorCiudadanoInteligente } from "@/features/politicas/components/enrutador-ciudadano-inteligente";
 import { FlujoInversionGobernanza } from "@/features/politicas/components/flujo-inversion-gobernanza";
@@ -68,28 +65,33 @@ export function InicioView() {
   const reducedMotion = useReducedMotion();
   const setVista = useNavigationStore((s) => s.setVista);
   const { openPanel } = usePanels();
-  const politica = usePoliticaPrincipal();
-  const noticias = useNoticiasStore((s) => s.noticias);
-  const testimonios = useTestimoniosStore((s) => s.testimonios);
+  const fasesQuery = useFases();
+  const lineasQuery = useLineas();
+  const fases = fasesQuery.data ?? [];
+  const lineas = lineasQuery.data ?? [];
+  const noticiasQuery = useNoticiasPublicas();
+  const testimoniosQuery = useTestimoniosPublicos({ destacados: true });
+  const noticias = noticiasQuery.data ?? [];
+  const testimonios = testimoniosQuery.data ?? [];
 
   const ultimasNoticias = noticiasPublicadasOrdenadas(noticias).slice(0, 3);
-  const testimoniosDestacados = testimonios
-    .filter((t) => t.destacado)
-    .slice(0, 2);
+  const testimoniosDestacados = testimonios.map((t) => ({
+    ...t,
+    nombre: t.nombre_autor ?? t.nombre,
+    texto: t.relato ?? t.texto,
+    foto: t.url_foto ?? t.foto,
+    verificado: true,
+  })).slice(0, 2);
 
-  if (!politica) {
-    return null;
-  }
-
-  /* Métricas reales — solo datos verificables */
-  const totalLineas = politica.fases.reduce((acc, f) => acc + f.lineas.length, 0);
-  const fasesCompletadas = politica.fases.filter(
-    (f) => f.estado === "completada"
+  /* Métricas reales — datos trazables del backend */
+  const totalLineas = lineas.length;
+  const fasesCompletadas = fases.filter(
+    (f) => f.estado === "completada" || f.estado === "cerrada"
   ).length;
 
   const stats = [
     { valor: totalLineas.toString(), label: "Líneas estratégicas" },
-    { valor: `${fasesCompletadas} de ${politica.fases.length}`, label: "Fases DNP en curso" },
+    { valor: `${fasesCompletadas} de ${fases.length || 3}`, label: "Fases DNP en curso" },
     { valor: "2026–2036", label: "Vigencia de la política" },
     { valor: "3 + Insular", label: "Localidades cubiertas" },
   ];
@@ -252,16 +254,21 @@ export function InicioView() {
           </div>
 
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {politica.fases.map((fase) => {
+            {fases.map((fase) => {
               let tone: StatusTone = "neutral";
               let labelEstado = "Próxima";
-              if (fase.estado === "completada") {
+              if (fase.estado === "completada" || fase.estado === "cerrada") {
                 tone = "success";
                 labelEstado = "Completada";
               } else if (fase.estado === "activa") {
                 tone = "warning";
                 labelEstado = "En curso";
               }
+
+              const progreso =
+                fase.progreso_porcentaje != null
+                  ? Number(fase.progreso_porcentaje)
+                  : 0;
 
               return (
                 <div
@@ -288,10 +295,12 @@ export function InicioView() {
                     <div className="mb-2 flex items-center justify-between text-xs text-[var(--text-secondary)]">
                       <span className="font-medium">Progreso</span>
                       <span className="font-semibold tabular text-[var(--text-primary)]">
-                        {fase.progreso}%
+                        {fase.progreso_porcentaje != null
+                          ? `${fase.progreso_porcentaje}%`
+                          : "Sin medición"}
                       </span>
                     </div>
-                    <Progress aria-label={`Progreso de ${fase.nombre}`} value={fase.progreso} />
+                    <Progress aria-label={`Progreso de ${fase.nombre}`} value={progreso} />
                   </div>
                 </div>
               );

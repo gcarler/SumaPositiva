@@ -154,18 +154,13 @@ export async function actualizarAcuerdosPlenaria(
         acuerdos: [{ detalle: acuerdos }],
       },
     });
-    return normalizarMesaBackend(resp);
-  } catch {
+    return await obtenerMesa(mesaId);
+  } catch (error) {
     const storeMesa = useMesasStore.getState().mesas.find((x) => x.id === mesaId);
     if (storeMesa) {
       return storeMesa;
     }
-    const m = MESAS_MOCK.find((x) => x.id === mesaId);
-    if (m) {
-      m.plenaria.acuerdos = acuerdos;
-      return m;
-    }
-    throw new Error("Mesa no encontrada");
+    throw error;
   }
 }
 
@@ -185,17 +180,12 @@ export async function actualizarInformeMesa(
       body: { metadatos: { informe } },
     });
     return normalizarMesaBackend(resp);
-  } catch {
+  } catch (error) {
     const storeMesa = useMesasStore.getState().mesas.find((x) => x.id === mesaId);
     if (storeMesa) {
       return storeMesa;
     }
-    const m = MESAS_MOCK.find((x) => x.id === mesaId);
-    if (m) {
-      m.informe = informe;
-      return m;
-    }
-    throw new Error("Mesa no encontrada");
+    throw error;
   }
 }
 
@@ -238,8 +228,8 @@ export async function listarSubmesas(mesaId: string): Promise<SubMesa[]> {
   try {
     return await apiFetch<SubMesa[]>(`/mesas/${mesaId}/submesas`);
   } catch {
-    const m = MESAS_MOCK.find((x) => x.id === mesaId);
-    return m ? m.submesas : [];
+    const storeMesa = useMesasStore.getState().mesas.find((x) => x.id === mesaId);
+    return storeMesa ? storeMesa.submesas : [];
   }
 }
 
@@ -310,17 +300,13 @@ export async function convertirAObjetivos(instrumentoId: string) {
   });
 }
 
-// Simulador fallback en memoria si FastAPI no está disponible
-import { MESAS_MOCK } from "@/features/mesas/data/mesas.mock";
-
 export async function fallbackListarMesas(): Promise<MesaDeTrabajo[]> {
   const storeMesas = useMesasStore.getState().mesas;
-  if (storeMesas && storeMesas.length > 0) return storeMesas;
-  return MESAS_MOCK;
+  return storeMesas || [];
 }
 
 export async function fallbackObtenerMesa(mesaId: string): Promise<MesaDeTrabajo> {
   const mesa = useMesasStore.getState().mesas.find((m) => m.id === mesaId);
   if (!mesa) throw new Error(`Mesa ${mesaId} no encontrada`);
-  return mesa; // retorna referencia viva del store
+  return mesa;
 }

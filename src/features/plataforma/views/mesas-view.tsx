@@ -67,17 +67,12 @@ export function MesasGestionView() {
   const { openPanel } = usePanels();
   const { data: mesasRemotas } = useMesas();
 
-  const mesas = mesasRemotas && mesasRemotas.length > 0 ? mesasRemotas : mesasStore;
+  const mesas = mesasRemotas ?? mesasStore;
 
-  // Sincronizar mesas remotas de backend en el store si no existen
+  // Sincronizar mesas remotas de backend en el store
   useEffect(() => {
-    if (mesasRemotas && mesasRemotas.length > 0) {
-      const state = useMesasStore.getState();
-      const idsExistentes = new Set(state.mesas.map((m) => m.id));
-      const nuevas = mesasRemotas.filter((m) => !idsExistentes.has(m.id));
-      if (nuevas.length > 0) {
-        useMesasStore.setState({ mesas: [...nuevas, ...state.mesas] });
-      }
+    if (mesasRemotas) {
+      useMesasStore.setState({ mesas: mesasRemotas });
     }
   }, [mesasRemotas]);
 

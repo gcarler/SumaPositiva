@@ -8,7 +8,7 @@ import {
   type Formulario,
 } from "@/features/formularios/models/formulario";
 import { leerPunto } from "@/features/formularios/services/ubicacion-geografica";
-import { useFormulariosDemoStore as useFormulariosStore } from "@/features/formularios/data/formularios-demo-store";
+import { useFormulariosDemoStore as useFormulariosStore } from "@/features/formularios/__fixtures__/formularios-demo-store";
 const form: Formulario = {
   ...formularioVacio(),
   id: "geografico",

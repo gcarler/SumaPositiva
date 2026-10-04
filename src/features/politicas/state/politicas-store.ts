@@ -2,7 +2,6 @@
 
 import { useMemo } from "react";
 import { create } from "zustand";
-import { POLITICAS_MOCK } from "@/features/politicas/data/politicas.mock";
 import type {
   Aporte,
   EstadoPolitica,
@@ -20,6 +19,7 @@ import type {
 
 interface PoliticasState {
   politicas: PoliticaPublica[];
+  setPoliticas: (politicas: PoliticaPublica[]) => void;
 
   /* Filtros de la vista explorar */
   sectorFiltro: Sector | "todos";
@@ -49,7 +49,8 @@ interface PoliticasState {
 let aporteSeq = 1000;
 
 export const usePoliticasStore = create<PoliticasState>((set) => ({
-  politicas: POLITICAS_MOCK,
+  politicas: [],
+  setPoliticas: (politicas) => set({ politicas }),
 
   sectorFiltro: "todos",
   estadoFiltro: "todos",

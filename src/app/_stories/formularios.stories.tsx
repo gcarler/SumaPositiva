@@ -1,7 +1,7 @@
 import {
   FORMULARIOS_MOCK,
   RESPUESTAS_MOCK,
-} from "@/features/formularios/data/formularios.mock";
+} from "@/features/formularios/__fixtures__/formularios.fixture";
 import { simularApiFormularios } from "./formularios-mock-api";
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { expect, userEvent, within, waitFor } from "storybook/test";

@@ -37,7 +37,9 @@ export function ParticipacionMulticanalPanel({ entryKey, props }: { entryKey: st
           </TabsList>
 
           <TabsContent value="consolidado" className="space-y-6 mt-0">
-            {loadingConsolidado ? <div className="text-sm text-[var(--text-secondary)]">Cargando...</div> : consolidado && (
+            {loadingConsolidado ? (
+              <div className="text-sm text-[var(--text-secondary)]">Cargando...</div>
+            ) : consolidado ? (
               <>
                 <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="p-4 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] text-center">
@@ -66,21 +68,21 @@ export function ParticipacionMulticanalPanel({ entryKey, props }: { entryKey: st
                   <div className="grid grid-cols-2 gap-4">
                     <div className="p-4 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] space-y-3">
                       <h4 className="text-xs font-medium text-[var(--text-primary)]">Por Género</h4>
-                      {Object.entries({ Mujeres: consolidado.desglose.mujeres, Hombres: consolidado.desglose.hombres, Otros: consolidado.desglose.otros }).map(([label, val]) => (
+                      {Object.entries({ Mujeres: consolidado.desglose?.mujeres ?? 0, Hombres: consolidado.desglose?.hombres ?? 0, Otros: consolidado.desglose?.otros ?? 0 }).map(([label, val]) => (
                         <div key={label} className="text-xs">
                           <div className="flex justify-between mb-1">
                             <span className="text-[var(--text-secondary)]">{label}</span>
                             <span className="text-[var(--text-primary)] font-medium">{val}</span>
                           </div>
                           <div className="w-full bg-[var(--surface-2)] rounded-full h-1.5">
-                            <div className="bg-[var(--info)] h-1.5 rounded-full" style={{ width: `${(val/consolidado.totalCartageneros)*100}%` }}></div>
+                            <div className="bg-[var(--info)] h-1.5 rounded-full" style={{ width: `${consolidado.totalCartageneros ? (val/consolidado.totalCartageneros)*100 : 0}%` }}></div>
                           </div>
                         </div>
                       ))}
                     </div>
                     <div className="p-4 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] space-y-3">
                       <h4 className="text-xs font-medium text-[var(--text-primary)]">Enfoque Diferencial</h4>
-                      {Object.entries(consolidado.desglose.enfoqueDiferencial).map(([label, val]) => (
+                      {Object.entries(consolidado.desglose?.enfoqueDiferencial ?? {}).map(([label, val]) => (
                         <div key={label} className="flex justify-between text-xs py-1 border-b border-[var(--border)] last:border-0">
                           <span className="text-[var(--text-secondary)]">{label}</span>
                           <span className="text-[var(--text-primary)] font-medium">{val}</span>
@@ -90,36 +92,44 @@ export function ParticipacionMulticanalPanel({ entryKey, props }: { entryKey: st
                   </div>
                 </section>
               </>
+            ) : (
+              <div className="text-sm text-[var(--text-secondary)] py-6 text-center">Sin registros consolidados de participación disponibles.</div>
             )}
           </TabsContent>
 
           <TabsContent value="web" className="space-y-6 mt-0">
-            {loadingWeb ? <div className="text-sm text-[var(--text-secondary)]">Cargando...</div> : web && (
+            {loadingWeb ? (
+              <div className="text-sm text-[var(--text-secondary)]">Cargando...</div>
+            ) : web ? (
               <section className="space-y-4">
                 <SectionLabel>Participación por Línea Estratégica (Canal Web)</SectionLabel>
                 <div className="p-4 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] space-y-3">
-                  {Object.entries(web.porLineaEstrategica).map(([label, val]) => (
+                  {Object.entries(web.porLineaEstrategica ?? {}).map(([label, val]) => (
                     <div key={label} className="text-xs">
                       <div className="flex justify-between mb-1">
                         <span className="text-[var(--text-secondary)]">{label}</span>
                         <span className="text-[var(--text-primary)] font-medium">{val}</span>
                       </div>
                       <div className="w-full bg-[var(--surface-2)] rounded-full h-1.5">
-                        <div className="bg-[var(--ember)] h-1.5 rounded-full" style={{ width: `${(val/web.totalAportes)*100}%` }}></div>
+                        <div className="bg-[var(--ember)] h-1.5 rounded-full" style={{ width: `${web.totalAportes ? (val/web.totalAportes)*100 : 0}%` }}></div>
                       </div>
                     </div>
                   ))}
                 </div>
               </section>
+            ) : (
+              <div className="text-sm text-[var(--text-secondary)] py-6 text-center">Sin registros de participación web disponibles.</div>
             )}
           </TabsContent>
 
           <TabsContent value="mesas" className="space-y-6 mt-0">
-            {loadingMesas ? <div className="text-sm text-[var(--text-secondary)]">Cargando...</div> : mesas && (
+            {loadingMesas ? (
+              <div className="text-sm text-[var(--text-secondary)]">Cargando...</div>
+            ) : mesas ? (
               <section className="space-y-4">
                 <SectionLabel>Asistencia por Mesa Deliberativa</SectionLabel>
                 <div className="p-4 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] space-y-3">
-                  {Object.entries(mesas.porMesa).map(([label, val]) => (
+                  {Object.entries(mesas.porMesa ?? {}).map(([label, val]) => (
                     <div key={label} className="flex justify-between text-xs py-2 border-b border-[var(--border)] last:border-0">
                       <span className="text-[var(--text-secondary)] font-medium">{label}</span>
                       <span className="text-[var(--text-primary)]">{val} asistentes</span>
@@ -127,6 +137,8 @@ export function ParticipacionMulticanalPanel({ entryKey, props }: { entryKey: st
                   ))}
                 </div>
               </section>
+            ) : (
+              <div className="text-sm text-[var(--text-secondary)] py-6 text-center">Sin registros de asistencia a mesas disponibles.</div>
             )}
           </TabsContent>
 
@@ -138,7 +150,9 @@ export function ParticipacionMulticanalPanel({ entryKey, props }: { entryKey: st
                 Registrar Escenario
               </Button>
             </div>
-            {loadingEscenarios ? <div className="text-sm text-[var(--text-secondary)]">Cargando...</div> : escenarios && (
+            {loadingEscenarios ? (
+              <div className="text-sm text-[var(--text-secondary)]">Cargando...</div>
+            ) : escenarios && escenarios.length > 0 ? (
               <div className="space-y-3">
                 {escenarios.map(esc => (
                   <div key={esc.id} className="p-4 rounded-xl border border-[var(--border)] bg-[var(--surface-1)]">
@@ -154,6 +168,8 @@ export function ParticipacionMulticanalPanel({ entryKey, props }: { entryKey: st
                   </div>
                 ))}
               </div>
+            ) : (
+              <div className="text-sm text-[var(--text-secondary)] py-6 text-center">No hay escenarios especiales registrados.</div>
             )}
           </TabsContent>
         </Tabs>

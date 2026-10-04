@@ -16,13 +16,9 @@ export function useMesas() {
   return useQuery({
     queryKey: MESAS_KEYS.all,
     queryFn: async () => {
-      try {
-        const data = await listarMesas();
-        if (!data || data.length === 0) return fallbackListarMesas();
-        return data;
-      } catch (err) {
-        return fallbackListarMesas();
-      }
+      const data = await listarMesas();
+      useMesasStore.getState().setMesas(data || []);
+      return data || [];
     },
     staleTime: 1000 * 60,
   });
@@ -32,11 +28,7 @@ export function useMesaQuery(mesaId: string) {
   return useQuery({
     queryKey: MESAS_KEYS.detail(mesaId),
     queryFn: async () => {
-      try {
-        return await obtenerMesa(mesaId);
-      } catch (err) {
-        return fallbackObtenerMesa(mesaId);
-      }
+      return await obtenerMesa(mesaId);
     },
     staleTime: 1000 * 30,
     enabled: !!mesaId,

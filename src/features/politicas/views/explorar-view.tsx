@@ -8,10 +8,10 @@ import { EmptyState } from "@/shared/ui/empty-state";
 import { Button } from "@/shared/ui/button";
 import { motion, useReducedMotion } from "framer-motion";
 import { Search, RotateCcw, ArrowUpRight, MessageSquare, Layers, Building2 } from "lucide-react";
-import { usePoliticaPrincipal } from "@/features/politicas/state/politicas-store";
+import { useFases, useLineas } from "@/features/politicas/services/use-politicas-queries";
 import { usePanels } from "@/core/panels/panel-store";
 import { FlujoInversionGobernanza } from "@/features/politicas/components/flujo-inversion-gobernanza";
-import type { LineaEstrategica, Fase } from "@/features/politicas/models/politicas";
+import type { LineaEstrategica } from "@/features/politicas/models/politicas";
 
 /**
  * Vista Explorar — catálogo de líneas estratégicas de la Política Pública
@@ -27,35 +27,41 @@ interface LineaConFase extends LineaEstrategica {
 
 export function ExplorarView() {
   const reducedMotion = useReducedMotion();
-  const politica = usePoliticaPrincipal();
   const { openPanel } = usePanels();
 
   const [faseFiltro, setFaseFiltro] = useState<string>("todas");
   const [busqueda, setBusqueda] = useState<string>("");
   const [pestana, setPestana] = useState<"lineas" | "gobernanza">("lineas");
 
+  const fasesQuery = useFases();
+  const lineasQuery = useLineas();
+  const fases = fasesQuery.data ?? [];
+  const lineasApi = lineasQuery.data ?? [];
+
   /* Obtener todas las líneas estratégicas con su fase correspondiente */
   const todasLasLineas = useMemo(() => {
-    if (!politica) return [];
-    const list: LineaConFase[] = [];
-    for (const fase of politica.fases) {
-      for (const linea of fase.lineas) {
-        list.push({
-          ...linea,
-          faseNombre: fase.nombre,
-          faseOrden: fase.orden,
-          faseEstado: fase.estado,
-        });
-      }
-    }
-    return list;
-  }, [politica]);
+    const faseMap = new Map(fases.map((f) => [f.id, f]));
+    return lineasApi.map((linea) => {
+      const fase = faseMap.get(linea.fase_id);
+      return {
+        id: linea.id,
+        faseId: linea.fase_id,
+        codigo: linea.codigo,
+        titulo: linea.titulo,
+        descripcion: linea.descripcion,
+        aportes: [],
+        faseNombre: fase?.nombre ?? "Fase DNP",
+        faseOrden: fase?.orden ?? 1,
+        faseEstado: fase?.estado ?? "activa",
+      };
+    });
+  }, [fases, lineasApi]);
 
   /* Fases disponibles para filtrar */
   const fasesDisponibles = useMemo(() => {
-    if (!politica) return [];
-    return politica.fases.filter((f) => f.lineas.length > 0);
-  }, [politica]);
+    const idsConLineas = new Set(todasLasLineas.map((l) => l.faseId));
+    return fases.filter((f) => idsConLineas.has(f.id));
+  }, [fases, todasLasLineas]);
 
   /* Filtro reactivo */
   const lineasFiltradas = useMemo(() => {
@@ -78,10 +84,6 @@ export function ExplorarView() {
     setFaseFiltro("todas");
     setBusqueda("");
   };
-
-  if (!politica) {
-    return null;
-  }
 
   return (
     <div className="container-fluid py-12 md:py-14 lg:py-16">
@@ -144,7 +146,7 @@ export function ExplorarView() {
           >
             Todas las fases
           </FilterChip>
-          {fasesDisponibles.map((fase: Fase) => (
+          {fasesDisponibles.map((fase) => (
             <FilterChip
               key={fase.id}
               active={faseFiltro === fase.id}
@@ -201,7 +203,6 @@ export function ExplorarView() {
       ) : (
         <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {lineasFiltradas.map((linea, index) => {
-            const numAportes = linea.aportes.length;
             return (
               <motion.button
                 key={linea.id}
@@ -215,7 +216,7 @@ export function ExplorarView() {
                 }}
                 onClick={() =>
                   openPanel("linea", {
-                    politicaId: politica.id,
+                    politicaId: "pol-cartagena",
                     faseId: linea.faseId,
                     lineaId: linea.id,
                   })
@@ -250,11 +251,9 @@ export function ExplorarView() {
                     <span className="truncate">Fase 0{linea.faseOrden}</span>
                   </div>
 
-                  <div className="flex items-center gap-1.5 font-medium tabular text-[var(--text-primary)]">
+                  <div className="flex items-center gap-1.5 font-medium text-[var(--text-primary)]">
                     <MessageSquare className="size-3.5 text-[var(--ember)]" />
-                    <span>
-                      {numAportes} {numAportes === 1 ? "aporte" : "aportes"}
-                    </span>
+                    <span>Ver aportes</span>
                   </div>
                 </div>
               </motion.button>

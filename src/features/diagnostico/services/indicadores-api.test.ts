@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
 import { normalizarFicha } from "./indicadores-api";
 import { INDICADORES_FALLBACK } from "../data/indicadores-fallback.data";
-import { POLITICAS_MOCK } from "@/features/politicas/data/politicas.mock";
+import { POLITICAS_MOCK } from "@/features/politicas/__fixtures__/politicas.fixture";
 
 describe("Diagnóstico y Línea Base Cuantitativa DNP", () => {
   describe("Normalización de Fichas de Indicador", () => {

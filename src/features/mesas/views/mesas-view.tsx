@@ -18,6 +18,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { useMesasStore } from "@/features/mesas/state/mesas-store";
+import { useMesas } from "@/features/mesas/services/use-mesas-queries";
 import { usePanels } from "@/core/panels/panel-store";
 
 /**
@@ -28,7 +29,9 @@ import { usePanels } from "@/core/panels/panel-store";
 
 export function MesasView() {
   const reducedMotion = useReducedMotion();
-  const mesas = useMesasStore((s) => s.mesas);
+  const { data: mesasRemotas } = useMesas();
+  const mesasStore = useMesasStore((s) => s.mesas);
+  const mesas = mesasRemotas ?? mesasStore;
   const { openPanel } = usePanels();
   const [busqueda, setBusqueda] = useState("");
 

@@ -1,4 +1,4 @@
-import { FORMULARIOS_MOCK, RESPUESTAS_MOCK } from "@/features/formularios/data/formularios.mock";
+import { FORMULARIOS_MOCK, RESPUESTAS_MOCK } from "@/features/formularios/__fixtures__/formularios.fixture";
 import { useFormulariosStore } from "@/features/formularios/state/formularios-store";
 import { simularApiFormularios } from "./formularios-mock-api";
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
@@ -12,8 +12,8 @@ import { usePanelStore } from "@/core/panels/panel-store";
 import { usePoliticasStore } from "@/features/politicas/state/politicas-store";
 import { useMesasStore } from "@/features/mesas/state/mesas-store";
 import { useSesionStore } from "@/features/sesion/state/session-store";
-import { POLITICAS_MOCK } from "@/features/politicas/data/politicas.mock";
-import { MESAS_MOCK } from "@/features/mesas/data/mesas.mock";
+import { POLITICAS_MOCK } from "@/features/politicas/__fixtures__/politicas.fixture";
+import { MESAS_MOCK } from "@/features/mesas/__fixtures__/mesas.fixture";
 
 const meta = {
   title: "Plataforma/Pantallas",
