@@ -177,3 +177,60 @@ class LineaEstrategicaRead(LineaEstrategicaBase):
     actualizado_en: datetime
     sublineas: list[SublineaSchema] = Field(default_factory=list)
     model_config = ConfigDict(from_attributes=True)
+
+
+class LineaPoliticaResumen(BaseModel):
+    id: uuid.UUID | str
+    fase_id: uuid.UUID | str = Field(alias="faseId")
+    codigo: str
+    titulo: str
+    descripcion: str
+    aportes: list[Any] = Field(default_factory=list)
+    model_config = ConfigDict(populate_by_name=True)
+
+
+class FasePoliticaResumen(BaseModel):
+    id: uuid.UUID | str
+    politica_id: str = Field(default="pol-001", alias="politicaId")
+    orden: int
+    nombre: str
+    tipo: str = "diagnostico"
+    descripcion: str = ""
+    estado: str = "activa"
+    progreso: float = 0.0
+    lineas: list[LineaPoliticaResumen] = Field(default_factory=list)
+    model_config = ConfigDict(populate_by_name=True)
+
+
+class PoliticaPublicaRead(BaseModel):
+    id: str = "pol-001"
+    slug: str = "seguridad-humana-cartagena"
+    titulo: str = "Política Pública de Seguridad Humana Integral de Cartagena 2026–2036"
+    resumen: str = (
+        "Construcción participativa de la Política Pública de Seguridad Humana Integral "
+        "del Distrito de Cartagena de Indias (Decreto Nacional 037 de 2026), articulando "
+        "las 7 Dimensiones ONU y la metodología DNP con anclaje territorial."
+    )
+    descripcion: str = (
+        "La Política Pública de Seguridad Humana Integral de Cartagena de Indias (2026–2036) "
+        "adopta el paradigma multidimensional de la ONU, protegiendo las libertades fundamentales "
+        "frente al miedo, la necesidad y la indignidad. Integra las 3 localidades urbanas y la "
+        "zona corregimental e insular (La Boquilla, Pasacaballos, Tierrabomba, Barú, Bayunca) "
+        "para transformar las causas estructurales de la violencia, la exclusión y la degradación ambiental."
+    )
+    problema: str = (
+        "Cartagena enfrenta brechas históricas de inequidad socioeconómica, altos índices de "
+        "homicidio y violencia interpersonal, amenazas de explotación sexual comercial de niñas, niños "
+        "y adolescentes (ESCNNA) en zonas turísticas, conflictividades y fronteras invisibles entre "
+        "jóvenes en barrios populares, informalidad laboral extrema y alta vulnerabilidad climática "
+        "en la Ciénaga de la Virgen y zonas de bajamar."
+    )
+    sector: str = "seguridad"
+    estado: str = "consulta_publica"
+    cobertura: str = "Distrito de Cartagena: 3 Localidades urbanas, 11 corregimientos y zonas insulares"
+    fecha_inicio: str = Field(default="2026-02-01", alias="fechaInicio")
+    fecha_cierre: str = Field(default="2026-12-31", alias="fechaCierre")
+    participantes: int = 0
+    fases: list[FasePoliticaResumen] = Field(default_factory=list)
+    model_config = ConfigDict(populate_by_name=True)
+

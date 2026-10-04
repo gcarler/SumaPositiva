@@ -17,13 +17,95 @@ from app.modules.politicas.schemas import (
     FaseConmutarPeticion,
     FaseControlLectura,
     FasePoliticaRead,
+    FasePoliticaResumen,
     LineaEstrategicaCreate,
     LineaEstrategicaRead,
     LineaEstrategicaUpdate,
+    LineaPoliticaResumen,
+    PoliticaPublicaRead,
 )
 from app.modules.politicas.service import LineaService
 
 router = APIRouter(prefix="/politicas", tags=["motor-politicas"])
+
+
+@router.get(
+    "",
+    response_model=list[PoliticaPublicaRead],
+    summary="Listar políticas públicas distritales",
+    description="Retorna el catálogo de políticas públicas distritales con sus fases canónicas y progreso dinámico real.",
+)
+async def listar_politicas(
+    session: SessionDependency,
+) -> list[PoliticaPublicaRead]:
+    progresos = await calcular_progreso_real_fases(session)
+    stmt_fases = select(FasePolitica).order_by(FasePolitica.orden)
+    result_fases = await session.execute(stmt_fases)
+    fases = result_fases.scalars().all()
+
+    stmt_lineas = (
+        select(LineaEstrategica)
+        .where(LineaEstrategica.activa.is_(True))
+        .order_by(LineaEstrategica.orden)
+    )
+    result_lineas = await session.execute(stmt_lineas)
+    lineas = result_lineas.scalars().all()
+
+    lineas_por_fase: dict[uuid.UUID, list[LineaPoliticaResumen]] = {}
+    for l in lineas:
+        lineas_por_fase.setdefault(l.fase_id, []).append(
+            LineaPoliticaResumen(
+                id=str(l.id),
+                faseId=str(l.fase_id),
+                codigo=l.codigo,
+                titulo=l.titulo,
+                descripcion=l.descripcion,
+                aportes=[],
+            )
+        )
+
+    tipo_map = {
+        "FASE_1": "diagnostico",
+        "FASE_2": "formulacion",
+        "FASE_3": "deliberacion",
+        "FASE_4": "validacion",
+        "FASE_5": "implementacion",
+        "FASE_6": "seguimiento",
+    }
+
+    fases_resumen: list[FasePoliticaResumen] = []
+    for f in fases:
+        prog = progresos.get(f.codigo)
+        if prog is None:
+            prog = f.progreso_porcentaje
+        prog_float = float(prog) if prog is not None else 0.0
+
+        estado_front = (
+            "activa"
+            if f.estado == "activa"
+            else ("completada" if f.estado in ("cerrada", "archivada") else "proxima")
+        )
+        fases_resumen.append(
+            FasePoliticaResumen(
+                id=str(f.id),
+                politicaId="pol-001",
+                orden=f.orden,
+                nombre=f.nombre,
+                tipo=tipo_map.get(f.codigo, "diagnostico"),
+                descripcion=f.descripcion or "",
+                estado=estado_front,
+                progreso=prog_float,
+                lineas=lineas_por_fase.get(f.id, []),
+            )
+        )
+
+    politica = PoliticaPublicaRead(
+        id="pol-001",
+        slug="seguridad-humana-cartagena",
+        titulo="Política Pública de Seguridad Humana Integral de Cartagena 2026–2036",
+        fases=fases_resumen,
+    )
+    return [politica]
 
 
 @router.get(

@@ -94,22 +94,14 @@ export async function listarFases(): Promise<FasePoliticaApi[]> {
  * Consulta las líneas estratégicas activas desde FastAPI.
  */
 export async function listarLineas(): Promise<LineaEstrategicaApi[]> {
-  try {
-    return await apiFetch<LineaEstrategicaApi[]>("/politicas/lineas");
-  } catch {
-    return [];
-  }
+  return await apiFetch<LineaEstrategicaApi[]>("/politicas/lineas");
 }
 
 /**
  * Consulta el catálogo de políticas públicas vigentes.
  */
 export async function listarPoliticas(): Promise<PoliticaPublica[]> {
-  try {
-    return await apiFetch<PoliticaPublica[]>("/politicas");
-  } catch {
-    return [];
-  }
+  return await apiFetch<PoliticaPublica[]>("/politicas");
 }
 
 /**

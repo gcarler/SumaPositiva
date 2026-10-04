@@ -185,6 +185,7 @@ La última columna explica la excepción pública o la condición adicional.
 | POST | /api/v1/participacion/escenarios-especiales | permiso:asistencia:verificar@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |
 | GET | /api/v1/participacion/escenarios-especiales/{id} | publico | Consulta pública de catálogos y resultados de política para transparencia. |
 | PUT | /api/v1/participacion/escenarios-especiales/{id} | permiso:asistencia:verificar@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |
+| GET | /api/v1/politicas | publico | Consulta pública de catálogos y resultados de política para transparencia. |
 | GET | /api/v1/politicas/dimensiones | publico | Consulta pública de catálogos y resultados de política para transparencia. |
 | GET | /api/v1/politicas/fases | publico | Consulta pública de catálogos y resultados de política para transparencia. |
 | GET | /api/v1/politicas/fases/control | permiso:politicas:gestionar@declarada | Supervisión institucional del ciclo metodológico DNP y reglas web. |
