@@ -191,5 +191,17 @@ Verificado de forma forense e independiente:
    - `pytest` access policy: 86/86 pass.
 5. Perímetro: Cero modificaciones a Codex, cero escrituras sobre `bd_csh`, cero git push.
 
+## Dictamen EDIT-09 — CONFORME (commit 99c54ad)
+Verificado de forma forense e independiente:
+1. Modelo relacional y migración Alembic 0043 (`0043_modulo_banco_alternativas.py`): Creación de tabla `motor_politicas.banco_alternativas` con clave primaria UUID, código MGA único, llaves foráneas a líneas estratégicas y dimensiones ONU, costeo NUMERIC(15,2), campo `requiere_consulta_previa` (Ley 70/1993 y OIT 169) y campos JSONB.
+2. Sembrado canónico: Sembradas las 8 iniciativas canónicas oficiales de Cartagena (ALT-ESCNNA-01 .. ALT-ETN-08) con trazabilidad plena y sin datos inventados.
+3. Módulo backend integral (`backend/app/modules/alternativas/`): Endpoints RESTful bajo `/api/v1/alternativas` (`GET`, `POST`, `PATCH`, `DELETE`) con RBAC (`alternativas:leer`, `alternativas:gestionar`), auditoría forense inmutable con hash SHA-256 encadenado y bloqueo HTTP 409 Conflict si la iniciativa tiene compromisos PAS vinculados.
+4. Frontend store y UI: `alternativas-api.ts` y `alternativas-store.ts` sincronizados con anti-silent-fallback (cero mutación local en memoria si la persistencia falla o es rechazada), soporte de contingencia honesta y panel de edición asíncrono.
+5. Pruebas backend: `backend/tests/test_alternativas_mga.py` con 4/4 passed; `test_access_policy.py` con 89/89 passed; `test_database_integration.py` con 1/1 passed.
+6. Paridad de esquema Alembic: `alembic check` reporta `No new upgrade operations detected` (0 diffs en `polis_test`).
+7. Quality gates frontend: `bun test` aprueba **279 pass / 0 fail (1272 expect calls)** en 30 suites; `bun run check` limpio con **0 errores y 0 advertencias**.
+8. Aislamiento pericial: Módulos de Codex estrictamente intactos; `bd_csh` sin migraciones prematuras (a aplicar en ventana de despliegue según runbook); cero push a remoto.
+
+
 
 
