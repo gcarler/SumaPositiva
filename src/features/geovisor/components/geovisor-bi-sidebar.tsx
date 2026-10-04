@@ -1,27 +1,24 @@
 "use client";
 
-import { useMemo } from "react";
+import {useMemo} from "react";
 import {
   ShieldCheck,
   MessageSquare,
   AlertTriangle,
   Users,
   TrendingUp,
-  BarChart3,
-  ExternalLink,
-  MapPin,
+  ExternalLink
 } from "lucide-react";
-import { Button } from "@/shared/ui/button";
-import { ScrollArea } from "@/shared/ui/scroll-area";
-import { StatusBadge } from "@/shared/ui/status-badge";
+import {Button} from "@/shared/ui/button";
+import {ScrollArea} from "@/shared/ui/scroll-area";
+
 import {
   type VariableMapa,
   VARIABLE_META,
   ESTADISTICAS_TERRITORIOS,
-  obtenerValorVariable,
-  type EstadisticasTerritorio,
+  obtenerValorVariable
 } from "../data/estadisticas.data";
-import { BARRIOS_CARTAGENA, type Barrio } from "../data/barrios.data";
+import {BARRIOS_CARTAGENA} from "../data/barrios.data";
 
 interface GeovisorBiSidebarProps {
   territorioId: string;

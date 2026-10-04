@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { toast } from "sonner";
+import {useState, useEffect} from "react";
+import {toast} from "sonner";
 import {
   FileText,
   MapPin,
@@ -11,33 +11,31 @@ import {
   Scale,
   ShieldAlert,
   CheckCircle2,
-  AlertCircle,
   HelpCircle,
-  ExternalLink,
   Download,
   ShieldCheck,
   Send,
-  Clock,
+  Clock
 } from "lucide-react";
-import { PanelShell } from "@/core/panels/panel-shell";
-import { usePanels } from "@/core/panels/panel-store";
-import type { PanelComponentProps } from "@/app/_composition/panel-registry";
-import { Button } from "@/shared/ui/button";
-import { Badge } from "@/shared/ui/badge";
-import { Label } from "@/shared/ui/label";
-import { Textarea } from "@/shared/ui/textarea";
+import {PanelShell} from "@/core/panels/panel-shell";
+import {usePanels} from "@/core/panels/panel-store";
+import type {PanelComponentProps} from "@/app/_composition/panel-registry";
+import {Button} from "@/shared/ui/button";
+import {Badge} from "@/shared/ui/badge";
+import {Label} from "@/shared/ui/label";
+import {Textarea} from "@/shared/ui/textarea";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
+  SelectValue
 } from "@/shared/ui/select";
-import { useSesionStore } from "@/features/sesion/state/session-store";
-import { useDevolucionStore } from "../state/devolucion-store";
+import {useSesionStore} from "@/features/sesion/state/session-store";
+import {useDevolucionStore} from "../state/devolucion-store";
 import {
   ESTADOS_INCORPORACION_INFO,
-  CAUSALES_DESCARTE_INFO,
+  CAUSALES_DESCARTE_INFO
 } from "../models/devolucion";
 
 export function DevolucionDetallePanel({

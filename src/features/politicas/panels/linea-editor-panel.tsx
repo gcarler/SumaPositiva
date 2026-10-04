@@ -1,35 +1,35 @@
 "use client";
-import { useForm, useFieldArray, useWatch, Controller } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
-import { Plus, Trash2 } from "lucide-react";
-import { PanelShell } from "@/core/panels/panel-shell";
-import { usePanels } from "@/core/panels/panel-store";
-import { useSesionStore } from "@/features/sesion/state/session-store";
-import { Button } from "@/shared/ui/button";
-import { Input } from "@/shared/ui/input";
-import { Textarea } from "@/shared/ui/textarea";
-import { FormField } from "@/shared/ui/form-field";
-import { ChoiceGroup } from "@/shared/ui/choice-group";
-import { Checkbox } from "@/shared/ui/checkbox";
-import { Label } from "@/shared/ui/label";
-import { Switch } from "@/shared/ui/switch";
+import {useForm, useFieldArray, useWatch, Controller} from "react-hook-form";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {useQuery, useQueryClient} from "@tanstack/react-query";
+import {toast} from "sonner";
+import {Plus, Trash2} from "lucide-react";
+import {PanelShell} from "@/core/panels/panel-shell";
+import {usePanels} from "@/core/panels/panel-store";
+import {useSesionStore} from "@/features/sesion/state/session-store";
+import {Button} from "@/shared/ui/button";
+import {Input} from "@/shared/ui/input";
+import {Textarea} from "@/shared/ui/textarea";
+import {FormField} from "@/shared/ui/form-field";
+import {ChoiceGroup} from "@/shared/ui/choice-group";
+import {Checkbox} from "@/shared/ui/checkbox";
+import {Label} from "@/shared/ui/label";
+import {Switch} from "@/shared/ui/switch";
 import {
   Select,
   SelectTrigger,
   SelectValue,
   SelectContent,
-  SelectItem,
+  SelectItem
 } from "@/shared/ui/select";
 import {
   lineasApi,
   lineaInputSchema,
   LINEAS_KEY,
   type LineaInput,
-  type LineaPersistida,
+  type LineaPersistida
 } from "../services/lineas-api";
-import { dimensionMeta, ENTIDADES } from "../components/dimensiones-meta";
+import {dimensionMeta, ENTIDADES} from "../components/dimensiones-meta";
 
 type Props = { entryKey: string; lineaId?: string; props?: { lineaId?: string } };
 export function LineaEditorPanel({ entryKey, lineaId: directLineaId, props }: Props) {
@@ -79,7 +79,7 @@ export function LineaEditorPanel({ entryKey, lineaId: directLineaId, props }: Pr
   );
 }
 function LineaForm({ linea }: { linea?: LineaPersistida }) {
-  const { closeTop, closeToKey } = usePanels();
+  const { closeTop } = usePanels();
   const client = useQueryClient();
   const dimensiones = useQuery({
     queryKey: ["politicas", "dimensiones"],

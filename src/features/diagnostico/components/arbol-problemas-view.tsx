@@ -1,41 +1,36 @@
 "use client";
 
-import { useEffect, useState, useMemo, useCallback } from "react";
-import { toast } from "sonner";
+import {useEffect, useState, useMemo, useCallback} from "react";
+import {toast} from "sonner";
 import {
   Sparkles,
-  GitCommit,
-  GitBranch,
   ArrowUp,
   ArrowDown,
   RotateCw,
   Target,
   AlertCircle,
-  FileCheck,
-  ChevronDown,
   Layers,
-  Info,
+  Info
 } from "lucide-react";
-import { Button } from "@/shared/ui/button";
-import { Badge } from "@/shared/ui/badge";
+import {Button} from "@/shared/ui/button";
+import {Badge} from "@/shared/ui/badge";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
+  SelectValue
 } from "@/shared/ui/select";
-import { usePanels } from "@/core/panels/panel-store";
+import {usePanels} from "@/core/panels/panel-store";
 import {
   obtenerInstrumentos,
   obtenerArbol,
-  evaluarDiagnosticoIA,
+  evaluarDiagnosticoIA
 } from "../services/mga-api";
 import type {
   InstrumentoMGA,
   ArbolMGARespuesta,
-  NodoArbolMGA,
-  EntradaDiagnostico,
+  EntradaDiagnostico
 } from "../models/mga";
 
 interface ArbolProblemasViewProps {

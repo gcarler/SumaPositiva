@@ -136,10 +136,10 @@ Según el nivel administrativo, una política pública en Colombia se adopta med
 
 | Concepto Normativo Colombiano | Implementación Técnica en POLIS |
 | :--- | :--- |
-| **Política Pública Territorial / Nacional** | Entidad raíz `PoliticaPublica` ([domain.ts](file:///root/preview_project/src/types/domain.ts)), con sector, coberturas y vigencia temporal. |
+| **Política Pública Territorial / Nacional** | Entidad raíz `PoliticaPublica` ([politicas.ts](file:///root/polis/src/features/politicas/models/politicas.ts)), con sector, coberturas y vigencia temporal. |
 | **Fases del Ciclo de Planeación** | Entidad `Fase` (Diagnóstico, Formulación, Deliberación, Validación, Implementación, Seguimiento). |
 | **Medios / Ejes Estratégicos** | Entidad `LineaEstrategica` (Código LE-01, título, descripción y vinculación con la fase). |
 | **Diálogo Social y Aportes Ciudadanos** | Entidad `Aporte` (propuestas, anotaciones, preguntas; con fotos y trazabilidad de identidad o anonimato garantizado). |
-| **Mesas Participativas (Ley 1757 / SGR)** | Módulo `MesaDeTrabajo` ([mesas.ts](file:///root/preview_project/src/types/mesas.ts)), con facilitador, entidad convocante, lugar y acuerdos de plenaria. |
+| **Mesas Participativas (Ley 1757 / SGR)** | Módulo `MesaDeTrabajo` ([mesas.ts](file:///root/polis/src/features/mesas/models/mesas.ts)), con facilitador, entidad convocante, lugar y acuerdos de plenaria. |
 | **Marco Lógico DNP (MGA)** | Módulo `Papelografo` con editor reactivo de **Árbol de Problemas** (causas/efectos) y derivación automática a **Árbol de Soluciones** (medios/fines). |
 | **Principio de Incidencia y Zero-Modals** | Navegación deslizante apilada (`PanelHost`) que permite al ciudadano profundizar desde el contexto macro hasta la propuesta puntual sin perder la visión sistémica. |

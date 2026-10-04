@@ -1,43 +1,40 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
-import { toast } from "sonner";
+import {useState, type FormEvent} from "react";
+import {toast} from "sonner";
 import {
   Users,
   Building2,
   Lock,
-  Phone,
-  Mail,
-  MapPin,
   ShieldCheck,
-  Target,
+  Target
 } from "lucide-react";
-import { PanelShell } from "@/core/panels/panel-shell";
-import { usePanels } from "@/core/panels/panel-store";
-import type { PanelComponentProps } from "@/app/_composition/panel-registry";
-import { Button } from "@/shared/ui/button";
-import { FormField } from "@/shared/ui/form-field";
-import { Input } from "@/shared/ui/input";
-import { Textarea } from "@/shared/ui/textarea";
-import { Badge } from "@/shared/ui/badge";
-import { Label } from "@/shared/ui/label";
+import {PanelShell} from "@/core/panels/panel-shell";
+import {usePanels} from "@/core/panels/panel-store";
+import type {PanelComponentProps} from "@/app/_composition/panel-registry";
+import {Button} from "@/shared/ui/button";
+import {FormField} from "@/shared/ui/form-field";
+import {Input} from "@/shared/ui/input";
+import {Textarea} from "@/shared/ui/textarea";
+import {Badge} from "@/shared/ui/badge";
+import {Label} from "@/shared/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
+  SelectValue
 } from "@/shared/ui/select";
-import { useSesionStore } from "@/features/sesion/state/session-store";
-import { puedeEditar } from "@/features/plataforma/models/acceso";
+import {useSesionStore} from "@/features/sesion/state/session-store";
+import {puedeEditar} from "@/features/plataforma/models/acceso";
 import type {
   NivelInteres,
   NivelPoder,
   PosturaActor,
   TerritorioActor,
-  TipoActor,
+  TipoActor
 } from "../models/actor";
-import { calcularCuadrante, useActoresStore } from "../state/actores-store";
+import {calcularCuadrante, useActoresStore} from "../state/actores-store";
 
 const DIMENSIONES_OPCIONES = [
   { id: "personal", label: "Seguridad Personal / Convivencia" },

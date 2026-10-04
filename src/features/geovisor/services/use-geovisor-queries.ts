@@ -1,6 +1,6 @@
-import { useQuery } from "@tanstack/react-query";
-import { listarTerritoriosGeoJSON, listarCapas, obtenerTerritorio } from "./geovisor-api";
-import type { FeatureCollection, CapaEspacial, FiltroTerritorial, TerritorioDetalle } from "../models/geovisor";
+import {useQuery} from "@tanstack/react-query";
+import {listarTerritoriosGeoJSON, listarCapas, obtenerTerritorio} from "./geovisor-api";
+import type {FiltroTerritorial} from "../models/geovisor";
 
 export const GEOVISOR_KEYS = {
   geojson: (filtros?: FiltroTerritorial) => ["geovisor", "geojson", filtros] as const,

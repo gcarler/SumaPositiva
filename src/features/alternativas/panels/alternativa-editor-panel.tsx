@@ -1,50 +1,47 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
-import { toast } from "sonner";
+import {useState, type FormEvent} from "react";
+import {toast} from "sonner";
 import {
   Lightbulb,
   DollarSign,
   ShieldAlert,
-  Building,
   MapPin,
-  Clock,
-  Users,
   Target,
   FileDown,
   CheckCircle2,
-  Lock,
+  Lock
 } from "lucide-react";
-import { PanelShell } from "@/core/panels/panel-shell";
-import { usePanels } from "@/core/panels/panel-store";
-import type { PanelComponentProps } from "@/app/_composition/panel-registry";
-import { Button } from "@/shared/ui/button";
-import { FormField } from "@/shared/ui/form-field";
-import { Input } from "@/shared/ui/input";
-import { Textarea } from "@/shared/ui/textarea";
-import { Badge } from "@/shared/ui/badge";
-import { Label } from "@/shared/ui/label";
+import {PanelShell} from "@/core/panels/panel-shell";
+import {usePanels} from "@/core/panels/panel-store";
+import type {PanelComponentProps} from "@/app/_composition/panel-registry";
+import {Button} from "@/shared/ui/button";
+import {FormField} from "@/shared/ui/form-field";
+import {Input} from "@/shared/ui/input";
+import {Textarea} from "@/shared/ui/textarea";
+
+import {Label} from "@/shared/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
+  SelectValue
 } from "@/shared/ui/select";
-import { useSesionStore } from "@/features/sesion/state/session-store";
-import { puedeEditar } from "@/features/plataforma/models/acceso";
+import {useSesionStore} from "@/features/sesion/state/session-store";
+import {puedeEditar} from "@/features/plataforma/models/acceso";
 import type {
   EstadoAlternativa,
-  SectorMGA,
+  SectorMGA
 } from "../models/alternativa";
 import {
   ESTADOS_ALTERNATIVA,
   SECTORES_MGA,
   LINEAS_ESTRATEGICAS_MAP,
   DIMENSIONES_ONU_MAP,
-  FUENTES_FINANCIACION_OFICIALES,
+  FUENTES_FINANCIACION_OFICIALES
 } from "../models/alternativa";
-import { useAlternativasStore } from "../state/alternativas-store";
+import {useAlternativasStore} from "../state/alternativas-store";
 
 export function AlternativaEditorPanel({
   entryKey,

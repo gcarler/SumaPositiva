@@ -1,14 +1,13 @@
 "use client";
 
-import { useState } from "react";
-import { toast } from "sonner";
+import {useState} from "react";
+import {toast} from "sonner";
 import {
   Layers,
   Plus,
   Trash2,
   CornerDownRight,
   Sparkles,
-  ArrowRight,
   ShieldAlert,
   CheckCircle2,
   Target,
@@ -18,39 +17,38 @@ import {
   AlertTriangle,
   FolderSync,
   FileSpreadsheet,
-  Copy,
-  FileText,
+  Copy
 } from "lucide-react";
-import { Button } from "@/shared/ui/button";
-import { Input } from "@/shared/ui/input";
-import { Textarea } from "@/shared/ui/textarea";
-import { Badge } from "@/shared/ui/badge";
+import {Button} from "@/shared/ui/button";
+import {Input} from "@/shared/ui/input";
+import {Textarea} from "@/shared/ui/textarea";
+import {Badge} from "@/shared/ui/badge";
 import {
   Table,
   TableHeader,
   TableBody,
   TableHead,
   TableRow,
-  TableCell,
+  TableCell
 } from "@/shared/ui/table";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/shared/ui/tabs";
+import {Tabs, TabsList, TabsTrigger} from "@/shared/ui/tabs";
 import {
   Select,
   SelectTrigger,
   SelectValue,
   SelectContent,
-  SelectItem,
+  SelectItem
 } from "@/shared/ui/select";
 import type {
   ArbolProblemas,
   ArbolSoluciones,
   NodoArbol,
-  NodoArbolMetadatos,
+  NodoArbolMetadatos
 } from "@/features/mesas/models/mesas";
 import {
   uidNodo,
   generarCSVMatrizEstructurada,
-  arbolesAMatrizEstructurada,
+  arbolesAMatrizEstructurada
 } from "@/features/mesas/models/mesas";
 
 export const DIMENSIONES_ONU = [

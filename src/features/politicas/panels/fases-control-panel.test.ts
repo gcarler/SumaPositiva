@@ -7,16 +7,15 @@
  * 4. Confirmación estricta con servidor e invalidación de caché.
  */
 
-import { describe, expect, test, vi, beforeEach, afterEach } from "vitest";
-import { ApiError } from "@/core/http/api-client";
+import {describe, expect, test, vi, beforeEach, afterEach} from "vitest";
+import {ApiError} from "@/core/http/api-client";
 import {
   clasificarErrorConmutacion,
   listarFasesControlApi,
-  conmutarFaseApi,
-  type FaseControlApi,
+  type FaseControlApi
 } from "../services/politicas-api";
 import * as politicasApi from "../services/politicas-api";
-import { POLITICAS_QUERY_KEYS } from "../services/use-politicas-queries";
+import {POLITICAS_QUERY_KEYS} from "../services/use-politicas-queries";
 
 describe("Centro de Control de Fases DNP (AUD-04)", () => {
   const originalFetch = globalThis.fetch;

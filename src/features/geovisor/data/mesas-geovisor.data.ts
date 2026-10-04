@@ -7,8 +7,8 @@
  *   - Amarillo/Ember (programada)
  */
 
-import { AGENDA_MESAS, type MesaAgenda } from "@/features/mesas/data/agenda.data";
-import type { MesaGeovisor, EstadoMesaGeovisor } from "../services/mesas-geovisor-api";
+import {AGENDA_MESAS} from "@/features/mesas/data/agenda.data";
+import type {MesaGeovisor, EstadoMesaGeovisor} from "../services/mesas-geovisor-api";
 
 interface CoordenadaReferencia {
   lat: number;

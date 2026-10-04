@@ -1,36 +1,33 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
-import { toast } from "sonner";
+import {useState, type FormEvent} from "react";
+import {toast} from "sonner";
 import {
   FileText,
-  Calendar,
   Building2,
   Lock,
-  ExternalLink,
   ShieldCheck,
-  User,
-  Info,
+  User
 } from "lucide-react";
-import { PanelShell } from "@/core/panels/panel-shell";
-import { usePanels } from "@/core/panels/panel-store";
-import type { PanelComponentProps } from "@/app/_composition/panel-registry";
-import { Button } from "@/shared/ui/button";
-import { FormField } from "@/shared/ui/form-field";
-import { Input } from "@/shared/ui/input";
-import { Textarea } from "@/shared/ui/textarea";
-import { Badge } from "@/shared/ui/badge";
+import {PanelShell} from "@/core/panels/panel-shell";
+import {usePanels} from "@/core/panels/panel-store";
+import type {PanelComponentProps} from "@/app/_composition/panel-registry";
+import {Button} from "@/shared/ui/button";
+import {FormField} from "@/shared/ui/form-field";
+import {Input} from "@/shared/ui/input";
+import {Textarea} from "@/shared/ui/textarea";
+import {Badge} from "@/shared/ui/badge";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
+  SelectValue
 } from "@/shared/ui/select";
-import { useSesionStore } from "@/features/sesion/state/session-store";
-import { puedeEditar } from "@/features/plataforma/models/acceso";
-import { useFuentesStore } from "../state/fuentes-store";
-import type { EstadoEntrega } from "../models/fuente";
+import {useSesionStore} from "@/features/sesion/state/session-store";
+import {puedeEditar} from "@/features/plataforma/models/acceso";
+import {useFuentesStore} from "../state/fuentes-store";
+import type {EstadoEntrega} from "../models/fuente";
 
 export function FuenteEditorPanel({ entryKey, props }: PanelComponentProps<"fuente-editor">) {
   const { closeTop } = usePanels();

@@ -42,11 +42,14 @@ let backendProcess = null;
 let frontendProcess = null;
 let proxyServer = null;
 const resultados = [];
+const flujosUnicos = new Set();
 
 function registrarPaso(nombre, detalle = "") {
   console.log(`\n========================================`);
   console.log(`[PASS] ${nombre}${detalle ? ` - ${detalle}` : ""}`);
   console.log(`========================================`);
+  const idFlujo = nombre.match(/^(\d+)\./)?.[1] || nombre;
+  flujosUnicos.add(idFlujo);
   resultados.push({ nombre, detalle, exito: true });
 }
 
@@ -673,8 +676,10 @@ async function main() {
 
     await contextA11y.close();
 
+    const TOTAL_FLUJOS = 9;
+    const totalAprobados = flujosUnicos.size;
     console.log(`\n================================================================================`);
-    console.log(`🎉 SUITE SMOKE E2E COMPLETADA CON ÉXITO: ${resultados.length}/9 FLUJOS APROBADOS`);
+    console.log(`🎉 SUITE SMOKE E2E COMPLETADA CON ÉXITO: ${totalAprobados}/${TOTAL_FLUJOS} FLUJOS APROBADOS`);
     console.log(`================================================================================\n`);
   } finally {
     await browser.close();

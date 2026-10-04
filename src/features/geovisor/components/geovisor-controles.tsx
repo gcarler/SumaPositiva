@@ -1,15 +1,15 @@
 "use client";
 
-import { Layers, Eye, EyeOff } from "lucide-react";
-import { Button } from "@/shared/ui/button";
-import { Label } from "@/shared/ui/label";
-import { Checkbox } from "@/shared/ui/checkbox";
+import {Layers} from "lucide-react";
+
+import {Label} from "@/shared/ui/label";
+import {Checkbox} from "@/shared/ui/checkbox";
 import {
   type VariableMapa,
   VARIABLE_META,
   ESCALA_CHOROPLETH_PASOS,
   ESTADISTICAS_TERRITORIOS,
-  obtenerValorVariable,
+  obtenerValorVariable
 } from "../data/estadisticas.data";
 
 export interface CapasConfig {

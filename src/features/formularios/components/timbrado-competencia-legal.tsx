@@ -1,19 +1,13 @@
 "use client";
 
-import { useMemo } from "react";
+import {useMemo} from "react";
 import {
   Landmark,
-  ShieldCheck,
-  Building2,
-  Users,
-  FileText,
   Phone,
   Mail,
-  MapPin,
-  CheckCircle2,
-  Scale,
+  MapPin
 } from "lucide-react";
-import { Badge } from "@/shared/ui/badge";
+import {Badge} from "@/shared/ui/badge";
 
 export interface InfoCompetenciaLegal {
   secretariaLider: string;

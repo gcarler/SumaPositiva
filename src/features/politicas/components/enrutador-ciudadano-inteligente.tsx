@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import {useState} from "react";
+import {useRouter} from "next/navigation";
 import {
   Search,
   MapPin,
@@ -13,16 +13,15 @@ import {
   ShieldCheck,
   CheckCircle2,
   BarChart3,
-  X,
+  X
 } from "lucide-react";
-import { Button } from "@/shared/ui/button";
-import { Input } from "@/shared/ui/input";
-import { Badge } from "@/shared/ui/badge";
-import { usePanels } from "@/core/panels/panel-store";
+import {Button} from "@/shared/ui/button";
+import {Input} from "@/shared/ui/input";
+import {Badge} from "@/shared/ui/badge";
+import {usePanels} from "@/core/panels/panel-store";
 import {
   enrutarCasoCiudadano,
-  DEPENDENCIAS_CARTAGENA_2026,
-  type EnrutamientoCiudadanoResultado,
+  type EnrutamientoCiudadanoResultado
 } from "../data/entidades-cartagena.data";
 
 const EJEMPLOS_CONSULTA = [

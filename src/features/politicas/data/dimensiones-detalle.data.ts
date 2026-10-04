@@ -7,11 +7,10 @@ import {
   HeartPulse,
   Scale,
   AlertTriangle,
-  type LucideIcon,
+  type LucideIcon
 } from "lucide-react";
 import {
-  DEPENDENCIAS_CARTAGENA_2026,
-  type DependenciaDistrital,
+  type DependenciaDistrital
 } from "./entidades-cartagena.data";
 
 export interface CorresponsableRol {

@@ -1,30 +1,29 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import {useMemo, useState} from "react";
 import {
   CalendarClock,
   MapPin,
   Upload,
   Users,
   ExternalLink,
-  LocateFixed,
-  Sparkles,
+  Sparkles
 } from "lucide-react";
-import { useQueryClient } from "@tanstack/react-query";
-import { Button } from "@/shared/ui/button";
-import { Checkbox } from "@/shared/ui/checkbox";
-import { Input } from "@/shared/ui/input";
-import { Label } from "@/shared/ui/label";
-import { StatusBadge } from "@/shared/ui/status-badge";
-import { usePanels } from "@/core/panels/panel-store";
-import { useSesionStore, tienePermiso } from "@/features/sesion/state/session-store";
-import { useMesasStore } from "@/features/mesas/state/mesas-store";
-import { calcularTotalAsistentes } from "@/features/mesas/models/mesas";
-import { TERRITORIOS_CARTAGENA } from "../data/territorios.data";
-import { subirFotoMesa, type MesaGeovisor, type EstadoMesaGeovisor } from "../services/mesas-geovisor-api";
-import { MesasDataGrid } from "./mesas-datagrid/mesas-datagrid";
-import { MesasCardsView } from "./mesas-cards-view";
-import type { ModoVistaMesas } from "./mesas-datagrid/datagrid-toolbar";
+import {useQueryClient} from "@tanstack/react-query";
+import {Button} from "@/shared/ui/button";
+import {Checkbox} from "@/shared/ui/checkbox";
+import {Input} from "@/shared/ui/input";
+import {Label} from "@/shared/ui/label";
+import {StatusBadge} from "@/shared/ui/status-badge";
+import {usePanels} from "@/core/panels/panel-store";
+import {useSesionStore, tienePermiso} from "@/features/sesion/state/session-store";
+import {useMesasStore} from "@/features/mesas/state/mesas-store";
+import {calcularTotalAsistentes} from "@/features/mesas/models/mesas";
+import {TERRITORIOS_CARTAGENA} from "../data/territorios.data";
+import {subirFotoMesa, type MesaGeovisor, type EstadoMesaGeovisor} from "../services/mesas-geovisor-api";
+import {MesasDataGrid} from "./mesas-datagrid/mesas-datagrid";
+import {MesasCardsView} from "./mesas-cards-view";
+import type {ModoVistaMesas} from "./mesas-datagrid/datagrid-toolbar";
 
 function fechaLocal(fecha: string | null): string {
   if (!fecha) return "Fecha no registrada";

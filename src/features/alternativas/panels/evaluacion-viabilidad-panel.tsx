@@ -1,33 +1,30 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
+import {useEffect, useState} from "react";
+import {toast} from "sonner";
 import {
   Scale,
   DollarSign,
   ShieldAlert,
   ShieldCheck,
   Building2,
-  Calendar,
   Clock,
-  MapPin,
   CheckCircle2,
-  AlertTriangle,
   FileDown,
   Layers,
   Sparkles,
-  BookOpen,
+  BookOpen
 } from "lucide-react";
-import { PanelShell } from "@/core/panels/panel-shell";
-import { usePanels } from "@/core/panels/panel-store";
-import type { PanelComponentProps } from "@/app/_composition/panel-registry";
-import { Button } from "@/shared/ui/button";
-import { Badge } from "@/shared/ui/badge";
-import { useSesionStore } from "@/features/sesion/state/session-store";
-import { puedeEditar } from "@/features/plataforma/models/acceso";
-import { useAlternativasStore } from "../state/alternativas-store";
-import type { EvaluacionViabilidadIntegral } from "../models/viabilidad";
-import { evaluarViabilidadIntegral } from "../services/viabilidad-api";
+import {PanelShell} from "@/core/panels/panel-shell";
+import {usePanels} from "@/core/panels/panel-store";
+import type {PanelComponentProps} from "@/app/_composition/panel-registry";
+import {Button} from "@/shared/ui/button";
+import {Badge} from "@/shared/ui/badge";
+import {useSesionStore} from "@/features/sesion/state/session-store";
+import {puedeEditar} from "@/features/plataforma/models/acceso";
+import {useAlternativasStore} from "../state/alternativas-store";
+import type {EvaluacionViabilidadIntegral} from "../models/viabilidad";
+import {evaluarViabilidadIntegral} from "../services/viabilidad-api";
 
 export function EvaluacionViabilidadPanel({
   entryKey,

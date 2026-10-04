@@ -1,41 +1,36 @@
 "use client";
 
-import { useState, useEffect, useMemo, useCallback } from "react";
-import { toast } from "sonner";
+import {useState, useEffect, useMemo, useCallback} from "react";
+import {toast} from "sonner";
 import {
   Coins,
   DollarSign,
-  ShieldAlert,
   Landmark,
   Calendar,
   Plus,
   RotateCw,
   Search,
-  Filter,
   FileSpreadsheet,
   FileJson,
   Download,
-  AlertTriangle,
-  Building,
-  CheckCircle2,
   Tag,
-  Eye,
+  Eye
 } from "lucide-react";
-import { Button } from "@/shared/ui/button";
-import { Input } from "@/shared/ui/input";
-import { Badge } from "@/shared/ui/badge";
+import {Button} from "@/shared/ui/button";
+import {Input} from "@/shared/ui/input";
+import {Badge} from "@/shared/ui/badge";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
+  SelectValue
 } from "@/shared/ui/select";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
+  DropdownMenuTrigger
 } from "@/shared/ui/dropdown-menu";
 import {
   Table,
@@ -43,23 +38,23 @@ import {
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
+  TableRow
 } from "@/shared/ui/table";
-import { usePanels } from "@/core/panels/panel-store";
-import { useSesionStore } from "@/features/sesion/state/session-store";
-import { puedeEditar } from "@/features/plataforma/models/acceso";
+import {usePanels} from "@/core/panels/panel-store";
+import {useSesionStore} from "@/features/sesion/state/session-store";
+import {puedeEditar} from "@/features/plataforma/models/acceso";
 import type {
   AsignacionPresupuestal,
   FuenteFinanciacion,
-  ResumenCosteo,
+  ResumenCosteo
 } from "../models/presupuesto";
 import {
   listarAsignacionesPresupuestales,
   listarFuentesFinanciacion,
   obtenerResumenCosteo,
-  calcularKpisPresupuesto,
+  calcularKpisPresupuesto
 } from "../services/presupuesto-api";
-import { sanitizarCsv } from "@/shared/lib/csv";
+import {sanitizarCsv} from "@/shared/lib/csv";
 
 interface CosteoPresupuestalViewProps {
   puedeEditar?: boolean;

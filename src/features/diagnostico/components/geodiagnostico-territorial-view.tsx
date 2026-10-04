@@ -1,40 +1,36 @@
 "use client";
 
-import { useEffect, useState, useMemo, useCallback } from "react";
-import { toast } from "sonner";
+import {useEffect, useState, useMemo, useCallback} from "react";
+import {toast} from "sonner";
 import {
   Search,
   RotateCcw,
   MapPin,
-  AlertTriangle,
   Users,
   ShieldAlert,
   BadgeCheck,
-  Building2,
-  FileText,
   Filter,
-  Layers,
-  ArrowRight,
+  ArrowRight
 } from "lucide-react";
-import { Button } from "@/shared/ui/button";
-import { Input } from "@/shared/ui/input";
-import { Badge } from "@/shared/ui/badge";
+import {Button} from "@/shared/ui/button";
+import {Input} from "@/shared/ui/input";
+import {Badge} from "@/shared/ui/badge";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
+  SelectValue
 } from "@/shared/ui/select";
-import { usePanels } from "@/core/panels/panel-store";
+import {usePanels} from "@/core/panels/panel-store";
 import {
   listarTerritoriosDiagnostico,
-  calcularResumenDiagnosticoTerritorial,
+  calcularResumenDiagnosticoTerritorial
 } from "../services/territorios-api";
 import type {
   FichaTerritorialDiagnostico,
   NivelRiesgo,
-  LocalidadCartagena,
+  LocalidadCartagena
 } from "../models/territorio-diagnostico";
 
 export function GeodiagnosticoTerritorialView() {

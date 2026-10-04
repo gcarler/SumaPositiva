@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import {useEffect, useRef, useState, useCallback} from "react";
 import Feature from "ol/Feature";
 import Map from "ol/Map";
 import View from "ol/View";
@@ -14,21 +14,20 @@ import Fill from "ol/style/Fill";
 import Stroke from "ol/style/Stroke";
 import Style from "ol/style/Style";
 import Text from "ol/style/Text";
-import { fromLonLat } from "ol/proj";
-import type { Geometry } from "ol/geom";
+import {fromLonLat} from "ol/proj";
+import type {Geometry} from "ol/geom";
 import Point from "ol/geom/Point";
-import { GEOJSON_TERRITORIOS } from "../data/territorios.geojson";
+import {GEOJSON_TERRITORIOS} from "../data/territorios.geojson";
 import {
   type VariableMapa,
   VARIABLE_META,
   ESTADISTICAS_TERRITORIOS,
   obtenerValorVariable,
-  interpolarColor,
-  type EstadisticasTerritorio,
+  interpolarColor
 } from "../data/estadisticas.data";
-import { BARRIOS_CARTAGENA, type Barrio } from "../data/barrios.data";
-import type { CapasConfig } from "../components/geovisor-controles";
-import type { MesaGeovisor } from "../services/mesas-geovisor-api";
+import {BARRIOS_CARTAGENA, type Barrio} from "../data/barrios.data";
+import type {CapasConfig} from "../components/geovisor-controles";
+import type {MesaGeovisor} from "../services/mesas-geovisor-api";
 
 export interface HoverInfo {
   id: string;

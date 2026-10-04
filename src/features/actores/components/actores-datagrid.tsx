@@ -1,28 +1,28 @@
 "use client";
 
-import { useEffect } from "react";
-import { Download, FileJson, FileSpreadsheet, SlidersHorizontal, ArrowRight, UserPlus } from "lucide-react";
-import { toast } from "sonner";
-import { Button } from "@/shared/ui/button";
-import { Badge } from "@/shared/ui/badge";
+import {useEffect} from "react";
+import {Download, FileJson, FileSpreadsheet, SlidersHorizontal, UserPlus} from "lucide-react";
+import {toast} from "sonner";
+import {Button} from "@/shared/ui/button";
+import {Badge} from "@/shared/ui/badge";
 import {
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
+  TableRow
 } from "@/shared/ui/table";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
+  DropdownMenuTrigger
 } from "@/shared/ui/dropdown-menu";
-import { usePanels } from "@/core/panels/panel-store";
-import type { ActorEstrategico, CuadranteMatriz, PosturaActor } from "../models/actor";
-import { calcularCuadrante, useActoresFiltrados, useActoresStore } from "../state/actores-store";
-import { sanitizarCsv } from "@/shared/lib/csv";
+import {usePanels} from "@/core/panels/panel-store";
+import type {CuadranteMatriz, PosturaActor} from "../models/actor";
+import {calcularCuadrante, useActoresFiltrados, useActoresStore} from "../state/actores-store";
+import {sanitizarCsv} from "@/shared/lib/csv";
 
 function formatearCuadrante(cuadrante: CuadranteMatriz): {
   etiqueta: string;

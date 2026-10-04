@@ -1,29 +1,22 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { PageHeader } from "@/shared/ui/page-header";
-import { SearchField } from "@/shared/ui/search-field";
-import { FilterChip } from "@/shared/ui/filter-chip";
-import { EmptyState } from "@/shared/ui/empty-state";
-import { Button } from "@/shared/ui/button";
-import { motion, useReducedMotion } from "framer-motion";
-import { Search, RotateCcw, ArrowUpRight, MessageSquare, Layers, Building2 } from "lucide-react";
-import { useFases, useLineas } from "@/features/politicas/services/use-politicas-queries";
-import { usePanels } from "@/core/panels/panel-store";
-import { FlujoInversionGobernanza } from "@/features/politicas/components/flujo-inversion-gobernanza";
-import type { LineaEstrategica } from "@/features/politicas/models/politicas";
+import {useMemo, useState} from "react";
+import {PageHeader} from "@/shared/ui/page-header";
+import {SearchField} from "@/shared/ui/search-field";
+import {FilterChip} from "@/shared/ui/filter-chip";
+import {EmptyState} from "@/shared/ui/empty-state";
+import {Button} from "@/shared/ui/button";
+import {motion, useReducedMotion} from "framer-motion";
+import {Search, RotateCcw, ArrowUpRight, MessageSquare, Layers, Building2} from "lucide-react";
+import {useFases, useLineas} from "@/features/politicas/services/use-politicas-queries";
+import {usePanels} from "@/core/panels/panel-store";
+import {FlujoInversionGobernanza} from "@/features/politicas/components/flujo-inversion-gobernanza";
 
 /**
  * Vista Explorar — catálogo de líneas estratégicas de la Política Pública
  * de Seguridad Humana Integral de Cartagena (2026–2036).
  * Al hacer clic en una línea, se abre el panel lateral L3 (Zero-Modals).
  */
-
-interface LineaConFase extends LineaEstrategica {
-  faseNombre: string;
-  faseOrden: number;
-  faseEstado: string;
-}
 
 export function ExplorarView() {
   const reducedMotion = useReducedMotion();

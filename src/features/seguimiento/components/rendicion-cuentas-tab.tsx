@@ -1,12 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { toast } from "sonner";
+import {useMemo, useState} from "react";
+import {toast} from "sonner";
 import {
   Users,
   Globe,
   MessageSquare,
-  Sparkles,
   MapPin,
   Search,
   RotateCcw,
@@ -14,29 +13,27 @@ import {
   FileSpreadsheet,
   FileJson,
   FileText,
-  Scale,
-  CheckCircle2,
   Percent,
   Bot,
   ChevronLeft,
   ChevronRight,
-  AlertTriangle,
+  AlertTriangle
 } from "lucide-react";
-import { Badge } from "@/shared/ui/badge";
-import { Button } from "@/shared/ui/button";
-import { Input } from "@/shared/ui/input";
+import {Badge} from "@/shared/ui/badge";
+import {Button} from "@/shared/ui/button";
+import {Input} from "@/shared/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
+  SelectValue
 } from "@/shared/ui/select";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
+  DropdownMenuTrigger
 } from "@/shared/ui/dropdown-menu";
 import {
   Table,
@@ -44,19 +41,19 @@ import {
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
+  TableRow
 } from "@/shared/ui/table";
-import { usePanels } from "@/core/panels/panel-store";
+import {usePanels} from "@/core/panels/panel-store";
 import {
   useDevolucionStore,
-  filtrarPropuestas,
+  filtrarPropuestas
 } from "../state/devolucion-store";
-import type { PropuestaDevolucion, EstadoIncorporacion } from "../models/devolucion";
+import type {PropuestaDevolucion, EstadoIncorporacion} from "../models/devolucion";
 import {
   ESTADOS_INCORPORACION_INFO,
-  CAUSALES_DESCARTE_INFO,
+  CAUSALES_DESCARTE_INFO
 } from "../models/devolucion";
-import { sanitizarCsv } from "@/shared/lib/csv";
+import {sanitizarCsv} from "@/shared/lib/csv";
 
 interface RendicionCuentasTabProps {
   puedeEditar: boolean;

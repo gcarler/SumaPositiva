@@ -1,22 +1,21 @@
 "use client";
 
-import { create } from "zustand";
+import {create} from "zustand";
 import type {
   PropuestaDevolucion,
   ConsolidadoParticipacionData,
   EstadoIncorporacion,
-  CausalDescarteTaxativa,
+  CausalDescarteTaxativa
 } from "../models/devolucion";
-import { CAUSALES_DESCARTE_INFO } from "../models/devolucion";
+import {CAUSALES_DESCARTE_INFO} from "../models/devolucion";
 import {
-  PROPUESTAS_DEVOLUCION_CARTAGENA,
   CONSOLIDADO_PARTICIPACION_VACIO,
   obtenerConsolidadoParticipacion,
   listarAportesReales,
   consultarDevolucionAporteApi,
   registrarDevolucionMotivadaApi,
   evaluarDevolucionConIa,
-  type DevolucionRazonItem,
+  type DevolucionRazonItem
 } from "../services/devolucion-api";
 
 export interface FiltrosDevolucion {

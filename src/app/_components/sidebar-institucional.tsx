@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useCallback } from "react";
-import { toast } from "sonner";
-import { useSesionStore, esInstitucional, tienePermiso } from "@/features/sesion/state/session-store";
-import { useNavigationStore } from "@/core/navigation/navigation-store";
-import { usePanels } from "@/core/panels/panel-store";
+import React, { useState, useRef, useCallback } from "react";
+import {toast} from "sonner";
+import {useSesionStore, esInstitucional, tienePermiso} from "@/features/sesion/state/session-store";
+import {useNavigationStore} from "@/core/navigation/navigation-store";
+import {usePanels} from "@/core/panels/panel-store";
 import {
   Building2,
   Users,
@@ -20,19 +20,15 @@ import {
   ChevronsLeft,
   ChevronsRight,
   EyeOff,
-  SlidersHorizontal,
   FileSpreadsheet,
   PlusCircle,
   BarChart3,
   CalendarCheck2,
-  Quote,
-  Sparkles,
-  PanelLeftClose,
-  PanelLeftOpen,
+  Quote
 } from "lucide-react";
-import { useIsMobile } from "@/shared/hooks/use-mobile";
-import { Button } from "@/shared/ui/button";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/shared/ui/tooltip";
+import {useIsMobile} from "@/shared/hooks/use-mobile";
+import {Button} from "@/shared/ui/button";
+import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/shared/ui/tooltip";
 
 const ROL_LABELS: Record<string, string> = {
   autoridad_distrital: "Autoridad Distrital",
@@ -62,8 +58,7 @@ export function SidebarInstitucional() {
   const esMovil = useIsMobile();
   const sesion = useSesionStore((s) => s.sesion);
   const cerrarSesion = useSesionStore((s) => s.cerrarSesion);
-  const vista = useNavigationStore((s) => s.vista);
-  const setVista = useNavigationStore((s) => s.setVista);
+    const setVista = useNavigationStore((s) => s.setVista);
   const { openPanel } = usePanels();
 
   // Estados de control del Sidebar

@@ -1,11 +1,15 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { 
-  listarMesas, obtenerMesa, fallbackListarMesas, fallbackObtenerMesa, 
-  actualizarAcuerdosPlenaria, actualizarInformeMesa, crearSubMesa, actualizarSubMesa
+import {useQuery, useMutation, useQueryClient} from "@tanstack/react-query";
+import {
+  listarMesas,
+  obtenerMesa,
+  actualizarAcuerdosPlenaria,
+  actualizarInformeMesa,
+  crearSubMesa,
+  actualizarSubMesa
 } from "./mesas-api";
-import type { SubMesa } from "@/features/mesas/models/mesas";
-import { useMesasStore } from "@/features/mesas/state/mesas-store";
-import { apiFetch } from "@/core/http/api-client";
+import type {SubMesa} from "@/features/mesas/models/mesas";
+import {useMesasStore} from "@/features/mesas/state/mesas-store";
+import {apiFetch} from "@/core/http/api-client";
 
 export const MESAS_KEYS = {
   all: ["mesas"] as const,
@@ -108,7 +112,7 @@ export function useActualizarAsistentesPlenaria() {
   });
 }
 
-import { toast } from "sonner";
+import {toast} from "sonner";
 
 export function useActualizarSubMesa() {
   const queryClient = useQueryClient();

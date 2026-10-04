@@ -1,30 +1,28 @@
 "use client";
 
 import {
-  CheckSquare,
   FileEdit,
   Eye,
   AlertCircle,
   Building2,
   CheckCircle2,
-  Clock,
   AlertTriangle,
   HelpCircle,
-  Activity,
+  Activity
 } from "lucide-react";
-import { Button } from "@/shared/ui/button";
-import { Badge } from "@/shared/ui/badge";
+import {Button} from "@/shared/ui/button";
+import {Badge} from "@/shared/ui/badge";
 import {
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
+  TableRow
 } from "@/shared/ui/table";
-import { usePanels } from "@/core/panels/panel-store";
-import type { CompromisoInstitucional } from "../models/compromiso";
-import { ESTADOS_COMPROMISO } from "../models/compromiso";
+import {usePanels} from "@/core/panels/panel-store";
+import type {CompromisoInstitucional} from "../models/compromiso";
+import {ESTADOS_COMPROMISO} from "../models/compromiso";
 
 function obtenerIconoEstado(estado: string) {
   switch (estado) {

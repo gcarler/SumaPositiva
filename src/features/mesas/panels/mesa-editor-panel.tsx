@@ -1,43 +1,37 @@
 "use client";
 
-import { Button } from "@/shared/ui/button";
-import { FormField } from "@/shared/ui/form-field";
-import { Input } from "@/shared/ui/input";
-import { Badge } from "@/shared/ui/badge";
-import { Checkbox } from "@/shared/ui/checkbox";
-import { Label } from "@/shared/ui/label";
+import {Button} from "@/shared/ui/button";
+import {FormField} from "@/shared/ui/form-field";
+import {Input} from "@/shared/ui/input";
+import {Badge} from "@/shared/ui/badge";
+import {Checkbox} from "@/shared/ui/checkbox";
+import {Label} from "@/shared/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
+  SelectValue
 } from "@/shared/ui/select";
-import { useState, useMemo, useEffect } from "react";
-import { useForm, useFieldArray, Controller, useWatch } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { toast } from "sonner";
+import {useState, useMemo, useEffect} from "react";
+import {useForm, useFieldArray, Controller, useWatch} from "react-hook-form";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {z} from "zod";
+import {toast} from "sonner";
 import {
-  Building2,
-  Calendar,
   Check,
   ChevronDown,
-  Clock,
-  ExternalLink,
   MapPin,
   Plus,
-  Trash2,
-  Users,
+  Trash2
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
-import { useQueryClient } from "@tanstack/react-query";
-import { PanelShell } from "@/core/panels/panel-shell";
-import { usePanels } from "@/core/panels/panel-store";
-import { useMesa, useMesasStore, type MesaInput } from "@/features/mesas/state/mesas-store";
-import { useSesionStore } from "@/features/sesion/state/session-store";
-import { crearMesaRemota } from "@/features/mesas/services/mesas-api";
-import { MESAS_KEYS } from "@/features/mesas/services/use-mesas-queries";
+import {motion, AnimatePresence} from "framer-motion";
+import {useQueryClient} from "@tanstack/react-query";
+import {PanelShell} from "@/core/panels/panel-shell";
+import {usePanels} from "@/core/panels/panel-store";
+import {useMesa, useMesasStore, type MesaInput} from "@/features/mesas/state/mesas-store";
+import {crearMesaRemota} from "@/features/mesas/services/mesas-api";
+import {MESAS_KEYS} from "@/features/mesas/services/use-mesas-queries";
 
 /**
  * Panel editor pro de mesa de trabajo — crear o editar.
@@ -132,8 +126,7 @@ export function MesaEditorPanel({
   const crearMesa = useMesasStore((s) => s.crearMesa);
   const actualizarMesa = useMesasStore((s) => s.actualizarMesa);
   const mesaEditada = useMesa(props.mesaId ?? "");
-  const sesion = useSesionStore((s) => s.sesion);
-
+  
   const esEdicion = Boolean(props.mesaId && mesaEditada);
 
   let defaultHoraInicio = "";

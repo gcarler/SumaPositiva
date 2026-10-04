@@ -1,12 +1,11 @@
 "use client";
 
-import { useState, useEffect, type FormEvent } from "react";
-import { toast } from "sonner";
+import {useState, useEffect, type FormEvent} from "react";
+import {toast} from "sonner";
 import {
   Coins,
   DollarSign,
   Calendar,
-  FileText,
   CheckCircle2,
   ShieldAlert,
   Lock,
@@ -14,33 +13,33 @@ import {
   Tag,
   AlertTriangle,
   Loader2,
-  FileDown,
+  FileDown
 } from "lucide-react";
-import { PanelShell } from "@/core/panels/panel-shell";
-import { usePanels } from "@/core/panels/panel-store";
-import type { PanelComponentProps } from "@/app/_composition/panel-registry";
-import { Button } from "@/shared/ui/button";
-import { FormField } from "@/shared/ui/form-field";
-import { Input } from "@/shared/ui/input";
-import { Textarea } from "@/shared/ui/textarea";
-import { Badge } from "@/shared/ui/badge";
-import { Label } from "@/shared/ui/label";
-import { Switch } from "@/shared/ui/switch";
+import {PanelShell} from "@/core/panels/panel-shell";
+import {usePanels} from "@/core/panels/panel-store";
+import type {PanelComponentProps} from "@/app/_composition/panel-registry";
+import {Button} from "@/shared/ui/button";
+import {FormField} from "@/shared/ui/form-field";
+import {Input} from "@/shared/ui/input";
+import {Textarea} from "@/shared/ui/textarea";
+import {Badge} from "@/shared/ui/badge";
+import {Label} from "@/shared/ui/label";
+import {Switch} from "@/shared/ui/switch";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
+  SelectValue
 } from "@/shared/ui/select";
-import { useSesionStore } from "@/features/sesion/state/session-store";
-import { puedeEditar } from "@/features/plataforma/models/acceso";
-import { useAlternativasStore } from "../state/alternativas-store";
+import {useSesionStore} from "@/features/sesion/state/session-store";
+import {puedeEditar} from "@/features/plataforma/models/acceso";
+import {useAlternativasStore} from "../state/alternativas-store";
 import {
   listarFuentesFinanciacion,
-  crearAsignacionPresupuestal,
+  crearAsignacionPresupuestal
 } from "../services/presupuesto-api";
-import type { FuenteFinanciacion, TipoVigenciaFutura } from "../models/presupuesto";
+import type {FuenteFinanciacion, TipoVigenciaFutura} from "../models/presupuesto";
 
 export function AsignacionPresupuestalPanel({
   entryKey,

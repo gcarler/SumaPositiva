@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { toast } from "sonner";
+import {useState, useMemo} from "react";
+import {toast} from "sonner";
 import {
   Plus,
   Search,
@@ -12,46 +12,46 @@ import {
   Filter,
   Lightbulb,
   Coins,
-  AlertTriangle,
+  AlertTriangle
 } from "lucide-react";
-import { PageHeader } from "@/shared/ui/page-header";
-import { Button } from "@/shared/ui/button";
-import { Input } from "@/shared/ui/input";
+import {PageHeader} from "@/shared/ui/page-header";
+import {Button} from "@/shared/ui/button";
+import {Input} from "@/shared/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
+  SelectValue
 } from "@/shared/ui/select";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
+  DropdownMenuTrigger
 } from "@/shared/ui/dropdown-menu";
-import { usePanels } from "@/core/panels/panel-store";
-import { useSesionStore } from "@/features/sesion/state/session-store";
-import { puedeEditar } from "@/features/plataforma/models/acceso";
-import { useFases } from "@/features/politicas/services/use-politicas-queries";
-import { AlternativasKpis } from "../components/alternativas-kpis";
-import { AlternativasTabla } from "../components/alternativas-tabla";
-import { CosteoPresupuestalView } from "../components/costeo-presupuestal-view";
+import {usePanels} from "@/core/panels/panel-store";
+import {useSesionStore} from "@/features/sesion/state/session-store";
+import {puedeEditar} from "@/features/plataforma/models/acceso";
+import {useFases} from "@/features/politicas/services/use-politicas-queries";
+import {AlternativasKpis} from "../components/alternativas-kpis";
+import {AlternativasTabla} from "../components/alternativas-tabla";
+import {CosteoPresupuestalView} from "../components/costeo-presupuestal-view";
 import {
   useAlternativasStore,
   calcularKPIsAlternativas,
-  filtrarAlternativas,
+  filtrarAlternativas
 } from "../state/alternativas-store";
 import type {
   EstadoAlternativa,
-  SectorMGA,
+  SectorMGA
 } from "../models/alternativa";
 import {
   SECTORES_MGA,
   ESTADOS_ALTERNATIVA,
-  LINEAS_ESTRATEGICAS_MAP,
+  LINEAS_ESTRATEGICAS_MAP
 } from "../models/alternativa";
-import { sanitizarCsv } from "@/shared/lib/csv";
+import {sanitizarCsv} from "@/shared/lib/csv";
 
 export function AlternativasView() {
   const [modoVista, setModoVista] = useState<"banco_mga" | "costeo_presupuesto">("banco_mga");
@@ -332,7 +332,7 @@ export function AlternativasView() {
                 <SelectItem value="todas" className="text-xs">
                   Todas las líneas
                 </SelectItem>
-                {Object.entries(LINEAS_ESTRATEGICAS_MAP).map(([key, label]) => (
+                {Object.entries(LINEAS_ESTRATEGICAS_MAP).map(([key, _label]) => (
                   <SelectItem key={key} value={key} className="text-xs">
                     {key}
                   </SelectItem>

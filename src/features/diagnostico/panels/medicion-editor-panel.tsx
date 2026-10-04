@@ -1,19 +1,19 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
-import { toast } from "sonner";
-import { BarChart3, Lock, Calendar, FileText, Link as LinkIcon, CheckCircle2 } from "lucide-react";
-import { PanelShell } from "@/core/panels/panel-shell";
-import { usePanels } from "@/core/panels/panel-store";
-import type { PanelComponentProps } from "@/app/_composition/panel-registry";
-import { Button } from "@/shared/ui/button";
-import { FormField } from "@/shared/ui/form-field";
-import { Input } from "@/shared/ui/input";
-import { Textarea } from "@/shared/ui/textarea";
-import { Badge } from "@/shared/ui/badge";
-import { useSesionStore } from "@/features/sesion/state/session-store";
-import { puedeEditar } from "@/features/plataforma/models/acceso";
-import { registrarMedicionIndicador } from "../services/indicadores-api";
+import {useState, type FormEvent} from "react";
+import {toast} from "sonner";
+import {Lock, CheckCircle2} from "lucide-react";
+import {PanelShell} from "@/core/panels/panel-shell";
+import {usePanels} from "@/core/panels/panel-store";
+import type {PanelComponentProps} from "@/app/_composition/panel-registry";
+import {Button} from "@/shared/ui/button";
+import {FormField} from "@/shared/ui/form-field";
+import {Input} from "@/shared/ui/input";
+import {Textarea} from "@/shared/ui/textarea";
+import {Badge} from "@/shared/ui/badge";
+import {useSesionStore} from "@/features/sesion/state/session-store";
+import {puedeEditar} from "@/features/plataforma/models/acceso";
+import {registrarMedicionIndicador} from "../services/indicadores-api";
 
 export function MedicionEditorPanel({
   entryKey,

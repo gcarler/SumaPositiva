@@ -1,31 +1,30 @@
 "use client";
 
 import "ol/ol.css";
-import { useCallback, useMemo, useState, useImperativeHandle, forwardRef } from "react";
-import { MapPin, Search, Plus, Minus, Compass, Loader2, Info } from "lucide-react";
-import { Button } from "@/shared/ui/button";
-import { Input } from "@/shared/ui/input";
+import {useCallback, useMemo, useState, useImperativeHandle, forwardRef} from "react";
+import {MapPin, Search, Plus, Minus, Compass, Loader2} from "lucide-react";
+import {Button} from "@/shared/ui/button";
+import {Input} from "@/shared/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
+  SelectValue
 } from "@/shared/ui/select";
-import { Label } from "@/shared/ui/label";
-import { BARRIOS_CARTAGENA, BARRIOS_POR_LOCALIDAD } from "../data/barrios.data";
-import type { Barrio } from "../data/barrios.data";
+import {Label} from "@/shared/ui/label";
+import {BARRIOS_CARTAGENA, BARRIOS_POR_LOCALIDAD} from "../data/barrios.data";
+import type {Barrio} from "../data/barrios.data";
 import {
-  LEYENDA_TERRITORIAL,
-  TERRITORIOS_CARTAGENA,
+  TERRITORIOS_CARTAGENA
 } from "../data/territorios.data";
-import type { Territorio } from "../data/territorios.data";
-import { useMapa, type HoverInfo } from "../hooks/use-mapa";
-import type { VariableMapa } from "../data/estadisticas.data";
-import { ESTADISTICAS_TERRITORIOS } from "../data/estadisticas.data";
-import type { CapasConfig } from "./geovisor-controles";
-import type { MesaGeovisor } from "../services/mesas-geovisor-api";
-import { usePanels } from "@/core/panels/panel-store";
+
+import {useMapa, type HoverInfo} from "../hooks/use-mapa";
+import type {VariableMapa} from "../data/estadisticas.data";
+import {ESTADISTICAS_TERRITORIOS} from "../data/estadisticas.data";
+import type {CapasConfig} from "./geovisor-controles";
+import type {MesaGeovisor} from "../services/mesas-geovisor-api";
+import {usePanels} from "@/core/panels/panel-store";
 
 export interface MapaCartagenaHandle {
   exportarPng: () => void;

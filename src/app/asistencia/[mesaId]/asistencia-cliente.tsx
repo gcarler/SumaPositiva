@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import {useState} from "react";
 import Link from "next/link";
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
+import {format} from "date-fns";
+import {es} from "date-fns/locale";
 import {
   CheckCircle2,
   CalendarDays,
@@ -13,27 +13,26 @@ import {
   UserCheck,
   Building2,
   ArrowRight,
-  RotateCcw,
-  Sparkles,
+  RotateCcw
 } from "lucide-react";
-import { Button } from "@/shared/ui/button";
-import { Input } from "@/shared/ui/input";
-import { Label } from "@/shared/ui/label";
-import { Checkbox } from "@/shared/ui/checkbox";
+import {Button} from "@/shared/ui/button";
+import {Input} from "@/shared/ui/input";
+import {Label} from "@/shared/ui/label";
+import {Checkbox} from "@/shared/ui/checkbox";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
+  SelectValue
 } from "@/shared/ui/select";
-import { Badge } from "@/shared/ui/badge";
-import { AGENDA_MESAS } from "@/features/mesas/data/agenda.data";
-import { CONTENIDO_MESAS } from "@/features/mesas/data/agenda-contenido.data";
-import { useMesasStore } from "@/features/mesas/state/mesas-store";
+import {Badge} from "@/shared/ui/badge";
+import {AGENDA_MESAS} from "@/features/mesas/data/agenda.data";
+import {CONTENIDO_MESAS} from "@/features/mesas/data/agenda-contenido.data";
+import {useMesasStore} from "@/features/mesas/state/mesas-store";
 import {
   useAsistenciaStore,
-  type NuevoAsistenteInput,
+  type NuevoAsistenteInput
 } from "@/features/mesas/state/asistencia-store";
 import {
   type EnfoqueDiferencial,
@@ -42,7 +41,7 @@ import {
   type RegistroAsistencia,
   ENFOQUES_DIFERENCIALES_LABELS,
   TIPOS_DOCUMENTO_LABELS,
-  GENEROS_LABELS,
+  GENEROS_LABELS
 } from "@/features/mesas/models/asistencia";
 
 export function AsistenciaCliente({ mesaId }: { mesaId: string }) {

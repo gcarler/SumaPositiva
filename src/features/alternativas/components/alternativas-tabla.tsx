@@ -1,24 +1,23 @@
 "use client";
 
-import { useMemo } from "react";
-import { FileEdit, ShieldAlert, Sparkles, MapPin, Eye, Scale } from "lucide-react";
-import { Button } from "@/shared/ui/button";
-import { Badge } from "@/shared/ui/badge";
+import {FileEdit, ShieldAlert, Sparkles, MapPin, Eye, Scale} from "lucide-react";
+import {Button} from "@/shared/ui/button";
+import {Badge} from "@/shared/ui/badge";
 import {
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
-  TableRow,
+  TableRow
 } from "@/shared/ui/table";
-import { usePanels } from "@/core/panels/panel-store";
-import type { AlternativaSolucion } from "../models/alternativa";
+import {usePanels} from "@/core/panels/panel-store";
+import type {AlternativaSolucion} from "../models/alternativa";
 import {
   ESTADOS_ALTERNATIVA,
   SECTORES_MGA,
   LINEAS_ESTRATEGICAS_MAP,
-  DIMENSIONES_ONU_MAP,
+  DIMENSIONES_ONU_MAP
 } from "../models/alternativa";
 
 interface AlternativasTablaProps {

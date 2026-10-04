@@ -1,9 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
+import {useEffect, useState} from "react";
+import {toast} from "sonner";
 import {
-  MapPin,
   Users,
   AlertTriangle,
   Building2,
@@ -13,16 +12,15 @@ import {
   HeartPulse,
   Utensils,
   Radio,
-  FileText,
-  BadgeCheck,
+  BadgeCheck
 } from "lucide-react";
-import { PanelShell } from "@/core/panels/panel-shell";
-import { usePanels } from "@/core/panels/panel-store";
-import type { PanelComponentProps } from "@/app/_composition/panel-registry";
-import { Button } from "@/shared/ui/button";
-import { Badge } from "@/shared/ui/badge";
-import { obtenerFichaTerritorial } from "../services/territorios-api";
-import type { FichaTerritorialDiagnostico } from "../models/territorio-diagnostico";
+import {PanelShell} from "@/core/panels/panel-shell";
+import {usePanels} from "@/core/panels/panel-store";
+import type {PanelComponentProps} from "@/app/_composition/panel-registry";
+import {Button} from "@/shared/ui/button";
+import {Badge} from "@/shared/ui/badge";
+import {obtenerFichaTerritorial} from "../services/territorios-api";
+import type {FichaTerritorialDiagnostico} from "../models/territorio-diagnostico";
 
 export function FichaTerritorialPanel({
   entryKey,

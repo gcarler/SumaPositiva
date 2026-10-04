@@ -1,18 +1,18 @@
 "use client";
 
-import { Button } from "@/shared/ui/button";
-import { Textarea } from "@/shared/ui/textarea";
-import { Input } from "@/shared/ui/input";
-import { FormField } from "@/shared/ui/form-field";
-import { Badge } from "@/shared/ui/badge";
-import { Switch } from "@/shared/ui/switch";
-import { Label } from "@/shared/ui/label";
+import {Button} from "@/shared/ui/button";
+import {Textarea} from "@/shared/ui/textarea";
+import {Input} from "@/shared/ui/input";
+import {FormField} from "@/shared/ui/form-field";
+import {Badge} from "@/shared/ui/badge";
+import {Switch} from "@/shared/ui/switch";
+import {Label} from "@/shared/ui/label";
 
-import { useState, useMemo, useEffect } from "react";
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
-import { AnimatePresence, motion } from "framer-motion";
-import { toast } from "sonner";
+import {useState, useMemo} from "react";
+import {format} from "date-fns";
+import {es} from "date-fns/locale";
+import {AnimatePresence, motion} from "framer-motion";
+import {toast} from "sonner";
 import {
   ArrowRight,
   CalendarDays,
@@ -20,7 +20,6 @@ import {
   FileText,
   FolderSync,
   Landmark,
-  Layers,
   MapPin,
   Pencil,
   Plus,
@@ -34,20 +33,19 @@ import {
   Search,
   ExternalLink,
   Printer,
-  Maximize2,
-  Share2,
+  Share2
 } from "lucide-react";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
+  SelectValue
 } from "@/shared/ui/select";
 import {
   useAsistenciaStore,
   useRegistrosMesa,
-  calcularResumenEnfoques,
+  calcularResumenEnfoques
 } from "@/features/mesas/state/asistencia-store";
 import {
   ENFOQUES_DIFERENCIALES_LABELS,
@@ -56,32 +54,31 @@ import {
   GENEROS_LABELS,
   type EnfoqueDiferencial,
   type TipoDocumento,
-  type Genero,
-  type RegistroAsistencia,
+  type Genero
 } from "@/features/mesas/models/asistencia";
-import { PanelShell } from "@/core/panels/panel-shell";
-import { usePanels } from "@/core/panels/panel-store";
+import {PanelShell} from "@/core/panels/panel-shell";
+import {usePanels} from "@/core/panels/panel-store";
 import {
   useMesaQuery,
   useActualizarAcuerdos,
   useActualizarInforme,
   useCrearSubMesa,
-  useActualizarAsistentesPlenaria,
+  useActualizarAsistentesPlenaria
 } from "@/features/mesas/services/use-mesas-queries";
-import { useMesasStore, type SubMesaInput } from "@/features/mesas/state/mesas-store";
-import { useSesionStore } from "@/features/sesion/state/session-store";
+import {useMesasStore, type SubMesaInput} from "@/features/mesas/state/mesas-store";
+import {useSesionStore} from "@/features/sesion/state/session-store";
 import {
   calcularTotalAsistentes,
   estadoDiligenciamiento,
   resumenProblemas,
   resumenSoluciones,
   type ArbolProblemas,
-  type ArbolSoluciones,
+  type ArbolSoluciones
 } from "@/features/mesas/models/mesas";
-import { CONTENIDO_MESAS } from "@/features/mesas/data/agenda-contenido.data";
-import { SectionLabel } from "@/shared/components/participation-ui";
-import { AdjuntosZona } from "@/features/mesas/components/adjuntos-zona";
-import { MatrizArbolRelatoria } from "@/features/mesas/components/matriz-arbol-relatoria";
+import {CONTENIDO_MESAS} from "@/features/mesas/data/agenda-contenido.data";
+import {SectionLabel} from "@/shared/components/participation-ui";
+import {AdjuntosZona} from "@/features/mesas/components/adjuntos-zona";
+import {MatrizArbolRelatoria} from "@/features/mesas/components/matriz-arbol-relatoria";
 
 /**
  * Panel de mesa de trabajo — el "acta viva" del área de trabajo.

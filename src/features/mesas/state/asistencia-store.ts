@@ -1,17 +1,17 @@
 "use client";
 
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import {create} from "zustand";
+import {persist} from "zustand/middleware";
 import type {
   RegistroAsistencia,
-  EnfoqueDiferencial,
+  EnfoqueDiferencial
 } from "@/features/mesas/models/asistencia";
 import {
   ENFOQUES_DIFERENCIALES_LABELS,
   TIPOS_DOCUMENTO_LABELS,
-  GENEROS_LABELS,
+  GENEROS_LABELS
 } from "@/features/mesas/models/asistencia";
-import { sanitizarCsv as escapeCSV } from "@/shared/lib/csv";
+import {sanitizarCsv as escapeCSV} from "@/shared/lib/csv";
 
 export type NuevoAsistenteInput = Omit<RegistroAsistencia, "id" | "horaRegistro">;
 
@@ -242,8 +242,7 @@ export const useAsistenciaStore = create<AsistenciaState>()(
           return;
         }
 
-        const titulo = (nombreMesa || `Mesa_${mesaId}`).replace(/[^\w\s-]/gi, "_");
-        const fechaDescarga = new Date().toISOString().split("T")[0];
+                const fechaDescarga = new Date().toISOString().split("T")[0];
 
         // Encabezados con metadatos institucionales
         const metadataHeader = [

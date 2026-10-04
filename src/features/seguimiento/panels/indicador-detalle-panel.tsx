@@ -1,34 +1,33 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
-import { toast } from "sonner";
+import {useState, useMemo, useEffect} from "react";
+import {toast} from "sonner";
 import {
   FileText,
   Activity,
   Calculator,
   Database,
   Building2,
-  Calendar,
   ShieldCheck,
   Save,
   TrendingUp,
   TrendingDown,
   ExternalLink,
-  Layers,
+  Layers
 } from "lucide-react";
-import { PanelShell } from "@/core/panels/panel-shell";
-import { usePanels } from "@/core/panels/panel-store";
-import type { PanelComponentProps } from "@/app/_composition/panel-registry";
-import { Button } from "@/shared/ui/button";
-import { Input } from "@/shared/ui/input";
-import { Textarea } from "@/shared/ui/textarea";
-import { Badge } from "@/shared/ui/badge";
-import { FormField } from "@/shared/ui/form-field";
-import { useSesionStore } from "@/features/sesion/state/session-store";
-import { useCadenaValorStore } from "../state/cadena-valor-store";
+import {PanelShell} from "@/core/panels/panel-shell";
+import {usePanels} from "@/core/panels/panel-store";
+import type {PanelComponentProps} from "@/app/_composition/panel-registry";
+import {Button} from "@/shared/ui/button";
+import {Input} from "@/shared/ui/input";
+import {Textarea} from "@/shared/ui/textarea";
+import {Badge} from "@/shared/ui/badge";
+import {FormField} from "@/shared/ui/form-field";
+import {useSesionStore} from "@/features/sesion/state/session-store";
+import {useCadenaValorStore} from "../state/cadena-valor-store";
 import {
   calcularAvancePorcentaje,
-  obtenerSemaforoAvance,
+  obtenerSemaforoAvance
 } from "../models/indicador-dnp";
 
 export function IndicadorDetallePanel({

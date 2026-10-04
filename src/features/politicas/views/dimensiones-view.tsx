@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import {useState, useMemo} from "react";
 import Link from "next/link";
-import { motion, useReducedMotion } from "framer-motion";
+import {motion, useReducedMotion} from "framer-motion";
 import {
   Compass,
   Building2,
@@ -13,27 +13,24 @@ import {
   MapPin,
   BarChart3,
   CheckCircle2,
-  AlertTriangle,
-  AlertCircle,
   Sparkles,
   Layers,
   ChevronRight,
-  FileCheck2,
+  FileCheck2
 } from "lucide-react";
-import { usePanels } from "@/core/panels/panel-store";
-import { Button } from "@/shared/ui/button";
-import { Input } from "@/shared/ui/input";
+import {usePanels} from "@/core/panels/panel-store";
+import {Button} from "@/shared/ui/button";
+import {Input} from "@/shared/ui/input";
 import {
   DEPENDENCIAS_CARTAGENA_2026,
   AVANCE_PROMEDIO_PDD_2026,
   FECHA_CORTE_AUDITORIA,
-  obtenerDependenciaPorId,
+  obtenerDependenciaPorId
 } from "../data/entidades-cartagena.data";
 import {
   DIMENSIONES_DETALLE_2026,
-  GABINETE_TITULARES,
   obtenerEntidadConTitular,
-  type DimensionDetalle,
+  type DimensionDetalle
 } from "../data/dimensiones-detalle.data";
 
 type ModoExploracion = "dimensiones" | "dependencias";

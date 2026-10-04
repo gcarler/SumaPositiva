@@ -1,19 +1,19 @@
-import { FORMULARIOS_MOCK, RESPUESTAS_MOCK } from "@/features/formularios/__fixtures__/formularios.fixture";
-import { useFormulariosStore } from "@/features/formularios/state/formularios-store";
-import { simularApiFormularios } from "./formularios-mock-api";
-import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { expect, userEvent, waitFor, within } from "storybook/test";
-import { QueryProvider } from "@/app/_composition/query-provider";
+import {FORMULARIOS_MOCK, RESPUESTAS_MOCK} from "@/features/formularios/__fixtures__/formularios.fixture";
+import {useFormulariosStore} from "@/features/formularios/state/formularios-store";
+import {simularApiFormularios} from "./formularios-mock-api";
+import type {Meta, StoryObj} from "@storybook/nextjs-vite";
+import {expect, userEvent, waitFor, within} from "storybook/test";
+import {QueryProvider} from "@/app/_composition/query-provider";
 import Home from "@/app/page";
-import { PanelHost } from "@/app/_components/panel-host";
-import { Toaster } from "@/shared/ui/sonner";
-import { useNavigationStore } from "@/core/navigation/navigation-store";
-import { usePanelStore } from "@/core/panels/panel-store";
-import { usePoliticasStore } from "@/features/politicas/state/politicas-store";
-import { useMesasStore } from "@/features/mesas/state/mesas-store";
-import { useSesionStore } from "@/features/sesion/state/session-store";
-import { POLITICAS_MOCK } from "@/features/politicas/__fixtures__/politicas.fixture";
-import { MESAS_MOCK } from "@/features/mesas/__fixtures__/mesas.fixture";
+import {PanelHost} from "@/app/_components/panel-host";
+import {Toaster} from "@/shared/ui/sonner";
+import {useNavigationStore} from "@/core/navigation/navigation-store";
+import {usePanelStore} from "@/core/panels/panel-store";
+import {usePoliticasStore} from "@/features/politicas/state/politicas-store";
+import {useMesasStore} from "@/features/mesas/state/mesas-store";
+import {useSesionStore} from "@/features/sesion/state/session-store";
+import {POLITICAS_MOCK} from "@/features/politicas/__fixtures__/politicas.fixture";
+import {MESAS_MOCK} from "@/features/mesas/__fixtures__/mesas.fixture";
 
 const meta = {
   title: "Plataforma/Pantallas",
@@ -244,9 +244,8 @@ export const CatalogoConNombresAccesibles: Story = {
 
 export const GaleriaAccesible: Story = {
   beforeEach: () => {
-    const restaurarFormularios = simularApiFormularios();
-    const cacheAnterior = useFormulariosStore.getState();
-    useFormulariosStore.setState({formularios: structuredClone(FORMULARIOS_MOCK).map(f=>({...f, origenDatos:"api"})), respuestas: structuredClone(RESPUESTAS_MOCK)});
+    simularApiFormularios();
+        useFormulariosStore.setState({formularios: structuredClone(FORMULARIOS_MOCK).map(f=>({...f, origenDatos:"api"})), respuestas: structuredClone(RESPUESTAS_MOCK)});
     const fetchOriginal = window.fetch;
     window.fetch = async (entrada, opciones) => {
       const ruta = new URL(typeof entrada === "string" ? entrada : entrada instanceof Request ? entrada.url : entrada.href, window.location.origin).pathname;

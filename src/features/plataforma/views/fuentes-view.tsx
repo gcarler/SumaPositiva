@@ -1,21 +1,20 @@
 "use client";
 
-import { useMemo } from "react";
-import { Search, RotateCcw, Filter } from "lucide-react";
-import { PageHeader } from "@/shared/ui/page-header";
-import { Button } from "@/shared/ui/button";
-import { Input } from "@/shared/ui/input";
+import {Search, RotateCcw, Filter} from "lucide-react";
+import {PageHeader} from "@/shared/ui/page-header";
+import {Button} from "@/shared/ui/button";
+import {Input} from "@/shared/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
+  SelectValue
 } from "@/shared/ui/select";
-import { FuentesKpis } from "@/features/fuentes/components/fuentes-kpis";
-import { FuentesDataGrid } from "@/features/fuentes/components/fuentes-datagrid";
-import { useFuentesStore } from "@/features/fuentes/state/fuentes-store";
-import type { AmbitoFuente, EstadoEntrega } from "@/features/fuentes/models/fuente";
+import {FuentesKpis} from "@/features/fuentes/components/fuentes-kpis";
+import {FuentesDataGrid} from "@/features/fuentes/components/fuentes-datagrid";
+import {useFuentesStore} from "@/features/fuentes/state/fuentes-store";
+import type {AmbitoFuente, EstadoEntrega} from "@/features/fuentes/models/fuente";
 
 export function FuentesView() {
   const filtros = useFuentesStore((s) => s.filtros);
