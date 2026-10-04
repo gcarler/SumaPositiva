@@ -35,6 +35,8 @@ export interface RegistroAsistencia {
   correo?: string;
   horaRegistro: string;
   subMesaAsignada?: string;
+  pendienteSincronizacion?: boolean;
+  sincronizadoEn?: string;
 }
 
 export const ENFOQUES_DIFERENCIALES_LABELS: Record<EnfoqueDiferencial, string> = {

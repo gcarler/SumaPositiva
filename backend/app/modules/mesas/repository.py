@@ -2,7 +2,7 @@ import uuid
 from collections.abc import Sequence
 from datetime import date
 
-from sqlalchemy import func, select, text
+from sqlalchemy import func, or_, select, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.modules.mesas.models import ActaComunitaria, Mesa, MesaAgenda, ParticipanteMesa
@@ -35,7 +35,14 @@ class MesaRepository:
         return res.scalar_one_or_none()
 
     async def obtener_por_codigo(self, codigo: str) -> Mesa | None:
-        stmt = select(Mesa).where(Mesa.codigo_oficial == codigo)
+        stmt = select(Mesa).where(
+            or_(
+                Mesa.codigo_oficial == codigo,
+                Mesa.shortcode_ciudadano == codigo,
+                func.lower(Mesa.codigo_oficial) == func.lower(codigo),
+                func.lower(Mesa.shortcode_ciudadano) == func.lower(codigo),
+            )
+        )
         res = await self.session.execute(stmt)
         return res.scalar_one_or_none()
 

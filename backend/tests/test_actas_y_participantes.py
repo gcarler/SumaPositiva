@@ -354,3 +354,79 @@ async def test_trigger_inmutabilidad_bd_csh(database_url: str, cabeceras_gestion
         assert "Violación Forense (Sentencia C-150/15)" in str(exc_delete.value)
 
     await db.engine.dispose()
+
+
+async def test_registro_asistencia_por_codigo_y_metadatos_completos(database_url: str, cabeceras_gestion):
+    settings = Settings(_env_file=None, environment="test", database_url=database_url)
+    app = create_app(settings)
+
+    with TestClient(app, headers=cabeceras_gestion) as client:
+        test_id = uuid.uuid4().hex[:6]
+        codigo_mesa = f"MT-EDIT08-{test_id}"
+        shortcode = f"E08{test_id}"
+
+        # 1. Crear Mesa
+        resp_mesa = client.post(
+            "/api/v1/mesas",
+            json={
+                "tipo_mesa": "TERRITORIAL",
+                "codigo_oficial": codigo_mesa,
+                "shortcode_ciudadano": shortcode,
+                "nombre": "Mesa Territorial San Francisco - Puerta Abierta",
+                "aforo_maximo": 50,
+                "estado": "PROGRAMADA",
+                "modalidad": "PRESENCIAL",
+            },
+        )
+        assert resp_mesa.status_code == 201
+        mesa_uuid = resp_mesa.json()["id"]
+
+        # 2. Registrar asistente usando el código oficial en la URL en vez del UUID
+        payload_asistente = {
+            "sujeto_id": f"doc:CC:45489120_{test_id}",
+            "nombre_completo": "Dora Luz Morales Mendoza",
+            "rol_en_mesa": "ciudadano",
+            "organizacion_comunitaria": "JAC Getsemaní — Calle del Pozo",
+            "asistencia_confirmada": True,
+            "metadatos": {
+                "tipo_documento": "CC",
+                "numero_documento": "45.489.120",
+                "genero": "mujer",
+                "enfoque_diferencial": "afrodescendiente",
+                "organizacion_o_barrio": "JAC Getsemaní — Calle del Pozo",
+                "telefono_whatsapp": "300 458 9123",
+                "correo": "dora.morales@getsemani.org",
+                "submesa_asignada": "Seguridad Ciudadana y Espacio Público",
+            },
+        }
+        resp_reg = client.post(
+            f"/api/v1/mesas/{codigo_mesa}/participantes",
+            json=payload_asistente,
+        )
+        assert resp_reg.status_code == 201, resp_reg.text
+        data_reg = resp_reg.json()
+        assert data_reg["nombre_completo"] == "Dora Luz Morales Mendoza"
+        assert data_reg["mesa_id"] == mesa_uuid
+        assert data_reg["metadatos"]["enfoque_diferencial"] == "afrodescendiente"
+        assert data_reg["metadatos"]["tipo_documento"] == "CC"
+        assert data_reg["organizacion_comunitaria"] == "JAC Getsemaní — Calle del Pozo"
+
+        # 3. Listar participantes por el shortcode de la mesa
+        resp_lista = client.get(f"/api/v1/mesas/{shortcode}/participantes")
+        assert resp_lista.status_code == 200
+        lista = resp_lista.json()
+        assert len(lista) == 1
+        assert lista[0]["id"] == data_reg["id"]
+
+        # 4. Intento de registro duplicado con mismo sujeto_id retorna 409
+        resp_dup = client.post(
+            f"/api/v1/mesas/{codigo_mesa}/participantes",
+            json=payload_asistente,
+        )
+        assert resp_dup.status_code == 409
+
+        # 5. Total de asistentes de la mesa se actualiza a 1
+        resp_mesa_get = client.get(f"/api/v1/mesas/{mesa_uuid}")
+        assert resp_mesa_get.status_code == 200
+        assert resp_mesa_get.json()["total_asistentes"] == 1
+

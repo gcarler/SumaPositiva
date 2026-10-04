@@ -13,7 +13,9 @@ import {
   UserCheck,
   Building2,
   ArrowRight,
-  RotateCcw
+  RotateCcw,
+  CloudOff,
+  RefreshCw,
 } from "lucide-react";
 import {Button} from "@/shared/ui/button";
 import {Input} from "@/shared/ui/input";
@@ -33,6 +35,7 @@ import {CONTENIDO_MESAS} from "@/features/mesas/data/agenda-contenido.data";
 import {useMesasStore} from "@/features/mesas/state/mesas-store";
 import {
   useAsistenciaStore,
+  useRegistrosMesa,
   type NuevoAsistenteInput
 } from "@/features/mesas/state/asistencia-store";
 import {
@@ -46,11 +49,19 @@ import {
 } from "@/features/mesas/models/asistencia";
 
 export function AsistenciaCliente({ mesaId }: { mesaId: string }) {
+  const registrarAsistente = useAsistenciaStore((s) => s.registrarAsistente);
+  const sincronizarPendientes = useAsistenciaStore((s) => s.sincronizarPendientes);
+  const cargarAsistentesDesdeBackend = useAsistenciaStore((s) => s.cargarAsistentesDesdeBackend);
+  const registrosMesa = useRegistrosMesa(mesaId);
+  const pendientesSincronizacion = registrosMesa.filter((r) => r.pendienteSincronizacion);
+
+  const [sincronizando, setSincronizando] = useState(false);
+  const [mensajeSincronizacion, setMensajeSincronizacion] = useState<string | null>(null);
+
   useEffect(() => {
     useAgendaStore.getState().cargarAgendas();
-  }, []);
-
-  const registrarAsistente = useAsistenciaStore((s) => s.registrarAsistente);
+    cargarAsistentesDesdeBackend(mesaId);
+  }, [mesaId, cargarAsistentesDesdeBackend]);
   const mesaStore = useMesasStore((s) => s.mesas.find((m) => m.id === mesaId));
   const agendaDinamica = useAgendaStore((s) => s.agendas.find((m) => m.id === mesaId));
   const mesaAgenda = agendaDinamica || AGENDA_MESAS.find((m) => m.id === mesaId);
@@ -89,7 +100,7 @@ export function AsistenciaCliente({ mesaId }: { mesaId: string }) {
   const [registroExitoso, setRegistroExitoso] = useState<RegistroAsistencia | null>(null);
   const [errorValidacion, setErrorValidacion] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorValidacion(null);
 
@@ -125,12 +136,29 @@ export function AsistenciaCliente({ mesaId }: { mesaId: string }) {
         subMesaAsignada: subMesaAsignada === "Plenaria General" ? undefined : subMesaAsignada,
       };
 
-      const creado = registrarAsistente(input);
+      const creado = await registrarAsistente(input);
       setRegistroExitoso(creado);
     } catch {
       setErrorValidacion("Ocurrió un error al guardar el registro. Inténtalo de nuevo.");
     } finally {
       setEnviando(false);
+    }
+  };
+
+  const handleSincronizarPendientes = async () => {
+    setSincronizando(true);
+    setMensajeSincronizacion(null);
+    try {
+      const res = await sincronizarPendientes(mesaId);
+      if (res.exitosos > 0) {
+        setMensajeSincronizacion(`Se sincronizaron exitosamente ${res.exitosos} registro(s) con PostgreSQL.`);
+      } else if (res.fallidos > 0) {
+        setMensajeSincronizacion("No fue posible conectar con el servidor central. Los datos continúan protegidos localmente.");
+      }
+    } catch {
+      setMensajeSincronizacion("Fallo temporal de conexión al sincronizar.");
+    } finally {
+      setSincronizando(false);
     }
   };
 
@@ -208,31 +236,92 @@ export function AsistenciaCliente({ mesaId }: { mesaId: string }) {
           </div>
         </section>
 
+        {/* Banner de Sincronización Offline si existen registros pendientes en el dispositivo */}
+        {pendientesSincronizacion.length > 0 && !registroExitoso && (
+          <div className="mb-6 rounded-xl border border-[var(--warning)]/40 bg-[var(--warning)]/10 p-3.5 flex items-center justify-between text-xs animate-in fade-in duration-200">
+            <div className="flex items-center gap-2 text-[var(--warning)]">
+              <CloudOff className="size-4 shrink-0" />
+              <span>
+                <strong>{pendientesSincronizacion.length} asistente(s)</strong> en modo contingencia local pendientes de subir a PostgreSQL.
+              </span>
+            </div>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="text-xs h-7 px-2.5 border-[var(--warning)]/40 text-[var(--warning)] hover:bg-[var(--warning)]/20"
+              disabled={sincronizando}
+              onClick={handleSincronizarPendientes}
+            >
+              <RefreshCw className={`size-3 mr-1.5 ${sincronizando ? "animate-spin" : ""}`} />
+              {sincronizando ? "Subiendo…" : "Sincronizar"}
+            </Button>
+          </div>
+        )}
+
+        {mensajeSincronizacion && !registroExitoso && (
+          <div className="mb-4 rounded-lg border border-[var(--border)] bg-[var(--surface-2)] p-2.5 text-xs text-[var(--text-secondary)] flex justify-between items-center">
+            <span>{mensajeSincronizacion}</span>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="text-[11px] h-6 px-1.5"
+              onClick={() => setMensajeSincronizacion(null)}
+            >
+              Cerrar
+            </Button>
+          </div>
+        )}
+
         {/* Vista de éxito tras registro */}
         {registroExitoso ? (
-          <div className="space-y-6 rounded-2xl border border-[var(--success)]/40 bg-[var(--surface-1)] p-6 text-center shadow-lg animate-in fade-in zoom-in-95 duration-200">
-            <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-[var(--success)]/15 text-[var(--success)]">
+          <div className={`space-y-6 rounded-2xl border p-6 text-center shadow-lg animate-in fade-in zoom-in-95 duration-200 bg-[var(--surface-1)] ${
+            registroExitoso.pendienteSincronizacion ? "border-[var(--warning)]/40" : "border-[var(--success)]/40"
+          }`}>
+            <div className={`mx-auto flex size-14 items-center justify-center rounded-full ${
+              registroExitoso.pendienteSincronizacion
+                ? "bg-[var(--warning)]/15 text-[var(--warning)]"
+                : "bg-[var(--success)]/15 text-[var(--success)]"
+            }`}>
               <CheckCircle2 className="size-8" />
             </div>
 
             <div className="space-y-2">
-              <Badge variant="outline" className="bg-[var(--success)]/10 text-[var(--success)] border-[var(--success)]/30 font-medium">
-                Registro Oficial Confirmado
+              <Badge
+                variant="outline"
+                className={`font-medium ${
+                  registroExitoso.pendienteSincronizacion
+                    ? "bg-[var(--warning)]/10 text-[var(--warning)] border-[var(--warning)]/30"
+                    : "bg-[var(--success)]/10 text-[var(--success)] border-[var(--success)]/30"
+                }`}
+              >
+                {registroExitoso.pendienteSincronizacion
+                  ? "Modo Contingencia Local — Radicado en Dispositivo"
+                  : "Registro Oficial Confirmado (PostgreSQL)"}
               </Badge>
               <h2 className="text-xl font-bold text-[var(--text-primary)]">
-                ¡Registro exitoso!
+                {registroExitoso.pendienteSincronizacion
+                  ? "¡Asistencia radicada localmente!"
+                  : "¡Registro exitoso!"}
               </h2>
-              <p className="text-sm text-[var(--text-secondary)]">
-                Gracias por construir la Seguridad Humana Integral de Cartagena de Indias (2026–2036).
+              <p className="text-xs text-[var(--text-secondary)]">
+                {registroExitoso.pendienteSincronizacion
+                  ? "Tu registro quedó asegurado en la memoria del dispositivo. Se sincronizará automáticamente con PostgreSQL al detectar conexión al servidor distrital."
+                  : "Gracias por construir la Seguridad Humana Integral de Cartagena de Indias (2026–2036)."}
               </p>
             </div>
 
             {/* Comprobante digital */}
             <div className="rounded-xl border border-[var(--border)] bg-[var(--surface-2)]/60 p-4 text-left text-xs space-y-2">
               <div className="flex justify-between items-center pb-2 border-b border-[var(--border)]">
-                <span className="text-[var(--text-tertiary)] font-mono">Radicado:</span>
+                <span className="text-[var(--text-tertiary)] font-mono">
+                  {registroExitoso.pendienteSincronizacion ? "Radicado Local:" : "ID PostgreSQL:"}
+                </span>
                 <span className="font-mono font-bold text-[var(--text-primary)]">
-                  POLIS-{registroExitoso.id.toUpperCase().slice(-8)}
+                  {registroExitoso.pendienteSincronizacion
+                    ? `LOCAL-${registroExitoso.id.toUpperCase().slice(-8)}`
+                    : `PG-${registroExitoso.id}`}
                 </span>
               </div>
               <div className="flex justify-between">

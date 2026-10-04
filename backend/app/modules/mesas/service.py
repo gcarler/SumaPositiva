@@ -317,16 +317,28 @@ class MesaService:
 
     # --- Participantes ---
 
+    async def _resolver_mesa_uuid(self, mesa_id: uuid.UUID | str) -> uuid.UUID:
+        if isinstance(mesa_id, uuid.UUID):
+            return mesa_id
+        try:
+            return uuid.UUID(str(mesa_id))
+        except (ValueError, TypeError, AttributeError):
+            mesa = await self.repository.obtener_por_codigo(str(mesa_id))
+            if not mesa:
+                raise HTTPException(status.HTTP_404_NOT_FOUND, detail="Mesa no encontrada")
+            return mesa.id
+
     async def registrar_participante(
-        self, mesa_id: uuid.UUID, datos: ParticipanteCrear
+        self, mesa_id: uuid.UUID | str, datos: ParticipanteCrear
     ) -> ParticipanteRespuesta:
+        mesa_uuid = await self._resolver_mesa_uuid(mesa_id)
         async with transaction(self.repository.session):
             # Serializar registro y recuento de asistentes hasta finalizar el caso de uso.
-            mesa = await self.repository.obtener_para_actualizar(mesa_id)
+            mesa = await self.repository.obtener_para_actualizar(mesa_uuid)
             if not mesa:
                 raise HTTPException(status.HTTP_404_NOT_FOUND, detail="Mesa no encontrada")
 
-            existente = await self.repository.obtener_participante(mesa_id, datos.sujeto_id)
+            existente = await self.repository.obtener_participante(mesa_uuid, datos.sujeto_id)
             if existente:
                 raise HTTPException(
                     status.HTTP_409_CONFLICT,
@@ -334,7 +346,7 @@ class MesaService:
                 )
 
             participante = ParticipanteMesa(
-                mesa_id=mesa_id,
+                mesa_id=mesa_uuid,
                 **datos.model_dump(),
             )
 
@@ -347,17 +359,18 @@ class MesaService:
                 ) from err
 
             # Actualizar total de asistentes
-            total = await self.repository.contar_participantes(mesa_id)
+            total = await self.repository.contar_participantes(mesa_uuid)
             mesa.total_asistentes = total
             await self.repository.actualizar_mesa(mesa)
 
             return ParticipanteRespuesta.model_validate(participante)
 
-    async def listar_participantes(self, mesa_id: uuid.UUID) -> list[ParticipanteRespuesta]:
-        mesa = await self.repository.obtener_por_id(mesa_id)
+    async def listar_participantes(self, mesa_id: uuid.UUID | str) -> list[ParticipanteRespuesta]:
+        mesa_uuid = await self._resolver_mesa_uuid(mesa_id)
+        mesa = await self.repository.obtener_por_id(mesa_uuid)
         if not mesa:
             raise HTTPException(status.HTTP_404_NOT_FOUND, detail="Mesa no encontrada")
-        participantes = await self.repository.listar_participantes(mesa_id)
+        participantes = await self.repository.listar_participantes(mesa_uuid)
         return [ParticipanteRespuesta.model_validate(p) for p in participantes]
 
     # --- Actas Comunitarias ---

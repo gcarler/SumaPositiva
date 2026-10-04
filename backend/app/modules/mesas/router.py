@@ -227,7 +227,7 @@ async def obtener_submesas(mesa_id: uuid.UUID, service: MesaServiceDep):
     dependencies=[Depends(requerir_permiso("asistencia:verificar", nivel_minimo="declarada"))],
 )
 async def registrar_participante(
-    mesa_id: uuid.UUID, datos: ParticipanteCrear, service: MesaServiceDep
+    mesa_id: str, datos: ParticipanteCrear, service: MesaServiceDep
 ):
     return await service.registrar_participante(mesa_id, datos)
 
@@ -237,7 +237,7 @@ async def registrar_participante(
     response_model=list[ParticipanteRespuesta],
     dependencies=[Depends(requerir_permiso("asistencia:verificar", nivel_minimo="declarada"))],
 )
-async def listar_participantes(mesa_id: uuid.UUID, service: MesaServiceDep):
+async def listar_participantes(mesa_id: str, service: MesaServiceDep):
     return await service.listar_participantes(mesa_id)
 
 

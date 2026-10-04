@@ -2498,3 +2498,91 @@ En atención a la auditoría forense de conectividad Frontend ↔ Backend y a la
 | **Pruebas de Integración Backend (`polis_test`)** | `backend/.venv/bin/pytest backend/tests/test_participacion_multicanal.py` | **5 passed in 7.49s** (consolidado, canal web, canal mesas, escenarios y desglose). |
 | **Aislamiento de Módulos Codex** | `git status` | Archivos de noticias y testimonios estrictamente intactos. |
 | **Salvaguarda de Base de Datos** | N/A | Cero migraciones ejecutadas sobre `bd_csh`, cero push a remoto. |
+
+---
+
+# Tarea EDIT-08: Cableado de Asistencia Pública Directa a PostgreSQL
+
+**Fecha**: 2026-10-04T08:44:00Z  
+**Estado**: LISTA PARA AUDITORÍA PERICIAL (EAF)  
+**Responsable**: agy2 (Equipo de Desarrollo EDD)  
+**Prioridad**: ALTA (Persistencia Real de Participación y Quórum en Mesas)  
+**Especificación**: `bridge/01_tarea_agy2_edit_08.md`  
+
+---
+
+### 1. Resumen de la Solución e Integración Fullstack (EDIT-08)
+
+En atención al mandato de auditoría forense para erradicar la persistencia puramente local (`localStorage`) en la planilla ciudadana de asistencia y conectar el flujo directamente con la base de datos PostgreSQL:
+
+1. **Resolución Flexible de Identificador de Mesa en Backend (`mesa_id: str | UUID`)**:
+   - `backend/app/modules/mesas/repository.py`:
+     - Se fortaleció `obtener_por_codigo(codigo: str)` para realizar búsqueda insensible a mayúsculas/minúsculas sobre `codigo_oficial` y `shortcode_ciudadano` (`func.lower(...) == codigo.lower()`).
+   - `backend/app/modules/mesas/service.py`:
+     - Implementado helper `_resolver_mesa_uuid(mesa_id: uuid.UUID | str) -> uuid.UUID` que resuelve de forma transparente si el identificador recibido es un UUID v4/v7 o un código de mesa territorial (ej. `MESA-LOC1-001`, `URB-HIS-01`), consultando la mesa en base de datos.
+     - Actualizados `registrar_participante()` y `listar_participantes()` para recibir `mesa_id: uuid.UUID | str`.
+   - `backend/app/modules/mesas/router.py`:
+     - `mesa_id` en las rutas `/api/v1/mesas/{mesa_id}/participantes` (tanto `POST` como `GET`) actualizado a `str` para admitir tanto UUIDs canónicos como códigos territoriales públicos utilizados en los enlaces ciudadanos.
+     - Preservada 100% intacta la política de acceso y roles (`requerir_permiso("asistencia:verificar", nivel_minimo="declarada")`).
+
+2. **Servicio Frontend de Asistencia (`src/features/mesas/services/asistencia-api.ts`)**:
+   - Implementado el módulo de integración HTTP contra `/api/v1/mesas/${mesaId}/participantes`:
+     - `construirPayloadParticipante(input: NuevoAsistenteInput)`: Construye un payload Pydantic compatible con `backend/app/modules/mesas/schemas.py:ParticipanteMesaCrear`, generando un `sujeto_id` determinista (`asist-{documento}`), mapeando roles institucionales (`rol_participacion`), entidad y empaquetando en `metadatos` el snapshot cívico demográfico completo (`tipoDocumento`, `enfoqueDiferencial`, `rangoEtario`, `genero`, `correo`, `telefono`, `subMesaAsignada`).
+     - `mapearParticipanteARegistro(p: ParticipanteMesaApi, mesaId: string)`: Desempaqueta y normaliza el participante desde PostgreSQL hacia el tipo de dominio `RegistroAsistencia` de la interfaz.
+     - `registrarAsistenteMesa(mesaId: string, datos: NuevoAsistenteInput)`: Ejecuta `POST /mesas/${mesaId}/participantes` mediante `apiFetch`.
+     - `listarAsistentesMesa(mesaId: string)`: Ejecuta `GET /mesas/${mesaId}/participantes` mediante `apiFetch`.
+
+3. **Resiliencia Offline y Persistencia en Store Zustand (`src/features/mesas/state/asistencia-store.ts`)**:
+   - `registrarAsistente(input)` convertido a función asíncrona con garantía anti-pérdida de datos:
+     - **Paso 1 (Resiliencia Offline Inmediata)**: Genera registro local con `pendienteSincronizacion: true` y lo persiste inmediatamente en el estado/`localStorage` para garantizar que la asistencia ciudadana nunca se pierda en campo ante caídas de conectividad móvil.
+     - **Paso 2 (Persistencia Central en PostgreSQL)**: Dispara la llamada a `registrarAsistenteMesa()`. Al recibir respuesta exitosa de la base de datos, actualiza el ID al UUID definitivo de PostgreSQL (`p.id`), establece `pendienteSincronizacion: false` y registra la marca temporal `sincronizadoEn`.
+     - **Paso 3 (Contingencia sin Bloqueo)**: Si la API no responde o falla la red, captura la excepción amistosamente mediante aviso de contingencia y retorna el registro local pendiente.
+   - Implementada función `sincronizarPendientes(mesaId: string)`: Itera sobre los registros marcados como pendientes de sincronización para subirlos al servidor cuando se restablece la red.
+   - Implementada función `cargarAsistentesDesdeBackend(mesaId: string)`: Consulta los asistentes de la mesa en PostgreSQL y los fusiona de manera segura con los registros pendientes locales.
+
+4. **Interfaz de Planilla Pública Adaptativa (`src/app/asistencia/[mesaId]/asistencia-cliente.tsx`)**:
+   - Almacena y maneja el estado de `registroExitoso` de forma asíncrona.
+   - Si el registro se sincronizó en PostgreSQL, despliega el identificador oficial `PG-{id}` y mensaje de conformación del quórum legal.
+   - Si quedó en contingencia local por desconexión de red, muestra el radicado local `LOCAL-{id}` junto con la indicación de que se sincronizará automáticamente al detectar conectividad.
+   - Incorporado banner de sincronización pendiente con contador visual y botón reactivo *"Sincronizar ahora"* para facilitadores en zonas rurales o de baja señal.
+
+5. **Pruebas Automatizadas Frontend y Backend**:
+   - `src/features/mesas/services/asistencia-api.test.ts`: 8 pruebas unitarias cubriendo transformación de DTOs, construcción de payloads, llamadas HTTP mockeadas, resolución de éxito con UUID de PostgreSQL, retención en fallo de red con `pendienteSincronizacion: true`, sincronización en lote y fusión remota/local.
+   - `backend/tests/test_actas_y_participantes.py`: Adición de `test_registro_asistencia_por_codigo_y_metadatos_completos`, verificando resolución por código de mesa, persistencia en `mesas_trabajo.participantes_mesa`, preservación de metadatos cívicos y detección estricta de duplicados (HTTP 409).
+   - `backend/tests/test_access_policy.py`: 86/86 pruebas aprobadas garantizando que el RBAC de mesas no fue alterado.
+
+---
+
+### 2. Matriz de Archivos Modificados y Creados (EDIT-08)
+
+| Archivo | Tipo | Descripción de la Modificación |
+|---|---|---|
+| `backend/app/modules/mesas/repository.py` | **Modificación** | Búsqueda insensible a mayúsculas en `obtener_por_codigo` (`codigo_oficial` y `shortcode_ciudadano`). |
+| `backend/app/modules/mesas/service.py` | **Modificación** | Incorporación de `_resolver_mesa_uuid` y soporte de `mesa_id: uuid.UUID \| str` en `registrar_participante` y `listar_participantes`. |
+| `backend/app/modules/mesas/router.py` | **Modificación** | Parámetro `mesa_id: str` en rutas de participantes para admitir UUIDs y códigos territoriales de mesa. |
+| `backend/tests/test_actas_y_participantes.py` | **Modificación** | Prueba pericial `test_registro_asistencia_por_codigo_y_metadatos_completos` (resolución por código, metadatos y 409 duplicado). |
+| `src/features/mesas/models/asistencia.ts` | **Modificación** | Extensión de `RegistroAsistencia` con `pendienteSincronizacion?: boolean` y `sincronizadoEn?: string`. |
+| `src/features/mesas/services/asistencia-api.ts` | **Creación** | Cliente API de asistencia (`registrarAsistenteMesa`, `listarAsistentesMesa`, adaptadores DTO). |
+| `src/features/mesas/state/asistencia-store.ts` | **Modificación** | `registrarAsistente` asíncrono con persistencia en PostgreSQL, fallback local, `sincronizarPendientes` y `cargarAsistentesDesdeBackend`. |
+| `src/app/asistencia/[mesaId]/asistencia-cliente.tsx` | **Modificación** | Conexión asíncrona a la API, distinción entre ID PostgreSQL y radicado local, banner interactivo de sincronización pendiente. |
+| `src/features/mesas/services/asistencia-api.test.ts` | **Creación** | Suite de 8 pruebas unitarias con cobertura de API, DTOs y resiliencia offline del store Zustand. |
+| `bridge/01_tarea_activa.md` | **Modificación** | Actualización de estado de EDIT-08 a ENTREGADA / LISTA PARA AUDITAR. |
+| `bridge/02_entrega_agy2.md` | **Modificación** | Registro del informe pericial de entrega de EDIT-08. |
+
+---
+
+### 3. Matriz de Quality Gates Periciales (EDIT-08)
+
+| Quality Gate | Comando de Validación | Resultado Pericial |
+|---|---|---|
+| **Pruebas Unitarias Asistencia API y Store** | `bun test src/features/mesas/services/asistencia-api.test.ts` | **8 pass, 0 fail (43 expect calls)** en 94ms. |
+| **Suite Completa Frontend Bun Test** | `bun test` | **267 pass, 0 fail (1223 expect calls)** en 29 suites de prueba. |
+| **Política de UI POLIS** | `bun run ui:check` (`node scripts/ui-policy.mjs`) | **0 violaciones** (100% componentes Design Kit, cero modales, tokens semánticos). |
+| **Chequeo de Tipos TypeScript** | `bun run typecheck` (`tsc --noEmit`) | **0 errores** de tipado estricto. |
+| **Linting Frontend ESLint** | `bun run lint` (`eslint .`) | **0 errores, 0 advertencias**. |
+| **Pipeline Global Check** | `bun run check` | **100% aprobado** (código 0). |
+| **Pruebas de Participantes y Actas Backend (`polis_test`)** | `backend/.venv/bin/pytest backend/tests/test_actas_y_participantes.py` | **4 passed in 4.90s** (registro por código, DTOs completos, unicidad 409 y actas). |
+| **Matriz de Control de Acceso y RBAC** | `backend/.venv/bin/pytest backend/tests/test_access_policy.py` | **86 passed in 13.60s** (política de permisos intacta). |
+| **Aislamiento de Módulos Codex** | `git status` | Archivos de noticias y testimonios estrictamente intactos. |
+| **Salvaguarda de Base de Datos** | N/A | Cero migraciones ejecutadas sobre `bd_csh`, cero push a remoto. |
+

@@ -12,12 +12,22 @@ import {
   GENEROS_LABELS
 } from "@/features/mesas/models/asistencia";
 import {sanitizarCsv as escapeCSV} from "@/shared/lib/csv";
+import {
+  registrarAsistenteMesa,
+  listarAsistentesMesa,
+  mapearParticipanteARegistro,
+  type NuevoAsistenteInput,
+} from "../services/asistencia-api";
 
-export type NuevoAsistenteInput = Omit<RegistroAsistencia, "id" | "horaRegistro">;
+export type { NuevoAsistenteInput };
 
 interface AsistenciaState {
   registros: Record<string, RegistroAsistencia[]>;
-  registrarAsistente: (input: NuevoAsistenteInput) => RegistroAsistencia;
+  cargando: boolean;
+  error: string | null;
+  registrarAsistente: (input: NuevoAsistenteInput) => Promise<RegistroAsistencia>;
+  sincronizarPendientes: (mesaId: string) => Promise<{ exitosos: number; fallidos: number }>;
+  cargarAsistentesDesdeBackend: (mesaId: string) => Promise<void>;
   eliminarRegistro: (mesaId: string, id: string) => void;
   limpiarRegistrosMesa: (mesaId: string) => void;
   exportarPlanillaCSV: (mesaId: string, nombreMesa?: string) => void;
@@ -191,25 +201,129 @@ export const useAsistenciaStore = create<AsistenciaState>()(
   persist(
     (set, get) => ({
       registros: REGISTROS_SEMILLA,
+      cargando: false,
+      error: null,
 
-      registrarAsistente: (input) => {
-        const nuevoRegistro: RegistroAsistencia = {
+      registrarAsistente: async (input) => {
+        const idLocal = generarId();
+        const registroLocal: RegistroAsistencia = {
           ...input,
-          id: generarId(),
+          id: idLocal,
           horaRegistro: new Date().toISOString(),
+          pendienteSincronizacion: true,
         };
 
+        // Resiliencia Offline: Guardar inmediatamente en Zustand (localStorage)
         set((state) => {
           const prev = state.registros[input.mesaId] ?? [];
           return {
             registros: {
               ...state.registros,
-              [input.mesaId]: [nuevoRegistro, ...prev],
+              [input.mesaId]: [registroLocal, ...prev],
             },
           };
         });
 
-        return nuevoRegistro;
+        // Intentar persistir en PostgreSQL vía API oficial
+        try {
+          const respuesta = await registrarAsistenteMesa(input.mesaId, input);
+          const registroConfirmado: RegistroAsistencia = {
+            ...registroLocal,
+            id: respuesta.id,
+            horaRegistro: respuesta.hora_ingreso || registroLocal.horaRegistro,
+            pendienteSincronizacion: false,
+            sincronizadoEn: new Date().toISOString(),
+          };
+
+          set((state) => {
+            const actual = state.registros[input.mesaId] ?? [];
+            return {
+              registros: {
+                ...state.registros,
+                [input.mesaId]: actual.map((r) => (r.id === idLocal ? registroConfirmado : r)),
+              },
+            };
+          });
+
+          return registroConfirmado;
+        } catch (error) {
+          console.warn(
+            "Aviso de contingencia: no fue posible persistir asistente en PostgreSQL (modo offline/sin red). Asistencia radicada localmente.",
+            error
+          );
+          return registroLocal;
+        }
+      },
+
+      sincronizarPendientes: async (mesaId: string) => {
+        const pendientes = (get().registros[mesaId] ?? []).filter((r) => r.pendienteSincronizacion);
+        if (pendientes.length === 0) return { exitosos: 0, fallidos: 0 };
+        let exitosos = 0;
+        let fallidos = 0;
+
+        for (const reg of pendientes) {
+          try {
+            const resp = await registrarAsistenteMesa(mesaId, reg);
+            set((state) => {
+              const actual = state.registros[mesaId] ?? [];
+              return {
+                registros: {
+                  ...state.registros,
+                  [mesaId]: actual.map((r) =>
+                    r.id === reg.id
+                      ? {
+                          ...r,
+                          id: resp.id,
+                          horaRegistro: resp.hora_ingreso || r.horaRegistro,
+                          pendienteSincronizacion: false,
+                          sincronizadoEn: new Date().toISOString(),
+                        }
+                      : r
+                  ),
+                },
+              };
+            });
+            exitosos++;
+          } catch {
+            fallidos++;
+          }
+        }
+        return { exitosos, fallidos };
+      },
+
+      cargarAsistentesDesdeBackend: async (mesaId: string) => {
+        set({ cargando: true, error: null });
+        try {
+          const remotos = await listarAsistentesMesa(mesaId);
+          if (Array.isArray(remotos) && remotos.length > 0) {
+            set((state) => {
+              const locales = state.registros[mesaId] ?? [];
+              const pendientesLocales = locales.filter((r) => r.pendienteSincronizacion);
+              const mapeados = remotos.map((p) => mapearParticipanteARegistro(p, mesaId));
+
+              // Priorizar pendientes locales no sincronizados y luego los confirmados de PostgreSQL
+              const combinados = [...pendientesLocales];
+              for (const m of mapeados) {
+                if (!combinados.some((c) => c.id === m.id || c.numeroDocumento === m.numeroDocumento)) {
+                  combinados.push(m);
+                }
+              }
+
+              return {
+                registros: {
+                  ...state.registros,
+                  [mesaId]: combinados,
+                },
+                cargando: false,
+              };
+            });
+          } else {
+            set({ cargando: false });
+          }
+        } catch (error) {
+          console.warn("Aviso de contingencia: no fue posible cargar asistentes desde PostgreSQL", error);
+          set({ cargando: false, error: "No fue posible conectar con el servidor para consultar asistentes." });
+        }
       },
 
       eliminarRegistro: (mesaId, id) => {
