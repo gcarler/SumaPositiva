@@ -178,4 +178,18 @@ Verificado de forma forense e independiente:
 6. Pruebas backend: `pytest backend/tests/test_participacion_multicanal.py` con **5 passed in 7.53s** en `polis_test`.
 7. Aislamiento estricto: Módulos de Codex intactos e inalterados; cero operaciones sobre `bd_csh`; cero git push.
 
+## Dictamen EDIT-08 — CONFORME (commit 12bf5eb)
+Verificado de forma forense e independiente:
+1. Persistencia real en PostgreSQL: Integración de la planilla pública `/asistencia/[mesaId]` con `POST /api/v1/mesas/{mesa_id}/participantes` y consulta `GET`. Cada registro ciudadano se persiste efectivamente en la tabla `mesas_trabajo.participantes_mesa`.
+2. Flexibilidad territorial y resolución por código: El backend ahora resuelve mesas tanto por UUID canónico como por `codigo_oficial` o `shortcode_ciudadano` (`MT-001`), permitiendo el acceso transparente desde slugs amigables en territorio.
+3. Arquitectura local-first y resiliencia offline: Guardado preventivo inmediato en `localStorage` con adopción de UUID una vez confirmado por PostgreSQL; ante caídas de conectividad en campo, se marca `pendienteSincronizacion = true` y se habilita botón de sincronización reactiva sin pérdida de información.
+4. Pruebas y calidad:
+   - `src/features/mesas/services/asistencia-api.test.ts`: 8/8 pruebas unitarias aprobadas.
+   - `backend/tests/test_actas_y_participantes.py`: 4/4 pruebas aprobadas en `polis_test` (registro por código territorial, snapshot de actas y prevención 409).
+   - `bun test`: **267 pass / 0 fail (1223 expect calls)** en 29 suites.
+   - `bun run check`: **0 errores, 0 advertencias**.
+   - `pytest` access policy: 86/86 pass.
+5. Perímetro: Cero modificaciones a Codex, cero escrituras sobre `bd_csh`, cero git push.
+
+
 
