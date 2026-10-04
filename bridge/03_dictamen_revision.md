@@ -144,3 +144,14 @@ Verificado de forma forense e independiente:
 
 ## Dictamen EDIT-04 — CONFORME (commit 55c6f22)
 Verificado: `PATCH /api/v1/indicadores/fichas/{id}` protegido por `indicadores:gestionar`; salvaguarda metodológica inquebrantable (intento de modificar fórmula, método de cálculo o línea base retorna 400 Bad Request); registro de auditoría institucional persistido; frontend enriquecido con sección colapsable de metadatos institucionales y enlace técnico; pruebas backend 6 passed; pruebas frontend de seguimiento 44 passed; `bun test` global 248 passed.
+
+## Dictamen EDIT-01b — CONFORME (commit 136f29d)
+Verificado de forma forense e independiente:
+1. `OBS-21 cerrada`:
+   - `total_asistentes` protegido: intento de sobreescritura manual retorna `HTTP 400 Bad Request` (el valor deriva de las actas oficiales de asistencia).
+   - Control de propiedad y roles: facilitadores ajenos no pueden reasignar facilitadores ni conmutar estados oficiales (`HTTP 403 Forbidden`).
+   - Cada actualización exitosa de mesa genera su registro inmutable en `auditoria.registros_auditoria` con detalle de campos mutados y usuario operador.
+2. `OBS-22 cerrada`:
+   - Mutaciones de agenda (`POST /api/v1/mesas/agendas` y `PATCH /api/v1/mesas/agendas/{id}`) generan eventos de auditoría institucional inmutable.
+   - `docs/permisos-api.md` documenta rigurosamente todos los métodos PATCH/POST de mesas y agendas sin perturbar el trabajo paralelo de Codex.
+3. Pruebas: `backend/tests/test_mesas_seguridad_auditoria.py` con 6/6 passed; `bun test` 248 passed; gates limpios.
