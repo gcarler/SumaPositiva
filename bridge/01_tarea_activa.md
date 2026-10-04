@@ -1,9 +1,10 @@
 # TAREA ACTIVA — EDD (agy2)
 
 **Última actualización**: 2026-10-04  
-**Responsable activo**: agy2 (EDD - en reposo / standby)  
+**Responsable activo**: agy2 (EDD - en ejecución)  
 **Auditor independiente**: EAF  
-**Estado General**: **SANEAMIENTO Y OPTIMIZACIÓN DE MESAS PÚBLICAS COMPLETADO (100% CONFORME)**  
+**Tarea Activa**: `AUD-19` — Auditoría de coherencia Base de Datos ↔ Backend ↔ Frontend (solo lectura)  
+**Especificación**: `bridge/01_tarea_agy2_audit_db_backend_frontend.md`  
 **Última tarea cerrada**: `INV-MESAS / EDIT-10` (**CONFORME**) — Saneamiento de Base de Datos, Filtro de Jerarquía y Rediseño UX de Mesas de Trabajo (279/279 bun tests passed, 9/9 pytest passed, 0 errores en check)
 
 
