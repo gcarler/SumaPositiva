@@ -117,3 +117,6 @@ Verificado: `no-unused-vars` y `ban-ts-comment` en `error`; `eslint .`, `tsc`, `
 
 ## Dictamen AUD-17 — CONFORME CON OBS-20 (commit b5f3ca6)
 Runbook y plan de consolidación coherentes con `alembic history` (revisiones y `downgrade 0036_restituir_mediciones` existen). **OBS-20:** el runbook trata 0037–0040 como "pendientes", pero `alembic current` sobre bd_csh ya reporta `0040_modulo_actores_estrategicos (head)`: las migraciones YA están aplicadas; corregir el runbook (paso condicional: si current=head, omitir). Mención literal de la contraseña antigua en `plan-consolidacion-git.md` aceptable solo mientras se rota; retirar tras la rotación.
+
+## Dictamen AUD-18 — CONFORME (commit f41fd90)
+Matriz verificada por muestreo: confirmado que `backend/app/modules/mesas/router.py` NO expone PATCH/PUT (edición de mesas no persiste → EDIT-01 ALTA); agenda estática, fuentes en Zustand. Respuesta al usuario: fases, líneas, actores, indicadores (mediciones) y compromisos SÍ son editables con persistencia; mesas (parcial), agendas, fuentes de información NO. Cada hueco queda como tarea individual `bridge/01_tarea_agy2_edit_0N.md`. OBS-20 corregida.
