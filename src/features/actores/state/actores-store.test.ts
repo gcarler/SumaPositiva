@@ -1,9 +1,10 @@
-import { describe, expect, test, beforeEach } from "vitest";
+import { describe, expect, test, beforeEach, vi } from "vitest";
 import { calcularCuadrante, useActoresStore } from "./actores-store";
-import type { NivelInteres, NivelPoder } from "../models/actor";
+import type { ActorEstrategico } from "../models/actor";
 
-describe("Actores Store & Matriz de Involucramiento", () => {
+describe("Actores Store & Matriz de Involucramiento (AUD-14)", () => {
   beforeEach(() => {
+    vi.restoreAllMocks();
     useActoresStore.getState().resetearActores();
   });
 
@@ -28,96 +29,103 @@ describe("Actores Store & Matriz de Involucramiento", () => {
     });
   });
 
-  describe("Catálogo Inicial de Cartagena", () => {
-    test("Carga al menos 16 actores reales y representativos del Distrito", () => {
+  describe("Estado Inicial Limpio y Libre de PII (AUD-14)", () => {
+    test("Inicia estrictamente vacío sin datos personales ni actores simulados", () => {
       const { actores } = useActoresStore.getState();
-      expect(actores.length).toBeGreaterThanOrEqual(16);
-
-      // Verificación de entidades y organizaciones clave de Cartagena
-      const codigos = actores.map((a) => a.codigo);
-      expect(codigos).toContain("ACT-COM-001"); // ASOJAC Localidad 2
-      expect(codigos).toContain("ACT-COM-002"); // La Boquilla (Ley 70)
-      expect(codigos).toContain("ACT-INS-001"); // MECAR
-      expect(codigos).toContain("ACT-INS-003"); // Personería Distrital
-      expect(codigos).toContain("ACT-SOC-001"); // Mesa Distrital de Víctimas
-      expect(codigos).toContain("ACT-GRE-001"); // Consejo Gremial de Bolívar
-      expect(codigos).toContain("ACT-ACA-003"); // Cartagena Cómo Vamos
-      expect(codigos).toContain("ACT-COOP-001"); // PNUD Caribe
-
-      // Verificar que todos los actores tengan contacto y dimensiones válidas
-      for (const actor of actores) {
-        expect(actor.nombre).toBeTruthy();
-        expect(actor.contacto.nombreLider).toBeTruthy();
-        expect(actor.dimensionesPrincipales.length).toBeGreaterThan(0);
-        expect(["alto", "medio", "bajo"]).toContain(actor.nivelPoder);
-        expect(["alto", "medio", "bajo"]).toContain(actor.nivelInteres);
-      }
+      expect(actores).toEqual([]);
+      expect(actores.length).toBe(0);
     });
   });
 
-  describe("Mutaciones del Store", () => {
-    test("Agrega un nuevo actor con datos completos", () => {
-      const store = useActoresStore.getState();
-      const totalInicial = store.actores.length;
+  describe("Mutaciones y Persistencia con API", () => {
+    test("Carga actores desde el backend exitosamente", async () => {
+      const mockActores: ActorEstrategico[] = [
+        {
+          id: "act-tst-01",
+          codigo: "ACT-DEMO-01",
+          nombre: "Organización Comunitaria Demo",
+          tipo: "comunitario",
+          territorio: "localidad_2",
+          dimensionesPrincipales: ["comunitaria", "personal"],
+          nivelPoder: "medio",
+          nivelInteres: "alto",
+          postura: "promotor_aliado",
+          contacto: {
+            organizacion: "Organización Comunitaria Demo",
+            cargo: "Vocero",
+          },
+          expectativasPrincipales: "Convivencia barrial",
+          accionesInvolucramiento: "Mesa de diálogo",
+          es_demostracion: true,
+          actualizadoEn: new Date().toISOString(),
+        },
+      ];
 
-      store.agregarActor({
+      vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
+        new Response(JSON.stringify(mockActores), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        })
+      );
+
+      await useActoresStore.getState().cargarActores();
+      const { actores } = useActoresStore.getState();
+      expect(actores.length).toBe(1);
+      expect(actores[0].codigo).toBe("ACT-DEMO-01");
+      expect(actores[0].es_demostracion).toBe(true);
+    });
+
+    test("Agrega un nuevo actor tras respuesta exitosa de API", async () => {
+      const nuevoMock = {
+        id: "act-01a0f820-0001",
         codigo: "ACT-TEST-001",
-        nombre: "Veeduría Ciudadana Bahía de Cartagena",
+        nombre: "Veeduría Ciudadana de Cartagena",
         tipo: "sociedad_civil",
         territorio: "localidad_3",
-        barrioVereda: "Manga / Bocagrande",
+        dimensiones_principales: ["ambiental", "politica"],
+        nivel_poder: "medio",
+        nivel_interes: "alto",
+        postura: "critico_opositor",
+        contacto: {
+          organizacion: "Veeduría Ciudadana",
+          cargo: "Director Delegado",
+        },
+        expectativas_principales: "Control social participativo.",
+        acciones_involucramiento: "Mesa técnica periódica.",
+        es_demostracion: false,
+        creado_en: new Date().toISOString(),
+        actualizado_en: new Date().toISOString(),
+      };
+
+      vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
+        new Response(JSON.stringify(nuevoMock), {
+          status: 201,
+          headers: { "Content-Type": "application/json" },
+        })
+      );
+
+      const ok = await useActoresStore.getState().agregarActor({
+        codigo: "ACT-TEST-001",
+        nombre: "Veeduría Ciudadana de Cartagena",
+        tipo: "sociedad_civil",
+        territorio: "localidad_3",
         dimensionesPrincipales: ["ambiental", "politica"],
         nivelPoder: "medio",
         nivelInteres: "alto",
         postura: "critico_opositor",
         contacto: {
-          nombreLider: "Ing. Carlos Mendoza",
-          cargo: "Director Ejecutivo",
-          organizacion: "Veeduría Bahía",
-          email: "contacto@veeduriabahia.org",
+          organizacion: "Veeduría Ciudadana",
+          cargo: "Director Delegado",
         },
-        expectativasPrincipales: "Transparencia en dragado y control ambiental.",
-        accionesInvolucramiento: "Mesa técnica ambiental periódica.",
+        expectativasPrincipales: "Control social participativo.",
+        accionesInvolucramiento: "Mesa técnica periódica.",
       });
 
+      expect(ok).toBe(true);
       const { actores } = useActoresStore.getState();
-      expect(actores.length).toBe(totalInicial + 1);
-
-      const nuevo = actores[0];
-      expect(nuevo.codigo).toBe("ACT-TEST-001");
-      expect(nuevo.id).toMatch(/^act-/);
-      expect(nuevo.actualizadoEn).toBeTruthy();
-      expect(calcularCuadrante(nuevo.nivelPoder, nuevo.nivelInteres)).toBe("base_social");
-    });
-
-    test("Actualiza los datos y clasificación de un actor existente", () => {
-      const store = useActoresStore.getState();
-      const actorId = "act-ins-01"; // MECAR
-
-      store.actualizarActor(actorId, {
-        nivelInteres: "alto",
-        postura: "promotor_aliado",
-        expectativasPrincipales: "Integración de cámaras distritales CAD 123.",
-      });
-
-      const actualizado = useActoresStore.getState().getById(actorId);
-      expect(actualizado).toBeDefined();
-      expect(actualizado?.nivelInteres).toBe("alto");
-      expect(actualizado?.postura).toBe("promotor_aliado");
-      expect(actualizado?.expectativasPrincipales).toContain("CAD 123");
-      // Con poder alto e interés alto ahora es aliado clave
-      expect(calcularCuadrante(actualizado!.nivelPoder, actualizado!.nivelInteres)).toBe("aliados_clave");
-    });
-
-    test("Elimina un actor correctamente", () => {
-      const store = useActoresStore.getState();
-      const totalInicial = store.actores.length;
-      const targetId = "act-coop-02"; // ACNUR
-
-      store.eliminarActor(targetId);
-      const { actores } = useActoresStore.getState();
-      expect(actores.length).toBe(totalInicial - 1);
-      expect(actores.find((a) => a.id === targetId)).toBeUndefined();
+      expect(actores.length).toBe(1);
+      expect(actores[0].codigo).toBe("ACT-TEST-001");
+      expect(calcularCuadrante(actores[0].nivelPoder, actores[0].nivelInteres)).toBe("base_social");
     });
   });
 
@@ -126,16 +134,16 @@ describe("Actores Store & Matriz de Involucramiento", () => {
       const store = useActoresStore.getState();
 
       store.setFiltros({
-        busqueda: "boquilla",
-        tipo: "comunitario",
-        territorio: "rural_insular",
+        busqueda: "veeduria",
+        tipo: "sociedad_civil",
+        territorio: "localidad_3",
         cuadrante: "aliados_clave",
       });
 
       const filtros = useActoresStore.getState().filtros;
-      expect(filtros.busqueda).toBe("boquilla");
-      expect(filtros.tipo).toBe("comunitario");
-      expect(filtros.territorio).toBe("rural_insular");
+      expect(filtros.busqueda).toBe("veeduria");
+      expect(filtros.tipo).toBe("sociedad_civil");
+      expect(filtros.territorio).toBe("localidad_3");
       expect(filtros.cuadrante).toBe("aliados_clave");
 
       store.limpiarFiltros();

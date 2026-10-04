@@ -97,7 +97,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         )
         return response
 
+    from app.modules.actores.router import router as actores_router
+
     application.include_router(api_router)
+    application.include_router(actores_router, prefix="/api/v1")
     return application
 
 

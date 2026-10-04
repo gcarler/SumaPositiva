@@ -68,9 +68,9 @@ export const TERRITORIOS_DIAGNOSTICO_CANONICOS: FichaTerritorialDiagnostico[] = 
         "Déficit en comisarías de familia especializadas en niñez y centros de acogida 24/7.",
     },
     participacion: {
-      mesasRealizadas: 7,
-      propuestasRadicadas: 54,
-      testimoniosRegistrados: 32,
+      mesasRealizadas: 0,
+      propuestasRadicadas: 0,
+      testimoniosRegistrados: 0,
     },
   },
   {
@@ -131,9 +131,9 @@ export const TERRITORIOS_DIAGNOSTICO_CANONICOS: FichaTerritorialDiagnostico[] = 
         "Grave carencia de centros juveniles de formación tecnológica, escenarios deportivos iluminados y alcantarillado pluvial.",
     },
     participacion: {
-      mesasRealizadas: 12,
-      propuestasRadicadas: 89,
-      testimoniosRegistrados: 64,
+      mesasRealizadas: 0,
+      propuestasRadicadas: 0,
+      testimoniosRegistrados: 0,
     },
   },
   {
@@ -194,9 +194,9 @@ export const TERRITORIOS_DIAGNOSTICO_CANONICOS: FichaTerritorialDiagnostico[] = 
         "Déficit en puestos de salud de segundo nivel y redes de transporte masivo Transcaribe al interior de Nelson Mandela.",
     },
     participacion: {
-      mesasRealizadas: 9,
-      propuestasRadicadas: 71,
-      testimoniosRegistrados: 48,
+      mesasRealizadas: 0,
+      propuestasRadicadas: 0,
+      testimoniosRegistrados: 0,
     },
   },
   {
@@ -253,9 +253,9 @@ export const TERRITORIOS_DIAGNOSTICO_CANONICOS: FichaTerritorialDiagnostico[] = 
         "Urgencia de planta de tratamiento de aguas residuales propia y centro de etnoeducación bilingüe.",
     },
     participacion: {
-      mesasRealizadas: 5,
-      propuestasRadicadas: 38,
-      testimoniosRegistrados: 27,
+      mesasRealizadas: 0,
+      propuestasRadicadas: 0,
+      testimoniosRegistrados: 0,
     },
   },
   {
@@ -312,9 +312,9 @@ export const TERRITORIOS_DIAGNOSTICO_CANONICOS: FichaTerritorialDiagnostico[] = 
         "Cero acueducto por red fija, sin ambulancia marítima de emergencias medicalizada.",
     },
     participacion: {
-      mesasRealizadas: 4,
-      propuestasRadicadas: 29,
-      testimoniosRegistrados: 19,
+      mesasRealizadas: 0,
+      propuestasRadicadas: 0,
+      testimoniosRegistrados: 0,
     },
   },
   {
@@ -371,9 +371,9 @@ export const TERRITORIOS_DIAGNOSTICO_CANONICOS: FichaTerritorialDiagnostico[] = 
         "Sin hospital de primer nivel, carencia de muelle público comunitario seguro.",
     },
     participacion: {
-      mesasRealizadas: 4,
-      propuestasRadicadas: 34,
-      testimoniosRegistrados: 23,
+      mesasRealizadas: 0,
+      propuestasRadicadas: 0,
+      testimoniosRegistrados: 0,
     },
   },
   {
@@ -430,9 +430,9 @@ export const TERRITORIOS_DIAGNOSTICO_CANONICOS: FichaTerritorialDiagnostico[] = 
         "Falta variante de carga pesada que desvíe tractomulas del centro poblado.",
     },
     participacion: {
-      mesasRealizadas: 6,
-      propuestasRadicadas: 42,
-      testimoniosRegistrados: 28,
+      mesasRealizadas: 0,
+      propuestasRadicadas: 0,
+      testimoniosRegistrados: 0,
     },
   },
   {
@@ -489,9 +489,9 @@ export const TERRITORIOS_DIAGNOSTICO_CANONICOS: FichaTerritorialDiagnostico[] = 
         "Conclusión del alcantarillado y puesto de bomberos rural.",
     },
     participacion: {
-      mesasRealizadas: 5,
-      propuestasRadicadas: 35,
-      testimoniosRegistrados: 21,
+      mesasRealizadas: 0,
+      propuestasRadicadas: 0,
+      testimoniosRegistrados: 0,
     },
   },
   {
@@ -547,9 +547,9 @@ export const TERRITORIOS_DIAGNOSTICO_CANONICOS: FichaTerritorialDiagnostico[] = 
         "Obras de defensa costera y colegio técnico agropecuario con dotación.",
     },
     participacion: {
-      mesasRealizadas: 3,
-      propuestasRadicadas: 24,
-      testimoniosRegistrados: 16,
+      mesasRealizadas: 0,
+      propuestasRadicadas: 0,
+      testimoniosRegistrados: 0,
     },
   },
   {
@@ -606,9 +606,9 @@ export const TERRITORIOS_DIAGNOSTICO_CANONICOS: FichaTerritorialDiagnostico[] = 
         "Falta sistema integrado de videovigilancia con analítica facial en Centro Amurallado.",
     },
     participacion: {
-      mesasRealizadas: 8,
-      propuestasRadicadas: 62,
-      testimoniosRegistrados: 39,
+      mesasRealizadas: 0,
+      propuestasRadicadas: 0,
+      testimoniosRegistrados: 0,
     },
   },
   {
@@ -666,9 +666,9 @@ export const TERRITORIOS_DIAGNOSTICO_CANONICOS: FichaTerritorialDiagnostico[] = 
         "Obras de canalización y recuperación ambiental del Caño Juan Angola.",
     },
     participacion: {
-      mesasRealizadas: 7,
-      propuestasRadicadas: 48,
-      testimoniosRegistrados: 31,
+      mesasRealizadas: 0,
+      propuestasRadicadas: 0,
+      testimoniosRegistrados: 0,
     },
   },
   {
@@ -726,9 +726,9 @@ export const TERRITORIOS_DIAGNOSTICO_CANONICOS: FichaTerritorialDiagnostico[] = 
         "Urgencia de un Centro de Oportunidades Juveniles y Casas de Justicia integrales.",
     },
     participacion: {
-      mesasRealizadas: 9,
-      propuestasRadicadas: 76,
-      testimoniosRegistrados: 52,
+      mesasRealizadas: 0,
+      propuestasRadicadas: 0,
+      testimoniosRegistrados: 0,
     },
   },
   {
@@ -785,9 +785,9 @@ export const TERRITORIOS_DIAGNOSTICO_CANONICOS: FichaTerritorialDiagnostico[] = 
         "Pavimentación de vías colectoras principales y Casa de la Mujer para atención integral.",
     },
     participacion: {
-      mesasRealizadas: 8,
-      propuestasRadicadas: 68,
-      testimoniosRegistrados: 44,
+      mesasRealizadas: 0,
+      propuestasRadicadas: 0,
+      testimoniosRegistrados: 0,
     },
   },
   {
@@ -843,9 +843,9 @@ export const TERRITORIOS_DIAGNOSTICO_CANONICOS: FichaTerritorialDiagnostico[] = 
         "Comisaría de Familia con sede propia permanente y estación de policía con cobertura completa.",
     },
     participacion: {
-      mesasRealizadas: 7,
-      propuestasRadicadas: 59,
-      testimoniosRegistrados: 41,
+      mesasRealizadas: 0,
+      propuestasRadicadas: 0,
+      testimoniosRegistrados: 0,
     },
   },
   {
@@ -902,9 +902,9 @@ export const TERRITORIOS_DIAGNOSTICO_CANONICOS: FichaTerritorialDiagnostico[] = 
         "Puentes peatonales elevados y monitores de calidad del aire en tiempo real.",
     },
     participacion: {
-      mesasRealizadas: 5,
-      propuestasRadicadas: 37,
-      testimoniosRegistrados: 25,
+      mesasRealizadas: 0,
+      propuestasRadicadas: 0,
+      testimoniosRegistrados: 0,
     },
   },
 ];

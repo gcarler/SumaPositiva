@@ -58,6 +58,15 @@ describe("Diagnóstico y Línea Base Cuantitativa DNP", () => {
       const insumos = INDICADORES_FALLBACK.filter((i) => i.tipo_indicador === "insumo");
       expect(insumos.length).toBe(2);
     });
+
+    test("Catálogo de contingencia no contiene cifras de medición ficticias ni porcentajes inventados (AUD-14)", () => {
+      for (const ind of INDICADORES_FALLBACK) {
+        expect(ind.valor_actual).toBe("Sin medición");
+        expect(ind.porcentaje_avance).toBe("Sin medición");
+        expect(ind.valor_actual).not.toBe("28.7500");
+        expect(ind.valor_actual).not.toBe("2500000000.0000");
+      }
+    });
   });
 
   describe("Hito D-0: Verificación de Purga Pericial en politicas.mock.ts", () => {

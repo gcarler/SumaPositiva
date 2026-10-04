@@ -15,8 +15,7 @@ export type DependenciaTipo =
 
 export interface CanalAtencion {
   direccion: string;
-  email: string;
-  telefono: string;
+  canalVirtual: string;
   web?: string;
 }
 
@@ -82,8 +81,7 @@ export const DEPENDENCIAS_CARTAGENA_2026: DependenciaDistrital[] = [
     ],
     "canalAtencion": {
       "direccion": "Plaza de la Aduana, Palacio de la Aduana, Piso 2",
-      "email": "interior@cartagena.gov.co",
-      "telefono": "(605) 6411370 Ext. 1201",
+      "canalVirtual": "Sede Electrónica Oficial y Ventanilla Única",
       "web": "https://cartagena.gov.co/dependencias/interior"
     },
     "palabrasClave": [
@@ -143,8 +141,7 @@ export const DEPENDENCIAS_CARTAGENA_2026: DependenciaDistrital[] = [
     ],
     "canalAtencion": {
       "direccion": "Manga, 3ra Avenida Calle 28 #21-62",
-      "email": "participacion@cartagena.gov.co",
-      "telefono": "(605) 6601442",
+      "canalVirtual": "Sede Electrónica Oficial y Ventanilla Única",
       "web": "https://cartagena.gov.co/dependencias/participacion"
     },
     "palabrasClave": [
@@ -203,8 +200,7 @@ export const DEPENDENCIAS_CARTAGENA_2026: DependenciaDistrital[] = [
     ],
     "canalAtencion": {
       "direccion": "Centro Histórico, Edificio Banco Agrario, Piso 6",
-      "email": "planeacion@cartagena.gov.co",
-      "telefono": "(605) 6411370 Ext. 1401",
+      "canalVirtual": "Sede Electrónica Oficial y Ventanilla Única",
       "web": "https://planeacion.cartagena.gov.co"
     },
     "palabrasClave": [
@@ -258,8 +254,7 @@ export const DEPENDENCIAS_CARTAGENA_2026: DependenciaDistrital[] = [
     ],
     "canalAtencion": {
       "direccion": "Plazoleta Telecom, Calle Larga #10B-89",
-      "email": "sed@cartagena.gov.co",
-      "telefono": "(605) 6649850",
+      "canalVirtual": "Sede Electrónica Oficial y Ventanilla Única",
       "web": "https://sedcartagena.gov.co"
     },
     "palabrasClave": [
@@ -310,8 +305,7 @@ export const DEPENDENCIAS_CARTAGENA_2026: DependenciaDistrital[] = [
     ],
     "canalAtencion": {
       "direccion": "Centro Histórico, Calle de la Inquisición #3-53",
-      "email": "turismo@cartagena.gov.co",
-      "telefono": "(605) 6411370 Ext. 1700",
+      "canalVirtual": "Sede Electrónica Oficial y Ventanilla Única",
       "web": "https://cartagena.gov.co/dependencias/turismo"
     },
     "palabrasClave": [
@@ -363,8 +357,7 @@ export const DEPENDENCIAS_CARTAGENA_2026: DependenciaDistrital[] = [
     ],
     "canalAtencion": {
       "direccion": "Plaza de la Aduana, Palacio de la Aduana, Piso 1",
-      "email": "hacienda@cartagena.gov.co",
-      "telefono": "(605) 6411370 Ext. 1300",
+      "canalVirtual": "Sede Electrónica Oficial y Ventanilla Única",
       "web": "https://hacienda.cartagena.gov.co"
     },
     "palabrasClave": [
@@ -417,8 +410,7 @@ export const DEPENDENCIAS_CARTAGENA_2026: DependenciaDistrital[] = [
     ],
     "canalAtencion": {
       "direccion": "Centro Histórico, Edificio Ronda Real, Torre B, Piso 3",
-      "email": "infraestructura@cartagena.gov.co",
-      "telefono": "(605) 6411370 Ext. 1600",
+      "canalVirtual": "Sede Electrónica Oficial y Ventanilla Única",
       "web": "https://cartagena.gov.co/dependencias/infraestructura"
     },
     "palabrasClave": [
@@ -471,8 +463,7 @@ export const DEPENDENCIAS_CARTAGENA_2026: DependenciaDistrital[] = [
     ],
     "canalAtencion": {
       "direccion": "Plaza de la Aduana, Palacio de la Aduana, Piso 1",
-      "email": "general@cartagena.gov.co",
-      "telefono": "(605) 6411370 Ext. 1100",
+      "canalVirtual": "Sede Electrónica Oficial y Ventanilla Única",
       "web": "https://cartagena.gov.co/dependencias/general"
     },
     "palabrasClave": [
@@ -523,8 +514,7 @@ export const DEPENDENCIAS_CARTAGENA_2026: DependenciaDistrital[] = [
     ],
     "canalAtencion": {
       "direccion": "Casa Fátima, Getsemaní Calle Larga #9A-47",
-      "email": "dadis@cartagena.gov.co",
-      "telefono": "(605) 6649770",
+      "canalVirtual": "Sede Electrónica Oficial y Ventanilla Única",
       "web": "https://dadiscartagena.gov.co"
     },
     "palabrasClave": [
@@ -579,8 +569,7 @@ export const DEPENDENCIAS_CARTAGENA_2026: DependenciaDistrital[] = [
     ],
     "canalAtencion": {
       "direccion": "Manga, Calle Real #22-54",
-      "email": "contacto@epacartagena.gov.co",
-      "telefono": "(605) 6608511",
+      "canalVirtual": "Sede Electrónica Oficial y Ventanilla Única",
       "web": "https://epacartagena.gov.co"
     },
     "palabrasClave": [
@@ -634,8 +623,7 @@ export const DEPENDENCIAS_CARTAGENA_2026: DependenciaDistrital[] = [
     ],
     "canalAtencion": {
       "direccion": "Manga, 4ta Avenida Calle 29 #23-28",
-      "email": "atencion@transitocartagena.gov.co",
-      "telefono": "(605) 6608000",
+      "canalVirtual": "Sede Electrónica Oficial y Ventanilla Única",
       "web": "https://transitocartagena.gov.co"
     },
     "palabrasClave": [
@@ -688,8 +676,7 @@ export const DEPENDENCIAS_CARTAGENA_2026: DependenciaDistrital[] = [
     ],
     "canalAtencion": {
       "direccion": "Centro Histórico, Edificio Portobelo, Piso 3",
-      "email": "pes@cartagena.gov.co",
-      "telefono": "(605) 6411370 Ext. 1850",
+      "canalVirtual": "Sede Electrónica Oficial y Ventanilla Única",
       "web": "https://cartagena.gov.co/dependencias/pes"
     },
     "palabrasClave": [
@@ -740,8 +727,7 @@ export const DEPENDENCIAS_CARTAGENA_2026: DependenciaDistrital[] = [
     ],
     "canalAtencion": {
       "direccion": "Manga, 3ra Avenida Calle 28 #21-14",
-      "email": "contacto@corvivienda.gov.co",
-      "telefono": "(605) 6601445",
+      "canalVirtual": "Sede Electrónica Oficial y Ventanilla Única",
       "web": "https://corvivienda.gov.co"
     },
     "palabrasClave": [
@@ -794,8 +780,7 @@ export const DEPENDENCIAS_CARTAGENA_2026: DependenciaDistrital[] = [
     ],
     "canalAtencion": {
       "direccion": "Pie de la Popa, Calle Real #29-33",
-      "email": "contacto@ider.gov.co",
-      "telefono": "(605) 6561144",
+      "canalVirtual": "Sede Electrónica Oficial y Ventanilla Única",
       "web": "https://ider.gov.co"
     },
     "palabrasClave": [
@@ -847,8 +832,7 @@ export const DEPENDENCIAS_CARTAGENA_2026: DependenciaDistrital[] = [
     ],
     "canalAtencion": {
       "direccion": "Centro Histórico, Calle Cuartel #36-24",
-      "email": "idaccc@cartagena.gov.co",
-      "telefono": "(605) 6411370 Ext. 1950",
+      "canalVirtual": "Sede Electrónica Oficial y Ventanilla Única",
       "web": "https://idaccc.gov.co"
     },
     "palabrasClave": [
@@ -896,8 +880,7 @@ export const DEPENDENCIAS_CARTAGENA_2026: DependenciaDistrital[] = [
     ],
     "canalAtencion": {
       "direccion": "Centro Histórico, Barrio Getsemaní, Calle Larga #9A-47",
-      "email": "recepcion@ipcc.gov.co",
-      "telefono": "(605) 6649443",
+      "canalVirtual": "Sede Electrónica Oficial y Ventanilla Única",
       "web": "https://ipcc.gov.co"
     },
     "palabrasClave": [
@@ -947,8 +930,7 @@ export const DEPENDENCIAS_CARTAGENA_2026: DependenciaDistrital[] = [
     ],
     "canalAtencion": {
       "direccion": "Centro Histórico, Baluarte San Pedro Mártir",
-      "email": "comunicaciones@etcar.org",
-      "telefono": "(605) 6642099",
+      "canalVirtual": "Sede Electrónica Oficial y Ventanilla Única",
       "web": "https://fortificacionescartagena.com.co"
     },
     "palabrasClave": [
@@ -995,8 +977,7 @@ export const DEPENDENCIAS_CARTAGENA_2026: DependenciaDistrital[] = [
     ],
     "canalAtencion": {
       "direccion": "Manga, Callejón Dandy #27-55",
-      "email": "contacto@distriseguridad.gov.co",
-      "telefono": "(605) 6607000",
+      "canalVirtual": "Sede Electrónica Oficial y Ventanilla Única",
       "web": "https://distriseguridad.gov.co"
     },
     "palabrasClave": [
@@ -1048,8 +1029,7 @@ export const DEPENDENCIAS_CARTAGENA_2026: DependenciaDistrital[] = [
     ],
     "canalAtencion": {
       "direccion": "Barrio España, Avenida Pedro de Heredia Calle 30 #39B-150",
-      "email": "atencionalusuario@transcaribe.gov.co",
-      "telefono": "(605) 6432420",
+      "canalVirtual": "Sede Electrónica Oficial y Ventanilla Única",
       "web": "https://transcaribe.gov.co"
     },
     "palabrasClave": [
@@ -1099,8 +1079,7 @@ export const DEPENDENCIAS_CARTAGENA_2026: DependenciaDistrital[] = [
     ],
     "canalAtencion": {
       "direccion": "Centro Histórico, Calle de la Factoría #36-27",
-      "email": "contacto@umayor.edu.co",
-      "telefono": "(605) 6643211",
+      "canalVirtual": "Sede Electrónica Oficial y Ventanilla Única",
       "web": "https://umayor.edu.co"
     },
     "palabrasClave": [
@@ -1151,8 +1130,7 @@ export const DEPENDENCIAS_CARTAGENA_2026: DependenciaDistrital[] = [
     ],
     "canalAtencion": {
       "direccion": "Manga, 4ta Avenida Calle 29 #23-45",
-      "email": "gestiondelriesgo@cartagena.gov.co",
-      "telefono": "(605) 6608515",
+      "canalVirtual": "Sede Electrónica Oficial y Ventanilla Única",
       "web": "https://oagrd.cartagena.gov.co"
     },
     "palabrasClave": [
@@ -1205,8 +1183,7 @@ export const DEPENDENCIAS_CARTAGENA_2026: DependenciaDistrital[] = [
     ],
     "canalAtencion": {
       "direccion": "Barrio Santa Lucía, Diagonal 31 #54-12",
-      "email": "bomberos@cartagena.gov.co",
-      "telefono": "119 / (605) 6531119",
+      "canalVirtual": "Sede Electrónica Oficial y Ventanilla Única",
       "web": "https://bomberos.cartagena.gov.co"
     },
     "palabrasClave": [
@@ -1257,8 +1234,7 @@ export const DEPENDENCIAS_CARTAGENA_2026: DependenciaDistrital[] = [
     ],
     "canalAtencion": {
       "direccion": "Centro Histórico, Edificio Portobelo, Piso 2",
-      "email": "espaciopublico@cartagena.gov.co",
-      "telefono": "(605) 6411370 Ext. 1750",
+      "canalVirtual": "Sede Electrónica Oficial y Ventanilla Única",
       "web": "https://cartagena.gov.co/dependencias/espaciopublico"
     },
     "palabrasClave": [
@@ -1305,8 +1281,7 @@ export const DEPENDENCIAS_CARTAGENA_2026: DependenciaDistrital[] = [
     ],
     "canalAtencion": {
       "direccion": "Centro Histórico, Plaza de San Pedro Claver",
-      "email": "centrohistorico@cartagena.gov.co",
-      "telefono": "(605) 6411370 Ext. 1780",
+      "canalVirtual": "Sede Electrónica Oficial y Ventanilla Única",
       "web": "https://cartagena.gov.co/dependencias/centrohistorico"
     },
     "palabrasClave": [
@@ -1355,8 +1330,7 @@ export const DEPENDENCIAS_CARTAGENA_2026: DependenciaDistrital[] = [
     ],
     "canalAtencion": {
       "direccion": "Pie de la Popa, Callejon de la Concretera #21-12",
-      "email": "escueladegobierno@cartagena.gov.co",
-      "telefono": "(605) 6602330",
+      "canalVirtual": "Sede Electrónica Oficial y Ventanilla Única",
       "web": "https://escueladegobierno.cartagena.gov.co"
     },
     "palabrasClave": [
@@ -1405,8 +1379,7 @@ export const DEPENDENCIAS_CARTAGENA_2026: DependenciaDistrital[] = [
     ],
     "canalAtencion": {
       "direccion": "Plaza de la Aduana, Palacio de la Aduana, Piso 3",
-      "email": "tic@cartagena.gov.co",
-      "telefono": "(605) 6411370 Ext. 1500",
+      "canalVirtual": "Sede Electrónica Oficial y Ventanilla Única",
       "web": "https://cartagena.gov.co/dependencias/tic"
     },
     "palabrasClave": [
@@ -1453,8 +1426,7 @@ export const DEPENDENCIAS_CARTAGENA_2026: DependenciaDistrital[] = [
     ],
     "canalAtencion": {
       "direccion": "Country Club, Calle 30 #54-18",
-      "email": "alcaldialocal1@cartagena.gov.co",
-      "telefono": "(605) 6560010",
+      "canalVirtual": "Sede Electrónica Oficial y Ventanilla Única",
       "web": "https://alcaldialocal1.cartagena.gov.co"
     },
     "palabrasClave": [
@@ -1503,8 +1475,7 @@ export const DEPENDENCIAS_CARTAGENA_2026: DependenciaDistrital[] = [
     ],
     "canalAtencion": {
       "direccion": "Chiquinquirá, Calle 31D #58-30",
-      "email": "alcaldialocal2@cartagena.gov.co",
-      "telefono": "(605) 6561020",
+      "canalVirtual": "Sede Electrónica Oficial y Ventanilla Única",
       "web": "https://alcaldialocal2.cartagena.gov.co"
     },
     "palabrasClave": [
@@ -1554,8 +1525,7 @@ export const DEPENDENCIAS_CARTAGENA_2026: DependenciaDistrital[] = [
     ],
     "canalAtencion": {
       "direccion": "Biblioteca Distrital Jorge Artel, Los Ejecutivos",
-      "email": "alcaldialocal3@cartagena.gov.co",
-      "telefono": "(605) 6562030",
+      "canalVirtual": "Sede Electrónica Oficial y Ventanilla Única",
       "web": "https://alcaldialocal3.cartagena.gov.co"
     },
     "palabrasClave": [

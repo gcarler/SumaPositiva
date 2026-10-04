@@ -6,8 +6,7 @@ import {
   Search,
   MapPin,
   Building2,
-  Phone,
-  Mail,
+  Globe,
   ArrowRight,
   Sparkles,
   ExternalLink,
@@ -319,18 +318,22 @@ export function EnrutadorCiudadanoInteligente() {
                     <MapPin className="size-3.5 shrink-0 text-[var(--ember)] mt-0.5" />
                     <span>{resultado.dependenciaLider.canalAtencion.direccion}</span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Mail className="size-3.5 shrink-0 text-[var(--ember)]" />
-                    <a
-                      href={`mailto:${resultado.dependenciaLider.canalAtencion.email}`}
-                      className="text-[var(--text-primary)] hover:underline"
-                    >
-                      {resultado.dependenciaLider.canalAtencion.email}
-                    </a>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Phone className="size-3.5 shrink-0 text-[var(--ember)]" />
-                    <span>{resultado.dependenciaLider.canalAtencion.telefono}</span>
+                  {resultado.dependenciaLider.canalAtencion.web && (
+                    <div className="flex items-center gap-2">
+                      <Globe className="size-3.5 shrink-0 text-[var(--ember)]" />
+                      <a
+                        href={resultado.dependenciaLider.canalAtencion.web}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-[var(--text-primary)] hover:underline flex items-center gap-1"
+                      >
+                        <span>{resultado.dependenciaLider.canalAtencion.web}</span>
+                        <ExternalLink className="size-3" aria-hidden="true" />
+                      </a>
+                    </div>
+                  )}
+                  <div className="text-[11px] text-[var(--text-tertiary)] pl-5.5">
+                    {resultado.dependenciaLider.canalAtencion.canalVirtual}
                   </div>
                 </div>
               ) : (

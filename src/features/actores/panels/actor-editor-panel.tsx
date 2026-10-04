@@ -102,7 +102,7 @@ export function ActorEditorPanel({ entryKey, props }: PanelComponentProps<"actor
     );
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!tienePermisoEscritura) {
       toast.error("No tienes permisos para modificar actores");
@@ -115,7 +115,7 @@ export function ActorEditorPanel({ entryKey, props }: PanelComponentProps<"actor
     }
 
     if (actor) {
-      actualizarActor(actor.id, {
+      const ok = await actualizarActor(actor.id, {
         nombre: nombre.trim(),
         codigo: codigo.trim(),
         tipo,
@@ -136,9 +136,14 @@ export function ActorEditorPanel({ entryKey, props }: PanelComponentProps<"actor
         expectativasPrincipales: expectativas.trim(),
         accionesInvolucramiento: acciones.trim(),
       });
-      toast.success("Actor estratégico actualizado");
+      if (ok) {
+        toast.success("Actor estratégico actualizado");
+        closeTop();
+      } else {
+        toast.error("Error al actualizar actor estratégico en el servidor");
+      }
     } else {
-      agregarActor({
+      const ok = await agregarActor({
         nombre: nombre.trim(),
         codigo: codigo.trim(),
         tipo,
@@ -159,10 +164,13 @@ export function ActorEditorPanel({ entryKey, props }: PanelComponentProps<"actor
         expectativasPrincipales: expectativas.trim(),
         accionesInvolucramiento: acciones.trim(),
       });
-      toast.success("Nuevo actor registrado en el directorio");
+      if (ok) {
+        toast.success("Nuevo actor registrado en el directorio");
+        closeTop();
+      } else {
+        toast.error("Error al registrar actor estratégico en el servidor");
+      }
     }
-
-    closeTop();
   };
 
   return (

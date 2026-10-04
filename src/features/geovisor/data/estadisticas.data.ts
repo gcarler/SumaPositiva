@@ -1,23 +1,24 @@
 export interface EstadisticasLocalidad2025 {
-  homicidios: number;
-  hurtos: number;
+  homicidios: number | null;
+  hurtos: number | null;
 }
 
 export const ESTADISTICAS_SEGURIDAD_2025 = {
-  homicidios_total: 410,
-  hurtos_personas: 6493,
-  tendencia_homicidios: "reducción_vs_2024",
-  fuente: "Policía Nacional / Cartagena Cómo Vamos",
-  periodo: "Enero-septiembre de 2025",
-  corte: "Septiembre de 2025",
+  homicidios_total: null as number | null,
+  hurtos_personas: null as number | null,
+  tendencia_homicidios: "Sin dato verificado",
+  fuente: "Sin dato verificado (Pendiente de reporte oficial consolidado)",
+  fecha_consulta: "2026-10-04",
+  periodo: "Sin dato verificado",
+  corte: "Sin dato verificado",
   percepcion_ciudadana: {
     valor: null,
     nota: "No se incluye una cifra de percepción sin una serie y metodología verificables.",
   },
   por_localidad: {
-    "loc-1": { homicidios: 142, hurtos: 2800 },
-    "loc-2": { homicidios: 178, hurtos: 2400 },
-    "loc-3": { homicidios: 90, hurtos: 1293 },
+    "loc-1": { homicidios: null, hurtos: null },
+    "loc-2": { homicidios: null, hurtos: null },
+    "loc-3": { homicidios: null, hurtos: null },
   } satisfies Record<string, EstadisticasLocalidad2025>,
 } as const;
 

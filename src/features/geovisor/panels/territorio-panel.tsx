@@ -169,24 +169,30 @@ export function TerritorioPanel({ entryKey, props }: TerritorioPanelProps) {
           <div className="grid grid-cols-2 gap-3">
             <Metric
               label="Homicidios · Cartagena"
-              value={numeros.format(ESTADISTICAS_SEGURIDAD_2025.homicidios_total)}
+              value={ESTADISTICAS_SEGURIDAD_2025.homicidios_total !== null ? numeros.format(ESTADISTICAS_SEGURIDAD_2025.homicidios_total) : "Sin dato verificado"}
             />
             <Metric
               label="Hurtos a personas · Cartagena"
-              value={numeros.format(ESTADISTICAS_SEGURIDAD_2025.hurtos_personas)}
+              value={ESTADISTICAS_SEGURIDAD_2025.hurtos_personas !== null ? numeros.format(ESTADISTICAS_SEGURIDAD_2025.hurtos_personas) : "Sin dato verificado"}
             />
           </div>
           {cifrasLocalidad && (
             <div className="space-y-2">
               <h4 className="text-sm font-medium text-text-primary">Agregado de {nombreLocalidad}</h4>
               <div className="grid grid-cols-2 gap-3">
-                <Metric label="Homicidios registrados" value={numeros.format(cifrasLocalidad.homicidios)} />
-                <Metric label="Hurtos a personas" value={numeros.format(cifrasLocalidad.hurtos)} />
+                <Metric
+                  label="Homicidios registrados"
+                  value={cifrasLocalidad.homicidios !== null ? numeros.format(cifrasLocalidad.homicidios) : "Sin dato verificado"}
+                />
+                <Metric
+                  label="Hurtos a personas"
+                  value={cifrasLocalidad.hurtos !== null ? numeros.format(cifrasLocalidad.hurtos) : "Sin dato verificado"}
+                />
               </div>
             </div>
           )}
           <p className="text-xs text-text-secondary">
-            Fuente: {ESTADISTICAS_SEGURIDAD_2025.fuente}. Datos actualizados a septiembre de 2025.
+            Fuente: {ESTADISTICAS_SEGURIDAD_2025.fuente} · Consulta: {ESTADISTICAS_SEGURIDAD_2025.fecha_consulta}.
           </p>
           <Notice tone="warning" title="Alcance de las cifras">
             Datos estáticos preprocesados para el período indicado; el reparto local no es una geocodificación por barrio ni representa cifras en tiempo real.

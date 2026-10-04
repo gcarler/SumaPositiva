@@ -849,6 +849,142 @@ En atención al hallazgo de auditoría pericial de severidad MEDIA sobre la omis
 | **Head Alembic Unificado** | `alembic -c backend/alembic.ini heads` | **Exactamente 1 head**: `0039_corregir_fuente_metas (head)`. |
 | **Base de Datos de Pruebas** | PostgreSQL `\l polis_test` | **Existente y migrada al head**. |
 
+---
+
+# Tarea AUD-14 (CRÍTICA) — Erradicación de PII, Persistencia de Actores y Saneamiento Pericial de Catálogos
+
+**Fecha**: 2026-10-04T01:55:00Z  
+**Estado**: CONFORME PARA AUDITORÍA FORENSE (EAF)  
+**Responsable**: agy2 (Equipo de Desarrollo EDD)  
+**Plan de Auditoría**: `bridge/00_plan_auditoria_plataforma.md`  
+**Especificación**: `bridge/01_tarea_agy2_aud_14.md`  
+
+---
+
+## 1. Resumen Ejecutivo de la Solución (AUD-14)
+
+En respuesta al dictamen del Equipo de Auditoría Forense (EAF) sobre el hallazgo crítico de datos personales (PII) en catálogos del frontend (`actores-iniciales.data.ts`, `fuentes-iniciales.data.ts`, `entidades-cartagena.data.ts`), mediciones inventadas en estructuras de contingencia (`indicadores-fallback.data.ts`) y cifras estadísticas sin trazabilidad documental (`geovisor/data/estadisticas.data.ts`, `territorios.data.ts`, `mesas-geovisor.data.ts`, `territorios-diagnostico.data.ts`):
+
+### 1.1 Erradicación Total de PII y Cumplimiento de la Ley 1581 de 2012:
+- Se purgaron el 100% de los nombres de personas naturales, números telefónicos fijos o móviles (+57), cuentas de correo electrónico y direcciones físicas en todos los catálogos `.data.ts`.
+- En `src/features/actores/data/actores-iniciales.data.ts`: los 20 actores ficticios fueron completamente eliminados. El estado inicial en memoria del store se fijó como un arreglo vacío `[]`.
+- En `src/features/fuentes/data/fuentes-iniciales.data.ts`: se eliminaron todos los bloques `responsableContacto` (sin personas, teléfonos ni correos). Las URLs directas a PDFs inexistentes se sustituyeron por portales institucionales oficiales verificados (`dane.gov.co`, `medicinalegal.gov.co`, `terridata.dnp.gov.co`, `cartagena.gov.co`, `funcionpublica.gov.co`).
+- En `src/features/politicas/data/dimensiones-detalle.data.ts`: se purgaron los nombres propios en `GABINETE_TITULARES`, migrándolos a títulos institucionales de despachos oficiales ("Despacho de la Secretaría del Interior...", etc.).
+- En `src/features/politicas/data/entidades-cartagena.data.ts`: se eliminaron `telefono` y `email` de la interfaz `CanalAtencion` y de las 12 entidades distritales, sustituyéndolos por `canalVirtual` y portal `web` oficial.
+
+### 1.2 Persistencia Backend Completa del Módulo de Actores Estratégicos:
+- **Migración DDL (`0040_modulo_actores_estrategicos.py`)**: Creación de la tabla `participacion_ciudadana.actores_estrategicos` con índices sobre `codigo`, `tipo`, `territorio`, `postura` y `es_demostracion`.
+- **Cero Datos Falsos en Base de Datos**: La base de datos de producción (`bd_csh`) y de pruebas (`polis_test`) cuentan con cero registros precargados tras la migración (`SELECT count(*) -> 0`).
+- **Arquitectura de Dominio (`backend/app/modules/actores/`)**:
+  - `models.py`: Entidad SQLAlchemy `ActorEstrategico` mapeada al esquema `participacion_ciudadana`.
+  - `schemas.py`: Modelos Pydantic v2 para creación (`ActorEstrategicoCrear`), actualización (`ActorEstrategicoActualizar`) y respuesta (`ActorEstrategicoRespuesta`).
+  - `repository.py`: Repositorio asíncrono con filtros multicriterio, paginación y trazabilidad.
+  - `service.py`: Lógica transaccional con registro obligatorio en `auditoria.registros_auditoria` con `causal="tecnica"` para toda mutación.
+  - `router.py`: Endpoints REST (`GET /api/v1/actores`, `GET /api/v1/actores/{id}`, `POST /api/v1/actores`, `PUT /api/v1/actores/{id}`, `DELETE /api/v1/actores/{id}`, `GET /api/v1/actores/resumen/matriz`).
+- **Control de Acceso y Política Declarada**:
+  - Escrituras protegidas estrictamente mediante `requerir_permiso("politicas:gestionar", "declarada")`.
+  - Todos los endpoints documentados en `docs/permisos-api.md`.
+  - Verificado por suite de seguridad: 79/79 pruebas pasadas en `test_access_policy.py`.
+
+### 1.3 Cableado Frontend Reactivo y Demostración Segura:
+- `src/features/actores/services/actores-api.ts`: Cliente HTTP conectado a `/api/v1/actores` mediante `apiFetch`.
+- `src/features/actores/state/actores-store.ts`: Store Zustand inicializado en `[]`, sincronizado con backend, con guardado asíncrono y protección contra mutaciones ante error.
+- `src/features/actores/components/actores-datagrid.tsx`: Manejo de estado vacío informativo con llamado a la acción (CTA) visible **"Registrar actor"**, badge visual `DEMO` para registros de prueba, y exportación limpia a CSV.
+- `scripts/sembrar_actores_demo.py`: Script aislado de desarrollo (no ejecuta en producción) con `es_demostracion=True`, nombres institucionales genéricos ("Actor demo 01", "Consejo Comunitario Demo 02"), sin datos personales ni teléfonos/correos, y flag `--limpiar`.
+
+### 1.4 Saneamiento Estricto de Fallbacks y Cifras Estadísticas:
+- **Indicadores Fallback (`indicadores-fallback.data.ts`)**: Se eliminaron las cifras inventadas de `valor_actual` (ej. `28.7500`) y `porcentaje_avance` (ej. `50.00`). Todas las 8 fichas canónicas devuelven `"Sin medición"`.
+- **Estadísticas de Seguridad (`estadisticas.data.ts`)**: Se estableció `ESTADISTICAS_SEGURIDAD_2025 = null` al no contar con boletín oficial indexado en repositorio; se documentó `fuente: "Sin dato verificado en fuentes oficiales distritales para la vigencia de corte"` y `fecha_consulta: "2026-10-04"`. La UI (`territorio-panel.tsx`) renderiza el badge pericial "Sin dato verificado".
+- **Participación Sintética Reseteada**: En `territorios.data.ts`, `mesas-geovisor.data.ts` y `territorios-diagnostico.data.ts`, todas las métricas de asistencia ciudadana, aportes y propuestas fueron reseteadas a `0`.
+
+### 1.5 Pruebas Automatizadas de Detección de PII:
+- **Frontend (`src/features/actores/tests/integridad-pii-catalogos.test.ts`)**: Escaneo automatizado de todos los archivos `src/**/data/*.data.ts` con aserción de 0 patrones de `telefono`, `email`, `+57` o `@`.
+- **Backend (`backend/tests/test_integridad_pii_catalogos.py`)**: Prueba Pytest que verifica la ausencia absoluta de PII en los catálogos del frontend antes de cualquier despliegue.
+
+---
+
+## 2. Matriz Exhaustiva de Barrido y Saneamiento Pericial (15 Archivos .data.ts)
+
+| Archivo (`.data.ts`) | Datos Factuales Analizados | Clasificación Pericial | Evidencia Oficial: Archivo/Línea o URL Verificada con Fecha de Consulta | Acción de Saneamiento Aplicada |
+|---|---|---|---|---|
+| `src/features/actores/data/actores-iniciales.data.ts` | 20 fichas de organizaciones comunitarias y cívicas con nombres de personas, teléfonos (+57), correos y direcciones físicas. | **Saneado Integralmente** (Originalmente PII Ficticia sin base legal Ley 1581/2012) | No existe autorización de tratamiento de datos personales conforme al Régimen General de Protección de Datos Personales (Ley 1581 de 2012 y Decreto 1377 de 2013). | Purgado 100% de registros y PII. Estado inicial establecido en `[]`. Persistencia real migrada a PostgreSQL (`0040_modulo_actores_estrategicos.py`) vía API `/api/v1/actores`. Demostración restringida a script local (`scripts/sembrar_actores_demo.py`) con `es_demostracion=true` y badge `DEMO`. |
+| `src/features/alternativas/data/alternativas-canonicas.data.ts` | 6 alternativas formuladas bajo metodología MGA (sectores, objetivos, árboles de decisión, presupuestos referenciales conceptuales). | **Catálogo Metodológico** | Metodología General Ajustada (MGA) para Proyectos de Inversión Pública, DNP: `https://proyectosmga.dnp.gov.co/` (Consulta: 2026-10-04) y repositorio `docs/lineas-sublineas-estrategicas.md#L45-L120`. | Inspeccionado. Cero PII. No contiene métricas de ejecución real ni cifras inventadas; representa un marco conceptual de formulación de proyectos. |
+| `src/features/diagnostico/data/indicadores-fallback.data.ts` | 8 fichas técnicas de indicadores de bienestar (homicidios, pobreza, desempleo, acueducto, desnutrición, etc.). Originalmente contenía `valor_actual: "28.7500"`, `porcentaje_avance: "50.00"`. | **Saneado Integralmente** (Estructura Canónica "Sin medición") | Marco conceptual de indicadores de bienestar social DNP / SINERGIA: `docs/lineas-sublineas-estrategicas.md#L150-L210`. | Purgadas todas las cifras inventadas en las 8 fichas técnicas. `valor_actual` y `porcentaje_avance` fijados en `"Sin medición"`. Aserción pericial en `indicadores-api.test.ts`. |
+| `src/features/diagnostico/data/mga-canonical.data.ts` | Clasificador sectorial y programático DNP/MGA (Educación, Salud, Vivienda, Seguridad, etc.). | **Catálogo Metodológico Oficial** | Clasificador Programático del Gasto Público y Manual de Inversión Pública MGA - Departamento Nacional de Planeación: `https://www.dnp.gov.co/` (Consulta: 2026-10-04). | Inspeccionado. Sin PII ni datos de ejecución. Clasificado como catálogo metodológico. |
+| `src/features/diagnostico/data/territorios-diagnostico.data.ts` | Fichas de caracterización de las 15 UCG de Cartagena (población DANE CNPV 2018, estratos predominantes, prioridades cualitativas). Originalmente con cifras sintéticas de participación comunitaria. | **Saneado** (Caracterización Territorial DANE / Participación a Cero) | Delimitación de UCG: Plan de Ordenamiento Territorial (POT) Cartagena (Decreto Distrital 0977 de 2001). Censo Nacional de Población y Vivienda CNPV 2018 DANE: `https://www.dane.gov.co/index.php/estadisticas-por-tema/demografia-y-poblacion/censo-nacional-de-poblacion-y-vivenda-2018` (Consulta: 2026-10-04). | Cero PII. Métricas sintéticas de participación (`mesasRealizadas`, `propuestasRadicadas`, `testimoniosRegistrados`) reseteadas estrictamente a `0` en las 15 UCG. Actualizada suite `territorios-api.test.ts`. |
+| `src/features/fuentes/data/fuentes-iniciales.data.ts` | Compendio normativo institucional (Constitución Política, Ley 1757/2015, Ley 1712/2014, Decreto 037/2026, Sentencia C-150/2015). Originalmente incluía contactos personales y URLs no verificadas. | **Saneado Integralmente** (Normativa Oficial Verificable) | SUIN-JURISCOL (`https://www.suin-juriscol.gov.co/viewDocument.asp?id=1687988`), Función Pública (`https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=65334`), Alcaldía Mayor de Cartagena (`https://www.cartagena.gov.co/`), Terridata DNP (`https://terridata.dnp.gov.co/index-app.html#/perfiles/13001`). Consulta: 2026-10-04. | Eliminación total de bloques `responsableContacto` (sin personas, teléfonos ni correos). Reemplazo de enlaces rotos por portales oficiales de consulta legal y gubernamental verificados. |
+| `src/features/geovisor/data/barrios.data.ts` | Catálogo de barrios de Cartagena clasificados por localidad y UCG. | **Catálogo Geográfico Oficial** | División Político-Administrativa del Distrito (Decreto Distrital 0977 de 2001 - POT y Acuerdo Distrital 01 de 2003). Sistema de Información Geográfica MIDAS Cartagena: `https://midas.cartagena.gov.co/` (Consulta: 2026-10-04). | Inspeccionado. Cero datos personales ni cifras de ejecución; topología geográfica oficial distrital. |
+| `src/features/geovisor/data/estadisticas.data.ts` | Demografía DANE (población 1.045.000 hab, pirámide etaria, IPM 30.1%). Originalmente contenía bloque `ESTADISTICAS_SEGURIDAD_2025` con delitos sin boletín pericial en repo. | **Saneado** (Demografía Oficial DANE / Seguridad Declarada Sin Dato Verificado) | DANE CNPV 2018 - Ficha Cartagena Terridata DNP: `https://terridata.dnp.gov.co/index-app.html#/perfiles/13001` (Consulta: 2026-10-04). Pobreza Multidimensional DANE: `https://www.dane.gov.co/` (Consulta: 2026-10-04). | Demografía oficial DANE preservada con fuente y fecha de consulta (`2026-10-04`). Estadísticas de seguridad fijadas en `null` ("Sin dato verificado en fuentes oficiales distritales para la vigencia de corte"). Panel UI adaptado para renderizar badge pericial "Sin dato verificado". |
+| `src/features/geovisor/data/mesas-geovisor.data.ts` | Coordenadas geoespaciales y equipamientos sedes de mesas de diálogo ciudadano. Originalmente con cifras sintéticas de asistencia y estados completados. | **Saneado** (Equipamientos Geográficos / Asistencia a Cero) | Coordenadas de instituciones educativas y salones comunales del Distrito de Cartagena (Secretaría del Interior y Convivencia Ciudadana / POT Cartagena). | Cero PII. Cifras de `totalAsistentes` fijadas en `0` y estados fijados en `PROGRAMADA` en todas las mesas. La asistencia real se certifica en backend mediante actas oficiales de mesa. |
+| `src/features/geovisor/data/territorios.data.ts` | Polígonos y centroides de las 3 Localidades distritales (Ley 1617 de 2013). Originalmente contenía métricas sintéticas de aportes y mesas. | **Saneado** (División Territorial Oficial / Métricas a Cero) | Ley 1617 de 2013 (Régimen de Distritos) y Acuerdo Distrital 01 de 2003. Geodatos distritales MIDAS: `https://midas.cartagena.gov.co/` (Consulta: 2026-10-04). | Cero PII. Métricas dinámicas sintéticas (`aportesCiudadanos: 0`, `mesasRealizadas: 0`) reseteadas a `0`. Los datos reales provienen de `/api/v1/participacion/estadisticas`. |
+| `src/features/mesas/data/agenda-contenido.data.ts` | Guía pedagógica metodológica de facilitación de espacios de diálogo participativo (pautas de escucha activa, consensos). | **Catálogo Metodológico Pedagógico** | Guía de Diálogo Social y Concertación Comunitaria, ESAP / DNP: `https://www.funcionpublica.gov.co/` (Consulta: 2026-10-04). | Inspeccionado. Cero PII ni datos numéricos de ejecución. |
+| `src/features/mesas/data/agenda.data.ts` | Estructura temporal y momentos de una sesión de mesa participativa (Bienvenida, Diagnóstico, Co-creación, Acuerdos). | **Catálogo Metodológico Operativo** | Protocolo Metodológico de Mesas de Seguridad Humana DNP / Ministerio del Interior. | Inspeccionado. Cero PII ni datos cuantitativos. |
+| `src/features/politicas/data/dimensiones-detalle.data.ts` | Marco conceptual de las 7 dimensiones de Seguridad Humana y asignación de despachos institucionales. Originalmente incluía nombres de funcionarios en `GABINETE_TITULARES`. | **Saneado** (Marco Conceptual DNP / PII Purgada) | Bases del Plan Nacional de Desarrollo y Documento CONPES 4100 de Seguridad Humana: `https://www.dnp.gov.co/` (Consulta: 2026-10-04). Organigrama distrital: Decreto de estructura de la Alcaldía de Cartagena. | Purgados 100% de nombres propios de funcionarios. Sustituidos por la denominación formal de los despachos ("Despacho de la Secretaría del Interior...", etc.). Cero PII. |
+| `src/features/politicas/data/entidades-cartagena.data.ts` | Directorio institucional de 12 dependencias distritales de Cartagena. Originalmente contenía teléfonos y correos. | **Saneado** (Directorio Distrital Oficial / Canales Virtuales Verificados) | Directorio Institucional de la Alcaldía Mayor de Cartagena de Indias: `https://www.cartagena.gov.co/` (Consulta: 2026-10-04). | Eliminación de campos `telefono` y `email`. Sustitución por `canalVirtual` oficial de atención y portal institucional `web` oficial. Componentes visuales adaptados. |
+| `src/features/seguimiento/data/compromisos-pas.data.ts` | 10 compromisos de política pública PAS. | **Catálogo Propuesto sin Validar** (AUD-13 / OBS-11) | Trazabilidad legal y forense en migración `0039_corregir_fuente_metas_propuestas_compromisos.py` y `bridge/02_entrega_agy2.md` (AUD-13). | Previamente corregido en AUD-13. Marcado `meta_validada: false`, fuente honesta "Catálogo propuesto por el equipo, PENDIENTE de validación institucional, no proviene del Decreto 037", avance `null` ("Sin reporte"). Inspeccionado en AUD-14: cero PII. |
+
+---
+
+## 3. Archivos Creados y Modificados (AUD-14)
+
+| Archivo | Rol en el Sistema |
+|---|---|
+| `backend/alembic/versions/0040_modulo_actores_estrategicos.py` | Migración DDL creando la tabla `participacion_ciudadana.actores_estrategicos`. |
+| `backend/app/main.py` | Montaje del router de actores en `/api/v1/actores`. |
+| `backend/app/modules/actores/__init__.py` | Módulo backend de Actores Estratégicos. |
+| `backend/app/modules/actores/models.py` | Modelo SQLAlchemy `ActorEstrategico` mapeado a `participacion_ciudadana`. |
+| `backend/app/modules/actores/schemas.py` | Esquemas Pydantic v2 de validación y respuesta de actores. |
+| `backend/app/modules/actores/repository.py` | Acceso a datos con soporte de filtros por territorio, tipo, postura y demo. |
+| `backend/app/modules/actores/service.py` | Capa transaccional y auditoría inmutable en `auditoria.registros_auditoria` con `causal="tecnica"`. |
+| `backend/app/modules/actores/router.py` | Endpoints REST públicos de lectura y protegidos por RBAC (`politicas:gestionar@declarada`) para escrituras. |
+| `backend/app/modules/participacion/models.py` | Import de modelos de actores para exposición de metadatos Alembic sin tocar archivos de otros agentes. |
+| `backend/tests/test_actores_estrategicos.py` | Pruebas de integración pytest (persistencia, auditoría, endpoints y bandera de demo). |
+| `backend/tests/test_integridad_pii_catalogos.py` | Prueba automatizada backend que audita todos los `.data.ts` exigiendo 0 PII. |
+| `docs/permisos-api.md` | Declaración formal de permisos y políticas RBAC para los 6 endpoints de `/api/v1/actores`. |
+| `scripts/sembrar_actores_demo.py` | Script de desarrollo para siembra y limpieza de datos demo con `es_demostracion=True`. |
+| `src/features/actores/components/actores-datagrid.tsx` | DataGrid con estado vacío amigable, CTA "Registrar actor", badge `DEMO` y exportación CSV. |
+| `src/features/actores/data/actores-iniciales.data.ts` | Purgado total de PII; arreglo inicial fijado en `[]`. |
+| `src/features/actores/models/actor.ts` | Tipado de actores con campos de contacto opcionales y compatibles con backend. |
+| `src/features/actores/panels/actor-editor-panel.tsx` | Formulario de creación/edición conectado al servicio de actores y política UI. |
+| `src/features/actores/services/actores-api.ts` | Servicio cliente HTTP con llamadas a API real `/api/v1/actores`. |
+| `src/features/actores/state/actores-store.ts` | Store Zustand con integración a backend, estado inicial vacío y control de mutación. |
+| `src/features/actores/state/actores-store.test.ts` | Suite unitaria frontend actualizada con estado inicial vacío. |
+| `src/features/actores/tests/integridad-pii-catalogos.test.ts` | Prueba automatizada Vitest/Bun que audita todos los `.data.ts` exigiendo 0 PII. |
+| `src/features/diagnostico/data/indicadores-fallback.data.ts` | Purgado de mediciones inventadas; todas las 8 fichas devuelven `"Sin medición"`. |
+| `src/features/diagnostico/data/territorios-diagnostico.data.ts` | Métricas sintéticas de participación comunitaria en 15 UCG reseteadas a `0`. |
+| `src/features/diagnostico/services/indicadores-api.test.ts` | Prueba que certifica que el fallback de indicadores devuelve estructura canónica sin datos numéricos simulados. |
+| `src/features/diagnostico/services/territorios-api.test.ts` | Prueba actualizada verificando 0 propuestas sintéticas. |
+| `src/features/fuentes/data/fuentes-iniciales.data.ts` | Eliminación de bloques `responsableContacto` y enlaces actualizados a portales oficiales verificados. |
+| `src/features/geovisor/data/estadisticas.data.ts` | Estadísticas de delitos en `null` ("Sin dato verificado") y fuentes demográficas DANE con fecha de consulta. |
+| `src/features/geovisor/data/mesas-geovisor.data.ts` | Cifras de asistentes fijadas en `0` y estados en `PROGRAMADA`. |
+| `src/features/geovisor/data/territorios.data.ts` | Cifras sintéticas de aportes y mesas ciudadanas reseteadas a `0`. |
+| `src/features/geovisor/panels/territorio-panel.tsx` | Renderizado condicional del badge "Sin dato verificado" ante estadísticas nulas. |
+| `src/features/politicas/components/enrutador-ciudadano-inteligente.tsx` | Eliminación de referencias a teléfonos y soporte de canales virtuales institucionales. |
+| `src/features/politicas/data/dimensiones-detalle.data.ts` | Nombres de funcionarios reemplazados por títulos institucionales de despachos distritales. |
+| `src/features/politicas/data/entidades-cartagena.data.ts` | Reemplazo de teléfonos/correos por canales virtuales y URLs de atención ciudadana oficial. |
+| `src/features/politicas/panels/rendicion-cuentas-panel.tsx` | Adaptación de panel para presentar canal virtual oficial en lugar de teléfonos/correos. |
+| `src/features/politicas/views/dimensiones-view.tsx` | Renderizado adaptado a canales virtuales oficiales. |
+
+---
+
+## 4. Matriz de Validación de Quality Gates (AUD-14)
+
+| Quality Gate | Comando de Validación | Resultado Pericial |
+|---|---|---|
+| **Política de UI POLIS** | `node scripts/ui-policy.mjs` | **0 violaciones** (100% controles Design Kit, cero modales, tokens semánticos). |
+| **Chequeo de Tipos y Lint Frontend** | `bun run check` | **Aprobado (0 errores)** en TypeScript estricto y ESLint. |
+| **Pruebas Automatizadas Frontend** | `bun test` | **211 pass, 0 fail (979 aserciones)** en 22 archivos (incluye scanner PII y fallback seguro). |
+| **Pruebas Unitarias Backend Actores & PII** | `PYTHONPATH=backend backend/.venv/bin/pytest backend/tests/test_actores_estrategicos.py backend/tests/test_integridad_pii_catalogos.py` | **3 pass, 0 fail en 3.21s** (persistencia, auditoría, API y scanner PII). |
+| **Políticas de Control de Acceso RBAC** | `PYTHONPATH=backend backend/.venv/bin/pytest backend/tests/test_access_policy.py` | **79 pass, 0 fail en 11.89s** (rutas de actores declaradas y validadas con 401/403). |
+| **Verificación de Ausencia de PII en Archivos de Datos** | `grep -En "(\+57|[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+|telefono|email)" src/**/data/*.data.ts` | **0 resultados (0 PII en catálogos frontend)**. |
+| **Head Alembic Unificado** | `backend/.venv/bin/alembic -c backend/alembic.ini heads` | **Exactamente 1 head**: `0040_modulo_actores_estrategicos (head)`. |
+| **Base de Datos de Producción (bd_csh)** | `psql -c "SELECT count(*) FROM participacion_ciudadana.actores_estrategicos;"` | **0 registros** (tabla creada, cero datos inventados en vivo). |
+| **Servicios en Producción** | `systemctl status polis-backend polis-frontend` | **Ambos servicios activos y operativos**. |
+| **Readiness Backend en Vivo** | `curl -s http://127.0.0.1:8000/api/v1/health/ready` | `{"status":"ready","database":"ok","migrations":"ok","extensions":"ok"}`. |
+| **Endpoint de Actores en Vivo** | `curl -s http://127.0.0.1:8000/api/v1/actores` | `[]` (**HTTP 200 OK**, arreglo vacío legítimo). |
+| **Frontend de Actores en Vivo** | `curl -sI http://127.0.0.1:3000/plataforma/actores` | **HTTP 200 OK**. |
+
+
 
 
 

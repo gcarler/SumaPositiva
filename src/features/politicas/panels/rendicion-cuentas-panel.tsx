@@ -7,8 +7,8 @@ import {
   AlertTriangle,
   AlertCircle,
   MapPin,
-  Mail,
-  Phone,
+  Globe,
+  ExternalLink,
 } from "lucide-react";
 import { PanelShell } from "@/core/panels/panel-shell";
 import { usePanels } from "@/core/panels/panel-store";
@@ -318,15 +318,22 @@ export function RendicionCuentasPanel({
                           <MapPin className="size-3.5 text-[var(--ember)] shrink-0" />
                           <span>{dep.canalAtencion.direccion}</span>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <Mail className="size-3.5 text-[var(--ember)] shrink-0" />
-                          <a href={`mailto:${dep.canalAtencion.email}`} className="hover:underline text-[var(--text-primary)]">
-                            {dep.canalAtencion.email}
-                          </a>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Phone className="size-3.5 text-[var(--ember)] shrink-0" />
-                          <span>{dep.canalAtencion.telefono}</span>
+                        {dep.canalAtencion.web && (
+                          <div className="flex items-center gap-2">
+                            <Globe className="size-3.5 text-[var(--ember)] shrink-0" />
+                            <a
+                              href={dep.canalAtencion.web}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="hover:underline text-[var(--text-primary)] flex items-center gap-1"
+                            >
+                              <span>{dep.canalAtencion.web}</span>
+                              <ExternalLink className="size-3" aria-hidden="true" />
+                            </a>
+                          </div>
+                        )}
+                        <div className="text-[11px] text-[var(--text-tertiary)] pl-5.5">
+                          {dep.canalAtencion.canalVirtual}
                         </div>
                       </div>
                     )}

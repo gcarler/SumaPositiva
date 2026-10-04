@@ -51,7 +51,7 @@ describe("Geodiagnóstico Territorial de Cartagena (Hito D-3)", () => {
     expect(ficha?.nombreComunidadNegra).toContain("Consejo Comunitario");
     expect(ficha?.problematicasPriorizadas.length).toBe(3);
     expect(ficha?.equipamientos.caisOEstaciones).toBeGreaterThanOrEqual(1);
-    expect(ficha?.participacion.propuestasRadicadas).toBeGreaterThan(0);
+    expect(ficha?.participacion.propuestasRadicadas).toBe(0);
   });
 
   test("calcularResumenDiagnosticoTerritorial computa métricas consolidadas", async () => {
@@ -62,7 +62,7 @@ describe("Geodiagnóstico Territorial de Cartagena (Hito D-3)", () => {
     expect(resumen.poblacionTotalEstimada).toBeGreaterThan(1_000_000);
     expect(resumen.poblacionTotalVulnerable).toBeGreaterThan(500_000);
     expect(resumen.promedioNbi).toBeGreaterThan(20);
-    expect(resumen.totalPropuestasRadicadas).toBeGreaterThan(200);
+    expect(resumen.totalPropuestasRadicadas).toBe(0);
     expect(resumen.territoriosEtnicosLey70Count).toBeGreaterThanOrEqual(5);
   });
 });

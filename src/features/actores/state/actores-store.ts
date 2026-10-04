@@ -11,6 +11,12 @@ import type {
   TipoActor,
 } from "../models/actor";
 import { ACTORES_INICIALES } from "../data/actores-iniciales.data";
+import {
+  actualizarActorApi,
+  crearActorApi,
+  eliminarActorApi,
+  listarActoresApi,
+} from "../services/actores-api";
 
 export function calcularCuadrante(
   poder: NivelPoder,
@@ -45,18 +51,23 @@ const FILTROS_DEFECTO: FiltrosActores = {
 
 export interface ActoresState {
   actores: ActorEstrategico[];
+  cargando: boolean;
+  error: string | null;
   filtros: FiltrosActores;
   setFiltros: (filtros: Partial<FiltrosActores>) => void;
   limpiarFiltros: () => void;
   getById: (id: string) => ActorEstrategico | undefined;
-  agregarActor: (actor: Omit<ActorEstrategico, "id" | "actualizadoEn">) => void;
-  actualizarActor: (id: string, cambios: Partial<ActorEstrategico>) => void;
-  eliminarActor: (id: string) => void;
+  cargarActores: () => Promise<void>;
+  agregarActor: (actor: Omit<ActorEstrategico, "id" | "actualizadoEn">) => Promise<boolean>;
+  actualizarActor: (id: string, cambios: Partial<ActorEstrategico>) => Promise<boolean>;
+  eliminarActor: (id: string) => Promise<boolean>;
   resetearActores: () => void;
 }
 
 export const useActoresStore = create<ActoresState>((set, get) => ({
   actores: ACTORES_INICIALES,
+  cargando: false,
+  error: null,
   filtros: FILTROS_DEFECTO,
 
   setFiltros: (cambios) =>
@@ -71,41 +82,61 @@ export const useActoresStore = create<ActoresState>((set, get) => ({
 
   getById: (id) => get().actores.find((a) => a.id === id),
 
-  agregarActor: (datos) =>
-    set((state) => {
-      const nuevoId = `act-${Date.now()}`;
-      const nuevoActor: ActorEstrategico = {
-        ...datos,
-        id: nuevoId,
-        actualizadoEn: new Date().toISOString(),
-      };
-      return {
-        actores: [nuevoActor, ...state.actores],
-      };
-    }),
+  cargarActores: async () => {
+    set({ cargando: true, error: null });
+    try {
+      const lista = await listarActoresApi();
+      set({ actores: lista, cargando: false });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Error al cargar actores";
+      set({ error: msg, cargando: false });
+    }
+  },
 
-  actualizarActor: (id, cambios) =>
-    set((state) => ({
-      actores: state.actores.map((a) =>
-        a.id === id
-          ? {
-              ...a,
-              ...cambios,
-              actualizadoEn: new Date().toISOString(),
-            }
-          : a
-      ),
-    })),
+  agregarActor: async (datos) => {
+    try {
+      const nuevo = await crearActorApi(datos);
+      set((state) => ({
+        actores: [nuevo, ...state.actores],
+      }));
+      return true;
+    } catch (err) {
+      console.error("Error al registrar actor estratégico:", err);
+      return false;
+    }
+  },
 
-  eliminarActor: (id) =>
-    set((state) => ({
-      actores: state.actores.filter((a) => a.id !== id),
-    })),
+  actualizarActor: async (id, cambios) => {
+    try {
+      const actualizado = await actualizarActorApi(id, cambios);
+      set((state) => ({
+        actores: state.actores.map((a) => (a.id === id ? actualizado : a)),
+      }));
+      return true;
+    } catch (err) {
+      console.error("Error al actualizar actor estratégico:", err);
+      return false;
+    }
+  },
+
+  eliminarActor: async (id) => {
+    try {
+      await eliminarActorApi(id);
+      set((state) => ({
+        actores: state.actores.filter((a) => a.id !== id),
+      }));
+      return true;
+    } catch (err) {
+      console.error("Error al eliminar actor estratégico:", err);
+      return false;
+    }
+  },
 
   resetearActores: () =>
     set({
       actores: ACTORES_INICIALES,
       filtros: FILTROS_DEFECTO,
+      error: null,
     }),
 }));
 
@@ -135,7 +166,10 @@ export function useActoresFiltrados(): ActorEstrategico[] {
       }
     }
     if (busquedaNorm) {
-      const texto = `${actor.codigo} ${actor.nombre} ${actor.barrioVereda ?? ""} ${actor.contacto.nombreLider} ${actor.contacto.cargo} ${actor.contacto.organizacion} ${actor.expectativasPrincipales} ${actor.dimensionesPrincipales.join(" ")}`.toLowerCase();
+      const nombreLider = actor.contacto?.nombreLider ?? "";
+      const cargo = actor.contacto?.cargo ?? "";
+      const organizacion = actor.contacto?.organizacion ?? "";
+      const texto = `${actor.codigo} ${actor.nombre} ${actor.barrioVereda ?? ""} ${nombreLider} ${cargo} ${organizacion} ${actor.expectativasPrincipales} ${actor.dimensionesPrincipales.join(" ")}`.toLowerCase();
       if (!texto.includes(busquedaNorm)) {
         return false;
       }

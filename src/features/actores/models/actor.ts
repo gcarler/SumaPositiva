@@ -30,7 +30,7 @@ export type CuadranteMatriz =
   | "monitoreo";             // Bajo o medio poder / Bajo o medio interés (Monitorear)
 
 export interface ContactoActor {
-  nombreLider: string;
+  nombreLider?: string;
   cargo: string;
   telefono?: string;
   email?: string;
@@ -54,5 +54,6 @@ export interface ActorEstrategico {
   propuestasRadicadas?: number;
   expectativasPrincipales: string;
   accionesInvolucramiento: string; // estrategia de relacionamiento
+  es_demostracion?: boolean;
   actualizadoEn: string;
 }

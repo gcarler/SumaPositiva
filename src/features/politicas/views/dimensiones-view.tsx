@@ -11,8 +11,6 @@ import {
   ArrowRight,
   ExternalLink,
   MapPin,
-  Mail,
-  Phone,
   BarChart3,
   CheckCircle2,
   AlertTriangle,
@@ -468,12 +466,13 @@ export function DimensionesView() {
                           <span className="truncate">{entidadLider.canalAtencion?.direccion ?? "Palacio de la Aduana, Centro Histórico"}</span>
                         </span>
                         <span className="flex items-center gap-2">
-                          <Phone className="size-3.5 text-[var(--text-tertiary)] shrink-0" />
-                          <span>{entidadLider.canalAtencion?.telefono ?? "(605) 6411370"}</span>
+                          <ExternalLink className="size-3.5 text-[var(--text-tertiary)] shrink-0" />
+                          <span className="truncate">{entidadLider.canalAtencion?.web ?? "https://www.cartagena.gov.co"}</span>
                         </span>
                         <span className="flex items-center gap-2">
-                          <Mail className="size-3.5 text-[var(--text-tertiary)] shrink-0" />
-                          <span className="truncate">{entidadLider.canalAtencion?.email ?? "atencion@cartagena.gov.co"}</span>
+                          <span className="text-[11px] text-[var(--text-tertiary)] truncate">
+                            {entidadLider.canalAtencion?.canalVirtual ?? "Sede Electrónica Distrital"}
+                          </span>
                         </span>
                       </div>
                     </div>

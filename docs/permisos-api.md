@@ -46,6 +46,7 @@ Contrato y activación: [usuarios y acceso](identidad.md).
 | politicas:gestionar | autoridad_distrital, administrador_identidades | declarada |
 | auditoria:leer | autoridad_distrital, administrador_identidades, auditor_forense | declarada |
 | seguimiento:gestionar | autoridad_distrital, administrador_identidades | declarada |
+| contenido:leer | autoridad_distrital, administrador_identidades, auditor_forense | declarada |
 
 Los roles ciudadano, ciudadano anónimo y auditor forense no reciben permisos de
 gestión institucional. El registro público solo admite ciudadano. Asignaciones
@@ -151,6 +152,14 @@ La última columna explica la excepción pública o la condición adicional.
 | POST | /api/v1/mesas | permiso:mesas:abrir@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |
 | GET | /api/v1/mesas/{mesa_id} | publico | Convocatorias y actas de deliberación pública; participantes nominales están protegidos. |
 | GET | /api/v1/mesas/{mesa_id}/acta | publico | Convocatorias y actas de deliberación pública; participantes nominales están protegidos. |
+| GET | /api/v1/noticias | publico | Consulta pública; contiene solo artículos publicados. |
+| GET | /api/v1/noticias/{slug} | publico | Consulta por slug; borradores y archivadas responden 404. |
+| GET | /api/v1/noticias/id/{id} | publico | Consulta pública por identificador; solo artículos publicados. |
+| GET | /api/v1/noticias/gestion | permiso:contenido:leer@declarada | Listado editorial, incluye borradores y archivadas; solo personal con acceso de lectura. |
+| GET | /api/v1/noticias/gestion/{id} | permiso:contenido:leer@declarada | Vista de edición; incluye estados no publicados. |
+| POST | /api/v1/noticias/gestion | permiso:politicas:gestionar@declarada | Alta editorial desde la plataforma institucional. |
+| PUT | /api/v1/noticias/gestion/{id} | permiso:politicas:gestionar@declarada | Edición y cambio de estado desde la plataforma institucional. |
+| DELETE | /api/v1/noticias/gestion/{id} | permiso:politicas:gestionar@declarada | Eliminación editorial autorizada desde la plataforma. |
 | POST | /api/v1/mesas/{mesa_id}/acta | permiso:mesas:acuerdos@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |
 | POST | /api/v1/mesas/{mesa_id}/acta/cerrar | permiso:mesas:acuerdos@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |
 | GET | /api/v1/mesas/{mesa_id}/participantes | permiso:asistencia:verificar@declarada | Registro nominal de asistencia reservado a gestión de mesa. |
@@ -180,6 +189,8 @@ La última columna explica la excepción pública o la condición adicional.
 | GET | /api/v1/testimonios | publico | Consulta pública de relatos de memoria social y testimonios comunitarios. |
 | POST | /api/v1/testimonios | sujeto | Creación de testimonio comunitario vinculada a sesión cívica o cuenta de usuario. |
 | GET | /api/v1/testimonios/gestion | permiso:testimonios:moderar@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |
+| GET | /api/v1/testimonios/gestion/{id} | permiso:testimonios:moderar@declarada | Consulta editorial, incluye relatos pendientes y rechazados. |
+| PUT | /api/v1/testimonios/{id} | permiso:testimonios:moderar@declarada | Edición editorial de campos del relato; conserva estado y datos de moderación. |
 | GET | /api/v1/testimonios/resumen | publico | Consulta pública de métricas de testimonios por estado y territorio. |
 | GET | /api/v1/testimonios/{id} | publico | Consulta pública de relatos de memoria social y testimonios comunitarios. |
 | PUT | /api/v1/testimonios/{id}/moderar | permiso:testimonios:moderar@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |
@@ -239,3 +250,14 @@ Responder usa una sesión cívica emitida sin registro; no requiere login ciudad
 | GET | /api/v1/politicas/lineas/gestion | roles:autoridad_distrital,administrador_identidades,auditor_forense | Catálogo administrativo completo, incluidas líneas inactivas; auditor solo lectura. |
 
 El listado público existente sigue mostrando líneas activas. No se conceden nuevos permisos ni se modifican roles. El editor administrativo no publica respuestas ciudadanas.
+
+## Mapeo de actores estratégicos — decisión AUD-14
+
+| Método | Ruta | Control | Motivo o condición |
+| --- | --- | --- | --- |
+| GET | /api/v1/actores | publico | Catálogo de actores estratégicos para control social y formulación participativa. |
+| GET | /api/v1/actores/kpis | publico | Agregaciones estadísticas y distribución en cuadrantes de poder e interés. |
+| GET | /api/v1/actores/{id} | publico | Ficha técnica pública de caracterización y postura del actor. |
+| POST | /api/v1/actores | permiso:politicas:gestionar@declarada | Registro de actor con validación de procedencia y trazabilidad de auditoría. |
+| PUT | /api/v1/actores/{id} | permiso:politicas:gestionar@declarada | Actualización de caracterización y acciones con registro inmutable. |
+| DELETE | /api/v1/actores/{id} | permiso:politicas:gestionar@declarada | Desactivación o retiro con justificación técnica obligatoria en auditoría. |

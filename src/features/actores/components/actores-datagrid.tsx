@@ -1,6 +1,7 @@
 "use client";
 
-import { Download, FileJson, FileSpreadsheet, SlidersHorizontal, ArrowRight, Mail, Phone } from "lucide-react";
+import { useEffect } from "react";
+import { Download, FileJson, FileSpreadsheet, SlidersHorizontal, ArrowRight, UserPlus } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/shared/ui/button";
 import { Badge } from "@/shared/ui/badge";
@@ -69,7 +70,12 @@ function formatearPostura(postura: PosturaActor): {
 export function ActoresDataGrid() {
   const actores = useActoresFiltrados();
   const totalTodos = useActoresStore((s) => s.actores.length);
+  const cargarActores = useActoresStore((s) => s.cargarActores);
   const { openPanel } = usePanels();
+
+  useEffect(() => {
+    cargarActores();
+  }, [cargarActores]);
 
   const handleExportarCsv = () => {
     if (actores.length === 0) {
@@ -89,15 +95,13 @@ export function ActoresDataGrid() {
       "Nivel de Interés",
       "Cuadrante Matriz",
       "Postura",
-      "Líder / Contacto",
-      "Cargo",
       "Organización",
-      "Teléfono",
-      "Email",
+      "Cargo",
       "Mesas Asistidas",
       "Propuestas Radicadas",
       "Expectativas Principales",
       "Estrategia de Involucramiento",
+      "Es Demostración",
       "Última Actualización",
     ];
 
@@ -115,15 +119,13 @@ export function ActoresDataGrid() {
         sanitizarCsv(a.nivelInteres),
         sanitizarCsv(c),
         sanitizarCsv(a.postura),
-        sanitizarCsv(a.contacto.nombreLider),
-        sanitizarCsv(a.contacto.cargo),
-        sanitizarCsv(a.contacto.organizacion),
-        sanitizarCsv(a.contacto.telefono ?? ""),
-        sanitizarCsv(a.contacto.email ?? ""),
+        sanitizarCsv(a.contacto?.organizacion ?? a.nombre),
+        sanitizarCsv(a.contacto?.cargo ?? ""),
         sanitizarCsv(a.mesasAsistidas?.join("; ") ?? ""),
         sanitizarCsv(a.propuestasRadicadas ?? 0),
         sanitizarCsv(a.expectativasPrincipales),
         sanitizarCsv(a.accionesInvolucramiento),
+        sanitizarCsv(a.es_demostracion ? "SÍ" : "NO"),
         sanitizarCsv(a.actualizadoEn),
       ];
     });
@@ -211,15 +213,23 @@ export function ActoresDataGrid() {
             <TableBody>
               {actores.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={8} className="h-44 text-center">
+                  <TableCell colSpan={8} className="h-48 text-center">
                     <div className="flex flex-col items-center justify-center gap-2 text-text-secondary">
                       <SlidersHorizontal className="size-6 text-text-tertiary" aria-hidden="true" />
-                      <p className="text-sm font-medium text-text-primary">
-                        No se encontraron actores con los filtros seleccionados
+                      <p className="text-sm font-semibold text-text-primary">
+                        No hay actores registrados en la plataforma
                       </p>
-                      <p className="text-xs text-text-tertiary">
-                        Intenta ajustar o reiniciar los criterios de búsqueda.
+                      <p className="text-xs text-text-tertiary max-w-md">
+                        Inicia el mapeo de actores estratégicos registrando la primera organización comunitaria, institucional o gremial.
                       </p>
+                      <Button
+                        size="sm"
+                        onClick={() => openPanel("actor-editor", {})}
+                        className="mt-3 gap-1.5"
+                      >
+                        <UserPlus className="size-3.5" aria-hidden="true" />
+                        <span>Registrar actor</span>
+                      </Button>
                     </div>
                   </TableCell>
                 </TableRow>
@@ -238,11 +248,16 @@ export function ActoresDataGrid() {
                       </TableCell>
                       <TableCell className="align-top">
                         <div className="space-y-1">
-                          <div className="font-semibold text-text-primary text-xs sm:text-sm">
-                            {actor.nombre}
+                          <div className="font-semibold text-text-primary text-xs sm:text-sm flex items-center gap-1.5 flex-wrap">
+                            <span>{actor.nombre}</span>
+                            {actor.es_demostracion && (
+                              <Badge variant="outline" className="border-warning/50 text-warning bg-warning/10 text-[9px] px-1 py-0 font-bold">
+                                DEMO
+                              </Badge>
+                            )}
                           </div>
                           <div className="text-[11px] text-text-secondary">
-                            {actor.contacto.organizacion}
+                            {actor.contacto?.organizacion || actor.nombre}
                           </div>
                           {actor.barrioVereda && (
                             <div className="text-[10px] text-text-tertiary">
@@ -277,17 +292,11 @@ export function ActoresDataGrid() {
                       <TableCell className="align-top text-xs">
                         <div className="space-y-0.5">
                           <div className="font-medium text-text-primary text-[11px]">
-                            {actor.contacto.nombreLider}
+                            {actor.contacto?.organizacion || actor.nombre}
                           </div>
                           <div className="text-[10px] text-text-secondary">
-                            {actor.contacto.cargo}
+                            {actor.contacto?.cargo || "Vocero / Delegado"}
                           </div>
-                          {actor.contacto.email && (
-                            <div className="flex items-center gap-1 text-[10px] text-text-tertiary truncate">
-                              <Mail className="size-2.5 shrink-0" aria-hidden="true" />
-                              <span className="truncate">{actor.contacto.email}</span>
-                            </div>
-                          )}
                         </div>
                       </TableCell>
                       <TableCell className="align-top text-right">
