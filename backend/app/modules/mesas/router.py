@@ -15,6 +15,9 @@ from app.modules.mesas.schemas import (
     ActaCierre,
     ActaCrear,
     ActaRespuesta,
+    AgendaActualizar,
+    AgendaCrear,
+    AgendaRespuesta,
     FotoMesaModeracion,
     FotoMesaModeradaRespuesta,
     FotoMesaRevision,
@@ -70,6 +73,48 @@ async def crear_submesa(mesa_id: uuid.UUID, datos: SubMesaCrear, service: MesaSe
 @router.get("/geovisor", response_model=list[MesaGeovisorRespuesta])
 async def listar_mesas_geovisor(service: EvidenciaServiceDep):
     return await service.listar_mesas_geovisor()
+
+
+# --- Endpoints de Cronograma y Gestión de Agendas (EDIT-02) ---
+
+
+@router.get("/agendas", response_model=list[AgendaRespuesta])
+async def listar_agendas(
+    service: MesaServiceDep,
+    tipo: str | None = None,
+    estado: str | None = None,
+    fecha: date | None = None,
+):
+    return await service.listar_agendas(tipo=tipo, estado=estado, fecha=fecha)
+
+
+@router.post(
+    "/agendas",
+    response_model=AgendaRespuesta,
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(requerir_permiso("mesas:abrir", nivel_minimo="declarada"))],
+)
+async def crear_agenda(datos: AgendaCrear, service: MesaServiceDep):
+    return await service.crear_agenda(datos)
+
+
+@router.get("/agendas/{agenda_id}", response_model=AgendaRespuesta)
+async def obtener_agenda(agenda_id: str, service: MesaServiceDep):
+    return await service.obtener_agenda(agenda_id)
+
+
+@router.patch(
+    "/agendas/{agenda_id}",
+    response_model=AgendaRespuesta,
+    dependencies=[Depends(requerir_permiso("mesas:abrir", nivel_minimo="declarada"))],
+)
+async def actualizar_agenda(
+    agenda_id: str,
+    datos: AgendaActualizar,
+    service: MesaServiceDep,
+):
+    return await service.actualizar_agenda(agenda_id, datos)
+
 
 
 @router.post(

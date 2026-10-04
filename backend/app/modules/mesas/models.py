@@ -257,3 +257,40 @@ class ActaComunitaria(Base):
     )
 
     mesa: Mapped["Mesa"] = relationship("Mesa", back_populates="actas")
+
+
+class MesaAgenda(Base):
+    """Cronograma y Agenda Dinámica de Mesas de Trabajo (EDIT-02)."""
+
+    __tablename__ = "agendas"
+    __table_args__ = (
+        Index("idx_agendas_tipo", "tipo", postgresql_include=[]),
+        Index("idx_agendas_estado", "estado", postgresql_include=[]),
+        Index("idx_agendas_fecha", "fecha", postgresql_include=[]),
+        {"schema": "mesas_trabajo"},
+    )
+
+    id: Mapped[str] = mapped_column(String(50), primary_key=True)
+    tipo: Mapped[str] = mapped_column(String(50), nullable=False)
+    nombre: Mapped[str] = mapped_column(String(255), nullable=False)
+    territorio: Mapped[str] = mapped_column(String(150), default="", nullable=False)
+    lugar: Mapped[str] = mapped_column(String(300), nullable=False)
+    fecha: Mapped[date] = mapped_column(Date, nullable=False)
+    hora_inicio: Mapped[str] = mapped_column(String(20), default="08:30", nullable=False)
+    hora_fin: Mapped[str] = mapped_column(String(20), default="12:00", nullable=False)
+    estado: Mapped[str] = mapped_column(String(50), default="programada", nullable=False)
+    dimensiones_onu: Mapped[list[Any]] = mapped_column(
+        JSONB, default=list, server_default=text("'[]'::jsonb"), nullable=False
+    )
+    responsable: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    observaciones: Mapped[str | None] = mapped_column(Text, nullable=True)
+    creado_en: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=text("clock_timestamp()"),
+        nullable=False,
+    )
+    actualizado_en: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=text("clock_timestamp()"),
+        nullable=False,
+    )

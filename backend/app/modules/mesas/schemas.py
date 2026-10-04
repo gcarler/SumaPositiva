@@ -205,3 +205,52 @@ class ActaRespuesta(BaseModel):
     integridad_valida: bool = True
 
     model_config = ConfigDict(from_attributes=True)
+
+
+# --- Schemas de Cronograma y Agenda de Mesas (EDIT-02) ---
+
+TipoAgendaLiteral = Literal["territorial", "rural_insular", "poblacional", "sectorial"]
+EstadoAgendaLiteral = Literal[
+    "programada", "en_curso", "realizada", "cancelada", "reprogramada"
+]
+
+
+class AgendaBase(BaseModel):
+    tipo: TipoAgendaLiteral
+    nombre: str = Field(..., min_length=2, max_length=255)
+    territorio: str = Field(default="", max_length=150)
+    lugar: str = Field(..., min_length=2, max_length=300)
+    fecha: date
+    hora_inicio: str = Field(default="08:30", max_length=20)
+    hora_fin: str = Field(default="12:00", max_length=20)
+    estado: EstadoAgendaLiteral = "programada"
+    dimensiones_onu: list[str] = Field(default_factory=list)
+    responsable: str | None = Field(default=None, max_length=255)
+    observaciones: str | None = None
+
+
+class AgendaCrear(AgendaBase):
+    id: str | None = None
+
+
+class AgendaActualizar(BaseModel):
+    tipo: TipoAgendaLiteral | None = None
+    nombre: str | None = Field(default=None, min_length=2, max_length=255)
+    territorio: str | None = Field(default=None, max_length=150)
+    lugar: str | None = Field(default=None, min_length=2, max_length=300)
+    fecha: date | None = None
+    hora_inicio: str | None = Field(default=None, max_length=20)
+    hora_fin: str | None = Field(default=None, max_length=20)
+    estado: EstadoAgendaLiteral | None = None
+    dimensiones_onu: list[str] | None = None
+    responsable: str | None = Field(default=None, max_length=255)
+    observaciones: str | None = None
+
+
+class AgendaRespuesta(AgendaBase):
+    id: str
+    creado_en: datetime
+    actualizado_en: datetime
+
+    model_config = ConfigDict(from_attributes=True)
+

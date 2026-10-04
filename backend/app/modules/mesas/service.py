@@ -10,12 +10,15 @@ from fastapi import HTTPException, status
 from sqlalchemy.exc import IntegrityError
 
 from app.core.transactions import transaction
-from app.modules.mesas.models import ActaComunitaria, Mesa, ParticipanteMesa
+from app.modules.mesas.models import ActaComunitaria, Mesa, MesaAgenda, ParticipanteMesa
 from app.modules.mesas.repository import MesaRepository
 from app.modules.mesas.schemas import (
     ActaCierre,
     ActaCrear,
     ActaRespuesta,
+    AgendaActualizar,
+    AgendaCrear,
+    AgendaRespuesta,
     MesaActualizar,
     MesaCrear,
     MesaRespuesta,
@@ -458,3 +461,76 @@ class MesaService:
         resp = ActaRespuesta.model_validate(acta)
         resp.integridad_valida = integridad
         return resp
+
+    # --- Cronograma y Gestión de Agendas de Mesas (EDIT-02) ---
+
+    async def listar_agendas(
+        self,
+        tipo: str | None = None,
+        estado: str | None = None,
+        fecha: date | None = None,
+    ) -> list[AgendaRespuesta]:
+        agendas = await self.repository.listar_agendas(tipo=tipo, estado=estado, fecha=fecha)
+        return [AgendaRespuesta.model_validate(a) for a in agendas]
+
+    async def obtener_agenda(self, agenda_id: str) -> AgendaRespuesta:
+        agenda = await self.repository.obtener_agenda_por_id(agenda_id)
+        if not agenda:
+            raise HTTPException(
+                status.HTTP_404_NOT_FOUND,
+                detail=f"Agenda de mesa '{agenda_id}' no encontrada",
+            )
+        return AgendaRespuesta.model_validate(agenda)
+
+    async def crear_agenda(self, datos: AgendaCrear) -> AgendaRespuesta:
+        async with transaction(self.repository.session):
+            agenda_id = datos.id or f"m-{uuid.uuid4().hex[:8]}"
+            existente = await self.repository.obtener_agenda_por_id(agenda_id)
+            if existente:
+                raise HTTPException(
+                    status.HTTP_409_CONFLICT,
+                    detail=f"Ya existe una mesa programada con ID '{agenda_id}'",
+                )
+
+            datos_dict = datos.model_dump()
+            datos_dict["id"] = agenda_id
+            agenda = MesaAgenda(**datos_dict)
+            creada = await self.repository.crear_agenda(agenda)
+            return AgendaRespuesta.model_validate(creada)
+
+    async def actualizar_agenda(self, agenda_id: str, datos: AgendaActualizar) -> AgendaRespuesta:
+        async with transaction(self.repository.session):
+            agenda = await self.repository.obtener_agenda_para_actualizar(agenda_id)
+            if not agenda:
+                raise HTTPException(
+                    status.HTTP_404_NOT_FOUND,
+                    detail=f"Agenda de mesa '{agenda_id}' no encontrada",
+                )
+
+            if datos.tipo is not None:
+                agenda.tipo = datos.tipo
+            if datos.nombre is not None:
+                agenda.nombre = datos.nombre
+            if datos.territorio is not None:
+                agenda.territorio = datos.territorio
+            if datos.lugar is not None:
+                agenda.lugar = datos.lugar
+            if datos.fecha is not None:
+                agenda.fecha = datos.fecha
+            if datos.hora_inicio is not None:
+                agenda.hora_inicio = datos.hora_inicio
+            if datos.hora_fin is not None:
+                agenda.hora_fin = datos.hora_fin
+            if datos.estado is not None:
+                agenda.estado = datos.estado
+            if datos.dimensiones_onu is not None:
+                agenda.dimensiones_onu = datos.dimensiones_onu
+            if datos.responsable is not None:
+                agenda.responsable = datos.responsable
+            if datos.observaciones is not None:
+                agenda.observaciones = datos.observaciones
+
+            agenda.actualizado_en = datetime.now(UTC)
+            actualizada = await self.repository.actualizar_agenda(agenda)
+            return AgendaRespuesta.model_validate(actualizada)
+

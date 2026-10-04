@@ -3,7 +3,7 @@
 **Última actualización**: 2026-10-04  
 **Responsable activo**: agy2 (EDD)  
 **Auditor independiente**: EAF  
-**Tarea en curso / entregada**: `EDIT-01` (Persistencia Backend para Edición de Metadatos de Mesas de Trabajo)
+**Tarea en curso / entregada**: `EDIT-02` (Dinamización y Gestión de Cronograma de Agendas de Mesas)
 
 ---
 
@@ -36,8 +36,8 @@
 
 | ID | Prioridad | Tarea / Alcance | Estado | Pruebas / Validación |
 |:---|:---:|:---|:---:|:---|
-| **EDIT-01** | **ALTA** | Persistencia Backend para Edición de Metadatos de Mesas (`PATCH /api/v1/mesas/{id}`) | **ENTREGADA / LISTA PARA AUDITAR** | `test_mesas_ltree.py::test_actualizar_mesa_persistencia`, `mesas-api.test.ts`, `bun run check`. |
-| **EDIT-02** | **MEDIA** | Modelo Relacional y CRUD Dinámico de Agenda de Mesas | **PENDIENTE** | Siguiente en orden de ejecución. |
+| **EDIT-01** | **ALTA** | Persistencia Backend para Edición de Metadatos de Mesas (`PATCH /api/v1/mesas/{id}`) | **CONFORME CON OBS-21** | `3dc7d1f`. OBS-21 programada para EDIT-01b tras EDIT-04. |
+| **EDIT-02** | **MEDIA** | Modelo Relacional y CRUD Dinámico de Agenda de Mesas | **ENTREGADA / LISTA PARA AUDITAR** | `0041_modulo_agendas_mesas.py`, `test_mesas_agenda.py` (passed), `agenda-api.test.ts` (7 pass), `bun run check`. |
 | **EDIT-03** | **MEDIA** | Persistencia en PostgreSQL para Catálogo de Fuentes de Información | **PENDIENTE** | Siguiente en orden de ejecución. |
 | **EDIT-04** | **BAJA** | Endpoint de Actualización Controlada para Fichas Técnicas DNP | **PENDIENTE** | Siguiente en orden de ejecución. |
 | **EDIT-05** | **BAJA** | Integración y Cierre de Módulos de Noticias y Testimonios (Codex) | **BLOQUEADA (CODEX)** | No tocar archivos de Codex. |

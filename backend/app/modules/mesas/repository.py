@@ -5,7 +5,7 @@ from datetime import date
 from sqlalchemy import func, select, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.modules.mesas.models import ActaComunitaria, Mesa, ParticipanteMesa
+from app.modules.mesas.models import ActaComunitaria, Mesa, MesaAgenda, ParticipanteMesa
 
 
 class MesaRepository:
@@ -124,3 +124,45 @@ class MesaRepository:
         await self.session.flush()
         await self.session.refresh(acta)
         return acta
+
+    # --- Agendas de Mesas (EDIT-02) ---
+
+    async def listar_agendas(
+        self,
+        tipo: str | None = None,
+        estado: str | None = None,
+        fecha: date | None = None,
+    ) -> Sequence[MesaAgenda]:
+        stmt = select(MesaAgenda)
+        if tipo:
+            stmt = stmt.where(MesaAgenda.tipo == tipo)
+        if estado:
+            stmt = stmt.where(MesaAgenda.estado == estado)
+        if fecha:
+            stmt = stmt.where(MesaAgenda.fecha == fecha)
+        stmt = stmt.order_by(MesaAgenda.fecha, MesaAgenda.hora_inicio, MesaAgenda.id)
+        res = await self.session.execute(stmt)
+        return res.scalars().all()
+
+    async def obtener_agenda_por_id(self, agenda_id: str) -> MesaAgenda | None:
+        stmt = select(MesaAgenda).where(MesaAgenda.id == agenda_id)
+        res = await self.session.execute(stmt)
+        return res.scalar_one_or_none()
+
+    async def obtener_agenda_para_actualizar(self, agenda_id: str) -> MesaAgenda | None:
+        stmt = select(MesaAgenda).where(MesaAgenda.id == agenda_id).with_for_update()
+        res = await self.session.execute(stmt)
+        return res.scalar_one_or_none()
+
+    async def crear_agenda(self, agenda: MesaAgenda) -> MesaAgenda:
+        self.session.add(agenda)
+        await self.session.flush()
+        await self.session.refresh(agenda)
+        return agenda
+
+    async def actualizar_agenda(self, agenda: MesaAgenda) -> MesaAgenda:
+        self.session.add(agenda)
+        await self.session.flush()
+        await self.session.refresh(agenda)
+        return agenda
+

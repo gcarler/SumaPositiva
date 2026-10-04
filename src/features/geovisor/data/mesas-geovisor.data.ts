@@ -7,7 +7,7 @@
  *   - Amarillo/Ember (programada)
  */
 
-import {AGENDA_MESAS} from "@/features/mesas/data/agenda.data";
+import {AGENDA_MESAS, type MesaAgenda} from "@/features/mesas/data/agenda.data";
 import type {MesaGeovisor, EstadoMesaGeovisor} from "../services/mesas-geovisor-api";
 
 interface CoordenadaReferencia {
@@ -397,8 +397,10 @@ export const COORDENADAS_AGENDA_MESAS: Record<string, CoordenadaReferencia> = {
  * Convierte la lista oficial de AGENDA_MESAS a formato MesaGeovisor
  * con coordenadas geográficas reales de Cartagena.
  */
-export function obtenerMesasGeovisorOficiales(): MesaGeovisor[] {
-  return AGENDA_MESAS.map((m) => {
+export function obtenerMesasGeovisorOficiales(
+  agendas: MesaAgenda[] = AGENDA_MESAS
+): MesaGeovisor[] {
+  return agendas.map((m) => {
     const geo = COORDENADAS_AGENDA_MESAS[m.id] ?? {
       lat: 10.4236,
       lng: -75.5506,
@@ -410,13 +412,18 @@ export function obtenerMesasGeovisorOficiales(): MesaGeovisor[] {
       aforo: 80,
     };
 
+    let estadoCalculado = geo.estadoDefault;
+    if (m.estado === "en_curso") estadoCalculado = "EN_DELIBERACION";
+    else if (m.estado === "realizada") estadoCalculado = "ACTA_CONCERTADA";
+    else if (m.estado === "reprogramada") estadoCalculado = "CONVOCADA";
+
     return {
       id: m.id,
       nombre: m.nombre,
       fecha: m.fecha,
       horario: `${m.horaInicio} – ${m.horaFin}`,
-      estado: geo.estadoDefault,
-      realizada: geo.realizada,
+      estado: estadoCalculado,
+      realizada: m.estado === "realizada" || geo.realizada,
       total_asistentes: geo.totalAsistentes,
       territorio_id: geo.territorioCodigo,
       territorio_nombre: geo.territorioNombre,

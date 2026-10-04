@@ -1,6 +1,6 @@
 "use client";
 
-import {useState} from "react";
+import {useState, useEffect} from "react";
 import Link from "next/link";
 import {format} from "date-fns";
 import {es} from "date-fns/locale";
@@ -28,6 +28,7 @@ import {
 } from "@/shared/ui/select";
 import {Badge} from "@/shared/ui/badge";
 import {AGENDA_MESAS} from "@/features/mesas/data/agenda.data";
+import {useAgendaStore} from "@/features/mesas/state/agenda-store";
 import {CONTENIDO_MESAS} from "@/features/mesas/data/agenda-contenido.data";
 import {useMesasStore} from "@/features/mesas/state/mesas-store";
 import {
@@ -45,9 +46,14 @@ import {
 } from "@/features/mesas/models/asistencia";
 
 export function AsistenciaCliente({ mesaId }: { mesaId: string }) {
+  useEffect(() => {
+    useAgendaStore.getState().cargarAgendas();
+  }, []);
+
   const registrarAsistente = useAsistenciaStore((s) => s.registrarAsistente);
   const mesaStore = useMesasStore((s) => s.mesas.find((m) => m.id === mesaId));
-  const mesaAgenda = AGENDA_MESAS.find((m) => m.id === mesaId);
+  const agendaDinamica = useAgendaStore((s) => s.agendas.find((m) => m.id === mesaId));
+  const mesaAgenda = agendaDinamica || AGENDA_MESAS.find((m) => m.id === mesaId);
   const contenido = CONTENIDO_MESAS[mesaId];
 
   const nombreMesa =

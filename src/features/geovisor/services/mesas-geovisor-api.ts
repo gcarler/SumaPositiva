@@ -92,6 +92,7 @@ import {
   obtenerMesasGeovisorOficiales,
   COORDENADAS_AGENDA_MESAS,
 } from "../data/mesas-geovisor.data";
+import { listarAgendas } from "@/features/mesas/services/agenda-api";
 
 export async function listarMesasGeovisor(): Promise<MesaGeovisor[]> {
   try {
@@ -116,9 +117,14 @@ export async function listarMesasGeovisor(): Promise<MesaGeovisor[]> {
       });
     }
   } catch {
-    // Si la API remota falla o responde vacío, entregar las 36 mesas oficiales georreferenciadas
+    // Si la API remota falla o responde vacío, entregar las mesas oficiales georreferenciadas
   }
-  return obtenerMesasGeovisorOficiales();
+  try {
+    const agendas = await listarAgendas();
+    return obtenerMesasGeovisorOficiales(agendas);
+  } catch {
+    return obtenerMesasGeovisorOficiales();
+  }
 }
 
 export async function subirFotoMesa(mesaId: string, archivo: File, autorizacionImagen: boolean): Promise<void> {

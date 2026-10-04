@@ -1929,3 +1929,78 @@ En cumplimiento estricto de la directiva de editabilidad de la plataforma, se su
 | **Pipeline Completo Check** | `bun run check` | **100% aprobado** (ui:check, typecheck, lint). |
 | **Aislamiento de Codex** | `git status` | Archivos de codex (`noticias`, `testimonios`, backend) estrictamente intactos. |
 | **Restricción E2E y Migraciones** | N/A | No se ejecutaron migraciones sobre `bd_csh`, no se realizó `git push`, y no se ejecutó suite E2E completa (a la espera de indicación de EAF). |
+
+---
+
+## Tarea EDIT-02: Dinamización y Gestión de Cronograma de Agendas de Mesas
+**Fecha**: 2026-10-04T04:30:00Z  
+**Estado**: LISTA PARA AUDITAR (EAF)  
+**Responsable**: agy2 (Equipo de Desarrollo EDD)  
+**Especificación**: `bridge/01_tarea_agy2_edit_02.md`  
+**Referencia Backlog**: `bridge/04_backlog_editabilidad.md` (Ítem 2)
+
+---
+
+### 1. Resumen Ejecutivo de la Solución (EDIT-02)
+En el dictamen AUD-18 se identificó que el cronograma de 36 mesas territoriales, sectoriales y poblacionales residía en una constante estática de frontend (`AGENDA_MESAS` en `agenda.data.ts`), impidiendo reprogramar fechas, actualizar sedes, cambiar estados de ejecución o agregar mesas sobrevenidas con persistencia en base de datos.
+
+Se implementó el ciclo completo de dinamización relacional y gestión:
+1. **Migración Relacional e Índices (`backend/alembic/versions/0041_modulo_agendas_mesas.py`)**:
+   - `down_revision = "0040_modulo_actores_estrategicos"`.
+   - Creación de tabla `mesas_trabajo.agendas` con clave primaria `id VARCHAR(50)`, `tipo` (territorial, rural_insular, poblacional, sectorial), `nombre`, `territorio`, `lugar`, `fecha DATE`, `hora_inicio`, `hora_fin`, `estado` (programada, en_curso, realizada, cancelada, reprogramada), `dimensiones_onu JSONB`, `responsable`, `observaciones`, `creado_en` y `actualizado_en`.
+   - Índices de alto rendimiento sobre `tipo`, `estado` y `fecha`.
+   - Sembrado canónico e idempotente (`ON CONFLICT (id) DO NOTHING`) de las 36 mesas oficiales de Cartagena.
+2. **Backend Domain (Modelos, Schemas, Repositorio y Servicio)**:
+   - `models.py`: Modelo SQLAlchemy `MesaAgenda` mapeado a `mesas_trabajo.agendas`.
+   - `schemas.py`: Schemas Pydantic `AgendaCrear`, `AgendaActualizar`, `AgendaRespuesta`.
+   - `repository.py`: Consultas parametrizadas asíncronas con ordenamiento cronológico y bloqueo pesimista `SELECT ... FOR UPDATE` para mutaciones seguras.
+   - `service.py`: Gestión transaccional atómica bajo `transaction(session)` garantizando consistencia ACID.
+   - `router.py`:
+     - `GET /api/v1/mesas/agendas`: Consulta pública con filtrado por tipo, estado y fecha.
+     - `GET /api/v1/mesas/agendas/{agenda_id}`: Detalle individual de programación.
+     - `POST /api/v1/mesas/agendas`: Creación de mesas sobrevenidas protegida con `requerir_permiso("mesas:abrir")`.
+     - `PATCH /api/v1/mesas/agendas/{agenda_id}`: Reprogramación y actualización de estados protegida con `requerir_permiso("mesas:abrir")`.
+3. **Frontend Cliente y Capa de Estado**:
+   - `src/features/mesas/services/agenda-api.ts`: Cliente HTTP `listarAgendas`, `obtenerAgenda`, `crearAgendaRemota`, `actualizarAgendaRemota`, con fallback resiliente a `AGENDA_MESAS`.
+   - `src/features/mesas/state/agenda-store.ts`: Store reactivo Zustand con carga inicial asíncrona, actualización optimista y fallback local.
+   - `src/features/mesas/panels/agenda-editor-panel.tsx`: Panel Zero-Modals conforme al Design Kit de POLIS (PanelShell, FormField, Select, Input, Textarea de `@/shared/ui`, banner pericial de reprogramación).
+   - Integración reactiva en el geovisor (`mesas-geovisor.data.ts`, `mesas-geovisor-api.ts`) y en la planilla de asistencia ciudadana (`asistencia-cliente.tsx`).
+
+---
+
+### 2. Matriz de Archivos Creados y Modificados (EDIT-02)
+
+| Archivo | Tipo | Descripción de la Modificación |
+|---|---|---|
+| `backend/alembic/versions/0041_modulo_agendas_mesas.py` | **Nuevo** | Migración Alembic: tabla `mesas_trabajo.agendas`, 3 índices y semillero de 36 agendas. |
+| `backend/app/modules/mesas/models.py` | **Modificación** | Modelo ORM SQLAlchemy `MesaAgenda`. |
+| `backend/app/modules/mesas/schemas.py` | **Modificación** | Schemas Pydantic `TipoAgendaLiteral`, `EstadoAgendaLiteral`, `AgendaBase`, `AgendaCrear`, `AgendaActualizar`, `AgendaRespuesta`. |
+| `backend/app/modules/mesas/repository.py` | **Modificación** | Métodos repository: `listar_agendas`, `obtener_agenda_por_id`, `obtener_agenda_para_actualizar`, `crear_agenda`, `actualizar_agenda`. |
+| `backend/app/modules/mesas/service.py` | **Modificación** | Métodos service transaccionales para listar, obtener, crear y actualizar agendas. |
+| `backend/app/modules/mesas/router.py` | **Modificación** | Endpoints `GET/POST /agendas` y `GET/PATCH /agendas/{agenda_id}` protegidos con `mesas:abrir`. |
+| `backend/tests/test_mesas_agenda.py` | **Nuevo** | Suite pytest validando persistencia, reprogramación, sembrado de 36 mesas, filtrado y creación. |
+| `src/features/mesas/services/agenda-api.ts` | **Nuevo** | Cliente HTTP `listarAgendas`, `obtenerAgenda`, `crearAgendaRemota`, `actualizarAgendaRemota` y normalización. |
+| `src/features/mesas/services/agenda-api.test.ts` | **Nuevo** | 7 pruebas unitarias de API: normalización, listados, fallback resiliente, creación POST y actualización PATCH. |
+| `src/features/mesas/state/agenda-store.ts` | **Nuevo** | Store Zustand reactivo para administración de cronograma y sincronización remota. |
+| `src/features/mesas/panels/agenda-editor-panel.tsx` | **Nuevo** | Panel Zero-Modals para reprogramación de mesas y cambio de estado con componentes POLIS UI. |
+| `src/features/geovisor/data/mesas-geovisor.data.ts` | **Modificación** | Adaptación de función para consumir agendas dinámicas y computar semáforo geográfico. |
+| `src/features/geovisor/services/mesas-geovisor-api.ts` | **Modificación** | Integración asíncrona con `listarAgendas()` para alimentar el geovisor con datos dinámicos. |
+| `src/app/asistencia/[mesaId]/asistencia-cliente.tsx` | **Modificación** | Conexión con `useAgendaStore` para reflejar dinámicamente reprogramaciones de fecha/sede. |
+| `bridge/01_tarea_activa.md` | **Modificación** | Estado actualizado a EDIT-02 LISTA PARA AUDITAR. |
+| `bridge/02_entrega_agy2.md` | **Modificación** | Reporte pericial de entrega EDIT-02. |
+
+---
+
+### 3. Matriz de Quality Gates y Verificación Pericial (EDIT-02)
+
+| Quality Gate | Comando de Validación | Resultado Pericial |
+|---|---|---|
+| **Pruebas Backend Pytest (`polis_test`)** | `backend/.venv/bin/pytest backend/tests/test_mesas_agenda.py backend/tests/test_mesas_ltree.py` | **3 passed in 5.06s** (sembrado de 36 agendas, reprogramación PATCH, creación POST, validación 404). |
+| **Pruebas Frontend Agenda API** | `bun test src/features/mesas/services/agenda-api.test.ts` | **7 pass, 0 fail (34 expect calls)**. |
+| **Suite Completa Frontend** | `bun test` | **236 pass, 0 fail (1073 expect calls)** en 26 suites de prueba. |
+| **Política de UI POLIS** | `bun run ui:check` (`node scripts/ui-policy.mjs`) | **0 violaciones** (uso estricto de Textarea, Input, FormField, PanelShell de `@/shared/ui`). |
+| **Chequeo de Tipos TypeScript** | `bun run typecheck` (`tsc --noEmit`) | **0 errores** de compilación estricta. |
+| **Linting ESLint** | `bun run lint` (`eslint .`) | **0 errores, 0 advertencias** (`no-unused-vars: error`, `ban-ts-comment: error`). |
+| **Pipeline Completo Check** | `bun run check` | **100% aprobado** (ui:check, typecheck, lint). |
+| **Aislamiento de Codex** | `git status` | Archivos de codex (`noticias`, `testimonios`, backend) estrictamente intactos. |
+| **Restricción E2E y Migraciones** | N/A | No se ejecutaron migraciones sobre `bd_csh`, no se realizó `git push`, y no se ejecutó suite E2E completa (a la espera de indicación de EAF). |
