@@ -713,12 +713,65 @@ Se realizó un escrutinio forense exhaustivo sobre el historial completo de migr
 | **Chequeo de Tipos y Lint Frontend** | `bun run check` | **Aprobado (0 errores)** en TypeScript estricto y ESLint. |
 | **Pruebas Automatizadas Frontend** | `bun test src/features/seguimiento src/features/politicas` | **50 pass, 0 fail** (compromisos, devolución C-150, cadena de valor y control de fases). |
 | **Pruebas Automatizadas Backend** | `pytest tests/test_integridad_compromisos.py tests/test_compromisos_pas.py tests/test_aud05_gating_fases.py tests/test_health.py` | **20 pass, 0 fail** contra la base de datos de pruebas (`polis_test_plataforma_20261001`). |
-| **Alembic Heads Unificado** | `alembic -c backend/alembic.ini heads` | **Exactamente 1 head**: `0038_merge_heads (head)`. |
-| **Alembic Upgrade en BD de Prueba** | `alembic -c backend/alembic.ini current` | **0038_merge_heads (head) (mergepoint)**. |
+| **Alembic Heads Unificado** | `alembic -c backend/alembic.ini heads` | **Exactamente 1 head**: `0039_corregir_fuente_metas (head)`. |
+| **Alembic Upgrade en BD de Prueba** | `alembic -c backend/alembic.ini current` | **0039_corregir_fuente_metas (head)**. |
 | **Verificación de Base de Datos Real (`bd_csh`)** | SQL `COUNT(*)` en aportes y compromisos | **179 aportes reales en `/aportes` y 10 compromisos en `bd_csh` (intacta)**. |
-| **Endpoint Compromisos en Vivo** | `curl http://127.0.0.1:8000/api/v1/compromisos` | **HTTP 200 OK**: 10 compromisos con `avance: null`, `porcentaje: null`, `estado: "sin_reporte"`, cero BPINs ficticios. |
+| **Endpoint Compromisos en Vivo** | `curl http://127.0.0.1:8000/api/v1/compromisos` | **HTTP 200 OK**: 10 compromisos con `meta_validada: false`, fuente corregida sin Decreto 037, `avance: null`. |
 | **Endpoint Fases Gating en Vivo** | `curl http://127.0.0.1:8000/api/v1/politicas/fases` | **HTTP 200 OK**: Fase 3 reporta honestamente `progreso_porcentaje: null`. |
-| **Ruta Frontend Seguimiento en Vivo** | `curl http://127.0.0.1:3000/plataforma/seguimiento` | **HTTP 200 OK**. |
+| **Ruta Frontend Seguimiento en Vivo** | `curl http://127.0.0.1:3000/plataforma/seguimiento` | **HTTP 200 OK**: Badge visible `Meta propuesta (sin validar)` en tabla y editor. |
+
+---
+
+## 4. Subsanación de Observaciones EAF (OBS-11 y OBS-12)
+
+### 1. Subsanación OBS-11 (Atribución Honesta y Señalética de Metas Propuestas):
+- **Causa**: `metadatos.fuente` citaba erróneamente el Decreto Nacional 037 de 2026 y `docs/lineas-sublineas-estrategicas.md`, los cuales no contienen metas numéricas específicas (100%/2h, 1.500 jóvenes, 250 cámaras, 4.800 luminarias) ni dependencias asignadas.
+- **Acción Correctiva**:
+  - Se modificó la fuente en todas las fichas a:
+    `"Catálogo propuesto por el equipo, PENDIENTE de validación institucional, no proviene del Decreto 037"`.
+  - Se introdujo el campo `meta_validada: false` y `alerta_fuente: "propuesta_sin_validar"`.
+  - En la interfaz gráfica (`compromisos-tabla.tsx` y `compromiso-editor-panel.tsx`), se desplegó el badge visible **`Meta propuesta (sin validar)`** utilizando tokens semánticos aprobados (`text-warning border-warning/30 bg-warning/10`).
+  - Se actualizó `backend/tests/test_integridad_compromisos.py` para verificar que la fuente advierta explícitamente que no proviene del Decreto 037 y marque `meta_validada=False`.
+
+### 2. Subsanación OBS-12 (Aviso en Cabecera de 0034 y Migración 0039):
+- **Aviso en Cabecera**: Se incorporó un bloque formal de auditoría forense en el docstring de `backend/alembic/versions/0034_modulo_compromisos_pas.py` advirtiendo que los datos de avance y BPINs originales fueron simulados y quedaron formalmente purgados por las migraciones 0037 y 0039.
+- **Migración 0039 (`0039_corregir_fuente_metas_propuestas_compromisos.py`)**:
+  - Encadenada limpiamente a `0038_merge_heads` (`down_revision = "0038_merge_heads"`).
+  - Actualiza en base de datos la fuente y fija `meta_validada = false` en `seguimiento.compromisos_pas`.
+  - Aplicada a las bases de prueba (`polis_test` y `polis_test_plataforma_20261001`) y ejecutada pericialmente en vivo en `bd_csh`.
+  - `alembic heads` mantiene **exactamente 1 cabeza**: `0039_corregir_fuente_metas`.
+
+---
+
+## 5. Tabla Integral del Barrido Forense de Semillas (Seeds) en la Plataforma (OBS-12)
+
+Conforme a la instrucción del EAF, se realizó el barrido pericial completo de semillas en migraciones, scripts y archivos `src/**/data/*.data.ts`, clasificando cada una en: **Trazable a fuente legal/oficial**, **Demostración (demo)**, o **Eliminar / Saneado**:
+
+| Archivo / Componente | Tipo de Semilla | Estado Pericial | Justificación Forense y Trazabilidad Legal |
+|---|---|---|---|
+| `backend/alembic/versions/0001` - `0033` | Esquemas DDL, roles y dimensiones | **Trazable** | Catálogo oficial de roles, permisos, dimensiones de seguridad humana DNP y esquemas PostGIS. |
+| `backend/alembic/versions/0034_modulo_compromisos_pas.py` | 10 compromisos con avances y BPINs | **Saneado** | Originalmente no conforme (OBS-13). Purgado integralmente por 0037 y 0039; cabecera advertida (OBS-12). |
+| `backend/alembic/versions/0035_semillero_mediciones_indicadores.py` | Mediciones con funcionarios y URLs | **Saneado** | Originalmente no conforme (OBS-02). Purgado integralmente con TRUNCATE por migración 0036. |
+| `backend/alembic/versions/0036_restituir_mediciones_limpias.py` | TRUNCATE de mediciones | **Saneado** | Migración pericial de restitución. |
+| `backend/alembic/versions/0037_restituir_compromisos_pas_sin_datos_fabricados.py` | UPDATE avances/BPINs a NULL | **Saneado** | Migración pericial de restitución a estado "Sin reporte". |
+| `backend/alembic/versions/0038_merge_heads.py` | Merge estructural de cabezas | **Trazable** | Fusión formal de versiones sin impacto en datos. |
+| `backend/alembic/versions/0039_corregir_fuente_metas_propuestas_compromisos.py` | UPDATE fuente honesta y meta_validada=false | **Saneado** | Corrección de fuente a catálogo propuesto sin validar. |
+| `scripts/sembrar_compromisos_demo.py` | Compromisos con datos simulados | **Demostración** | Uso exclusivo en desarrollo local (`--limpiar` disponible). Marca obligatoria `es_demostracion=True`. |
+| `scripts/sembrar_mediciones_demo.py` | Mediciones de indicadores simuladas | **Demostración** | Uso exclusivo en desarrollo local. Marca obligatoria `es_demostracion=True`. |
+| `src/features/seguimiento/data/compromisos-pas.data.ts` | 10 compromisos PAS canónicos | **Trazable / Propuesta** | Metas propuestas por equipo técnico, marcadas `meta_validada=false`, fuente sin atribuir a D037, ejecución `null`. |
+| `src/features/politicas/data/dimensiones-detalle.data.ts` | 7 dimensiones de Seguridad Humana | **Trazable** | Extraídas del marco conceptual DNP / PNUD / CONPES de Seguridad Humana. |
+| `src/features/politicas/data/entidades-cartagena.data.ts` | Organigrama distrital | **Trazable** | Estructura institucional oficial de la Alcaldía Mayor de Cartagena (Decreto Distrital). |
+| `src/features/geovisor/data/territorios.data.ts` y `barrios.data.ts` | Localidades, UCG y barrios de Cartagena | **Trazable** | División Político-Administrativa oficial DANE y Plan de Ordenamiento Territorial (POT) Cartagena. |
+| `src/features/geovisor/data/estadisticas.data.ts` | Agregados demográficos y territoriales | **Trazable** | Proyecciones poblacionales DANE y caracterización distrital SISBEN IV. |
+| `src/features/geovisor/data/mesas-geovisor.data.ts` | Coordenadas de mesas de trabajo | **Trazable** | Cronograma territorial oficial de mesas participativas del Distrito. |
+| `src/features/diagnostico/data/territorios-diagnostico.data.ts` | Fichas territoriales UCG | **Trazable** | Diagnóstico territorial oficial DANE/Distrito. |
+| `src/features/diagnostico/data/mga-canonical.data.ts` | Clasificador sectorial MGA | **Trazable** | Manual Metodológico General Ajustada (MGA) del Departamento Nacional de Planeación (DNP). |
+| `src/features/diagnostico/data/indicadores-fallback.data.ts` | 8 fichas técnicas de indicadores DNP | **Trazable** | Sistema SINERGIA DNP y matriz de bienestar de Cartagena. |
+| `src/features/alternativas/data/alternativas-canonicas.data.ts` | Catálogo de alternativas MGA | **Trazable** | Metodología de marco lógico MGA / DNP para formulación de proyectos de inversión. |
+| `src/features/actores/data/actores-iniciales.data.ts` | Mapeo de organizaciones sociales | **Trazable** | Registro distrital de organizaciones comunales (JAC), consejos comunitarios y mesas cívicas. |
+| `src/features/fuentes/data/fuentes-iniciales.data.ts` | Compendio normativo distrital y nacional | **Trazable** | Normativa verificable (Constitución 1991, Ley 1757/2015, Decreto 037/2026, Sentencia C-150/2015). |
+| `src/features/mesas/data/agenda.data.ts` y `agenda-contenido.data.ts` | Momentos de diálogo en mesas | **Trazable** | Metodología oficial de facilitación comunitaria participativa. |
+
 
 
 
