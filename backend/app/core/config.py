@@ -24,7 +24,11 @@ class Settings(BaseSettings):
     ]
     log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"] = "INFO"
 
-    jwt_secret_key: str = "polis_secreto_super_seguro_cartagena_2026"
+    jwt_secret_key: str = Field(
+        ...,
+        min_length=32,
+        description="Clave secreta obligatoria para firma de tokens JWT (POLIS_JWT_SECRET_KEY)",
+    )
     ip_salt: str = "polis_salt_habeas_data_2026"
     jwt_algorithm: str = "HS256"
     jwt_expiracion_horas: int = 24

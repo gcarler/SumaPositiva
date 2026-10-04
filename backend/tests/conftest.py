@@ -4,14 +4,42 @@ import asyncio
 import os
 from pathlib import Path
 
-# Configuración uniforme de entorno de pruebas para aislamiento forense (AUD-06 / OBS-09 / AUD-07)
+# Configuración uniforme de entorno de pruebas para aislamiento forense (AUD-06 / OBS-09 / AUD-07 / OBS-13)
 os.environ.setdefault("POLIS_ENVIRONMENT", "test")
-os.environ.setdefault("POLIS_JWT_SECRET_KEY", "polis_secreto_super_seguro_cartagena_2026")
-os.environ.setdefault("POLIS_IP_SALT", "polis_salt_habeas_data_2026")
 os.environ.setdefault(
-    "POLIS_TEST_DATABASE_URL",
-    "postgresql+asyncpg://polis:polis_cartagena_2026@127.0.0.1:5432/polis_test",
+    "POLIS_JWT_SECRET_KEY", "polis_test_jwt_secret_key_32bytes_min_longitud!"
 )
+os.environ.setdefault("POLIS_IP_SALT", "salt_test_habeas_data_aislado_32bytes!")
+
+# Resolución dinámica de base de datos de pruebas sin credenciales en código versionado
+if "POLIS_TEST_DATABASE_URL" not in os.environ:
+    _target_url = None
+    if "POLIS_DATABASE_URL" in os.environ:
+        try:
+            from sqlalchemy.engine import make_url
+            _target_url = make_url(os.environ["POLIS_DATABASE_URL"]).set(database="polis_test").render_as_string(hide_password=False)
+        except Exception:
+            pass
+    if not _target_url:
+        _env_file = Path(__file__).resolve().parents[1] / ".env"
+        if _env_file.exists():
+            for _line in _env_file.read_text().splitlines():
+                if _line.startswith("POLIS_DATABASE_URL="):
+                    try:
+                        from sqlalchemy.engine import make_url
+                        _raw = _line.split("=", 1)[1].strip()
+                        _target_url = make_url(_raw).set(database="polis_test").render_as_string(hide_password=False)
+                    except Exception:
+                        pass
+                    break
+    if not _target_url:
+        _db_pass = os.environ.get("POLIS_DB_PASS") or os.environ.get("PGPASSWORD")
+        if _db_pass:
+            _target_url = f"postgresql+asyncpg://polis:{_db_pass}@127.0.0.1:5432/polis_test"
+        else:
+            _target_url = "postgresql+asyncpg://polis@127.0.0.1:5432/polis_test"
+
+    os.environ["POLIS_TEST_DATABASE_URL"] = _target_url
 
 import pytest
 from alembic.config import Config

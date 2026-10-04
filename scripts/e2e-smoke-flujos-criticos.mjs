@@ -4,11 +4,39 @@ import { spawn, execSync } from "node:child_process";
 import http from "node:http";
 import fs from "node:fs";
 
-const BACKEND_PORT = 8100;
-const FRONTEND_STANDALONE_PORT = 3105;
-const PROXY_PORT = 3100;
+// Configuración de puertos de entorno aislado (OBS-14)
+// Se pueden sobreescribir vía variables de entorno para evitar colisiones con otros servicios.
+const BACKEND_PORT = Number(process.env.E2E_BACKEND_PORT) || 8100;
+const FRONTEND_STANDALONE_PORT = Number(process.env.E2E_FRONTEND_STANDALONE_PORT) || 3105;
+const PROXY_PORT = Number(process.env.E2E_PROXY_PORT) || 3100;
 const BASE_URL = `http://127.0.0.1:${PROXY_PORT}`;
 const BACKEND_URL = `http://127.0.0.1:${BACKEND_PORT}`;
+
+// Resolución dinámica de credenciales sin contraseñas en código versionado (OBS-13)
+function resolverPasswordBd() {
+  if (process.env.POLIS_DB_PASS) return process.env.POLIS_DB_PASS;
+  if (process.env.PGPASSWORD) return process.env.PGPASSWORD;
+  try {
+    const envContent = fs.readFileSync("backend/.env", "utf8");
+    for (const line of envContent.split("\n")) {
+      if (line.startsWith("POLIS_DATABASE_URL=")) {
+        const val = line.slice(line.indexOf("=") + 1).trim();
+        const m = val.match(/:\/\/([^:]+):([^@]+)@/);
+        if (m && m[2]) return m[2];
+      }
+    }
+  } catch {}
+  return "";
+}
+
+const DB_PASS = resolverPasswordBd();
+const DB_HOST = process.env.POLIS_DB_HOST || "127.0.0.1";
+const DB_PORT = process.env.POLIS_DB_PORT || "5432";
+const DB_USER = process.env.POLIS_DB_USER || "polis";
+const E2E_DB_NAME = process.env.POLIS_E2E_DB_NAME || "polis_test_e2e";
+const E2E_DATABASE_URL = DB_PASS
+  ? `postgresql+asyncpg://${DB_USER}:${encodeURIComponent(DB_PASS)}@${DB_HOST}:${DB_PORT}/${E2E_DB_NAME}`
+  : `postgresql+asyncpg://${DB_USER}@${DB_HOST}:${DB_PORT}/${E2E_DB_NAME}`;
 
 let backendProcess = null;
 let frontendProcess = null;
@@ -22,14 +50,20 @@ function registrarPaso(nombre, detalle = "") {
   resultados.push({ nombre, detalle, exito: true });
 }
 
+/**
+ * Limpieza defensiva de puertos aislados de prueba (OBS-14).
+ * Se ejecuta únicamente sobre puertos dedicados de test (8100, 3105, 3100) para garantizar
+ * que no queden procesos zombies de corridas previas interrumpidas.
+ * NUNCA opera sobre los puertos productivos (8000 backend / 3000 frontend).
+ */
 function limpiarPuertos() {
-  console.log(`[E2E-ENV] Limpiando procesos en puertos ${BACKEND_PORT}, ${FRONTEND_STANDALONE_PORT} y ${PROXY_PORT}...`);
+  console.log(`[E2E-ENV] Limpiando procesos en puertos de prueba aislados ${BACKEND_PORT}, ${FRONTEND_STANDALONE_PORT} y ${PROXY_PORT}...`);
   try {
     execSync(`fuser -k ${BACKEND_PORT}/tcp 2>/dev/null || true`);
     execSync(`fuser -k ${FRONTEND_STANDALONE_PORT}/tcp 2>/dev/null || true`);
     execSync(`fuser -k ${PROXY_PORT}/tcp 2>/dev/null || true`);
   } catch {
-    // Ignore errors if no processes were listening
+    // Si no había procesos escuchando, ignorar limpiamente
   }
 }
 
@@ -68,10 +102,8 @@ async function prepararEntornoAislado() {
       env: {
         ...process.env,
         POLIS_ENVIRONMENT: "test",
-        POLIS_DATABASE_URL:
-          "postgresql+asyncpg://polis:polis_cartagena_2026@127.0.0.1:5432/polis_test_e2e",
-        POLIS_TEST_DATABASE_URL:
-          "postgresql+asyncpg://polis:polis_cartagena_2026@127.0.0.1:5432/polis_test_e2e",
+        POLIS_DATABASE_URL: E2E_DATABASE_URL,
+        POLIS_TEST_DATABASE_URL: E2E_DATABASE_URL,
         POLIS_JWT_SECRET_KEY: "clave_secreta_e2e_para_pruebas_aisladas_32caracteres",
         POLIS_IP_SALT: "salt_e2e_para_pruebas_aisladas_32caracteres",
       },

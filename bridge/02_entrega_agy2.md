@@ -1343,3 +1343,89 @@ En respuesta al hallazgo pericial de severidad MEDIA sobre la presencia de más 
 
 
 
+
+---
+
+## Tarea AUD-11: Higiene del Repositorio antes de Consolidar y Subir a Remoto
+**Fecha**: 2026-10-04T03:30:00Z  
+**Estado**: CONFORME PARA AUDITORÍA FORENSE (EAF)  
+**Responsable**: agy2 (Equipo de Desarrollo EDD)  
+**Plan de Auditoría**: `bridge/00_plan_auditoria_plataforma.md`  
+**Especificación**: `bridge/01_tarea_agy2_aud_11.md`  
+**Observaciones Asociadas**: OBS-13 (Credenciales en scripts y BD real por defecto) y OBS-14 (Credenciales en E2E y uso de `fuser -k`) de `bridge/03_dictamen_revision.md`.  
+
+---
+
+### 1. Resumen Ejecutivo de la Solución (AUD-11)
+
+En cumplimiento de la especificación de AUD-11 y los requerimientos derivados de OBS-13 y OBS-14, se ejecutó un saneamiento integral de la higiene del repositorio, erradicación definitiva de credenciales embebidas en código/scripts, blindaje defensivo de bases de datos productivas y redacción del protocolo de rotación y consolidación:
+
+1. **Higiene del Índice Git y `.gitignore`**:
+   - Se removieron del índice de rastreo de git (`git rm --cached`) los archivos sensibles `.env`, `bridge/auditorias.db` y `db/custom.db`.
+   - Se reforzó `.gitignore` con exclusiones estrictas para patrones de entorno (`.env`, `.env.*`, `.env.local`, `backend/.env`), bases SQLite (`*.db`, `*.db-journal`, `*.sqlite*`, `/db/*.db`, `bridge/*.db`), preservando únicamente las plantillas públicas `.env.example` y `backend/.env.example`.
+   - Se verificó que `git ls-files | grep -E "(\.env|\.db)$"` arroja **0 resultados**.
+
+2. **Configuración de Identidad de Commits**:
+   - Se configuró la identidad del autor de commits a nivel de repositorio:
+     - `user.name`: `"Equipo de Desarrollo POLIS"`
+     - `user.email`: `"dev@seguridadhumanaintegral.org"`
+
+3. **Erradicación de Contraseñas de Base de Datos en Código y Tests (OBS-13 / OBS-14)**:
+   - `backend/tests/conftest.py`: Se eliminó el default `polis_cartagena_2026`. Ahora `POLIS_TEST_DATABASE_URL` se deriva de manera dinámica a partir de la variable de entorno `POLIS_DATABASE_URL` o del archivo `backend/.env` local no versionado mediante `sqlalchemy.engine.make_url()`, sustituyendo limpiamente el nombre de la base de datos a `polis_test`.
+   - `scripts/respaldo_bd.sh` y `scripts/restaurar_bd.sh`: Se eliminó la exportación fija `export PGPASSWORD="polis_cartagena_2026"`. Las credenciales se resuelven exclusivamente desde las variables de entorno (`PGPASSWORD` o `POLIS_DB_PASS`) o desde el archivo `backend/.env` local no versionado.
+   - `scripts/preparar_entorno_e2e.py` y `scripts/e2e-smoke-flujos-criticos.mjs`: Se erradicó cualquier contraseña embebida en URLs estáticas; la conexión se genera de forma parametrizada a través de `E2E_DATABASE_URL`, garantizando total portabilidad y seguridad.
+   - **Barrido de Repositorio**: Se ejecutó `git grep -n "polis_cartagena_2026"`; se constató **0 coincidencias** en todo el código fuente, tests, scripts y configuraciones.
+
+4. **Guardas de Seguridad en Scripts de Demostración (OBS-13)**:
+   - `scripts/sembrar_compromisos_demo.py`, `scripts/sembrar_mediciones_demo.py` y `scripts/sembrar_actores_demo.py`:
+     - El destino por defecto se cambió a `polis_demo` (desvinculando por completo la base de producción `bd_csh`).
+     - Se implementó la guarda activa `validar_bd_destino`: cualquier intento de ejecución contra una base de datos que no inicie por `polis_test` o `polis_demo` es rechazado inmediatamente con código de salida 1 y mensaje de advertencia pericial, a menos que se invoque expresamente con la bandera `--confirmar-bd-destino`.
+
+5. **Eliminación de Clave JWT por Defecto en Configuración (OBS-13)**:
+   - `backend/app/core/config.py`: Se eliminó el valor por defecto `polis_secreto_super_seguro_cartagena_2026`. El parámetro `jwt_secret_key` se configuró como `Field(..., min_length=32)` obligatorio, impidiendo el arranque de la API en cualquier entorno si no se provee una clave explícita de longitud segura.
+
+6. **Manejo Defensivo y Documentado de Puertos en E2E (OBS-14)**:
+   - En `scripts/e2e-smoke-flujos-criticos.mjs`, se acotó y documentó la función `limpiarPuertos`: el uso de `fuser -k` opera única y exclusivamente sobre los puertos de prueba aislados (`8100`, `3100`, `3105`), impidiendo interferencias con los servicios de producción (`8000` / `3000`).
+
+7. **Protocolo de Rotación de Secretos y Plan de Squash (`docs/rotacion-secretos.md`)**:
+   - Se redactó el documento formal `docs/rotacion-secretos.md` detallando:
+     - Procedimiento operativo paso a paso para la rotación de credenciales en PostgreSQL.
+     - Generación y sustitución de claves criptográficas `POLIS_JWT_SECRET_KEY` y `POLIS_IP_SALT`.
+     - Plan de consolidación de commits (*squash* por tres fases estratégicas: Fase 1 Diagnóstico, Fase 2 Políticas/Gating, Fase 3 Seguimiento/Hardening) previo a la vinculación con el repositorio remoto.
+   - **Cumplimiento de Restricción**: Se verificó que **no se ha realizado ningún `git push`** al remoto.
+
+---
+
+### 2. Archivos Creados y Modificados (AUD-11)
+
+| Archivo | Rol en el Sistema |
+|---|---|
+| `.gitignore` | Exclusión de patrones `.env*`, `backend/.env` y bases de datos `*.db*`. |
+| `backend/app/core/config.py` | `jwt_secret_key` como campo obligatorio (`Field(..., min_length=32)`); erradicación de default inseguro. |
+| `backend/tests/conftest.py` | Derivación dinámica de `POLIS_TEST_DATABASE_URL` sin credenciales hardcodeadas; llaves de prueba aisladas. |
+| `scripts/respaldo_bd.sh` | Eliminación de contraseña embebida; resolución desde entorno o `.env` seguro. |
+| `scripts/restaurar_bd.sh` | Eliminación de contraseña embebida; resolución desde entorno o `.env` seguro. |
+| `scripts/sembrar_compromisos_demo.py` | Destino predeterminado `polis_demo` y guarda activa de base de datos (`validar_bd_destino`). |
+| `scripts/sembrar_mediciones_demo.py` | Destino predeterminado `polis_demo` y guarda activa de base de datos (`validar_bd_destino`). |
+| `scripts/sembrar_actores_demo.py` | Destino predeterminado `polis_demo` y guarda activa de base de datos (`validar_bd_destino`). |
+| `scripts/preparar_entorno_e2e.py` | Resolución dinámica de contraseñas de BD para entorno de prueba aislado. |
+| `scripts/e2e-smoke-flujos-criticos.mjs` | Uso de `E2E_DATABASE_URL` dinámico y documentación de `fuser -k` defensivo en puertos aislados. |
+| `docs/rotacion-secretos.md` | Protocolo pericial de rotación de credenciales y plan de consolidación de historial git (squash por fases). |
+| `bridge/02_entrega_agy2.md` | Registro y documentación de entrega formal de la tarea AUD-11. |
+
+---
+
+### 3. Matriz de Validación de Quality Gates (AUD-11)
+
+| Quality Gate | Comando de Validación | Resultado Pericial |
+|---|---|---|
+| **Higiene de Índice Git** | `git ls-files \| grep -E "(\.env\|\.db)$"` | **0 coincidencias** (limpio de secretos y binarios SQLite). |
+| **Erradicación de Contraseñas** | `git grep -n "polis_cartagena_2026"` | **0 coincidencias** en código fuente, scripts y tests (solo menciones históricas en dictámenes de `bridge/`). |
+| **Erradicación de Clave Default** | `git grep -n "polis_secreto_super_seguro"` | **0 coincidencias** en defaults de configuración y conftest (única presencia en guarda de producción en `security.py`). |
+| **Identidad Git Configurada** | `git config user.name && git config user.email` | **Conforme**: `Equipo de Desarrollo POLIS <dev@seguridadhumanaintegral.org>`. |
+| **Pruebas de Configuración Backend** | `pytest test_config.py test_aud06_perfil_produccion.py` | **10 passed en 3.98s** (validación de campos obligatorios y modo producción). |
+| **Política de UI POLIS** | `node scripts/ui-policy.mjs` | **0 violaciones** (100% controles Design Kit y semántica). |
+| **Chequeo de Tipos TypeScript** | `bun run typecheck` (`tsc --noEmit`) | **0 errores** de compilación estricta. |
+| **Linting ESLint** | `bun run lint` (`eslint .`) | **0 errores, 0 warnings** con `no-explicit-any: error`. |
+| **Pruebas Automatizadas Frontend** | `bun test` | **213 pass, 0 fail (981 aserciones)** en 23 suites. |
+| **Estado Remoto Git** | `git remote -v` | **Sin remotos configurados; CERO push realizado.** |

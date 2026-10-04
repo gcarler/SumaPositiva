@@ -15,10 +15,32 @@ import sys
 import asyncpg
 import bcrypt
 
+from pathlib import Path
+
 DB_HOST = os.environ.get("POLIS_DB_HOST", "127.0.0.1")
 DB_PORT = int(os.environ.get("POLIS_DB_PORT", "5432"))
 DB_USER = os.environ.get("POLIS_DB_USER", "polis")
-DB_PASS = os.environ.get("POLIS_DB_PASS", "polis_cartagena_2026")
+
+DB_PASS = os.environ.get("POLIS_DB_PASS") or os.environ.get("PGPASSWORD")
+if not DB_PASS:
+    env_file = Path(__file__).resolve().parents[1] / "backend" / ".env"
+    if env_file.exists():
+        for line in env_file.read_text().splitlines():
+            if line.startswith("POLIS_DATABASE_URL="):
+                try:
+                    from urllib.parse import urlparse
+                    raw_url = line.split("=", 1)[1].strip()
+                    # normalizar esquema para urlparse
+                    parsed = urlparse(raw_url.replace("+asyncpg", ""))
+                    if parsed.password:
+                        DB_PASS = parsed.password
+                        break
+                except Exception:
+                    pass
+
+if not DB_PASS:
+    raise RuntimeError("Se requiere POLIS_DB_PASS o PGPASSWORD configurada para preparar el entorno E2E.")
+
 TARGET_DB = os.environ.get("POLIS_E2E_DB_NAME", "polis_test_e2e")
 TEMPLATE_DB = os.environ.get("POLIS_TEMPLATE_DB_NAME", "polis_test")
 

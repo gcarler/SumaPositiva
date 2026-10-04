@@ -15,13 +15,60 @@ import sys
 from datetime import date
 from decimal import Decimal
 
+from pathlib import Path
 from sqlalchemy import select, text
+from sqlalchemy.engine import make_url
 from sqlalchemy.ext.asyncio import create_async_engine
 
-DATABASE_URL = os.getenv(
-    "POLIS_DATABASE_URL",
-    "postgresql+asyncpg://polis:polis_cartagena_2026@127.0.0.1:5432/bd_csh",
-)
+
+def resolver_database_url(url_arg: str | None = None) -> str:
+    """Resuelve la URL de BD sin credenciales hardcodeadas (OBS-13).
+    Por defecto apunta a 'polis_demo' (NUNCA a 'bd_csh' de producción).
+    """
+    if url_arg:
+        return url_arg
+    if "POLIS_DEMO_DATABASE_URL" in os.environ:
+        return os.environ["POLIS_DEMO_DATABASE_URL"]
+    if "POLIS_TEST_DATABASE_URL" in os.environ:
+        return os.environ["POLIS_TEST_DATABASE_URL"]
+
+    db_pass = os.environ.get("POLIS_DB_PASS") or os.environ.get("PGPASSWORD")
+    if not db_pass:
+        env_file = Path(__file__).resolve().parents[1] / "backend" / ".env"
+        if env_file.exists():
+            for line in env_file.read_text().splitlines():
+                if line.startswith("POLIS_DATABASE_URL="):
+                    try:
+                        db_pass = make_url(line.split("=", 1)[1].strip()).password
+                    except Exception:
+                        pass
+                    break
+
+    if db_pass:
+        return f"postgresql+asyncpg://polis:{db_pass}@127.0.0.1:5432/polis_demo"
+    return "postgresql+asyncpg://polis@127.0.0.1:5432/polis_demo"
+
+
+def validar_bd_destino(url: str, confirmar_destino: bool = False) -> None:
+    """Guardia de seguridad (OBS-13): Se niega a correr sobre bd_csh o bases ajenas a polis_test*/polis_demo*
+    salvo confirmación explícita vía --confirmar-bd-destino.
+    """
+    try:
+        u = make_url(url)
+        dbname = u.database or ""
+    except Exception:
+        dbname = url.rsplit("/", 1)[-1].split("?")[0]
+
+    if not (dbname.startswith("polis_test") or dbname.startswith("polis_demo")):
+        if not confirmar_destino:
+            print(
+                f"\n[BLOQUEO DE SEGURIDAD OBS-13] La base de datos destino es '{dbname}'.\n"
+                f"Los scripts demo se niegan a ejecutarse sobre bases productivas (bd_csh) o no autorizadas.\n"
+                f"Si requieres forzar la siembra sobre '{dbname}', usa explícitamente:\n"
+                f"  --confirmar-bd-destino\n",
+                file=sys.stderr,
+            )
+            sys.exit(1)
 
 MEDICIONES_DEMO = [
     {
@@ -48,8 +95,8 @@ MEDICIONES_DEMO = [
 ]
 
 
-async def sembrar(limpiar_solo: bool = False):
-    engine = create_async_engine(DATABASE_URL)
+async def sembrar(db_url: str, limpiar_solo: bool = False):
+    engine = create_async_engine(db_url)
     async with engine.begin() as conn:
         # Siempre limpiar cualquier medición previa de demostración
         await conn.execute(
@@ -134,11 +181,21 @@ async def sembrar(limpiar_solo: bool = False):
                     "id": ficha_id,
                 },
             )
-            print(f"Sembrada medición DEMO para {item['codigo']}")
+            print(f"Sembrada medición DEMO para {item['codigo']} en {db_url}")
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Sembrar mediciones demo DNP")
     parser.add_argument("--limpiar", action="store_true", help="Solo limpiar datos demo")
+    parser.add_argument("--db-url", default=None, help="URL de la base de datos destino (por defecto polis_demo)")
+    parser.add_argument(
+        "--confirmar-bd-destino",
+        action="store_true",
+        help="Confirma explícitamente la ejecución si la BD no inicia por polis_test/polis_demo (OBS-13)",
+    )
     args = parser.parse_args()
-    asyncio.run(sembrar(limpiar_solo=args.limpiar))
+
+    url_efectiva = resolver_database_url(args.db_url)
+    validar_bd_destino(url_efectiva, confirmar_destino=args.confirmar_bd_destino)
+
+    asyncio.run(sembrar(db_url=url_efectiva, limpiar_solo=args.limpiar))
