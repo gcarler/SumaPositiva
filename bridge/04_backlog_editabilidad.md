@@ -128,3 +128,52 @@ A continuación se formalizan los huecos de editabilidad identificados, prioriza
   4. Certificar los flujos de creación y moderación de contenido en UI.
 - **Criterios de Aceptación**:
   - Código editorial integrado en `main`, sin exclusiones en el linter y con quality gates en 100%.
+
+---
+
+### Tarea EDIT-07: Alineación de Rutas y Esquemas en Participación Multicanal
+- **Prioridad**: **ALTA** (Corrección de Integración API / Erradicación de HTTP 404)
+- **Clasificación**: Frontend Data Integration & API Alignment
+- **Diagnóstico del Hueco**:
+  - En `src/features/participacion/services/participacion-api.ts`, los métodos de consulta apuntan a rutas inexistentes (`/participacion/web`, `/participacion/mesas`, `/participacion/escenarios`) produciendo 404 Not Found.
+  - Los tipos en `models/participacion.ts` y el panel `participacion-multicanal-panel.tsx` están desalineados con los contratos DTO reales de FastAPI (`/participacion/canal-web`, `/participacion/canal-mesas`, `/participacion/escenarios-especiales`).
+- **Alcance Propuesto**:
+  1. Alinear endpoints en `participacion-api.ts`.
+  2. Normalizar modelos y DTOs en `src/features/participacion/models/participacion.ts`.
+  3. Adaptar el panel reactivo `participacion-multicanal-panel.tsx` para consumir los datos reales de PostgreSQL.
+  4. Suite de pruebas unitarias en `src/features/participacion/services/participacion-api.test.ts`.
+- **Criterios de Aceptación**:
+  - 0 errores 404 al consultar los canales de participación; renderizado fiel de los 179 aportes y métricas distritales; `bun test` y `bun run check` al 100%.
+
+---
+
+### Tarea EDIT-08: Cableado de Asistencia Pública Directa a PostgreSQL
+- **Prioridad**: **ALTA** (Persistencia Real de Participación y Quórum)
+- **Clasificación**: Fullstack Integration & Civic Registration
+- **Diagnóstico del Hueco**:
+  - La página pública `/asistencia/[mesaId]` en `src/app/asistencia/[mesaId]/asistencia-cliente.tsx` registra asistentes únicamente en `localStorage` (Zustand `useAsistenciaStore`).
+  - El backend cuenta con la tabla `mesas_trabajo.participantes_mesa` y los endpoints `POST/GET /api/v1/mesas/{mesa_id}/participantes` listos para persistir.
+- **Alcance Propuesto**:
+  1. Implementar `src/features/mesas/services/asistencia-api.ts` con `registrarAsistenteMesa` y `listarAsistentesMesa`.
+  2. Cablear `asistencia-cliente.tsx` para enviar el POST a la API con fallback offline en `localStorage` ante problemas de red.
+  3. Pruebas automatizadas de persistencia y resiliencia offline.
+- **Criterios de Aceptación**:
+  - Asistencias registradas aterrizan en la tabla `mesas_trabajo.participantes_mesa` en PostgreSQL; quórum legal derivado de la base de datos; gates limpios.
+
+---
+
+### Tarea EDIT-09: Modelo Relacional y Persistencia del Banco de Alternativas MGA
+- **Prioridad**: **MEDIA** (Cierre de Ciclo de Vida Metodológico MGA)
+- **Clasificación**: Backend Architecture & Fullstack Data Persistence
+- **Diagnóstico del Hueco**:
+  - El catálogo de 8 iniciativas de solución del Banco de Alternativas MGA opera en memoria en `alternativas-store.ts` (`alternativas-canonicas.data.ts`).
+  - No existe modelo ni tabla `banco_alternativas` en PostgreSQL, aunque sus asignaciones presupuestales y enlaces en compromisos PAS sí persisten.
+- **Alcance Propuesto**:
+  1. Crear modelo `AlternativaSolucion` y migración Alembic `0043_modulo_banco_alternativas.py`.
+  2. Sembrar las 8 alternativas canónicas preexistentes de forma trazable.
+  3. Exponer módulo backend `/api/v1/alternativas` con operaciones CRUD y RBAC (`alternativas:gestionar`).
+  4. Cablear `alternativas-store.ts` y servicio frontend `alternativas-api.ts`.
+  5. Pruebas backend (pytest) y frontend (bun test).
+- **Criterios de Aceptación**:
+  - Alternativas persistidas en PostgreSQL con paridad Alembic (0 diffs), persistencia tras recarga y gates 100% limpios.
+
