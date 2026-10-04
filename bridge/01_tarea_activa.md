@@ -3,11 +3,11 @@
 **Última actualización**: 2026-10-04  
 **Responsable activo**: agy2 (EDD)  
 **Auditor independiente**: EAF  
-**Tarea en curso / entregada**: `AUD-16` (Endurecimiento de reglas ESLint OBS-16, barrido de docs/ y actualización de estado activo)
+**Tarea en curso / entregada**: `AUD-17` (Runbook de despliegue en producción, plan de consolidación git pre-remoto y corrección de contadores E2E)
 
 ---
 
-## Estado Global de Auditorías (AUD-01 .. AUD-16)
+## Estado Global de Auditorías (AUD-01 .. AUD-17)
 
 | ID | Tarea / Alcance | Dictamen EAF / Estado | Commit de Entrega / Notas |
 |:---|:---|:---:|:---|
@@ -26,7 +26,8 @@
 | **AUD-13** | Integridad de compromisos PAS y saneamiento de BD | **CONFORME** | Eliminación de BPIN/metas sin validar. OBS-11/12 cerradas. |
 | **AUD-14** | Erradicación integral de PII y estadísticas sin fuente | **CONFORME** | `3e46067`: Retiro de PII en actores, fuentes limpias. |
 | **AUD-15** | Erradicación de mocks en stores de producción | **CONFORME** | `2c6af60`: Retiro de `MESAS_MOCK` y `AGENDA_INICIAL`. |
-| **AUD-16** | Endurecimiento ESLint (`no-unused-vars` error, `ban-ts-comment` error), barrido de docs/ y corrección cosmética E2E | **LISTA PARA AUDITAR** | `bun run check` limpio, 0 warnings/errores, docs saneados. |
+| **AUD-16** | Endurecimiento ESLint (`no-unused-vars` error, `ban-ts-comment` error) y barrido de docs/ | **CONFORME CON OBS-19** | `9faa78e`: 0 errores, 0 warnings. OBS-19: exclusión de noticias/testimonios a retirar al cerrar Codex. |
+| **AUD-17** | Runbook de despliegue en producción, plan de consolidación git y corrección de contadores | **ENTREGADA / LISTA PARA AUDITAR** | `docs/despliegue-produccion.md`, `docs/plan-consolidacion-git.md`, corrección 11/9 a 9/9 en bridge. |
 
 ---
 

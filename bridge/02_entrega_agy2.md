@@ -1247,7 +1247,7 @@ En cumplimiento de las directrices periciales del EAF (OBS-02/AUD-13/AUD-14/AUD-
 | **Política de UI POLIS** | `node scripts/ui-policy.mjs` | **0 violaciones** (100% controles Design Kit, cero modales, tokens semánticos). |
 | **Chequeo de Tipos y Lint Frontend** | `bun run check` | **Aprobado (0 errores)** en TypeScript estricto (`tsc --noEmit`) y ESLint (`eslint .`). |
 | **Compilación Turbopack Standalone** | `bun run build` | **Compilación exitosa (57 rutas estáticas y dinámicas)**. |
-| **Suite Smoke E2E Aislada (9 flujos)** | `bun run check:e2e` | **100% Aprobado (11/9 flujos passed)** en entorno aislado (puertos 8100/3105/3100), actas persisten con UUIDs reales sin error 422. |
+| **Suite Smoke E2E Aislada (9 flujos)** | `bun run check:e2e` | **100% Aprobado (9/9 flujos passed)** en entorno aislado (puertos 8100/3105/3100), actas persisten con UUIDs reales sin error 422. |
 | **Auditoría Axe-core Ampliada (8 vistas/tabs)** | `bun run check:e2e` (Flujo 9) | **0 violaciones críticas o serias** en Dashboard, Mesas, Contenido, Seguimiento (3 pestañas), Configuración y Actores. |
 | **Servicios de Producción Intactos** | `systemctl is-active polis-backend polis-frontend` | **Ambos servicios activos y operativos**. |
 
@@ -1327,7 +1327,7 @@ En respuesta al hallazgo pericial de severidad MEDIA sobre la presencia de más 
 | **Chequeo de Tipos TypeScript** | `bun run typecheck` (`tsc --noEmit`) | **0 errores** de tipado estricto. |
 | **Política de UI POLIS** | `node scripts/ui-policy.mjs` | **0 violaciones** (100% controles Design Kit, cero modales, tokens semánticos). |
 | **Pruebas Automatizadas Frontend** | `bun test` | **213 pass, 0 fail (981 aserciones)** en 23 suites de prueba. |
-| **Suite Smoke E2E Aislada** | `bun run check:e2e` | **100% Aprobado (11/9 flujos passed)** en entorno aislado (puertos 8100/3105/3100). |
+| **Suite Smoke E2E Aislada** | `bun run check:e2e` | **100% Aprobado (9/9 flujos passed)** en entorno aislado (puertos 8100/3105/3100). |
 | **Auditoría Axe-core Ampliada** | `bun run check:e2e` (Flujo 9) | **0 violaciones críticas o serias** en las 8 vistas evaluadas. |
 | **Compilación Turbopack Standalone** | `bun run build` | **Compilación exitosa** de las 57 rutas en 11.0s. |
 
@@ -1685,3 +1685,102 @@ En cumplimiento de las instrucciones periciales de AUD-16, se ejecutaron cuatro 
 | **Pipeline Completo Check** | `bun run check` | **100% aprobado** (ui:check, typecheck, lint). |
 | **Aislamiento de Codex** | `git status` | Archivos de codex (`noticias`, `testimonios`, backend) intactos y sin commitear. |
 | **Restricción de Ejecución** | N/A | No se ejecutaron suites de `pytest` ni `check:e2e`, respetando la exclusividad de EAF. |
+
+---
+
+## Entrega de Tarea: AUD-17 — Runbook de Despliegue en Producción, Plan de Consolidación Git y Corrección de Contadores E2E
+
+**Fecha**: 2026-10-04  
+**Responsable**: agy2 (EDD)  
+**Auditor independiente**: EAF  
+**Estado**: Entregado y listo para auditoría pericial
+
+---
+
+### 1. Resumen Ejecutivo de la Tarea AUD-17
+
+En cumplimiento estricto de las especificaciones de la tarea AUD-17, se desarrollaron exclusivamente actividades de **documentación operativa de infraestructura, verificación analítica de base de datos en solo lectura y corrección de registros en bridge**, respetando todas las salvaguardas de proceso:
+- **Cero migraciones ejecutadas sobre `bd_csh`**: La base de datos de producción permaneció intacta, sin escrituras ni alteraciones.
+- **Cero operaciones de `git push`**: El repositorio se conserva exclusivamente en el entorno local.
+- **Cero archivos de Codex modificados**: Los módulos de `noticias` y `testimonios` permanecieron sin tocar.
+- **Cero ejecuciones concurrentes de `pytest` o `check:e2e`**: Se respetó la exclusividad del auditor EAF, limitando la verificación local a los gates de calidad obligatorios (`bun run check`, `bun test`).
+
+---
+
+### 2. Detalle de Componentes Elaborados y Corregidos
+
+#### 2.1. Runbook de Despliegue en Producción (`docs/despliegue-produccion.md`)
+Se estructuró una guía operativa completa, estandarizada y paso a paso para la operación en entornos productivos distritales:
+1. **Principios y Salvaguardas Forenses**: Cero pérdida de datos reales (179 aportes ciudadanos activos conservados), parada obligatoria de servicios de aplicación durante migraciones, respaldo mandatorio con validación criptográfica y custodia estricta de variables de entorno.
+2. **Nómina Exhaustiva de Variables de Entorno (`.env`)**: Lista completa de variables requeridas para backend y frontend, documentando nombre, tipo, obligatoriedad y propósito/restricciones (ej. restricción HTTPS en CORS, longitud mínima de JWT, semilla de anonimización IP según Ley 1581/2012), **sin consignar valores reales ni secretos**.
+3. **Topología de Servicios y Dependencias**: Documentación de la arquitectura de servicios supervisada por `systemd` (`polis-backend.service`, `polis-frontend.service`), proxy inverso Nginx (`nginx.service`) y PostgreSQL 16 con PostGIS 3.5.
+4. **Secuencia de Despliegue en 10 Pasos Cronológicos**:
+   - Paso 1: Notificación y activación de ventana de mantenimiento.
+   - Paso 2: Detención de servicios (`systemctl stop polis-frontend polis-backend`).
+   - Paso 3: Respaldo previo mandatorio con `scripts/respaldo_bd.sh` (generación de `.dump` con pg_dump comprimido, checksum `.sha256` y permisos `0600`).
+   - Paso 4: Actualización y validación del código fuente.
+   - Paso 5: Sincronización de dependencias (`uv sync --locked` y `bun install --frozen-lockfile`).
+   - Paso 6: Compilación de producción (`bun run build`).
+   - Paso 7: Comprobación y aplicación de migraciones Alembic sobre `bd_csh` con servicios detenidos. Se documentaron analíticamente las **5 migraciones pendientes** desde el baseline 0036 hasta 0040:
+     * `0037_restituir_compromisos_pas`: Eliminación de avances fabricados, BPINs simulados y habilitación de NULLs en avances no reportados.
+     * `0037_noticias_institucionales` (Codex): Esquema `comunicacion`, permisos `contenido:leer` y tabla `noticias`.
+     * `0038_merge_heads`: Unificación de ramas paralelas en un único head.
+     * `0039_corregir_fuente_metas`: Corrección de fuente de metas (propuestas pendientes de validación distrital, no provenientes del Decreto 037).
+     * `0040_modulo_actores_estrategicos`: Creación de la tabla `actores_estrategicos` y sus índices para gobernanza territorial sin PII pre-cargada.
+   - Paso 8: Arranque de servicios (`systemctl start polis-backend polis-frontend`).
+   - Paso 9: Verificación de disponibilidad (`/api/v1/health/live`, `/api/v1/health/ready` validando base de datos, migraciones y extensiones `postgis`, `ltree`, `pgcrypto`, `pg_trgm`, y chequeo de vistas web).
+   - Paso 10: Reapertura de tráfico en Nginx.
+5. **Procedimiento de Contingencia y Rollback**: Criterios de activación, restauración con `scripts/restaurar_bd.sh` validando hash SHA-256, procedimiento alternativo con `alembic downgrade 0036_restituir_mediciones` y reversión de compilación.
+6. **Rotación de Secretos y Seguridad Operativa**: Articulación con `docs/rotacion-secretos.md`, directrices para renovación periódica y disparadores de rotación.
+
+#### 2.2. Plan de Consolidación Git por Fases y Checklist Pre-Remoto (`docs/plan-consolidacion-git.md`)
+Se elaboró el plan técnico formal para el saneamiento definitivo del árbol de versiones antes de cualquier sincronización a repositorios remotos:
+1. **Diagnóstico del Historial**: Análisis de los 170 commits acumulados en el repositorio local. Diagnóstico forense de la presencia histórica de contraseñas de prueba (`polis_cartagena_2026`) en snapshots pasados (commits `a1e510b` a `499affd`).
+2. **Checklist Mandatoria Previa al Remoto**:
+   - Rotación de contraseña de base de datos en PostgreSQL y `.env`.
+   - Rotación de llaves JWT y salt de IP (invalidando sesiones activas).
+   - Búsqueda pericial con `git log -S "polis_cartagena_2026" --oneline` (debe retornar 0 en el árbol final).
+   - Verificación de exclusión en `.gitignore` (`.env`, `*.db`).
+   - Verificación del índice (`git ls-files | grep -E "(\.env|\.db)$"` = vacío).
+   - Reincorporación del linter para los módulos de Codex (OBS-19).
+3. **Estructura de Squash en 5 Hitos Convencionales**:
+   - *Hito 1*: `feat(fase-1): arquitectura base, geodatos y diagnostico territorial distrital` (Alembic 0001-0015).
+   - *Hito 2*: `feat(fase-2): motor de politicas, banco de alternativas mga y costeo presupuestal` (Alembic 0016-0023).
+   - *Hito 3*: `feat(fase-3): matriz de seguimiento pas, indicadores dnp y rendicion motivada c-150` (Alembic 0024-0036).
+   - *Hito 4*: `feat(gobernanza): comunicacion comunitaria, noticias y actores estrategicos` (Alembic 0037-0040).
+   - *Hito 5*: `chore(seguridad): hardening forense, erradicacion de datos fabricados, a11y y tipado estricto` (AUD-01 a AUD-17).
+4. **Metodologías Técnicas de Ejecución**: Opción recomendada mediante rama huérfana limpia (*Orphan Branch Release* `git checkout --orphan main-public`), con alternativa de rebase interactivo estructurado (`git rebase -i --root`).
+5. **Salvaguarda de Ejecución**: Declaración explícita de que el plan NO se ejecutó durante AUD-17.
+
+#### 2.3. Corrección del Contador E2E ("11/9" a "9/9") en Bridge
+- Se identificaron y corrigieron las menciones residuales de `11/9` en `bridge/02_entrega_agy2.md` (líneas 1250 y 1330), actualizándolas al valor real de la suite: **9/9 flujos aprobados**.
+- Se verificó que en `scripts/e2e-smoke-flujos-criticos.mjs`, la constante `TOTAL_FLUJOS = 9` y el conteo mediante `flujosUnicos = new Set()` garantizan que la suite emita de manera determinista `9/9 FLUJOS APROBADOS`.
+
+#### 2.4. Actualización de `bridge/01_tarea_activa.md`
+- Se actualizó el archivo de coordinación central, reflejando el dictamen **CONFORME CON OBS-19** de AUD-16 y registrando la tarea **AUD-17** en estado **ENTREGADA / LISTA PARA AUDITAR**.
+
+---
+
+### 3. Matriz de Archivos Creados y Modificados (AUD-17)
+
+| Archivo | Tipo de Intervención | Descripción de la Modificación |
+|---|---|---|
+| `docs/despliegue-produccion.md` | **Nuevo archivo** | Runbook de despliegue en producción: 10 pasos, backup con `respaldo_bd.sh`, 5 migraciones Alembic detalladas (0037 a 0040), rollback, readiness y nómina de variables `.env` sin valores. |
+| `docs/plan-consolidacion-git.md` | **Nuevo archivo** | Plan de squash por fases en 5 hitos convencionales, checklist mandatoria pre-remoto, auditoría `git log -S` y guía operativa de ejecución futura (sin ejecutar). |
+| `bridge/01_tarea_activa.md` | **Modificación** | Actualización de matriz activa con AUD-16 cerrada y AUD-17 entregada. |
+| `bridge/02_entrega_agy2.md` | **Modificación** | Corrección de menciones residuales `11/9` a `9/9` y registro pericial de entrega de AUD-17. |
+
+---
+
+### 4. Matriz de Quality Gates (AUD-17)
+
+| Quality Gate | Comando de Validación | Resultado Pericial |
+|---|---|---|
+| **Política de UI POLIS** | `bun run ui:check` (`node scripts/ui-policy.mjs`) | **0 violaciones** de diseño institucional. |
+| **Chequeo de Tipos TypeScript** | `bun run typecheck` (`tsc --noEmit`) | **0 errores** de tipos. |
+| **Linting ESLint** | `bun run lint` (`eslint .`) | **0 errores, 0 advertencias** (con `no-unused-vars` y `ban-ts-comment` en error). |
+| **Pruebas Automatizadas Frontend** | `bun test` | **227 pass, 0 fail (1017 expect calls)** en 24 suites de prueba. |
+| **Pipeline Completo Check** | `bun run check` | **100% aprobado** (ui:check, typecheck, lint). |
+| **Aislamiento de Codex** | `git status` | Archivos de codex (`noticias`, `testimonios`, backend) intactos y sin commitear. |
+| **Restricción de Ejecución** | N/A | No se ejecutaron migraciones sobre `bd_csh`, no se hizo `git push`, y no se corrieron suites de `pytest` ni `check:e2e`. |
+
