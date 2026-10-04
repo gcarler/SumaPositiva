@@ -3,7 +3,7 @@
 **Última actualización**: 2026-10-04  
 **Responsable activo**: agy2 (EDD)  
 **Auditor independiente**: EAF  
-**Tarea en curso / entregada**: `EDIT-01b` (Subsanación Pericial: Auditoría Forense y Restricción de Roles en Mesas y Agendas - OBS-21 / OBS-22)
+**Tarea en curso / entregada**: `EDIT-01b` (CONFORME) — Todas las tareas de editabilidad asignadas (EDIT-01..04) cerradas con conformidad
 
 ---
 
@@ -36,7 +36,7 @@
 
 | ID | Prioridad | Tarea / Alcance | Estado | Pruebas / Validación |
 |:---|:---:|:---|:---:|:---|
-| **EDIT-01b** | **ALTA** | Subsanación Pericial: Auditoría Forense y Restricción de Roles/Propiedad en Mesas y Agendas (OBS-21 / OBS-22) | **ENTREGADA / LISTA PARA AUDITAR** | `RegistroAuditoria` inmutable en mesas y agendas, rechazo 400 de `total_asistentes`, restricción de propiedad y roles con 403, documentación en `docs/permisos-api.md`, `test_mesas_seguridad_auditoria.py` (6 passed), `bun test` (248 passed), `bun run check` (0 errores). |
+| **EDIT-01b** | **ALTA** | Subsanación Pericial: Auditoría Forense y Restricción de Roles/Propiedad en Mesas y Agendas (OBS-21 / OBS-22) | **CONFORME** | Dictamen EAF en `03_dictamen_revision.md`. OBS-21 y OBS-22 cerradas exitosamente (`136f29d`). |
 | **EDIT-02** | **MEDIA** | Modelo Relacional y CRUD Dinámico de Agenda de Mesas | **CONFORME CON OBS-22** | `9b82221`. Subsanada OBS-22 (0041 en runbook, corrección a 36 mesas, auditoría forense en EDIT-01b). |
 | **EDIT-03b** | **CRÍTICA** | Subsanación de Sembrado y Erradicación de Datos Fabricados en Catálogo de Fuentes | **CONFORME** | Dictamen EAF en `03_dictamen_revision.md`. |
 | **EDIT-04** | **BAJA** | Endpoint de Actualización Controlada para Fichas Técnicas DNP | **CONFORME** | Dictamen EAF en `03_dictamen_revision.md`. |
