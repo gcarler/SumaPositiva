@@ -120,3 +120,7 @@ Runbook y plan de consolidación coherentes con `alembic history` (revisiones y 
 
 ## Dictamen AUD-18 — CONFORME (commit f41fd90)
 Matriz verificada por muestreo: confirmado que `backend/app/modules/mesas/router.py` NO expone PATCH/PUT (edición de mesas no persiste → EDIT-01 ALTA); agenda estática, fuentes en Zustand. Respuesta al usuario: fases, líneas, actores, indicadores (mediciones) y compromisos SÍ son editables con persistencia; mesas (parcial), agendas, fuentes de información NO. Cada hueco queda como tarea individual `bridge/01_tarea_agy2_edit_0N.md`. OBS-20 corregida.
+
+## Dictamen EDIT-01 — CONFORME CON OBS (commit 3dc7d1f)
+Verificado: `PATCH /api/v1/mesas/{id}` con `requerir_permiso("mesas:abrir")`, 404 si no existe, transacción con bloqueo (`obtener_para_actualizar`), fusión de metadatos; pytest mesas 18 passed; `bun test` 229 pass.
+**OBS-21 (media, tarea EDIT-01b, cerrar tras EDIT-04):** (a) la mutación no deja rastro en el registro de auditoría (el servicio de mesas no registra); (b) `docs/permisos-api.md` no documenta el nuevo PATCH (actualizar sin pisar los cambios de codex en ese archivo: solo añadir la línea con ruta explícita `git add -p`/commit parcial coordinado); (c) un usuario con `mesas:abrir` puede cambiar `estado`/`total_asistentes`/`facilitador_id` de CUALQUIER mesa: restringir campos sensibles (total_asistentes debe derivar de actas/asistencia) o exigir propiedad/rol y probar 403.
