@@ -682,15 +682,51 @@ def test_login_rollback_incluye_sesion_civica_y_evento(contexto, database_url, m
 def test_configuracion_insegura_no_habilita_identidad_en_produccion():
     from app.modules.identidad.security import crear_token_acceso
 
+    # Literal inseguro retirado por OBS-13 / AUD-11
     with pytest.raises(HTTPException) as error:
         crear_token_acceso(
             uuid.uuid4(),
             "ciudadano",
             "declarada",
             [],
-            settings=Settings(_env_file=None, environment="production"),
+            settings=Settings(
+                _env_file=None,
+                environment="production",
+                jwt_secret_key="polis_secreto_super_seguro_cartagena_2026",
+            ),
         )
     assert error.value.status_code == 503
+
+    # Clave que inicia con plantilla cambiar_por_
+    with pytest.raises(HTTPException) as error_plantilla:
+        crear_token_acceso(
+            uuid.uuid4(),
+            "ciudadano",
+            "declarada",
+            [],
+            settings=Settings(
+                _env_file=None,
+                environment="production",
+                jwt_secret_key="cambiar_por_un_secreto_aleatorio_32bytes",
+            ),
+        )
+    assert error_plantilla.value.status_code == 503
+
+    # Salt insegura en producción
+    with pytest.raises(HTTPException) as error_salt:
+        crear_token_acceso(
+            uuid.uuid4(),
+            "ciudadano",
+            "declarada",
+            [],
+            settings=Settings(
+                _env_file=None,
+                environment="production",
+                jwt_secret_key="clave_valida_pero_salt_insegura_32b!",
+                ip_salt="polis_salt_habeas_data_2026",
+            ),
+        )
+    assert error_salt.value.status_code == 503
 
 
 def test_ultimo_administrador_protegido_con_ediciones_concurrentes(contexto, database_url):

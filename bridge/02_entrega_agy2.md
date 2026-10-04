@@ -1429,3 +1429,56 @@ En cumplimiento de la especificación de AUD-11 y los requerimientos derivados d
 | **Linting ESLint** | `bun run lint` (`eslint .`) | **0 errores, 0 warnings** con `no-explicit-any: error`. |
 | **Pruebas Automatizadas Frontend** | `bun test` | **213 pass, 0 fail (981 aserciones)** en 23 suites. |
 | **Estado Remoto Git** | `git remote -v` | **Sin remotos configurados; CERO push realizado.** |
+
+---
+
+## Tarea AUD-11b: Subsanación de Regresión de Pruebas y Test de Guardas Demo
+**Fecha**: 2026-10-04T03:46:00Z  
+**Estado**: CONFORME PARA AUDITORÍA FORENSE (EAF)  
+**Responsable**: agy2 (Equipo de Desarrollo EDD)  
+**Plan de Auditoría**: `bridge/00_plan_auditoria_plataforma.md`  
+**Especificación**: Dictamen AUD-11 en `bridge/03_dictamen_revision.md`  
+
+---
+
+### 1. Resumen Ejecutivo de la Subsanación (AUD-11b)
+
+En respuesta al dictamen emitido por EAF sobre AUD-11, se subsanó la regresión identificada en los tests unitarios y se blindó la verificación de las guardas de seguridad contra ejecución accidental en bases productivas:
+
+1. **Corrección de `test_configuracion_insegura_no_habilita_identidad_en_produccion` (`backend/tests/test_identidad_completa.py`)**:
+   - **Causa Raíz**: Al haber eliminado el valor por defecto inseguro de `config.py` y fijado una clave segura en `conftest.py` para aislar el entorno, la llamada `Settings(environment="production")` heredaba la clave de prueba de `os.environ`, por lo que la guarda de seguridad `validar_configuracion_identidad` no se activaba al no detectar ya el valor por defecto.
+   - **Corrección**: Se parametrizó la prueba fijando explícitamente el literal inseguro `jwt_secret_key="polis_secreto_super_seguro_cartagena_2026"` en entorno `production`, verificando que la guarda responde de forma estricta con HTTP 503 sin debilitar las comprobaciones.
+   - **Ampliación de Cobertura**: Se añadieron aserciones para los demás vectores de inseguridad en producción contemplados por la guarda: claves basadas en plantillas (`cambiar_por_...`) y salt de Habeas Data no rotada (`polis_salt_habeas_data_2026`), certificando 503 en todos los casos.
+
+2. **Nueva Suite de Pruebas Automatizadas para Guardas Demo (`backend/tests/test_aud11_scripts_seguridad.py`)**:
+   - Se implementó una suite integral con 16 casos de prueba dedicados exclusivamente a auditar las guardas de seguridad de los scripts demo:
+     - **Rechazo Estricto contra `bd_csh`**: `validar_bd_destino` levanta `SystemExit(1)` ante cualquier intento de ejecutar `sembrar_compromisos_demo`, `sembrar_mediciones_demo` o `sembrar_actores_demo` sobre la base de producción.
+     - **Rechazo contra Bases Externas**: Rechazo inmediato ante cualquier base que no inicie por `polis_test` o `polis_demo`.
+     - **Destino Predeterminado Seguro**: `resolver_database_url` retorna una cadena apuntando a `polis_demo`, jamás a `bd_csh`.
+     - **Excepción Controlada**: Permite la ejecución únicamente si el operador provee `--confirmar-bd-destino` (`confirmar_destino=True`).
+     - **Prueba CLI Subproceso**: Se evalúa la ejecución real por consola mediante `subprocess.run`, verificando código de retorno 1 y la emisión del mensaje `[BLOQUEO DE SEGURIDAD OBS-13]`.
+
+3. **Ejecución Completa de la Suite de Backend (`pytest`)**:
+   - Se ejecutó la suite completa de `pytest` sobre `polis_test` sin exclusiones (`-x` deshabilitado).
+   - **Resultado**: **391 passed, 0 failed, 0 skipped** en 180.70s.
+
+---
+
+### 2. Archivos Creados y Modificados (AUD-11b)
+
+| Archivo | Rol en la Subsanación |
+|---|---|
+| `backend/tests/test_identidad_completa.py` | Configuración explícita de literales inseguros en `test_configuracion_insegura_no_habilita_identidad_en_produccion` preservando la guarda 503. |
+| `backend/tests/test_aud11_scripts_seguridad.py` | Nueva suite de 16 pruebas que certifica la negativa de scripts demo sobre `bd_csh` y validación de guardas (OBS-13). |
+| `bridge/02_entrega_agy2.md` | Registro pericial de la entrega y validaciones de AUD-11b. |
+
+---
+
+### 3. Matriz de Validación de Quality Gates (AUD-11b)
+
+| Quality Gate | Comando de Validación | Resultado Pericial |
+|---|---|---|
+| **Prueba Unitaria Subsanada** | `pytest test_identidad_completa.py::test_configuracion_insegura_no_habilita_identidad_en_produccion` | **1 passed** (HTTP 503 verificado). |
+| **Pruebas de Guardas de Seguridad** | `pytest test_aud11_scripts_seguridad.py` | **16 passed en 0.75s** (rechazo estricto sobre `bd_csh` verificado). |
+| **Suite Completa Backend** | `PYTHONPATH=. .venv/bin/pytest -q` | **391 passed, 0 failed, 0 skipped en 180.70s** (100% verde). |
+| **Aislamiento de Cambios** | `git status` | Solo rutas explícitas de AUD-11b; cero interferencia con codex. |
