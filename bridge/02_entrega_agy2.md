@@ -122,6 +122,7 @@ Aprobado con dictamen conforme por el Auditor Forense EAF.
 **Plan de Auditoría**: `bridge/00_plan_auditoria_plataforma.md`
 **Especificación**: `bridge/01_tarea_agy2_aud_02.md`
 **Commits**:
+- `57c3d46` fix(aud-02): subsanar OBS-02 restituyendo mediciones sin datos fabricados y aislando demo con bandera explicita
 - `26a5e55` feat(indicadores): mediciones reales verificables y control estricto de contingencia (AUD-02)
 
 ---
@@ -229,6 +230,8 @@ En estricto cumplimiento del mandato de auditoría forense y de la **REGLA PERMA
 **Responsable**: agy2 (Equipo de Desarrollo EDD)  
 **Plan de Auditoría**: `bridge/00_plan_auditoria_plataforma.md`  
 **Especificación**: `bridge/01_tarea_agy2_aud_03.md`  
+**Commits**:
+- `69f6bad` feat(aud-03): conectar rendicion de cuentas con 179 aportes reales y erradicacion del descarte silencioso (C-150/15)
 
 ---
 
