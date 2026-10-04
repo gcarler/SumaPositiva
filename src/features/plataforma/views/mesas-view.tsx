@@ -62,10 +62,12 @@ function formatearFecha(fechaStr: string): string {
 }
 
 export function MesasGestionView() {
-  const mesas = useMesasStore((s) => s.mesas);
+  const mesasStore = useMesasStore((s) => s.mesas);
   const sesion = useSesionStore((s) => s.sesion);
   const { openPanel } = usePanels();
   const { data: mesasRemotas } = useMesas();
+
+  const mesas = mesasRemotas && mesasRemotas.length > 0 ? mesasRemotas : mesasStore;
 
   // Sincronizar mesas remotas de backend en el store si no existen
   useEffect(() => {

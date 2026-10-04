@@ -32,13 +32,18 @@ export function PanelShell({
 }: PanelShellProps) {
   const previousFocusRef = useRef<HTMLElement | null>(null);
 
+  const onCloseRef = useRef(props.onClose);
+  useEffect(() => {
+    onCloseRef.current = props.onClose;
+  }, [props.onClose]);
+
   useEffect(() => {
     previousFocusRef.current = document.activeElement as HTMLElement | null;
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         event.stopPropagation();
-        props.onClose();
+        onCloseRef.current();
       }
     };
 
@@ -53,7 +58,7 @@ export function PanelShell({
         previousFocusRef.current.focus();
       }
     };
-  }, [props.onClose]);
+  }, []);
 
   const maximized = usePanelStore(
     (state) =>

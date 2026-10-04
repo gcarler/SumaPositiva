@@ -31,8 +31,9 @@ import {
 } from "../services/lineas-api";
 import { dimensionMeta, ENTIDADES } from "../components/dimensiones-meta";
 
-type Props = { entryKey: string; lineaId?: string };
-export function LineaEditorPanel({ entryKey, lineaId }: Props) {
+type Props = { entryKey: string; lineaId?: string; props?: { lineaId?: string } };
+export function LineaEditorPanel({ entryKey, lineaId: directLineaId, props }: Props) {
+  const lineaId = directLineaId ?? props?.lineaId;
   const { closeTop, closeToKey } = usePanels();
   const sesion = useSesionStore((s) => s.sesion);
   const lineas = useQuery({

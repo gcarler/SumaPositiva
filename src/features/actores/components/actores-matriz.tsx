@@ -112,6 +112,7 @@ function CuadranteCard({
                     size="sm"
                     onClick={() => onSeleccionarActor(actor.id)}
                     className="h-6 px-2 text-[11px] text-ember hover:text-ember hover:bg-ember-soft gap-1"
+                    aria-label={`Ver ficha de ${actor.nombre}`}
                   >
                     <span>Ficha</span>
                     <ArrowRight className="size-3" aria-hidden="true" />

@@ -338,11 +338,13 @@ export const useAsistenciaStore = create<AsistenciaState>()(
   )
 );
 
+const EMPTY_REGISTROS: RegistroAsistencia[] = [];
+
 /**
  * Selector helper para obtener registros de una mesa de manera reactiva
  */
 export function useRegistrosMesa(mesaId: string): RegistroAsistencia[] {
-  return useAsistenciaStore((s) => s.registros[mesaId] ?? []);
+  return useAsistenciaStore((s) => s.registros[mesaId] ?? EMPTY_REGISTROS);
 }
 
 /**

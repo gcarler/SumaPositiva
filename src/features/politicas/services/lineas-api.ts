@@ -10,7 +10,10 @@ export const sublineaSchema = z.object({
 });
 export const lineaInputSchema = z
   .object({
-    codigo: z.string().regex(/^LE-[0-9]{2,}$/, "Usa un código como LE-01"),
+    codigo: z
+      .string()
+      .trim()
+      .regex(/^LE-[0-9]{2,}$/, "El código debe seguir el formato LE-01, LE-02, ..."),
     titulo: z.string().trim().min(1, "Escribe un título").max(300),
     descripcion: z.string().trim().min(1, "Describe la línea").max(10000),
     problema_abordado: z.string(),

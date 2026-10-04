@@ -147,7 +147,7 @@ export function ActoresView() {
                 setFiltros({ tipo: val as TipoActor | "todos" })
               }
             >
-              <SelectTrigger className="text-xs">
+              <SelectTrigger className="text-xs" aria-label="Filtrar por tipo de actor">
                 <SelectValue placeholder="Tipo de actor" />
               </SelectTrigger>
               <SelectContent>
@@ -171,7 +171,7 @@ export function ActoresView() {
                 setFiltros({ territorio: val as TerritorioActor | "todos" })
               }
             >
-              <SelectTrigger className="text-xs">
+              <SelectTrigger className="text-xs" aria-label="Filtrar por territorio">
                 <SelectValue placeholder="Territorio" />
               </SelectTrigger>
               <SelectContent>
@@ -193,7 +193,7 @@ export function ActoresView() {
                 setFiltros({ cuadrante: val as CuadranteMatriz | "todos" })
               }
             >
-              <SelectTrigger className="text-xs">
+              <SelectTrigger className="text-xs" aria-label="Filtrar por cuadrante matriz">
                 <SelectValue placeholder="Cuadrante Matriz" />
               </SelectTrigger>
               <SelectContent>
@@ -214,7 +214,7 @@ export function ActoresView() {
                 setFiltros({ postura: val as PosturaActor | "todos" })
               }
             >
-              <SelectTrigger className="text-xs">
+              <SelectTrigger className="text-xs" aria-label="Filtrar por postura">
                 <SelectValue placeholder="Postura" />
               </SelectTrigger>
               <SelectContent>

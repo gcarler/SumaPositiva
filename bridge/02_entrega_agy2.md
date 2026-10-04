@@ -1065,6 +1065,78 @@ Se implementó el script automatizado de auditoría pericial `scripts/auditar_a1
 | **Servicios en Producción** | `systemctl status polis-frontend` | **Activo y operativo (PID actualizado con build de producción)**. |
 | **Respuesta HTTP en Vivo** | `curl -sI http://127.0.0.1:3000/plataforma/seguimiento` | **HTTP 200 OK**. |
 
+---
+
+# Tarea AUD-09: Pruebas E2E Reales de Flujos Críticos y Auditoría Axe-core en Entorno Aislado
+
+**Fecha**: 2026-10-04T02:58:00Z  
+**Estado**: CERRADA CONFORME — LISTO PARA AUDITAR (EAF)  
+**Responsable**: agy2 (Equipo de Desarrollo EDD)  
+**Plan de Auditoría**: `bridge/00_plan_auditoria_plataforma.md`  
+**Especificación**: `bridge/01_tarea_agy2_aud_09.md`  
+
+---
+
+## 1. Resumen Ejecutivo de la Solución (AUD-09)
+
+En estricto cumplimiento de las directrices del EAF y los principios de seguridad de `AGENTS.md`, se diseñó, implementó y ejecutó una suite automatizada completa de pruebas End-to-End (E2E) con **Playwright Chromium**, ejecutada exclusivamente contra un **entorno 100% aislado** de pruebas:
+
+1. **Aislamiento Absoluto de Datos y Servicios**:
+   - **Base de Datos Aislada (`polis_test_e2e`)**: Creada y clonada instantáneamente mediante plantilla PostgreSQL (`WITH TEMPLATE polis_test`) a través de `scripts/preparar_entorno_e2e.py`.
+   - **Credenciales Efímeras Dinámicas**: Los usuarios de prueba (`test_e2e_autoridad@cartagena.gov.co` y `test_e2e_auditor@cartagena.gov.co`) se siembran con hashes `bcrypt` generados aleatoriamente en memoria durante la ejecución, sin tocar credenciales reales de `bd_csh` ni versionar secretos.
+   - **Puertos de Red Dedicados**: Backend FastAPI en puerto `8100` (`POLIS_DATABASE_URL=polis_test_e2e`), frontend Next.js standalone en puerto `3105`, y proxy inverso local en puerto `3100` (`http://127.0.0.1:3100`). Los servicios de producción (`8000` / `3000`) permanecen completamente intocados e independientes.
+   - **Ciclo de Vida Automático**: Inicio limpio de procesos y desmontaje garantizado (`SIGTERM` y limpieza con `fuser -k`) al finalizar o ante cualquier excepción.
+
+2. **Subsanación de Causa Raíz: Bucles de Renderizado (React Error #185)**:
+   - **Selector Inestable en Zustand**: En `src/features/mesas/state/asistencia-store.ts`, el selector `s.registros[mesaId] ?? []` instanciaba un nuevo arreglo vacío `[]` en cada render, disparando la advertencia de React Error #185 (*Maximum update depth exceeded*). Se solucionó sustituyendo el fallback por la constante inmutable `EMPTY_REGISTROS`.
+   - **Foco y Refs en React Compiler**: En `src/core/panels/panel-shell.tsx`, se aisló la asignación de `onCloseRef.current` dentro de un `useEffect` dependiente de `props.onClose`, evitando mutaciones durante el render y garantizando que el efecto de retorno de foco al desmontar opere de forma estable sin dependencias que fuercen bucles.
+   - **Sincronización de Estado en Paneles**: En `src/features/mesas/panels/mesa-panel.tsx`, se reemplazó el reseteo sincrónico en `useEffect` por ajuste de estado durante el render ante cambio de `props.mesaId`, conforme a los estándares de React 19 y React Compiler.
+
+3. **Matriz Completa de los 9 Flujos Críticos Validados en `check:e2e`**:
+   - **Flujo 1 (Login por Rol)**: Autenticación exitosa tanto para `autoridad_distrital` como para `auditor_forense`, confirmación de token y estado en `sessionStorage['polis-sesion-v2']`, y redirección a `/plataforma`.
+   - **Flujo 2 (Conmutar Fase DNP)**: Modificación del interruptor de fase en `/plataforma/contenido`, recarga total de la página en navegador (`reload`), verificación de la persistencia del estado en PostgreSQL y restauración controlada.
+   - **Flujo 3 (Editar Mesa - Acuerdos de Plenaria)**: Edición de acuerdos en mesa real (`01a1049...`), persistencia en PostgreSQL (`mesas_trabajo.actas_comunitarias`), recarga completa del navegador y validación de lectura persistida.
+   - **Flujo 4 (Editar Línea Estratégica)**: Modificación de descripción de línea en `/plataforma/contenido`, persistencia en PostgreSQL (`motor_politicas.lineas_estrategicas`) y verificación tras recarga.
+   - **Flujo 5 (Editar Compromiso PAS)**: Actualización de avance cuatrienal (35%) y observación en `/plataforma/seguimiento`, persistencia en PostgreSQL (`seguimiento.compromisos_pas`) y confirmación tras recarga.
+   - **Flujo 6 (Registrar Medición de Indicador DNP)**: Registro de nuevo valor en ficha técnica de Cadena de Valor, persistencia en PostgreSQL y verificación tras recarga.
+   - **Flujo 7 (Devolución Motivada C-150/15)**: Radicación de causal motivada de devolución en Rendición de Cuentas, persistencia en auditoría forense inmutable y confirmación tras recarga.
+   - **Flujo 8 (Modo Solo Lectura del Auditor Forense)**: Verificación de blindaje RBAC: inexistencia de botones de creación ("Nuevo Compromiso", "Crear mesa", "Control de Fases"), presencia de banners de inspección técnica/forense en los 3 paneles de Seguimiento, e imposibilidad de mutar datos.
+   - **Flujo 9 (Auditoría Axe-core Ampliada)**: Inspección automatizada con `axe-core` en 6 vistas y 3 pestañas principales de la plataforma (Dashboard, Mesas, Contenido, Seguimiento Pestaña 1, Seguimiento Pestaña 2, Seguimiento Pestaña 3, Configuración, Actores Estratégicos). **0 violaciones críticas o serias en el 100% de las vistas**.
+
+---
+
+## 2. Archivos Creados y Modificados (AUD-09)
+
+| Archivo | Rol en el Sistema |
+|---|---|
+| `package.json` | Script `"check:e2e": "node scripts/e2e-smoke-flujos-criticos.mjs"`. |
+| `scripts/preparar_entorno_e2e.py` | Clonación de BD con plantilla `polis_test`, siembra de usuarios dinámicos con bcrypt y normalización de códigos DNP. |
+| `scripts/e2e-smoke-flujos-criticos.mjs` | Suite Playwright E2E aislada (puertos 8100/3105/3100), ejecución de 9 flujos y auditoría axe-core. |
+| `src/core/panels/panel-shell.tsx` | Corrección de bucles de foco y gestión de ref compatible con React Compiler. |
+| `src/features/mesas/state/asistencia-store.ts` | Eliminación de selector inestable `?? []` generador de Error #185, uso de `EMPTY_REGISTROS`. |
+| `src/features/mesas/panels/mesa-panel.tsx` | Ajuste de estado reactivo durante el render, persistencia con `mesaRemota`. |
+| `src/features/plataforma/views/mesas-view.tsx` | Priorización de mesas remotas de PostgreSQL con UUID para evitar 422 de IDs mock. |
+| `src/features/politicas/panels/linea-editor-panel.tsx` | Soporte para `props.lineaId` desde `PanelHost`. |
+| `src/features/politicas/services/lineas-api.ts` | Sincronización estricta de regex de código con el validador del backend (`^LE-[0-9]{2,}$`). |
+| `src/features/plataforma/views/actores-view.tsx` | Nombres accesibles (`aria-label`) en los 4 `SelectTrigger` de filtros. |
+| `src/features/actores/components/actores-matriz.tsx` | Nombre accesible (`aria-label`) en botón de ficha técnica de actor. |
+| `bridge/02_entrega_agy2.md` | Documentación pericial de la tarea AUD-09. |
+
+---
+
+## 3. Matriz de Validación de Quality Gates (AUD-09)
+
+| Quality Gate | Comando de Validación | Resultado Pericial |
+|---|---|---|
+| **Suite Smoke E2E Aislada (9 flujos)** | `bun run check:e2e` | **100% Aprobado (9/9 flujos passed)** en entorno aislado. |
+| **Auditoría Axe-core Ampliada (6 vistas)** | `bun run check:e2e` (Flujo 9) | **0 violaciones críticas o serias** en Dashboard, Mesas, Contenido, Seguimiento, Configuración y Actores. |
+| **Política de UI POLIS** | `node scripts/ui-policy.mjs` | **0 violaciones** (100% controles Design Kit, cero modales, tokens semánticos). |
+| **Chequeo de Tipos y Lint Frontend** | `bun run check` | **Aprobado (0 errores)** en TypeScript estricto y ESLint. |
+| **Pruebas Automatizadas Frontend** | `bun test` | **211 pass, 0 fail (979 aserciones)** en 22 archivos. |
+| **Compilación Turbopack Standalone** | `bun run build` | **Compilación exitosa (57 rutas estáticas y dinámicas)**. |
+| **Servicios de Producción Intactos** | `systemctl is-active polis-backend polis-frontend` | **Ambos servicios activos y operativos**. |
+
+
 
 
 

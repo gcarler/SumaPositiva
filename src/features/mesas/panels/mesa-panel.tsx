@@ -8,7 +8,7 @@ import { Badge } from "@/shared/ui/badge";
 import { Switch } from "@/shared/ui/switch";
 import { Label } from "@/shared/ui/label";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { AnimatePresence, motion } from "framer-motion";
@@ -112,7 +112,7 @@ export function MesaPanel({
   const mesaStore = useMesasStore((s) =>
     s.mesas.find((m) => m.id === props.mesaId)
   );
-  const mesa = mesaStore ?? mesaRemota;
+  const mesa = mesaRemota ?? mesaStore;
 
   const mutarAcuerdos = useActualizarAcuerdos();
   const mutarInforme = useActualizarInforme();
@@ -149,7 +149,7 @@ export function MesaPanel({
   const [formManualAbierto, setFormManualAbierto] = useState(false);
 
   const [prevMesaId, setPrevMesaId] = useState(props.mesaId);
-  if (prevMesaId !== props.mesaId) {
+  if (props.mesaId !== prevMesaId) {
     setPrevMesaId(props.mesaId);
     setAcuerdosBorrador(null);
     setInformeBorrador(null);
