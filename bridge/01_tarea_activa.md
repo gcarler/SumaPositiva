@@ -1,39 +1,50 @@
-# TAREA ACTIVA — AUD-20: AUDITORÍA DE CONFORMIDAD PLATAFORMA POLIS VS. BANCO DE CONOCIMIENTO
+# TAREA ACTIVA — EDIT-14: DEPURACIÓN DE CONSULTA PREVIA Y MEJORAS BANCO DE CONOCIMIENTO
 
 **Asignada a**: agy2  
 **Supervisor / Auditor**: agy  
-**Objetivo**: Auditar exhaustivamente la plataforma POLIS (código frontend, backend FastAPI y base de datos `bd_csh`) contrastándola contra los estándares, metodologías y taxonomías establecidos en el **Banco de Conocimiento** (`knowledge-base/` y `docs/banco-conocimiento-politica-publica.md`).
+**Contexto**: Aprobación del supervisor sobre los resultados de AUD-20 y decisión pericial del usuario:
+- **RECHAZO ROTUNDO** a incorporar Consulta Previa formal OIT 169. Se ordena la **depuración integral** de cualquier referencia a consulta previa, sustituyéndola por **Enfoque Diferencial Étnico** constitucional.
+- Aprobación de siembra de actores institucionales oficiales de Cartagena 2026, 3 indicadores de impacto GED a 2036 y 3 fuentes presupuestales distritales con destinación específica.
 
 ---
 
-## Ejes Obligatorios de la Auditoría
+## Alcance (Commits atómicos por hito)
 
-1. **Metodología DNP / CONPES / MGA (`03_METODOLOGIA_DNP_CONPES_MGA.md`)**:
-   - Verificar si las 3 fases (Diagnóstico, Alternativas, PAS/Inversión) cumplen la cadena de valor (insumos, actividades, productos, resultados e impactos).
-   - Verificar si la matriz de árboles (problemas/soluciones en submesas) y el banco de alternativas cumplen el estándar MGA.
-2. **Las 7 Dimensiones de Seguridad Humana ONU (`06_ARQUITECTURA_FUNCIONAL_PLATAFORMA_POLIS.md`)**:
-   - Verificar en `motor_politicas.dimensiones_seguridad_humana` y en los módulos de Diagnóstico, Mesas y Aportes que las 7 dimensiones canónicas estén completas, bien tipificadas y articuladas con las metas e indicadores.
-3. **Enfoques Diferenciales y Consulta Previa (`05_HERRAMIENTAS_PARTICIPATIVAS_Y_ENFOQUES_DIFERENCIALES.md`)**:
-   - Verificar cómo la plataforma captura y procesa enfoques de género, étnico/afro/palenquero/indígena, niñez/adolescencia, víctimas y discapacidad en mesas, propuestas y testimonios.
-   - Verificar si la bandera `es_consulta_previa` en las 12 mesas rurales/insulares activa las salvaguardas requeridas.
-4. **Anclaje Territorial e Institucional de Cartagena (`11_MAPEO_DEPENDENCIAS_ALCALDIA_CARTAGENA_2026.md`, `barrios_cartagena.json`)**:
-   - Verificar si los territorios en `geodatos.territorios` y los barrios cubren la división oficial de las 3 Localidades urbanas y corregimientos.
-   - Verificar si las entidades responsables en mesas, metas y alternativas coinciden con las dependencias distritales oficiales de Cartagena 2026.
-5. **Cadena de Custodia, Integridad e Inmutabilidad (`01_MARCO_CONSTITUCIONAL_Y_LEGAL.md`, `02_LINEA_JURISPRUDENCIAL_CORTE_CONSTITUCIONAL.md`)**:
-   - Verificar que las actas comunitarias y firmas/hashes SHA-256 cumplan la inmutabilidad exigida por la Sentencia C-150 de 2015.
-   - Verificar que el total de asistentes no sea manipulable manualmente y provenga exclusivamente de listas de asistencia.
-6. **Sistema Presupuestal y Financiación (`07_SISTEMA_PRESUPUESTAL_Y_FINANCIACION.md`)**:
-   - Verificar si las fuentes de financiamiento en `presupuesto.fuentes_financiacion` y las asignaciones presupuestales soportan FONSET, SGP y vigencias de la política 2026–2036.
+### Hito 1: Depuración Integral de Consulta Previa
+1. **Base de Datos (`mesas_trabajo.mesas`)**:
+   - En `bd_csh`, actualizar `metadatos = metadatos - 'es_consulta_previa'` en las 33 mesas.
+   - Verificar que las 12 mesas de corregimientos e islas conserven estrictamente `enfoque_poblacional = 'ETNICO'`.
+2. **Alternativas y Viabilidad (`src/features/alternativas/` y `backend/app/modules/alternativas/`)**:
+   - Sustituir alertas de *"Requiere Consulta Previa Ley 70 / OIT 169"* por *"Enfoque Diferencial Étnico / Concertación Comunitaria"*.
+   - Renombrar/ajustar textos en paneles de edición y evaluación de viabilidad jurídica para que no bloqueen ni impongan trámites de consulta previa formal.
+
+### Hito 2: Siembra de Actores Institucionales Oficiales de Cartagena 2026
+1. **Base de Datos (`participacion_ciudadana.actores_estrategicos`)**:
+   - Migración Alembic `0047_sembrar_actores_institucionales_cartagena.py` idempotente (`ON CONFLICT (codigo) DO NOTHING`):
+   - Sembrar las 17 dependencias oficiales de la Alcaldía de Cartagena 2026 según `knowledge-base/11_MAPEO_DEPENDENCIAS_ALCALDIA_CARTAGENA_2026.md`:
+     - SICC, Distriseguridad, Sec. Participación, EPA Cartagena, OAGRD, Corvivienda, GEPM, PES-PR, DADIS, Escuela de Gobierno, IDACCC, IPCC, Alcaldía Local 1, Alcaldía Local 2, Alcaldía Local 3, Sec. Planeación, Sec. Hacienda.
+   - Datos: `tipo='institucional'`, `territorio='distrital'`, `postura='promotor_aliado'`, nivel poder alto/medio, nivel interés alto. Cero PII personal.
+2. **Frontend (`src/features/plataforma/views/actores-view.tsx`)**:
+   - Añadir `useEffect` para invocar `cargarActores()` al montarse `ActoresView`, garantizando que la Matriz 2x2 consulte la API real en su carga inicial.
+
+### Hito 3: Indicadores de Impacto a 2036 (AUD20-H01)
+1. **Migración Alembic `0048_indicadores_impacto_2036.py` idempotente**:
+   - Sembrar en `indicadores.fichas_tecnicas_indicadores` 3 fichas de `tipo_indicador = 'impacto'`:
+     1. `IND-IMP-01`: *Índice de Incidencia de Pobreza Multidimensional (IPM)*.
+     2. `IND-IMP-02`: *Tasa de Convivencia Barrial y Desescalamiento de Violencias*.
+     3. `IND-IMP-03`: *Índice de Resiliencia Climática y Seguridad Ambiental en la Ciénaga de la Virgen*.
+
+### Hito 4: Fuentes Presupuestales Distritales (AUD20-H03)
+1. **Migración Alembic `0049_fuentes_distritales_destinacion_especifica.py` idempotente**:
+   - Sembrar en `presupuesto.fuentes_financiacion`:
+     1. `FTE-PRO-CULTURA`: *Estampilla Pro-Cultura (Ley 397/1997)*.
+     2. `FTE-PRO-ADULTO`: *Estampilla Pro-Adulto Mayor (Ley 1276/2009)*.
+     3. `FTE-SOBRETASA-GAS`: *Sobretasa a la Gasolina (Ley 488/1998)*.
 
 ---
-
-## Formato del Entregable
-Documentar los resultados en `bridge/02_resultado_agy2.md` (sección AUD-20):
-- **Matriz de Conformidad**: Tabla con Eje, Referente del Banco de Conocimiento, Estado en POLIS (Cumple 100% / Parcial / Brecha), Evidencia en código/BD.
-- **Hallazgos y Oportunidades de Mejora**: Detalle de vacíos metodológicos o normativos identificados con propuesta concreta de solución.
-- Al terminar, comitear el informe en Git y notificar a `agy`.
 
 ## Reglas
-- Auditoría de **SOLO LECTURA** (no alterar código ni base de datos durante esta fase).
 - Cero `git push`.
-- Respaldar cada afirmación con comandos y consultas directas en `bd_csh` o código.
+- Aplicar migraciones con respaldo previo `su - postgres -c "pg_dump -Fc bd_csh" > backups/...` y servicios detenidos.
+- Quality gates: `bun run check`, `bun test`, `pytest`, `alembic check` en `polis_test`.
+- Documentar en `bridge/02_resultado_agy2.md` y notificar a `agy`.
