@@ -515,3 +515,238 @@ Al realizar el cruce entre ambas fuentes se constata:
 - **Frontend**:
   - Armonizar [`mesas-geovisor-api.ts`](file:///root/polis/src/features/geovisor/services/mesas-geovisor-api.ts) para que el lookup de coordenadas resuelva tanto por UUID como por `shortcode_ciudadano` o código de agenda, garantizando que el mapa muestre las 33 mesas oficiales.
   - Asegurar que `/asistencia/[mesaId]` resuelva la mesa tanto si el slug recibido es el código de agenda (`mt-001`) como si es el código oficial (`MT-L01-01`) o el UUID.
+
+### 8.4. H-05 — Vinculación Canónica Mesas ↔ Agendas y Unificación de Geovisor (Commit `76d718c`)
+
+#### Reconciliación del Conteo y Matriz Forense Exhaustiva (36 Agendas ↔ 33 Mesas Canónicas)
+En estricto cumplimiento de las 5 condiciones del dictamen EAF, se presenta la reconciliación matemática y forense de las 36 agendas:
+
+| Tipo | Nº | Código Agenda | Nombre en Agenda | Mesa Canónica Destino (`codigo_oficial`) | UUID Mesa Canónica |
+|---|---|---|---|---|---|
+| Territorial | 1 | `mt-001` | Mesa Territorial — Localidad Histórica y del Caribe Norte | `MT-L01-01` | `01a0f5fe-86df-717b-a4d0-5b6605bdf993` |
+| Territorial | 2 | `mt-002` | Mesa Territorial — Localidad De La Virgen y Turística | `MT-L02-01` | `01a0f5fe-86e1-7175-8932-3799c59182c4` |
+| Territorial | 3 | `mt-003` | Mesa Territorial — Localidad Industrial y de la Bahía | `MT-L03-01` | `01a0f5fe-86e1-7e78-a8e2-401657b07e30` |
+| Poblacional | 4 | `mp-001` | Mesa Poblacional — Adulto Mayor | `MP-POB-01` | `01a0f5fe-86e3-7282-a54b-f042f85fa1bc` |
+| Poblacional | 5 | `mp-002` | Mesa Poblacional — Infancia y Primera Infancia | `MP-POB-02` | `01a0f5fe-86e3-7cc2-8436-ebc34e6acbc4` |
+| Poblacional | 6 | `mp-003` | Mesa Poblacional — Población LGBTIQ+ | `MP-POB-03` | `01a0f5fe-86e3-773b-9bbb-287eb0a475c4` |
+| Poblacional | 7 | `mp-004` | Mesa Poblacional — Personas con Discapacidad | `MP-POB-04` | `01a0f5fe-86e3-71a2-a832-83a2b8757f4a` |
+| Poblacional | 8 | `mp-005` | Mesa Poblacional — Juventud | `MP-POB-05` | `01a0f5fe-86e3-7cc0-9494-9b43b0de02b0` |
+| Poblacional | 9 | `mp-006` | Mesa Poblacional — Mujeres | `MP-POB-06` | `01a0f5fe-86e3-7ece-aa45-f734eaf5d4dd` |
+| Poblacional | 10 | `mp-007` | Mesa Poblacional — Víctimas del Conflicto | `MP-POB-07` | `01a0f5fe-86e3-7e68-89c5-7cc6c9cc4ce8` |
+| Poblacional | 11 | `mp-008` | Mesa Poblacional — Comunidades Étnicas | `MP-ETN-08` | `01a0f5fe-86e3-7bca-a222-69ddd0da41f4` |
+| Sectorial | 12 | `ms-001` | Mesa Sectorial — Cultura y Patrimonio | `MS-SEC-01` | `01a0f5fe-86e4-7462-9bf4-7fba713251dd` |
+| Sectorial | 13 | `ms-002` | Mesa Sectorial — Deporte y Recreación | `MS-SEC-02` | `01a0f5fe-86e4-7a89-a279-abfbadfa1e91` |
+| Sectorial | 14 | `ms-003` | Mesa Sectorial — Salud Pública | `MS-SEC-03` | `01a0f5fe-86e5-7ff9-a971-27375ae9f301` |
+| Sectorial | 15 | `ms-004` | Mesa Sectorial — Educación | `MS-SEC-04` | `01a0f5fe-86e5-7883-9644-8c7a2dac9923` |
+| Sectorial | 16 | `ms-005` | Mesa Sectorial — Movilidad y Espacio Público | `MS-SEC-05` | `01a0f5fe-86e5-7e28-8bd7-4a18a3ea9c19` |
+| Sectorial | 17 | `ms-006` | Mesa Sectorial — Servicios Públicos, Infraestructura y Vivienda | `MS-SEC-06` | `01a0f5fe-86e5-7d19-a547-3edee16440b1` |
+| Sectorial | 18 | `ms-007` | Mesa Sectorial — Seguridad y Convivencia Ciudadana | `MS-SEC-07` | `01a0f5fe-86e5-752b-bf52-fa98aeb8406a` |
+| Sectorial | 19 | `ms-008` | Mesa Sectorial — Medio Ambiente, Gestión del Riesgo y Planeación | `MS-SEC-08` | `01a0f5fe-86e5-7e6f-bf6c-9e7b9837816f` |
+| Sectorial | 20 | `ms-009` | Mesa Sectorial — Desarrollo Económico, Turismo y Competitividad | `MS-SEC-09` | `01a0f5fe-86e5-7d46-8bfb-527585d6d433` |
+| Sectorial | 21 | `ms-010` | Mesa Sectorial — Transparencia y Cultura Ciudadana | `MS-SEC-10` | `01a0f5fe-86e5-7322-953d-72489185aead` |
+| Sectorial | 22 | `ms-011` | Mesa Sectorial — Construcción de Paz y Reconciliación | `MS-SEC-11` | `01a0f5fe-86e5-767a-8851-6b6a5eb052e6` |
+| Rural/Insular | 23 | `mr-001` | Mesa Rural — La Boquilla | `MR-RUR-01` | `01a0f5fe-86e2-7b56-b70b-aa6b3c6feb08` |
+| Rural/Insular | 24 | `mr-002` | Mesa Rural — Arroyo de Piedra | `MR-RUR-02` | `01a0f5fe-86e2-7eb8-85f0-7f8edbd8d441` |
+| Rural/Insular | 25 | `mr-003` | Mesa Rural — Punta Canoa | `MR-RUR-03` | `01a0f5fe-86e2-7b3a-99ca-973a388ae602` |
+| Rural/Insular | 26 | `mr-004` | Mesa Rural — Bayunca | `MR-RUR-04` | `01a0f5fe-86e2-76ca-8fb4-8c2403144877` |
+| Rural/Insular | 27 | `mr-005` | Mesa Rural — Pasacaballos | `MR-RUR-05` | `01a0f5fe-86e2-71eb-98b5-16f61f5a3b80` |
+| Rural/Insular | 28 | `mr-006` | Mesa Rural — Arroyo Grande | `MR-RUR-06` | `01a0f5fe-86e2-7e7d-b043-8b61c7c913e0` |
+| Rural/Insular | 29 | `mr-007` | Mesa Rural — Santa Ana | `MR-ISL-07` | `01a0f5fe-86e2-7ebb-90f1-7268653ea79d` |
+| Rural/Insular | 30 | `mr-007b` | Mesa Insular — Barú y Comunidades del Archipiélago | `MR-ISL-07` | `01a0f5fe-86e2-7ebb-90f1-7268653ea79d` |
+| Rural/Insular | 31 | `mr-012` | Mesa Rural e Insular — Barú | `MR-ISL-07` | `01a0f5fe-86e2-7ebb-90f1-7268653ea79d` |
+| Rural/Insular | 32 | `mr-008` | Mesa Insular — Tierrabomba | `MR-ISL-08` | `01a0f5fe-86e2-77ec-aa3f-d52f9fbb8125` |
+| Rural/Insular | 33 | `mr-009` | Mesa Insular — Bocachica | `MR-ISL-09` | `01a0f5fe-86e2-70f0-84de-854dae52dc89` |
+| Rural/Insular | 34 | `mr-010` | Mesa Insular — Isla del Rosario | `MR-ISL-10` | `01a0f5fe-86e2-7c68-a9f7-4ecbfa5236b5` |
+| Rural/Insular | 35 | `mr-011` | Mesa Insular — Isla Fuerte | `MR-ISL-11` | `01a0f5fe-86e3-7288-8425-1317a98eebd4` |
+| Plenaria | 36 | `pc-001` | Plenaria de Cierre — Consolidación de Aportes Ciudadanos | `NULL` (Sin mesa territorial) | `NULL` |
+
+**Resumen de la Reconciliación**:
+- Total agendas analizadas: **36**.
+- Agendas vinculadas a mesas canónicas: **35**.
+- Agendas con `mesa_id = NULL`: **1** (`pc-001`, plenaria institucional de cierre).
+- Total de mesas canónicas cubiertas: exactamente **33** mesas (32 mesas con 1 agenda + 1 mesa `MR-ISL-07` con 3 agendas de Barú: `mr-007`, `mr-007b`, `mr-012`).
+- 0 agendas huérfanas, 0 mesas canónicas sin agenda.
+
+#### Intervención Realizada
+1. **Migración Alembic 0045 (`backend/alembic/versions/0045_agendas_mesa_id.py`)**:
+   - Agrega la columna `mesa_id UUID NULL REFERENCES mesas_trabajo.mesas(id) ON DELETE SET NULL` con índice `idx_agendas_mesa_id`.
+   - Bloque PL/pgSQL transaccional con tabla temporal explícita: itera sobre cada par `(agenda_id, codigo_oficial)` y ejecuta `UPDATE`, validando con `GET DIAGNOSTICS ROW_COUNT` que cada asignación afecte exactamente 1 fila (de lo contrario aborta con `RAISE EXCEPTION`).
+   - Valida que `pc-001` quede en `mesa_id = NULL`.
+   - Aserción final estricta de conteos: comprueba `v_total_agendas = 35` y `v_total_mesas_con_agenda = 33` antes de confirmar.
+   - `downgrade()` limpio: elimina índice, restricción FK y columna.
+2. **Modelos y Esquemas Backend**:
+   - `backend/app/modules/mesas/models.py`: Declaración de relación bidireccional `Mesa.agendas` y `MesaAgenda.mesa`, con FK indexada.
+   - `backend/app/modules/mesas/schemas.py`: `AgendaBase`, `AgendaActualizar` y `AgendaRespuesta` exponen `mesa_id: uuid.UUID | None = None`. `MesaGeovisorRespuesta` incorpora `codigo_oficial` y `shortcode_ciudadano`.
+   - `backend/app/modules/mesas/service.py`: `_resolver_mesa_uuid` ahora resuelve transparentemente identificadores por UUID, código oficial (`MT-L01-01`), shortcode (`MT101`) o código de agenda (`mt-001` -> `agenda.mesa_id`).
+   - `backend/app/modules/evidencia/service.py`: `listar_mesas_geovisor` puebla `codigo_oficial` y `shortcode_ciudadano` en cada registro.
+3. **Frontend: Geovisor Territorial y Planilla de Asistencia**:
+   - `src/features/geovisor/data/mesas-geovisor.data.ts`: Función `buscarCoordenadasMesa` con mapas deterministas de resolución por UUID, código oficial, shortcode o código de agenda, asegurando cobertura al 100% de las 33 mesas.
+   - `src/features/geovisor/services/mesas-geovisor-api.ts`: Enriquece `listarMesasGeovisor` usando `buscarCoordenadasMesa`.
+   - `src/app/asistencia/[mesaId]/asistencia-cliente.tsx`: Resuelve metadatos, nombres, lugares y contenidos de submesas sugeridas si la URL recibe UUID, código oficial (`MT-L01-01`) o código de agenda (`mt-001`).
+4. **Verificación en Producción (`bd_csh`) y Pruebas**:
+   - Respaldo previo: `backups/bd_csh_pre_edit13_h05_20261005_043429.dump` (1.6 MB, 1.331 entradas).
+   - Servicios `polis-backend` y `polis-frontend` detenidos.
+   - Migración aplicada: `0045_agendas_mesa_id (head)`.
+   - Verificado en PostgreSQL:
+     ```
+     total_con_mesa = 35
+     mesas_cubiertas = 33
+     pc-001 mesa_id = NULL
+     mr-007, mr-007b, mr-012 -> MR-ISL-07
+     ```
+   - Downgrade/Upgrade probado en `polis_test` vía `test_database_integration.py` (`1 passed in 6.11s`, `alembic check` limpio con 0 diffs).
+   - Pruebas frontend: `src/features/geovisor/services/mesas-geovisor-api.test.ts` (7 passed), `src/features/mesas/services/asistencia-api.test.ts` (9 passed), `bun test` global (300 passed, 0 failed).
+   - Quality gates: `bun run check` (0 errores / 0 advertencias), Turbopack build exitoso (57 rutas prerenderizadas).
+
+### 8.5. H-08 — Conexión del Cargador de Fotos a Sanitización EXIF/GPS (Commit `bb89185`)
+
+#### Contexto y Requerimiento
+El hallazgo AUD-19 identificó que los cargadores de fotos en el frontend (`fotos-pregunta.tsx` para formularios y `aporte-editor-panel.tsx` para aportes ciudadanos) procesaban imágenes en Base64/dataURL en el navegador del cliente sin enviarlas a la API forense de sanitización. Esto contravenía la salvaguarda de protección a líderes sociales y veedores comunitarios (Ley 1581 de 2012 y salvaguardas territoriales de Cartagena), dejando expuestos metadatos sensibles como coordenadas GPS y marcas temporales EXIF.
+
+#### Implementación Realizada
+1. **Nuevo Servicio de Evidencias Sanitizadas (`src/features/evidencias/services/evidencias-api.ts`)**:
+   - Función [`subirEvidenciaFotografica(archivo: File, propuestaId?: string)`](file:///root/polis/src/features/evidencias/services/evidencias-api.ts):
+     - Asegura una sesión activa con JWT (o anónima declarada) antes de la transferencia.
+     - Envía el archivo como `multipart/form-data` a `POST /api/v1/evidencias/subir`.
+     - El backend FastAPI procesa la imagen a través de `Pillow`, despojando todos los segmentos EXIF y GPS de forma inmutable.
+     - Construye y retorna la URL canónica segura `/api/v1/evidencias/{id}/archivo`.
+     - **Cero retornos simulados**: Ante cualquier error HTTP (401, 422, 500) o fallo de red, propaga la excepción honestamente.
+
+2. **Formularios de Preguntas con Fotos (`src/features/formularios/components/fotos-pregunta.tsx`)**:
+   - Reemplazado el `FileReader` local en base64 por la llamada secuencial a `subirEvidenciaFotografica`.
+   - Si la subida falla, captura el error real devuelto por la API y muestra el mensaje al usuario sin corromper el formulario.
+
+3. **Editor de Aportes Ciudadanos (`src/features/aportes/panels/aporte-editor-panel.tsx`)**:
+   - Reemplazado `fileToDataUrlComprimido` por `subirEvidenciaFotografica`.
+   - Los aportes ahora guardan la referencia canónica al backend de evidencias en lugar de cadenas base64 gigantes en memoria.
+   - Manejo honesto de errores vía toast descriptivo.
+
+4. **Suite de Pruebas Automatizadas (`src/features/evidencias/services/evidencias-api.test.ts`)**:
+   - Prueba 1: Verifica despacho exitoso a `POST /evidencias/subir`, aseguramiento de sesión e inyección de `archivo_url`.
+   - Prueba 2: Verifica inclusión de `propuesta_id` opcional en el FormData.
+   - Prueba 3 (Anti-silent-fallback): Verifica que ante respuestas 422/500 de la API se rechace la promesa con el mensaje del servidor sin inventar rutas falsas.
+
+#### Pruebas y Quality Gates
+- `bun test`: 303 pruebas pasadas en 32 archivos (0 fallidas).
+- `bun run check`: `eslint`, `tsc --noEmit` y validaciones UI limpias (cero errores).
+- `pytest` backend: 95 pruebas pasadas en `test_evidencia_segura.py` y `test_access_policy.py`.
+- `bun run build`: Build de producción Next.js (Turbopack) exitoso, 57 rutas generadas.
+- Commit atómico: `bb89185` (`feat(evidencias): conectar cargador de fotos a sanitizacion exif y gps (H-08)`).
+
+---
+
+### 8.6. H-07 (Fase A) — Inventario Forense de 14 Columnas Legadas y Borrador de Migración (Commit `81dc779`)
+
+#### Contexto del Hallazgo
+En la auditoría AUD-19 se detectó una disparidad estructural entre la base de datos de producción `bd_csh` (37 columnas en `mesas_trabajo.mesas`) y la base de pruebas canónica `polis_test` / modelo SQLAlchemy `Mesa` (23 columnas).
+Las 14 columnas sobrantes se originaron en la creación inicial del esquema mediante el script legador `bd/scripts/04_mesas_trabajo_360.sql`, antes de que las migraciones de Alembic gestionaran el ciclo de vida del catálogo.
+
+#### 1. Inventario Forense Exhaustivo de las 14 Columnas Legadas en `bd_csh`
+
+Consulta de auditoría ejecutada en `bd_csh` (PostgreSQL 18.6):
+```sql
+SELECT 
+    column_name, data_type, is_nullable, column_default,
+    count(*) OVER () as total_filas
+FROM information_schema.columns 
+WHERE table_schema = 'mesas_trabajo' AND table_name = 'mesas';
+```
+
+| Nº | Nombre de Columna | Tipo de Dato | Nullable | Default | Filas No Nulas (de 33) | Diagnóstico de Redundancia y Contenido |
+|---|---|---|---|---|---|---|
+| 1 | `descripcion` | `text` | YES | `NULL` | **0** | **Columna vacía** (100% NULL). Sin uso en la aplicación. |
+| 2 | `coordenadas` | `geometry(Point, 4326)` | YES | `NULL` | **33** | **Datos reales espaciales**: Puntos WKT exactos de ubicación de cada mesa. Tiene índice `idx_mesas_geo_gist`. |
+| 3 | `dimension_principal_id` | `uuid` | YES | `NULL` | **33** | **100% Redundante**: En las 33 filas coincide de forma idéntica con la columna canónica `dimension_id`. Tiene FK `mesas_dimension_principal_id_fkey` e índice `idx_mesas_dimension`. |
+| 4 | `enfoque_poblacional` | `varchar(50)` | YES | `'GENERAL'` | **33** | **Datos reales**: 14 GENERAL, 12 ETNICO, 1 MUJERES, 1 JUVENTUD, 1 VICTIMAS, 1 INFANCIA, 1 ADULTO_MAYOR, 1 DISCAPACIDAD, 1 LGTBIQ. |
+| 5 | `es_consulta_previa` | `boolean` | YES | `false` | **33** | **Datos reales**: 12 `true` (coincide exactamente con las 12 mesas de enfoque ETNICO de corregimientos e islas), 21 `false`. |
+| 6 | `enlace_streaming` | `varchar(255)` | YES | `NULL` | **0** | **Columna vacía** (100% NULL). Sin uso en la aplicación. |
+| 7 | `aforo_presencial` | `integer` | YES | `150` | **33** | **100% Redundante**: En las 33 filas coincide de forma idéntica con la columna canónica `aforo_maximo`. |
+| 8 | `facilitador_responsable` | `varchar(150)` | YES | `NULL` | **0** | **Columna vacía** (100% NULL). Reemplazado por `facilitador_id` (FK a `autenticacion.usuarios`). |
+| 9 | `relator_comunitario` | `varchar(150)` | YES | `NULL` | **0** | **Columna vacía** (100% NULL). Sin uso en la aplicación. |
+| 10 | `total_asistentes_presenciales`| `integer` | YES | `0` | **33** | **Todos en 0** (igual a default). Derivado pericialmente de listas de asistencia. |
+| 11 | `total_asistentes_digitales` | `integer` | YES | `0` | **33** | **Todos en 0** (igual a default). |
+| 12 | `total_propuestas_producidas` | `integer` | YES | `0` | **33** | **Todos en 0** (igual a default). |
+| 13 | `acta_pdf_url` | `varchar(255)` | YES | `NULL` | **0** | **Columna vacía** (100% NULL). La gestión de actas se realiza en `mesas_trabajo.actas_comunitarias`. |
+| 14 | `metadata` | `jsonb` | YES | `'{}'::jsonb` | **33** | **100% Redundante**: En las 33 filas es `{}` (objeto JSON vacío), idéntico a la columna canónica `metadatos`. |
+
+#### 2. Inspección de Dependencias en Catálogo PostgreSQL y Código
+
+1. **Vistas (`pg_views`)**:
+   - `SELECT viewname FROM pg_views WHERE definition ILIKE '%mesas_trabajo.mesas%';` -> **0 filas**. Ninguna vista depende de estas columnas.
+2. **Funciones y Procedimientos (`pg_proc`)**:
+   - Ninguna función de PostgreSQL referencia las 14 columnas legadas.
+3. **Triggers (`information_schema.triggers`)**:
+   - Solo existe `trg_actualizar_mesas` (`BEFORE UPDATE` ejecutando `actualizar_marca_temporal()`), el cual actúa sobre `actualizado_en` y es independiente de las columnas eliminadas.
+4. **Índices y Restricciones Físicas**:
+   - Restricción FK: `mesas_dimension_principal_id_fkey` en `mesas_trabajo.mesas(dimension_principal_id)`.
+   - Índices: `idx_mesas_geo_gist` (sobre `coordenadas`) e `idx_mesas_dimension` (sobre `dimension_principal_id`).
+5. **Referencias en `bd/scripts/`**:
+   - Las 14 columnas y sus 2 índices se definieron exclusivamente en `bd/scripts/04_mesas_trabajo_360.sql`.
+6. **Referencias en `backend/` y `src/`**:
+   - Búsqueda recursiva (`grep -rn`): Cero referencias en los controladores, esquemas o componentes activos de la plataforma.
+
+#### 3. Estrategia de Preservación de Datos (Regla Estricta H-07)
+La regla estricta de H-07 establece: *"Si alguna columna tiene datos, NO se elimina: se mapea en el modelo o se migra el dato; consultar."*
+
+- **Columnas 100% Vacías (5 columnas)**: `descripcion`, `enlace_streaming`, `facilitador_responsable`, `relator_comunitario`, `acta_pdf_url`.
+  - *Acción*: Eliminación directa segura mediante `DROP COLUMN IF EXISTS`.
+- **Columnas Redundantes con Valores Canónicos Existentes (6 columnas)**:
+  - `dimension_principal_id` (duplicado exacto de `dimension_id`).
+  - `aforo_presencial` (duplicado exacto de `aforo_maximo`).
+  - `metadata` (duplicado exacto de `metadatos`).
+  - `total_asistentes_presenciales`, `total_asistentes_digitales`, `total_propuestas_producidas` (todos en 0).
+  - *Acción*: Eliminación segura previa remoción del FK `mesas_dimension_principal_id_fkey` y del índice `idx_mesas_dimension`. Los datos canónicos permanecen intactos en sus columnas activas.
+- **Columnas con Información Territorial Única (3 columnas)**:
+  - `coordenadas` (33 puntos espaciales).
+  - `enfoque_poblacional` (33 valores clasificados: general, étnico, mujeres, etc.).
+  - `es_consulta_previa` (12 banderas `true` para salvaguardas Convenio 169 OIT).
+
+#### Propuesta Sometida a Decisión de Revisión:
+- **Opción A (Recomendada e Implementada en el Borrador)**:
+  Migrar los datos de `coordenadas`, `enfoque_poblacional` y `es_consulta_previa` al campo canónico `metadatos` (JSONB) antes de eliminar las columnas físicas:
+  ```sql
+  UPDATE mesas_trabajo.mesas
+  SET metadatos = COALESCE(metadatos, '{}'::jsonb) || jsonb_build_object(
+      'enfoque_poblacional', enfoque_poblacional,
+      'es_consulta_previa', es_consulta_previa,
+      'coordenadas', CASE 
+          WHEN coordenadas IS NOT NULL THEN jsonb_build_object(
+              'longitud', ST_X(coordenadas),
+              'latitud', ST_Y(coordenadas)
+          )
+          ELSE NULL 
+      END
+  );
+  ```
+  *Ventajas*: Cero pérdida de información; la estructura física de `bd_csh` queda 100% alineada con `polis_test` y el modelo SQLAlchemy canónico; los metadatos quedan disponibles vía `MesaRespuesta.metadatos`. Downgrade es 100% capaz de rehidratar las columnas y geometrías originales desde el JSONB.
+- **Opción B**:
+  Modificar el modelo canónico SQLAlchemy (`Mesa`), agregar las 3 columnas a `polis_test` mediante migraciones adicionales y mantener las columnas físicas en ambas bases.
+
+#### 4. Borrador de Migración Alembic Entregado (`0046_depurar_columnas_mesas.py`)
+- Archivo: [`backend/alembic/versions/0046_depurar_columnas_mesas.py`](file:///root/polis/backend/alembic/versions/0046_depurar_columnas_mesas.py).
+- `revision = "0046_depurar_columnas_mesas"` (longitud 27 caracteres, cumpliendo el límite de 32 de `alembic_version.version_num`).
+- `down_revision = "0045_agendas_mesa_id"`.
+- Implementa:
+  - Salvaguarda automática y condicional a `metadatos` JSONB (Opción A).
+  - Eliminación de índices `idx_mesas_geo_gist` e `idx_mesas_dimension`.
+  - Eliminación de restricción FK `mesas_dimension_principal_id_fkey`.
+  - Eliminación de las 14 columnas legadas mediante `DROP COLUMN IF EXISTS`.
+  - `downgrade()` completo que recrea las 14 columnas, reestablece FK e índices, y rehidrata los valores desde `metadatos`.
+- **Validación en Base de Pruebas**:
+  - Ejecutado ciclo de downgrade/upgrade en `polis_test` vía `test_database_integration.py` (`1 passed in 7.88s`).
+  - `alembic check` en `polis_test`: 0 diferencias detectadas.
+- **Estado de Producción (`bd_csh`)**:
+  - La migración **NO HA SIDO APLICADA** en `bd_csh`.
+  - `bd_csh` permanece estrictamente en la revisión `0045_agendas_mesa_id`.
+- Commit atómico entregado: `81dc779` (`chore(db): borrador migracion depuracion 14 columnas legadas mesas (H-07 fase A)`).
+
+---
+
+### ESTADO ACTUAL Y PUNTO DE PARADA (STOP)
+
+- **H-11**: CERRADO y aplicado (Commit `5f05141`).
+- **H-09**: CERRADO y aplicado (Commit `95b85dd`).
+- **H-05**: CERRADO y aplicado (Commit `76d718c`).
+- **H-08**: CERRADO y aplicado (Commit `bb89185`).
+- **H-07 (Fase A)**: CONCLUIDO y entregado en commit `81dc779` (sin aplicar en `bd_csh`).
+- **PUNTO DE PARADA OBLIGATORIO**: Me detengo en total conformidad con la especificación de EDIT-13 a la espera del dictamen y aprobación escrita de `agy` en `bridge/03_dictamen_revision.md` antes de ejecutar la Fase B de H-07.
