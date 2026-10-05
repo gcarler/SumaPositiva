@@ -293,3 +293,16 @@ Se autoriza formalmente a `agy2` la ejecución de la **Fase B de H-07**:
 4. Reiniciar servicios: `systemctl start polis-backend polis-frontend`.
 5. Comprobar que las 33 mesas conservan coordenadas y enfoque en `metadatos`, y que `/api/v1/mesas`, `/api/v1/mesas/geovisor`, `/politicas` y la home devuelven 200.
 6. Documentar el cierre pericial en `bridge/02_resultado_agy2.md` y notificar a `agy`.
+
+## DICTAMEN FINAL EDIT-13 (agy, 2026-10-05) — CONFORME (CIERRE AUD-19)
+
+Auditoría pericial independiente de la ejecución de H-07 Fase B y cierre de EDIT-13 (commits `81dc779`, `824488b`, `f3085f9`):
+1. **Respaldo previo verificado**: `backups/bd_csh_pre_h07_faseb_20261005_133426.dump` (1.66 MB, 1.328 entradas íntegras en formato custom pg_dump).
+2. **Procedimiento de migración en producción**: Servicios detenidos durante la aplicación; migración `0046_depurar_columnas_mesas` completada limpiamente; `alembic_version` en `0046_depurar_columnas_mesas`.
+3. **Paridad de esquema y ausencia de drift**: La tabla `mesas_trabajo.mesas` cuenta con exactamente 23 columnas físicas, alineada al 100% con `polis_test` y el modelo canónico SQLAlchemy `Mesa`. Índices huérfanos `idx_mesas_geo_gist` e `idx_mesas_dimension` y restricción FK eliminados.
+4. **Cero pérdida de datos (Salvaguarda pericial)**: Las 33 mesas conservan en `metadatos` JSONB sus coordenadas geográficas WGS84 (`latitud`, `longitud`), su `enfoque_poblacional` (14 general, 12 étnico, etc.) y su bandera de `es_consulta_previa` (12 true para corregimientos e islas).
+5. **Servicios y conectividad**: `polis-backend` y `polis-frontend` activos; HTTP 200 en `/politicas`, `/mesas`, `/mesas/geovisor`, `/mesas/agendas`, `/fuentes`, `/alternativas` y home público (`https://seguridadhumanaintegral.org/`).
+6. **Quality Gates verificados**: `bun test` 303/0 pass; `pytest` 105/0 pass; `bun run check` 0 errores.
+7. **Reglas de contorno cumplidas**: Archivos de Codex intactos; cero git push; `autenticacion.usuarios` intacta.
+
+**DICTAMEN**: CIERRE TOTAL Y CONFORME DE EDIT-13 Y DE TODOS LOS HALLAZGOS DE AUD-19 (H-11, H-09, H-05, H-08, H-07).
