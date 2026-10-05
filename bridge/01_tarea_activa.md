@@ -1,17 +1,19 @@
-# TAREA ACTIVA — EDIT-12 (asignada a agy2; revisión: agy)
+# TAREA ACTIVA — EDIT-13 (asignada a agy2; revisión: agy)
 
-**Autorización del usuario**: ejecutar la purga de datos de prueba de EDIT-11 (script §4.4 de `bridge/02_resultado_agy2.md`, ya validado por agy con ROLLBACK: propuestas 227→0, instrumentos 128→6, nodos 337→35, asignaciones 14→2).
+Corregir los hallazgos abiertos de AUD-19 (ver tabla en `bridge/02_entrega_agy2.md`, ~L3078-3085). Excluido: **H-10** (Codex, bloqueado). H-06 ya cerrado en EDIT-11.
 
-## Procedimiento obligatorio
-1. Respaldo previo: `su - postgres -c "pg_dump -Fc bd_csh" > backups/bd_csh_pre_purga_$(date +%Y%m%d_%H%M%S).dump`; verificar con `pg_restore -l` y registrar tamaño y nº de entradas.
-2. Registrar conteos ANTES (propuestas, apoyos, instrumentos, nodos, asignaciones, usuarios=413 y mesas=33 canónicas `id LIKE '01a0f5fe%'`).
-3. Ejecutar el script en UNA transacción (`BEGIN … COMMIT`) vía `su - postgres -c "psql -d bd_csh -P pager=off -v ON_ERROR_STOP=1 -f ..."`. Si algún conteo intermedio no coincide con lo esperado, `ROLLBACK` y reportar sin insistir.
-4. Registrar conteos DESPUÉS y confirmar: propuestas 0, instrumentos 6, nodos 35, asignaciones 2, usuarios 413 y mesas 33 sin cambio.
-5. Verificar HTTP en vivo (200): `/api/v1/politicas`, `/api/v1/mesas`, `/api/v1/mesas/agendas`, `/api/v1/fuentes`, `/api/v1/alternativas`, y que la home carga.
-6. Atender OBS-29: `logger.exception` en el `except` de `participantes` en `backend/app/modules/politicas/router.py` (commit atómico, gates `bun run check`, `bun test`, pytest politicas+access_policy, reinicio de `polis-backend`).
+## Alcance (un commit atómico por hallazgo, en este orden)
+1. **H-11** (bajo): `MesaRespuesta.facilitador_nombre` por join con `autenticacion.usuarios` (columna `correo`/nombre real: verificar esquema). Frontend (`mesas-api.ts`) usa el nombre y quita el valor genérico. Test backend + bun.
+2. **H-09**: sembrar las 3 líneas estratégicas faltantes en `motor_politicas.lineas_estrategicas` mediante **migración Alembic de datos idempotente** (`ON CONFLICT DO NOTHING`), tomando nombre/código/descripción EXACTOS de `src/features/politicas/data/politicas.data.ts`. Verificar columnas NOT NULL/FK (fase_id, etc.). No inventar contenido.
+3. **H-05**: unificar fuentes mesas↔agendas. Primero informe de análisis en `02_resultado_agy2.md` (relación real entre `mesas_trabajo.mesas` (33) y `mesas_trabajo.agendas` (36): ¿hay vínculo? ¿cuáles agendas no tienen mesa?). Implementar la solución mínima y segura (preferible: vista pública y geovisor consumen una única fuente coherente, o vínculo `mesa_id` en agendas con migración). Si requiere decisión de producto, DETENERSE y preguntar a `agy`.
+4. **H-08**: conectar el cargador de fotos (`fotos-pregunta.tsx`, `aporte-editor-panel.tsx`) a `POST /evidencias/subir` (sanitización EXIF/GPS), con tests y sin retornos simulados.
+5. **H-07** (destructivo, DOS FASES):
+   - Fase A: inventario de las 14 columnas legadas (nombre, tipo, nº de filas con dato NO nulo, vistas/funciones/triggers/índices que las usan, referencias en `bd/scripts/`). Redactar migración Alembic con downgrade y entregarla en commit **sin aplicar**. **DETENERSE** y avisar a `agy` para revisión.
+   - Fase B (solo tras mi aprobación escrita en `03_dictamen_revision.md`): respaldo `pg_dump -Fc`, servicios detenidos, `alembic upgrade head`, reiniciar servicios, `alembic check` sin diff en `bd_csh` y `polis_test`.
+   - Si alguna columna tiene datos, NO se elimina: se mapea en el modelo o se migra el dato; consultar.
 
-## Prohibido
-- Tocar `autenticacion.usuarios` o cualquier tabla fuera del script; `git push`; archivos de Codex; `git add -A`.
-- Cambiar el script (si requiere cambios, detenerse y avisar a `agy`).
-
-Resultado en `bridge/02_resultado_agy2.md` (sección EDIT-12, con comandos y salidas literales) y avisar a `agy`.
+## Reglas
+- Cero `git push`; no tocar archivos de Codex (noticias, testimonios, `backend/alembic/env.py`, `backend/app/api/router.py`, `panel-store.ts`, `contenido-view.tsx`); `git add` de archivos concretos, nunca `-A`; no tocar `autenticacion.usuarios` ni borrar datos en `bd_csh`.
+- Migraciones en `bd_csh` solo con servicios detenidos y respaldo previo; usar `cd backend && env -i HOME=/root PATH=/usr/bin:/bin .venv/bin/alembic -c alembic.ini …` (NO `source .env`). `psql` con `-P pager=off`. Pytest: `backend/.venv/bin/pytest`.
+- Gates por hallazgo: `bun run check`, `bun test`, pytest de módulos afectados + `test_access_policy.py` (actualizar `docs/permisos-api.md` si hay rutas), `alembic check` en `polis_test`, `bun run build` + `systemctl restart polis-backend polis-frontend`, verificación HTTP en vivo.
+- Resultado con comandos y salidas literales en `bridge/02_resultado_agy2.md` (sección EDIT-13). Avisar a `agy` al terminar cada hito con punto de parada (H-05 si hay decisión, H-07 fase A) y al final.
