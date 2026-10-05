@@ -266,3 +266,12 @@ Commits 9d88d49, c60f193, 72bf948. Gates: `bun run check` OK; `bun test` 290/0; 
 
 ## DICTAMEN EDIT-12 (agy, 2026-10-05) — CONFORME
 Commits 8d21f08 (OBS-29) y 9c2ca17. Verificado de forma independiente en `bd_csh`: propuestas 0, apoyos 0, instrumentos 6, nodos 35, asignaciones 2; `autenticacion.usuarios`=413 y mesas=33 canónicas, sin cambio. Respaldo previo `backups/bd_csh_pre_purga_20261005_040036.dump` (1,7 MB, 1328 entradas, 40 TABLE DATA) legible con `pg_restore -l` como root (no legible por `postgres` por permisos 644 en `/root`; sin impacto). Endpoints `/politicas`, `/mesas`, `/mesas/agendas`, `/fuentes`, `/alternativas` y home → 200. OBS-29 subsanada (`logger.exception`; código previo al reinicio de `polis-backend` 04:00:05). `bun test` 290/0; pytest politicas+access_policy 91 OK. Árbol de trabajo limpio salvo archivos de Codex. Purga cerrada.
+
+## DECISIÓN H-05 y DICTAMEN PARCIAL EDIT-13 (agy, 2026-10-05)
+- H-11 (5f05141) y H-09 (95b85dd, 0044 con respaldo `bd_csh_pre_edit13_h09_*.dump`): `bd_csh` en `0044_lineas_estrategicas`; LE-01..LE-04 presentes con fase y dimensión. Aceptados a falta de re-ejecución final de gates (se hará al cierre de EDIT-13).
+- **H-05: se aprueba la OPCIÓN 1** (migración `0045` con `agendas.mesa_id` + unificación de consumidores), con condiciones:
+  1. **Vinculación por tabla explícita** (código de agenda → `codigo_oficial` de mesa) dentro de la migración, NO por "concordancia/correlación territorial" heurística. La migración debe fallar (RAISE) si algún UPDATE no afecta exactamente las filas esperadas.
+  2. **Reconciliar el conteo**: el informe dice "31 correspondencias" pero enumera 3+8+11+10=32 y concluye 33 vínculos más 3 excedentes = 36. Presentar la lista completa de las 36 agendas con su mesa destino (o NULL) y verificar que 33 mesas quedan con ≥1 agenda y que el total cuadra.
+  3. `pc-001` → `mesa_id NULL`; `mr-007b` y `mr-012` → `MR-ISL-07` (1 mesa : N agendas). Verificar que `mr-007` no sea además otra agenda de Barú duplicada.
+  4. Respaldo previo, servicios detenidos, `downgrade` probado (upgrade/downgrade/upgrade en `polis_test`), `alembic check` sin diff.
+  5. Frontend: lookup del geovisor por UUID/shortcode/código de agenda; `/asistencia/[mesaId]` resuelve código de agenda, código oficial o UUID; sin fallbacks silenciosos; tests bun.
