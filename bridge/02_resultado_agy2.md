@@ -1142,3 +1142,200 @@ La plataforma **POLIS** evidencia un **Índice Global de Conformidad del 92.5%**
 - Todos los servicios (`polis-backend` en puerto 8000 y `polis-frontend` en puerto 3000) se encuentran en estado activo y operativo.
 
 `agy2` concluye la auditoría AUD-20 y se declara en reposo técnico a la espera de las instrucciones del supervisor `agy`.
+
+
+---
+
+# INFORME PERICIAL DE EJECUCIÓN — TAREA EDIT-14
+## DEPURACIÓN INTEGRAL DE CONSULTA PREVIA Y SIEMBRA DE MEJORAS DEL BANCO DE CONOCIMIENTO
+
+**Destinatario:** Coordinador General / Revisor `agy`  
+**Responsable:** `agy2` (Agente de Implementación y Peritaje Técnico)  
+**Fecha de Ejecución:** Lunes, 05 de Octubre de 2026  
+**Estado:** **Completada al 100%** con 4 Commits Atómicos y Quality Gates Aprobados  
+
+---
+
+## 13. Resumen Ejecutivo de la Tarea EDIT-14
+
+En cumplimiento de las directrices de [`bridge/01_tarea_activa.md`](file:///root/polis/bridge/01_tarea_activa.md) tras la auditoría AUD-20 y la decisión pericial respecto al **rechazo rotundo a incorporar Consulta Previa formal OIT 169**, se ejecutó la depuración integral de dicho concepto y la adopción de las mejoras normativas y estructurales del Banco de Conocimiento en 4 hitos atómicos:
+
+1. **Hito 1 (Commit `8465370`)**:
+   - **Depuración de BD (`bd_csh`)**: Se purgó la clave `'es_consulta_previa'` del JSONB `metadatos` en las 33 mesas de `mesas_trabajo.mesas`, preservando intacto el `enfoque_poblacional = 'ETNICO'` en las 12 mesas de corregimientos e islas y sus geometrías WGS84.
+   - **Alternativas y Viabilidad**: Sustitución de alertas y textos de consulta previa formal por *"Enfoque Diferencial Étnico / Concertación Comunitaria"* en los paneles del frontend y en el motor del `AgenteJuridico`.
+2. **Hito 2 (Commit `864619c`)**:
+   - **Migración Alembic `0047_sembrar_actores_institucionales_cartagena.py` (`0047_actores_cartagena_2026`)**: Siembra idempotente de las 17 dependencias oficiales de la Alcaldía Mayor de Cartagena (2026) en `participacion_ciudadana.actores_estrategicos` (cero PII personal).
+   - **Frontend**: Integración de `useEffect` en [`actores-view.tsx`](file:///root/polis/src/features/plataforma/views/actores-view.tsx) para hidratar reactivamente la Matriz 2x2 desde la API real (`GET /api/v1/actores`).
+3. **Hito 3 (Commit `51d64b8`)**:
+   - **Migración Alembic `0048_indicadores_impacto_2036.py` (`0048_indicadores_impacto_2036`)**: Siembra idempotente de 3 indicadores de impacto GED con proyección a 2036 en `indicadores.fichas_tecnicas_indicadores` (AUD20-H01), enlazados a sus líneas estratégicas y dimensiones de seguridad humana.
+4. **Hito 4 (Commit `895552b`)**:
+   - **Migración Alembic `0049_fuentes_distritales_destinacion_especifica.py` (`0049_fuentes_distritales_esp`)**: Siembra idempotente de 3 fuentes tributarias distritales con destinación específica en `presupuesto.fuentes_financiacion` (AUD20-H03): Estampilla Pro-Cultura, Estampilla Pro-Adulto Mayor y Sobretasa a la Gasolina.
+
+---
+
+## 14. Detalle Técnico de Implementación por Hito
+
+### 14.1. Hito 1: Depuración Integral de Consulta Previa (Commit `8465370`)
+
+1. **Saneamiento en Base de Datos (`mesas_trabajo.mesas`)**:
+   - Ejecutado en `bd_csh` (PostgreSQL 18.6):
+     ```sql
+     UPDATE mesas_trabajo.mesas
+     SET metadatos = metadatos - 'es_consulta_previa';
+     ```
+   - **Verificación Forense:**
+     ```
+      total | con_es_cp | etnico | con_coords 
+     -------+-----------+--------+------------
+         33 |         0 |     12 |         33
+     ```
+   - Queda eliminada en un 100% cualquier referencia a `es_consulta_previa` de los metadatos de las mesas.
+   - Las 12 mesas rurales e insulares preservan rigurosamente `enfoque_poblacional = 'ETNICO'`.
+
+2. **Ajustes en Frontend y Agente Jurídico**:
+   - [`src/features/alternativas/panels/alternativa-editor-panel.tsx`](file:///root/polis/src/features/alternativas/panels/alternativa-editor-panel.tsx):
+     - Título: *"Enfoque Diferencial Étnico / Concertación Comunitaria"*.
+     - Descripción: *"Active si la alternativa focaliza acciones en comunidades negras o indígenas de Cartagena (Tierrabomba, La Boquilla, Barú, etc.) con concertación comunitaria."*
+     - Botón de estado: `"Activado (Étnico)"` / `"No aplica"`.
+   - [`src/features/alternativas/panels/evaluacion-viabilidad-panel.tsx`](file:///root/polis/src/features/alternativas/panels/evaluacion-viabilidad-panel.tsx):
+     - Etiqueta de resumen: *"Enfoque Étnico: Enfoque Diferencial Étnico / General"*.
+     - Alerta jurídica: *"ENFOQUE DIFERENCIAL ÉTNICO: Concertación Comunitaria Participativa"*.
+   - [`src/features/alternativas/components/alternativas-tabla.tsx`](file:///root/polis/src/features/alternativas/components/alternativas-tabla.tsx):
+     - Badge en tabla: *"Enfoque Étnico / Concertación"*.
+   - [`src/features/alternativas/views/alternativas-view.tsx`](file:///root/polis/src/features/alternativas/views/alternativas-view.tsx):
+     - Filtros de selección: `"Con enfoque étnico"` / `"Sin enfoque étnico"`.
+   - [`src/features/alternativas/services/viabilidad-api.ts`](file:///root/polis/src/features/alternativas/services/viabilidad-api.ts):
+     - Recomendación jurídica orientada al diálogo participativo y autonomía territorial conforme a los Artículos 1, 7 y 70 de la Constitución Política y Ley 70 de 1993, sustituyendo trámites de consulta previa formal.
+   - [`backend/app/modules/ia/agentes/agente_juridico.py`](file:///root/polis/backend/app/modules/ia/agentes/agente_juridico.py):
+     - Recomendación: *"ENFOQUE DIFERENCIAL ÉTNICO: Desarrollar mesas de concertación comunitaria y diálogo participativo con las comunidades étnicas identificadas en el marco del respeto a la autonomía territorial."*
+     - Resumen jurídico: *"Aplica Enfoque Diferencial Étnico y Concertación Comunitaria."*
+
+---
+
+### 14.2. Hito 2: Siembra de 17 Actores Institucionales Cartagena 2026 (Commit `864619c`)
+
+1. **Migración Alembic `0047_sembrar_actores_institucionales_cartagena.py`**:
+   - Identificador de revisión: `0047_actores_cartagena_2026` (26 caracteres $\le 32$).
+   - Inserción idempotente con `ON CONFLICT (codigo) DO NOTHING` de las 17 dependencias oficiales documentadas en [`knowledge-base/11_MAPEO_DEPENDENCIAS_ALCALDIA_CARTAGENA_2026.md`](file:///root/polis/knowledge-base/11_MAPEO_DEPENDENCIAS_ALCALDIA_CARTAGENA_2026.md):
+     1. `ACT-SICC`: Secretaría del Interior y Convivencia Ciudadana (Poder alto, interés alto).
+     2. `ACT-DISTRISEG`: Distriseguridad (Poder alto, interés alto).
+     3. `ACT-PARTICIPACION`: Secretaría de Participación y Desarrollo Social (Poder alto, interés alto).
+     4. `ACT-EPA`: Establecimiento Público Ambiental - EPA Cartagena (Poder alto, interés alto).
+     5. `ACT-OAGRD`: Oficina Asesora para la Gestión del Riesgo de Desastres (Poder alto, interés alto).
+     6. `ACT-CORVIVIENDA`: Fondo de Vivienda de Interés Social y Reforma Urbana Distrital (Poder alto, interés alto).
+     7. `ACT-GEPM`: Gerencia de Espacio Público y Movilidad (Poder medio, interés alto).
+     8. `ACT-PES-PR`: Plan de Emergencia Social Pedro Romero (Poder alto, interés alto).
+     9. `ACT-DADIS`: Departamento Administrativo Distrital de Salud (Poder alto, interés alto).
+     10. `ACT-ESC-GOBIERNO`: Escuela de Gobierno y Liderazgo (Poder medio, interés alto).
+     11. `ACT-IDACCC`: Instituto Comunal de Cartagena (Poder medio, interés alto).
+     12. `ACT-IPCC`: Instituto de Patrimonio y Cultura de Cartagena (Poder medio, interés alto).
+     13. `ACT-ALC-LOC1`: Alcaldía de la Localidad 1 - Histórica y del Caribe Norte (Poder medio, interés alto).
+     14. `ACT-ALC-LOC2`: Alcaldía de la Localidad 2 - De la Virgen y Turística (Poder medio, interés alto).
+     15. `ACT-ALC-LOC3`: Alcaldía de la Localidad 3 - Industrial y de la Bahía (Poder medio, interés alto).
+     16. `ACT-PLANEACION`: Secretaría de Planeación Distrital (Poder alto, interés alto).
+     17. `ACT-HACIENDA`: Secretaría de Hacienda Distrital (Poder alto, interés alto).
+   - Todos los registros declarados con `tipo = 'institucional'`, `territorio = 'distrital'`, `postura = 'promotor_aliado'`, `contacto` organizacional institucional (CERO PII de personas naturales) y `es_demostracion = false`.
+   - `downgrade()`: `DELETE FROM participacion_ciudadana.actores_estrategicos WHERE codigo LIKE 'ACT-%';`.
+
+2. **Frontend (`src/features/plataforma/views/actores-view.tsx`)**:
+   - Se incorporó `useEffect` con llamada a `cargarActores()`, garantizando que la vista monte directamente los 17 actores institucionales desde el endpoint `GET /api/v1/actores`.
+
+---
+
+### 14.3. Hito 3: Siembra de 3 Indicadores de Impacto a 2036 (Commit `51d64b8`)
+
+1. **Migración Alembic `0048_indicadores_impacto_2036.py`**:
+   - Identificador de revisión: `0048_indicadores_impacto_2036` (29 caracteres $\le 32$).
+   - Se sembraron 3 fichas técnicas de nivel `tipo_indicador = 'impacto'` articuladas a la jurisprudencia de la Corte Constitucional (Sentencia T-025 de 2004) y a las líneas estratégicas distritales:
+     - `IND-IMP-01`: *Índice de Incidencia de Pobreza Multidimensional (IPM)*.
+       - Línea: `LE-04` (Económica) · Dimensión: `economica`.
+       - Línea Base: 31.1% (2024) · Meta Cuatrienio: 22.5% (2027) · Meta 2036: 15.0%.
+       - Responsable: Secretaría de Planeación Distrital / PES-PR.
+     - `IND-IMP-02`: *Tasa de Convivencia Barrial y Desescalamiento de Violencias*.
+       - Línea: `LE-02` (Convivencia y Transformación de Fronteras) · Dimensión: `comunitaria`.
+       - Línea Base: 68.4 pts (2024) · Meta Cuatrienio: 45.0 pts (2027) · Meta 2036: 25.0 pts.
+       - Responsable: Secretaría del Interior y Convivencia Ciudadana (SICC) / Distriseguridad.
+     - `IND-IMP-03`: *Índice de Resiliencia Climática y Seguridad Ambiental en la Ciénaga de la Virgen*.
+       - Línea: `LE-03` (Seguridad Ambiental) · Dimensión: `ambiental`.
+       - Línea Base: 32.0 / 100 (2024) · Meta Cuatrienio: 58.0 / 100 (2027) · Meta 2036: 85.0 / 100.
+       - Responsable: Establecimiento Público Ambiental (EPA Cartagena).
+   - Resuelven el hallazgo pericial **AUD20-H01**, completando la cadena de valor MGA (insumo, producto, resultado e impacto).
+
+---
+
+### 14.4. Hito 4: Siembra de 3 Fuentes Distritales con Destinación Específica (Commit `895552b`)
+
+1. **Migración Alembic `0049_fuentes_distritales_destinacion_especifica.py`**:
+   - Identificador de revisión: `0049_fuentes_distritales_esp` (27 caracteres $\le 32$).
+   - Se sembraron 3 fuentes tributarias distritales con base legal explícita:
+     - `FTE-PRO-CULTURA`: *Estampilla Pro-Cultura* (Ley 397 de 1997, Ley 666 de 2001) administrada por IPCC.
+     - `FTE-PRO-ADULTO`: *Estampilla Pro-Adulto Mayor* (Ley 1276 de 2009) administrada por Secretaría de Participación (Centros Vida).
+     - `FTE-SOBRETASA-GAS`: *Sobretasa a la Gasolina* (Ley 488 de 1998, Ley 788 de 2002) administrada por Infraestructura / DATT.
+   - Resuelven el hallazgo pericial **AUD20-H03**, elevando el catálogo presupuestal distrital de 5 a **8 fuentes de financiamiento**.
+
+---
+
+## 15. Protocolo de Respaldo y Aplicación en Producción (`bd_csh`)
+
+1. **Respaldos de Seguridad Generados**:
+   - [`backups/bd_csh_pre_edit14_20261005_143500.dump`](file:///root/polis/backups/bd_csh_pre_edit14_20261005_143500.dump) (1.662.258 bytes).
+   - [`backups/bd_csh_pre_edit14_apply_20261005_144300.dump`](file:///root/polis/backups/bd_csh_pre_edit14_apply_20261005_144300.dump) (1.662.205 bytes).
+
+2. **Ventana de Mantenimiento con Servicios Detenidos**:
+   - Detención: `systemctl stop polis-backend polis-frontend`.
+   - Estado verificado: `inactive`.
+   - Upgrade en producción: `alembic -c alembic.ini upgrade head`.
+   - Versión actual verificada: `0049_fuentes_distritales_esp (head)`.
+   - Reinicio: `systemctl start polis-backend polis-frontend`.
+   - Estado verificado: `active (running)` en ambos servicios.
+
+3. **Verificación Forense Directa en PostgreSQL 18.6 (`bd_csh`)**:
+   ```sql
+   SELECT count(*) FROM participacion_ciudadana.actores_estrategicos WHERE codigo LIKE 'ACT-%';
+   -- Resultado: 17 actores institucionales oficiales
+
+   SELECT count(*) FROM indicadores.fichas_tecnicas_indicadores WHERE tipo_indicador = 'impacto';
+   -- Resultado: 3 indicadores de impacto (IND-IMP-01, IND-IMP-02, IND-IMP-03)
+
+   SELECT count(*) FROM presupuesto.fuentes_financiacion WHERE codigo LIKE 'FTE-%';
+   -- Resultado: 3 fuentes distritales con destinación específica (total catálogo: 8)
+
+   SELECT count(*) as total, count(*) FILTER (WHERE metadatos ? 'es_consulta_previa') as con_cp, count(*) FILTER (WHERE metadatos->>'enfoque_poblacional' = 'ETNICO') as etnico FROM mesas_trabajo.mesas;
+   -- Resultado: total=33, con_cp=0, etnico=12
+   ```
+
+---
+
+## 16. Matriz Consolidada de Quality Gates (Post-EDIT-14)
+
+| Quality Gate | Comando Oficial de Verificación | Resultado Obtenido | Estado |
+|:---|:---|:---:|:---:|
+| **Integridad Migraciones Alembic** | `POLIS_DATABASE_URL=... alembic -c backend/alembic.ini check` | *No new upgrade operations detected* (0 diffs) | ✅ CONFORME |
+| **Pruebas de Migración e Integración** | `pytest backend/tests/test_database_integration.py` | **1 pasada** en 8.57s (Downgrade/Upgrade limpios) | ✅ CONFORME |
+| **Pruebas Automatizadas Backend** | `pytest backend/tests/test_*.py` | **126 pasadas** en 43.01s (0 fallas) | ✅ CONFORME |
+| **Políticas UI / CSS / Tokens** | `bun run ui:check` | Tokens, capas, a11y 100% conformes | ✅ CONFORME |
+| **Tipado Estricto TypeScript** | `bun run typecheck` (`tsc --noEmit`) | **0 errores** de compilación tipográfica | ✅ CONFORME |
+| **Linter ESLint** | `bun run lint` (`eslint .`) | **0 advertencias, 0 errores** | ✅ CONFORME |
+| **Pruebas Unitarias Frontend** | `bun test` | **303 pasadas** en 32 archivos, 1,326 `expect()` | ✅ CONFORME |
+| **Compilación Turbopack Next.js** | `bun run build` | **57/57 rutas compiladas** limpiamente | ✅ CONFORME |
+| **Health Liveness Backend** | `GET http://127.0.0.1:8000/api/v1/health/live` | `HTTP 200 OK` (`{"status":"ok"}`) | ✅ CONFORME |
+| **Health Readiness Backend** | `GET http://127.0.0.1:8000/api/v1/health/ready` | `HTTP 200 OK` (`database: ok, migrations: ok`) | ✅ CONFORME |
+| **Endpoint Actores en Vivo** | `GET http://127.0.0.1:8000/api/v1/actores` | `HTTP 200 OK` (retorna 17 actores oficiales) | ✅ CONFORME |
+| **Endpoint Fuentes en Vivo** | `GET http://127.0.0.1:8000/api/v1/presupuesto/fuentes` | `HTTP 200 OK` (retorna 8 fuentes financieras) | ✅ CONFORME |
+| **Endpoint Indicadores en Vivo** | `GET http://127.0.0.1:8000/api/v1/indicadores/fichas` | `HTTP 200 OK` (retorna 11 fichas: 2 insumo, 3 prod, 3 res, 3 imp) | ✅ CONFORME |
+| **Frontend Web en Vivo** | `GET http://127.0.0.1:3000/plataforma/actores` | `HTTP 200 OK` (interfaz y matriz hidratadas) | ✅ CONFORME |
+
+---
+
+## 17. Historial de Commits Atómicos (EDIT-14)
+
+```
+895552b feat(presupuesto): sembrar 3 fuentes distritales con destinacion especifica (AUD20-H03 / EDIT-14 Hito 4)
+51d64b8 feat(indicadores): sembrar 3 indicadores de impacto 2036 (AUD20-H01 / EDIT-14 Hito 3)
+864619c feat(actores): sembrar 17 actores institucionales Cartagena 2026 y carga en vista (EDIT-14 Hito 2)
+8465370 fix(etnico): sustituir consulta previa formal por enfoque diferencial etnico constitucional (EDIT-14 Hito 1)
+```
+
+- **Perímetro de Seguridad:** Cero `git push`. Codex estrictamente intacto.
+- **Producción:** `bd_csh` en revisión `0049_fuentes_distritales_esp (head)`.
+- `agy2` se declara en reposo técnico a la espera de las directrices del supervisor `agy`.
