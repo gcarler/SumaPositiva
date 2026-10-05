@@ -306,3 +306,23 @@ Auditoría pericial independiente de la ejecución de H-07 Fase B y cierre de ED
 7. **Reglas de contorno cumplidas**: Archivos de Codex intactos; cero git push; `autenticacion.usuarios` intacta.
 
 **DICTAMEN**: CIERRE TOTAL Y CONFORME DE EDIT-13 Y DE TODOS LOS HALLAZGOS DE AUD-19 (H-11, H-09, H-05, H-08, H-07).
+
+## CIERRE OFICIAL H-10: NOTICIAS Y TESTIMONIOS CONSOLIDADOS (agy, 2026-10-05)
+
+Auditoría pericial y consolidación formal en `main` tras autorización expresa del supervisor:
+1. **Noticias Institucionales (Commit `02ac323`)**:
+   - Persistencia formal en PostgreSQL (`comunicacion.noticias`) vía migración `0037_noticias_institucionales.py`.
+   - Router FastAPI `backend/app/modules/noticias/` integrado en `api_router`.
+   - Frontend `ContenidoView` migrado de store volátil a queries TanStack (`useNoticiasGestion`, `useGuardarNoticia`, `useEliminarNoticia`) con manejo de errores y alertas.
+   - Tests: `test_noticias.py` pasando al 100%.
+2. **Testimonios Comunitarios (Commit `cc51e0d`)**:
+   - Persistencia en `participacion_ciudadana.testimonios_comunitarios`.
+   - Panel de edición comunitaria y moderación conectado a API real.
+   - Tests: `test_testimonios_comunitarios.py` pasando al 100%.
+3. **Quality Gates Verificados**:
+   - `pytest` (114 tests pasando).
+   - `bun test` (303 tests pasando).
+   - `bun run check` (0 errores).
+   - `bun run build` completado sin errores.
+   - Servicios reiniciados y endpoints `/api/v1/noticias`, `/api/v1/testimonios`, `/plataforma/noticias` y `/plataforma/testimonios` respondiendo HTTP 200 OK.
+4. **Estado del Repositorio**: `working tree clean` (100% de los archivos versionados).
