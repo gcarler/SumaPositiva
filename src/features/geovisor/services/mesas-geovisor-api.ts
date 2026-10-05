@@ -24,6 +24,8 @@ export interface MesaGeovisor {
   tipo_ubicacion: "centroide_territorial_referencia" | null;
   fotos: FotoMesaGeovisor[];
   aforo?: number | null;
+  codigo_oficial?: string | null;
+  shortcode_ciudadano?: string | null;
 }
 
 const ESTADOS = new Set<EstadoMesaGeovisor>([
@@ -85,11 +87,13 @@ function validarMesa(valor: unknown): MesaGeovisor {
     latitud_referencia: numeroNullable(valor.latitud_referencia, "latitud_referencia"),
     tipo_ubicacion: tipoUbicacion,
     fotos: valor.fotos.map(validarFoto),
+    codigo_oficial: textoNullable(valor.codigo_oficial, "codigo_oficial"),
+    shortcode_ciudadano: textoNullable(valor.shortcode_ciudadano, "shortcode_ciudadano"),
   };
 }
 
 import {
-  COORDENADAS_AGENDA_MESAS,
+  buscarCoordenadasMesa,
 } from "../data/mesas-geovisor.data";
 
 export async function listarMesasGeovisor(): Promise<MesaGeovisor[]> {
@@ -98,7 +102,7 @@ export async function listarMesasGeovisor(): Promise<MesaGeovisor[]> {
     const validadas = payload.map(validarMesa);
     return validadas.map((m) => {
       if (m.longitud_referencia === null || m.latitud_referencia === null) {
-        const geo = COORDENADAS_AGENDA_MESAS[m.id];
+        const geo = buscarCoordenadasMesa(m);
         if (geo) {
           return {
             ...m,

@@ -109,6 +109,8 @@ class MesaGeovisorRespuesta(BaseModel):
     latitud_referencia: float | None
     tipo_ubicacion: Literal["centroide_territorial_referencia"] | None
     fotos: list[FotoMesaPublica] = Field(default_factory=list)
+    codigo_oficial: str | None = None
+    shortcode_ciudadano: str | None = None
 
 
 class FotoMesaSubidaRespuesta(BaseModel):
@@ -228,6 +230,7 @@ class AgendaBase(BaseModel):
     dimensiones_onu: list[str] = Field(default_factory=list)
     responsable: str | None = Field(default=None, max_length=255)
     observaciones: str | None = None
+    mesa_id: uuid.UUID | None = None
 
 
 class AgendaCrear(AgendaBase):
@@ -246,6 +249,7 @@ class AgendaActualizar(BaseModel):
     dimensiones_onu: list[str] | None = None
     responsable: str | None = Field(default=None, max_length=255)
     observaciones: str | None = None
+    mesa_id: uuid.UUID | None = None
 
 
 class AgendaRespuesta(AgendaBase):

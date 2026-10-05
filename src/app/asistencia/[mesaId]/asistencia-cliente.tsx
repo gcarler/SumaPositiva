@@ -30,6 +30,10 @@ import {
 } from "@/shared/ui/select";
 import {Badge} from "@/shared/ui/badge";
 import {AGENDA_MESAS} from "@/features/mesas/data/agenda.data";
+import {
+  MAPA_CODIGO_OFICIAL_A_AGENDA,
+  MAPA_UUID_A_AGENDA,
+} from "@/features/geovisor/data/mesas-geovisor.data";
 import {useAgendaStore} from "@/features/mesas/state/agenda-store";
 import {CONTENIDO_MESAS} from "@/features/mesas/data/agenda-contenido.data";
 import {useMesasStore} from "@/features/mesas/state/mesas-store";
@@ -62,10 +66,28 @@ export function AsistenciaCliente({ mesaId }: { mesaId: string }) {
     useAgendaStore.getState().cargarAgendas();
     cargarAsistentesDesdeBackend(mesaId);
   }, [mesaId, cargarAsistentesDesdeBackend]);
-  const mesaStore = useMesasStore((s) => s.mesas.find((m) => m.id === mesaId));
-  const agendaDinamica = useAgendaStore((s) => s.agendas.find((m) => m.id === mesaId));
-  const mesaAgenda = agendaDinamica || AGENDA_MESAS.find((m) => m.id === mesaId);
-  const contenido = CONTENIDO_MESAS[mesaId];
+  const mesaStore = useMesasStore((s) => s.mesas.find((m) =>
+    m.id.toLowerCase() === mesaId.toLowerCase() ||
+    m.codigoOficial?.toLowerCase() === mesaId.toLowerCase() ||
+    m.shortcodeCiudadano?.toLowerCase() === mesaId.toLowerCase()
+  ));
+  const agendaDinamica = useAgendaStore((s) => s.agendas.find((a) =>
+    a.id.toLowerCase() === mesaId.toLowerCase() ||
+    (a.mesa_id && (
+      a.mesa_id.toLowerCase() === mesaId.toLowerCase() ||
+      (mesaStore && a.mesa_id.toLowerCase() === mesaStore.id.toLowerCase())
+    ))
+  ));
+  const mesaAgenda = agendaDinamica || AGENDA_MESAS.find((a) =>
+    a.id.toLowerCase() === mesaId.toLowerCase() ||
+    (mesaStore && (
+      (mesaStore.codigoOficial && a.id.toLowerCase() === MAPA_CODIGO_OFICIAL_A_AGENDA[mesaStore.codigoOficial]?.toLowerCase()) ||
+      a.id.toLowerCase() === MAPA_UUID_A_AGENDA[mesaStore.id.toLowerCase()]?.toLowerCase()
+    )) ||
+    a.id.toLowerCase() === MAPA_UUID_A_AGENDA[mesaId.toLowerCase()]?.toLowerCase()
+  );
+  const agendaKey = mesaAgenda?.id || (mesaStore?.codigoOficial ? MAPA_CODIGO_OFICIAL_A_AGENDA[mesaStore.codigoOficial] : undefined) || MAPA_UUID_A_AGENDA[mesaId.toLowerCase()] || mesaId;
+  const contenido = CONTENIDO_MESAS[agendaKey];
 
   const nombreMesa =
     mesaStore?.nombre || mesaAgenda?.nombre || `Mesa de Trabajo (${mesaId})`;

@@ -30,6 +30,7 @@ export interface MesaAgenda {
   dimensionesONU: string[];
   responsable?: string;
   observaciones?: string;
+  mesa_id?: string | null;
 }
 
 export const TIPOS_MESA: Record<TipoMesa, string> = {

@@ -368,3 +368,36 @@ async def test_mesa_facilitador_nombre_join_usuario(database_url: str, cabeceras
         assert encontrada is not None
         assert encontrada["facilitador_nombre"] == "Usuario facilitador_mesa Prueba"
 
+
+async def test_vinculacion_agendas_con_mesas_canonicas_h05(database_url: str):
+    """H-05: Agendas exponen mesa_id y resuelven participantes por código de agenda."""
+    settings = Settings(_env_file=None, environment="test", database_url=database_url)
+    app = create_app(settings)
+
+    with TestClient(app) as client:
+        resp = client.get("/api/v1/mesas/agendas")
+        assert resp.status_code == 200
+        agendas = resp.json()
+        assert len(agendas) >= 36
+
+        # pc-001 es la plenaria institucional y tiene mesa_id = None
+        pc_001 = next((a for a in agendas if a["id"] == "pc-001"), None)
+        assert pc_001 is not None
+        assert pc_001["mesa_id"] is None
+
+        # Agendas de Barú apuntan a la misma mesa si están vinculadas
+        agendas_con_mesa = [a for a in agendas if a.get("mesa_id") is not None]
+        if agendas_con_mesa:
+            mr_007 = next((a for a in agendas if a["id"] == "mr-007"), None)
+            mr_007b = next((a for a in agendas if a["id"] == "mr-007b"), None)
+            mr_012 = next((a for a in agendas if a["id"] == "mr-012"), None)
+            if mr_007 and mr_007b and mr_012 and mr_007["mesa_id"]:
+                assert mr_007["mesa_id"] == mr_007b["mesa_id"] == mr_012["mesa_id"]
+
+            # Resolucion transparente por codigo de agenda
+            agenda_ejemplo = agendas_con_mesa[0]
+            resp_part = client.get(f"/api/v1/mesas/{agenda_ejemplo['id']}/participantes")
+            assert resp_part.status_code == 200
+            assert isinstance(resp_part.json(), list)
+
+

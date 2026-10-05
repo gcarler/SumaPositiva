@@ -326,5 +326,33 @@ describe("Asistencia Digital y Persistencia en PostgreSQL (EDIT-08)", () => {
       expect(fusionados.some((r) => r.id === "asist-local-pending")).toBe(true);
       expect(fusionados.some((r) => r.id === "01a10558-cccc-7d4a-9b87-4e433ab67ccc")).toBe(true);
     });
+
+    test("soporta consulta y registro con código de agenda territorial (ej. mt-001) y código oficial (MT-L01-01)", async () => {
+      fetchSpy.mockResolvedValueOnce(
+        new Response(JSON.stringify([]), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        })
+      );
+
+      await listarAsistentesMesa("mt-001");
+      expect(fetchSpy).toHaveBeenLastCalledWith(
+        expect.stringContaining("/mesas/mt-001/participantes"),
+        expect.anything()
+      );
+
+      fetchSpy.mockResolvedValueOnce(
+        new Response(JSON.stringify([]), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        })
+      );
+
+      await listarAsistentesMesa("MT-L01-01");
+      expect(fetchSpy).toHaveBeenLastCalledWith(
+        expect.stringContaining("/mesas/MT-L01-01/participantes"),
+        expect.anything()
+      );
+    });
   });
 });

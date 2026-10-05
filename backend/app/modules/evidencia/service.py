@@ -248,6 +248,8 @@ class EvidenciaService:
                     latitud_referencia=float(latitud) if latitud is not None else None,
                     tipo_ubicacion="centroide_territorial_referencia" if longitud is not None and latitud is not None else None,
                     fotos=[],
+                    codigo_oficial=mesa.codigo_oficial,
+                    shortcode_ciudadano=mesa.shortcode_ciudadano,
                 )
             if foto is not None and evidencia is not None:
                 por_mesa[mesa.id].fotos.append(

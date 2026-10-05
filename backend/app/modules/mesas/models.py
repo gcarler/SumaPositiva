@@ -156,6 +156,10 @@ class Mesa(Base):
         back_populates="mesa",
         cascade="all, delete-orphan",
     )
+    agendas: Mapped[list["MesaAgenda"]] = relationship(
+        "MesaAgenda",
+        back_populates="mesa",
+    )
     facilitador: Mapped["Usuario | None"] = relationship(
         "Usuario",
         foreign_keys=[facilitador_id],
@@ -284,10 +288,16 @@ class MesaAgenda(Base):
         Index("idx_agendas_tipo", "tipo", postgresql_include=[]),
         Index("idx_agendas_estado", "estado", postgresql_include=[]),
         Index("idx_agendas_fecha", "fecha", postgresql_include=[]),
+        Index("idx_agendas_mesa_id", "mesa_id", postgresql_include=[]),
         {"schema": "mesas_trabajo"},
     )
 
     id: Mapped[str] = mapped_column(String(50), primary_key=True)
+    mesa_id: Mapped[uuid.UUID | None] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("mesas_trabajo.mesas.id", ondelete="SET NULL"),
+        nullable=True,
+    )
     tipo: Mapped[str] = mapped_column(String(50), nullable=False)
     nombre: Mapped[str] = mapped_column(String(255), nullable=False)
     territorio: Mapped[str] = mapped_column(String(150), default="", nullable=False)
@@ -311,3 +321,5 @@ class MesaAgenda(Base):
         server_default=text("clock_timestamp()"),
         nullable=False,
     )
+
+    mesa: Mapped["Mesa | None"] = relationship("Mesa", back_populates="agendas")

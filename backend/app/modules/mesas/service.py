@@ -350,10 +350,17 @@ class MesaService:
         try:
             return uuid.UUID(str(mesa_id))
         except (ValueError, TypeError, AttributeError):
-            mesa = await self.repository.obtener_por_codigo(str(mesa_id))
-            if not mesa:
-                raise HTTPException(status.HTTP_404_NOT_FOUND, detail="Mesa no encontrada")
+            pass
+
+        mesa = await self.repository.obtener_por_codigo(str(mesa_id))
+        if mesa:
             return mesa.id
+
+        agenda = await self.repository.obtener_agenda_por_id(str(mesa_id).lower())
+        if agenda and agenda.mesa_id:
+            return agenda.mesa_id
+
+        raise HTTPException(status.HTTP_404_NOT_FOUND, detail="Mesa no encontrada")
 
     async def registrar_participante(
         self, mesa_id: uuid.UUID | str, datos: ParticipanteCrear
@@ -682,6 +689,9 @@ class MesaService:
             if datos.observaciones is not None and datos.observaciones != agenda.observaciones:
                 agenda.observaciones = datos.observaciones
                 campos_modificados.append("observaciones")
+            if "mesa_id" in datos.model_fields_set and datos.mesa_id != agenda.mesa_id:
+                agenda.mesa_id = datos.mesa_id
+                campos_modificados.append("mesa_id")
 
             agenda.actualizado_en = datetime.now(UTC)
             actualizada = await self.repository.actualizar_agenda(agenda)

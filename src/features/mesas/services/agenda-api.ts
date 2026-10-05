@@ -21,6 +21,7 @@ export interface AgendaBackendResponse {
   dimensionesONU?: string[];
   responsable?: string | null;
   observaciones?: string | null;
+  mesa_id?: string | null;
   creado_en?: string;
   actualizado_en?: string;
 }
@@ -44,6 +45,7 @@ export function normalizarAgendaBackend(raw: AgendaBackendResponse): MesaAgenda 
     dimensionesONU: dimensiones,
     responsable: raw.responsable ?? undefined,
     observaciones: raw.observaciones ?? undefined,
+    mesa_id: raw.mesa_id ?? undefined,
   };
 }
 
