@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Search,
   RotateCcw,
@@ -39,9 +39,14 @@ export function ActoresView() {
   const sesion = useSesionStore((s) => s.sesion);
   const editable = puedeEditar(sesion, "actores");
 
+  const cargarActores = useActoresStore((s) => s.cargarActores);
   const filtros = useActoresStore((s) => s.filtros);
   const setFiltros = useActoresStore((s) => s.setFiltros);
   const limpiarFiltros = useActoresStore((s) => s.limpiarFiltros);
+
+  useEffect(() => {
+    cargarActores();
+  }, [cargarActores]);
 
   const hayFiltrosActivos =
     filtros.busqueda !== "" ||

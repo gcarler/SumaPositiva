@@ -132,6 +132,13 @@ def upgrade() -> None:
 
 def downgrade() -> None:
     op.execute("""
+        DELETE FROM participacion_ciudadana.propuestas_ciudadanas
+        WHERE linea_id IN (
+            SELECT id FROM motor_politicas.lineas_estrategicas
+            WHERE codigo IN ('LE-01', 'LE-02', 'LE-03', 'LE-04')
+        );
+    """)
+    op.execute("""
         UPDATE motor_politicas.banco_alternativas
         SET linea_estrategica_id = NULL
         WHERE linea_estrategica_codigo IN ('LE-01', 'LE-02', 'LE-03', 'LE-04');
