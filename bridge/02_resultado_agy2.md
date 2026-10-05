@@ -284,8 +284,11 @@ COMMIT;
 ## 6. Historial de Commits Atómicos
 
 ```
+8d21f08 fix(politicas): registrar excepcion en logger al computar participantes (OBS-29)
+72bf948 docs(audit): subsanar OBS-26, OBS-27 y OBS-28 con esquema real y rollback (EDIT-11)
 c60f193 fix(services): erradicar fallbacks silenciosos en actores-api y devolucion-api (OBS-27)
 9d88d49 fix(politicas): computar participantes dinamicos y documentar politica canonica (OBS-26)
+cce01f1 docs(audit): dictamen EDIT-11 conforme con observaciones
 3377ad2 docs(audit): resultado pericial de ejecucion EDIT-11
 46ca526 fix(services): erradicar fallbacks silenciosos y mutaciones simuladas en frontend (H-04)
 af7fec0 feat(politicas): implementar endpoint GET /api/v1/politicas y sanear llamada frontend (H-06)
@@ -294,4 +297,129 @@ af7fec0 feat(politicas): implementar endpoint GET /api/v1/politicas y sanear lla
 - **Garantías de Perímetro y Aislamiento:**
   - Cero comandos `git push`.
   - Archivos Codex (`noticias`, `testimonios`, `backend/alembic/env.py`, `backend/app/api/router.py`, `panel-store.ts`, `contenido-view.tsx`) estrictamente intactos.
-  - Base de datos `bd_csh` preservada al 100% sin ejecuciones de purga definitiva.
+  - Tabla `autenticacion.usuarios` (413 cuentas) estrictamente preservada.
+
+---
+
+## 7. Ejecución Autorizada de la Tarea EDIT-12 (Purga de Datos de Prueba en `bd_csh`)
+
+**Autorización:** En cumplimiento de la autorización expresa del usuario en `bridge/01_tarea_activa.md`, tras la validación independiente con ROLLBACK por parte de `agy` en `bridge/03_dictamen_revision.md`.
+
+### 7.1. Subsanación Menor OBS-29 (Commit `8d21f08`)
+- Se incorporó `logger = logging.getLogger(__name__)` y `logger.exception("Error al calcular participantes consolidados para pol-001")` en el bloque `except` de `listar_politicas()` en [`backend/app/modules/politicas/router.py`](file:///root/polis/backend/app/modules/politicas/router.py).
+- Gates validados: `/root/polis/backend/.venv/bin/pytest backend/tests/test_politicas_catalogo.py backend/tests/test_access_policy.py` (91 passed en 17.96s), `bun run check` (0 errores), `bun test` (290 pass / 0 fail) y reinicio de `polis-backend`.
+
+### 7.2. Respaldo Previo de Seguridad (`bd_csh`)
+- **Comando ejecutado:**
+  ```bash
+  su - postgres -c "pg_dump -Fc bd_csh" > backups/bd_csh_pre_purga_20261005_040036.dump
+  ```
+- **Verificación pericial:**
+  ```bash
+  ls -la backups/bd_csh_pre_purga_20261005_040036.dump
+  # -rw-r--r-- 1 root root 1713441 Oct  5 04:00 backups/bd_csh_pre_purga_20261005_040036.dump (1.7 MB)
+
+  pg_restore -l backups/bd_csh_pre_purga_20261005_040036.dump | wc -l
+  # 1328 entradas catalogadas íntegramente
+  ```
+
+### 7.3. Registro de Conteos ANTES de la Purga
+Consulta ejecutada como usuario `postgres` en `bd_csh`:
+```sql
+SELECT 'propuestas_ciudadanas' AS tabla, count(*) FROM participacion_ciudadana.propuestas_ciudadanas
+UNION ALL
+SELECT 'apoyos_propuestas', count(*) FROM participacion_ciudadana.apoyos_propuestas
+UNION ALL
+SELECT 'instrumentos', count(*) FROM motor_instrumentos.instrumentos
+UNION ALL
+SELECT 'nodos_instrumento', count(*) FROM motor_instrumentos.nodos_instrumento
+UNION ALL
+SELECT 'asignaciones_presupuestales', count(*) FROM presupuesto.asignaciones_presupuestales
+UNION ALL
+SELECT 'usuarios', count(*) FROM autenticacion.usuarios
+UNION ALL
+SELECT 'mesas_canonicas', count(*) FROM mesas_trabajo.mesas WHERE id::text LIKE '01a0f5fe%';
+```
+
+**Salida Literal:**
+```
+            tabla            | count 
+-----------------------------+-------
+ propuestas_ciudadanas       |   227
+ apoyos_propuestas           |   130
+ instrumentos                |   128
+ nodos_instrumento           |   337
+ asignaciones_presupuestales |    14
+ usuarios                    |   413
+ mesas_canonicas             |    33
+(7 rows)
+```
+
+### 7.4. Ejecución del Script de Purga en Transacción Única (`BEGIN ... COMMIT`)
+El script oficial autorizado ([`bd/scripts/purga_datos_prueba_edit12.sql`](file:///root/polis/bd/scripts/purga_datos_prueba_edit12.sql)) fue ejecutado vía `su - postgres`:
+```bash
+su - postgres -c "psql -d bd_csh -P pager=off -v ON_ERROR_STOP=1 -f /var/lib/postgresql/purga_datos_prueba_edit12.sql"
+```
+
+**Salida Literal del Motor PostgreSQL 18.6:**
+```
+BEGIN
+DELETE 227
+DELETE 122
+DELETE 12
+COMMIT
+```
+
+Todos los conteos intermedios coincidieron exactamente con los valores previstos:
+- **227** propuestas eliminadas (y 130 apoyos en cascada referencial).
+- **122** instrumentos sintéticos eliminados (y 302 nodos hijos en cascada referencial).
+- **12** asignaciones presupuestales duplicadas eliminadas (preservando las 2 canónicas).
+- Transacción confirmada exitosamente con `COMMIT`.
+
+### 7.5. Registro de Conteos DESPUÉS de la Purga
+Misma consulta ejecutada en `bd_csh`:
+```
+            tabla            | count 
+-----------------------------+-------
+ propuestas_ciudadanas       |     0
+ apoyos_propuestas           |     0
+ instrumentos                |     6
+ nodos_instrumento           |    35
+ asignaciones_presupuestales |     2
+ usuarios                    |   413
+ mesas_canonicas             |    33
+(7 rows)
+```
+
+**Confirmación de Integridad:**
+- **Propuestas:** Reducción a **0** (conforme).
+- **Apoyos:** Reducción a **0** por cascada (conforme).
+- **Instrumentos:** Quedan exactamente **6** instrumentos canónicos de Cartagena (3 de problemas, 3 de objetivos: Convivencia y Desarme Loc. 2, Prevención ESCNNA, Recuperación Ciénaga de la Virgen).
+- **Nodos:** Quedan exactamente **35** nodos canónicos correspondientes a los 6 instrumentos.
+- **Asignaciones Presupuestales:** Quedan exactamente **2** asignaciones canónicas originales:
+  - `01a0f7d0-d847...`: $50,000,000 COP (2026, *"Cámaras de seguridad"*, FONSET).
+  - `01a0f7d0-d859...`: $150,000,000 COP (2027, *"Megacolegio fase 2"*, SGP).
+- **Usuarios (`autenticacion.usuarios`):** Permanecen exactamente **413** (intactos, CERO modificaciones).
+- **Mesas Canónicas:** Permanecen exactamente **33** (`id LIKE '01a0f5fe%'`, intactas, CERO modificaciones).
+
+### 7.6. Verificación HTTP en Vivo Post-Purga (HTTP 200 OK)
+```bash
+curl -s -o /dev/null -w "/api/v1/politicas: %{http_code}\n" http://127.0.0.1:8000/api/v1/politicas && \
+curl -s -o /dev/null -w "/api/v1/mesas: %{http_code}\n" http://127.0.0.1:8000/api/v1/mesas && \
+curl -s -o /dev/null -w "/api/v1/mesas/agendas: %{http_code}\n" http://127.0.0.1:8000/api/v1/mesas/agendas && \
+curl -s -o /dev/null -w "/api/v1/fuentes: %{http_code}\n" http://127.0.0.1:8000/api/v1/fuentes && \
+curl -s -o /dev/null -w "/api/v1/alternativas: %{http_code}\n" http://127.0.0.1:8000/api/v1/alternativas && \
+curl -s -o /dev/null -w "Frontend Home: %{http_code}\n" http://127.0.0.1:3000/
+```
+
+**Salida Literal:**
+```
+/api/v1/politicas: 200
+/api/v1/mesas: 200
+/api/v1/mesas/agendas: 200
+/api/v1/fuentes: 200
+/api/v1/alternativas: 200
+Frontend Home: 200
+```
+
+En particular, `GET /api/v1/politicas` devuelve ahora `"participantes": 0`, reflejando fidedignamente la base de datos saneada sin rastro de los 209 participantes sintéticos previos.
