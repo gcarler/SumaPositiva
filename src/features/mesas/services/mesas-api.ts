@@ -122,43 +122,39 @@ export function normalizarMesaBackend(b: MesaBackendResponse): MesaDeTrabajo {
  * Consulta el catálogo de mesas de trabajo disponibles.
  */
 export async function listarMesas(): Promise<MesaDeTrabajo[]> {
-  try {
-    const raw = await apiFetch<MesaBackendResponse[]>("/mesas");
-    if (Array.isArray(raw) && raw.length > 0) {
-      return raw.map(normalizarMesaBackend);
-    }
-  } catch {
-    // Si la API falla o no responde, fallback
+  const raw = await apiFetch<MesaBackendResponse[]>("/mesas");
+  if (!Array.isArray(raw) || raw.length === 0) {
+    return [];
   }
-  return fallbackListarMesas();
+  return raw.map(normalizarMesaBackend);
 }
 
 /**
  * Obtiene los detalles completos de una mesa de trabajo por ID.
  */
 export async function obtenerMesa(mesaId: string): Promise<MesaDeTrabajo> {
+  const raw = await apiFetch<MesaBackendResponse>(`/mesas/${mesaId}`);
+  let submesas: SubMesa[] = [];
   try {
-    const raw = await apiFetch<MesaBackendResponse>(`/mesas/${mesaId}`);
-    let submesas: SubMesa[] = [];
-    try {
-      const subsRaw = await apiFetch<SubMesaBackendResponse[]>(`/mesas/${mesaId}/submesas`);
-      if (Array.isArray(subsRaw)) {
-        submesas = subsRaw.map(normalizarSubMesa);
-      }
-    } catch {}
-    let acuerdos = "";
-    try {
-      const acta = await apiFetch<ActaBackendResponse>(`/mesas/${mesaId}/acta`);
-      acuerdos = (acta.acuerdos || []).map((a: { detalle: string }) => a.detalle).join("\n") || acta.resumen_deliberacion || "";
-    } catch {}
-    return normalizarMesaBackend({
-      ...raw,
-      submesas: submesas.length > 0 ? submesas : raw.submesas,
-      metadatos: { ...raw.metadatos, acuerdos: acuerdos || raw.metadatos?.acuerdos },
-    });
+    const subsRaw = await apiFetch<SubMesaBackendResponse[]>(`/mesas/${mesaId}/submesas`);
+    if (Array.isArray(subsRaw)) {
+      submesas = subsRaw.map(normalizarSubMesa);
+    }
   } catch {
-    return fallbackObtenerMesa(mesaId);
+    // Si submesas falla de forma aislada, preservamos las que vengan en raw
   }
+  let acuerdos = "";
+  try {
+    const acta = await apiFetch<ActaBackendResponse>(`/mesas/${mesaId}/acta`);
+    acuerdos = (acta.acuerdos || []).map((a: { detalle: string }) => a.detalle).join("\n") || acta.resumen_deliberacion || "";
+  } catch {
+    // Si acta falla de forma aislada, preservamos los acuerdos en raw
+  }
+  return normalizarMesaBackend({
+    ...raw,
+    submesas: submesas.length > 0 ? submesas : raw.submesas,
+    metadatos: { ...raw.metadatos, acuerdos: acuerdos || raw.metadatos?.acuerdos },
+  });
 }
 
 /**
@@ -380,11 +376,17 @@ export async function convertirAObjetivos(instrumentoId: string): Promise<Instru
   });
 }
 
+/**
+ * @deprecated Fallbacks erradicados en EDIT-15. ListarMesas y obtenerMesa propagan errores y usan colecciones canónicas.
+ */
 export async function fallbackListarMesas(): Promise<MesaDeTrabajo[]> {
   const storeMesas = useMesasStore.getState().mesas;
   return storeMesas || [];
 }
 
+/**
+ * @deprecated Fallbacks erradicados en EDIT-15. ListarMesas y obtenerMesa propagan errores y usan colecciones canónicas.
+ */
 export async function fallbackObtenerMesa(mesaId: string): Promise<MesaDeTrabajo> {
   const mesa = useMesasStore.getState().mesas.find((m) => m.id === mesaId);
   if (!mesa) throw new Error(`Mesa ${mesaId} no encontrada`);

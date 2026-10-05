@@ -2,6 +2,8 @@ import { describe, expect, test, vi, beforeEach, afterEach } from "vitest";
 import {
   actualizarMesaRemota,
   normalizarMesaBackend,
+  listarMesas,
+  obtenerMesa,
   type MesaBackendResponse,
 } from "./mesas-api";
 
@@ -133,6 +135,99 @@ describe("Persistencia y normalización de Mesas de Trabajo (EDIT-01)", () => {
       expect(resultado.lugar).toBe("Sede Comunal Blas de Lezo");
       expect(resultado.entidad).toBe("Secretaría de Participación");
       expect(resultado.facilitador).toBe("Dr. Andrés Morales");
+    });
+  });
+
+  describe("listarMesas (Hito 4 / EDIT-15)", () => {
+    test("retorna colección normalizada cuando el backend responde exitosamente", async () => {
+      const mockList: MesaBackendResponse[] = [
+        {
+          id: "m-001",
+          nombre: "Mesa 1",
+          fecha: "2026-10-10",
+          lugar_nombre: "Coliseo",
+          estado: "PROGRAMADA",
+        },
+      ];
+
+      vi.spyOn(globalThis, "fetch").mockImplementation(async () => {
+        return new Response(JSON.stringify(mockList), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        });
+      });
+
+      const mesas = await listarMesas();
+      expect(mesas).toHaveLength(1);
+      expect(mesas[0].id).toBe("m-001");
+      expect(mesas[0].nombre).toBe("Mesa 1");
+    });
+
+    test("retorna arreglo vacío canónico cuando el backend no tiene mesas sin activar fallback", async () => {
+      vi.spyOn(globalThis, "fetch").mockImplementation(async () => {
+        return new Response(JSON.stringify([]), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        });
+      });
+
+      const mesas = await listarMesas();
+      expect(mesas).toEqual([]);
+    });
+
+    test("propaga el error si la API falla sin enmascararlo con fallback silencioso", async () => {
+      vi.spyOn(globalThis, "fetch").mockImplementation(async () => {
+        return new Response(JSON.stringify({ detail: "Fallo de conexión interno" }), {
+          status: 500,
+          statusText: "Internal Server Error",
+          headers: { "Content-Type": "application/json" },
+        });
+      });
+
+      await expect(listarMesas()).rejects.toThrow();
+    });
+  });
+
+  describe("obtenerMesa (Hito 4 / EDIT-15)", () => {
+    test("retorna mesa normalizada al encontrarla en el backend", async () => {
+      const mockMesa: MesaBackendResponse = {
+        id: "mesa-valida-01",
+        nombre: "Mesa Principal",
+        fecha: "2026-10-12",
+        lugar_nombre: "Alcaldía Local",
+        estado: "EN_DELIBERACION",
+      };
+
+      vi.spyOn(globalThis, "fetch").mockImplementation(async (info) => {
+        const url = typeof info === "string" ? info : info instanceof Request ? info.url : info.toString();
+        if (url.includes("/submesas")) {
+          return new Response(JSON.stringify([]), { status: 200, headers: { "Content-Type": "application/json" } });
+        }
+        if (url.includes("/acta")) {
+          return new Response(JSON.stringify({ acuerdos: [] }), { status: 200, headers: { "Content-Type": "application/json" } });
+        }
+        return new Response(JSON.stringify(mockMesa), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        });
+      });
+
+      const mesa = await obtenerMesa("mesa-valida-01");
+      expect(mesa.id).toBe("mesa-valida-01");
+      expect(mesa.nombre).toBe("Mesa Principal");
+      expect(mesa.estado).toBe("en_curso");
+    });
+
+    test("propaga el error cuando la mesa remota no existe sin invocar fallback", async () => {
+      vi.spyOn(globalThis, "fetch").mockImplementation(async () => {
+        return new Response(JSON.stringify({ detail: "Mesa no encontrada" }), {
+          status: 404,
+          statusText: "Not Found",
+          headers: { "Content-Type": "application/json" },
+        });
+      });
+
+      await expect(obtenerMesa("mesa-inexistente")).rejects.toThrow();
     });
   });
 });
