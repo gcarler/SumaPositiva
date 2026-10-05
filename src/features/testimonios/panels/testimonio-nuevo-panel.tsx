@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { PanelShell } from "@/core/panels/panel-shell";
 import { usePanels } from "@/core/panels/panel-store";
-import { useTestimoniosStore } from "../state/testimonios-store";
+import { useCrearTestimonio } from "../services/use-testimonios-queries";
 import type { TipoTestimonio } from "../models/testimonio";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
@@ -50,7 +50,7 @@ const LOCALIDADES = [
 
 export function TestimonioNuevoPanel({ entryKey }: TestimonioNuevoPanelProps) {
   const { closeTop } = usePanels();
-  const agregarTestimonio = useTestimoniosStore((s) => s.agregarTestimonio);
+  const crearTestimonio = useCrearTestimonio();
 
   const [anonimo, setAnonimo] = useState(false);
   const [nombre, setNombre] = useState("");
@@ -64,7 +64,7 @@ export function TestimonioNuevoPanel({ entryKey }: TestimonioNuevoPanelProps) {
   const maxChars = 500;
   const remaining = maxChars - texto.length;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!anonimo && !nombre.trim()) {
@@ -91,14 +91,18 @@ export function TestimonioNuevoPanel({ entryKey }: TestimonioNuevoPanelProps) {
 
     setIsSubmitting(true);
     try {
-      agregarTestimonio({
-        nombre: anonimo ? "Anónimo" : nombre.trim(),
-        anonimo,
-        barrio: barrio.trim() || undefined,
-        localidad: localidad || undefined,
-        tipo,
-        texto: texto.trim(),
-        dimensionOnu: dimensionOnu || undefined,
+      await crearTestimonio.mutateAsync({
+        nombre_autor: anonimo ? "Anónimo" : nombre.trim(),
+        titulo: texto.trim().slice(0, 80),
+        relato: texto.trim(),
+        metadatos_enfoque: {
+          anonimo,
+          barrio: barrio.trim() || null,
+          localidad: localidad || null,
+          tipo_actor: tipo,
+          dimension: dimensionOnu || null,
+          canal_origen: "portal_ciudadano_web",
+        },
       });
 
       toast.success("¡Gracias! Tu testimonio será revisado.", {
@@ -291,7 +295,7 @@ export function TestimonioNuevoPanel({ entryKey }: TestimonioNuevoPanelProps) {
             variant="outline"
             size="default"
             onClick={closeTop}
-            disabled={isSubmitting}
+      disabled={isSubmitting || crearTestimonio.isPending}
           >
             Cancelar
           </Button>

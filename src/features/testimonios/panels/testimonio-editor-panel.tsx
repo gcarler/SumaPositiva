@@ -4,7 +4,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { PanelShell } from "@/core/panels/panel-shell";
 import { usePanels } from "@/core/panels/panel-store";
-import { useCrearTestimonio } from "../services/use-testimonios-queries";
+import { useCrearTestimonio, useEditarTestimonio, useTestimonioGestionDetalle } from "../services/use-testimonios-queries";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import { Textarea } from "@/shared/ui/textarea";
@@ -19,17 +19,29 @@ import {
 import { Checkbox } from "@/shared/ui/checkbox";
 import { ShieldCheck, HeartHandshake } from "lucide-react";
 
-export function TestimonioEditorPanel({ entryKey }: { entryKey: string }) {
+export function TestimonioEditorPanel({ entryKey, props }: { entryKey: string; props?: { testimonioId?: string } }) {
   const { closeTop } = usePanels();
+  const testimonioId = props?.testimonioId;
+  const detalle = useTestimonioGestionDetalle(testimonioId ?? "");
   const crearMutation = useCrearTestimonio();
+  const editarMutation = useEditarTestimonio();
 
-  const [nombreAutor, setNombreAutor] = useState("");
-  const [organizacion, setOrganizacion] = useState("");
-  const [titulo, setTitulo] = useState("");
-  const [relato, setRelato] = useState("");
-  const [urlFoto, setUrlFoto] = useState("");
-  const [etnia, setEtnia] = useState("");
-  const [esVictima, setEsVictima] = useState(false);
+  const [edicion, setEdicion] = useState<{
+    nombreAutor?: string;
+    organizacion?: string;
+    titulo?: string;
+    relato?: string;
+    urlFoto?: string;
+    etnia?: string;
+    esVictima?: boolean;
+  }>({});
+  const nombreAutor = edicion.nombreAutor ?? detalle.data?.nombre_autor ?? "";
+  const organizacion = edicion.organizacion ?? detalle.data?.organizacion_comunitaria ?? "";
+  const titulo = edicion.titulo ?? detalle.data?.titulo ?? "";
+  const relato = edicion.relato ?? detalle.data?.relato ?? "";
+  const urlFoto = edicion.urlFoto ?? detalle.data?.url_foto ?? "";
+  const etnia = edicion.etnia ?? String(detalle.data?.metadatos_enfoque?.etnia ?? "");
+  const esVictima = edicion.esVictima ?? detalle.data?.metadatos_enfoque?.ley_1448_victima === true;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,7 +61,7 @@ export function TestimonioEditorPanel({ entryKey }: { entryKey: string }) {
     }
 
     try {
-      await crearMutation.mutateAsync({
+      const datos = {
         nombre_autor: nombreAutor.trim(),
         organizacion_comunitaria: organizacion.trim() || null,
         titulo: titulo.trim(),
@@ -60,11 +72,18 @@ export function TestimonioEditorPanel({ entryKey }: { entryKey: string }) {
           ley_1448_victima: esVictima,
           canal_origen: "portal_ciudadano_web",
         },
-      });
+      };
 
-      toast.success("Testimonio registrado", {
-        description:
-          "Tu relato ha sido enviado a curaduría institucional y se publicará tras su revisión ética.",
+      if (testimonioId) {
+        await editarMutation.mutateAsync({ id: testimonioId, datos });
+      } else {
+        await crearMutation.mutateAsync(datos);
+      }
+
+      toast.success(testimonioId ? "Testimonio actualizado" : "Testimonio registrado", {
+        description: testimonioId
+          ? "Los cambios editoriales se guardaron desde la plataforma."
+          : "Tu relato ha sido enviado a curaduría institucional y se publicará tras su revisión ética.",
       });
       closeTop();
     } catch {
@@ -78,13 +97,15 @@ export function TestimonioEditorPanel({ entryKey }: { entryKey: string }) {
   return (
     <PanelShell
       entryKey={entryKey}
-      title="Compartir Testimonio Comunitario"
-      subtitle="Memoria viva y aportes a la seguridad humana de Cartagena"
-      crumbs={[{ label: "Memoria Social" }, { label: "Nuevo Testimonio" }]}
+      title={testimonioId ? "Editar Testimonio Comunitario" : "Compartir Testimonio Comunitario"}
+      subtitle={testimonioId ? "Edición institucional del relato comunitario" : "Memoria viva y aportes a la seguridad humana de Cartagena"}
+      crumbs={[{ label: "Memoria Social" }, { label: testimonioId ? "Editar testimonio" : "Nuevo Testimonio" }]}
       onClose={closeTop}
       onCloseToKey={closeTop}
     >
       <form onSubmit={handleSubmit} className="p-6 space-y-5">
+        {detalle.isLoading && testimonioId && <p role="status" className="text-sm text-text-secondary">Cargando testimonio…</p>}
+        {detalle.isError && testimonioId && <p role="alert" className="text-sm text-danger">No se pudo cargar el testimonio para editar.</p>}
         <div className="p-3.5 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] flex items-start gap-3">
           <HeartHandshake className="size-5 text-[var(--ember)] shrink-0 mt-0.5" />
           <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
@@ -101,7 +122,7 @@ export function TestimonioEditorPanel({ entryKey }: { entryKey: string }) {
             id="nombre"
             placeholder="Ej. Ana Rosa Gómez"
             value={nombreAutor}
-            onChange={(e) => setNombreAutor(e.target.value)}
+            onChange={(e) => setEdicion((actual) => ({ ...actual, nombreAutor: e.target.value }))}
             required
             className="text-xs"
           />
@@ -115,7 +136,7 @@ export function TestimonioEditorPanel({ entryKey }: { entryKey: string }) {
             id="organizacion"
             placeholder="Ej. Junta de Acción Comunal Sector 19 de Febrero"
             value={organizacion}
-            onChange={(e) => setOrganizacion(e.target.value)}
+            onChange={(e) => setEdicion((actual) => ({ ...actual, organizacion: e.target.value }))}
             className="text-xs"
           />
         </div>
@@ -128,7 +149,7 @@ export function TestimonioEditorPanel({ entryKey }: { entryKey: string }) {
             id="titulo"
             placeholder="Ej. La defensa de nuestros manglares y la pesca artesanal"
             value={titulo}
-            onChange={(e) => setTitulo(e.target.value)}
+            onChange={(e) => setEdicion((actual) => ({ ...actual, titulo: e.target.value }))}
             required
             className="text-xs"
           />
@@ -148,7 +169,7 @@ export function TestimonioEditorPanel({ entryKey }: { entryKey: string }) {
             rows={5}
             placeholder="Narra tu experiencia comunitaria, vivencias del territorio o propuestas prioritarias para la política pública..."
             value={relato}
-            onChange={(e) => setRelato(e.target.value)}
+            onChange={(e) => setEdicion((actual) => ({ ...actual, relato: e.target.value }))}
             required
             className="text-xs leading-relaxed"
           />
@@ -162,7 +183,7 @@ export function TestimonioEditorPanel({ entryKey }: { entryKey: string }) {
             id="foto"
             placeholder="https://..."
             value={urlFoto}
-            onChange={(e) => setUrlFoto(e.target.value)}
+            onChange={(e) => setEdicion((actual) => ({ ...actual, urlFoto: e.target.value }))}
             className="text-xs"
           />
         </div>
@@ -177,7 +198,7 @@ export function TestimonioEditorPanel({ entryKey }: { entryKey: string }) {
               <Label htmlFor="etnia" className="text-[11px] text-[var(--text-secondary)]">
                 Pertenencia Étnica
               </Label>
-              <Select value={etnia} onValueChange={setEtnia}>
+              <Select value={etnia} onValueChange={(value) => setEdicion((actual) => ({ ...actual, etnia: value }))}>
                 <SelectTrigger id="etnia" className="w-full text-xs">
                   <SelectValue placeholder="No declara / General" />
                 </SelectTrigger>
@@ -195,7 +216,7 @@ export function TestimonioEditorPanel({ entryKey }: { entryKey: string }) {
               <Checkbox
                 id="victima"
                 checked={esVictima}
-                onCheckedChange={(checked) => setEsVictima(checked === true)}
+                onCheckedChange={(checked) => setEdicion((actual) => ({ ...actual, esVictima: checked === true }))}
               />
               <Label htmlFor="victima" className="text-xs text-[var(--text-primary)] cursor-pointer">
                 Víctima del conflicto armado (Ley 1448)
@@ -212,14 +233,14 @@ export function TestimonioEditorPanel({ entryKey }: { entryKey: string }) {
             type="submit"
             size="sm"
             variant="ember"
-            disabled={crearMutation.isPending}
+            disabled={crearMutation.isPending || editarMutation.isPending || (Boolean(testimonioId) && (detalle.isLoading || detalle.isError))}
           >
-            {crearMutation.isPending ? (
-              "Enviando..."
+            {crearMutation.isPending || editarMutation.isPending ? (
+              "Guardando..."
             ) : (
               <>
                 <ShieldCheck className="mr-1.5 size-4" />
-                Registrar Testimonio
+                {testimonioId ? "Guardar cambios" : "Registrar Testimonio"}
               </>
             )}
           </Button>

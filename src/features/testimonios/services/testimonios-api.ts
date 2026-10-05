@@ -28,6 +28,10 @@ export async function obtenerTestimonioPorId(id: string): Promise<Testimonio> {
   return apiFetch<Testimonio>(`/testimonios/${id}`);
 }
 
+export async function obtenerTestimonioGestion(id: string): Promise<Testimonio> {
+  return apiFetch<Testimonio>(`/testimonios/gestion/${id}`);
+}
+
 export async function crearTestimonio(datos: TestimonioCrearPeticion): Promise<Testimonio> {
   return apiFetch<Testimonio>("/testimonios", {
     method: "POST",
@@ -55,4 +59,12 @@ export async function moderarTestimonio(
     method: "PUT",
     body: moderacion,
   });
+}
+
+export type TestimonioEdicionPeticion = Omit<TestimonioCrearPeticion, "metadatos_enfoque"> & {
+  metadatos_enfoque: Record<string, unknown>;
+};
+
+export async function editarTestimonio(id: string, datos: TestimonioEdicionPeticion): Promise<Testimonio> {
+  return apiFetch<Testimonio>(`/testimonios/${id}`, { method: "PUT", body: datos });
 }

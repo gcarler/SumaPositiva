@@ -88,7 +88,7 @@ export interface PanelPropsMap {
   "participacion-multicanal": { canalInicial?: string };
   "escenario-editor": Record<string, never>;
   "testimonios-galeria": { territorioId?: string };
-  "testimonio-editor": Record<string, never>;
+  "testimonio-editor": { testimonioId?: string };
   "testimonios-moderacion": { estadoInicial?: string };
   "fases-control": Record<string, never>;
   "auditoria-consola": Record<string, never>;

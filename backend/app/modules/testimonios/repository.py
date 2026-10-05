@@ -2,7 +2,7 @@ import uuid
 from datetime import UTC, datetime
 from typing import Any
 
-from sqlalchemy import case, func, select, text
+from sqlalchemy import case, select, text
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -97,6 +97,21 @@ class TestimoniosRepository:
         res = await self.session.execute(stmt)
         return res.scalar_one_or_none()
 
+    async def obtener_publico_por_id(self, id: uuid.UUID) -> TestimonioComunitario | None:
+        stmt = (
+            select(TestimonioComunitario)
+            .options(
+                selectinload(TestimonioComunitario.territorio),
+                selectinload(TestimonioComunitario.dimension),
+            )
+            .where(
+                TestimonioComunitario.id == id,
+                TestimonioComunitario.activo.is_(True),
+                TestimonioComunitario.estado.in_(["APROBADO", "DESTACADO"]),
+            )
+        )
+        return (await self.session.execute(stmt)).scalar_one_or_none()
+
     async def crear(self, testimonio: TestimonioComunitario) -> TestimonioComunitario:
         self.session.add(testimonio)
         await self.session.flush()
@@ -114,6 +129,15 @@ class TestimoniosRepository:
         testimonio.moderado_por_id = moderador_id
         testimonio.moderado_en = datetime.now(UTC)
         await self.session.flush()
+        return testimonio
+
+    async def actualizar_contenido(
+        self, testimonio: TestimonioComunitario, datos: dict[str, Any]
+    ) -> TestimonioComunitario:
+        for campo, valor in datos.items():
+            setattr(testimonio, campo, valor)
+        await self.session.flush()
+        await self.session.refresh(testimonio)
         return testimonio
 
     async def obtener_resumen_metricas(self) -> dict[str, Any]:
@@ -143,7 +167,8 @@ class TestimoniosRepository:
                 COUNT(tc.id) AS total_testimonios
             FROM geodatos.territorios t
             LEFT JOIN participacion_ciudadana.testimonios_comunitarios tc
-                ON tc.territorio_id = t.id AND tc.activo = true AND tc.estado IN ('APROBADO', 'DESTACADO')
+                ON tc.territorio_id = t.id AND tc.activo = true
+                AND tc.estado IN ('APROBADO', 'DESTACADO')
             GROUP BY t.id, t.codigo, t.nombre
             ORDER BY total_testimonios DESC, t.nombre ASC;
         """)

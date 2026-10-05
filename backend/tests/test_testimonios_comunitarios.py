@@ -4,9 +4,14 @@ import uuid
 
 import pytest
 from fastapi.testclient import TestClient
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 from app.core.config import Settings
 from app.main import create_app
+from app.modules.testimonios.models import TestimonioComunitario as ModeloTestimonio
+from app.modules.testimonios.schemas import TestimonioEdicion as DatosEdicionTestimonio
+from app.modules.testimonios.service import TestimoniosService as ServicioTestimonios
 
 
 @pytest.fixture
@@ -72,7 +77,11 @@ def test_crear_testimonio_ciudadano(public_client: TestClient):
         "nombre_autor": "Marta Cecilia Padilla",
         "organizacion_comunitaria": "Veeduría Ciudadana por la Dignidad de Pasacaballos",
         "titulo": "Protegiendo el canal y la tradición afrodescendiente",
-        "relato": "Nuestros ancestros navegaron estas aguas. La política pública debe priorizar el empleo local en la zona industrial sin contaminar nuestra bahía.",
+        "relato": (
+            "Nuestros ancestros navegaron estas aguas. La política pública debe priorizar "
+            "el empleo "
+            "local en la zona industrial sin contaminar nuestra bahía."
+        ),
         "metadatos_enfoque": {
             "poblacion": "afrodescendiente",
             "sector": "Pasacaballos",
@@ -186,3 +195,76 @@ def test_panel_gestion_y_moderacion(
     assert resp_pub.status_code == 200
     codigos_pub = [t["codigo_unico"] for t in resp_pub.json()]
     assert nuevo_codigo in codigos_pub
+
+
+def test_editar_testimonio_desde_plataforma_conserva_moderacion(
+    sync_client: TestClient, public_client: TestClient
+):
+    pendiente = next(
+        item
+        for item in sync_client.get("/api/v1/testimonios/gestion").json()
+        if item["estado"] == "PENDIENTE"
+    )
+    respuesta = sync_client.put(
+        f"/api/v1/testimonios/{pendiente['id']}",
+        json={
+            "nombre_autor": "Autora editada desde POLIS",
+            "organizacion_comunitaria": "Colectivo comunitario",
+            "territorio_id": None,
+            "dimension_id": None,
+            "titulo": "Relato actualizado en plataforma",
+            "relato": "El equipo editorial corrigió y enriqueció este relato comunitario.",
+            "url_foto": None,
+            "url_audio_video": None,
+            "metadatos_enfoque": {"canal_origen": "plataforma"},
+        },
+    )
+    assert respuesta.status_code == 200, respuesta.text
+    assert respuesta.json()["titulo"] == "Relato actualizado en plataforma"
+    assert respuesta.json()["estado"] == "PENDIENTE"
+    lectura_gestion = sync_client.get(f"/api/v1/testimonios/gestion/{pendiente['id']}")
+    assert lectura_gestion.status_code == 200
+    assert lectura_gestion.json()["titulo"] == "Relato actualizado en plataforma"
+
+    # Una ruta pública nunca revela relatos pendientes, incluso si se conoce su UUID.
+    assert public_client.get(f"/api/v1/testimonios/{pendiente['id']}").status_code == 404
+
+
+@pytest.mark.integration
+@pytest.mark.anyio
+async def test_fallo_despues_de_editar_testimonio_revierte(database_url):
+    engine = create_async_engine(database_url, hide_parameters=True)
+    sessions = async_sessionmaker(engine, expire_on_commit=False)
+    try:
+        async with sessions() as session:
+            original = await session.scalar(
+                select(ModeloTestimonio).where(ModeloTestimonio.codigo_unico == "TEST-004")
+            )
+            assert original is not None
+            testimonio_id = original.id
+            titulo_anterior = original.titulo
+            service = ServicioTestimonios(session)
+            guardar_real = service.repository.actualizar_contenido
+
+            async def guardar_y_fallar(testimonio, datos):
+                await guardar_real(testimonio, datos)
+                raise RuntimeError("fallo inyectado después del flush editorial")
+
+            service.repository.actualizar_contenido = guardar_y_fallar
+            with pytest.raises(RuntimeError, match="después del flush editorial"):
+                await service.editar_testimonio(
+                    testimonio_id,
+                    DatosEdicionTestimonio(
+                        nombre_autor="Nombre para rollback",
+                        titulo="Título de rollback posterior al flush",
+                        relato="Relato de prueba con cambio editorial que debe revertirse.",
+                    ),
+                )
+
+        async with sessions() as verificacion:
+            persistido = await verificacion.get(ModeloTestimonio, testimonio_id)
+            assert persistido is not None
+            assert persistido.titulo == titulo_anterior
+            assert persistido.nombre_autor != "Nombre para rollback"
+    finally:
+        await engine.dispose()

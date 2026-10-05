@@ -1,6 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   crearTestimonio,
+  editarTestimonio,
+  obtenerTestimonioGestion,
   listarTestimoniosGestion,
   listarTestimoniosPublicos,
   moderarTestimonio,
@@ -11,6 +13,7 @@ import type {
   TestimonioCrearPeticion,
   TestimonioModeracionPeticion,
 } from "../models/testimonio";
+import type { TestimonioEdicionPeticion } from "./testimonios-api";
 
 export const TESTIMONIOS_KEYS = {
   all: ["testimonios"] as const,
@@ -50,6 +53,14 @@ export function useTestimonioDetalle(id: string) {
   });
 }
 
+export function useTestimonioGestionDetalle(id: string) {
+  return useQuery({
+    queryKey: [...TESTIMONIOS_KEYS.detalle(id), "gestion"],
+    queryFn: () => obtenerTestimonioGestion(id),
+    enabled: Boolean(id),
+  });
+}
+
 export function useTestimoniosGestion(filtros?: {
   estado?: string | null;
   territorioId?: string | null;
@@ -84,5 +95,13 @@ export function useModerarTestimonio() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: TESTIMONIOS_KEYS.all });
     },
+  });
+}
+
+export function useEditarTestimonio() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, datos }: { id: string; datos: TestimonioEdicionPeticion }) => editarTestimonio(id, datos),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: TESTIMONIOS_KEYS.all }),
   });
 }

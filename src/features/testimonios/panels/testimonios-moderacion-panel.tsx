@@ -13,7 +13,7 @@ import { FormField } from "@/shared/ui/form-field";
 import { StatusBadge } from "@/shared/ui/status-badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 import { Textarea } from "@/shared/ui/textarea";
-import { CheckCircle2, Sparkles, XCircle, ShieldAlert, MapPin, Tag } from "lucide-react";
+import { CheckCircle2, Sparkles, XCircle, ShieldAlert, MapPin, Tag, Edit3 } from "lucide-react";
 import type { EstadoTestimonio } from "../models/testimonio";
 
 export function TestimoniosModeracionPanel({ entryKey }: { entryKey: string }) {
@@ -33,6 +33,7 @@ export function TestimoniosModeracionPanel({ entryKey }: { entryKey: string }) {
 }
 
 export function TestimoniosModeracionContenido() {
+  const { openPanel } = usePanels();
   const [tabEstado, setTabEstado] = useState<string>("PENDIENTE");
   const [rechazandoId, setRechazandoId] = useState<string | null>(null);
   const [motivoRechazo, setMotivoRechazo] = useState<string>("");
@@ -189,6 +190,10 @@ export function TestimoniosModeracionContenido() {
 
                   {/* Bloque de Acciones de Moderación */}
                   <div className="pt-2 flex flex-wrap items-center justify-end gap-2">
+                    <Button size="sm" variant="outline" onClick={() => openPanel("testimonio-editor", { testimonioId: t.id })} className="text-xs h-8">
+                      <Edit3 className="mr-1 size-3.5" />
+                      Editar contenido
+                    </Button>
                     {t.estado !== "APROBADO" && (
                       <Button
                         size="sm"

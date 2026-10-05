@@ -1,5 +1,4 @@
 import uuid
-from typing import Any
 
 from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -10,6 +9,7 @@ from app.modules.testimonios.repository import TestimoniosRepository
 from app.modules.testimonios.schemas import (
     ResumenTestimonios,
     TestimonioCrear,
+    TestimonioEdicion,
     TestimonioLectura,
     TestimonioModeracion,
 )
@@ -48,6 +48,16 @@ class TestimoniosService:
             return [self._mapear_testimonio(t) for t in testimonios]
 
     async def obtener_por_id(self, id: uuid.UUID) -> TestimonioLectura:
+        async with transaction(self.session):
+            testimonio = await self.repository.obtener_publico_por_id(id)
+            if not testimonio:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail=f"Testimonio comunitario con ID {id} no encontrado",
+                )
+            return self._mapear_testimonio(testimonio)
+
+    async def obtener_gestion_por_id(self, id: uuid.UUID) -> TestimonioLectura:
         async with transaction(self.session):
             testimonio = await self.repository.obtener_por_id(id)
             if not testimonio:
@@ -102,7 +112,9 @@ class TestimoniosService:
             if nuevo_estado not in ("APROBADO", "DESTACADO", "RECHAZADO"):
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Estado de moderación inválido. Debe ser APROBADO, DESTACADO o RECHAZADO.",
+                    detail=(
+                        "Estado de moderación inválido. Debe ser APROBADO, DESTACADO o RECHAZADO."
+                    ),
                 )
 
             if nuevo_estado == "RECHAZADO" and (
@@ -110,7 +122,10 @@ class TestimoniosService:
             ):
                 raise HTTPException(
                     status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
-                    detail="El rechazo de un testimonio comunitario exige un motivo de moderación fundamentado.",
+                    detail=(
+                        "El rechazo de un testimonio comunitario exige un motivo de moderación "
+                        "fundamentado."
+                    ),
                 )
 
             moderado = await self.repository.moderar(
@@ -121,6 +136,18 @@ class TestimoniosService:
             )
             await self.session.refresh(moderado)
             return self._mapear_testimonio(moderado)
+
+    async def editar_testimonio(self, id: uuid.UUID, datos: TestimonioEdicion) -> TestimonioLectura:
+        """Actualiza campos editoriales sin alterar el estado de moderación."""
+        async with transaction(self.session):
+            testimonio = await self.repository.obtener_por_id(id)
+            if not testimonio:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail=f"Testimonio comunitario con ID {id} no encontrado",
+                )
+            actualizado = await self.repository.actualizar_contenido(testimonio, datos.model_dump())
+            return self._mapear_testimonio(actualizado)
 
     async def obtener_resumen_metricas(self) -> ResumenTestimonios:
         async with transaction(self.session):

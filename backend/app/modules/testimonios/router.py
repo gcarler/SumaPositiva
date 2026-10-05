@@ -1,13 +1,14 @@
 import uuid
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Query, status
+from fastapi import APIRouter, Depends, status
 
 from app.core.database import SessionDependency
 from app.modules.identidad.deps import SujetoAutenticadoDep, requerir_permiso
 from app.modules.testimonios.schemas import (
     ResumenTestimonios,
     TestimonioCrear,
+    TestimonioEdicion,
     TestimonioLectura,
     TestimonioModeracion,
 )
@@ -72,6 +73,15 @@ async def listar_testimonios_gestion(
     return await service.listar_gestion(estado=estado, territorio_id=territorio_id)
 
 
+@router.get(
+    "/gestion/{id}",
+    response_model=TestimonioLectura,
+    dependencies=[Depends(requerir_permiso("testimonios:moderar", nivel_minimo="declarada"))],
+)
+async def obtener_testimonio_gestion(id: uuid.UUID, service: TestimoniosServiceDep):
+    return await service.obtener_gestion_por_id(id)
+
+
 @router.get("/{id}", response_model=TestimonioLectura)
 async def obtener_testimonio(
     id: uuid.UUID,
@@ -79,6 +89,18 @@ async def obtener_testimonio(
 ):
     """Consulta individual de un testimonio comunitario."""
     return await service.obtener_por_id(id)
+
+
+@router.put(
+    "/{id}",
+    response_model=TestimonioLectura,
+    dependencies=[Depends(requerir_permiso("testimonios:moderar", nivel_minimo="declarada"))],
+)
+async def editar_testimonio(
+    id: uuid.UUID, datos: TestimonioEdicion, service: TestimoniosServiceDep
+):
+    """Edición de contenido desde el panel institucional de testimonios."""
+    return await service.editar_testimonio(id=id, datos=datos)
 
 
 @router.put(

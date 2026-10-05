@@ -22,6 +22,18 @@ class TestimonioModeracion(BaseModel):
     motivo_moderacion: str | None = Field(None, max_length=500)
 
 
+class TestimonioEdicion(BaseModel):
+    nombre_autor: str = Field(..., min_length=2, max_length=200)
+    organizacion_comunitaria: str | None = Field(None, max_length=200)
+    territorio_id: uuid.UUID | None = None
+    dimension_id: uuid.UUID | None = None
+    titulo: str = Field(..., min_length=5, max_length=250)
+    relato: str = Field(..., min_length=15)
+    url_foto: str | None = Field(None, max_length=500)
+    url_audio_video: str | None = Field(None, max_length=500)
+    metadatos_enfoque: dict[str, Any] = Field(default_factory=dict)
+
+
 class TestimonioLectura(BaseModel):
     id: uuid.UUID
     codigo_unico: str

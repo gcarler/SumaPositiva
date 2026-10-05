@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion, type Variants } from "framer-motion";
 import {
   Quote,
   Plus,
@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { usePanels } from "@/core/panels/panel-store";
 import { useTestimoniosStore } from "../state/testimonios-store";
+import { useTestimoniosPublicos } from "../services/use-testimonios-queries";
 import type { TipoTestimonio, Testimonio } from "../models/testimonio";
 import { Button } from "@/shared/ui/button";
 import { StatusBadge } from "@/shared/ui/status-badge";
@@ -37,7 +38,20 @@ const TIPO_LABELS: Record<TipoTestimonio, string> = {
 export function TestimoniosView() {
   const reducedMotion = useReducedMotion();
   const { openPanel } = usePanels();
-  const testimonios = useTestimoniosStore((s) => s.testimonios);
+  const testimoniosQuery = useTestimoniosPublicos();
+  const testimonios = useMemo(() => (testimoniosQuery.data ?? []).map((item) => ({
+    ...item,
+    nombre: item.nombre_autor ?? item.nombre,
+    anonimo: false,
+    tipo: "ciudadano" as const,
+    texto: item.relato ?? item.texto,
+    textoCompleto: item.relato ?? item.textoCompleto,
+    foto: item.url_foto ?? item.foto,
+    dimensionOnu: item.dimension_nombre ?? item.dimensionOnu,
+    verificado: true,
+    creadoEn: item.creado_en ?? item.creadoEn,
+    destacado: item.estado === "DESTACADO",
+  })), [testimoniosQuery.data]);
   const filtroTipo = useTestimoniosStore((s) => s.filtroTipo);
   const setFiltro = useTestimoniosStore((s) => s.setFiltro);
 
@@ -132,7 +146,8 @@ export function TestimoniosView() {
 
       {/* ================= MOSAICO MASONRY DE TESTIMONIOS ================= */}
       <section>
-        {testimoniosFiltrados.length === 0 ? (
+        {testimoniosQuery.isError && <div role="alert" className="mb-4 flex items-center justify-between gap-3 rounded-lg border border-danger/30 bg-danger-soft p-4 text-sm text-text-primary"><span>No se pudieron cargar los testimonios publicados.</span><Button variant="outline" size="sm" onClick={() => void testimoniosQuery.refetch()}>Reintentar</Button></div>}
+        {testimoniosQuery.isPending ? <p role="status" className="rounded-xl border border-[var(--border)] p-8 text-center text-sm text-[var(--text-secondary)]">Cargando testimonios…</p> : testimoniosFiltrados.length === 0 ? (
           <div className="flex flex-col items-center justify-center rounded-2xl border border-[var(--border)] bg-[var(--surface-1)] p-12 text-center space-y-3">
             <Quote className="size-10 text-[var(--text-tertiary)] opacity-40" />
             <h3 className="text-base font-semibold text-[var(--text-primary)]">
@@ -203,7 +218,7 @@ function TestimonioCard({
   variants,
 }: {
   testimonio: Testimonio;
-  variants: any;
+  variants: Variants;
 }) {
   const iniciales = testimonio.nombre
     ? testimonio.nombre
