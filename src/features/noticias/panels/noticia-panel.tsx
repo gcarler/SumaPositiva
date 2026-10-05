@@ -20,8 +20,8 @@ import {
 import { PanelShell } from "@/core/panels/panel-shell";
 import { usePanels } from "@/core/panels/panel-store";
 import { useSesionStore } from "@/features/sesion/state/session-store";
-import { puedeEditar } from "@/features/plataforma/models/acceso";
-import { useNoticiasStore } from "../state/noticias-store";
+import { puedeEditar, puedeVer } from "@/features/plataforma/models/acceso";
+import { useNoticiaGestion } from "../services/use-noticias-queries";
 import { Button } from "@/shared/ui/button";
 import { Badge } from "@/shared/ui/badge";
 import { StatusBadge, type StatusTone } from "@/shared/ui/status-badge";
@@ -50,11 +50,10 @@ const CATEGORIA_META: Record<
 export function NoticiaPanel({ entryKey, props }: NoticiaPanelProps) {
   const { closeTop, openPanel } = usePanels();
   const sesion = useSesionStore((s) => s.sesion);
-  const esEditor = puedeEditar(sesion, "contenido");
-
-  const noticia = useNoticiasStore((s) =>
-    s.noticias.find((n) => n.id === props.noticiaId)
-  );
+  const esEditor = puedeEditar(sesion, "noticias");
+  const puedeLeerGestion = puedeVer(sesion, "noticias");
+  const noticiaQuery = useNoticiaGestion(props.noticiaId, puedeLeerGestion);
+  const noticia = noticiaQuery.data;
 
   const [copiado, setCopiado] = useState(false);
   const [fotoSeleccionada, setFotoSeleccionada] = useState<string | null>(null);
@@ -79,6 +78,9 @@ export function NoticiaPanel({ entryKey, props }: NoticiaPanelProps) {
     }
   };
 
+  if (!noticia && noticiaQuery.isLoading) {
+    return <PanelShell entryKey={entryKey} title="Cargando noticia" crumbs={[{ label: "Noticias" }]} onClose={closeTop} onCloseToKey={closeTop}><div role="status" className="p-8 text-sm text-[var(--text-secondary)]">Cargando artículo…</div></PanelShell>;
+  }
   if (!noticia) {
     return (
       <PanelShell
@@ -303,7 +305,7 @@ export function NoticiaPanel({ entryKey, props }: NoticiaPanelProps) {
             <span>Proceso vinculado a la Sentencia C-150 de 2015</span>
           </div>
           <div className="flex items-center gap-2">
-            {esEditor && (
+            {puedeEditar(sesion, "noticias") && (
               <Button
                 variant="outline"
                 size="sm"

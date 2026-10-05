@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion, type Variants } from "framer-motion";
 import {
   Calendar,
   Building2,
@@ -22,6 +22,7 @@ import {
   useNoticiasStore,
   noticiasPublicadasOrdenadas,
 } from "../state/noticias-store";
+import { useNoticiasGestion, useNoticiasPublicas } from "../services/use-noticias-queries";
 import type { CategoriaNoticia, Noticia } from "../models/noticia";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
@@ -44,7 +45,10 @@ export function NoticiasView() {
   const sesion = useSesionStore((s) => s.sesion);
   const esEditor = puedeEditar(sesion, "contenido");
 
-  const noticias = useNoticiasStore((s) => s.noticias);
+  const gestionNoticias = useNoticiasGestion(esEditor);
+  const publicasNoticias = useNoticiasPublicas();
+  const noticiasQuery = esEditor ? gestionNoticias : publicasNoticias;
+  const noticias = noticiasQuery.data ?? [];
   const filtroCategoria = useNoticiasStore((s) => s.filtroCategoria);
   const setFiltro = useNoticiasStore((s) => s.setFiltro);
   const busqueda = useNoticiasStore((s) => s.busqueda);
@@ -101,6 +105,8 @@ export function NoticiasView() {
 
   return (
     <div className="container-fluid space-y-12 py-8 md:space-y-16 md:py-12">
+      {noticiasQuery.isError && <div role="alert" className="mx-auto flex max-w-5xl items-center justify-between gap-3 rounded-lg border border-danger/30 bg-danger-soft p-4 text-sm text-text-primary"><span>No se pudieron cargar las noticias.</span><Button variant="outline" size="sm" onClick={() => void noticiasQuery.refetch()}>Reintentar</Button></div>}
+      {noticiasQuery.isPending && <div role="status" className="mx-auto max-w-5xl rounded-lg border border-[var(--border)] p-6 text-sm text-[var(--text-secondary)]">Cargando noticias…</div>}
       {/* ================= HERO NOTICIA DESTACADA ================= */}
       {noticiaDestacada && (
         <section className="relative overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface-1)] shadow-sm">
@@ -302,7 +308,7 @@ function NoticiaCard({
   esEditor,
 }: {
   noticia: Noticia;
-  variants: any;
+  variants: Variants;
   esEditor: boolean;
 }) {
   const { openPanel } = usePanels();

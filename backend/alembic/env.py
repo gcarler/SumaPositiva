@@ -15,6 +15,7 @@ from app.modules.identidad import models as identidad_models  # noqa: F401
 from app.modules.indicadores import models as indicadores_models  # noqa: F401
 from app.modules.instrumentos import models as instrumentos_models  # noqa: F401
 from app.modules.mesas import models as mesas_models  # noqa: F401
+from app.modules.noticias import models as noticias_models  # noqa: F401
 from app.modules.participacion import models as participacion_models  # noqa: F401
 from app.modules.politicas import models as politicas_models  # noqa: F401
 from app.modules.presupuesto import models as presupuesto_models  # noqa: F401
@@ -34,6 +35,7 @@ ALLOWED_SCHEMAS = {
     "motor_instrumentos",
     "presupuesto",
     "indicadores",
+    "comunicacion",
 }
 
 

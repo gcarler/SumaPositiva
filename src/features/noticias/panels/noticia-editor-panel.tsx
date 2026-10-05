@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useId } from "react";
+import { useEffect, useState, useId } from "react";
 import { toast } from "sonner";
 import {
   Save,
@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { PanelShell } from "@/core/panels/panel-shell";
 import { usePanels } from "@/core/panels/panel-store";
-import { useNoticiasStore } from "../state/noticias-store";
+import { useEliminarNoticia, useGuardarNoticia, useNoticiaGestion } from "../services/use-noticias-queries";
 import type {
   CategoriaNoticia,
   EstadoNoticia,
@@ -60,12 +60,10 @@ export function NoticiaEditorPanel({ entryKey, props }: NoticiaEditorPanelProps)
   const { closeTop } = usePanels();
   const noticiaId = props?.noticiaId;
 
-  const noticiaExistente = useNoticiasStore((s) =>
-    noticiaId ? s.noticias.find((n) => n.id === noticiaId) : undefined
-  );
-  const crearNoticia = useNoticiasStore((s) => s.crearNoticia);
-  const actualizarNoticia = useNoticiasStore((s) => s.actualizarNoticia);
-  const eliminarNoticia = useNoticiasStore((s) => s.eliminarNoticia);
+  const consultaNoticia = useNoticiaGestion(noticiaId ?? "");
+  const noticiaExistente = consultaNoticia.data;
+  const guardarMutation = useGuardarNoticia();
+  const eliminarMutation = useEliminarNoticia();
 
   const esEdicion = Boolean(noticiaExistente);
 
@@ -83,7 +81,7 @@ export function NoticiaEditorPanel({ entryKey, props }: NoticiaEditorPanelProps)
     noticiaExistente?.autor ?? "Secretaría de Planeación Distrital"
   );
   const [estado, setEstado] = useState<EstadoNoticia>(
-    noticiaExistente?.estado ?? "publicada"
+    noticiaExistente?.estado ?? "borrador"
   );
   const [ordenPrioridad, setOrdenPrioridad] = useState<number>(
     noticiaExistente?.ordenPrioridad ?? 1
@@ -102,10 +100,26 @@ export function NoticiaEditorPanel({ entryKey, props }: NoticiaEditorPanelProps)
   );
   const [nuevaFotoUrl, setNuevaFotoUrl] = useState("");
   const [etiquetas, setEtiquetas] = useState<string[]>(
-    noticiaExistente?.etiquetas ?? ["cartagena-2026", "participacion"]
+    noticiaExistente?.etiquetas ?? []
   );
   const [nuevaEtiqueta, setNuevaEtiqueta] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (!noticiaExistente) return;
+    setTitulo(noticiaExistente.titulo);
+    setResumen(noticiaExistente.resumen);
+    setContenido(noticiaExistente.contenido);
+    setCategoria(noticiaExistente.categoria);
+    setAutor(noticiaExistente.autor);
+    setEstado(noticiaExistente.estado);
+    setOrdenPrioridad(noticiaExistente.ordenPrioridad);
+    setDestacada(noticiaExistente.destacada);
+    setImagenPortada(noticiaExistente.imagenPortada ?? "");
+    setVideoUrl(noticiaExistente.videoUrl ?? "");
+    setGaleria(noticiaExistente.galeria ?? []);
+    setEtiquetas(noticiaExistente.etiquetas ?? []);
+  }, [noticiaExistente]);
 
   // Manejo de carga de imagen de portada (File)
   const handleCargarPortada = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -164,7 +178,7 @@ export function NoticiaEditorPanel({ entryKey, props }: NoticiaEditorPanelProps)
     setEtiquetas(etiquetas.filter((t) => t !== tagToRemove));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!titulo.trim()) {
@@ -199,13 +213,12 @@ export function NoticiaEditorPanel({ entryKey, props }: NoticiaEditorPanelProps)
         etiquetas,
       };
 
+      await guardarMutation.mutateAsync({ id: noticiaId, datos });
       if (esEdicion && noticiaId) {
-        actualizarNoticia(noticiaId, datos);
         toast.success("Noticia actualizada con éxito", {
           description: titulo,
         });
       } else {
-        crearNoticia(datos);
         toast.success("Nueva noticia creada y registrada", {
           description: titulo,
         });
@@ -213,7 +226,7 @@ export function NoticiaEditorPanel({ entryKey, props }: NoticiaEditorPanelProps)
 
       closeTop();
     } catch {
-      toast.error("No se pudo guardar la noticia.");
+      toast.error("No se pudo guardar la noticia. Verifica tu sesión y los datos ingresados.");
     } finally {
       setIsSubmitting(false);
     }
@@ -222,9 +235,10 @@ export function NoticiaEditorPanel({ entryKey, props }: NoticiaEditorPanelProps)
   const handleEliminar = () => {
     if (!noticiaId) return;
     if (confirm("¿Estás seguro de que deseas eliminar permanentemente esta noticia?")) {
-      eliminarNoticia(noticiaId);
-      toast.success("Noticia eliminada correctamente");
-      closeTop();
+      void eliminarMutation.mutateAsync(noticiaId).then(() => {
+        toast.success("Noticia eliminada correctamente");
+        closeTop();
+      }).catch(() => toast.error("No se pudo eliminar la noticia."));
     }
   };
 
@@ -255,6 +269,8 @@ export function NoticiaEditorPanel({ entryKey, props }: NoticiaEditorPanelProps)
       }
     >
       <form onSubmit={handleSubmit} className="space-y-6 p-6">
+        {consultaNoticia.isLoading && noticiaId && <p role="status" className="text-sm text-[var(--text-secondary)]">Cargando noticia…</p>}
+        {consultaNoticia.isError && noticiaId && <p role="alert" className="text-sm text-danger">No se pudo cargar la noticia para editar.</p>}
         {/* Título Principal */}
         <div className="space-y-2">
           <Label htmlFor="titulo" className="text-xs font-semibold text-[var(--text-primary)]">
@@ -622,11 +638,22 @@ export function NoticiaEditorPanel({ entryKey, props }: NoticiaEditorPanelProps)
             type="submit"
             variant="default"
             size="default"
-            disabled={isSubmitting}
+            disabled={
+              isSubmitting ||
+              (Boolean(noticiaId) && (consultaNoticia.isPending || consultaNoticia.isError))
+            }
             className="gap-2"
           >
             <Save className="size-4" />
-            <span>{esEdicion ? "Actualizar Noticia" : "Publicar Noticia"}</span>
+            <span>
+              {estado === "publicada"
+                ? esEdicion
+                  ? "Actualizar Noticia"
+                  : "Publicar Noticia"
+                : estado === "archivada"
+                  ? "Archivar Noticia"
+                  : "Guardar Borrador"}
+            </span>
           </Button>
         </div>
       </form>

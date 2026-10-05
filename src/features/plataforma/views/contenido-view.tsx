@@ -1,9 +1,9 @@
 "use client";
 
-import { ArquitecturaPolitica } from "@/features/politicas/components/arquitectura-politica";
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { toast } from "sonner";
+import {ArquitecturaPolitica} from "@/features/politicas/components/arquitectura-politica";
+
+import {useQuery} from "@tanstack/react-query";
+import {toast} from "sonner";
 import {
   Newspaper,
   Plus,
@@ -13,21 +13,17 @@ import {
   Play,
   Layers,
   Sparkles,
-  ArrowUpDown,
-  CheckCircle2,
-  Clock,
-  Archive,
-  Layers as DnpIcon,
+  Layers as DnpIcon
 } from "lucide-react";
-import { PageHeader } from "@/shared/ui/page-header";
-import { Button } from "@/shared/ui/button";
-import { Badge } from "@/shared/ui/badge";
-import { StatusBadge, type StatusTone } from "@/shared/ui/status-badge";
+import {PageHeader} from "@/shared/ui/page-header";
+import {Button} from "@/shared/ui/button";
+import {Badge} from "@/shared/ui/badge";
+import {StatusBadge, type StatusTone} from "@/shared/ui/status-badge";
 import {
   Tabs,
   TabsList,
   TabsTrigger,
-  TabsContent,
+  TabsContent
 } from "@/shared/ui/tabs";
 import {
   Table,
@@ -35,26 +31,25 @@ import {
   TableRow,
   TableHead,
   TableBody,
-  TableCell,
+  TableCell
 } from "@/shared/ui/table";
-import { useSesionStore } from "@/features/sesion/state/session-store";
-import { usePanels } from "@/core/panels/panel-store";
-import { useNoticiasStore } from "@/features/noticias/state/noticias-store";
-import type { Noticia, EstadoNoticia } from "@/features/noticias/models/noticia";
-import { plataformaApi } from "../services/plataforma-api";
-import { EstadoConsulta } from "../components/estado-consulta";
-import { puedeEditar } from "../models/acceso";
+import {useSesionStore} from "@/features/sesion/state/session-store";
+import {usePanels} from "@/core/panels/panel-store";
+import type {Noticia, EstadoNoticia} from "@/features/noticias/models/noticia";
+import {useEliminarNoticia, useGuardarNoticia, useNoticiasGestion} from "@/features/noticias/services/use-noticias-queries";
+import {plataformaApi} from "../services/plataforma-api";
+import {EstadoConsulta} from "../components/estado-consulta";
+import {puedeEditar} from "../models/acceso";
 
 export function ContenidoView({ soloNoticias = false }: { soloNoticias?: boolean } = {}) {
   const sesion = useSesionStore((s) => s.sesion);
   const { openPanel } = usePanels();
   const esEditor = puedeEditar(sesion, "contenido");
 
-  // Noticias Store
-  const noticias = useNoticiasStore((s) => s.noticias);
-  const cambiarEstado = useNoticiasStore((s) => s.cambiarEstado);
-  const reordenarPrioridad = useNoticiasStore((s) => s.reordenarPrioridad);
-  const eliminarNoticia = useNoticiasStore((s) => s.eliminarNoticia);
+  const noticiasQuery = useNoticiasGestion();
+  const noticias = noticiasQuery.data ?? [];
+  const guardarNoticia = useGuardarNoticia();
+  const eliminarNoticia = useEliminarNoticia();
 
   // Consultas DNP históricas
   const fases = useQuery({
@@ -83,8 +78,9 @@ export function ContenidoView({ soloNoticias = false }: { soloNoticias?: boolean
   const handleEliminar = (id: string, titulo: string) => {
     if (!esEditor) return;
     if (confirm(`¿Eliminar la noticia "${titulo}"?`)) {
-      eliminarNoticia(id);
-      toast.success("Noticia eliminada correctamente");
+      void eliminarNoticia.mutateAsync(id)
+        .then(() => toast.success("Noticia eliminada correctamente"))
+        .catch(() => toast.error("No se pudo eliminar la noticia."));
     }
   };
 
@@ -92,10 +88,10 @@ export function ContenidoView({ soloNoticias = false }: { soloNoticias?: boolean
     if (!esEditor) return;
     const nuevo: EstadoNoticia =
       noticia.estado === "publicada" ? "borrador" : "publicada";
-    cambiarEstado(noticia.id, nuevo);
-    toast.success(
-      `Noticia ahora marcada como ${nuevo === "publicada" ? "PUBLICADA" : "BORRADOR"}`
-    );
+    const { id, slug: _slug, publicadaEn: _publicadaEn, ...datos } = noticia;
+    void guardarNoticia.mutateAsync({ id, datos: { ...datos, estado: nuevo } })
+      .then(() => toast.success(`Noticia ahora marcada como ${nuevo === "publicada" ? "PUBLICADA" : "BORRADOR"}`))
+      .catch(() => toast.error("No se pudo cambiar el estado de la noticia."));
   };
 
   return (
@@ -149,6 +145,7 @@ export function ContenidoView({ soloNoticias = false }: { soloNoticias?: boolean
         {/* ================= PESTAÑA: NOTICIAS Y COMUNICADOS ================= */}
         {!soloNoticias && <TabsContent value="arquitectura"><ArquitecturaPolitica /></TabsContent>}
         <TabsContent value="noticias" className="space-y-6">
+          {noticiasQuery.isError && <div role="alert" className="flex items-center justify-between gap-3 rounded-lg border border-danger/30 bg-danger-soft p-4 text-sm"><span>No se pudieron cargar las noticias desde el servidor.</span><Button variant="outline" size="sm" onClick={() => void noticiasQuery.refetch()}>Reintentar</Button></div>}
           {/* Métricas editoriales */}
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <div className="rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-4">
@@ -192,7 +189,7 @@ export function ContenidoView({ soloNoticias = false }: { soloNoticias?: boolean
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {noticias.length === 0 ? (
+                {noticiasQuery.isPending ? <TableRow><TableCell colSpan={7} className="py-8 text-center text-[var(--text-secondary)]">Cargando noticias…</TableCell></TableRow> : noticias.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={7} className="text-center py-8 text-[var(--text-secondary)]">
                       No hay noticias creadas. Pulsa &quot;Nueva Noticia&quot; para registrar la primera.
