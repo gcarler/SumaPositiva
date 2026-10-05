@@ -275,3 +275,21 @@ Commits 8d21f08 (OBS-29) y 9c2ca17. Verificado de forma independiente en `bd_csh
   3. `pc-001` → `mesa_id NULL`; `mr-007b` y `mr-012` → `MR-ISL-07` (1 mesa : N agendas). Verificar que `mr-007` no sea además otra agenda de Barú duplicada.
   4. Respaldo previo, servicios detenidos, `downgrade` probado (upgrade/downgrade/upgrade en `polis_test`), `alembic check` sin diff.
   5. Frontend: lookup del geovisor por UUID/shortcode/código de agenda; `/asistencia/[mesaId]` resuelve código de agenda, código oficial o UUID; sin fallbacks silenciosos; tests bun.
+
+## DICTAMEN AUD-19 / EDIT-13: APROBACIÓN H-05, H-08 y H-07 FASE A (agy, 2026-10-05)
+
+Auditoría forense de los commits `5f05141` (H-11), `95b85dd` (H-09), `76d718c` (H-05), `bb89185` (H-08) y `81dc779` (H-07 Fase A):
+1. **H-11**: Conforme. `MesaRespuesta.facilitador_nombre` poblado por join; frontend utiliza el nombre sin fallback genérico.
+2. **H-09**: Conforme. Migración `0044` sembró de forma idempotente las 4 líneas canónicas con nombres y códigos oficiales.
+3. **H-05**: Conforme. Migración `0045` vinculó determinísticamente las 35 agendas a sus 33 mesas correspondientes, dejando `pc-001` en NULL. Geovisor y Asistencia resuelven tanto por UUID como por código de agenda y código oficial; `bun test` 303/0 pass.
+4. **H-08**: Conforme. `subirEvidenciaFotografica` conectada en `AporteEditorPanel` y `FotosPregunta` contra `POST /api/v1/evidencias/subir` con sanitización EXIF/GPS, propagación de errores y tests unitarios.
+5. **H-07 Fase A**: Conforme. Inventario exhaustivo y riguroso de las 14 columnas legadas. Se aprueba la **Opción A** (migración de coordenadas WGS84, enfoque poblacional y bandera de consulta previa a `metadatos` JSONB antes de remover las columnas físicas). La migración borrador `0046_depurar_columnas_mesas.py` preserva el 100% de la información y cuenta con `downgrade()` invertible probado.
+
+### AUTORIZACIÓN PARA FASE B DE H-07
+Se autoriza formalmente a `agy2` la ejecución de la **Fase B de H-07**:
+1. Respaldo previo obligatorio de `bd_csh`: `su - postgres -c "pg_dump -Fc bd_csh" > backups/bd_csh_pre_h07_faseb_$(date +%Y%m%d_%H%M%S).dump`.
+2. Detener servicios: `systemctl stop polis-backend polis-frontend`.
+3. Aplicar migración en `bd_csh`: `cd backend && env -i HOME=/root PATH=/usr/bin:/bin .venv/bin/alembic -c alembic.ini upgrade head`.
+4. Reiniciar servicios: `systemctl start polis-backend polis-frontend`.
+5. Comprobar que las 33 mesas conservan coordenadas y enfoque en `metadatos`, y que `/api/v1/mesas`, `/api/v1/mesas/geovisor`, `/politicas` y la home devuelven 200.
+6. Documentar el cierre pericial en `bridge/02_resultado_agy2.md` y notificar a `agy`.
