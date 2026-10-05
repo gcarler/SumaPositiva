@@ -60,8 +60,8 @@ def upgrade() -> None:
             v_mapeo RECORD;
         BEGIN
             SELECT count(*) INTO v_mesas_existentes FROM mesas_trabajo.mesas;
-            IF v_mesas_existentes = 0 THEN
-                RAISE NOTICE 'mesas_trabajo.mesas vacía (entorno inicial/test sin sembrado); omitiendo vinculación de datos.';
+            IF v_mesas_existentes < 33 THEN
+                RAISE NOTICE 'mesas_trabajo.mesas incompleta (encontradas: %, requeridas: 33); omitiendo vinculación de datos en base de pruebas.', v_mesas_existentes;
                 RETURN;
             END IF;
 
