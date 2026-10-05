@@ -45,6 +45,32 @@ describe("Persistencia y normalización de Mesas de Trabajo (EDIT-01)", () => {
       expect(mesa.estado).toBe("programada");
       expect(mesa.tipoMesa).toBe("TERRITORIAL");
     });
+
+    test("H-11: prioriza facilitador_nombre retornado por backend", () => {
+      const backendData: MesaBackendResponse = {
+        id: "mesa-uuid-5678",
+        nombre: "Mesa Rural Bayunca",
+        facilitador_id: "usr-uuid-001",
+        facilitador_nombre: "Ing. Martín Morales",
+        metadatos: {
+          facilitador: "Nombre Obsoleto",
+        },
+      };
+
+      const mesa = normalizarMesaBackend(backendData);
+      expect(mesa.facilitador).toBe("Ing. Martín Morales");
+    });
+
+    test("H-11: sin facilitador asignado no retorna el valor genérico 'Facilitador Institucional'", () => {
+      const backendData: MesaBackendResponse = {
+        id: "mesa-uuid-9999",
+        nombre: "Mesa Sin Facilitador",
+      };
+
+      const mesa = normalizarMesaBackend(backendData);
+      expect(mesa.facilitador).toBe("");
+      expect(mesa.facilitador).not.toBe("Facilitador Institucional");
+    });
   });
 
   describe("actualizarMesaRemota", () => {

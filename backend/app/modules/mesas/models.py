@@ -20,6 +20,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.types import UserDefinedType
 
 from app.core.database import Base
+from app.modules.identidad.models import Usuario
 
 if TYPE_CHECKING:
     pass
@@ -155,6 +156,22 @@ class Mesa(Base):
         back_populates="mesa",
         cascade="all, delete-orphan",
     )
+    facilitador: Mapped["Usuario | None"] = relationship(
+        "Usuario",
+        foreign_keys=[facilitador_id],
+        lazy="selectin",
+    )
+
+    @property
+    def facilitador_nombre(self) -> str | None:
+        if self.facilitador is not None:
+            nombre = f"{self.facilitador.nombres or ''} {self.facilitador.apellidos or ''}".strip()
+            return nombre or self.facilitador.correo
+        if self.metadatos and isinstance(self.metadatos, dict):
+            meta_facil = self.metadatos.get("facilitador")
+            if meta_facil and isinstance(meta_facil, str) and meta_facil.strip():
+                return meta_facil.strip()
+        return None
 
 
 class ParticipanteMesa(Base):

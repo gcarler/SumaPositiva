@@ -33,6 +33,8 @@ export interface MesaBackendResponse {
   lugar?: string;
   entidad?: string;
   facilitador?: string;
+  facilitador_id?: string | null;
+  facilitador_nombre?: string | null;
   total_asistentes?: number | null;
   totalAsistentes?: number | null;
   aforo_maximo?: number;
@@ -102,7 +104,7 @@ export function normalizarMesaBackend(b: MesaBackendResponse): MesaDeTrabajo {
     fecha: b.fecha ? (typeof b.fecha === "string" ? b.fecha.slice(0, 10) : new Date(b.fecha).toISOString().slice(0, 10)) : "2026-10-01",
     lugar: b.lugar_nombre || b.lugar || b.metadatos?.lugar || "Lugar por definir",
     entidad: b.metadatos?.entidad || b.entidad || (b.tipo_mesa ? `Mesa ${b.tipo_mesa}` : "Distrito de Cartagena"),
-    facilitador: b.metadatos?.facilitador || b.facilitador || "Facilitador Institucional",
+    facilitador: b.facilitador_nombre || b.metadatos?.facilitador || b.facilitador || "",
     totalAsistentes: b.total_asistentes ?? b.totalAsistentes ?? b.aforo_maximo ?? 0,
     plenaria: { acuerdos: b.plenaria?.acuerdos || (b.metadatos?.acuerdos as string | undefined) || "" },
     submesas,

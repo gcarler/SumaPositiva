@@ -81,6 +81,7 @@ class MesaRespuesta(MesaBase):
     ruta_jerarquica: str
     total_asistentes: int
     sha256_acta: str | None = None
+    facilitador_nombre: str | None = None
     creado_en: datetime
     actualizado_en: datetime
 

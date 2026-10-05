@@ -309,6 +309,8 @@ class MesaService:
             )
             self.repository.session.add(auditoria)
             await self.repository.session.flush()
+            if "facilitador_id" in campos_modificados:
+                await self.repository.session.refresh(mesa_actualizada, attribute_names=["facilitador"])
 
             return MesaRespuesta.model_validate(mesa_actualizada)
 

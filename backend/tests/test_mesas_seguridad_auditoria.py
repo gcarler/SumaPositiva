@@ -325,3 +325,46 @@ async def test_auditoria_agendas_mesas_crear_y_actualizar(database_url: str, cab
         assert audit_patch is not None
         assert "estado" in audit_patch.metadatos["campos_modificados"]
     await engine.dispose()
+
+
+async def test_mesa_facilitador_nombre_join_usuario(database_url: str, cabeceras_gestion):
+    """H-11: MesaRespuesta expone facilitador_nombre por join con autenticacion.usuarios."""
+    settings = Settings(_env_file=None, environment="test", database_url=database_url)
+    app = create_app(settings)
+
+    # 1. Crear usuario facilitador con nombres y apellidos
+    usuario_id, _ = await _crear_usuario_con_rol(database_url, "facilitador_mesa")
+
+    with TestClient(app, headers=cabeceras_gestion) as client:
+        test_code = uuid.uuid4().hex[:6]
+        # 2. Crear mesa asignando facilitador_id
+        resp_crear = client.post(
+            "/api/v1/mesas",
+            json={
+                "tipo_mesa": "TERRITORIAL",
+                "codigo_oficial": f"MT-FAC-{test_code}",
+                "shortcode_ciudadano": f"MFAC{test_code}",
+                "nombre": f"Mesa con Facilitador {test_code}",
+                "estado": "PROGRAMADA",
+                "modalidad": "PRESENCIAL",
+                "facilitador_id": str(usuario_id),
+            },
+        )
+        assert resp_crear.status_code == 201, resp_crear.text
+        mesa_id = resp_crear.json()["id"]
+
+        # 3. GET /mesas/{id} resuelve facilitador_nombre por join
+        resp_get = client.get(f"/api/v1/mesas/{mesa_id}")
+        assert resp_get.status_code == 200
+        data_get = resp_get.json()
+        assert data_get["facilitador_id"] == str(usuario_id)
+        assert data_get["facilitador_nombre"] == "Usuario facilitador_mesa Prueba"
+
+        # 4. GET /mesas (listado) también incluye facilitador_nombre
+        resp_list = client.get("/api/v1/mesas")
+        assert resp_list.status_code == 200
+        mesas = resp_list.json()
+        encontrada = next((m for m in mesas if m["id"] == mesa_id), None)
+        assert encontrada is not None
+        assert encontrada["facilitador_nombre"] == "Usuario facilitador_mesa Prueba"
+

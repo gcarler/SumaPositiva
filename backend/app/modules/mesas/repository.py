@@ -4,6 +4,7 @@ from datetime import date
 
 from sqlalchemy import func, or_, select, text
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import joinedload
 
 from app.modules.mesas.models import ActaComunitaria, Mesa, MesaAgenda, ParticipanteMesa
 
@@ -25,9 +26,9 @@ class MesaRepository:
         return mesa
 
     async def obtener_por_id(self, mesa_id: uuid.UUID) -> Mesa | None:
-        stmt = select(Mesa).where(Mesa.id == mesa_id)
+        stmt = select(Mesa).options(joinedload(Mesa.facilitador)).where(Mesa.id == mesa_id)
         res = await self.session.execute(stmt)
-        return res.scalar_one_or_none()
+        return res.unique().scalar_one_or_none()
 
     async def obtener_para_actualizar(self, mesa_id: uuid.UUID) -> Mesa | None:
         stmt = select(Mesa).where(Mesa.id == mesa_id).with_for_update()
@@ -35,16 +36,20 @@ class MesaRepository:
         return res.scalar_one_or_none()
 
     async def obtener_por_codigo(self, codigo: str) -> Mesa | None:
-        stmt = select(Mesa).where(
-            or_(
-                Mesa.codigo_oficial == codigo,
-                Mesa.shortcode_ciudadano == codigo,
-                func.lower(Mesa.codigo_oficial) == func.lower(codigo),
-                func.lower(Mesa.shortcode_ciudadano) == func.lower(codigo),
+        stmt = (
+            select(Mesa)
+            .options(joinedload(Mesa.facilitador))
+            .where(
+                or_(
+                    Mesa.codigo_oficial == codigo,
+                    Mesa.shortcode_ciudadano == codigo,
+                    func.lower(Mesa.codigo_oficial) == func.lower(codigo),
+                    func.lower(Mesa.shortcode_ciudadano) == func.lower(codigo),
+                )
             )
         )
         res = await self.session.execute(stmt)
-        return res.scalar_one_or_none()
+        return res.unique().scalar_one_or_none()
 
     async def listar(
         self,
@@ -55,7 +60,7 @@ class MesaRepository:
         ancestro_ruta: str | None = None,
         solo_raiz: bool = True,
     ) -> Sequence[Mesa]:
-        stmt = select(Mesa)
+        stmt = select(Mesa).options(joinedload(Mesa.facilitador))
         if solo_raiz and not ancestro_ruta:
             stmt = stmt.where(Mesa.mesa_padre_id.is_(None))
         if tipo_mesa:
@@ -73,17 +78,18 @@ class MesaRepository:
 
         stmt = stmt.order_by(Mesa.creado_en)
         res = await self.session.execute(stmt)
-        return res.scalars().all()
+        return res.unique().scalars().all()
 
     async def buscar_descendientes(self, ruta_padre: str, mesa_id: uuid.UUID) -> Sequence[Mesa]:
         stmt = (
             select(Mesa)
+            .options(joinedload(Mesa.facilitador))
             .where(text("ruta_jerarquica <@ CAST(:ruta_padre AS ltree)"), Mesa.id != mesa_id)
             .order_by(Mesa.ruta_jerarquica)
             .params(ruta_padre=ruta_padre)
         )
         res = await self.session.execute(stmt)
-        return res.scalars().all()
+        return res.unique().scalars().all()
 
     # --- Participantes ---
 
