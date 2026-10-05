@@ -423,3 +423,95 @@ Frontend Home: 200
 ```
 
 En particular, `GET /api/v1/politicas` devuelve ahora `"participantes": 0`, reflejando fidedignamente la base de datos saneada sin rastro de los 209 participantes sintéticos previos.
+
+
+---
+
+## 8. Ejecución de la Tarea EDIT-13 (Hallazgos Abiertos AUD-19)
+
+### 8.1. H-11 — Exposición de `facilitador_nombre` y Eliminación de Fallback Genérico (Commit `5f05141`)
+
+#### Causa Raíz
+El endpoint `GET /api/v1/mesas` retornaba `facilitador_id` pero carecía de la propiedad `facilitador_nombre`, lo que obligaba al cliente frontend en [`src/features/mesas/services/mesas-api.ts`](file:///root/polis/src/features/mesas/services/mesas-api.ts#L105) a recurrir al literal `"Facilitador Institucional"`.
+
+#### Intervención Realizada
+1. **Esquema Pydantic (`backend/app/modules/mesas/schemas.py`)**: Se incorporó el campo `facilitador_nombre: str | None = None` en el modelo `MesaRespuesta`.
+2. **Modelo SQLAlchemy (`backend/app/modules/mesas/models.py`)**:
+   - Se definió la relación `facilitador: Mapped["Usuario | None"] = relationship("Usuario", foreign_keys=[facilitador_id], lazy="selectin")`.
+   - Se implementó la propiedad `@property def facilitador_nombre(self)` que resuelve dinámicamente `f"{nombres} {apellidos}".strip() or correo`, o en su defecto `metadatos.get("facilitador")`.
+3. **Repositorio (`backend/app/modules/mesas/repository.py`)**: Se aplicó `options(joinedload(Mesa.facilitador))` en `obtener_por_id`, `obtener_por_codigo`, `listar` y `buscar_descendientes`, manteniendo `obtener_para_actualizar` sin join para prevenir el error de bloqueo de PostgreSQL (`FOR UPDATE cannot be applied to the nullable side of an outer join`).
+4. **Servicio (`backend/app/modules/mesas/service.py`)**: Tras mutación de `facilitador_id`, se ejecuta `session.refresh(mesa, attribute_names=["facilitador"])`.
+5. **Frontend (`src/features/mesas/services/mesas-api.ts`)**:
+   - `MesaBackendResponse` ahora declara `facilitador_id` y `facilitador_nombre`.
+   - `normalizarMesaBackend` adopta `b.facilitador_nombre || b.metadatos?.facilitador || b.facilitador || ""` erradicando completamente el fallback genérico `"Facilitador Institucional"`.
+6. **Pruebas y Verificación**:
+   - Backend: Creado `test_mesa_facilitador_nombre_join_usuario` en [`backend/tests/test_mesas_seguridad_auditoria.py`](file:///root/polis/backend/tests/test_mesas_seguridad_auditoria.py); 7/7 pruebas aprobadas.
+   - Frontend: Agregadas 2 pruebas unitarias en [`src/features/mesas/services/mesas-api.test.ts`](file:///root/polis/src/features/mesas/services/mesas-api.test.ts) validando prioridad de `facilitador_nombre` y ausencia de texto genérico ante valores nulos.
+   - Gates: `bun test` (292 passed), `bun run check` (0 errores), `alembic check` (0 diffs), `bun run build` exitoso.
+
+---
+
+### 8.2. H-09 — Sembrado Idempotente de Líneas Estratégicas Canónicas (Commit `95b85dd`)
+
+#### Causa Raíz
+`bd_csh` contenía una única línea estratégica legada (`LE-APORTE-8ff57e`), mientras que la arquitectura metodológica de Cartagena y los módulos de alternativas MGA y compromisos PAS referencian las 4 líneas canónicas distritales.
+
+#### Intervención Realizada
+1. **Migración Alembic 0044 (`backend/alembic/versions/0044_lineas_estrategicas.py`)**:
+   - Creación de restricción única: `op.create_unique_constraint("uq_lineas_estrategicas_codigo", "lineas_estrategicas", ["codigo"], schema="motor_politicas")`.
+   - Inserción idempotente con `ON CONFLICT (codigo) DO NOTHING` de las 4 líneas canónicas con resolución dinámica de `fase_id` (`FASE_1_DIAGNOSTICO`) y `dimension_id` por código:
+     - **LE-01**: *Prevención de ESCNNA y Protección Integral de Niñez* (dimensión `personal`, orden 1).
+     - **LE-02**: *Convivencia Comunitaria y Transformación de Fronteras Invisibles* (dimensión `comunitaria`, orden 2).
+     - **LE-03**: *Seguridad Ambiental y Resiliencia en la Ciénaga de la Virgen* (dimensión `ambiental`, orden 3).
+     - **LE-04**: *Seguridad Económica, Inclusión Productiva e Informalidad* (dimensión `economica`, orden 4).
+   - Enlace referencial automático de las 8 iniciativas preexistentes en `motor_politicas.banco_alternativas` (`UPDATE banco_alternativas SET linea_estrategica_id = l.id FROM lineas_estrategicas l WHERE linea_estrategica_codigo = l.codigo`).
+   - Downgrade limpio y desacoplado por comandos individuales sin errores de prepared statement en asyncpg.
+2. **Modelo ORM (`backend/app/modules/politicas/models.py`)**: Se incorporó `UniqueConstraint("codigo", name="uq_lineas_estrategicas_codigo")` garantizando paridad estricta y 0 diffs en `alembic check`.
+3. **Aplicación en Producción (`bd_csh`)**:
+   - Respaldo previo generado: `backups/bd_csh_pre_edit13_h09_20261005_042037.dump` (1.672.201 bytes, 1.328 entradas verificadas).
+   - Servicios detenidos, ejecución de `alembic upgrade head` vía entorno aislado (`env -i`).
+   - Verificado: `alembic current` -> `0044_lineas_estrategicas (head)`.
+   - Verificado en PostgreSQL: 4 líneas canónicas sembradas + 1 línea técnica previa preservada (5 filas totales).
+   - Verificado: Las 8 iniciativas de `banco_alternativas` cuentan ahora con `linea_estrategica_id` resuelto.
+   - Endpoint `GET /api/v1/politicas` devuelve las líneas asociadas a la Fase 1.
+4. **Gates Validados**: Pytest (92 passed en 17.31s), `bun test` (292 passed), `bun run check` (0 errores), endpoints HTTP 200 en vivo.
+
+---
+
+### 8.3. H-05 — Informe Pericial: Unificación de Fuentes Mesas (33) ↔ Agendas (36)
+
+#### 1. Diagnóstico del Estado Actual en Base de Datos (`bd_csh`)
+- `mesas_trabajo.mesas`: Cuenta con **33 registros** (las 33 mesas de trabajo deliberativas canónicas creadas para el proceso de concertación ciudadana de Cartagena).
+- `mesas_trabajo.agendas`: Cuenta con **36 registros** (cronograma de sesiones de agenda territorial creadas en la migración `0041`).
+- **Estado de Vinculación Actual**: **CERO vínculo en la base de datos**.
+  - `mesas_trabajo.agendas` NO tiene columna `mesa_id`.
+  - `mesas_trabajo.mesas` NO tiene columna `agenda_id`.
+  - Ambas tablas operan como islas desacopladas.
+
+#### 2. Matriz Forense de Correspondencia y Desglose de las 3 Agendas Excedentes
+Al realizar el cruce entre ambas fuentes se constata:
+- **31 correspondencias directas 1 a 1**:
+  - 3 Territoriales: `MT-L01-01` ↔ `mt-001`, `MT-L02-01` ↔ `mt-002`, `MT-L03-01` ↔ `mt-003`.
+  - 8 Poblacionales: `MP-POB-01..07` + `MP-ETN-08` ↔ `mp-001..008`.
+  - 11 Sectoriales: `MS-SEC-01..11` ↔ `ms-001..011`.
+  - 9 Rurales/Insulares directas: La Boquilla (`mr-001`), Arroyo de Piedra (`mr-002`), Punta Canoa (`mr-003`), Bayunca (`mr-004`), Pasacaballos (`mr-005`), Arroyo Grande (`mr-006`), Tierra Bomba (`mr-008`), Bocachica (`mr-009`), Archipiélago del Rosario (`mr-010`), Isla Fuerte (`mr-011`).
+- **Las 3 Agendas Excedentes en `mesas_trabajo.agendas` (36 - 33 = 3)**:
+  1. `pc-001` (*"Plenaria de Cierre — Consolidación de Aportes Ciudadanos"*): Es un evento plenario distrital de cierre en el Centro de Convenciones; **no es una mesa de trabajo deliberativa**, sino una sesión institucional de consolidación.
+  2. `mr-007b` (*"Mesa Insular — Barú y Comunidades del Archipiélago"*): Registro de calendario accesorio/duplicado para la zona de Barú.
+  3. `mr-012` (*"Mesa Rural e Insular — Barú"*): Segundo registro de calendario accesorio/duplicado para la zona de Barú.
+  *(En `mesas_trabajo.mesas`, la mesa canónica única para este territorio insular es `MR-ISL-07: Mesa Insular Santa Ana (Barú)`).*
+
+#### 3. Impacto en los Consumidores Frontend
+1. **MesasView (`/plataforma/mesas`)**: Consume `GET /api/v1/mesas` (33 mesas canónicas categorizadas y paginadas). Su botón "Asistencia" navega a `/asistencia/${mesa.codigoOficial}`.
+2. **Geovisor (`/plataforma/geovisor`)**: Invoca `GET /api/v1/mesas/geovisor` (backend devuelve las 33 mesas de `mesas_trabajo.mesas`), pero en [`mesas-geovisor-api.ts`](file:///root/polis/src/features/geovisor/services/mesas-geovisor-api.ts#L101) busca coordenadas en `COORDENADAS_AGENDA_MESAS[m.id]` usando `m.id` (UUID) contra un diccionario indexado por strings cortos (`mt-001`, `mr-001`), impidiendo la resolución de coordenadas para mesas sin geometría en BD.
+3. **Planilla de Asistencia (`/asistencia/[mesaId]`)**: Las páginas estáticas se generan en base a `AGENDA_MESAS` (36), pero la persistencia de asistentes se realiza en `mesas_trabajo.participantes_mesa` vinculada a `mesas_trabajo.mesas(id)`.
+
+#### 4. Propuesta de Solución Mínima y Segura (Sometida a Aprobación)
+- **Base de Datos / Backend**:
+  - Migración Alembic `0045_vincular_agendas_mesas.py` que agregue `mesa_id UUID NULL REFERENCES mesas_trabajo.mesas(id) ON DELETE SET NULL` en `mesas_trabajo.agendas`.
+  - Vincular automáticamente mediante script SQL en la migración los 33 registros correspondientes entre `mesas_trabajo.agendas` y `mesas_trabajo.mesas` (basado en concordancia de tipo y correlación territorial).
+  - Dejar `pc-001` con `mesa_id = NULL` (por ser plenaria distrital sin mesa territorial específica), y enlazar `mr-007b` y `mr-012` como sesiones de agenda de la mesa canónica de Barú `MR-ISL-07` (relación 1 mesa a N agendas).
+  - Actualizar `AgendaRespuesta` en backend para exponer `mesa_id: uuid.UUID | None = None`.
+- **Frontend**:
+  - Armonizar [`mesas-geovisor-api.ts`](file:///root/polis/src/features/geovisor/services/mesas-geovisor-api.ts) para que el lookup de coordenadas resuelva tanto por UUID como por `shortcode_ciudadano` o código de agenda, garantizando que el mapa muestre las 33 mesas oficiales.
+  - Asegurar que `/asistencia/[mesaId]` resuelva la mesa tanto si el slug recibido es el código de agenda (`mt-001`) como si es el código oficial (`MT-L01-01`) o el UUID.
