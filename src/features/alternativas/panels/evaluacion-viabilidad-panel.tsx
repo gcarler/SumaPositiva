@@ -198,9 +198,9 @@ export function EvaluacionViabilidadPanel({
               </strong>
             </div>
             <div>
-              <span className="text-text-muted block">Salvaguarda Étnica</span>
+              <span className="text-text-muted block">Enfoque Étnico</span>
               <strong className={alternativa.requiere_consulta_previa ? "text-warning" : "text-text-primary"}>
-                {alternativa.requiere_consulta_previa ? "Ley 70 / OIT 169" : "General"}
+                {alternativa.requiere_consulta_previa ? "Enfoque Diferencial Étnico" : "General"}
               </strong>
             </div>
           </div>
@@ -213,7 +213,7 @@ export function EvaluacionViabilidadPanel({
               Consultando AgenteJuridico y AgenteFiscal en el backend...
             </h4>
             <p className="text-xs text-text-muted max-w-md mx-auto">
-              Analizando competencias bajo la Ley Orgánica 1454 de 2011 (LOOT), salvaguardas de Consulta Previa (Convenio 169 OIT), restricciones de no regresividad DESCA y reglas de Vigencias Futuras (Ley 1483 de 2011).
+              Analizando competencias bajo la Ley Orgánica 1454 de 2011 (LOOT), salvaguardas de Enfoque Diferencial Étnico y Concertación Comunitaria, restricciones de no regresividad DESCA y reglas de Vigencias Futuras (Ley 1483 de 2011).
             </p>
           </div>
         ) : evaluacion ? (
@@ -262,12 +262,12 @@ export function EvaluacionViabilidadPanel({
                 </div>
               </div>
 
-              {/* Alerta de Consulta Previa Convenio 169 OIT */}
+              {/* Alerta de Enfoque Diferencial Étnico y Concertación Comunitaria */}
               {evaluacion.juridico.alerta_consulta_previa.requiere_consulta_previa ? (
                 <div className="rounded-xl border border-warning/40 bg-warning-soft p-3 text-xs space-y-2">
                   <div className="flex items-center gap-2 font-bold text-warning">
                     <ShieldAlert className="h-4 w-4 shrink-0" />
-                    <span>SALVAGUARDA ÉTNICA ACTIVA: Consulta Previa Preceptiva Obligatoria</span>
+                    <span>ENFOQUE DIFERENCIAL ÉTNICO: Concertación Comunitaria Participativa</span>
                   </div>
                   <p className="text-text-primary leading-relaxed">
                     {evaluacion.juridico.alerta_consulta_previa.criterio_afectacion_directa}
@@ -280,7 +280,7 @@ export function EvaluacionViabilidadPanel({
                 <div className="flex items-center gap-2 rounded-lg border border-border bg-surface-2 p-2.5 text-xs text-text-muted">
                   <ShieldCheck className="h-4 w-4 text-success shrink-0" />
                   <span>
-                    No se identificó afectación directa sobre territorios de comunidades étnicas con titulación colectiva protegida.
+                    Iniciativa de alcance general. No requiere procesos específicos de concertación comunitaria étnica.
                   </span>
                 </div>
               )}

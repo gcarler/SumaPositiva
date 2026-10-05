@@ -407,10 +407,10 @@ export function AlternativasView() {
                   Cualquier enfoque
                 </SelectItem>
                 <SelectItem value="solo_etnicos" className="text-xs">
-                  Consulta Previa Ley 70
+                  Con enfoque étnico
                 </SelectItem>
                 <SelectItem value="no_etnicos" className="text-xs">
-                  Sin consulta previa
+                  Sin enfoque étnico
                 </SelectItem>
               </SelectContent>
             </Select>

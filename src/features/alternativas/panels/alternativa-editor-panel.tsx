@@ -447,17 +447,17 @@ export function AlternativaEditorPanel({
             </FormField>
           </div>
 
-          {/* Salvaguarda Étnica Ley 70/93 */}
+          {/* Enfoque Diferencial Étnico y Concertación Comunitaria */}
           <div className="rounded-lg border border-border bg-surface-2 p-3">
             <div className="flex items-start justify-between gap-3">
               <div className="space-y-1">
                 <Label className="flex items-center gap-2 font-semibold text-xs text-text-primary">
                   <ShieldAlert className="h-3.5 w-3.5 text-warning" />
-                  Requiere Consulta Previa (Ley 70 de 1993 / OIT 169)
+                  Enfoque Diferencial Étnico / Concertación Comunitaria
                 </Label>
                 <p className="text-[11px] text-text-muted">
-                  Active si la alternativa interviene territorios colectivos de comunidades
-                  negras o indígenas de Cartagena (Tierrabomba, La Boquilla, Barú, etc.).
+                  Active si la alternativa focaliza acciones en comunidades negras o indígenas
+                  de Cartagena (Tierrabomba, La Boquilla, Barú, etc.) con concertación comunitaria.
                 </p>
               </div>
               <Button
@@ -468,7 +468,7 @@ export function AlternativaEditorPanel({
                 disabled={!tienePermisoEscritura}
                 onClick={() => setRequiereConsultaPrevia(!requiereConsultaPrevia)}
               >
-                {requiereConsultaPrevia ? "Activada (Ley 70)" : "No requiere"}
+                {requiereConsultaPrevia ? "Activado (Étnico)" : "No aplica"}
               </Button>
             </div>
           </div>

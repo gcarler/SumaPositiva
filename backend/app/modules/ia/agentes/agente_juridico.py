@@ -255,10 +255,9 @@ class AgenteJuridico:
         # Determinar acto normativo idóneo
         if alerta_cp.requiere_consulta_previa:
             recomendaciones.append(
-                "ALERTA CONSTITUCIONAL VINCULANTE: Antes de expedir el acto de ad"
-                "opción, debe protocolizarse la Consulta Previa con las comunidad"
-                "es étnicas identificadas ante la Dirección de Consulta Previa de"
-                "l MinInterior."
+                "ENFOQUE DIFERENCIAL ÉTNICO: Desarrollar mesas de concertación "
+                "comunitaria y diálogo participativo con las comunidades étnicas "
+                "identificadas en el marco del respeto a la autonomía territorial."
             )
 
         if not control_desca.supera_test_progresividad:
@@ -285,9 +284,9 @@ class AgenteJuridico:
         )
 
         consulta_previa = (
-            "Requiere trámite obligatorio de Consulta Previa (Convenio 169 OIT)."
+            "Aplica Enfoque Diferencial Étnico y Concertación Comunitaria."
             if alerta_cp.requiere_consulta_previa
-            else "No requiere Consulta Previa."
+            else "Aplica régimen de participación ciudadana general."
         )
         progresividad = (
             "Supera el examen de no regresividad en DESCA."

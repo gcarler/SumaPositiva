@@ -136,7 +136,7 @@ export function AlternativasTabla({
                         {alt.requiere_consulta_previa && (
                           <span className="inline-flex items-center gap-1 rounded bg-warning-soft px-1.5 py-0.5 text-[10px] font-semibold text-warning border border-warning/30">
                             <ShieldAlert className="h-3 w-3" />
-                            Consulta Previa Ley 70/93
+                            Enfoque Étnico / Concertación
                           </span>
                         )}
                       </div>

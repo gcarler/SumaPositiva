@@ -38,7 +38,7 @@ export function generarDictamenJuridicoDeterminista(
 
   if (esEtnico) {
     recomendaciones.push(
-      "Apertura formal de mesa de protocolización de Consulta Previa ante la Dirección de la Autoridad Nacional de Consulta Previa (DANCP/MinInterior) conforme al Convenio 169 de la OIT y SU-123 de 2018."
+      "Garantizar espacios de concertación comunitaria y diálogo participativo con las autoridades tradicionales y consejos comunitarios conforme al enfoque diferencial étnico constitucional (en sustitución de trámites de Consulta Previa formal)."
     );
   }
 
@@ -55,11 +55,11 @@ export function generarDictamenJuridicoDeterminista(
       comunidades_etnicas_identificadas: comunidades,
       territorios_colectivos_involucrados: territorios,
       criterio_afectacion_directa: esEtnico
-        ? "La iniciativa interviene territorios con presencia de comunidades negras o de titulación colectiva protegidas por la Ley 70 de 1993."
-        : "No se identificaron afectaciones directas a territorios de grupos étnicos diferenciados.",
+        ? "La iniciativa focaliza acciones en comunidades negras o indígenas de Cartagena, aplicando el principio constitucional de enfoque diferencial étnico y concertación comunitaria."
+        : "Iniciativa de alcance general en el territorio distrital.",
       requiere_clpi: false,
       fundamento_constitucional:
-        "Artículo 93 de la Constitución Política, Convenio 169 de la OIT, Sentencias SU-123/18, SU-095/18 y C-366/11.",
+        "Artículos 1, 7 y 70 de la Constitución Política, Convenio 169 de la OIT (referente de enfoque diferencial), Ley 70 de 1993 y Sentencia SU-123/18.",
     },
     control_regresividad: {
       existe_riesgo_regresividad: false,
