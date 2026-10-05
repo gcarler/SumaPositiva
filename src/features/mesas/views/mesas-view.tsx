@@ -253,8 +253,9 @@ export function MesasView() {
                 } catch {}
 
                 return (
-                  <motion.button
-                    type="button"
+                  <motion.div
+                    role="article"
+                    aria-label={`Mesa ${mesa.nombre}`}
                     key={mesa.id}
                     initial={reducedMotion ? false : { opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -262,7 +263,6 @@ export function MesasView() {
                       duration: 0.2,
                       delay: reducedMotion ? 0 : Math.min((idx % 12) * 0.025, 0.2),
                     }}
-                    onClick={() => openPanel("mesa", { mesaId: mesa.id })}
                     className="ui-interactive-card group relative flex min-w-0 flex-col justify-between p-6 text-left"
                   >
                     <div>
@@ -338,7 +338,6 @@ export function MesasView() {
                       <div className="flex items-center gap-2">
                         <Link
                           href={`/asistencia/${mesa.codigoOficial?.toLowerCase() || mesa.id}`}
-                          onClick={(e) => e.stopPropagation()}
                           className="inline-flex items-center gap-1 rounded-md px-2.5 py-1 text-[11px] font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-3)] transition-colors border border-[var(--border)]"
                           title="Planilla de Asistencia comunitaria"
                         >
@@ -346,13 +345,20 @@ export function MesasView() {
                           <span>Asistencia</span>
                         </Link>
 
-                        <span className="inline-flex items-center gap-1 font-medium text-[var(--text-primary)] group-hover:translate-x-0.5 transition-transform">
-                          {tieneActa ? "Acta" : "Detalle"}{" "}
+                        <Button
+                          variant="unstyled"
+                          size="unstyled"
+                          type="button"
+                          onClick={() => openPanel("mesa", { mesaId: mesa.id })}
+                          aria-label={`Ver ${tieneActa ? "acta" : "detalle"} de la mesa ${mesa.nombre}`}
+                          className="inline-flex items-center gap-1 font-medium text-[var(--text-primary)] hover:text-[var(--ember)] group-hover:translate-x-0.5 transition-transform cursor-pointer"
+                        >
+                          <span>{tieneActa ? "Acta" : "Detalle"}</span>
                           <ArrowRight className="size-3" />
-                        </span>
+                        </Button>
                       </div>
                     </div>
-                  </motion.button>
+                  </motion.div>
                 );
               })}
             </div>

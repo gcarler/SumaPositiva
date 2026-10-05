@@ -1,6 +1,14 @@
 import { z } from "zod";
 export const MAX_FOTO_BYTES = 5 * 1024 * 1024;
 export const fotoSchema = z.string().refine((valor) => {
+  if (
+    valor.startsWith("/api/v1/evidencias/") ||
+    valor.startsWith("blob:") ||
+    valor.startsWith("http://") ||
+    valor.startsWith("https://")
+  ) {
+    return true;
+  }
   const m =
     /^data:image\/(?:jpeg|png|webp);base64,([A-Za-z0-9+/]*={0,2})$/.exec(valor);
   if (!m || !m[1] || m[1].length % 4 !== 0) return false;

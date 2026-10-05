@@ -41,7 +41,7 @@ export async function subirEvidenciaFotografica(
     formData.append("propuesta_id", propuestaId);
   }
 
-  const raw = await apiFetch<Omit<EvidenciaSubidaRespuesta, "archivo_url">>("/evidencias/subir", {
+  const raw = await apiFetch<EvidenciaSubidaRespuesta>("/evidencias/subir", {
     method: "POST",
     body: formData,
     retry: { retries: 0 },
@@ -49,6 +49,6 @@ export async function subirEvidenciaFotografica(
 
   return {
     ...raw,
-    archivo_url: `/api/v1/evidencias/${raw.id}/archivo`,
+    archivo_url: raw.archivo_url || `/api/v1/evidencias/${raw.id}/archivo`,
   };
 }

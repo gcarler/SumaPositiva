@@ -31,7 +31,7 @@ import {
   TableRow,
   TableCell
 } from "@/shared/ui/table";
-import {Tabs, TabsList, TabsTrigger} from "@/shared/ui/tabs";
+import {Tabs, TabsList, TabsTrigger, TabsContent} from "@/shared/ui/tabs";
 import {
   Select,
   SelectTrigger,
@@ -527,7 +527,11 @@ export function MatrizArbolRelatoria({
   const maxFilasMml = Math.max(totalCausas, totalMedios, totalEfectos, totalFines, 1);
 
   return (
-    <div className="space-y-4 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-4 shadow-sm">
+    <Tabs
+      value={tabActiva}
+      onValueChange={(v) => setTabActiva(v as "problemas" | "soluciones" | "mml")}
+      className="space-y-4 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-4 shadow-sm w-full"
+    >
       {/* Barra de cabecera con tabs y acciones */}
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--border)] pb-3">
         <div className="space-y-1">
@@ -557,42 +561,36 @@ export function MatrizArbolRelatoria({
             </Button>
           )}
 
-          <Tabs
-            value={tabActiva}
-            onValueChange={(v) => setTabActiva(v as "problemas" | "soluciones" | "mml")}
-            className="w-auto"
-          >
-            <TabsList className="bg-[var(--surface-2)]">
-              <TabsTrigger value="problemas" className="gap-1.5 text-xs">
-                <ShieldAlert className="size-3.5" strokeWidth={1.5} />
-                Árbol de Problemas
-                {totalCausas > 0 && (
-                  <Badge variant="secondary" className="ml-1 px-1.5 py-0 text-[10px]">
-                    {totalCausas}
-                  </Badge>
-                )}
-              </TabsTrigger>
-              <TabsTrigger value="soluciones" className="gap-1.5 text-xs">
-                <CheckCircle2 className="size-3.5" strokeWidth={1.5} />
-                Árbol de Soluciones
-                {totalMedios > 0 && (
-                  <Badge variant="secondary" className="ml-1 px-1.5 py-0 text-[10px]">
-                    {totalMedios}
-                  </Badge>
-                )}
-              </TabsTrigger>
-              <TabsTrigger value="mml" className="gap-1.5 text-xs">
-                <Target className="size-3.5" strokeWidth={1.5} />
-                Matriz Integrada MML
-                <Badge
-                  variant={coberturaSoluciones >= 80 ? "success" : "warning"}
-                  className="ml-1 px-1.5 py-0 text-[10px]"
-                >
-                  {coberturaSoluciones}%
+          <TabsList className="bg-[var(--surface-2)]">
+            <TabsTrigger value="problemas" className="gap-1.5 text-xs">
+              <ShieldAlert className="size-3.5" strokeWidth={1.5} />
+              Árbol de Problemas
+              {totalCausas > 0 && (
+                <Badge variant="secondary" className="ml-1 px-1.5 py-0 text-[10px]">
+                  {totalCausas}
                 </Badge>
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
+              )}
+            </TabsTrigger>
+            <TabsTrigger value="soluciones" className="gap-1.5 text-xs">
+              <CheckCircle2 className="size-3.5" strokeWidth={1.5} />
+              Árbol de Soluciones
+              {totalMedios > 0 && (
+                <Badge variant="secondary" className="ml-1 px-1.5 py-0 text-[10px]">
+                  {totalMedios}
+                </Badge>
+              )}
+            </TabsTrigger>
+            <TabsTrigger value="mml" className="gap-1.5 text-xs">
+              <Target className="size-3.5" strokeWidth={1.5} />
+              Matriz Integrada MML
+              <Badge
+                variant={coberturaSoluciones >= 80 ? "success" : "warning"}
+                className="ml-1 px-1.5 py-0 text-[10px]"
+              >
+                {coberturaSoluciones}%
+              </Badge>
+            </TabsTrigger>
+          </TabsList>
         </div>
       </div>
 
@@ -646,7 +644,7 @@ export function MatrizArbolRelatoria({
       {/* ========================================================================= */}
       {/* TAB 1: ÁRBOL DE PROBLEMAS (DIAGNÓSTICO TERRITORIAL)                       */}
       {/* ========================================================================= */}
-      {tabActiva === "problemas" && (
+      <TabsContent value="problemas" className="mt-0 space-y-4">
         <div className="space-y-4">
           {/* Problema Central */}
           <div className="rounded-lg border border-[var(--border-strong)] bg-[var(--surface-2)] p-3.5 shadow-sm">
@@ -668,7 +666,7 @@ export function MatrizArbolRelatoria({
                         })
                       }
                     >
-                      <SelectTrigger size="sm" className="h-6 text-[10px]">
+                      <SelectTrigger size="sm" className="h-6 text-[10px]" aria-label="Dimensión ONU principal">
                         <SelectValue placeholder="Dimensión ONU principal…" />
                       </SelectTrigger>
                       <SelectContent>
@@ -831,7 +829,7 @@ export function MatrizArbolRelatoria({
                                   })
                                 }
                               >
-                                <SelectTrigger size="sm" className="h-6 text-[10px]">
+                                <SelectTrigger size="sm" className="h-6 text-[10px]" aria-label="Dimensión ONU principal">
                                   <SelectValue placeholder="Dimensión ONU…" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -854,7 +852,7 @@ export function MatrizArbolRelatoria({
                                   })
                                 }
                               >
-                                <SelectTrigger size="sm" className="h-6 text-[10px]">
+                                <SelectTrigger size="sm" className="h-6 text-[10px]" aria-label="Nivel de criticidad">
                                   <SelectValue placeholder="Criticidad…" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -1060,7 +1058,7 @@ export function MatrizArbolRelatoria({
                                 })
                               }
                             >
-                              <SelectTrigger size="sm" className="h-6 text-[10px]">
+                              <SelectTrigger size="sm" className="h-6 text-[10px]" aria-label="Dimensión ONU principal">
                                 <SelectValue placeholder="Dimensión ONU…" />
                               </SelectTrigger>
                               <SelectContent>
@@ -1132,12 +1130,12 @@ export function MatrizArbolRelatoria({
             </div>
           </div>
         </div>
-      )}
+      </TabsContent>
 
       {/* ========================================================================= */}
       {/* TAB 2: ÁRBOL DE SOLUCIONES (PROYECCIÓN ESTRATÉGICA)                        */}
       {/* ========================================================================= */}
-      {tabActiva === "soluciones" && (
+      <TabsContent value="soluciones" className="mt-0 space-y-4">
         <div className="space-y-4">
           {/* Objetivo Central y Botón Derivar */}
           <div className="rounded-lg border border-[var(--success)]/40 bg-[var(--surface-2)] p-3.5 shadow-sm">
@@ -1305,7 +1303,7 @@ export function MatrizArbolRelatoria({
                                   })
                                 }
                               >
-                                <SelectTrigger size="sm" className="h-6 text-[10px]">
+                                <SelectTrigger size="sm" className="h-6 text-[10px]" aria-label="Dimensión ONU principal">
                                   <SelectValue placeholder="Dimensión ONU…" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -1536,12 +1534,12 @@ export function MatrizArbolRelatoria({
             </div>
           </div>
         </div>
-      )}
+      </TabsContent>
 
       {/* ========================================================================= */}
       {/* TAB 3: MATRIZ INTEGRADA MML (MARCO LÓGICO DNP CONPES)                      */}
       {/* ========================================================================= */}
-      {tabActiva === "mml" && (
+      <TabsContent value="mml" className="mt-0 space-y-4">
         <div className="space-y-3">
           {/* Banner de indicadores metodológicos */}
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-5">
@@ -1755,7 +1753,7 @@ export function MatrizArbolRelatoria({
             </Table>
           </div>
         </div>
-      )}
-    </div>
+      </TabsContent>
+    </Tabs>
   );
 }

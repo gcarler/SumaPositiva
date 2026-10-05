@@ -918,7 +918,7 @@ export function MesaPanel({
 
               <div className="flex items-center gap-2">
                 <Select value={filtroEnfoque} onValueChange={setFiltroEnfoque}>
-                  <SelectTrigger className="h-8 text-xs w-[180px]">
+                  <SelectTrigger className="h-8 text-xs w-[180px]" aria-label="Filtrar por enfoque diferencial">
                     <SelectValue placeholder="Enfoque diferencial" />
                   </SelectTrigger>
                   <SelectContent className="max-h-56">

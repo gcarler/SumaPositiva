@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { expect, fn, userEvent, within } from "storybook/test";
+import { expect, fn, userEvent, within, waitFor } from "storybook/test";
 import MapaCartagena from "@/features/geovisor/components/mapa-cartagena";
 
 const meta = {
@@ -18,8 +18,10 @@ export const MapaYBarrios: Story = {
     const mapHost = canvas.getByRole("application", {
       name: /Mapa interactivo de Cartagena de Indias/,
     });
-    await expect(mapHost.querySelector(".ol-viewport")).toBeInTheDocument();
-    await expect(mapHost.querySelector(".ol-viewport canvas")).toBeInTheDocument();
+    await waitFor(() => {
+      expect(mapHost.querySelector(".ol-viewport")).toBeInTheDocument();
+      expect(mapHost.querySelector(".ol-viewport canvas")).toBeInTheDocument();
+    });
 
     const filtro = canvas.getByRole("combobox", { name: "Filtrar por localidad" });
     await expect(filtro).toHaveTextContent("Todas las localidades (205 barrios)");
