@@ -15,6 +15,7 @@ from sqlalchemy import (
     Numeric,
     String,
     Text,
+    UniqueConstraint,
     text,
 )
 from sqlalchemy.dialects.postgresql import JSONB, UUID
@@ -154,6 +155,7 @@ class LineaEstrategica(Base):
 
     __tablename__ = "lineas_estrategicas"
     __table_args__ = (
+        UniqueConstraint("codigo", name="uq_lineas_estrategicas_codigo"),
         Index("idx_lineas_dimension", "dimension_id", postgresql_include=[]),
         Index("idx_lineas_fase", "fase_id", postgresql_include=[]),
         Index(
