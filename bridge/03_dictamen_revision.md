@@ -326,3 +326,59 @@ Auditoría pericial y consolidación formal en `main` tras autorización expresa
    - `bun run build` completado sin errores.
    - Servicios reiniciados y endpoints `/api/v1/noticias`, `/api/v1/testimonios`, `/plataforma/noticias` y `/plataforma/testimonios` respondiendo HTTP 200 OK.
 4. **Estado del Repositorio**: `working tree clean` (100% de los archivos versionados).
+
+---
+
+## DICTAMEN FINAL AUD-20 Y EDIT-14 (agy, 2026-10-05) — CONFORME AL 100%
+
+**Destinatario:** Usuario / Dirección del Proyecto POLIS  
+**Auditor / Coordinador EAF:** `agy`  
+**Ejecutor Técnico:** `agy2`  
+**Veredicto:** **CONFORME AL 100% — TAREA EDIT-14 CERRADA EXITOSAMENTE**
+
+### 1. Contexto Jurídico y Decisión Estratégica Distrital
+En concordancia estricta con la determinación del Usuario y la jurisprudencia constitucional colombiana (Corte Constitucional, Sentencias SU-123 de 2018, C-030 de 2008, C-175 de 2009):
+- La **Consulta Previa formal (Convenio 169 de la OIT)** procede de manera excepcional ante medidas administrativas o legislativas que ocasionen una **afectación directa y diferenciada** a una comunidad étnica (como obras de infraestructura de alto impacto, titulación de resguardos o explotación minera).
+- Para la formulación de una **política pública distrital general de seguridad ciudadana**, exigir consulta previa formal en los 12 corregimientos e islas constituía un yerro jurídico que habría desatado sobrecostos millonarios y paralizado la ejecución por litigiosidad constitucional.
+- En su lugar, el mandato constitucional y legal (Arts. 1, 2, 7 y 70 C.P.; Ley 1757 de 2015) exige **Participación Concertada con Enfoque Diferencial Étnico**.
+- Se ordenó y verificó la **depuración integral de las alertas de consulta previa formal** en la plataforma, sustituyéndolas por el **Enfoque Diferencial Étnico y Diálogo Comunitario**, y la siembra de los elementos estructurales identificados en la auditoría AUD-20.
+
+### 2. Verificación Pericial por Hito (Commits `8465370`, `864619c`, `51d64b8`, `895552b`, `e1891f5`)
+
+1. **Hito 1 — Depuración Integral de Consulta Previa (Commit `8465370`)**:
+   - **Base de Datos (`bd_csh`)**: Purgada la clave `'es_consulta_previa'` del JSONB `metadatos` en las 33 mesas de trabajo. Conteo pericial: `con_es_cp = 0`.
+   - **Salvaguarda Territorial Étnica**: Las 12 mesas de corregimientos e islas (Tierrabomba, Bocachica, Caño del Oro, Punta Arena, Barú, Ararca, Santa Ana, La Boquilla, Manzanillo del Mar, Punta Canoa, Pontezuela, Bayunca) conservan intacto su atributo `enfoque_poblacional = 'ETNICO'` y sus coordenadas WGS84.
+   - **Frontend y Agente Jurídico**: Sustituidas las alertas por "Enfoque Diferencial Étnico / Concertación Comunitaria" en paneles de alternativas (`alternativa-editor-panel.tsx`, `evaluacion-viabilidad-panel.tsx`, `alternativas-tabla.tsx`, `alternativas-view.tsx`, `viabilidad-api.ts`) y en el motor del agente jurídico (`agente_juridico.py`).
+
+2. **Hito 2 — Siembra de 17 Actores Institucionales Cartagena 2026 (Commit `864619c`)**:
+   - **Migración Alembic `0047_sembrar_actores_institucionales_cartagena.py`**: Siembra idempotente de las 17 dependencias oficiales según `knowledge-base/11_MAPEO_DEPENDENCIAS_ALCALDIA_CARTAGENA_2026.md` (SICC, Distriseguridad, Secretaría de Participación, EPA, OAGRD, Corvivienda, GEPM, PES-PR, DADIS, Escuela de Gobierno, IDACCC, IPCC, Alcaldías Locales 1, 2 y 3, Secretaría de Planeación, Secretaría de Hacienda).
+   - **Protección de Datos**: Cero PII (nombres de personas naturales, teléfonos personales o correos no institucionales). Tipo institucional, territorio distrital, postura promotor aliado.
+   - **Frontend React**: [`src/features/plataforma/views/actores-view.tsx`](file:///root/polis/src/features/plataforma/views/actores-view.tsx) conectado reactivamente con `useEffect` a `cargarActores()`, hidratando la Matriz 2x2 desde la API real.
+
+3. **Hito 3 — Siembra de 3 Indicadores de Impacto a 2036 (Commit `51d64b8`)**:
+   - **Migración Alembic `0048_indicadores_impacto_2036.py`**: Siembra de `IND-IMP-01` (IPM pobreza multidimensional, meta 15% a 2036), `IND-IMP-02` (Tasa convivencia barrial, meta 25 pts a 2036) e `IND-IMP-03` (Resiliencia climática Ciénaga de la Virgen, meta 85/100 a 2036) en `indicadores.fichas_tecnicas_indicadores`.
+   - Cierra el hallazgo **AUD20-H01**, completando la cadena de valor MGA (insumos, productos, resultados e impactos).
+
+4. **Hito 4 — Siembra de 3 Fuentes Distritales con Destinación Específica (Commit `895552b`)**:
+   - **Migración Alembic `0049_fuentes_distritales_destinacion_especifica.py`**: Siembra de Estampilla Pro-Cultura (`FTE-PRO-CULTURA`), Estampilla Pro-Adulto Mayor (`FTE-PRO-ADULTO`) y Sobretasa a la Gasolina (`FTE-SOBRETASA-GAS`) con sus bases legales de orden distrital y nacional en `presupuesto.fuentes_financiacion`.
+   - Cierra el hallazgo **AUD20-H03**, elevando el catálogo a 8 fuentes formales.
+
+### 3. Comprobación Forense Directa en Producción (`bd_csh`)
+- Respaldo previo generado: `backups/bd_csh_pre_edit14_apply_20261005_144300.dump` (1.66 MB).
+- Migración head actual: `0049_fuentes_distritales_esp`.
+- Resultados de consulta SQL verificados por el auditor:
+  - `participacion_ciudadana.actores_estrategicos`: **17** dependencias distritales registradas.
+  - `indicadores.fichas_tecnicas_indicadores`: **3** indicadores de impacto (`IND-IMP-01`, `IND-IMP-02`, `IND-IMP-03`), 11 fichas técnicas en total.
+  - `presupuesto.fuentes_financiacion`: **8** fuentes oficiales registradas.
+  - `mesas_trabajo.mesas`: **33** mesas canónicas, **0** con `es_consulta_previa`, **12** con `enfoque_poblacional = 'ETNICO'` y 100% con coordenadas WGS84 intactas.
+
+### 4. Quality Gates y Estado Operativo
+- `bun run check`: **0 errores de lint, 0 errores de TypeScript, tokens de diseño y capas conformes**.
+- `bun test`: **303 pruebas unitarias pasando (0 fallas)**.
+- `pytest`: **126 pruebas backend pasando (0 fallas)**, incluyendo validación de migraciones e integración en base de datos.
+- Servicios `systemd`: `polis-backend` (uvicorn en 8000) y `polis-frontend` (Next.js en 3000) activos y respondiendo `HTTP 200 OK`.
+- Servidor web Nginx con SSL en `https://seguridadhumanaintegral.org/` 100% operativo.
+- Repositorio Git: `working tree clean`, HEAD en `e1891f5`, cero `git push` a remoto ejecutado.
+
+**CONCLUSIÓN**: EDIT-14 queda formalmente APROBADA y CERRADA. La plataforma POLIS se encuentra blindada jurídica y técnicamente, con el módulo de Actores Institucionales plenamente funcional y poblado con la estructura oficial de la Alcaldía de Cartagena 2026. `agy2` queda en modo reposo técnico.
+
