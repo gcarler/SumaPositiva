@@ -36,12 +36,12 @@ import {
 } from "@/features/sesion/state/session-store";
 import type { TipoAporte } from "@/features/politicas/models/politicas";
 import {
-  fileToDataUrlComprimido,
   esImagenValida,
   MAX_FOTOS_POR_APORTE,
   formatBytes,
   MAX_BYTES_FOTO_ORIGINAL,
 } from "@/features/aportes/services/images";
+import { subirEvidenciaFotografica } from "@/features/evidencias/services/evidencias-api";
 import { SectionLabel } from "@/shared/components/participation-ui";
 import { SesionAvatar } from "@/features/sesion/components/sesion-avatar";
 import { useCrearAporte } from "@/features/aportes/services/use-aportes-queries";
@@ -152,10 +152,14 @@ export function AporteEditorPanel({
         continue;
       }
       try {
-        aceptadas.push(await fileToDataUrlComprimido(file));
-      } catch {
-        toast.error(`No se pudo procesar "${file.name}"`, {
-          description: "Puede ser un formato no compatible con el navegador.",
+        const evidencia = await subirEvidenciaFotografica(file);
+        aceptadas.push(evidencia.archivo_url);
+      } catch (err) {
+        toast.error(`No se pudo subir y sanitizar "${file.name}"`, {
+          description:
+            err instanceof Error
+              ? err.message
+              : "Error al comunicarse con el servidor de evidencias.",
         });
       }
     }

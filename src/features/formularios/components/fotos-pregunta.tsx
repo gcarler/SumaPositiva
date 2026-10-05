@@ -5,8 +5,8 @@ import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import { FormField } from "@/shared/ui/form-field";
 import { errorFotos, MAX_FOTO_BYTES } from "../services/fotos-respuesta";
-// Las fotos son un borrador hasta enviar; la API persiste el contenido en PostgreSQL.
-// Una integración futura con MinIO/S3 deberá subirlas y devolver referencias permanentes.
+import { subirEvidenciaFotografica } from "@/features/evidencias/services/evidencias-api";
+// Las fotos se sanitizan (despojo de EXIF/GPS) y persisten vía POST /api/v1/evidencias/subir.
 export function FotosPregunta({
   fotos,
   cambiar,
@@ -85,21 +85,11 @@ export function FotosPregunta({
               setLeyendo(true);
               ocupado?.(true);
               try {
-                const nuevas = await Promise.all(
-                  archivos.map(
-                    (f) =>
-                      new Promise<string>((resolve, reject) => {
-                        const reader = new FileReader();
-                        reader.onerror = () =>
-                          reject(new Error("No se pudo leer una foto"));
-                        reader.onload = () =>
-                          typeof reader.result === "string"
-                            ? resolve(reader.result)
-                            : reject(new Error("Foto inválida"));
-                        reader.readAsDataURL(f);
-                      }),
-                  ),
-                );
+                const nuevas: string[] = [];
+                for (const f of archivos) {
+                  const ev = await subirEvidenciaFotografica(f);
+                  nuevas.push(ev.archivo_url);
+                }
                 if (!activo.current) return;
                 const siguientes = [...actual.current, ...nuevas];
                 const mensaje = errorFotos(siguientes, max);
@@ -108,11 +98,14 @@ export function FotosPregunta({
                   actual.current = siguientes;
                   cambio.current(siguientes);
                 }
-              } catch {
-                if (activo.current)
+              } catch (err) {
+                if (activo.current) {
                   setError(
-                    "No se pudieron leer las fotos. Intenta nuevamente.",
+                    err instanceof Error && err.message
+                      ? err.message
+                      : "No se pudieron subir y sanitizar las fotos. Intenta nuevamente."
                   );
+                }
               } finally {
                 ocupado?.(false);
                 if (activo.current) setLeyendo(false);
