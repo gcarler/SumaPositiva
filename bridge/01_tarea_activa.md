@@ -1,14 +1,17 @@
-# TAREA ACTIVA — EDIT-11 (asignada a agy2; revisión: agy/coordinador)
+# TAREA ACTIVA — EDIT-12 (asignada a agy2; revisión: agy)
 
-Contexto: cierre post-AUD-19 en `bridge/03_dictamen_revision.md` (commit 3d1648f). Pendientes de la auditoría:
+**Autorización del usuario**: ejecutar la purga de datos de prueba de EDIT-11 (script §4.4 de `bridge/02_resultado_agy2.md`, ya validado por agy con ROLLBACK: propuestas 227→0, instrumentos 128→6, nodos 337→35, asignaciones 14→2).
 
-## Alcance
-1. **H-04**: retirar fallbacks/retornos simulados silenciosos del frontend en agenda, fuentes, indicadores, presupuesto y participación (`src/features/**/services/*-api.ts` y hooks). Regla: el backend es la fuente de verdad; ante error, propagar y mostrar toast; solo permitir lectura vacía si el backend responde vacío. Si un endpoint que el front llama no existe, implementarlo en backend (con test y matriz `docs/permisos-api.md`) o eliminar la llamada muerta.
-2. **H-06**: `GET /api/v1/politicas` (404) llamado desde `src/features/politicas/services/politicas-api.ts:109`: implementar el endpoint o corregir la ruta real.
-3. **Datos de prueba (SOLO propuesta, NO ejecutar)**: listar en un informe `bridge/` qué propuestas (227), instrumentos (128/337 nodos) y asignaciones presupuestales (14, 7 duplicadas) son de prueba, con el criterio de identificación y la consulta SQL. La purga la autoriza el usuario después de revisión.
+## Procedimiento obligatorio
+1. Respaldo previo: `su - postgres -c "pg_dump -Fc bd_csh" > backups/bd_csh_pre_purga_$(date +%Y%m%d_%H%M%S).dump`; verificar con `pg_restore -l` y registrar tamaño y nº de entradas.
+2. Registrar conteos ANTES (propuestas, apoyos, instrumentos, nodos, asignaciones, usuarios=413 y mesas=33 canónicas `id LIKE '01a0f5fe%'`).
+3. Ejecutar el script en UNA transacción (`BEGIN … COMMIT`) vía `su - postgres -c "psql -d bd_csh -P pager=off -v ON_ERROR_STOP=1 -f ..."`. Si algún conteo intermedio no coincide con lo esperado, `ROLLBACK` y reportar sin insistir.
+4. Registrar conteos DESPUÉS y confirmar: propuestas 0, instrumentos 6, nodos 35, asignaciones 2, usuarios 413 y mesas 33 sin cambio.
+5. Verificar HTTP en vivo (200): `/api/v1/politicas`, `/api/v1/mesas`, `/api/v1/mesas/agendas`, `/api/v1/fuentes`, `/api/v1/alternativas`, y que la home carga.
+6. Atender OBS-29: `logger.exception` en el `except` de `participantes` en `backend/app/modules/politicas/router.py` (commit atómico, gates `bun run check`, `bun test`, pytest politicas+access_policy, reinicio de `polis-backend`).
 
-## Reglas
-- Cero `git push`. No tocar archivos de Codex (noticias, testimonios, `backend/alembic/env.py`, `backend/app/api/router.py`, `panel-store.ts`, `contenido-view.tsx`). `git add` de archivos concretos, nunca `-A`.
-- NO tocar `autenticacion.usuarios` ni ejecutar DELETE en `bd_csh`.
-- Gates: `bun run check`, `bun test`, pytest de los módulos afectados + `test_access_policy.py`, `alembic check` en `polis_test`, `bun run build` + `systemctl restart polis-frontend polis-backend`.
-- Commits atómicos por hallazgo. Al terminar, escribir resultado en `bridge/02_resultado_agy2.md` (evidencia: comandos y salidas) y avisar a `agy`.
+## Prohibido
+- Tocar `autenticacion.usuarios` o cualquier tabla fuera del script; `git push`; archivos de Codex; `git add -A`.
+- Cambiar el script (si requiere cambios, detenerse y avisar a `agy`).
+
+Resultado en `bridge/02_resultado_agy2.md` (sección EDIT-12, con comandos y salidas literales) y avisar a `agy`.
