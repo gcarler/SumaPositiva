@@ -127,6 +127,85 @@ async def preparar_bd_y_usuarios():
             WHERE codigo !~ '^LE-[0-9]{2,}$';
         """)
 
+        # Asegurar al menos una mesa canónica para flujos E2E
+        mesas_count = await conn.fetchval("SELECT count(*) FROM mesas_trabajo.mesas;")
+        if mesas_count == 0:
+            linea_id = await conn.fetchval("""
+                SELECT id FROM motor_politicas.lineas_estrategicas
+                WHERE codigo = 'LE-01'
+                LIMIT 1;
+            """)
+            if not linea_id:
+                linea_id = await conn.fetchval("SELECT id FROM motor_politicas.lineas_estrategicas LIMIT 1;")
+            await conn.execute("""
+                INSERT INTO mesas_trabajo.mesas (
+                    id, mesa_padre_id, ruta_jerarquica, tipo_mesa,
+                    codigo_oficial, shortcode_ciudadano, nombre, slug,
+                    lugar_nombre, fecha, horario, aforo_maximo,
+                    total_asistentes, estado, modalidad, linea_id,
+                    metadatos, creado_en, actualizado_en
+                ) VALUES (
+                    '01a0f5fe-0001-7000-8000-000000000001'::uuid,
+                    NULL,
+                    'csh.mt.canonica'::ltree,
+                    'TERRITORIAL',
+                    'MT-CAN-01',
+                    'MTCAN01',
+                    'Mesa Territorial Canónica E2E',
+                    'mesa-territorial-canonica-e2e',
+                    'Centro Cultural Cartagena',
+                    '2026-10-15',
+                    '08:00 - 12:00',
+                    50,
+                    25,
+                    'PROGRAMADA',
+                    'PRESENCIAL',
+                    $1,
+                    '{"acuerdos": "Acuerdos iniciales de plenaria ciudadana para seguridad y convivencia."}'::jsonb,
+                    NOW(),
+                    NOW()
+                ) ON CONFLICT (codigo_oficial) DO NOTHING;
+            """, linea_id)
+
+        # Asegurar al menos una propuesta de prueba publicada para flujo de devolución motivada C-150
+        propuestas_count = await conn.fetchval(
+            "SELECT count(*) FROM participacion_ciudadana.propuestas_ciudadanas WHERE estado = 'publicado';"
+        )
+        if propuestas_count == 0:
+            linea_id = await conn.fetchval("""
+                SELECT id FROM motor_politicas.lineas_estrategicas
+                WHERE codigo = 'LE-01'
+                LIMIT 1;
+            """)
+            if not linea_id:
+                linea_id = await conn.fetchval("SELECT id FROM motor_politicas.lineas_estrategicas LIMIT 1;")
+            dimension_id = await conn.fetchval("SELECT id FROM motor_politicas.dimensiones_seguridad_humana WHERE codigo = 'personal' LIMIT 1;")
+            await conn.execute("""
+                INSERT INTO participacion_ciudadana.propuestas_ciudadanas (
+                    id, linea_id, dimension_id, tipo_aporte, titulo,
+                    descripcion, autor_nombre, es_anonimo, metadata_enfoque,
+                    archivos_adjuntos, apoyos_contador, estado, activo,
+                    metadatos, creado_en, actualizado_en
+                ) VALUES (
+                    '01a0f5fe-0002-7000-8000-000000000001'::uuid,
+                    $1,
+                    $2,
+                    'propuesta',
+                    'Aporte Ciudadano para Devolución Motivada E2E',
+                    'Propuesta comunitaria para fortalecimiento del alumbrado y vigilancia en corredores escolares.',
+                    'Líder Comunitario E2E',
+                    false,
+                    '{}'::jsonb,
+                    '[]'::jsonb,
+                    0,
+                    'publicado',
+                    true,
+                    '{"publicado": true}'::jsonb,
+                    NOW(),
+                    NOW()
+                ) ON CONFLICT (id) DO NOTHING;
+            """, linea_id, dimension_id)
+
         resultado = {
             "autoridad": {
                 "correo": correo_autoridad,

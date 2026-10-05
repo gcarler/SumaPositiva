@@ -350,7 +350,7 @@ export function MesasView() {
                           size="unstyled"
                           type="button"
                           onClick={() => openPanel("mesa", { mesaId: mesa.id })}
-                          aria-label={`Ver ${tieneActa ? "acta" : "detalle"} de la mesa ${mesa.nombre}`}
+                          aria-label={`Ver detalle de la mesa ${mesa.nombre}`}
                           className="inline-flex items-center gap-1 font-medium text-[var(--text-primary)] hover:text-[var(--ember)] group-hover:translate-x-0.5 transition-transform cursor-pointer"
                         >
                           <span>{tieneActa ? "Acta" : "Detalle"}</span>
