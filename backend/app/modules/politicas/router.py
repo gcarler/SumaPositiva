@@ -1,3 +1,4 @@
+import logging
 import uuid
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -25,6 +26,8 @@ from app.modules.politicas.schemas import (
     PoliticaPublicaRead,
 )
 from app.modules.politicas.service import LineaService
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/politicas", tags=["motor-politicas"])
 
@@ -78,6 +81,7 @@ async def listar_politicas(
         conteo_raw = (await session.execute(sql_participantes)).scalar()
         total_participantes: int | None = int(conteo_raw) if conteo_raw is not None else None
     except Exception:
+        logger.exception("Error al calcular participantes consolidados para pol-001")
         total_participantes = None
 
     progresos = await calcular_progreso_real_fases(session)
