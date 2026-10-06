@@ -18,6 +18,7 @@ from app.modules.politicas.router import router as politicas_router
 from app.modules.presupuesto.router import router as presupuesto_router
 from app.modules.sesion.router import router as sesion_router
 from app.modules.testimonios.router import router as testimonios_router
+from app.modules.comunicaciones.router import router as comunicaciones_router
 
 api_router = APIRouter(prefix="/api/v1")
 api_router.include_router(health_router)
@@ -39,3 +40,4 @@ api_router.include_router(testimonios_router)
 api_router.include_router(auditoria_router)
 api_router.include_router(compromisos_router)
 api_router.include_router(noticias_router)
+api_router.include_router(comunicaciones_router)

@@ -18,6 +18,7 @@ import {
   Settings,
   ArrowLeft,
   Menu,
+  Megaphone,
 } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import { useSesionStore } from "@/features/sesion/state/session-store";
@@ -30,6 +31,7 @@ export const ICONOS = {
   usuarios: Users,
   contenido: FileText,
   noticias: Newspaper,
+  comunicaciones: Megaphone,
   testimonios: MessageCircle,
   fuentes: Database,
   actores: Users,

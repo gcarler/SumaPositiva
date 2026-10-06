@@ -30,9 +30,9 @@ describe("Matriz de rutas internas", () => {
     ["ciudadano", []],
     [
       "autoridad_distrital",
-      ["dashboard", "formularios", "geovisor", "mesas", "contenido", "noticias", "testimonios", "fuentes", "actores", "diagnostico", "alternativas", "seguimiento"],
+      ["dashboard", "formularios", "geovisor", "mesas", "contenido", "noticias", "testimonios", "fuentes", "actores", "diagnostico", "alternativas", "seguimiento", "comunicaciones"],
     ],
-    ["facilitador_mesa", ["dashboard", "formularios", "mesas", "testimonios", "actores"]],
+    ["facilitador_mesa", ["dashboard", "formularios", "mesas", "testimonios", "actores", "comunicaciones"]],
     [
       "auditor_forense",
       [
@@ -47,6 +47,7 @@ describe("Matriz de rutas internas", () => {
         "diagnostico",
         "alternativas",
         "seguimiento",
+        "comunicaciones",
         "configuracion",
       ],
     ],
