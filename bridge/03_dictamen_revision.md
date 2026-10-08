@@ -593,3 +593,48 @@ La tarea **[QA-FIX-01]** queda formalmente **CERRADA Y APROBADA AL 100%**. Los t
 
 ### 2. Veredicto Final:
 La tarea **[QA-FIX-02]** queda formalmente **CERRADA Y APROBADA AL 100%**. El ticket `QA-005` es declarado en estado **Listo para Re-test (`listo_retest`)** en la Plataforma Autónoma de QA (`http://2.25.244.251:4000`).
+
+---
+
+## DICTAMEN PERICIAL FORENSE: CIERRE EXITOSO Y APROBACIÓN DE [FEAT-TESTIMONIOS-01] (EAF / agy, 2026-10-08)
+
+**Destinatario:** Dirección del Proyecto POLIS / Equipo de Control de Calidad y Desarrollo  
+**Auditor / Coordinador EAF:** `agy` (`tmux a -t agy`)  
+**Ejecutor Técnico:** `agy2` (`tmux a -t agy2`)  
+**Commit Auditado:** `bff100a` (`feat(testimonios): creacion y edicion de testimonios desde plataforma y habilitacion de permisos (FEAT-TESTIMONIOS-01)`)  
+**Requerimiento del Usuario:** *"en la plataforma /plataforma no me deja crear ni editar testimonios. por favor encargate de eso.... necesito que crees esa opción"*  
+
+**Resultado Oficial:** **APROBADO — CONFORME AL 100%**
+
+### 1. Comprobaciones Periciales de Contra-Auditoría:
+
+1. **Permiso de Moderación en Base de Datos PostgreSQL y Migración Alembic**:
+   - Se verificó la creación de la migración `backend/alembic/versions/0053_permiso_testimonios_admin.py` con `down_revision = "0052_alinear_esquema_mesas"`.
+   - Se constató que `/root/polis/venv/bin/alembic current` certifica `0053_permiso_testimonios_admin (head)`.
+   - Se ejecutó consulta pericial directa en PostgreSQL (`bd_csh`, tabla `autenticacion.roles`), corroborando la inclusión explícita del permiso `"testimonios:moderar"` dentro del array JSONB para el rol `administrador_identidades`.
+   - Queda erradicado de raíz el error HTTP 403 Forbidden al gestionar o cargar testimonios en el panel administrativo.
+
+2. **Habilitación de Botón Principal y Flujo de Creación**:
+   - En `src/features/plataforma/views/testimonios-view.tsx`, se verificó la asignación de la prop `action` en `PageHeader`, instanciando el botón `+ Registrar Testimonio` (`variant="ember"`, tamaño `sm`, con icono `Plus`).
+   - Se constató el punto de entrada secundario en `src/features/testimonios/panels/testimonios-moderacion-panel.tsx` dentro del estado vacío (`empty state`), asegurando agilidad operativa para el funcionario.
+
+3. **Robustecimiento Reactivo y Ergonomía de `TestimonioEditorPanel`**:
+   - En `src/features/testimonios/panels/testimonio-editor-panel.tsx`, se verificó la eliminación de `useEffect` con mutaciones directas de estado (previniendo advertencias y errores de renderizado en cascada).
+   - Modo Creación (`!testimonioId`): el formulario inicializa completamente limpio, con los campos desbloqueados y el botón de submit activo para registrar nuevos testimonios.
+   - Modo Edición (`testimonioId` presente): precarga reactiva de los datos del servidor a través de `detalle.data`.
+   - Selectores desplegables de Territorio Distrital (Localidades 1, 2, 3 e Islas/Corregimientos) y de Dimensión ONU de Seguridad Humana, integrando datos remotos con fallback resiliente.
+   - Desbloqueo garantizado del botón de guardado ante errores de red, incorporando un banner no intrusivo con botón interactivo de reintento (`detalle.refetch()`).
+   - Saneamiento y tipado estricto de excepciones mediante `ApiError` y notificaciones descriptivas mediante `toast`.
+   - Invalidación completa y atómica de queries en React Query (`TESTIMONIOS_KEYS.all`, `TESTIMONIOS_KEYS.resumen`, `["testimonios", "gestion"]`, `["testimonios", "publicos"]`).
+
+4. **Verificación Independiente de Quality Gates**:
+   - `bun run check`: **0 errores** (`node scripts/ui-policy.mjs`, `tsc --noEmit`, `eslint .`).
+   - `bun test`: **321/321 pruebas unitarias pasando (0 fallas)**, 1383 assertions en 34 suites de prueba.
+   - `bun run build`: **Compilación de producción exitosa en Next.js Turbopack** (190 rutas generadas, standalone empaquetado).
+   - `systemctl status polis-frontend`: **Activo y operativo en puerto 3000**.
+   - `curl -s -I http://127.0.0.1:3000/plataforma/testimonios` -> **HTTP/1.1 200 OK**.
+   - `curl -s -k -I https://seguridadhumanaintegral.org/plataforma/testimonios` -> **HTTP/1.1 200 OK** (vía Nginx reverse proxy).
+
+### 2. Veredicto Final:
+La tarea **[FEAT-TESTIMONIOS-01]** queda formalmente **CERRADA, APROBADA AL 100% Y CERTIFICADA PARA PRODUCCIÓN**.
+
