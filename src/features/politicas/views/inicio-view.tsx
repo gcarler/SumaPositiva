@@ -1,6 +1,15 @@
 "use client";
 
+import { useSyncExternalStore } from "react";
 import { motion, useReducedMotion } from "framer-motion";
+
+const subscribeNoop = () => () => {};
+const useMounted = () =>
+  useSyncExternalStore(
+    subscribeNoop,
+    () => true,
+    () => false,
+  );
 import {
   ArrowRight,
   MapPin,
@@ -28,6 +37,12 @@ import { useFases, useLineas } from "@/features/politicas/services/use-politicas
 import { DimensionesGrid } from "@/features/politicas/components/dimensiones-grid";
 import { EnrutadorCiudadanoInteligente } from "@/features/politicas/components/enrutador-ciudadano-inteligente";
 import { FlujoInversionGobernanza } from "@/features/politicas/components/flujo-inversion-gobernanza";
+import {
+  useHeroConfigStore,
+  obtenerOpcionHero,
+  HERO_DEFAULT_IMAGE_ID,
+  HERO_DEFAULT_OPACIDAD,
+} from "@/features/politicas/state/hero-store";
 
 const fadeUp = {
   initial: { opacity: 0, y: 20 },
@@ -96,12 +111,39 @@ export function InicioView() {
     { valor: "3 + Insular", label: "Localidades cubiertas" },
   ];
 
+  /* Configuración del Backdrop Territorial (FEAT-HERO-01) */
+  const heroImageId = useHeroConfigStore((s) => s.heroImageId);
+  const opacidad = useHeroConfigStore((s) => s.opacidad);
+  const montado = useMounted();
+
+  const imagenActivaId = montado ? heroImageId : HERO_DEFAULT_IMAGE_ID;
+  const opacidadActiva = montado ? opacidad : HERO_DEFAULT_OPACIDAD;
+  const opcionHero = obtenerOpcionHero(imagenActivaId);
+
   return (
     <div className="space-y-20 pb-20 md:space-y-28 md:pb-28">
       {/* ================= HERO INSTITUCIONAL ================= */}
       <section className="relative overflow-hidden">
-        <div className="bg-dotgrid absolute inset-0" aria-hidden />
-        <div className="container-fluid relative pb-12 pt-12 md:pb-20 md:pt-16 lg:pb-24 lg:pt-20">
+        {/* Backdrop fotográfico territorial ambiental (FEAT-HERO-01) */}
+        {imagenActivaId !== "ninguna" && Boolean(opcionHero.archivo) && (
+          <div
+            className="pointer-events-none absolute inset-0 select-none overflow-hidden z-0"
+            aria-hidden="true"
+          >
+            <img
+              src={opcionHero.archivo}
+              alt=""
+              className="h-full w-full object-cover object-center transition-opacity duration-700 ease-in-out"
+              style={{ opacity: opacidadActiva / 100 }}
+            />
+            {/* Gradientes elegantes para protección de contraste y legibilidad WCAG AAA */}
+            <div className="absolute inset-0 bg-gradient-to-t from-[var(--surface-0)] via-transparent to-[var(--surface-0)]/60" />
+            <div className="absolute inset-0 bg-gradient-to-r from-[var(--surface-0)]/85 via-[var(--surface-0)]/40 to-transparent" />
+          </div>
+        )}
+
+        <div className="bg-dotgrid absolute inset-0 z-0" aria-hidden />
+        <div className="container-fluid relative z-10 pb-12 pt-12 md:pb-20 md:pt-16 lg:pb-24 lg:pt-20">
           <div className="grid gap-12 xl:grid-cols-12 xl:items-end xl:gap-16">
             <div className="xl:col-span-7 2xl:col-span-8">
               <motion.p

@@ -1,82 +1,102 @@
-# TAREA ACTIVA: [QA-FIX-02] RESOLUCIÓN INTEGRAL DE QA-005: DESCARGA DE PDF DE ACTAS, GESTIÓN DE DISPONIBILIDAD CIUDADANA Y ERRADICACIÓN NORMATIVA
+# TAREA ACTIVA: [FEAT-HERO-01] INTEGRACIÓN DE HERO BACKDROP DE POLÍTICA PÚBLICA Y SELECTOR INTERACTIVO EN PLATAFORMA
 
 **Fecha**: 2026-10-08  
 **Asignada a**: `agy2` (Desarrollador / EDD)  
 **Supervisor / Auditor**: `agy` (Coordinador / Auditor Forense EAF)  
-**Ticket de Referencia en QA Platform (`http://2.25.244.251:4000`)**:
-- `QA-005`: "pdf de acta no funciona" (`https://seguridadhumanaintegral.org/plataforma/mesas?mesaId=01a0f5fe-86df-717b-a4d0-5b6605bdf993&ver=acta`)
-  - *Descripción*: "debería permitir descargar el pdf, y si no esta listo el pdf, debe informarle al ciudadano que no se encuentra dispoble el acta aun. hay tambien que eliminar el texto: \"Validez legal conforme a Ley 1757 de 2015, Decreto 037 de 2026 y Sentencia C-150 de 2015\""
-  - *Evidencia*: Captura oficial en [`uploads/captura_1791441135827_2ajt0y.png`](http://2.25.244.251:4000/uploads/captura_1791441135827_2ajt0y.png)
+**Solicitud del Usuario**:
+> *"necesito pedirte un favor, voy a compartirte unas iamgenes con una carpeta de dirve y necesito que selecciones las mejores iamgens y las mas a fines a un proceso de participación de una politica publica, porque me estan pidiendo fotos en la plafaforma, algo así como un hero, el hero puede estar en la parte de atas del contenido https://drive.google.com/drive/u/1/folders/1CU1A5fVjOrUAxM6byrFZFUvpqQqu_shs por favor dale la tarea a polis, la idea es que el sitio publico d ela plataforma no sufra muchos cambios, y las imagenes las podemos optimizar para web, selecciona las mas dicientes a una politica publica. y crea en la /plataforma la posibilidad de poder cambiar las imagenes del sistio publico. toda esta tarea asignasela a tmux a -t agy2"*
 
 ---
 
-## 🎯 Alcance Técnico y Requerimientos de UX/UI:
+## 🎯 1. Diagnóstico y Assets de Imágenes Ya Optimizados
 
-### 1. Erradicación Normativa del Decreto 037 y del Texto Literal Reportado por Calidad
-- **Archivo**: `src/features/mesas/panels/mesa-acta-panel.tsx`
-- **Acciones**:
-  - En la línea 111 (propiedad `subtitle` del `PanelShell`):
-    Eliminar completamente el texto: `"Validez legal conforme a Ley 1757 de 2015, Decreto 037 de 2026 y Sentencia C-150 de 2015"`.
-    Sustituirlo por una descripción institucional dinámica y pulcra:
-    - Si el acta está lista: `"Documento Oficial Distrital · Conforme a Ley Estatutaria 1757 de 2015 y Sentencia C-150 de 2015"`.
-    - Si el acta aún no está cerrada: `"Borrador de Trabajo · Sesión en Proceso de Concertación Ciudadana"`.
-  - En la línea 249 (párrafo legal del encabezado institucional impreso):
-    Eliminar `"Decreto 037 de 2026 del Ministerio del Interior,"` de modo que exprese estrictamente el marco constitucional verídico:
-    `"En cumplimiento de la Ley Estatutaria 1757 de 2015 de Participación Ciudadana y las garantías de devolución motivada de la Sentencia C-150 de 2015 de la Corte Constitucional de Colombia."`
+La coordinación técnica (`agy`) ya ha examinado y procesado con filtro Lanczos y compresión WebP q=82 las **5 mejores imágenes** extraídas del repositorio territorial de formulación de política pública, ubicadas físicamente y listas en `/root/polis/public/images/hero/`:
 
-### 2. Detección y Modelado de Disponibilidad del Acta Oficial
-- **Archivo**: `src/features/mesas/panels/mesa-acta-panel.tsx`
-- **Lógica de Disponibilidad**:
+1. **`hero-marco-logico.webp`** (166 KB, thumb 12 KB, 1920x1080):
+   - **Contenido**: Mesa comunitaria de trabajo con mujeres líderes y jóvenes diligenciando con lápiz la *"Matriz de marco lógico para formular proyectos"* (Objetivo, Acciones, Apoyo institucional, Resultados).
+   - **Alineación**: 100% metodológica con el marco MGA/DNP de POLIS.
+2. **`hero-asamblea-claustro.webp`** (295 KB, thumb 21 KB, 1920x1080):
+   - **Contenido**: Vista aérea de cabildo y foro ciudadano en patio colonial cartagenero, con panelistas en tarima y auditorio de ciudadanos deliberando.
+   - **Alineación**: Máxima expresión de deliberación masiva territorial en Cartagena.
+3. **`hero-dialogo-comunitario.webp`** (157 KB, thumb 15 KB, 1920x1080):
+   - **Contenido**: Conversatorio abierto al aire libre con micrófono y rendición de cuentas directa con la ciudadanía.
+   - **Alineación**: Diálogo social y concertación transparente.
+4. **`hero-mesa-deliberativa.webp`** (141 KB, thumb 10 KB, 1920x1080):
+   - **Contenido**: Mesa redonda participativa de mujeres y jóvenes con carpetas, esquemas y relatoría comunitaria.
+   - **Alineación**: Mesas temáticas de concertación de POLIS.
+5. **`hero-enfoque-diferencial.webp`** (111 KB, thumb 18 KB, 1280x720):
+   - **Contenido**: Taller diferencial de género y juventud con el Observatorio para la Equidad y Desarrollo en Cartagena.
+   - **Alineación**: Inclusión, equidad de género y enfoque diferencial.
+
+---
+
+## 🛠️ 2. Requerimientos Técnicos y de UX/UI
+
+### 2.1. Store Zustand de Configuración del Hero con Persistencia Local
+- **Crear**: `src/features/politicas/state/hero-store.ts` (o `src/features/plataforma/state/hero-config-store.ts` exportable).
+- **Estructura y Opciones**:
   ```ts
-  const e = (mesa.estado || "").toLowerCase();
-  const actaDisponible = e === "cerrada" || e === "completada" || e === "finalizada" || e === "acta_concertada" || Boolean(mesa.sha256Acta);
+  export interface HeroImageOption {
+    id: string;
+    titulo: string;
+    descripcion: string;
+    archivo: string;
+    thumbnail: string;
+    enfoque: string;
+  }
   ```
-- **Cuando el Acta NO está lista (`!actaDisponible`)**:
-  1. En los breadcrumbs/kicker del `PanelShell`, mostrar el badge en tono ámbar: `"BORRADOR PRELIMINAR"` o `"EN CONCERTACIÓN"` en lugar de `"ACTUAL"`.
-  2. Desplegar un **Banner Institucional Informativo** destacado en la parte superior del panel (clase `no-print`):
-     - Título: *"Acta oficial no disponible para descarga aún"* (icono `AlertCircle` o `Clock`).
-     - Mensaje claro al ciudadano: Informar que la mesa se encuentra en estado *Programada* o *En Deliberación*, y que el acta definitiva con su código de verificación digital y radicado oficial en PDF estará disponible para descarga una vez finalizada la sesión y suscrita la concertación comunitaria.
-     - Aclarar que la visualización actual corresponde al *borrador preliminar de trabajo*.
+- **Catálogo de 6 opciones**:
+  1. `marco-logico` (Recomendada por defecto)
+  2. `asamblea-claustro`
+  3. `dialogo-comunitario`
+  4. `mesa-deliberativa`
+  5. `enfoque-diferencial`
+  6. `ninguna` (Opción institucional limpia: solo retícula de puntos, sin foto).
+- **Estado**:
+  - `heroImageId`: string (default `"marco-logico"`).
+  - `opacidad`: number (default `18`, escala de 5 a 40%).
+  - Acciones: `setHeroImageId(id: string)`, `setOpacidad(opacidad: number)`, `resetearHeroConfig()`.
+- **Persistencia**: Usar Zustand `persist` con `createJSONStorage(() => localStorage)` bajo la clave `"polis_hero_config"`. Manejar hidratación de forma segura para evitar diferencias de renderizado inicial (por ejemplo inicializando con `"marco-logico"` o con hook hidratado).
 
-### 3. Funcionalidad de Descarga en PDF y Feedback Interactivo
-- **Archivo**: `src/features/mesas/panels/mesa-acta-panel.tsx`
-- **Comportamiento de los Botones de Acción**:
-  - Si el usuario pulsa en el botón principal de descarga (`Descargar PDF`):
-    - Si `!actaDisponible`:
-      - Disparar `toast.info("Acta oficial no disponible aún", { description: "Esta mesa se encuentra en proceso de concertación. El documento oficial en PDF estará disponible una vez cerrada y formalizada la sesión." })`.
-      - Proporcionar la opción de imprimir el borrador de trabajo:
-        `toast("¿Deseas imprimir el borrador de trabajo actual?", { action: { label: "Imprimir borrador", onClick: () => window.print() } })` o un botón secundario específico `"Imprimir borrador preliminar"`.
-    - Si `actaDisponible`:
-      - Iniciar la descarga del documento PDF oficial:
-        - Para máxima compatibilidad multiplataforma y cumplimiento de descarga directa de archivo, invocar `window.print()` y además generar/descargar el archivo oficial exportable (`.html`/documento oficial formateado para guardar como `Acta_Oficial_[codigo].pdf` o exportación con nombre determinista).
-        - Feedback con `toast.success("Generando descarga del acta oficial...")`.
+### 2.2. Integración Sutil en el Hero de la Landing Pública
+- **Archivo**: `src/features/politicas/views/inicio-view.tsx`
+- **Requisitos Críticos de Diseño**:
+  - **REGLA DE ORO DEL USUARIO**: *"la idea es que el sitio publico d ela plataforma no sufra muchos cambios, y el hero puede estar en la parte de atas del contenido"*.
+  - No modificar la retícula, ni los textos, ni los badges, ni la disposición del hero institucional existente.
+  - La fotografía debe posicionarse de manera ambiental detrás del contenido:
+    - Contenedor con `position: absolute; inset: 0; pointer-events-none overflow-hidden select-none z-0`.
+    - La imagen debe cubrir el área con `object-cover object-center w-full h-full`.
+    - Opacidad calibrada (ej. `style={{ opacity: opacidad / 100 }}`), combinada con una capa de gradiente elegante:
+      - En modo oscuro / tema general: gradientes sutiles a `var(--surface-0)` y a `bg-background` que protegen el 100% de la legibilidad de títulos, subtítulos, badges y estadísticas (WCAG AAA).
+      - La imagen da profundidad, calidez humana y realismo territorial sin distraer ni recargar visualmente.
+    - Si `heroImageId === "ninguna"`, no se renderiza la imagen, manteniéndose únicamente la retícula de puntos estándar (`bg-dotgrid`).
 
-### 4. Soporte para Enlace Profundo en la Plataforma (`?mesaId=...&ver=acta`)
-- **Archivo**: `src/features/plataforma/views/mesas-view.tsx`
-- **Acción**:
-  - Al montar la vista `MesasGestionView`, leer los parámetros de búsqueda `window.location.search`:
-    - Si existe `mesaId` y `ver === "acta"`, invocar automáticamente `openPanel("mesa-acta", { mesaId })`.
-    - Si existe `mesaId` sin `ver`, abrir `openPanel("mesa", { mesaId })`.
-  - Esto garantiza que enlaces compartidos como el del ticket de QA abran inmediatamente el acta correspondiente.
-
-### 5. Semántica de Botones en `src/features/mesas/panels/mesa-panel.tsx`
-- En la vista principal de la mesa (`mesa-panel.tsx`):
-  - Evaluar `actaDisponible`:
-    - Si está cerrada: Botón dice `📄 Descargar Acta Oficial (PDF)`.
-    - Si aún está abierta/programada: Botón dice `📄 Ver Borrador / Acta de Consulta`.
+### 2.3. Selector Interactivo en `/plataforma/configuracion`
+- **Archivo**: `src/features/plataforma/views/configuracion-view.tsx`
+- **Implementación**:
+  - Incorporar una sección dedicada y destacada:
+    - Cabecera: `CabeceraSeccion` con icono de imagen/paisaje (e.g. `ImageIcon` o `Palette`), Título: `"Identidad Visual de la Portada Pública"`, Detalle: `"Selecciona la fotografía territorial del Hero del portal ciudadano y calibra su intensidad ambiental."`.
+  - Cuadrícula de tarjetas visuales (grid responsive de 1 a 3 columnas):
+    - Cada tarjeta muestra la miniatura de la fotografía (`thumbnail`), título metodológico, badge de enfoque, y descripción concisa.
+    - Indicador de estado: La imagen activa exhibe un borde acentuado (`border-ember`), un badge `"Activa en el portal"` con icono de check.
+    - Tarjeta clickeable o botón `"Activar como portada"` con feedback inmediato vía `toast.success`.
+    - Opción especial `"Solo retícula institucional"` para volver al fondo minimalista original.
+  - Control de intensidad / opacidad:
+    - Selector numérico o slider o botones rápidos: `10% (Sutil)`, `18% (Recomendado)`, `25% (Marcado)`, `35% (Vibrante)`.
+  - Botón de conveniencia:
+    - `"Previsualizar portal público (/) "` con icono de enlace externo, permitiendo al administrador abrir la landing y validar el efecto de inmediato.
 
 ---
 
-## 📋 Quality Gates de Entrega Obligatorios:
-1. `bun run check` -> **0 errores** (`ui:check`, `tsc --noEmit`, `eslint .`).
-2. `bun test src/features/mesas/` -> **100% pruebas pasando**.
-3. `bun run build` -> **Compilación limpia de Next.js** (190 rutas generadas).
-4. Reinicio de frontend: `systemctl restart polis-frontend`.
-5. Verificación pericial de:
-   - `http://127.0.0.1:3000/plataforma/mesas?mesaId=01a0f5fe-86df-717b-a4d0-5b6605bdf993&ver=acta`
-   - Erradicación total de `"Decreto 037"` en el panel de acta.
-   - Presencia del banner informativo de acta no disponible.
-   - Funcionamiento correcto del feedback y botones de PDF.
-6. Commit atómico local en la rama `main` (sin git push).
-7. Documentar entrega en `bridge/02_resultado_agy2.md`.
-8. Solicitar contra-auditoría pericial a `agy`.
+## 🔒 3. Protocolo de Quality Gates
+
+Antes de entregar, `agy2` debe verificar obligatoriamente:
+1. `bun run check`: 0 errores en `ui-policy.mjs`, `tsc --noEmit` y `eslint .`.
+2. `bun test`: Suite completa de pruebas en verde.
+3. `bun run build`: Empaquetado de producción de Turbopack exitoso (190 rutas).
+4. `systemctl restart polis-frontend`: Servicio frontend reiniciado y corriendo en el puerto 3000.
+5. Verificación de endpoints con `curl`:
+   - `curl -s -I http://127.0.0.1:3000` -> 200 OK
+   - `curl -s -I http://127.0.0.1:3000/plataforma/configuracion` -> 200 OK
+6. Commit local atómico en `main` con mensaje descriptivo (e.g., `feat(hero): seleccion y configuracion de imagenes territoriales para el portal publico (FEAT-HERO-01)`). **ESTRICTAMENTE PROHIBIDO `git push`**.
+7. Registro de resultados en `bridge/02_resultado_agy2.md` y notificación a la sesión `agy`.
