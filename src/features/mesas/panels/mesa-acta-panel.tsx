@@ -9,6 +9,8 @@ import {
   Share2,
   Building2,
   Scale,
+  Clock,
+  Download,
 } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import { PanelShell } from "@/core/panels/panel-shell";
@@ -68,7 +70,38 @@ export function MesaActaPanel({
     registros.length
   );
 
+  const estadoMesaLower = (mesa.estado || "").toLowerCase();
+  const actaDisponible =
+    estadoMesaLower === "cerrada" ||
+    estadoMesaLower === "completada" ||
+    estadoMesaLower === "finalizada" ||
+    estadoMesaLower === "acta_concertada" ||
+    Boolean(mesa.sha256Acta);
+
   const handlePrint = () => {
+    if (typeof window !== "undefined") {
+      window.print();
+    }
+  };
+
+  const handleDescargarPdf = () => {
+    if (!actaDisponible) {
+      toast.info("Acta oficial no disponible aún", {
+        description:
+          "Esta mesa se encuentra en proceso de concertación. El documento oficial en PDF estará disponible una vez cerrada y formalizada la sesión plenaria.",
+        action: {
+          label: "Imprimir borrador",
+          onClick: () => {
+            if (typeof window !== "undefined") window.print();
+          },
+        },
+      });
+      return;
+    }
+
+    toast.success("Iniciando descarga del acta oficial...", {
+      description: `Acta Oficial ${mesa.codigoOficial || mesa.id.toUpperCase()}`,
+    });
     if (typeof window !== "undefined") {
       window.print();
     }
@@ -104,11 +137,15 @@ export function MesaActaPanel({
       crumbs={[
         { label: "Mesas de trabajo" },
         { label: mesa.nombre, targetKey: entryKey },
-        { label: "Acta Oficial" },
+        { label: actaDisponible ? "Acta Oficial" : "Borrador de Acta (En Concertación)" },
       ]}
-      kicker="Documento Público Distrital"
+      kicker={actaDisponible ? "Documento Público Distrital" : "Borrador de Trabajo en Curso"}
       title={`Acta de Consulta — ${mesa.codigoOficial || mesa.id.toUpperCase()}`}
-      subtitle="Validez legal conforme a Ley 1757 de 2015, Decreto 037 de 2026 y Sentencia C-150 de 2015"
+      subtitle={
+        actaDisponible
+          ? "Documento Oficial Distrital · Conforme a Ley Estatutaria 1757 de 2015 y Sentencia C-150 de 2015"
+          : "Borrador de Trabajo · Sesión en Proceso de Concertación Ciudadana"
+      }
       onClose={closeTop}
       onCloseToKey={closeTop}
       actions={
@@ -122,14 +159,25 @@ export function MesaActaPanel({
             <Share2 className="size-3.5 mr-1.5" />
             Compartir
           </Button>
+          {!actaDisponible && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handlePrint}
+              className="text-xs"
+            >
+              <Printer className="size-3.5 mr-1.5" />
+              Imprimir Borrador
+            </Button>
+          )}
           <Button
-            variant="ember"
+            variant={actaDisponible ? "ember" : "outline"}
             size="sm"
-            onClick={handlePrint}
-            className="shadow-sm"
+            onClick={handleDescargarPdf}
+            className="shadow-sm text-xs font-semibold"
           >
-            <Printer className="size-3.5 mr-1.5" />
-            Imprimir / PDF
+            <Download className="size-3.5 mr-1.5" />
+            {actaDisponible ? "Descargar Acta Oficial (PDF)" : "Descargar PDF"}
           </Button>
         </div>
       }
@@ -137,9 +185,20 @@ export function MesaActaPanel({
         <div className="flex items-center justify-between gap-3 text-xs text-[var(--text-tertiary)]">
           <span>Radicado Oficial: POLIS-ACTA-{props.mesaId.toUpperCase()}</span>
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" onClick={handlePrint}>
-              <Printer className="size-3.5 mr-1.5" />
-              Guardar en PDF
+            {!actaDisponible && (
+              <Button variant="ghost" size="sm" onClick={handlePrint} className="h-8 text-xs">
+                <Printer className="size-3.5 mr-1.5" />
+                Imprimir borrador preliminar
+              </Button>
+            )}
+            <Button
+              variant={actaDisponible ? "ember" : "outline"}
+              size="sm"
+              onClick={handleDescargarPdf}
+              className="h-8 text-xs font-semibold"
+            >
+              <Download className="size-3.5 mr-1.5" />
+              {actaDisponible ? "Descargar Acta Oficial (PDF)" : "Descargar PDF"}
             </Button>
           </div>
         </div>
@@ -190,12 +249,45 @@ export function MesaActaPanel({
       `}</style>
 
       <div className="w-full space-y-6 px-4 py-6 sm:px-6 lg:px-8">
+        {/* Banner Informativo cuando el acta aún no está cerrada/disponible */}
+        {!actaDisponible && (
+          <div className="rounded-xl border border-[var(--warning)]/40 bg-[var(--warning)]/10 p-4 sm:p-5 text-xs text-[var(--text-primary)] space-y-2 no-print shadow-sm animate-in fade-in duration-200">
+            <div className="flex items-center gap-2.5 text-[var(--warning)] font-bold text-sm">
+              <Clock className="size-5 shrink-0" />
+              <span>Acta oficial no disponible para descarga aún</span>
+            </div>
+            <p className="leading-relaxed text-[var(--text-secondary)]">
+              Esta mesa de trabajo se encuentra actualmente en estado{" "}
+              <strong className="capitalize text-[var(--text-primary)]">
+                {mesa.estado || "programada"}
+              </strong>
+              . El acta definitiva con su código de verificación digital (SHA-256) y radicado oficial en PDF estará disponible para descarga ciudadana una vez finalizada la sesión plenaria y formalizada la concertación comunitaria.
+            </p>
+            <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-[var(--warning)]/20">
+              <span className="text-[11px] text-[var(--text-tertiary)] italic">
+                La visualización a continuación corresponde al borrador preliminar de relatoría y acuerdos en curso.
+              </span>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handlePrint}
+                className="h-7 text-xs border-[var(--warning)]/40 text-[var(--warning)] hover:bg-[var(--warning)]/20"
+              >
+                <Printer className="size-3.5 mr-1.5" />
+                Imprimir borrador preliminar
+              </Button>
+            </div>
+          </div>
+        )}
+
         {/* Barra superior de herramientas en pantalla */}
         <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-3 text-xs text-[var(--text-secondary)] no-print">
           <div className="flex items-center gap-2">
             <Scale className="size-4 text-[var(--ember)]" />
             <span>
-              Documento estructurado listo para impresión en hoja Carta o exportación a PDF.
+              {actaDisponible
+                ? "Documento estructurado listo para impresión en hoja Carta o exportación a PDF."
+                : "Borrador de trabajo en curso · La versión oficial estará disponible al cierre de la mesa."}
             </span>
           </div>
           <div className="flex items-center gap-2">
@@ -203,9 +295,19 @@ export function MesaActaPanel({
               <Share2 className="size-3.5 mr-1" />
               Copiar enlace
             </Button>
-            <Button variant="ember" size="sm" onClick={handlePrint}>
-              <Printer className="size-3.5 mr-1" />
-              Imprimir / PDF
+            {!actaDisponible && (
+              <Button variant="outline" size="sm" onClick={handlePrint}>
+                <Printer className="size-3.5 mr-1" />
+                Imprimir borrador
+              </Button>
+            )}
+            <Button
+              variant={actaDisponible ? "ember" : "outline"}
+              size="sm"
+              onClick={handleDescargarPdf}
+            >
+              <Download className="size-3.5 mr-1" />
+              {actaDisponible ? "Descargar Acta Oficial (PDF)" : "Descargar PDF"}
             </Button>
           </div>
         </div>
@@ -246,7 +348,7 @@ export function MesaActaPanel({
             </div>
 
             <p className="mx-auto max-w-2xl text-[11px] leading-relaxed italic text-[var(--text-secondary)] border-t border-[var(--border)] pt-2">
-              En cumplimiento del Decreto 037 de 2026 del Ministerio del Interior, la Ley Estatutaria 1757 de 2015 de Participación Ciudadana y las garantías de devolución motivada de la Sentencia C-150 de 2015 de la Corte Constitucional de Colombia.
+              En cumplimiento de la Ley Estatutaria 1757 de 2015 de Participación Ciudadana y las garantías de devolución motivada de la Sentencia C-150 de 2015 de la Corte Constitucional de Colombia.
             </p>
           </header>
 

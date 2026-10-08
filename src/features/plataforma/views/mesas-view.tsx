@@ -76,6 +76,22 @@ export function MesasGestionView() {
     }
   }, [mesasRemotas]);
 
+  // Soporte para deep-linking con query params (?mesaId=...&ver=acta)
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const paramMesaId = params.get("mesaId");
+      const paramVer = params.get("ver");
+      if (paramMesaId) {
+        if (paramVer === "acta") {
+          openPanel("mesa-acta", { mesaId: paramMesaId });
+        } else {
+          openPanel("mesa", { mesaId: paramMesaId });
+        }
+      }
+    }
+  }, [openPanel]);
+
   const [busqueda, setBusqueda] = useState("");
   const [filtroEstado, setFiltroEstado] = useState<FiltroEstado>("TODAS");
   const [filtroFecha, setFiltroFecha] = useState("");

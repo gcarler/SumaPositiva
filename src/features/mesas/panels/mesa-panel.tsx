@@ -358,6 +358,14 @@ export function MesaPanel({
 
   const contenido = CONTENIDO_MESAS[mesa.id];
 
+  const estadoMesaLower = (mesa.estado || "").toLowerCase();
+  const actaDisponible =
+    estadoMesaLower === "cerrada" ||
+    estadoMesaLower === "completada" ||
+    estadoMesaLower === "finalizada" ||
+    estadoMesaLower === "acta_concertada" ||
+    Boolean(mesa.sha256Acta);
+
   return (
     <PanelShell
       entryKey={entryKey}
@@ -370,14 +378,14 @@ export function MesaPanel({
       actions={
         <div className="flex items-center gap-2">
           <Button
-            variant="outline"
+            variant={actaDisponible ? "ember" : "outline"}
             size="sm"
             type="button"
             onClick={() => openPanel("mesa-acta", { mesaId: mesa.id })}
             className="shrink-0 font-medium"
           >
-            <FileText className="size-3.5 text-[var(--ember)] mr-1.5" />
-            📄 Ver Acta Oficial en PDF
+            <FileText className="size-3.5 mr-1.5" />
+            {actaDisponible ? "📄 Descargar Acta Oficial (PDF)" : "📄 Ver Borrador / Acta de Consulta"}
           </Button>
         </div>
       }
@@ -397,7 +405,7 @@ export function MesaPanel({
               className="shrink-0"
             >
               <FileText className="size-3.5 mr-1.5" />
-              📄 Ver Acta Oficial en PDF
+              {actaDisponible ? "📄 Descargar Acta Oficial (PDF)" : "📄 Ver Borrador / Acta de Consulta"}
             </Button>
             {!soloLectura && (
               <Button
