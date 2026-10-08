@@ -1,3 +1,63 @@
+# INFORME PERICIAL DE EJECUCIÓN — TAREA [ASIS-01] REMEDIACIÓN NORMATIVA Y ADAPTABILIDAD RESPONSIVA DEL FORMULARIO PÚBLICO DE ASISTENCIA
+**Destinatario:** Coordinador General y Auditor Forense EAF `agy`  
+**Responsable:** `agy2` (Desarrollador / EDD — `tmux a -t agy2`)  
+**Fecha de Ejecución:** Miércoles, 08 de Octubre de 2026  
+**URL Auditada:** Local: `http://127.0.0.1:3000/asistencia/ms-sec-03` / Producción: `https://seguridadhumanaintegral.org/asistencia/ms-sec-03`  
+**Estado:** Subsanación Ejecutada al 100%, Validada y Conforme  
+
+---
+
+## 1. Resumen Ejecutivo de la Intervención ASIS-01
+
+En cumplimiento estricto de las directrices y quality gates consignados en `bridge/01_tarea_activa.md`, `agy2` ejecutó de forma integral la remediación del formulario público de asistencia ciudadana en `src/app/asistencia/[mesaId]/`:
+
+1. **Remediación Normativa e Institucional**:
+   - Erradicación absoluta de la mención y badge de *"Decreto 037 / 2026"* en la cabecera y en todo el flujo de asistencia.
+   - Incorporación del marco constitucional y legal vinculante de participación ciudadana: **Ley Estatutaria 1757 de 2015** (badge oficial en cabecera y en el consentimiento de Habeas Data).
+   - Preservación y blindaje de la **Ley 1581 de 2012** (Tratamiento de Datos Personales / Habeas Data) en el checkbox legal obligatorio.
+   - Despliegue del código oficial de la mesa (ej. `MS-SEC-03`) tanto en la cabecera como en la ficha del evento utilizando componentes canónicos del kit UI (`Badge variant="ember"`).
+
+2. **Rediseño Adaptativo y Ergonomía Responsiva (Zero-Modals)**:
+   - Sustitución del contenedor rígido `max-w-lg` (512px) por un layout 100% fluido y responsivo `max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8` con protección antidesbordamiento `overflow-x-hidden`.
+   - **En pantallas de escritorio y tablets (`lg:grid lg:grid-cols-12 lg:gap-8`)**:
+     - **Columna Izquierda (5 columnas, sticky)**: Tarjeta institucional con información exhaustiva de la mesa: Nombre oficial, Código (`Badge variant="ember"`), Horario, Fecha formateada en español (`format(..., "d 'de' MMMM, yyyy", { locale: es })`), Lugar físico de convocatoria, Territorio/Localidad, Dimensiones ONU vinculadas, estado de conectividad en tiempo real (indicador de pulso verde en línea PostgreSQL / contingencia offline) y conteo en vivo de asistentes presenciales.
+     - **Columna Derecha (7 columnas)**: Formulario ciudadano ergonómico estructurado en sub-grids responsivos:
+       - Tipo de documento y número de documento (grid responsivo 2 columnas en `sm:`).
+       - Nombres y apellidos completos.
+       - Identidad de género y enfoque diferencial/poblacional (2 columnas).
+       - Barrio, corregimiento u organización comunitaria / JAC.
+       - Teléfono/WhatsApp y correo electrónico (2 columnas).
+       - Selector de submesa temática (dinámico según agenda o contenido).
+       - Cláusula y checkbox de Habeas Data (Leyes 1581 de 2012 y Estatutaria 1757 de 2015).
+       - Botón de confirmación `variant="ember" size="lg"` con micro-interacción hover.
+   - **En pantallas móviles (`< lg`)**: Flujo vertical continuo, padding adaptado y cero desbordamientos horizontales.
+   - **Pase de Asistencia (Pantalla de Éxito)**: Diseño adaptativo con resumen completo (Radicado Local o ID PostgreSQL, nombre, documento, enfoque, barrio, submesa, hora) y botón para registrar al siguiente asistente.
+
+3. **Normalización y Consistencia de Slugs**:
+   - `src/app/asistencia/[mesaId]/page.tsx` actualizado con `dynamicParams = true`, generación estática ampliada (`generateStaticParams`) para todos los códigos oficiales (`MS-SEC-03`, `ms-sec-03`, etc.) y shortcodes, y función `resolverMesa(mesaId)` para `generateMetadata` de modo que la URL `http://127.0.0.1:3000/asistencia/ms-sec-03` resuelva con precisión y devuelva el título `"Registro de Asistencia — Mesa Sectorial — Salud Pública | POLIS Cartagena"`.
+
+4. **Cumplimiento Estricto de Reglas POLIS y Políticas UI**:
+   - Cero colores Tailwind literales (`text-white`, `bg-white`, etc. prohibidos). 100% tokens semánticos CSS (`var(--text-primary)`, `var(--surface-0)`, `var(--surface-1)`, `var(--surface-2)`, `var(--ember)`, `var(--border)`, etc.).
+   - Arquitectura Zero-Modals respetada.
+   - Accesibilidad completa (`htmlFor` vinculado a `id` en todos los controles).
+
+---
+
+## 2. Verificación de Quality Gates Obligatorios
+
+| Quality Gate | Comando Oficial | Resultado Obtenido | Estado |
+| :--- | :--- | :--- | :---: |
+| **QG1: Verificación de Políticas UI, Tipos y Linter** | `bun run check` | `node scripts/ui-policy.mjs`, `tsc --noEmit`, `eslint .` -> **0 errores** | ✅ CONFORME (100%) |
+| **QG2: Pruebas Unitarias de Mesas** | `bun test src/features/mesas/` | **26 pass, 0 fail**, 112 expect calls | ✅ CONFORME (100%) |
+| **QG3: Compilación de Producción Next.js** | `bun run build` | **Compilación exitosa (Turbopack)**, 190 rutas generadas, export standalone listo | ✅ CONFORME (100%) |
+| **QG4: Reinicio de Servicio Frontend** | `systemctl restart polis-frontend` | Servicio activo (`active (running)`), ready en 75ms | ✅ CONFORME (100%) |
+| **QG5: Verificación HTTP y Normativa en Vivo** | `curl -s -I http://127.0.0.1:3000/asistencia/ms-sec-03` | **HTTP/1.1 200 OK** | ✅ CONFORME (100%) |
+| **QG6: Erradicación Decreto 037** | `curl -s http://127.0.0.1:3000/asistencia/ms-sec-03 \| grep -i "decreto 037"` | **0 coincidencias (salida vacía)** | ✅ CONFORME (100%) |
+| **QG7: Presencia Ley 1757 y Código Oficial** | `curl -s http://127.0.0.1:3000/asistencia/ms-sec-03` | Contiene "Ley Estatutaria 1757 de 2015", "MS-SEC-03" y "Salud Pública" | ✅ CONFORME (100%) |
+| **QG8: Control de Versiones** | Git local | Cero git push a remoto. Commit atómico local | ✅ CONFORME (100%) |
+
+---
+
 # INFORME PERICIAL DE EJECUCIÓN — TAREA [AUD21-H01] REMEDIACIÓN DE MATRIZ DE ACCESO Y ALINEACIÓN DE ESQUEMA ALEMBIQUE
 **Destinatario:** Coordinador General y Auditor Forense EAF `agy`  
 **Responsable:** `agy2` (Desarrollador / EDD — `tmux a -t agy2`)  
