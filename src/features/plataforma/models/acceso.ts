@@ -71,7 +71,7 @@ export const MODULOS = [
   {
     id: "alternativas",
     ruta: "/plataforma/alternativas",
-    titulo: "Alternativas MGA",
+    titulo: "Alternativas",
     descripcion: "Banco de proyectos y alternativas de solución formuladas bajo metodología MGA/DNP.",
   },
   {
