@@ -262,8 +262,8 @@ export function AsistenciaCliente({ mesaId }: { mesaId: string }) {
   return (
     <div className="min-h-screen bg-[var(--surface-0)] text-[var(--text-primary)] overflow-x-hidden">
       {/* Barra institucional adaptable */}
-      <header className="border-b border-[var(--border)] bg-[var(--surface-1)] py-3.5 px-4 sm:px-6 lg:px-8 xl:px-12">
-        <div className="mx-auto flex w-full max-w-7xl 2xl:max-w-[1536px] items-center justify-between gap-4">
+      <header className="border-b border-[var(--border)] bg-[var(--surface-1)] py-3.5 px-4 sm:px-6 md:px-8 lg:px-10 xl:px-14 2xl:px-20">
+        <div className="flex w-full items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[var(--ember)] text-[var(--surface-0)] font-bold text-sm shadow-sm">
               <Building2 className="size-5" />
@@ -298,7 +298,7 @@ export function AsistenciaCliente({ mesaId }: { mesaId: string }) {
       </header>
 
       {/* Contenedor Principal Adaptativo */}
-      <main className="mx-auto w-full max-w-7xl 2xl:max-w-[1536px] px-4 sm:px-6 lg:px-8 xl:px-12 py-6 md:py-10">
+      <main className="w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-14 2xl:px-20 py-6 md:py-10">
         {/* Banner de Sincronización Offline si existen registros pendientes */}
         {pendientesSincronizacion.length > 0 && !registroExitoso && (
           <div className="mb-6 rounded-2xl border border-[var(--warning)]/40 bg-[var(--warning)]/10 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs animate-in fade-in duration-200">
@@ -340,7 +340,7 @@ export function AsistenciaCliente({ mesaId }: { mesaId: string }) {
         {/* Layout Adaptativo Responsivo */}
         {registroExitoso ? (
           /* Vista de Éxito Amplia y Centrada */
-          <div className="w-full max-w-2xl mx-auto py-4">
+          <div className="w-full max-w-3xl mx-auto py-6">
             <div
               className={`space-y-6 rounded-2xl border p-6 sm:p-10 text-center shadow-lg animate-in fade-in zoom-in-95 duration-200 bg-[var(--surface-1)] ${
                 registroExitoso.pendienteSincronizacion
@@ -591,65 +591,66 @@ export function AsistenciaCliente({ mesaId }: { mesaId: string }) {
                   </div>
                 )}
 
-                {/* Nombres y Apellidos */}
-                <div className="space-y-1.5">
-                  <Label htmlFor="nombreCompleto" className="text-xs font-semibold">
-                    Nombres y Apellidos *
-                  </Label>
-                  <Input
-                    id="nombreCompleto"
-                    type="text"
-                    placeholder="Ej. María Josefa Díaz Pérez"
-                    value={nombreCompleto}
-                    onChange={(e) => setNombreCompleto(e.target.value)}
-                    required
-                    autoComplete="name"
-                    className="h-11 text-sm"
-                  />
-                </div>
-
-                {/* Documento de Identidad Adaptativo */}
-                <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 sm:gap-4">
-                  <div className="sm:col-span-4 space-y-1.5">
-                    <Label htmlFor="tipoDoc" className="text-xs font-semibold">
-                      Tipo Doc. *
-                    </Label>
-                    <Select
-                      value={tipoDocumento}
-                      onValueChange={(val) => setTipoDocumento(val as TipoDocumento)}
-                    >
-                      <SelectTrigger id="tipoDoc" className="h-11 text-sm">
-                        <SelectValue placeholder="Tipo" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {(Object.keys(TIPOS_DOCUMENTO_LABELS) as TipoDocumento[]).map((t) => (
-                          <SelectItem key={t} value={t}>
-                            {t}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="sm:col-span-8 space-y-1.5">
-                    <Label htmlFor="numDoc" className="text-xs font-semibold">
-                      Número de Documento *
+                {/* Nombres y Apellidos + Documento de Identidad */}
+                <div className="grid grid-cols-1 xl:grid-cols-12 gap-4 sm:gap-5">
+                  <div className="xl:col-span-6 space-y-1.5">
+                    <Label htmlFor="nombreCompleto" className="text-xs font-semibold">
+                      Nombres y Apellidos *
                     </Label>
                     <Input
-                      id="numDoc"
+                      id="nombreCompleto"
                       type="text"
-                      placeholder="Número de cédula o identificación"
-                      value={numeroDocumento}
-                      onChange={(e) => setNumeroDocumento(e.target.value)}
+                      placeholder="Ej. María Josefa Díaz Pérez"
+                      value={nombreCompleto}
+                      onChange={(e) => setNombreCompleto(e.target.value)}
                       required
+                      autoComplete="name"
                       className="h-11 text-sm"
                     />
                   </div>
+
+                  <div className="xl:col-span-6 grid grid-cols-1 sm:grid-cols-12 gap-3 sm:gap-4">
+                    <div className="sm:col-span-4 space-y-1.5">
+                      <Label htmlFor="tipoDoc" className="text-xs font-semibold">
+                        Tipo Doc. *
+                      </Label>
+                      <Select
+                        value={tipoDocumento}
+                        onValueChange={(val) => setTipoDocumento(val as TipoDocumento)}
+                      >
+                        <SelectTrigger id="tipoDoc" className="h-11 text-sm">
+                          <SelectValue placeholder="Tipo" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {(Object.keys(TIPOS_DOCUMENTO_LABELS) as TipoDocumento[]).map((t) => (
+                            <SelectItem key={t} value={t}>
+                              {t}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="sm:col-span-8 space-y-1.5">
+                      <Label htmlFor="numDoc" className="text-xs font-semibold">
+                        Número de Documento *
+                      </Label>
+                      <Input
+                        id="numDoc"
+                        type="text"
+                        placeholder="Número de cédula o identificación"
+                        value={numeroDocumento}
+                        onChange={(e) => setNumeroDocumento(e.target.value)}
+                        required
+                        className="h-11 text-sm"
+                      />
+                    </div>
+                  </div>
                 </div>
 
-                {/* Género y Enfoque en Grid Responsivo */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* Género, Enfoque Diferencial y Barrio en Grid Armónico */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-12 gap-4 sm:gap-5">
                   {/* Género */}
-                  <div className="space-y-1.5">
+                  <div className="xl:col-span-3 space-y-1.5">
                     <Label htmlFor="genero" className="text-xs font-semibold">
                       Identidad de Género *
                     </Label>
@@ -671,7 +672,7 @@ export function AsistenciaCliente({ mesaId }: { mesaId: string }) {
                   </div>
 
                   {/* Enfoque Diferencial */}
-                  <div className="space-y-1.5">
+                  <div className="xl:col-span-4 space-y-1.5">
                     <div className="flex items-center justify-between">
                       <Label htmlFor="enfoque" className="text-xs font-semibold">
                         Enfoque Poblacional / Étnico *
@@ -693,26 +694,26 @@ export function AsistenciaCliente({ mesaId }: { mesaId: string }) {
                       </SelectContent>
                     </Select>
                   </div>
+
+                  {/* Barrio u Organización */}
+                  <div className="sm:col-span-2 xl:col-span-5 space-y-1.5">
+                    <Label htmlFor="barrio" className="text-xs font-semibold">
+                      Barrio, Corregimiento o JAC / Organización Comunitaria *
+                    </Label>
+                    <Input
+                      id="barrio"
+                      type="text"
+                      placeholder="Ej. Getsemaní, Olaya Herrera, JAC Sector Central, Consejo Comunitario..."
+                      value={organizacionOBarrio}
+                      onChange={(e) => setOrganizacionOBarrio(e.target.value)}
+                      required
+                      className="h-11 text-sm"
+                    />
+                  </div>
                 </div>
 
-                {/* Barrio u Organización */}
-                <div className="space-y-1.5">
-                  <Label htmlFor="barrio" className="text-xs font-semibold">
-                    Barrio, Corregimiento o JAC / Organización Comunitaria *
-                  </Label>
-                  <Input
-                    id="barrio"
-                    type="text"
-                    placeholder="Ej. Getsemaní, Olaya Herrera, JAC Sector Central, Consejo Comunitario..."
-                    value={organizacionOBarrio}
-                    onChange={(e) => setOrganizacionOBarrio(e.target.value)}
-                    required
-                    className="h-11 text-sm"
-                  />
-                </div>
-
-                {/* Teléfono / WhatsApp y Correo en 2 Columnas */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* Teléfono / WhatsApp, Correo y Submesa en Grid Adaptativo */}
+                <div className={`grid grid-cols-1 sm:grid-cols-2 ${listaSubmesas.length > 0 ? "xl:grid-cols-3" : "xl:grid-cols-2"} gap-4 sm:gap-5`}>
                   <div className="space-y-1.5">
                     <Label htmlFor="telefono" className="text-xs font-semibold">
                       Teléfono / WhatsApp (Opcional)
@@ -727,6 +728,7 @@ export function AsistenciaCliente({ mesaId }: { mesaId: string }) {
                       className="h-11 text-sm"
                     />
                   </div>
+
                   <div className="space-y-1.5">
                     <Label htmlFor="correo" className="text-xs font-semibold">
                       Correo Electrónico (Opcional)
@@ -741,32 +743,31 @@ export function AsistenciaCliente({ mesaId }: { mesaId: string }) {
                       className="h-11 text-sm"
                     />
                   </div>
-                </div>
 
-                {/* Submesa Asignada (si existen submesas) */}
-                {listaSubmesas.length > 0 && (
-                  <div className="space-y-1.5">
-                    <Label htmlFor="submesa" className="text-xs font-semibold">
-                      Submesa Temática de Interés
-                    </Label>
-                    <Select
-                      value={subMesaAsignada}
-                      onValueChange={setSubMesaAsignada}
-                    >
-                      <SelectTrigger id="submesa" className="h-11 text-sm">
-                        <SelectValue placeholder="Elige la submesa a participar" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Plenaria General">Plenaria General (Sin submesa)</SelectItem>
-                        {listaSubmesas.map((sm) => (
-                          <SelectItem key={sm} value={sm}>
-                            {sm}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                )}
+                  {listaSubmesas.length > 0 && (
+                    <div className="sm:col-span-2 xl:col-span-1 space-y-1.5">
+                      <Label htmlFor="submesa" className="text-xs font-semibold">
+                        Submesa Temática de Interés
+                      </Label>
+                      <Select
+                        value={subMesaAsignada}
+                        onValueChange={setSubMesaAsignada}
+                      >
+                        <SelectTrigger id="submesa" className="h-11 text-sm">
+                          <SelectValue placeholder="Elige la submesa" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Plenaria General">Plenaria General (Sin submesa)</SelectItem>
+                          {listaSubmesas.map((sm) => (
+                            <SelectItem key={sm} value={sm}>
+                              {sm}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
+                </div>
 
                 {/* Habeas Data */}
                 <div className="rounded-xl border border-[var(--border)] bg-[var(--surface-2)]/40 p-4">
@@ -803,8 +804,8 @@ export function AsistenciaCliente({ mesaId }: { mesaId: string }) {
       </main>
 
       {/* Pie de página oficial adaptable */}
-      <footer className="mt-12 border-t border-[var(--border)] py-6 text-center text-xs text-[var(--text-tertiary)] px-4 sm:px-6 lg:px-8 xl:px-12">
-        <div className="mx-auto w-full max-w-7xl 2xl:max-w-[1536px] text-center">
+      <footer className="mt-12 border-t border-[var(--border)] py-6 text-center text-xs text-[var(--text-tertiary)] px-4 sm:px-6 md:px-8 lg:px-10 xl:px-14 2xl:px-20">
+        <div className="w-full text-center">
           <p className="font-medium text-[var(--text-secondary)]">
             POLIS • Sistema Distrital de Participación Ciudadana y Seguridad Humana
           </p>

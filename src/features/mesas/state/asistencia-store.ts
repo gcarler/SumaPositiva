@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import {create} from "zustand";
 import {persist} from "zustand/middleware";
 import type {
@@ -12,6 +13,12 @@ import {
   GENEROS_LABELS
 } from "@/features/mesas/models/asistencia";
 import {sanitizarCsv as escapeCSV} from "@/shared/lib/csv";
+import {
+  MAPA_CODIGO_OFICIAL_A_AGENDA,
+  MAPA_UUID_A_AGENDA,
+  MAPA_SHORTCODE_A_AGENDA,
+} from "@/features/geovisor/data/mesas-geovisor.data";
+import { useMesasStore } from "@/features/mesas/state/mesas-store";
 import {
   registrarAsistenteMesa,
   listarAsistentesMesa,
@@ -348,7 +355,7 @@ export const useAsistenciaStore = create<AsistenciaState>()(
       },
 
       exportarPlanillaCSV: (mesaId, nombreMesa) => {
-        const lista = get().registros[mesaId] ?? [];
+        const lista = obtenerRegistrosMesa(get().registros, mesaId);
         if (lista.length === 0) {
           if (typeof window !== "undefined") {
             alert("No hay asistentes registrados para exportar en esta mesa.");
@@ -449,10 +456,143 @@ export const useAsistenciaStore = create<AsistenciaState>()(
 const EMPTY_REGISTROS: RegistroAsistencia[] = [];
 
 /**
- * Selector helper para obtener registros de una mesa de manera reactiva
+ * Resuelve todas las claves equivalentes de una mesa (UUID, código oficial, shortcode, agenda)
+ */
+export function obtenerClavesEquivalentesMesa(mesaId: string): string[] {
+  if (!mesaId) return [];
+  const claves = new Set<string>();
+  const idOriginal = mesaId.trim();
+  const idLower = idOriginal.toLowerCase();
+  const idUpper = idOriginal.toUpperCase();
+
+  claves.add(idOriginal);
+  claves.add(idLower);
+  claves.add(idUpper);
+
+  // 1. Identificar agendaId referencial
+  let agendaId: string | undefined = undefined;
+  if (MAPA_UUID_A_AGENDA[idLower]) {
+    agendaId = MAPA_UUID_A_AGENDA[idLower];
+  } else if (MAPA_CODIGO_OFICIAL_A_AGENDA[idUpper]) {
+    agendaId = MAPA_CODIGO_OFICIAL_A_AGENDA[idUpper];
+  } else if (MAPA_SHORTCODE_A_AGENDA[idUpper]) {
+    agendaId = MAPA_SHORTCODE_A_AGENDA[idUpper];
+  } else if (
+    idLower.startsWith("mt-") ||
+    idLower.startsWith("mp-") ||
+    idLower.startsWith("ms-") ||
+    idLower.startsWith("mr-")
+  ) {
+    agendaId = idLower;
+  }
+
+  // 2. Si identificamos agendaId, agregar todas las variantes asociadas
+  if (agendaId) {
+    const agLower = agendaId.toLowerCase();
+    claves.add(agLower);
+
+    for (const [cod, ag] of Object.entries(MAPA_CODIGO_OFICIAL_A_AGENDA)) {
+      if (ag.toLowerCase() === agLower) {
+        claves.add(cod);
+        claves.add(cod.toLowerCase());
+      }
+    }
+
+    for (const [uuid, ag] of Object.entries(MAPA_UUID_A_AGENDA)) {
+      if (ag.toLowerCase() === agLower) {
+        claves.add(uuid);
+        claves.add(uuid.toLowerCase());
+      }
+    }
+
+    for (const [sc, ag] of Object.entries(MAPA_SHORTCODE_A_AGENDA)) {
+      if (ag.toLowerCase() === agLower) {
+        claves.add(sc);
+        claves.add(sc.toLowerCase());
+      }
+    }
+  }
+
+  // 3. Consultar useMesasStore para enriquecer con mesas cargadas dinámicamente
+  try {
+    const mesas = useMesasStore.getState?.()?.mesas;
+    if (Array.isArray(mesas) && mesas.length > 0) {
+      const match = mesas.find(
+        (m) =>
+          claves.has(m.id) ||
+          claves.has(m.id.toLowerCase()) ||
+          (m.codigoOficial &&
+            (claves.has(m.codigoOficial) ||
+              claves.has(m.codigoOficial.toUpperCase()) ||
+              claves.has(m.codigoOficial.toLowerCase()))) ||
+          (m.shortcodeCiudadano &&
+            (claves.has(m.shortcodeCiudadano) ||
+              claves.has(m.shortcodeCiudadano.toUpperCase()) ||
+              claves.has(m.shortcodeCiudadano.toLowerCase())))
+      );
+      if (match) {
+        claves.add(match.id);
+        claves.add(match.id.toLowerCase());
+        if (match.codigoOficial) {
+          claves.add(match.codigoOficial);
+          claves.add(match.codigoOficial.toLowerCase());
+          claves.add(match.codigoOficial.toUpperCase());
+        }
+        if (match.shortcodeCiudadano) {
+          claves.add(match.shortcodeCiudadano);
+          claves.add(match.shortcodeCiudadano.toLowerCase());
+          claves.add(match.shortcodeCiudadano.toUpperCase());
+        }
+      }
+    }
+  } catch {
+    // Entornos de prueba o SSR
+  }
+
+  return Array.from(claves);
+}
+
+/**
+ * Obtiene y consolida sin duplicados los registros de todas las variantes de una mesa
+ */
+export function obtenerRegistrosMesa(
+  registros: Record<string, RegistroAsistencia[]>,
+  mesaId: string
+): RegistroAsistencia[] {
+  if (!mesaId || !registros) return EMPTY_REGISTROS;
+  const claves = obtenerClavesEquivalentesMesa(mesaId);
+  const vistosIds = new Set<string>();
+  const vistosDocs = new Set<string>();
+  const combinados: RegistroAsistencia[] = [];
+
+  for (const clave of claves) {
+    const lista = registros[clave];
+    if (Array.isArray(lista)) {
+      for (const reg of lista) {
+        const docKey = reg.numeroDocumento?.trim()
+          ? `${reg.tipoDocumento}-${reg.numeroDocumento.trim().replace(/\D/g, "")}`
+          : null;
+        if (vistosIds.has(reg.id) || (docKey && vistosDocs.has(docKey))) {
+          continue;
+        }
+        vistosIds.add(reg.id);
+        if (docKey) vistosDocs.add(docKey);
+        combinados.push(reg);
+      }
+    }
+  }
+
+  return combinados;
+}
+
+/**
+ * Selector helper para obtener registros de una mesa de manera reactiva y multi-clave
  */
 export function useRegistrosMesa(mesaId: string): RegistroAsistencia[] {
-  return useAsistenciaStore((s) => s.registros[mesaId] ?? EMPTY_REGISTROS);
+  const registrosPorMesa = useAsistenciaStore((s) => s.registros);
+  return useMemo(() => {
+    return obtenerRegistrosMesa(registrosPorMesa, mesaId);
+  }, [registrosPorMesa, mesaId]);
 }
 
 /**

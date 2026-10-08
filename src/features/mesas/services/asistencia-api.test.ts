@@ -7,7 +7,11 @@ import {
   type NuevoAsistenteInput,
   type ParticipanteRespuesta,
 } from "./asistencia-api";
-import { useAsistenciaStore } from "../state/asistencia-store";
+import {
+  useAsistenciaStore,
+  obtenerClavesEquivalentesMesa,
+  obtenerRegistrosMesa,
+} from "../state/asistencia-store";
 
 describe("Asistencia Digital y Persistencia en PostgreSQL (EDIT-08)", () => {
   let fetchSpy: ReturnType<typeof vi.spyOn>;
@@ -353,6 +357,72 @@ describe("Asistencia Digital y Persistencia en PostgreSQL (EDIT-08)", () => {
         expect.stringContaining("/mesas/MT-L01-01/participantes"),
         expect.anything()
       );
+    });
+
+    test("obtenerClavesEquivalentesMesa resuelve UUID, slug, código oficial y código de agenda (QA-004)", () => {
+      // Desde código oficial
+      const clavesDesdeCod = obtenerClavesEquivalentesMesa("MT-L01-01");
+      expect(clavesDesdeCod).toContain("MT-L01-01");
+      expect(clavesDesdeCod).toContain("mt-001");
+      expect(clavesDesdeCod).toContain("01a0f5fe-86df-717b-a4d0-5b6605bdf993");
+
+      // Desde UUID
+      const clavesDesdeUuid = obtenerClavesEquivalentesMesa("01a0f5fe-86df-717b-a4d0-5b6605bdf993");
+      expect(clavesDesdeUuid).toContain("mt-001");
+      expect(clavesDesdeUuid).toContain("MT-L01-01");
+
+      // Desde código de agenda
+      const clavesDesdeAgenda = obtenerClavesEquivalentesMesa("mt-001");
+      expect(clavesDesdeAgenda).toContain("MT-L01-01");
+      expect(clavesDesdeAgenda).toContain("01a0f5fe-86df-717b-a4d0-5b6605bdf993");
+    });
+
+    test("obtenerRegistrosMesa consolida y deduplica registros indexados bajo distintas claves (QA-004)", () => {
+      const registros = {
+        "mt-001": [
+          {
+            id: "reg-1",
+            mesaId: "mt-001",
+            nombreCompleto: "Ciudadano Agenda",
+            tipoDocumento: "CC" as const,
+            numeroDocumento: "11111",
+            genero: "mujer" as const,
+            enfoqueDiferencial: "ninguno" as const,
+            organizacionOBarrio: "Centro",
+            horaRegistro: "2026-10-15T08:00:00Z",
+          },
+        ],
+        "MT-L01-01": [
+          {
+            id: "reg-2",
+            mesaId: "MT-L01-01",
+            nombreCompleto: "Ciudadano Puerta",
+            tipoDocumento: "CC" as const,
+            numeroDocumento: "22222",
+            genero: "hombre" as const,
+            enfoqueDiferencial: "juventud" as const,
+            organizacionOBarrio: "Manga",
+            horaRegistro: "2026-10-15T08:10:00Z",
+          },
+          // Duplicado con mismo número de documento
+          {
+            id: "reg-3-dup",
+            mesaId: "MT-L01-01",
+            nombreCompleto: "Ciudadano Agenda Repetido",
+            tipoDocumento: "CC" as const,
+            numeroDocumento: "11111",
+            genero: "mujer" as const,
+            enfoqueDiferencial: "ninguno" as const,
+            organizacionOBarrio: "Centro",
+            horaRegistro: "2026-10-15T08:20:00Z",
+          },
+        ],
+      };
+
+      // Consultar con el UUID de la mesa debe retornar ambos registros deduplicados
+      const consolidados = obtenerRegistrosMesa(registros, "01a0f5fe-86df-717b-a4d0-5b6605bdf993");
+      expect(consolidados.length).toBe(2);
+      expect(consolidados.map((r) => r.numeroDocumento)).toEqual(["11111", "22222"]);
     });
   });
 });

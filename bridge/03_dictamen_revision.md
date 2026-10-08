@@ -418,3 +418,98 @@ Se ejecutó la inspección exhaustiva de 5 frentes en POLIS con los siguientes r
 
 ### 2. Plan de Acción Inmediato para agy2:
 Asignar a `agy2` la tarea de remediación atómica para subsanar `HALLAZGO-BACKEND-01` (registro de rutas en `docs/permisos-api.md` y 100% de pytest verde) y `HALLAZGO-BD-01` (alineación de modelo `Mesa` para `alembic check` 0 diffs).
+
+---
+
+## DICTAMEN PERICIAL FORENSE: CIERRE EXITOSO Y APROBACIÓN DE [AUD21-H01] (EAF / agy, 2026-10-08)
+
+**Destinatario:** Usuario / Dirección del Proyecto POLIS  
+**Auditor / Coordinador EAF:** `agy`  
+**Ejecutor Técnico:** `agy2`  
+**Commit Auditado:** `4ed992d` (`fix(audit): subsanar AUD21-H01 registrar rutas de comunicaciones y alinear modelo mesa con bd_csh`)  
+**Resultado Oficial:** **APROBADO — CONFORME AL 100%**  
+
+### 1. Comprobaciones Periciales de Contra-Auditoría:
+
+1. **Hito 1 — HALLAZGO-BACKEND-01 (Matriz de Permisos API)**:
+   - Se verificó la incorporación de las 6 rutas de `/api/v1/comunicaciones/tareas` en `docs/permisos-api.md`.
+   - Contra-auditoría ejecutada: `backend/.venv/bin/pytest backend/tests/test_access_policy.py`.
+   - **Resultado**: **96/96 pruebas pasando (100% verde)**. Cero violaciones de contrato de autorización.
+
+2. **Hito 2 — HALLAZGO-BD-01 (Alineación de Modelo Mesa y Esquema Alembic)**:
+   - Se verificó la alineación en `backend/app/modules/mesas/models.py` (`slug` VARCHAR(180), `nombre` VARCHAR(255), `lugar_nombre` VARCHAR(255), `estado` VARCHAR(30), `modalidad` VARCHAR(30)) y la restricción `uq_fotos_mesa_evidencia`.
+   - Se verificó el respaldo forense pre-migración: `backups/bd_csh_pre_aud21_h01_20261008_010624.dump`.
+   - Contra-auditoría ejecutada: `cd /root/polis/backend && .venv/bin/alembic check`.
+   - **Resultado**: **`No new upgrade operations detected.` (0 diffs)**. Paridad absoluta entre el modelo SQLAlchemy y `bd_csh`.
+
+3. **Salud de Servicios y Quality Gates Globales**:
+   - `backend/.venv/bin/pytest backend/tests/`: **438/438 pruebas backend pasando (100% verde)**.
+   - `bun run check`: **0 errores** (TypeScript, ESLint y UI-policy).
+   - `bun test`: **313/313 pruebas frontend pasando**.
+   - `http://127.0.0.1:8000/api/v1/health/ready` -> `HTTP 200` (`status: ready, database: ok, migrations: ok`).
+   - `http://127.0.0.1:3000/plataforma` -> `HTTP 200 OK`.
+   - Repositorio: Rama `main` limpia (HEAD en `4ed992d`), cero git push a remoto.
+
+### 2. Veredicto:
+La tarea **[AUD21-H01]** queda oficialmente **CERRADA Y APROBADA**. La plataforma POLIS se encuentra en estado de **CONFORMIDAD TÉCNICA TOTAL (100% verde en frontend, backend, base de datos y accesibilidad)**.
+
+---
+
+## DICTAMEN PERICIAL FORENSE: REVISIÓN DE [ASIS-01] Y ASIGNACIÓN DE [ASIS-02] (EAF / agy, 2026-10-08)
+
+**Destinatario:** Usuario / Dirección del Proyecto POLIS  
+**Auditor / Coordinador EAF:** `agy`  
+**Ejecutor Técnico:** `agy2`  
+**Commit Auditado:** `c5e30fc` (`feat(asistencia): remediacion normativa ley 1757 y diseno adaptativo responsivo`)  
+**Resultado Oficial [ASIS-01]:** **CONFORME EN REMEDIACIÓN NORMATIVA CON OBSERVACIÓN DE ADAPTABILIDAD VISUAL**  
+
+### 1. Comprobaciones Periciales de Contra-Auditoría:
+1. **Remediación Normativa e Institucional**:
+   - Erradicación total de *"Decreto 037 / 2026"*: `curl -s http://127.0.0.1:3000/asistencia/ms-sec-03 | grep -i "decreto 037"` retorna 0 coincidencias.
+   - Sustento de participación ciudadana formal: Se constata la adopción de la **Ley Estatutaria 1757 de 2015** y **Ley 1581 de 2012** en el formulario público.
+2. **Observación Pericial del Usuario (Feedback Directo en Producción)**:
+   - En la URL `https://seguridadhumanaintegral.org/asistencia/mt-l01-01`, el usuario constata que el contenido sigue viéndose acotado/encajonado y no se expande para aprovechar el tamaño y resolución completa de la pantalla.
+   - Diagnóstico: El uso de topes como `max-w-6xl` (1152px) en el contenedor principal y `max-w-md` / `max-w-lg` en subsecciones deja márgenes vacíos excesivos en monitores de escritorio panorámicos (1440px, 1920px+) y tablets anchas.
+3. **Acción Inmediata**:
+   - Se apertura la orden de trabajo **[ASIS-02]** para que `agy2` adapte y ajuste fluidamente todo el contenido al tamaño y ancho de pantalla disponible.
+
+---
+
+## DICTAMEN PERICIAL FORENSE: CIERRE EXITOSO Y APROBACIÓN DE [ASIS-02] (EAF / agy, 2026-10-08)
+
+**Destinatario:** Usuario / Dirección del Proyecto POLIS  
+**Auditor / Coordinador EAF:** `agy`  
+**Ejecutor Técnico:** `agy2`  
+**Commit Auditado:** `7960791` (`feat(asistencia): expansion fluida max-w-7xl rebalanceo grid y pase de exito centrado (ASIS-02)`)  
+**Resultado Oficial:** **APROBADO — CONFORME AL 100%**  
+
+### 1. Comprobaciones Periciales de Contra-Auditoría:
+
+1. **Expansión Fluida y Adaptabilidad al Tamaño de Pantalla (UX / Ergonomía)**:
+   - Se verificó la sustitución definitiva de los topes restrictivos (`max-w-6xl` de 1152px y `max-w-md`) en `src/app/asistencia/[mesaId]/asistencia-cliente.tsx`.
+   - La cabecera oficial distrital (`<header>`), el contenedor principal (`<main>`) y el pie institucional (`<footer>`) ahora implementan un layout fluido generoso: `w-full max-w-7xl 2xl:max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-12`.
+   - Se preserva la protección antidesbordamiento `overflow-x-hidden` en el elemento raíz para dispositivos móviles y tablets.
+
+2. **Rebalanceo Armónico del Grid de 2 Columnas**:
+   - En pantallas grandes (`lg:`, `xl:`, `2xl:`):
+     - **Columna de Información Institucional (Sticky)**: Ocupa 4 columnas (`xl:col-span-4 lg:col-span-5`), albergando la ficha técnica de la mesa, horario, lugar, dimensiones ONU, aforo estimado y estado de conectividad en tiempo real (PostgreSQL / Contingencia Local).
+     - **Columna de Registro Ciudadano**: Ocupa 8 columnas (`xl:col-span-8 lg:col-span-7`), permitiendo que los campos de entrada gocen de amplitud visual, tipografía clara y altura ergonómica `h-11`.
+   - En pantallas móviles (`< lg`): Flujo vertical natural, continuo y de ancho completo al 100%.
+
+3. **Pase de Asistencia (Pantalla de Éxito)**:
+   - Se eliminaron las restricciones rígidas `max-w-md` y se desplegó un pase de confirmación centrado con ancho generoso `w-full max-w-2xl mx-auto py-4`, presentando el radicado oficial y los datos del ciudadano de forma limpia y legible.
+
+4. **Higiene Normativa Global en Metadata**:
+   - Se verificó en `src/app/layout.tsx` la eliminación de la mención entre paréntesis `"(Decreto Nacional 037 de 2026)"` de la metadata `description` global.
+
+5. **Quality Gates Oficiales Verificados de Forma Independiente**:
+   - `bun run check`: **0 errores** (`node scripts/ui-policy.mjs`, `tsc --noEmit`, `eslint .`).
+   - `bun test src/features/mesas/`: **26/26 pruebas pasando (0 fallas)** con 112 expect calls.
+   - `systemctl status polis-frontend`: **Activo y operativo en puerto 3000** (`ready in 76ms`).
+   - `curl -s -I http://127.0.0.1:3000/asistencia/mt-l01-01` -> **HTTP/1.1 200 OK**.
+   - `curl -k -s -I https://seguridadhumanaintegral.org/asistencia/mt-l01-01` -> **HTTP/1.1 200 OK**.
+   - Erradicación de "Decreto 037": **0 coincidencias** en HTML y metadatos.
+   - Repositorio Git: Commit atómico `7960791` en `main`, working tree limpio, cero git push a remoto.
+
+### 2. Veredicto Final:
+La tarea **[ASIS-02]** queda oficialmente **CERRADA Y APROBADA AL 100%**. El módulo de asistencia ciudadana en `https://seguridadhumanaintegral.org/asistencia/mt-l01-01` y demás mesas del distrito se encuentra en óptimas condiciones de ergonomía visual, fluidez adaptativa en todas las resoluciones de pantalla y estricto apego normativo.

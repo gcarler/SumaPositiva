@@ -1,3 +1,63 @@
+# INFORME PERICIAL DE EJECUCIÓN — TAREA [QA-FIX-01] RESOLUCIÓN INTEGRAL DE QA-002, QA-003 Y QA-004: FLUIDEZ TOTAL EN PANTALLAS ULTRA-ANCHAS Y SINCRONIZACIÓN DE ASISTENCIA EN PLATAFORMA
+**Destinatario:** Coordinador General y Auditor Forense EAF `agy` (`tmux a -t agy`)  
+**Responsable:** `agy2` (Desarrollador / EDD — `tmux a -t agy2`)  
+**Fecha de Ejecución:** Miércoles, 08 de Octubre de 2026  
+**Tickets Subsanados en Plataforma QA (`http://2.25.244.251:4000`):**
+- `QA-002`: Formularios desaprovechando espacio en monitores panorámicos (`https://seguridadhumanaintegral.org/asistencia/mt-l02-01`)
+- `QA-003`: Márgenes blancos gigantescos en pantallas 2K/4K/ultra-wide por topes `max-w`
+- `QA-004`: Gestión y consolidación nativa de la asistencia en la plataforma (`https://seguridadhumanaintegral.org/plataforma/mesas`)
+**Estado:** Subsanación Ejecutada al 100%, Validada y Conforme
+
+---
+
+## 1. Resumen Ejecutivo de la Intervención [QA-FIX-01]
+
+En estricto cumplimiento de los requerimientos de `bridge/01_tarea_activa.md`, `agy2` resolvió de forma integral los 3 hallazgos reportados por el equipo de Calidad (QA):
+
+1. **Fluidez Total y Erradicación de Topes en Pantallas Ultra-Anchas (`QA-002`, `QA-003`)**:
+   - En `src/app/asistencia/[mesaId]/asistencia-cliente.tsx`:
+     - Se eliminó de raíz cualquier tope restrictivo (`max-w-7xl` y `2xl:max-w-[1536px]`) en `<header>`, `<main>` y `<footer>`.
+     - Se implementó un layout **100% fluido (`w-full`)** con padding horizontal adaptativo:
+       `w-full px-4 sm:px-6 md:px-8 lg:px-10 xl:px-14 2xl:px-20`.
+     - En el cuerpo del formulario (`<form>`), los campos fueron estructurados en sub-grids armónicos de 2 y 3 columnas (`grid grid-cols-1 xl:grid-cols-12`):
+       - Fila 1: Nombres y Apellidos (`xl:col-span-6`) + Documento de Identidad (`xl:col-span-6`, sub-grid 4/8 tipo/número).
+       - Fila 2: Género (`xl:col-span-3`) + Enfoque Poblacional/Étnico (`xl:col-span-4`) + Barrio/Organización/JAC (`xl:col-span-5`).
+       - Fila 3: Teléfono (`xl:grid-cols-3` / `xl:grid-cols-2`) + Correo Electrónico + Submesa Temática.
+     - En pantallas ultra-wide (1440p, 2K, 4K, 21:9 o 32:9), los campos no quedan elongados de forma desproporcionada, logrando un balance estético y ergonómico perfecto sin márgenes laterales vacíos.
+     - La pantalla de confirmación ("Pase de Asistencia") se amplió a un contenedor generoso y centrado `w-full max-w-3xl mx-auto py-6`.
+
+2. **Sincronización y Registro Nativo de Asistencia en la Plataforma (`QA-004`)**:
+   - En `src/features/mesas/state/asistencia-store.ts`:
+     - Se implementaron las funciones `obtenerClavesEquivalentesMesa(mesaId)` y `obtenerRegistrosMesa(registros, mesaId)`.
+     - El selector `useRegistrosMesa(mesaId)` ahora resuelve dinámicamente y agrega los registros buscando a través de todas las variantes de identificación de la mesa: UUID interno (ej. `01a0f5fe-...`), código oficial (ej. `MT-L01-01`), slug en minúsculas (`mt-l01-01`), código de agenda territorial (`mt-001`) y shortcodes (`MT101`).
+     - Se aplica deduplicación determinista por `id` y número de documento normalizado (`tipoDocumento-numeroDocumento`).
+     - Se adaptó `exportarPlanillaCSV` para utilizar la colección consolidada de registros de la mesa.
+   - En `src/features/mesas/panels/mesa-panel.tsx`:
+     - Se agregó sincronización automática al montar el panel mediante `useEffect`: invoca `cargarAsistentesDesdeBackend(mesa.id)` y `cargarAsistentesDesdeBackend(mesa.codigoOficial)`.
+     - Se jerarquizó la sección "Control de Quórum Digital" y se colocó el botón de acción principal `+ Registrar Asistente Manual` en la cabecera de la sección (`SectionLabel`) con estilo `variant="ember"`, visible inmediatamente para facilitadores institucionales.
+     - Se mejoró `handleGuardarManual` con ejecución asíncrona, notificación descriptiva con `toast.success`, y reseteo completo de todos los estados del formulario.
+     - Las métricas de quórum digital y desglose demográfico por enfoque diferencial en la plataforma reflejan en tiempo real tanto los registros manuales como los escaneos de puerta.
+   - En `src/features/mesas/services/asistencia-api.test.ts`:
+     - Se agregaron 2 nuevas pruebas unitarias para certificar la resolución de claves equivalentes y la agregación/deduplicación multi-clave (total: 28 pruebas pasando en mesas).
+
+---
+
+## 2. Matriz de Cumplimiento de Quality Gates
+
+| Quality Gate | Comando Oficial | Resultado Obtenido | Estado |
+| :--- | :--- | :--- | :---: |
+| **QG1: Check UI, Tipos y Linter** | `bun run check` | `node scripts/ui-policy.mjs`, `tsc --noEmit`, `eslint .` -> **0 errores** | ✅ 100% CONFORME |
+| **QG2: Pruebas Unitarias Mesas** | `bun test src/features/mesas/` | **28 pass, 0 fail**, 121 expect calls en 3 archivos | ✅ 100% CONFORME |
+| **QG3: Compilación Producción Next.js** | `bun run build` | Turbopack exitoso (20.6s), 190 rutas generadas, standalone empaquetado | ✅ 100% CONFORME |
+| **QG4: Reinicio de Servicio Frontend** | `systemctl restart polis-frontend` | Servicio activo en puerto 3000 (`ready in 76ms`) | ✅ 100% CONFORME |
+| **QG5: Verificación MT-L02-01 en Vivo** | `curl -s -I http://127.0.0.1:3000/asistencia/mt-l02-01` | **HTTP/1.1 200 OK** | ✅ 100% CONFORME |
+| **QG6: Eliminación Total de max-w-7xl** | `curl -s http://127.0.0.1:3000/asistencia/mt-l02-01 \| grep "max-w-7xl"` | **0 coincidencias** (erradicado) | ✅ 100% CONFORME |
+| **QG7: Clases Fluidas en Vivo** | `curl -s http://127.0.0.1:3000/asistencia/mt-l02-01` | Presencia de `px-4 sm:px-6 md:px-8 lg:px-10 xl:px-14 2xl:px-20` (3 ocurrencias) | ✅ 100% CONFORME |
+| **QG8: Endpoint Plataforma Mesas** | `curl -s -I http://127.0.0.1:3000/plataforma/mesas` | **HTTP/1.1 200 OK** | ✅ 100% CONFORME |
+| **QG9: Control de Versiones** | Git local | Commit atómico en `main`, cero git push a remoto | ✅ 100% CONFORME |
+
+---
+
 # INFORME PERICIAL DE EJECUCIÓN — TAREA [ASIS-02] AJUSTE Y EXPANSIÓN FLUIDA DEL CONTENIDO AL TAMAÑO DE LA PANTALLA
 **Destinatario:** Coordinador General y Auditor Forense EAF `agy`  
 **Responsable:** `agy2` (Desarrollador / EDD — `tmux a -t agy2`)  

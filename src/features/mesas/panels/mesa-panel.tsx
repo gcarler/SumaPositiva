@@ -8,7 +8,7 @@ import {Badge} from "@/shared/ui/badge";
 import {Switch} from "@/shared/ui/switch";
 import {Label} from "@/shared/ui/label";
 
-import {useState, useMemo} from "react";
+import {useState, useMemo, useEffect} from "react";
 import {format} from "date-fns";
 import {es} from "date-fns/locale";
 import {AnimatePresence, motion} from "framer-motion";
@@ -45,7 +45,8 @@ import {
 import {
   useAsistenciaStore,
   useRegistrosMesa,
-  calcularResumenEnfoques
+  calcularResumenEnfoques,
+  type NuevoAsistenteInput,
 } from "@/features/mesas/state/asistencia-store";
 import {
   ENFOQUES_DIFERENCIALES_LABELS,
@@ -139,6 +140,19 @@ export function MesaPanel({
   const registrarAsistente = useAsistenciaStore((s) => s.registrarAsistente);
   const eliminarRegistro = useAsistenciaStore((s) => s.eliminarRegistro);
   const exportarPlanillaCSV = useAsistenciaStore((s) => s.exportarPlanillaCSV);
+  const cargarAsistentesDesdeBackend = useAsistenciaStore((s) => s.cargarAsistentesDesdeBackend);
+
+  useEffect(() => {
+    if (mesa?.id) {
+      cargarAsistentesDesdeBackend(mesa.id);
+    }
+    if (mesa?.codigoOficial && mesa.codigoOficial !== mesa.id) {
+      cargarAsistentesDesdeBackend(mesa.codigoOficial);
+    }
+    if (props.mesaId && props.mesaId !== mesa?.id && props.mesaId !== mesa?.codigoOficial) {
+      cargarAsistentesDesdeBackend(props.mesaId);
+    }
+  }, [mesa?.id, mesa?.codigoOficial, props.mesaId, cargarAsistentesDesdeBackend]);
 
   const [filtroEnfoque, setFiltroEnfoque] = useState<string>("todos");
   const [busquedaAsistente, setBusquedaAsistente] = useState("");
@@ -286,29 +300,39 @@ export function MesaPanel({
     }
   };
 
-  const handleGuardarManual = (e: React.FormEvent) => {
+  const handleGuardarManual = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!manualNombre.trim() || !manualNumDoc.trim() || !manualBarrio.trim()) {
       toast.error("Completa nombres, documento y barrio/organización");
       return;
     }
-    registrarAsistente({
-      mesaId: mesa.id,
-      nombreCompleto: manualNombre.trim(),
-      tipoDocumento: manualTipoDoc,
-      numeroDocumento: manualNumDoc.trim(),
-      genero: manualGenero,
-      enfoqueDiferencial: manualEnfoque,
-      organizacionOBarrio: manualBarrio.trim(),
-      telefonoWhatsApp: manualTel.trim() || undefined,
-      subMesaAsignada: manualSubmesa === "Plenaria General" ? undefined : manualSubmesa,
-    });
-    toast.success("Asistente registrado en planilla");
-    setManualNombre("");
-    setManualNumDoc("");
-    setManualBarrio("");
-    setManualTel("");
-    setFormManualAbierto(false);
+    try {
+      const input: NuevoAsistenteInput = {
+        mesaId: mesa.id,
+        nombreCompleto: manualNombre.trim(),
+        tipoDocumento: manualTipoDoc,
+        numeroDocumento: manualNumDoc.trim(),
+        genero: manualGenero,
+        enfoqueDiferencial: manualEnfoque,
+        organizacionOBarrio: manualBarrio.trim(),
+        telefonoWhatsApp: manualTel.trim() || undefined,
+        subMesaAsignada: manualSubmesa === "Plenaria General" ? undefined : manualSubmesa,
+      };
+      await registrarAsistente(input);
+      toast.success("Asistente registrado exitosamente en la planilla oficial", {
+        description: `${manualNombre.trim()} (${manualTipoDoc} ${manualNumDoc.trim()})`,
+      });
+      setManualNombre("");
+      setManualNumDoc("");
+      setManualBarrio("");
+      setManualTel("");
+      setManualGenero("mujer");
+      setManualEnfoque("ninguno");
+      setManualSubmesa("Plenaria General");
+      setFormManualAbierto(false);
+    } catch {
+      toast.error("Ocurrió un error al registrar al asistente.");
+    }
   };
 
   const handleCopiarEnlaceAsistencia = () => {
@@ -580,6 +604,18 @@ export function MesaPanel({
           <SectionLabel
             right={
               <div className="flex items-center gap-2">
+                {!soloLectura && (
+                  <Button
+                    variant={formManualAbierto ? "outline" : "ember"}
+                    size="sm"
+                    type="button"
+                    onClick={() => setFormManualAbierto(!formManualAbierto)}
+                    className="h-7 text-xs font-semibold shadow-sm"
+                  >
+                    <UserPlus className="size-3.5 mr-1" />
+                    {formManualAbierto ? "Ocultar Formulario" : "+ Registrar Asistente Manual"}
+                  </Button>
+                )}
                 <Button
                   variant="outline"
                   size="sm"
