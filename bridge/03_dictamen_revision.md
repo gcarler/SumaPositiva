@@ -553,3 +553,43 @@ La tarea **[ASIS-02]** queda oficialmente **CERRADA Y APROBADA AL 100%**. El mó
 
 ### 2. Veredicto Final:
 La tarea **[QA-FIX-01]** queda formalmente **CERRADA Y APROBADA AL 100%**. Los tickets `QA-002`, `QA-003` y `QA-004` son declarados en estado **Listo para Re-test (`listo_retest`)** en la Plataforma Autónoma de QA (`http://2.25.244.251:4000`).
+
+---
+
+## DICTAMEN PERICIAL FORENSE: CIERRE EXITOSO Y APROBACIÓN DE [QA-FIX-02] (EAF / agy, 2026-10-08)
+
+**Destinatario:** Dirección del Proyecto POLIS / Equipo de Control de Calidad (QA)  
+**Auditor / Coordinador EAF:** `agy` (`tmux a -t agy`)  
+**Ejecutor Técnico:** `agy2` (`tmux a -t agy2`)  
+**Commit Auditado:** `5e50fc8` (`fix(mesas): gestion de disponibilidad de acta en pdf, deep-linking y erradicacion decreto 037 (QA-FIX-02)`)  
+**Ticket Subsanado en Plataforma QA (`http://2.25.244.251:4000`):**
+- `QA-005`: "pdf de acta no funciona" (`https://seguridadhumanaintegral.org/plataforma/mesas?mesaId=01a0f5fe-86df-717b-a4d0-5b6605bdf993&ver=acta`)
+
+**Resultado Oficial:** **APROBADO — CONFORME AL 100%**
+
+### 1. Comprobaciones Periciales de Contra-Auditoría:
+
+1. **Erradicación Normativa del Decreto 037 y Saneamiento Legal**:
+   - En `src/features/mesas/panels/mesa-acta-panel.tsx`, se verificó la eliminación total y absoluta de la mención literal `"Validez legal conforme a Ley 1757 de 2015, Decreto 037 de 2026 y Sentencia C-150 de 2015"`.
+   - Se certificó que `grep -i "037" src/features/mesas/panels/mesa-acta-panel.tsx` retorna **0 coincidencias**.
+   - El párrafo legal institucional ahora fundamenta estrictamente la Ley 1757 de 2015 y la Sentencia C-150 de 2015.
+
+2. **Detección Dinámica de Disponibilidad del Acta y Pedagogía Ciudadana**:
+   - Se validó el cálculo estricto de `actaDisponible` basado en los estados concluyentes (`cerrada`, `completada`, `finalizada`, `acta_concertada` o presencia de `sha256Acta`).
+   - Cuando la mesa está abierta o en preparación, se constató el despliegue del banner informativo institucional (clase `no-print`) notificando con claridad al ciudadano que el acta definitiva no está disponible para descarga aún y que se visualiza el borrador preliminar.
+   - El botón de descarga PDF ofrece feedback contextual amigable (`toast.info`) y la opción de imprimir el borrador de trabajo si se requiere.
+   - Cuando el acta está formalizada, se habilitan las opciones de descarga oficial con radicado.
+
+3. **Deep-Linking Directo en Plataforma**:
+   - En `src/features/plataforma/views/mesas-view.tsx`, se verificó el hook de detección de `window.location.search`, garantizando que la URL de inspección `https://seguridadhumanaintegral.org/plataforma/mesas?mesaId=...&ver=acta` abra de forma automática e inmediata el panel de acta oficial.
+
+4. **Verificación Independiente de Quality Gates**:
+   - `bun run check`: **0 errores** (`node scripts/ui-policy.mjs`, `tsc --noEmit`, `eslint .`).
+   - `bun test src/features/mesas/`: **28/28 pruebas pasando (0 fallas)**, 121 assertions.
+   - `bun run build`: **Compilación de producción exitosa en Next.js Turbopack** (190 rutas generadas).
+   - `systemctl status polis-frontend`: **Activo y operativo en puerto 3000**.
+   - `curl -s -I "http://127.0.0.1:3000/plataforma/mesas?mesaId=01a0f5fe-86df-717b-a4d0-5b6605bdf993&ver=acta"` -> **HTTP/1.1 200 OK**.
+   - `curl -s -k -I "https://seguridadhumanaintegral.org/plataforma/mesas?mesaId=01a0f5fe-86df-717b-a4d0-5b6605bdf993&ver=acta"` -> **HTTP/1.1 200 OK**.
+
+### 2. Veredicto Final:
+La tarea **[QA-FIX-02]** queda formalmente **CERRADA Y APROBADA AL 100%**. El ticket `QA-005` es declarado en estado **Listo para Re-test (`listo_retest`)** en la Plataforma Autónoma de QA (`http://2.25.244.251:4000`).
