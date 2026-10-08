@@ -51,6 +51,8 @@ Contrato y activación: [usuarios y acceso](identidad.md).
 | fuentes:leer | autoridad_distrital, administrador_identidades, auditor_forense, facilitador_mesa, ciudadano | declarada |
 | alternativas:gestionar | autoridad_distrital, administrador_identidades | declarada |
 | alternativas:leer | autoridad_distrital, administrador_identidades, auditor_forense, facilitador_mesa, ciudadano | declarada |
+| comunicaciones:gestionar | autoridad_distrital, administrador_identidades | declarada |
+| comunicaciones:leer | autoridad_distrital, administrador_identidades, auditor_forense, facilitador_mesa | declarada |
 
 Los roles ciudadano, ciudadano anónimo y auditor forense no reciben permisos de
 gestión institucional. El registro público solo admite ciudadano. Asignaciones
@@ -289,4 +291,16 @@ El listado público existente sigue mostrando líneas activas. No se conceden nu
 | POST | /api/v1/alternativas | permiso:alternativas:gestionar@declarada | Formular iniciativa en el Banco Distrital de Alternativas MGA con gating de Fase 2. |
 | PATCH | /api/v1/alternativas/{id} | permiso:alternativas:gestionar@declarada | Actualización controlada de iniciativa con trazabilidad de auditoría inmutable. |
 | DELETE | /api/v1/alternativas/{id} | permiso:alternativas:gestionar@declarada | Retiro de alternativa con validación de dependencias en compromisos PAS. |
+
+## Módulo de Comunicaciones y Cronograma de Trabajo
+
+| Método | Ruta | Control | Motivo o condición |
+| --- | --- | --- | --- |
+| GET | /api/v1/comunicaciones/tareas | permiso:comunicaciones:leer@declarada | Consulta del plan de trabajo, tareas y cronograma de comunicaciones de la política pública. |
+| GET | /api/v1/comunicaciones/tareas/{id} | permiso:comunicaciones:leer@declarada | Consulta detallada de una tarea específica del cronograma de comunicaciones por su UUID. |
+| POST | /api/v1/comunicaciones/tareas | permiso:comunicaciones:gestionar@declarada | Creación de nuevas tareas y actividades en el cronograma institucional de comunicaciones. |
+| PUT | /api/v1/comunicaciones/tareas/{id} | permiso:comunicaciones:gestionar@declarada | Actualización completa de tarea, fechas, entregables y responsables en el cronograma. |
+| PATCH | /api/v1/comunicaciones/tareas/{id} | permiso:comunicaciones:gestionar@declarada | Modificación parcial de fechas, estado o territorio de una tarea de comunicaciones. |
+| DELETE | /api/v1/comunicaciones/tareas/{id} | permiso:comunicaciones:gestionar@declarada | Retiro o cancelación de una tarea en el cronograma de trabajo de comunicaciones. |
+
 

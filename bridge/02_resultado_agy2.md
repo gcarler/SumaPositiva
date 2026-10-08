@@ -1,3 +1,54 @@
+# INFORME PERICIAL DE EJECUCIÓN — TAREA [AUD21-H01] REMEDIACIÓN DE MATRIZ DE ACCESO Y ALINEACIÓN DE ESQUEMA ALEMBIQUE
+**Destinatario:** Coordinador General y Auditor Forense EAF `agy`  
+**Responsable:** `agy2` (Desarrollador / EDD — `tmux a -t agy2`)  
+**Fecha de Ejecución:** Miércoles, 08 de Octubre de 2026  
+**Estado:** Subsanación Ejecutada al 100%, Validada y Conforme  
+
+---
+
+## 1. Resumen Ejecutivo de la Intervención AUD21-H01
+
+En cumplimiento estricto de las directrices consignadas en `bridge/01_tarea_activa.md`, `agy2` ejecutó de forma integral la remediación de los dos hallazgos periciales identificados en la Auditoría Forense de Línea Base:
+
+1. **Subsanación Hito 1 — HALLAZGO-BACKEND-01 (Matriz de Permisos API)**:
+   - Se registraron en [`docs/permisos-api.md`](file:///root/polis/docs/permisos-api.md) las 6 rutas del módulo `/api/v1/comunicaciones/tareas`:
+     - `GET /api/v1/comunicaciones/tareas` -> `permiso:comunicaciones:leer@declarada`
+     - `GET /api/v1/comunicaciones/tareas/{id}` -> `permiso:comunicaciones:leer@declarada`
+     - `POST /api/v1/comunicaciones/tareas` -> `permiso:comunicaciones:gestionar@declarada`
+     - `PUT /api/v1/comunicaciones/tareas/{id}` -> `permiso:comunicaciones:gestionar@declarada`
+     - `PATCH /api/v1/comunicaciones/tareas/{id}` -> `permiso:comunicaciones:gestionar@declarada`
+     - `DELETE /api/v1/comunicaciones/tareas/{id}` -> `permiso:comunicaciones:gestionar@declarada`
+   - Se adicionaron los permisos `comunicaciones:gestionar` y `comunicaciones:leer` en la tabla canónica de roles institucionales de [`docs/permisos-api.md`](file:///root/polis/docs/permisos-api.md), alineados a los roles sembrados en `autenticacion.roles`.
+   - **Resultado Comprobado**: `backend/.venv/bin/pytest backend/tests/test_access_policy.py` pasa al **100% verde (96/96 pruebas aprobadas sin fallas)**.
+
+2. **Subsanación Hito 2 — HALLAZGO-BD-01 (Alineación de Modelo Mesa y Esquema Alembic)**:
+   - Se alinearon los atributos de columna en el modelo SQLAlchemy `Mesa` ([`backend/app/modules/mesas/models.py`](file:///root/polis/backend/app/modules/mesas/models.py)):
+     - `slug`: `String(180)`, `unique=True`, `nullable=False`.
+     - `nombre`: `String(255)`, `nullable=False`.
+     - `lugar_nombre`: `String(255)`, `nullable=True`.
+     - `estado`: `String(30)`, default/server_default `'PROGRAMADA'`, `nullable=True`.
+     - `modalidad`: `String(30)`, default/server_default `'HIBRIDA_DIGITAL'`, `nullable=True`.
+     - `creado_en` y `actualizado_en`: `nullable=True`.
+   - Se normalizó el nombre de la restricción de unicidad en `FotoMesa` a `uq_fotos_mesa_evidencia` en [`backend/app/modules/evidencia/models.py`](file:///root/polis/backend/app/modules/evidencia/models.py) y en `bd_csh`.
+   - Se creó y aplicó la migración idempotente [`backend/alembic/versions/0052_alinear_esquema_mesas.py`](file:///root/polis/backend/alembic/versions/0052_alinear_esquema_mesas.py) para blindar la convergencia en despliegues desde `base` hasta `head`.
+   - **Protocolo de Respaldo**: Antes de aplicar la migración, con servicios `systemd` detenidos, se generó el respaldo forense `/root/polis/backups/bd_csh_pre_aud21_h01_20261008_010624.dump` (con firma SHA256).
+   - **Resultados Comprobados**:
+     - `cd /root/polis/backend && .venv/bin/alembic check`: **`No new upgrade operations detected.` (0 diffs, código de salida 0)**.
+     - `backend/.venv/bin/pytest backend/tests/test_database_integration.py`: **1/1 prueba de integración pasando al 100% verde**.
+     - `backend/.venv/bin/pytest backend/tests/`: **438/438 pruebas backend pasando (100% verde)**.
+
+---
+
+## 2. Verificación de Quality Gates Obligatorios
+- **Gate 1 (Matriz de Acceso)**: `backend/.venv/bin/pytest backend/tests/test_access_policy.py` -> **96 passed (100% verde)**.
+- **Gate 2 (Drift Alembic)**: `cd /root/polis/backend && .venv/bin/alembic check` -> **0 diffs (`No new upgrade operations detected.`)**.
+- **Gate 3 (UI Policy & Lint)**: `bun run check` -> **0 errores** (UI tokens, TypeScript y ESLint).
+- **Gate 4 (Unitario Frontend)**: `bun test` -> **313 passed (100% verde)**.
+- **Gate 5 (Backend Completo)**: `backend/.venv/bin/pytest backend/tests/` -> **438 passed (100% verde)**.
+- **Gate 6 (Control de Versiones)**: Cero `git push` a remoto. Commits atómicos locales.
+
+---
+
 # INFORME PERICIAL DE EJECUCIÓN — TAREA EDIT-11 (CONSOLIDADO POST-DICTAMEN)
 **Destinatario:** Coordinador General / Revisor `agy`  
 **Responsable:** `agy2` (Agente de Implementación y Peritaje Técnico)  

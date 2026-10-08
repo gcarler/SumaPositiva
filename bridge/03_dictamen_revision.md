@@ -382,3 +382,39 @@ En concordancia estricta con la determinación del Usuario y la jurisprudencia c
 
 **CONCLUSIÓN**: EDIT-14 queda formalmente APROBADA y CERRADA. La plataforma POLIS se encuentra blindada jurídica y técnicamente, con el módulo de Actores Institucionales plenamente funcional y poblado con la estructura oficial de la Alcaldía de Cartagena 2026. `agy2` queda en modo reposo técnico.
 
+
+---
+
+## DICTAMEN AUDITORÍA FORENSE DE LÍNEA BASE (EAF / agy, 2026-10-08)
+
+**Destinatario:** Usuario / Dirección del Proyecto POLIS  
+**Auditor / Coordinador EAF:** `agy`  
+**Ejecutor Técnico Evaluado:** `agy2`  
+**Resultado Global:** **CONFORME CONDICIONADO A SUBSANACIÓN DE 2 HALLAZGOS**  
+
+### 1. Resumen de Ejecución Pericial
+Se ejecutó la inspección exhaustiva de 5 frentes en POLIS con los siguientes resultados comprobados:
+
+1. **Frontend (Quality Gates)**:
+   - `bun run check`: **0 errores** (TypeScript estricto, ESLint y reglas semánticas de UI-policy).
+   - `bun test`: **313 pruebas pasando (0 fallas)** en 33 archivos.
+   - `bun run ui:test` (Storybook / Componentes): **206 pruebas pasando (0 fallas)** en 16 suites.
+   - **Veredicto Frontend**: **100% CONFORME**.
+
+2. **Flujos Críticos E2E (`e2e-smoke-flujos-criticos.mjs`)**:
+   - **9/9 Flujos Aprobados** con persistencia real verificada en PostgreSQL tras recarga.
+   - 0 violaciones críticas/serias de accesibilidad axe-core en Dashboard, Mesas, Contenido, Seguimiento (3 pestañas), Configuración y Actores.
+   - **Veredicto E2E**: **100% CONFORME**.
+
+3. **Backend (`pytest` con Python 3.12)**:
+   - 431 pruebas pasando, **1 prueba fallando**.
+   - **HALLAZGO-BACKEND-01 (Mayor / Bloqueante)**: Falla en `backend/tests/test_access_policy.py::test_matriz_cubre_todas_las_rutas_y_sus_controles`. Las 6 rutas del módulo `/api/v1/comunicaciones/tareas` (`POST`, `PUT`, `DELETE`, `GET /`, `GET /{id}`, `PATCH /{id}`) se implementaron en FastAPI pero no se registraron en la Matriz Canónica de Control de Acceso (`docs/permisos-api.md`), violando la regla inalterable #27 de `AGENTS.md`.
+
+4. **Base de Datos y Esquema (`bd_csh` / PostgreSQL 18)**:
+   - `alembic heads`: Unificado en `0051_modulo_tareas_comunicacion`.
+   - **HALLAZGO-BD-01 (Medio)**: `alembic check` reporta discrepancias de tipo/longitud entre el modelo SQLAlchemy `Mesa` y la tabla `mesas_trabajo.mesas` (`slug` VARCHAR(180) vs String(100), `nombre` VARCHAR(255) vs String(250), `lugar_nombre` VARCHAR(255) vs String(300), `estado` y `modalidad` VARCHAR(30) vs String(50), y restricción de unicidad en `fotos_mesa.evidencia_id`).
+   - **Integridad de Datos**: Confirmadas **33 mesas** (sin falsas alertas de consulta previa formal y con enfoque étnico intacto), **8 líneas estratégicas** cubriendo las 7 dimensiones ONU, **11 indicadores MGA** sin mediciones inventadas (`valor_actual = 0.0`), **17 actores institucionales oficiales**, **8 fuentes presupuestales** y **18 tareas de comunicaciones** del diagnóstico 2026.
+   - **HALLAZGO-BD-02 (Bajo / Higiene)**: Existen 39 cuentas sintéticas de prueba `autoridad_xxxxxx@cartagena.gov.co` que tienen referencias activas de clave foránea en `auditoria.registros_auditoria`, requiriendo un procedimiento de purga seguro que preserve la integridad referencial.
+
+### 2. Plan de Acción Inmediato para agy2:
+Asignar a `agy2` la tarea de remediación atómica para subsanar `HALLAZGO-BACKEND-01` (registro de rutas en `docs/permisos-api.md` y 100% de pytest verde) y `HALLAZGO-BD-01` (alineación de modelo `Mesa` para `alembic check` 0 diffs).

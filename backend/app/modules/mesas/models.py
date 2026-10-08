@@ -85,15 +85,19 @@ class Mesa(Base):
     tipo_mesa: Mapped[str] = mapped_column(String(50), nullable=False)
     codigo_oficial: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
     shortcode_ciudadano: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
-    slug: Mapped[str] = mapped_column(String(100), nullable=False)
-    nombre: Mapped[str] = mapped_column(String(250), nullable=False)
-    lugar_nombre: Mapped[str | None] = mapped_column(String(300), nullable=True)
+    slug: Mapped[str] = mapped_column(String(180), unique=True, nullable=False)
+    nombre: Mapped[str] = mapped_column(String(255), nullable=False)
+    lugar_nombre: Mapped[str | None] = mapped_column(String(255), nullable=True)
     fecha: Mapped[date | None] = mapped_column(Date, nullable=True)
     horario: Mapped[str | None] = mapped_column(String(100), nullable=True)
     aforo_maximo: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     total_asistentes: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
-    estado: Mapped[str] = mapped_column(String(50), default="PROGRAMADA", nullable=False)
-    modalidad: Mapped[str] = mapped_column(String(50), default="PRESENCIAL", nullable=False)
+    estado: Mapped[str | None] = mapped_column(
+        String(30), default="PROGRAMADA", server_default=text("'PROGRAMADA'"), nullable=True
+    )
+    modalidad: Mapped[str | None] = mapped_column(
+        String(30), default="HIBRIDA_DIGITAL", server_default=text("'HIBRIDA_DIGITAL'"), nullable=True
+    )
     sha256_acta: Mapped[str | None] = mapped_column(CHAR(64), nullable=True)
 
     linea_id: Mapped[uuid.UUID | None] = mapped_column(
@@ -120,15 +124,15 @@ class Mesa(Base):
     metadatos: Mapped[dict[str, Any]] = mapped_column(
         JSONB, default=dict, server_default=text("'{}'::jsonb"), nullable=False
     )
-    creado_en: Mapped[datetime] = mapped_column(
+    creado_en: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True),
         server_default=text("clock_timestamp()"),
-        nullable=False,
+        nullable=True,
     )
-    actualizado_en: Mapped[datetime] = mapped_column(
+    actualizado_en: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True),
         server_default=text("clock_timestamp()"),
-        nullable=False,
+        nullable=True,
     )
 
     padre: Mapped["Mesa | None"] = relationship(
