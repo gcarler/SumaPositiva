@@ -184,7 +184,7 @@ export function AlternativasView() {
           eyebrow="Fase 2: Formulación Estratégica · MGA DNP"
           title={
             modoVista === "banco_mga"
-              ? "Banco Distrital de Alternativas de Solución MGA"
+              ? "Banco Distrital de Alternativas de Solución"
               : "Tablero de Costeo Presupuestal y Plan Financiero"
           }
           description={
