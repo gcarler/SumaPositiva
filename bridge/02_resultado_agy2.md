@@ -1,3 +1,54 @@
+# INFORME PERICIAL DE EJECUCIÓN — TAREA [ASIS-02] AJUSTE Y EXPANSIÓN FLUIDA DEL CONTENIDO AL TAMAÑO DE LA PANTALLA
+**Destinatario:** Coordinador General y Auditor Forense EAF `agy`  
+**Responsable:** `agy2` (Desarrollador / EDD — `tmux a -t agy2`)  
+**Fecha de Ejecución:** Miércoles, 08 de Octubre de 2026  
+**URL Auditada:** Local: `http://127.0.0.1:3000/asistencia/mt-l01-01` (y `ms-sec-03`) / Producción: `https://seguridadhumanaintegral.org/asistencia/mt-l01-01`  
+**Estado:** Subsanación Ejecutada al 100%, Validada y Conforme  
+
+---
+
+## 1. Resumen Ejecutivo de la Intervención ASIS-02
+
+En respuesta a la observación pericial de adaptabilidad visual en pantallas panorámicas consignada en `bridge/03_dictamen_revision.md` y a los requerimientos de `bridge/01_tarea_activa.md`, `agy2` ejecutó la ampliación fluida y el rebalanceo ergonómico del módulo de asistencia pública:
+
+1. **Expansión Fluida del Contenedor Principal**:
+   - Se erradicó el tope restrictivo `max-w-6xl` (1152px) que provocaba márgenes muertos excesivos en monitores y laptops.
+   - Tanto la cabecera distrital (`<header>`) como el cuerpo central (`<main>`) y el pie institucional (`<footer>`) ahora utilizan el layout fluido generoso:
+     `w-full max-w-7xl 2xl:max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-12`.
+   - Se mantiene la protección antidesbordamiento horizontal `overflow-x-hidden` en el elemento raíz para móviles y pantallas táctiles.
+
+2. **Rebalanceo Armónico del Grid en Pantallas de Escritorio y Tablets (`lg:`, `xl:`, `2xl:`)**:
+   - **Columna de Información Institucional**: `lg:col-span-5 xl:col-span-4` (sticky en desktop). Despliega nombre de mesa, código oficial (`Badge variant="ember"`), horario, fecha en español, lugar físico, territorio, dimensiones ONU, estado de conectividad en tiempo real (indicador de pulso verde PostgreSQL / amarillo offline) y conteo dinámico de participantes con aforo referencial (`{registrosMesa.length} / {aforoEstimado} aforo estimado`).
+   - **Columna del Formulario de Registro**: `lg:col-span-7 xl:col-span-8`. Contenedor amplio `p-6 sm:p-8 xl:p-10` con sub-grids generosos:
+     - Documento de identidad: `grid grid-cols-1 sm:grid-cols-12 gap-3 sm:gap-4` (`sm:col-span-4` tipo doc, `sm:col-span-8` número de documento).
+     - Género y enfoque poblacional: `grid grid-cols-1 sm:grid-cols-2 gap-4`.
+     - Teléfono y correo electrónico: `grid grid-cols-1 sm:grid-cols-2 gap-4`.
+     - Controles con altura ergonómica `h-11 text-sm` y excelente padding táctil.
+   - En pantallas móviles (`< lg`): Flujo vertical natural, continuo y de ancho completo al 100%.
+
+3. **Pase de Asistencia (Pantalla de Éxito) Amplio y Centrado**:
+   - Cuando el ciudadano completa su registro, el formulario se transforma en una pantalla de confirmación centrada con ancho generoso `w-full max-w-2xl mx-auto py-4` (eliminando las restricciones `max-w-md`), exhibiendo con elegancia y máxima claridad el radicado digital, datos del asistente y botón para registrar a otro participante.
+
+4. **Higiene Normativa Global en Metadata**:
+   - Se actualizó [`src/app/layout.tsx`](file:///root/polis/src/app/layout.tsx) para retirar la mención entre paréntesis `"(Decreto Nacional 037 de 2026)"` de la metadata `description` global, consolidando la coherencia institucional en todo el portal.
+
+---
+
+## 2. Verificación de Quality Gates Obligatorios
+
+| Quality Gate | Comando Oficial | Resultado Obtenido | Estado |
+| :--- | :--- | :--- | :---: |
+| **QG1: Check UI, Tipos y Linter** | `bun run check` | `node scripts/ui-policy.mjs`, `tsc --noEmit`, `eslint .` -> **0 errores** | ✅ 100% CONFORME |
+| **QG2: Pruebas Unitarias Mesas** | `bun test src/features/mesas/` | **26 pass, 0 fail**, 112 expect calls | ✅ 100% CONFORME |
+| **QG3: Compilación Producción Next.js** | `bun run build` | Turbopack compilado exitosamente, 190 rutas generadas | ✅ 100% CONFORME |
+| **QG4: Reinicio de Servicio Frontend** | `systemctl restart polis-frontend` | Servicio activo en puerto 3000 (`ready in 76ms`) | ✅ 100% CONFORME |
+| **QG5: Endpoint Canónico en Vivo** | `curl -s -I http://127.0.0.1:3000/asistencia/mt-l01-01` | **HTTP/1.1 200 OK** | ✅ 100% CONFORME |
+| **QG6: Verificación de Clases Fluidas en HTML** | `curl -s http://127.0.0.1:3000/asistencia/mt-l01-01` | Presencia de `max-w-7xl 2xl:max-w-[1536px]` en header, main y footer | ✅ 100% CONFORME |
+| **QG7: Erradicación Decreto 037** | `curl -s http://127.0.0.1:3000/asistencia/mt-l01-01 \| grep -i "decreto 037"` | **0 coincidencias (salida vacía, exit code 1)** | ✅ 100% CONFORME |
+| **QG8: Control de Versiones** | Git local | Commit atómico local, cero git push a remoto | ✅ 100% CONFORME |
+
+---
+
 # INFORME PERICIAL DE EJECUCIÓN — TAREA [ASIS-01] REMEDIACIÓN NORMATIVA Y ADAPTABILIDAD RESPONSIVA DEL FORMULARIO PÚBLICO DE ASISTENCIA
 **Destinatario:** Coordinador General y Auditor Forense EAF `agy`  
 **Responsable:** `agy2` (Desarrollador / EDD — `tmux a -t agy2`)  

@@ -35,6 +35,7 @@ import { AGENDA_MESAS } from "@/features/mesas/data/agenda.data";
 import {
   MAPA_CODIGO_OFICIAL_A_AGENDA,
   MAPA_UUID_A_AGENDA,
+  COORDENADAS_AGENDA_MESAS,
 } from "@/features/geovisor/data/mesas-geovisor.data";
 import { useAgendaStore } from "@/features/mesas/state/agenda-store";
 import { CONTENIDO_MESAS } from "@/features/mesas/data/agenda-contenido.data";
@@ -160,6 +161,7 @@ export function AsistenciaCliente({ mesaId }: { mesaId: string }) {
     mesaAgenda?.territorio ||
     "Distrito Turístico y Cultural de Cartagena de Indias";
   const dimensionesMesa = mesaAgenda?.dimensionesONU || [];
+  const aforoEstimado = mesaAgenda?.id ? COORDENADAS_AGENDA_MESAS[mesaAgenda.id]?.aforo : undefined;
 
   // Submesas disponibles para elegir
   const listaSubmesas =
@@ -260,8 +262,8 @@ export function AsistenciaCliente({ mesaId }: { mesaId: string }) {
   return (
     <div className="min-h-screen bg-[var(--surface-0)] text-[var(--text-primary)] overflow-x-hidden">
       {/* Barra institucional adaptable */}
-      <header className="border-b border-[var(--border)] bg-[var(--surface-1)] py-3.5 px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4">
+      <header className="border-b border-[var(--border)] bg-[var(--surface-1)] py-3.5 px-4 sm:px-6 lg:px-8 xl:px-12">
+        <div className="mx-auto flex w-full max-w-7xl 2xl:max-w-[1536px] items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[var(--ember)] text-[var(--surface-0)] font-bold text-sm shadow-sm">
               <Building2 className="size-5" />
@@ -296,7 +298,7 @@ export function AsistenciaCliente({ mesaId }: { mesaId: string }) {
       </header>
 
       {/* Contenedor Principal Adaptativo */}
-      <main className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8 py-6 md:py-10">
+      <main className="mx-auto w-full max-w-7xl 2xl:max-w-[1536px] px-4 sm:px-6 lg:px-8 xl:px-12 py-6 md:py-10">
         {/* Banner de Sincronización Offline si existen registros pendientes */}
         {pendientesSincronizacion.length > 0 && !registroExitoso && (
           <div className="mb-6 rounded-2xl border border-[var(--warning)]/40 bg-[var(--warning)]/10 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs animate-in fade-in duration-200">
@@ -336,233 +338,235 @@ export function AsistenciaCliente({ mesaId }: { mesaId: string }) {
         )}
 
         {/* Layout Adaptativo Responsivo */}
-        <div className="lg:grid lg:grid-cols-12 lg:gap-8 items-start">
-          {/* Columna Izquierda: Información de la Mesa (Sticky en desktop) */}
-          <div className="lg:col-span-5 mb-6 lg:mb-0 space-y-5 lg:sticky lg:top-8">
-            <section className="rounded-2xl border border-[var(--border)] bg-[var(--surface-1)] p-5 sm:p-6 shadow-sm">
-              <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-1.5 text-xs font-semibold text-[var(--ember)] uppercase tracking-wider">
-                  <ShieldCheck className="size-4" />
-                  <span>Planilla Oficial en Puerta</span>
-                </div>
-                {codigoMesa && (
-                  <Badge
-                    variant="ember"
-                    className="font-mono text-[11px] font-bold"
-                  >
-                    {codigoMesa}
-                  </Badge>
-                )}
-              </div>
-
-              <h1 className="mt-2 text-xl sm:text-2xl font-bold leading-snug text-[var(--text-primary)]">
-                {nombreMesa}
-              </h1>
-
-              <p className="mt-1.5 text-xs sm:text-sm text-[var(--text-secondary)]">
-                {territorioMesa}
-              </p>
-
-              {/* Ficha de Detalles de la Mesa */}
-              <div className="mt-5 space-y-3 border-t border-[var(--border)] pt-4 text-xs sm:text-sm text-[var(--text-secondary)]">
-                <div className="flex items-center gap-2.5">
-                  <CalendarDays className="size-4 text-[var(--ember)] shrink-0" />
-                  <span className="font-medium text-[var(--text-primary)]">
-                    {(() => {
-                      try {
-                        return format(new Date(`${fechaMesa}T12:00:00`), "d 'de' MMMM, yyyy", { locale: es });
-                      } catch {
-                        return fechaMesa;
-                      }
-                    })()}
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-2.5">
-                  <Clock className="size-4 text-[var(--text-tertiary)] shrink-0" />
-                  <span>{horarioMesa}</span>
-                </div>
-
-                <div className="flex items-start gap-2.5">
-                  <MapPin className="size-4 text-[var(--text-tertiary)] shrink-0 mt-0.5" />
-                  <span className="leading-snug">{lugarMesa}</span>
-                </div>
-
-                {dimensionesMesa.length > 0 && (
-                  <div className="pt-2 flex flex-wrap gap-1.5">
-                    {dimensionesMesa.map((dim, idx) => (
-                      <span
-                        key={idx}
-                        className="rounded-full bg-[var(--surface-2)] px-2.5 py-0.5 text-[11px] font-medium text-[var(--text-secondary)] border border-[var(--border)]"
-                      >
-                        {dim}
-                      </span>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              {/* Estado de Conectividad y Asistentes Registrados */}
-              <div className="mt-5 border-t border-[var(--border)] pt-4 space-y-2.5 text-xs">
-                <div className="flex items-center justify-between">
-                  <span className="flex items-center gap-1.5 text-[var(--text-tertiary)]">
-                    <span
-                      className={`size-2 rounded-full ${
-                        estaOnline ? "bg-[var(--success)]" : "bg-[var(--warning)]"
-                      }`}
-                    />
-                    <span>Conectividad:</span>
-                  </span>
-                  <span
-                    className={`font-semibold ${
-                      estaOnline ? "text-[var(--success)]" : "text-[var(--warning)]"
-                    }`}
-                  >
-                    {estaOnline ? "En Línea (PostgreSQL)" : "Contingencia Offline"}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="flex items-center gap-1.5 text-[var(--text-tertiary)]">
-                    <Users className="size-3.5" />
-                    <span>Asistentes registrados:</span>
-                  </span>
-                  <span className="font-mono font-bold text-sm text-[var(--text-primary)]">
-                    {registrosMesa.length} participante(s)
-                  </span>
-                </div>
-              </div>
-            </section>
-
-            {/* Aviso de Garantía y Validez Legal */}
-            <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface-2)]/50 p-4 text-xs text-[var(--text-secondary)] space-y-2">
-              <p className="font-semibold text-[var(--text-primary)] flex items-center gap-1.5">
-                <Compass className="size-3.5 text-[var(--ember)]" />
-                Participación Ciudadana Vinculante
-              </p>
-              <p className="leading-relaxed">
-                Este registro digital consolida la asistencia formal a las mesas de diagnóstico y co-creación de la Política Pública de Seguridad Humana Integral de Cartagena. Diligenciarlo toma menos de 30 segundos.
-              </p>
-            </div>
-          </div>
-
-          {/* Columna Derecha: Formulario o Pantalla de Éxito */}
-          <div className="lg:col-span-7">
-            {registroExitoso ? (
-              /* Vista de Éxito */
+        {registroExitoso ? (
+          /* Vista de Éxito Amplia y Centrada */
+          <div className="w-full max-w-2xl mx-auto py-4">
+            <div
+              className={`space-y-6 rounded-2xl border p-6 sm:p-10 text-center shadow-lg animate-in fade-in zoom-in-95 duration-200 bg-[var(--surface-1)] ${
+                registroExitoso.pendienteSincronizacion
+                  ? "border-[var(--warning)]/40"
+                  : "border-[var(--success)]/40"
+              }`}
+            >
               <div
-                className={`space-y-6 rounded-2xl border p-6 sm:p-8 text-center shadow-lg animate-in fade-in zoom-in-95 duration-200 bg-[var(--surface-1)] ${
+                className={`mx-auto flex size-16 items-center justify-center rounded-full ${
                   registroExitoso.pendienteSincronizacion
-                    ? "border-[var(--warning)]/40"
-                    : "border-[var(--success)]/40"
+                    ? "bg-[var(--warning)]/15 text-[var(--warning)]"
+                    : "bg-[var(--success)]/15 text-[var(--success)]"
                 }`}
               >
-                <div
-                  className={`mx-auto flex size-16 items-center justify-center rounded-full ${
+                <CheckCircle2 className="size-9" />
+              </div>
+
+              <div className="space-y-2">
+                <Badge
+                  variant="outline"
+                  className={`font-medium ${
                     registroExitoso.pendienteSincronizacion
-                      ? "bg-[var(--warning)]/15 text-[var(--warning)]"
-                      : "bg-[var(--success)]/15 text-[var(--success)]"
+                      ? "bg-[var(--warning)]/10 text-[var(--warning)] border-[var(--warning)]/30"
+                      : "bg-[var(--success)]/10 text-[var(--success)] border-[var(--success)]/30"
                   }`}
                 >
-                  <CheckCircle2 className="size-9" />
-                </div>
+                  {registroExitoso.pendienteSincronizacion
+                    ? "Modo Contingencia Local — Radicado en Dispositivo"
+                    : "Registro Oficial Confirmado (PostgreSQL)"}
+                </Badge>
+                <h2 className="text-xl sm:text-2xl font-bold text-[var(--text-primary)]">
+                  {registroExitoso.pendienteSincronizacion
+                    ? "¡Asistencia radicada localmente!"
+                    : "¡Registro de Asistencia Confirmado!"}
+                </h2>
+                <p className="text-xs sm:text-sm text-[var(--text-secondary)] max-w-xl mx-auto">
+                  {registroExitoso.pendienteSincronizacion
+                    ? "Tu registro quedó asegurado en la memoria del dispositivo. Se sincronizará automáticamente con PostgreSQL al detectar conexión al servidor distrital."
+                    : "Gracias por participar y construir la Seguridad Humana Integral de Cartagena de Indias."}
+                </p>
+              </div>
 
-                <div className="space-y-2 max-w-md mx-auto">
-                  <Badge
-                    variant="outline"
-                    className={`font-medium ${
-                      registroExitoso.pendienteSincronizacion
-                        ? "bg-[var(--warning)]/10 text-[var(--warning)] border-[var(--warning)]/30"
-                        : "bg-[var(--success)]/10 text-[var(--success)] border-[var(--success)]/30"
-                    }`}
-                  >
+              {/* Comprobante digital */}
+              <div className="rounded-xl border border-[var(--border)] bg-[var(--surface-2)]/60 p-5 sm:p-6 text-left text-xs sm:text-sm space-y-2.5">
+                <div className="flex justify-between items-center pb-2.5 border-b border-[var(--border)]">
+                  <span className="text-[var(--text-tertiary)] font-mono text-xs">
+                    {registroExitoso.pendienteSincronizacion ? "Radicado Local:" : "ID PostgreSQL:"}
+                  </span>
+                  <span className="font-mono font-bold text-[var(--text-primary)]">
                     {registroExitoso.pendienteSincronizacion
-                      ? "Modo Contingencia Local — Radicado en Dispositivo"
-                      : "Registro Oficial Confirmado (PostgreSQL)"}
-                  </Badge>
-                  <h2 className="text-xl sm:text-2xl font-bold text-[var(--text-primary)]">
-                    {registroExitoso.pendienteSincronizacion
-                      ? "¡Asistencia radicada localmente!"
-                      : "¡Registro de Asistencia Confirmado!"}
-                  </h2>
-                  <p className="text-xs sm:text-sm text-[var(--text-secondary)]">
-                    {registroExitoso.pendienteSincronizacion
-                      ? "Tu registro quedó asegurado en la memoria del dispositivo. Se sincronizará automáticamente con PostgreSQL al detectar conexión al servidor distrital."
-                      : "Gracias por participar y construir la Seguridad Humana Integral de Cartagena de Indias."}
-                  </p>
+                      ? `LOCAL-${registroExitoso.id.toUpperCase().slice(-8)}`
+                      : `PG-${registroExitoso.id}`}
+                  </span>
                 </div>
-
-                {/* Comprobante digital */}
-                <div className="rounded-xl border border-[var(--border)] bg-[var(--surface-2)]/60 p-5 text-left text-xs sm:text-sm space-y-2.5 max-w-lg mx-auto">
-                  <div className="flex justify-between items-center pb-2.5 border-b border-[var(--border)]">
-                    <span className="text-[var(--text-tertiary)] font-mono text-xs">
-                      {registroExitoso.pendienteSincronizacion ? "Radicado Local:" : "ID PostgreSQL:"}
-                    </span>
-                    <span className="font-mono font-bold text-[var(--text-primary)]">
-                      {registroExitoso.pendienteSincronizacion
-                        ? `LOCAL-${registroExitoso.id.toUpperCase().slice(-8)}`
-                        : `PG-${registroExitoso.id}`}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-[var(--text-secondary)]">Asistente:</span>
-                    <span className="font-semibold text-[var(--text-primary)]">
-                      {registroExitoso.nombreCompleto}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-[var(--text-secondary)]">Documento:</span>
-                    <span className="font-medium text-[var(--text-primary)]">
-                      {registroExitoso.tipoDocumento} {registroExitoso.numeroDocumento}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-[var(--text-secondary)]">Enfoque:</span>
-                    <span className="font-medium text-[var(--text-primary)]">
-                      {ENFOQUES_DIFERENCIALES_LABELS[registroExitoso.enfoqueDiferencial]}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-[var(--text-secondary)]">Barrio / JAC:</span>
-                    <span className="font-medium text-[var(--text-primary)]">
-                      {registroExitoso.organizacionOBarrio}
-                    </span>
-                  </div>
-                  {registroExitoso.subMesaAsignada && (
-                    <div className="flex justify-between">
-                      <span className="text-[var(--text-secondary)]">Submesa:</span>
-                      <span className="font-medium text-[var(--ember)]">
-                        {registroExitoso.subMesaAsignada}
-                      </span>
-                    </div>
-                  )}
-                  <div className="flex justify-between pt-2 border-t border-[var(--border)] text-xs text-[var(--text-tertiary)]">
-                    <span>Hora de ingreso:</span>
-                    <span>{new Date(registroExitoso.horaRegistro).toLocaleTimeString("es-CO")}</span>
-                  </div>
+                <div className="flex justify-between">
+                  <span className="text-[var(--text-secondary)]">Asistente:</span>
+                  <span className="font-semibold text-[var(--text-primary)]">
+                    {registroExitoso.nombreCompleto}
+                  </span>
                 </div>
-
-                <div className="flex flex-col sm:flex-row gap-3 pt-2 max-w-md mx-auto">
-                  <Button
-                    variant="outline"
-                    className="w-full h-11"
-                    onClick={handleReiniciar}
-                  >
-                    <RotateCcw className="size-4 mr-2" />
-                    Registrar a otro participante
-                  </Button>
-                  <Link href="/" className="w-full">
-                    <Button variant="ghost" className="w-full h-11 text-xs text-[var(--text-tertiary)]">
-                      Explorar plataforma POLIS
-                      <ArrowRight className="size-3.5 ml-1.5" />
-                    </Button>
-                  </Link>
+                <div className="flex justify-between">
+                  <span className="text-[var(--text-secondary)]">Documento:</span>
+                  <span className="font-medium text-[var(--text-primary)]">
+                    {registroExitoso.tipoDocumento} {registroExitoso.numeroDocumento}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-[var(--text-secondary)]">Enfoque:</span>
+                  <span className="font-medium text-[var(--text-primary)]">
+                    {ENFOQUES_DIFERENCIALES_LABELS[registroExitoso.enfoqueDiferencial]}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-[var(--text-secondary)]">Barrio / JAC:</span>
+                  <span className="font-medium text-[var(--text-primary)]">
+                    {registroExitoso.organizacionOBarrio}
+                  </span>
+                </div>
+                {registroExitoso.subMesaAsignada && (
+                  <div className="flex justify-between">
+                    <span className="text-[var(--text-secondary)]">Submesa:</span>
+                    <span className="font-medium text-[var(--ember)]">
+                      {registroExitoso.subMesaAsignada}
+                    </span>
+                  </div>
+                )}
+                <div className="flex justify-between pt-2 border-t border-[var(--border)] text-xs text-[var(--text-tertiary)]">
+                  <span>Hora de ingreso:</span>
+                  <span>{new Date(registroExitoso.horaRegistro).toLocaleTimeString("es-CO")}</span>
                 </div>
               </div>
-            ) : (
-              /* Formulario de Registro Rápido Adaptativo */
+
+              <div className="flex flex-col sm:flex-row gap-3 pt-2">
+                <Button
+                  variant="outline"
+                  className="w-full h-11"
+                  onClick={handleReiniciar}
+                >
+                  <RotateCcw className="size-4 mr-2" />
+                  Registrar a otro participante
+                </Button>
+                <Link href="/" className="w-full">
+                  <Button variant="ghost" className="w-full h-11 text-xs text-[var(--text-tertiary)]">
+                    Explorar plataforma POLIS
+                    <ArrowRight className="size-3.5 ml-1.5" />
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </div>
+        ) : (
+          /* Layout Adaptativo Responsivo a 2 Columnas */
+          <div className="lg:grid lg:grid-cols-12 lg:gap-8 xl:gap-10 items-start">
+            {/* Columna Izquierda: Información de la Mesa (Sticky en desktop) */}
+            <div className="lg:col-span-5 xl:col-span-4 mb-6 lg:mb-0 space-y-5 lg:sticky lg:top-8">
+              <section className="rounded-2xl border border-[var(--border)] bg-[var(--surface-1)] p-5 sm:p-6 shadow-sm">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-1.5 text-xs font-semibold text-[var(--ember)] uppercase tracking-wider">
+                    <ShieldCheck className="size-4" />
+                    <span>Planilla Oficial en Puerta</span>
+                  </div>
+                  {codigoMesa && (
+                    <Badge
+                      variant="ember"
+                      className="font-mono text-[11px] font-bold"
+                    >
+                      {codigoMesa}
+                    </Badge>
+                  )}
+                </div>
+
+                <h1 className="mt-2 text-xl sm:text-2xl font-bold leading-snug text-[var(--text-primary)]">
+                  {nombreMesa}
+                </h1>
+
+                <p className="mt-1.5 text-xs sm:text-sm text-[var(--text-secondary)]">
+                  {territorioMesa}
+                </p>
+
+                {/* Ficha de Detalles de la Mesa */}
+                <div className="mt-5 space-y-3 border-t border-[var(--border)] pt-4 text-xs sm:text-sm text-[var(--text-secondary)]">
+                  <div className="flex items-center gap-2.5">
+                    <CalendarDays className="size-4 text-[var(--ember)] shrink-0" />
+                    <span className="font-medium text-[var(--text-primary)]">
+                      {(() => {
+                        try {
+                          return format(new Date(`${fechaMesa}T12:00:00`), "d 'de' MMMM, yyyy", { locale: es });
+                        } catch {
+                          return fechaMesa;
+                        }
+                      })()}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-2.5">
+                    <Clock className="size-4 text-[var(--text-tertiary)] shrink-0" />
+                    <span>{horarioMesa}</span>
+                  </div>
+
+                  <div className="flex items-start gap-2.5">
+                    <MapPin className="size-4 text-[var(--text-tertiary)] shrink-0 mt-0.5" />
+                    <span className="leading-snug">{lugarMesa}</span>
+                  </div>
+
+                  {dimensionesMesa.length > 0 && (
+                    <div className="pt-2 flex flex-wrap gap-1.5">
+                      {dimensionesMesa.map((dim, idx) => (
+                        <span
+                          key={idx}
+                          className="rounded-full bg-[var(--surface-2)] px-2.5 py-0.5 text-[11px] font-medium text-[var(--text-secondary)] border border-[var(--border)]"
+                        >
+                          {dim}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Estado de Conectividad y Asistentes Registrados */}
+                <div className="mt-5 border-t border-[var(--border)] pt-4 space-y-2.5 text-xs">
+                  <div className="flex items-center justify-between">
+                    <span className="flex items-center gap-1.5 text-[var(--text-tertiary)]">
+                      <span
+                        className={`size-2 rounded-full ${
+                          estaOnline ? "bg-[var(--success)]" : "bg-[var(--warning)]"
+                        }`}
+                      />
+                      <span>Conectividad:</span>
+                    </span>
+                    <span
+                      className={`font-semibold ${
+                        estaOnline ? "text-[var(--success)]" : "text-[var(--warning)]"
+                      }`}
+                    >
+                      {estaOnline ? "En Línea (PostgreSQL)" : "Contingencia Offline"}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="flex items-center gap-1.5 text-[var(--text-tertiary)]">
+                      <Users className="size-3.5" />
+                      <span>Asistentes registrados:</span>
+                    </span>
+                    <span className="font-mono font-bold text-sm text-[var(--text-primary)]">
+                      {registrosMesa.length} {aforoEstimado ? `/ ${aforoEstimado} aforo estimado` : "participante(s)"}
+                    </span>
+                  </div>
+                </div>
+              </section>
+
+              {/* Aviso de Garantía y Validez Legal */}
+              <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface-2)]/50 p-4 text-xs text-[var(--text-secondary)] space-y-2">
+                <p className="font-semibold text-[var(--text-primary)] flex items-center gap-1.5">
+                  <Compass className="size-3.5 text-[var(--ember)]" />
+                  Participación Ciudadana Vinculante
+                </p>
+                <p className="leading-relaxed">
+                  Este registro digital consolida la asistencia formal a las mesas de diagnóstico y co-creación de la Política Pública de Seguridad Humana Integral de Cartagena. Diligenciarlo toma menos de 30 segundos.
+                </p>
+              </div>
+            </div>
+
+            {/* Columna Derecha: Formulario de Registro */}
+            <div className="lg:col-span-7 xl:col-span-8">
               <form
                 onSubmit={handleSubmit}
-                className="space-y-5 rounded-2xl border border-[var(--border)] bg-[var(--surface-1)] p-6 sm:p-8 shadow-sm"
+                className="space-y-6 rounded-2xl border border-[var(--border)] bg-[var(--surface-1)] p-6 sm:p-8 xl:p-10 shadow-sm"
               >
                 <div className="flex items-center justify-between pb-3 border-b border-[var(--border)]">
                   <div className="flex items-center gap-2">
@@ -600,13 +604,13 @@ export function AsistenciaCliente({ mesaId }: { mesaId: string }) {
                     onChange={(e) => setNombreCompleto(e.target.value)}
                     required
                     autoComplete="name"
-                    className="h-10 text-sm"
+                    className="h-11 text-sm"
                   />
                 </div>
 
                 {/* Documento de Identidad Adaptativo */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  <div className="space-y-1.5">
+                <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 sm:gap-4">
+                  <div className="sm:col-span-4 space-y-1.5">
                     <Label htmlFor="tipoDoc" className="text-xs font-semibold">
                       Tipo Doc. *
                     </Label>
@@ -614,7 +618,7 @@ export function AsistenciaCliente({ mesaId }: { mesaId: string }) {
                       value={tipoDocumento}
                       onValueChange={(val) => setTipoDocumento(val as TipoDocumento)}
                     >
-                      <SelectTrigger id="tipoDoc" className="h-10 text-sm">
+                      <SelectTrigger id="tipoDoc" className="h-11 text-sm">
                         <SelectValue placeholder="Tipo" />
                       </SelectTrigger>
                       <SelectContent>
@@ -626,7 +630,7 @@ export function AsistenciaCliente({ mesaId }: { mesaId: string }) {
                       </SelectContent>
                     </Select>
                   </div>
-                  <div className="sm:col-span-2 space-y-1.5">
+                  <div className="sm:col-span-8 space-y-1.5">
                     <Label htmlFor="numDoc" className="text-xs font-semibold">
                       Número de Documento *
                     </Label>
@@ -637,7 +641,7 @@ export function AsistenciaCliente({ mesaId }: { mesaId: string }) {
                       value={numeroDocumento}
                       onChange={(e) => setNumeroDocumento(e.target.value)}
                       required
-                      className="h-10 text-sm"
+                      className="h-11 text-sm"
                     />
                   </div>
                 </div>
@@ -653,7 +657,7 @@ export function AsistenciaCliente({ mesaId }: { mesaId: string }) {
                       value={genero}
                       onValueChange={(val) => setGenero(val as Genero)}
                     >
-                      <SelectTrigger id="genero" className="h-10 text-sm">
+                      <SelectTrigger id="genero" className="h-11 text-sm">
                         <SelectValue placeholder="Selecciona género" />
                       </SelectTrigger>
                       <SelectContent>
@@ -677,7 +681,7 @@ export function AsistenciaCliente({ mesaId }: { mesaId: string }) {
                       value={enfoqueDiferencial}
                       onValueChange={(val) => setEnfoqueDiferencial(val as EnfoqueDiferencial)}
                     >
-                      <SelectTrigger id="enfoque" className="h-10 text-sm">
+                      <SelectTrigger id="enfoque" className="h-11 text-sm">
                         <SelectValue placeholder="Selecciona enfoque" />
                       </SelectTrigger>
                       <SelectContent className="max-h-64">
@@ -703,7 +707,7 @@ export function AsistenciaCliente({ mesaId }: { mesaId: string }) {
                     value={organizacionOBarrio}
                     onChange={(e) => setOrganizacionOBarrio(e.target.value)}
                     required
-                    className="h-10 text-sm"
+                    className="h-11 text-sm"
                   />
                 </div>
 
@@ -720,7 +724,7 @@ export function AsistenciaCliente({ mesaId }: { mesaId: string }) {
                       value={telefonoWhatsApp}
                       onChange={(e) => setTelefonoWhatsApp(e.target.value)}
                       autoComplete="tel"
-                      className="h-10 text-sm"
+                      className="h-11 text-sm"
                     />
                   </div>
                   <div className="space-y-1.5">
@@ -734,7 +738,7 @@ export function AsistenciaCliente({ mesaId }: { mesaId: string }) {
                       value={correo}
                       onChange={(e) => setCorreo(e.target.value)}
                       autoComplete="email"
-                      className="h-10 text-sm"
+                      className="h-11 text-sm"
                     />
                   </div>
                 </div>
@@ -749,7 +753,7 @@ export function AsistenciaCliente({ mesaId }: { mesaId: string }) {
                       value={subMesaAsignada}
                       onValueChange={setSubMesaAsignada}
                     >
-                      <SelectTrigger id="submesa" className="h-10 text-sm">
+                      <SelectTrigger id="submesa" className="h-11 text-sm">
                         <SelectValue placeholder="Elige la submesa a participar" />
                       </SelectTrigger>
                       <SelectContent>
@@ -793,19 +797,21 @@ export function AsistenciaCliente({ mesaId }: { mesaId: string }) {
                   {enviando ? "Registrando ingreso…" : "Confirmar Asistencia a la Mesa"}
                 </Button>
               </form>
-            )}
+            </div>
           </div>
-        </div>
+        )}
       </main>
 
       {/* Pie de página oficial adaptable */}
-      <footer className="mt-12 border-t border-[var(--border)] py-6 text-center text-xs text-[var(--text-tertiary)] px-4">
-        <p className="font-medium text-[var(--text-secondary)]">
-          POLIS • Sistema Distrital de Participación Ciudadana y Seguridad Humana
-        </p>
-        <p className="mt-1 text-[11px]">
-          Cartagena de Indias — Distrito Turístico y Cultural • Alcaldía Mayor
-        </p>
+      <footer className="mt-12 border-t border-[var(--border)] py-6 text-center text-xs text-[var(--text-tertiary)] px-4 sm:px-6 lg:px-8 xl:px-12">
+        <div className="mx-auto w-full max-w-7xl 2xl:max-w-[1536px] text-center">
+          <p className="font-medium text-[var(--text-secondary)]">
+            POLIS • Sistema Distrital de Participación Ciudadana y Seguridad Humana
+          </p>
+          <p className="mt-1 text-[11px]">
+            Cartagena de Indias — Distrito Turístico y Cultural • Alcaldía Mayor
+          </p>
+        </div>
       </footer>
     </div>
   );
