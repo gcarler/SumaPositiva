@@ -13,7 +13,7 @@ import { FormField } from "@/shared/ui/form-field";
 import { StatusBadge } from "@/shared/ui/status-badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs";
 import { Textarea } from "@/shared/ui/textarea";
-import { CheckCircle2, Sparkles, XCircle, ShieldAlert, MapPin, Tag, Edit3 } from "lucide-react";
+import { CheckCircle2, Sparkles, XCircle, ShieldAlert, MapPin, Tag, Edit3, Plus } from "lucide-react";
 import type { EstadoTestimonio } from "../models/testimonio";
 
 export function TestimoniosModeracionPanel({ entryKey }: { entryKey: string }) {
@@ -286,8 +286,19 @@ export function TestimoniosModeracionContenido() {
                 </article>
               ))
             ) : (
-              <div className="p-8 text-center rounded-xl border border-[var(--border)] bg-[var(--surface-1)] text-xs text-[var(--text-secondary)]">
-                No hay testimonios en estado {tabEstado.toLowerCase()} en este momento.
+              <div className="p-8 text-center rounded-xl border border-[var(--border)] bg-[var(--surface-1)] text-xs text-[var(--text-secondary)] space-y-3">
+                <p>No hay testimonios en estado {tabEstado.toLowerCase()} en este momento.</p>
+                <div className="pt-1">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => openPanel("testimonio-editor", {})}
+                    className="text-xs"
+                  >
+                    <Plus className="mr-1.5 size-3.5 text-[var(--ember)]" />
+                    Registrar Testimonio Comunitario
+                  </Button>
+                </div>
               </div>
             )}
           </TabsContent>
