@@ -101,7 +101,7 @@ export interface PanelPropsMap {
   "testimonio-nuevo": Record<string, never>;
   "mesa-acta": { mesaId: string };
   "rendicion-cuentas": { dependenciaId?: string };
-  "fuente-editor": { fuenteId: string; soloLectura?: boolean };
+  "fuente-editor": { fuenteId?: string; soloLectura?: boolean };
   "actor-editor": { actorId?: string; soloLectura?: boolean };
   "medicion-editor": {
     fichaId: string;

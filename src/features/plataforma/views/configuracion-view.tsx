@@ -31,6 +31,7 @@ import {
   useHeroConfigStore,
   HERO_IMAGE_OPTIONS,
 } from "@/features/politicas/state/hero-store";
+import { useConfiguracionPlataformaStore } from "../state/configuracion-store";
 import { puedeEditar } from "../models/acceso";
 
 export function ConfiguracionView() {
@@ -39,10 +40,25 @@ export function ConfiguracionView() {
   const cache = useQueryClient();
   const { openPanel } = usePanels();
   const editar = puedeEditar(sesion, "configuracion");
-  const [resumenSemanal, setResumenSemanal] = useState(false);
-  const [latitud, setLatitud] = useState("10.3997");
-  const [longitud, setLongitud] = useState("-75.5144");
-  const [zoom, setZoom] = useState("13");
+
+  /* Parámetros persistentes de configuración (GAP-12) */
+  const resumenSemanal = useConfiguracionPlataformaStore(
+    (state) => state.resumenSemanal
+  );
+  const setResumenSemanal = useConfiguracionPlataformaStore(
+    (state) => state.setResumenSemanal
+  );
+
+  const geovisorCentro = useConfiguracionPlataformaStore(
+    (state) => state.geovisorCentro
+  );
+  const setGeovisorCentro = useConfiguracionPlataformaStore(
+    (state) => state.setGeovisorCentro
+  );
+
+  const [latitud, setLatitud] = useState(geovisorCentro.latitud);
+  const [longitud, setLongitud] = useState(geovisorCentro.longitud);
+  const [zoom, setZoom] = useState(geovisorCentro.zoom);
   const googleConfigurado = Boolean(process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID);
 
   /* Identidad Visual del Hero en Portada (FEAT-HERO-01) */
@@ -79,7 +95,19 @@ export function ConfiguracionView() {
           <div className="space-y-4 p-5">
             <div className="flex items-center justify-between gap-4 rounded-xl border border-border bg-surface-0 p-4">
               <div><p className="font-medium">Resumen semanal por correo</p><p className="mt-1 text-sm text-text-secondary">Recibe un resumen de actividad del equipo.</p></div>
-              <Switch checked={resumenSemanal} onCheckedChange={(value) => { setResumenSemanal(value); toast.success(value ? "Preferencia activada en esta sesión" : "Preferencia desactivada en esta sesión"); }} disabled={!editar} aria-label="Resumen semanal por correo" />
+              <Switch
+                checked={resumenSemanal}
+                onCheckedChange={(value) => {
+                  setResumenSemanal(value);
+                  toast.success(
+                    value
+                      ? "Preferencia de resumen semanal activada y guardada"
+                      : "Preferencia de resumen semanal desactivada y guardada"
+                  );
+                }}
+                disabled={!editar}
+                aria-label="Resumen semanal por correo"
+              />
             </div>
             <p className="text-xs text-text-tertiary">La entrega de correo requiere una configuración institucional del servicio de notificaciones.</p>
           </div>
@@ -257,11 +285,30 @@ export function ConfiguracionView() {
 
         <section className="overflow-hidden rounded-2xl border border-border bg-surface-1">
           <CabeceraSeccion icono={<MapPinned className="size-5" />} titulo="Geovisor" detalle="Valores iniciales de referencia para el mapa distrital." />
-          <div className="grid gap-4 p-5 sm:grid-cols-3">
-            <FormField label="Latitud">{(field) => <Input {...field} inputMode="decimal" value={latitud} onChange={(event) => setLatitud(event.target.value)} disabled={!editar} />}</FormField>
-            <FormField label="Longitud">{(field) => <Input {...field} inputMode="decimal" value={longitud} onChange={(event) => setLongitud(event.target.value)} disabled={!editar} />}</FormField>
-            <FormField label="Zoom inicial">{(field) => <Input {...field} type="number" min={1} max={20} value={zoom} onChange={(event) => setZoom(event.target.value)} disabled={!editar} />}</FormField>
-            <p className="text-xs text-text-tertiary sm:col-span-3">Coordenadas de referencia en Cartagena. Los cambios aquí solo actualizan esta vista y no alteran el servicio del geovisor.</p>
+          <div className="space-y-4 p-5">
+            <div className="grid gap-4 sm:grid-cols-3">
+              <FormField label="Latitud">{(field) => <Input {...field} inputMode="decimal" value={latitud} onChange={(event) => setLatitud(event.target.value)} disabled={!editar} />}</FormField>
+              <FormField label="Longitud">{(field) => <Input {...field} inputMode="decimal" value={longitud} onChange={(event) => setLongitud(event.target.value)} disabled={!editar} />}</FormField>
+              <FormField label="Zoom inicial">{(field) => <Input {...field} type="number" min={1} max={20} value={zoom} onChange={(event) => setZoom(event.target.value)} disabled={!editar} />}</FormField>
+            </div>
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between pt-2 border-t border-border">
+              <p className="text-xs text-text-tertiary">
+                Coordenadas de referencia en Cartagena. Se guardan en almacenamiento persistente del navegador.
+              </p>
+              <Button
+                type="button"
+                variant="default"
+                size="sm"
+                disabled={!editar}
+                onClick={() => {
+                  setGeovisorCentro({ latitud, longitud, zoom });
+                  toast.success("Parámetros del geovisor actualizados y guardados");
+                }}
+                className="shrink-0 text-xs h-8 bg-ember text-text-inverse hover:bg-ember/90"
+              >
+                Guardar parámetros de geovisor
+              </Button>
+            </div>
           </div>
         </section>
 

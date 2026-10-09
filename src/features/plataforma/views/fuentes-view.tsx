@@ -1,10 +1,10 @@
 "use client";
 
-import {useEffect} from "react";
-import {Search, RotateCcw, Filter} from "lucide-react";
-import {PageHeader} from "@/shared/ui/page-header";
-import {Button} from "@/shared/ui/button";
-import {Input} from "@/shared/ui/input";
+import { useEffect } from "react";
+import { Search, RotateCcw, Filter, Plus } from "lucide-react";
+import { PageHeader } from "@/shared/ui/page-header";
+import { Button } from "@/shared/ui/button";
+import { Input } from "@/shared/ui/input";
 import {
   Select,
   SelectContent,
@@ -12,12 +12,19 @@ import {
   SelectTrigger,
   SelectValue
 } from "@/shared/ui/select";
-import {FuentesKpis} from "@/features/fuentes/components/fuentes-kpis";
-import {FuentesDataGrid} from "@/features/fuentes/components/fuentes-datagrid";
-import {useFuentesStore} from "@/features/fuentes/state/fuentes-store";
-import type {AmbitoFuente, EstadoEntrega} from "@/features/fuentes/models/fuente";
+import { usePanels } from "@/core/panels/panel-store";
+import { useSesionStore } from "@/features/sesion/state/session-store";
+import { puedeEditar } from "../models/acceso";
+import { FuentesKpis } from "@/features/fuentes/components/fuentes-kpis";
+import { FuentesDataGrid } from "@/features/fuentes/components/fuentes-datagrid";
+import { useFuentesStore } from "@/features/fuentes/state/fuentes-store";
+import type { AmbitoFuente, EstadoEntrega } from "@/features/fuentes/models/fuente";
 
 export function FuentesView() {
+  const { openPanel } = usePanels();
+  const sesion = useSesionStore((s) => s.sesion);
+  const puedeEditarFuentes = puedeEditar(sesion, "fuentes");
+
   useEffect(() => {
     void useFuentesStore.getState().cargarFuentes();
   }, []);
@@ -39,6 +46,18 @@ export function FuentesView() {
         eyebrow="Gestión interna · Ley 1757 de 2015"
         title="Fuentes de Información"
         description="Monitoreo, radicación, trazabilidad y control de cumplimiento a fuentes primarias y secundarias requeridas para la formulación técnica de la política pública."
+        action={
+          puedeEditarFuentes ? (
+            <Button
+              variant="default"
+              onClick={() => openPanel("fuente-editor", {})}
+              className="gap-2 text-xs h-9 bg-ember text-text-inverse hover:bg-ember/90"
+            >
+              <Plus className="size-4" aria-hidden="true" />
+              <span>+ Radicar Fuente</span>
+            </Button>
+          ) : undefined
+        }
       />
 
       {/* Tarjetas KPI de cumplimiento */}

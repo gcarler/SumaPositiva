@@ -13,11 +13,42 @@ export async function listarFormularios() {
   return formulariosRemotos.listar();
 }
 export async function obtenerFormulario(id: string) {
-  const form = useFormulariosStore
-    .getState()
-    .formularios.find((f) => f.id === id);
-  if (!form) throw new Error("Formulario no encontrado.");
-  return form;
+  const store = useFormulariosStore.getState();
+  const coincidenciaLocal = store.formularios.find(
+    (f) => f.id === id || f.idPersistido === id || f.configuracion.slug === id
+  );
+  if (coincidenciaLocal) return coincidenciaLocal;
+
+  // Resiliencia en frío (GAP-06): consultar backend e hidratar store
+  try {
+    const remotos = await formulariosRemotos.listar();
+    if (Array.isArray(remotos) && remotos.length > 0) {
+      useFormulariosStore.setState({ formularios: remotos });
+      const coincidenciaRemota = remotos.find(
+        (f) => f.id === id || f.idPersistido === id || f.configuracion.slug === id
+      );
+      if (coincidenciaRemota) return coincidenciaRemota;
+    }
+  } catch {
+    // Si falla listar, intentar fallback de formulario público/individual
+  }
+
+  // Fallback: resolver formulario público o por slug
+  try {
+    const publico = await formulariosRemotos.publico(id);
+    if (publico) {
+      useFormulariosStore.setState((s) => ({
+        formularios: s.formularios.some((f) => f.id === publico.id)
+          ? s.formularios
+          : [...s.formularios, publico],
+      }));
+      return publico;
+    }
+  } catch {
+    // Si tampoco resuelve público, arrojar excepción definitiva
+  }
+
+  throw new Error("Formulario no encontrado.");
 }
 export async function crearFormulario(data: DatosFormulario) {
   const slug = generarSlug(data.titulo);

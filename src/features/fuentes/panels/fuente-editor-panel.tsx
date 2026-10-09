@@ -1,50 +1,72 @@
 "use client";
 
-import {useState, type FormEvent} from "react";
-import {toast} from "sonner";
+import { useState, type FormEvent } from "react";
+import { toast } from "sonner";
 import {
   FileText,
   Building2,
   Lock,
   ShieldCheck,
-  User
+  User,
+  PlusCircle,
 } from "lucide-react";
-import {PanelShell} from "@/core/panels/panel-shell";
-import {usePanels} from "@/core/panels/panel-store";
-import type {PanelComponentProps} from "@/app/_composition/panel-registry";
-import {Button} from "@/shared/ui/button";
-import {FormField} from "@/shared/ui/form-field";
-import {Input} from "@/shared/ui/input";
-import {Textarea} from "@/shared/ui/textarea";
-import {Badge} from "@/shared/ui/badge";
+import { PanelShell } from "@/core/panels/panel-shell";
+import { usePanels } from "@/core/panels/panel-store";
+import type { PanelComponentProps } from "@/app/_composition/panel-registry";
+import { Button } from "@/shared/ui/button";
+import { FormField } from "@/shared/ui/form-field";
+import { Input } from "@/shared/ui/input";
+import { Textarea } from "@/shared/ui/textarea";
+import { Badge } from "@/shared/ui/badge";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue
+  SelectValue,
 } from "@/shared/ui/select";
-import {useSesionStore} from "@/features/sesion/state/session-store";
-import {puedeEditar} from "@/features/plataforma/models/acceso";
-import {useFuentesStore} from "../state/fuentes-store";
-import type {EstadoEntrega} from "../models/fuente";
+import { useSesionStore } from "@/features/sesion/state/session-store";
+import { puedeEditar } from "@/features/plataforma/models/acceso";
+import { useFuentesStore } from "../state/fuentes-store";
+import type {
+  AmbitoFuente,
+  EstadoEntrega,
+  TipoFuente,
+} from "../models/fuente";
 
 export function FuenteEditorPanel({ entryKey, props }: PanelComponentProps<"fuente-editor">) {
   const { closeTop } = usePanels();
   const sesion = useSesionStore((s) => s.sesion);
   const fuenteId = props.fuenteId;
+  const esCreacion = !fuenteId;
 
-  const fuente = useFuentesStore((s) => s.getById(fuenteId));
+  const fuente = useFuentesStore((s) => (fuenteId ? s.getById(fuenteId) : undefined));
   const actualizarFuente = useFuentesStore((s) => s.actualizarFuente);
+  const agregarFuente = useFuentesStore((s) => s.agregarFuente);
 
   const tienePermisoEscritura = puedeEditar(sesion, "fuentes") && !props.soloLectura;
 
   // Estados del formulario
+  const [codigo, setCodigo] = useState(fuente?.codigo ?? "");
+  const [entidad, setEntidad] = useState(fuente?.entidad ?? "");
+  const [nombreFuente, setNombreFuente] = useState(fuente?.nombreFuente ?? "");
+  const [tipo, setTipo] = useState<TipoFuente>(fuente?.tipo ?? "primaria");
+  const [ambito, setAmbito] = useState<AmbitoFuente>(fuente?.ambito ?? "local");
+  const [dimensionSeguridad, setDimensionSeguridad] = useState<string>(
+    fuente?.dimensionSeguridad ?? "personal"
+  );
+  const [periodicidad, setPeriodicidad] = useState<
+    "mensual" | "trimestral" | "semestral" | "anual" | "por_demanda"
+  >(fuente?.periodicidad ?? "mensual");
+  const [variablesTexto, setVariablesTexto] = useState(
+    fuente?.variablesSolicitadas?.join("\n") ?? ""
+  );
+
   const [radicado, setRadicado] = useState(fuente?.radicadoSolicitud ?? "");
   const [fechaSolicitud, setFechaSolicitud] = useState(fuente?.fechaSolicitud ?? "");
   const [fechaLimite, setFechaLimite] = useState(fuente?.fechaLimiteRespuesta ?? "");
   const [estadoEntrega, setEstadoEntrega] = useState<EstadoEntrega>(
-    fuente?.estadoEntrega ?? "en_termino"
+    fuente?.estadoEntrega ?? (esCreacion ? "por_solicitar" : "en_termino")
   );
   const [datosResumen, setDatosResumen] = useState(fuente?.datosEntregadosResumen ?? "");
   const [archivoUrl, setArchivoUrl] = useState(fuente?.archivoAdjuntoUrl ?? "");
@@ -65,7 +87,7 @@ export function FuenteEditorPanel({ entryKey, props }: PanelComponentProps<"fuen
 
   const [guardando, setGuardando] = useState(false);
 
-  if (!fuente) {
+  if (!esCreacion && !fuente) {
     return (
       <PanelShell
         entryKey={entryKey}
@@ -95,28 +117,71 @@ export function FuenteEditorPanel({ entryKey, props }: PanelComponentProps<"fuen
 
     setGuardando(true);
     try {
-      await actualizarFuente(fuente.id, {
-        radicadoSolicitud: radicado.trim() || undefined,
-        fechaSolicitud: fechaSolicitud || undefined,
-        fechaLimiteRespuesta: fechaLimite || undefined,
-        estadoEntrega,
-        datosEntregadosResumen: datosResumen.trim() || undefined,
-        archivoAdjuntoUrl: archivoUrl.trim() || undefined,
-        observacionesCalidad: observaciones.trim() || undefined,
-        responsableContacto: contactoNombre.trim()
-          ? {
-              nombre: contactoNombre.trim(),
-              cargo: contactoCargo.trim(),
-              email: contactoEmail.trim(),
-              telefono: contactoTelefono.trim() || undefined,
-            }
-          : fuente.responsableContacto,
-      });
+      if (esCreacion) {
+        if (!entidad.trim() || !nombreFuente.trim()) {
+          toast.error("La entidad y el nombre de la fuente son obligatorios.");
+          setGuardando(false);
+          return;
+        }
 
-      toast.success(`Fuente ${fuente.codigo} actualizada con éxito`);
-      closeTop();
+        const codigoGenerado = codigo.trim() || `FTE-${Date.now().toString().slice(-4)}`;
+        const varsArray = variablesTexto
+          .split(/[\n,]+/)
+          .map((v) => v.trim())
+          .filter(Boolean);
+
+        const nueva = await agregarFuente({
+          codigo: codigoGenerado.toUpperCase(),
+          entidad: entidad.trim(),
+          nombreFuente: nombreFuente.trim(),
+          tipo,
+          ambito,
+          dimensionSeguridad,
+          periodicidad,
+          radicadoSolicitud: radicado.trim() || undefined,
+          fechaSolicitud: fechaSolicitud || undefined,
+          fechaLimiteRespuesta: fechaLimite || undefined,
+          estadoEntrega,
+          variablesSolicitadas: varsArray.length > 0 ? varsArray : ["Datos estadísticos del sector"],
+          datosEntregadosResumen: datosResumen.trim() || undefined,
+          archivoAdjuntoUrl: archivoUrl.trim() || undefined,
+          responsableContacto: contactoNombre.trim()
+            ? {
+                nombre: contactoNombre.trim(),
+                cargo: contactoCargo.trim(),
+                email: contactoEmail.trim(),
+                telefono: contactoTelefono.trim() || undefined,
+              }
+            : undefined,
+          observacionesCalidad: observaciones.trim() || undefined,
+        });
+
+        toast.success(`Fuente ${nueva.codigo} radicada exitosamente`);
+        closeTop();
+      } else {
+        await actualizarFuente(fuente!.id, {
+          radicadoSolicitud: radicado.trim() || undefined,
+          fechaSolicitud: fechaSolicitud || undefined,
+          fechaLimiteRespuesta: fechaLimite || undefined,
+          estadoEntrega,
+          datosEntregadosResumen: datosResumen.trim() || undefined,
+          archivoAdjuntoUrl: archivoUrl.trim() || undefined,
+          observacionesCalidad: observaciones.trim() || undefined,
+          responsableContacto: contactoNombre.trim()
+            ? {
+                nombre: contactoNombre.trim(),
+                cargo: contactoCargo.trim(),
+                email: contactoEmail.trim(),
+                telefono: contactoTelefono.trim() || undefined,
+              }
+            : fuente!.responsableContacto,
+        });
+
+        toast.success(`Fuente ${fuente!.codigo} actualizada con éxito`);
+        closeTop();
+      }
     } catch (_err) {
-      toast.error("Error al actualizar la fuente", {
+      toast.error(esCreacion ? "Error al radicar la fuente" : "Error al actualizar la fuente", {
         description: "No se pudo sincronizar la solicitud con el servidor.",
       });
     } finally {
@@ -127,10 +192,17 @@ export function FuenteEditorPanel({ entryKey, props }: PanelComponentProps<"fuen
   return (
     <PanelShell
       entryKey={entryKey}
-      crumbs={[{ label: "Fuentes" }]}
-      kicker="Gestión de Información · Trazabilidad"
-      title={`${fuente.codigo} · ${fuente.nombreFuente}`}
-      subtitle={`Entidad responsable: ${fuente.entidad}`}
+      crumbs={[
+        { label: "Fuentes" },
+        { label: esCreacion ? "Radicar Fuente" : (fuente?.codigo || "Editar") },
+      ]}
+      kicker={esCreacion ? "Gestión Institucional de Fuentes · Radicación" : "Gestión de Información · Trazabilidad"}
+      title={esCreacion ? "Radicar Fuente de Información" : `${fuente!.codigo} · ${fuente!.nombreFuente}`}
+      subtitle={
+        esCreacion
+          ? "Registro institucional de solicitud oficial de información según Ley 1757 de 2015."
+          : `Entidad responsable: ${fuente!.entidad}`
+      }
       onClose={closeTop}
       onCloseToKey={closeTop}
     >
@@ -148,48 +220,204 @@ export function FuenteEditorPanel({ entryKey, props }: PanelComponentProps<"fuen
           </div>
         )}
 
-        {/* Ficha técnica informativa */}
-        <section className="space-y-3 rounded-xl border border-border bg-surface-2 p-4">
-          <div className="flex items-center justify-between gap-2 border-b border-border pb-2">
-            <span className="text-xs font-semibold uppercase tracking-wider text-text-secondary">
-              Ficha Técnica de Radicación
-            </span>
-            <div className="flex items-center gap-1.5">
-              <Badge variant="outline" className="capitalize text-xs">
-                {fuente.ambito}
-              </Badge>
-              <Badge variant="secondary" className="capitalize text-xs">
-                {fuente.tipo}
+        {/* Datos Principales (Modo Creación) o Ficha Técnica (Modo Edición) */}
+        {esCreacion ? (
+          <section className="space-y-4 rounded-xl border border-border bg-surface-2 p-4">
+            <div className="flex items-center justify-between gap-2 border-b border-border pb-2">
+              <span className="text-xs font-semibold uppercase tracking-wider text-text-secondary flex items-center gap-1.5">
+                <PlusCircle className="size-3.5 text-ember" aria-hidden="true" />
+                Definición y Clasificación de la Fuente
+              </span>
+              <Badge variant="outline" className="text-2xs font-semibold">
+                Nueva Radicación
               </Badge>
             </div>
-          </div>
 
-          <div className="grid gap-2 text-xs sm:grid-cols-2">
-            <div>
-              <span className="text-text-secondary">Dimensión de Seguridad:</span>{" "}
-              <strong className="capitalize text-text-primary">
-                {fuente.dimensionSeguridad}
-              </strong>
-            </div>
-            <div>
-              <span className="text-text-secondary">Periodicidad:</span>{" "}
-              <strong className="capitalize text-text-primary">
-                {fuente.periodicidad.replace("_", " ")}
-              </strong>
-            </div>
-          </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <FormField label="Entidad Solicitada" required>
+                {(field) => (
+                  <Input
+                    {...field}
+                    value={entidad}
+                    onChange={(e) => setEntidad(e.target.value)}
+                    placeholder="ej. Distriseguridad / Policía Nacional"
+                    disabled={!tienePermisoEscritura}
+                    required
+                  />
+                )}
+              </FormField>
 
-          <div className="pt-1">
-            <span className="text-xs font-medium text-text-secondary">
-              Variables Requeridas para la Política:
-            </span>
-            <ul className="mt-1.5 list-disc space-y-1 pl-4 text-xs text-text-primary">
-              {fuente.variablesSolicitadas.map((v, i) => (
-                <li key={i}>{v}</li>
-              ))}
-            </ul>
-          </div>
-        </section>
+              <FormField label="Nombre de la Fuente / Registro" required>
+                {(field) => (
+                  <Input
+                    {...field}
+                    value={nombreFuente}
+                    onChange={(e) => setNombreFuente(e.target.value)}
+                    placeholder="ej. Sistema SIEDCO / Cifras de convivencia"
+                    disabled={!tienePermisoEscritura}
+                    required
+                  />
+                )}
+              </FormField>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-3">
+              <FormField label="Código Oficial (Opcional)">
+                {(field) => (
+                  <Input
+                    {...field}
+                    value={codigo}
+                    onChange={(e) => setCodigo(e.target.value)}
+                    placeholder="ej. FTE-DIS-09"
+                    disabled={!tienePermisoEscritura}
+                  />
+                )}
+              </FormField>
+
+              <FormField label="Tipo de Fuente">
+                {(field) => (
+                  <Select
+                    value={tipo}
+                    onValueChange={(val) => setTipo(val as TipoFuente)}
+                    disabled={!tienePermisoEscritura}
+                  >
+                    <SelectTrigger {...field}>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="primaria">Primaria (Directa)</SelectItem>
+                      <SelectItem value="secundaria">Secundaria (Indirecta)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              </FormField>
+
+              <FormField label="Ámbito Territorial">
+                {(field) => (
+                  <Select
+                    value={ambito}
+                    onValueChange={(val) => setAmbito(val as AmbitoFuente)}
+                    disabled={!tienePermisoEscritura}
+                  >
+                    <SelectTrigger {...field}>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="local">Local (Cartagena)</SelectItem>
+                      <SelectItem value="nacional">Nacional</SelectItem>
+                      <SelectItem value="internacional">Internacional</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              </FormField>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              <FormField label="Dimensión de Seguridad Humana ONU">
+                {(field) => (
+                  <Select
+                    value={dimensionSeguridad}
+                    onValueChange={(val) => setDimensionSeguridad(val)}
+                    disabled={!tienePermisoEscritura}
+                  >
+                    <SelectTrigger {...field}>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="personal">Personal (Vida e Integridad)</SelectItem>
+                      <SelectItem value="comunitaria">Comunitaria (Convivencia y Tejido)</SelectItem>
+                      <SelectItem value="ambiental">Ambiental (Recursos y Hábitat)</SelectItem>
+                      <SelectItem value="economica">Económica (Ingreso y Empleo)</SelectItem>
+                      <SelectItem value="alimentaria">Alimentaria (Soberanía)</SelectItem>
+                      <SelectItem value="salud">Salud (Acceso y Bienestar)</SelectItem>
+                      <SelectItem value="politica">Política (Derechos y Libertades)</SelectItem>
+                      <SelectItem value="crisis">Crisis (Emergencias y Riesgos)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              </FormField>
+
+              <FormField label="Periodicidad Solicitada">
+                {(field) => (
+                  <Select
+                    value={periodicidad}
+                    onValueChange={(val) => setPeriodicidad(val as typeof periodicidad)}
+                    disabled={!tienePermisoEscritura}
+                  >
+                    <SelectTrigger {...field}>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="mensual">Mensual</SelectItem>
+                      <SelectItem value="trimestral">Trimestral</SelectItem>
+                      <SelectItem value="semestral">Semestral</SelectItem>
+                      <SelectItem value="anual">Anual</SelectItem>
+                      <SelectItem value="por_demanda">Por Demanda</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              </FormField>
+            </div>
+
+            <FormField
+              label="Variables Requeridas para la Política Pública"
+              description="Escribe una variable por línea o separadas por comas."
+            >
+              {(field) => (
+                <Textarea
+                  {...field}
+                  value={variablesTexto}
+                  onChange={(e) => setVariablesTexto(e.target.value)}
+                  placeholder="ej. Homicidios mensuales por cuadrante&#10;Hurtos a comercio&#10;Casos de violencia intrafamiliar"
+                  rows={3}
+                  disabled={!tienePermisoEscritura}
+                />
+              )}
+            </FormField>
+          </section>
+        ) : (
+          <section className="space-y-3 rounded-xl border border-border bg-surface-2 p-4">
+            <div className="flex items-center justify-between gap-2 border-b border-border pb-2">
+              <span className="text-xs font-semibold uppercase tracking-wider text-text-secondary">
+                Ficha Técnica de Radicación
+              </span>
+              <div className="flex items-center gap-1.5">
+                <Badge variant="outline" className="capitalize text-xs">
+                  {fuente!.ambito}
+                </Badge>
+                <Badge variant="secondary" className="capitalize text-xs">
+                  {fuente!.tipo}
+                </Badge>
+              </div>
+            </div>
+
+            <div className="grid gap-2 text-xs sm:grid-cols-2">
+              <div>
+                <span className="text-text-secondary">Dimensión de Seguridad:</span>{" "}
+                <strong className="capitalize text-text-primary">
+                  {fuente!.dimensionSeguridad}
+                </strong>
+              </div>
+              <div>
+                <span className="text-text-secondary">Periodicidad:</span>{" "}
+                <strong className="capitalize text-text-primary">
+                  {fuente!.periodicidad.replace("_", " ")}
+                </strong>
+              </div>
+            </div>
+
+            <div className="pt-1">
+              <span className="text-xs font-medium text-text-secondary">
+                Variables Requeridas para la Política:
+              </span>
+              <ul className="mt-1.5 list-disc space-y-1 pl-4 text-xs text-text-primary">
+                {fuente!.variablesSolicitadas.map((v, i) => (
+                  <li key={i}>{v}</li>
+                ))}
+              </ul>
+            </div>
+          </section>
+        )}
 
         {/* Control de Radicación y Tiempos */}
         <div className="space-y-4">
@@ -223,8 +451,9 @@ export function FuenteEditorPanel({ entryKey, props }: PanelComponentProps<"fuen
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="entregada">Entregada</SelectItem>
+                    <SelectItem value="por_solicitar">Por Solicitar</SelectItem>
                     <SelectItem value="en_termino">En Término</SelectItem>
+                    <SelectItem value="entregada">Entregada</SelectItem>
                     <SelectItem value="incompleta">Incompleta</SelectItem>
                     <SelectItem value="vencida_sin_entrega">Vencida sin Entrega</SelectItem>
                     <SelectItem value="requerimiento_insistencia">
@@ -401,9 +630,10 @@ export function FuenteEditorPanel({ entryKey, props }: PanelComponentProps<"fuen
               variant="default"
               type="submit"
               loading={guardando}
-              loadingLabel="Guardando…"
+              loadingLabel={esCreacion ? "Radicando..." : "Guardando…"}
+              className="bg-ember text-text-inverse hover:bg-ember/90"
             >
-              Guardar Cambios
+              {esCreacion ? "Radicar Fuente Institucional" : "Guardar Cambios"}
             </Button>
           )}
         </div>
