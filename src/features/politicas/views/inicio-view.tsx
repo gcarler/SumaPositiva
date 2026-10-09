@@ -172,7 +172,7 @@ export function InicioView() {
                 className="mt-6 max-w-2xl text-[15px] leading-relaxed text-[var(--text-secondary)] md:text-base lg:text-lg"
               >
                 Garantizando las libertades frente al miedo, la necesidad y la indignidad mediante la
-                participación vinculante de la ciudadanía (Decreto Nacional 037 de 2026 — Sentencia C-150 de 2015).
+                participación vinculante de la ciudadanía (Ley Estatutaria 1757 de 2015 — Sentencia C-150 de 2015).
               </motion.p>
 
               {/* 3 Botones de acción */}

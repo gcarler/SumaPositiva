@@ -244,7 +244,7 @@ export function CadenaValorTab({ puedeEditar }: CadenaValorTabProps) {
               MIPG
             </Badge>
             <Badge variant="outline" className="text-[10px]">
-              Decreto Distrital 037/2026
+              Ley 1757 de 2015
             </Badge>
             {esContingencia ? (
               <Badge variant="warning" className="text-[10px]">

@@ -36,7 +36,7 @@ export function FuentesView() {
   return (
     <div className="space-y-6">
       <PageHeader
-        eyebrow="Gestión interna · Decreto 037/26"
+        eyebrow="Gestión interna · Ley 1757 de 2015"
         title="Fuentes de Información"
         description="Monitoreo, radicación, trazabilidad y control de cumplimiento a fuentes primarias y secundarias requeridas para la formulación técnica de la política pública."
       />

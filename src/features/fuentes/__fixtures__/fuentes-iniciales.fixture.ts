@@ -349,7 +349,7 @@ export const FUENTES_INICIALES: FuenteInformacion[] = [
     ],
     datosEntregadosResumen: "Alerta Temprana 002-26 y notas de seguimiento emitidas para Nelson Mandela, El Pozón y Tierrabomba.",
     archivoAdjuntoUrl: "https://www.defensoria.gov.co",
-    observacionesCalidad: "Cumplimiento vinculante bajo el Decreto 037 de 2026 del Ministerio del Interior.",
+    observacionesCalidad: "Cumplimiento vinculante bajo la Ley Estatutaria 1757 de 2015 y Sentencia C-150 de 2015.",
     actualizadoEn: "2026-03-15T16:10:00Z",
   },
   {

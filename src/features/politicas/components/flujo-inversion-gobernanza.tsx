@@ -222,7 +222,7 @@ export function FlujoInversionGobernanza() {
             Flujo de Inversión y Competencias en Cartagena
           </h2>
           <p className="mt-1 text-sm text-[var(--text-secondary)] max-w-3xl">
-            Explora las conexiones dinámicas entre las 7 Dimensiones de Seguridad Humana (Decreto 037/26),
+            Explora las conexiones dinámicas entre las 7 Dimensiones de Seguridad Humana (Ley 1757 de 2015),
             las 27 dependencias de la Alcaldía Mayor y los territorios distritales donde se ejecutan los proyectos.
           </p>
         </div>
@@ -296,7 +296,7 @@ export function FlujoInversionGobernanza() {
           <div className="flex items-center justify-between pb-1 border-b border-[var(--border)]">
             <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] flex items-center gap-1.5">
               <span className="size-2 rounded-full bg-[var(--ember)]" />
-              1. Dimensión ONU (Decreto 037)
+              1. Dimensión ONU (Seguridad Humana)
             </h3>
             {dimensionFiltro && (
               <Button

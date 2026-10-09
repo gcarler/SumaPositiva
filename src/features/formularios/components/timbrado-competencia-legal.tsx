@@ -50,7 +50,7 @@ export function calcularCompetenciaLegalReporte(
         siglaLider: "STUR",
         entidadesAliadas: "SICC, ICBF, Policía de Turismo, Fiscalía General de la Nación",
         marcoIntervencion: "Plan de Desarrollo 2024–2027 'Cartagena Ciudad de Derechos' — Estrategia Cero Tolerancia ESCNNA",
-        fundamentoLegal: "Decreto 037 de 2026 del Ministerio del Interior y Ley 679 de 2001",
+        fundamentoLegal: "Ley 1757 de 2015 y Ley 679 de 2001",
         dimensionTexto: "Dimensión 1 — Seguridad Personal y Protección a la Niñez",
         misionResumen: "Inspección a prestadores turísticos, operativos en playas y cordón amurallado, y restitución de derechos.",
         canalContacto: {
@@ -66,7 +66,7 @@ export function calcularCompetenciaLegalReporte(
       siglaLider: "SICC",
       entidadesAliadas: "Policía Metropolitana de Cartagena (MECAR), Distriseguridad, Fiscalía Seccional Bolívar",
       marcoIntervencion: "Plan de Desarrollo 2024–2027 'Cartagena Ciudad de Derechos' — Eje de Seguridad y Justicia",
-      fundamentoLegal: "Decreto 037 de 2026 del Ministerio del Interior y Código Nacional de Seguridad y Convivencia Ciudadana (Ley 1801)",
+      fundamentoLegal: "Ley 1757 de 2015 y Código Nacional de Seguridad y Convivencia Ciudadana (Ley 1801)",
       dimensionTexto: "Dimensión 1 — Seguridad Personal y Ciudadana",
       misionResumen: "Orden público, desarticulación de expendios barriales de drogas, desarme y fortalecimiento de cuadrantes policiales.",
       canalContacto: {
@@ -85,7 +85,7 @@ export function calcularCompetenciaLegalReporte(
         siglaLider: "PARTICIPACION",
         entidadesAliadas: "Comisarías de Familia, DADIS (Salud Mental), SICC, Casa de Justicia",
         marcoIntervencion: "Plan de Desarrollo 2024–2027 — Política Pública de Mujeres, Género y Diversidad",
-        fundamentoLegal: "Decreto 037 de 2026 del Ministerio del Interior y Ley 1257 de 2008",
+        fundamentoLegal: "Ley 1757 de 2015 y Ley 1257 de 2008",
         dimensionTexto: "Dimensión 2 — Convivencia y Seguridad de Género / Familiar",
         misionResumen: "Ruta de atención integral, Casas de la Mujer Empoderada y medidas de protección inmediata para víctimas.",
         canalContacto: {
@@ -102,7 +102,7 @@ export function calcularCompetenciaLegalReporte(
         siglaLider: "IDACCC",
         entidadesAliadas: "SICC, Personería Distrital, Defensoría del Pueblo, Escuela de Gobierno",
         marcoIntervencion: "Plan de Desarrollo 2024–2027 — Fortalecimiento y Garantías para Dignatarios Barriales",
-        fundamentoLegal: "Decreto 037 de 2026 del Ministerio del Interior y Ley 2166 de 2021",
+        fundamentoLegal: "Ley 1757 de 2015 y Ley 2166 de 2021",
         dimensionTexto: "Dimensión 2 — Seguridad Comunitaria y Liderazgo Social",
         misionResumen: "Ruta de protección y alerta temprana para dignatarios comunales y resolución de disputas vecinales.",
         canalContacto: {
@@ -119,7 +119,7 @@ export function calcularCompetenciaLegalReporte(
         siglaLider: "SED",
         entidadesAliadas: "Policía de Infancia y Adolescencia, DADIS, SICC",
         marcoIntervencion: "Plan de Desarrollo 2024–2027 — Programa Entornos Escolares en Paz",
-        fundamentoLegal: "Decreto 037 de 2026 del Ministerio del Interior y Ley 1620 de 2013",
+        fundamentoLegal: "Ley 1757 de 2015 y Ley 1620 de 2013",
         dimensionTexto: "Dimensión 2 — Convivencia Escolar y Comunitaria",
         misionResumen: "Comités de convivencia escolar, mediación de conflictos y prevención de la deserción juvenil.",
         canalContacto: {
@@ -135,7 +135,7 @@ export function calcularCompetenciaLegalReporte(
       siglaLider: "SICC / IDER",
       entidadesAliadas: "Alcaldías Locales 1, 2 y 3, Escuela de Gobierno y Liderazgo",
       marcoIntervencion: "Plan de Desarrollo 2024–2027 — Pactos Barriales de Paz y Barrismo Social",
-      fundamentoLegal: "Decreto 037 de 2026 del Ministerio del Interior",
+      fundamentoLegal: "Ley 1757 de 2015 (Participación Ciudadana)",
       dimensionTexto: "Dimensión 2 — Convivencia y Seguridad Comunitaria",
       misionResumen: "Mediación de conflictos entre pandillas barriales, frentes de seguridad y escuelas deportivas por la paz.",
       canalContacto: {
@@ -154,7 +154,7 @@ export function calcularCompetenciaLegalReporte(
         siglaLider: "INFRAESTRUCTURA",
         entidadesAliadas: "Distriseguridad, Concesión Alumbrado Público, SICC",
         marcoIntervencion: "Plan de Desarrollo 2024–2027 — Modernización de Alumbrado Público LED",
-        fundamentoLegal: "Decreto 037 de 2026 del Ministerio del Interior",
+        fundamentoLegal: "Ley 1757 de 2015 y PDD 2024–2027",
         dimensionTexto: "Dimensión 3 — Entorno Seguro e Infraestructura",
         misionResumen: "Expansión e iluminación de puntos oscuros y zonas de riesgo para prevenir hechos delictivos.",
         canalContacto: {
@@ -171,7 +171,7 @@ export function calcularCompetenciaLegalReporte(
         siglaLider: "OAGRD",
         entidadesAliadas: "Cuerpo Oficial de Bomberos, Corvivienda, Secretaría de Infraestructura",
         marcoIntervencion: "Plan de Desarrollo 2024–2027 — Sistema Distrital de Gestión del Riesgo y Adaptación Climática",
-        fundamentoLegal: "Decreto 037 de 2026 del Ministerio del Interior y Ley 1523 de 2012",
+        fundamentoLegal: "Ley 1757 de 2015 y Ley 1523 de 2012",
         dimensionTexto: "Dimensión 3 — Seguridad Ambiental y Mitigación del Riesgo",
         misionResumen: "Monitoreo hidrometeorológico de arroyos, censos de afectación y reubicación preventiva de familias.",
         canalContacto: {
@@ -187,7 +187,7 @@ export function calcularCompetenciaLegalReporte(
       siglaLider: "EPA",
       entidadesAliadas: "Cardique, Secretaría de Infraestructura, Policía Ambiental, Veolia / Pacaribe",
       marcoIntervencion: "Plan de Desarrollo 2024–2027 — Recuperación de la Ciénaga de la Virgen y Cuerpos de Agua",
-      fundamentoLegal: "Decreto 037 de 2026 del Ministerio del Interior y Ley 99 de 1993",
+      fundamentoLegal: "Ley 1757 de 2015 y Ley 99 de 1993",
       dimensionTexto: "Dimensión 3 — Seguridad Ambiental y Ecosistémica",
       misionResumen: "Inspección, control y sanción a vertimientos ilegales, recuperación de manglares y saneamiento hídrico.",
       canalContacto: {
@@ -206,7 +206,7 @@ export function calcularCompetenciaLegalReporte(
         siglaLider: "STUR",
         entidadesAliadas: "SICC, DATT, Policía de Turismo, Gerencia Centro Histórico",
         marcoIntervencion: "Plan de Desarrollo 2024–2027 — Turismo Justo, Seguro y Sostenible",
-        fundamentoLegal: "Decreto 037 de 2026 del Ministerio del Interior",
+        fundamentoLegal: "Ley 1757 de 2015 y PDD 2024–2027",
         dimensionTexto: "Dimensión 4 — Seguridad Económica y Defensa al Consumidor",
         misionResumen: "Operativos permanentes contra cobros abusivos, regulación de tarifas de lanchas y playas, y sanciones.",
         canalContacto: {
@@ -222,7 +222,7 @@ export function calcularCompetenciaLegalReporte(
       siglaLider: "PES-PR",
       entidadesAliadas: "Secretaría de Participación, SICC, Banco de las Oportunidades",
       marcoIntervencion: "Plan de Desarrollo 2024–2027 — Inclusión Financiera y Combate a la Usura",
-      fundamentoLegal: "Decreto 037 de 2026 del Ministerio del Interior",
+      fundamentoLegal: "Ley 1757 de 2015 y PDD 2024–2027",
       dimensionTexto: "Dimensión 4 — Seguridad Económica y Medios de Vida",
       misionResumen: "Microcréditos productivos barriales para liberar a comerciantes informales de las redes del 'gota a gota'.",
       canalContacto: {
@@ -241,7 +241,7 @@ export function calcularCompetenciaLegalReporte(
         siglaLider: "DADIS",
         entidadesAliadas: "EPA Cartagena, Secretaría de Infraestructura, ESE Cartagena de Indias",
         marcoIntervencion: "Plan de Desarrollo 2024–2027 — Vigilancia Epidemiológica y Control Vectorial",
-        fundamentoLegal: "Decreto 037 de 2026 del Ministerio del Interior y Ley 715 de 2001",
+        fundamentoLegal: "Ley 1757 de 2015 y Ley 715 de 2001",
         dimensionTexto: "Dimensión 5 — Seguridad Sanitaria y Salud Pública",
         misionResumen: "Jornadas de fumigación barrial, erradicación de criaderos de mosquitos y atención primaria en salud.",
         canalContacto: {
@@ -257,7 +257,7 @@ export function calcularCompetenciaLegalReporte(
       siglaLider: "PES / SED",
       entidadesAliadas: "DADIS, ICBF, Secretaría de Participación",
       marcoIntervencion: "Plan de Desarrollo 2024–2027 — Soberanía y Seguridad Alimentaria Distrital",
-      fundamentoLegal: "Decreto 037 de 2026 del Ministerio del Interior",
+      fundamentoLegal: "Ley 1757 de 2015 y PDD 2024–2027",
       dimensionTexto: "Dimensión 5 — Seguridad Alimentaria y Nutricional",
       misionResumen: "Comedores comunitarios en zonas de pobreza extrema y auditoría nutricional al PAE escolar.",
       canalContacto: {
@@ -275,7 +275,7 @@ export function calcularCompetenciaLegalReporte(
       siglaLider: "GENERAL",
       entidadesAliadas: "Escuela de Gobierno y Liderazgo, Oficina de Transparencia, OTIC",
       marcoIntervencion: "Plan de Desarrollo 2024–2027 — Gobierno Abierto y Cero Corrupción",
-      fundamentoLegal: "Decreto 037 de 2026 del Ministerio del Interior y Ley 1712 de 2014",
+      fundamentoLegal: "Ley 1757 de 2015 y Ley 1712 de 2014",
       dimensionTexto: "Dimensión 6 — Seguridad Política e Institucional",
       misionResumen: "Canales de denuncia contra sobornos o abuso de autoridad, veedurías ciudadanas y garantías de participación.",
       canalContacto: {
@@ -293,7 +293,7 @@ export function calcularCompetenciaLegalReporte(
       siglaLider: "SICC / OAGRD",
       entidadesAliadas: "Armada Nacional, MECAR, Unidad para las Víctimas, Cruz Roja",
       marcoIntervencion: "Plan de Desarrollo 2024–2027 — Sistema de Alertas Tempranas y Respuesta Humanitaria",
-      fundamentoLegal: "Decreto 037 de 2026 del Ministerio del Interior",
+      fundamentoLegal: "Ley 1757 de 2015 (Gestión del Riesgo y Crisis)",
       dimensionTexto: "Dimensión 7 — Alertas Tempranas y Gestión de Crisis",
       misionResumen: "Atención inmediata ante amenazas de actores armados, confinamiento barrial o desastres naturales graves.",
       canalContacto: {
@@ -331,7 +331,7 @@ export function TimbradoCompetenciaLegal({
           </div>
           <div>
             <span className="text-xs font-bold uppercase tracking-wider text-[var(--ember)] block">
-              Competencia Legal Asignada (Decreto 037 de 2026 MinInterior)
+              Competencia Legal Asignada (Ley 1757 de 2015)
             </span>
             <span className="text-[11px] text-[var(--text-secondary)] font-medium">
               {info.dimensionTexto}

@@ -1,7 +1,7 @@
 /**
  * POLIS — Modelos de Devolución Ciudadana Motivada y Rendición de Cuentas
  * Fundamento: Sentencia C-150 de 2015 de la Corte Constitucional (deber de motivación sustancial y proscripción del descarte silencioso)
- * Ley Estatutaria 1757 de 2015 de Participación Ciudadana y Decreto Distrital 037/2026.
+ * Ley Estatutaria 1757 de 2015 de Participación Ciudadana y Plan de Desarrollo Distrital Cartagena 2024–2027.
  */
 
 export type EstadoIncorporacion =

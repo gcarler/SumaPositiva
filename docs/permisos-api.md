@@ -30,19 +30,19 @@ Contrato y activación: [usuarios y acceso](identidad.md).
 | usuarios:gestionar | administrador_identidades | declarada |
 | roles:gestionar | administrador_identidades | declarada |
 | identidad:auditar | administrador_identidades, auditor_forense | declarada |
-| presupuesto:gestionar | autoridad_distrital | declarada |
-| indicadores:gestionar | autoridad_distrital | declarada |
-| instrumentos:gestionar | autoridad_distrital, facilitador_mesa | declarada |
-| ia:analizar | autoridad_distrital, facilitador_mesa | declarada |
-| mesas:abrir | autoridad_distrital, facilitador_mesa | declarada |
-| mesas:fotos:subir | autoridad_distrital, facilitador_mesa | declarada |
-| mesas:acuerdos | autoridad_distrital, facilitador_mesa | declarada |
-| asistencia:verificar | autoridad_distrital, facilitador_mesa | declarada |
+| presupuesto:gestionar | autoridad_distrital, administrador_identidades | declarada |
+| indicadores:gestionar | autoridad_distrital, administrador_identidades | declarada |
+| instrumentos:gestionar | autoridad_distrital, facilitador_mesa, administrador_identidades | declarada |
+| ia:analizar | autoridad_distrital, facilitador_mesa, administrador_identidades | declarada |
+| mesas:abrir | autoridad_distrital, facilitador_mesa, administrador_identidades | declarada |
+| mesas:fotos:subir | autoridad_distrital, facilitador_mesa, administrador_identidades | declarada |
+| mesas:acuerdos | autoridad_distrital, facilitador_mesa, administrador_identidades | declarada |
+| asistencia:verificar | autoridad_distrital, facilitador_mesa, administrador_identidades | declarada |
 | aportes:priorizar | autoridad_distrital | declarada |
 | aportes:responder | autoridad_distrital | declarada |
 | formularios:leer | autoridad_distrital, facilitador_mesa, administrador_identidades, auditor_forense | declarada |
 | formularios:gestionar | autoridad_distrital, facilitador_mesa, administrador_identidades | declarada |
-| testimonios:moderar | autoridad_distrital, facilitador_mesa | declarada |
+| testimonios:moderar | autoridad_distrital, facilitador_mesa, administrador_identidades | declarada |
 | politicas:gestionar | autoridad_distrital, administrador_identidades | declarada |
 | auditoria:leer | autoridad_distrital, administrador_identidades, auditor_forense | declarada |
 | seguimiento:gestionar | autoridad_distrital, administrador_identidades | declarada |

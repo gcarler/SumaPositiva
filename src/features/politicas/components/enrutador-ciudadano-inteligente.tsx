@@ -86,7 +86,7 @@ export function EnrutadorCiudadanoInteligente() {
               Pilar 1 — Trazabilidad y Responsabilidad Institucional
             </p>
             <Badge variant="outline" className="border-[var(--border)] text-[10px]">
-              Decreto 037 de 2026 MinInterior
+              Ley 1757 de 2015
             </Badge>
           </div>
           <h2 className="mt-2 text-2xl font-bold tracking-tight text-[var(--text-primary)] sm:text-3xl">

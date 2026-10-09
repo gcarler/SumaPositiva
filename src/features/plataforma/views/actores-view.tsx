@@ -61,7 +61,7 @@ export function ActoresView() {
       {/* Cabecera institucional */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <PageHeader
-          eyebrow="Gobernanza participativa · Decreto 037/26"
+          eyebrow="Gobernanza participativa · Ley 1757 de 2015"
           title="Mapeo y Caracterización de Actores"
           description="Identificación, caracterización estratégica y matriz relacional (Poder vs. Interés) de actores territoriales, gremiales, comunitarios e institucionales de Cartagena."
         />

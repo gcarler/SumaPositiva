@@ -250,7 +250,7 @@ export function ConfiguracionView() {
           <div className="grid gap-4 p-5 sm:grid-cols-2">
             <FormField label="Nombre">{(field) => <Input {...field} value="Seguridad Humana Integral" readOnly />}</FormField>
             <FormField label="Vigencia">{(field) => <Input {...field} value="2026–2036" readOnly />}</FormField>
-            <FormField label="Decreto">{(field) => <Input {...field} value="037 de 2026" readOnly />}</FormField>
+            <FormField label="Marco Legal">{(field) => <Input {...field} value="Ley 1757 de 2015" readOnly />}</FormField>
             <div className="flex items-end"><Badge variant="success"><Check className="mr-1 size-3" aria-hidden="true" />Marco institucional</Badge></div>
           </div>
         </section>

@@ -1,6 +1,6 @@
 /**
  * POLIS — Modelos de Datos para Geodiagnóstico Territorial de Cartagena
- * Conforme a Ley 1617 de 2013, Decreto 037 de 2026 y Enfoque Étnico Ley 70 de 1993.
+ * Conforme a Ley 1617 de 2013, Sentencia C-150 de 2015 y Enfoque Étnico Ley 70 de 1993.
  */
 
 export type NivelRiesgo = "ALTO" | "MEDIO" | "MODERADO";

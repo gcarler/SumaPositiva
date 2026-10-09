@@ -143,7 +143,7 @@ export function MesasView() {
         <PageHeader
           eyebrow="Participación Ciudadana Distrital"
           title="Mesas de trabajo"
-          description="Espacios de concertación y deliberación para construir acuerdos y documentar árboles de problemas y soluciones (Decreto Distrital 037/2026)."
+          description="Espacios de concertación y deliberación para construir acuerdos y documentar árboles de problemas y soluciones (Ley Estatutaria 1757 de 2015)."
         />
         <div className="flex items-center gap-2">
           <Button

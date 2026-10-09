@@ -80,7 +80,7 @@ export const DIMENSIONES_DETALLE_2026: DimensionDetalle[] = [
     descripcion:
       "Protección integral de los ciudadanos frente a la delincuencia, homicidios, extorsión, violencia de género y erradicación del delito de ESCNNA en entornos turísticos y escolares.",
     marcoLegal:
-      "Decreto 037 de 2026 Art. 4.1 • Ley Estatutaria 1801 de 2016 • Sentencia T-025 de 2004",
+      "Ley Estatutaria 1757 de 2015 • Ley Estatutaria 1801 de 2016 • Sentencia T-025 de 2004",
     entidadLiderId: "dep-sicc",
     presupuestoTotalCop: "$68.400 Millones COP",
     colorToken: "var(--danger)",
@@ -149,7 +149,7 @@ export const DIMENSIONES_DETALLE_2026: DimensionDetalle[] = [
     descripcion:
       "Fortalecimiento de la cohesión comunitaria, prevención de estigmatización barrial, apoyo a las JAC y protección de las comunidades negras, palenqueras e indígenas de Cartagena.",
     marcoLegal:
-      "Decreto 037 de 2026 Art. 4.2 • Ley 70 de 1993 • Convenio 169 OIT • Ley 2166 de 2021 (JAC)",
+      "Ley Estatutaria 1757 de 2015 • Ley 70 de 1993 • Convenio 169 OIT • Ley 2166 de 2021 (JAC)",
     entidadLiderId: "dep-participacion",
     presupuestoTotalCop: "$42.800 Millones COP",
     colorToken: "var(--ember)",
@@ -218,7 +218,7 @@ export const DIMENSIONES_DETALLE_2026: DimensionDetalle[] = [
     descripcion:
       "Garantía de ingresos dignos, capital semilla para la economía popular, titulación de predios y formación técnica de jóvenes para cerrar las brechas de desigualdad en Cartagena.",
     marcoLegal:
-      "Decreto 037 de 2026 Art. 4.3 • Ley 1454 de 2011 • PDD 2024–2027 Eje Productivo",
+      "Ley Estatutaria 1757 de 2015 • Ley 1454 de 2011 • PDD 2024–2027 Eje Productivo",
     entidadLiderId: "dep-pes",
     presupuestoTotalCop: "$54.600 Millones COP",
     colorToken: "var(--warning)",
@@ -282,7 +282,7 @@ export const DIMENSIONES_DETALLE_2026: DimensionDetalle[] = [
     descripcion:
       "Restauración integral de la Ciénaga de la Virgen y caños distritales, mitigación de la erosión costera, drenaje pluvial contra inundaciones y control estricto de la contaminación.",
     marcoLegal:
-      "Decreto 037 de 2026 Art. 4.4 • Ley 99 de 1993 • Sentencia T-622 (Derechos de la Naturaleza)",
+      "Ley Estatutaria 1757 de 2015 • Ley 99 de 1993 • Sentencia T-622 (Derechos de la Naturaleza)",
     entidadLiderId: "dep-epa",
     presupuestoTotalCop: "$89.200 Millones COP",
     colorToken: "var(--success)",
@@ -336,7 +336,7 @@ export const DIMENSIONES_DETALLE_2026: DimensionDetalle[] = [
     descripcion:
       "Garantía del derecho humano a la alimentación adecuada, comedores comunitarios dignos, nutrición escolar con calidad y circuitos cortos de comercialización con los campesinos corregimentales.",
     marcoLegal:
-      "Decreto 037 de 2026 Art. 4.5 • Ley 2294 de 2023 • CONPES 113 de Seguridad Alimentaria",
+      "Ley Estatutaria 1757 de 2015 • Ley 2294 de 2023 • CONPES 113 de Seguridad Alimentaria",
     entidadLiderId: "dep-pes",
     presupuestoTotalCop: "$38.500 Millones COP",
     colorToken: "var(--warning)",
@@ -375,7 +375,7 @@ export const DIMENSIONES_DETALLE_2026: DimensionDetalle[] = [
     descripcion:
       "Acceso oportuno y humanizado a servicios de salud, apertura de nuevos centros de salud (CAP), prevención comunitaria del dengue y creación de una red distrital para el cuidado de la salud mental.",
     marcoLegal:
-      "Decreto 037 de 2026 Art. 4.6 • Ley Estatutaria 1751 de 2015 • Ley 715 de 2001",
+      "Ley Estatutaria 1757 de 2015 • Ley Estatutaria 1751 de 2015 • Ley 715 de 2001",
     entidadLiderId: "dep-dadis",
     presupuestoTotalCop: "$76.200 Millones COP",
     colorToken: "var(--danger)",
@@ -419,7 +419,7 @@ export const DIMENSIONES_DETALLE_2026: DimensionDetalle[] = [
     descripcion:
       "Garantía plena para el ejercicio del control social, protección a veedores y defensores de DD.HH., presupuesto participativo transparente y digitalización de trámites públicos en POLIS.",
     marcoLegal:
-      "Decreto 037 de 2026 Art. 4.7 • Ley Estatutaria 1757 de 2015 • Ley 1712 de 2014 (Transparencia)",
+      "Ley Estatutaria 1757 de 2015 • Sentencia C-150 de 2015 • Ley 1712 de 2014 (Transparencia)",
     entidadLiderId: "dep-planeacion",
     presupuestoTotalCop: "$28.300 Millones COP",
     colorToken: "var(--info)",
@@ -468,7 +468,7 @@ export const DIMENSIONES_DETALLE_2026: DimensionDetalle[] = [
     descripcion:
       "Eje transversal para la atención expedita de emergencias climáticas (vendavales, mar de leva, huracanes), incendios estructurales, colapsos de infraestructura y alertas tempranas del CIPRAT.",
     marcoLegal:
-      "Decreto 037 de 2026 Art. 5 • Ley 1523 de 2012 (Gestión del Riesgo) • Sentencia C-150/15",
+      "Ley Estatutaria 1757 de 2015 • Ley 1523 de 2012 (Gestión del Riesgo) • Sentencia C-150/15",
     entidadLiderId: "dep-oagrd",
     presupuestoTotalCop: "$32.100 Millones COP",
     colorToken: "var(--danger)",

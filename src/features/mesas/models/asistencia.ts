@@ -1,7 +1,7 @@
 /**
  * POLIS — Modelo de Registro de Asistencia Digital con Enfoque Diferencial
  * Cartagena de Indias 2026–2036
- * Cumplimiento: Ley 1757 de 2015, Decreto 037 de 2026 del Ministerio del Interior y Sentencia C-150 de 2015.
+ * Cumplimiento: Ley Estatutaria 1757 de 2015 y Sentencia C-150 de 2015.
  */
 
 export type EnfoqueDiferencial =

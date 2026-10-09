@@ -89,9 +89,9 @@ export const TESTIMONIOS_MOCK: Testimonio[] = [
     dimension_nombre: "Seguridad Política",
     titulo: "Sustento técnico y vinculación de recursos",
     texto:
-      "El Decreto 037 de 2026 marca un hito: por primera vez en Cartagena, las metas de seguridad humana están amarradas al presupuesto distrital y obligan a rendición de cuentas bajo los estándares de la Sentencia C-150.",
+      "El PDD Cartagena 2024–2027 marca un hito: por primera vez en Cartagena, las metas de seguridad humana están amarradas al presupuesto distrital y obligan a rendición de cuentas bajo los estándares de la Sentencia C-150.",
     relato:
-      "El Decreto 037 de 2026 marca un hito: por primera vez en Cartagena, las metas de seguridad humana están amarradas al presupuesto distrital y obligan a rendición de cuentas bajo los estándares de la Sentencia C-150.",
+      "El PDD Cartagena 2024–2027 marca un hito: por primera vez en Cartagena, las metas de seguridad humana están amarradas al presupuesto distrital y obligan a rendición de cuentas bajo los estándares de la Sentencia C-150.",
     verificado: true,
     estado: "APROBADO",
     destacado: false,

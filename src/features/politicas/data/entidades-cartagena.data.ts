@@ -2,7 +2,7 @@
  * POLIS — Censo Oficial de 27 Dependencias de la Alcaldía Mayor de Cartagena (2026)
  * Fuente Oficial: Informe de Seguimiento a Planes de Acción 2026 a corte 30 de junio de 2026
  * Plan de Desarrollo Distrital "Cartagena Ciudad de Derechos" (2024–2027).
- * Articulado con las 7 Dimensiones de Seguridad Humana (Decreto 037 de 2026 del Ministerio del Interior).
+ * Articulado con las 7 Dimensiones de Seguridad Humana (Ley Estatutaria 1757 de 2015).
  */
 
 export type DependenciaTipo =

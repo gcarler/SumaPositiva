@@ -1,7 +1,7 @@
 /**
  * POLIS — Servicio de Integración de Asistencia en Mesas Presenciales con PostgreSQL
  * Conecta la planilla digital en puerta con /api/v1/mesas/{mesa_id}/participantes
- * Cumplimiento: Ley 1757 de 2015, Decreto 037 de 2026 y Sentencia C-150 de 2015.
+ * Cumplimiento: Ley Estatutaria 1757 de 2015 y Sentencia C-150 de 2015.
  */
 
 import { apiFetch } from "@/core/http/api-client";
