@@ -818,6 +818,56 @@ Se emite autorización inmediata para formular y despachar a `agy2` la **Fase 3:
 La tarea **[GAP-FIX-03]** queda formalmente **CERRADA Y APROBADA AL 100%**.  
 Se emite autorización inmediata para formular y despachar a `agy2` la **Fase 4: `[GAP-FIX-04]` (Habilitación de CRUDs Faltantes: Fichas Indicadores DNP y Mutaciones del Árbol MGA)**.
 
+---
+
+## DICTAMEN PERICIAL FORENSE: APROBACIÓN DE [GAP-FIX-04] (EAF / agy, 2026-10-09)
+
+**Destinatario:** Dirección del Proyecto POLIS / Equipo de Control de Calidad y Desarrollo  
+**Auditor / Coordinador General EAF:** `agy` (`tmux a -t agy`)  
+**Ejecutor Técnico:** `agy2` (`tmux a -t agy2`)  
+**Commits Auditados:** `f9ce00c` (`feat(diagnostico): [GAP-FIX-04] crud de fichas indicadores dnp y mutaciones del arbol mga`) y `ebc82ea` (`docs(audit): registrar informe de ejecucion de GAP-FIX-04`)  
+**Documento Técnico:** `bridge/02_resultado_agy2.md`  
+**Referencia Activa:** `bridge/01_tarea_activa.md`  
+**Alcance:** Habilitación de CRUDs Faltantes: Fichas Indicadores DNP y Mutaciones del Árbol MGA (Erradicación de GAP-04 y GAP-05)  
+
+**Resultado Oficial:** **APROBADO — CONFORME AL 100%**
+
+### 1. Comprobaciones Forenses de Contra-Auditoría:
+
+1. **CRUD Integral de Fichas de Indicadores DNP SINERGIA (GAP-04)**:
+   - DTOs canónicos `FichaIndicadorCrearPayload` y `FichaIndicadorActualizarPayload` implementados en `src/features/diagnostico/models/indicador.ts`.
+   - Métodos cliente `crearFichaIndicador` y `actualizarFichaIndicador` integrados en `src/features/diagnostico/services/indicadores-api.ts`, conectando con `POST /api/v1/indicadores/fichas` y `PATCH /api/v1/indicadores/fichas/{id}` mediante Bearer token institucional.
+   - Nuevo panel `FichaEditorPanel` (`src/features/diagnostico/panels/ficha-editor-panel.tsx`) registrado en `src/core/panels/panel-store.ts`, `src/app/_composition/panel-registry.tsx` (ancho 680px) y `src/features/plataforma/models/acceso.ts`.
+   - Incorpora salvaguarda metodológica DNP (Ley 152/94 y C-150/15) que bloquea en modo edición la alteración de fórmula matemática, línea base y código técnico, limitando la mutación a la gobernanza y fuentes.
+   - Puntos de entrada en UI: Botón `+ Nueva Ficha Técnica` en la barra de herramientas de `diagnostico-view.tsx` y botón `Editar` en cada fila de `linea-base-tabla.tsx`, condicionados a `puedeGestionar` (`indicadores:gestionar`).
+
+2. **Mutaciones y Conversión Canónica del Árbol MGA (GAP-05)**:
+   - DTOs canónicos `NodoInstrumentoCrear` y `NodoInstrumentoActualizar` integrados en `src/features/diagnostico/models/mga.ts`.
+   - Métodos cliente `convertirAObjetivos`, `agregarNodoArbol`, `actualizarNodoArbol` y `eliminarNodoArbol` implementados en `src/features/diagnostico/services/mga-api.ts` apuntando a los endpoints de FastAPI (`POST /instrumentos/{id}/convertir-a-objetivos`, `POST /nodos`, `PUT /nodos/{id}`, `DELETE /nodos/{id}`).
+   - Interfaz interactiva `ArbolProblemasView` (`src/features/diagnostico/components/arbol-problemas-view.tsx`) enriquecida con:
+     - Botón "Convertir a Objetivos" reactivo que transforma la estructura del problema en árbol de medios-fines.
+     - Botones `+ Agregar Efecto` / `+ Agregar Causa` en cabeceras de nivel 1.
+     - Botón `+ Sub-nodo` en cada tarjeta para crear causas/efectos indirectos (nivel 2).
+     - Acciones inline de `Editar` y `Eliminar` por nodo con confirmación y manejo de estados de carga.
+
+3. **Pruebas Automatizadas y Calidad de Código**:
+   - `src/features/diagnostico/services/indicadores-api.test.ts`: 12/12 pruebas unitarias pasando (+2 pruebas dedicadas a POST/PATCH).
+   - `src/features/diagnostico/services/mga-api.test.ts`: 14/14 pruebas unitarias pasando (+4 pruebas de mutaciones y conversión).
+   - Cobertura global de pruebas unitarias: **356 pass / 0 fail** (1524 expect calls en 36 archivos; +6 pruebas nuevas).
+
+4. **Quality Gates Inviolables Verificados de Forma Independiente**:
+   - `bun run check`: **0 errores** (`node scripts/ui-policy.mjs`, `tsc --noEmit`, `eslint .`).
+   - `bun test`: **356 pass / 0 fail** (100% verde).
+   - `bun run build`: **Compilación exitosa en Next.js Turbopack** (190 rutas generadas limpiamente).
+   - `systemctl restart polis-frontend`: Servicio activo; `curl http://127.0.0.1:3000/plataforma/diagnostico` responde HTTP 200 OK.
+   - `backend/.venv/bin/pytest`: **438 passed in 215.73s (100% verde en backend)**.
+   - Control de versiones: Commits atómicos locales en `main` (`f9ce00c` y `ebc82ea`), cero git push a remoto.
+
+### 2. Veredicto y Autorización:
+La tarea **[GAP-FIX-04]** queda formalmente **CERRADA Y APROBADA AL 100%**.  
+Se emite autorización inmediata para formular y despachar a `agy2` la **Fase 5: `[GAP-FIX-05]` (Resiliencia en Frío de Formularios, Radicación de Fuentes y Persistencia de Parámetros de Configuración)**.
+
+
 
 
 
