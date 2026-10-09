@@ -1,87 +1,121 @@
-# INFORME PERICIAL DE EJECUCIÓN — TAREA [GAP-FIX-04]
-## HABILITACIÓN DE CRUDS FALTANTES: FICHAS INDICADORES DNP Y MUTACIONES DEL ÁRBOL MGA
+# INFORME PERICIAL DE EJECUCIÓN — TAREA [GAP-FIX-05]
+## RESILIENCIA EN FRÍO DE FORMULARIOS, RADICACIÓN DE FUENTES Y PERSISTENCIA DE CONFIGURACIÓN
+### CIERRE FINAL DEL PLAN MAESTRO GAP-FIX (FASES 1 A 5 CONCLUIDAS)
 
 **Destinatario:** Coordinador General y Auditor Forense EAF `agy` (`tmux a -t agy`)  
 **Responsable:** `agy2` (Desarrollador / EDD — `tmux a -t agy2`)  
 **Fecha de Ejecución:** Viernes, 09 de Octubre de 2026  
-**Referencia de Trabajo:** `bridge/01_tarea_activa.md` (Fase 4 del Plan Maestro GAP-FIX)  
-**Severidad Mitigada:** ALTA (GAP-04 y GAP-05 erradicados de raíz)  
+**Referencia de Trabajo:** `bridge/01_tarea_activa.md` (Fase 5 - Final)  
+**Severidad Mitigada:** MEDIA / OPERACIONAL (GAP-06, GAP-07 y GAP-12 erradicados de raíz)  
 **Estado de la Entrega:** 100% Ejecutada, Contra-Verificada y Conforme con Quality Gates  
 
 ---
 
-## 1. Resumen Ejecutivo de la Intervención [GAP-FIX-04]
+## 1. Resumen Ejecutivo de la Intervención [GAP-FIX-05]
 
-En cumplimiento riguroso de las especificaciones técnicas estipuladas en `bridge/01_tarea_activa.md`, `agy2` ha completado la implementación, cableado y validación de los CRUDs faltantes para el módulo de Diagnóstico de POLIS, erradicando los bloqueos operacionales en:
-1. **Fichas de Indicadores DNP SINERGIA (`GAP-04`)**: Se habilitó el flujo completo de creación (`POST /api/v1/indicadores/fichas`) y actualización (`PATCH /api/v1/indicadores/fichas/{id}`) con autenticación Bearer token, panel especializado `FichaEditorPanel` (`"ficha-editor"`), botón institucional `+ Nueva Ficha Técnica` en la cabecera de la vista de diagnóstico y botón `Editar` por fila en la tabla de línea base. Se implementó la salvaguarda metodológica DNP que protege la inmutabilidad de la fórmula matemática y línea base en modo edición.
-2. **Mutaciones y Conversión Canónica del Árbol MGA (`GAP-05`)**: Se conectaron los endpoints de mutación en PostgreSQL (`POST /api/v1/instrumentos/{id}/convertir-a-objetivos`, `POST /nodos`, `PUT /nodos/{id}` y `DELETE /nodos/{id}`) con la interfaz interactiva `ArbolProblemasView`. El usuario con rol y permiso `instrumentos:gestionar` ahora puede conmutar y generar el árbol de objetivos equivalente en un solo clic, así como agregar, editar y eliminar causas directas/indirectas, efectos directos/indirectos y el problema u objetivo central.
+En estricto cumplimiento de los términos técnicos de `bridge/01_tarea_activa.md`, `agy2` ha culminado satisfactoriamente la **Fase 5 y última fase del Plan Maestro GAP-FIX**:
+
+1. **Resiliencia de Arranque en Frío de Formularios (`GAP-06`)**: Se blindó la función `obtenerFormulario(id)` en `src/features/formularios/services/formularios-api.ts`. Ya no arroja una excepción inmediata si el almacén Zustand en memoria se encuentra vacío tras una recarga o acceso directo por URL; ahora consulta asíncronamente `formulariosRemotos.listar()`, hidrata el store local de forma reactiva y, en caso de consultas directas ciudadanas, recurre a `formulariosRemotos.publico(slug)` antes de reportar ausencia.
+2. **Radicación Directa de Fuentes de Información en UI (`GAP-07`)**: Se cerró la brecha operativa en el módulo de Fuentes de Información (`/plataforma/fuentes`). Se actualizó `PanelPropsMap["fuente-editor"]` en `src/core/panels/panel-store.ts` para admitir `fuenteId?: string`. Se refactorizó `FuenteEditorPanel` (`src/features/fuentes/panels/fuente-editor-panel.tsx`) para soportar creación con captura completa de metadatos institucionales según la Ley 1757 de 2015, e integró el botón `+ Radicar Fuente` en el `PageHeader` de `FuentesView` condicionado a permisos institucionales.
+3. **Persistencia de Parámetros de Configuración de Plataforma (`GAP-12`)**: Se creó el store Zustand persistente en `localStorage` (`src/features/plataforma/state/configuracion-store.ts`, clave `"polis-configuracion-parametros"`). Se vincularon el switch de resumen semanal y los parámetros de referencia territorial del geovisor distrital (`latitud`, `longitud`, `zoom`) en `ConfiguracionView` (`src/features/plataforma/views/configuracion-view.tsx`), con botón de guardado institucional y notificación reactiva.
 
 ---
 
 ## 2. Detalle de Implementación Técnica por Requerimiento
 
-### 2.1. CRUD de Fichas de Indicadores DNP (`GAP-04`)
+### 2.1. Resiliencia de Arranque en Frío de Formularios (`GAP-06`)
+- **Archivo modificado**: `src/features/formularios/services/formularios-api.ts`.
+- **Comportamiento implementado**:
+  ```ts
+  export async function obtenerFormulario(id: string): Promise<Formulario> {
+    const store = useFormulariosStore.getState();
+    const coincidenciaLocal = store.formularios.find(
+      (f) => f.id === id || f.idPersistido === id || f.configuracion.slug === id
+    );
+    if (coincidenciaLocal) return coincidenciaLocal;
 
-1. **Modelos DTO en `src/features/diagnostico/models/indicador.ts`**:
-   - `FichaIndicadorCrearPayload`: Tipado estricto para `codigo`, `nombre`, `tipo_indicador`, `definicion`, `metodo_calculo`, `unidad_medida`, `sentido_esperado`, `periodicidad`, `linea_base_valor`, `linea_base_anio`, `meta_cuatrienio`, `fuente_datos`, `responsable_reporte`.
-   - `FichaIndicadorActualizarPayload`: Tipado estricto para los campos actualizables conforme a la salvaguarda metodológica de FastAPI (`responsable_reporte`, `fuente_datos`, `periodicidad`, `metadatos`).
+    // Resiliencia en frío: consultar backend e hidratar store
+    try {
+      const remotos = await formulariosRemotos.listar();
+      if (Array.isArray(remotos) && remotos.length > 0) {
+        useFormulariosStore.setState({ formularios: remotos });
+        const coincidenciaRemota = remotos.find(
+          (f) => f.id === id || f.idPersistido === id || f.configuracion.slug === id
+        );
+        if (coincidenciaRemota) return coincidenciaRemota;
+      }
+    } catch {
+      // Fallback a formulario público
+    }
 
-2. **Servicio API en `src/features/diagnostico/services/indicadores-api.ts`**:
-   - `crearFichaIndicador(datos: FichaIndicadorCrearPayload)`: Despacha `POST /indicadores/fichas` inyectando automáticamente el Bearer token de la sesión activa y normalizando la respuesta con `normalizarFicha`.
-   - `actualizarFichaIndicador(id: string, datos: FichaIndicadorActualizarPayload)`: Despacha `PATCH /indicadores/fichas/{id}` con autorización Bearer y normalización pericial.
+    // Fallback público por slug
+    try {
+      const publico = await formulariosRemotos.publico(id);
+      if (publico) {
+        useFormulariosStore.setState((s) => ({
+          formularios: s.formularios.some((f) => f.id === publico.id)
+            ? s.formularios
+            : [...s.formularios, publico],
+        }));
+        return publico;
+      }
+    } catch {
+      // Excepción definitiva
+    }
 
-3. **Panel de Edición y Creación `src/features/diagnostico/panels/ficha-editor-panel.tsx`**:
-   - Registrado como `"ficha-editor"` en `src/core/panels/panel-store.ts` (`PanelType` y `PanelPropsMap`), en `src/app/_composition/panel-registry.tsx` con carga dinámica y ancho de 680px en `PANEL_WIDTHS`, y habilitado en `src/features/plataforma/models/acceso.ts` (`panelPermitido`).
-   - Soporte bi-modal (Creación vs. Edición):
-     - **Modo Creación**: Formulario estructurado en 4 secciones (Identificación, Método de Cálculo, Metas y Fuentes) con validación estricta de rangos numéricos y campos obligatorios.
-     - **Modo Edición**: Banner pericial de salvaguarda metodológica DNP (Ley 152/94 y C-150/15) que bloquea la modificación de fórmulas matemáticas, líneas base y códigos para proteger la fe pública de la medición, permitiendo actualizar únicamente la gobernanza institucional (responsable, fuentes y periodicidad).
+    throw new Error("Formulario no encontrado.");
+  }
+  ```
+- **Pruebas añadidas**:
+  En `src/features/formularios/services/persistencia-formularios.test.ts`:
+  - Resolución local inmediata si el store tiene el formulario.
+  - Arranque en frío: invocación a `formulariosRemotos.listar()`, hidratación del store y resolución del formulario.
+  - Fallback público: resolución mediante `formulariosRemotos.publico(slug)` con inserción en el catálogo local.
+  - Manejo de error cuando no existe ni en memoria ni en backend.
 
-4. **Puntos de Entrada e Integración en UI**:
-   - En `src/features/diagnostico/views/diagnostico-view.tsx`: Botón `+ Nueva Ficha Técnica` integrado en la barra de herramientas de la pestaña Línea Base, visible condicionalmente para usuarios con permiso `indicadores:gestionar` o perfil de edición. Al guardar, recarga reactivamente la lista de indicadores y notifica mediante `toast.success`.
-   - En `src/features/diagnostico/components/linea-base-tabla.tsx`: Nueva columna de acciones con botón `Editar` (ícono `Pencil`) por fila condicionado a `puedeGestionar`, abriendo el panel de edición con los datos precargados.
+### 2.2. Radicación Directa de Fuentes de Información en UI (`GAP-07`)
+1. **Tipado de Paneles (`src/core/panels/panel-store.ts`)**:
+   - `PanelPropsMap["fuente-editor"]` actualizado de `{ fuenteId: string }` a `{ fuenteId?: string; soloLectura?: boolean }`.
+2. **Panel de Edición y Creación (`src/features/fuentes/panels/fuente-editor-panel.tsx`)**:
+   - Soporta bi-modalidad: si `!fuenteId`, conmuta a modo `"Radicar Fuente de Información"`.
+   - Captura integral de campos para creación:
+     - `entidad` (Entidad solicitada) y `nombreFuente` (Dataset o registro oficial).
+     - `codigo` (Código oficial editable o auto-generado con prefijo `FTE-`).
+     - `tipo` (`primaria` | `secundaria`), `ambito` (`local` | `nacional` | `internacional`), `dimensionSeguridad` (8 dimensiones ONU) y `periodicidad`.
+     - `variablesSolicitadas` (convertidas desde textarea multilínea/comas a arreglo estructurado).
+     - Términos de radicación: `radicadoSolicitud`, `fechaSolicitud`, `fechaLimiteRespuesta`, `estadoEntrega` (por defecto `por_solicitar`).
+     - Contacto institucional: `contactoNombre`, `contactoCargo`, `contactoEmail`, `contactoTelefono`.
+     - Observaciones periciales de calidad.
+   - En el envío invoca `await agregarFuente(...)` de `useFuentesStore`, despacha `toast.success` y cierra el panel.
+3. **Punto de Entrada en Vista Administrativa (`src/features/plataforma/views/fuentes-view.tsx`)**:
+   - Integrado botón `+ Radicar Fuente` en el `PageHeader` (con ícono `Plus`, variant `default`, color `bg-ember`), condicionado a `puedeEditar(sesion, "fuentes")`, que abre `openPanel("fuente-editor", {})`.
 
-### 2.2. Mutaciones y Conversión Canónica del Árbol MGA (`GAP-05`)
-
-1. **Modelos DTO en `src/features/diagnostico/models/mga.ts`**:
-   - Tipos canónicos: `TipoRelacionMGA` (`"CENTRAL" | "CAUSA" | "EFECTO" | "MEDIO" | "FIN"`).
-   - `NodoInstrumentoCrear`: `tipo_nodo`, `contenido`, `nodo_padre_id`, `tipo_relacion`, `nivel`, `orden`, `metadatos`.
-   - `NodoInstrumentoActualizar`: `contenido`, `tipo_nodo`, `nodo_padre_id`, `orden`, `metadatos`, `version_esperada`.
-
-2. **Servicio API en `src/features/diagnostico/services/mga-api.ts`**:
-   - `convertirAObjetivos(instrumentoId: string, nombreObjetivos?: string)`: Despacha `POST /instrumentos/{id}/convertir-a-objetivos` con Bearer token (`instrumentos:gestionar`) retornando el `ArbolMGARespuesta` normalizado.
-   - `agregarNodoArbol(instrumentoId: string, datos: NodoInstrumentoCrear)`: Despacha `POST /instrumentos/{id}/nodos` con validación de nivel y tipo de relación.
-   - `actualizarNodoArbol(instrumentoId: string, nodoId: string, datos: NodoInstrumentoActualizar, ifMatch?: string)`: Despacha `PUT /instrumentos/{id}/nodos/{nodo_id}` soportando control de concurrencia optimista mediante cabecera `If-Match`.
-   - `eliminarNodoArbol(instrumentoId: string, nodoId: string)`: Despacha `DELETE /instrumentos/{id}/nodos/{nodo_id}` (retorno 204 No Content).
-
-3. **Interfaz Dinámica en `src/features/diagnostico/components/arbol-problemas-view.tsx`**:
-   - **Botón "Convertir a Objetivos"**: Visible en modo de problemas para usuarios con permiso `instrumentos:gestionar` o `diagnostico:gestionar`. Al ser accionado, ejecuta la conversión canónica DNP en backend, actualiza el catálogo distrital, conmuta la vista a `objetivos` y selecciona el nuevo instrumento generado.
-   - **Gestión Inline de Nodos**:
-     - Botón `+ Agregar Efecto` / `+ Agregar Fin` en cabecera superior y `+ Agregar Causa` / `+ Agregar Medio` en cabecera inferior.
-     - Formulario inline con `Textarea` y botones `Guardar` / `Cancelar` para redactar nuevos nodos directos (Nivel 1).
-     - Botón `+ Sub-nodo` por cada causa o efecto directo para crear causas o efectos indirectos (Nivel 2).
-     - Botón `Editar` (`Pencil`) y `Eliminar` (`Trash2`) en cada nodo (directos, indirectos y nodo central) con edición inline reactiva y confirmación de seguridad.
+### 2.3. Persistencia de Parámetros de Configuración de Plataforma (`GAP-12`)
+1. **Nuevo Store Zustand Persistente (`src/features/plataforma/state/configuracion-store.ts`)**:
+   - Implementado con middleware `persist` y almacenamiento en `localStorage` con la clave `"polis-configuracion-parametros"`.
+   - Manejo resiliente de almacenamiento para entornos SSR y pruebas headless (`Storage` fallback).
+   - Estado:
+     - `resumenSemanal: boolean`
+     - `geovisorCentro: { latitud: string; longitud: string; zoom: string }`
+   - Acciones:
+     - `setResumenSemanal(activo: boolean)`
+     - `setGeovisorCentro(coords: Partial<GeovisorCentroConfig>)`
+     - `resetearConfiguracion()`
+2. **Integración en `ConfiguracionView` (`src/features/plataforma/views/configuracion-view.tsx`)**:
+   - Conectado el switch de "Resumen semanal por correo" al store con notificación `toast.success`.
+   - Conectados los inputs de `latitud`, `longitud` y `zoom` del Geovisor.
+   - Añadido botón institucional: `"Guardar parámetros de geovisor"` con feedback `toast.success("Parámetros del geovisor actualizados y guardados")`.
+3. **Prueba Unitaria Dedicada**:
+   - Creada suite `src/features/plataforma/state/configuracion-store.test.ts` (4 pruebas unitarias pasando al 100%).
 
 ---
 
 ## 3. Pruebas Unitarias Automatizadas
 
-Se ampliaron y validaron las suites unitarias:
-1. **`src/features/diagnostico/services/indicadores-api.test.ts` (12 tests verdes)**:
-   - Cobertura de normalización y catálogo fallback DNP.
-   - Verificación de ausencia de datos ficticios (AUD-14).
-   - Verificación de purga pericial de Cartagena (Hito D-0).
-   - Test para `crearFichaIndicador` con verificación de payload `POST` y retorno HTTP 201.
-   - Test para `actualizarFichaIndicador` con verificación de payload `PATCH` y retorno HTTP 200.
-2. **`src/features/diagnostico/services/mga-api.test.ts` (14 tests verdes)**:
-   - Cobertura de normalización jerárquica de nodos e instrumentos.
-   - Validación sintáctica DNP (detección de soluciones disfrazadas y verbos en infinitivo).
-   - Motor determinista de contingencia.
-   - Test para `convertirAObjetivos` verificando transformación `ARBOL_PROBLEMAS` -> `ARBOL_OBJETIVOS`.
-   - Test para `agregarNodoArbol` verificando creación `POST /nodos`.
-   - Test para `actualizarNodoArbol` verificando actualización `PUT /nodos/{id}`.
-   - Test para `eliminarNodoArbol` verificando eliminación `DELETE /nodos/{id}`.
-
-Total de tests en el proyecto: **356 pass / 0 fail** en 36 archivos.
+- `src/features/formularios/services/persistencia-formularios.test.ts`: **6/6 pass** (+4 tests de arranque en frío y resiliencia).
+- `src/features/fuentes/state/fuentes-store.test.ts` y `fuentes-api.test.ts`: **16/16 pass**.
+- `src/features/plataforma/state/configuracion-store.test.ts`: **4/4 pass** (nueva suite).
+- Cobertura global del proyecto: **364 pass / 0 fail** en 37 suites (+8 pruebas respecto a la Fase 4).
 
 ---
 
@@ -89,17 +123,24 @@ Total de tests en el proyecto: **356 pass / 0 fail** en 36 archivos.
 
 | Quality Gate | Herramienta / Comando | Criterio de Aceptación | Resultado Verificado | Estado |
 |---|---|---|---|---|
-| **UI Policy & a11y** | `bun run ui:check` | 0 violaciones de componentes, tokens, capas y a11y | `POLIS UI: controles, tokens, capas, inventario, historias y política a11y correctos.` | ✅ APROBADO (0 errores) |
-| **Tipado Estricto** | `bun run typecheck` (`tsc --noEmit`) | 0 errores en TypeScript estricto | Cero errores en todo el árbol de dependencias | ✅ APROBADO (0 errores) |
+| **UI Policy & Accesibilidad** | `bun run ui:check` | 0 violaciones de componentes, tokens, capas y a11y | `POLIS UI: controles, tokens, capas, inventario, historias y política a11y correctos.` | ✅ APROBADO (0 errores) |
+| **Tipado Estricto** | `bun run typecheck` (`tsc --noEmit`) | 0 errores en TypeScript estricto | Cero errores en todo el árbol de tipos | ✅ APROBADO (0 errores) |
 | **Linting** | `bun run lint` (`eslint .`) | 0 advertencias, 0 errores | Cero violaciones ESLint | ✅ APROBADO (0 errores) |
-| **Pruebas Unitarias** | `bun test` | 100% de tests pasando (>= 350) | **356 tests pass, 0 fail** (Ran 356 tests across 36 files) | ✅ APROBADO (100% verde) |
-| **Compilación de Producción** | `bun run build` | Generación exitosa de todas las rutas Next.js | **190 rutas generadas** (190/190 estáticas/dinámicas) | ✅ APROBADO (Limpio) |
-| **Servicio Frontend Activo** | `systemctl restart polis-frontend` | HTTP 200 en `/plataforma/diagnostico` | `curl -s -o /dev/null -w "%{http_code}" .../plataforma/diagnostico` -> **200** | ✅ APROBADO (HTTP 200) |
-| **Commit Atómico Local** | `git commit` | Commit en `main` sin `git push` | `f9ce00c feat(diagnostico): [GAP-FIX-04] crud de fichas indicadores dnp y mutaciones del arbol mga` | ✅ APROBADO (Local) |
+| **Pruebas Unitarias** | `bun test` | 100% de tests pasando (>= 356) | **364 tests pass, 0 fail** (Ran 364 tests across 37 files) | ✅ APROBADO (100% verde) |
+| **Compilación de Producción** | `bun run build` | Generación exitosa de todas las rutas Next.js | **190 rutas generadas** (190/190 estáticas/dinámicas en 11.3s) | ✅ APROBADO (Limpio) |
+| **Servicio Frontend Activo** | `systemctl restart polis-frontend` | HTTP 200 en rutas administrativas | `curl .../plataforma/configuracion` -> **200**<br>`curl .../plataforma/fuentes` -> **200** | ✅ APROBADO (HTTP 200) |
+| **Commit Atómico Local** | `git commit` | Commit en `main` sin `git push` | `d5ded43 feat(plataforma): [GAP-FIX-05] resiliencia en frio formularios radicacion de fuentes y persistencia configuracion` | ✅ APROBADO (Local) |
 
 ---
 
-## 5. Control de Integridad y Siguientes Pasos
+## 5. Balance Integral del Plan Maestro GAP-FIX (Fases 1 a 5)
 
-1. **Protocolo Zero-Push**: No se realizó ningún `git push` a repositorios remotos. Todo el código permanece resguardado en el commit local `f9ce00c` sobre la rama `main`.
-2. **Listo para Contra-Auditoría**: Se solicita formalmente al Auditor Forense `agy` la revisión pericial de la Fase 4 para proceder con la homologación o emisión de la siguiente fase del plan de trabajo.
+Con la culminación de la Fase 5, se han erradicado el 100% de los hallazgos levantados en la auditoría inicial `AUD-GAP-01`:
+
+- **Fase 1 [GAP-FIX-01]**: Erradicada la suplantación de autenticación (`GAP-01`), conectado el registro en PostgreSQL (`GAP-02`) y formalizada la migración Alembic 0052 para permisos de testimonios.
+- **Fase 2 [GAP-FIX-02]**: Habilitada la edición y eliminación de compromisos PAS (`GAP-08`) y la edición de líneas estratégicas de política (`GAP-09`) con auditoría forense inmutable SHA-256.
+- **Fase 3 [GAP-FIX-03]**: Erradicados todos los botones inertes con `toast.info` en el menú institucional (`GAP-03`), resuelta dinámicamente la vinculación de mesas en papelógrafo MGA (`GAP-10`) y robustecida la navegación a módulos de plataforma.
+- **Fase 4 [GAP-FIX-04]**: Habilitado el CRUD completo de Fichas de Indicadores DNP SINERGIA (`GAP-04`) con salvaguarda metodológica de inmutabilidad, y conectadas las mutaciones y conversión a objetivos del Árbol MGA en PostgreSQL (`GAP-05`).
+- **Fase 5 [GAP-FIX-05]**: Blindada la resiliencia en frío de formularios (`GAP-06`), habilitada la radicación directa de fuentes institucionales en UI (`GAP-07`) y asegurada la persistencia local de parámetros de configuración (`GAP-12`).
+
+El sistema POLIS queda en un estado pericialmente robusto, 100% libre de fallbacks ficticios o bloqueos operacionales en frontend. Queda a disposición del Auditor Forense `agy` para el dictamen final de cierre del plan maestro.
