@@ -1,35 +1,26 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { PanelShell } from "@/core/panels/panel-shell";
 import { usePanels } from "@/core/panels/panel-store";
 import type { PanelComponentProps } from "@/app/_composition/panel-registry";
-import { useUsuariosStore, type ModuloUsuario, type RolPlataforma } from "@/features/usuarios/state/usuarios-store";
+import { identidadApi } from "@/features/sesion/services/identidad-api";
+import { ApiError } from "@/core/http/api-client";
 import { Button } from "@/shared/ui/button";
-import { Checkbox } from "@/shared/ui/checkbox";
 import { FormField } from "@/shared/ui/form-field";
 import { Input } from "@/shared/ui/input";
 import { Label } from "@/shared/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/ui/select";
 import { Switch } from "@/shared/ui/switch";
 
-const ROLES: { id: RolPlataforma; label: string }[] = [
+const ROLES_FALLBACK = [
+  { id: "administrador_identidades", label: "Administrador de identidades" },
   { id: "autoridad_distrital", label: "Autoridad distrital" },
   { id: "facilitador_mesa", label: "Facilitador de mesa" },
   { id: "auditor_forense", label: "Auditor forense" },
-  { id: "administrador_identidades", label: "Administrador de identidades" },
-];
-
-const MODULOS: { id: ModuloUsuario; label: string }[] = [
-  { id: "mesas", label: "Mesas" },
-  { id: "formularios", label: "Formularios" },
-  { id: "geovisor", label: "Geovisor" },
-  { id: "noticias", label: "Noticias" },
-  { id: "testimonios", label: "Testimonios" },
-  { id: "usuarios", label: "Usuarios" },
-  { id: "contenido", label: "Contenido" },
-  { id: "configuracion", label: "Configuración" },
+  { id: "ciudadano", label: "Ciudadano" },
 ];
 
 interface EditorProps extends PanelComponentProps {
@@ -37,89 +28,231 @@ interface EditorProps extends PanelComponentProps {
 }
 
 export function UsuarioEditorPanel({ entryKey, props, mode }: EditorProps) {
-  const usuarioId = mode === "edit" && "usuarioId" in props ? props.usuarioId : undefined;
-  const usuario = useUsuariosStore((state) =>
-    usuarioId ? state.getById(usuarioId) : undefined,
-  );
-  const guardar = useUsuariosStore((state) => state.guardar);
+  const usuarioId = mode === "edit" && "usuarioId" in props ? (props.usuarioId as string) : undefined;
   const { closeTop } = usePanels();
-  const [nombre, setNombre] = useState(usuario?.nombre ?? "");
-  const [correo, setCorreo] = useState(usuario?.correo ?? "");
-  const [rol, setRol] = useState<RolPlataforma>(usuario?.rol ?? "facilitador_mesa");
-  const [activo, setActivo] = useState(usuario?.activo ?? true);
-  const [modulos, setModulos] = useState<ModuloUsuario[]>(
-    (usuario?.modulos ?? ["mesas", "formularios"]) as ModuloUsuario[],
+  const cache = useQueryClient();
+
+  const usuariosQuery = useQuery({
+    queryKey: ["identidad", "usuarios", "todos"],
+    queryFn: () => identidadApi.usuarios("", 0, 100),
+    enabled: Boolean(usuarioId),
+  });
+
+  const rolesQuery = useQuery({
+    queryKey: ["identidad", "roles"],
+    queryFn: () => identidadApi.roles(),
+  });
+
+  const usuario = useMemo(
+    () => (usuarioId ? usuariosQuery.data?.elementos.find((u) => u.id === usuarioId) : undefined),
+    [usuarioId, usuariosQuery.data],
   );
 
-  function submit(event: FormEvent<HTMLFormElement>) {
+  const [nombres, setNombres] = useState("");
+  const [apellidos, setApellidos] = useState("");
+  const [correo, setCorreo] = useState("");
+  const [contrasena, setContrasena] = useState("");
+  const [rol, setRol] = useState("facilitador_mesa");
+  const [activo, setActivo] = useState(true);
+  const [motivo, setMotivo] = useState(
+    mode === "invite" ? "Alta administrativa de cuenta institucional" : "Actualización administrativa de cuenta institucional",
+  );
+  const [guardando, setGuardando] = useState(false);
+  const [cargado, setCargado] = useState(false);
+
+  useEffect(() => {
+    if (usuario && !cargado) {
+      setNombres(usuario.nombres);
+      setApellidos(usuario.apellidos);
+      setCorreo(usuario.correo);
+      setRol(usuario.codigo_rol);
+      setActivo(usuario.activo);
+      setCargado(true);
+    }
+  }, [usuario, cargado]);
+
+  const rolesDisponibles = useMemo(() => {
+    if (rolesQuery.data && rolesQuery.data.length > 0) {
+      return rolesQuery.data.map((r) => ({ id: r.codigo, label: r.nombre }));
+    }
+    return ROLES_FALLBACK;
+  }, [rolesQuery.data]);
+
+  async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    guardar({ nombre: nombre.trim(), correo: correo.trim(), rol, activo, modulos }, usuarioId);
-    toast.success(mode === "invite" ? "Invitación enviada" : "Usuario actualizado");
-    closeTop();
+    setGuardando(true);
+    try {
+      if (mode === "invite") {
+        await identidadApi.crearUsuario({
+          correo: correo.trim(),
+          contrasena: contrasena.trim() || "Cartagena2026*",
+          nombres: nombres.trim(),
+          apellidos: apellidos.trim() || "-",
+          codigo_rol: rol,
+          motivo: motivo.trim() || "Alta administrativa de cuenta institucional",
+        });
+        toast.success("Invitación enviada y usuario registrado en PostgreSQL");
+      } else if (usuarioId) {
+        await identidadApi.editarUsuario(usuarioId, {
+          nombres: nombres.trim(),
+          apellidos: apellidos.trim() || "-",
+          codigo_rol: rol,
+          activo,
+          motivo: motivo.trim() || "Actualización administrativa de cuenta institucional",
+        });
+        toast.success("Usuario institucional actualizado exitosamente");
+      }
+      await cache.invalidateQueries({ queryKey: ["identidad"] });
+      closeTop();
+    } catch (err) {
+      const mensaje =
+        err instanceof ApiError
+          ? err.message
+          : err instanceof Error
+            ? err.message
+            : "No se pudo procesar la solicitud de usuario";
+      toast.error(mensaje);
+    } finally {
+      setGuardando(false);
+    }
   }
 
   return (
     <PanelShell
       entryKey={entryKey}
       crumbs={[{ label: "Usuarios y roles" }]}
-      kicker="Gestión de identidades · Demo"
+      kicker="Gestión de identidades · Seguridad Humana"
       title={mode === "invite" ? "Invitar usuario" : "Editar usuario"}
-      subtitle="Define el rol y los módulos disponibles para esta cuenta. Los cambios de esta vista son demostrativos."
+      subtitle={
+        mode === "invite"
+          ? "Registra una nueva cuenta institucional en la base de datos de POLIS."
+          : "Modifica los datos, rol institucional y estado de la cuenta en PostgreSQL."
+      }
       onClose={closeTop}
       onCloseToKey={closeTop}
     >
-      <form onSubmit={submit} className="space-y-6 p-5 sm:p-6">
+      <form onSubmit={submit} className="space-y-6 p-5 sm:p-6" aria-busy={guardando}>
         <div className="grid gap-5 sm:grid-cols-2">
-          <FormField label="Nombre completo" required>
-            {(field) => <Input {...field} value={nombre} onChange={(event) => setNombre(event.target.value)} autoComplete="name" maxLength={120} />}
+          <FormField label="Nombres" required>
+            {(field) => (
+              <Input
+                {...field}
+                value={nombres}
+                onChange={(event) => setNombres(event.target.value)}
+                autoComplete="given-name"
+                maxLength={100}
+                required
+              />
+            )}
           </FormField>
-          <FormField label="Correo electrónico" required>
-            {(field) => <Input {...field} type="email" value={correo} onChange={(event) => setCorreo(event.target.value)} autoComplete="email" maxLength={255} />}
+          <FormField label="Apellidos" required>
+            {(field) => (
+              <Input
+                {...field}
+                value={apellidos}
+                onChange={(event) => setApellidos(event.target.value)}
+                autoComplete="family-name"
+                maxLength={100}
+                required
+              />
+            )}
           </FormField>
         </div>
 
-        <FormField label="Rol de plataforma" description="El rol define el alcance general de acceso.">
+        <div className="grid gap-5 sm:grid-cols-2">
+          <FormField label="Correo electrónico" required description={mode === "edit" ? "Identificador institucional único" : undefined}>
+            {(field) => (
+              <Input
+                {...field}
+                type="email"
+                value={correo}
+                onChange={(event) => setCorreo(event.target.value)}
+                autoComplete="email"
+                maxLength={255}
+                disabled={mode === "edit"}
+                required
+              />
+            )}
+          </FormField>
+
+          {mode === "invite" ? (
+            <FormField
+              label="Contraseña inicial"
+              description="Mínimo 8 caracteres (por defecto: Cartagena2026*)"
+            >
+              {(field) => (
+                <Input
+                  {...field}
+                  type="password"
+                  placeholder="Cartagena2026*"
+                  value={contrasena}
+                  onChange={(event) => setContrasena(event.target.value)}
+                  autoComplete="new-password"
+                  minLength={8}
+                  maxLength={72}
+                />
+              )}
+            </FormField>
+          ) : (
+            <FormField label="Estado de cuenta" description="Permite iniciar sesión en POLIS">
+              {() => (
+                <div className="flex h-10 items-center justify-between rounded-xl border border-border px-3">
+                  <Label htmlFor="usuario-activo" className="text-sm font-medium">
+                    {activo ? "Cuenta activa" : "Cuenta suspendida"}
+                  </Label>
+                  <Switch
+                    id="usuario-activo"
+                    checked={activo}
+                    onCheckedChange={setActivo}
+                    aria-label="Estado de cuenta activa"
+                  />
+                </div>
+              )}
+            </FormField>
+          )}
+        </div>
+
+        <FormField label="Rol de plataforma" description="Define el alcance general de acceso y permisos RBAC.">
           {(field) => (
-            <Select value={rol} onValueChange={(value) => setRol(value as RolPlataforma)}>
-              <SelectTrigger {...field}><SelectValue /></SelectTrigger>
+            <Select value={rol} onValueChange={(value) => setRol(value)}>
+              <SelectTrigger {...field} aria-label="Seleccionar rol de plataforma">
+                <SelectValue />
+              </SelectTrigger>
               <SelectContent>
-                {ROLES.map((option) => <SelectItem key={option.id} value={option.id}>{option.label}</SelectItem>)}
+                {rolesDisponibles.map((option) => (
+                  <SelectItem key={option.id} value={option.id}>
+                    {option.label}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           )}
         </FormField>
 
-        <fieldset className="space-y-3 rounded-xl border border-border p-4">
-          <legend className="px-1 text-sm font-semibold text-text-primary">Módulos disponibles</legend>
-          <p className="text-sm text-text-secondary">Selecciona las áreas visibles para esta persona.</p>
-          <div className="grid gap-3 sm:grid-cols-2">
-            {MODULOS.map((modulo) => {
-              const checked = modulos.includes(modulo.id);
-              const id = `usuario-modulo-${modulo.id}`;
-              return (
-                <div key={modulo.id} className="flex items-center gap-3">
-                  <Checkbox id={id} checked={checked} onCheckedChange={(value) =>
-                    setModulos((current) => value === true
-                      ? [...current, modulo.id]
-                      : current.filter((item) => item !== modulo.id))} />
-                  <Label htmlFor={id}>{modulo.label}</Label>
-                </div>
-              );
-            })}
-          </div>
-        </fieldset>
-
-        <div className="flex items-center justify-between gap-4 rounded-xl border border-border p-4">
-          <div>
-            <Label htmlFor="usuario-activo" className="font-semibold">Cuenta activa</Label>
-            <p className="mt-1 text-sm text-text-secondary">Permite iniciar sesión en la plataforma.</p>
-          </div>
-          <Switch id="usuario-activo" checked={activo} onCheckedChange={setActivo} aria-label="Cuenta activa" />
-        </div>
+        <FormField
+          label="Motivo de la acción"
+          required
+          description="Trazabilidad forense obligatoria para el registro de auditoría (mínimo 10 caracteres)."
+        >
+          {(field) => (
+            <Input
+              {...field}
+              value={motivo}
+              onChange={(event) => setMotivo(event.target.value)}
+              minLength={10}
+              maxLength={500}
+              required
+            />
+          )}
+        </FormField>
 
         <div className="flex flex-wrap justify-end gap-2 border-t border-border pt-5">
-          <Button type="button" variant="outline" onClick={closeTop}>Cancelar</Button>
-          <Button type="submit">{mode === "invite" ? "Enviar invitación" : "Guardar cambios"}</Button>
+          <Button type="button" variant="outline" onClick={closeTop} disabled={guardando}>
+            Cancelar
+          </Button>
+          <Button type="submit" variant="ember" disabled={guardando}>
+            {guardando ? "Procesando…" : mode === "invite" ? "Enviar invitación" : "Guardar cambios"}
+          </Button>
         </div>
       </form>
     </PanelShell>

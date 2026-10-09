@@ -6,13 +6,20 @@ import { PageHeader } from "@/shared/ui/page-header";
 import { useFormulariosStore } from "@/features/formularios/state/formularios-store";
 import { useMesasStore } from "@/features/mesas/state/mesas-store";
 import { TERRITORIOS_CARTAGENA } from "@/features/geovisor/data/territorios.data";
-import { useSesionStore } from "@/features/sesion/state/session-store";
+import { useSesionStore, tienePermiso } from "@/features/sesion/state/session-store";
+import { identidadApi } from "@/features/sesion/services/identidad-api";
 import { modulosPermitidos } from "../models/acceso";
 import { ICONOS } from "../components/plataforma-sidebar";
 import { EstadoConsulta } from "../components/estado-consulta";
 import { plataformaApi } from "../services/plataforma-api";
 export function DashboardView() {
   const sesion = useSesionStore((s) => s.sesion);
+  const puedeLeerUsuarios = tienePermiso(sesion, "usuarios:leer");
+  const usuariosQuery = useQuery({
+    queryKey: ["identidad", "usuarios", "conteo-dashboard"],
+    queryFn: () => identidadApi.usuarios("", 0, 1),
+    enabled: puedeLeerUsuarios,
+  });
   const formularios = useFormulariosStore((s) => s.formularios);
   const mesas = useMesasStore((s) => s.mesas);
   const alertas = useQuery({
@@ -27,6 +34,9 @@ export function DashboardView() {
   const territorio = [...TERRITORIOS_CARTAGENA].sort(
     (a, b) => b.aportesCiudadanos - a.aportesCiudadanos,
   )[0];
+
+  const totalUsuarios = usuariosQuery.data?.total;
+
   const tarjetas = [
     {
       titulo: "Formularios activos",
@@ -45,8 +55,16 @@ export function DashboardView() {
     },
     {
       titulo: "Usuarios registrados",
-      valor: "Pendiente",
-      detalle: "El total distrital aún no está conectado a este resumen.",
+      valor: usuariosQuery.isLoading
+        ? "..."
+        : totalUsuarios !== undefined
+          ? totalUsuarios
+          : puedeLeerUsuarios
+            ? 0
+            : "Acceso restringido",
+      detalle: puedeLeerUsuarios
+        ? "Cuentas registradas en la base de datos distrital."
+        : "Requiere permiso usuarios:leer para consultar el total.",
     },
   ];
   return (

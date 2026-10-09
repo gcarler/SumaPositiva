@@ -48,8 +48,8 @@ export const identidadApi = {
   solicitarVerificacion: () => consultar("/correo/solicitar", mensajeSchema, {method: "POST"}),
   confirmarVerificacion: (token: string) => consultar("/correo/confirmar", mensajeSchema,
     {method: "POST", body: {token}}),
-  usuarios: (busqueda = "", desplazamiento = 0) => consultar(
-    `/usuarios?${new URLSearchParams({busqueda, desplazamiento: String(desplazamiento), limite: "20"})}`,
+  usuarios: (busqueda = "", desplazamiento = 0, limite = 20) => consultar(
+    `/usuarios?${new URLSearchParams({busqueda, desplazamiento: String(desplazamiento), limite: String(limite)})}`,
     z.object({total: z.number(), elementos: z.array(usuarioSchema)})),
   crearUsuario: (datos: {correo: string; contrasena: string; nombres: string; apellidos: string;
     codigo_rol: string; motivo: string}) => consultar("/usuarios", usuarioSchema, {method: "POST", body: datos}),
