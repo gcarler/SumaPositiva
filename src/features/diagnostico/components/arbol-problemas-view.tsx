@@ -1,7 +1,7 @@
 "use client";
 
-import {useEffect, useState, useMemo, useCallback} from "react";
-import {toast} from "sonner";
+import { useEffect, useState, useMemo, useCallback } from "react";
+import { toast } from "sonner";
 import {
   Sparkles,
   ArrowUp,
@@ -10,27 +10,43 @@ import {
   Target,
   AlertCircle,
   Layers,
-  Info
+  Info,
+  ArrowRightLeft,
+  Plus,
+  Pencil,
+  Trash2,
+  Check,
+  X,
 } from "lucide-react";
-import {Button} from "@/shared/ui/button";
-import {Badge} from "@/shared/ui/badge";
+import { Button } from "@/shared/ui/button";
+import { Badge } from "@/shared/ui/badge";
+import { Textarea } from "@/shared/ui/textarea";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue
+  SelectValue,
 } from "@/shared/ui/select";
-import {usePanels} from "@/core/panels/panel-store";
+import { usePanels } from "@/core/panels/panel-store";
+import { useSesionStore, tienePermiso } from "@/features/sesion/state/session-store";
+import { puedeEditar } from "@/features/plataforma/models/acceso";
 import {
   obtenerInstrumentos,
   obtenerArbol,
-  evaluarDiagnosticoIA
+  evaluarDiagnosticoIA,
+  convertirAObjetivos,
+  agregarNodoArbol,
+  actualizarNodoArbol,
+  eliminarNodoArbol,
 } from "../services/mga-api";
 import type {
   InstrumentoMGA,
   ArbolMGARespuesta,
-  EntradaDiagnostico
+  EntradaDiagnostico,
+  NodoArbolMGA,
+  TipoNodoMGA,
+  TipoRelacionMGA,
 } from "../models/mga";
 
 interface ArbolProblemasViewProps {
@@ -39,13 +55,36 @@ interface ArbolProblemasViewProps {
 
 export function ArbolProblemasView({}: ArbolProblemasViewProps = {}) {
   const { openPanel } = usePanels();
+  const sesion = useSesionStore((s) => s.sesion);
+  const puedeGestionar =
+    tienePermiso(sesion, "instrumentos:gestionar") ||
+    puedeEditar(sesion, "diagnostico");
+
   const [instrumentos, setInstrumentos] = useState<InstrumentoMGA[]>([]);
   const [instrumentoSeleccionadoId, setInstrumentoSeleccionadoId] = useState<string>("");
   const [arbol, setArbol] = useState<ArbolMGARespuesta | null>(null);
   const [cargando, setCargando] = useState(true);
   const [cargandoArbol, setCargandoArbol] = useState(false);
   const [evaluandoIA, setEvaluandoIA] = useState(false);
+  const [convirtiendo, setConvirtiendo] = useState(false);
+  const [guardandoNodo, setGuardandoNodo] = useState(false);
   const [vistaArbol, setVistaArbol] = useState<"problemas" | "objetivos">("problemas");
+
+  // Edición inline de un nodo existente
+  const [nodoEnEdicion, setNodoEnEdicion] = useState<{
+    id: string;
+    contenido: string;
+  } | null>(null);
+
+  // Creación inline de un nuevo nodo
+  const [nuevoNodoConfig, setNuevoNodoConfig] = useState<{
+    tipo_nodo: TipoNodoMGA;
+    tipo_relacion: TipoRelacionMGA;
+    nodo_padre_id: string | null;
+    nivel: number;
+    contenido: string;
+    etiqueta: string;
+  } | null>(null);
 
   // Cargar lista de instrumentos MGA
   const cargarInstrumentos = useCallback(async () => {
@@ -101,6 +140,125 @@ export function ArbolProblemasView({}: ArbolProblemasViewProps = {}) {
   const instrumentoActual = useMemo(() => {
     return instrumentos.find((i) => i.id === instrumentoSeleccionadoId);
   }, [instrumentos, instrumentoSeleccionadoId]);
+
+  // Conversión canónica DNP a Árbol de Objetivos
+  const handleConvertirAObjetivos = async () => {
+    if (!instrumentoSeleccionadoId) return;
+    setConvirtiendo(true);
+    try {
+      const nuevoArbol = await convertirAObjetivos(instrumentoSeleccionadoId);
+      toast.success("Árbol de Objetivos generado exitosamente bajo metodología MGA DNP.");
+      await cargarInstrumentos();
+      setInstrumentoSeleccionadoId(nuevoArbol.instrumento.id);
+      setArbol(nuevoArbol);
+      setVistaArbol("objetivos");
+    } catch (err: unknown) {
+      const mensaje = err instanceof Error ? err.message : "Error al convertir el árbol a objetivos.";
+      toast.error(mensaje);
+    } finally {
+      setConvirtiendo(false);
+    }
+  };
+
+  // Iniciar creación de nodo
+  const handleAbrirNuevoNodo = (
+    tipo_nodo: TipoNodoMGA,
+    tipo_relacion: TipoRelacionMGA,
+    nodo_padre_id: string | null,
+    nivel: number,
+    etiqueta: string
+  ) => {
+    setNodoEnEdicion(null);
+    setNuevoNodoConfig({
+      tipo_nodo,
+      tipo_relacion,
+      nodo_padre_id,
+      nivel,
+      contenido: "",
+      etiqueta,
+    });
+  };
+
+  // Guardar nuevo nodo
+  const handleGuardarNuevoNodo = async () => {
+    if (!nuevoNodoConfig || !instrumentoSeleccionadoId) return;
+    if (!nuevoNodoConfig.contenido.trim()) {
+      toast.error("El contenido del nodo no puede estar vacío.");
+      return;
+    }
+    setGuardandoNodo(true);
+    try {
+      await agregarNodoArbol(instrumentoSeleccionadoId, {
+        tipo_nodo: nuevoNodoConfig.tipo_nodo,
+        tipo_relacion: nuevoNodoConfig.tipo_relacion,
+        nodo_padre_id: nuevoNodoConfig.nodo_padre_id,
+        nivel: nuevoNodoConfig.nivel,
+        contenido: nuevoNodoConfig.contenido.trim(),
+      });
+      toast.success(`${nuevoNodoConfig.etiqueta} agregado exitosamente.`);
+      setNuevoNodoConfig(null);
+      await cargarArbolActual(instrumentoSeleccionadoId);
+    } catch (err: unknown) {
+      const mensaje = err instanceof Error ? err.message : "Error al agregar el nodo causal.";
+      toast.error(mensaje);
+    } finally {
+      setGuardandoNodo(false);
+    }
+  };
+
+  // Iniciar edición de nodo existente
+  const handleIniciarEdicion = (nodo: NodoArbolMGA) => {
+    setNuevoNodoConfig(null);
+    setNodoEnEdicion({
+      id: nodo.id,
+      contenido: nodo.contenido,
+    });
+  };
+
+  // Guardar edición de nodo
+  const handleGuardarEdicion = async (nodoId: string) => {
+    if (!nodoEnEdicion || !instrumentoSeleccionadoId) return;
+    if (!nodoEnEdicion.contenido.trim()) {
+      toast.error("El contenido no puede estar vacío.");
+      return;
+    }
+    setGuardandoNodo(true);
+    try {
+      await actualizarNodoArbol(instrumentoSeleccionadoId, nodoId, {
+        contenido: nodoEnEdicion.contenido.trim(),
+      });
+      toast.success("Nodo causal actualizado correctamente.");
+      setNodoEnEdicion(null);
+      await cargarArbolActual(instrumentoSeleccionadoId);
+    } catch (err: unknown) {
+      const mensaje = err instanceof Error ? err.message : "Error al actualizar el nodo.";
+      toast.error(mensaje);
+    } finally {
+      setGuardandoNodo(false);
+    }
+  };
+
+  // Eliminar nodo
+  const handleEliminarNodo = async (nodoId: string) => {
+    if (!instrumentoSeleccionadoId) return;
+    const seguro = window.confirm(
+      "¿Confirma la eliminación de este nodo causal del árbol MGA?"
+    );
+    if (!seguro) return;
+
+    setGuardandoNodo(true);
+    try {
+      await eliminarNodoArbol(instrumentoSeleccionadoId, nodoId);
+      toast.success("Nodo causal eliminado correctamente.");
+      if (nodoEnEdicion?.id === nodoId) setNodoEnEdicion(null);
+      await cargarArbolActual(instrumentoSeleccionadoId);
+    } catch (err: unknown) {
+      const mensaje = err instanceof Error ? err.message : "Error al eliminar el nodo.";
+      toast.error(mensaje);
+    } finally {
+      setGuardandoNodo(false);
+    }
+  };
 
   // Ejecutar validación pericial causal con IA DNP
   const handleValidarConIA = async () => {
@@ -200,7 +358,7 @@ export function ArbolProblemasView({}: ArbolProblemasViewProps = {}) {
             </div>
           </div>
 
-          {/* Conmutador de Árbol (Problemas vs Objetivos) y Botón IA DNP */}
+          {/* Conmutador de Árbol (Problemas vs Objetivos), Conversor y Botón IA DNP */}
           <div className="flex flex-wrap items-center gap-2.5">
             {/* Segmented Switcher */}
             <div className="inline-flex rounded-lg border border-border bg-surface-2 p-1">
@@ -231,6 +389,24 @@ export function ArbolProblemasView({}: ArbolProblemasViewProps = {}) {
                 <span>Árbol de Objetivos</span>
               </Button>
             </div>
+
+            {/* Botón Convertir a Árbol de Objetivos */}
+            {esModoProblemas && puedeGestionar && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleConvertirAObjetivos}
+                disabled={convirtiendo || cargandoArbol || !arbol}
+                className="h-9 px-3 text-xs font-semibold gap-1.5 border-success/40 bg-success-soft text-success hover:bg-success hover:text-text-inverse transition-colors"
+                title="Generar árbol de objetivos equivalente bajo metodología MGA DNP"
+              >
+                <ArrowRightLeft
+                  className={`size-3.5 ${convirtiendo ? "animate-spin" : ""}`}
+                  aria-hidden="true"
+                />
+                <span>{convirtiendo ? "Convirtiendo..." : "Convertir a Objetivos"}</span>
+              </Button>
+            )}
 
             {/* Botón de Validación Causal IA DNP */}
             <Button
@@ -306,12 +482,84 @@ export function ArbolProblemasView({}: ArbolProblemasViewProps = {}) {
                   {esModoProblemas ? "Efectos del Problema Central" : "Fines del Objetivo Central"}
                 </h4>
               </div>
-              <span className="text-2xs text-text-tertiary">
-                {esModoProblemas
-                  ? "Impactos adversos en la calidad de vida y seguridad de Cartagena"
-                  : "Impactos positivos y bienestar colectivo proyectado"}
-              </span>
+              <div className="flex items-center gap-3">
+                <span className="text-2xs text-text-tertiary hidden sm:inline">
+                  {esModoProblemas
+                    ? "Impactos adversos en la calidad de vida y seguridad de Cartagena"
+                    : "Impactos positivos y bienestar colectivo proyectado"}
+                </span>
+                {puedeGestionar && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() =>
+                      handleAbrirNuevoNodo(
+                        esModoProblemas ? "EFECTO_DIRECTO" : "FIN_DIRECTO",
+                        "EFECTO",
+                        arbol?.nodo_central?.id ?? null,
+                        1,
+                        esModoProblemas ? "Efecto Directo" : "Fin Directo"
+                      )
+                    }
+                    disabled={guardandoNodo}
+                    className="h-7 px-2.5 text-2xs font-semibold gap-1"
+                  >
+                    <Plus className="size-3" aria-hidden="true" />
+                    <span>{esModoProblemas ? "Agregar Efecto" : "Agregar Fin"}</span>
+                  </Button>
+                )}
+              </div>
             </div>
+
+            {/* Formulario Inline: Nuevo Efecto / Fin Directo */}
+            {nuevoNodoConfig &&
+              nuevoNodoConfig.nivel === 1 &&
+              nuevoNodoConfig.tipo_relacion === "EFECTO" && (
+                <div className="rounded-xl border-2 border-dashed border-ember/60 bg-surface-2/80 p-4 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <Badge variant="outline" className="text-2xs font-semibold border-ember/40 text-ember">
+                      Nuevo {nuevoNodoConfig.etiqueta}
+                    </Badge>
+                    <span className="text-2xs text-text-tertiary">Directo (Nivel 1)</span>
+                  </div>
+                  <Textarea
+                    value={nuevoNodoConfig.contenido}
+                    onChange={(e) =>
+                      setNuevoNodoConfig({ ...nuevoNodoConfig, contenido: e.target.value })
+                    }
+                    placeholder={
+                      esModoProblemas
+                        ? "Describa el efecto adverso en la población o territorio..."
+                        : "Describa el fin o impacto positivo buscado..."
+                    }
+                    className="text-xs min-h-[70px] bg-surface-1"
+                    disabled={guardandoNodo}
+                    autoFocus
+                  />
+                  <div className="flex items-center justify-end gap-2">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setNuevoNodoConfig(null)}
+                      disabled={guardandoNodo}
+                      className="h-7 px-2.5 text-xs"
+                    >
+                      <X className="size-3 mr-1" aria-hidden="true" />
+                      Cancelar
+                    </Button>
+                    <Button
+                      variant="default"
+                      size="sm"
+                      onClick={handleGuardarNuevoNodo}
+                      disabled={guardandoNodo || !nuevoNodoConfig.contenido.trim()}
+                      className="h-7 px-3 text-xs bg-ember text-text-inverse hover:bg-ember/90"
+                    >
+                      <Check className="size-3 mr-1" aria-hidden="true" />
+                      {guardandoNodo ? "Guardando..." : "Guardar"}
+                    </Button>
+                  </div>
+                </div>
+              )}
 
             {/* Grid de Efectos o Fines */}
             <div className="grid gap-4 md:grid-cols-2">
@@ -331,12 +579,133 @@ export function ArbolProblemasView({}: ArbolProblemasViewProps = {}) {
                     >
                       {esModoProblemas ? `Efecto Directo ${idx + 1}` : `Fin Directo ${idx + 1}`}
                     </Badge>
-                    <span className="text-2xs text-text-tertiary font-mono">Nivel 1</span>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-2xs text-text-tertiary font-mono">Nivel 1</span>
+                      {puedeGestionar && (
+                        <div className="flex items-center gap-0.5">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() =>
+                              handleAbrirNuevoNodo(
+                                esModoProblemas ? "EFECTO_INDIRECTO" : "FIN_INDIRECTO",
+                                "EFECTO",
+                                efecto.id,
+                                2,
+                                esModoProblemas ? "Efecto Indirecto" : "Fin Indirecto"
+                              )
+                            }
+                            disabled={guardandoNodo}
+                            className="size-6 p-0 text-text-tertiary hover:text-text-primary"
+                            title="Agregar sub-efecto indirecto"
+                          >
+                            <Plus className="size-3" aria-hidden="true" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleIniciarEdicion(efecto)}
+                            disabled={guardandoNodo}
+                            className="size-6 p-0 text-text-tertiary hover:text-text-primary"
+                            title="Editar efecto"
+                          >
+                            <Pencil className="size-3" aria-hidden="true" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleEliminarNodo(efecto.id)}
+                            disabled={guardandoNodo}
+                            className="size-6 p-0 text-text-tertiary hover:text-error"
+                            title="Eliminar efecto"
+                          >
+                            <Trash2 className="size-3" aria-hidden="true" />
+                          </Button>
+                        </div>
+                      )}
+                    </div>
                   </div>
 
-                  <p className="text-xs font-medium text-text-primary leading-snug">
-                    {efecto.contenido}
-                  </p>
+                  {/* Contenido o Edición inline */}
+                  {nodoEnEdicion?.id === efecto.id ? (
+                    <div className="space-y-2 pt-1">
+                      <Textarea
+                        value={nodoEnEdicion.contenido}
+                        onChange={(e) =>
+                          setNodoEnEdicion({ ...nodoEnEdicion, contenido: e.target.value })
+                        }
+                        className="text-xs min-h-[60px] bg-surface-2"
+                        disabled={guardandoNodo}
+                        autoFocus
+                      />
+                      <div className="flex items-center justify-end gap-1.5">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setNodoEnEdicion(null)}
+                          disabled={guardandoNodo}
+                          className="h-6 px-2 text-2xs"
+                        >
+                          <X className="size-3 mr-1" aria-hidden="true" />
+                          Cancelar
+                        </Button>
+                        <Button
+                          variant="default"
+                          size="sm"
+                          onClick={() => handleGuardarEdicion(efecto.id)}
+                          disabled={guardandoNodo || !nodoEnEdicion.contenido.trim()}
+                          className="h-6 px-2.5 text-2xs bg-ember text-text-inverse hover:bg-ember/90"
+                        >
+                          <Check className="size-3 mr-1" aria-hidden="true" />
+                          {guardandoNodo ? "Guardando..." : "Guardar"}
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="text-xs font-medium text-text-primary leading-snug">
+                      {efecto.contenido}
+                    </p>
+                  )}
+
+                  {/* Formulario Inline: Nuevo Sub-nodo de este Efecto */}
+                  {nuevoNodoConfig &&
+                    nuevoNodoConfig.nodo_padre_id === efecto.id && (
+                      <div className="p-2.5 rounded-lg border border-dashed border-border bg-surface-2/80 space-y-2">
+                        <span className="text-2xs font-semibold text-text-secondary block">
+                          Nuevo {nuevoNodoConfig.etiqueta}:
+                        </span>
+                        <Textarea
+                          value={nuevoNodoConfig.contenido}
+                          onChange={(e) =>
+                            setNuevoNodoConfig({ ...nuevoNodoConfig, contenido: e.target.value })
+                          }
+                          placeholder="Descripción del impacto indirecto..."
+                          className="text-2xs min-h-[50px] bg-surface-1"
+                          disabled={guardandoNodo}
+                          autoFocus
+                        />
+                        <div className="flex items-center justify-end gap-1.5">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setNuevoNodoConfig(null)}
+                            disabled={guardandoNodo}
+                            className="h-6 px-2 text-2xs"
+                          >
+                            Cancelar
+                          </Button>
+                          <Button
+                            variant="default"
+                            size="sm"
+                            onClick={handleGuardarNuevoNodo}
+                            disabled={guardandoNodo || !nuevoNodoConfig.contenido.trim()}
+                            className="h-6 px-2.5 text-2xs bg-ember text-text-inverse hover:bg-ember/90"
+                          >
+                            Guardar
+                          </Button>
+                        </div>
+                      </div>
+                    )}
 
                   {/* Hijos: Efectos Indirectos / Fines Indirectos */}
                   {efecto.hijos && efecto.hijos.length > 0 && (
@@ -348,12 +717,73 @@ export function ArbolProblemasView({}: ArbolProblemasViewProps = {}) {
                         {efecto.hijos.map((hijo, hIdx) => (
                           <div
                             key={hijo.id || hIdx}
-                            className="rounded-lg bg-surface-2/60 p-2.5 text-2xs text-text-secondary font-medium"
+                            className="rounded-lg bg-surface-2/60 p-2.5 text-2xs text-text-secondary font-medium space-y-1"
                           >
-                            <span className="font-semibold text-text-primary block mb-0.5">
-                              {esModoProblemas ? `Impacto 1.${idx + 1}.${hIdx + 1}:` : `Fin 1.${idx + 1}.${hIdx + 1}:`}
-                            </span>
-                            {hijo.contenido}
+                            <div className="flex items-center justify-between gap-1">
+                              <span className="font-semibold text-text-primary block">
+                                {esModoProblemas ? `Impacto 1.${idx + 1}.${hIdx + 1}:` : `Fin 1.${idx + 1}.${hIdx + 1}:`}
+                              </span>
+                              {puedeGestionar && (
+                                <div className="flex items-center gap-0.5">
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => handleIniciarEdicion(hijo)}
+                                    disabled={guardandoNodo}
+                                    className="size-5 p-0 text-text-tertiary hover:text-text-primary"
+                                    title="Editar sub-nodo"
+                                  >
+                                    <Pencil className="size-2.5" aria-hidden="true" />
+                                  </Button>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => handleEliminarNodo(hijo.id)}
+                                    disabled={guardandoNodo}
+                                    className="size-5 p-0 text-text-tertiary hover:text-error"
+                                    title="Eliminar sub-nodo"
+                                  >
+                                    <Trash2 className="size-2.5" aria-hidden="true" />
+                                  </Button>
+                                </div>
+                              )}
+                            </div>
+
+                            {nodoEnEdicion?.id === hijo.id ? (
+                              <div className="space-y-1.5 pt-1">
+                                <Textarea
+                                  value={nodoEnEdicion.contenido}
+                                  onChange={(e) =>
+                                    setNodoEnEdicion({ ...nodoEnEdicion, contenido: e.target.value })
+                                  }
+                                  className="text-2xs min-h-[45px] bg-surface-1"
+                                  disabled={guardandoNodo}
+                                  autoFocus
+                                />
+                                <div className="flex items-center justify-end gap-1">
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => setNodoEnEdicion(null)}
+                                    disabled={guardandoNodo}
+                                    className="h-5 px-1.5 text-2xs"
+                                  >
+                                    Cancelar
+                                  </Button>
+                                  <Button
+                                    variant="default"
+                                    size="sm"
+                                    onClick={() => handleGuardarEdicion(hijo.id)}
+                                    disabled={guardandoNodo || !nodoEnEdicion.contenido.trim()}
+                                    className="h-5 px-2 text-2xs bg-ember text-text-inverse hover:bg-ember/90"
+                                  >
+                                    Guardar
+                                  </Button>
+                                </div>
+                              </div>
+                            ) : (
+                              <span>{hijo.contenido}</span>
+                            )}
                           </div>
                         ))}
                       </div>
@@ -390,11 +820,59 @@ export function ArbolProblemasView({}: ArbolProblemasViewProps = {}) {
                     {esModoProblemas ? "Problema Central Distrital" : "Objetivo Central Distrital"}
                   </Badge>
                   <span className="text-2xs text-text-tertiary font-mono">Nivel 0 (Eje Causal)</span>
+                  {puedeGestionar && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleIniciarEdicion(arbol.nodo_central!)}
+                      disabled={guardandoNodo}
+                      className="size-6 p-0 text-text-tertiary hover:text-text-primary ml-1"
+                      title="Editar nodo central"
+                    >
+                      <Pencil className="size-3" aria-hidden="true" />
+                    </Button>
+                  )}
                 </div>
 
-                <h3 className="text-sm sm:text-base font-bold text-text-primary leading-snug">
-                  {arbol.nodo_central.contenido}
-                </h3>
+                {nodoEnEdicion?.id === arbol.nodo_central.id ? (
+                  <div className="space-y-2 pt-1 max-w-lg mx-auto">
+                    <Textarea
+                      value={nodoEnEdicion.contenido}
+                      onChange={(e) =>
+                        setNodoEnEdicion({ ...nodoEnEdicion, contenido: e.target.value })
+                      }
+                      className="text-sm font-semibold text-center min-h-[60px] bg-surface-2"
+                      disabled={guardandoNodo}
+                      autoFocus
+                    />
+                    <div className="flex items-center justify-center gap-2">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setNodoEnEdicion(null)}
+                        disabled={guardandoNodo}
+                        className="h-7 px-3 text-xs"
+                      >
+                        <X className="size-3 mr-1" aria-hidden="true" />
+                        Cancelar
+                      </Button>
+                      <Button
+                        variant="default"
+                        size="sm"
+                        onClick={() => handleGuardarEdicion(arbol.nodo_central!.id)}
+                        disabled={guardandoNodo || !nodoEnEdicion.contenido.trim()}
+                        className="h-7 px-3 text-xs bg-ember text-text-inverse hover:bg-ember/90"
+                      >
+                        <Check className="size-3 mr-1" aria-hidden="true" />
+                        {guardandoNodo ? "Guardando..." : "Guardar"}
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <h3 className="text-sm sm:text-base font-bold text-text-primary leading-snug">
+                    {arbol.nodo_central.contenido}
+                  </h3>
+                )}
 
                 <p className="text-2xs text-text-tertiary max-w-lg mx-auto">
                   {esModoProblemas
@@ -417,12 +895,84 @@ export function ArbolProblemasView({}: ArbolProblemasViewProps = {}) {
                   {esModoProblemas ? "Causas del Problema Central" : "Medios para el Logro del Objetivo"}
                 </h4>
               </div>
-              <span className="text-2xs text-text-tertiary">
-                {esModoProblemas
-                  ? "Factores determinantes y raíces socioeconómicas e institucionales"
-                  : "Acciones estratégicas e intervenciones programáticas de política pública"}
-              </span>
+              <div className="flex items-center gap-3">
+                <span className="text-2xs text-text-tertiary hidden sm:inline">
+                  {esModoProblemas
+                    ? "Factores determinantes y raíces socioeconómicas e institucionales"
+                    : "Acciones estratégicas e intervenciones programáticas de política pública"}
+                </span>
+                {puedeGestionar && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() =>
+                      handleAbrirNuevoNodo(
+                        esModoProblemas ? "CAUSA_DIRECTA" : "MEDIO_DIRECTO",
+                        "CAUSA",
+                        arbol?.nodo_central?.id ?? null,
+                        1,
+                        esModoProblemas ? "Causa Directa" : "Medio Directo"
+                      )
+                    }
+                    disabled={guardandoNodo}
+                    className="h-7 px-2.5 text-2xs font-semibold gap-1"
+                  >
+                    <Plus className="size-3" aria-hidden="true" />
+                    <span>{esModoProblemas ? "Agregar Causa" : "Agregar Medio"}</span>
+                  </Button>
+                )}
+              </div>
             </div>
+
+            {/* Formulario Inline: Nueva Causa / Medio Directo */}
+            {nuevoNodoConfig &&
+              nuevoNodoConfig.nivel === 1 &&
+              nuevoNodoConfig.tipo_relacion === "CAUSA" && (
+                <div className="rounded-xl border-2 border-dashed border-ember/60 bg-surface-2/80 p-4 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <Badge variant="outline" className="text-2xs font-semibold border-ember/40 text-ember">
+                      Nueva {nuevoNodoConfig.etiqueta}
+                    </Badge>
+                    <span className="text-2xs text-text-tertiary">Directa (Nivel 1)</span>
+                  </div>
+                  <Textarea
+                    value={nuevoNodoConfig.contenido}
+                    onChange={(e) =>
+                      setNuevoNodoConfig({ ...nuevoNodoConfig, contenido: e.target.value })
+                    }
+                    placeholder={
+                      esModoProblemas
+                        ? "Describa la causa directa o factor determinante..."
+                        : "Describa el medio o intervención directa..."
+                    }
+                    className="text-xs min-h-[70px] bg-surface-1"
+                    disabled={guardandoNodo}
+                    autoFocus
+                  />
+                  <div className="flex items-center justify-end gap-2">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setNuevoNodoConfig(null)}
+                      disabled={guardandoNodo}
+                      className="h-7 px-2.5 text-xs"
+                    >
+                      <X className="size-3 mr-1" aria-hidden="true" />
+                      Cancelar
+                    </Button>
+                    <Button
+                      variant="default"
+                      size="sm"
+                      onClick={handleGuardarNuevoNodo}
+                      disabled={guardandoNodo || !nuevoNodoConfig.contenido.trim()}
+                      className="h-7 px-3 text-xs bg-ember text-text-inverse hover:bg-ember/90"
+                    >
+                      <Check className="size-3 mr-1" aria-hidden="true" />
+                      {guardandoNodo ? "Guardando..." : "Guardar"}
+                    </Button>
+                  </div>
+                </div>
+              )}
 
             {/* Grid de Causas o Medios */}
             <div className="grid gap-4 md:grid-cols-2">
@@ -442,12 +992,133 @@ export function ArbolProblemasView({}: ArbolProblemasViewProps = {}) {
                     >
                       {esModoProblemas ? `Causa Directa ${idx + 1}` : `Medio Directo ${idx + 1}`}
                     </Badge>
-                    <span className="text-2xs text-text-tertiary font-mono">Nivel 1</span>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-2xs text-text-tertiary font-mono">Nivel 1</span>
+                      {puedeGestionar && (
+                        <div className="flex items-center gap-0.5">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() =>
+                              handleAbrirNuevoNodo(
+                                esModoProblemas ? "CAUSA_INDIRECTA" : "MEDIO_INDIRECTO",
+                                "CAUSA",
+                                causa.id,
+                                2,
+                                esModoProblemas ? "Causa Indirecta" : "Medio Indirecto"
+                              )
+                            }
+                            disabled={guardandoNodo}
+                            className="size-6 p-0 text-text-tertiary hover:text-text-primary"
+                            title="Agregar sub-causa indirecta"
+                          >
+                            <Plus className="size-3" aria-hidden="true" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleIniciarEdicion(causa)}
+                            disabled={guardandoNodo}
+                            className="size-6 p-0 text-text-tertiary hover:text-text-primary"
+                            title="Editar causa"
+                          >
+                            <Pencil className="size-3" aria-hidden="true" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleEliminarNodo(causa.id)}
+                            disabled={guardandoNodo}
+                            className="size-6 p-0 text-text-tertiary hover:text-error"
+                            title="Eliminar causa"
+                          >
+                            <Trash2 className="size-3" aria-hidden="true" />
+                          </Button>
+                        </div>
+                      )}
+                    </div>
                   </div>
 
-                  <p className="text-xs font-medium text-text-primary leading-snug">
-                    {causa.contenido}
-                  </p>
+                  {/* Contenido o Edición inline */}
+                  {nodoEnEdicion?.id === causa.id ? (
+                    <div className="space-y-2 pt-1">
+                      <Textarea
+                        value={nodoEnEdicion.contenido}
+                        onChange={(e) =>
+                          setNodoEnEdicion({ ...nodoEnEdicion, contenido: e.target.value })
+                        }
+                        className="text-xs min-h-[60px] bg-surface-2"
+                        disabled={guardandoNodo}
+                        autoFocus
+                      />
+                      <div className="flex items-center justify-end gap-1.5">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setNodoEnEdicion(null)}
+                          disabled={guardandoNodo}
+                          className="h-6 px-2 text-2xs"
+                        >
+                          <X className="size-3 mr-1" aria-hidden="true" />
+                          Cancelar
+                        </Button>
+                        <Button
+                          variant="default"
+                          size="sm"
+                          onClick={() => handleGuardarEdicion(causa.id)}
+                          disabled={guardandoNodo || !nodoEnEdicion.contenido.trim()}
+                          className="h-6 px-2.5 text-2xs bg-ember text-text-inverse hover:bg-ember/90"
+                        >
+                          <Check className="size-3 mr-1" aria-hidden="true" />
+                          {guardandoNodo ? "Guardando..." : "Guardar"}
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="text-xs font-medium text-text-primary leading-snug">
+                      {causa.contenido}
+                    </p>
+                  )}
+
+                  {/* Formulario Inline: Nuevo Sub-nodo de esta Causa */}
+                  {nuevoNodoConfig &&
+                    nuevoNodoConfig.nodo_padre_id === causa.id && (
+                      <div className="p-2.5 rounded-lg border border-dashed border-border bg-surface-2/80 space-y-2">
+                        <span className="text-2xs font-semibold text-text-secondary block">
+                          Nueva {nuevoNodoConfig.etiqueta}:
+                        </span>
+                        <Textarea
+                          value={nuevoNodoConfig.contenido}
+                          onChange={(e) =>
+                            setNuevoNodoConfig({ ...nuevoNodoConfig, contenido: e.target.value })
+                          }
+                          placeholder="Descripción de la causa raíz / factor indirecto..."
+                          className="text-2xs min-h-[50px] bg-surface-1"
+                          disabled={guardandoNodo}
+                          autoFocus
+                        />
+                        <div className="flex items-center justify-end gap-1.5">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setNuevoNodoConfig(null)}
+                            disabled={guardandoNodo}
+                            className="h-6 px-2 text-2xs"
+                          >
+                            Cancelar
+                          </Button>
+                          <Button
+                            variant="default"
+                            size="sm"
+                            onClick={handleGuardarNuevoNodo}
+                            disabled={guardandoNodo || !nuevoNodoConfig.contenido.trim()}
+                            className="h-6 px-2.5 text-2xs bg-ember text-text-inverse hover:bg-ember/90"
+                          >
+                            Guardar
+                          </Button>
+                        </div>
+                      </div>
+                    )}
 
                   {/* Hijos: Causas Indirectas / Medios Indirectos */}
                   {causa.hijos && causa.hijos.length > 0 && (
@@ -459,12 +1130,73 @@ export function ArbolProblemasView({}: ArbolProblemasViewProps = {}) {
                         {causa.hijos.map((hijo, hIdx) => (
                           <div
                             key={hijo.id || hIdx}
-                            className="rounded-lg bg-surface-2/60 p-2.5 text-2xs text-text-secondary font-medium"
+                            className="rounded-lg bg-surface-2/60 p-2.5 text-2xs text-text-secondary font-medium space-y-1"
                           >
-                            <span className="font-semibold text-text-primary block mb-0.5">
-                              {esModoProblemas ? `Raíz 1.${idx + 1}.${hIdx + 1}:` : `Actividad 1.${idx + 1}.${hIdx + 1}:`}
-                            </span>
-                            {hijo.contenido}
+                            <div className="flex items-center justify-between gap-1">
+                              <span className="font-semibold text-text-primary block">
+                                {esModoProblemas ? `Raíz 1.${idx + 1}.${hIdx + 1}:` : `Actividad 1.${idx + 1}.${hIdx + 1}:`}
+                              </span>
+                              {puedeGestionar && (
+                                <div className="flex items-center gap-0.5">
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => handleIniciarEdicion(hijo)}
+                                    disabled={guardandoNodo}
+                                    className="size-5 p-0 text-text-tertiary hover:text-text-primary"
+                                    title="Editar sub-nodo"
+                                  >
+                                    <Pencil className="size-2.5" aria-hidden="true" />
+                                  </Button>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => handleEliminarNodo(hijo.id)}
+                                    disabled={guardandoNodo}
+                                    className="size-5 p-0 text-text-tertiary hover:text-error"
+                                    title="Eliminar sub-nodo"
+                                  >
+                                    <Trash2 className="size-2.5" aria-hidden="true" />
+                                  </Button>
+                                </div>
+                              )}
+                            </div>
+
+                            {nodoEnEdicion?.id === hijo.id ? (
+                              <div className="space-y-1.5 pt-1">
+                                <Textarea
+                                  value={nodoEnEdicion.contenido}
+                                  onChange={(e) =>
+                                    setNodoEnEdicion({ ...nodoEnEdicion, contenido: e.target.value })
+                                  }
+                                  className="text-2xs min-h-[45px] bg-surface-1"
+                                  disabled={guardandoNodo}
+                                  autoFocus
+                                />
+                                <div className="flex items-center justify-end gap-1">
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => setNodoEnEdicion(null)}
+                                    disabled={guardandoNodo}
+                                    className="h-5 px-1.5 text-2xs"
+                                  >
+                                    Cancelar
+                                  </Button>
+                                  <Button
+                                    variant="default"
+                                    size="sm"
+                                    onClick={() => handleGuardarEdicion(hijo.id)}
+                                    disabled={guardandoNodo || !nodoEnEdicion.contenido.trim()}
+                                    className="h-5 px-2 text-2xs bg-ember text-text-inverse hover:bg-ember/90"
+                                  >
+                                    Guardar
+                                  </Button>
+                                </div>
+                              </div>
+                            ) : (
+                              <span>{hijo.contenido}</span>
+                            )}
                           </div>
                         ))}
                       </div>

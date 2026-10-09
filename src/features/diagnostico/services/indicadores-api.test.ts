@@ -3,6 +3,8 @@ import {
   normalizarFicha,
   listarFichasIndicadores,
   obtenerFichaIndicador,
+  crearFichaIndicador,
+  actualizarFichaIndicador,
 } from "./indicadores-api";
 import { INDICADORES_FALLBACK } from "../data/indicadores-fallback.data";
 import { POLITICAS_MOCK } from "@/features/politicas/__fixtures__/politicas.fixture";
@@ -192,6 +194,81 @@ describe("Diagnóstico y Línea Base Cuantitativa DNP", () => {
 
       await expect(obtenerFichaIndicador("ind-inexistente")).rejects.toThrow();
     });
+
+    test("crearFichaIndicador despacha POST /indicadores/fichas y retorna la ficha creada (GAP-04)", async () => {
+      const payloadNuevo = {
+        codigo: "IND-PROD-09",
+        nombre: "Jornadas Comunitarias Realizadas",
+        tipo_indicador: "producto" as const,
+        definicion: "Total de jornadas territoriales",
+        metodo_calculo: "Sumatoria de jornadas",
+        unidad_medida: "Jornadas",
+        sentido_esperado: "ascendente" as const,
+        periodicidad: "Trimestral",
+        linea_base_valor: "0",
+        linea_base_anio: 2026,
+        meta_cuatrienio: "50",
+        fuente_datos: "Secretaría del Interior",
+        responsable_reporte: "Coordinación de Participación",
+      };
+
+      const respuestaBackend = {
+        id: "ind-09-creado",
+        ...payloadNuevo,
+        creado_en: "2026-10-09T00:00:00Z",
+        actualizado_en: "2026-10-09T00:00:00Z",
+      };
+
+      vi.spyOn(globalThis, "fetch").mockImplementation(async (url, init) => {
+        expect(String(url)).toContain("/indicadores/fichas");
+        expect(init?.method).toBe("POST");
+        const bodyParseado = JSON.parse(String(init?.body));
+        expect(bodyParseado.codigo).toBe("IND-PROD-09");
+        return new Response(JSON.stringify(respuestaBackend), {
+          status: 201,
+          headers: { "Content-Type": "application/json" },
+        });
+      });
+
+      const resultado = await crearFichaIndicador(payloadNuevo);
+      expect(resultado.id).toBe("ind-09-creado");
+      expect(resultado.codigo).toBe("IND-PROD-09");
+      expect(resultado.nombre).toBe("Jornadas Comunitarias Realizadas");
+    });
+
+    test("actualizarFichaIndicador despacha PATCH /indicadores/fichas/{id} y retorna la ficha actualizada (GAP-04)", async () => {
+      const idObjetivo = "ind-09-creado";
+      const actualizacion = {
+        responsable_reporte: "Secretaría de Participación y Desarrollo Social",
+        fuente_datos: "Sistema Distrital de Monitoreo",
+        periodicidad: "Semestral",
+      };
+
+      const respuestaBackend = {
+        id: idObjetivo,
+        codigo: "IND-PROD-09",
+        nombre: "Jornadas Comunitarias Realizadas",
+        tipo_indicador: "producto",
+        ...actualizacion,
+      };
+
+      vi.spyOn(globalThis, "fetch").mockImplementation(async (url, init) => {
+        expect(String(url)).toContain(`/indicadores/fichas/${idObjetivo}`);
+        expect(init?.method).toBe("PATCH");
+        const bodyParseado = JSON.parse(String(init?.body));
+        expect(bodyParseado.responsable_reporte).toBe("Secretaría de Participación y Desarrollo Social");
+        return new Response(JSON.stringify(respuestaBackend), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        });
+      });
+
+      const resultado = await actualizarFichaIndicador(idObjetivo, actualizacion);
+      expect(resultado.id).toBe(idObjetivo);
+      expect(resultado.responsable_reporte).toBe("Secretaría de Participación y Desarrollo Social");
+      expect(resultado.periodicidad).toBe("Semestral");
+    });
   });
 });
+
 

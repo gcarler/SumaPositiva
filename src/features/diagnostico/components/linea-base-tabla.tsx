@@ -1,6 +1,6 @@
 "use client";
 
-import { PlusCircle, ArrowDown, ArrowUp, Database, Calendar } from "lucide-react";
+import { PlusCircle, ArrowDown, ArrowUp, Database, Calendar, Pencil } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import { Badge } from "@/shared/ui/badge";
 import {
@@ -12,11 +12,14 @@ import {
   TableRow,
 } from "@/shared/ui/table";
 import { usePanels } from "@/core/panels/panel-store";
+import { useSesionStore, tienePermiso } from "@/features/sesion/state/session-store";
+import { puedeEditar } from "@/features/plataforma/models/acceso";
 import type { FichaIndicador, TipoIndicador } from "../models/indicador";
 
 interface LineaBaseTablaProps {
   indicadores: FichaIndicador[];
   onMedicionRegistrada?: () => void;
+  onFichaActualizada?: () => void;
 }
 
 function formatearValor(valor: string | number, unidad: string): string {
@@ -51,8 +54,15 @@ function formatearTipo(tipo: TipoIndicador): {
   }
 }
 
-export function LineaBaseTabla({ indicadores }: LineaBaseTablaProps) {
+export function LineaBaseTabla({
+  indicadores,
+  onMedicionRegistrada,
+  onFichaActualizada,
+}: LineaBaseTablaProps) {
   const { openPanel } = usePanels();
+  const sesion = useSesionStore((s) => s.sesion);
+  const puedeGestionar =
+    tienePermiso(sesion, "indicadores:gestionar") || puedeEditar(sesion, "diagnostico");
 
   const handleAbrirMedicion = (indicador: FichaIndicador) => {
     openPanel("medicion-editor", {
@@ -60,6 +70,15 @@ export function LineaBaseTabla({ indicadores }: LineaBaseTablaProps) {
       codigoIndicador: indicador.codigo,
       nombreIndicador: indicador.nombre,
       unidadMedida: indicador.unidad_medida,
+      onMedicionGuardada: onMedicionRegistrada,
+    });
+  };
+
+  const handleEditarFicha = (indicador: FichaIndicador) => {
+    openPanel("ficha-editor", {
+      fichaId: indicador.id,
+      ficha: indicador,
+      onGuardado: onFichaActualizada,
     });
   };
 
@@ -182,15 +201,29 @@ export function LineaBaseTabla({ indicadores }: LineaBaseTablaProps) {
                       </div>
                     </TableCell>
                     <TableCell className="text-right">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleAbrirMedicion(ind)}
-                        className="h-8 gap-1.5 text-xs border-border hover:border-ember/50 hover:bg-ember-soft"
-                      >
-                        <PlusCircle className="size-3.5 text-ember" aria-hidden="true" />
-                        <span>Medición</span>
-                      </Button>
+                      <div className="flex items-center justify-end gap-1.5">
+                        {puedeGestionar && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleEditarFicha(ind)}
+                            className="h-8 gap-1 text-xs text-text-secondary hover:text-text-primary hover:bg-surface-2"
+                            title="Editar ficha técnica DNP"
+                          >
+                            <Pencil className="size-3.5" aria-hidden="true" />
+                            <span>Editar</span>
+                          </Button>
+                        )}
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleAbrirMedicion(ind)}
+                          className="h-8 gap-1.5 text-xs border-border hover:border-ember/50 hover:bg-ember-soft"
+                        >
+                          <PlusCircle className="size-3.5 text-ember" aria-hidden="true" />
+                          <span>Medición</span>
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 );

@@ -51,7 +51,8 @@ export type PanelType =
   | "asignacion-presupuestal"
   | "compromiso-editor"
   | "indicador-detalle"
-  | "devolucion-detalle";
+  | "devolucion-detalle"
+  | "ficha-editor";
 
 /** Árbol que se diligencia en el papelografo */
 export type ArbolPanel = "problemas" | "soluciones";
@@ -108,6 +109,7 @@ export interface PanelPropsMap {
     nombreIndicador?: string;
     unidadMedida?: string;
     soloLectura?: boolean;
+    onMedicionGuardada?: () => void;
   };
   "validacion-mga": {
     resultado: {
@@ -165,6 +167,12 @@ export interface PanelPropsMap {
   };
   "devolucion-detalle": {
     propuestaId?: string | null;
+    soloLectura?: boolean;
+    onGuardado?: () => void;
+  };
+  "ficha-editor": {
+    fichaId?: string | null;
+    ficha?: unknown;
     soloLectura?: boolean;
     onGuardado?: () => void;
   };

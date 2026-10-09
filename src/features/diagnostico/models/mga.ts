@@ -93,3 +93,26 @@ export interface ResultadoDiagnostico {
   recomendaciones_dnp: string[];
   resumen_ejecutivo: string;
 }
+
+export type TipoRelacionMGA = "CENTRAL" | "CAUSA" | "EFECTO" | "MEDIO" | "FIN";
+
+export interface NodoInstrumentoCrear {
+  tipo_nodo: TipoNodoMGA;
+  contenido: string;
+  nodo_padre_id?: string | null;
+  tipo_relacion?: TipoRelacionMGA | string | null;
+  nivel?: number | null;
+  orden?: number;
+  metadatos?: Record<string, unknown>;
+}
+
+export interface NodoInstrumentoActualizar {
+  contenido?: string | null;
+  tipo_nodo?: TipoNodoMGA | null;
+  nodo_padre_id?: string | null;
+  orden?: number | null;
+  metadatos?: Record<string, unknown> | null;
+  version_esperada?: number | null;
+  version_seq?: number | null;
+}
+

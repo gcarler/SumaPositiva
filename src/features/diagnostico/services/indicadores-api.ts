@@ -2,6 +2,8 @@ import { apiFetch } from "@/core/http/api-client";
 import { useSesionStore } from "@/features/sesion/state/session-store";
 import type {
   FichaIndicador,
+  FichaIndicadorCrearPayload,
+  FichaIndicadorActualizarPayload,
   MedicionIndicadorCrear,
   MedicionIndicadorRespuesta,
 } from "../models/indicador";
@@ -78,4 +80,43 @@ export async function registrarMedicionIndicador(
       headers,
     }
   );
+}
+
+export async function crearFichaIndicador(
+  datos: FichaIndicadorCrearPayload
+): Promise<FichaIndicador> {
+  const sesion = useSesionStore.getState().sesion;
+  const token = sesion?.token;
+
+  const headers: Record<string, string> = {};
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+
+  const raw = await apiFetch<Record<string, unknown>>("/indicadores/fichas", {
+    method: "POST",
+    body: datos,
+    headers,
+  });
+  return normalizarFicha(raw);
+}
+
+export async function actualizarFichaIndicador(
+  id: string,
+  datos: FichaIndicadorActualizarPayload
+): Promise<FichaIndicador> {
+  const sesion = useSesionStore.getState().sesion;
+  const token = sesion?.token;
+
+  const headers: Record<string, string> = {};
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+
+  const raw = await apiFetch<Record<string, unknown>>(`/indicadores/fichas/${id}`, {
+    method: "PATCH",
+    body: datos,
+    headers,
+  });
+  return normalizarFicha(raw);
 }

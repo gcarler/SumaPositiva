@@ -12,6 +12,7 @@ import {
   BarChart3,
   GitBranch,
   MapPin,
+  Plus,
 } from "lucide-react";
 import { toast } from "sonner";
 import { PageHeader } from "@/shared/ui/page-header";
@@ -30,6 +31,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/shared/ui/dropdown-menu";
+import { usePanels } from "@/core/panels/panel-store";
+import { useSesionStore, tienePermiso } from "@/features/sesion/state/session-store";
+import { puedeEditar } from "@/features/plataforma/models/acceso";
 import { DiagnosticoKpis } from "../components/diagnostico-kpis";
 import { LineaBaseTabla } from "../components/linea-base-tabla";
 import { ArbolProblemasView } from "../components/arbol-problemas-view";
@@ -39,6 +43,11 @@ import type { FichaIndicador, TipoIndicador } from "../models/indicador";
 import { sanitizarCsv } from "@/shared/lib/csv";
 
 export function DiagnosticoView() {
+  const { openPanel } = usePanels();
+  const sesion = useSesionStore((s) => s.sesion);
+  const puedeGestionarIndicadores =
+    tienePermiso(sesion, "indicadores:gestionar") || puedeEditar(sesion, "diagnostico");
+
   const [indicadores, setIndicadores] = useState<FichaIndicador[]>([]);
   const [modoVista, setModoVista] = useState<
     "linea_base" | "arbol_mga" | "geodiagnostico"
@@ -245,6 +254,20 @@ export function DiagnosticoView() {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
+
+            {puedeGestionarIndicadores && (
+              <Button
+                variant="ember"
+                size="sm"
+                onClick={() =>
+                  openPanel("ficha-editor", { onGuardado: cargarDatos })
+                }
+                className="h-8 gap-1.5 text-xs font-semibold"
+              >
+                <Plus className="size-3.5" aria-hidden="true" />
+                <span>Nueva Ficha Técnica</span>
+              </Button>
+            )}
           </div>
         )}
       </div>
@@ -390,6 +413,7 @@ export function DiagnosticoView() {
           <LineaBaseTabla
             indicadores={indicadoresFiltrados}
             onMedicionRegistrada={cargarDatos}
+            onFichaActualizada={cargarDatos}
           />
         </>
       ) : modoVista === "arbol_mga" ? (

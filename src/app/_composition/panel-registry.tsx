@@ -151,6 +151,10 @@ const FichaTerritorialPanel = dynamic(
   () => import("@/features/diagnostico/panels/ficha-territorial-panel").then((m) => m.FichaTerritorialPanel),
   { ssr: false }
 );
+const FichaEditorPanel = dynamic(
+  () => import("@/features/diagnostico/panels/ficha-editor-panel").then((m) => m.FichaEditorPanel),
+  { ssr: false }
+);
 const AlternativaEditorPanel = dynamic(
   () => import("@/features/alternativas/panels/alternativa-editor-panel").then((m) => m.AlternativaEditorPanel),
   { ssr: false }
@@ -222,6 +226,7 @@ export const PANEL_REGISTRY: Record<
   "compromiso-editor": CompromisoEditorPanel as ComponentType<PanelComponentProps>,
   "indicador-detalle": IndicadorDetallePanel as ComponentType<PanelComponentProps>,
   "devolucion-detalle": DevolucionDetallePanel as ComponentType<PanelComponentProps>,
+  "ficha-editor": FichaEditorPanel as ComponentType<PanelComponentProps>,
 };
 
 /**
@@ -276,4 +281,5 @@ export const PANEL_WIDTHS: Record<PanelType, string> = {
   "compromiso-editor": "min(clamp(720px, 50vw, 1020px), 100vw)",
   "indicador-detalle": "min(clamp(720px, 50vw, 1000px), 100vw)",
   "devolucion-detalle": "min(clamp(720px, 50vw, 1020px), 100vw)",
+  "ficha-editor": "min(clamp(720px, 50vw, 1020px), 100vw)",
 };

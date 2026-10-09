@@ -316,6 +316,7 @@ export function panelPermitido(
     case "actor-editor":
       return puedeEditar(sesion, "actores");
     case "medicion-editor":
+    case "ficha-editor":
       return puedeEditar(sesion, "diagnostico");
     case "alternativa-editor":
       return puedeEditar(sesion, "alternativas");

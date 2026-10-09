@@ -10,6 +10,8 @@ import type {
   InstrumentoMGA,
   ArbolMGARespuesta,
   NodoArbolMGA,
+  NodoInstrumentoCrear,
+  NodoInstrumentoActualizar,
   EntradaDiagnostico,
   ResultadoDiagnostico,
   ValidacionSintaxisNodo,
@@ -410,4 +412,116 @@ export async function evaluarDiagnosticoIA(
 
   // Fallback determinista DNP
   return generarDiagnosticoDeterminista(entrada);
+}
+
+/**
+ * Convierte un árbol de problemas a árbol de objetivos bajo metodología MGA DNP.
+ * Despacha POST /api/v1/instrumentos/{instrumento_id}/convertir-a-objetivos.
+ */
+export async function convertirAObjetivos(
+  instrumentoId: string,
+  nombreObjetivos?: string
+): Promise<ArbolMGARespuesta> {
+  const sesion = useSesionStore.getState().sesion;
+  const token = sesion?.token;
+
+  const headers: Record<string, string> = {};
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+
+  const body = nombreObjetivos ? { nombre_objetivos: nombreObjetivos } : {};
+  const raw = await apiFetch<Record<string, unknown>>(
+    `/instrumentos/${instrumentoId}/convertir-a-objetivos`,
+    {
+      method: "POST",
+      body,
+      headers,
+    }
+  );
+  return normalizarArbol(raw);
+}
+
+/**
+ * Agrega un nuevo nodo causal o medio/fin al árbol MGA.
+ * Despacha POST /api/v1/instrumentos/{instrumento_id}/nodos.
+ */
+export async function agregarNodoArbol(
+  instrumentoId: string,
+  datos: NodoInstrumentoCrear
+): Promise<NodoArbolMGA> {
+  const sesion = useSesionStore.getState().sesion;
+  const token = sesion?.token;
+
+  const headers: Record<string, string> = {};
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+
+  const raw = await apiFetch<Record<string, unknown>>(
+    `/instrumentos/${instrumentoId}/nodos`,
+    {
+      method: "POST",
+      body: datos,
+      headers,
+    }
+  );
+  return normalizarNodo(raw);
+}
+
+/**
+ * Actualiza el contenido, tipo u orden de un nodo en el árbol MGA.
+ * Despacha PUT /api/v1/instrumentos/{instrumento_id}/nodos/{nodo_id}.
+ */
+export async function actualizarNodoArbol(
+  instrumentoId: string,
+  nodoId: string,
+  datos: NodoInstrumentoActualizar,
+  ifMatch?: string
+): Promise<NodoArbolMGA> {
+  const sesion = useSesionStore.getState().sesion;
+  const token = sesion?.token;
+
+  const headers: Record<string, string> = {};
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+  if (ifMatch) {
+    headers["If-Match"] = ifMatch;
+  }
+
+  const raw = await apiFetch<Record<string, unknown>>(
+    `/instrumentos/${instrumentoId}/nodos/${nodoId}`,
+    {
+      method: "PUT",
+      body: datos,
+      headers,
+    }
+  );
+  return normalizarNodo(raw);
+}
+
+/**
+ * Elimina un nodo y sus dependientes del árbol MGA.
+ * Despacha DELETE /api/v1/instrumentos/{instrumento_id}/nodos/{nodo_id}.
+ */
+export async function eliminarNodoArbol(
+  instrumentoId: string,
+  nodoId: string
+): Promise<void> {
+  const sesion = useSesionStore.getState().sesion;
+  const token = sesion?.token;
+
+  const headers: Record<string, string> = {};
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+
+  await apiFetch<void>(
+    `/instrumentos/${instrumentoId}/nodos/${nodoId}`,
+    {
+      method: "DELETE",
+      headers,
+    }
+  );
 }

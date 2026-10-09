@@ -1,4 +1,4 @@
-import { describe, expect, test } from "vitest";
+import { describe, expect, test, vi, afterEach } from "vitest";
 import {
   normalizarNodo,
   normalizarInstrumento,
@@ -8,6 +8,10 @@ import {
   validarSintaxisLocal,
   generarDiagnosticoDeterminista,
   evaluarDiagnosticoIA,
+  convertirAObjetivos,
+  agregarNodoArbol,
+  actualizarNodoArbol,
+  eliminarNodoArbol,
 } from "./mga-api";
 import type { EntradaDiagnostico } from "../models/mga";
 
@@ -206,4 +210,155 @@ describe("Diagnóstico MGA y Agente IA DNP", () => {
       expect(resultado.analisis_sintaxis.length).toBeGreaterThanOrEqual(4);
     });
   });
+
+  describe("Mutaciones y Conversión Canónica DNP del Árbol MGA (GAP-05)", () => {
+    const originalFetch = globalThis.fetch;
+
+    afterEach(() => {
+      globalThis.fetch = originalFetch;
+    });
+
+    test("convertirAObjetivos despacha POST /instrumentos/{id}/convertir-a-objetivos", async () => {
+      const mockRespuesta = {
+        instrumento: {
+          id: "inst-obj-01",
+          nombre: "Árbol de Objetivos Derivado",
+          tipo_instrumento: "ARBOL_OBJETIVOS",
+          estado: "CONVERTIDO",
+        },
+        nodo_central: {
+          id: "nodo-central-obj",
+          tipo_nodo: "OBJETIVO_CENTRAL",
+          tipo_relacion: "CENTRAL",
+          nivel: 0,
+          orden: 0,
+          contenido: "Reducir la vulnerabilidad en el sector histórico",
+          hijos: [],
+        },
+        causas_o_medios: [
+          {
+            id: "medio-01",
+            tipo_nodo: "MEDIO_DIRECTO",
+            tipo_relacion: "MEDIO",
+            nivel: 1,
+            orden: 0,
+            contenido: "Fortalecer la inspección institucional",
+            hijos: [],
+          },
+        ],
+        efectos_o_fines: [
+          {
+            id: "fin-01",
+            tipo_nodo: "FIN_DIRECTO",
+            tipo_relacion: "FIN",
+            nivel: 1,
+            orden: 0,
+            contenido: "Garantizar la protección integral de derechos",
+            hijos: [],
+          },
+        ],
+        total_nodos: 3,
+      };
+
+      vi.spyOn(globalThis, "fetch").mockImplementation(async (url, init) => {
+        expect(String(url)).toContain("/instrumentos/inst-orig-01/convertir-a-objetivos");
+        expect(init?.method).toBe("POST");
+        return new Response(JSON.stringify(mockRespuesta), {
+          status: 201,
+          headers: { "Content-Type": "application/json" },
+        });
+      });
+
+      const arbolObjetivos = await convertirAObjetivos("inst-orig-01");
+      expect(arbolObjetivos.instrumento.id).toBe("inst-obj-01");
+      expect(arbolObjetivos.instrumento.tipo_instrumento).toBe("ARBOL_OBJETIVOS");
+      expect(arbolObjetivos.nodo_central?.tipo_nodo).toBe("OBJETIVO_CENTRAL");
+      expect(arbolObjetivos.causas_o_medios[0].tipo_nodo).toBe("MEDIO_DIRECTO");
+      expect(arbolObjetivos.efectos_o_fines[0].tipo_nodo).toBe("FIN_DIRECTO");
+    });
+
+    test("agregarNodoArbol despacha POST /instrumentos/{id}/nodos y normaliza el nodo retornado", async () => {
+      const nuevoNodo = {
+        tipo_nodo: "CAUSA_DIRECTA" as const,
+        tipo_relacion: "CAUSA",
+        contenido: "Falta de iluminación en vías peatonales",
+        nivel: 1,
+        orden: 1,
+      };
+
+      const respuestaBackend = {
+        id: "nodo-causa-nueva-01",
+        instrumento_id: "inst-01",
+        ...nuevoNodo,
+        nodo_padre_id: null,
+        metadatos: {},
+        hijos: [],
+        version_seq: 1,
+      };
+
+      vi.spyOn(globalThis, "fetch").mockImplementation(async (url, init) => {
+        expect(String(url)).toContain("/instrumentos/inst-01/nodos");
+        expect(init?.method).toBe("POST");
+        const bodyParseado = JSON.parse(String(init?.body));
+        expect(bodyParseado.contenido).toBe("Falta de iluminación en vías peatonales");
+        return new Response(JSON.stringify(respuestaBackend), {
+          status: 201,
+          headers: { "Content-Type": "application/json" },
+        });
+      });
+
+      const resultado = await agregarNodoArbol("inst-01", nuevoNodo);
+      expect(resultado.id).toBe("nodo-causa-nueva-01");
+      expect(resultado.contenido).toBe("Falta de iluminación en vías peatonales");
+      expect(resultado.tipo_nodo).toBe("CAUSA_DIRECTA");
+    });
+
+    test("actualizarNodoArbol despacha PUT /instrumentos/{id}/nodos/{nodo_id}", async () => {
+      const actualizacion = {
+        contenido: "Déficit crítico en luminarias en corredores turísticos",
+      };
+
+      const respuestaBackend = {
+        id: "nodo-causa-nueva-01",
+        instrumento_id: "inst-01",
+        tipo_nodo: "CAUSA_DIRECTA",
+        tipo_relacion: "CAUSA",
+        contenido: actualizacion.contenido,
+        nivel: 1,
+        orden: 1,
+      };
+
+      vi.spyOn(globalThis, "fetch").mockImplementation(async (url, init) => {
+        expect(String(url)).toContain("/instrumentos/inst-01/nodos/nodo-causa-nueva-01");
+        expect(init?.method).toBe("PUT");
+        const bodyParseado = JSON.parse(String(init?.body));
+        expect(bodyParseado.contenido).toBe(actualizacion.contenido);
+        return new Response(JSON.stringify(respuestaBackend), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        });
+      });
+
+      const resultado = await actualizarNodoArbol(
+        "inst-01",
+        "nodo-causa-nueva-01",
+        actualizacion
+      );
+      expect(resultado.contenido).toBe(actualizacion.contenido);
+    });
+
+    test("eliminarNodoArbol despacha DELETE /instrumentos/{id}/nodos/{nodo_id}", async () => {
+      let llamado = false;
+      vi.spyOn(globalThis, "fetch").mockImplementation(async (url, init) => {
+        expect(String(url)).toContain("/instrumentos/inst-01/nodos/nodo-causa-eliminar");
+        expect(init?.method).toBe("DELETE");
+        llamado = true;
+        return new Response(null, { status: 204 });
+      });
+
+      await eliminarNodoArbol("inst-01", "nodo-causa-eliminar");
+      expect(llamado).toBe(true);
+    });
+  });
 });
+
