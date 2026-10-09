@@ -771,6 +771,54 @@ Se emite autorización inmediata para formular y despachar a `agy2` la **Fase 2:
 La tarea **[GAP-FIX-02]** queda formalmente **CERRADA Y APROBADA AL 100%**.  
 Se emite autorización inmediata para formular y despachar a `agy2` la **Fase 3: `[GAP-FIX-03]` (Activación de Enlaces Inertes y Navegación Operativa en Menú Institucional)**.
 
+---
+
+## DICTAMEN PERICIAL FORENSE: APROBACIÓN DE [GAP-FIX-03] (EAF / agy, 2026-10-09)
+
+**Destinatario:** Dirección del Proyecto POLIS / Equipo de Control de Calidad y Desarrollo  
+**Auditor / Coordinador General EAF:** `agy` (`tmux a -t agy`)  
+**Ejecutor Técnico:** `agy2` (`tmux a -t agy2`)  
+**Commits Auditados:** `150e38d` (`feat(sidebar): [GAP-FIX-03] activacion de enlaces inertes y resolucion dinamica en menu institucional`) y `f8157bc` (`docs(audit): registrar informe de ejecucion de GAP-FIX-03`)  
+**Documento Técnico:** `bridge/02_resultado_agy2.md`  
+**Referencia Activa:** `bridge/01_tarea_activa.md`  
+**Alcance:** Activación de Enlaces Inertes y Navegación Operativa en Menú Institucional (Erradicación de GAP-03 y GAP-10)  
+
+**Resultado Oficial:** **APROBADO — CONFORME AL 100%**
+
+### 1. Comprobaciones Forenses de Contra-Auditoría:
+
+1. **Erradicación Absoluta de Botones Inertes con `toast.info` (GAP-03)**:
+   - Barrido forense de llamadas `toast.info` en `src/app/_components/sidebar-institucional.tsx`: erradicadas las llamadas en los 4 puntos críticos (analítica de formularios, actas C-150, presupuesto FONSET e indicadores DNP).
+   - Acciones conectadas y funcionales:
+     - `forms_analitica`: Despacha apertura de `formulario-analitica` si hay formularios o `formularios` consolidado.
+     - `mesas_actas`: Despacha apertura de `mesa-acta` con resolución de mesa con sellado pericial SHA-256 o primera mesa activa.
+     - `presupuesto`: Despacha apertura del panel de costeo distrital `asignacion-presupuestal`.
+     - `indicadores`: Despacha apertura del panel `rendicion-cuentas`.
+
+2. **Resolución Dinámica de Mesas en Papelógrafo MGA (GAP-10)**:
+   - Erradicados taxativamente los identificadores mockeados `mesa-001` y `sm-001-1`.
+   - Implementada resolución dinámica desde `useMesasStore.getState().mesas`, seleccionando mesas y submesas reales en tiempo de ejecución o abriendo la ficha operativa correspondiente.
+
+3. **Navegación Robusta a Módulos Administrativos de Plataforma**:
+   - Integración fluida mediante helper tipado `navigateToPlataforma` hacia `/plataforma/usuarios`, `/plataforma/diagnostico`, `/plataforma/fuentes`, `/plataforma/actores` y `/plataforma`.
+   - Todos los módulos cuentan con su mapeo de permisos canónicos en `PERMISOS_MODULO`.
+
+4. **Suite de Pruebas Unitarias de Navegación**:
+   - Creada [`src/app/_components/sidebar-institucional.test.ts`](file:///root/polis/src/app/_components/sidebar-institucional.test.ts) con 23 escenarios automatizados (0 llamadas a toast.info, resolución dinámica, apertura de paneles tipados y navegación administrativa).
+
+5. **Quality Gates Inviolables Verificados de Forma Independiente**:
+   - `bun run check`: **0 errores** (`node scripts/ui-policy.mjs`, `tsc --noEmit`, `eslint .`).
+   - `bun test`: **350 pass / 0 fail** (1492 expect calls en 36 suites; +23 pruebas nuevas).
+   - `bun run build`: **Compilación exitosa en Next.js Turbopack** (190 rutas generadas limpiamente en 11.4s).
+   - `systemctl restart polis-frontend`: Servicio activo; `curl http://127.0.0.1:3000` y `/plataforma` responden HTTP 200 OK.
+   - `pytest test_access_policy.py test_integridad_compromisos.py`: **100 passed in 14.98s**.
+   - Control de versiones: Commits atómicos locales en `main` (`150e38d` y `f8157bc`), cero git push a remoto.
+
+### 2. Veredicto y Autorización:
+La tarea **[GAP-FIX-03]** queda formalmente **CERRADA Y APROBADA AL 100%**.  
+Se emite autorización inmediata para formular y despachar a `agy2` la **Fase 4: `[GAP-FIX-04]` (Habilitación de CRUDs Faltantes: Fichas Indicadores DNP y Mutaciones del Árbol MGA)**.
+
+
 
 
 
