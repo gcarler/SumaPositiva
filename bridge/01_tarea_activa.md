@@ -1,59 +1,50 @@
-# TAREA ACTIVA: [GAP-FIX-02] CONEXIÓN REAL DE GESTIÓN DE USUARIOS Y ROLES A LA API FASTAPI
+# TAREA ACTIVA: [GAP-FIX-03] ACTIVACIÓN DE ENLACES INERTES Y NAVEGACIÓN OPERATIVA EN MENÚ INSTITUCIONAL
 
 **Fecha:** 2026-10-09  
 **Asignada a:** `agy2` (Desarrollador / EDD — `tmux a -t agy2`)  
 **Supervisor / Auditor:** `agy` (Coordinador General y Auditor Forense EAF — `tmux a -t agy`)  
-**Referencia:** Plan de Trabajo Maestro homologado en `bridge/03_dictamen_revision.md` (Fase 2)  
-**Severidad del GAP:** CRÍTICA (GAP-01 y GAP-08)  
+**Referencia:** Plan de Trabajo Maestro homologado en `bridge/03_dictamen_revision.md` (Fase 3)  
+**Severidad del GAP:** ALTA (GAP-03 y GAP-10 erradicados)  
 
 ---
 
-## 🎯 1. Objetivos Técnicos de la Tarea [GAP-FIX-02]
+## 🎯 1. Objetivos Técnicos de la Tarea [GAP-FIX-03]
 
-El objetivo de esta fase es erradicar completamente los mocks en memoria (`usuariosDemo`, notices de "demostración", tarjetas "Pendiente") en la gestión de usuarios y roles, conectando la vista principal, los paneles de edición/detalle y el dashboard institucional con los endpoints canónicos de FastAPI (`identidadApi` / `/api/v1/identidad/`):
+El objetivo de esta fase es erradicar de raíz todos los botones inertes disfrazados de `toast.info` y los identificadores hardcoded en el menú institucional (`src/app/_components/sidebar-institucional.tsx`), dotando a cada opción de una acción operativa real (apertura de panel especializado o navegación a vista de plataforma):
 
-### 1.1. Conexión Real de `src/features/plataforma/views/usuarios-view.tsx`
-1. **Consumo de API Real con React Query**:
-   - Reemplazar la dependencia estática de `useUsuariosStore.usuarios` por consultas reactivas mediante `useQuery` a `identidadApi.usuarios(busqueda, pagina * 20)` y `identidadApi.roles()`.
-   - Soportar paginación real basada en `data.total` y búsqueda por texto/correo.
-   - Filtrado por rol compatible con los roles del sistema (`administrador_identidades`, `facilitador_mesa`, `auditor_forense`, `autoridad_distrital`, `ciudadano`).
-2. **Erradicación de Mocks y Avisos de Demostración**:
-   - Eliminar el `<Notice tone="info" title="Vista de demostración">`.
-   - Eliminar el botón redundante inferior *"Abrir administración institucional"*. La pantalla `/plataforma/usuarios` es la administración canónica de usuarios.
-3. **Métricas y KPIs Reales**:
-   - Tarjetas de resumen (Total usuarios, Facilitadores, Auditores, Administradores, Cuentas activas) calculadas sobre datos de la API / roles del sistema.
-4. **Acción Principal**:
-   - El botón `+ Invitar usuario` / `+ Crear usuario` en `PageHeader` debe invocar la creación real (`openPanel("usuario-invitar", {})`).
+### 1.1. Erradicación de Botones Inertes con `toast.info` en `src/app/_components/sidebar-institucional.tsx`
+1. **Analítica y Métricas de Formularios (`forms_analitica`, L167)**:
+   - Eliminar `toast.info("Analítica global", ...)`.
+   - Conectar la acción para abrir el panel operativo de analítica: `openPanel("formulario-analitica", {})` o, en su defecto, desplegar el selector de formularios con métricas consolidadas (`openPanel("formularios", {})`).
+2. **Actas Inmutables C-150 (`mesas_actas`, L199)**:
+   - Eliminar `toast.info("Actas Comunitarias", ...)`.
+   - Conectar a la apertura del panel de actas oficial `openPanel("mesa-acta", {})` resolviendo la primera mesa canónica o abriendo el visor institucional de actas comunitarias.
+3. **Presupuesto FONSET / SGP (`presupuesto`, L269)**:
+   - Eliminar `toast.info("Presupuesto FONSET / SGP", ...)`.
+   - Conectar a la apertura del panel de costeo `openPanel("asignacion-presupuestal", {})` o navegación hacia `/plataforma/alternativas` (módulo de asignación presupuestal y fuentes MGA).
+4. **Indicadores DNP SINERGIA (`indicadores`, L275)**:
+   - Eliminar `toast.info("Indicadores DNP SINERGIA", ...)`.
+   - Conectar a la apertura del panel `openPanel("rendicion-cuentas", {})` o `openPanel("indicador-detalle", {})` o navegación directa hacia `/plataforma/seguimiento`.
 
-### 1.2. Conexión de Paneles de Edición y Detalle (`usuario-editor-panel.tsx` y `usuario-detalle-panel.tsx`)
-1. **`src/features/usuarios/panels/usuario-editor-panel.tsx`**:
-   - Conectar el formulario a las mutaciones reales de `identidadApi`:
-     - Modo creación/invitación: invocar `identidadApi.crearUsuario({ correo, contrasena, nombres, apellidos, codigo_rol, motivo })`.
-     - Modo edición: invocar `identidadApi.editarUsuario(usuarioId, { nombres, apellidos, codigo_rol, activo, motivo })`.
-   - Cargar roles dinámicamente desde `identidadApi.roles()` con fallback a los 4 roles canónicos.
-   - Invalidar queries de React Query (`["identidad", "usuarios"]`, `["identidad"]`) tras mutación exitosa.
-   - Manejo tipado de errores con `ApiError`, feedback inmediato con `toast` descriptivo y cierre de panel `closeTop()`.
-   - Erradicar de la cabecera y subtítulo cualquier mención a "Demo" o "Los cambios de esta vista son demostrativos".
-2. **`src/features/usuarios/panels/usuario-detalle-panel.tsx`**:
-   - Cargar datos del usuario real (mediante props o consulta a la API).
-   - Acciones operativas reales:
-     - Activar/Desactivar cuenta conectado a `identidadApi.editarUsuario`.
-     - Revocar sesiones conectado a `identidadApi.revocarUsuario(usuarioId)`.
-     - Editar rol y datos abriendo `usuario-editor`.
-   - Eliminar referencias a mock, fotos locales ficticias y actividades falsas ("demo").
+### 1.2. Resolución Dinámica de Mesas en Papelógrafo MGA (`mesas_papelografo`, GAP-10)
+- En L188-193, erradicar los identificadores estáticos mockeados `mesaId: "mesa-001"` y `submesaId: "sm-001-1"`.
+- Resolver dinámicamente una mesa válida desde `useMesasStore.getState().mesas` (e.g. la primera mesa disponible o la mesa canónica activa). Si no hay submesa cargada, abrir el panel en modo visión general del árbol o abrir el panel de selección de mesa para papelógrafo.
 
-### 1.3. Conexión de Usuarios Registrados en `src/features/plataforma/views/dashboard-view.tsx`
-1. Reemplazar `valor: "Pendiente"` y `detalle: "El total distrital aún no está conectado a este resumen."` en la tarjeta *"Usuarios registrados"*.
-2. Conectar consulta mediante `useQuery` a `identidadApi.usuarios("", 0)` para obtener el `total` real de usuarios si la sesión cuenta con permisos (`usuarios:leer` / sesión activa). Mostrar el conteo exacto de cuentas registradas en PostgreSQL.
+### 1.3. Robustecimiento de Navegación Institucional
+- Permitir la navegación fluida tanto a las vistas del portal ciudadano (`setVista`) como a los módulos avanzados de la plataforma administrativa (`/plataforma/*`) mediante `useRouter` de `next/navigation` o enlaces tipados.
+- Añadir opciones directas a módulos institucionales clave si el rol lo amerita (Diagnóstico, Fuentes, Actores).
+
+### 1.4. Pruebas Unitarias de Navegación
+- Crear o actualizar suite de pruebas unitarias (`src/app/_components/sidebar-institucional.test.tsx` o similar) verificando que ninguno de los módulos o submódulos llame a `toast.info` como sustituto de navegación o acción y que todos despachen la apertura de paneles o rutas correspondientes.
 
 ---
 
 ## 🛡️ 2. Quality Gates Obligatorios
 - `bun run check`: **0 errores** (ui-policy, tsc, eslint).
-- `bun test`: **100% verde** (321 pass o superior).
-- `bun run build`: **Compilación exitosa** (190 rutas generadas).
-- `systemctl restart polis-frontend`: Servicio activo y respondiendo HTTP 200 en `http://127.0.0.1:3000/plataforma/usuarios`.
-- Commit atómico local en `main` con mensaje descriptivo (e.g. `feat(usuarios): [GAP-FIX-02] conexion real de usuarios y roles a api fastapi y dashboard`).
+- `bun test`: **100% verde** (327 pass o superior).
+- `bun run build`: **Compilación limpia exitosa** (190 rutas generadas).
+- `systemctl restart polis-frontend`: Servicio activo y respondiendo HTTP 200 en `http://127.0.0.1:3000`.
+- Commit atómico local en `main` con mensaje descriptivo (e.g. `feat(sidebar): [GAP-FIX-03] activacion de enlaces inertes y resolucion dinamica en menu institucional`).
 - **PROHIBIDO**: `git push` a remoto.
 
 Al culminar la implementación y verificar todos los quality gates, documenta en `bridge/02_resultado_agy2.md` y notifica a `agy` en la sesión tmux.

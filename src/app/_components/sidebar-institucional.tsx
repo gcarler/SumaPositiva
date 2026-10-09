@@ -1,10 +1,13 @@
 "use client";
 
 import React, { useState, useRef, useCallback } from "react";
-import {toast} from "sonner";
-import {useSesionStore, esInstitucional, tienePermiso} from "@/features/sesion/state/session-store";
-import {useNavigationStore} from "@/core/navigation/navigation-store";
-import {usePanels} from "@/core/panels/panel-store";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { useSesionStore, esInstitucional, tienePermiso } from "@/features/sesion/state/session-store";
+import { useNavigationStore } from "@/core/navigation/navigation-store";
+import { usePanels, type PanelType, type PanelPropsMap } from "@/core/panels/panel-store";
+import { useMesasStore } from "@/features/mesas/state/mesas-store";
+import { useFormulariosStore } from "@/features/formularios/state/formularios-store";
 import {
   Building2,
   Users,
@@ -24,7 +27,10 @@ import {
   PlusCircle,
   BarChart3,
   CalendarCheck2,
-  Quote
+  Quote,
+  Compass,
+  Database,
+  Layers,
 } from "lucide-react";
 import {useIsMobile} from "@/shared/hooks/use-mobile";
 import {Button} from "@/shared/ui/button";
@@ -39,14 +45,14 @@ const ROL_LABELS: Record<string, string> = {
 
 type ModoSidebar = "expandido" | "iconos" | "oculto";
 
-interface SubModuloItem {
+export interface SubModuloItem {
   id: string;
   label: string;
   icon?: React.ComponentType<{ className?: string }>;
   onClick: () => void;
 }
 
-interface ModuloItem {
+export interface ModuloItem {
   id: string;
   label: string;
   icon: React.ComponentType<{ className?: string }>;
@@ -54,76 +60,41 @@ interface ModuloItem {
   submodulos?: SubModuloItem[];
 }
 
-export function SidebarInstitucional() {
-  const esMovil = useIsMobile();
-  const sesion = useSesionStore((s) => s.sesion);
-  const cerrarSesion = useSesionStore((s) => s.cerrarSesion);
-    const setVista = useNavigationStore((s) => s.setVista);
-  const { openPanel } = usePanels();
+export const PERMISOS_MODULO: Record<string, string[]> = {
+  usuarios: ["usuarios:leer"],
+  motor_politicas: ["aportes:priorizar", "auditoria:leer", "politicas:gestionar"],
+  forms: ["formularios:leer", "formularios:gestionar"],
+  mesas_trabajo: ["mesas:abrir", "mesas:acuerdos"],
+  asistencia: ["asistencia:verificar"],
+  testimonios: ["testimonios:moderar", "aportes:priorizar"],
+  geodatos: ["mesas:abrir", "auditoria:leer"],
+  diagnostico: ["indicadores:gestionar", "auditoria:leer"],
+  fuentes: ["fuentes:leer", "fuentes:gestionar", "auditoria:leer"],
+  actores: ["auditoria:leer", "aportes:priorizar"],
+  presupuesto: ["presupuesto:gestionar", "alternativas:gestionar"],
+  indicadores: ["indicadores:gestionar", "auditoria:leer"],
+  plataforma: ["usuarios:leer", "auditoria:leer", "politicas:gestionar"],
+  auditoria: ["auditoria:leer", "identidad:auditar"],
+};
 
-  // Estados de control del Sidebar
-  const [modo, setModo] = useState<ModoSidebar>("expandido");
-  const modoVisible: ModoSidebar = esMovil ? "oculto" : modo;
-  const [ancho, setAncho] = useState<number>(280);
-  const [submodulosAbiertos, setSubmodulosAbiertos] = useState<Record<string, boolean>>({
-    mesas_trabajo: true,
-    asistencia: false,
-    forms: false,
-  });
+export interface ParametrosConstruccionModulos {
+  navigateTo: (viewName: "inicio" | "explorar" | "mesas" | "geovisor") => void;
+  navigateToPlataforma: (path?: string) => void;
+  openPanel: <T extends PanelType>(type: T, props: PanelPropsMap[T]) => void;
+}
 
-  const isResizingRef = useRef(false);
-  const sidebarRef = useRef<HTMLDivElement>(null);
-
-  // Redimensionamiento con mouse (Drag-to-Resize)
-  const handleMouseDown = useCallback((e: React.MouseEvent) => {
-    e.preventDefault();
-    isResizingRef.current = true;
-    document.body.style.cursor = "col-resize";
-    document.body.style.userSelect = "none";
-
-    const onMouseMove = (moveEvent: MouseEvent) => {
-      if (!isResizingRef.current) return;
-      const nuevoAncho = Math.min(Math.max(moveEvent.clientX, 220), 480);
-      setAncho(nuevoAncho);
-      if (modo !== "expandido") setModo("expandido");
-    };
-
-    const onMouseUp = () => {
-      isResizingRef.current = false;
-      document.body.style.cursor = "";
-      document.body.style.userSelect = "";
-      window.removeEventListener("mousemove", onMouseMove);
-      window.removeEventListener("mouseup", onMouseUp);
-    };
-
-    window.addEventListener("mousemove", onMouseMove);
-    window.addEventListener("mouseup", onMouseUp);
-  }, [modo]);
-
-  const toggleSubmodulo = (moduloId: string) => {
-    setSubmodulosAbiertos((prev) => ({
-      ...prev,
-      [moduloId]: !prev[moduloId],
-    }));
-  };
-
-  const navigateTo = (viewName: "inicio" | "explorar" | "mesas" | "geovisor") => {
-    setVista(viewName);
-  };
-
-  if (!esInstitucional(sesion)) return null;
-
-  const rolLabel = (sesion?.rol && ROL_LABELS[sesion.rol]) || "Funcionario";
-
-  const permisosModulo: Record<string, string[]> = {
-    motor_politicas: ["aportes:priorizar", "auditoria:leer"], forms: ["formularios:leer", "formularios:gestionar"],
-    mesas_trabajo: ["mesas:abrir", "mesas:acuerdos"], asistencia: ["asistencia:verificar"],
-    testimonios: ["testimonios:moderar", "aportes:priorizar"], geodatos: ["mesas:abrir", "auditoria:leer"],
-    presupuesto: ["presupuesto:gestionar"], indicadores: ["indicadores:gestionar"],
-    auditoria: ["auditoria:leer", "identidad:auditar"], usuarios: ["usuarios:leer"],
-  };
-  const modulos: ModuloItem[] = [
-    {id: "usuarios", label: "Usuarios y permisos", icon: Users, onClick: () => openPanel("usuarios", {})},
+export function construirModulosInstitucionales({
+  navigateTo,
+  navigateToPlataforma,
+  openPanel,
+}: ParametrosConstruccionModulos): ModuloItem[] {
+  return [
+    {
+      id: "usuarios",
+      label: "Usuarios y permisos",
+      icon: Users,
+      onClick: () => navigateToPlataforma("usuarios"),
+    },
     {
       id: "motor_politicas",
       label: "Políticas Públicas",
@@ -140,8 +111,8 @@ export function SidebarInstitucional() {
           label: "Control de Fases DNP",
           icon: Building2,
           onClick: () => openPanel("fases-control", {}),
-        }
-      ]
+        },
+      ],
     },
     {
       id: "forms",
@@ -164,7 +135,14 @@ export function SidebarInstitucional() {
           id: "forms_analitica",
           label: "Analítica y Métricas",
           icon: BarChart3,
-          onClick: () => toast.info("Analítica global", { description: "Selecciona un formulario de la lista para ver su analítica." }),
+          onClick: () => {
+            const forms = useFormulariosStore.getState().formularios;
+            if (forms && forms.length > 0) {
+              openPanel("formulario-analitica", { formularioId: forms[0].id });
+            } else {
+              openPanel("formularios", {});
+            }
+          },
         },
       ],
     },
@@ -185,18 +163,32 @@ export function SidebarInstitucional() {
           icon: PenTool,
           onClick: () => {
             navigateTo("mesas");
-            openPanel("papelografo", {
-              mesaId: "mesa-001",
-              submesaId: "sm-001-1",
-              arbol: "problemas",
-            });
+            const mesas = useMesasStore.getState().mesas;
+            const mesaConSub = mesas.find((m) => m.submesas && m.submesas.length > 0) ?? mesas[0];
+            if (mesaConSub && mesaConSub.submesas && mesaConSub.submesas.length > 0) {
+              openPanel("papelografo", {
+                mesaId: mesaConSub.id,
+                submesaId: mesaConSub.submesas[0].id,
+                arbol: "problemas",
+              });
+            } else if (mesaConSub) {
+              openPanel("mesa", { mesaId: mesaConSub.id });
+            }
           },
         },
         {
           id: "mesas_actas",
           label: "Actas Inmutables (C-150)",
           icon: ShieldCheck,
-          onClick: () => toast.info("Actas Comunitarias", { description: "Sellado pericial SHA-256 e inmutabilidad garantizada." }),
+          onClick: () => {
+            const mesas = useMesasStore.getState().mesas;
+            const mesaValida = mesas.find((m) => Boolean(m.sha256Acta)) ?? mesas[0];
+            if (mesaValida) {
+              openPanel("mesa-acta", { mesaId: mesaValida.id });
+            } else {
+              navigateTo("mesas");
+            }
+          },
         },
       ],
     },
@@ -263,16 +255,40 @@ export function SidebarInstitucional() {
       onClick: () => navigateTo("geovisor"),
     },
     {
+      id: "diagnostico",
+      label: "Diagnóstico y Línea Base",
+      icon: Compass,
+      onClick: () => navigateToPlataforma("diagnostico"),
+    },
+    {
+      id: "fuentes",
+      label: "Fuentes de Información",
+      icon: Database,
+      onClick: () => navigateToPlataforma("fuentes"),
+    },
+    {
+      id: "actores",
+      label: "Mapeo de Actores",
+      icon: Users,
+      onClick: () => navigateToPlataforma("actores"),
+    },
+    {
       id: "presupuesto",
       label: "Presupuesto FONSET",
       icon: Landmark,
-      onClick: () => toast.info("Presupuesto FONSET / SGP", { description: "Fuentes de financiación y vigencias futuras (Ley 1483/11)." }),
+      onClick: () => openPanel("asignacion-presupuestal", {}),
     },
     {
       id: "indicadores",
       label: "Indicadores DNP",
       icon: LineChart,
-      onClick: () => toast.info("Indicadores DNP SINERGIA", { description: "Cadena de valor: Insumo → Producto → Resultado." }),
+      onClick: () => openPanel("rendicion-cuentas", {}),
+    },
+    {
+      id: "plataforma",
+      label: "Plataforma Administrativa",
+      icon: Layers,
+      onClick: () => navigateToPlataforma(),
     },
     {
       id: "auditoria",
@@ -281,6 +297,80 @@ export function SidebarInstitucional() {
       onClick: () => openPanel("auditoria-consola", {}),
     },
   ];
+}
+
+export function SidebarInstitucional() {
+  const esMovil = useIsMobile();
+  const sesion = useSesionStore((s) => s.sesion);
+  const cerrarSesion = useSesionStore((s) => s.cerrarSesion);
+    const setVista = useNavigationStore((s) => s.setVista);
+  const { openPanel } = usePanels();
+  const router = useRouter();
+
+  // Estados de control del Sidebar
+  const [modo, setModo] = useState<ModoSidebar>("expandido");
+  const modoVisible: ModoSidebar = esMovil ? "oculto" : modo;
+  const [ancho, setAncho] = useState<number>(280);
+  const [submodulosAbiertos, setSubmodulosAbiertos] = useState<Record<string, boolean>>({
+    mesas_trabajo: true,
+    asistencia: false,
+    forms: false,
+  });
+
+  const isResizingRef = useRef(false);
+  const sidebarRef = useRef<HTMLDivElement>(null);
+
+  // Redimensionamiento con mouse (Drag-to-Resize)
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    isResizingRef.current = true;
+    document.body.style.cursor = "col-resize";
+    document.body.style.userSelect = "none";
+
+    const onMouseMove = (moveEvent: MouseEvent) => {
+      if (!isResizingRef.current) return;
+      const nuevoAncho = Math.min(Math.max(moveEvent.clientX, 220), 480);
+      setAncho(nuevoAncho);
+      if (modo !== "expandido") setModo("expandido");
+    };
+
+    const onMouseUp = () => {
+      isResizingRef.current = false;
+      document.body.style.cursor = "";
+      document.body.style.userSelect = "";
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mouseup", onMouseUp);
+    };
+
+    window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("mouseup", onMouseUp);
+  }, [modo]);
+
+  const toggleSubmodulo = (moduloId: string) => {
+    setSubmodulosAbiertos((prev) => ({
+      ...prev,
+      [moduloId]: !prev[moduloId],
+    }));
+  };
+
+  const navigateTo = (viewName: "inicio" | "explorar" | "mesas" | "geovisor") => {
+    setVista(viewName);
+  };
+
+  const navigateToPlataforma = (path = "") => {
+    router.push(`/plataforma${path ? `/${path}` : ""}`);
+  };
+
+  if (!esInstitucional(sesion)) return null;
+
+  const rolLabel = (sesion?.rol && ROL_LABELS[sesion.rol]) || "Funcionario";
+
+  const permisosModulo = PERMISOS_MODULO;
+  const modulos = construirModulosInstitucionales({
+    navigateTo,
+    navigateToPlataforma,
+    openPanel,
+  });
 
   // Si está completamente oculto, renderizar el botón chevron flotante en la esquina inferior izquierda
   if (modoVisible === "oculto") {
