@@ -716,5 +716,61 @@ La tarea **[AUD-GAP-01]** queda formalmente **CERRADA Y APROBADA**. Se autoriza 
 La tarea **[GAP-FIX-01]** queda formalmente **CERRADA Y APROBADA AL 100%**.  
 Se emite autorización inmediata para formular y despachar a `agy2` la **Fase 2: `[GAP-FIX-02]` (Conexión Real de Gestión de Usuarios y Roles a la API FastAPI)**.
 
+---
+
+## DICTAMEN PERICIAL FORENSE: APROBACIÓN DE [GAP-FIX-02] (EAF / agy, 2026-10-09)
+
+**Destinatario:** Dirección del Proyecto POLIS / Equipo de Control de Calidad y Desarrollo  
+**Auditor / Coordinador General EAF:** `agy` (`tmux a -t agy`)  
+**Ejecutor Técnico:** `agy2` (`tmux a -t agy2`)  
+**Commits Auditados:** `4fbeec1` (`feat(usuarios): [GAP-FIX-02] conexion real de usuarios y roles a api fastapi y dashboard`) y `c68f0e7` (`docs(audit): registrar informe de entrega de GAP-FIX-02`)  
+**Documento Técnico:** `bridge/02_resultado_agy2.md`  
+**Referencia Activa:** `bridge/01_tarea_activa.md`  
+**Alcance:** Conexión Real de Gestión de Usuarios y Roles a la API FastAPI y Dashboard Institucional (Erradicación de GAP-01 y GAP-08)  
+
+**Resultado Oficial:** **APROBADO — CONFORME AL 100%**
+
+### 1. Comprobaciones Forenses de Contra-Auditoría:
+
+1. **Conexión Real de la Vista Principal (`src/features/plataforma/views/usuarios-view.tsx`)**:
+   - Se erradicó por completo la dependencia del store estático `usuariosDemo` y de datos en memoria.
+   - Implementadas consultas paginadas reactivas mediante `useQuery` a `identidadApi.usuarios(busqueda, pagina * 20, 20)`, `identidadApi.roles()` y query consolidada para métricas.
+   - Paginación dinámica real operando con base en `data.total`, con controles de avance/retroceso y búsqueda reactiva por correo/identificador.
+   - Erradicado el aviso `<Notice tone="info" title="Vista de demostración">` y el botón redundante de apertura institucional. La vista `/plataforma/usuarios` es la administración canónica distrital.
+   - KPIs de cabecera calculados dinámicamente sobre PostgreSQL (total de cuentas, cuentas activas, facilitadores territoriales, auditores forenses y administradores de identidades).
+   - Botón principal `+ Invitar usuario` habilitado por permiso `usuarios:gestionar` con apertura directa de `usuario-invitar`.
+
+2. **Conexión Operativa de Paneles Laterales**:
+   - `src/features/usuarios/panels/usuario-editor-panel.tsx`:
+     - Modo Invitación (`mode === "invite"`): Despacha `POST /api/v1/identidad/usuarios` vía `identidadApi.crearUsuario` con payload completo (`correo`, `contrasena`, `nombres`, `apellidos`, `codigo_rol`, `motivo`).
+     - Modo Edición (`mode === "edit"`): Despacha `PATCH /api/v1/identidad/usuarios/{id}` vía `identidadApi.editarUsuario` con campos trazables requeridos por backend.
+     - Carga reactiva de roles desde base de datos con fallback canónico distrital.
+     - Trazabilidad y captura tipada de errores con clase `ApiError`, feedback informativo mediante `toast` e invalidación atómica de caché React Query (`["identidad"]`).
+     - Higiene textual absoluta: 0 menciones a estados "demo" o demostrativos.
+   - `src/features/usuarios/panels/usuario-detalle-panel.tsx`:
+     - Carga de datos reales desde PostgreSQL y ejecución de operaciones críticas: activación/desactivación de cuentas, revocación de sesiones JWT y solicitud de restablecimiento institucional de credenciales.
+     - 0 avatares simulados o historias de actividad inventadas.
+
+3. **Dashboard Institucional Conectado (`src/features/plataforma/views/dashboard-view.tsx`)**:
+   - Erradicado el valor estático `"Pendiente"` y su texto asociado.
+   - Integrada consulta reactiva con `useQuery` sobre `identidadApi.usuarios("", 0, 1)`. Si la sesión dispone del permiso `usuarios:leer`, expone el número real de cuentas registradas en PostgreSQL; en caso contrario, degrada coherentemente informando "Acceso restringido".
+
+4. **Higiene de Stores y Pruebas Unitarias**:
+   - `src/features/usuarios/state/usuarios-store.ts` depurado, eliminando el arreglo `usuariosDemo` y constantes huérfanas.
+   - Nueva suite de pruebas [`src/features/usuarios/services/usuarios-integracion.test.ts`](file:///root/polis/src/features/usuarios/services/usuarios-integracion.test.ts) con 6/6 pruebas aprobadas (100% verde).
+
+5. **Quality Gates Inviolables Verificados de Forma Independiente**:
+   - `bun run check`: **0 errores** (`node scripts/ui-policy.mjs`, `tsc --noEmit`, `eslint .`).
+   - `bun test`: **327 pass / 0 fail** (1397 expect calls en 35 suites; +6 pruebas nuevas).
+   - `bun run build`: **Compilación exitosa en Next.js Turbopack** (190 rutas generadas, standalone empaquetado).
+   - `systemctl restart polis-frontend`: Servicio activo; `curl http://127.0.0.1:3000/plataforma/usuarios` y `/plataforma` responden HTTP 200 OK.
+   - `pytest test_access_policy.py test_integridad_compromisos.py`: **100 passed in 15.48s**.
+   - Control de versiones: Commits atómicos locales en `main` (`4fbeec1` y `c68f0e7`), cero git push a remoto.
+
+### 2. Veredicto y Autorización:
+La tarea **[GAP-FIX-02]** queda formalmente **CERRADA Y APROBADA AL 100%**.  
+Se emite autorización inmediata para formular y despachar a `agy2` la **Fase 3: `[GAP-FIX-03]` (Activación de Enlaces Inertes y Navegación Operativa en Menú Institucional)**.
+
+
 
 
