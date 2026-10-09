@@ -638,3 +638,39 @@ La tarea **[QA-FIX-02]** queda formalmente **CERRADA Y APROBADA AL 100%**. El ti
 ### 2. Veredicto Final:
 La tarea **[FEAT-TESTIMONIOS-01]** queda formalmente **CERRADA, APROBADA AL 100% Y CERTIFICADA PARA PRODUCCIÓN**.
 
+---
+
+## DICTAMEN PERICIAL FORENSE: APROBACIÓN DE [AUD-GAP-01] Y FORMALIZACIÓN DEL PLAN DE TRABAJO MAESTRO (EAF / agy, 2026-10-09)
+
+**Destinatario:** Dirección del Proyecto POLIS / Equipo de Control de Calidad y Desarrollo  
+**Auditor / Coordinador General EAF:** `agy` (`tmux a -t agy`)  
+**Ejecutor Técnico:** `agy2` (`tmux a -t agy2`)  
+**Documento Auditado:** `bridge/02_resultado_agy2.md`  
+**Referencia Activa:** `bridge/01_tarea_activa.md`  
+**Requerimiento del Usuario:** *"hay cosas que aun no esan siendo funcionales en la paltafomra... pidele a agy2 que haga una revisión exhaustiva de las funcioalidades que estan en el forntend que no estan en el backen ni en la base de datos, o no tienen endpoints, sp o CRUD... conviertas en un plan de trabajo para AGY2 que le vas a ir auditando"*  
+
+**Resultado Oficial:** **AUDITORÍA APROBADA AL 100% — PLAN MAESTRO CERTIFICADO**
+
+### 1. Comprobaciones Forenses de Contra-Auditoría:
+
+1. **Validación de la Matriz de 14 Hallazgos (GAP-01 a GAP-14)**:
+   - Se corroboraron independientemente los 14 hallazgos documentados por `agy2`.
+   - **GAP-01 (Usuarios Mock)**: Confirmada la desconexión en `usuarios-view.tsx` y `usuario-editor-panel.tsx` que operan sobre `usuariosDemo` local en Zustand mientras `identidadApi` y PostgreSQL disponen de la gestión real completa.
+   - **GAP-02 (Permisos RBAC 403)**: Verificado mediante query directo en PostgreSQL (`bd_csh`, `autenticacion.roles`) que `administrador_identidades` carece de permisos de gestión para indicadores, instrumentos, presupuesto, mesas y asistencia.
+   - **GAP-03 (Botones Inertes con Toast)**: Comprobadas las llamadas inertes a `toast.info` en `sidebar-institucional.tsx` en las opciones de Presupuesto FONSET, Indicadores DNP, Actas C-150 y Analítica de Formularios.
+   - **GAP-04 y GAP-05 (CRUDs Incompletos en Diagnóstico)**: Confirmado que `diagnostico-view.tsx` y `arbol-problemas-view.tsx` son vistas de solo lectura sin formularios ni mutaciones para nuevas fichas ni manipulación de nodos causales MGA.
+   - **GAP-06 (Fallo en Frío de Formularios)**: Confirmada la dependencia exclusiva de `obtenerFormulario(id)` en el store en memoria de Zustand sin consulta remota de respaldo.
+   - **GAP-14 (Saneamiento Legal Residual)**: Comprobadas las menciones remanentes del inexistente "Decreto 037 de 2026" en 6 archivos del frontend.
+
+2. **Homologación del Plan de Trabajo Maestro por Fases**:
+   Queda formalizado el siguiente cronograma de intervención atómica y contra-auditoría:
+   - **Fase 1 `[GAP-FIX-01]`**: Desbloqueo RBAC en Base de Datos (migración Alembic `0054_permisos_plenos_administrador.py`) y Erradicación Definitiva de Decreto 037 en todo el frontend.
+   - **Fase 2 `[GAP-FIX-02]`**: Conexión Real de Gestión de Usuarios y Roles a la API FastAPI (`identidadApi`), eliminando stores demo en memoria.
+   - **Fase 3 `[GAP-FIX-03]`**: Activación de Enlaces Inertes y Navegación Operativa en Menú Institucional (`sidebar-institucional.tsx`).
+   - **Fase 4 `[GAP-FIX-04]`**: Habilitación de CRUDs Faltantes: Fichas Indicadores DNP y Mutaciones del Árbol MGA.
+   - **Fase 5 `[GAP-FIX-05]`**: Resiliencia de Formularios en Frío, Radicación de Fuentes y Persistencia de Parámetros de Configuración.
+
+### 2. Veredicto Final:
+La tarea **[AUD-GAP-01]** queda formalmente **CERRADA Y APROBADA**. Se autoriza el inicio inmediato de la **Fase 1: `[GAP-FIX-01]`** para su ejecución por parte de `agy2` y posterior contra-auditoría pericial por parte de `agy`.
+
+

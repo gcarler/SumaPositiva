@@ -1,95 +1,68 @@
-# TAREA ACTIVA: [FEAT-TESTIMONIOS-01] HABILITACIÓN INTEGRAL DE CREACIÓN, EDICIÓN Y GESTIÓN DE TESTIMONIOS EN PLATAFORMA
+# TAREA ACTIVA: [AUD-GAP-01] AUDITORÍA EXHAUSTIVA DE FUNCIONALIDADES FRONTEND VS BACKEND, ENDPOINTS, SCHEMAS Y CRUDS FALTANTES
 
-**Fecha**: 2026-10-08  
-**Asignada a**: `agy2` (Desarrollador / EDD)  
-**Supervisor / Auditor**: `agy` (Coordinador / Auditor Forense EAF)  
-**Solicitud del Usuario**:
-> *"en la plataforma /plaforma no me deja crear ni editar testimonios. por favor encargate de eso.... necesito que crees esa opción"*
-
----
-
-## 🎯 1. Diagnóstico Pericial y Causa Raíz
-
-La auditoría forense (`agy`) ha identificado las dos causas determinantes de la falla reportada:
-
-1. **Ausencia de Interfaz de Creación en `/plataforma/testimonios`**:
-   - En `src/features/plataforma/views/testimonios-view.tsx` (`TestimoniosPlataformaView`), el componente `PageHeader` **carece por completo** de prop `action` con botón de registro. Los administradores institucionales no disponían de ningún botón ni acceso para crear nuevos testimonios desde la plataforma.
-
-2. **Causa Raíz de Falla al Editar (Error 403 y Bloqueo de Formulario)**:
-   - En la base de datos PostgreSQL, el rol `administrador_identidades` no tenía el permiso `testimonios:moderar`.
-   - Como resultado, las consultas a `/api/v1/testimonios/gestion/{id}` retornaban `403 Forbidden`. En `testimonio-editor-panel.tsx`, esto activaba `detalle.isError === true`, deshabilitando el botón de guardado (`disabled={... || detalle.isError}`) y bloqueando al usuario con la alerta *"No se pudo cargar el testimonio para editar."*
-   - Adicionalmente, el formulario de edición no incluía selectores para `territorio_id` y `dimension_id`, enviando valores incompletos.
-   - **Acción ya adelantada**: La auditoría (`agy`) ya ha aplicado la adición del permiso `testimonios:moderar` al rol `administrador_identidades` en la base de datos activa. `agy2` debe formalizar la migración correspondiente en Alembic para garantizar la idempotencia del entorno.
+**Fecha de Asignación:** 2026-10-09  
+**Asignado a:** `agy2` (Desarrollador / Investigador EDD — `tmux a -t agy2`)  
+**Supervisor / Auditor:** `agy` (Coordinador General y Auditor Forense EAF — `tmux a -t agy`)  
+**Solicitud Expresa del Usuario:**  
+> *"hay cosas que aun no esan siendo funcionales en la paltafomra, y quería pedirte el favor que por favor lo revisaras.... pidele a agy2 que haga una revisión exhaustiva de las funcioalidades que estan en el forntend que no estan en el backen ni en la base de datos, o no tienen endpoints, sp o CRUD. necesito que sea rigurosos y los resutlados los consignes com oun plan de trabajo en el puente para que tu lo adutites, y luego d eque compruebes los errores o poblemas, o bug, los conviertas en un plan de trabajo para AGY2 que le vas a ir auditando"*
 
 ---
 
-## 🛠️ 2. Especificación Técnica de Implementación
+## 🎯 1. Objetivo Pericial y Alcance de la Tarea
 
-### 2.1. Botón de Creación en `/plataforma/testimonios`
-- **Archivo**: `src/features/plataforma/views/testimonios-view.tsx`
-- **Cambios**:
-  - Importar `Button` y el icono `Plus` de `lucide-react`, junto con `usePanels` de `@/core/panels/panel-store`.
-  - En `TestimoniosPlataformaView`:
-    ```tsx
-    <PageHeader
-      title="Gestión y Moderación de Testimonios"
-      description="Revisa los relatos comunitarios, registra testimonios institucionales o territoriales y gestiona su curaduría y publicación."
-      action={
-        <Button
-          variant="ember"
-          size="sm"
-          onClick={() => openPanel("testimonio-editor", {})}
-          className="gap-1.5"
-        >
-          <Plus className="size-4" aria-hidden="true" />
-          Registrar Testimonio
-        </Button>
-      }
-    />
-    ```
-  - En la sección inferior o vacía de `testimonios-moderacion-panel.tsx`, proveer un botón secundario "+ Registrar Testimonio Comunitario" para máxima ergonomía del funcionario.
+`agy2` debe ejecutar una revisión exhaustiva, metódica y pericial de todo el código de POLIS (`src/features/`, `src/app/`, `backend/app/`, `alembic/` y esquemas de PostgreSQL `bd_csh`) con el objetivo de identificar y categorizar todas las desconexiones, brechas (gaps), elementos mockeados, CRUDs incompletos y botones inertes en la plataforma.
 
-### 2.2. Robustecimiento Integral de `TestimonioEditorPanel`
-- **Archivo**: `src/features/testimonios/panels/testimonio-editor-panel.tsx`
-- **Cambios requeridos**:
-  1. **Inicialización y Carga de Datos**:
-     - Usar `useEffect` para poblar el estado local `edicion` cuando `detalle.data` esté disponible al editar (`testimonioId` presente).
-     - Si `!testimonioId` (nuevo testimonio), inicializar con formulario en blanco.
-  2. **Selectores de Territorio y Dimensión**:
-     - Incluir campos desplegables para asociar el testimonio al territorio distrital (ej. Localidad 1, Localidad 2, Localidad 3, Zona Insular) y a la Dimensión de Seguridad Humana de la política pública (usando datos existentes o catálogo distrital).
-  3. **Envío y Persistencia (`handleSubmit`)**:
-     - Si es edición (`testimonioId`): invocar `editarMutation.mutateAsync({ id: testimonioId, datos })`.
-     - Si es nuevo: invocar `crearMutation.mutateAsync(datos)`.
-     - Al éxito:
-       - Notificación `toast.success(testimonioId ? "Testimonio actualizado correctamente" : "Testimonio registrado exitosamente")`.
-       - Invalidar queries de React Query: `TESTIMONIOS_KEYS.all`, `TESTIMONIOS_KEYS.gestion`, `TESTIMONIOS_KEYS.resumen`, `TESTIMONIOS_KEYS.publicos()`.
-       - Cerrar panel con `closeTop()`.
-     - Al error: extraer el mensaje de error tipado (`error instanceof ApiError ? error.message : ...`) y mostrarlo con `toast.error`.
-  4. **Habilitación del Botón**:
-     - Si `detalle.isError` ocurre pero el usuario está en modo nuevo testimonio (`!testimonioId`), el botón NUNCA debe estar bloqueado.
-     - Si es edición y ocurre error, permitir botón de reintento de carga sin congelar la interfaz.
+Debe analizar rigurosamente cinco (5) ejes de investigación:
 
-### 2.3. Formalización de Migración Alembic en Backend
-- **Directorio**: `backend/alembic/versions/`
-- **Acción**:
-  - Crear una migración idempotente (ej. `0052_permiso_testimonios_admin.py`) que asegure que `testimonios:moderar` forme parte de los permisos del rol `administrador_identidades`:
-    ```sql
-    UPDATE autenticacion.roles 
-    SET permisos = permisos || '["testimonios:moderar"]'::jsonb 
-    WHERE codigo = 'administrador_identidades' AND NOT (permisos ? 'testimonios:moderar');
-    ```
+### Eje 1: Funcionalidades Mockeadas o Desconectadas del Backend Real
+- Componentes o stores que usan datos fijos/demo en memoria o `localStorage` teniendo tablas y endpoints en el backend.
+- *Ejemplo detectado por auditoría:* `src/features/usuarios/state/usuarios-store.ts` mantiene 8 usuarios mock en memoria (`usuariosDemo`), mientras el backend FastAPI dispone de un módulo completo en `backend/app/modules/identidad/` (`GET,POST /api/v1/identidad/usuarios`, `PATCH /usuarios/{id}`, `POST /usuarios/{id}/revocar`) y tabla `autenticacion.usuarios`. En `/plataforma/usuarios` se muestra el mock y la administración real queda relegada a un panel secundario.
+
+### Eje 2: CRUDs Parciales o Incompletos en el Frontend
+- Vistas donde solo se implementó lectura (`GET`), pero carecen de botones/paneles de creación (`POST`), edición (`PATCH/PUT`) o eliminación (`DELETE`), aun cuando el backend dispone de los endpoints o la base de datos lo soporta.
+- *Ejemplos para inspeccionar:*
+  - **Diagnóstico / Línea Base (`src/features/diagnostico/`):** La tabla lista indicadores (`GET /indicadores/fichas`), pero no existe botón ni formulario para registrar nueva ficha (`POST /indicadores/fichas`) o editar ficha (`PATCH /indicadores/fichas/{id}`).
+  - **Árbol de Problemas MGA (`arbol-problemas-view.tsx`):** Vista de solo lectura. El backend dispone de endpoints para nodos (`POST /instrumentos/{id}/nodos`, `PUT/DELETE`), pero el usuario no puede modificarlos desde la vista principal de diagnóstico.
+  - **Formularios (`formularios-api.ts`):** `obtenerFormulario(id)` lee del store local de Zustand en lugar de consultar `GET /formularios/{id}`, generando desincronización si el store está frío.
+
+### Eje 3: Enlaces Inertes, Placeholders y Acciones con Toasts Informativos
+- Botones, menús o accesos directos en el menú institucional (`sidebar-institucional.tsx`), cabeceras o paneles que al hacer clic solo disparan un `toast.info(...)` o `console.log` sin ejecutar acción de negocio ni abrir la vista correspondiente.
+- *Ejemplos detectados en `sidebar-institucional.tsx`:*
+  - *"Presupuesto FONSET"* -> Dispara `toast.info` en vez de enlazar a `/plataforma/alternativas` (costeo) o panel de fuentes.
+  - *"Indicadores DNP"* -> Dispara `toast.info` en vez de enlazar a `/plataforma/diagnostico` o seguimiento de cadena de valor.
+  - *"Actas Inmutables (C-150)"* -> Dispara `toast.info`.
+  - *"Analítica y Métricas de Formularios"* -> Dispara `toast.info`.
+
+### Eje 4: Brechas de Permisos y Roles en Base de Datos (`autenticacion.roles`)
+- Endpoints del backend protegidos con `Depends(requerir_permiso(...))` donde los roles administrativos carecen del permiso en `autenticacion.roles`, causando errores 403 Forbidden silenciosos o bloqueos de UI.
+- *Ejemplo detectado:* `administrador_identidades` carece de `indicadores:gestionar`, `instrumentos:gestionar`, `presupuesto:gestionar`, `mesas:abrir`, `mesas:acuerdos` y `asistencia:verificar`.
+
+### Eje 5: Discrepancias Normativas y de Configuración
+- Parámetros de configuración en `/plataforma/configuracion` que se almacenan en `useState` efímero y no persisten en base de datos.
+- Referencias anacrónicas erradicadas (ej. mención residual de "Decreto 037 de 2026" en `configuracion-view.tsx`).
 
 ---
 
-## 🔒 3. Protocolo de Quality Gates
+## 📋 2. Formato Requerido del Informe en `bridge/02_resultado_agy2.md`
 
-Antes de entregar, `agy2` debe verificar:
-1. `bun run check`: 0 errores en `ui-policy.mjs`, `tsc --noEmit` y `eslint .`.
-2. `bun test`: Pruebas de testimonios y plataforma 100% en verde.
-3. `bun run build`: Empaquetado de producción de Turbopack exitoso (190 rutas).
-4. `systemctl restart polis-frontend`: Frontend activo en puerto 3000.
-5. Verificación HTTP en vivo:
-   - `curl -s -I http://127.0.0.1:3000/plataforma/testimonios` -> 200 OK
-   - `curl -s -k -I https://seguridadhumanaintegral.org/plataforma/testimonios` -> 200 OK
-6. Commit local atómico en `main` (sin git push) con mensaje descriptivo (e.g. `feat(testimonios): creacion y edicion de testimonios desde plataforma y habilitacion de permisos (FEAT-TESTIMONIOS-01)`).
-7. Registrar el informe de resultados en `bridge/02_resultado_agy2.md` y notificar a la sesión `agy`.
+`agy2` debe estructurar su informe en `bridge/02_resultado_agy2.md` con:
+
+1. **Tabla de Hallazgos y Matriz de Gaps:**
+   - ID del Hallazgo (ej. `GAP-01`, `GAP-02`, ...).
+   - Módulo afectado (Usuarios, Diagnóstico, Presupuesto, Configuración, etc.).
+   - Descripción técnica precisa (archivo frontend, línea, endpoint backend, tabla PostgreSQL).
+   - Severidad (Crítica / Alta / Media / Baja).
+   - Estado actual (Mock / CRUD Incompleto / Toast Inerte / Permiso 403 / Incoherencia).
+
+2. **Detalle Técnico por Módulo:**
+   - Análisis pormenorizado con evidencia de código y comportamiento verificado.
+
+3. **Propuesta del Plan de Trabajo Estructurado en Fases para Auditoría:**
+   - Desglose de tareas atómicas de implementación (`GAP-FIX-01`, `GAP-FIX-02`, etc.) priorizadas para que `agy` las contra-audite una a una.
+
+---
+
+## ⚡ 3. Instrucción Operativa para `agy2`
+
+Una vez recibida esta tarea, procede a realizar las inspecciones sobre el repositorio y consigna de inmediato tus resultados en `bridge/02_resultado_agy2.md`.  
+Al finalizar la redacción de la bitácora, notifica formalmente a `agy` para iniciar la contra-auditoría pericial.
