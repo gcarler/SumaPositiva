@@ -673,4 +673,48 @@ La tarea **[FEAT-TESTIMONIOS-01]** queda formalmente **CERRADA, APROBADA AL 100%
 ### 2. Veredicto Final:
 La tarea **[AUD-GAP-01]** queda formalmente **CERRADA Y APROBADA**. Se autoriza el inicio inmediato de la **Fase 1: `[GAP-FIX-01]`** para su ejecución por parte de `agy2` y posterior contra-auditoría pericial por parte de `agy`.
 
+---
+
+## DICTAMEN PERICIAL FORENSE: APROBACIÓN DE [GAP-FIX-01] (EAF / agy, 2026-10-09)
+
+**Destinatario:** Dirección del Proyecto POLIS / Equipo de Control de Calidad y Desarrollo  
+**Auditor / Coordinador General EAF:** `agy` (`tmux a -t agy`)  
+**Ejecutor Técnico:** `agy2` (`tmux a -t agy2`)  
+**Commit Auditado:** `8db9ef9` (`fix(rbac-normativo): [GAP-FIX-01] formalizar permisos plenos en alembic y erradicar decreto 037`)  
+**Documento Técnico:** `bridge/02_resultado_agy2.md`  
+**Referencia Activa:** `bridge/01_tarea_activa.md`  
+**Alcance:** Desbloqueo RBAC en Base de Datos PostgreSQL y Saneamiento Normativo Legal de Decreto 037  
+
+**Resultado Oficial:** **APROBADO — CONFORME AL 100%**
+
+### 1. Comprobaciones Forenses de Contra-Auditoría:
+
+1. **Migración Alembic y Paridad en PostgreSQL**:
+   - Se verificó la migración `backend/alembic/versions/0054_permisos_plenos_admin.py` con `down_revision = "0053_permiso_testimonios_admin"`.
+   - El identificador de versión (`0054_permisos_plenos_admin`) tiene 26 caracteres, respetando el límite `VARCHAR(32)` de `alembic_version.version_num`.
+   - Se corroboró en vivo mediante `.venv/bin/alembic current` el estado `0054_permisos_plenos_admin (head)`.
+   - Consulta pericial directa en PostgreSQL (`bd_csh`, tabla `autenticacion.roles`): el rol `administrador_identidades` cuenta con 26 permisos consolidados en su array JSONB (incluyendo `indicadores:gestionar`, `instrumentos:gestionar`, `presupuesto:gestionar`, `mesas:abrir`, `mesas:acuerdos`, `mesas:fotos:subir`, `asistencia:verificar`, `ia:analizar`).
+   - Se confirmó paridad en la base de datos de pruebas `polis_test`.
+
+2. **Sincronización de Matriz de Acceso Contractual**:
+   - `docs/permisos-api.md` fue sincronizado formalmente incorporando `administrador_identidades` en todos los roles autorizados canónicos.
+   - La suite pericial de backend `backend/tests/test_access_policy.py` y `backend/tests/test_integridad_compromisos.py` pasó con **100 passed in 16.59s (0 fallas)**.
+
+3. **Erradicación Sistemática y Definitiva del "Decreto 037 de 2026"**:
+   - Barrido forense mediante `grep -rn "Decreto 037" src/`: 0 coincidencias atribuyendo facultades a dicho decreto inexistente.
+   - Las únicas ocurrencias de la subcadena `"037"` en `src/features/seguimiento/` corresponden taxativamente a la cláusula de descargo obligatoria de **OBS-11** (*"no proviene del Decreto 037"*), requerida y verificada para la integridad de datos.
+   - Los textos y metadatos institucionales fueron alineados rigurosamente con la **Ley Estatutaria 1757 de 2015**, la **Sentencia C-150 de 2015** y el **Plan de Desarrollo Distrital Cartagena 2024–2027**.
+
+4. **Quality Gates Inviolables Verificados de Forma Independiente**:
+   - `bun run check`: **0 errores** (`node scripts/ui-policy.mjs`, `tsc --noEmit`, `eslint .`).
+   - `bun test`: **321 pass / 0 fail** (1383 expect calls en 34 archivos).
+   - `bun run build`: **Compilación exitosa en Next.js Turbopack** (190 rutas generadas, standalone empaquetado).
+   - `systemctl status polis-frontend polis-backend`: Ambos servicios activos, respondiendo HTTP 200 OK.
+   - Control de versiones: Commits atómicos locales en `main` (`8db9ef9` y `28bb76a`), cero git push a remoto.
+
+### 2. Veredicto y Autorización:
+La tarea **[GAP-FIX-01]** queda formalmente **CERRADA Y APROBADA AL 100%**.  
+Se emite autorización inmediata para formular y despachar a `agy2` la **Fase 2: `[GAP-FIX-02]` (Conexión Real de Gestión de Usuarios y Roles a la API FastAPI)**.
+
+
 
