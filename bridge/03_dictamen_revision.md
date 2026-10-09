@@ -935,3 +935,63 @@ La plataforma POLIS se encuentra en estado de **CONFORMIDAD INTEGRAL AL 100%**, 
 
 
 
+
+
+---
+
+## DICTAMEN PERICIAL FORENSE: APROBACIÓN DE [FIX-MESAS-01] — HABILITACIÓN INTEGRAL Y PERSISTENCIA DE CREACIÓN DE MESAS (EAF / agy, 2026-10-09)
+
+**Destinatario:** Dirección del Proyecto POLIS / Supervisión Técnica y Funcional  
+**Auditor / Coordinador General EAF:** `agy` (`tmux a -t agy`)  
+**Ejecutor Técnico:** `agy2` (`tmux a -t agy2`)  
+**Commits Auditados:** `c37989e` (`fix(mesas): [FIX-MESAS-01] resolver mapper FotoMesa persistencia real y flujo asincrono de creacion de mesas`) y `277be50` (`docs(audit): registrar informe de ejecucion de FIX-MESAS-01`)  
+**Documento Técnico:** `bridge/02_resultado_agy2.md`  
+**Referencia Activa:** `bridge/01_tarea_activa.md`  
+**Alcance:** Remediación del fallo de mapper SQLAlchemy, flujo asíncrono con persistencia en PostgreSQL, inyección de token de autenticación y remoción del bloqueo UX en formulario de mesas (`/plataforma/mesas`)  
+
+**Resultado Oficial:** **APROBADO — CONFORME AL 100%**
+
+### 1. Comprobaciones Forenses de Contra-Auditoría:
+
+1. **Resolución Definitiva de Mapper SQLAlchemy (`FotoMesa` ↔ `Mesa`)**:
+   - En `backend/app/modules/mesas/models.py` se incorporó la importación en tiempo de ejecución de `FotoMesa` desde `app.modules.evidencia.models`.
+   - En `backend/app/modules/evidencia/models.py` se aisló la importación de `Mesa` bajo guarda condicional `TYPE_CHECKING` con resolución diferida al pie del módulo.
+   - Comprobación: inicialización de `configure_mappers()` limpia y sin excepciones circulares ni errores `InvalidRequestError` (`When initializing mapper Mapper[Mesa(mesas)], expression 'FotoMesa' failed to locate a name`).
+
+2. **Backend: Unicidad Jerárquica `ltree` y Auditoría Forense**:
+   - En `backend/app/modules/mesas/service.py` (`crear_mesa_raiz`), se implementó la detección de colisiones en `slug`, `ruta_jerarquica` y `shortcode_ciudadano`, asignando sufijo hexadecimal único para asegurar persistencia sin conflicto con el árbol existente.
+   - Validación sintáctica `ltree` estricta garantizada por `_validar_ruta_ltree`.
+   - Se registró el evento inmutable en `auditoria.registros_auditoria` con acción `mesa:crear` y trazabilidad del sujeto autenticado.
+   - En `backend/app/modules/mesas/router.py`, el endpoint `POST /api/v1/mesas` inyecta `SujetoAutenticadoContexto` mediante `requerir_permiso("mesas:abrir")` y lo propaga al servicio.
+
+3. **Frontend API: Autenticación Bearer y Formateo Pydantic**:
+   - En `src/features/mesas/services/mesas-api.ts` (`crearMesaRemota`), se inyecta dinámicamente el Bearer token activo desde `useSesionStore.getState().sesion?.token`.
+   - Se asegura que valores de fecha en blanco sean enviados como `null` estricto (`datos.fecha || null`) satisfaciendo el validador Pydantic `date | None` (evitando rechazos `HTTP 422`).
+   - Cero enmascaramiento de excepciones de red; propagación honesta a la interfaz de usuario.
+   - Pruebas unitarias dedicadas en `src/features/mesas/services/mesas-api.test.ts` (3/3 pass).
+
+4. **Frontend UI: Flujo Asíncrono Real y Accesibilidad**:
+   - En `src/features/mesas/panels/mesa-editor-panel.tsx`, se erradicó la mutación optimista con captura silenciosa `.catch(() => {})`.
+   - La operación `guardar` aguarda la respuesta con `await crearMesaRemota(...)`, adopta el UUID devuelto por PostgreSQL, sincroniza el store Zustand, invalida la caché de React Query (`MESAS_KEYS.all`), muestra retroalimentación exitosa y enfoca la nueva mesa.
+   - Ante fallos, el panel permanece abierto y expone el mensaje de error del servidor.
+   - Se removió el atributo bloqueante `disabled={!isValid}` en el botón de submit; el clic dispara la validación de React Hook Form mediante callback `onInvalid` que abre automáticamente las secciones colapsadas con campos faltantes y guía al usuario.
+
+5. **Verificación Pericial en Vivo (End-to-End)**:
+   - Se ejecutó una prueba de creación en vivo contra `polis-backend` en puerto 8000 utilizando un token válido con sesión activa en `autenticacion.sesiones_usuario`.
+   - Resultado: `POST /api/v1/mesas` respondió **HTTP 201 Created**, retornando UUID `01a121c2-62a1-7191-98b2-e1592042f229` y ruta `csh.vivo3572c7`.
+   - La mesa se consultó exitosamente mediante `GET /api/v1/mesas/{id}` con **HTTP 200 OK**.
+   - Tras la limpieza inmediata del registro de prueba, se verificó el recuento en PostgreSQL `bd_csh`: **exactamente 33 mesas canónicas** oficiales preservadas.
+
+6. **Quality Gates Inviolables 100% Verdes**:
+   - `bun run check`: **0 errores, 0 advertencias** (UI Policy, TypeScript estricto, ESLint).
+   - `bun test`: **367 pass / 0 fail** (1551 expect calls en 37 archivos).
+   - `pytest`: **19 passed** en `test_mesas*`, `test_actas*` y `test_fotos*`.
+   - `bun run build`: **190 rutas compiladas** en modo producción con Turbopack.
+   - Servicios del sistema: `polis-backend` y `polis-frontend` activos (`systemctl is-active`).
+   - Control de versiones: Commits atómicos locales en `main` (`c37989e` y `277be50`), protocolo Zero Push cumplido estrictamente.
+
+---
+
+### 2. Veredicto Pericial:
+La tarea **[FIX-MESAS-01]** queda formalmente **CERRADA Y APROBADA AL 100%**.  
+La creación de mesas de trabajo está plenamente funcional, validada y operativa tanto en backend como en interfaz de usuario.
