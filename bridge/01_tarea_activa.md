@@ -1,73 +1,89 @@
-# TAREA ACTIVA: [GAP-FIX-05] RESILIENCIA EN FRÍO DE FORMULARIOS, RADICACIÓN DE FUENTES Y PERSISTENCIA DE CONFIGURACIÓN
+# TAREA ACTIVA: [FIX-MESAS-01] HABILITACIÓN INTEGRAL Y PERSISTENCIA DE CREACIÓN DE MESAS EN PLATAFORMA Y FASTAPI
 
 **Fecha:** 2026-10-09  
 **Asignada a:** `agy2` (Desarrollador / EDD — `tmux a -t agy2`)  
 **Supervisor / Auditor:** `agy` (Coordinador General y Auditor Forense EAF — `tmux a -t agy`)  
-**Referencia:** Plan de Trabajo Maestro homologado en `bridge/03_dictamen_revision.md` (Fase 5 - Final)  
-**Severidad Mitigada:** MEDIA / OPERACIONAL (GAP-06, GAP-07 y GAP-12 erradicados de raíz)  
+**Referencia:** Requerimiento del Usuario ("no puedo crear mesas")  
+**Severidad:** ALTA / BLOQUEANTE (Imposibilidad de registrar nuevas mesas en base de datos)  
 
 ---
 
-## 🎯 1. Objetivos Técnicos de la Tarea [GAP-FIX-05]
+## 🎯 1. Diagnóstico de Causa Raíz
 
-Esta es la **Fase 5 y de Cierre** del Plan Maestro GAP-FIX. Abarca tres componentes esenciales para la robustez operativa de la plataforma:
+Tras la auditoría forense inmediata realizada por `agy`, se identificaron los tres factores que impiden crear mesas de trabajo en POLIS:
 
-### 1.1. Resiliencia de Arranque en Frío de Formularios (`GAP-06`)
-1. **Archivo Objetivo**: `src/features/formularios/services/formularios-api.ts`.
-2. **Diagnóstico**: La función `obtenerFormulario(id: string)` actualmente solo busca en `useFormulariosStore.getState().formularios`. Si un usuario recarga la página, accede directamente a una URL de formulario o abre el panel de analítica sin haber pasado antes por el listado, el store en memoria está vacío y la función arroja inmediatamente `Error("Formulario no encontrado.")`, bloqueando la visualización.
-3. **Requerimiento**:
-   - Modificar `obtenerFormulario(id: string)` para que:
-     a) Busque primero en el store en memoria (`f.id === id || f.idPersistido === id || f.configuracion.slug === id`).
-     b) Si no se encuentra, consulte asíncronamente `formulariosRemotos.listar()` e hidrate el store (`useFormulariosStore.setState({ formularios: remotos })`), volviendo a buscar en la lista devuelta.
-     c) Si aún no se encuentra, intente resolverlo mediante `formulariosRemotos.publico(id)` como fallback para formularios públicos ciudadanos.
-     d) Solo si falla la consulta remota o no se localiza en backend, lance la excepción.
-4. **Pruebas**:
-   - Actualizar o ampliar `src/features/formularios/services/persistencia-formularios.test.ts` para verificar la hidratación resiliente en frío cuando el store inicial está vacío.
+1. **Error Crítico de Mapper en Backend (`backend/app/modules/mesas/models.py`)**:
+   - `Mesa` declara la relación `fotos: Mapped[list["FotoMesa"]] = relationship("FotoMesa", back_populates="mesa")`.
+   - Sin embargo, la clase `FotoMesa` (definida en `app.modules.evidencia.models`) **no está importada** en `backend/app/modules/mesas/models.py`.
+   - En consecuencia, cada intento de instanciar `Mesa(**datos_dict)` en `MesaService.crear_mesa_raiz` arroja:
+     `sqlalchemy.exc.InvalidRequestError: When initializing mapper Mapper[Mesa(mesas)], expression 'FotoMesa' failed to locate a name ('FotoMesa')`.
+   - El endpoint `POST /api/v1/mesas` falla con `HTTP 500 Internal Server Error`.
 
-### 1.2. Radicación Directa de Fuentes de Información en UI (`GAP-07`)
-1. **Diagnóstico**: El backend en FastAPI ya dispone de `POST /api/v1/fuentes` protegido por `fuentes:gestionar` (implementado en `EDIT-03b`) y `useFuentesStore` ya cuenta con el método `agregarFuente(datos)`. Sin embargo, la interfaz de usuario en `src/features/plataforma/views/fuentes-view.tsx` no ofrece ningún botón para radicar una nueva fuente institucional y el panel `fuente-editor-panel.tsx` asume obligatoriamente un `fuenteId` preexistente.
-2. **Requerimientos**:
-   - **`src/core/panels/panel-store.ts`**:
-     - Actualizar el tipado de `PanelPropsMap["fuente-editor"]` para admitir `{ fuenteId?: string; soloLectura?: boolean }` (hacer `fuenteId` opcional).
-   - **`src/features/fuentes/panels/fuente-editor-panel.tsx`**:
-     - Adaptar el panel para soportar modo creación (`esCreacion = !fuenteId || !fuente`).
-     - En modo creación:
-       - Título: "Radicar Fuente de Información".
-       - Kicker: "Gestión Institucional de Fuentes".
-       - Formulario completo para capturar: entidad solicitada, nombre de la fuente, tipo (`primaria` | `secundaria`), ámbito (`local` | `nacional` | `internacional`), dimensión de seguridad humana ONU (`personal`, `comunitaria`, `ambiental`, `economica`, `alimentaria`, `salud`, `politica`, `crisis`), variables solicitadas (separadas por comas o líneas), número de radicado distrital, fecha de solicitud, fecha límite, y datos del enlace de contacto (nombre, cargo, email, teléfono).
-       - Botón de envío "Radicar Fuente Institucional" que invoque `agregarFuente(...)` del store, cierre el panel con `closeTop()` y notifique vía `toast.success`.
-   - **`src/features/plataforma/views/fuentes-view.tsx`**:
-     - En el `PageHeader`, agregar la acción institucional `action`:
-       - Botón `+ Radicar Fuente` (ícono `Plus` o `FilePlus`, variant `default`, con chequeo de permisos `puedeEditar(sesion, "fuentes")`).
-       - Al hacer clic, despacha `openPanel("fuente-editor", {})`.
-   - **Pruebas**:
-     - Actualizar o verificar suites en `src/features/fuentes/services/fuentes-api.test.ts` y `src/features/fuentes/state/fuentes-store.test.ts`.
+2. **Mutación Optimista Ciega y Fallback Silencioso en Frontend (`src/features/mesas/panels/mesa-editor-panel.tsx`)**:
+   - En `MesaEditorPanel`, la función `guardar` crea una mesa en memoria local (`mesa-nueva-X`) y luego lanza `crearMesaRemota` con `.catch(() => {})` no bloqueante.
+   - El formulario muestra `toast.success("Mesa creada")` y cierra el panel, pero la mesa NUNCA se persistió en PostgreSQL debido al error del backend o falta de token.
+   - Al navegar a `/plataforma/mesas` o recargar la página, React Query carga la lista real de PostgreSQL y la mesa desaparece, haciendo creer al usuario que no se puede crear o que se perdió.
 
-### 1.3. Persistencia de Parámetros de Configuración de Plataforma (`GAP-12`)
-1. **Diagnóstico**: En `src/features/plataforma/views/configuracion-view.tsx`, los parámetros de resumen semanal y coordenadas de referencia del geovisor (`latitud`, `longitud`, `zoom`) se mantienen en simples `useState` volátiles que se reinician en cada recarga del navegador.
-2. **Requerimientos**:
-   - Crear el store Zustand persistente `src/features/plataforma/state/configuracion-store.ts` utilizando el middleware `persist` de Zustand apuntando a `localStorage` (`"polis-configuracion-parametros"`).
-   - El store debe contener:
-     - `resumenSemanal: boolean`
-     - `geovisorCentro: { latitud: string; longitud: string; zoom: string }`
-     - Acciones: `setResumenSemanal(activo: boolean)`, `setGeovisorCentro(coords: Partial<{ latitud: string; longitud: string; zoom: string }>)`.
-   - En `src/features/plataforma/views/configuracion-view.tsx`:
-     - Conectar el switch de "Resumen semanal" y los campos de latitud, longitud y zoom al store persistente.
-     - En la sección del Geovisor, agregar un botón de guardado institucional: "Guardar parámetros de geovisor", con feedback inmediato mediante `toast.success("Parámetros del geovisor actualizados y guardados")`.
-   - Crear prueba unitaria en `src/features/plataforma/state/configuracion-store.test.ts` para verificar la reactividad y persistencia del nuevo store.
+3. **Inyección de Bearer Token y Validación de Fechas (`src/features/mesas/services/mesas-api.ts`)**:
+   - `crearMesaRemota` no asegura `setBearerToken(sesion.token)` de la sesión activa, lo que provoca `401 Unauthorized` si el token en memoria de `apiFetch` no está inicializado.
+   - Si `datos.fecha` es una cadena vacía o no formateada, FastAPI falla con `422 Unprocessable Entity` en Pydantic (`fecha: date | None`). Debe enviarse `datos.fecha || null`.
+   - El `shortcode_ciudadano` debe ser único y con entropía suficiente para no colisionar con mesas existentes.
+
+4. **Bloqueo UX en Botón Submit (`src/features/mesas/panels/mesa-editor-panel.tsx`)**:
+   - El botón tiene `disabled={!isValid}`. Si hay un campo inválido o faltante en una sección colapsada (ej. sección 2 o 3), el usuario queda bloqueado sin saber qué falta.
+   - Debe removerse `disabled={!isValid}` (o manejarse el clic para expandir la sección con error y notificar mediante toast).
 
 ---
 
-## 🛡️ 2. Quality Gates Obligatorios
+## 🛠️ 2. Especificación Técnica de Remediación
 
-Antes de reportar la finalización de la tarea, ejecuta y valida rigurosamente:
+### 2.1. Backend (`backend/app/modules/mesas/`)
+1. **`backend/app/modules/mesas/models.py`**:
+   - Importar `FotoMesa` desde `app.modules.evidencia.models`:
+     ```python
+     from app.modules.evidencia.models import FotoMesa
+     ```
+2. **`backend/app/modules/mesas/service.py`**:
+   - En `crear_mesa_raiz`:
+     - Asegurar la unicidad del `slug`: si ya existe una mesa con ese slug o shortcode, sanitizarlo agregando un sufijo único (e.g. `f"csh.{slug}_{uuid.uuid4().hex[:6]}"`).
+     - Registrar el evento de auditoría correspondiente (`auditoria: "mesa:crear"`).
+3. **Prueba Backend**:
+   - Crear o actualizar test en `backend/tests/` para verificar que `POST /api/v1/mesas` crea y persiste exitosamente una mesa raíz con rol autorizado (`autoridad_distrital` o `administrador_identidades`) retornando `HTTP 201 Created` con su UUID y `codigo_oficial`.
+
+### 2.2. Frontend (`src/features/mesas/`)
+1. **`src/features/mesas/services/mesas-api.ts`**:
+   - En `crearMesaRemota`:
+     - Inyectar el Bearer token activo:
+       ```typescript
+       const sesion = useSesionStore.getState().sesion;
+       if (sesion?.token) setBearerToken(sesion.token);
+       ```
+     - Formatear `fecha`: si no hay fecha o es cadena vacía, enviar `null`.
+     - Generar `codigo_oficial` y `shortcode_ciudadano` únicos y legibles.
+     - Propagar cualquier error HTTP o `ApiError` para que la UI lo capture honestamente.
+2. **`src/features/mesas/panels/mesa-editor-panel.tsx`**:
+   - En el envío del formulario (`guardar`):
+     - Esperar asíncronamente con `await crearMesaRemota(...)`.
+     - Al recibir la confirmación de PostgreSQL (`remota.id`), agregar/sincronizar la mesa en `useMesasStore` con el ID real.
+     - Invalidar consultas de React Query (`queryClient.invalidateQueries({ queryKey: MESAS_KEYS.all })`).
+     - Mostrar `toast.success("Mesa creada exitosamente", { description: `Código: ${remota.codigoOficial}` })`.
+     - Cerrar el panel y abrir el panel de detalle de la mesa con el UUID real: `openPanel("mesa", { mesaId: remota.id })`.
+     - En el bloque `catch (err)`: NO cerrar el panel, mostrar `toast.error("No se pudo crear la mesa", { description: err instanceof Error ? err.message : "Error del servidor" })`.
+   - En el botón de submit:
+     - Remover `disabled={!isValid}` para no bloquear al usuario si una subsección colapsada tiene valores pendientes; permitir que al dar clic se validen los campos y se enfoque la sección con error.
+
+---
+
+## 🛡️ 3. Quality Gates Obligatorios
+
+Antes de reportar la finalización, valida:
 1. `bun run check`: Cero errores en UI-Policy, TypeScript estricto (`tsc --noEmit`) y ESLint (`eslint .`).
-2. `bun test`: 100% de tests pasando (mínimo los 356 actuales + los nuevos tests de formularios, fuentes y configuración).
-3. `bun run build`: Compilación de producción limpia en Next.js (190 rutas generadas).
-4. `systemctl restart polis-frontend`: Servicio reiniciado sin caídas.
+2. `bun test`: 100% de tests pasando (mínimo 364 tests pass).
+3. `bun run build`: Compilación limpia en Next.js (190 rutas generadas).
+4. `systemctl restart polis-backend polis-frontend`: Ambos servicios activos.
 5. Verificación HTTP en vivo:
-   - `curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:3000/plataforma/configuracion` -> 200.
-   - `curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:3000/plataforma/fuentes` -> 200.
+   - `curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:3000/plataforma/mesas` -> 200.
+   - Creación de mesa de prueba verificada en vivo contra backend.
 6. Commit atómico local en la rama `main` sin `git push`:
-   - `feat(plataforma): [GAP-FIX-05] resiliencia en frio formularios radicacion de fuentes y persistencia configuracion`
-7. Registrar el informe técnico de ejecución en `bridge/02_resultado_agy2.md` y notificar a `agy`.
+   - `fix(mesas): [FIX-MESAS-01] resolver mapper FotoMesa persistencia real y flujo asincrono de creacion de mesas`
+7. Registrar informe de ejecución en `bridge/02_resultado_agy2.md` y notificar a `agy`.
