@@ -171,7 +171,7 @@ export function MesaEditorPanel({
     control,
     handleSubmit,
     setValue,
-    formState: { errors, isSubmitting, isValid },
+    formState: { errors, isSubmitting },
   } = useForm<MesaForm>({
     resolver: zodResolver(mesaSchema),
     mode: "onChange",
@@ -295,45 +295,71 @@ export function MesaEditorPanel({
         if (remota?.id) {
           actualizarMesa(props.mesaId, remota);
         }
+        queryClient.invalidateQueries({ queryKey: MESAS_KEYS.all });
+        queryClient.invalidateQueries({
+          queryKey: MESAS_KEYS.detail(props.mesaId),
+        });
+        toast.success("Mesa actualizada", {
+          description: "Los datos de la mesa quedaron al día.",
+        });
+        closeTop();
       } catch (err) {
-        console.warn("No se pudo persistir la mesa en el servidor:", err);
+        toast.error("No se pudo actualizar la mesa", {
+          description: err instanceof Error ? err.message : "Error del servidor",
+        });
       }
-      queryClient.invalidateQueries({ queryKey: MESAS_KEYS.all });
-      queryClient.invalidateQueries({
-        queryKey: MESAS_KEYS.detail(props.mesaId),
-      });
-      toast.success("Mesa actualizada", {
-        description: "Los datos de la mesa quedaron al día.",
-      });
-      closeTop();
       return;
     }
 
-    const mesa = crearMesa(mesaPayload);
-    crearMesaRemota({
-      nombre: data.nombre,
-      fecha: data.fecha,
-      lugar: data.lugar,
-      entidad: entidadPrincipal ?? "Secretaría de Planeación",
-      facilitador: facilitadorPrincipal ?? "",
-      totalAsistentes: data.totalAsistentes ?? 0,
-    })
-      .then((remota) => {
-        if (remota?.id) {
-          actualizarMesa(mesa.id, {
-            codigoOficial: remota.codigoOficial,
-            shortcodeCiudadano: remota.shortcodeCiudadano,
-          });
-          queryClient.invalidateQueries({ queryKey: MESAS_KEYS.all });
-        }
-      })
-      .catch(() => {});
+    try {
+      const remota = await crearMesaRemota({
+        nombre: data.nombre,
+        fecha: data.fecha,
+        lugar: data.lugar,
+        entidad: entidadPrincipal ?? "Secretaría de Planeación",
+        facilitador: facilitadorPrincipal ?? "",
+        totalAsistentes: data.totalAsistentes ?? 0,
+        horario,
+      });
 
-    toast.success("Mesa creada", {
-      description: "Registra la plenaria y crea las submesas para empezar.",
+      if (remota?.id) {
+        crearMesa({
+          ...mesaPayload,
+          id: remota.id,
+          codigoOficial: remota.codigoOficial,
+          shortcodeCiudadano: remota.shortcodeCiudadano,
+        });
+        queryClient.invalidateQueries({ queryKey: MESAS_KEYS.all });
+        toast.success("Mesa creada exitosamente", {
+          description: `Código: ${remota.codigoOficial || remota.nombre}`,
+        });
+        closeTop();
+        openPanel("mesa", { mesaId: remota.id });
+      }
+    } catch (err) {
+      toast.error("No se pudo crear la mesa", {
+        description: err instanceof Error ? err.message : "Error del servidor",
+      });
+    }
+  };
+
+  const onInvalid = (fieldErrors: typeof errors) => {
+    if (
+      fieldErrors.nombre ||
+      fieldErrors.fecha ||
+      fieldErrors.lugar ||
+      fieldErrors.horaInicio ||
+      fieldErrors.horaFin
+    ) {
+      setSeccion1Abierta(true);
+    } else if (fieldErrors.entidades || fieldErrors.responsables) {
+      setSeccion2Abierta(true);
+    } else if (fieldErrors.urlMapa || fieldErrors.coordenadas || fieldErrors.aforo) {
+      setSeccion3Abierta(true);
+    }
+    toast.error("Por favor completa los campos requeridos", {
+      description: "Revisa las secciones marcadas para corregir los campos pendientes.",
     });
-    closeTop();
-    openPanel("mesa", { mesaId: mesa.id });
   };
 
   return (
@@ -364,7 +390,6 @@ export function MesaEditorPanel({
               type="submit"
               form="form-mesa-pro"
               size="sm"
-              disabled={!isValid}
               loading={isSubmitting}
               loadingLabel="Guardando…"
               className="flex-1 sm:flex-none"
@@ -401,7 +426,7 @@ export function MesaEditorPanel({
 
         <form
           id="form-mesa-pro"
-          onSubmit={handleSubmit(guardar)}
+          onSubmit={handleSubmit(guardar, onInvalid)}
           noValidate
           className="space-y-4"
         >

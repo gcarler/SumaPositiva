@@ -20,6 +20,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.types import UserDefinedType
 
 from app.core.database import Base
+from app.modules.evidencia.models import FotoMesa
 from app.modules.identidad.models import Usuario
 
 if TYPE_CHECKING:

@@ -24,6 +24,7 @@ import { uidNodo, calcularTotalAsistentes } from "@/features/mesas/models/mesas"
  */
 
 export interface MesaInput {
+  id?: string;
   nombre: string;
   fecha: string;
   lugar: string;
@@ -230,7 +231,7 @@ export const useMesasStore = create<MesasState>((set, get) => ({
       "";
 
     const mesa: MesaDeTrabajo = {
-      id: `mesa-nueva-${++mesaSeq}`,
+      id: input.id ?? `mesa-nueva-${++mesaSeq}`,
       ...input,
       entidad: entidadDerivada,
       facilitador: facilitadorDerivado,

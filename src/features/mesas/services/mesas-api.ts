@@ -1,6 +1,7 @@
-import { apiFetch } from "@/core/http/api-client";
+import { apiFetch, setBearerToken } from "@/core/http/api-client";
 import type { MesaDeTrabajo, SubMesa, EstadoMesa } from "@/features/mesas/models/mesas";
 import { useMesasStore, type MesaInput } from "@/features/mesas/state/mesas-store";
+import { useSesionStore } from "@/features/sesion/state/session-store";
 
 function normalizarEstado(estado?: string): EstadoMesa {
   const e = (estado || "").toLowerCase();
@@ -171,15 +172,19 @@ export async function crearMesaRemota(datos: {
   horario?: string;
   modalidad?: string;
 }): Promise<MesaDeTrabajo> {
-  const shortId = Date.now().toString().slice(-4);
+  const sesion = useSesionStore.getState().sesion;
+  if (sesion?.token) setBearerToken(sesion.token);
+
+  const entropy = Math.random().toString(36).substring(2, 6).toUpperCase();
+  const shortId = `${Date.now().toString(36).slice(-4).toUpperCase()}${entropy}`;
   const tipo = datos.tipoMesa || "TERRITORIAL";
   const body = {
     tipo_mesa: tipo,
-    codigo_oficial: `MT-${Date.now().toString(36).toUpperCase()}`,
+    codigo_oficial: `MT-${Date.now().toString(36).toUpperCase()}-${entropy}`,
     shortcode_ciudadano: `M${shortId}`,
     nombre: datos.nombre,
     lugar_nombre: datos.lugar,
-    fecha: datos.fecha,
+    fecha: datos.fecha && datos.fecha.trim() ? datos.fecha.trim() : null,
     horario: datos.horario || "8:00 am - 12:00 m",
     aforo_maximo: Number(datos.totalAsistentes) || 50,
     modalidad: datos.modalidad || "PRESENCIAL",
@@ -204,6 +209,9 @@ export async function actualizarMesaRemota(
   mesaId: string,
   datos: Partial<MesaInput>
 ): Promise<MesaDeTrabajo> {
+  const sesion = useSesionStore.getState().sesion;
+  if (sesion?.token) setBearerToken(sesion.token);
+
   const body: Record<string, unknown> = {};
 
   if (datos.nombre !== undefined) body.nombre = datos.nombre;

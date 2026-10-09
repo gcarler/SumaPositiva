@@ -1,11 +1,13 @@
 import { describe, expect, test, vi, beforeEach, afterEach } from "vitest";
 import {
   actualizarMesaRemota,
+  crearMesaRemota,
   normalizarMesaBackend,
   listarMesas,
   obtenerMesa,
   type MesaBackendResponse,
 } from "./mesas-api";
+import { useSesionStore } from "@/features/sesion/state/session-store";
 
 describe("Persistencia y normalización de Mesas de Trabajo (EDIT-01)", () => {
   const originalFetch = globalThis.fetch;
@@ -228,6 +230,131 @@ describe("Persistencia y normalización de Mesas de Trabajo (EDIT-01)", () => {
       });
 
       await expect(obtenerMesa("mesa-inexistente")).rejects.toThrow();
+    });
+  });
+
+  describe("crearMesaRemota (FIX-MESAS-01)", () => {
+    test("inyecta Bearer token de la sesión activa, formatea fecha y genera códigos con entropía", async () => {
+      useSesionStore.setState({
+        sesion: {
+          modo: "institucional",
+          desde: "2026-10-09T00:00:00Z",
+          token: "jwt-test-token-cartagena",
+          sesionId: "ses-123",
+          usuario: {
+            id: "usr-123",
+            correo: "autoridad@cartagena.gov.co",
+            codigo_rol: "autoridad_distrital",
+            nombres: "Alcaldía",
+            apellidos: "Mayor",
+            nivel_identidad: "verificada",
+            permisos: ["mesas:abrir"],
+            activo: true,
+            correo_verificado_en: null,
+          },
+        },
+      });
+
+      let capturedUrl = "";
+      let capturedMethod = "";
+      let capturedHeaders: Record<string, string> = {};
+      let capturedBody: Record<string, unknown> = {};
+
+      const mockResponse: MesaBackendResponse = {
+        id: "01999999-aaaa-bbbb-cccc-111122223333",
+        nombre: "Mesa Comunitaria Pozón",
+        fecha: "2026-10-25",
+        lugar_nombre: "Coliseo El Pozón",
+        estado: "PROGRAMADA",
+        codigo_oficial: "MT-TEST-001",
+        shortcode_ciudadano: "M9999",
+        tipo_mesa: "TERRITORIAL",
+        metadatos: { entidad: "Secretaría del Interior" },
+      };
+
+      vi.spyOn(globalThis, "fetch").mockImplementation(async (info, init) => {
+        capturedUrl = typeof info === "string" ? info : info instanceof Request ? info.url : info.toString();
+        capturedMethod = init?.method || "GET";
+        if (init?.headers) {
+          if (init.headers instanceof Headers) {
+            capturedHeaders = Object.fromEntries(init.headers.entries());
+          } else if (Array.isArray(init.headers)) {
+            capturedHeaders = Object.fromEntries(init.headers);
+          } else {
+            capturedHeaders = init.headers as Record<string, string>;
+          }
+        }
+        if (init?.body && typeof init.body === "string") {
+          capturedBody = JSON.parse(init.body);
+        }
+        return new Response(JSON.stringify(mockResponse), {
+          status: 201,
+          headers: { "Content-Type": "application/json" },
+        });
+      });
+
+      const resultado = await crearMesaRemota({
+        nombre: "Mesa Comunitaria Pozón",
+        entidad: "Secretaría del Interior",
+        fecha: "2026-10-25",
+        lugar: "Coliseo El Pozón",
+        facilitador: "Dr. Roberto Casas",
+        totalAsistentes: 45,
+      });
+
+      expect(capturedUrl).toContain("/mesas");
+      expect(capturedMethod).toBe("POST");
+      expect(capturedHeaders["Authorization"] || capturedHeaders["authorization"]).toBe("Bearer jwt-test-token-cartagena");
+      expect(capturedBody.nombre).toBe("Mesa Comunitaria Pozón");
+      expect(capturedBody.fecha).toBe("2026-10-25");
+      expect(capturedBody.codigo_oficial).toMatch(/^MT-[A-Z0-9]+-[A-Z0-9]+$/);
+      expect(capturedBody.shortcode_ciudadano).toMatch(/^M[A-Z0-9]+$/);
+      expect(resultado.id).toBe("01999999-aaaa-bbbb-cccc-111122223333");
+      expect(resultado.nombre).toBe("Mesa Comunitaria Pozón");
+    });
+
+    test("envía fecha como null cuando viene vacía para cumplir contrato Pydantic de FastAPI", async () => {
+      let capturedBody: Record<string, unknown> = {};
+
+      vi.spyOn(globalThis, "fetch").mockImplementation(async (_info, init) => {
+        if (init?.body && typeof init.body === "string") {
+          capturedBody = JSON.parse(init.body);
+        }
+        return new Response(JSON.stringify({ id: "uuid-test", nombre: "Sin Fecha", fecha: null }), {
+          status: 201,
+          headers: { "Content-Type": "application/json" },
+        });
+      });
+
+      await crearMesaRemota({
+        nombre: "Mesa Sin Fecha",
+        entidad: "Secretaría",
+        fecha: "",
+        lugar: "Plaza de la Aduana",
+        facilitador: "",
+      });
+
+      expect(capturedBody.fecha).toBeNull();
+    });
+
+    test("propaga errores HTTP (401, 403, 500) para captura honesta en la UI", async () => {
+      vi.spyOn(globalThis, "fetch").mockImplementation(async () => {
+        return new Response(JSON.stringify({ detail: "Permiso mesas:abrir denegado" }), {
+          status: 403,
+          statusText: "Forbidden",
+          headers: { "Content-Type": "application/json" },
+        });
+      });
+
+      await expect(
+        crearMesaRemota({
+          nombre: "Mesa No Autorizada",
+          entidad: "Entidad",
+          fecha: "2026-10-20",
+          lugar: "Lugar",
+          facilitador: "",
+        })
+      ).rejects.toThrow();
     });
   });
 });

@@ -7,6 +7,7 @@ from datetime import UTC, date, datetime
 from typing import Any
 
 from fastapi import HTTPException, status
+from sqlalchemy import or_, select
 from sqlalchemy.exc import IntegrityError
 
 from app.core.transactions import transaction
@@ -123,17 +124,61 @@ class MesaService:
             aforo_maximo > 0 and total_participantes >= aforo_maximo * 0.10
         )
 
-    async def crear_mesa_raiz(self, datos: MesaCrear) -> MesaRespuesta:
+    async def crear_mesa_raiz(
+        self,
+        datos: MesaCrear,
+        sujeto: SujetoAutenticadoContexto | None = None,
+    ) -> MesaRespuesta:
         # Generar ruta base usando shortcode
         async with transaction(self.repository.session):
-            slug = self._sanitizar_ltree(datos.shortcode_ciudadano)
+            base_slug = self._sanitizar_ltree(datos.shortcode_ciudadano).strip("_") or "mesa"
+            slug = base_slug[:170]
             ruta = f"csh.{slug}"
+            shortcode = datos.shortcode_ciudadano
+
+            # Asegurar la unicidad del slug, ruta y shortcode si ya existe una mesa previa
+            stmt = select(Mesa).where(
+                or_(
+                    Mesa.slug == slug,
+                    Mesa.ruta_jerarquica == ruta,
+                    Mesa.shortcode_ciudadano == shortcode,
+                )
+            )
+            res = await self.repository.session.execute(stmt)
+            if res.first() is not None:
+                sufijo = uuid.uuid4().hex[:6]
+                slug = f"{base_slug[:160]}_{sufijo}"
+                ruta = f"csh.{slug}"
+                shortcode = f"{datos.shortcode_ciudadano[:40]}_{sufijo}"
+
+            self._validar_ruta_ltree(ruta)
 
             datos_dict = datos.model_dump()
             mesa = Mesa(**datos_dict)
             mesa.slug = slug
             mesa.ruta_jerarquica = ruta
+            mesa.shortcode_ciudadano = shortcode
             mesa_creada = await self.repository.crear(mesa)
+
+            justif = f"Creación de mesa {mesa_creada.codigo_oficial or mesa_creada.nombre}"
+            auditoria = RegistroAuditoria(
+                tabla_afectada="mesas_trabajo.mesas",
+                registro_id=mesa_creada.id,
+                accion="mesa:crear",
+                usuario_id=sujeto.sujeto_id if sujeto else None,
+                causal="tecnica",
+                justificacion_motivada=justif[:250],
+                metadatos={
+                    "mesa_id": str(mesa_creada.id),
+                    "codigo_oficial": mesa_creada.codigo_oficial,
+                    "shortcode_ciudadano": mesa_creada.shortcode_ciudadano,
+                    "slug": mesa_creada.slug,
+                    "tipo_mesa": mesa_creada.tipo_mesa,
+                },
+            )
+            self.repository.session.add(auditoria)
+            await self.repository.session.flush()
+
             return MesaRespuesta.model_validate(mesa_creada)
 
     async def crear_submesa(self, padre_id: uuid.UUID, datos: SubMesaCrear) -> MesaRespuesta:

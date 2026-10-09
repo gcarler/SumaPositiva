@@ -369,12 +369,12 @@ async def test_mesa_facilitador_nombre_join_usuario(database_url: str, cabeceras
         assert encontrada["facilitador_nombre"] == "Usuario facilitador_mesa Prueba"
 
 
-async def test_vinculacion_agendas_con_mesas_canonicas_h05(database_url: str):
+async def test_vinculacion_agendas_con_mesas_canonicas_h05(database_url: str, cabeceras_gestion):
     """H-05: Agendas exponen mesa_id y resuelven participantes por código de agenda."""
     settings = Settings(_env_file=None, environment="test", database_url=database_url)
     app = create_app(settings)
 
-    with TestClient(app) as client:
+    with TestClient(app, headers=cabeceras_gestion) as client:
         resp = client.get("/api/v1/mesas/agendas")
         assert resp.status_code == 200
         agendas = resp.json()
@@ -399,5 +399,68 @@ async def test_vinculacion_agendas_con_mesas_canonicas_h05(database_url: str):
             resp_part = client.get(f"/api/v1/mesas/{agenda_ejemplo['id']}/participantes")
             assert resp_part.status_code == 200
             assert isinstance(resp_part.json(), list)
+
+
+async def test_crear_mesa_persistencia_auditoria_y_unicidad(database_url: str, cabeceras_gestion):
+    """FIX-MESAS-01: POST /api/v1/mesas persiste mesa raíz con UUID, código oficial,
+    auditoría mesa:crear y resiliencia de slug."""
+    settings = Settings(_env_file=None, environment="test", database_url=database_url)
+    app = create_app(settings)
+
+    with TestClient(app, headers=cabeceras_gestion) as client:
+        test_code = uuid.uuid4().hex[:6]
+        codigo = f"MT-TEST-{test_code}"
+        shortcode = f"MC{test_code}"
+
+        payload = {
+            "tipo_mesa": "TERRITORIAL",
+            "codigo_oficial": codigo,
+            "shortcode_ciudadano": shortcode,
+            "nombre": "Mesa de Innovación y Seguridad CSH",
+            "lugar_nombre": "Biblioteca Bartolomé Calvo",
+            "fecha": "2026-10-15",
+            "horario": "08:00 - 12:00",
+            "aforo_maximo": 60,
+            "modalidad": "PRESENCIAL",
+            "estado": "PROGRAMADA",
+            "metadatos": {
+                "entidad": "Secretaría del Interior",
+                "facilitador": "Dra. Carolina Martínez",
+            },
+        }
+
+        # 1. Creación exitosa (201 Created)
+        resp = client.post("/api/v1/mesas", json=payload)
+        assert resp.status_code == 201, resp.text
+        data = resp.json()
+        assert data["codigo_oficial"] == codigo
+        assert data["shortcode_ciudadano"] == shortcode
+        mesa_uuid = uuid.UUID(data["id"])
+        assert data["ruta_jerarquica"].startswith("csh.mc")
+
+        # 2. Verificar persistencia en base de datos y auditoría SQL
+        engine = create_async_engine(database_url, hide_parameters=True)
+        sessions = async_sessionmaker(engine, expire_on_commit=False)
+        async with sessions() as session:
+            stmt = select(RegistroAuditoria).where(
+                RegistroAuditoria.tabla_afectada == "mesas_trabajo.mesas",
+                RegistroAuditoria.registro_id == mesa_uuid,
+                RegistroAuditoria.accion == "mesa:crear",
+            )
+            auditoria = (await session.execute(stmt)).scalars().first()
+            assert auditoria is not None
+            assert auditoria.accion == "mesa:crear"
+            assert auditoria.metadatos.get("codigo_oficial") == codigo
+        await engine.dispose()
+
+        # 3. Resiliencia ante colisión de slug/shortcode
+        payload_colision = dict(payload)
+        payload_colision["codigo_oficial"] = f"MT-COL-{uuid.uuid4().hex[:6]}"
+        resp_colision = client.post("/api/v1/mesas", json=payload_colision)
+        assert resp_colision.status_code == 201
+        data_col = resp_colision.json()
+        assert data_col["id"] != data["id"]
+        assert data_col["ruta_jerarquica"] != data["ruta_jerarquica"]
+
 
 

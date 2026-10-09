@@ -17,8 +17,12 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.schema import conv
 
+from typing import TYPE_CHECKING
+
 from app.core.database import Base
-from app.modules.mesas.models import Mesa
+
+if TYPE_CHECKING:
+    from app.modules.mesas.models import Mesa
 
 
 class EvidenciaMultimedia(Base):
@@ -141,3 +145,6 @@ class FotoMesa(Base):
 
     evidencia: Mapped["EvidenciaMultimedia"] = relationship(back_populates="fotos_mesa")
     mesa: Mapped["Mesa"] = relationship("Mesa", back_populates="fotos")
+
+
+from app.modules.mesas import models as _mesas_models  # noqa: E402, F401

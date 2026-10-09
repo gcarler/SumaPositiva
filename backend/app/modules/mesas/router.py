@@ -54,10 +54,16 @@ EvidenciaServiceDep = Annotated[EvidenciaService, Depends(get_evidencia_service)
     "",
     response_model=MesaRespuesta,
     status_code=status.HTTP_201_CREATED,
-    dependencies=[Depends(requerir_permiso("mesas:abrir", nivel_minimo="declarada"))],
 )
-async def crear_mesa(datos: MesaCrear, service: MesaServiceDep):
-    return await service.crear_mesa_raiz(datos)
+async def crear_mesa(
+    datos: MesaCrear,
+    sujeto: Annotated[
+        SujetoAutenticadoContexto,
+        Depends(requerir_permiso("mesas:abrir", nivel_minimo="declarada")),
+    ],
+    service: MesaServiceDep,
+):
+    return await service.crear_mesa_raiz(datos, sujeto=sujeto)
 
 
 @router.post(
