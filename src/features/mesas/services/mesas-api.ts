@@ -1,4 +1,4 @@
-import { apiFetch, setBearerToken } from "@/core/http/api-client";
+import { apiFetch, setBearerToken, construirUrl } from "@/core/http/api-client";
 import type { MesaDeTrabajo, SubMesa, EstadoMesa } from "@/features/mesas/models/mesas";
 import { useMesasStore, type MesaInput } from "@/features/mesas/state/mesas-store";
 import { useSesionStore } from "@/features/sesion/state/session-store";
@@ -464,4 +464,70 @@ export async function fallbackObtenerMesa(mesaId: string): Promise<MesaDeTrabajo
   const mesa = useMesasStore.getState().mesas.find((m) => m.id === mesaId);
   if (!mesa) throw new Error(`Mesa ${mesaId} no encontrada`);
   return mesa;
+}
+
+/**
+ * Descarga el documento oficial de Acta Comunitaria en formato PDF vectorial (DOC-PDF-ACTAS-01).
+ * Consume GET /api/v1/mesas/{mesa_id}/acta/pdf.
+ */
+export async function descargarActaPdf(mesaId: string): Promise<Blob> {
+  const sesion = useSesionStore.getState().sesion;
+  if (sesion?.token) setBearerToken(sesion.token);
+
+  // Resolver UUID canónico si mesaId es un código oficial (ej. MT-L01-01) o de agenda (ej. mt-001)
+  let idResuelto = mesaId;
+  const esUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(mesaId);
+  if (!esUUID) {
+    const storeMesa = useMesasStore.getState().mesas.find(
+      (m) =>
+        m.id === mesaId ||
+        m.codigoOficial?.toLowerCase() === mesaId.toLowerCase() ||
+        m.shortcodeCiudadano?.toLowerCase() === mesaId.toLowerCase()
+    );
+    if (storeMesa && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(storeMesa.id)) {
+      idResuelto = storeMesa.id;
+    }
+  }
+
+  const url = construirUrl(`/mesas/${idResuelto}/acta/pdf`);
+  const headers: Record<string, string> = {
+    Accept: "application/pdf",
+  };
+  if (sesion?.token) {
+    headers.Authorization = `Bearer ${sesion.token}`;
+  }
+
+  const res = await fetch(url, {
+    method: "GET",
+    headers,
+  });
+
+  if (!res.ok) {
+    let detail = `Error ${res.status}: ${res.statusText}`;
+    try {
+      const errJson = await res.json();
+      if (errJson?.detail) detail = errJson.detail;
+    } catch {
+      // Ignorar si no es json
+    }
+    throw new Error(detail);
+  }
+
+  return await res.blob();
+}
+
+/**
+ * Dispara la descarga del PDF oficial en el navegador del usuario (DOC-PDF-ACTAS-01).
+ */
+export async function descargarActaPdfArchivo(mesaId: string, nombreArchivo?: string): Promise<void> {
+  const blob = await descargarActaPdf(mesaId);
+  if (typeof window === "undefined") return;
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = nombreArchivo || `Acta_Oficial_${mesaId}.pdf`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  window.URL.revokeObjectURL(url);
 }

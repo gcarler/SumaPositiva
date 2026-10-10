@@ -3,6 +3,7 @@ import {
   actualizarMesaRemota,
   crearMesaRemota,
   cerrarActaOficial,
+  descargarActaPdf,
   normalizarMesaBackend,
   listarMesas,
   obtenerMesa,
@@ -500,6 +501,85 @@ describe("Persistencia y normalización de Mesas de Trabajo (EDIT-01)", () => {
       const res = await cerrarActaOficial("01a0f5fe-86df-717b-a4d0-5b6605bdf993");
       expect(res.id).toBe("01a0f5fe-86df-717b-a4d0-5b6605bdf993");
       expect(res.sha256Acta).toBe("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855");
+    });
+  });
+
+  describe("descargarActaPdf (DOC-PDF-ACTAS-01)", () => {
+    test("despacha GET /mesas/{mesaId}/acta/pdf y retorna Blob con contenido binario PDF", async () => {
+      let capturedUrl = "";
+      let capturedHeaders: Record<string, string> = {};
+
+      useSesionStore.setState({
+        sesion: {
+          token: "jwt-token-pdf-test",
+          modo: "institucional",
+          desde: new Date().toISOString(),
+          usuarioId: "usr-pdf",
+          rol: "ADMIN",
+        },
+      });
+
+      const mockPdfBytes = new Uint8Array([0x25, 0x50, 0x44, 0x46, 0x2d, 0x31, 0x2e, 0x34]); // %PDF-1.4
+
+      vi.spyOn(globalThis, "fetch").mockImplementation(async (info, init) => {
+        capturedUrl = typeof info === "string" ? info : info instanceof Request ? info.url : info.toString();
+        const headers = init?.headers;
+        if (headers instanceof Headers) {
+          headers.forEach((val, key) => {
+            capturedHeaders[key] = val;
+          });
+        } else if (headers && typeof headers === "object") {
+          capturedHeaders = { ...(headers as Record<string, string>) };
+        }
+        return new Response(mockPdfBytes, {
+          status: 200,
+          headers: {
+            "Content-Type": "application/pdf",
+            "Content-Disposition": 'inline; filename="Acta_Oficial_MT-01.pdf"',
+          },
+        });
+      });
+
+      const blob = await descargarActaPdf("01a0f5fe-86df-717b-a4d0-5b6605bdf993");
+      expect(capturedUrl).toContain("/mesas/01a0f5fe-86df-717b-a4d0-5b6605bdf993/acta/pdf");
+      expect(capturedHeaders["Accept"] || capturedHeaders["accept"]).toBe("application/pdf");
+      expect(capturedHeaders["Authorization"] || capturedHeaders["authorization"]).toBe("Bearer jwt-token-pdf-test");
+      expect(blob).toBeInstanceOf(Blob);
+      expect(blob.size).toBe(8);
+    });
+
+    test("resuelve código oficial o slug de agenda a UUID antes de descargar el PDF", async () => {
+      let capturedUrl = "";
+
+      useMesasStore.setState({
+        mesas: [
+          {
+            id: "01a0f5fe-86df-717b-a4d0-5b6605bdf993",
+            nombre: "Mesa Resoluble",
+            fecha: "2026-10-15",
+            lugar: "SENA Aduana",
+            entidad: "Distrito",
+            facilitador: "Dr. Gómez",
+            totalAsistentes: 10,
+            estado: "cerrada",
+            codigoOficial: "MT-L01-01",
+            shortcodeCiudadano: "mt-001",
+            plenaria: { acuerdos: "" },
+            submesas: [],
+          },
+        ],
+      });
+
+      vi.spyOn(globalThis, "fetch").mockImplementation(async (info) => {
+        capturedUrl = String(info);
+        return new Response(new Uint8Array([0x25, 0x50, 0x44, 0x46]), {
+          status: 200,
+          headers: { "Content-Type": "application/pdf" },
+        });
+      });
+
+      await descargarActaPdf("mt-001");
+      expect(capturedUrl).toContain("/mesas/01a0f5fe-86df-717b-a4d0-5b6605bdf993/acta/pdf");
     });
   });
 });

@@ -68,6 +68,7 @@ import {
 } from "@/features/mesas/services/use-mesas-queries";
 import {useMesasStore, type SubMesaInput} from "@/features/mesas/state/mesas-store";
 import {useSesionStore} from "@/features/sesion/state/session-store";
+import {descargarActaPdfArchivo} from "@/features/mesas/services/mesas-api";
 import {
   calcularTotalAsistentes,
   estadoDiligenciamiento,
@@ -188,6 +189,7 @@ export function MesaPanel({
   const [nombreSub, setNombreSub] = useState("");
   const [temaSub, setTemaSub] = useState("");
   const [participantesSub, setParticipantesSub] = useState("");
+  const [descargandoPdf, setDescargandoPdf] = useState(false);
 
   const registrosFiltrados = useMemo(() => {
     return registrosMesa.filter((r) => {
@@ -366,6 +368,25 @@ export function MesaPanel({
     estadoMesaLower === "acta_concertada" ||
     Boolean(mesa.sha256Acta);
 
+  const handleDescargarPdfMesa = async () => {
+    setDescargandoPdf(true);
+    try {
+      const codigo = (mesa.codigoOficial || mesa.id).replace(/[\/\s]/g, "_");
+      const nombreArchivo = `Acta_Oficial_${codigo}_2026.pdf`;
+      toast.info("Generando documento oficial en PDF...", {
+        description: `Preparando descarga para ${mesa.nombre}`,
+      });
+      await descargarActaPdfArchivo(mesa.id, nombreArchivo);
+      toast.success("Documento PDF descargado exitosamente");
+    } catch (err) {
+      toast.error("Error al descargar el acta en PDF", {
+        description: err instanceof Error ? err.message : "Error de comunicación con el servidor.",
+      });
+    } finally {
+      setDescargandoPdf(false);
+    }
+  };
+
   return (
     <PanelShell
       entryKey={entryKey}
@@ -378,14 +399,25 @@ export function MesaPanel({
       actions={
         <div className="flex items-center gap-2">
           <Button
+            variant="outline"
+            size="sm"
+            type="button"
+            onClick={handleDescargarPdfMesa}
+            disabled={descargandoPdf}
+            className="shrink-0 font-medium text-xs shadow-sm"
+          >
+            <Download className="size-3.5 mr-1.5" />
+            {descargandoPdf ? "Generando PDF..." : "Descargar PDF"}
+          </Button>
+          <Button
             variant={actaDisponible ? "ember" : "outline"}
             size="sm"
             type="button"
             onClick={() => openPanel("mesa-acta", { mesaId: mesa.id })}
-            className="shrink-0 font-medium"
+            className="shrink-0 font-medium text-xs"
           >
             <FileText className="size-3.5 mr-1.5" />
-            {actaDisponible ? "📄 Descargar Acta Oficial (PDF)" : "📄 Ver Borrador / Acta de Consulta"}
+            {actaDisponible ? "Ver Acta Oficial" : "Ver Borrador / Acta de Consulta"}
           </Button>
         </div>
       }
@@ -401,11 +433,22 @@ export function MesaPanel({
               variant="outline"
               size="sm"
               type="button"
+              onClick={handleDescargarPdfMesa}
+              disabled={descargandoPdf}
+              className="shrink-0 text-xs"
+            >
+              <Download className="size-3.5 mr-1.5" />
+              {descargandoPdf ? "Descargando..." : "Descargar PDF"}
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              type="button"
               onClick={() => openPanel("mesa-acta", { mesaId: mesa.id })}
-              className="shrink-0"
+              className="shrink-0 text-xs"
             >
               <FileText className="size-3.5 mr-1.5" />
-              {actaDisponible ? "📄 Descargar Acta Oficial (PDF)" : "📄 Ver Borrador / Acta de Consulta"}
+              {actaDisponible ? "Ver Acta" : "Ver Borrador"}
             </Button>
             {!soloLectura && (
               <Button

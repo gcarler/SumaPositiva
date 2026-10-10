@@ -1,95 +1,69 @@
-# INFORME PERICIAL DE REMEDIACIÓN TÉCNICA — TAREA [FIX-EDIT-MESA-01]
-## REMEDIACIÓN INTEGRAL DE EDICIÓN DE MESAS (LUGAR, FECHA, HORARIO, RESPONSABLES) Y PERSISTENCIA REAL
+# INFORME PERICIAL DE IMPLEMENTACIÓN TÉCNICA — TAREA [DOC-PDF-ACTAS-01]
+## EXPORTADOR OFICIAL DE ACTAS COMUNITARIAS EN PDF FOLIADO CON MEMBRETE DISTRITAL, CÓDIGO QR Y SELLO CRIPTOGRÁFICO SHA-256
 
 **Destinatario:** Coordinador General y Auditor Forense EAF `agy` (`tmux a -t agy`)  
 **Responsable:** `agy2` (Desarrollador / EDD — `tmux a -t agy2`)  
 **Fecha de Emisión:** Sábado, 10 de Octubre de 2026  
-**Referencia de Trabajo:** `bridge/01_tarea_activa.md` (`[FIX-EDIT-MESA-01]`)  
-**Requerimiento del Usuario:** *"una vez intenté editar la información de una de las mesas en la plataforma, por ejemplo el lugar de realización y no pude. puedes revisar ese tema con tu equipo de trabajo"*  
-**Severidad Atendida:** ALTA / OPERATIVA (Gobernanza Territorial, Usabilidad y Persistencia Relacional)  
+**Referencia de Trabajo:** `bridge/01_tarea_activa.md` (`[DOC-PDF-ACTAS-01]`)  
+**Plan Maestro:** `bridge/00_plan_maestro_excelencia_y_adopcion.md` (Fase 1: Tarea 1.1)  
+**Severidad Atendida:** ALTA / OPERATIVA (Fe Pública, Validez Jurídica Distrital y Radicación Ciudadana)  
 **Estado de la Entrega:** 100% Ejecutada, Verificada y Certificada bajo Quality Gates Estrictos  
 
 ---
 
-## 🎯 1. Resumen Ejecutivo de la Remediación
+## 🎯 1. Resumen Ejecutivo de la Implementación
 
-En atención al requerimiento del usuario y bajo la orden formalizada en `bridge/01_tarea_activa.md`, se ejecutó la remediación integral de punta a punta del flujo de **Edición de Mesas de Trabajo** en la plataforma distrital POLIS (Cartagena de Indias).
+En cumplimiento estricto de la orden técnica **[DOC-PDF-ACTAS-01]**, se ha diseñado, implementado y verificado de punta a punta el sistema de **Generación y Descarga de Actas Oficiales de Mesas Comunitarias en formato PDF vectorial** para la plataforma distrital POLIS (Cartagena de Indias).
 
-El problema reportado (imposibilidad de modificar metadatos como el **lugar de realización**, fecha u horario de una mesa) fue investigado forensemente, diagnosticándose una concatenación de 7 causas raíz que operaban tanto en el cliente (Next.js / Zustand / React Hook Form) como en el servidor (FastAPI / Pydantic / SQLAlchemy).
-
-Todas las causas raíz fueron subsanadas sin vulnerar ninguna de las salvaguardas periciales ni comprometer la integridad histórica de la base de datos de Cartagena (`bd_csh`):
-1. **Salvaguarda OBS-21 Protegida:** Se eliminó la inyección indebida de `total_asistentes` en el body de `PATCH /mesas/{mesa_id}`, erradicando el error `HTTP 400 Bad Request` sin alterar la regla de que los asistentes sólo proceden de actas y listas verificadas.
-2. **Polimorfismo de Identificadores (UUID vs Código/Slug):** El backend FastAPI y el frontend ahora resuelven transparentemente UUIDs canónicos (v4/v7), códigos oficiales (ej. `MT-L01-01`) y slugs de agenda territorial (ej. `mt-001`), evitando rechazos `HTTP 422 Unprocessable Entity` o `404 Not Found`.
-3. **Carga Reactiva y Sincronización Asíncrona:** `MesaEditorPanel` ahora precarga datos frescos desde la API mediante `useMesaQuery` y sincroniza reactivamente el formulario con `reset()` de React Hook Form al montar o al recibir datos de red.
-4. **Sincronización Bidireccional Mesa ⇄ Agenda:** Modificar el `lugar_nombre`, `fecha` u `horario` de una mesa actualiza en cascada transaccional la agenda vinculada en `mesas_trabajo.agendas.lugar`; y modificar la agenda sincroniza de vuelta la mesa.
-5. **Calidad y Calibración:** 100% de Quality Gates aprobados (`bun run check`, `bun test`, `pytest`, `bun run build` Turbopack standalone, y hot-verification en vivo con curl/httpx contra PostgreSQL).
+Esta solución resuelve la brecha de validez jurídica e interoperabilidad comunitaria: hasta ahora las actas estaban confinadas a un registro JSON en base de datos. A partir de esta entrega, los facilitadores territoriales, secretarios de despacho, líderes comunales y veedurías ciudadanas pueden **descargar e imprimir el documento oficial foliado** con membrete de la Alcaldía Mayor de Cartagena, código QR dinámico de verificación pública y sello criptográfico SHA-256 para radicación ante cualquier órgano de control.
 
 ---
 
-## 🔍 2. Análisis Forense de las 7 Causas Raíz y Solución Implementada
+## 🛠️ 2. Arquitectura y Componentes Implementados
 
-| # | Causa Raíz Diagnosticada | Impacto Operativo | Solución Técnica Implementada |
-|---|---|---|---|
-| **1** | **Inyección de `total_asistentes` en PATCH (OBS-21)** | El backend lanzaba `HTTP 400 Bad Request` ("Salvaguarda pericial: El total de asistentes se deriva exclusivamente del registro oficial de actas...") cada vez que se guardaba el formulario. | En `actualizarMesaRemota` (`mesas-api.ts`) y `MesaEditorPanel`, se omitió estrictamente el campo `total_asistentes` del payload JSON. Se añadieron pruebas unitarias que blindan esta omisión. |
-| **2** | **Tipado estricto `mesa_id: uuid.UUID` en FastAPI** | Al acceder o editar mesas mediante códigos oficiales (`MT-L01-01`) o slugs de agenda (`mt-001`), FastAPI lanzaba `HTTP 422 Unprocessable Entity`. | En `router.py`, los endpoints fueron actualizados a `mesa_id: str`. En `service.py`, se integró `_resolver_mesa_uuid` en `actualizar_mesa`, `obtener_mesa`, `listar_submesas` y actas. |
-| **3** | **Lectura exclusiva de Zustand en `MesaEditorPanel`** | Si el usuario recargaba la página o accedía directamente a la edición, el store en memoria estaba vacío (`mesaEditada = undefined`), forzando `esEdicion = false` e intentando un `POST` en vez de `PATCH`. | Se integró `useMesaQuery(props.mesaId)` junto con `useMesa`. Se fijó `esEdicion = Boolean(props.mesaId)`, garantizando que el panel siempre sepa que está editando. |
-| **4** | **`defaultValues` estáticos en React Hook Form** | Los campos `lugar`, `fecha`, `horario`, `entidad`, `facilitador` no se poblaban si la mesa se cargaba de forma asíncrona tras el primer render. | Se implementó un `useEffect` reactivo que ejecuta `reset({ ... })` tan pronto como `mesaEditada` esté disponible en memoria o vía query. |
-| **5** | **Falta de invalidación de caché y sincronización local** | El listado, el Geovisor y el panel de detalle no reflejaban el nuevo lugar hasta reiniciar la aplicación. | Se invalidaron explícitamente `MESAS_KEYS.all` y `MESAS_KEYS.detail` tras la mutación exitosa, sincronizando el store local de `mesas` y `agendas`. |
-| **6** | **Desconexión relacional Mesa ⇄ Agenda** | La tabla `mesas_trabajo.mesas` (`lugar_nombre`) y `mesas_trabajo.agendas` (`lugar`) no estaban sincronizadas; editar una dejaba la otra con el lugar antiguo. | Se crearon métodos en `repository.py` (`obtener_agenda_para_actualizar_por_mesa_id`) y en `service.py` (`actualizar_mesa` y `actualizar_agenda`) para sincronizar `lugar`, `fecha` y `horario` bidireccionalmente dentro de la misma transacción. |
-| **7** | **Manejo de permisos y modo offline/local** | Usuarios sin rol administrativo o sin sesión activa experimentaban fallos silenciosos o bloqueos sin explicación. | Se añadió un banner visual `Notice` en `MesaEditorPanel` indicando el estado de permisos y modo de guardado (remoto vs optimista local), junto con captura honesta de errores mediante `toast.error(error.message)`. |
+### A. Backend (`FastAPI / Python 3.12 / ReportLab 5.0.1 / qrcode`)
+1. **Generador Vectorial de Actas (`backend/app/modules/mesas/acta_pdf.py`)**:
+   - Maquetación con ReportLab usando `SimpleDocTemplate` y un canvas personalizado de doble pasada `ActaNumberedCanvas` para numeración exacta de páginas (*"Página X de Y"*) y pie de seguridad institucional.
+   - **Membrete Oficial:** República de Colombia, Departamento de Bolívar, Alcaldía Mayor de Cartagena de Indias, Secretaría del Interior y Plan de Desarrollo *"Cartagena Ciudad de Derechos 2024-2027"*.
+   - **Folio Único Institucional:** Formato `ACTA-MT-{codigo_oficial}-2026` o el consecutivo oficial persistido en `mesas_trabajo.actas_comunitarias.numero_acta`.
+   - **Ficha Técnica y Quórum:** Nombre de la mesa, código oficial, shortcode ciudadano, lugar físico de realización (sincronizado con `mesa.lugar_nombre`), fecha, horario, facilitador responsable y total de asistentes verificados.
+   - **Cuerpo Deliberativo (Sección I):** Resumen de la deliberación comunitaria y contexto de la jornada.
+   - **Matriz de Acuerdos Concertados (Sección II):** Tabla estructurada con `#`, `Acuerdo / Compromiso Concertado`, `Entidad Responsable` y `Plazo / Meta`.
+   - **Certificación de Fe Pública y Sello Criptográfico (Sección III):**
+     - Sello hash SHA-256 (64 caracteres) en tipografía monoespaciada legible.
+     - Código QR generado dinámicamente en memoria que apunta a `https://seguridadhumanaintegral.org/asistencia/{mesa_id}` para validación pública instantánea con la cámara de cualquier teléfono celular.
+     - Párrafo legal de presunción de autenticidad e inmutabilidad.
+   - **Cuadro de Firmas Oficiales (Sección IV):** Tres líneas de firma formal para Facilitador Institucional, Relator Comunitario y Veeduría Ciudadana.
+2. **Servicio de Mesas (`backend/app/modules/mesas/service.py`)**:
+   - Método `obtener_acta_pdf(mesa_id: uuid.UUID | str, url_base: str)`: Resuelve polimórficamente el identificador (UUID, código oficial o slug de agenda) mediante `_resolver_mesa_uuid`, consulta la mesa, acta y participantes, y compila el binario PDF con nombre de archivo canónico `Acta_Oficial_{codigo}_{fecha}.pdf`.
+3. **Endpoint REST en Router (`backend/app/modules/mesas/router.py`)**:
+   - `GET /api/v1/mesas/{mesa_id}/acta/pdf`: Retorna el binario con `media_type="application/pdf"`, cabeceras `Content-Disposition: inline; filename="..."` y control de caché `no-cache, no-store`.
 
----
-
-## 🛠️ 3. Registro Pericial de Modificaciones en Código
-
-### A. Backend (`/backend/app/modules/mesas/`)
-1. **`repository.py`**:
-   - Agregado método `obtener_agenda_por_mesa_id(mesa_id: uuid.UUID) -> AgendaMesa | None`.
-   - Agregado método `obtener_agenda_para_actualizar_por_mesa_id(mesa_id: uuid.UUID) -> AgendaMesa | None` con bloqueo pesimista `with_for_update()`.
-2. **`service.py`**:
-   - `actualizar_mesa`: Modificado para recibir `mesa_id: uuid.UUID | str`, resolver el UUID canónico vía `_resolver_mesa_uuid`, y ejecutar sincronización bidireccional con la agenda asociada cuando se alteren `lugar_nombre`, `fecha` u `horario`.
-   - `obtener_mesa`, `listar_submesas`, `crear_o_actualizar_borrador_acta`, `cerrar_acta`, `obtener_acta`: Actualizados para recibir `mesa_id: uuid.UUID | str` y resolver transparentemente códigos oficiales y slugs.
-   - `actualizar_agenda`: Añadida sincronización bidireccional automática hacia la mesa vinculada (`mesa.lugar_nombre = agenda.lugar`) cuando se actualice el lugar de una agenda.
-3. **`router.py`**:
-   - Actualizados parámetros de ruta de `mesa_id: uuid.UUID` a `mesa_id: str` en endpoints de consulta, actualización y actas (`/{mesa_id}`, `/{mesa_id}/submesas`, `/{mesa_id}/acta`, `/{mesa_id}/acta/cerrar`).
-
-### B. Frontend (`/src/features/mesas/`)
-1. **`services/mesas-api.ts`**:
-   - `actualizarMesaRemota`:
-     - Omitido estrictamente `body.total_asistentes` (salvaguarda OBS-21).
-     - Resolución de UUID canónico si `mesaId` es un slug de agenda (`mt-001`) o código oficial (`MT-L01-01`).
-     - Inyección del Bearer token de la sesión activa (`headers.Authorization = Bearer ...`).
-2. **`panels/mesa-editor-panel.tsx`**:
-   - Conectado hook `useMesaQuery(props.mesaId)` junto al selector de store Zustand `useMesa`.
-   - `esEdicion = Boolean(props.mesaId)`.
-   - Implementado `useEffect` con `reset()` de React Hook Form para poblar reactivamente todos los campos del formulario (`nombre`, `fecha`, `horario`, `lugar`, `aforo`, `entidades`, `responsables`, `tipoMesa`).
-   - Verificación de permisos institucionales con feedback visual preventivo (`Notice`).
-   - Invocación de `actualizarMesaRemota` con payload limpio de asistentes.
-   - Revalidación automática de caché React Query (`MESAS_KEYS.all` y `MESAS_KEYS.detail`).
-3. **`panels/agenda-editor-panel.tsx`**:
-   - Ajustado soporte de props del panel-registry y cierre asistido `handleClose()` tras guardado exitoso.
-4. **`src/core/panels/panel-store.ts` y `src/app/_composition/panel-registry.tsx`**:
-   - Registrado panel `agenda-editor` con ancho responsivo y carga diferida (dynamic import).
-5. **`services/mesas-api.test.ts`**:
-   - Agregada prueba unitaria específica para verificar que `actualizarMesaRemota` omite `total_asistentes` incluso si viene en el input.
-   - Agregada prueba unitaria para verificar resolución de códigos oficiales a UUID canónico e inyección de encabezado `Authorization`.
+### B. Frontend (`Next.js 16 / TypeScript / Turbopack / @/shared/ui/`)
+1. **Cliente HTTP en `src/features/mesas/services/mesas-api.ts`**:
+   - Función `descargarActaPdf(mesaId: string): Promise<Blob>`: Consume el endpoint remoto inyectando el Bearer token de la sesión activa y resolviendo identificadores.
+   - Función `descargarActaPdfArchivo(mesaId: string, nombreArchivo?: string): Promise<void>`: Automatiza la descarga del archivo en el navegador del usuario vía `window.URL.createObjectURL`.
+2. **Integración en `MesaActaPanel` (`mesa-acta-panel.tsx`)**:
+   - Se reemplazó el antiguo placeholder de `window.print()` por `handleDescargarPdf` asíncrono con feedback descriptivo de `toast.info` y `toast.success`.
+   - Botón institucional `Button` con variantes de estado (`Generando PDF...` / `Descargar Acta Oficial (PDF)`), respetando la política estricta `@/shared/ui/button`.
+3. **Integración en `MesaPanel` (`mesa-panel.tsx`)**:
+   - Añadido botón directo de descarga de PDF en la cabecera de acciones y pie del panel de la mesa de trabajo (`Download` icon + feedback descriptivo).
 
 ---
 
-## 🛡️ 4. Verificación de Salvaguardas Forenses
+## 🛡️ 3. Verificación de Salvaguardas Institucionales
 
-| Salvaguarda Forense | Estado | Certificación y Evidencia |
+| Salvaguarda Institucional | Estado | Certificación y Evidencia |
 |---|:---:|---|
 | **Preservación Inviolable de BPIN** | ✅ INTACTA | Cero modificaciones a BPIN. Verificado con `git status --porcelain \| grep -i bpin` (0 coincidencias). |
 | **Cero Acrónimos Ajenos** | ✅ CUMPLIDO | Cero reintroducción de DNP, MGA o SINERGIA en código modificado. Verificado con `git diff \| grep -iE "dnp\|mga\|sinergia"` (0 coincidencias). |
-| **UI-Policy Estricta** | ✅ APROBADA | Uso exclusivo de controles `@/shared/ui/` (`Button`, `Input`, `Textarea`, `Notice`, `Select`). Ejecutado `node scripts/ui-policy.mjs` $\rightarrow$ "POLIS UI: controles, tokens, capas, inventario, historias y política a11y correctos." |
-| **Salvaguarda OBS-21 (Asistentes)** | ✅ BLINDADA | Se garantizó que el conteo de asistentes nunca sea manipulable por formularios administrativos. Intentos directos de PATCH son rechazados por backend con HTTP 400 y el frontend jamás emite ese campo. |
-| **Integridad de Datos Cartagena (`bd_csh`)** | ✅ PRESERVADA | Las 33 mesas territoriales y 36 agendas oficiales se mantienen intactas y consistentes. |
-| **Protocolo Zero-Push** | ✅ CUMPLIDO | Operación 100% confinada al repositorio local en la rama `main`. Cero pushes a remotos. |
+| **UI-Policy Estricta** | ✅ APROBADA | Uso exclusivo de controles `@/shared/ui/` (`Button`, etc.). Ejecutado `node scripts/ui-policy.mjs` $\rightarrow$ "POLIS UI: controles, tokens, capas, inventario, historias y política a11y correctos." |
+| **Fidelidad Criptográfica** | ✅ CERTIFICADA | El hash SHA-256 impreso en el PDF coincide con el sellado en `mesas_trabajo.actas_comunitarias.sha256_acta`. |
+| **Protocolo Zero-Push** | ✅ CUMPLIDO | Operación 100% confinada al repositorio local en la rama `main`. |
 
 ---
 
-## 🔬 5. Resultados de Quality Gates y Hot-Verification
+## 🔬 4. Resultados de Quality Gates y Hot-Verification
 
 ### Quality Gate 1: Verificación de Tipos, UI-Policy y Linting (`bun run check`)
 ```bash
@@ -98,7 +72,7 @@ $ node scripts/ui-policy.mjs
 POLIS UI: controles, tokens, capas, inventario, historias y política a11y correctos.
 $ tsc --noEmit
 $ eslint .
-# Exit code: 0 (Limpio)
+# Exit code: 0 (Limpio, sin errores ni advertencias)
 ```
 
 ### Quality Gate 2: Suite de Pruebas Frontend Mesas (`bun test src/features/mesas`)
@@ -106,70 +80,60 @@ $ eslint .
 bun test v1.4.2 (744846f84)
 src/features/mesas/services/agenda-api.test.ts: 8 passed
 src/features/mesas/services/asistencia-api.test.ts: 11 passed
-src/features/mesas/services/mesas-api.test.ts: 15 passed
-  ✓ actualizarMesaRemota > emite PATCH /mesas/{mesa_id} con la estructura esperada y normaliza respuesta
-  ✓ actualizarMesaRemota > FIX-EDIT-MESA-01: omite estrictamente total_asistentes protegiendo la salvaguarda OBS-21
-  ✓ actualizarMesaRemota > FIX-EDIT-MESA-01: resuelve código oficial o slug a UUID canónico e inyecta Bearer token
-Total: 34 pass, 0 fail, 141 expect() calls [1.96s]
+src/features/mesas/services/mesas-api.test.ts: 17 passed
+  ✓ descargarActaPdf (DOC-PDF-ACTAS-01) > despacha GET /mesas/{mesaId}/acta/pdf y retorna Blob con contenido binario PDF
+  ✓ descargarActaPdf (DOC-PDF-ACTAS-01) > resuelve código oficial o slug de agenda a UUID antes de descargar el PDF
+Total: 36 pass, 0 fail, 147 expect() calls [1.98s]
 ```
 
 ### Quality Gate 3: Suite de Pruebas Backend (`pytest`)
 ```bash
-backend/.venv/bin/pytest backend/tests/test_mesas_ltree.py backend/tests/test_mesas_agenda.py backend/tests/test_actas_y_participantes.py -q
-.......                                                                  [100%]
-7 passed in 9.28s
+backend/.venv/bin/pytest backend/tests/test_acta_pdf.py backend/tests/test_mesas_agenda.py backend/tests/test_actas_y_participantes.py backend/tests/test_mesas_ltree.py -q
+.........                                                                [100%]
+9 passed in 12.06s
 ```
 
 ### Quality Gate 4: Compilación Turbopack de Producción (`bun run build`)
 ```bash
 $ next build && cp -r .next/static .next/standalone/.next/ && cp -r public .next/standalone/
 ▲ Next.js 16.1.3 (Turbopack)
-✓ Compiled successfully in 17.3s
-✓ Finished TypeScript in 26.5s
-✓ Generating static pages using 7 workers (190/190) in 1060.7ms
-Finalizing page optimization in 379.0ms
-# Exit code: 0 (190 rutas estáticas compiladas exitosamente)
+✓ Compiled successfully in 18.3s
+✓ Finished TypeScript in 25.8s
+✓ Generating static pages using 7 workers (190/190) in 1296.6ms
+Finalizing page optimization in 450.4ms
+# Exit code: 0 (190 rutas estáticas compiladas exitosamente en standalone)
 ```
 
-### Quality Gate 5: Hot-Verification en Vivo contra Servicios Activos (`localhost:8000`)
-Se ejecutó un script forense autenticado mediante sesión institucional activa contra el servicio PostgreSQL `bd_csh`:
-```text
-1. GET /mesas/MT-L01-01 status: 200
-   Nombre: Mesa Territorial Localidad Histórica y del Caribe Norte
-   Lugar actual: SENA Plaza de la Aduana, Auditorio Rodolfo Martínez
-2. GET /mesas/mt-001 status: 200
-   ID resuelto por slug mt-001: 01a0f5fe-86df-717b-a4d0-5b6605bdf993
-3. PATCH con total_asistentes status: 400
-   Mensaje salvaguarda OBS-21: Salvaguarda pericial: El total de asistentes se deriva exclusivamente del registro oficial de actas y listas de asistencia verificadas; no es modificable directamente.
-4. PATCH /mesas/MT-L01-01 (cambio lugar) status: 200
-   Lugar modificado exitosamente a: SENA Plaza de la Aduana, Auditorio Rodolfo Martínez (Sala de Crisis)
-5. GET /mesas/agendas/mt-001 status: 200
-   Lugar de agenda sincronizado: SENA Plaza de la Aduana, Auditorio Rodolfo Martínez (Sala de Crisis)
-6. Restaurado lugar original: SENA Plaza de la Aduana, Auditorio Rodolfo Martínez
+### Quality Gate 5: Hot-Verification en Vivo contra el Servicio Activo (`localhost:8000`)
+```bash
+curl -s -D - http://127.0.0.1:8000/api/v1/mesas/MT-L01-01/acta/pdf -o /tmp/acta_test_live.pdf | head -n 12
+HTTP/1.1 200 OK
+date: Sat, 10 Oct 2026 16:44:51 GMT
+server: uvicorn
+content-disposition: inline; filename="Acta_Oficial_MT-L01-01_2026-02-01.pdf"
+cache-control: no-cache, no-store, must-revalidate
+content-length: 6344
+content-type: application/pdf
 
->>> HOT-VERIFICATION 100% EXITOSA <<<
+head -c 10 /tmp/acta_test_live.pdf
+%PDF-1.4
+%
 ```
 
 ---
 
-## 📦 6. Protocolización de Commit Local
+## 📦 5. Inventario de Archivos Modificados y Creados
 
-Los cambios quedan preparados para el commit atómico local en la rama `main` con el siguiente mensaje normativo:
-```text
-fix(mesas): remediacion integral edicion de informacion de mesas FIX-EDIT-MESA-01
-```
-
-Archivos involucrados:
-- `backend/app/modules/mesas/repository.py`
-- `backend/app/modules/mesas/router.py`
-- `backend/app/modules/mesas/service.py`
-- `src/app/_composition/panel-registry.tsx`
-- `src/core/panels/panel-store.ts`
-- `src/features/mesas/panels/agenda-editor-panel.tsx`
-- `src/features/mesas/panels/mesa-editor-panel.tsx`
-- `src/features/mesas/services/mesas-api.test.ts`
-- `src/features/mesas/services/mesas-api.ts`
-- `bridge/02_resultado_agy2.md`
+1. **`backend/app/modules/mesas/acta_pdf.py`** *(Nuevo)*: Generador oficial ReportLab de actas PDF con membrete, QR dinámico y sello SHA-256.
+2. **`backend/tests/test_acta_pdf.py`** *(Nuevo)*: Suite de integración pytest para generación y descarga de actas.
+3. **`backend/app/modules/mesas/service.py`**: Integrado método `obtener_acta_pdf`.
+4. **`backend/app/modules/mesas/router.py`**: Añadido endpoint `GET /{mesa_id}/acta/pdf`.
+5. **`backend/pyproject.toml`** y **`backend/uv.lock`**: Añadida dependencia `reportlab>=5.0.1` y `qrcode>=8.2`.
+6. **`src/features/mesas/services/mesas-api.ts`**: Añadidos métodos `descargarActaPdf` y `descargarActaPdfArchivo`.
+7. **`src/features/mesas/services/mesas-api.test.ts`**: Pruebas unitarias de descarga de actas PDF.
+8. **`src/features/mesas/panels/mesa-acta-panel.tsx`**: Botón de descarga real con feedback y estado de carga.
+9. **`src/features/mesas/panels/mesa-panel.tsx`**: Acceso directo de descarga de acta PDF en cabecera y pie.
+10. **`bridge/02_resultado_agy2.md`**: Protocolización del informe pericial.
 
 ---
-*Informe emitido en conformidad técnica y pericial por agy2. Listo para contra-auditoría por el supervisor agy.*
+*Informe pericial protocolizado por agy2. La tarea [DOC-PDF-ACTAS-01] queda 100% lista para contra-auditoría por el supervisor agy.*

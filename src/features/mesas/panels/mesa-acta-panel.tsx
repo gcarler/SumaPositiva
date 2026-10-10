@@ -17,7 +17,7 @@ import { Button } from "@/shared/ui/button";
 import { PanelShell } from "@/core/panels/panel-shell";
 import { usePanels } from "@/core/panels/panel-store";
 import { useMesasStore } from "@/features/mesas/state/mesas-store";
-import { cerrarActaOficial } from "@/features/mesas/services/mesas-api";
+import { cerrarActaOficial, descargarActaPdfArchivo } from "@/features/mesas/services/mesas-api";
 import { AGENDA_MESAS } from "@/features/mesas/data/agenda.data";
 import { CONTENIDO_MESAS } from "@/features/mesas/data/agenda-contenido.data";
 import {
@@ -115,11 +115,25 @@ export function MesaActaPanel({
     }
   };
 
-  const handleDescargarPdf = () => {
-    if (!actaDisponible) {
-      toast.info("Acta oficial no disponible aún", {
+  const [descargandoPdf, setDescargandoPdf] = useState(false);
+
+  const handleDescargarPdf = async () => {
+    setDescargandoPdf(true);
+    try {
+      const codigo = (mesa.codigoOficial || props.mesaId).replace(/[\/\s]/g, "_");
+      const nombreArchivo = `Acta_Oficial_${codigo}_2026.pdf`;
+      toast.info("Generando documento oficial en PDF...", {
+        description: `Preparando descarga para ${mesa.nombre}`,
+      });
+      await descargarActaPdfArchivo(props.mesaId, nombreArchivo);
+      toast.success("Acta descargada con éxito", {
+        description: `Archivo: ${nombreArchivo}`,
+      });
+    } catch (err) {
+      console.error("Error al descargar acta PDF:", err);
+      toast.error("No fue posible generar el PDF oficial", {
         description:
-          "Esta mesa se encuentra en proceso de concertación. El documento oficial en PDF estará disponible una vez cerrada y formalizada la sesión plenaria.",
+          err instanceof Error ? err.message : "Error de comunicación con el servidor.",
         action: {
           label: "Imprimir borrador",
           onClick: () => {
@@ -127,14 +141,8 @@ export function MesaActaPanel({
           },
         },
       });
-      return;
-    }
-
-    toast.success("Iniciando descarga del acta oficial...", {
-      description: `Acta Oficial ${mesa.codigoOficial || mesa.id.toUpperCase()}`,
-    });
-    if (typeof window !== "undefined") {
-      window.print();
+    } finally {
+      setDescargandoPdf(false);
     }
   };
 
@@ -217,10 +225,15 @@ export function MesaActaPanel({
             variant={actaDisponible ? "ember" : "outline"}
             size="sm"
             onClick={handleDescargarPdf}
+            disabled={descargandoPdf}
             className="shadow-sm text-xs font-semibold"
           >
             <Download className="size-3.5 mr-1.5" />
-            {actaDisponible ? "Descargar Acta Oficial (PDF)" : "Descargar PDF"}
+            {descargandoPdf
+              ? "Generando PDF..."
+              : actaDisponible
+                ? "Descargar Acta Oficial (PDF)"
+                : "Descargar PDF"}
           </Button>
         </div>
       }
@@ -250,10 +263,15 @@ export function MesaActaPanel({
               variant={actaDisponible ? "ember" : "outline"}
               size="sm"
               onClick={handleDescargarPdf}
+              disabled={descargandoPdf}
               className="h-8 text-xs font-semibold"
             >
               <Download className="size-3.5 mr-1.5" />
-              {actaDisponible ? "Descargar Acta Oficial (PDF)" : "Descargar PDF"}
+              {descargandoPdf
+                ? "Generando PDF..."
+                : actaDisponible
+                  ? "Descargar Acta Oficial (PDF)"
+                  : "Descargar PDF"}
             </Button>
           </div>
         </div>

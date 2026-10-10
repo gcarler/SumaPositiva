@@ -293,3 +293,20 @@ async def cerrar_acta(
 @router.get("/{mesa_id}/acta", response_model=ActaRespuesta)
 async def obtener_acta(mesa_id: str, service: MesaServiceDep):
     return await service.obtener_acta(mesa_id)
+
+
+@router.get("/{mesa_id}/acta/pdf")
+async def descargar_acta_pdf(mesa_id: str, service: MesaServiceDep, request: Request):
+    """Genera y descarga el documento oficial de Acta en PDF (DOC-PDF-ACTAS-01)."""
+    from fastapi.responses import Response
+
+    url_base = str(request.base_url)
+    pdf_bytes, nombre_archivo = await service.obtener_acta_pdf(mesa_id, url_base=url_base)
+    return Response(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={
+            "Content-Disposition": f'inline; filename="{nombre_archivo}"',
+            "Cache-Control": "no-cache, no-store, must-revalidate",
+        },
+    )

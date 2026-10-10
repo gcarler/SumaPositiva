@@ -645,6 +645,32 @@ class MesaService:
         resp.integridad_valida = integridad
         return resp
 
+    async def obtener_acta_pdf(
+        self, mesa_id: uuid.UUID | str, url_base: str = "https://seguridadhumanaintegral.org"
+    ) -> tuple[bytes, str]:
+        """Genera el documento oficial en PDF con ReportLab (DOC-PDF-ACTAS-01)."""
+        from app.modules.mesas.acta_pdf import generar_acta_pdf
+
+        mesa_uuid = await self._resolver_mesa_uuid(mesa_id)
+        mesa = await self.repository.obtener_por_id(mesa_uuid)
+        if not mesa:
+            raise HTTPException(status.HTTP_404_NOT_FOUND, detail="Mesa no encontrada")
+
+        acta = await self.repository.obtener_acta_por_mesa(mesa_uuid)
+        participantes = await self.repository.listar_participantes(mesa_uuid)
+
+        pdf_bytes = generar_acta_pdf(
+            mesa=mesa,
+            acta=acta,
+            participantes=participantes,
+            url_base_publica=url_base,
+        )
+        codigo = mesa.codigo_oficial or str(mesa.id)[:8]
+        codigo_limpio = codigo.replace("/", "_").replace(" ", "_")
+        fecha_str = mesa.fecha.isoformat() if mesa.fecha else "2026"
+        nombre_archivo = f"Acta_Oficial_{codigo_limpio}_{fecha_str}.pdf"
+        return pdf_bytes, nombre_archivo
+
     # --- Cronograma y Gestión de Agendas de Mesas (EDIT-02) ---
 
     async def listar_agendas(
