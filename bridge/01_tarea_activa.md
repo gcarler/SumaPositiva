@@ -1,69 +1,76 @@
-# TAREA ACTIVA: [DOC-PDF-ACTAS-01] EXPORTADOR OFICIAL DE ACTAS COMUNITARIAS EN PDF FOLIADO CON MEMBRETE DISTRITAL, CÓDIGO QR Y SELLO CRIPTOGRÁFICO SHA-256
+# TAREA ACTIVA: [OPS-BACKUP-01] AUTOMATIZACIÓN DE RESPALDOS DE BASE DE DATOS bd_csh, RETENCIÓN GFS Y VERIFICACIÓN FORENSE DE RESTAURACIÓN
 
 **Fecha:** 2026-10-10  
 **Fase:** FASE 1 — Supervivencia Operativa y Cierre Jurídico Documental  
 **Plan Maestro:** `bridge/00_plan_maestro_excelencia_y_adopcion.md`  
 **Asignada a:** `agy2` (Desarrollador / EDD — `tmux a -t agy2`)  
 **Supervisor / Auditor:** `agy` (Coordinador General y Auditor Forense EAF — `tmux a -t agy`)  
-**Severidad:** ALTA / OPERATIVA (Fe Pública, Validez Jurídica Distrital y Radicación Ciudadana)
+**Severidad:** CRÍTICA / INFRAESTRUCTURA (Disponibilidad, Integridad Criptográfica y Mitigación de Desastres)
 
 ---
 
 ## 🎯 1. Justificación y Alcance del Requerimiento
 
-La plataforma POLIS cuenta con sellado criptográfico inmutable SHA-256 para las actas de mesas comunitarias (`POST /api/v1/mesas/{mesa_id}/acta/cerrar`). Sin embargo, en el ejercicio de la administración pública y el control social en Cartagena de Indias, los facilitadores territoriales, secretarios de despacho, líderes comunales y veedurías ciudadanas requieren un **documento físico o digital oficial radicable** (PDF con membrete, folio único, firmas y código QR escaneable).
+La plataforma POLIS almacena en PostgreSQL (`bd_csh`) la memoria histórica comunitaria del Distrito de Cartagena de Indias: 33 mesas territoriales canónicas, agendas, actas comunitarias, participantes, propuestas y capas geográficas. 
 
-Sin este documento exportable, el acta queda confinada a un registro JSON en una base de datos que la comunidad y los órganos de control (Personería, Contraloría) no pueden anexar a expedientes administrativos ni radicar en ventanilla distrital.
+A la fecha, los respaldos existentes son manuales y esporádicos, carecen de programación en cron, esquema formal de retención (rotación GFS), sumas de verificación criptográfica obligatorias y, críticamente, **nunca se ha ejecutado una prueba forense de restauración controlada**. En caso de fallo de disco, corrupción o incidente operacional, existe riesgo de pérdida de información institucional irreemplazable.
+
+Esta tarea automatiza integralmente el ciclo de vida del respaldo, retención, integridad criptográfica y certificación de restaurabilidad.
 
 ---
 
 ## 📋 2. Especificación Técnica de la Tarea
 
-### A. Backend (`backend/app/modules/mesas/`)
-1. **Endpoint de Generación de PDF Oficial**:
-   - `GET /api/v1/mesas/{mesa_id}/acta/pdf`
-   - Retorna `application/pdf` con encabezados `Content-Disposition: inline; filename="Acta_{codigo_oficial}_{fecha}.pdf"`.
-   - Utilizar ReportLab (instalando `reportlab` en el entorno virtual de backend) o generación de maquetación HTML $\rightarrow$ PDF limpia, vectorial y de alto rendimiento.
-2. **Estructura Documental del Acta PDF**:
-   - **Encabezado Institucional:** Escudo o membrete del Distrito de Cartagena de Indias, Alcaldía Mayor, y lema del Plan de Desarrollo *"Cartagena Ciudad de Derechos 2024-2027"*.
-   - **Identificación Formal:** Número de Folio único (`ACTA-MT-{codigo_oficial}-{anio}`), fecha y hora de emisión.
-   - **Ficha Técnica de la Mesa:** Nombre oficial de la mesa territorial, localidad, barrio/corregimiento, lugar de realización (sincronizado con la remediación FIX-EDIT-MESA-01), horario, facilitador responsable y entidad convocante.
-   - **Quórum y Registro:** Total de participantes verificados en lista de asistencia, modalidad (presencial/mixta) y estado del acta (Cerrada / Concertada).
-   - **Cuerpo Deliberativo y Acuerdos:**
-     - Resumen ejecutivo de la deliberación comunitaria.
-     - Tabla estructurada de Acuerdos Concertados (Compromiso, Entidad Responsable, Plazo estimado o meta).
-   - **Pie de Seguridad y Cierre Forense:**
-     - Hash SHA-256 oficial en tipografía monoespaciada legible.
-     - Código QR dinámico que al ser escaneado con la cámara de un smartphone abre la URL de validación pública de la plataforma (`https://seguridadhumanaintegral.org/asistencia/{mesa_id}`).
-     - Cuadro de firmas para el Facilitador Distrital y Relator Comunitario.
+### A. Script de Respaldo Programado (`scripts/respaldo_programado_bd.sh`)
+1. **Extracción y Compresión:**
+   - Extracción de la base de datos `bd_csh` mediante `pg_dump` con variables de entorno de conexión estándar (`DATABASE_URL` o usuario/clave de postgres).
+   - Compresión eficiente en formato custom `.dump` o `.sql.gz` con timestamp canónico: `bd_csh_YYYYMMDD_HHMMSS.dump`.
+2. **Esquema de Retención GFS (Grandfather-Father-Son):**
+   - **Diarios:** Conservar las últimas 7 copias diarias (`backups/diarios/`).
+   - **Semanales:** Conservar las últimas 4 copias semanales (los domingos) (`backups/semanales/`).
+   - **Mensuales:** Conservar las últimas 3 copias mensuales (el 1° de cada mes) (`backups/mensuales/`).
+   - Purgado automático de dumps que excedan la política de retención, sin eliminar copias vigentes.
+3. **Integridad Criptográfica:**
+   - Cálculo automático de hash SHA-256 para cada archivo generado y almacenamiento en un archivo adjunto `.sha256`.
+4. **Trazabilidad y Permisos:**
+   - Registro de ejecución detallado en `backups/historial_respaldos.log` (fecha, archivo, tamaño en bytes, hash SHA-256, estado).
+   - Permisos estrictos: `chmod 600` para los archivos de backup y `chmod 700` para el script.
 
-### B. Frontend (`src/features/mesas/`)
-1. **Servicio API en `mesas-api.ts`**:
-   - Función `descargarActaPdf(mesaId: string): Promise<Blob>` para consumir `GET /mesas/{mesa_id}/acta/pdf`.
-2. **Integración en `MesaActaPanel` (`mesa-acta-panel.tsx`)**:
-   - Botón institucional `Button` con icono de documento/descarga: *"Descargar Acta Oficial en PDF"*.
-   - Habilitado tanto en modo lectura cuando el acta está concertada/cerrada, como en vista previa.
-   - Manejo de descarga fluida en navegador con nombre de archivo canónico.
-3. **Botón en Tarjeta de Mesa / Detalle (`MesaPanel`)**:
-   - Acceso directo a la descarga del acta oficial si la mesa cuenta con acta cerrada.
+### B. Automatización en crontab de Linux
+1. **Configuración de Cron:**
+   - Programación de la ejecución automática en el crontab del usuario `root` diariamente a las 02:00 AM UTC:
+     `0 2 * * * /root/polis/scripts/respaldo_programado_bd.sh >> /root/polis/backups/cron_respaldos.log 2>&1`
+   - Verificación de que la tarea quede activa y visible con `crontab -l`.
+
+### C. Script de Verificación Forense de Restauración (`scripts/verificar_restauracion_dump.sh`)
+1. **Validación de Restaurabilidad:**
+   - Toma el dump más reciente (o una ruta pasada por argumento).
+   - Verifica la suma SHA-256 con `sha256sum -c`.
+   - Crea una base de datos efímera de prueba (ej. `bd_csh_forensic_verify_tmp`).
+   - Restaura el dump en dicha base efímera mediante `pg_restore` o `psql`.
+   - Ejecuta consultas de comprobación de integridad:
+     - Conteo de mesas en `mesas_trabajo.mesas` (debe ser >= 33).
+     - Conteo de agendas en `mesas_trabajo.agendas` (debe ser >= 36).
+     - Conteo de esquemas y tablas fundamentales.
+   - Elimina limpiamente la base efímera tras la comprobación (`DROP DATABASE`).
+   - Retorna código de salida `0` si la base se restauró al 100% sin corrupción, o código distinto de `0` con alerta descriptiva ante cualquier fallo.
 
 ---
 
 ## 🛡️ 3. Salvaguardas Obligatorias
 
-1. **Preservación BPIN:** No alterar referencias a BPIN.
+1. **Preservación Inviolable de BPIN:** No alterar identificadores presupuestales.
 2. **Cero Acrónimos Ajenos:** Cero mención a DNP, MGA o SINERGIA.
-3. **UI-Policy Estricta:** Uso exclusivo de componentes `@/shared/ui/`. Cero `<button>` o `<input>` nativos en JSX.
-4. **Fidelidad Criptográfica:** El hash SHA-256 impreso en el PDF debe coincidir bit a bit con el calculado y sellado en `mesas_trabajo.actas_comunitarias.sha256_acta`.
-5. **Protocolo Zero-Push:** Commits locales en `main`.
+3. **Integridad de Producción:** El script de respaldo no debe bloquear transacciones de producción (`--no-owner --no-privileges` si aplica, sin locks exclusivos persistentes). La base de verificación debe ser estrictamente efímera y aislada.
+4. **Protocolo Zero-Push:** Commits locales en `main`.
 
 ---
 
 ## 🧪 4. Quality Gates y Criterios de Aceptación
 
-1. `bun run check`: 0 errores TypeScript, 0 advertencias ESLint, UI Policy aprobada.
-2. `bun test src/features/mesas`: Suite completa de pruebas de mesas pasando al 100%.
-3. `pytest`: Pruebas de endpoint backend pasando con generación de PDF válida.
-4. `bun run build`: Compilación limpia Turbopack.
-5. Verificación visual del PDF generado: Márgenes, paginación, legibilidad de acuerdos, escudo/membrete y escaneabilidad del código QR.
-6. Informe técnico en `bridge/02_resultado_agy2.md` y commit atómico local en `main`.
+1. Script `respaldo_programado_bd.sh` ejecutable y con manejo estricto de errores (`set -euo pipefail`).
+2. Generación exitosa de un dump real de prueba con su correspondiente `.sha256`.
+3. Verificación de retención y creación de estructura de directorios (`diarios`, `semanales`, `mensuales`).
+4. Crontab configurado y validado.
+5. Ejecución exitosa de `scripts/verificar_restauracion_dump.sh` confirmando integridad de las 33 mesas y 36 agendas en base efímera.
+6. Informe técnico protocolizado en `bridge/02_resultado_agy2.md` y commit atómico local en `main`.
