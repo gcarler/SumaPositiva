@@ -1,76 +1,78 @@
-# TAREA ACTIVA: [OPS-BACKUP-01] AUTOMATIZACIÓN DE RESPALDOS DE BASE DE DATOS bd_csh, RETENCIÓN GFS Y VERIFICACIÓN FORENSE DE RESTAURACIÓN
+# TAREA ACTIVA: [OPS-BACKUP-01] AUTOMATIZACIÓN DE RESPALDOS DE BASE DE DATOS Y RECUPERACIÓN FORENSE
 
 **Fecha:** 2026-10-10  
-**Fase:** FASE 1 — Supervivencia Operativa y Cierre Jurídico Documental  
+**Fase:** FASE 1 — Supervivencia Operativa y Cierre Jurídico  
 **Plan Maestro:** `bridge/00_plan_maestro_excelencia_y_adopcion.md`  
 **Asignada a:** `agy2` (Desarrollador / EDD — `tmux a -t agy2`)  
 **Supervisor / Auditor:** `agy` (Coordinador General y Auditor Forense EAF — `tmux a -t agy`)  
-**Severidad:** CRÍTICA / INFRAESTRUCTURA (Disponibilidad, Integridad Criptográfica y Mitigación de Desastres)
+**Severidad:** ALTA / CRÍTICA (Seguridad Operativa, Continuidad del Negocio y Recuperación ante Desastres)
 
 ---
 
 ## 🎯 1. Justificación y Alcance del Requerimiento
 
-La plataforma POLIS almacena en PostgreSQL (`bd_csh`) la memoria histórica comunitaria del Distrito de Cartagena de Indias: 33 mesas territoriales canónicas, agendas, actas comunitarias, participantes, propuestas y capas geográficas. 
+La base de datos `bd_csh` alberga el patrimonio institucional y comunitario de POLIS en Cartagena de Indias: 33 mesas territoriales, 36 agendas comunitarias, capas cartográficas PostGIS, catálogo de políticas públicas y actores comunales. Hasta la fecha, los respaldos se han efectuado de manera manual y ad-hoc, careciendo de una política sistemática de retención GFS (Grandfather-Father-Son), verificación criptográfica automatizada y restauración probatoria programada.
 
-A la fecha, los respaldos existentes son manuales y esporádicos, carecen de programación en cron, esquema formal de retención (rotación GFS), sumas de verificación criptográfica obligatorias y, críticamente, **nunca se ha ejecutado una prueba forense de restauración controlada**. En caso de fallo de disco, corrupción o incidente operacional, existe riesgo de pérdida de información institucional irreemplazable.
-
-Esta tarea automatiza integralmente el ciclo de vida del respaldo, retención, integridad criptográfica y certificación de restaurabilidad.
+Cualquier contingencia en el servidor sin un proceso de respaldo automatizado pondría en riesgo irreversible la memoria histórica de los acuerdos y la trazabilidad ciudadana.
 
 ---
 
 ## 📋 2. Especificación Técnica de la Tarea
 
 ### A. Script de Respaldo Programado (`scripts/respaldo_programado_bd.sh`)
-1. **Extracción y Compresión:**
-   - Extracción de la base de datos `bd_csh` mediante `pg_dump` con variables de entorno de conexión estándar (`DATABASE_URL` o usuario/clave de postgres).
-   - Compresión eficiente en formato custom `.dump` o `.sql.gz` con timestamp canónico: `bd_csh_YYYYMMDD_HHMMSS.dump`.
-2. **Esquema de Retención GFS (Grandfather-Father-Son):**
-   - **Diarios:** Conservar las últimas 7 copias diarias (`backups/diarios/`).
-   - **Semanales:** Conservar las últimas 4 copias semanales (los domingos) (`backups/semanales/`).
-   - **Mensuales:** Conservar las últimas 3 copias mensuales (el 1° de cada mes) (`backups/mensuales/`).
-   - Purgado automático de dumps que excedan la política de retención, sin eliminar copias vigentes.
-3. **Integridad Criptográfica:**
-   - Cálculo automático de hash SHA-256 para cada archivo generado y almacenamiento en un archivo adjunto `.sha256`.
-4. **Trazabilidad y Permisos:**
-   - Registro de ejecución detallado en `backups/historial_respaldos.log` (fecha, archivo, tamaño en bytes, hash SHA-256, estado).
-   - Permisos estrictos: `chmod 600` para los archivos de backup y `chmod 700` para el script.
+1. **Política de Retención GFS (Grandfather-Father-Son)**:
+   - **Diarios (Son):** Conservación de los 7 respaldos diarios más recientes en `/root/polis/backups/diarios/`.
+   - **Semanales (Father):** Conservación de 4 respaldos semanales en `/root/polis/backups/semanales/` (generados/promovidos los domingos o sembrados inicialmente).
+   - **Mensuales (Grandfather):** Conservación de 3 respaldos mensuales en `/root/polis/backups/mensuales/` (generados/promovidos el primer día del mes o sembrados inicialmente).
+2. **Formato y Seguridad**:
+   - Dump con `pg_dump -Fc` (formato personalizado comprimido de PostgreSQL).
+   - Extracción segura de credenciales desde entorno (`PGPASSWORD` / `POLIS_DB_PASS`) o desde `/root/polis/backend/.env` sin exponerlas en logs ni procesos.
+   - Permisos restrictivos `chmod 0600` para volcados y archivos hash.
+3. **Cálculo Criptográfico y Bitácora**:
+   - Cálculo del hash SHA-256 para cada dump en su respectivo archivo `.sha256`.
+   - Bitácora estructurada de ejecución en `/root/polis/backups/respaldos.log` con marcas de tiempo ISO, peso del archivo, hash y estado.
+4. **Purgado Automático**:
+   - Rotación y purga limpia de archivos `.dump` y `.dump.sha256` que excedan la cuota de retención de cada nivel.
 
-### B. Automatización en crontab de Linux
-1. **Configuración de Cron:**
-   - Programación de la ejecución automática en el crontab del usuario `root` diariamente a las 02:00 AM UTC:
-     `0 2 * * * /root/polis/scripts/respaldo_programado_bd.sh >> /root/polis/backups/cron_respaldos.log 2>&1`
-   - Verificación de que la tarea quede activa y visible con `crontab -l`.
+### B. Programación del Cron de Linux
+- Registro del cron job en el usuario `root`:
+  ```cron
+  0 2 * * * /root/polis/scripts/respaldo_programado_bd.sh >> /root/polis/backups/respaldos.log 2>&1
+  ```
+- Verificación con `crontab -l`.
 
-### C. Script de Verificación Forense de Restauración (`scripts/verificar_restauracion_dump.sh`)
-1. **Validación de Restaurabilidad:**
-   - Toma el dump más reciente (o una ruta pasada por argumento).
-   - Verifica la suma SHA-256 con `sha256sum -c`.
-   - Crea una base de datos efímera de prueba (ej. `bd_csh_forensic_verify_tmp`).
-   - Restaura el dump en dicha base efímera mediante `pg_restore` o `psql`.
-   - Ejecuta consultas de comprobación de integridad:
-     - Conteo de mesas en `mesas_trabajo.mesas` (debe ser >= 33).
-     - Conteo de agendas en `mesas_trabajo.agendas` (debe ser >= 36).
-     - Conteo de esquemas y tablas fundamentales.
-   - Elimina limpiamente la base efímera tras la comprobación (`DROP DATABASE`).
-   - Retorna código de salida `0` si la base se restauró al 100% sin corrupción, o código distinto de `0` con alerta descriptiva ante cualquier fallo.
+### C. Script de Verificación de Restauración Forense (`scripts/verificar_restauracion_dump.sh`)
+1. **Validación Criptográfica Previa**:
+   - Comprobación estricta de integridad con `sha256sum -c`.
+2. **Restauración en Base de Datos Efímera**:
+   - Creación de base de datos aislada temporal (ej. `bd_csh_test_<timestamp>_<pid>`).
+   - Carga de extensiones requeridas (`postgis`, `pgcrypto`, `ltree`, `pg_trgm`).
+   - Restauración del dump mediante `pg_restore --no-owner --no-privileges`.
+3. **Comprobación Cuantitativa y Estructural**:
+   - Verificación estricta de las 33 mesas territoriales (`SELECT count(*) FROM mesas_trabajo.mesas` = 33).
+   - Verificación estricta de las 36 agendas comunitarias (`SELECT count(*) FROM mesas_trabajo.agendas` = 36).
+   - Verificación de esquemas medulares (`autenticacion`, `geodatos`, `motor_politicas`, `mesas_trabajo`, `indicadores`, `participacion_ciudadana`, `presupuesto`).
+4. **Aislamiento y Limpieza Automática**:
+   - Trap `EXIT INT TERM` para eliminar inmediatamente la base de datos temporal, garantizando cero contaminación y cero impacto en la base de producción `bd_csh`.
 
 ---
 
 ## 🛡️ 3. Salvaguardas Obligatorias
 
-1. **Preservación Inviolable de BPIN:** No alterar identificadores presupuestales.
-2. **Cero Acrónimos Ajenos:** Cero mención a DNP, MGA o SINERGIA.
-3. **Integridad de Producción:** El script de respaldo no debe bloquear transacciones de producción (`--no-owner --no-privileges` si aplica, sin locks exclusivos persistentes). La base de verificación debe ser estrictamente efímera y aislada.
-4. **Protocolo Zero-Push:** Commits locales en `main`.
+1. **Inviolabilidad de Producción:** Cero modificación o interrupción sobre `bd_csh`. La restauración de prueba se ejecuta exclusivamente sobre bases efímeras temporales.
+2. **Preservación BPIN:** No alterar identificadores BPIN.
+3. **Cero Acrónimos Ajenos:** Cero reintroducción de DNP, MGA o SINERGIA en código y documentación.
+4. **Protocolo Zero-Push:** Exclusivamente commits locales en `main`.
 
 ---
 
-## 🧪 4. Quality Gates y Criterios de Aceptación
+## ✅ 4. Criterios de Aceptación
 
-1. Script `respaldo_programado_bd.sh` ejecutable y con manejo estricto de errores (`set -euo pipefail`).
-2. Generación exitosa de un dump real de prueba con su correspondiente `.sha256`.
-3. Verificación de retención y creación de estructura de directorios (`diarios`, `semanales`, `mensuales`).
-4. Crontab configurado y validado.
-5. Ejecución exitosa de `scripts/verificar_restauracion_dump.sh` confirmando integridad de las 33 mesas y 36 agendas en base efímera.
-6. Informe técnico protocolizado en `bridge/02_resultado_agy2.md` y commit atómico local en `main`.
+- [ ] `scripts/respaldo_programado_bd.sh` creado, ejecutable y probado con éxito.
+- [ ] Directorios `backups/diarios`, `backups/semanales`, `backups/mensuales` creados con sus respaldos y hashes SHA-256.
+- [ ] Bitácora `backups/respaldos.log` registrando eventos con fecha, peso y hash.
+- [ ] Tarea programada en `crontab -l` a las `0 2 * * *`.
+- [ ] `scripts/verificar_restauracion_dump.sh` probado con éxito, certificando 33 mesas y 36 agendas en base efímera y autodestruyéndose al finalizar.
+- [ ] Rotación GFS validada (purga de archivos antiguos sin dejar huérfanos).
+- [ ] Informe protocolizado en `bridge/02_resultado_agy2.md` y commit atómico en `main`.
+- [ ] Notificación al supervisor `agy` en pane `%0`.

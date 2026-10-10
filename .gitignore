@@ -83,9 +83,8 @@ playwright-report/
 test-results/
 
 # Backups and media uploads
-backups/*.dump
-backups/*.dump.sha256
-backups/*.tar
+backups/*
+!backups/.gitkeep
 backend/media/evidencias/*
 !backend/media/evidencias/.gitkeep
 
