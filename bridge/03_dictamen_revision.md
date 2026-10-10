@@ -1346,4 +1346,83 @@ El problema reportado por el usuario ha sido erradicado en su totalidad: los fun
 
 La tarea **[DOC-PDF-ACTAS-01]** queda formalmente **CERRADA Y APROBADA AL 100%**.  
 POLIS dispone ahora de su sistema oficial de exportación documental probatorio: las actas comunitarias trascienden la base de datos digital y se materializan en documentos físicos o digitales dotados de membrete distrital, folio único, quórum verificado, sello criptográfico y QR de trazabilidad para radicación ciudadana y control social en Cartagena de Indias.
+---
+
+## DICTAMEN PERICIAL FORENSE: APROBACIÓN DE [OPS-BACKUP-01] — AUTOMATIZACIÓN DE RESPALDOS DE BASE DE DATOS bd_csh, RETENCIÓN GFS Y VERIFICACIÓN FORENSE DE RESTAURACIÓN (EAF / agy, 2026-10-10)
+
+**Destinatario:** Dirección del Proyecto POLIS / Supervisión Técnica y Funcional  
+**Auditor / Coordinador General EAF:** `agy` (`tmux a -t agy`)  
+**Ejecutor Técnico:** `agy2` (`tmux a -t agy2`)  
+**Commit Auditado:** `870efce` (`feat(ops): automatizacion de respaldos GFS y recuperacion forense OPS-BACKUP-01`)  
+**Documento Técnico Evaluado:** `bridge/02_resultado_agy2.md`  
+**Plan Maestro:** `bridge/00_plan_maestro_excelencia_y_adopcion.md` (Fase 1: Tarea 1.2)  
+**Referencia Activa:** `bridge/01_tarea_activa.md` (`[OPS-BACKUP-01]`)  
+**Alcance:** Automatización integral de respaldos de la base de datos PostgreSQL `bd_csh`, política de retención Grandfather-Father-Son (7 diarios, 4 semanales, 3 mensuales), sellado criptográfico obligatorio SHA-256, ejecución desatendida en crontab, verificación forense de restauración en base efímera aislada, y certificación de inviolabilidad de la base de producción.
+
+**Resultado Oficial:** **APROBADO — CONFORME AL 100% (CALIFICACIÓN SOBRESALIENTE)**
+
+---
+
+### 1. Comprobaciones Forenses de Contra-Auditoría
+
+1. **Arquitectura y Robustez del Script de Respaldo (`scripts/respaldo_programado_bd.sh`)**:
+   - Implementación estricta con `set -euo pipefail` y extracción segura de credenciales de PostgreSQL (respetando variables de entorno y fallback seguro a `/root/polis/backend/.env`).
+   - Volcado binario comprimido con `pg_dump -Fc` generando archivos canónicos `bd_csh_diario_YYYYMMDD_HHMMSS.dump` con permisos restrictivos `chmod 0600`.
+   - Sellado criptográfico obligatorio: Cada archivo genera su suma de verificación homónima `.dump.sha256` con permisos `0600`.
+   - Política de retención Grandfather-Father-Son (GFS):
+     - Diarios (*Son*): Cuota máxima de 7 volcados en `/root/polis/backups/diarios/`.
+     - Semanales (*Father*): Promoción los domingos (`DOW=7`) con cuota máxima de 4 volcados en `/root/polis/backups/semanales/`.
+     - Mensuales (*Grandfather*): Promoción el 1° de cada mes (`DOM=01`) con cuota máxima de 3 volcados en `/root/polis/backups/mensuales/`.
+   - Función `purgar_nivel_gfs()` probada en caliente: elimina los volcados y hashes más antiguos sin dejar archivos huérfanos.
+   - Bitácora estructurada de auditoría en `/root/polis/backups/respaldos.log` registrando timestamp, nombre, tamaño, hash SHA-256 y resultado de rotación.
+
+2. **Automatización en Demonio de Cron de Linux**:
+   - Verificado registro formal en el crontab del usuario `root`:
+     `0 2 * * * /root/polis/scripts/respaldo_programado_bd.sh >> /root/polis/backups/respaldos.log 2>&1`
+   - Servicio `cron.service` activo y ejecutándose (`systemctl is-active cron` $\rightarrow$ `active`).
+
+3. **Verificación y Restauración Forense en Base Efímera (`scripts/verificar_restauracion_dump.sh`)**:
+   - Validación previa de integridad con `sha256sum -c`. Ante alteraciones en el archivo o en la suma criptográfica, rechaza de forma inmediata con código de salida 1 (probado y certificado con volcado corrupto deliberado).
+   - Creación de base de datos efímera aislada (`bd_csh_verif_<timestamp>_<pid>`) con extensiones requeridas (`plpgsql`, `pgcrypto`, `postgis`, `ltree`, `pg_trgm`).
+   - Restauración limpia mediante tubería y `pg_restore --no-owner` sin escalamiento inseguro de permisos.
+   - Auditoría de datos cuantitativa:
+     - 33 mesas territoriales restauradas íntegramente (`SELECT count(*) FROM mesas_trabajo.mesas` = 33).
+     - 36 agendas comunitarias restauradas íntegramente (`SELECT count(*) FROM mesas_trabajo.agendas` = 36).
+     - Tablas de los 8 esquemas medulares (`autenticacion`, `geodatos`, `indicadores`, `mesas_trabajo`, `motor_instrumentos`, `motor_politicas`, `participacion_ciudadana`, `presupuesto`) verificadas.
+   - Autodestrucción garantizada: Manejador de señal `trap cleanup EXIT INT TERM` que asegura que la base efímera sea eliminada siempre al terminar o fallar. Verificado que no queda ninguna base temporal residual.
+
+4. **Inviolabilidad de la Base de Producción (`bd_csh`)**:
+   - Se verificó independientemente que la base de datos de producción `bd_csh` permaneció 100% intacta, disponible y sin bloqueos durante los ciclos de respaldo y prueba de restauración: 33 mesas y 36 agendas activas y consultables.
+
+---
+
+### 2. Verificación Estricta de Salvaguardas Institucionales
+
+| Salvaguarda Institucional | Estado | Evidencia Pericial |
+|---|:---:|---|
+| **Inviolabilidad de Producción (`bd_csh`)** | **CUMPLIDA** | 33 mesas territoriales y 36 agendas comunitarias intactas y activas en producción. |
+| **Preservación BPIN 100% Intacta** | **CUMPLIDA** | **19 referencias en `src/` y 21 en `backend/`** (0 modificaciones; BPIN permanece intacto como identificador presupuestal). |
+| **Cero Acrónimos Ajenos** | **CUMPLIDA** | **0 coincidencias** de `DNP`, `MGA` y `SINERGIA` en código modificado. |
+| **Protección Gitignore** | **CUMPLIDA** | Archivos binarios `.dump`, `.sha256` y bitácoras excluidos formalmente en `.gitignore`, preservando `backups/.gitkeep`. |
+| **Protocolo Zero-Push** | **CUMPLIDA** | Operaciones confinadas exclusivamente al repositorio local en la rama `main`. |
+
+---
+
+### 3. Certificación de Quality Gates
+
+- `bun run ui:check`: **APROBADO** (0 infracciones).
+- `bun run check` (`tsc --noEmit` & `eslint .`): **APROBADO** (0 errores TypeScript, 0 advertencias ESLint).
+- `pytest backend/tests/test_acta_pdf.py backend/tests/test_mesas_agenda.py backend/tests/test_actas_y_participantes.py`: **APROBADO** (7/7 pasados en 11.66s).
+- Ejecución directa de `/root/polis/scripts/respaldo_programado_bd.sh`: **APROBADO** (código 0, dump `1.2M`, SHA-256 verificado, rotación GFS conforme).
+- Ejecución directa de `/root/polis/scripts/verificar_restauracion_dump.sh`: **APROBADO** (código 0, hash SHA-256 verificado, 33 mesas y 36 agendas restauradas en base efímera, base efímera destruida limpiamente).
+- Prueba de detección de manipulación (*Tamper Rejection*): **APROBADO** (Rechazo inmediato con código 1 ante archivo alterado).
+- Crontab y Demonio de Sistema: **APROBADO** (Regla activa a las `0 2 * * *`, servicio `cron.service` activo).
+
+---
+
+### 4. Veredicto Pericial
+
+La tarea **[OPS-BACKUP-01]** queda formalmente **CERRADA Y APROBADA AL 100%**.  
+La plataforma POLIS cuenta ahora con una política de respaldos automatizados de nivel empresarial, con rotación GFS de tres niveles, custodia criptográfica SHA-256, programación desatendida y garantía forense de restaurabilidad sin riesgo para la base de producción.
+
 
