@@ -1046,3 +1046,60 @@ La creación de mesas de trabajo está plenamente funcional, validada y operativ
 La tarea **[SAN-TERM-01]** queda formalmente **CERRADA Y APROBADA AL 100%**.  
 La plataforma POLIS cuenta ahora con una identidad metodológica soberana, distrital y propia, libre de denominaciones del orden nacional ajenas al territorio.
 
+---
+
+## DICTAMEN PERICIAL FORENSE: APROBACIÓN DE [SAN-TERM-02] — ERRADICACIÓN DE "SINERGIA" Y "CONPES INSTITUCIONAL" (PRESERVANDO BPIN) (EAF / agy, 2026-10-10)
+
+**Destinatario:** Dirección del Proyecto POLIS / Supervisión Técnica y Funcional  
+**Auditor / Coordinador General EAF:** `agy` (`tmux a -t agy`)  
+**Ejecutor Técnico:** `agy2` (`tmux a -t agy2`)  
+**Commits Auditados:** `d927a37` (`fix(branding): [SAN-TERM-02] erradicar SINERGIA y CONPES institucional preservando BPIN`) y `8866b02` (`docs(audit): registrar informe de ejecucion de SAN-TERM-02`)  
+**Documento Técnico:** `bridge/02_resultado_agy2.md`  
+**Referencia Activa:** `bridge/01_tarea_activa.md`  
+**Alcance:** Erradicación completa de la denominación ajena "SINERGIA" en frontend, ajuste de "CONPES institucional" hacia "Documento de Política Pública Distrital" y "relatoría técnica", y preservación intacta del identificador "BPIN"  
+
+**Resultado Oficial:** **APROBADO — CONFORME AL 100%**
+
+### 1. Comprobaciones Forenses de Contra-Auditoría:
+
+1. **Erradicación Total de "SINERGIA" en Frontend (`src/`)**:
+   - Se ejecutó `grep -rni "SINERGIA" src/`.
+   - Resultado: **CERO (0) coincidencias**. Sustituido por términos distritales oficiales: "Cadena de Valor y Seguimiento", "Plan de Acción y Seguimiento (PAS)" y "rangos de semaforización oficial".
+
+2. **Preservación Rigurosa de "BPIN"**:
+   - Se ejecutó `grep -rni "BPIN" src/`.
+   - Resultado: **37 ocurrencias legítimas conservadas al 100%** en modelos de alternativas, presupuesto, formularios y servicios (`src/features/alternativas/` y `src/features/seguimiento/`), respetando la directriz explícita de supervisión.
+
+3. **Saneamiento de "CONPES Institucional" vs. Preservación Normativa**:
+   - En la titulación de la fase 4, metadatos y relatorías, se reemplazó la figura impropia de "Documento CONPES Distrital" por **"Documento de Política Pública Distrital"**, "relatoría técnica", "adopción de políticas públicas distritales" y "mesas distritales de seguimiento".
+   - Las citas textuales a documentos CONPES nacionales de antecedentes normativos y marcos jurídicos (`CONPES 4040`, `CONPES 3990`, `CONPES 166`, `CONPES 3887`, `CONPES 4080`, `CONPES 3956`, `CONPES 113`) se mantuvieron con absoluta fidelidad legal.
+
+4. **Políticas de Accesibilidad y UI-Policy Distrital**:
+   - `node scripts/ui-policy.mjs`: **0 violaciones en 209 archivos auditados**.
+   - Cero botones nativos `<button>` sin control tipado; uso estricto del Design System de POLIS.
+
+5. **Verificación de Tipos y Linter**:
+   - `tsc --noEmit`: 0 errores de TypeScript estricto.
+   - `eslint .`: 0 errores, 0 advertencias.
+
+6. **Batería de Pruebas Unitarias e Integración**:
+   - `bun test`: **367 pass / 0 fail** (1551 expect calls en 37 archivos de prueba).
+
+7. **Compilación de Producción Next.js Turbopack**:
+   - `bun run build`: **190 de 190 rutas compiladas limpias**, empaquetado standalone completado exitosamente.
+
+8. **Servicios en Vivo y Accesibilidad HTTP**:
+   - `polis-frontend.service`: **active (running)**.
+   - `polis-backend.service`: **active (running)**.
+   - Verificación HTTP en vivo: `curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:3000/plataforma/mesas` retornó **HTTP 200 OK** y `http://127.0.0.1:3000/plataforma/seguimiento` retornó **HTTP 200 OK**.
+
+9. **Control de Versiones y Protocolo Zero-Push**:
+   - Commits atómicos en `main` sin envíos a remotos (`git push` restringido).
+
+---
+
+### 2. Veredicto Pericial:
+La tarea **[SAN-TERM-02]** queda formalmente **CERRADA Y APROBADA AL 100%**.  
+La plataforma POLIS consolida una identidad institucional distrital armónica, soberana y técnicamente depurada.
+
+
