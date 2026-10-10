@@ -995,3 +995,54 @@ La plataforma POLIS se encuentra en estado de **CONFORMIDAD INTEGRAL AL 100%**, 
 ### 2. Veredicto Pericial:
 La tarea **[FIX-MESAS-01]** queda formalmente **CERRADA Y APROBADA AL 100%**.  
 La creación de mesas de trabajo está plenamente funcional, validada y operativa tanto en backend como en interfaz de usuario.
+
+---
+
+## DICTAMEN PERICIAL FORENSE: APROBACIÓN DE [SAN-TERM-01] — SANEAMIENTO Y ERRADICACIÓN INTEGRAL DE MARCAS "DNP" Y "MGA" EN LA PLATAFORMA POLIS (EAF / agy, 2026-10-10)
+
+**Destinatario:** Dirección del Proyecto POLIS / Supervisión Técnica y Funcional  
+**Auditor / Coordinador General EAF:** `agy` (`tmux a -t agy`)  
+**Ejecutor Técnico:** `agy2` (`tmux a -t agy2`)  
+**Commits Auditados:** `c6c3336` (`fix(branding): [SAN-TERM-01] erradicar denominaciones ajenas DNP y MGA en UI de plataforma POLIS`) y `2bd6224` (`docs(audit): registrar informe de ejecucion de SAN-TERM-01`)  
+**Documento Técnico:** `bridge/02_resultado_agy2.md`  
+**Referencia Activa:** `bridge/01_tarea_activa.md`  
+**Alcance:** Erradicación y sustitución integral de las siglas ajenas DNP y MGA en la interfaz de usuario, navegación, paneles, modales, tablas y relatorías de POLIS  
+
+**Resultado Oficial:** **APROBADO — CONFORME AL 100%**
+
+### 1. Comprobaciones Forenses de Contra-Auditoría:
+
+1. **Erradicación Terminológica en Código Fuente (`src/`)**:
+   - Se ejecutó `grep -rnE "\b(DNP|MGA)\b" src/`.
+   - Resultado: **CERO (0) coincidencias** en todo el frontend. No queda ninguna mención visible ni etiqueta residual con las siglas DNP o MGA.
+   - Términos saneados con éxito: "Papelógrafo", "Fichas de Indicadores", "Fases de la Política", "Banco de Alternativas de Solución", "Diagnóstico Territorial", "Validación Metodológica", "Línea Base de Diagnóstico", "Generar borrador técnico", "Matriz de Diagnóstico y Relatoría".
+
+2. **Políticas de Accesibilidad y UI-Policy Distrital**:
+   - `node scripts/ui-policy.mjs`: **0 violaciones en 209 archivos**.
+   - Cero botones nativos `<button>` sin control tipado; uso estricto del Design System de POLIS.
+
+3. **Verificación de Tipos y Linter**:
+   - `tsc --noEmit`: 0 errores de TypeScript estricto.
+   - `eslint .`: 0 errores, 0 advertencias.
+
+4. **Suite Completa de Pruebas Unitarias e Integración**:
+   - `bun test`: **367 pass / 0 fail** (1551 expect calls en 37 archivos de prueba).
+   - Todas las aserciones adaptadas a la nueva terminología pasaron con éxito.
+
+5. **Compilación de Producción Next.js Turbopack**:
+   - `bun run build`: **190 de 190 rutas compiladas limpias**, empaquetado standalone exitoso.
+
+6. **Servicios en Vivo y Accesibilidad HTTP**:
+   - `polis-frontend.service`: **active (running)**.
+   - `polis-backend.service`: **active (running)**.
+   - Verificación HTTP en vivo: `curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:3000/plataforma/mesas` retornó **HTTP 200 OK**.
+
+7. **Control de Versiones y Protocolo Zero-Push**:
+   - Commit atómico `c6c3336` en `main` sin envíos a remotos (`git push` restringido).
+
+---
+
+### 2. Veredicto Pericial:
+La tarea **[SAN-TERM-01]** queda formalmente **CERRADA Y APROBADA AL 100%**.  
+La plataforma POLIS cuenta ahora con una identidad metodológica soberana, distrital y propia, libre de denominaciones del orden nacional ajenas al territorio.
+
