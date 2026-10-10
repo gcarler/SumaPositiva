@@ -59,6 +59,10 @@ const MesaEditorPanel = dynamic(
   () => import("@/features/mesas/panels/mesa-editor-panel").then((m) => m.MesaEditorPanel),
   { ssr: false }
 );
+const AgendaEditorPanel = dynamic(
+  () => import("@/features/mesas/panels/agenda-editor-panel").then((m) => m.AgendaEditorPanel),
+  { ssr: false }
+);
 const MesaActaPanel = dynamic(
   () => import("@/features/mesas/panels/mesa-acta-panel").then((m) => m.MesaActaPanel),
   { ssr: false }
@@ -197,6 +201,7 @@ export const PANEL_REGISTRY: Record<
   mesa: MesaPanel as ComponentType<PanelComponentProps>,
   papelografo: PapelografoPanel as ComponentType<PanelComponentProps>,
   "mesa-editor": MesaEditorPanel as ComponentType<PanelComponentProps>,
+  "agenda-editor": AgendaEditorPanel as ComponentType<PanelComponentProps>,
   territorio: TerritorioPanel as ComponentType<PanelComponentProps>,
   formularios: FormulariosPanel as ComponentType<PanelComponentProps>,
   "formulario-editor": FormularioEditorPanel as ComponentType<PanelComponentProps>,
@@ -253,6 +258,7 @@ export const PANEL_WIDTHS: Record<PanelType, string> = {
   // el papelografo es el lienzo más ancho: el árbol necesita aire
   papelografo: "min(clamp(1080px, 82vw, 1760px), 100vw)",
   "mesa-editor": "min(clamp(560px, 42vw, 800px), 100vw)",
+  "agenda-editor": "min(clamp(560px, 42vw, 800px), 100vw)",
   territorio: "min(clamp(480px, 35vw, 640px), 100vw)",
   formularios: "min(clamp(820px, 56vw, 1240px), 100vw)",
   "formulario-editor": "min(clamp(780px, 52vw, 1120px), 100vw)",

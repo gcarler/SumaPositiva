@@ -204,6 +204,8 @@ export async function crearMesaRemota(datos: {
 
 /**
  * Actualiza los datos de una mesa en el backend remoto (PATCH /mesas/{mesa_id}).
+ * Salvaguarda pericial (OBS-21 / FIX-EDIT-MESA-01): Nunca se envía total_asistentes en el body del PATCH,
+ * dado que los asistentes se derivan exclusivamente del registro verificado de asistencia y actas.
  */
 export async function actualizarMesaRemota(
   mesaId: string,
@@ -211,6 +213,21 @@ export async function actualizarMesaRemota(
 ): Promise<MesaDeTrabajo> {
   const sesion = useSesionStore.getState().sesion;
   if (sesion?.token) setBearerToken(sesion.token);
+
+  // Resolver UUID canónico si mesaId es un código oficial (ej. MT-L01-01) o de agenda (ej. mt-001)
+  let idResuelto = mesaId;
+  const esUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(mesaId);
+  if (!esUUID) {
+    const storeMesa = useMesasStore.getState().mesas.find(
+      (m) =>
+        m.id === mesaId ||
+        m.codigoOficial?.toLowerCase() === mesaId.toLowerCase() ||
+        m.shortcodeCiudadano?.toLowerCase() === mesaId.toLowerCase()
+    );
+    if (storeMesa && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(storeMesa.id)) {
+      idResuelto = storeMesa.id;
+    }
+  }
 
   const body: Record<string, unknown> = {};
 
@@ -222,7 +239,7 @@ export async function actualizarMesaRemota(
   if (datos.fecha !== undefined) body.fecha = datos.fecha;
   if (datos.horario !== undefined) body.horario = datos.horario;
   if (datos.aforo !== undefined) body.aforo_maximo = Number(datos.aforo);
-  if (datos.totalAsistentes !== undefined) body.total_asistentes = Number(datos.totalAsistentes);
+  // NOTA PERICIAL (OBS-21 / FIX-EDIT-MESA-01): Omitir estrictamente body.total_asistentes
   if (datos.tipoMesa !== undefined) body.tipo_mesa = datos.tipoMesa;
   if (datos.entidad !== undefined) body.entidad_responsable = datos.entidad;
   if (datos.facilitador !== undefined) body.facilitador_principal = datos.facilitador;
@@ -235,15 +252,20 @@ export async function actualizarMesaRemota(
   if (datos.responsables !== undefined) metadatos.responsables = datos.responsables;
   if (datos.coordenadas !== undefined) metadatos.coordenadas = datos.coordenadas;
   if (datos.urlMapa !== undefined) metadatos.urlMapa = datos.urlMapa;
-  if (datos.totalAsistentes !== undefined) metadatos.totalAsistentes = datos.totalAsistentes;
   if (datos.informe !== undefined) metadatos.informe = datos.informe;
 
   if (Object.keys(metadatos).length > 0) {
     body.metadatos = metadatos;
   }
 
-  const resp = await apiFetch<MesaBackendResponse>(`/mesas/${mesaId}`, {
+  const headers: Record<string, string> = {};
+  if (sesion?.token) {
+    headers.Authorization = `Bearer ${sesion.token}`;
+  }
+
+  const resp = await apiFetch<MesaBackendResponse>(`/mesas/${idResuelto}`, {
     method: "PATCH",
+    headers,
     body,
   });
   return normalizarMesaBackend(resp);

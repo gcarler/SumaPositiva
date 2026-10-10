@@ -9,6 +9,7 @@ import {
   type MesaBackendResponse,
 } from "./mesas-api";
 import { useSesionStore } from "@/features/sesion/state/session-store";
+import { useMesasStore } from "@/features/mesas/state/mesas-store";
 
 describe("Persistencia y normalización de Mesas de Trabajo (EDIT-01)", () => {
   const originalFetch = globalThis.fetch;
@@ -138,6 +139,105 @@ describe("Persistencia y normalización de Mesas de Trabajo (EDIT-01)", () => {
       expect(resultado.lugar).toBe("Sede Comunal Blas de Lezo");
       expect(resultado.entidad).toBe("Secretaría de Participación");
       expect(resultado.facilitador).toBe("Dr. Andrés Morales");
+    });
+
+    test("FIX-EDIT-MESA-01: omite estrictamente total_asistentes protegiendo la salvaguarda OBS-21", async () => {
+      let capturedBody: Record<string, unknown> = {};
+
+      vi.spyOn(globalThis, "fetch").mockImplementation(async (_info, init) => {
+        if (init?.body && typeof init.body === "string") {
+          capturedBody = JSON.parse(init.body);
+        }
+        return new Response(JSON.stringify({
+          id: "01924567-89ab-7cde-f012-3456789abcde",
+          nombre: "Mesa Sin Manipulacion Asistentes",
+          lugar_nombre: "Coliseo de Combate",
+        }), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        });
+      });
+
+      await actualizarMesaRemota("01924567-89ab-7cde-f012-3456789abcde", {
+        nombre: "Mesa Sin Manipulacion Asistentes",
+        lugar: "Coliseo de Combate",
+        totalAsistentes: 99,
+        // @ts-expect-error verificación de protección en tiempo de ejecución
+        total_asistentes: 99,
+      });
+
+      expect(capturedBody.total_asistentes).toBeUndefined();
+      expect(capturedBody.totalAsistentes).toBeUndefined();
+      expect(capturedBody.lugar).toBe("Coliseo de Combate");
+      expect(capturedBody.lugar_nombre).toBe("Coliseo de Combate");
+    });
+
+    test("FIX-EDIT-MESA-01: resuelve código oficial o slug a UUID canónico e inyecta Bearer token", async () => {
+      let capturedUrl = "";
+      let capturedHeaders: Record<string, string> = {};
+
+      useSesionStore.setState({
+        sesion: {
+          token: "jwt-test-token-edicion",
+          modo: "institucional",
+          desde: new Date().toISOString(),
+          usuarioId: "usr-01",
+          rol: "ADMIN",
+          permisos: ["mesas:crear", "mesas:editar"],
+        },
+      });
+
+      useMesasStore.setState({
+        mesas: [
+          {
+            id: "01a0f5fe-86df-717b-a4d0-5b6605bdf993",
+            nombre: "Mesa Territorial San Francisco",
+            fecha: "2026-10-15",
+            lugar: "Lugar Original",
+            entidad: "Secretaría del Interior",
+            facilitador: "Dr. Gómez",
+            totalAsistentes: 12,
+            estado: "programada",
+            codigoOficial: "MT-L01-01",
+            shortcodeCiudadano: "mt-001",
+            plenaria: { acuerdos: "" },
+            submesas: [],
+          },
+        ],
+      });
+
+      vi.spyOn(globalThis, "fetch").mockImplementation(async (info, init) => {
+        capturedUrl = typeof info === "string" ? info : info instanceof Request ? info.url : info.toString();
+        const headers = init?.headers;
+        if (headers instanceof Headers) {
+          headers.forEach((val, key) => {
+            capturedHeaders[key] = val;
+          });
+        } else if (Array.isArray(headers)) {
+          headers.forEach(([k, v]) => {
+            capturedHeaders[k] = v;
+          });
+        } else if (headers && typeof headers === "object") {
+          capturedHeaders = { ...(headers as Record<string, string>) };
+        }
+
+        return new Response(JSON.stringify({
+          id: "01a0f5fe-86df-717b-a4d0-5b6605bdf993",
+          nombre: "Mesa Territorial San Francisco",
+          lugar_nombre: "Nuevo Lugar Comunal San Francisco",
+        }), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        });
+      });
+
+      const res = await actualizarMesaRemota("MT-L01-01", {
+        lugar: "Nuevo Lugar Comunal San Francisco",
+      });
+
+      expect(capturedUrl).toContain("/mesas/01a0f5fe-86df-717b-a4d0-5b6605bdf993");
+      expect(capturedHeaders["Authorization"] || capturedHeaders["authorization"]).toBe("Bearer jwt-test-token-edicion");
+      expect(res.lugar).toBe("Nuevo Lugar Comunal San Francisco");
     });
   });
 

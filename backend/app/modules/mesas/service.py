@@ -226,7 +226,7 @@ class MesaService:
 
     async def actualizar_mesa(
         self,
-        mesa_id: uuid.UUID,
+        mesa_id: uuid.UUID | str,
         datos: MesaActualizar,
         sujeto: SujetoAutenticadoContexto | None = None,
     ) -> MesaRespuesta:
@@ -240,8 +240,10 @@ class MesaService:
                 ),
             )
 
+        mesa_uuid = await self._resolver_mesa_uuid(mesa_id)
+
         async with transaction(self.repository.session):
-            mesa = await self.repository.obtener_para_actualizar(mesa_id)
+            mesa = await self.repository.obtener_para_actualizar(mesa_uuid)
             if not mesa:
                 raise HTTPException(status.HTTP_404_NOT_FOUND, detail="Mesa no encontrada")
 
@@ -338,6 +340,19 @@ class MesaService:
 
             mesa_actualizada = await self.repository.actualizar_mesa(mesa)
 
+            # Sincronización bidireccional con agenda vinculada (FIX-EDIT-MESA-01)
+            if "lugar_nombre" in campos_modificados or "fecha" in campos_modificados or "horario" in campos_modificados:
+                agenda = await self.repository.obtener_agenda_para_actualizar_por_mesa_id(mesa_actualizada.id)
+                if agenda:
+                    if "lugar_nombre" in campos_modificados and mesa_actualizada.lugar_nombre:
+                        agenda.lugar = mesa_actualizada.lugar_nombre
+                    if "fecha" in campos_modificados and mesa_actualizada.fecha:
+                        agenda.fecha = mesa_actualizada.fecha.isoformat()
+                    if "horario" in campos_modificados and mesa_actualizada.horario:
+                        agenda.hora_inicio = mesa_actualizada.horario
+                    agenda.actualizado_en = datetime.now(UTC)
+                    await self.repository.actualizar_agenda(agenda)
+
             # Registro inmutable de auditoría forense (OBS-21)
             auditoria = RegistroAuditoria(
                 tabla_afectada="mesas_trabajo.mesas",
@@ -359,8 +374,9 @@ class MesaService:
 
             return MesaRespuesta.model_validate(mesa_actualizada)
 
-    async def obtener_mesa(self, mesa_id: uuid.UUID) -> MesaRespuesta:
-        mesa = await self.repository.obtener_por_id(mesa_id)
+    async def obtener_mesa(self, mesa_id: uuid.UUID | str) -> MesaRespuesta:
+        mesa_uuid = await self._resolver_mesa_uuid(mesa_id)
+        mesa = await self.repository.obtener_por_id(mesa_uuid)
         if not mesa:
             raise HTTPException(status.HTTP_404_NOT_FOUND, detail="Mesa no encontrada")
         return MesaRespuesta.model_validate(mesa)
@@ -379,8 +395,9 @@ class MesaService:
         mesas = await self.repository.listar(tipo_mesa, estado, fecha, territorio_id, ancestro_ruta, solo_raiz)
         return [MesaRespuesta.model_validate(m) for m in mesas]
 
-    async def listar_submesas(self, mesa_id: uuid.UUID) -> list[MesaRespuesta]:
-        padre = await self.repository.obtener_por_id(mesa_id)
+    async def listar_submesas(self, mesa_id: uuid.UUID | str) -> list[MesaRespuesta]:
+        mesa_uuid = await self._resolver_mesa_uuid(mesa_id)
+        padre = await self.repository.obtener_por_id(mesa_uuid)
         if not padre:
             raise HTTPException(status.HTTP_404_NOT_FOUND, detail="Mesa padre no encontrada")
 
@@ -455,14 +472,15 @@ class MesaService:
     # --- Actas Comunitarias ---
 
     async def crear_o_actualizar_borrador_acta(
-        self, mesa_id: uuid.UUID, datos: ActaCrear
+        self, mesa_id: uuid.UUID | str, datos: ActaCrear
     ) -> ActaRespuesta:
+        mesa_uuid = await self._resolver_mesa_uuid(mesa_id)
         async with transaction(self.repository.session):
-            mesa = await self.repository.obtener_para_actualizar(mesa_id)
+            mesa = await self.repository.obtener_para_actualizar(mesa_uuid)
             if not mesa:
                 raise HTTPException(status.HTTP_404_NOT_FOUND, detail="Mesa no encontrada")
 
-            acta = await self.repository.obtener_acta_por_mesa(mesa_id)
+            acta = await self.repository.obtener_acta_por_mesa(mesa_uuid)
             if acta and acta.estado in ("CONCERTADA", "PUBLICADA"):
                 raise HTTPException(
                     status.HTTP_400_BAD_REQUEST,
@@ -472,7 +490,7 @@ class MesaService:
                     ),
                 )
 
-            participantes = await self.repository.listar_participantes(mesa_id)
+            participantes = await self.repository.listar_participantes(mesa_uuid)
             total_p = len(participantes)
             quorum = self._evaluar_quorum(total_p, mesa.aforo_maximo)
             snapshot_participantes = [
@@ -489,7 +507,7 @@ class MesaService:
 
             if not acta:
                 acta = ActaComunitaria(
-                    mesa_id=mesa_id,
+                    mesa_id=mesa_uuid,
                     numero_acta=datos.numero_acta,
                     resumen_deliberacion=datos.resumen_deliberacion,
                     acuerdos=datos.acuerdos,
@@ -529,14 +547,15 @@ class MesaService:
             return resp
 
     async def cerrar_acta(
-        self, mesa_id: uuid.UUID, datos_cierre: ActaCierre | None = None
+        self, mesa_id: uuid.UUID | str, datos_cierre: ActaCierre | None = None
     ) -> ActaRespuesta:
+        mesa_uuid = await self._resolver_mesa_uuid(mesa_id)
         async with transaction(self.repository.session):
-            mesa = await self.repository.obtener_para_actualizar(mesa_id)
+            mesa = await self.repository.obtener_para_actualizar(mesa_uuid)
             if not mesa:
                 raise HTTPException(status.HTTP_404_NOT_FOUND, detail="Mesa no encontrada")
 
-            acta = await self.repository.obtener_acta_por_mesa(mesa_id)
+            acta = await self.repository.obtener_acta_por_mesa(mesa_uuid)
             if not acta:
                 raise HTTPException(
                     status.HTTP_404_NOT_FOUND,
@@ -568,7 +587,7 @@ class MesaService:
                 if datos_cierre.nombre_facilitador_firma:
                     acta.nombre_facilitador_firma = datos_cierre.nombre_facilitador_firma
 
-            participantes = await self.repository.listar_participantes(mesa_id)
+            participantes = await self.repository.listar_participantes(mesa_uuid)
             total_p = len(participantes)
             quorum = self._evaluar_quorum(total_p, mesa.aforo_maximo)
             snapshot_participantes = [
@@ -606,8 +625,9 @@ class MesaService:
             resp.integridad_valida = True
             return resp
 
-    async def obtener_acta(self, mesa_id: uuid.UUID) -> ActaRespuesta:
-        acta = await self.repository.obtener_acta_por_mesa(mesa_id)
+    async def obtener_acta(self, mesa_id: uuid.UUID | str) -> ActaRespuesta:
+        mesa_uuid = await self._resolver_mesa_uuid(mesa_id)
+        acta = await self.repository.obtener_acta_por_mesa(mesa_uuid)
         if not acta:
             raise HTTPException(
                 status.HTTP_404_NOT_FOUND, detail="Acta no encontrada para esta mesa"
@@ -740,6 +760,17 @@ class MesaService:
 
             agenda.actualizado_en = datetime.now(UTC)
             actualizada = await self.repository.actualizar_agenda(agenda)
+
+            # Sincronización bidireccional con mesa vinculada (FIX-EDIT-MESA-01)
+            if "lugar" in campos_modificados and actualizada.mesa_id:
+                mesa_vinculada = await self.repository.obtener_para_actualizar(actualizada.mesa_id)
+                if mesa_vinculada and mesa_vinculada.lugar_nombre != actualizada.lugar:
+                    mesa_vinculada.lugar_nombre = actualizada.lugar
+                    nuevos_meta = dict(mesa_vinculada.metadatos or {})
+                    nuevos_meta["lugar"] = actualizada.lugar
+                    mesa_vinculada.metadatos = nuevos_meta
+                    mesa_vinculada.actualizado_en = datetime.now(UTC)
+                    await self.repository.actualizar_mesa(mesa_vinculada)
 
             # Registro de auditoría forense inmutable (OBS-22)
             agenda_uuid = uuid.uuid5(uuid.NAMESPACE_DNS, f"mesas_agendas:{actualizada.id}")

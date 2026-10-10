@@ -199,7 +199,7 @@ async def listar_mesas(
 
 
 @router.get("/{mesa_id}", response_model=MesaRespuesta)
-async def obtener_mesa(mesa_id: uuid.UUID, service: MesaServiceDep):
+async def obtener_mesa(mesa_id: str, service: MesaServiceDep):
     return await service.obtener_mesa(mesa_id)
 
 
@@ -208,7 +208,7 @@ async def obtener_mesa(mesa_id: uuid.UUID, service: MesaServiceDep):
     response_model=MesaRespuesta,
 )
 async def actualizar_mesa(
-    mesa_id: uuid.UUID,
+    mesa_id: str,
     datos: MesaActualizar,
     sujeto: Annotated[
         SujetoAutenticadoContexto,
@@ -237,7 +237,7 @@ async def actualizar_submesa(
 
 
 @router.get("/{mesa_id}/submesas", response_model=list[MesaRespuesta])
-async def obtener_submesas(mesa_id: uuid.UUID, service: MesaServiceDep):
+async def obtener_submesas(mesa_id: str, service: MesaServiceDep):
     return await service.listar_submesas(mesa_id)
 
 
@@ -274,7 +274,7 @@ async def listar_participantes(mesa_id: str, service: MesaServiceDep):
     status_code=status.HTTP_200_OK,
     dependencies=[Depends(requerir_permiso("mesas:acuerdos", nivel_minimo="declarada"))],
 )
-async def crear_o_actualizar_acta(mesa_id: uuid.UUID, datos: ActaCrear, service: MesaServiceDep):
+async def crear_o_actualizar_acta(mesa_id: str, datos: ActaCrear, service: MesaServiceDep):
     return await service.crear_o_actualizar_borrador_acta(mesa_id, datos)
 
 
@@ -285,11 +285,11 @@ async def crear_o_actualizar_acta(mesa_id: uuid.UUID, datos: ActaCrear, service:
     dependencies=[Depends(requerir_permiso("mesas:acuerdos", nivel_minimo="declarada"))],
 )
 async def cerrar_acta(
-    mesa_id: uuid.UUID, service: MesaServiceDep, datos_cierre: ActaCierre | None = None
+    mesa_id: str, service: MesaServiceDep, datos_cierre: ActaCierre | None = None
 ):
     return await service.cerrar_acta(mesa_id, datos_cierre)
 
 
 @router.get("/{mesa_id}/acta", response_model=ActaRespuesta)
-async def obtener_acta(mesa_id: uuid.UUID, service: MesaServiceDep):
+async def obtener_acta(mesa_id: str, service: MesaServiceDep):
     return await service.obtener_acta(mesa_id)

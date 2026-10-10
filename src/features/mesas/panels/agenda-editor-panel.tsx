@@ -20,20 +20,23 @@ import { useAgendaStore } from "@/features/mesas/state/agenda-store";
 import type { EstadoMesa } from "@/features/mesas/data/agenda.data";
 
 export interface AgendaEditorPanelProps {
-  agendaId: string;
+  agendaId?: string;
   onClose?: () => void;
   entryKey?: string;
+  props?: { agendaId?: string };
 }
 
 export function AgendaEditorPanel({
   agendaId,
   onClose,
   entryKey = "agenda-editor",
+  props,
 }: AgendaEditorPanelProps) {
   const { closeTop, closeToKey } = usePanels();
   const handleClose = onClose ?? closeTop;
+  const id = props?.agendaId ?? agendaId ?? "";
 
-  const agenda = useAgendaStore((s) => s.obtenerAgendaPorId(agendaId));
+  const agenda = useAgendaStore((s) => s.obtenerAgendaPorId(id));
   const actualizarAgenda = useAgendaStore((s) => s.actualizarAgenda);
 
   const [estado, setEstado] = useState<EstadoMesa>(
@@ -59,7 +62,7 @@ export function AgendaEditorPanel({
 
     setGuardando(true);
     try {
-      await actualizarAgenda(agendaId, {
+      await actualizarAgenda(id, {
         estado,
         fecha,
         horaInicio,
@@ -71,9 +74,9 @@ export function AgendaEditorPanel({
       });
 
       toast.success("Cronograma actualizado", {
-        description: `La mesa '${agenda?.nombre || agendaId}' quedó en estado ${estado}.`,
+        description: `La mesa '${agenda?.nombre || id}' quedó en estado ${estado}.`,
       });
-      onClose?.();
+      handleClose();
     } catch {
       toast.error("Error al actualizar", {
         description: "No se pudo sincronizar la reprogramación en el servidor.",

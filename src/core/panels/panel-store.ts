@@ -20,6 +20,7 @@ export type PanelType =
   | "mesa"
   | "papelografo"
   | "mesa-editor"
+  | "agenda-editor"
   | "territorio"
   | "formularios"
   | "formulario-editor"
@@ -79,6 +80,8 @@ export interface PanelPropsMap {
   };
   /** Crear (sin mesaId) o editar una mesa de trabajo */
   "mesa-editor": { mesaId?: string };
+  /** Programación y gestión de cronograma de agenda */
+  "agenda-editor": { agendaId?: string };
   /** Ficha técnica del territorio en el geovisor */
   territorio: { territorioId: string };
   formularios: { soloRespuesta?: boolean; soloLectura?: boolean };

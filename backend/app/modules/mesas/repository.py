@@ -165,8 +165,18 @@ class MesaRepository:
         res = await self.session.execute(stmt)
         return res.scalar_one_or_none()
 
+    async def obtener_agenda_por_mesa_id(self, mesa_id: uuid.UUID) -> MesaAgenda | None:
+        stmt = select(MesaAgenda).where(MesaAgenda.mesa_id == mesa_id)
+        res = await self.session.execute(stmt)
+        return res.scalar_one_or_none()
+
     async def obtener_agenda_para_actualizar(self, agenda_id: str) -> MesaAgenda | None:
         stmt = select(MesaAgenda).where(MesaAgenda.id == agenda_id).with_for_update()
+        res = await self.session.execute(stmt)
+        return res.scalar_one_or_none()
+
+    async def obtener_agenda_para_actualizar_por_mesa_id(self, mesa_id: uuid.UUID) -> MesaAgenda | None:
+        stmt = select(MesaAgenda).where(MesaAgenda.mesa_id == mesa_id).with_for_update()
         res = await self.session.execute(stmt)
         return res.scalar_one_or_none()
 

@@ -29,9 +29,12 @@ import {motion, AnimatePresence} from "framer-motion";
 import {useQueryClient} from "@tanstack/react-query";
 import {PanelShell} from "@/core/panels/panel-shell";
 import {usePanels} from "@/core/panels/panel-store";
+import {Notice} from "@/shared/ui/notice";
 import {useMesa, useMesasStore, type MesaInput} from "@/features/mesas/state/mesas-store";
 import {actualizarMesaRemota, crearMesaRemota} from "@/features/mesas/services/mesas-api";
-import {MESAS_KEYS} from "@/features/mesas/services/use-mesas-queries";
+import {useMesaQuery, MESAS_KEYS} from "@/features/mesas/services/use-mesas-queries";
+import {useSesionStore} from "@/features/sesion/state/session-store";
+import {puedeEditar} from "@/features/plataforma/models/acceso";
 
 /**
  * Panel editor pro de mesa de trabajo — crear o editar.
@@ -123,11 +126,16 @@ export function MesaEditorPanel({
 }) {
   const { closeTop, openPanel } = usePanels();
   const queryClient = useQueryClient();
+  const sesion = useSesionStore((s) => s.sesion);
+  const puedeModificar = puedeEditar(sesion, "mesas");
   const crearMesa = useMesasStore((s) => s.crearMesa);
   const actualizarMesa = useMesasStore((s) => s.actualizarMesa);
-  const mesaEditada = useMesa(props.mesaId ?? "");
+
+  const { data: mesaRemota, isLoading: cargandoRemota } = useMesaQuery(props.mesaId ?? "");
+  const mesaStore = useMesa(props.mesaId ?? "");
+  const mesaEditada = mesaRemota ?? mesaStore;
   
-  const esEdicion = Boolean(props.mesaId && mesaEditada);
+  const esEdicion = Boolean(props.mesaId);
 
   let defaultHoraInicio = "";
   let defaultHoraFin = "";
@@ -171,7 +179,8 @@ export function MesaEditorPanel({
     control,
     handleSubmit,
     setValue,
-    formState: { errors, isSubmitting },
+    reset,
+    formState: { errors, isSubmitting, isDirty },
   } = useForm<MesaForm>({
     resolver: zodResolver(mesaSchema),
     mode: "onChange",
@@ -189,6 +198,62 @@ export function MesaEditorPanel({
       totalAsistentes: mesaEditada?.totalAsistentes,
     },
   });
+
+  // Sincronizar reactivamente cuando la mesa remota o del store cargue (FIX-EDIT-MESA-01)
+  useEffect(() => {
+    if (mesaEditada && !isDirty) {
+      let hInicio = "";
+      let hFin = "";
+      if (mesaEditada.horario) {
+        const parts = mesaEditada.horario.split(/[–-]/).map((s) => s.trim());
+        if (parts.length >= 2) {
+          hInicio = parts[0];
+          hFin = parts[1];
+        }
+      }
+
+      const entidadesSincronizadas =
+        mesaEditada.entidades && mesaEditada.entidades.length > 0
+          ? mesaEditada.entidades
+          : mesaEditada.entidad
+          ? [
+              {
+                id: `ent-${Date.now()}`,
+                nombre: mesaEditada.entidad,
+                rol: "Convocante",
+              },
+            ]
+          : [];
+
+      const responsablesSincronizados =
+        mesaEditada.responsables && mesaEditada.responsables.length > 0
+          ? mesaEditada.responsables
+          : mesaEditada.facilitador
+          ? [
+              {
+                id: `resp-${Date.now()}`,
+                nombre: mesaEditada.facilitador,
+                cargo: "Facilitador de mesa",
+                esFacilitador: true,
+              },
+            ]
+          : [];
+
+      reset({
+        nombre: mesaEditada.nombre ?? "",
+        fecha: mesaEditada.fecha ?? "",
+        horaInicio: hInicio,
+        horaFin: hFin,
+        lugar: mesaEditada.lugar ?? "",
+        entidades: entidadesSincronizadas,
+        responsables: responsablesSincronizados,
+        urlMapa: mesaEditada.urlMapa ?? "",
+        coordenadas: mesaEditada.coordenadas,
+        aforo: mesaEditada.aforo,
+        totalAsistentes: mesaEditada.totalAsistentes,
+      });
+    }
+  }, [mesaEditada, isDirty, reset]);
 
   const {
     fields: entidadFields,
@@ -285,20 +350,34 @@ export function MesaEditorPanel({
       urlMapa: data.urlMapa || undefined,
       coordenadas: data.coordenadas,
       aforo: data.aforo,
-      totalAsistentes: data.totalAsistentes,
     };
 
     if (esEdicion && props.mesaId) {
-      actualizarMesa(props.mesaId, mesaPayload);
+      const targetId = mesaEditada?.id || props.mesaId;
+      actualizarMesa(targetId, { ...mesaPayload, totalAsistentes: data.totalAsistentes });
+
+      if (!puedeModificar && !sesion?.token) {
+        toast.info("Cambios guardados localmente", {
+          description: "Inicia sesión con rol institucional para persistir en la base de datos oficial.",
+        });
+        closeTop();
+        return;
+      }
+
       try {
-        const remota = await actualizarMesaRemota(props.mesaId, mesaPayload);
+        const remota = await actualizarMesaRemota(targetId, mesaPayload);
         if (remota?.id) {
-          actualizarMesa(props.mesaId, remota);
+          actualizarMesa(remota.id, remota);
         }
         queryClient.invalidateQueries({ queryKey: MESAS_KEYS.all });
         queryClient.invalidateQueries({
-          queryKey: MESAS_KEYS.detail(props.mesaId),
+          queryKey: MESAS_KEYS.detail(targetId),
         });
+        if (props.mesaId !== targetId) {
+          queryClient.invalidateQueries({
+            queryKey: MESAS_KEYS.detail(props.mesaId),
+          });
+        }
         toast.success("Mesa actualizada", {
           description: "Los datos de la mesa quedaron al día.",
         });
@@ -406,6 +485,22 @@ export function MesaEditorPanel({
       }
     >
       <div className="ui-panel-body w-full space-y-6 px-4 sm:px-6 lg:px-8 2xl:px-10">
+        {esEdicion && !puedeModificar && (
+          <Notice
+            tone="warning"
+            title="Modo de consulta / sin sesión institucional"
+            className="mb-2"
+          >
+            Para persistir cambios en la base de datos oficial de Cartagena, inicia sesión como Facilitador de Mesa o Autoridad Distrital. Los cambios guardados se mantendrán en memoria local durante esta sesión.
+          </Notice>
+        )}
+
+        {props.mesaId && cargandoRemota && !mesaEditada && (
+          <div className="flex items-center justify-center p-6 text-xs text-[var(--text-secondary)] italic">
+            Cargando información oficial de la mesa desde el servidor...
+          </div>
+        )}
+
         {/* Barra de progreso de configuración */}
         <div className="flex flex-col gap-2 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-4">
           <div className="flex items-center justify-between text-xs">
