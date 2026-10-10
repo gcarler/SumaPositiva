@@ -1143,3 +1143,61 @@ La plataforma POLIS cuenta ahora con su manual pericial maestro de hilación ló
 
 
 
+---
+
+## DICTAMEN PERICIAL FORENSE: APROBACIÓN DE [AUD-SYNC-01] — PLAN MAESTRO DE HILACIÓN Y SINCRONIZACIÓN BIDIRECCIONAL FRONTEND ⇄ BACKEND (EAF / agy, 2026-10-10)
+
+**Destinatario:** Dirección del Proyecto POLIS / Supervisión Técnica y Funcional  
+**Auditor / Coordinador General EAF:** `agy` (`tmux a -t agy`)  
+**Ejecutor Técnico:** `agy2` (`tmux a -t agy2`)  
+**Commit Auditado:** `eb5a117` (`feat(sync): hilacion bidireccional integral frontend backend AUD-SYNC-01`)  
+**Documento Técnico Evaluado:** `bridge/02_resultado_agy2.md`  
+**Referencia Activa:** `bridge/01_tarea_activa.md` (`[AUD-SYNC-01]`)  
+**Alcance:** Verificación pericial de la hilación lógica y técnica bidireccional completa entre Next.js 15 (Turbopack) y FastAPI (PostgreSQL `bd_csh` / PostGIS / LangGraph), erradicación de gaps en ambas direcciones y certificación de Quality Gates.
+
+**Resultado Oficial:** **APROBADO — CONFORME AL 100% (CALIFICACIÓN SOBRESALIENTE)**
+
+---
+
+### 1. Comprobaciones Forenses de Contra-Auditoría
+
+1. **Matriz de Trazabilidad e Inventario Exhaustivo (174 Endpoints Backend ⇄ 120 Clientes Frontend)**:
+   - Se verificó la matriz protocolizada en `bridge/02_resultado_agy2.md`, cubriendo la totalidad de los **22 módulos de FastAPI** (`actores`, `alternativas`, `aportes`, `auditoria`, `compromisos`, `comunicaciones`, `evidencia`, `formularios`, `fuentes`, `geodatos`, `health`, `ia`, `identidad`, `indicadores`, `instrumentos`, `mesas`, `noticias`, `participacion`, `politicas`, `presupuesto`, `sesion`, `testimonios`).
+   - Todos los 174 endpoints cuentan con asignación unívoca hacia servicios tipados en TypeScript, hooks de React Query, stores Zustand o vistas en `src/features/`.
+
+2. **Cierre Pericial de Gaps Frontend $\rightarrow$ Backend (Fase 2)**:
+   - **Actores Estratégicos — KPIs en Servidor**: Verificada la función `obtenerKpisActoresApi()` en `src/features/actores/services/actores-api.ts` y su integración en `actores-store.ts` y `actores-kpis.tsx`, sustituyendo el cálculo en memoria por la agregación de `GET /api/v1/actores/kpis`.
+   - **Formularios Dinámicos — Analítica de Servidor**: Verificada la conexión de `obtenerAnaliticaFormulario(id)` con `GET /api/v1/formularios/{id}/analitica` en `formularios-api.ts` y su consumo reactivo mediante `useFormularioAnalitica`.
+   - **Diagnóstico y Árbol Causal Soberano**: Erradicados los docstrings residuales en `backend/app/modules/ia/router.py` (líneas 73 y 80). Refactorizado el módulo de diagnóstico a `arbol-causal-canonical.data.ts`, `models/arbol-causal.ts`, `services/arbol-causal-api.ts` y `panels/validacion-causal-panel.tsx`, preservando adaptadores para retrocompatibilidad total.
+
+3. **Cierre Pericial de Gaps Backend $\rightarrow$ Frontend (Fase 3 - Capacidades Expuestas en UI)**:
+   - **Cierre Oficial y Firma Criptográfica de Actas**: Verificada la implementación de `cerrarActaOficial()` en `src/features/mesas/services/mesas-api.ts` y la incorporación del botón *"Cerrar y Certificar Acta Oficial"* en `src/features/mesas/panels/mesa-acta-panel.tsx`, con diálogo modal, validación de permisos de facilitador/coordinador e inmutabilización visual del hash SHA-256 oficial.
+   - **Curaduría de Evidencias Fotográficas de Mesas**: Verificado el componente `src/features/evidencias/components/fotos-mesas-moderacion.tsx` y su inclusión como pestaña *"Fotos de Mesas Territoriales"* en `src/features/testimonios/panels/testimonios-moderacion-panel.tsx`, permitiendo curar éticamente fotos con `GET /api/v1/mesas/fotos/pendientes` y `POST /api/v1/mesas/fotos/{id}/revision`.
+   - **Orquestación Multi-Agente del Ciclo de Política**: Verificada la exposición de `ejecutarCicloPoliticaIA()` en `src/features/politicas/services/politicas-api.ts` y el panel interactivo de *"Diagnóstico Integral Multi-Agente (PolicyLifecycleGraph)"* en `src/features/politicas/panels/fases-control-panel.tsx`, conectando los 6 nodos de evaluación determinista (`POST /api/v1/ia/ciclo-politica`).
+   - **Georreferenciación Territorial Inversa**: Verificada la función `buscarTerritorioPorCoordenada()` en `src/features/geovisor/services/geovisor-api.ts` y su conexión al manejador `handleClick` de OpenLayers en `use-mapa.ts`, resolviendo el barrio o corregimiento vía PostGIS (`GET /api/v1/geodatos/territorios/buscar-por-coordenada`).
+
+4. **Verificación Estricta de Salvaguardas Institucionales**:
+   - **Preservación BPIN**: **100% Intacta**. 19 referencias en `src/` y 21 en `backend/`, con cero eliminaciones ni alteraciones.
+   - **Cero Acrónimos Ajenos**: **0 coincidencias** de `DNP`, `MGA` y `SINERGIA` en `src/` y docstrings depurados en backend.
+   - **UI-Policy Estricta**: `bun run ui:check` aprobado con 0 infracciones. Uso exclusivo de `@/shared/ui/` y tokens CSS semánticos.
+   - **Protocolo Zero-Push**: Cumplido con rigor. Rama local `main` sin operaciones hacia servidores remotos.
+   - **Integridad de Datos**: Las 33 mesas territoriales canónicas de Cartagena y la estructura relacional de `bd_csh` se mantienen íntegras.
+
+5. **Certificación Independiente de Quality Gates**:
+   - `bun run ui:check`: **APROBADO** (0 violaciones a las directrices de interfaz).
+   - `bun run check` (`tsc --noEmit` & `eslint .`): **APROBADO** (0 errores TypeScript, 0 advertencias ESLint).
+   - `bun test`: **APROBADO** (389 pasados / 0 fallados, 1631 aserciones, 40 archivos de prueba).
+   - `pytest`: **APROBADO** (22/22 pruebas unitarias de subsistemas sincronizados pasando al 100%).
+   - `bun run build` (Turbopack): **APROBADO** (190 rutas estáticas y dinámicas compiladas limpias en modo standalone).
+   - Hot-Verification en vivo: Servicios systemd activos y respondiendo con HTTP 200 OK:
+     * `curl -s http://127.0.0.1:8000/api/v1/health/live` $\rightarrow$ `{"status":"ok","service":"polis-api"}` (200 OK).
+     * `curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:3000/plataforma` $\rightarrow$ `200` (200 OK).
+     * `curl -s http://127.0.0.1:8000/api/v1/actores/kpis` $\rightarrow$ Responde métricas agregadas reales (200 OK).
+     * `curl -s http://127.0.0.1:8000/api/v1/mesas/agendas` $\rightarrow$ Responde catálogo canónico de agendas (200 OK).
+
+---
+
+### 2. Veredicto Pericial
+
+La tarea **[AUD-SYNC-01]** queda formalmente **CERRADA Y APROBADA AL 100%**.  
+La plataforma POLIS cuenta ahora con una arquitectura perfectamente sincronizada e hilada de extremo a extremo: todo requerimiento de la interfaz de usuario está respaldado por transacciones y persistencia real en PostgreSQL, y toda capacidad construida en FastAPI está debidamente expuesta, navegable y operable en la interfaz de usuario.
