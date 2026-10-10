@@ -39,7 +39,7 @@ import {
   agregarNodoArbol,
   actualizarNodoArbol,
   eliminarNodoArbol,
-} from "../services/mga-api";
+} from "../services/arbol-causal-api";
 import type {
   InstrumentoMGA,
   ArbolMGARespuesta,
@@ -47,7 +47,7 @@ import type {
   NodoArbolMGA,
   TipoNodoMGA,
   TipoRelacionMGA,
-} from "../models/mga";
+} from "../models/arbol-causal";
 
 interface ArbolProblemasViewProps {
   onVerValidacion?: (resultadoId: string) => void;

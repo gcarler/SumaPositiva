@@ -70,14 +70,14 @@ router = APIRouter(
     "/diagnostico",
     response_model=ResultadoDiagnostico,
     status_code=status.HTTP_200_OK,
-    summary="Evaluar diagnóstico y árbol de problemas bajo metodología DNP / MGA",
+    summary="Evaluar diagnóstico y árbol de problemas bajo metodología de formulación distrital",
     dependencies=[Depends(requerir_permiso("ia:analizar", nivel_minimo="declarada"))],
 )
 def evaluar_diagnostico_endpoint(
     entrada: EntradaDiagnostico,
     servicio: Annotated[ServicioIA, Depends(obtener_servicio_ia)],
 ) -> ResultadoDiagnostico:
-    """Evalúa la sintaxis DNP, consistencia causal y deriva el árbol de objetivos."""
+    """Evalúa la sintaxis causal, consistencia causal y deriva el árbol de objetivos."""
     return servicio.evaluar_diagnostico(entrada)
 
 

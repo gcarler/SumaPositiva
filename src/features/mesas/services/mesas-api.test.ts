@@ -2,6 +2,7 @@ import { describe, expect, test, vi, beforeEach, afterEach } from "vitest";
 import {
   actualizarMesaRemota,
   crearMesaRemota,
+  cerrarActaOficial,
   normalizarMesaBackend,
   listarMesas,
   obtenerMesa,
@@ -357,4 +358,49 @@ describe("Persistencia y normalización de Mesas de Trabajo (EDIT-01)", () => {
       ).rejects.toThrow();
     });
   });
+
+  describe("cerrarActaOficial (AUD-SYNC-01)", () => {
+    test("despacha POST /mesas/{mesa_id}/acta/cerrar y retorna mesa cerrada con SHA-256", async () => {
+      const mockCierre = {
+        id: "acta-uuid-123",
+        mesa_id: "01a0f5fe-86df-717b-a4d0-5b6605bdf993",
+        numero_acta: "ACTA-01A0F5FE",
+        estado: "cerrada",
+        sha256_acta: "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        resumen_deliberacion: "Acta formalizada",
+      };
+
+      const mockMesa = {
+        id: "01a0f5fe-86df-717b-a4d0-5b6605bdf993",
+        nombre: "Mesa Canónica",
+        estado: "cerrada",
+        sha256_acta: "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      };
+
+      vi.spyOn(globalThis, "fetch").mockImplementation(async (info) => {
+        const url = String(info);
+        if (url.includes("/acta/cerrar")) {
+          return new Response(JSON.stringify(mockCierre), {
+            status: 200,
+            headers: { "Content-Type": "application/json" },
+          });
+        }
+        if (url.includes("/submesas")) {
+          return new Response(JSON.stringify([]), { status: 200, headers: { "Content-Type": "application/json" } });
+        }
+        if (url.includes("/acta")) {
+          return new Response(JSON.stringify(mockCierre), { status: 200, headers: { "Content-Type": "application/json" } });
+        }
+        return new Response(JSON.stringify(mockMesa), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        });
+      });
+
+      const res = await cerrarActaOficial("01a0f5fe-86df-717b-a4d0-5b6605bdf993");
+      expect(res.id).toBe("01a0f5fe-86df-717b-a4d0-5b6605bdf993");
+      expect(res.sha256Acta).toBe("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855");
+    });
+  });
 });
+

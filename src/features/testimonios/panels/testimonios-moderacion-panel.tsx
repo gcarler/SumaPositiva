@@ -16,18 +16,45 @@ import { Textarea } from "@/shared/ui/textarea";
 import { CheckCircle2, Sparkles, XCircle, ShieldAlert, MapPin, Tag, Edit3, Plus } from "lucide-react";
 import type { EstadoTestimonio } from "../models/testimonio";
 
+import { FotosMesasModeracion } from "@/features/evidencias/components/fotos-mesas-moderacion";
+
 export function TestimoniosModeracionPanel({ entryKey }: { entryKey: string }) {
   const { closeTop } = usePanels();
+  const [seccion, setSeccion] = useState<"testimonios" | "fotos_mesas">("testimonios");
+
   return (
     <PanelShell
       entryKey={entryKey}
-      title="Curaduría y Moderación de Testimonios"
-      subtitle="Filtro ético institucional y salvaguardas de memoria social"
+      title="Curaduría y Moderación Institucional"
+      subtitle="Filtro ético institucional para testimonios ciudadanos y evidencias fotográficas de mesas"
       crumbs={[{ label: "Memoria Social" }, { label: "Curaduría Institucional" }]}
       onClose={closeTop}
       onCloseToKey={closeTop}
     >
-      <TestimoniosModeracionContenido />
+      <div className="border-b border-border px-4 sm:px-6 pt-3 pb-2 flex gap-2">
+        <Button
+          variant={seccion === "testimonios" ? "default" : "ghost"}
+          size="sm"
+          onClick={() => setSeccion("testimonios")}
+          className="text-xs"
+        >
+          Testimonios Ciudadanos
+        </Button>
+        <Button
+          variant={seccion === "fotos_mesas" ? "default" : "ghost"}
+          size="sm"
+          onClick={() => setSeccion("fotos_mesas")}
+          className="text-xs"
+        >
+          Fotos de Mesas Territoriales
+        </Button>
+      </div>
+
+      {seccion === "testimonios" ? (
+        <TestimoniosModeracionContenido />
+      ) : (
+        <FotosMesasModeracion />
+      )}
     </PanelShell>
   );
 }

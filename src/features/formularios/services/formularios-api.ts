@@ -1,13 +1,18 @@
 import { v4 as uuid } from "uuid";
 import { formulariosRemotos } from "./formularios-remotos";
 import { generarSlug, urlFormulario } from "./formulario-url";
-import { validarFormulario } from "./formulario-engine";
+import { esInformativa, validarFormulario } from "./formulario-engine";
 /** Transporte persistente. Nunca se sustituye un fallo de API por datos locales. */
 import {
   useFormulariosStore,
   type DatosRespuesta,
 } from "../state/formularios-store";
-import type { DatosFormulario, Formulario } from "../models/formulario";
+import type {
+  DatosFormulario,
+  Formulario,
+  AnaliticaFormulario,
+  RespuestaAnalitica,
+} from "../models/formulario";
 import { calcularAnalitica } from "./formulario-analitica";
 export async function listarFormularios() {
   return formulariosRemotos.listar();
@@ -109,13 +114,62 @@ export async function actualizarFormulario(
   }));
   return guardado;
 }
-export async function obtenerAnalitica(id: string) {
+export async function obtenerAnaliticaFormulario(id: string): Promise<AnaliticaFormulario> {
   const form = await obtenerFormulario(id);
-  return calcularAnalitica(
-    form,
-    await formulariosRemotos.respuestas(id, form.idPersistido),
-  );
+  const targetId = form.idPersistido ?? form.id;
+
+  try {
+    const res = await formulariosRemotos.analitica(targetId);
+    if (res && typeof res.total_respuestas === "number" && res.total_respuestas > 0) {
+      const enfoqueMap: Record<string, number> = {};
+      const rawEnfoque = (res.desglose_enfoque_diferencial as Record<string, unknown>) ?? {};
+      for (const [dimension, subValores] of Object.entries(rawEnfoque)) {
+        if (typeof subValores === "object" && subValores !== null) {
+          for (const [subk, count] of Object.entries(subValores as Record<string, number>)) {
+            if (typeof count === "number" && count > 0) {
+              enfoqueMap[`${dimension}: ${subk}`] = count;
+            }
+          }
+        }
+      }
+
+      const respuestasPorPregunta: RespuestaAnalitica[] = form.preguntas
+        .filter((p) => !esInformativa(p))
+        .map((p) => {
+          const tab = (res.tabulacion_preguntas?.[p.id] as Record<string, unknown>) ?? {};
+          const conteo = (tab.conteo as Record<string, number>) ?? {};
+          return {
+            preguntaId: p.id,
+            total: typeof tab.total === "number" ? tab.total : res.total_respuestas,
+            conteo,
+            promedio: typeof tab.promedio === "number" ? tab.promedio : undefined,
+            minimo: typeof tab.minimo === "number" ? tab.minimo : undefined,
+            maximo: typeof tab.maximo === "number" ? tab.maximo : undefined,
+            ultimas: Array.isArray(tab.ultimas) ? (tab.ultimas as string[]) : [],
+          };
+        });
+
+      return {
+        formularioId: form.id,
+        totalRespuestas: res.total_respuestas,
+        porEnfoqueDiferencial:
+          Object.keys(enfoqueMap).length > 0
+            ? enfoqueMap
+            : { "Comunidad General": res.total_respuestas },
+        respuestasPorPregunta,
+      };
+    }
+  } catch (err) {
+    console.warn(`Aviso: analítica de servidor no disponible para ${id}, usando cálculo determinista:`, err);
+  }
+
+  // Fallback determinista cliente
+  const respuestas = await formulariosRemotos.respuestas(id, form.idPersistido);
+  return calcularAnalitica(form, respuestas);
 }
+
+export const obtenerAnalitica = obtenerAnaliticaFormulario;
+
 export async function enviarRespuesta(data: DatosRespuesta) {
   const form = await obtenerFormulario(data.formularioId);
   await formulariosRemotos.enviar(

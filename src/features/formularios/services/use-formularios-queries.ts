@@ -1,16 +1,17 @@
 import { formulariosRemotos } from "./formularios-remotos";
 import { useSesionStore } from "@/features/sesion/state/session-store";
 import type { DatosRespuesta } from "../state/formularios-store";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useFormulariosStore } from "../state/formularios-store";
 import {
   crearFormulario,
   actualizarFormulario,
   enviarRespuesta,
+  obtenerAnaliticaFormulario,
 } from "./formularios-api";
 import type { DatosFormulario } from "../models/formulario";
-import { calcularAnalitica } from "./formulario-analitica";
+
 export const FORMULARIOS_KEYS = {
   all: ["formularios"] as const,
   detail: (id: string) => ["formularios", id] as const,
@@ -45,25 +46,11 @@ export function useFormularioDetalle(id: string) {
 export function useFormularioAnalitica(id: string) {
   const { data: form, error } = useFormularioDetalle(id);
   const remoto = useQuery({
-    queryKey: [...FORMULARIOS_KEYS.analitica(id), "respuestas"],
-    queryFn: () => formulariosRemotos.respuestas(id, form?.idPersistido),
+    queryKey: FORMULARIOS_KEYS.analitica(id),
+    queryFn: () => obtenerAnaliticaFormulario(id),
     enabled: !!form,
   });
-  const registros = remoto.data;
-  const data = useMemo(
-    () => (form && registros ? calcularAnalitica(form, registros) : undefined),
-    [form, registros],
-  );
-  useEffect(() => {
-    if (form && remoto.data)
-      useFormulariosStore.setState((s) => ({
-        respuestas: [
-          ...s.respuestas.filter((r) => r.formularioId !== id),
-          ...remoto.data!,
-        ],
-      }));
-  }, [form, id, remoto.data]);
-  return { data, isLoading: remoto.isFetching, error: error ?? remoto.error };
+  return { data: remoto.data, isLoading: remoto.isFetching, error: error ?? remoto.error };
 }
 export function useGuardarFormulario() {
   const cache = useQueryClient();

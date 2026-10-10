@@ -19,3 +19,39 @@ export async function listarCapas(): Promise<CapaEspacial[]> {
 export async function obtenerTerritorio(id: string): Promise<TerritorioDetalle> {
   return apiFetch<TerritorioDetalle>(`/geodatos/territorios/${id}`);
 }
+
+export interface TerritorioResultadoCoordenada {
+  id: string;
+  codigo: string;
+  nombre: string;
+  tipo_territorio: string;
+  territorio_padre_id?: string | null;
+  poblacion_estimada?: number | null;
+  estrato_predominante?: number | null;
+  es_zona_etnica?: boolean;
+  nombre_consejo_comunitario?: string | null;
+  coordenadas_centroide?: [number, number] | null;
+  metadatos?: Record<string, unknown>;
+  creado_en?: string;
+  actualizado_en?: string;
+}
+
+/**
+ * Georreferenciación Territorial Inversa:
+ * Ubica la división territorial (distrito, localidad, barrio, corregimiento) a partir de coordenadas WGS84 (EPSG:4326).
+ * Conecta con backend FastAPI: GET /api/v1/geodatos/territorios/buscar-por-coordenada
+ */
+export async function buscarTerritorioPorCoordenada(
+  lat: number,
+  lon: number
+): Promise<TerritorioResultadoCoordenada[]> {
+  try {
+    return await apiFetch<TerritorioResultadoCoordenada[]>(
+      `/geodatos/territorios/buscar-por-coordenada?lon=${lon}&lat=${lat}`
+    );
+  } catch (err) {
+    console.warn("Fallo al consultar /geodatos/territorios/buscar-por-coordenada:", err);
+    return [];
+  }
+}
+

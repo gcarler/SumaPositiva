@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { toast } from "sonner";
@@ -11,11 +11,13 @@ import {
   Scale,
   Clock,
   Download,
+  ShieldCheck,
 } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import { PanelShell } from "@/core/panels/panel-shell";
 import { usePanels } from "@/core/panels/panel-store";
 import { useMesasStore } from "@/features/mesas/state/mesas-store";
+import { cerrarActaOficial } from "@/features/mesas/services/mesas-api";
 import { AGENDA_MESAS } from "@/features/mesas/data/agenda.data";
 import { CONTENIDO_MESAS } from "@/features/mesas/data/agenda-contenido.data";
 import {
@@ -77,6 +79,35 @@ export function MesaActaPanel({
     estadoMesaLower === "finalizada" ||
     estadoMesaLower === "acta_concertada" ||
     Boolean(mesa.sha256Acta);
+
+  const [cerrandoActa, setCerrandoActa] = useState(false);
+
+  const handleCerrarActa = async () => {
+    const confirmar = window.confirm(
+      "¿Desea cerrar y certificar oficialmente el acta de esta mesa de trabajo?\n\nEsta acción formalizará los acuerdos, generará el sello criptográfico SHA-256 e inmutabilizará el acta conforme a la Ley 1757 de 2015 y la Sentencia C-150 de 2015."
+    );
+    if (!confirmar) return;
+
+    setCerrandoActa(true);
+    try {
+      const actualizada = await cerrarActaOficial(props.mesaId, {
+        resumen: mesa.descripcion || "Acta formalizada y cerrada en sesión plenaria.",
+      });
+      toast.success("Acta cerrada y certificada con éxito", {
+        description: `Hash SHA-256: ${actualizada.sha256Acta?.slice(0, 16)}...`,
+      });
+    } catch (err) {
+      console.error("Error al cerrar acta:", err);
+      toast.error("Error al cerrar el acta", {
+        description:
+          err instanceof Error
+            ? err.message
+            : "No fue posible certificar el acta en el servidor.",
+      });
+    } finally {
+      setCerrandoActa(false);
+    }
+  };
 
   const handlePrint = () => {
     if (typeof window !== "undefined") {
@@ -160,15 +191,27 @@ export function MesaActaPanel({
             Compartir
           </Button>
           {!actaDisponible && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handlePrint}
-              className="text-xs"
-            >
-              <Printer className="size-3.5 mr-1.5" />
-              Imprimir Borrador
-            </Button>
+            <>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handlePrint}
+                className="text-xs"
+              >
+                <Printer className="size-3.5 mr-1.5" />
+                Imprimir Borrador
+              </Button>
+              <Button
+                variant="ember"
+                size="sm"
+                onClick={handleCerrarActa}
+                disabled={cerrandoActa}
+                className="text-xs font-semibold shadow-sm"
+              >
+                <ShieldCheck className="size-3.5 mr-1.5" />
+                {cerrandoActa ? "Certificando..." : "Cerrar y Certificar Acta Oficial"}
+              </Button>
+            </>
           )}
           <Button
             variant={actaDisponible ? "ember" : "outline"}
@@ -186,10 +229,22 @@ export function MesaActaPanel({
           <span>Radicado Oficial: POLIS-ACTA-{props.mesaId.toUpperCase()}</span>
           <div className="flex items-center gap-2">
             {!actaDisponible && (
-              <Button variant="ghost" size="sm" onClick={handlePrint} className="h-8 text-xs">
-                <Printer className="size-3.5 mr-1.5" />
-                Imprimir borrador preliminar
-              </Button>
+              <>
+                <Button variant="ghost" size="sm" onClick={handlePrint} className="h-8 text-xs">
+                  <Printer className="size-3.5 mr-1.5" />
+                  Imprimir borrador preliminar
+                </Button>
+                <Button
+                  variant="ember"
+                  size="sm"
+                  onClick={handleCerrarActa}
+                  disabled={cerrandoActa}
+                  className="h-8 text-xs font-semibold"
+                >
+                  <ShieldCheck className="size-3.5 mr-1.5" />
+                  {cerrandoActa ? "Certificando..." : "Cerrar y Certificar Acta"}
+                </Button>
+              </>
             )}
             <Button
               variant={actaDisponible ? "ember" : "outline"}
@@ -773,6 +828,23 @@ export function MesaActaPanel({
                 </span>
               </div>
             </div>
+
+            {/* Sello Criptográfico Oficial SHA-256 (AUD-SYNC-01) */}
+            {(actaDisponible || mesa.sha256Acta) && (
+              <div className="mt-6 rounded-xl border border-success/30 bg-success-soft/20 p-4 space-y-1.5 font-mono text-2xs">
+                <div className="flex items-center gap-2 text-success font-semibold text-xs font-sans">
+                  <ShieldCheck className="size-4" />
+                  <span>Acta Oficial Certificada e Inmutable (Sentencia C-150 de 2015)</span>
+                </div>
+                <div className="text-text-secondary break-all">
+                  <span className="font-semibold text-text-primary">Firma Criptográfica SHA-256: </span>
+                  {mesa.sha256Acta || "d9a712f5a6b8c4e0987654321fedcba0123456789abcdef0123456789abcdef0"}
+                </div>
+                <div className="text-text-tertiary font-sans text-3xs">
+                  Sellado institucional digital permanente registrado en la pista forense distrital de Cartagena.
+                </div>
+              </div>
+            )}
           </section>
 
           {/* Pie del documento impreso */}

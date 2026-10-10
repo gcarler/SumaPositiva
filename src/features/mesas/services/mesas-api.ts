@@ -279,6 +279,49 @@ export async function actualizarAcuerdosPlenaria(
 }
 
 /**
+ * Cierra oficialmente el acta de la mesa y calcula el hash criptográfico SHA-256 (AUD-SYNC-01).
+ * Despacha POST /api/v1/mesas/{mesa_id}/acta/cerrar.
+ */
+export async function cerrarActaOficial(
+  mesaId: string,
+  datos?: { resumen?: string; acuerdos?: Array<{ detalle: string }> }
+): Promise<MesaDeTrabajo> {
+  const sesion = useSesionStore.getState().sesion;
+  const token = sesion?.token;
+  const headers: Record<string, string> = {};
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+
+  const payload = datos
+    ? {
+        resumen_deliberacion: datos.resumen,
+        acuerdos: datos.acuerdos,
+      }
+    : {};
+
+  const res = await apiFetch<ActaBackendResponse>(`/mesas/${mesaId}/acta/cerrar`, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(payload),
+  });
+
+  const sha256 =
+    (res.sha256_acta as string) ||
+    ((res.metadatos_cierre as Record<string, unknown>)?.sha256 as string);
+
+  useMesasStore.getState().actualizarMesa(mesaId, {
+    estado: "cerrada",
+  });
+
+  const mesaActualizada = await obtenerMesa(mesaId);
+  if (sha256 && !mesaActualizada.sha256Acta) {
+    mesaActualizada.sha256Acta = sha256;
+  }
+  return mesaActualizada;
+}
+
+/**
  * Actualiza el informe y relatoría final de una mesa.
  */
 export async function actualizarInformeMesa(

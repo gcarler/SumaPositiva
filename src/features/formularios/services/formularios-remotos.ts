@@ -5,6 +5,7 @@ import type {
   Formulario,
   RespuestaCiudadana,
   ValoresRespuesta,
+  AnaliticaFormularioRespuesta,
 } from "../models/formulario";
 import { formularioSchema } from "./formulario-schema";
 import { fotosSchema } from "./fotos-respuesta";
@@ -181,6 +182,15 @@ export const formulariosRemotos = {
           retry: { retries: 0 },
         },
       ),
+    );
+  },
+  analitica: async (
+    id: string,
+    idPersistido?: string,
+  ): Promise<AnaliticaFormularioRespuesta> => {
+    return apiFetch<AnaliticaFormularioRespuesta>(
+      `${prefijo}/${idPersistido ?? id}/analitica`,
+      { retry: { retries: 0 } },
     );
   },
 };

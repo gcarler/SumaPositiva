@@ -8,9 +8,12 @@ import VectorLayer from "ol/layer/Vector";
 import VectorSource from "ol/source/Vector";
 import { Fill, Stroke, Style, Circle } from "ol/style";
 import { isEmpty } from "ol/extent";
+import { toLonLat } from "ol/proj";
 import { Button } from "@/shared/ui/button";
 import { Notice } from "@/shared/ui/notice";
 import type { GeometriaApi } from "../models/geometria-api";
+import { buscarTerritorioPorCoordenada } from "../services/geovisor-api";
+
 /** Geometrías de FastAPI, sin capas o estadísticas simuladas como fallback. */
 export function MapaTerritoriosApi({
   datos,
@@ -84,8 +87,22 @@ export function MapaTerritoriosApi({
       actual.on("singleclick", (event) => {
         const feature = actual?.forEachFeatureAtPixel(event.pixel, (f) => f);
         const id = feature?.get("id");
-        if (typeof id === "string") seleccionar(id);
+        if (typeof id === "string") {
+          seleccionar(id);
+          return;
+        }
+        if (event.coordinate) {
+          const [lon, lat] = toLonLat(event.coordinate);
+          buscarTerritorioPorCoordenada(lat, lon)
+            .then((res) => {
+              if (res && res.length > 0) {
+                seleccionar(res[0].id);
+              }
+            })
+            .catch(() => {});
+        }
       });
+
     } catch (e) {
       const mensaje = e instanceof Error ? e.message : "Geometría inválida.";
       queueMicrotask(() => setError(mensaje));

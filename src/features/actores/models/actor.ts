@@ -57,3 +57,11 @@ export interface ActorEstrategico {
   es_demostracion?: boolean;
   actualizadoEn: string;
 }
+
+export interface KpisActores {
+  total_actores: number;
+  por_tipo: Record<string, number>;
+  por_territorio: Record<string, number>;
+  por_postura: Record<string, number>;
+  actores_demostracion: number;
+}

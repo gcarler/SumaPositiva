@@ -146,6 +146,17 @@ export interface AnaliticaFormulario {
   porEnfoqueDiferencial: Record<string, number>;
   respuestasPorPregunta: RespuestaAnalitica[];
 }
+
+export interface AnaliticaFormularioRespuesta {
+  formulario_id: string;
+  codigo: string;
+  titulo: string;
+  estado: string;
+  total_respuestas: number;
+  tabulacion_preguntas: Record<string, unknown>;
+  desglose_enfoque_diferencial: Record<string, unknown>;
+  desglose_territorial: Record<string, number>;
+}
 export const CONFIGURACION_INICIAL: ConfiguracionFormulario = {
   slug: "",
   urlPublica: "",

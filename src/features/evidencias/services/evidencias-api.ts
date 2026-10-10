@@ -52,3 +52,51 @@ export async function subirEvidenciaFotografica(
     archivo_url: raw.archivo_url || `/api/v1/evidencias/${raw.id}/archivo`,
   };
 }
+
+export interface FotoMesaRevision {
+  id: string;
+  mesa_id: string;
+  mesa_nombre: string;
+  nombre_archivo_original: string;
+  autorizacion_imagen: boolean;
+  creada_en: string;
+  archivo_revision_url: string;
+}
+
+export interface FotoMesaModeracionPayload {
+  estado: "APROBADA" | "RECHAZADA";
+  observacion?: string;
+}
+
+export interface FotoMesaModeradaRespuesta {
+  id: string;
+  mesa_id: string;
+  estado: "APROBADA" | "RECHAZADA";
+  observacion_revision?: string | null;
+  revisada_en: string;
+}
+
+/**
+ * Consulta la lista de fotos de mesas pendientes de revisión institucional.
+ * Despacha GET /api/v1/mesas/fotos/pendientes.
+ */
+export async function listarFotosMesasPendientes(): Promise<FotoMesaRevision[]> {
+  await asegurarSesionActiva();
+  return apiFetch<FotoMesaRevision[]>("/mesas/fotos/pendientes");
+}
+
+/**
+ * Aplica moderación institucional (APROBADA o RECHAZADA) sobre una fotografía de mesa.
+ * Despacha POST /api/v1/mesas/fotos/{foto_id}/revision.
+ */
+export async function moderarFotoMesa(
+  fotoId: string,
+  datos: FotoMesaModeracionPayload
+): Promise<FotoMesaModeradaRespuesta> {
+  await asegurarSesionActiva();
+  return apiFetch<FotoMesaModeradaRespuesta>(`/mesas/fotos/${fotoId}/revision`, {
+    method: "POST",
+    body: JSON.stringify(datos),
+  });
+}
+

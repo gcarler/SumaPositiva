@@ -1,9 +1,16 @@
 "use client";
 
+import { useEffect } from "react";
 import { Users, Star, HeartHandshake, CheckCircle2, FileText } from "lucide-react";
-import { useActoresMetricas } from "../state/actores-store";
+import { useActoresMetricas, useActoresStore } from "../state/actores-store";
 
 export function ActoresKpis() {
+  const cargarKpis = useActoresStore((s) => s.cargarKpis);
+
+  useEffect(() => {
+    void cargarKpis();
+  }, [cargarKpis]);
+
   const {
     total,
     aliadosClave,

@@ -166,4 +166,28 @@ describe("Actores Store & Matriz de Involucramiento (AUD-14)", () => {
       expect(limpios.dimension).toBe("todas");
     });
   });
+
+  describe("KPIs Agregados del Servidor (AUD-SYNC-01)", () => {
+    test("cargarKpis consulta /actores/kpis e hidrata el estado", async () => {
+      const kpisMock = {
+        total_actores: 25,
+        por_tipo: { institucional: 10, comunitario: 15 },
+        por_territorio: { localidad_1: 12, localidad_2: 13 },
+        por_postura: { promotor_aliado: 18, neutral_expectante: 7 },
+        actores_demostracion: 0,
+      };
+
+      vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
+        new Response(JSON.stringify(kpisMock), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        })
+      );
+
+      await useActoresStore.getState().cargarKpis();
+      const state = useActoresStore.getState();
+      expect(state.kpisServidor?.total_actores).toBe(25);
+      expect(state.kpisServidor?.por_postura["promotor_aliado"]).toBe(18);
+    });
+  });
 });

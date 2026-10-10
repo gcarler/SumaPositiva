@@ -1,6 +1,6 @@
 import { apiFetch } from "@/core/http/api-client";
 import { useSesionStore } from "@/features/sesion/state/session-store";
-import type { ActorEstrategico, ContactoActor } from "../models/actor";
+import type { ActorEstrategico, ContactoActor, KpisActores } from "../models/actor";
 
 export function normalizarActor(item: Record<string, unknown>): ActorEstrategico {
   const contactoRaw = (item.contacto as Record<string, unknown>) ?? {};
@@ -156,4 +156,15 @@ export async function eliminarActorApi(id: string): Promise<void> {
     method: "DELETE",
     headers,
   });
+}
+
+export async function obtenerKpisActoresApi(): Promise<KpisActores> {
+  const res = await apiFetch<KpisActores>("/actores/kpis");
+  return {
+    total_actores: Number(res.total_actores ?? 0),
+    por_tipo: res.por_tipo ?? {},
+    por_territorio: res.por_territorio ?? {},
+    por_postura: res.por_postura ?? {},
+    actores_demostracion: Number(res.actores_demostracion ?? 0),
+  };
 }

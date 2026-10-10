@@ -14,7 +14,7 @@ import Fill from "ol/style/Fill";
 import Stroke from "ol/style/Stroke";
 import Style from "ol/style/Style";
 import Text from "ol/style/Text";
-import {fromLonLat} from "ol/proj";
+import {fromLonLat, toLonLat} from "ol/proj";
 import type {Geometry} from "ol/geom";
 import Point from "ol/geom/Point";
 import {GEOJSON_TERRITORIOS} from "../data/territorios.geojson";
@@ -28,6 +28,7 @@ import {
 import {BARRIOS_CARTAGENA, type Barrio} from "../data/barrios.data";
 import type {CapasConfig} from "../components/geovisor-controles";
 import type {MesaGeovisor} from "../services/mesas-geovisor-api";
+import {buscarTerritorioPorCoordenada} from "../services/geovisor-api";
 
 export interface HoverInfo {
   id: string;
@@ -526,9 +527,42 @@ export function useMapa({
       return found;
     };
 
-    const handleClick = (event: { pixel: number[] }) => {
+    const handleClick = (event: { pixel: number[]; coordinate?: number[] }) => {
       const feature = featureAtPixel(event.pixel);
-      if (!feature) return;
+      if (!feature) {
+        if (event.coordinate) {
+          const [lon, lat] = toLonLat(event.coordinate);
+          buscarTerritorioPorCoordenada(lat, lon)
+            .then((resultados) => {
+              if (cancelado || !resultados || resultados.length === 0) return;
+              const territorio =
+                resultados.find(
+                  (r) =>
+                    r.tipo_territorio === "barrio" ||
+                    r.tipo_territorio === "corregimiento" ||
+                    r.tipo_territorio === "zona_insular"
+                ) ||
+                resultados.find((r) => r.tipo_territorio === "localidad") ||
+                resultados[0];
+
+              if (territorio) {
+                const idCanonica = territorio.codigo.toLowerCase().replace("-", "");
+                const local = ESTADISTICAS_TERRITORIOS.find(
+                  (item) =>
+                    item.id.toLowerCase() === idCanonica ||
+                    item.id === territorio.id ||
+                    item.nombre.toLowerCase() === territorio.nombre.toLowerCase()
+                );
+                onSelectTerritorio(local ? local.id : territorio.id);
+                if (onSelectBarrio && territorio.nombre) {
+                  onSelectBarrio(territorio.nombre);
+                }
+              }
+            })
+            .catch(() => {});
+        }
+        return;
+      }
       if (feature.get("tipo") === "mesa") {
         const idMesa = feature.get("id");
         if (typeof idMesa === "string") onSelectMesa?.(idMesa);

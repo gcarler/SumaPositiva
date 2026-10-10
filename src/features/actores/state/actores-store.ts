@@ -9,6 +9,7 @@ import type {
   PosturaActor,
   TerritorioActor,
   TipoActor,
+  KpisActores,
 } from "../models/actor";
 import { ACTORES_INICIALES } from "../data/actores-iniciales.data";
 import {
@@ -16,6 +17,7 @@ import {
   crearActorApi,
   eliminarActorApi,
   listarActoresApi,
+  obtenerKpisActoresApi,
 } from "../services/actores-api";
 
 export function calcularCuadrante(
@@ -51,6 +53,7 @@ const FILTROS_DEFECTO: FiltrosActores = {
 
 export interface ActoresState {
   actores: ActorEstrategico[];
+  kpisServidor: KpisActores | null;
   cargando: boolean;
   error: string | null;
   filtros: FiltrosActores;
@@ -58,6 +61,7 @@ export interface ActoresState {
   limpiarFiltros: () => void;
   getById: (id: string) => ActorEstrategico | undefined;
   cargarActores: () => Promise<void>;
+  cargarKpis: () => Promise<void>;
   agregarActor: (actor: Omit<ActorEstrategico, "id" | "actualizadoEn">) => Promise<boolean>;
   actualizarActor: (id: string, cambios: Partial<ActorEstrategico>) => Promise<boolean>;
   eliminarActor: (id: string) => Promise<boolean>;
@@ -66,6 +70,7 @@ export interface ActoresState {
 
 export const useActoresStore = create<ActoresState>((set, get) => ({
   actores: ACTORES_INICIALES,
+  kpisServidor: null,
   cargando: false,
   error: null,
   filtros: FILTROS_DEFECTO,
@@ -87,9 +92,24 @@ export const useActoresStore = create<ActoresState>((set, get) => ({
     try {
       const lista = await listarActoresApi();
       set({ actores: lista, cargando: false });
+      try {
+        const kpis = await obtenerKpisActoresApi();
+        set({ kpisServidor: kpis });
+      } catch {
+        // Silencioso si falla kpis
+      }
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Error al cargar actores";
       set({ error: msg, cargando: false });
+    }
+  },
+
+  cargarKpis: async () => {
+    try {
+      const kpis = await obtenerKpisActoresApi();
+      set({ kpisServidor: kpis });
+    } catch (err) {
+      console.warn("Fallo al consultar KPIs agregados de actores:", err);
     }
   },
 
@@ -180,8 +200,8 @@ export function useActoresFiltrados(): ActorEstrategico[] {
 
 export function useActoresMetricas() {
   const actores = useActoresStore((s) => s.actores);
+  const kpisServidor = useActoresStore((s) => s.kpisServidor);
 
-  const total = actores.length;
   let aliadosClave = 0;
   let incidenciaEstrategica = 0;
   let baseSocial = 0;
@@ -200,6 +220,11 @@ export function useActoresMetricas() {
     if (a.propuestasRadicadas) propuestasTotales += a.propuestasRadicadas;
   }
 
+  const total = kpisServidor ? kpisServidor.total_actores : actores.length;
+  if (kpisServidor && kpisServidor.por_postura && typeof kpisServidor.por_postura["promotor_aliado"] === "number") {
+    promotores = kpisServidor.por_postura["promotor_aliado"];
+  }
+
   const porcentajePromotores = total > 0 ? Math.round((promotores / total) * 100) : 0;
 
   return {
@@ -211,5 +236,6 @@ export function useActoresMetricas() {
     promotores,
     porcentajePromotores,
     propuestasTotales,
+    kpisServidor,
   };
 }

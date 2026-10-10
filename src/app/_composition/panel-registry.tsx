@@ -144,7 +144,7 @@ const MedicionEditorPanel = dynamic(
   { ssr: false }
 );
 const ValidacionMgaPanel = dynamic(
-  () => import("@/features/diagnostico/panels/validacion-mga-panel").then((m) => m.ValidacionMgaPanel),
+  () => import("@/features/diagnostico/panels/validacion-causal-panel").then((m) => m.ValidacionCausalPanel),
   { ssr: false }
 );
 const FichaTerritorialPanel = dynamic(
