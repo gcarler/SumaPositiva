@@ -494,7 +494,7 @@ export function MesaActaPanel({
             {/* Resumen por Enfoque Diferencial */}
             <div className="rounded-xl border border-[var(--border)] p-3 bg-[var(--surface-2)]/20">
               <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-tertiary)] block mb-2">
-                Desglose Poblacional y Étnico (Ley 1757 / DNP):
+                Desglose Poblacional y Étnico (Ley 1757):
               </span>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
                 {(Object.entries(resumenEnfoques.porEnfoque) as [EnfoqueDiferencial, number][])

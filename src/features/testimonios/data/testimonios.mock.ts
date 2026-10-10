@@ -111,7 +111,7 @@ export const TESTIMONIOS_MOCK: Testimonio[] = [
     tipo: "academia",
     dimensionOnu: "Seguridad Humana Integral",
     dimension_nombre: "Marco General ONU",
-    titulo: "Metodología causal en el marco DNP",
+    titulo: "Metodología causal en el marco territorial",
     texto:
       "El enfoque multidimensional de Naciones Unidas supera la visión punitiva clásica. Desde el semillero de investigación estamos acompañando el análisis de los árboles de problemas en cada submesa para validar su consistencia causal.",
     relato:

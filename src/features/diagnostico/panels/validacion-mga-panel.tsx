@@ -46,7 +46,7 @@ export function ValidacionMgaPanel({
   const handleExportarJson = () => {
     const dataStr = JSON.stringify(
       {
-        instrumento: instrumentoNombre ?? "Instrumento MGA",
+        instrumento: instrumentoNombre ?? "Instrumento Metodológico",
         fecha_evaluacion: new Date().toISOString(),
         resultado,
       },
@@ -59,13 +59,13 @@ export function ValidacionMgaPanel({
     link.href = url;
     link.setAttribute(
       "download",
-      `dictamen_mga_dnp_${resultado.evaluacion_id.slice(0, 8)}.json`
+      `dictamen_metodologico_${resultado.evaluacion_id.slice(0, 8)}.json`
     );
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
-    toast.success("Dictamen pericial MGA exportado en formato JSON");
+    toast.success("Dictamen pericial metodológico exportado en formato JSON");
   };
 
   const handleCopiarTexto = (texto: string, label: string) => {
@@ -76,19 +76,19 @@ export function ValidacionMgaPanel({
   return (
     <PanelShell
       entryKey={entryKey}
-      crumbs={[{ label: "Diagnóstico MGA" }]}
-      kicker="Metodología General Ajustada · DNP"
-      title="Auditoría Causal e Inteligencia Artificial DNP"
+      crumbs={[{ label: "Diagnóstico Territorial" }]}
+      kicker="Validación Metodológica · POLIS"
+      title="Auditoría Causal y Evaluación Metodológica con IA"
       subtitle={
         instrumentoNombre
           ? `Evaluación metodológica: ${instrumentoNombre}`
-          : "Validación pericial de Árbol MGA y consistencia causal"
+          : "Validación pericial de árbol causal y consistencia de política"
       }
       onClose={closeTop}
       onCloseToKey={closeTop}
     >
       <div className="space-y-6 pb-6 text-xs text-text-secondary">
-        {/* Tarjeta de Puntaje y Veredicto DNP */}
+        {/* Tarjeta de Puntaje y Veredicto Metodológico */}
         <div className="rounded-xl border border-border bg-surface-1 p-5 space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div className="flex items-center gap-3">
@@ -98,7 +98,7 @@ export function ValidacionMgaPanel({
               <div>
                 <div className="flex items-center gap-2">
                   <span className="text-base font-bold text-text-primary">
-                    Puntaje de Coherencia DNP
+                    Puntaje de Coherencia Metodológica
                   </span>
                   <Badge
                     variant="outline"
@@ -112,7 +112,7 @@ export function ValidacionMgaPanel({
                   </Badge>
                 </div>
                 <p className="text-2xs text-text-tertiary">
-                  Evaluación sintáctica DNP / Marco Lógico bajo directrices DNP y CONPES
+                  Evaluación sintáctica y de consistencia causal de marco lógico
                 </p>
               </div>
             </div>
@@ -122,7 +122,7 @@ export function ValidacionMgaPanel({
                 {puntaje}%
               </span>
               <span className="text-2xs text-text-tertiary block">
-                Umbral mínimo DNP: 65%
+                Umbral mínimo de coherencia: 65%
               </span>
             </div>
           </div>
@@ -138,7 +138,7 @@ export function ValidacionMgaPanel({
             <div className="flex justify-between text-2xs text-text-tertiary">
               <span>0% Inconsistente</span>
               <span>65% Aceptable</span>
-              <span>100% Óptimo DNP</span>
+              <span>100% Óptimo</span>
             </div>
           </div>
 
@@ -250,7 +250,7 @@ export function ValidacionMgaPanel({
                       {nodo.cumple_sintaxis ? (
                         <span className="flex items-center gap-1">
                           <Check className="size-3" aria-hidden="true" />
-                          <span>Conforme DNP</span>
+                          <span>Conforme</span>
                         </span>
                       ) : (
                         <span className="flex items-center gap-1">
@@ -275,7 +275,7 @@ export function ValidacionMgaPanel({
                   <div className="rounded-lg border border-warning/30 bg-warning-soft/30 p-2.5 space-y-1">
                     <div className="text-2xs font-semibold text-warning flex items-center gap-1">
                       <Lightbulb className="size-3" aria-hidden="true" />
-                      <span>Reescritura sugerida por Agente DNP:</span>
+                      <span>Reescritura sugerida por Agente IA:</span>
                     </div>
                     <div className="text-xs font-medium text-text-primary">
                       {nodo.texto_corregido_sugerido}
@@ -291,12 +291,12 @@ export function ValidacionMgaPanel({
           </div>
         </div>
 
-        {/* Recomendaciones Metodológicas DNP */}
+        {/* Recomendaciones Metodológicas */}
         {resultado.recomendaciones_dnp && resultado.recomendaciones_dnp.length > 0 && (
           <div className="rounded-xl border border-border bg-surface-1 p-4 space-y-3">
             <div className="flex items-center gap-2 font-bold text-text-primary text-xs uppercase tracking-wider">
               <Lightbulb className="size-4 text-ember" aria-hidden="true" />
-              <span>Directrices Metodológicas DNP para Formulación</span>
+              <span>Directrices Metodológicas para Formulación</span>
             </div>
             <ul className="space-y-2 list-none p-0 m-0">
               {resultado.recomendaciones_dnp.map((rec, i) => (

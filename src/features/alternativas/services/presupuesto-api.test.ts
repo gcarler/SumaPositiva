@@ -13,7 +13,7 @@ import {
   ASIGNACIONES_FALLBACK,
 } from "../models/presupuesto";
 
-describe("Costeo Presupuestal y Asignación de Fuentes MGA (Hito F-3)", () => {
+describe("Costeo Presupuestal y Asignación de Fuentes (Hito F-3)", () => {
   describe("Normalización de Modelos Presupuestales", () => {
     test("normaliza fuentes de financiación preservando tipado y metadatos", () => {
       const raw = {

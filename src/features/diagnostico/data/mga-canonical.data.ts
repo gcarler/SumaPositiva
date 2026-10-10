@@ -1,7 +1,7 @@
 /**
- * POLIS — Catálogo Canónico de Instrumentos MGA de Cartagena de Indias
+ * POLIS — Catálogo Canónico de Instrumentos de Diagnóstico de Cartagena de Indias
  * Sembrado para contingencia offline, testing y SSR pericial.
- * Cumplimiento con Ley 1098/06, Ley 1617/13 y Directrices DNP.
+ * Cumplimiento con Ley 1098/06, Ley 1617/13 y directrices metodológicas distritales.
  */
 
 import type { InstrumentoMGA, ArbolMGARespuesta } from "../models/mga";

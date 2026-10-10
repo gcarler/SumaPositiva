@@ -246,7 +246,7 @@ export const useAlternativasStore = create<AlternativasState>((set, get) => ({
     return await get().actualizarAlternativa(
       id,
       { estado: nuevoEstado },
-      `Cambio de estado MGA a '${nuevoEstado}'`
+      `Cambio de estado a '${nuevoEstado}'`
     );
   },
 

@@ -255,7 +255,7 @@ export function MesaPanel({
     const borrador = useMesasStore.getState().generarBorradorRelatoriaDesdeMatriz(mesa.id);
     setInformeBorrador(borrador);
     mutarInforme.mutate({ mesaId: mesa.id, informe: borrador });
-    toast.success("Borrador técnico de relatoría generado conforme a lineamientos DNP.");
+    toast.success("Borrador técnico de relatoría generado exitosamente.");
   };
 
   const handleActualizarProblemasMesa = (arbol: ArbolProblemas) => {
@@ -720,7 +720,7 @@ export function MesaPanel({
                 {/* Desglose por Enfoques Diferenciales */}
                 <div className="space-y-2 border-t border-[var(--border)] pt-3">
                   <span className="text-[11px] font-medium text-[var(--text-secondary)] block">
-                    Participación por Enfoque Diferencial (Ley 1757 / DNP):
+                    Participación por Enfoque Diferencial (Ley 1757):
                   </span>
                   <div className="flex flex-wrap gap-1.5 max-h-28 overflow-y-auto pr-1">
                     {(Object.entries(resumenEnfoques.porEnfoque) as [EnfoqueDiferencial, number][])
@@ -1566,10 +1566,10 @@ export function MesaPanel({
                       type="button"
                       onClick={handleGenerarBorradorTecnico}
                       className="h-7 gap-1 text-xs text-[var(--success)]"
-                      title="Generar borrador técnico de relatoría conforme a lineamientos DNP / CONPES desde la matriz"
+                      title="Generar borrador técnico de relatoría formal desde la matriz"
                     >
                       <Sparkles className="size-3.5" strokeWidth={1.5} />
-                      Generar borrador DNP
+                      Generar borrador técnico
                     </Button>
                     <Button
                       variant="outline"
@@ -1628,7 +1628,7 @@ export function MesaPanel({
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-semibold text-[var(--text-secondary)]">
-                  Memoria técnica y relatoría narrativa (Redacción formal DNP / CONPES)
+                  Memoria técnica y relatoría narrativa formal
                 </span>
                 <span className="text-[10px] uppercase tracking-[0.12em] text-[var(--text-tertiary)]">
                   {soloLectura ? "Solo lectura" : "Se guarda al salir del campo"}

@@ -137,7 +137,7 @@ function LineaForm({ linea }: { linea?: LineaPersistida }) {
   return (
     <form onSubmit={guardar} noValidate className="min-w-0 space-y-6 p-5">
       <fieldset disabled={isSubmitting} className="min-w-0 space-y-6">
-        <legend className="mb-3 font-semibold">1. Dimensión y fase DNP</legend>
+        <legend className="mb-3 font-semibold">1. Dimensión y fase de la política</legend>
         <Controller
           control={control}
           name="dimension_id"
@@ -193,7 +193,7 @@ function LineaForm({ linea }: { linea?: LineaPersistida }) {
           name="fase_id"
           render={({ field }) => (
             <FormField
-              label="Fase DNP"
+              label="Fase de la política"
               required
               error={errors.fase_id?.message}
             >
@@ -349,7 +349,7 @@ function LineaForm({ linea }: { linea?: LineaPersistida }) {
                 ["titulo", "Título de la intervención"],
                 ["descripcion", "Descripción de la sublínea"],
                 ["meta_cuatrienal", "Meta cuatrienal"],
-                ["indicador_nombre", "Indicador DNP sugerido"],
+                ["indicador_nombre", "Indicador sugerido"],
                 ["actor_coresponsable", "Actor corresponsable"],
               ] as const
             ).map(([name, label]) => (

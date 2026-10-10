@@ -181,7 +181,7 @@ export function IndicadorDetallePanel({
     return (
       <PanelShell
         entryKey={entryKey}
-        title="Ficha Técnica DNP"
+        title="Ficha Técnica de Indicador"
         subtitle="No se encontró el indicador seleccionado"
         crumbs={[{ label: "Seguimiento PAS" }, { label: "Cadena de Valor" }]}
         onClose={closeTop}
@@ -207,11 +207,11 @@ export function IndicadorDetallePanel({
   return (
     <PanelShell
       entryKey={entryKey}
-      title={`Ficha Técnica DNP · ${indicador.codigo}`}
+      title={`Ficha Técnica de Indicador · ${indicador.codigo}`}
       subtitle={indicador.nombre}
       crumbs={[
         { label: "Seguimiento PAS" },
-        { label: "Cadena de Valor SINERGIA" },
+        { label: "Cadena de Valor y Seguimiento" },
         { label: indicador.codigo },
       ]}
       onClose={closeTop}
@@ -233,7 +233,7 @@ export function IndicadorDetallePanel({
           </div>
         )}
 
-        {/* Tarjeta de Metadatos Clave DNP */}
+        {/* Tarjeta de Metadatos Técnicos */}
         <div className="rounded-xl border border-border bg-surface-1 p-4 shadow-xs">
           <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border pb-3">
             <div className="flex items-center gap-2">
@@ -339,14 +339,14 @@ export function IndicadorDetallePanel({
 
           {metadatosAbierto && (
             <div className="space-y-4 border-t border-border bg-surface-1 p-4">
-              {/* Salvaguarda metodológica DNP */}
+              {/* Salvaguarda metodológica de Indicadores */}
               <div className="flex items-start gap-2.5 rounded-lg border border-border bg-surface-2 p-3 text-xs">
                 <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-success" />
                 <div className="leading-relaxed text-text-secondary">
                   <strong className="font-semibold text-text-primary">
-                    Salvaguarda Metodológica DNP:
+                    Salvaguarda Metodológica de Indicadores:
                   </strong>{" "}
-                  El método de cálculo matemático y la línea base histórica del DNP ({indicador.linea_base_anio}:{" "}
+                  El método de cálculo matemático y la línea base histórica ({indicador.linea_base_anio}:{" "}
                   {Number(indicador.linea_base_valor).toLocaleString("es-CO")} {indicador.unidad_medida}) son
                   inmutables por salvaguarda legal pericial. Solo los enlaces técnicos y periodicidades
                   institucionales son editables.

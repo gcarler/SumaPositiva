@@ -115,7 +115,7 @@ export async function listarAlternativasApi(
     };
   } catch (error) {
     console.warn(
-      "Aviso de contingencia: no fue posible conectar con el servidor para consultar alternativas MGA. Usando catálogo local.",
+      "Aviso de contingencia: no fue posible conectar con el servidor para consultar alternativas de solución. Usando catálogo local.",
       error
     );
     return {

@@ -1,7 +1,7 @@
 /**
  * POLIS — Modelos de Datos para Costeo Presupuestal y Asignación de Fuentes
  * Fase de Formulación Estratégica (Hito F-3)
- * Conforme con MGA/DNP, Ley 1454/11 (LOOT), Ley 819/03 (MFMP),
+ * Conforme con lineamientos de inversión distrital, Ley 1454/11 (LOOT), Ley 819/03 (MFMP),
  * Ley 1483/11 (Vigencias Futuras Excepcionales), Ley 418/97 & 2272/22 (FONSET),
  * Ley 715/01 (SGP) y Ley 2056/20 (SGR).
  */
@@ -154,7 +154,7 @@ export const FUENTES_FINANCIACION_FALLBACK: FuenteFinanciacion[] = [
   },
 ];
 
-/** Asignaciones Presupuestales Canónicas vinculadas a Alternativas MGA de Cartagena */
+/** Asignaciones Presupuestales Canónicas vinculadas a Alternativas de Solución de Cartagena */
 export const ASIGNACIONES_FALLBACK: AsignacionPresupuestal[] = [
   {
     id: "asig-001",

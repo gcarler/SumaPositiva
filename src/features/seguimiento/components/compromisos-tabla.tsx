@@ -106,7 +106,7 @@ export function CompromisosTabla({
                 Entidad Responsable
               </TableHead>
               <TableHead scope="col" className="w-[150px] font-semibold text-text-primary">
-                Línea / MGA
+                Línea / Alternativa
               </TableHead>
               <TableHead scope="col" className="w-[180px] font-semibold text-text-primary">
                 Avance Cuatrienal

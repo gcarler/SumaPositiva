@@ -24,7 +24,7 @@ export const CADENA_VALOR_CANONICA_CARTAGENA: CadenaValorData = {
       dimension_id: "DIM-SEG",
       nodo_instrumento_id: null,
       definicion: "Total de recursos FONSET destinados a la implementación de planes de convivencia y prevención comunitaria.",
-      metodo_calculo: "(Presupuesto FONSET apropiado para programas MGA)",
+      metodo_calculo: "(Presupuesto FONSET apropiado para proyectos de política)",
       unidad_medida: "Pesos COP",
       sentido_esperado: "ascendente",
       periodicidad: "Anual",
@@ -32,7 +32,7 @@ export const CADENA_VALOR_CANONICA_CARTAGENA: CadenaValorData = {
       linea_base_anio: 2023,
       meta_cuatrienio: 4000000000,
       meta_anualizada: { "2026": 1000000000, "2027": 1000000000, "2028": 1000000000, "2029": 1000000000 },
-      fuente_datos: "CHIP - DNP / Secretaría de Hacienda",
+      fuente_datos: "CHIP / Secretaría de Hacienda Distrital",
       responsable_reporte: "Secretaría de Hacienda Distrital",
       metadatos: { programa_dnp: "Seguridad y Convivencia Ciudadana" },
       valor_actual: 2500000000,
@@ -300,7 +300,7 @@ function normalizarFicha(item: Record<string, unknown>): FichaIndicadorDnp {
 }
 
 /**
- * Obtiene la Cadena de Valor SINERGIA DNP completa desde el backend FastAPI.
+ * Obtiene la Cadena de Valor y Seguimiento completa desde el backend FastAPI.
  * Si el backend está disponible, devuelve los datos de la base de datos PostgreSQL con esContingencia: false.
  * Si ocurre un error de red o de API, retorna el catálogo canónico marcando esContingencia: true (AUD-02).
  */
@@ -334,7 +334,7 @@ export async function obtenerCadenaValor(): Promise<CadenaValorRespuestaApi> {
 }
 
 /**
- * Consulta la ficha técnica DNP detallada de un indicador por ID.
+ * Consulta la ficha técnica de indicador detallada por ID.
  */
 export async function obtenerFichaIndicador(id: string): Promise<FichaIndicadorDnp | null> {
   try {
@@ -355,7 +355,7 @@ export async function obtenerFichaIndicador(id: string): Promise<FichaIndicadorD
 }
 
 /**
- * Registra una medición de avance cuantitativo y cualitativo en la ficha DNP.
+ * Registra una medición de avance cuantitativo y cualitativo en la ficha de indicador.
  * AUD-02: NO captura errores silenciosamente; si la API falla, relanza la excepción
  * para que el store registre el fallo y no mute su estado en memoria.
  */
@@ -380,7 +380,7 @@ export interface FichaIndicadorActualizarInput {
 }
 
 /**
- * Actualiza los metadatos institucionales de la ficha DNP (EDIT-04).
+ * Actualiza los metadatos institucionales de la ficha de indicador (EDIT-04).
  * Salvaguarda: las fórmulas y línea base histórica permanecen inmutables.
  */
 export async function actualizarFichaIndicador(

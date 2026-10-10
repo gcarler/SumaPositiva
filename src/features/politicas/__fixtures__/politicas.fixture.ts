@@ -12,7 +12,7 @@ export const POLITICAS_MOCK: PoliticaPublica[] = [
     slug: "seguridad-humana-cartagena",
     titulo: "Política Pública de Seguridad Humana Integral de Cartagena 2026–2036",
     resumen:
-      "Construcción participativa de la Política Pública de Seguridad Humana Integral del Distrito de Cartagena de Indias (Ley Estatutaria 1757 de 2015), articulando las 7 Dimensiones ONU y la metodología DNP con anclaje territorial.",
+      "Construcción participativa de la Política Pública de Seguridad Humana Integral del Distrito de Cartagena de Indias (Ley Estatutaria 1757 de 2015), articulando las 7 Dimensiones ONU y la planeación distrital con anclaje territorial.",
     descripcion:
       "La Política Pública de Seguridad Humana Integral de Cartagena de Indias (2026–2036) adopta el paradigma multidimensional de la ONU, protegiendo las libertades fundamentales frente al miedo, la necesidad y la indignidad. Integra las 3 localidades urbanas y la zona corregimental e insular (La Boquilla, Pasacaballos, Tierrabomba, Barú, Bayunca) para transformar las causas estructurales de la violencia, la exclusión y la degradación ambiental.",
     problema:
@@ -31,7 +31,7 @@ export const POLITICAS_MOCK: PoliticaPublica[] = [
         nombre: "Fase 1: Diagnóstico Participativo y Territorial",
         tipo: "diagnostico",
         descripcion:
-          "Levantamiento de línea base cuantitativa DNP, geovisor de conflictividad, alertas tempranas SAT de la Defensoría y mesas territoriales en las 3 localidades y zona corregimental e insular de Cartagena.",
+          "Levantamiento de línea base de diagnóstico cuantitativo, geovisor de conflictividad, alertas tempranas SAT de la Defensoría y mesas territoriales en las 3 localidades y zona corregimental e insular de Cartagena.",
         estado: "completada",
         progreso: 100,
         lineas: [
@@ -225,7 +225,7 @@ export const POLITICAS_MOCK: PoliticaPublica[] = [
         id: "fase-001-2",
         politicaId: "pol-001",
         orden: 2,
-        nombre: "Fase 2: Formulación de Líneas Estratégicas y Metas DNP",
+        nombre: "Fase 2: Formulación de Líneas Estratégicas y Metas",
         tipo: "formulacion",
         descripcion:
           "Cocreación de las 4 líneas estratégicas, definición de metas cuatrienales cuantificables y programas de inversión con cargo al FONSET y fuentes distritales.",
@@ -437,7 +437,7 @@ export const POLITICAS_MOCK: PoliticaPublica[] = [
         nombre: "Fase 4: Validación y Adopción del Documento CONPES Distrital",
         tipo: "validacion",
         descripcion:
-          "Audiencia pública distrital de rendición pericial y consulta final sobre el documento de política pública articulado a la metodología MGA/DNP y Sentencia C-150 de 2015.",
+          "Audiencia pública distrital de rendición pericial y consulta final sobre el documento de política pública articulado a la formulación metodológica distrital y Sentencia C-150 de 2015.",
         estado: "proxima",
         progreso: 0,
         lineas: [],

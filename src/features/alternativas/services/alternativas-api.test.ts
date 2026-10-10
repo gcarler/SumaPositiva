@@ -11,7 +11,7 @@ import {
 } from "./alternativas-api";
 import { ALTERNATIVAS_CANONICAS } from "../data/alternativas-canonicas.data";
 
-describe("Alternativas MGA API Service (EDIT-09)", () => {
+describe("Alternativas de Solución API Service (EDIT-09)", () => {
   const originalFetch = globalThis.fetch;
 
   beforeEach(() => {

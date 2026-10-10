@@ -150,7 +150,7 @@ export function AsignacionPresupuestalPanel({
       });
 
       toast.success(
-        `Asignación formalizada por ${formatoMoneda(monto)} para ${alternativaActual?.codigo ?? "proyecto MGA"}.`
+        `Asignación formalizada por ${formatoMoneda(monto)} para ${alternativaActual?.codigo ?? "proyecto de solución"}.`
       );
 
       props.onAsignacionGuardada?.();
@@ -201,9 +201,9 @@ export function AsignacionPresupuestalPanel({
   return (
     <PanelShell
       entryKey={entryKey}
-      crumbs={[{ label: "Banco de Alternativas MGA" }, { label: "Costeo Presupuestal" }]}
+      crumbs={[{ label: "Banco de Alternativas de Solución" }, { label: "Costeo Presupuestal" }]}
       kicker="Formulación Estratégica · Plan Financiero"
-      title="Asignación Presupuestal y Costeo MGA"
+      title="Asignación Presupuestal y Costeo de Alternativas"
       subtitle="Formalización del financiamiento plurianual con fuentes oficiales distritales y control fiscal de vigencias futuras"
       onClose={closeTop}
       onCloseToKey={closeTop}
@@ -224,12 +224,12 @@ export function AsignacionPresupuestalPanel({
           </div>
         )}
 
-        {/* Resumen del Proyecto MGA Vinculado */}
+        {/* Resumen de la Alternativa Vinculada */}
         <div className="rounded-xl border border-border bg-surface-1 p-4 space-y-3">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-text-muted uppercase tracking-wider flex items-center gap-1.5">
               <Building className="size-3.5 text-ember" aria-hidden="true" />
-              Iniciativa MGA a Financiar
+              Iniciativa a Financiar
             </span>
             {alternativaActual && (
               <Badge variant="outline" className="border-border text-text-secondary font-mono text-[10px]">
@@ -238,7 +238,7 @@ export function AsignacionPresupuestalPanel({
             )}
           </div>
 
-          <FormField label="Alternativa de Solución MGA" required>
+          <FormField label="Alternativa de Solución" required>
             {({ id }) => (
               <Select
                 value={alternativaSeleccionadaId}
@@ -457,7 +457,7 @@ export function AsignacionPresupuestalPanel({
               <Textarea
                 id={id}
                 rows={3}
-                placeholder="Describa el objeto de la inversión, componentes a financiar, articulación con el árbol MGA y justificación conforme a la regla fiscal..."
+                placeholder="Describa el objeto de la inversión, componentes a financiar, articulación con el árbol de objetivos y justificación conforme a la regla fiscal..."
                 value={justificacion}
                 onChange={(e) => setJustificacion(e.target.value)}
                 disabled={esSoloLectura}

@@ -90,7 +90,7 @@ export function AlternativasTabla({
                 Plazo
               </TableHead>
               <TableHead className="w-[140px] text-center font-semibold text-text-primary">
-                Viabilidad MGA
+                Viabilidad Técnica
               </TableHead>
               <TableHead className="w-[210px] text-right font-semibold text-text-primary">
                 Acciones
@@ -201,7 +201,7 @@ export function AlternativasTabla({
                         className="gap-1 text-xs font-medium text-accent border-accent/30 hover:bg-accent-soft"
                         onClick={() => handleEvaluarViabilidad(alt)}
                         aria-label={`Evaluar viabilidad con IA para ${alt.codigo}`}
-                        title="Evaluar viabilidad jurídica y fiscal con Agentes IA DNP"
+                        title="Evaluar viabilidad jurídica y fiscal con Agentes IA"
                       >
                         <Scale className="h-3.5 w-3.5" />
                         <span>Evaluar IA</span>

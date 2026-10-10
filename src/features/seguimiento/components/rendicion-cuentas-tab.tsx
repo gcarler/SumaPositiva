@@ -309,7 +309,7 @@ export function RendicionCuentasTab({ puedeEditar }: RendicionCuentasTabProps) {
           <Bot className="h-5 w-5 shrink-0 text-ember mt-0.5" />
           <div className="space-y-1">
             <span className="font-semibold text-text-primary text-sm">
-              Dictamen Oficial del Agente IA DNP — Cumplimiento C-150/15
+              Dictamen Oficial del Agente IA de Evaluación Metodológica — Cumplimiento C-150/15
             </span>
             <p className="text-text-secondary leading-relaxed pt-0.5">
               {resultadoIa}
@@ -399,7 +399,7 @@ export function RendicionCuentasTab({ puedeEditar }: RendicionCuentasTabProps) {
             size="sm"
             onClick={handleEvaluarIa}
             disabled={evaluandoIa}
-            aria-label="Evaluar devolución ciudadana con agente IA DNP"
+            aria-label="Evaluar devolución ciudadana con agente IA de Evaluación Metodológica"
             className="gap-1.5 text-xs text-text-primary border-border hover:bg-surface-2"
           >
             <Bot className="h-4 w-4 text-ember" aria-hidden="true" />

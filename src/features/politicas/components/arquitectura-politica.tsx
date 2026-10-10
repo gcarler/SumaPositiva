@@ -96,7 +96,7 @@ export function ArquitecturaPolitica() {
         <p className="break-words">{l.descripcion}</p>
         <dl className="grid gap-2 text-sm sm:grid-cols-2">
           <div>
-            <dt className="text-text-secondary">Fase DNP</dt>
+            <dt className="text-text-secondary">Fase de la política</dt>
             <dd>
               {fases.data?.find((f) => f.id === l.fase_id)?.nombre ?? l.fase_id}
             </dd>
@@ -141,7 +141,7 @@ export function ArquitecturaPolitica() {
                     "Código",
                     "Intervención",
                     "Meta cuatrienal",
-                    "Indicador DNP",
+                    "Indicador",
                     "Corresponsable",
                   ].map((h) => (
                     <TableHead key={h}>{h}</TableHead>
@@ -225,7 +225,7 @@ export function ArquitecturaPolitica() {
         Arquitectura de la Política Pública: Dimensiones, Líneas y Sublíneas
       </h2>
       <p className="text-sm text-text-secondary">
-        Siete dimensiones de Seguridad Humana, líneas estratégicas por fase DNP
+        Siete dimensiones de Seguridad Humana, líneas estratégicas por fase de la política
         y sublíneas con metas e indicadores.
       </p>
       <div className="flex flex-wrap gap-3">

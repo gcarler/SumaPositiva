@@ -197,7 +197,7 @@ export function CompromisoEditorPanel({
     <PanelShell
       entryKey={entryKey}
       crumbs={[{ label: "Seguimiento PAS" }, { label: "Gestión de Compromiso" }]}
-      kicker="Plan de Acción y Seguimiento · SINERGIA DNP"
+      kicker="Plan de Acción y Seguimiento Distrital"
       title={
         esModoCrear
           ? "Nuevo Compromiso Institucional PAS"
@@ -260,7 +260,7 @@ export function CompromisoEditorPanel({
               </Badge>
               <Badge variant="outline" className="border-border text-text-secondary text-[11px] gap-1">
                 <Target className="size-3 text-text-muted" aria-hidden="true" />
-                MGA: {compromiso.alternativa_mga_codigo}
+                Alternativa: {compromiso.alternativa_mga_codigo}
               </Badge>
               <Badge variant="outline" className="border-border text-text-secondary text-[11px] gap-1">
                 <DollarSign className="size-3 text-text-muted" aria-hidden="true" />

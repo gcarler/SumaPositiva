@@ -160,7 +160,7 @@ export function GeodiagnosticoTerritorialView() {
             </span>
           </div>
           <p className="text-2xs text-text-tertiary">
-            Población focalizada bajo directrices Sisbén IV y DNP
+            Población focalizada bajo directrices de estratificación y Sisbén IV
           </p>
         </div>
 

@@ -445,7 +445,7 @@ export async function registrarDevolucionMotivadaApi(
 }
 
 /**
- * Evalúa propuestas comunitarias no incorporadas mediante el agente IA DNP de Devolución
+ * Evalúa propuestas comunitarias no incorporadas mediante el agente IA de Evaluación Metodológica
  * (POST /api/v1/ia/devolucion).
  */
 export async function evaluarDevolucionConIa(

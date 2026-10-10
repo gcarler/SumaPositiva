@@ -6,7 +6,7 @@ import {
 } from "../models/indicador-dnp";
 import * as cadenaValorApi from "../services/cadena-valor-api";
 
-describe("Tablero SINERGIA DNP y Cadena de Valor (Hito PAS-2 / AUD-02)", () => {
+describe("Tablero de Cadena de Valor y Seguimiento (Hito PAS-2 / AUD-02)", () => {
   beforeEach(() => {
     useCadenaValorStore.getState().restablecer();
     vi.restoreAllMocks();
@@ -35,7 +35,7 @@ describe("Tablero SINERGIA DNP y Cadena de Valor (Hito PAS-2 / AUD-02)", () => {
       expect(codigosResultado).toContain("IND-RES-03");
     });
 
-    test("busca indicadores por ID o por código DNP", () => {
+    test("busca indicadores por ID o por código", () => {
       const store = useCadenaValorStore.getState();
       const porCodigo = store.getIndicadorById("IND-RES-01");
       expect(porCodigo).toBeDefined();
@@ -48,7 +48,7 @@ describe("Tablero SINERGIA DNP y Cadena de Valor (Hito PAS-2 / AUD-02)", () => {
     });
   });
 
-  describe("Cálculo Metodológico de Avance DNP / SINERGIA", () => {
+  describe("Cálculo Metodológico de Avance de Indicadores", () => {
     test("calcula avance para indicador ascendente (recursos, luminarias, frentes)", () => {
       // Línea Base = 1.000, Meta = 4.000, Actual = 2.500 -> 50%
       const avance1 = calcularAvancePorcentaje(2500, 1000, 4000, "ascendente");
@@ -216,7 +216,7 @@ describe("Tablero SINERGIA DNP y Cadena de Valor (Hito PAS-2 / AUD-02)", () => {
       expect(useCadenaValorStore.getState().indicadorSeleccionadoId).toBeNull();
     });
 
-    test("actualiza metadatos institucionales de la ficha DNP cuando la API responde exitosamente (EDIT-04)", async () => {
+    test("actualiza metadatos institucionales de la ficha de indicador cuando la API responde exitosamente (EDIT-04)", async () => {
       const indicadorExistente = useCadenaValorStore.getState().getIndicadorById("IND-INS-01")!;
       const lbOriginal = indicadorExistente.linea_base_valor;
       const formulaOriginal = indicadorExistente.metodo_calculo;
@@ -252,14 +252,14 @@ describe("Tablero SINERGIA DNP y Cadena de Valor (Hito PAS-2 / AUD-02)", () => {
       expect(actualizado?.fuente_datos).toBe("MECAR SIEDCO");
       expect(actualizado?.periodicidad).toBe("Trimestral");
       expect(actualizado?.metadatos?.contacto_tecnico).toBe("Ing. Enlace");
-      // Salvaguarda: fórmulas y línea base DNP intactas
+      // Salvaguarda: fórmulas y línea base intactas
       expect(actualizado?.linea_base_valor).toBe(lbOriginal);
       expect(actualizado?.metodo_calculo).toBe(formulaOriginal);
     });
 
     test("AUD-02: un PATCH fallido de metadatos NO altera el store, guarda error y retorna false", async () => {
       vi.spyOn(cadenaValorApi, "actualizarFichaIndicador").mockRejectedValueOnce(
-        new Error("HTTP 400: Salvaguarda institucional: Prohibido modificar fórmula o línea base DNP")
+        new Error("HTTP 400: Salvaguarda institucional: Prohibido modificar fórmula o línea base")
       );
 
       const store = useCadenaValorStore.getState();

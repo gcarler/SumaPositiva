@@ -1,6 +1,6 @@
 /**
  * POLIS — Modelos de Datos del Plan de Acción y Seguimiento (PAS)
- * Conforme con Metodología DNP / CONPES, Sistema SINERGIA y MIPG.
+ * Conforme con la Metodología de Plan de Acción y Gestión por Resultados distrital y MIPG.
  * Fase de Plan de Acción y Seguimiento (Hito PAS-1)
  */
 

@@ -1,5 +1,5 @@
 /**
- * POLIS — Pruebas de Calidad Forense: AUD-04 (Control de Fases DNP)
+ * POLIS — Pruebas de Calidad Forense: AUD-04 (Control de Fases de Política)
  * Verificación de:
  * 1. Reversión inmediata del estado ante errores (403, 401, 5xx).
  * 2. Errores reales diferenciados (401/403/404/422/500/Red).
@@ -17,7 +17,7 @@ import {
 import * as politicasApi from "../services/politicas-api";
 import {POLITICAS_QUERY_KEYS} from "../services/use-politicas-queries";
 
-describe("Centro de Control de Fases DNP (AUD-04)", () => {
+describe("Centro de Control de Fases de Política (AUD-04)", () => {
   const originalFetch = globalThis.fetch;
 
   beforeEach(() => {

@@ -93,7 +93,7 @@ export const ESTADOS_ALTERNATIVA: Record<
   },
   viable: {
     label: "Viable",
-    descripcion: "Alternativa con coherencia técnica MGA y viabilidad normativa preliminar.",
+    descripcion: "Alternativa con coherencia técnica y viabilidad normativa preliminar.",
     badgeVariant: "default",
     toneClass: "bg-surface-2 text-text-primary border-border",
   },
@@ -111,7 +111,7 @@ export const ESTADOS_ALTERNATIVA: Record<
   },
   descartada: {
     label: "Descartada",
-    descripcion: "Alternativa que no supera el filtro causal MGA o invade competencias.",
+    descripcion: "Alternativa que no supera el filtro causal o invade competencias.",
     badgeVariant: "destructive",
     toneClass: "bg-danger-soft text-danger border-danger/30",
   },

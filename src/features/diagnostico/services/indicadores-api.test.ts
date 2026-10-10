@@ -9,7 +9,7 @@ import {
 import { INDICADORES_FALLBACK } from "../data/indicadores-fallback.data";
 import { POLITICAS_MOCK } from "@/features/politicas/__fixtures__/politicas.fixture";
 
-describe("Diagnóstico y Línea Base Cuantitativa DNP", () => {
+describe("Diagnóstico y Línea Base Cuantitativa", () => {
   describe("Normalización de Fichas de Indicador", () => {
     test("Normaliza correctamente un objeto de la API backend", () => {
       const apiItem = {
@@ -41,7 +41,7 @@ describe("Diagnóstico y Línea Base Cuantitativa DNP", () => {
       expect(normalizado.porcentaje_avance).toBe("50.00");
     });
 
-    test("Catálogo de contingencia contiene los 8 indicadores oficiales DNP", () => {
+    test("Catálogo de contingencia contiene los 8 indicadores oficiales", () => {
       expect(INDICADORES_FALLBACK.length).toBe(8);
 
       const codigos = INDICADORES_FALLBACK.map((i) => i.codigo);

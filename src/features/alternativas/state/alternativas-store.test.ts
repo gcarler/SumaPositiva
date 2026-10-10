@@ -7,7 +7,7 @@ import {
 } from "./alternativas-store";
 import { ALTERNATIVAS_CANONICAS } from "../data/alternativas-canonicas.data";
 
-describe("Banco Distrital de Alternativas MGA — Cartagena (Hito F-1 & EDIT-09)", () => {
+describe("Banco Distrital de Alternativas de Solución — Cartagena (Hito F-1 & EDIT-09)", () => {
   const originalFetch = globalThis.fetch;
 
   beforeEach(() => {
@@ -51,7 +51,7 @@ describe("Banco Distrital de Alternativas MGA — Cartagena (Hito F-1 & EDIT-09)
   });
 
   describe("Filtrado Multicriterio", () => {
-    test("filtra por Sector MGA", () => {
+    test("filtra por Sector de Inversión", () => {
       const alternativas = ALTERNATIVAS_CANONICAS;
       const filtradas = filtrarAlternativas(alternativas, {
         ...FILTROS_DEFECTO_ALTERNATIVAS,
@@ -74,7 +74,7 @@ describe("Banco Distrital de Alternativas MGA — Cartagena (Hito F-1 & EDIT-09)
       expect(codigos).toContain("ALT-SEG-06");
     });
 
-    test("filtra por Estado de Viabilidad MGA", () => {
+    test("filtra por Estado de Viabilidad", () => {
       const alternativas = ALTERNATIVAS_CANONICAS;
       const priorizadas = filtrarAlternativas(alternativas, {
         ...FILTROS_DEFECTO_ALTERNATIVAS,
@@ -201,7 +201,7 @@ describe("Banco Distrital de Alternativas MGA — Cartagena (Hito F-1 & EDIT-09)
         sector: "seguridad_convivencia",
         linea_estrategica_codigo: "LE-01",
         dimension_id: "comunitaria",
-        objetivo_central_mga: "Objetivo MGA de prueba.",
+        objetivo_central_mga: "Objetivo de prueba.",
         territorio_cobertura: "Localidad 1",
         poblacion_objetivo_estimada: 5000,
         costo_estimado_cop: 1000000000,

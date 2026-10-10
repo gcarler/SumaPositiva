@@ -24,7 +24,7 @@ export function DiagnosticoKpis({ indicadores }: DiagnosticoKpisProps) {
 
   const tarjetas = [
     {
-      titulo: "Línea Base DNP",
+      titulo: "Línea Base de Diagnóstico",
       valor: total,
       subtexto: "Fichas técnicas oficiales registradas",
       icono: BarChart3,
@@ -47,7 +47,7 @@ export function DiagnosticoKpis({ indicadores }: DiagnosticoKpisProps) {
     {
       titulo: "Fuentes Oficiales",
       valor: fuentesUnicas,
-      subtexto: "Medicina Legal, SIEDCO, DNP, CCV",
+      subtexto: "Medicina Legal, SIEDCO, Sisbén, CCV",
       icono: Database,
       variante: "info" as const,
     },

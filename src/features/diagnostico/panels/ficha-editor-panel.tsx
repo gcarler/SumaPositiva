@@ -128,7 +128,7 @@ export function FichaEditorPanel({
     }
 
     if (esEdicion) {
-      // Modo Edición (PATCH): solo campos permitidos por DNP y FastAPI
+      // Modo Edición (PATCH): solo campos permitidos
       if (!responsableReporte.trim()) {
         toast.error("El responsable del reporte es obligatorio.");
         return;
@@ -152,7 +152,7 @@ export function FichaEditorPanel({
 
         const targetId = fichaId || fichaInicial?.id || "";
         await actualizarFichaIndicador(targetId, payload);
-        toast.success("Ficha técnica DNP actualizada exitosamente.");
+        toast.success("Ficha técnica de indicador actualizada exitosamente.");
         onGuardado?.();
         closeTop();
       } catch (err) {
@@ -224,7 +224,7 @@ export function FichaEditorPanel({
         };
 
         await crearFichaIndicador(payload);
-        toast.success("Ficha técnica DNP creada y radicada exitosamente.");
+        toast.success("Ficha técnica de indicador creada y radicada exitosamente.");
         onGuardado?.();
         closeTop();
       } catch (err) {
@@ -242,11 +242,11 @@ export function FichaEditorPanel({
   return (
     <PanelShell
       entryKey={entryKey}
-      kicker="Metodología General Ajustada (MGA) · Sistema DNP SINERGIA"
+      kicker="Fichas Técnicas de Indicadores · Sistema Distrital de Monitoreo"
       title={
         esEdicion
-          ? `Editar Ficha Técnica DNP — ${codigo || "Indicador"}`
-          : "Nueva Ficha Técnica de Indicador DNP"
+          ? `Editar Ficha Técnica de Indicador — ${codigo || "Indicador"}`
+          : "Nueva Ficha Técnica de Indicador"
       }
       subtitle={
         esEdicion
@@ -286,7 +286,7 @@ export function FichaEditorPanel({
               <ShieldAlert className="size-5 shrink-0 text-ember mt-0.5" />
               <div>
                 <span className="font-semibold text-text-primary block mb-0.5">
-                  Salvaguarda Metodológica DNP (Ley 152/94 y C-150/15)
+                  Salvaguarda Metodológica y Normativa (Ley 152/94 y C-150/15)
                 </span>
                 La fórmula matemática, el método de cálculo y la línea base de
                 este indicador están sellados institucionalmente para garantizar
@@ -299,7 +299,7 @@ export function FichaEditorPanel({
           {/* Sección 1: Identificación y Clasificación */}
           <div className="space-y-4">
             <h4 className="text-xs font-bold uppercase tracking-wider text-text-tertiary border-b border-border pb-1">
-              1. Identificación y Clasificación DNP
+              1. Identificación y Clasificación Técnica
             </h4>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -337,7 +337,7 @@ export function FichaEditorPanel({
                     <SelectItem value="impacto" className="text-xs">Impacto (Bienestar Colectivo)</SelectItem>
                   </SelectContent>
                 </Select>
-                <p className="text-2xs text-text-tertiary">Nivel de la cadena de valor MGA</p>
+                <p className="text-2xs text-text-tertiary">Nivel de la cadena de valor</p>
               </div>
             </div>
 

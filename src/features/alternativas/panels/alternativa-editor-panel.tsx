@@ -150,11 +150,11 @@ export function AlternativaEditorPanel({
       return;
     }
     if (!codigo.trim()) {
-      toast.error("El código MGA de la alternativa es obligatorio.");
+      toast.error("El código de la alternativa es obligatorio.");
       return;
     }
     if (!objetivoMGA.trim()) {
-      toast.error("El objetivo central MGA vinculado es obligatorio.");
+      toast.error("El objetivo central vinculado es obligatorio.");
       return;
     }
     if (!territorio.trim()) {
@@ -216,14 +216,14 @@ export function AlternativaEditorPanel({
   return (
     <PanelShell
       entryKey={entryKey}
-      crumbs={[{ label: "Banco de Alternativas MGA" }]}
-      kicker="Formulación Estratégica · MGA DNP"
+      crumbs={[{ label: "Banco de Alternativas de Solución" }]}
+      kicker="Formulación Estratégica · POLIS"
       title={
         esModoEdicion
           ? `Ficha Técnica · ${alternativa.codigo}`
-          : "Nueva Alternativa de Solución MGA"
+          : "Nueva Alternativa de Solución"
       }
-      subtitle="Banco Distrital de Proyectos · Metodología General Ajustada (DNP)"
+      subtitle="Banco Distrital de Proyectos de Inversión y Solución"
       onClose={closeTop}
       onCloseToKey={closeTop}
     >
@@ -245,7 +245,7 @@ export function AlternativaEditorPanel({
           <div className="flex items-center justify-between border-b border-border pb-2">
             <h4 className="flex items-center gap-2 text-sm font-semibold text-text-primary">
               <Lightbulb className="h-4 w-4 text-accent" />
-              Identificación y Formulación MGA
+              Identificación y Formulación
             </h4>
             <span className="font-mono text-xs text-text-muted">
               {codigo || "ALT-..."}
@@ -253,7 +253,7 @@ export function AlternativaEditorPanel({
           </div>
 
           <div className="grid gap-4 sm:grid-cols-3">
-            <FormField label="Código Oficial MGA" required>
+            <FormField label="Código Oficial de Alternativa" required>
               {({ id }) => (
                 <Input
                   id={id}
@@ -266,7 +266,7 @@ export function AlternativaEditorPanel({
               )}
             </FormField>
 
-            <FormField label="Sector MGA" required>
+            <FormField label="Sector de Inversión" required>
               {({ id }) => (
                 <Select
                   value={sector}
@@ -337,7 +337,7 @@ export function AlternativaEditorPanel({
           </FormField>
         </div>
 
-        {/* Articulación con Árbol MGA y Dimensiones */}
+        {/* Articulación con Árbol de Objetivos y Dimensiones */}
         <div className="space-y-4 rounded-xl border border-border bg-surface-1 p-4">
           <div className="flex items-center justify-between border-b border-border pb-2">
             <h4 className="flex items-center gap-2 text-sm font-semibold text-text-primary">
@@ -391,7 +391,7 @@ export function AlternativaEditorPanel({
           </div>
 
           <FormField
-            label="Objetivo Central del Árbol MGA Vinculado"
+            label="Objetivo Central Vinculado"
             required
           >
             {({ id }) => (
@@ -581,7 +581,7 @@ export function AlternativaEditorPanel({
                     ? "Guardando..."
                     : esModoEdicion
                     ? "Guardar Cambios"
-                    : "Registrar en Banco MGA"}
+                    : "Registrar en Banco de Alternativas"}
                 </span>
               </Button>
             )}

@@ -59,7 +59,7 @@ export function AlternativasView() {
   const sesion = useSesionStore((s) => s.sesion);
   const puedeEditarUsuario = puedeEditar(sesion, "alternativas");
 
-  // Gating de Fases DNP (AUD-05): en fase preparatoria solo los admins pueden modificar
+  // Gating de Fases de Política (AUD-05): en fase preparatoria solo los admins pueden modificar
   const { data: fases } = useFases();
   const fase2 = fases?.find((f) => f.codigo === "FASE_2_FORMULACION");
   const fase2Activa = fase2?.estado === "activa";
@@ -110,10 +110,10 @@ export function AlternativasView() {
       const headers = [
         "Código",
         "Nombre",
-        "Sector MGA",
+        "Sector de Inversión",
         "Línea Estratégica",
         "Dimensión ONU",
-        "Objetivo Central MGA",
+        "Objetivo Central Vinculado",
         "Territorio Cobertura",
         "Población Objetivo Estimada",
         "Costo Estimado COP",
@@ -181,7 +181,7 @@ export function AlternativasView() {
       {/* Cabecera institucional de la vista */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <PageHeader
-          eyebrow="Fase 2: Formulación Estratégica · MGA DNP"
+          eyebrow="Fase 2: Formulación Estratégica"
           title={
             modoVista === "banco_mga"
               ? "Banco Distrital de Alternativas de Solución"
@@ -190,7 +190,7 @@ export function AlternativasView() {
           description={
             modoVista === "banco_mga"
               ? "Iniciativas, programas e intervenciones transformadoras derivadas del diagnóstico distrital y priorizadas para la Política Pública de Seguridad Humana Integral de Cartagena de Indias 2026."
-              : "Programación cuatrienal de recursos distritales (FONSET, SGP, SGR, ICLD y Presupuesto Participativo) articulados a las iniciativas del banco de alternativas MGA."
+              : "Programación cuatrienal de recursos distritales (FONSET, SGP, SGR, ICLD y Presupuesto Participativo) articulados a las iniciativas del banco de alternativas de solución."
           }
         />
 
@@ -245,7 +245,7 @@ export function AlternativasView() {
             <p className="text-text-secondary leading-relaxed pt-0.5">
               {esAdmin
                 ? "La Fase 2 de Formulación Estratégica se encuentra en alistamiento. Como autoridad o administrador distrital, cuenta con permisos para estructurar alternativas antes de la apertura pública de la fase."
-                : "La Fase 2 de Formulación Estratégica se encuentra actualmente en etapa preparatoria. La creación y edición de alternativas MGA está reservada a la administración distrital hasta la activación oficial de la fase."}
+                : "La Fase 2 de Formulación Estratégica se encuentra actualmente en etapa preparatoria. La creación y edición de alternativas de solución está reservada a la administración distrital hasta la activación oficial de la fase."}
             </p>
           </div>
         </div>
@@ -260,7 +260,7 @@ export function AlternativasView() {
           <AlertTriangle className="h-5 w-5 shrink-0 text-warning mt-0.5" />
           <div className="space-y-1">
             <span className="font-semibold text-warning text-sm">
-              Modo Contingencia Local — Banco de Alternativas MGA
+              Modo Contingencia Local — Banco de Alternativas de Solución
             </span>
             <p className="text-text-secondary leading-relaxed pt-0.5">
               Sin conexión con el servicio central de PostgreSQL. Se presentan las iniciativas canónicas en modo lectura de contingencia.
@@ -269,7 +269,7 @@ export function AlternativasView() {
         </div>
       )}
 
-      {/* Conmutador de Modos: Banco MGA vs Costeo Presupuestal */}
+      {/* Conmutador de Modos: Banco de Alternativas vs Costeo Presupuestal */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-xl border border-border bg-surface-1 p-2">
         <div className="inline-flex flex-wrap rounded-lg border border-border bg-surface-2 p-1 gap-1">
           <Button
@@ -283,7 +283,7 @@ export function AlternativasView() {
             }`}
           >
             <Lightbulb className="size-3.5 text-ember" aria-hidden="true" />
-            <span>Banco de Alternativas MGA</span>
+            <span>Banco de Alternativas de Solución</span>
           </Button>
           <Button
             variant={modoVista === "costeo_presupuesto" ? "default" : "ghost"}
@@ -321,14 +321,14 @@ export function AlternativasView() {
             />
           </div>
 
-          {/* Filtro Sector MGA */}
+          {/* Filtro Sector */}
           <div className="w-[190px]">
             <Select
               value={filtros.sector}
               onValueChange={(val) => setFiltros({ sector: val as SectorMGA | "todos" })}
             >
               <SelectTrigger className="text-xs">
-                <SelectValue placeholder="Sector MGA" />
+                <SelectValue placeholder="Sector de inversión" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="todos" className="text-xs">

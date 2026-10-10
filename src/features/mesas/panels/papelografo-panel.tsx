@@ -492,7 +492,7 @@ export function PapelografoPanel({
           ) : (
             <div className="flex items-center gap-2">
               <span className="text-xs font-semibold text-[var(--text-primary)]">
-                Vista Matriz DNP / Marco Lógico
+                Vista Matriz de Diagnóstico y Relatoría
               </span>
               <span className="text-[11px] text-[var(--text-tertiary)]">
                 Estructuración causal tabular y marco lógico para la relatoría técnica

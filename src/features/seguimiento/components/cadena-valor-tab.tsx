@@ -193,11 +193,11 @@ export function CadenaValorTab({ puedeEditar }: CadenaValorTabProps) {
                     variant="outline"
                     size="sm"
                     onClick={() => handleAbrirFicha(ind)}
-                    aria-label={`Ver ficha técnica DNP del indicador ${ind.codigo} ${ind.nombre}`}
+                    aria-label={`Ver ficha técnica del indicador ${ind.codigo} ${ind.nombre}`}
                     className="h-7 gap-1 text-[11px] w-full justify-center"
                   >
                     <FileText className="h-3 w-3" aria-hidden="true" />
-                    <span>Ver Ficha Técnica DNP</span>
+                    <span>Ver Ficha Técnica de Indicador</span>
                   </Button>
                 </div>
               </div>
@@ -230,15 +230,15 @@ export function CadenaValorTab({ puedeEditar }: CadenaValorTabProps) {
         </div>
       )}
 
-      {/* Banner de Contexto Metodológico DNP */}
+      {/* Banner de Contexto Metodológico */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-xl border border-border bg-surface-1 p-4 shadow-xs">
         <div>
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-xs font-semibold text-ember uppercase tracking-wider">
-              Metodología DNP · Cadena de Valor
+              Metodología de Cadena de Valor y Gestión por Resultados
             </span>
             <Badge variant="outline" className="text-[10px]">
-              SINERGIA
+              Gestión por Resultados
             </Badge>
             <Badge variant="outline" className="text-[10px]">
               MIPG

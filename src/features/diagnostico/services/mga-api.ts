@@ -1,7 +1,7 @@
 /**
- * POLIS — Servicio de Integración para Instrumentos MGA y Agente IA DNP
+ * POLIS — Servicio de Integración para Instrumentos de Diagnóstico y Agente IA
  * Conecta con /api/v1/instrumentos y /api/v1/ia/diagnostico.
- * Incluye motor de contingencia determinista DNP para pruebas y modo offline.
+ * Incluye motor de contingencia determinista para pruebas y modo offline.
  */
 
 import { apiFetch } from "@/core/http/api-client";
@@ -22,7 +22,7 @@ import {
   ARBOLES_CANONICOS,
 } from "../data/mga-canonical.data";
 
-// Vocabularios canónicos DNP
+// Vocabularios canónicos de validación sintáctica
 const PREFIJOS_SOLUCION_DISFRAZADA = [
   /^falta (de )?(un |una |unos |unas |el |la )?(cai|app|software|plataforma|camara|cámara|vehiculo|vehículo|patrulla|puente|hospital|colegio|sede)/i,
   /^necesidad (de )?(un |una |unos |unas |el |la )?(cai|app|software|camara|cámara|patrulla)/i,
@@ -166,7 +166,7 @@ export async function obtenerInstrumentos(): Promise<InstrumentoMGA[]> {
     return INSTRUMENTOS_MGA_CANONICOS;
   } catch (error) {
     console.warn(
-      "Fallo al consultar /api/v1/instrumentos, utilizando catálogo MGA oficial:",
+      "Fallo al consultar /api/v1/instrumentos, utilizando catálogo oficial:",
       error
     );
     return INSTRUMENTOS_MGA_CANONICOS;
@@ -230,7 +230,7 @@ export function validarSintaxisLocal(
           "Déficit o insuficiencia en "
         ),
         observacion_metodologica:
-          "ALERTA DNP: Se identificó una solución disfrazada ('falta de/construir'). Debe enunciarse el problema o carencia que afecta a la población.",
+          "ALERTA METODOLÓGICA: Se identificó una solución disfrazada ('falta de/construir'). Debe enunciarse el problema o carencia que afecta a la población.",
       };
     }
 
@@ -248,8 +248,8 @@ export function validarSintaxisLocal(
         ? t
         : `Deficiencia o incremento en ${t.toLowerCase()}`,
       observacion_metodologica: tieneSustantivoNegativo
-        ? "Cumple el estándar DNP de formulación de problema/causa en estado negativo."
-        : "Recomendación DNP: Prefijar con un sustantivo negativo para delimitar el estado insatisfactorio.",
+        ? "Cumple el estándar metodológico de formulación de problema/causa en estado negativo."
+        : "Recomendación metodológica: Prefijar con un sustantivo negativo para delimitar el estado insatisfactorio.",
     };
   }
 
@@ -271,13 +271,13 @@ export function validarSintaxisLocal(
       ? t
       : `Fortalecer o garantizar ${t.toLowerCase()}`,
     observacion_metodologica: esInfinitivo
-      ? "Cumple directriz DNP: formulado con verbo en infinitivo propositivo."
-      : "Ajuste DNP: Formular iniciando con verbo en infinitivo que indique la transformación.",
+      ? "Cumple directriz metodológica: formulado con verbo en infinitivo propositivo."
+      : "Ajuste metodológico: Formular iniciando con verbo en infinitivo que indique la transformación.",
   };
 }
 
 /**
- * Generador determinista de diagnóstico de contingencia conforme a directrices DNP.
+ * Generador determinista de diagnóstico de contingencia conforme a directrices metodológicas.
  */
 export function generarDiagnosticoDeterminista(
   entrada: EntradaDiagnostico
@@ -346,7 +346,7 @@ export function generarDiagnosticoDeterminista(
   const recomendaciones_dnp: string[] = [
     "Asegurar articulación directa entre causas indirectas y competencias de secretarías distritales según Ley 1617 de 2013.",
     "Verificar que ningún nodo formule compras de equipos o infraestructura física como causa raíz (evitar soluciones disfrazadas).",
-    "Comprobar correspondencia biunívoca entre efectos directos e indicadores de resultado de la línea base DNP.",
+    "Comprobar correspondencia biunívoca entre efectos directos e indicadores de resultado de la línea base.",
     "Articular el objetivo central a la matriz plurianual de inversión y fuentes FONSET / SGP / ICLD.",
   ];
 
@@ -375,9 +375,9 @@ export function generarDiagnosticoDeterminista(
       ),
     },
     recomendaciones_dnp,
-    resumen_ejecutivo: `Concepto Pericial DNP: La iniciativa '${entrada.titulo}' presenta un nivel de coherencia metodológica del ${puntaje_coherencia}%. ${
+    resumen_ejecutivo: `Concepto Pericial Metodológico: La iniciativa '${entrada.titulo}' presenta un nivel de coherencia metodológica del ${puntaje_coherencia}%. ${
       es_valido
-        ? "La estructura causal cumple con los lineamientos del Manual MGA / Marco Lógico del DNP para formulación de política pública distrital."
+        ? "La estructura causal cumple con los lineamientos de Marco Lógico para formulación de política pública distrital."
         : "Se detectaron inconsistencias sintácticas o vacíos en la cadena causal que requieren reformulación antes de la fase de diseño y viabilidad fiscal."
     }`,
   };
@@ -405,17 +405,17 @@ export async function evaluarDiagnosticoIA(
     }
   } catch (error) {
     console.warn(
-      "Servicio /api/v1/ia/diagnostico no disponible o no autenticado, ejecutando motor causal determinista DNP:",
+      "Servicio /api/v1/ia/diagnostico no disponible o no autenticado, ejecutando motor causal determinista:",
       error
     );
   }
 
-  // Fallback determinista DNP
+  // Fallback determinista
   return generarDiagnosticoDeterminista(entrada);
 }
 
 /**
- * Convierte un árbol de problemas a árbol de objetivos bajo metodología MGA DNP.
+ * Convierte un árbol de problemas a árbol de objetivos bajo metodología de marco lógico.
  * Despacha POST /api/v1/instrumentos/{instrumento_id}/convertir-a-objetivos.
  */
 export async function convertirAObjetivos(
@@ -443,7 +443,7 @@ export async function convertirAObjetivos(
 }
 
 /**
- * Agrega un nuevo nodo causal o medio/fin al árbol MGA.
+ * Agrega un nuevo nodo causal o medio/fin al árbol causal.
  * Despacha POST /api/v1/instrumentos/{instrumento_id}/nodos.
  */
 export async function agregarNodoArbol(
@@ -470,7 +470,7 @@ export async function agregarNodoArbol(
 }
 
 /**
- * Actualiza el contenido, tipo u orden de un nodo en el árbol MGA.
+ * Actualiza el contenido, tipo u orden de un nodo en el árbol causal.
  * Despacha PUT /api/v1/instrumentos/{instrumento_id}/nodos/{nodo_id}.
  */
 export async function actualizarNodoArbol(
@@ -502,7 +502,7 @@ export async function actualizarNodoArbol(
 }
 
 /**
- * Elimina un nodo y sus dependientes del árbol MGA.
+ * Elimina un nodo y sus dependientes del árbol causal.
  * Despacha DELETE /api/v1/instrumentos/{instrumento_id}/nodos/{nodo_id}.
  */
 export async function eliminarNodoArbol(

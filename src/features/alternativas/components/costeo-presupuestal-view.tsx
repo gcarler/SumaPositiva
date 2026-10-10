@@ -266,7 +266,7 @@ export function CosteoPresupuestalView({ puedeEditar: puedeEditarProp }: CosteoP
             Plan Financiero y Asignaciones Presupuestales Cuatrienales
           </h2>
           <p className="text-xs text-text-muted">
-            Monitoreo y formalización de recursos FONSET, transferencias de la Nación (SGP), regalías (SGR) e ICLD vinculados al Banco de Alternativas MGA.
+            Monitoreo y formalización de recursos FONSET, transferencias de la Nación (SGP), regalías (SGR) e ICLD vinculados al Banco de Alternativas de Solución.
           </p>
         </div>
 
@@ -537,7 +537,7 @@ export function CosteoPresupuestalView({ puedeEditar: puedeEditarProp }: CosteoP
         <Table>
           <TableHeader className="bg-surface-2">
             <TableRow className="border-border hover:bg-surface-2">
-              <TableHead className="text-xs font-semibold text-text-secondary">Iniciativa MGA Vinculada</TableHead>
+              <TableHead className="text-xs font-semibold text-text-secondary">Iniciativa Vinculada</TableHead>
               <TableHead className="text-xs font-semibold text-text-secondary">Código BPIN</TableHead>
               <TableHead className="text-xs font-semibold text-text-secondary">Fuente de Financiación</TableHead>
               <TableHead className="text-xs font-semibold text-text-secondary text-center">Vigencia</TableHead>
@@ -564,7 +564,7 @@ export function CosteoPresupuestalView({ puedeEditar: puedeEditarProp }: CosteoP
                     <TableCell className="text-xs font-medium text-text-primary max-w-[260px]">
                       <div className="space-y-0.5">
                         <span className="font-semibold text-text-primary block truncate">
-                          {asig.metadatos?.alternativa_codigo ?? "MGA"}
+                          {asig.metadatos?.alternativa_codigo ?? "ALT"}
                         </span>
                         <p className="text-[11px] text-text-muted truncate">
                           {asig.metadatos?.alternativa_nombre ?? asig.justificacion}

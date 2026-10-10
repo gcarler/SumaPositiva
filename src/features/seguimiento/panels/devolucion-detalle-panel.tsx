@@ -259,7 +259,7 @@ export function DevolucionDetallePanel({
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="tecnica" className="text-xs">
-                          Inconsistencia Técnica / Metodológica (MGA)
+                          Inconsistencia Técnica / Metodológica
                         </SelectItem>
                         <SelectItem value="juridica" className="text-xs">
                           Incompetencia Legal / Restricción Jurídica (LOOT)

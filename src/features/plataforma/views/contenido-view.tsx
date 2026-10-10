@@ -12,8 +12,7 @@ import {
   Eye,
   Play,
   Layers,
-  Sparkles,
-  Layers as DnpIcon
+  Sparkles
 } from "lucide-react";
 import {PageHeader} from "@/shared/ui/page-header";
 import {Button} from "@/shared/ui/button";
@@ -51,7 +50,7 @@ export function ContenidoView({ soloNoticias = false }: { soloNoticias?: boolean
   const guardarNoticia = useGuardarNoticia();
   const eliminarNoticia = useEliminarNoticia();
 
-  // Consultas DNP históricas
+  // Consultas metodológicas históricas
   const fases = useQuery({
     queryKey: ["plataforma", "fases"],
     queryFn: plataformaApi.fases,
@@ -110,7 +109,7 @@ export function ContenidoView({ soloNoticias = false }: { soloNoticias?: boolean
                   size="sm"
                   onClick={() => openPanel("fases-control", {})}
                 >
-                  Control de Fases DNP
+                  Control de Fases de Política
                 </Button>
               )}
               <Button
@@ -135,9 +134,9 @@ export function ContenidoView({ soloNoticias = false }: { soloNoticias?: boolean
               <Newspaper className="size-4" />
               <span>Noticias y Comunicados ({totalNoticias})</span>
             </TabsTrigger>
-            <TabsTrigger value="dnp" className="gap-2">
-              <DnpIcon className="size-4" />
-              <span>Estructura DNP & Metodología</span>
+            <TabsTrigger value="metodologia" className="gap-2">
+              <Layers className="size-4" />
+              <span>Estructura Metodológica</span>
             </TabsTrigger>
           </TabsList>
         )}
@@ -345,8 +344,8 @@ export function ContenidoView({ soloNoticias = false }: { soloNoticias?: boolean
           </div>
         </TabsContent>
 
-        {/* ================= PESTAÑA: ESTRUCTURA DNP ================= */}
-        {!soloNoticias && <TabsContent value="dnp" className="space-y-6">
+        {/* ================= PESTAÑA: ESTRUCTURA METODOLÓGICA ================= */}
+        {!soloNoticias && <TabsContent value="metodologia" className="space-y-6">
           <section className="space-y-3">
             <h2 className="text-lg font-semibold">Fases Metodológicas</h2>
             <EstadoConsulta

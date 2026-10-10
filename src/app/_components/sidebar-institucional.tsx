@@ -108,7 +108,7 @@ export function construirModulosInstitucionales({
         },
         {
           id: "politicas_fases",
-          label: "Control de Fases DNP",
+          label: "Control de Fases de Política",
           icon: Building2,
           onClick: () => openPanel("fases-control", {}),
         },
@@ -159,7 +159,7 @@ export function construirModulosInstitucionales({
         },
         {
           id: "mesas_papelografo",
-          label: "Papelógrafo MGA",
+          label: "Papelógrafo",
           icon: PenTool,
           onClick: () => {
             navigateTo("mesas");
@@ -280,7 +280,7 @@ export function construirModulosInstitucionales({
     },
     {
       id: "indicadores",
-      label: "Indicadores DNP",
+      label: "Fichas de Indicadores",
       icon: LineChart,
       onClick: () => openPanel("rendicion-cuentas", {}),
     },

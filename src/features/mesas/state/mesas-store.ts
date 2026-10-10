@@ -527,7 +527,7 @@ export const useMesasStore = create<MesasState>((set, get) => ({
 
     lineas.push(`## 1. DIAGNÓSTICO TERRITORIAL ESTRUCTURAL (ÁRBOL DE PROBLEMAS)`);
     lineas.push(
-      `Conforme a la metodología DNP y CONPES de Marco Lógico, la deliberación territorial identificó el siguiente núcleo problemático y sus causas directas e indirectas:`
+      `Conforme a la metodología de Marco Lógico y estructuración técnica, la deliberación territorial identificó el siguiente núcleo problemático y sus causas directas e indirectas:`
     );
     lineas.push("");
     const probCentral = ap?.problemaCentral?.trim() || "Definición pendiente de concertación territorial";

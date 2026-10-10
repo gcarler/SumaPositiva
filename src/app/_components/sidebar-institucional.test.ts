@@ -2,7 +2,7 @@
  * POLIS — Suite de Pruebas Unitarias de Navegación Institucional (GAP-FIX-03)
  * Verificación forense:
  * 1. Erradicación total de botones inertes con toast.info (GAP-03).
- * 2. Resolución dinámica de mesas y submesas en papelógrafo MGA (GAP-10).
+ * 2. Resolución dinámica de mesas y submesas en papelógrafo (GAP-10).
  * 3. Apertura de paneles operacionales reales (analítica, actas, costeo, rendición).
  * 4. Navegación a rutas administrativas (/plataforma/*).
  * 5. Mapeo íntegro de permisos institucionales por módulo.
@@ -134,7 +134,7 @@ describe("Sidebar Institucional — Navegación Operativa y Erradicación de GAP
     });
   });
 
-  describe("3. Resolución Dinámica de Mesas en Papelógrafo MGA (mesas_papelografo — GAP-10)", () => {
+  describe("3. Resolución Dinámica de Mesas en Papelógrafo (mesas_papelografo — GAP-10)", () => {
     test("resuelve dinámicamente ID de mesa y submesa real sin valores mockeados fijos", () => {
       const mesaDinamica: MesaDeTrabajo = {
         id: "mesa-territorial-olaya-77",
@@ -248,7 +248,7 @@ describe("Sidebar Institucional — Navegación Operativa y Erradicación de GAP
     });
   });
 
-  describe("5. Presupuesto FONSET y Cadena MGA (presupuesto — GAP-03)", () => {
+  describe("5. Presupuesto FONSET y Cadena de Valor (presupuesto — GAP-03)", () => {
     test("abre 'asignacion-presupuestal' operativamente en lugar de toast inerte", () => {
       const modulos = obtenerModulos();
       const mod = buscarModulo(modulos, "presupuesto");
@@ -261,7 +261,7 @@ describe("Sidebar Institucional — Navegación Operativa y Erradicación de GAP
     });
   });
 
-  describe("6. Indicadores DNP SINERGIA (indicadores — GAP-03)", () => {
+  describe("6. Fichas de Indicadores de Seguimiento (indicadores — GAP-03)", () => {
     test("abre 'rendicion-cuentas' operativamente en lugar de toast inerte", () => {
       const modulos = obtenerModulos();
       const mod = buscarModulo(modulos, "indicadores");

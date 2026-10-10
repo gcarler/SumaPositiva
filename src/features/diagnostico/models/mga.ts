@@ -1,5 +1,5 @@
 /**
- * POLIS — Modelos para Árbol de Problemas y Objetivos MGA (DNP)
+ * POLIS — Modelos para Árbol de Problemas y Objetivos (Marco Lógico)
  * Articulado con backend FastAPI (/api/v1/instrumentos y /api/v1/ia/diagnostico).
  */
 

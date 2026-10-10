@@ -2,7 +2,7 @@ import type { FichaIndicador } from "../models/indicador";
 
 /**
  * Catálogo canónico de contingencia / fallback con los 8 indicadores
- * oficiales DNP sembrados en la base de datos de Cartagena (bd_csh).
+ * oficiales sembrados en la base de datos de Cartagena (bd_csh).
  */
 export const INDICADORES_FALLBACK: FichaIndicador[] = [
   {
@@ -68,14 +68,14 @@ export const INDICADORES_FALLBACK: FichaIndicador[] = [
     nombre: "Presupuesto FONSET asignado a programas de convivencia",
     tipo_indicador: "insumo",
     definicion: "Total de recursos FONSET destinados a prevención social",
-    metodo_calculo: "(Presupuesto FONSET apropiado para programas MGA)",
+    metodo_calculo: "(Presupuesto FONSET apropiado para programas y proyectos)",
     unidad_medida: "Pesos",
     sentido_esperado: "ascendente",
     periodicidad: "Anual",
     linea_base_valor: "1000000000.0000",
     linea_base_anio: 2023,
     meta_cuatrienio: "4000000000.0000",
-    fuente_datos: "CHIP - DNP / Secretaría de Hacienda",
+    fuente_datos: "CHIP - Contaduría General de la Nación / Secretaría de Hacienda",
     responsable_reporte: "Secretaría de Hacienda Distrital",
     valor_actual: "Sin medición",
     porcentaje_avance: "Sin medición",

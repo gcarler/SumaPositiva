@@ -32,7 +32,7 @@ A través de un despliegue sin precedentes en las tres localidades urbanas y la 
 
 1. **Territorialización de las 7 Dimensiones ONU:** Seguridad económica, alimentaria, en salud, ambiental, personal, comunitaria y política.
 2. **Cumplimiento estricto de la Sentencia C-150 de 2015:** Cada propuesta ciudadana registrada recibirá devolución motivada y trazabilidad pública.
-3. **Metodología DNP & CONPES:** Los árboles de problemas y de soluciones construidos en las submesas alimentarán directamente la matriz de proyectos distritales.
+3. **Metodología de Ciclo de Políticas Públicas:** Los árboles de problemas y de soluciones construidos en las submesas alimentarán directamente la matriz de proyectos distritales.
 
 > *"La seguridad de Cartagena no se construye con medidas aisladas; requiere atender las raíces del hambre, la exclusión y el riesgo climático de la mano con la gente."* — Equipo de Facilitación POLIS.
 
@@ -134,7 +134,7 @@ Para registrar delegaciones o solicitar transporte comunitario, contactar al equ
     destacada: false,
     ordenPrioridad: 5,
     estado: "publicada",
-    etiquetas: ["diagnostico", "balance-participacion", "indicadores", "dnp"],
+    etiquetas: ["diagnostico", "balance-participacion", "indicadores", "planeacion"],
     contenido: `## Consolidación de datos y diagnósticos sectoriales
 
 La Secretaría de Planeación Distrital presentó el primer informe de balance de las mesas poblacionales llevadas a cabo durante las últimas tres semanas.

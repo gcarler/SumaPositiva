@@ -89,7 +89,7 @@ export function LineaBaseTabla({
           <TableHeader>
             <TableRow className="border-b border-border bg-surface-2/60">
               <TableHead className="w-28 text-xs font-semibold">Código</TableHead>
-              <TableHead className="min-w-[260px] text-xs font-semibold">Indicador DNP / Definición</TableHead>
+              <TableHead className="min-w-[260px] text-xs font-semibold">Indicador / Definición</TableHead>
               <TableHead className="w-28 text-xs font-semibold">Tipo</TableHead>
               <TableHead className="w-32 text-xs font-semibold">Línea Base</TableHead>
               <TableHead className="w-32 text-xs font-semibold">Valor Actual</TableHead>
@@ -208,7 +208,7 @@ export function LineaBaseTabla({
                             size="sm"
                             onClick={() => handleEditarFicha(ind)}
                             className="h-8 gap-1 text-xs text-text-secondary hover:text-text-primary hover:bg-surface-2"
-                            title="Editar ficha técnica DNP"
+                            title="Editar ficha técnica de indicador"
                           >
                             <Pencil className="size-3.5" aria-hidden="true" />
                             <span>Editar</span>

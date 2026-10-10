@@ -43,7 +43,7 @@ export function ExplorarView() {
         titulo: linea.titulo,
         descripcion: linea.descripcion,
         aportes: [],
-        faseNombre: fase?.nombre ?? "Fase DNP",
+        faseNombre: fase?.nombre ?? "Fase de la política",
         faseOrden: fase?.orden ?? 1,
         faseEstado: fase?.estado ?? "activa",
       };
@@ -127,11 +127,11 @@ export function ExplorarView() {
           placeholder="Buscar por código, título, fase o palabra clave…"
         />
 
-        {/* Filtro por Fase DNP */}
+        {/* Filtro por Fase de Política */}
         <div
           className="flex flex-wrap items-center gap-1.5"
           role="group"
-          aria-label="Filtrar por fase DNP"
+          aria-label="Filtrar por fase de política"
         >
           <FilterChip
             active={faseFiltro === "todas"}

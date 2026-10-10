@@ -86,7 +86,7 @@ export function ArbolProblemasView({}: ArbolProblemasViewProps = {}) {
     etiqueta: string;
   } | null>(null);
 
-  // Cargar lista de instrumentos MGA
+  // Cargar lista de instrumentos de diagnóstico
   const cargarInstrumentos = useCallback(async () => {
     setCargando(true);
     try {
@@ -101,7 +101,7 @@ export function ArbolProblemasView({}: ArbolProblemasViewProps = {}) {
         setInstrumentoSeleccionadoId(inicial);
       }
     } catch {
-      toast.error("Error al cargar instrumentos MGA.");
+      toast.error("Error al cargar instrumentos de diagnóstico.");
     } finally {
       setCargando(false);
     }
@@ -141,13 +141,13 @@ export function ArbolProblemasView({}: ArbolProblemasViewProps = {}) {
     return instrumentos.find((i) => i.id === instrumentoSeleccionadoId);
   }, [instrumentos, instrumentoSeleccionadoId]);
 
-  // Conversión canónica DNP a Árbol de Objetivos
+  // Conversión canónica a Árbol de Objetivos
   const handleConvertirAObjetivos = async () => {
     if (!instrumentoSeleccionadoId) return;
     setConvirtiendo(true);
     try {
       const nuevoArbol = await convertirAObjetivos(instrumentoSeleccionadoId);
-      toast.success("Árbol de Objetivos generado exitosamente bajo metodología MGA DNP.");
+      toast.success("Árbol de Objetivos generado exitosamente bajo metodología de marco lógico.");
       await cargarInstrumentos();
       setInstrumentoSeleccionadoId(nuevoArbol.instrumento.id);
       setArbol(nuevoArbol);
@@ -242,7 +242,7 @@ export function ArbolProblemasView({}: ArbolProblemasViewProps = {}) {
   const handleEliminarNodo = async (nodoId: string) => {
     if (!instrumentoSeleccionadoId) return;
     const seguro = window.confirm(
-      "¿Confirma la eliminación de este nodo causal del árbol MGA?"
+      "¿Confirma la eliminación de este nodo causal del árbol?"
     );
     if (!seguro) return;
 
@@ -260,7 +260,7 @@ export function ArbolProblemasView({}: ArbolProblemasViewProps = {}) {
     }
   };
 
-  // Ejecutar validación pericial causal con IA DNP
+  // Ejecutar validación pericial causal con IA
   const handleValidarConIA = async () => {
     if (!arbol || !arbol.nodo_central) {
       toast.error("El árbol actual no contiene un nodo central definido.");
@@ -296,10 +296,10 @@ export function ArbolProblemasView({}: ArbolProblemasViewProps = {}) {
       });
 
       toast.success(
-        `Auditoría IA DNP completada: Coherencia ${Math.round(resultado.puntaje_coherencia)}%`
+        `Auditoría IA completada: Coherencia ${Math.round(resultado.puntaje_coherencia)}%`
       );
     } catch {
-      toast.error("Error al ejecutar la validación con el Agente DNP.");
+      toast.error("Error al ejecutar la validación con el Agente IA.");
     } finally {
       setEvaluandoIA(false);
     }
@@ -316,13 +316,13 @@ export function ArbolProblemasView({}: ArbolProblemasViewProps = {}) {
 
   return (
     <div className="space-y-6">
-      {/* Barra de Controles y Selector de Instrumento MGA */}
+      {/* Barra de Controles y Selector de Instrumento */}
       <div className="rounded-xl border border-border bg-surface-1 p-4 space-y-4">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           {/* Selector de Instrumento */}
           <div className="space-y-1.5 flex-1 max-w-xl">
             <span className="text-2xs font-semibold text-text-tertiary uppercase tracking-wider block">
-              Instrumento MGA / Dimensión Cartagena
+              Instrumento / Dimensión Cartagena
             </span>
             <div className="flex items-center gap-2">
               <Select
@@ -358,7 +358,7 @@ export function ArbolProblemasView({}: ArbolProblemasViewProps = {}) {
             </div>
           </div>
 
-          {/* Conmutador de Árbol (Problemas vs Objetivos), Conversor y Botón IA DNP */}
+          {/* Conmutador de Árbol (Problemas vs Objetivos), Conversor y Botón IA */}
           <div className="flex flex-wrap items-center gap-2.5">
             {/* Segmented Switcher */}
             <div className="inline-flex rounded-lg border border-border bg-surface-2 p-1">
@@ -398,7 +398,7 @@ export function ArbolProblemasView({}: ArbolProblemasViewProps = {}) {
                 onClick={handleConvertirAObjetivos}
                 disabled={convirtiendo || cargandoArbol || !arbol}
                 className="h-9 px-3 text-xs font-semibold gap-1.5 border-success/40 bg-success-soft text-success hover:bg-success hover:text-text-inverse transition-colors"
-                title="Generar árbol de objetivos equivalente bajo metodología MGA DNP"
+                title="Generar árbol de objetivos equivalente bajo metodología de marco lógico"
               >
                 <ArrowRightLeft
                   className={`size-3.5 ${convirtiendo ? "animate-spin" : ""}`}
@@ -408,7 +408,7 @@ export function ArbolProblemasView({}: ArbolProblemasViewProps = {}) {
               </Button>
             )}
 
-            {/* Botón de Validación Causal IA DNP */}
+            {/* Botón de Validación Causal IA */}
             <Button
               variant="outline"
               size="sm"
@@ -420,7 +420,7 @@ export function ArbolProblemasView({}: ArbolProblemasViewProps = {}) {
                 className={`size-3.5 ${evaluandoIA ? "animate-spin" : ""}`}
                 aria-hidden="true"
               />
-              <span>{evaluandoIA ? "Auditando con IA..." : "Validar con Agente IA DNP"}</span>
+              <span>{evaluandoIA ? "Auditando con IA..." : "Validar con Agente IA"}</span>
             </Button>
           </div>
         </div>
@@ -448,13 +448,13 @@ export function ArbolProblemasView({}: ArbolProblemasViewProps = {}) {
         )}
       </div>
 
-      {/* Canvas Jerárquico del Árbol MGA */}
+      {/* Canvas Jerárquico del Árbol Causal */}
       {cargandoArbol ? (
         <div className="flex h-72 items-center justify-center rounded-xl border border-border bg-surface-1">
           <div className="flex flex-col items-center gap-2">
             <RotateCw className="size-6 animate-spin text-ember" aria-hidden="true" />
             <span className="text-xs text-text-tertiary">
-              Cargando estructura MGA de Cartagena...
+              Cargando estructura causal de Cartagena...
             </span>
           </div>
         </div>
@@ -462,7 +462,7 @@ export function ArbolProblemasView({}: ArbolProblemasViewProps = {}) {
         <div className="flex h-72 flex-col items-center justify-center rounded-xl border border-dashed border-border bg-surface-1 p-6 text-center">
           <Info className="size-8 text-text-tertiary mb-2" aria-hidden="true" />
           <p className="text-sm font-semibold text-text-primary">
-            No se encontró un árbol MGA configurado
+            No se encontró un árbol causal configurado
           </p>
           <p className="text-xs text-text-secondary max-w-md mt-1">
             Seleccione otro instrumento distrital o cree un nuevo árbol analítico desde la mesa de concertación.

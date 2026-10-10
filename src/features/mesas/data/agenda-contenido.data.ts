@@ -70,7 +70,7 @@ export const CONTENIDO_MESAS: Record<string, ContenidoMesa> = {
     ordenDelDia: [
       "Apertura metodológica y conformación de la mesa directiva comunitaria",
       "Contextualización de la vulnerabilidad socioambiental en la cuenca de la Ciénaga",
-      "Trabajo en submesas de papelógrafo con enfoque DNP",
+      "Trabajo en submesas de papelógrafo comunitario",
       "Socialización de árboles de soluciones por delegados comunitarios",
       "Firma del pacto preliminar de corresponsabilidad barrial",
     ],
@@ -471,7 +471,7 @@ export const CONTENIDO_MESAS: Record<string, ContenidoMesa> = {
     ordenDelDia: [
       "Apertura con el Consejo Comunitario de Barú bajo protocolo étnico",
       "Contextualización de la Sentencia SU-123 de 2018 y derechos territoriales",
-      "Trabajo en papelógrafos DNP por mesas temáticas",
+      "Trabajo en papelógrafos de mesas de trabajo por áreas temáticas",
       "Plenaria de concertación sobre turismo de bajo impacto y medio ambiente",
       "Cierre y firma del acta con veedores comunitarios",
     ],
@@ -926,7 +926,7 @@ export const CONTENIDO_MESAS: Record<string, ContenidoMesa> = {
     ordenDelDia: [
       "Bienvenida e instalación institucional por líderes de la Mesa LGBTIQ+ de Cartagena",
       "Balance de crímenes de odio, agresiones policiales y barreras de acceso a derechos",
-      "Trabajo grupal en papelógrafos DNP formulando árboles causales",
+      "Trabajo grupal en papelógrafos formulando árboles causales",
       "Exposición de iniciativas de inclusión económica y salud afirmativa",
       "Adopción de compromisos para la Política Pública LGBTIQ+ Distrital",
     ],
@@ -1026,7 +1026,7 @@ export const CONTENIDO_MESAS: Record<string, ContenidoMesa> = {
     ordenDelDia: [
       "Apertura con consejeros distritales y municipales de juventud (CMJ) y colectivos juveniles",
       "Diagnóstico de desempleo juvenil, informalidad y deserción académica",
-      "Deliberación en submesas de papelógrafo orientadas a medios y fines DNP",
+      "Deliberación en submesas de papelógrafo orientadas a medios y fines de solución",
       "Pitch de propuestas formuladas por jóvenes líderes",
       "Adopción de la agenda juvenil distrital 2026-2036",
     ],
@@ -1178,7 +1178,7 @@ export const CONTENIDO_MESAS: Record<string, ContenidoMesa> = {
     ordenDelDia: [
       "Apertura ritual y palabras de mayores de los Consejos Comunitarios y Cabildos Indígenas",
       "Diagnóstico de amenazas a la autonomía territorial y etnoeducación",
-      "Taller con papelógrafos DNP analizando las causas de la discriminación racial estructural",
+      "Taller con papelógrafos analizando las causas de la discriminación racial estructural",
       "Formulación de políticas de desarrollo propio (planes de etnodesarrollo)",
       "Suscripción del pacto étnico distrital",
     ],
@@ -1230,7 +1230,7 @@ export const CONTENIDO_MESAS: Record<string, ContenidoMesa> = {
     ordenDelDia: [
       "Saludo e instalación por el IPCC y el Consejo Distrital de Cultura",
       "Diagnóstico de la inversión cultural y brechas entre el centro amurallado y la periferia",
-      "Deliberación en submesas con papelógrafos DNP",
+      "Deliberación en submesas con papelógrafos comunitarios",
       "Presentación de iniciativas de fomento cultural y protección patrimonial",
       "Acuerdos sobre asignación transparente de estímulos y becas",
     ],
@@ -1631,7 +1631,7 @@ export const CONTENIDO_MESAS: Record<string, ContenidoMesa> = {
     ordenDelDia: [
       "Apertura con la Secretaría de Hacienda, Secretaría de Turismo y Cámara de Comercio",
       "Diagnóstico de informalidad laboral, estacionalidad del turismo y brecha de competitividad",
-      "Trabajo grupal en papelógrafos DNP con emprendedores, gremios y comerciantes informales",
+      "Trabajo grupal en papelógrafos con emprendedores, gremios y comerciantes informales",
       "Socialización de soluciones para la reactivación económica incluyente",
       "Firma del acuerdo por la competitividad y el trabajo decente",
     ],

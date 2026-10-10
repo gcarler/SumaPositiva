@@ -1,5 +1,5 @@
 /**
- * POLIS — Pruebas Unitarias de Gating de Fases DNP (AUD-05)
+ * POLIS — Pruebas Unitarias de Gating de Fases de Política (AUD-05)
  * Criterio verificable por EAF:
  * Con Fase 2 en 'preparatoria' Alternativas muestra aviso y bloquea escritura a no-admins;
  * Con Fase 3 en 'preparatoria' Seguimiento bloquea escritura a no-admins.
@@ -36,7 +36,7 @@ function evaluarGatingFase({
   };
 }
 
-describe("Gating de Fases DNP en Alternativas y Seguimiento (AUD-05)", () => {
+describe("Gating de Fases de Política en Alternativas y Seguimiento (AUD-05)", () => {
   const ahora = new Date().toISOString();
 
   const sesionAdmin: Sesion = {
@@ -79,7 +79,7 @@ describe("Gating de Fases DNP en Alternativas y Seguimiento (AUD-05)", () => {
     permisos: ["alternativas:leer", "alternativas:gestionar", "seguimiento:leer", "seguimiento:gestionar"],
   };
 
-  describe("Fase 2 (Alternativas MGA) en estado 'preparatoria'", () => {
+  describe("Fase 2 (Alternativas de Solución) en estado 'preparatoria'", () => {
     test("bloquea escritura a facilitador_mesa y auditor_forense", () => {
       const resFac = evaluarGatingFase({
         faseEstado: "preparatoria",

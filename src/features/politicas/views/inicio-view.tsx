@@ -106,7 +106,7 @@ export function InicioView() {
 
   const stats = [
     { valor: totalLineas.toString(), label: "Líneas estratégicas" },
-    { valor: `${fasesCompletadas} de ${fases.length || 3}`, label: "Fases DNP en curso" },
+    { valor: `${fasesCompletadas} de ${fases.length || 3}`, label: "Fases de política en curso" },
     { valor: "2026–2036", label: "Vigencia de la política" },
     { valor: "3 + Insular", label: "Localidades cubiertas" },
   ];
@@ -200,7 +200,7 @@ export function InicioView() {
                   type="button"
                   asChild
                 >
-                  <a href="#fases-dnp">
+                  <a href="#fases-politica">
                     <FileCheck2 className="size-4 text-[var(--text-secondary)]" strokeWidth={1.75} />
                     Ver Diagnóstico Participativo
                   </a>
@@ -281,11 +281,11 @@ export function InicioView() {
         <EnrutadorCiudadanoInteligente />
       </section>
 
-      {/* ================= CICLO DNP ================= */}
-      <section id="fases-dnp" className="border-y border-[var(--border)] bg-[var(--surface-2)]">
+      {/* ================= CICLO DE FORMULACIÓN ================= */}
+      <section id="fases-politica" className="border-y border-[var(--border)] bg-[var(--surface-2)]">
         <div className="container-fluid py-16 md:py-24">
           <div className="mb-10 max-w-2xl">
-            <p className="label-micro text-[var(--text-tertiary)]">Metodología DNP & CONPES</p>
+            <p className="label-micro text-[var(--text-tertiary)]">Metodología de Ciclo de Políticas Públicas</p>
             <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[var(--text-primary)] md:text-3xl">
               Ciclo de Formulación de la Política
             </h2>

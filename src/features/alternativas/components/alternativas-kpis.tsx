@@ -21,7 +21,7 @@ export function AlternativasKpis({ kpis }: AlternativasKpisProps) {
     {
       titulo: "Alternativas Formuladas",
       valor: kpis.total,
-      subtexto: "Iniciativas en Banco Distrital MGA",
+      subtexto: "Iniciativas en Banco Distrital",
       icono: Lightbulb,
       estiloIcono: "text-accent bg-accent-soft",
     },

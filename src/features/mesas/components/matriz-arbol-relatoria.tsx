@@ -538,11 +538,11 @@ export function MatrizArbolRelatoria({
           <div className="flex items-center gap-2">
             <Layers className="size-4 text-[var(--ember)]" strokeWidth={2} />
             <h3 className="text-sm font-semibold tracking-wide text-[var(--text-primary)]">
-              Matriz de Árbol de Problemas, Soluciones y Marco Lógico (DNP / CONPES)
+              Matriz de Árbol de Problemas, Soluciones y Marco Lógico (Relatoría Técnica)
             </h3>
           </div>
           <p className="text-xs text-[var(--text-secondary)]">
-            Estructuración causal conforme a la Metodología General Ajustada para relatorías territoriales.
+            Estructuración causal conforme a la metodología de marco lógico para relatorías territoriales.
           </p>
         </div>
 
@@ -1537,7 +1537,7 @@ export function MatrizArbolRelatoria({
       </TabsContent>
 
       {/* ========================================================================= */}
-      {/* TAB 3: MATRIZ INTEGRADA MML (MARCO LÓGICO DNP CONPES)                      */}
+      {/* TAB 3: MATRIZ INTEGRADA MML (MARCO LÓGICO Y RELATORÍA TÉCNICA)            */}
       {/* ========================================================================= */}
       <TabsContent value="mml" className="mt-0 space-y-4">
         <div className="space-y-3">

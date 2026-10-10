@@ -141,7 +141,7 @@ export async function listarFasesControlApi(): Promise<FaseControlApi[]> {
 }
 
 /**
- * Conmuta el interruptor maestro de participación web o estado de una fase DNP.
+ * Conmuta el interruptor maestro de participación web o estado de una fase de la política.
  * Requiere rol de Autoridad Distrital (politicas:gestionar).
  * Lanza ApiError sin enmascaramiento silencioso.
  */

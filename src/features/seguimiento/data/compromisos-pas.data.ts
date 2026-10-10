@@ -3,7 +3,7 @@ import type { CompromisoInstitucional } from "../models/compromiso";
 /**
  * Catálogo Canónico Oficial de Compromisos Institucionales — Plan de Acción y Seguimiento (PAS)
  * Política Pública de Seguridad Humana Integral de Cartagena de Indias 2026–2036.
- * Desagregación vinculante de las 8 alternativas MGA hacia entidades distritales ejecutoras.
+ * Desagregación vinculante de las 8 alternativas de solución hacia entidades distritales ejecutoras.
  * Conforme con AUD-13 / OBS-02: compromisos programáticos estructurados para validación institucional (PDD Cartagena 2024–2027).
  * Todo campo de ejecución reportada se inicializa en 'sin_reporte' (null / sin datos inventados).
  */

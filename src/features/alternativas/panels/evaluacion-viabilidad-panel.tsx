@@ -110,8 +110,8 @@ export function EvaluacionViabilidadPanel({
     return (
       <PanelShell
         entryKey={entryKey}
-        crumbs={[{ label: "Banco de Alternativas MGA" }]}
-        kicker="Evaluación Pericial IA · MGA DNP"
+        crumbs={[{ label: "Banco de Alternativas de Solución" }]}
+        kicker="Evaluación Pericial IA de Viabilidad"
         title="Alternativa No Encontrada"
         subtitle="No se encontró la iniciativa seleccionada en el banco distrital."
         onClose={closeTop}
@@ -128,7 +128,7 @@ export function EvaluacionViabilidadPanel({
     <PanelShell
       entryKey={entryKey}
       crumbs={[
-        { label: "Banco de Alternativas MGA" },
+        { label: "Banco de Alternativas de Solución" },
         { label: alternativa.codigo },
       ]}
       kicker="Agentes Multi-IA · AgenteJuridico & AgenteFiscal"
@@ -156,7 +156,7 @@ export function EvaluacionViabilidadPanel({
             {/* Veredicto Consolidado */}
             <div className="flex flex-col items-start sm:items-end gap-1">
               <span className="text-[11px] font-semibold text-text-muted">
-                Veredicto Consolidado MGA
+                Veredicto Consolidado de Viabilidad
               </span>
               {cargando ? (
                 <span className="text-xs text-text-muted animate-pulse">
@@ -444,7 +444,7 @@ export function EvaluacionViabilidadPanel({
                 onClick={handleAplicarVeredicto}
               >
                 <CheckCircle2 className="h-3.5 w-3.5" />
-                <span>Aplicar Veredicto MGA</span>
+                <span>Aplicar Veredicto de Viabilidad</span>
               </Button>
             )}
           </div>

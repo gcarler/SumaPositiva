@@ -90,7 +90,7 @@ export const CAUSALES_DESCARTE_INFO: Record<
   },
   DUPLICIDAD_PROGRAMATICA: {
     label: "Duplicidad Programática",
-    norma: "Metodología General Ajustada (MGA) y Principio de Eficiencia Administrativa (Ley 489/98)",
+    norma: "Estructuración Metodológica de Proyectos y Principio de Eficiencia Administrativa (Ley 489/98)",
     canalSugerido: "Programa Distrital en ejecución correspondiente",
     descripcion: "El objeto y población objetivo de la iniciativa ya se encuentra cubierto por un programa o compromiso vigente del Distrito.",
   },
@@ -102,7 +102,7 @@ export const CAUSALES_DESCARTE_INFO: Record<
   },
   tecnica: {
     label: "Inconsistencia Técnica / Metodológica",
-    norma: "Metodología General Ajustada (MGA) y Lineamientos DNP",
+    norma: "Estructuración Metodológica de Proyectos y Lineamientos Técnicos Distritales",
     canalSugerido: "Mesa Técnica de Co-diseño Institucional",
     descripcion: "La propuesta presenta inconsistencias metodológicas o de viabilidad técnica que impiden su adopción directa.",
   },

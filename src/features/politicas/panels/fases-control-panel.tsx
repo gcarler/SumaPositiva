@@ -26,9 +26,9 @@ export function FasesControlPanel({ entryKey }: { entryKey: string }) {
   return (
     <PanelShell
       entryKey={entryKey}
-      title="Centro de Control de Fases DNP"
+      title="Centro de Control de Fases de Política"
       subtitle="Interruptor maestro del ciclo metodológico y participación ciudadana"
-      crumbs={[{ label: "Administración" }, { label: "Fases DNP" }]}
+      crumbs={[{ label: "Administración" }, { label: "Fases de la Política" }]}
       onClose={closeTop}
       onCloseToKey={closeTop}
     >
@@ -36,7 +36,7 @@ export function FasesControlPanel({ entryKey }: { entryKey: string }) {
         <div className="p-3.5 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] flex items-start gap-3">
           <Sparkles className="size-5 text-[var(--ember)] shrink-0 mt-0.5" />
           <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
-            Conforme a la metodología DNP y la Ley 1757 de 2015, la apertura de
+            Conforme al ciclo de formulación de política pública y la Ley 1757 de 2015, la apertura de
             cada fase habilita la captación deliberativa multicanal. El interruptor
             maestro controla la recepción de aportes y formularios web en tiempo
             real. Las operaciones requieren rol de Autoridad Distrital.

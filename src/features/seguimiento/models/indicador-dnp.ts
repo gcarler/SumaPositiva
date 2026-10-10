@@ -1,6 +1,6 @@
 /**
- * POLIS — Modelos de Datos del Tablero SINERGIA DNP y Cadena de Valor
- * Metodología del Departamento Nacional de Planeación (DNP) / CONPES / MIPG
+ * POLIS — Modelos de Datos del Tablero de Cadena de Valor y Seguimiento
+ * Metodología de Cadena de Valor y Gestión por Resultados / MIPG
  * Cartagena de Indias 2026–2036.
  */
 
@@ -63,7 +63,7 @@ export interface MedicionIndicadorRespuesta extends MedicionIndicadorInput {
 }
 
 /**
- * Calcula el avance porcentual según la metodología oficial DNP / SINERGIA:
+ * Calcula el avance porcentual según la metodología técnica de seguimiento y gestión por resultados:
  * - Ascendente (mayor es mejor): ((valorActual - lineaBase) / (meta - lineaBase)) * 100
  * - Descendente (menor es mejor, ej. reducción de homicidios): ((lineaBase - valorActual) / (lineaBase - meta)) * 100
  */

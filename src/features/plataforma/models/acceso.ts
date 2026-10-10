@@ -66,13 +66,13 @@ export const MODULOS = [
     id: "diagnostico",
     ruta: "/plataforma/diagnostico",
     titulo: "Diagnóstico",
-    descripcion: "Línea base cuantitativa, brechas por dimensión e indicadores oficiales DNP.",
+    descripcion: "Línea base cuantitativa, brechas por dimensión e indicadores oficiales distritales.",
   },
   {
     id: "alternativas",
     ruta: "/plataforma/alternativas",
     titulo: "Alternativas",
-    descripcion: "Banco de proyectos y alternativas de solución formuladas bajo metodología MGA/DNP.",
+    descripcion: "Banco de proyectos e iniciativas de solución técnica estructuradas para el Distrito.",
   },
   {
     id: "seguimiento",

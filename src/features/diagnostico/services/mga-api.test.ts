@@ -15,8 +15,8 @@ import {
 } from "./mga-api";
 import type { EntradaDiagnostico } from "../models/mga";
 
-describe("Diagnóstico MGA y Agente IA DNP", () => {
-  describe("Normalización de estructuras MGA", () => {
+describe("Diagnóstico Territorial y Agente IA", () => {
+  describe("Normalización de estructuras causales", () => {
     test("normalizarNodo procesa un nodo plano y sus hijos recursivamente", () => {
       const raw = {
         id: "nodo-1",
@@ -124,14 +124,14 @@ describe("Diagnóstico MGA y Agente IA DNP", () => {
     });
   });
 
-  describe("Validador sintáctico y motor causal DNP", () => {
+  describe("Validador sintáctico y motor causal metodológico", () => {
     test("detecta alerta metodológica de solución disfrazada (falta de / construir)", () => {
       const analisis = validarSintaxisLocal(
         "Falta de un CAI móvil en el sector turístico",
         "PROBLEMA_CENTRAL"
       );
       expect(analisis.cumple_sintaxis).toBe(false);
-      expect(analisis.observacion_metodologica).toContain("ALERTA DNP");
+      expect(analisis.observacion_metodologica).toContain("ALERTA METODOLÓGICA");
       expect(analisis.observacion_metodologica).toContain("solución disfrazada");
     });
 
@@ -141,7 +141,7 @@ describe("Diagnóstico MGA y Agente IA DNP", () => {
         "CAUSA_DIRECTA"
       );
       expect(analisis.cumple_sintaxis).toBe(true);
-      expect(analisis.observacion_metodologica).toContain("Cumple el estándar DNP");
+      expect(analisis.observacion_metodologica).toContain("Cumple el estándar metodológico");
     });
 
     test("valida objetivos formulados con verbos en infinitivo", () => {
@@ -150,10 +150,10 @@ describe("Diagnóstico MGA y Agente IA DNP", () => {
         "OBJETIVO_CENTRAL"
       );
       expect(analisis.cumple_sintaxis).toBe(true);
-      expect(analisis.observacion_metodologica).toContain("Cumple directriz DNP");
+      expect(analisis.observacion_metodologica).toContain("Cumple directriz metodológica");
     });
 
-    test("genera diagnóstico determinista completo bajo directrices DNP", () => {
+    test("genera diagnóstico determinista completo bajo directrices metodológicas", () => {
       const entrada: EntradaDiagnostico = {
         politica_id: "pol-escnna-01",
         titulo: "Prevención de ESCNNA Centro Histórico",
@@ -182,7 +182,7 @@ describe("Diagnóstico MGA y Agente IA DNP", () => {
       expect(resultado.objetivo_central_derivado).toContain("Reducir");
       expect(resultado.analisis_sintaxis.length).toBe(6);
       expect(resultado.recomendaciones_dnp.length).toBeGreaterThan(0);
-      expect(resultado.resumen_ejecutivo).toContain("Concepto Pericial DNP");
+      expect(resultado.resumen_ejecutivo).toContain("Concepto Pericial Metodológico");
     });
 
     test("evaluarDiagnosticoIA responde con estructura de dictamen pericial", async () => {
@@ -211,7 +211,7 @@ describe("Diagnóstico MGA y Agente IA DNP", () => {
     });
   });
 
-  describe("Mutaciones y Conversión Canónica DNP del Árbol MGA (GAP-05)", () => {
+  describe("Mutaciones y Conversión Canónica del Árbol Causal (GAP-05)", () => {
     const originalFetch = globalThis.fetch;
 
     afterEach(() => {

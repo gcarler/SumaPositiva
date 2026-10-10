@@ -79,10 +79,10 @@ export function MedicionEditorPanel({
   return (
     <PanelShell
       entryKey={entryKey}
-      crumbs={[{ label: "Línea Base DNP" }]}
-      kicker="Seguimiento Cuantitativo · Metodología DNP / MGA"
+      crumbs={[{ label: "Línea Base de Diagnóstico" }]}
+      kicker="Seguimiento Cuantitativo · Indicadores de Política"
       title="Registrar Medición de Línea Base"
-      subtitle={`${codigoIndicador ?? "IND"} · ${nombreIndicador ?? "Indicador DNP"}`}
+      subtitle={`${codigoIndicador ?? "IND"} · ${nombreIndicador ?? "Indicador"}`}
       onClose={closeTop}
       onCloseToKey={closeTop}
     >

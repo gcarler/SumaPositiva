@@ -111,7 +111,7 @@ export function DiagnosticoView() {
     }
 
     const cabeceras = [
-      "Código DNP",
+      "Código de Indicador",
       "Nombre Indicador",
       "Tipo Indicador",
       "Definición",
@@ -193,9 +193,9 @@ export function DiagnosticoView() {
         <PageHeader
           eyebrow={
             modoVista === "linea_base"
-              ? "Línea Base Cuantitativa · Metodología DNP / MGA"
+              ? "Línea Base Cuantitativa · Indicadores de Política"
               : modoVista === "arbol_mga"
-                ? "Metodología General Ajustada (MGA) · Validación Causal DNP"
+                ? "Estructura Causal y Diagnóstico Territorial"
                 : "Geodiagnóstico Territorial · Cartagena de Indias"
           }
           title={
@@ -209,7 +209,7 @@ export function DiagnosticoView() {
             modoVista === "linea_base"
               ? "Matriz oficial de indicadores de resultado, producto e insumo para el seguimiento técnico y auditoría pericial a las 7 dimensiones de la política pública."
               : modoVista === "arbol_mga"
-                ? "Estructura causal de problemas, causas, efectos y formulación de objetivos con validación del Agente IA DNP articulado al Plan de Desarrollo Distrital."
+                ? "Estructura causal de problemas, causas, efectos y formulación de objetivos con validación de Agente IA articulado al Plan de Desarrollo Distrital."
                 : "Caracterización territorial multidimensional, equipamientos, alertas tempranas SAT y enfoque étnico Ley 70 de 1993 en las 3 localidades distritales."
           }
         />
@@ -272,7 +272,7 @@ export function DiagnosticoView() {
         )}
       </div>
 
-      {/* Conmutador de Modos: Línea Base vs Árbol MGA vs Geodiagnóstico */}
+      {/* Conmutador de Modos: Línea Base vs Árbol Causal vs Geodiagnóstico */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-xl border border-border bg-surface-1 p-2">
         <div className="inline-flex flex-wrap rounded-lg border border-border bg-surface-2 p-1 gap-1">
           <Button
@@ -299,7 +299,7 @@ export function DiagnosticoView() {
             }`}
           >
             <GitBranch className="size-3.5 text-ember" aria-hidden="true" />
-            <span>Árbol de Problemas MGA</span>
+            <span>Árbol Causal y Objetivos</span>
           </Button>
           <Button
             variant={modoVista === "geodiagnostico" ? "default" : "ghost"}
@@ -318,9 +318,9 @@ export function DiagnosticoView() {
 
         <div className="text-2xs text-text-tertiary px-2">
           {modoVista === "linea_base" &&
-            "Metodología DNP: Indicadores cuantitativos de resultado, producto e insumo"}
+            "Indicadores cuantitativos de resultado, producto e insumo para el seguimiento distrital"}
           {modoVista === "arbol_mga" &&
-            "Metodología General Ajustada (MGA): Estructura causal y validación IA DNP"}
+            "Estructura causal y validación metodológica con Agente IA"}
           {modoVista === "geodiagnostico" &&
             "Geodiagnóstico: Fichas de vulnerabilidad UCGs, corregimientos e islas (Ley 70/93)"}
         </div>
@@ -336,7 +336,7 @@ export function DiagnosticoView() {
             <div className="flex items-center justify-between gap-2 border-b border-border pb-2.5">
               <div className="flex items-center gap-2 text-xs font-semibold text-text-primary">
                 <Filter className="size-3.5 text-ember" aria-hidden="true" />
-                <span>Filtros y Búsqueda en Línea Base DNP</span>
+                <span>Filtros y Búsqueda en Línea Base</span>
               </div>
               {hayFiltrosActivos && (
                 <Button
@@ -360,7 +360,7 @@ export function DiagnosticoView() {
                 />
                 <Input
                   type="search"
-                  placeholder="Buscar por código DNP, nombre de indicador, fuente o responsable..."
+                  placeholder="Buscar por código, nombre de indicador, fuente o responsable..."
                   value={busqueda}
                   onChange={(e) => setBusqueda(e.target.value)}
                   className="pl-8 text-xs"

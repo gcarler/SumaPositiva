@@ -17,10 +17,10 @@ export const HERO_IMAGE_OPTIONS: HeroImageOption[] = [
     id: "marco-logico",
     titulo: "Matriz de Marco Lógico y Proyectos",
     descripcion:
-      "Mesa comunitaria con líderes y jóvenes formulando proyectos territoriales con la matriz MGA/DNP.",
+      "Mesa comunitaria con líderes y jóvenes formulando proyectos territoriales con la matriz de relatoría técnica.",
     archivo: "/images/hero/hero-marco-logico.webp",
     thumbnail: "/images/hero/hero-marco-logico-thumb.webp",
-    enfoque: "Metodología DNP & Comunitaria",
+    enfoque: "Metodología Participativa & Comunitaria",
   },
   {
     id: "asamblea-claustro",

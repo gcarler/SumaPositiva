@@ -60,7 +60,7 @@ export function SeguimientoView() {
   const sesion = useSesionStore((s) => s.sesion);
   const puedeEditarUsuario = puedeEditar(sesion, "seguimiento");
 
-  // Gating de Fases DNP (AUD-05): en fase preparatoria solo los admins pueden modificar
+  // Gating de Fases de Política (AUD-05): en fase preparatoria solo los admins pueden modificar
   const { data: fases } = useFases();
   const fase3 = fases?.find((f) => f.codigo === "FASE_3_PLAN_ACCION");
   const fase3Activa = fase3?.estado === "activa";
@@ -116,7 +116,7 @@ export function SeguimientoView() {
         "Descripción",
         "Entidad Responsable",
         "Línea Estratégica",
-        "Alternativa MGA",
+        "Alternativa de Solución",
         "Indicador Asociado",
         "Meta Cuatrienal",
         "Unidad de Medida",
@@ -191,7 +191,7 @@ export function SeguimientoView() {
             tabActiva === "matriz_compromisos"
               ? "Matriz de Compromisos Institucionales"
               : tabActiva === "cadena_valor"
-              ? "Cadena de Valor DNP / SINERGIA"
+              ? "Cadena de Valor y Seguimiento"
               : "Rendición de Cuentas y Devolución Ciudadana"
           }
           description={
@@ -309,7 +309,7 @@ export function SeguimientoView() {
               className="gap-2 text-xs data-[state=active]:bg-surface-1 data-[state=active]:text-text-primary"
             >
               <Layers className="h-3.5 w-3.5 text-ember" />
-              <span>Cadena de Valor SINERGIA (DNP)</span>
+              <span>Cadena de Valor y Seguimiento</span>
             </TabsTrigger>
             <TabsTrigger
               value="rendicion_cuentas"
@@ -335,8 +335,8 @@ export function SeguimientoView() {
                 <Input
                   value={filtros.busqueda}
                   onChange={(e) => setFiltros({ busqueda: e.target.value })}
-                  placeholder="Buscar por código, nombre, indicador o alternativa MGA..."
-                  aria-label="Buscar compromisos por código, nombre, indicador o alternativa MGA"
+                  placeholder="Buscar por código, nombre, indicador o alternativa de solución..."
+                  aria-label="Buscar compromisos por código, nombre, indicador o alternativa de solución"
                   className="pl-9 text-xs"
                 />
               </div>
