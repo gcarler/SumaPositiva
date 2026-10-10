@@ -173,7 +173,7 @@ export const DEPENDENCIAS_CARTAGENA_2026: DependenciaDistrital[] = [
       "economica",
       "ambiental"
     ],
-    "competenciaSeguridadHumana": "Dirección estratégica distrital, adopción de políticas CONPES, ordenamiento territorial (POT), focalización Sisbén y seguimiento del PDD.",
+    "competenciaSeguridadHumana": "Dirección estratégica distrital, adopción de políticas públicas distritales, ordenamiento territorial (POT), focalización Sisbén y seguimiento del PDD.",
     "misionPlanAccion2026": "Orientar la planificación territorial, el seguimiento al PDD \"Cartagena Ciudad de Derechos\" y la focalización social transparente.",
     "avancePlanAccion2026": 46.8,
     "presupuesto2026Cop": "2.100 Millones",
@@ -184,7 +184,7 @@ export const DEPENDENCIAS_CARTAGENA_2026: DependenciaDistrital[] = [
     "metasPriorizadas": [
       "Adopción y reglamentación del nuevo Plan de Ordenamiento Territorial (POT)",
       "Actualización y depuración al 100% de la base Sisbén IV",
-      "6 mesas distritales CONPES de seguimiento de políticas públicas"
+      "6 mesas distritales de seguimiento de políticas públicas"
     ],
     "territoriosPrioritarios": [
       "loc-1",
@@ -208,7 +208,7 @@ export const DEPENDENCIAS_CARTAGENA_2026: DependenciaDistrital[] = [
       "ordenamiento territorial",
       "sisben",
       "politicas publicas",
-      "conpes",
+      "politica_distrital",
       "planeacion",
       "uso del suelo",
       "estratificacion",

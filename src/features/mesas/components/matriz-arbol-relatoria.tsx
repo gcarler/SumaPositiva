@@ -599,7 +599,7 @@ export function MatrizArbolRelatoria({
         <div className="flex items-center gap-1.5 text-xs text-[var(--text-secondary)]">
           <span className="font-semibold text-[var(--text-primary)]">Analítica y Datos:</span>
           <span className="text-[11px] text-[var(--text-tertiary)]">
-            Estructuración para tabulación CONPES y cruce territorial
+            Estructuración para relatoría técnica y cruce territorial
           </span>
         </div>
         <div className="flex flex-wrap items-center gap-2">

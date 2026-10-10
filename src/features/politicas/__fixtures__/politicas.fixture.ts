@@ -434,7 +434,7 @@ export const POLITICAS_MOCK: PoliticaPublica[] = [
         id: "fase-001-4",
         politicaId: "pol-001",
         orden: 4,
-        nombre: "Fase 4: Validación y Adopción del Documento CONPES Distrital",
+        nombre: "Fase 4: Validación y Adopción del Documento de Política Pública Distrital",
         tipo: "validacion",
         descripcion:
           "Audiencia pública distrital de rendición pericial y consulta final sobre el documento de política pública articulado a la formulación metodológica distrital y Sentencia C-150 de 2015.",

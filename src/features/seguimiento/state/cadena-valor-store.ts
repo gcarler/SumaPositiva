@@ -65,7 +65,7 @@ export const useCadenaValorStore = create<CadenaValorStoreState>((set, get) => (
         error:
           err instanceof Error
             ? err.message
-            : "Error al cargar la Cadena de Valor SINERGIA",
+            : "Error al cargar la Cadena de Valor y Seguimiento",
         cargando: false,
       });
     }

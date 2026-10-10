@@ -259,8 +259,8 @@ export function SeguimientoView() {
             </span>
             <p className="text-text-secondary leading-relaxed pt-0.5">
               {esAdmin
-                ? "La Fase 3 (Plan de Acción y Seguimiento PAS / SINERGIA) se encuentra en alistamiento. Como autoridad o administrador distrital, cuenta con permisos institucionales de configuración y cargue de metas previo a la apertura pública."
-                : "La Fase 3 (Plan de Acción y Seguimiento PAS / SINERGIA) se encuentra actualmente en etapa preparatoria. La creación y edición de compromisos institucionales está reservada a la administración distrital hasta la activación oficial de la fase."}
+                ? "La Fase 3 (Plan de Acción y Seguimiento PAS) se encuentra en alistamiento. Como autoridad o administrador distrital, cuenta con permisos institucionales de configuración y cargue de metas previo a la apertura pública."
+                : "La Fase 3 (Plan de Acción y Seguimiento PAS) se encuentra actualmente en etapa preparatoria. La creación y edición de compromisos institucionales está reservada a la administración distrital hasta la activación oficial de la fase."}
             </p>
           </div>
         </div>
@@ -421,7 +421,7 @@ export function SeguimientoView() {
           />
         </TabsContent>
 
-        {/* Tab 2: Cadena de Valor SINERGIA */}
+        {/* Tab 2: Cadena de Valor y Seguimiento */}
         <TabsContent value="cadena_valor" className="space-y-6 outline-none">
           <CadenaValorTab puedeEditar={puedeEditarEfectivo} />
         </TabsContent>

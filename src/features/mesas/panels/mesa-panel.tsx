@@ -1644,7 +1644,7 @@ export function MesaPanel({
                 }}
                 rows={6}
                 aria-label="Informe y relatoría de la mesa"
-                placeholder="Registra aquí el informe o relatoría final de la mesa: síntesis de discusiones, hallazgos comunitarios, compromisos adquiridos y recomendaciones para el CONPES distrital…"
+                placeholder="Registra aquí el informe o relatoría final de la mesa: síntesis de discusiones, hallazgos comunitarios, compromisos adquiridos y recomendaciones para la adopción de la política pública distrital…"
                 className="min-h-[140px] w-full resize-y rounded-lg border border-[var(--border)] bg-[var(--surface-1)] px-4 py-3 font-mono text-xs leading-relaxed text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] transition-colors focus:border-[var(--ember)]"
               />
               <p className="flex items-start gap-2 text-[11px] leading-relaxed text-[var(--text-tertiary)]">

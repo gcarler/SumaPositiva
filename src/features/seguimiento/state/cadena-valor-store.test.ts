@@ -85,7 +85,7 @@ describe("Tablero de Cadena de Valor y Seguimiento (Hito PAS-2 / AUD-02)", () =>
       expect(avance4).toBe(50);
     });
 
-    test("asigna semáforos cromáticos conforme a rangos SINERGIA", () => {
+    test("asigna semáforos cromáticos conforme a rangos de semaforización oficial", () => {
       const verde = obtenerSemaforoAvance(85);
       expect(verde.nivel).toBe("verde");
       expect(verde.badgeVariant).toBe("success");
