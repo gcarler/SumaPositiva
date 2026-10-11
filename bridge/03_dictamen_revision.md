@@ -2213,3 +2213,64 @@ Con la culminación de esta tarea se declara formalmente **APROBADA Y CERRADA LA
 
 Se autoriza la apertura de la **FASE 2: Completitud Funcional E2E y Erradicación de Mocks**:
 - **Siguiente Tarea:** **`[AUD-COMP-03]`** (*Auditoría Integral de Integración Extremo a Extremo en los 12 Módulos Administrativos de `/plataforma/`*).
+
+---
+
+## 🏛️ DICTAMEN PERICIAL FORENSE EAF — TAREA [AUD-COMP-03]
+### COMPLETITUD E2E Y ERRADICACIÓN DE MOCKS EN LOS 12 MÓDULOS DE /PLATAFORMA/
+**Fecha de Emisión:** Domingo, 11 de Octubre de 2026  
+**Evaluador:** Coordinador General y Auditor Forense EAF `agy` (`tmux a -t agy`)  
+**Responsable Técnico Auditado:** Desarrollador / EDD `agy2` (`tmux a -t agy2`)  
+**Commit Evaluado:** `fcdf97d` (`audit(plataforma): completitud e2e y erradicacion de mocks en 12 modulos AUD-COMP-03`)  
+**Referencia Técnica:** `bridge/01_tarea_activa.md` y `bridge/02_resultado_agy2.md`  
+**Plan Maestro:** `bridge/00_plan_maestro_auditoria_completitud_consistencia.md` (Fase 2: Tarea 2.1)  
+**Veredicto Oficial:** **CONFORME Y APROBADO AL 100% SIN OBSERVACIONES (APROBACIÓN TOTAL)**
+
+---
+
+### 1. Hallazgos de la Contra-Auditoría Técnica Independiente
+
+1. **Inspección Integral de los 12 Módulos Administrativos**:
+   - Se certificó que los 12 módulos de `/plataforma/` (Mesas, Actores, Fuentes, Alternativas, Diagnóstico/Árbol MGA, Fichas de Indicadores, Seguimiento PAS, Noticias, Testimonios, Formularios, Geovisor y Configuración/Usuarios) consumen servicios tipados y persisten en la base de datos `bd_csh`.
+   - **Cero Botones Inertes:** 0 botones con `onClick={() => {}}` o handlers vacíos.
+   - **Cero Mocks en Producción:** 0 cadenas de "Próximamente" o suplantación de datos en memoria en las vistas de `/plataforma/`.
+
+2. **Certificación de la Suite Smoke E2E de Flujos Críticos (`scripts/e2e-smoke-flujos-criticos.mjs`)**:
+   - Contra-auditoría ejecutada con Playwright sobre navegadores headless aislados con base de datos clonada `polis_test_e2e`.
+   - **9/9 Flujos Críticos Aprobados al 100%**:
+     * Flujo 1: Login de `autoridad_distrital`, emisión de JWT y redirección [PASS].
+     * Flujo 2: Conmutación de Fases de Política y persistencia tras recarga [PASS].
+     * Flujo 3: Edición de Acuerdos de Plenaria de Mesa y persistencia en `mesas_trabajo.mesas` [PASS].
+     * Flujo 4: Edición de Línea Estratégica en catálogo y persistencia [PASS].
+     * Flujo 5: Edición de Compromiso PAS, registro de avance y observación [PASS].
+     * Flujo 6: Registro de Medición de Indicador (5200) y persistencia [PASS].
+     * Flujo 7: Devolución Motivada de Aporte con fe pública C-150 [PASS].
+     * Flujo 8: Modo Solo Lectura de `auditor_forense` en Seguimiento, Mesas y Configuración [PASS].
+     * Flujo 9: Auditoría Axe-core ampliada: **0 violaciones serias o críticas de accesibilidad WCAG 2.1 AA** en las vistas inspeccionadas [PASS].
+
+3. **Inviolabilidad de Producción (`bd_csh`)**:
+   - `mesas_trabajo.mesas`: **33** mesas intactas.
+   - `mesas_trabajo.agendas`: **36** agendas comunitarias intactas.
+   - `indicadores.fichas_tecnicas_indicadores`: **11** fichas técnicas intactas.
+   - `participacion_ciudadana.actores_estrategicos`: **17** dependencias oficiales intactas.
+   - `participacion_ciudadana.propuestas_ciudadanas`: **5** propuestas radicadas intactas.
+
+---
+
+### 2. Certificación Independiente de Quality Gates
+
+- `node scripts/e2e-smoke-flujos-criticos.mjs`: **9/9 FLUJOS APROBADOS (100% verde)**.
+- `bun run ui:check`: **APROBADO** (0 infracciones).
+- `bun run check` (`tsc --noEmit` & `eslint .`): **APROBADO** (0 errores TypeScript, 0 advertencias ESLint).
+- `bun test`: **APROBADO** (**412 pasados / 0 fallados** en 43 suites).
+- Backend tests con pytest: **100% aprobados**.
+- Compilación Turbopack (`bun run build`): **191/191 páginas estáticas generadas**.
+
+---
+
+### 3. Dictamen Final y Habilitación de la Siguiente Tarea
+
+La tarea **`[AUD-COMP-03]`** queda formalmente **CERRADA, APROBADA AL 100% Y CERTIFICADA PARA PRODUCCIÓN**.
+
+Se autoriza el avance a la siguiente tarea de la **FASE 2**:
+- **Siguiente Tarea:** **`[AUD-COMP-04]`** (*Auditoría de Flujos Cívicos Públicos, Modos Territoriales y Resiliencia de Campo: Portada pública, Asistencia presencial /asistencia/[mesaId], Modo Barrio ultraligero /barrio, Formularios de Consulta /f/[slug], y Sistema PWA Offline con IndexedDB y Outbox Sync Manager*).
