@@ -6,11 +6,18 @@ import "./globals.css";
 import { PanelHost } from "@/app/_components/panel-host";
 import { SesionSync } from "@/app/_composition/sesion-sync";
 import { QueryProvider } from "@/app/_composition/query-provider";
+import { RegisterServiceWorker } from "@/shared/pwa/register-sw";
 
 export const metadata: Metadata = {
   title: "POLIS — Política Pública de Seguridad Humana Integral de Cartagena",
   description:
     "Plataforma distrital de participación ciudadana para la construcción y rendición de cuentas de la Política Pública de Seguridad Humana Integral de Cartagena de Indias.",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "POLIS Cartagena",
+  },
   keywords: [
     "seguridad humana integral",
     "Cartagena de Indias",
@@ -41,6 +48,7 @@ export default function RootLayout({
         className="antialiased bg-background text-foreground font-sans"
       >
         <QueryProvider>
+          <RegisterServiceWorker />
           <SesionSync />
           <ThemeProvider
             attribute="class"

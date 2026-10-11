@@ -51,9 +51,16 @@ async def test_apoyos_unicos_flujo(database_url: str):
         assert resp_apoyo1.status_code == 200
         assert resp_apoyo1.json()["apoyos_contador"] == 1
 
-        # 4. Segundo apoyo por S1 (Debe fallar)
+        # 4. Segundo apoyo por S1 (Toggle / Retiro cívico según FEAT-APOYOS-VOTO-01)
         resp_apoyo1_dup = client.post(f"/api/v1/aportes/{aporte_id}/apoyar", headers=headers_s1)
-        assert resp_apoyo1_dup.status_code == 409
+        assert resp_apoyo1_dup.status_code == 200
+        assert resp_apoyo1_dup.json()["apoyado"] is False
+        assert resp_apoyo1_dup.json()["apoyos_contador"] == 0
+
+        # Reactivar apoyo de S1
+        resp_apoyo1_react = client.post(f"/api/v1/aportes/{aporte_id}/apoyar", headers=headers_s1)
+        assert resp_apoyo1_react.status_code == 200
+        assert resp_apoyo1_react.json()["apoyos_contador"] == 1
 
         # 5. Apoyo por S2 (Debe pasar)
         resp_apoyo2 = client.post(f"/api/v1/aportes/{aporte_id}/apoyar", headers=headers_s2)
@@ -88,11 +95,13 @@ async def test_apoyos_unicos_flujo(database_url: str):
         assert resp_apoyo3.status_code == 200
         assert resp_apoyo3.json()["apoyos_contador"] == 3
 
-        # 5.2 Segundo apoyo por el mismo usuario autenticado -> 409 Conflict
+        # 5.2 Segundo apoyo por el mismo usuario autenticado -> Toggle / Retira apoyo
         resp_apoyo3_dup = client.post(
             f"/api/v1/aportes/{aporte_id}/apoyar", headers=headers_usuario
         )
-        assert resp_apoyo3_dup.status_code == 409
+        assert resp_apoyo3_dup.status_code == 200
+        assert resp_apoyo3_dup.json()["apoyado"] is False
+        assert resp_apoyo3_dup.json()["apoyos_contador"] == 2
 
         # 6. Intento directo en BD (Duplicado S2)
         engine = create_async_engine(database_url)

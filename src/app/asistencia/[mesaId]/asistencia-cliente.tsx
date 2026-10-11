@@ -20,6 +20,7 @@ import {
   Compass,
 } from "lucide-react";
 import { Button } from "@/shared/ui/button";
+import { guardarPendiente, sincronizarTodo } from "@/shared/offline";
 import { Input } from "@/shared/ui/input";
 import { Label } from "@/shared/ui/label";
 import { Checkbox } from "@/shared/ui/checkbox";
@@ -222,6 +223,16 @@ export function AsistenciaCliente({ mesaId }: { mesaId: string }) {
       };
 
       const creado = await registrarAsistente(input);
+      if (creado.pendienteSincronizacion || (typeof navigator !== "undefined" && !navigator.onLine)) {
+        await guardarPendiente("asistencias_pendientes", {
+          id: creado.id,
+          mesaId,
+          datos: input as unknown as Record<string, unknown>,
+          creadoEn: new Date().toISOString(),
+          intentos: 0,
+          estado: "pendiente",
+        });
+      }
       setRegistroExitoso(creado);
     } catch {
       setErrorValidacion("Ocurrió un error al guardar el registro. Inténtalo de nuevo.");
@@ -234,12 +245,13 @@ export function AsistenciaCliente({ mesaId }: { mesaId: string }) {
     setSincronizando(true);
     setMensajeSincronizacion(null);
     try {
+      await sincronizarTodo();
       const res = await sincronizarPendientes(mesaId);
       if (res.exitosos > 0) {
         setMensajeSincronizacion(`Se sincronizaron exitosamente ${res.exitosos} registro(s) con PostgreSQL.`);
       } else if (res.fallidos > 0) {
         setMensajeSincronizacion(
-          "No fue posible conectar con el servidor central. Los datos continúan protegidos localmente."
+          "No fue posible conectar con el servidor central. Los datos continúan protegidos localmente en IndexedDB."
         );
       }
     } catch {

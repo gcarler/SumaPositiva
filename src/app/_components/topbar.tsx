@@ -12,6 +12,7 @@ import type { VistaApp } from "@/core/navigation/navigation-store";
 import { usePanels } from "@/core/panels/panel-store";
 import { useSesionStore } from "@/features/sesion/state/session-store";
 import { SesionAvatar } from "@/features/sesion/components/sesion-avatar";
+import { OfflineStatusBadge } from "@/shared/offline";
 
 /**
  * Topbar minimalista — wordmark, navegación de vistas, sesión y toggle de tema.
@@ -170,6 +171,7 @@ export function Topbar() {
 
         {/* Acciones */}
         <div className="flex flex-wrap items-center justify-end gap-2">
+          <OfflineStatusBadge />
           <Button
             asChild
             variant="outline"

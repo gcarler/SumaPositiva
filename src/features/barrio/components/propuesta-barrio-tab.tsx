@@ -14,6 +14,7 @@ import { Input } from "@/shared/ui/input";
 import { Textarea } from "@/shared/ui/textarea";
 import { Badge } from "@/shared/ui/badge";
 import { Label } from "@/shared/ui/label";
+import { guardarPendiente } from "@/shared/offline";
 import {
   Send,
   CheckCircle2,
@@ -73,26 +74,62 @@ export function PropuestaBarrioTab({ barrio }: PropuestaBarrioTabProps) {
       return;
     }
 
+    const payload = {
+      linea_id: LINEA_ID_CANONICA,
+      titulo: titulo.trim(),
+      descripcion: `[Barrio: ${barrio.nombre} | Eje: ${tematica}] ${descripcion.trim()}`,
+      tipo_aporte: "propuesta" as const,
+      autor_nombre: esAnonimo
+        ? `Vecino(a) de ${barrio.nombre}`
+        : autorNombre.trim() || `Líder de ${barrio.nombre}`,
+      es_anonimo: esAnonimo,
+      metadatos: {
+        canal: "modo_barrio",
+        barrio_id: barrio.id,
+        barrio_nombre: barrio.nombre,
+        localidad: barrio.localidad,
+        tematica,
+        telefono: esAnonimo ? null : telefono.trim(),
+      },
+    };
+
     setEnviando(true);
+
+    const isOffline = typeof navigator !== "undefined" && !navigator.onLine;
+    if (isOffline) {
+      const sufijo = Math.random().toString(36).substring(2, 6).toUpperCase();
+      const codigoProvisional = `POL-2026-OFFLINE-${sufijo}`;
+      const id = typeof crypto !== "undefined" && crypto.randomUUID ? crypto.randomUUID() : `offline-${Date.now()}`;
+      try {
+        await guardarPendiente("propuestas_pendientes", {
+          id,
+          codigoProvisional,
+          payload,
+          creadoEn: new Date().toISOString(),
+          intentos: 0,
+          estado: "pendiente",
+        });
+        setRadicadoExitoso({
+          codigo: codigoProvisional,
+          titulo: payload.titulo,
+        });
+        setTitulo("");
+        setDescripcion("");
+        setAutorNombre("");
+        setTelefono("");
+        toast.warning(
+          "Sin conexión: Propuesta protegida localmente con radicado provisional. Se sincronizará automáticamente al recuperar red."
+        );
+      } catch {
+        toast.error("Error al almacenar la propuesta en el dispositivo.");
+      } finally {
+        setEnviando(false);
+      }
+      return;
+    }
+
     try {
-      const res = await crearAporteMutate({
-        linea_id: LINEA_ID_CANONICA,
-        titulo: titulo.trim(),
-        descripcion: `[Barrio: ${barrio.nombre} | Eje: ${tematica}] ${descripcion.trim()}`,
-        tipo_aporte: "propuesta",
-        autor_nombre: esAnonimo
-          ? `Vecino(a) de ${barrio.nombre}`
-          : autorNombre.trim() || `Líder de ${barrio.nombre}`,
-        es_anonimo: esAnonimo,
-        metadatos: {
-          canal: "modo_barrio",
-          barrio_id: barrio.id,
-          barrio_nombre: barrio.nombre,
-          localidad: barrio.localidad,
-          tematica,
-          telefono: esAnonimo ? null : telefono.trim(),
-        },
-      });
+      const res = await crearAporteMutate(payload);
 
       setRadicadoExitoso({
         codigo: res.codigo_radicado,
@@ -106,7 +143,33 @@ export function PropuestaBarrioTab({ barrio }: PropuestaBarrioTabProps) {
       setTelefono("");
       toast.success("¡Propuesta radicada exitosamente!");
     } catch {
-      toast.error("No se pudo radicar la propuesta en este momento.");
+      // Fallback ante desconexión o fallo de red en vuelo
+      const sufijo = Math.random().toString(36).substring(2, 6).toUpperCase();
+      const codigoProvisional = `POL-2026-OFFLINE-${sufijo}`;
+      const id = typeof crypto !== "undefined" && crypto.randomUUID ? crypto.randomUUID() : `offline-${Date.now()}`;
+      try {
+        await guardarPendiente("propuestas_pendientes", {
+          id,
+          codigoProvisional,
+          payload,
+          creadoEn: new Date().toISOString(),
+          intentos: 0,
+          estado: "pendiente",
+        });
+        setRadicadoExitoso({
+          codigo: codigoProvisional,
+          titulo: payload.titulo,
+        });
+        setTitulo("");
+        setDescripcion("");
+        setAutorNombre("");
+        setTelefono("");
+        toast.warning(
+          "Fallo de conexión con el servidor. Propuesta guardada en dispositivo con radicado provisional."
+        );
+      } catch {
+        toast.error("No se pudo radicar la propuesta en este momento.");
+      }
     } finally {
       setEnviando(false);
     }
@@ -120,7 +183,9 @@ export function PropuestaBarrioTab({ barrio }: PropuestaBarrioTabProps) {
   };
 
   const compartirWhatsApp = (codigo: string, tituloPropuesta: string) => {
-    const texto = `¡Hola vecinos de ${barrio.nombre}! Acabo de radicar la propuesta comunitaria "${tituloPropuesta}" ante la Alcaldía de Cartagena con el radicado oficial ${codigo}. ¡Apóyala en POLIS aquí: https://seguridadhumanaintegral.org/barrio!`;
+    const esOffline = codigo.includes("OFFLINE");
+    const tipo = esOffline ? "radicado provisional de campo" : "radicado oficial";
+    const texto = `¡Hola vecinos de ${barrio.nombre}! Acabo de registrar la propuesta comunitaria "${tituloPropuesta}" ante la Alcaldía de Cartagena con el ${tipo} ${codigo}. ¡Apóyala en POLIS aquí: https://seguridadhumanaintegral.org/barrio!`;
     const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(texto)}`;
     if (typeof window !== "undefined") {
       window.open(url, "_blank");
@@ -146,22 +211,35 @@ export function PropuestaBarrioTab({ barrio }: PropuestaBarrioTabProps) {
     <div className="space-y-6">
       {/* Panel de Éxito al Radicar */}
       {radicadoExitoso && (
-        <div className="rounded-xl border-2 border-[var(--success)] bg-[var(--surface-1)] p-4 shadow-sm animate-in fade-in">
-          <div className="flex items-center gap-2 text-[var(--success)]">
+        <div className={`rounded-xl border-2 p-4 shadow-sm animate-in fade-in bg-[var(--surface-1)] ${
+          radicadoExitoso.codigo.includes("OFFLINE")
+            ? "border-[var(--warning)]"
+            : "border-[var(--success)]"
+        }`}>
+          <div className={`flex items-center gap-2 ${
+            radicadoExitoso.codigo.includes("OFFLINE")
+              ? "text-[var(--warning)]"
+              : "text-[var(--success)]"
+          }`}>
             <CheckCircle2 className="size-5" />
             <h4 className="text-sm font-bold">
-              ¡Propuesta Radicada con Fe Pública!
+              {radicadoExitoso.codigo.includes("OFFLINE")
+                ? "¡Propuesta Asegurada en Modo Contingencia Local!"
+                : "¡Propuesta Radicada con Fe Pública!"}
             </h4>
           </div>
           <p className="mt-1 text-xs text-[var(--text-secondary)]">
-            Tu propuesta ha sido radicada de forma atómica en el sistema
-            distrital de Cartagena para {barrio.nombre}.
+            {radicadoExitoso.codigo.includes("OFFLINE")
+              ? `Tu propuesta para ${barrio.nombre} está guardada en la memoria segura del dispositivo y se transmitirá automáticamente a la Alcaldía Distrital al detectar señal.`
+              : `Tu propuesta ha sido radicada de forma atómica en el sistema distrital de Cartagena para ${barrio.nombre}.`}
           </p>
 
           <div className="mt-3 flex items-center justify-between rounded-lg border border-[var(--border)] bg-[var(--surface-2)] p-2.5">
             <div>
               <span className="text-[10px] uppercase tracking-wider text-[var(--text-tertiary)] block">
-                Radicado Oficial Distrital
+                {radicadoExitoso.codigo.includes("OFFLINE")
+                  ? "Radicado Provisional de Campo (IndexedDB)"
+                  : "Radicado Oficial Distrital"}
               </span>
               <span className="font-mono text-sm font-bold text-[var(--text-primary)] tracking-wide">
                 {radicadoExitoso.codigo}

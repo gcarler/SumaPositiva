@@ -1,0 +1,42 @@
+{
+  "name": "POLIS — Seguridad Humana Cartagena 2026–2036",
+  "short_name": "POLIS Cartagena",
+  "description": "Plataforma distrital de participación ciudadana y resiliencia territorial para la Política Pública de Seguridad Humana de Cartagena de Indias.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0f172a",
+  "orientation": "portrait-primary",
+  "lang": "es-CO",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/og-image.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Modo Barrio",
+      "short_name": "Barrio",
+      "description": "Vista ultraligera para celulares con bajo consumo de datos",
+      "url": "/barrio",
+      "icons": [{ "src": "/logo.svg", "sizes": "any" }]
+    },
+    {
+      "name": "Mesas de Trabajo",
+      "short_name": "Mesas",
+      "description": "Consulta de mesas y registro de asistencia comunitaria",
+      "url": "/plataforma/mesas",
+      "icons": [{ "src": "/logo.svg", "sizes": "any" }]
+    }
+  ]
+}
