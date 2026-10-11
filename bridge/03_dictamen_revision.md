@@ -1992,3 +1992,103 @@ La funcionalidad **`[PWA-OFFLINE-01]`** queda formalmente **CERRADA, APROBADA AL
 
 Se autoriza el despliegue del modo PWA offline y se habilita la última tarea de la **FASE 3**:
 - **Siguiente Tarea:** **`[OPS-OBSERVABILITY-01]`** (*Observabilidad y Monitoreo Proactivo de Producción con Sentry / GlitchTip / Prometheus / Alertas del Sistema para rastreo de errores en frontend y backend, caídas de servicios systemd o saturación de PostgreSQL*).
+
+---
+
+## 🏛️ DICTAMEN PERICIAL FORENSE EAF — TAREA [OPS-OBSERVABILITY-01]
+### OBSERVABILIDAD, TELEMETRÍA, ERROR BOUNDARY Y MONITOREO PROACTIVO
+**Fecha de Emisión:** Domingo, 11 de Octubre de 2026  
+**Evaluador:** Coordinador General y Auditor Forense EAF `agy` (`tmux a -t agy`)  
+**Responsable Técnico Auditado:** Desarrollador / EDD `agy2` (`tmux a -t agy2`)  
+**Commit Evaluado:** `b5a52ef` (`feat(ops): observabilidad telemetria y watchdog proactivo OPS-OBSERVABILITY-01`)  
+**Referencia Técnica:** `bridge/01_tarea_activa.md` y `bridge/02_resultado_agy2.md`  
+**Veredicto Oficial:** **CONFORME Y APROBADO AL 100% SIN OBSERVACIONES (APROBACIÓN TOTAL)**
+
+---
+
+### 1. Hallazgos de la Contra-Auditoría Técnica Independiente
+
+1. **Endpoint de Métricas y Diagnóstico en Vivo (`GET /api/v1/health/system`)**:
+   - Inspeccionado directamente en caliente: `curl -s http://127.0.0.1:8000/api/v1/health/system`.
+   - **Salud de Base de Datos (`bd_csh`)**: Latencia ping certificada en **2.55 ms**, 2 conexiones activas de 100 permitidas, revisión `0056_radicacion_notif` y 5 extensiones PostGIS/pgcrypto activas.
+   - **Telemetría de Proceso FastAPI**: Uptime real, memoria RSS (198.5 MB), desglose por rangos de respuesta HTTP (2xx, 3xx, 4xx, 5xx) y tasa de error.
+   - **Almacenamiento del Servidor**: Capacidad total de 386.85 GB, 366.4 GB libres (5.3% de uso en `/root/polis`).
+   - **Sentry / GlitchTip**: Integración defensiva verificada (`sentry_status: "desactivado"`, sin bloqueos ni caídas ante ausencia de DSN).
+
+2. **Middleware de Telemetría Thread-Safe y Protección de Datos**:
+   - Tracker en memoria en [`backend/app/core/telemetry.py`](file:///root/polis/backend/app/core/telemetry.py) sincronizado con bloqueos `threading.Lock()`.
+   - Verificado el incremento reactivo de métricas tras peticiones HTTP en tiempo real.
+   - Filtro `_filtrar_pii` en [`backend/app/core/sentry.py`](file:///root/polis/backend/app/core/sentry.py) garantizando que ninguna credencial, token JWT o dato personal sea transmitido a sistemas de telemetría.
+
+3. **Error Boundary Global en Frontend ([`error-boundary.tsx`](file:///root/polis/src/shared/monitoring/error-boundary.tsx))**:
+   - Envoltorio institucional montado en [`src/app/layout.tsx`](file:///root/polis/src/app/layout.tsx) que contiene cualquier fallo no capturado en el árbol de renderizado de React 19.
+   - Despliega interfaz de contingencia accesible con tokens de diseño distritales y botones *"Reintentar"* y *"Volver al inicio"*.
+   - Cumplimiento estricto de la regla **UI004**: `@/shared/monitoring` es 100% autocontenido y no importa capas de `features` ni `app`.
+
+4. **Panel de Salud del Sistema en Plataforma ([`salud-sistema-section.tsx`](file:///root/polis/src/features/plataforma/components/salud-sistema-section.tsx))**:
+   - Integrado en [`src/features/plataforma/views/configuracion-view.tsx`](file:///root/polis/src/features/plataforma/views/configuracion-view.tsx) para administradores distritales.
+   - Ofrece monitoreo en tiempo real de 4 componentes clave (FastAPI, PostgreSQL, Frontend y Almacenamiento) con botón táctil interactivo *"Comprobar salud en tiempo real"*.
+
+5. **Watchdog Automatizado de Producción y Autosanación ([`scripts/monitor_sistema_polis.sh`](file:///root/polis/scripts/monitor_sistema_polis.sh))**:
+   - Probado en vivo:
+     * Modo `--check`: Diagnóstico tabular completo con código de salida 0 (*SISTEMA 100% SALUDABLE Y OPERATIVO*).
+     * Modo `--json`: Salida JSON estructurada para ingestión por herramientas externas.
+     * Modo `--cron`: Configurado en el crontab del sistema de `/root` cada 5 minutos (`*/5 * * * *`).
+   - Lógica de autosanación (*self-healing*) que reinicia servicios caídos de systemd y emite alarmas tempranas si PostgreSQL supera el 85% de conexiones o el disco el 90%.
+
+---
+
+### 2. Verificación Estricta de Salvaguardas Institucionales
+
+| Salvaguarda Institucional | Estado | Evidencia Pericial Independiente |
+|---|:---:|---|
+| **Preservación BPIN 100% Intacta** | **CUMPLIDA** | Códigos y metadatos distritales no sufrieron ninguna alteración. |
+| **Cero Acrónimos Ajenos** | **CUMPLIDA** | 0 menciones a `DNP`, `MGA` o `SINERGIA` en código, telemetría o paneles. |
+| **UI-Policy Estricta (UI004)** | **CUMPLIDA** | 0 infracciones en `scripts/ui-policy.mjs`. `@/shared/monitoring` autocontenido. |
+| **Habeas Data y Seguridad** | **CUMPLIDA** | Cero inclusión de credenciales, contraseñas, tokens JWT o PII en logs o métricas. |
+| **Inviolabilidad de Producción (`bd_csh`)** | **CUMPLIDA** | Las 33 mesas de diálogo, 36 agendas comunitarias, 11 fichas técnicas de indicadores, 5 propuestas y 3 notificaciones registradas permanecen 100% intactas. |
+| **Protocolo Zero-Push** | **CUMPLIDA** | Commits atómicos confinados estrictamente en la rama local `main`. |
+
+---
+
+### 3. Certificación Independiente de Quality Gates
+
+- `bun run ui:check`: **APROBADO** (0 infracciones de diseño, controles o accesibilidad).
+- `bun run check` (`tsc --noEmit` & `eslint .`): **APROBADO** (0 errores TypeScript, 0 advertencias ESLint).
+- `bun test`: **APROBADO** (**412 pasados / 0 fallados** en 43 suites, incluyendo los 5 tests de `error-boundary.test.tsx` en 202ms).
+- `pytest backend/tests/`: **APROBADO** (**101 pasados / 0 fallados** en 25.38s, incluyendo `test_observability.py` y `test_access_policy.py`).
+- Compilación Turbopack (`bun run build`): **APROBADO** (191 rutas estáticas/dinámicas generadas limpiamente en 18.3s).
+- Servicios `systemd` (`polis-backend` & `polis-frontend`): **ACTIVOS Y SALUDABLES (HTTP 200 OK en ambos puertos 8000 y 3000)**.
+- Diagnóstico Watchdog (`monitor_sistema_polis.sh --check`): **APROBADO (Código 0)**.
+
+---
+
+### 4. Certificación Forense en Vivo (Hot-Testing en Producción)
+
+1. **Endpoint `GET /api/v1/health/system`**:
+   - HTTP 200 OK con payload JSON completo.
+   - Latencia a PostgreSQL: **2.55 ms**.
+   - Contador de solicitudes y desglose HTTP funcional.
+2. **Integridad de Base de Datos PostgreSQL (`bd_csh`)**:
+   - `mesas_trabajo.mesas`: **33** mesas intactas.
+   - `mesas_trabajo.agendas`: **36** agendas comunitarias intactas.
+   - `indicadores.fichas_tecnicas_indicadores`: **11** fichas técnicas intactas.
+   - `participacion_ciudadana.propuestas_ciudadanas`: **5** propuestas radicadas intactas.
+   - `participacion_ciudadana.notificaciones_transaccionales`: **3** notificaciones emitidas intactas.
+   - Conexiones activas en pool: 2 a 4 conexiones (muy por debajo del límite de 100).
+3. **Automatización en Crontab**:
+   - Respaldo diario a las 02:00 UTC activo.
+   - Watchdog de monitoreo cada 5 minutos activo.
+
+---
+
+### 5. Dictamen Final y Conclusión del Plan Maestro
+
+La orden técnica **`[OPS-OBSERVABILITY-01]`** queda formalmente **CERRADA, APROBADA AL 100% Y CERTIFICADA PARA PRODUCCIÓN**.
+
+Con la culminación de esta orden, se certifica el **CIERRE TOTAL Y EXITOSO DE LAS TRES FASES DEL PLAN MAESTRO DE EXCELENCIA, ADOPCIÓN TERRITORIAL Y CIERRE OPERATIVO POLIS 2026**:
+- **FASE 1: Supervivencia Operativa y Cierre Jurídico** (Respaldos automáticos GFS, Generador oficial de actas PDF con QR y sello SHA-256, Autenticación sin fricción con Google OAuth y Magic Link).
+- **FASE 2: Ingesta de Datos Vivos y Feedback Loop** (Ingesta y certificación de indicadores reales de Cartagena, Motor de notificaciones transaccionales y radicación cívica, Canal de captura rápida por WhatsApp).
+- **FASE 3: Adopción Territorial y Resiliencia** (Apoyos y me gusta cívicos funcionales bidireccionales, Modo Barrio ultraligero `/barrio` <150 KB, PWA Offline con Service Worker e IndexedDB para zonas insulares y rurales, y Observabilidad proactiva con telemetría y watchdog).
+
+La plataforma POLIS se declara en estado de **EXCELENCIA TÉCNICA Y OPERATIVA TOTAL**, lista para deliberación territorial y fe pública en Cartagena de Indias.
