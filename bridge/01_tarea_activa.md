@@ -1,76 +1,107 @@
-# TAREA ACTIVA: [INGESTA-DATOS-01] INGESTA Y CERTIFICACIÓN DE INDICADORES REALES DE SEGURIDAD Y CONVIVENCIA
+# TAREA ACTIVA: [NOTIF-FEEDBACK-01] MOTOR TRANSACCIONAL DE NOTIFICACIONES Y RADICACIÓN CIUDADANA
 
-**Fecha:** 2026-10-11  
-**Fase:** FASE 2 — Ingesta de Datos Vivos y Feedback Loop  
+**Fecha:** Domingo, 11 de Octubre de 2026  
+**Fase:** FASE 2 — Ingesta de Datos Vivos y Feedback Loop (Tarea 2.2)  
 **Plan Maestro:** `bridge/00_plan_maestro_excelencia_y_adopcion.md`  
 **Asignada a:** `agy2` (Desarrollador / EDD — `tmux a -t agy2`)  
 **Supervisor / Auditor:** `agy` (Coordinador General y Auditor Forense EAF — `tmux a -t agy`)  
-**Severidad:** ALTA / RIGOR ANALÍTICO (Erradicación del estado "Sin medición", Transparencia, Rendición de Cuentas y Adopción Territorial)
+**Severidad:** ALTA / ADOPCIÓN CIUDADANA (Cero Silencio Administrativo, Trazabilidad, Fe Pública y Transparencia)
 
 ---
 
 ## 🎯 1. Justificación y Alcance del Requerimiento
 
-En la actualidad, las 11 fichas técnicas de indicadores de seguridad, convivencia y desarrollo territorial registradas en la base de datos distrital (`bd_csh`, esquema `indicadores`) presentan valores en cero (`valor_actual = 0.0000`, `porcentaje_avance = 0.00`) y la tabla `mediciones_indicador` carece de registros históricos certificados (`count = 0`). Como consecuencia, tanto en la interfaz pública como en el módulo de seguimiento y rendición de cuentas, la plataforma muestra la leyenda desmovilizadora **"Sin medición"**.
+En asambleas comunitarias y talleres barriales en Cartagena de Indias, uno de los mayores desincentivos a la participación es la sensación ciudadana de que las propuestas "se quedan en el aire" o que existe silencio administrativo tras consignar una idea o alerta.
 
-Para el éxito del despliegue comunitario en Cartagena de Indias y la credibilidad del Plan Distrital de Desarrollo, es indispensable:
-1. **Poblar la serie histórica y de corte reciente (2024-2025)** con mediciones oficiales reales y trazables, provenientes de fuentes abiertas certificadas:
-   - **Instituto Nacional de Medicina Legal y Ciencias Forenses (Forensis):** Homicidios por 100.000 hab.
-   - **Policía Nacional de Colombia (SIEDCO / Policía Metropolitana de Cartagena - MECAR):** Hurtos a personas denunciados, Convivencia barrial y desescalamiento de violencias.
-   - **Cartagena Cómo Vamos (CCV - Encuesta de Percepción Ciudadana 2024-2025):** Percepción de inseguridad en barrios priorizados.
-   - **DANE (Encuesta Nacional de Calidad de Vida - ECV):** Pobreza Multidimensional (IPM) Cartagena.
-   - **Alcaldía Mayor / Secotic / Fondo Territorial de Seguridad (FONSET):** Presupuesto asignado a programas de convivencia, cámaras en mantenimiento, jóvenes capacitados en tecnología.
-   - **Concesión Alumbrado Público Cartagena:** Luminarias instaladas en puntos críticos.
-   - **EPA Cartagena / Cardique / OAGRD:** Resiliencia climática y ambiental en la Ciénaga de la Virgen.
-2. **Saneamiento Metodológico y Lingüístico Obligatorio:**
-   - Erradicar de raíz cualquier mención remanente a acrónimos no autorizados (reemplazar "DNP" en `indicadores/service.py`, `schemas.py`, `router.py` y en la columna `fuente_datos` de `fichas_tecnicas_indicadores` por la denominación distrital correspondiente).
-   - Corregir en la base de datos `fuente_datos` de `IND-PROD-01` de "Policía MEBAR" (Barranquilla) a "Policía MECAR" (Cartagena de Indias).
+Para erradicar el silencio administrativo y construir confianza institucional entre las comunidades (El Pozón, Nelson Mandela, La Boquilla, Isla de Barú, Albornoz) y la administración distrital:
+1. **Radicación Oficial Obligatoria e Inmutable:** Cada aporte, propuesta o alerta ciudadana registrada en POLIS debe recibir automáticamente un **Código Único de Radicado Institucional** en formato oficial **`POL-2026-XXXX`** (ej. `POL-2026-0001`, `POL-2026-0002`...), respaldado por una secuencia atómica en PostgreSQL.
+2. **Constancia Digital de Radicación:** Envío automático e inmediato de una notificación de constancia por correo electrónico al ciudadano (si está autenticado o si suministra su correo de contacto en el formulario), con plantilla HTML sobria que incluye el escudo de la Alcaldía Mayor de Cartagena, el membrete de "Cartagena Ciudad de Derechos", resumen del aporte, fecha/hora y número de radicado.
+3. **Consulta Pública de Radicado:** Endpoint público y vista ligera que permite a cualquier ciudadano consultar el estado de tramitación de su propuesta ingresando únicamente su código `POL-2026-XXXX` sin necesidad de contraseña.
+4. **Notificación de Cambio de Estado y Priorización:** Cuando una propuesta ciudadana cambia de estado (`en_revision`, `incorporado`, `rechazado`) o es priorizada por una mesa territorial de seguridad o secretaría distrital, el sistema despacha automáticamente una notificación de actualización al ciudadano.
 
 ---
 
 ## 📋 2. Especificación Técnica de la Tarea
 
-### A. Saneamiento de Código Backend (`backend/app/modules/indicadores/`)
-1. **`service.py`**:
-   - Reemplazar comentarios y mensajes de error que mencionan "DNP" por "metodología institucional de planeación distrital" o "parámetros oficiales de planeación distrital".
-   - Preservar al 100% la regla de inmutabilidad de la fórmula matemática y la línea base histórica.
-2. **`schemas.py` & `router.py`**:
-   - Limpiar comentarios y docstrings eliminando referencias a "DNP".
-3. **Tests (`backend/tests/test_indicadores_metadatos.py`)**:
-   - Verificar que las pruebas sigan pasando al 100% con los mensajes saneados.
+### A. Base de Datos y Persistencia (`backend/alembic/versions/0056_radicacion_ciudadana_y_notificaciones.py`)
+1. **Secuencia de Radicación**:
+   - Crear la secuencia `participacion_ciudadana.secuencia_radicados_propuestas START WITH 1 INCREMENT BY 1`.
+2. **Columna `codigo_radicado` en `participacion_ciudadana.propuestas_ciudadanas`**:
+   - Agregar columna `codigo_radicado VARCHAR(50) UNIQUE` con índice único.
+   - Para aportes preexistentes (si los hubiere), poblar secuencialmente con prefijo `POL-2026-`.
+3. **Tabla `participacion_ciudadana.notificaciones_transaccionales`**:
+   - Campos:
+     * `id`: UUID (v7).
+     * `codigo_radicado`: VARCHAR(50) (asociado a la propuesta o trámite).
+     * `destinatario_correo`: VARCHAR(255) NOT NULL.
+     * `tipo_evento`: VARCHAR(50) NOT NULL (`radicacion`, `cambio_estado`, `priorizacion`).
+     * `asunto`: VARCHAR(250) NOT NULL.
+     * `cuerpo_html`: TEXT NOT NULL.
+     * `estado_envio`: VARCHAR(30) NOT NULL (`enviado`, `simulado`, `fallido`).
+     * `error_detalle`: TEXT NULL.
+     * `creado_en`: TIMESTAMP WITH TIME ZONE DEFAULT clock_timestamp().
+     * `enviado_en`: TIMESTAMP WITH TIME ZONE NULL.
+   - Índices en `codigo_radicado`, `destinatario_correo`, `creado_en`.
 
-### B. Ingesta y Certificación de Datos en Base de Datos (`bd_csh`)
-1. **Saneamiento en `indicadores.fichas_tecnicas_indicadores`**:
-   - Actualizar `fuente_datos` en `IND-INS-01`: reemplazar `CHIP - DNP` por `CHIP - Secretaría de Hacienda Distrital`.
-   - Actualizar `fuente_datos` en `IND-PROD-01`: reemplazar `Policía MEBAR` por `Policía MECAR (Cartagena)`.
-2. **Script de Ingesta Oficial (`scripts/ingestar_indicadores_reales.py` o migración SQL)**:
-   - Insertar mediciones oficiales en `indicadores.mediciones_indicador` para las 11 fichas técnicas con metadatos completos:
-     * `periodo`: "2024-ANUAL" (y cortes 2024-S1/S2 según aplique).
-     * `fecha_corte`: Fecha oficial del boletín (ej. 2024-12-31).
-     * `valor_medido`: Cifra exacta reportada por la entidad oficial.
-     * `avance_acumulado`: Porcentaje de avance calculado según el sentido esperado (ascendente o descendente) respecto a la línea base y la meta del cuatrienio.
-     * `observaciones`: Cita de la fuente oficial, resolución, boletín estadístico o informe de calidad de vida.
-     * `evidencia_documental_url`: Enlace público verificable institucional (Forensis, SIEDCO, CCV, DANE).
-     * `registrado_por`: "Secretaría de Planeación Distrital - Observatorio del Delito / EAF".
-     * `es_demostracion`: `false`.
-3. **Actualización de Fichas Técnicas**:
-   - Actualizar en `indicadores.fichas_tecnicas_indicadores`:
-     * `valor_actual = valor_medido`
-     * `porcentaje_avance = avance_acumulado`
-     * `metadatos`: `{"tiene_mediciones": true, "fecha_corte_ultimo_reporte": "2024-12-31", "periodo_ultimo_reporte": "2024-ANUAL"}`
-     * `actualizado_en = clock_timestamp()`
+### B. Backend (`backend/app/modules/`)
+1. **Módulo de Notificaciones (`backend/app/modules/notificaciones/`)**:
+   - `models.py`: Modelo SQLAlchemy `NotificacionTransaccional`.
+   - `service.py`:
+     * Generador de plantilla HTML sobria institucional (membrete de Cartagena, escudo, sello distrital, título del aporte, descripción, radicado `POL-2026-XXXX`, enlace público de consulta).
+     * Método `enviar_constancia_radicacion(destinatario, radicado, titulo, descripcion, autor)`:
+       - Resiliente: si SMTP está configurado (`settings.smtp_host`), despacha el correo mediante `asyncio.to_thread`; si no está configurado (entorno de pruebas/desarrollo), registra la notificación como `simulado` con log descriptivo, **sin bloquear** la creación del aporte.
+     * Método `enviar_notificacion_cambio_estado(destinatario, radicado, titulo, nuevo_estado, observaciones)`.
+   - `schemas.py`:
+     * `ConsultaRadicadoRespuesta`: devuelve radicado, título, tipo_aporte, autor_nombre, estado, territorio_nombre, creado_en, actualizado_en.
+     * `NotificacionLectura`.
+   - `router.py`:
+     * `GET /api/v1/notificaciones/radicado/{codigo_radicado}`: Endpoint público (sin autenticación obligatoria) que permite verificar el estado de una propuesta radicada.
+     * `GET /api/v1/notificaciones/historial`: Endpoint para auditoría forense y gestión de funcionarios.
+2. **Módulo de Aportes (`backend/app/modules/aportes/`)**:
+   - `models.py`: Incorporar `codigo_radicado: Mapped[str] = mapped_column(String(50), unique=True, index=True, nullable=False)`.
+   - `schemas.py`:
+     * `PropuestaCiudadanaCreate`: incorporar campo opcional `correo_contacto: str | None = None` para ciudadanos anónimos que deseen recibir su radicado por correo.
+     * `PropuestaCiudadanaRead`: exponer `codigo_radicado: str`.
+   - `repository.py`:
+     * Al crear propuesta, obtener el siguiente valor de la secuencia y formatear como `POL-2026-{numero:04d}` (ej. `POL-2026-0001`).
+   - `service.py`:
+     * Al registrar aporte exitoso, invocar de forma desacoplada la notificación de radicación si se cuenta con `correo_contacto` o correo del usuario en sesión.
+     * Al actualizar estado de la propuesta (`actualizar_propuesta`), si el estado muta (ej. a `incorporado`, `en_revision`, `rechazado`), despachar la notificación de actualización.
+3. **Contrato de Rutas y Permisos (`docs/permisos-api.md` & `backend/tests/test_access_policy.py`)**:
+   - Registrar la ruta pública `GET /api/v1/notificaciones/radicado/{codigo_radicado}` en la lista blanca de la política de acceso.
 
-### C. Verificación de Semáforos y Endpoints
-1. Verificar que `GET /api/v1/indicadores/fichas` retorne las 11 fichas con `valor_actual > 0` y `tiene_mediciones = true`.
-2. Verificar que `GET /api/v1/indicadores/cadena-valor` retorne insumo, producto y resultado con sus avances calculados.
-3. Verificar que en la interfaz web de seguimiento (`/plataforma/seguimiento`), las tarjetas de indicadores muestren sus semáforos de cumplimiento activos y ya no aparezca la leyenda "Sin medición".
+### C. Frontend (`src/features/aportes/` y `src/features/seguimiento/`)
+1. **Editor de Aportes (`src/features/aportes/panels/aporte-editor-panel.tsx`)**:
+   - Añadir campo opcional de correo de contacto cuando la sesión no tiene correo verificado: *"Correo electrónico para recibir constancia oficial de radicación (opcional)"*.
+   - Al recibir la confirmación de la API:
+     * Notificar con `toast.success` mostrando el radicado: *"Aporte recibido bajo radicado POL-2026-XXXX"*.
+     * Mostrar diálogo o tarjeta de confirmación de radicación con botón interactivo `@/shared/ui/button` para **"Copiar Radicado"**.
+2. **Tarjeta y Detalle de Aporte (`src/features/aportes/components/` / `src/features/politicas/panels/linea-panel.tsx`)**:
+   - Renderizar el Badge institucional `@/shared/ui/badge` con el `codigo_radicado` (ej. `POL-2026-0001`) visible en cada propuesta.
+3. **Módulo de Rendición de Cuentas (`src/features/seguimiento/components/rendicion-cuentas-tab.tsx`)**:
+   - Asegurar que la tabla y tarjetas de devolución muestren el `codigo_radicado` de cada propuesta ciudadana.
 
 ---
 
 ## 🛡️ 3. Salvaguardas Obligatorias
 
-1. **Preservación BPIN:** No alterar identificadores BPIN presupuestales.
-2. **Cero Acrónimos Ajenos:** Cero mención a DNP, MGA o SINERGIA en código, documentación o registros de base de datos.
-3. **UI-Policy Estricta:** Uso exclusivo de `@/shared/ui/` (`Badge`, `Button`, tokens).
-4. **Protocolo Zero-Push:** Exclusivamente commits locales en `main`.
-5. **Integridad de Producción:** Las 33 mesas y 36 agendas en `bd_csh` deben permanecer 100% inalteradas y operativas.
+1. **Preservación Inviolable de BPIN:** No alterar identificadores BPIN presupuestales.
+2. **Cero Acrónimos Ajenos:** Cero mención a DNP, MGA o SINERGIA en código, modelos o interfaces.
+3. **UI-Policy Estricta:** Uso exclusivo de componentes `@/shared/ui/` (`Button`, `Badge`, `Input`, `FormField`). Cero etiquetas nativas HTML sueltas.
+4. **Resiliencia de Transacción:** El envío de correos jamás debe romper o hacer fallar la creación de una propuesta ciudadana en base de datos si SMTP no responde.
+5. **Inviolabilidad de Producción:** Las 33 mesas territoriales, 36 agendas comunitarias y las 11 fichas técnicas de indicadores en `bd_csh` deben permanecer 100% intactas y operativas.
+6. **Protocolo Zero-Push:** Exclusivamente commits locales atómicos en `main`.
+
+---
+
+## 🔬 4. Quality Gates de Aceptación
+
+1. **`bun run ui:check`**: 0 violaciones de accesibilidad, tokens o capas.
+2. **`bun run check`**: `tsc --noEmit` y `eslint .` limpios al 100%.
+3. **`bun test`**: Pruebas unitarias de frontend aprobadas.
+4. **`pytest`**: Suite de backend aprobada al 100%, incluyendo pruebas de radicación y notificaciones (`test_notificaciones.py`, `test_aportes.py`, `test_access_policy.py`).
+5. **`bun run build`**: Compilación Turbopack en modo standalone sin errores (190+ rutas).
+6. **Hot-Verification en vivo**:
+   - Crear un aporte vía API o frontend y constatar la emisión de su código `POL-2026-XXXX`.
+   - Consultar `GET /api/v1/notificaciones/radicado/POL-2026-XXXX` y obtener respuesta HTTP 200 OK estructurada.
+   - Verificar persistencia en `participacion_ciudadana.notificaciones_transaccionales`.
