@@ -9,10 +9,12 @@ from app.core.database import SessionDependency
 from app.modules.aportes.repository import AporteRepository
 from app.modules.aportes.schemas import (
     EstadoPropuestaLiteral,
+    MisApoyosRespuesta,
     PropuestaCiudadanaCreate,
     PropuestaCiudadanaRead,
     PropuestaCiudadanaUpdate,
     PropuestasPaginadasRead,
+    RespuestaToggleApoyo,
     TipoAporteLiteral,
 )
 from app.modules.aportes.service import AporteService
@@ -150,6 +152,19 @@ async def listar_aportes(
 
 
 @router.get(
+    "/mis-apoyos",
+    response_model=MisApoyosRespuesta,
+    status_code=status.HTTP_200_OK,
+    summary="Listar aportes respaldados por la sesión actual",
+)
+async def obtener_mis_apoyos(
+    sesion: SesionRequeridaDep,
+    service: AporteServiceDep,
+) -> MisApoyosRespuesta:
+    return await service.obtener_mis_apoyos(sesion)
+
+
+@router.get(
     "/{aporte_id}",
     response_model=PropuestaCiudadanaRead,
     status_code=status.HTTP_200_OK,
@@ -192,16 +207,31 @@ async def desactivar_aporte(
 
 @router.post(
     "/{aporte_id}/apoyar",
+    response_model=RespuestaToggleApoyo,
+    status_code=status.HTTP_200_OK,
+    summary="Alternar respaldo ciudadano (apoyar / des-apoyar)",
+)
+async def alternar_apoyo_aporte(
+    aporte_id: uuid.UUID,
+    sesion: SesionRequeridaDep,
+    service: AporteServiceDep,
+) -> RespuestaToggleApoyo:
+    return await service.alternar_apoyo(aporte_id, sesion)
+
+
+@router.delete(
+    "/{aporte_id}/apoyar",
     response_model=PropuestaCiudadanaRead,
     status_code=status.HTTP_200_OK,
-    summary="Respaldar un aporte ciudadano",
+    summary="Retirar respaldo ciudadano",
 )
-async def respaldar_aporte(
+async def retirar_apoyo_aporte(
     aporte_id: uuid.UUID,
-    sujeto: SujetoAutenticadoDep,
+    sesion: SesionRequeridaDep,
     service: AporteServiceDep,
 ) -> PropuestaCiudadanaRead:
-    return await service.apoyar_propuesta(aporte_id, sujeto)
+    return await service.retirar_apoyo(aporte_id, sesion)
+
 
 
 @router.post(

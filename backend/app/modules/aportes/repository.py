@@ -187,6 +187,21 @@ class AporteRepository:
         await self.session.flush()
         return True
 
+    @staticmethod
+    def _extraer_sujeto_info(sujeto: Any) -> tuple[uuid.UUID, str]:
+        """Extrae (sujeto_id, tipo_sujeto) de SesionContexto o SujetoAutenticadoContexto."""
+        if sujeto is None:
+            return uuid.uuid4(), "sesion_anonima"
+        if hasattr(sujeto, "sujeto_id") and getattr(sujeto, "sujeto_id"):
+            sujeto_id = sujeto.sujeto_id
+            tipo_sujeto = "sesion_anonima" if getattr(sujeto, "es_anonimo", False) else "usuario"
+            return sujeto_id, tipo_sujeto
+        if hasattr(sujeto, "sesion_id") and getattr(sujeto, "sesion_id"):
+            sujeto_id = sujeto.sesion_id
+            tipo_sujeto = "sesion_anonima" if getattr(sujeto, "es_anonimo", True) else "usuario"
+            return sujeto_id, tipo_sujeto
+        return uuid.uuid4(), "sesion_anonima"
+
     async def sumar_apoyo(
         self, aporte_id: uuid.UUID, sujeto: Any = None
     ) -> PropuestaCiudadana | None:
@@ -197,12 +212,7 @@ class AporteRepository:
 
         from app.modules.aportes.models import ApoyoPropuesta
 
-        if sujeto is None:
-            sujeto_id = uuid.uuid4()
-            tipo_sujeto = "sesion_anonima"
-        else:
-            sujeto_id = sujeto.sujeto_id
-            tipo_sujeto = "sesion_anonima" if getattr(sujeto, "es_anonimo", False) else "usuario"
+        sujeto_id, tipo_sujeto = self._extraer_sujeto_info(sujeto)
 
         apoyo = ApoyoPropuesta(
             propuesta_id=propuesta.id,
@@ -211,6 +221,83 @@ class AporteRepository:
         )
         self.session.add(apoyo)
         await self.session.flush()
+        await self.session.refresh(propuesta)
+        return propuesta
+
+    async def retirar_apoyo(
+        self, aporte_id: uuid.UUID, sujeto: Any = None
+    ) -> PropuestaCiudadana | None:
+        """Retira el respaldo popular ciudadano previamente registrado."""
+        propuesta = await self.obtener_por_id(aporte_id, incluir_inactivos=False)
+        if not propuesta:
+            return None
+
+        from app.modules.aportes.models import ApoyoPropuesta
+
+        sujeto_id, _ = self._extraer_sujeto_info(sujeto)
+
+        stmt = select(ApoyoPropuesta).where(
+            ApoyoPropuesta.propuesta_id == propuesta.id,
+            ApoyoPropuesta.sujeto_id == sujeto_id,
+        )
+        res = await self.session.execute(stmt)
+        apoyo = res.scalar_one_or_none()
+        if apoyo:
+            await self.session.delete(apoyo)
+            await self.session.flush()
 
         await self.session.refresh(propuesta)
         return propuesta
+
+    async def alternar_apoyo(
+        self, aporte_id: uuid.UUID, sujeto: Any = None
+    ) -> tuple[PropuestaCiudadana | None, bool]:
+        """Alterna el respaldo ciudadano (suma si no existe, retira si ya existe)."""
+        propuesta = await self.obtener_por_id(aporte_id, incluir_inactivos=False)
+        if not propuesta:
+            return None, False
+
+        from app.modules.aportes.models import ApoyoPropuesta
+
+        sujeto_id, tipo_sujeto = self._extraer_sujeto_info(sujeto)
+
+        stmt = select(ApoyoPropuesta).where(
+            ApoyoPropuesta.propuesta_id == propuesta.id,
+            ApoyoPropuesta.sujeto_id == sujeto_id,
+        )
+        res = await self.session.execute(stmt)
+        apoyo_existente = res.scalar_one_or_none()
+
+        if apoyo_existente:
+            # Retirar apoyo (unlike)
+            await self.session.delete(apoyo_existente)
+            await self.session.flush()
+            await self.session.refresh(propuesta)
+            return propuesta, False
+        else:
+            # Sumar apoyo (like)
+            nuevo_apoyo = ApoyoPropuesta(
+                propuesta_id=propuesta.id,
+                sujeto_id=sujeto_id,
+                tipo_sujeto=tipo_sujeto,
+            )
+            self.session.add(nuevo_apoyo)
+            await self.session.flush()
+            await self.session.refresh(propuesta)
+            return propuesta, True
+
+    async def obtener_apoyos_sujeto(self, sujeto: Any = None) -> list[uuid.UUID]:
+        """Consulta los IDs de las propuestas que el sujeto/sesión actual ha respaldado."""
+        if sujeto is None:
+            return []
+
+        from app.modules.aportes.models import ApoyoPropuesta
+
+        sujeto_id, _ = self._extraer_sujeto_info(sujeto)
+
+        stmt = select(ApoyoPropuesta.propuesta_id).where(
+            ApoyoPropuesta.sujeto_id == sujeto_id
+        )
+        res = await self.session.execute(stmt)
+        return list(res.scalars().all())
+

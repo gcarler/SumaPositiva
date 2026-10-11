@@ -69,10 +69,12 @@ La última columna explica la excepción pública o la condición adicional.
 | --- | --- | --- | --- |
 | GET | /api/v1/aportes | publico | Consulta pública de participación y devoluciones motivadas. |
 | POST | /api/v1/aportes | sesion | Sesión cívica anónima o registrada; token obligatorio y vigencia de la cuenta. |
+| GET | /api/v1/aportes/mis-apoyos | sesion | Consulta de las propuestas respaldadas por la sesión cívica actual. |
 | DELETE | /api/v1/aportes/{aporte_id} | permiso:aportes:priorizar@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |
 | GET | /api/v1/aportes/{aporte_id} | publico | Consulta pública de participación y devoluciones motivadas. |
 | PATCH | /api/v1/aportes/{aporte_id} | permiso:aportes:priorizar@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |
-| POST | /api/v1/aportes/{aporte_id}/apoyar | sujeto | Un apoyo por sujeto; contador y registro en la misma transacción. |
+| POST | /api/v1/aportes/{aporte_id}/apoyar | sesion | Alternancia de respaldo ciudadano (apoyar o retirar) vinculado a sesión cívica. |
+| DELETE | /api/v1/aportes/{aporte_id}/apoyar | sesion | Retiro de respaldo ciudadano vinculado a sesión cívica. |
 | GET | /api/v1/aportes/{aporte_id}/devolucion-razon | publico | Consulta pública de participación y devoluciones motivadas. |
 | POST | /api/v1/aportes/{aporte_id}/devolucion-razon | permiso:aportes:responder@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |
 | GET | /api/v1/auditoria/registros | permiso:auditoria:leer@declarada | Consulta forense inmutable de razones motivadas y trazabilidad. |

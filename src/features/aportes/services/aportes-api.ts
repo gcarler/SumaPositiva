@@ -178,12 +178,58 @@ export async function crearAporte(
   });
 }
 
+export interface RespuestaToggleApoyo {
+  propuesta_id: string;
+  apoyado: boolean;
+  apoyos_contador: number;
+  mensaje: string;
+}
+
+export interface MisApoyosRespuesta {
+  propuestas_apoyadas: string[];
+}
+
+/**
+ * Alterna el respaldo ciudadano (suma si no existe, retira si ya existe).
+ */
+export async function alternarApoyoAporte(
+  aporteId: string
+): Promise<RespuestaToggleApoyo> {
+  await asegurarSesionActiva();
+  return apiFetch<RespuestaToggleApoyo>(`/aportes/${aporteId}/apoyar`, {
+    method: "POST",
+  });
+}
+
+/**
+ * Retira explícitamente el respaldo ciudadano de una propuesta.
+ */
+export async function retirarApoyoAporte(
+  aporteId: string
+): Promise<PropuestaCiudadanaRead> {
+  await asegurarSesionActiva();
+  return apiFetch<PropuestaCiudadanaRead>(`/aportes/${aporteId}/apoyar`, {
+    method: "DELETE",
+  });
+}
+
+/**
+ * Consulta la lista de identificadores de propuestas respaldadas por la sesión actual.
+ */
+export async function obtenerMisApoyos(): Promise<string[]> {
+  await asegurarSesionActiva();
+  const res = await apiFetch<MisApoyosRespuesta>("/aportes/mis-apoyos");
+  return res.propuestas_apoyadas ?? [];
+}
+
 /**
  * Registra un respaldo popular (voto positivo) para una propuesta ciudadana.
+ * (Mantenido por retrocompatibilidad con componentes existentes).
  */
 export async function respaldarAporte(
   aporteId: string
 ): Promise<PropuestaCiudadanaRead> {
+  await asegurarSesionActiva();
   return apiFetch<PropuestaCiudadanaRead>(`/aportes/${aporteId}/apoyar`, {
     method: "POST",
   });

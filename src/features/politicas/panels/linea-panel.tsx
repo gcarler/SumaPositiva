@@ -27,11 +27,13 @@ import {
   usePoliticasStore,
 } from "@/features/politicas/state/politicas-store";
 import type { Aporte, LineaEstrategica } from "@/features/politicas/models/politicas";
+import { toast } from "sonner";
 import { SectionLabel, InitialAvatar, AnonAvatar } from "@/shared/components/participation-ui";
 import { TipoAporteChip } from "@/features/politicas/components/politica-ui";
 import {
   useAportes,
-  useRespaldarAporte,
+  useMisApoyos,
+  useToggleApoyo,
 } from "@/features/aportes/services/use-aportes-queries";
 
 /**
@@ -305,12 +307,24 @@ export function LineaPanel({
     refetch: reintentarAportes,
   } = useAportes({ linea_id: lineaIdApi });
 
-  const { mutate: mutarRespaldo } = useRespaldarAporte();
+  const { data: misApoyos = [] } = useMisApoyos();
+  const { mutate: mutarToggleApoyo } = useToggleApoyo();
 
   const handleApoyar = (lineaId: string, aporteId: string) => {
     toggleApoyo(lineaId, aporteId);
     if (UUID_REGEX.test(aporteId)) {
-      mutarRespaldo(aporteId);
+      mutarToggleApoyo(aporteId, {
+        onSuccess: (data) => {
+          if (data.apoyado) {
+            toast.success("¡Gracias por tu respaldo cívico!");
+          } else {
+            toast.info("Respaldo retirado");
+          }
+        },
+        onError: () => {
+          toast.error("No fue posible actualizar tu respaldo en este momento");
+        },
+      });
     }
   };
 
@@ -327,7 +341,7 @@ export function LineaPanel({
       autor: el.es_anonimo ? "Ciudadano Anónimo" : el.autor_nombre,
       autorId: el.es_anonimo ? undefined : "identidad",
       votos: el.apoyos_contador ?? 0,
-      apoyado: false,
+      apoyado: misApoyos.includes(el.id),
       fecha: el.creado_en,
       fotos: Array.isArray(el.archivos_adjuntos)
         ? el.archivos_adjuntos.filter((f): f is string => typeof f === "string")
@@ -340,11 +354,14 @@ export function LineaPanel({
     const combinados = [...mapeados];
     for (const a of linea.aportes) {
       if (!combinados.some((c) => c.id === a.id)) {
-        combinados.push(a);
+        combinados.push({
+          ...a,
+          apoyado: a.apoyado || misApoyos.includes(a.id),
+        });
       }
     }
     return combinados;
-  }, [dataAportesApi, props.lineaId, linea]);
+  }, [dataAportesApi, props.lineaId, linea, misApoyos]);
 
   if (!linea || !fase || !politica) {
     return (

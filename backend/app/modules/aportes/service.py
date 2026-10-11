@@ -9,10 +9,12 @@ from app.core.config import Settings
 from app.core.transactions import transaction
 from app.modules.aportes.repository import AporteRepository
 from app.modules.aportes.schemas import (
+    MisApoyosRespuesta,
     PropuestaCiudadanaCreate,
     PropuestaCiudadanaRead,
     PropuestaCiudadanaUpdate,
     PropuestasPaginadasRead,
+    RespuestaToggleApoyo,
 )
 from app.modules.sesion.schemas import SesionContexto
 
@@ -237,6 +239,44 @@ class AporteService:
                     detail=f"Propuesta ciudadana con ID {aporte_id} no encontrada",
                 )
             return PropuestaCiudadanaRead.model_validate(propuesta)
+
+    async def alternar_apoyo(self, aporte_id: uuid.UUID, sujeto) -> RespuestaToggleApoyo:
+        """Alterna el respaldo popular (suma si no existe, retira si ya existe)."""
+        async with transaction(self.repository.session):
+            propuesta, apoyado = await self.repository.alternar_apoyo(aporte_id, sujeto)
+            if not propuesta:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail=f"Propuesta ciudadana con ID {aporte_id} no encontrada",
+                )
+            mensaje = (
+                "¡Respaldo ciudadano registrado con éxito!"
+                if apoyado
+                else "Respaldo ciudadano retirado con éxito"
+            )
+            return RespuestaToggleApoyo(
+                propuesta_id=propuesta.id,
+                apoyado=apoyado,
+                apoyos_contador=propuesta.apoyos_contador,
+                mensaje=mensaje,
+            )
+
+    async def retirar_apoyo(self, aporte_id: uuid.UUID, sujeto) -> PropuestaCiudadanaRead:
+        """Retira el respaldo ciudadano de una propuesta."""
+        async with transaction(self.repository.session):
+            propuesta = await self.repository.retirar_apoyo(aporte_id, sujeto)
+            if not propuesta:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail=f"Propuesta ciudadana con ID {aporte_id} no encontrada",
+                )
+            return PropuestaCiudadanaRead.model_validate(propuesta)
+
+    async def obtener_mis_apoyos(self, sujeto) -> MisApoyosRespuesta:
+        """Obtiene la lista de UUIDs de propuestas que la sesión actual ha respaldado."""
+        ids = await self.repository.obtener_apoyos_sujeto(sujeto)
+        return MisApoyosRespuesta(propuestas_apoyadas=ids)
+
 
     async def registrar_devolucion_motivada(
         self,

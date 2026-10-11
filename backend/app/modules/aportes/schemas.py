@@ -205,3 +205,22 @@ class PropuestasPaginadasRead(BaseModel):
     elementos: list[PropuestaCiudadanaRead] = Field(
         ..., description="Lista de aportes en la página actual"
     )
+
+
+class RespuestaToggleApoyo(BaseModel):
+    """Respuesta para la alternancia de respaldo cívico a una propuesta."""
+
+    propuesta_id: uuid.UUID = Field(..., description="ID de la propuesta respaldada o des-apoyada")
+    apoyado: bool = Field(..., description="True si la sesión apoya la propuesta, False si retiró su apoyo")
+    apoyos_contador: int = Field(..., description="Contador consolidado de apoyos tras la operación")
+    mensaje: str = Field(..., description="Mensaje explicativo de la acción realizada")
+
+
+class MisApoyosRespuesta(BaseModel):
+    """Listado de propuestas respaldadas por la sesión actual."""
+
+    propuestas_apoyadas: list[uuid.UUID] = Field(
+        default_factory=list,
+        description="Lista de UUIDs de propuestas que la sesión actual ha respaldado",
+    )
+
