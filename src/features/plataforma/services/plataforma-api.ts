@@ -36,6 +36,26 @@ const aportes = z.object({
     }),
   ),
 });
+const databaseQueryStat = z.object({
+  query: z.string(),
+  calls: z.number(),
+  total_ms: z.number(),
+  mean_ms: z.number(),
+  rows: z.number(),
+  hit_ratio_pct: z.number(),
+});
+
+const databaseTelemetryResponse = z.object({
+  status: z.enum(["ok", "degraded", "unavailable"]),
+  timestamp: z.string(),
+  total_queries_recorded: z.number(),
+  cache_hit_ratio_pct: z.number(),
+  top_queries: z.array(databaseQueryStat),
+});
+
+export type DatabaseQueryStat = z.infer<typeof databaseQueryStat>;
+export type DatabaseTelemetryResponse = z.infer<typeof databaseTelemetryResponse>;
+
 async function leer<T>(ruta: string, schema: z.ZodType<T>) {
   return schema.parse(await apiFetch<unknown>(ruta));
 }
@@ -49,4 +69,13 @@ export const plataformaApi = {
       `/aportes?limite=${alertas ? 5 : 20}${alertas ? "&tipo_aporte=alerta_comunitaria" : ""}`,
       aportes,
     ),
+  telemetriaSql: (
+    limite = 10,
+    ordenarPor: "tiempo_total" | "tiempo_medio" | "llamadas" = "tiempo_total",
+  ) =>
+    leer(
+      `/health/database/queries?limite=${limite}&ordenar_por=${ordenarPor}`,
+      databaseTelemetryResponse,
+    ),
 };
+

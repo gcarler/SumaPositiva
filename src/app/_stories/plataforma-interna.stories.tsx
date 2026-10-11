@@ -146,7 +146,24 @@ const meta = {
         },
       ]),
       aportes: fn(async () => ({ total: 0, elementos: [] })),
+      telemetriaSql: fn(async () => ({
+        status: "ok" as const,
+        timestamp: new Date().toISOString(),
+        total_queries_recorded: 120,
+        cache_hit_ratio_pct: 99.8,
+        top_queries: [
+          {
+            query: "SELECT count(*) FROM mesas_trabajo.mesas",
+            calls: 42,
+            total_ms: 12.4,
+            mean_ms: 0.29,
+            rows: 42,
+            hit_ratio_pct: 99.9,
+          },
+        ],
+      })),
     } satisfies typeof plataformaApi);
+
     Object.assign(identidadApi, {
       usuarios: fn(async () => ({ total: 1, elementos: [perfil] })),
       logout: fn(async () => ({ mensaje: "Sesión cerrada" })),

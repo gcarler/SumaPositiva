@@ -1,8 +1,10 @@
 import asyncio
 from datetime import datetime, timezone
 import logging
+import re
 import resource
 import shutil
+from typing import Any
 
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -12,6 +14,8 @@ from app.core.telemetry import global_telemetry
 from app.modules.health.repository import HealthRepository
 from app.modules.health.schemas import (
     DatabaseMetrics,
+    DatabaseQueryStat,
+    DatabaseTelemetryResponse,
     ObservabilityMetrics,
     ProcessMetrics,
     ReadinessResponse,
@@ -21,6 +25,7 @@ from app.modules.health.schemas import (
 
 logger = logging.getLogger(__name__)
 REQUIRED_EXTENSIONS = {"postgis", "ltree", "pgcrypto", "pg_trgm"}
+
 
 
 def obtener_memoria_rss_mb() -> float:
@@ -146,3 +151,61 @@ class HealthService:
             storage=storage_metrics,
             observability=obs_metrics,
         )
+
+    async def database_queries_telemetry(
+        self, limite: int = 10, ordenar_por: str = "tiempo_total"
+    ) -> DatabaseTelemetryResponse:
+        limite = max(1, min(limite, 50))
+        if ordenar_por not in ("tiempo_total", "tiempo_medio", "llamadas"):
+            ordenar_por = "tiempo_total"
+
+        status = "ok"
+        total_queries = 0
+        hit_ratio = 99.5
+        raw_queries: list[dict[str, Any]] = []
+
+        try:
+            async with asyncio.timeout(5):
+                total_queries, hit_ratio, raw_queries = (
+                    await self.repository.obtener_telemetria_consultas(
+                        limite=limite, ordenar_por=ordenar_por
+                    )
+                )
+        except (SQLAlchemyError, OSError, TimeoutError) as e:
+            logger.warning("Fallo al obtener telemetría de consultas SQL: %s", type(e).__name__)
+            status = "unavailable"
+
+        sanitized_queries = [
+            DatabaseQueryStat(
+                query=sanitizar_consulta_sql(q["query"]),
+                calls=q["calls"],
+                total_ms=q["total_ms"],
+                mean_ms=q["mean_ms"],
+                rows=q["rows"],
+                hit_ratio_pct=q["hit_ratio_pct"],
+            )
+            for q in raw_queries
+        ]
+
+        return DatabaseTelemetryResponse(
+            status=status,
+            timestamp=datetime.now(timezone.utc).isoformat(),
+            total_queries_recorded=total_queries,
+            cache_hit_ratio_pct=hit_ratio,
+            top_queries=sanitized_queries,
+        )
+
+
+def sanitizar_consulta_sql(query_raw: str, max_chars: int = 200) -> str:
+    """Sanitiza y acota el texto de una consulta SQL para proteger credenciales y PII."""
+    if not query_raw:
+        return ""
+    texto = " ".join(query_raw.split())
+    pattern = re.compile(
+        r"(?i)\b(password|token|secret|clave|contrasena|contrase\u00f1a)\b\s*(=|:)\s*('[^']*'|\"[^\"]*\"|[^\s,;)]+)"
+    )
+    texto = pattern.sub(r"\1\2'***'", texto)
+    if len(texto) > max_chars:
+        return texto[: max_chars - 3] + "..."
+    return texto
+

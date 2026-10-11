@@ -13,6 +13,8 @@ import {
 import { toast } from "sonner";
 import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
+import { TelemetriaSqlCard } from "./telemetria-sql-card";
+
 
 interface SystemHealthData {
   status: "ok" | "degraded" | "unavailable";
@@ -180,9 +182,14 @@ export function SaludSistemaSection() {
           ]}
         />
       </div>
+
+      <div className="px-5 pb-5">
+        <TelemetriaSqlCard />
+      </div>
     </section>
   );
 }
+
 
 function TarjetaMetrica({
   icono,
