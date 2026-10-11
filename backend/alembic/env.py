@@ -46,11 +46,24 @@ ALLOWED_SCHEMAS = {
 }
 
 
+POSTGIS_INTERNAL_TABLES = {
+    "spatial_ref_sys",
+    "topology",
+    "layer",
+    "raster_columns",
+    "raster_overviews",
+    "geography_columns",
+    "geometry_columns",
+    "pg_stat_statements",
+    "pg_stat_statements_info",
+}
+
+
 def include_object(obj, name, type_, reflected, compare_to) -> bool:
     if type_ == "schema":
         return name in ALLOWED_SCHEMAS
     if type_ == "table":
-        if reflected and name == "spatial_ref_sys":
+        if reflected and name in POSTGIS_INTERNAL_TABLES:
             return False
         schema = getattr(obj, "schema", None)
         if schema and schema not in ALLOWED_SCHEMAS:
