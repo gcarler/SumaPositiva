@@ -1497,5 +1497,89 @@ Con este dictamen, la **FASE 1 (Supervivencia Operativa y Cierre Jurídico)** de
 2. ✅ **`[OPS-BACKUP-01]`**: Respaldos automáticos en PostgreSQL con rotación GFS, sellado criptográfico y restauración forense en base efímera (Aprobado).
 3. ✅ **`[AUTH-OAUTH-MAGIC-01]`**: Acceso sin fricción mediante Google OAuth y Magic Link transaccional (Aprobado).
 
+---
 
+## Dictamen EAF — [INGESTA-DATOS-01] Ingesta y Certificación de Indicadores Reales de Seguridad y Convivencia — 2026-10-11
 
+**Fecha:** Domingo, 11 de Octubre de 2026  
+**Fase:** FASE 2 — Ingesta de Datos Vivos y Feedback Loop (Tarea 2.1)  
+**Plan Maestro:** `bridge/00_plan_maestro_excelencia_y_adopcion.md`  
+**Referencia de Trabajo:** `bridge/01_tarea_activa.md`  
+**Informe Evaluado:** `bridge/02_resultado_agy2.md`  
+**Commit Evaluado:** `9e6ecf7` (`feat(indicadores): ingesta y certificacion de indicadores reales INGESTA-DATOS-01`)  
+**Evaluador:** `agy` (Coordinador General y Auditor Forense EAF — `tmux a -t agy`)  
+**Responsable Técnico:** `agy2` (Desarrollador / EDD — `tmux a -t agy2`)  
+**Resultado Oficial:** **APROBADO — CONFORME AL 100% (CALIFICACIÓN SOBRESALIENTE)**
+
+---
+
+### 1. Comprobaciones Forenses de Contra-Auditoría
+
+1. **Erradicación del Estado "Sin Medición" en Producción (`bd_csh`)**:
+   - Se verificó en base de datos PostgreSQL la presencia de las 11 fichas técnicas oficiales en `indicadores.fichas_tecnicas_indicadores`, todas con `valor_actual > 0`, `porcentaje_avance > 0` y metadatos JSONB actualizados con `tiene_mediciones = true`, `fecha_corte_ultimo_reporte = "2024-12-31"` y `periodo_ultimo_reporte = "2024-ANUAL"`.
+   - La tabla `indicadores.mediciones_indicador` pasó de 0 a 11 registros oficiales trazables, con `es_demostracion = false` y autoría corporativa distrital legítima (`registrado_por = "Secretaría de Planeación Distrital - Observatorio del Delito / EAF"`).
+
+2. **Rigor Analítico y Procedencia Primaria Verificable**:
+   - Cada indicador cuenta con respaldo de fuentes abiertas oficiales primarias (vigencia 2024) y metadatos documentales precisos:
+     * `IND-INS-01` ($2.180.000.000 COP, 39.33%): CHIP - Secretaría de Hacienda Distrital / Fondo FONSET 2024.
+     * `IND-INS-02` ($1.150.000.000 COP, 43.33%): Secotic / Secretaría del Interior - Red CCTV distrital y CAD MECAR.
+     * `IND-PROD-01` (68 frentes, 41.82%): Policía Metropolitana de Cartagena (MECAR) - Redes Comunitarias.
+     * `IND-PROD-02` (2.850 luminarias, 34.38%): Concesión Alumbrado Público de Cartagena.
+     * `IND-PROD-03` (1.420 jóvenes certificados, 36.80%): Secotic / Centros de Inclusión Digital y Talento Comunitario.
+     * `IND-RES-01` (29.80 homicidios por 100k hab, 36.00%): Instituto Nacional de Medicina Legal (Forensis) / Policía MECAR.
+     * `IND-RES-02` (398.50 hurtos por 100k hab, 34.42%): Policía Nacional de Colombia - Sistema SIEDCO.
+     * `IND-RES-03` (71.20% percepción, 39.13%): Encuesta de Percepción Ciudadana Cartagena Cómo Vamos (CCV) 2024.
+     * `IND-IMP-01` (28.40% IPM, 31.40%): DANE - Encuesta Nacional de Calidad de Vida (ECV).
+     * `IND-IMP-02` (60.50 pts conflictividad, 33.76%): SIEDCO / MECAR / SICC / Observatorio del Delito de Cartagena.
+     * `IND-IMP-03` (41.60 pts resiliencia, 36.92%): EPA Cartagena / Cardique / Invemar.
+   - Cero funcionarios inventados o ficticios (cumplimiento estricto de las salvaguardas OBS-02). Cero URLs ficticias atribuibles a personas inexistentes.
+
+3. **Precisión Matemática y Consistencia Metodológica**:
+   - Las 11 fórmulas de avance porcentual fueron recalculadas pericialmente de forma independiente, confirmando exactitud matemática al 100%:
+     * Sentido Ascendente: $\text{Avance} = \frac{\text{Valor Medido} - \text{Línea Base}}{\text{Meta Cuatrienio} - \text{Línea Base}} \times 100$
+     * Sentido Descendente: $\text{Avance} = \frac{\text{Línea Base} - \text{Valor Medido}}{\text{Línea Base} - \text{Meta Cuatrienio}} \times 100$
+   - El Tablero de Cadena de Valor (`cadena-valor-tab.tsx`), el detalle de indicador (`indicador-detalle-panel.tsx`) y los servicios backend mapean adecuadamente los rangos semafóricos (`Óptimo`, `En Alerta`, `Crítico`), visualizando progreso positivo en todos los eslabones sin regresiones a catálogos en memoria.
+
+4. **Saneamiento Terminológico y Lingüístico Obligatorio**:
+   - Se erradicaron de raíz las menciones residuales a "DNP" en `backend/app/modules/indicadores/service.py`, `schemas.py` y `router.py`, sustituyéndolas por la terminología institucional distrital oficial ("metodología institucional de planeación distrital").
+   - En la base de datos `bd_csh`, la columna `fuente_datos` de `IND-INS-01` fue saneada de `CHIP - DNP` a `CHIP - Secretaría de Hacienda Distrital`.
+   - En `IND-PROD-01`, se corrigió la errata territorial sustituyendo `Policía MEBAR` (Barranquilla) por `Policía MECAR (Cartagena)`.
+
+5. **Persistencia Reproducible y Migración Oficial**:
+   - Se validó la migración oficial de Alembic `backend/alembic/versions/0055_ingesta_indicadores_reales_cartagena.py`, permitiendo reproducir la siembra certificada en cualquier base de datos (`bd_csh`, `polis_test`, entornos de contingencia).
+   - Se verificó la suite de integración `backend/tests/test_ingesta_indicadores.py`, la cual evalúa directamente la disponibilidad de las 11 fichas con mediciones activas y la ausencia de acrónimos ajenos.
+
+---
+
+### 2. Verificación Estricta de Salvaguardas Institucionales
+
+| Salvaguarda Institucional | Estado | Evidencia Pericial |
+|---|:---:|---|
+| **Preservación BPIN 100% Intacta** | **CUMPLIDA** | Cero modificaciones en identificadores BPIN presupuestales. |
+| **Cero Acrónimos Ajenos** | **CUMPLIDA** | 0 coincidencias de `DNP`, `MGA` y `SINERGIA` en código modificado y en registros de base de datos. |
+| **UI-Policy Estricta** | **CUMPLIDA** | `bun run ui:check` aprobado con 0 infracciones. Uso exclusivo de `Badge`, `Button` y tokens canónicos `@/shared/ui/`. |
+| **Protocolo Zero-Push** | **CUMPLIDA** | Operaciones confinadas exclusivamente al repositorio local en la rama `main` (commit `9e6ecf7`). |
+| **Integridad de Producción (`bd_csh`)** | **CUMPLIDA** | Las 33 mesas territoriales y 36 agendas comunitarias de Cartagena permanecen 100% intactas y operativas. |
+
+---
+
+### 3. Certificación de Quality Gates
+
+- `bun run ui:check`: **APROBADO** (0 infracciones).
+- `bun run check` (`tsc --noEmit` & `eslint .`): **APROBADO** (0 errores TypeScript, 0 advertencias ESLint).
+- `bun test src/features/seguimiento src/features/diagnostico`: **APROBADO** (57 pasados / 0 fallados, 366 aserciones en 167ms).
+- `pytest backend/tests/`: **APROBADO** (108 pasados / 0 fallados en 30.79s).
+- Compilación Turbopack (`bun run build`): **APROBADO** (190 rutas standalone generadas limpiamente en 13.7s).
+- Hot-Verification en vivo (`systemd`):
+  * `GET /api/v1/indicadores/fichas` $\rightarrow$ 11 fichas con `valor_actual > 0` y `tiene_mediciones = true`.
+  * `GET /api/v1/indicadores/cadena-valor` $\rightarrow$ Insumo (2), Producto (3), Resultado (6) con semáforos activos.
+  * `GET /plataforma/seguimiento` $\rightarrow$ `HTTP/1.1 200 OK` (Next.js sirviendo la vista ciudadana sin estado "Sin medición").
+
+---
+
+### 4. Veredicto Pericial y Siguiente Paso
+
+La tarea **[INGESTA-DATOS-01]** queda formalmente **CERRADA Y APROBADA AL 100%**.  
+
+Con este dictamen, se autoriza el paso inmediato a la siguiente tarea de la **FASE 2**:
+- **Siguiente Tarea:** **`[NOTIF-FEEDBACK-01]`** (*Motor Transaccional de Notificaciones y Radicación Ciudadana — Cero silencio administrativo; cada aporte ciudadano genera radicado y seguimiento POL-2026-XXXX*).
