@@ -1583,3 +1583,95 @@ La tarea **[INGESTA-DATOS-01]** queda formalmente **CERRADA Y APROBADA AL 100%**
 
 Con este dictamen, se autoriza el paso inmediato a la siguiente tarea de la **FASE 2**:
 - **Siguiente Tarea:** **`[NOTIF-FEEDBACK-01]`** (*Motor Transaccional de Notificaciones y Radicación Ciudadana — Cero silencio administrativo; cada aporte ciudadano genera radicado y seguimiento POL-2026-XXXX*).
+
+---
+
+## 🏛️ Dictamen EAF — Contra-Auditoría Pericial [NOTIF-FEEDBACK-01] — 2026-10-11
+
+**Tarea Auditada:** `[NOTIF-FEEDBACK-01]` (Motor Transaccional de Notificaciones y Radicación Ciudadana Inmutable)  
+**Plan Maestro:** `bridge/00_plan_maestro_excelencia_y_adopcion.md` (Fase 2: Feedback Loop y Adopción Ciudadana — Tarea 2.2)  
+**Commit Evaluado:** `27e6190`  
+**Autor del Commit:** `agy2` (Desarrollador / EDD — `tmux a -t agy2`)  
+**Evaluador / Auditor:** `agy` (Coordinador General y Auditor Forense EAF — `tmux a -t agy`)  
+**Resultado de la Contra-Auditoría:** **CONFORME AL 100% (APROBADO SIN OBSERVACIONES)**  
+
+---
+
+### 1. Verificación Forense de Capacidades Técnicas e Integridad
+
+1. **Secuencia Atómica y Radicación Inmutable en Base de Datos**:
+   - Se constató en `bd_csh` la existencia y correcto funcionamiento de la secuencia `participacion_ciudadana.secuencia_radicados_propuestas` (iniciando en 1, con incremento de a 1).
+   - Se auditó la migración oficial Alembic `backend/alembic/versions/0056_radicacion_ciudadana_y_notificaciones.py`, certificando que la columna `codigo_radicado` en `participacion_ciudadana.propuestas_ciudadanas` cuenta con índice único (`ix_propuestas_ciudadanas_codigo_radicado`) y expresión `DEFAULT` a nivel de servidor:
+     $$\mathbf{('POL\text{-}2026\text{-}' \parallel \text{lpad(nextval('participacion\_ciudadana.secuencia\_radicados\_propuestas')::text, 4, '0'))}$$
+   - Se verificó que cualquier inserción directa (vía SQL o vía backend) genera inmediatamente y de forma determinista el código oficial `POL-2026-XXXX`.
+
+2. **Tabla Transaccional de Notificaciones y Auditoría Legal**:
+   - Se verificó en `bd_csh` la estructura de `participacion_ciudadana.notificaciones_transaccionales` con identificador UUIDv7, columna `codigo_radicado`, destinatario, tipo de evento (`radicacion`, `cambio_estado`, `priorizacion`), asunto, cuerpo HTML, estado de envío (`enviado`, `simulado`, `fallido`), marcas temporales e índices de alto rendimiento.
+   - Se constató en caliente el primer registro oficial: radicado `POL-2026-0001`, destinatario `veeduria.getsemani@cartagena.gov.co`, asunto institucional y estado de despacho `simulado`.
+
+3. **Arquitectura Backend Desacoplada y Resiliente**:
+   - En [`backend/app/modules/notificaciones/`](file:///root/polis/backend/app/modules/notificaciones/), se implementaron `models.py`, `schemas.py`, `service.py`, `router.py` y `correo.py`.
+   - Las plantillas HTML incorporan los estándares institucionales del Distrito de Cartagena de Indias: membrete oficial de la Alcaldía Mayor, colores Ember (`#D97706`) y Lagoon (`#0D9488`), referencia a la Sentencia C-150 de 2015 de la Corte Constitucional (proscripción del silencio administrativo), resumen del aporte cívico y enlace público directo de seguimiento.
+   - El motor de despacho `despachar_correo` maneja excepciones y ausencia de SMTP conmutando transparentemente a estado `simulado`, garantizando que la creación de aportes cívicos **jamás resulte bloqueada ni interrumpida**.
+
+4. **Contratos de Acceso y Rutas Públicas (PBAC)**:
+   - Endpoint de consulta pública `GET /api/v1/notificaciones/radicado/{codigo_radicado}`:
+     * Consulta con radicado válido (`POL-2026-0001`): `HTTP/1.1 200 OK` con DTO estructurado `ConsultaRadicadoRespuesta`.
+     * Consulta con radicado inexistente (`POL-2026-9999`): `HTTP/1.1 404 Not Found` controlado sin stack trace.
+     * Acceso abierto sin credenciales obligatorio para garantizar la trazabilidad comunitaria sin fricción.
+   - Endpoint de auditoría `GET /api/v1/notificaciones/historial`:
+     * Sin token: `HTTP/1.1 401 Unauthorized`.
+     * Protegido estrictamente bajo la política PBAC `permiso:auditoria:leer@declarada`.
+   - Documentación actualizada en [`docs/permisos-api.md`](file:///root/polis/docs/permisos-api.md) y validada por suite automatizada de políticas de acceso.
+
+5. **Frontend con Ergonomía Cívica y UI-Policy Estricta**:
+   - `AporteEditorPanel` ([`src/features/aportes/panels/aporte-editor-panel.tsx`](file:///root/polis/src/features/aportes/panels/aporte-editor-panel.tsx)):
+     * Campo opcional `correo_contacto` con validación Zod para ciudadanos anónimos.
+     * Tarjeta de confirmación con icono institucional `FileCheck`, badge del radicado `POL-2026-XXXX` y botón reactivo para **"Copiar Radicado"** con feedback táctil inmediato.
+   - Integración transversal en la plataforma:
+     * `linea-panel.tsx`: Badge institucional visible en cada tarjeta de aporte.
+     * `rendicion-cuentas-tab.tsx`: Visualización de radicado en la tabla de devolución motivada C-150.
+     * Cero etiquetas nativas HTML no autorizadas; estricto uso de `@/shared/ui/`.
+
+---
+
+### 2. Verificación Estricta de Salvaguardas Institucionales
+
+| Salvaguarda Institucional | Estado | Evidencia Pericial |
+|---|:---:|---|
+| **Preservación BPIN 100% Intacta** | **CUMPLIDA** | Cero modificaciones en identificadores BPIN presupuestales. `git diff` verificado y limpio al 100%. |
+| **Cero Acrónimos Ajenos** | **CUMPLIDA** | 0 menciones a `DNP`, `MGA` o `SINERGIA` en código fuente, modelos o interfaces. Verificado pericialmente con `grep`. |
+| **UI-Policy Estricta** | **CUMPLIDA** | `bun run ui:check` aprobado con 0 infracciones. Uso exclusivo de componentes `@/shared/ui/` (`Button`, `Badge`, `Input`, `FormField`). |
+| **Resiliencia de Transacciones** | **CUMPLIDA** | El despacho transaccional conmuta a `simulado` sin abortar ni revertir el aporte en base de datos. |
+| **Integridad de Producción (`bd_csh`)** | **CUMPLIDA** | Las 33 mesas territoriales, 36 agendas comunitarias y 11 fichas técnicas de indicadores permanecen 100% intactas y operativas. |
+| **Protocolo Zero-Push** | **CUMPLIDA** | Exclusivamente commits atómicos locales en la rama `main` (commit `27e6190`). |
+
+---
+
+### 3. Certificación de Quality Gates
+
+- `bun run ui:check`: **APROBADO** (0 infracciones de controles, tokens, capas o accesibilidad).
+- `bun run check` (`tsc --noEmit` & `eslint .`): **APROBADO** (0 errores TypeScript, 0 advertencias ESLint).
+- `bun test`: **APROBADO** (393 pasados / 0 fallados en 40 archivos de prueba).
+- `pytest backend/tests/`: **APROBADO** (106 pasados / 0 fallados en 23.14s, cubriendo radicación, notificaciones, aportes y access policy).
+- `alembic check`: **APROBADO** (`No new upgrade operations detected.` — sincronía total entre base de datos y modelos SQLAlchemy).
+- Compilación Turbopack (`bun run build`): **APROBADO** (190 rutas standalone generadas limpiamente).
+- Servicios `systemd` (`polis-backend` & `polis-frontend`): **ACTIVOS Y SALUDABLES**.
+- Verificación en caliente (Hot-Verification):
+  * `POST /api/v1/aportes` $\rightarrow$ Genera aporte con `codigo_radicado = "POL-2026-0001"`.
+  * `GET /api/v1/notificaciones/radicado/POL-2026-0001` $\rightarrow$ `HTTP/1.1 200 OK` con respuesta canónica.
+  * `GET /api/v1/notificaciones/radicado/POL-2026-9999` $\rightarrow$ `HTTP/1.1 404 Not Found`.
+  * `GET /api/v1/notificaciones/historial` $\rightarrow$ `HTTP/1.1 401 Unauthorized` (protegido).
+  * `GET /plataforma/seguimiento` $\rightarrow$ `HTTP/1.1 200 OK`.
+
+---
+
+### 4. Veredicto Pericial y Siguiente Tarea del Plan Maestro
+
+La tarea **`[NOTIF-FEEDBACK-01]`** queda formalmente **CERRADA Y APROBADA AL 100%**.
+
+Con este cierre, el estado de la **FASE 2** del Plan Maestro (`bridge/00_plan_maestro_excelencia_y_adopcion.md`) avanza al siguiente hito:
+- **Hito Culminado:** `[INGESTA-DATOS-01]` ✅ (Indicadores Reales Certificados)
+- **Hito Culminado:** `[NOTIF-FEEDBACK-01]` ✅ (Motor Transaccional de Radicación y Notificaciones)
+- **Siguiente Tarea de la FASE 2:** **`[CANAL-WHATSAPP-01]`** (*Captura Conversacional Rápida de Propuestas — Ingesta comunitaria vía webhook / audio a texto y radicación automática*).
+
