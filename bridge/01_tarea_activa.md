@@ -1,91 +1,97 @@
-# TAREA ACTIVA: [AUD-COMP-04] AUDITORÍA DE FLUJOS CÍVICOS PÚBLICOS, MODOS TERRITORIALES Y RESILIENCIA DE CAMPO
-## INSPECCIÓN DE PORTADA PÚBLICA, ASISTENCIA A MESAS (LEY 1757), MODO BARRIO (/BARRIO), FORMULARIOS (/F/[SLUG]) Y PWA OFFLINE CON INDEXEDDB
+# TAREA ACTIVA: [AUD-COMP-05] CONSISTENCIA NORMATIVA, SALVAGUARDAS INSTITUCIONALES Y REGLAS DE DISEÑO UI-POLICY
+## INSPECCIÓN DE PRESERVACIÓN BPIN, SANEAMIENTO LEGAL (DECRETO 037 / OBS-11), CERO ACRÓNIMOS AJENOS EN MODOS TERRITORIALES, HABEAS DATA (LEY 1581), REGLA DE CAPAS UI004 Y A11Y WCAG 2.1 AA
 
 **Fecha:** Domingo, 11 de Octubre de 2026  
-**Fase:** FASE 2: Completitud Funcional E2E y Erradicación de Mocks (Tarea 2.2 — Cierre de Fase 2)  
+**Fase:** FASE 3: Consistencia Normativa, UI-Policy y Resiliencia Operativa (Tarea 3.1)  
 **Plan Maestro:** `bridge/00_plan_maestro_auditoria_completitud_consistencia.md`  
 **Asignada a:** `agy2` (Desarrollador / EDD — `tmux a -t agy2`)  
 **Supervisor / Auditor:** `agy` (Coordinador General y Auditor Forense EAF — `tmux a -t agy`)  
-**Severidad:** ALTA / FE PÚBLICA, PARTICIPACIÓN CIUDADANA Y RESILIENCIA TERRITORIAL  
+**Severidad:** CRÍTICA / BLINDAJE JURÍDICO, INSTITUCIONAL, ARQUITECTÓNICO Y ACCESIBILIDAD UNIVERSAL  
 
 ---
 
 ## 🎯 1. Justificación y Alcance de la Tarea
 
-La legitimidad de la política pública de seguridad humana descansa en la participación real y verificable de la ciudadanía cartagenera, tanto en las asambleas urbanas y corregimentales como a través de medios digitales accesibles.
+La plataforma POLIS 2026 debe satisfacer no solo los más altos estándares de rendimiento y completitud funcional, sino también una disciplina normativa, jurídica y arquitectónica impecable. Un desfase legal o una infracción en la jerarquía de componentes comprometería la fe pública y la sostenibilidad a largo plazo del sistema distrital.
 
-Esta tarea exige auditar con rigor forense todos los **canales cívicos de acceso público y resiliencia territorial**:
-1. **Portada Institucional (`/`):** Navegación pública, accesos táctiles y coherencia con la identidad distrital.
-2. **Planilla de Asistencia a Mesas (`/asistencia/[mesaId]`):** Cumplimiento formal de la Ley Estatutaria 1757 de 2015, radicación inmediata y contingencia local.
-3. **Modo Barrio Ultraligero (`/barrio`):** Arquitectura de 3 pasos, catálogo de 16 barrios populares de Cartagena, presupuesto de datos <150 KB, emisión de radicados `POL-2026-XXXX`, sistema de apoyos y difusión en WhatsApp.
-4. **Formularios de Consulta Ciudadana (`/f/[slug]`):** Carga en frío, resiliencia y persistencia de respuestas.
-5. **Modo PWA Offline e IndexedDB (`polis_offline_db`):** Service worker `polis-pwa-v1`, cola outbox de sincronización en segundo plano y badge accesible de estado de conectividad.
-
----
-
-## 📋 2. Requerimientos Técnicos y Puntos de Inspección
-
-### A. Planilla de Asistencia Presencial (Ley 1757 de 2015)
-1. Verificar en `src/app/asistencia/[mesaId]/asistencia-cliente.tsx`:
-   - Cumplimiento de la Ley 1757 de 2015 y Ley 1581 de 2012 (cero menciones al "Decreto 037").
-   - Captura de cédula, nombres, teléfono, enfoque diferencial y firma/consentimiento.
-   - Si hay conexión: persistencia directa vía `POST /api/v1/mesas/{mesaId}/participantes`.
-   - Si no hay conexión o falla la red: almacenamiento automático en `asistencias_pendientes` de IndexedDB con comprobante visual para el ciudadano.
-
-### B. Modo Barrio Ultraligero (`/barrio`)
-1. Verificar en `src/features/barrio/`:
-   - Carga inicial liviana (<150 KB transferidos, verificado con curl).
-   - Catálogo de 16 territorios populares y corregimientos en `barrios-cartagena.ts`.
-   - Pestaña 1 (¿Qué se acordó?): Acuerdos comunitarios reales de plenaria por entidad.
-   - Pestaña 2 (¿Qué propones tú?): Radicación formal de aportes con emisión de `POL-2026-XXXX` en línea y `POL-2026-OFFLINE-XXXX` offline, botón de difusión por WhatsApp y muro de propuestas con toggle reactivo de apoyo (1 ciudadano = 1 voto).
-   - Pestaña 3 (¿Cómo va el barrio?): Semáforo cívico de alto contraste con fuentes de Medicina Legal, Policía SIEDCO y Cartagena Cómo Vamos.
-
-### C. Formularios Públicos (`/f/[slug]`)
-1. Constatar que las rutas `/f/[slug]` carguen reactivamente consultando la API de formularios sin fallar en frío y persistan las respuestas ciudadanas en `participacion_ciudadana.respuestas_formulario`.
-
-### D. Modo PWA Offline e IndexedDB
-1. Verificar la integridad de `public/manifest.json` y `public/sw.js`.
-2. Verificar que `polis_offline_db` almacene en `asistencias_pendientes` y `propuestas_pendientes`.
-3. Verificar que el Outbox Sync Manager auto-sincronice al detectar el evento `online` o cambio de visibilidad, respetando el límite de 5 reintentos.
-4. Verificar que `offline-status-badge.tsx` en `topbar.tsx` refleje fielmente el estado de red y el conteo de pendientes.
+Esta tarea exige auditar y blindar cinco (5) frentes periciales no negociables:
+1. **Preservación Inviolable de Códigos BPIN:** Asegurar la integridad de los códigos distritales de proyecto `BPIN-2026-CTG-XXXX` en los módulos de alternativas y asignación presupuestal, y comprobar la erradicación estricta de BPINs fabricados en compromisos PAS (mandato AUD-13).
+2. **Saneamiento Normativo y Cero Acrónimos Ajenos en Canales Territoriales:**
+   - Erradicación taxativa de acrónimos tecnocráticos ajenos (`DNP`, `MGA`, `SINERGIA`) en datos e interfaces cívico-comunitarias (`/barrio`, catálogos territoriales, planillas ciudadanas).
+   - Verificación de la salvedad institucional obligatoria de descargo (OBS-11) en compromisos PAS: `"Catálogo propuesto por el equipo, PENDIENTE de validación institucional, no proviene del Decreto 037"`.
+   - Soporte exclusivo de la Ley Estatutaria 1757 de 2015 y Ley 1581 de 2012 en planillas de asistencia a mesas.
+3. **Habeas Data (Ley 1581 de 2012) y Secreto Estadístico:**
+   - Validación de consentimientos expresos en captura de datos cívicos.
+   - Verificación del filtro defensivo de Sentry/GlitchTip (`backend/app/core/sentry.py`): censura estricta (`[REDACTED]`) de contraseñas, tokens, cédulas, teléfonos y enmascaramiento de IPs (`[FILTERED_HABEAS_DATA]`).
+   - Cero exposición de datos sensibles no autorizados en respuestas JSON de la API.
+4. **Regla de Capas Arquitectónicas UI004:**
+   - Ejecución y validación estricta de `scripts/ui-policy.mjs` (`bun run ui:check`).
+   - Certificación de independencia unidireccional: `@/shared/` no importa `@/features/`, `@/app/` ni `@/core/`; y `@/core/` no importa `@/features/` ni `@/app/`.
+5. **Accesibilidad Universal (WCAG 2.1 AA):**
+   - Verificación de contraste semántico de tokens, etiquetas ARIA accesibles, soporte de navegación por teclado y cero violaciones serias o críticas en auditorías `axe-core`.
 
 ---
 
-## 🧪 3. Pruebas y Criterios de Aceptación
+## 📋 2. Puntos de Inspección Forense y Requerimientos de Verificación
 
-1. **Pruebas Automatizadas de Frontend:**
-   - `src/shared/offline/tests/offline-sync.test.ts` (9/9 pruebas aprobadas).
-   - `src/features/barrio/tests/barrio-view.test.ts` (5/5 pruebas aprobadas).
-   - `src/features/mesas/` (28/28 pruebas aprobadas).
-2. **Quality Gates Inviolables:**
-   - `bun run ui:check` (0 infracciones).
-   - `bun run check` (0 errores TypeScript, 0 warnings ESLint).
-   - `bun test` (100% de tests aprobados).
-   - `pytest backend/tests/` (100% de tests aprobados).
-   - `bun run build` (Compilación Turbopack exitosa).
-3. **Hot-Verification HTTP:**
-   - `curl -sI http://127.0.0.1:3000/manifest.json` $\rightarrow$ 200 OK.
-   - `curl -sI http://127.0.0.1:3000/sw.js` $\rightarrow$ 200 OK.
-   - `curl -sI http://127.0.0.1:3000/barrio` $\rightarrow$ 200 OK (<150 KB).
-   - `curl -sI http://127.0.0.1:3000/asistencia/mt-001` $\rightarrow$ 200 OK.
-4. **Integridad de Base de Datos:**
-   - 33 mesas territoriales, 36 agendas comunitarias y 11 fichas técnicas de indicadores 100% intactas.
+### A. Preservación y Trazabilidad de Códigos BPIN
+1. Auditar `src/features/alternativas/` y `backend/app/modules/presupuesto/`:
+   - Verificar que los códigos BPIN distritales (`BPIN-2026-CTG-XXXX`) en el catálogo institucional de alternativas y costeo presupuestal se preserven y validen con rigor.
+2. Auditar `backend/tests/test_integridad_compromisos.py`:
+   - Ejecutar la prueba forense que certifica que en `seguimiento.compromisos_pas` NO existan BPINs fabricados ni atribuciones arbitrarias (`bpin_relacionado` debe ser inexistente o estrictamente certificado).
+
+### B. Saneamiento Normativo y Cero Acrónimos Ajenos en Canales Comunitarios
+1. En datos comunitarios (`src/features/barrio/data/barrios-cartagena.ts`) y vistas cívicas (`src/features/barrio/views/barrio-view.tsx`):
+   - Corroborar mediante script/test que ningún dato desplegado al ciudadano contenga los acrónimos `DNP`, `MGA` o `SINERGIA`.
+2. En compromisos PAS (`src/features/seguimiento/data/compromisos-pas.data.ts` y tabla `seguimiento.compromisos_pas`):
+   - Confirmar que todo compromiso no oficializado incorpore el descargo institucional:
+     `"Catálogo propuesto por el equipo, PENDIENTE de validación institucional, no proviene del Decreto 037"`, con `meta_validada: false`.
+3. En planilla de asistencia (`src/app/asistencia/[mesaId]/asistencia-cliente.tsx`):
+   - Confirmar sustento formal en Ley Estatutaria 1757 de 2015 y Ley 1581 de 2012, sin invocación indebida de decretos de planeación que confundan al ciudadano.
+
+### C. Habeas Data y Blindaje de Telemetría (Ley 1581 de 2012)
+1. Auditar `backend/app/core/sentry.py`:
+   - Verificar que la función `_filtrar_pii` intercepte encabezados (`authorization`, `cookie`), campos sensibles (`password`, `contrasena`, `token`, `secret`, `cedula`, `documento`, `telefono`, `correo`) y enmascare `ip_address` a `[FILTERED_HABEAS_DATA]`.
+2. Ejecutar prueba unitaria o de integración que certifique la sanitización activa de eventos de error antes de su eventual despacho.
+
+### D. Regla Arquitectónica de Capas UI004 y Política de UI
+1. Ejecutar `bun run ui:check` y `bun run ui:policy:test`.
+2. Constatar que 0 archivos infrinjan las reglas:
+   - `UI001`: Controles nativos encapsulados.
+   - `UI002`: Primitivos externos radicados en `src/shared/ui/`.
+   - `UI003`: Cero colores literales fuera de `tokens.css`.
+   - `UI004`: `shared` y `core` libres de dependencias circulares hacia `features` o `app`.
+   - `UI005`: Uso de `SidePanel` / `PanelHost` para flujos canónicos.
+
+### E. Accesibilidad Universal WCAG 2.1 AA
+1. Ejecutar la suite de auditoría E2E con motor axe-core (`node scripts/e2e-smoke-flujos-criticos.mjs`).
+2. Certificar cero (0) violaciones de impacto "critical" o "serious".
 
 ---
 
-## 🔒 4. Salvaguardas Inviolables
+## 🧪 3. Protocolo de Pruebas y Quality Gates Obligatorios
 
-1. **Preservación Inviolable de BPIN:** Códigos distritales intactos.
-2. **Cero Acrónimos Ajenos:** Cero referencias a DNP, MGA o SINERGIA.
-3. **UI-Policy Estricta (UI004):** Componentes canónicos `@/shared/ui/` y arquitectura de capas.
-4. **Protocolo Zero-Push:** Commits atómicos confinados estrictamente en la rama local `main`.
+| Verificación | Comando / Prueba | Resultado Esperado |
+|---|---|---|
+| **Integridad BPIN & OBS-11** | `/root/polis/venv/bin/pytest backend/tests/test_integridad_compromisos.py` | 100% verde (sin BPIN ficticio, OBS-11 cumplido) |
+| **Acrónimos en Modo Barrio** | `bun test src/features/barrio/tests/barrio-view.test.ts` | 5/5 verde (cero DNP, MGA, SINERGIA en datos cívicos) |
+| **Política UI y Capas UI004** | `bun run ui:check` y `bun run ui:policy:test` | Aprobado, 0 violaciones |
+| **Axe-core A11y E2E** | `node scripts/e2e-smoke-flujos-criticos.mjs` | 9/9 flujos aprobados, 0 violaciones serias/críticas |
+| **TypeCheck & Linter** | `bun run check` | 0 errores TypeScript, 0 advertencias ESLint |
+| **Frontend Test Suite** | `bun test` | 412/412 pruebas pasadas |
+| **Backend Test Suite** | `/root/polis/venv/bin/pytest backend/tests/` | 100% verde |
+| **Turbopack Build** | `bun run build` | Compilación limpia, 191/191 páginas estáticas |
 
 ---
 
-## 🚀 5. Instrucciones de Entrega para agy2
+## 📦 4. Entregables y Salvaguardas
 
-1. Auditar los flujos cívicos, asistencia, Modo Barrio, formularios y PWA offline.
-2. Verificar todos los Quality Gates y pruebas unitarias/hot-verification.
-3. Registrar el informe pericial detallado en `bridge/02_resultado_agy2.md`.
-4. Generar el commit atómico correspondiente: `audit(civico): flujos publicos asistencia modo barrio y pwa offline AUD-COMP-04`.
-5. Notificar a `agy` en la sesión tmux `%0` para la contra-auditoría pericial.
+1. **Matriz Pericial de Consistencia Normativa y UI-Policy:**
+   - Tabla de verificación punto por punto en `bridge/02_resultado_agy2.md`.
+2. **Salvaguardas Inviolables:**
+   - Base de datos `bd_csh` intacta (33 mesas, 36 agendas, 11 fichas técnicas).
+   - Códigos BPIN distritales inalterados.
+   - Cero push a repositorios remotos (exclusivo local en `main`).
+3. **Commit Atómico Local:**
+   - Registrar el commit con formato: `audit(normativa): verificacion bpin obs-11 acronimos ui004 y a11y AUD-COMP-05`.
+4. **Notificación:** Notificar a `agy` en tmux `%0` para contra-auditoría pericial.
