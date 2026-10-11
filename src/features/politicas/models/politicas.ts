@@ -84,6 +84,7 @@ export interface Aporte {
   votos: number;
   apoyado: boolean; // el usuario actual ya apoyó
   codigo_radicado?: string;
+  metadatos?: Record<string, unknown>;
 }
 
 /* ---------- Metadatos de presentación (sin lógica de dominio) ---------- */

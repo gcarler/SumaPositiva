@@ -43,6 +43,8 @@ interface PoliticasState {
     fotos?: string[];
     /** Código institucional de radicación POL-2026-XXXX */
     codigo_radicado?: string;
+    /** Metadatos adicionales de origen o canal */
+    metadatos?: Record<string, unknown>;
   }) => Aporte | null;
   toggleApoyo: (lineaId: string, aporteId: string) => void;
 
@@ -61,7 +63,7 @@ export const usePoliticasStore = create<PoliticasState>((set) => ({
   setEstadoFiltro: (estadoFiltro) => set({ estadoFiltro }),
   setBusqueda: (busqueda) => set({ busqueda }),
 
-  crearAporte: ({ politicaId, lineaId, tipo, titulo, contenido, autor, autorId, fotos, codigo_radicado }) => {
+  crearAporte: ({ politicaId, lineaId, tipo, titulo, contenido, autor, autorId, fotos, codigo_radicado, metadatos }) => {
     const aporte: Aporte = {
       id: `apo-nuevo-${++aporteSeq}`,
       lineaId,
@@ -75,6 +77,7 @@ export const usePoliticasStore = create<PoliticasState>((set) => ({
       votos: 0,
       apoyado: false,
       codigo_radicado,
+      metadatos,
     };
 
     let created: Aporte | null = null;

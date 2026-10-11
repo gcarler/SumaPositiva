@@ -313,4 +313,13 @@ El listado público existente sigue mostrando líneas activas. No se conceden nu
 | GET | /api/v1/notificaciones/radicado/{codigo_radicado} | publico | Consulta pública del estado de tramitación ciudadana por radicado POL-2026-XXXX. |
 | GET | /api/v1/notificaciones/historial | permiso:auditoria:leer@declarada | Supervisión forense e institucional del historial de notificaciones transaccionales despachadas. |
 
+## Canal Conversacional WhatsApp e Ingesta Comunitaria — decisión CANAL-WHATSAPP-01
+
+| Método | Ruta | Control | Motivo o condición |
+| --- | --- | --- | --- |
+| GET | /api/v1/canales/whatsapp/webhook | publico | Handshake de suscripción y verificación exigido por Meta WhatsApp Cloud API. |
+| POST | /api/v1/canales/whatsapp/webhook | publico | Recepción asíncrona de eventos y mensajes comunitarios entrantes desde Meta. |
+| POST | /api/v1/canales/whatsapp/simular | publico | Ingesta de reportes y propuestas comunitarias directas para pruebas y auditoría forense. |
+
+
 

@@ -9,6 +9,7 @@ import { formatDistanceToNow } from "date-fns";
 import { es } from "date-fns/locale";
 import {
   ArrowUp,
+  MessageSquare,
   MessageSquarePlus,
   Target,
   Images,
@@ -218,6 +219,15 @@ function AporteCard({
             {aporte.codigo_radicado}
           </Badge>
         )}
+        {aporte.metadatos?.canal === "whatsapp" && (
+          <Badge
+            variant="outline"
+            className="gap-1 font-sans text-[10px] text-[var(--accent)] border-[var(--border-strong)]"
+          >
+            <MessageSquare className="size-3" strokeWidth={1.5} />
+            <span>WhatsApp</span>
+          </Badge>
+        )}
         <TipoAporteChip tipo={aporte.tipo} />
       </div>
 
@@ -323,6 +333,7 @@ export function LineaPanel({
         ? el.archivos_adjuntos.filter((f): f is string => typeof f === "string")
         : [],
       codigo_radicado: el.codigo_radicado,
+      metadatos: el.metadatos,
     }));
 
     if (!linea?.aportes) return mapeados;
