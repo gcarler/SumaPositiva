@@ -2497,3 +2497,58 @@ En la ciudad de Cartagena de Indias, a las 19:15 UTC del domingo 11 de octubre d
    - Servicios systemd estables en producción, Nginx con cifrado moderno TLS 1.3, respaldos GFS automáticos y watchdog de autosanación activo.
 
 **DICTAMEN FINAL GLOBAL: LA PLATAFORMA POLIS CARTAGENA 2026 SE DECLARA 100% COMPLETA, CONSISTENTE, BLINDADA Y APTA PARA SU OPERACIÓN CONTINUA EN PRODUCCIÓN DISTRITAL.**
+
+---
+
+## 🏛️ DICTAMEN PERICIAL FORENSE EAF — TAREA [SEC-HARDEN-01]
+### HARDENING DE PUERTOS, AISLAMIENTO NEXT.JS A LOCALHOST Y FIREWALL UFW
+**Fecha de Emisión:** Domingo, 11 de Octubre de 2026  
+**Evaluador:** Coordinador General y Auditor Forense EAF `agy` (`tmux a -t agy`)  
+**Responsable Técnico Auditado:** Desarrollador / EDD `agy2` (`tmux a -t agy2`)  
+**Commit Evaluado:** `18a4293` (`sec(harden): aislamiento nextjs a localhost y activacion firewall ufw SEC-HARDEN-01`)  
+**Referencia Técnica:** `bridge/01_tarea_activa.md` y `bridge/02_resultado_agy2.md`  
+**Plan Maestro:** `bridge/00_plan_maestro_blindaje_geoprocesamiento_resiliencia.md` (Fase 1: Tarea 1.1)  
+**Veredicto Oficial:** **CONFORME Y APROBADO AL 100% SIN OBSERVACIONES (APROBACIÓN TOTAL)**
+
+---
+
+### 1. Hallazgos de la Contra-Auditoría Técnica Independiente
+
+1. **Aislamiento Estricto de Next.js (`127.0.0.1:3000`)**:
+   - Inspección directa de sockets con `ss -tulpn | grep 3000`: el proceso Next.js escucha exclusivamente en `127.0.0.1:3000` (`pid 3409362`).
+   - Se erradica por completo la exposición externa del puerto 3000, forzando a todo tráfico a atravesar Nginx con TLS 1.3 y cabeceras de seguridad.
+
+2. **Cortafuegos Perimetral UFW Activo y Hermético**:
+   - Estado verificado: `Status: active`. Política por defecto: `deny incoming`, `allow outgoing`.
+   - Reglas de entrada estrictamente restringidas a:
+     * **777/tcp:** SSH Administrativo (preservado sin interrupción).
+     * **80/tcp:** HTTP Nginx.
+     * **443/tcp:** HTTPS Nginx.
+   - Puertos internos 3000, 4000, 5432 y 8000 blindados e inaccesibles desde internet.
+
+3. **Supervisión Continua Fail2ban**:
+   - Servicio `fail2ban.service` verificado en estado `active (running)`.
+
+4. **Inviolabilidad de Producción (`bd_csh`) y Servicios**:
+   - Verificación de tablas base en PostgreSQL: 33 mesas, 36 agendas, 11 fichas técnicas y 17 actores estratégicos 100% intactos.
+   - Endpoints `/api/v1/health/ready` y `https://127.0.0.1/` respondiendo HTTP 200 OK de manera instantánea.
+
+---
+
+### 2. Certificación Independiente de Quality Gates
+
+- `ss -tulpn | grep 3000`: **127.0.0.1:3000 (Aislamiento verificado)**.
+- `ufw status verbose`: **Status: active (Filtrado perimetral conforme)**.
+- `systemctl is-active fail2ban`: **active**.
+- `bun run ui:check`: **APROBADO** (0 infracciones).
+- `bun run check` (`tsc --noEmit` & `eslint .`): **APROBADO** (0 errores, 0 advertencias).
+- `bun test`: **412/412 pasadas**.
+
+---
+
+### 3. Dictamen Final y Autorización de Avance a la Siguiente Tarea
+
+La tarea **`[SEC-HARDEN-01]`** queda formalmente **CERRADA, APROBADA AL 100% Y CERTIFICADA PARA PRODUCCIÓN**.
+
+Se autoriza el avance a la siguiente tarea de la **FASE 1**:
+- **Siguiente Tarea:** **`[SEC-HARDEN-02]`** (*Endurecimiento de Nginx: Rate Limiting, Redirección 301 Universal en Puerto 80 y Cabeceras de Seguridad Avanzadas*).
