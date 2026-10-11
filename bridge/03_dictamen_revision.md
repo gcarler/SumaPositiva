@@ -1816,8 +1816,89 @@ Se ejecutó un script forense independiente contra `http://127.0.0.1:8000/api/v1
 
 La funcionalidad **`[FEAT-APOYOS-VOTO-01]`** queda formalmente **CERRADA Y APROBADA AL 100%**.
 
-Se autoriza el despliegue y se ratifica la hoja de ruta para la siguiente tarea prioritaria:
-- **Siguiente Tarea:** **`[UX-MOVIL-BARRIO-01]`** (*Vista Ciudadana Ultraligera "Modo Barrio" — Carga ultrarrápida <150 KB para smartphones Android de gama de entrada con 3G/4G prepago en sectores populares de Cartagena*).
+---
+
+## 🏛️ DICTAMEN PERICIAL FORENSE EAF — TAREA [UX-MOVIL-BARRIO-01]
+### MODO CIUDADANO ULTRALIGERO ("MODO BARRIO" — /barrio)
+**Fecha de Emisión:** Domingo, 11 de Octubre de 2026  
+**Evaluador:** Coordinador General y Auditor Forense EAF `agy` (`tmux a -t agy`)  
+**Responsable Técnico Auditado:** Desarrollador / EDD `agy2` (`tmux a -t agy2`)  
+**Commit Evaluado:** `6922e9f` (`feat(ux): vista ciudadana ultraligera modo barrio UX-MOVIL-BARRIO-01`)  
+**Referencia Técnica:** `bridge/01_tarea_activa.md` y `bridge/02_resultado_agy2.md`  
+**Veredicto Oficial:** **CONFORME Y APROBADO AL 100% SIN OBSERVACIONES (APROBACIÓN TOTAL)**
+
+---
+
+### 1. Hallazgos de la Contra-Auditoría Técnica Independiente
+
+1. **Arquitectura Cívica de 3 Preguntas en Modo Barrio (`/barrio`)**:
+   - **Catálogo Territorial Extensivo ([`barrios-cartagena.ts`](file:///root/polis/src/features/barrio/data/barrios-cartagena.ts))**: Mapeo completo de 16 sectores populares y corregimientos de Cartagena (Olaya Herrera con sus sectores, Nelson Mandela, El Pozón, San Francisco, Bayunca, Fredonia, Pasacaballos, La Boquilla, Barú, etc.) con sus correspondientes códigos de mesa oficial (`MT-L01-01` a `MT-L03-01` y `MR-RUR-02`), aforo y prioridades.
+   - **Paso 1: ¿Qué se acordó? ([`acuerdos-barrio-tab.tsx`](file:///root/polis/src/features/barrio/components/acuerdos-barrio-tab.tsx))**: Visualización de compromisos distritales estructurados por entidad responsable (Distriseguridad, Secretaría del Interior, OAGRD, Secretaría de Participación), plazos y estados de avance.
+   - **Paso 2: ¿Qué propones tú? ([`propuesta-barrio-tab.tsx`](file:///root/polis/src/features/barrio/components/propuesta-barrio-tab.tsx))**: Formulario exprés en 1 pantalla que asegura sesión cívica anónima (`useCrearAporte`), emite el radicado oficial **`POL-2026-XXXX`**, permite copiar y compartir el texto formal en grupos de WhatsApp del barrio (`api.whatsapp.com`), e integra el muro comunitario con me gusta funcionales usando la mutación optimista [`useToggleApoyo`](file:///root/polis/src/features/aportes/services/use-aportes-queries.ts).
+   - **Paso 3: ¿Cómo va el barrio? ([`semaforo-barrio-tab.tsx`](file:///root/polis/src/features/barrio/components/semaforo-barrio-tab.tsx))**: Semáforo ciudadano de alto contraste para visibilidad bajo luz solar intensa, con indicadores reales de Medicina Legal, Policía Nacional SIEDCO y Cartagena Cómo Vamos (homicidios, hurtos, convivencia, percepción) sin requerir librerías pesadas.
+
+2. **Presupuesto de Rendimiento y Equidad Digital (<150 KB)**:
+   - Se verificó pericialmente el payload HTML inicial transferido en la ruta `http://127.0.0.1:3000/barrio`: **40.13 KB**.
+   - Esto representa un **ahorro de datos del 73%** respecto al presupuesto de 150 KB, garantizando que ciudadanos con conexiones 3G/4G prepago de 100MB a 500MB puedan deliberar sin agotar su saldo.
+   - Cero mapas pesados (Leaflet/Mapbox) ni canvas/WebGL en la ruta de Modo Barrio.
+
+3. **Puntos de Enlace y Navegación Global**:
+   - Botón canónico *"Modo Barrio"* en [`topbar.tsx`](file:///root/polis/src/app/_components/topbar.tsx) con icono `Smartphone` de Lucide.
+   - Enlace directo en [`footer.tsx`](file:///root/polis/src/shared/layout/footer.tsx).
+   - Banner cívico informativo en la vista principal móvil [`page.tsx`](file:///root/polis/src/app/page.tsx).
+   - Botón en `/barrio` para alternar hacia la "Vista Completa".
+
+---
+
+### 2. Verificación Estricta de Salvaguardas Institucionales
+
+| Salvaguarda Institucional | Estado | Evidencia Pericial Independiente |
+|---|:---:|---|
+| **Preservación BPIN 100% Intacta** | **CUMPLIDA** | Cero modificaciones o afectaciones a identificadores de proyectos BPIN distritales. `git diff` 100% limpio. |
+| **Cero Acrónimos Ajenos** | **CUMPLIDA** | 0 menciones a `DNP`, `MGA` o `SINERGIA` en código, modelos o interfaces de Modo Barrio. Verificado con `grep` y blindado con test unitario en `barrio-view.test.ts`. |
+| **UI-Policy Estricta** | **CUMPLIDA** | Uso exclusivo de controles canónicos `@/shared/ui/` (`Button`, `Badge`, `Input`, `Textarea`, `Label`, `Select`) y tokens semánticos oficiales. `bun run ui:check`: 0 incumplimientos. |
+| **Presupuesto de Rendimiento (<150 KB)** | **CUMPLIDA** | Carga inicial de `/barrio` certificada en **40.13 KB**. Cero dependencias gráficas pesadas. |
+| **Inviolabilidad de Producción (`bd_csh`)** | **CUMPLIDA** | Las **33 mesas de diálogo**, **36 agendas comunitarias** y **11 fichas técnicas de indicadores** permanecen 100% intactas en PostgreSQL. |
+| **Protocolo Zero-Push** | **CUMPLIDA** | Commits atómicos locales en la rama `main` (commit `6922e9f`). |
+
+---
+
+### 3. Certificación Independiente de Quality Gates
+
+- `bun run ui:check`: **APROBADO** (0 infracciones de diseño, controles o accesibilidad).
+- `bun run check` (`tsc --noEmit` & `eslint .`): **APROBADO** (0 errores TypeScript, 0 advertencias ESLint).
+- `bun test`: **APROBADO** (398 pasados / 0 fallados en 41 suites, incluyendo los 5 tests de `barrio-view.test.ts`).
+- `pytest backend/tests/`: **APROBADO** (107 pasados / 0 fallados en 22.52s).
+- Compilación Turbopack (`bun run build`): **APROBADO** (191 rutas generadas, incluyendo `/barrio`).
+- Servicios `systemd` (`polis-backend` & `polis-frontend`): **ACTIVOS Y SALUDABLES (200 OK)**.
+
+---
+
+### 4. Certificación Forense en Vivo (Hot-Testing en Producción)
+
+1. **Inspección de la Ruta `/barrio` (`http://127.0.0.1:3000/barrio`)**:
+   - Código HTTP: `200 OK`.
+   - Tamaño del Payload: `40.13 KB`.
+   - Elementos presentes: Marca "POLIS Barrio", selector territorial, pestaña de acuerdos, formulario y semáforo.
+2. **Radicación Comunitaria en Caliente desde Modo Barrio**:
+   - Emisión de sesión cívica anónima.
+   - Petición `POST /api/v1/aportes` con metadatos `{ canal: "modo_barrio", barrio_id: "olaya-herrera", localidad: 2 }`.
+   - Resultado: Radicado oficial emitido **`POL-2026-0005`** con código de estado HTTP 201 Created.
+3. **Consistencia de PostgreSQL `bd_csh`**:
+   - 33 mesas de diálogo intactas.
+   - 36 agendas comunitarias intactas.
+   - 11 fichas de indicadores intactas.
+   - 5 propuestas ciudadanas radicadas (`POL-2026-0001` a `POL-2026-0005`).
+
+---
+
+### 5. Dictamen Final y Autorización de Continuidad
+
+La funcionalidad **`[UX-MOVIL-BARRIO-01]`** queda formalmente **CERRADA Y APROBADA AL 100%**.
+
+Se autoriza el despliegue del Modo Barrio y se habilita la siguiente tarea de la **FASE 3**:
+- **Siguiente Tarea:** **`[PWA-OFFLINE-01]`** (*Modo PWA Offline con Service Worker e IndexedDB para Facilitadores Rurales e Insulares en Islas del Rosario, Barú y corregimientos norte de Cartagena*).
+
 
 
 
