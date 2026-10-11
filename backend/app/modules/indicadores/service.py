@@ -35,7 +35,7 @@ class IndicadoresService:
         datos: FichaIndicadorActualizar,
         usuario_id: uuid.UUID | None = None,
     ) -> FichaIndicadorRespuesta:
-        # Salvaguarda metodológica DNP: prohibido alterar fórmula matemática o línea base histórica
+        # Salvaguarda metodológica institucional: prohibido alterar fórmula matemática o línea base histórica
         salvaguardas = {
             "linea_base_valor": datos.linea_base_valor,
             "linea_base_anio": datos.linea_base_anio,
@@ -48,7 +48,7 @@ class IndicadoresService:
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail=(
                     f"Salvaguarda institucional: Prohibido modificar la fórmula matemática o la línea base histórica "
-                    f"del DNP ({', '.join(intentos)}). Estos parámetros oficiales son inmutables."
+                    f"oficial ({', '.join(intentos)}). Estos parámetros oficiales son inmutables."
                 ),
             )
 
@@ -58,7 +58,7 @@ class IndicadoresService:
         ):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Salvaguarda institucional: Prohibido sobreescribir atributos matemáticos o línea base DNP en metadatos.",
+                detail="Salvaguarda institucional: Prohibido sobreescribir atributos matemáticos o línea base oficial en metadatos.",
             )
 
         async with transaction(self.repository.session):
@@ -92,7 +92,7 @@ class IndicadoresService:
                 accion="ACTUALIZAR_METADATOS_FICHA_INDICADOR",
                 usuario_id=usuario_id,
                 causal="tecnica",
-                justificacion_motivada=f"Actualización de metadatos institucionales de ficha DNP {resultado.codigo}",
+                justificacion_motivada=f"Actualización de metadatos institucionales de ficha técnica {resultado.codigo}",
                 metadatos={
                     "ficha_id": str(resultado.id),
                     "codigo": resultado.codigo,

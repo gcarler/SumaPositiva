@@ -36,7 +36,7 @@ class FichaIndicadorActualizar(BaseModel):
     periodicidad: str | None = Field(default=None, max_length=50)
     metadatos: dict[str, Any] | None = None
 
-    # Salvaguarda metodológica DNP: campos capturados para rechazo explícito (HTTP 400)
+    # Salvaguarda metodológica institucional: campos capturados para rechazo explícito (HTTP 400)
     linea_base_valor: Any | None = None
     linea_base_anio: Any | None = None
     metodo_calculo: Any | None = None

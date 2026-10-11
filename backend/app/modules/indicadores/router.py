@@ -50,7 +50,7 @@ async def actualizar_ficha(
     ],
     service: IndicadoresServiceDep,
 ):
-    """Actualiza metadatos institucionales de la ficha DNP salvaguardando la fórmula matemática y línea base."""
+    """Actualiza metadatos institucionales de la ficha técnica salvaguardando la fórmula matemática y línea base."""
     return await service.actualizar_ficha(id, datos, usuario_id=sujeto.sujeto_id)
 
 
