@@ -4,6 +4,8 @@ from time import perf_counter
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from sqlalchemy.exc import IntegrityError
 
 from app.api.router import api_router
 from app.core.config import Settings
@@ -49,6 +51,37 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE"],
         allow_headers=["Content-Type", "Authorization", "Accept"],
     )
+
+    @application.exception_handler(IntegrityError)
+    async def handle_integrity_error(request: Request, exc: IntegrityError):
+        logger.warning(
+            "Conflicto de integridad de datos en %s %s: %s",
+            request.method,
+            request.url.path,
+            str(exc.orig) if hasattr(exc, "orig") and exc.orig else str(exc),
+        )
+        return JSONResponse(
+            status_code=409,
+            content={
+                "detail": "Conflicto de integridad de datos: el recurso ya existe o infringe una restricción de unicidad distrital."
+            },
+        )
+
+    @application.exception_handler(Exception)
+    async def handle_unhandled_exception(request: Request, exc: Exception):
+        logger.error(
+            "Excepción no controlada en %s %s: %s",
+            request.method,
+            request.url.path,
+            exc,
+            exc_info=True,
+        )
+        return JSONResponse(
+            status_code=500,
+            content={
+                "detail": "Error interno del servidor. La incidencia ha sido registrada para revisión técnica institucional."
+            },
+        )
 
     @application.middleware("http")
     async def security_headers_and_cookies_middleware(request: Request, call_next):
