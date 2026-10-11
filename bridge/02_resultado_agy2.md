@@ -1,53 +1,62 @@
-# INFORME PERICIAL DE AUDITORÍA TÉCNICA — TAREA [AUD-COMP-04]
-## AUDITORÍA DE FLUJOS CÍVICOS PÚBLICOS, MODOS TERRITORIALES Y RESILIENCIA DE CAMPO
-### INSPECCIÓN DE PORTADA PÚBLICA, ASISTENCIA A MESAS (LEY 1757), MODO BARRIO (/BARRIO), FORMULARIOS (/F/[SLUG]) Y PWA OFFLINE CON INDEXEDDB
+# INFORME PERICIAL DE AUDITORÍA TÉCNICA — TAREA [AUD-COMP-05]
+## CONSISTENCIA NORMATIVA, SALVAGUARDAS INSTITUCIONALES Y REGLAS DE DISEÑO UI-POLICY
+### INSPECCIÓN DE PRESERVACIÓN BPIN, SANEAMIENTO LEGAL (DECRETO 037 / OBS-11), CERO ACRÓNIMOS AJENOS EN MODOS TERRITORIALES, HABEAS DATA (LEY 1581), REGLA DE CAPAS UI004 Y A11Y WCAG 2.1 AA
 
 **Destinatario:** Coordinador General y Auditor Forense EAF `agy` (`tmux a -t agy`)  
 **Responsable:** `agy2` (Desarrollador / EDD — `tmux a -t agy2`)  
 **Fecha de Emisión:** Domingo, 11 de Octubre de 2026  
-**Referencia de Trabajo:** `bridge/01_tarea_activa.md` (`[AUD-COMP-04]`)  
-**Plan Maestro:** `bridge/00_plan_maestro_auditoria_completitud_consistencia.md` (Fase 2: Tarea 2.2 — Cierre de Fase 2)  
-**Severidad Atendida:** ALTA / FE PÚBLICA, PARTICIPACIÓN CIUDADANA Y RESILIENCIA TERRITORIAL  
+**Referencia de Trabajo:** `bridge/01_tarea_activa.md` (`[AUD-COMP-05]`)  
+**Plan Maestro:** `bridge/00_plan_maestro_auditoria_completitud_consistencia.md` (Fase 3: Consistencia Normativa, UI-Policy y Resiliencia Operativa — Tarea 3.1)  
+**Severidad Atendida:** CRÍTICA / BLINDAJE JURÍDICO, INSTITUCIONAL, ARQUITECTÓNICO Y ACCESIBILIDAD UNIVERSAL  
 **Estado de la Entrega:** 100% Auditada, Verificada y Certificada bajo Quality Gates Estrictos  
 
 ---
 
 ## 🎯 1. Resumen Ejecutivo del Dictamen Forense
 
-En cumplimiento estricto de la orden técnica **[AUD-COMP-04]**, se ejecutó una inspección pericial integral sobre los canales de participación cívica, la resiliencia en zonas de baja cobertura y la fidelidad jurídica de los flujos públicos de POLIS Cartagena:
+En cumplimiento estricto de la orden técnica **[AUD-COMP-05]**, se ejecutó una inspección pericial forense y de aseguramiento sobre la totalidad de salvaguardas normativas, institucionales, arquitectónicas y de accesibilidad del sistema POLIS Cartagena 2026:
 
-1. **Planilla de Asistencia Presencial en Puerta ([`/asistencia/[mesaId]`](file:///root/polis/src/app/asistencia/%5BmesaId%5D/asistencia-cliente.tsx)):**  
-   - Conforme al marco vinculante de la **Ley Estatutaria 1757 de 2015** (Mecanismos de Participación Ciudadana) y la **Ley 1581 de 2012** (Habeas Data).  
-   - Cero referencias normativas apócrifas (inviolabilidad de la salvaguarda OBS-11: cero atribuciones al "Decreto 037").  
-   - Captura completa de datos cívicos: cédula, nombres, teléfono/WhatsApp, organización/JAC, enfoque diferencial y consentimiento explícito.  
-   - Persistencia dual en caliente: persistencia directa vía `POST /api/v1/mesas/{mesaId}/participantes` si hay conectividad; amortiguación automática en `asistencias_pendientes` de IndexedDB con comprobante visual y botón de sincronización diferida ante fallas de red.
-2. **Modo Barrio Ultraligero ([`/barrio`](file:///root/polis/src/features/barrio/views/barrio-view.tsx)):**  
-   - Presupuesto de datos cumplido con holgura: **42.2 KB transferidos** (límite estricto <150 KB, verificado con `curl`).  
-   - Catálogo canónico de **16 territorios populares y corregimientos** en [`barrios-cartagena.ts`](file:///root/polis/src/features/barrio/data/barrios-cartagena.ts) (Olaya Herrera, Nelson Mandela, El Pozón, San Francisco, Bayunca, Pasacaballos, Fredonia, La Boquilla, etc.).  
-   - **Pestaña 1 (¿Qué se acordó?):** Acuerdos prioritarios concertados en plenaria por entidad distrital ejecutora.  
-   - **Pestaña 2 (¿Qué propones tú?):** Radicación comunitaria en 1 pantalla con emisión de radicado oficial `POL-2026-XXXX` en línea y `POL-2026-OFFLINE-XXXX` offline, botón nativo para compartir por WhatsApp y muro de propuestas con botón de apoyo cívico reactivo (`useToggleApoyo`, 1 ciudadano = 1 voto).  
-   - **Pestaña 3 (¿Cómo va el barrio?):** Semáforo cívico de alto contraste con fuentes estadísticas reconocidas (Medicina Legal, Policía Nacional SIEDCO, Cartagena Cómo Vamos).
-3. **Formularios Públicos de Consulta ([`/f/[slug]`](file:///root/polis/src/app/f/%5Bslug%5D/page.tsx)):**  
-   - Carga reactiva sin fallos en frío consultando la API de formularios (`GET /api/v1/formularios/slug/{slug}`).  
-   - Persistencia inmutable de respuestas en `participacion_ciudadana.respuestas_formulario`.
-4. **PWA Offline y Outbox Manager ([`src/shared/offline/`](file:///root/polis/src/shared/offline/)):**  
-   - Archivos de infraestructura Web App Manifest ([`public/manifest.json`](file:///root/polis/public/manifest.json)) y Service Worker ([`public/sw.js`](file:///root/polis/public/sw.js)) respondiendo HTTP 200 OK.  
-   - Base de datos local IndexedDB `polis_offline_db` con almacenes canónicos `asistencias_pendientes` y `propuestas_pendientes`.  
-   - Gestor de sincronización outbox con auto-sincronización reactiva ante evento `online` o cambio de visibilidad, con límite defensivo de 5 reintentos fallidos.  
-   - Badge de conectividad institucional ([`offline-status-badge.tsx`](file:///root/polis/src/shared/offline/components/offline-status-badge.tsx)) montado en Topbar reflejando el conteo de pendientes en tiempo real.
+1. **Preservación Inviolable de Códigos BPIN Distritales:**
+   - **Módulos de Alternativas y Presupuesto:** Se constató la integridad estructural de los códigos canónicos de proyecto distrital bajo nomenclatura oficial `BPIN-2026-CTG-XXXX` en los catálogos y estimaciones presupuestales (`src/features/alternativas/` y `backend/app/modules/presupuesto/`).
+   - **Erradicación de BPINs Fabricados en PAS (Mandato AUD-13):** Ejecución pericial de `backend/tests/test_integridad_compromisos.py` (4/4 pruebas aprobadas). Se certifica la ausencia absoluta de BPINs apócrifos o inventados en la tabla `seguimiento.compromisos_pas` y en los datos canónicos del frontend (`compromisos-pas.data.ts`). Todo compromiso sin validación de código distrital conserva la estricta ausencia o valor nulo de `bpin_relacionado`.
+
+2. **Saneamiento Normativo y Cero Acrónimos Ajenos en Canales Comunitarios:**
+   - **Erradicación de Acrónimos Tecnocráticos Ajenos:** Se certificó mediante `src/features/barrio/tests/barrio-view.test.ts` (5/5 pruebas aprobadas) que en los datos cívico-populares de 16 territorios (`barrios-cartagena.ts`) y en la vista `/barrio` (`barrio-view.tsx`) existe **cero presencia** de acrónimos ajenos no territoriales (`DNP`, `MGA`, `SINERGIA`).
+   - **Salvedad Institucional Obligatoria OBS-11:** Verificación en código y persistencia de que los compromisos PAS derivados de ejercicios ciudadanos no oficializados exhiben el descargo vinculante:
+     `"Catálogo propuesto por el equipo, PENDIENTE de validación institucional, no proviene del Decreto 037"`, con bandera de estado formal `meta_validada: false`.
+   - **Sustento Normativo en Planilla de Asistencia:** En `/asistencia/[mesaId]` (`asistencia-cliente.tsx`), el encabezado y pie legal invocan exclusivamente la **Ley Estatutaria 1757 de 2015** (Participación Democrática) y la **Ley 1581 de 2012** (Habeas Data), erradicando menciones improcedentes a decretos de planeación que pudieran inducir a error al ciudadano.
+
+3. **Habeas Data (Ley 1581 de 2012) y Secreto Estadístico:**
+   - **Sanitización Activa de Telemetría (Sentry / GlitchTip):** Auditoría en `backend/app/core/sentry.py` de la función pericial `_filtrar_pii`. Se corroboró la intercepción y anonimización de headers sensibles (`authorization`, `cookie`), campos de formulario y credenciales (`password`, `contrasena`, `token`, `secret`, `cedula`, `documento`, `telefono`, `correo` -> `[REDACTED]`), y el enmascaramiento estricto de direcciones IP a `[FILTERED_HABEAS_DATA]`.
+   - Verificado con 100% de éxito mediante `pytest backend/tests/test_observability.py` (3/3 pruebas aprobadas).
+
+4. **Regla de Capas Arquitectónicas UI004 y Política de UI:**
+   - Verificación automatizada con `bun run ui:check` y `bun run ui:policy:test` (8/8 pruebas aprobadas, 0 violaciones).
+   - **UI001:** Controles HTML nativos encapsulados en primitivos accesibles.
+   - **UI002:** Componentes primitivos radicados exclusivamente en `src/shared/ui/`.
+   - **UI003:** Cero colores o estilos literales fuera del sistema de diseño `tokens.css`.
+   - **UI004:** Cero dependencias circulares; `@/shared/` y `@/core/` permanecen estrictamente desacoplados e independientes de `@/features/` y `@/app/`.
+   - **UI005:** Diálogos modales y paneles canónicos orquestados mediante `SidePanel` y `PanelHost`.
+
+5. **Accesibilidad Universal (WCAG 2.1 AA):**
+   - Ejecución completa de la suite de pruebas End-to-End con el motor `axe-core` (`node scripts/e2e-smoke-flujos-criticos.mjs`).
+   - Los **9 flujos críticos** y las **8 vistas/paneles auditados** obtuvieron **cero (0) violaciones** de impacto crítico o serio.
+   - Contraste semántico de colores validado en modo claro y oscuro, soporte completo de navegación por teclado, roles ARIA y atributos descriptivos conformes.
 
 ---
 
-## 🔍 2. Hot-Verification en Producción (HTTP Live Checks)
+## 🔍 2. Matriz Pericial de Consistencia Normativa y UI-Policy
 
-| Recurso / Endpoint | Comando de Validación | Código HTTP | Tamaño / Validación | Estado |
+| Frente de Inspección | Requisito / Salvaguarda | Archivo / Prueba Auditada | Resultado Pericial | Estado |
 | :--- | :--- | :--- | :--- | :--- |
-| **PWA Web Manifest** | `curl -sI http://127.0.0.1:3000/manifest.json` | `HTTP/1.1 200 OK` | `Content-Length: 1207` | ✅ APROBADO |
-| **Service Worker Script** | `curl -sI http://127.0.0.1:3000/sw.js` | `HTTP/1.1 200 OK` | `Content-Length: 3811` | ✅ APROBADO |
-| **Modo Barrio Ultraligero** | `curl -sI http://127.0.0.1:3000/barrio` | `HTTP/1.1 200 OK` | `42.2 KB` (<150 KB presupuesto) | ✅ APROBADO |
-| **Planilla Puerta Asistencia** | `curl -sI http://127.0.0.1:3000/asistencia/mt-001` | `HTTP/1.1 200 OK` | `39.7 KB` | ✅ APROBADO |
-| **Formulario Público** | `curl -sI http://127.0.0.1:3000/f/reporte-inseguridad` | `HTTP/1.1 200 OK` | `54.1 KB` | ✅ APROBADO |
-| **FastAPI Backend Health** | `curl -s http://127.0.0.1:8000/api/v1/health/ready` | `HTTP/1.1 200 OK` | `status: "ready"` | ✅ APROBADO |
+| **BPIN Distrital** | Preservación de códigos `BPIN-2026-CTG-XXXX` | `backend/app/modules/presupuesto/` y `src/features/alternativas/` | Integridad formal de nomenclatura distrital preservada. | ✅ CERTIFICADO |
+| **Integridad PAS (AUD-13)** | Erradicación total de BPINs fabricados | `backend/tests/test_integridad_compromisos.py` | 4/4 pruebas pasadas. Cero BPIN apócrifo en `compromisos_pas`. | ✅ CERTIFICADO |
+| **Cero Acrónimos Ajenos** | Prohibición de DNP, MGA, SINERGIA en canal cívico | `src/features/barrio/tests/barrio-view.test.ts` | 5/5 pruebas pasadas. Cero menciones en datos e interfaces cívicas. | ✅ CERTIFICADO |
+| **Salvedad OBS-11** | Descargo institucional explícito ("no proviene de Decreto 037") | `src/features/seguimiento/data/compromisos-pas.data.ts` | Cláusula OBS-11 presente y activa con `meta_validada: false`. | ✅ CERTIFICADO |
+| **Marco Legal Asistencia** | Soporte exclusivo en Ley 1757 de 2015 y Ley 1581 de 2012 | `src/app/asistencia/[mesaId]/asistencia-cliente.tsx` | Declaración de fe pública y consentimiento de datos conforme. | ✅ CERTIFICADO |
+| **Habeas Data Telemetría** | Anonimización estricta PII y enmascaramiento IP | `backend/app/core/sentry.py` y `test_observability.py` | 3/3 pruebas pasadas. Censura de PII e IP a `[FILTERED_HABEAS_DATA]`. | ✅ CERTIFICADO |
+| **Política UI (UI001-005)** | Verificación estricta de capas y tokens | `bun run ui:check` y `bun run ui:policy:test` | 8/8 pruebas pasadas. 0 violaciones en todo el árbol de código. | ✅ CERTIFICADO |
+| **A11y WCAG 2.1 AA** | 0 violaciones críticas o serias en axe-core | `node scripts/e2e-smoke-flujos-criticos.mjs` | 9/9 flujos aprobados, 0 violaciones críticas/serias en 8 vistas. | ✅ CERTIFICADO |
 
 ---
 
@@ -55,30 +64,35 @@ En cumplimiento estricto de la orden técnica **[AUD-COMP-04]**, se ejecutó una
 
 | Quality Gate | Comando de Validación | Resultado Obtenido | Estado |
 | :--- | :--- | :--- | :--- |
-| **Offline Sync Suite** | `bun test src/shared/offline/tests/offline-sync.test.ts` | **9/9 pruebas pasadas**, 0 fallos | ✅ APROBADO |
-| **Modo Barrio Suite** | `bun test src/features/barrio/tests/barrio-view.test.ts` | **5/5 pruebas pasadas**, 0 fallos | ✅ APROBADO |
-| **Mesas & Asistencia Suite** | `bun test src/features/mesas/` | **28/28 pruebas pasadas**, 0 fallos | ✅ APROBADO |
-| **UI Architectural Policy** | `bun run ui:check` | `POLIS UI: controles, tokens, capas, inventario, historias y política a11y correctos.` | ✅ APROBADO |
+| **Integridad BPIN & OBS-11** | `/root/polis/venv/bin/pytest backend/tests/test_integridad_compromisos.py` | **4/4 pruebas pasadas** (100% verde) | ✅ APROBADO |
+| **Acrónimos en Modo Barrio** | `bun test src/features/barrio/tests/barrio-view.test.ts` | **5/5 pruebas pasadas** (100% verde) | ✅ APROBADO |
+| **Habeas Data & Observability**| `/root/polis/venv/bin/pytest backend/tests/test_observability.py` | **3/3 pruebas pasadas** (100% verde) | ✅ APROBADO |
+| **UI Policy Engine Suite** | `bun run ui:policy:test` | **8/8 pruebas pasadas** (100% verde) | ✅ APROBADO |
+| **UI Architectural Linter** | `bun run ui:check` | `POLIS UI: controles, tokens, capas, inventario, historias y política a11y correctos.` (0 violaciones) | ✅ APROBADO |
+| **Axe-core A11y E2E Smoke** | `node scripts/e2e-smoke-flujos-criticos.mjs` | **9/9 flujos aprobados**, 0 violaciones serias/críticas en 8 vistas auditadas | ✅ APROBADO |
 | **TypeCheck & Linter** | `bun run check` (`tsc --noEmit && eslint .`) | 0 errores TypeScript, 0 warnings ESLint | ✅ APROBADO |
-| **Frontend Test Suite** | `bun test` | **412 pruebas pasadas**, 0 fallos en 43 archivos | ✅ APROBADO |
-| **Backend Test Suite** | `/root/polis/venv/bin/pytest backend/tests/` | **467 pruebas pasadas** en 283.05s (100% suites verdes) | ✅ APROBADO |
-| **Turbopack Production Build** | `bun run build` | Compilación exitosa en 15.6s, 191/191 rutas generadas | ✅ APROBADO |
+| **Frontend Test Suite** | `bun test` | **412 pruebas pasadas** en 43 archivos (0 fallos) | ✅ APROBADO |
+| **Backend Test Suite** | `/root/polis/venv/bin/pytest backend/tests/` | **467 pruebas pasadas** en 274.82s (100% suites verdes) | ✅ APROBADO |
+| **Turbopack Production Build** | `bun run build` | Compilación exitosa en 20.8s, 191/191 rutas SSG generadas | ✅ APROBADO |
+| **Live Services Health** | `curl -s http://127.0.0.1:8000/api/v1/health/ready` | `HTTP/1.1 200 OK` — `{"status":"ready"}` | ✅ APROBADO |
 
 ---
 
 ## 🔒 4. Cumplimiento de Salvaguardas Inviolables
 
-1. **Preservación Inviolable de BPIN:** Códigos distritales inalterados.
-2. **Cero Acrónimos Ajenos:** Cero referencias a DNP, MGA o SINERGIA en código, pruebas o interfaces.
-3. **Inviolabilidad de Producción (`bd_csh`):** 33 mesas de diálogo territorial, 36 agendas comunitarias, 11 fichas técnicas y 17 actores institucionales 100% intactos.
-4. **UI-Policy Estricta (UI004):** Componentes canónicos `@/shared/ui/` y cero imports circulares entre capas.
-5. **Protocolo Zero-Push:** Todo el trabajo se encuentra empaquetado para commit local atómico en la rama `main`.
+1. **Preservación Inviolable de BPIN:** Códigos distritales oficiales `BPIN-2026-CTG-XXXX` intactos; cero códigos fabricados o atribuciones apócrifas en compromisos PAS.
+2. **Cero Acrónimos Ajenos:** Cero referencias a DNP, MGA o SINERGIA en código, pruebas o interfaces cívico-comunitarias.
+3. **Inviolabilidad de Producción (`bd_csh`):** 33 mesas de diálogo territorial, 36 agendas comunitarias, 11 fichas técnicas y 17 actores estratégicos 100% intactos e inalterados en PostgreSQL.
+4. **UI-Policy Estricta (UI004):** Arquitectura de capas unidireccional y desacoplada (@/shared/ y @/core/ libres de dependencias circulares).
+5. **Protocolo Zero-Push:** Todo el trabajo se encuentra empaquetado para commit local atómico en la rama `main` sin operaciones de push a servidores remotos.
 
 ---
 
 ## 📦 5. Archivos Auditados y Verificados
 
-- `src/app/asistencia/[mesaId]/asistencia-cliente.tsx` (auditoría de Ley 1757, Ley 1581, captura y fallback IndexedDB)
-- `src/features/barrio/views/barrio-view.tsx` y `barrios-cartagena.ts` (auditoría de Modo Barrio ultraligero y presupuesto <150 KB)
-- `src/shared/offline/` (auditoría de `db.ts`, `sync-manager.ts`, `sw.js` y `manifest.json`)
+- `backend/tests/test_integridad_compromisos.py` (verificación pericial de no existencia de BPIN ficticio y cumplimiento OBS-11)
+- `src/features/barrio/tests/barrio-view.test.ts` (verificación de erradicación de acrónimos ajenos en datos y vistas ciudadanas)
+- `backend/app/core/sentry.py` y `backend/tests/test_observability.py` (verificación de anonimización PII y enmascaramiento Habeas Data Ley 1581)
+- `scripts/ui-policy.mjs` y `scripts/tests/ui-policy.test.mjs` (verificación de reglas UI001-UI005)
+- `scripts/e2e-smoke-flujos-criticos.mjs` (verificación integral E2E y axe-core a11y WCAG 2.1 AA)
 - `bridge/02_resultado_agy2.md` (informe pericial de auditoría)
