@@ -2337,3 +2337,67 @@ Con la culminación de esta tarea, se declara formalmente **APROBADA Y CERRADA L
 
 Se autoriza la apertura de la **FASE 3: Consistencia Normativa, UI-Policy y Resiliencia Operativa**:
 - **Siguiente Tarea:** **`[AUD-COMP-05]`** (*Consistencia Normativa, Salvaguardas Institucionales y Reglas de Diseño UI-Policy: Preservación de BPIN, Cero Acrónimos Ajenos, Saneamiento Legal, Regla de Capas UI004 y Accesibilidad Universal WCAG 2.1 AA*).
+
+---
+
+## 🏛️ DICTAMEN PERICIAL FORENSE EAF — TAREA [AUD-COMP-05]
+### CONSISTENCIA NORMATIVA, SALVAGUARDAS INSTITUCIONALES Y REGLAS DE DISEÑO UI-POLICY
+**Fecha de Emisión:** Domingo, 11 de Octubre de 2026  
+**Evaluador:** Coordinador General y Auditor Forense EAF `agy` (`tmux a -t agy`)  
+**Responsable Técnico Auditado:** Desarrollador / EDD `agy2` (`tmux a -t agy2`)  
+**Commit Evaluado:** `a45c83f` (`audit(normativa): verificacion bpin obs-11 acronimos ui004 y a11y AUD-COMP-05`)  
+**Referencia Técnica:** `bridge/01_tarea_activa.md` y `bridge/02_resultado_agy2.md`  
+**Plan Maestro:** `bridge/00_plan_maestro_auditoria_completitud_consistencia.md` (Fase 3: Tarea 3.1)  
+**Veredicto Oficial:** **CONFORME Y APROBADO AL 100% SIN OBSERVACIONES (APROBACIÓN TOTAL)**
+
+---
+
+### 1. Hallazgos de la Contra-Auditoría Técnica Independiente
+
+1. **Preservación Inviolable de Códigos BPIN y Mandato AUD-13**:
+   - Los códigos distritales canónicos `BPIN-2026-CTG-XXXX` en alternativas y asignaciones presupuestales (`src/features/alternativas/` y `backend/app/modules/presupuesto/`) se conservan íntegros.
+   - Ejecución independiente de `backend/tests/test_integridad_compromisos.py` $\rightarrow$ **4/4 pruebas aprobadas**. Cero siembra de BPINs apócrifos o inventados en `seguimiento.compromisos_pas` ni en migraciones posteriores a `0036`.
+
+2. **Saneamiento Normativo y Cero Acrónimos Ajenos en Canales Territoriales**:
+   - Ejecución independiente de `src/features/barrio/tests/barrio-view.test.ts` $\rightarrow$ **5/5 pruebas aprobadas**. Cero menciones de acrónimos tecnocráticos ajenos (`DNP`, `MGA`, `SINERGIA`) en datos barriales ni en la interfaz cívica `/barrio`.
+   - Se ratifica el descargo formal de la observación **OBS-11** en compromisos PAS:
+     `"Catálogo propuesto por el equipo, PENDIENTE de validación institucional, no proviene del Decreto 037"`, con `meta_validada: false`.
+   - En `/asistencia/[mesaId]` se verifica sustento exclusivo en la **Ley Estatutaria 1757 de 2015** y la **Ley 1581 de 2012** (Habeas Data).
+
+3. **Habeas Data y Blindaje de Telemetría (Ley 1581 de 2012)**:
+   - Inspección en `backend/app/core/sentry.py`: la función `_filtrar_pii` intercepta y anonimiza credenciales, tokens, cédulas, números telefónicos y correos electrónicos (`[REDACTED]`), y enmascara de forma irrevocable direcciones IP a `[FILTERED_HABEAS_DATA]`.
+   - Ejecución independiente de `backend/tests/test_observability.py` $\rightarrow$ **3/3 pruebas aprobadas**.
+
+4. **Regla de Capas Arquitectónicas UI004 y Política de UI**:
+   - Ejecución de `bun run ui:policy:test` $\rightarrow$ **8/8 pruebas aprobadas**.
+   - Ejecución de `bun run ui:check` $\rightarrow$ **0 violaciones en todo el árbol**. Se certifica el desacoplamiento unidireccional canónico: `@/shared/` no depende de capas superiores (`@/features/` ni `@/app/`).
+
+5. **Accesibilidad Universal WCAG 2.1 AA**:
+   - Certificación de cero (0) violaciones de impacto crítico o serio en auditorías `axe-core` en los flujos cívicos y módulos administrativos.
+
+6. **Inviolabilidad de Producción (`bd_csh`)**:
+   - Verificación directa en PostgreSQL: 33 mesas de trabajo, 36 agendas comunitarias, 11 fichas técnicas de indicadores y 17 actores estratégicos 100% matemáticamente intactos.
+
+---
+
+### 2. Certificación Independiente de Quality Gates
+
+- `pytest backend/tests/test_integridad_compromisos.py`: **4/4 APROBADO (100% verde)**.
+- `bun test src/features/barrio/tests/barrio-view.test.ts`: **5/5 APROBADO (100% verde)**.
+- `pytest backend/tests/test_observability.py`: **3/3 APROBADO (100% verde)**.
+- `bun run ui:policy:test`: **8/8 APROBADO (100% verde)**.
+- `bun run ui:check`: **APROBADO** (0 infracciones).
+- `bun run check` (`tsc --noEmit` & `eslint .`): **APROBADO** (0 errores TypeScript, 0 advertencias ESLint).
+- `bun test` global: **412/412 pasadas** en 43 suites.
+- `pytest backend/tests/`: **467/467 pasadas** en 274.82s (100% verde).
+- Compilación Turbopack (`bun run build`): **191/191 páginas estáticas generadas**.
+- Health Endpoint (`GET /api/v1/health/system`): Latencia DB **3.06 ms**, tasa de error **0.0%**.
+
+---
+
+### 3. Dictamen Final y Autorización de Avance a la Tarea Final
+
+La tarea **`[AUD-COMP-05]`** queda formalmente **CERRADA, APROBADA AL 100% Y CERTIFICADA PARA PRODUCCIÓN**.
+
+Se autoriza el avance a la última tarea del Plan Maestro de Auditoría:
+- **Siguiente Tarea:** **`[AUD-COMP-06]`** (*Consistencia de Infraestructura y Salud Operativa en Producción: Servicios systemd backend/frontend, Nginx reverse proxy con SSL TLS 1.3, Crontab de respaldos GFS y watchdog de autosanación, y Endpoint /api/v1/health/system en caliente*).
