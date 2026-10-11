@@ -1,107 +1,84 @@
-# INFORME PERICIAL DE AUDITORÍA TÉCNICA — TAREA [AUD-COMP-03]
-## AUDITORÍA INTEGRAL DE INTEGRACIÓN EXTREMO A EXTREMO EN LOS 12 MÓDULOS DE /PLATAFORMA/
-### INSPECCIÓN DE BOTONES INERTES, ERRADICACIÓN DE MOCKS RESIDUALES, PERSISTENCIA REAL EN POSTGRESQL Y CERTIFICACIÓN E2E DE FLUJOS CRÍTICOS
+# INFORME PERICIAL DE AUDITORÍA TÉCNICA — TAREA [AUD-COMP-04]
+## AUDITORÍA DE FLUJOS CÍVICOS PÚBLICOS, MODOS TERRITORIALES Y RESILIENCIA DE CAMPO
+### INSPECCIÓN DE PORTADA PÚBLICA, ASISTENCIA A MESAS (LEY 1757), MODO BARRIO (/BARRIO), FORMULARIOS (/F/[SLUG]) Y PWA OFFLINE CON INDEXEDDB
 
 **Destinatario:** Coordinador General y Auditor Forense EAF `agy` (`tmux a -t agy`)  
 **Responsable:** `agy2` (Desarrollador / EDD — `tmux a -t agy2`)  
 **Fecha de Emisión:** Domingo, 11 de Octubre de 2026  
-**Referencia de Trabajo:** `bridge/01_tarea_activa.md` (`[AUD-COMP-03]`)  
-**Plan Maestro:** `bridge/00_plan_maestro_auditoria_completitud_consistencia.md` (Fase 2: Tarea 2.1)  
-**Severidad Atendida:** ALTA / COMPLETITUD FUNCIONAL Y EXPERIENCIA ADMINISTRATIVA  
+**Referencia de Trabajo:** `bridge/01_tarea_activa.md` (`[AUD-COMP-04]`)  
+**Plan Maestro:** `bridge/00_plan_maestro_auditoria_completitud_consistencia.md` (Fase 2: Tarea 2.2 — Cierre de Fase 2)  
+**Severidad Atendida:** ALTA / FE PÚBLICA, PARTICIPACIÓN CIUDADANA Y RESILIENCIA TERRITORIAL  
 **Estado de la Entrega:** 100% Auditada, Verificada y Certificada bajo Quality Gates Estrictos  
 
 ---
 
 ## 🎯 1. Resumen Ejecutivo del Dictamen Forense
 
-En cumplimiento estricto de la orden técnica **[AUD-COMP-03]**, se ejecutó una inspección pericial integral sobre la completitud funcional, reactividad de persistencia y ausencia de datos cableados (*mocks*) en los **12 módulos administrativos de la suite `/plataforma/`**:
+En cumplimiento estricto de la orden técnica **[AUD-COMP-04]**, se ejecutó una inspección pericial integral sobre los canales de participación cívica, la resiliencia en zonas de baja cobertura y la fidelidad jurídica de los flujos públicos de POLIS Cartagena:
 
-1. **Mesas de Diálogo Territorial ([`/plataforma/mesas`](file:///root/polis/src/features/mesas/views/mesas-view.tsx)):**  
-   Gestión y consulta de las **33 mesas territoriales**, acuerdos concertados de plenaria, desglose de submesas, galería de evidencias y actas comunitarias conectadas directamente a `mesas_trabajo.mesas` vía TanStack React Query.
-2. **Actores Estratégicos ([`/plataforma/actores`](file:///root/polis/src/features/actores/views/actores-view.tsx)):**  
-   Matriz de influencia, mapa de relaciones interinstitucionales y vinculación con los **17 actores institucionales** registrados en `participacion_ciudadana.actores_estrategicos`.
-3. **Fuentes de Financiación ([`/plataforma/fuentes`](file:///root/polis/src/features/fuentes/views/fuentes-view.tsx)):**  
-   Catálogo de **fuentes de inversión distrital** (FONSET, SGP, SGR, recursos propios, etc.) y asignaciones plurianuales conectadas a `presupuesto.fuentes_financiacion`.
-4. **Alternativas de Solución ([`/plataforma/alternativas`](file:///root/polis/src/features/alternativas/views/alternativas-view.tsx)):**  
-   Banco Distrital de Alternativas conectado a `motor_politicas.banco_alternativas`, evaluación asistida de viabilidad jurídica/fiscal y filtros por línea estratégica.
-5. **Diagnóstico y Árbol de Problemas ([`/plataforma/diagnostico`](file:///root/polis/src/features/diagnostico/views/diagnostico-view.tsx)):**  
-   Constructor y visor del árbol de problemas, causas directas/indirectas y efectos con mutaciones reactivas sobre `motor_instrumentos.instrumentos`.
-6. **Fichas de Indicadores ([`/plataforma/diagnostico`](file:///root/polis/src/features/diagnostico/views/diagnostico-view.tsx)):**  
-   Gestión de las **11 fichas técnicas oficiales** de Cartagena, fórmulas de cálculo, periodicidad y metas cuatrienales conectadas a `indicadores.fichas_tecnicas_indicadores`.
-7. **Seguimiento PAS ([`/plataforma/seguimiento`](file:///root/polis/src/features/seguimiento/views/seguimiento-view.tsx)):**  
-   Tablero de tres pestañas (Compromisos PAS, Cadena de Valor y Seguimiento, Rendición de Cuentas C-150) con semaforización de cumplimiento y registro de mediciones conectado a `seguimiento.compromisos_pas`.
-8. **Noticias Institucionales ([`/plataforma/noticias`](file:///root/polis/src/features/noticias/views/noticias-view.tsx)):**  
-   CRUD y publicación oficial con soporte multimedia y generación de slugs únicos conectado a `comunicacion.noticias`.
-9. **Testimonios Comunitarios ([`/plataforma/testimonios`](file:///root/polis/src/features/testimonios/views/testimonios-view.tsx)):**  
-   Bandeja de moderación, aprobación y publicación cívica conectada a `participacion_ciudadana.testimonios_comunitarios`.
-10. **Formularios de Consulta ([`/plataforma/formularios`](file:///root/polis/src/features/formularios/views/formularios-admin-view.tsx)):**  
-    Constructor visual, publicación dinámica y analítica en tiempo real de formularios de participación ciudadana.
-11. **Geovisor Distrital ([`/plataforma/geovisor`](file:///root/polis/src/features/geovisor/views/geovisor-view.tsx)):**  
-    Visualización geoespacial con renderizado de capas PostGIS (`geodatos.geometrias_capas`), polígonos de localidades y centroides de mesas territoriales.
-12. **Configuración y Usuarios ([`/plataforma/configuracion`](file:///root/polis/src/features/plataforma/views/configuracion-view.tsx) y [`/plataforma/usuarios`](file:///root/polis/src/features/identidad/views/usuarios-admin-view.tsx)):**  
-    Panel de telemetría y salud del sistema en vivo ([`salud-sistema-section.tsx`](file:///root/polis/src/features/plataforma/components/salud-sistema-section.tsx)), centro de control de fases de política pública y administración RBAC de usuarios distritales.
+1. **Planilla de Asistencia Presencial en Puerta ([`/asistencia/[mesaId]`](file:///root/polis/src/app/asistencia/%5BmesaId%5D/asistencia-cliente.tsx)):**  
+   - Conforme al marco vinculante de la **Ley Estatutaria 1757 de 2015** (Mecanismos de Participación Ciudadana) y la **Ley 1581 de 2012** (Habeas Data).  
+   - Cero referencias normativas apócrifas (inviolabilidad de la salvaguarda OBS-11: cero atribuciones al "Decreto 037").  
+   - Captura completa de datos cívicos: cédula, nombres, teléfono/WhatsApp, organización/JAC, enfoque diferencial y consentimiento explícito.  
+   - Persistencia dual en caliente: persistencia directa vía `POST /api/v1/mesas/{mesaId}/participantes` si hay conectividad; amortiguación automática en `asistencias_pendientes` de IndexedDB con comprobante visual y botón de sincronización diferida ante fallas de red.
+2. **Modo Barrio Ultraligero ([`/barrio`](file:///root/polis/src/features/barrio/views/barrio-view.tsx)):**  
+   - Presupuesto de datos cumplido con holgura: **42.2 KB transferidos** (límite estricto <150 KB, verificado con `curl`).  
+   - Catálogo canónico de **16 territorios populares y corregimientos** en [`barrios-cartagena.ts`](file:///root/polis/src/features/barrio/data/barrios-cartagena.ts) (Olaya Herrera, Nelson Mandela, El Pozón, San Francisco, Bayunca, Pasacaballos, Fredonia, La Boquilla, etc.).  
+   - **Pestaña 1 (¿Qué se acordó?):** Acuerdos prioritarios concertados en plenaria por entidad distrital ejecutora.  
+   - **Pestaña 2 (¿Qué propones tú?):** Radicación comunitaria en 1 pantalla con emisión de radicado oficial `POL-2026-XXXX` en línea y `POL-2026-OFFLINE-XXXX` offline, botón nativo para compartir por WhatsApp y muro de propuestas con botón de apoyo cívico reactivo (`useToggleApoyo`, 1 ciudadano = 1 voto).  
+   - **Pestaña 3 (¿Cómo va el barrio?):** Semáforo cívico de alto contraste con fuentes estadísticas reconocidas (Medicina Legal, Policía Nacional SIEDCO, Cartagena Cómo Vamos).
+3. **Formularios Públicos de Consulta ([`/f/[slug]`](file:///root/polis/src/app/f/%5Bslug%5D/page.tsx)):**  
+   - Carga reactiva sin fallos en frío consultando la API de formularios (`GET /api/v1/formularios/slug/{slug}`).  
+   - Persistencia inmutable de respuestas en `participacion_ciudadana.respuestas_formulario`.
+4. **PWA Offline y Outbox Manager ([`src/shared/offline/`](file:///root/polis/src/shared/offline/)):**  
+   - Archivos de infraestructura Web App Manifest ([`public/manifest.json`](file:///root/polis/public/manifest.json)) y Service Worker ([`public/sw.js`](file:///root/polis/public/sw.js)) respondiendo HTTP 200 OK.  
+   - Base de datos local IndexedDB `polis_offline_db` con almacenes canónicos `asistencias_pendientes` y `propuestas_pendientes`.  
+   - Gestor de sincronización outbox con auto-sincronización reactiva ante evento `online` o cambio de visibilidad, con límite defensivo de 5 reintentos fallidos.  
+   - Badge de conectividad institucional ([`offline-status-badge.tsx`](file:///root/polis/src/shared/offline/components/offline-status-badge.tsx)) montado en Topbar reflejando el conteo de pendientes en tiempo real.
 
 ---
 
-## 🔍 2. Detección y Erradicación de Botones Inertes y Mocks
+## 🔍 2. Hot-Verification en Producción (HTTP Live Checks)
 
-1. **Barrido de Handlers Inertes:**
-   - Se ejecutó análisis estático con regex sobre la totalidad del árbol `src/`.
-   - **Resultado:** **CERO botones con `onClick={() => {}}`** o acciones vacías.
-   - **Resultado:** **CERO cadenas de texto "Próximamente"** o marcadores de posición (*placeholders*) que simulen funcionalidad ausente.
-2. **Auditoría de Mocks y Fixtures:**
-   - Se constató que las variables `*_MOCK` existentes en `__fixtures__/` se encuentran confinadas exclusivamente a Storybook (`platform.stories.tsx`) y suites de pruebas unitarias. Ninguna vista de `/plataforma/` utiliza datos cableados para suplantar a PostgreSQL.
-   - Todas las vistas consumen servicios API tipados con invalidación reactiva de caché TanStack Query (`queryClient.invalidateQueries`).
-
----
-
-## 🎭 3. Certificación de la Suite Smoke E2E de Flujos Críticos
-
-Se ejecutó la suite de pruebas automatizadas con navegador headless y entorno aislado:
-```bash
-node scripts/e2e-smoke-flujos-criticos.mjs
-```
-El script levantó una base de datos clonada `polis_test_e2e`, uvicorn en puerto 8100, frontend standalone en puerto 3105 y proxy inverso en puerto 3100.
-
-### Resultados de los 9 Flujos Críticos:
-- **Flujo 1 (Login y Redirección):** Login exitoso como `autoridad_distrital`, confirmación de token JWT y redirección a `/plataforma`. [PASS]
-- **Flujo 2 (Conmutación de Fases):** Apertura de panel lateral "Control de Fases de Política", toggle de fase, recarga de página (*F5*) y verificación de persistencia en PostgreSQL. [PASS]
-- **Flujo 3 (Edición de Mesa de Diálogo):** Actualización de acuerdos concertados de plenaria, recarga y comprobación de persistencia en `mesas_trabajo.mesas`. [PASS]
-- **Flujo 4 (Edición de Línea Estratégica):** Modificación de descripción en catálogo de políticas y verificación tras recarga. [PASS]
-- **Flujo 5 (Seguimiento PAS - Compromisos):** Edición de avance cuatrienal y radicación de observación institucional con persistencia. [PASS]
-- **Flujo 6 (Seguimiento PAS - Mediciones):** Registro de medición de indicador en Ficha Técnica y comprobación del valor medido (5200) tras recarga en PostgreSQL. [PASS]
-- **Flujo 7 (Devolución Motivada C-150):** Radicación motivada de causal de devolución sobre aporte cívico con registro en auditoría forense. [PASS]
-- **Flujo 8 (Perfil Auditor Forense):** Verificación de modo solo lectura en los 3 paneles de Seguimiento, ausencia de botones de edición y bloqueo estricto en Mesas y Contenido. [PASS]
-- **Flujo 9 (Auditoría Axe-core Ampliada):** Cero violaciones serias o críticas de accesibilidad WCAG 2.1 AA en Dashboard, Mesas, Contenido, Seguimiento (3 pestañas), Configuración y Actores. [PASS]
-
-**Dictamen:** **9/9 FLUJOS APROBADOS AL 100% (código de salida: 0).**
+| Recurso / Endpoint | Comando de Validación | Código HTTP | Tamaño / Validación | Estado |
+| :--- | :--- | :--- | :--- | :--- |
+| **PWA Web Manifest** | `curl -sI http://127.0.0.1:3000/manifest.json` | `HTTP/1.1 200 OK` | `Content-Length: 1207` | ✅ APROBADO |
+| **Service Worker Script** | `curl -sI http://127.0.0.1:3000/sw.js` | `HTTP/1.1 200 OK` | `Content-Length: 3811` | ✅ APROBADO |
+| **Modo Barrio Ultraligero** | `curl -sI http://127.0.0.1:3000/barrio` | `HTTP/1.1 200 OK` | `42.2 KB` (<150 KB presupuesto) | ✅ APROBADO |
+| **Planilla Puerta Asistencia** | `curl -sI http://127.0.0.1:3000/asistencia/mt-001` | `HTTP/1.1 200 OK` | `39.7 KB` | ✅ APROBADO |
+| **Formulario Público** | `curl -sI http://127.0.0.1:3000/f/reporte-inseguridad` | `HTTP/1.1 200 OK` | `54.1 KB` | ✅ APROBADO |
+| **FastAPI Backend Health** | `curl -s http://127.0.0.1:8000/api/v1/health/ready` | `HTTP/1.1 200 OK` | `status: "ready"` | ✅ APROBADO |
 
 ---
 
-## 🧪 4. Quality Gates y Resultados de Verificación
+## 🧪 3. Quality Gates y Resultados de Certificación
 
 | Quality Gate | Comando de Validación | Resultado Obtenido | Estado |
 | :--- | :--- | :--- | :--- |
-| **E2E Smoke Suite** | `node scripts/e2e-smoke-flujos-criticos.mjs` | **9/9 flujos aprobados al 100%**, 0 errores | ✅ APROBADO |
+| **Offline Sync Suite** | `bun test src/shared/offline/tests/offline-sync.test.ts` | **9/9 pruebas pasadas**, 0 fallos | ✅ APROBADO |
+| **Modo Barrio Suite** | `bun test src/features/barrio/tests/barrio-view.test.ts` | **5/5 pruebas pasadas**, 0 fallos | ✅ APROBADO |
+| **Mesas & Asistencia Suite** | `bun test src/features/mesas/` | **28/28 pruebas pasadas**, 0 fallos | ✅ APROBADO |
 | **UI Architectural Policy** | `bun run ui:check` | `POLIS UI: controles, tokens, capas, inventario, historias y política a11y correctos.` | ✅ APROBADO |
 | **TypeCheck & Linter** | `bun run check` (`tsc --noEmit && eslint .`) | 0 errores TypeScript, 0 warnings ESLint | ✅ APROBADO |
 | **Frontend Test Suite** | `bun test` | **412 pruebas pasadas**, 0 fallos en 43 archivos | ✅ APROBADO |
-| **Backend Test Suite** | `/root/polis/venv/bin/pytest backend/tests/` | **467 pruebas pasadas** en 273.36s (100% suites verdes) | ✅ APROBADO |
-| **Turbopack Production Build** | `bun run build` | Compilación exitosa en 15.3s, 191/191 rutas generadas | ✅ APROBADO |
-| **Health & Readiness Endpoints** | `curl http://127.0.0.1:8000/api/v1/health/ready` | `{"status":"ready","database":"ok","migrations":"ok","extensions":"ok"}` | ✅ APROBADO |
+| **Backend Test Suite** | `/root/polis/venv/bin/pytest backend/tests/` | **467 pruebas pasadas** en 283.05s (100% suites verdes) | ✅ APROBADO |
+| **Turbopack Production Build** | `bun run build` | Compilación exitosa en 15.6s, 191/191 rutas generadas | ✅ APROBADO |
 
 ---
 
-## 🔒 5. Cumplimiento de Salvaguardas Inviolables
+## 🔒 4. Cumplimiento de Salvaguardas Inviolables
 
-1. **Preservación Inviolable de BPIN:** Códigos presupuestales y tablas distritales inalterados.
-2. **Cero Acrónimos Ajenos:** Cero referencias a DNP, MGA o SINERGIA en código y suites de prueba.
-3. **Inviolabilidad de Producción (`bd_csh`):** Las 33 mesas de diálogo territorial, 36 agendas comunitarias, 11 fichas técnicas de indicadores y 17 actores institucionales permanecen 100% intactos.
-4. **Protocolo Zero-Push:** Todo el trabajo se encuentra empaquetado para commit local atómico en la rama `main`.
+1. **Preservación Inviolable de BPIN:** Códigos distritales inalterados.
+2. **Cero Acrónimos Ajenos:** Cero referencias a DNP, MGA o SINERGIA en código, pruebas o interfaces.
+3. **Inviolabilidad de Producción (`bd_csh`):** 33 mesas de diálogo territorial, 36 agendas comunitarias, 11 fichas técnicas y 17 actores institucionales 100% intactos.
+4. **UI-Policy Estricta (UI004):** Componentes canónicos `@/shared/ui/` y cero imports circulares entre capas.
+5. **Protocolo Zero-Push:** Todo el trabajo se encuentra empaquetado para commit local atómico en la rama `main`.
 
 ---
 
-## 📦 6. Archivos Modificados / Creados
+## 📦 5. Archivos Auditados y Verificados
 
-- `scripts/e2e-smoke-flujos-criticos.mjs` (actualización de selectores institucionales, erradicación de acrónimos ajenos residuales y validación de 9 flujos)
+- `src/app/asistencia/[mesaId]/asistencia-cliente.tsx` (auditoría de Ley 1757, Ley 1581, captura y fallback IndexedDB)
+- `src/features/barrio/views/barrio-view.tsx` y `barrios-cartagena.ts` (auditoría de Modo Barrio ultraligero y presupuesto <150 KB)
+- `src/shared/offline/` (auditoría de `db.ts`, `sync-manager.ts`, `sw.js` y `manifest.json`)
 - `bridge/02_resultado_agy2.md` (informe pericial de auditoría)
