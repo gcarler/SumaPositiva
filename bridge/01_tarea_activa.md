@@ -1,97 +1,93 @@
-# TAREA ACTIVA: [AUD-COMP-05] CONSISTENCIA NORMATIVA, SALVAGUARDAS INSTITUCIONALES Y REGLAS DE DISEÑO UI-POLICY
-## INSPECCIÓN DE PRESERVACIÓN BPIN, SANEAMIENTO LEGAL (DECRETO 037 / OBS-11), CERO ACRÓNIMOS AJENOS EN MODOS TERRITORIALES, HABEAS DATA (LEY 1581), REGLA DE CAPAS UI004 Y A11Y WCAG 2.1 AA
+# TAREA ACTIVA: [AUD-COMP-06] AUDITORÍA DE CONSISTENCIA DE INFRAESTRUCTURA, OPERABILIDAD Y SALUD EN PRODUCCIÓN
+## VERIFICACIÓN DE SERVICIOS SYSTEMD, REVERSE PROXY NGINX SSL TLS 1.3, CRONTAB DE RESPALDOS GFS, WATCHDOG DE AUTOSANACIÓN Y TELEMETRÍA EN CALIENTE (/API/V1/HEALTH/SYSTEM)
 
 **Fecha:** Domingo, 11 de Octubre de 2026  
-**Fase:** FASE 3: Consistencia Normativa, UI-Policy y Resiliencia Operativa (Tarea 3.1)  
+**Fase:** FASE 3: Consistencia Normativa, UI-Policy y Resiliencia Operativa (Tarea 3.2 — CIERRE FINAL DEL PLAN MAESTRO)  
 **Plan Maestro:** `bridge/00_plan_maestro_auditoria_completitud_consistencia.md`  
 **Asignada a:** `agy2` (Desarrollador / EDD — `tmux a -t agy2`)  
 **Supervisor / Auditor:** `agy` (Coordinador General y Auditor Forense EAF — `tmux a -t agy`)  
-**Severidad:** CRÍTICA / BLINDAJE JURÍDICO, INSTITUCIONAL, ARQUITECTÓNICO Y ACCESIBILIDAD UNIVERSAL  
+**Severidad:** ALTA / DISPONIBILIDAD 24/7, SEGURIDAD OPERATIVA Y RESILIENCIA DE PRODUCCIÓN  
 
 ---
 
 ## 🎯 1. Justificación y Alcance de la Tarea
 
-La plataforma POLIS 2026 debe satisfacer no solo los más altos estándares de rendimiento y completitud funcional, sino también una disciplina normativa, jurídica y arquitectónica impecable. Un desfase legal o una infracción en la jerarquía de componentes comprometería la fe pública y la sostenibilidad a largo plazo del sistema distrital.
+Esta es la sexta y última tarea del **Plan Maestro de Auditoría Técnica de Completitud y Consistencia**. Tras haber verificado la coherencia de esquemas y modelos (Fase 1), la completitud E2E y erradicación de mocks en frontend y territorio (Fase 2), y el blindaje normativo, de capas UI y accesibilidad (Fase 3.1), corresponde auditar y certificar la infraestructura de soporte y la operabilidad continua del sistema en el entorno distrital.
 
-Esta tarea exige auditar y blindar cinco (5) frentes periciales no negociables:
-1. **Preservación Inviolable de Códigos BPIN:** Asegurar la integridad de los códigos distritales de proyecto `BPIN-2026-CTG-XXXX` en los módulos de alternativas y asignación presupuestal, y comprobar la erradicación estricta de BPINs fabricados en compromisos PAS (mandato AUD-13).
-2. **Saneamiento Normativo y Cero Acrónimos Ajenos en Canales Territoriales:**
-   - Erradicación taxativa de acrónimos tecnocráticos ajenos (`DNP`, `MGA`, `SINERGIA`) en datos e interfaces cívico-comunitarias (`/barrio`, catálogos territoriales, planillas ciudadanas).
-   - Verificación de la salvedad institucional obligatoria de descargo (OBS-11) en compromisos PAS: `"Catálogo propuesto por el equipo, PENDIENTE de validación institucional, no proviene del Decreto 037"`.
-   - Soporte exclusivo de la Ley Estatutaria 1757 de 2015 y Ley 1581 de 2012 en planillas de asistencia a mesas.
-3. **Habeas Data (Ley 1581 de 2012) y Secreto Estadístico:**
-   - Validación de consentimientos expresos en captura de datos cívicos.
-   - Verificación del filtro defensivo de Sentry/GlitchTip (`backend/app/core/sentry.py`): censura estricta (`[REDACTED]`) de contraseñas, tokens, cédulas, teléfonos y enmascaramiento de IPs (`[FILTERED_HABEAS_DATA]`).
-   - Cero exposición de datos sensibles no autorizados en respuestas JSON de la API.
-4. **Regla de Capas Arquitectónicas UI004:**
-   - Ejecución y validación estricta de `scripts/ui-policy.mjs` (`bun run ui:check`).
-   - Certificación de independencia unidireccional: `@/shared/` no importa `@/features/`, `@/app/` ni `@/core/`; y `@/core/` no importa `@/features/` ni `@/app/`.
-5. **Accesibilidad Universal (WCAG 2.1 AA):**
-   - Verificación de contraste semántico de tokens, etiquetas ARIA accesibles, soporte de navegación por teclado y cero violaciones serias o críticas en auditorías `axe-core`.
+La auditoría abarcará cuatro (4) dimensiones críticas de infraestructura:
+1. **Servicios Systemd en Producción:**
+   - Comprobar estado operativo, estabilidad y ausencia de reinicios anómalos de `polis-backend.service`, `polis-frontend.service`, `nginx` y `postgresql`.
+2. **Reverse Proxy Nginx y Terminación Criptográfica SSL TLS 1.3:**
+   - Verificar la configuración de Nginx en `/etc/nginx/sites-available/` y `/etc/nginx/sites-enabled/`.
+   - Comprobar redirección forzada de tráfico inseguro (HTTP 80 -> HTTPS 443), protocolos seguros (TLS 1.2 / TLS 1.3) para `https://seguridadhumanaintegral.org/`, cabeceras de endurecimiento HSTS y proxy pass hacia backend (8000) y frontend (3000).
+3. **Automatización Operativa en Crontab del Servidor:**
+   - **Respaldos GFS (`/root/polis/scripts/respaldo_programado_bd.sh`):** Ejecución a las 02:00 AM, política de retención diaria/semanal/mensual, integridad de `/root/polis/backups/` y rotación de volcados PostgreSQL.
+   - **Watchdog de Autosanación (`/root/polis/scripts/monitor_sistema_polis.sh --cron`):** Ejecución programada cada 5 minutos, consulta al endpoint de salud, detección temprana de anomalías, reinicio automático y trazabilidad en `/var/log/polis-monitor.log`.
+4. **Telemetría y Estado de Salud en Vivo (`/api/v1/health/system`):**
+   - Corroborar en caliente la latencia de PostgreSQL (<20 ms), conexiones activas en `pg_stat_activity`, coincidencia de migración canónica (`0057_comentario_pas`), consumo de memoria RSS, capacidad de disco y tasa de errores 0.0%.
 
 ---
 
-## 📋 2. Puntos de Inspección Forense y Requerimientos de Verificación
+## 📋 2. Puntos de Inspección Forense y Verificaciones Requeridas
 
-### A. Preservación y Trazabilidad de Códigos BPIN
-1. Auditar `src/features/alternativas/` y `backend/app/modules/presupuesto/`:
-   - Verificar que los códigos BPIN distritales (`BPIN-2026-CTG-XXXX`) en el catálogo institucional de alternativas y costeo presupuestal se preserven y validen con rigor.
-2. Auditar `backend/tests/test_integridad_compromisos.py`:
-   - Ejecutar la prueba forense que certifica que en `seguimiento.compromisos_pas` NO existan BPINs fabricados ni atribuciones arbitrarias (`bpin_relacionado` debe ser inexistente o estrictamente certificado).
+### A. Diagnóstico de Servicios del Sistema
+1. Ejecutar y documentar el estado de los servicios:
+   - `systemctl status polis-backend.service` (FastAPI / Uvicorn en puerto 8000).
+   - `systemctl status polis-frontend.service` (Next.js en puerto 3000).
+   - `systemctl status nginx` (Proxy inverso).
+   - `systemctl status postgresql` (Motor relacional `bd_csh`).
+2. Verificar que los logs de journald (`journalctl -u polis-backend -n 30 --no-pager`) no presenten fallos no controlados ni bucles de reinicio.
 
-### B. Saneamiento Normativo y Cero Acrónimos Ajenos en Canales Comunitarios
-1. En datos comunitarios (`src/features/barrio/data/barrios-cartagena.ts`) y vistas cívicas (`src/features/barrio/views/barrio-view.tsx`):
-   - Corroborar mediante script/test que ningún dato desplegado al ciudadano contenga los acrónimos `DNP`, `MGA` o `SINERGIA`.
-2. En compromisos PAS (`src/features/seguimiento/data/compromisos-pas.data.ts` y tabla `seguimiento.compromisos_pas`):
-   - Confirmar que todo compromiso no oficializado incorpore el descargo institucional:
-     `"Catálogo propuesto por el equipo, PENDIENTE de validación institucional, no proviene del Decreto 037"`, con `meta_validada: false`.
-3. En planilla de asistencia (`src/app/asistencia/[mesaId]/asistencia-cliente.tsx`):
-   - Confirmar sustento formal en Ley Estatutaria 1757 de 2015 y Ley 1581 de 2012, sin invocación indebida de decretos de planeación que confundan al ciudadano.
+### B. Nginx, Enrutamiento y Certificados SSL
+1. Auditar la sintaxis con `nginx -t`.
+2. Verificar en la configuración de Nginx:
+   - Proxy pass `/api/` y `/docs` hacia `http://127.0.0.1:8000`.
+   - Proxy pass `/` hacia `http://127.0.0.1:3000`.
+   - Forzado de HTTPS y cabeceras de seguridad (`Strict-Transport-Security`, `X-Content-Type-Options`, `X-Frame-Options`).
 
-### C. Habeas Data y Blindaje de Telemetría (Ley 1581 de 2012)
-1. Auditar `backend/app/core/sentry.py`:
-   - Verificar que la función `_filtrar_pii` intercepte encabezados (`authorization`, `cookie`), campos sensibles (`password`, `contrasena`, `token`, `secret`, `cedula`, `documento`, `telefono`, `correo`) y enmascare `ip_address` a `[FILTERED_HABEAS_DATA]`.
-2. Ejecutar prueba unitaria o de integración que certifique la sanitización activa de eventos de error antes de su eventual despacho.
+### C. Crontab, Respaldos y Watchdog de Autosanación
+1. Inspeccionar `crontab -l` constatando las dos tareas programadas canónicas:
+   - Respaldo nocturno diario a las 02:00 AM (`respaldo_programado_bd.sh`).
+   - Monitor de salud cada 5 minutos (`monitor_sistema_polis.sh --cron`).
+2. Ejecutar una corrida de prueba en seco del monitor de salud:
+   `/root/polis/scripts/monitor_sistema_polis.sh` y documentar la salida pericial.
+3. Verificar la existencia del directorio `/root/polis/backups` y el log de operaciones `/root/polis/backups/respaldos.log`.
 
-### D. Regla Arquitectónica de Capas UI004 y Política de UI
-1. Ejecutar `bun run ui:check` y `bun run ui:policy:test`.
-2. Constatar que 0 archivos infrinjan las reglas:
-   - `UI001`: Controles nativos encapsulados.
-   - `UI002`: Primitivos externos radicados en `src/shared/ui/`.
-   - `UI003`: Cero colores literales fuera de `tokens.css`.
-   - `UI004`: `shared` y `core` libres de dependencias circulares hacia `features` o `app`.
-   - `UI005`: Uso de `SidePanel` / `PanelHost` para flujos canónicos.
-
-### E. Accesibilidad Universal WCAG 2.1 AA
-1. Ejecutar la suite de auditoría E2E con motor axe-core (`node scripts/e2e-smoke-flujos-criticos.mjs`).
-2. Certificar cero (0) violaciones de impacto "critical" o "serious".
+### D. Telemetría y Salud en Caliente (`/api/v1/health/system`)
+1. Consultar en vivo `http://127.0.0.1:8000/api/v1/health/system` y certificar:
+   - `status: "ok"`
+   - `database.status: "ok"` y latencia menor a 20 ms.
+   - `database.migration_revision: "0057_comentario_pas"` (cero drift).
+   - `database.installed_extensions`: `ltree`, `pg_trgm`, `pgcrypto`, `plpgsql`, `postgis`.
+   - `process.error_rate_pct`: 0.0%.
+   - `storage.used_pct`: nivel saludable de disco.
 
 ---
 
-## 🧪 3. Protocolo de Pruebas y Quality Gates Obligatorios
+## 🧪 3. Protocolo de Pruebas y Quality Gates de Cierre
 
-| Verificación | Comando / Prueba | Resultado Esperado |
+| Verificación | Comando / Prueba | Criterio de Aceptación |
 |---|---|---|
-| **Integridad BPIN & OBS-11** | `/root/polis/venv/bin/pytest backend/tests/test_integridad_compromisos.py` | 100% verde (sin BPIN ficticio, OBS-11 cumplido) |
-| **Acrónimos en Modo Barrio** | `bun test src/features/barrio/tests/barrio-view.test.ts` | 5/5 verde (cero DNP, MGA, SINERGIA en datos cívicos) |
-| **Política UI y Capas UI004** | `bun run ui:check` y `bun run ui:policy:test` | Aprobado, 0 violaciones |
-| **Axe-core A11y E2E** | `node scripts/e2e-smoke-flujos-criticos.mjs` | 9/9 flujos aprobados, 0 violaciones serias/críticas |
+| **Servicios Systemd** | `systemctl is-active polis-backend polis-frontend nginx postgresql` | Todos activos (`active`) |
+| **Sintaxis Nginx** | `nginx -t` | `syntax is ok` / `test is successful` |
+| **Crontab Distrital** | `crontab -l` | Tareas de respaldo y monitor activas |
+| **Prueba Monitor** | `/root/polis/scripts/monitor_sistema_polis.sh` | Retorno limpio con telemetría en verde |
+| **Health API en Caliente** | `curl -s http://127.0.0.1:8000/api/v1/health/system` | HTTP 200 OK con latencia < 20 ms y 0 drift |
 | **TypeCheck & Linter** | `bun run check` | 0 errores TypeScript, 0 advertencias ESLint |
 | **Frontend Test Suite** | `bun test` | 412/412 pruebas pasadas |
-| **Backend Test Suite** | `/root/polis/venv/bin/pytest backend/tests/` | 100% verde |
-| **Turbopack Build** | `bun run build` | Compilación limpia, 191/191 páginas estáticas |
+| **Backend Test Suite** | `/root/polis/venv/bin/pytest backend/tests/` | 467/467 pruebas pasadas (100% verde) |
+| **Turbopack Build** | `bun run build` | Compilación exitosa, 191/191 rutas SSG |
 
 ---
 
 ## 📦 4. Entregables y Salvaguardas
 
-1. **Matriz Pericial de Consistencia Normativa y UI-Policy:**
-   - Tabla de verificación punto por punto en `bridge/02_resultado_agy2.md`.
+1. **Informe Pericial Final de Infraestructura:**
+   - Registrar la matriz de verificación de infraestructura y telemetría en `bridge/02_resultado_agy2.md`.
 2. **Salvaguardas Inviolables:**
+   - Cero interrupción o reinicio destructivo de servicios en ejecución.
    - Base de datos `bd_csh` intacta (33 mesas, 36 agendas, 11 fichas técnicas).
-   - Códigos BPIN distritales inalterados.
-   - Cero push a repositorios remotos (exclusivo local en `main`).
+   - Preservación de BPINs distritales y protocolo Zero-Push estricto.
 3. **Commit Atómico Local:**
-   - Registrar el commit con formato: `audit(normativa): verificacion bpin obs-11 acronimos ui004 y a11y AUD-COMP-05`.
-4. **Notificación:** Notificar a `agy` en tmux `%0` para contra-auditoría pericial.
+   - Registrar el commit con formato: `audit(ops): verificacion infraestructura systemd nginx crontab y telemetria AUD-COMP-06`.
+4. **Notificación:** Notificar a `agy` en tmux `%0` para la contra-auditoría pericial y certificación final del sistema.
