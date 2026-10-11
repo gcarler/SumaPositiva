@@ -2151,3 +2151,65 @@ La tarea **`[AUD-COMP-01]`** queda formalmente **CERRADA, APROBADA AL 100% Y CER
 
 Se autoriza el avance a la siguiente tarea del **Plan Maestro de Auditoría de Completitud y Consistencia**:
 - **Siguiente Tarea:** **`[AUD-COMP-02]`** (*Contratos de API, Manejo Tipado de Excepciones y Matriz Canónica RBAC en docs/permisos-api.md*).
+
+---
+
+## 🏛️ DICTAMEN PERICIAL FORENSE EAF — TAREA [AUD-COMP-02]
+### CONTRATOS DE API, COBERTURA RBAC Y MANEJO TIPADO DE EXCEPCIONES
+**Fecha de Emisión:** Domingo, 11 de Octubre de 2026  
+**Evaluador:** Coordinador General y Auditor Forense EAF `agy` (`tmux a -t agy`)  
+**Responsable Técnico Auditado:** Desarrollador / EDD `agy2` (`tmux a -t agy2`)  
+**Commit Evaluado:** `add6689` (`audit(api): contratos rbac excepciones tipadas y matriz permisos AUD-COMP-02`)  
+**Referencia Técnica:** `bridge/01_tarea_activa.md` y `bridge/02_resultado_agy2.md`  
+**Plan Maestro:** `bridge/00_plan_maestro_auditoria_completitud_consistencia.md` (Fase 1: Tarea 1.2)  
+**Veredicto Oficial:** **CONFORME Y APROBADO AL 100% SIN OBSERVACIONES (APROBACIÓN TOTAL)**
+
+---
+
+### 1. Hallazgos de la Contra-Auditoría Técnica Independiente
+
+1. **Paridad Canónica 1:1 en Árbol de Rutas y Matriz de Acceso ([`docs/permisos-api.md`](file:///root/polis/docs/permisos-api.md))**:
+   - Total de rutas HTTP activas en FastAPI: **185 rutas**.
+   - Total de rutas documentadas y asignadas a roles canónicos en `docs/permisos-api.md`: **185 rutas**.
+   - Cero rutas huérfanas, no documentadas o desprotegidas.
+   - Suite de Acceso Contractual ([`backend/tests/test_access_policy.py`](file:///root/polis/backend/tests/test_access_policy.py)): **97/97 pruebas aprobadas al 100%**.
+
+2. **Erradicación Total de Excepciones 500 No Controladas y Fuga de Trazas**:
+   - Se validaron los manejadores globales en [`backend/app/main.py`](file:///root/polis/backend/app/main.py):
+     * `IntegrityError` de SQLAlchemy: Capturado e interceptado formalmente, retornando **HTTP 409 Conflict** estructurado y seguro, erradicando la fuga de sentencias SQL crudas o nombres internos de restricciones hacia el cliente.
+     * `Exception` de último recurso: Captura de contingencia que registra el traceback interno en los logs institucionales y retorna **HTTP 500** limpio con mensaje genérico.
+     * `RequestValidationError`: Preservado con serialización nativa retornando **HTTP 422**.
+   - Suite de Pruebas de Excepciones ([`backend/tests/test_exception_handlers.py`](file:///root/polis/backend/tests/test_exception_handlers.py)): **6/6 pruebas aprobadas**.
+
+3. **Higiene Contractual y Protección de DTOs (`response_model`)**:
+   - Modelos Pydantic explícitos en endpoints de usuario, sesión y aportes. Cero exposición de campos confidenciales (`password_hash`, `salt`).
+
+4. **Inviolabilidad de Producción (`bd_csh`)**:
+   - `mesas_trabajo.mesas`: **33** mesas intactas.
+   - `mesas_trabajo.agendas`: **36** agendas comunitarias intactas.
+   - `indicadores.fichas_tecnicas_indicadores`: **11** fichas técnicas intactas.
+   - `participacion_ciudadana.actores_estrategicos`: **17** dependencias oficiales intactas.
+   - `participacion_ciudadana.propuestas_ciudadanas`: **5** propuestas radicadas intactas.
+
+---
+
+### 2. Certificación Independiente de Quality Gates
+
+- `pytest backend/tests/test_access_policy.py`: **97/97 APROBADO (100% verde)**.
+- `pytest backend/tests/test_exception_handlers.py`: **6/6 APROBADO (100% verde)**.
+- `pytest backend/tests/test_observability.py`: **3/3 APROBADO (100% verde)**.
+- `bun run ui:check`: **APROBADO** (0 infracciones).
+- `bun run check` (`tsc --noEmit` & `eslint .`): **APROBADO** (0 errores TypeScript, 0 advertencias ESLint).
+- `bun test`: **APROBADO** (**412 pasados / 0 fallados** en 43 suites).
+- Endpoint `/api/v1/health/ready`: **HTTP 200 OK** (`status: ready, database: ok, migrations: ok, extensions: ok`).
+
+---
+
+### 3. Dictamen Final y Conclusión de Fase 1
+
+La tarea **`[AUD-COMP-02]`** queda formalmente **CERRADA, APROBADA AL 100% Y CERTIFICADA PARA PRODUCCIÓN**.
+
+Con la culminación de esta tarea se declara formalmente **APROBADA Y CERRADA LA FASE 1 (Consistencia Estructural, Esquema y Contratos de Datos)** del Plan Maestro de Auditoría.
+
+Se autoriza la apertura de la **FASE 2: Completitud Funcional E2E y Erradicación de Mocks**:
+- **Siguiente Tarea:** **`[AUD-COMP-03]`** (*Auditoría Integral de Integración Extremo a Extremo en los 12 Módulos Administrativos de `/plataforma/`*).
