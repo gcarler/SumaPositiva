@@ -3,6 +3,7 @@ import {
   buscarTerritorioPorCoordenada,
   obtenerTerritorio,
   listarCapas,
+  estandarizarDireccion,
 } from "./geovisor-api";
 import * as apiClient from "@/core/http/api-client";
 
@@ -99,5 +100,54 @@ describe("Georreferenciación Territorial Inversa (AUD-SYNC-01)", () => {
     expect(spy).toHaveBeenCalledWith("/geodatos/capas");
     expect(resultado).toHaveLength(1);
     expect(resultado[0].slug).toBe("barrios");
+  });
+
+  describe("Normalizador Inteligente de Direcciones (GEO-PROC-01)", () => {
+    it("envía solicitud POST /geodatos/estandarizar-direccion con dirección estructurada", async () => {
+      const mockRespuesta = {
+        direccion_original: "Calle 30 # 25-10 Pie de la Popa",
+        direccion_normalizada: "CL 30 # 25-10, Pie de la Popa",
+        tipo_via: "Calle",
+        numero_principal: "30",
+        numero_secundario: "25-10",
+        sector_o_barrio: "Pie de la Popa",
+        territorio_id: "018f4a3b-mock-id",
+        coordenadas_aproximadas: {
+          latitud: 10.4167,
+          longitud: -75.5333,
+        },
+        confianza: 0.95,
+      };
+
+      const spy = vi.spyOn(apiClient, "apiFetch").mockResolvedValueOnce(mockRespuesta);
+
+      const resultado = await estandarizarDireccion("Calle 30 # 25-10 Pie de la Popa");
+
+      expect(spy).toHaveBeenCalledWith("/geodatos/estandarizar-direccion", {
+        method: "POST",
+        body: JSON.stringify({ direccion_raw: "Calle 30 # 25-10 Pie de la Popa" }),
+      });
+      expect(resultado).toEqual(mockRespuesta);
+      expect(resultado?.direccion_normalizada).toBe("CL 30 # 25-10, Pie de la Popa");
+      expect(resultado?.coordenadas_aproximadas?.latitud).toBe(10.4167);
+    });
+
+    it("retorna null de forma segura ante cadenas vacías sin invocar a la API", async () => {
+      const spy = vi.spyOn(apiClient, "apiFetch");
+
+      const resultado1 = await estandarizarDireccion("");
+      const resultado2 = await estandarizarDireccion("   ");
+
+      expect(resultado1).toBeNull();
+      expect(resultado2).toBeNull();
+      expect(spy).not.toHaveBeenCalled();
+    });
+
+    it("captura errores de red y retorna null defensivamente", async () => {
+      vi.spyOn(apiClient, "apiFetch").mockRejectedValueOnce(new Error("Network Error"));
+
+      const resultado = await estandarizarDireccion("Pozón sector 1ro de Mayo");
+      expect(resultado).toBeNull();
+    });
   });
 });

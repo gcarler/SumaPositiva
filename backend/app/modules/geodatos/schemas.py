@@ -123,3 +123,61 @@ class CapaGeovisorRead(CapaGeovisorBase):
     actualizado_en: datetime
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class CoordenadasAproximadas(BaseModel):
+    """Coordenadas geográficas WGS84 EPSG:4326 del territorio o punto normalizado."""
+
+    latitud: float = Field(..., description="Latitud en grados decimales (-90 a 90)")
+    longitud: float = Field(..., description="Longitud en grados decimales (-180 a 180)")
+
+
+class EstandarizarDireccionRequest(BaseModel):
+    """Solicitud de estandarización léxica y territorial de dirección."""
+
+    direccion_raw: str = Field(
+        ...,
+        min_length=2,
+        max_length=300,
+        description="Dirección o referencia territorial en texto libre",
+    )
+
+
+class DireccionEstandarizadaResponse(BaseModel):
+    """Respuesta con dirección normalizada, desglose de vía/sector y georreferenciación distrital."""
+
+    direccion_original: str = Field(..., description="Texto original proporcionado")
+    direccion_normalizada: str = Field(
+        ..., description="Dirección normalizada según nomenclatura distrital oficial"
+    )
+    tipo_via: str | None = Field(
+        default=None,
+        description="Tipo de vía: Calle, Carrera, Diagonal, Transversal, Avenida, Sector, etc.",
+    )
+    numero_principal: str | None = Field(
+        default=None,
+        description="Número de vía principal o identificador de manzana/sector",
+    )
+    numero_secundario: str | None = Field(
+        default=None,
+        description="Número de cruce/placa o identificador de lote",
+    )
+    sector_o_barrio: str | None = Field(
+        default=None,
+        description="Sector, barrio o territorio identificado en Cartagena",
+    )
+    territorio_id: uuid.UUID | None = Field(
+        default=None,
+        description="UUID del territorio en geodatos.territorios si existe correspondencia",
+    )
+    coordenadas_aproximadas: CoordenadasAproximadas | None = Field(
+        default=None,
+        description="Coordenadas geográficas aproximadas [latitud, longitud]",
+    )
+    confianza: float = Field(
+        ...,
+        ge=0.0,
+        le=1.0,
+        description="Nivel de confianza de la estandarización (0.0 a 1.0)",
+    )
+

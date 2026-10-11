@@ -1,87 +1,120 @@
-# INFORME PERICIAL DE AUDITORÍA TÉCNICA — TAREA [SEC-HARDEN-02]
-## ENDURECIMIENTO DE NGINX: RATE LIMITING, REDIRECCIÓN 301 UNIVERSAL Y CABECERAS AVANZADAS
-### PROTECCIÓN CONTRA SATURACIÓN DE VOTOS/FORMULARIOS CÍVICOS, FORZADO LIMPIO DE HTTPS Y BLINDAJE HTTP
+# INFORME PERICIAL DE AUDITORÍA TÉCNICA — TAREA [GEO-PROC-01]
+## NORMALIZADOR INTELIGENTE DE DIRECCIONES CARTAGENERAS (POSTGIS ADDRESS_STANDARDIZER)
+### NORMALIZACIÓN DE NOMENCLATURAS URBANAS Y SECTORES POPULARES CON VINCULACIÓN TERRITORIAL Y COORDENADAS
 
 **Destinatario:** Coordinador General y Auditor Forense EAF `agy` (`tmux a -t agy`)  
 **Responsable:** `agy2` (Desarrollador / EDD — `tmux a -t agy2`)  
 **Fecha de Emisión:** Domingo, 11 de Octubre de 2026  
-**Referencia de Trabajo:** `bridge/01_tarea_activa.md` (`[SEC-HARDEN-02]`)  
-**Plan Maestro:** `bridge/00_plan_maestro_blindaje_geoprocesamiento_resiliencia.md` (Fase 1: Tarea 1.2 — Cierre de Fase 1)  
-**Severidad Atendida:** ALTA / DISPONIBILIDAD, MITIGACIÓN DoS Y BLINDAJE DE FE PÚBLICA CÍVICA  
+**Referencia de Trabajo:** `bridge/01_tarea_activa.md` (`[GEO-PROC-01]`)  
+**Plan Maestro:** `bridge/00_plan_maestro_blindaje_geoprocesamiento_resiliencia.md` (Fase 2: Tarea 2.1 — Apertura de Fase 2)  
+**Severidad Atendida:** ALTA / INTELIGENCIA TERRITORIAL Y FACILITACIÓN DE ACCESO CÍVICO  
 **Estado de la Entrega:** 100% Implementada, Auditada y Verificada con Quality Gates  
 
 ---
 
 ## 🎯 1. Resumen Ejecutivo del Dictamen Forense
 
-En cumplimiento estricto de la orden técnica **[SEC-HARDEN-02]**, se implementó el endurecimiento perimetral de Nginx sobre [`/etc/nginx/sites-available/polis`](file:///etc/nginx/sites-available/polis), dotando a la plataforma de mecanismos de protección contra saturación, control estricto de accesos y cabeceras de seguridad de grado militar:
+En cumplimiento estricto de la orden técnica **[GEO-PROC-01]**, se implementó el **Normalizador Inteligente de Direcciones Cartageneras**, un motor híbrido backend-frontend diseñado para procesar tanto la nomenclatura formal de vías numéricas (Calles, Carreras, Diagonales, Transversales, Avenidas) como la compleja estructura urbana de sectores populares y corregimientos de Cartagena de Indias (Olaya Herrera, El Pozón, Nelson Mandela, etc. basados en Sector, Manzana y Lote).
 
-1. **Rate Limiting Segmentado y Código RFC 6585:**  
-   - Se crearon dos zonas de limitación en memoria con claves binarias (`$binary_remote_addr`):
-     - **`api_general`:** Cuota de 30 req/s con ráfaga (`burst`) de 50 peticiones en modo `nodelay` sobre `location /api/`.
-     - **`civic_forms`:** Cuota restrictiva de 5 req/s con ráfaga (`burst`) de 10 peticiones en modo `nodelay` sobre `location /api/v1/formularios/`.
-   - Se configuró la directiva `limit_req_status 429` para retornar el estándar HTTP **429 Too Many Requests**.
-   - **Verificación empírica:** Prueba de ráfaga (20 peticiones concurrentes a formularios) arrojó **13 respuestas 200 OK y 7 respuestas 429 Too Many Requests**, demostrando el filtrado activo y la mitigación de scripts automatizados de votación cívica.
+El motor integra la potencia analítica de la extensión **`address_standardizer`** en PostgreSQL con resolución espacial sobre la base territorial `geodatos.territorios` y un catálogo canónico de coordenadas distritales:
 
-2. **Redirección Universal 301 en Puerto 80:**  
-   - Se refactorizó el bloque `server` del puerto 80 eliminando las cláusulas condicionales y los retornos 404 para hosts secundarios.  
-   - Ahora aplica una regla catch-all `server_name _;` con retorno universal incondicional:
-     `return 301 https://$host$request_uri;`  
-   - Comprobado en vivo: peticiones directas y con encabezados Host secundarios redirigen limpiamente con HTTP 301 a su contraparte HTTPS.
+1. **Modelado y Esquemas Contractuales (`backend/app/modules/geodatos/schemas.py`):**
+   - Definidos `CoordenadasAproximadas` (`latitud`, `longitud`), `EstandarizarDireccionRequest` (`direccion_raw`) y `DireccionEstandarizadaResponse` (`direccion_original`, `direccion_normalizada`, `tipo_via`, `numero_principal`, `numero_secundario`, `sector_o_barrio`, `territorio_id`, `coordenadas_aproximadas`, `confianza`).
 
-3. **Cabeceras de Seguridad Avanzadas y HSTS Preload:**  
-   - En el bloque `server` TLS (443), se incorporó la directiva HSTS completa:  
-     `add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;`  
-   - Se añadió la política de permisos restrictiva:  
-     `add_header Permissions-Policy "camera=(), microphone=(), geolocation=(self)" always;`  
-   - Se preservaron las cabeceras `X-Content-Type-Options: nosniff`, `X-Frame-Options: SAMEORIGIN`, `X-XSS-Protection: 1; mode=block` y `Referrer-Policy: strict-origin-when-cross-origin`.
+2. **Capa de Persistencia y PostGIS (`backend/app/modules/geodatos/repository.py`):**
+   - Implementado `parse_with_address_standardizer()` ejecutando la función `SELECT * FROM parse_address(:addr)` de PostgreSQL. La llamada está blindada mediante un subsavepoint defensivo (`async with self.session.begin_nested():`) para evitar abortos en cascada en caso de sintaxis anómala.
+   - Implementados métodos de consulta territorial `buscar_territorios_por_nombre()` y `obtener_territorio_por_codigo()` con extracción precisa de centroide espacial (`ST_Y(ST_Centroid(geometria))` y `ST_X(ST_Centroid(geometria))`) y similitud trigram.
 
-4. **Validación Sintáctica y Recarga Limpia:**  
-   - `nginx -t` ejecutado con resultado exitoso (`syntax is ok / test is successful`).  
-   - Nginx recargado sin interrupciones con `systemctl reload nginx` preservando el estado `active (running)`.
+3. **Lógica de Servicio Híbrida (`backend/app/modules/geodatos/service.py`):**
+   - **Soporte de Sectores Populares:** Detección automática de patrones populares como *"Olaya Herrera sector Playas Blancas mz 12"*, *"Pozón sector 1ro de Mayo"*, identificando sector, manzana y lote, normalizando a formato legible y asociando el barrio canónico correspondiente.
+   - **Soporte de Vías Tradicionales:** Normalización de prefijos ("calle" -> "CL", "carrera" -> "CR", "diagonal" -> "DG", "avenida" -> "AV"), separación limpia de número principal y secundario.
+   - **Georreferenciación y Coordenadas:** Inyección de centroides geográficos (`BARRIOS_COORD_MAP`) y resolución de UUID en `geodatos.territorios` (`BARRIO-OLAYA`, `BARRIO-POZON`, `BARRIO-MANDELA`, `BARRIO-CENTRO`, `LOC-1`, `LOC-2`, `LOC-3`).
+   - **Confianza Métrica:** Estimación ponderada (0.95 para match directo de barrio/sector, 0.85 para aproximaciones y 0.50 para detecciones genéricas).
+
+4. **Exposición del Endpoint (`backend/app/modules/geodatos/router.py`):**
+   - Expuesto `POST /api/v1/geodatos/estandarizar-direccion` como ruta cívica abierta.
+   - Documentado en [`docs/permisos-api.md`](file:///root/polis/docs/permisos-api.md) y validado en [`backend/tests/test_access_policy.py`](file:///root/polis/backend/tests/test_access_policy.py) (97/97 tests pasados).
+
+5. **Integración en Interfaces Cívicas (Frontend):**
+   - **Servicio API Frontend (`src/features/geovisor/services/geovisor-api.ts`):** Añadido método `estandarizarDireccion(direccionRaw: string)` con tipado completo y manejo resiliente ante fallos de conexión. Suite de pruebas unitarias en `geovisor-api.test.ts` (7/7 pasados).
+   - **Modo Barrio (`src/features/barrio/components/propuesta-barrio-tab.tsx`):** Incorporado campo opcional de dirección/sector exacto de intervención con normalización interactiva al perder foco (`onBlur`), visualización de coordenadas de referencia y almacenamiento enriquecido en los metadatos de radicado de la propuesta ciudadana.
+   - **Planilla de Asistencia (`src/app/asistencia/[mesaId]/asistencia-cliente.tsx`):** Sugerencia territorial inteligente en el campo de barrio/organización mediante `Button` de `@/shared/ui/button` cumpliendo con la directiva UI001.
 
 ---
 
 ## 🔍 2. Evidencia Forense de Verificación en Caliente
 
-### A. Validación Sintáctica (`nginx -t`)
+### A. Prueba de Dirección Formal en Caliente (FastAPI & Nginx HTTPS)
+```bash
+curl -k -s -X POST https://127.0.0.1/api/v1/geodatos/estandarizar-direccion \
+  -H "Content-Type: application/json" \
+  -d '{"direccion_raw":"Cra 3 # 6-20 Bocagrande"}'
 ```
-nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
-nginx: configuration file /etc/nginx/nginx.conf test is successful
-```
-
-### B. Verificación de Redirección Universal 301 (`curl -sI http://127.0.0.1/`)
-```
-HTTP/1.1 301 Moved Permanently
-Server: nginx/1.28.3 (Ubuntu)
-Location: https://127.0.0.1/
-```
-*Host secundario (`sub.seguridadhumanaintegral.org/foo`):*
-```
-HTTP/1.1 301 Moved Permanently
-Location: https://sub.seguridadhumanaintegral.org/foo
-```
-
-### C. Inspección de Cabeceras Avanzadas HTTPS (`curl -k -sI https://127.0.0.1/`)
-```
-HTTP/1.1 200 OK
-Server: nginx/1.28.3 (Ubuntu)
-Content-Type: text/html; charset=utf-8
-Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
-X-Content-Type-Options: nosniff
-X-Frame-Options: SAMEORIGIN
-X-XSS-Protection: 1; mode=block
-Referrer-Policy: strict-origin-when-cross-origin
-Permissions-Policy: camera=(), microphone=(), geolocation=(self)
+**Respuesta:**
+```json
+{
+  "direccion_original": "Cra 3 # 6-20 Bocagrande",
+  "direccion_normalizada": "CR 3 # 6-20, Bocagrande",
+  "tipo_via": "Carrera",
+  "numero_principal": "3",
+  "numero_secundario": "6-20",
+  "sector_o_barrio": "Bocagrande",
+  "territorio_id": "01a0f5dd-5391-7c5d-b29f-c020e56d7adf",
+  "coordenadas_aproximadas": {
+    "latitud": 10.4,
+    "longitud": -75.555
+  },
+  "confianza": 0.95
+}
 ```
 
-### D. Comprobación de Rate Limiting con Ráfaga Concurrente (Código 429)
+### B. Prueba de Sector Popular (Olaya Herrera — Playas Blancas)
+```bash
+curl -s -X POST http://127.0.0.1:8000/api/v1/geodatos/estandarizar-direccion \
+  -H "Content-Type: application/json" \
+  -d '{"direccion_raw":"Olaya Herrera sector Playas Blancas mz 12"}'
 ```
-$ for i in {1..20}; do curl -k -s -o /dev/null -w "%{http_code}\n" https://127.0.0.1/api/v1/formularios/publicos; done | sort | uniq -c
-     13 200
-      7 429
+**Respuesta:**
+```json
+{
+  "direccion_original": "Olaya Herrera sector Playas Blancas mz 12",
+  "direccion_normalizada": "Olaya Herrera, Sector Playas Blancas, Mz 12",
+  "tipo_via": "Sector",
+  "numero_principal": "12",
+  "numero_secundario": null,
+  "sector_o_barrio": "Olaya Herrera, Sector Playas Blancas",
+  "territorio_id": "01a0f5dd-5394-71d5-b6dc-52e3a9690f90",
+  "coordenadas_aproximadas": {
+    "latitud": 10.4141,
+    "longitud": -75.4922
+  },
+  "confianza": 0.95
+}
 ```
-*Dictamen: Protección activa contra ataques de fuerza bruta y saturación en formularios cívicos.*
+
+### C. Prueba de Sector Popular (El Pozón — 1ro de Mayo)
+```bash
+curl -s -X POST http://127.0.0.1:8000/api/v1/geodatos/estandarizar-direccion \
+  -H "Content-Type: application/json" \
+  -d '{"direccion_raw":"Pozón sector 1ro de Mayo"}'
+```
+**Respuesta:**
+```json
+{
+  "direccion_original": "Pozón sector 1ro de Mayo",
+  "direccion_normalizada": "El Pozón, Sector 1ro de Mayo",
+  "tipo_via": "Sector",
+  "numero_principal": null,
+  "numero_secundario": null,
+  "sector_o_barrio": "El Pozón, Sector 1ro de Mayo",
+  "territorio_id": "01a0f5dd-5395-7395-8dd6-c057908e293b",
+  "coordenadas_aproximadas": {
+    "latitud": 10.4118,
+    "longitud": -75.4595
+  },
+  "confianza": 0.95
+}
+```
 
 ---
 
@@ -89,26 +122,30 @@ $ for i in {1..20}; do curl -k -s -o /dev/null -w "%{http_code}\n" https://127.0
 
 | Verificación | Comando / Prueba | Resultado Obtenido | Estado |
 | :--- | :--- | :--- | :--- |
-| **Sintaxis Nginx** | `nginx -t` | `syntax is ok / test is successful` | ✅ APROBADO |
-| **Redirección 301 Puerto 80** | `curl -sI http://127.0.0.1/` | `HTTP/1.1 301 Moved Permanently` | ✅ APROBADO |
-| **Cabeceras HSTS & Permissions** | `curl -k -sI https://127.0.0.1/` | `HSTS preload` y `Permissions-Policy` presentes | ✅ APROBADO |
-| **Protección Rate Limit (429)** | Ráfaga de peticiones a `/formularios/` | Retorno de HTTP 429 tras agotar burst | ✅ APROBADO |
-| **Estado Nginx** | `systemctl is-active nginx` | `active` | ✅ APROBADO |
+| **Suite Estandarización Backend** | `pytest backend/tests/test_geodatos_estandarizacion.py` | **6 pasadas** (100% verde en 5.24s) | ✅ APROBADO |
+| **Suite Geodatos Global** | `pytest backend/tests/test_geodatos*.py ...` | **21 pasadas** en 4 archivos (0 fallos) | ✅ APROBADO |
+| **Política de Acceso y Permisos** | `pytest backend/tests/test_access_policy.py` | **97 pasadas** en 22.61s (0 fallos) | ✅ APROBADO |
+| **Alembic Schema Check** | `cd backend && alembic check` | `No new upgrade operations detected.` | ✅ APROBADO |
 | **UI Architectural Linter** | `bun run ui:check` | `POLIS UI: controles, tokens, capas... correctos` | ✅ APROBADO |
 | **TypeCheck & Linter** | `bun run check` (`tsc --noEmit && eslint .`) | **0 errores TypeScript, 0 warnings ESLint** | ✅ APROBADO |
-| **Frontend Test Suite** | `bun test` | **412 pruebas pasadas** en 43 archivos (0 fallos) | ✅ APROBADO |
+| **Frontend Test Suite** | `bun test` | **415 pruebas pasadas** en 43 archivos (0 fallos) | ✅ APROBADO |
+| **Servicios Systemd** | `systemctl is-active polis-backend polis-frontend` | Ambos `active (running)` | ✅ APROBADO |
 
 ---
 
-## 🔒 4. Cumplimiento de Salvaguardas Inviolables
+## 🛡️ 4. Verificación de Salvaguardas Inviolables
 
-1. **Inviolabilidad de Certificados SSL:** Certificados Let's Encrypt para `seguridadhumanaintegral.org` intactos y operativos.
-2. **Inviolabilidad de Producción (`bd_csh`):** Datos territoriales 100% íntegros y preservados (33 mesas, 36 agendas, 11 fichas, 17 actores estratégicos).
-3. **Protocolo Zero-Push:** Todo cambio registrado localmente en la rama `main` sin operaciones de push a repositorios remotos.
+1. **Integridad de Base de Datos `bd_csh`:**
+   - 33 mesas de diálogo territorial, 36 agendas temáticas, 11 fichas de diagnóstico y 17 actores estratégicos 100% intactos.
+2. **Cero Drift en Base de Datos:**
+   - `alembic check` ejecutado sin inconsistencias.
+3. **Protocolo Zero-Push:**
+   - Todo trabajo se consolida estrictamente en commits locales en la rama `main`.
 
 ---
 
-## 📦 5. Archivos Auditados y Modificados
+## 📌 5. Conclusión y Solicitud de Contra-Auditoría
 
-- `/etc/nginx/sites-available/polis` (zonas de rate limiting, cabeceras avanzadas, redirección 301 universal)
-- `bridge/02_resultado_agy2.md` (informe pericial de hardening de Nginx)
+La tarea técnica **[GEO-PROC-01]** ha sido completada con rigurosidad pericial, integrando el normalizador cartagenero en backend y frontend, blindando la política de acceso y certificando todos los Quality Gates al 100%.
+
+Se procede a emitir el commit atómico y a notificar al Coordinador General `agy` en el panel tmux `%0` para su respectivo dictamen de contra-auditoría.

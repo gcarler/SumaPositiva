@@ -25,9 +25,15 @@ import {
   User,
   PlusCircle,
   MessageSquare,
+  MapPin,
+  Loader2,
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { es } from "date-fns/locale";
+import {
+  estandarizarDireccion,
+  type DireccionEstandarizada,
+} from "@/features/geovisor/services/geovisor-api";
 
 const LINEA_ID_CANONICA = "01a0f61b-6252-73d5-b035-7671ed9cf089";
 
@@ -48,6 +54,9 @@ export function PropuestaBarrioTab({ barrio }: PropuestaBarrioTabProps) {
   const [tematica, setTematica] = useState(TEMATICAS[0]);
   const [titulo, setTitulo] = useState("");
   const [descripcion, setDescripcion] = useState("");
+  const [direccionRaw, setDireccionRaw] = useState("");
+  const [direccionNormalizada, setDireccionNormalizada] = useState<DireccionEstandarizada | null>(null);
+  const [normalizando, setNormalizando] = useState(false);
   const [esAnonimo, setEsAnonimo] = useState(true);
   const [autorNombre, setAutorNombre] = useState("");
   const [telefono, setTelefono] = useState("");
@@ -67,6 +76,23 @@ export function PropuestaBarrioTab({ barrio }: PropuestaBarrioTabProps) {
   const { data: misApoyos = [] } = useMisApoyos();
   const { mutate: toggleApoyoMutate } = useToggleApoyo();
 
+  const handleNormalizarDireccion = async () => {
+    const q = direccionRaw.trim();
+    if (!q || q.length < 3) {
+      setDireccionNormalizada(null);
+      return;
+    }
+    setNormalizando(true);
+    try {
+      const res = await estandarizarDireccion(q);
+      if (res) {
+        setDireccionNormalizada(res);
+      }
+    } finally {
+      setNormalizando(false);
+    }
+  };
+
   const handleEnviar = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!titulo.trim() || !descripcion.trim()) {
@@ -74,10 +100,13 @@ export function PropuestaBarrioTab({ barrio }: PropuestaBarrioTabProps) {
       return;
     }
 
+    const direccionRef = direccionNormalizada?.direccion_normalizada || (direccionRaw.trim() || undefined);
+    const sufijoDir = direccionRef ? ` | Dir: ${direccionRef}` : "";
+
     const payload = {
       linea_id: LINEA_ID_CANONICA,
       titulo: titulo.trim(),
-      descripcion: `[Barrio: ${barrio.nombre} | Eje: ${tematica}] ${descripcion.trim()}`,
+      descripcion: `[Barrio: ${barrio.nombre} | Eje: ${tematica}${sufijoDir}] ${descripcion.trim()}`,
       tipo_aporte: "propuesta" as const,
       autor_nombre: esAnonimo
         ? `Vecino(a) de ${barrio.nombre}`
@@ -90,6 +119,9 @@ export function PropuestaBarrioTab({ barrio }: PropuestaBarrioTabProps) {
         localidad: barrio.localidad,
         tematica,
         telefono: esAnonimo ? null : telefono.trim(),
+        direccion_referencia: direccionRef,
+        territorio_id: direccionNormalizada?.territorio_id || undefined,
+        coordenadas_aproximadas: direccionNormalizada?.coordenadas_aproximadas || undefined,
       },
     };
 
@@ -115,6 +147,8 @@ export function PropuestaBarrioTab({ barrio }: PropuestaBarrioTabProps) {
         });
         setTitulo("");
         setDescripcion("");
+        setDireccionRaw("");
+        setDireccionNormalizada(null);
         setAutorNombre("");
         setTelefono("");
         toast.warning(
@@ -139,6 +173,8 @@ export function PropuestaBarrioTab({ barrio }: PropuestaBarrioTabProps) {
       // Limpiar campos
       setTitulo("");
       setDescripcion("");
+      setDireccionRaw("");
+      setDireccionNormalizada(null);
       setAutorNombre("");
       setTelefono("");
       toast.success("¡Propuesta radicada exitosamente!");
@@ -162,6 +198,8 @@ export function PropuestaBarrioTab({ barrio }: PropuestaBarrioTabProps) {
         });
         setTitulo("");
         setDescripcion("");
+        setDireccionRaw("");
+        setDireccionNormalizada(null);
         setAutorNombre("");
         setTelefono("");
         toast.warning(
@@ -368,6 +406,50 @@ export function PropuestaBarrioTab({ barrio }: PropuestaBarrioTabProps) {
               maxLength={600}
               required
             />
+          </div>
+
+          {/* Dirección o Sector exacto de referencia territorial */}
+          <div>
+            <div className="flex items-center justify-between mb-1">
+              <Label
+                htmlFor="propuesta-direccion"
+                className="text-xs font-semibold text-[var(--text-primary)]"
+              >
+                Dirección o sector exacto en {barrio.nombre} (opcional)
+              </Label>
+              {normalizando && (
+                <span className="text-[10px] text-[var(--ember)] flex items-center gap-1 font-medium">
+                  <Loader2 className="size-3 animate-spin" /> Verificando territorio...
+                </span>
+              )}
+            </div>
+            <Input
+              id="propuesta-direccion"
+              value={direccionRaw}
+              onChange={(e) => {
+                setDireccionRaw(e.target.value);
+                if (direccionNormalizada) setDireccionNormalizada(null);
+              }}
+              onBlur={handleNormalizarDireccion}
+              placeholder="Ej. Sector Playas Blancas Mz 12 Lt 4, Calle 30 # 25-10, etc."
+              className="text-xs h-9"
+            />
+            {direccionNormalizada && (
+              <div className="mt-1 text-[11px] text-[var(--text-secondary)] flex items-center gap-1.5 bg-[var(--surface-2)] p-2 rounded-lg border border-[var(--border)]">
+                <MapPin className="size-3.5 text-[var(--ember)] shrink-0" />
+                <span className="leading-snug">
+                  Dirección estandarizada:{" "}
+                  <strong className="text-[var(--text-primary)]">
+                    {direccionNormalizada.direccion_normalizada}
+                  </strong>
+                  {direccionNormalizada.coordenadas_aproximadas && (
+                    <span className="ml-1 text-[var(--text-tertiary)] font-mono text-[10px]">
+                      ({direccionNormalizada.coordenadas_aproximadas.latitud.toFixed(4)}, {direccionNormalizada.coordenadas_aproximadas.longitud.toFixed(4)})
+                    </span>
+                  )}
+                </span>
+              </div>
+            )}
           </div>
 
           {/* Modalidad de Identidad */}

@@ -55,3 +55,44 @@ export async function buscarTerritorioPorCoordenada(
   }
 }
 
+export interface CoordenadasAproximadas {
+  latitud: number;
+  longitud: number;
+}
+
+export interface DireccionEstandarizada {
+  direccion_original: string;
+  direccion_normalizada: string;
+  tipo_via?: string | null;
+  numero_principal?: string | null;
+  numero_secundario?: string | null;
+  sector_o_barrio?: string | null;
+  territorio_id?: string | null;
+  coordenadas_aproximadas?: CoordenadasAproximadas | null;
+  confianza: number;
+}
+
+/**
+ * Normalizador Inteligente de Direcciones Cartageneras:
+ * Estandariza nomenclaturas formales (CL, CR, DG, AV) y sectores populares (Olaya, Pozón, etc.)
+ * vinculando coordenadas de referencia y territorio_id distrital.
+ * Conecta con backend FastAPI: POST /api/v1/geodatos/estandarizar-direccion
+ */
+export async function estandarizarDireccion(
+  direccionRaw: string
+): Promise<DireccionEstandarizada | null> {
+  const limpia = direccionRaw?.trim();
+  if (!limpia) {
+    return null;
+  }
+  try {
+    return await apiFetch<DireccionEstandarizada>("/geodatos/estandarizar-direccion", {
+      method: "POST",
+      body: JSON.stringify({ direccion_raw: limpia }),
+    });
+  } catch (err) {
+    console.warn("Fallo al estandarizar dirección:", err);
+    return null;
+  }
+}
+

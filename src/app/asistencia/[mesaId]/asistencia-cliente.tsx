@@ -42,6 +42,7 @@ import { useAgendaStore } from "@/features/mesas/state/agenda-store";
 import { CONTENIDO_MESAS } from "@/features/mesas/data/agenda-contenido.data";
 import { useMesasStore } from "@/features/mesas/state/mesas-store";
 import { listarMesas } from "@/features/mesas/services/mesas-api";
+import { estandarizarDireccion } from "@/features/geovisor/services/geovisor-api";
 import {
   useAsistenciaStore,
   useRegistrosMesa,
@@ -177,6 +178,7 @@ export function AsistenciaCliente({ mesaId }: { mesaId: string }) {
   const [genero, setGenero] = useState<Genero>("mujer");
   const [enfoqueDiferencial, setEnfoqueDiferencial] = useState<EnfoqueDiferencial>("ninguno");
   const [organizacionOBarrio, setOrganizacionOBarrio] = useState("");
+  const [sugerenciaBarrio, setSugerenciaBarrio] = useState<string | null>(null);
   const [telefonoWhatsApp, setTelefonoWhatsApp] = useState("");
   const [correo, setCorreo] = useState("");
   const [subMesaAsignada, setSubMesaAsignada] = useState<string>("Plenaria General");
@@ -265,6 +267,7 @@ export function AsistenciaCliente({ mesaId }: { mesaId: string }) {
     setNombreCompleto("");
     setNumeroDocumento("");
     setOrganizacionOBarrio("");
+    setSugerenciaBarrio(null);
     setTelefonoWhatsApp("");
     setCorreo("");
     setRegistroExitoso(null);
@@ -717,10 +720,37 @@ export function AsistenciaCliente({ mesaId }: { mesaId: string }) {
                       type="text"
                       placeholder="Ej. Getsemaní, Olaya Herrera, JAC Sector Central, Consejo Comunitario..."
                       value={organizacionOBarrio}
-                      onChange={(e) => setOrganizacionOBarrio(e.target.value)}
+                      onChange={(e) => {
+                        setOrganizacionOBarrio(e.target.value);
+                        if (sugerenciaBarrio) setSugerenciaBarrio(null);
+                      }}
+                      onBlur={async () => {
+                        const q = organizacionOBarrio.trim();
+                        if (q.length >= 3 && !q.toLowerCase().startsWith("jac") && !q.toLowerCase().startsWith("consejo")) {
+                          const est = await estandarizarDireccion(q);
+                          if (est && est.sector_o_barrio && est.sector_o_barrio.toLowerCase() !== q.toLowerCase()) {
+                            setSugerenciaBarrio(est.sector_o_barrio);
+                          }
+                        }
+                      }}
                       required
                       className="h-11 text-sm"
                     />
+                    {sugerenciaBarrio && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                          setOrganizacionOBarrio(sugerenciaBarrio);
+                          setSugerenciaBarrio(null);
+                        }}
+                        className="text-[11px] text-[var(--accent)] hover:underline flex items-center gap-1 mt-1 p-0 h-auto font-medium justify-start"
+                      >
+                        <MapPin className="size-3 shrink-0" />
+                        <span>Sugerencia territorial: <strong>{sugerenciaBarrio}</strong> (Clic para aplicar)</span>
+                      </Button>
+                    )}
                   </div>
                 </div>
 

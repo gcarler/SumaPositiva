@@ -4,8 +4,13 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 
 from app.core.database import SessionDependency
+from app.modules.geodatos.schemas import (
+    CapaGeovisorRead,
+    DireccionEstandarizadaResponse,
+    EstandarizarDireccionRequest,
+    TerritorioRead,
+)
 from app.modules.geodatos.repository import GeodatosRepository
-from app.modules.geodatos.schemas import CapaGeovisorRead, TerritorioRead
 from app.modules.geodatos.service import GeodatosService
 
 router = APIRouter(prefix="/geodatos", tags=["geovisor-territorial"])
@@ -52,3 +57,16 @@ async def obtener_territorio(id: uuid.UUID, service: GeodatosServiceDep):
 @router.get("/capas", response_model=list[CapaGeovisorRead])
 async def listar_capas(service: GeodatosServiceDep):
     return await service.listar_capas()
+
+
+@router.post(
+    "/estandarizar-direccion",
+    response_model=DireccionEstandarizadaResponse,
+    summary="Estandarizar y normalizar dirección cartagenera con PostGIS",
+    description="Estandariza nomenclaturas formales y sectores populares de Cartagena vinculando territorios y coordenadas.",
+)
+async def estandarizar_direccion(
+    payload: EstandarizarDireccionRequest,
+    service: GeodatosServiceDep,
+) -> DireccionEstandarizadaResponse:
+    return await service.estandarizar_direccion(payload.direccion_raw)
