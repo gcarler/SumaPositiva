@@ -1,93 +1,87 @@
-# TAREA ACTIVA: [AUD-COMP-06] AUDITORÍA DE CONSISTENCIA DE INFRAESTRUCTURA, OPERABILIDAD Y SALUD EN PRODUCCIÓN
-## VERIFICACIÓN DE SERVICIOS SYSTEMD, REVERSE PROXY NGINX SSL TLS 1.3, CRONTAB DE RESPALDOS GFS, WATCHDOG DE AUTOSANACIÓN Y TELEMETRÍA EN CALIENTE (/API/V1/HEALTH/SYSTEM)
+# TAREA ACTIVA: [SEC-HARDEN-01] HARDENING DE PUERTOS, AISLAMIENTO NEXT.JS A LOCALHOST Y FIREWALL UFW
+## BLINDAJE PERIMETRAL, CIERRE DE EXPOSICIÓN EXTERNA DIRECTA (PUERTOS 3000/4000) Y FILTRADO ESTRICTO DE RED
 
 **Fecha:** Domingo, 11 de Octubre de 2026  
-**Fase:** FASE 3: Consistencia Normativa, UI-Policy y Resiliencia Operativa (Tarea 3.2 — CIERRE FINAL DEL PLAN MAESTRO)  
-**Plan Maestro:** `bridge/00_plan_maestro_auditoria_completitud_consistencia.md`  
+**Fase:** FASE 1: Blindaje Perimetral, Seguridad de Red y Hardening de Servidor (Tarea 1.1)  
+**Plan Maestro:** `bridge/00_plan_maestro_blindaje_geoprocesamiento_resiliencia.md`  
 **Asignada a:** `agy2` (Desarrollador / EDD — `tmux a -t agy2`)  
 **Supervisor / Auditor:** `agy` (Coordinador General y Auditor Forense EAF — `tmux a -t agy`)  
-**Severidad:** ALTA / DISPONIBILIDAD 24/7, SEGURIDAD OPERATIVA Y RESILIENCIA DE PRODUCCIÓN  
+**Severidad:** ALTA / SEGURIDAD PERIMETRAL Y BLINDAJE DE ACCESOS  
 
 ---
 
 ## 🎯 1. Justificación y Alcance de la Tarea
 
-Esta es la sexta y última tarea del **Plan Maestro de Auditoría Técnica de Completitud y Consistencia**. Tras haber verificado la coherencia de esquemas y modelos (Fase 1), la completitud E2E y erradicación de mocks en frontend y territorio (Fase 2), y el blindaje normativo, de capas UI y accesibilidad (Fase 3.1), corresponde auditar y certificar la infraestructura de soporte y la operabilidad continua del sistema en el entorno distrital.
+Actualmente, el cortafuegos del sistema operativo se encuentra inactivo (`ufw status` -> `Status: inactive`) y el servicio de Next.js (`polis-frontend.service`) está enlazado a la dirección comodín `HOSTNAME=0.0.0.0` en el puerto 3000. Esto permitiría que un actor externo acceda al frontend directamente por la IP del servidor saltándose el proxy inverso Nginx, la terminación TLS 1.3 y las cabeceras de endurecimiento HSTS.
 
-La auditoría abarcará cuatro (4) dimensiones críticas de infraestructura:
-1. **Servicios Systemd en Producción:**
-   - Comprobar estado operativo, estabilidad y ausencia de reinicios anómalos de `polis-backend.service`, `polis-frontend.service`, `nginx` y `postgresql`.
-2. **Reverse Proxy Nginx y Terminación Criptográfica SSL TLS 1.3:**
-   - Verificar la configuración de Nginx en `/etc/nginx/sites-available/` y `/etc/nginx/sites-enabled/`.
-   - Comprobar redirección forzada de tráfico inseguro (HTTP 80 -> HTTPS 443), protocolos seguros (TLS 1.2 / TLS 1.3) para `https://seguridadhumanaintegral.org/`, cabeceras de endurecimiento HSTS y proxy pass hacia backend (8000) y frontend (3000).
-3. **Automatización Operativa en Crontab del Servidor:**
-   - **Respaldos GFS (`/root/polis/scripts/respaldo_programado_bd.sh`):** Ejecución a las 02:00 AM, política de retención diaria/semanal/mensual, integridad de `/root/polis/backups/` y rotación de volcados PostgreSQL.
-   - **Watchdog de Autosanación (`/root/polis/scripts/monitor_sistema_polis.sh --cron`):** Ejecución programada cada 5 minutos, consulta al endpoint de salud, detección temprana de anomalías, reinicio automático y trazabilidad en `/var/log/polis-monitor.log`.
-4. **Telemetría y Estado de Salud en Vivo (`/api/v1/health/system`):**
-   - Corroborar en caliente la latencia de PostgreSQL (<20 ms), conexiones activas en `pg_stat_activity`, coincidencia de migración canónica (`0057_comentario_pas`), consumo de memoria RSS, capacidad de disco y tasa de errores 0.0%.
+El objetivo de esta tarea es cerrar toda superficie de ataque perimetral mediante:
+1. **Aislamiento de Next.js (`127.0.0.1`):** Restringir la escucha del frontend exclusivamente a localhost.
+2. **Activación y Configuración Estricta de UFW:**
+   - Permitir estrictamente el puerto SSH administrativo (**777/tcp**).
+   - Permitir los puertos web **80/tcp** (HTTP) y **443/tcp** (HTTPS).
+   - Denegar por defecto todo el tráfico entrante restante (`default deny incoming`).
+   - Bloquear el acceso directo exterior a los puertos 3000, 4000, 5432 y 8000.
+3. **Persistencia de Fail2ban y Servicios:** Garantizar que las sesiones SSH y la conectividad pública del portal no se interrumpan.
 
 ---
 
-## 📋 2. Puntos de Inspección Forense y Verificaciones Requeridas
+## 📋 2. Requerimientos Técnicos y Pasos de Ejecución
 
-### A. Diagnóstico de Servicios del Sistema
-1. Ejecutar y documentar el estado de los servicios:
-   - `systemctl status polis-backend.service` (FastAPI / Uvicorn en puerto 8000).
-   - `systemctl status polis-frontend.service` (Next.js en puerto 3000).
-   - `systemctl status nginx` (Proxy inverso).
-   - `systemctl status postgresql` (Motor relacional `bd_csh`).
-2. Verificar que los logs de journald (`journalctl -u polis-backend -n 30 --no-pager`) no presenten fallos no controlados ni bucles de reinicio.
+### A. Aislamiento de Next.js
+1. Editar `/etc/systemd/system/polis-frontend.service`:
+   - Cambiar `Environment=HOSTNAME=0.0.0.0` a `Environment=HOSTNAME=127.0.0.1`.
+2. Recargar y reiniciar el servicio:
+   ```bash
+   systemctl daemon-reload && systemctl restart polis-frontend.service
+   ```
+3. Verificar con `ss -tulpn | grep 3000` que la dirección local sea `127.0.0.1:3000` (no `0.0.0.0:3000`).
 
-### B. Nginx, Enrutamiento y Certificados SSL
-1. Auditar la sintaxis con `nginx -t`.
-2. Verificar en la configuración de Nginx:
-   - Proxy pass `/api/` y `/docs` hacia `http://127.0.0.1:8000`.
-   - Proxy pass `/` hacia `http://127.0.0.1:3000`.
-   - Forzado de HTTPS y cabeceras de seguridad (`Strict-Transport-Security`, `X-Content-Type-Options`, `X-Frame-Options`).
+### B. Configuración y Habilitación de UFW
+1. Aplicar las políticas y reglas perimetrales:
+   ```bash
+   ufw default deny incoming
+   ufw default allow outgoing
+   ufw allow 777/tcp comment 'SSH Administrativo'
+   ufw allow 80/tcp comment 'HTTP Nginx'
+   ufw allow 443/tcp comment 'HTTPS Nginx'
+   ```
+2. Habilitar el cortafuegos de forma segura sin interrumpir sesiones:
+   ```bash
+   ufw --force enable
+   ```
+3. Comprobar el estado resultante con `ufw status verbose`:
+   - Estado: `active`.
+   - Reglas 777/tcp, 80/tcp y 443/tcp registradas en IPv4 e IPv6.
 
-### C. Crontab, Respaldos y Watchdog de Autosanación
-1. Inspeccionar `crontab -l` constatando las dos tareas programadas canónicas:
-   - Respaldo nocturno diario a las 02:00 AM (`respaldo_programado_bd.sh`).
-   - Monitor de salud cada 5 minutos (`monitor_sistema_polis.sh --cron`).
-2. Ejecutar una corrida de prueba en seco del monitor de salud:
-   `/root/polis/scripts/monitor_sistema_polis.sh` y documentar la salida pericial.
-3. Verificar la existencia del directorio `/root/polis/backups` y el log de operaciones `/root/polis/backups/respaldos.log`.
-
-### D. Telemetría y Salud en Caliente (`/api/v1/health/system`)
-1. Consultar en vivo `http://127.0.0.1:8000/api/v1/health/system` y certificar:
-   - `status: "ok"`
-   - `database.status: "ok"` y latencia menor a 20 ms.
-   - `database.migration_revision: "0057_comentario_pas"` (cero drift).
-   - `database.installed_extensions`: `ltree`, `pg_trgm`, `pgcrypto`, `plpgsql`, `postgis`.
-   - `process.error_rate_pct`: 0.0%.
-   - `storage.used_pct`: nivel saludable de disco.
+### C. Verificación de Conectividad y Resiliencia
+1. Constatar que `fail2ban` permanezca activo: `systemctl status fail2ban --no-pager`.
+2. Verificar que Nginx responda correctamente a través de localhost y dominio:
+   - `curl -k -sI https://127.0.0.1/` -> HTTP 200.
+   - `curl -s http://127.0.0.1:8000/api/v1/health/ready` -> HTTP 200.
 
 ---
 
-## 🧪 3. Protocolo de Pruebas y Quality Gates de Cierre
+## 🧪 3. Protocolo de Pruebas y Quality Gates Obligatorios
 
-| Verificación | Comando / Prueba | Criterio de Aceptación |
+| Verificación | Comando / Prueba | Resultado Esperado |
 |---|---|---|
-| **Servicios Systemd** | `systemctl is-active polis-backend polis-frontend nginx postgresql` | Todos activos (`active`) |
-| **Sintaxis Nginx** | `nginx -t` | `syntax is ok` / `test is successful` |
-| **Crontab Distrital** | `crontab -l` | Tareas de respaldo y monitor activas |
-| **Prueba Monitor** | `/root/polis/scripts/monitor_sistema_polis.sh` | Retorno limpio con telemetría en verde |
-| **Health API en Caliente** | `curl -s http://127.0.0.1:8000/api/v1/health/system` | HTTP 200 OK con latencia < 20 ms y 0 drift |
-| **TypeCheck & Linter** | `bun run check` | 0 errores TypeScript, 0 advertencias ESLint |
-| **Frontend Test Suite** | `bun test` | 412/412 pruebas pasadas |
-| **Backend Test Suite** | `/root/polis/venv/bin/pytest backend/tests/` | 467/467 pruebas pasadas (100% verde) |
-| **Turbopack Build** | `bun run build` | Compilación exitosa, 191/191 rutas SSG |
+| **Aislamiento Next.js** | `ss -tulpn \| grep 3000` | Escucha en `127.0.0.1:3000` |
+| **Estado UFW** | `ufw status verbose` | `Status: active`, reglas 777, 80, 443 ALLOW |
+| **Fail2ban** | `systemctl is-active fail2ban` | `active` |
+| **Salud del Sistema** | `curl -s http://127.0.0.1:8000/api/v1/health/system` | HTTP 200, status "ok" |
+| **Frontend Test Suite** | `bun test` | 412/412 pasadas |
+| **UI Architectural Linter** | `bun run ui:check` | 0 infracciones |
+| **TypeCheck & Linter** | `bun run check` | 0 errores TypeScript, 0 warnings ESLint |
 
 ---
 
 ## 📦 4. Entregables y Salvaguardas
 
-1. **Informe Pericial Final de Infraestructura:**
-   - Registrar la matriz de verificación de infraestructura y telemetría en `bridge/02_resultado_agy2.md`.
+1. **Informe Pericial de Hardening:** Documentar en `bridge/02_resultado_agy2.md` la salida de `ss -tulpn` y `ufw status verbose`.
 2. **Salvaguardas Inviolables:**
-   - Cero interrupción o reinicio destructivo de servicios en ejecución.
-   - Base de datos `bd_csh` intacta (33 mesas, 36 agendas, 11 fichas técnicas).
-   - Preservación de BPINs distritales y protocolo Zero-Push estricto.
+   - La sesión SSH en puerto 777 debe preservarse ininterrumpidamente.
+   - Base de datos `bd_csh` intacta (33 mesas, 36 agendas, 11 fichas).
+   - Protocolo Zero-Push (commits locales en `main`).
 3. **Commit Atómico Local:**
-   - Registrar el commit con formato: `audit(ops): verificacion infraestructura systemd nginx crontab y telemetria AUD-COMP-06`.
-4. **Notificación:** Notificar a `agy` en tmux `%0` para la contra-auditoría pericial y certificación final del sistema.
+   - Formato: `sec(harden): aislamiento nextjs a localhost y activacion firewall ufw SEC-HARDEN-01`.
+4. **Notificación:** Notificar a `agy` en tmux `%0` para la contra-auditoría pericial.
