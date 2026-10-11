@@ -1,72 +1,69 @@
-# TAREA ACTIVA: [AUD-COMP-01] AUDITORÍA DE PARIDAD DE ESQUEMA POSTGRESQL (BD_CSH), MIGRACIONES ALEMBIC Y MODELOS SQLALCHEMY
-## INSPECCIÓN FORENSE DE ESTRUCTURAS, RESTRICCIONES FK, ÍNDICES POSTGIS Y ALINEACIÓN DE DTOS PYDANTIC
+# TAREA ACTIVA: [AUD-COMP-02] AUDITORÍA DE CONTRATOS DE API, COBERTURA RBAC Y MANEJO TIPADO DE EXCEPCIONES
+## INSPECCIÓN DE RUTAS FASTAPI, SINCRONIZACIÓN MATRIZ DE PERMISOS (DOCS/PERMISOS-API.MD) Y ERRADICACIÓN DE EXCEPCIONES 500 NO CAPTURADAS
 
 **Fecha:** Domingo, 11 de Octubre de 2026  
-**Fase:** FASE 1: Consistencia Estructural, Esquema y Contratos de Datos (Tarea 1.1)  
+**Fase:** FASE 1: Consistencia Estructural, Esquema y Contratos de Datos (Tarea 1.2)  
 **Plan Maestro:** `bridge/00_plan_maestro_auditoria_completitud_consistencia.md`  
 **Asignada a:** `agy2` (Desarrollador / EDD — `tmux a -t agy2`)  
 **Supervisor / Auditor:** `agy` (Coordinador General y Auditor Forense EAF — `tmux a -t agy`)  
-**Severidad:** ALTA / INTEGRIDAD ESTRUCTURAL DE DATOS  
+**Severidad:** ALTA / SEGURIDAD, CONTRATOS Y CONTROL DE ACCESO  
 
 ---
 
 ## 🎯 1. Justificación y Alcance de la Tarea
 
-La base de datos de producción `bd_csh` alberga las tablas maestras de la política pública de seguridad humana de Cartagena (33 mesas de diálogo, 36 agendas comunitarias, 11 fichas de indicadores, 17 actores institucionales, propuestas cívicas de Modo Barrio y notificaciones transaccionales).
-
-Para garantizar la **consistencia estructural y ausencia absoluta de drift**, esta primera tarea exige una inspección forense exhaustiva de la relación tripartita:
-$$\text{Base de Datos PostgreSQL (bd\_csh)} \iff \text{Migraciones Alembic} \iff \text{Modelos SQLAlchemy y DTOs Pydantic}$$
+La plataforma POLIS cuenta con más de 20 módulos de backend y más de 170 rutas de API en FastAPI.
+Para garantizar **consistencia absoluta de contratos y seguridad perimetral**, se requiere auditar:
+1. **Cobertura RBAC Contractual:** Que cada endpoint expuesto esté rigurosamente documentado en la Matriz Canónica de Control de Acceso ([`docs/permisos-api.md`](file:///root/polis/docs/permisos-api.md)) y respaldado por tests automáticos en [`backend/tests/test_access_policy.py`](file:///root/polis/backend/tests/test_access_policy.py).
+2. **Manejo Tipado de Excepciones:** Que ningún endpoint retorne errores HTTP 500 no controlados con fuga de trazas o información interna de la base de datos ante entradas inválidas o colisiones de unicidad.
+3. **Protección de Salida:** Que los endpoints empleen `response_model` tipados para evitar la exposición accidental de hashes o atributos privados de los modelos de base de datos.
 
 ---
 
 ## 📋 2. Requerimientos Técnicos y Pasos de Inspección
 
-### A. Diagnóstico de Drift con Alembic
-1. Ejecutar en el backend de FastAPI:
+### A. Barrido y Reconciliación de Rutas con la Matriz de Permisos
+1. Extraer el inventario de todas las rutas HTTP registradas en la aplicación FastAPI (`app.routes` en `backend/app/main.py`).
+2. Comparar exhaustivamente cada ruta con [`docs/permisos-api.md`](file:///root/polis/docs/permisos-api.md):
+   - Módulo
+   - Método HTTP (`GET`, `POST`, `PUT`, `PATCH`, `DELETE`)
+   - Path de la ruta (incluyendo parámetros de ruta)
+   - Rol(es) autorizados
+   - Permiso requerido o política pública anónima/declarada
+3. Ejecutar y certificar la suite pericial:
    ```bash
-   cd /root/polis/backend && /root/polis/backend/.venv/bin/alembic check
+   /root/polis/venv/bin/pytest backend/tests/test_access_policy.py
    ```
-2. Si `alembic check` detecta operaciones pendientes o discrepancias de tipos/columnas entre los modelos SQLAlchemy (`backend/app/modules/*/models.py`) y `bd_csh`:
-   - Analizar el diff detallado.
-   - Si se trata de ajustes en modelos para alinear tipos (ej. longitudes de `String`, nombres de restricciones o índices), aplicar la corrección en los modelos o generar una migración Alembic idempotente y segura que preserve el 100% de los datos existentes.
+   Si existen rutas huérfanas o discrepancias, incorporarlas formalmente en `docs/permisos-api.md` con su justificación técnica.
 
-### B. Inspección de Tablas y Esquemas en `bd_csh`
-1. Auditar la totalidad de los esquemas distritales activos:
-   - `mesas_trabajo` (`mesas`, `agendas`, `submesas`, `participantes_mesa`, `compromisos_mesa`, `evidencias_mesa`, etc.)
-   - `indicadores` (`fichas_tecnicas_indicadores`, `mediciones_indicador`)
-   - `participacion_ciudadana` (`propuestas_ciudadanas`, `apoyos_propuestas`, `actores_estrategicos`, `notificaciones_transaccionales`, `sesiones_anonimas`, `testimonios_comunitarios`, `formularios_consulta`, `respuestas_formulario`)
-   - `presupuesto` (`fuentes_financiacion`, `asignaciones_presupuestales`)
-   - `comunicacion` (`noticias`, `tareas_comunicacion`)
-   - `autenticacion` (`usuarios`, `roles`, `sesiones_usuario`)
-   - `auditoria` (`registros_auditoria`)
-   - `seguimiento` (`avances_compromiso`, `rendicion_cuentas`)
-2. Verificar:
-   - Claves foráneas (`FOREIGN KEY`) y cascadas seguras.
-   - Índices espaciales PostGIS (`GIST`) en columnas de geometría o coordenadas WGS84.
-   - Restricciones de unicidad (`UNIQUE`) en códigos oficiales (ej. `codigo_radicado`, `slug`, `cedula_participante`).
-   - Cero registros huérfanos o relaciones rotas.
+### B. Auditoría de Excepciones y Respuestas de Error
+1. Inspeccionar los manejadores globales de excepciones en FastAPI:
+   - Validación Pydantic (`RequestValidationError`) $\rightarrow$ Retorno HTTP 422 con formato claro y sanitizado.
+   - Autenticación (`HTTPException` 401) $\rightarrow$ Tokens expirados o inválidos manejados sin caída.
+   - Autorización (`HTTPException` 403) $\rightarrow$ Detalle del permiso distrital faltante.
+   - No encontrado (`HTTPException` 404) $\rightarrow$ Mensaje institucional claro.
+   - Conflicto (`HTTPException` 409 o `IntegrityError` de SQLAlchemy) $\rightarrow$ Captura limpia de colisiones `UNIQUE` (ej. radicado duplicado, cédula repetida o apoyo duplicado) sin arrojar 500 ni exponer sentencias SQL crudas.
+   - Excepciones no controladas $\rightarrow$ Manejador de último recurso que registre en log interno y responda JSON genérico seguro con código 500.
 
-### C. Alineación de DTOs Pydantic (`schemas.py`)
-1. Comprobar que los esquemas de entrada y salida en `backend/app/modules/*/schemas.py`:
-   - Reflejen con precisión la nulabilidad de las columnas físicas en PostgreSQL (`nullable=False` $\rightarrow$ campo obligatorio; `nullable=True` $\rightarrow$ campo opcional).
-   - Definan validadores para prevenir cadenas vacías o tipos incongruentes.
+### C. Higiene de DTOs de Respuesta (`response_model`)
+1. Constatar que las rutas que retornan entidades con usuarios o datos protegidos no expongan campos como `password_hash`, `salt` o metadatos de auditoría confidenciales.
 
 ---
 
 ## 🧪 3. Pruebas y Criterios de Aceptación
 
-1. `alembic check` reporta `No new upgrade operations detected.` (cero drift).
-2. Verificación de integridad en `bd_csh`:
-   - 33 mesas de diálogo territorial 100% intactas.
-   - 36 agendas comunitarias 100% intactas.
-   - 11 fichas técnicas de indicadores 100% intactas.
-   - 17 actores institucionales 100% intactos.
-3. Quality Gates de Frontend y Backend aprobados:
+1. **Test de Matriz de Permisos Verde:**
+   - `backend/tests/test_access_policy.py` pasa al 100% (todas las pruebas aprobadas).
+2. **Cero Excepciones 500 no capturadas:**
+   - Comprobación de respuestas HTTP estructuradas ante datos erróneos.
+3. **Quality Gates Inviolables:**
    - `bun run ui:check` (0 infracciones).
-   - `bun run check` (0 errores de TypeScript y ESLint).
-   - `bun test` (100% pruebas frontend aprobadas).
-   - `pytest backend/tests/` (100% pruebas backend aprobadas).
+   - `bun run check` (0 errores TypeScript, 0 warnings ESLint).
+   - `bun test` (100% de tests frontend aprobados).
+   - `pytest backend/tests/` (100% de tests backend aprobados).
    - `bun run build` (Compilación exitosa con Turbopack).
+4. **Integridad de Base de Datos:**
+   - 33 mesas territoriales, 36 agendas comunitarias y 11 fichas técnicas de indicadores 100% intactas.
 
 ---
 
@@ -81,9 +78,9 @@ $$\text{Base de Datos PostgreSQL (bd\_csh)} \iff \text{Migraciones Alembic} \iff
 
 ## 🚀 5. Instrucciones de Entrega para agy2
 
-1. Ejecutar el diagnóstico de paridad de esquema y documentar hallazgos.
-2. Si se requieren correcciones menores o migraciones de alineación, aplicarlas con salvaguarda de datos.
-3. Ejecutar todos los Quality Gates.
+1. Ejecutar el barrido de rutas y auditoría de matriz de permisos y excepciones.
+2. Si detecta rutas sin registrar o discrepancias en excepciones, subsanarlas con pulcritud.
+3. Validar todos los Quality Gates.
 4. Registrar el informe pericial detallado en `bridge/02_resultado_agy2.md`.
-5. Generar el commit atómico correspondiente: `audit(db): paridad de esquema postgresql alembic y modelos AUD-COMP-01`.
-6. Notificar a `agy` en la sesión tmux `%0` para contra-auditoría pericial.
+5. Generar el commit atómico correspondiente: `audit(api): contratos rbac excepciones tipadas y matriz permisos AUD-COMP-02`.
+6. Notificar a `agy` en la sesión tmux `%0` para la contra-auditoría pericial.
