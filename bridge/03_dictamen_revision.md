@@ -2785,4 +2785,69 @@ La tarea **`[OPS-FORENSIC-01]`** queda formalmente **CERRADA, APROBADA AL 100% Y
 Se autoriza formalmente el despacho de la **TAREA FINAL** del Plan Maestro:
 - **Tarea Final:** **`[FE-PUBLICA-01]`** (*Generación de Actas Formales en PDF con Código QR de Fe Pública y Replicación Externa de Respaldos Offsite: Motor de exportación PDF distrital para las 33 mesas de diálogo territorial con código QR verificable, y script `scripts/respaldo_offsite.sh` para custodia fuera de banda*).
 
+---
+
+## 🏛️ DICTAMEN PERICIAL FORENSE EAF — TAREA FINAL [FE-PUBLICA-01]
+### GENERACIÓN DE ACTAS FORMALES EN PDF CON CÓDIGO QR Y REPLICACIÓN OFFSITE
+**Fecha de Emisión:** Domingo, 11 de Octubre de 2026  
+**Evaluador:** Coordinador General y Auditor Forense EAF `agy` (`tmux a -t agy`)  
+**Responsable Técnico Auditado:** Desarrollador / EDD `agy2` (`tmux a -t agy2`)  
+**Commit Evaluado:** `8921b46` (`feat(fe-publica): generacion de actas pdf con qr y replicacion de respaldos offsite FE-PUBLICA-01`)  
+**Referencia Técnica:** `bridge/01_tarea_activa.md` y `bridge/02_resultado_agy2.md`  
+**Plan Maestro:** `bridge/00_plan_maestro_blindaje_geoprocesamiento_resiliencia.md` (Fase 3: Tarea 3.2 — Culminación de Fase 3 y Cierre Global)  
+**Veredicto Oficial:** **CONFORME Y APROBADO AL 100% SIN OBSERVACIONES (APROBACIÓN TOTAL Y CIERRE DEFINITIVO)**
+
+---
+
+### 1. Hallazgos de la Contra-Auditoría Técnica Independiente
+
+1. **Fe Pública y Generación Oficial de Actas en PDF (`DOC-PDF-ACTAS-01`)**:
+   - Se probó en caliente la descarga binaria del PDF mediante el endpoint `GET /api/v1/mesas/{mesa_id}/acta/pdf` tanto de forma directa en el puerto 8000 como perimetral por HTTPS Nginx:
+     * **Mesa Rural Arroyo de Piedra (`MR-RUR-02`)**: Generación de binario PDF versión 1.4 de 6.2 KB, estructurado en ReportLab vectorial con membrete distrital, código QR nítido y firma digital SHA-256.
+     * **Mesa Territorial Caribe Norte (`MT-L01-01`)**: Retorno HTTP 200 verificado con cabeceras `Content-Type: application/pdf` y `Content-Disposition: inline`.
+   - Se validó la suite unitaria de backend [`backend/tests/test_acta_pdf.py`](file:///root/polis/backend/tests/test_acta_pdf.py) (**4/4 pasadas**), verificando resolución tanto por código oficial como por UUID de mesa y captura de errores 404 para identificadores inexistentes.
+
+2. **Replicación de Respaldos Fuera de Banda (`scripts/respaldo_offsite.sh`)**:
+   - Se verificó la ejecución del script tanto en modo simulación (`--dry-run`) como en modo real:
+     * Detección automática del volcado diario sellado `bd_csh_diario_20261011_020001.dump` (1.2 MB).
+     * Comprobación estricta de la firma SHA-256 en origen (`ea9c9d1cd4c7c77899e0344f75810764b92074997c04698db9018a9c740d3bfc`).
+     * Transferencia segura hacia el almacenamiento secundario `/var/backups/polis_offsite/` con permisos restrictivos `0600`.
+     * Validación de paridad criptográfica cruzada en destino: **100% coincidente**.
+     * Trazabilidad completa en `/root/polis/backups/offsite.log`.
+
+3. **Inviolabilidad Absoluta de la Fe Pública en `bd_csh`**:
+   - **Mesas de Diálogo Territorial:** `33` (100% intactas)
+   - **Agendas Estratégicas:** `36` (100% intactas)
+   - **Fichas Técnicas de Diagnóstico:** `11` (100% intactas)
+   - **Actores Estratégicos:** `17` (100% intactos)
+
+---
+
+### 2. Certificación Independiente de Quality Gates
+
+| Verificación | Comando / Prueba | Resultado Obtenido | Estado |
+| :--- | :--- | :--- | :--- |
+| **Suite Generación PDF Backend** | `pytest backend/tests/test_acta_pdf.py` | **4 pasadas** en 3.25s (0 fallos) | ✅ APROBADO |
+| **Paridad RBAC de Seguridad** | `pytest backend/tests/test_access_policy.py` | **97 pasadas** en 22.05s (0 fallos) | ✅ APROBADO |
+| **Pruebas Mesas Frontend** | `bun test src/features/mesas/` | **36 pasadas** en 3 suites (0 fallos) | ✅ APROBADO |
+| **Script Offsite (Dry-Run)** | `scripts/respaldo_offsite.sh --dry-run` | Simulación validada (código 0) | ✅ APROBADO |
+| **Script Offsite (Real)** | `scripts/respaldo_offsite.sh` | Réplica y paridad SHA-256 certificada | ✅ APROBADO |
+| **UI Architectural Linter** | `bun run ui:check` | `POLIS UI: controles, tokens, capas... correctos` | ✅ APROBADO |
+| **TypeCheck & Linter** | `bun run check` (`tsc --noEmit && eslint .`) | **0 errores TypeScript, 0 warnings ESLint** | ✅ APROBADO |
+| **Alembic Schema Drift** | `cd backend && alembic check` | `No new upgrade operations detected.` | ✅ APROBADO |
+| **Frontend Test Suite Global** | `bun test` | **420 pruebas pasadas** en 44 archivos | ✅ APROBADO |
+| **Servicios de Producción** | `systemctl is-active polis-backend polis-frontend nginx postgresql@18-main ufw fail2ban` | **6/6 servicios activos y blindados** | ✅ APROBADO |
+
+---
+
+### 3. Declaración Solemne de Cierre Definitivo del Plan Maestro
+
+Habiéndose verificado el cumplimiento estricto, modular y forense de todas y cada una de las 6 tareas atómicas comprendidas en las 3 Fases del Plan Maestro:
+1. **FASE 1: Blindaje Perimetral, Seguridad de Red y Hardening de Servidor** (`[SEC-HARDEN-01]` y `[SEC-HARDEN-02]`) — **APROBADA Y CERTIFICADA**.
+2. **FASE 2: Explotación Activa de Geoprocesamiento y Normalización Territorial** (`[GEO-PROC-01]` y `[GEO-PROC-02]`) — **APROBADA Y CERTIFICADA**.
+3. **FASE 3: Observabilidad Forense SQL, Fe Pública en PDF y Resiliencia Offsite** (`[OPS-FORENSIC-01]` y `[FE-PUBLICA-01]`) — **APROBADA Y CERTIFICADA**.
+
+Se declara solemnemente **CULMINADO AL 100%, AUDITADO, CERTIFICADO Y EN PRODUCCIÓN EL PLAN MAESTRO DE BLINDAJE PERIMETRAL, GEOPROCESAMIENTO Y RESILIENCIA INSTITUCIONAL** de la plataforma POLIS (Cartagena de Indias, 2026).
+
+
 
