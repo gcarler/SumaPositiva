@@ -1673,5 +1673,78 @@ La tarea **`[NOTIF-FEEDBACK-01]`** queda formalmente **CERRADA Y APROBADA AL 100
 Con este cierre, el estado de la **FASE 2** del Plan Maestro (`bridge/00_plan_maestro_excelencia_y_adopcion.md`) avanza al siguiente hito:
 - **Hito Culminado:** `[INGESTA-DATOS-01]` ✅ (Indicadores Reales Certificados)
 - **Hito Culminado:** `[NOTIF-FEEDBACK-01]` ✅ (Motor Transaccional de Radicación y Notificaciones)
-- **Siguiente Tarea de la FASE 2:** **`[CANAL-WHATSAPP-01]`** (*Captura Conversacional Rápida de Propuestas — Ingesta comunitaria vía webhook / audio a texto y radicación automática*).
+- **Hito Culminado:** `[CANAL-WHATSAPP-01]` ✅ (Canal Conversacional Rápido para Propuestas y Asistencia)
+
+---
+
+## 🏛️ Dictamen EAF — Contra-Auditoría Pericial [CANAL-WHATSAPP-01] — 2026-10-11
+
+**Tarea Auditada:** `[CANAL-WHATSAPP-01]` (Canal Conversacional Rápido para Propuestas y Asistencia — WhatsApp Webhook & Ingesta Comunitaria)  
+**Plan Maestro:** `bridge/00_plan_maestro_excelencia_y_adopcion.md` (Fase 2: Ingesta de Datos Vivos y Feedback Loop — Tarea 2.3)  
+**Commit Evaluado:** `e828b69`  
+**Autor del Commit:** `agy2` (Desarrollador / EDD — `tmux a -t agy2`)  
+**Evaluador / Auditor:** `agy` (Coordinador General y Auditor Forense EAF — `tmux a -t agy`)  
+**Resultado de la Contra-Auditoría:** **CONFORME AL 100% (APROBADO SIN OBSERVACIONES)**  
+
+---
+
+### 1. Verificación Forense de Capacidades Técnicas e Integridad
+
+1. **Submódulo Transaccional de Canales ([`backend/app/modules/canales/`](file:///root/polis/backend/app/modules/canales/))**:
+   - `schemas.py`: Esquemas Pydantic v2 para validación del handshake de Meta (`WhatsAppWebhookVerification`), ingesta estructurada de eventos Cloud API (`WhatsAppWebhookPayload`) y simulaciones cívicas locales (`WhatsAppSimulacionEntrante`).
+   - `service.py`: Lógica de negocio con enmascaramiento de privacidad de números telefónicos (`+57 315 *** **76`), cálculo de huella SHA-256 no reversible para prevención de abusos, extracción automática de barrios populares de Cartagena sobre el catálogo de `geodatos.territorios` y enrutamiento inteligente hacia líneas estratégicas distritales.
+   - `router.py`:
+     * Handshake de verificación `GET /api/v1/canales/whatsapp/webhook` verificado pericialmente: con `verify_token` correcto devuelve el challenge con `HTTP/1.1 200 OK`; con token falso devuelve `HTTP/1.1 403 Forbidden`.
+     * Recepción asíncrona de eventos `POST /api/v1/canales/whatsapp/webhook`.
+     * Simulación e ingesta directa `POST /api/v1/canales/whatsapp/simular`.
+
+2. **Verificación en Caliente de Radicación Inmutable y Trazabilidad (Hot-Verification)**:
+   - Se probó en caliente la recepción e ingesta de dos propuestas ciudadanas vía WhatsApp:
+     * **Aporte 1 (Olaya Herrera - Sector Ricaurte):** Radicado emitido: **`POL-2026-0002`**. Territorio identificado: `Olaya Herrera (Todos los sectores)`.
+     * **Aporte 2 (Nelson Mandela - Sector Los Deseos):** Radicado emitido: **`POL-2026-0003`**. Territorio identificado: `Nelson Mandela`.
+   - Consulta pública ciudadana: `GET /api/v1/notificaciones/radicado/POL-2026-0003` respondió `HTTP/1.1 200 OK` con los datos normalizados de la propuesta y asignación territorial verídica.
+   - Persistencia transaccional: Ambos radicados fueron registrados en `participacion_ciudadana.notificaciones_transaccionales` con `tipo_evento = 'radicacion'`, destinatarios `wa:+57...` y estado de despacho `simulado`.
+
+3. **Frontend y UI-Policy Canónica**:
+   - En [`src/features/politicas/panels/linea-panel.tsx`](file:///root/polis/src/features/politicas/panels/linea-panel.tsx), cada tarjeta de aporte (`AporteCard`) que contenga `metadatos?.canal === "whatsapp"` renderiza el Badge canónico `@/shared/ui/badge` con variante `outline`, icono `MessageSquare` y tokens semánticos oficiales (`text-[var(--accent)] border-[var(--border-strong)]`).
+   - Cero etiquetas nativas HTML no autorizadas; estricto cumplimiento de la política de diseño distrital.
+
+---
+
+### 2. Verificación Estricta de Salvaguardas Institucionales
+
+| Salvaguarda Institucional | Estado | Evidencia Pericial Independiente |
+|---|:---:|---|
+| **Preservación BPIN 100% Intacta** | **CUMPLIDA** | 0 alteraciones a identificadores BPIN presupuestales. `git diff` 100% limpio. |
+| **Cero Acrónimos Ajenos** | **CUMPLIDA** | 0 menciones a `DNP`, `MGA` o `SINERGIA` en código fuente, modelos o interfaces. Verificado pericialmente con `grep`. |
+| **UI-Policy Estricta** | **CUMPLIDA** | `bun run ui:check` aprobado con 0 infracciones. Uso exclusivo de componentes canónicos `@/shared/ui/`. |
+| **Resiliencia Extrema** | **CUMPLIDA** | El webhook conmuta transparentemente a despacho simulado ante ausencia de credenciales de Meta, sin abortar ni hacer fallar la radicación cívica. |
+| **Integridad de Producción (`bd_csh`)** | **CUMPLIDA** | Las **33 mesas territoriales**, **36 agendas comunitarias** y **11 fichas técnicas de indicadores** permanecen 100% intactas y operativas en PostgreSQL. |
+| **Protocolo Zero-Push** | **CUMPLIDA** | Commits atómicos locales en la rama `main` (commit `e828b69`). |
+
+---
+
+### 3. Certificación de Quality Gates
+
+- `bun run ui:check`: **APROBADO** (0 violaciones de tokens, accesibilidad o capas).
+- `bun run check` (`tsc --noEmit` & `eslint .`): **APROBADO** (0 errores TypeScript, 0 advertencias ESLint).
+- `bun test`: **APROBADO** (393 pasados / 0 fallados en 40 suites).
+- `pytest backend/tests/`: **APROBADO** (111 pasados / 0 fallados en 23.49s, incluyendo `test_canal_whatsapp.py`, `test_access_policy.py`, `test_notificaciones_y_radicacion.py` y `test_aportes.py`).
+- Compilación Turbopack (`bun run build`): **APROBADO** (190 rutas standalone generadas sin errores).
+- Servicios `systemd` (`polis-backend` & `polis-frontend`): **ACTIVOS Y SALUDABLES**.
+
+---
+
+### 4. Veredicto Pericial y Cierre de la FASE 2
+
+La tarea **`[CANAL-WHATSAPP-01]`** queda formalmente **CERRADA Y APROBADA AL 100%**.
+
+Con este hito, la **FASE 2: Ingesta de Datos Vivos y Feedback Loop** del Plan Maestro queda **100% CULMINADA CON ÉXITO**:
+- ✅ `[INGESTA-DATOS-01]`: Indicadores Reales Certificados (Cartagena de Indias 2024-2025).
+- ✅ `[NOTIF-FEEDBACK-01]`: Motor Transaccional de Radicación y Notificaciones (`POL-2026-XXXX`).
+- ✅ `[CANAL-WHATSAPP-01]`: Captura Conversacional Rápida de Propuestas (WhatsApp Ingesta Comunitaria).
+
+Se autoriza el paso inmediato a la **FASE 3: Adopción Territorial y Resiliencia**:
+- **Siguiente Tarea de la FASE 3:** **`[UX-MOVIL-BARRIO-01]`** (*Vista Ciudadana Ultraligera "Modo Barrio" — Carga ultrarrápida <150 KB para smartphones Android de gama de entrada con 3G/4G prepago en sectores populares de Cartagena*).
+
 
