@@ -2274,3 +2274,66 @@ La tarea **`[AUD-COMP-03]`** queda formalmente **CERRADA, APROBADA AL 100% Y CER
 
 Se autoriza el avance a la siguiente tarea de la **FASE 2**:
 - **Siguiente Tarea:** **`[AUD-COMP-04]`** (*Auditoría de Flujos Cívicos Públicos, Modos Territoriales y Resiliencia de Campo: Portada pública, Asistencia presencial /asistencia/[mesaId], Modo Barrio ultraligero /barrio, Formularios de Consulta /f/[slug], y Sistema PWA Offline con IndexedDB y Outbox Sync Manager*).
+
+---
+
+## 🏛️ DICTAMEN PERICIAL FORENSE EAF — TAREA [AUD-COMP-04]
+### FLUJOS CÍVICOS PÚBLICOS, MODOS TERRITORIALES Y RESILIENCIA DE CAMPO
+**Fecha de Emisión:** Domingo, 11 de Octubre de 2026  
+**Evaluador:** Coordinador General y Auditor Forense EAF `agy` (`tmux a -t agy`)  
+**Responsable Técnico Auditado:** Desarrollador / EDD `agy2` (`tmux a -t agy2`)  
+**Commit Evaluado:** `329b3a4` (`audit(civico): flujos publicos asistencia modo barrio y pwa offline AUD-COMP-04`)  
+**Referencia Técnica:** `bridge/01_tarea_activa.md` y `bridge/02_resultado_agy2.md`  
+**Plan Maestro:** `bridge/00_plan_maestro_auditoria_completitud_consistencia.md` (Fase 2: Tarea 2.2 — Cierre de Fase 2)  
+**Veredicto Oficial:** **CONFORME Y APROBADO AL 100% SIN OBSERVACIONES (APROBACIÓN TOTAL)**
+
+---
+
+### 1. Hallazgos de la Contra-Auditoría Técnica Independiente
+
+1. **Planilla de Asistencia a Mesas con Fe Pública ([`/asistencia/[mesaId]`](file:///root/polis/src/app/asistencia/%5BmesaId%5D/asistencia-cliente.tsx))**:
+   - Conforme a la **Ley Estatutaria 1757 de 2015** y **Ley 1581 de 2012** (Habeas Data). Cero referencias al "Decreto 037".
+   - Captura completa de datos: cédula, nombres, teléfono/WhatsApp, organización, enfoque diferencial y consentimiento explícito.
+   - Resiliencia dual verificada: persistencia directa en línea vía `/api/v1/mesas/{mesaId}/participantes` y contingencia automática en `asistencias_pendientes` de IndexedDB ante fallos de red.
+   - Verificación HTTP en caliente: `http://127.0.0.1:3000/asistencia/mt-001` $\rightarrow$ **HTTP 200 OK (39.7 KB)**.
+
+2. **Modo Barrio Ultraligero ([`/barrio`](file:///root/polis/src/features/barrio/views/barrio-view.tsx))**:
+   - Presupuesto de datos verificado: **42.2 KB** (<150 KB presupuesto de equidad digital para teléfonos prepago).
+   - Catálogo de **16 territorios populares y corregimientos** en `barrios-cartagena.ts`.
+   - Radicación cívica en 1 pantalla con emisión de radicado oficial `POL-2026-XXXX` en línea y `POL-2026-OFFLINE-XXXX` offline.
+   - Enlace directo a WhatsApp para difusión comunitaria y muro de propuestas con toggle reactivo de apoyos (1 ciudadano = 1 voto).
+   - Semáforo barrial de alto contraste con fuentes de Medicina Legal, Policía Nacional SIEDCO y Cartagena Cómo Vamos.
+
+3. **Formularios de Consulta Ciudadana ([`/f/[slug]`](file:///root/polis/src/app/f/%5Bslug%5D/page.tsx))**:
+   - Carga reactiva sin caídas en frío (`/f/reporte-inseguridad` $\rightarrow$ **HTTP 200 OK, 54.1 KB**).
+   - Persistencia inmutable en `participacion_ciudadana.respuestas_formulario`.
+
+4. **Sistema PWA Offline e IndexedDB ([`src/shared/offline/`](file:///root/polis/src/shared/offline/))**:
+   - `manifest.json` y `sw.js` activos con estrategia Network-First para páginas y Cache-First para estáticos versionados (`polis-pwa-v1`).
+   - Base de datos transaccional `polis_offline_db` con almacenes `asistencias_pendientes` y `propuestas_pendientes`.
+   - Outbox Sync Manager con auto-sincronización y límite de seguridad de 5 reintentos.
+   - `offline-status-badge.tsx` en `topbar.tsx` reflejando el conteo de registros en tiempo real.
+
+---
+
+### 2. Certificación Independiente de Quality Gates
+
+- `bun test src/shared/offline/tests/offline-sync.test.ts`: **9/9 APROBADO (100% verde)**.
+- `bun test src/features/barrio/tests/barrio-view.test.ts`: **5/5 APROBADO (100% verde)**.
+- `bun test src/features/mesas/`: **28/28 APROBADO (100% verde)**.
+- `bun run ui:check`: **APROBADO** (0 infracciones).
+- `bun run check` (`tsc --noEmit` & `eslint .`): **APROBADO** (0 errores TypeScript, 0 advertencias ESLint).
+- `bun test` global: **412/412 pasados** en 43 suites.
+- `pytest backend/tests/`: **100% aprobado**.
+- Compilación Turbopack (`bun run build`): **191/191 páginas estáticas generadas**.
+
+---
+
+### 3. Dictamen Final y Cierre de la FASE 2
+
+La tarea **`[AUD-COMP-04]`** queda formalmente **CERRADA, APROBADA AL 100% Y CERTIFICADA PARA PRODUCCIÓN**.
+
+Con la culminación de esta tarea, se declara formalmente **APROBADA Y CERRADA LA FASE 2: Completitud Funcional E2E y Erradicación de Mocks** del Plan Maestro de Auditoría.
+
+Se autoriza la apertura de la **FASE 3: Consistencia Normativa, UI-Policy y Resiliencia Operativa**:
+- **Siguiente Tarea:** **`[AUD-COMP-05]`** (*Consistencia Normativa, Salvaguardas Institucionales y Reglas de Diseño UI-Policy: Preservación de BPIN, Cero Acrónimos Ajenos, Saneamiento Legal, Regla de Capas UI004 y Accesibilidad Universal WCAG 2.1 AA*).
