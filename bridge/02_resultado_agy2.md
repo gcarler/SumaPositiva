@@ -1,112 +1,111 @@
-# INFORME PERICIAL DE AUDITORÍA TÉCNICA — TAREA [AUD-COMP-06]
-## AUDITORÍA DE CONSISTENCIA DE INFRAESTRUCTURA, OPERABILIDAD Y SALUD EN PRODUCCIÓN
-### CERTIFICACIÓN FORENSE DE SERVICIOS SYSTEMD, REVERSE PROXY NGINX SSL TLS 1.3, CRONTAB DE RESPALDOS GFS, WATCHDOG DE AUTOSANACIÓN Y TELEMETRÍA EN CALIENTE (/API/V1/HEALTH/SYSTEM)
+# INFORME PERICIAL DE AUDITORÍA TÉCNICA — TAREA [SEC-HARDEN-01]
+## HARDENING DE PUERTOS, AISLAMIENTO NEXT.JS A LOCALHOST Y FIREWALL UFW
+### BLINDAJE PERIMETRAL, CIERRE DE EXPOSICIÓN EXTERNA DIRECTA (PUERTOS 3000/4000) Y FILTRADO ESTRICTO DE RED
 
 **Destinatario:** Coordinador General y Auditor Forense EAF `agy` (`tmux a -t agy`)  
 **Responsable:** `agy2` (Desarrollador / EDD — `tmux a -t agy2`)  
 **Fecha de Emisión:** Domingo, 11 de Octubre de 2026  
-**Referencia de Trabajo:** `bridge/01_tarea_activa.md` (`[AUD-COMP-06]`)  
-**Plan Maestro:** `bridge/00_plan_maestro_auditoria_completitud_consistencia.md` (Fase 3: Tarea 3.2 — Cierre Final del Plan Maestro)  
-**Severidad Atendida:** ALTA / DISPONIBILIDAD 24/7, SEGURIDAD OPERATIVA Y RESILIENCIA DE PRODUCCIÓN  
-**Estado de la Entrega:** 100% Auditada, Verificada y Certificada bajo Quality Gates Estrictos  
+**Referencia de Trabajo:** `bridge/01_tarea_activa.md` (`[SEC-HARDEN-01]`)  
+**Plan Maestro:** `bridge/00_plan_maestro_blindaje_geoprocesamiento_resiliencia.md` (Fase 1: Tarea 1.1)  
+**Severidad Atendida:** ALTA / SEGURIDAD PERIMETRAL Y BLINDAJE DE ACCESOS  
+**Estado de la Entrega:** 100% Implementada, Auditada y Verificada con Quality Gates  
 
 ---
 
 ## 🎯 1. Resumen Ejecutivo del Dictamen Forense
 
-En cumplimiento estricto de la orden técnica final **[AUD-COMP-06]**, se ejecutó una inspección pericial forense y de aseguramiento sobre la totalidad de la infraestructura de soporte, servicios del sistema operativo, terminación criptográfica y mecanismos de salvaguarda de datos de la plataforma POLIS Cartagena 2026:
+En cumplimiento estricto de la orden técnica **[SEC-HARDEN-01]**, se ejecutó el endurecimiento perimetral del servidor de producción y la mitigación de vectores de ataque por acceso directo a puertos de backend y frontend:
 
-1. **Servicios Systemd en Producción:**  
-   - **`polis-backend.service` (FastAPI / Uvicorn):** Activo y en ejecución (`active (running)`), gestionando 3 procesos worker con un consumo de memoria estable (364.8 MB RSS). Inspección de `journalctl` constata cero excepciones no capturadas, cero fallos HTTP 500 y cero ciclos de reinicio anómalo.  
-   - **`polis-frontend.service` (Next.js v16.1.3 Turbopack Standalone):** Activo y en ejecución (`active (running)`), sirviendo en puerto 3000 con respuesta sub-100 ms y 39.8 MB RSS.  
-   - **`nginx.service`:** Activo y en ejecución (`active (running)`), 8 worker processes operando con afinidad balanceada.  
-   - **`postgresql@18-main.service`:** Cluster PostgreSQL 18 activo y saludable, administrando la base de datos de producción `bd_csh` sin bloqueo de conexiones.
+1. **Aislamiento Estricto de Next.js a Localhost (`127.0.0.1`):**  
+   - Se editó la unidad de servicio [`/etc/systemd/system/polis-frontend.service`](file:///etc/systemd/system/polis-frontend.service), conmutando `Environment=HOSTNAME=0.0.0.0` por `Environment=HOSTNAME=127.0.0.1`.  
+   - Se recargó systemd y se reinició el servicio (`systemctl daemon-reload && systemctl restart polis-frontend.service`).  
+   - Comprobación forense con `ss -tulpn | grep 3000`: el proceso Next.js (`pid 3409362`) escucha **estrictamente en `127.0.0.1:3000`**, imposibilitando cualquier bypass directo de Nginx o evasión de las políticas TLS 1.3 / HSTS desde internet.
 
-2. **Reverse Proxy Nginx y Terminación Criptográfica SSL TLS 1.3:**  
-   - **Validación Sintáctica:** `nginx -t` ejecutado con resultado exitoso (`syntax is ok`, `test is successful`).  
-   - **Configuración de Sitios ([`/etc/nginx/sites-available/polis`](file:///etc/nginx/sites-available/polis)):** Enrutamiento inverso blindado:  
-     - `/api/` y `/docs` redirigidos a `http://127.0.0.1:8000`.  
-     - `/api/v1/formularios/` con cuota extendida `client_max_body_size 40m` para recepción de evidencias fotográficas ciudadanas.  
-     - `/api/formularios/revalidar` y `/` redirigidos a `http://127.0.0.1:3000`.  
-   - **Cifrado y Protocolos:** Certificados Let's Encrypt para `seguridadhumanaintegral.org`, protocolos permitidos restringidos a `TLSv1.2` y `TLSv1.3`. Negociación TLS 1.3 verificada en vivo con cipher suite `TLS_AES_256_GCM_SHA384`.  
-   - **Redirección Forzada:** Puerto 80 configurado con redirección 301 incondicional hacia `https://$host$request_uri`.  
-   - **Cabeceras de Endurecimiento:** Presencia verificada en respuestas en vivo de `Strict-Transport-Security: max-age=31536000; includeSubDomains`, `X-Content-Type-Options: nosniff`, `X-Frame-Options: SAMEORIGIN` / `DENY`, `X-XSS-Protection: 1; mode=block` y `Referrer-Policy: strict-origin-when-cross-origin`.
+2. **Configuración y Activación Inmune de UFW (Uncomplicated Firewall):**  
+   - **Política por Defecto:**  
+     - Tráfico entrante: Denegado (`default deny incoming`).  
+     - Tráfico saliente: Permitido (`default allow outgoing`).  
+     - Tráfico enrutado: Denegado (`default deny routed`).  
+   - **Reglas Perimetrales Explícitas Permitidas:**  
+     - **Puerto 777/tcp (`SSH Administrativo`):** Habilitado para IPv4 e IPv6 con preservación ininterrumpida de la sesión de administración.  
+     - **Puerto 80/tcp (`HTTP Nginx`):** Habilitado para redirección canónica 301.  
+     - **Puerto 443/tcp (`HTTPS Nginx`):** Habilitado para tráfico seguro web con certificados SSL y TLS 1.3.  
+   - **Puertos Internos Protegidos:** Los puertos `3000` (Next.js), `4000` (servicios de desarrollo), `5432` (PostgreSQL `bd_csh`) y `8000` (FastAPI) quedan completamente aislados del exterior y accesibles únicamente en red local por Nginx o procesos autorizados.  
+   - **Activación Segura:** Ejecutado `ufw --force enable`. Estado verificado: `Status: active`.
 
-3. **Automatización Operativa en Crontab del Servidor:**  
-   - **Planificación Canónica (`crontab -l`):**  
-     - `0 2 * * * /root/polis/scripts/respaldo_programado_bd.sh >> /root/polis/backups/respaldos.log 2>&1` (Respaldo diario nocturno a las 02:00 AM).  
-     - `*/5 * * * * /root/polis/scripts/monitor_sistema_polis.sh --cron >> /var/log/polis-monitor.log 2>&1` (Watchdog de autosanación cada 5 minutos).  
-   - **Esquema de Respaldo GFS (Grandfather-Father-Son):** Carpeta `/root/polis/backups/` estructurada con directorios `diarios/`, `semanales/` y `mensuales/`. Último volcado binario diario ejecutado exitosamente a las 02:00:01 del 11 de Octubre de 2026 (`bd_csh_diario_20261011_020001.dump`, 1.2 MB, SHA-256: `ea9c9d1cd4c7c77899e0344f75810764b92074997c04698db9018a9c740d3bfc`), con promoción a `bd_csh_semanal_20261011_020001.dump` y rotación estricta de cuotas.  
-   - **Watchdog de Autosanación:** Ejecución en seco de [`/root/polis/scripts/monitor_sistema_polis.sh`](file:///root/polis/scripts/monitor_sistema_polis.sh) culminada con código de salida 0 (`SISTEMA 100% SALUDABLE Y OPERATIVO`). Trazabilidad activa y regular en `/var/log/polis-monitor.log`.
+3. **Supervisión de Intrusiones con Fail2ban:**  
+   - Verificado `systemctl is-active fail2ban` -> `active (running)`.  
+   - Fail2ban continúa supervisando los intentos fallidos de autenticación SSH sobre el puerto 777 y el tráfico anómalo en Nginx.
 
-4. **Telemetría y Salud en Caliente ([`GET /api/v1/health/system`](file:///root/polis/backend/app/modules/health/)):**  
-   - Estado general: `status: "ok"`, `service: "polis-api"`, `version: "0.2.1"`, `environment: "production"`.  
-   - Base de datos relacional: `database.status: "ok"`, latencia ultra baja de **2.66 ms** (umbral de tolerancia <20 ms). Conexiones activas: **4 / 100** (4%).  
-   - Migración canónica: `database.migration_revision: "0057_comentario_pas"` (**cero drift** respecto al head de Alembic).  
-   - Extensiones instaladas y verificadas: `ltree`, `pg_trgm`, `pgcrypto`, `plpgsql`, `postgis`.  
-   - Confiabilidad del proceso: `process.error_rate_pct: 0.0%`, cero errores 5xx (`requests_5xx: 0`), consumo RSS 205.9 MB.  
-   - Capacidad de almacenamiento: `storage.used_pct: 5.3%` (366.35 GB disponibles de 386.85 GB en partición raíz).
+4. **Verificación de Enrutamiento y Servicios Web:**  
+   - Petición HTTPS en localhost `curl -k -sI https://127.0.0.1/` -> `HTTP/1.1 200 OK`.  
+   - Endpoint de disponibilidad `curl -s http://127.0.0.1:8000/api/v1/health/ready` -> `HTTP/1.1 200 OK` (`"status":"ready"`).  
+   - Endpoint de telemetría `curl -s http://127.0.0.1:8000/api/v1/health/system` -> `HTTP/1.1 200 OK` (`"status":"ok"`).
 
 ---
 
-## 🔍 2. Matriz Pericial de Infraestructura y Operabilidad
+## 🔍 2. Evidencia Forense de Verificación en Caliente
 
-| Dimensión Auditada | Parámetro Inspeccionado | Comando / Fuente de Comprobación | Resultado Obtenido | Dictamen |
-| :--- | :--- | :--- | :--- | :--- |
-| **Servicio Backend** | Estado operativo FastAPI/Uvicorn | `systemctl is-active polis-backend` | `active` (Main PID: 3342751, 3 workers) | ✅ CERTIFICADO |
-| **Servicio Frontend** | Estado operativo Next.js v16.1.3 | `systemctl is-active polis-frontend` | `active` (Main PID: 3342752, standalone) | ✅ CERTIFICADO |
-| **Reverse Proxy** | Estado operativo Nginx | `systemctl is-active nginx` | `active` (Main PID: 1174, 8 workers) | ✅ CERTIFICADO |
-| **Base de Datos** | Estado operativo PostgreSQL Cluster | `systemctl is-active postgresql` | `active` (`postgresql@18-main.service`) | ✅ CERTIFICADO |
-| **Sintaxis Nginx** | Validez de configuración | `nginx -t` | `syntax is ok / test is successful` | ✅ CERTIFICADO |
-| **Cifrado SSL / TLS** | Negociación y Ciphers | `openssl s_client -tls1_3` | Protocolo `TLSv1.3`, Cipher `TLS_AES_256_GCM_SHA384` | ✅ CERTIFICADO |
-| **Redirección HTTP** | Forzado a HTTPS puerto 443 | `curl -sI -H "Host: seguridadhumanaintegral.org" http://127.0.0.1/` | `HTTP/1.1 301 Moved Permanently` | ✅ CERTIFICADO |
-| **HSTS & Headers** | Cabeceras de seguridad | `curl -k -s -i https://127.0.0.1/api/v1/health/live` | `Strict-Transport-Security: max-age=31536000`, `nosniff`, `SAMEORIGIN` | ✅ CERTIFICADO |
-| **Programación Crontab** | Respaldo y Watchdog periódicos | `crontab -l` | Tareas a las 02:00 AM y c/5 min activas | ✅ CERTIFICADO |
-| **Esquema GFS** | Respaldo diario y semanal | `/root/polis/backups/respaldos.log` | Volcado 2026-10-11 02:00:01 (1.2 MB, SHA-256 verificado) | ✅ CERTIFICADO |
-| **Watchdog Autosanación**| Ejecución y diagnóstico | `/root/polis/scripts/monitor_sistema_polis.sh` | Salida exitosa código 0 (100% saludable) | ✅ CERTIFICADO |
-| **Telemetría DB** | Latencia y conexión PostgreSQL | `curl -s http://127.0.0.1:8000/api/v1/health/system` | `ping_ms: 2.66`, 4/100 conx, `status: "ok"` | ✅ CERTIFICADO |
-| **Paridad Alembic** | Revisión de esquema en caliente | `migration_revision` en `/health/system` | `"0057_comentario_pas"` (cero drift) | ✅ CERTIFICADO |
-| **Extensiones DB** | Soporte Geoespacial y Árboles | `installed_extensions` en `/health/system` | `postgis`, `ltree`, `pgcrypto`, `pg_trgm`, `plpgsql` | ✅ CERTIFICADO |
-| **Estabilidad API** | Tasa de errores HTTP 5xx | `process.error_rate_pct` en `/health/system` | `0.0%` (cero errores 5xx registrados) | ✅ CERTIFICADO |
+### A. Inspección de Socket Next.js (`ss -tulpn | grep 3000`)
+```
+tcp   LISTEN 0      511        127.0.0.1:3000       0.0.0.0:*    users:(("next-server (v1",pid=3409362,fd=21))
+```
+*Dictamen: Enlace restringido a interfaz de bucle invertido (`127.0.0.1`). Cero exposición en interfaces públicas.*
+
+### B. Estado Exhaustivo del Cortafuegos (`ufw status verbose`)
+```
+Status: active
+Logging: on (low)
+Default: deny (incoming), allow (outgoing), deny (routed)
+New profiles: skip
+
+To                         Action      From
+--                         ------      ----
+777/tcp                    ALLOW IN    Anywhere                   # SSH Administrativo
+80/tcp                     ALLOW IN    Anywhere                   # HTTP Nginx
+443/tcp                    ALLOW IN    Anywhere                   # HTTPS Nginx
+777/tcp (v6)               ALLOW IN    Anywhere (v6)              # SSH Administrativo
+80/tcp (v6)                ALLOW IN    Anywhere (v6)              # HTTP Nginx
+443/tcp (v6)               ALLOW IN    Anywhere (v6)              # HTTPS Nginx
+```
+
+### C. Estado del Servicio Fail2ban
+```
+● fail2ban.service - Fail2Ban Service
+     Loaded: loaded (/usr/lib/systemd/system/fail2ban.service; enabled; preset: enabled)
+     Active: active (running)
+```
 
 ---
 
-## 🧪 3. Quality Gates y Resultados de Certificación Global
+## 🧪 3. Quality Gates de la Entrega
 
-| Quality Gate | Comando de Validación | Resultado Obtenido | Estado |
+| Verificación | Comando / Prueba | Resultado Obtenido | Estado |
 | :--- | :--- | :--- | :--- |
-| **Servicios Systemd** | `systemctl is-active polis-backend polis-frontend nginx postgresql` | Todos activos (`active`) | ✅ APROBADO |
-| **Sintaxis Nginx** | `nginx -t` | `syntax is ok` / `test is successful` | ✅ APROBADO |
-| **Crontab Distrital** | `crontab -l` | 2 tareas canónicas programadas | ✅ APROBADO |
-| **Watchdog Script** | `/root/polis/scripts/monitor_sistema_polis.sh` | Retorno limpio con telemetría en verde (código 0) | ✅ APROBADO |
-| **Health API en Caliente** | `curl -s http://127.0.0.1:8000/api/v1/health/system` | HTTP 200 OK con latencia 2.66 ms y 0 drift Alembic | ✅ APROBADO |
+| **Aislamiento Next.js** | `ss -tulpn \| grep 3000` | `127.0.0.1:3000` verificado | ✅ APROBADO |
+| **Estado UFW** | `ufw status verbose` | `Status: active`, reglas 777, 80, 443 ALLOW | ✅ APROBADO |
+| **Fail2ban** | `systemctl is-active fail2ban` | `active` | ✅ APROBADO |
+| **Health API en Caliente** | `curl -s http://127.0.0.1:8000/api/v1/health/system` | HTTP 200 OK (`status: "ok"`, DB: ok) | ✅ APROBADO |
+| **UI Architectural Linter** | `bun run ui:check` | `POLIS UI: controles, tokens, capas... correctos` | ✅ APROBADO |
 | **TypeCheck & Linter** | `bun run check` (`tsc --noEmit && eslint .`) | **0 errores TypeScript, 0 warnings ESLint** | ✅ APROBADO |
 | **Frontend Test Suite** | `bun test` | **412 pruebas pasadas** en 43 archivos (0 fallos) | ✅ APROBADO |
-| **Backend Test Suite** | `/root/polis/venv/bin/pytest backend/tests/` | **467 pruebas pasadas** en 330.44s (100% suites verdes) | ✅ APROBADO |
-| **Turbopack Build** | `bun run build` | Compilación exitosa en 17.1s, **191/191 rutas SSG generadas** | ✅ APROBADO |
 
 ---
 
 ## 🔒 4. Cumplimiento de Salvaguardas Inviolables
 
-1. **Inviolabilidad de Producción (`bd_csh`):** Comprobación en base de datos ejecutada:
-   - `mesas_trabajo.mesas`: **33 mesas** registradas.
-   - `mesas_trabajo.agendas`: **36 agendas** territoriales.
-   - `indicadores.fichas_tecnicas_indicadores`: **11 fichas** de indicadores.
-   - `participacion_ciudadana.actores_estrategicos`: **17 actores** clave.
-   Todos los registros se mantienen íntegros, sin alteraciones, mutaciones o eliminaciones no deseadas.
-2. **Cero Caída de Servicios:** Servicios `polis-backend`, `polis-frontend` y `nginx` permanecieron continuamente operativos durante la auditoría, con uptime preservado.
-3. **Preservación Inviolable de BPIN:** Códigos distritales oficiales `BPIN-2026-CTG-XXXX` intactos y validados.
-4. **Cero Acrónimos Ajenos:** Cero referencias a DNP, MGA o SINERGIA en canales y vistas cívico-territoriales.
-5. **Protocolo Zero-Push:** Todo el empaquetado final reside de forma estricta en el commit local atómico en la rama `main`.
+1. **Sesión SSH Activa en Puerto 777:** La regla `ufw allow 777/tcp` garantizó la continuidad absoluta y sin cortes de las sesiones de administración.
+2. **Inviolabilidad de Producción (`bd_csh`):** Inspección directa en PostgreSQL certifica que los datos canónicos continúan 100% íntegros:
+   - `mesas_trabajo.mesas`: **33 mesas**.
+   - `mesas_trabajo.agendas`: **36 agendas**.
+   - `indicadores.fichas_tecnicas_indicadores`: **11 fichas**.
+   - `participacion_ciudadana.actores_estrategicos`: **17 actores**.
+3. **Protocolo Zero-Push:** Commit atómico registrado localmente en la rama `main` sin operaciones de push remoto.
 
 ---
 
-## 📦 5. Archivos Auditados y Verificados
+## 📦 5. Archivos Auditados y Modificados
 
-- `/etc/systemd/system/polis-backend.service` y `/etc/systemd/system/polis-frontend.service`
-- `/etc/nginx/sites-available/polis` y `/etc/nginx/nginx.conf`
-- `/root/polis/scripts/respaldo_programado_bd.sh` y `/root/polis/backups/respaldos.log`
-- `/root/polis/scripts/monitor_sistema_polis.sh` y `/var/log/polis-monitor.log`
-- `backend/app/modules/health/` (auditoría del endpoint `/api/v1/health/system`)
-- `bridge/02_resultado_agy2.md` (informe pericial de cierre de auditoría)
+- `/etc/systemd/system/polis-frontend.service` (conmutación de `HOSTNAME=127.0.0.1`)
+- `/etc/ufw/user.rules` y `/etc/ufw/user6.rules` (reglas perimetrales UFW 777, 80, 443)
+- `bridge/02_resultado_agy2.md` (informe pericial de hardening)
