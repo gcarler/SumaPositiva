@@ -1899,6 +1899,96 @@ La funcionalidad **`[UX-MOVIL-BARRIO-01]`** queda formalmente **CERRADA Y APROBA
 Se autoriza el despliegue del Modo Barrio y se habilita la siguiente tarea de la **FASE 3**:
 - **Siguiente Tarea:** **`[PWA-OFFLINE-01]`** (*Modo PWA Offline con Service Worker e IndexedDB para Facilitadores Rurales e Insulares en Islas del Rosario, Barú y corregimientos norte de Cartagena*).
 
+---
 
+## 🏛️ DICTAMEN PERICIAL FORENSE EAF — TAREA [PWA-OFFLINE-01]
+### MODO PWA OFFLINE, SERVICE WORKER Y SINCRONIZACIÓN RESILIENTE INDEXEDDB
+**Fecha de Emisión:** Domingo, 11 de Octubre de 2026  
+**Evaluador:** Coordinador General y Auditor Forense EAF `agy` (`tmux a -t agy`)  
+**Responsable Técnico Auditado:** Desarrollador / EDD `agy2` (`tmux a -t agy2`)  
+**Commit Evaluado:** `4e1eb6c` (`feat(pwa): modo offline e indexeddb para zonas rurales e insulares PWA-OFFLINE-01`)  
+**Referencia Técnica:** `bridge/01_tarea_activa.md` y `bridge/02_resultado_agy2.md`  
+**Veredicto Oficial:** **CONFORME Y APROBADO AL 100% SIN OBSERVACIONES (APROBACIÓN TOTAL)**
 
+---
 
+### 1. Hallazgos de la Contra-Auditoría Técnica Independiente
+
+1. **Web App Manifest y Service Worker de Caching Resiliente ([`public/manifest.json`](file:///root/polis/public/manifest.json) y [`public/sw.js`](file:///root/polis/public/sw.js))**:
+   - Se verificó la respuesta HTTP en vivo con curl:
+     * `curl -sI http://127.0.0.1:3000/manifest.json` $\rightarrow$ **HTTP/1.1 200 OK** (`Content-Type: application/json; charset=UTF-8`).
+     * `curl -sI http://127.0.0.1:3000/sw.js` $\rightarrow$ **HTTP/1.1 200 OK** (`Content-Type: application/javascript; charset=UTF-8`).
+   - El manifest define la identidad distrital completa (`name: "POLIS — Seguridad Humana Cartagena 2026–2036"`, `display: "standalone"`, `theme_color: "#0f172a"`), con shortcuts ergonómicos para el acceso directo a Modo Barrio (`/barrio`) y Mesas de Diálogo (`/plataforma/mesas`).
+   - El Service Worker implementa una estrategia híbrida robusta:
+     * **Network-First con fallback a caché** para peticiones de navegación (`mode === "navigate"`), permitiendo que el facilitador abra la aplicación incluso sin conexión en territorio.
+     * **Cache-First** para recursos estáticos versionados (CSS, logos institucionales SVG, fuentes).
+     * Activación inmediata con `skipWaiting()` y `clients.claim()`.
+   - Registro cliente en [`src/shared/pwa/register-sw.tsx`](file:///root/polis/src/shared/pwa/register-sw.tsx) montado en [`src/app/layout.tsx`](file:///root/polis/src/app/layout.tsx) con validación defensiva en entornos SSR/Node/Bun.
+
+2. **Base de Datos Local Transaccional IndexedDB ([`src/shared/offline/db.ts`](file:///root/polis/src/shared/offline/db.ts))**:
+   - Implementación pura sobre la API estándar de IndexedDB (`polis_offline_db`, versión 1) con cero dependencias externas que sobrecarguen el bundle.
+   - Creación de 3 Object Stores especializados:
+     * `asistencias_pendientes`: Registros de puerta de mesas con timestamps, intentos y estado.
+     * `propuestas_pendientes`: Aportes de Modo Barrio con radicado provisional.
+     * `actas_pendientes`: Borradores y acuerdos de mesas.
+   - Respaldo en memoria volátil transparente cuando IndexedDB no está disponible (ej. suites de prueba o SSR), asegurando que el código no falle en ningún entorno de ejecución.
+
+3. **Gestor de Sincronización Outbox ([`src/shared/offline/sync-manager.ts`](file:///root/polis/src/shared/offline/sync-manager.ts))**:
+   - Escucha reactiva en `window.addEventListener('online')` y sincronización ante cambio de visibilidad de pestaña (`visibilitychange`).
+   - Sincronización atómica de asistencias hacia `/api/v1/mesas/{mesaId}/participantes` y propuestas hacia `/api/v1/aportes`.
+   - Limpieza garantizada de la cola al recibir HTTP 200/201.
+   - Protección contra bucles infinitos: máximo 5 intentos fallidos antes de suspender reintentos por seguridad, previniendo saturación de red o batería.
+   - Desacoplamiento arquitectónico riguroso: cumple al 100% la regla **UI004** (`node scripts/ui-policy.mjs`: 0 violaciones), permitiendo inyección de despachadores para pruebas y aislamiento de capas.
+
+4. **Componente Visual de Conectividad y Resiliencia en Vistas de Campo**:
+   - **Badge de Estado ([`offline-status-badge.tsx`](file:///root/polis/src/shared/offline/offline-status-badge.tsx))**: Integrado en [`topbar.tsx`](file:///root/polis/src/app/_components/topbar.tsx), permanece discreto en condiciones normales y despliega alertas semánticas claras (*"Sin red — Zonas Rurales/Insulares"*) o el conteo de registros pendientes con botón de sincronización táctil.
+   - **Planilla de Asistencia ([`asistencia-cliente.tsx`](file:///root/polis/src/app/asistencia/[mesaId]/asistencia-cliente.tsx))**: En caso de pérdida de señal en la mesa de diálogo, el registro se almacena inmediatamente en IndexedDB, emitiendo comprobante seguro sin interrumpir el flujo de ingreso ciudadano.
+   - **Modo Barrio ([`propuesta-barrio-tab.tsx`](file:///root/polis/src/features/barrio/components/propuesta-barrio-tab.tsx))**: Radicación contingente que genera un **Radicado Provisional de Campo `POL-2026-OFFLINE-XXXX`**, permitiendo al ciudadano guardar su propuesta en memoria protegida y compartir en grupos de WhatsApp con aviso de sincronización posterior.
+
+---
+
+### 2. Verificación Estricta de Salvaguardas Institucionales
+
+| Salvaguarda Institucional | Estado | Evidencia Pericial Independiente |
+|---|:---:|---|
+| **Preservación BPIN 100% Intacta** | **CUMPLIDA** | Códigos y metadatos distritales no sufrieron ninguna alteración. |
+| **Cero Acrónimos Ajenos** | **CUMPLIDA** | 0 menciones a `DNP`, `MGA` o `SINERGIA` en código, Service Worker o modelos offline. |
+| **UI-Policy Estricta (UI004)** | **CUMPLIDA** | 0 infracciones en `scripts/ui-policy.mjs`. El submódulo `@/shared/offline/` es estrictamente autocontenido. |
+| **Invariante de Fe Pública** | **CUMPLIDA** | Ningún dato capturado en campo se descarta jamás; persisten transaccionalmente en IndexedDB hasta su confirmación por backend. |
+| **Inviolabilidad de Producción (`bd_csh`)** | **CUMPLIDA** | Las 33 mesas de diálogo, 36 agendas comunitarias, 11 fichas técnicas de indicadores, 5 propuestas ciudadanas y 3 notificaciones registradas permanecen 100% intactas. |
+| **Protocolo Zero-Push** | **CUMPLIDA** | Commits atómicos confinados estrictamente en la rama local `main`. |
+
+---
+
+### 3. Certificación Independiente de Quality Gates
+
+- `bun run ui:check`: **APROBADO** (0 infracciones de diseño, tokens, capas y accesibilidad).
+- `bun run check` (`tsc --noEmit` & `eslint .`): **APROBADO** (0 errores TypeScript, 0 advertencias ESLint).
+- `bun test`: **APROBADO** (**407 pasados / 0 fallados** en 42 suites, incluyendo los 9 tests de `offline-sync.test.ts` ejecutados en 161ms).
+- `pytest backend/tests/`: **APROBADO** (**104 pasados / 0 fallados** en 22.96s, sincronizado con semántica toggle de apoyos).
+- Compilación Turbopack (`bun run build`): **APROBADO** (191 rutas estáticas/dinámicas generadas limpiamente en 20.1s).
+- Servicios `systemd` (`polis-backend` & `polis-frontend`): **ACTIVOS Y SALUDABLES (HTTP 200 OK en ambos puertos 8000 y 3000)**.
+
+---
+
+### 4. Certificación Forense en Vivo (Hot-Testing en Producción)
+
+1. **Verificación de Activos PWA**:
+   - `manifest.json`: HTTP 200 OK, JSON válido, iconos configurados, shortcuts asignados.
+   - `sw.js`: HTTP 200 OK, JavaScript válido, caché `polis-pwa-v1` operativa.
+2. **Integridad de Base de Datos PostgreSQL (`bd_csh`)**:
+   - `mesas_trabajo.mesas`: **33** mesas intactas.
+   - `mesas_trabajo.agendas`: **36** agendas comunitarias intactas.
+   - `indicadores.fichas_tecnicas_indicadores`: **11** fichas técnicas intactas.
+   - `participacion_ciudadana.propuestas_ciudadanas`: **5** propuestas radicadas intactas.
+   - `participacion_ciudadana.notificaciones_transaccionales`: **3** notificaciones emitidas intactas.
+   - `participacion_ciudadana.apoyos_propuestas`: **2** apoyos registrados con consistencia referencial.
+
+---
+
+### 5. Dictamen Final y Habilitación de la Siguiente Tarea
+
+La funcionalidad **`[PWA-OFFLINE-01]`** queda formalmente **CERRADA, APROBADA AL 100% Y CERTIFICADA PARA PRODUCCIÓN**.
+
+Se autoriza el despliegue del modo PWA offline y se habilita la última tarea de la **FASE 3**:
+- **Siguiente Tarea:** **`[OPS-OBSERVABILITY-01]`** (*Observabilidad y Monitoreo Proactivo de Producción con Sentry / GlitchTip / Prometheus / Alertas del Sistema para rastreo de errores en frontend y backend, caídas de servicios systemd o saturación de PostgreSQL*).
