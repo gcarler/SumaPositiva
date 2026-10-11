@@ -1,85 +1,66 @@
-# TAREA ACTIVA: [NOTIF-FEEDBACK-01] MOTOR TRANSACCIONAL DE NOTIFICACIONES Y RADICACIÓN CIUDADANA
+# TAREA ACTIVA: [CANAL-WHATSAPP-01] CANAL CONVERSACIONAL RÁPIDO PARA PROPUESTAS Y ASISTENCIA
+## CAPTURA COMUNITARIA DIRECTA VÍA WHATSAPP CLOUD API / WEBHOOK CON RADICACIÓN POL-2026-XXXX
 
 **Fecha:** Domingo, 11 de Octubre de 2026  
-**Fase:** FASE 2 — Ingesta de Datos Vivos y Feedback Loop (Tarea 2.2)  
+**Fase:** FASE 2 — Ingesta de Datos Vivos y Feedback Loop (Tarea 2.3)  
 **Plan Maestro:** `bridge/00_plan_maestro_excelencia_y_adopcion.md`  
 **Asignada a:** `agy2` (Desarrollador / EDD — `tmux a -t agy2`)  
 **Supervisor / Auditor:** `agy` (Coordinador General y Auditor Forense EAF — `tmux a -t agy`)  
-**Severidad:** ALTA / ADOPCIÓN CIUDADANA (Cero Silencio Administrativo, Trazabilidad, Fe Pública y Transparencia)
+**Severidad:** ALTA / ADOPCIÓN CIUDADANA POPULAR (Democratización de la participación y erradicación de barreras tecnológicas)
 
 ---
 
-## 🎯 1. Justificación y Alcance del Requerimiento
+## 🎯 1. Justificación y Alcance Territorial
 
-En asambleas comunitarias y talleres barriales en Cartagena de Indias, uno de los mayores desincentivos a la participación es la sensación ciudadana de que las propuestas "se quedan en el aire" o que existe silencio administrativo tras consignar una idea o alerta.
+En los barrios populares, veredas y corregimientos de Cartagena de Indias (Nelson Mandela, Olaya Herrera, El Pozón, Bayunca, Pasacaballos, Barú, Tierrabomba, Membrillal), los líderes comunales, madres comunitarias, comités de seguridad y jóvenes utilizan WhatsApp como su principal (y a menudo única) herramienta digital de articulación barrial.
 
-Para erradicar el silencio administrativo y construir confianza institucional entre las comunidades (El Pozón, Nelson Mandela, La Boquilla, Isla de Barú, Albornoz) y la administración distrital:
-1. **Radicación Oficial Obligatoria e Inmutable:** Cada aporte, propuesta o alerta ciudadana registrada en POLIS debe recibir automáticamente un **Código Único de Radicado Institucional** en formato oficial **`POL-2026-XXXX`** (ej. `POL-2026-0001`, `POL-2026-0002`...), respaldado por una secuencia atómica en PostgreSQL.
-2. **Constancia Digital de Radicación:** Envío automático e inmediato de una notificación de constancia por correo electrónico al ciudadano (si está autenticado o si suministra su correo de contacto en el formulario), con plantilla HTML sobria que incluye el escudo de la Alcaldía Mayor de Cartagena, el membrete de "Cartagena Ciudad de Derechos", resumen del aporte, fecha/hora y número de radicado.
-3. **Consulta Pública de Radicado:** Endpoint público y vista ligera que permite a cualquier ciudadano consultar el estado de tramitación de su propuesta ingresando únicamente su código `POL-2026-XXXX` sin necesidad de contraseña.
-4. **Notificación de Cambio de Estado y Priorización:** Cuando una propuesta ciudadana cambia de estado (`en_revision`, `incorporado`, `rechazado`) o es priorizada por una mesa territorial de seguridad o secretaría distrital, el sistema despacha automáticamente una notificación de actualización al ciudadano.
+Obligar a un ciudadano a ingresar a una plataforma web de escritorio o diligenciar formularios extensos impone una barrera de acceso insalvable para quienes cuentan únicamente con paquetes prepago o prefieren enviar un mensaje rápido de texto o una nota de voz relatando una problemática de su sector.
+
+**Objetivo de la Tarea:**
+Habilitar un **Canal Conversacional de Ingesta Comunitaria** que permita:
+1. **Recepción vía Webhook Institucional:** Endpoint compatible con Meta WhatsApp Cloud API / Webhook estándar para recibir mensajes entrantes de texto, notas de voz y fotografías de asambleas ciudadanas.
+2. **Normalización e Ingesta Inmediata en POLIS:** Mapeo automático del mensaje a una propuesta cívica (`PropuestaCiudadanaCreate`) vinculada a la Línea Estratégica Distrital correspondiente, extrayendo menciones territoriales (barrio o localidad) y registrando el origen `canal = "whatsapp"`.
+3. **Radicación Oficial Inmutable:** Asignación inmediata del código institucional oficial **`POL-2026-XXXX`** mediante la secuencia atómica implementada en la base de datos.
+4. **Respuesta Automática por WhatsApp:** Envío (o simulación auditada en ausencia de API Key activa) de un mensaje de confirmación con membrete institucional, acuse de recibo formal y enlace de consulta pública para seguimiento ciudadano.
+5. **Visibilidad en Interfaz:** Reconocimiento visual del origen del aporte en el frontend mediante un badge canónico distintivo (`Canal: WhatsApp`), fortaleciendo la trazabilidad y la rendición de cuentas.
 
 ---
 
 ## 📋 2. Especificación Técnica de la Tarea
 
-### A. Base de Datos y Persistencia (`backend/alembic/versions/0056_radicacion_ciudadana_y_notificaciones.py`)
-1. **Secuencia de Radicación**:
-   - Crear la secuencia `participacion_ciudadana.secuencia_radicados_propuestas START WITH 1 INCREMENT BY 1`.
-2. **Columna `codigo_radicado` en `participacion_ciudadana.propuestas_ciudadanas`**:
-   - Agregar columna `codigo_radicado VARCHAR(50) UNIQUE` con índice único.
-   - Para aportes preexistentes (si los hubiere), poblar secuencialmente con prefijo `POL-2026-`.
-3. **Tabla `participacion_ciudadana.notificaciones_transaccionales`**:
-   - Campos:
-     * `id`: UUID (v7).
-     * `codigo_radicado`: VARCHAR(50) (asociado a la propuesta o trámite).
-     * `destinatario_correo`: VARCHAR(255) NOT NULL.
-     * `tipo_evento`: VARCHAR(50) NOT NULL (`radicacion`, `cambio_estado`, `priorizacion`).
-     * `asunto`: VARCHAR(250) NOT NULL.
-     * `cuerpo_html`: TEXT NOT NULL.
-     * `estado_envio`: VARCHAR(30) NOT NULL (`enviado`, `simulado`, `fallido`).
-     * `error_detalle`: TEXT NULL.
-     * `creado_en`: TIMESTAMP WITH TIME ZONE DEFAULT clock_timestamp().
-     * `enviado_en`: TIMESTAMP WITH TIME ZONE NULL.
-   - Índices en `codigo_radicado`, `destinatario_correo`, `creado_en`.
-
-### B. Backend (`backend/app/modules/`)
-1. **Módulo de Notificaciones (`backend/app/modules/notificaciones/`)**:
-   - `models.py`: Modelo SQLAlchemy `NotificacionTransaccional`.
-   - `service.py`:
-     * Generador de plantilla HTML sobria institucional (membrete de Cartagena, escudo, sello distrital, título del aporte, descripción, radicado `POL-2026-XXXX`, enlace público de consulta).
-     * Método `enviar_constancia_radicacion(destinatario, radicado, titulo, descripcion, autor)`:
-       - Resiliente: si SMTP está configurado (`settings.smtp_host`), despacha el correo mediante `asyncio.to_thread`; si no está configurado (entorno de pruebas/desarrollo), registra la notificación como `simulado` con log descriptivo, **sin bloquear** la creación del aporte.
-     * Método `enviar_notificacion_cambio_estado(destinatario, radicado, titulo, nuevo_estado, observaciones)`.
+### A. Backend y Módulo de Canales (`backend/app/modules/canales/`)
+1. **Creación del Sub-módulo `backend/app/modules/canales/`**:
    - `schemas.py`:
-     * `ConsultaRadicadoRespuesta`: devuelve radicado, título, tipo_aporte, autor_nombre, estado, territorio_nombre, creado_en, actualizado_en.
-     * `NotificacionLectura`.
+     * `WhatsAppWebhookVerification`: esquema para validar la verificación del webhook de Meta (`hub.mode`, `hub.verify_token`, `hub.challenge`).
+     * `WhatsAppWebhookPayload`: modelo Pydantic flexible que soporte la estructura de mensajes entrantes de Meta WhatsApp Cloud API (entry $\rightarrow$ changes $\rightarrow$ value $\rightarrow$ messages: `from`, `id`, `timestamp`, `type`: `text`, `audio`, `image`, `document`, con sus respectivos sub-objetos).
+     * `WhatsAppSimulacionEntrante`: esquema para simulación directa de pruebas (`telefono_remitente`, `nombre_remitente`, `texto_mensaje`, `tipo_mensaje`, `linea_id` opcional, `territorio_id` opcional).
+     * `WhatsAppIngestaRespuesta`: DTO de respuesta con `codigo_radicado`, `propuesta_id`, `titulo`, `canal`, `mensaje_respuesta`.
+   - `service.py`:
+     * `procesar_mensaje_whatsapp(payload, session)`:
+       - Extrae el número de teléfono del remitente (guardando una versión anonimizada/hasheada o salvaguardada en metadatos para trazabilidad).
+       - Extrae el contenido del mensaje (texto directo, o transcripción/descripción de audio/imagen).
+       - Infiere inteligentemente el título y la descripción (o asigna síntesis estructurada).
+       - Infiere el territorio o barrio si se menciona explícitamente en el texto (ej. "Getsemaní", "El Pozón", "Nelson Mandela").
+       - Asigna la propuesta a una línea estratégica válida en `bd_csh` (por defecto la primera línea de convivencia o la más afín).
+       - Invoca `AporteRepository.crear()` para generar atómicamente el radicado `POL-2026-XXXX` con `metadatos={"canal": "whatsapp", "wa_id": ..., "telefono_contacto": ...}`.
+       - Genera el texto institucional de respuesta para WhatsApp:
+         > *"¡Aporte recibido con éxito! La Alcaldía Mayor de Cartagena te agradece por tu participación en 'Cartagena Ciudad de Derechos'. Tu propuesta ha sido radicada bajo el código oficial: POL-2026-XXXX. Puedes consultar su estado en: https://seguridadhumanaintegral.org/radicado/POL-2026-XXXX"*
+       - Despacha o registra la notificación en `participacion_ciudadana.notificaciones_transaccionales` con `tipo_evento="whatsapp_radicacion"` y estado `simulado` (si no hay Meta token configurado) o `enviado`.
    - `router.py`:
-     * `GET /api/v1/notificaciones/radicado/{codigo_radicado}`: Endpoint público (sin autenticación obligatoria) que permite verificar el estado de una propuesta radicada.
-     * `GET /api/v1/notificaciones/historial`: Endpoint para auditoría forense y gestión de funcionarios.
-2. **Módulo de Aportes (`backend/app/modules/aportes/`)**:
-   - `models.py`: Incorporar `codigo_radicado: Mapped[str] = mapped_column(String(50), unique=True, index=True, nullable=False)`.
-   - `schemas.py`:
-     * `PropuestaCiudadanaCreate`: incorporar campo opcional `correo_contacto: str | None = None` para ciudadanos anónimos que deseen recibir su radicado por correo.
-     * `PropuestaCiudadanaRead`: exponer `codigo_radicado: str`.
-   - `repository.py`:
-     * Al crear propuesta, obtener el siguiente valor de la secuencia y formatear como `POL-2026-{numero:04d}` (ej. `POL-2026-0001`).
-   - `service.py`:
-     * Al registrar aporte exitoso, invocar de forma desacoplada la notificación de radicación si se cuenta con `correo_contacto` o correo del usuario en sesión.
-     * Al actualizar estado de la propuesta (`actualizar_propuesta`), si el estado muta (ej. a `incorporado`, `en_revision`, `rechazado`), despachar la notificación de actualización.
-3. **Contrato de Rutas y Permisos (`docs/permisos-api.md` & `backend/tests/test_access_policy.py`)**:
-   - Registrar la ruta pública `GET /api/v1/notificaciones/radicado/{codigo_radicado}` en la lista blanca de la política de acceso.
+     * `GET /api/v1/canales/whatsapp/webhook`: Endpoint de verificación pública del webhook conforme al estándar de Meta Cloud API (`hub.mode == 'subscribe'`).
+     * `POST /api/v1/canales/whatsapp/webhook`: Endpoint de recepción de eventos de Meta. Retorna `HTTP 200 OK` inmediato para evitar reintentos.
+     * `POST /api/v1/canales/whatsapp/simular`: Endpoint para pruebas locales y auditoría forense que procesa un mensaje simulado y retorna el radicado emitido.
+2. **Inclusión en API Router**:
+   - Registrar el router en `backend/app/api/router.py` bajo el prefijo `/canales/whatsapp`.
+3. **Contrato de Políticas de Acceso**:
+   - Registrar las rutas públicas del webhook en `docs/permisos-api.md` y en la lista blanca de `backend/tests/test_access_policy.py`.
 
-### C. Frontend (`src/features/aportes/` y `src/features/seguimiento/`)
-1. **Editor de Aportes (`src/features/aportes/panels/aporte-editor-panel.tsx`)**:
-   - Añadir campo opcional de correo de contacto cuando la sesión no tiene correo verificado: *"Correo electrónico para recibir constancia oficial de radicación (opcional)"*.
-   - Al recibir la confirmación de la API:
-     * Notificar con `toast.success` mostrando el radicado: *"Aporte recibido bajo radicado POL-2026-XXXX"*.
-     * Mostrar diálogo o tarjeta de confirmación de radicación con botón interactivo `@/shared/ui/button` para **"Copiar Radicado"**.
-2. **Tarjeta y Detalle de Aporte (`src/features/aportes/components/` / `src/features/politicas/panels/linea-panel.tsx`)**:
-   - Renderizar el Badge institucional `@/shared/ui/badge` con el `codigo_radicado` (ej. `POL-2026-0001`) visible en cada propuesta.
-3. **Módulo de Rendición de Cuentas (`src/features/seguimiento/components/rendicion-cuentas-tab.tsx`)**:
-   - Asegurar que la tabla y tarjetas de devolución muestren el `codigo_radicado` de cada propuesta ciudadana.
+### B. Frontend (`src/features/aportes/` y `src/features/politicas/`)
+1. **Identificación Visual de Canal en Tarjetas de Aportes**:
+   - En [`src/features/politicas/panels/linea-panel.tsx`](file:///root/polis/src/features/politicas/panels/linea-panel.tsx):
+     * Si el aporte tiene `metadatos.canal === 'whatsapp'`, renderizar un Badge canónico `@/shared/ui/badge` con variante institucional (ej. verde esmeralda canónico del kit `var(--success)` o icono de mensaje) indicando `"WhatsApp"`.
+2. **Soporte en Rendición de Cuentas y Modelos**:
+   - Asegurar que `metadatos` o `canal_origen` sea preservado en los DTOs de TypeScript.
 
 ---
 
@@ -87,8 +68,8 @@ Para erradicar el silencio administrativo y construir confianza institucional en
 
 1. **Preservación Inviolable de BPIN:** No alterar identificadores BPIN presupuestales.
 2. **Cero Acrónimos Ajenos:** Cero mención a DNP, MGA o SINERGIA en código, modelos o interfaces.
-3. **UI-Policy Estricta:** Uso exclusivo de componentes `@/shared/ui/` (`Button`, `Badge`, `Input`, `FormField`). Cero etiquetas nativas HTML sueltas.
-4. **Resiliencia de Transacción:** El envío de correos jamás debe romper o hacer fallar la creación de una propuesta ciudadana en base de datos si SMTP no responde.
+3. **UI-Policy Estricta:** Uso exclusivo de componentes `@/shared/ui/` (`Badge`, `Button`, `FormField`, `Input`).
+4. **Resiliencia Extrema:** La ausencia de credenciales de Meta/WhatsApp o fallos de red en webhooks **jamás** deben abortar la ingesta ni el radicado cívico; conmutar con elegancia a despacho `simulado`.
 5. **Inviolabilidad de Producción:** Las 33 mesas territoriales, 36 agendas comunitarias y las 11 fichas técnicas de indicadores en `bd_csh` deben permanecer 100% intactas y operativas.
 6. **Protocolo Zero-Push:** Exclusivamente commits locales atómicos en `main`.
 
@@ -96,12 +77,13 @@ Para erradicar el silencio administrativo y construir confianza institucional en
 
 ## 🔬 4. Quality Gates de Aceptación
 
-1. **`bun run ui:check`**: 0 violaciones de accesibilidad, tokens o capas.
+1. **`bun run ui:check`**: 0 violaciones de tokens, capas o accesibilidad.
 2. **`bun run check`**: `tsc --noEmit` y `eslint .` limpios al 100%.
-3. **`bun test`**: Pruebas unitarias de frontend aprobadas.
-4. **`pytest`**: Suite de backend aprobada al 100%, incluyendo pruebas de radicación y notificaciones (`test_notificaciones.py`, `test_aportes.py`, `test_access_policy.py`).
+3. **`bun test`**: Suites de frontend aprobadas sin fallos.
+4. **`pytest`**: Suites de backend aprobadas al 100%, incluyendo la nueva suite `tests/test_canal_whatsapp.py` y `tests/test_access_policy.py`.
 5. **`bun run build`**: Compilación Turbopack en modo standalone sin errores (190+ rutas).
 6. **Hot-Verification en vivo**:
-   - Crear un aporte vía API o frontend y constatar la emisión de su código `POL-2026-XXXX`.
-   - Consultar `GET /api/v1/notificaciones/radicado/POL-2026-XXXX` y obtener respuesta HTTP 200 OK estructurada.
-   - Verificar persistencia en `participacion_ciudadana.notificaciones_transaccionales`.
+   - Verificación del webhook vía `GET /api/v1/canales/whatsapp/webhook?hub.mode=subscribe&hub.challenge=test1234&hub.verify_token=polis_cartagena_2026`.
+   - Envío de mensaje simulado vía `POST /api/v1/canales/whatsapp/simular` constatando la emisión del código `POL-2026-0002` (o subsiguiente) en `bd_csh`.
+   - Consulta pública de la propuesta creada vía `GET /api/v1/notificaciones/radicado/{codigo_radicado}`.
+   - Verificación de persistencia en `participacion_ciudadana.notificaciones_transaccionales`.
