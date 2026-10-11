@@ -105,6 +105,7 @@ La última columna explica la excepción pública o la condición adicional.
 | GET | /api/v1/geodatos/territorios/{id} | publico | Consulta pública de catálogos y resultados de política para transparencia. |
 | GET | /api/v1/health/live | publico | Comprobación de vida/disponibilidad; no publicar credenciales ni errores internos. |
 | GET | /api/v1/health/ready | publico | Comprobación de vida/disponibilidad; no publicar credenciales ni errores internos. |
+| GET | /api/v1/health/system | publico | Comprobación de vida/disponibilidad; no publicar credenciales ni errores internos. |
 | POST | /api/v1/ia/ciclo-politica | permiso:ia:analizar@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |
 | POST | /api/v1/ia/devolucion | permiso:ia:analizar@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |
 | POST | /api/v1/ia/diagnostico | permiso:ia:analizar@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |

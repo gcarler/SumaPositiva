@@ -8,12 +8,15 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api.router import api_router
 from app.core.config import Settings
 from app.core.database import Database
+from app.core.sentry import init_sentry
+from app.core.telemetry import global_telemetry
 
 logger = logging.getLogger("polis.http")
 
 
 def create_app(settings: Settings | None = None) -> FastAPI:
     settings = settings or Settings()
+    init_sentry(settings)
     log_level = settings.log_level
     if settings.environment == "production" and log_level == "DEBUG":
         log_level = "INFO"
@@ -86,6 +89,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     async def log_request(request: Request, call_next):
         started = perf_counter()
         response = await call_next(request)
+        duration_ms = (perf_counter() - started) * 1000
+        global_telemetry.record_request(response.status_code, duration_ms)
         # Log route templates, not query strings or citizen-supplied content.
         route = request.scope.get("route")
         logger.info(
@@ -93,7 +98,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             request.method,
             getattr(route, "path", "unmatched"),
             response.status_code,
-            (perf_counter() - started) * 1000,
+            duration_ms,
         )
         return response
 

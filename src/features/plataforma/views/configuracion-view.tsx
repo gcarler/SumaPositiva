@@ -33,6 +33,7 @@ import {
 } from "@/features/politicas/state/hero-store";
 import { useConfiguracionPlataformaStore } from "../state/configuracion-store";
 import { puedeEditar } from "../models/acceso";
+import { SaludSistemaSection } from "../components/salud-sistema-section";
 
 export function ConfiguracionView() {
   const sesion = useSesionStore((state) => state.sesion);
@@ -326,6 +327,8 @@ export function ConfiguracionView() {
             <p className="text-xs text-text-tertiary md:col-span-2">No se muestran ni editan secretos desde la interfaz. La configuración de OAuth se realiza en el entorno de despliegue.</p>
           </div>
         </section>
+
+        <SaludSistemaSection />
 
         <section className="flex flex-col gap-3 rounded-2xl border border-border bg-surface-1 p-5 sm:flex-row sm:items-center sm:justify-between xl:col-span-2">
           <div className="flex items-start gap-3"><Settings2 className="mt-0.5 size-5 text-ember" aria-hidden="true" /><div><h2 className="font-semibold">Participación y fases</h2><p className="mt-1 text-sm text-text-secondary">La recepción web y los cierres se configuran desde cada fase y formulario.</p></div></div>

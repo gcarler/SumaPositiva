@@ -7,6 +7,7 @@ import { PanelHost } from "@/app/_components/panel-host";
 import { SesionSync } from "@/app/_composition/sesion-sync";
 import { QueryProvider } from "@/app/_composition/query-provider";
 import { RegisterServiceWorker } from "@/shared/pwa/register-sw";
+import { ErrorBoundary } from "@/shared/monitoring";
 
 export const metadata: Metadata = {
   title: "POLIS — Política Pública de Seguridad Humana Integral de Cartagena",
@@ -57,7 +58,9 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <MotionConfig reducedMotion="user">
-            {children}
+              <ErrorBoundary>
+                {children}
+              </ErrorBoundary>
 
             {/* Zero-Modals: host global de paneles apilados */}
             <PanelHost />
