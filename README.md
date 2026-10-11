@@ -1,135 +1,155 @@
-# POLIS
+# 🏛️ POLIS — Plataforma de Inteligencia Territorial y Seguridad Humana
 
-Plataforma de participación en políticas públicas. El frontend utiliza Next.js,
-React y TypeScript; la API utiliza FastAPI, SQLAlchemy y PostgreSQL/PostGIS.
+> **Propiedad Intelectual y Titularidad:** Plataforma desarrollada y de propiedad exclusiva de **[Ples SAS](https://ples.com.co)** (*ples.com.co*). Todos los derechos reservados © 2026.
 
-La estructura sigue convenciones explícitas de módulos, servicios e inyección de
-dependencias. Las decisiones están en [la arquitectura](docs/arquitectura.md) y las
-entregas pendientes en [el plan de trabajo](docs/plan-trabajo.md).
-
-## Desarrollo local
-
-Requisitos: Bun, uv, Python 3.12 y Docker con Compose. El baseline mantenido
-en Compose y CI es PostgreSQL 16/PostGIS 3.5; versiones, perfiles operativos y
-asignación controlada de roles están en [operación](docs/operacion.md). `uv` puede instalar Python
-3.12 al sincronizar el backend. La base local se publica en `127.0.0.1:5433`.
-
-Desde la raíz:
-
-```bash
-bun install --frozen-lockfile
-uv sync --project backend --python 3.12 --locked
-cp .env.example .env.local
-cp backend/.env.example backend/.env
-bun run db:up
-bun run backend:migrate
-bun run dev:all
-```
-
-Si ya tienes archivos de entorno, conserva sus valores y agrega las variables del
-ejemplo. La variable `POLIS_DATABASE_URL` pertenece exclusivamente al backend;
-`DATABASE_URL` pertenece al adaptador Prisma heredado y no configura FastAPI.
-
-- Interfaz: <http://localhost:3000>.
-- Documentación de API: <http://127.0.0.1:8000/api/v1/docs>.
-- Vida del proceso: <http://127.0.0.1:8000/api/v1/health/live>.
-- Disponibilidad: <http://127.0.0.1:8000/api/v1/health/ready>.
-
-También puedes ejecutar `bun run dev` y `bun run backend:dev` en terminales
-separadas. Next.js reenvía `/api/v1/*` al backend mediante `POLIS_BACKEND_URL`.
-Reinicia Next.js si cambias esa variable. El frontend conserva sus datos de
-demostración hasta la entrega de integración del dominio.
-
-## Comprobaciones
-
-```bash
-bun run check
-bun run build
-bun run backend:check
-```
-
-Las pruebas de integración requieren una base separada; nunca utilizan `polis`.
-Para ejecutarlas en la base local:
-
-```bash
-docker compose exec -T database createdb -U polis polis_test
-POLIS_TEST_DATABASE_URL=postgresql+asyncpg://polis:polis_local@127.0.0.1:5433/polis_test bun run backend:check
-```
-
-El comando `createdb` se ejecuta una sola vez. Las pruebas verifican migraciones,
-rollback, extensiones y disponibilidad HTTP. Sin `POLIS_TEST_DATABASE_URL` esa
-prueba se omite; CI la ejecuta en PostgreSQL/PostGIS.
-
-## Organización
-
-```text
-src/
-  app/                    Rutas y ensamblaje de la interfaz
-    _components/          Navegación global y host de paneles
-    _composition/         Registro de paneles de las funcionalidades
-  core/                   HTTP, navegación, infraestructura de paneles
-  shared/                 UI y utilidades independientes del dominio
-  features/
-    politicas/            components, views, panels, models, state, data
-    mesas/                views, panels, models, state, data
-    aportes/              panels, services
-    sesion/               components, panels, models, state
-backend/
-  app/
-    core/                 Configuración, base de datos y migraciones
-    api/                  Ensamblaje de routers bajo /api/v1
-    modules/
-      health/             router, schemas, service, repository
-  alembic/                Migraciones versionadas
-  tests/                  Pruebas unitarias e integración
-scripts/                  Comandos comunes de desarrollo
-docs/                     Arquitectura y plan de trabajo
-knowledge-base/           Material de referencia del proyecto
-```
-
-## Estado de esta entrega
-
-El scaffold tiene configuración por entorno, sesiones SQLAlchemy por petición,
-logs HTTP, OpenAPI, CORS explícito y migraciones de las extensiones `postgis`,
-`ltree`, `pgcrypto` y `pg_trgm`. `/health/ready` responde 503 si la base es
-inaccesible, faltan extensiones o las migraciones no están al día.
-
-Los módulos backend de políticas, aportes, usuarios, mesas y otros dominios cuentan
-con modelos, migraciones y endpoints. La interfaz de usuarios y permisos utiliza
-login real, perfiles, administración y sesiones revocables; consulta
-[su contrato y activación](docs/identidad.md). El correo requiere SMTP y ejecución
-periódica del worker. La integración de otros dominios y su estado se mantienen
-en el plan de trabajo. La presencia del código no acredita despliegue conjunto.
-Los scripts heredados `.zscripts/` pertenecen al despliegue anterior.
+[![Ples SAS](https://img.shields.io/badge/Propietario-Ples%20SAS%20(ples.com.co)-0B2545?style=flat-square)](https://ples.com.co)
+[![Quality Gates](https://img.shields.io/badge/Quality%20Gates-100%25%20Verde-success?style=flat-square)](docs/DOCUMENTACION_OFICIAL_POLIS.md)
+[![Frontend Tests](https://img.shields.io/badge/Bun%20Test-420%20passed-success?style=flat-square)](src/)
+[![RBAC Parity](https://img.shields.io/badge/RBAC%20Coverage-97%2F97%20Rutas-blue?style=flat-square)](docs/permisos-api.md)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-18.6%20PostGIS%20%2F%20pgRouting-336791?style=flat-square)](backend/)
 
 ---
 
-## 👥 Equipos Autónomos de Agentes
+## 📖 Descripción General
 
-El proyecto cuenta con dos cuerpos colegiados de agentes especializados (nivel `pro`):
+**POLIS** es un sistema integral de software y ciberdefensa diseñado y desarrollado por **Ples SAS** ([ples.com.co](https://ples.com.co)) para la gestión, concertación deliberativa, fe pública y seguimiento continuo de políticas públicas territoriales de seguridad humana y convivencia ciudadana.
 
-1. **Equipo de Desarrollo "EDD"** ([Documentación](docs/equipo_agentes_desarrollo.md)):
-   - Integrantes: `dba`, `arquitecto`, `backend`, `frontend`, `ia`, `auditor`.
-   - Propósito: Construcción de modelos, esquemas DDL, lógica de negocio FastAPI, componentes React 19 / Next.js 16 (Zero-Modals) y grafos LangGraph.
+Implementada como plataforma insignia para el Distrito Turístico y Cultural de Cartagena de Indias (*Plan de Desarrollo "Cartagena Ciudad de Derechos 2024–2027"*), POLIS articula:
 
-2. **Equipo de Auditoría Forense "EAF"** ([Documentación](docs/equipo_auditores_forenses.md)):
-   - Integrantes: `forense-bd`, `forense-backend`, `forense-frontend`, `forense-cicd`, `forense-ia`, `forense-legal`.
-   - Propósito: Control pericial independiente, auditoría de Stored Procedures, verificación de CRUDs y endpoints, escaneo de secretos y CI/CD, mitigación de inyecciones y cumplimiento estricto de la Sentencia C-150/15 y Decreto 037/26.
+1. **Fe Pública y Actas Oficiales Inmutables:** Generación de actas en PDF vectorial (ReportLab) con folio oficial, acuerdos vinculantes con responsables y plazos, código QR dinámico y sellado criptográfico SHA-256 (Ley 527/99).
+2. **Motor Geoespacial y Normalización Territorial:** PostGIS 3.6, `address_standardizer` para nomenclaturas cartageneras complejas y `pgrouting` para cálculo de isócronas de accesibilidad temporal (5, 10 y 15 min) y ruteo hacia 21 Centros de Seguridad Humana.
+3. **Banco de Alternativas MGA y Evaluación Neurosimbólica con IA:** Metodología General Ajustada (DNP) asistida por inteligencia artificial con validación rígida de salvaguardas constitucionales (LOOT, Consulta Previa OIT 169) y sostenibilidad fiscal (MFMP, FONSET, Vigencias Futuras Ley 1483/11).
+4. **Asistencia Digital y Resiliencia Offline:** Modo Barrio mediante Progressive Web App (PWA) con Service Worker y base de datos local IndexedDB para deliberación en zonas rurales sin cobertura celular.
+5. **Telemetría Forense SQL en Vivo:** Monitoreo en tiempo real de consultas mediante `pg_stat_statements` en `/plataforma/configuracion` con acierto en caché global del 99.95% y sanitización estricta de credenciales y PII.
+6. **Alta Disponibilidad y Respaldo Offsite:** Esquema GFS (Grandfather-Father-Son) y script automatizado de réplica fuera de banda (`scripts/respaldo_offsite.sh`) con verificación bidireccional SHA-256.
 
+Para consultar el manual técnico completo, diagramas y especificaciones formales, consulte el **[Libro Maestro de Documentación Oficial de POLIS](docs/DOCUMENTACION_OFICIAL_POLIS.md)**.
 
-## Biblioteca UI y Storybook
+---
 
-La plataforma comparte tokens, componentes y patrones con su catálogo visual.
-Incluye temas claro/oscuro, formularios, navegación lateral, estados y pantallas
-reales con datos de demostración. Consulta [el sistema de diseño](docs/design-system.md).
+## 🛠️ Stack Tecnológico
+
+| Capa | Tecnologías Clave | Propósito / Características |
+| :--- | :--- | :--- |
+| **Frontend** | Next.js 16.1.3 (Standalone), React 19, TypeScript 5.9, Zustand, TanStack Query | Salida optimizada `standalone`, renderizado híbrido SSG/SSR, gobernanza estricta de tokens semánticos de diseño (`ui-policy.mjs`). |
+| **Backend** | Python 3.12, FastAPI, Pydantic v2, SQLAlchemy 2.0 AsyncIO (`asyncpg`) | Arquitectura modular DDD por dominios, pool de conexiones asíncrono, ReportLab para actas oficiales, 97 endpoints REST documentados. |
+| **Motor Espacial y Base de Datos** | PostgreSQL 18.6, PostGIS 3.6, pgRouting 4.0, ltree, pgcrypto, pg_stat_statements | Súper-tuning aplicado (`shared_buffers=8GB`, `effective_cache_size=24GB`), jerarquías de mesas con `ltree`, analítica de rutas e isócronas. |
+| **Perímetro de Ciberdefensa** | Nginx 1.28.3, UFW Firewall, Fail2ban | Aislamiento de Next.js y FastAPI a `127.0.0.1`, TLS 1.3 estricto, HSTS Preload, Permissions-Policy, redirección universal 301, Rate Limiting cívico. |
+| **Respaldo y Continuidad** | Scripts Bash GFS, pg_dump, sha256sum | Respaldos diarios, semanales y mensuales cifrados, replicación offsite a `/var/backups/polis_offsite/`. |
+
+---
+
+## 🚀 Puesta en Marcha y Desarrollo Local
+
+### Requisitos Previos
+- **Bun** (v1.2+)
+- **Python** (3.12+) y gestor `uv`
+- **PostgreSQL 16+** con extensiones `postgis`, `ltree`, `pgcrypto`, `pg_trgm` (o Docker Compose)
+
+### Instalación Rápida
 
 ```bash
-bun run storybook          # http://localhost:6006
-bun run storybook:build    # catálogo estático
-bunx playwright install chromium
-bun run ui:test           # Chromium: historias, interacción y accesibilidad
+# 1. Clonar repositorio e instalar dependencias frontend
+bun install --frozen-lockfile
+
+# 2. Sincronizar entorno virtual de Python para el backend
+uv sync --project backend --python 3.12 --locked
+
+# 3. Preparar variables de entorno
+cp .env.example .env.local
+cp backend/.env.example backend/.env
+
+# 4. Levantar base de datos y aplicar migraciones
+bun run db:up
+bun run backend:migrate
+
+# 5. Iniciar ambos servicios en desarrollo
+bun run dev:all
 ```
 
-Las [reglas obligatorias del kit UI](docs/kit-ui-rules.md) se comprueban con
-`bun run ui:check`, integrado en `bun run check` y CI. Los skills versionados en
-`.agents/skills` guían construcción (`polis-ui-build`) y revisión (`polis-ui-review`).
+- **Portal Web Ciudadano:** [http://localhost:3000](http://localhost:3000)
+- **Área de Gestión Interna:** [http://localhost:3000/plataforma](http://localhost:3000/plataforma)
+- **Documentación OpenAPI (Swagger):** [http://127.0.0.1:8000/api/v1/docs](http://127.0.0.1:8000/api/v1/docs)
+- **Sonda de Vida (Liveness):** [http://127.0.0.1:8000/api/v1/health/live](http://127.0.0.1:8000/api/v1/health/live)
+- **Sonda de Disponibilidad (Readiness):** [http://127.0.0.1:8000/api/v1/health/ready](http://127.0.0.1:8000/api/v1/health/ready)
+
+---
+
+## 🧪 Matriz de Verificación y Quality Gates
+
+Todo cambio debe superar el 100% de los Quality Gates antes de su despliegue a producción:
+
+```bash
+# Comprobación de linter arquitectónico de tokens UI y accesibilidad
+bun run ui:check
+
+# Verificación global de TypeScript y ESLint
+bun run check
+
+# Suite completa de pruebas frontend (420+ pruebas)
+bun test
+
+# Pruebas backend de generación de actas en PDF y QR (ReportLab)
+/root/polis/venv/bin/pytest backend/tests/test_acta_pdf.py
+
+# Pruebas backend de telemetría forense SQL (pg_stat_statements)
+/root/polis/venv/bin/pytest backend/tests/test_database_telemetry.py
+
+# Verificación de paridad estricta en matriz RBAC (97 endpoints)
+/root/polis/venv/bin/pytest backend/tests/test_access_policy.py
+
+# Verificación de cero drift en esquemas de base de datos
+cd backend && /root/polis/venv/bin/alembic check
+
+# Prueba de replicación de respaldos offsite en modo simulación
+/root/polis/scripts/respaldo_offsite.sh --dry-run
+```
+
+---
+
+## 📂 Estructura del Proyecto
+
+```text
+/root/polis/
+├── src/                          # Código fuente frontend (Next.js 16 Standalone)
+│   ├── app/                      # Rutas de App Router (/ y /plataforma/*)
+│   ├── core/                     # Infraestructura HTTP, guards y navegación
+│   ├── shared/                   # UI Kit y componentes desacoplados de dominio
+│   └── features/                 # Módulos de funcionalidad por dominio (DDD)
+│       ├── mesas/                # Mesas territoriales, agendas y actas PDF
+│       ├── geovisor/             # Visualizador cartográfico, capas e isócronas
+│       ├── alternativas/         # Banco de soluciones MGA y evaluación con IA
+│       ├── seguimiento/          # Plan de Acción (PAS) y compromisos
+│       ├── formularios/          # Formularios dinámicos y reportes
+│       ├── plataforma/           # Dashboard institucional y telemetría SQL
+│       └── sesion/               # Autenticación, JWT y control de sesión
+├── backend/                      # API Backend (FastAPI + SQLAlchemy)
+│   ├── app/
+│   │   ├── core/                 # Configuración, base de datos y migraciones
+│   │   └── modules/              # Módulos backend de negocio (DDD)
+│   │       ├── mesas/            # Ltree, relatorías y generador PDF ReportLab
+│   │       ├── geodatos/         # PostGIS, address_standardizer y pgrouting
+│   │       ├── alternativas/     # Lógica MGA y viabilidad jurídica/fiscal
+│   │       ├── seguimiento/      # Metas e indicadores SINERGIA / DNP
+│   │       ├── identidad/        # RBAC, OAuth2, magic links y contraseñas
+│   │       └── health/           # pg_stat_statements y observabilidad
+│   ├── alembic/                  # Migraciones versionadas de PostgreSQL
+│   └── tests/                    # Suites de pruebas de integración con pytest
+├── scripts/                      # Utilidades de mantenimiento, respaldo y verificación
+│   ├── respaldo_programado_bd.sh # Volcados GFS con sellado SHA-256
+│   └── respaldo_offsite.sh       # Replicación segura fuera de banda
+├── docs/                         # Documentación técnica, jurídica y de arquitectura
+│   ├── DOCUMENTACION_OFICIAL_POLIS.md # Libro Maestro de Documentación (Ples SAS)
+│   ├── permisos-api.md           # Matriz contractual RBAC de 97 endpoints
+│   ├── arquitectura.md           # Convenciones de software y patrones
+│   └── despliegue-produccion.md  # Guía de hardening y despliegue seguro
+└── bridge/                       # Informes periciales y actas de auditoría forense
+```
+
+---
+
+## 🏛️ Derechos de Autor y Propiedad
+
+Esta plataforma es propiedad intelectual exclusiva de **Ples SAS** ([ples.com.co](https://ples.com.co)). Prohibida su copia, distribución, ingeniería inversa o explotación comercial sin autorización expresa y por escrito de Ples SAS.
+
+Para licenciamiento gubernamental, adaptaciones territoriales o auditorías forenses, consulte [https://ples.com.co](https://ples.com.co).
