@@ -2662,3 +2662,66 @@ La tarea **`[GEO-PROC-01]`** queda formalmente **CERRADA, APROBADA AL 100% Y CER
 
 Se autoriza el avance a la siguiente tarea de la **FASE 2**:
 - **Siguiente Tarea:** **`[GEO-PROC-02]`** (*Isócronas de Accesibilidad y Ruteo de Protección Ciudadana con pgrouting: Cálculo espacial de cobertura a pie y vehículo hacia CAI, comisarías y centros asistenciales en el Geovisor*).
+
+---
+
+## 🏛️ DICTAMEN PERICIAL FORENSE EAF — TAREA [GEO-PROC-02]
+### ISÓCRONAS DE ACCESIBILIDAD Y RUTEO DE PROTECCIÓN CIUDADANA (PGROUTING)
+**Fecha de Emisión:** Domingo, 11 de Octubre de 2026  
+**Evaluador:** Coordinador General y Auditor Forense EAF `agy` (`tmux a -t agy`)  
+**Responsable Técnico Auditado:** Desarrollador / EDD `agy2` (`tmux a -t agy2`)  
+**Commit Evaluado:** `7fde662` (`feat(geo): isocronas de accesibilidad y ruteo de seguridad humana GEO-PROC-02`)  
+**Referencia Técnica:** `bridge/01_tarea_activa.md` y `bridge/02_resultado_agy2.md`  
+**Plan Maestro:** `bridge/00_plan_maestro_blindaje_geoprocesamiento_resiliencia.md` (Fase 2: Tarea 2.2 — Cierre de Fase 2)  
+**Veredicto Oficial:** **CONFORME Y APROBADO AL 100% SIN OBSERVACIONES (APROBACIÓN TOTAL Y CIERRE DE FASE 2)**
+
+---
+
+### 1. Hallazgos de la Contra-Auditoría Técnica Independiente
+
+1. **Motor Geoespacial y Modelos de Isócronas**:
+   - Se verificó en caliente la ejecución del endpoint `GET /api/v1/geodatos/isocronas` mediante dos pruebas periciales:
+     * **Modo A Pie en Olaya Herrera (`lat: 10.4141, lon: -75.4922, minutos: 5,10,15`)**:
+       Retorno de `FeatureCollection` con 3 geometrías poligonales (`Polygon`), radios de 375m, 750m y 1125m y resolución determinista del nodo cercano `"CAP Olaya Herrera"` a 102.4m.
+     * **Modo En Vehículo en El Pozón vía Nginx SSL (`lat: 10.4120, lon: -75.4610, minutos: 5`)**:
+       Retorno de polígono con radio escalado de 2083.3m y nodo más cercano `"CAI El Pozón"` a 0.0m.
+   - Robustez de la capa de persistencia: `verificar_pgrouting()` valida versión 4.0.1 blindado por savepoints transaccionales sin contaminar el pool de conexiones de SQLAlchemy.
+   - Salvaguarda perimetral distrital: el cuadrante de Cartagena (`lat: [9.8, 11.2], lon: [-76.2, -74.8]`) rechaza consultas fuera de rango geográfico con HTTP 400 Bad Request.
+
+2. **Integración en el Geovisor Distrital (Frontend)**:
+   - Capa y control de Isócronas plenamente articulados en `src/features/geovisor/components/geovisor-controles.tsx` y `geovisor-view.tsx`.
+   - Cliente API `src/features/geovisor/services/geovisor-api.ts` con manejo seguro ante desconexión o fallo de red.
+   - Suite de pruebas frontend `geovisor-api.test.ts`: **9/9 pruebas pasadas** (0 fallos).
+
+3. **Inviolabilidad de Producción (`bd_csh`) y Calidad Arquitectónica**:
+   - Censo distrital inalterado: 33 mesas de diálogo territorial, 36 agendas estratégicas, 11 fichas técnicas y 17 actores estratégicos 100% intactos.
+   - `alembic check`: *No new upgrade operations detected* (0 drift).
+   - `bun run ui:check`: 0 infracciones en diseño, tokens y componentes.
+   - `bun run check`: 0 errores TypeScript, 0 advertencias ESLint.
+
+---
+
+### 2. Certificación Independiente de Quality Gates
+
+| Verificación | Comando / Prueba | Resultado Obtenido | Estado |
+| :--- | :--- | :--- | :--- |
+| **Suite Isócronas Backend** | `pytest backend/tests/test_geodatos_isocronas.py` | **7 pasadas** en 4.72s (0 fallos) | ✅ APROBADO |
+| **Paridad RBAC de Seguridad** | `pytest backend/tests/test_access_policy.py` | **97 pasadas** en 17.05s (0 fallos) | ✅ APROBADO |
+| **Pruebas Geovisor Frontend** | `bun test src/features/geovisor/services/geovisor-api.test.ts` | **9 pasadas** en 107ms (0 fallos) | ✅ APROBADO |
+| **UI Architectural Linter** | `bun run ui:check` | `POLIS UI: controles, tokens, capas... correctos` | ✅ APROBADO |
+| **TypeCheck & Linter** | `bun run check` (`tsc --noEmit && eslint .`) | **0 errores TypeScript, 0 warnings ESLint** | ✅ APROBADO |
+| **Alembic Schema Drift** | `cd backend && alembic check` | `No new upgrade operations detected.` | ✅ APROBADO |
+| **Frontend Test Suite** | `bun test` | **417 pruebas pasadas** en 43 archivos | ✅ APROBADO |
+| **Servicios Systemd** | `systemctl is-active polis-backend polis-frontend nginx postgresql@18-main` | **4/4 activos (running)** | ✅ APROBADO |
+
+---
+
+### 3. Dictamen Final y Declaración de Cierre de la FASE 2
+
+La tarea **`[GEO-PROC-02]`** queda formalmente **CERRADA, APROBADA AL 100% Y CERTIFICADA PARA PRODUCCIÓN**.
+
+Con este dictamen se declara formalmente **APROBADA Y CERRADA LA FASE 2: Explotación Activa de Geoprocesamiento y Normalización Territorial** del Plan Maestro.
+
+Se autoriza formalmente la apertura de la **FASE 3: Observabilidad Forense SQL, Fe Pública en PDF y Resiliencia Offsite**:
+- **Siguiente Tarea Inmediata:** **`[OPS-FORENSIC-01]`** (*Telemetría y Observabilidad Forense SQL en Tiempo Real con `pg_stat_statements`: Endpoint administrativo `/api/v1/health/database/queries` y visualización de Top 10 consultas lentas y rendimiento en `/plataforma/configuracion`*).
+

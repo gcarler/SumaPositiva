@@ -25,17 +25,17 @@ Este Plan Maestro tiene por objeto ejecutar, de manera secuencial, modular y aud
 
 ```
 PLAN MAESTRO (3 Fases / 6 Tareas Atómicas)
-├── FASE 1: Blindaje Perimetral, Seguridad de Red y Hardening de Servidor
-│   ├── [SEC-HARDEN-01] Hardening de Puertos, Aislamiento Next.js a Localhost y Firewall UFW
-│   └── [SEC-HARDEN-02] Endurecimiento Nginx: Rate Limiting, Redirección 301 Universal y Cabeceras
+├── FASE 1: Blindaje Perimetral, Seguridad de Red y Hardening de Servidor [100% CULMINADA Y CERTIFICADA]
+│   ├── [SEC-HARDEN-01] Hardening de Puertos, Aislamiento Next.js y UFW [APROBADA - Commit 18a4293]
+│   └── [SEC-HARDEN-02] Endurecimiento Nginx: Rate Limiting y Redirección 301 [APROBADA - Commit 6ca999e]
 │
-├── FASE 2: Explotación Activa de Geoprocesamiento y Normalización Territorial
-│   ├── [GEO-PROC-01] Normalizador Inteligente de Direcciones Cartageneras (address_standardizer)
-│   └── [GEO-PROC-02] Isócronas de Accesibilidad y Ruteo de Protección Ciudadana (pgrouting)
+├── FASE 2: Explotación Activa de Geoprocesamiento y Normalización Territorial [100% CULMINADA Y CERTIFICADA]
+│   ├── [GEO-PROC-01] Normalizador Inteligente de Direcciones (address_standardizer) [APROBADA - Commit 5afd960]
+│   └── [GEO-PROC-02] Isócronas de Accesibilidad y Ruteo (pgrouting) [APROBADA - Commit 7fde662]
 │
-└── FASE 3: Observabilidad Forense SQL, Fe Pública en PDF y Resiliencia Offsite
-    ├── [OPS-FORENSIC-01] Panel de Telemetría SQL en Vivo (pg_stat_statements) en /plataforma/configuracion
-    └── [FE-PUBLICA-01] Generación de Actas Formales en PDF con QR y Replicación Externa de Respaldos
+└── FASE 3: Observabilidad Forense SQL, Fe Pública en PDF y Resiliencia Offsite [EN EJECUCIÓN]
+    ├── [OPS-FORENSIC-01] Panel de Telemetría SQL en Vivo (pg_stat_statements) [EN PROCESO / ASIGNACIÓN]
+    └── [FE-PUBLICA-01] Generación de Actas Formales en PDF con QR y Respaldo Offsite [PENDIENTE]
 ```
 
 ---
