@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Landmark } from "lucide-react";
 
 /**
@@ -24,6 +25,12 @@ export function Footer() {
         </div>
 
         <nav className="flex flex-wrap items-center gap-x-5 gap-y-2" aria-label="Enlaces de pie de página">
+          <Link
+            href="/barrio"
+            className="label-micro text-[var(--ember)] font-semibold transition-colors hover:underline"
+          >
+            Modo Barrio (Bajo consumo)
+          </Link>
           {["Datos abiertos", "Trazabilidad", "Marco legal", "Contacto"].map((l) => (
             <a
               key={l}

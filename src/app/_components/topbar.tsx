@@ -6,7 +6,7 @@ import { Button } from "@/shared/ui/button";
 
 import { useSyncExternalStore } from "react";
 import { useTheme } from "next-themes";
-import { Moon, Sun, Landmark, UserRound, BarChart3 } from "lucide-react";
+import { Moon, Sun, Landmark, UserRound, BarChart3, Smartphone } from "lucide-react";
 import { useNavigationStore } from "@/core/navigation/navigation-store";
 import type { VistaApp } from "@/core/navigation/navigation-store";
 import { usePanels } from "@/core/panels/panel-store";
@@ -170,6 +170,19 @@ export function Topbar() {
 
         {/* Acciones */}
         <div className="flex flex-wrap items-center justify-end gap-2">
+          <Button
+            asChild
+            variant="outline"
+            size="sm"
+            className="gap-1.5 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] border-[var(--border)]"
+            title="Modo Barrio: vista ultraligera y bajo consumo de datos para celulares"
+          >
+            <Link href="/barrio">
+              <Smartphone className="size-3.5 text-[var(--ember)]" />
+              <span className="hidden sm:inline">Modo Barrio</span>
+            </Link>
+          </Button>
+
           <Button
             variant="outline"
             size="sm"

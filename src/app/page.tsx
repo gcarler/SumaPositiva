@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import Link from "next/link";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Topbar } from "@/app/_components/topbar";
 import { Footer } from "@/shared/layout/footer";
@@ -38,6 +39,17 @@ export default function Home() {
           Saltar al contenido
         </a>
         <Topbar />
+
+        {/* Banner cívico móvil: Modo Barrio */}
+        <div className="md:hidden border-b border-[var(--border)] bg-[var(--surface-2)] px-4 py-2 text-center text-xs text-[var(--text-secondary)]">
+          ¿En tu celular con datos prepago?{" "}
+          <Link
+            href="/barrio"
+            className="font-semibold text-[var(--ember)] underline underline-offset-2"
+          >
+            Activar Modo Barrio (Bajo consumo)
+          </Link>
+        </div>
 
         <main id="main-content" tabIndex={-1} className="flex-1">
           <AnimatePresence mode="wait">
