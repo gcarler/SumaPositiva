@@ -309,7 +309,7 @@ async function main() {
     // 2. Conmutar fase y verificar persistencia tras recarga
     console.log("\nEjecutando Flujo 2: Conmutar Fase...");
     await pageAutoridad.goto(`${BASE_URL}/plataforma/contenido`, { waitUntil: "domcontentloaded" });
-    const botonConfigFases = pageAutoridad.locator('button:has-text("Control de Fases DNP")').first();
+    const botonConfigFases = pageAutoridad.locator('button:has-text("Control de Fases de Política")').first();
     await botonConfigFases.waitFor({ state: "visible", timeout: 8000 });
     await botonConfigFases.click();
 
@@ -326,7 +326,7 @@ async function main() {
     // Recargar página y verificar persistencia en PostgreSQL
     console.log("Recargando página para verificar persistencia de fase en PostgreSQL...");
     await pageAutoridad.reload({ waitUntil: "domcontentloaded" });
-    await pageAutoridad.locator('button:has-text("Control de Fases DNP")').first().click();
+    await pageAutoridad.locator('button:has-text("Control de Fases de Política")').first().click();
     await pageAutoridad.waitForSelector('[data-slot="side-panel"]', { timeout: 8000 });
 
     const switchRecargado = pageAutoridad.locator('[data-slot="side-panel"] [role="switch"]').first();
@@ -470,16 +470,16 @@ async function main() {
     registrarPaso("5. Editar compromiso", `Avance persistió en ${nuevoAvanceCompromiso} y observación registrada`);
 
     // 6. Registrar medición de indicador y verificar persistencia tras recarga
-    console.log("\nEjecutando Flujo 6: Registrar Medición de Indicador DNP...");
+    console.log("\nEjecutando Flujo 6: Registrar Medición de Indicador...");
     await pageAutoridad.goto(`${BASE_URL}/plataforma/seguimiento`, { waitUntil: "domcontentloaded" });
     const tabCadenaValor = pageAutoridad.locator('[role="tab"]:has-text("Cadena de Valor")').first();
     await tabCadenaValor.waitFor({ state: "visible", timeout: 8000 });
     await tabCadenaValor.click();
     await pageAutoridad.waitForTimeout(500);
 
-    const botonFichaDNP = pageAutoridad.locator('button:has-text("Ver Ficha Técnica DNP")').first();
-    await botonFichaDNP.waitFor({ state: "visible", timeout: 8000 });
-    await botonFichaDNP.click();
+    const botonFichaIndicador = pageAutoridad.locator('button:has-text("Ver Ficha Técnica de Indicador")').first();
+    await botonFichaIndicador.waitFor({ state: "visible", timeout: 8000 });
+    await botonFichaIndicador.click();
 
     const panelIndicador = pageAutoridad.locator('[data-slot="side-panel"]').first();
     await panelIndicador.waitFor({ state: "visible", timeout: 8000 });
@@ -498,7 +498,7 @@ async function main() {
     await pageAutoridad.reload({ waitUntil: "domcontentloaded" });
     await pageAutoridad.locator('[role="tab"]:has-text("Cadena de Valor")').first().click();
     await pageAutoridad.waitForTimeout(500);
-    await pageAutoridad.locator('button:has-text("Ver Ficha Técnica DNP")').first().click();
+    await pageAutoridad.locator('button:has-text("Ver Ficha Técnica de Indicador")').first().click();
     await pageAutoridad.waitForSelector('[data-slot="side-panel"]', { timeout: 8000 });
 
     const inputMedicionRecargado = pageAutoridad.locator('[data-slot="side-panel"] input[type="number"]').first();
@@ -590,7 +590,7 @@ async function main() {
     // Indicador en modo solo lectura
     await pageAuditor.locator('[role="tab"]:has-text("Cadena de Valor")').first().click();
     await pageAuditor.waitForTimeout(500);
-    await pageAuditor.locator('button:has-text("Ver Ficha Técnica DNP")').first().click();
+    await pageAuditor.locator('button:has-text("Ver Ficha Técnica de Indicador")').first().click();
     await pageAuditor.waitForSelector('[data-slot="side-panel"]', { timeout: 8000 });
     const bannerSupervisorIndicador = pageAuditor.locator('text=Modo de Inspección Pericial — Solo Lectura');
     await bannerSupervisorIndicador.waitFor({ state: "visible", timeout: 8000 });
@@ -617,7 +617,7 @@ async function main() {
 
     // 8.3 Verificaciones en Contenido
     await pageAuditor.goto(`${BASE_URL}/plataforma/contenido`, { waitUntil: "domcontentloaded" });
-    assert.equal(await pageAuditor.locator('button:has-text("Control de Fases DNP")').count(), 0, "El auditor forense no debe tener botón de control de fases");
+    assert.equal(await pageAuditor.locator('button:has-text("Control de Fases de Política")').count(), 0, "El auditor forense no debe tener botón de control de fases");
 
     registrarPaso("8. Modo solo lectura del auditor", "Validado en Seguimiento (3 paneles), Mesas y Configuración");
 
@@ -654,7 +654,7 @@ async function main() {
     // 9.5 Seguimiento (Pestaña 2 · Cadena de Valor)
     await pageA11y.locator('[role="tab"]:has-text("Cadena de Valor")').first().click();
     await pageA11y.waitForTimeout(500);
-    await auditarA11y(pageA11y, "Seguimiento - Tab 2 · Cadena de Valor DNP");
+    await auditarA11y(pageA11y, "Seguimiento - Tab 2 · Cadena de Valor y Seguimiento");
 
     // 9.6 Seguimiento (Pestaña 3 · Rendición de Cuentas)
     await pageA11y.locator('[role="tab"]:has-text("Rendición de Cuentas")').first().click();
