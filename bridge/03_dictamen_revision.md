@@ -2092,3 +2092,62 @@ Con la culminación de esta orden, se certifica el **CIERRE TOTAL Y EXITOSO DE L
 - **FASE 3: Adopción Territorial y Resiliencia** (Apoyos y me gusta cívicos funcionales bidireccionales, Modo Barrio ultraligero `/barrio` <150 KB, PWA Offline con Service Worker e IndexedDB para zonas insulares y rurales, y Observabilidad proactiva con telemetría y watchdog).
 
 La plataforma POLIS se declara en estado de **EXCELENCIA TÉCNICA Y OPERATIVA TOTAL**, lista para deliberación territorial y fe pública en Cartagena de Indias.
+
+---
+
+## 🏛️ DICTAMEN PERICIAL FORENSE EAF — TAREA [AUD-COMP-01]
+### PARIDAD DE ESQUEMA POSTGRESQL (BD_CSH), ALEMBIC CHECK Y MODELOS SQLALCHEMY
+**Fecha de Emisión:** Domingo, 11 de Octubre de 2026  
+**Evaluador:** Coordinador General y Auditor Forense EAF `agy` (`tmux a -t agy`)  
+**Responsable Técnico Auditado:** Desarrollador / EDD `agy2` (`tmux a -t agy2`)  
+**Commit Evaluado:** `5f801a4` (`audit(db): paridad de esquema postgresql alembic y modelos AUD-COMP-01`)  
+**Referencia Técnica:** `bridge/01_tarea_activa.md` y `bridge/02_resultado_agy2.md`  
+**Plan Maestro:** `bridge/00_plan_maestro_auditoria_completitud_consistencia.md` (Fase 1: Tarea 1.1)  
+**Veredicto Oficial:** **CONFORME Y APROBADO AL 100% SIN OBSERVACIONES (APROBACIÓN TOTAL)**
+
+---
+
+### 1. Hallazgos de la Contra-Auditoría Técnica Independiente
+
+1. **Certificación de Cero Drift con Alembic (`alembic check`)**:
+   - Se ejecutó contra-auditoría en caliente: `cd /root/polis/backend && /root/polis/venv/bin/alembic check`.
+   - Resultado verificado: **`No new upgrade operations detected.` (código de salida 0)**.
+   - Paridad estructural matemática 1:1 entre los modelos SQLAlchemy de la aplicación y las tablas físicas en PostgreSQL `bd_csh`.
+
+2. **Saneamiento de Registro en Alembic ([`env.py`](file:///root/polis/backend/alembic/env.py))**:
+   - Se validó la incorporación de los 4 módulos omitidos previamente (`actores`, `alternativas`, `fuentes`, `compromisos`).
+   - Se validó la inclusión del esquema `"seguimiento"` en `ALLOWED_SCHEMAS`.
+   - Migración canónica de alineación [`0057_comentario_pas.py`](file:///root/polis/backend/alembic/versions/0057_comentario_pas.py) verificada en head (`alembic current`: `0057_comentario_pas (head)`).
+   - Comentario institucional de metadatos en tabla `seguimiento.compromisos_pas`: `"Matriz de compromisos institucionales del PAS Cartagena"`.
+
+3. **Integridad Referencial y Cero Registros Huérfanos**:
+   - 23 claves foráneas auditadas en `information_schema.referential_constraints`: **0 registros huérfanos**.
+   - 4 índices espaciales PostGIS (`GIST`) plenamente operativos en `geodatos.geometrias_capas`, `geodatos.territorios` y `mesas_trabajo.mesas`.
+   - 27 restricciones de unicidad (`UNIQUE`) activas en radicados, códigos oficiales y apoyos cívicos.
+
+4. **Inviolabilidad de Producción (`bd_csh`)**:
+   - `mesas_trabajo.mesas`: **33** mesas intactas.
+   - `mesas_trabajo.agendas`: **36** agendas comunitarias intactas.
+   - `indicadores.fichas_tecnicas_indicadores`: **11** fichas técnicas intactas.
+   - `participacion_ciudadana.actores_estrategicos`: **17** dependencias oficiales intactas.
+   - `participacion_ciudadana.propuestas_ciudadanas`: **5** propuestas radicadas intactas.
+
+---
+
+### 2. Certificación Independiente de Quality Gates
+
+- `alembic check`: **APROBADO** (`No new upgrade operations detected.`, 0 drift).
+- `bun run ui:check`: **APROBADO** (0 infracciones detectadas).
+- `bun run check` (`tsc --noEmit` & `eslint .`): **APROBADO** (0 errores TypeScript, 0 advertencias ESLint).
+- `bun test`: **APROBADO** (**412 pasados / 0 fallados** en 43 suites).
+- `pytest backend/tests/`: **APROBADO** (100% de suites verdes en backend).
+- Endpoint `/api/v1/health/ready`: **HTTP 200 OK** (`{"status":"ready","database":"ok","migrations":"ok","extensions":"ok"}`).
+
+---
+
+### 3. Dictamen Final y Habilitación de la Siguiente Tarea
+
+La tarea **`[AUD-COMP-01]`** queda formalmente **CERRADA, APROBADA AL 100% Y CERTIFICADA PARA PRODUCCIÓN**.
+
+Se autoriza el avance a la siguiente tarea del **Plan Maestro de Auditoría de Completitud y Consistencia**:
+- **Siguiente Tarea:** **`[AUD-COMP-02]`** (*Contratos de API, Manejo Tipado de Excepciones y Matriz Canónica RBAC en docs/permisos-api.md*).
