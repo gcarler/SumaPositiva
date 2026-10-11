@@ -1,98 +1,112 @@
-# INFORME PERICIAL DE AUDITORÍA TÉCNICA — TAREA [AUD-COMP-05]
-## CONSISTENCIA NORMATIVA, SALVAGUARDAS INSTITUCIONALES Y REGLAS DE DISEÑO UI-POLICY
-### INSPECCIÓN DE PRESERVACIÓN BPIN, SANEAMIENTO LEGAL (DECRETO 037 / OBS-11), CERO ACRÓNIMOS AJENOS EN MODOS TERRITORIALES, HABEAS DATA (LEY 1581), REGLA DE CAPAS UI004 Y A11Y WCAG 2.1 AA
+# INFORME PERICIAL DE AUDITORÍA TÉCNICA — TAREA [AUD-COMP-06]
+## AUDITORÍA DE CONSISTENCIA DE INFRAESTRUCTURA, OPERABILIDAD Y SALUD EN PRODUCCIÓN
+### CERTIFICACIÓN FORENSE DE SERVICIOS SYSTEMD, REVERSE PROXY NGINX SSL TLS 1.3, CRONTAB DE RESPALDOS GFS, WATCHDOG DE AUTOSANACIÓN Y TELEMETRÍA EN CALIENTE (/API/V1/HEALTH/SYSTEM)
 
 **Destinatario:** Coordinador General y Auditor Forense EAF `agy` (`tmux a -t agy`)  
 **Responsable:** `agy2` (Desarrollador / EDD — `tmux a -t agy2`)  
 **Fecha de Emisión:** Domingo, 11 de Octubre de 2026  
-**Referencia de Trabajo:** `bridge/01_tarea_activa.md` (`[AUD-COMP-05]`)  
-**Plan Maestro:** `bridge/00_plan_maestro_auditoria_completitud_consistencia.md` (Fase 3: Consistencia Normativa, UI-Policy y Resiliencia Operativa — Tarea 3.1)  
-**Severidad Atendida:** CRÍTICA / BLINDAJE JURÍDICO, INSTITUCIONAL, ARQUITECTÓNICO Y ACCESIBILIDAD UNIVERSAL  
+**Referencia de Trabajo:** `bridge/01_tarea_activa.md` (`[AUD-COMP-06]`)  
+**Plan Maestro:** `bridge/00_plan_maestro_auditoria_completitud_consistencia.md` (Fase 3: Tarea 3.2 — Cierre Final del Plan Maestro)  
+**Severidad Atendida:** ALTA / DISPONIBILIDAD 24/7, SEGURIDAD OPERATIVA Y RESILIENCIA DE PRODUCCIÓN  
 **Estado de la Entrega:** 100% Auditada, Verificada y Certificada bajo Quality Gates Estrictos  
 
 ---
 
 ## 🎯 1. Resumen Ejecutivo del Dictamen Forense
 
-En cumplimiento estricto de la orden técnica **[AUD-COMP-05]**, se ejecutó una inspección pericial forense y de aseguramiento sobre la totalidad de salvaguardas normativas, institucionales, arquitectónicas y de accesibilidad del sistema POLIS Cartagena 2026:
+En cumplimiento estricto de la orden técnica final **[AUD-COMP-06]**, se ejecutó una inspección pericial forense y de aseguramiento sobre la totalidad de la infraestructura de soporte, servicios del sistema operativo, terminación criptográfica y mecanismos de salvaguarda de datos de la plataforma POLIS Cartagena 2026:
 
-1. **Preservación Inviolable de Códigos BPIN Distritales:**
-   - **Módulos de Alternativas y Presupuesto:** Se constató la integridad estructural de los códigos canónicos de proyecto distrital bajo nomenclatura oficial `BPIN-2026-CTG-XXXX` en los catálogos y estimaciones presupuestales (`src/features/alternativas/` y `backend/app/modules/presupuesto/`).
-   - **Erradicación de BPINs Fabricados en PAS (Mandato AUD-13):** Ejecución pericial de `backend/tests/test_integridad_compromisos.py` (4/4 pruebas aprobadas). Se certifica la ausencia absoluta de BPINs apócrifos o inventados en la tabla `seguimiento.compromisos_pas` y en los datos canónicos del frontend (`compromisos-pas.data.ts`). Todo compromiso sin validación de código distrital conserva la estricta ausencia o valor nulo de `bpin_relacionado`.
+1. **Servicios Systemd en Producción:**  
+   - **`polis-backend.service` (FastAPI / Uvicorn):** Activo y en ejecución (`active (running)`), gestionando 3 procesos worker con un consumo de memoria estable (364.8 MB RSS). Inspección de `journalctl` constata cero excepciones no capturadas, cero fallos HTTP 500 y cero ciclos de reinicio anómalo.  
+   - **`polis-frontend.service` (Next.js v16.1.3 Turbopack Standalone):** Activo y en ejecución (`active (running)`), sirviendo en puerto 3000 con respuesta sub-100 ms y 39.8 MB RSS.  
+   - **`nginx.service`:** Activo y en ejecución (`active (running)`), 8 worker processes operando con afinidad balanceada.  
+   - **`postgresql@18-main.service`:** Cluster PostgreSQL 18 activo y saludable, administrando la base de datos de producción `bd_csh` sin bloqueo de conexiones.
 
-2. **Saneamiento Normativo y Cero Acrónimos Ajenos en Canales Comunitarios:**
-   - **Erradicación de Acrónimos Tecnocráticos Ajenos:** Se certificó mediante `src/features/barrio/tests/barrio-view.test.ts` (5/5 pruebas aprobadas) que en los datos cívico-populares de 16 territorios (`barrios-cartagena.ts`) y en la vista `/barrio` (`barrio-view.tsx`) existe **cero presencia** de acrónimos ajenos no territoriales (`DNP`, `MGA`, `SINERGIA`).
-   - **Salvedad Institucional Obligatoria OBS-11:** Verificación en código y persistencia de que los compromisos PAS derivados de ejercicios ciudadanos no oficializados exhiben el descargo vinculante:
-     `"Catálogo propuesto por el equipo, PENDIENTE de validación institucional, no proviene del Decreto 037"`, con bandera de estado formal `meta_validada: false`.
-   - **Sustento Normativo en Planilla de Asistencia:** En `/asistencia/[mesaId]` (`asistencia-cliente.tsx`), el encabezado y pie legal invocan exclusivamente la **Ley Estatutaria 1757 de 2015** (Participación Democrática) y la **Ley 1581 de 2012** (Habeas Data), erradicando menciones improcedentes a decretos de planeación que pudieran inducir a error al ciudadano.
+2. **Reverse Proxy Nginx y Terminación Criptográfica SSL TLS 1.3:**  
+   - **Validación Sintáctica:** `nginx -t` ejecutado con resultado exitoso (`syntax is ok`, `test is successful`).  
+   - **Configuración de Sitios ([`/etc/nginx/sites-available/polis`](file:///etc/nginx/sites-available/polis)):** Enrutamiento inverso blindado:  
+     - `/api/` y `/docs` redirigidos a `http://127.0.0.1:8000`.  
+     - `/api/v1/formularios/` con cuota extendida `client_max_body_size 40m` para recepción de evidencias fotográficas ciudadanas.  
+     - `/api/formularios/revalidar` y `/` redirigidos a `http://127.0.0.1:3000`.  
+   - **Cifrado y Protocolos:** Certificados Let's Encrypt para `seguridadhumanaintegral.org`, protocolos permitidos restringidos a `TLSv1.2` y `TLSv1.3`. Negociación TLS 1.3 verificada en vivo con cipher suite `TLS_AES_256_GCM_SHA384`.  
+   - **Redirección Forzada:** Puerto 80 configurado con redirección 301 incondicional hacia `https://$host$request_uri`.  
+   - **Cabeceras de Endurecimiento:** Presencia verificada en respuestas en vivo de `Strict-Transport-Security: max-age=31536000; includeSubDomains`, `X-Content-Type-Options: nosniff`, `X-Frame-Options: SAMEORIGIN` / `DENY`, `X-XSS-Protection: 1; mode=block` y `Referrer-Policy: strict-origin-when-cross-origin`.
 
-3. **Habeas Data (Ley 1581 de 2012) y Secreto Estadístico:**
-   - **Sanitización Activa de Telemetría (Sentry / GlitchTip):** Auditoría en `backend/app/core/sentry.py` de la función pericial `_filtrar_pii`. Se corroboró la intercepción y anonimización de headers sensibles (`authorization`, `cookie`), campos de formulario y credenciales (`password`, `contrasena`, `token`, `secret`, `cedula`, `documento`, `telefono`, `correo` -> `[REDACTED]`), y el enmascaramiento estricto de direcciones IP a `[FILTERED_HABEAS_DATA]`.
-   - Verificado con 100% de éxito mediante `pytest backend/tests/test_observability.py` (3/3 pruebas aprobadas).
+3. **Automatización Operativa en Crontab del Servidor:**  
+   - **Planificación Canónica (`crontab -l`):**  
+     - `0 2 * * * /root/polis/scripts/respaldo_programado_bd.sh >> /root/polis/backups/respaldos.log 2>&1` (Respaldo diario nocturno a las 02:00 AM).  
+     - `*/5 * * * * /root/polis/scripts/monitor_sistema_polis.sh --cron >> /var/log/polis-monitor.log 2>&1` (Watchdog de autosanación cada 5 minutos).  
+   - **Esquema de Respaldo GFS (Grandfather-Father-Son):** Carpeta `/root/polis/backups/` estructurada con directorios `diarios/`, `semanales/` y `mensuales/`. Último volcado binario diario ejecutado exitosamente a las 02:00:01 del 11 de Octubre de 2026 (`bd_csh_diario_20261011_020001.dump`, 1.2 MB, SHA-256: `ea9c9d1cd4c7c77899e0344f75810764b92074997c04698db9018a9c740d3bfc`), con promoción a `bd_csh_semanal_20261011_020001.dump` y rotación estricta de cuotas.  
+   - **Watchdog de Autosanación:** Ejecución en seco de [`/root/polis/scripts/monitor_sistema_polis.sh`](file:///root/polis/scripts/monitor_sistema_polis.sh) culminada con código de salida 0 (`SISTEMA 100% SALUDABLE Y OPERATIVO`). Trazabilidad activa y regular en `/var/log/polis-monitor.log`.
 
-4. **Regla de Capas Arquitectónicas UI004 y Política de UI:**
-   - Verificación automatizada con `bun run ui:check` y `bun run ui:policy:test` (8/8 pruebas aprobadas, 0 violaciones).
-   - **UI001:** Controles HTML nativos encapsulados en primitivos accesibles.
-   - **UI002:** Componentes primitivos radicados exclusivamente en `src/shared/ui/`.
-   - **UI003:** Cero colores o estilos literales fuera del sistema de diseño `tokens.css`.
-   - **UI004:** Cero dependencias circulares; `@/shared/` y `@/core/` permanecen estrictamente desacoplados e independientes de `@/features/` y `@/app/`.
-   - **UI005:** Diálogos modales y paneles canónicos orquestados mediante `SidePanel` y `PanelHost`.
-
-5. **Accesibilidad Universal (WCAG 2.1 AA):**
-   - Ejecución completa de la suite de pruebas End-to-End con el motor `axe-core` (`node scripts/e2e-smoke-flujos-criticos.mjs`).
-   - Los **9 flujos críticos** y las **8 vistas/paneles auditados** obtuvieron **cero (0) violaciones** de impacto crítico o serio.
-   - Contraste semántico de colores validado en modo claro y oscuro, soporte completo de navegación por teclado, roles ARIA y atributos descriptivos conformes.
+4. **Telemetría y Salud en Caliente ([`GET /api/v1/health/system`](file:///root/polis/backend/app/modules/health/)):**  
+   - Estado general: `status: "ok"`, `service: "polis-api"`, `version: "0.2.1"`, `environment: "production"`.  
+   - Base de datos relacional: `database.status: "ok"`, latencia ultra baja de **2.66 ms** (umbral de tolerancia <20 ms). Conexiones activas: **4 / 100** (4%).  
+   - Migración canónica: `database.migration_revision: "0057_comentario_pas"` (**cero drift** respecto al head de Alembic).  
+   - Extensiones instaladas y verificadas: `ltree`, `pg_trgm`, `pgcrypto`, `plpgsql`, `postgis`.  
+   - Confiabilidad del proceso: `process.error_rate_pct: 0.0%`, cero errores 5xx (`requests_5xx: 0`), consumo RSS 205.9 MB.  
+   - Capacidad de almacenamiento: `storage.used_pct: 5.3%` (366.35 GB disponibles de 386.85 GB en partición raíz).
 
 ---
 
-## 🔍 2. Matriz Pericial de Consistencia Normativa y UI-Policy
+## 🔍 2. Matriz Pericial de Infraestructura y Operabilidad
 
-| Frente de Inspección | Requisito / Salvaguarda | Archivo / Prueba Auditada | Resultado Pericial | Estado |
+| Dimensión Auditada | Parámetro Inspeccionado | Comando / Fuente de Comprobación | Resultado Obtenido | Dictamen |
 | :--- | :--- | :--- | :--- | :--- |
-| **BPIN Distrital** | Preservación de códigos `BPIN-2026-CTG-XXXX` | `backend/app/modules/presupuesto/` y `src/features/alternativas/` | Integridad formal de nomenclatura distrital preservada. | ✅ CERTIFICADO |
-| **Integridad PAS (AUD-13)** | Erradicación total de BPINs fabricados | `backend/tests/test_integridad_compromisos.py` | 4/4 pruebas pasadas. Cero BPIN apócrifo en `compromisos_pas`. | ✅ CERTIFICADO |
-| **Cero Acrónimos Ajenos** | Prohibición de DNP, MGA, SINERGIA en canal cívico | `src/features/barrio/tests/barrio-view.test.ts` | 5/5 pruebas pasadas. Cero menciones en datos e interfaces cívicas. | ✅ CERTIFICADO |
-| **Salvedad OBS-11** | Descargo institucional explícito ("no proviene de Decreto 037") | `src/features/seguimiento/data/compromisos-pas.data.ts` | Cláusula OBS-11 presente y activa con `meta_validada: false`. | ✅ CERTIFICADO |
-| **Marco Legal Asistencia** | Soporte exclusivo en Ley 1757 de 2015 y Ley 1581 de 2012 | `src/app/asistencia/[mesaId]/asistencia-cliente.tsx` | Declaración de fe pública y consentimiento de datos conforme. | ✅ CERTIFICADO |
-| **Habeas Data Telemetría** | Anonimización estricta PII y enmascaramiento IP | `backend/app/core/sentry.py` y `test_observability.py` | 3/3 pruebas pasadas. Censura de PII e IP a `[FILTERED_HABEAS_DATA]`. | ✅ CERTIFICADO |
-| **Política UI (UI001-005)** | Verificación estricta de capas y tokens | `bun run ui:check` y `bun run ui:policy:test` | 8/8 pruebas pasadas. 0 violaciones en todo el árbol de código. | ✅ CERTIFICADO |
-| **A11y WCAG 2.1 AA** | 0 violaciones críticas o serias en axe-core | `node scripts/e2e-smoke-flujos-criticos.mjs` | 9/9 flujos aprobados, 0 violaciones críticas/serias en 8 vistas. | ✅ CERTIFICADO |
+| **Servicio Backend** | Estado operativo FastAPI/Uvicorn | `systemctl is-active polis-backend` | `active` (Main PID: 3342751, 3 workers) | ✅ CERTIFICADO |
+| **Servicio Frontend** | Estado operativo Next.js v16.1.3 | `systemctl is-active polis-frontend` | `active` (Main PID: 3342752, standalone) | ✅ CERTIFICADO |
+| **Reverse Proxy** | Estado operativo Nginx | `systemctl is-active nginx` | `active` (Main PID: 1174, 8 workers) | ✅ CERTIFICADO |
+| **Base de Datos** | Estado operativo PostgreSQL Cluster | `systemctl is-active postgresql` | `active` (`postgresql@18-main.service`) | ✅ CERTIFICADO |
+| **Sintaxis Nginx** | Validez de configuración | `nginx -t` | `syntax is ok / test is successful` | ✅ CERTIFICADO |
+| **Cifrado SSL / TLS** | Negociación y Ciphers | `openssl s_client -tls1_3` | Protocolo `TLSv1.3`, Cipher `TLS_AES_256_GCM_SHA384` | ✅ CERTIFICADO |
+| **Redirección HTTP** | Forzado a HTTPS puerto 443 | `curl -sI -H "Host: seguridadhumanaintegral.org" http://127.0.0.1/` | `HTTP/1.1 301 Moved Permanently` | ✅ CERTIFICADO |
+| **HSTS & Headers** | Cabeceras de seguridad | `curl -k -s -i https://127.0.0.1/api/v1/health/live` | `Strict-Transport-Security: max-age=31536000`, `nosniff`, `SAMEORIGIN` | ✅ CERTIFICADO |
+| **Programación Crontab** | Respaldo y Watchdog periódicos | `crontab -l` | Tareas a las 02:00 AM y c/5 min activas | ✅ CERTIFICADO |
+| **Esquema GFS** | Respaldo diario y semanal | `/root/polis/backups/respaldos.log` | Volcado 2026-10-11 02:00:01 (1.2 MB, SHA-256 verificado) | ✅ CERTIFICADO |
+| **Watchdog Autosanación**| Ejecución y diagnóstico | `/root/polis/scripts/monitor_sistema_polis.sh` | Salida exitosa código 0 (100% saludable) | ✅ CERTIFICADO |
+| **Telemetría DB** | Latencia y conexión PostgreSQL | `curl -s http://127.0.0.1:8000/api/v1/health/system` | `ping_ms: 2.66`, 4/100 conx, `status: "ok"` | ✅ CERTIFICADO |
+| **Paridad Alembic** | Revisión de esquema en caliente | `migration_revision` en `/health/system` | `"0057_comentario_pas"` (cero drift) | ✅ CERTIFICADO |
+| **Extensiones DB** | Soporte Geoespacial y Árboles | `installed_extensions` en `/health/system` | `postgis`, `ltree`, `pgcrypto`, `pg_trgm`, `plpgsql` | ✅ CERTIFICADO |
+| **Estabilidad API** | Tasa de errores HTTP 5xx | `process.error_rate_pct` en `/health/system` | `0.0%` (cero errores 5xx registrados) | ✅ CERTIFICADO |
 
 ---
 
-## 🧪 3. Quality Gates y Resultados de Certificación
+## 🧪 3. Quality Gates y Resultados de Certificación Global
 
 | Quality Gate | Comando de Validación | Resultado Obtenido | Estado |
 | :--- | :--- | :--- | :--- |
-| **Integridad BPIN & OBS-11** | `/root/polis/venv/bin/pytest backend/tests/test_integridad_compromisos.py` | **4/4 pruebas pasadas** (100% verde) | ✅ APROBADO |
-| **Acrónimos en Modo Barrio** | `bun test src/features/barrio/tests/barrio-view.test.ts` | **5/5 pruebas pasadas** (100% verde) | ✅ APROBADO |
-| **Habeas Data & Observability**| `/root/polis/venv/bin/pytest backend/tests/test_observability.py` | **3/3 pruebas pasadas** (100% verde) | ✅ APROBADO |
-| **UI Policy Engine Suite** | `bun run ui:policy:test` | **8/8 pruebas pasadas** (100% verde) | ✅ APROBADO |
-| **UI Architectural Linter** | `bun run ui:check` | `POLIS UI: controles, tokens, capas, inventario, historias y política a11y correctos.` (0 violaciones) | ✅ APROBADO |
-| **Axe-core A11y E2E Smoke** | `node scripts/e2e-smoke-flujos-criticos.mjs` | **9/9 flujos aprobados**, 0 violaciones serias/críticas en 8 vistas auditadas | ✅ APROBADO |
-| **TypeCheck & Linter** | `bun run check` (`tsc --noEmit && eslint .`) | 0 errores TypeScript, 0 warnings ESLint | ✅ APROBADO |
+| **Servicios Systemd** | `systemctl is-active polis-backend polis-frontend nginx postgresql` | Todos activos (`active`) | ✅ APROBADO |
+| **Sintaxis Nginx** | `nginx -t` | `syntax is ok` / `test is successful` | ✅ APROBADO |
+| **Crontab Distrital** | `crontab -l` | 2 tareas canónicas programadas | ✅ APROBADO |
+| **Watchdog Script** | `/root/polis/scripts/monitor_sistema_polis.sh` | Retorno limpio con telemetría en verde (código 0) | ✅ APROBADO |
+| **Health API en Caliente** | `curl -s http://127.0.0.1:8000/api/v1/health/system` | HTTP 200 OK con latencia 2.66 ms y 0 drift Alembic | ✅ APROBADO |
+| **TypeCheck & Linter** | `bun run check` (`tsc --noEmit && eslint .`) | **0 errores TypeScript, 0 warnings ESLint** | ✅ APROBADO |
 | **Frontend Test Suite** | `bun test` | **412 pruebas pasadas** en 43 archivos (0 fallos) | ✅ APROBADO |
-| **Backend Test Suite** | `/root/polis/venv/bin/pytest backend/tests/` | **467 pruebas pasadas** en 274.82s (100% suites verdes) | ✅ APROBADO |
-| **Turbopack Production Build** | `bun run build` | Compilación exitosa en 20.8s, 191/191 rutas SSG generadas | ✅ APROBADO |
-| **Live Services Health** | `curl -s http://127.0.0.1:8000/api/v1/health/ready` | `HTTP/1.1 200 OK` — `{"status":"ready"}` | ✅ APROBADO |
+| **Backend Test Suite** | `/root/polis/venv/bin/pytest backend/tests/` | **467 pruebas pasadas** en 330.44s (100% suites verdes) | ✅ APROBADO |
+| **Turbopack Build** | `bun run build` | Compilación exitosa en 17.1s, **191/191 rutas SSG generadas** | ✅ APROBADO |
 
 ---
 
 ## 🔒 4. Cumplimiento de Salvaguardas Inviolables
 
-1. **Preservación Inviolable de BPIN:** Códigos distritales oficiales `BPIN-2026-CTG-XXXX` intactos; cero códigos fabricados o atribuciones apócrifas en compromisos PAS.
-2. **Cero Acrónimos Ajenos:** Cero referencias a DNP, MGA o SINERGIA en código, pruebas o interfaces cívico-comunitarias.
-3. **Inviolabilidad de Producción (`bd_csh`):** 33 mesas de diálogo territorial, 36 agendas comunitarias, 11 fichas técnicas y 17 actores estratégicos 100% intactos e inalterados en PostgreSQL.
-4. **UI-Policy Estricta (UI004):** Arquitectura de capas unidireccional y desacoplada (@/shared/ y @/core/ libres de dependencias circulares).
-5. **Protocolo Zero-Push:** Todo el trabajo se encuentra empaquetado para commit local atómico en la rama `main` sin operaciones de push a servidores remotos.
+1. **Inviolabilidad de Producción (`bd_csh`):** Comprobación en base de datos ejecutada:
+   - `mesas_trabajo.mesas`: **33 mesas** registradas.
+   - `mesas_trabajo.agendas`: **36 agendas** territoriales.
+   - `indicadores.fichas_tecnicas_indicadores`: **11 fichas** de indicadores.
+   - `participacion_ciudadana.actores_estrategicos`: **17 actores** clave.
+   Todos los registros se mantienen íntegros, sin alteraciones, mutaciones o eliminaciones no deseadas.
+2. **Cero Caída de Servicios:** Servicios `polis-backend`, `polis-frontend` y `nginx` permanecieron continuamente operativos durante la auditoría, con uptime preservado.
+3. **Preservación Inviolable de BPIN:** Códigos distritales oficiales `BPIN-2026-CTG-XXXX` intactos y validados.
+4. **Cero Acrónimos Ajenos:** Cero referencias a DNP, MGA o SINERGIA en canales y vistas cívico-territoriales.
+5. **Protocolo Zero-Push:** Todo el empaquetado final reside de forma estricta en el commit local atómico en la rama `main`.
 
 ---
 
 ## 📦 5. Archivos Auditados y Verificados
 
-- `backend/tests/test_integridad_compromisos.py` (verificación pericial de no existencia de BPIN ficticio y cumplimiento OBS-11)
-- `src/features/barrio/tests/barrio-view.test.ts` (verificación de erradicación de acrónimos ajenos en datos y vistas ciudadanas)
-- `backend/app/core/sentry.py` y `backend/tests/test_observability.py` (verificación de anonimización PII y enmascaramiento Habeas Data Ley 1581)
-- `scripts/ui-policy.mjs` y `scripts/tests/ui-policy.test.mjs` (verificación de reglas UI001-UI005)
-- `scripts/e2e-smoke-flujos-criticos.mjs` (verificación integral E2E y axe-core a11y WCAG 2.1 AA)
-- `bridge/02_resultado_agy2.md` (informe pericial de auditoría)
+- `/etc/systemd/system/polis-backend.service` y `/etc/systemd/system/polis-frontend.service`
+- `/etc/nginx/sites-available/polis` y `/etc/nginx/nginx.conf`
+- `/root/polis/scripts/respaldo_programado_bd.sh` y `/root/polis/backups/respaldos.log`
+- `/root/polis/scripts/monitor_sistema_polis.sh` y `/var/log/polis-monitor.log`
+- `backend/app/modules/health/` (auditoría del endpoint `/api/v1/health/system`)
+- `bridge/02_resultado_agy2.md` (informe pericial de cierre de auditoría)
