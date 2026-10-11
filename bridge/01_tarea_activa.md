@@ -1,87 +1,86 @@
-# TAREA ACTIVA: [UX-MOVIL-BARRIO-01] MODO CIUDADANO ULTRALIGERO ("MODO BARRIO")
-## VISTA CIUDADANA MOBILE-FIRST Y BAJO CONSUMO DE DATOS (<150 KB) PARA SMARTPHONES DE GAMA DE ENTRADA EN CARTAGENA
+# TAREA ACTIVA: [PWA-OFFLINE-01] MODO PWA OFFLINE Y SINCRONIZACIÓN RESILIENTE
+## ALMACENAMIENTO INDEXEDDB, SERVICE WORKER Y COLA DE SINCRONIZACIÓN PARA FACILITADORES EN ZONAS INSULARES Y RURALES DE CARTAGENA
 
 **Fecha:** Domingo, 11 de Octubre de 2026  
-**Fase:** FASE 3: Adopción Territorial y Resiliencia (Tarea 3.1)  
+**Fase:** FASE 3: Adopción Territorial y Resiliencia (Tarea 3.2)  
 **Plan Maestro:** `bridge/00_plan_maestro_excelencia_y_adopcion.md`  
 **Asignada a:** `agy2` (Desarrollador / EDD — `tmux a -t agy2`)  
 **Supervisor / Auditor:** `agy` (Coordinador General y Auditor Forense EAF — `tmux a -t agy`)  
-**Severidad:** ALTA / EQUIDAD DIGITAL Y JUSTICIA TERRITORIAL (Acceso universal en barrios populares)
+**Severidad:** ALTA / RESILIENCIA TERRITORIAL (Operación en zonas sin señal: Islas del Rosario, Barú, Tierrabomba, corregimientos norte)
 
 ---
 
 ## 🎯 1. Justificación y Diagnóstico Estratégico
 
-En los barrios populares y corregimientos de Cartagena de Indias (Olaya Herrera, Nelson Mandela, El Pozón, San Francisco, Bayunca, Pasacaballos, Fredonia, La Boquilla, etc.), la mayoría de los habitantes acceden a Internet mediante **teléfonos inteligentes Android de gama de entrada** (Android Go, 2GB–3GB de RAM) con **planes de datos móviles prepago de 100MB a 500MB** y conectividad intermitente 3G/4G.
+El Distrito Turístico y Cultural de Cartagena de Indias abarca una vasta geografía rural e insular:
+- **Zona Insular:** Islas del Rosario (Isla Grande), Barú (Poblado, Santa Ana, Ararca), Tierrabomba (Caño del Oro, Bocachica, Punta Arena), Archipiélago de San Bernardo e Isla Fuerte.
+- **Zona Rural y Corregimental:** Arroyo Grande, Arroyo de Piedra, Bayunca, Pontezuela, Pasacaballos, Membrillal y Leticia/Recreo.
 
-La plataforma principal de POLIS cuenta con mapas georreferenciados (Leaflet/Mapbox), paneles apilados de múltiples niveles y visualizaciones ricas que, si bien son excelentes para computadores de escritorio y funcionarios distritales, representan una barrera de datos y rendimiento para un vecino en la calle o un líder barrial.
+En estas zonas, los facilitadores distritales de las mesas de trabajo (`mesas_trabajo.mesas`) y los líderes comunitarios enfrentan **ausencia total de cobertura celular o caídas prolongadas de red**. Actualmente, si el navegador pierde la conexión, el registro de asistencia o el levantamiento de acuerdos comunitarios corre el riesgo de no persistir o arrojar errores de red.
 
 **Objetivo de la Tarea:**
-Implementar el **"Modo Barrio" (`/barrio`)**: una vista web móvil ultraligera, accesible y de consumo mínimo de datos (<150 KB en carga inicial), estructurada bajo la **Arquitectura Cívica de 3 Preguntas**:
-1. **¿Qué se acordó en mi barrio?** (Consulta ágil de mesas de diálogo, acuerdos y compromisos territoriales).
-2. **¿Qué propones tú?** (Voz directa del territorio: radicación exprés de propuestas con código `POL-2026-XXXX`, soporte anónimo/identificado y me gusta cívicos funcionales).
-3. **¿Cómo va el barrio?** (Semáforo de seguridad y convivencia con indicadores reales sin gráficos pesados).
+Implementar el **Modo PWA Offline con Resiliencia de Campo**:
+1. **Manifest y Service Worker:** Instalabilidad PWA y cache inteligente del shell de la aplicación.
+2. **Almacenamiento Local Robusto con IndexedDB (`polis_offline_db`):** Captura segura y persistente en el dispositivo de asistencias a mesas, actas comunitarias y propuestas cívicas de Modo Barrio.
+3. **Cola de Sincronización en Segundo Plano (Outbox Sync Manager):** Detección automática de conectividad (`online` event) y sincronización transaccional por lotes hacia la API de FastAPI (`/api/v1/mesas/{id}/participantes`, `/api/v1/aportes`).
+4. **Indicador Visual de Estado de Red (Offline Banner / Sync Badge):** Notificación visual clara y accesible para el facilitador con contador de elementos pendientes y botón táctil *"Sincronizar ahora"*.
 
 ---
 
 ## 📋 2. Especificación Técnica de la Implementación
 
-### A. Estructura de Rutas y Módulos
-1. **Ruta Pública Dedicada (`src/app/barrio/`)**:
-   - `src/app/barrio/page.tsx`: Punto de entrada directo server/client optimizado.
-   - `src/app/barrio/layout.tsx`: Layout minimalista sin headers pesados, con navegación de pestañas táctiles inferior o superior fijada (*Acuerdos / Proponer / Semáforo*).
-   - Componentes modulares en `src/features/barrio/`:
-     * `barrio-selector.tsx`: Selector rápido de territorio distrital (Localidades 1, 2 y 3, barrios populares y corregimientos de Cartagena).
-     * `acuerdos-barrio-tab.tsx`: Listado ágil de mesas y acuerdos del territorio seleccionado.
-     * `propuesta-barrio-tab.tsx`: Formulario ultraligero de radicación en 1 pantalla + listado de propuestas comunitarias con botón de apoyo cívico reactivo (`useToggleApoyo`).
-     * `semaforo-barrio-tab.tsx`: Tarjetas de alto contraste con semáforos de cumplimiento e indicadores de seguridad (homicidios, hurtos, riñas, percepción) provenientes de la API de indicadores.
-2. **Navegación y Acceso Global**:
-   - En [`src/app/_components/topbar.tsx`](file:///root/polis/src/app/_components/topbar.tsx): Añadir botón de acceso rápido *"Modo Barrio"* con icono `Smartphone` de Lucide, visible tanto en móviles como en escritorio.
-   - En [`src/shared/layout/footer.tsx`](file:///root/polis/src/shared/layout/footer.tsx): Enlace destacado a `/barrio` (*"Modo Barrio (Bajo consumo)"*).
-   - En la vista principal móvil: Banner cívico no invasivo: *"¿Estás en tu celular con datos prepago? Activa el Modo Barrio para ahorrar megas"*.
-   - En `/barrio`: Botón visible para regresar a la "Vista Completa" (`/`).
+### A. Manifest y Service Worker PWA
+1. **Web App Manifest (`src/app/manifest.ts` o `public/manifest.json`)**:
+   - `name: "POLIS — Seguridad Humana Cartagena 2026–2036"`
+   - `short_name: "POLIS Cartagena"`
+   - `start_url: "/"`
+   - `display: "standalone"`
+   - `background_color: "#ffffff"`
+   - `theme_color: "#0f172a"`
+   - Iconos institucionales vectoriales y PNG estándar (192x192, 512x512).
+2. **Service Worker (`public/sw.js` y `src/shared/pwa/register-sw.tsx`)**:
+   - Cache estática de recursos esenciales (CSS, JS, fuentes, iconos SVG).
+   - Estrategia Network-First con fallback a caché para vistas de navegación.
+   - Manejo de ciclo de vida seguro (`skipWaiting`, `clients.claim`).
 
-### B. Funcionalidades Detalladas del Modo Barrio
+### B. Módulo de Almacenamiento IndexedDB (`src/shared/offline/db.ts`)
+1. **Base de Datos `polis_offline_db`**:
+   - Implementación ligera y robusta con IndexedDB nativo (sin dependencias pesadas):
+     * Object Store `asistencias_pendientes`: Asistencias levantadas en campo (`id`, `mesaId`, `datos`, `creadoEn`, `intentos`, `estado`).
+     * Object Store `propuestas_pendientes`: Propuestas comunitarias tomadas en Modo Barrio offline (`id`, `payload`, `creadoEn`, `intentos`, `estado`).
+     * Object Store `actas_pendientes`: Borradores y acuerdos de mesas capturados sin red.
+   - Métodos asíncronos tipados: `guardarPendiente()`, `listarPendientes()`, `eliminarPendiente()`, `contarPendientes()`.
 
-#### 1. Paso 1: ¿Qué se acordó? (Mesas y Compromisos Territoriales)
-- Permite al usuario seleccionar su barrio o corregimiento de una lista canónica (ej. Olaya Herrera, Nelson Mandela, El Pozón, San Francisco, Bayunca, Fredonia, etc.).
-- Filtra y presenta las mesas de diálogo distritales realizadas en dicho territorio, mostrando:
-  * Fecha y lugar de la mesa.
-  * Acuerdos y compromisos concretos pactados con la comunidad.
-  * Entidad distrital responsable (Distriseguridad, Secretaría del Interior, etc.).
+### C. Gestor de Sincronización Outbox (`src/shared/offline/sync-manager.ts`)
+1. **SyncManager**:
+   - Detección de conectividad (`navigator.onLine`, `window.addEventListener('online')`, `offline`).
+   - Función `sincronizarTodo()`:
+     * Procesa la cola de `asistencias_pendientes` despachando a `POST /api/v1/mesas/{mesaId}/participantes`.
+     * Procesa `propuestas_pendientes` despachando a `POST /api/v1/aportes`.
+     * Manejo de reintentos exponenciales con límite de seguridad (máximo 5 reintentos).
+     * Emisión de notificaciones cívicas toast (`toast.success("¡Sincronización completada! N registros subidos al servidor distrital")`).
+   - Hook reactivo `useOfflineSync()`: expone `isOnline`, `pendientesCount`, `sincronizando`, `sincronizarAhora()`.
 
-#### 2. Paso 2: ¿Qué propones tú? (Voz del Barrio + Apoyos Cívicos)
-- Formulario directo de radicación comunitaria:
-  * Territorio (preseleccionado del selector).
-  * Título conciso de la propuesta o alerta comunitaria.
-  * Descripción clara de la necesidad barrial.
-  * Temática básica (Seguridad y Alarmas, Espacio Público e Iluminación, Juventud y Oportunidades, Convivencia).
-  * Modalidad de identidad: "Anónimo (Protegido Ley 1581)" o "Con mi nombre y teléfono".
-- Al enviar:
-  * Invoca `POST /api/v1/aportes` garantizando sesión activa (`asegurarSesionActiva`).
-  * Despliega inmediatamente el **Código de Radicado Oficial `POL-2026-XXXX`** con confirmación visual clara.
-  * Botón para *"Compartir en WhatsApp del Barrio"* (`https://wa.me/?text=...`) para que el ciudadano pueda convocar el apoyo de sus vecinos.
-- Muro de propuestas del barrio:
-  * Muestra las propuestas comunitarias registradas para ese territorio.
-  * Botón de apoyo ("Me Gusta") funcional que utiliza la mutación optimista recién certificada (`useToggleApoyo` y `useMisApoyos`).
-
-#### 3. Paso 3: ¿Cómo va el barrio? (Semáforo Ciudadano)
-- Visualización de alto contraste sin canvas ni WebGL ni librerías de gráficos pesadas.
-- Tarjetas semáforo con colores estándar del kit POLIS (`var(--success)`, `var(--warning)`, `var(--danger)` o equivalentes tokenizados):
-  * Tasa de Homicidios Distrital (Medicina Legal / Policía SIEDCO).
-  * Frecuencia de Hurtos y Convivencia.
-  * Percepción de Seguridad (Cartagena Cómo Vamos).
-  * Número de mesas comunitarias y acuerdos alcanzados en el sector.
+### D. Componentes de UI y Experiencia de Usuario
+1. **Indicador de Conectividad Resiliente (`src/shared/offline/offline-status-badge.tsx`)**:
+   - Renderiza un badge accesible canónico `@/shared/ui/badge` y botón `@/shared/ui/button`:
+     * Modo Online: Indicador discreto o invisible cuando no hay pendientes.
+     * Modo Offline: Badge semántico ámbar/warning *"Sin conexión — Modo Zonas Rurales/Insulares"* con icono `CloudOff` o `WifiOff`.
+     * Pendientes por sincronizar: Badge informativo con el contador de registros pendientes (`N pendientes`) y botón con icono `RefreshCw` para forzar sincronización manual al recuperar señal.
+2. **Integración en Vistas Clave**:
+   - En [`src/app/layout.tsx`](file:///root/polis/src/app/layout.tsx) o [`src/app/_components/topbar.tsx`](file:///root/polis/src/app/_components/topbar.tsx): Montar el `OfflineStatusBadge`.
+   - En [`src/app/asistencia/[mesaId]/asistencia-cliente.tsx`](file:///root/polis/src/app/asistencia/[mesaId]/asistencia-cliente.tsx): Conectar con el `SyncManager` para que ante fallo de red (`!navigator.onLine` o `TypeError: fetch failed`), la asistencia se guarde automáticamente en `asistencias_pendientes` en IndexedDB con confirmación inmediata al facilitador.
+   - En [`src/features/barrio/components/propuesta-barrio-tab.tsx`](file:///root/polis/src/features/barrio/components/propuesta-barrio-tab.tsx): Permitir radicar propuestas offline encolándolas con radicado provisional de campo `POL-2026-OFFLINE-XXXX` para sincronización posterior.
 
 ---
 
 ## 🛡️ 3. Salvaguardas Obligatorias e Inviolables
 
-1. **Preservación Inviolable de BPIN:** Prohibido alterar, renombrar o modificar códigos BPIN distritales.
+1. **Preservación Inviolable de BPIN:** Cero modificaciones a identificadores presupuestales.
 2. **Cero Acrónimos Ajenos:** Estricta prohibición de `DNP`, `MGA` o `SINERGIA`.
-3. **UI-Policy Estricta:** Uso riguroso de controles canónicos `@/shared/ui/` (`Button`, `Badge`, `Input`, `FormField`, etc.) y tokens semánticos oficiales (`var(--surface)`, `var(--text-primary)`, `var(--ember)`). 0 violaciones en `node scripts/ui-policy.mjs`.
-4. **Presupuesto de Rendimiento (<150 KB):** No importar mapas (`leaflet`, `mapbox`), ni librerías de visualización pesadas (`chart.js`, `recharts`, `three.js`). Solo React, Lucide icons y Tailwind tokenizado.
-5. **Inviolabilidad de Producción (`bd_csh`):** Las 33 mesas de diálogo, 36 agendas comunitarias y 11 fichas técnicas en PostgreSQL deben permanecer 100% intactas.
+3. **UI-Policy Estricta:** Uso riguroso de controles canónicos `@/shared/ui/` (`Button`, `Badge`, etc.). Cero violaciones en `node scripts/ui-policy.mjs`.
+4. **Resiliencia Extrema:** La pérdida total de red nunca debe abortar ni hacer perder datos levantados en campo por los facilitadores comunitarios.
+5. **Inviolabilidad de Producción (`bd_csh`):** Las 33 mesas de diálogo, 36 agendas comunitarias y 11 fichas de indicadores deben permanecer 100% intactas en PostgreSQL.
 6. **Protocolo Zero-Push:** Todo cambio debe quedar confinado en commits locales atómicos sobre la rama `main`.
 
 ---
@@ -91,12 +90,11 @@ Implementar el **"Modo Barrio" (`/barrio`)**: una vista web móvil ultraligera, 
 Para autorizar el dictamen pericial de aprobación, deben cumplirse rigurosamente:
 1. `bun run ui:check`: Aprobado (0 infracciones).
 2. `bun run check`: Aprobado (0 errores TypeScript en `tsc --noEmit`, 0 warnings en `eslint`).
-3. `bun test`: Aprobado (393+ tests verdes, agregando pruebas específicas para los componentes de `/barrio`).
+3. `bun test`: Aprobado (398+ tests verdes, añadiendo pruebas unitarias específicas para `db.ts`, `sync-manager.ts` y el badge offline).
 4. `pytest`: Aprobado al 100% en backend.
 5. `bun run build`: Aprobado sin fallos de compilación en Turbopack (Next.js 16).
-6. Verificación en caliente en el navegador / curl con `polis-frontend.service` y `polis-backend.service` activos:
-   - Ruta `http://127.0.0.1:3000/barrio` respondiendo HTTP 200 OK.
-   - Enlace desde el Topbar funcionando.
-   - Radicación comunitaria desde `/barrio` generando código `POL-2026-XXXX`.
+6. Verificación en caliente (Hot-Verification):
+   - Service Worker y Manifest accesibles vía HTTP (`/manifest.webmanifest` o `/manifest.json`, `/sw.js`).
+   - Simulación de encolado offline en IndexedDB y sincronización hacia FastAPI.
 7. Registro de informe pericial detallado en `bridge/02_resultado_agy2.md`.
-8. Commit atómico local con mensaje canónico: `feat(ux): vista ciudadana ultraligera modo barrio UX-MOVIL-BARRIO-01`.
+8. Commit atómico local con mensaje canónico: `feat(pwa): modo offline e indexeddb para zonas rurales e insulares PWA-OFFLINE-01`.
