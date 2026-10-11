@@ -50,6 +50,7 @@ export function GeovisorView() {
     barrios: true,
     puntos: true,
     etiquetas: true,
+    isocronas: false,
   });
 
   const handleToggleCapa = useCallback((capa: keyof CapasConfig) => {

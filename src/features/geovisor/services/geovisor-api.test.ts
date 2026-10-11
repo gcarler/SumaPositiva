@@ -4,6 +4,7 @@ import {
   obtenerTerritorio,
   listarCapas,
   estandarizarDireccion,
+  obtenerIsocronas,
 } from "./geovisor-api";
 import * as apiClient from "@/core/http/api-client";
 
@@ -147,6 +148,64 @@ describe("Georreferenciación Territorial Inversa (AUD-SYNC-01)", () => {
       vi.spyOn(apiClient, "apiFetch").mockRejectedValueOnce(new Error("Network Error"));
 
       const resultado = await estandarizarDireccion("Pozón sector 1ro de Mayo");
+      expect(resultado).toBeNull();
+    });
+  });
+
+  describe("Isócronas de Accesibilidad y Ruteo de Seguridad (GEO-PROC-02)", () => {
+    it("consulta GET /geodatos/isocronas con latitud, longitud y parámetros de ruteo", async () => {
+      const mockIsocronas = {
+        type: "FeatureCollection",
+        features: [
+          {
+            type: "Feature",
+            geometry: {
+              type: "Polygon",
+              coordinates: [
+                [
+                  [-75.49, 10.41],
+                  [-75.49, 10.42],
+                  [-75.48, 10.42],
+                  [-75.49, 10.41],
+                ],
+              ],
+            },
+            properties: {
+              minutos: 5,
+              modo: "pie" as const,
+              radio_metros: 375.0,
+              nodo_cercano: {
+                nombre: "CAI Olaya Herrera",
+                tipo: "seguridad",
+                distancia_metros: 208.5,
+              },
+            },
+          },
+        ],
+      };
+
+      const spy = vi.spyOn(apiClient, "apiFetch").mockResolvedValueOnce(mockIsocronas);
+
+      const resultado = await obtenerIsocronas({
+        lat: 10.4141,
+        lon: -75.4922,
+        modo: "pie",
+        minutos: "5,10,15",
+      });
+
+      expect(spy).toHaveBeenCalledWith(
+        "/geodatos/isocronas?lat=10.4141&lon=-75.4922&modo=pie&minutos=5%2C10%2C15"
+      );
+      expect(resultado?.type).toBe("FeatureCollection");
+      expect(resultado?.features).toHaveLength(1);
+      expect(resultado?.features[0].properties.minutos).toBe(5);
+      expect(resultado?.features[0].properties.nodo_cercano?.nombre).toBe("CAI Olaya Herrera");
+    });
+
+    it("captura errores de red y retorna null de forma segura", async () => {
+      vi.spyOn(apiClient, "apiFetch").mockRejectedValueOnce(new Error("Timeout"));
+
+      const resultado = await obtenerIsocronas({ lat: 10.4, lon: -75.5 });
       expect(resultado).toBeNull();
     });
   });

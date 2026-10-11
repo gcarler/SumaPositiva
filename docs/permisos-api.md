@@ -103,6 +103,7 @@ La última columna explica la excepción pública o la condición adicional.
 | GET | /api/v1/geodatos/territorios/buscar-por-coordenada | publico | Consulta pública de catálogos y resultados de política para transparencia. |
 | GET | /api/v1/geodatos/territorios/geojson | publico | Consulta pública de catálogos y resultados de política para transparencia. |
 | GET | /api/v1/geodatos/territorios/{id} | publico | Consulta pública de catálogos y resultados de política para transparencia. |
+| GET | /api/v1/geodatos/isocronas | publico | Consulta pública de catálogos y resultados de política para transparencia. |
 | POST | /api/v1/geodatos/estandarizar-direccion | publico | Normalización y georreferenciación inteligente de nomenclaturas cartageneras. |
 | GET | /api/v1/health/live | publico | Comprobación de vida/disponibilidad; no publicar credenciales ni errores internos. |
 | GET | /api/v1/health/ready | publico | Comprobación de vida/disponibilidad; no publicar credenciales ni errores internos. |

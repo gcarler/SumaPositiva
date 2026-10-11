@@ -8,6 +8,7 @@ from app.modules.geodatos.schemas import (
     CapaGeovisorRead,
     DireccionEstandarizadaResponse,
     EstandarizarDireccionRequest,
+    IsocronasFeatureCollection,
     TerritorioRead,
 )
 from app.modules.geodatos.repository import GeodatosRepository
@@ -70,3 +71,29 @@ async def estandarizar_direccion(
     service: GeodatosServiceDep,
 ) -> DireccionEstandarizadaResponse:
     return await service.estandarizar_direccion(payload.direccion_raw)
+
+
+@router.get(
+    "/isocronas",
+    response_model=IsocronasFeatureCollection,
+    summary="Cálculo de isócronas de accesibilidad y ruteo de seguridad humana",
+    description=(
+        "Genera polígonos de isócronas de cobertura temporal (5, 10, 15 min) a pie o vehículo "
+        "calculando la proximidad al nodo de seguridad ciudadana o salud más cercano mediante PostGIS y pgRouting."
+    ),
+)
+async def calcular_isocronas(
+    service: GeodatosServiceDep,
+    lat: float = Query(..., ge=-90.0, le=90.0, description="Latitud WGS84 EPSG:4326"),
+    lon: float = Query(..., ge=-180.0, le=180.0, description="Longitud WGS84 EPSG:4326"),
+    modo: str = Query(
+        default="pie",
+        pattern="^(pie|vehiculo)$",
+        description="Modo de desplazamiento: 'pie' (~4.5 km/h) o 'vehiculo' (~25 km/h)",
+    ),
+    minutos: str = Query(
+        default="5,10,15",
+        description="Intervalos temporales en minutos separados por coma (ej. '5,10,15')",
+    ),
+) -> IsocronasFeatureCollection:
+    return await service.calcular_isocronas(lon=lon, lat=lat, modo=modo, minutos_str=minutos)

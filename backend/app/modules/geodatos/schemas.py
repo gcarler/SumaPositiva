@@ -181,3 +181,41 @@ class DireccionEstandarizadaResponse(BaseModel):
         description="Nivel de confianza de la estandarización (0.0 a 1.0)",
     )
 
+
+class NodoCercanoRead(BaseModel):
+    """Información del nodo de seguridad o salud más cercano."""
+
+    nombre: str = Field(..., description="Nombre del nodo de seguridad humana")
+    tipo: str = Field(..., description="Tipo de nodo: seguridad, salud, justicia")
+    distancia_metros: float = Field(
+        ..., description="Distancia geodésica en metros desde el origen"
+    )
+
+
+class IsocronaProperties(BaseModel):
+    """Propiedades temáticas y temporales del polígono de isócrona."""
+
+    minutos: int = Field(..., description="Intervalo temporal en minutos (5, 10, 15)")
+    modo: str = Field(..., description="Modo de desplazamiento: 'pie' o 'vehiculo'")
+    radio_metros: float = Field(..., description="Radio de cobertura estimado en metros")
+    nodo_cercano: NodoCercanoRead | None = Field(
+        default=None, description="Nodo de seguridad humana más cercano alcanzable"
+    )
+
+
+class IsocronaFeature(BaseModel):
+    """Feature GeoJSON de isócrona poligonal."""
+
+    type: str = Field(default="Feature", description="Tipo GeoJSON Feature")
+    geometry: dict[str, Any] = Field(..., description="Geometría Polygon o MultiPolygon GeoJSON")
+    properties: IsocronaProperties = Field(..., description="Propiedades de la isócrona")
+
+
+class IsocronasFeatureCollection(BaseModel):
+    """Colección GeoJSON de polígonos de isócronas para el Geovisor."""
+
+    type: str = Field(default="FeatureCollection", description="Tipo GeoJSON FeatureCollection")
+    features: list[IsocronaFeature] = Field(
+        default_factory=list, description="Lista de polígonos de cobertura temporal"
+    )
+

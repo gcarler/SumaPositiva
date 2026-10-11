@@ -1,8 +1,9 @@
 import json
 import uuid
 from collections.abc import Sequence
+from typing import Any
 
-from sqlalchemy import func, select
+from sqlalchemy import func, select, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.modules.geodatos.models import CapaGeovisor, Territorio
@@ -131,3 +132,39 @@ class GeodatosRepository:
         res = await self.session.execute(stmt)
         row = res.first()
         return (row[0], row[1], row[2]) if row else None
+
+    async def verificar_pgrouting(self) -> str | None:
+        """Verifica la disponibilidad de la extensión pgRouting en PostgreSQL."""
+        try:
+            async with self.session.begin_nested():
+                res = await self.session.execute(text("SELECT pgr_version();"))
+                row = res.first()
+                return str(row[0]) if row else None
+        except Exception:
+            return None
+
+    async def generar_isocrona_postgis(
+        self, lon: float, lat: float, radio_metros: float
+    ) -> dict[str, Any] | None:
+        """Genera la geometría poligonal de una isócrona usando PostGIS ST_Buffer sobre geografía."""
+        try:
+            async with self.session.begin_nested():
+                stmt = text(
+                    """
+                    SELECT ST_AsGeoJSON(
+                        ST_Buffer(
+                            ST_SetSRID(ST_MakePoint(:lon, :lat), 4326)::geography,
+                            :radio
+                        )::geometry
+                    ) as geojson;
+                    """
+                )
+                res = await self.session.execute(
+                    stmt, {"lon": lon, "lat": lat, "radio": radio_metros}
+                )
+                row = res.first()
+                if row and row[0]:
+                    return json.loads(row[0])
+        except Exception:
+            pass
+        return None

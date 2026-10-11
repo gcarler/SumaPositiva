@@ -1,11 +1,22 @@
+import math
 import re
 import unicodedata
 import uuid
 from collections.abc import Sequence
+from typing import Any
+
+from fastapi import HTTPException, status
 
 from app.modules.geodatos.models import CapaGeovisor, Territorio
 from app.modules.geodatos.repository import GeodatosRepository
-from app.modules.geodatos.schemas import CoordenadasAproximadas, DireccionEstandarizadaResponse
+from app.modules.geodatos.schemas import (
+    CoordenadasAproximadas,
+    DireccionEstandarizadaResponse,
+    IsocronaFeature,
+    IsocronaProperties,
+    IsocronasFeatureCollection,
+    NodoCercanoRead,
+)
 
 BARRIOS_COORD_MAP: dict[str, dict] = {
     "pie de la popa": {"lat": 10.4167, "lon": -75.5333, "loc": "LOC-1", "nombre": "Pie de la Popa"},
@@ -42,6 +53,238 @@ BARRIOS_COORD_MAP: dict[str, dict] = {
     "tierra bomba": {"lat": 10.3634, "lon": -75.5640, "codigo": "INS-TIERRABOMBA", "nombre": "Isla de Tierra Bomba"},
     "islas del rosario": {"lat": 10.1738, "lon": -75.7543, "codigo": "INS-ROSARIO", "nombre": "Archipiélago de Nuestra Señora del Rosario"},
 }
+
+NODOS_SEGURIDAD_HUMANA: list[dict[str, Any]] = [
+    # CAIs y Estaciones de Policía (Seguridad)
+    {
+        "nombre": "CAI Olaya Herrera",
+        "tipo": "seguridad",
+        "subtipo": "cai",
+        "latitud": 10.4135,
+        "longitud": -75.4940,
+        "direccion": "Avenida Pedro Romero, Sector Central",
+        "localidad": "Localidad 2: De la Virgen y Turística",
+    },
+    {
+        "nombre": "CAI El Pozón",
+        "tipo": "seguridad",
+        "subtipo": "cai",
+        "latitud": 10.4120,
+        "longitud": -75.4610,
+        "direccion": "Carrera 88 # Calle 58, El Pozón",
+        "localidad": "Localidad 2: De la Virgen y Turística",
+    },
+    {
+        "nombre": "CAI Nelson Mandela",
+        "tipo": "seguridad",
+        "subtipo": "cai",
+        "latitud": 10.3860,
+        "longitud": -75.4790,
+        "direccion": "Sector Las Colinas, Nelson Mandela",
+        "localidad": "Localidad 3: Industrial y de la Bahía",
+    },
+    {
+        "nombre": "CAI Bocagrande",
+        "tipo": "seguridad",
+        "subtipo": "cai",
+        "latitud": 10.3980,
+        "longitud": -75.5560,
+        "direccion": "Carrera 2 con Calle 10, Bocagrande",
+        "localidad": "Localidad 1: Histórica y del Caribe Norte",
+    },
+    {
+        "nombre": "CAI Manga",
+        "tipo": "seguridad",
+        "subtipo": "cai",
+        "latitud": 10.4125,
+        "longitud": -75.5345,
+        "direccion": "Calle Real # Avenida Miramar, Manga",
+        "localidad": "Localidad 1: Histórica y del Caribe Norte",
+    },
+    {
+        "nombre": "CAI San Francisco",
+        "tipo": "seguridad",
+        "subtipo": "cai",
+        "latitud": 10.4350,
+        "longitud": -75.5080,
+        "direccion": "Sector La María, San Francisco",
+        "localidad": "Localidad 1: Histórica y del Caribe Norte",
+    },
+    {
+        "nombre": "CAI Los Ejecutivos",
+        "tipo": "seguridad",
+        "subtipo": "cai",
+        "latitud": 10.4030,
+        "longitud": -75.5090,
+        "direccion": "Avenida Pedro de Heredia, Los Ejecutivos",
+        "localidad": "Localidad 2: De la Virgen y Turística",
+    },
+    {
+        "nombre": "CAI Fredonia",
+        "tipo": "seguridad",
+        "subtipo": "cai",
+        "latitud": 10.4020,
+        "longitud": -75.4850,
+        "direccion": "Sector Fredonia con Isla de León",
+        "localidad": "Localidad 2: De la Virgen y Turística",
+    },
+    {
+        "nombre": "CAI La Boquilla",
+        "tipo": "seguridad",
+        "subtipo": "cai",
+        "latitud": 10.4720,
+        "longitud": -75.4980,
+        "direccion": "Entrada Principal, La Boquilla",
+        "localidad": "Localidad 1: Histórica y del Caribe Norte",
+    },
+    {
+        "nombre": "Estación de Policía Caribe Norte",
+        "tipo": "seguridad",
+        "subtipo": "estacion_policia",
+        "latitud": 10.4225,
+        "longitud": -75.5510,
+        "direccion": "Centro Histórico, Calle Cuartel",
+        "localidad": "Localidad 1: Histórica y del Caribe Norte",
+    },
+    {
+        "nombre": "Estación de Policía Virgen y Turística",
+        "tipo": "seguridad",
+        "subtipo": "estacion_policia",
+        "latitud": 10.4070,
+        "longitud": -75.5020,
+        "direccion": "Chiquinquirá con Avenida Pedro Romero",
+        "localidad": "Localidad 2: De la Virgen y Turística",
+    },
+    {
+        "nombre": "Estación de Policía Pasacaballos",
+        "tipo": "seguridad",
+        "subtipo": "estacion_policia",
+        "latitud": 10.2980,
+        "longitud": -75.5120,
+        "direccion": "Sector Vía Mamonal, Pasacaballos",
+        "localidad": "Localidad 3: Industrial y de la Bahía",
+    },
+    # Salud y Emergencias
+    {
+        "nombre": "Hospital Universitario del Caribe",
+        "tipo": "salud",
+        "subtipo": "hospital",
+        "latitud": 10.3980,
+        "longitud": -75.5120,
+        "direccion": "Zarzagocilla, Calle 29",
+        "localidad": "Localidad 2: De la Virgen y Turística",
+    },
+    {
+        "nombre": "CAP Olaya Herrera",
+        "tipo": "salud",
+        "subtipo": "centro_atencion_prioritaria",
+        "latitud": 10.4150,
+        "longitud": -75.4920,
+        "direccion": "Sector Ricaurte, Olaya Herrera",
+        "localidad": "Localidad 2: De la Virgen y Turística",
+    },
+    {
+        "nombre": "CAP El Pozón",
+        "tipo": "salud",
+        "subtipo": "centro_atencion_prioritaria",
+        "latitud": 10.4105,
+        "longitud": -75.4600,
+        "direccion": "Sector Central, El Pozón",
+        "localidad": "Localidad 2: De la Virgen y Turística",
+    },
+    {
+        "nombre": "CAP Nelson Mandela",
+        "tipo": "salud",
+        "subtipo": "centro_atencion_prioritaria",
+        "latitud": 10.3880,
+        "longitud": -75.4760,
+        "direccion": "Sector El Trébol, Nelson Mandela",
+        "localidad": "Localidad 3: Industrial y de la Bahía",
+    },
+    {
+        "nombre": "Hospital Infantil Napoleón Franco Pareja",
+        "tipo": "salud",
+        "subtipo": "hospital",
+        "latitud": 10.4140,
+        "longitud": -75.5280,
+        "direccion": "Pie de la Popa, Calle Real",
+        "localidad": "Localidad 1: Histórica y del Caribe Norte",
+    },
+    {
+        "nombre": "CAP Canapote",
+        "tipo": "salud",
+        "subtipo": "centro_atencion_prioritaria",
+        "latitud": 10.4380,
+        "longitud": -75.5190,
+        "direccion": "Calle 60, Canapote",
+        "localidad": "Localidad 1: Histórica y del Caribe Norte",
+    },
+    # Justicia y Convivencia
+    {
+        "nombre": "Casa de Justicia Chiquinquirá",
+        "tipo": "justicia",
+        "subtipo": "casa_justicia",
+        "latitud": 10.4060,
+        "longitud": -75.5040,
+        "direccion": "Avenida Pedro de Heredia, Chiquinquirá",
+        "localidad": "Localidad 2: De la Virgen y Turística",
+    },
+    {
+        "nombre": "Casa de Justicia Canapote",
+        "tipo": "justicia",
+        "subtipo": "casa_justicia",
+        "latitud": 10.4390,
+        "longitud": -75.5170,
+        "direccion": "Calle 62 con Carrera 15, Canapote",
+        "localidad": "Localidad 1: Histórica y del Caribe Norte",
+    },
+    {
+        "nombre": "Comisaría de Familia Olaya Herrera",
+        "tipo": "justicia",
+        "subtipo": "comisaria_familia",
+        "latitud": 10.4145,
+        "longitud": -75.4910,
+        "direccion": "Sector Central, Olaya Herrera",
+        "localidad": "Localidad 2: De la Virgen y Turística",
+    },
+]
+
+
+def calcular_distancia_geodesica_metros(
+    lat1: float, lon1: float, lat2: float, lon2: float
+) -> float:
+    """Calcula la distancia geodésica en metros entre dos puntos WGS84 usando fórmula de Haversine."""
+    r = 6371000.0
+    phi1 = math.radians(lat1)
+    phi2 = math.radians(lat2)
+    delta_phi = math.radians(lat2 - lat1)
+    delta_lambda = math.radians(lon2 - lon1)
+    a = (
+        math.sin(delta_phi / 2.0) ** 2
+        + math.cos(phi1) * math.cos(phi2) * math.sin(delta_lambda / 2.0) ** 2
+    )
+    c = 2.0 * math.atan2(math.sqrt(a), math.sqrt(max(0.0, 1.0 - a)))
+    return round(r * c, 1)
+
+
+def generar_circulo_geodesico(
+    lon: float, lat: float, radio_metros: float, num_puntos: int = 32
+) -> dict[str, Any]:
+    """Genera un polígono de aproximación circular geodésica en formato GeoJSON."""
+    coords = []
+    lat_rad = math.radians(lat)
+    r_lat = radio_metros / 111320.0
+    r_lon = radio_metros / (111320.0 * max(0.001, math.cos(lat_rad)))
+    for i in range(num_puntos):
+        theta = 2.0 * math.pi * i / num_puntos
+        p_lat = round(lat + r_lat * math.sin(theta), 6)
+        p_lon = round(lon + r_lon * math.cos(theta), 6)
+        coords.append([p_lon, p_lat])
+    coords.append(coords[0])
+    return {
+        "type": "Polygon",
+        "coordinates": [coords],
+    }
 
 
 def _strip_accents(text: str) -> str:
@@ -237,4 +480,94 @@ class GeodatosService:
             territorio_id=None,
             coordenadas_aproximadas=None,
             confianza=0.50,
+        )
+
+    async def calcular_isocronas(
+        self,
+        lon: float,
+        lat: float,
+        modo: str = "pie",
+        minutos_str: str = "5,10,15",
+    ) -> IsocronasFeatureCollection:
+        """Calcula polígonos de isócronas (cobertura temporal a pie/vehículo) y localiza el centro de seguridad más cercano."""
+        # 1. Validación de rango territorial distrital de Cartagena
+        if not (9.8 <= lat <= 11.2 and -76.2 <= lon <= -74.8):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=(
+                    f"Coordenadas fuera del rango territorial del Distrito de Cartagena de Indias "
+                    f"(latitud recibida: {lat}, longitud: {lon}). "
+                    f"Rango válido distrital WGS84: lat [9.8, 11.2], lon [-76.2, -74.8]."
+                ),
+            )
+
+        # 2. Parseo seguro de intervalos temporales
+        intervalos: list[int] = []
+        if minutos_str:
+            for part in minutos_str.split(","):
+                part_clean = part.strip()
+                if part_clean.isdigit():
+                    val = int(part_clean)
+                    if 1 <= val <= 180:
+                        intervalos.append(val)
+        if not intervalos:
+            intervalos = [5, 10, 15]
+
+        # 3. Normalización del modo de desplazamiento y cálculo de velocidad
+        modo_clean = modo.strip().lower()
+        if modo_clean in ["vehiculo", "vehículo", "carro", "moto", "patrulla", "ambulancia"]:
+            modo_final = "vehiculo"
+            velocidad_m_min = 25000.0 / 60.0  # 416.6667 m/min (~25 km/h urbano)
+        else:
+            modo_final = "pie"
+            velocidad_m_min = 4500.0 / 60.0  # 75.0 m/min (~4.5 km/h a pie)
+
+        # 4. Localización del nodo de seguridad humana más cercano
+        nodos_con_distancia = []
+        for nodo in NODOS_SEGURIDAD_HUMANA:
+            dist = calcular_distancia_geodesica_metros(
+                lat, lon, nodo["latitud"], nodo["longitud"]
+            )
+            nodos_con_distancia.append({**nodo, "distancia_metros": dist})
+
+        nodos_con_distancia.sort(key=lambda n: n["distancia_metros"])
+        nodo_mas_cercano = nodos_con_distancia[0] if nodos_con_distancia else None
+
+        # 5. Generación de polígonos de isócronas para cada intervalo
+        features: list[IsocronaFeature] = []
+        for m in sorted(set(intervalos)):
+            radio_m = round(m * velocidad_m_min, 1)
+
+            # Intentar generar geometría precisa mediante PostGIS ST_Buffer
+            geom = await self.repository.generar_isocrona_postgis(lon, lat, radio_m)
+            if not geom:
+                # Fallback geodésico resiliente en memoria
+                geom = generar_circulo_geodesico(lon, lat, radio_m)
+
+            nodo_cercano_read = None
+            if nodo_mas_cercano:
+                nodo_cercano_read = NodoCercanoRead(
+                    nombre=nodo_mas_cercano["nombre"],
+                    tipo=nodo_mas_cercano["tipo"],
+                    distancia_metros=nodo_mas_cercano["distancia_metros"],
+                )
+
+            propiedades = IsocronaProperties(
+                minutos=m,
+                modo=modo_final,
+                radio_metros=radio_m,
+                nodo_cercano=nodo_cercano_read,
+            )
+
+            features.append(
+                IsocronaFeature(
+                    type="Feature",
+                    geometry=geom,
+                    properties=propiedades,
+                )
+            )
+
+        return IsocronasFeatureCollection(
+            type="FeatureCollection",
+            features=features,
         )

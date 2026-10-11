@@ -18,6 +18,7 @@ export interface CapasConfig {
   barrios: boolean;
   puntos: boolean;
   etiquetas: boolean;
+  isocronas?: boolean;
 }
 
 interface GeovisorControlesProps {
@@ -108,6 +109,20 @@ export function GeovisorControles({
           </div>
           <span className="text-[10px] text-[var(--text-tertiary)]">Aa</span>
         </Label>
+
+        {capas.isocronas !== undefined && (
+          <Label htmlFor="capa-isocronas" className="flex items-center justify-between gap-2 cursor-pointer hover:text-[var(--text-primary)] text-[var(--text-secondary)] font-normal">
+            <div className="flex items-center gap-2">
+              <Checkbox
+                checked={capas.isocronas}
+                onCheckedChange={() => onToggleCapa("isocronas")}
+                id="capa-isocronas"
+              />
+              <span className="font-medium text-xs">Isócronas de Accesibilidad</span>
+            </div>
+            <span className="size-2 rounded-full" style={{ backgroundColor: "#10b981" }} />
+          </Label>
+        )}
       </div>
 
       {/* Leyenda Dinámica Coroplética */}

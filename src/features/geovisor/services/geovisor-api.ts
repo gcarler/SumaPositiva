@@ -96,3 +96,60 @@ export async function estandarizarDireccion(
   }
 }
 
+export interface NodoSeguridadCercano {
+  nombre: string;
+  tipo: string;
+  distancia_metros: number;
+}
+
+export interface IsocronaProperties {
+  minutos: number;
+  modo: "pie" | "vehiculo";
+  radio_metros: number;
+  nodo_cercano?: NodoSeguridadCercano | null;
+}
+
+export interface IsocronaFeature {
+  type: "Feature";
+  geometry: {
+    type: string;
+    coordinates: unknown;
+  };
+  properties: IsocronaProperties;
+}
+
+export interface IsocronasFeatureCollection {
+  type: "FeatureCollection";
+  features: IsocronaFeature[];
+}
+
+export interface ParametrosIsocronas {
+  lat: number;
+  lon: number;
+  modo?: "pie" | "vehiculo";
+  minutos?: string;
+}
+
+/**
+ * Cálculo de Isócronas de Accesibilidad y Ruteo de Seguridad Humana:
+ * Genera polígonos GeoJSON de cobertura temporal (5, 10, 15 min) y ubica el centro de auxilio más cercano.
+ * Conecta con backend FastAPI: GET /api/v1/geodatos/isocronas
+ */
+export async function obtenerIsocronas(
+  params: ParametrosIsocronas
+): Promise<IsocronasFeatureCollection | null> {
+  const { lat, lon, modo = "pie", minutos = "5,10,15" } = params;
+  try {
+    const query = new URLSearchParams({
+      lat: String(lat),
+      lon: String(lon),
+      modo,
+      minutos,
+    });
+    return await apiFetch<IsocronasFeatureCollection>(`/geodatos/isocronas?${query.toString()}`);
+  } catch (err) {
+    console.warn("Fallo al consultar /geodatos/isocronas:", err);
+    return null;
+  }
+}
+
