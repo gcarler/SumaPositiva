@@ -2552,3 +2552,59 @@ La tarea **`[SEC-HARDEN-01]`** queda formalmente **CERRADA, APROBADA AL 100% Y C
 
 Se autoriza el avance a la siguiente tarea de la **FASE 1**:
 - **Siguiente Tarea:** **`[SEC-HARDEN-02]`** (*Endurecimiento de Nginx: Rate Limiting, Redirección 301 Universal en Puerto 80 y Cabeceras de Seguridad Avanzadas*).
+
+---
+
+## 🏛️ DICTAMEN PERICIAL FORENSE EAF — TAREA [SEC-HARDEN-02]
+### ENDURECIMIENTO DE NGINX: RATE LIMITING, REDIRECCIÓN 301 UNIVERSAL Y CABECERAS AVANZADAS
+**Fecha de Emisión:** Domingo, 11 de Octubre de 2026  
+**Evaluador:** Coordinador General y Auditor Forense EAF `agy` (`tmux a -t agy`)  
+**Responsable Técnico Auditado:** Desarrollador / EDD `agy2` (`tmux a -t agy2`)  
+**Commit Evaluado:** `6ca999e` (`sec(nginx): rate limiting redireccion 301 universal y cabeceras de endurecimiento SEC-HARDEN-02`)  
+**Referencia Técnica:** `bridge/01_tarea_activa.md` y `bridge/02_resultado_agy2.md`  
+**Plan Maestro:** `bridge/00_plan_maestro_blindaje_geoprocesamiento_resiliencia.md` (Fase 1: Tarea 1.2 — Cierre de Fase 1)  
+**Veredicto Oficial:** **CONFORME Y APROBADO AL 100% SIN OBSERVACIONES (APROBACIÓN TOTAL)**
+
+---
+
+### 1. Hallazgos de la Contra-Auditoría Técnica Independiente
+
+1. **Rate Limiting Segmentado y Código RFC 6585**:
+   - Inspección directa de `/etc/nginx/sites-available/polis`: zonas de limitación en memoria binaria debidamente declaradas (`api_general: 30r/s`, `civic_forms: 5r/s`).
+   - Se verificó la respuesta bajo ráfaga concurrente contra `/api/v1/formularios/publicos`: **13 respuestas 200 OK y 7 respuestas HTTP 429 Too Many Requests**, protegiendo activamente contra la saturación o votaciones cívicas automatizadas.
+
+2. **Redirección Incondicional Universal HTTP 301**:
+   - Bloque del puerto 80 refactorizado como catch-all `server_name _; return 301 https://$host$request_uri;`.
+   - Comprobación en caliente: `curl -sI http://127.0.0.1/` $\rightarrow$ `HTTP/1.1 301 Moved Permanently` con `Location: https://127.0.0.1/`. Cero retornos 404 en hosts secundarios.
+
+3. **Cabeceras de Endurecimiento Avanzadas y HSTS Preload**:
+   - Comprobación de cabeceras en HTTPS:
+     * `Strict-Transport-Security: max-age=31536000; includeSubDomains; preload`
+     * `Permissions-Policy: camera=(), microphone=(), geolocation=(self)`
+     * `X-Content-Type-Options: nosniff`
+     * `X-Frame-Options: SAMEORIGIN`
+
+4. **Inviolabilidad de Producción (`bd_csh`)**:
+   - Comprobación en PostgreSQL: 33 mesas de diálogo territorial, 36 agendas comunitarias, 11 fichas técnicas de indicadores y 17 actores estratégicos 100% intactos.
+
+---
+
+### 2. Certificación Independiente de Quality Gates
+
+- `nginx -t`: **SINTAXIS Y CONFIGURACIÓN VÁLIDAS**.
+- `curl -sI http://127.0.0.1/`: **HTTP/1.1 301 Moved Permanently (Universal)**.
+- Ráfaga a Formularios: **HTTP 429 Too Many Requests verificado**.
+- `bun run ui:check`: **APROBADO** (0 infracciones).
+- `bun run check` (`tsc --noEmit` & `eslint .`): **APROBADO** (0 errores, 0 advertencias).
+- `bun test`: **412/412 pasadas**.
+
+---
+
+### 3. Dictamen Final y Cierre de la FASE 1
+
+La tarea **`[SEC-HARDEN-02]`** queda formalmente **CERRADA, APROBADA AL 100% Y CERTIFICADA PARA PRODUCCIÓN**.
+
+Con este dictamen se declara formalmente **APROBADA Y CERRADA LA FASE 1: Blindaje Perimetral, Seguridad de Red y Hardening de Servidor** del Plan Maestro.
+
+Se autoriza la apertura de la **FASE 2: Explotación Activa de Geoprocesamiento y Normalización Territorial**:
+- **Siguiente Tarea:** **`[GEO-PROC-01]`** (*Normalizador Inteligente de Direcciones Cartageneras: Integración de PostGIS address_standardizer en backend y frontend para nomenclaturas urbanas y populares de Cartagena*).
