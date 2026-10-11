@@ -219,10 +219,14 @@ def downgrade() -> None:
     conn.execute(
         text("""
             DELETE FROM indicadores.mediciones_indicador
-            WHERE periodo = '2024-ANUAL';
+            WHERE periodo = '2024-ANUAL'
+        """)
+    )
+    conn.execute(
+        text("""
             UPDATE indicadores.fichas_tecnicas_indicadores
             SET valor_actual = 0.0,
                 porcentaje_avance = 0.0,
-                metadatos = '{}'::jsonb;
+                metadatos = CAST('{}' AS jsonb)
         """)
     )

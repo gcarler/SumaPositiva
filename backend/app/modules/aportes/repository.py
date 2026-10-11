@@ -4,7 +4,7 @@ import uuid
 from collections.abc import Sequence
 from typing import Any
 
-from sqlalchemy import func, select
+from sqlalchemy import func, select, text
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -19,14 +19,28 @@ class AporteRepository:
     def __init__(self, session: AsyncSession) -> None:
         self.session = session
 
+    async def generar_codigo_radicado(self) -> str:
+        """Obtiene el siguiente valor atómico de radicación POL-2026-XXXX."""
+        resultado = await self.session.execute(
+            text("SELECT nextval('participacion_ciudadana.secuencia_radicados_propuestas')")
+        )
+        val = resultado.scalar_one()
+        return f"POL-2026-{val:04d}"
+
     async def crear(
         self,
         datos: PropuestaCiudadanaCreate,
         sesion_contexto: SesionContexto | None = None,
     ) -> PropuestaCiudadana:
-        """Crea y persiste un nuevo aporte ciudadano."""
-        datos_dict = datos.model_dump()
-        propuesta = PropuestaCiudadana(**datos_dict)
+        """Crea y persiste un nuevo aporte ciudadano asignando radicado oficial atómico."""
+        radicado = await self.generar_codigo_radicado()
+        datos_dict = datos.model_dump(exclude={"correo_contacto"})
+        if datos.correo_contacto:
+            metadatos_actuales = dict(datos_dict.get("metadatos") or {})
+            metadatos_actuales["correo_contacto"] = datos.correo_contacto
+            datos_dict["metadatos"] = metadatos_actuales
+
+        propuesta = PropuestaCiudadana(**datos_dict, codigo_radicado=radicado)
         if sesion_contexto is not None:
             propuesta.sesion_id = sesion_contexto.sesion_id
             propuesta.huella_hash = sesion_contexto.huella_hash
@@ -40,6 +54,21 @@ class AporteRepository:
     ) -> PropuestaCiudadana | None:
         """Obtiene un aporte por su identificador UUIDv7."""
         query = select(PropuestaCiudadana).where(PropuestaCiudadana.id == aporte_id)
+        if not incluir_inactivos:
+            query = query.where(PropuestaCiudadana.activo.is_(True))
+
+        resultado = await self.session.execute(query)
+        return resultado.scalar_one_or_none()
+
+    async def obtener_por_radicado(
+        self, codigo_radicado: str, incluir_inactivos: bool = False
+    ) -> PropuestaCiudadana | None:
+        """Obtiene un aporte por su código único de radicado POL-2026-XXXX."""
+        query = (
+            select(PropuestaCiudadana)
+            .options(selectinload(PropuestaCiudadana.territorio))
+            .where(PropuestaCiudadana.codigo_radicado == codigo_radicado.strip().upper())
+        )
         if not incluir_inactivos:
             query = query.where(PropuestaCiudadana.activo.is_(True))
 

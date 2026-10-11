@@ -17,6 +17,7 @@ from app.modules.instrumentos import models as instrumentos_models  # noqa: F401
 from app.modules.mesas import models as mesas_models  # noqa: F401
 from app.modules.noticias import models as noticias_models  # noqa: F401
 from app.modules.comunicaciones import models as comunicaciones_models  # noqa: F401
+from app.modules.notificaciones import models as notificaciones_models  # noqa: F401
 from app.modules.participacion import models as participacion_models  # noqa: F401
 from app.modules.politicas import models as politicas_models  # noqa: F401
 from app.modules.presupuesto import models as presupuesto_models  # noqa: F401

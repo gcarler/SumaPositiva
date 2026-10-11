@@ -59,9 +59,12 @@ def upgrade() -> None:
             v_total_mesas_con_agenda integer;
             v_mapeo RECORD;
         BEGIN
-            SELECT count(*) INTO v_mesas_existentes FROM mesas_trabajo.mesas;
-            IF v_mesas_existentes < 33 THEN
-                RAISE NOTICE 'mesas_trabajo.mesas incompleta (encontradas: %, requeridas: 33); omitiendo vinculación de datos en base de pruebas.', v_mesas_existentes;
+            SELECT count(*) INTO v_mesas_existentes
+            FROM mesas_trabajo.mesas
+            WHERE codigo_oficial = 'MT-L01-01';
+
+            IF v_mesas_existentes = 0 THEN
+                RAISE NOTICE 'Mesas canónicas no encontradas; omitiendo vinculación de datos en base de pruebas.';
                 RETURN;
             END IF;
 

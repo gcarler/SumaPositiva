@@ -145,6 +145,11 @@ class PropuestaCiudadanaCreate(PropuestaCiudadanaBase):
         default="publicado",
         description="Estado inicial de la propuesta",
     )
+    correo_contacto: str | None = Field(
+        default=None,
+        max_length=255,
+        description="Correo electrónico opcional de contacto para recibir constancia oficial de radicación",
+    )
 
 
 class PropuestaCiudadanaUpdate(BaseModel):
@@ -171,6 +176,10 @@ class PropuestaCiudadanaRead(PropuestaCiudadanaBase):
     """Esquema de salida serializado para propuestas ciudadanas."""
 
     id: uuid.UUID
+    codigo_radicado: str = Field(
+        ...,
+        description="Código oficial único de radicación distrital (ej. POL-2026-0001)",
+    )
     sesion_id: uuid.UUID | None = Field(
         default=None, description="UUIDv7 de la sesión anónima originaria"
     )

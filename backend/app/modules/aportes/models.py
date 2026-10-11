@@ -88,6 +88,15 @@ class PropuestaCiudadana(Base):
         primary_key=True,
         server_default=text("public.generar_uuid_v7()"),
     )
+    codigo_radicado: Mapped[str] = mapped_column(
+        String(50),
+        unique=True,
+        index=True,
+        server_default=text(
+            "('POL-2026-' || lpad(CAST(nextval('participacion_ciudadana.secuencia_radicados_propuestas') AS text), 4, '0'))"
+        ),
+        nullable=False,
+    )
     linea_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
         ForeignKey("motor_politicas.lineas_estrategicas.id", ondelete="RESTRICT"),

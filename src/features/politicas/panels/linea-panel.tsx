@@ -2,6 +2,7 @@
 
 import { Button } from "@/shared/ui/button";
 import { Skeleton } from "@/shared/ui/skeleton";
+import { Badge } from "@/shared/ui/badge";
 
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from "react";
 import { formatDistanceToNow } from "date-fns";
@@ -209,6 +210,14 @@ function AporteCard({
             {fotos.length}
           </span>
         )}
+        {aporte.codigo_radicado && (
+          <Badge
+            variant="outline"
+            className="font-mono text-[10px] tracking-wider text-[var(--text-secondary)] border-[var(--border-strong)]"
+          >
+            {aporte.codigo_radicado}
+          </Badge>
+        )}
         <TipoAporteChip tipo={aporte.tipo} />
       </div>
 
@@ -313,6 +322,7 @@ export function LineaPanel({
       fotos: Array.isArray(el.archivos_adjuntos)
         ? el.archivos_adjuntos.filter((f): f is string => typeof f === "string")
         : [],
+      codigo_radicado: el.codigo_radicado,
     }));
 
     if (!linea?.aportes) return mapeados;

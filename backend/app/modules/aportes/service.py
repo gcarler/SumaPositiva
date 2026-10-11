@@ -1,9 +1,11 @@
 """Servicio de lógica de negocio para la gestión de aportes y participación ciudadana."""
 
+import logging
 import uuid
 
 from fastapi import HTTPException, status
 
+from app.core.config import Settings
 from app.core.transactions import transaction
 from app.modules.aportes.repository import AporteRepository
 from app.modules.aportes.schemas import (
@@ -14,12 +16,17 @@ from app.modules.aportes.schemas import (
 )
 from app.modules.sesion.schemas import SesionContexto
 
+logger = logging.getLogger("polis.aportes.service")
+
 
 class AporteService:
     """Lógica de negocio para aportes ciudadanos con enfoque diferencial."""
 
-    def __init__(self, repository: AporteRepository) -> None:
+    def __init__(
+        self, repository: AporteRepository, settings: Settings | None = None
+    ) -> None:
         self.repository = repository
+        self.settings = settings or Settings()
 
     async def crear_propuesta(
         self,
@@ -61,7 +68,30 @@ class AporteService:
                     datos.ruta_etnica_diferenciada = True
                     datos.consejo_comunitario = territorio.nombre_consejo_comunitario
 
+            correo_notif = datos.correo_contacto
             propuesta = await self.repository.crear(datos, sesion_contexto=sesion_contexto)
+
+            if correo_notif:
+                try:
+                    from app.modules.notificaciones.service import NotificacionService
+
+                    notif_service = NotificacionService(
+                        self.repository.session, settings=self.settings
+                    )
+                    await notif_service.enviar_constancia_radicacion(
+                        destinatario=correo_notif,
+                        radicado=propuesta.codigo_radicado,
+                        titulo=propuesta.titulo,
+                        descripcion=propuesta.descripcion,
+                        autor=propuesta.autor_nombre,
+                    )
+                except Exception as err:
+                    logger.warning(
+                        "Fallo no bloqueante al registrar notificacion para radicado %s: %s",
+                        propuesta.codigo_radicado,
+                        err,
+                    )
+
             return PropuestaCiudadanaRead.model_validate(propuesta)
 
     async def obtener_propuesta(self, aporte_id: uuid.UUID) -> PropuestaCiudadanaRead:
@@ -125,7 +155,7 @@ class AporteService:
     async def actualizar_propuesta(
         self, aporte_id: uuid.UUID, cambios: PropuestaCiudadanaUpdate
     ) -> PropuestaCiudadanaRead:
-        """Actualiza una propuesta existente."""
+        """Actualiza una propuesta existente y notifica cambios de estado si corresponde."""
         async with transaction(self.repository.session):
             if cambios.estado == "rechazado":
                 raise HTTPException(
@@ -136,12 +166,44 @@ class AporteService:
                     ),
                 )
 
+            propuesta_previa = await self.repository.obtener_por_id(aporte_id, incluir_inactivos=True)
+            if not propuesta_previa:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail=f"Propuesta ciudadana con ID {aporte_id} no encontrada",
+                )
+            estado_anterior = propuesta_previa.estado
+
             propuesta = await self.repository.actualizar(aporte_id, cambios)
             if not propuesta:
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
                     detail=f"Propuesta ciudadana con ID {aporte_id} no encontrada",
                 )
+
+            if cambios.estado and cambios.estado != estado_anterior:
+                correo = (propuesta.metadatos or {}).get("correo_contacto")
+                if correo:
+                    try:
+                        from app.modules.notificaciones.service import NotificacionService
+
+                        notif_service = NotificacionService(
+                            self.repository.session, settings=self.settings
+                        )
+                        await notif_service.enviar_notificacion_cambio_estado(
+                            destinatario=correo,
+                            radicado=propuesta.codigo_radicado,
+                            titulo=propuesta.titulo,
+                            nuevo_estado=cambios.estado,
+                            observaciones="Actualización en el estado de tramitación en POLIS.",
+                        )
+                    except Exception as err:
+                        logger.warning(
+                            "Fallo no bloqueante al notificar cambio de estado para radicado %s: %s",
+                            propuesta.codigo_radicado,
+                            err,
+                        )
+
             return PropuestaCiudadanaRead.model_validate(propuesta)
 
     async def desactivar_propuesta(self, aporte_id: uuid.UUID) -> None:

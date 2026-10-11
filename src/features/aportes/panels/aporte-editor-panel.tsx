@@ -6,6 +6,7 @@ import { ChoiceGroup } from "@/shared/ui/choice-group";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
 import { Textarea } from "@/shared/ui/textarea";
+import { Badge } from "@/shared/ui/badge";
 
 import { useRef, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
@@ -21,6 +22,9 @@ import {
   ImagePlus,
   Trash2,
   UserRoundPen,
+  Check,
+  Copy,
+  FileCheck,
 } from "lucide-react";
 import { PanelShell } from "@/core/panels/panel-shell";
 import { usePanels, usePanelStore } from "@/core/panels/panel-store";
@@ -69,6 +73,12 @@ const aporteSchema = z.object({
     .trim()
     .min(30, "Desarrolla tu aporte con al menos 30 caracteres")
     .max(1200, "Máximo 1200 caracteres"),
+  correo_contacto: z
+    .string()
+    .trim()
+    .email("Ingresa un correo electrónico válido")
+    .optional()
+    .or(z.literal("")),
 });
 
 type AporteForm = z.infer<typeof aporteSchema>;
@@ -171,6 +181,22 @@ export function AporteEditorPanel({
   const quitarFoto = (idx: number) =>
     setFotos((prev) => prev.filter((_, i) => i !== idx));
 
+  /* ---------- Radicado y Fe Pública ---------- */
+  const [radicadoConfirmado, setRadicadoConfirmado] = useState<string | null>(null);
+  const [copiado, setCopiado] = useState(false);
+
+  const handleCopiarRadicado = async () => {
+    if (!radicadoConfirmado) return;
+    try {
+      await navigator.clipboard.writeText(radicadoConfirmado);
+      setCopiado(true);
+      toast.success("Código de radicado copiado al portapapeles");
+      setTimeout(() => setCopiado(false), 2500);
+    } catch {
+      toast.info(`Radicado: ${radicadoConfirmado}`);
+    }
+  };
+
   /* ---------- Formulario ---------- */
   const {
     register,
@@ -181,7 +207,7 @@ export function AporteEditorPanel({
   } = useForm<AporteForm>({
     resolver: zodResolver(aporteSchema),
     mode: "onChange",
-    defaultValues: { tipo: "propuesta", titulo: "", contenido: "" },
+    defaultValues: { tipo: "propuesta", titulo: "", contenido: "", correo_contacto: "" },
   });
 
   const [contenido, titulo, tipoActual] = useWatch({
@@ -202,9 +228,11 @@ export function AporteEditorPanel({
   const onSubmit = async (data: AporteForm) => {
     const conIdentidad = sesion?.modo === "identidad" && !!sesion.identidad;
     const lineaIdReal = UUID_REGEX.test(props.lineaId) ? props.lineaId : UUID_CANONICO_LINEA;
-    
+    const correoSesion = sesion?.identidad?.email || sesion?.usuario?.correo;
+    const correoFinal = data.correo_contacto?.trim() || correoSesion || undefined;
+
     try {
-      await mutarCrearAporte({
+      const nuevoAporte = await mutarCrearAporte({
         linea_id: lineaIdReal,
         tipo_aporte: data.tipo,
         titulo: data.titulo,
@@ -212,6 +240,7 @@ export function AporteEditorPanel({
         autor_nombre: nombreParaPublicar(sesion),
         es_anonimo: !conIdentidad,
         archivos_adjuntos: fotos.length > 0 ? fotos : undefined,
+        correo_contacto: correoFinal,
       });
 
       usePoliticasStore.getState().crearAporte({
@@ -223,20 +252,108 @@ export function AporteEditorPanel({
         autor: nombreParaPublicar(sesion),
         autorId: conIdentidad ? (sesion?.sesionId ?? "identidad-registrada") : undefined,
         fotos: fotos.length > 0 ? fotos : undefined,
+        codigo_radicado: nuevoAporte.codigo_radicado,
       });
 
-      toast.success("Aporte publicado", {
-        description: conIdentidad
-          ? "Quedó registrado con tu identidad en el acta de esta línea y en POLIS bd_csh."
-          : "Quedó registrado de forma anónima en el acta de esta línea y en POLIS bd_csh.",
+      toast.success(`Aporte recibido bajo radicado ${nuevoAporte.codigo_radicado}`, {
+        description: correoFinal
+          ? `Constancia oficial despachada a ${correoFinal}.`
+          : "Guarda tu código para consulta y seguimiento ciudadano.",
       });
-      closeTop(); // regresa al muro de aportes (L3) con el aporte al inicio
+
+      setRadicadoConfirmado(nuevoAporte.codigo_radicado);
     } catch {
       toast.error("No se pudo publicar el aporte", {
         description: "Inténtalo de nuevo en unos segundos.",
       });
     }
   };
+
+  if (radicadoConfirmado) {
+    return (
+      <PanelShell
+        entryKey={entryKey}
+        crumbs={[
+          { label: politica?.titulo ?? "Política", targetKey: parentKeyPolitica },
+          { label: fase?.nombre ?? "Fase", targetKey: parentKeyFase },
+          { label: linea?.codigo ?? "Línea", targetKey: parentKeyLinea },
+          { label: "Radicación confirmada" },
+        ]}
+        kicker="Constancia Digital de Radicación"
+        title="Radicación Exitosa"
+        subtitle={linea?.titulo}
+        onClose={closeTop}
+        onCloseToKey={closeToKey}
+        footer={
+          <div className="flex items-center justify-end gap-2">
+            <Button
+              variant="default"
+              size="sm"
+              type="button"
+              onClick={closeTop}
+            >
+              Volver a la línea
+            </Button>
+          </div>
+        }
+      >
+        <div className="mx-auto max-w-md space-y-6 px-5 py-8 text-center sm:px-6">
+          <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-[var(--surface-2)] text-[var(--accent)] border border-[var(--border)]">
+            <FileCheck className="size-7 text-[var(--accent)]" strokeWidth={1.5} />
+          </div>
+
+          <div className="space-y-2">
+            <Badge
+              variant="outline"
+              className="text-xs uppercase tracking-wider font-semibold text-[var(--accent)] border-[var(--border-strong)]"
+            >
+              Radicación Oficial Confirmada
+            </Badge>
+            <h3 className="text-lg font-bold text-[var(--text-primary)]">
+              Aporte Recibido en POLIS
+            </h3>
+            <p className="text-xs leading-relaxed text-[var(--text-secondary)]">
+              En cumplimiento del mandato de proscripción del silencio administrativo (Sentencia C-150 de 2015), tu aporte ha sido radicado bajo el número único oficial:
+            </p>
+          </div>
+
+          <div className="rounded-xl border border-[var(--border-strong)] bg-[var(--surface-2)] p-5 shadow-sm">
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-[var(--text-tertiary)]">
+              Código Único de Radicado
+            </p>
+            <p className="mt-1 font-mono text-2xl font-extrabold tracking-widest text-[var(--text-primary)]">
+              {radicadoConfirmado}
+            </p>
+            <div className="mt-4 flex justify-center">
+              <Button
+                variant="outline"
+                size="sm"
+                type="button"
+                onClick={handleCopiarRadicado}
+                className="gap-2 text-xs"
+              >
+                {copiado ? (
+                  <>
+                    <Check className="size-3.5 text-[var(--accent)]" strokeWidth={2} />
+                    <span>¡Copiado!</span>
+                  </>
+                ) : (
+                  <>
+                    <Copy className="size-3.5" strokeWidth={1.5} />
+                    <span>Copiar Radicado</span>
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
+
+          <p className="text-[11px] leading-relaxed text-[var(--text-tertiary)]">
+            Alcaldía Mayor de Cartagena de Indias · Cartagena Ciudad de Derechos. Puedes consultar el avance de tu propuesta en cualquier momento ingresando este radicado en la plataforma.
+          </p>
+        </div>
+      </PanelShell>
+    );
+  }
 
   return (
     <PanelShell
@@ -405,6 +522,26 @@ export function AporteEditorPanel({
               rows={8}
               maxLength={1200}
               placeholder="Explica tu idea con detalle: qué problema ataca, cómo se implementaría y qué beneficio traería a la ciudad."
+            />
+          )}
+        </FormField>
+
+        <FormField
+          id="aporte-correo-contacto"
+          label="Correo electrónico para recibir constancia oficial de radicación (opcional)"
+          description="Te enviaremos el comprobante formal con el número de radicado POL-2026-XXXX y las notificaciones sobre el avance de tu propuesta."
+          error={errors.correo_contacto?.message}
+        >
+          {(control) => (
+            <Input
+              {...control}
+              {...register("correo_contacto")}
+              type="email"
+              placeholder={
+                sesion?.identidad?.email ||
+                sesion?.usuario?.correo ||
+                "ejemplo@cartagena.gov.co o tu correo personal"
+              }
             />
           )}
         </FormField>

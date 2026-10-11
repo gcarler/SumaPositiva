@@ -24,6 +24,7 @@ export type CausalDescarteTaxativa =
 export interface PropuestaDevolucion {
   id: string;
   codigo: string;
+  codigo_radicado?: string;
   titulo: string;
   descripcion: string;
   autor_nombre: string;

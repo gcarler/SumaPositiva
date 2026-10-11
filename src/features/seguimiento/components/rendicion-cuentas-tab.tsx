@@ -490,7 +490,14 @@ export function RendicionCuentasTab({ puedeEditar }: RendicionCuentasTabProps) {
                     className="border-b border-border transition-colors hover:bg-surface-2/60"
                   >
                     <TableCell className="font-mono text-xs font-semibold text-text-primary">
-                      {p.codigo}
+                      <div className="flex flex-col gap-0.5">
+                        <span>{p.codigo_radicado || p.codigo}</span>
+                        {p.codigo_radicado && p.codigo !== p.codigo_radicado && (
+                          <span className="font-sans text-[10px] text-text-muted">
+                            Ref: {p.codigo}
+                          </span>
+                        )}
+                      </div>
                     </TableCell>
                     <TableCell>
                       <div className="flex flex-col gap-0.5">

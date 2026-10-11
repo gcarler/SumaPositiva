@@ -306,4 +306,11 @@ El listado público existente sigue mostrando líneas activas. No se conceden nu
 | PATCH | /api/v1/comunicaciones/tareas/{id} | permiso:comunicaciones:gestionar@declarada | Modificación parcial de fechas, estado o territorio de una tarea de comunicaciones. |
 | DELETE | /api/v1/comunicaciones/tareas/{id} | permiso:comunicaciones:gestionar@declarada | Retiro o cancelación de una tarea en el cronograma de trabajo de comunicaciones. |
 
+## Motor Transaccional de Notificaciones y Radicación Ciudadana — decisión NOTIF-FEEDBACK-01
+
+| Método | Ruta | Control | Motivo o condición |
+| --- | --- | --- | --- |
+| GET | /api/v1/notificaciones/radicado/{codigo_radicado} | publico | Consulta pública del estado de tramitación ciudadana por radicado POL-2026-XXXX. |
+| GET | /api/v1/notificaciones/historial | permiso:auditoria:leer@declarada | Supervisión forense e institucional del historial de notificaciones transaccionales despachadas. |
+
 

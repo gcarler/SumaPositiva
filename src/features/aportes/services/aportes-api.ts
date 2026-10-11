@@ -38,10 +38,12 @@ export interface PropuestaCiudadanaCreate {
   metadata_enfoque?: MetadataEnfoque;
   archivos_adjuntos?: unknown[];
   metadatos?: Record<string, unknown>;
+  correo_contacto?: string;
 }
 
 export interface PropuestaCiudadanaRead {
   id: string;
+  codigo_radicado: string;
   linea_id: string;
   dimension_id?: string | null;
   territorio_id?: string | null;
@@ -186,3 +188,28 @@ export async function respaldarAporte(
     method: "POST",
   });
 }
+
+export interface ConsultaRadicadoRespuesta {
+  id: string;
+  codigo_radicado: string;
+  titulo: string;
+  descripcion: string;
+  tipo_aporte: TipoAporte;
+  autor_nombre: string;
+  estado: string;
+  territorio_nombre?: string | null;
+  creado_en: string;
+  actualizado_en: string;
+}
+
+/**
+ * Consulta pública del estado de tramitación ciudadana por radicado POL-2026-XXXX.
+ */
+export async function consultarRadicadoPublico(
+  codigoRadicado: string
+): Promise<ConsultaRadicadoRespuesta> {
+  return apiFetch<ConsultaRadicadoRespuesta>(
+    `/notificaciones/radicado/${encodeURIComponent(codigoRadicado.trim().toUpperCase())}`
+  );
+}
+

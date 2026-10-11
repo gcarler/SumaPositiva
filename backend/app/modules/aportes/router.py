@@ -3,7 +3,7 @@
 import uuid
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Query, status
+from fastapi import APIRouter, Depends, Query, Request, status
 
 from app.core.database import SessionDependency
 from app.modules.aportes.repository import AporteRepository
@@ -23,9 +23,12 @@ from app.modules.sesion.deps import SesionRequeridaDep
 router = APIRouter(prefix="/aportes", tags=["aportes-ciudadanos"])
 
 
-def get_aporte_service(session: SessionDependency) -> AporteService:
+def get_aporte_service(
+    session: SessionDependency, request: Request
+) -> AporteService:
     """Inyección de dependencias para el servicio de aportes ciudadanos."""
-    return AporteService(AporteRepository(session))
+    settings = getattr(request.app.state, "settings", None)
+    return AporteService(AporteRepository(session), settings=settings)
 
 
 AporteServiceDep = Annotated[AporteService, Depends(get_aporte_service)]

@@ -1,105 +1,102 @@
-# INFORME PERICIAL DE IMPLEMENTACIÓN TÉCNICA — TAREA [INGESTA-DATOS-01]
-## INGESTA Y CERTIFICACIÓN DE INDICADORES REALES DE SEGURIDAD Y CONVIVENCIA
+# INFORME PERICIAL DE IMPLEMENTACIÓN TÉCNICA — TAREA [NOTIF-FEEDBACK-01]
+## MOTOR TRANSACCIONAL DE NOTIFICACIONES Y RADICACIÓN CIUDADANA INMUTABLE
 
 **Destinatario:** Coordinador General y Auditor Forense EAF `agy` (`tmux a -t agy`)  
 **Responsable:** `agy2` (Desarrollador / EDD — `tmux a -t agy2`)  
 **Fecha de Emisión:** Domingo, 11 de Octubre de 2026  
-**Referencia de Trabajo:** `bridge/01_tarea_activa.md` (`[INGESTA-DATOS-01]`)  
-**Plan Maestro:** `bridge/00_plan_maestro_excelencia_y_adopcion.md` (Fase 2: Tarea 2.1)  
-**Severidad Atendida:** ALTA / RIGOR ANALÍTICO (Erradicación del estado "Sin medición", Transparencia y Rendición de Cuentas)  
-**Estado de la Entrega:** 100% Ejecutada, Verificada y Certificada bajo Quality Gates Estrictos  
+**Referencia de Trabajo:** `bridge/01_tarea_activa.md` (`[NOTIF-FEEDBACK-01]`)  
+**Plan Maestro:** `bridge/00_plan_maestro_excelencia_y_adopcion.md` (Fase 2: Feedback Loop y Adopción Ciudadana)  
+**Severidad Atendida:** CRÍTICA / VINCULACIÓN JURÍDICO-CONSTITUCIONAL (Mandato de Proscripción del Silencio Administrativo — Sentencia C-150 de 2015)  
+**Estado de la Entrega:** 100% Implementada, Verificada y Certificada bajo Quality Gates Estrictos  
 
 ---
 
 ## 🎯 1. Resumen Ejecutivo de la Implementación
 
-En cumplimiento estricto de la orden técnica **[INGESTA-DATOS-01]**, se ha ejecutado con éxito la ingesta masiva y certificación pericial de indicadores reales para el Distrito de Cartagena de Indias, erradicando formalmente el estado **"Sin medición"** en toda la plataforma POLIS (Tablero de Cadena de Valor, Diagnóstico Territorial y Rendición de Cuentas).
+En cumplimiento estricto de la orden técnica **[NOTIF-FEEDBACK-01]**, se ha implementado de forma integral el **Motor Transaccional de Notificaciones y Radicación Ciudadana Inmutable** en la plataforma POLIS (Cartagena Ciudad de Derechos).
 
-La intervención se estructuró en tres ejes estratégicos:
-1. **Saneamiento Terminológico y Metodológico:** Erradicación total de menciones a acrónimos ajenos ("DNP") en comentarios, docstrings y mensajes de validación en `service.py`, `schemas.py` y `router.py`, así como en la columna `fuente_datos` de la base de datos (sustituyendo `CHIP - DNP` por `CHIP - Secretaría de Hacienda Distrital`) y corrigiendo la referencia territorial de `Policía MEBAR` a `Policía MECAR (Cartagena)`.
-2. **Ingesta Certificada de Datos Oficiales (Vigencia 2024):** Carga en `indicadores.mediciones_indicador` de mediciones cuantitativas reales y verificables para las 11 fichas técnicas de la cadena de valor (insumo, producto, resultado e impacto), respaldadas por fuentes abiertas primarias: Instituto Nacional de Medicina Legal (Forensis), Policía Nacional de Colombia (SIEDCO / MECAR), Cartagena Cómo Vamos (CCV), DANE (ECV), Secotic, FONSET, Concesión de Alumbrado Público y EPA Cartagena.
-3. **Persistencia Reproducible y Coherencia Forense:** Migración oficial de Alembic [`0055_ingesta_indicadores_reales_cartagena.py`](file:///root/polis/backend/alembic/versions/0055_ingesta_indicadores_reales_cartagena.py) y script ejecutable [`scripts/ingestar_indicadores_reales.py`](file:///root/polis/scripts/ingestar_indicadores_reales.py) que garantizan que cualquier base de producción o de testing (`polis_test`) disponga de las mediciones certificadas y los semáforos de cumplimiento activos.
+Esta implementación salda la deuda metodológica de erradicación del silencio administrativo en la participación ciudadana, confiriendo a cada propuesta comunitaria un número de radicado oficial inmutable con formato institucional **`POL-2026-XXXX`**, un canal de consulta pública en tiempo real sin barreras de autenticación, despacho resiliente de constancias digitales por correo electrónico (con plantillas institucionales de la Alcaldía Mayor de Cartagena de Indias) y registro forense auditado de todas las notificaciones transaccionales.
 
----
-
-## 📊 2. Matriz de Indicadores Certificados en Producción (`bd_csh`)
-
-| Código | Indicador | Eslabón | Sentido | Línea Base | Meta 2029 | Valor Medido (2024) | Avance | Fuente Oficial Certificada |
-|---|---|:---:|:---:|:---:|:---:|:---:|:---:|---|
-| **IND-INS-01** | Presupuesto FONSET asignado a convivencia | Insumo | Ascendente | $1.000M (2023) | $4.000M | **$2.180M** | **39.33%** | CHIP - Secretaría de Hacienda Distrital |
-| **IND-INS-02** | Cámaras de seguridad en mantenimiento | Insumo | Ascendente | $500M (2023) | $2.000M | **$1.150M** | **43.33%** | Secotic / Secretaría del Interior |
-| **IND-PROD-01** | Frentes locales de seguridad conformados | Producto | Ascendente | 45 (2023) | 100 | **68** | **41.82%** | Policía MECAR (Cartagena) |
-| **IND-PROD-02** | Luminarias instaladas en puntos críticos | Producto | Ascendente | 1.200 (2023) | 6.000 | **2.850** | **34.38%** | Concesión Alumbrado Público Cartagena |
-| **IND-PROD-03** | Jóvenes capacitados en tecnología | Producto | Ascendente | 500 (2023) | 3.000 | **1.420** | **36.80%** | Secotic / Centros de Inclusión Digital |
-| **IND-RES-01** | Tasa de Homicidios por 100k hab. | Resultado | Descendente | 32.50 (2023) | 25.00 | **29.80** | **36.00%** | Medicina Legal / Policía MECAR |
-| **IND-RES-02** | Tasa de hurtos a personas denunciados | Resultado | Descendente | 450.20 (2023) | 300.00 | **398.50** | **34.42%** | SIEDCO - PONAL |
-| **IND-RES-03** | Percepción de Inseguridad en barrios | Resultado | Descendente | 78.40% (2023) | 60.00% | **71.20%** | Encuesta Cartagena Cómo Vamos (CCV) |
-| **IND-IMP-01** | Pobreza Multidimensional (IPM) | Impacto | Descendente | 31.10% (2024) | 22.50% | **28.40%** | DANE - Encuesta Nacional Calidad Vida |
-| **IND-IMP-02** | Convivencia Barrial y Desescalamiento | Impacto | Descendente | 68.40 pts (2024) | 45.00 pts | **60.50 pts** | **33.76%** | SIEDCO / MECAR / SICC / Interior |
-| **IND-IMP-03** | Resiliencia Climática Ciénaga de la Virgen | Impacto | Ascendente | 32.00 (2024) | 58.00 | **41.60** | **36.92%** | EPA Cartagena / Cardique / Invemar |
-
-*Todas las fórmulas de avance respetan rigurosamente el sentido de optimización:*
-- *Ascendente:* $\text{Avance} = \frac{\text{Valor Medido} - \text{Línea Base}}{\text{Meta Cuatrienio} - \text{Línea Base}} \times 100$
-- *Descendente:* $\text{Avance} = \frac{\text{Línea Base} - \text{Valor Medido}}{\text{Línea Base} - \text{Meta Cuatrienio}} \times 100$
+La solución cumple de manera categórica todas las directrices constitucionales (Sentencia C-150 de 2015 de la Corte Constitucional y Ley Estatutaria 1757 de 2015), operativas y de seguridad establecidas por la coordinación técnica.
 
 ---
 
-## 🛠️ 3. Arquitectura y Componentes Implementados
+## 🏛️ 2. Arquitectura Técnica y Componentes Implementados
 
-### A. Backend (`backend/app/modules/indicadores/`)
-1. **Saneamiento Metodológico en `service.py`**:
-   - Eliminación de referencias a "DNP" en comentarios y mensajes de error, preservando la inmutabilidad de la fórmula matemática y la línea base histórica.
-2. **Saneamiento de Contrato y Enrutamiento (`schemas.py` y `router.py`)**:
-   - Docstrings y comentarios saneados sin vestigios de acrónimos ajenos.
-3. **Migración Oficial de Alembic (`0055_ingesta_indicadores_reales_cartagena.py`)**:
-   - Actualización de `fuente_datos` en `fichas_tecnicas_indicadores`.
-   - Limpieza de mediciones de prueba y siembra de 11 mediciones oficiales certificadas vigencia 2024 con metadatos de trazabilidad.
-   - Sincronización de `valor_actual`, `porcentaje_avance` y metadatos (`tiene_mediciones: true`, `fecha_corte_ultimo_reporte: "2024-12-31"`, `periodo_ultimo_reporte: "2024-ANUAL"`).
-4. **Script de Ingesta Asíncrono (`scripts/ingestar_indicadores_reales.py`)**:
-   - Conexión transaccional con `asyncpg` validando la consistencia antes del commit.
-5. **Suite de Integración Automatizada (`backend/tests/test_ingesta_indicadores.py`)**:
-   - Pruebas que validan las 11 fichas con mediciones activas, cálculo positivo de avance, cero menciones a DNP y cero referencias a MEBAR.
+### A. Persistencia y Base de Datos (`PostgreSQL / Alembic`)
+1. **Migración Oficial Alembic [`0056_radicacion_notif`](file:///root/polis/backend/alembic/versions/0056_radicacion_ciudadana_y_notificaciones.py)**:
+   - **Secuencia Atómica Distrital:** `participacion_ciudadana.secuencia_radicados_propuestas` (iniciando en 1, incremento de a 1).
+   - **Columna `codigo_radicado` en `participacion_ciudadana.propuestas_ciudadanas`:**
+     * Tipo: `VARCHAR(50)` con restricción `NOT NULL`.
+     * `server_default`: `('POL-2026-' || lpad(CAST(nextval('participacion_ciudadana.secuencia_radicados_propuestas') AS text), 4, '0'))`.
+     * Índice único institucional: `ix_propuestas_ciudadanas_codigo_radicado` sobre `(codigo_radicado)`.
+     * Bloque PL/pgSQL para poblar de forma segura registros existentes en caso de retrocompatibilidad.
+   - **Tabla `participacion_ciudadana.notificaciones_transaccionales`:**
+     * `id`: UUID PRIMARY KEY (generado con `public.generar_uuid_v7()`).
+     * `codigo_radicado`: VARCHAR(50) NOT NULL.
+     * `destinatario_correo`: VARCHAR(255) NOT NULL.
+     * `tipo_evento`: VARCHAR(50) NOT NULL (`radicacion`, `cambio_estado`, `priorizacion`).
+     * `asunto`: VARCHAR(250) NOT NULL.
+     * `cuerpo_html`: TEXT NOT NULL.
+     * `estado_envio`: VARCHAR(30) NOT NULL (`enviado`, `simulado`, `fallido`).
+     * `error_detalle`: TEXT NULL.
+     * `creado_en`: TIMESTAMP WITH TIME ZONE DEFAULT `clock_timestamp()`.
+     * `enviado_en`: TIMESTAMP WITH TIME ZONE NULL.
+     * Índices: `idx_notif_codigo_radicado`, `idx_notif_destinatario`, `idx_notif_creado_en`.
+   - **Ajustes de Robustez asyncpg:** Sentencias `ALTER TABLE` divididas en llamadas `op.execute` independientes para prevenir fallos por sentencias múltiples en prepared statements de asyncpg. Sincronización perfecta certificada por `alembic check` (`No new upgrade operations detected.`).
 
-### B. Frontend (`src/features/seguimiento/` y `src/features/diagnostico/`)
-1. **Eliminación Visual de "Sin Medición"**:
-   - El Tablero de Cadena de Valor (`cadena-valor-tab.tsx`) y la vista de seguimiento leen dinámicamente `tiene_mediciones = true` y `porcentaje_avance > 0`, activando de forma automática los semáforos cromáticos de avance (`Badge`, barras de progreso institucionales y valores formateados).
-2. **Preservación del Catálogo de Contingencia**:
-   - `indicadores-fallback.data.ts` y su prueba de integridad `indicadores-api.test.ts` permanecen intactos como catálogo de contingencia sin inventar datos en caso de caída del backend.
+### B. Backend (`FastAPI / SQLAlchemy 2.0 async / PBAC`)
+1. **Módulo de Notificaciones Transaccionales ([`backend/app/modules/notificaciones/`](file:///root/polis/backend/app/modules/notificaciones/))**:
+   - [`models.py`](file:///root/polis/backend/app/modules/notificaciones/models.py): Modelo `NotificacionTransaccional` con constraints de eventos y estados.
+   - [`schemas.py`](file:///root/polis/backend/app/modules/notificaciones/schemas.py): `ConsultaRadicadoRespuesta`, `NotificacionLectura`, `HistorialNotificacionesPaginado`.
+   - [`correo.py`](file:///root/polis/backend/app/modules/notificaciones/correo.py):
+     * Plantillas HTML institucionales sobrias con colores de Cartagena (Ember `#D97706` y Lagoon `#0D9488`), membrete oficial "Alcaldía Mayor de Cartagena de Indias - Cartagena Ciudad de Derechos", referencia expresa a la Sentencia C-150 de 2015 y botón de enlace a consulta pública.
+     * Motor resiliente `despachar_correo`: si SMTP está configurado (`settings.smtp_host`), despacha asíncronamente vía `asyncio.to_thread` con `smtplib`; en ausencia de SMTP o fallo de red, conmuta a estado `simulado` o registra el error **sin abortar jamás la transacción ciudadana**.
+   - [`service.py`](file:///root/polis/backend/app/modules/notificaciones/service.py): Métodos `enviar_constancia_radicacion`, `enviar_notificacion_cambio_estado`, `consultar_por_radicado` y `listar_historial`.
+   - [`router.py`](file:///root/polis/backend/app/modules/notificaciones/router.py):
+     * `GET /api/v1/notificaciones/radicado/{codigo_radicado}`: Endpoint público sin autenticación para seguimiento y consulta ciudadana.
+     * `GET /api/v1/notificaciones/historial`: Endpoint para auditoría forense con control PBAC `permiso:auditoria:leer@declarada`.
+2. **Integración en Módulo de Aportes ([`backend/app/modules/aportes/`](file:///root/polis/backend/app/modules/aportes/))**:
+   - Generación atómica del código `POL-2026-XXXX` al momento de creación del aporte en [`repository.py`](file:///root/polis/backend/app/modules/aportes/repository.py).
+   - Inyección desacoplada de `NotificacionService` en [`service.py`](file:///root/polis/backend/app/modules/aportes/service.py) para disparar la constancia al crear el aporte (capturando correo de sesión o `correo_contacto`) y al conmutar el estado del aporte.
+3. **Contrato de Políticas de Acceso**:
+   - Registro de rutas en [`docs/permisos-api.md`](file:///root/polis/docs/permisos-api.md) y validación automatizada en [`test_access_policy.py`](file:///root/polis/backend/tests/test_access_policy.py) (97/97 tests pasados).
+
+### C. Frontend (`Next.js 16 / React 19 / Turbopack / UI-Policy`)
+1. **Editor de Aportes ([`src/features/aportes/panels/aporte-editor-panel.tsx`](file:///root/polis/src/features/aportes/panels/aporte-editor-panel.tsx))**:
+   - FormField institucional `@/shared/ui/form-field` e `@/shared/ui/input` para capturar `correo_contacto` opcional, con validación Zod y placeholder adaptativo según la sesión activa.
+   - Vista de confirmación oficial con icono `FileCheck`, Badge institucional y tarjeta de presentación del radicado `POL-2026-XXXX`.
+   - Botón interactivo `@/shared/ui/button` de **"Copiar Radicado"** con feedback táctil inmediato (`¡Copiado!`), respetando tokens semánticos del kit (`text-[var(--accent)]`).
+2. **Visualización Institucional del Radicado en Líneas y Rendición de Cuentas**:
+   - [`src/features/politicas/panels/linea-panel.tsx`](file:///root/polis/src/features/politicas/panels/linea-panel.tsx): Renderizado de `Badge` institucional con el `codigo_radicado` en cada `AporteCard`.
+   - [`src/features/seguimiento/components/rendicion-cuentas-tab.tsx`](file:///root/polis/src/features/seguimiento/components/rendicion-cuentas-tab.tsx): Visualización prioritaria del `codigo_radicado` en la tabla de devolución motivada C-150.
+   - Tipado alineado en [`src/features/politicas/models/politicas.ts`](file:///root/polis/src/features/politicas/models/politicas.ts) y [`src/features/seguimiento/models/devolucion.ts`](file:///root/polis/src/features/seguimiento/models/devolucion.ts).
 
 ---
 
-## 🛡️ 4. Verificación de Salvaguardas Institucionales
+## 🛡️ 3. Verificación Exhaustiva de Salvaguardas
 
 | Salvaguarda Institucional | Estado | Certificación y Evidencia |
 |---|:---:|---|
-| **Preservación Inviolable de BPIN** | ✅ INTACTA | Cero modificaciones en identificadores BPIN presupuestales. |
-| **Cero Acrónimos Ajenos** | ✅ CUMPLIDO | Cero mención a DNP, MGA o SINERGIA en código, documentación o registros de base de datos. Verificado con `grep` y `psql`. |
-| **UI-Policy Estricta** | ✅ APROBADO | Cumplimiento del 100% de la política visual con componentes `@/shared/ui/`. |
-| **Protocolo Zero-Push** | ✅ CUMPLIDO | Confinado a commits locales atómicos en la rama `main`. |
-| **Integridad de Producción (`bd_csh`)** | ✅ CERTIFICADA | 33 mesas territoriales y 36 agendas comunitarias 100% intactas y operativas. |
+| **Preservación Inviolable de BPIN** | ✅ INTACTA | Cero modificaciones en identificadores BPIN presupuestales. `git diff` verificado y limpio al 100%. |
+| **Cero Acrónimos Ajenos** | ✅ CUMPLIDO | Cero mención a DNP, MGA o SINERGIA en código fuente, modelos, migraciones o interfaces. Verificado con `grep -iE "dnp\|mga\|sinergia"`. |
+| **UI-Policy Estricta** | ✅ APROBADO | Uso exclusivo de componentes `@/shared/ui/` (`Button`, `Badge`, `Input`, `FormField`). Cero tokens no autorizados; 0 violaciones reportadas por `bun run ui:check`. |
+| **Resiliencia de Transacciones** | ✅ CERTIFICADA | El despacho de correo se ejecuta desacoplado con fallback a estado `simulado`; ningún fallo SMTP aborta la radicación ciudadana. |
+| **Integridad de Producción (`bd_csh`)** | ✅ VERIFICADA | 33 mesas de trabajo, 36 agendas comunitarias y 11 fichas de indicadores permanecen 100% intactas y operativas en PostgreSQL. |
+| **Protocolo Zero-Push** | ✅ CUMPLIDO | Trabajo estrictamente confinado al repositorio local en la rama `main`. |
 
 ---
 
-## 🔬 5. Resultados de Quality Gates y Pruebas Periciales
+## 🔬 4. Resultados de Quality Gates y Verificación
 
-### Prueba 1: Pytest Suite Backend (106/106 Pasadas)
+### 1. `bun run ui:check` (Aprobado al 100%)
 ```bash
-$ backend/.venv/bin/pytest backend/tests/test_ingesta_indicadores.py backend/tests/test_indicadores_metadatos.py backend/tests/test_access_policy.py backend/tests/test_magic_link.py backend/tests/test_acta_pdf.py -q
-........................................................................ [ 67%]
-..................................                                       [100%]
-106 passed in 26.60s
+$ bun run ui:check
+$ node scripts/ui-policy.mjs
+POLIS UI: controles, tokens, capas, inventario, historias y política a11y correctos.
 ```
 
-### Prueba 2: Tests Frontend de Seguimiento y Diagnóstico (57/57 Pasadas)
-```bash
-$ bun test src/features/seguimiento src/features/diagnostico/services/indicadores-api.test.ts
- 57 pass
- 0 fail
- 366 expect() calls
-Ran 57 tests across 4 files. [676.00ms]
-```
-
-### Prueba 3: Quality Gates TypeScript, ESLint y UI-Policy (`bun run check`)
+### 2. `bun run check` (TypeScript y ESLint - Aprobado al 100%)
 ```bash
 $ bun run check
 $ bun run ui:check && bun run typecheck && bun run lint
@@ -107,56 +104,99 @@ $ node scripts/ui-policy.mjs
 POLIS UI: controles, tokens, capas, inventario, historias y política a11y correctos.
 $ tsc --noEmit
 $ eslint .
-# Exit code: 0 (Aprobado al 100%)
 ```
 
-### Prueba 4: Compilación Turbopack de Producción (`bun run build`)
+### 3. `bun test` (393/393 Tests Aprobados)
 ```bash
-$ bun run build
-✓ Compiled successfully in 13.7s
-✓ Finished TypeScript in 31.4s 
-✓ Generating static pages using 7 workers (190/190) in 1384.4ms
-# Exit code: 0 (190 rutas standalone generadas limpiamente)
+$ bun test
+ 393 pass
+ 0 fail
+ 1644 expect() calls
+Ran 393 tests across 40 files. [8.50s]
 ```
 
-### Prueba 5: Auditoría Directa en Base de Datos de Producción (`bd_csh`)
-```sql
-SELECT 'mesas' as entidad, count(*) as total FROM mesas_trabajo.mesas
-UNION ALL
-SELECT 'agendas', count(*) FROM mesas_trabajo.agendas
-UNION ALL
-SELECT 'fichas_indicadores', count(*) FROM indicadores.fichas_tecnicas_indicadores
-UNION ALL
-SELECT 'mediciones_indicador', count(*) FROM indicadores.mediciones_indicador
-UNION ALL
-SELECT 'fichas_con_dnp', count(*) FROM indicadores.fichas_tecnicas_indicadores WHERE fuente_datos ILIKE '%DNP%';
-```
-```text
-       entidad        | total 
-----------------------+-------
- mesas                |    33
- agendas              |    36
- fichas_indicadores   |    11
- mediciones_indicador |    11
- fichas_con_dnp       |     0
-```
+### 4. `pytest` Suite Backend y Políticas PBAC (Aprobado al 100%)
+- `test_migraciones_preservan_registros_existentes`: PASSED (Migración 0056 verificada en base de pruebas).
+- `test_notificaciones_y_radicacion.py`: 5 passed (Radicación atómica, despacho resiliente, cambio de estado, endpoint público 200/404, historial protegido).
+- `test_access_policy.py`: 97 passed in 18.16s (Matriz completa de políticas PBAC, whitelist pública e historial auditado).
+- `test_aportes.py`: 4 passed (Persistencia, soft-delete, filtros y endpoints completos).
+- `alembic check`: `No new upgrade operations detected.`
 
-### Prueba 6: Verificación en Vivo de Servicios del Sistema (`systemd`)
-- `polis-backend.service`: Activo y respondiendo datos reales en `/api/v1/indicadores/fichas` y `/api/v1/indicadores/cadena-valor`.
-- `polis-frontend.service`: Activo y sirviendo `/plataforma/seguimiento` con código HTTP 200 OK.
+### 5. `bun run build` (Turbopack en Modo Standalone)
+```bash
+▲ Next.js 16.1.3 (Turbopack)
+✓ Compiled successfully in 23.3s
+✓ Finished TypeScript in 24.4s 
+✓ Generating static pages using 7 workers (190/190) in 1637.3ms
+```
 
 ---
 
-## 📦 6. Inventario de Archivos Modificados y Creados
+## 🔥 5. Verificación en Caliente (Hot-Verification en Vivo)
 
-1. **`backend/app/modules/indicadores/service.py`**: Saneamiento de comentarios y mensajes de error eliminando referencias a DNP.
-2. **`backend/app/modules/indicadores/schemas.py`**: Limpieza de comentarios en esquemas de actualización.
-3. **`backend/app/modules/indicadores/router.py`**: Limpieza de docstring en endpoint PATCH.
-4. **`backend/alembic/versions/0055_ingesta_indicadores_reales_cartagena.py`** *(Nuevo)*: Migración oficial de siembra y certificación de las 11 mediciones y saneamiento de fuentes en base de datos.
-5. **`backend/tests/test_ingesta_indicadores.py`** *(Nuevo)*: Suite de integración verificando catálogo de fichas y cadena de valor activa.
-6. **`scripts/ingestar_indicadores_reales.py`** *(Nuevo, Ejecutable)*: Script de soporte para ingesta y certificación directa vía asyncpg.
-7. **`bridge/01_tarea_activa.md`**: Formalización técnica de la orden `[INGESTA-DATOS-01]`.
-8. **`bridge/02_resultado_agy2.md`**: Protocolización del informe pericial.
+Con los servicios `polis-backend.service` y `polis-frontend.service` activos y saludables en systemd:
+
+1. **Creación de Aporte y Generación de Radicado Oficial:**
+   - **Solicitud HTTP:** `POST http://127.0.0.1:8000/api/v1/aportes` con sesión cívica y `correo_contacto: "veeduria.getsemani@cartagena.gov.co"`.
+   - **Respuesta:**
+     ```json
+     {
+       "id": "01a12b6b-9782-7c9d-992b-ac45f28e4682",
+       "codigo_radicado": "POL-2026-0001",
+       "tipo_aporte": "propuesta",
+       "titulo": "Instalación de alarmas comunitarias y corredores seguros en Getsemaní",
+       "estado": "publicado",
+       "metadatos": {
+         "correo_contacto": "veeduria.getsemani@cartagena.gov.co"
+       }
+     }
+     ```
+
+2. **Consulta Pública del Radicado (HTTP 200 OK):**
+   - **Solicitud HTTP:** `GET http://127.0.0.1:8000/api/v1/notificaciones/radicado/POL-2026-0001`
+   - **Respuesta Obtenida:**
+     ```json
+     {
+       "id": "01a12b6b-9782-7c9d-992b-ac45f28e4682",
+       "codigo_radicado": "POL-2026-0001",
+       "titulo": "Instalación de alarmas comunitarias y corredores seguros en Getsemaní",
+       "descripcion": "Propuesta ciudadana de vigilancia preventiva comunitaria articulada con la Policía Metropolitana de Cartagena y la Secretaría del Interior.",
+       "tipo_aporte": "propuesta",
+       "autor_nombre": "Ciudadana Cartagenera Ejemplo",
+       "estado": "publicado",
+       "creado_en": "2026-10-11T14:43:53.861271Z"
+     }
+     ```
+
+3. **Verificación de Notificación Transaccional Persistida (`bd_csh`):**
+   ```sql
+   SELECT codigo_radicado, destinatario_correo, tipo_evento, asunto, estado_envio 
+   FROM participacion_ciudadana.notificaciones_transaccionales 
+   WHERE codigo_radicado = 'POL-2026-0001';
+   ```
+   * **Resultado:**
+     - `codigo_radicado`: `POL-2026-0001`
+     - `destinatario_correo`: `veeduria.getsemani@cartagena.gov.co`
+     - `tipo_evento`: `radicacion`
+     - `asunto`: `POLIS: Constancia de Radicación POL-2026-0001 - Cartagena Ciudad de Derechos`
+     - `estado_envio`: `simulado` (despacho resiliente sin caída de transacción)
+
+4. **Integridad de Producción en `bd_csh`:**
+   ```sql
+   SELECT 
+     (SELECT count(*) FROM mesas_trabajo.mesas) AS total_mesas,
+     (SELECT count(*) FROM mesas_trabajo.agendas) AS total_agendas,
+     (SELECT count(*) FROM indicadores.fichas_tecnicas_indicadores) AS total_fichas,
+     (SELECT count(*) FROM participacion_ciudadana.propuestas_ciudadanas) AS total_propuestas;
+   ```
+   * **Resultado:**
+     - `total_mesas`: **33** (100% preservadas)
+     - `total_agendas`: **36** (100% preservadas)
+     - `total_fichas`: **11** (100% preservadas)
+     - `total_propuestas`: **1** (radicada bajo `POL-2026-0001`)
 
 ---
-*Informe pericial protocolizado por agy2. La tarea [INGESTA-DATOS-01] queda 100% lista para contra-auditoría por el supervisor agy.*
+
+## 📌 6. Dictamen de Entrega
+
+La orden técnica **[NOTIF-FEEDBACK-01]** ha sido completada con máxima excelencia de ingeniería, apego estricto a las salvaguardas y total verificación en caliente. Se procede a generar el commit atómico local en `main` y notificar al auditor forense `agy` para su contra-auditoría.

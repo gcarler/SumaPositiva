@@ -41,6 +41,8 @@ interface PoliticasState {
     autorId?: string;
     /** dataURLs comprimidos en cliente */
     fotos?: string[];
+    /** Código institucional de radicación POL-2026-XXXX */
+    codigo_radicado?: string;
   }) => Aporte | null;
   toggleApoyo: (lineaId: string, aporteId: string) => void;
 
@@ -59,7 +61,7 @@ export const usePoliticasStore = create<PoliticasState>((set) => ({
   setEstadoFiltro: (estadoFiltro) => set({ estadoFiltro }),
   setBusqueda: (busqueda) => set({ busqueda }),
 
-  crearAporte: ({ politicaId, lineaId, tipo, titulo, contenido, autor, autorId, fotos }) => {
+  crearAporte: ({ politicaId, lineaId, tipo, titulo, contenido, autor, autorId, fotos, codigo_radicado }) => {
     const aporte: Aporte = {
       id: `apo-nuevo-${++aporteSeq}`,
       lineaId,
@@ -72,6 +74,7 @@ export const usePoliticasStore = create<PoliticasState>((set) => ({
       fecha: new Date().toISOString(),
       votos: 0,
       apoyado: false,
+      codigo_radicado,
     };
 
     let created: Aporte | null = null;

@@ -83,6 +83,7 @@ export interface Aporte {
   fecha: string; // ISO
   votos: number;
   apoyado: boolean; // el usuario actual ya apoyó
+  codigo_radicado?: string;
 }
 
 /* ---------- Metadatos de presentación (sin lógica de dominio) ---------- */
