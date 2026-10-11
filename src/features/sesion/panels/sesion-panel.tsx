@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useState, useEffect, type FormEvent } from "react";
 import { toast } from "sonner";
 import {
   GoogleLogin,
@@ -21,9 +21,16 @@ import {
 } from "@/features/sesion/components/campo-identidad";
 import { CuentaUsuario } from "@/features/sesion/components/cuenta-usuario";
 
-type Vista = "login" | "registro" | "recuperar" | "restablecer" | "verificar";
+type Vista =
+  | "login"
+  | "magic_link"
+  | "registro"
+  | "recuperar"
+  | "restablecer"
+  | "verificar";
 const TITULOS: Record<Vista, string> = {
   login: "Iniciar sesión",
+  magic_link: "Acceso directo (Magic Link)",
   registro: "Crear cuenta",
   recuperar: "Recuperar contraseña",
   restablecer: "Elegir nueva contraseña",
@@ -46,12 +53,43 @@ export function SesionPanel({
       ? "restablecer"
       : props.accion === "verificar"
         ? "verificar"
-        : "login",
+        : props.accion === "magic_link"
+          ? "magic_link"
+          : "login",
   );
   const [ocupado, setOcupado] = useState(false);
   const [error, setError] = useState("");
   const [mensaje, setMensaje] = useState("");
-  const tieneAccion = vista === "restablecer" || vista === "verificar";
+  const tieneAccion =
+    vista === "restablecer" ||
+    vista === "verificar" ||
+    (props.accion === "magic_link" && !!props.token);
+
+  useEffect(() => {
+    if (props.accion === "magic_link" && props.token) {
+      setOcupado(true);
+      setError("");
+      identidadApi
+        .confirmarMagicLink(props.token)
+        .then((resp) => {
+          useSesionStore.getState().iniciarSesion(resp);
+          toast.success("¡Bienvenido! Sesión iniciada con enlace directo.");
+          router.push(resp.rol === "ciudadano" ? "/" : "/plataforma");
+          closeTop();
+        })
+        .catch((err) => {
+          setError(
+            err instanceof Error
+              ? err.message
+              : "El enlace de acceso es inválido o ha caducado",
+          );
+        })
+        .finally(() => {
+          setOcupado(false);
+        });
+    }
+  }, [props.accion, props.token, router, closeTop]);
+
   function cambiar(v: Vista) {
     setVista(v);
     setError("");
@@ -105,6 +143,11 @@ export function SesionPanel({
         });
         setVista("login");
         setMensaje("Cuenta creada. Inicia sesión para verificar tu correo.");
+      } else if (vista === "magic_link") {
+        const correo = textoFormulario(datos, "correo");
+        const resp = await identidadApi.solicitarMagicLink(correo);
+        setMensaje(resp.mensaje);
+        toast.info("Enlace de acceso enviado. Revisa tu bandeja de entrada.");
       } else if (vista === "recuperar") {
         setMensaje(
           (
@@ -170,6 +213,12 @@ export function SesionPanel({
                   Iniciar sesión
                 </Button>
                 <Button
+                  variant={vista === "magic_link" ? "default" : "outline"}
+                  onClick={() => cambiar("magic_link")}
+                >
+                  Acceso con Magic Link
+                </Button>
+                <Button
                   variant={vista === "registro" ? "default" : "outline"}
                   onClick={() => cambiar("registro")}
                 >
@@ -197,6 +246,7 @@ export function SesionPanel({
               aria-busy={ocupado}
             >
               {(vista === "login" ||
+                vista === "magic_link" ||
                 vista === "registro" ||
                 vista === "recuperar") && (
                 <CampoIdentidad
@@ -206,6 +256,11 @@ export function SesionPanel({
                   autoComplete="email"
                   maxLength={255}
                 />
+              )}
+              {vista === "magic_link" && (
+                <p className="text-sm text-text-secondary">
+                  Ingresa tu correo y te enviaremos un enlace de acceso directo válido por 15 minutos para ingresar al instante sin necesidad de contraseña.
+                </p>
               )}
               {vista === "registro" && (
                 <>
@@ -252,11 +307,13 @@ export function SesionPanel({
               <Button type="submit" disabled={ocupado}>
                 {ocupado
                   ? "Procesando…"
-                  : vista === "recuperar"
-                    ? "Solicitar enlace"
-                    : vista === "restablecer"
-                      ? "Guardar contraseña"
-                      : TITULOS[vista]}
+                  : vista === "magic_link"
+                    ? "Enviar enlace de acceso"
+                    : vista === "recuperar"
+                      ? "Solicitar enlace"
+                      : vista === "restablecer"
+                        ? "Guardar contraseña"
+                        : TITULOS[vista]}
               </Button>
             </form>
             {!tieneAccion && (

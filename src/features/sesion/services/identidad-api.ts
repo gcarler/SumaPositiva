@@ -28,6 +28,10 @@ async function consultar<T>(path: string, schema: z.ZodType<T>, options: Paramet
 export const identidadApi = {
   loginGoogle: (id_token: string) =>
     consultar("/oauth/google", tokenSchema, { method: "POST", body: { id_token } }),
+  solicitarMagicLink: (correo: string) =>
+    consultar("/magic-link/solicitar", mensajeSchema, { method: "POST", body: { correo } }),
+  confirmarMagicLink: (token: string) =>
+    consultar("/magic-link/confirmar", tokenSchema, { method: "POST", body: { token } }),
   login: (correo: string, contrasena: string) => consultar("/login", tokenSchema,
     { method: "POST", body: { correo, contrasena } }),
   registrar: (datos: {correo: string; contrasena: string; nombres: string; apellidos: string}) =>

@@ -87,6 +87,8 @@ const meta = {
       confirmarRecuperacion: fn(async () => mensaje),
       solicitarVerificacion: fn(async () => mensaje),
       confirmarVerificacion: fn(async () => mensaje),
+      solicitarMagicLink: fn(async () => mensaje),
+      confirmarMagicLink: fn(async () => structuredClone(login)),
       usuarios: fn(async () => ({
         total: 1,
         elementos: [structuredClone(usuario)],

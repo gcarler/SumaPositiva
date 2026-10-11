@@ -332,6 +332,102 @@ class IdentidadService:
                 await self.repo.registrar_evento("correo_verificado", usuario.id, usuario.id)
             return MensajeRespuesta(mensaje="Solicitud completada. Puedes iniciar sesión")
 
+    async def solicitar_magic_link(
+        self, correo: str, transporte: CorreoIdentidad
+    ) -> MensajeRespuesta:
+        transporte.comprobar_configuracion()
+        correo_norm = str(correo).strip().lower()
+        nonce = uuid.uuid4()
+        token = token_para_correo(nonce, self.settings)
+        async with transaction(self.repo.session):
+            usuario = await self.repo.obtener_usuario_por_correo(correo_norm)
+            if not usuario:
+                rol = await self.repo.obtener_rol_por_codigo("ciudadano")
+                if not rol:
+                    raise HTTPException(500, "Rol ciudadano no configurado")
+                nombre_base = correo_norm.split("@")[0].replace(".", " ").title()
+                usuario = await self.repo.crear_usuario_oauth(
+                    correo=correo_norm,
+                    nombres=nombre_base or "Ciudadano",
+                    apellidos="Cartagena",
+                    rol_id=rol.id,
+                    nivel_identidad="declarada",
+                    hash_contrasena=await asyncio.to_thread(
+                        obtener_hash_contrasena, uuid.uuid4().hex
+                    ),
+                    metadatos={"origen": "magic_link"},
+                )
+            elif not usuario.activo:
+                raise HTTPException(403, "Usuario inactivo")
+
+            expira_token = datetime.now(UTC) + timedelta(minutes=15)
+            await self.repo.crear_token(
+                hashlib.sha256(token.encode()).hexdigest(),
+                usuario.id,
+                "magic_link",
+                expira_token,
+                nonce,
+            )
+            await self.repo.registrar_evento(
+                "magic_link_solicitado",
+                None,
+                usuario.id,
+                {"proposito": "magic_link"},
+            )
+
+        return MensajeRespuesta(
+            mensaje="Si la cuenta cumple los requisitos, recibirás un enlace de acceso por correo válido por 15 minutos"
+        )
+
+    async def consumir_magic_link(self, token: str) -> TokenRespuesta:
+        async with transaction(self.repo.session):
+            hash_token = hashlib.sha256(token.encode()).hexdigest()
+            registro = await self.repo.obtener_token(hash_token, "magic_link")
+            if not registro or registro.usado_en or registro.expira_en <= datetime.now(UTC):
+                raise HTTPException(400, "Enlace inválido, utilizado o caducado")
+            usuario = await self._usuario(registro.usuario_id, bloquear=True)
+            registro = await self.repo.obtener_token(registro.hash_token, "magic_link", bloquear=True)
+            if registro.usado_en or registro.expira_en <= datetime.now(UTC):
+                raise HTTPException(400, "Enlace inválido, utilizado o caducado")
+            if not usuario.activo:
+                raise HTTPException(403, "Usuario inactivo")
+
+            registro.usado_en = datetime.now(UTC)
+            if not usuario.correo_verificado_en:
+                usuario.correo_verificado_en = datetime.now(UTC)
+
+            await self.repo.invalidar_tokens(usuario.id, "magic_link")
+            await self.repo.guardar()
+
+            expira = datetime.now(UTC) + timedelta(hours=self.settings.jwt_expiracion_horas)
+            huella = hmac.new(
+                self.settings.ip_salt.encode(), uuid.uuid4().bytes, hashlib.sha256
+            ).hexdigest()
+            sesion = await self.repo.crear_sesion(usuario.id, expira, huella)
+            jwt_token = crear_token_acceso(
+                usuario.id,
+                usuario.rol.codigo,
+                usuario.nivel_identidad,
+                usuario.rol.permisos,
+                sesion_id=sesion.id,
+                settings=self.settings,
+            )
+            await self.repo.registrar_evento(
+                "login_magic_link",
+                usuario.id,
+                usuario.id,
+                {"email": usuario.correo, "rol": usuario.rol.codigo, "nivel": usuario.nivel_identidad},
+            )
+
+            return TokenRespuesta(
+                token_acceso=jwt_token,
+                rol=usuario.rol.codigo,
+                nivel_identidad=usuario.nivel_identidad,
+                permisos=usuario.rol.permisos,
+                expira_en=expira,
+                usuario=UsuarioLectura.model_validate(usuario),
+            )
+
     async def listar_usuarios(self, busqueda, limite, desplazamiento):
         total, usuarios = await self.repo.listar_usuarios(busqueda, limite, desplazamiento)
         return UsuariosPagina(

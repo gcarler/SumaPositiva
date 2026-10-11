@@ -65,8 +65,8 @@ export interface PanelPropsMap {
   "linea-editor": { lineaId?: string };
   linea: { politicaId: string; faseId: string; lineaId: string };
   aporte: { politicaId: string; faseId: string; lineaId: string };
-  /** Panel de sesión/identidad — no requiere props */
-  sesion: { accion?: "recuperar" | "verificar"; token?: string };
+  /** Panel de sesión/identidad — soporta flujos de recuperación, verificación y magic link */
+  sesion: { accion?: "recuperar" | "verificar" | "magic_link"; token?: string };
   usuarios: Record<string, never>;
   /** Área de trabajo: detalle de una mesa (plenaria + submesas) */
   mesa: { mesaId: string; soloLectura?: boolean };

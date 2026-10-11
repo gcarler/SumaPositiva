@@ -39,12 +39,23 @@ class CorreoIdentidad:
         mensaje = EmailMessage()
         mensaje["From"] = self.settings.smtp_remitente
         mensaje["To"] = destinatario
-        mensaje["Subject"] = (
-            "POLIS: verificar correo" if proposito == "verificar" else "POLIS: recuperar contraseña"
-        )
+        if proposito == "verificar":
+            asunto = "POLIS: verificar correo"
+            cuerpo_accion = "completar la verificación de tu correo"
+            minutos = self.settings.identidad_token_minutos
+        elif proposito == "magic_link":
+            asunto = "POLIS: Enlace de acceso directo (Magic Link)"
+            cuerpo_accion = "iniciar sesión instantáneamente en la plataforma"
+            minutos = 15
+        else:
+            asunto = "POLIS: recuperar contraseña"
+            cuerpo_accion = "restablecer tu contraseña"
+            minutos = self.settings.identidad_token_minutos
+
+        mensaje["Subject"] = asunto
         mensaje.set_content(
-            f"Abre este enlace para completar tu solicitud:\n{enlace}\n\n"
-            f"Caduca en {self.settings.identidad_token_minutos} minutos y solo se usa una vez.\n"
+            f"Abre este enlace para {cuerpo_accion}:\n{enlace}\n\n"
+            f"Caduca en {minutos} minutos y solo se usa una vez.\n"
             "Si no solicitaste esta acción, puedes ignorar este mensaje."
         )
 

@@ -91,6 +91,8 @@ def test_matriz_cubre_todas_las_rutas_y_sus_controles():
                     ("POST", "/api/v1/identidad/recuperacion/solicitar"),
                     ("POST", "/api/v1/identidad/recuperacion/confirmar"),
                     ("POST", "/api/v1/identidad/correo/confirmar"),
+                    ("POST", "/api/v1/identidad/magic-link/solicitar"),
+                    ("POST", "/api/v1/identidad/magic-link/confirmar"),
                 }, "Una escritura pública nueva requiere decisión explícita y pruebas"
 
 

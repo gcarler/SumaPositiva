@@ -199,6 +199,44 @@ async def confirmar_verificacion(
     return await service.consumir_token(datos.token, "verificar")
 
 
+@router.post("/magic-link/solicitar", response_model=MensajeRespuesta)
+async def solicitar_magic_link(
+    datos: CorreoPeticion, request: Request, service: IdentidadServiceDep, correo: CorreoDep
+):
+    await service.limitar(
+        "magic_link_solicitar", request.client.host if request.client else "local", datos.correo
+    )
+    return await service.solicitar_magic_link(datos.correo, correo)
+
+
+@router.post("/magic-link/confirmar", response_model=TokenRespuesta)
+async def confirmar_magic_link(
+    datos: TokenPeticion,
+    request: Request,
+    response: Response,
+    service: IdentidadServiceDep,
+):
+    await service.limitar(
+        "magic_link_confirmar", request.client.host if request.client else "local"
+    )
+    resultado = await service.consumir_magic_link(datos.token)
+    es_seguro = (
+        request.app.state.settings.environment == "production"
+        or request.url.scheme == "https"
+        or request.headers.get("x-forwarded-proto") == "https"
+    )
+    response.set_cookie(
+        key="polis_session",
+        value=resultado.token_acceso,
+        max_age=request.app.state.settings.jwt_expiracion_horas * 3600,
+        httponly=True,
+        secure=es_seguro,
+        samesite="lax",
+        path="/",
+    )
+    return resultado
+
+
 @router.get(
     "/verificar-nivel",
     response_model=dict,

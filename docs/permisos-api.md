@@ -114,6 +114,8 @@ La última columna explica la excepción pública o la condición adicional.
 | POST | /api/v1/identidad/correo/solicitar | sujeto | Envía enlace solo al correo de la cuenta autenticada, con límites de intentos. |
 | GET | /api/v1/identidad/eventos | permiso:identidad:auditar@declarada | Eventos paginados de identidad sin contraseñas o tokens. |
 | POST | /api/v1/identidad/login | publico | Intercambio de credenciales por token; no concede roles adicionales. |
+| POST | /api/v1/identidad/magic-link/confirmar | publico | Consumo de token Magic Link de uso único para autenticación directa e inicio de sesión. |
+| POST | /api/v1/identidad/magic-link/solicitar | publico | Solicitud de acceso instantáneo sin contraseñas; emite token de uso único con caducidad de 15 minutos. |
 | POST | /api/v1/identidad/oauth/google | publico | Login mediante ID token verificado para audiencia configurada; conserva el rol existente y crea cuentas nuevas solo como ciudadano. |
 | POST | /api/v1/identidad/logout | sujeto | Revoca la sesión actual de la cuenta registrada. |
 | GET | /api/v1/identidad/perfil | sujeto | Solo perfil propio de usuario registrado; sesión anónima denegada. |
@@ -164,6 +166,7 @@ La última columna explica la excepción pública o la condición adicional.
 | GET | /api/v1/mesas/{mesa_id} | publico | Convocatorias y actas de deliberación pública; participantes nominales están protegidos. |
 | PATCH | /api/v1/mesas/{mesa_id} | permiso:mesas:abrir@declarada | Edición de metadatos de mesa con control de propiedad (403), restricción de campos sensibles (asistentes deriva de actas) y auditoría. |
 | GET | /api/v1/mesas/{mesa_id}/acta | publico | Convocatorias y actas de deliberación pública; participantes nominales están protegidos. |
+| GET | /api/v1/mesas/{mesa_id}/acta/pdf | publico | Descarga pública oficial de actas comunitarias foliadas en formato PDF vectorial con QR dinámico y sello SHA-256. |
 | GET | /api/v1/noticias | publico | Consulta pública; contiene solo artículos publicados. |
 | GET | /api/v1/noticias/{slug} | publico | Consulta por slug; borradores y archivadas responden 404. |
 | GET | /api/v1/noticias/id/{id} | publico | Consulta pública por identificador; solo artículos publicados. |

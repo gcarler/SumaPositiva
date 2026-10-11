@@ -16,13 +16,19 @@ export function SesionSync() {
     localStorage.removeItem("polis-sesion-v1");
     localStorage.removeItem("polis_sesion_token");
     const fragmento = new URLSearchParams(window.location.hash.slice(1));
-    const accion = fragmento.get("accion");
-    const token = fragmento.get("token");
-    if ((accion === "recuperar" || accion === "verificar") && token) {
+    const busqueda = new URLSearchParams(window.location.search);
+    const accion = fragmento.get("accion") ?? busqueda.get("accion");
+    const token = fragmento.get("token") ?? busqueda.get("token");
+    if (
+      (accion === "recuperar" ||
+        accion === "verificar" ||
+        accion === "magic_link") &&
+      token
+    ) {
       window.history.replaceState(
         null,
         "",
-        window.location.pathname + window.location.search,
+        window.location.pathname,
       );
       usePanelStore.getState().openPanel("sesion", { accion, token });
     }
