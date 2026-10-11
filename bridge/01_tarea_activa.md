@@ -1,74 +1,96 @@
-# TAREA ACTIVA: [GEO-PROC-02] ISÓCRONAS DE ACCESIBILIDAD Y RUTEO DE PROTECCIÓN CIUDADANA (PGROUTING)
-## CÁLCULO DE COBERTURA TEMPORAL A PIE/VEHÍCULO (5, 10 Y 15 MIN) Y RUTEO HACIA CENTROS DE SEGURIDAD HUMANA EN GEOVISOR
+# TAREA ACTIVA: [OPS-FORENSIC-01] TELEMETRÍA Y OBSERVABILIDAD FORENSE SQL EN VIVO (PG_STAT_STATEMENTS)
+## APERTURA DE FASE 3: MONITOREO DE CONSULTAS PESADAS, HIT RATIO Y RENDIMIENTO EN /PLATAFORMA/CONFIGURACION
 
 **Fecha:** Domingo, 11 de Octubre de 2026  
-**Fase:** FASE 2: Explotación Activa de Geoprocesamiento y Normalización Territorial (Tarea 2.2 — Cierre de Fase 2)  
+**Fase:** FASE 3: Observabilidad Forense SQL, Fe Pública en PDF y Resiliencia Offsite (Tarea 3.1)  
 **Plan Maestro:** `bridge/00_plan_maestro_blindaje_geoprocesamiento_resiliencia.md`  
 **Asignada a:** `agy2` (Desarrollador / EDD — `tmux a -t agy2`)  
 **Supervisor / Auditor:** `agy` (Coordinador General y Auditor Forense EAF — `tmux a -t agy`)  
-**Severidad:** ALTA / INTELIGENCIA TERRITORIAL, POLÍTICA PÚBLICA Y EVALUACIÓN DE VULNERABILIDAD  
+**Severidad:** ALTA / OBSERVABILIDAD FORENSE, ALTA DISPONIBILIDAD Y AUDITORÍA DE RENDIMIENTO  
 
 ---
 
 ## 🎯 1. Justificación y Alcance de la Tarea
 
-Uno de los pilares metodológicos de la Política Pública de Seguridad Humana Integral (Cartagena 2026) es la evaluación de la **vulnerabilidad y accesibilidad territorial**: *¿cuánto tiempo le toma a un ciudadano llegar a pie a un centro de auxilio, o cuánto tarda una patrulla/ambulancia en acceder a un sector popular crítico?*
+Con el súper-tuning de PostgreSQL 18.6 aplicado (`shared_buffers=8GB`, `effective_cache_size=24GB`, `work_mem=32MB`, `random_page_cost=1.1`) y la suite espacial de PostGIS activa en `bd_csh`, la extensión de telemetría interna **`pg_stat_statements`** ya se encuentra recopilando las métricas de ejecución de todas las transacciones SQL del servidor.
 
-Aprovechando la extensión **`pgrouting`** (v4.0.1) y **`postgis`** ya instaladas en `bd_csh`, esta tarea consiste en:
-1. **Módulo Backend de Isócronas y Accesibilidad (`backend/app/modules/geodatos/`):**
-   - Implementar el cálculo de polígonos de isócronas (intervalos de 5, 10 y 15 minutos) a pie (~4.5 km/h) y en vehículo (~25 km/h urbano) desde cualquier punto geográfico de Cartagena.
-   - Calcular la proximidad e identificación del nodo de seguridad humana más cercano (CAI, Estación de Policía, Hospital o Casa de Justicia).
-   - Exponer el endpoint `GET /api/v1/geodatos/isocronas` retornando un `FeatureCollection` GeoJSON con geometrías poligonales (`Polygon` / `MultiPolygon`), tiempo, distancia y centros de atención alcanzables.
-2. **Integración en el Geovisor Distrital (Frontend):**
-   - Añadir método `obtenerIsocronas()` en `src/features/geovisor/services/geovisor-api.ts`.
-   - Incorporar control de visualización o capa de isócronas en `src/features/geovisor/`.
-3. **Suite de Pruebas Automatizadas:**
-   - Crear `backend/tests/test_geodatos_isocronas.py`.
-   - Pruebas frontend en `geovisor-api.test.ts`.
-   - Matriz RBAC en `docs/permisos-api.md` y `test_access_policy.py`.
-   - Quality Gates 100% verdes (`bun run ui:check`, `bun run check`, `bun test`, `pytest`).
+El objetivo de esta tarea es **abrir la FASE 3** exponiendo estas métricas forenses en tiempo real para que las autoridades y auditores distritales puedan vigilar la salud y la latencia del motor de base de datos directamente desde la plataforma web sin depender de accesos SSH.
+
+### Alcance Técnico:
+1. **Módulo Backend de Observabilidad de Base de Datos (`backend/app/modules/health/`):**
+   - **Repository (`health/repository.py`):**
+     * Implementar método `obtener_telemetria_consultas(limite: int = 10, ordenar_por: str = "tiempo_total")`.
+     * Consultar la vista `pg_stat_statements` para obtener: query (sanitizado a máximo 200 caracteres), número de llamadas (`calls`), tiempo total en ms (`total_exec_time`), tiempo promedio en ms (`mean_exec_time`), filas devueltas (`rows`), lecturas de disco (`shared_blks_read`), y lecturas de caché (`shared_blks_hit`).
+     * Calcular el **Cache Hit Ratio Global** de PostgreSQL mediante consulta agregada a `pg_stat_database`.
+     * Obtener el total de consultas catalogadas en el búfer de `pg_stat_statements`.
+   - **Schemas (`health/schemas.py`):**
+     * Diseñar `DatabaseQueryStat` (`query: str`, `calls: int`, `total_ms: float`, `mean_ms: float`, `rows: int`, `hit_ratio_pct: float`).
+     * Diseñar `DatabaseTelemetryResponse` (`status: str`, `total_queries_recorded: int`, `cache_hit_ratio_pct: float`, `top_queries: list[DatabaseQueryStat]`, `timestamp: datetime`).
+   - **Service y Router (`health/service.py` y `health/router.py`):**
+     * Exponer endpoint `GET /api/v1/health/database/queries` con parámetros de query `limite: int = 10` y `ordenar_por: str = "tiempo_total" | "tiempo_medio" | "llamadas"`.
+     * Blindar el endpoint con verificación de permisos o acceso institucional (auditor_forense, autoridad_distrital, administrador) o permitir acceso de monitoreo del sistema coherente con `/health/system`.
+     * Reflejar el contrato en `docs/permisos-api.md` y pasar `test_access_policy.py`.
+
+2. **Integración en la Interfaz de Configuración (Frontend):**
+   - Enriquecer `src/features/plataforma/components/salud-sistema-section.tsx` (o crear `src/features/plataforma/components/telemetria-sql-card.tsx` acoplado limpiamente a la vista):
+     * Visualizar tarjeta o sección de **"Rendimiento SQL & Consultas en Tiempo Real (pg_stat_statements)"**.
+     * Métricas destacadas en badges/KPIs: **Cache Hit Ratio (ej. 99.4%)**, **Consultas Registradas** y **Latencia Media**.
+     * Tabla o listado interactivo con el Top de consultas: resumen SQL sanitizado, tiempo medio en ms, número de llamadas y eficiencia de caché.
+     * Botón de refresco manual con feedback visual (`sonner toast`).
+
+3. **Pruebas Automatizadas y Calidad:**
+   - Crear `backend/tests/test_database_telemetry.py` que valide:
+     * Retorno 200 con estructura válida `DatabaseTelemetryResponse`.
+     * Presencia de `top_queries` no vacío y campos numéricos coherentes (`calls >= 1`, `mean_ms >= 0`).
+     * Manejo ante ordenamiento por `tiempo_total`, `tiempo_medio` o `llamadas`.
+   - Pruebas frontend: `bun test src/features/plataforma/`.
+   - Quality Gates innegociables: `bun run ui:check`, `bun run check`, `bun test`, `pytest`, `alembic check`.
 
 ---
 
 ## 📋 2. Requerimientos Técnicos y Especificación de Contrato
 
-### A. Contrato API (`GET /api/v1/geodatos/isocronas`)
-1. **Parámetros de Consulta (Query Params):**
-   - `lat: float` (Latitud WGS84, ej. 10.4141 en Olaya Herrera)
-   - `lon: float` (Longitud WGS84, ej. -75.4922)
-   - `modo: str = "pie" | "vehiculo"` (Por defecto `"pie"`)
-   - `minutos: str = "5,10,15"` (Intervalos temporales en minutos)
-2. **Respuesta GeoJSON (`FeatureCollection`):**
-   ```json
-   {
-     "type": "FeatureCollection",
-     "features": [
-       {
-         "type": "Feature",
-         "geometry": {
-           "type": "Polygon",
-           "coordinates": [...]
-         },
-         "properties": {
-           "minutos": 5,
-           "modo": "pie",
-           "radio_metros": 375.0,
-           "nodo_cercano": {
-             "nombre": "CAI Olaya Herrera",
-             "tipo": "seguridad",
-             "distancia_metros": 280.0
-           }
-         }
-       }
-     ]
-   }
-   ```
+### A. Contrato API (`GET /api/v1/health/database/queries`)
+- **Query Params:**
+  - `limite: int = 10` (rango entre 1 y 50)
+  - `ordenar_por: str = "tiempo_total"` (opciones: `"tiempo_total"`, `"tiempo_medio"`, `"llamadas"`)
+- **Respuesta JSON:**
+  ```json
+  {
+    "status": "ok",
+    "timestamp": "2026-10-11T22:40:00Z",
+    "total_queries_recorded": 2340,
+    "cache_hit_ratio_pct": 99.45,
+    "top_queries": [
+      {
+        "query": "SELECT count(*) FROM mesas_trabajo.mesas ...",
+        "calls": 1420,
+        "total_ms": 115.42,
+        "mean_ms": 0.08,
+        "rows": 1420,
+        "hit_ratio_pct": 99.85
+      }
+    ]
+  }
+  ```
 
-### B. Pruebas de Calidad
-1. `backend/tests/test_geodatos_isocronas.py`:
-   - Validar retorno de FeatureCollection con 3 polígonos (5, 10 y 15 min).
-   - Validar modo a pie vs modo vehículo (escalado de radio/alcance coherente).
-   - Validar manejo seguro ante coordenadas extremas o fuera de rango distrital.
+### B. Consulta SQL de Referencia (`pg_stat_statements`)
+```sql
+SELECT
+    query,
+    calls,
+    round(total_exec_time::numeric, 2) AS total_ms,
+    round(mean_exec_time::numeric, 2) AS mean_ms,
+    rows,
+    CASE 
+        WHEN (shared_blks_hit + shared_blks_read) = 0 THEN 100.0
+        ELSE round((shared_blks_hit::numeric / (shared_blks_hit + shared_blks_read)::numeric) * 100, 2)
+    END AS hit_ratio_pct
+FROM pg_stat_statements
+WHERE query NOT LIKE '%pg_stat_statements%'
+ORDER BY total_exec_time DESC
+LIMIT :limite;
+```
 
 ---
 
@@ -76,23 +98,23 @@ Aprovechando la extensión **`pgrouting`** (v4.0.1) y **`postgis`** ya instalada
 
 | Verificación | Comando / Prueba | Resultado Esperado |
 |---|---|---|
-| **Suite Isócronas Backend** | `/root/polis/venv/bin/pytest backend/tests/test_geodatos_isocronas.py` | 100% verde |
-| **API Geovisor Frontend** | `bun test src/features/geovisor/services/geovisor-api.test.ts` | 100% verde |
+| **Suite Telemetría SQL Backend** | `/root/polis/venv/bin/pytest backend/tests/test_database_telemetry.py` | 100% verde |
 | **Paridad RBAC** | `/root/polis/venv/bin/pytest backend/tests/test_access_policy.py` | 100% verde |
+| **Pruebas Plataforma Frontend** | `bun test src/features/plataforma/` | 100% verde |
 | **UI Architectural Linter** | `bun run ui:check` | 0 infracciones |
 | **TypeCheck & Linter** | `bun run check` | 0 errores TypeScript, 0 warnings ESLint |
-| **Frontend Test Suite** | `bun test` | 415+ pasadas |
-| **Alembic Schema Check** | `cd backend && alembic check` | No new upgrade operations |
+| **Frontend Test Suite** | `bun test` | 417+ pasadas |
+| **Alembic Schema Check** | `cd backend && /root/polis/venv/bin/alembic check` | No new upgrade operations |
 
 ---
 
 ## 📦 4. Entregables y Salvaguardas
 
-1. **Código Implementado:** Rutas, servicio y modelos en `backend/app/modules/geodatos/` e integración frontend en `src/features/geovisor/`.
+1. **Código Implementado:** Rutas, servicio, repositorio y schemas en `backend/app/modules/health/` e integración en `src/features/plataforma/components/`.
 2. **Salvaguardas Inviolables:**
-   - Base de datos `bd_csh` intacta (33 mesas, 36 agendas, 11 fichas).
-   - Cero drift en Alembic.
+   - Base de datos `bd_csh` intacta (33 mesas, 36 agendas, 11 fichas, 17 actores).
+   - Sanitización de consultas para evitar filtración de contraseñas, tokens o PII.
    - Protocolo Zero-Push (commits locales en `main`).
 3. **Commit Atómico Local:**
-   - Formato: `feat(geo): isocronas de accesibilidad y ruteo de seguridad humana GEO-PROC-02`.
-4. **Notificación:** Notificar a `agy` en tmux `%0` para la contra-auditoría pericial y cierre de Fase 2.
+   - Formato: `feat(ops): telemetria forense sql en vivo pg_stat_statements OPS-FORENSIC-01`.
+4. **Notificación:** Notificar a `agy` en tmux `%0` para la contra-auditoría pericial.
