@@ -1744,7 +1744,80 @@ Con este hito, la **FASE 2: Ingesta de Datos Vivos y Feedback Loop** del Plan Ma
 - ✅ `[NOTIF-FEEDBACK-01]`: Motor Transaccional de Radicación y Notificaciones (`POL-2026-XXXX`).
 - ✅ `[CANAL-WHATSAPP-01]`: Captura Conversacional Rápida de Propuestas (WhatsApp Ingesta Comunitaria).
 
-Se autoriza el paso inmediato a la **FASE 3: Adopción Territorial y Resiliencia**:
-- **Siguiente Tarea de la FASE 3:** **`[UX-MOVIL-BARRIO-01]`** (*Vista Ciudadana Ultraligera "Modo Barrio" — Carga ultrarrápida <150 KB para smartphones Android de gama de entrada con 3G/4G prepago en sectores populares de Cartagena*).
+---
+
+## 🏛️ DICTAMEN PERICIAL FORENSE EAF — TAREA [FEAT-APOYOS-VOTO-01]
+### SISTEMA FUNCIONAL DE RESPALDO CIUDADANO ("ME GUSTA" / APOYOS A PROPUESTAS)
+**Fecha de Emisión:** Domingo, 11 de Octubre de 2026  
+**Evaluador:** Coordinador General y Auditor Forense EAF `agy` (`tmux a -t agy`)  
+**Responsable Técnico Auditado:** Desarrollador / EDD `agy2` (`tmux a -t agy2`)  
+**Commit Evaluado:** `1d9f657` (`feat(aportes): sistema funcional de respaldo ciudadano FEAT-APOYOS-VOTO-01`)  
+**Referencia Técnica:** `bridge/01_tarea_activa.md` y `bridge/02_resultado_agy2.md`  
+**Veredicto Oficial:** **CONFORME Y APROBADO AL 100% SIN OBSERVACIONES (APROBACIÓN TOTAL)**
+
+---
+
+### 1. Hallazgos de la Contra-Auditoría Técnica Independiente
+
+1. **Backend y Desacoplamiento de Identidad (`backend/app/modules/aportes/`)**:
+   - **Acceso Democrático Universal:** Los endpoints `POST /api/v1/aportes/{id}/apoyar`, `DELETE /api/v1/aportes/{id}/apoyar` y `GET /api/v1/aportes/mis-apoyos` operan con la dependencia `SesionRequeridaDep`, erradicando el bloqueo 401 que sufrían los ciudadanos con sesión anónima protegida (Ley 1581/12).
+   - **Precedencia de Rutas en FastAPI:** El endpoint `GET /api/v1/aportes/mis-apoyos` fue definido estrictamente antes de `GET /api/v1/aportes/{aporte_id}`, neutralizando cualquier colisión de deserialización de UUID.
+   - **Integridad Transaccional y Trigger Nativo:** En `repository.py`, el método `alternar_apoyo` gestiona atómicamente la inserción o eliminación sobre `participacion_ciudadana.apoyos_propuestas`. El trigger existente `trg_actualizar_contador_apoyos AFTER INSERT OR DELETE` recalcula y persiste el campo `apoyos_contador` directamente en PostgreSQL, garantizando tolerancia cero a carreras de datos.
+   - **Matriz de Control de Acceso (PBAC):** Sincronizada en `docs/permisos-api.md` y respaldada por 97/97 pruebas en `test_access_policy.py`.
+
+2. **Frontend POLIS UI y Mutaciones Optimistas Instantáneas**:
+   - **Flujo de Sesión Seguro:** En `src/features/aportes/services/aportes-api.ts`, las operaciones `alternarApoyoAporte` y `retirarApoyoAporte` aseguran la existencia del token cívico mediante `await asegurarSesionActiva()`.
+   - **Reactividad Instantánea (<50ms):** El hook `useToggleApoyo` implementa mutación optimista cancelando consultas en vuelo, aplicando snapshots de rollback en `onError`, y mutando en memoria tanto la colección `mis-apoyos` como el contador `apoyos_contador` de la lista de propuestas.
+   - **Consistencia de Estado Visual:** En `linea-panel.tsx`, la propiedad `apoyado` se calcula dinámicamente con `misApoyos.includes(el.id)`, garantizando que recargas de página o refrescos de la API no reseteen el estado activo del voto.
+   - **Accesibilidad y Semántica Cívica:** Botón construido con `@/shared/ui/button`, `aria-pressed`, variantes Ember oficiales (`border-[var(--ember)] bg-[var(--ember-soft)] text-[var(--ember)]`) y retroalimentación táctil con `toast.success` y `toast.info`.
+
+---
+
+### 2. Verificación Estricta de Salvaguardas Institucionales
+
+| Salvaguarda Institucional | Estado | Evidencia Pericial Independiente |
+|---|:---:|---|
+| **Preservación BPIN 100% Intacta** | **CUMPLIDA** | 0 alteraciones a identificadores o tablas de proyectos BPIN distritales. `git diff` 100% limpio. |
+| **Cero Acrónimos Ajenos** | **CUMPLIDA** | 0 menciones a `DNP`, `MGA` o `SINERGIA` en código fuente, modelos o interfaces de apoyos. |
+| **UI-Policy Estricta** | **CUMPLIDA** | `bun run ui:check` aprobado con 0 infracciones. Uso exclusivo de componentes canónicos `@/shared/ui/` y tokens del kit. |
+| **Integridad Democrática (1 Ciudadano = 1 Voto)** | **CUMPLIDA** | Restricción única `uq_apoyo_propuesta_sujeto` en base de datos; la misma sesión o usuario no puede emitir múltiples votos sobre una misma iniciativa comunitaria. |
+| **Inviolabilidad de Producción (`bd_csh`)** | **CUMPLIDA** | Las **33 mesas territoriales**, **36 agendas comunitarias** y **11 fichas técnicas de indicadores** se verificaron intactas y operativas en PostgreSQL. |
+| **Protocolo Zero-Push** | **CUMPLIDA** | Commits atómicos locales en la rama `main` (commit `1d9f657`). |
+
+---
+
+### 3. Certificación Independiente de Quality Gates
+
+- `bun run ui:check`: **APROBADO** (0 violaciones de tokens, accesibilidad o capas).
+- `bun run check` (`tsc --noEmit` & `eslint .`): **APROBADO** (0 errores TypeScript, 0 advertencias ESLint).
+- `bun test`: **APROBADO** (393 pasados / 0 fallados en 40 suites).
+- `pytest backend/tests/`: **APROBADO** (107 pasados / 0 fallados en 33.08s, incluyendo `test_apoyos_voto.py`, `test_aportes.py`, `test_canal_whatsapp.py` y `test_access_policy.py`).
+- Compilación Turbopack (`bun run build`): **APROBADO** (190 rutas standalone generadas sin errores).
+- Servicios `systemd` (`polis-backend` & `polis-frontend`): **ACTIVOS Y SALUDABLES (200 OK)**.
+
+---
+
+### 4. Certificación Forense en Vivo (Hot-Testing contra API Real)
+
+Se ejecutó un script forense independiente contra `http://127.0.0.1:8000/api/v1` obteniendo los siguientes resultados:
+1. Emisión de sesión cívica anónima (`POST /sesion/anonima`): `01a12b88-e211-7c0d-aca7-a763a0ff21bb`.
+2. Consulta de aportes: propuesta `01a12b7a-56de-7361-8e9d-ff96f55d0364` con contador inicial `0`.
+3. Consulta `GET /aportes/mis-apoyos`: Lista vacía `[]`.
+4. Toggle ON (`POST /aportes/{id}/apoyar`): Retornó `apoyado: True`, `apoyos_contador: 1`, mensaje confirmatorio.
+5. Verificación de sincronización: `GET /aportes/mis-apoyos` reflejó inmediatamente el ID de la propuesta respaldada.
+6. Toggle OFF (`POST /aportes/{id}/apoyar`): Retornó `apoyado: False`, `apoyos_contador: 0`, mensaje de retiro.
+7. Verificación de limpieza: `GET /aportes/mis-apoyos` retornó de nuevo lista vacía `[]`.
+8. Retiro idempotente (`DELETE /aportes/{id}/apoyar`): Confirmado retorno a contador `0` sin excepciones.
+9. Integridad en `bd_csh`: 33 mesas, 36 agendas, 11 fichas y 2 apoyos históricos persistidos con consistencia referencial absoluta.
+
+---
+
+### 5. Dictamen Final y Autorización de Continuidad
+
+La funcionalidad **`[FEAT-APOYOS-VOTO-01]`** queda formalmente **CERRADA Y APROBADA AL 100%**.
+
+Se autoriza el despliegue y se ratifica la hoja de ruta para la siguiente tarea prioritaria:
+- **Siguiente Tarea:** **`[UX-MOVIL-BARRIO-01]`** (*Vista Ciudadana Ultraligera "Modo Barrio" — Carga ultrarrápida <150 KB para smartphones Android de gama de entrada con 3G/4G prepago en sectores populares de Cartagena*).
+
 
 
