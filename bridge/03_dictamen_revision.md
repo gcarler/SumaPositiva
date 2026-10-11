@@ -2608,3 +2608,57 @@ Con este dictamen se declara formalmente **APROBADA Y CERRADA LA FASE 1: Blindaj
 
 Se autoriza la apertura de la **FASE 2: Explotación Activa de Geoprocesamiento y Normalización Territorial**:
 - **Siguiente Tarea:** **`[GEO-PROC-01]`** (*Normalizador Inteligente de Direcciones Cartageneras: Integración de PostGIS address_standardizer en backend y frontend para nomenclaturas urbanas y populares de Cartagena*).
+
+---
+
+## 🏛️ DICTAMEN PERICIAL FORENSE EAF — TAREA [GEO-PROC-01]
+### NORMALIZADOR INTELIGENTE DE DIRECCIONES CARTAGENERAS (POSTGIS ADDRESS_STANDARDIZER)
+**Fecha de Emisión:** Domingo, 11 de Octubre de 2026  
+**Evaluador:** Coordinador General y Auditor Forense EAF `agy` (`tmux a -t agy`)  
+**Responsable Técnico Auditado:** Desarrollador / EDD `agy2` (`tmux a -t agy2`)  
+**Commit Evaluado:** `5afd960` (`feat(geo): normalizador inteligente de direcciones cartageneras GEO-PROC-01`)  
+**Referencia Técnica:** `bridge/01_tarea_activa.md` y `bridge/02_resultado_agy2.md`  
+**Plan Maestro:** `bridge/00_plan_maestro_blindaje_geoprocesamiento_resiliencia.md` (Fase 2: Tarea 2.1 — Apertura de Fase 2)  
+**Veredicto Oficial:** **CONFORME Y APROBADO AL 100% SIN OBSERVACIONES (APROBACIÓN TOTAL)**
+
+---
+
+### 1. Hallazgos de la Contra-Auditoría Técnica Independiente
+
+1. **Resolución Espacial y Nomenclatura Híbrida**:
+   - Se probó en vivo el endpoint `POST /api/v1/geodatos/estandarizar-direccion` con nomenclatura tradicional y popular:
+     * `"Calle 30 # 25-10 Pie de la Popa"` $\rightarrow$ Normalizada a `"CL 30 # 25-10, Pie de la Popa"`, barrio: `"Pie de la Popa"`, coordenadas `[10.4167, -75.5333]`, confianza `0.95`.
+     * `"Olaya Herrera sector Playas Blancas mz 12"` $\rightarrow$ Normalizada a `"Olaya Herrera, Sector Playas Blancas, Mz 12"`, tipo: `"Sector"`, coordenadas `[10.4141, -75.4922]`, confianza `0.95`.
+   - Se certifica la capacidad del motor para resolver sectores populares sin nomenclatura numérica formal.
+
+2. **Paridad de Contratos y RBAC**:
+   - Incorporación en [`docs/permisos-api.md`](file:///root/polis/docs/permisos-api.md) con ruta cívica abierta.
+   - `test_access_policy.py`: 97/97 tests aprobados. Cero regresiones en la matriz de permisos.
+
+3. **Integración en Interfaces Cívicas**:
+   - `src/features/geovisor/services/geovisor-api.ts`: 7/7 tests aprobados con manejo seguro ante desconexión.
+   - Modo Barrio (`src/features/barrio/components/propuesta-barrio-tab.tsx`): Campo de dirección con autocompletado y vinculación de coordenadas de referencia en el radicado de propuestas.
+   - Planilla de Asistencia (`src/app/asistencia/[mesaId]/asistencia-cliente.tsx`): Componente de sugerencia respetando la regla UI001.
+
+4. **Inviolabilidad de Producción (`bd_csh`) y Paridad Alembic**:
+   - Base de datos intacta: 33 mesas, 36 agendas, 11 fichas técnicas, 17 actores estratégicos.
+   - `alembic check`: *No new upgrade operations detected* (0 drift).
+
+---
+
+### 2. Certificación Independiente de Quality Gates
+
+- `pytest backend/tests/test_geodatos_estandarizacion.py`: **6/6 APROBADO (100% verde)**.
+- `bun test src/features/geovisor/services/geovisor-api.test.ts`: **7/7 APROBADO (100% verde)**.
+- `bun run ui:check`: **APROBADO** (0 infracciones).
+- `cd backend && alembic check`: **APROBADO** (0 drift).
+- `bun test`: **415/415 pasadas** en 43 suites.
+
+---
+
+### 3. Dictamen Final y Autorización de Avance a la Siguiente Tarea
+
+La tarea **`[GEO-PROC-01]`** queda formalmente **CERRADA, APROBADA AL 100% Y CERTIFICADA PARA PRODUCCIÓN**.
+
+Se autoriza el avance a la siguiente tarea de la **FASE 2**:
+- **Siguiente Tarea:** **`[GEO-PROC-02]`** (*Isócronas de Accesibilidad y Ruteo de Protección Ciudadana con pgrouting: Cálculo espacial de cobertura a pie y vehículo hacia CAI, comisarías y centros asistenciales en el Geovisor*).
