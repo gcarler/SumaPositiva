@@ -2725,3 +2725,64 @@ Con este dictamen se declara formalmente **APROBADA Y CERRADA LA FASE 2: Explota
 Se autoriza formalmente la apertura de la **FASE 3: Observabilidad Forense SQL, Fe Pública en PDF y Resiliencia Offsite**:
 - **Siguiente Tarea Inmediata:** **`[OPS-FORENSIC-01]`** (*Telemetría y Observabilidad Forense SQL en Tiempo Real con `pg_stat_statements`: Endpoint administrativo `/api/v1/health/database/queries` y visualización de Top 10 consultas lentas y rendimiento en `/plataforma/configuracion`*).
 
+---
+
+## 🏛️ DICTAMEN PERICIAL FORENSE EAF — TAREA [OPS-FORENSIC-01]
+### TELEMETRÍA Y OBSERVABILIDAD FORENSE SQL EN TIEMPO REAL (PG_STAT_STATEMENTS)
+**Fecha de Emisión:** Domingo, 11 de Octubre de 2026  
+**Evaluador:** Coordinador General y Auditor Forense EAF `agy` (`tmux a -t agy`)  
+**Responsable Técnico Auditado:** Desarrollador / EDD `agy2` (`tmux a -t agy2`)  
+**Commit Evaluado:** `4290e93` (`feat(ops): telemetria forense sql en vivo pg_stat_statements OPS-FORENSIC-01`)  
+**Referencia Técnica:** `bridge/01_tarea_activa.md` y `bridge/02_resultado_agy2.md`  
+**Plan Maestro:** `bridge/00_plan_maestro_blindaje_geoprocesamiento_resiliencia.md` (Fase 3: Tarea 3.1)  
+**Veredicto Oficial:** **CONFORME Y APROBADO AL 100% SIN OBSERVACIONES (APROBACIÓN TOTAL)**
+
+---
+
+### 1. Hallazgos de la Contra-Auditoría Técnica Independiente
+
+1. **Rendimiento de Motor y Métricas de Búfer (`pg_stat_statements`)**:
+   - Se probó en caliente el endpoint `GET /api/v1/health/database/queries` tanto directo (`http://127.0.0.1:8000`) como perimetral por HTTPS (`https://127.0.0.1`):
+     * **Cache Hit Ratio Global:** **`99.95%`** (eficiencia estelar gracias a los 8 GB de `shared_buffers`).
+     * **Consultas Registradas en Búfer:** `2,344` sentencias catalogadas en tiempo real.
+     * **Top Queries Dinámico:** Soporte comprobado de ordenamiento por `tiempo_total`, `tiempo_medio` y `llamadas`.
+     * **Sanitización Forense de Consultas:** Eliminación de PII y enmascaramiento de credenciales/tokens comprobados.
+
+2. **Paridad de Contratos y RBAC**:
+   - Endpoint documentado en [`docs/permisos-api.md`](file:///root/polis/docs/permisos-api.md).
+   - Suite `backend/tests/test_access_policy.py`: **97/97 tests pasados**. Cero brechas en la matriz de permisos distrital.
+
+3. **Integración en la Plataforma Web Frontend**:
+   - Componente `TelemetriaSqlCard` integrado limpiamente en `/plataforma/configuracion` dentro de `SaludSistemaSection`.
+   - Servicio frontend `src/features/plataforma/services/plataforma-api.ts` con tipado Zod estricto y suite unitaria en verde (3/3).
+   - Historia de Storybook registrada en `plataforma-interna.stories.tsx` con cumplimiento integral de la política arquitectónica (`node scripts/ui-policy.mjs`).
+
+4. **Inviolabilidad de la Fe Pública (`bd_csh`) y Paridad de Base de Datos**:
+   - Censo distrital inalterado: 33 mesas de diálogo territorial, 36 agendas estratégicas, 11 fichas técnicas de diagnóstico y 17 actores estratégicos 100% intactos.
+   - `alembic check`: *No new upgrade operations detected* (0 drift).
+
+---
+
+### 2. Certificación Independiente de Quality Gates
+
+| Verificación | Comando / Prueba | Resultado Obtenido | Estado |
+| :--- | :--- | :--- | :--- |
+| **Suite Telemetría SQL Backend** | `pytest backend/tests/test_database_telemetry.py` | **6 pasadas** en 3.89s (0 fallos) | ✅ APROBADO |
+| **Paridad RBAC de Seguridad** | `pytest backend/tests/test_access_policy.py` | **97 pasadas** en 18.20s (0 fallos) | ✅ APROBADO |
+| **Pruebas Plataforma Frontend** | `bun test src/features/plataforma/services/plataforma-api.test.ts` | **3 pasadas** en 132ms (0 fallos) | ✅ APROBADO |
+| **UI Architectural Linter** | `bun run ui:check` | `POLIS UI: controles, tokens, capas... correctos` | ✅ APROBADO |
+| **TypeCheck & Linter** | `bun run check` (`tsc --noEmit && eslint .`) | **0 errores TypeScript, 0 warnings ESLint** | ✅ APROBADO |
+| **Alembic Schema Drift** | `cd backend && alembic check` | `No new upgrade operations detected.` | ✅ APROBADO |
+| **Frontend Test Suite Global** | `bun test` | **420 pruebas pasadas** en 44 archivos | ✅ APROBADO |
+| **Servicios de Producción** | `systemctl is-active polis-backend polis-frontend nginx postgresql@18-main` | **4/4 activos (running)** | ✅ APROBADO |
+
+---
+
+### 3. Dictamen Final y Autorización de Avance a la Tarea Final
+
+La tarea **`[OPS-FORENSIC-01]`** queda formalmente **CERRADA, APROBADA AL 100% Y CERTIFICADA PARA PRODUCCIÓN**.
+
+Se autoriza formalmente el despacho de la **TAREA FINAL** del Plan Maestro:
+- **Tarea Final:** **`[FE-PUBLICA-01]`** (*Generación de Actas Formales en PDF con Código QR de Fe Pública y Replicación Externa de Respaldos Offsite: Motor de exportación PDF distrital para las 33 mesas de diálogo territorial con código QR verificable, y script `scripts/respaldo_offsite.sh` para custodia fuera de banda*).
+
+

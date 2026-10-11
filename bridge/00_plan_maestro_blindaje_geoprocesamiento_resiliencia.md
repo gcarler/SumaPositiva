@@ -33,9 +33,9 @@ PLAN MAESTRO (3 Fases / 6 Tareas Atómicas)
 │   ├── [GEO-PROC-01] Normalizador Inteligente de Direcciones (address_standardizer) [APROBADA - Commit 5afd960]
 │   └── [GEO-PROC-02] Isócronas de Accesibilidad y Ruteo (pgrouting) [APROBADA - Commit 7fde662]
 │
-└── FASE 3: Observabilidad Forense SQL, Fe Pública en PDF y Resiliencia Offsite [EN EJECUCIÓN]
-    ├── [OPS-FORENSIC-01] Panel de Telemetría SQL en Vivo (pg_stat_statements) [EN PROCESO / ASIGNACIÓN]
-    └── [FE-PUBLICA-01] Generación de Actas Formales en PDF con QR y Respaldo Offsite [PENDIENTE]
+└── FASE 3: Observabilidad Forense SQL, Fe Pública en PDF y Resiliencia Offsite [TRAMO FINAL EN EJECUCIÓN]
+    ├── [OPS-FORENSIC-01] Panel de Telemetría SQL en Vivo (pg_stat_statements) [APROBADA - Commit 4290e93]
+    └── [FE-PUBLICA-01] Generación de Actas Formales en PDF con QR y Respaldo Offsite [TAREA ACTIVA FINAL]
 ```
 
 ---
