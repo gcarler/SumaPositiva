@@ -19,10 +19,10 @@ describe("GeovisorLayoutStore (GEO-DOCK-01)", () => {
     expect(state.bottomOpen).toBe(false);
     expect(state.isMaximized).toBe(false);
 
-    expect(state.sizes.top).toBe(20);
+    expect(state.sizes.top).toBe(18);
     expect(state.sizes.left).toBe(24);
     expect(state.sizes.right).toBe(26);
-    expect(state.sizes.bottom).toBe(30);
+    expect(state.sizes.bottom).toBe(26);
   });
 
   test("permite alternar la visibilidad de cada panel con togglePanel", () => {

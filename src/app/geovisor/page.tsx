@@ -1,8 +1,6 @@
 "use client";
 
 import { useEffect } from "react";
-import { Topbar } from "@/app/_components/topbar";
-import { Footer } from "@/shared/layout/footer";
 import { GeovisorView } from "@/features/geovisor/views/geovisor-view";
 import { useNavigationStore } from "@/core/navigation/navigation-store";
 import { SidebarProvider } from "@/shared/ui/sidebar";
@@ -16,17 +14,13 @@ export default function GeovisorPublicPage() {
 
   return (
     <SidebarProvider id="polis-geovisor">
-      <div className="flex min-h-screen flex-col flex-1 min-w-0">
+      <div className="flex h-dvh w-screen flex-col overflow-hidden bg-[var(--surface-0)]">
         <a className="ui-skip-link" href="#main-content">
           Saltar al contenido
         </a>
-        <Topbar />
-
-        <main id="main-content" tabIndex={-1} className="flex-1">
+        <main id="main-content" tabIndex={-1} className="h-full w-full flex-1 min-h-0 min-w-0 overflow-hidden">
           <GeovisorView />
         </main>
-
-        <Footer />
       </div>
     </SidebarProvider>
   );

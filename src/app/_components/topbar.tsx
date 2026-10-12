@@ -146,6 +146,29 @@ export function Topbar() {
         >
           {NAV.map((item) => {
             const active = vista === item.id;
+            if (item.id === "geovisor") {
+              return (
+                <Button
+                  variant="unstyled"
+                  size="unstyled"
+                  key={item.id}
+                  asChild
+                  className={`rounded-full px-3 py-2.5 text-xs font-medium transition-colors md:text-sm sm:px-3.5 ${
+                    active
+                      ? "bg-[var(--surface-3)] text-[var(--text-primary)]"
+                      : "text-[var(--text-tertiary)] hover:text-[var(--text-primary)]"
+                  }`}
+                  aria-current={active ? "page" : undefined}
+                >
+                  <Link href="/geovisor">
+                    <span className="hidden md:inline">{item.label}</span>
+                    <span className="md:hidden">
+                      {item.labelCorto ?? item.label}
+                    </span>
+                  </Link>
+                </Button>
+              );
+            }
             return (
               <Button
                 variant="unstyled"

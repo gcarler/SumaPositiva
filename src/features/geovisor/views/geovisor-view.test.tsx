@@ -42,11 +42,15 @@ describe("GeovisorView Component (GEO-DOCK-02)", () => {
     // Dock inferior (DataGrid y Gráficos)
     expect(html).toContain('data-testid="geovisor-dock-host-bottom"');
     expect(html).toContain('data-testid="geovisor-dock-host-top"');
+    // Workbench bar y controles
     expect(html).toContain('data-testid="geovisor-workbench-bar"');
-    expect(html).toContain("DataGrid de Mesas");
+    expect(html).toContain('data-testid="geovisor-btn-volver-inicio"');
+    expect(html).toContain("Volver al inicio");
 
-    // Footer institucional de metadatos
-    expect(html).toContain("POLIS SIG Studio • 4 Paneles Acoplados");
+    // Atribución de fuentes oficiales en la barra permanente
     expect(html).toContain("Fuentes oficiales: DANE 2025");
+
+    // Sin contenedor fluid ni márgenes restrictivos
+    expect(html).not.toContain("container-fluid");
   });
 });

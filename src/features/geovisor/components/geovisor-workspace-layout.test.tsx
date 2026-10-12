@@ -50,9 +50,9 @@ describe("GeovisorWorkspaceLayout Component (GEO-DOCK-01)", () => {
       />
     );
 
-    // Top activo (defaultSize 20)
+    // Top activo (defaultSize 18)
     expect(html).toContain('id="dock-panel-top"');
-    expect(html).toContain('data-panel-size="20.0"');
+    expect(html).toContain('data-panel-size="18.0"');
 
     // Left activo (defaultSize 24)
     expect(html).toContain('id="dock-panel-left"');
@@ -91,7 +91,7 @@ describe("GeovisorWorkspaceLayout Component (GEO-DOCK-01)", () => {
     expect(html).toContain('data-panel-size="26.0"');
 
     expect(html).toContain('id="dock-panel-bottom"');
-    expect(html).toContain('data-panel-size="30.0"');
+    expect(html).toContain('data-panel-size="26.0"');
   });
 
   test("maximizar mapa colapsa los 4 paneles a tamaño 0.0 mientras preserva el mapa central", () => {
@@ -141,7 +141,7 @@ describe("GeovisorWorkspaceLayout Component (GEO-DOCK-01)", () => {
       />
     );
 
-    expect(html).toContain('data-panel-size="20.0"'); // Top
+    expect(html).toContain('data-panel-size="18.0"'); // Top
     expect(html).toContain('data-panel-size="24.0"'); // Left
   });
 
@@ -158,5 +158,21 @@ describe("GeovisorWorkspaceLayout Component (GEO-DOCK-01)", () => {
     expect(html).toContain('id="dock-panel-left"');
     expect(html).toContain('data-panel-size="0.0"');
     expect(html).toContain("Solo Mapa");
+  });
+
+  test("el contenedor del workspace ocupa altura completa (h-dvh) sin restriccion max-h", () => {
+    const html = renderToString(
+      <GeovisorWorkspaceLayout
+        centerSlot={<div>Mapa Fullscreen</div>}
+      />
+    );
+
+    // Debe contener h-dvh para ocupar la totalidad del viewport dinámico
+    expect(html).toContain("h-dvh");
+    expect(html).toContain("w-full");
+
+    // No debe contener max-h-[960px] ni redondeos exteriores
+    expect(html).not.toContain("max-h-[960px]");
+    expect(html).not.toContain("rounded-2xl");
   });
 });

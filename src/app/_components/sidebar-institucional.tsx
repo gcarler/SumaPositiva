@@ -354,6 +354,10 @@ export function SidebarInstitucional() {
   };
 
   const navigateTo = (viewName: "inicio" | "explorar" | "mesas" | "geovisor") => {
+    if (viewName === "geovisor") {
+      router.push("/geovisor");
+      return;
+    }
     setVista(viewName);
   };
 

@@ -169,7 +169,7 @@ export function GeovisorWorkspaceLayout({
       aria-label="Espacio de trabajo cartográfico y analítico de POLIS"
       data-testid="geovisor-workspace-layout"
       className={cn(
-        "relative flex h-[calc(100vh-8.5rem)] min-h-[640px] max-h-[960px] w-full flex-col overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface-0)] shadow-xs transition-all",
+        "relative flex h-dvh w-full flex-col overflow-hidden bg-[var(--surface-0)] transition-all",
         className
       )}
     >

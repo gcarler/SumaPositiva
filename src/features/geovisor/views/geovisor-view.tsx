@@ -212,7 +212,7 @@ export function GeovisorView() {
   };
 
   return (
-    <div className="container-fluid space-y-3 py-3 md:py-4">
+    <div className="h-full w-full overflow-hidden">
       {/* WORKSPACE PRINCIPAL: 4 PANELES ACOPLADOS CON PESTAÑAS (estilo IDE) */}
       <GeovisorWorkspaceLayout
         topSlot={<GeovisorDockHost dock="top" renderView={renderView} />}
@@ -234,16 +234,6 @@ export function GeovisorView() {
         rightSlot={<GeovisorDockHost dock="right" renderView={renderView} />}
         bottomSlot={<GeovisorDockHost dock="bottom" renderView={renderView} />}
       />
-
-      {/* Footer de Metadatos de Fuentes Oficiales */}
-      <div className="flex flex-wrap items-center justify-between gap-2 border-t border-[var(--border)] pt-2.5 text-xs text-[var(--text-tertiary)]">
-        <span>
-          Fuentes oficiales: DANE 2025 • Policía Nacional / CCV (Ene–Sep 2025) • Alcaldía Mayor de Cartagena • Catastro Distrital.
-        </span>
-        <span>
-          POLIS SIG Studio • 4 Paneles Acoplados • 33 Mesas Territoriales • 217 Barrios
-        </span>
-      </div>
     </div>
   );
 }

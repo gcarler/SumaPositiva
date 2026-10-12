@@ -1,7 +1,8 @@
 "use client";
 
 import React from "react";
-import { LayoutPanelLeft } from "lucide-react";
+import Link from "next/link";
+import { ArrowLeft, Home, LayoutPanelLeft } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import {
   DropdownMenu,
@@ -22,9 +23,8 @@ import { GeovisorDockControls } from "./geovisor-dock-controls";
 
 /**
  * GeovisorWorkbenchBar — Barra permanente del espacio de trabajo.
- * Siempre visible (nunca se oculta con los paneles), de modo que el usuario puede
- * recuperar cualquier panel o vista aunque haya cerrado todo, como la barra de
- * título / menú Ver de VS Code.
+ * Siempre visible (nunca se oculta con los paneles), con botón de retorno al portal,
+ * menú Ver de vistas, atribución de fuentes y conmutadores de los 4 paneles dock.
  */
 export function GeovisorWorkbenchBar({ className }: { className?: string }) {
   const clientStore = useGeovisorLayoutStore();
@@ -35,15 +35,43 @@ export function GeovisorWorkbenchBar({ className }: { className?: string }) {
     <div
       data-testid="geovisor-workbench-bar"
       className={cn(
-        "flex shrink-0 flex-wrap items-center justify-between gap-2 border-b border-[var(--border)] bg-[var(--surface-2)]/70 px-2 py-1",
+        "flex h-9 shrink-0 items-center justify-between gap-2 border-b border-[var(--border)] bg-[var(--surface-2)]/80 px-2 text-xs",
         className
       )}
     >
-      <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wider text-[var(--text-tertiary)]">
-        <LayoutPanelLeft className="size-3.5 text-[var(--ember)]" aria-hidden="true" />
-        <span>Espacio de trabajo SIG</span>
+      {/* Lado izquierdo: Botón «Volver al inicio» + Título SIG */}
+      <div className="flex items-center gap-2">
+        <Button
+          asChild
+          variant="ghost"
+          size="sm"
+          className="h-7 gap-1.5 px-2 text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+        >
+          <Link href="/" aria-label="Volver al inicio" data-testid="geovisor-btn-volver-inicio">
+            <ArrowLeft className="size-3.5" aria-hidden="true" />
+            <Home className="size-3.5" aria-hidden="true" />
+            <span className="hidden sm:inline">Volver al inicio</span>
+          </Link>
+        </Button>
+
+        <div className="h-4 w-px bg-[var(--border)]" aria-hidden="true" />
+
+        <div className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-[var(--text-tertiary)]">
+          <LayoutPanelLeft className="size-3.5 text-[var(--ember)]" aria-hidden="true" />
+          <span className="hidden md:inline">Espacio de trabajo SIG</span>
+        </div>
       </div>
 
+      {/* Centro: Fuentes oficiales discretas para no perder la atribución */}
+      <div
+        className="hidden xl:flex items-center gap-1.5 text-[11px] text-[var(--text-tertiary)] truncate max-w-md 2xl:max-w-xl"
+        title="Fuentes oficiales: DANE 2025 • Policía Nacional / CCV (Ene–Sep 2025) • Alcaldía Mayor de Cartagena • Catastro Distrital"
+      >
+        <span className="font-semibold text-[var(--text-secondary)]">Fuentes oficiales:</span>
+        <span className="truncate">DANE 2025 • Policía Nacional / CCV • Alcaldía de Cartagena • Catastro Distrital</span>
+      </div>
+
+      {/* Lado derecho: Menú de Vistas y Controles de los 4 Paneles */}
       <div className="flex items-center gap-1.5">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
