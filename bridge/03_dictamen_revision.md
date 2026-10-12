@@ -1,70 +1,45 @@
-# DICTAMEN PERICIAL DE AUDITORÍA FORENSE — OPTIMIZACIÓN SIG DEL GEOVISOR PÚBLICO (SIN HERO)
-## RETIRO DE HERO EN GEOVISOR, USABILIDAD DIRECTA "ABOVE THE FOLD" Y ALINEACIÓN DE GESTIÓN EN /plataforma
+# DICTAMEN PERICIAL FORENSE DE AUDITORÍA (EAF)
+## FASE 1: ARQUITECTURA DE LAYOUT RESIZABLE (VS CODE TILING), STORE ZUSTAND Y CONTROLES DOCK [GEO-DOCK-01]
 
-**Auditor / Coordinador General:** `agy` (Coordinador General y Auditor Forense EAF — `tmux a -t agy`)  
-**Desarrollador / EDD:** `agy2` (Desarrollador / EDD — `tmux a -t agy2`)  
-**Fecha de Dictamen:** Lunes, 12 de Octubre de 2026  
-**Commit Evaluado:** `b6a936a08607c57c56c47c3b146994fafc6287c2`  
-**Referencia:** `bridge/02_resultado_agy2.md`  
-**Veredicto Oficial:** 🏆 **APROBADO AL 100% — CERTIFICACIÓN INTEGRAL DE USABILIDAD SIG Y PRODUCCIÓN**
-
----
-
-## 🔬 1. Evaluación de Hallazgos y Cumplimiento Técnico
-
-### 1.1 Optimización Directa del Geovisor Público (`src/features/geovisor/views/geovisor-view.tsx`)
-- **Eliminación Total de Hero Banner:** En estricto cumplimiento de la instrucción (*"el geovisor no requiere hero, es decir la página pública del geovisor no debe tener Hero"*), se retiró `<HeroPageBanner pageKey="geovisor" />`.
-- **Experiencia de Usuario Inmediata (*Above the Fold*):** La barra de filtros analíticos y KPIs territoriales (`GeovisorKpiBar`) y el mapa coroplético OpenLayers (`MapaCartagena`) quedan situados en la parte superior absoluta de la vista, permitiendo al ciudadano interactuar inmediatamente con los 217 barrios, las 3 localidades y los datos geoespaciales sin desplazamiento vertical innecesario.
-- **Sincronización de Navegación Cartográfica:** En `handleLocalizarMesaEnMapa`, se configuró `window.scrollTo({ top: 0, behavior: "smooth" })`, enfocando instantáneamente el mapa en la mesa seleccionada.
-
-### 1.2 Alineación del Gestor de Heros en `/plataforma` (`src/features/plataforma/components/gestor-heros-plataforma.tsx`)
-- **Catálogo Depurado:** Se excluyó `geovisor` del arreglo `ESPACIOS_PUBLICOS`, alineando la consola de administración a los **8 espacios públicos** que legítimamente proyectan cabecera temática territorial:
-  1. 🏛️ Portada Principal (`/`)
-  2. 📑 Líneas Estratégicas y Gobernanza (`/explorar`)
-  3. 🤝 Mesas de Diálogo Territorial (`/mesas`)
-  4. 📰 Noticias y Actualidad Distrital (`/noticias`)
-  5. 🗣️ Voces y Memoria Social (`/testimonios`)
-  6. 🧭 Diagnóstico y Dimensiones (`/fases`)
-  7. 🏘️ Modo Barrio Popular (`/barrio`)
-  8. ⚖️ Veeduría y Rendición (`/plataforma/rendicion`)
-
-### 1.3 Suite Unitaria de No Regresión (`gestor-heros-plataforma.test.tsx`)
-- Pruebas automatizadas actualizadas y 100% verdes, validando la consistencia de los 8 espacios gestionables.
+**Auditor Forense / Supervisor:** `agy` (Coordinador General y Auditor Forense EAF — `tmux a -t agy`)  
+**Desarrollador Responsable:** `agy2` (Desarrollador / EDD — `tmux a -t agy2`)  
+**Fecha de Emisión:** Lunes, 12 de Octubre de 2026  
+**Commit Evaluado:** `63c5a6b` (*feat(geovisor): implementar arquitectura de layout resizable VS Code y store de paneles GEO-DOCK-01*)  
+**Rama:** `main` (cumplimiento estricto de Protocolo Zero-Push)  
+**Dictamen:** ✅ **APROBADO SIN RESERVAS**
 
 ---
 
-## 🧪 2. Matriz Forense Independiente de Quality Gates
+### 1. Hallazgos de la Contra-Auditoría Técnica
 
-| Control de Calidad | Comando Ejecutado | Criterio Forense | Resultado de la Contra-Auditoría | Estado |
-|---|---|---|---|:---:|
-| **UI Architectural Linter** | `bun run ui:check` | 0 violaciones a tokens, controles nativos o accesibilidad | **0 infracciones detectadas** | ✅ CERTIFICADO |
-| **TypeCheck & Linter** | `bun run check` | 0 errores TypeScript, 0 warnings ESLint | **0 errores, 0 warnings** (`tsc --noEmit`, `eslint .`) | ✅ CERTIFICADO |
-| **Suite Completa Frontend** | `bun test` | 450+ pruebas unitarias y de componentes | **456/456 PASADAS** (2147 aserciones en 47 archivos) | ✅ CERTIFICADO |
-| **Alembic Drift Check** | `alembic check` | 0 diferencias entre modelos SQLAlchemy y BD | **"No new upgrade operations detected"** | ✅ CERTIFICADO |
-| **Inviolabilidad Censo `bd_csh`** | Consulta directa PostgreSQL 18 | 33 mesas, 36 agendas, 11 fichas, 17 actores | **33 mesas, 36 agendas, 11 fichas, 17 actores (100% intactos)** | ✅ CERTIFICADO |
-| **Compilación Producción** | `bun run build` (Turbopack) | Generación estática SSG limpia | **191/191 páginas generadas con éxito** | ✅ CERTIFICADO |
-| **Servicios en Producción** | `systemctl is-active` | Daemons en estado active | `polis-frontend`, `polis-backend`, `nginx`, `postgresql` (todos activos) | ✅ CERTIFICADO |
-| **Protocolo Zero-Push** | `git log -n 1` | Commits confinados estrictamente en `main` local | **Commit `b6a936a` verificado** | ✅ CERTIFICADO |
+1. **Store de Estado Reactivo (`geovisor-layout-store.ts`):**
+   - El store tipado `useGeovisorLayoutStore` implementa correctamente la persistencia con salvaguarda SSR (`createJSONStorage` con fallback en memoria cuando `window` es indefinido).
+   - Control de límites elásticos seguro: `Math.max(5, Math.min(65, Math.round(size)))` previene que un arrastre manual colapse inadvertidamente el layout.
+   - La acción `maximizeMap()` preserva el estado previo de los 4 paneles (`previousOpenState`) permitiendo restauración instantánea y fluida.
 
----
+2. **Componente de Controles de Layout (`geovisor-dock-controls.tsx`):**
+   - Implementa los 4 iconos demandados (`PanelTop`, `PanelLeft`, `PanelRight`, `PanelBottom`) junto a controles de "Maximizar/Restaurar" y "Restablecer Layout".
+   - Atributos de accesibilidad completos: `role="toolbar"`, `aria-label`, `aria-pressed`, `data-testid` y tooltips descriptivos.
+   - Cumplimiento 100% de la política UI: utiliza tokens de diseño POLIS y botones de la biblioteca base (`Button` de `@/shared/ui/button`).
 
-## 🏛️ 3. Censo Forense de Fe Pública de la Base de Datos (`bd_csh`)
-
-```
-========================================================================================
-TABLA                                              CENSO AUDITADO        INTEGRIDAD
-========================================================================================
-mesas_trabajo.mesas                                      33               100% INTACTO
-mesas_trabajo.agendas                                    36               100% INTACTO
-indicadores.fichas_tecnicas_indicadores                  11               100% INTACTO
-participacion_ciudadana.actores_estrategicos             17               100% INTACTO
-========================================================================================
-```
+3. **Contenedor Resizable Mosaico (`geovisor-workspace-layout.tsx`):**
+   - Jerarquía de paneles dobles anidados (`ResizablePanelGroup` vertical exterior y horizontal interior) que garantiza la regla cardinal de **cero superposición (*tiling*)**.
+   - **Lienzo OpenLayers inmutable:** El panel central (`centerSlot`) tiene `minSize={30}` y **nunca se desmonta ni desactiva**, asegurando que el mapa de Cartagena conserve el contexto cartográfico y tiles precargados sin parpadeos ni recargas.
+   - Sincronización imperativa de referencias (`useRef<ImperativePanelHandle>`) y `useEffect` que permite que el mapa redimensione fluidamente sin líneas divisorias huérfanas.
 
 ---
 
-## 🏆 4. Dictamen Final y Conclusión
+### 2. Certificación de Quality Gates
 
-La optimización de la página pública del **Geovisor Territorial (sin Hero Banner)** y la calibración del Gestor de Heros en `/plataforma` quedan formalmente **CERTIFICADAS Y APROBADAS AL 100%**.
+* **UI Architectural Policy (`bun run ui:check`):** 0 infracciones detectadas.
+* **TypeCheck & Linter (`bun run check`):** 0 errores TypeScript, 0 advertencias ESLint.
+* **Pruebas del Subsistema Geovisor (`bun test src/features/geovisor/`):** 34 pruebas pasadas (0 fail).
+* **Suite Completa Frontend (`bun test`):** 474 pruebas pasadas (0 fail) en 50 archivos.
+* **Inviolabilidad Censo `bd_csh`:** 33 mesas, 36 agendas, 11 fichas, 17 actores estratégicos 100% verificados.
+* **Servicios de Producción:** `polis-frontend`, `polis-backend`, `nginx` y `postgresql@18-main` operando normalmente.
 
-El Geovisor ofrece la máxima ergonomía y rendimiento para análisis SIG ciudadano y técnico, mientras que el resto de las páginas públicas preservan sus Heros territoriales de alta visibilidad y nitidez.
+---
+
+### 3. Veredicto y Paso a la Siguiente Fase
+
+Se autoriza el cierre formal de la **Fase 1 (`[GEO-DOCK-01]`)** y se ordena el inicio de la **Fase 2 (`[GEO-DOCK-02]`: Modularización y Construcción de los 4 Paneles Acoplados: Top Shelf, Left Dock, Right Inspector y Bottom Console)**.
