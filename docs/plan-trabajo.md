@@ -28,8 +28,9 @@ activación en [identidad](identidad.md); dictamen independiente EAF pendiente.
 - [x] Prueba de navegador real con Next.js, FastAPI y PostgreSQL en base aislada;
   creación de usuario/rol, asignación, revocación, restauración y móvil 320 px.
 - [x] Actualizar contrato, matriz de 91 operaciones y skills de revisión EDD/EAF.
-- [ ] Operación: aplicar migración en el entorno autorizado, configurar SMTP/worker,
-  bootstrap administrativo y revisar procedencia de cuentas institucionales existentes.
+- [x] Operación: runbook normativo en [despliegue de identidad](despliegue-identidad.md),
+  herramientas de bootstrap administrativo idempotente, auditoría pericial de procedencia
+  de cuentas institucionales y verificación de entorno SMTP/worker sin envío real [CIERRE-02].
 - [ ] Dictamen independiente de EAF sobre el snapshot y alcance entregados.
 
 Evidencia: [manifest de identidad](evidencia-identidad-2026-10-01.json).
