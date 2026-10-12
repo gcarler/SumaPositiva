@@ -15,11 +15,30 @@ BACKEND_SYSTEM_URL="http://127.0.0.1:8000/api/v1/health/system"
 FRONTEND_URL="http://127.0.0.1:3000/"
 LOG_FILE="/var/log/polis-monitor.log"
 
+# Carga de credenciales opcionales de alerta desde backend/.env
+POLIS_ALERT_WEBHOOK_URL="${POLIS_ALERT_WEBHOOK_URL:-}"
+POLIS_TELEGRAM_BOT_TOKEN="${POLIS_TELEGRAM_BOT_TOKEN:-}"
+POLIS_TELEGRAM_CHAT_ID="${POLIS_TELEGRAM_CHAT_ID:-}"
+
+if [[ -f "/root/polis/backend/.env" ]]; then
+  if [[ -z "${POLIS_ALERT_WEBHOOK_URL}" ]]; then
+    POLIS_ALERT_WEBHOOK_URL=$(grep "^POLIS_ALERT_WEBHOOK_URL=" /root/polis/backend/.env 2>/dev/null | cut -d= -f2- || true)
+  fi
+  if [[ -z "${POLIS_TELEGRAM_BOT_TOKEN}" ]]; then
+    POLIS_TELEGRAM_BOT_TOKEN=$(grep "^POLIS_TELEGRAM_BOT_TOKEN=" /root/polis/backend/.env 2>/dev/null | cut -d= -f2- || true)
+  fi
+  if [[ -z "${POLIS_TELEGRAM_CHAT_ID}" ]]; then
+    POLIS_TELEGRAM_CHAT_ID=$(grep "^POLIS_TELEGRAM_CHAT_ID=" /root/polis/backend/.env 2>/dev/null | cut -d= -f2- || true)
+  fi
+fi
+
 MODO="check"
 if [[ "${1:-}" == "--cron" ]]; then
   MODO="cron"
 elif [[ "${1:-}" == "--json" ]]; then
   MODO="json"
+elif [[ "${1:-}" == "--test-alert" ]]; then
+  MODO="test-alert"
 elif [[ "${1:-}" == "--check" ]] || [[ -z "${1:-}" ]]; then
   MODO="check"
 fi
@@ -34,6 +53,43 @@ log_msg() {
     echo "$linea" >> "$LOG_FILE" 2>/dev/null || echo "$linea"
   else
     echo "$linea"
+  fi
+}
+
+enviar_alerta_notificacion() {
+  local titulo="$1"
+  local cuerpo="$2"
+  local enviada=false
+
+  # 1. Webhook genérico (Discord / Slack / Teams / custom HTTP)
+  if [[ -n "${POLIS_ALERT_WEBHOOK_URL:-}" ]]; then
+    log_msg "INFO" "Enviando alerta a webhook configurado..."
+    if curl -s -m 5 -X POST -H "Content-Type: application/json" \
+      -d "{\"content\": \"⚠️ **POLIS CARTAGENA — ALERTA CRÍTICA** [$TIMESTAMP]\n**$titulo**\n$cuerpo\"}" \
+      "$POLIS_ALERT_WEBHOOK_URL" >/dev/null 2>&1; then
+      log_msg "INFO" "Alerta webhook despachada exitosamente."
+      enviada=true
+    else
+      log_msg "WARN" "Fallo al despachar alerta webhook."
+    fi
+  fi
+
+  # 2. Telegram Bot Oficial
+  if [[ -n "${POLIS_TELEGRAM_BOT_TOKEN:-}" && -n "${POLIS_TELEGRAM_CHAT_ID:-}" ]]; then
+    log_msg "INFO" "Enviando alerta a Telegram Bot..."
+    local mensaje="🚨 *POLIS Cartagena — Alerta del Watchdog* 🚨%0A%0A*Fecha UTC:* \`$TIMESTAMP\`%0A*Alerta:* $titulo%0A*Detalles:* \`$cuerpo\`"
+    if curl -s -m 5 -X POST "https://api.telegram.org/bot${POLIS_TELEGRAM_BOT_TOKEN}/sendMessage" \
+      -d "chat_id=${POLIS_TELEGRAM_CHAT_ID}&text=${mensaje}&parse_mode=Markdown" >/dev/null 2>&1; then
+      log_msg "INFO" "Alerta Telegram despachada exitosamente."
+      enviada=true
+    else
+      log_msg "WARN" "Fallo al despachar alerta Telegram."
+    fi
+  fi
+
+  if [[ "$enviada" == false && "$MODO" == "test-alert" ]]; then
+    echo "[AVISO] No hay variables de alerta configuradas (POLIS_ALERT_WEBHOOK_URL o POLIS_TELEGRAM_*)."
+    echo "Para activarlas, agregue las variables en /root/polis/backend/.env o en el entorno del sistema."
   fi
 }
 
@@ -167,7 +223,12 @@ elif [[ "$MODO" == "cron" ]]; then
     log_msg "OK" "Todos los servicios saludables (Backend 200, Frontend 200, PG: ${PG_ACTUALES}/${PG_MAX} conx, Disco: ${DISK_USED_PCT}%)."
   else
     log_msg "ALERT" "Degradación detectada:${DETALLES_FALLOS}"
+    enviar_alerta_notificacion "Degradación en Producción" "Servicios afectados:${DETALLES_FALLOS}"
   fi
+elif [[ "$MODO" == "test-alert" ]]; then
+  echo "=== PRUEBA DE DESPACHO DE ALERTA PROACTIVA (WATCHDOG POLIS) ==="
+  enviar_alerta_notificacion "Prueba de Alerta Watchdog" "Este es un mensaje de verificación emitido desde el servidor de POLIS (Cartagena 2026)."
+  echo "Prueba finalizada."
 else
   # Modo --check tabular
   echo "=============================================================================="
