@@ -1,54 +1,53 @@
-# TAREA ACTIVA: [HERO-PAGES-02] COMPONENTE HERO HOME SHOWCASE (FULLSCREEN INMERSIVO)
-## PORTADA PRINCIPAL PÚBLICA: CARRUSEL CINEMATOGRÁFICO, KEN BURNS, VIÑETA ADAPTATIVA Y CONTROLES
+# TAREA ACTIVA: [HERO-PAGES-03] COMPONENTE HERO PAGE BANNER (HEROS COMPACTOS PÚBLICOS)
+## SUBPÁGINAS PÚBLICAS: ALTURAS COMPACTAS, FOTOGRAFÍA TEMÁTICA DIFERENCIADA Y REGLA DEL PLIEGUE
 
 **Fecha:** Lunes, 12 de Octubre de 2026  
-**Fase:** FASE 2: Hero Inmersivo de Portada Principal (Tarea 2.1 y 2.2)  
+**Fase:** FASE 3: Heros Compactos para Subpáginas Públicas (Tareas 3.1 y 3.2)  
 **Plan Maestro:** `bridge/00_plan_maestro_heros_territoriales_publicos.md`  
 **Asignada a:** `agy2` (Desarrollador / EDD — `tmux a -t agy2`)  
 **Supervisor / Auditor:** `agy` (Coordinador General y Auditor Forense EAF — `tmux a -t agy`)  
-**Severidad:** ALTA / EXPERIENCIA VISUAL, ACCESIBILIDAD Y ENGAGEMENT CIUDADANO  
+**Severidad:** MEDIA-ALTA / ARQUITECTURA VISUAL, COHERENCIA DE MARCA Y ACCESIBILIDAD  
 
 ---
 
 ## 🎯 1. Justificación y Alcance de la Tarea
 
-El usuario ha solicitado de forma expresa que las imágenes del Hero:
-1. **"Se vean mucho más"**: Opacidad viva al 60% por defecto (ampliable hasta 85%).
-2. **"Que se muevan"**: Carrusel automático (7 segundos) con transición fluida (crossfade) y ligero zoom cinematográfico Ken Burns.
-3. **"Que también pueda cambiarlas manualmente"**: Controles de navegación de alta gama (inspirados en la sofisticación de *heliasoils.com*, pero con la dignidad de la política pública de seguridad humana de Cartagena).
+Tal como acordamos en el Plan Maestro, **cada página pública debe tener un Hero diferenciado** que refleje su propósito territorial específico, pero **con una altura compacta (`h-56` a `h-64`, o ultracompacta `h-44` a `h-48` en el Geovisor)** para respetar estrictamente la regla del pliegue (*above the fold*) y no desplazar hacia abajo los mapas interactivos, selectores de barrio o formularios de participación.
+
+Asimismo, **la plataforma administrativa interna (`/plataforma/*`) se mantiene 100% sobria sin imágenes invasivas de fondo**.
 
 ### Alcance Técnico Detallado:
 
-1. **Creación de `src/features/politicas/components/hero-home-showcase.tsx`:**
-   - Debe consumir las 5 diapositivas territoriales `HERO_HOME_SLIDES` desde `hero-pages.data.ts`.
-   - Conectado a `useHeroConfigStore`:
-     * `heroImageId`: ID de la diapositiva actual.
-     * `opacidad`: Nivel de transparencia de la capa fotográfica (60% default).
-     * `modoCarrusel`: Si la rotación está habilitada.
-     * `pausado`: Si el ciudadano detuvo la rotación.
-     * `siguienteImagen()`, `anteriorImagen()`, `irAImagen(id)`, `togglePausa()`.
-   - **Efecto Visual Cinematográfico:**
-     * Contenedor de altura completa o inmersiva (`min-h-[82vh]` o `h-[88vh] md:h-[92vh]`).
-     * Capa de imagen de fondo WebP con transición crossfade (`transition-opacity duration-700 ease-in-out`).
-     * Animación sutil de respiración/Ken Burns (`scale-[1.03] transition-transform duration-[7000ms] ease-out`).
-     * **Viñeta Adaptativa Multicapa:** Gradiente radial y lineal oscuro (`from-slate-950/90 via-slate-900/60 to-transparent`) para garantizar que el texto tenga contraste superior a 4.5:1 (WCAG 2.1 AA) sin apagar la vivacidad de la imagen.
-   - **Controles de Navegación Manuales (Estilo Showcase):**
-     * **Contador Numérico:** Formato `01 / 05`, `02 / 05`, etc., con tipografía tabular y elegante.
-     * **Insignia Territorial en Vivo:** Etiqueta translúcida con el hito geográfico real (`ubicacionReal`, ej. *"Claustro de la Merced — Centro Histórico"* o *"Sector El Pozón — Localidad 2"*).
-     * **Botones Flecha:** Botones `<` y `>` (anterior / siguiente) con efectos hover sutiles y accesibilidad ARIA (`aria-label="Diapositiva anterior"`, `aria-label="Diapositiva siguiente"`).
-     * **Pills / Barra de Diapositivas:** Indicadores interactivos para seleccionar directamente cualquiera de las 5 líneas temáticas (al hacer click, salta a la diapositiva correspondiente).
-     * **Botón Play / Pausa:** Control accesible para detener o reanudar el carrusel en cualquier momento (`aria-label="Pausar carrusel"` / `"Reanudar carrusel"`).
-     * **Detección de Interacción:** Si el usuario pasa el mouse por encima (hover) o hace foco en los controles, el temporizador se suspende temporalmente para no cambiarle la diapositiva mientras lee.
-     * **Soporte `prefers-reduced-motion`:** Si el usuario tiene reducida la animación en su sistema operativo, desactivar el Ken Burns y respetar pausas.
+1. **Creación del Componente Universal `src/features/politicas/components/hero-page-banner.tsx`:**
+   - Props aceptadas:
+     * `pageKey`: `"barrio" | "geovisor" | "fases" | "rendicion"` (clave canónica del catálogo `HERO_PAGES_CONFIG`).
+     * `tituloOverride?: string` (permite sobreescribir el título si la vista lo requiere).
+     * `subtituloOverride?: string`.
+     * `badgeOverride?: string`.
+     * `alturaOverride?: "compact" | "ultracompact"`.
+     * `children?: React.ReactNode` (espacio para inyectar selectores, filtros o KPIs si la vista lo requiere).
+     * `className?: string`.
+   - **Renderizado Visual:**
+     * Contenedor con altura acotada:
+       - `compact`: `min-h-[14rem] sm:min-h-[16rem]` (`h-56` a `h-64`).
+       - `ultracompact`: `min-h-[10rem] sm:min-h-[12rem]` (`h-40` a `h-48`, ideal para el Geovisor).
+     * Imagen de fondo temática WebP obtenida de `hero-pages.data.ts` (con opacidad calibrada en sincronía con el store o default al 55-60%).
+     * Viñeta semántica multicapa que blinda el contraste WCAG 2.1 AA del texto institucional (`from-[var(--surface-0)]/90 via-[var(--surface-0)]/70 to-transparent`).
+     * **Insignia Territorial:** Etiqueta translúcida superior con el hito geográfico real (`ubicacionReal`, ej. *"Sector El Pozón — Localidad 2"* para Barrio, o *"Claustro de la Merced — Centro Histórico"* para Fases).
+     * Título institucional nítido y subtítulo explicativo de alto valor cívico.
+     * Cero colores o utilidades no autorizadas (100% tokens de diseño de POLIS).
 
-2. **Integración en `src/features/politicas/views/inicio-view.tsx`:**
-   - Incorporar `HeroHomeShowcase` en la cabecera del Home público (`/`), asegurando que conviva de manera impecable con el resumen ejecutivo, métricas clave y enlaces de acción ciudadana.
+2. **Integración en Vistas Públicas Clave:**
+   - **`src/features/geovisor/views/geovisor-view.tsx`:** Integrar `<HeroPageBanner pageKey="geovisor" />` en reemplazo o enriquecimiento del `PageHeader` estático, manteniendo la visibilidad inmediata del lienzo de mapas y controles.
+   - **`src/features/barrio/components/barrio-view.tsx`:** Integrar `<HeroPageBanner pageKey="barrio" />` de forma ligera y optimizada mobile-first antes del selector de barrios de Cartagena.
+   - **`src/features/politicas/views/dimensiones-view.tsx`:** Integrar `<HeroPageBanner pageKey="fases" />` en la cabecera institucional preservando los indicadores clave.
 
-3. **Pruebas Automatizadas en `src/features/politicas/components/hero-home-showcase.test.tsx`:**
-   - Renderizado con la diapositiva activa inicial.
-   - Presencia de controles: flechas anterior/siguiente, contador `01 / 05`, botón de pausa y badge territorial.
-   - Disparo de eventos de clic en anterior, siguiente, salto por pill y toggle de pausa.
-   - Cumplimiento de accesibilidad (`aria-label` en controles interactivos).
+3. **Pruebas Automatizadas en `src/features/politicas/components/hero-page-banner.test.tsx`:**
+   - Renderizado correcto para cada una de las páginas públicas (`barrio`, `geovisor`, `fases`, `rendicion`).
+   - Aplicación de alturas diferenciadas (`compact` vs `ultracompact`).
+   - Renderizado de la insignia geográfica de procedencia real.
+   - Soporte de sobrescritura de props (`tituloOverride`, etc.) y renderizado de `children`.
+   - Cumplimiento de accesibilidad (`role="banner"` o semántica accesible).
 
 ---
 
@@ -56,19 +55,19 @@ El usuario ha solicitado de forma expresa que las imágenes del Hero:
 
 | Verificación | Comando / Prueba | Criterio de Éxito |
 |---|---|---|
-| **Suite Componente Hero Home** | `bun test src/features/politicas/components/hero-home-showcase.test.tsx` | 100% verde |
-| **Suite Políticas Completa** | `bun test src/features/politicas/` | 100% verde |
+| **Suite HeroPageBanner** | `bun test src/features/politicas/components/hero-page-banner.test.tsx` | 100% verde |
+| **Suite Completa Políticas** | `bun test src/features/politicas/` | 100% verde |
 | **UI Architectural Linter** | `bun run ui:check` | 0 infracciones |
 | **TypeCheck & Linter** | `bun run check` | 0 errores TypeScript, 0 warnings ESLint |
-| **Frontend Test Suite** | `bun test` | 430+ pasadas |
+| **Frontend Test Suite** | `bun test` | 440+ pasadas |
 | **Inviolabilidad `bd_csh`** | Verificación PostgreSQL 18 | 33 mesas, 36 agendas, 11 fichas, 17 actores intactos |
 
 ---
 
 ## 📦 3. Entregables y Compromisos
 
-1. Componente `src/features/politicas/components/hero-home-showcase.tsx`.
-2. Integración en `src/features/politicas/views/inicio-view.tsx`.
-3. Pruebas unitarias en `src/features/politicas/components/hero-home-showcase.test.tsx`.
-4. Commit atómico local: `feat(hero): componente inmersivo HeroHomeShowcase con carrusel y controles HERO-PAGES-02`.
+1. Componente `src/features/politicas/components/hero-page-banner.tsx`.
+2. Integración en `geovisor-view.tsx`, `barrio-view.tsx` y `dimensiones-view.tsx`.
+3. Suite unitaria `src/features/politicas/components/hero-page-banner.test.tsx`.
+4. Commit atómico local: `feat(hero): componente universal HeroPageBanner para subpaginas publicas HERO-PAGES-03`.
 5. Registro en `bridge/02_resultado_agy2.md` y notificación a `agy` en `%0`.
