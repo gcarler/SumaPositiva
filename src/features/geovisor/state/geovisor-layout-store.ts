@@ -137,7 +137,7 @@ export const DEFAULT_DOCK_SIZES: DockPanelSizes = {
   top: 18,
   left: 24,
   right: 26,
-  bottom: 26,
+  bottom: 20,
 };
 
 export const DEFAULT_DOCK_VISIBILITY: DockPanelVisibility = {

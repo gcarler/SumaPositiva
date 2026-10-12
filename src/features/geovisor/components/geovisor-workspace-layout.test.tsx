@@ -91,7 +91,7 @@ describe("GeovisorWorkspaceLayout Component (GEO-DOCK-01)", () => {
     expect(html).toContain('data-panel-size="26.0"');
 
     expect(html).toContain('id="dock-panel-bottom"');
-    expect(html).toContain('data-panel-size="26.0"');
+    expect(html).toContain('data-panel-size="20.0"');
   });
 
   test("maximizar mapa colapsa los 4 paneles a tamaño 0.0 mientras preserva el mapa central", () => {
