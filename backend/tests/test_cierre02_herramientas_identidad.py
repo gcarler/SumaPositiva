@@ -288,3 +288,47 @@ def test_cli_ejecucion_herramientas(database_url: str):
     data_boot = json.loads(proc_boot.stdout)
     assert data_boot["exito"] is True
     assert data_boot["accion"] == "check_only"
+
+    # 4. bootstrap_identidad_admin con --contrasena por CLI emite advertencia pericial en stderr
+    cmd_warn = [
+        sys.executable,
+        "-m",
+        "scripts.bootstrap_identidad_admin",
+        "--database-url",
+        database_url,
+        "--correo",
+        f"cli-audit-warn-{uuid.uuid4().hex[:6]}@example.org",
+        "--contrasena",
+        "ClavePorCLIAdvertencia2026*",
+        "--check-only",
+    ]
+    # Comprobar cuando no es check-only para disparar la advertencia
+    cmd_warn_activa = [
+        sys.executable,
+        "-m",
+        "scripts.bootstrap_identidad_admin",
+        "--database-url",
+        database_url,
+        "--correo",
+        f"cli-audit-warn-{uuid.uuid4().hex[:6]}@example.org",
+        "--contrasena",
+        "ClavePorCLIAdvertencia2026*",
+    ]
+    try:
+        proc_warn = subprocess.run(cmd_warn_activa, cwd=backend_dir, capture_output=True, text=True)
+        assert "[ADVERTENCIA DE SEGURIDAD OPERATIVA]" in proc_warn.stderr
+    finally:
+        import asyncio
+        from sqlalchemy.ext.asyncio import create_async_engine
+
+        async def _cleanup():
+            eng = create_async_engine(database_url, hide_parameters=True)
+            try:
+                async with eng.begin() as conn:
+                    await conn.execute(
+                        text("DELETE FROM autenticacion.usuarios WHERE correo LIKE 'cli-audit-warn-%'")
+                    )
+            finally:
+                await eng.dispose()
+
+        asyncio.run(_cleanup())

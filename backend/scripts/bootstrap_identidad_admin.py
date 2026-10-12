@@ -243,6 +243,15 @@ def main():
         parser.error("El motivo requiere al menos 10 caracteres de justificación pericial.")
 
     contrasena = args.contrasena
+    if not args.check_only and args.contrasena:
+        print(
+            "[ADVERTENCIA DE SEGURIDAD OPERATIVA] El paso de la contraseña mediante el parámetro "
+            "--contrasena en línea de comandos expone el secreto en el historial del shell y en la "
+            "tabla de procesos (ps). Para entornos autorizados y producción, utilice la variable de "
+            "entorno POLIS_BOOTSTRAP_ADMIN_PASSWORD o el prompt interactivo seguro (getpass).",
+            file=sys.stderr,
+        )
+
     if not args.check_only and not contrasena:
         if sys.stdin.isatty():
             contrasena = getpass.getpass("Contraseña para el administrador inicial: ")
@@ -251,7 +260,7 @@ def main():
                 parser.error("Las contraseñas no coinciden.")
         else:
             parser.error(
-                "Debe proporcionar --contrasena o la variable POLIS_BOOTSTRAP_ADMIN_PASSWORD en entornos no interactivos."
+                "Debe proporcionar la variable POLIS_BOOTSTRAP_ADMIN_PASSWORD o el prompt interactivo getpass."
             )
 
     settings = Settings()

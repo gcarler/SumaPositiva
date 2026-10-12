@@ -126,15 +126,30 @@ uv run --project backend alembic -c backend/alembic.ini current
 ### Paso 4: Bootstrap Administrativo Idempotente
 Inicializar o verificar la existencia del primer administrador distrital. Este procedimiento es estrictamente **idempotente**: si ya existe un administrador activo, reporta su presencia y finaliza con éxito sin duplicar cuentas ni alterar credenciales existentes.
 
+> [!WARNING] Seguridad Operativa en la Gestión de Contraseñas
+> **Queda terminantemente desaconsejado** pasar la contraseña mediante el parámetro `--contrasena` por línea de comandos, dado que expone el secreto en texto plano en el historial del shell (`.bash_history`) y en la tabla de procesos del sistema operativo (`ps aux`).  
+> **Directriz Mandatoria:** Para entornos autorizados y despliegues productivos, suministre la contraseña exclusivamente mediante:
+> 1. **Prompt interactivo seguro:** Omitiendo el parámetro `--contrasena`, el script invoca `getpass` ocultando los caracteres tecleados y exigiendo confirmación doble.
+> 2. **Variable de entorno:** Configurando temporalmente `POLIS_BOOTSTRAP_ADMIN_PASSWORD` en la sesión o subshell protegido:
+>    ```bash
+>    read -s -p "Contraseña de Administrador: " PASS && echo
+>    POLIS_BOOTSTRAP_ADMIN_PASSWORD="$PASS" uv run --project backend python -m scripts.bootstrap_identidad_admin \
+>      --correo admin@seguridadhumanaintegral.org \
+>      --nombres "Administrador Distrital" \
+>      --apellidos "POLIS" \
+>      --motivo "Puesta en operacion oficial autorizada - Decreto 037 de 2026"
+>    unset PASS
+>    ```
+
 ```bash
-# Modo interactivo (solicita contraseña oculta por consola tty):
+# Modo interactivo estándar (solicita contraseña oculta por consola tty):
 uv run --project backend python -m scripts.bootstrap_identidad_admin \
   --correo admin@seguridadhumanaintegral.org \
   --nombres "Administrador Distrital" \
   --apellidos "POLIS" \
   --motivo "Puesta en operacion oficial autorizada - Decreto 037 de 2026"
 
-# O verificar únicamente el estado sin mutaciones:
+# O verificar únicamente el estado existente sin mutaciones (check-only):
 uv run --project backend python -m scripts.bootstrap_identidad_admin --check-only
 ```
 
