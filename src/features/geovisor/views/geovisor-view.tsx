@@ -105,6 +105,16 @@ export function GeovisorView() {
     if (mesa.territorio_codigo) {
       setTerritorioId(mesa.territorio_codigo);
     }
+    if (
+      mesa.longitud_referencia !== null &&
+      mesa.latitud_referencia !== null
+    ) {
+      mapaRef.current?.volarACoordenadas?.(
+        mesa.longitud_referencia,
+        mesa.latitud_referencia,
+        15.5
+      );
+    }
     if (typeof window !== "undefined" && window.innerWidth < 1024) {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }

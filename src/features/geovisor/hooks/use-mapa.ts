@@ -285,6 +285,23 @@ export function useMapa({
     }
   }, [barrioSeleccionado]);
 
+  // Manejo de foco y vuelo cartográfico cinematográfico (flyTo) al seleccionar una mesa (GEO-DOCK-03)
+  useEffect(() => {
+    if (!mesaSeleccionadaId || !mapaRef.current) return;
+    const mesa = mesasRef.current.find((m) => m.id === mesaSeleccionadaId);
+    if (
+      mesa &&
+      mesa.longitud_referencia !== null &&
+      mesa.latitud_referencia !== null
+    ) {
+      mapaRef.current.getView().animate({
+        center: fromLonLat([mesa.longitud_referencia, mesa.latitud_referencia]),
+        zoom: 15.5,
+        duration: 600,
+      });
+    }
+  }, [mesaSeleccionadaId]);
+
   // Montaje de OpenLayers y capas coropléticas
   useEffect(() => {
     if (!target) return;
@@ -458,7 +475,37 @@ export function useMapa({
           ? "#2563eb"
           : "#e85d04";
 
-        const radius = seleccionada ? 12 : hovered ? 10 : 8;
+        if (seleccionada) {
+          // Estilo compuesto: Halo exterior luminoso + Núcleo destacado (GEO-DOCK-03)
+          return [
+            new Style({
+              image: new CircleStyle({
+                radius: 19,
+                fill: new Fill({ color: "rgba(232, 93, 4, 0.28)" }),
+                stroke: new Stroke({ color: "#e85d04", width: 2.5 }),
+              }),
+            }),
+            new Style({
+              image: new CircleStyle({
+                radius: 11,
+                fill: new Fill({ color }),
+                stroke: new Stroke({ color: "#ffffff", width: 3.5 }),
+              }),
+              text: capasRef.current.etiquetas
+                ? new Text({
+                    text: `📍 ${String(feature.get("nombre") ?? "Mesa")}`,
+                    offsetY: -22,
+                    font: "700 12px Geist, sans-serif",
+                    fill: new Fill({ color: "#e85d04" }),
+                    stroke: new Stroke({ color: "#ffffff", width: 3.5 }),
+                    overflow: true,
+                  })
+                : undefined,
+            }),
+          ];
+        }
+
+        const radius = hovered ? 10 : 8;
 
         return new Style({
           image: new CircleStyle({
@@ -466,7 +513,7 @@ export function useMapa({
             fill: new Fill({ color }),
             stroke: new Stroke({
               color: "#ffffff",
-              width: seleccionada ? 3.5 : hovered ? 2.5 : 2,
+              width: hovered ? 2.5 : 2,
             }),
           }),
           text: capasRef.current.etiquetas
@@ -712,6 +759,15 @@ export function useMapa({
     });
   }, []);
 
+  const volarACoordenadas = useCallback((lon: number, lat: number, zoom = 15.5) => {
+    if (!mapaRef.current) return;
+    mapaRef.current.getView().animate({
+      center: fromLonLat([lon, lat]),
+      zoom,
+      duration: 600,
+    });
+  }, []);
+
   const exportarPng = useCallback(() => {
     if (!mapaRef.current) return;
     mapaRef.current.once("rendercomplete", () => {
@@ -725,5 +781,5 @@ export function useMapa({
     mapaRef.current.renderSync();
   }, []);
 
-  return { cargando, zoomIn, zoomOut, centrarCartagena, exportarPng };
+  return { cargando, zoomIn, zoomOut, centrarCartagena, exportarPng, volarACoordenadas };
 }

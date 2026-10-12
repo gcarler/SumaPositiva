@@ -28,6 +28,8 @@ import {usePanels} from "@/core/panels/panel-store";
 
 export interface MapaCartagenaHandle {
   exportarPng: () => void;
+  volarACoordenadas?: (lon: number, lat: number, zoom?: number) => void;
+  centrarCartagena?: () => void;
 }
 
 interface MapaCartagenaProps {
@@ -96,7 +98,7 @@ const MapaCartagena = forwardRef<MapaCartagenaHandle, MapaCartagenaProps>(functi
     onSelectTerritorio(val);
   };
 
-  const { cargando, zoomIn, zoomOut, centrarCartagena, exportarPng } = useMapa({
+  const { cargando, zoomIn, zoomOut, centrarCartagena, exportarPng, volarACoordenadas } = useMapa({
     target: contenedor,
     onSelectTerritorio,
     onSelectBarrio,
@@ -112,7 +114,9 @@ const MapaCartagena = forwardRef<MapaCartagenaHandle, MapaCartagenaProps>(functi
 
   useImperativeHandle(ref, () => ({
     exportarPng,
-  }), [exportarPng]);
+    volarACoordenadas,
+    centrarCartagena,
+  }), [exportarPng, volarACoordenadas, centrarCartagena]);
 
   const termBusqueda = normalizarBusqueda(busqueda);
   const barriosFiltrados = useMemo(() => {
