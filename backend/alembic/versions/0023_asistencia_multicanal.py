@@ -137,21 +137,8 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
-    import json
-
     op.execute(
         text("""
         DROP TABLE IF EXISTS participacion_ciudadana.escenarios_especiales CASCADE;
         """)
-    )
-    op.execute(
-        text("""
-        UPDATE autenticacion.roles AS rol
-        SET permisos = (
-            SELECT COALESCE(jsonb_agg(permiso.value ORDER BY permiso.orden), '[]'::jsonb)
-            FROM jsonb_array_elements(rol.permisos) WITH ORDINALITY AS permiso(value, orden)
-            WHERE NOT CAST(:quitar AS jsonb) @> jsonb_build_array(permiso.value)
-        )
-        WHERE rol.codigo = 'auditor_forense';
-        """).bindparams(quitar=json.dumps(["asistencia:verificar"]))
     )

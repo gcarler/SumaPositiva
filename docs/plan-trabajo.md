@@ -33,9 +33,7 @@ activación en [identidad](identidad.md); dictamen independiente EAF pendiente.
 - [ ] Dictamen independiente de EAF sobre el snapshot y alcance entregados.
 
 Evidencia: [manifest de identidad](evidencia-identidad-2026-10-01.json).
-La migración concurrente posterior `0023_asistencia_multicanal` requiere su propia
-integración: al validar el workspace completo modificaba permisos de auditoría
-y creaba una tabla sin modelo registrado. No pertenece al snapshot validado de identidad.
+La migración concurrente posterior `0023_asistencia_multicanal` fue integrada y saneada bajo la tarea [CIERRE-01]: su modelo `EscenarioEspecial` se encuentra registrado en `participacion_ciudadana`, el lineaje Alembic encadena limpiamente `0022 -> 0023 -> 0024` con cabeza única, los permisos del rol `auditor_forense` quedan libres de alteraciones no intencionadas y el ciclo upgrade/downgrade fue certificado en base aislada sin drift.
 Las casillas operativas no representan código pendiente: la entrega no configura
 servicios externos ni modifica producción sin una tarea de activación específica.
 Los registros históricos siguientes deben interpretarse dentro de su alcance original.
