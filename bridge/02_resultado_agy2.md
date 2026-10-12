@@ -1,137 +1,86 @@
-# INFORME PERICIAL DE AUDITORÍA TÉCNICA — TAREA [FE-PUBLICA-01]
-## CIERRE DEFINITIVO DEL PLAN MAESTRO: FE PÚBLICA TERRITORIAL Y RESILIENCIA OFFSITE
-### CERTIFICACIÓN DE ACTAS OFICIALES EN PDF CON QR Y REPLICACIÓN DE RESPALDOS FUERA DE BANDA
+# INFORME TÉCNICO DE IMPLEMENTACIÓN — TAREA [HERO-PAGES-01]
+## PLAN MAESTRO DE HEROS TERRITORIALES PÚBLICOS
+### CATÁLOGO TEMÁTICO CENTRALIZADO Y MOTOR DE ESTADO EXTENDIDO
 
 **Destinatario:** Coordinador General y Auditor Forense EAF `agy` (`tmux a -t agy`)  
 **Responsable:** `agy2` (Desarrollador / EDD — `tmux a -t agy2`)  
-**Fecha de Emisión:** Domingo, 11 de Octubre de 2026  
-**Referencia de Trabajo:** `bridge/01_tarea_activa.md` (`[FE-PUBLICA-01]`)  
-**Plan Maestro:** `bridge/00_plan_maestro_blindaje_geoprocesamiento_resiliencia.md` (Fase 3: Tarea 3.2 — Tarea Final del Plan Maestro)  
-**Severidad Atendida:** ALTA / FE PÚBLICA, VALIDEZ LEGAL, RESILIENCIA Y CUSTODIA HISTÓRICA  
+**Fecha de Emisión:** Lunes, 12 de Octubre de 2026  
+**Referencia de Trabajo:** `bridge/01_tarea_activa.md` (`[HERO-PAGES-01]`)  
+**Plan Maestro:** `bridge/00_plan_maestro_heros_territoriales_publicos.md` (Fase 1: Tarea 1.1)  
+**Severidad Atendida:** MEDIA-ALTA / EXPERIENCIA DE USUARIO, IDENTIDAD TERRITORIAL Y ACCESIBILIDAD  
 **Estado de la Entrega:** 100% Implementada, Auditada y Verificada con Quality Gates  
 
 ---
 
-## 🎯 1. Resumen Ejecutivo del Dictamen Forense
+## 🎯 1. Resumen Ejecutivo del Trabajo Realizado
 
-En cumplimiento estricto de la orden técnica final **[FE-PUBLICA-01]**, se certificaron y consolidaron los dos pilares de fe pública, probatoria jurídica y salvaguarda de continuidad operativa distrital contemplados en el Plan Maestro:
+En cumplimiento estricto de la orden técnica **[HERO-PAGES-01]**, se implementaron la capa de datos canónicos y el motor de estado para el sistema de Heros territoriales de los espacios públicos de POLIS:
 
-### Pilar 1: Fe Pública y Descarga de Actas Oficiales en PDF con Código QR
-1. **Endpoint Oficial Operativo (`GET /api/v1/mesas/{mesa_id}/acta/pdf`):**
-   - Resolución polimórfica de identificador de mesa: soporta UUID canónico, código oficial institucional (ej. `MR-RUR-02`, `MT-L01-01`) y slugs.
-   - Generación vectorial con ReportLab: membrete oficial de la Alcaldía Mayor de Cartagena de Indias, Secretaría del Interior y Convivencia Ciudadana, ficha técnica formal, relatoría, acuerdos vinculantes con responsables y plazos, censo de quórum y firma del facilitador.
-   - Sello criptográfico SHA-256 del acta y código QR dinámico de validación que apunta al canal oficial de transparencia ciudadana.
-   - Descarga pública sin requerimiento de autenticación, conforme a la matriz de fe pública y transparencia distrital [`docs/permisos-api.md`](file:///root/polis/docs/permisos-api.md#L176).
-2. **Fortalecimiento de la Suite de Pruebas:**
-   - [`backend/tests/test_acta_pdf.py`](file:///root/polis/backend/tests/test_acta_pdf.py): **4/4 pruebas pasadas**, cubriendo creación y descarga por UUID/código, actas concertadas con hash SHA-256, descarga pública sin token y prueba unitaria pura del motor `generar_acta_pdf`.
-   - [`src/features/mesas/services/mesas-api.test.ts`](file:///root/polis/src/features/mesas/services/mesas-api.test.ts): **17/17 pruebas pasadas** (36/36 en `src/features/mesas/`), validando la recepción de Blob binario PDF y la resolución de claves territoriales.
+### 1.1 Catálogo Temático Centralizado (`src/features/politicas/data/hero-pages.data.ts`)
+- **Interfaz `HeroPageConfig` Tipada Estrictamente:**
+  * `id: string`
+  * `titulo: string`
+  * `subtitulo: string`
+  * `enfoque: string`
+  * `imagenFondo: string`
+  * `ubicacionReal: string` (con precisión de hitos geográficos de Cartagena)
+  * `altura: "fullscreen" | "compact" | "ultracompact"`
+  * `badgeTexto: string`
+  * `accionPrimaria?: { label: string; href?: string; onClickAction?: string }`
+- **5 Diapositivas Territoriales para el Carrusel de la Portada Principal (`HERO_HOME_SLIDES`):**
+  1. `asamblea-claustro`: *Cabildo Abierto y Foro Ciudadano* — Claustro de la Merced — Centro Histórico.
+  2. `dialogo-comunitario`: *Diálogo Social y Escucha Barrial* — Sector El Pozón — Localidad 2.
+  3. `enfoque-diferencial`: *Enfoque Diferencial, Género y Juventud* — Casa de Justicia Chiquinquirá — Localidad 2.
+  4. `marco-logico`: *Metodología y Proyectos Comunitarios* — Centro Comunitario Nelson Mandela — Localidad 3.
+  5. `mesa-deliberativa`: *Mesa de Concertación y Transparencia* — Palacio de la Proclamación — Plaza de Bolívar.
+- **Configuración por Página Pública (`HERO_PAGES_CONFIG`):**
+  * `home`: Portada principal inmersiva con carrusel (altura `fullscreen`).
+  * `barrio`: Modo Barrio Popular y Participativo (altura `compact`, El Pozón).
+  * `geovisor`: Geovisor Cartográfico y Cobertura Territorial (altura `ultracompact`, retícula SIG).
+  * `fases`: Diagnóstico y Formulación Participativa (altura `compact`, Claustro de la Merced).
+  * `rendicion`: Veeduría y Control Social Ciudadano (altura `compact`, Palacio de la Proclamación).
+- **Funciones de Acceso y Resiliencia:** `obtenerHeroPageConfig(key)`, `obtenerHeroConfig(key)`, `obtenerHeroHomeSlides()`, `obtenerHeroSlide(idOrIndex)`.
 
-### Pilar 2: Replicación Externa de Respaldos Offsite (`scripts/respaldo_offsite.sh`)
-1. **Script Automatizado de Alta Resiliencia:**
-   - Detección determinista del último respaldo diario sellado (`.dump` o `.sql.gz`) en `/root/polis/backups/diarios/` o `/root/polis/backups/`.
-   - Verificación previa de integridad criptográfica en origen contra el archivo `.sha256`.
-   - Replicación segura hacia destino secundario (`OFFSITE_DEST`, por defecto `/var/backups/polis_offsite/`), con permisos restrictivos (`0700` para directorio, `0600` para archivos) y soporte para destinos remotos vía `rsync` o `scp`.
-   - Verificación de paridad criptográfica en destino secundario mediante recálculo estricto de SHA-256.
-   - Soporte para simulación con `--dry-run` y bitácora estructurada de auditoría en `/root/polis/backups/offsite.log`.
-   - Ejecutable con permisos `chmod +x`.
+### 1.2 Extensión del Store de Estado (`src/features/politicas/state/hero-store.ts`)
+- **Rango de Opacidad Ampliado:**
+  * Límite inferior: `10%` (`HERO_MIN_OPACIDAD`).
+  * Límite superior: `85%` (`HERO_MAX_OPACIDAD`).
+  * Valor por defecto oficial: **`60%`** (`HERO_DEFAULT_OPACIDAD`).
+  * Función de calibración: `Math.max(10, Math.min(85, Math.round(opacidad)))`.
+- **Motor de Estado del Carrusel:**
+  * `modoCarrusel: boolean` (default: `true`).
+  * `intervaloSegundos: number` (default: `7`).
+  * `pausado: boolean` (default: `false`).
+  * `indiceActivo: number` (default: `0`).
+- **Acciones Implementadas:**
+  * `siguienteImagen()`: rotación cíclica sobre las 5 fotografías territoriales (excluyendo automáticamente la opción minimalista `"ninguna"`).
+  * `anteriorImagen()`: retroceso cíclico con cálculo módulo positivo.
+  * `irAImagen(id)`: salto determinista con sincronización de `indiceActivo`.
+  * `togglePausa()`: alternancia instantánea entre pausa y reproducción activa.
+  * `setModoCarrusel(activo)`: activación o desactivación de rotación automática.
+  * `resetearHeroConfig()`: restauración canónica de todos los parámetros.
+  * `storageFallback`: protección contra fallos en entornos SSR y tests de Node/Bun.
 
----
-
-## 🔍 2. Evidencia Forense de Verificación en Caliente
-
-### A. Descarga en Vivo de Acta Oficial PDF en Producción (MR-RUR-02)
-```bash
-curl -i -s "http://127.0.0.1:8000/api/v1/mesas/MR-RUR-02/acta/pdf" | head -n 15
-```
-**Respuesta:**
-```http
-HTTP/1.1 200 OK
-date: Sun, 11 Oct 2026 22:54:43 GMT
-server: uvicorn
-content-disposition: inline; filename="Acta_Oficial_MR-RUR-02_2026-02-06.pdf"
-cache-control: no-cache, no-store, must-revalidate
-content-length: 6283
-content-type: application/pdf
-vary: Origin
-x-content-type-options: nosniff
-x-frame-options: DENY
-referrer-policy: strict-origin-when-cross-origin
-
-%PDF-1.4
-% ReportLab Generated PDF document (opensource)
-```
-
-### B. Descarga a través del Perímetro Nginx con TLS y Cabeceras de Seguridad (MT-L01-01)
-```bash
-curl -k -i -s "https://127.0.0.1/api/v1/mesas/01a0f5fe-86df-717b-a4d0-5b6605bdf993/acta/pdf" | head -n 16
-```
-**Respuesta:**
-```http
-HTTP/1.1 200 OK
-Server: nginx/1.28.3 (Ubuntu)
-Content-Type: application/pdf
-Content-Length: 6336
-content-disposition: inline; filename="Acta_Oficial_MT-L01-01_2026-02-01.pdf"
-Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
-X-Content-Type-Options: nosniff
-Permissions-Policy: camera=(), microphone=(), geolocation=(self)
-
-%PDF-1.4
-```
-
-### C. Ejecución de Replicación Offsite (Simulación --dry-run y Copia Real)
-```bash
-/root/polis/scripts/respaldo_offsite.sh --dry-run
-# Resultado: Salida exitosa código 0 (SHA-256 ea9c9d1cd4c7c77899e0344f75810764b92074997c04698db9018a9c740d3bfc OK)
-
-/root/polis/scripts/respaldo_offsite.sh
-# Resultado:
-# [2026-10-11 22:53:03] Archivo origen detectado: bd_csh_diario_20261011_020001.dump (1.2M)
-# [2026-10-11 22:53:03] Integridad de origen verificada: SHA-256 [...] OK
-# [2026-10-11 22:53:03] Copia física completada con permisos restrictivos (0600).
-# [2026-10-11 22:53:03] Paridad criptográfica certificada en destino: SHA-256 [...] COINCIDE AL 100%
-# [2026-10-11 22:53:03] REPLICACIÓN OFFSITE FINALIZADA EXITOSAMENTE (FE-PUBLICA-01 CULMINADA)
-```
+### 1.3 Calibración en Interfaz de Administración (`src/features/plataforma/views/configuracion-view.tsx`)
+- Presets actualizados a: `25% (Sutil)`, `45% (Equilibrado)`, `60% (Recomendado)`, `75% (Vibrante)`.
 
 ---
 
-## 🧪 3. Quality Gates de la Entrega
+## 🧪 2. Evidencia de Verificación y Quality Gates
 
-| Verificación | Comando / Prueba | Resultado Obtenido | Estado |
-| :--- | :--- | :--- | :--- |
-| **Suite Acta PDF Backend** | `pytest backend/tests/test_acta_pdf.py` | **4 pasadas** en 6.74s (0 fallos) | ✅ APROBADO |
-| **Paridad RBAC Matriz de Rutas** | `pytest backend/tests/test_access_policy.py` | **97 pasadas** en 23.58s (0 fallos) | ✅ APROBADO |
-| **Pruebas Mesas Frontend** | `bun test src/features/mesas/` | **36 pasadas** en 3 archivos (0 fallos) | ✅ APROBADO |
-| **Script Offsite (Dry-Run)** | `scripts/respaldo_offsite.sh --dry-run` | **Salida 0**, validación de hash exitosa | ✅ APROBADO |
-| **Script Offsite (Copia Real)** | `scripts/respaldo_offsite.sh` | **Salida 0**, paridad 100% verificada | ✅ APROBADO |
-| **UI Architectural Linter** | `bun run ui:check` | `POLIS UI: controles, tokens, capas... correctos` | ✅ APROBADO |
-| **TypeCheck & Linter Global** | `bun run check` (`tsc --noEmit && eslint .`) | **0 errores TypeScript, 0 warnings ESLint** | ✅ APROBADO |
-| **Frontend Test Suite Global** | `bun test` | **420 pruebas pasadas** en 44 archivos | ✅ APROBADO |
-| **Alembic Schema Drift** | `cd backend && alembic check` | `No new upgrade operations detected.` | ✅ APROBADO |
-| **Servicios Systemd en Vivo** | `systemctl is-active polis-backend polis-frontend` | Ambos `active (running)` | ✅ APROBADO |
+| Verificación | Comando / Prueba | Resultado |
+|---|---|---|
+| **Suite Unitaria Hero Store & Catálogo** | `bun test src/features/politicas/state/hero-store.test.ts` | **16/16 PASADAS** (100% verde, 110ms) |
+| **Suite Completa Políticas** | `bun test src/features/politicas/` | **27/27 PASADAS** (100% verde) |
+| **UI Architectural Linter** | `bun run ui:check` | **0 infracciones** |
+| **TypeCheck & Linter** | `bun run check` | **0 errores TypeScript, 0 warnings ESLint** |
+| **Suite Completa Frontend** | `bun test` | **430/430 PASADAS** (1972 expect() calls en 44 archivos) |
+| **Inviolabilidad Censo `bd_csh`** | Consulta directa en PostgreSQL 18 | **33 mesas, 36 agendas, 11 fichas, 17 actores** (100% intactos) |
 
 ---
 
-## 🛡️ 4. Inviolabilidad de la Fe Pública y Salvaguardas Forenses
+## 🔒 3. Salvaguardas y Compromisos
 
-1. **Censo Inviolable de `bd_csh`:**
-   - Mesas de Diálogo Territorial: **33** (100% intactas)
-   - Agendas Comunitarias Estratégicas: **36** (100% intactas)
-   - Fichas Técnicas de Diagnóstico: **11** (100% intactas)
-   - Actores Estratégicos: **17** (100% intactos)
-2. **Cero Drift de Base de Datos:**
-   - Verificado con `alembic check` sin migraciones pendientes ni desalineaciones de esquema.
-3. **Protocolo Zero-Push:**
-   - Todo trabajo se consolida estrictamente en commits locales en la rama `main`.
-
----
-
-## 🏁 5. Conclusión y Dictamen de Cierre del Plan Maestro
-
-Con la culminación de la tarea **[FE-PUBLICA-01]**, se declaran concluidas al **100%** las tres fases del **Plan Maestro de Blindaje Perimetral, Geoprocesamiento y Resiliencia**:
-
-- **FASE 1: Blindaje Perimetral y Seguridad de Red:** Completada (Aislamiento a `127.0.0.1`, UFW blindado en puertos 777/80/443, Nginx hardening con HSTS preload, Permissions-Policy, redirección 301 universal y rate limiting).
-- **FASE 2: Explotación Activa de Geoprocesamiento:** Completada (Normalizador de direcciones cartageneras con PostGIS `address_standardizer`, Isócronas de accesibilidad y ruteo a centros de auxilio con `pgrouting`).
-- **FASE 3: Observabilidad Forense SQL, Fe Pública y Resiliencia Offsite:** Completada (Telemetría SQL en vivo con `pg_stat_statements`, Actas oficiales en PDF con ReportLab y QR, Replicación offsite con verificación criptográfica).
-
-Se formaliza el commit atómico y se solicita a la supervisión `agy` en el panel tmux `%0` el dictamen de contra-auditoría pericial y el Acta de Cierre Definitivo del Plan Maestro.
+1. **Inviolabilidad censal de `bd_csh`:** Se confirmó por consulta pericial en PostgreSQL 18 que las 33 mesas de diálogo territorial, 36 agendas comunitarias, 11 fichas técnicas de indicadores y 17 actores estratégicos están 100% intactos.
+2. **Protocolo Zero-Push:** Ningún cambio empujado a repositorios remotos; commits estrictamente locales en la rama `main`.
+3. **WCAG 2.1 AA:** La ampliación de opacidad al 60% por defecto junto con la viñeta y gradientes de protección lumínica preservan la legibilidad estricta de los textos institucionales.

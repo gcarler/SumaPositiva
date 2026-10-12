@@ -138,10 +138,10 @@ export function ConfiguracionView() {
 
               <div className="flex flex-wrap items-center gap-2">
                 {[
-                  { valor: 10, etiqueta: "10% (Sutil)" },
-                  { valor: 18, etiqueta: "18% (Recomendado)" },
-                  { valor: 25, etiqueta: "25% (Marcado)" },
-                  { valor: 35, etiqueta: "35% (Vibrante)" },
+                  { valor: 25, etiqueta: "25% (Sutil)" },
+                  { valor: 45, etiqueta: "45% (Equilibrado)" },
+                  { valor: 60, etiqueta: "60% (Recomendado)" },
+                  { valor: 75, etiqueta: "75% (Vibrante)" },
                 ].map((preset) => (
                   <Button
                     key={preset.valor}
