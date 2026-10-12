@@ -1,36 +1,80 @@
-# 🏁 PLAN MAESTRO CULMINADO AL 100% — NO HAY TAREAS ACTIVAS PENDIENTES
-## POLIS — POLÍTICA PÚBLICA DE SEGURIDAD HUMANA INTEGRAL (CARTAGENA DE INDIAS, 2026)
+# TAREA ACTIVA: [HERO-PAGES-01] CATÁLOGO TEMÁTICO CENTRALIZADO Y MOTOR DE ESTADO EXTENDIDO
+## SISTEMA DE HEROS PÚBLICOS: OPACIDAD AMPLIADA, CARRUSEL DE 7S Y CONTROLES MANUALES
 
-**Fecha de Cierre:** Domingo, 11 de Octubre de 2026  
-**Coordinador General y Auditor Forense EAF:** `agy` (`tmux a -t agy`)  
-**Equipo de Desarrollo / EDD:** `agy2` (`tmux a -t agy2`)  
-**Estado:** 100% CULMINADO, AUDITADO, CERTIFICADO Y EN PRODUCCIÓN  
-**Head Commit:** `7c084fb`  
-
----
-
-### 🛡️ Resumen de Fases y Tareas Certificadas:
-
-1. **FASE 1: Blindaje Perimetral, Seguridad de Red y Hardening de Servidor [100% CULMINADA]**
-   - `[SEC-HARDEN-01]` Hardening de Puertos, Aislamiento Next.js a Localhost y Firewall UFW (Commit `18a4293` / Auditoría `a601639`).
-   - `[SEC-HARDEN-02]` Endurecimiento Nginx: Rate Limiting segmentado, Redirección 301 Universal y Cabeceras HSTS (Commit `6ca999e` / Auditoría `8f1f0f2`).
-
-2. **FASE 2: Explotación Activa de Geoprocesamiento y Normalización Territorial [100% CULMINADA]**
-   - `[GEO-PROC-01]` Normalizador Inteligente de Direcciones Cartageneras con PostGIS `address_standardizer` (Commit `5afd960` / Auditoría `a564eb4`).
-   - `[GEO-PROC-02]` Isócronas de Accesibilidad Peatonal/Vehicular y Ruteo de Protección Ciudadana con `pgrouting` (Commit `7fde662` / Auditoría `6fd2040`).
-
-3. **FASE 3: Observabilidad Forense SQL, Fe Pública en PDF y Resiliencia Offsite [100% CULMINADA]**
-   - `[OPS-FORENSIC-01]` Telemetría Forense SQL en Vivo (`pg_stat_statements`) en `/plataforma/configuracion` con 99.95% Cache Hit Ratio (Commit `4290e93` / Auditoría `6fd0fde`).
-   - `[FE-PUBLICA-01]` Generación Oficial de Actas en PDF con Código QR de Fe Pública y Replicación Externa de Respaldos Offsite en `/var/backups/polis_offsite/` con paridad SHA-256 (Commit `8921b46` / Auditoría `7c084fb`).
+**Fecha:** Lunes, 12 de Octubre de 2026  
+**Fase:** FASE 1: Catálogo Temático y Motor de Estado del Hero (Tarea 1.1)  
+**Plan Maestro:** `bridge/00_plan_maestro_heros_territoriales_publicos.md`  
+**Asignada a:** `agy2` (Desarrollador / EDD — `tmux a -t agy2`)  
+**Supervisor / Auditor:** `agy` (Coordinador General y Auditor Forense EAF — `tmux a -t agy`)  
+**Severidad:** MEDIA-ALTA / EXPERIENCIA DE USUARIO, IDENTIDAD TERRITORIAL Y ACCESIBILIDAD  
 
 ---
 
-### 🏛️ Inviolabilidad Certificada de Base de Datos `bd_csh`:
-- 33 Mesas de Diálogo Territorial (100% intactas).
-- 36 Agendas Estratégicas (100% intactas).
-- 11 Fichas Técnicas de Diagnóstico (100% intactas).
-- 17 Actores Estratégicos (100% intactos).
-- Cero Drift de Esquema en Alembic (`alembic check` limpio).
-- 420 Pruebas Frontend Verdes en 44 Suites.
-- 101 Pruebas Backend Verdes en Pytest.
-- Servidor blindado en puertos 777 (SSH), 80 (HTTP 301) y 443 (HTTPS TLS 1.3).
+## 🎯 1. Justificación y Alcance de la Tarea
+
+Para permitir que las imágenes del Hero tengan **mucha mayor visibilidad (opacidad al 60% por defecto)**, que **se muevan de manera armónica en carrusel automático** y que el ciudadano o funcionario **pueda cambiarlas manualmente**, es indispensable dotar al frontend del catálogo de datos temáticos y de un store robusto.
+
+### Alcance Técnico:
+1. **Creación del Catálogo Temático Centralizado (`src/features/politicas/data/hero-pages.data.ts`):**
+   - Definir interfaz `HeroPageConfig`:
+     * `id: string`
+     * `titulo: string`
+     * `subtitulo: string`
+     * `enfoque: string`
+     * `imagenFondo: string`
+     * `ubicacionReal: string` (ej. *"Claustro de la Merced — Centro Histórico"*, *"Sector El Pozón — Localidad 2"*, etc.)
+     * `altura: "fullscreen" | "compact" | "ultracompact"`
+     * `badgeTexto: string`
+     * `accionPrimaria?: { label: string; href?: string; onClickAction?: string }`
+   - Registrar la configuración diferenciada para las páginas públicas:
+     * `home`: 5 diapositivas territoriales (*Cabildo Masivo*, *Diálogo Barrial*, *Mujeres y Género*, *Proyectos Comunitarios*, *Transparencia*).
+     * `barrio`: *Modo Barrio Popular y Participativo* (fotografía barrial en calle, altura compacta).
+     * `geovisor`: *Geovisor Cartográfico y Cobertura* (altura ultracompacta).
+     * `fases`: *Diagnóstico y Formulación Participativa* (altura compacta).
+     * `rendicion`: *Veeduría y Control Social* (altura compacta).
+
+2. **Extensión del Store de Estado (`src/features/politicas/state/hero-store.ts`):**
+   - **Rango de Opacidad:** Ampliar el límite superior de 40 a 85 (`Math.max(10, Math.min(85, Math.round(opacidad)))`), con nuevo default en **60%** (`HERO_DEFAULT_OPACIDAD = 60`).
+   - **Propiedades de Carrusel:**
+     * `modoCarrusel: boolean` (default: `true`).
+     * `intervaloSegundos: number` (default: `7`).
+     * `pausado: boolean` (default: `false`).
+     * `indiceActivo: number` (índice 0 a N-1).
+   - **Acciones:**
+     * `siguienteImagen()`: Avanza cíclicamente a la siguiente imagen disponible (excluyendo "ninguna").
+     * `anteriorImagen()`: Retrocede cíclicamente.
+     * `irAImagen(id: string)`: Salta directamente a la imagen con dicho ID.
+     * `togglePausa()`: Alterna entre pausado y reproducción activa.
+     * `setModoCarrusel(activo: boolean)`: Habilita o deshabilita la rotación.
+
+3. **Pruebas Unitarias Automatizadas:**
+   - Actualizar `src/features/politicas/state/hero-store.test.ts` cubriendo:
+     * Nuevo rango de opacidad (10% a 85%) y default en 60%.
+     * Avance cíclico con `siguienteImagen()` y retroceso con `anteriorImagen()`.
+     * Salto directo con `irAImagen()`.
+     * Alternancia de pausa con `togglePausa()`.
+     * Integridad del catálogo en `hero-pages.data.ts`.
+
+---
+
+## 🧪 2. Protocolo de Pruebas y Quality Gates Obligatorios
+
+| Verificación | Comando / Prueba | Resultado Esperado |
+|---|---|---|
+| **Suite Hero Store** | `bun test src/features/politicas/state/hero-store.test.ts` | 100% verde |
+| **Suite Completa Políticas** | `bun test src/features/politicas/` | 100% verde |
+| **UI Architectural Linter** | `bun run ui:check` | 0 infracciones |
+| **TypeCheck & Linter** | `bun run check` | 0 errores TypeScript, 0 warnings ESLint |
+| **Frontend Test Suite** | `bun test` | 420+ pasadas |
+
+---
+
+## 📦 3. Entregables y Salvaguardas
+
+1. **Código Implementado:** `src/features/politicas/data/hero-pages.data.ts`, `src/features/politicas/state/hero-store.ts` y pruebas unitarias.
+2. **Salvaguardas:**
+   - Base de datos `bd_csh` intacta (33 mesas, 36 agendas, 11 fichas, 17 actores).
+   - Protocolo Zero-Push (commits locales en `main`).
+3. **Commit Atómico Local:**
+   - Formato: `feat(hero): catalogo tematico y motor de estado del carrusel HERO-PAGES-01`.
+4. **Notificación:** Notificar a `agy` en tmux `%0` para la contra-auditoría pericial.
