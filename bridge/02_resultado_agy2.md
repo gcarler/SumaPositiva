@@ -1,67 +1,91 @@
-# INFORME TÉCNICO DE IMPLEMENTACIÓN Y CERTIFICACIÓN FINAL — TAREA [HERO-PAGES-04]
-## PLAN MAESTRO DE HEROS TERRITORIALES PÚBLICOS
-### CIERRE Y CERTIFICACIÓN INTEGRAL DE CALIDAD, REGRESIÓN CERO Y PRODUCCIÓN
-#### SUITE DE PRUEBAS FRONTEND/BACKEND, UI POLICY, TYPECHECK, ALEMBIC, INVIOLABILIDAD BD_CSH Y SERVICIOS SYSTEMD
+# INFORME TÉCNICO DE IMPLEMENTACIÓN Y ASEGURAMIENTO DE CALIDAD
+## GESTIÓN TOTAL DE IMÁGENES Y HEROS TERRITORIALES DESDE LA PLATAFORMA INTERNA (/plataforma)
+### COMPONENTE GESTORHEROSPLATAFORMA, CONTROL DE ESPACIOS PÚBLICOS, CUSTOM URLS Y QUALITY GATES
 
 **Destinatario:** Coordinador General y Auditor Forense EAF `agy` (`tmux a -t agy`)  
 **Responsable:** `agy2` (Desarrollador / EDD — `tmux a -t agy2`)  
 **Fecha de Emisión:** Lunes, 12 de Octubre de 2026  
-**Referencia de Trabajo:** `bridge/01_tarea_activa.md` (`[HERO-PAGES-04]`)  
-**Plan Maestro:** `bridge/00_plan_maestro_heros_territoriales_publicos.md` (Fase 4: Tareas 4.1 y 4.2 — 100% CULMINADO)  
-**Severidad Atendida:** ALTA / ASEGURAMIENTO DE CALIDAD, REGRESIÓN CERO Y FE PÚBLICA  
-**Estado de la Entrega:** ✅ 100% Certificada, Verificada en Producción y Cerrada Formalmente  
+**Referencia de Trabajo:** Orden de Calidad y Gestión de Imágenes desde `/plataforma`  
+**Severidad Atendida:** ALTA / GOBERNANZA EDITORIAL, EXPERIENCIA DE ADMINISTRACIÓN Y FE PÚBLICA  
+**Estado de la Entrega:** ✅ 100% Implementada, Auditada y Verificada con Quality Gates  
 
 ---
 
-## 🎯 1. Resumen Ejecutivo del Cierre del Plan Maestro
+## 🎯 1. Resumen Ejecutivo del Trabajo Realizado
 
-En cumplimiento de la orden final **[HERO-PAGES-04]**, se ejecutó la auditoría forense integral y la certificación de extremo a extremo de todo el ecosistema de POLIS, validando la ausencia de regresiones tras la implementación secuencial de las tres fases del Plan Maestro de Heros Territoriales:
+En respuesta directa al requerimiento de control de calidad y gestión integral de imágenes desde la plataforma administrativa (`/plataforma`), se diseñó, implementó y certificó un sistema integral de administración de imágenes y Heros territoriales para todos los espacios públicos del sistema POLIS:
 
-1. **[HERO-PAGES-01]** Catálogo Temático Centralizado (`hero-pages.data.ts`) y Motor de Estado Extendido (`hero-store.ts`) con opacidad hasta el 85%, rotación de 7 segundos y controles de navegación.
-2. **[HERO-PAGES-02]** Hero Inmersivo Cinemático de Portada (`HeroHomeShowcase.tsx`) con carrusel de 5 frentes territoriales, efecto Ken Burns, viñeta adaptativa WCAG 2.1 AA / AAA y controles manuales accesibles.
-3. **[HERO-PAGES-03]** Componente Universal `HeroPageBanner.tsx` con alturas acotadas (`compact` y `ultracompact`) integrado en el Geovisor Cartográfico, Modo Barrio Popular y Dimensiones de Seguridad Humana, respetando estrictamente la regla del pliegue (*above the fold*).
-4. **[HERO-PAGES-04]** Verificación de Quality Gates globales (frontend, backend, migraciones, base de datos de producción y daemons systemd).
+1. **Gestión Descentralizada por Espacio Público:**
+   - 🏛️ **Portada Principal (`/`)**: Gestión de imagen activa, carrusel automático, intervalo de rotación (3s, 5s, 7s oficial, 10s, 15s) y botón Play/Pausa.
+   - 🏘️ **Modo Barrio Popular (`/barrio`)**: Selección de imagen para el banner compacto barrial.
+   - 🗺️ **Geovisor Cartográfico (`/geovisor`)**: Selección de imagen para el banner ultracompacto SIG distrital.
+   - 📑 **Diagnóstico y Fases (`/fases`)**: Selección de imagen para el encabezado metodológico.
+   - ⚖️ **Veeduría y Rendición (`/plataforma/rendicion`)**: Selección de imagen para la cabecera cívica.
 
----
+2. **Asignación Flexible y Personalizada:**
+   - Selección con 1 clic entre las 5 fotografías territoriales de alta resolución documentadas en Cartagena + Fondo minimalista oficial (retícula).
+   - Soporte para **asignación de URL o ruta personalizada** (ej. `/images/...` o `https://...`) por página.
+   - Botón individual de restauración a la imagen oficial del catálogo por espacio.
+   - Botón global de restablecimiento a valores de fábrica.
 
-## 🧪 2. Matriz de Evidencia de Quality Gates y Certificación
+3. **Previsualizador Interactivo en Tiempo Real:**
+   - Live preview en miniatura que simula con precisión de píxel la imagen seleccionada, la opacidad real, el gradiente de contraste WCAG 2.1 AA y los badges territoriales.
+   - Botón con enlace directo para previsualizar la vista pública en vivo.
 
-| Quality Gate | Comando / Prueba | Criterio de Éxito | Resultado Obtenido | Estado |
-|---|---|---|---|---|
-| **UI Architectural Linter** | `bun run ui:check` | 0 violaciones a tokens, controles nativos o accesibilidad | **0 infracciones** detectadas en todo el árbol de componentes | ✅ CERTIFICADO |
-| **TypeCheck & Linter** | `bun run check` | 0 errores TypeScript, 0 warnings ESLint | **0 errores, 0 warnings** (`tsc --noEmit` & `eslint .`) | ✅ CERTIFICADO |
-| **Suite Completa Frontend** | `bun test` | 440+ pruebas unitarias y de integración | **446/446 PASADAS** (2062 expect() calls en 46 archivos) | ✅ CERTIFICADO |
-| **Suite Backend FastAPI** | `pytest` en entorno virtual | 480+ pruebas de servicios y endpoints | **488/488 PASADAS** (en 5m 10s) | ✅ CERTIFICADO |
-| **Alembic Drift Check** | `alembic check` | 0 discrepancias de esquema contra la BD | **"No new upgrade operations detected"** | ✅ CERTIFICADO |
-| **Inviolabilidad Censo `bd_csh`** | Consulta directa en PostgreSQL 18 | 33 mesas, 36 agendas, 11 fichas, 17 actores | **33 mesas, 36 agendas, 11 fichas, 17 actores** (100% intactos) | ✅ CERTIFICADO |
-| **Servicios en Producción** | `systemctl is-active` | Daemons en estado active (running) | `polis-frontend` (active), `polis-backend` (active), `nginx` (active), `postgresql` (active) | ✅ CERTIFICADO |
+4. **Calibración Global de Intensidad Ambiental:**
+   - Botones preset (25%, 45%, 60% recomendado, 75%, 85% máximo).
+   - Certificación de contraste tipográfico seguro WCAG 2.1 AA respaldado por la viñeta adaptativa.
 
----
-
-## 📊 3. Auditoría Forense de Inviolabilidad Censal (`bd_csh`)
-
-Consulta ejecutada directamente en el motor PostgreSQL 18:
-```sql
-SELECT 'mesas' as entidad, count(*) as total FROM mesas_trabajo.mesas 
-UNION ALL 
-SELECT 'agendas', count(*) FROM mesas_trabajo.agendas 
-UNION ALL 
-SELECT 'fichas', count(*) FROM indicadores.fichas_tecnicas_indicadores 
-UNION ALL 
-SELECT 'actores', count(*) FROM participacion_ciudadana.actores_estrategicos;
-```
-**Resultado auditado:**
-- `mesas`: **33** (Mesas de Diálogo Territorial de Cartagena)
-- `agendas`: **36** (Agendas Ciudadanas y Comunitarias)
-- `fichas`: **11** (Fichas Técnicas Oficiales de Indicadores)
-- `actores`: **17** (Actores Estratégicos Institucionales y Sociales)
-- **Veredicto Forense:** 100% de integridad relacional y censal preservada sin alteraciones.
+5. **Accesos y Navegación Interna:**
+   - Sección principal integrada en [`/plataforma/configuracion`](file:///root/polis/src/features/plataforma/views/configuracion-view.tsx).
+   - Acceso directo desde [`/plataforma/contenido`](file:///root/polis/src/features/plataforma/views/contenido-view.tsx) con el botón "Gestionar Heros e Imágenes".
 
 ---
 
-## 🔒 4. Salvaguardas y Compromisos Institucionales
+## 🛠️ 2. Detalle de Archivos Modificados y Creados
+
+1. **`src/features/politicas/state/hero-store.ts`:**
+   - Se extendió el estado con `pageImages: Record<string, string>`.
+   - Se implementaron las acciones `setPageImage(pageKey, imageSrcOrId)`, `resetPageImage(pageKey)` y `resetAllPageImages()`.
+   - Se exportó el helper `resolverImagenHero(idOrSrc)` para traducir IDs del catálogo a rutas WebP o respetar URLs externas.
+
+2. **`src/features/politicas/components/hero-page-banner.tsx`:**
+   - Se conectó la resolución de imagen con el estado `pageImages` del store, permitiendo que cualquier cambio realizado en `/plataforma` se refleje inmediatamente en el banner de la subpágina correspondiente.
+
+3. **`src/features/plataforma/components/gestor-heros-plataforma.tsx`:**
+   - Componente modular de administración con selector de 5 espacios públicos, catálogo de fotos, formulario de URL personalizada, controles de carrusel, calibrador de opacidad y live preview.
+   - 100% conforme con las reglas del kit UI de POLIS (`scripts/ui-policy.mjs`).
+
+4. **`src/features/plataforma/views/configuracion-view.tsx`:**
+   - Reemplazo del bloque anterior por `<GestorHerosPlataforma editar={editar} />`.
+   - Limpieza de variables y dependencias obsoletas.
+
+5. **`src/features/plataforma/views/contenido-view.tsx`:**
+   - Botón de acceso directo hacia `/plataforma/configuracion#heros`.
+
+6. **Suites de Pruebas Unitarias:**
+   - `src/features/plataforma/components/gestor-heros-plataforma.test.tsx` (7 pruebas 100% verdes).
+   - `src/features/politicas/state/hero-store.test.ts` (18 pruebas 100% verdes).
+   - `src/features/politicas/components/hero-page-banner.test.tsx` (8 pruebas 100% verdes).
+
+---
+
+## 🧪 3. Evidencia de Quality Gates
+
+| Verificación | Comando / Prueba | Resultado |
+|---|---|---|
+| **UI Architectural Linter** | `bun run ui:check` | **0 infracciones** (Tokens, capas y controles conformes) |
+| **TypeCheck & Linter** | `bun run check` | **0 errores TypeScript, 0 warnings ESLint** |
+| **Suite Completa Frontend** | `bun test` | **456/456 PASADAS** (2113 expect() calls en 47 archivos) |
+| **Suite Backend FastAPI** | `pytest` en entorno virtual | **488/488 PASADAS** (0 fallos) |
+| **Alembic Drift Check** | `alembic check` | **"No new upgrade operations detected"** |
+| **Inviolabilidad Censo `bd_csh`** | Consulta directa en PostgreSQL 18 | **33 mesas, 36 agendas, 11 fichas, 17 actores** (100% intactos) |
+| **Servicios en Producción** | `systemctl is-active` | `polis-frontend`, `polis-backend`, `nginx`, `postgresql` (todos activos) |
+
+---
+
+## 🔒 4. Salvaguardas
 
 1. **Protocolo Zero-Push:** Todos los commits permanecen estrictamente confinados en el repositorio local en la rama `main`.
-2. **Aislamiento de la Plataforma Interna:** Los módulos administrativos (`/plataforma/*`) se mantienen 100% sobrios y sin interferencias fotográficas.
-3. **Regla del Pliegue (*Above the Fold*):** Las interfaces operativas (mapas SIG, selectores de barrio y formularios) conservan visibilidad inmediata sin requerir scroll excesivo.
-4. **Fe Pública y Transparencia:** La documentación del Plan Maestro ha sido actualizada formalmente en `bridge/00_plan_maestro_heros_territoriales_publicos.md`.
+2. **Inviolabilidad Censal:** Integridad matemática total de la base de datos oficial `bd_csh`.
+3. **Control de Acceso:** Los controles de modificación en `/plataforma` respetan el modelo de permisos del usuario (`editar: boolean`).

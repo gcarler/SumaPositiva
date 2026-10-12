@@ -3,7 +3,10 @@
 import React from "react";
 import { MapPin } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
-import { useHeroConfigStore } from "@/features/politicas/state/hero-store";
+import {
+  useHeroConfigStore,
+  resolverImagenHero,
+} from "@/features/politicas/state/hero-store";
 import {
   obtenerHeroPageConfig,
   type HeroAltura,
@@ -42,7 +45,15 @@ export function HeroPageBanner({
   const clientStore = useHeroConfigStore();
   const isServer = typeof window === "undefined";
   const store = isServer ? useHeroConfigStore.getState() : clientStore;
-  const { opacidad, heroImageId } = store;
+  const { opacidad, heroImageId, pageImages } = store;
+
+  /* Resolución de imagen considerando personalización desde /plataforma */
+  const customImageKey = pageImages?.[pageKey] || pageImages?.[config.id];
+  const imagenFondo = customImageKey
+    ? resolverImagenHero(customImageKey)
+    : config.imagenFondo;
+  const esModoMinimalista =
+    customImageKey === "ninguna" || (heroImageId === "ninguna" && !customImageKey);
 
   const altura = alturaOverride ?? config.altura;
   const esUltracompact = altura === "ultracompact";
@@ -71,13 +82,13 @@ export function HeroPageBanner({
       )}
     >
       {/* ================= 1. CAPA FOTOGRÁFICA TEMÁTICA ================= */}
-      {config.imagenFondo && heroImageId !== "ninguna" && (
+      {imagenFondo && !esModoMinimalista && (
         <div
           className="pointer-events-none absolute inset-0 select-none overflow-hidden"
           aria-hidden="true"
         >
           <img
-            src={config.imagenFondo}
+            src={imagenFondo}
             alt=""
             className="h-full w-full object-cover object-center"
             style={{ opacity: (opacidad ?? 60) / 100 }}

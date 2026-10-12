@@ -120,4 +120,21 @@ describe("HeroPageBanner Component (HERO-PAGES-03)", () => {
     expect(html).not.toContain('src="/images/hero/hero-dialogo-comunitario.webp"');
     expect(html).toContain(HERO_PAGES_CONFIG.barrio.titulo);
   });
+
+  test("renderiza la imagen personalizada asignada desde la plataforma", () => {
+    // Asignar desde plataforma imagen de marco lógico a Modo Barrio
+    useHeroConfigStore.getState().setPageImage("barrio", "marco-logico");
+    let html = renderToString(<HeroPageBanner pageKey="barrio" />);
+    expect(html).toContain('src="/images/hero/hero-marco-logico.webp"');
+
+    // Asignar URL externa personalizada a Geovisor
+    useHeroConfigStore.getState().setPageImage("geovisor", "https://cdn.cartagena.gov.co/mapa-satelital.webp");
+    html = renderToString(<HeroPageBanner pageKey="geovisor" />);
+    expect(html).toContain('src="https://cdn.cartagena.gov.co/mapa-satelital.webp"');
+
+    // Restablecer imagen de Barrio
+    useHeroConfigStore.getState().resetPageImage("barrio");
+    html = renderToString(<HeroPageBanner pageKey="barrio" />);
+    expect(html).toContain('src="/images/hero/hero-dialogo-comunitario.webp"');
+  });
 });

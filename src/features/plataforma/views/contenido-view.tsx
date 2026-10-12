@@ -2,6 +2,7 @@
 
 import {ArquitecturaPolitica} from "@/features/politicas/components/arquitectura-politica";
 
+import Link from "next/link";
 import {useQuery} from "@tanstack/react-query";
 import {toast} from "sonner";
 import {
@@ -12,7 +13,8 @@ import {
   Eye,
   Play,
   Layers,
-  Sparkles
+  Sparkles,
+  Image as ImageIcon,
 } from "lucide-react";
 import {PageHeader} from "@/shared/ui/page-header";
 import {Button} from "@/shared/ui/button";
@@ -103,6 +105,17 @@ export function ContenidoView({ soloNoticias = false }: { soloNoticias?: boolean
         action={
           esEditor && (
             <div className="flex flex-wrap items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                asChild
+                className="gap-1.5"
+              >
+                <Link href="/plataforma/configuracion#heros">
+                  <ImageIcon className="size-4 text-[var(--ember)]" />
+                  <span>Gestionar Heros e Imágenes</span>
+                </Link>
+              </Button>
               {!soloNoticias && (
                 <Button
                   variant="outline"

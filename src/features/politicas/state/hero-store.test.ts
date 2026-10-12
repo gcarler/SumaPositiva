@@ -9,6 +9,7 @@ import {
   HERO_DEFAULT_INTERVALO_SEGUNDOS,
   obtenerOpcionHero,
   obtenerOpcionesCarrusel,
+  resolverImagenHero,
 } from "./hero-store";
 import {
   HERO_HOME_SLIDES,
@@ -179,6 +180,45 @@ describe("Hero Config Store & Catálogo (HERO-PAGES-01)", () => {
     expect(estado.intervaloSegundos).toBe(7);
     expect(estado.pausado).toBe(false);
     expect(estado.indiceActivo).toBe(0);
+    expect(estado.pageImages).toEqual({});
+  });
+
+  test("gestiona imágenes personalizadas por página con setPageImage y resetPageImage", () => {
+    // Asignación a página de barrio
+    useHeroConfigStore.getState().setPageImage("barrio", "dialogo-comunitario");
+    expect(useHeroConfigStore.getState().pageImages.barrio).toBe("dialogo-comunitario");
+
+    // Asignación a geovisor con ruta o URL externa
+    useHeroConfigStore.getState().setPageImage("geovisor", "https://ejemplo.gov.co/mapa.webp");
+    expect(useHeroConfigStore.getState().pageImages.geovisor).toBe("https://ejemplo.gov.co/mapa.webp");
+
+    // Asignación a home sincroniza heroImageId si es una opción válida
+    useHeroConfigStore.getState().setPageImage("home", "marco-logico");
+    expect(useHeroConfigStore.getState().pageImages.home).toBe("marco-logico");
+    expect(useHeroConfigStore.getState().heroImageId).toBe("marco-logico");
+
+    // resetPageImage restaura la página individual
+    useHeroConfigStore.getState().resetPageImage("barrio");
+    expect(useHeroConfigStore.getState().pageImages.barrio).toBeUndefined();
+    expect(useHeroConfigStore.getState().pageImages.geovisor).toBe("https://ejemplo.gov.co/mapa.webp");
+
+    // resetAllPageImages limpia todas las personalizaciones
+    useHeroConfigStore.getState().resetAllPageImages();
+    expect(useHeroConfigStore.getState().pageImages).toEqual({});
+    expect(useHeroConfigStore.getState().heroImageId).toBe(HERO_DEFAULT_IMAGE_ID);
+  });
+
+  test("resolverImagenHero traduce IDs a rutas WebP oficiales o preserva URLs externas", () => {
+    // Opción conocida
+    expect(resolverImagenHero("asamblea-claustro")).toBe("/images/hero/hero-asamblea-claustro.webp");
+    expect(resolverImagenHero("dialogo-comunitario")).toBe("/images/hero/hero-dialogo-comunitario.webp");
+
+    // URL externa o ruta directa
+    expect(resolverImagenHero("https://cdn.cartagena.gov.co/foto.webp")).toBe("https://cdn.cartagena.gov.co/foto.webp");
+    expect(resolverImagenHero("/images/custom/foto.webp")).toBe("/images/custom/foto.webp");
+
+    // Cadena vacía
+    expect(resolverImagenHero("")).toBe("");
   });
 
   describe("Catálogo Temático Centralizado (hero-pages.data.ts)", () => {

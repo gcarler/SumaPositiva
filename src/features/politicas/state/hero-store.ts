@@ -82,6 +82,7 @@ export interface HeroConfigState {
   intervaloSegundos: number;
   pausado: boolean;
   indiceActivo: number;
+  pageImages: Record<string, string>;
   setHeroImageId: (id: string) => void;
   setOpacidad: (opacidad: number) => void;
   setModoCarrusel: (activo: boolean) => void;
@@ -91,6 +92,9 @@ export interface HeroConfigState {
   anteriorImagen: () => void;
   irAImagen: (id: string) => void;
   togglePausa: () => void;
+  setPageImage: (pageKey: string, imageSrcOrId: string) => void;
+  resetPageImage: (pageKey: string) => void;
+  resetAllPageImages: () => void;
   resetearHeroConfig: () => void;
 }
 
@@ -121,6 +125,7 @@ export const useHeroConfigStore = create<HeroConfigState>()(
       intervaloSegundos: HERO_DEFAULT_INTERVALO_SEGUNDOS,
       pausado: false,
       indiceActivo: 0,
+      pageImages: {},
 
       setHeroImageId: (heroImageId: string) => {
         const validas = obtenerOpcionesCarrusel();
@@ -196,6 +201,42 @@ export const useHeroConfigStore = create<HeroConfigState>()(
 
       togglePausa: () => set((state) => ({ pausado: !state.pausado })),
 
+      setPageImage: (pageKey: string, imageSrcOrId: string) => {
+        const key = pageKey.replace(/^\//, "").toLowerCase().split("/")[0] || "home";
+        set((state) => {
+          const nuevas = { ...state.pageImages, [key]: imageSrcOrId };
+          if (key === "home") {
+            const validOpt = HERO_IMAGE_OPTIONS.find((opt) => opt.id === imageSrcOrId);
+            return {
+              pageImages: nuevas,
+              heroImageId: validOpt ? validOpt.id : imageSrcOrId,
+            };
+          }
+          return { pageImages: nuevas };
+        });
+      },
+
+      resetPageImage: (pageKey: string) => {
+        const key = pageKey.replace(/^\//, "").toLowerCase().split("/")[0] || "home";
+        set((state) => {
+          const copia = { ...state.pageImages };
+          delete copia[key];
+          if (key === "home") {
+            return {
+              pageImages: copia,
+              heroImageId: HERO_DEFAULT_IMAGE_ID,
+            };
+          }
+          return { pageImages: copia };
+        });
+      },
+
+      resetAllPageImages: () =>
+        set({
+          pageImages: {},
+          heroImageId: HERO_DEFAULT_IMAGE_ID,
+        }),
+
       resetearHeroConfig: () =>
         set({
           heroImageId: HERO_DEFAULT_IMAGE_ID,
@@ -204,6 +245,7 @@ export const useHeroConfigStore = create<HeroConfigState>()(
           intervaloSegundos: HERO_DEFAULT_INTERVALO_SEGUNDOS,
           pausado: false,
           indiceActivo: 0,
+          pageImages: {},
         }),
     }),
     {
@@ -220,3 +262,16 @@ export const useHeroConfigStore = create<HeroConfigState>()(
     }
   )
 );
+
+/**
+ * Resuelve una clave de imagen o URL externa.
+ * Si coincide con una opción del catálogo oficial, devuelve su ruta de archivo WebP.
+ * En caso contrario, devuelve la URL o ruta provista.
+ */
+export function resolverImagenHero(idOrSrc: string): string {
+  if (!idOrSrc) return "";
+  const opt = HERO_IMAGE_OPTIONS.find((o) => o.id === idOrSrc);
+  if (opt) return opt.archivo;
+  return idOrSrc;
+}
+
