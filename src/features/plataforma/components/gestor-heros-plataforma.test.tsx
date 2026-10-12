@@ -10,13 +10,12 @@ describe("GestorHerosPlataforma Component", () => {
     useHeroConfigStore.getState().resetearHeroConfig();
   });
 
-  test("renderiza los 9 espacios públicos gestionables con sus rutas oficiales", () => {
+  test("renderiza los 8 espacios públicos gestionables con sus rutas oficiales", () => {
     const html = renderToString(<GestorHerosPlataforma />);
 
     expect(html).toContain("Portada Principal");
     expect(html).toContain("Líneas y Gobernanza");
     expect(html).toContain("Mesas de Diálogo");
-    expect(html).toContain("Geovisor Cartográfico");
     expect(html).toContain("Noticias y Novedades");
     expect(html).toContain("Voces y Testimonios");
     expect(html).toContain("Diagnóstico y Fases");
@@ -26,7 +25,6 @@ describe("GestorHerosPlataforma Component", () => {
     expect(html).toContain("/");
     expect(html).toContain("/explorar");
     expect(html).toContain("/mesas");
-    expect(html).toContain("/geovisor");
     expect(html).toContain("/noticias");
     expect(html).toContain("/testimonios");
     expect(html).toContain("/fases");

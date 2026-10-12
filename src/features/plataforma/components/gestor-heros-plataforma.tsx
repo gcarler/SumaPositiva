@@ -65,13 +65,6 @@ const ESPACIOS_PUBLICOS: EspacioPublico[] = [
     configDefecto: HERO_PAGES_CONFIG.mesas,
   },
   {
-    key: "geovisor",
-    nombre: "Geovisor Cartográfico",
-    ruta: "/geovisor",
-    descripcion: "Banner ultracompacto que resguarda la visibilidad del mapa interactivo y capas SIG.",
-    configDefecto: HERO_PAGES_CONFIG.geovisor,
-  },
-  {
     key: "noticias",
     nombre: "Noticias y Novedades",
     ruta: "/noticias",
