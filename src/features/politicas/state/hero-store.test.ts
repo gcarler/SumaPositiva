@@ -23,10 +23,10 @@ describe("Hero Config Store & Catálogo (HERO-PAGES-01)", () => {
     useHeroConfigStore.getState().resetearHeroConfig();
   });
 
-  test("inicia con la imagen recomendada, opacidad al 60% y carrusel activo sin pausa", () => {
+  test("inicia con la imagen recomendada, opacidad al 80% y carrusel activo sin pausa", () => {
     const estado = useHeroConfigStore.getState();
     expect(estado.heroImageId).toBe(HERO_DEFAULT_IMAGE_ID);
-    expect(estado.opacidad).toBe(60);
+    expect(estado.opacidad).toBe(80);
     expect(estado.opacidad).toBe(HERO_DEFAULT_OPACIDAD);
     expect(estado.modoCarrusel).toBe(true);
     expect(estado.intervaloSegundos).toBe(HERO_DEFAULT_INTERVALO_SEGUNDOS);
@@ -60,7 +60,7 @@ describe("Hero Config Store & Catálogo (HERO-PAGES-01)", () => {
     expect(estado.indiceActivo).toBe(1);
   });
 
-  test("permite calibrar la opacidad y acota estrictamente entre 10% y 85%", () => {
+  test("permite calibrar la opacidad y acota estrictamente entre 10% y 95%", () => {
     // Valor intermedio válido
     useHeroConfigStore.getState().setOpacidad(45);
     expect(useHeroConfigStore.getState().opacidad).toBe(45);
@@ -73,13 +73,13 @@ describe("Hero Config Store & Catálogo (HERO-PAGES-01)", () => {
     useHeroConfigStore.getState().setOpacidad(-20);
     expect(useHeroConfigStore.getState().opacidad).toBe(10);
 
-    // Límite superior (máximo 85%)
+    // Límite superior (máximo 95%)
     useHeroConfigStore.getState().setOpacidad(99);
     expect(useHeroConfigStore.getState().opacidad).toBe(HERO_MAX_OPACIDAD);
-    expect(useHeroConfigStore.getState().opacidad).toBe(85);
+    expect(useHeroConfigStore.getState().opacidad).toBe(95);
 
-    useHeroConfigStore.getState().setOpacidad(85);
-    expect(useHeroConfigStore.getState().opacidad).toBe(85);
+    useHeroConfigStore.getState().setOpacidad(95);
+    expect(useHeroConfigStore.getState().opacidad).toBe(95);
   });
 
   test("siguienteImagen avanza cíclicamente por las 5 fotografías territoriales", () => {
@@ -175,7 +175,7 @@ describe("Hero Config Store & Catálogo (HERO-PAGES-01)", () => {
     useHeroConfigStore.getState().resetearHeroConfig();
     const estado = useHeroConfigStore.getState();
     expect(estado.heroImageId).toBe(HERO_DEFAULT_IMAGE_ID);
-    expect(estado.opacidad).toBe(60);
+    expect(estado.opacidad).toBe(80);
     expect(estado.modoCarrusel).toBe(true);
     expect(estado.intervaloSegundos).toBe(7);
     expect(estado.pausado).toBe(false);
@@ -268,6 +268,10 @@ describe("Hero Config Store & Catálogo (HERO-PAGES-01)", () => {
       expect(HERO_PAGES_CONFIG.geovisor).toBeDefined();
       expect(HERO_PAGES_CONFIG.fases).toBeDefined();
       expect(HERO_PAGES_CONFIG.rendicion).toBeDefined();
+      expect(HERO_PAGES_CONFIG.explorar).toBeDefined();
+      expect(HERO_PAGES_CONFIG.mesas).toBeDefined();
+      expect(HERO_PAGES_CONFIG.noticias).toBeDefined();
+      expect(HERO_PAGES_CONFIG.testimonios).toBeDefined();
 
       // Verificación de alturas según requerimiento técnico
       expect(HERO_PAGES_CONFIG.barrio.altura).toBe("compact");
@@ -281,6 +285,11 @@ describe("Hero Config Store & Catálogo (HERO-PAGES-01)", () => {
 
       expect(HERO_PAGES_CONFIG.rendicion.altura).toBe("compact");
       expect(HERO_PAGES_CONFIG.rendicion.enfoque).toContain("Fe Pública");
+
+      expect(HERO_PAGES_CONFIG.explorar.altura).toBe("compact");
+      expect(HERO_PAGES_CONFIG.mesas.altura).toBe("compact");
+      expect(HERO_PAGES_CONFIG.noticias.altura).toBe("ultracompact");
+      expect(HERO_PAGES_CONFIG.testimonios.altura).toBe("compact");
     });
 
     test("obtenerHeroPageConfig y obtenerHeroSlide resuelven correctamente o aplican fallback", () => {

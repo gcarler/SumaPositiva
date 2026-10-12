@@ -18,11 +18,24 @@ describe("HeroPageBanner Component (HERO-PAGES-03)", () => {
   });
 
   test("renderiza correctamente los datos canónicos de cada página pública", () => {
-    const claves: Array<"barrio" | "geovisor" | "fases" | "rendicion"> = [
+    const claves: Array<
+      | "barrio"
+      | "geovisor"
+      | "fases"
+      | "rendicion"
+      | "explorar"
+      | "mesas"
+      | "noticias"
+      | "testimonios"
+    > = [
       "barrio",
       "geovisor",
       "fases",
       "rendicion",
+      "explorar",
+      "mesas",
+      "noticias",
+      "testimonios",
     ];
 
     claves.forEach((clave) => {

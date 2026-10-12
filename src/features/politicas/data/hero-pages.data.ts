@@ -174,6 +174,58 @@ export const HERO_PAGES_CONFIG: Record<string, HeroPageConfig> = {
       href: "/plataforma/fe-publica",
     },
   },
+  explorar: {
+    id: "explorar",
+    titulo: "Líneas Estratégicas y Gobernanza Distrital",
+    subtitulo:
+      "Explora las fases y líneas de la Política Pública de Cartagena, o visualiza cómo las 27 dependencias y sus presupuestos atienden las 7 dimensiones de seguridad humana.",
+    enfoque: "Arquitectura Estratégica y Gobernanza Distrital",
+    imagenFondo: "/images/hero/hero-marco-logico.webp",
+    ubicacionReal: "Centro Comunitario Nelson Mandela — Localidad 3 (Industrial y de la Bahía)",
+    altura: "compact",
+    badgeTexto: "Líneas Estratégicas POLIS",
+    accionPrimaria: {
+      label: "Consultar Líneas",
+      href: "#lineas",
+    },
+  },
+  mesas: {
+    id: "mesas",
+    titulo: "Mesas de Diálogo y Concertación Territorial",
+    subtitulo:
+      "Espacios de concertación y deliberación comunitaria para construir acuerdos y documentar árboles de problemas y soluciones (Ley Estatutaria 1757 de 2015).",
+    enfoque: "33 Mesas de Diálogo Territorial",
+    imagenFondo: "/images/hero/hero-asamblea-claustro.webp",
+    ubicacionReal: "Claustro de la Merced — Centro Histórico",
+    altura: "compact",
+    badgeTexto: "33 Mesas Distritales",
+    accionPrimaria: {
+      label: "Ver en Geovisor",
+      href: "/geovisor",
+    },
+  },
+  noticias: {
+    id: "noticias",
+    titulo: "Noticias y Comunicados Oficiales",
+    subtitulo:
+      "Actualidad institucional, avances de formulación, memorias de asambleas y convocatorias distritales de seguridad humana integral.",
+    enfoque: "Actualidad Institucional y Convocatorias",
+    imagenFondo: "/images/hero/hero-mesa-deliberativa.webp",
+    ubicacionReal: "Palacio de la Proclamación — Plaza de Bolívar",
+    altura: "ultracompact",
+    badgeTexto: "Actualidad Institucional",
+  },
+  testimonios: {
+    id: "testimonios",
+    titulo: "Voces Ciudadanas y Memoria Social",
+    subtitulo:
+      "Relatos vivos de quienes participan en la construcción colectiva de la seguridad humana desde las tres localidades y la zona insular.",
+    enfoque: "Memoria Social y Testimonios de Barrio",
+    imagenFondo: "/images/hero/hero-dialogo-comunitario.webp",
+    ubicacionReal: "Sector El Pozón — Localidad 2 (De la Virgen y Turística)",
+    altura: "compact",
+    badgeTexto: "Voces Ciudadanas",
+  },
 };
 
 /**

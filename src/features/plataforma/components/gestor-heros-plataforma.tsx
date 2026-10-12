@@ -51,11 +51,18 @@ const ESPACIOS_PUBLICOS: EspacioPublico[] = [
     configDefecto: HERO_PAGES_CONFIG.home,
   },
   {
-    key: "barrio",
-    nombre: "Modo Barrio Popular",
-    ruta: "/barrio",
-    descripcion: "Banner compacto mobile-first para reporte y participación comunitaria directa.",
-    configDefecto: HERO_PAGES_CONFIG.barrio,
+    key: "explorar",
+    nombre: "Líneas y Gobernanza",
+    ruta: "/explorar",
+    descripcion: "Encabezado estratégico de las líneas temáticas y flujo de inversión distrital.",
+    configDefecto: HERO_PAGES_CONFIG.explorar,
+  },
+  {
+    key: "mesas",
+    nombre: "Mesas de Diálogo",
+    ruta: "/mesas",
+    descripcion: "Cabecera territorial de concertación cívica para las 33 mesas distritales.",
+    configDefecto: HERO_PAGES_CONFIG.mesas,
   },
   {
     key: "geovisor",
@@ -65,11 +72,32 @@ const ESPACIOS_PUBLICOS: EspacioPublico[] = [
     configDefecto: HERO_PAGES_CONFIG.geovisor,
   },
   {
+    key: "noticias",
+    nombre: "Noticias y Novedades",
+    ruta: "/noticias",
+    descripcion: "Banner institucional para la sección de actualidad, avances y comunicados.",
+    configDefecto: HERO_PAGES_CONFIG.noticias,
+  },
+  {
+    key: "testimonios",
+    nombre: "Voces y Testimonios",
+    ruta: "/testimonios",
+    descripcion: "Cabecera comunitaria con relatos ciudadanos y memoria social territorial.",
+    configDefecto: HERO_PAGES_CONFIG.testimonios,
+  },
+  {
     key: "fases",
     nombre: "Diagnóstico y Fases",
     ruta: "/fases",
     descripcion: "Encabezado institucional metodológico con indicadores clave de gobernanza.",
     configDefecto: HERO_PAGES_CONFIG.fases,
+  },
+  {
+    key: "barrio",
+    nombre: "Modo Barrio Popular",
+    ruta: "/barrio",
+    descripcion: "Banner compacto mobile-first para reporte y participación comunitaria directa.",
+    configDefecto: HERO_PAGES_CONFIG.barrio,
   },
   {
     key: "rendicion",
@@ -324,18 +352,18 @@ export function GestorHerosPlataforma({
                   src={imagenActivaSrc}
                   alt=""
                   className="h-full w-full object-cover object-center"
-                  style={{ opacity: opacidad / 100 }}
+                  style={{ opacity: Math.max(0.75, (opacidad ?? 80) / 100) }}
                 />
               </div>
             )}
 
-            {/* Viñeta multicapa */}
+            {/* Viñeta adaptativa de alta visibilidad */}
             <div
-              className="pointer-events-none absolute inset-0 z-[1] select-none bg-gradient-to-r from-[var(--surface-0)]/90 via-[var(--surface-0)]/70 to-transparent"
+              className="pointer-events-none absolute inset-0 z-[1] select-none bg-gradient-to-r from-[var(--surface-0)]/85 via-[var(--surface-0)]/40 to-transparent"
               aria-hidden="true"
             />
             <div
-              className="bg-dotgrid pointer-events-none absolute inset-0 z-[2]"
+              className="bg-dotgrid pointer-events-none absolute inset-0 z-[2] opacity-20"
               aria-hidden="true"
             />
 
@@ -594,11 +622,11 @@ export function GestorHerosPlataforma({
 
         <div className="flex flex-wrap items-center gap-2">
           {[
-            { valor: 25, etiqueta: "25% (Sutil)" },
-            { valor: 45, etiqueta: "45% (Equilibrado)" },
-            { valor: 60, etiqueta: "60% (Recomendado)" },
-            { valor: 75, etiqueta: "75% (Vibrante)" },
-            { valor: 85, etiqueta: "85% (Máximo)" },
+            { valor: 40, etiqueta: "40% (Suave)" },
+            { valor: 60, etiqueta: "60% (Medio)" },
+            { valor: 80, etiqueta: "80% (Recomendado)" },
+            { valor: 85, etiqueta: "85% (Vibrante)" },
+            { valor: 95, etiqueta: "95% (Máximo)" },
           ].map((preset) => (
             <Button
               key={preset.valor}

@@ -130,29 +130,32 @@ export function HeroHomeShowcase({
                   ? "scale-105 transition-transform duration-[7000ms] ease-out motion-reduce:transform-none motion-reduce:transition-none"
                   : "scale-100"
               }`}
-              style={{ opacity: opacidad / 100 }}
+              style={{ opacity: Math.max(0.75, (opacidad ?? 80) / 100) }}
             />
           </div>
         );
       })}
 
-      {/* ================= 2. VIÑETA ADAPTATIVA MULTICAPA (WCAG AAA) ================= */}
+      {/* ================= 2. VIÑETA ADAPTATIVA DE ALTA VISIBILIDAD (WCAG 2.1 AA) ================= */}
+      {/* Scrim direccional suave que garantiza legibilidad del bloque de texto izquierdo sin opacar la fotografía */}
       <div
-        className="pointer-events-none absolute inset-0 z-[1] select-none bg-gradient-to-t from-[var(--surface-0)] via-transparent to-[var(--surface-0)]/60"
+        className="pointer-events-none absolute inset-0 z-[1] select-none bg-gradient-to-r from-[var(--surface-0)]/85 via-[var(--surface-0)]/40 to-transparent"
         aria-hidden="true"
       />
+      {/* Fundido base inferior sutil para acoplar con la sección siguiente */}
       <div
-        className="pointer-events-none absolute inset-0 z-[1] select-none bg-gradient-to-r from-[var(--surface-0)]/90 via-[var(--surface-0)]/60 to-transparent"
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-32 select-none bg-gradient-to-t from-[var(--surface-0)] via-[var(--surface-0)]/30 to-transparent"
         aria-hidden="true"
       />
+      {/* Fundido superior muy tenue para la barra superior */}
       <div
-        className="pointer-events-none absolute inset-0 z-[1] select-none bg-gradient-to-b from-[var(--surface-0)]/40 via-transparent to-[var(--surface-0)]"
+        className="pointer-events-none absolute inset-x-0 top-0 z-[1] h-16 select-none bg-gradient-to-b from-[var(--surface-0)]/35 to-transparent"
         aria-hidden="true"
       />
 
       {/* ================= 3. RETÍCULA SUTIL INSTITUCIONAL ================= */}
       <div
-        className="bg-dotgrid pointer-events-none absolute inset-0 z-[2]"
+        className="bg-dotgrid pointer-events-none absolute inset-0 z-[2] opacity-20"
         aria-hidden="true"
       />
 

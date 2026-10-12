@@ -13,7 +13,16 @@ import {
 } from "@/features/politicas/data/hero-pages.data";
 
 export interface HeroPageBannerProps {
-  pageKey: "barrio" | "geovisor" | "fases" | "rendicion" | string;
+  pageKey:
+    | "barrio"
+    | "geovisor"
+    | "fases"
+    | "rendicion"
+    | "explorar"
+    | "mesas"
+    | "noticias"
+    | "testimonios"
+    | string;
   tituloOverride?: string;
   subtituloOverride?: string;
   badgeOverride?: string;
@@ -91,28 +100,26 @@ export function HeroPageBanner({
             src={imagenFondo}
             alt=""
             className="h-full w-full object-cover object-center"
-            style={{ opacity: (opacidad ?? 60) / 100 }}
+            style={{ opacity: Math.max(0.75, (opacidad ?? 80) / 100) }}
           />
         </div>
       )}
 
-      {/* ================= 2. VIÑETA ADAPTATIVA MULTICAPA (WCAG 2.1 AA) ================= */}
+      {/* ================= 2. VIÑETA ADAPTATIVA DE ALTA VISIBILIDAD (WCAG 2.1 AA) ================= */}
+      {/* Scrim direccional suave que garantiza contraste sobre el tercio izquierdo sin opacar la fotografía */}
       <div
-        className="pointer-events-none absolute inset-0 z-[1] select-none bg-gradient-to-t from-[var(--surface-0)] via-transparent to-[var(--surface-0)]/60"
+        className="pointer-events-none absolute inset-0 z-[1] select-none bg-gradient-to-r from-[var(--surface-0)]/90 via-[var(--surface-0)]/50 to-transparent"
         aria-hidden="true"
       />
+      {/* Fundido base inferior sutil */}
       <div
-        className="pointer-events-none absolute inset-0 z-[1] select-none bg-gradient-to-r from-[var(--surface-0)]/90 via-[var(--surface-0)]/70 to-transparent"
-        aria-hidden="true"
-      />
-      <div
-        className="pointer-events-none absolute inset-0 z-[1] select-none bg-gradient-to-b from-[var(--surface-0)]/40 via-transparent to-[var(--surface-0)]"
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-20 select-none bg-gradient-to-t from-[var(--surface-0)]/60 to-transparent"
         aria-hidden="true"
       />
 
       {/* ================= 3. RETÍCULA SUTIL INSTITUCIONAL ================= */}
       <div
-        className="bg-dotgrid pointer-events-none absolute inset-0 z-[2]"
+        className="bg-dotgrid pointer-events-none absolute inset-0 z-[2] opacity-20"
         aria-hidden="true"
       />
 

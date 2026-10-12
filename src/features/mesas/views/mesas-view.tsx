@@ -18,7 +18,7 @@ import {
   CheckCircle2,
   Clock,
 } from "lucide-react";
-import { PageHeader } from "@/shared/ui/page-header";
+import { HeroPageBanner } from "@/features/politicas/components/hero-page-banner";
 import { SearchField } from "@/shared/ui/search-field";
 import { EmptyState } from "@/shared/ui/empty-state";
 import { Button } from "@/shared/ui/button";
@@ -138,25 +138,23 @@ export function MesasView() {
   };
 
   return (
-    <div className="container-fluid py-12 md:py-14 lg:py-16">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <PageHeader
-          eyebrow="Participación Ciudadana Distrital"
-          title="Mesas de trabajo"
-          description="Espacios de concertación y deliberación para construir acuerdos y documentar árboles de problemas y soluciones (Ley Estatutaria 1757 de 2015)."
-        />
-        <div className="flex items-center gap-2">
+    <div className="container-fluid py-8 md:py-10 lg:py-12">
+      <HeroPageBanner
+        pageKey="mesas"
+        className="mb-8"
+      >
+        <div className="flex items-center gap-2 pt-1">
           <Button
             variant="outline"
             size="sm"
             onClick={() => setVista("geovisor")}
-            className="gap-1.5 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+            className="gap-1.5 text-xs border-[var(--border-strong)] bg-[var(--surface-2)]/90 backdrop-blur-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
           >
             <MapPin className="size-3.5 text-[var(--ember)]" />
-            <span className="hidden sm:inline">Ver en Geovisor</span>
+            <span>Ver Mesas en Geovisor</span>
           </Button>
         </div>
-      </div>
+      </HeroPageBanner>
 
       {/* Pestañas por Categoría */}
       <div className="mt-8 flex flex-wrap items-center gap-1.5 border-b border-[var(--border)] pb-3">

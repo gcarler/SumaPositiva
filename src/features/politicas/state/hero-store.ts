@@ -70,9 +70,9 @@ export const HERO_IMAGE_OPTIONS: HeroImageOption[] = [
 ];
 
 export const HERO_DEFAULT_IMAGE_ID = "asamblea-claustro";
-export const HERO_DEFAULT_OPACIDAD = 60;
+export const HERO_DEFAULT_OPACIDAD = 80;
 export const HERO_MIN_OPACIDAD = 10;
-export const HERO_MAX_OPACIDAD = 85;
+export const HERO_MAX_OPACIDAD = 95;
 export const HERO_DEFAULT_INTERVALO_SEGUNDOS = 7;
 
 export interface HeroConfigState {

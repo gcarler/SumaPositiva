@@ -13,6 +13,7 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import { usePanels } from "@/core/panels/panel-store";
+import { HeroPageBanner } from "@/features/politicas/components/hero-page-banner";
 import { useTestimoniosStore } from "../state/testimonios-store";
 import { useTestimoniosPublicos } from "../services/use-testimonios-queries";
 import type { TipoTestimonio, Testimonio } from "../models/testimonio";
@@ -77,42 +78,24 @@ export function TestimoniosView() {
 
   return (
     <div className="container-fluid space-y-12 py-8 md:space-y-16 md:py-12">
-      {/* ================= HEADER PRINCIPAL ================= */}
-      <section className="relative overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface-1)] p-8 sm:p-12">
-        <div className="absolute top-0 right-0 -mt-10 -mr-10 size-60 rounded-full bg-[var(--ember)]/5 blur-3xl pointer-events-none" />
-        <div className="relative max-w-3xl space-y-4">
-          <div className="flex items-center gap-2">
-            <span className="size-2 rounded-full bg-[var(--ember)]" />
-            <span className="label-micro text-[var(--text-secondary)]">
-              Memoria Social y Participación Territorial
-            </span>
-          </div>
-
-          <h1 className="text-3xl font-bold tracking-tight text-[var(--text-primary)] sm:text-4xl md:text-5xl">
-            Voces de Cartagena
-          </h1>
-
-          <p className="text-sm leading-relaxed text-[var(--text-secondary)] sm:text-base md:text-lg">
-            Lo que dicen quienes participan en la construcción de la Política Pública de Seguridad Humana Integral 2026–2036. Relatos vivos de las tres localidades y la zona insular.
-          </p>
-
-          <div className="pt-2 flex flex-wrap items-center gap-3">
-            <Button
-              variant="default"
-              size="lg"
-              onClick={() => openPanel("testimonio-nuevo", {})}
-              className="gap-2"
-            >
-              <Plus className="size-4" />
-              <span>Comparte tu experiencia</span>
-            </Button>
-            <div className="flex items-center gap-2 text-xs text-[var(--text-tertiary)] pl-2">
-              <ShieldCheck className="size-4 text-[var(--success)]" />
-              <span>Verificación con salvaguardas de Habeas Data</span>
-            </div>
+      {/* ================= HEADER PRINCIPAL CON HERO TERRITORIAL ================= */}
+      <HeroPageBanner pageKey="testimonios">
+        <div className="pt-2 flex flex-wrap items-center gap-3">
+          <Button
+            variant="default"
+            size="lg"
+            onClick={() => openPanel("testimonio-nuevo", {})}
+            className="gap-2"
+          >
+            <Plus className="size-4" />
+            <span>Comparte tu experiencia</span>
+          </Button>
+          <div className="flex items-center gap-2 text-xs text-[var(--text-tertiary)] pl-2">
+            <ShieldCheck className="size-4 text-[var(--success)]" />
+            <span>Verificación con salvaguardas de Habeas Data</span>
           </div>
         </div>
-      </section>
+      </HeroPageBanner>
 
       {/* ================= FILTROS POR TIPO DE ACTOR ================= */}
       <section className="space-y-4">

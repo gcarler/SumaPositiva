@@ -1,7 +1,7 @@
 "use client";
 
 import {useMemo, useState} from "react";
-import {PageHeader} from "@/shared/ui/page-header";
+import {HeroPageBanner} from "@/features/politicas/components/hero-page-banner";
 import {SearchField} from "@/shared/ui/search-field";
 import {FilterChip} from "@/shared/ui/filter-chip";
 import {EmptyState} from "@/shared/ui/empty-state";
@@ -79,11 +79,10 @@ export function ExplorarView() {
   };
 
   return (
-    <div className="container-fluid py-12 md:py-14 lg:py-16">
-      <PageHeader
-        eyebrow="Participación Ciudadana"
-        title="Líneas Estratégicas y Gobernanza Distrital"
-        description="Explora las fases y líneas de la Política Pública de Cartagena, o visualiza cómo las 27 dependencias y sus presupuestos atienden las 7 dimensiones de seguridad humana."
+    <div className="container-fluid py-8 md:py-10 lg:py-12">
+      <HeroPageBanner
+        pageKey="explorar"
+        className="mb-8"
       />
 
       {/* ---------- Selector de Pestañas ---------- */}

@@ -10,19 +10,27 @@ describe("GestorHerosPlataforma Component", () => {
     useHeroConfigStore.getState().resetearHeroConfig();
   });
 
-  test("renderiza los 5 espacios públicos gestionables con sus rutas oficiales", () => {
+  test("renderiza los 9 espacios públicos gestionables con sus rutas oficiales", () => {
     const html = renderToString(<GestorHerosPlataforma />);
 
     expect(html).toContain("Portada Principal");
-    expect(html).toContain("Modo Barrio Popular");
+    expect(html).toContain("Líneas y Gobernanza");
+    expect(html).toContain("Mesas de Diálogo");
     expect(html).toContain("Geovisor Cartográfico");
+    expect(html).toContain("Noticias y Novedades");
+    expect(html).toContain("Voces y Testimonios");
     expect(html).toContain("Diagnóstico y Fases");
+    expect(html).toContain("Modo Barrio Popular");
     expect(html).toContain("Veeduría y Rendición");
 
     expect(html).toContain("/");
-    expect(html).toContain("/barrio");
+    expect(html).toContain("/explorar");
+    expect(html).toContain("/mesas");
     expect(html).toContain("/geovisor");
+    expect(html).toContain("/noticias");
+    expect(html).toContain("/testimonios");
     expect(html).toContain("/fases");
+    expect(html).toContain("/barrio");
     expect(html).toContain("/plataforma/rendicion");
   });
 
@@ -61,7 +69,7 @@ describe("GestorHerosPlataforma Component", () => {
     expect(html).toContain("Asignar Imagen Personalizada vía URL o Ruta Local");
     expect(html).toContain("Calibración Global de Intensidad Ambiental");
     expect(html).toContain("Certificado WCAG 2.1 AA");
-    expect(html).toContain("60% (Recomendado)");
+    expect(html).toContain("80% (Recomendado)");
   });
 
   test("refleja en el store la personalización de imagen por página vía setPageImage", () => {

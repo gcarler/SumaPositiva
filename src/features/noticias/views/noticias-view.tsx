@@ -18,6 +18,7 @@ import {
 import { usePanels } from "@/core/panels/panel-store";
 import { useSesionStore } from "@/features/sesion/state/session-store";
 import { puedeEditar } from "@/features/plataforma/models/acceso";
+import { HeroPageBanner } from "@/features/politicas/components/hero-page-banner";
 import {
   useNoticiasStore,
   noticiasPublicadasOrdenadas,
@@ -104,7 +105,10 @@ export function NoticiasView() {
   };
 
   return (
-    <div className="container-fluid space-y-12 py-8 md:space-y-16 md:py-12">
+    <div className="container-fluid space-y-8 py-8 md:space-y-12 md:py-10">
+      {/* ================= HERO EDITORIAL DE NOTICIAS ================= */}
+      <HeroPageBanner pageKey="noticias" />
+
       {noticiasQuery.isError && <div role="alert" className="mx-auto flex max-w-5xl items-center justify-between gap-3 rounded-lg border border-danger/30 bg-danger-soft p-4 text-sm text-text-primary"><span>No se pudieron cargar las noticias.</span><Button variant="outline" size="sm" onClick={() => void noticiasQuery.refetch()}>Reintentar</Button></div>}
       {noticiasQuery.isPending && <div role="status" className="mx-auto max-w-5xl rounded-lg border border-[var(--border)] p-6 text-sm text-[var(--text-secondary)]">Cargando noticias…</div>}
       {/* ================= HERO NOTICIA DESTACADA ================= */}
