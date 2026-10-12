@@ -1,58 +1,18 @@
-# DICTAMEN PERICIAL FORENSE DE AUDITORÍA (EAF)
-## FASE 4: CERTIFICACIÓN GLOBAL, BUILD DE PRODUCCIÓN Y CIERRE DEL PLAN MAESTRO [GEO-DOCK-04]
+# DICTAMEN EAF — [CIERRE-01] Integración de la migración 0023_asistencia_multicanal
 
-**Auditor Forense / Supervisor:** `agy` (Coordinador General y Auditor Forense EAF — `tmux a -t agy`)  
-**Desarrollador Responsable:** `agy2` (Desarrollador / EDD — `tmux a -t agy2`)  
-**Fecha de Emisión:** Lunes, 12 de Octubre de 2026  
-**Commit Evaluado:** `d76d8d5` (*test(geovisor): certificacion global de produccion y cierre de plan maestro GEO-DOCK-04*)  
-**Rama:** `main` (cumplimiento estricto de Protocolo Zero-Push)  
-**Plan Maestro:** `bridge/00_plan_maestro_geovisor_docking.md`  
-**Dictamen:** 🏆 **APROBADO CON MÁXIMA DISTINCIÓN — PLAN MAESTRO CERRADO AL 100%**
+**Auditor:** `agy` — **Desarrollador:** `agy2` — **Commit evaluado:** `22421e1` — **Fecha:** 12-oct-2026
+**Dictamen:** ✅ APROBADO CON OBSERVACIONES MENORES
 
----
+## Verificado de forma independiente
+- Árbol de trabajo limpio; cabeza única de Alembic (`0057_comentario_pas`); `alembic check`: sin operaciones pendientes.
+- Backend: **492 pruebas pasan** (290 s). Frontend: 500 (reporte de agy2; sin cambios de frontend).
+- Censo `bd_csh` intacto: 33 mesas, 36 agendas, 11 fichas, 17 actores.
+- La migración 0023 ya no altera permisos de `auditor_forense` (se eliminó la mutación espuria del `downgrade`); el modelo `EscenarioEspecial` está registrado y probado.
 
-### 1. Hallazgos de la Contra-Auditoría Forense de Cierre
+## Observaciones (a corregir en CIERRE-02, sin bloquear)
+1. `test_lineaje_alembic_0023_linear_y_cabeza_unica` fija la cabeza en `"0057_comentario_pas"`: se romperá con la próxima migración. Debe comprobar solo cabeza única y que 0023 esté encadenada.
+2. `test_migracion_0023_no_modifica_permisos_auditor_forense` es una búsqueda de texto sobre el archivo; mejor un test que ejecute upgrade/downgrade en base aislada y compare permisos del rol.
+3. El cambio real fue mínimo (solo `downgrade`); `docs/plan-trabajo.md` describe «registrado» y «0022 -> 0023 -> 0024» como logros de este commit, cuando ya existían. Ajustar el texto para no sobrerrepresentar el alcance.
 
-1. **Ecosistema Docking Tiling (Estilo IDE / VS Code) Verificado:**
-   - La arquitectura de 4 paneles acoplados resizables (`geovisor-workspace-layout.tsx`) opera sin superposición de paneles ni solapamientos sobre el mapa.
-   - El lienzo central OpenLayers (`mapa-cartagena.tsx`) ocupa fluidamente todo el espacio disponible y responde instantáneamente a eventos de redimensión manual a 60 fps mediante `ResizeObserver`.
-   - Los 4 controles de paneles (`geovisor-dock-controls.tsx`) permiten alternar individualmente cada panel (superior, izquierdo, derecho, inferior), maximizar el lienzo del mapa y restablecer la disposición predeterminada.
-
-2. **Modularización y Distribución Funcional de Paneles:**
-   - **Panel Superior (`geovisor-top-shelf.tsx`):** Selector de Ámbito territorial, Selector de Variable temática ISH, 4 micro-chips ejecutivos distritales, botón de exportación PNG de alta resolución y controles dock integrados.
-   - **Panel Izquierdo (`geovisor-left-dock.tsx`):** Pestañas de "Capas SIG & Leyenda" y "Directorio de Mesas" con búsqueda en tiempo real, filtros facetados y botón interactivo "Ubicar en Mapa" para las 33 mesas.
-   - **Panel Derecho (`geovisor-right-dock.tsx`):** Pestañas de "Ficha Técnica de Mesa" (aforo vs asistencia, acuerdos, galería y botón de acta viva) e "Inspector Territorial & BI" (`GeovisorBiSidebar`).
-   - **Panel Inferior (`geovisor-bottom-dock.tsx`):** Pestañas de "DataGrid de Mesas" (tabla estructurada interactiva con paginación y exportación CSV) y "Gráficos Estadísticos" (`GeovisorCharts` con radar de dimensiones, evolución temporal y comparativas).
-
-3. **Navegación e Interacción Cartográfica Bidireccional:**
-   - Selección de mesa desde el mapa (clic en OpenLayers), desde el directorio izquierdo o desde el DataGrid inferior ejecuta vuelo cinemático (`flyTo` suave hacia lat/long a zoom 15.5), enciende el halo beacon luminoso de alta visibilidad (radio 19px con trazo dorado `#e85d04` y rótulo 📍) y despliega automáticamente la Ficha Técnica en el panel derecho.
-   - La sincronización territorial y temática actualiza simultáneamente coropletas, KPIs, filtros y gráficos sin latencia.
-
-4. **Ruta Canónica y Disponibilidad en Producción:**
-   - Creada la ruta pública `src/app/geovisor/page.tsx`.
-   - Compilación Next.js 16.1.3 completada con éxito (192 páginas estáticas/SSR generadas).
-   - Verificados los tres endpoints con respuesta `HTTP/1.1 200 OK`:
-     * `http://localhost:3000/geovisor` (Acceso directo público)
-     * `http://localhost:3000/` (Acceso vía SPA con Topbar)
-     * `http://localhost:3000/plataforma/geovisor` (Acceso administrativo)
-
----
-
-### 2. Certificación Integral de Quality Gates
-
-| Control | Comando / Prueba | Resultado Forense | Estado |
-|---|---|---|---|
-| **UI Architectural Linter** | `bun run ui:check` | 0 infracciones en todo el árbol de componentes | ✅ CERTIFICADO |
-| **TypeCheck & Linter** | `bun run check` | 0 errores TypeScript (`tsc --noEmit`), 0 warnings ESLint | ✅ CERTIFICADO |
-| **Suite Frontend Completa** | `bun test` | **486/486 pasadas** (2,311 aserciones en 56 archivos) | ✅ CERTIFICADO |
-| **Suite Backend Completa** | `pytest backend/tests` | **488/488 pasadas** (100% verde en entorno virtual) | ✅ CERTIFICADO |
-| **Alembic Drift Check** | `alembic check` | 0 diferencias con PostgreSQL 18 | ✅ CERTIFICADO |
-| **Inviolabilidad Censo `bd_csh`** | Consulta directa PostgreSQL 18 | 33 mesas, 36 agendas, 11 fichas, 17 actores intactos | ✅ CERTIFICADO |
-| **Servicios del Sistema** | `systemctl is-active` | `polis-frontend`, `polis-backend`, `nginx`, `postgresql` (active) | ✅ CERTIFICADO |
-| **Disponibilidad HTTP** | `curl -sI /geovisor` | **HTTP/1.1 200 OK** | ✅ CERTIFICADO |
-
----
-
-### 3. Veredicto Final y Cierre del Plan Maestro
-
-El **Plan Maestro de Reingeniería del Geovisor Studio de POLIS (`bridge/00_plan_maestro_geovisor_docking.md`)** se declara **CULMINADO Y CERRADO AL 100%**. Se formaliza la entrega al usuario con plena operatividad en producción.
+## Autorización
+Se autoriza **CIERRE-02**. Recordatorio: no aplicar nada en producción ni tocar `bd_csh`, SMTP real ni cuentas existentes; solo runbook, scripts y pruebas en base aislada.
