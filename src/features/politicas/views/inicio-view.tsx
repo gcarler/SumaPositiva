@@ -1,28 +1,15 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
-import { motion, useReducedMotion } from "framer-motion";
-
-const subscribeNoop = () => () => {};
-const useMounted = () =>
-  useSyncExternalStore(
-    subscribeNoop,
-    () => true,
-    () => false,
-  );
 import {
   ArrowRight,
   MapPin,
   Scale,
-  Compass,
-  FileCheck2,
   Newspaper,
   Quote,
   Sparkles,
   Plus,
   Play,
   Layers,
-  BarChart3,
 } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import { Badge } from "@/shared/ui/badge";
@@ -37,17 +24,7 @@ import { useFases, useLineas } from "@/features/politicas/services/use-politicas
 import { DimensionesGrid } from "@/features/politicas/components/dimensiones-grid";
 import { EnrutadorCiudadanoInteligente } from "@/features/politicas/components/enrutador-ciudadano-inteligente";
 import { FlujoInversionGobernanza } from "@/features/politicas/components/flujo-inversion-gobernanza";
-import {
-  useHeroConfigStore,
-  obtenerOpcionHero,
-  HERO_DEFAULT_IMAGE_ID,
-  HERO_DEFAULT_OPACIDAD,
-} from "@/features/politicas/state/hero-store";
-
-const fadeUp = {
-  initial: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0 },
-};
+import { HeroHomeShowcase } from "@/features/politicas/components/hero-home-showcase";
 
 const TERRITORIOS = [
   {
@@ -77,7 +54,6 @@ const TERRITORIOS = [
 ];
 
 export function InicioView() {
-  const reducedMotion = useReducedMotion();
   const setVista = useNavigationStore((s) => s.setVista);
   const { openPanel } = usePanels();
   const fasesQuery = useFases();
@@ -111,154 +87,15 @@ export function InicioView() {
     { valor: "3 + Insular", label: "Localidades cubiertas" },
   ];
 
-  /* Configuración del Backdrop Territorial (FEAT-HERO-01) */
-  const heroImageId = useHeroConfigStore((s) => s.heroImageId);
-  const opacidad = useHeroConfigStore((s) => s.opacidad);
-  const montado = useMounted();
-
-  const imagenActivaId = montado ? heroImageId : HERO_DEFAULT_IMAGE_ID;
-  const opacidadActiva = montado ? opacidad : HERO_DEFAULT_OPACIDAD;
-  const opcionHero = obtenerOpcionHero(imagenActivaId);
-
   return (
     <div className="space-y-20 pb-20 md:space-y-28 md:pb-28">
-      {/* ================= HERO INSTITUCIONAL ================= */}
-      <section className="relative overflow-hidden">
-        {/* Backdrop fotográfico territorial ambiental (FEAT-HERO-01) */}
-        {imagenActivaId !== "ninguna" && Boolean(opcionHero.archivo) && (
-          <div
-            className="pointer-events-none absolute inset-0 select-none overflow-hidden z-0"
-            aria-hidden="true"
-          >
-            <img
-              src={opcionHero.archivo}
-              alt=""
-              className="h-full w-full object-cover object-center transition-opacity duration-700 ease-in-out"
-              style={{ opacity: opacidadActiva / 100 }}
-            />
-            {/* Gradientes elegantes para protección de contraste y legibilidad WCAG AAA */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[var(--surface-0)] via-transparent to-[var(--surface-0)]/60" />
-            <div className="absolute inset-0 bg-gradient-to-r from-[var(--surface-0)]/85 via-[var(--surface-0)]/40 to-transparent" />
-          </div>
-        )}
-
-        <div className="bg-dotgrid absolute inset-0 z-0" aria-hidden />
-        <div className="container-fluid relative z-10 pb-12 pt-12 md:pb-20 md:pt-16 lg:pb-24 lg:pt-20">
-          <div className="grid gap-12 xl:grid-cols-12 xl:items-end xl:gap-16">
-            <div className="xl:col-span-7 2xl:col-span-8">
-              <motion.p
-                {...(reducedMotion ? { initial: false as const } : fadeUp)}
-                transition={{ duration: 0.5 }}
-                className="flex items-center gap-2"
-              >
-                <span className="size-2 rounded-full bg-[var(--ember)]" aria-hidden />
-                <span className="label-micro text-[var(--text-secondary)]">
-                  Distrito Turístico y Cultural de Cartagena de Indias
-                </span>
-              </motion.p>
-
-              <motion.h1
-                {...(reducedMotion ? { initial: false as const } : fadeUp)}
-                transition={{ duration: 0.55, delay: 0.08 }}
-                className="display-tight mt-6 text-[clamp(2.25rem,4vw,5.25rem)] font-semibold text-[var(--text-primary)]"
-              >
-                Política Pública de Seguridad Humana Integral{" "}
-                <span className="text-fade block sm:inline">2026–2036</span>
-              </motion.h1>
-
-              <motion.p
-                {...(reducedMotion ? { initial: false as const } : fadeUp)}
-                transition={{ duration: 0.55, delay: 0.16 }}
-                className="mt-6 max-w-2xl text-[15px] leading-relaxed text-[var(--text-secondary)] md:text-base lg:text-lg"
-              >
-                Garantizando las libertades frente al miedo, la necesidad y la indignidad mediante la
-                participación vinculante de la ciudadanía (Ley Estatutaria 1757 de 2015 — Sentencia C-150 de 2015).
-              </motion.p>
-
-              {/* 3 Botones de acción */}
-              <motion.div
-                {...(reducedMotion ? { initial: false as const } : fadeUp)}
-                transition={{ duration: 0.55, delay: 0.24 }}
-                className="mt-9 flex flex-wrap items-center gap-3.5"
-              >
-                <Button
-                  variant="default"
-                  size="lg"
-                  type="button"
-                  onClick={() => setVista("explorar")}
-                  className="group"
-                >
-                  Dejar mi Aporte Territorial
-                  <ArrowRight
-                    className="size-4 transition-transform group-hover:translate-x-0.5"
-                    strokeWidth={1.75}
-                  />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="lg"
-                  type="button"
-                  asChild
-                >
-                  <a href="#fases-politica">
-                    <FileCheck2 className="size-4 text-[var(--text-secondary)]" strokeWidth={1.75} />
-                    Ver Diagnóstico Participativo
-                  </a>
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="lg"
-                  type="button"
-                  onClick={() => setVista("geovisor")}
-                  className="text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
-                >
-                  <Compass className="size-4 text-[var(--ember)]" strokeWidth={1.75} />
-                  Geovisor de Seguridad
-                </Button>
-                <Button
-                  variant="outline"
-                  size="lg"
-                  type="button"
-                  onClick={() => openPanel("rendicion-cuentas", {})}
-                  className="gap-2 border-[var(--border)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
-                >
-                  <BarChart3 className="size-4 text-[var(--ember)]" strokeWidth={1.75} />
-                  Rendición de Cuentas 2026
-                </Button>
-              </motion.div>
-            </div>
-
-            {/* Métricas vivas */}
-            <motion.dl
-              initial={reducedMotion ? false : { opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.6, delay: 0.35 }}
-              className="grid grid-cols-2 overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--surface-1)] md:grid-cols-4 xl:col-span-5 xl:grid-cols-2 2xl:col-span-4"
-            >
-              {stats.map((s, i) => (
-                <div
-                  key={s.label}
-                  className={`flex flex-col-reverse px-6 py-6 lg:px-7 lg:py-7 ${
-                    [
-                      "",
-                      "border-l border-[var(--border)]",
-                      "border-t border-[var(--border)] md:border-l md:border-t-0 xl:border-t xl:border-l-0",
-                      "border-l border-t border-[var(--border)] md:border-t-0 xl:border-t",
-                    ][i]
-                  }`}
-                >
-                  <dt className="mt-1.5 text-[11px] uppercase tracking-[0.12em] text-[var(--text-tertiary)]">
-                    {s.label}
-                  </dt>
-                  <dd className="text-2xl font-semibold tracking-tight text-[var(--text-primary)] tabular md:text-3xl xl:text-[1.85rem] 2xl:text-3xl">
-                    {s.valor}
-                  </dd>
-                </div>
-              ))}
-            </motion.dl>
-          </div>
-        </div>
-      </section>
+      {/* ================= HERO INMERSIVO SHOWCASE (HERO-PAGES-02) ================= */}
+      <HeroHomeShowcase
+        onAporteClick={() => setVista("explorar")}
+        onGeovisorClick={() => setVista("geovisor")}
+        onRendicionClick={() => openPanel("rendicion-cuentas", {})}
+        stats={stats}
+      />
 
       {/* ================= 7 DIMENSIONES ONU ================= */}
       <section id="dimensiones" className="container-fluid">
