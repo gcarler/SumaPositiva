@@ -5,13 +5,15 @@ import { useCallback, useMemo, useState, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { listarMesasGeovisor, type MesaGeovisor } from "../services/mesas-geovisor-api";
 import { usePanels } from "@/core/panels/panel-store";
-import { GeovisorKpiBar } from "../components/geovisor-kpi-bar";
-import { GeovisorBiSidebar } from "../components/geovisor-bi-sidebar";
-import { GeovisorControles, type CapasConfig } from "../components/geovisor-controles";
-import { GeovisorCharts } from "../components/geovisor-charts";
-import { MesasGeovisor } from "../components/mesas-geovisor";
+import { GeovisorWorkspaceLayout } from "../components/geovisor-workspace-layout";
+import { GeovisorTopShelf } from "../components/geovisor-top-shelf";
+import { GeovisorLeftDock } from "../components/geovisor-left-dock";
+import { GeovisorRightDock } from "../components/geovisor-right-dock";
+import { GeovisorBottomDock } from "../components/geovisor-bottom-dock";
+import type { CapasConfig } from "../components/geovisor-controles";
 import type { VariableMapa } from "../data/estadisticas.data";
 import type { MapaCartagenaHandle } from "../components/mapa-cartagena";
+import { useGeovisorLayoutStore } from "../state/geovisor-layout-store";
 
 const MapaCartagena = dynamic(() => import("../components/mapa-cartagena"), {
   ssr: false,
@@ -64,7 +66,7 @@ export function GeovisorView() {
         openPanel("territorio", { territorioId: id });
       }
     },
-    [openPanel],
+    [openPanel]
   );
 
   const handleSelectBarrio = useCallback((barrioNombre: string) => {
@@ -75,52 +77,76 @@ export function GeovisorView() {
     (id: string) => {
       openPanel("territorio", { territorioId: id === "todas" ? "loc-1" : id });
     },
-    [openPanel],
+    [openPanel]
   );
 
   const mesasDelTerritorio = useMemo(() => {
     if (territorioId === "todas") return mesasGeovisor;
-    return mesasGeovisor.filter((mesa) => mesa.territorio_codigo?.toLowerCase() === territorioId.toLowerCase());
+    return mesasGeovisor.filter(
+      (mesa) => mesa.territorio_codigo?.toLowerCase() === territorioId.toLowerCase()
+    );
   }, [mesasGeovisor, territorioId]);
 
   const handleExportarPng = useCallback(() => {
     mapaRef.current?.exportarPng();
   }, []);
 
+  // Al seleccionar una mesa, abre el dock derecho si estaba cerrado para ver la ficha
+  const handleSelectMesa = useCallback((mesaId: string | null) => {
+    setMesaIdSeleccionada(mesaId);
+    if (mesaId) {
+      useGeovisorLayoutStore.getState().setPanelOpen("right", true);
+    }
+  }, []);
+
   const handleLocalizarMesaEnMapa = useCallback((mesa: MesaGeovisor) => {
     setMesaIdSeleccionada(mesa.id);
+    useGeovisorLayoutStore.getState().setPanelOpen("right", true);
     if (mesa.territorio_codigo) {
       setTerritorioId(mesa.territorio_codigo);
     }
-    if (typeof window !== "undefined") {
+    if (typeof window !== "undefined" && window.innerWidth < 1024) {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   }, []);
 
-  return (
-    <div className="container-fluid space-y-4 py-5 md:py-6">
-      {/* HEADER: Selector de Ámbito, Selector de Variable, Exportar PNG y 4 KPI Chips Globales */}
-      <GeovisorKpiBar
-        territorioId={territorioId}
-        onTerritorioChange={handleSelectTerritorio}
-        variableMapa={variableMapa}
-        onVariableChange={setVariableMapa}
-        onExportarPng={handleExportarPng}
-      />
+  const handleAbrirPanelMesa = useCallback(
+    (mesaId: string) => {
+      openPanel("mesa", { mesaId });
+    },
+    [openPanel]
+  );
 
-      {/* WORKSPACE PRINCIPAL TRIPARTITO: Controles SIG (Izq) + Mapa Coroplético (Centro) + Panel Analítico (Der) */}
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-12 xl:grid-cols-12">
-        {/* Columna Izquierda: Controles de Capas y Leyenda Dinámica (3 cols) */}
-        <div className="lg:col-span-3 xl:col-span-3 space-y-4">
-          <GeovisorControles
+  const mesaActiva = useMemo(() => {
+    if (!mesaIdSeleccionada) return null;
+    return mesasGeovisor.find((m) => m.id === mesaIdSeleccionada) ?? null;
+  }, [mesasGeovisor, mesaIdSeleccionada]);
+
+  return (
+    <div className="container-fluid space-y-3 py-3 md:py-4">
+      {/* WORKSPACE PRINCIPAL: 4 PANELES ACOPLADOS TIPO IDE (Tiling Docking System) */}
+      <GeovisorWorkspaceLayout
+        topSlot={
+          <GeovisorTopShelf
+            territorioId={territorioId}
+            onTerritorioChange={handleSelectTerritorio}
+            variableMapa={variableMapa}
+            onVariableChange={setVariableMapa}
+            onExportarPng={handleExportarPng}
+          />
+        }
+        leftSlot={
+          <GeovisorLeftDock
             capas={capas}
             onToggleCapa={handleToggleCapa}
             variableMapa={variableMapa}
+            mesas={mesasGeovisor}
+            mesaSeleccionadaId={mesaIdSeleccionada}
+            onSelectMesa={handleSelectMesa}
+            onLocalizarEnMapa={handleLocalizarMesaEnMapa}
           />
-        </div>
-
-        {/* Columna Central: Mapa Coroplético OpenLayers (5 cols en lg, 5 en xl) */}
-        <div className="h-[600px] lg:col-span-5 lg:h-[720px] xl:col-span-5">
+        }
+        centerSlot={
           <MapaCartagena
             ref={mapaRef}
             onSelectTerritorio={handleSelectTerritorio}
@@ -131,47 +157,42 @@ export function GeovisorView() {
             capasVisibles={capas}
             mesas={mesasDelTerritorio}
             mesaSeleccionadaId={mesaIdSeleccionada}
-            onSelectMesa={setMesaIdSeleccionada}
+            onSelectMesa={handleSelectMesa}
           />
-        </div>
-
-        {/* Columna Derecha: Panel Analítico BI con KPIs, Barras CSS, Sparkline y Ranking (4 cols) */}
-        <div className="lg:col-span-4 xl:col-span-4">
-          <GeovisorBiSidebar
+        }
+        rightSlot={
+          <GeovisorRightDock
+            mesaSeleccionada={mesaActiva}
+            onCerrarMesa={() => setMesaIdSeleccionada(null)}
+            onAbrirPanelMesa={handleAbrirPanelMesa}
             territorioId={territorioId}
             onSelectTerritorio={handleSelectTerritorio}
             variableMapa={variableMapa}
             onOpenDetalleDrawer={handleOpenDetalleDrawer}
           />
-        </div>
-      </div>
-
-      <MesasGeovisor
-        mesas={mesasGeovisor}
-        isLoading={false}
-        isError={false}
-        error={null}
-        seleccionada={mesaIdSeleccionada}
-        onSeleccionar={setMesaIdSeleccionada}
-        onLocalizarEnMapa={handleLocalizarMesaEnMapa}
+        }
+        bottomSlot={
+          <GeovisorBottomDock
+            mesas={mesasGeovisor}
+            mesaSeleccionadaId={mesaIdSeleccionada}
+            onSeleccionarMesa={handleSelectMesa}
+            onLocalizarEnMapa={handleLocalizarMesaEnMapa}
+            onAbrirPanelMesa={handleAbrirPanelMesa}
+            territorioId={territorioId}
+            onTerritorioChange={handleSelectTerritorio}
+            variableMapa={variableMapa}
+            onVariableChange={setVariableMapa}
+          />
+        }
       />
 
-      <section aria-label="Análisis estadístico territorial">
-        <GeovisorCharts
-          territorioId={territorioId}
-          variableMapa={variableMapa}
-          onTerritorioChange={handleSelectTerritorio}
-          onVariableChange={setVariableMapa}
-        />
-      </section>
-
       {/* Footer de Metadatos de Fuentes Oficiales */}
-      <div className="flex flex-wrap items-center justify-between gap-2 border-t border-[var(--border)] pt-3 text-xs text-[var(--text-tertiary)]">
+      <div className="flex flex-wrap items-center justify-between gap-2 border-t border-[var(--border)] pt-2.5 text-xs text-[var(--text-tertiary)]">
         <span>
           Fuentes oficiales: DANE 2025 • Policía Nacional / CCV (Ene–Sep 2025) • Alcaldía Mayor de Cartagena • Catastro Distrital.
         </span>
         <span>
-          POLIS BI Geovisor v2.0 • 9 territorios de análisis • 217 barrios
+          POLIS SIG Studio • 4 Paneles Acoplados • 33 Mesas Territoriales • 217 Barrios
         </span>
       </div>
     </div>
