@@ -1,24 +1,55 @@
-# TAREA ACTIVA: [HERO-PAGES-04] SUITE INTEGRAL, UI CHECKS, FORENSE Y CIERRE DEL PLAN MAESTRO
-## CERTIFICACIÓN GLOBAL DEL SISTEMA DE HEROS PÚBLICOS DE POLIS
+# TAREA ACTIVA: [GEO-DOCK-01] ARQUITECTURA DE LAYOUT RESIZABLE (VS CODE TILING), STORE ZUSTAND Y CONTROLES DOCK
+## REINGENIERÍA GEOVISOR STUDIO DE POLIS — FASE 1
 
 **Fecha:** Lunes, 12 de Octubre de 2026  
-**Fase:** FASE 4: Pruebas de Integración, UI Checks y Cierre Global (Tarea 4.1 y 4.2)  
-**Plan Maestro:** `bridge/00_plan_maestro_heros_territoriales_publicos.md`  
+**Fase:** FASE 1 del Plan Maestro (`bridge/00_plan_maestro_geovisor_docking.md`)  
 **Asignada a:** `agy2` (Desarrollador / EDD — `tmux a -t agy2`)  
 **Supervisor / Auditor:** `agy` (Coordinador General y Auditor Forense EAF — `tmux a -t agy`)  
-**Severidad:** ALTA / ASEGURAMIENTO DE CALIDAD, REGRESIÓN CERO Y FE PÚBLICA  
+**Severidad:** ALTA / USABILIDAD, ARQUITECTURA SIG Y EXPERIENCIA DE USUARIO  
 
 ---
 
-## 🎯 1. Justificación y Alcance de la Tarea
+## 🎯 1. Objetivos y Alcance de la Tarea
 
-Con las tres fases de arquitectura e implementación culminadas exitosamente (`[HERO-PAGES-01]`, `[HERO-PAGES-02]`, `[HERO-PAGES-03]`), corresponde ejecutar la certificación global de extremo a extremo para asegurar:
-1. Cero regresiones en todo el árbol de componentes frontend y backend.
-2. Cumplimiento de la política arquitectónica UI (`ui-policy.mjs`).
-3. Limpieza absoluta en TypeScript y ESLint (`bun run check`).
-4. Inviolabilidad matemática de la base de datos oficial `bd_csh` (33 mesas, 36 agendas, 11 fichas, 17 actores).
-5. Estado saludable de los servicios de producción (`polis-frontend`, `polis-backend`, `nginx`, `postgresql`).
-6. Actualización y cierre formal del Plan Maestro en `bridge/00_plan_maestro_heros_territoriales_publicos.md`.
+Implementar los cimientos del sistema de acoplamiento de 4 paneles (*tiling docking system* estilo Visual Studio Code) para el Geovisor Territorial de POLIS:
+
+1. **Store Zustand de Layout (`src/features/geovisor/state/geovisor-layout-store.ts`):**
+   * Tipado estricto para estado de visibilidad: `topOpen`, `leftOpen`, `rightOpen`, `bottomOpen`.
+   * Tamaños porcentuales: `sizes: { top: number, left: number, right: number, bottom: number }`.
+   * Valores iniciales por defecto:
+     * `topOpen: true` (tamaño ~14%)
+     * `leftOpen: true` (tamaño ~24%)
+     * `rightOpen: false` (tamaño ~26%, se abre dinámicamente o con toggle)
+     * `bottomOpen: false` (tamaño ~30%, se abre dinámicamente o con toggle)
+   * Acciones: `togglePanel(panelId)`, `setPanelOpen(panelId, open)`, `setPanelSize(panelId, size)`, `maximizeMap()`, `resetLayout()`.
+   * Persistencia en `localStorage` con fallback seguro para SSR (`typeof window === "undefined"`).
+
+2. **Componente de Controles de Layout (`src/features/geovisor/components/geovisor-dock-controls.tsx`):**
+   * 4 iconos claramente diferenciados para alternar cada panel:
+     * Superior: `PanelTop` (Lucide)
+     * Izquierdo: `PanelLeft` (Lucide)
+     * Derecho: `PanelRight` (Lucide)
+     * Inferior: `PanelBottom` (Lucide)
+   * Botón de Maximizar / Restaurar Mapa (`Maximize2` / `Minimize2`).
+   * Botón de Restablecer Layout a valores por defecto (`RotateCcw`).
+   * Estados visuales con tokens de diseño (`var(--ember)`, `var(--surface-1)`, etc.), bordes sutiles y tooltips o etiquetas accesibles (`aria-label`, `aria-pressed`).
+
+3. **Contenedor Resizable Mosaico (`src/features/geovisor/components/geovisor-workspace-layout.tsx`):**
+   * Utilizar los componentes ya existentes en `src/shared/ui/resizable.tsx` (`ResizablePanelGroup`, `ResizablePanel`, `ResizableHandle` de `react-resizable-panels`).
+   * Estructura anidada tipo IDE:
+     * PanelGroup Vertical externo:
+       * Panel Superior (`collapsible`, `minSize={8}`, `maxSize={28}`).
+       * Separador horizontal (`ResizableHandle`).
+       * PanelGroup Horizontal intermedio:
+         * Panel Izquierdo (`collapsible`, `minSize={16}`, `maxSize={45}`).
+         * Separador vertical (`ResizableHandle`).
+         * Panel Central: Canvas del Mapa OpenLayers (ocupa el resto, elástico y fluido).
+         * Separador vertical (`ResizableHandle`).
+         * Panel Derecho (`collapsible`, `minSize={18}`, `maxSize={45}`).
+       * Separador horizontal (`ResizableHandle`).
+       * Panel Inferior (`collapsible`, `minSize={12}`, `maxSize={50}`).
+   * Manejo imperativo de ref o sincronización reactiva con `geovisor-layout-store.ts`.
+   * Contenedor con altura de estudio definida (`h-[calc(100vh-8.5rem)]` o `min-h-[750px]`) que prevenga scroll general de página y se comporte como una estación de trabajo cartográfica profesional.
 
 ---
 
@@ -28,17 +59,17 @@ Con las tres fases de arquitectura e implementación culminadas exitosamente (`[
 |---|---|---|
 | **UI Architectural Linter** | `bun run ui:check` | 0 infracciones |
 | **TypeCheck & Linter** | `bun run check` | 0 errores TypeScript, 0 warnings ESLint |
-| **Suite Completa Frontend** | `bun test` | 446+ pasadas (0 fail) |
-| **Suite Backend FastAPI** | `pytest` en entorno virtual | 111+ pasadas (0 fail) |
-| **Alembic Drift Check** | `alembic check` | 0 diferencias |
-| **Inviolabilidad `bd_csh`** | Consulta directa PostgreSQL 18 | 33 mesas, 36 agendas, 11 fichas, 17 actores intactos |
-| **Servicios en Producción** | `systemctl is-active` | `polis-frontend`, `polis-backend`, `nginx`, `postgresql` activos |
+| **Pruebas Unitarias Store** | Test en `src/features/geovisor/state/geovisor-layout-store.test.ts` | 100% pasando |
+| **Suite Completa Frontend** | `bun test` | Todas las pruebas pasando sin regresiones |
+| **Inviolabilidad `bd_csh`** | No tocar BD | 33 mesas, 36 agendas, 11 fichas, 17 actores intactos |
 
 ---
 
-## 📦 3. Entregables y Compromisos
+## 📦 3. Entregables y Procedimiento
 
-1. Ejecución de todos los Quality Gates sin advertencias.
-2. Actualización del estado de las tareas en `bridge/00_plan_maestro_heros_territoriales_publicos.md` al 100% completado.
-3. Commit atómico local: `test(hero): suite integral de pruebas y cierre de plan maestro HERO-PAGES-04`.
-4. Registro de informe final en `bridge/02_resultado_agy2.md` y notificación a `agy` en `%0`.
+1. Implementar `geovisor-layout-store.ts` y su suite de pruebas unitarias.
+2. Implementar `geovisor-dock-controls.tsx`.
+3. Implementar `geovisor-workspace-layout.tsx`.
+4. Ejecutar Quality Gates y asegurar cero errores.
+5. Formalizar commit atómico local en `main`: `feat(geovisor): implementar arquitectura de layout resizable VS Code y store de paneles GEO-DOCK-01`.
+6. Reportar culminación en `bridge/02_resultado_agy2.md` y enviar notificación a `agy` en `%0`.
