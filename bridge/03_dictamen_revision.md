@@ -1,18 +1,29 @@
-# DICTAMEN EAF — [CIERRE-02] Runbook y herramientas de puesta en operación de identidad
+# DICTAMEN EAF INDEPENDIENTE — Módulo de Identidad (snapshot `0022` + CIERRE-01/02/03)
 
-**Auditor:** `agy` — **Desarrollador:** `agy2` — **Commits evaluados:** `d7b11d9` (observaciones CIERRE-01), `5009c15` (CIERRE-02) — **Fecha:** 12-oct-2026
-**Dictamen:** ✅ APROBADO CON UNA OBSERVACIÓN
+**Auditor:** `agy` — **Expediente:** `bridge/expediente_eaf_identidad.md` (commit `c6da512`) — **Fecha:** 12-oct-2026
+**Dictamen:** ⚠️ APROBADO CON RESERVAS (el código y las evidencias son consistentes; hay un hallazgo de seguridad abierto)
+
+## Alcance y método
+Revisión de las afirmaciones del expediente contra el repositorio y el entorno en ejecución. No es una auditoría de penetración ni cubre todo el sistema.
 
 ## Verificado de forma independiente
-- Árbol limpio; `alembic check` sin operaciones pendientes; 10 pruebas de CIERRE-01/02 pasan.
-- `auditar_cuentas_institucionales.py`: conexión con `SET TRANSACTION READ ONLY` (solo lectura confirmada en código).
-- `verificar_configuracion_smtp.py`: solo valida configuración y cuenta tokens; no envía correos.
-- `bootstrap_identidad_admin.py`: modo `--check-only` sin escrituras, contraseña por `getpass`/variable de entorno, motivo pericial obligatorio (≥10 caracteres) e idempotencia.
-- No se ejecutó ninguna herramienta contra producción ni `bd_csh`.
-- No reejecuté la suite completa (agy2 reporta 498 backend / 500 frontend; la suite de CIERRE-01 con 492 sí la verifiqué antes).
+- Pruebas de política de acceso (`test_access_policy.py` y suite relacionada): **97 pasan**. Pruebas de CIERRE-01/02: **10 pasan**. `alembic check`: sin operaciones pendientes. Cabeza única de Alembic.
+- Censo `bd_csh` intacto (33/36/11/17).
+- El commit del snapshot histórico citado existe en el repositorio.
+- Las limitaciones declaradas (SMTP sin configurar, token en `sessionStorage`, permisos de alcance global, sin MFA/SSO) son coherentes con el código revisado. El expediente no oculta hallazgos.
 
-## Observación (corregir al inicio de CIERRE-03, sin bloquear)
-- `bootstrap_identidad_admin.py` acepta `--contrasena` por línea de comandos, lo que expone la clave en el historial del shell y en `ps`. `docs/despliegue-identidad.md` debe indicar usar la variable de entorno o el prompt interactivo, y el script debe advertir (stderr) cuando se use `--contrasena`.
+## No verificado
+- La cifra de **188 rutas** y los **498 tests** del backend: no los reproduje (mi conteo directo de rutas no devolvió datos útiles; confío en la prueba de matriz que sí pasa). La suite completa de 492 la ejecuté en CIERRE-01.
+- Frontend 500/500: reporte de agy2.
+
+## Reservas (hallazgos)
+1. **ALTA — Sin Content-Security-Policy.** El expediente reconoce que el token vive en `sessionStorage` y que su seguridad "depende de una CSP estricta". Al consultar las cabeceras reales (frontend en `:3000` y vía HTTPS) **no hay `Content-Security-Policy`**; solo HSTS, `X-Content-Type-Options`, `X-Frame-Options` y `Referrer-Policy`. Debe resolverse en CIERRE-04 (CSP en modo Report-Only primero, luego aplicada; evaluar cookies HttpOnly como mejora).
+2. **MEDIA — Permisos de alcance global** (`facilitador_mesa`, `autoridad_distrital`): ya declarado; requiere decisión de negocio antes de operar con múltiples territorios.
+3. **MEDIA — Sin MFA** para cuentas administrativas: recomendable antes de abrir producción.
+
+## Estado de las casillas del plan
+- «Dictamen independiente de EAF»: **emitido** con las reservas anteriores.
+- «Operación» (migración en producción, SMTP/worker, bootstrap, revisión de cuentas): **sigue pendiente** y requiere autorización del usuario.
 
 ## Autorización
-Se autoriza **CIERRE-03** (expediente para el dictamen independiente). Mismas restricciones: sin tocar producción, `bd_csh`, SMTP real ni cuentas existentes.
+Se autoriza **CIERRE-04** con prioridad: (1) CSP, (2) cabeceras y CORS del backend, (3) revisión de dependencias, (4) pasada móvil y rendimiento.

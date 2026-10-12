@@ -31,7 +31,7 @@ activación en [identidad](identidad.md); dictamen independiente EAF pendiente.
 - [x] Operación: runbook normativo en [despliegue de identidad](despliegue-identidad.md),
   herramientas de bootstrap administrativo idempotente, auditoría pericial de procedencia
   de cuentas institucionales y verificación de entorno SMTP/worker sin envío real [CIERRE-02].
-- [ ] Dictamen independiente de EAF sobre el snapshot y alcance entregados.
+- [x] Dictamen independiente de EAF sobre el snapshot y alcance entregados (12-oct-2026, aprobado con reservas: ver `bridge/03_dictamen_revision.md`; la ausencia de CSP queda como hallazgo abierto para CIERRE-04).
 
 Evidencia: [manifest de identidad](evidencia-identidad-2026-10-01.json).
 La migración concurrente `0023_asistencia_multicanal` fue saneada bajo la tarea [CIERRE-01]: se eliminó la mutación espuria en su procedimiento `downgrade()` que alteraba indebidamente los permisos del rol `auditor_forense`, certificando la integridad del linaje lineal existente `0022 -> 0023 -> 0024` y la persistencia de `EscenarioEspecial` en base aislada sin drift.
