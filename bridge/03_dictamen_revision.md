@@ -1,18 +1,18 @@
-# DICTAMEN EAF — [CIERRE-01] Integración de la migración 0023_asistencia_multicanal
+# DICTAMEN EAF — [CIERRE-02] Runbook y herramientas de puesta en operación de identidad
 
-**Auditor:** `agy` — **Desarrollador:** `agy2` — **Commit evaluado:** `22421e1` — **Fecha:** 12-oct-2026
-**Dictamen:** ✅ APROBADO CON OBSERVACIONES MENORES
+**Auditor:** `agy` — **Desarrollador:** `agy2` — **Commits evaluados:** `d7b11d9` (observaciones CIERRE-01), `5009c15` (CIERRE-02) — **Fecha:** 12-oct-2026
+**Dictamen:** ✅ APROBADO CON UNA OBSERVACIÓN
 
 ## Verificado de forma independiente
-- Árbol de trabajo limpio; cabeza única de Alembic (`0057_comentario_pas`); `alembic check`: sin operaciones pendientes.
-- Backend: **492 pruebas pasan** (290 s). Frontend: 500 (reporte de agy2; sin cambios de frontend).
-- Censo `bd_csh` intacto: 33 mesas, 36 agendas, 11 fichas, 17 actores.
-- La migración 0023 ya no altera permisos de `auditor_forense` (se eliminó la mutación espuria del `downgrade`); el modelo `EscenarioEspecial` está registrado y probado.
+- Árbol limpio; `alembic check` sin operaciones pendientes; 10 pruebas de CIERRE-01/02 pasan.
+- `auditar_cuentas_institucionales.py`: conexión con `SET TRANSACTION READ ONLY` (solo lectura confirmada en código).
+- `verificar_configuracion_smtp.py`: solo valida configuración y cuenta tokens; no envía correos.
+- `bootstrap_identidad_admin.py`: modo `--check-only` sin escrituras, contraseña por `getpass`/variable de entorno, motivo pericial obligatorio (≥10 caracteres) e idempotencia.
+- No se ejecutó ninguna herramienta contra producción ni `bd_csh`.
+- No reejecuté la suite completa (agy2 reporta 498 backend / 500 frontend; la suite de CIERRE-01 con 492 sí la verifiqué antes).
 
-## Observaciones (a corregir en CIERRE-02, sin bloquear)
-1. `test_lineaje_alembic_0023_linear_y_cabeza_unica` fija la cabeza en `"0057_comentario_pas"`: se romperá con la próxima migración. Debe comprobar solo cabeza única y que 0023 esté encadenada.
-2. `test_migracion_0023_no_modifica_permisos_auditor_forense` es una búsqueda de texto sobre el archivo; mejor un test que ejecute upgrade/downgrade en base aislada y compare permisos del rol.
-3. El cambio real fue mínimo (solo `downgrade`); `docs/plan-trabajo.md` describe «registrado» y «0022 -> 0023 -> 0024» como logros de este commit, cuando ya existían. Ajustar el texto para no sobrerrepresentar el alcance.
+## Observación (corregir al inicio de CIERRE-03, sin bloquear)
+- `bootstrap_identidad_admin.py` acepta `--contrasena` por línea de comandos, lo que expone la clave en el historial del shell y en `ps`. `docs/despliegue-identidad.md` debe indicar usar la variable de entorno o el prompt interactivo, y el script debe advertir (stderr) cuando se use `--contrasena`.
 
 ## Autorización
-Se autoriza **CIERRE-02**. Recordatorio: no aplicar nada en producción ni tocar `bd_csh`, SMTP real ni cuentas existentes; solo runbook, scripts y pruebas en base aislada.
+Se autoriza **CIERRE-03** (expediente para el dictamen independiente). Mismas restricciones: sin tocar producción, `bd_csh`, SMTP real ni cuentas existentes.
