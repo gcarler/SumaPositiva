@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import { useCallback, useMemo, useState, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { listarMesasGeovisor, type MesaGeovisor } from "../services/mesas-geovisor-api";
-import { PageHeader } from "@/shared/ui/page-header";
+import { HeroPageBanner } from "@/features/politicas/components/hero-page-banner";
 import { usePanels } from "@/core/panels/panel-store";
 import { GeovisorKpiBar } from "../components/geovisor-kpi-bar";
 import { GeovisorBiSidebar } from "../components/geovisor-bi-sidebar";
@@ -100,10 +100,11 @@ export function GeovisorView() {
 
   return (
     <div className="container-fluid space-y-4 py-5 md:py-6">
-      <PageHeader
-        eyebrow="Analítica Territorial Integral — POLIS BI"
-        title="Geovisor Estadístico de Seguridad Humana de Cartagena"
-        description="Plataforma de inteligencia territorial estilo Power BI / Tableau. Cruza 8 dimensiones estadísticas clave sobre las 3 Localidades, la Zona Corregimental e Insular y los 217 barrios catastrales de Cartagena de Indias."
+      <HeroPageBanner
+        pageKey="geovisor"
+        tituloOverride="Geovisor Estadístico de Seguridad Humana de Cartagena"
+        subtituloOverride="Plataforma de inteligencia territorial estilo Power BI / Tableau. Cruza 8 dimensiones estadísticas clave sobre las 3 Localidades, la Zona Corregimental e Insular y los 217 barrios catastrales de Cartagena de Indias."
+        badgeOverride="Analítica Territorial Integral — POLIS BI"
       />
 
       {/* HEADER: Selector de Ámbito, Selector de Variable, Exportar PNG y 4 KPI Chips Globales */}

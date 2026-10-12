@@ -7,6 +7,7 @@ import {
   type BarrioCartagena,
 } from "../data/barrios-cartagena";
 import { BarrioSelector } from "./barrio-selector";
+import { HeroPageBanner } from "@/features/politicas/components/hero-page-banner";
 import { AcuerdosBarrioTab } from "./acuerdos-barrio-tab";
 import { PropuestaBarrioTab } from "./propuesta-barrio-tab";
 import { SemaforoBarrioTab } from "./semaforo-barrio-tab";
@@ -90,6 +91,9 @@ export function BarrioView() {
             3G / 4G
           </span>
         </div>
+
+        {/* Hero Territorial para Modo Barrio */}
+        <HeroPageBanner pageKey="barrio" />
 
         {/* Selector de Barrio de Cartagena */}
         <BarrioSelector

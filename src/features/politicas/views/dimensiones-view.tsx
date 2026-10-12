@@ -14,10 +14,9 @@ import {
   BarChart3,
   CheckCircle2,
   Sparkles,
-  Layers,
   ChevronRight,
-  FileCheck2
 } from "lucide-react";
+import { HeroPageBanner } from "@/features/politicas/components/hero-page-banner";
 import {usePanels} from "@/core/panels/panel-store";
 import {Button} from "@/shared/ui/button";
 import {Input} from "@/shared/ui/input";
@@ -128,67 +127,41 @@ export function DimensionesView() {
 
   return (
     <div className="flex flex-col gap-8 pb-16 pt-6">
-      {/* ================= HEADER INSTITUCIONAL ================= */}
+      {/* ================= HEADER INSTITUCIONAL CON HERO BANNER ================= */}
       <section className="container-fluid">
-        <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface-1)] p-6 sm:p-8 lg:p-10 shadow-sm relative overflow-hidden">
-          {/* Acento cromático institucional de fondo */}
-          <div
-            className="absolute -right-20 -top-20 size-72 rounded-full opacity-10 pointer-events-none blur-3xl bg-[var(--ember)]"
-            aria-hidden
-          />
-
-          <div className="max-w-4xl relative z-10 flex flex-col gap-4">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--border-strong)] bg-[var(--surface-2)] px-3 py-1 text-xs font-semibold uppercase tracking-wider text-[var(--ember)]">
-                <Layers className="size-3.5" />
-                Arquitectura de Gobernanza 2026–2036
-              </span>
-              <span className="inline-flex items-center gap-1 rounded-full border border-[var(--border)] bg-[var(--surface-3)] px-2.5 py-1 text-xs font-medium text-[var(--text-secondary)]">
-                <FileCheck2 className="size-3.5 text-[var(--success)]" />
-                Ley Estatutaria 1757 de 2015
-              </span>
+        <HeroPageBanner
+          pageKey="fases"
+          tituloOverride="Dimensiones de Seguridad Humana y Estructura Distrital"
+          subtituloOverride="Conoce cómo se articula el gobierno de Cartagena frente al paradigma multidimensional de la ONU: cada una de las 7 Dimensiones cuenta con una Entidad Líder legalmente responsable, un mosaico de Entidades Corresponsables con proyectos específicos, y metas auditadas del Plan de Desarrollo 2024–2027 'Cartagena Ciudad de Derechos'."
+          badgeOverride="Arquitectura de Gobernanza 2026–2036"
+        >
+          {/* Métrica Banner de Transparencia */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+            <div className="rounded-xl border border-[var(--border)] bg-[var(--surface-2)]/90 backdrop-blur-xs p-3">
+              <p className="text-xs font-medium text-[var(--text-tertiary)]">Dimensiones ONU</p>
+              <p className="mt-0.5 text-lg font-bold text-[var(--text-primary)]">
+                7 + 1 <span className="text-xs font-normal text-[var(--text-secondary)]">Crisis</span>
+              </p>
             </div>
-
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-[var(--text-primary)]">
-              Dimensiones de Seguridad Humana y Estructura Distrital
-            </h1>
-
-            <p className="text-sm sm:text-base leading-relaxed text-[var(--text-secondary)]">
-              Conoce cómo se articula el gobierno de Cartagena frente al paradigma multidimensional
-              de la ONU: cada una de las <strong>7 Dimensiones</strong> cuenta con una{" "}
-              <strong>Entidad Líder</strong> legalmente responsable, un mosaico de{" "}
-              <strong>Entidades Corresponsables</strong> con proyectos específicos, y metas auditadas
-              del <em>Plan de Desarrollo 2024–2027 &quot;Cartagena Ciudad de Derechos&quot;</em>.
-            </p>
-
-            {/* Métrica Banner de Transparencia */}
-            <div className="mt-2 grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
-              <div className="rounded-xl border border-[var(--border)] bg-[var(--surface-2)] p-3">
-                <p className="text-xs font-medium text-[var(--text-tertiary)]">Dimensiones ONU</p>
-                <p className="mt-0.5 text-lg font-bold text-[var(--text-primary)]">
-                  7 + 1 <span className="text-xs font-normal text-[var(--text-secondary)]">Crisis</span>
-                </p>
-              </div>
-              <div className="rounded-xl border border-[var(--border)] bg-[var(--surface-2)] p-3">
-                <p className="text-xs font-medium text-[var(--text-tertiary)]">Dependencias Distritales</p>
-                <p className="mt-0.5 text-lg font-bold text-[var(--text-primary)]">27 Oficiales</p>
-              </div>
-              <div className="rounded-xl border border-[var(--border)] bg-[var(--surface-2)] p-3">
-                <p className="text-xs font-medium text-[var(--text-tertiary)]">Avance Promedio Auditado</p>
-                <p className="mt-0.5 text-lg font-bold text-[var(--success)]">
-                  {AVANCE_PROMEDIO_PDD_2026}%{" "}
-                  <span className="text-[10px] font-normal text-[var(--text-secondary)]">al corte</span>
-                </p>
-              </div>
-              <div className="rounded-xl border border-[var(--border)] bg-[var(--surface-2)] p-3">
-                <p className="text-xs font-medium text-[var(--text-tertiary)]">Auditoría Oficial</p>
-                <p className="mt-0.5 text-xs font-semibold text-[var(--text-primary)] truncate" title={FECHA_CORTE_AUDITORIA}>
-                  {FECHA_CORTE_AUDITORIA}
-                </p>
-              </div>
+            <div className="rounded-xl border border-[var(--border)] bg-[var(--surface-2)]/90 backdrop-blur-xs p-3">
+              <p className="text-xs font-medium text-[var(--text-tertiary)]">Dependencias Distritales</p>
+              <p className="mt-0.5 text-lg font-bold text-[var(--text-primary)]">27 Oficiales</p>
+            </div>
+            <div className="rounded-xl border border-[var(--border)] bg-[var(--surface-2)]/90 backdrop-blur-xs p-3">
+              <p className="text-xs font-medium text-[var(--text-tertiary)]">Avance Promedio Auditado</p>
+              <p className="mt-0.5 text-lg font-bold text-[var(--success)]">
+                {AVANCE_PROMEDIO_PDD_2026}%{" "}
+                <span className="text-[10px] font-normal text-[var(--text-secondary)]">al corte</span>
+              </p>
+            </div>
+            <div className="rounded-xl border border-[var(--border)] bg-[var(--surface-2)]/90 backdrop-blur-xs p-3">
+              <p className="text-xs font-medium text-[var(--text-tertiary)]">Auditoría Oficial</p>
+              <p className="mt-0.5 text-xs font-semibold text-[var(--text-primary)] truncate" title={FECHA_CORTE_AUDITORIA}>
+                {FECHA_CORTE_AUDITORIA}
+              </p>
             </div>
           </div>
-        </div>
+        </HeroPageBanner>
       </section>
 
       {/* ================= CONTROLES DE MODO Y BÚSQUEDA ================= */}
