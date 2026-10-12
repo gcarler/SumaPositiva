@@ -83,20 +83,19 @@ class GeodatosRepository:
         try:
             from sqlalchemy import text
 
-            async with self.session.begin_nested():
-                stmt = text("SELECT * FROM parse_address(:addr)")
-                res = await self.session.execute(stmt, {"addr": direccion_raw})
-                row = res.fetchone()
-                if row:
-                    return {
-                        "num": row[0],
-                        "street": row[1],
-                        "streettype": row[2],
-                        "city": row[3],
-                        "state": row[4],
-                        "zip": row[5],
-                        "country": row[8] if len(row) > 8 else None,
-                    }
+            stmt = text("SELECT * FROM parse_address(:addr)")
+            res = await self.session.execute(stmt, {"addr": direccion_raw})
+            row = res.fetchone()
+            if row:
+                return {
+                    "num": row[0],
+                    "street": row[1],
+                    "streettype": row[2],
+                    "city": row[3],
+                    "state": row[4],
+                    "zip": row[5],
+                    "country": row[8] if len(row) > 8 else None,
+                }
         except Exception:
             pass
         return None
@@ -136,10 +135,9 @@ class GeodatosRepository:
     async def verificar_pgrouting(self) -> str | None:
         """Verifica la disponibilidad de la extensión pgRouting en PostgreSQL."""
         try:
-            async with self.session.begin_nested():
-                res = await self.session.execute(text("SELECT pgr_version();"))
-                row = res.first()
-                return str(row[0]) if row else None
+            res = await self.session.execute(text("SELECT pgr_version();"))
+            row = res.first()
+            return str(row[0]) if row else None
         except Exception:
             return None
 
@@ -148,23 +146,22 @@ class GeodatosRepository:
     ) -> dict[str, Any] | None:
         """Genera la geometría poligonal de una isócrona usando PostGIS ST_Buffer sobre geografía."""
         try:
-            async with self.session.begin_nested():
-                stmt = text(
-                    """
-                    SELECT ST_AsGeoJSON(
-                        ST_Buffer(
-                            ST_SetSRID(ST_MakePoint(:lon, :lat), 4326)::geography,
-                            :radio
-                        )::geometry
-                    ) as geojson;
-                    """
-                )
-                res = await self.session.execute(
-                    stmt, {"lon": lon, "lat": lat, "radio": radio_metros}
-                )
-                row = res.first()
-                if row and row[0]:
-                    return json.loads(row[0])
+            stmt = text(
+                """
+                SELECT ST_AsGeoJSON(
+                    ST_Buffer(
+                        ST_SetSRID(ST_MakePoint(:lon, :lat), 4326)::geography,
+                        :radio
+                    )::geometry
+                ) as geojson;
+                """
+            )
+            res = await self.session.execute(
+                stmt, {"lon": lon, "lat": lat, "radio": radio_metros}
+            )
+            row = res.first()
+            if row and row[0]:
+                return json.loads(row[0])
         except Exception:
             pass
         return None
