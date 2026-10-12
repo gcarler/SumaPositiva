@@ -92,14 +92,22 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         )
         is_prod = settings.environment == "production"
 
+        # Cabeceras universales de protección perimetral en todos los entornos
+        response.headers.setdefault("X-Content-Type-Options", "nosniff")
+        response.headers.setdefault("X-Frame-Options", "DENY")
+        response.headers.setdefault("Referrer-Policy", "strict-origin-when-cross-origin")
+        response.headers.setdefault(
+            "Permissions-Policy", "camera=(), microphone=(), geolocation=(self)"
+        )
+        # CSP restrictiva propia de endpoints API (previene framing y ejecución si se carga directamente en navegador)
+        response.headers.setdefault(
+            "Content-Security-Policy", "default-src 'none'; frame-ancestors 'none'"
+        )
+
         if is_prod or is_https:
-            response.headers.setdefault("X-Content-Type-Options", "nosniff")
-            response.headers.setdefault("X-Frame-Options", "DENY")
-            response.headers.setdefault("Referrer-Policy", "strict-origin-when-cross-origin")
-            if is_https:
-                response.headers.setdefault(
-                    "Strict-Transport-Security", "max-age=31536000; includeSubDomains"
-                )
+            response.headers.setdefault(
+                "Strict-Transport-Security", "max-age=31536000; includeSubDomains"
+            )
 
         if "set-cookie" in response.headers:
             raw_headers = response.raw_headers

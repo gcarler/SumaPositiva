@@ -88,7 +88,7 @@
     "react-resizable-panels": "^3.0.3",
     "react-syntax-highlighter": "^15.6.1",
     "recharts": "^2.15.4",
-    "sharp": "^0.34.3",
+    "sharp": "^0.35.5",
     "sonner": "^2.0.6",
     "tailwind-merge": "^3.3.1",
     "tailwindcss-animate": "^1.0.7",
@@ -108,7 +108,7 @@
     "@types/ol": "^7.0.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@vitest/browser-playwright": "4.1.6",
+    "@vitest/browser-playwright": "^5.0.4",
     "bun-types": "^1.3.4",
     "eslint": "^9",
     "eslint-config-next": "^16.1.1",
@@ -118,6 +118,6 @@
     "tw-animate-css": "^1.3.5",
     "typescript": "^5",
     "vite": "^8.3.1",
-    "vitest": "4.1.6"
+    "vitest": "^5.0.4"
   }
 }

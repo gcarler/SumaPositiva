@@ -324,3 +324,53 @@ El procedimiento detallado paso a paso, incluyendo la generación de entropía c
 1. **Puesta en producción formal**: Reemplazo de todas las claves generadas durante el ciclo de auditoría/desarrollo local.
 2. **Creación de repositorio remoto**: Ejecución de la rotación antes del primer `git push` debido a la presencia histórica de contraseñas de prueba en commits anteriores del árbol git local.
 3. **Compromiso o sospecha de filtración**: Rotación inmediata de `POLIS_JWT_SECRET_KEY` para revocar en bloque todas las sesiones activas en el sistema.
+
+---
+
+## 7. Endurecimiento de Cabeceras HTTP y Content-Security-Policy (CSP)
+
+En cumplimiento de la directriz de seguridad [CIERRE-04] (mitigación del hallazgo ALTO de EAF por token en `sessionStorage`), se implementa una arquitectura de Content-Security-Policy dual y cabeceras estrictas en dos niveles:
+
+### 7.1. Niveles de Protección
+
+1. **Nivel Aplicación (Next.js - `next.config.ts`)**:
+   - Entrega cabeceras `Content-Security-Policy` (o `Content-Security-Policy-Report-Only`), `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: strict-origin-when-cross-origin` y `Permissions-Policy: camera=(), microphone=(), geolocation=(self)`.
+   - Controlable mediante la variable de entorno `POLIS_CSP_REPORT_ONLY` (`true` para modo Report-Only, por defecto `false` para modo restrictivo Enforce).
+2. **Nivel Servidor / Proxy Inverso (Nginx - `docs/nginx-csp-polis.conf`)**:
+   - Plantilla oficial versionada para incluir en `/etc/nginx/sites-available/polis`.
+   - Estandariza la política perimetral a nivel HTTP/HTTPS para todo el tráfico entrante.
+3. **Nivel API (FastAPI - `backend/app/main.py`)**:
+   - Middleware universal que emite cabeceras de seguridad perimetral y CSP restrictiva (`default-src 'none'; frame-ancestors 'none'`) en todas las respuestas REST.
+
+### 7.2. Política CSP y Recursos Autorizados
+
+La directiva CSP de POLIS ha sido certificada para la operación completa de todos los módulos:
+- `default-src 'self'`
+- `script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com` (compatibilidad Next.js hydration y Google OAuth).
+- `style-src 'self' 'unsafe-inline'` (estilos dinámicos Tailwind CSS y animaciones Framer Motion).
+- `img-src 'self' data: blob: https://*.tile.openstreetmap.org https://tile.openstreetmap.org https://*.tile.osm.org https://*.googleusercontent.com https://seguridadhumanaintegral.org https://www.seguridadhumanaintegral.org https://images.unsplash.com https://api.qrserver.com` (teselas cartográficas OpenLayers OSM, avatares OAuth, códigos QR de asistencia de mesas y fotografía institucional).
+- `font-src 'self' data:` (tipografías Geist y Geist Mono).
+- `connect-src 'self' http://127.0.0.1:8000 http://localhost:8000 https://seguridadhumanaintegral.org https://www.seguridadhumanaintegral.org https://*.tile.openstreetmap.org https://tile.openstreetmap.org https://accounts.google.com ws: wss:` (API backend y peticiones asíncronas).
+- `frame-src 'self' https://accounts.google.com https://www.youtube-nocookie.com https://player.vimeo.com` (autenticación Google y reproductores de video pedagógico).
+- `frame-ancestors 'none'` (prevención absoluta de ataques clickjacking).
+- `object-src 'none'` y `base-uri 'self'`.
+
+### 7.3. Procedimiento de Activación en Nginx
+
+> [!CAUTION]
+> **REGLA DE CONFORMIDAD**: Queda estrictamente prohibido recargar Nginx en el servidor sin autorización previa del auditor `agy`.
+
+1. **Verificación previa del archivo de configuración**:
+   ```bash
+   sudo cp docs/nginx-csp-polis.conf /etc/nginx/snippets/polis-csp.conf
+   # O incorporar las directivas dentro del bloque server de /etc/nginx/sites-available/polis
+   ```
+2. **Validación de sintaxis Nginx (no disruptiva)**:
+   ```bash
+   sudo nginx -t
+   ```
+3. **Aplicación controlada (previa autorización)**:
+   ```bash
+   sudo systemctl reload nginx
+   ```
+

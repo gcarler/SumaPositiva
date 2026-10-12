@@ -32,6 +32,8 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#fafaf9" },
     { media: "(prefers-color-scheme: dark)", color: "#0d0d10" },
@@ -46,7 +48,7 @@ export default function RootLayout({
   return (
     <html lang="es" suppressHydrationWarning>
       <body
-        className="antialiased bg-background text-foreground font-sans"
+        className="antialiased bg-background text-foreground font-sans min-w-0 overflow-x-hidden"
       >
         <QueryProvider>
           <RegisterServiceWorker />

@@ -1,11 +1,14 @@
 """Rutas FastAPI para auditoría forense y supervisión de respaldos del sistema."""
 
 import asyncio
+import logging
 import os
 import shutil
 import uuid
 from datetime import UTC, datetime
 from pathlib import Path
+
+logger = logging.getLogger("polis.auditoria")
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import func, select
@@ -142,9 +145,13 @@ async def ejecutar_respaldo_sistema(
     stdout, stderr = await proceso.communicate()
 
     if proceso.returncode != 0:
+        logger.error(
+            "Fallo al ejecutar script de respaldo de base de datos: %s",
+            stderr.decode("utf-8", errors="ignore"),
+        )
         raise HTTPException(
             status_code=500,
-            detail=f"Fallo al ejecutar respaldo: {stderr.decode('utf-8', errors='ignore')}",
+            detail="Fallo al ejecutar el procedimiento de respaldo de base de datos. Se ha registrado el incidente para el equipo de infraestructura.",
         )
 
     # Encontrar el archivo más reciente generado

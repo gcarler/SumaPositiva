@@ -34,7 +34,7 @@ export default function Home() {
 
   return (
     <SidebarProvider id="polis-application">
-      <div className="flex min-h-screen flex-col flex-1 min-w-0">
+      <div className="flex min-h-screen flex-col flex-1 min-w-0 overflow-x-hidden">
         <a className="ui-skip-link" href="#main-content">
           Saltar al contenido
         </a>
