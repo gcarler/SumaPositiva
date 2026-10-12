@@ -1,53 +1,24 @@
-# TAREA ACTIVA: [HERO-PAGES-03] COMPONENTE HERO PAGE BANNER (HEROS COMPACTOS PÚBLICOS)
-## SUBPÁGINAS PÚBLICAS: ALTURAS COMPACTAS, FOTOGRAFÍA TEMÁTICA DIFERENCIADA Y REGLA DEL PLIEGUE
+# TAREA ACTIVA: [HERO-PAGES-04] SUITE INTEGRAL, UI CHECKS, FORENSE Y CIERRE DEL PLAN MAESTRO
+## CERTIFICACIÓN GLOBAL DEL SISTEMA DE HEROS PÚBLICOS DE POLIS
 
 **Fecha:** Lunes, 12 de Octubre de 2026  
-**Fase:** FASE 3: Heros Compactos para Subpáginas Públicas (Tareas 3.1 y 3.2)  
+**Fase:** FASE 4: Pruebas de Integración, UI Checks y Cierre Global (Tarea 4.1 y 4.2)  
 **Plan Maestro:** `bridge/00_plan_maestro_heros_territoriales_publicos.md`  
 **Asignada a:** `agy2` (Desarrollador / EDD — `tmux a -t agy2`)  
 **Supervisor / Auditor:** `agy` (Coordinador General y Auditor Forense EAF — `tmux a -t agy`)  
-**Severidad:** MEDIA-ALTA / ARQUITECTURA VISUAL, COHERENCIA DE MARCA Y ACCESIBILIDAD  
+**Severidad:** ALTA / ASEGURAMIENTO DE CALIDAD, REGRESIÓN CERO Y FE PÚBLICA  
 
 ---
 
 ## 🎯 1. Justificación y Alcance de la Tarea
 
-Tal como acordamos en el Plan Maestro, **cada página pública debe tener un Hero diferenciado** que refleje su propósito territorial específico, pero **con una altura compacta (`h-56` a `h-64`, o ultracompacta `h-44` a `h-48` en el Geovisor)** para respetar estrictamente la regla del pliegue (*above the fold*) y no desplazar hacia abajo los mapas interactivos, selectores de barrio o formularios de participación.
-
-Asimismo, **la plataforma administrativa interna (`/plataforma/*`) se mantiene 100% sobria sin imágenes invasivas de fondo**.
-
-### Alcance Técnico Detallado:
-
-1. **Creación del Componente Universal `src/features/politicas/components/hero-page-banner.tsx`:**
-   - Props aceptadas:
-     * `pageKey`: `"barrio" | "geovisor" | "fases" | "rendicion"` (clave canónica del catálogo `HERO_PAGES_CONFIG`).
-     * `tituloOverride?: string` (permite sobreescribir el título si la vista lo requiere).
-     * `subtituloOverride?: string`.
-     * `badgeOverride?: string`.
-     * `alturaOverride?: "compact" | "ultracompact"`.
-     * `children?: React.ReactNode` (espacio para inyectar selectores, filtros o KPIs si la vista lo requiere).
-     * `className?: string`.
-   - **Renderizado Visual:**
-     * Contenedor con altura acotada:
-       - `compact`: `min-h-[14rem] sm:min-h-[16rem]` (`h-56` a `h-64`).
-       - `ultracompact`: `min-h-[10rem] sm:min-h-[12rem]` (`h-40` a `h-48`, ideal para el Geovisor).
-     * Imagen de fondo temática WebP obtenida de `hero-pages.data.ts` (con opacidad calibrada en sincronía con el store o default al 55-60%).
-     * Viñeta semántica multicapa que blinda el contraste WCAG 2.1 AA del texto institucional (`from-[var(--surface-0)]/90 via-[var(--surface-0)]/70 to-transparent`).
-     * **Insignia Territorial:** Etiqueta translúcida superior con el hito geográfico real (`ubicacionReal`, ej. *"Sector El Pozón — Localidad 2"* para Barrio, o *"Claustro de la Merced — Centro Histórico"* para Fases).
-     * Título institucional nítido y subtítulo explicativo de alto valor cívico.
-     * Cero colores o utilidades no autorizadas (100% tokens de diseño de POLIS).
-
-2. **Integración en Vistas Públicas Clave:**
-   - **`src/features/geovisor/views/geovisor-view.tsx`:** Integrar `<HeroPageBanner pageKey="geovisor" />` en reemplazo o enriquecimiento del `PageHeader` estático, manteniendo la visibilidad inmediata del lienzo de mapas y controles.
-   - **`src/features/barrio/components/barrio-view.tsx`:** Integrar `<HeroPageBanner pageKey="barrio" />` de forma ligera y optimizada mobile-first antes del selector de barrios de Cartagena.
-   - **`src/features/politicas/views/dimensiones-view.tsx`:** Integrar `<HeroPageBanner pageKey="fases" />` en la cabecera institucional preservando los indicadores clave.
-
-3. **Pruebas Automatizadas en `src/features/politicas/components/hero-page-banner.test.tsx`:**
-   - Renderizado correcto para cada una de las páginas públicas (`barrio`, `geovisor`, `fases`, `rendicion`).
-   - Aplicación de alturas diferenciadas (`compact` vs `ultracompact`).
-   - Renderizado de la insignia geográfica de procedencia real.
-   - Soporte de sobrescritura de props (`tituloOverride`, etc.) y renderizado de `children`.
-   - Cumplimiento de accesibilidad (`role="banner"` o semántica accesible).
+Con las tres fases de arquitectura e implementación culminadas exitosamente (`[HERO-PAGES-01]`, `[HERO-PAGES-02]`, `[HERO-PAGES-03]`), corresponde ejecutar la certificación global de extremo a extremo para asegurar:
+1. Cero regresiones en todo el árbol de componentes frontend y backend.
+2. Cumplimiento de la política arquitectónica UI (`ui-policy.mjs`).
+3. Limpieza absoluta en TypeScript y ESLint (`bun run check`).
+4. Inviolabilidad matemática de la base de datos oficial `bd_csh` (33 mesas, 36 agendas, 11 fichas, 17 actores).
+5. Estado saludable de los servicios de producción (`polis-frontend`, `polis-backend`, `nginx`, `postgresql`).
+6. Actualización y cierre formal del Plan Maestro en `bridge/00_plan_maestro_heros_territoriales_publicos.md`.
 
 ---
 
@@ -55,19 +26,19 @@ Asimismo, **la plataforma administrativa interna (`/plataforma/*`) se mantiene 1
 
 | Verificación | Comando / Prueba | Criterio de Éxito |
 |---|---|---|
-| **Suite HeroPageBanner** | `bun test src/features/politicas/components/hero-page-banner.test.tsx` | 100% verde |
-| **Suite Completa Políticas** | `bun test src/features/politicas/` | 100% verde |
 | **UI Architectural Linter** | `bun run ui:check` | 0 infracciones |
 | **TypeCheck & Linter** | `bun run check` | 0 errores TypeScript, 0 warnings ESLint |
-| **Frontend Test Suite** | `bun test` | 440+ pasadas |
-| **Inviolabilidad `bd_csh`** | Verificación PostgreSQL 18 | 33 mesas, 36 agendas, 11 fichas, 17 actores intactos |
+| **Suite Completa Frontend** | `bun test` | 446+ pasadas (0 fail) |
+| **Suite Backend FastAPI** | `pytest` en entorno virtual | 111+ pasadas (0 fail) |
+| **Alembic Drift Check** | `alembic check` | 0 diferencias |
+| **Inviolabilidad `bd_csh`** | Consulta directa PostgreSQL 18 | 33 mesas, 36 agendas, 11 fichas, 17 actores intactos |
+| **Servicios en Producción** | `systemctl is-active` | `polis-frontend`, `polis-backend`, `nginx`, `postgresql` activos |
 
 ---
 
 ## 📦 3. Entregables y Compromisos
 
-1. Componente `src/features/politicas/components/hero-page-banner.tsx`.
-2. Integración en `geovisor-view.tsx`, `barrio-view.tsx` y `dimensiones-view.tsx`.
-3. Suite unitaria `src/features/politicas/components/hero-page-banner.test.tsx`.
-4. Commit atómico local: `feat(hero): componente universal HeroPageBanner para subpaginas publicas HERO-PAGES-03`.
-5. Registro en `bridge/02_resultado_agy2.md` y notificación a `agy` en `%0`.
+1. Ejecución de todos los Quality Gates sin advertencias.
+2. Actualización del estado de las tareas en `bridge/00_plan_maestro_heros_territoriales_publicos.md` al 100% completado.
+3. Commit atómico local: `test(hero): suite integral de pruebas y cierre de plan maestro HERO-PAGES-04`.
+4. Registro de informe final en `bridge/02_resultado_agy2.md` y notificación a `agy` en `%0`.
