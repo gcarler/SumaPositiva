@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { cn } from "@/shared/lib/utils";
 import {
   ResizablePanelGroup,
@@ -13,6 +13,12 @@ import {
   type DockPanelId,
 } from "../state/geovisor-layout-store";
 import { GeovisorWorkbenchBar } from "./geovisor-workbench-bar";
+import { DRAG_MIME } from "./geovisor-dock-host";
+import { DOCK_LABELS } from "./geovisor-view-registry";
+import {
+  GEOVISOR_VIEW_IDS,
+  type GeovisorViewId,
+} from "../state/geovisor-layout-store";
 
 export interface GeovisorWorkspaceLayoutProps {
   /** Slot superior colapsable (filtros globales, KPIs, controles dock) */
@@ -65,6 +71,34 @@ export function GeovisorWorkspaceLayout({
   const isLeftActive = hasLeft && leftOpen;
   const isRightActive = hasRight && rightOpen;
   const isBottomActive = hasBottom && bottomOpen;
+
+  // Al arrastrar una pestaña, los paneles ocultos muestran una zona de soltado en su borde
+  const [draggingView, setDraggingView] = useState(false);
+  useEffect(() => {
+    const onStart = (e: DragEvent) => {
+      if (e.dataTransfer?.types.includes(DRAG_MIME)) setDraggingView(true);
+    };
+    const onEnd = () => setDraggingView(false);
+    window.addEventListener("dragstart", onStart);
+    window.addEventListener("dragend", onEnd);
+    window.addEventListener("drop", onEnd);
+    return () => {
+      window.removeEventListener("dragstart", onStart);
+      window.removeEventListener("dragend", onEnd);
+      window.removeEventListener("drop", onEnd);
+    };
+  }, []);
+
+  const moveView = useGeovisorLayoutStore((st) => st.moveView);
+  const hiddenDocks = (["top", "left", "right", "bottom"] as DockPanelId[]).filter(
+    (d) => !{ top: isTopActive, left: isLeftActive, right: isRightActive, bottom: isBottomActive }[d]
+  );
+  const edgeClass: Record<DockPanelId, string> = {
+    top: "inset-x-0 top-9 h-10",
+    bottom: "inset-x-0 bottom-0 h-10",
+    left: "inset-y-9 left-0 w-10",
+    right: "inset-y-9 right-0 w-10",
+  };
 
   // Expandir un panel a su máximo y restaurar su tamaño previo al volver a pulsar
   const previousExpanded = useRef<DockPanelId | null>(null);
@@ -318,6 +352,34 @@ export function GeovisorWorkspaceLayout({
           </div>
         </ResizablePanel>
       </ResizablePanelGroup>
+
+      {draggingView &&
+        hiddenDocks.map((dock) => (
+          <div
+            key={dock}
+            data-testid={`dock-dropzone-${dock}`}
+            onDragOver={(e) => {
+              e.preventDefault();
+              e.dataTransfer.dropEffect = "move";
+            }}
+            onDrop={(e) => {
+              e.preventDefault();
+              const id = e.dataTransfer.getData(DRAG_MIME);
+              if (id && (GEOVISOR_VIEW_IDS as readonly string[]).includes(id)) {
+                moveView(id as GeovisorViewId, dock);
+              }
+              setDraggingView(false);
+            }}
+            className={cn(
+              "absolute z-20 flex items-center justify-center rounded-md border-2 border-dashed border-[var(--ember)] bg-[var(--surface-2)]/90 text-[10px] font-semibold text-[var(--ember)]",
+              edgeClass[dock]
+            )}
+          >
+            <span className={dock === "left" || dock === "right" ? "[writing-mode:vertical-rl]" : ""}>
+              Soltar en panel {DOCK_LABELS[dock].toLowerCase()}
+            </span>
+          </div>
+        ))}
     </div>
   );
 }

@@ -32,7 +32,7 @@ import {
 } from "../state/geovisor-layout-store";
 import { DOCK_LABELS, GEOVISOR_VIEW_META } from "./geovisor-view-registry";
 
-const DRAG_MIME = "application/x-polis-geovisor-view";
+export const DRAG_MIME = "application/x-polis-geovisor-view";
 
 export interface GeovisorDockHostProps {
   dock: DockPanelId;
