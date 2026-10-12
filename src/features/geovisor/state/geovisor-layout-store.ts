@@ -134,7 +134,7 @@ function sanitizeActive(raw: unknown, tabs: DockTabs): DockActiveTab {
 }
 
 export const DEFAULT_DOCK_SIZES: DockPanelSizes = {
-  top: 14,
+  top: 20,
   left: 24,
   right: 26,
   bottom: 30,

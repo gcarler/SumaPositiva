@@ -13,6 +13,8 @@ import type { DockPanelId, GeovisorViewId } from "../state/geovisor-layout-store
 export interface GeovisorViewMeta {
   id: GeovisorViewId;
   title: string;
+  /** Rótulo corto para la pestaña (el título completo va en aria-label). */
+  short: string;
   description: string;
   icon: LucideIcon;
   /** Clase de color del ícono (token POLIS). */
@@ -23,6 +25,7 @@ export const GEOVISOR_VIEW_META: Record<GeovisorViewId, GeovisorViewMeta> = {
   filtros: {
     id: "filtros",
     title: "Filtros & KPIs",
+    short: "Filtros",
     description: "Ámbito, variable temática, exportación y KPIs distritales",
     icon: SlidersHorizontal,
     tone: "text-[var(--ember)]",
@@ -30,6 +33,7 @@ export const GEOVISOR_VIEW_META: Record<GeovisorViewId, GeovisorViewMeta> = {
   capas: {
     id: "capas",
     title: "Capas & Leyenda",
+    short: "Capas",
     description: "Capas SIG y leyenda de la variable activa",
     icon: Layers,
     tone: "text-[var(--ember)]",
@@ -37,6 +41,7 @@ export const GEOVISOR_VIEW_META: Record<GeovisorViewId, GeovisorViewMeta> = {
   mesas: {
     id: "mesas",
     title: "Directorio de Mesas",
+    short: "Mesas",
     description: "Búsqueda y ubicación de las mesas de diálogo",
     icon: MapPin,
     tone: "text-[var(--info)]",
@@ -44,6 +49,7 @@ export const GEOVISOR_VIEW_META: Record<GeovisorViewId, GeovisorViewMeta> = {
   ficha: {
     id: "ficha",
     title: "Ficha Técnica",
+    short: "Ficha",
     description: "Detalle, aforo, acuerdos y evidencia de la mesa seleccionada",
     icon: FileText,
     tone: "text-[var(--ember)]",
@@ -51,6 +57,7 @@ export const GEOVISOR_VIEW_META: Record<GeovisorViewId, GeovisorViewMeta> = {
   territorio: {
     id: "territorio",
     title: "Territorio & BI",
+    short: "Territorio",
     description: "Ranking y analítica del territorio seleccionado",
     icon: BarChart3,
     tone: "text-[var(--info)]",
@@ -58,6 +65,7 @@ export const GEOVISOR_VIEW_META: Record<GeovisorViewId, GeovisorViewMeta> = {
   datagrid: {
     id: "datagrid",
     title: "DataGrid de Mesas",
+    short: "Tabla",
     description: "Tabla interactiva de mesas con exportación",
     icon: TableProperties,
     tone: "text-[var(--ember)]",
@@ -65,6 +73,7 @@ export const GEOVISOR_VIEW_META: Record<GeovisorViewId, GeovisorViewMeta> = {
   graficos: {
     id: "graficos",
     title: "Gráficos",
+    short: "Gráficos",
     description: "Radar, evolución temporal y comparativas",
     icon: BarChart2,
     tone: "text-[var(--info)]",

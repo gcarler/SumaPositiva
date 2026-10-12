@@ -140,10 +140,11 @@ export function GeovisorDockHost({ dock, renderView, className }: GeovisorDockHo
                   <TabsTrigger
                     value={id}
                     title={meta.description}
+                    aria-label={meta.title}
                     className="h-full flex-none gap-1.5 rounded-none border-0 bg-transparent px-2 text-xs font-medium shadow-none data-[state=active]:bg-transparent data-[state=active]:shadow-none"
                   >
                     <Icon className={cn("size-3.5", meta.tone)} aria-hidden="true" />
-                    <span>{meta.title}</span>
+                    <span>{meta.short}</span>
                   </TabsTrigger>
                   <Button
                     type="button"
@@ -278,7 +279,7 @@ export function GeovisorDockHost({ dock, renderView, className }: GeovisorDockHo
                 forceMount
                 hidden={id !== active}
                 data-testid={`dock-view-${id}`}
-                className="m-0 min-h-0 flex-1 overflow-auto outline-none data-[state=inactive]:hidden"
+                className="m-0 min-h-0 flex-1 overflow-auto outline-none [scrollbar-width:thin] data-[state=inactive]:hidden"
               >
                 {renderView(id)}
               </TabsContent>

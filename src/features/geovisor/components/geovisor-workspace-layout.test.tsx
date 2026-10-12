@@ -50,9 +50,9 @@ describe("GeovisorWorkspaceLayout Component (GEO-DOCK-01)", () => {
       />
     );
 
-    // Top activo (defaultSize 14)
+    // Top activo (defaultSize 20)
     expect(html).toContain('id="dock-panel-top"');
-    expect(html).toContain('data-panel-size="14.0"');
+    expect(html).toContain('data-panel-size="20.0"');
 
     // Left activo (defaultSize 24)
     expect(html).toContain('id="dock-panel-left"');
@@ -141,7 +141,7 @@ describe("GeovisorWorkspaceLayout Component (GEO-DOCK-01)", () => {
       />
     );
 
-    expect(html).toContain('data-panel-size="14.0"'); // Top
+    expect(html).toContain('data-panel-size="20.0"'); // Top
     expect(html).toContain('data-panel-size="24.0"'); // Left
   });
 

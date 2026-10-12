@@ -77,7 +77,7 @@ export function GeovisorTopShelf({
       aria-label="Panel superior de control cartográfico y KPIs ejecutivos"
       data-testid="geovisor-top-shelf"
       className={cn(
-        "flex flex-col justify-between gap-2.5 p-3 sm:px-4 sm:py-3 bg-[var(--surface-1)] border-b border-[var(--border)]",
+        "flex flex-wrap items-center gap-x-4 gap-y-2 p-2.5 sm:px-3 bg-[var(--surface-1)] border-b border-[var(--border)]",
         className
       )}
     >
@@ -151,7 +151,7 @@ export function GeovisorTopShelf({
       </div>
 
       {/* FILA INFERIOR: 4 KPI Chips Ejecutivos Compactos */}
-      <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+      <div className="flex flex-wrap gap-2">
         {/* Chip 1: Participantes */}
         <div className="flex items-center gap-2 rounded-lg border border-[var(--border)] bg-[var(--surface-0)]/70 px-2.5 py-1.5">
           <div className="flex size-7 shrink-0 items-center justify-center rounded-md bg-[var(--surface-2)]">
