@@ -7,13 +7,17 @@ import { listarMesasGeovisor, type MesaGeovisor } from "../services/mesas-geovis
 import { usePanels } from "@/core/panels/panel-store";
 import { GeovisorWorkspaceLayout } from "../components/geovisor-workspace-layout";
 import { GeovisorTopShelf } from "../components/geovisor-top-shelf";
-import { GeovisorLeftDock } from "../components/geovisor-left-dock";
-import { GeovisorRightDock } from "../components/geovisor-right-dock";
-import { GeovisorBottomDock } from "../components/geovisor-bottom-dock";
-import type { CapasConfig } from "../components/geovisor-controles";
+import { GeovisorDockHost } from "../components/geovisor-dock-host";
+import { GeovisorControles, type CapasConfig } from "../components/geovisor-controles";
+import { GeovisorMesasDirectorio } from "../components/geovisor-mesas-directorio";
+import { GeovisorFichaMesa } from "../components/geovisor-ficha-mesa";
+import { GeovisorBiSidebar } from "../components/geovisor-bi-sidebar";
+import { GeovisorCharts } from "../components/geovisor-charts";
+import { MesasDataGrid } from "../components/mesas-datagrid/mesas-datagrid";
+import type { ModoVistaMesas } from "../components/mesas-datagrid/datagrid-toolbar";
 import type { VariableMapa } from "../data/estadisticas.data";
 import type { MapaCartagenaHandle } from "../components/mapa-cartagena";
-import { useGeovisorLayoutStore } from "../state/geovisor-layout-store";
+import { useGeovisorLayoutStore, type GeovisorViewId } from "../state/geovisor-layout-store";
 
 const MapaCartagena = dynamic(() => import("../components/mapa-cartagena"), {
   ssr: false,
@@ -44,6 +48,7 @@ export function GeovisorView() {
   });
   const [barrioSeleccionado, setBarrioSeleccionado] = useState<string | null>(null);
   const [variableMapa, setVariableMapa] = useState<VariableMapa>("ish");
+  const [modoVistaMesas, setModoVistaMesas] = useState<ModoVistaMesas>("tabla");
 
   const [capas, setCapas] = useState<CapasConfig>({
     localidades: true,
@@ -91,17 +96,17 @@ export function GeovisorView() {
     mapaRef.current?.exportarPng();
   }, []);
 
-  // Al seleccionar una mesa, abre el dock derecho si estaba cerrado para ver la ficha
+  // Al seleccionar una mesa, muestra su ficha técnica (donde esté acoplada)
   const handleSelectMesa = useCallback((mesaId: string | null) => {
     setMesaIdSeleccionada(mesaId);
     if (mesaId) {
-      useGeovisorLayoutStore.getState().setPanelOpen("right", true);
+      useGeovisorLayoutStore.getState().openView("ficha");
     }
   }, []);
 
   const handleLocalizarMesaEnMapa = useCallback((mesa: MesaGeovisor) => {
     setMesaIdSeleccionada(mesa.id);
-    useGeovisorLayoutStore.getState().setPanelOpen("right", true);
+    useGeovisorLayoutStore.getState().openView("ficha");
     if (mesa.territorio_codigo) {
       setTerritorioId(mesa.territorio_codigo);
     }
@@ -132,11 +137,10 @@ export function GeovisorView() {
     return mesasGeovisor.find((m) => m.id === mesaIdSeleccionada) ?? null;
   }, [mesasGeovisor, mesaIdSeleccionada]);
 
-  return (
-    <div className="container-fluid space-y-3 py-3 md:py-4">
-      {/* WORKSPACE PRINCIPAL: 4 PANELES ACOPLADOS TIPO IDE (Tiling Docking System) */}
-      <GeovisorWorkspaceLayout
-        topSlot={
+  const renderView = (id: GeovisorViewId) => {
+    switch (id) {
+      case "filtros":
+        return (
           <GeovisorTopShelf
             territorioId={territorioId}
             onTerritorioChange={handleSelectTerritorio}
@@ -144,18 +148,75 @@ export function GeovisorView() {
             onVariableChange={setVariableMapa}
             onExportarPng={handleExportarPng}
           />
-        }
-        leftSlot={
-          <GeovisorLeftDock
-            capas={capas}
-            onToggleCapa={handleToggleCapa}
-            variableMapa={variableMapa}
+        );
+      case "capas":
+        return (
+          <div className="p-3">
+            <GeovisorControles capas={capas} onToggleCapa={handleToggleCapa} variableMapa={variableMapa} />
+          </div>
+        );
+      case "mesas":
+        return (
+          <GeovisorMesasDirectorio
             mesas={mesasGeovisor}
             mesaSeleccionadaId={mesaIdSeleccionada}
             onSelectMesa={handleSelectMesa}
             onLocalizarEnMapa={handleLocalizarMesaEnMapa}
           />
-        }
+        );
+      case "ficha":
+        return (
+          <GeovisorFichaMesa
+            mesaSeleccionada={mesaActiva}
+            onCerrarMesa={() => setMesaIdSeleccionada(null)}
+            onAbrirPanelMesa={handleAbrirPanelMesa}
+          />
+        );
+      case "territorio":
+        return (
+          <div className="p-3">
+            <GeovisorBiSidebar
+              territorioId={territorioId}
+              onSelectTerritorio={handleSelectTerritorio}
+              variableMapa={variableMapa}
+              onOpenDetalleDrawer={handleOpenDetalleDrawer}
+            />
+          </div>
+        );
+      case "datagrid":
+        return (
+          <div className="p-3">
+            <MesasDataGrid
+              mesas={mesasGeovisor}
+              seleccionada={mesaIdSeleccionada}
+              onSeleccionar={handleSelectMesa}
+              onAbrirPanelMesa={handleAbrirPanelMesa}
+              onLocalizarEnMapa={handleLocalizarMesaEnMapa}
+              modoVista={modoVistaMesas}
+              onModoVistaChange={setModoVistaMesas}
+            />
+          </div>
+        );
+      case "graficos":
+        return (
+          <div className="p-3">
+            <GeovisorCharts
+              territorioId={territorioId}
+              variableMapa={variableMapa}
+              onTerritorioChange={handleSelectTerritorio}
+              onVariableChange={setVariableMapa}
+            />
+          </div>
+        );
+    }
+  };
+
+  return (
+    <div className="container-fluid space-y-3 py-3 md:py-4">
+      {/* WORKSPACE PRINCIPAL: 4 PANELES ACOPLADOS CON PESTAÑAS (estilo IDE) */}
+      <GeovisorWorkspaceLayout
+        topSlot={<GeovisorDockHost dock="top" renderView={renderView} />}
+        leftSlot={<GeovisorDockHost dock="left" renderView={renderView} />}
         centerSlot={
           <MapaCartagena
             ref={mapaRef}
@@ -170,30 +231,8 @@ export function GeovisorView() {
             onSelectMesa={handleSelectMesa}
           />
         }
-        rightSlot={
-          <GeovisorRightDock
-            mesaSeleccionada={mesaActiva}
-            onCerrarMesa={() => setMesaIdSeleccionada(null)}
-            onAbrirPanelMesa={handleAbrirPanelMesa}
-            territorioId={territorioId}
-            onSelectTerritorio={handleSelectTerritorio}
-            variableMapa={variableMapa}
-            onOpenDetalleDrawer={handleOpenDetalleDrawer}
-          />
-        }
-        bottomSlot={
-          <GeovisorBottomDock
-            mesas={mesasGeovisor}
-            mesaSeleccionadaId={mesaIdSeleccionada}
-            onSeleccionarMesa={handleSelectMesa}
-            onLocalizarEnMapa={handleLocalizarMesaEnMapa}
-            onAbrirPanelMesa={handleAbrirPanelMesa}
-            territorioId={territorioId}
-            onTerritorioChange={handleSelectTerritorio}
-            variableMapa={variableMapa}
-            onVariableChange={setVariableMapa}
-          />
-        }
+        rightSlot={<GeovisorDockHost dock="right" renderView={renderView} />}
+        bottomSlot={<GeovisorDockHost dock="bottom" renderView={renderView} />}
       />
 
       {/* Footer de Metadatos de Fuentes Oficiales */}

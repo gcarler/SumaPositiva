@@ -1,40 +1,23 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import {
-  FileText,
-  BarChart3,
-  MapPin,
   CalendarClock,
-  Users,
-  ExternalLink,
-  X,
-  FileSearch,
   CheckCircle2,
+  ExternalLink,
+  FileSearch,
+  MapPin,
+  Users,
+  X,
 } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import { StatusBadge } from "@/shared/ui/status-badge";
-import {
-  Tabs,
-  TabsList,
-  TabsTrigger,
-  TabsContent,
-} from "@/shared/ui/tabs";
-import { GeovisorBiSidebar } from "./geovisor-bi-sidebar";
-import type { VariableMapa } from "../data/estadisticas.data";
 import type { MesaGeovisor } from "../services/mesas-geovisor-api";
-import { cn } from "@/shared/lib/utils";
 
-export interface GeovisorRightDockProps {
+export interface GeovisorFichaMesaProps {
   mesaSeleccionada: MesaGeovisor | null;
   onCerrarMesa: () => void;
   onAbrirPanelMesa?: (mesaId: string) => void;
-  territorioId: string;
-  onSelectTerritorio: (id: string) => void;
-  variableMapa: VariableMapa;
-  onOpenDetalleDrawer?: (territorioId: string) => void;
-  defaultTab?: "mesa" | "territorio";
-  className?: string;
 }
 
 function formatearFecha(fecha: string | null): string {
@@ -48,73 +31,21 @@ function formatearFecha(fecha: string | null): string {
   }
 }
 
-export function GeovisorRightDock({
+const META_PARTICIPACION = 60;
+
+/** Ficha técnica de la mesa seleccionada (aforo, acuerdos, evidencia y acciones). */
+export function GeovisorFichaMesa({
   mesaSeleccionada,
   onCerrarMesa,
   onAbrirPanelMesa,
-  territorioId,
-  onSelectTerritorio,
-  variableMapa,
-  onOpenDetalleDrawer,
-  defaultTab = "mesa",
-  className,
-}: GeovisorRightDockProps) {
-  const [prevMesaId, setPrevMesaId] = useState<string | null>(mesaSeleccionada?.id ?? null);
-  const [tabActiva, setTabActiva] = useState<string>(defaultTab);
-
-  if (mesaSeleccionada && mesaSeleccionada.id !== prevMesaId) {
-    setPrevMesaId(mesaSeleccionada.id);
-    setTabActiva("mesa");
-  } else if (!mesaSeleccionada && prevMesaId !== null) {
-    setPrevMesaId(null);
-  }
-
-  // Cálculo de porcentaje de asistencia vs meta estimada (~60 participantes estándar)
-  const metaParticipacion = 60;
+}: GeovisorFichaMesaProps) {
+  const metaParticipacion = META_PARTICIPACION;
   const porcentajeAsistencia = mesaSeleccionada
     ? Math.min(100, Math.round((mesaSeleccionada.total_asistentes / metaParticipacion) * 100))
     : 0;
 
   return (
-    <aside
-      role="region"
-      aria-label="Panel derecho del Geovisor: Inspector y Analítica BI"
-      data-testid="geovisor-right-dock"
-      className={cn(
-        "flex h-full w-full flex-col overflow-hidden bg-[var(--surface-1)] text-[var(--text-primary)]",
-        className
-      )}
-    >
-      <Tabs
-        value={tabActiva}
-        onValueChange={setTabActiva}
-        className="flex h-full flex-col"
-      >
-        {/* ENCABEZADO DE PESTAÑAS */}
-        <div className="border-b border-[var(--border)] bg-[var(--surface-2)]/60 px-2 pt-2">
-          <TabsList className="grid h-8 w-full grid-cols-2 rounded-lg bg-[var(--surface-0)] p-0.5 border border-[var(--border)]">
-            <TabsTrigger
-              value="mesa"
-              className="gap-1.5 text-xs py-1 data-[state=active]:bg-[var(--surface-1)] data-[state=active]:text-[var(--text-primary)]"
-            >
-              <FileText className="size-3.5 text-[var(--ember)]" />
-              <span>Ficha Técnica</span>
-            </TabsTrigger>
-            <TabsTrigger
-              value="territorio"
-              className="gap-1.5 text-xs py-1 data-[state=active]:bg-[var(--surface-1)] data-[state=active]:text-[var(--text-primary)]"
-            >
-              <BarChart3 className="size-3.5 text-[var(--info)]" />
-              <span>Territorio & BI</span>
-            </TabsTrigger>
-          </TabsList>
-        </div>
-
-        {/* PESTAÑA 1: FICHA TÉCNICA DE MESA */}
-        <TabsContent
-          value="mesa"
-          className="m-0 flex-1 overflow-y-auto p-3 outline-none"
-        >
+    <div data-testid="geovisor-ficha-mesa" className="h-full overflow-y-auto p-3">
           {mesaSeleccionada ? (
             <article
               className="flex flex-col gap-3 rounded-xl border border-[var(--ember)]/50 bg-[var(--surface-0)] p-3.5 shadow-xs"
@@ -258,26 +189,11 @@ export function GeovisorRightDock({
                 Ninguna mesa seleccionada
               </h4>
               <p className="max-w-xs text-[11px] leading-relaxed">
-                Haz clic sobre cualquier mesa en el mapa SIG, en el directorio izquierdo o
-                en la consola de datos inferior para inspeccionar su ficha técnica de diálogo social.
+                Haz clic sobre cualquier mesa en el mapa SIG, en el directorio de mesas o
+                en el DataGrid para inspeccionar su ficha técnica de diálogo social.
               </p>
             </div>
           )}
-        </TabsContent>
-
-        {/* PESTAÑA 2: ANALÍTICA TERRITORIAL & BI */}
-        <TabsContent
-          value="territorio"
-          className="m-0 flex-1 overflow-y-auto p-3 outline-none"
-        >
-          <GeovisorBiSidebar
-            territorioId={territorioId}
-            onSelectTerritorio={onSelectTerritorio}
-            variableMapa={variableMapa}
-            onOpenDetalleDrawer={onOpenDetalleDrawer}
-          />
-        </TabsContent>
-      </Tabs>
-    </aside>
+    </div>
   );
 }

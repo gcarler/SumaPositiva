@@ -32,15 +32,17 @@ describe("GeovisorView Component (GEO-DOCK-02)", () => {
     expect(html).toContain("Variable:");
 
     // Dock izquierdo (Capas y Directorio)
-    expect(html).toContain('data-testid="geovisor-left-dock"');
+    expect(html).toContain('data-testid="geovisor-dock-host-left"');
     expect(html).toContain("Capas &amp; Leyenda");
 
     // Dock derecho (Inspector y BI)
-    expect(html).toContain('data-testid="geovisor-right-dock"');
+    expect(html).toContain('data-testid="geovisor-dock-host-right"');
     expect(html).toContain("Ficha Técnica");
 
     // Dock inferior (DataGrid y Gráficos)
-    expect(html).toContain('data-testid="geovisor-bottom-dock"');
+    expect(html).toContain('data-testid="geovisor-dock-host-bottom"');
+    expect(html).toContain('data-testid="geovisor-dock-host-top"');
+    expect(html).toContain('data-testid="geovisor-workbench-bar"');
     expect(html).toContain("DataGrid de Mesas");
 
     // Footer institucional de metadatos

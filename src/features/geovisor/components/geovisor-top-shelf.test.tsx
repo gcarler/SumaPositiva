@@ -4,7 +4,7 @@ import { renderToString } from "react-dom/server";
 import { GeovisorTopShelf } from "./geovisor-top-shelf";
 
 describe("GeovisorTopShelf Component (GEO-DOCK-02)", () => {
-  test("renderiza selectores de ámbito y variable, 4 KPI chips y controles dock", () => {
+  test("renderiza selectores de ámbito y variable, y 4 KPI chips", () => {
     const handleTerritorio = vi.fn();
     const handleVariable = vi.fn();
     const handleExportar = vi.fn();
@@ -27,10 +27,6 @@ describe("GeovisorTopShelf Component (GEO-DOCK-02)", () => {
     expect(html).toContain("Ámbito:");
     expect(html).toContain("Variable:");
     expect(html).toContain("Exportar PNG");
-
-    // Dock controls presentes
-    expect(html).toContain('role="toolbar"');
-    expect(html).toContain('aria-label="Controles de paneles del Geovisor"');
 
     // 4 KPI Chips
     expect(html).toContain("Ciudadanos Participando");

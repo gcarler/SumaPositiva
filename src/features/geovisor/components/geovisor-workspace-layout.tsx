@@ -7,7 +7,12 @@ import {
   ResizablePanel,
   ResizableHandle,
 } from "@/shared/ui/resizable";
-import { useGeovisorLayoutStore } from "../state/geovisor-layout-store";
+import {
+  DOCK_LIMITS,
+  useGeovisorLayoutStore,
+  type DockPanelId,
+} from "../state/geovisor-layout-store";
+import { GeovisorWorkbenchBar } from "./geovisor-workbench-bar";
 
 export interface GeovisorWorkspaceLayoutProps {
   /** Slot superior colapsable (filtros globales, KPIs, controles dock) */
@@ -43,6 +48,7 @@ export function GeovisorWorkspaceLayout({
     sizes,
     setPanelSize,
     setPanelOpen,
+    expandedDock,
   } = isServer ? useGeovisorLayoutStore.getState() : storeState;
 
   const topPanelRef = useRef<React.ElementRef<typeof ResizablePanel>>(null);
@@ -59,6 +65,28 @@ export function GeovisorWorkspaceLayout({
   const isLeftActive = hasLeft && leftOpen;
   const isRightActive = hasRight && rightOpen;
   const isBottomActive = hasBottom && bottomOpen;
+
+  // Expandir un panel a su máximo y restaurar su tamaño previo al volver a pulsar
+  const previousExpanded = useRef<DockPanelId | null>(null);
+  const savedSize = useRef<number | null>(null);
+  useEffect(() => {
+    const refs: Record<DockPanelId, React.RefObject<React.ElementRef<typeof ResizablePanel> | null>> = {
+      top: topPanelRef,
+      left: leftPanelRef,
+      right: rightPanelRef,
+      bottom: bottomPanelRef,
+    };
+    const prev = previousExpanded.current;
+    previousExpanded.current = expandedDock;
+    if (prev && prev !== expandedDock) {
+      const restore = savedSize.current ?? useGeovisorLayoutStore.getState().sizes[prev];
+      refs[prev].current?.resize(restore);
+    }
+    if (expandedDock) {
+      savedSize.current = useGeovisorLayoutStore.getState().sizes[expandedDock];
+      refs[expandedDock].current?.resize(DOCK_LIMITS[expandedDock].max);
+    }
+  }, [expandedDock]);
 
   // Sincronización imperativa de ref cuando el store muta externamente
   useEffect(() => {
@@ -111,9 +139,10 @@ export function GeovisorWorkspaceLayout({
         className
       )}
     >
+      <GeovisorWorkbenchBar />
       <ResizablePanelGroup
         direction="vertical"
-        className="h-full w-full"
+        className="min-h-0 w-full flex-1"
         id="geovisor-vertical-group"
       >
         {/* PANEL DOCK SUPERIOR (Shelf) */}
@@ -122,8 +151,8 @@ export function GeovisorWorkspaceLayout({
           id="dock-panel-top"
           order={1}
           collapsible
-          minSize={8}
-          maxSize={28}
+          minSize={DOCK_LIMITS.top.min}
+          maxSize={DOCK_LIMITS.top.max}
           defaultSize={isTopActive ? sizes.top : 0}
           onResize={(size) => {
             if (size > 0) setPanelSize("top", size);
@@ -170,8 +199,8 @@ export function GeovisorWorkspaceLayout({
               id="dock-panel-left"
               order={1}
               collapsible
-              minSize={16}
-              maxSize={45}
+              minSize={DOCK_LIMITS.left.min}
+              maxSize={DOCK_LIMITS.left.max}
               defaultSize={isLeftActive ? sizes.left : 0}
               onResize={(size) => {
                 if (size > 0) setPanelSize("left", size);
@@ -228,8 +257,8 @@ export function GeovisorWorkspaceLayout({
               id="dock-panel-right"
               order={3}
               collapsible
-              minSize={18}
-              maxSize={45}
+              minSize={DOCK_LIMITS.right.min}
+              maxSize={DOCK_LIMITS.right.max}
               defaultSize={isRightActive ? sizes.right : 0}
               onResize={(size) => {
                 if (size > 0) setPanelSize("right", size);
@@ -266,8 +295,8 @@ export function GeovisorWorkspaceLayout({
           id="dock-panel-bottom"
           order={3}
           collapsible
-          minSize={12}
-          maxSize={50}
+          minSize={DOCK_LIMITS.bottom.min}
+          maxSize={DOCK_LIMITS.bottom.max}
           defaultSize={isBottomActive ? sizes.bottom : 0}
           onResize={(size) => {
             if (size > 0) setPanelSize("bottom", size);

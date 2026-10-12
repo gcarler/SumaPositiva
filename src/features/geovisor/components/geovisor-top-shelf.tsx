@@ -23,7 +23,6 @@ import {
   VARIABLE_META,
   ESTADISTICAS_TERRITORIOS,
 } from "../data/estadisticas.data";
-import { GeovisorDockControls } from "./geovisor-dock-controls";
 import { cn } from "@/shared/lib/utils";
 
 export interface GeovisorTopShelfProps {
@@ -82,8 +81,8 @@ export function GeovisorTopShelf({
         className
       )}
     >
-      {/* FILA SUPERIOR: Selectores de Ámbito y Variable + Exportar PNG + Controles de Dock */}
-      <div className="flex flex-wrap items-center justify-between gap-2">
+      {/* FILA SUPERIOR: Selectores de Ámbito y Variable + Exportar PNG */}
+      <div className="flex flex-wrap items-center gap-2">
         <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           {/* Selector de Ámbito */}
           <div className="flex items-center gap-1.5">
@@ -149,10 +148,6 @@ export function GeovisorTopShelf({
           )}
         </div>
 
-        {/* CONTROLES DE LAYOUT ACOPLADO (Dock Controls) */}
-        <div className="flex items-center">
-          <GeovisorDockControls />
-        </div>
       </div>
 
       {/* FILA INFERIOR: 4 KPI Chips Ejecutivos Compactos */}
