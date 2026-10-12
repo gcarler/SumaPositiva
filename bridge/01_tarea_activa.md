@@ -1,42 +1,35 @@
-# TAREA ACTIVA: [GEO-DOCK-03] ENLACE E INTERACCIÓN BIDIRECCIONAL DE DATOS
-## REINGENIERÍA GEOVISOR STUDIO DE POLIS — FASE 3
+# TAREA ACTIVA: [GEO-DOCK-04] CERTIFICACIÓN GLOBAL, BUILD DE PRODUCCIÓN Y CIERRE DEL PLAN MAESTRO
+## REINGENIERÍA GEOVISOR STUDIO DE POLIS — FASE 4
 
 **Fecha:** Lunes, 12 de Octubre de 2026  
-**Fase:** FASE 3 del Plan Maestro (`bridge/00_plan_maestro_geovisor_docking.md`)  
+**Fase:** FASE 4: Certificación Global, Quality Gates y Cierre del Plan Maestro (`bridge/00_plan_maestro_geovisor_docking.md`)  
 **Asignada a:** `agy2` (Desarrollador / EDD — `tmux a -t agy2`)  
 **Supervisor / Auditor:** `agy` (Coordinador General y Auditor Forense EAF — `tmux a -t agy`)  
-**Severidad:** ALTA / USABILIDAD, NAVEGACIÓN SIG Y EXPERIENCIA DE USUARIO  
+**Severidad:** ALTA / ASEGURAMIENTO DE CALIDAD, REGRESIÓN CERO Y PRODUCCIÓN  
 
 ---
 
 ## 🎯 1. Objetivos y Alcance de la Tarea
 
-Implementar el enlace e interacción bidireccional completa entre los 4 paneles acoplados y el lienzo cartográfico OpenLayers:
+Con las tres fases de arquitectura, modularización y navegación bidireccional culminadas exitosamente (`[GEO-DOCK-01]`, `[GEO-DOCK-02]`, `[GEO-DOCK-03]`), corresponde ejecutar la certificación global de producción y cierre formal:
 
-1. **Flujo de Navegación Cartográfica "¿Dónde queda la mesa?":**
-   * En `src/features/geovisor/hooks/use-mapa.ts`:
-     * Incorporar un `useEffect` dedicado que reaccione al cambio de `mesaSeleccionadaId`.
-     * Al detectar una mesa seleccionada válida con coordenadas de referencia (`longitud_referencia`, `latitud_referencia`), ejecutar una animación fluida de vuelo:
-       ```ts
-       mapaRef.current.getView().animate({
-         center: fromLonLat([mesa.longitud_referencia, mesa.latitud_referencia]),
-         zoom: 15.5,
-         duration: 600,
-       });
-       ```
-     * Reforzar el estilo del punto vectorial de la mesa seleccionada en `capaMesas` para que destaque inmediatamente con un halo o borde de alto contraste (`COLORES_MAPA.heatHigh` o borde dorado `var(--ember)` y radio ampliado), haciéndola inequívocamente reconocible sobre el mapa.
-   * Conectar el evento de clic nativo sobre puntos de mesa en el mapa (`map.on("click")`) para que seleccione la mesa (`onSelectMesa(feature.get("id"))`), lo que a su vez desplegará de forma reactiva la Ficha Técnica en el panel derecho.
+1. **Certificación de la Suite Completa:**
+   * UI Architectural Linter (`bun run ui:check`).
+   * TypeCheck y ESLint (`bun run check`).
+   * Suite Completa Frontend (`bun test` con 486+ pruebas).
+   * Suite Completa Backend FastAPI (`uv run --project backend pytest backend/tests`).
+   * Verificación de migraciones Alembic (`uv run --project backend alembic -c backend/alembic.ini check`).
 
-2. **Sincronización Bidireccional Cruzada:**
-   * **Desde el Panel Izquierdo (`geovisor-left-dock.tsx`):**
-     * Al pulsar el botón "Ubicar en Mapa" o hacer clic sobre una mesa del directorio, se centra el mapa con animación en la coordenada, se resalta el punto y se abre el panel derecho con la ficha de la mesa.
-   * **Desde el Panel Inferior (`geovisor-bottom-dock.tsx`):**
-     * Al pulsar "Ubicar en Mapa" o seleccionar una fila en el DataGrid de mesas, se ejecuta el mismo vuelo cartográfico y apertura del inspector derecho.
-   * **Desde el Panel Superior (`geovisor-top-shelf.tsx`):**
-     * La selección de ámbito territorial (Localidad 1, 2, 3, Rural-Insular, Todas) y variable analítica ISH sincroniza simultáneamente la coropleta del mapa, los micro-chips de KPIs, los filtros del directorio y los gráficos analíticos de la consola inferior.
+2. **Compilación de Producción y Verificación de Servicio:**
+   * Ejecución de `bun run build`.
+   * Reinicio del servicio de frontend: `systemctl restart polis-frontend`.
+   * Verificación de disponibilidad con `curl -sI http://localhost:3000/geovisor` (debe responder HTTP 200 OK).
 
-3. **Adaptabilidad Fluida al Arrastre de Divisores (Resize en Vivo):**
-   * Verificar que el `ResizeObserver` de OpenLayers responda a 60 fps durante el redimensionamiento manual con los handles de `react-resizable-panels`, sin saltos visuales ni recortes de mapa.
+3. **Inviolabilidad Censal de Base de Datos:**
+   * Comprobación en PostgreSQL 18: 33 mesas, 36 agendas, 11 fichas, 17 actores intactos.
+
+4. **Actualización del Plan Maestro:**
+   * Actualizar `bridge/00_plan_maestro_geovisor_docking.md` reflejando el 100% de ejecución.
 
 ---
 
@@ -46,17 +39,19 @@ Implementar el enlace e interacción bidireccional completa entre los 4 paneles 
 |---|---|---|
 | **UI Architectural Linter** | `bun run ui:check` | 0 infracciones |
 | **TypeCheck & Linter** | `bun run check` | 0 errores TypeScript, 0 warnings ESLint |
-| **Pruebas de Vuelo y Foco** | `bun test src/features/geovisor/` | Pruebas de navegación cartográfica y selección de mesas pasando |
-| **Suite Completa Frontend** | `bun test` | Todas las pruebas pasando sin regresiones |
-| **Inviolabilidad `bd_csh`** | No alterar BD | 33 mesas, 36 agendas, 11 fichas, 17 actores intactos |
+| **Suite Completa Frontend** | `bun test` | 486+ pasadas (0 fail) |
+| **Suite Backend FastAPI** | `uv run --project backend pytest backend/tests` | 100% pasadas (0 fail) |
+| **Alembic Drift Check** | `alembic check` en backend | 0 diferencias |
+| **Build de Producción** | `bun run build` | Compilación exitosa |
+| **Servicio Geovisor** | `curl -sI http://localhost:3000/geovisor` | HTTP 200 OK |
+| **Inviolabilidad `bd_csh`** | Consulta directa PostgreSQL 18 | 33 mesas, 36 agendas, 11 fichas, 17 actores intactos |
 
 ---
 
 ## 📦 3. Entregables y Procedimiento
 
-1. Actualizar `src/features/geovisor/hooks/use-mapa.ts` con la animación de vuelo centrada en mesa y el estilo de foco de alta visibilidad.
-2. Afinar la reactividad de clics sobre features de mesas en el mapa OpenLayers.
-3. Crear pruebas unitarias específicas que certifiquen el flujo de foco y animación ante selección de mesa.
-4. Ejecutar Quality Gates (`bun run ui:check`, `bun run check`, `bun test`).
-5. Formalizar commit atómico local en `main`: `feat(geovisor): implementar enlace bidireccional navegacion de mesas y mapa GEO-DOCK-03`.
-6. Reportar culminación en `bridge/02_resultado_agy2.md` y enviar notificación a `agy` en `%0`.
+1. Ejecutar todos los Quality Gates sin advertencias.
+2. Compilar la aplicación y verificar el servicio en producción.
+3. Actualizar `bridge/00_plan_maestro_geovisor_docking.md` marcando todas las fases al 100%.
+4. Formalizar commit atómico local en `main`: `test(geovisor): certificacion global de produccion y cierre de plan maestro GEO-DOCK-04`.
+5. Reportar culminación en `bridge/02_resultado_agy2.md` y enviar notificación a `agy` en `%0`.

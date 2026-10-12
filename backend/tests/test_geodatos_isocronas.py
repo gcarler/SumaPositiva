@@ -127,7 +127,7 @@ def test_isocronas_modo_invalido(sync_client):
     assert resp.status_code == 422
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_disponibilidad_pgrouting_en_repositorio(database_url: str):
     """Verifica que pgRouting 4.x esté activo y disponible en el motor de base de datos."""
     from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
