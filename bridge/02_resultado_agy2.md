@@ -1,206 +1,141 @@
-# INFORME DE RESULTADO Y AUDITORÍA: TAREA [CIERRE-06]
+# INFORME DE RESULTADO: TAREAS [CIERRE-06b] Y CONTRATO [CIERRE-07]
+
 **Para:** Coordinador General / Auditor EAF (`agy`)  
 **De:** Desarrollador / Responsable Técnico EDD (`agy2`)  
 **Fecha:** 13 de Octubre de 2026  
-**Tarea Activa:** `[CIERRE-06] MFA (TOTP) para Cuentas Administrativas y Despliegue en Producción (Fase Beta)`  
-**Plan Maestro:** `bridge/00_plan_maestro_cierre_operativo.md` (Sección EXTENSIÓN + ACTUALIZACIÓN DE REGLAS)
+**Tareas Reportadas:**  
+1. `[CIERRE-06b] Atención de Reservas del Dictamen MFA (Antirreplay TOTP + Clave MFA Obligatoria)`  
+2. `[CIERRE-07] Documento de Contrato de Diseño: Alcance Territorial de Permisos Institucionales`  
+**Plan Maestro:** `bridge/00_plan_maestro_cierre_operativo.md` y `bridge/01_tarea_activa.md`  
 
 ---
 
-## 🎯 1. Resumen Ejecutivo de la Tarea
+## 🎯 1. Resumen Ejecutivo
 
-En estricto cumplimiento del Plan Maestro y bajo la autorización del propietario/usuario para trabajar directamente en producción durante la fase beta, se implementó, probó y desplegó en producción el subsistema de **Autenticación Multifactor (MFA) TOTP según RFC 6238** para el módulo de identidad de POLIS.
-
-### Logros y Especificaciones Principales:
-1. **Respaldo Pericial Previo de Base de Datos**:
-   - Generado mediante `scripts/respaldo_bd.sh`.
-   - Archivo: `/root/polis/backups/bd_csh_20261013_033638.dump`.
-   - Tamaño: 1,602,593 bytes.
-   - Sello criptográfico SHA-256 verificado: `4fa3bd692015aae9f6b49013d21f07ca53328f273cca3af2b495252e79572006`.
-2. **Cifrado de Secretos en Reposo con Fernet**:
-   - Clave criptográfica simétrica generada en el servidor e inyectada exclusivamente en `backend/.env` (`POLIS_MFA_ENCRYPTION_KEY`).
-   - **Cero exposición**: `backend/.env` está excluido del control de versiones (`.gitignore`), garantizando que ningún secreto o credencial sea versionado.
-   - Los secretos TOTP se generan con 160 bits (32 caracteres base32) y se cifran con Fernet (AES-128-CBC + HMAC-SHA256) antes de almacenarse en la tabla `autenticacion.usuarios_mfa`.
-3. **MFA Apagado por Defecto (Sin Bloqueo de Cuentas Preexistentes)**:
-   - Se configuró `POLIS_MFA_ROLES_EXIGIDOS=""` por defecto en `backend/app/core/config.py` y `backend/.env`.
-   - Ninguna cuenta existente ve interrumpido su flujo ordinario de acceso; los administradores y usuarios pueden enrolarse de manera opcional o gradual.
-   - La obligatoriedad puede activarse dinámicamente por rol configurando la variable de entorno (ej. `POLIS_MFA_ROLES_EXIGIDOS="administrador_identidades,auditor_forense"`).
-4. **Códigos de Recuperación de Respaldo de Un Solo Uso**:
-   - Cada enrolamiento genera 8 códigos en formato canónico de alta legibilidad (`XXXX-XXXX`).
-   - Almacenamiento seguro: en base de datos solo se persisten los hashes SHA-256 salteados con `POLIS_IP_SALT`.
-   - Mecanismo de quemado en uso (*burn-on-use*): una vez consumido un código de recuperación, es purgado del arreglo en la base de datos.
-   - Funcionalidad de regeneración de códigos con reautenticación previa mediante código TOTP vigente.
-5. **Rate-Limiting y Bloqueo Temporal Defensivo**:
-   - Máximo de 5 intentos fallidos consecutivos (`mfa_max_intentos = 5`).
-   - Al quinto fallo, la cuenta queda temporalmente bloqueada para verificación MFA durante 15 minutos (`bloqueado_hasta`).
-6. **Auditoría Forense en `autenticacion.eventos_identidad`**:
-   - Cada acción genera un evento inmutable con UUID v7 y detalle forense sanitizado:
-     - `mfa_iniciado`: Generación de secreto provisional.
-     - `mfa_activado`: Activación exitosa tras confirmación con TOTP válido.
-     - `mfa_desactivado`: Desactivación voluntaria validada con la contraseña actual del usuario.
-     - `mfa_codigos_regenerados`: Emisión de nuevos códigos de respaldo.
-     - `mfa_verificado`: Acceso concedido mediante TOTP o código de recuperación.
-     - `mfa_fallido`: Intento con código erróneo o token inválido.
-     - `mfa_bloqueado`: Bloqueo por exceso de intentos fallidos.
-7. **Flujo de Acceso Desafiado (Challenge-Response)**:
-   - Integrado en autenticación por contraseña (`/login`), Google OAuth (`/oauth/google`) y enlace directo Magic Link (`/magic-link/confirmar`).
-   - Si el usuario tiene MFA activo o su rol lo exige, el sistema emite un token de desafío temporal JWT (`typ="desafio_mfa"`, expira en 5 minutos) con `mfa_requerido: true` y sin emitir el token de sesión final.
-   - El token de sesión definitivo solo se libera al verificar con éxito el TOTP o código de recuperación en `POST /api/v1/identidad/mfa/verificar`.
-8. **Interfaz de Usuario Web Completa (Frontend)**:
-   - Desafío MFA en login (`src/features/sesion/panels/sesion-panel.tsx`): transición automática a vista de verificación con soporte para código numérico de 6 dígitos o código de recuperación alfanumérico.
-   - Administración de MFA en "Mi cuenta" (`src/features/sesion/components/cuenta-usuario.tsx`):
-     - Indicador de estado visual con `StatusBadge` (Activo / Inactivo).
-     - Asistente de enrolamiento con renderizado de código QR en base64 (`data:image/png;base64,...`) y clave secreta en texto seleccionable (`code`).
-     - Activación con confirmación de 6 dígitos.
-     - Visualización destacada de los 8 códigos de respaldo en cuadrícula para copia y resguardo.
-     - Regeneración de códigos con validación TOTP.
-     - Desactivación protegida mediante reingreso obligatorio de la contraseña actual.
+En estricto seguimiento a las instrucciones de `bridge/01_tarea_activa.md` y el dictamen pericial de `bridge/03_dictamen_revision.md`:
+1. **[CIERRE-06b] Ejecutado y Desplegado en Commit Separado (`379fb31`):**
+   - Se atendieron y remediaron al 100% las Reservas 1, 2 y 3 del dictamen previo.
+   - Respaldo pericial previo generado en `/root/polis/backups/bd_csh_20261013_040158.dump`.
+   - Migración aditiva `0059_mfa_antirreplay` ejecutada; `alembic check` con 0 drift.
+   - Quality Gates 100% verdes: 500 pruebas frontend, 512 pruebas backend, ESLint y TypeScript sin errores.
+   - Censo `bd_csh` intacto (33/36/11/17) y servicios en producción activos y respondiendo HTTP 200.
+2. **[CIERRE-07] Documento de Contrato Entregado en Commit Separado (`a226153`):**
+   - Redactado en `docs/contrato-alcance-territorial-cierre07.md`.
+   - Modela el ámbito territorial bajo PBAC preservando la regla cardinal de retrocompatibilidad ("Sin ámbito = comportamiento actual").
+   - **DECLARACIÓN EXPRESA:** En estricto acatamiento a la directriz, **NO se ha escrito ninguna línea de código de implementación de CIERRE-07**, quedando a la espera del visto bueno pericial de `agy`.
 
 ---
 
-## 🔒 2. Respaldo y Salvaguardas de Producción
+## 🛡️ 2. Detalle de Correcciones en [CIERRE-06b]
 
-| Salvaguarda | Verificación / Ruta | Estado |
+### 2.1. Reserva 1: Protección Antirreplay TOTP (RFC 6238 §5.2)
+- **Problema atendido:** Posibilidad de reutilizar un código TOTP de 6 dígitos dentro de su ventana de validez de 90 segundos.
+- **Implementación:**
+  - Nueva columna aditiva en la base de datos: `autenticacion.usuarios_mfa.ultimo_paso_totp` (`sa.BigInteger`, nullable=True).
+  - Migración Alembic: `0059_mfa_antirreplay.py` encadenada tras `0058_mfa_totp`.
+  - Algoritmo de verificación en `backend/app/modules/identidad/mfa.py`:
+    - Calcula el paso de tiempo actual $T = \lfloor \text{timestamp} / 30 \rfloor$.
+    - Para cada candidato en la ventana de tolerancia $\pm 1$ ($T - 1, T, T + 1$), si `ultimo_paso` está registrado y $T_{\text{candidato}} \le \text{ultimo\_paso}$, el paso es **rechazado inmediatamente** sin evaluar el HMAC.
+    - Al autenticar exitosamente, se retorna el paso aceptado y se persiste en `mfa_obj.ultimo_paso_totp`.
+  - Integración en `service.py`:
+    - En `activar_mfa`: registra el paso usado para la activación, impidiendo que ese mismo código se use de inmediato para iniciar sesión.
+    - En `verificar_desafio_mfa`: registra el paso aceptado, bloqueando cualquier reintento con el mismo código.
+    - En `regenerar_codigos_recuperacion`: exige paso estrictamente posterior.
+
+### 2.2. Reserva 2: Clave MFA Dedicada Obligatoria en Producción (`POLIS_MFA_ENCRYPTION_KEY`)
+- **Problema atendido:** Si faltaba `POLIS_MFA_ENCRYPTION_KEY`, el sistema derivaba la clave del secreto JWT.
+- **Implementación:**
+  - En `backend/app/core/config.py`: validador Pydantic `@model_validator(mode="after")` que exige la existencia de `POLIS_MFA_ENCRYPTION_KEY` si el entorno es producción y se arranca con roles MFA exigidos (`POLIS_MFA_ROLES_EXIGIDOS`).
+  - Validación de formato Fernet: si se proporciona, se verifica que sea una clave Fernet válida (32 bytes url-safe base64), fallando de inmediato ante cadenas inválidas.
+  - En `backend/app/modules/identidad/mfa.py` (`obtener_cifrador_mfa`): si el entorno es `production` y no hay clave dedicada, **lanza `RuntimeError` inmediatamente y prohíbe terminantemente el fallback al secreto JWT**.
+  - Servidor en producción: `backend/.env` cuenta con clave Fernet dedicada y permisos `0600`.
+
+### 2.3. Reserva 3: Documentación de Entropía y Modelo de Amenazas de Códigos de Recuperación
+- Se documentó formalmente en:
+  1. Los docstrings de `backend/app/modules/identidad/mfa.py` (`generar_codigos_recuperacion`).
+  2. En el runbook oficial `docs/despliegue-identidad.md` (Sección 8: Arquitectura y Salvaguardas MFA).
+- **Parámetros auditados:**
+  - Alfabeto: Crockford Base32 (32 símbolos sin 0, 1, I, O).
+  - Formato: 8 caracteres (`XXXX-XXXX`).
+  - Entropía individual: $32^8 = 2^{40} \approx 1.1 \times 10^{12}$ combinaciones (~40 bits). Lote de 8 códigos: $2^{37}$ combinaciones.
+  - Mitigaciones: Exigencia previa de primer factor (contraseña bcrypt), bloqueo temporal tras 5 fallos durante 15 minutos, límite por IP (60 peticiones/15 min), almacenamiento como hashes SHA-256 salteados con `POLIS_IP_SALT`, y quemado inmediato al usarse ("burn-on-use").
+
+---
+
+## 📜 3. Documento de Contrato de Diseño: [CIERRE-07]
+
+Se elaboró y radicó en el repositorio el documento **`docs/contrato-alcance-territorial-cierre07.md`** (commit `a226153`), el cual define:
+
+1. **Principio Inquebrantable de Retrocompatibilidad (Default Fallback):**
+   - **Sin ámbito = Comportamiento actual (Global):** Todo usuario institucional sin ámbitos asignados mantiene acceso distrital irrestricto según sus permisos funcionales. Ninguna cuenta existente en producción se verá interrumpida.
+2. **Modelo Relacional Aditivo:**
+   - Tabla `autenticacion.ambitos_territoriales_usuario` con tipos: `distrital`, `localidad`, `upz`, `mesa`.
+   - Totalmente desacoplada del censo de mesas para garantizar la inviolabilidad de `mesas_trabajo.mesas`.
+3. **Inmunidad para Roles Superiores y Comunitarios:**
+   - `administrador`, `administrador_identidades` y `auditor_forense` mantienen visión distrital completa sin evaluación de ámbito.
+   - `ciudadano` mantiene participación comunitaria libre.
+4. **Endpoints Sujetos a Control:**
+   - Lectura: 100% abierta y transparente (máxima publicidad).
+   - Escritura (actas, compromisos, acuerdos, evidencias, participantes): verifican pertenencia territorial de la mesa.
+5. **Nuevos Endpoints Administrativos:**
+   - Gestión de ámbitos por usuario (`GET`, `POST`, `DELETE` en `/api/v1/identidad/usuarios/{id}/ambitos`).
+6. **Respuesta de Denegación Estricta:**
+   - HTTP 403 Forbidden con código `fuera_de_ambito_territorial` y registro en `autenticacion.eventos_seguridad`.
+
+---
+
+## 🔒 4. Respaldo y Salvaguardas en Producción
+
+| Salvaguarda | Ruta / Evidencia | Estado |
 |---|---|---|
-| **Respaldo Pre-Migración** | `/root/polis/backups/bd_csh_20261013_033638.dump` | ✅ GENERADO Y VERIFICADO |
-| **Hash SHA-256 del Dump** | `4fa3bd692015aae9f6b49013d21f07ca53328f273cca3af2b495252e79572006` | ✅ CERTIFICADO |
-| **Clave de Cifrado en Reposo** | Inyectada en `backend/.env` (no versionada) | ✅ PROTEGIDA |
-| **Exigencia MFA por Defecto** | `POLIS_MFA_ROLES_EXIGIDOS=""` | ✅ INACTIVA (Cero disrupción) |
-| **Migración Alembic** | `0058_mfa_totp` encadenada tras `0057_comentario_pas` | ✅ APLICADA |
-| **Drift de Esquema** | `alembic check` | ✅ **0 DRIFT (No new upgrade operations detected)** |
-| **Inviolabilidad Censo** | `bd_csh` (33 mesas, 36 agendas, 11 fichas, 17 actores) | ✅ **100% INTACTO Y VERIFICADO** |
-| **Estado de Servicios** | `systemctl is-active polis-frontend polis-backend nginx postgresql@18-main` | ✅ **TODOS `active`** |
-| **Disponibilidad HTTP** | `/`, `/geovisor`, `/plataforma/geovisor`, `/api/v1/health/live`, `/api/v1/health/ready` | ✅ **HTTP 200 OK** |
+| **Respaldo Previo de Base de Datos** | `/root/polis/backups/bd_csh_20261013_040158.dump` | ✅ GENERADO |
+| **Hash SHA-256 del Respaldo** | `/root/polis/backups/bd_csh_20261013_040158.dump.sha256` | ✅ CERTIFICADO |
+| **Migración Alembic Aditiva** | `0059_mfa_antirreplay.py` | ✅ APLICADA |
+| **Verificación de Drift** | `alembic check` | ✅ **0 DRIFT** |
+| **Censo `bd_csh` Intacto** | 33 mesas, 36 agendas, 11 fichas, 17 actores | ✅ **VERIFICADO** |
+| **Servicios Activos** | `polis-frontend`, `polis-backend`, `nginx`, `postgresql@18-main` | ✅ **TODOS `active`** |
+| **Pruebas HTTP en Vivo** | `/`, `/geovisor`, `/plataforma/geovisor`, `/api/v1/health/ready` | ✅ **HTTP 200 OK** |
 
 ---
 
-## 🏛️ 3. Auditoría de Inviolabilidad del Censo (`bd_csh`)
+## 🚦 5. Quality Gates (100% Verdes)
 
-Consulta forense ejecutada en PostgreSQL 18 sobre la base viva `bd_csh`:
-```sql
-SELECT 'mesas: ' || count(*) FROM mesas_trabajo.mesas
-UNION ALL
-SELECT 'agendas: ' || count(*) FROM mesas_trabajo.agendas
-UNION ALL
-SELECT 'fichas: ' || count(*) FROM indicadores.fichas_tecnicas_indicadores
-UNION ALL
-SELECT 'actores: ' || count(*) FROM participacion_ciudadana.actores_estrategicos;
-```
-
-**Resultado:**
-- `mesas`: **33** (100% conforme)
-- `agendas`: **36** (100% conforme)
-- `fichas`: **11** (100% conforme)
-- `actores`: **17** (100% conforme)
-
----
-
-## 🚦 4. Certificación Integral de Quality Gates (100% Verdes)
-
-### 4.1. UI Policy & Design System (`bun run ui:check`)
-```
-$ node scripts/ui-policy.mjs
-POLIS UI: controles, tokens, capas, inventario, historias y política a11y correctos.
-```
-- **Resultado:** ✅ **0 incumplimientos**. Tokens semánticos (`StatusBadge`, `bg-card`, etc.) aplicados rigurosamente según `docs/kit-ui-rules.md`.
-
-### 4.2. Tipado Estático y Calidad de Código (`bun run check`)
-```
-$ bun run ui:check && bun run typecheck && bun run lint
-$ node scripts/ui-policy.mjs
-POLIS UI: controles, tokens, capas, inventario, historias y política a11y correctos.
-$ tsc --noEmit
-$ eslint .
-```
-- **Resultado:** ✅ **0 errores TypeScript, 0 advertencias ESLint**.
-
-### 4.3. Suite Frontend (`bun test`)
-```
-Ran 500 tests across 57 files. [7.00s]
-500 pass, 0 fail, 2348 expect() calls.
-```
-- **Resultado:** ✅ **500 pruebas pasadas (100%)**.
-
-### 4.4. Suite Backend (`uv run --project backend pytest backend/tests`)
-```
-======================= 510 passed in 312.28s (0:05:12) ========================
-```
-- **Resultado:** ✅ **510 pruebas pasadas (100%)**, incluyendo las pruebas dedicadas `test_cierre06_mfa_totp.py` y las regresiones completas de identidad y permisos.
-
-### 4.5. Auditoría de Migraciones (`alembic check`)
-```
-No new upgrade operations detected.
-```
-- **Resultado:** ✅ **0 drift**.
+1. **Design System & UI (`bun run ui:check`):**
+   ```
+   POLIS UI: controles, tokens, capas, inventario, historias y política a11y correctos.
+   ```
+2. **Tipado y Linters (`bun run check`):**
+   ```
+   $ tsc --noEmit
+   $ eslint .
+   0 errores, 0 advertencias.
+   ```
+3. **Pruebas Frontend (`bun test`):**
+   ```
+   500 pass, 0 fail, 2348 expect() calls. Ran 500 tests across 57 files.
+   ```
+4. **Pruebas Backend (`pytest backend/tests`):**
+   ```
+   512 passed in 300.96s (100% de la suite completa)
+   - test_cierre06_mfa_totp.py: 5/5 PASADAS (incluyendo antirreplay y validación obligatoria de clave)
+   - test_identidad_completa.py: 24/24 PASADAS
+   ```
+5. **Auditoría de Esquema (`alembic check`):**
+   ```
+   No new upgrade operations detected.
+   ```
 
 ---
 
-## 📋 5. Matriz de Permisos y Endpoints Implementados
+## 📦 6. Registro de Commits Locales (Zero-Push)
 
-Actualizada en `docs/permisos-api.md` y validada en `backend/tests/test_access_policy.py`:
-
-| Método | Endpoint | Permiso Requerido / Tipo | Propósito |
-|---|---|---|---|
-| `GET` | `/api/v1/identidad/mfa/estado` | Autenticado | Consulta estado actual de MFA y códigos restantes |
-| `POST` | `/api/v1/identidad/mfa/iniciar` | Autenticado | Genera secreto provisional TOTP, URI y código QR |
-| `POST` | `/api/v1/identidad/mfa/activar` | Autenticado | Valida código TOTP y entrega los 8 códigos de recuperación |
-| `POST` | `/api/v1/identidad/mfa/desactivar` | Autenticado | Desactiva MFA requiriendo contraseña actual |
-| `POST` | `/api/v1/identidad/mfa/recuperacion/regenerar` | Autenticado | Regenera los 8 códigos requiriendo TOTP actual |
-| `POST` | `/api/v1/identidad/mfa/verificar` | **Público** (Challenge) | Resuelve desafío MFA y emite token de sesión final |
+1. **Commit `379fb31`:** `fix(identidad): antirreplay totp y validacion obligatoria de clave de cifrado CIERRE-06b`
+2. **Commit `a226153`:** `docs(identidad): contrato de diseno para alcance territorial de permisos CIERRE-07`
 
 ---
 
-## 🚀 6. Verificación de Despliegue en Producción
+## 📌 7. Estado Actual y Próximos Pasos
 
-### Compilación Frontend (`bun run build`)
-- Salida Next.js 16 (Turbopack): **192 páginas estáticas/SSG compiladas con éxito**.
-- Standalone y assets estáticos copiados a `.next/standalone/`.
-
-### Estado de Servicios Systemd
-```
-polis-frontend.service: active (running)
-polis-backend.service: active (running)
-nginx.service: active (running)
-postgresql@18-main.service: active (running)
-```
-
-### Respuestas HTTP en Vivo
-- `GET http://127.0.0.1:3000/` -> **HTTP 200**
-- `GET http://127.0.0.1:3000/geovisor` -> **HTTP 200**
-- `GET http://127.0.0.1:3000/plataforma/geovisor` -> **HTTP 200**
-- `GET http://127.0.0.1:8000/api/v1/health/live` -> **HTTP 200** (`{"status":"ok","service":"polis-api"}`)
-- `GET http://127.0.0.1:8000/api/v1/health/ready` -> **HTTP 200**
-- `GET https://127.0.0.1/` (vía Nginx HTTPS 443) -> **HTTP 200**
-
----
-
-## 📦 7. Estado del Repositorio Git
-
-- **Rama:** `main`
-- **Zero-Push cumplido:** Todos los cambios se empaquetan en un commit atómico local en `main`.
-- **Archivos Modificados:**
-  - `backend/app/core/config.py`
-  - `backend/app/modules/identidad/models.py`
-  - `backend/app/modules/identidad/repository.py`
-  - `backend/app/modules/identidad/router.py`
-  - `backend/app/modules/identidad/schemas.py`
-  - `backend/app/modules/identidad/security.py`
-  - `backend/app/modules/identidad/service.py`
-  - `backend/tests/test_access_policy.py`
-  - `docs/permisos-api.md`
-  - `src/app/_stories/identidad.stories.tsx`
-  - `src/features/sesion/components/campo-identidad.tsx`
-  - `src/features/sesion/components/cuenta-usuario.tsx`
-  - `src/features/sesion/panels/sesion-panel.tsx`
-  - `src/features/sesion/services/identidad-api.ts`
-- **Archivos Nuevos (Aditivos):**
-  - `backend/alembic/versions/0058_mfa_totp.py`
-  - `backend/app/modules/identidad/mfa.py`
-  - `backend/tests/test_cierre06_mfa_totp.py`
-
----
-
-## 📌 8. Conclusión y Solicitud de Dictamen
-
-La tarea `[CIERRE-06]` ha sido **completada y desplegada al 100%** bajo las salvaguardas establecidas.
-El sistema queda a la espera del dictamen de auditoría de `agy` en `bridge/03_dictamen_revision.md` antes de proceder con `[CIERRE-07]`.
+- **[CIERRE-06b]:** Culminado, probado y desplegado en producción.
+- **[CIERRE-07]:** Contrato radicado en `docs/contrato-alcance-territorial-cierre07.md`.
+- **Compromiso:** No se iniciará ninguna codificación de CIERRE-07 hasta recibir el visto bueno y dictamen del contrato por parte del auditor `agy`.
