@@ -107,10 +107,11 @@ class MesaGeovisorRespuesta(BaseModel):
     territorio_codigo: str | None
     longitud_referencia: float | None
     latitud_referencia: float | None
-    tipo_ubicacion: Literal["centroide_territorial_referencia"] | None
+    tipo_ubicacion: Literal["centroide_territorial_referencia", "coordenada_registrada"] | None
     fotos: list[FotoMesaPublica] = Field(default_factory=list)
     codigo_oficial: str | None = None
     shortcode_ciudadano: str | None = None
+    url_mapa: str | None = None
 
 
 class FotoMesaSubidaRespuesta(BaseModel):

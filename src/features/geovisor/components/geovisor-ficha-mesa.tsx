@@ -7,11 +7,13 @@ import {
   ExternalLink,
   FileSearch,
   MapPin,
+  Navigation,
   Users,
   X,
 } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import { StatusBadge } from "@/shared/ui/status-badge";
+import { generarUrlComoLlegar } from "@/features/mesas/lib/coordenadas-parser";
 import type { MesaGeovisor } from "../services/mesas-geovisor-api";
 
 export interface GeovisorFichaMesaProps {
@@ -94,6 +96,30 @@ export function GeovisorFichaMesa({
                     {mesaSeleccionada.horario ? ` (${mesaSeleccionada.horario})` : ""}
                   </span>
                 </div>
+                {mesaSeleccionada.latitud_referencia !== null && mesaSeleccionada.longitud_referencia !== null && (
+                  <div className="mt-1 flex flex-col gap-1 rounded-md border border-[var(--border)] bg-[var(--surface-1)] p-2">
+                    <div className="flex items-center justify-between text-[11px]">
+                      <span className="text-[10px] font-semibold uppercase text-[var(--text-tertiary)]">
+                        {mesaSeleccionada.tipo_ubicacion === "coordenada_registrada"
+                          ? "Coordenada de la mesa"
+                          : "Centroide territorial"}
+                      </span>
+                      <span className="font-mono text-[10px] text-[var(--text-secondary)]">
+                        {mesaSeleccionada.latitud_referencia.toFixed(5)}, {mesaSeleccionada.longitud_referencia.toFixed(5)}
+                      </span>
+                    </div>
+                    <a
+                      href={generarUrlComoLlegar(mesaSeleccionada.latitud_referencia, mesaSeleccionada.longitud_referencia)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-[11px] font-medium text-[var(--ember)] hover:underline pt-0.5"
+                    >
+                      <Navigation className="size-3" />
+                      <span>Cómo llegar</span>
+                      <ExternalLink className="size-2.5 opacity-70" />
+                    </a>
+                  </div>
+                )}
               </div>
 
               {/* Asistencia y Porcentaje de Cumplimiento */}

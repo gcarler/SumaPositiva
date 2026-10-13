@@ -116,6 +116,11 @@ export function normalizarMesaBackend(b: MesaBackendResponse): MesaDeTrabajo {
     horario: b.horario,
     modalidad: b.modalidad,
     sha256Acta: b.sha256_acta,
+    coordenadas: (b.metadatos?.coordenadas as { lat: number; lng: number } | undefined) ?? undefined,
+    urlMapa: (b.metadatos?.urlMapa as string | undefined) ?? undefined,
+    aforo: (b.metadatos?.aforo as number | undefined) ?? b.aforo_maximo ?? undefined,
+    entidades: (b.metadatos?.entidades as MesaDeTrabajo["entidades"] | undefined) ?? undefined,
+    responsables: (b.metadatos?.responsables as MesaDeTrabajo["responsables"] | undefined) ?? undefined,
   };
 }
 
@@ -171,6 +176,11 @@ export async function crearMesaRemota(datos: {
   tipoMesa?: string;
   horario?: string;
   modalidad?: string;
+  aforo?: number;
+  coordenadas?: { lat: number; lng: number };
+  urlMapa?: string;
+  entidades?: MesaDeTrabajo["entidades"];
+  responsables?: MesaDeTrabajo["responsables"];
 }): Promise<MesaDeTrabajo> {
   const sesion = useSesionStore.getState().sesion;
   if (sesion?.token) setBearerToken(sesion.token);
@@ -178,6 +188,17 @@ export async function crearMesaRemota(datos: {
   const entropy = Math.random().toString(36).substring(2, 6).toUpperCase();
   const shortId = `${Date.now().toString(36).slice(-4).toUpperCase()}${entropy}`;
   const tipo = datos.tipoMesa || "TERRITORIAL";
+  const metadatos: Record<string, unknown> = {
+    entidad: datos.entidad,
+    facilitador: datos.facilitador,
+    totalAsistentes: Number(datos.totalAsistentes) || 0,
+  };
+  if (datos.coordenadas) metadatos.coordenadas = datos.coordenadas;
+  if (datos.urlMapa) metadatos.urlMapa = datos.urlMapa;
+  if (datos.aforo) metadatos.aforo = Number(datos.aforo);
+  if (datos.entidades) metadatos.entidades = datos.entidades;
+  if (datos.responsables) metadatos.responsables = datos.responsables;
+
   const body = {
     tipo_mesa: tipo,
     codigo_oficial: `MT-${Date.now().toString(36).toUpperCase()}-${entropy}`,
@@ -186,14 +207,10 @@ export async function crearMesaRemota(datos: {
     lugar_nombre: datos.lugar,
     fecha: datos.fecha && datos.fecha.trim() ? datos.fecha.trim() : null,
     horario: datos.horario || "8:00 am - 12:00 m",
-    aforo_maximo: Number(datos.totalAsistentes) || 50,
+    aforo_maximo: Number(datos.aforo) || Number(datos.totalAsistentes) || 50,
     modalidad: datos.modalidad || "PRESENCIAL",
     estado: "PROGRAMADA",
-    metadatos: {
-      entidad: datos.entidad,
-      facilitador: datos.facilitador,
-      totalAsistentes: Number(datos.totalAsistentes) || 0,
-    },
+    metadatos,
   };
   const resp = await apiFetch<MesaBackendResponse>("/mesas", {
     method: "POST",

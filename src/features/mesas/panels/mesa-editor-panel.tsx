@@ -13,7 +13,7 @@ import {
   SelectTrigger,
   SelectValue
 } from "@/shared/ui/select";
-import {useState, useMemo, useEffect} from "react";
+import {useState, useMemo, useEffect, useCallback} from "react";
 import {useForm, useFieldArray, Controller, useWatch} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {z} from "zod";
@@ -35,6 +35,22 @@ import {actualizarMesaRemota, crearMesaRemota} from "@/features/mesas/services/m
 import {useMesaQuery, MESAS_KEYS} from "@/features/mesas/services/use-mesas-queries";
 import {useSesionStore} from "@/features/sesion/state/session-store";
 import {puedeEditar} from "@/features/plataforma/models/acceso";
+import dynamic from "next/dynamic";
+import {
+  esEnlaceCorto,
+  parsearCoordenadasUrl,
+  parsearTextoCoordenadas,
+  validarLimitesCartagena,
+  type Coordenadas,
+} from "@/features/mesas/lib/coordenadas-parser";
+
+const SelectorUbicacionMesa = dynamic(
+  () =>
+    import("@/features/mesas/components/selector-ubicacion-mesa").then(
+      (m) => m.SelectorUbicacionMesa
+    ),
+  { ssr: false }
+);
 
 /**
  * Panel editor pro de mesa de trabajo — crear o editar.
@@ -80,10 +96,11 @@ const mesaSchema = z
     urlMapa: z.string().url("Debe ser una URL válida").optional().or(z.literal("")),
     coordenadas: z
       .object({
-        lat: z.number(),
-        lng: z.number(),
+        lat: z.number().min(-90, "Latitud entre -90 y 90").max(90, "Latitud entre -90 y 90"),
+        lng: z.number().min(-180, "Longitud entre -180 y 180").max(180, "Longitud entre -180 y 180"),
       })
-      .optional(),
+      .optional()
+      .nullable(),
     aforo: z
       .number()
       .int("Debe ser un número entero")
@@ -107,15 +124,6 @@ const mesaSchema = z
   );
 
 type MesaForm = z.infer<typeof mesaSchema>;
-
-function parsearCoordenadas(url: string): { lat: number; lng: number } | null {
-  if (!url) return null;
-  const match = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
-  if (match) return { lat: parseFloat(match[1]), lng: parseFloat(match[2]) };
-  const q = url.match(/[?&]q=(-?\d+\.\d+),(-?\d+\.\d+)/);
-  if (q) return { lat: parseFloat(q[1]), lng: parseFloat(q[2]) };
-  return null;
-}
 
 export function MesaEditorPanel({
   entryKey,
@@ -288,26 +296,85 @@ export function MesaEditorPanel({
   };
 
   const urlMapaValue = useWatch({ control, name: "urlMapa" });
-  const coordsDetectadas = useMemo(() => {
-    return urlMapaValue ? parsearCoordenadas(urlMapaValue) : null;
+  const esUrlCorta = useMemo(() => Boolean(urlMapaValue && esEnlaceCorto(urlMapaValue)), [urlMapaValue]);
+  const coordsDetectadasUrl = useMemo(() => {
+    return urlMapaValue ? parsearCoordenadasUrl(urlMapaValue) : null;
   }, [urlMapaValue]);
 
-  useEffect(() => {
-    if (coordsDetectadas) {
-      setValue("coordenadas", coordsDetectadas, { shouldDirty: true });
-    }
-  }, [coordsDetectadas, setValue]);
+  const watchCoords = useWatch({ control, name: "coordenadas" });
+  const watchLat = useWatch({ control, name: "coordenadas.lat" });
+  const watchLng = useWatch({ control, name: "coordenadas.lng" });
 
-  // Secciones colapsables
+  const coordenadasActuales = useMemo<Coordenadas | undefined>(() => {
+    if (watchLat !== undefined && watchLng !== undefined && watchLat !== null && watchLng !== null) {
+      const latNum = Number(watchLat);
+      const lngNum = Number(watchLng);
+      if (Number.isFinite(latNum) && Number.isFinite(lngNum)) {
+        return { lat: latNum, lng: lngNum };
+      }
+    }
+    if (watchCoords && Number.isFinite(watchCoords.lat) && Number.isFinite(watchCoords.lng)) {
+      return { lat: Number(watchCoords.lat), lng: Number(watchCoords.lng) };
+    }
+    return undefined;
+  }, [watchCoords, watchLat, watchLng]);
+
+  const fijarCoordenadas = useCallback(
+    (coords: Coordenadas | null | undefined, dirty = true) => {
+      setValue("coordenadas", coords ?? undefined, { shouldDirty: dirty, shouldValidate: true });
+      setValue("coordenadas.lat", coords ? coords.lat : (undefined as unknown as number), {
+        shouldDirty: dirty,
+        shouldValidate: true,
+      });
+      setValue("coordenadas.lng", coords ? coords.lng : (undefined as unknown as number), {
+        shouldDirty: dirty,
+        shouldValidate: true,
+      });
+    },
+    [setValue]
+  );
+
+  useEffect(() => {
+    if (coordsDetectadasUrl) {
+      fijarCoordenadas(coordsDetectadasUrl);
+    }
+  }, [coordsDetectadasUrl, fijarCoordenadas]);
+
+  // Secciones colapsables: Sección 1 y Sección 3 abiertas por defecto según [MESA-UBIC-01]
   const [seccion1Abierta, setSeccion1Abierta] = useState(true);
   const [seccion2Abierta, setSeccion2Abierta] = useState(false);
-  const [seccion3Abierta, setSeccion3Abierta] = useState(false);
+  const [seccion3Abierta, setSeccion3Abierta] = useState(true);
 
   const watchNombre = useWatch({ control, name: "nombre" });
   const watchFecha = useWatch({ control, name: "fecha" });
   const watchLugar = useWatch({ control, name: "lugar" });
   const watchAforo = useWatch({ control, name: "aforo" });
-  const watchCoords = useWatch({ control, name: "coordenadas" });
+
+  // Coordenadas planas combinadas (sincronizadas bidireccionalmente)
+  const [textoCoordsPlanas, setTextoCoordsPlanas] = useState("");
+
+  useEffect(() => {
+    if (coordenadasActuales && Number.isFinite(coordenadasActuales.lat) && Number.isFinite(coordenadasActuales.lng)) {
+      const parsed = parsearTextoCoordenadas(textoCoordsPlanas);
+      if (
+        !parsed ||
+        Math.abs(parsed.lat - coordenadasActuales.lat) > 0.00001 ||
+        Math.abs(parsed.lng - coordenadasActuales.lng) > 0.00001
+      ) {
+        setTextoCoordsPlanas(`${coordenadasActuales.lat.toFixed(5)}, ${coordenadasActuales.lng.toFixed(5)}`);
+      }
+    } else if (!coordenadasActuales && textoCoordsPlanas) {
+      setTextoCoordsPlanas("");
+    }
+  }, [coordenadasActuales]);
+
+  const advertenciaCartagena = useMemo(() => {
+    if (!coordenadasActuales || !Number.isFinite(coordenadasActuales.lat) || !Number.isFinite(coordenadasActuales.lng)) {
+      return null;
+    }
+    const res = validarLimitesCartagena(coordenadasActuales.lat, coordenadasActuales.lng);
+    return res.dentroDeCartagena ? null : res.advertencia;
+  }, [coordenadasActuales]);
 
   const seccion1Valida =
     (watchNombre?.trim()?.length ?? 0) >= 6 &&
@@ -320,7 +387,7 @@ export function MesaEditorPanel({
   const seccion3Iniciada =
     Boolean(urlMapaValue?.trim()) ||
     Boolean(watchAforo) ||
-    Boolean(watchCoords);
+    Boolean(coordenadasActuales);
 
   const seccionesCompletadas =
     (seccion1Valida ? 1 : 0) +
@@ -338,6 +405,8 @@ export function MesaEditorPanel({
       data.responsables?.find((r) => r.esFacilitador)?.nombre ??
       data.responsables?.[0]?.nombre;
 
+    const coordsFinales = coordenadasActuales ?? data.coordenadas ?? undefined;
+
     const mesaPayload: MesaInput = {
       nombre: data.nombre,
       fecha: data.fecha,
@@ -348,7 +417,7 @@ export function MesaEditorPanel({
       entidades: data.entidades,
       responsables: data.responsables,
       urlMapa: data.urlMapa || undefined,
-      coordenadas: data.coordenadas,
+      coordenadas: coordsFinales,
       aforo: data.aforo,
     };
 
@@ -399,6 +468,11 @@ export function MesaEditorPanel({
         facilitador: facilitadorPrincipal ?? "",
         totalAsistentes: data.totalAsistentes ?? 0,
         horario,
+        aforo: data.aforo,
+        coordenadas: coordsFinales,
+        urlMapa: data.urlMapa || undefined,
+        entidades: data.entidades,
+        responsables: data.responsables,
       });
 
       if (remota?.id) {
@@ -1002,31 +1076,84 @@ export function MesaEditorPanel({
                 animate={{ opacity: 1, height: "auto" }}
                 exit={{ opacity: 0, height: 0 }}
                 transition={{ duration: 0.22 }}
-                className="border-t border-[var(--border)] p-4 sm:p-5"
+                className="border-t border-[var(--border)] p-4 sm:p-5 space-y-5"
               >
-                <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-                  <FormField
-                    id="mesa-url-mapa"
-                    label="Enlace al mapa (Google Maps / Waze / OSM)"
-                    error={errors.urlMapa?.message}
-                    description="Pega un enlace de Google Maps con ubicación; las coordenadas se detectarán automáticamente."
-                    className="col-span-full sm:col-span-2 lg:col-span-2"
-                  >
-                    {(controlProps) => (
-                      <Input
-                        {...controlProps}
-                        type="url"
-                        placeholder="https://maps.google.com/... o enlace Waze / OSM"
-                        {...register("urlMapa")}
-                      />
-                    )}
-                  </FormField>
+                {/* 1. SELECCIONADOR POR CLIC EN MAPA */}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="text-xs font-semibold uppercase tracking-wider text-[var(--text-tertiary)]">
+                        1. Fijar ubicación en el mapa
+                      </h4>
+                      <p className="text-xs text-[var(--text-secondary)]">
+                        Haz clic sobre el mapa para marcar o mover el punto de encuentro exacto.
+                      </p>
+                    </div>
+                  </div>
 
+                  <SelectorUbicacionMesa
+                    coordenadas={coordenadasActuales}
+                    onChange={(nuevasCoords) => {
+                      fijarCoordenadas(nuevasCoords);
+                    }}
+                    altura="280px"
+                  />
+                </div>
+
+                {/* Advertencia de límites de Cartagena si aplica */}
+                {advertenciaCartagena && (
+                  <Notice tone="warning" title="Punto fuera del Distrito de Cartagena">
+                    <span className="text-xs">{advertenciaCartagena}</span>
+                  </Notice>
+                )}
+
+                <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 pt-2 border-t border-[var(--border)]">
+                  {/* 2. PEGAR ENLACE DE MAPAS */}
+                  <div className="col-span-full sm:col-span-2 lg:col-span-2">
+                    <FormField
+                      id="mesa-url-mapa"
+                      label="2. Enlace de mapas (Google Maps / OpenStreetMap / Waze)"
+                      error={errors.urlMapa?.message}
+                      description="Pega un enlace de Google Maps con ubicación; las coordenadas se detectarán automáticamente."
+                    >
+                      {(controlProps) => (
+                        <Input
+                          {...controlProps}
+                          type="url"
+                          placeholder="https://maps.google.com/... o enlace OpenStreetMap / Waze"
+                          {...register("urlMapa")}
+                        />
+                      )}
+                    </FormField>
+
+                    {esUrlCorta && (
+                      <div className="mt-2">
+                        <Notice tone="warning" title="Enlace acortado de mapas">
+                          <span className="text-xs">
+                            Los enlaces cortos (como maps.app.goo.gl o goo.gl) no exponen coordenadas directas.
+                            Por favor abre el enlace en tu navegador y copia la URL completa expandida o escribe las coordenadas planas abajo.
+                          </span>
+                        </Notice>
+                      </div>
+                    )}
+
+                    {coordsDetectadasUrl && (
+                      <div className="mt-2 flex items-center gap-2 rounded-lg border border-[var(--border)] bg-[var(--surface-2)] p-2.5 text-xs text-[var(--success)] font-medium">
+                        <MapPin className="size-4 shrink-0 text-[var(--success)]" />
+                        <span>
+                          📍 Coordenadas detectadas desde URL: {coordsDetectadasUrl.lat.toFixed(5)},{" "}
+                          {coordsDetectadasUrl.lng.toFixed(5)}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Aforo máximo */}
                   <FormField
                     id="mesa-aforo"
-                    label="Capacidad máxima del lugar (aforo)"
+                    label="Capacidad de aforo"
                     error={errors.aforo?.message}
-                    description="Número máximo de participantes permitidos en el espacio."
+                    description="Número máximo de participantes en el espacio."
                     className="col-span-full sm:col-span-2 lg:col-span-1"
                   >
                     {(controlProps) => (
@@ -1035,7 +1162,7 @@ export function MesaEditorPanel({
                         type="number"
                         min={1}
                         max={100000}
-                        placeholder="Ej.: 120"
+                        placeholder="Ej.: 60"
                         {...register("aforo", {
                           setValueAs: (v) =>
                             v === "" || v === null || isNaN(Number(v))
@@ -1046,19 +1173,36 @@ export function MesaEditorPanel({
                     )}
                   </FormField>
 
-                  {coordsDetectadas && (
-                    <div className="col-span-full flex items-center gap-2 rounded-lg border border-[var(--border)] bg-[var(--surface-2)] p-3 text-xs text-[var(--success)] font-medium">
-                      <MapPin className="size-4 shrink-0 text-[var(--success)]" />
-                      <span>
-                        📍 Coordenadas detectadas: {coordsDetectadas.lat.toFixed(6)},{" "}
-                        {coordsDetectadas.lng.toFixed(6)}
-                      </span>
-                    </div>
-                  )}
+                  {/* 3. COORDENADAS PLANAS COMBINADAS */}
+                  <div className="col-span-full sm:col-span-2">
+                    <FormField
+                      id="mesa-coords-planas"
+                      label="3. Coordenadas planas combinadas (un solo campo)"
+                      description="Escribe Latitud y Longitud separadas por coma, espacio o punto y coma (ej. 10.39972, -75.51444)."
+                    >
+                      {() => (
+                        <Input
+                          id="mesa-coords-planas"
+                          type="text"
+                          placeholder="10.39972, -75.51444"
+                          value={textoCoordsPlanas}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            setTextoCoordsPlanas(val);
+                            const parseadas = parsearTextoCoordenadas(val);
+                            if (parseadas) {
+                              fijarCoordenadas(parseadas);
+                            }
+                          }}
+                        />
+                      )}
+                    </FormField>
+                  </div>
 
+                  {/* Latitud individual */}
                   <FormField
                     id="mesa-lat"
-                    label="Latitud (opcional)"
+                    label="Latitud individual"
                     error={errors.coordenadas?.lat?.message}
                     className="col-span-1"
                   >
@@ -1078,9 +1222,10 @@ export function MesaEditorPanel({
                     )}
                   </FormField>
 
+                  {/* Longitud individual */}
                   <FormField
                     id="mesa-lng"
-                    label="Longitud (opcional)"
+                    label="Longitud individual"
                     error={errors.coordenadas?.lng?.message}
                     className="col-span-1"
                   >

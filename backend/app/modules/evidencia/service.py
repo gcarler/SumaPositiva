@@ -243,6 +243,38 @@ class EvidenciaService:
         por_mesa: dict[uuid.UUID, MesaGeovisorRespuesta] = {}
         for mesa, territorio_nombre, territorio_codigo, longitud, latitud, foto, evidencia in filas:
             if mesa.id not in por_mesa:
+                coords = (mesa.metadatos or {}).get("coordenadas")
+                lat_custom = None
+                lng_custom = None
+                if isinstance(coords, dict):
+                    c_lat = coords.get("lat") if "lat" in coords else coords.get("latitud")
+                    c_lng = coords.get("lng") if "lng" in coords else coords.get("longitud")
+                    try:
+                        if c_lat is not None and c_lng is not None:
+                            v_lat = float(c_lat)
+                            v_lng = float(c_lng)
+                            if -90.0 <= v_lat <= 90.0 and -180.0 <= v_lng <= 180.0:
+                                lat_custom = v_lat
+                                lng_custom = v_lng
+                    except (ValueError, TypeError):
+                        pass
+
+                if lat_custom is not None and lng_custom is not None:
+                    longitud_ref = lng_custom
+                    latitud_ref = lat_custom
+                    tipo_ubicacion = "coordenada_registrada"
+                elif longitud is not None and latitud is not None:
+                    longitud_ref = float(longitud)
+                    latitud_ref = float(latitud)
+                    tipo_ubicacion = "centroide_territorial_referencia"
+                else:
+                    longitud_ref = None
+                    latitud_ref = None
+                    tipo_ubicacion = None
+
+                raw_url_mapa = (mesa.metadatos or {}).get("urlMapa") or (mesa.metadatos or {}).get("url_mapa")
+                url_mapa_val = str(raw_url_mapa).strip() if raw_url_mapa and isinstance(raw_url_mapa, str) else None
+
                 por_mesa[mesa.id] = MesaGeovisorRespuesta(
                     id=mesa.id,
                     nombre=mesa.nombre,
@@ -254,12 +286,13 @@ class EvidenciaService:
                     territorio_id=mesa.territorio_id,
                     territorio_nombre=territorio_nombre,
                     territorio_codigo=territorio_codigo,
-                    longitud_referencia=float(longitud) if longitud is not None else None,
-                    latitud_referencia=float(latitud) if latitud is not None else None,
-                    tipo_ubicacion="centroide_territorial_referencia" if longitud is not None and latitud is not None else None,
+                    longitud_referencia=longitud_ref,
+                    latitud_referencia=latitud_ref,
+                    tipo_ubicacion=tipo_ubicacion,
                     fotos=[],
                     codigo_oficial=mesa.codigo_oficial,
                     shortcode_ciudadano=mesa.shortcode_ciudadano,
+                    url_mapa=url_mapa_val,
                 )
             if foto is not None and evidencia is not None:
                 por_mesa[mesa.id].fotos.append(

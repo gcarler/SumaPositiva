@@ -123,5 +123,44 @@ describe("Geovisor Territorial — Resolución Multiclave de Coordenadas (H-05)"
       expect(m.codigo_oficial).toBe("MT-L01-01");
       expect(m.shortcode_ciudadano).toBe("MT101");
     });
+
+    test("respeta tipo_ubicacion 'coordenada_registrada' y no sobreescribe coordenadas propias [MESA-UBIC-01]", async () => {
+      const mockBackendMesas = [
+        {
+          id: "01a0f5fe-86df-717b-a4d0-5b6605bdf993",
+          nombre: "Mesa Territorial con Coordenadas Propias Registradas",
+          fecha: "2026-10-15",
+          horario: "08:30 – 12:00",
+          estado: "PROGRAMADA",
+          realizada: false,
+          total_asistentes: 0,
+          territorio_id: "01a0f5f0-0000-0000-0000-000000000001",
+          territorio_nombre: "Centro Histórico",
+          territorio_codigo: "loc-1",
+          longitud_referencia: -75.5489,
+          latitud_referencia: 10.4201,
+          tipo_ubicacion: "coordenada_registrada",
+          fotos: [],
+          codigo_oficial: "MT-L01-01",
+          shortcode_ciudadano: "MT101",
+          url_mapa: "https://www.google.com/maps/@10.4201,-75.5489,17z",
+        },
+      ];
+
+      fetchSpy.mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        headers: new Headers({ "content-type": "application/json" }),
+        json: async () => mockBackendMesas,
+      } as Response);
+
+      const mesas = await listarMesasGeovisor();
+      expect(mesas).toHaveLength(1);
+      const m = mesas[0];
+      expect(m.tipo_ubicacion).toBe("coordenada_registrada");
+      expect(m.latitud_referencia).toBe(10.4201);
+      expect(m.longitud_referencia).toBe(-75.5489);
+      expect(m.url_mapa).toBe("https://www.google.com/maps/@10.4201,-75.5489,17z");
+    });
   });
 });

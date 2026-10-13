@@ -21,11 +21,12 @@ export interface MesaGeovisor {
   territorio_codigo: string | null;
   longitud_referencia: number | null;
   latitud_referencia: number | null;
-  tipo_ubicacion: "centroide_territorial_referencia" | null;
+  tipo_ubicacion: "centroide_territorial_referencia" | "coordenada_registrada" | null;
   fotos: FotoMesaGeovisor[];
   aforo?: number | null;
   codigo_oficial?: string | null;
   shortcode_ciudadano?: string | null;
+  url_mapa?: string | null;
 }
 
 const ESTADOS = new Set<EstadoMesaGeovisor>([
@@ -37,7 +38,7 @@ function esRegistro(valor: unknown): valor is Record<string, unknown> {
 }
 
 function textoNullable(valor: unknown, campo: string): string | null {
-  if (valor === null) return null;
+  if (valor === null || valor === undefined) return null;
   if (typeof valor !== "string") throw new Error(`Respuesta de mesas inválida: ${campo}`);
   return valor;
 }
@@ -67,7 +68,11 @@ function validarMesa(valor: unknown): MesaGeovisor {
   }
   if (!Array.isArray(valor.fotos)) throw new Error("La lista de fotos de mesa es inválida");
   const tipoUbicacion = valor.tipo_ubicacion;
-  if (tipoUbicacion !== null && tipoUbicacion !== "centroide_territorial_referencia") {
+  if (
+    tipoUbicacion !== null &&
+    tipoUbicacion !== "centroide_territorial_referencia" &&
+    tipoUbicacion !== "coordenada_registrada"
+  ) {
     throw new Error("Tipo de ubicación de mesa desconocido");
   }
   const fecha = textoNullable(valor.fecha, "fecha");
@@ -89,6 +94,7 @@ function validarMesa(valor: unknown): MesaGeovisor {
     fotos: valor.fotos.map(validarFoto),
     codigo_oficial: textoNullable(valor.codigo_oficial, "codigo_oficial"),
     shortcode_ciudadano: textoNullable(valor.shortcode_ciudadano, "shortcode_ciudadano"),
+    url_mapa: textoNullable(valor.url_mapa, "url_mapa"),
   };
 }
 

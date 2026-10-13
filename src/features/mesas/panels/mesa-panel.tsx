@@ -33,8 +33,10 @@ import {
   Search,
   ExternalLink,
   Printer,
-  Share2
+  Share2,
+  Navigation
 } from "lucide-react";
+import { generarUrlComoLlegar } from "@/features/mesas/lib/coordenadas-parser";
 import {
   Select,
   SelectContent,
@@ -564,7 +566,24 @@ export function MesaPanel({
                   />
                   <span>{mesa.lugar}</span>
                 </span>
-                {mesa.urlMapa && (
+                {mesa.coordenadas && (
+                  <div className="flex flex-wrap items-center gap-2 pt-0.5">
+                    <span className="font-mono text-xs text-[var(--text-secondary)]">
+                      {mesa.coordenadas.lat.toFixed(5)}, {mesa.coordenadas.lng.toFixed(5)}
+                    </span>
+                    <a
+                      href={generarUrlComoLlegar(mesa.coordenadas.lat, mesa.coordenadas.lng)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-xs text-[var(--ember)] hover:underline font-medium"
+                    >
+                      <Navigation className="size-3" />
+                      <span>Cómo llegar</span>
+                      <ExternalLink className="size-2.5 opacity-70" />
+                    </a>
+                  </div>
+                )}
+                {mesa.urlMapa && !mesa.coordenadas && (
                   <a
                     href={mesa.urlMapa}
                     target="_blank"
