@@ -2,7 +2,7 @@ import uuid
 from datetime import datetime
 from typing import Any
 
-from sqlalchemy import Boolean, DateTime, ForeignKey, Index, Integer, Numeric, String, Text, text
+from sqlalchemy import Boolean, DateTime, Float, ForeignKey, Index, Integer, Numeric, String, Text, text
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.types import UserDefinedType
@@ -264,3 +264,74 @@ class GeometriaCapa(Base):
     creado_en: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=text("clock_timestamp()"), nullable=False
     )
+
+
+class PoligonoAnaliticaHurto(Base):
+    """Polígonos espaciales base re-proyectados a EPSG:4326 para análisis delictivo de Cartagena."""
+
+    __tablename__ = "poligonos_analitica_hurtos"
+    __table_args__ = (
+        Index("idx_poligonos_hurtos_gist", "geometria", postgresql_using="gist"),
+        Index("idx_poligonos_hurtos_simp_gist", "geometria_simplificada", postgresql_using="gist"),
+        {"schema": "geodatos"},
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    codigo: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
+    nombre: Mapped[str] = mapped_column(String(100), nullable=False)
+    zona: Mapped[str] = mapped_column(String(20), nullable=False)
+    geometria: Mapped[Any] = mapped_column(Geometria("MultiPolygon", 4326), nullable=False)
+    geometria_simplificada: Mapped[Any | None] = mapped_column(
+        Geometria("MultiPolygon", 4326), nullable=True
+    )
+    area_km2: Mapped[float | None] = mapped_column(Float, nullable=True)
+    centroide: Mapped[Any | None] = mapped_column(Geometria("Point", 4326), nullable=True)
+    metadatos: Mapped[dict[str, Any]] = mapped_column(
+        JSONB, default=dict, server_default=text("'{}'::jsonb"), nullable=False
+    )
+    creado_en: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=text("clock_timestamp()"), nullable=False
+    )
+
+    estadisticas: Mapped[list["EstadisticaHurto"]] = relationship(
+        "EstadisticaHurto", back_populates="poligono", cascade="all, delete-orphan"
+    )
+
+
+class EstadisticaHurto(Base):
+    """Estadística estructurada de hurtos en Cartagena (2018-2026)."""
+
+    __tablename__ = "estadisticas_hurtos"
+    __table_args__ = (
+        Index("idx_hurtos_delito_anio", "delito", "anio"),
+        Index("idx_hurtos_anio_mes", "anio", "mes"),
+        Index("idx_hurtos_zona", "zona"),
+        Index("idx_hurtos_poligono_id", "poligono_id"),
+        Index("idx_hurtos_delito_zona_anio", "delito", "zona", "anio"),
+        {"schema": "geodatos"},
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, server_default=text("public.generar_uuid_v7()")
+    )
+    delito: Mapped[str] = mapped_column(String(50), nullable=False)
+    anio: Mapped[int] = mapped_column(Integer, nullable=False)
+    mes: Mapped[str] = mapped_column(String(20), nullable=False)
+    zona: Mapped[str] = mapped_column(String(20), nullable=False)
+    poligono_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("geodatos.poligonos_analitica_hurtos.id", ondelete="CASCADE"), nullable=False
+    )
+    armas_medios: Mapped[str] = mapped_column(String(100), nullable=False)
+    clase_sitio: Mapped[str] = mapped_column(String(100), nullable=False)
+    dia_semana: Mapped[str] = mapped_column(String(20), nullable=False)
+    cantidad: Mapped[int] = mapped_column(
+        Integer, default=1, server_default=text("1"), nullable=False
+    )
+    creado_en: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=text("clock_timestamp()"), nullable=False
+    )
+
+    poligono: Mapped["PoligonoAnaliticaHurto"] = relationship(
+        "PoligonoAnaliticaHurto", back_populates="estadisticas"
+    )
+

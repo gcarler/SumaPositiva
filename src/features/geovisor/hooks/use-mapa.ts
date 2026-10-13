@@ -29,11 +29,12 @@ import {BARRIOS_CARTAGENA, type Barrio} from "../data/barrios.data";
 import type {CapasConfig} from "../components/geovisor-controles";
 import type {MesaGeovisor} from "../services/mesas-geovisor-api";
 import {buscarTerritorioPorCoordenada} from "../services/geovisor-api";
+import {obtenerPoligonosHurtosGeojson} from "../services/hurtos-api";
 
 export interface HoverInfo {
   id: string;
   nombre: string;
-  tipo: "localidad" | "corregimiento" | "isla" | "barrio" | "mesa";
+  tipo: "localidad" | "corregimiento" | "isla" | "barrio" | "mesa" | "hurto";
   ish?: number;
   poblacion?: number;
   aportes?: number;
@@ -53,6 +54,20 @@ export interface HoverInfo {
     estado: string;
     realizada: boolean;
   };
+  hurtoDetalle?: {
+    poligono_id: number;
+    codigo: string;
+    nombre: string;
+    zona: string;
+    area_km2: number;
+    total_casos: number;
+    densidad_casos_km2: number;
+    porcentaje_total: number;
+    delito_etiqueta: string;
+    anio_etiqueta: string;
+    top_armas: Array<{ arma: string; cantidad: number; porcentaje: number }>;
+    top_sitios: Array<{ sitio: string; cantidad: number; porcentaje: number }>;
+  };
 }
 
 export interface UseMapaOptions {
@@ -67,6 +82,9 @@ export interface UseMapaOptions {
   mesas?: MesaGeovisor[];
   mesaSeleccionadaId?: string | null;
   onSelectMesa?: (mesaId: string) => void;
+  anioHurto?: number | null;
+  delitoHurto?: string | null;
+  onSelectHurto?: (poligonoId: number) => void;
 }
 
 /**
@@ -181,6 +199,9 @@ export function useMapa({
   mesas = [],
   mesaSeleccionadaId = null,
   onSelectMesa,
+  anioHurto = null,
+  delitoHurto: _delitoHurto = null,
+  onSelectHurto,
 }: UseMapaOptions) {
   const mapaRef = useRef<Map | null>(null);
   const [cargando, setCargando] = useState(true);
@@ -191,11 +212,71 @@ export function useMapa({
   const capasRef = useRef(capasVisibles);
 
   const fuenteTerritoriosRef = useRef<VectorSource<Feature> | null>(null);
+  const fuenteHurtosRef = useRef<VectorSource<Feature> | null>(null);
   const fuenteBarriosRef = useRef<VectorSource<Feature> | null>(null);
   const fuentePuntosRef = useRef<VectorSource<Feature> | null>(null);
   const fuenteMesasRef = useRef<VectorSource<Feature> | null>(null);
   const mesasRef = useRef(mesas);
   const mesaSeleccionadaRef = useRef(mesaSeleccionadaId);
+  const onSelectHurtoRef = useRef(onSelectHurto);
+
+  useEffect(() => {
+    onSelectHurtoRef.current = onSelectHurto;
+  }, [onSelectHurto]);
+
+  // Carga reactiva de polígonos analíticos de hurtos cuando se activa alguna capa de delitos
+  useEffect(() => {
+    const hayHurtos = Boolean(
+      capasVisibles?.hurtoMotocicletas ||
+      capasVisibles?.hurtoResidencias ||
+      capasVisibles?.hurtoComercio
+    );
+    if (!fuenteHurtosRef.current) return;
+
+    if (!hayHurtos) {
+      fuenteHurtosRef.current.clear(true);
+      return;
+    }
+
+    let delitoParam: string | undefined = undefined;
+    if (capasVisibles?.hurtoMotocicletas) delitoParam = "HURTO MOTOCICLETA";
+    else if (capasVisibles?.hurtoResidencias) delitoParam = "HURTO RESIDENCIAS";
+    else if (capasVisibles?.hurtoComercio) delitoParam = "HURTO COMERCIO";
+
+    let activo = true;
+    obtenerPoligonosHurtosGeojson({
+      delito: delitoParam,
+      anio: anioHurto ?? undefined,
+    })
+      .then((fc) => {
+        if (!activo || !fuenteHurtosRef.current) return;
+        fuenteHurtosRef.current.clear(true);
+        const format = new GeoJSON();
+        const feats = format.readFeatures(fc, {
+          dataProjection: "EPSG:4326",
+          featureProjection: "EPSG:3857",
+        });
+        feats.forEach((f) => {
+          f.set("tipo", "hurto");
+          f.set("delito_etiqueta", delitoParam ?? "Todos los Hurtos");
+          f.set("anio_etiqueta", anioHurto ? `Año ${anioHurto}` : "2018–2026");
+        });
+        fuenteHurtosRef.current.addFeatures(feats);
+        mapaRef.current?.renderSync();
+      })
+      .catch((err) => {
+        console.warn("Fallo al cargar polígonos de analítica de hurtos:", err);
+      });
+
+    return () => {
+      activo = false;
+    };
+  }, [
+    capasVisibles?.hurtoMotocicletas,
+    capasVisibles?.hurtoResidencias,
+    capasVisibles?.hurtoComercio,
+    anioHurto,
+  ]);
 
   useEffect(() => {
     localidadRef.current = localidadId;
@@ -530,11 +611,52 @@ export function useMapa({
       },
     });
 
+    /* 4. Capa Analítica de Hurtos (Urbano y Rural SIEDCO) */
+    const fuenteHurtos = new VectorSource<Feature>();
+    fuenteHurtosRef.current = fuenteHurtos;
+
+    const capaHurtos = new VectorLayer({
+      source: fuenteHurtos,
+      zIndex: 5,
+      style: (feature) => {
+        const hovered = feature.get("hovered") === true;
+        const total = Number(feature.get("total_casos") ?? 0);
+        const porcentaje = Number(feature.get("porcentaje_total") ?? 0);
+        const nombre = String(feature.get("nombre") ?? "Polígono");
+        const zona = String(feature.get("zona") ?? "URBANA");
+
+        let baseColor = "#ef4444";
+        if (capasRef.current.hurtoMotocicletas) baseColor = "#f97316";
+        else if (capasRef.current.hurtoResidencias) baseColor = "#8b5cf6";
+        else if (capasRef.current.hurtoComercio) baseColor = "#06b6d4";
+
+        const esUrbano = zona === "URBANA";
+        const opacidad = hovered ? "88" : esUrbano ? "50" : "22";
+        const strokeColor = hovered ? "#1a1a2e" : baseColor;
+        const strokeWidth = hovered ? 3.5 : 2;
+
+        return new Style({
+          fill: new Fill({ color: `${baseColor}${opacidad}` }),
+          stroke: new Stroke({ color: strokeColor, width: strokeWidth }),
+          text: capasRef.current.etiquetas
+            ? new Text({
+                text: `${nombre}\n${total.toLocaleString("es-CO")} hurtos (${porcentaje}%)`,
+                font: "700 11.5px Geist, sans-serif",
+                fill: new Fill({ color: "#111827" }),
+                stroke: new Stroke({ color: "#ffffff", width: 3.5 }),
+                overflow: true,
+              })
+            : undefined,
+        });
+      },
+    });
+
     const mapa = new Map({
       target,
       layers: [
         new TileLayer({ source: new OSM() }),
         capaTerritorios,
+        capaHurtos,
         capaBarrios,
         capaPuntos,
         capaMesas,
@@ -615,6 +737,11 @@ export function useMapa({
         if (typeof idMesa === "string") onSelectMesa?.(idMesa);
         return;
       }
+      if (feature.get("tipo") === "hurto") {
+        const idPol = Number(feature.get("poligono_id") ?? 0);
+        onSelectHurtoRef.current?.(idPol);
+        return;
+      }
 
       const id = feature.get("id");
       if (typeof id === "string") {
@@ -646,7 +773,7 @@ export function useMapa({
       const feature = featureAtPixel(pixel);
       target.style.cursor = feature ? "pointer" : "grab";
 
-      const todasLasCapas = [capaTerritorios, capaBarrios, capaPuntos, capaMesas];
+      const todasLasCapas = [capaTerritorios, capaHurtos, capaBarrios, capaPuntos, capaMesas];
       todasLasCapas.forEach((capa) => {
         capa.getSource()?.getFeatures().forEach((elemento) => {
           const hovered = elemento === feature;
@@ -664,6 +791,41 @@ export function useMapa({
 
       const id = String(feature.get("id") ?? "");
       const nombre = String(feature.get("nombre") ?? "");
+
+      if (feature.get("tipo") === "hurto") {
+        onHoverInfo({
+          id: String(feature.get("poligono_id") ?? "hurto"),
+          nombre: String(feature.get("nombre") ?? "Polígono Delictivo"),
+          tipo: "hurto",
+          pixel,
+          hurtoDetalle: {
+            poligono_id: Number(feature.get("poligono_id") ?? 0),
+            codigo: String(feature.get("codigo") ?? ""),
+            nombre: String(feature.get("nombre") ?? ""),
+            zona: String(feature.get("zona") ?? ""),
+            area_km2: Number(feature.get("area_km2") ?? 0),
+            total_casos: Number(feature.get("total_casos") ?? 0),
+            densidad_casos_km2: Number(feature.get("densidad_casos_km2") ?? 0),
+            porcentaje_total: Number(feature.get("porcentaje_total") ?? 0),
+            delito_etiqueta: String(feature.get("delito_etiqueta") ?? "Hurtos"),
+            anio_etiqueta: String(feature.get("anio_etiqueta") ?? "2018–2026"),
+            top_armas:
+              (feature.get("top_armas") as Array<{
+                arma: string;
+                cantidad: number;
+                porcentaje: number;
+              }>) ?? [],
+            top_sitios:
+              (feature.get("top_sitios") as Array<{
+                sitio: string;
+                cantidad: number;
+                porcentaje: number;
+              }>) ?? [],
+          },
+        });
+        return;
+      }
+
       if (feature.get("tipo") === "mesa") {
         const mesa = mesasRef.current.find((item) => item.id === id);
         if (mesa) {
@@ -734,6 +896,7 @@ export function useMapa({
       mapaRef.current = null;
       fuenteMesasRef.current = null;
       fuentePuntosRef.current = null;
+      fuenteHurtosRef.current = null;
     };
   }, [target, onSelectTerritorio, onSelectBarrio, onHoverInfo, onSelectMesa]);
 

@@ -219,3 +219,86 @@ class IsocronasFeatureCollection(BaseModel):
         default_factory=list, description="Lista de polígonos de cobertura temporal"
     )
 
+
+class SerieTemporalItem(BaseModel):
+    """Elemento de serie temporal anual o mensual."""
+
+    periodo: str = Field(..., description="Año o mes analizado")
+    cantidad: int = Field(..., description="Cantidad total de incidentes")
+
+
+class CategoriaConteo(BaseModel):
+    """Categoría con su frecuencia y participación porcentual."""
+
+    categoria: str = Field(..., description="Nombre de la categoría")
+    cantidad: int = Field(..., description="Número de incidentes")
+    porcentaje: float = Field(..., description="Porcentaje sobre el total analizado")
+
+
+class DistribucionZonaItem(BaseModel):
+    """Desglose por zona geográfica urbana vs rural."""
+
+    zona: str = Field(..., description="URBANA o RURAL")
+    cantidad: int = Field(..., description="Número de incidentes")
+    porcentaje: float = Field(..., description="Porcentaje sobre el total analizado")
+
+
+class ResumenHurtosResponse(BaseModel):
+    """Resumen estadístico y analítico de hurtos para el Geovisor."""
+
+    total_casos: int = Field(..., description="Total de casos registrados según filtros")
+    delito: str | None = Field(default=None, description="Filtro de delito aplicado")
+    anio: int | None = Field(default=None, description="Filtro de año aplicado")
+    zona: str | None = Field(default=None, description="Filtro de zona aplicado")
+    serie_anual: list[SerieTemporalItem] = Field(
+        default_factory=list, description="Serie temporal anual 2018-2026"
+    )
+    serie_mensual: list[SerieTemporalItem] = Field(
+        default_factory=list, description="Distribución mensual"
+    )
+    top_armas: list[CategoriaConteo] = Field(
+        default_factory=list, description="Top 5 armas o medios empleados"
+    )
+    top_sitios: list[CategoriaConteo] = Field(
+        default_factory=list, description="Top 5 clases de sitio"
+    )
+    distribucion_zona: list[DistribucionZonaItem] = Field(
+        default_factory=list, description="Distribución por zona urbana vs rural"
+    )
+
+
+class HurtoPoligonoProperties(BaseModel):
+    """Propiedades analíticas asociadas a cada polígono base."""
+
+    poligono_id: int = Field(..., description="ID del polígono (1 Urbano, 2 Rural)")
+    codigo: str = Field(..., description="Código oficial del polígono")
+    nombre: str = Field(..., description="Nombre descriptivo del polígono")
+    zona: str = Field(..., description="URBANA o RURAL")
+    area_km2: float | None = Field(default=None, description="Área superficial en km2")
+    delito: str | None = Field(default=None, description="Delito analizado")
+    anio: int | None = Field(default=None, description="Año analizado o null para consolidado")
+    total_casos: int = Field(..., description="Total de casos en este polígono")
+    densidad_casos_km2: float = Field(..., description="Casos por kilómetro cuadrado")
+    porcentaje_total: float = Field(..., description="Participación porcentual sobre el distrito")
+    top_armas: list[CategoriaConteo] = Field(default_factory=list)
+    top_sitios: list[CategoriaConteo] = Field(default_factory=list)
+
+
+class HurtoFeature(BaseModel):
+    """Feature GeoJSON de polígono analítico de hurtos."""
+
+    type: str = Field(default="Feature", description="Tipo GeoJSON Feature")
+    id: int = Field(..., description="ID numérico del polígono")
+    geometry: dict[str, Any] = Field(..., description="Geometría MultiPolygon EPSG:4326")
+    properties: HurtoPoligonoProperties = Field(..., description="Propiedades analíticas")
+
+
+class HurtosFeatureCollection(BaseModel):
+    """Colección GeoJSON con los polígonos urbano y rural y sus estadísticas asociadas."""
+
+    type: str = Field(default="FeatureCollection", description="Tipo GeoJSON FeatureCollection")
+    features: list[HurtoFeature] = Field(
+        default_factory=list, description="Polígonos temáticos analíticos"
+    )
+
+

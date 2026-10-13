@@ -1,9 +1,15 @@
-"use client";
-
-import {Layers} from "lucide-react";
+import {Layers, ShieldAlert, BarChart3} from "lucide-react";
 
 import {Label} from "@/shared/ui/label";
 import {Checkbox} from "@/shared/ui/checkbox";
+import {Button} from "@/shared/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/shared/ui/select";
 import {
   type VariableMapa,
   VARIABLE_META,
@@ -19,18 +25,27 @@ export interface CapasConfig {
   puntos: boolean;
   etiquetas: boolean;
   isocronas?: boolean;
+  hurtoMotocicletas?: boolean;
+  hurtoResidencias?: boolean;
+  hurtoComercio?: boolean;
 }
 
 interface GeovisorControlesProps {
   capas: CapasConfig;
   onToggleCapa: (capa: keyof CapasConfig) => void;
   variableMapa: VariableMapa;
+  anioHurto?: number | null;
+  onAnioHurtoChange?: (anio: number | null) => void;
+  onAbrirTableroHurtos?: () => void;
 }
 
 export function GeovisorControles({
   capas,
   onToggleCapa,
   variableMapa,
+  anioHurto = null,
+  onAnioHurtoChange,
+  onAbrirTableroHurtos,
 }: GeovisorControlesProps) {
   const meta = VARIABLE_META[variableMapa];
 
@@ -123,6 +138,108 @@ export function GeovisorControles({
             <span className="size-2 rounded-full" style={{ backgroundColor: "#10b981" }} />
           </Label>
         )}
+
+        {/* Sección de Capas Analíticas de Hurtos 2018-2026 */}
+        <div className="border-t border-[var(--border)] pt-2.5 mt-1 space-y-2">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1.5 text-[var(--danger)]">
+              <ShieldAlert className="size-3.5" />
+              <span className="text-[11px] font-bold uppercase tracking-wider">
+                Hurtos SIEDCO
+              </span>
+            </div>
+            {onAbrirTableroHurtos && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onAbrirTableroHurtos}
+                className="h-6 px-1.5 text-[10px] text-[var(--danger)] hover:bg-[var(--danger)]/10"
+                title="Abrir tablero analítico completo"
+              >
+                <BarChart3 className="size-3 mr-1" />
+                Tablero
+              </Button>
+            )}
+          </div>
+
+          <Label
+            htmlFor="capa-hurto-motos"
+            className="flex items-center justify-between gap-2 cursor-pointer hover:text-[var(--text-primary)] text-[var(--text-secondary)] font-normal"
+          >
+            <div className="flex items-center gap-2">
+              <Checkbox
+                checked={Boolean(capas.hurtoMotocicletas)}
+                onCheckedChange={() => onToggleCapa("hurtoMotocicletas")}
+                id="capa-hurto-motos"
+              />
+              <span className="font-medium text-xs">Hurto a Motocicletas</span>
+            </div>
+            <span className="size-2 rounded-full" style={{ backgroundColor: "#f97316" }} />
+          </Label>
+
+          <Label
+            htmlFor="capa-hurto-residencias"
+            className="flex items-center justify-between gap-2 cursor-pointer hover:text-[var(--text-primary)] text-[var(--text-secondary)] font-normal"
+          >
+            <div className="flex items-center gap-2">
+              <Checkbox
+                checked={Boolean(capas.hurtoResidencias)}
+                onCheckedChange={() => onToggleCapa("hurtoResidencias")}
+                id="capa-hurto-residencias"
+              />
+              <span className="font-medium text-xs">Hurto a Residencias</span>
+            </div>
+            <span className="size-2 rounded-full" style={{ backgroundColor: "#8b5cf6" }} />
+          </Label>
+
+          <Label
+            htmlFor="capa-hurto-comercio"
+            className="flex items-center justify-between gap-2 cursor-pointer hover:text-[var(--text-primary)] text-[var(--text-secondary)] font-normal"
+          >
+            <div className="flex items-center gap-2">
+              <Checkbox
+                checked={Boolean(capas.hurtoComercio)}
+                onCheckedChange={() => onToggleCapa("hurtoComercio")}
+                id="capa-hurto-comercio"
+              />
+              <span className="font-medium text-xs">Hurto a Comercio</span>
+            </div>
+            <span className="size-2 rounded-full" style={{ backgroundColor: "#06b6d4" }} />
+          </Label>
+
+          {(capas.hurtoMotocicletas || capas.hurtoResidencias || capas.hurtoComercio) && (
+            <div className="pt-1">
+              <Label
+                htmlFor="select-filtro-anio-geovisor"
+                className="block text-[10px] font-semibold text-[var(--text-tertiary)] uppercase tracking-wider mb-1"
+              >
+                Año Delictivo
+              </Label>
+              <Select
+                value={anioHurto ? String(anioHurto) : "TODOS"}
+                onValueChange={(val) => onAnioHurtoChange?.(val === "TODOS" ? null : Number(val))}
+              >
+                <SelectTrigger
+                  id="select-filtro-anio-geovisor"
+                  className="w-full h-7 text-[11px]"
+                  aria-label="Filtrar año delictivo"
+                >
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="TODOS" className="text-xs">
+                    2018–2026 (Consolidado)
+                  </SelectItem>
+                  {[2026, 2025, 2024, 2023, 2022, 2021, 2020, 2019, 2018].map((a) => (
+                    <SelectItem key={a} value={String(a)} className="text-xs">
+                      Año {a}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Leyenda Dinámica Coroplética */}

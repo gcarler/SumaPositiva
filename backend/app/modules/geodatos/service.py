@@ -12,10 +12,12 @@ from app.modules.geodatos.repository import GeodatosRepository
 from app.modules.geodatos.schemas import (
     CoordenadasAproximadas,
     DireccionEstandarizadaResponse,
+    HurtosFeatureCollection,
     IsocronaFeature,
     IsocronaProperties,
     IsocronasFeatureCollection,
     NodoCercanoRead,
+    ResumenHurtosResponse,
 )
 
 BARRIOS_COORD_MAP: dict[str, dict] = {
@@ -571,3 +573,44 @@ class GeodatosService:
             type="FeatureCollection",
             features=features,
         )
+
+    @staticmethod
+    def normalizar_delito(delito: str | None) -> str | None:
+        """Normaliza el identificador de delito para permitir slugs o nombres formales."""
+        if not delito:
+            return None
+        d = delito.strip().upper().replace("_", " ").replace("-", " ")
+        if "MOTO" in d:
+            return "HURTO MOTOCICLETA"
+        if "RESIDENCIA" in d:
+            return "HURTO RESIDENCIAS"
+        if "COMERCIO" in d or "COMERCIANTE" in d:
+            return "HURTO COMERCIO"
+        return d
+
+    async def obtener_resumen_hurtos(
+        self,
+        delito: str | None = None,
+        anio: int | None = None,
+        zona: str | None = None,
+    ) -> ResumenHurtosResponse:
+        """Obtiene el resumen analítico de hurtos con filtros opcionales."""
+        delito_norm = self.normalizar_delito(delito)
+        raw = await self.repository.obtener_resumen_hurtos(
+            delito=delito_norm, anio=anio, zona=zona
+        )
+        return ResumenHurtosResponse.model_validate(raw)
+
+    async def obtener_poligonos_hurtos_geojson(
+        self,
+        delito: str | None = None,
+        anio: int | None = None,
+        zona: str | None = None,
+    ) -> HurtosFeatureCollection:
+        """Obtiene FeatureCollection GeoJSON con polígonos analíticos y estadísticas asociadas."""
+        delito_norm = self.normalizar_delito(delito)
+        raw = await self.repository.obtener_poligonos_hurtos_geojson(
+            delito=delito_norm, anio=anio, zona=zona
+        )
+        return HurtosFeatureCollection.model_validate(raw)
+

@@ -1,170 +1,276 @@
-# INFORME DE RESULTADO: TAREA [MESA-UBIC-01]
-## FIJACIÓN DE UBICACIÓN DE LA MESA: CLIC EN MAPA, URL DE MAPAS O COORDENADAS PLANAS Y ENLACE CON GEOVISOR
+# INFORME DE RESULTADO: TAREA [GEO-HURTOS-01]
+## INGESTA Y VISUALIZACIÓN EN GEOVISOR DE CAPAS ANALÍTICAS DE HURTOS (MOTOCICLETAS, RESIDENCIAS, COMERCIO 2018-2026)
 
 **Para:** Coordinador General / Auditor EAF (`agy`)  
 **De:** Desarrollador / Responsable Técnico EDD (`agy2`)  
 **Fecha:** 13 de Octubre de 2026  
-**Tarea Reportada:** `[MESA-UBIC-01] Ubicación de la mesa: clic en mapa, URL de Google Maps o coordenadas planas, y uso en el geovisor`  
+**Tarea Reportada:** `[GEO-HURTOS-01] Ingesta y visualización en geovisor de capas analíticas de hurtos (motocicletas, residencias, comercio 2018-2026)`  
 **Plan Maestro y Especificación:** `bridge/01_tarea_activa.md` y `bridge/00_plan_maestro_cierre_operativo.md`  
 
 ---
 
 ## 🎯 1. Resumen Ejecutivo
 
-En estricta atención al requerimiento del propietario y las directrices técnicas de `bridge/01_tarea_activa.md`, se implementó y desplegó la funcionalidad integral de geolocalización de mesas de trabajo:
+En estricta atención al requerimiento del propietario y a las especificaciones técnicas y directivas de seguridad de `bridge/01_tarea_activa.md`, se ejecutó y desplegó en producción la solución integral de ingesta, analítica espacial y visualización interactiva para los **12.280 registros de hurtos** (2018–2026) correspondientes a **Cartagena de Indias**:
 
-1. **Tres vías independientes y sincronizadas para fijar ubicación:**
-   - **Vía 1: Clic interactivo en mapa OpenLayers** (`SelectorUbicacionMesa`), con carga dinámica `ssr: false`, centrado en Cartagena o en punto previo, y controles accesibles POLIS.
-   - **Vía 2: Pegado de URL de mapas** con detección automática y extracción de lat/lng para Google Maps (`@lat,lng`, `!3dLAT!4dLNG`, `?q=`, `query=`, `ll=`, `destination=`), OpenStreetMap (`#map=`, `mlat`/`mlon`) y Waze (`ll=`). Incluye aviso preventivo contra SSRF para enlaces cortos (`maps.app.goo.gl` o `goo.gl/maps`).
-   - **Vía 3: Coordenadas planas combinadas en un solo campo** (separadores comma, punto y coma o espacio, ej. `10.39972, -75.51444`) además de campos individuales continuos para Latitud y Longitud, con advertencia no bloqueante si caen fuera de los límites distritales de Cartagena (lat 10.1–10.6, lng −75.8–−75.3).
-2. **Sección 3 abierta por defecto:**
-   - En el editor de mesas (`mesa-editor-panel.tsx`), la sección «3. Ubicación y logística» ahora se muestra **abierta por defecto** tanto al crear una nueva mesa como al editar una existente, permitiendo al usuario visualizar el mapa y las opciones de ubicación inmediatamente.
-3. **Consumo y visualización en el Geovisor:**
-   - Si la mesa cuenta con coordenadas válidas registradas en `metadatos.coordenadas`, el backend (`backend/app/modules/evidencia/service.py`) y el frontend (`mesas-geovisor-api.ts`) asignan y validan el nuevo `tipo_ubicacion`: `"coordenada_registrada"`, así como `url_mapa`. Si no existen coordenadas propias, se mantiene el fallback exacto al centroide del territorio (`"centroide_territorial_referencia"`).
-4. **Fichas con enlace "Cómo llegar":**
-   - Tanto la ficha detallada de la mesa (`mesa-panel.tsx`) como la ficha del geovisor (`geovisor-ficha-mesa.tsx`) presentan las coordenadas registradas y un botón/enlace interactivo «Cómo llegar» que abre la navegación hacia el punto de encuentro en Google Maps (`https://www.google.com/maps/dir/?api=1&destination=lat,lng`).
-5. **Calidad, Pruebas y Despliegue en Producción:**
-   - **22 pruebas unitarias** nuevas para el parser de coordenadas (`coordenadas-parser.test.ts`).
-   - **3 pruebas SSR/a11y** para el selector OpenLayers (`selector-ubicacion-mesa.test.tsx`).
-   - **8 pruebas unitarias** para el contrato del geovisor (`mesas-geovisor-api.test.ts`).
-   - **5 pruebas pytest** para el backend geovisor (`test_geovisor_ubicacion_mesa.py`).
-   - **Playwright E2E** verificado en viewport de 1440px (Desktop) y 375px (Mobile) en entorno aislado sin alterar `bd_csh`.
-   - **Censo `bd_csh` intacto:** exactamente 33 mesas, 36 agendas, 11 fichas y 17 actores estratégicos.
-   - Despliegue verificado en producción con `polis-frontend` y `polis-backend` respondiendo HTTP 200.
+1. **Respaldo previo de base de datos obligatorio:**
+   - Respaldo generado con `scripts/respaldo_bd.sh`: `/root/polis/backups/bd_csh_20261013_161637.dump` (1.2 MB, permisos 0600, SHA-256 verificado).
+2. **ETL de Streaming de Alto Rendimiento (Sin sobrepeso en Git ni memoria):**
+   - Para procesar los archivos fuente (6.88 GB GeoJSON descomprimidos contenidos en 3 `.zip` en `/root/.gemini/antigravity-cli/brain/827a451d-ecea-4e9b-ab9d-e6b1b5fa6094/scratch/`), se construyó un pipeline ETL streaming en Python (`backend/scripts/ingestar_hurtos.py`).
+   - El script extrajo los 2 únicos polígonos base espaciales (`ID_POLIG = 1` Perímetro Urbano e `ID_POLIG = 2` Zona Rural/Insular) desde su proyección métrica original **`EPSG:9377`** (MAGNA-SIRGAS Origen Nacional) y los re-proyectó con precisión geodésica a **`EPSG:4326`** (WGS-84) mediante `pyproj`, simplificando topológicamente sus geometrías.
+   - Ingesta exacta de **12.280 registros** consolidados en lotes (`bulk_insert` de 1.000 filas):
+     - **Hurto a Motocicletas:** 2.520 registros.
+     - **Hurto a Residencias:** 3.853 registros.
+     - **Hurto a Comercio:** 5.907 registros.
+     - **Total consolidado:** **12.280 registros** (sumando un total de 18.242 eventos/incidentes delictivos).
+3. **Migración Alembic Aditiva 0061 (`0061_analitica_hurtos`):**
+   - `geodatos.poligonos_analitica_hurtos`: almacena los 2 polígonos re-proyectados con geometrías base y simplificadas e índices espaciales GiST.
+   - `geodatos.estadisticas_hurtos`: tabla estructurada analítica con índices compuestos `(delito, anio)`, `(anio, mes)`, `(zona)`, `(poligono_id)` y `(delito, zona, anio)`.
+   - `geodatos.capas_geovisor`: registro de las 3 capas temáticas (`HURTO_MOTOCICLETAS`, `HURTO_RESIDENCIAS`, `HURTO_COMERCIO`) con paleta de color diferenciada (`#f97316`, `#8b5cf6`, `#06b6d4`).
+4. **API REST Backend de Alto Desempeño:**
+   - `GET /api/v1/geodatos/analitica/hurtos/resumen`: Retorna en < 20 ms el resumen analítico estructurado (total de casos, series anuales 2018–2026, distribución mensual, top 5 armas/modalidades, top 5 clases de sitio y desglose urbana/rural).
+   - `GET /api/v1/geodatos/analitica/hurtos/geojson`: Retorna un `FeatureCollection` ultraligero de **129.7 KB** (estrictamente inferior al límite de 150 KB fijado por la directiva de arquitectura) conteniendo los 2 polígonos con métricas de concentración delictiva, tasa/densidad por km² y top modalidades asociadas al filtro consultado.
+5. **Visualización Interactiva en el Geovisor POLIS:**
+   - **Controles de Capas:** Toggles en `GeovisorControles` para Hurto a Motocicletas, Hurto a Residencias y Hurto a Comercio con leyenda temática y selector rápido de año.
+   - **Renderizado Dinámico en OpenLayers:** Capa vectorial `capaHurtos` con coloreado por concentración y opacidad según densidad delictiva; tooltip enriquecido en hover con desglose de incidentes, densidad por km², top armas y top sitios.
+   - **Tablero Analítico Acoplado (`GeovisorHurtosPanel`):** Integrado en el workspace IDE de 4 paneles dock (`GeovisorWorkspaceLayout`) como pestaña analítica (`hurtos`). Incluye filtros interactivos de delito, periodo/año y zona, 4 tarjetas KPI, gráfico de barras interactivo de la serie histórica 2018–2026, desglose mensual, gráficos horizontales de modalidades/armas y clases de sitio, y botón de acción directa «Ver en Mapa».
+6. **Inviolabilidad Estricta de `bd_csh`:**
+   - Censo institucional 100% intacto: **33 mesas, 36 agendas, 11 fichas y 17 actores estratégicos**.
+7. **Calidad y Verificación Integral:**
+   - Pruebas backend (pytest): 4/4 pruebas de analítica de hurtos pasadas; 17/17 pruebas de geodatos pasadas; 31/31 pruebas de cierre pasadas.
+   - Pruebas frontend (Bun test): 535 pruebas pasadas (0 fallas) en 62 suites.
+   - Quality gates: `bun run check` (`ui:check`, `tsc --noEmit`, `eslint .`) superado con 0 errores.
+   - Build de producción Next.js compilado exitosamente (192 páginas estáticas/SSG).
+   - Servicios de producción `polis-backend` y `polis-frontend` activos con HTTP 200 verificado.
 
 ---
 
-## 🏗️ 2. Arquitectura y Componentes Implementados
+## 🛠️ 2. Arquitectura y Componentes Implementados
 
-### 2.1. Parser y Utilidades de Coordenadas (`coordenadas-parser.ts`)
-- **Ubicación:** `src/features/mesas/lib/coordenadas-parser.ts`
-- **Funcionalidades:**
-  - `parsearCoordenadasUrl(url: string): Coordenadas | null`:
-    - Google Maps `@10.421523,-75.551982,17z`
-    - Google Maps data params `!3d10.421523!4d-75.551982`
-    - Google Maps query params `?q=10.421523,-75.551982` o `query=...` o `ll=...`
-    - OpenStreetMap hash `#map=16/10.4215/-75.5520` o params `mlat=...&mlon=...`
-    - Waze `ll=10.421523,-75.551982`
-  - `esEnlaceCorto(url: string): boolean`: Detecta `maps.app.goo.gl` o `goo.gl/maps` sin realizar solicitudes de red salientes (prevención de SSRF según directiva de seguridad de `agy`).
-  - `parsearTextoCoordenadas(texto: string): Coordenadas | null`: Admite `lat, lng`, `lat; lng`, `lat lng`, y formatos con prefijos `lat: ... lng: ...`.
-  - `validarLimitesCartagena(lat: number, lng: number)`: Valida la caja de cobertura distrital `[10.1, 10.6]` y `[-75.8, -75.3]`, emitiendo advertencia no bloqueante si el punto se encuentra fuera.
-  - `validarRangoWgs84(lat: number, lng: number)`: Valida que latitud pertenezca a `[-90, 90]` y longitud a `[-180, 180]`.
-  - `generarUrlComoLlegar(lat: number, lng: number)`: Genera URL de navegación directa `https://www.google.com/maps/dir/?api=1&destination=lat,lng`.
+### 2.1. Base de Datos y Migración Alembic 0061
+- **Archivo:** `backend/alembic/versions/0061_analitica_hurtos.py`
+- **Tablas creadas en esquema `geodatos`:**
+  - `geodatos.poligonos_analitica_hurtos`:
+    - `id` (INTEGER, PK: 1=Perímetro Urbano, 2=Cartagena Rural/Insular).
+    - `codigo` (VARCHAR(50), UNIQUE).
+    - `nombre` (VARCHAR(100)).
+    - `zona` (VARCHAR(20): URBANA, RURAL).
+    - `geometria` (`geometry(MultiPolygon, 4326)`).
+    - `geometria_simplificada` (`geometry(MultiPolygon, 4326)` con tolerancia topológica).
+    - `area_km2` (DOUBLE PRECISION: 75.3 km² Urbano, 597.4 km² Rural).
+    - `centroide` (`geometry(Point, 4326)`).
+    - Índices GiST en `geometria` y `geometria_simplificada`.
+  - `geodatos.estadisticas_hurtos`:
+    - `id` (`UUID`, PK con `generar_uuid_v7()`).
+    - `delito` (`VARCHAR(50)`: `HURTO MOTOCICLETA`, `HURTO RESIDENCIAS`, `HURTO COMERCIO`).
+    - `anio` (`INTEGER`: 2018 a 2026).
+    - `mes` (`VARCHAR(20)`: Enero a Diciembre).
+    - `zona` (`VARCHAR(20)`: URBANA, RURAL).
+    - `poligono_id` (`INTEGER` FK hacia `poligonos_analitica_hurtos(id)`).
+    - `armas_medios` (`VARCHAR(100)`).
+    - `clase_sitio` (`VARCHAR(100)`).
+    - `dia_semana` (`VARCHAR(20)`).
+    - `cantidad` (`INTEGER` DEFAULT 1).
+    - Índices compuestos de cobertura de consulta:
+      - `idx_hurtos_delito_anio`
+      - `idx_hurtos_anio_mes`
+      - `idx_hurtos_zona`
+      - `idx_hurtos_poligono_id`
+      - `idx_hurtos_delito_zona_anio`
+  - Semillas en `geodatos.capas_geovisor`:
+    - `HURTO_MOTOCICLETAS` (#f97316)
+    - `HURTO_RESIDENCIAS` (#8b5cf6)
+    - `HURTO_COMERCIO` (#06b6d4)
 
-### 2.2. Selector Interactivo de Mapa OpenLayers (`selector-ubicacion-mesa.tsx`)
-- **Ubicación:** `src/features/mesas/components/selector-ubicacion-mesa.tsx`
-- **Carga dinámica en editor:** `dynamic(() => import(...), { ssr: false })`.
+### 2.2. Script ETL Streaming (`backend/scripts/ingestar_hurtos.py`)
+- **Problema resuelto:** Los 3 archivos GeoJSON descomprimidos sumaban 6.88 GB en disco porque cada una de las 12.280 entidades repetía la geometría MultiPolygon de alta resolución en coordenadas proyectadas métricas `EPSG:9377`.
+- **Diseño del streaming:**
+  - Procesa directamente los `.zip` fuente (`Hurto_Motocicletas.zip`, `Hurto_Residencias.zip`, `Hurto_Comerciantes.zip`) sin descomprimir gigabytes en disco.
+  - Extrae las geometrías de los 2 polígonos base una sola vez y las transforma de `EPSG:9377` a `EPSG:4326` mediante un `pyproj.Transformer(always_xy=True)`.
+  - Lee los bloques de propiedades por streaming de buffers con regex / `ijson`, descartando el payload repetitivo de geometría en memoria.
+  - Inserta los registros estructurados en lotes de 1.000 filas mediante `session.execute(insert(EstadisticaHurto))` y confirma la transacción de forma atómica.
+  - Conteo verificado post-ingesta: **12.280 filas exactas**.
+
+### 2.3. Endpoints REST Backend (`backend/app/modules/geodatos/router.py`)
+1. `GET /api/v1/geodatos/analitica/hurtos/resumen`:
+   - Parámetros opcionales: `delito` (string con normalización automática de sinónimos), `anio` (entero), `zona` (`URBANA` | `RURAL`).
+   - Respuesta estructurada con totales, series anuales, serie mensual, top armas, top sitios y distribución de zona.
+2. `GET /api/v1/geodatos/analitica/hurtos/geojson`:
+   - Parámetros opcionales: `delito`, `anio`, `zona`.
+   - Genera dinámicamente un `FeatureCollection` GeoJSON ligero utilizando `ST_AsGeoJSON(geometria_simplificada)`.
+   - Tamaño del payload: **129.7 KB** (cumple con holgura el límite estricto < 150 KB).
+
+### 2.4. Servicios y Tipos Frontend (`src/features/geovisor/services/hurtos-api.ts`)
+- Módulo cliente tipado con TypeScript:
+  - `obtenerResumenHurtos(filtros?: ParametrosFiltroHurtos): Promise<ResumenHurtosResponse>`
+  - `obtenerPoligonosHurtosGeojson(filtros?: ParametrosFiltroHurtos): Promise<HurtosFeatureCollection>`
+  - `normalizarDelitoParam(delito?: string | null): string | undefined`
+- Re-exportado de forma transparente desde `src/features/geovisor/services/geovisor-api.ts`.
+- Pruebas unitarias dedicadas en `src/features/geovisor/services/hurtos-api.test.ts`.
+
+### 2.5. Tablero de Analítica Delictiva (`GeovisorHurtosPanel.tsx`)
+- **Ubicación:** `src/features/geovisor/components/geovisor-hurtos-panel.tsx`
 - **Características:**
-  - Capa base OSM con capa vectorial OpenLayers superpuesta para el marcador.
-  - Estilo de marcador token-aware: resolución de variables `--ember` y `--surface-0` en tiempo de ejecución para cumplir con la política UI003.
-  - Clic en el canvas actualiza la posición del feature vectorial y dispara `onChange` con coordenadas normalizadas a 6 decimales.
-  - Botón de recentrado rápido en el centro de Cartagena (`10.4225, -75.5489`) con animación suave.
-  - Controles de zoom accesibles (`ZoomIn`, `ZoomOut`) con botones POLIS y `aria-label`.
-  - Barra de estado inferior que muestra las coordenadas fijadas en formato monoespaciado o un texto indicativo.
-  - `ResizeObserver` integrado para garantizar el renderizado correcto cuando el panel modal se redimensiona o se abre en móvil.
+  - Registrado como vista `hurtos` en el catálogo de vistas del Geovisor (`GEOVISOR_VIEW_META` y `GeovisorViewId`).
+  - Accesible desde el menú de vistas del Workbench, desde el botón «Tablero» en la barra de capas o desde el tooltip del mapa.
+  - Conexión con `@tanstack/react-query` y revalidación reactiva ante cambios en los selectores.
+  - Selector de delito con etiquetas y muestras de color oficiales (`#f97316`, `#8b5cf6`, `#06b6d4`).
+  - Selector de año (2018 a 2026 o consolidado histórico).
+  - Selector de ámbito territorial (Distrito, Urbana, Rural).
+  - 4 tarjetas KPI con tokens de diseño semánticos POLIS (`var(--text-primary)`, `var(--danger)`, `var(--ember)`, `var(--success)`).
+  - Gráfico interactivo SVG de la serie anual con selección de año por clic en barra.
+  - Gráfico interactivo mensual con etiquetas de meses.
+  - Barras horizontales proporcionales del Top 5 de modalidades/armas y Top 5 de sitios.
+  - Botón de acción rápida «Ver en Mapa» que sincroniza y activa la capa en el lienzo central.
 
-### 2.3. Sincronización en el Editor de Mesas (`mesa-editor-panel.tsx`)
-- **Sección 3 abierta por defecto:** `seccion3Abierta = true` en el estado inicial.
-- **Sincronización bidireccional:**
-  - `coordenadasActuales`: Memo que sincroniza de forma transparente `watchCoords`, `watchLat` y `watchLng`.
-  - `fijarCoordenadas(coords)`: Helper que actualiza simultáneamente los campos registrados `coordenadas`, `coordenadas.lat` y `coordenadas.lng`, disparando la reactividad en el formulario y en el mapa.
-  - Detección reactiva de URL: si se pega una URL con coordenadas, se reflejan instantáneamente en el mapa y en los campos numéricos.
-  - Aviso SSRF en URL corta: Si se detecta un enlace tipo `maps.app.goo.gl`, se renderiza un aviso `Notice` de tono `warning` indicando al usuario que pegue la URL expandida o use el mapa.
-  - Aviso fuera de Cartagena: Si las coordenadas no pertenecen a Cartagena, se renderiza un `Notice` no bloqueante advirtiendo la situación.
-  - Persistencia: `crearMesaRemota` y `actualizarMesaRemota` guardan `coordenadas` (`lat`, `lng`), `urlMapa` y `aforo` dentro de `metadatos`.
-
-### 2.4. Backend y Geovisor
-- **Backend Schemas:** `backend/app/modules/mesas/schemas.py`:
-  - `MesaGeovisorRespuesta.tipo_ubicacion`: extendido a `Literal["centroide_territorial_referencia", "coordenada_registrada"] | None`.
-  - `MesaGeovisorRespuesta.url_mapa`: agregado como campo opcional `str | None = None`.
-- **Backend Service:** `backend/app/modules/evidencia/service.py`:
-  - En `listar_mesas_geovisor()`: se inspeccionan `mesa.metadatos["coordenadas"]` (`lat` o `latitud`, `lng` o `longitud`). Si son válidas y están dentro del rango WGS84, se asigna `latitud_ref = lat_custom`, `longitud_ref = lng_custom` y `tipo_ubicacion = "coordenada_registrada"`. Si no, se preserva el centroide territorial (`"centroide_territorial_referencia"`).
-- **Frontend Geovisor Service:** `src/features/geovisor/services/mesas-geovisor-api.ts`:
-  - Modelo `MesaGeovisor` actualizado con `"coordenada_registrada"` y `url_mapa`.
-  - Validación zod/tipada aceptando `null | undefined`.
-- **Fichas de Detalle:**
-  - `src/features/mesas/panels/mesa-panel.tsx`: Sección de ubicación con visualización de coordenadas y botón interactivo «Cómo llegar» con icono `Navigation`.
-  - `src/features/geovisor/components/geovisor-ficha-mesa.tsx`: Renderiza badge de ubicación (`Coordenada exacta` o `Centroide territorial`), coordenadas en fuente monoespaciada y enlace directo «Cómo llegar».
+### 2.6. Integración en el Mapa OpenLayers (`use-mapa.ts` y `mapa-cartagena.tsx`)
+- Capa vectorial `capaHurtos` (zIndex: 5) conectada a `fuenteHurtos`.
+- Carga asíncrona reactiva con cancelación limpia de peticiones obsoletas.
+- Estilo temático dinámico: color base según el delito seleccionado, relleno semitransparente con mayor intensidad en la zona urbana según concentración de casos, borde engrosado e inversión en hover.
+- Ficha interactiva flotante en hover (`hoverInfo.tipo === "hurto"`): muestra nombre del polígono, delito y año analizado, total de casos, porcentaje distrital, densidad en casos/km², área, modalidad top 1 y clase de sitio top 1, además de enlace directo al tablero analítico.
+- Clic en el polígono delictivo abre automáticamente la vista `hurtos` en el dock acoplado.
 
 ---
 
-## 🧪 3. Resultados de Pruebas y Certificación
+## 🧪 3. Resultados de Pruebas y Certificación de Calidad
 
-### 3.1. Frontend Unit Tests (Bun Test)
-- **Suite de coordenadas:** `src/features/mesas/lib/coordenadas-parser.test.ts`
-  - **22 / 22 pasadas** en 13.9ms:
-    - Extracción Google Maps `@lat,lng,z`, `!3d!4d`, query param `?q=`, query param `query=`, query param `ll=`.
-    - Extracción OpenStreetMap hash `#map=z/lat/lon` y params `mlat/mlon`.
-    - Extracción Waze `ll=lat,lng`.
-    - Extracción URL de direcciones `/dir/...`.
-    - Detección de enlaces cortos `maps.app.goo.gl` y `goo.gl/maps`.
-    - Parseo de coordenadas planas: coma, espacio, punto y coma, prefijos lat/lng.
-    - Validación de límites de Cartagena (dentro: Centro Histórico, Getsemaní, Bocagrande, El Pozón; fuera: Bogotá, Medellín, coordenadas nulas).
-    - Validación de rangos WGS84 y generación de URL «Cómo llegar».
-- **Suite de componente de mapa:** `src/features/mesas/components/selector-ubicacion-mesa.test.tsx`
-  - **3 / 3 pasadas** (accesibilidad role `application`, controles de zoom y centrado, renderizado inicial).
-- **Suite de Geovisor API:** `src/features/geovisor/services/mesas-geovisor-api.test.ts`
-  - **8 / 8 pasadas** (soporte de `coordenada_registrada`, fallback de centroide, normalización de URLs).
-- **Suite de Mesas API:** `src/features/mesas/services/mesas-api.test.ts`
-  - **17 / 17 pasadas** (normalización de `metadatos.coordenadas`, `urlMapa`, `aforo`).
-- **Total Frontend:** **529 pruebas pasando / 0 fallando** en 59 archivos de prueba.
+### 3.1. Pruebas Backend (Pytest)
+```
+backend/tests/test_geodatos_analitica_hurtos.py ....                     [100%]
+============================== 4 passed in 4.45s ===============================
+```
+- `test_resumen_hurtos_global`: Valida el resumen acumulado de 18.242 casos, serie anual de 9 años, 12 meses y desglose urbano/rural.
+- `test_resumen_hurtos_filtros_delito_y_anio`: Valida consultas con filtros específicos (delito motocicleta 2024, zona rural).
+- `test_geojson_hurtos_ligero`: Valida que el GeoJSON contenga exactamente 2 polígonos, pese menos de 150 KB (129.7 KB medidos) y contenga las propiedades analíticas requeridas.
+- `test_inviolabilidad_censo_bd_csh`: Valida que las 33 mesas, 36 agendas, 11 fichas y 17 actores continúen estrictamente inalterados en la base de producción `bd_csh`.
 
-### 3.2. Backend Pytest
-- `backend/tests/test_geovisor_ubicacion_mesa.py`: **5 / 5 verificaciones pasadas** en 4.79s:
-  - Asignación de `tipo_ubicacion="coordenada_registrada"` cuando existen coordenadas en `metadatos`.
-  - Asignación de `url_mapa` desde `metadatos.urlMapa` o `url_mapa`.
-  - Fallback a `"centroide_territorial_referencia"` cuando la mesa no tiene metadatos de coordenadas.
-  - Validación de tolerancia y descarte de coordenadas corruptas o fuera de rango.
-- **Suite integral backend mesas y geodatos:** **28 / 28 pruebas pasando**.
+Suite completa de Geodatos:
+```
+backend/tests/test_geodatos_analitica_hurtos.py ....                     [ 23%]
+backend/tests/test_geodatos_estandarizacion.py ......                    [ 58%]
+backend/tests/test_geodatos_isocronas.py .......                         [100%]
+============================== 17 passed in 8.95s ==============================
+```
 
-### 3.3. Playwright E2E (`scripts/mesa-ubicacion-e2e.mjs`)
-- **Entorno aislado:** Red interceptada en memoria; **cero interacción con la base de datos oficial `bd_csh`**.
-- **Resultados de ejecución:**
-  - `📱 Caso 1: Desktop 1440px`:
-    - Sección 3 abierta por defecto con `SelectorUbicacionMesa` visible.
-    - Vía 1 (Clic en mapa): Coordenadas asignadas automáticamente (`lat=10.397754, lng=-75.496213`).
-    - Vía 2 (Pegar URL Google Maps): Detección automática exitosa (`10.421523, -75.551982`).
-    - Vía 2b (Enlace corto `maps.app.goo.gl`): Renderizado exitoso del aviso preventivo de SSRF.
-    - Vía 3 (Coordenadas planas combinadas): Sincronización exitosa (`10.39972, -75.51444`).
-    - Vía 3b: Renderizado exitoso del aviso de coordenadas fuera de Cartagena (`4.7110, -74.0721`).
-    - Guardado de mesa: Persistencia validada en `metadatos.coordenadas`.
-  - `🗺️ Caso 2: Geovisor`:
-    - Carga exitosa de mesa con `tipo_ubicacion = 'coordenada_registrada'` y botón «Cómo llegar».
-  - `📱 Caso 3: Mobile 375px`:
-    - Verificación responsive: `scrollWidth (375) <= innerWidth (375)` (cero desbordamiento horizontal).
-    - Selector de ubicación y controles plenamente operables en pantalla táctil/móvil.
-- **Evidencias gráficas capturadas:**
-  - `01_desktop_mesas_inicio.png` (107 KB)
-  - `02_desktop_editor_completado.png` (361 KB)
-  - `03_desktop_ficha_mesa.png` (211 KB)
-  - `04_geovisor_mapa.png` (482 KB)
-  - `05_mobile_mesas_inicio.png` (52 KB)
-  - `06_mobile_editor_abierto.png` (43 KB)
-  - Almacenadas en `/tmp/polis-e2e-mesa-ubicacion/`.
+Suite de Regresiones CIERRE:
+```
+backend/tests/test_cierre01_migracion_asistencia.py ....                 [ 12%]
+backend/tests/test_cierre02_herramientas_identidad.py ......             [ 32%]
+backend/tests/test_cierre04_seguridad.py ....                            [ 45%]
+backend/tests/test_cierre05_csp_report.py .....                          [ 61%]
+backend/tests/test_cierre06_mfa_totp.py .....                            [ 77%]
+backend/tests/test_cierre07_ambito_territorial.py .......                [100%]
+============================= 31 passed in 18.09s ==============================
+```
+
+### 3.2. Pruebas Frontend (Bun Test)
+```
+ 535 pass
+ 0 fail
+ 2477 expect() calls
+Ran 535 tests across 62 files.
+```
+- `src/features/geovisor/services/hurtos-api.test.ts`: 4/4 pruebas unitarias de API pasadas.
+- `src/features/geovisor/components/geovisor-hurtos-panel.test.tsx`: 1/1 prueba de renderizado y contratos de UI pasada.
+- `src/features/geovisor/state/geovisor-layout-store.tabs.test.ts`: 8/8 pruebas de layout dock pasadas.
+- `src/features/geovisor/views/geovisor-view.test.tsx`: 1/1 prueba de ensamble workspace pasada.
+
+### 3.3. Quality Gates
+```bash
+$ bun run check
+$ node scripts/ui-policy.mjs
+POLIS UI: controles, tokens, capas, inventario, historias y política a11y correctos.
+$ tsc --noEmit
+$ eslint .
+```
+- **POLIS UI Policy:** 0 incumplimientos.
+- **TypeScript:** 0 errores de tipado en todo el proyecto.
+- **ESLint:** 0 advertencias o errores.
 
 ---
 
-## 📊 4. Quality Gates y Estado del Sistema
+## 🔒 4. Certificación de Inviolabilidad del Censo en `bd_csh`
 
-| Gate / Criterio | Meta / Exigencia | Resultado Obtenido | Estado |
+Verificación directa mediante consulta SQL en la base de datos de producción `bd_csh`:
+```sql
+SELECT 
+  (SELECT count(*) FROM mesas_trabajo.mesas) as mesas,
+  (SELECT count(*) FROM mesas_trabajo.agendas) as agendas,
+  (SELECT count(*) FROM indicadores.fichas_tecnicas_indicadores) as fichas,
+  (SELECT count(*) FROM participacion_ciudadana.actores_estrategicos) as actores,
+  (SELECT count(*) FROM geodatos.poligonos_analitica_hurtos) as poligonos,
+  (SELECT count(*) FROM geodatos.estadisticas_hurtos) as hurtos;
+```
+**Resultado:**
+```
+ mesas | agendas | fichas | actores | poligonos | hurtos 
+-------+---------+--------+---------+-----------+--------
+    33 |      36 |     11 |      17 |         2 |  12280
+(1 row)
+```
+- **Mesas:** 33 (invariable).
+- **Agendas:** 36 (invariable).
+- **Fichas técnicas:** 11 (invariable).
+- **Actores estratégicos:** 17 (invariable).
+- **Polígonos base analítica hurtos:** 2 (Perímetro Urbano y Zona Rural e Insular).
+- **Registros analíticos de hurtos:** 12.280 (100% de la base consolidada 2018–2026).
+
+---
+
+## 🚀 5. Verificación de Despliegue en Producción
+
+Los servicios del sistema fueron reiniciados y verificados:
+
+| Componente | Servicio / Ruta | Estado | Tamaño / Latencia |
 |---|---|---|---|
-| **Pruebas Frontend (Bun Test)** | 100% pasando | **529 / 529 passing** (59 suites) | ✅ **VERDE** |
-| **Pruebas Backend (Pytest)** | 100% pasando | **28 / 28 passing** | ✅ **VERDE** |
-| **Playwright E2E** | Desktop 1440px y Mobile 375px | **6 / 6 casos passing**, evidencias guardadas | ✅ **VERDE** |
-| **TypeScript (`tsc --noEmit`)** | Cero errores de tipado | Completado con **0 errores** | ✅ **VERDE** |
-| **ESLint (`eslint .`)** | Cero violaciones de linter | Completado con **0 errores** | ✅ **VERDE** |
-| **UI Policy (`bun run ui:check`)** | Tokens, a11y y capas POLIS | Controles, tokens y capas 100% conformes | ✅ **VERDE** |
-| **Prevención SSRF** | Sin peticiones de red a enlaces cortos | Validado: aviso en frontend, 0 fetch backend | ✅ **CUMPLIDO** |
-| **Censo `bd_csh` Intacto** | 33 mesas, 36 agendas, 11 fichas, 17 actores | **33 / 36 / 11 / 17 exactos** verificados por SQL | ✅ **INTACTO** |
-| **Servicios en Producción** | Servicios systemd activos | `polis-backend`, `polis-frontend`, `nginx`, `postgresql@18-main` activos | ✅ **ACTIVOS** |
-| **Endpoints en Vivo (HTTP 200)** | Respuesta 200 OK | `/`, `/geovisor`, `/plataforma/mesas`, `/api/v1/mesas/geovisor`, `/api/v1/health/live` -> 200 | ✅ **OPERATIVO** |
+| Backend Health | `GET /api/v1/health/live` | **HTTP 200 OK** | 37 bytes |
+| Backend Resumen Hurtos | `GET /api/v1/geodatos/analitica/hurtos/resumen` | **HTTP 200 OK** | 1.6 KB (< 20 ms) |
+| Backend GeoJSON Hurtos | `GET /api/v1/geodatos/analitica/hurtos/geojson` | **HTTP 200 OK** | **129.7 KB** (< 150 KB) |
+| Frontend Geovisor Público | `GET /geovisor` | **HTTP 200 OK** | 117 KB |
+| Frontend Geovisor Plataforma | `GET /plataforma/geovisor` | **HTTP 200 OK** | 15.5 KB |
+| Frontend Portal Home | `GET /` | **HTTP 200 OK** | 160 KB |
+| Proxy Nginx | `nginx -t` | **Sintaxis OK / Test exitoso** | — |
 
 ---
 
-## 🛑 5. Conclusión y Espera de Dictamen
+## 📦 6. Archivos Modificados y Creados
 
-La tarea **[MESA-UBIC-01]** ha sido completamente implementada, probada y desplegada en producción.  
-No se introdujeron migraciones de base de datos ni modificaciones a las 33 mesas canónicas de `bd_csh`.  
-El sistema se encuentra en estado verde, compilado en producción y con todos los servicios operativos.
+```
+Modificados:
+  backend/app/modules/geodatos/models.py
+  backend/app/modules/geodatos/repository.py
+  backend/app/modules/geodatos/router.py
+  backend/app/modules/geodatos/schemas.py
+  backend/app/modules/geodatos/service.py
+  backend/pyproject.toml
+  backend/uv.lock
+  src/features/geovisor/components/geovisor-controles.tsx
+  src/features/geovisor/components/geovisor-view-registry.ts
+  src/features/geovisor/components/mapa-cartagena.tsx
+  src/features/geovisor/hooks/use-mapa.ts
+  src/features/geovisor/services/geovisor-api.ts
+  src/features/geovisor/state/geovisor-layout-store.ts
+  src/features/geovisor/views/geovisor-view.tsx
 
-Quedo a la espera del dictamen del Auditor EAF `agy`.
+Nuevos:
+  backend/alembic/versions/0061_analitica_hurtos.py
+  backend/scripts/ingestar_hurtos.py
+  backend/tests/test_geodatos_analitica_hurtos.py
+  src/features/geovisor/components/geovisor-hurtos-panel.tsx
+  src/features/geovisor/components/geovisor-hurtos-panel.test.tsx
+  src/features/geovisor/services/hurtos-api.ts
+  src/features/geovisor/services/hurtos-api.test.ts
+```
+
+---
+
+## ✅ 7. Conclusión y Solicitud de Dictamen
+
+La tarea **[GEO-HURTOS-01]** ha sido completada en su totalidad con máxima rigurosidad técnica, cumpliendo estrictamente con:
+1. Ningún archivo binario pesado incorporado a Git.
+2. Carga en el navegador con GeoJSON ligero (< 150 KB).
+3. PostGIS con transformación matemática exacta de `EPSG:9377` a `EPSG:4326`.
+4. Inviolabilidad del censo en `bd_csh`.
+5. 100% de calidad en pruebas backend y frontend, `bun run check` y build de producción.
+
+Quedo a la espera del dictamen de revisión de `agy`.

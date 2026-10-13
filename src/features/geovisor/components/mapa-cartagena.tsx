@@ -2,7 +2,7 @@
 
 import "ol/ol.css";
 import {useCallback, useMemo, useState, useImperativeHandle, forwardRef} from "react";
-import {MapPin, Search, Plus, Minus, Compass, Loader2} from "lucide-react";
+import {MapPin, Search, Plus, Minus, Compass, Loader2, ShieldAlert} from "lucide-react";
 import {Button} from "@/shared/ui/button";
 import {Input} from "@/shared/ui/input";
 import {
@@ -25,6 +25,7 @@ import {ESTADISTICAS_TERRITORIOS} from "../data/estadisticas.data";
 import type {CapasConfig} from "./geovisor-controles";
 import type {MesaGeovisor} from "../services/mesas-geovisor-api";
 import {usePanels} from "@/core/panels/panel-store";
+import {useGeovisorLayoutStore} from "../state/geovisor-layout-store";
 
 export interface MapaCartagenaHandle {
   exportarPng: () => void;
@@ -42,6 +43,9 @@ interface MapaCartagenaProps {
   mesas?: MesaGeovisor[];
   mesaSeleccionadaId?: string | null;
   onSelectMesa?: (mesaId: string) => void;
+  anioHurto?: number | null;
+  delitoHurto?: string | null;
+  onSelectHurto?: (poligonoId: number) => void;
 }
 
 const LOCALIDADES = [
@@ -75,6 +79,9 @@ const MapaCartagena = forwardRef<MapaCartagenaHandle, MapaCartagenaProps>(functi
     mesas = [],
     mesaSeleccionadaId = null,
     onSelectMesa,
+    anioHurto = null,
+    delitoHurto = null,
+    onSelectHurto,
   },
   ref,
 ) {
@@ -110,6 +117,9 @@ const MapaCartagena = forwardRef<MapaCartagenaHandle, MapaCartagenaProps>(functi
     mesas,
     mesaSeleccionadaId,
     onSelectMesa,
+    anioHurto,
+    delitoHurto,
+    onSelectHurto,
   });
 
   useImperativeHandle(ref, () => ({
@@ -402,6 +412,79 @@ const MapaCartagena = forwardRef<MapaCartagenaHandle, MapaCartagenaProps>(functi
                   onClick={() => openPanel("mesa", { mesaId: hoverInfo.id })}
                 >
                   Ver Detalle / Acta →
+                </Button>
+              </div>
+            </div>
+          ) : hoverInfo.tipo === "hurto" ? (
+            <div className="space-y-2 text-xs">
+              <div className="flex items-center justify-between border-b border-[var(--border)] pb-2">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--danger)] flex items-center gap-1">
+                  <ShieldAlert className="size-3" />
+                  Hurtos SIEDCO
+                </span>
+                <span className="rounded-full bg-[var(--danger)]/15 px-2 py-0.5 text-[10px] font-bold text-[var(--danger)]">
+                  {hoverInfo.hurtoDetalle?.zona}
+                </span>
+              </div>
+
+              <div>
+                <p className="font-bold text-xs text-[var(--text-primary)]">
+                  {hoverInfo.nombre}
+                </p>
+                <p className="text-[11px] text-[var(--text-secondary)]">
+                  {hoverInfo.hurtoDetalle?.delito_etiqueta} • {hoverInfo.hurtoDetalle?.anio_etiqueta}
+                </p>
+              </div>
+
+              <div className="rounded-lg bg-[var(--surface-2)] p-2 space-y-1 text-[11px]">
+                <div className="flex justify-between">
+                  <span className="text-[var(--text-tertiary)]">Total Casos:</span>
+                  <strong className="text-[var(--text-primary)] font-mono">
+                    {(hoverInfo.hurtoDetalle?.total_casos ?? 0).toLocaleString("es-CO")} ({hoverInfo.hurtoDetalle?.porcentaje_total}%)
+                  </strong>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-[var(--text-tertiary)]">Densidad Espacial:</span>
+                  <strong className="text-[var(--text-primary)] font-mono">
+                    {hoverInfo.hurtoDetalle?.densidad_casos_km2.toFixed(1)} casos/km²
+                  </strong>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-[var(--text-tertiary)]">Área Polígono:</span>
+                  <span className="text-[var(--text-secondary)]">
+                    {hoverInfo.hurtoDetalle?.area_km2.toFixed(1)} km²
+                  </span>
+                </div>
+              </div>
+
+              {hoverInfo.hurtoDetalle?.top_armas && hoverInfo.hurtoDetalle.top_armas.length > 0 && (
+                <div className="border-t border-[var(--border)] pt-1.5 text-[11px]">
+                  <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase">Top Modalidad / Arma:</span>
+                  <p className="truncate font-medium text-[var(--text-primary)]">
+                    1. {hoverInfo.hurtoDetalle.top_armas[0].arma} ({hoverInfo.hurtoDetalle.top_armas[0].porcentaje}%)
+                  </p>
+                </div>
+              )}
+
+              {hoverInfo.hurtoDetalle?.top_sitios && hoverInfo.hurtoDetalle.top_sitios.length > 0 && (
+                <div className="text-[11px]">
+                  <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase">Top Clase de Sitio:</span>
+                  <p className="truncate font-medium text-[var(--text-primary)]">
+                    1. {hoverInfo.hurtoDetalle.top_sitios[0].sitio} ({hoverInfo.hurtoDetalle.top_sitios[0].porcentaje}%)
+                  </p>
+                </div>
+              )}
+
+              <div className="border-t border-[var(--border)] pt-2">
+                <Button
+                  variant="ember"
+                  size="sm"
+                  className="w-full text-xs font-semibold h-7 shadow-sm"
+                  onClick={() => {
+                    useGeovisorLayoutStore.getState().openView("hurtos");
+                  }}
+                >
+                  Ver Tablero de Hurtos →
                 </Button>
               </div>
             </div>

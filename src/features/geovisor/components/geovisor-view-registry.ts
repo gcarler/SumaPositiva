@@ -6,6 +6,7 @@ import {
   MapPin,
   SlidersHorizontal,
   TableProperties,
+  ShieldAlert,
   type LucideIcon,
 } from "lucide-react";
 import type { DockPanelId, GeovisorViewId } from "../state/geovisor-layout-store";
@@ -77,6 +78,14 @@ export const GEOVISOR_VIEW_META: Record<GeovisorViewId, GeovisorViewMeta> = {
     description: "Radar, evolución temporal y comparativas",
     icon: BarChart2,
     tone: "text-[var(--info)]",
+  },
+  hurtos: {
+    id: "hurtos",
+    title: "Analítica de Hurtos (2018–2026)",
+    short: "Hurtos",
+    description: "Estadísticas SIEDCO de hurto a motos, comercio y residencias",
+    icon: ShieldAlert,
+    tone: "text-[var(--danger)]",
   },
 };
 
