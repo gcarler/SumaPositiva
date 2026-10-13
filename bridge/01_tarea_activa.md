@@ -1,3 +1,5 @@
-# TAREA ACTIVA: [CIERRE-06] MFA (TOTP) PARA CUENTAS ADMINISTRATIVAS
-**Plan:** `bridge/00_plan_maestro_cierre_operativo.md` (sección CIERRE-06 y reglas de producción) — **Asignada a:** `agy2` — **Auditor:** `agy`
-Implementar según la sección CIERRE-06. Salvaguardas: respaldo con `scripts/respaldo_bd.sh` antes de migrar; migración aditiva encadenada; exigencia de MFA **apagada por defecto** (no bloquear cuentas existentes); secretos cifrados en reposo con clave en `backend/.env` (no versionada, no inventes valores en el repo: genera la clave en el servidor); auditoría en `eventos_identidad`; rate-limit en verificación. Despliega en producción siguiendo las salvaguardas y verifica servicios/HTTP. Reporta y espera dictamen.
+# TAREA ACTIVA: [CIERRE-06b] Reservas del dictamen MFA + [CIERRE-07] Alcance territorial
+**Plan:** `bridge/00_plan_maestro_cierre_operativo.md` — **Asignada a:** `agy2` — **Auditor:** `agy`
+1. **Primero, en commit aparte (CIERRE-06b):** atender las reservas 1 y 2 del dictamen (`bridge/03_dictamen_revision.md`): antirreplay de TOTP (último paso aceptado por usuario, migración aditiva, pruebas) y exigir clave MFA dedicada si el MFA está habilitado. Reserva 3: documentar. Respaldo previo (`scripts/respaldo_bd.sh`) antes de migrar; verificar servicios y HTTP tras desplegar.
+2. **Después, CIERRE-07:** primero el documento de contrato en `docs/` (modelo de ámbito por usuario, comportamiento sin ámbito = actual, endpoints afectados, riesgos) y **espera mi visto bueno del contrato antes de codificar**. Luego implementar con pruebas de no regresión y de denegación fuera de ámbito.
+Reglas de producción del plan vigentes. Reporta y espera dictamen.
