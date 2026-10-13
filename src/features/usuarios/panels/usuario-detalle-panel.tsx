@@ -3,7 +3,19 @@
 import { useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { KeyRound, ShieldCheck, UserRoundX, LogOut, CheckCircle2, AlertCircle, Pencil } from "lucide-react";
+import {
+  KeyRound,
+  ShieldCheck,
+  UserRoundX,
+  LogOut,
+  CheckCircle2,
+  AlertCircle,
+  Pencil,
+  MapPin,
+  Plus,
+  Trash2,
+  Globe,
+} from "lucide-react";
 import { PanelShell } from "@/core/panels/panel-shell";
 import { usePanels } from "@/core/panels/panel-store";
 import type { PanelComponentProps } from "@/app/_composition/panel-registry";
@@ -11,6 +23,9 @@ import { identidadApi } from "@/features/sesion/services/identidad-api";
 import { tienePermiso, useSesionStore } from "@/features/sesion/state/session-store";
 import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
+import { Input } from "@/shared/ui/input";
+import { Label } from "@/shared/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/ui/select";
 
 const rolMeta: Record<string, { label: string; style: string; token?: "authority" }> = {
   administrador_identidades: { label: "Administrador de identidades", style: "border-ember/30 bg-ember-soft text-ember" },
@@ -27,11 +42,22 @@ export function UsuarioDetallePanel({ entryKey, props }: PanelComponentProps) {
   const sesion = useSesionStore((state) => state.sesion);
   const puedeGestionar = tienePermiso(sesion, "usuarios:gestionar");
   const [ejecutando, setEjecutando] = useState(false);
+  const [mostrarFormAmbito, setMostrarFormAmbito] = useState(false);
+  const [tipoAmbito, setTipoAmbito] = useState<"distrital" | "localidad" | "mesa">("localidad");
+  const [identificadorTerritorial, setIdentificadorTerritorial] = useState("LOC-1");
+  const [motivoAmbito, setMotivoAmbito] = useState("");
+  const [guardandoAmbito, setGuardandoAmbito] = useState(false);
 
   const usuariosQuery = useQuery({
     queryKey: ["identidad", "usuarios", "todos"],
     queryFn: () => identidadApi.usuarios("", 0, 100),
     enabled: Boolean(usuarioId),
+  });
+
+  const ambitosQuery = useQuery({
+    queryKey: ["identidad", "usuarios", usuarioId, "ambitos"],
+    queryFn: () => identidadApi.ambitosUsuario(usuarioId),
+    enabled: Boolean(usuarioId) && puedeGestionar,
   });
 
   const usuario = useMemo(
@@ -91,6 +117,51 @@ export function UsuarioDetallePanel({ entryKey, props }: PanelComponentProps) {
       toast.success(`Enlace de restablecimiento enviado a ${usuario.correo}`);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Error al solicitar restablecimiento");
+    } finally {
+      setEjecutando(false);
+    }
+  }
+
+  async function asignarAmbito(e: React.FormEvent) {
+    e.preventDefault();
+    if (!usuario || !motivoAmbito.trim()) {
+      toast.error("El motivo de asignación es obligatorio");
+      return;
+    }
+    const idTerritorial = tipoAmbito === "distrital" ? "DISTRITO" : identificadorTerritorial.trim();
+    if (!idTerritorial) {
+      toast.error("Debe especificar el identificador territorial");
+      return;
+    }
+    setGuardandoAmbito(true);
+    try {
+      await identidadApi.asignarAmbitoUsuario(usuario.id, {
+        tipo_ambito: tipoAmbito,
+        identificador_territorial: idTerritorial,
+        motivo: motivoAmbito.trim(),
+      });
+      await cache.invalidateQueries({ queryKey: ["identidad", "usuarios", usuarioId, "ambitos"] });
+      toast.success("Ámbito territorial asignado exitosamente");
+      setMotivoAmbito("");
+      setMostrarFormAmbito(false);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Error al asignar ámbito territorial");
+    } finally {
+      setGuardandoAmbito(false);
+    }
+  }
+
+  async function revocarAmbito(ambitoId: string) {
+    if (!usuario) return;
+    const motivo = window.prompt("Ingrese el motivo de revocación del ámbito territorial (obligatorio):");
+    if (!motivo || !motivo.trim()) return;
+    setEjecutando(true);
+    try {
+      await identidadApi.revocarAmbitoUsuario(usuario.id, ambitoId, motivo.trim());
+      await cache.invalidateQueries({ queryKey: ["identidad", "usuarios", usuarioId, "ambitos"] });
+      toast.success("Ámbito territorial revocado exitosamente");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Error al revocar ámbito");
     } finally {
       setEjecutando(false);
     }
@@ -227,6 +298,177 @@ export function UsuarioDetallePanel({ entryKey, props }: PanelComponentProps) {
               <p className="text-sm text-text-secondary">Sin permisos asignados explícitamente.</p>
             )}
           </div>
+        </section>
+
+        <section className="space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <MapPin className="size-4 text-ember" aria-hidden="true" />
+              <h4 className="font-semibold text-text-primary">
+                Ámbitos territoriales PBAC ({ambitosQuery.data?.length ?? 0})
+              </h4>
+            </div>
+            {puedeGestionar && !mostrarFormAmbito && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setMostrarFormAmbito(true)}
+                className="gap-1 text-xs"
+              >
+                <Plus className="size-3.5" aria-hidden="true" />
+                Asignar ámbito
+              </Button>
+            )}
+          </div>
+
+          {ambitosQuery.isLoading ? (
+            <p className="text-xs text-text-tertiary">Cargando ámbitos territoriales...</p>
+          ) : ambitosQuery.data && ambitosQuery.data.length > 0 ? (
+            <div className="space-y-2">
+              {ambitosQuery.data.map((ambito) => (
+                <div
+                  key={ambito.id}
+                  className="flex items-center justify-between rounded-xl border border-border bg-surface-0 p-3"
+                >
+                  <div className="flex items-center gap-2.5">
+                    {ambito.tipo_ambito === "distrital" ? (
+                      <Globe className="size-4 text-info" aria-hidden="true" />
+                    ) : (
+                      <MapPin className="size-4 text-ember" aria-hidden="true" />
+                    )}
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <Badge variant="outline" className="font-mono text-xs uppercase">
+                          {ambito.tipo_ambito}
+                        </Badge>
+                        <span className="font-semibold text-text-primary text-sm">
+                          {ambito.identificador_territorial}
+                        </span>
+                      </div>
+                      <span className="text-xs text-text-tertiary">
+                        Asignado el {new Date(ambito.asignado_en).toLocaleDateString("es-CO")}
+                      </span>
+                    </div>
+                  </div>
+                  {puedeGestionar && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      disabled={ejecutando}
+                      onClick={() => revocarAmbito(ambito.id)}
+                      className="size-8 p-0 text-text-tertiary hover:text-destructive"
+                      aria-label={`Revocar ámbito ${ambito.identificador_territorial}`}
+                    >
+                      <Trash2 className="size-4" aria-hidden="true" />
+                    </Button>
+                  )}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="rounded-xl border border-border bg-surface-0 p-3.5 text-xs text-text-secondary">
+              <p className="font-medium text-text-primary">Sin ámbito específico asignado</p>
+              <p className="mt-0.5 text-text-tertiary">
+                El usuario opera con jurisdicción distrital global plena (comportamiento retrocompatible por defecto).
+              </p>
+            </div>
+          )}
+
+          {puedeGestionar && mostrarFormAmbito && (
+            <form
+              onSubmit={asignarAmbito}
+              className="space-y-3 rounded-xl border border-border bg-surface-1 p-3.5"
+            >
+              <h5 className="text-xs font-semibold text-text-primary">Asignar nuevo ámbito territorial</h5>
+              <div className="grid gap-2 sm:grid-cols-2">
+                <div>
+                  <Label htmlFor="tipo-ambito-select" className="text-xs text-text-tertiary block mb-1">
+                    Tipo de ámbito:
+                  </Label>
+                  <Select
+                    value={tipoAmbito}
+                    onValueChange={(val) => {
+                      const t = val as "distrital" | "localidad" | "mesa";
+                      setTipoAmbito(t);
+                      if (t === "localidad") setIdentificadorTerritorial("LOC-1");
+                      else if (t === "distrital") setIdentificadorTerritorial("DISTRITO");
+                      else setIdentificadorTerritorial("");
+                    }}
+                  >
+                    <SelectTrigger id="tipo-ambito-select" className="w-full">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="distrital">Distrital (Todo el distrito)</SelectItem>
+                      <SelectItem value="localidad">Localidad</SelectItem>
+                      <SelectItem value="mesa">Mesa específica</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="id-territorial-input" className="text-xs text-text-tertiary block mb-1">
+                    Identificador territorial:
+                  </Label>
+                  {tipoAmbito === "localidad" ? (
+                    <Select
+                      value={identificadorTerritorial}
+                      onValueChange={setIdentificadorTerritorial}
+                    >
+                      <SelectTrigger id="id-territorial-input" className="w-full">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="LOC-1">Localidad 1 (Histórica y del Caribe Norte)</SelectItem>
+                        <SelectItem value="LOC-2">Localidad 2 (De la Virgen y Turística)</SelectItem>
+                        <SelectItem value="LOC-3">Localidad 3 (Industrial y de la Bahía)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  ) : (
+                    <Input
+                      id="id-territorial-input"
+                      value={identificadorTerritorial}
+                      disabled={tipoAmbito === "distrital"}
+                      onChange={(e) => setIdentificadorTerritorial(e.target.value)}
+                      placeholder={tipoAmbito === "distrital" ? "DISTRITO" : "Código o UUID de mesa"}
+                      className="text-sm"
+                    />
+                  )}
+                </div>
+              </div>
+              <div>
+                <Label htmlFor="motivo-ambito-input" className="text-xs text-text-tertiary block mb-1">
+                  Motivo pericial obligatorio:
+                </Label>
+                <Input
+                  id="motivo-ambito-input"
+                  value={motivoAmbito}
+                  onChange={(e) => setMotivoAmbito(e.target.value)}
+                  placeholder="Ej. Asignación operativa de liderazgo en Localidad 1"
+                  className="text-sm"
+                  required
+                />
+              </div>
+              <div className="flex justify-end gap-2 pt-1">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setMostrarFormAmbito(false)}
+                  disabled={guardandoAmbito}
+                >
+                  Cancelar
+                </Button>
+                <Button
+                  type="submit"
+                  variant="ember"
+                  size="sm"
+                  disabled={guardandoAmbito}
+                >
+                  {guardandoAmbito ? "Guardando..." : "Asignar"}
+                </Button>
+              </div>
+            </form>
+          )}
         </section>
 
         {puedeGestionar && (

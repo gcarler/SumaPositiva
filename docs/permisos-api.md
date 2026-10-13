@@ -56,10 +56,21 @@ Contrato y activación: [usuarios y acceso](identidad.md).
 
 Los roles ciudadano, ciudadano anónimo y auditor forense no reciben permisos de
 gestión institucional. El registro público solo admite ciudadano. Asignaciones
-privilegiadas requieren el canal administrativo descrito en [operación](operacion.md).
-Los permisos institucionales actuales tienen alcance global del rol; no se afirma
-que exista asignación por mesa o territorio. Un alcance más fino requiere contrato
-y comprobaciones de recurso antes de habilitarlo.
+### Alcance territorial y modelo PBAC (CIERRE-07)
+
+A partir de la especificación CIERRE-07, las mutaciones operativas sobre entidades micro-territoriales (mesas de trabajo, actas comunitarias, participantes, fotos de mesas, agendas) están sujetas a control de alcance territorial (PBAC) gestionado a través de `autenticacion.ambitos_territoriales_usuario`:
+
+1. **Recursos sujetos a PBAC:**
+   - `mesas_trabajo.mesas` (creación, edición, submesas).
+   - `mesas_trabajo.actas_comunitarias` (borrador, acuerdos, cierre).
+   - `mesas_trabajo.participantes_mesa` (registro de asistencia).
+   - `mesas_trabajo.fotos_mesa` (evidencias fotográficas de deliberación).
+   - `mesas_trabajo.agendas` (programación y fechas de mesas y localidades).
+   La jurisdicción se resuelve de forma jerárquica ascendiendo por `territorio_padre_id` (nivel directo localidad `LOC-1`, `LOC-2`, `LOC-3`, barrio, corregimiento o zona insular). En submesas huérfanas de `territorio_id`, la jurisdicción se hereda de la mesa raíz.
+
+2. **Instrumentos distritales globales por diseño (Alternativas MGA y Compromisos PAS):**
+   - **Banco Distrital de Alternativas MGA** (`/api/v1/alternativas`): Las iniciativas de solución formuladas en Fase 2 constituyen instrumentos estratégicos de alcance distrital y macro-territorial. Como lo acredita el censo de 8 alternativas de Cartagena, las iniciativas cubren simultáneamente múltiples Unidades Comuneras de Gobierno (UCG), varias localidades (ej. Localidades 1 y 2, Localidades 2 y 3) o el distrito en su totalidad (ej. videovigilancia y corredores viales transversales). En el modelo de datos (`motor_politicas.banco_alternativas`) no existe vinculación relacional atómica a una mesa o territorio individual. Por diseño, su gobernanza responde a RBAC estricto (`alternativas:gestionar` reservado a `autoridad_distrital` y `administrador_identidades`) y compuertas de fase (`FASE_2_FORMULACION`), operando con **alcance global distrital**.
+   - **Plan de Acción y Seguimiento PAS** (`/api/v1/compromisos`): Los compromisos vinculantes de la Fase 3 son asumidos por dependencias y organismos del nivel central distrital (`entidad_responsable`: Secretaría de Hacienda, Distriseguridad, Secretaría del Interior, EPA, MECAR, etc.) para monitorear metas cuatrienales de impacto de ciudad. En el esquema (`seguimiento.compromisos_pas`), los compromisos se articulan por entidad responsable y código MGA, careciendo de clave foránea a mesas o territorios particulares. Su gestión se rige por RBAC (`seguimiento:gestionar`) y control de fase (`FASE_3_PLAN_ACCION`), siendo **globales distritales por diseño**.
 
 ## Inventario comprobado
 

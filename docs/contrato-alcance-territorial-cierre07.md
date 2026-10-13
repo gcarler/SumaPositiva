@@ -131,29 +131,31 @@ Conforme a la Observación 4 del Dictamen EAF, los endpoints se derivan estricta
 ### 5.1. Endpoints de Lectura (Consulta Pública y Transparencia)
 - **CERO RESTRICCIÓN TERRITORIAL:** Todas las rutas públicas de consulta (`GET /api/v1/mesas`, `GET /api/v1/mesas/{mesa_id}`, `GET /api/v1/mesas/agendas`, `GET /api/v1/mesas/geovisor`, `GET /api/v1/alternativas`, `GET /api/v1/compromisos`, etc.) se mantienen abiertas y sin interceptores territoriales, salvaguardando el derecho de acceso a la información pública (Ley 1712 de 2014).
 
-### 5.2. Endpoints de Mutación Sujetos a Control Territorial
+### 5.2. Endpoints de Mutación Sujetos a Control Territorial PBAC (Mesas y Evidencias)
+
+Las operaciones sobre entidades micro-territoriales están sujetas a verificación en tiempo real de jurisdicción territorial (`verificar_ambito_territorial`):
 
 | Método | Endpoint Real (`permisos-api.md`) | Permiso Requerido | Resolución del Recurso Territorial | Comportamiento si Denegado |
 |---|---|---|---|---|
-| `PATCH` | `/api/v1/mesas/{mesa_id}` | `mesas:abrir` | Mesa `{mesa_id}` → `territorio_id` → Localidad | HTTP 403 `fuera_de_ambito_territorial` |
-| `POST` | `/api/v1/mesas/{mesa_id}/acta` | `mesas:acuerdos` | Mesa `{mesa_id}` → `territorio_id` → Localidad | HTTP 403 `fuera_de_ambito_territorial` |
-| `POST` | `/api/v1/mesas/{mesa_id}/acta/cerrar` | `mesas:acuerdos` | Mesa `{mesa_id}` → `territorio_id` → Localidad | HTTP 403 `fuera_de_ambito_territorial` |
-| `POST` | `/api/v1/mesas/{mesa_id}/participantes` | `asistencia:verificar` | Mesa `{mesa_id}` → `territorio_id` → Localidad | HTTP 403 `fuera_de_ambito_territorial` |
-| `POST` | `/api/v1/mesas/{mesa_id}/fotos` | `mesas:fotos:subir` | Mesa `{mesa_id}` → `territorio_id` → Localidad | HTTP 403 `fuera_de_ambito_territorial` |
-| `POST` | `/api/v1/mesas/{mesa_id}/submesas` | `mesas:abrir` | Mesa `{mesa_id}` → `territorio_id` → Localidad | HTTP 403 `fuera_de_ambito_territorial` |
-| `PUT` | `/api/v1/mesas/{mesa_id}/submesas/{submesa_id}` | `mesas:abrir` | Mesa `{mesa_id}` → `territorio_id` → Localidad | HTTP 403 `fuera_de_ambito_territorial` |
+| `PATCH` | `/api/v1/mesas/{mesa_id}` | `mesas:abrir` | Mesa `{mesa_id}` → `territorio_id` → Localidad (CTE) | HTTP 403 `fuera_de_ambito_territorial` |
+| `POST` | `/api/v1/mesas/{mesa_id}/acta` | `mesas:acuerdos` | Mesa `{mesa_id}` → `territorio_id` → Localidad (CTE) | HTTP 403 `fuera_de_ambito_territorial` |
+| `POST` | `/api/v1/mesas/{mesa_id}/acta/cerrar` | `mesas:acuerdos` | Mesa `{mesa_id}` → `territorio_id` → Localidad (CTE) | HTTP 403 `fuera_de_ambito_territorial` |
+| `POST` | `/api/v1/mesas/{mesa_id}/participantes` | `asistencia:verificar` | Mesa `{mesa_id}` → `territorio_id` → Localidad (CTE) | HTTP 403 `fuera_de_ambito_territorial` |
+| `POST` | `/api/v1/mesas/{mesa_id}/fotos` | `mesas:fotos:subir` | Mesa `{mesa_id}` → `territorio_id` → Localidad (CTE) | HTTP 403 `fuera_de_ambito_territorial` |
+| `POST` | `/api/v1/mesas/{mesa_id}/submesas` | `mesas:abrir` | Mesa `{mesa_id}` → `territorio_id` → Localidad (CTE) | HTTP 403 `fuera_de_ambito_territorial` |
+| `PUT` | `/api/v1/mesas/{mesa_id}/submesas/{submesa_id}` | `mesas:abrir` | Mesa `{mesa_id}` → `territorio_id` → Localidad (CTE) | HTTP 403 `fuera_de_ambito_territorial` |
 | `POST` | `/api/v1/mesas` | `mesas:abrir` | `territorio_id` provisto en el cuerpo de la petición | HTTP 403 `fuera_de_ambito_territorial` |
-| `POST` | `/api/v1/mesas/agendas` | `mesas:abrir` | `mesa_id` o `territorio_id` provisto en el cuerpo | HTTP 403 `fuera_de_ambito_territorial` |
-| `PATCH` | `/api/v1/mesas/agendas/{agenda_id}` | `mesas:abrir` | Agenda `{agenda_id}` → `mesa_id` asociado | HTTP 403 `fuera_de_ambito_territorial` |
-| `POST` | `/api/v1/compromisos` | `seguimiento:gestionar` | `mesa_id` / territorio indicado en el cuerpo | HTTP 403 `fuera_de_ambito_territorial` |
-| `PUT` | `/api/v1/compromisos/{id_o_codigo}` | `seguimiento:gestionar` | Compromiso `{id_o_codigo}` → mesa / territorio vinculado | HTTP 403 `fuera_de_ambito_territorial` |
-| `PATCH` | `/api/v1/compromisos/{id_o_codigo}/avance` | `seguimiento:gestionar` | Compromiso `{id_o_codigo}` → mesa / territorio vinculado | HTTP 403 `fuera_de_ambito_territorial` |
-| `DELETE` | `/api/v1/compromisos/{id_o_codigo}` | `seguimiento:gestionar` | Compromiso `{id_o_codigo}` → mesa / territorio vinculado | HTTP 403 `fuera_de_ambito_territorial` |
-| `POST` | `/api/v1/alternativas` | `alternativas:gestionar` | Territorio o Localidad declarada en el cuerpo MGA | HTTP 403 `fuera_de_ambito_territorial` |
-| `PATCH` | `/api/v1/alternativas/{id}` | `alternativas:gestionar` | Alternativa `{id}` → territorio / localidad de origen | HTTP 403 `fuera_de_ambito_territorial` |
-| `DELETE` | `/api/v1/alternativas/{id}` | `alternativas:gestionar` | Alternativa `{id}` → territorio / localidad de origen | HTTP 403 `fuera_de_ambito_territorial` |
+| `POST` | `/api/v1/mesas/agendas` | `mesas:abrir` | `mesa_id` o `territorio` provisto en el cuerpo | HTTP 403 `fuera_de_ambito_territorial` |
+| `PATCH` | `/api/v1/mesas/agendas/{agenda_id}` | `mesas:abrir` | Agenda `{agenda_id}` → `mesa_id` o territorio asociado | HTTP 403 `fuera_de_ambito_territorial` |
 
-### 5.3. Endpoints Administrativos para Gestión de Ámbitos
+### 5.3. Exclusión Justificada: Instrumentos Macropolíticos Globales por Diseño (Alternativas y Compromisos)
+
+Conforme a la evaluación pericial del esquema real de base de datos (`bd_csh`), los módulos de **Alternativas MGA** (`/api/v1/alternativas`) y **Compromisos PAS** (`/api/v1/compromisos`) **no están sujetos a PBAC territorial y son globales por diseño institucional**:
+1. **Ausencia de Vínculo Relacional Atómico:** En las tablas `motor_politicas.banco_alternativas` y `seguimiento.compromisos_pas` **no existen columnas ni claves foráneas** a `mesas_trabajo.mesas` ni a `geodatos.territorios`.
+2. **Naturaleza Multijurisdiccional y Distrital:** Las iniciativas del Banco Distrital de Alternativas (Fase 2) articulan soluciones de escala macro (las 8 iniciativas del censo oficial abarcan múltiples UCGs, varias localidades o el distrito completo, ej. ALT-SEG-06 para videovigilancia de corredores principales en Localidades 1, 2 y 3). Los Compromisos PAS (Fase 3) son asumidos por Secretarías y organismos del nivel central distrital (`entidad_responsable`: Secretaría de Hacienda, Distriseguridad, EPA, MECAR, etc.) para monitorear metas de ciudad.
+3. **Mecanismo de Salvaguarda Vigente:** El acceso a estos instrumentos está protegido mediante RBAC estricto (`alternativas:gestionar` y `seguimiento:gestionar`, restringidos exclusivamente a `autoridad_distrital` y `administrador_identidades`) y compuertas de fase de política pública (`verificar_escritura_fase` para Fase 2 y Fase 3). Restringirlos por localidad fragmentaría la planeación presupuestal y cuatrienal unificada del Distrito de Cartagena.
+
+### 5.4. Endpoints Administrativos para Gestión de Ámbitos
 Exclusivos para `administrador_identidades` (`autenticacion.roles`):
 - `GET /api/v1/identidad/usuarios/{id}/ambitos`: Lista los ámbitos asignados al usuario.
 - `POST /api/v1/identidad/usuarios/{id}/ambitos`: Asigna un nuevo ámbito territorial (`distrital`, `localidad` o `mesa`) con motivo justificado.

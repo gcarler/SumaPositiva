@@ -144,6 +144,16 @@ const meta = {
         ],
       })),
       mfaVerificar: fn(async () => structuredClone(login)),
+      ambitosUsuario: fn(async () => []),
+      asignarAmbitoUsuario: fn(async (_uid: string, datos: { tipo_ambito: string; identificador_territorial: string; motivo: string }) => ({
+        id: "01900000-0000-7000-8000-0000000000bb",
+        usuario_id: "01900000-0000-7000-8000-000000000099",
+        tipo_ambito: datos.tipo_ambito as "distrital" | "localidad" | "mesa",
+        identificador_territorial: datos.identificador_territorial,
+        activo: true,
+        asignado_en: new Date().toISOString(),
+      })),
+      revocarAmbitoUsuario: fn(async () => mensaje),
     } satisfies typeof identidadApi);
     usePanelStore.getState().openPanel("sesion", {});
     return () => {

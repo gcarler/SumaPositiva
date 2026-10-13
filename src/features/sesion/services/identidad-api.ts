@@ -48,6 +48,15 @@ export const eventoSchema = z.object({id: z.string().uuid(), actor_id: z.string(
   objetivo_id: z.string().nullable(), accion: z.string(), detalle: z.record(z.string(), z.unknown()),
   creado_en: z.string()});
 export type Evento = z.infer<typeof eventoSchema>;
+export const ambitoTerritorialSchema = z.object({
+  id: z.string().uuid(),
+  usuario_id: z.string().uuid(),
+  tipo_ambito: z.enum(["distrital", "localidad", "mesa"]),
+  identificador_territorial: z.string(),
+  activo: z.boolean(),
+  asignado_en: z.string(),
+});
+export type AmbitoTerritorial = z.infer<typeof ambitoTerritorialSchema>;
 
 async function consultar<T>(path: string, schema: z.ZodType<T>, options: Parameters<typeof apiFetch>[1] = {}) {
   return schema.parse(await apiFetch<unknown>(`/identidad${path}`, options));
@@ -107,4 +116,10 @@ export const identidadApi = {
     consultar("/mfa/recuperacion/regenerar", mfaRecuperacionSchema, { method: "POST", body: { codigo } }),
   mfaVerificar: (token_desafio: string, codigo: string) =>
     consultar("/mfa/verificar", tokenSchema, { method: "POST", body: { token_desafio, codigo } }),
+  ambitosUsuario: (usuarioId: string) =>
+    consultar(`/usuarios/${usuarioId}/ambitos`, z.array(ambitoTerritorialSchema)),
+  asignarAmbitoUsuario: (usuarioId: string, datos: { tipo_ambito: string; identificador_territorial: string; motivo: string }) =>
+    consultar(`/usuarios/${usuarioId}/ambitos`, ambitoTerritorialSchema, { method: "POST", body: datos }),
+  revocarAmbitoUsuario: (usuarioId: string, ambitoId: string, motivo: string) =>
+    consultar(`/usuarios/${usuarioId}/ambitos/${ambitoId}?${new URLSearchParams({ motivo })}`, mensajeSchema, { method: "DELETE" }),
 };
