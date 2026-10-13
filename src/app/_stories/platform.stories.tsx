@@ -264,10 +264,8 @@ export const CrearMesaCompleta: Story = {
       target: { value: "2026-10-15" },
     });
     await userEvent.type(panel.getByLabelText(/Lugar/), "Casa de la cultura");
-    /* Coordenadas legítimas dentro de Cartagena: los campos de la sección 3 quedan
-     * inválidos en vacío (NaN) y el resolver aborta el envío sin POST. */
-    await userEvent.type(panel.getByLabelText(/^Latitud/), "10.4");
-    await userEvent.type(panel.getByLabelText(/^Longitud/), "-75.6");
+    /* MESA-UBIC-02: Campo unificado de coordenadas (Latitud, Longitud) */
+    await userEvent.type(panel.getByLabelText(/Coordenadas/i), "10.4, -75.6");
     const submit = panel.getByRole("button", { name: "Crear mesa" });
     await waitFor(() => expect(submit).toBeEnabled());
     /* Envío real del formulario del panel con reintentos: consulta FRESCA en cada intento

@@ -654,3 +654,95 @@ La barra de accesibilidad conserva ahora de forma limpia y exclusiva los **5 bot
 - `src/shared/ui/accesibilidad-widget.stories.tsx`
 - `src/features/accesibilidad/accesibilidad-widget.test.tsx`
 - `bridge/02_resultado_agy2.md`
+
+
+---
+
+# INFORME DE ENTREGA: [MESA-UBIC-02] SIMPLIFICACIÓN DE COORDENADAS Y CORRECCIÓN DE VALIDACIÓN AL USAR ENLACES DE GOOGLE MAPS
+
+**Responsable:** `agy2` — **Auditor:** `agy` — **Fecha:** 13-oct-2026  
+**Tarea de referencia:** `bridge/01_tarea_activa.md` (`[MESA-UBIC-02]`)
+
+---
+
+## 📋 1. Resumen Ejecutivo y Diagnóstico
+
+### Problema resuelto:
+Al pegar un enlace de Google Maps en el editor de mesa de trabajo (`MesaEditorPanel`), el formulario requería obligatoriamente los campos *"Latitud individual"* y *"Longitud individual"*. Esto sucedía porque React Hook Form registraba dos inputs independientes (`coordenadas.lat` y `coordenadas.lng`), construyendo el objeto `{ coordenadas: { lat: undefined, lng: undefined } }` ante valores vacíos. Al evaluar el esquema Zod, el objeto resultaba no nulo con atributos `undefined`, bloqueando el guardado con errores espurios de campos requeridos. Adicionalmente, existía duplicación redundante de controles entre el campo combinado y los dos campos separados.
+
+### Solución implementada:
+1. **Unificación de controles UI:** Se eliminaron los dos campos separados (`Latitud individual` y `Longitud individual`). Se consolidó un único campo `#mesa-coords-planas` etiquetado como `"3. Coordenadas (Latitud, Longitud)"` con descripción instructiva clara, validación en línea de formato y botón de acción directa *"Limpiar coordenadas"*.
+2. **Blindaje de esquema y sincronización RHF:** Se envolvió el campo `coordenadas` con `z.preprocess` en `mesaSchema`, convirtiendo automáticamente cualquier valor `null`, `undefined` o con `lat`/`lng` no finitos en `undefined`. Se eliminaron `watchLat`, `watchLng` y `setValue("coordenadas.lat/lng")`, dejando `coordenadas` verdaderamente opcional.
+3. **Ampliación del parser de coordenadas:** Soporte para secuencias codificadas (`decodeURIComponent`, ej. `%2C`), rutas directas de Google Maps (`/maps/place/lat,lng`, `/maps/search/lat,lng`, `/maps/dir/lat,lng`), parámetros ampliados (`center`, `viewpoint`, `daddr`, `saddr`), formato sexagesimal DMS (`10°24'00.0"N 75°30'00.0"W`) y detección inteligente cruzada si el usuario pega una URL directamente en el campo de texto de coordenadas.
+4. **Actualización de Historias y Pruebas:** Se alineó la historia `CrearMesaCompleta` en `src/app/_stories/platform.stories.tsx` con el campo unificado, se añadieron pruebas unitarias en `src/features/mesas/panels/mesa-editor-panel.test.tsx` y se expandió la suite `src/features/mesas/lib/coordenadas-parser.test.ts`.
+
+---
+
+## 🛠️ 2. Detalle de Archivos Intervenidos
+
+### 2.1. `src/features/mesas/panels/mesa-editor-panel.tsx`
+- **Esquema `mesaSchema`:** Inclusión de `z.preprocess` para limpiar objetos con valores `NaN` o `undefined` antes de validar el esquema opcional de latitud [-90..90] y longitud [-180..180].
+- **Hooks y Handlers:** Eliminación de `watchLat` y `watchLng`. Reducción de `fijarCoordenadas` a `setValue("coordenadas", coords ?? undefined)`.
+- **JSX:** Supresión de `<FormField id="mesa-lat">` y `<FormField id="mesa-lng">`. Campo unificado `#mesa-coords-planas` a ancho completo (`col-span-full`) con botón *"Limpiar"* y mensajes de validación contextuales.
+
+### 2.2. `src/features/mesas/lib/coordenadas-parser.ts`
+- Implementación de `parsearCoordenadasDMS` para grados, minutos y segundos WGS84.
+- `parsearCoordenadasUrl`: Incorporación de `decodeURIComponent` seguro con `try/catch`, soporte para rutas directas de Google Maps (`/maps/place/`, `/maps/search/`, `/maps/dir/`) y parámetros `center`, `viewpoint`, `daddr`, `saddr`.
+- `parsearTextoCoordenadas`: Detección preventiva de URLs pegadas en el campo de texto y parseo de DMS.
+
+### 2.3. `src/app/_stories/platform.stories.tsx`
+- En la historia `CrearMesaCompleta`, actualización del paso `play` para interactuar con el campo unificado `panel.getByLabelText(/Coordenadas/i)`.
+
+### 2.4. `src/features/mesas/lib/coordenadas-parser.test.ts`
+- Se agregaron casos de prueba para `%2C`, rutas `/place/`, `/search/`, `/dir/`, parámetros `center`/`viewpoint`/`daddr`/`saddr`, coordenadas DMS y pegado de URL en campo de texto (29/29 pasadas).
+
+### 2.5. `src/features/mesas/panels/mesa-editor-panel.test.tsx`
+- Nueva suite unitaria que valida la ausencia de inputs separados, presencia del campo unificado, extracción de coordenadas desde URLs complejas y comportamiento del botón de limpieza (4/4 pasadas).
+
+---
+
+## 🧪 3. Matriz de Pruebas y Certificación de Calidad
+
+| Suite / Verificación | Comando Ejecutado | Resultado |
+|---|---|---|
+| **Unitarias Parser Coordenadas** | `bun test src/features/mesas/lib/coordenadas-parser.test.ts` | ✅ **29 / 29 pasadas** (114 ms) |
+| **Unitarias Panel Editor Mesas** | `bun test src/features/mesas/panels/mesa-editor-panel.test.tsx` | ✅ **4 / 4 pasadas** (390 ms) |
+| **Suite Completa Frontend** | `bun test` | ✅ **558 / 558 pasadas** (64 archivos, 0 fallos) |
+| **Historias Storybook Plataforma** | `bunx vitest run --project=storybook src/app/_stories/platform.stories.tsx` | ✅ **24 / 24 pasadas** (incluyendo `CrearMesaCompleta`) |
+| **Suite Global Storybook (axe-core)**| `bun run ui:test` | ✅ **212 / 212 pasadas** (17 archivos, 0 fallos) |
+| **Verificación de Calidad y Tipos** | `bun run check` (`ui:check` + `tsc --noEmit` + `eslint .`) | ✅ **0 errores** |
+| **Build de Producción** | `bun run build` (Next.js 16.3.8 Turbopack) | ✅ **192 / 192 rutas compiladas** |
+
+---
+
+## 🚀 4. Despliegue y Estado Operativo
+
+- **Servicio `polis-frontend`:** Reiniciado (`systemctl restart polis-frontend`), estado `active (running)`.
+- **Verificación HTTP:**
+  - `GET http://127.0.0.1:3000/` → `HTTP 200 OK`
+  - `GET http://127.0.0.1:3000/plataforma/mesas` → `HTTP 200 OK`
+- **Inviolabilidad del Censo Institucional en `bd_csh`:**
+  ```sql
+  SELECT 
+    (SELECT count(*) FROM mesas_trabajo.mesas) as mesas, 
+    (SELECT count(*) FROM mesas_trabajo.agendas) as agendas, 
+    (SELECT count(*) FROM indicadores.fichas_tecnicas_indicadores) as fichas, 
+    (SELECT count(*) FROM participacion_ciudadana.actores_estrategicos) as actores;
+  ```
+  ```
+   mesas | agendas | fichas | actores 
+  -------+---------+--------+---------
+      33 |      36 |     11 |      17
+  ```
+  *(33 mesas, 36 agendas, 11 fichas técnicas, 17 actores estratégicos — rigurosamente intactos).*
+
+---
+
+## 📦 5. Archivos Modificados e Incluidos
+
+- `src/features/mesas/panels/mesa-editor-panel.tsx`
+- `src/features/mesas/panels/mesa-editor-panel.test.tsx`
+- `src/features/mesas/lib/coordenadas-parser.ts`
+- `src/features/mesas/lib/coordenadas-parser.test.ts`
+- `src/app/_stories/platform.stories.tsx`
+- `bridge/02_resultado_agy2.md`

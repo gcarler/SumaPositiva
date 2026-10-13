@@ -82,16 +82,67 @@ export function validarLimitesCartagena(lat: number, lng: number): ResultadoVali
 }
 
 /**
+ * Parsea coordenadas en formato Grados, Minutos y Segundos (DMS):
+ * Ejemplos:
+ * - 10°24'00.0"N 75°30'00.0"W
+ * - 10°24'35"N, 75°30'52"W
+ * - 10° 24' 00" N 75° 30' 00" W
+ */
+export function parsearCoordenadasDMS(texto: string): Coordenadas | null {
+  if (!texto || typeof texto !== "string") return null;
+
+  const dmsRegex = /(\d+(?:\.\d+)?)\s*°\s*(?:(\d+(?:\.\d+)?)\s*['′]\s*)?(?:(\d+(?:\.\d+)?)\s*["″]\s*)?([NSEWnsew])/g;
+  const matches = Array.from(texto.matchAll(dmsRegex));
+
+  if (matches.length !== 2) return null;
+
+  let lat: number | null = null;
+  let lng: number | null = null;
+
+  for (const match of matches) {
+    const deg = parseFloat(match[1]);
+    const min = match[2] ? parseFloat(match[2]) : 0;
+    const sec = match[3] ? parseFloat(match[3]) : 0;
+    const dir = match[4].toUpperCase();
+
+    const dec = deg + min / 60 + sec / 3600;
+    const valorConSigno = dir === "S" || dir === "W" ? -dec : dec;
+
+    if (dir === "N" || dir === "S") {
+      lat = valorConSigno;
+    } else if (dir === "E" || dir === "W") {
+      lng = valorConSigno;
+    }
+  }
+
+  if (lat !== null && lng !== null && validarRangoWgs84(lat, lng)) {
+    return { lat: Number(lat.toFixed(6)), lng: Number(lng.toFixed(6)) };
+  }
+
+  return null;
+}
+
+/**
  * Parsea coordenadas desde una URL de mapas:
- * - Google Maps: @lat,lng, !3dLAT!4dLNG, ?q=lat,lng, ll=lat,lng, query=lat,lng, destination=lat,lng
+ * - Google Maps: @lat,lng, !3dLAT!4dLNG, ?q=lat,lng, ll=lat,lng, query=lat,lng, destination=lat,lng,
+ *   rutas directas /maps/place/lat,lng, /maps/search/lat,lng, /maps/dir/lat,lng,
+ *   parámetros center=lat,lng, viewpoint=lat,lng, daddr=lat,lng, saddr=lat,lng,
+ *   parámetros URL-encoded (ej. %2C).
  * - OpenStreetMap: #map=zoom/lat/lon, mlat=LAT&mlon=LON
  * - Waze: ll=lat,lng
  */
 export function parsearCoordenadasUrl(url: string): Coordenadas | null {
   if (!url || typeof url !== "string") return null;
-  const limpia = url.trim();
+  let limpia = url.trim();
 
-  // Si es enlace corto, no contiene coordenadas en texto plano
+  // Decodificar secuencias de escape URL de forma segura (ej. %2C para coma)
+  try {
+    limpia = decodeURIComponent(limpia);
+  } catch {
+    // Si contiene secuencias inválidas, continuar con la cadena original
+  }
+
+  // Si es enlace corto conocido sin parámetros de coordenadas, no intentar extraer
   if (esEnlaceCorto(limpia)) return null;
 
   // 1. Google Maps data parameters: !3d10.39972!4d-75.51444
@@ -114,21 +165,25 @@ export function parsearCoordenadasUrl(url: string): Coordenadas | null {
     }
   }
 
-  // 3. Parámetro q=lat,lng o destination=lat,lng
-  const matchQ = limpia.match(/[?&](?:q|destination|query)=(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/i);
-  if (matchQ) {
-    const lat = parseFloat(matchQ[1]);
-    const lng = parseFloat(matchQ[2]);
+  // 3. Rutas directas de Google Maps: /maps/(place|search|dir)/lat,lng o /maps/(place|search|dir)/Nombre/lat,lng
+  const matchRuta = limpia.match(
+    /\/maps\/(?:place|search|dir)\/(?:[^\/@?#]+\/)?(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)/i
+  );
+  if (matchRuta) {
+    const lat = parseFloat(matchRuta[1]);
+    const lng = parseFloat(matchRuta[2]);
     if (validarRangoWgs84(lat, lng)) {
       return { lat: Number(lat.toFixed(6)), lng: Number(lng.toFixed(6)) };
     }
   }
 
-  // 4. Parámetro ll=lat,lng (Google Maps / Waze)
-  const matchLl = limpia.match(/[?&]ll=(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/i);
-  if (matchLl) {
-    const lat = parseFloat(matchLl[1]);
-    const lng = parseFloat(matchLl[2]);
+  // 4. Parámetros de consulta: q, query, destination, center, viewpoint, daddr, saddr, ll
+  const matchParams = limpia.match(
+    /[?&](?:q|query|destination|center|viewpoint|daddr|saddr|ll)=(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)/i
+  );
+  if (matchParams) {
+    const lat = parseFloat(matchParams[1]);
+    const lng = parseFloat(matchParams[2]);
     if (validarRangoWgs84(lat, lng)) {
       return { lat: Number(lat.toFixed(6)), lng: Number(lng.toFixed(6)) };
     }
@@ -155,6 +210,12 @@ export function parsearCoordenadasUrl(url: string): Coordenadas | null {
     }
   }
 
+  // 7. DMS dentro de la URL (ej. ?q=10°24'00.0"N+75°30'00.0"W)
+  const dmsUrl = parsearCoordenadasDMS(limpia.replace(/\+/g, " "));
+  if (dmsUrl) {
+    return dmsUrl;
+  }
+
   return null;
 }
 
@@ -165,14 +226,35 @@ export function parsearCoordenadasUrl(url: string): Coordenadas | null {
  * - "10.39972; -75.51444"
  * - "10.39972 -75.51444"
  * - "lat: 10.39972, lng: -75.51444"
+ * - Coordenadas DMS: 10°24'00.0"N 75°30'00.0"W
+ * - Enlace o fragmento de Google Maps pegado por error en este campo
  */
 export function parsearTextoCoordenadas(texto: string): Coordenadas | null {
   if (!texto || typeof texto !== "string") return null;
   const limpia = texto.trim();
   if (!limpia) return null;
 
+  // Si el usuario pega una URL o fragmento con @ o http/https en el campo de coordenadas planas
+  if (
+    limpia.startsWith("http://") ||
+    limpia.startsWith("https://") ||
+    limpia.includes("@") ||
+    limpia.includes("maps.")
+  ) {
+    const coordsDesdeUrl = parsearCoordenadasUrl(limpia);
+    if (coordsDesdeUrl) return coordsDesdeUrl;
+  }
+
+  // Formato DMS (Grados, Minutos, Segundos)
+  if (limpia.includes("°")) {
+    const coordsDms = parsearCoordenadasDMS(limpia);
+    if (coordsDms) return coordsDms;
+  }
+
   // Extraer patrones nombrados si existen (ej. lat: 10.39, lng: -75.5)
-  const matchNombrado = limpia.match(/lat(?:itud)?[:\s=]+(-?\d+(?:\.\d+)?)[,\s;]+(?:lon|lng|longitud)?[:\s=]+(-?\d+(?:\.\d+)?)/i);
+  const matchNombrado = limpia.match(
+    /lat(?:itud)?[:\s=]+(-?\d+(?:\.\d+)?)[,\s;]+(?:lon|lng|longitud)?[:\s=]+(-?\d+(?:\.\d+)?)/i
+  );
   if (matchNombrado) {
     const lat = parseFloat(matchNombrado[1]);
     const lng = parseFloat(matchNombrado[2]);

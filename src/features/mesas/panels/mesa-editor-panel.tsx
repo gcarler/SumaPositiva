@@ -14,7 +14,7 @@ import {
   SelectValue
 } from "@/shared/ui/select";
 import {useState, useMemo, useEffect, useCallback} from "react";
-import {useForm, useFieldArray, Controller, useWatch} from "react-hook-form";
+import {useForm, useFieldArray, Controller, useWatch, type Resolver} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {z} from "zod";
 import {toast} from "sonner";
@@ -95,12 +95,25 @@ const mesaSchema = z
     // Sección 3 — opcionales
     urlMapa: z.string().url("Debe ser una URL válida").optional().or(z.literal("")),
     coordenadas: z
-      .object({
-        lat: z.number().min(-90, "Latitud entre -90 y 90").max(90, "Latitud entre -90 y 90"),
-        lng: z.number().min(-180, "Longitud entre -180 y 180").max(180, "Longitud entre -180 y 180"),
-      })
-      .optional()
-      .nullable(),
+      .preprocess(
+        (val) => {
+          if (!val || typeof val !== "object") return undefined;
+          const v = val as Record<string, unknown>;
+          const latNum = typeof v.lat === "number" ? v.lat : parseFloat(String(v.lat ?? ""));
+          const lngNum = typeof v.lng === "number" ? v.lng : parseFloat(String(v.lng ?? ""));
+          if (!Number.isFinite(latNum) || !Number.isFinite(lngNum)) {
+            return undefined;
+          }
+          return { lat: latNum, lng: lngNum };
+        },
+        z
+          .object({
+            lat: z.number().min(-90, "Latitud entre -90 y 90").max(90, "Latitud entre -90 y 90"),
+            lng: z.number().min(-180, "Longitud entre -180 y 180").max(180, "Longitud entre -180 y 180"),
+          })
+          .optional()
+      )
+      .optional(),
     aforo: z
       .number()
       .int("Debe ser un número entero")
@@ -190,7 +203,7 @@ export function MesaEditorPanel({
     reset,
     formState: { errors, isSubmitting, isDirty },
   } = useForm<MesaForm>({
-    resolver: zodResolver(mesaSchema),
+    resolver: zodResolver(mesaSchema) as unknown as Resolver<MesaForm>,
     mode: "onChange",
     defaultValues: {
       nombre: mesaEditada?.nombre ?? "",
@@ -301,35 +314,18 @@ export function MesaEditorPanel({
     return urlMapaValue ? parsearCoordenadasUrl(urlMapaValue) : null;
   }, [urlMapaValue]);
 
-  const watchCoords = useWatch({ control, name: "coordenadas" });
-  const watchLat = useWatch({ control, name: "coordenadas.lat" });
-  const watchLng = useWatch({ control, name: "coordenadas.lng" });
+  const watchCoords = useWatch({ control, name: "coordenadas" }) as Coordenadas | null | undefined;
 
   const coordenadasActuales = useMemo<Coordenadas | undefined>(() => {
-    if (watchLat !== undefined && watchLng !== undefined && watchLat !== null && watchLng !== null) {
-      const latNum = Number(watchLat);
-      const lngNum = Number(watchLng);
-      if (Number.isFinite(latNum) && Number.isFinite(lngNum)) {
-        return { lat: latNum, lng: lngNum };
-      }
-    }
     if (watchCoords && Number.isFinite(watchCoords.lat) && Number.isFinite(watchCoords.lng)) {
       return { lat: Number(watchCoords.lat), lng: Number(watchCoords.lng) };
     }
     return undefined;
-  }, [watchCoords, watchLat, watchLng]);
+  }, [watchCoords]);
 
   const fijarCoordenadas = useCallback(
     (coords: Coordenadas | null | undefined, dirty = true) => {
       setValue("coordenadas", coords ?? undefined, { shouldDirty: dirty, shouldValidate: true });
-      setValue("coordenadas.lat", coords ? coords.lat : (undefined as unknown as number), {
-        shouldDirty: dirty,
-        shouldValidate: true,
-      });
-      setValue("coordenadas.lng", coords ? coords.lng : (undefined as unknown as number), {
-        shouldDirty: dirty,
-        shouldValidate: true,
-      });
     },
     [setValue]
   );
@@ -352,6 +348,7 @@ export function MesaEditorPanel({
 
   // Coordenadas planas combinadas (sincronizadas bidireccionalmente)
   const [textoCoordsPlanas, setTextoCoordsPlanas] = useState("");
+  const [errorCoordsPlanas, setErrorCoordsPlanas] = useState<string | null>(null);
 
   useEffect(() => {
     if (coordenadasActuales && Number.isFinite(coordenadasActuales.lat) && Number.isFinite(coordenadasActuales.lng)) {
@@ -362,11 +359,12 @@ export function MesaEditorPanel({
         Math.abs(parsed.lng - coordenadasActuales.lng) > 0.00001
       ) {
         setTextoCoordsPlanas(`${coordenadasActuales.lat.toFixed(5)}, ${coordenadasActuales.lng.toFixed(5)}`);
+        setErrorCoordsPlanas(null);
       }
-    } else if (!coordenadasActuales && textoCoordsPlanas) {
+    } else if (!coordenadasActuales && textoCoordsPlanas && !errorCoordsPlanas) {
       setTextoCoordsPlanas("");
     }
-  }, [coordenadasActuales]);
+  }, [coordenadasActuales, errorCoordsPlanas, textoCoordsPlanas]);
 
   const advertenciaCartagena = useMemo(() => {
     if (!coordenadasActuales || !Number.isFinite(coordenadasActuales.lat) || !Number.isFinite(coordenadasActuales.lng)) {
@@ -1173,77 +1171,68 @@ export function MesaEditorPanel({
                     )}
                   </FormField>
 
-                  {/* 3. COORDENADAS PLANAS COMBINADAS */}
-                  <div className="col-span-full sm:col-span-2">
+                  {/* 3. COORDENADAS (LATITUD, LONGITUD) UNIFICADAS */}
+                  <div className="col-span-full">
                     <FormField
                       id="mesa-coords-planas"
-                      label="3. Coordenadas planas combinadas (un solo campo)"
-                      description="Escribe Latitud y Longitud separadas por coma, espacio o punto y coma (ej. 10.39972, -75.51444)."
+                      label="3. Coordenadas (Latitud, Longitud)"
+                      error={
+                        errorCoordsPlanas ??
+                        (errors.coordenadas as { message?: string } | undefined)?.message ??
+                        (errors.coordenadas as { lat?: { message?: string }; lng?: { message?: string } } | undefined)?.lat?.message ??
+                        (errors.coordenadas as { lat?: { message?: string }; lng?: { message?: string } } | undefined)?.lng?.message
+                      }
+                      description="Escribe o pega Latitud y Longitud separadas por coma o espacio (ej. 10.39972, -75.51444). También se llena automáticamente al hacer clic en el mapa o pegar un enlace con coordenadas."
                     >
                       {() => (
-                        <Input
-                          id="mesa-coords-planas"
-                          type="text"
-                          placeholder="10.39972, -75.51444"
-                          value={textoCoordsPlanas}
-                          onChange={(e) => {
-                            const val = e.target.value;
-                            setTextoCoordsPlanas(val);
-                            const parseadas = parsearTextoCoordenadas(val);
-                            if (parseadas) {
-                              fijarCoordenadas(parseadas);
-                            }
-                          }}
-                        />
+                        <div className="relative flex items-center">
+                          <Input
+                            id="mesa-coords-planas"
+                            type="text"
+                            placeholder="10.39972, -75.51444"
+                            value={textoCoordsPlanas}
+                            aria-invalid={Boolean(errorCoordsPlanas || errors.coordenadas)}
+                            className={textoCoordsPlanas || coordenadasActuales ? "pr-20" : ""}
+                            onChange={(e) => {
+                              const val = e.target.value;
+                              setTextoCoordsPlanas(val);
+                              if (!val.trim()) {
+                                setErrorCoordsPlanas(null);
+                                fijarCoordenadas(undefined);
+                                return;
+                              }
+                              const parseadas = parsearTextoCoordenadas(val);
+                              if (parseadas) {
+                                setErrorCoordsPlanas(null);
+                                fijarCoordenadas(parseadas);
+                              } else {
+                                setErrorCoordsPlanas(
+                                  "No se reconocen coordenadas válidas. Usa el formato latitud, longitud (ej. 10.39972, -75.51444) o pega un enlace de Google Maps."
+                                );
+                              }
+                            }}
+                          />
+                          {(textoCoordsPlanas || coordenadasActuales) && (
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              className="absolute right-1.5 top-1/2 -translate-y-1/2 h-7 px-2 text-xs text-[var(--text-tertiary)] hover:text-[var(--danger)] hover:bg-[var(--surface-3)]"
+                              onClick={() => {
+                                setTextoCoordsPlanas("");
+                                setErrorCoordsPlanas(null);
+                                fijarCoordenadas(undefined);
+                              }}
+                              title="Limpiar coordenadas"
+                              aria-label="Limpiar coordenadas"
+                            >
+                              Limpiar
+                            </Button>
+                          )}
+                        </div>
                       )}
                     </FormField>
                   </div>
-
-                  {/* Latitud individual */}
-                  <FormField
-                    id="mesa-lat"
-                    label="Latitud individual"
-                    error={errors.coordenadas?.lat?.message}
-                    className="col-span-1"
-                  >
-                    {(controlProps) => (
-                      <Input
-                        {...controlProps}
-                        type="number"
-                        step="any"
-                        placeholder="10.39972"
-                        {...register("coordenadas.lat", {
-                          setValueAs: (v) =>
-                            v === "" || v === null || isNaN(Number(v))
-                              ? undefined
-                              : Number(v),
-                        })}
-                      />
-                    )}
-                  </FormField>
-
-                  {/* Longitud individual */}
-                  <FormField
-                    id="mesa-lng"
-                    label="Longitud individual"
-                    error={errors.coordenadas?.lng?.message}
-                    className="col-span-1"
-                  >
-                    {(controlProps) => (
-                      <Input
-                        {...controlProps}
-                        type="number"
-                        step="any"
-                        placeholder="-75.51444"
-                        {...register("coordenadas.lng", {
-                          setValueAs: (v) =>
-                            v === "" || v === null || isNaN(Number(v))
-                              ? undefined
-                              : Number(v),
-                        })}
-                      />
-                    )}
-                  </FormField>
                 </div>
               </motion.div>
             )}

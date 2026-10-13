@@ -3,6 +3,7 @@ import {
   esEnlaceCorto,
   parsearCoordenadasUrl,
   parsearTextoCoordenadas,
+  parsearCoordenadasDMS,
   validarLimitesCartagena,
   validarRangoWgs84,
   generarUrlComoLlegar,
@@ -61,6 +62,41 @@ describe("coordenadas-parser — Parseo de URLs y Coordenadas Planas [MESA-UBIC-
       expect(coords).not.toBeNull();
       expect(coords?.lat).toBeCloseTo(10.4123, 4);
       expect(coords?.lng).toBeCloseTo(-75.5345, 4);
+    });
+
+    it("parsea Google Maps con coma codificada en URL (%2C) [MESA-UBIC-02]", () => {
+      const url = "https://www.google.com/maps/search/?api=1&query=10.39972%2C-75.51444";
+      const coords = parsearCoordenadasUrl(url);
+      expect(coords).not.toBeNull();
+      expect(coords?.lat).toBeCloseTo(10.39972, 4);
+      expect(coords?.lng).toBeCloseTo(-75.51444, 4);
+    });
+
+    it("parsea rutas directas /maps/place/lat,lng y /maps/search/lat,lng [MESA-UBIC-02]", () => {
+      const urlPlace = "https://www.google.com/maps/place/10.39972,-75.51444";
+      const coordsPlace = parsearCoordenadasUrl(urlPlace);
+      expect(coordsPlace).not.toBeNull();
+      expect(coordsPlace?.lat).toBeCloseTo(10.39972, 4);
+      expect(coordsPlace?.lng).toBeCloseTo(-75.51444, 4);
+
+      const urlSearch = "https://www.google.com/maps/search/10.39972,-75.51444";
+      const coordsSearch = parsearCoordenadasUrl(urlSearch);
+      expect(coordsSearch).not.toBeNull();
+      expect(coordsSearch?.lat).toBeCloseTo(10.39972, 4);
+      expect(coordsSearch?.lng).toBeCloseTo(-75.51444, 4);
+
+      const urlDir = "https://www.google.com/maps/dir/10.39972,-75.51444";
+      const coordsDir = parsearCoordenadasUrl(urlDir);
+      expect(coordsDir).not.toBeNull();
+      expect(coordsDir?.lat).toBeCloseTo(10.39972, 4);
+      expect(coordsDir?.lng).toBeCloseTo(-75.51444, 4);
+    });
+
+    it("parsea parámetros adicionales de mapas: center, viewpoint, daddr, saddr [MESA-UBIC-02]", () => {
+      expect(parsearCoordenadasUrl("https://maps.google.com/?center=10.39972,-75.51444")?.lat).toBeCloseTo(10.39972, 4);
+      expect(parsearCoordenadasUrl("https://maps.google.com/?viewpoint=10.39972,-75.51444")?.lng).toBeCloseTo(-75.51444, 4);
+      expect(parsearCoordenadasUrl("https://maps.google.com/?daddr=10.39972,-75.51444")?.lat).toBeCloseTo(10.39972, 4);
+      expect(parsearCoordenadasUrl("https://maps.google.com/?saddr=10.39972,-75.51444")?.lng).toBeCloseTo(-75.51444, 4);
     });
 
     it("parsea Waze con parámetro ?ll=lat,lng", () => {
@@ -123,6 +159,20 @@ describe("coordenadas-parser — Parseo de URLs y Coordenadas Planas [MESA-UBIC-
       expect(coords?.lng).toBeCloseTo(-75.51444, 4);
     });
 
+    it("parsea coordenadas en formato DMS (Grados, Minutos, Segundos) [MESA-UBIC-02]", () => {
+      const coords = parsearTextoCoordenadas('10°24\'00.0"N 75°30\'00.0"W');
+      expect(coords).not.toBeNull();
+      expect(coords?.lat).toBeCloseTo(10.4, 4);
+      expect(coords?.lng).toBeCloseTo(-75.5, 4);
+    });
+
+    it("extrae coordenadas si el usuario pega por error una URL de Google Maps [MESA-UBIC-02]", () => {
+      const coords = parsearTextoCoordenadas("https://www.google.com/maps/@10.39972,-75.51444,15z");
+      expect(coords).not.toBeNull();
+      expect(coords?.lat).toBeCloseTo(10.39972, 4);
+      expect(coords?.lng).toBeCloseTo(-75.51444, 4);
+    });
+
     it("retorna null si las coordenadas están fuera de rango WGS84", () => {
       expect(parsearTextoCoordenadas("95.0, -75.51444")).toBeNull(); // lat > 90
       expect(parsearTextoCoordenadas("10.39, -195.51444")).toBeNull(); // lng < -180
@@ -132,6 +182,20 @@ describe("coordenadas-parser — Parseo de URLs y Coordenadas Planas [MESA-UBIC-
       expect(parsearTextoCoordenadas("")).toBeNull();
       expect(parsearTextoCoordenadas("solo texto")).toBeNull();
       expect(parsearTextoCoordenadas("10.39972")).toBeNull();
+    });
+  });
+
+  describe("parsearCoordenadasDMS", () => {
+    it("parsea grados minutos segundos con N y W", () => {
+      const coords = parsearCoordenadasDMS('10°24\'36"N, 75°30\'54"W');
+      expect(coords).not.toBeNull();
+      expect(coords?.lat).toBeCloseTo(10.41, 2);
+      expect(coords?.lng).toBeCloseTo(-75.515, 2);
+    });
+
+    it("retorna null ante texto no DMS", () => {
+      expect(parsearCoordenadasDMS("10.4, -75.5")).toBeNull();
+      expect(parsearCoordenadasDMS("")).toBeNull();
     });
   });
 
