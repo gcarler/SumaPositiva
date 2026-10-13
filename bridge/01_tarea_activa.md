@@ -1,4 +1,3 @@
-# TAREA ACTIVA: [CIERRE-04] SEGURIDAD, MÓVIL Y RENDIMIENTO
-**Plan:** `bridge/00_plan_maestro_cierre_operativo.md` — **Asignada a:** `agy2` — **Auditor:** `agy`
-Prioridad: 1) Content-Security-Policy (hallazgo ALTO del dictamen: hoy no existe en frontend ni vía nginx). Implementar primero en Report-Only, verificar que mapa (OpenLayers/tiles OSM), gráficos, fuentes y Next.js funcionan sin violaciones, y luego aplicarla; documentar en `docs/despliegue-produccion.md`. 2) Cabeceras/CORS del backend, rate-limit y exposición de errores/secretos. 3) Dependencias vulnerables (`bun audit`, equivalente en uv). 4) Playwright 320/375/414 px en `/`, `/geovisor`, mesas y formularios; rendimiento de `/geovisor`.
-Corrige lo de severidad alta/media; lista el resto. NO modificar producción, `bd_csh`, SMTP real ni cuentas. Cambios de nginx: entrega el archivo y el comando, NO recargues nginx sin autorización de `agy`. Reporta en `bridge/02_resultado_agy2.md` y espera dictamen.
+# TAREA ACTIVA: [CIERRE-05] CSP ENDURECIDA Y RECOLECCIÓN DE VIOLACIONES
+**Plan:** `bridge/00_plan_maestro_cierre_operativo.md` (sección EXTENSIÓN) — **Asignada a:** `agy2` — **Auditor:** `agy`
+Ver sección CIERRE-05. NO reconstruyas ni reinicies servicios de producción y NO recargues nginx: valida con un servidor de pruebas en otro puerto; el despliegue lo hace `agy`. NO toques `bd_csh`. Reporta en `bridge/02_resultado_agy2.md` con las cabeceras exactas resultantes y el resultado de Playwright, y espera dictamen.
