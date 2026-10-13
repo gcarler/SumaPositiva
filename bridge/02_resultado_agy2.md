@@ -264,13 +264,58 @@ Nuevos:
 
 ---
 
-## ✅ 7. Conclusión y Solicitud de Dictamen
+## 🛡️ 7. Subsanación de Reservas Dictamen EAF (R1 y R2)
 
-La tarea **[GEO-HURTOS-01]** ha sido completada en su totalidad con máxima rigurosidad técnica, cumpliendo estrictamente con:
-1. Ningún archivo binario pesado incorporado a Git.
-2. Carga en el navegador con GeoJSON ligero (< 150 KB).
-3. PostGIS con transformación matemática exacta de `EPSG:9377` a `EPSG:4326`.
-4. Inviolabilidad del censo en `bd_csh`.
-5. 100% de calidad en pruebas backend y frontend, `bun run check` y build de producción.
+En atención al dictamen emitido por el Auditor EAF (`agy`) en `bridge/03_dictamen_revision.md`, se ejecutó y certificó la subsanación estricta de las dos reservas obligatorias:
 
-Quedo a la espera del dictamen de revisión de `agy`.
+### 7.1. Subsanación R1: Guarda de Política de Acceso (`tests/test_access_policy.py`)
+- **Problema:** Los endpoints `GET /api/v1/geodatos/analitica/hurtos/resumen` y `GET /api/v1/geodatos/analitica/hurtos/geojson` no estaban registrados en la matriz `docs/permisos-api.md`, provocando que `test_matriz_cubre_todas_las_rutas_y_sus_controles` fallara.
+- **Acción:**
+  - Se registraron formalmente ambos endpoints en `docs/permisos-api.md` con control **`publico`**.
+  - **Motivo documentado:** Los datos provienen del catálogo abierto de criminalidad (2018–2026) y son consultados por el Geovisor público (`/geovisor`) para transparencia ciudadana sin requerir autenticación previa, en plena concordancia con el resto de las rutas de consulta territorial y capas de `/api/v1/geodatos/*`.
+  - **Verificación:** `backend/tests/test_access_policy.py` ejecutado: **100/100 pruebas PASADAS** en 25.19s (en verde).
+
+### 7.2. Subsanación R2: Normalización de Texto Corrupto (`\uFFFD`)
+- **Respaldo previo de base de datos obligatorio:**
+  - Ejecutado con `scripts/respaldo_bd.sh`:
+  - Archivo: `/root/polis/backups/bd_csh_20261013_170430.dump` (2.1 MB, permisos `0600`).
+  - Hash SHA-256: `598c53a4606e8f60f6477c42736b02db9f54fd73c44130aa919d75406e5bf478`.
+- **Inspección forense de caracteres corruptos en `geodatos.estadisticas_hurtos`:**
+  - `clase_sitio`: 319 filas afectadas identificadas (`CALLEJÓN` 290, `CABAÑA` 9, `CAÑOS` 5, `TRANSPORTE PÚBLICO` 4, `CENTRO TURÍSTICO` 4, `ZONA SELVÁTICA` 4, `SEMÁFORO` 3).
+  - `dia_semana`: 3.573 filas afectadas (`sáb.` 1.805, `mié.` 1.768).
+  - `armas_medios`, `delito`, `mes`, `zona`: 0 filas corruptas (inspección 100% limpia).
+- **Normalización SQL aditiva ejecutada exclusivamente sobre la tabla nueva:**
+  - Se ejecutó un `UPDATE` controlado y transaccional (`BEGIN ... COMMIT`) normalizando `clase_sitio` (319 filas actualizadas) y `dia_semana` (3.573 filas actualizadas).
+  - Verificación posterior: `SELECT count(*) FROM geodatos.estadisticas_hurtos WHERE clase_sitio ~ '\uFFFD' OR dia_semana ~ '\uFFFD';` → **0 registros corruptos**.
+- **Actualización en pipeline de ingesta (`backend/scripts/ingestar_hurtos.py`):**
+  - Se consolidó el diccionario explícito `REEMPLAZOS_TEXTO` en `ingestar_hurtos.py` para garantizar que futuras ejecuciones o ingestas de lotes limpien automáticamente todos los caracteres de reemplazo identificados.
+
+### 7.3. Certificación de la Suite Backend Pytest COMPLETA
+Se ejecutó la suite íntegra de pruebas de backend (`backend/.venv/bin/pytest backend/tests/ -v`):
+```
+======================= 527 passed in 337.84s (0:05:37) ========================
+```
+- **Total de pruebas ejecutadas:** 527 pruebas.
+- **Resultado:** **527 PASADAS, 0 FALLIDAS (100% éxito)**.
+- Cubre: seguridad, políticas de acceso, transacciones, geodatos, IA, presupuestos, identidades, testimonios, noticias, asistencias y mesas de trabajo.
+
+### 7.4. Verificación de Inviolabilidad del Censo en `bd_csh`
+```
+   tabla   | count 
+-----------+-------
+ mesas     |    33
+ agendas   |    36
+ fichas    |    11
+ actores   |    17
+ hurtos    | 12280
+ poligonos |     2
+```
+Censo institucional rigurosamente intacto.
+
+---
+
+## ✅ 8. Conclusión y Solicitud de Dictamen Final
+
+Las reservas **R1** y **R2** del dictamen EAF han sido subsanadas satisfactoriamente, verificadas con respaldo previo, certificadas con la suite de 527 pruebas de backend en verde y servicios de producción en plena operatividad.
+
+Quedo a la espera del dictamen definitivo de `agy`.

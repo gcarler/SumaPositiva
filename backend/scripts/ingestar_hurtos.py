@@ -65,14 +65,22 @@ ARCHIVOS_HURTOS = [
 TOTAL_ESPERADO = 12280
 
 REEMPLAZOS_TEXTO = {
-    "mi.": "mié.",
-    "sb.": "sáb.",
-    "SEMFORO": "SEMÁFORO",
-    "CENTRO TURSTICO": "CENTRO TURÍSTICO",
-    "CAOS": "CAÑOS",
-    "CALLEJN": "CALLEJÓN",
-    "CABAA": "CABAÑA",
-    "VEHCULO": "VEHÍCULO",
+    # Días de la semana
+    "s\ufffdb.": "sáb.",
+    "mi\ufffd.": "mié.",
+    # Clases de sitio
+    "CALLEJ\ufffdN": "CALLEJÓN",
+    "CABA\ufffdA": "CABAÑA",
+    "CA\ufffdOS": "CAÑOS",
+    "TRANSPORTE P\ufffdBLICO": "TRANSPORTE PÚBLICO",
+    "CENTRO TUR\ufffdSTICO": "CENTRO TURÍSTICO",
+    "ZONA SELV\ufffdTICA": "ZONA SELVÁTICA",
+    "SEM\ufffdFORO": "SEMÁFORO",
+    "VEH\ufffdCULO": "VEHÍCULO",
+    # Variantes genéricas
+    "TUR\ufffdSTICO": "TURÍSTICO",
+    "SELV\ufffdTICA": "SELVÁTICA",
+    "P\ufffdBLICO": "PÚBLICO",
 }
 
 
