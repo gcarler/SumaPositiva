@@ -490,3 +490,88 @@ Censo institucional rigurosamente intacto.
 - `bridge/02_resultado_agy2.md`: Este reporte de entrega.
 
 *(Se respetó estrictamente la zona de trabajo de `freebuff`: ningún archivo de historias internas, plataforma ni banners fue modificado ni staged).*
+
+
+---
+
+# INFORME DE ENTREGA: [UI-REMED-01] CULMINACIÓN DE REMEDIACIÓN UI/STORYBOOK (F1–F4) + AJUSTE O1 ACCESIBILIDAD
+
+**Responsable:** `agy2` — **Auditor:** `agy` — **Fecha:** 13-oct-2026  
+**Documentos base:** `Revision_ui_13102026.md` (§5, §8 y §9), `docs/plan-remediacion-ui-13102026.md` y Dictamen EAF `bridge/03_dictamen_revision.md` (Observación O1)
+
+---
+
+## 📋 1. Resumen Ejecutivo de la Intervención
+
+Se retomó, revisó, completó y certificó el trabajo de remediación UI y Storybook iniciado por `freebuff` en el árbol de trabajo (hallazgos **F1 a F4**), se subsanó la observación cosmética **O1** sobre la barra lateral de accesibilidad (`src/shared/ui/accesibilidad-widget.tsx`) y se aisló el ciclo de vida de los mocks de `window`/`document` en `src/features/accesibilidad/accesibilidad-store.test.ts` para dejar tanto `bun run ui:test` (**212/212**) como `bun test` (**547/547**) y `bun run check` (**0 errores**) al **100 % en verde**.
+
+---
+
+## 🛠️ 2. Detalle Técnico por Hallazgo (F1–F4 + O1)
+
+### 2.1. F1 — Contraste WCAG 1.4.3 (`color-contrast`) en pestañas de héroes
+- **Archivo:** `src/features/plataforma/components/gestor-heros-plataforma.tsx:264`
+- **Cambio:** Se sustituyó `opacity-75` por el token semántico `text-[var(--text-secondary)]` en el `<span className="font-mono text-[10px] text-[var(--text-secondary)] truncate">{espacio.ruta}</span>` de las 7 pestañas (`role="tab"`).
+- **Verificación:** La historia `plataforma-interna › Configuracion` supera la auditoría `axe-core` con 0 violaciones de contraste en tema claro y oscuro.
+
+### 2.2. F2 — Aserciones asíncronas y aislamiento de mocks en `plataforma-interna.stories.tsx`
+- **Archivo:** `src/app/_stories/plataforma-interna.stories.tsx`
+- **Cambios:**
+  - En `Testimonios` y `TestimoniosOscuro`: uso de `await c.findByRole("heading", { name: "Gestión y Moderación de Testimonios" })`, `await c.findByRole("region", { name: "Cola de moderación de testimonios" })` y `await c.findByText(...)`.
+  - En `Usuarios`: mock de `identidadApi` con 8 cuentas institucionales de demo (`cuentasBase`, incluyendo a `Ana Pérez`), métodos `crearUsuario`, `editarUsuario`, `roles` y `ambitosUsuario: fn(async () => [])`, restaurando `cuentasActuales = structuredClone(cuentasBase)` en el cleanup del `beforeEach`.
+  - Se alinearon las aserciones de la función `play` con los textos reales de `UsuarioDetallePanel` (`"Detalles de la cuenta"` y botón `"Editar rol y datos"` que abre el panel `"Editar usuario"`).
+- **Verificación:** Las historias `Usuarios`, `Testimonios` y `Testimonios Oscuro` pasan de forma determinista y sin fugas de estado entre corridas.
+
+### 2.3. F3 — Eliminación de landmark `banner` duplicado/anidado en héroes embebidos
+- **Archivos:** `src/features/politicas/components/hero-page-banner.tsx` y `src/features/politicas/components/hero-page-banner.test.tsx`
+- **Cambios:**
+  - Se reemplazó `<header role="banner" aria-label={titulo}>` por `<section aria-label={titulo}>` para que el documento conserve un único landmark `banner` de nivel superior (el del shell de la plataforma).
+  - Se actualizó la prueba unitaria `hero-page-banner.test.tsx` para verificar que renderice `<section` con `aria-label` y no emita `role="banner"`.
+- **Verificación:** Las historias `platform › Explorar`, `› Sin Resultados` y `› Mesas` pasan con 0 violaciones de `landmark-banner-is-top-level` y `landmark-no-duplicate-banner`.
+
+### 2.4. F4 — Mock determinista de `POST /api/v1/mesas` en Storybook
+- **Archivo:** `src/app/_stories/platform.stories.tsx`
+- **Cambios:**
+  - Se añadió soporte para `POST /api/v1/mesas` en el mock de `window.fetch` del `meta` y en el `beforeEach` específico de `CrearMesaCompleta`, devolviendo HTTP `201` con eco del cuerpo e `id` generado (`mesa-demo-...`) conforme a la regla 8 del kit UI (las historias no escriben en servicios reales), sin modificar `mesa-editor-panel.tsx`.
+  - Se completaron en `play` los campos requeridos del formulario (incluyendo fecha con `fireEvent.change` y coordenadas válidas dentro de Cartagena `10.4`, `-75.6`) y se verificó la inserción de `"Mesa de convivencia barrial"` en `useMesasStore` y la apertura del diálogo de detalle.
+- **Verificación:** La historia `platform › Crear Mesa Completa` pasa en verde en Chromium headless.
+
+### 2.5. O1 — Subsanación de solapamiento de barra lateral con subpanel «Más opciones» abierto
+- **Archivos:** `src/shared/ui/accesibilidad-widget.tsx` y `src/features/accesibilidad/accesibilidad-widget.test.tsx`
+- **Cambios:**
+  - Se condicionaron las clases de expansión horizontal (`hover:w-[196px] focus-within:w-[196px] focus-visible:w-[196px]`) y de opacidad de etiqueta a `!isOpen`, de modo que mientras el subpanel `#panel-mas-opciones-a11y` permanece abierto, los botones de la barra lateral se mantienen en `52px` sin invadir el borde derecho del subpanel.
+  - Se estableció jerarquía explícita de apilamiento: `z-20` en `#panel-mas-opciones-a11y` frente a `z-10` en `<nav aria-label="Menú de accesibilidad">`.
+  - Se añadieron aserciones unitarias en `accesibilidad-widget.test.tsx` y se regeneró la captura `a11y-subpanel-mas-opciones.png` con Playwright E2E confirmando visualmente la ausencia total de solapamiento.
+- **Aislamiento adicional en `src/features/accesibilidad/accesibilidad-store.test.ts`:**
+  - Se encapsuló la inyección de `globalThis.window` y `globalThis.document` dentro de `beforeEach` y su limpieza en `afterEach`, garantizando que las 63 suites de `bun test` se ejecuten en un mismo proceso sin contaminar la detección SSR (`typeof window === "undefined"`) de otras pruebas.
+
+---
+
+## 🧪 3. Certificación de Calidad (Antes vs. Después)
+
+Se documentó la sección `§9. Resultados de la remediación ejecutada — antes/después` en `Revision_ui_13102026.md`:
+
+| Verificación / Comando | Antes | Después |
+|---|---|---|
+| **`bun run ui:test`** (Storybook + `axe-core` Chromium) | ❌ 198 / 206 (8 fallos) | ✅ **212 / 212 pasadas** (17 archivos, **0 fallos**, 30.22 s) |
+| **`bun test`** (Unitarios frontend completos) | — | ✅ **547 / 547 pasadas** (63 archivos, 2.548 `expect()`, **0 fallos**, 7.00 s) |
+| **`bun run check`** (`ui:check` + `tsc --noEmit` + `eslint .`) | ✅ 0 errores | ✅ **0 errores** |
+| **`bun run ui:policy:test`** (`scripts/ui-policy.test.mjs`) | ✅ 8 / 8 | ✅ **8 / 8 pasadas** |
+| **`bun run build`** (Next.js 16.3.8 Turbopack) | ✅ Exitoso | ✅ **192 / 192 rutas compiladas** |
+| **Playwright E2E Accesibilidad (`test_a11y_e2e.mjs`)** | ✅ 14 / 14 | ✅ **14 / 14 pasos + 2 / 2 auditorías axe (0 violaciones)** |
+
+---
+
+## 🚀 4. Despliegue y Censo Institucional `bd_csh`
+
+- **Servicio `polis-frontend`:** Reiniciado (`systemctl restart polis-frontend`), estado `active (running)`.
+- **Verificación HTTP:**
+  - `GET http://127.0.0.1:3000/` → `HTTP/1.1 200 OK`
+  - `GET http://127.0.0.1:3000/geovisor` → `HTTP/1.1 200 OK`
+- **Inviolabilidad del Censo en `bd_csh`:**
+  ```
+   mesas | agendas | fichas | actores 
+  -------+---------+--------+---------
+      33 |      36 |     11 |      17
+  ```
+  Censo institucional rigurosamente intacto.

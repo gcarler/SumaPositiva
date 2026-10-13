@@ -10,10 +10,11 @@ describe("HeroPageBanner Component (HERO-PAGES-03)", () => {
     useHeroConfigStore.getState().resetearHeroConfig();
   });
 
-  test("renderiza con semántica accesible role='banner' y aria-label", () => {
+  test("renderiza como sección nombrada sin duplicar el landmark banner (F3, axe landmark-no-duplicate-banner)", () => {
     const html = renderToString(<HeroPageBanner pageKey="barrio" />);
 
-    expect(html).toContain('role="banner"');
+    expect(html).not.toContain('role="banner"');
+    expect(html).toContain("<section");
     expect(html).toContain(`aria-label="${HERO_PAGES_CONFIG.barrio.titulo}"`);
   });
 

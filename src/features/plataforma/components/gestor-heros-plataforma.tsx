@@ -261,7 +261,7 @@ export function GestorHerosPlataforma({
                     />
                   )}
                 </div>
-                <span className="font-mono text-[10px] opacity-75 truncate">
+                <span className="font-mono text-[10px] text-[var(--text-secondary)] truncate">
                   {espacio.ruta}
                 </span>
               </Button>

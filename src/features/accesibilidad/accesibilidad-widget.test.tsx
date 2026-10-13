@@ -129,6 +129,11 @@ describe("AccesibilidadWidget UI Component (A11Y-WIDGET-01b - Patrón Función P
     expect(html).toContain("Subrayar enlaces");
     expect(html).toContain("Reducir movimiento");
     expect(html).toContain("Restablecer todo");
+
+    // O1: Con el subpanel abierto se suprime la expansión lateral de botones (hover:w-[196px]) y el subpanel tiene z-20 frente a z-10 del nav
+    expect(html).not.toContain("hover:w-[196px]");
+    expect(html).toContain("z-20");
+    expect(html).toContain("z-10");
   });
 
   test("en geovisor con isCollapsed=true renderiza únicamente la pestaña mínima compacta para no obstruir paneles", () => {

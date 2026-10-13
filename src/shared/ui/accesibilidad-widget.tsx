@@ -155,6 +155,14 @@ export function AccesibilidadWidget({
     );
   }
 
+  const clasesExpansionBoton = !isOpen
+    ? "hover:w-[196px] hover:border-[var(--border-strong)] hover:shadow-md focus-within:w-[196px] focus-within:border-[var(--border-strong)] focus-within:shadow-md focus-visible:w-[196px]"
+    : "";
+
+  const clasesOpacidadEtiqueta = !isOpen
+    ? "group-hover:opacity-100 group-focus-within:opacity-100 group-focus-visible:opacity-100"
+    : "";
+
   return (
     <aside
       className={cn(
@@ -176,7 +184,7 @@ export function AccesibilidadWidget({
           role="region"
           aria-label="Controles adicionales de accesibilidad"
           tabIndex={-1}
-          className="absolute right-[60px] top-1/2 -translate-y-1/2 flex w-[min(20rem,calc(100vw-4.5rem))] flex-col gap-3 rounded-2xl border border-[var(--border-strong)] bg-[var(--surface-1)] p-4 shadow-panel backdrop-blur transition-all duration-150 animate-in fade-in zoom-in-95 max-h-[85vh] overflow-y-auto"
+          className="absolute right-[60px] top-1/2 -translate-y-1/2 z-20 flex w-[min(20rem,calc(100vw-4.5rem))] flex-col gap-3 rounded-2xl border border-[var(--border-strong)] bg-[var(--surface-1)] p-4 shadow-panel backdrop-blur transition-all duration-150 animate-in fade-in zoom-in-95 max-h-[85vh] overflow-y-auto"
         >
           {/* Encabezado del subpanel */}
           <div className="flex items-center justify-between border-b border-[var(--border)] pb-2">
@@ -338,7 +346,7 @@ export function AccesibilidadWidget({
       {/* Barra vertical fija estilo Función Pública / GOV.CO */}
       <nav
         aria-label="Menú de accesibilidad"
-        className="relative flex w-[52px] flex-col rounded-l-xl border-y border-l border-[var(--border-strong)] bg-[var(--surface-1)] py-1.5 shadow-raised"
+        className="relative z-10 flex w-[52px] flex-col rounded-l-xl border-y border-l border-[var(--border-strong)] bg-[var(--surface-1)] py-1.5 shadow-raised"
       >
         {/* En geovisor: botón para colapsar barra a pestaña mínima */}
         {isGeovisor && onToggleCollapse && (
@@ -368,7 +376,8 @@ export function AccesibilidadWidget({
               }
               aria-pressed={contrast === "alto"}
               className={cn(
-                "group absolute right-0 top-0 flex h-12 w-[52px] items-center overflow-hidden rounded-l-lg border-y border-l border-transparent bg-[var(--surface-1)] shadow-none transition-[width] duration-[250ms] ease-out hover:w-[196px] hover:border-[var(--border-strong)] hover:shadow-md focus-within:w-[196px] focus-within:border-[var(--border-strong)] focus-within:shadow-md focus-visible:w-[196px] focus-visible:outline-2 focus-visible:outline-[var(--ring)] motion-reduce:transition-none",
+                "group absolute right-0 top-0 flex h-12 w-[52px] items-center overflow-hidden rounded-l-lg border-y border-l border-transparent bg-[var(--surface-1)] shadow-none transition-[width] duration-[250ms] ease-out focus-visible:outline-2 focus-visible:outline-[var(--ring)] motion-reduce:transition-none",
+                clasesExpansionBoton,
                 reducedMotion && "transition-none!"
               )}
             >
@@ -385,7 +394,8 @@ export function AccesibilidadWidget({
                 </div>
                 <span
                   className={cn(
-                    "ml-2.5 whitespace-nowrap text-xs font-semibold text-[var(--text-primary)] opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-within:opacity-100 group-focus-visible:opacity-100",
+                    "ml-2.5 whitespace-nowrap text-xs font-semibold text-[var(--text-primary)] opacity-0 transition-opacity duration-200",
+                    clasesOpacidadEtiqueta,
                     reducedMotion && "transition-none!"
                   )}
                 >
@@ -403,7 +413,8 @@ export function AccesibilidadWidget({
               disabled={textSize === "200"}
               aria-label={`Aumentar tamaño de texto (actual ${textSize}%)`}
               className={cn(
-                "group absolute right-0 top-0 flex h-12 w-[52px] items-center overflow-hidden rounded-l-lg border-y border-l border-transparent bg-[var(--surface-1)] shadow-none transition-[width] duration-[250ms] ease-out hover:w-[196px] hover:border-[var(--border-strong)] hover:shadow-md focus-within:w-[196px] focus-within:border-[var(--border-strong)] focus-within:shadow-md focus-visible:w-[196px] focus-visible:outline-2 focus-visible:outline-[var(--ring)] motion-reduce:transition-none",
+                "group absolute right-0 top-0 flex h-12 w-[52px] items-center overflow-hidden rounded-l-lg border-y border-l border-transparent bg-[var(--surface-1)] shadow-none transition-[width] duration-[250ms] ease-out focus-visible:outline-2 focus-visible:outline-[var(--ring)] motion-reduce:transition-none",
+                clasesExpansionBoton,
                 textSize === "200" && "cursor-not-allowed opacity-50",
                 reducedMotion && "transition-none!"
               )}
@@ -416,7 +427,8 @@ export function AccesibilidadWidget({
                 </div>
                 <span
                   className={cn(
-                    "ml-2.5 whitespace-nowrap text-xs font-semibold text-[var(--text-primary)] opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-within:opacity-100 group-focus-visible:opacity-100",
+                    "ml-2.5 whitespace-nowrap text-xs font-semibold text-[var(--text-primary)] opacity-0 transition-opacity duration-200",
+                    clasesOpacidadEtiqueta,
                     reducedMotion && "transition-none!"
                   )}
                 >
@@ -434,7 +446,8 @@ export function AccesibilidadWidget({
               disabled={textSize === "100"}
               aria-label={`Reducir tamaño de texto (actual ${textSize}%)`}
               className={cn(
-                "group absolute right-0 top-0 flex h-12 w-[52px] items-center overflow-hidden rounded-l-lg border-y border-l border-transparent bg-[var(--surface-1)] shadow-none transition-[width] duration-[250ms] ease-out hover:w-[196px] hover:border-[var(--border-strong)] hover:shadow-md focus-within:w-[196px] focus-within:border-[var(--border-strong)] focus-within:shadow-md focus-visible:w-[196px] focus-visible:outline-2 focus-visible:outline-[var(--ring)] motion-reduce:transition-none",
+                "group absolute right-0 top-0 flex h-12 w-[52px] items-center overflow-hidden rounded-l-lg border-y border-l border-transparent bg-[var(--surface-1)] shadow-none transition-[width] duration-[250ms] ease-out focus-visible:outline-2 focus-visible:outline-[var(--ring)] motion-reduce:transition-none",
+                clasesExpansionBoton,
                 textSize === "100" && "cursor-not-allowed opacity-50",
                 reducedMotion && "transition-none!"
               )}
@@ -447,7 +460,8 @@ export function AccesibilidadWidget({
                 </div>
                 <span
                   className={cn(
-                    "ml-2.5 whitespace-nowrap text-xs font-semibold text-[var(--text-primary)] opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-within:opacity-100 group-focus-visible:opacity-100",
+                    "ml-2.5 whitespace-nowrap text-xs font-semibold text-[var(--text-primary)] opacity-0 transition-opacity duration-200",
+                    clasesOpacidadEtiqueta,
                     reducedMotion && "transition-none!"
                   )}
                 >
@@ -464,7 +478,8 @@ export function AccesibilidadWidget({
               onClick={onResetAll}
               aria-label="Restablecer todas las preferencias de accesibilidad"
               className={cn(
-                "group absolute right-0 top-0 flex h-12 w-[52px] items-center overflow-hidden rounded-l-lg border-y border-l border-transparent bg-[var(--surface-1)] shadow-none transition-[width] duration-[250ms] ease-out hover:w-[196px] hover:border-[var(--border-strong)] hover:shadow-md focus-within:w-[196px] focus-within:border-[var(--border-strong)] focus-within:shadow-md focus-visible:w-[196px] focus-visible:outline-2 focus-visible:outline-[var(--ring)] motion-reduce:transition-none",
+                "group absolute right-0 top-0 flex h-12 w-[52px] items-center overflow-hidden rounded-l-lg border-y border-l border-transparent bg-[var(--surface-1)] shadow-none transition-[width] duration-[250ms] ease-out focus-visible:outline-2 focus-visible:outline-[var(--ring)] motion-reduce:transition-none",
+                clasesExpansionBoton,
                 reducedMotion && "transition-none!"
               )}
             >
@@ -474,7 +489,8 @@ export function AccesibilidadWidget({
                 </div>
                 <span
                   className={cn(
-                    "ml-2.5 whitespace-nowrap text-xs font-semibold text-[var(--text-primary)] opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-within:opacity-100 group-focus-visible:opacity-100",
+                    "ml-2.5 whitespace-nowrap text-xs font-semibold text-[var(--text-primary)] opacity-0 transition-opacity duration-200",
+                    clasesOpacidadEtiqueta,
                     reducedMotion && "transition-none!"
                   )}
                 >
@@ -494,7 +510,8 @@ export function AccesibilidadWidget({
               aria-expanded={isOpen}
               aria-controls="panel-mas-opciones-a11y"
               className={cn(
-                "group absolute right-0 top-0 flex h-12 w-[52px] items-center overflow-hidden rounded-l-lg border-y border-l border-transparent bg-[var(--surface-1)] shadow-none transition-[width] duration-[250ms] ease-out hover:w-[196px] hover:border-[var(--border-strong)] hover:shadow-md focus-within:w-[196px] focus-within:border-[var(--border-strong)] focus-within:shadow-md focus-visible:w-[196px] focus-visible:outline-2 focus-visible:outline-[var(--ring)] motion-reduce:transition-none",
+                "group absolute right-0 top-0 flex h-12 w-[52px] items-center overflow-hidden rounded-l-lg border-y border-l border-transparent bg-[var(--surface-1)] shadow-none transition-[width] duration-[250ms] ease-out focus-visible:outline-2 focus-visible:outline-[var(--ring)] motion-reduce:transition-none",
+                clasesExpansionBoton,
                 isOpen && "border-[var(--border-strong)] bg-[var(--surface-2)]",
                 reducedMotion && "transition-none!"
               )}
@@ -512,7 +529,8 @@ export function AccesibilidadWidget({
                 </div>
                 <span
                   className={cn(
-                    "ml-2.5 whitespace-nowrap text-xs font-semibold text-[var(--text-primary)] opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-within:opacity-100 group-focus-visible:opacity-100",
+                    "ml-2.5 whitespace-nowrap text-xs font-semibold text-[var(--text-primary)] opacity-0 transition-opacity duration-200",
+                    clasesOpacidadEtiqueta,
                     reducedMotion && "transition-none!"
                   )}
                 >
@@ -530,7 +548,8 @@ export function AccesibilidadWidget({
               rel="noopener noreferrer"
               aria-label="Centro de Relevo Colombia (abre en una nueva pestaña)"
               className={cn(
-                "group absolute right-0 top-0 flex h-12 w-[52px] items-center overflow-hidden rounded-l-lg border-y border-l border-transparent bg-[var(--surface-1)] shadow-none transition-[width] duration-[250ms] ease-out hover:w-[196px] hover:border-[var(--border-strong)] hover:shadow-md focus-within:w-[196px] focus-within:border-[var(--border-strong)] focus-within:shadow-md focus-visible:w-[196px] focus-visible:outline-2 focus-visible:outline-[var(--ring)] motion-reduce:transition-none",
+                "group absolute right-0 top-0 flex h-12 w-[52px] items-center overflow-hidden rounded-l-lg border-y border-l border-transparent bg-[var(--surface-1)] shadow-none transition-[width] duration-[250ms] ease-out focus-visible:outline-2 focus-visible:outline-[var(--ring)] motion-reduce:transition-none",
+                clasesExpansionBoton,
                 reducedMotion && "transition-none!"
               )}
             >
@@ -540,7 +559,8 @@ export function AccesibilidadWidget({
                 </div>
                 <div
                   className={cn(
-                    "ml-2.5 flex items-center gap-1.5 whitespace-nowrap text-xs font-semibold text-[var(--text-primary)] opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-within:opacity-100 group-focus-visible:opacity-100",
+                    "ml-2.5 flex items-center gap-1.5 whitespace-nowrap text-xs font-semibold text-[var(--text-primary)] opacity-0 transition-opacity duration-200",
+                    clasesOpacidadEtiqueta,
                     reducedMotion && "transition-none!"
                   )}
                 >

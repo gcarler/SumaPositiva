@@ -48,6 +48,19 @@ const perfil: Usuario = {
 };
 const apiOriginal = { ...plataformaApi };
 const identidadOriginal = { ...identidadApi };
+/* 8 cuentas de demo para la vista de usuarios; incluye a Ana Pérez para el flujo de "Perfil y accesos". */
+const cuentasBase: Usuario[] = [
+  perfil,
+  { ...perfil, id: "demo-002", nombres: "Ana", apellidos: "Pérez", correo: "ana.perez@cartagena.gov.co" },
+  { ...perfil, id: "demo-003", nombres: "Carlos", apellidos: "Molina", correo: "carlos.molina@cartagena.gov.co" },
+  { ...perfil, id: "demo-004", nombres: "Diana", apellidos: "Vélez", correo: "diana.velez@cartagena.gov.co" },
+  { ...perfil, id: "demo-005", nombres: "Ernesto", apellidos: "Sánchez", correo: "ernesto.sanchez@cartagena.gov.co" },
+  { ...perfil, id: "demo-006", nombres: "Fernanda", apellidos: "Ruiz", correo: "fernanda.ruiz@cartagena.gov.co" },
+  { ...perfil, id: "demo-007", nombres: "Gustavo", apellidos: "Salas", correo: "gustavo.salas@cartagena.gov.co" },
+  { ...perfil, id: "demo-008", nombres: "Helena", apellidos: "Cardona", correo: "helena.cardona@cartagena.gov.co" },
+];
+/* Exhibición mutable de la historia: las invitaciones de la prueba se adjuntan sin fugar entre historias. */
+let cuentasActuales: Usuario[] = structuredClone(cuentasBase);
 const geometria = {
   type: "FeatureCollection" as const,
   features: [
@@ -165,13 +178,54 @@ const meta = {
     } satisfies typeof plataformaApi);
 
     Object.assign(identidadApi, {
-      usuarios: fn(async () => ({ total: 1, elementos: [perfil] })),
+      usuarios: fn(async () => ({
+        total: cuentasActuales.length,
+        elementos: structuredClone(cuentasActuales),
+      })),
+      roles: fn(async () => []),
+      crearUsuario: fn(
+        async (datos: {
+          correo: string;
+          contrasena: string;
+          nombres: string;
+          apellidos: string;
+          codigo_rol: string;
+          motivo: string;
+        }) => {
+          cuentasActuales = [
+            ...cuentasActuales,
+            {
+              ...perfil,
+              id: `demo-${Date.now().toString(36)}`,
+              nombres: datos.nombres,
+              apellidos: datos.apellidos,
+              correo: datos.correo,
+              codigo_rol: datos.codigo_rol ?? "ciudadano",
+            },
+          ];
+          return { ...perfil, mensaje: "Invitación enviada y usuario registrado" };
+        },
+      ),
+      editarUsuario: fn(
+        async (
+          _id: string,
+          _datos: {
+            nombres: string;
+            apellidos: string;
+            codigo_rol: string;
+            activo: boolean;
+            motivo: string;
+          },
+        ) => ({ mensaje: "Usuario institucional actualizado" }),
+      ),
+      ambitosUsuario: fn(async () => []),
       logout: fn(async () => ({ mensaje: "Sesión cerrada" })),
       perfil: fn(async () => perfil),
     });
     return () => {
       restaurarApiTestimonios();
       restaurarApiFormularios();
+      cuentasActuales = structuredClone(cuentasBase);
       Object.assign(plataformaApi, apiOriginal);
       Object.assign(identidadApi, identidadOriginal);
       usePanelStore.getState().closeAll();
@@ -266,18 +320,36 @@ export const Usuarios: Story = {
   ),
   play: async ({ canvasElement }) => {
     const c = within(canvasElement);
-    await expect(await c.findByText("Mostrando 8 de 8 cuentas de demo")).toBeVisible();
+    /* El SidePanel de POLIS no se porta fuera del árbol: el diálogo vive en el canvas. */
+    await expect(
+      await c.findByText("Mostrando 8 de 8 cuentas registradas"),
+    ).toBeVisible();
     await userEvent.click(c.getByRole("button", { name: "Invitar usuario" }));
-    await expect(await c.findByRole("dialog", { name: "Invitar usuario" })).toBeVisible();
-    await userEvent.type(c.getByLabelText(/Nombre completo/), "Prueba Cartagena");
-    await userEvent.type(c.getByLabelText(/Correo electrónico/), "prueba@cartagena.gov.co");
+    await expect(
+      await c.findByRole("dialog", { name: "Invitar usuario" }),
+    ).toBeVisible();
+    /* Los labels obligatorios añaden "*" visibles: matcher por prefijo. */
+    await userEvent.type(c.getByLabelText(/^Nombres/), "Prueba");
+    await userEvent.type(c.getByLabelText(/^Apellidos/), "Cartagena");
+    await userEvent.type(
+      c.getByLabelText(/^Correo electrónico/),
+      "prueba@cartagena.gov.co",
+    );
     await userEvent.click(c.getByRole("button", { name: "Enviar invitación" }));
-    await expect(await c.findAllByText("prueba@cartagena.gov.co")).toHaveLength(2);
-    await userEvent.click(c.getAllByRole("button", { name: /Ana Pérez/ })[0]);
-    await expect(await c.findByRole("dialog", { name: "Perfil y accesos" })).toBeVisible();
-    await expect(c.getByText("Actividad reciente")).toBeVisible();
-    await userEvent.click(c.getByRole("button", { name: "Editar rol y módulos" }));
-    await expect(await c.findByRole("dialog", { name: "Editar usuario" })).toBeVisible();
+    await expect(await c.findByText("Prueba Cartagena")).toBeVisible();
+    await userEvent.click(
+      (await c.findAllByRole("button", { name: /Ana Pérez/ }))[0],
+    );
+    await expect(
+      await c.findByRole("dialog", { name: "Perfil y accesos" }),
+    ).toBeVisible();
+    await expect(await c.findByText("Detalles de la cuenta")).toBeVisible();
+    await userEvent.click(
+      await c.findByRole("button", { name: "Editar rol y datos" }),
+    );
+    await expect(
+      await c.findByRole("dialog", { name: "Editar usuario" }),
+    ).toBeVisible();
   },
 };
 export const Contenido: Story = {
@@ -323,8 +395,12 @@ export const Testimonios: Story = {
   ),
   play: async ({ canvasElement }) => {
     const c = within(canvasElement);
-    await expect(c.getByRole("heading", { name: "Moderación de Testimonios" })).toBeVisible();
-    await expect(c.getByRole("region", { name: "Cola de moderación de testimonios" })).toBeVisible();
+    await expect(
+      await c.findByRole("heading", { name: "Gestión y Moderación de Testimonios" }),
+    ).toBeVisible();
+    await expect(
+      await c.findByRole("region", { name: "Cola de moderación de testimonios" }),
+    ).toBeVisible();
     await expect(await c.findByText("No hay testimonios en estado pendiente en este momento.")).toBeVisible();
   },
 };

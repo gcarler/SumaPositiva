@@ -80,8 +80,7 @@ export function HeroPageBanner({
     : "p-6 sm:p-8 lg:p-10";
 
   return (
-    <header
-      role="banner"
+    <section
       aria-label={titulo}
       className={cn(
         "relative overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface-1)] flex flex-col justify-center select-text shadow-xs",
@@ -174,6 +173,6 @@ export function HeroPageBanner({
           </div>
         )}
       </div>
-    </header>
+    </section>
   );
 }

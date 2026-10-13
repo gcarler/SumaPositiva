@@ -2,7 +2,7 @@ import {FORMULARIOS_MOCK, RESPUESTAS_MOCK} from "@/features/formularios/__fixtur
 import {useFormulariosStore} from "@/features/formularios/state/formularios-store";
 import {simularApiFormularios} from "./formularios-mock-api";
 import type {Meta, StoryObj} from "@storybook/nextjs-vite";
-import {expect, userEvent, waitFor, within} from "storybook/test";
+import {expect, userEvent, waitFor, within, fireEvent} from "storybook/test";
 import {QueryProvider} from "@/app/_composition/query-provider";
 import Home from "@/app/page";
 import {PanelHost} from "@/app/_components/panel-host";
@@ -39,7 +39,23 @@ const meta = {
         window.location.origin).pathname;
       if (ruta.startsWith("/api/v1/")) {
         const mesaId = /^\/api\/v1\/mesas\/([^/]+)$/.exec(ruta)?.[1];
-        if (ruta === "/api/v1/mesas") return Response.json(useMesasStore.getState().mesas);
+        const metodo = String(
+          opciones?.method ?? (entrada instanceof Request ? entrada.method : "GET"),
+        ).toUpperCase();
+        if (ruta === "/api/v1/mesas") {
+          /* F4: creación demo en la historia; responde 201 con id sin depender de un backend real (regla 8 del kit). */
+          if (metodo === "POST") {
+            const cuerpo =
+              typeof opciones?.body === "string"
+                ? JSON.parse(opciones.body)
+                : opciones?.body ?? {};
+            return Response.json(
+              { ...cuerpo, id: `mesa-demo-${Date.now().toString(36)}` },
+              { status: 201 },
+            );
+          }
+          return Response.json(useMesasStore.getState().mesas);
+        }
         if (mesaId) {
           const mesa = useMesasStore.getState().mesas.find((m) => m.id === mesaId);
           return mesa ? Response.json(mesa) : Response.json({detail: "Mesa no encontrada"}, {status: 404});
@@ -176,24 +192,132 @@ export const NavegacionConTeclado: Story = {
 
 export const CrearMesaCompleta: Story = {
   ...CrearMesa,
+  /* F4: la creación demo se interpola EN LA HISTORIA (tras el beforeEach del meta)
+     para garantizar que el POST /api/v1/mesas reciba 201 con id sin backend real
+     (regla 8 del kit: las historias no hablan con servicios reales). */
+  beforeEach: () => {
+    /* Conservar el montaje original del editor (antes del spread de CrearMesa). */
+    useNavigationStore.setState({ vista: "mesas" });
+    usePanelStore.getState().openPanel("mesa-editor", {});
+    const registrosPost: string[] = [];
+    const registrosSubmit: string[] = [];
+    (window as unknown as { __F4_POSTS__?: string[] }).__F4_POSTS__ = registrosPost;
+    (window as unknown as { __F4_SUBMITS__?: string[] }).__F4_SUBMITS__ = registrosSubmit;
+    (window as unknown as { __F4_ULTIMO__?: Record<string, unknown> }).__F4_ULTIMO__ = {};
+    /* El comportamiento por defecto del submit nativo reinicia el iframe de la historia;
+     * se cancela a nivel documento (fase de captura) sin tocar el componente real del panel.
+     * React/RHF conserva el manejo propio del evento (preventDefault no corta la propagación). */
+    const cancelarSubmitNativo = (evento: Event) => {
+      evento.preventDefault();
+      registrosSubmit.push(
+        (evento.target instanceof HTMLElement && evento.target.id) || "submit-nativo",
+      );
+    };
+    document.addEventListener("submit", cancelarSubmitNativo, true);
+    const fetchOriginal = window.fetch;
+    window.fetch = async (entrada, opciones) => {
+      const url = new URL(
+        typeof entrada === "string"
+          ? entrada
+          : entrada instanceof Request
+            ? entrada.url
+            : entrada.href,
+        window.location.origin,
+      );
+      const esPostMesas =
+        url.pathname === "/api/v1/mesas" &&
+        String(opciones?.method ?? "GET").toUpperCase() === "POST";
+      if (!esPostMesas) return fetchOriginal(entrada, opciones);
+      registrosPost.push(url.pathname);
+      const cuerpo =
+        typeof opciones?.body === "string"
+          ? JSON.parse(opciones.body)
+          : opciones?.body ?? {};
+      const id = `mesa-demo-${Date.now().toString(36)}`;
+      (window as unknown as { __F4_ULTIMO__?: Record<string, unknown> }).__F4_ULTIMO__ = {
+        nombre: cuerpo.nombre,
+        id,
+      };
+      return Response.json(
+        { ...cuerpo, id },
+        { status: 201 },
+      );
+    };
+    return () => {
+      document.removeEventListener("submit", cancelarSubmitNativo, true);
+      window.fetch = fetchOriginal;
+      (window as unknown as { __F4_POSTS__?: string[]; __F4_SUBMITS__?: string[]; __F4_ULTIMO__?: Record<string, unknown> }).__F4_POSTS__ = undefined;
+      (window as unknown as { __F4_POSTS__?: string[]; __F4_SUBMITS__?: string[]; __F4_ULTIMO__?: Record<string, unknown> }).__F4_SUBMITS__ = undefined;
+      (window as unknown as { __F4_POSTS__?: string[]; __F4_SUBMITS__?: string[]; __F4_ULTIMO__?: Record<string, unknown> }).__F4_ULTIMO__ = undefined;
+    };
+  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const panel = within(await canvas.findByRole("dialog"));
+    const dialogo = await canvas.findByRole("dialog");
+    const panel = within(dialogo);
     await userEvent.type(
       panel.getByLabelText(/Nombre de la mesa/),
       "Mesa de convivencia barrial",
     );
-    await userEvent.type(panel.getByLabelText(/Fecha/), "2026-10-15");
+    /* La fecha es un input nativo type="date": poblar con fireEvent (userEvent.type no lo llena de forma fiable). */
+    await fireEvent.change(panel.getByLabelText(/Fecha/), {
+      target: { value: "2026-10-15" },
+    });
     await userEvent.type(panel.getByLabelText(/Lugar/), "Casa de la cultura");
+    /* Coordenadas legítimas dentro de Cartagena: los campos de la sección 3 quedan
+     * inválidos en vacío (NaN) y el resolver aborta el envío sin POST. */
+    await userEvent.type(panel.getByLabelText(/^Latitud/), "10.4");
+    await userEvent.type(panel.getByLabelText(/^Longitud/), "-75.6");
     const submit = panel.getByRole("button", { name: "Crear mesa" });
     await waitFor(() => expect(submit).toBeEnabled());
-    await userEvent.click(submit);
-    await waitFor(() =>
-      expect(
-        useMesasStore
-          .getState()
-          .mesas.some((mesa) => mesa.nombre === "Mesa de convivencia barrial"),
-      ).toBe(true),
+    /* Envío real del formulario del panel con reintentos: consulta FRESCA en cada intento
+     * (los re-renders de la animación pueden desconectar el nodo), esperar a que el form no
+     * esté `inert` y disparar el submit real del formulario del panel. */
+    const ventana = window as unknown as {
+      __F4_POSTS__?: string[];
+      __F4_SUBMITS__?: string[];
+      __F4_ULTIMO__?: Record<string, unknown>;
+    };
+    for (
+      let intento = 0;
+      (ventana.__F4_POSTS__?.some((ruta) => ruta.startsWith("/")) ?? false) ===
+        false && intento < 3;
+      intento += 1
+    ) {
+      const formularios = Array.from(
+        document.querySelectorAll("#form-mesa-pro"),
+      ) as HTMLFormElement[];
+      expect(formularios.length).toBe(1);
+      const formulario = formularios[formularios.length - 1];
+      expect(formulario.isConnected).toBe(true);
+      await waitFor(() => {
+        expect(formulario.closest("[inert]")).toBeNull();
+      }, { timeout: 5000 });
+      await fireEvent.submit(formulario);
+      await new Promise((r) => setTimeout(r, 400));
+    }
+    /* Diagnóstico de validación RHF: si el submit fue validado y abortado, aquí se ve el campo. */
+    const invalidos = Array.from(
+      document.querySelectorAll("#form-mesa-pro [aria-invalid='true']"),
+    ).map((elemento) => elemento.getAttribute("id"));
+    expect(invalidos).toEqual([]);
+    /* Verificación instrumental: el POST real del panel debe llegar al mock con los datos del formulario. */
+    await waitFor(
+      () =>
+        expect(ventana.__F4_POSTS__?.some((ruta) => ruta.startsWith("/"))).toBe(
+          true,
+        ),
+      { timeout: 5000 },
+    );
+    expect(ventana.__F4_SUBMITS__?.length ?? 0).toBeGreaterThan(0);
+    expect(ventana.__F4_ULTIMO__?.nombre).toBe("Mesa de convivencia barrial");
+    /* El flujo real del panel (POST mock + normalización + store); al fallar imprime los nombres del store para el diagnóstico. */
+    await waitFor(
+      () =>
+        expect(
+          useMesasStore.getState().mesas.map((mesa) => mesa.nombre),
+        ).toContain("Mesa de convivencia barrial"),
+      { timeout: 5000 },
     );
     await expect(
       await canvas.findByRole("dialog", {

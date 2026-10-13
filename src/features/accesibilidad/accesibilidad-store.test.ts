@@ -6,7 +6,7 @@ import {
   obtenerValoresPorDefecto,
 } from "./accesibilidad-store";
 
-// Asegurar mock de Storage y Document para entorno Node/Bun
+// Asegurar mock de Storage para entorno Node/Bun
 const memoryStore = new Map<string, string>();
 if (typeof globalThis.localStorage === "undefined") {
   globalThis.localStorage = {
@@ -21,38 +21,44 @@ if (typeof globalThis.localStorage === "undefined") {
   } as Storage;
 }
 
-if (typeof globalThis.window === "undefined") {
-  (globalThis as unknown as Record<string, unknown>).window = globalThis;
-}
-
 const domAttrs = new Map<string, string>();
-if (typeof globalThis.document === "undefined") {
-  const docElement = {
-    setAttribute: (k: string, v: string) => domAttrs.set(k, String(v)),
-    getAttribute: (k: string) => domAttrs.get(k) ?? null,
-    removeAttribute: (k: string) => domAttrs.delete(k),
-  };
-  globalThis.document = {
-    documentElement: docElement as unknown as HTMLElement,
-  } as unknown as Document;
-}
+const mockDocElement = {
+  setAttribute: (k: string, v: string) => domAttrs.set(k, String(v)),
+  getAttribute: (k: string) => domAttrs.get(k) ?? null,
+  removeAttribute: (k: string) => domAttrs.delete(k),
+};
 
 describe("AccesibilidadStore (A11Y-WIDGET-01)", () => {
+  const originalWindow = globalThis.window;
+  const originalDocument = globalThis.document;
+
   beforeEach(() => {
+    if (typeof globalThis.window === "undefined") {
+      (globalThis as unknown as Record<string, unknown>).window = globalThis;
+    }
+    if (typeof globalThis.document === "undefined") {
+      globalThis.document = {
+        documentElement: mockDocElement as unknown as HTMLElement,
+      } as unknown as Document;
+    }
     localStorage.clear();
     domAttrs.clear();
-    document.documentElement.removeAttribute("data-a11y-text-size");
-    document.documentElement.removeAttribute("data-a11y-contrast");
-    document.documentElement.removeAttribute("data-a11y-grayscale");
-    document.documentElement.removeAttribute("data-a11y-line-spacing");
-    document.documentElement.removeAttribute("data-a11y-letter-spacing");
-    document.documentElement.removeAttribute("data-a11y-underline-links");
-    document.documentElement.removeAttribute("data-a11y-reduced-motion");
     useAccesibilidadStore.getState().resetAll();
   });
 
   afterEach(() => {
     vi.restoreAllMocks();
+    if (typeof originalWindow === "undefined") {
+      delete (globalThis as unknown as Record<string, unknown>).window;
+      delete (globalThis as unknown as Record<string, unknown>).matchMedia;
+    } else {
+      globalThis.window = originalWindow;
+    }
+    if (typeof originalDocument === "undefined") {
+      delete (globalThis as unknown as Record<string, unknown>).document;
+    } else {
+      globalThis.document = originalDocument;
+    }
   });
 
   it("proporciona valores iniciales seguros por defecto", () => {
