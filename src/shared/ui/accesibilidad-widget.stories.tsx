@@ -40,7 +40,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Barra vertical fija de accesibilidad adosada al borde derecho estilo Función Pública / GOV.CO (A11Y-WIDGET-01b). Permite acciones directas de alto contraste, escala de texto A−/A+, restablecer, enlace oficial a Centro de Relevo y subpanel de Más Opciones con soporte responsive y modo pestaña colapsada para el geovisor.",
+          "Barra vertical fija de accesibilidad adosada al borde derecho estilo Función Pública / GOV.CO (A11Y-WIDGET-01c). Permite acciones directas de alto contraste, escala de texto A−/A+, restablecer y subpanel de Más Opciones con soporte responsive y modo pestaña colapsada para el geovisor.",
       },
     },
   },
@@ -64,8 +64,8 @@ export const BarraLateral: Story = {
     await userEvent.click(btnAumentar);
     await expect(args.onAumentarTextSize).toHaveBeenCalled();
 
-    const linkRelevo = canvas.getByRole("link", { name: /centro de relevo/i });
-    await expect(linkRelevo).toHaveAttribute("href", "https://centroderelevo.gov.co/");
+    // Verificación de exclusión: Centro de Relevo ya no existe (A11Y-WIDGET-01c)
+    await expect(canvas.queryByRole("link", { name: /centro de relevo/i })).toBeNull();
   },
 };
 

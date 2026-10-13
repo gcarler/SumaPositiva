@@ -575,3 +575,82 @@ Se documentó la sección `§9. Resultados de la remediación ejecutada — ante
       33 |      36 |     11 |      17
   ```
   Censo institucional rigurosamente intacto.
+
+
+---
+
+# INFORME DE ENTREGA: [A11Y-WIDGET-01c] RETIRO DEL BOTÓN «CENTRO DE RELEVO» DE LA BARRA LATERAL DE ACCESIBILIDAD
+
+**Responsable:** `agy2` — **Auditor:** `agy` — **Fecha:** 13-oct-2026  
+**Tarea de referencia:** `bridge/01_tarea_activa.md` (`[A11Y-WIDGET-01c]`)
+
+---
+
+## 📋 1. Resumen de la Solicitud y Alcance
+
+A solicitud del propietario del producto, se procedió a retirar de la barra lateral vertical de accesibilidad (`src/shared/ui/accesibilidad-widget.tsx`) el 6.º botón correspondiente al enlace externo *"Centro de Relevo / Signos en Red"* (`https://centroderelevo.gov.co/`), debido a que no cargaba contenido en el entorno de despliegue.
+
+La barra de accesibilidad conserva ahora de forma limpia y exclusiva los **5 botones esenciales**:
+1. **Contraste:** Alternancia directa a Modo Alto Contraste AAA (ratio 21:1).
+2. **Aumentar (`A+`):** Incremento del tamaño de fuente en pasos del 10 % (hasta 150 %).
+3. **Reducir (`A−`):** Reducción del tamaño de fuente (hasta 90 %).
+4. **Restablecer:** Retorno inmediato a la configuración tipográfica y de contraste predeterminada.
+5. **Más opciones:** Apertura/cierre del subpanel flotante con controles avanzados (escala de grises, interlineado, espaciado entre letras, subrayado de enlaces, reducción de movimiento).
+
+---
+
+## 🛠️ 2. Modificaciones Realizadas
+
+### 2.1. Componente de UI (`src/shared/ui/accesibilidad-widget.tsx`)
+- Se removieron los iconos no utilizados `Volume2` y `ExternalLink` de los imports de `lucide-react`.
+- Se eliminó el sexto elemento `<li>` del `<nav aria-label="Menú de accesibilidad">` que contenía el enlace externo hacia `https://centroderelevo.gov.co/`.
+- La lista de controles ahora contiene exactamente 5 elementos `<li>`, manteniendo el diseño de 52px de ancho, expansión en hover/focus-within hacia la izquierda, tokens semánticos del design system y aria attributes completos.
+
+### 2.2. Pruebas Unitarias (`src/features/accesibilidad/accesibilidad-widget.test.tsx`)
+- Se actualizó el paso 6 de la suite para verificar explícitamente la ausencia del enlace y del texto institucional:
+  - `expect(html).not.toContain("Centro de Relevo")`
+  - `expect(html).not.toContain("centroderelevo.gov.co")`
+- Se verificó que todas las 13 pruebas de la suite de accesibilidad pasen exitosamente.
+
+### 2.3. Historias de Storybook (`src/shared/ui/accesibilidad-widget.stories.tsx`)
+- Se actualizó la descripción del componente en el `meta` de Storybook indicando el retiro del enlace en `[A11Y-WIDGET-01c]`.
+- Se actualizó la función `play` de la historia `BarraLateral`:
+  - `await expect(canvas.queryByRole("link", { name: /centro de relevo/i })).toBeNull()`
+- Las historias de Storybook pasaron todas las aserciones y auditorías axe sin fallos.
+
+---
+
+## 🧪 3. Certificación de Calidad y Resultados
+
+| Verificación / Comando | Resultado | Detalle |
+|---|---|---|
+| **`bun test src/features/accesibilidad`** | ✅ **13 / 13 pasadas** | Pruebas unitarias de renderizado y eventos de la barra lateral |
+| **`bunx vitest run --project=storybook src/shared/ui/accesibilidad-widget.stories.tsx`** | ✅ **6 / 6 pasadas** | Historias de Storybook y auditoría de accesibilidad |
+| **`bun run check`** (`ui:check` + `tsc --noEmit` + `eslint .`) | ✅ **0 errores** | Validación estricta de UI tokens, tipado TypeScript y linter |
+| **`bun run build`** (Next.js 16.3.8 Turbopack) | ✅ **192 / 192 rutas** | Compilación de producción exitosa en standalone |
+| **E2E Playwright + axe-core (`test_a11y_e2e.mjs`)** | ✅ **14 / 14 pasos + 2/2 axe** | Confirmación en navegador real de retiro de botón y 0 violaciones WCAG |
+
+---
+
+## 🚀 4. Despliegue y Estado del Servicio
+
+- **Servicio `polis-frontend`:** Reiniciado (`systemctl restart polis-frontend`), estado `active (running)`.
+- **Verificación HTTP:**
+  - `GET http://127.0.0.1:3000/` → `HTTP 200 OK`
+  - `GET http://127.0.0.1:3000/geovisor` → `HTTP 200 OK`
+- **Inviolabilidad del Censo en `bd_csh`:**
+  ```
+   mesas | agendas | fichas | actores 
+  -------+---------+--------+---------
+      33 |      36 |     11 |      17
+  ```
+  Invariante intacto (33 mesas, 36 agendas, 11 fichas técnicas, 17 actores estratégicos).
+
+---
+
+## 📦 5. Archivos Modificados en la Tarea
+
+- `src/shared/ui/accesibilidad-widget.tsx`
+- `src/shared/ui/accesibilidad-widget.stories.tsx`
+- `src/features/accesibilidad/accesibilidad-widget.test.tsx`
+- `bridge/02_resultado_agy2.md`

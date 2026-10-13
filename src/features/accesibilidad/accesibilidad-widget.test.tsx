@@ -67,11 +67,9 @@ describe("AccesibilidadWidget UI Component (A11Y-WIDGET-01b - Patrón Función P
     expect(html).toContain('aria-expanded="false"');
     expect(html).toContain('aria-controls="panel-mas-opciones-a11y"');
 
-    // 6. Centro de Relevo (enlace externo oficial)
-    expect(html).toContain('href="https://centroderelevo.gov.co/"');
-    expect(html).toContain('target="_blank"');
-    expect(html).toContain('rel="noopener noreferrer"');
-    expect(html).toContain("Centro de Relevo");
+    // 6. Verificación de exclusión: Centro de Relevo ya no existe en la barra (A11Y-WIDGET-01c)
+    expect(html).not.toContain("Centro de Relevo");
+    expect(html).not.toContain("centroderelevo.gov.co");
 
     // Comportamiento de expansión (hover:w-[196px])
     expect(html).toContain("hover:w-[196px]");
