@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import Literal
 
-from pydantic import Field, PostgresDsn
+from pydantic import Field, PostgresDsn, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 BACKEND_DIR = Path(__file__).resolve().parents[2]
@@ -60,6 +60,25 @@ class Settings(BaseSettings):
     mfa_bloqueo_minutos: int = Field(default=15, ge=1)
     mfa_token_expira_minutos: int = Field(default=5, ge=1)
     sentry_dsn: str | None = None
+
+    @model_validator(mode="after")
+    def validar_mfa_encryption_key(self) -> "Settings":
+        key = (self.mfa_encryption_key or "").strip()
+        mfa_habilitado = bool((self.mfa_roles_exigidos or "").strip())
+        if mfa_habilitado and not key:
+            raise ValueError(
+                "POLIS_MFA_ENCRYPTION_KEY es obligatoria al arrancar con MFA habilitado "
+                "(POLIS_MFA_ROLES_EXIGIDOS configurado)."
+            )
+        if key:
+            try:
+                from cryptography.fernet import Fernet
+                Fernet(key.encode("ascii"))
+            except Exception as e:
+                raise ValueError(
+                    f"POLIS_MFA_ENCRYPTION_KEY no es una clave Fernet válida (32 bytes url-safe base64): {e}"
+                ) from e
+        return self
 
     @property
     def cors_origins_efectivos(self) -> list[str]:

@@ -1,8 +1,10 @@
 import asyncio
+import time
 import uuid
 from datetime import UTC, datetime
 from unittest.mock import patch
 
+from cryptography.fernet import Fernet
 import pytest
 from httpx import ASGITransport, AsyncClient
 
@@ -56,8 +58,14 @@ async def test_mfa_utilidades_criptograficas(settings):
     codigo = mfa_utils.calcular_codigo_totp(secreto)
     assert len(codigo) == 6
     assert codigo.isdigit()
-    assert mfa_utils.verificar_codigo_totp(secreto, codigo) is True
-    assert mfa_utils.verificar_codigo_totp(secreto, "000000" if codigo != "000000" else "999999") is False
+    valido, paso = mfa_utils.verificar_codigo_totp(secreto, codigo)
+    assert valido is True
+    assert isinstance(paso, int)
+    valido_inv, paso_inv = mfa_utils.verificar_codigo_totp(
+        secreto, "000000" if codigo != "000000" else "999999"
+    )
+    assert valido_inv is False
+    assert paso_inv is None
 
     # 4. Códigos de recuperación
     codigos = mfa_utils.generar_codigos_recuperacion(8)
@@ -90,6 +98,87 @@ async def test_token_desafio_mfa(settings):
 
     # Token manipulado
     assert decodificar_token_desafio_mfa(token + "invalido", settings) is None
+
+
+async def test_totp_antirreplay_unitario():
+    """Verifica el cumplimiento de RFC 6238 §5.2 rechazando la reutilización de códigos."""
+    secreto = mfa_utils.generar_secreto_totp()
+    t_fijo = 1770000000
+    intervalo = 30
+    paso_esperado = t_fijo // intervalo
+
+    codigo_t = mfa_utils.calcular_codigo_totp(secreto, timestamp=t_fijo)
+
+    # 1. Primera verificación sin último paso registrado -> Éxito
+    valido, paso = mfa_utils.verificar_codigo_totp(
+        secreto, codigo_t, timestamp=t_fijo, ultimo_paso=None
+    )
+    assert valido is True
+    assert paso == paso_esperado
+
+    # 2. Reintento con el mismo código en el mismo instante (replay) -> Rechazado
+    valido_replay, _ = mfa_utils.verificar_codigo_totp(
+        secreto, codigo_t, timestamp=t_fijo, ultimo_paso=paso
+    )
+    assert valido_replay is False
+
+    # 3. Código de un paso previo o igual -> Rechazado
+    codigo_previo = mfa_utils.calcular_codigo_totp(secreto, timestamp=t_fijo - intervalo)
+    valido_prev, _ = mfa_utils.verificar_codigo_totp(
+        secreto, codigo_previo, timestamp=t_fijo, ultimo_paso=paso
+    )
+    assert valido_prev is False
+
+    # 4. Código del siguiente intervalo temporal (t + 30s) -> Éxito
+    codigo_siguiente = mfa_utils.calcular_codigo_totp(secreto, timestamp=t_fijo + intervalo)
+    valido_sig, paso_sig = mfa_utils.verificar_codigo_totp(
+        secreto, codigo_siguiente, timestamp=t_fijo + intervalo, ultimo_paso=paso
+    )
+    assert valido_sig is True
+    assert paso_sig == paso_esperado + 1
+
+
+async def test_mfa_clave_cifrado_obligatoria():
+    """Verifica que la clave MFA dedicada sea obligatoria en producción y cuando se exige MFA."""
+    # 1. Al arrancar con roles MFA exigidos y sin clave MFA -> Falla en Settings
+    with pytest.raises(ValueError, match="POLIS_MFA_ENCRYPTION_KEY es obligatoria"):
+        Settings(
+            _env_file=None,
+            environment="production",
+            jwt_secret_key="a" * 32,
+            mfa_roles_exigidos="administrador",
+            mfa_encryption_key=None,
+        )
+
+    # 2. Con clave Fernet inválida -> Falla en Settings
+    with pytest.raises(ValueError, match="no es una clave Fernet válida"):
+        Settings(
+            _env_file=None,
+            environment="production",
+            jwt_secret_key="a" * 32,
+            mfa_encryption_key="clave_no_fernet_invalida",
+        )
+
+    # 3. En producción si falta la clave y se intenta operar con MFA -> RuntimeError (sin fallback a JWT)
+    conf_prod_sin_clave = Settings(
+        _env_file=None,
+        environment="production",
+        jwt_secret_key="a" * 32,
+        mfa_encryption_key=None,
+    )
+    with pytest.raises(RuntimeError, match="POLIS_MFA_ENCRYPTION_KEY es obligatoria en producción"):
+        mfa_utils.obtener_cifrador_mfa(conf_prod_sin_clave)
+
+    # 4. Con clave Fernet válida -> Se instancia y cifra correctamente
+    clave_valida = Fernet.generate_key().decode("ascii")
+    conf = Settings(
+        _env_file=None,
+        environment="production",
+        jwt_secret_key="a" * 32,
+        mfa_encryption_key=clave_valida,
+    )
+    cifrador = mfa_utils.obtener_cifrador_mfa(conf)
+    assert isinstance(cifrador, Fernet)
 
 
 from fastapi.testclient import TestClient
@@ -192,17 +281,38 @@ def test_flujo_completo_mfa_api(database_url: str):
         )
         assert verif_fail.status_code == 401
 
-        # 10. Resolver desafío con código TOTP válido -> 200 con token_acceso
-        codigo_nuevo = mfa_utils.calcular_codigo_totp(secreto_b32)
-        verif_ok = client.post(
+        # 9b. Reutilizar el código de activación -> 401 (Antirreplay RFC 6238 §5.2)
+        replay_fail = client.post(
             "/api/v1/identidad/mfa/verificar",
-            json={"token_desafio": token_desafio, "codigo": codigo_nuevo},
+            json={"token_desafio": token_desafio, "codigo": codigo_valido},
         )
-        assert verif_ok.status_code == 200
-        data_verif = verif_ok.json()
-        assert data_verif["mfa_requerido"] is False
-        assert len(data_verif["token_acceso"]) > 20
-        token_post_mfa = data_verif["token_acceso"]
+        assert replay_fail.status_code == 401
+
+        # 10. Resolver desafío con código TOTP del siguiente intervalo (+35s) -> 200 con token_acceso
+        t_base = int(time.time())
+        with patch("time.time", return_value=t_base + 35):
+            codigo_siguiente = mfa_utils.calcular_codigo_totp(secreto_b32, timestamp=t_base + 35)
+            verif_ok = client.post(
+                "/api/v1/identidad/mfa/verificar",
+                json={"token_desafio": token_desafio, "codigo": codigo_siguiente},
+            )
+            assert verif_ok.status_code == 200
+            data_verif = verif_ok.json()
+            assert data_verif["mfa_requerido"] is False
+            assert len(data_verif["token_acceso"]) > 20
+            token_post_mfa = data_verif["token_acceso"]
+
+            # 10b. Intentar reutilizar inmediatamente el mismo código -> 401 (Antirreplay en login)
+            login_replay = client.post(
+                "/api/v1/identidad/login",
+                json={"correo": correo_test, "contrasena": "PasswordSeguro2026!"},
+            )
+            desafio_replay = login_replay.json()["token_desafio_mfa"]
+            verif_replay = client.post(
+                "/api/v1/identidad/mfa/verificar",
+                json={"token_desafio": desafio_replay, "codigo": codigo_siguiente},
+            )
+            assert verif_replay.status_code == 401
 
         # 11. Resolver desafío alternativo usando código de recuperación
         # Login de nuevo para obtener otro desafío
@@ -226,15 +336,16 @@ def test_flujo_completo_mfa_api(database_url: str):
         estado_post_rec = client.get("/api/v1/identidad/mfa/estado", headers=headers3)
         assert estado_post_rec.json()["codigos_restantes"] == 7
 
-        # 12. Regenerar códigos de recuperación
-        codigo_regen = mfa_utils.calcular_codigo_totp(secreto_b32)
-        regen_resp = client.post(
-            "/api/v1/identidad/mfa/recuperacion/regenerar",
-            json={"codigo": codigo_regen},
-            headers=headers3,
-        )
-        assert regen_resp.status_code == 200
-        assert len(regen_resp.json()["codigos_recuperacion"]) == 8
+        # 12. Regenerar códigos de recuperación (avanzando al siguiente intervalo +70s)
+        with patch("time.time", return_value=t_base + 70):
+            codigo_regen = mfa_utils.calcular_codigo_totp(secreto_b32, timestamp=t_base + 70)
+            regen_resp = client.post(
+                "/api/v1/identidad/mfa/recuperacion/regenerar",
+                json={"codigo": codigo_regen},
+                headers=headers3,
+            )
+            assert regen_resp.status_code == 200
+            assert len(regen_resp.json()["codigos_recuperacion"]) == 8
 
         # 13. Desactivar MFA con contraseña incorrecta -> 401
         desact_fail = client.post(

@@ -276,6 +276,8 @@ class IdentidadRepository:
             mfa.activado_en = None
             mfa.intentos_fallidos = 0
             mfa.bloqueado_hasta = None
+            mfa.ultimo_uso_en = None
+            mfa.ultimo_paso_totp = None
             mfa.actualizado_en = ahora
         else:
             mfa = UsuarioMfa(
@@ -283,6 +285,7 @@ class IdentidadRepository:
                 secreto_cifrado=secreto_cifrado,
                 activo=False,
                 codigos_recuperacion=codigos_recuperacion,
+                ultimo_paso_totp=None,
             )
             self.session.add(mfa)
         await self.session.flush()

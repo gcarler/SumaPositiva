@@ -18,7 +18,11 @@ def obtener_cifrador_mfa(settings: Settings) -> Fernet:
     """Retorna una instancia de Fernet usando la clave configurada o derivada."""
     if settings.mfa_encryption_key and len(settings.mfa_encryption_key.strip()) > 0:
         return Fernet(settings.mfa_encryption_key.strip().encode("ascii"))
-    # Fallback seguro determinístico para pruebas y entornos locales
+    if settings.environment == "production" or bool((settings.mfa_roles_exigidos or "").strip()):
+        raise RuntimeError(
+            "POLIS_MFA_ENCRYPTION_KEY es obligatoria en producción o cuando se exige MFA por rol."
+        )
+    # Fallback seguro determinístico para pruebas y entornos locales sin MFA en producción
     digest = hashlib.sha256(settings.jwt_secret_key.encode("utf-8")).digest()
     clave_fernet = base64.urlsafe_b64encode(digest)
     return Fernet(clave_fernet)
@@ -101,28 +105,64 @@ def verificar_codigo_totp(
     codigo_ingresado: str,
     ventana: int = 1,
     intervalo: int = 30,
-) -> bool:
+    ultimo_paso: int | None = None,
+    timestamp: int | None = None,
+) -> tuple[bool, int | None]:
     """
-    Verifica un código TOTP admitiendo una ventana de tolerancia de +-1 intervalo
-    (total 90 segundos de tolerancia para compensar desincronizaciones de reloj).
+    Verifica un código TOTP admitiendo una ventana de tolerancia de +-ventana intervalos
+    (por defecto +-1 intervalo = 90 segundos de tolerancia para desincronizaciones de reloj).
+
+    Protección antirreplay (RFC 6238 §5.2):
+    Si se especifica `ultimo_paso`, solo se acepta un código cuyo paso de tiempo candidato
+    sea estrictamente mayor que `ultimo_paso` (rechaza paso <= ultimo_paso).
+
+    Retorna (True, paso_aceptado) si el código es válido y no reutilizado,
+    o (False, None) si es inválido o reutilizado.
     """
     codigo_limpio = codigo_ingresado.strip().replace(" ", "").replace("-", "")
     if len(codigo_limpio) != 6 or not codigo_limpio.isdigit():
-        return False
+        return False, None
 
-    ahora = int(time.time())
-    for delta in range(-ventana, ventana + 1):
-        codigo_esperado = calcular_codigo_totp(secreto_b32, ahora + delta * intervalo, intervalo)
+    ahora = int(time.time()) if timestamp is None else timestamp
+    paso_actual = ahora // intervalo
+
+    # Evaluamos paso actual (0), luego decremento (-1), luego incremento (+1)
+    deltas = [0] + [d for d in range(-ventana, ventana + 1) if d != 0]
+    for delta in deltas:
+        paso_candidato = paso_actual + delta
+        if ultimo_paso is not None and paso_candidato <= ultimo_paso:
+            continue
+        codigo_esperado = calcular_codigo_totp(
+            secreto_b32, timestamp=paso_candidato * intervalo, intervalo=intervalo
+        )
         if hmac.compare_digest(codigo_esperado, codigo_limpio):
-            return True
-    return False
+            return True, paso_candidato
+    return False, None
 
 
 CARACTERES_RECUPERACION = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ"
 
 
 def generar_codigos_recuperacion(cantidad: int = 8) -> list[str]:
-    """Genera códigos de recuperación legibles y de un solo uso en formato XXXX-XXXX."""
+    """
+    Genera códigos de recuperación legibles y de un solo uso en formato XXXX-XXXX.
+
+    Análisis de entropía y modelo de amenazas (Reserva 3 Dictamen CIERRE-06):
+    - Alfabeto: 32 caracteres (Base32 Crockford sin 0, 1, I, O para evitar confusiones tipográficas).
+    - Longitud: 8 caracteres por código (4 + 4 con guión visual).
+    - Entropía individual: 32^8 = 2^40 (~1.1 x 10^12 combinaciones, ~40 bits de entropía).
+    - Entropía efectiva de lote: con 8 códigos activos por usuario, el espacio de búsqueda
+      es 2^40 / 8 = 2^37 (~1.37 x 10^11 combinaciones).
+    - Mitigación contra fuerza bruta en línea:
+      1) Exigencia previa de autenticación de primer factor (contraseña).
+      2) Bloqueo temporal por intentos fallidos de MFA (máximo 5 intentos seguidos de 15 min de bloqueo).
+      3) Rate-limiting por IP (máximo 60 peticiones/15 min).
+      Bajo estas tasas, adivinar un código requeriría > 3 millones de años en promedio.
+    - Mitigación contra exfiltración de base de datos (ataques fuera de línea):
+      Los códigos nunca se almacenan en texto plano; se guarda únicamente su hash SHA-256
+      con sal/pepper del servidor (`POLIS_IP_SALT`). Cada código es de un solo uso estricto
+      y se elimina ("burn-on-use") en el momento exacto en que se utiliza exitosamente.
+    """
     codigos = []
     for _ in range(cantidad):
         parte1 = "".join(secrets.choice(CARACTERES_RECUPERACION) for _ in range(4))

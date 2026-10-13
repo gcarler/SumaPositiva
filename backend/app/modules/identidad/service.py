@@ -745,7 +745,8 @@ class IdentidadService:
             if not mfa_obj:
                 raise HTTPException(400, "Debe iniciar la configuración de MFA antes de activarla")
             secreto_b32 = mfa_utils.descifrar_secreto_totp(mfa_obj.secreto_cifrado, self.settings)
-            if not mfa_utils.verificar_codigo_totp(secreto_b32, datos.codigo):
+            valido, paso = mfa_utils.verificar_codigo_totp(secreto_b32, datos.codigo)
+            if not valido:
                 raise HTTPException(400, "Código TOTP inválido. Verifique la sincronización horaria.")
 
             codigos_recuperacion = mfa_utils.generar_codigos_recuperacion(8)
@@ -756,6 +757,7 @@ class IdentidadService:
             mfa_obj.codigos_recuperacion = hashes
             mfa_obj.activo = True
             mfa_obj.activado_en = datetime.now(UTC)
+            mfa_obj.ultimo_paso_totp = paso
             mfa_obj.intentos_fallidos = 0
             mfa_obj.bloqueado_hasta = None
             mfa_obj.actualizado_en = datetime.now(UTC)
@@ -793,14 +795,18 @@ class IdentidadService:
                 raise HTTPException(400, "MFA no está activo")
 
             secreto_b32 = mfa_utils.descifrar_secreto_totp(mfa_obj.secreto_cifrado, self.settings)
-            if not mfa_utils.verificar_codigo_totp(secreto_b32, datos.codigo):
-                raise HTTPException(400, "Código TOTP inválido")
+            valido, paso = mfa_utils.verificar_codigo_totp(
+                secreto_b32, datos.codigo, ultimo_paso=mfa_obj.ultimo_paso_totp
+            )
+            if not valido:
+                raise HTTPException(400, "Código TOTP inválido o ya utilizado")
 
             codigos = mfa_utils.generar_codigos_recuperacion(8)
             hashes = [
                 mfa_utils.hashear_codigo_recuperacion(c, self.settings.ip_salt) for c in codigos
             ]
             mfa_obj.codigos_recuperacion = hashes
+            mfa_obj.ultimo_paso_totp = paso
             mfa_obj.actualizado_en = datetime.now(UTC)
             await self.repo.guardar()
             await self.repo.registrar_evento(
@@ -837,12 +843,17 @@ class IdentidadService:
 
             es_valido = False
             es_codigo_recuperacion = False
+            paso_exitoso = None
             secreto_b32 = mfa_utils.descifrar_secreto_totp(
                 mfa_obj.secreto_cifrado, self.settings
             )
 
-            if mfa_utils.verificar_codigo_totp(secreto_b32, datos.codigo):
+            valido_totp, paso_totp = mfa_utils.verificar_codigo_totp(
+                secreto_b32, datos.codigo, ultimo_paso=mfa_obj.ultimo_paso_totp
+            )
+            if valido_totp:
                 es_valido = True
+                paso_exitoso = paso_totp
             else:
                 ok_rec, restantes = mfa_utils.verificar_y_consumir_codigo_recuperacion(
                     datos.codigo, mfa_obj.codigos_recuperacion, self.settings.ip_salt
@@ -882,6 +893,8 @@ class IdentidadService:
             mfa_obj.intentos_fallidos = 0
             mfa_obj.bloqueado_hasta = None
             mfa_obj.ultimo_uso_en = ahora
+            if paso_exitoso is not None:
+                mfa_obj.ultimo_paso_totp = paso_exitoso
             await self.repo.guardar()
 
             if es_codigo_recuperacion:

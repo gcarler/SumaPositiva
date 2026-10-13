@@ -2,7 +2,7 @@ import uuid
 from datetime import datetime
 from typing import Any
 
-from sqlalchemy import Boolean, DateTime, ForeignKey, Index, Integer, String, func, text
+from sqlalchemy import BigInteger, Boolean, DateTime, ForeignKey, Index, Integer, String, func, text
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -130,6 +130,11 @@ class UsuarioMfa(Base):
     )
     activado_en: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     ultimo_uso_en: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    ultimo_paso_totp: Mapped[int | None] = mapped_column(
+        BigInteger,
+        nullable=True,
+        comment="Último paso de tiempo TOTP (RFC 6238 §5.2) aceptado para prevenir reutilización",
+    )
     intentos_fallidos: Mapped[int] = mapped_column(
         Integer, default=0, server_default=text("0"), nullable=False
     )

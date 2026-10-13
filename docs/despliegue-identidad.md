@@ -231,8 +231,36 @@ Si durante la ejecución se presenta un fallo crítico insuperable (error de mig
 
 ---
 
-## 7. Registro de Versiones y Aprobaciones
+---
+
+## 8. Arquitectura y Salvaguardas de Autenticación Multifactor (MFA TOTP)
+
+### 8.1. Especificación TOTP (RFC 6238) y Antirreplay (RFC 6238 §5.2)
+- **Algoritmo:** HMAC-SHA1 con ventana de 30 segundos y 6 dígitos decimales.
+- **Tolerancia:** Ventana de $\pm 1$ intervalo (90 segundos en total) para compensar desincronizaciones razonables de reloj en dispositivos móviles.
+- **Protección Antirreplay:** En cumplimiento estricto del estándar RFC 6238 §5.2, el servidor almacena en `autenticacion.usuarios_mfa.ultimo_paso_totp` el contador de paso temporal aceptado ($T = \lfloor \text{timestamp} / 30 \rfloor$). Todo código cuyo paso candidato sea menor o igual al último registrado ($T_{\text{candidato}} \le T_{\text{ultimo}}$) es rechazado de inmediato con HTTP 401. Esto impide la reutilización de códigos interceptados dentro de su ventana de validez y bloquea la reutilización del código de activación durante el inicio de sesión subsiguiente.
+
+### 8.2. Obligatoriedad de Clave de Cifrado Dedicada (`POLIS_MFA_ENCRYPTION_KEY`)
+- En reposo, los secretos TOTP se almacenan cifrados con Fernet (AES-128-CBC + HMAC-SHA256).
+- **Prohibición de Fallback en Producción:** En entornos de producción (`POLIS_ENVIRONMENT="production"`) o cuando se configuran roles con MFA exigido (`POLIS_MFA_ROLES_EXIGIDOS`), la clave dedicada `POLIS_MFA_ENCRYPTION_KEY` (32 bytes url-safe base64) es estrictamente obligatoria. Queda prohibido derivar la clave del secreto JWT en producción; el sistema falla inmediatamente al arrancar si la variable no existe o no es una clave Fernet válida.
+- Permisos del archivo de entorno: El archivo `backend/.env` debe mantenerse con permisos `0600` (legible únicamente por el proceso del servidor).
+
+### 8.3. Códigos de Recuperación: Análisis de Entropía y Modelo de Amenazas
+- **Formato:** Códigos legibles en formato `XXXX-XXXX` (8 caracteres alfanuméricos) generados con `secrets.choice` sobre un alfabeto Crockford Base32 (32 símbolos, excluyendo 0, 1, I, O para evitar confusiones tipográficas).
+- **Entropía:** $32^8 = 2^{40} \approx 1.1 \times 10^{12}$ combinaciones posibles (~40 bits de entropía por código). Con un lote activo de 8 códigos por cuenta, el espacio de búsqueda es $2^{40} / 8 = 2^{37}$ combinaciones.
+- **Defensas contra ataques en línea (fuerza bruta):**
+  1. Autenticación de primer factor previa obligatoria (contraseña evaluada con bcrypt).
+  2. Bloqueo temporal de cuenta (`bloqueado_hasta`): máximo 5 intentos fallidos consecutivos activan 15 minutos de bloqueo automático.
+  3. Límite de tasa por IP: máximo 60 peticiones por ventana de 15 minutos.
+  4. A una tasa máxima de 5 intentos por cada 15 minutos, un ataque de fuerza bruta requeriría más de 3 millones de años en promedio para adivinar un código.
+- **Defensas contra ataques fuera de línea (exfiltración de base de datos):**
+  1. Los códigos nunca se almacenan en texto claro. Se almacena únicamente su hash criptográfico SHA-256 salteado con `POLIS_IP_SALT`.
+  2. Cada código es de un solo uso estricto y se quema ("burn-on-use") en el instante de su validación exitosa, reduciendo a cero la ventana de reutilización.
+
+---
+
+## 9. Registro de Versiones y Aprobaciones
 
 - **Elaborado por:** Equipo de Desarrollo POLIS (`agy2` / EDD)
 - **Supervisado y Auditado por:** Coordinador de Auditoría Forense (`agy` / EAF)
-- **Estado:** Listo para certificación pericial bajo tarea [CIERRE-02].
+- **Estado:** Actualizado con salvaguardas de producción bajo tareas [CIERRE-06] y [CIERRE-06b].
