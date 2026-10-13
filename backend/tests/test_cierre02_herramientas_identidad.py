@@ -199,7 +199,7 @@ async def test_bootstrap_identidad_admin_creacion_e_idempotencia(database_url: s
         assert res_repetido["accion"] == "idempotente_sin_cambios"
         assert res_repetido["usuario_id"] == str(admin_creado_id)
 
-        # 4. Idempotencia: Intentar crear OTRO administrador cuando ya existe uno activo
+        # 4. Idempotencia: Intentar crear OTRO administrador cuando ya existe uno activo (sin --adicional)
         otro_correo = f"segundo-admin-{uuid.uuid4().hex[:8]}@seguridadhumanaintegral.org"
         res_segundo = await ejecutar_bootstrap(
             correo=otro_correo,
@@ -209,30 +209,73 @@ async def test_bootstrap_identidad_admin_creacion_e_idempotencia(database_url: s
             motivo=motivo_test,
             settings=settings,
             check_only=False,
+            adicional=False,
         )
         assert res_segundo["exito"] is True
         assert res_segundo["accion"] == "idempotente_admin_existente"
         assert res_segundo["usuario_id"] == str(admin_creado_id)
 
-        # 5. Verificar que el evento de auditoría 'bootstrap_administrador' fue asentado
+        # 5. Modo adicional: Crear administrador adicional con --adicional=True
+        res_adicional = await ejecutar_bootstrap(
+            correo=otro_correo,
+            nombres="Segundo",
+            apellidos="Admin",
+            contrasena=clave_test,
+            motivo="Creación de administrador adicional autorizada para prueba",
+            settings=settings,
+            check_only=False,
+            adicional=True,
+        )
+        assert res_adicional["exito"] is True
+        assert res_adicional["accion"] == "creado"
+        admin2_creado_id = uuid.UUID(res_adicional["usuario_id"])
+
+        # 6. Idempotencia del administrador adicional: Re-ejecutar con el mismo correo adicional
+        res_adicional_rep = await ejecutar_bootstrap(
+            correo=otro_correo,
+            nombres="Segundo",
+            apellidos="Admin",
+            contrasena=clave_test,
+            motivo="Creación de administrador adicional autorizada para prueba",
+            settings=settings,
+            check_only=False,
+            adicional=True,
+        )
+        assert res_adicional_rep["exito"] is True
+        assert res_adicional_rep["accion"] == "idempotente_sin_cambios"
+        assert res_adicional_rep["usuario_id"] == str(admin2_creado_id)
+
+        # 7. Verificar eventos de auditoría para ambos administradores
         async with engine.connect() as conn:
-            stmt = select(EventoIdentidad.detalle).where(
+            stmt1 = select(EventoIdentidad.detalle).where(
                 EventoIdentidad.objetivo_id == admin_creado_id,
                 EventoIdentidad.accion == "bootstrap_administrador",
             )
-            res_ev = await conn.execute(stmt)
-            detalle = res_ev.scalar_one_or_none()
-            assert detalle is not None, "El evento de auditoría 'bootstrap_administrador' debe persistirse"
-            assert detalle.get("correo") == correo_test.lower()
+            res_ev1 = await conn.execute(stmt1)
+            detalle1 = res_ev1.scalar_one_or_none()
+            assert detalle1 is not None, "El evento 'bootstrap_administrador' debe persistirse"
+            assert detalle1.get("correo") == correo_test.lower()
+
+            stmt2 = select(EventoIdentidad.detalle).where(
+                EventoIdentidad.objetivo_id == admin2_creado_id,
+                EventoIdentidad.accion == "bootstrap_administrador_adicional",
+            )
+            res_ev2 = await conn.execute(stmt2)
+            detalle2 = res_ev2.scalar_one_or_none()
+            assert detalle2 is not None, "El evento 'bootstrap_administrador_adicional' debe persistirse"
+            assert detalle2.get("correo") == otro_correo.lower()
+            assert detalle2.get("modo") == "adicional"
 
     finally:
-        # Limpieza pericial: el usuario de prueba se remueve (eventos_identidad es inmutable/append-only)
-        if admin_creado_id:
+        # Limpieza pericial: los usuarios de prueba se remueven (eventos_identidad es inmutable/append-only)
+        uids_a_borrar = [u for u in [admin_creado_id, locals().get("admin2_creado_id")] if u]
+        if uids_a_borrar:
             async with engine.begin() as conn:
-                await conn.execute(
-                    text("DELETE FROM autenticacion.usuarios WHERE id = :uid"),
-                    {"uid": admin_creado_id},
-                )
+                for uid in uids_a_borrar:
+                    await conn.execute(
+                        text("DELETE FROM autenticacion.usuarios WHERE id = :uid"),
+                        {"uid": uid},
+                    )
         await engine.dispose()
 
 

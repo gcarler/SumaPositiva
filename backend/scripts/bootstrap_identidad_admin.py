@@ -60,6 +60,7 @@ async def ejecutar_bootstrap(
     motivo: str,
     settings: Settings,
     check_only: bool = False,
+    adicional: bool = False,
 ) -> dict[str, Any]:
     """Ejecuta el bootstrap administrativo de forma estrictamente idempotente."""
     database = Database(settings)
@@ -107,7 +108,7 @@ async def ejecutar_bootstrap(
                         "correo": coincidencia["correo"],
                         "mensaje": f"El administrador '{coincidencia['correo']}' ya existe y está activo. No se requieren cambios.",
                     }
-                else:
+                elif not adicional:
                     primer_admin = admins_actuales[0]
                     return {
                         "exito": True,
@@ -151,12 +152,23 @@ async def ejecutar_bootstrap(
                 await repo.serializar_administracion()
                 
                 # Re-comprobación bajo bloqueo de tabla
-                if await repo.contar_administradores():
-                    return {
-                        "exito": True,
-                        "accion": "idempotente_concurrente",
-                        "mensaje": "Un administrador fue creado concurrentemente; no se aplican cambios adicionales.",
-                    }
+                if not adicional:
+                    if await repo.contar_administradores():
+                        return {
+                            "exito": True,
+                            "accion": "idempotente_concurrente",
+                            "mensaje": "Un administrador fue creado concurrentemente; no se aplican cambios adicionales.",
+                        }
+                else:
+                    usuario_concurrente = await repo.obtener_usuario_por_correo(correo_normalizado)
+                    if usuario_concurrente:
+                        return {
+                            "exito": True,
+                            "accion": "idempotente_sin_cambios",
+                            "usuario_id": str(usuario_concurrente.id),
+                            "correo": usuario_concurrente.correo,
+                            "mensaje": f"El administrador '{usuario_concurrente.correo}' ya existe y está activo. No se requieren cambios.",
+                        }
 
                 datos_usuario = UsuarioCreacion(
                     correo=correo_normalizado,
@@ -171,14 +183,20 @@ async def ejecutar_bootstrap(
                     rol_admin.id,
                 )
 
+                accion_evento = (
+                    "bootstrap_administrador_adicional"
+                    if adicional
+                    else "bootstrap_administrador"
+                )
                 await repo.registrar_evento(
-                    "bootstrap_administrador",
+                    accion_evento,
                     None,
                     nuevo_admin.id,
                     {
                         "motivo": motivo.strip(),
                         "canal": "CLI operativo idempotente",
                         "correo": correo_normalizado,
+                        "modo": "adicional" if adicional else "inicial",
                     },
                 )
 
@@ -187,7 +205,7 @@ async def ejecutar_bootstrap(
                     "accion": "creado",
                     "usuario_id": str(nuevo_admin.id),
                     "correo": nuevo_admin.correo,
-                    "mensaje": f"Administrador '{nuevo_admin.correo}' creado exitosamente bajo rol '{rol_admin.codigo}'.",
+                    "mensaje": f"Administrador {'adicional ' if adicional else ''}'{nuevo_admin.correo}' creado exitosamente bajo rol '{rol_admin.codigo}'.",
                 }
     finally:
         await database.engine.dispose()
@@ -221,6 +239,11 @@ def main():
         "--motivo",
         default="Puesta en operacion oficial autorizada - Decreto 037 de 2026",
         help="Motivo pericial para el registro de auditoría (mínimo 10 caracteres)",
+    )
+    parser.add_argument(
+        "--adicional",
+        action="store_true",
+        help="Permite registrar un administrador adicional si ya existe un administrador principal activo",
     )
     parser.add_argument(
         "--check-only",
@@ -276,6 +299,7 @@ def main():
             motivo=args.motivo,
             settings=settings,
             check_only=args.check_only,
+            adicional=args.adicional,
         )
     )
 
