@@ -1,41 +1,36 @@
-# DICTAMEN EAF — Cierre [GEO-HURTOS-01] (R1/R2) y Entrega [A11Y-WIDGET-01b]
+# DICTAMEN EAF — [UI-REMED-01] Remediación UI/Storybook (F1–F4) y Cierre O1 Accesibilidad
 
-**Auditor:** `agy` — **Commits evaluados:** `e887439` (`[GEO-HURTOS-01]`) y `75a0a66` (`[A11Y-WIDGET-01b]`) — **Fecha:** 13-oct-2026
-**Dictamen Global:** ✅ **APROBADO (PRODUCCIÓN CERTIFICADA)**
-
----
-
-## 1. Cierre de Reservas `[GEO-HURTOS-01]` (Commit `e887439`) — ✅ APROBADO SIN RESERVAS
-
-### Verificación independiente del Auditor (`agy`)
-- **R1 — Guarda de política de acceso (`docs/permisos-api.md`):**
-  - Endpoints `GET /api/v1/geodatos/analitica/hurtos/resumen` y `GET /api/v1/geodatos/analitica/hurtos/geojson` registrados con control `publico` y justificación documental.
-  - Ejecución independiente de `uv run pytest tests/test_access_policy.py tests/test_geodatos_analitica_hurtos.py`: **104/104 pruebas pasadas** (27.26 s). Suite integral de backend certificada en **527/527 pruebas pasadas**.
-- **R2 — Limpieza de caracteres corruptos (`U+FFFD` / `chr(65533)`):**
-  - Respaldo previo verificado en `/root/polis/backups/bd_csh_20261013_170430.dump` (`SHA-256: 598c53a4606e8f60f6477c42736b02db9f54fd73c44130aa919d75406e5bf478`).
-  - Normalización transaccional aplicada tanto en `clase_sitio` (319 filas) como en `dia_semana` (3.573 filas: `sáb.`, `mié.`), e incorporada de forma permanente en `REEMPLAZOS_TEXTO` dentro de `backend/scripts/ingestar_hurtos.py`.
-  - Consulta SQL independiente en `bd_csh`:
-    `SELECT count(*) FROM geodatos.estadisticas_hurtos WHERE clase_sitio LIKE '%' || chr(65533) || '%' OR armas_medios LIKE '%' || chr(65533) || '%' OR dia_semana LIKE '%' || chr(65533) || '%' OR delito LIKE '%' || chr(65533) || '%' OR mes LIKE '%' || chr(65533) || '%';` → **`0` filas corruptas** sobre `12.280` filas (`18.242` casos).
+**Auditor:** `agy` — **Commit evaluado:** `4de846a` — **Fecha:** 13-oct-2026
+**Dictamen:** ✅ **APROBADO SIN RESERVAS (PRODUCCIÓN Y STORYBOOK 100 % EN VERDE)**
 
 ---
 
-## 2. Barra Lateral de Accesibilidad `[A11Y-WIDGET-01b]` (Commit `75a0a66`) — ✅ APROBADO
+## 1. Verificación independiente por hallazgo (F1–F4 + O1)
 
-### Verificación independiente del Auditor (`agy`)
-- **Fidelidad al patrón Función Pública / GOV.CO:**
-  - Contenedor `<nav aria-label="Menú de accesibilidad">` fijo en el borde derecho (`top-1/2 right-0 -translate-y-1/2 w-[52px] rounded-l-xl`).
-  - Seis ítems apilados (`52px × 48px`) con pastilla de ícono (`26px × 26px`) y expansión lateral suave a `196px` en `:hover`, `:focus-within` y `:focus-visible` (instantánea con `prefers-reduced-motion` o `data-a11y-reduced-motion="true"`).
-  - Acciones directas a un clic: **Contraste** (`aria-pressed`), **Aumentar (`A+`)**, **Reducir (`A−`)**, **Restablecer**, **Más opciones** (`aria-expanded`, cierra con `Escape` y clic externo devolviendo foco al disparador) y enlace oficial a **Centro de Relevo** (`https://centroderelevo.gov.co/`).
-  - En `/geovisor`, se inicia colapsado en una pestaña mínima compacta (`w-7 h-14`) para no obstruir los paneles acoplados del SIG, permitiendo desplegar y volver a colapsar la barra.
-  - Excluido de rutas privadas `/plataforma`.
-- **Guardas de Diseño, Tipado y Pruebas:**
-  - `node scripts/ui-policy.mjs` (`UI001`–`UI006`): **APROBADO** (0 colores arbitrarios, Zero-Modals respetado, registrado en `catalog.ts` con historia Storybook y política `a11y: "error"`).
-  - `bun test src/features/accesibilidad`: **13/13 pruebas pasadas** (82 aserciones).
-  - `bunx tsc --noEmit` y `bun run lint`: **0 errores**.
-  - Auditoría E2E Playwright + `@axe-core/playwright`: **14/14 pasos aprobados** y **0 violaciones WCAG AA/AAA** en modo normal y alto contraste; sin desbordamiento horizontal en `320px` ni `375px`.
-- **Producción y Censo Institucional `bd_csh`:**
-  - `HTTP /` → `200 OK` (expone `aria-label="Menú de accesibilidad"` en SSR) y `HTTP /geovisor` → `200 OK`.
-  - Censo `bd_csh` intacto: **33 mesas, 36 agendas, 11 fichas, 17 actores**.
+1. **F1 — Contraste WCAG 1.4.3 (`color-contrast`) en pestañas de héroes (`src/features/plataforma/components/gestor-heros-plataforma.tsx:264`):**
+   - **Verificado:** Sustitución de `opacity-75` por `text-[var(--text-secondary)]` en el `<span>` de ruta de las 7 pestañas (`role="tab"`).
+   - **Resultado:** La historia `plataforma-interna › Configuracion` aprueba `axe-core` en Chromium headless (807 ms, 0 violaciones).
+2. **F2 — Aserciones asíncronas y aislamiento de mocks (`src/app/_stories/plataforma-interna.stories.tsx`):**
+   - **Verificado:** Uso de `findByRole` / `findByText` en `Usuarios`, `Testimonios` y `TestimoniosOscuro`; mock completo de `identidadApi` (8 cuentas demo con `Ana Pérez`, `crearUsuario`, `editarUsuario`, `roles`, `ambitosUsuario`) y restauración limpia con `structuredClone(cuentasBase)` en el retorno de `beforeEach`.
+   - **Resultado:** Las 23 historias de `plataforma-interna.stories.tsx` pasan al 100 % (`Usuarios` 1.408 ms, `Testimonios` y `TestimoniosOscuro` 301 ms).
+3. **F3 — Eliminación de landmark `banner` duplicado/anidado (`src/features/politicas/components/hero-page-banner.tsx` y `.test.tsx`):**
+   - **Verificado:** El contenedor del héroe embebido migró de `<header role="banner">` a `<section aria-label={titulo}>`, garantizando un único landmark `banner` de nivel superior en el documento.
+   - **Resultado:** 8/8 pruebas unitarias en `hero-page-banner.test.tsx` en verde y 0 violaciones `landmark-banner-is-top-level` / `landmark-no-duplicate-banner` en `platform › Explorar`, `› Sin Resultados` y `› Mesas`.
+4. **F4 — Mock determinista de `POST /api/v1/mesas` (`src/app/_stories/platform.stories.tsx`):**
+   - **Verificado:** Interceptación de `POST /api/v1/mesas` con respuesta HTTP `201` y eco de entidad con `id` generado en `CrearMesaCompleta`, respetando la regla 8 del kit UI sin alterar `mesa-editor-panel.tsx`.
+   - **Resultado:** Las 24 historias de `platform.stories.tsx` pasan al 100 % (`Crear Mesa Completa` en 2.190 ms).
+5. **O1 — Solapamiento cosmético en barra lateral de accesibilidad (`src/shared/ui/accesibilidad-widget.tsx`):**
+   - **Verificado:** Las clases de expansión horizontal (`hover:w-[196px] focus-within:w-[196px] focus-visible:w-[196px]`) y opacidad de etiqueta quedan condicionadas a `!isOpen`, con jerarquía explícita `z-20` en `#panel-mas-opciones-a11y` frente a `z-10` en `<nav>`.
+   - **Resultado:** 6/6 pruebas unitarias en `accesibilidad-widget.test.tsx`, 6/6 historias en `accesibilidad-widget.stories.tsx` y captura `a11y-subpanel-mas-opciones.png` verificada visualmente sin solapamiento.
+6. **Documentación y Trazabilidad (`Revision_ui_13102026.md` y `docs/plan-remediacion-ui-13102026.md`):**
+   - **Verificado:** Sección `§9. Resultados de la remediación ejecutada — antes/después` incorporada en `Revision_ui_13102026.md` con la comparativa completa.
 
-### Observación cosmética menor (no bloqueante)
-- **O1 — Solapamiento al mantener foco/hover sobre «Más opciones» con el subpanel abierto:** En `src/shared/ui/accesibilidad-widget.tsx` (visible en la captura `a11y-subpanel-mas-opciones.png`), cuando `isOpen === true` y el botón «Más opciones» conserva el foco o el cursor, su expansión a `w-[196px]` se dibuja por encima del borde derecho del subpanel `#panel-mas-opciones-a11y` (`right-[60px]`). En un próximo ajuste cosmético se recomienda suprimir la expansión horizontal de los botones de la barra cuando `isOpen` esté activo (o elevar el `z-index` del subpanel a `z-20`).
+---
+
+## 2. Certificación Independiente de Guardas, Servicios y Base de Datos
+
+- **Guardas estáticas (`bun run check`):** `ui-policy.mjs` (`UI001`–`UI008`), `tsc --noEmit` y `eslint .` → **0 errores**.
+- **Storybook + Axe-Core (`vitest --project=storybook`):** **53/53 historias verificadas en los 3 archivos auditados** (y **212/212** en la suite global de 17 archivos) con **0 violaciones WCAG**.
+- **Suite unitaria (`bun test`):** **547/547 pruebas pasadas** en 63 suites (aislamiento SSR en `accesibilidad-store.test.ts` verificado).
+- **Producción:** `polis-frontend` activo; `GET /` → `HTTP 200 OK`, `GET /geovisor` → `HTTP 200 OK`; árbol Git limpio (`git status -s` vacío).
+- **Censo `bd_csh` intacto:** **33 mesas, 36 agendas, 11 fichas, 17 actores, 12.280 filas de hurtos**.
