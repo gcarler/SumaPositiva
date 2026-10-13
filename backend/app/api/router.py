@@ -21,6 +21,7 @@ from app.modules.testimonios.router import router as testimonios_router
 from app.modules.comunicaciones.router import router as comunicaciones_router
 from app.modules.notificaciones.router import router as notificaciones_router
 from app.modules.canales.router import router as canales_whatsapp_router
+from app.modules.seguridad.router import router as seguridad_router
 
 api_router = APIRouter(prefix="/api/v1")
 api_router.include_router(health_router)
@@ -45,5 +46,6 @@ api_router.include_router(noticias_router)
 api_router.include_router(comunicaciones_router)
 api_router.include_router(notificaciones_router)
 api_router.include_router(canales_whatsapp_router, prefix="/canales/whatsapp", tags=["Canales"])
+api_router.include_router(seguridad_router)
 
 

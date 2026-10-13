@@ -327,38 +327,62 @@ El procedimiento detallado paso a paso, incluyendo la generación de entropía c
 
 ---
 
-## 7. Endurecimiento de Cabeceras HTTP y Content-Security-Policy (CSP)
+## 7. Endurecimiento de Cabeceras HTTP, Content-Security-Policy (CSP) y Telemetría [CIERRE-05]
 
-En cumplimiento de la directriz de seguridad [CIERRE-04] (mitigación del hallazgo ALTO de EAF por token en `sessionStorage`), se implementa una arquitectura de Content-Security-Policy dual y cabeceras estrictas en dos niveles:
+En cumplimiento de las directrices de seguridad [CIERRE-04] y [CIERRE-05] (mitigación del hallazgo de almacenamiento en `sessionStorage` y endurecimiento perimetral de CSP), se implementa una arquitectura de Content-Security-Policy por entorno con recolección centralizada de telemetría de violaciones.
 
 ### 7.1. Niveles de Protección
 
 1. **Nivel Aplicación (Next.js - `next.config.ts`)**:
-   - Entrega cabeceras `Content-Security-Policy` (o `Content-Security-Policy-Report-Only`), `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: strict-origin-when-cross-origin` y `Permissions-Policy: camera=(), microphone=(), geolocation=(self)`.
-   - Controlable mediante la variable de entorno `POLIS_CSP_REPORT_ONLY` (`true` para modo Report-Only, por defecto `false` para modo restrictivo Enforce).
+   - Emite cabeceras de seguridad: `Content-Security-Policy-Report-Only` (por defecto) o `Content-Security-Policy` (en modo restrictivo `Enforce`), `Reporting-Endpoints`, `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: strict-origin-when-cross-origin` y `Permissions-Policy: camera=(), microphone=(), geolocation=(self)`.
+   - **Modo por defecto**: `Report-Only` para permitir la supervisión pasiva sin disrupción de funcionalidades.
+   - **Activación de Enforce**: Conmutable mediante variables de entorno `POLIS_CSP_ENFORCE=true` o `POLIS_CSP_REPORT_ONLY=false`.
 2. **Nivel Servidor / Proxy Inverso (Nginx - `docs/nginx-csp-polis.conf`)**:
-   - Plantilla oficial versionada para incluir en `/etc/nginx/sites-available/polis`.
-   - Estandariza la política perimetral a nivel HTTP/HTTPS para todo el tráfico entrante.
+   - Plantilla oficial versionada para `/etc/nginx/sites-available/polis` con directivas alineadas a producción.
+   - Configurada en `Report-Only` con `Reporting-Endpoints` y directiva `report-uri /api/v1/seguridad/csp-report; report-to csp-endpoint;`.
 3. **Nivel API (FastAPI - `backend/app/main.py`)**:
-   - Middleware universal que emite cabeceras de seguridad perimetral y CSP restrictiva (`default-src 'none'; frame-ancestors 'none'`) en todas las respuestas REST.
+   - Middleware universal de seguridad perimetral (`default-src 'none'; frame-ancestors 'none'`) en todas las respuestas REST.
 
-### 7.2. Política CSP y Recursos Autorizados
+### 7.2. Política CSP de Producción Endurecida
 
-La directiva CSP de POLIS ha sido certificada para la operación completa de todos los módulos:
+En producción (`NODE_ENV=production`), la CSP se restringe bajo el principio de mínimo privilegio:
 - `default-src 'self'`
-- `script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com` (compatibilidad Next.js hydration y Google OAuth).
-- `style-src 'self' 'unsafe-inline'` (estilos dinámicos Tailwind CSS y animaciones Framer Motion).
-- `img-src 'self' data: blob: https://*.tile.openstreetmap.org https://tile.openstreetmap.org https://*.tile.osm.org https://*.googleusercontent.com https://seguridadhumanaintegral.org https://www.seguridadhumanaintegral.org https://images.unsplash.com https://api.qrserver.com` (teselas cartográficas OpenLayers OSM, avatares OAuth, códigos QR de asistencia de mesas y fotografía institucional).
-- `font-src 'self' data:` (tipografías Geist y Geist Mono).
-- `connect-src 'self' http://127.0.0.1:8000 http://localhost:8000 https://seguridadhumanaintegral.org https://www.seguridadhumanaintegral.org https://*.tile.openstreetmap.org https://tile.openstreetmap.org https://accounts.google.com ws: wss:` (API backend y peticiones asíncronas).
-- `frame-src 'self' https://accounts.google.com https://www.youtube-nocookie.com https://player.vimeo.com` (autenticación Google y reproductores de video pedagógico).
-- `frame-ancestors 'none'` (prevención absoluta de ataques clickjacking).
-- `object-src 'none'` y `base-uri 'self'`.
+- `script-src 'self' 'unsafe-inline' https://accounts.google.com` (se eliminó terminantemente `'unsafe-eval'`).
+- `style-src 'self' 'unsafe-inline'` (estilos atómicos Tailwind CSS y Framer Motion).
+- `img-src 'self' data: blob: https://*.tile.openstreetmap.org https://tile.openstreetmap.org https://*.tile.osm.org https://*.googleusercontent.com https://seguridadhumanaintegral.org https://www.seguridadhumanaintegral.org https://images.unsplash.com https://api.qrserver.com` (teselas OSM, avatares OAuth, QR de asistencia y medios).
+- `font-src 'self' data:` (tipografías Geist y Geist Mono integradas).
+- `connect-src 'self' https://seguridadhumanaintegral.org https://www.seguridadhumanaintegral.org https://*.tile.openstreetmap.org https://tile.openstreetmap.org https://accounts.google.com` (acotado exclusivamente a dominios HTTPS de producción; se eliminaron `ws:`, `wss:`, `localhost` y `127.0.0.1`).
+- `frame-src 'self' https://accounts.google.com https://www.youtube-nocookie.com https://player.vimeo.com` (Google OAuth y reproductores pedagógicos).
+- `frame-ancestors 'none'` y `X-Frame-Options: DENY` (prevención absoluta de clickjacking).
+- `object-src 'none'`, `base-uri 'self'`, `form-action 'self'`.
+- `report-uri /api/v1/seguridad/csp-report` y `report-to csp-endpoint`.
 
-### 7.3. Procedimiento de Activación en Nginx
+### 7.3. Justificación Técnica de `'unsafe-inline'` en `script-src` y Gestión de Riesgo Residual
+
+1. **Razón técnica de incompatibilidad con Nonces/Hashes estáticos**:
+   - Next.js App Router con arquitectura standalone compila 192 rutas estáticas pre-renderizadas (`output: "standalone"` / SSG con `generateStaticParams`).
+   - El uso de **nonces** criptográficos requeriría forzar SSR dinámico mediante middleware en cada petición entrante, impidiendo la entrega estática ultra rápida (TTFB < 10ms), invalidando el cacheo de borde en CDN/Nginx y aumentando innecesariamente el consumo de CPU.
+   - El uso de **hashes** para scripts en línea resulta inmanejable en despliegues ágiles, ya que los identificadores de módulos y chunks de hidratación de Next.js mutan con cada build.
+2. **Evaluación de Riesgo Residual y Mitigaciones Compensatorias**:
+   - **Eliminación total de `'unsafe-eval'`**: Impide que una eventual inyección ejecute cadenas de texto como código dinámico (`eval`, `Function`, `setTimeout(string)`).
+   - **Restricción estricta de `connect-src`**: Aunque un atacante lograse inyectar código en el DOM, no cuenta con permisos CSP para exfiltrar credenciales o tokens a servidores externos de comando y control (C2).
+   - **Telemetría continua de violaciones**: Cualquier intento de cargar recursos o conectar fuera de la política autorizada dispara inmediatamente una alerta a través del endpoint de reporte.
+   - **Protección contra clickjacking**: `frame-ancestors 'none'` imposibilita incrustar POLIS en frames de sitios de terceros.
+
+### 7.4. Endpoint de Recolección de Violaciones (`POST /api/v1/seguridad/csp-report`)
+
+POLIS incorpora un colector pasivo de telemetría de CSP con altos estándares de privacidad y resiliencia:
+- **Acceso público**: Habilitado para navegadores cliente sin requerir autenticación Bearer (`docs/permisos-api.md`).
+- **Rate limiting por IP**: Máximo 60 peticiones/minuto por IP cliente (configurable vía `POLIS_CSP_REPORT_LIMITE_IP`). Protege contra inundaciones y abusos de telemetría.
+- **Límite de tamaño**: Carga útil máxima de 32 KB (`413 Content Too Large` en caso de excedente).
+- **Sanitización de PII**: Stripping automático de cadenas de consulta (`query strings`) y fragmentos (`#hash`) en `blockedURI`, `documentURI` y `referrer`.
+- **Compatibilidad dual**: Procesa tanto el formato clásico `{"csp-report": {...}}` (CSP Level 2 / `report-uri`) como la especificación moderna W3C Reporting API v1 (`[{"type": "csp-violation", "body": {...}}]`).
+- **Respuesta**: HTTP `204 No Content`.
+
+### 7.5. Procedimiento de Activación en Nginx
 
 > [!CAUTION]
-> **REGLA DE CONFORMIDAD**: Queda estrictamente prohibido recargar Nginx en el servidor sin autorización previa del auditor `agy`.
+> **REGLA DE CONFORMIDAD**: Queda estrictamente prohibido recargar Nginx en el servidor de producción sin autorización previa del auditor `agy`.
 
 1. **Verificación previa del archivo de configuración**:
    ```bash
@@ -373,4 +397,5 @@ La directiva CSP de POLIS ha sido certificada para la operación completa de tod
    ```bash
    sudo systemctl reload nginx
    ```
+
 

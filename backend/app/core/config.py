@@ -53,6 +53,7 @@ class Settings(BaseSettings):
 
     sesion_anonima_limite_ip: int = Field(default=30, ge=1)
     ia_limite_ip: int = Field(default=30, ge=1)
+    csp_report_limite_ip: int = Field(default=60, ge=1)
     sentry_dsn: str | None = None
 
     @property

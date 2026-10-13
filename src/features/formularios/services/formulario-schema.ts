@@ -1,3 +1,4 @@
+import "@/core/zod-init";
 import { z } from "zod";
 export const formularioSchema = z.object({
   id: z.string(),

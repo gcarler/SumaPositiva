@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import "@/core/zod-init";
 import { MotionConfig } from "framer-motion";
 import { ThemeProvider } from "next-themes";
 import { Toaster } from "@/shared/ui/sonner";

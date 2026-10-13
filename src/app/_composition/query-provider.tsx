@@ -1,5 +1,6 @@
 "use client";
 
+import "@/core/zod-init";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { ReactNode, useState } from "react";

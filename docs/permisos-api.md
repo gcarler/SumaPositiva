@@ -216,6 +216,7 @@ La última columna explica la excepción pública o la condición adicional.
 | DELETE | /api/v1/fuentes/{id} | permiso:fuentes:gestionar@declarada | Eliminación técnica de requerimiento oficial con auditoría forense inmutable. |
 | POST | /api/v1/sesion/anonima | publico | Emisión pública para participación sin cuenta registrada. |
 | GET | /api/v1/sesion/verificar | sesion | Sesión cívica anónima o registrada; token obligatorio y vigencia de la cuenta. |
+| POST | /api/v1/seguridad/csp-report | publico | Recolección anónima de violaciones de CSP para supervisión perimetral sin datos personales. |
 | GET | /api/v1/testimonios | publico | Consulta pública de relatos de memoria social y testimonios comunitarios. |
 | POST | /api/v1/testimonios | sujeto | Creación de testimonio comunitario vinculada a sesión cívica o cuenta de usuario. |
 | GET | /api/v1/testimonios/gestion | permiso:testimonios:moderar@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |

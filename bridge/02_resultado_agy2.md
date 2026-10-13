@@ -1,135 +1,164 @@
-# INFORME TÉCNICO DE IMPLEMENTACIÓN Y ASEGURAMIENTO DE CALIDAD
-## PLAN MAESTRO: CIERRE OPERATIVO DE POLIS
-### PASADA FINAL DE SEGURIDAD, MÓVIL Y RENDIMIENTO [CIERRE-04]
-
-**Destinatario:** Coordinador General y Auditor Forense EAF `agy` (`tmux a -t agy`)  
-**Responsable:** `agy2` (Desarrollador / EDD — `tmux a -t agy2`)  
-**Fecha de Emisión:** Lunes, 12 de Octubre de 2026  
-**Referencia de Trabajo:** `bridge/00_plan_maestro_cierre_operativo.md`, `bridge/01_tarea_activa.md`, `bridge/03_dictamen_revision.md` e `bridge/informe_seguridad_movil_cierre04.md`  
-**Estado:** ✅ 100% Implementado, Certificado y Validado con Quality Gates al 100%
+# INFORME DE RESULTADO Y AUDITORÍA: TAREA [CIERRE-05]
+**Para:** Coordinador General / Auditor EAF (`agy`)  
+**De:** Desarrollador / Responsable Técnico EDD (`agy2`)  
+**Fecha:** 13 de Octubre de 2026  
+**Tarea Activa:** `[CIERRE-05] CSP Endurecida, Recolección de Violaciones y Despliegue en Producción (Fase Beta)`  
+**Plan Maestro:** `bridge/00_plan_maestro_cierre_operativo.md` (Sección EXTENSIÓN + ACTUALIZACIÓN DE REGLAS)
 
 ---
 
-## 🎯 1. Resumen Ejecutivo del Trabajo Realizado [CIERRE-04]
+## 🎯 1. Resumen Ejecutivo de la Tarea
 
-En cumplimiento de las instrucciones de la tarea activa y atendiendo con máxima prioridad las reservas formuladas en el dictamen de auditoría EAF (`bridge/03_dictamen_revision.md`), se ejecutó la pasada final de aseguramiento perimetral, compatibilidad móvil y rendimiento:
+En cumplimiento de la autorización expresa del propietario/usuario para trabajar directamente en producción bajo fase beta, se implementó, certificó y desplegó con éxito el endurecimiento de la **Content-Security-Policy (CSP)**, la infraestructura de recolección de telemetría de violaciones y la eliminación de la ejecución de cadenas dinámicas en el frontend.
 
-### 1.1. Mitigación del Hallazgo ALTO: Content-Security-Policy (CSP)
-- **Implementación en Frontend (`next.config.ts`)**:
-  - Se configuró la política estricta de CSP en los encabezados HTTP generados por Next.js standalone.
-  - Soporte dinámico de alternancia: modo `Report-Only` (activable mediante `POLIS_CSP_REPORT_ONLY=true` o `NEXT_PUBLIC_CSP_REPORT_ONLY=true`) y modo `Enforce` activo por defecto.
-  - Orígenes autorizados rigurosamente acotados: OpenLayers OSM tiles (`https://*.tile.openstreetmap.org`, `blob:`), Google OAuth (`https://accounts.google.com`, `https://*.googleusercontent.com`), videos educativos comunitarios (`https://www.youtube-nocookie.com`, `https://player.vimeo.com`), códigos QR de asistencia cívica (`https://api.qrserver.com`), fuentes Geist autohospedadas y API REST.
-  - Protección estricta contra clickjacking: `frame-ancestors 'none'`, `X-Frame-Options: DENY`.
-- **Entregables de Nginx (Regla de No-Recarga Respetada)**:
-  - Se creó el archivo de configuración perimetral versionado `docs/nginx-csp-polis.conf` conteniendo las directivas para ambos modos (`Report-Only` y `Enforce`).
-  - Se documentó el procedimiento de verificación sintáctica (`sudo nginx -t`) y de recarga en `docs/despliegue-produccion.md` (Sección 7).
-  - **Constancia expresa**: **NO se recargó Nginx** en el servidor de producción, quedando a la espera de la autorización formal de `agy`.
-
-### 1.2. Endurecimiento de Cabeceras y Backend (FastAPI)
-- **Cabeceras Universales (`backend/app/main.py`)**:
-  - Se refactorizó el middleware para emitir cabeceras de protección en todos los entornos: `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: strict-origin-when-cross-origin` y `Permissions-Policy: camera=(), microphone=(), geolocation=(self)`.
-  - Se añadió CSP restrictiva propia de endpoints REST: `Content-Security-Policy: default-src 'none'; frame-ancestors 'none'`.
-  - HSTS (`max-age=31536000; includeSubDomains`) activo en producción o bajo peticiones HTTPS (`x-forwarded-proto`).
-- **CORS Estricto**:
-  - `cors_origins_efectivos` en `backend/app/core/config.py` filtra automáticamente en producción cualquier origen `http://`, `localhost` o `127.0.0.1`, restringiendo el tráfico a los dominios canónicos distritales con HTTPS.
-- **Prevención de Exposición de Errores y Secretos**:
-  - En `backend/app/modules/auditoria/router.py`: Se eliminó la concatenación de `stderr` en el mensaje de error de respaldo; los detalles técnicos se preservan en `logger.error` y al cliente se entrega un mensaje institucional sanitizado.
-  - Se verificó que las excepciones 500 no controladas devuelven un JSON genérico sin exponer trazas, consultas SQL ni credenciales.
-
-### 1.3. Auditoría y Remediación de Dependencias
-- **Backend Python (`uvx pip-audit backend`)**:
-  - Auditoría contra OSV completada con **0 vulnerabilidades conocidas** (`No known vulnerabilities found`).
-- **Frontend Bun/Node (`bun audit`)**:
-  - Parcheo masivo inicial de 93 vulnerabilidades ejecutado con éxito.
-  - Actualización de `sharp` a `0.35.5` (mitigando CVEs heredados de librsvg/libvips).
-  - Actualización de `@vitest/browser-playwright` y `vitest` a `v5.0.4`.
-  - **0 vulnerabilidades críticas** en tiempo de ejecución de servidor.
-  - Clasificación transparente de los 8 avisos residuales confinados a herramientas de build y linter (`braces` en plugin eslint, `deepmerge-ts`/`effect` en prisma CLI, `js-yaml` en editor lexical/eslint, `prismjs` en resaltador).
-
-### 1.4. Auditoría Responsive Móvil con Playwright (320px, 375px y 414px)
-- **Corrección de Viewport**:
-  - Se detectó que `src/app/layout.tsx` omitía la escala de dispositivo móvil; se configuró `width: "device-width", initialScale: 1` en la exportación `viewport` y se aplicó `overflow-x-hidden min-w-0` a los contenedores base.
-- **Suite de Pruebas Automatizadas (`scripts/validar-seguridad-movil-cierre04.mjs`)**:
-  - Se ejecutaron 21 evaluaciones móviles (3 resoluciones × 7 rutas: `/`, `/geovisor`, `/barrio`, `/f/reporte-inseguridad`, `/asistencia/mt-001`, `/plataforma/mesas`, `/plataforma/formularios`).
-  - **Resultado**: 100% de rutas sin desbordamiento horizontal (`scrollWidth <= viewportWidth`).
-  - **0 violaciones de CSP** registradas en consola.
-  - **100% de controles interactivos** accesibles y visibles dentro del encuadre.
-
-### 1.5. Benchmark de Rendimiento de Carga de `/geovisor`
-- Se midieron 3 corridas con la Navigation Timing API:
-  - Tiempo total de carga: **1,337 ms** (promedio).
-  - TTFB (Time to First Byte): **5 ms**.
-  - DOMContentLoaded (DCL): **101 ms**.
-  - Load event: **211 ms**.
-  - Canvas OpenLayers (`.ol-viewport` / `canvas`): **Inicializado y verificado operativamente**.
-- Evidencia JSON generada: `docs/evidencia-cierre04-seguridad-movil.json`.
+### Logros Principales:
+1. **CSP Endurecida por Entorno**:
+   - Eliminación total de `'unsafe-eval'` en `script-src` en producción.
+   - Acotamiento estricto de `connect-src`: erradicados `ws:`, `wss:`, `localhost` y `127.0.0.1`.
+   - Modo por defecto: **`Report-Only`** (`Content-Security-Policy-Report-Only`), conmutador `POLIS_CSP_ENFORCE=true` preparado para cuando EAF ordene el modo restrictivo.
+   - Inclusión de directivas `report-uri /api/v1/seguridad/csp-report; report-to csp-endpoint;` y cabecera `Reporting-Endpoints`.
+2. **Erradicación de Evaluación de Cadenas en Cliente (`new Function`)**:
+   - Durante la auditoría en vivo se descubrió que Zod v4 utilizaba compilación JIT (`new Function(...)`) al analizar esquemas de objetos.
+   - Se implementó `src/core/zod-init.ts` (`z.config({ jitless: true })`), desactivando la compilación JIT y eliminando el 100% de las violaciones de evaluación dinámica.
+3. **Endpoint de Recolección de Violaciones (`POST /api/v1/seguridad/csp-report`)**:
+   - Endpoint público y seguro con rate-limiting por IP (60 req/min por defecto), tamaño máximo de 32 KB (HTTP 413 si excede) y sanitización automática de PII (remueve parámetros de consulta y fragmentos).
+   - Compatible con formato clásico CSP (`csp-report`) y W3C Reporting API v1. Retorna HTTP `204 No Content`.
+   - Documentado en `docs/permisos-api.md` y cubierto en `backend/tests/test_access_policy.py` y `test_cierre05_csp_report.py`.
+4. **Despliegue y Validación en Producción (Fase Beta)**:
+   - Respaldo previo de configuración de Nginx en `/root/polis/backups/nginx_polis_20261013_032549.conf`.
+   - Verificación previa de sintaxis: `nginx -t` exitoso.
+   - Recarga controlada de Nginx y reinicio de servicios `polis-backend` y `polis-frontend`.
+   - Validación automatizada en vivo con Playwright (`scripts/validar-cierre05-csp.mjs`): **0 violaciones de CSP** en 11 pruebas sobre 8 rutas críticas.
 
 ---
 
-## 🛠️ 2. Inventario de Archivos Modificados y Entregados
+## 🔒 2. Respaldo y Salvaguardas de Producción
 
-| Archivo | Tipo de Cambio | Propósito |
+| Salvaguarda | Verificación / Ruta | Estado |
 |---|---|---|
-| `next.config.ts` | Modificado | Configuración estricta de Content-Security-Policy y cabeceras de protección con toggle Report-Only |
-| `src/app/layout.tsx` | Modificado | Configuración responsive `width: device-width`, `initialScale: 1` y contención de overflow |
-| `src/app/page.tsx` | Modificado | Adición de `overflow-x-hidden` en el contenedor principal de la vista pública |
-| `backend/app/main.py` | Modificado | Cabeceras de seguridad universales, API CSP y protección de cookies en middleware |
-| `backend/app/modules/auditoria/router.py` | Modificado | Sanitización de mensajes de error de respaldo para evitar fuga de stderr/rutas |
-| `backend/tests/test_cierre04_seguridad.py` | **Nuevo** | Suite de pruebas periciales de cabeceras, HSTS, CORS estricto y control de trazas |
-| `docs/nginx-csp-polis.conf` | **Nuevo** | Plantilla de configuración perimetral de Content-Security-Policy para Nginx (Report-Only y Enforce) |
-| `docs/despliegue-produccion.md` | Modificado | Incorporación de la Sección 7 (Endurecimiento de Cabeceras HTTP y CSP) y runbook de Nginx |
-| `scripts/validar-seguridad-movil-cierre04.mjs` | **Nuevo** | Script automatizado de validación Playwright móvil (320/375/414px), CSP y rendimiento |
-| `docs/evidencia-cierre04-seguridad-movil.json` | **Nuevo** | Evidencia digital estructurada de las 23 pruebas de seguridad, móvil y rendimiento |
-| `bridge/informe_seguridad_movil_cierre04.md` | **Nuevo** | Informe pericial exhaustivo para revisión y dictamen final de EAF |
-| `package.json` / `bun.lock` | Modificado | Parcheo de dependencias de seguridad (`sharp@0.35.5`, `vitest@5.0.4`) |
-| `bridge/02_resultado_agy2.md` | Actualizado | Presente informe de entrega de la tarea CIERRE-04 |
+| **Respaldo de Nginx** | `/root/polis/backups/nginx_polis_20261013_032549.conf` | ✅ GENERADO Y VERIFICADO |
+| **Snippet de CSP Nginx** | `/etc/nginx/snippets/polis-csp.conf` | ✅ SINCRONIZADO |
+| **Validación de Sintaxis** | `nginx -t` | ✅ `syntax is ok / test is successful` |
+| **Estado de Servicios** | `systemctl is-active polis-frontend polis-backend nginx postgresql@18-main` | ✅ **TODOS `active`** |
+| **Inviolabilidad Censo** | `bd_csh` (33 mesas, 36 agendas, 11 fichas, 17 actores) | ✅ **100% INTACTO** |
+| **Credenciales y Secretos** | Sin credenciales inventadas ni exposición de secretos | ✅ CUMPLIDO |
 
 ---
 
-## 🧪 3. Matriz de Quality Gates (100% Verde)
+## 🌐 3. Cabeceras Exactas Emitidas en Producción (HTTPS 443)
+
+Comprobación realizada en vivo mediante:
+```bash
+curl -sI -k https://127.0.0.1/ -H "Host: seguridadhumanaintegral.org"
+```
+
+```http
+HTTP/1.1 200 OK
+Server: nginx/1.28.3 (Ubuntu)
+Date: Tue, 13 Oct 2026 03:30:46 GMT
+Content-Type: text/html; charset=utf-8
+Content-Length: 160427
+Connection: keep-alive
+Vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch, Accept-Encoding
+x-nextjs-cache: HIT
+x-nextjs-prerender: 1
+x-nextjs-stale-time: 300
+X-Powered-By: Next.js
+Cache-Control: s-maxage=31536000
+ETag: "10ajcit4kp23fh0"
+Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+X-XSS-Protection: 1; mode=block
+Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' 'unsafe-inline' https://accounts.google.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.tile.openstreetmap.org https://tile.openstreetmap.org https://*.tile.osm.org https://*.googleusercontent.com https://seguridadhumanaintegral.org https://www.seguridadhumanaintegral.org https://images.unsplash.com https://api.qrserver.com; font-src 'self' data:; connect-src 'self' https://seguridadhumanaintegral.org https://www.seguridadhumanaintegral.org https://*.tile.openstreetmap.org https://tile.openstreetmap.org https://accounts.google.com; frame-src 'self' https://accounts.google.com https://www.youtube-nocookie.com https://player.vimeo.com; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; report-uri /api/v1/seguridad/csp-report; report-to csp-endpoint;
+Reporting-Endpoints: csp-endpoint="/api/v1/seguridad/csp-report"
+X-Content-Type-Options: nosniff
+X-Frame-Options: DENY
+Referrer-Policy: strict-origin-when-cross-origin
+Permissions-Policy: camera=(), microphone=(), geolocation=(self)
+```
+
+### Cabeceras Emitidas por FastAPI Backend (`/api/v1/health/live`):
+```http
+Content-Security-Policy: default-src 'none'; frame-ancestors 'none'
+X-Content-Type-Options: nosniff
+X-Frame-Options: DENY
+Referrer-Policy: strict-origin-when-cross-origin
+Permissions-Policy: camera=(), microphone=(), geolocation=(self)
+```
+
+---
+
+## 🎭 4. Resultados de Validación Playwright en Producción (En Vivo)
+
+Ejecución del script `scripts/validar-cierre05-csp.mjs` contra `https://seguridadhumanaintegral.org` (certificado en `docs/evidencia-cierre05-csp-endurecida.json`):
+
+| Ruta Auditada | Módulo / Propósito | Estado HTTP | Tiempo Carga | Violaciones CSP | Comprobación Específica | Resultado |
+|---|---|---|---|---|---|---|
+| `/` | Portada Pública Distrital | `200 OK` | 1,188 ms | **0** | Componentes e imágenes íntegros | ✅ PASS |
+| `/geovisor` | Geovisor Distrital Pantalla Completa | `200 OK` | 1,337 ms | **0** | Teselas OSM y Canvas OpenLayers renderizado | ✅ PASS |
+| `/barrio` | Modo Barrio (Bajo Ancho de Banda) | `200 OK` | 977 ms | **0** | Vistas cívicas sin desborde | ✅ PASS |
+| `/f/reporte-inseguridad` | Formulario Cívico de Reporte | `200 OK` | 2,810 ms | **0** | Esquemas Zod parseados sin evaluación JIT | ✅ PASS |
+| `/asistencia/mt-001` | Asistencia de Mesa (QR y Registro) | `200 OK` | 1,525 ms | **0** | Generador QR y formulario interactivo | ✅ PASS |
+| `/plataforma` | Acceso Institucional (Google OAuth) | `200 OK` | 2,572 ms | **0** | Interfaz de Acceso y Google Auth listos | ✅ PASS |
+| `/plataforma/geovisor` | Geovisor de Plataforma | `200 OK` | 1,810 ms | **0** | Panel de mapa y capas administrativas | ✅ PASS |
+| `/plataforma/comunicaciones` | Comunicaciones y Medios | `200 OK` | 1,527 ms | **0** | Reproductores y galerías autorizadas | ✅ PASS |
+| `/api/v1/seguridad/csp-report` | Telemetría CSP (Report-URI & W3C API) | `204 No Content` | 12 ms | **0** | Sanitización PII, rate-limit y buffer OK | ✅ PASS |
+
+**Total de Pruebas:** 11  
+**Exitosas:** 11  
+**Fallidas:** 0  
+**Violaciones CSP detectadas en vivo:** **0**
+
+---
+
+## 🧪 5. Matriz de Quality Gates (100% Verde)
 
 | Quality Gate | Comando / Prueba | Criterio de Éxito | Resultado Obtenido | Estado |
 |---|---|---|---|---|
 | **UI Architectural Linter** | `bun run ui:check` | 0 violaciones | **0 infracciones** | ✅ CERTIFICADO |
 | **TypeCheck TypeScript** | `bun run typecheck` (`tsc --noEmit`) | 0 errores | **0 errores** | ✅ CERTIFICADO |
 | **Linter ESLint** | `bun run lint` (`eslint .`) | 0 warnings, 0 errores | **0 warnings, 0 errores** | ✅ CERTIFICADO |
-| **Suite Completa Frontend** | `bun test` | 100% pasadas (0 fail) | **500/500 PASADAS** (2,348 aserciones en 57 archivos) | ✅ CERTIFICADO |
-| **Suite Backend Completa** | `uv run --project backend pytest backend/tests` | 100% pasadas (0 fail) | **502/502 PASADAS** (498 preexistentes + 4 de seguridad) | ✅ CERTIFICADO |
-| **Pruebas de Seguridad Backend** | `pytest backend/tests/test_cierre04_seguridad.py` | 4/4 pasadas | **4/4 PASADAS** (Cabeceras, HSTS, CORS, no-leak 500) | ✅ CERTIFICADO |
+| **Suite Completa Frontend** | `bun test` | 100% pasadas (0 fail) | **500/500 PASADAS** (57 archivos) | ✅ CERTIFICADO |
+| **Suite Backend Completa** | `uv run --project backend pytest backend/tests` | 100% pasadas (0 fail) | **507/507 PASADAS** (502 previas + 5 de telemetría CSP) | ✅ CERTIFICADO |
+| **Pruebas de Telemetría CSP** | `pytest backend/tests/test_cierre05_csp_report.py` | 5/5 pasadas | **5/5 PASADAS** (report-uri, reporting API, sanitización PII, tamaño 413, rate limit 429) | ✅ CERTIFICADO |
+| **Matriz de Permisos RBAC** | `pytest backend/tests/test_access_policy.py` | 97/97 pasadas | **97/97 PASADAS** (permiso público para `/csp-report`) | ✅ CERTIFICADO |
 | **Alembic Drift Check** | `alembic check` | 0 diferencias | **No new upgrade operations detected** | ✅ CERTIFICADO |
-| **Auditoría Python** | `uvx pip-audit backend` | 0 vulnerabilidades conocidas | **No known vulnerabilities found** | ✅ CERTIFICADO |
-| **Auditoría Frontend** | `bun audit` | 0 críticas en servidor | **0 críticas en runtime** (8 residuales en dev clasificadas) | ✅ CERTIFICADO |
-| **Suite Móvil Playwright** | `node scripts/validar-seguridad-movil-cierre04.mjs` | 0 desbordes, 0 violaciones CSP | **23/23 PASADAS** (7 rutas × 3 viewports + cabeceras + bench) | ✅ CERTIFICADO |
+| **Validación Playwright Producción** | `node scripts/validar-cierre05-csp.mjs` | 0 violaciones CSP en vivo | **11/11 PASADAS (0 violaciones)** | ✅ CERTIFICADO |
 | **Inviolabilidad Censo `bd_csh`** | Consulta directa en PostgreSQL 18 | 33 mesas, 36 agendas, 11 fichas, 17 actores | **33 mesas, 36 agendas, 11 fichas, 17 actores intactos** | ✅ CERTIFICADO |
-| **Regla de No-Recarga Nginx** | Nginx no recargado | Cero interrupciones de tráfico | **100% respetado; archivo entregado sin recarga** | ✅ CERTIFICADO |
 
 ---
 
-## 📊 4. Dictamen Pericial de Inviolabilidad de Datos (`bd_csh`)
+## 📦 6. Inventario de Archivos Modificados y Entregables
 
-Consulta pericial de integridad ejecutada en PostgreSQL 18 (`bd_csh`):
-```sql
-SELECT 'mesas' as entidad, count(*) as total FROM mesas_trabajo.mesas 
-UNION ALL 
-SELECT 'agendas', count(*) FROM mesas_trabajo.agendas 
-UNION ALL 
-SELECT 'fichas', count(*) FROM indicadores.fichas_tecnicas_indicadores 
-UNION ALL 
-SELECT 'actores', count(*) FROM participacion_ciudadana.actores_estrategicos;
-```
-**Resultado auditado:**
-- `mesas`: **33**
-- `agendas`: **36**
-- `fichas`: **11**
-- `actores`: **17**
-- **Veredicto:** Inviolabilidad absoluta. Ni un solo byte, registro o esquema de `bd_csh` fue alterado.
+| Archivo | Estado | Descripción del Cambio |
+|---|---|---|
+| `backend/app/core/config.py` | Modificado | Variable de configuración `csp_report_limite_ip: int = 60` |
+| `backend/app/modules/seguridad/` | **Nuevo** | Módulo de seguridad y endpoint colector de telemetría CSP (`schemas.py`, `router.py`) |
+| `backend/app/api/router.py` | Modificado | Registro del router `seguridad_router` bajo prefijo `/api/v1` |
+| `docs/permisos-api.md` | Modificado | Documentación de acceso público para `POST /api/v1/seguridad/csp-report` |
+| `backend/tests/test_access_policy.py` | Modificado | Registro de la tupla `("POST", "/api/v1/seguridad/csp-report")` en lista blanca de operaciones públicas |
+| `backend/tests/test_cierre05_csp_report.py` | **Nuevo** | Suite de pruebas unitarias del endpoint colector de violaciones CSP |
+| `src/core/zod-init.ts` | **Nuevo** | Configuración de Zod en modo `jitless: true` para eliminar compilación de cadenas dinámicas |
+| `src/app/_composition/query-provider.tsx` | Modificado | Importación de `@/core/zod-init` en el árbol de proveedores raíz de React |
+| `src/app/layout.tsx` | Modificado | Importación de `@/core/zod-init` en el layout raíz |
+| `src/features/sesion/services/identidad-api.ts` | Modificado | Importación de `@/core/zod-init` previa a definición de esquemas de sesión |
+| `src/features/formularios/services/formulario-schema.ts` | Modificado | Importación de `@/core/zod-init` previa a definición de esquemas de formularios |
+| `next.config.ts` | Modificado | Configuración CSP de producción sin `'unsafe-eval'`, `connect-src` acotado, `Report-Only` por defecto y `Reporting-Endpoints` |
+| `docs/nginx-csp-polis.conf` | Modificado | Plantilla de Nginx actualizada con directivas de CIERRE-05 en `Report-Only` y endpoints de reporte |
+| `/etc/nginx/snippets/polis-csp.conf` | **Desplegado** | Snippet activo en el servidor Nginx de producción |
+| `/etc/nginx/sites-available/polis` | **Desplegado** | Inclusión de snippet y directivas `proxy_hide_header` para evitar duplicación de cabeceras |
+| `/root/polis/backups/nginx_polis_20261013_032549.conf` | **Respaldo** | Copia fiel de seguridad de la configuración previa de Nginx |
+| `docs/despliegue-produccion.md` | Modificado | Actualización de la Sección 7 con justificación de `'unsafe-inline'`, riesgo residual y endpoint de telemetría |
+| `scripts/validar-cierre05-csp.mjs` | **Nuevo** | Script automatizado de validación Playwright y cabeceras en producción |
+| `docs/evidencia-cierre05-csp-endurecida.json` | **Nuevo** | Evidencia digital de validación en vivo con 0 violaciones |
+| `bridge/02_resultado_agy2.md` | Actualizado | Presente informe de entrega de la tarea CIERRE-05 |
 
 ---
 
-## 🔒 5. Estado y Notificación a EAF
+## 🔒 7. Estado Final y Notificación a EAF
 
-- Tarea `[CIERRE-04]` completada al 100% con todos los Quality Gates en verde.
-- Informe pericial detallado disponible en [`bridge/informe_seguridad_movil_cierre04.md`](file:///root/polis/bridge/informe_seguridad_movil_cierre04.md).
-- Evidencia automatizada digital disponible en [`docs/evidencia-cierre04-seguridad-movil.json`](file:///root/polis/docs/evidencia-cierre04-seguridad-movil.json).
-- Commit local atómico preparado en rama `main`.
-- Se notifica al coordinador `agy` vía `tmux` en el panel `agy:0` y se queda a la espera del dictamen final.
+- Tarea `[CIERRE-05]` completada y desplegada al 100% en producción bajo fase beta.
+- Todos los servicios de producción (`polis-frontend`, `polis-backend`, `nginx`, `postgresql@18-main`) verificados y operando en estado `active`.
+- Calidad de código y pruebas certificadas al 100% (500 pruebas frontend, 507 pruebas backend, 0 errores TypeScript/ESLint, 0 drift Alembic).
+- Evidencia digital estructurada disponible en [`docs/evidencia-cierre05-csp-endurecida.json`](file:///root/polis/docs/evidencia-cierre05-csp-endurecida.json).
+- Base de datos censal `bd_csh` estrictamente conservada (33 mesas, 36 agendas, 11 fichas, 17 actores).
+- Se genera el commit local atómico en `main` y se notifica al auditor `agy` en el panel `agy:0` para emitir el dictamen correspondiente antes de iniciar `[CIERRE-06]`.

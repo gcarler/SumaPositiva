@@ -1,3 +1,4 @@
+import "@/core/zod-init";
 import { z } from "zod";
 import { apiFetch } from "@/core/http/api-client";
 
