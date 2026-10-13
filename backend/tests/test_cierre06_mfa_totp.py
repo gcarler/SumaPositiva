@@ -1,0 +1,262 @@
+import asyncio
+import uuid
+from datetime import UTC, datetime
+from unittest.mock import patch
+
+import pytest
+from httpx import ASGITransport, AsyncClient
+
+from app.core.config import Settings
+from app.main import create_app
+from app.modules.identidad import mfa as mfa_utils
+from app.modules.identidad.security import (
+    crear_token_acceso,
+    crear_token_desafio_mfa,
+    decodificar_token_desafio_mfa,
+)
+
+
+pytestmark = pytest.mark.anyio
+
+
+@pytest.fixture
+def settings():
+    return Settings(
+        _env_file=None,
+        environment="test",
+        jwt_secret_key="test_secret_key_32_characters_long_super_safe",
+        database_url="postgresql+asyncpg://polis:polis_local@127.0.0.1:5433/polis",
+        ip_salt="test_salt_habeas_data_2026",
+    )
+
+
+@pytest.fixture
+def app(settings):
+    return create_app(settings)
+
+
+async def test_mfa_utilidades_criptograficas(settings):
+    """Verifica generación, cifrado Fernet en reposo y algoritmos RFC 6238."""
+    # 1. Generación y cifrado de secreto
+    secreto = mfa_utils.generar_secreto_totp()
+    assert len(secreto) == 32
+    cifrado = mfa_utils.cifrar_secreto_totp(secreto, settings)
+    assert cifrado != secreto
+    descifrado = mfa_utils.descifrar_secreto_totp(cifrado, settings)
+    assert descifrado == secreto
+
+    # 2. URI y Código QR
+    uri = mfa_utils.construir_uri_totp("auditor@cartagena.gov.co", secreto)
+    assert "otpauth://totp/POLIS%20Cartagena:auditor%40cartagena.gov.co" in uri
+    assert f"secret={secreto}" in uri
+    qr_data = mfa_utils.generar_qr_code_data_uri(uri)
+    assert qr_data.startswith("data:image/png;base64,")
+
+    # 3. Código TOTP y tolerancia de ventana
+    codigo = mfa_utils.calcular_codigo_totp(secreto)
+    assert len(codigo) == 6
+    assert codigo.isdigit()
+    assert mfa_utils.verificar_codigo_totp(secreto, codigo) is True
+    assert mfa_utils.verificar_codigo_totp(secreto, "000000" if codigo != "000000" else "999999") is False
+
+    # 4. Códigos de recuperación
+    codigos = mfa_utils.generar_codigos_recuperacion(8)
+    assert len(codigos) == 8
+    for c in codigos:
+        assert len(c) == 9 and c[4] == "-"
+
+    hashes = [mfa_utils.hashear_codigo_recuperacion(c, settings.ip_salt) for c in codigos]
+    valido, restantes = mfa_utils.verificar_y_consumir_codigo_recuperacion(
+        codigos[0], hashes, settings.ip_salt
+    )
+    assert valido is True
+    assert len(restantes) == 7
+
+    # Quemado: el mismo código ya no debe ser válido en los restantes
+    invalido, _ = mfa_utils.verificar_y_consumir_codigo_recuperacion(
+        codigos[0], restantes, settings.ip_salt
+    )
+    assert invalido is False
+
+
+async def test_token_desafio_mfa(settings):
+    """Verifica la emisión y validación del token de desafío temporal de MFA."""
+    uid = uuid.uuid4()
+    token = crear_token_desafio_mfa(uid, expira_minutos=5, settings=settings)
+    assert isinstance(token, str)
+
+    recuperado_id = decodificar_token_desafio_mfa(token, settings)
+    assert recuperado_id == uid
+
+    # Token manipulado
+    assert decodificar_token_desafio_mfa(token + "invalido", settings) is None
+
+
+from fastapi.testclient import TestClient
+
+
+def test_flujo_completo_mfa_api(database_url: str):
+    """Prueba integral de enrolamiento, login desafiado, verificación y desactivación por API."""
+    settings = Settings(
+        _env_file=None,
+        environment="test",
+        database_url=database_url,
+        jwt_secret_key="test_secret_key_32_characters_long_super_safe",
+        ip_salt="test_salt_habeas_data_2026",
+    )
+    app = create_app(settings)
+    with TestClient(app) as client:
+        # 1. Registrar usuario para la prueba
+        correo_test = f"admin_mfa_{uuid.uuid4().hex[:8]}@cartagena.gov.co"
+        reg_resp = client.post(
+            "/api/v1/identidad/registro",
+            json={
+                "correo": correo_test,
+                "contrasena": "PasswordSeguro2026!",
+                "nombres": "Admin",
+                "apellidos": "MFA Test",
+            },
+        )
+        assert reg_resp.status_code == 201
+        user_data = reg_resp.json()
+        user_id = uuid.UUID(user_data["id"])
+
+        # 2. Login inicial (sin MFA activado)
+        login1 = client.post(
+            "/api/v1/identidad/login",
+            json={"correo": correo_test, "contrasena": "PasswordSeguro2026!"},
+        )
+        assert login1.status_code == 200
+        data1 = login1.json()
+        assert data1["mfa_requerido"] is False
+        assert len(data1["token_acceso"]) > 20
+        token_auth = data1["token_acceso"]
+        auth_headers = {"Authorization": f"Bearer {token_auth}"}
+
+        # 3. Consultar estado MFA inicial
+        estado_resp = client.get("/api/v1/identidad/mfa/estado", headers=auth_headers)
+        assert estado_resp.status_code == 200
+        assert estado_resp.json()["activo"] is False
+        assert estado_resp.json()["codigos_restantes"] == 0
+
+        # 4. Iniciar enrolamiento MFA
+        iniciar_resp = client.post("/api/v1/identidad/mfa/iniciar", headers=auth_headers)
+        assert iniciar_resp.status_code == 200
+        iniciar_data = iniciar_resp.json()
+        secreto_b32 = iniciar_data["secreto_b32"]
+        assert len(secreto_b32) == 32
+        assert iniciar_data["qr_code_base64"].startswith("data:image/png;base64,")
+
+        # 5. Activar MFA con código inválido -> 400
+        activar_fail = client.post(
+            "/api/v1/identidad/mfa/activar",
+            json={"codigo": "000000"},
+            headers=auth_headers,
+        )
+        assert activar_fail.status_code == 400
+
+        # 6. Activar MFA con código TOTP válido
+        codigo_valido = mfa_utils.calcular_codigo_totp(secreto_b32)
+        activar_ok = client.post(
+            "/api/v1/identidad/mfa/activar",
+            json={"codigo": codigo_valido},
+            headers=auth_headers,
+        )
+        assert activar_ok.status_code == 200
+        activar_data = activar_ok.json()
+        codigos_recuperacion = activar_data["codigos_recuperacion"]
+        assert len(codigos_recuperacion) == 8
+
+        # 7. Verificar estado MFA activo
+        estado_activo = client.get("/api/v1/identidad/mfa/estado", headers=auth_headers)
+        assert estado_activo.status_code == 200
+        assert estado_activo.json()["activo"] is True
+        assert estado_activo.json()["codigos_restantes"] == 8
+
+        # 8. Login con MFA activo -> Retorna mfa_requerido: true
+        login2 = client.post(
+            "/api/v1/identidad/login",
+            json={"correo": correo_test, "contrasena": "PasswordSeguro2026!"},
+        )
+        assert login2.status_code == 200
+        data2 = login2.json()
+        assert data2["mfa_requerido"] is True
+        assert data2["token_acceso"] == ""
+        token_desafio = data2["token_desafio_mfa"]
+        assert len(token_desafio) > 20
+
+        # 9. Resolver desafío con código erróneo -> 401
+        verif_fail = client.post(
+            "/api/v1/identidad/mfa/verificar",
+            json={"token_desafio": token_desafio, "codigo": "123456"},
+        )
+        assert verif_fail.status_code == 401
+
+        # 10. Resolver desafío con código TOTP válido -> 200 con token_acceso
+        codigo_nuevo = mfa_utils.calcular_codigo_totp(secreto_b32)
+        verif_ok = client.post(
+            "/api/v1/identidad/mfa/verificar",
+            json={"token_desafio": token_desafio, "codigo": codigo_nuevo},
+        )
+        assert verif_ok.status_code == 200
+        data_verif = verif_ok.json()
+        assert data_verif["mfa_requerido"] is False
+        assert len(data_verif["token_acceso"]) > 20
+        token_post_mfa = data_verif["token_acceso"]
+
+        # 11. Resolver desafío alternativo usando código de recuperación
+        # Login de nuevo para obtener otro desafío
+        login3 = client.post(
+            "/api/v1/identidad/login",
+            json={"correo": correo_test, "contrasena": "PasswordSeguro2026!"},
+        )
+        desafio3 = login3.json()["token_desafio_mfa"]
+
+        # Usar el primer código de recuperación
+        recovery_code = codigos_recuperacion[0]
+        rec_verif = client.post(
+            "/api/v1/identidad/mfa/verificar",
+            json={"token_desafio": desafio3, "codigo": recovery_code},
+        )
+        assert rec_verif.status_code == 200
+        assert rec_verif.json()["mfa_requerido"] is False
+
+        # Verificar que el código se consumió (restan 7)
+        headers3 = {"Authorization": f"Bearer {rec_verif.json()['token_acceso']}"}
+        estado_post_rec = client.get("/api/v1/identidad/mfa/estado", headers=headers3)
+        assert estado_post_rec.json()["codigos_restantes"] == 7
+
+        # 12. Regenerar códigos de recuperación
+        codigo_regen = mfa_utils.calcular_codigo_totp(secreto_b32)
+        regen_resp = client.post(
+            "/api/v1/identidad/mfa/recuperacion/regenerar",
+            json={"codigo": codigo_regen},
+            headers=headers3,
+        )
+        assert regen_resp.status_code == 200
+        assert len(regen_resp.json()["codigos_recuperacion"]) == 8
+
+        # 13. Desactivar MFA con contraseña incorrecta -> 401
+        desact_fail = client.post(
+            "/api/v1/identidad/mfa/desactivar",
+            json={"contrasena": "ClaveIncorrecta!"},
+            headers=headers3,
+        )
+        assert desact_fail.status_code == 401
+
+        # 14. Desactivar MFA con contraseña correcta -> 200
+        desact_ok = client.post(
+            "/api/v1/identidad/mfa/desactivar",
+            json={"contrasena": "PasswordSeguro2026!"},
+            headers=headers3,
+        )
+        assert desact_ok.status_code == 200
+
+        # 15. Comprobar que el login posterior vuelve a ser directo sin MFA
+        login_final = client.post(
+            "/api/v1/identidad/login",
+            json={"correo": correo_test, "contrasena": "PasswordSeguro2026!"},
+        )
+        assert login_final.status_code == 200
+        assert login_final.json()["mfa_requerido"] is False
+        assert len(login_final.json()["token_acceso"]) > 20

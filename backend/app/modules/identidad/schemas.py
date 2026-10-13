@@ -44,6 +44,8 @@ class TokenRespuesta(BaseModel):
     permisos: list[str]
     expira_en: datetime
     usuario: "UsuarioLectura"
+    mfa_requerido: bool = False
+    token_desafio_mfa: str | None = None
 
 
 class UsuarioLectura(BaseModel):
@@ -57,8 +59,41 @@ class UsuarioLectura(BaseModel):
     codigo_rol: str
     permisos: list[str]
     correo_verificado_en: datetime | None
+    mfa_activo: bool = False
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class MfaEstadoLectura(BaseModel):
+    activo: bool
+    codigos_restantes: int
+    activado_en: datetime | None
+    exigido_por_rol: bool
+
+
+class MfaIniciarRespuesta(BaseModel):
+    secreto_b32: str
+    otpauth_uri: str
+    qr_code_base64: str
+
+
+class MfaCodigoPeticion(BaseModel):
+    codigo: str = Field(min_length=6, max_length=16)
+
+
+class MfaActivarRespuesta(BaseModel):
+    mensaje: str
+    codigos_recuperacion: list[str]
+
+
+class MfaDesactivarPeticion(BaseModel):
+    contrasena: str = Field(max_length=72)
+    codigo: str | None = Field(default=None, max_length=16)
+
+
+class MfaVerificarPeticion(BaseModel):
+    token_desafio: str = Field(min_length=32)
+    codigo: str = Field(min_length=6, max_length=16)
 
 
 class SujetoAutenticadoContexto(BaseModel):

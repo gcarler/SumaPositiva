@@ -105,6 +105,45 @@ const meta = {
       editarRol: fn(async () => structuredClone(roles[1])),
       eliminarRol: fn(async () => mensaje),
       eventos: fn(async () => []),
+      mfaEstado: fn(async () => ({
+        activo: false,
+        activado_en: null,
+        ultimo_uso_en: null,
+        codigos_restantes: 0,
+      })),
+      mfaIniciar: fn(async () => ({
+        secreto_b32: "JBSWY3DPEHPK3PXPJBSWY3DPEHPK3PXP",
+        uri_totp: "otpauth://totp/POLIS:test@example.org?secret=JBSWY3DPEHPK3PXP",
+        qr_code_base64: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY44YAAAAASUVORK5CYII=",
+      })),
+      mfaActivar: fn(async () => ({
+        mensaje: "MFA activado",
+        codigos_recuperacion: [
+          "AAAA-1111",
+          "BBBB-2222",
+          "CCCC-3333",
+          "DDDD-4444",
+          "EEEE-5555",
+          "FFFF-6666",
+          "GGGG-7777",
+          "HHHH-8888",
+        ],
+      })),
+      mfaDesactivar: fn(async () => mensaje),
+      mfaRegenerarRecuperacion: fn(async () => ({
+        mensaje: "Códigos regenerados",
+        codigos_recuperacion: [
+          "AAAA-1111",
+          "BBBB-2222",
+          "CCCC-3333",
+          "DDDD-4444",
+          "EEEE-5555",
+          "FFFF-6666",
+          "GGGG-7777",
+          "HHHH-8888",
+        ],
+      })),
+      mfaVerificar: fn(async () => structuredClone(login)),
     } satisfies typeof identidadApi);
     usePanelStore.getState().openPanel("sesion", {});
     return () => {

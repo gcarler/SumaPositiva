@@ -81,6 +81,9 @@ class Usuario(Base):
     correo_verificado_en: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
     rol: Mapped["Rol"] = relationship("Rol", back_populates="usuarios")
+    mfa: Mapped["UsuarioMfa | None"] = relationship(
+        "UsuarioMfa", back_populates="usuario", uselist=False, cascade="all, delete-orphan"
+    )
 
     @property
     def codigo_rol(self) -> str:
@@ -89,6 +92,60 @@ class Usuario(Base):
     @property
     def permisos(self) -> list[str]:
         return self.rol.permisos
+
+    @property
+    def mfa_activo(self) -> bool:
+        mfa_inst = self.__dict__.get("mfa")
+        if mfa_inst is None:
+            return False
+        return bool(mfa_inst.activo)
+
+
+class UsuarioMfa(Base):
+    __tablename__ = "usuarios_mfa"
+    __table_args__ = (
+        Index("idx_usuarios_mfa_usuario", "usuario_id", unique=True),
+        {
+            "schema": "autenticacion",
+            "comment": "Configuración de autenticación multifactor TOTP (RFC 6238) y códigos de recuperación",
+        },
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        primary_key=True,
+        server_default=text("public.generar_uuid_v7()"),
+    )
+    usuario_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("autenticacion.usuarios.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    secreto_cifrado: Mapped[str] = mapped_column(String(512), nullable=False)
+    activo: Mapped[bool] = mapped_column(
+        Boolean, default=False, server_default=text("false"), nullable=False
+    )
+    codigos_recuperacion: Mapped[list[str]] = mapped_column(
+        JSONB, default=list, server_default=text("'[]'::jsonb"), nullable=False
+    )
+    activado_en: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    ultimo_uso_en: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    intentos_fallidos: Mapped[int] = mapped_column(
+        Integer, default=0, server_default=text("0"), nullable=False
+    )
+    bloqueado_hasta: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    creado_en: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=text("clock_timestamp()"),
+        nullable=False,
+    )
+    actualizado_en: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=text("clock_timestamp()"),
+        nullable=False,
+    )
+
+    usuario: Mapped["Usuario"] = relationship("Usuario", back_populates="mfa")
 
 
 class SesionUsuario(Base):

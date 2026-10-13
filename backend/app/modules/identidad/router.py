@@ -14,6 +14,12 @@ from app.modules.identidad.schemas import (
     GoogleOAuthPeticion,
     LoginPeticion,
     MensajeRespuesta,
+    MfaActivarRespuesta,
+    MfaCodigoPeticion,
+    MfaDesactivarPeticion,
+    MfaEstadoLectura,
+    MfaIniciarRespuesta,
+    MfaVerificarPeticion,
     PerfilEdicion,
     RecuperarContrasena,
     RolCreacion,
@@ -370,3 +376,73 @@ async def eventos(
     desplazamiento: int = Query(0, ge=0),
 ):
     return await service.listar_eventos(limite, desplazamiento)
+
+
+# ==============================================================================
+# Endpoints de Autenticación Multifactor (MFA TOTP RFC 6238) [CIERRE-06]
+# ==============================================================================
+
+
+@router.get("/mfa/estado", response_model=MfaEstadoLectura)
+async def obtener_estado_mfa(sujeto: SujetoAutenticadoDep, service: IdentidadServiceDep):
+    exigir_usuario(sujeto)
+    return await service.obtener_estado_mfa(sujeto)
+
+
+@router.post("/mfa/iniciar", response_model=MfaIniciarRespuesta)
+async def iniciar_mfa(sujeto: SujetoAutenticadoDep, service: IdentidadServiceDep):
+    exigir_usuario(sujeto)
+    return await service.iniciar_mfa(sujeto)
+
+
+@router.post("/mfa/activar", response_model=MfaActivarRespuesta)
+async def activar_mfa(
+    datos: MfaCodigoPeticion, sujeto: SujetoAutenticadoDep, service: IdentidadServiceDep
+):
+    exigir_usuario(sujeto)
+    return await service.activar_mfa(datos, sujeto)
+
+
+@router.post("/mfa/desactivar", response_model=MensajeRespuesta)
+async def desactivar_mfa(
+    datos: MfaDesactivarPeticion, sujeto: SujetoAutenticadoDep, service: IdentidadServiceDep
+):
+    exigir_usuario(sujeto)
+    return await service.desactivar_mfa(datos, sujeto)
+
+
+@router.post("/mfa/recuperacion/regenerar", response_model=MfaActivarRespuesta)
+async def regenerar_codigos_recuperacion(
+    datos: MfaCodigoPeticion, sujeto: SujetoAutenticadoDep, service: IdentidadServiceDep
+):
+    exigir_usuario(sujeto)
+    return await service.regenerar_codigos_recuperacion(datos, sujeto)
+
+
+@router.post("/mfa/verificar", response_model=TokenRespuesta)
+async def verificar_mfa(
+    datos: MfaVerificarPeticion,
+    request: Request,
+    response: Response,
+    service: IdentidadServiceDep,
+):
+    await service.limitar(
+        "mfa_verificar", request.client.host if request.client else "local"
+    )
+    resultado = await service.verificar_desafio_mfa(datos)
+    es_seguro = (
+        request.app.state.settings.environment == "production"
+        or request.url.scheme == "https"
+        or request.headers.get("x-forwarded-proto") == "https"
+    )
+    response.set_cookie(
+        key="polis_session",
+        value=resultado.token_acceso,
+        max_age=request.app.state.settings.jwt_expiracion_horas * 3600,
+        httponly=True,
+        secure=es_seguro,
+        samesite="lax",
+        path="/",
+    )
+    return resultado
+

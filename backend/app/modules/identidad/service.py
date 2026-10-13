@@ -10,6 +10,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import Settings
 from app.core.transactions import transaction
+from app.modules.identidad import mfa as mfa_utils
 from app.modules.identidad.catalogo import PERMISOS, ROLES_SISTEMA
 from app.modules.identidad.correo import CorreoIdentidad, token_para_correo
 from app.modules.identidad.repository import IdentidadRepository
@@ -18,6 +19,12 @@ from app.modules.identidad.schemas import (
     GoogleOAuthPeticion,
     LoginPeticion,
     MensajeRespuesta,
+    MfaActivarRespuesta,
+    MfaCodigoPeticion,
+    MfaDesactivarPeticion,
+    MfaEstadoLectura,
+    MfaIniciarRespuesta,
+    MfaVerificarPeticion,
     PerfilEdicion,
     RolCreacion,
     RolEdicion,
@@ -32,6 +39,8 @@ from app.modules.identidad.schemas import (
 )
 from app.modules.identidad.security import (
     crear_token_acceso,
+    crear_token_desafio_mfa,
+    decodificar_token_desafio_mfa,
     obtener_hash_contrasena,
     verificar_contrasena,
 )
@@ -94,6 +103,38 @@ class IdentidadService:
             usuario = await self.repo.obtener_usuario_por_id(usuario.id, bloquear=True)
             if not usuario.activo:
                 raise HTTPException(403, "Usuario inactivo")
+
+            mfa_obj = usuario.mfa
+            if mfa_obj and mfa_obj.activo:
+                if mfa_obj.bloqueado_hasta and mfa_obj.bloqueado_hasta > datetime.now(UTC):
+                    minutos = max(
+                        1,
+                        int((mfa_obj.bloqueado_hasta - datetime.now(UTC)).total_seconds() / 60),
+                    )
+                    raise HTTPException(
+                        429,
+                        f"Cuenta temporalmente bloqueada por intentos fallidos de MFA. Reintente en {minutos} minutos.",
+                    )
+                token_desafio = crear_token_desafio_mfa(
+                    usuario.id,
+                    expira_minutos=self.settings.mfa_token_expira_minutos,
+                    settings=self.settings,
+                )
+                await self.repo.registrar_evento(
+                    "mfa_desafio_emitido", usuario.id, usuario.id, {"metodo": "login"}
+                )
+                return TokenRespuesta(
+                    token_acceso="",
+                    rol=usuario.rol.codigo,
+                    nivel_identidad=usuario.nivel_identidad,
+                    permisos=[],
+                    expira_en=datetime.now(UTC)
+                    + timedelta(minutes=self.settings.mfa_token_expira_minutos),
+                    usuario=UsuarioLectura.model_validate(usuario),
+                    mfa_requerido=True,
+                    token_desafio_mfa=token_desafio,
+                )
+
             expira = datetime.now(UTC) + timedelta(hours=self.settings.jwt_expiracion_horas)
             huella = hmac.new(
                 self.settings.ip_salt.encode(), uuid.uuid4().bytes, hashlib.sha256
@@ -115,6 +156,7 @@ class IdentidadService:
                 permisos=usuario.rol.permisos,
                 expira_en=expira,
                 usuario=UsuarioLectura.model_validate(usuario),
+                mfa_requerido=False,
             )
 
     def _verificar_google_token(self, id_token: str) -> dict:
@@ -188,6 +230,37 @@ class IdentidadService:
                     metadatos={"origen": "google_oauth", "google_sub": claims.get("sub")},
                 )
 
+            mfa_obj = usuario.mfa
+            if mfa_obj and mfa_obj.activo:
+                if mfa_obj.bloqueado_hasta and mfa_obj.bloqueado_hasta > datetime.now(UTC):
+                    minutos = max(
+                        1,
+                        int((mfa_obj.bloqueado_hasta - datetime.now(UTC)).total_seconds() / 60),
+                    )
+                    raise HTTPException(
+                        429,
+                        f"Cuenta temporalmente bloqueada por intentos fallidos de MFA. Reintente en {minutos} minutos.",
+                    )
+                token_desafio = crear_token_desafio_mfa(
+                    usuario.id,
+                    expira_minutos=self.settings.mfa_token_expira_minutos,
+                    settings=self.settings,
+                )
+                await self.repo.registrar_evento(
+                    "mfa_desafio_emitido", usuario.id, usuario.id, {"metodo": "google_oauth"}
+                )
+                return TokenRespuesta(
+                    token_acceso="",
+                    rol=usuario.rol.codigo,
+                    nivel_identidad=usuario.nivel_identidad,
+                    permisos=[],
+                    expira_en=datetime.now(UTC)
+                    + timedelta(minutes=self.settings.mfa_token_expira_minutos),
+                    usuario=UsuarioLectura.model_validate(usuario),
+                    mfa_requerido=True,
+                    token_desafio_mfa=token_desafio,
+                )
+
             expira = datetime.now(UTC) + timedelta(hours=self.settings.jwt_expiracion_horas)
             huella = hmac.new(
                 self.settings.ip_salt.encode(), uuid.uuid4().bytes, hashlib.sha256
@@ -215,6 +288,7 @@ class IdentidadService:
                 permisos=usuario.rol.permisos,
                 expira_en=expira,
                 usuario=UsuarioLectura.model_validate(usuario),
+                mfa_requerido=False,
             )
 
     async def obtener_perfil(self, usuario_id: uuid.UUID) -> UsuarioLectura:
@@ -399,6 +473,37 @@ class IdentidadService:
             await self.repo.invalidar_tokens(usuario.id, "magic_link")
             await self.repo.guardar()
 
+            mfa_obj = usuario.mfa
+            if mfa_obj and mfa_obj.activo:
+                if mfa_obj.bloqueado_hasta and mfa_obj.bloqueado_hasta > datetime.now(UTC):
+                    minutos = max(
+                        1,
+                        int((mfa_obj.bloqueado_hasta - datetime.now(UTC)).total_seconds() / 60),
+                    )
+                    raise HTTPException(
+                        429,
+                        f"Cuenta temporalmente bloqueada por intentos fallidos de MFA. Reintente en {minutos} minutos.",
+                    )
+                token_desafio = crear_token_desafio_mfa(
+                    usuario.id,
+                    expira_minutos=self.settings.mfa_token_expira_minutos,
+                    settings=self.settings,
+                )
+                await self.repo.registrar_evento(
+                    "mfa_desafio_emitido", usuario.id, usuario.id, {"metodo": "magic_link"}
+                )
+                return TokenRespuesta(
+                    token_acceso="",
+                    rol=usuario.rol.codigo,
+                    nivel_identidad=usuario.nivel_identidad,
+                    permisos=[],
+                    expira_en=datetime.now(UTC)
+                    + timedelta(minutes=self.settings.mfa_token_expira_minutos),
+                    usuario=UsuarioLectura.model_validate(usuario),
+                    mfa_requerido=True,
+                    token_desafio_mfa=token_desafio,
+                )
+
             expira = datetime.now(UTC) + timedelta(hours=self.settings.jwt_expiracion_horas)
             huella = hmac.new(
                 self.settings.ip_salt.encode(), uuid.uuid4().bytes, hashlib.sha256
@@ -426,6 +531,7 @@ class IdentidadService:
                 permisos=usuario.rol.permisos,
                 expira_en=expira,
                 usuario=UsuarioLectura.model_validate(usuario),
+                mfa_requerido=False,
             )
 
     async def listar_usuarios(self, busqueda, limite, desplazamiento):
@@ -590,3 +696,224 @@ class IdentidadService:
                 "Demasiados intentos. Inténtalo más tarde",
                 headers={"Retry-After": str(self.settings.identidad_ventana_segundos)},
             )
+
+    def _rol_exige_mfa(self, codigo_rol: str) -> bool:
+        if not self.settings.mfa_roles_exigidos:
+            return False
+        roles = [
+            r.strip().lower()
+            for r in self.settings.mfa_roles_exigidos.split(",")
+            if r.strip()
+        ]
+        return codigo_rol.lower() in roles
+
+    async def obtener_estado_mfa(self, actor) -> MfaEstadoLectura:
+        usuario = await self._usuario(actor.sujeto_id)
+        mfa_obj = usuario.mfa
+        activo = bool(mfa_obj and mfa_obj.activo)
+        codigos_restantes = (
+            len(mfa_obj.codigos_recuperacion) if mfa_obj and mfa_obj.activo else 0
+        )
+        activado_en = mfa_obj.activado_en if mfa_obj else None
+        exigido_por_rol = self._rol_exige_mfa(usuario.rol.codigo)
+        return MfaEstadoLectura(
+            activo=activo,
+            codigos_restantes=codigos_restantes,
+            activado_en=activado_en,
+            exigido_por_rol=exigido_por_rol,
+        )
+
+    async def iniciar_mfa(self, actor) -> MfaIniciarRespuesta:
+        async with transaction(self.repo.session):
+            usuario = await self._usuario(actor.sujeto_id, bloquear=True)
+            secreto_b32 = mfa_utils.generar_secreto_totp()
+            secreto_cifrado = mfa_utils.cifrar_secreto_totp(secreto_b32, self.settings)
+            await self.repo.guardar_mfa_usuario(usuario.id, secreto_cifrado, [])
+            await self.repo.registrar_evento("mfa_iniciado", actor.sujeto_id, usuario.id)
+            otpauth_uri = mfa_utils.construir_uri_totp(usuario.correo, secreto_b32)
+            qr_base64 = mfa_utils.generar_qr_code_data_uri(otpauth_uri)
+            return MfaIniciarRespuesta(
+                secreto_b32=secreto_b32,
+                otpauth_uri=otpauth_uri,
+                qr_code_base64=qr_base64,
+            )
+
+    async def activar_mfa(self, datos: MfaCodigoPeticion, actor) -> MfaActivarRespuesta:
+        async with transaction(self.repo.session):
+            usuario = await self._usuario(actor.sujeto_id, bloquear=True)
+            mfa_obj = await self.repo.obtener_mfa_usuario(usuario.id, bloquear=True)
+            if not mfa_obj:
+                raise HTTPException(400, "Debe iniciar la configuración de MFA antes de activarla")
+            secreto_b32 = mfa_utils.descifrar_secreto_totp(mfa_obj.secreto_cifrado, self.settings)
+            if not mfa_utils.verificar_codigo_totp(secreto_b32, datos.codigo):
+                raise HTTPException(400, "Código TOTP inválido. Verifique la sincronización horaria.")
+
+            codigos_recuperacion = mfa_utils.generar_codigos_recuperacion(8)
+            hashes = [
+                mfa_utils.hashear_codigo_recuperacion(c, self.settings.ip_salt)
+                for c in codigos_recuperacion
+            ]
+            mfa_obj.codigos_recuperacion = hashes
+            mfa_obj.activo = True
+            mfa_obj.activado_en = datetime.now(UTC)
+            mfa_obj.intentos_fallidos = 0
+            mfa_obj.bloqueado_hasta = None
+            mfa_obj.actualizado_en = datetime.now(UTC)
+            await self.repo.guardar()
+            await self.repo.registrar_evento("mfa_activado", actor.sujeto_id, usuario.id)
+            return MfaActivarRespuesta(
+                mensaje="Autenticación en dos pasos (TOTP) activada exitosamente.",
+                codigos_recuperacion=codigos_recuperacion,
+            )
+
+    async def desactivar_mfa(self, datos: MfaDesactivarPeticion, actor) -> MensajeRespuesta:
+        async with transaction(self.repo.session):
+            usuario = await self._usuario(actor.sujeto_id, bloquear=True)
+            mfa_obj = await self.repo.obtener_mfa_usuario(usuario.id, bloquear=True)
+            if not mfa_obj or not mfa_obj.activo:
+                raise HTTPException(400, "MFA no está activo")
+
+            valido = await asyncio.to_thread(
+                verificar_contrasena, datos.contrasena, usuario.hash_contrasena
+            )
+            if not valido:
+                raise HTTPException(401, "Contraseña incorrecta para confirmar la desactivación de MFA")
+
+            await self.repo.desactivar_mfa_usuario(usuario.id)
+            await self.repo.registrar_evento("mfa_desactivado", actor.sujeto_id, usuario.id)
+            return MensajeRespuesta(mensaje="MFA desactivado exitosamente")
+
+    async def regenerar_codigos_recuperacion(
+        self, datos: MfaCodigoPeticion, actor
+    ) -> MfaActivarRespuesta:
+        async with transaction(self.repo.session):
+            usuario = await self._usuario(actor.sujeto_id, bloquear=True)
+            mfa_obj = await self.repo.obtener_mfa_usuario(usuario.id, bloquear=True)
+            if not mfa_obj or not mfa_obj.activo:
+                raise HTTPException(400, "MFA no está activo")
+
+            secreto_b32 = mfa_utils.descifrar_secreto_totp(mfa_obj.secreto_cifrado, self.settings)
+            if not mfa_utils.verificar_codigo_totp(secreto_b32, datos.codigo):
+                raise HTTPException(400, "Código TOTP inválido")
+
+            codigos = mfa_utils.generar_codigos_recuperacion(8)
+            hashes = [
+                mfa_utils.hashear_codigo_recuperacion(c, self.settings.ip_salt) for c in codigos
+            ]
+            mfa_obj.codigos_recuperacion = hashes
+            mfa_obj.actualizado_en = datetime.now(UTC)
+            await self.repo.guardar()
+            await self.repo.registrar_evento(
+                "mfa_codigos_regenerados", actor.sujeto_id, usuario.id
+            )
+            return MfaActivarRespuesta(
+                mensaje="Nuevos códigos de recuperación generados exitosamente.",
+                codigos_recuperacion=codigos,
+            )
+
+    async def verificar_desafio_mfa(self, datos: MfaVerificarPeticion) -> TokenRespuesta:
+        usuario_id = decodificar_token_desafio_mfa(datos.token_desafio, self.settings)
+        if not usuario_id:
+            raise HTTPException(401, "Token de desafío MFA inválido o expirado")
+
+        async with transaction(self.repo.session):
+            usuario = await self.repo.obtener_usuario_por_id(usuario_id, bloquear=True)
+            if not usuario or not usuario.activo:
+                raise HTTPException(403, "Usuario inactivo")
+
+            mfa_obj = await self.repo.obtener_mfa_usuario(usuario.id, bloquear=True)
+            if not mfa_obj or not mfa_obj.activo:
+                raise HTTPException(400, "MFA no está activo para este usuario")
+
+            ahora = datetime.now(UTC)
+            if mfa_obj.bloqueado_hasta and mfa_obj.bloqueado_hasta > ahora:
+                minutos = max(
+                    1, int((mfa_obj.bloqueado_hasta - ahora).total_seconds() / 60)
+                )
+                raise HTTPException(
+                    429,
+                    f"Cuenta bloqueada temporalmente por intentos fallidos de MFA. Reintente en {minutos} minutos.",
+                )
+
+            es_valido = False
+            es_codigo_recuperacion = False
+            secreto_b32 = mfa_utils.descifrar_secreto_totp(
+                mfa_obj.secreto_cifrado, self.settings
+            )
+
+            if mfa_utils.verificar_codigo_totp(secreto_b32, datos.codigo):
+                es_valido = True
+            else:
+                ok_rec, restantes = mfa_utils.verificar_y_consumir_codigo_recuperacion(
+                    datos.codigo, mfa_obj.codigos_recuperacion, self.settings.ip_salt
+                )
+                if ok_rec:
+                    es_valido = True
+                    es_codigo_recuperacion = True
+                    mfa_obj.codigos_recuperacion = restantes
+
+            if not es_valido:
+                mfa_obj.intentos_fallidos += 1
+                if mfa_obj.intentos_fallidos >= self.settings.mfa_max_intentos:
+                    mfa_obj.bloqueado_hasta = ahora + timedelta(
+                        minutes=self.settings.mfa_bloqueo_minutos
+                    )
+                    mfa_obj.intentos_fallidos = 0
+                    await self.repo.registrar_evento(
+                        "mfa_bloqueo_activado",
+                        usuario.id,
+                        usuario.id,
+                        {"motivo": "exceso_intentos_mfa"},
+                    )
+                    await self.repo.guardar()
+                    raise HTTPException(
+                        429,
+                        "Demasiados intentos fallidos. Cuenta temporalmente bloqueada.",
+                    )
+                await self.repo.registrar_evento(
+                    "mfa_fallido",
+                    usuario.id,
+                    usuario.id,
+                    {"intentos": mfa_obj.intentos_fallidos},
+                )
+                await self.repo.guardar()
+                raise HTTPException(401, "Código de verificación inválido")
+
+            mfa_obj.intentos_fallidos = 0
+            mfa_obj.bloqueado_hasta = None
+            mfa_obj.ultimo_uso_en = ahora
+            await self.repo.guardar()
+
+            if es_codigo_recuperacion:
+                await self.repo.registrar_evento(
+                    "mfa_codigo_recuperacion_usado",
+                    usuario.id,
+                    usuario.id,
+                    {"restantes": len(mfa_obj.codigos_recuperacion)},
+                )
+            else:
+                await self.repo.registrar_evento("mfa_verificado", usuario.id, usuario.id)
+
+            expira = ahora + timedelta(hours=self.settings.jwt_expiracion_horas)
+            huella = hmac.new(
+                self.settings.ip_salt.encode(), uuid.uuid4().bytes, hashlib.sha256
+            ).hexdigest()
+            sesion = await self.repo.crear_sesion(usuario.id, expira, huella)
+            token = crear_token_acceso(
+                usuario.id,
+                usuario.rol.codigo,
+                usuario.nivel_identidad,
+                usuario.rol.permisos,
+                sesion_id=sesion.id,
+                settings=self.settings,
+            )
+            return TokenRespuesta(
+                token_acceso=token,
+                rol=usuario.rol.codigo,
+                nivel_identidad=usuario.nivel_identidad,
+                permisos=usuario.rol.permisos,
+                expira_en=expira,
+                usuario=UsuarioLectura.model_validate(usuario),
+                mfa_requerido=False,
+            )
+

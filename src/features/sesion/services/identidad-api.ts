@@ -6,14 +6,40 @@ export const usuarioSchema = z.object({
   id: z.string().uuid(), correo: z.string().email(), nombres: z.string(), apellidos: z.string(),
   codigo_rol: z.string(), permisos: z.array(z.string()), activo: z.boolean(),
   nivel_identidad: z.string(), correo_verificado_en: z.string().nullable(),
+  mfa_activo: z.boolean().optional(),
 });
 export type Usuario = z.infer<typeof usuarioSchema>;
 export const rolSchema = z.object({ id: z.string().uuid(), codigo: z.string(), nombre: z.string(),
   permisos: z.array(z.string()), sistema: z.boolean() });
 export type Rol = z.infer<typeof rolSchema>;
 export const tokenSchema = z.object({token_acceso: z.string(), expira_en: z.string(),
-  rol: z.string(), permisos: z.array(z.string()), nivel_identidad: z.string(), usuario: usuarioSchema});
+  rol: z.string(), permisos: z.array(z.string()), nivel_identidad: z.string(), usuario: usuarioSchema,
+  mfa_requerido: z.boolean().optional(),
+  token_desafio_mfa: z.string().nullable().optional()});
 export type Login = z.infer<typeof tokenSchema>;
+export const mfaEstadoSchema = z.object({
+  activo: z.boolean(),
+  activado_en: z.string().nullable(),
+  ultimo_uso_en: z.string().nullable(),
+  codigos_restantes: z.number(),
+});
+export type MfaEstado = z.infer<typeof mfaEstadoSchema>;
+export const mfaIniciarSchema = z.object({
+  secreto_b32: z.string(),
+  uri_totp: z.string(),
+  qr_code_base64: z.string(),
+});
+export type MfaIniciar = z.infer<typeof mfaIniciarSchema>;
+export const mfaActivarSchema = z.object({
+  mensaje: z.string(),
+  codigos_recuperacion: z.array(z.string()),
+});
+export type MfaActivar = z.infer<typeof mfaActivarSchema>;
+export const mfaRecuperacionSchema = z.object({
+  mensaje: z.string(),
+  codigos_recuperacion: z.array(z.string()),
+});
+export type MfaRecuperacion = z.infer<typeof mfaRecuperacionSchema>;
 const mensajeSchema = z.object({ mensaje: z.string() });
 export const sesionSchema = z.object({id: z.string().uuid(), creada_en: z.string(),
   expira_en: z.string(), actual: z.boolean()});
@@ -71,4 +97,14 @@ export const identidadApi = {
   eliminarRol: (codigo: string, motivo: string) => consultar(
     `/roles/${encodeURIComponent(codigo)}?${new URLSearchParams({motivo})}`, mensajeSchema, {method: "DELETE"}),
   eventos: (desplazamiento = 0) => consultar(`/eventos?desplazamiento=${desplazamiento}`, z.array(eventoSchema)),
+  mfaEstado: () => consultar("/mfa/estado", mfaEstadoSchema),
+  mfaIniciar: () => consultar("/mfa/iniciar", mfaIniciarSchema, { method: "POST" }),
+  mfaActivar: (codigo: string) =>
+    consultar("/mfa/activar", mfaActivarSchema, { method: "POST", body: { codigo } }),
+  mfaDesactivar: (contrasena: string) =>
+    consultar("/mfa/desactivar", mensajeSchema, { method: "POST", body: { contrasena } }),
+  mfaRegenerarRecuperacion: (codigo: string) =>
+    consultar("/mfa/recuperacion/regenerar", mfaRecuperacionSchema, { method: "POST", body: { codigo } }),
+  mfaVerificar: (token_desafio: string, codigo: string) =>
+    consultar("/mfa/verificar", tokenSchema, { method: "POST", body: { token_desafio, codigo } }),
 };

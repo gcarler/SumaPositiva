@@ -27,7 +27,8 @@ type Vista =
   | "registro"
   | "recuperar"
   | "restablecer"
-  | "verificar";
+  | "verificar"
+  | "mfa";
 const TITULOS: Record<Vista, string> = {
   login: "Iniciar sesión",
   magic_link: "Acceso directo (Magic Link)",
@@ -35,6 +36,7 @@ const TITULOS: Record<Vista, string> = {
   recuperar: "Recuperar contraseña",
   restablecer: "Elegir nueva contraseña",
   verificar: "Verificar correo",
+  mfa: "Verificación en dos pasos (MFA)",
 };
 
 export function SesionPanel({
@@ -60,9 +62,11 @@ export function SesionPanel({
   const [ocupado, setOcupado] = useState(false);
   const [error, setError] = useState("");
   const [mensaje, setMensaje] = useState("");
+  const [tokenDesafioMfa, setTokenDesafioMfa] = useState<string | null>(null);
   const tieneAccion =
     vista === "restablecer" ||
     vista === "verificar" ||
+    vista === "mfa" ||
     (props.accion === "magic_link" && !!props.token);
 
   useEffect(() => {
@@ -72,6 +76,11 @@ export function SesionPanel({
       identidadApi
         .confirmarMagicLink(props.token)
         .then((resp) => {
+          if (resp.mfa_requerido && resp.token_desafio_mfa) {
+            setTokenDesafioMfa(resp.token_desafio_mfa);
+            setVista("mfa");
+            return;
+          }
           useSesionStore.getState().iniciarSesion(resp);
           toast.success("¡Bienvenido! Sesión iniciada con enlace directo.");
           router.push(resp.rol === "ciudadano" ? "/" : "/plataforma");
@@ -95,6 +104,9 @@ export function SesionPanel({
     setError("");
     setMensaje("");
     setOcupado(false);
+    if (v !== "mfa") {
+      setTokenDesafioMfa(null);
+    }
   }
 
   async function loginConGoogle(credential: CredentialResponse) {
@@ -106,6 +118,11 @@ export function SesionPanel({
     setError("");
     try {
       const resp = await identidadApi.loginGoogle(credential.credential);
+      if (resp.mfa_requerido && resp.token_desafio_mfa) {
+        setTokenDesafioMfa(resp.token_desafio_mfa);
+        setVista("mfa");
+        return;
+      }
       useSesionStore.getState().iniciarSesion(resp);
       toast.success("Sesión iniciada con Google");
       router.push(resp.rol === "ciudadano" ? "/" : "/plataforma");
@@ -129,9 +146,26 @@ export function SesionPanel({
           textoFormulario(datos, "correo"),
           textoFormulario(datos, "contrasena"),
         );
+        if (respuesta.mfa_requerido && respuesta.token_desafio_mfa) {
+          setTokenDesafioMfa(respuesta.token_desafio_mfa);
+          setVista("mfa");
+          return;
+        }
         useSesionStore.getState().iniciarSesion(respuesta);
         toast.success("Sesión iniciada");
         router.push(respuesta.rol === "ciudadano" ? "/" : "/plataforma");
+        closeTop();
+      } else if (vista === "mfa") {
+        const codigo = textoFormulario(datos, "codigo_mfa").trim();
+        if (!tokenDesafioMfa) {
+          setError("El desafío ha expirado. Inicia sesión nuevamente.");
+          setVista("login");
+          return;
+        }
+        const resp = await identidadApi.mfaVerificar(tokenDesafioMfa, codigo);
+        useSesionStore.getState().iniciarSesion(resp);
+        toast.success("Verificación de dos pasos completada");
+        router.push(resp.rol === "ciudadano" ? "/" : "/plataforma");
         closeTop();
       } else if (vista === "registro") {
         const contrasena = comprobarContrasena(datos);
@@ -304,17 +338,50 @@ export function SesionPanel({
                   Confirma la verificación del correo asociado a este enlace.
                 </p>
               )}
-              <Button type="submit" disabled={ocupado}>
-                {ocupado
-                  ? "Procesando…"
-                  : vista === "magic_link"
-                    ? "Enviar enlace de acceso"
-                    : vista === "recuperar"
-                      ? "Solicitar enlace"
-                      : vista === "restablecer"
-                        ? "Guardar contraseña"
-                        : TITULOS[vista]}
-              </Button>
+              {vista === "mfa" && (
+                <div className="space-y-4">
+                  <p className="text-sm text-text-secondary">
+                    Introduce el código de 6 dígitos generado por tu aplicación autenticadora (TOTP) o uno de tus códigos de recuperación de respaldo de 8 caracteres.
+                  </p>
+                  <CampoIdentidad
+                    name="codigo_mfa"
+                    label="Código de autenticación o recuperación"
+                    type="text"
+                    autoComplete="one-time-code"
+                    placeholder="123456 o ABCD-EFGH"
+                    required
+                  />
+                  <div className="flex gap-2 pt-2">
+                    <Button type="submit" disabled={ocupado}>
+                      {ocupado ? "Verificando…" : "Verificar y entrar"}
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      disabled={ocupado}
+                      onClick={() => {
+                        setTokenDesafioMfa(null);
+                        setVista("login");
+                      }}
+                    >
+                      Cancelar
+                    </Button>
+                  </div>
+                </div>
+              )}
+              {vista !== "mfa" && (
+                <Button type="submit" disabled={ocupado}>
+                  {ocupado
+                    ? "Procesando…"
+                    : vista === "magic_link"
+                      ? "Enviar enlace de acceso"
+                      : vista === "recuperar"
+                        ? "Solicitar enlace"
+                        : vista === "restablecer"
+                          ? "Guardar contraseña"
+                          : TITULOS[vista]}
+                </Button>
+              )}
             </form>
             {!tieneAccion && (
               <div className="space-y-3 border-t border-border pt-4">

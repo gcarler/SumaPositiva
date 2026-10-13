@@ -123,6 +123,12 @@ La última columna explica la excepción pública o la condición adicional.
 | POST | /api/v1/identidad/login | publico | Intercambio de credenciales por token; no concede roles adicionales. |
 | POST | /api/v1/identidad/magic-link/confirmar | publico | Consumo de token Magic Link de uso único para autenticación directa e inicio de sesión. |
 | POST | /api/v1/identidad/magic-link/solicitar | publico | Solicitud de acceso instantáneo sin contraseñas; emite token de uso único con caducidad de 15 minutos. |
+| POST | /api/v1/identidad/mfa/activar | sujeto | Valida código TOTP y activa MFA entregando códigos de recuperación de un solo uso. |
+| POST | /api/v1/identidad/mfa/desactivar | sujeto | Desactiva MFA requiriendo reautenticación por contraseña. |
+| GET | /api/v1/identidad/mfa/estado | sujeto | Consulta estado de activación de MFA TOTP y códigos restantes de la cuenta. |
+| POST | /api/v1/identidad/mfa/iniciar | sujeto | Genera secreto TOTP y código QR para inicio de enrolamiento MFA. |
+| POST | /api/v1/identidad/mfa/recuperacion/regenerar | sujeto | Regenera lote de códigos de recuperación de un solo uso validando TOTP. |
+| POST | /api/v1/identidad/mfa/verificar | publico | Valida código TOTP o código de recuperación contra token de desafío emitido en login. |
 | POST | /api/v1/identidad/oauth/google | publico | Login mediante ID token verificado para audiencia configurada; conserva el rol existente y crea cuentas nuevas solo como ciudadano. |
 | POST | /api/v1/identidad/logout | sujeto | Revoca la sesión actual de la cuenta registrada. |
 | GET | /api/v1/identidad/perfil | sujeto | Solo perfil propio de usuario registrado; sesión anónima denegada. |

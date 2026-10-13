@@ -54,6 +54,11 @@ class Settings(BaseSettings):
     sesion_anonima_limite_ip: int = Field(default=30, ge=1)
     ia_limite_ip: int = Field(default=30, ge=1)
     csp_report_limite_ip: int = Field(default=60, ge=1)
+    mfa_encryption_key: str | None = Field(default=None)
+    mfa_roles_exigidos: str = Field(default="")
+    mfa_max_intentos: int = Field(default=5, ge=1)
+    mfa_bloqueo_minutos: int = Field(default=15, ge=1)
+    mfa_token_expira_minutos: int = Field(default=5, ge=1)
     sentry_dsn: str | None = None
 
     @property

@@ -2,12 +2,12 @@ import { FormField } from "@/shared/ui/form-field";
 import { Input } from "@/shared/ui/input";
 
 export function CampoIdentidad({name, label, type = "text", defaultValue, minLength, maxLength = 100,
-  autoComplete, required = true, readOnly = false}: {name: string; label: string; type?: string;
+  autoComplete, required = true, readOnly = false, placeholder}: {name: string; label: string; type?: string;
   defaultValue?: string; minLength?: number; maxLength?: number; autoComplete?: string;
-  required?: boolean; readOnly?: boolean}) {
+  required?: boolean; readOnly?: boolean; placeholder?: string}) {
   return <FormField label={label} required={required}>{(field) =>
     <Input {...field} name={name} type={type} defaultValue={defaultValue} minLength={minLength}
-      maxLength={maxLength} autoComplete={autoComplete} readOnly={readOnly} />}</FormField>;
+      maxLength={maxLength} autoComplete={autoComplete} readOnly={readOnly} placeholder={placeholder} />}</FormField>;
 }
 export function textoFormulario(datos: FormData, campo: string): string {
   const valor = datos.get(campo);

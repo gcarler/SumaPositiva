@@ -88,3 +88,46 @@ def decodificar_token_acceso(
         )
     except (jwt.PyJWTError, ValueError, KeyError, TypeError, ValidationError):
         return None
+
+
+def crear_token_desafio_mfa(
+    sujeto_id: UUID,
+    expira_minutos: int = 5,
+    settings: Settings | None = None,
+) -> str:
+    config = settings or Settings()
+    validar_configuracion_identidad(config)
+    ahora = datetime.now(UTC)
+    payload = {
+        "sub": str(sujeto_id),
+        "typ": "desafio_mfa",
+        "iss": "polis-identidad",
+        "aud": "polis-api",
+        "iat": ahora,
+        "exp": ahora + timedelta(minutes=expira_minutos),
+        "jti": str(uuid4()),
+    }
+    return jwt.encode(payload, config.jwt_secret_key, algorithm=config.jwt_algorithm)
+
+
+def decodificar_token_desafio_mfa(
+    token: str,
+    settings: Settings | None = None,
+) -> UUID | None:
+    config = settings or Settings()
+    validar_configuracion_identidad(config)
+    try:
+        payload = jwt.decode(
+            token,
+            config.jwt_secret_key,
+            algorithms=[config.jwt_algorithm],
+            issuer="polis-identidad",
+            audience="polis-api",
+            options={"require": ["sub", "jti", "typ", "exp", "iat", "iss", "aud"]},
+        )
+        if payload.get("typ") != "desafio_mfa":
+            return None
+        return UUID(payload["sub"])
+    except (jwt.PyJWTError, ValueError, KeyError, TypeError):
+        return None
+

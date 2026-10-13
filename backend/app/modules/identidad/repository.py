@@ -13,6 +13,7 @@ from app.modules.identidad.models import (
     SesionUsuario,
     TokenAccion,
     Usuario,
+    UsuarioMfa,
 )
 from app.modules.identidad.schemas import UsuarioCreacion
 from app.modules.sesion.models import SesionAnonima
@@ -28,14 +29,18 @@ class IdentidadRepository:
     async def obtener_usuario_por_correo(self, correo: str) -> Usuario | None:
         return await self.session.scalar(
             select(Usuario)
-            .options(joinedload(Usuario.rol))
+            .options(joinedload(Usuario.rol), joinedload(Usuario.mfa))
             .where(func.lower(Usuario.correo) == correo.strip().lower())
         )
 
     async def obtener_usuario_por_id(
         self, usuario_id: uuid.UUID, *, bloquear=False
     ) -> Usuario | None:
-        consulta = select(Usuario).options(joinedload(Usuario.rol)).where(Usuario.id == usuario_id)
+        consulta = (
+            select(Usuario)
+            .options(joinedload(Usuario.rol), joinedload(Usuario.mfa))
+            .where(Usuario.id == usuario_id)
+        )
         if bloquear:
             consulta = consulta.with_for_update(of=Usuario).execution_options(
                 populate_existing=True
@@ -168,7 +173,7 @@ class IdentidadRepository:
         )
 
     async def listar_usuarios(self, busqueda, limite, desplazamiento):
-        consulta = select(Usuario).options(joinedload(Usuario.rol))
+        consulta = select(Usuario).options(joinedload(Usuario.rol), joinedload(Usuario.mfa))
         if busqueda:
             # contains autoescape evita interpretar %/_ como comodines introducidos por el usuario.
             consulta = consulta.where(
@@ -247,3 +252,47 @@ class IdentidadRepository:
             delete(LimiteAcceso).where(LimiteAcceso.expira_en < ahora - timedelta(seconds=ventana))
         )
         return await self.session.scalar(consulta)
+
+    async def obtener_mfa_usuario(
+        self, usuario_id: uuid.UUID, *, bloquear=False
+    ) -> UsuarioMfa | None:
+        consulta = select(UsuarioMfa).where(UsuarioMfa.usuario_id == usuario_id)
+        if bloquear:
+            consulta = consulta.with_for_update(of=UsuarioMfa)
+        return await self.session.scalar(consulta)
+
+    async def guardar_mfa_usuario(
+        self,
+        usuario_id: uuid.UUID,
+        secreto_cifrado: str,
+        codigos_recuperacion: list[str],
+    ) -> UsuarioMfa:
+        mfa = await self.obtener_mfa_usuario(usuario_id, bloquear=True)
+        ahora = datetime.now(UTC)
+        if mfa:
+            mfa.secreto_cifrado = secreto_cifrado
+            mfa.codigos_recuperacion = codigos_recuperacion
+            mfa.activo = False
+            mfa.activado_en = None
+            mfa.intentos_fallidos = 0
+            mfa.bloqueado_hasta = None
+            mfa.actualizado_en = ahora
+        else:
+            mfa = UsuarioMfa(
+                usuario_id=usuario_id,
+                secreto_cifrado=secreto_cifrado,
+                activo=False,
+                codigos_recuperacion=codigos_recuperacion,
+            )
+            self.session.add(mfa)
+        await self.session.flush()
+        return mfa
+
+    async def desactivar_mfa_usuario(self, usuario_id: uuid.UUID) -> bool:
+        mfa = await self.obtener_mfa_usuario(usuario_id, bloquear=True)
+        if mfa:
+            await self.session.delete(mfa)
+            await self.session.flush()
+            return True
+        return False
+
