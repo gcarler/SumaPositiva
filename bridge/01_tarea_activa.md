@@ -1,35 +1,33 @@
-# TAREA ACTIVA: [A11Y-WIDGET-01] WIDGET DE ACCESIBILIDAD PARA LA PÁGINA PÚBLICA (TAMAÑO DE TEXTO, COLOR, CONTRASTE)
+# TAREA ACTIVA: [A11Y-WIDGET-01b] BARRA LATERAL DE ACCESIBILIDAD ESTILO FUNCIÓN PÚBLICA / GOV.CO
 
 **Asignada a:** `agy2` — **Auditor:** `agy`. Reglas de producción vigentes (cambios por pasos, verificar servicios y HTTP 200, `bd_csh` intacta 33/36/11/17, commits locales por ruta, nunca `git push`, sin `git add .`).
-**Coordinación:** `freebuff` trabaja en `src/app/_stories/*`, `src/features/plataforma/components/gestor-heros-plataforma.tsx` y `src/features/politicas/components/hero-page-banner*`. No los toques.
 
-## Pedido del propietario
-Un widget de accesibilidad para el sitio público: tamaño de fuente, colores y contraste, que el visitante controla y que se recuerda entre visitas.
+## Referencia visual indicada por el propietario
+El propietario pidió seguir el diseño del widget de accesibilidad de Función Pública:
+`https://www.funcionpublica.gov.co/web/mipg/resultados-medicion`
 
-## Estado actual (verificado por `agy`)
-- Tema claro/oscuro con `next-themes` (`src/app/layout.tsx`, `ThemeToggle` en `src/app/_components/topbar.tsx`). Tokens en `src/shared/design-system/tokens.css` (`:root` y `.dark`, oklch).
-- No existe escala de texto, modo de alto contraste ni otras preferencias.
+## Especificación exacta del patrón Función Pública / GOV.CO (inspeccionada por `agy`)
+En `funcionpublica.gov.co`, el widget es una **barra vertical fija adosada al borde derecho de la pantalla** (`<nav aria-label="Menú de accesibilidad">`):
+1. **Posición y contenedor:**
+   - Fijo en el borde derecho a media altura: `position: fixed; top: 50%; right: 0; transform: translateY(-50%); width: 52px; border-radius: 12px 0 0 12px; padding: 6px 0;`.
+   - En `/geovisor` (pantalla completa con paneles acoplados), ocultarlo o permitir colapsarlo a una pestaña mínima para no tapar el panel derecho del geovisor; en el resto de páginas públicas (`/`, `/barrio`, `/f`, `/asistencia`) mostrar la barra lateral completa.
+2. **Botones apilados con expansión lateral al pasar el cursor o enfocar (`:hover` / `:focus-within`):**
+   - Cada ítem mide `52px × 48px` en reposo y contiene un botón posicionado a la derecha (`right: 0; width: 52px; height: 48px; border-radius: 8px 0 0 8px; overflow: hidden; transition: width 0.25s ease`).
+   - Dentro de cada botón hay una pastilla/recuadro con el ícono (`26px × 26px`, fondo contrastado y bordes redondeados `6px`) y a su derecha un `<span>` con el texto (`white-space: nowrap; opacity: 0; transition: opacity 0.2s`).
+   - Al hacer `:hover` o `:focus-within`, el botón se expande hacia la izquierda hasta `width: 196px` y el `<span>` pasa a `opacity: 1`.
+   - Con `prefers-reduced-motion` o modo movimiento reducido activo, la expansión es instantánea sin animación.
+3. **Acciones directas en la barra (un clic sin abrir modal):**
+   - **Contraste** (`aria-pressed`): alterna directamente entre contraste normal y Alto Contraste AAA (`[data-a11y-contrast="alto"]`).
+   - **Aumentar** (`A+`): sube un paso el tamaño de texto (`100% → 125% → 150% → 200%`), deshabilitado en `200%`. Muestra el porcentaje actual en la etiqueta (`Aumentar (125%)`).
+   - **Reducir** (`A−`): baja un paso el tamaño de texto (`200% → 150% → 125% → 100%`), deshabilitado en `100%`.
+   - **Restablecer**: restaura todas las preferencias de accesibilidad a sus valores por defecto en un clic.
+   - **Más opciones** (`aria-expanded`): despliega a la izquierda de la barra el panel compacto con los controles adicionales ya implementados (Modo claro/oscuro, Escala de grises, Espaciado de líneas y letras, Subrayar enlaces, Reducir movimiento). Cierra con `Esc`.
+   - **Centro de Relevo / Signos en Red**: enlace externo oficial (`https://centroderelevo.gov.co/`, `target="_blank" rel="noopener noreferrer"`) como en la barra de Función Pública.
+4. **Tokens y guardas POLIS:**
+   - Usa únicamente tokens semánticos de `tokens.css` (sin colores hexadecimales ni arbitrarios en el TSX, cumpliendo `UI003`).
+   - En modo Alto Contraste, la barra mantiene borde y contraste nítidos sin invertirse ni perder legibilidad.
+   - Cumple 320 px / 375 px sin generar `scrollWidth > innerWidth`.
 
-## Alcance (v1)
-Ubicación: componente nuevo `src/features/accesibilidad/` (widget + store + pruebas), montado en el layout de las rutas públicas (`/`, `/geovisor`, `/barrio`, `/f`, `/asistencia` y demás públicas). No en `/plataforma` en esta versión.
-
-Controles:
-1. **Tamaño de texto:** 4 pasos (100 %, 125 %, 150 %, 200 %) mediante la raíz `html`, y que el diseño siga en `rem`. Botones A− / A+ y restablecer.
-2. **Contraste:** Normal / **Alto contraste** (texto ≥ 7:1 AAA, bordes y foco visibles ≥ 3:1, definido como tokens bajo `[data-a11y-contrast="alto"]` en `tokens.css` para claro y oscuro; sin colores literales por pantalla, guarda UI003).
-3. **Color:** tema Claro/Oscuro (reutiliza `next-themes`) y **escala de grises**. No prometas «modo daltónico» con filtros aproximados; si lo incluyes, que sea una paleta de estados con símbolos/etiquetas que no dependan solo del color y documenta el alcance.
-4. **Lectura:** espaciado de líneas y de letras (normal/amplio), **subrayar enlaces**, **reducir movimiento** (además de respetar `prefers-reduced-motion`).
-5. **Restablecer todo** con un botón.
-
-Comportamiento:
-- Persistencia en `localStorage` (clave versionada, solo preferencias, sin datos personales ni cookies). Valores inválidos se ignoran.
-- Respetar preferencias del sistema como valor inicial (`prefers-contrast`, `prefers-reduced-motion`, `prefers-color-scheme`) hasta que el visitante elija.
-- Aplicar las preferencias al cargar sin parpadeo **sin añadir `'unsafe-inline'` ni relajar la CSP** (está en Report-Only; no la modifiques). Si necesitas un script temprano, usa nonce/hash compatible o aplica en un efecto de cliente y documenta el compromiso.
-- Botón flotante (≥ 44 px) con `aria-label` «Accesibilidad», que abre un panel (usa los primitivos existentes de `shared/ui`; Zero-Modals: sin diálogo bloqueante). Teclado completo, `Esc` cierra y devuelve el foco, `aria-pressed`/`role` correctos, anuncios con `aria-live` al cambiar.
-- No debe tapar el contenido ni los controles del geovisor; en 320 px no genera scroll horizontal. Con texto al 200 % no hay pérdida de contenido ni solapes (WCAG 1.4.4 y 1.4.10) en `/` y `/geovisor`.
-- El mapa del geovisor no se altera (solo la interfaz alrededor).
-
-## Calidad
-- Alta del componente en `catalog.ts` (inventario UI006), historia en Storybook con axe en estado normal, alto contraste, oscuro y 200 % (`a11y.test: "error"` sin rebajar), `bun run ui:check`, `tsc`, `eslint`.
-- Pruebas unitarias del store (valores por defecto, persistencia, valores corruptos, reset, preferencias del sistema) y del componente.
-- Playwright (1440 y 375 px): abrir con teclado, cambiar cada control, recargar y verificar persistencia, axe sin violaciones de contraste en `/` y `/geovisor` en alto contraste y oscuro.
-- Despliega (build + reinicio de `polis-frontend`) y verifica HTTP 200. Reporta en `bridge/02_resultado_agy2.md` con capturas y espera dictamen.
+## Verificación requerida
+- Actualizar `src/shared/ui/accesibilidad-widget.tsx`, su historia en Storybook y pruebas unitarias/Playwright para reflejar la barra lateral estilo Función Pública / GOV.CO con acciones directas y el subpanel de «Más opciones».
+- Verificar `bun run check`, `bun test`, `bun run build`, reiniciar `polis-frontend` y reportar en `bridge/02_resultado_agy2.md`.
