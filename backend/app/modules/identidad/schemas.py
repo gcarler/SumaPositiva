@@ -188,3 +188,21 @@ class GoogleOAuthPeticion(BaseModel):
     id_token: str = Field(
         ..., min_length=10, description="Google ID Token JWT emitido por Google Identity Services"
     )
+
+
+class AmbitoTerritorialLectura(BaseModel):
+    id: uuid.UUID
+    usuario_id: uuid.UUID
+    tipo_ambito: str
+    identificador_territorial: str
+    activo: bool
+    creado_en: datetime
+    actualizado_en: datetime
+    model_config = ConfigDict(from_attributes=True)
+
+
+class AmbitoTerritorialCreacion(BaseModel):
+    tipo_ambito: Literal["distrital", "localidad", "mesa"]
+    identificador_territorial: str = Field(..., min_length=1, max_length=100)
+    motivo: str = Field(..., min_length=10, max_length=500)
+

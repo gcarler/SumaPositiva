@@ -44,6 +44,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         redoc_url=None,
         openapi_url="/api/v1/openapi.json" if settings.environment != "production" else None,
     )
+    application.state.settings = settings
+    application.state.database = Database(settings)
     application.add_middleware(
         CORSMiddleware,
         allow_origins=settings.cors_origins_efectivos,

@@ -12,6 +12,7 @@ from sqlalchemy.exc import IntegrityError
 
 from app.core.transactions import transaction
 from app.modules.auditoria.models import RegistroAuditoria
+from app.modules.identidad.ambito_territorial import verificar_ambito_territorial
 from app.modules.identidad.schemas import SujetoAutenticadoContexto
 from app.modules.mesas.models import ActaComunitaria, Mesa, MesaAgenda, ParticipanteMesa
 from app.modules.mesas.repository import MesaRepository
@@ -129,6 +130,15 @@ class MesaService:
         datos: MesaCrear,
         sujeto: SujetoAutenticadoContexto | None = None,
     ) -> MesaRespuesta:
+        if datos.territorio_id is not None:
+            await verificar_ambito_territorial(
+                self.repository.session,
+                sujeto,
+                territorio_id=datos.territorio_id,
+                recurso_tipo="mesa",
+                metodo_http="POST",
+                ruta_http="/api/v1/mesas",
+            )
         # Generar ruta base usando shortcode
         async with transaction(self.repository.session):
             base_slug = self._sanitizar_ltree(datos.shortcode_ciudadano).strip("_") or "mesa"
@@ -181,7 +191,21 @@ class MesaService:
 
             return MesaRespuesta.model_validate(mesa_creada)
 
-    async def crear_submesa(self, padre_id: uuid.UUID, datos: SubMesaCrear) -> MesaRespuesta:
+    async def crear_submesa(
+        self,
+        padre_id: uuid.UUID,
+        datos: SubMesaCrear,
+        sujeto: SujetoAutenticadoContexto | None = None,
+    ) -> MesaRespuesta:
+        await verificar_ambito_territorial(
+            self.repository.session,
+            sujeto,
+            mesa_id=padre_id,
+            recurso_tipo="mesa",
+            recurso_id=padre_id,
+            metodo_http="POST",
+            ruta_http=f"/api/v1/mesas/{padre_id}/submesas",
+        )
         async with transaction(self.repository.session):
             padre = await self.repository.obtener_por_id(padre_id)
             if not padre:
@@ -241,6 +265,15 @@ class MesaService:
             )
 
         mesa_uuid = await self._resolver_mesa_uuid(mesa_id)
+        await verificar_ambito_territorial(
+            self.repository.session,
+            sujeto,
+            mesa_id=mesa_uuid,
+            recurso_tipo="mesa",
+            recurso_id=mesa_uuid,
+            metodo_http="PATCH",
+            ruta_http=f"/api/v1/mesas/{mesa_uuid}",
+        )
 
         async with transaction(self.repository.session):
             mesa = await self.repository.obtener_para_actualizar(mesa_uuid)
@@ -425,9 +458,21 @@ class MesaService:
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail="Mesa no encontrada")
 
     async def registrar_participante(
-        self, mesa_id: uuid.UUID | str, datos: ParticipanteCrear
+        self,
+        mesa_id: uuid.UUID | str,
+        datos: ParticipanteCrear,
+        sujeto: SujetoAutenticadoContexto | None = None,
     ) -> ParticipanteRespuesta:
         mesa_uuid = await self._resolver_mesa_uuid(mesa_id)
+        await verificar_ambito_territorial(
+            self.repository.session,
+            sujeto,
+            mesa_id=mesa_uuid,
+            recurso_tipo="mesa",
+            recurso_id=mesa_uuid,
+            metodo_http="POST",
+            ruta_http=f"/api/v1/mesas/{mesa_uuid}/participantes",
+        )
         async with transaction(self.repository.session):
             # Serializar registro y recuento de asistentes hasta finalizar el caso de uso.
             mesa = await self.repository.obtener_para_actualizar(mesa_uuid)
@@ -472,9 +517,21 @@ class MesaService:
     # --- Actas Comunitarias ---
 
     async def crear_o_actualizar_borrador_acta(
-        self, mesa_id: uuid.UUID | str, datos: ActaCrear
+        self,
+        mesa_id: uuid.UUID | str,
+        datos: ActaCrear,
+        sujeto: SujetoAutenticadoContexto | None = None,
     ) -> ActaRespuesta:
         mesa_uuid = await self._resolver_mesa_uuid(mesa_id)
+        await verificar_ambito_territorial(
+            self.repository.session,
+            sujeto,
+            mesa_id=mesa_uuid,
+            recurso_tipo="mesa",
+            recurso_id=mesa_uuid,
+            metodo_http="POST",
+            ruta_http=f"/api/v1/mesas/{mesa_uuid}/acta",
+        )
         async with transaction(self.repository.session):
             mesa = await self.repository.obtener_para_actualizar(mesa_uuid)
             if not mesa:
@@ -547,9 +604,21 @@ class MesaService:
             return resp
 
     async def cerrar_acta(
-        self, mesa_id: uuid.UUID | str, datos_cierre: ActaCierre | None = None
+        self,
+        mesa_id: uuid.UUID | str,
+        datos_cierre: ActaCierre | None = None,
+        sujeto: SujetoAutenticadoContexto | None = None,
     ) -> ActaRespuesta:
         mesa_uuid = await self._resolver_mesa_uuid(mesa_id)
+        await verificar_ambito_territorial(
+            self.repository.session,
+            sujeto,
+            mesa_id=mesa_uuid,
+            recurso_tipo="mesa",
+            recurso_id=mesa_uuid,
+            metodo_http="POST",
+            ruta_http=f"/api/v1/mesas/{mesa_uuid}/acta/cerrar",
+        )
         async with transaction(self.repository.session):
             mesa = await self.repository.obtener_para_actualizar(mesa_uuid)
             if not mesa:
@@ -696,6 +765,25 @@ class MesaService:
         datos: AgendaCrear,
         sujeto: SujetoAutenticadoContexto | None = None,
     ) -> AgendaRespuesta:
+        if datos.mesa_id:
+            await verificar_ambito_territorial(
+                self.repository.session,
+                sujeto,
+                mesa_id=datos.mesa_id,
+                recurso_tipo="agenda",
+                metodo_http="POST",
+                ruta_http="/api/v1/mesas/agendas",
+            )
+        elif datos.territorio:
+            loc_code = "LOC-1" if "1" in datos.territorio else ("LOC-2" if "2" in datos.territorio else ("LOC-3" if "3" in datos.territorio else datos.territorio))
+            await verificar_ambito_territorial(
+                self.repository.session,
+                sujeto,
+                localidad_codigo=loc_code,
+                recurso_tipo="agenda",
+                metodo_http="POST",
+                ruta_http="/api/v1/mesas/agendas",
+            )
         async with transaction(self.repository.session):
             agenda_id = datos.id or f"m-{uuid.uuid4().hex[:8]}"
             existente = await self.repository.obtener_agenda_por_id(agenda_id)
@@ -738,6 +826,31 @@ class MesaService:
         datos: AgendaActualizar,
         sujeto: SujetoAutenticadoContexto | None = None,
     ) -> AgendaRespuesta:
+        agenda_existente = await self.repository.obtener_agenda_por_id(agenda_id)
+        if agenda_existente:
+            target_mesa_id = datos.mesa_id if "mesa_id" in datos.model_fields_set and datos.mesa_id else agenda_existente.mesa_id
+            target_territorio = datos.territorio if datos.territorio is not None else agenda_existente.territorio
+            if target_mesa_id:
+                await verificar_ambito_territorial(
+                    self.repository.session,
+                    sujeto,
+                    mesa_id=target_mesa_id,
+                    recurso_tipo="agenda",
+                    recurso_id=agenda_id,
+                    metodo_http="PATCH",
+                    ruta_http=f"/api/v1/mesas/agendas/{agenda_id}",
+                )
+            elif target_territorio:
+                loc_code = "LOC-1" if "1" in target_territorio else ("LOC-2" if "2" in target_territorio else ("LOC-3" if "3" in target_territorio else target_territorio))
+                await verificar_ambito_territorial(
+                    self.repository.session,
+                    sujeto,
+                    localidad_codigo=loc_code,
+                    recurso_tipo="agenda",
+                    recurso_id=agenda_id,
+                    metodo_http="PATCH",
+                    ruta_http=f"/api/v1/mesas/agendas/{agenda_id}",
+                )
         async with transaction(self.repository.session):
             agenda = await self.repository.obtener_agenda_para_actualizar(agenda_id)
             if not agenda:

@@ -8,6 +8,8 @@ from app.modules.identidad.catalogo import PERMISOS
 from app.modules.identidad.correo import CorreoIdentidad, obtener_correo_identidad
 from app.modules.identidad.deps import SujetoAutenticadoDep, requerir_permiso, requerir_rol
 from app.modules.identidad.schemas import (
+    AmbitoTerritorialCreacion,
+    AmbitoTerritorialLectura,
     CambiarContrasena,
     CorreoPeticion,
     EventoLectura,
@@ -310,6 +312,48 @@ async def revocar_usuario(
     usuario_id: uuid.UUID, sujeto: SujetoAutenticadoDep, service: IdentidadServiceDep
 ):
     return await service.revocar_usuario(usuario_id, sujeto)
+
+
+@router.get(
+    "/usuarios/{usuario_id}/ambitos",
+    response_model=list[AmbitoTerritorialLectura],
+    dependencies=[Depends(requerir_permiso("usuarios:gestionar", "declarada"))],
+)
+async def listar_ambitos_usuario(
+    usuario_id: uuid.UUID,
+    service: IdentidadServiceDep,
+):
+    return await service.listar_ambitos_usuario(usuario_id)
+
+
+@router.post(
+    "/usuarios/{usuario_id}/ambitos",
+    response_model=AmbitoTerritorialLectura,
+    status_code=201,
+    dependencies=[Depends(requerir_permiso("usuarios:gestionar", "declarada"))],
+)
+async def asignar_ambito_usuario(
+    usuario_id: uuid.UUID,
+    datos: AmbitoTerritorialCreacion,
+    sujeto: SujetoAutenticadoDep,
+    service: IdentidadServiceDep,
+):
+    return await service.asignar_ambito_usuario(usuario_id, datos, sujeto)
+
+
+@router.delete(
+    "/usuarios/{usuario_id}/ambitos/{ambito_id}",
+    response_model=MensajeRespuesta,
+    dependencies=[Depends(requerir_permiso("usuarios:gestionar", "declarada"))],
+)
+async def revocar_ambito_usuario(
+    usuario_id: uuid.UUID,
+    ambito_id: uuid.UUID,
+    sujeto: SujetoAutenticadoDep,
+    service: IdentidadServiceDep,
+    motivo: str = Query(min_length=10, max_length=500),
+):
+    return await service.revocar_ambito_usuario(usuario_id, ambito_id, motivo, sujeto)
 
 
 @router.get(

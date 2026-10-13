@@ -2,7 +2,19 @@ import uuid
 from datetime import datetime
 from typing import Any
 
-from sqlalchemy import BigInteger, Boolean, DateTime, ForeignKey, Index, Integer, String, func, text
+from sqlalchemy import (
+    BigInteger,
+    Boolean,
+    CheckConstraint,
+    DateTime,
+    ForeignKey,
+    Index,
+    Integer,
+    String,
+    UniqueConstraint,
+    func,
+    text,
+)
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -83,6 +95,9 @@ class Usuario(Base):
     rol: Mapped["Rol"] = relationship("Rol", back_populates="usuarios")
     mfa: Mapped["UsuarioMfa | None"] = relationship(
         "UsuarioMfa", back_populates="usuario", uselist=False, cascade="all, delete-orphan"
+    )
+    ambitos_territoriales: Mapped[list["AmbitoTerritorialUsuario"]] = relationship(
+        "AmbitoTerritorialUsuario", back_populates="usuario", cascade="all, delete-orphan"
     )
 
     @property
@@ -204,6 +219,50 @@ class LimiteAcceso(Base):
     clave: Mapped[str] = mapped_column(String(64), primary_key=True)
     intentos: Mapped[int] = mapped_column(Integer, nullable=False)
     expira_en: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+
+class AmbitoTerritorialUsuario(Base):
+    """Ámbitos territoriales de autorización PBAC para actores institucionales [CIERRE-07]."""
+
+    __tablename__ = "ambitos_territoriales_usuario"
+    __table_args__ = (
+        Index("idx_ambitos_usuario", "usuario_id", postgresql_where=text("activo = true")),
+        Index("idx_ambitos_territorio", "tipo_ambito", "identificador_territorial"),
+        UniqueConstraint("usuario_id", "tipo_ambito", "identificador_territorial", name="uq_usuario_ambito"),
+        CheckConstraint("tipo_ambito IN ('distrital', 'localidad', 'mesa')", name="ck_tipo_ambito"),
+        {
+            "schema": "autenticacion",
+            "comment": "Ámbitos territoriales de autorización PBAC para actores institucionales",
+        },
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        primary_key=True,
+        server_default=text("public.generar_uuid_v7()"),
+    )
+    usuario_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("autenticacion.usuarios.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    tipo_ambito: Mapped[str] = mapped_column(String(20), nullable=False)
+    identificador_territorial: Mapped[str] = mapped_column(String(100), nullable=False)
+    activo: Mapped[bool] = mapped_column(
+        Boolean, default=True, server_default=text("true"), nullable=False
+    )
+    creado_en: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=text("clock_timestamp()"),
+        nullable=False,
+    )
+    actualizado_en: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=text("clock_timestamp()"),
+        nullable=False,
+    )
+
+    usuario: Mapped["Usuario"] = relationship("Usuario", back_populates="ambitos_territoriales")
 
 
 Index("uq_usuarios_correo_normalizado", func.lower(Usuario.correo), unique=True)

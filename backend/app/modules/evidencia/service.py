@@ -13,6 +13,7 @@ from app.modules.mesas.models import Mesa
 from app.modules.evidencia.repository import EvidenciaRepository
 from app.modules.evidencia.sanitizer import sanitizar_imagen_bytes
 from app.modules.evidencia.schemas import EvidenciaRespuesta
+from app.modules.identidad.ambito_territorial import verificar_ambito_territorial
 from app.modules.identidad.schemas import SujetoAutenticadoContexto
 from app.modules.mesas.schemas import (
     FotoMesaModeracion,
@@ -144,6 +145,15 @@ class EvidenciaService:
         sujeto: SujetoAutenticadoContexto,
         autorizacion_imagen: bool,
     ) -> FotoMesaSubidaRespuesta:
+        await verificar_ambito_territorial(
+            self.session,
+            sujeto,
+            mesa_id=mesa_id,
+            recurso_tipo="mesa",
+            recurso_id=mesa_id,
+            metodo_http="POST",
+            ruta_http=f"/api/v1/mesas/{mesa_id}/fotos",
+        )
         if not autorizacion_imagen:
             raise HTTPException(status_code=422, detail="Se requiere autorización para publicar la imagen")
         ruta, _, metadatos = await self._sanitizar_y_guardar_archivo(archivo)

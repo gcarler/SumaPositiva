@@ -7,6 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 
 from app.modules.identidad.models import (
+    AmbitoTerritorialUsuario,
     EventoIdentidad,
     LimiteAcceso,
     Rol,
@@ -298,4 +299,63 @@ class IdentidadRepository:
             await self.session.flush()
             return True
         return False
+
+    async def listar_ambitos_usuario(
+        self, usuario_id: uuid.UUID
+    ) -> list[AmbitoTerritorialUsuario]:
+        stmt = (
+            select(AmbitoTerritorialUsuario)
+            .where(
+                AmbitoTerritorialUsuario.usuario_id == usuario_id,
+                AmbitoTerritorialUsuario.activo.is_(True),
+            )
+            .order_by(AmbitoTerritorialUsuario.creado_en.asc())
+        )
+        res = await self.session.execute(stmt)
+        return list(res.scalars().all())
+
+    async def asignar_ambito_usuario(
+        self, usuario_id: uuid.UUID, tipo_ambito: str, identificador_territorial: str
+    ) -> AmbitoTerritorialUsuario:
+        stmt = select(AmbitoTerritorialUsuario).where(
+            AmbitoTerritorialUsuario.usuario_id == usuario_id,
+            AmbitoTerritorialUsuario.tipo_ambito == tipo_ambito,
+            AmbitoTerritorialUsuario.identificador_territorial == identificador_territorial,
+        )
+        res = await self.session.execute(stmt)
+        existente = res.scalar_one_or_none()
+        if existente:
+            if existente.activo:
+                return None
+            existente.activo = True
+            existente.actualizado_en = datetime.now(UTC)
+            await self.session.flush()
+            return existente
+
+        nuevo = AmbitoTerritorialUsuario(
+            usuario_id=usuario_id,
+            tipo_ambito=tipo_ambito,
+            identificador_territorial=identificador_territorial,
+            activo=True,
+        )
+        self.session.add(nuevo)
+        await self.session.flush()
+        return nuevo
+
+    async def revocar_ambito_usuario(
+        self, usuario_id: uuid.UUID, ambito_id: uuid.UUID
+    ) -> bool:
+        stmt = select(AmbitoTerritorialUsuario).where(
+            AmbitoTerritorialUsuario.id == ambito_id,
+            AmbitoTerritorialUsuario.usuario_id == usuario_id,
+        )
+        res = await self.session.execute(stmt)
+        ambito = res.scalar_one_or_none()
+        if ambito:
+            ambito.activo = False
+            ambito.actualizado_en = datetime.now(UTC)
+            await self.session.flush()
+            return True
+        return False
+
 

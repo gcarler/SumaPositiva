@@ -148,6 +148,9 @@ La última columna explica la excepción pública o la condición adicional.
 | POST | /api/v1/identidad/usuarios | permiso:usuarios:gestionar@declarada | Alta administrativa; no concede permisos que el actor no pueda asignar. |
 | PATCH | /api/v1/identidad/usuarios/{usuario_id} | permiso:usuarios:gestionar@declarada | Cambios con motivo, revocación y protección del último administrador. |
 | POST | /api/v1/identidad/usuarios/{usuario_id}/revocar | permiso:usuarios:gestionar@declarada | Revocación administrativa de sesiones con evento de auditoría. |
+| GET | /api/v1/identidad/usuarios/{usuario_id}/ambitos | permiso:usuarios:gestionar@declarada | Consulta administrativa de ámbitos territoriales asignados al usuario institucional. |
+| POST | /api/v1/identidad/usuarios/{usuario_id}/ambitos | permiso:usuarios:gestionar@declarada | Asignación controlada de ámbito territorial con justificación pericial y auditoría. |
+| DELETE | /api/v1/identidad/usuarios/{usuario_id}/ambitos/{ambito_id} | permiso:usuarios:gestionar@declarada | Revocación controlada de ámbito territorial con justificación pericial y auditoría. |
 | GET | /api/v1/identidad/verificar-nivel | permiso:aportes:crear@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |
 | GET | /api/v1/indicadores/cadena-valor | publico | Consulta pública de catálogos y resultados de política para transparencia. |
 | GET | /api/v1/indicadores/fichas | publico | Consulta pública de catálogos y resultados de política para transparencia. |

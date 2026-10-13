@@ -70,10 +70,17 @@ async def crear_mesa(
     "/{mesa_id}/submesas",
     response_model=MesaRespuesta,
     status_code=status.HTTP_201_CREATED,
-    dependencies=[Depends(requerir_permiso("mesas:abrir", nivel_minimo="declarada"))],
 )
-async def crear_submesa(mesa_id: uuid.UUID, datos: SubMesaCrear, service: MesaServiceDep):
-    return await service.crear_submesa(mesa_id, datos)
+async def crear_submesa(
+    mesa_id: uuid.UUID,
+    datos: SubMesaCrear,
+    sujeto: Annotated[
+        SujetoAutenticadoContexto,
+        Depends(requerir_permiso("mesas:abrir", nivel_minimo="declarada")),
+    ],
+    service: MesaServiceDep,
+):
+    return await service.crear_submesa(mesa_id, datos, sujeto=sujeto)
 
 
 @router.get("/geovisor", response_model=list[MesaGeovisorRespuesta])
@@ -248,12 +255,17 @@ async def obtener_submesas(mesa_id: str, service: MesaServiceDep):
     "/{mesa_id}/participantes",
     response_model=ParticipanteRespuesta,
     status_code=status.HTTP_201_CREATED,
-    dependencies=[Depends(requerir_permiso("asistencia:verificar", nivel_minimo="declarada"))],
 )
 async def registrar_participante(
-    mesa_id: str, datos: ParticipanteCrear, service: MesaServiceDep
+    mesa_id: str,
+    datos: ParticipanteCrear,
+    sujeto: Annotated[
+        SujetoAutenticadoContexto,
+        Depends(requerir_permiso("asistencia:verificar", nivel_minimo="declarada")),
+    ],
+    service: MesaServiceDep,
 ):
-    return await service.registrar_participante(mesa_id, datos)
+    return await service.registrar_participante(mesa_id, datos, sujeto=sujeto)
 
 
 @router.get(
@@ -272,22 +284,34 @@ async def listar_participantes(mesa_id: str, service: MesaServiceDep):
     "/{mesa_id}/acta",
     response_model=ActaRespuesta,
     status_code=status.HTTP_200_OK,
-    dependencies=[Depends(requerir_permiso("mesas:acuerdos", nivel_minimo="declarada"))],
 )
-async def crear_o_actualizar_acta(mesa_id: str, datos: ActaCrear, service: MesaServiceDep):
-    return await service.crear_o_actualizar_borrador_acta(mesa_id, datos)
+async def crear_o_actualizar_acta(
+    mesa_id: str,
+    datos: ActaCrear,
+    sujeto: Annotated[
+        SujetoAutenticadoContexto,
+        Depends(requerir_permiso("mesas:acuerdos", nivel_minimo="declarada")),
+    ],
+    service: MesaServiceDep,
+):
+    return await service.crear_o_actualizar_borrador_acta(mesa_id, datos, sujeto=sujeto)
 
 
 @router.post(
     "/{mesa_id}/acta/cerrar",
     response_model=ActaRespuesta,
     status_code=status.HTTP_200_OK,
-    dependencies=[Depends(requerir_permiso("mesas:acuerdos", nivel_minimo="declarada"))],
 )
 async def cerrar_acta(
-    mesa_id: str, service: MesaServiceDep, datos_cierre: ActaCierre | None = None
+    mesa_id: str,
+    sujeto: Annotated[
+        SujetoAutenticadoContexto,
+        Depends(requerir_permiso("mesas:acuerdos", nivel_minimo="declarada")),
+    ],
+    service: MesaServiceDep,
+    datos_cierre: ActaCierre | None = None,
 ):
-    return await service.cerrar_acta(mesa_id, datos_cierre)
+    return await service.cerrar_acta(mesa_id, datos_cierre, sujeto=sujeto)
 
 
 @router.get("/{mesa_id}/acta", response_model=ActaRespuesta)

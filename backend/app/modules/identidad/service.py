@@ -15,6 +15,8 @@ from app.modules.identidad.catalogo import PERMISOS, ROLES_SISTEMA
 from app.modules.identidad.correo import CorreoIdentidad, token_para_correo
 from app.modules.identidad.repository import IdentidadRepository
 from app.modules.identidad.schemas import (
+    AmbitoTerritorialCreacion,
+    AmbitoTerritorialLectura,
     CambiarContrasena,
     GoogleOAuthPeticion,
     LoginPeticion,
@@ -30,6 +32,7 @@ from app.modules.identidad.schemas import (
     RolEdicion,
     RolLectura,
     SesionLectura,
+    SujetoAutenticadoContexto,
     TokenRespuesta,
     UsuarioAdministrado,
     UsuarioAltaAdministrativa,
@@ -929,4 +932,72 @@ class IdentidadService:
                 usuario=UsuarioLectura.model_validate(usuario),
                 mfa_requerido=False,
             )
+
+    async def listar_ambitos_usuario(
+        self, usuario_id: uuid.UUID
+    ) -> list[AmbitoTerritorialLectura]:
+        usuario = await self.repo.obtener_usuario_por_id(usuario_id)
+        if not usuario:
+            raise HTTPException(404, "Usuario no encontrado")
+        ambitos = await self.repo.listar_ambitos_usuario(usuario_id)
+        return [AmbitoTerritorialLectura.model_validate(a) for a in ambitos]
+
+    async def asignar_ambito_usuario(
+        self,
+        usuario_id: uuid.UUID,
+        datos: AmbitoTerritorialCreacion,
+        actor: SujetoAutenticadoContexto,
+    ) -> AmbitoTerritorialLectura:
+        async with transaction(self.repo.session):
+            usuario = await self.repo.obtener_usuario_por_id(usuario_id)
+            if not usuario:
+                raise HTTPException(404, "Usuario no encontrado")
+
+            ambito = await self.repo.asignar_ambito_usuario(
+                usuario_id=usuario_id,
+                tipo_ambito=datos.tipo_ambito,
+                identificador_territorial=datos.identificador_territorial.strip(),
+            )
+            if not ambito:
+                raise HTTPException(409, "El usuario ya cuenta con este ámbito territorial activo asignado")
+            await self.repo.registrar_evento(
+                "ambito_territorial_asignado",
+                actor.sujeto_id,
+                usuario_id,
+                {
+                    "ambito_id": str(ambito.id),
+                    "tipo_ambito": datos.tipo_ambito,
+                    "identificador_territorial": datos.identificador_territorial.strip(),
+                    "motivo": datos.motivo.strip(),
+                },
+            )
+            return AmbitoTerritorialLectura.model_validate(ambito)
+
+    async def revocar_ambito_usuario(
+        self,
+        usuario_id: uuid.UUID,
+        ambito_id: uuid.UUID,
+        motivo: str,
+        actor: SujetoAutenticadoContexto,
+    ) -> MensajeRespuesta:
+        async with transaction(self.repo.session):
+            usuario = await self.repo.obtener_usuario_por_id(usuario_id)
+            if not usuario:
+                raise HTTPException(404, "Usuario no encontrado")
+
+            ok = await self.repo.revocar_ambito_usuario(usuario_id, ambito_id)
+            if not ok:
+                raise HTTPException(404, "Ámbito territorial no encontrado")
+
+            await self.repo.registrar_evento(
+                "ambito_territorial_revocado",
+                actor.sujeto_id,
+                usuario_id,
+                {
+                    "ambito_id": str(ambito_id),
+                    "motivo": motivo.strip(),
+                },
+            )
+            return MensajeRespuesta(mensaje="Ámbito territorial revocado exitosamente")
+
 

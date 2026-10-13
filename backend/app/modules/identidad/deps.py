@@ -54,7 +54,7 @@ async def obtener_sujeto_autenticado(
             headers={"WWW-Authenticate": "Bearer"},
         )
     token = credenciales.credentials
-    settings = request.app.state.settings
+    settings = getattr(request.app.state, "settings", None) or Settings()
     contexto = decodificar_token_acceso(token, settings)
     if contexto:
         return await cargar_sujeto_vigente(request, contexto)
