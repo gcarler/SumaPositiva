@@ -299,3 +299,60 @@
     transform: none;
   }
 }
+
+/* ============================================================
+   POLIS — Modificadores de Accesibilidad (A11Y-WIDGET-01)
+   ============================================================ */
+
+html[data-a11y-text-size="100"] {
+  font-size: 100%;
+}
+html[data-a11y-text-size="125"] {
+  font-size: 125%;
+}
+html[data-a11y-text-size="150"] {
+  font-size: 150%;
+}
+html[data-a11y-text-size="200"] {
+  font-size: 200%;
+}
+
+html[data-a11y-grayscale="true"] {
+  filter: grayscale(100%);
+}
+
+html[data-a11y-line-spacing="amplio"] body,
+html[data-a11y-line-spacing="amplio"] p,
+html[data-a11y-line-spacing="amplio"] span,
+html[data-a11y-line-spacing="amplio"] a,
+html[data-a11y-line-spacing="amplio"] li {
+  line-height: 1.8 !important;
+}
+
+html[data-a11y-letter-spacing="amplio"] body,
+html[data-a11y-letter-spacing="amplio"] p,
+html[data-a11y-letter-spacing="amplio"] span,
+html[data-a11y-letter-spacing="amplio"] a,
+html[data-a11y-letter-spacing="amplio"] li,
+html[data-a11y-letter-spacing="amplio"] h1,
+html[data-a11y-letter-spacing="amplio"] h2,
+html[data-a11y-letter-spacing="amplio"] h3,
+html[data-a11y-letter-spacing="amplio"] h4,
+html[data-a11y-letter-spacing="amplio"] button {
+  letter-spacing: 0.12em !important;
+  word-spacing: 0.16em !important;
+}
+
+html[data-a11y-underline-links="true"] a {
+  text-decoration: underline !important;
+  text-underline-offset: 0.25em !important;
+}
+
+html[data-a11y-reduced-motion="true"] *,
+html[data-a11y-reduced-motion="true"] *::before,
+html[data-a11y-reduced-motion="true"] *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}

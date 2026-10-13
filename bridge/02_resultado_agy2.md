@@ -319,3 +319,174 @@ Censo institucional rigurosamente intacto.
 Las reservas **R1** y **R2** del dictamen EAF han sido subsanadas satisfactoriamente, verificadas con respaldo previo, certificadas con la suite de 527 pruebas de backend en verde y servicios de producción en plena operatividad.
 
 Quedo a la espera del dictamen definitivo de `agy`.
+
+
+---
+
+# INFORME DE ENTREGA: [A11Y-WIDGET-01b] BARRA LATERAL DE ACCESIBILIDAD ESTILO FUNCIÓN PÚBLICA / GOV.CO
+
+**Responsable:** `agy2` — **Auditor:** `agy` — **Fecha:** 13-oct-2026  
+**Referencia de diseño:** Widget institucional de Función Pública (`https://www.funcionpublica.gov.co/web/mipg/resultados-medicion`)
+
+---
+
+## 📋 1. Resumen de la Implementación
+
+Se ha diseñado, implementado, verificado y desplegado en producción la **barra vertical lateral de accesibilidad fija** adosada al borde derecho de la pantalla para todo el portal ciudadano público de POLIS (`/`, `/barrio`, `/f`, `/asistencia`), cumpliendo punto a punto con la especificación de Función Pública / GOV.CO y las directrices WCAG 2.1 AA / AAA.
+
+### 1.1. Arquitectura y Contenedor (`<nav aria-label="Menú de accesibilidad">`)
+- **Posición fija y geometría:** `position: fixed; top: 50%; right: 0; transform: translateY(-50%); width: 52px; border-radius: 12px 0 0 12px; padding: 6px 0;` con elevación `shadow-raised` y z-index controlado (`z-40`).
+- **Comportamiento en `/geovisor`:** Para no interferir con los paneles laterales acoplados del mapa de pantalla completa, en `/geovisor` se renderiza de forma predeterminada una **pestaña mínima compacta** (`w-7 h-14` con ícono de accesibilidad). Al pulsarla, se expande la barra lateral completa con un botón de colapso superior (`ChevronRight`) que permite volver a minimizarla en cualquier momento. En el resto de rutas públicas se muestra la barra lateral completa en reposo.
+
+### 1.2. Botones con Expansión Lateral (`:hover` / `:focus-within`)
+- Cada ítem mide `52px × 48px` en reposo y aloja un botón anclado a la derecha (`right: 0`).
+- **Pastilla de ícono:** Recuadro contrastado de `26px × 26px` con bordes redondeados `6px`, centrado perfectamente en los 52px en reposo.
+- **Etiqueta textual:** `<span>` posicionado a la derecha de la pastilla con `white-space: nowrap; opacity: 0; transition: opacity 0.2s`.
+- **Expansión suave hacia la izquierda:** Al pasar el cursor o recibir foco de teclado (`:hover`, `:focus-within`, `:focus-visible`), el botón se expande hacia la izquierda hasta `196px` (`transition: width 0.25s ease`), revelando la etiqueta con `opacity: 1`.
+- **Reducción de movimiento:** Si el usuario tiene activa la preferencia de movimiento reducido (`prefers-reduced-motion` o `data-a11y-reduced-motion="true"`), la expansión es instantánea sin animación (`duration: 0.001ms`).
+
+### 1.3. Acciones Directas en la Barra (un clic, sin modal bloqueante)
+1. **Contraste directo (`aria-pressed`):** Alterna inmediatamente entre modo normal y **Alto Contraste AAA** (`[data-a11y-contrast="alto"]`), actualizando la pastilla y emitiendo anuncio audible.
+2. **Aumentar tamaño (`A+`):** Sube un paso la escala de texto (`100% → 125% → 150% → 200%`). Muestra el porcentaje actual dinámicamente en la etiqueta (`Aumentar (125%)`). Se deshabilita al alcanzar `200%`.
+3. **Reducir tamaño (`A−`):** Disminuye un paso la escala de texto (`200% → 150% → 125% → 100%`). Se deshabilita al alcanzar `100%`.
+4. **Restablecer:** Restaura todas las preferencias de accesibilidad a sus valores por defecto en un solo clic.
+5. **Más opciones (`aria-expanded`):** Despliega a la izquierda de la barra el subpanel flotante desacoplado con controles adicionales. Manejo completo de teclado: la tecla `Escape` o clic externo cierran el subpanel y devuelven el foco al botón disparador.
+6. **Centro de Relevo / Signos en Red:** Enlace externo oficial a `https://centroderelevo.gov.co/` (`target="_blank" rel="noopener noreferrer"`) con ícono de comunicación y advertencia accesible de apertura en pestaña nueva.
+
+### 1.4. Subpanel de Más Opciones
+- **Tamaño de texto:** Selector directo de 4 pasos (100%, 125%, 150%, 200%).
+- **Color y Tema:** Selector Modo claro / Modo oscuro integrado con `next-themes` + alternador de **Escala de grises** (`data-a11y-grayscale="true"`).
+- **Lectura y Movimiento:** Interlineado amplio (`line-height: 1.8`), Espaciado de letras (`letter-spacing: 0.12em`), Subrayar enlaces (`text-decoration: underline`), y Reducir movimiento.
+- **Botón Restablecer todo.**
+
+---
+
+## 🎨 2. Tokens Semánticos y Cumplimiento de Guardas POLIS
+
+- **Guardas UI001 a UI006 (`scripts/ui-policy.mjs`):**
+  - `UI001` / `UI002`: Componentes de biblioteca importados exclusivamente desde `@/shared/ui/`.
+  - `UI003`: Cero colores hexadecimales o arbitrarios en el TSX. Se utilizan exclusivamente variables semánticas (`var(--surface-1)`, `var(--text-primary)`, `var(--ember)`, `var(--border-strong)`).
+  - `UI004`: `src/shared/ui/` no importa desde `src/features/`.
+  - `UI005` (Zero-Modals): No se utilizan modales bloqueantes (`<dialog>`, `AlertDialog`). El subpanel es una región flotante no invasiva accesible por teclado (`role="region"`).
+  - `UI006`: Componente registrado formalmente en `src/shared/design-system/catalog.ts` con su historia correspondiente en Storybook (`a11y: { test: "error" }`).
+- **Tokens de Alto Contraste AAA en `tokens.css`:**
+  - Modo claro: fondo blanco puro `oklch(1 0 0)`, texto negro absoluto `oklch(0 0 0)` (ratio 21:1 AAA), bordes `oklch(0 0 0 / 60%)`.
+  - Modo oscuro: fondo negro puro `oklch(0 0 0)`, texto blanco absoluto `oklch(1 0 0)` (ratio 21:1 AAA), bordes `oklch(1 0 0 / 70%)`.
+- **Responsive (320px y 375px):**
+  - Posicionamiento `fixed` al margen derecho no incrementa el ancho de layout.
+  - Subpanel ajustado con `w-[min(20rem,calc(100vw-4.5rem))]` garantizando matemáticamente cero scroll horizontal (`scrollWidth <= innerWidth`).
+
+---
+
+## 🧪 3. Resultados de Pruebas y Certificación de Calidad
+
+### 3.1. Pruebas Unitarias del Feature y Store (`bun test`)
+```
+bun test v1.4.2
+
+src/features/accesibilidad/accesibilidad-store.test.ts:
+✓ AccesibilidadStore > proporciona valores iniciales seguros por defecto [0.34ms]
+✓ AccesibilidadStore > persiste los cambios en localStorage con clave versionada [0.39ms]
+✓ AccesibilidadStore > aumenta y disminuye el tamaño de texto dentro del rango seguro [100, 200] [0.21ms]
+✓ AccesibilidadStore > recupera valores por defecto ante datos corruptos o inválidos [0.26ms]
+✓ AccesibilidadStore > resetAll restablece todas las configuraciones a sus valores canónicos [0.34ms]
+✓ AccesibilidadStore > respeta las preferencias del sistema (prefers-contrast / prefers-reduced-motion) [0.29ms]
+✓ AccesibilidadStore > emite anuncios en aria-live tras cada cambio para lectores de pantalla [0.15ms]
+
+src/features/accesibilidad/accesibilidad-widget.test.tsx:
+✓ AccesibilidadWidget UI > renderiza la barra lateral adosada al borde derecho con <nav aria-label='Menú de accesibilidad'> [18.05ms]
+✓ AccesibilidadWidget UI > renderiza las acciones directas de la barra con expansión lateral al hover/focus [2.04ms]
+✓ AccesibilidadWidget UI > en modo alto contraste, el botón de contraste refleja aria-pressed='true' y etiqueta de desactivación [1.65ms]
+✓ AccesibilidadWidget UI > al 200% de tamaño de texto, el botón A+ queda deshabilitado y A− habilitado [1.40ms]
+✓ AccesibilidadWidget UI > cuando isOpen es true, despliega el subpanel de Más Opciones a la izquierda con todos sus controles [6.80ms]
+✓ AccesibilidadWidget UI > en geovisor con isCollapsed=true renderiza únicamente la pestaña mínima compacta para no obstruir paneles [1.81ms]
+
+ 13 pass, 0 fail, 82 expect() calls (231ms)
+```
+
+### 3.2. Chequeo de Políticas de Diseño y Linter (`bun run check`)
+```
+$ bun run ui:check && bun run typecheck && bun run lint
+$ node scripts/ui-policy.mjs
+POLIS UI: controles, tokens, capas, inventario, historias y política a11y correctos.
+$ tsc --noEmit (0 errores)
+$ eslint . (0 errores)
+```
+
+### 3.3. Compilación de Producción (`bun run build`)
+- Next.js 16.3.8 (Turbopack) compiló las 192 rutas estáticas y SSG limpiamente.
+- Servicio `polis-frontend.service` reiniciado y verificado activo.
+- Respuestas HTTP 200 confirmadas en `/` y `/geovisor` conteniendo el menú accesible en el HTML renderizado.
+
+### 3.4. Auditoría Playwright E2E y Axe-Core (`test_a11y_e2e.mjs`)
+Ejecutado sobre Chromium headless:
+```
+1. Navegando a http://127.0.0.1:3000/ ...
+2. Verificando barra lateral fija: width=52px -> ✓ Aprobado
+3. Verificando expansión al hover: width=196px -> ✓ Aprobado
+4. Probando activación de Alto Contraste AAA: data-a11y-contrast="alto", aria-pressed="true" -> ✓ Aprobado
+5. Probando aumento de texto (A+): data-a11y-text-size="125" -> ✓ Aprobado
+6. Verificando enlace a Centro de Relevo: target=_blank, href oficial -> ✓ Aprobado
+7. Probando despliegue de subpanel Más Opciones: panel visible a la izquierda -> ✓ Aprobado
+8. Probando cierre con teclado Escape: cierra y devuelve foco -> ✓ Aprobado
+9. Verificando persistencia en localStorage tras recarga: clave polis_a11y_v1 intacta -> ✓ Aprobado
+10. Probando botón Restablecer: atributos restaurados -> ✓ Aprobado
+11. Auditoría axe-core en modo normal: 0 violaciones de contraste -> ✓ Aprobado
+12. Auditoría axe-core en Alto Contraste: 0 violaciones de contraste -> ✓ Aprobado
+13. Responsive (375px y 320px): scrollWidth > innerWidth = false -> ✓ Aprobado
+14. Geovisor: pestaña mínima inicial visible, despliegue y colapso funcional -> ✓ Aprobado
+
+=== RESUMEN DE EJECUCIÓN ===
+Pasos aprobados: 14 / 14 (100%)
+Auditorías Axe aprobadas: 2 / 2 (0 violaciones)
+```
+
+---
+
+## 📸 4. Evidencia Visual (Capturas de Pantalla)
+
+Guardadas en `/root/.gemini/antigravity-cli/brain/ab05e85a-5868-48f3-9e1b-3bf75b7bedb1/`:
+1. `a11y-sidebar-desktop-hover.png`: Barra lateral fija con botón expandido a 196px al hover.
+2. `a11y-sidebar-alto-contraste.png`: Vista completa en modo Alto Contraste AAA (21:1).
+3. `a11y-subpanel-mas-opciones.png`: Subpanel de Más Opciones desplegado a la izquierda de la barra.
+4. `a11y-geovisor-tab.png`: Pestaña mínima compacta acoplada al borde derecho en `/geovisor`.
+5. `a11y-mobile-375px.png`: Barra lateral visible en viewport móvil de 375px sin desbordamiento.
+
+---
+
+## 🔒 5. Verificación de Inviolabilidad del Censo en `bd_csh`
+
+Verificación directa mediante consulta SQL en la base de datos de producción `bd_csh`:
+```sql
+SELECT 
+  (SELECT count(*) FROM mesas_trabajo.mesas) as mesas, 
+  (SELECT count(*) FROM mesas_trabajo.agendas) as agendas, 
+  (SELECT count(*) FROM indicadores.fichas_tecnicas_indicadores) as fichas, 
+  (SELECT count(*) FROM participacion_ciudadana.actores_estrategicos) as actores;
+```
+**Resultado:**
+```
+ mesas | agendas | fichas | actores 
+-------+---------+--------+---------
+    33 |      36 |     11 |      17
+```
+Censo institucional rigurosamente intacto.
+
+---
+
+## 📦 6. Archivos Modificados y Creados por `agy2`
+
+- `src/shared/design-system/tokens.css`: Definición de tokens de alto contraste WCAG AAA.
+- `src/shared/design-system/styles.css`: Modificadores raíz (`data-a11y-*`), escalas de fuente y resets.
+- `src/shared/design-system/catalog.ts`: Registro del componente en el catálogo de UI.
+- `src/shared/ui/accesibilidad-widget.tsx`: Componente presentacional con barra lateral Función Pública y subpanel.
+- `src/shared/ui/accesibilidad-widget.stories.tsx`: Historias de Storybook con escenarios y auditoría axe.
+- `src/features/accesibilidad/accesibilidad-store.ts`: Store Zustand con persistencia y detección de sistema.
+- `src/features/accesibilidad/accesibilidad-store.test.ts`: Pruebas unitarias de lógica y almacenamiento.
+- `src/features/accesibilidad/accesibilidad-widget.tsx`: Contenedor conectado al store y detector de geovisor.
+- `src/features/accesibilidad/accesibilidad-widget.test.tsx`: Pruebas unitarias de renderizado y eventos.
+- `src/features/accesibilidad/index.ts`: Export público del módulo.
+- `src/app/layout.tsx`: Montaje global en layout público dentro de `ThemeProvider`.
+- `bridge/02_resultado_agy2.md`: Este reporte de entrega.
+
+*(Se respetó estrictamente la zona de trabajo de `freebuff`: ningún archivo de historias internas, plataforma ni banners fue modificado ni staged).*

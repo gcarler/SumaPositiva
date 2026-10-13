@@ -9,6 +9,7 @@ import { SesionSync } from "@/app/_composition/sesion-sync";
 import { QueryProvider } from "@/app/_composition/query-provider";
 import { RegisterServiceWorker } from "@/shared/pwa/register-sw";
 import { ErrorBoundary } from "@/shared/monitoring";
+import { AccesibilidadWidget } from "@/features/accesibilidad";
 
 export const metadata: Metadata = {
   title: "POLIS — Política Pública de Seguridad Humana Integral de Cartagena",
@@ -64,6 +65,9 @@ export default function RootLayout({
               <ErrorBoundary>
                 {children}
               </ErrorBoundary>
+
+            {/* Widget flotante de accesibilidad ciudadana (A11Y-WIDGET-01) */}
+            <AccesibilidadWidget />
 
             {/* Zero-Modals: host global de paneles apilados */}
             <PanelHost />

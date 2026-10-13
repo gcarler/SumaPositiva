@@ -1,5 +1,10 @@
 /** Public component inventory. Imports remain explicit by file to avoid global barrels. */
 export const componentCatalog = [
+  {
+    name: "accesibilidad-widget",
+    source: "@/shared/ui/accesibilidad-widget",
+    status: "ready",
+  },
   { name: "accordion", source: "@/shared/ui/accordion", status: "ready" },
   { name: "alert", source: "@/shared/ui/alert", status: "ready" },
   { name: "alert-dialog", source: "@/shared/ui/alert-dialog", status: "ready" },
