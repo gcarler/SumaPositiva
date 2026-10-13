@@ -44,3 +44,14 @@ El usuario aceptó todas las recomendaciones del dictamen de CIERRE-04. Mismas r
 
 ## CIERRE-07 — Alcance territorial de permisos institucionales
 - Diseñar e implementar la restricción opcional por territorio/mesa para `facilitador_mesa` y `autoridad_distrital` (asignación de ámbito por usuario; sin ámbito = comportamiento actual, para no romper nada). Documento de contrato previo en `docs/` antes de codificar; pruebas de no regresión y de denegación fuera de ámbito.
+
+---
+# ACTUALIZACIÓN DE REGLAS (13-oct-2026): TRABAJO DIRECTO EN PRODUCCIÓN AUTORIZADO
+El usuario (propietario) declaró la plataforma en **fase beta** y autorizó a `agy2` a trabajar directamente en producción durante esta semana. Esto **reemplaza** la prohibición de tocar producción de las reglas anteriores, con estas salvaguardas obligatorias:
+1. **Respaldo antes de cambiar:** ejecutar `scripts/respaldo_bd.sh` antes de aplicar cualquier migración o cambio de datos; copiar a `/root/polis/backups`-equivalente la configuración de nginx/systemd antes de editarla. Anotar la ruta del respaldo en el reporte.
+2. **Cambios reversibles y por pasos:** un cambio a la vez; `nginx -t` antes de `nginx -s reload`/`systemctl reload nginx`; tras cada despliegue verificar `systemctl is-active` de `polis-frontend`, `polis-backend`, `nginx`, `postgresql@18-main` y HTTP 200 en `/`, `/geovisor`, `/plataforma/geovisor`. Si algo falla: revertir de inmediato y reportar.
+3. **Datos del censo:** `bd_csh` conserva su inviolabilidad: 33 mesas, 36 agendas, 11 fichas, 17 actores. Prohibido borrar, truncar o sobrescribir datos existentes; las migraciones solo aditivas (o con respaldo verificado).
+4. **Lo que sigue necesitando datos del usuario:** credenciales SMTP reales, correo del administrador inicial y contraseñas. No inventarlas ni ponerlas en el repositorio ni en el chat: se piden a `agy`, que las solicita al usuario; se configuran solo en el entorno del servidor (`backend/.env`, no versionado).
+5. **Cuentas existentes:** no modificar ni desactivar cuentas de usuarios existentes; el script de auditoría es de solo lectura.
+6. **Sigue vigente:** commits locales (Zero-Push), Quality Gates antes de desplegar, reporte y dictamen de `agy` por tarea. `agy` verifica de forma independiente el estado en producción tras cada despliegue.
+7. CSP: desplegar en modo **Report-Only**; el paso a Enforce lo decide `agy` tras revisar violaciones reales.

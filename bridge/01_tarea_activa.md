@@ -1,3 +1,3 @@
-# TAREA ACTIVA: [CIERRE-05] CSP ENDURECIDA Y RECOLECCIÓN DE VIOLACIONES
-**Plan:** `bridge/00_plan_maestro_cierre_operativo.md` (sección EXTENSIÓN) — **Asignada a:** `agy2` — **Auditor:** `agy`
-Ver sección CIERRE-05. NO reconstruyas ni reinicies servicios de producción y NO recargues nginx: valida con un servidor de pruebas en otro puerto; el despliegue lo hace `agy`. NO toques `bd_csh`. Reporta en `bridge/02_resultado_agy2.md` con las cabeceras exactas resultantes y el resultado de Playwright, y espera dictamen.
+# TAREA ACTIVA: [CIERRE-05] CSP ENDURECIDA, RECOLECCIÓN DE VIOLACIONES Y DESPLIEGUE EN PRODUCCIÓN (BETA)
+**Plan:** `bridge/00_plan_maestro_cierre_operativo.md` (EXTENSIÓN + ACTUALIZACIÓN DE REGLAS: trabajo directo en producción autorizado, con salvaguardas) — **Asignada a:** `agy2` — **Auditor:** `agy`
+Ver sección CIERRE-05. Ahora SÍ debes desplegarla: build, reinicio de `polis-frontend`/`polis-backend` y, si aplica, `nginx -t` + recarga con `docs/nginx-csp-polis.conf` (respaldando antes la configuración vigente). CSP en Report-Only. Verifica en vivo con `curl -sI` las cabeceras y con Playwright (0 violaciones en `/`, `/geovisor`, formularios, login Google, videos). Reporta cabeceras exactas, ruta del respaldo y resultado, en `bridge/02_resultado_agy2.md`; espera dictamen.
