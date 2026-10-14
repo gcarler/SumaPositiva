@@ -7,9 +7,13 @@ export type VistaApp = "inicio" | "explorar" | "mesas" | "geovisor" | "noticias"
 interface NavigationState {
   vista: VistaApp;
   setVista: (vista: VistaApp) => void;
+  dimensionActivaId?: string;
+  irADimension: (dimensionId: string) => void;
 }
 
 export const useNavigationStore = create<NavigationState>((set) => ({
   vista: "inicio",
   setVista: (vista) => set({ vista }),
+  dimensionActivaId: undefined,
+  irADimension: (dimensionId) => set({ vista: "dimensiones", dimensionActivaId: dimensionId }),
 }));

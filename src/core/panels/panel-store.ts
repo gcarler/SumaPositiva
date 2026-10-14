@@ -53,7 +53,8 @@ export type PanelType =
   | "compromiso-editor"
   | "indicador-detalle"
   | "devolucion-detalle"
-  | "ficha-editor";
+  | "ficha-editor"
+  | "dimension-detalle";
 
 /** Árbol que se diligencia en el papelografo */
 export type ArbolPanel = "problemas" | "soluciones";
@@ -178,6 +179,9 @@ export interface PanelPropsMap {
     ficha?: unknown;
     soloLectura?: boolean;
     onGuardado?: () => void;
+  };
+  "dimension-detalle": {
+    dimensionId: string;
   };
 }
 

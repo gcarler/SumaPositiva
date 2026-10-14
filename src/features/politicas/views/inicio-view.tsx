@@ -99,15 +99,43 @@ export function InicioView() {
 
       {/* ================= 7 DIMENSIONES ONU ================= */}
       <section id="dimensiones" className="container-fluid">
-        <div className="mb-8 max-w-2xl">
-          <p className="label-micro text-[var(--ember)]">Marco Multidimensional ONU</p>
-          <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[var(--text-primary)] md:text-3xl">
-            Las 7 Dimensiones de la Seguridad Humana
-          </h2>
-          <p className="mt-3 text-sm leading-relaxed text-[var(--text-secondary)] md:text-base">
-            La política pública territorializa las libertades frente al miedo, la necesidad y la
-            indignidad, organizando las alternativas ciudadanas en los siete ejes definidos por las Naciones Unidas.
-          </p>
+        <div className="mb-8 flex flex-col justify-between gap-6 md:flex-row md:items-end">
+          <div className="max-w-2xl">
+            <p className="label-micro text-[var(--ember)]">Marco Multidimensional ONU</p>
+            <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[var(--text-primary)] md:text-3xl">
+              Las 7 Dimensiones de la Seguridad Humana
+            </h2>
+            <p className="mt-3 text-sm leading-relaxed text-[var(--text-secondary)] md:text-base">
+              La política pública territorializa las libertades frente al miedo, la necesidad y la
+              indignidad, organizando las alternativas ciudadanas en los siete ejes definidos por las Naciones Unidas.
+            </p>
+
+            {/* 3 píldoras conceptuales ONU */}
+            <div className="mt-4 flex flex-wrap gap-2 text-xs">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--border)] bg-[var(--surface-1)] px-3 py-1 font-medium text-[var(--text-secondary)]">
+                <span className="size-1.5 rounded-full bg-[var(--danger)]" />
+                1. Libertad frente al miedo
+              </span>
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--border)] bg-[var(--surface-1)] px-3 py-1 font-medium text-[var(--text-secondary)]">
+                <span className="size-1.5 rounded-full bg-[var(--warning)]" />
+                2. Libertad frente a la necesidad
+              </span>
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--border)] bg-[var(--surface-1)] px-3 py-1 font-medium text-[var(--text-secondary)]">
+                <span className="size-1.5 rounded-full bg-[var(--ember)]" />
+                3. Libertad frente a la indignidad
+              </span>
+            </div>
+          </div>
+
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => setVista("dimensiones")}
+            className="group w-fit shrink-0 gap-2 text-xs"
+          >
+            <span>Ver matriz completa de las 7 Dimensiones y 27 Entidades</span>
+            <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-1" aria-hidden="true" />
+          </Button>
         </div>
 
         <DimensionesGrid />

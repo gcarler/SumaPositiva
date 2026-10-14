@@ -183,6 +183,10 @@ const DevolucionDetallePanel = dynamic(
   () => import("@/features/seguimiento/panels/devolucion-detalle-panel").then((m) => m.DevolucionDetallePanel),
   { ssr: false }
 );
+const DimensionDetallePanel = dynamic(
+  () => import("@/features/politicas/panels/dimension-detalle-panel").then((m) => m.DimensionDetallePanel),
+  { ssr: false }
+);
 
 export const PANEL_REGISTRY: Record<
   PanelType,
@@ -232,6 +236,7 @@ export const PANEL_REGISTRY: Record<
   "indicador-detalle": IndicadorDetallePanel as ComponentType<PanelComponentProps>,
   "devolucion-detalle": DevolucionDetallePanel as ComponentType<PanelComponentProps>,
   "ficha-editor": FichaEditorPanel as ComponentType<PanelComponentProps>,
+  "dimension-detalle": DimensionDetallePanel as ComponentType<PanelComponentProps>,
 };
 
 /**
@@ -288,4 +293,5 @@ export const PANEL_WIDTHS: Record<PanelType, string> = {
   "indicador-detalle": "min(clamp(720px, 50vw, 1000px), 100vw)",
   "devolucion-detalle": "min(clamp(720px, 50vw, 1020px), 100vw)",
   "ficha-editor": "min(clamp(720px, 50vw, 1020px), 100vw)",
+  "dimension-detalle": "min(clamp(760px, 54vw, 1120px), 100vw)",
 };

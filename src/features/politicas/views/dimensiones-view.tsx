@@ -15,9 +15,14 @@ import {
   CheckCircle2,
   Sparkles,
   ChevronRight,
+  BookOpen,
+  Users,
+  Target,
+  ShieldAlert,
 } from "lucide-react";
 import { HeroPageBanner } from "@/features/politicas/components/hero-page-banner";
 import {usePanels} from "@/core/panels/panel-store";
+import {useNavigationStore} from "@/core/navigation/navigation-store";
 import {Button} from "@/shared/ui/button";
 import {Input} from "@/shared/ui/input";
 import {
@@ -39,10 +44,23 @@ type SemaforoFiltro = "todos" | "verde" | "amarillo" | "rojo";
 export function DimensionesView() {
   const reducedMotion = useReducedMotion();
   const { openPanel } = usePanels();
+  const dimensionActivaIdNav = useNavigationStore((s) => s.dimensionActivaId);
 
   // Estados de navegación interna
   const [modo, setModo] = useState<ModoExploracion>("dimensiones");
-  const [dimensionSeleccionadaId, setDimensionSeleccionadaId] = useState<string>("personal");
+  const [dimensionSeleccionadaLocal, setDimensionSeleccionadaLocal] = useState<{
+    navId?: string;
+    id: string;
+  }>({ navId: dimensionActivaIdNav, id: dimensionActivaIdNav || "personal" });
+
+  const dimensionSeleccionadaId =
+    dimensionSeleccionadaLocal.navId !== dimensionActivaIdNav
+      ? dimensionActivaIdNav || "personal"
+      : dimensionSeleccionadaLocal.id;
+
+  const setDimensionSeleccionadaId = (id: string) => {
+    setDimensionSeleccionadaLocal({ navId: dimensionActivaIdNav, id });
+  };
   const [busqueda, setBusqueda] = useState<string>("");
   const [tipoFiltro, setTipoFiltro] = useState<TipoFiltroEntidad>("todas");
   const [semaforoFiltro, setSemaforoFiltro] = useState<SemaforoFiltro>("todos");
@@ -319,6 +337,11 @@ export function DimensionesView() {
                       <span className="rounded-full bg-[var(--surface-2)] border border-[var(--border)] px-2.5 py-0.5 text-[11px] font-bold text-[var(--ember)]">
                         Dimensión {dimensionActiva.codigo}
                       </span>
+                      {dimensionActiva.pilarOnu && (
+                        <span className="rounded-full bg-[var(--surface-3)] border border-[var(--border)] px-2.5 py-0.5 text-[11px] font-semibold text-[var(--text-secondary)]">
+                          🛡️ {dimensionActiva.pilarOnu}
+                        </span>
+                      )}
                       <span className="text-xs text-[var(--text-tertiary)]">
                         {dimensionActiva.marcoLegal}
                       </span>
@@ -332,24 +355,160 @@ export function DimensionesView() {
                   </div>
                 </div>
 
-                {/* Presupuesto Concurrente de la Dimensión */}
-                <div className="flex flex-col items-start lg:items-end justify-center rounded-xl border border-[var(--border)] bg-[var(--surface-2)] p-4 min-w-[220px]">
-                  <span className="text-[11px] font-semibold text-[var(--text-tertiary)] uppercase tracking-wider">
-                    Inversión Concurrente 2026
-                  </span>
-                  <span className="text-lg sm:text-xl font-black text-[var(--text-primary)]">
-                    {dimensionActiva.presupuestoTotalCop}
-                  </span>
-                  <span className="text-[10px] text-[var(--text-secondary)]">
-                    Recursos PDD + Regalías + SGP
-                  </span>
+                {/* Presupuesto Concurrente y Acceso Rápido a Panel Ficha */}
+                <div className="flex flex-col items-start lg:items-end justify-center gap-3">
+                  <div className="flex flex-col items-start lg:items-end justify-center rounded-xl border border-[var(--border)] bg-[var(--surface-2)] p-4 min-w-[220px]">
+                    <span className="text-[11px] font-semibold text-[var(--text-tertiary)] uppercase tracking-wider">
+                      Inversión Concurrente 2026
+                    </span>
+                    <span className="text-lg sm:text-xl font-black text-[var(--text-primary)]">
+                      {dimensionActiva.presupuestoTotalCop}
+                    </span>
+                    <span className="text-[10px] text-[var(--text-secondary)]">
+                      Recursos PDD + Regalías + SGP
+                    </span>
+                  </div>
+
+                  <Button
+                    variant="default"
+                    size="sm"
+                    type="button"
+                    onClick={() => openPanel("dimension-detalle", { dimensionId: dimensionActiva.id })}
+                    className="w-full lg:w-auto bg-[var(--ember)] text-[var(--text-inverse)] hover:opacity-90 gap-1.5 shadow-sm text-xs font-semibold"
+                    aria-label={`Abrir ficha pedagógica completa de ${dimensionActiva.nombre}`}
+                  >
+                    <Sparkles className="size-3.5" />
+                    <span>Abrir Ficha Pedagógica Completa</span>
+                    <ArrowRight className="size-3.5" />
+                  </Button>
                 </div>
               </div>
 
-              <p className="mt-4 text-xs sm:text-sm leading-relaxed text-[var(--text-secondary)]">
-                {dimensionActiva.descripcion}
-              </p>
+              {/* Explicación Pedagógica ONU */}
+              <div className="mt-5 flex flex-col gap-3">
+                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[var(--ember)]">
+                  <BookOpen className="size-4" />
+                  <span>Definición Pedagógica y Paradigma ONU (Resolución 66/290)</span>
+                </div>
+                <div className="rounded-xl border border-[var(--border)] bg-[var(--surface-2)] p-4 text-xs sm:text-sm leading-relaxed text-[var(--text-primary)] space-y-2">
+                  {Array.isArray(dimensionActiva.queEsExplicacionPedagogica) ? (
+                    dimensionActiva.queEsExplicacionPedagogica.map((parrafo, idx) => (
+                      <p key={idx}>{parrafo}</p>
+                    ))
+                  ) : (
+                    <p>{dimensionActiva.descripcion}</p>
+                  )}
+                </div>
+              </div>
+
+              {/* Contexto Situado en Cartagena */}
+              {dimensionActiva.contextoCartagena && (
+                <div className="mt-4 rounded-xl border border-[var(--border)] bg-[var(--surface-2)]/60 p-4">
+                  <p className="text-xs font-bold uppercase tracking-wider text-[var(--text-tertiary)] flex items-center gap-1.5 mb-1.5">
+                    <MapPin className="size-3.5 text-[var(--ember)]" />
+                    <span>Contexto Territorial Cartagena de Indias</span>
+                  </p>
+                  <p className="text-xs sm:text-sm leading-relaxed text-[var(--text-secondary)]">
+                    {dimensionActiva.contextoCartagena}
+                  </p>
+                </div>
+              )}
             </div>
+
+            {/* DIAGNÓSTICO Y AMENAZAS CRÍTICAS TERRITORIALIZADAS */}
+            {dimensionActiva.amenazasCriticas && dimensionActiva.amenazasCriticas.length > 0 && (
+              <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface-1)] p-6 sm:p-8 flex flex-col gap-4">
+                <div>
+                  <h3 className="text-lg sm:text-xl font-bold text-[var(--text-primary)] flex items-center gap-2">
+                    <ShieldAlert className="size-5 text-[var(--danger)]" />
+                    <span>Diagnóstico de Amenazas Críticas en Cartagena</span>
+                  </h3>
+                  <p className="mt-0.5 text-xs text-[var(--text-secondary)]">
+                    Focos prioritarios de vulnerabilidad territorial identificados para intervención distrital y comunitaria
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                  {dimensionActiva.amenazasCriticas.map((amenaza, idx) => (
+                    <div
+                      key={idx}
+                      className="rounded-xl border border-[var(--border)] bg-[var(--surface-2)] p-4 flex flex-col justify-between gap-3"
+                    >
+                      <div className="flex items-start gap-2.5">
+                        <ShieldAlert className="mt-0.5 size-4 shrink-0 text-[var(--danger)]" aria-hidden="true" />
+                        <div>
+                          <h4 className="text-xs sm:text-sm font-semibold text-[var(--text-primary)] leading-snug">
+                            {amenaza.titulo}
+                          </h4>
+                          <p className="mt-1 text-xs leading-relaxed text-[var(--text-secondary)]">
+                            {amenaza.descripcion}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Enfoque Diferencial */}
+                {dimensionActiva.enfoqueDiferencial && (
+                  <div className="mt-2 rounded-xl border border-[var(--border)] bg-[var(--surface-2)] p-4 flex items-start gap-3">
+                    <Users className="size-4 text-[var(--ember)] shrink-0 mt-0.5" />
+                    <div>
+                      <span className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider block mb-1">
+                        Enfoque Diferencial e Interseccional (Ley 70/93, Comunidades Étnicas y Género)
+                      </span>
+                      <p className="text-xs sm:text-sm leading-relaxed text-[var(--text-secondary)]">
+                        {dimensionActiva.enfoqueDiferencial}
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* INDICADORES TRAZADORES Y METAS */}
+            {dimensionActiva.indicadoresTrazadores && dimensionActiva.indicadoresTrazadores.length > 0 && (
+              <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface-1)] p-6 sm:p-8 flex flex-col gap-4">
+                <div>
+                  <h3 className="text-lg sm:text-xl font-bold text-[var(--text-primary)] flex items-center gap-2">
+                    <Target className="size-5 text-[var(--ember)]" />
+                    <span>Indicadores Trazadores Decenales (2026–2036)</span>
+                  </h3>
+                  <p className="mt-0.5 text-xs text-[var(--text-secondary)]">
+                    Metas estratégicas de largo plazo alineadas a la visión decenal de seguridad humana
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                  {dimensionActiva.indicadoresTrazadores.map((ind, idx) => (
+                    <div
+                      key={idx}
+                      className="rounded-xl border border-[var(--border)] bg-[var(--surface-2)] p-4 flex flex-col justify-between gap-3"
+                    >
+                      <div>
+                        <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase tracking-wider block mb-1">
+                          Indicador Trazador #{idx + 1}
+                        </span>
+                        <h4 className="text-xs sm:text-sm font-bold text-[var(--text-primary)] leading-snug">
+                          {ind.indicador}
+                        </h4>
+                      </div>
+
+                      <div className="flex flex-col gap-1.5 pt-2 border-t border-[var(--border)]">
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="text-[var(--text-tertiary)]">Línea Base:</span>
+                          <span className="font-semibold text-[var(--text-primary)]">{ind.lineaBase}</span>
+                        </div>
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="text-[var(--text-tertiary)]">Meta 2036:</span>
+                          <span className="font-bold text-[var(--success)]">{ind.meta2036}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* SECCIÓN 1: ENTIDAD LÍDER ASIGNADA (DESTACADA) */}
             {entidadLider && (
@@ -543,7 +702,29 @@ export function DimensionesView() {
               </div>
             </div>
 
-            {/* SECCIÓN 3: PROGRAMAS Y METAS 2026 VINCULADAS + CTA */}
+            {/* SECCIÓN 3: RUTAS DE PARTICIPACIÓN CIUDADANA Y VEEDURÍA */}
+            {dimensionActiva.comoParticipar && dimensionActiva.comoParticipar.length > 0 && (
+              <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface-1)] p-6 sm:p-8 flex flex-col gap-4">
+                <div>
+                  <h3 className="text-lg sm:text-xl font-bold text-[var(--text-primary)] flex items-center gap-2">
+                    <Users className="size-5 text-[var(--ember)]" />
+                    <span>Rutas de Participación Ciudadana y Veeduría</span>
+                  </h3>
+                  <p className="mt-0.5 text-xs text-[var(--text-secondary)]">
+                    Mecanismos concretos donde las comunidades cartageneras inciden, deliberan y auditan esta dimensión
+                  </p>
+                </div>
+
+                <div className="rounded-xl border border-[var(--border)] bg-[var(--surface-2)] p-4 flex items-start gap-3">
+                  <CheckCircle2 className="size-4 text-[var(--ember)] shrink-0 mt-0.5" />
+                  <p className="text-xs sm:text-sm leading-relaxed text-[var(--text-primary)]">
+                    {dimensionActiva.comoParticipar}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* SECCIÓN 4: PROGRAMAS Y METAS 2026 VINCULADAS + CTA */}
             <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface-1)] p-6 sm:p-8 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-6">
               <div className="flex-1 flex flex-col gap-3">
                 <div className="flex items-center gap-2">
@@ -563,26 +744,37 @@ export function DimensionesView() {
                 </ul>
               </div>
 
-              {/* Botón de Acción 1-Clic a Reporte Formal */}
+              {/* Botón de Acción 1-Clic a Reporte Formal y Ficha */}
               <div className="flex flex-col sm:flex-row lg:flex-col gap-2 shrink-0 justify-center">
                 <Button
-                  asChild
                   variant="default"
                   size="default"
+                  type="button"
+                  onClick={() => openPanel("dimension-detalle", { dimensionId: dimensionActiva.id })}
                   className="gap-2 bg-[var(--ember)] text-[var(--text-inverse)] hover:opacity-95 font-semibold text-xs sm:text-sm px-5"
+                >
+                  <Sparkles className="size-4" />
+                  <span>Abrir Ficha Pedagógica</span>
+                </Button>
+
+                <Button
+                  asChild
+                  variant="outline"
+                  size="sm"
+                  className="gap-2 border-[var(--border)] text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
                 >
                   <Link href={`/f/reporte-inseguridad?categoria=${dimensionActiva.id}`}>
                     <span>Crear Reporte Formal</span>
-                    <ArrowRight className="size-4" />
+                    <ArrowRight className="size-3.5" />
                   </Link>
                 </Button>
 
                 <Button
-                  variant="outline"
+                  variant="ghost"
                   size="sm"
                   type="button"
                   onClick={() => openPanel("rendicion-cuentas", {})}
-                  className="border-[var(--border)] text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+                  className="text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
                 >
                   <span>Ver Todas las Cuentas</span>
                 </Button>

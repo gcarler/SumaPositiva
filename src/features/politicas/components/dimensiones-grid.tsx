@@ -1,104 +1,89 @@
 "use client";
 
-import {
-  ShieldCheck,
-  Users,
-  Briefcase,
-  Leaf,
-  Wheat,
-  HeartPulse,
-  Scale,
-} from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
+import { ArrowRight } from "lucide-react";
+import { usePanels } from "@/core/panels/panel-store";
+import { Button } from "@/shared/ui/button";
+import {
+  DIMENSIONES_DETALLE_2026,
+  type DimensionDetalle,
+} from "../data/dimensiones-detalle.data";
 
-export const DIMENSIONES = [
-  {
-    num: "01",
-    icono: ShieldCheck,
-    titulo: "Seguridad Personal",
-    desc: "Desarme, erradicación de violencias y prevención integral de ESCNNA en entornos escolares y turísticos.",
-    color: "--ember",
-  },
-  {
-    num: "02",
-    icono: Users,
-    titulo: "Seguridad Comunitaria",
-    desc: "Cohesión social, mediación vecinal y salvaguardas étnicas para comunidades negras e insulares (Ley 70/93).",
-    color: "--ember",
-  },
-  {
-    num: "03",
-    icono: Briefcase,
-    titulo: "Seguridad Económica",
-    desc: "Empleo digno, economía popular y alternativas productivas para jóvenes en riesgo.",
-    color: "--ember",
-  },
-  {
-    num: "04",
-    icono: Leaf,
-    titulo: "Seguridad Ambiental",
-    desc: "Saneamiento y resiliencia en la Ciénaga de la Virgen, protección de la bahía y mitigación costera.",
-    color: "--ember",
-  },
-  {
-    num: "05",
-    icono: Wheat,
-    titulo: "Seguridad Alimentaria",
-    desc: "Soberanía alimentaria, nutrición infantil y circuitos cortos con la zona rural corregimental.",
-    color: "--ember",
-  },
-  {
-    num: "06",
-    icono: HeartPulse,
-    titulo: "Seguridad en Salud",
-    desc: "Atención primaria integral, salud mental y prevención comunitaria de adicciones.",
-    color: "--ember",
-  },
-  {
-    num: "07",
-    icono: Scale,
-    titulo: "Seguridad Política",
-    desc: "Protección a liderazgos comunitarios, transparencia activa y ejercicio pleno de libertades.",
-    color: "--ember",
-  },
-];
+// Exportación compatible para consumidores existentes
+export const DIMENSIONES = DIMENSIONES_DETALLE_2026.filter((d) => d.id !== "crisis").map((d) => ({
+  id: d.id,
+  num: d.numero,
+  icono: d.icono,
+  titulo: d.nombreCorto,
+  nombreCompleto: d.nombre,
+  desc: d.descripcion,
+  pilarOnu: d.pilarOnu,
+  lema: d.lema,
+  color: d.colorToken,
+}));
 
 export function DimensionesGrid() {
   const reducedMotion = useReducedMotion();
+  const { openPanel } = usePanels();
+
+  // Las 7 dimensiones fundamentales de la ONU (excluyendo la dimensión transversal de crisis)
+  const dimensionesOnu = DIMENSIONES_DETALLE_2026.filter((d) => d.id !== "crisis");
 
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      {DIMENSIONES.map((dim, i) => {
+      {dimensionesOnu.map((dim: DimensionDetalle, i: number) => {
         const Icono = dim.icono;
         return (
           <motion.div
-            key={dim.num}
+            key={dim.id}
             initial={reducedMotion ? false : { opacity: 0, y: 16 }}
             whileInView={reducedMotion ? undefined : { opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-40px" }}
-            transition={{ duration: 0.45, delay: i * 0.06 }}
-            className="flex flex-col justify-between rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-6 transition-colors hover:border-[var(--border-strong)]"
+            transition={{ duration: 0.45, delay: i * 0.05 }}
+            className="h-full"
           >
-            <div>
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold text-[var(--text-tertiary)] tabular">
-                  {dim.num}
-                </span>
-                <span className="flex size-8 items-center justify-center rounded-lg bg-[var(--surface-2)] text-[var(--ember)]">
-                  <Icono className="size-4" strokeWidth={1.75} />
-                </span>
+            <Button
+              variant="unstyled"
+              size="unstyled"
+              type="button"
+              onClick={() =>
+                openPanel("dimension-detalle", { dimensionId: dim.id })
+              }
+              aria-label={`Explorar la dimensión ${dim.numero}: ${dim.nombre}. ${dim.pilarOnu}`}
+              className="group flex h-full w-full flex-col justify-between rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-6 text-left transition-all hover:border-[var(--ember)]/60 hover:bg-[var(--surface-2)]/60 hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ring)] cursor-pointer"
+            >
+              <div>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-semibold text-[var(--text-tertiary)] tabular">
+                    {dim.numero}
+                  </span>
+                  <span className="flex size-9 items-center justify-center rounded-lg bg-[var(--surface-2)] text-[var(--ember)] transition-colors group-hover:bg-[var(--ember)] group-hover:text-[var(--ember-foreground)]">
+                    <Icono className="size-4.5" strokeWidth={1.75} aria-hidden="true" />
+                  </span>
+                </div>
+
+                <div className="mt-3">
+                  <span className="inline-block rounded-full bg-[var(--surface-3)] px-2.5 py-0.5 text-[10px] font-medium text-[var(--text-secondary)]">
+                    {dim.pilarOnu}
+                  </span>
+                </div>
+
+                <h3 className="mt-3 text-base font-semibold text-[var(--text-primary)] transition-colors group-hover:text-[var(--ember)]">
+                  {dim.nombre}
+                </h3>
+                <p className="mt-2 text-[13px] leading-relaxed text-[var(--text-secondary)]">
+                  {dim.descripcion}
+                </p>
               </div>
-              <h3 className="mt-4 text-base font-semibold text-[var(--text-primary)]">
-                {dim.titulo}
-              </h3>
-              <p className="mt-2 text-[13px] leading-relaxed text-[var(--text-secondary)]">
-                {dim.desc}
-              </p>
-            </div>
-            <div className="mt-6 flex items-center gap-1.5 text-[11px] font-medium text-[var(--text-tertiary)]">
-              <span className="size-1 rounded-full bg-[var(--ember)]" />
-              <span>Dimensión ONU</span>
-            </div>
+
+              <div className="mt-6 flex items-center justify-between border-t border-[var(--border)]/70 pt-3 text-xs font-semibold text-[var(--ember)]">
+                <span>Explorar dimensión a fondo</span>
+                <ArrowRight
+                  className="size-3.5 transition-transform group-hover:translate-x-1"
+                  aria-hidden="true"
+                />
+              </div>
+            </Button>
           </motion.div>
         );
       })}

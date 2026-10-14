@@ -746,3 +746,143 @@ Al pegar un enlace de Google Maps en el editor de mesa de trabajo (`MesaEditorPa
 - `src/features/mesas/lib/coordenadas-parser.test.ts`
 - `src/app/_stories/platform.stories.tsx`
 - `bridge/02_resultado_agy2.md`
+
+
+---
+
+# INFORME DE RESULTADO: TAREA [DIM-ONU-01]
+## ESTRATEGIA DE CONTENIDO PROFUNDO E INTERACTIVIDAD PARA LAS 7 DIMENSIONES DE LA SEGURIDAD HUMANA (ONU) EN EL HOME
+
+**Para:** Coordinador General / Auditor EAF (`agy`)  
+**De:** Desarrollador / Responsable Técnico EDD (`agy2`)  
+**Fecha:** 14 de Octubre de 2026  
+**Tarea Reportada:** `[DIM-ONU-01] Estrategia de contenido profundo e interactividad para las 7 Dimensiones de la Seguridad Humana (ONU) en el Home`  
+**Plan de Ejecución:** `bridge/01_tarea_activa.md`  
+
+---
+
+## 🎯 1. Resumen Ejecutivo
+
+En estricta atención al mandato de `bridge/01_tarea_activa.md`, se ejecutó y desplegó en producción la estrategia integral de contenido pedagógico situado, interactividad y arquitectura Zero-Modals para las **7 Dimensiones de la Seguridad Humana (Resolución 66/290 ONU)** y su eje transversal de crisis en Cartagena de Indias:
+
+1. **Enriquecimiento Pedagógico y Territorial Situado (`dimensiones-detalle.data.ts`):**
+   - Se completaron las 8 dimensiones con contenido técnico real y no trivial situado en Cartagena:
+     - **Pilar Fundamental ONU:** Mapeo estricto a *Libertad frente al miedo*, *Libertad frente a la necesidad* o *Libertad frente a la indignidad*.
+     - **Explicación Pedagógica Decenal:** 3 párrafos pedagógicos por dimensión explicando qué es según el paradigma PNUD 1994 y la Resolución ONU 66/290.
+     - **Contexto Territorial Cartagena:** Diagnóstico situado en las tres localidades distritales y áreas insulares/rurales (Olaya Herrera, El Pozón, Nelson Mandela, Tierrabomba, Ciénaga de la Virgen, etc.).
+     - **Amenazas Críticas:** 4 focos prioritarios por dimensión con título y descripción operativa.
+     - **Enfoque Diferencial e Interseccional:** Incorporación de mandatos de la Ley 70 de 1993, comunidades negras/afrodescendientes, raizales, palenqueras, mujeres, jóvenes e infancia.
+     - **Rutas de Incidencia Ciudadana:** Mecanismos concretos de participación y co-gobernanza comunitaria.
+     - **Indicadores Trazadores Decenales (2026–2036):** 3 indicadores por dimensión con línea base y meta a 2036.
+
+2. **Nuevo Panel Zero-Modals `DimensionDetallePanel` (`dimension-detalle-panel.tsx`):**
+   - Montado sobre `PanelShell` con ancho adaptable `min(clamp(760px, 54vw, 1120px), 100vw)`.
+   - Registrado en `PanelType`, `PanelPropsMap` (`src/core/panels/panel-store.ts`) y `PANEL_REGISTRY` (`src/app/_composition/panel-registry.tsx`).
+   - Bloques estructurados: selector rápido de las 7 dimensiones ONU, paradigma ONU / definición pedagógica, diagnóstico Cartagena y 4 amenazas críticas, enfoque diferencial (Ley 70/93), indicadores trazadores 2026–2036 + metas PDD, gobernanza distrital con enlace a rendición de cuentas, y rutas de participación ciudadana con enlaces a líneas de acción y geovisor.
+
+3. **Interactividad Plena en la Grilla del Home (`dimensiones-grid.tsx`):**
+   - Recuadros convertidos en botones interactivos accesibles (`<Button variant="unstyled" size="unstyled">`) que invocan `openPanel("dimension-detalle", { dimensionId: dim.id })`.
+   - Badge del Pilar ONU, título, descripción y llamada visual a la acción *"Explorar dimensión a fondo →"*.
+   - Inclusión de las 3 píldoras conceptuales ONU (*Libertad frente al miedo*, *Libertad frente a las necesidades*, *Libertad frente a la indignidad*) en el encabezado de `#dimensiones` en `inicio-view.tsx`, junto con el botón de navegación directa hacia `DimensionesView`.
+
+4. **Sincronización y Enriquecimiento de `DimensionesView` (`dimensiones-view.tsx`):**
+   - Sincronización reactiva del estado `dimensionSeleccionadaId` con `dimensionActivaIdNav` de `useNavigationStore` (sin efectos secundarios ni renders en cascada).
+   - Modo A enriquecido con el pilar ONU, explicación pedagógica, contexto Cartagena, diagnóstico de amenazas críticas, enfoque diferencial e indicadores decenales, junto con botones para abrir la ficha pedagógica completa en el panel lateral.
+
+5. **Pruebas Unitarias y Calidad:**
+   - Creada suite `src/features/politicas/components/dimensiones-grid.test.tsx` (8/8 pruebas pasadas).
+   - Suite global Bun: **566 / 566 pasadas** (65 archivos, 0 fallos).
+   - `bun run check`: `ui:check` (Zero-Colors y controles UI), `tsc --noEmit` y `eslint .` superados con **0 errores**.
+   - `bun run ui:test`: **212 / 212 historias Storybook** pasadas (17 archivos, 0 fallos).
+   - `bun run build`: Compilación Next.js 16.3.8 exitosa (192 páginas estáticas/SSG generadas).
+   - Reinicio de `polis-frontend` exitoso con HTTP 200 en `/` y `/plataforma`.
+   - Censo `bd_csh` intacto: 33 mesas, 36 agendas, 11 fichas, 17 actores.
+
+---
+
+## 🛠️ 2. Detalle de Archivos Intervenidos
+
+### 2.1. `src/features/politicas/data/dimensiones-detalle.data.ts`
+- Definición de tipos `PilarOnu`, `AmenazaCritica`, `IndicadorTrazador`.
+- Enriquecimiento integral de las 8 dimensiones con `pilarOnu`, `queEsExplicacionPedagogica`, `contextoCartagena`, `amenazasCriticas`, `enfoqueDiferencial`, `comoParticipar`, `indicadoresTrazadores`.
+
+### 2.2. `src/core/panels/panel-store.ts`
+- Registro de `"dimension-detalle"` en `PanelType`.
+- Registro de `dimension-detalle: { dimensionId: string }` en `PanelPropsMap`.
+
+### 2.3. `src/core/navigation/navigation-store.ts`
+- Incorporación de `dimensionActivaId?: string` en el contrato `NavigationState`.
+- Incorporación del método `irADimension: (dimensionId: string) => void` que conmuta la vista a `"dimensiones"` y fija la dimensión activa.
+
+### 2.4. `src/features/politicas/panels/dimension-detalle-panel.tsx` (Nuevo)
+- Componente de ficha técnica pedagógica profunda bajo arquitectura Zero-Modals (`PanelShell`).
+- 6 bloques temáticos detallados con selector rápido de las 7 dimensiones ONU, paradigma Resolución 66/290, diagnóstico territorial, enfoque Ley 70/93, indicadores decenales y gobernanza.
+
+### 2.5. `src/app/_composition/panel-registry.tsx`
+- Registro diferido `DimensionDetallePanel` en `PANEL_REGISTRY`.
+- Asignación de ancho responsive `"min(clamp(760px, 54vw, 1120px), 100vw)"` en `PANEL_WIDTHS`.
+
+### 2.6. `src/features/politicas/components/dimensiones-grid.tsx`
+- Conexión a `DIMENSIONES_DETALLE_2026`.
+- Conversión de recuadros a botones accesibles con badge de pilar ONU, descripción y pie *"Explorar dimensión a fondo →"*, abriendo `openPanel("dimension-detalle", { dimensionId: dim.id })`.
+
+### 2.7. `src/features/politicas/views/inicio-view.tsx`
+- Encabezado de `#dimensiones` actualizado con 3 píldoras conceptuales ONU (*Libertad frente al miedo / necesidad / indignidad*) y botón directo *"Ver matriz completa de las 7 Dimensiones y 27 Entidades →"*.
+
+### 2.8. `src/features/politicas/views/dimensiones-view.tsx`
+- Sincronización con `useNavigationStore((s) => s.dimensionActivaId)` sin efectos secundarios.
+- Modo A enriquecido con explicación pedagógica, contexto de Cartagena, amenazas críticas, enfoque diferencial, indicadores trazadores decenales y botón directo para abrir `DimensionDetallePanel`.
+
+### 2.9. `src/features/politicas/components/dimensiones-grid.test.tsx` (Nuevo)
+- Suite con 8 pruebas verificando el renderizado de las 7 dimensiones ONU en la grilla, presencia de pilares y accesibilidad, despacho a `usePanelStore`, integridad de datos de las 8 dimensiones y renderizado de `DimensionDetallePanel`.
+
+---
+
+## 🧪 3. Matriz de Pruebas y Certificación de Calidad
+
+| Suite / Verificación | Comando Ejecutado | Resultado |
+|---|---|---|
+| **Unitarias Grilla y Panel Dimensiones** | `bun test src/features/politicas/components/dimensiones-grid.test.tsx` | ✅ **8 / 8 pasadas** (281 ms) |
+| **Suite Módulo Políticas** | `bun test src/features/politicas` | ✅ **54 / 54 pasadas** (6 archivos, 0 fallos) |
+| **Suite Completa Frontend** | `bun test` | ✅ **566 / 566 pasadas** (65 archivos, 0 fallos) |
+| **Suite Global Storybook (Playwright/axe)** | `bun run ui:test` | ✅ **212 / 212 pasadas** (17 archivos, 0 fallos) |
+| **Verificación de Calidad y Tipos** | `bun run check` (`ui:check` + `tsc --noEmit` + `eslint .`) | ✅ **0 errores** |
+| **Build de Producción** | `bun run build` (Next.js 16.3.8 Turbopack) | ✅ **192 / 192 rutas compiladas** |
+
+---
+
+## 🚀 4. Despliegue y Estado Operativo
+
+- **Servicio `polis-frontend`:** Reiniciado (`systemctl restart polis-frontend`), estado `active (running)`.
+- **Verificación HTTP:**
+  - `GET http://127.0.0.1:3000/` → `HTTP 200 OK`
+  - `GET http://127.0.0.1:3000/plataforma` → `HTTP 200 OK`
+- **Inviolabilidad del Censo Institucional en `bd_csh`:**
+  ```sql
+  SELECT 
+    (SELECT count(*) FROM mesas_trabajo.mesas) as mesas, 
+    (SELECT count(*) FROM mesas_trabajo.agendas) as agendas, 
+    (SELECT count(*) FROM indicadores.fichas_tecnicas_indicadores) as fichas, 
+    (SELECT count(*) FROM participacion_ciudadana.actores_estrategicos) as actores;
+  ```
+  ```
+   mesas | agendas | fichas | actores 
+  -------+---------+--------+---------
+      33 |      36 |     11 |      17
+  ```
+  *(33 mesas, 36 agendas, 11 fichas técnicas, 17 actores estratégicos — rigurosamente intactos).*
+
+---
+
+## 📦 5. Archivos Intervenidos e Incluidos en la Entrega
+
+- `src/features/politicas/data/dimensiones-detalle.data.ts`
+- `src/core/panels/panel-store.ts`
+- `src/core/navigation/navigation-store.ts`
+- `src/features/politicas/panels/dimension-detalle-panel.tsx`
+- `src/app/_composition/panel-registry.tsx`
+- `src/features/politicas/components/dimensiones-grid.tsx`
+- `src/features/politicas/views/inicio-view.tsx`
+- `src/features/politicas/views/dimensiones-view.tsx`
+- `src/features/politicas/components/dimensiones-grid.test.tsx`
+- `bridge/02_resultado_agy2.md`
