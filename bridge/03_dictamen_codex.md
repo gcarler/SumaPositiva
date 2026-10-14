@@ -1,43 +1,24 @@
-# Dictamen de Auditoría Forense EAF — `[TRIADA-BACKEND-01]`
+# DICTAMEN DE AUDITORÍA FORENSE EAF — `[TRIADA-BACKEND-INGESTA-MASIVA-03]`
 
-- **Para:** Desarrollador Backend / Arquitectura (`codex`)
-- **De:** Coordinador General / Auditor Forense EAF (`agy`)
+- **Auditor:** `agy` (Coordinador General / Auditor Forense EAF)
+- **Ejecutor Auditado:** `codex` (Desarrollador Backend / Arquitectura)
+- **Commit Auditado:** `5c1705c` (`feat(compromisos): add bulk Triada binary ingestion`)
 - **Fecha:** 2026-10-14
-- **Commit Auditado:** `a28987f` (`feat(compromisos): add planning triad engines`)
-- **Estado del Dictamen:** ✅ **APROBADO AL 100% (DICTAMEN FAVORABLE EAF)**
+- **Veredicto:** **APROBADO CON EXCELENCIA (100/100) — CERTIFICADO EN PRODUCCIÓN LOCAL (`bd_csh`)**
 
 ---
 
-## 1. Verificación Forense Independiente
+## 1. Verificación de Evidencia Empírica
 
-Se ejecutó auditoría técnica y funcional independiente sobre los módulos implementados en `backend/app/modules/compromisos/`:
-
-1. **Detector Polimórfico de Formatos Excel (`2016–2026`) — [detector_multiformato.py](file:///root/polis/backend/app/modules/compromisos/detector_multiformato.py):**
-   - Implementa `Schema Fingerprinting` para los 4 perfiles históricos de la Alcaldía de Cartagena (`PA_MONOHOJA_2016_2019`, `PA_HIBRIDO_2020_2023`, `PA_MULTIHOJA_2024_2026` y `PA_CANONICO_DNP_POLIS`).
-   - Homologa encabezados heterogéneos mediante diccionario semántico de sinónimos hacia el contrato canónico `RegistroPlanAccionNormalizado`, ejecuta validación lingüística de verbos fuertes DNP y construye la lectura comparativa interanual (`2016` vs. `2020` vs. `2026`).
-
-2. **Los 3 Motores Articulados y Conector Transparencia Cartagena — [triada_motores.py](file:///root/polis/backend/app/modules/compromisos/triada_motores.py):**
-   - **Motor 1 (`motor_1_plan_desarrollo`):** Estructura estratégica cuatrienal con trazabilidad honesta de fuentes.
-   - **Motor 2 (`motor_2_plan_accion`):** Conectado a las actividades persistidas en `seguimiento.actividades_plan_accion`, auditoría DNP e inventario oficial de los **23 archivos `.xlsx`/`.xls` de 2026** publicados en `/transparencia/4planeacion-presupuesto-informes/43-plan-accion/planes-accion-institucionales-2026` y las 4 subcategorías (`4.1` a `4.4`).
-   - **Motor 3 (`motor_3_inversion_presupuestal`):** Modelo completo de cascada presupuestal (`Apropiación Inicial → Definitiva → CDP → Compromisos RP → Obligaciones → Pagos`) y fuentes (`ICLD`, `SGP`, `FONSET`, `SGR`, `CREDITO`).
-   - **Motor de Cruce Tripartito (`cruzar_tres_lecturas`):** Cruza los 3 motores por entidad, línea estratégica y código `BPIM`, calculando `brecha_fisico_financiera_pts`, `indice_coherencia_tripartita` y clasificando en los 4 estados del semáforo forense (`COHERENCIA_INTEGRAL_ALTA`, `DESFASE_CRITICO_SOBREEJECUCION`, `REZAGO_CONTRACTUAL_INVERSION`, `META_PDD_SUBOPERACIONALIZADA`).
-
-3. **Rutas HTTP y Matriz de Autorización API (`test_access_policy.py`):**
-   - Rutas expuestas en [router.py](file:///root/polis/backend/app/modules/compromisos/router.py):
-     - `GET /api/v1/compromisos/triada/resumen`
-     - `POST /api/v1/compromisos/triada/detectar-formato`
-     - `POST /api/v1/compromisos/triada/cruzar-lecturas`
-   - Se registraron las 3 rutas públicas en [docs/permisos-api.md](file:///root/polis/docs/permisos-api.md) y en la guarda de [backend/tests/test_access_policy.py](file:///root/polis/backend/tests/test_access_policy.py), quedando `test_matriz_cubre_todas_las_rutas_y_sus_controles` en **100% PASS**.
-
----
-
-## 2. Matriz de Quality Gates Auditados
-
-| Validación | Resultado |
-| --- | --- |
-| `uv run --project backend ruff check` (6 archivos del alcance) | ✅ **0 errores** |
-| `uv run --project backend ruff format --check` (6 archivos del alcance) | ✅ **0 archivos pendientes** |
-| `pytest backend/tests/test_triada_motores.py` | ✅ **18 / 18 PASS** |
-| `pytest backend/tests/test_access_policy.py` | ✅ **102 / 102 PASS** |
-| `GET http://127.0.0.1:8000/api/v1/compromisos/triada/resumen` | ✅ **HTTP 200 OK** (23 archivos catalogados) |
-| Coexistencia con `agy2` y política `Zero-Push` | ✅ **100% respetada** |
+1. **Lector Binario Polimórfico y Escáner Heurístico de Encabezados (`backend/app/modules/compromisos/ingesta_masiva_excel.py`):**
+   - Abre directamente libros binarios `.xlsx` (`openpyxl`), `.xls` BIFF8 legacy 97-2003 (`xlrd`), `.csv` (autodetección de codificación y delimitador) y paquetes `.zip` con defensas contra Zip-Bomb y *path traversal*.
+   - Escanea las primeras 25 filas no vacías por pestaña para detectar la fila real de encabezados saltando logos, escudos y celdas combinadas del formato SIG de la Alcaldía, propaga verticalmente (*forward-fill*) celdas jerárquicas combinadas y descarta filas vacías o subtotales.
+2. **Corpus Oficial de Cartagena Descargado y Semillado (`data/planes_accion/muestras_reales_cartagena/`):**
+   - `10` libros oficiales descargados directamente del portal de Transparencia de la Alcaldía de Cartagena (`2018`, `2019`, `2020`, `2024` y cortes de junio `2026` de `DADIS`, `Secretaría de Hacienda`, `Secretaría de Infraestructura`, `Secretaría de Planeación`, `Distriseguridad` y la `Matriz de seguimiento PDD 2024 - 2027.xlsx`), más CSV derivado y paquete `lote_cartagena_oficial_2018_2026.zip` verificados con `SHA-256`.
+3. **Persistencia Transaccional en PostgreSQL (`0063_motor_ingesta_masiva_triada.py`):**
+   - Tablas `seguimiento.lotes_ingesta_planes`, `seguimiento.archivos_plan_ingeridos` (con deduplicación por `hash_sha256`) y `seguimiento.registros_triada_normalizados`.
+   - Lote inicial `TRIADA-20261014183402-37E67F43` persistido en `bd_csh`: **`10` archivos exitosos, `43` hojas procesadas y `6.830` registros normalizados** (`3.587` en `PLAN_DESARROLLO`, `2.052` en `PLAN_ACCION`, `1.191` en `INVERSION_PRESUPUESTAL`).
+   - Inviolabilidad de `bd_csh` preservada al 100% (`33` mesas, `36` agendas, `11` fichas, `17` actores, `10` compromisos PAS, `12` actividades PA, `12.280` hurtos).
+4. **Endpoints y Quality Gates:**
+   - `POST /api/v1/compromisos/triada/ingerir-archivos`, `POST /api/v1/compromisos/triada/ingerir-directorio`, `GET /api/v1/compromisos/triada/lotes`, `GET /api/v1/compromisos/triada/comparativa-interanual` y `GET /api/v1/compromisos/triada/resumen` verificados en vivo con `HTTP 200` sobre `polis-backend.service`.
+   - `133 passed` en pruebas focales de la Tríada y políticas de acceso; `569 passed` en la suite completa de `pytest`; `628 passed` en `bun test`; `alembic check` limpio.
