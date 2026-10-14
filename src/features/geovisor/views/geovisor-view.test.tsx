@@ -28,19 +28,19 @@ describe("GeovisorView Component (GEO-DOCK-02)", () => {
 
     // Dock superior (Top Shelf)
     expect(html).toContain('data-testid="geovisor-top-shelf"');
-    expect(html).toContain("Ámbito:");
-    expect(html).toContain("Variable:");
+    expect(html).toContain("Zona GeoJSON:");
+    expect(html).toContain("Capa GeoJSON:");
 
-    // Dock izquierdo (Capas y Directorio)
+    // Dock izquierdo (Capas GeoJSON)
     expect(html).toContain('data-testid="geovisor-dock-host-left"');
-    expect(html).toContain("Capas &amp; Leyenda");
+    expect(html).toContain("Capas");
 
     // Dock derecho (Inspector y BI)
     expect(html).toContain('data-testid="geovisor-dock-host-right"');
-    expect(html).toContain("Ficha Técnica");
 
-    // Dock inferior (DataGrid y Gráficos)
+    // Dock inferior (Analítica de Hurtos SIEDCO)
     expect(html).toContain('data-testid="geovisor-dock-host-bottom"');
+    expect(html).toContain("Hurtos");
     expect(html).toContain('data-testid="geovisor-dock-host-top"');
     // Workbench bar y controles
     expect(html).toContain('data-testid="geovisor-workbench-bar"');

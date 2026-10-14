@@ -51,7 +51,7 @@ export function GeovisorView() {
   const [variableMapa, setVariableMapa] = useState<VariableMapa>("ish");
   const [modoVistaMesas, setModoVistaMesas] = useState<ModoVistaMesas>("tabla");
   const [anioHurto, setAnioHurto] = useState<number | null>(null);
-  const [delitoHurto, setDelitoHurto] = useState<string | null>("hurto_motocicletas");
+  const [delitoHurto, setDelitoHurto] = useState<string | null>(null);
   const [capaPersonalizada, setCapaPersonalizada] = useState<{
     geojson: unknown;
     nombre: string;
@@ -59,15 +59,15 @@ export function GeovisorView() {
   } | null>(null);
 
   const [capas, setCapas] = useState<CapasConfig>({
-    localidades: true,
-    corregimientos: true,
-    barrios: true,
-    puntos: true,
+    localidades: false,
+    corregimientos: false,
+    barrios: false,
+    puntos: false,
     etiquetas: true,
     isocronas: false,
     hurtoMotocicletas: true,
-    hurtoResidencias: false,
-    hurtoComercio: false,
+    hurtoResidencias: true,
+    hurtoComercio: true,
   });
 
   useEffect(() => {
@@ -77,20 +77,53 @@ export function GeovisorView() {
   const handleToggleCapa = useCallback((capa: keyof CapasConfig) => {
     setCapas((prev) => {
       const next = { ...prev, [capa]: !prev[capa] };
-      if (capa === "hurtoMotocicletas" && next[capa]) {
-        setDelitoHurto("hurto_motocicletas");
-        useGeovisorLayoutStore.getState().openView("hurtos");
-      }
-      if (capa === "hurtoResidencias" && next[capa]) {
-        setDelitoHurto("hurto_residencias");
-        useGeovisorLayoutStore.getState().openView("hurtos");
-      }
-      if (capa === "hurtoComercio" && next[capa]) {
-        setDelitoHurto("hurto_comercio");
-        useGeovisorLayoutStore.getState().openView("hurtos");
+      const activosHurtos =
+        (next.hurtoMotocicletas ? 1 : 0) +
+        (next.hurtoResidencias ? 1 : 0) +
+        (next.hurtoComercio ? 1 : 0);
+
+      if (activosHurtos === 1) {
+        if (next.hurtoMotocicletas) setDelitoHurto("hurto_motocicletas");
+        else if (next.hurtoResidencias) setDelitoHurto("hurto_residencias");
+        else if (next.hurtoComercio) setDelitoHurto("hurto_comercio");
+      } else {
+        setDelitoHurto(null);
       }
       return next;
     });
+  }, []);
+
+  const handleCambioDelito = useCallback((delito: string | null) => {
+    setDelitoHurto(delito);
+    if (!delito || delito === "TODOS") {
+      setCapas((c) => ({
+        ...c,
+        hurtoMotocicletas: true,
+        hurtoResidencias: true,
+        hurtoComercio: true,
+      }));
+    } else if (delito === "hurto_motocicletas") {
+      setCapas((c) => ({
+        ...c,
+        hurtoMotocicletas: true,
+        hurtoResidencias: false,
+        hurtoComercio: false,
+      }));
+    } else if (delito === "hurto_residencias") {
+      setCapas((c) => ({
+        ...c,
+        hurtoMotocicletas: false,
+        hurtoResidencias: true,
+        hurtoComercio: false,
+      }));
+    } else if (delito === "hurto_comercio") {
+      setCapas((c) => ({
+        ...c,
+        hurtoMotocicletas: false,
+        hurtoResidencias: false,
+        hurtoComercio: true,
+      }));
+    }
   }, []);
 
   const handleSelectTerritorio = useCallback(
@@ -114,13 +147,6 @@ export function GeovisorView() {
     },
     [openPanel]
   );
-
-  const mesasDelTerritorio = useMemo(() => {
-    if (territorioId === "todas") return mesasGeovisor;
-    return mesasGeovisor.filter(
-      (mesa) => mesa.territorio_codigo?.toLowerCase() === territorioId.toLowerCase()
-    );
-  }, [mesasGeovisor, territorioId]);
 
   const handleExportarPng = useCallback(() => {
     mapaRef.current?.exportarPng();
@@ -174,6 +200,12 @@ export function GeovisorView() {
           <GeovisorTopShelf
             territorioId={territorioId}
             onTerritorioChange={handleSelectTerritorio}
+            zonaId={territorioId}
+            onZonaChange={handleSelectTerritorio}
+            delitoHurto={delitoHurto}
+            onDelitoChange={handleCambioDelito}
+            anioHurto={anioHurto}
+            onAnioHurtoChange={setAnioHurto}
             variableMapa={variableMapa}
             onVariableChange={setVariableMapa}
             onExportarPng={handleExportarPng}
@@ -292,17 +324,19 @@ export function GeovisorView() {
         centerSlot={
           <MapaCartagena
             ref={mapaRef}
+            modoGeojsonDrive={true}
             onSelectTerritorio={handleSelectTerritorio}
             selectedTerritorioId={territorioId}
             barrioSeleccionado={barrioSeleccionado}
             onSelectBarrio={handleSelectBarrio}
             variableMapa={variableMapa}
             capasVisibles={capas}
-            mesas={mesasDelTerritorio}
+            mesas={[]}
             mesaSeleccionadaId={mesaIdSeleccionada}
             onSelectMesa={handleSelectMesa}
             anioHurto={anioHurto}
             delitoHurto={delitoHurto}
+            onSelectDelitoHurto={handleCambioDelito}
             onSelectHurto={() => useGeovisorLayoutStore.getState().openView("hurtos")}
             capaPersonalizada={capaPersonalizada}
           />

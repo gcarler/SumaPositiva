@@ -11,22 +11,25 @@ const s = () => useGeovisorLayoutStore.getState();
 describe("GeovisorLayoutStore — vistas con pestañas por panel", () => {
   beforeEach(() => s().resetLayout());
 
-  test("distribuye las 8 vistas por defecto en los 4 paneles", () => {
+  test("distribuye las vistas limpias por defecto en los 4 paneles", () => {
     expect(s().tabs).toEqual(DEFAULT_DOCK_TABS);
     expect(s().activeTab.left).toBe("capas");
     expect(s().activeTab.bottom).toBe("hurtos");
+    expect(s().activeTab.right).toBeNull();
     expect(s().expandedDock).toBeNull();
   });
 
   test("moveView mueve una vista a otro panel, la activa y abre el destino", () => {
-    s().moveView("graficos", "right");
-    expect(s().tabs.bottom).toEqual(["hurtos", "datagrid"]);
-    expect(s().tabs.right).toEqual(["ficha", "territorio", "graficos"]);
-    expect(s().activeTab.right).toBe("graficos");
+    s().moveView("hurtos", "right");
+    expect(s().tabs.bottom).toEqual([]);
+    expect(s().tabs.right).toEqual(["hurtos"]);
+    expect(s().activeTab.right).toBe("hurtos");
     expect(s().rightOpen).toBe(true);
   });
 
   test("moveView reordena dentro del mismo panel", () => {
+    s().openView("mesas", "left");
+    expect(s().tabs.left).toEqual(["capas", "mesas"]);
     s().moveView("mesas", "left", 0);
     expect(s().tabs.left).toEqual(["mesas", "capas"]);
   });
@@ -39,12 +42,16 @@ describe("GeovisorLayoutStore — vistas con pestañas por panel", () => {
   });
 
   test("closeView quita la vista y openView la restaura en su panel original", () => {
+    s().openView("territorio");
+    expect(findViewDock(s().tabs, "territorio")).toBe("right");
+    expect(s().tabs.right).toEqual(["territorio"]);
+
     s().closeView("territorio");
     expect(findViewDock(s().tabs, "territorio")).toBeNull();
-    expect(s().tabs.right).toEqual(["ficha"]);
+    expect(s().tabs.right).toEqual([]);
 
     s().openView("territorio");
-    expect(s().tabs.right).toEqual(["ficha", "territorio"]);
+    expect(s().tabs.right).toEqual(["territorio"]);
     expect(s().activeTab.right).toBe("territorio");
   });
 
@@ -56,9 +63,10 @@ describe("GeovisorLayoutStore — vistas con pestañas por panel", () => {
   });
 
   test("cerrar la pestaña activa selecciona una vecina", () => {
-    s().setActiveView("bottom", "graficos");
-    s().closeView("graficos");
+    s().openView("datagrid", "bottom");
     expect(s().activeTab.bottom).toBe("datagrid");
+    s().closeView("datagrid");
+    expect(s().activeTab.bottom).toBe("hurtos");
   });
 
   test("toggleDockExpanded alterna el panel expandido", () => {

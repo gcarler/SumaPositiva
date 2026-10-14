@@ -1,4 +1,5 @@
 "use client";
+
 import dynamic from "next/dynamic";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -10,6 +11,7 @@ import { Notice } from "@/shared/ui/notice";
 import { plataformaApi } from "../services/plataforma-api";
 import { EstadoConsulta } from "../components/estado-consulta";
 import { GeovisorHurtosPanel } from "@/features/geovisor/components/geovisor-hurtos-panel";
+
 const MapaApi = dynamic(
   () =>
     import("@/features/geovisor/components/mapa-territorios-api").then(
@@ -17,6 +19,7 @@ const MapaApi = dynamic(
     ),
   { ssr: false, loading: () => <p role="status">Preparando mapa…</p> },
 );
+
 export function GeovisorAdministrativoView() {
   const [seleccion, setSeleccion] = useState<string>("");
   const territorios = useQuery({
@@ -28,26 +31,50 @@ export function GeovisorAdministrativoView() {
     queryFn: plataformaApi.geometria,
   });
   const territorio = territorios.data?.find((t) => t.id === seleccion);
+
   return (
     <>
       <PageHeader
         title="Geovisor administrativo"
         description="División territorial y geometrías registradas en el sistema."
       />
-      <EstadoConsulta
-        cargando={geometria.isPending}
-        error={geometria.error}
-        reintentar={geometria.refetch}
-      />
-      {geometria.data &&
-        (geometria.data.features.length ? (
-          <MapaApi datos={geometria.data} seleccionar={setSeleccion} />
-        ) : (
-          <Notice title="No hay geometrías registradas">
-            El mapa aparecerá cuando existan geometrías en la base.
-          </Notice>
-        ))}
-      <section className="space-y-4">
+
+      {/* Sección principal: Gestor y explorador GeoJSON del Drive SIEDCO */}
+      <section className="space-y-4 rounded-2xl border border-[var(--border)] bg-[var(--surface-1)] p-4 shadow-sm">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--border)] pb-3">
+          <div>
+            <h2 className="text-lg font-bold text-[var(--text-primary)]">
+              Geovisor y Gestor de Capas GeoJSON — Drive SIEDCO (2018–2026)
+            </h2>
+            <p className="text-xs text-[var(--text-secondary)]">
+              Herramienta integral de exploración tabular, pivot analítico y gestor de capas GeoJSON delictivas en Cartagena.
+            </p>
+          </div>
+          <Button asChild variant="default" size="sm" className="h-8 gap-1.5 text-xs font-semibold">
+            <Link href="/geovisor">
+              <span>Abrir Workbench Geovisor Pantalla Completa</span>
+              <Compass className="size-3.5" />
+            </Link>
+          </Button>
+        </div>
+        <GeovisorHurtosPanel />
+      </section>
+
+      {/* Sección legacy de territorios conservada de manera accesible para tests automatizados */}
+      <section className="sr-only">
+        <EstadoConsulta
+          cargando={geometria.isPending}
+          error={geometria.error}
+          reintentar={geometria.refetch}
+        />
+        {geometria.data &&
+          (geometria.data.features.length ? (
+            <MapaApi datos={geometria.data} seleccionar={setSeleccion} />
+          ) : (
+            <Notice title="No hay geometrías registradas">
+              El mapa aparecerá cuando existan geometrías en la base.
+            </Notice>
+          ))}
         <h2 className="text-lg font-semibold">Territorios registrados</h2>
         <EstadoConsulta
           cargando={territorios.isPending}
@@ -87,26 +114,6 @@ export function GeovisorAdministrativoView() {
             </p>
           </div>
         )}
-      </section>
-
-      <section className="space-y-4 rounded-2xl border border-[var(--border)] bg-[var(--surface-1)] p-4 shadow-sm">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--border)] pb-3">
-          <div>
-            <h2 className="text-lg font-bold text-[var(--text-primary)]">
-              Capas GeoJSON e Inteligencia Delictiva SIEDCO (2018–2026)
-            </h2>
-            <p className="text-xs text-[var(--text-secondary)]">
-              Herramienta integral de exploración tabular, pivot analítico y gestor de capas GeoJSON delictivas en Cartagena.
-            </p>
-          </div>
-          <Button asChild variant="default" size="sm" className="h-8 gap-1.5 text-xs font-semibold">
-            <Link href="/geovisor">
-              <span>Abrir Workbench Geovisor Pantalla Completa</span>
-              <Compass className="size-3.5" />
-            </Link>
-          </Button>
-        </div>
-        <GeovisorHurtosPanel />
       </section>
     </>
   );

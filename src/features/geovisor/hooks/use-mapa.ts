@@ -201,7 +201,7 @@ export function useMapa({
   mesaSeleccionadaId = null,
   onSelectMesa,
   anioHurto = null,
-  delitoHurto: _delitoHurto = null,
+  delitoHurto = null,
   onSelectHurto,
   capaPersonalizada = null,
 }: UseMapaOptions) {
@@ -241,10 +241,21 @@ export function useMapa({
       return;
     }
 
+    const numHurtosActivos =
+      (capasVisibles?.hurtoMotocicletas ? 1 : 0) +
+      (capasVisibles?.hurtoResidencias ? 1 : 0) +
+      (capasVisibles?.hurtoComercio ? 1 : 0);
+
     let delitoParam: string | undefined = undefined;
-    if (capasVisibles?.hurtoMotocicletas) delitoParam = "HURTO MOTOCICLETA";
-    else if (capasVisibles?.hurtoResidencias) delitoParam = "HURTO RESIDENCIAS";
-    else if (capasVisibles?.hurtoComercio) delitoParam = "HURTO COMERCIO";
+    if (numHurtosActivos === 1) {
+      if (capasVisibles?.hurtoMotocicletas) delitoParam = "HURTO MOTOCICLETA";
+      else if (capasVisibles?.hurtoResidencias) delitoParam = "HURTO RESIDENCIAS";
+      else if (capasVisibles?.hurtoComercio) delitoParam = "HURTO COMERCIO";
+    } else if (delitoHurto && delitoHurto !== "TODOS") {
+      if (delitoHurto === "hurto_motocicletas") delitoParam = "HURTO MOTOCICLETA";
+      else if (delitoHurto === "hurto_residencias") delitoParam = "HURTO RESIDENCIAS";
+      else if (delitoHurto === "hurto_comercio") delitoParam = "HURTO COMERCIO";
+    }
 
     let activo = true;
     obtenerPoligonosHurtosGeojson({
@@ -261,7 +272,7 @@ export function useMapa({
         });
         feats.forEach((f) => {
           f.set("tipo", "hurto");
-          f.set("delito_etiqueta", delitoParam ?? "Todos los Hurtos");
+          f.set("delito_etiqueta", delitoParam ?? "Consolidado 3 Capas Drive");
           f.set("anio_etiqueta", anioHurto ? `Año ${anioHurto}` : "2018–2026");
         });
         fuenteHurtosRef.current.addFeatures(feats);
@@ -278,6 +289,7 @@ export function useMapa({
     capasVisibles?.hurtoMotocicletas,
     capasVisibles?.hurtoResidencias,
     capasVisibles?.hurtoComercio,
+    delitoHurto,
     anioHurto,
   ]);
 
@@ -628,19 +640,33 @@ export function useMapa({
         const nombre = String(feature.get("nombre") ?? "Polígono");
         const zona = String(feature.get("zona") ?? "URBANA");
 
+        const numHurtos =
+          (capasRef.current.hurtoMotocicletas ? 1 : 0) +
+          (capasRef.current.hurtoResidencias ? 1 : 0) +
+          (capasRef.current.hurtoComercio ? 1 : 0);
+
         let baseColor = "#ef4444";
-        if (capasRef.current.hurtoMotocicletas) baseColor = "#f97316";
-        else if (capasRef.current.hurtoResidencias) baseColor = "#8b5cf6";
-        else if (capasRef.current.hurtoComercio) baseColor = "#06b6d4";
+        if (numHurtos === 1) {
+          if (capasRef.current.hurtoMotocicletas) baseColor = "#f97316";
+          else if (capasRef.current.hurtoResidencias) baseColor = "#8b5cf6";
+          else if (capasRef.current.hurtoComercio) baseColor = "#06b6d4";
+        } else if (delitoHurto === "hurto_motocicletas") {
+          baseColor = "#f97316";
+        } else if (delitoHurto === "hurto_residencias") {
+          baseColor = "#8b5cf6";
+        } else if (delitoHurto === "hurto_comercio") {
+          baseColor = "#06b6d4";
+        }
 
         const esUrbano = zona === "URBANA";
-        const opacidad = hovered ? "88" : esUrbano ? "50" : "22";
+        const opacidad = hovered ? "88" : esUrbano ? "55" : "28";
         const strokeColor = hovered ? "#1a1a2e" : baseColor;
-        const strokeWidth = hovered ? 3.5 : 2;
+        const strokeWidth = hovered ? 3.5 : esUrbano ? 2.5 : 2;
+        const lineDash = (!hovered && !esUrbano) ? [6, 4] : undefined;
 
         return new Style({
           fill: new Fill({ color: `${baseColor}${opacidad}` }),
-          stroke: new Stroke({ color: strokeColor, width: strokeWidth }),
+          stroke: new Stroke({ color: strokeColor, width: strokeWidth, lineDash }),
           text: capasRef.current.etiquetas
             ? new Text({
                 text: `${nombre}\n${total.toLocaleString("es-CO")} hurtos (${porcentaje}%)`,

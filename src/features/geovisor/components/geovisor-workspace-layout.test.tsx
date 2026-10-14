@@ -39,7 +39,7 @@ describe("GeovisorWorkspaceLayout Component (GEO-DOCK-01)", () => {
     expect(html).toContain('data-dock-panel="center"');
   });
 
-  test("refleja el estado por defecto del store: top y left activos, right y bottom colapsados", () => {
+  test("refleja el estado por defecto del store: top, left y bottom activos, right colapsado", () => {
     const html = renderToString(
       <GeovisorWorkspaceLayout
         topSlot={<div>Contenido Superior</div>}
@@ -62,19 +62,19 @@ describe("GeovisorWorkspaceLayout Component (GEO-DOCK-01)", () => {
     expect(html).toContain('id="dock-panel-right"');
     expect(html).toContain('data-panel-size="0.0"');
 
-    // Bottom colapsado (defaultSize 0.0)
+    // Bottom activo por defecto en layout limpio para analítica de hurtos (defaultSize 20.0)
     expect(html).toContain('id="dock-panel-bottom"');
-    expect(html).toContain('data-panel-size="0.0"');
+    expect(html).toContain('data-panel-size="20.0"');
 
-    // Separadores de paneles cerrados deben tener clase hidden
+    // Separador de panel derecho cerrado debe tener clase hidden
     expect(html).toContain('data-dock-handle="right"');
     expect(html).toContain('data-dock-handle="bottom"');
   });
 
-  test("actualiza el dimensionamiento cuando se activan los paneles derecho e inferior en el store", () => {
+  test("actualiza el dimensionamiento cuando se modifican los paneles derecho e inferior en el store", () => {
     const store = useGeovisorLayoutStore.getState();
-    store.togglePanel("right");
-    store.togglePanel("bottom");
+    store.setPanelOpen("right", true);
+    store.setPanelOpen("bottom", false);
 
     const html = renderToString(
       <GeovisorWorkspaceLayout
@@ -86,12 +86,12 @@ describe("GeovisorWorkspaceLayout Component (GEO-DOCK-01)", () => {
       />
     );
 
-    // Right y Bottom ahora activos con sus tamaños configurados
+    // Right ahora activo (26.0) y Bottom ahora colapsado (0.0)
     expect(html).toContain('id="dock-panel-right"');
     expect(html).toContain('data-panel-size="26.0"');
 
     expect(html).toContain('id="dock-panel-bottom"');
-    expect(html).toContain('data-panel-size="20.0"');
+    expect(html).toContain('data-panel-size="0.0"');
   });
 
   test("maximizar mapa colapsa los 4 paneles a tamaño 0.0 mientras preserva el mapa central", () => {

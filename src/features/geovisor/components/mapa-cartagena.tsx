@@ -45,8 +45,10 @@ interface MapaCartagenaProps {
   onSelectMesa?: (mesaId: string) => void;
   anioHurto?: number | null;
   delitoHurto?: string | null;
+  onSelectDelitoHurto?: (delito: string | null) => void;
   onSelectHurto?: (poligonoId: number) => void;
   capaPersonalizada?: { geojson: unknown; nombre?: string; color?: string } | null;
+  modoGeojsonDrive?: boolean;
 }
 
 const LOCALIDADES = [
@@ -82,8 +84,10 @@ const MapaCartagena = forwardRef<MapaCartagenaHandle, MapaCartagenaProps>(functi
     onSelectMesa,
     anioHurto = null,
     delitoHurto = null,
+    onSelectDelitoHurto,
     onSelectHurto,
     capaPersonalizada = null,
+    modoGeojsonDrive = false,
   },
   ref,
 ) {
@@ -167,101 +171,153 @@ const MapaCartagena = forwardRef<MapaCartagenaHandle, MapaCartagenaProps>(functi
 
   return (
     <div className="relative flex h-full min-h-[36rem] w-full flex-col overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface-1)] shadow-sm">
-      {/* Panel Flotante de Búsqueda y Filtro Rápido */}
-      <div
-        role="search"
-        aria-label="Buscar territorio o barrio"
-        className="absolute left-3 right-3 top-3 z-10 grid gap-2.5 rounded-xl border border-[var(--border)] bg-[var(--surface-1)]/95 p-3 shadow-raised backdrop-blur sm:left-4 sm:right-auto sm:w-[min(26rem,calc(100%-2rem))]"
-      >
-        <div className="relative">
-          <Label htmlFor="buscar-barrio-geovisor" className="sr-only">
-            Buscar territorio o barrio
-          </Label>
-          <Search
-            aria-hidden="true"
-            className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-[var(--text-tertiary)]"
-          />
-          <Input
-            id="buscar-barrio-geovisor"
-            value={busqueda}
-            onChange={(event) => setBusqueda(event.target.value)}
-            placeholder="Busca un territorio o barrio (ej. Boquilla)"
-            autoComplete="off"
-            className="pl-9 h-9 text-xs"
-          />
-          {termBusqueda.length >= 2 && (
-            <ul
-              aria-label="Resultados de búsqueda"
-              className="absolute left-0 right-0 top-full z-30 mt-1 max-h-60 overflow-auto rounded-lg border border-[var(--border)] bg-[var(--surface-1)] p-1 shadow-raised"
+      {/* Panel Flotante de Capas GeoJSON o Búsqueda y Filtro Rápido */}
+      {modoGeojsonDrive ? (
+        <div
+          role="region"
+          aria-label="Capas GeoJSON Drive"
+          className="absolute left-3 right-3 top-3 z-10 flex flex-col gap-2 rounded-xl border border-[var(--border)] bg-[var(--surface-1)]/95 p-3 shadow-raised backdrop-blur sm:left-4 sm:right-auto sm:w-[min(30rem,calc(100%-2rem))]"
+        >
+          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--border)] pb-2">
+            <div className="flex items-center gap-1.5 text-xs font-bold text-[var(--text-primary)]">
+              <span className="size-2 rounded-full bg-[var(--ember)]" />
+              <span>Capas GeoJSON Drive (SIEDCO 2018–2026)</span>
+            </div>
+            <span className="text-[10px] text-[var(--text-tertiary)] font-mono">
+              EPSG:9377 → WGS84 · 2 Polígonos Oficiales
+            </span>
+          </div>
+          <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
+            <Button
+              variant={!delitoHurto || delitoHurto === "TODOS" ? "ember" : "outline"}
+              size="sm"
+              onClick={() => onSelectDelitoHurto?.(null)}
+              className="text-[11px] h-7 px-2.5 font-medium"
             >
-              {territoriosCoincidentes.map((territorio) => (
-                <li key={territorio.id}>
-                  <Button
-                    variant="unstyled"
-                    size="unstyled"
-                    className="flex w-full items-start rounded-md px-3 py-2 text-left hover:bg-[var(--surface-2)]"
-                    onClick={() => {
-                      setBusqueda(territorio.nombre);
-                      onSelectTerritorio(territorio.id);
-                    }}
-                  >
-                    <span className="text-xs font-medium text-[var(--text-primary)]">
-                      {territorio.nombre}
-                    </span>
-                  </Button>
-                </li>
-              ))}
-              {barriosFiltrados.map((barrio) => (
-                <li key={`${barrio.localidadId}-${barrio.barrio}`}>
-                  <Button
-                    variant="unstyled"
-                    size="unstyled"
-                    className="flex w-full items-start justify-between gap-3 rounded-md px-3 py-2 text-left hover:bg-[var(--surface-2)]"
-                    onClick={() => seleccionarBarrio(barrio)}
-                  >
-                    <span className="min-w-0">
-                      <span className="block text-xs font-semibold text-[var(--text-primary)]">
-                        {barrio.barrio}
-                      </span>
-                      <span className="block text-[11px] text-[var(--text-secondary)]">
-                        {LOCALIDADES.find((l) => l.id === barrio.localidadId)?.nombre}
-                        {barrio.ucg ? ` · UCG ${barrio.ucg}` : ""}
-                      </span>
-                    </span>
-                    <span className="shrink-0 rounded bg-[var(--surface-2)] px-1.5 py-0.5 text-[10px] font-semibold text-[var(--text-tertiary)]">
-                      {barrio.estratoNum ? `Estrato ${barrio.estratoNum}` : barrio.estrato}
-                    </span>
-                  </Button>
-                </li>
-              ))}
-              {barriosFiltrados.length === 0 && territoriosCoincidentes.length === 0 && (
-                <li className="p-3 text-xs text-[var(--text-secondary)]">
-                  No hay coincidencias en el catálogo de barrios o territorios.
-                </li>
-              )}
-            </ul>
-          )}
+              Consolidado (18.242)
+            </Button>
+            <Button
+              variant={delitoHurto === "hurto_motocicletas" ? "ember" : "outline"}
+              size="sm"
+              onClick={() => onSelectDelitoHurto?.("hurto_motocicletas")}
+              className="text-[11px] h-7 px-2.5 font-medium"
+            >
+              Motocicletas (4.683)
+            </Button>
+            <Button
+              variant={delitoHurto === "hurto_residencias" ? "ember" : "outline"}
+              size="sm"
+              onClick={() => onSelectDelitoHurto?.("hurto_residencias")}
+              className="text-[11px] h-7 px-2.5 font-medium"
+            >
+              Residencias (5.044)
+            </Button>
+            <Button
+              variant={delitoHurto === "hurto_comercio" ? "ember" : "outline"}
+              size="sm"
+              onClick={() => onSelectDelitoHurto?.("hurto_comercio")}
+              className="text-[11px] h-7 px-2.5 font-medium"
+            >
+              Comercio (8.515)
+            </Button>
+          </div>
         </div>
+      ) : (
+        <div
+          role="search"
+          aria-label="Buscar territorio o barrio"
+          className="absolute left-3 right-3 top-3 z-10 grid gap-2.5 rounded-xl border border-[var(--border)] bg-[var(--surface-1)]/95 p-3 shadow-raised backdrop-blur sm:left-4 sm:right-auto sm:w-[min(26rem,calc(100%-2rem))]"
+        >
+          <div className="relative">
+            <Label htmlFor="buscar-barrio-geovisor" className="sr-only">
+              Buscar territorio o barrio
+            </Label>
+            <Search
+              aria-hidden="true"
+              className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-[var(--text-tertiary)]"
+            />
+            <Input
+              id="buscar-barrio-geovisor"
+              value={busqueda}
+              onChange={(event) => setBusqueda(event.target.value)}
+              placeholder="Busca un territorio o barrio (ej. Boquilla)"
+              autoComplete="off"
+              className="pl-9 h-9 text-xs"
+            />
+            {termBusqueda.length >= 2 && (
+              <ul
+                aria-label="Resultados de búsqueda"
+                className="absolute left-0 right-0 top-full z-30 mt-1 max-h-60 overflow-auto rounded-lg border border-[var(--border)] bg-[var(--surface-1)] p-1 shadow-raised"
+              >
+                {territoriosCoincidentes.map((territorio) => (
+                  <li key={territorio.id}>
+                    <Button
+                      variant="unstyled"
+                      size="unstyled"
+                      className="flex w-full items-start rounded-md px-3 py-2 text-left hover:bg-[var(--surface-2)]"
+                      onClick={() => {
+                        setBusqueda(territorio.nombre);
+                        onSelectTerritorio(territorio.id);
+                      }}
+                    >
+                      <span className="text-xs font-medium text-[var(--text-primary)]">
+                        {territorio.nombre}
+                      </span>
+                    </Button>
+                  </li>
+                ))}
+                {barriosFiltrados.map((barrio) => (
+                  <li key={`${barrio.localidadId}-${barrio.barrio}`}>
+                    <Button
+                      variant="unstyled"
+                      size="unstyled"
+                      className="flex w-full items-start justify-between gap-3 rounded-md px-3 py-2 text-left hover:bg-[var(--surface-2)]"
+                      onClick={() => seleccionarBarrio(barrio)}
+                    >
+                      <span className="min-w-0">
+                        <span className="block text-xs font-semibold text-[var(--text-primary)]">
+                          {barrio.barrio}
+                        </span>
+                        <span className="block text-[11px] text-[var(--text-secondary)]">
+                          {LOCALIDADES.find((l) => l.id === barrio.localidadId)?.nombre}
+                          {barrio.ucg ? ` · UCG ${barrio.ucg}` : ""}
+                        </span>
+                      </span>
+                      <span className="shrink-0 rounded bg-[var(--surface-2)] px-1.5 py-0.5 text-[10px] font-semibold text-[var(--text-tertiary)]">
+                        {barrio.estratoNum ? `Estrato ${barrio.estratoNum}` : barrio.estrato}
+                      </span>
+                    </Button>
+                  </li>
+                ))}
+                {barriosFiltrados.length === 0 && territoriosCoincidentes.length === 0 && (
+                  <li className="p-3 text-xs text-[var(--text-secondary)]">
+                    No hay coincidencias en el catálogo de barrios o territorios.
+                  </li>
+                )}
+              </ul>
+            )}
+          </div>
 
-        <div>
-          <Label htmlFor="filtro-localidad-geovisor" className="mb-1 block text-[11px] font-medium text-[var(--text-secondary)]">
-            Filtrar por localidad
-          </Label>
-          <Select value={localidadActiva} onValueChange={handleCambioLocalidad}>
-            <SelectTrigger id="filtro-localidad-geovisor" className="w-full h-8 text-xs" aria-label="Filtrar por localidad">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="todas">Todas las localidades (205 barrios)</SelectItem>
-              {LOCALIDADES.map((localidad) => (
-                <SelectItem key={localidad.id} value={localidad.id}>
-                  {localidad.nombre} ({BARRIOS_POR_LOCALIDAD[localidad.id].length} barrios)
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <div>
+            <Label htmlFor="filtro-localidad-geovisor" className="mb-1 block text-[11px] font-medium text-[var(--text-secondary)]">
+              Filtrar por localidad
+            </Label>
+            <Select value={localidadActiva} onValueChange={handleCambioLocalidad}>
+              <SelectTrigger id="filtro-localidad-geovisor" className="w-full h-8 text-xs" aria-label="Filtrar por localidad">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="todas">Todas las localidades (205 barrios)</SelectItem>
+                {LOCALIDADES.map((localidad) => (
+                  <SelectItem key={localidad.id} value={localidad.id}>
+                    {localidad.nombre} ({BARRIOS_POR_LOCALIDAD[localidad.id].length} barrios)
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Badge Estado SIG en Esquina Superior Derecha */}
       <div className="absolute right-4 top-4 z-20 flex items-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--surface-1)]/90 px-3 py-1.5 shadow-sm backdrop-blur">
@@ -276,7 +332,7 @@ const MapaCartagena = forwardRef<MapaCartagenaHandle, MapaCartagenaProps>(functi
           <>
             <span className="size-2 rounded-full bg-[var(--success)]" />
             <span className="text-[11px] font-medium text-[var(--text-secondary)]">
-              Choropleth Activo
+              {modoGeojsonDrive ? "GeoJSON Drive Activo" : "Choropleth Activo"}
             </span>
           </>
         )}
@@ -572,7 +628,13 @@ const MapaCartagena = forwardRef<MapaCartagenaHandle, MapaCartagenaProps>(functi
       )}
 
       {/* Lista Accesible de Botones Territoriales para Navegación por Teclado */}
-      <div className="flex max-h-36 shrink-0 flex-wrap gap-2 overflow-y-auto border-t border-[var(--border)] bg-[var(--surface-1)] p-3">
+      <div
+        className={
+          modoGeojsonDrive
+            ? "sr-only"
+            : "flex max-h-36 shrink-0 flex-wrap gap-2 overflow-y-auto border-t border-[var(--border)] bg-[var(--surface-1)] p-3"
+        }
+      >
         {territoriosVisibles.map((territorio) => (
           <Button
             key={territorio.id}

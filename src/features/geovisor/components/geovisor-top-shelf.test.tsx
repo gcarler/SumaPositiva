@@ -4,17 +4,20 @@ import { renderToString } from "react-dom/server";
 import { GeovisorTopShelf } from "./geovisor-top-shelf";
 
 describe("GeovisorTopShelf Component (GEO-DOCK-02)", () => {
-  test("renderiza selectores de ámbito y variable, y 4 KPI chips", () => {
-    const handleTerritorio = vi.fn();
-    const handleVariable = vi.fn();
+  test("renderiza selectores de zona GeoJSON, capa y año, y 4 KPI chips reales", () => {
+    const handleZona = vi.fn();
+    const handleDelito = vi.fn();
+    const handleAnio = vi.fn();
     const handleExportar = vi.fn();
 
     const html = renderToString(
       <GeovisorTopShelf
-        territorioId="todas"
-        onTerritorioChange={handleTerritorio}
-        variableMapa="ish"
-        onVariableChange={handleVariable}
+        zonaId="todas"
+        onZonaChange={handleZona}
+        delitoHurto={null}
+        onDelitoChange={handleDelito}
+        anioHurto={null}
+        onAnioHurtoChange={handleAnio}
         onExportarPng={handleExportar}
       />
     );
@@ -23,15 +26,18 @@ describe("GeovisorTopShelf Component (GEO-DOCK-02)", () => {
     expect(html).toContain('role="region"');
     expect(html).toContain('data-testid="geovisor-top-shelf"');
 
-    // Etiquetas y selectores
-    expect(html).toContain("Ámbito:");
-    expect(html).toContain("Variable:");
+    // Etiquetas y selectores GeoJSON Drive
+    expect(html).toContain("Zona GeoJSON:");
+    expect(html).toContain("Capa GeoJSON:");
+    expect(html).toContain("Año:");
     expect(html).toContain("Exportar PNG");
 
-    // 4 KPI Chips
-    expect(html).toContain("Ciudadanos Participando");
-    expect(html).toContain("Aportes Radicados");
-    expect(html).toContain("Alertas SAT Activas");
-    expect(html).toContain("ISH Promedio Distrital");
+    // 4 KPI Chips Reales del GeoJSON del Drive
+    expect(html).toContain("Total Incidentes GeoJSON");
+    expect(html).toContain("Registros GeoJSON (Drive)");
+    expect(html).toContain("Perímetro Urbano");
+    expect(html).toContain("Zona Rural e Insular");
+    expect(html).toContain("18.242");
+    expect(html).toContain("12.280");
   });
 });

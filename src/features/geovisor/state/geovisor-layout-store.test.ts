@@ -16,7 +16,7 @@ describe("GeovisorLayoutStore (GEO-DOCK-01)", () => {
     expect(state.topOpen).toBe(true);
     expect(state.leftOpen).toBe(true);
     expect(state.rightOpen).toBe(false);
-    expect(state.bottomOpen).toBe(false);
+    expect(state.bottomOpen).toBe(true);
     expect(state.isMaximized).toBe(false);
 
     expect(state.sizes.top).toBe(18);
@@ -38,9 +38,9 @@ describe("GeovisorLayoutStore (GEO-DOCK-01)", () => {
     useGeovisorLayoutStore.getState().togglePanel("right");
     expect(useGeovisorLayoutStore.getState().rightOpen).toBe(true);
 
-    // Bottom está cerrado inicialmente -> debe abrirse
+    // Bottom está abierto inicialmente -> debe cerrarse
     useGeovisorLayoutStore.getState().togglePanel("bottom");
-    expect(useGeovisorLayoutStore.getState().bottomOpen).toBe(true);
+    expect(useGeovisorLayoutStore.getState().bottomOpen).toBe(false);
   });
 
   test("permite establecer explícitamente el estado de un panel con setPanelOpen", () => {
@@ -84,7 +84,7 @@ describe("GeovisorLayoutStore (GEO-DOCK-01)", () => {
     expect(restaurado.topOpen).toBe(true);
     expect(restaurado.leftOpen).toBe(true);
     expect(restaurado.rightOpen).toBe(false);
-    expect(restaurado.bottomOpen).toBe(false);
+    expect(restaurado.bottomOpen).toBe(true);
     expect(restaurado.isMaximized).toBe(false);
   });
 

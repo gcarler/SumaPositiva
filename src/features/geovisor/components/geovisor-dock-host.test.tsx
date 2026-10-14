@@ -11,20 +11,21 @@ describe("GeovisorDockHost", () => {
   beforeEach(() => useGeovisorLayoutStore.getState().resetLayout());
 
   test("muestra una pestaña por vista del panel y solo monta la activa", () => {
+    useGeovisorLayoutStore.getState().openView("mesas", "left");
     const html = renderToString(<GeovisorDockHost dock="left" renderView={render} />);
     expect(html).toContain('data-testid="dock-tab-capas"');
     expect(html).toContain('data-testid="dock-tab-mesas"');
     expect(html).toContain('role="tablist"');
     expect(html).toContain("Capas &amp; Leyenda");
     expect(html).toContain("Directorio de Mesas");
-    expect(html).toContain('data-testid="contenido-capas"');
-    expect(html).not.toContain('data-testid="contenido-mesas"');
+    expect(html).toContain('data-testid="contenido-mesas"');
+    expect(html).not.toContain('data-testid="contenido-capas"');
   });
 
   test("cada pestaña es arrastrable y tiene botón de cierre accesible", () => {
     const html = renderToString(<GeovisorDockHost dock="bottom" renderView={render} />);
     expect(html).toContain('draggable="true"');
-    expect(html).toContain('aria-label="Cerrar vista DataGrid de Mesas"');
+    expect(html).toContain('aria-label="Cerrar vista Analítica de Hurtos (2018–2026)"');
     expect(html).toContain('data-testid="dock-expand-bottom"');
     expect(html).toContain('data-testid="dock-menu-bottom"');
   });

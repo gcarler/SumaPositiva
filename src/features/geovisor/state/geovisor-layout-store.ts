@@ -34,15 +34,15 @@ export type DockActiveTab = Record<DockPanelId, GeovisorViewId | null>;
 
 export const DEFAULT_DOCK_TABS: DockTabs = {
   top: ["filtros"],
-  left: ["capas", "mesas"],
-  right: ["ficha", "territorio"],
-  bottom: ["hurtos", "datagrid", "graficos"],
+  left: ["capas"],
+  right: [],
+  bottom: ["hurtos"],
 };
 
 export const DEFAULT_DOCK_ACTIVE: DockActiveTab = {
   top: "filtros",
   left: "capas",
-  right: "ficha",
+  right: null,
   bottom: "hurtos",
 };
 
@@ -98,8 +98,10 @@ export function findViewDock(tabs: DockTabs, viewId: GeovisorViewId): DockPanelI
 }
 
 export function defaultDockForView(viewId: GeovisorViewId): DockPanelId {
-  if (viewId === "hurtos") return "bottom";
-  return findViewDock(DEFAULT_DOCK_TABS, viewId) ?? "right";
+  if (viewId === "hurtos" || viewId === "datagrid" || viewId === "graficos") return "bottom";
+  if (viewId === "ficha" || viewId === "territorio") return "right";
+  if (viewId === "capas" || viewId === "mesas") return "left";
+  return "top";
 }
 
 function cloneTabs(tabs: DockTabs): DockTabs {
@@ -147,7 +149,7 @@ export const DEFAULT_DOCK_VISIBILITY: DockPanelVisibility = {
   topOpen: true,
   leftOpen: true,
   rightOpen: false,
-  bottomOpen: false,
+  bottomOpen: true,
 };
 
 const storageFallback = {
@@ -329,8 +331,21 @@ export const useGeovisorLayoutStore = create<GeovisorLayoutState>()(
     }),
     {
       name: "polis_geovisor_layout",
-      version: 2,
-      migrate: (persisted) => persisted as GeovisorLayoutState,
+      version: 3,
+      migrate: (persisted, version) => {
+        if (typeof version === "number" && version < 3) {
+          return {
+            ...DEFAULT_DOCK_VISIBILITY,
+            sizes: { ...DEFAULT_DOCK_SIZES },
+            isMaximized: false,
+            previousOpenState: null,
+            tabs: cloneTabs(DEFAULT_DOCK_TABS),
+            activeTab: { ...DEFAULT_DOCK_ACTIVE },
+            expandedDock: null,
+          } as GeovisorLayoutState;
+        }
+        return persisted as GeovisorLayoutState;
+      },
       merge: (persisted, current) => {
         const saved = (persisted ?? {}) as Partial<GeovisorLayoutState>;
         const hasTabs = saved.tabs !== undefined;
