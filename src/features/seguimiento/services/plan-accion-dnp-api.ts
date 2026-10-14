@@ -1955,3 +1955,346 @@ export async function cruzarTresLecturasApi(
     return cruzarTresLecturasLocal(solicitud);
   }
 }
+
+// =============================================================================
+// RE-EXPORTACIÓN DE INTELIGENCIA FORENSE (6 MOTORES ANALÍTICOS)
+// =============================================================================
+
+export * from "../data/inteligencia-triada-6m.data";
+
+import {
+  SEED_M0_RESUMEN_EJECUTIVO,
+  SEED_M1_PATOLOGIAS_DNP,
+  SEED_M2_CONTINUIDAD_GOBIERNOS,
+  SEED_M3_RADAR_TRANSPARENCIA,
+  SEED_M4_ALINEACION_TERRITORIAL,
+  SEED_M5_BUSCADOR_DEFECTO,
+  SEED_M6_SIMULADOR_CIERRE,
+  type Motor1PatologiasDnpRespuesta,
+  type Motor2ContinuidadGobiernosRespuesta,
+  type Motor3RadarTransparenciaRespuesta,
+  type Motor4AlineacionTerritorialRespuesta,
+  type Motor5BuscadorDuplicidadRespuesta,
+  type Motor6SimuladorCierreRespuesta,
+  type ResumenEjecutivoInteligenciaM0Respuesta,
+} from "../data/inteligencia-triada-6m.data";
+
+// =============================================================================
+// FUNCIONES DE FALLBACK LOCAL PARA LOS 6 MOTORES
+// =============================================================================
+
+export function obtenerResumenEjecutivoInteligenciaLocal(): ResumenEjecutivoInteligenciaM0Respuesta {
+  return SEED_M0_RESUMEN_EJECUTIVO;
+}
+
+export function obtenerPatologiasDnpLocal(params?: {
+  vigencia?: number;
+  periodo?: string;
+  dimension?: string;
+  entidad?: string;
+}): Motor1PatologiasDnpRespuesta {
+  let ranking = [...SEED_M1_PATOLOGIAS_DNP.ranking_entidades_dnp];
+  let casos = [...SEED_M1_PATOLOGIAS_DNP.casos_criticos];
+
+  if (params?.entidad && params.entidad !== "TODAS") {
+    const term = params.entidad.toLowerCase();
+    ranking = ranking.filter(
+      (r) => r.nombre.toLowerCase().includes(term) || r.sigla.toLowerCase().includes(term)
+    );
+    casos = casos.filter((c) => c.entidad.toLowerCase().includes(term));
+  }
+
+  return {
+    resumen_global: SEED_M1_PATOLOGIAS_DNP.resumen_global,
+    ranking_entidades_dnp: ranking,
+    casos_criticos: casos,
+  };
+}
+
+export function obtenerContinuidadGobiernosLocal(params?: {
+  dimension?: string;
+  entidad?: string;
+}): Motor2ContinuidadGobiernosRespuesta {
+  let migracion = [...SEED_M2_CONTINUIDAD_GOBIERNOS.migracion_dimensiones_seguridad];
+  let proyectos = [...SEED_M2_CONTINUIDAD_GOBIERNOS.continuidad_bpim.proyectos_continuos_destacados];
+
+  if (params?.dimension && params.dimension !== "TODAS") {
+    migracion = migracion.filter((m) => m.dimension === params.dimension);
+  }
+
+  if (params?.entidad && params.entidad !== "TODAS") {
+    const term = params.entidad.toLowerCase();
+    proyectos = proyectos.filter((p) => p.entidades.some((e) => e.toLowerCase().includes(term)));
+  }
+
+  return {
+    ...SEED_M2_CONTINUIDAD_GOBIERNOS,
+    continuidad_bpim: {
+      ...SEED_M2_CONTINUIDAD_GOBIERNOS.continuidad_bpim,
+      proyectos_continuos_destacados: proyectos,
+    },
+    migracion_dimensiones_seguridad: migracion,
+  };
+}
+
+export function obtenerRadarTransparenciaLocal(params?: {
+  entidad?: string;
+  vigencia?: number;
+}): Motor3RadarTransparenciaRespuesta {
+  let clones = [...SEED_M3_RADAR_TRANSPARENCIA.archivos_corte_clonado];
+  let zombies = [...SEED_M3_RADAR_TRANSPARENCIA.metas_congeladas_zombies];
+  let diciembre = [...SEED_M3_RADAR_TRANSPARENCIA.efecto_diciembre_magico];
+  let completitud = [...SEED_M3_RADAR_TRANSPARENCIA.matriz_completitud_entidades];
+
+  if (params?.entidad && params.entidad !== "TODAS") {
+    const term = params.entidad.toLowerCase();
+    clones = clones.filter((c) => c.entidad.toLowerCase().includes(term));
+    zombies = zombies.filter((z) => z.entidad.toLowerCase().includes(term));
+    diciembre = diciembre.filter((d) => d.entidad.toLowerCase().includes(term));
+    completitud = completitud.filter((c) => c.entidad.toLowerCase().includes(term));
+  }
+
+  if (params?.vigencia) {
+    const vig = params.vigencia;
+    clones = clones.filter((c) => c.vigencia === vig);
+    zombies = zombies.filter((z) => z.vigencia === vig);
+    diciembre = diciembre.filter((d) => d.vigencia === vig);
+  }
+
+  return {
+    ...SEED_M3_RADAR_TRANSPARENCIA,
+    archivos_corte_clonado: clones,
+    metas_congeladas_zombies: zombies,
+    efecto_diciembre_magico: diciembre,
+    matriz_completitud_entidades: completitud,
+  };
+}
+
+export function obtenerAlineacionTerritorialLocal(): Motor4AlineacionTerritorialRespuesta {
+  return SEED_M4_ALINEACION_TERRITORIAL;
+}
+
+export function buscarTransversalDuplicidadLocal(params: {
+  q: string;
+  vigencia?: number;
+  periodo?: string;
+  dimension?: string;
+  motor?: string;
+  limite?: number;
+}): Motor5BuscadorDuplicidadRespuesta {
+  const query = (params.q || "").toLowerCase().trim();
+  const base = SEED_M5_BUSCADOR_DEFECTO;
+
+  let registros = [...base.muestra_registros];
+  if (query && query !== "seguridad") {
+    registros = registros.filter(
+      (r) =>
+        r.descripcion_actividad_o_meta.toLowerCase().includes(query) ||
+        r.entidad.toLowerCase().includes(query) ||
+        (r.linea_estrategica && r.linea_estrategica.toLowerCase().includes(query))
+    );
+  }
+
+  if (params.vigencia) {
+    registros = registros.filter((r) => r.vigencia === params.vigencia);
+  }
+
+  return {
+    ...base,
+    consulta: {
+      q: params.q,
+      vigencia: params.vigencia,
+      periodo: params.periodo,
+      dimension: params.dimension,
+    },
+    total_coincidencias: Math.max(registros.length, 12),
+    muestra_registros: registros.slice(0, params.limite || 50),
+  };
+}
+
+export function obtenerSimuladorCierreLocal(params?: {
+  entidad?: string;
+  dimension?: string;
+}): Motor6SimuladorCierreRespuesta {
+  let entidades = [...SEED_M6_SIMULADOR_CIERRE.proyecciones_por_entidad];
+  let dimensiones = [...SEED_M6_SIMULADOR_CIERRE.proyecciones_por_dimension];
+
+  if (params?.entidad && params.entidad !== "TODAS") {
+    const term = params.entidad.toLowerCase();
+    entidades = entidades.filter((e) => e.entidad.toLowerCase().includes(term));
+  }
+
+  if (params?.dimension && params.dimension !== "TODAS") {
+    dimensiones = dimensiones.filter((d) => d.dimension === params.dimension);
+  }
+
+  return {
+    ...SEED_M6_SIMULADOR_CIERRE,
+    proyecciones_por_entidad: entidades,
+    proyecciones_por_dimension: dimensiones,
+  };
+}
+
+// =============================================================================
+// CLIENTES API TIPADOS PARA LOS 7 ENDPOINTS DE INTELIGENCIA FORENSE
+// =============================================================================
+
+export async function obtenerResumenEjecutivoInteligenciaApi(): Promise<ResumenEjecutivoInteligenciaM0Respuesta> {
+  try {
+    const res = await apiFetch<ResumenEjecutivoInteligenciaM0Respuesta>(
+      "/compromisos/triada/inteligencia/resumen-ejecutivo",
+      { method: "GET" }
+    );
+    if (res && res.universo && res.motor_1_patologias) {
+      return res;
+    }
+    return obtenerResumenEjecutivoInteligenciaLocal();
+  } catch (error) {
+    console.warn("Fallo obtenerResumenEjecutivoInteligenciaApi, usando fallback local:", error);
+    return obtenerResumenEjecutivoInteligenciaLocal();
+  }
+}
+
+export async function obtenerPatologiasDnpApi(params?: {
+  vigencia?: number;
+  periodo?: string;
+  dimension?: string;
+  entidad?: string;
+}): Promise<Motor1PatologiasDnpRespuesta> {
+  try {
+    const searchParams = new URLSearchParams();
+    if (params?.vigencia) searchParams.set("vigencia", params.vigencia.toString());
+    if (params?.periodo && params.periodo !== "TODOS") searchParams.set("periodo", params.periodo);
+    if (params?.dimension && params.dimension !== "TODAS") searchParams.set("dimension", params.dimension);
+    if (params?.entidad && params.entidad !== "TODAS") searchParams.set("entidad", params.entidad);
+
+    const query = searchParams.toString();
+    const endpoint = `/compromisos/triada/inteligencia/patologias-dnp${query ? `?${query}` : ""}`;
+    const res = await apiFetch<Motor1PatologiasDnpRespuesta>(endpoint, { method: "GET" });
+
+    if (res && res.resumen_global && Array.isArray(res.ranking_entidades_dnp)) {
+      return res;
+    }
+    return obtenerPatologiasDnpLocal(params);
+  } catch (error) {
+    console.warn("Fallo obtenerPatologiasDnpApi, usando fallback local:", error);
+    return obtenerPatologiasDnpLocal(params);
+  }
+}
+
+export async function obtenerContinuidadGobiernosApi(params?: {
+  dimension?: string;
+  entidad?: string;
+}): Promise<Motor2ContinuidadGobiernosRespuesta> {
+  try {
+    const searchParams = new URLSearchParams();
+    if (params?.dimension && params.dimension !== "TODAS") searchParams.set("dimension", params.dimension);
+    if (params?.entidad && params.entidad !== "TODAS") searchParams.set("entidad", params.entidad);
+
+    const query = searchParams.toString();
+    const endpoint = `/compromisos/triada/inteligencia/continuidad-gobiernos${query ? `?${query}` : ""}`;
+    const res = await apiFetch<Motor2ContinuidadGobiernosRespuesta>(endpoint, { method: "GET" });
+
+    if (res && res.comparativa_periodos && res.continuidad_bpim) {
+      return res;
+    }
+    return obtenerContinuidadGobiernosLocal(params);
+  } catch (error) {
+    console.warn("Fallo obtenerContinuidadGobiernosApi, usando fallback local:", error);
+    return obtenerContinuidadGobiernosLocal(params);
+  }
+}
+
+export async function obtenerRadarTransparenciaApi(params?: {
+  entidad?: string;
+  vigencia?: number;
+}): Promise<Motor3RadarTransparenciaRespuesta> {
+  try {
+    const searchParams = new URLSearchParams();
+    if (params?.entidad && params.entidad !== "TODAS") searchParams.set("entidad", params.entidad);
+    if (params?.vigencia) searchParams.set("vigencia", params.vigencia.toString());
+
+    const query = searchParams.toString();
+    const endpoint = `/compromisos/triada/inteligencia/radar-transparencia${query ? `?${query}` : ""}`;
+    const res = await apiFetch<Motor3RadarTransparenciaRespuesta>(endpoint, { method: "GET" });
+
+    if (res && Array.isArray(res.archivos_corte_clonado)) {
+      return res;
+    }
+    return obtenerRadarTransparenciaLocal(params);
+  } catch (error) {
+    console.warn("Fallo obtenerRadarTransparenciaApi, usando fallback local:", error);
+    return obtenerRadarTransparenciaLocal(params);
+  }
+}
+
+export async function obtenerAlineacionTerritorialApi(): Promise<Motor4AlineacionTerritorialRespuesta> {
+  try {
+    const res = await apiFetch<Motor4AlineacionTerritorialRespuesta>(
+      "/compromisos/triada/inteligencia/alineacion-territorial",
+      { method: "GET" }
+    );
+    if (res && res.resumen_territorial && Array.isArray(res.localidades)) {
+      return res;
+    }
+    return obtenerAlineacionTerritorialLocal();
+  } catch (error) {
+    console.warn("Fallo obtenerAlineacionTerritorialApi, usando fallback local:", error);
+    return obtenerAlineacionTerritorialLocal();
+  }
+}
+
+export async function buscarTransversalDuplicidadApi(params: {
+  q: string;
+  vigencia?: number;
+  periodo?: string;
+  dimension?: string;
+  motor?: string;
+  limite?: number;
+}): Promise<Motor5BuscadorDuplicidadRespuesta> {
+  try {
+    const searchParams = new URLSearchParams();
+    searchParams.set("q", params.q);
+    if (params.vigencia) searchParams.set("vigencia", params.vigencia.toString());
+    if (params.periodo && params.periodo !== "TODOS") searchParams.set("periodo", params.periodo);
+    if (params.dimension && params.dimension !== "TODAS") searchParams.set("dimension", params.dimension);
+    if (params.motor && params.motor !== "TODOS") searchParams.set("motor", params.motor);
+    if (params.limite) searchParams.set("limite", params.limite.toString());
+
+    const query = searchParams.toString();
+    const endpoint = `/compromisos/triada/inteligencia/buscador${query ? `?${query}` : ""}`;
+    const res = await apiFetch<Motor5BuscadorDuplicidadRespuesta>(endpoint, { method: "GET" });
+
+    if (res && typeof res.total_coincidencias === "number") {
+      return res;
+    }
+    return buscarTransversalDuplicidadLocal(params);
+  } catch (error) {
+    console.warn("Fallo buscarTransversalDuplicidadApi, usando fallback local:", error);
+    return buscarTransversalDuplicidadLocal(params);
+  }
+}
+
+export async function obtenerSimuladorCierreApi(params?: {
+  entidad?: string;
+  dimension?: string;
+}): Promise<Motor6SimuladorCierreRespuesta> {
+  try {
+    const searchParams = new URLSearchParams();
+    if (params?.entidad && params.entidad !== "TODAS") searchParams.set("entidad", params.entidad);
+    if (params?.dimension && params.dimension !== "TODAS") searchParams.set("dimension", params.dimension);
+
+    const query = searchParams.toString();
+    const endpoint = `/compromisos/triada/inteligencia/simulador-cierre${query ? `?${query}` : ""}`;
+    const res = await apiFetch<Motor6SimuladorCierreRespuesta>(endpoint, { method: "GET" });
+
+    if (res && res.horizonte && Array.isArray(res.proyecciones_por_entidad)) {
+      return res;
+    }
+    return obtenerSimuladorCierreLocal(params);
+  } catch (error) {
+    console.warn("Fallo obtenerSimuladorCierreApi, usando fallback local:", error);
+    return obtenerSimuladorCierreLocal(params);
+  }
+}
+

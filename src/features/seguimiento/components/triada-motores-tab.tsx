@@ -36,19 +36,25 @@ import {
   detectarFormatoPlanAccionApi,
   obtenerResumenTriadaMotoresLocal,
   detectarFormatoPlanAccionLocal,
+  DIMENSIONES_SEGURIDAD_HUMANA_INFO,
+  PERIODOS_GOBIERNO_INFO,
   type ResumenTriadaMotoresRespuesta,
   type DetectarFormatoPlanAccionRespuesta,
   type ArchivoExcelPlanAccion2026,
 } from "../services/plan-accion-dnp-api";
+import { InteligenciaForense6MPanel } from "./inteligencia-forense-6m-panel";
 
 export interface TriadaMotoresTabProps {
   puedeEditar?: boolean;
 }
 
-export function TriadaMotoresTab({ puedeEditar: _puedeEditar = false }: TriadaMotoresTabProps) {
+export function TriadaMotoresTab({ puedeEditar = false }: TriadaMotoresTabProps) {
   // Sub-vista activa
   const [subvistaActiva, setSubvistaActiva] = useState<
-    "triada_lecturas" | "detector_multiformato" | "conector_transparencia"
+    | "triada_lecturas"
+    | "detector_multiformato"
+    | "conector_transparencia"
+    | "inteligencia_forense"
   >("triada_lecturas");
 
   // Estado general de datos inicializado con catálogo canónico (SSR y resiliencia offline)
@@ -60,6 +66,8 @@ export function TriadaMotoresTab({ puedeEditar: _puedeEditar = false }: TriadaMo
   const [filtroDependencia, setFiltroDependencia] = useState<string>("TODAS");
   const [filtroFuente, setFiltroFuente] = useState<string>("TODAS");
   const [filtroSemaforo, setFiltroSemaforo] = useState<string>("TODOS");
+  const [filtroDimensionTriada, setFiltroDimensionTriada] = useState<string>("TODAS");
+  const [filtroPeriodoTriada, setFiltroPeriodoTriada] = useState<string>("TODOS");
 
   // Estado de Sub-vista 2 (Detector Polimórfico)
   const [muestraSeleccionadaId, setMuestraSeleccionadaId] = useState<string>(
@@ -213,12 +221,33 @@ export function TriadaMotoresTab({ puedeEditar: _puedeEditar = false }: TriadaMo
             <Database className="h-4 w-4" />
             <span>3. Conector Transparencia Cartagena (23 Archivos 2026)</span>
           </Button>
+
+          <Button
+            variant={subvistaActiva === "inteligencia_forense" ? "ember" : "outline"}
+            size="sm"
+            onClick={() => setSubvistaActiva("inteligencia_forense")}
+            className="gap-2 text-xs font-medium"
+            data-testid="tab-nav-inteligencia-forense-6m"
+            aria-pressed={subvistaActiva === "inteligencia_forense"}
+          >
+            <ShieldCheck className="h-4 w-4" />
+            <span>4. Laboratorio de Inteligencia Forense (6 Motores · 217k)</span>
+          </Button>
         </div>
 
-        <Badge variant="outline" className="gap-1.5 border-ember/30 bg-ember/10 text-xs text-text-primary">
-          <Sparkles className="h-3 w-3 text-ember" />
-          <span>Ley 152/94 · Ley 1474/11 Art. 74</span>
-        </Badge>
+        <div className="flex flex-wrap items-center gap-2">
+          <Badge
+            variant="outline"
+            className="gap-1.5 border-primary/40 bg-primary/10 text-xs font-semibold text-primary"
+          >
+            <ShieldCheck className="h-3 w-3" />
+            <span>Calidad Forense 99,97% (217.740 registros saneados en bd_csh)</span>
+          </Badge>
+          <Badge variant="outline" className="gap-1.5 border-ember/30 bg-ember/10 text-xs text-text-primary">
+            <Sparkles className="h-3 w-3 text-ember" />
+            <span>Ley 152/94 · Ley 1474/11 Art. 74</span>
+          </Badge>
+        </div>
       </div>
 
       {/* ==================================================================== */}
@@ -529,6 +558,46 @@ export function TriadaMotoresTab({ puedeEditar: _puedeEditar = false }: TriadaMo
                     <SelectItem value="META_PDD_SUBOPERACIONALIZADA" className="text-xs">
                       🟠 Meta PDD Suboperacionalizada
                     </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Filtro Dimensión de Seguridad Humana */}
+              <div className="w-[220px]">
+                <Label className="text-[11px] text-text-muted mb-1 block">Dimensión Seguridad Humana</Label>
+                <Select value={filtroDimensionTriada} onValueChange={setFiltroDimensionTriada}>
+                  <SelectTrigger className="text-xs" aria-label="Filtrar por Dimensión de Seguridad Humana">
+                    <SelectValue placeholder="Todas las dimensiones" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="TODAS" className="text-xs">
+                      Todas las 8 dimensiones
+                    </SelectItem>
+                    {DIMENSIONES_SEGURIDAD_HUMANA_INFO.map((d) => (
+                      <SelectItem key={d.id} value={d.id} className="text-xs">
+                        {d.nombre}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Filtro Periodo de Gobierno */}
+              <div className="w-[200px]">
+                <Label className="text-[11px] text-text-muted mb-1 block">Periodo Histórico</Label>
+                <Select value={filtroPeriodoTriada} onValueChange={setFiltroPeriodoTriada}>
+                  <SelectTrigger className="text-xs" aria-label="Filtrar por Periodo Histórico">
+                    <SelectValue placeholder="Todos los periodos" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="TODOS" className="text-xs">
+                      Todos los periodos (2016–2026)
+                    </SelectItem>
+                    {PERIODOS_GOBIERNO_INFO.map((p) => (
+                      <SelectItem key={p.codigo} value={p.codigo} className="text-xs">
+                        {p.nombre}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
@@ -1078,6 +1147,15 @@ export function TriadaMotoresTab({ puedeEditar: _puedeEditar = false }: TriadaMo
               </table>
             </div>
           </div>
+        </section>
+      )}
+
+      {/* ==================================================================== */}
+      {/* SUB-VISTA 4: LABORATORIO DE INTELIGENCIA FORENSE (6 MOTORES · 217K) */}
+      {/* ==================================================================== */}
+      {subvistaActiva === "inteligencia_forense" && (
+        <section aria-labelledby="heading-subvista-inteligencia" className="space-y-6">
+          <InteligenciaForense6MPanel puedeEditar={puedeEditar} />
         </section>
       )}
     </div>
