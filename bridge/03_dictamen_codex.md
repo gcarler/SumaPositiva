@@ -28,3 +28,27 @@
    - `16 passed` en `test_ingesta_masiva_triada.py`, `573 passed` (`0` fallos) en toda la suite `pytest` del backend y `628 passed` en `bun test`.
    - `alembic check` limpio (`0064_drive_seguridad_humana (head)`).
    - Conteos canónicos de `bd_csh` 100% intactos (`33` mesas, `36` agendas, `11` fichas, `17` actores, `10` compromisos PAS, `12` actividades PA, `12.280` hurtos).
+
+
+---
+
+# DICTAMEN EAF — `[TRIADA-BACKEND-QA-FORENSE-05]`
+
+- **Fecha:** 2026-10-14
+- **Auditor:** `agy` (Auditor Forense EAF)
+- **Auditado:** `codex` (`=codex:0.0`)
+- **Commit auditado:** `90add410aa055390644ce547ce4c79e4ad4406c1` (`fix(triada): enforce forensic data quality controls`)
+- **Calificación:** **100 / 100 — APROBADO SIN OBSERVACIONES**
+
+## Verificación independiente en `bd_csh` y API en vivo (`127.0.0.1:8000`)
+
+1. **Normalización institucional cerrada (`30` entidades públicas oficiales de Cartagena):**
+   - Cobertura de entidad canónica en `seguimiento.registros_triada_normalizados`: subió de **`65,92%`** (`143.846 / 218.217`) a **`99,97%`** (`217.678 / 217.740`).
+   - `0` nombres de funcionarios en `entidad_normalizada` (preservados en `datos_origen["_responsable_celda"]`), `0` entidades numéricas (`57 -> 0`), `0` placeholders (`555 -> 0`), y solo `62` registros (`0,03%`) con `None` por ausencia de atribución verificable en la fuente.
+   - Corregido el falso positivo de subcadena `"epa"` en `"departamento"` (`VALORIZACION` clasificado en `Departamento Administrativo de Valorización Distrital` con `2.056` registros) y el caso `TRANSCARIBEcon` (`Transcaribe` con `2.351` registros).
+2. **Doble barrera de deduplicación (`hash_sha256` binario + `huella_tabular_sha256` semántica):**
+   - `609` hashes binarios únicos, `8` copias binarias exactas descartadas y `1` clon tabular de mismo corte fusionado (`DADIS 2021`, `477` filas duplicadas eliminadas).
+   - `5` archivos marcados con `alerta_calidad = "CONTENIDO_IDENTICO_OTRO_CORTE"` (`Transcaribe` T2=T1 2026, `LHCN` T1=T2 2026, `Alcaldía Local Industrial y de la Bahía` T1 2026 y Diciembre 2025 vs. Anual 2026, e `IDER` T3 2023 vs. Anual) y excluidos por defecto de las series interanuales para impedir sobreconteo.
+3. **Inviolabilidad de `bd_csh` y suites de pruebas:**
+   - Conteos canónicos intactos: `33` mesas, `36` agendas, `11` fichas, `17` actores, `10` compromisos PAS, `12` actividades PA, `12.280` hurtos.
+   - `pytest`: `20 passed` en `backend/tests/test_ingesta_masiva_triada.py` y `579 passed` en `backend/tests`. `bun test`: `628 passed` (`0 fail`).
