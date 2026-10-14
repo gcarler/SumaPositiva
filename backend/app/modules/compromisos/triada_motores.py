@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from collections import defaultdict
 from typing import Any
 
@@ -225,10 +226,19 @@ def motor_inversion_presupuestal(
 
 def _clave(fila: Any) -> tuple[str, str, str]:
     return (
-        fila.entidad.strip().casefold(),
-        fila.linea_estrategica.strip().casefold(),
-        fila.codigo_bpim.strip().casefold(),
+        str(fila.entidad or "").strip().casefold(),
+        str(fila.linea_estrategica or "").strip().casefold(),
+        str(fila.codigo_bpim or "").strip().casefold(),
     )
+
+
+def _clave_valida(clave: tuple[str, str, str]) -> bool:
+    invalidos = {"-", "----", "n/a", "na", "nd", "ninguno", "0", "sin codigo"}
+    for valor in clave:
+        normalizado = " ".join(valor.strip().casefold().split())
+        if not normalizado or normalizado in invalidos:
+            return False
+    return not bool(re.fullmatch(r"\d+(?:[.,]\d+)*", clave[0].strip()))
 
 
 def cruzar_tres_lecturas(
@@ -243,7 +253,7 @@ def cruzar_tres_lecturas(
         for row in rows:
             key = _clave(row)
             # Never match unrelated records through an empty entity/line/BPIM key.
-            if all(key):
+            if _clave_valida(key):
                 grouped[key].append(row)
         maps.append(grouped)
     keys = sorted(set().union(*(set(m) for m in maps)))

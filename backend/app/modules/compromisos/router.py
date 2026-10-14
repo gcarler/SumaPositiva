@@ -183,6 +183,7 @@ async def comparativa_interanual_triada(
     vigencia_hasta: int = Query(2026, ge=2016, le=2027),
     dimension: str | None = Query(None, max_length=120),
     periodo: str | None = Query(None, max_length=40),
+    corte: str | None = Query(None, max_length=20),
 ):
     if vigencia_desde > vigencia_hasta:
         from fastapi import HTTPException
@@ -199,6 +200,7 @@ async def comparativa_interanual_triada(
         hasta=vigencia_hasta,
         dimension=dimension,
         periodo=periodo,
+        corte=corte,
     )
 
 
@@ -231,6 +233,9 @@ async def obtener_resumen_triada_motores(
         resumen["resumen_dimensiones_seguridad"] = await IngestaMasivaService(
             session
         ).resumen_dimensiones(dimension, periodo)
+        resumen["ingesta_masiva"]["calidad_datos"] = await IngestaMasivaService(
+            session
+        ).calidad_datos()
     resumen["filtros"]["dimension"] = dimension
     resumen["filtros"]["periodo"] = periodo
     return resumen

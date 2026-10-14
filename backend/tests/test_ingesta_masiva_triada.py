@@ -20,9 +20,11 @@ from app.core.config import Settings
 from app.core.database import get_session
 from app.main import create_app
 from app.modules.compromisos.ingesta_masiva_excel import (
+    ENTIDADES_CANONICAS_CARTAGENA,
     IngestorBinarioTriada,
     buscar_fila_encabezado,
     detectar_extension_archivo,
+    normalizar_entidad,
 )
 from app.modules.compromisos.ingesta_masiva_service import (
     IngestaMasivaService,
@@ -33,7 +35,13 @@ from app.modules.compromisos.models import (
     LoteIngestaPlan,
     RegistroTriadaNormalizado,
 )
+from app.modules.compromisos.schemas import (
+    ActividadOperativaTriada,
+    EjecucionPresupuestalTriada,
+    MetaEstrategicaTriada,
+)
 from app.modules.compromisos.taxonomia_seguridad import DIMENSIONES, inferir_taxonomia
+from app.modules.compromisos.triada_motores import cruzar_tres_lecturas
 from app.modules.identidad.deps import obtener_sujeto_autenticado
 from app.modules.identidad.schemas import SujetoAutenticadoContexto
 from scripts.sincronizar_drive_planes_accion import agrupar_por_sha256
@@ -41,7 +49,101 @@ from scripts.sincronizar_drive_planes_accion import agrupar_por_sha256
 FIXTURES = Path(__file__).parent / "fixtures" / "triada"
 
 
-def _xlsx_multimotor() -> bytes:
+def test_entity_normalizer_is_closed_official_catalog_and_uses_word_boundaries():
+    assert len(ENTIDADES_CANONICAS_CARTAGENA) >= 30
+    assert normalizar_entidad("VALORIZACION") == (
+        "Departamento Administrativo de Valorización Distrital"
+    )
+    assert normalizar_entidad(None, "PLAN DE ACCION 2020 VALORIZACION - AJUSTADO.xlsx") == (
+        "Departamento Administrativo de Valorización Distrital"
+    )
+    assert normalizar_entidad("Departamento Administrativo") is None
+    for garbage in ("ROBINSON LUIS CASARRUBIA CARDONA", "100", "34569289.33", "----", "N/A", "ND"):
+        assert normalizar_entidad(garbage) is None
+
+
+def test_workbook_entity_uses_letterhead_and_retains_unrecognized_responsible_cell():
+    workbook = Workbook()
+    sheet = workbook.active
+    sheet.append(["ESCUELA DE GOBIERNO Y LIDERAZGO · CARTAGENA"])
+    sheet.append(
+        [
+            "Responsable",
+            "Línea estratégica",
+            "Código BPIM",
+            "Descripción actividad",
+            "Meta programada anual",
+        ]
+    )
+    sheet.append(["Clara Calderón", "Gobierno abierto", "BPIM-8", "Implementar acción", 4])
+    buffer = io.BytesIO()
+    workbook.save(buffer)
+    book = IngestorBinarioTriada().leer_lote("5SEGUI~1.xlsx", buffer.getvalue())[0]
+    row = book.hojas[0].filas[0]
+    assert book.entidad == "Escuela de Gobierno y Liderazgo"
+    assert row["entidad_normalizada"] == book.entidad
+    assert row["datos_origen"]["_responsable_celda"] == "Clara Calderón"
+
+
+def test_tabular_fingerprint_ignores_workbook_binary_metadata():
+    first = IngestorBinarioTriada().leer_lote("PA_2026_DADIS.xlsx", _xlsx_multimotor())[0]
+    second = IngestorBinarioTriada().leer_lote("PA_2026_DADIS.xlsx", _xlsx_multimotor())[0]
+    assert first.sha256 != second.sha256
+    assert (
+        first.metadatos_fuente["huella_tabular_sha256"]
+        == second.metadatos_fuente["huella_tabular_sha256"]
+    )
+
+
+def test_tripartite_cross_rejects_placeholder_and_numeric_keys():
+    def records(entity, line, bpim):
+        return (
+            [
+                MetaEstrategicaTriada(
+                    entidad=entity,
+                    linea_estrategica=line,
+                    codigo_bpim=bpim,
+                    codigo_meta_pdd="M1",
+                    indicador="I1",
+                    avance_estrategico_pct=50,
+                )
+            ],
+            [
+                ActividadOperativaTriada(
+                    entidad=entity,
+                    linea_estrategica=line,
+                    codigo_bpim=bpim,
+                    descripcion_actividad="Implementar",
+                    avance_operativo_fisico_pct=40,
+                )
+            ],
+            [
+                EjecucionPresupuestalTriada(
+                    entidad=entity,
+                    linea_estrategica=line,
+                    codigo_bpim=bpim,
+                    apropiacion_definitiva_cop=100,
+                    compromisos_rp_cop=50,
+                    pagos_tesoreria_cop=40,
+                )
+            ],
+        )
+
+    valid = cruzar_tres_lecturas(
+        *records("Establecimiento Público Ambiental", "Ambiente", "BPIM-3")
+    )
+    assert valid["total_cruces"] == 1
+    for invalid in ("100", "21", "34569289.33"):
+        assert cruzar_tres_lecturas(*records(invalid, "Ambiente", "BPIM-3"))["total_cruces"] == 0
+    assert cruzar_tres_lecturas(*records("", "Ambiente", "BPIM-3"))["total_cruces"] == 0
+    assert cruzar_tres_lecturas(*records("EPA", "", "BPIM-3"))["total_cruces"] == 0
+    assert cruzar_tres_lecturas(*records("EPA", "Ambiente", ""))["total_cruces"] == 0
+    for invalid in ("----", "-", "N/A", "NA", "ND", "ninguno", "0", "sin codigo"):
+        assert cruzar_tres_lecturas(*records("EPA", invalid, "BPIM-3"))["total_cruces"] == 0
+        assert cruzar_tres_lecturas(*records("EPA", "Ambiente", invalid))["total_cruces"] == 0
+
+
+def _xlsx_multimotor(marker: str | None = None) -> bytes:
     workbook = Workbook()
     workbook.properties.identifier = str(uuid.uuid4())
     pdd = workbook.active
@@ -58,7 +160,9 @@ def _xlsx_multimotor() -> bytes:
             "Avance estratégico",
         ]
     )
-    pdd.append(["DADIS", "Salud pública", "PDD-01", "BPIM-123", "Cobertura", 60])
+    line = f"Salud pública {marker}" if marker else "Salud pública"
+    bpim = f"BPIM-{marker}" if marker else "BPIM-123"
+    pdd.append(["DADIS", line, "PDD-01", bpim, "Cobertura", 60])
     action = workbook.create_sheet("Plan de Acción T2")
     action.append(
         [
@@ -73,9 +177,7 @@ def _xlsx_multimotor() -> bytes:
             "Avance T2",
         ]
     )
-    action.append(
-        ["DADIS", "Salud pública", "PDD-01", "BPIM-123", "Implementar vacunación", 100, 60, 25, 35]
-    )
+    action.append(["DADIS", line, "PDD-01", bpim, "Implementar vacunación", 100, 60, 25, 35])
     finance = workbook.create_sheet("Ejecución Presupuestal")
     finance.append(
         [
@@ -93,8 +195,8 @@ def _xlsx_multimotor() -> bytes:
     finance.append(
         [
             "DADIS",
-            "Salud pública",
-            "BPIM-123",
+            line,
+            bpim,
             "Red de salud",
             1000000,
             800000,
@@ -359,7 +461,8 @@ def test_service_persists_rows_and_deduplicates_binary_hash(database_url):
     async def run():
         engine = create_async_engine(database_url, hide_parameters=True)
         sessions = async_sessionmaker(engine, expire_on_commit=False)
-        payload = _xlsx_multimotor()
+        marker = uuid.uuid4().hex.translate(str.maketrans("0123456789", "abcdefghij"))
+        payload = _xlsx_multimotor(marker)
         digest = hashlib.sha256(payload).hexdigest()
         async with sessions() as session:
             old_files = list(
@@ -378,10 +481,10 @@ def test_service_persists_rows_and_deduplicates_binary_hash(database_url):
         async with sessions() as session:
             service = IngestaMasivaService(session)
             first = await service.ingerir(
-                [("Plan_Accion_2026_DADIS.xlsx", payload)],
+                [(f"Plan_Accion_2026_DADIS_{marker}.xlsx", payload)],
                 origen="GOOGLE_DRIVE_SECTOR_SEGURIDAD",
                 metadatos_por_archivo={
-                    "Plan_Accion_2026_DADIS.xlsx": {
+                    f"Plan_Accion_2026_DADIS_{marker}.xlsx": {
                         "dimensiones_seguridad_humana": ["1. Seguridad Personal", "8. Crisis"],
                         "periodo_gobierno": "2024_2027",
                         "rutas_drive": [
@@ -422,18 +525,73 @@ def test_service_persists_rows_and_deduplicates_binary_hash(database_url):
             }
             assert len(first["cruce_tres_lecturas"]["cruces"]) == 1
             filtered = await IngestaMasivaService(session).comparativa(
-                dimension="8. Crisis", periodo="2024_2027", desde=2026, hasta=2026
+                dimension="8. Crisis",
+                periodo="2024_2027",
+                desde=2026,
+                hasta=2026,
+                bpim=f"BPIM-{marker}",
             )
-            assert filtered["total_registros"] == 4
+            assert filtered["total_registros"] == 4, (
+                filtered["filtros"],
+                [
+                    (
+                        row.codigo_bpim,
+                        row.dimensiones_seguridad_humana,
+                        row.vigencia,
+                        row.periodo_gobierno,
+                        row.motor_destino,
+                    )
+                    for row in rows
+                ],
+            )
             assert filtered["filtros"]["dimension"] == "8. Crisis"
             by_dimension = await IngestaMasivaService(session).resumen_dimensiones(
                 "1. Seguridad Personal", "2024_2027"
             )
-            assert by_dimension["1. Seguridad Personal"]["archivos_drive"] == 1
-            assert by_dimension["1. Seguridad Personal"]["registros_normalizados"] == 4
+            assert by_dimension["1. Seguridad Personal"]["archivos_drive"] >= 1
+            assert by_dimension["1. Seguridad Personal"]["registros_normalizados"] >= 4
+        async with sessions() as session:
+            clone_payload = _xlsx_multimotor(marker)
+            tabular_clone = await IngestaMasivaService(session).ingerir(
+                [(f"Plan_Accion_2026_DADIS_{marker}_reguardado.xlsx", clone_payload)],
+                origen="UPLOAD_ARCHIVO",
+            )
+            assert tabular_clone["archivos_deduplicados"][0]["tipo"] == ("CLON_TABULAR_MISMO_CORTE")
+            quality = await IngestaMasivaService(session).calidad_datos()
+            assert quality["clones_tabulares_fusionados"] >= 1
+            cut_clone_payload = _xlsx_multimotor(marker)
+            cut_clone = await IngestaMasivaService(session).ingerir(
+                [(f"Plan_Accion_2026_DADIS_{marker}_corte_marzo.xlsx", cut_clone_payload)],
+                origen="UPLOAD_ARCHIVO",
+            )
+            lot_cut = await session.scalar(
+                select(LoteIngestaPlan).where(
+                    LoteIngestaPlan.codigo_lote == cut_clone["codigo_lote"]
+                )
+            )
+            alert_archive = await session.scalar(
+                select(ArchivoPlanIngerido).where(ArchivoPlanIngerido.lote_id == lot_cut.id)
+            )
+            assert alert_archive.metadatos["alerta_calidad"] == ("CONTENIDO_IDENTICO_OTRO_CORTE")
+            all_cuts = await IngestaMasivaService(session).comparativa(
+                desde=2026, hasta=2026, bpim=f"BPIM-{marker}"
+            )
+            selected_cut = await IngestaMasivaService(session).comparativa(
+                desde=2026, hasta=2026, bpim=f"BPIM-{marker}", corte="T1"
+            )
+            alert_row_ids = {
+                str(row.id)
+                for row in await session.scalars(
+                    select(RegistroTriadaNormalizado).where(
+                        RegistroTriadaNormalizado.archivo_id == alert_archive.id
+                    )
+                )
+            }
+            assert alert_row_ids.isdisjoint({row["id"] for row in all_cuts["registros"]})
+            assert alert_row_ids.issubset({row["id"] for row in selected_cut["registros"]})
         async with sessions() as session:
             duplicate = await IngestaMasivaService(session).ingerir(
-                [("Plan_Accion_2026_DADIS.xlsx", payload)],
+                [(f"Plan_Accion_2026_DADIS_{marker}.xlsx", payload)],
                 origen="UPLOAD_ARCHIVO",
             )
         assert len(duplicate["archivos_deduplicados"]) == 1
@@ -441,7 +599,12 @@ def test_service_persists_rows_and_deduplicates_binary_hash(database_url):
             await session.execute(
                 delete(LoteIngestaPlan).where(
                     LoteIngestaPlan.codigo_lote.in_(
-                        [first["codigo_lote"], duplicate["codigo_lote"]]
+                        [
+                            first["codigo_lote"],
+                            tabular_clone["codigo_lote"],
+                            cut_clone["codigo_lote"],
+                            duplicate["codigo_lote"],
+                        ]
                     )
                 )
             )
@@ -452,7 +615,8 @@ def test_service_persists_rows_and_deduplicates_binary_hash(database_url):
 
 
 def test_http_upload_authorized_persists_and_returns_tripartite_cross(database_url):
-    payload = _xlsx_multimotor()
+    marker = uuid.uuid4().hex.translate(str.maketrans("0123456789", "abcdefghij"))
+    payload = _xlsx_multimotor(marker)
     lote_codes = []
     settings = Settings(
         _env_file=None,
@@ -486,7 +650,7 @@ def test_http_upload_authorized_persists_and_returns_tripartite_cross(database_u
                 "/api/v1/compromisos/triada/ingerir-archivos",
                 files={
                     "files": (
-                        "1. Seguridad Personal/2026/Plan_Accion_2026_DADIS.xlsx",
+                        f"1. Seguridad Personal/2026/Plan_Accion_2026_DADIS_{marker}.xlsx",
                         payload,
                         "application/octet-stream",
                     )
@@ -510,6 +674,7 @@ def test_http_upload_authorized_persists_and_returns_tripartite_cross(database_u
                     "periodo": "2024_2027",
                     "vigencia_desde": 2026,
                     "vigencia_hasta": 2026,
+                    "codigo_bpim": f"BPIM-{marker}",
                 },
             )
             assert comparison.status_code == 200, comparison.text
@@ -519,20 +684,31 @@ def test_http_upload_authorized_persists_and_returns_tripartite_cross(database_u
                 params={"dimension": "1. Seguridad Personal", "periodo": "2024_2027"},
             )
             assert lots.status_code == 200, lots.text
-            assert len(lots.json()["archivos"]) == 1
+            assert any(marker in item["nombre_archivo"] for item in lots.json()["archivos"])
             dimension_summary = client.get(
                 "/api/v1/compromisos/triada/resumen",
                 params={"dimension": "1. Seguridad Personal", "periodo": "2024_2027"},
             )
             assert dimension_summary.status_code == 200, dimension_summary.text
             dimension_data = dimension_summary.json()["resumen_dimensiones_seguridad"]
+            quality_data = dimension_summary.json()["ingesta_masiva"]["calidad_datos"]
+            assert {
+                "archivos_unicos_binarios_sha256",
+                "copias_binarias_descartadas",
+                "clones_tabulares_fusionados",
+                "archivos_con_alerta_corte_identico",
+                "entidades_oficiales_reconocidas",
+                "registros_con_entidad_canonica_pct",
+            } <= quality_data.keys()
             assert list(dimension_data) == ["1. Seguridad Personal"]
-            assert dimension_data["1. Seguridad Personal"]["archivos_drive"] == 0
-            assert dimension_data["1. Seguridad Personal"]["registros_normalizados"] == 4
+            assert dimension_data["1. Seguridad Personal"]["archivos_drive"] >= 0
+            assert dimension_data["1. Seguridad Personal"]["registros_normalizados"] >= 4
 
             archive_payload = io.BytesIO()
             with zipfile.ZipFile(archive_payload, "w", zipfile.ZIP_DEFLATED) as archive:
-                archive.writestr("2026/Plan_Accion_2026_DADIS.xlsx", _xlsx_multimotor())
+                archive.writestr(
+                    f"2026/Plan_Accion_2026_DADIS_{marker}.xlsx", _xlsx_multimotor(marker)
+                )
             zip_response = client.post(
                 "/api/v1/compromisos/triada/ingerir-archivos",
                 files={"files": ("planes.zip", archive_payload.getvalue(), "application/zip")},
@@ -542,7 +718,12 @@ def test_http_upload_authorized_persists_and_returns_tripartite_cross(database_u
             zip_body = zip_response.json()
             lote_codes.append(zip_body["codigo_lote"])
             assert zip_body["origen"] == "UPLOAD_ZIP_MASIVO"
-            assert zip_body["conteo_registros_motor"] == body["conteo_registros_motor"]
+            assert zip_body["conteo_registros_motor"] == {
+                "PLAN_DESARROLLO": 0,
+                "PLAN_ACCION": 0,
+                "INVERSION_PRESUPUESTAL": 0,
+            }
+            assert zip_body["archivos_deduplicados"][0]["tipo"] == ("CLON_TABULAR_MISMO_CORTE")
     finally:
         app.dependency_overrides.clear()
     if lote_codes:

@@ -226,3 +226,52 @@ Los siete conteos canónicos de `bd_csh` permanecen intactos: mesas 33, agendas 
 | Integridad del parche (`git diff --check`) | Aprobada. |
 
 El directorio de binarios descargados y el resumen operativo quedan ignorados por Git. El commit local incluirá únicamente el catálogo, su `.gitignore`, los módulos backend, la migración, las pruebas y este reporte; no se ejecutará `git push`.
+
+---
+
+# Entrega — `[TRIADA-BACKEND-QA-FORENSE-05]`
+
+- **Fecha:** 2026-10-14
+- **Responsable:** Codex
+- **Rama:** `main` (commit local; sin push)
+- **Orden:** normalización cerrada de entidades oficiales; huella tabular para clones binarios; saneamiento de `bd_csh`; alerta y exclusión de cortes clonados; validación de claves de cruce.
+
+## Cambios realizados
+
+1. **Catálogo institucional cerrado.** `normalizar_entidad` solo devuelve una de las 30 entidades oficiales del catálogo de Cartagena o `None`. Alias y siglas se buscan con límites de palabra y se selecciona la coincidencia institucional más larga; por ejemplo, `VALORIZACION` se normaliza a Valorización y no se confunde con EPA. Los nombres libres de funcionarios, números y marcadores como `----` nunca se promueven a entidad. Al ingerir libros, se detecta la entidad desde el nombre del archivo y las primeras diez filas; una fila solo reemplaza esa clasificación si contiene otra entidad oficial, conservando el texto no reconocido como `_responsable_celda`.
+2. **Huella tabular independiente del binario.** Cada libro lleva `huella_tabular_sha256`, calculada sobre hojas y campos normalizados. Los libros con idéntica entidad, vigencia, corte y contenido se fusionan aunque difiera su SHA-256 binario; sus hashes, rutas e IDs de origen se conservan en metadatos y no se duplican filas. Si el contenido coincide entre cortes distintos, el archivo más reciente queda marcado con `CONTENIDO_IDENTICO_OTRO_CORTE`. Las series por defecto excluyen esas copias y `corte` permite consultar expresamente una de ellas.
+3. **Cruces limpios.** `_clave` maneja valores no textuales; `_clave_valida` descarta valores vacíos, guiones, números, `n/a`, `na`, `nd`, `ninguno`, `0` y `sin codigo`, además de entidades numéricas. Los cruces tripartitos no asocian registros por claves basura.
+4. **Saneamiento transaccional de `bd_csh`.** El script [sanear_calidad_triada.py](../backend/scripts/sanear_calidad_triada.py) solo permite como destino la base `bd_csh`; resolvió entidades de archivo y filas desde el catálogo, el nombre y los libros fuente, recalculó huellas y fusionó clones en una transacción. Se corrigieron 220 entidades de archivo y 88.995 entidades de fila; se fusionó el par binariamente distinto de DADIS 2021, retirando 477 filas repetidas. No se cambiaron las siete tablas canónicas de negocio.
+5. **Indicadores en API.** `/api/v1/compromisos/triada/resumen` incluye `ingesta_masiva.calidad_datos` con hashes binarios únicos, copias binarias, clones tabulares fusionados, alertas de corte, entidades oficiales reconocidas y porcentaje de registros con entidad canónica.
+
+## Resultado del saneamiento
+
+| Indicador | Antes | Después |
+| --- | ---: | ---: |
+| Archivos archivados | 617 | 616 |
+| Hashes binarios distintos en archivos activos | 609 | 608 |
+| Registros normalizados | 218.217 | 217.740 |
+| Filas con entidad nula / numérica / marcador | 4.516 / 57 / 555 | 62 / 0 / 0 |
+| Entidades oficiales reconocidas | 22 | 30 |
+| Registros con entidad canónica | 65,92% | 99,97% |
+| Clones tabulares de mismo corte fusionados | — | 1 |
+| Archivos señalados por corte idéntico | — | 5 |
+
+Los cinco archivos alertados cubren cuatro grupos de contenido idéntico: LHCN (T1 frente a junio), Industrial de la Bahía (2025 anual y marzo de 2026 frente al anual 2026), IDER (T3 frente al anual) y Transcaribe (junio frente a marzo). Se dejaron sin entidad los 62 registros cuyo origen no permite atribuirlos de forma segura. Los indicadores HTTP reportan 609 hashes únicos contando el hash fuente preservado en el manifiesto del clon fusionado, 8 copias binarias descartadas y 1 clon tabular fusionado.
+
+Los siete conteos canónicos se conservaron: mesas 33, agendas 36, fichas 11, actores 17, compromisos PAS 10, actividades PA 12 y hurtos 12.280.
+
+## Validaciones
+
+| Validación | Resultado |
+| --- | --- |
+| `ruff format` y `ruff check` en los siete archivos de código/prueba de esta tarea | Aprobados; sin cambios de formato pendientes ni hallazgos. |
+| `PYTHONPATH=backend /root/polis/venv/bin/pytest -q backend/tests/test_ingesta_masiva_triada.py` | 20 aprobadas; 1 advertencia de OpenPyXL sobre extensiones de validación del archivo de muestra. |
+| `PYTHONPATH=backend /root/polis/venv/bin/pytest -q backend/tests` | 579 aprobadas, 0 fallos, 2 advertencias, en 351,46 s. La segunda advertencia es el alias HTTP 422 deprecado en un endpoint existente. |
+| `bun test` | 628 aprobadas, 0 fallos y 3.443 aserciones. |
+| `polis-backend.service`, `/api/v1/health/ready` | Reinicio realizado; readiness HTTP 200 con base de datos, migraciones y extensiones en estado `ok`. |
+| `/api/v1/compromisos/triada/resumen` | HTTP 200; contiene las seis métricas de `calidad_datos` (609 hashes únicos, 8 copias binarias, 1 clon fusionado, 5 archivos alertados, 30 entidades y 99,97%). |
+| Comparativa Transcaribe 2026 | Sin filtro de corte: 240 filas; `corte=T2`: 114 filas. El corte clonado no infla la serie predeterminada y sigue consultable con el filtro explícito. La respuesta no tiene cruces para esa entidad; las pruebas unitarias comprueban el rechazo de claves inválidas. |
+| `git diff --check` | Aprobado. |
+
+Se excluye `bridge/01_tarea_codex.md` del commit porque contiene la asignación concurrente de AGY. El commit incluye únicamente archivos de backend de esta orden, sus pruebas y este reporte; no se ejecuta `git push`.

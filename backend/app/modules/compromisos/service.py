@@ -143,6 +143,14 @@ class CompromisosService:
                 RegistroTriadaNormalizado.pagos_tesoreria_cop,
             )
         )
+        ingesta_stmt = ingesta_stmt.where(
+            RegistroTriadaNormalizado.archivo_id.not_in(
+                select(ArchivoPlanIngerido.id).where(
+                    ArchivoPlanIngerido.metadatos["alerta_calidad"].astext
+                    == "CONTENIDO_IDENTICO_OTRO_CORTE"
+                )
+            )
+        )
         if vigencia is not None:
             ingesta_stmt = ingesta_stmt.where(RegistroTriadaNormalizado.vigencia == vigencia)
         if entidad:

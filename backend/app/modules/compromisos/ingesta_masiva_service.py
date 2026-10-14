@@ -12,7 +12,11 @@ from fastapi import HTTPException
 from sqlalchemy import func, select
 
 from app.core.transactions import transaction
-from app.modules.compromisos.ingesta_masiva_excel import ArchivoLeido, IngestorBinarioTriada
+from app.modules.compromisos.ingesta_masiva_excel import (
+    ENTIDADES_CANONICAS_CARTAGENA,
+    ArchivoLeido,
+    IngestorBinarioTriada,
+)
 from app.modules.compromisos.models import (
     ArchivoPlanIngerido,
     LoteIngestaPlan,
@@ -70,6 +74,39 @@ def _porcentaje_opcional(valor: Any) -> float | None:
     except (TypeError, ValueError):
         return None
     return numero if numero is not None and 0 <= numero <= 100 else None
+
+
+async def _fusionar_etiquetas_archivo(
+    session, archive: ArchivoPlanIngerido, incoming: dict[str, Any]
+) -> None:
+    metadata = dict(archive.metadatos or {})
+    for key in ("rutas_drive", "drive_file_ids", "dimensiones_seguridad_humana"):
+        metadata[key] = list(
+            dict.fromkeys([*(metadata.get(key) or []), *(incoming.get(key) or [])])
+        )
+    archive.dimensiones_seguridad_humana = metadata["dimensiones_seguridad_humana"]
+    archive.metadatos = {
+        **metadata,
+        **{
+            key: value
+            for key, value in incoming.items()
+            if key not in {"rutas_drive", "drive_file_ids", "dimensiones_seguridad_humana"}
+        },
+    }
+    rows = await session.scalars(
+        select(RegistroTriadaNormalizado).where(RegistroTriadaNormalizado.archivo_id == archive.id)
+    )
+    for row in rows:
+        row.dimensiones_seguridad_humana = archive.dimensiones_seguridad_humana
+        data = dict(row.datos_origen or {})
+        source = dict(data.get("_dimensiones_seguridad") or {})
+        source["dimensiones_seguridad_humana"] = archive.dimensiones_seguridad_humana
+        for key in ("rutas_drive", "drive_file_ids"):
+            source[key] = list(
+                dict.fromkeys([*(source.get(key) or []), *(metadata.get(key) or [])])
+            )
+        data["_dimensiones_seguridad"] = source
+        row.datos_origen = data
 
 
 def _datos_registro(
@@ -227,13 +264,38 @@ class IngestaMasivaService:
                 self.session.add(lote)
                 await self.session.flush()
                 for book in leidos:
+                    meta_book = dict(book.metadatos_fuente or {})
+                    huella = meta_book.get("huella_tabular_sha256")
                     existente = await self.session.scalar(
                         select(ArchivoPlanIngerido)
                         .where(ArchivoPlanIngerido.hash_sha256 == book.sha256)
                         .order_by(ArchivoPlanIngerido.creado_en.desc())
                         .limit(1)
                     )
+                    clon_mismo_corte = None
+                    clon_otro_corte = None
+                    if not existente and huella and book.entidad and book.vigencia is not None:
+                        candidatos = list(
+                            (
+                                await self.session.scalars(
+                                    select(ArchivoPlanIngerido).where(
+                                        ArchivoPlanIngerido.entidad_normalizada == book.entidad,
+                                    )
+                                )
+                            ).all()
+                        )
+                        for candidato in candidatos:
+                            if (candidato.metadatos or {}).get("huella_tabular_sha256") != huella:
+                                continue
+                            if (
+                                candidato.vigencia == book.vigencia
+                                and candidato.corte_periodo == book.corte
+                            ):
+                                clon_mismo_corte = candidato
+                                break
+                            clon_otro_corte = clon_otro_corte or candidato
                     if existente:
+                        await _fusionar_etiquetas_archivo(self.session, existente, meta_book)
                         deduplicados.append(
                             {
                                 "nombre_archivo": book.nombre,
@@ -270,6 +332,65 @@ class IngestaMasivaService:
                             )
                         )
                         continue
+                    if clon_mismo_corte:
+                        await _fusionar_etiquetas_archivo(self.session, clon_mismo_corte, meta_book)
+                        clone_info = {
+                            "hash_sha256": book.sha256,
+                            "nombre_archivo": book.nombre,
+                            "lote_id": str(lote.id),
+                        }
+                        canonical_meta = dict(clon_mismo_corte.metadatos or {})
+                        clones = canonical_meta.setdefault("clones_tabulares_fusionados", [])
+                        if clone_info not in clones:
+                            clones.append(clone_info)
+                        clon_mismo_corte.metadatos = canonical_meta
+                        self.session.add(
+                            ArchivoPlanIngerido(
+                                lote_id=lote.id,
+                                nombre_archivo=book.nombre,
+                                formato_extension=book.extension,
+                                hash_sha256=book.sha256,
+                                perfil_detectado=book.perfil,
+                                confianza_deteccion=book.confianza,
+                                vigencia=book.vigencia,
+                                corte_periodo=book.corte,
+                                entidad_normalizada=book.entidad,
+                                hojas_analizadas=[],
+                                mapeo_columnas={},
+                                filas_extraidas=0,
+                                metadatos={
+                                    **meta_book,
+                                    "deduplicado_tabular": True,
+                                    "archivo_canonico_id": str(clon_mismo_corte.id),
+                                },
+                                dimensiones_seguridad_humana=meta_book.get(
+                                    "dimensiones_seguridad_humana", []
+                                ),
+                                periodo_gobierno=meta_book.get("periodo_gobierno"),
+                            )
+                        )
+                        deduplicados.append(
+                            {
+                                "nombre_archivo": book.nombre,
+                                "archivo_id": str(clon_mismo_corte.id),
+                                "huella_tabular_sha256": huella,
+                                "tipo": "CLON_TABULAR_MISMO_CORTE",
+                            }
+                        )
+                        continue
+                    if clon_otro_corte:
+                        meta_otro = dict(clon_otro_corte.metadatos or {})
+                        meta_otro["cortes_con_mismo_contenido"] = list(
+                            dict.fromkeys(
+                                [*(meta_otro.get("cortes_con_mismo_contenido") or []), book.corte]
+                            )
+                        )
+                        clon_otro_corte.metadatos = meta_otro
+                        meta_book["alerta_calidad"] = "CONTENIDO_IDENTICO_OTRO_CORTE"
+                        meta_book["corte_clonado_de"] = {
+                            "archivo_id": str(clon_otro_corte.id),
+                            "corte_periodo": clon_otro_corte.corte_periodo,
+                        }
                     motores_book: Counter[str] = Counter()
                     mapeos = {hoja.nombre: hoja.mapeo for hoja in book.hojas}
                     metadata_hojas = []
@@ -298,7 +419,7 @@ class IngestaMasivaService:
                         filas_extraidas=sum(len(sheet.filas) for sheet in book.hojas),
                         metadatos={
                             "clasificacion_motores": dict(motores_book),
-                            **(book.metadatos_fuente or {}),
+                            **meta_book,
                         },
                         dimensiones_seguridad_humana=(book.metadatos_fuente or {}).get(
                             "dimensiones_seguridad_humana", []
@@ -496,6 +617,7 @@ class IngestaMasivaService:
         hasta: int = 2026,
         dimension: str | None = None,
         periodo: str | None = None,
+        corte: str | None = None,
     ) -> dict[str, Any]:
         filtros_sql = [RegistroTriadaNormalizado.vigencia.between(desde, hasta)]
         if entidad:
@@ -512,6 +634,17 @@ class IngestaMasivaService:
             )
         if periodo:
             filtros_sql.append(RegistroTriadaNormalizado.periodo_gobierno == periodo)
+        if corte:
+            filtros_sql.append(RegistroTriadaNormalizado.corte_periodo == corte.upper())
+        else:
+            filtros_sql.append(
+                RegistroTriadaNormalizado.archivo_id.not_in(
+                    select(ArchivoPlanIngerido.id).where(
+                        ArchivoPlanIngerido.metadatos["alerta_calidad"].astext
+                        == "CONTENIDO_IDENTICO_OTRO_CORTE"
+                    )
+                )
+            )
         total_registros = await self.session.scalar(
             select(func.count()).select_from(RegistroTriadaNormalizado).where(*filtros_sql)
         )
@@ -554,6 +687,7 @@ class IngestaMasivaService:
                 "vigencia_hasta": hasta,
                 "dimension": dimension,
                 "periodo": periodo,
+                "corte": corte,
             },
             "total_registros": total_registros or 0,
             "registros_retornados": len(rows),
@@ -563,6 +697,47 @@ class IngestaMasivaService:
             "serie": by_year,
             "registros": serializados,
             "cruce_tres_lecturas": grouped,
+        }
+
+    async def calidad_datos(self) -> dict[str, Any]:
+        archivos = list((await self.session.scalars(select(ArchivoPlanIngerido))).all())
+        huellas_binarias = {item.hash_sha256 for item in archivos}
+        copias_binarias = max(0, len(archivos) - len(huellas_binarias))
+        clones = sum(
+            len((item.metadatos or {}).get("clones_tabulares_fusionados", [])) for item in archivos
+        )
+        for item in archivos:
+            for clone in (item.metadatos or {}).get("clones_tabulares_fusionados", []):
+                if clone.get("hash_sha256"):
+                    huellas_binarias.add(clone["hash_sha256"])
+        alertas = sum(
+            1
+            for item in archivos
+            if (item.metadatos or {}).get("alerta_calidad") == "CONTENIDO_IDENTICO_OTRO_CORTE"
+        )
+        canonical_names = list(ENTIDADES_CANONICAS_CARTAGENA)
+        total, canonical, entities = (
+            await self.session.execute(
+                select(
+                    func.count(RegistroTriadaNormalizado.id),
+                    func.count(RegistroTriadaNormalizado.id).filter(
+                        RegistroTriadaNormalizado.entidad_normalizada.in_(canonical_names)
+                    ),
+                    func.count(func.distinct(RegistroTriadaNormalizado.entidad_normalizada)).filter(
+                        RegistroTriadaNormalizado.entidad_normalizada.in_(canonical_names)
+                    ),
+                )
+            )
+        ).one()
+        return {
+            "archivos_unicos_binarios_sha256": len(huellas_binarias),
+            "copias_binarias_descartadas": copias_binarias,
+            "clones_tabulares_fusionados": clones,
+            "archivos_con_alerta_corte_identico": alertas,
+            "entidades_oficiales_reconocidas": entities,
+            "registros_con_entidad_canonica_pct": round(100 * canonical / total, 2)
+            if total
+            else 0.0,
         }
 
     async def resumen_dimensiones(
@@ -593,7 +768,13 @@ class IngestaMasivaService:
                 .where(
                     RegistroTriadaNormalizado.dimensiones_seguridad_humana.contains(
                         [dimension_name]
-                    )
+                    ),
+                    RegistroTriadaNormalizado.archivo_id.not_in(
+                        select(ArchivoPlanIngerido.id).where(
+                            ArchivoPlanIngerido.metadatos["alerta_calidad"].astext
+                            == "CONTENIDO_IDENTICO_OTRO_CORTE"
+                        )
+                    ),
                 )
                 .group_by(
                     RegistroTriadaNormalizado.periodo_gobierno,
@@ -612,6 +793,12 @@ class IngestaMasivaService:
             entidades_stmt = select(RegistroTriadaNormalizado.entidad_normalizada).where(
                 RegistroTriadaNormalizado.dimensiones_seguridad_humana.contains([dimension_name]),
                 RegistroTriadaNormalizado.entidad_normalizada.is_not(None),
+                RegistroTriadaNormalizado.archivo_id.not_in(
+                    select(ArchivoPlanIngerido.id).where(
+                        ArchivoPlanIngerido.metadatos["alerta_calidad"].astext
+                        == "CONTENIDO_IDENTICO_OTRO_CORTE"
+                    )
+                ),
             )
             if periodo:
                 entidades_stmt = entidades_stmt.where(

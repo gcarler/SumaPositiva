@@ -5,10 +5,12 @@ from __future__ import annotations
 import csv
 import hashlib
 import io
+import json
 import re
 import unicodedata
 import zipfile
 from dataclasses import dataclass
+from functools import lru_cache
 from itertools import islice
 from pathlib import PurePosixPath
 from typing import Any
@@ -140,33 +142,135 @@ SINONIMOS_COLUMNAS: dict[str, tuple[str, ...]] = {
     "fuente_financiacion": ("fuente financiacion", "fuente de financiacion", "fuente"),
 }
 
-DEPENDENCIAS = {
-    "DADIS": "Departamento Administrativo Distrital de Salud",
-    "SECRETARIA GENERAL": "Secretaría General",
-    "SECRETARIA DE HACIENDA": "Secretaría de Hacienda",
-    "SECRETARIA DE PLANEACION": "Secretaría de Planeación",
-    "DATT": "Departamento Administrativo de Tránsito y Transporte",
-    "EPA": "Establecimiento Público Ambiental",
-    "IDER": "Instituto Distrital de Deporte y Recreación",
-    "IPCC": "Instituto de Patrimonio y Cultura de Cartagena",
-    "OAGR": "Oficina Asesora para la Gestión del Riesgo de Desastres",
-    "OADGR": "Oficina Asesora para la Gestión del Riesgo de Desastres",
-    "PES-PR": "Plan de Emergencia Social Pedro Romero",
-    "SEHACIENDA": "Secretaría de Hacienda",
-    "HACIENDA": "Secretaría de Hacienda",
-    "SEPLANEACION": "Secretaría de Planeación",
-    "PLANEACION": "Secretaría de Planeación",
-    "SEC_EDUCACION": "Secretaría de Educación",
-    "EDUCACION": "Secretaría de Educación",
-    "SPDS-UMATA": "Secretaría de Participación y Desarrollo Social – UMATA",
-    "UMATA": "Secretaría de Participación y Desarrollo Social – UMATA",
-    "IDACCC": "Instituto de Acción Comunal y Capital Social de Cartagena",
-    "UMAYOR": "Alcaldía Mayor de Cartagena",
-    "SICC": "Secretaría de Infraestructura y Conectividad de Cartagena",
-    "DISTRISEGURIDAD": "Distriseguridad",
-    "INFRAESTRUCTURA": "Secretaría de Infraestructura",
-    "CORVIVIENDA": "Corvivienda",
-    "TRANSCARIBE": "Transcaribe",
+ENTIDADES_CANONICAS_CARTAGENA: dict[str, tuple[str, ...]] = {
+    "Alcaldía Mayor de Cartagena": (
+        "alcaldia mayor de cartagena",
+        "alcaldia mayor",
+        "umayor",
+        "distrito de cartagena",
+        "distrito turistico y cultural de cartagena",
+    ),
+    "Alcaldía Local Histórica y del Caribe Norte": (
+        "alcaldia local historica y del caribe norte",
+        "localidad historica y del caribe norte",
+        "alcaldia lh y cn",
+        "alcaldia lhcn",
+        "lhcn",
+        "lhycn",
+    ),
+    "Alcaldía Local de la Virgen y Turística": (
+        "alcaldia local de la virgen y turistica",
+        "localidad de la virgen y turistica",
+        "alcaldia local 2 de la virgen y turistica",
+        "alcaldia lvt",
+        "lvt",
+    ),
+    "Alcaldía Local Industrial y de la Bahía": (
+        "alcaldia local industrial y de la bahia",
+        "alcaldia local industrial de la bahia",
+        "localidad industrial y de la bahia",
+        "alcaldia local i b",
+        "unalde",
+        "lib",
+    ),
+    "Departamento Administrativo Distrital de Salud": (
+        "departamento administrativo distrital de salud",
+        "dadis",
+        "secretaria de salud",
+    ),
+    "Departamento Administrativo de Tránsito y Transporte": (
+        "departamento administrativo de transito y transporte",
+        "datt",
+        "transito y transporte",
+    ),
+    "Establecimiento Público Ambiental": (
+        "establecimiento publico ambiental",
+        "epa",
+        "epa cartagena",
+    ),
+    "Instituto Distrital de Deporte y Recreación": (
+        "instituto distrital de deporte y recreacion",
+        "ider",
+        "instituto de deporte y recreacion",
+    ),
+    "Instituto de Patrimonio y Cultura de Cartagena": (
+        "instituto de patrimonio y cultura de cartagena",
+        "ipcc",
+        "instituto de patrimonio y cultura",
+    ),
+    "Secretaría General": ("secretaria general", "secgeneral"),
+    "Secretaría de Hacienda": ("secretaria de hacienda", "sehacienda", "hacienda"),
+    "Secretaría de Planeación": ("secretaria de planeacion", "seplaneacion", "planeacion"),
+    "Secretaría del Interior y Convivencia Ciudadana": (
+        "secretaria del interior y convivencia ciudadana",
+        "secretaria de interior y convivencia ciudadana",
+        "secretaria del interior",
+        "interior y convivencia ciudadana",
+    ),
+    "Secretaría de Educación": ("secretaria de educacion", "sec educacion", "educacion"),
+    "Secretaría de Participación y Desarrollo Social": (
+        "secretaria de participacion y desarrollo social",
+        "spds",
+        "secretaria de participacion",
+    ),
+    "Unidad Municipal de Asistencia Técnica Agropecuaria": (
+        "unidad municipal de asistencia tecnica agropecuaria",
+        "umata",
+    ),
+    "Secretaría de Infraestructura": (
+        "secretaria de infraestructura",
+        "infraestructura",
+    ),
+    "Secretaría de Infraestructura y Conectividad de Cartagena": (
+        "secretaria de infraestructura y conectividad de cartagena",
+        "sicc",
+        "sicc infraestructura",
+    ),
+    "Secretaría de Turismo": ("secretaria de turismo", "instituto de turismo", "turismo"),
+    "Secretaría de Desarrollo Económico": (
+        "secretaria de desarrollo economico",
+        "desarrollo economico",
+    ),
+    "Secretaría de Agricultura y Desarrollo Rural": (
+        "secretaria de agricultura y desarrollo rural",
+        "agricultura y desarrollo rural",
+    ),
+    "Secretaría de Cultura": ("secretaria de cultura",),
+    "Distriseguridad": ("distriseguridad",),
+    "Corvivienda": ("corvivienda",),
+    "Transcaribe": ("transcaribe", "transcaribecon"),
+    "Gerencia de Espacio Público y Movilidad": (
+        "gerencia de espacio publico y movilidad",
+        "gerencia de espacio publico",
+        "gepm",
+    ),
+    "Departamento Administrativo de Valorización Distrital": (
+        "departamento administrativo de valorizacion distrital",
+        "davd",
+        "valorizacion",
+    ),
+    "Oficina Asesora para la Gestión del Riesgo de Desastres": (
+        "oficina asesora para la gestion del riesgo de desastres",
+        "oagrd",
+        "oagr",
+        "oadgr",
+        "gestion del riesgo",
+    ),
+    "Plan de Emergencia Social Pedro Romero": (
+        "plan de emergencia social pedro romero",
+        "pes pr",
+        "pespr",
+    ),
+    "Instituto de Acción Comunal y Capital Social de Cartagena": (
+        "instituto de accion comunal y capital social de cartagena",
+        "idaccc",
+    ),
+    "Escuela de Gobierno y Liderazgo": (
+        "escuela de gobierno y liderazgo",
+        "escuela de gobierno",
+        "egl",
+    ),
+    "Escuela Taller Cartagena de Indias": ("escuela taller cartagena de indias", "escuela taller"),
 }
 
 
@@ -176,16 +280,90 @@ def _normalizar(texto: Any) -> str:
     return re.sub(r"[^a-z0-9]+", " ", plano).strip()
 
 
+_ALIAS_ENTIDAD_CANONICA: dict[str, str] = {}
+for _canon, _alias_list in ENTIDADES_CANONICAS_CARTAGENA.items():
+    for _alias in _alias_list:
+        _ALIAS_ENTIDAD_CANONICA[_normalizar(_alias)] = _canon
+_ALIASES_ORDENADOS = sorted(_ALIAS_ENTIDAD_CANONICA, key=len, reverse=True)
+_ENTIDAD_REGEX = re.compile(
+    r"\b(?:"
+    + "|".join(r"\s+".join(map(re.escape, alias.split())) for alias in _ALIASES_ORDENADOS)
+    + r")\b"
+)
+
+
+@lru_cache(maxsize=4096)
+def _buscar_entidad_canonica(texto: str) -> str | None:
+    coincidencias = _ENTIDAD_REGEX.finditer(texto)
+    alias = max((match.group() for match in coincidencias), key=len, default=None)
+    return _ALIAS_ENTIDAD_CANONICA.get(alias) if alias else None
+
+
 def normalizar_entidad(valor: str | None, nombre_archivo: str = "") -> str | None:
-    texto = _normalizar(valor or "")
-    nombre = _normalizar(nombre_archivo)
-    combinados = f"{texto} {nombre}"
-    if "secretaria general" in combinados:
-        return "Secretaría General"
-    for sigla, canonica in DEPENDENCIAS.items():
-        if _normalizar(sigla) in combinados:
-            return canonica
-    return (valor or "").strip() or None
+    """Return only an official Cartagena entity, matched as complete words/phrases."""
+    texto = _normalizar(f"{valor or ''} {nombre_archivo or ''}")
+    return _buscar_entidad_canonica(texto) if texto else None
+
+
+def huella_tabular_sha256(hojas: list[HojaLeida]) -> str:
+    """Hash normalized business rows, excluding workbook metadata and formatting."""
+    campos = (
+        "motor_destino",
+        "entidad_normalizada",
+        "linea_estrategica",
+        "codigo_meta_pdd",
+        "codigo_bpim",
+        "indicador",
+        "descripcion_actividad",
+        "meta_programada_anual",
+        "meta_ejecutada_anual",
+        "avance_t1",
+        "avance_t2",
+        "avance_t3",
+        "avance_t4",
+        "avance_fisico_pct",
+        "avance_estrategico_pct",
+        "apropiacion_definitiva_cop",
+        "cdp_cop",
+        "compromisos_rp_cop",
+        "obligaciones_cop",
+        "pagos_tesoreria_cop",
+    )
+    filas = []
+    for hoja in hojas:
+        for fila in hoja.filas:
+            valores = {
+                campo: (
+                    _normalizar(fila[campo])
+                    if isinstance(fila.get(campo), str)
+                    else fila.get(campo)
+                )
+                for campo in campos
+            }
+            filas.append(
+                (
+                    _normalizar(hoja.nombre),
+                    fila.get("fila_origen_num") or 0,
+                    fila.get("motor_destino", ""),
+                    _normalizar(fila.get("descripcion_actividad")),
+                    _normalizar(fila.get("indicador")),
+                    valores,
+                )
+            )
+    filas.sort(
+        key=lambda fila: (
+            fila[0],
+            fila[1],
+            fila[2],
+            fila[3],
+            fila[4],
+            json.dumps(fila[5], sort_keys=True, ensure_ascii=False, default=str),
+        )
+    )
+    payload = json.dumps(
+        filas, sort_keys=True, ensure_ascii=False, separators=(",", ":"), default=str
+    )
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
 
 def _numero(valor: Any) -> float | None:
@@ -544,6 +722,15 @@ class IngestorBinarioTriada:
         if corte == (corte_defecto or "ANUAL").upper() and corte_defecto is None:
             corte = _corte(nombres_hojas, None)
         entidad_archivo = normalizar_entidad(None, nombre_corto)
+        if entidad_archivo is None:
+            membrete = " ".join(
+                str(value)
+                for _, top_rows in hojas_crudas
+                for row in top_rows[:10]
+                for value in row
+                if value is not None
+            )
+            entidad_archivo = normalizar_entidad(membrete)
         hojas: list[HojaLeida] = []
         for sheet_name, rows in hojas_crudas:
             encabezado, mapping, headers = buscar_fila_encabezado(rows)
@@ -561,10 +748,9 @@ class IngestorBinarioTriada:
                 }
                 if _es_pie_o_subtotal(fila):
                     continue
-                entidad = (
-                    normalizar_entidad(str(fila.get("entidad") or "") or None, nombre_corto)
-                    or entidad_archivo
-                )
+                entidad_celda_raw = str(fila.get("entidad") or "").strip()
+                entidad_celda = normalizar_entidad(entidad_celda_raw)
+                entidad = entidad_celda or entidad_archivo
                 descripcion = str(fila.get("descripcion_actividad") or "").strip()
                 if not any(str(v).strip() for v in fila.values() if v is not None):
                     continue
@@ -584,6 +770,8 @@ class IngestorBinarioTriada:
                         },
                     }
                 )
+                if entidad_celda_raw and entidad_celda is None:
+                    fila["datos_origen"]["_responsable_celda"] = entidad_celda_raw
                 verbo = fila["verbo_detectado"]
                 fila["verbo_fuerte_dnp"] = (
                     bool(
@@ -663,6 +851,8 @@ class IngestorBinarioTriada:
             perfil = "PA_CANONICO_DNP_POLIS"
         scores = [len(h.mapeo) for h in hojas]
         confianza = min(1.0, (sum(scores) / max(1, len(scores))) / 12)
+        metadatos = dict(metadatos_fuente or {})
+        metadatos["huella_tabular_sha256"] = huella_tabular_sha256(hojas)
         return ArchivoLeido(
             nombre_corto,
             ext,
@@ -682,7 +872,7 @@ class IngestorBinarioTriada:
                 None,
             ),
             hojas,
-            metadatos_fuente or {},
+            metadatos,
         )
 
 
