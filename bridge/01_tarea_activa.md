@@ -1,133 +1,93 @@
-# TAREA ACTIVA PARA AGY2: `[GEO-UX-SCROLL-01]`
+# ASIGNACIÓN TÉCNICA EDD: `[TRIADA-FRONTEND-02]`
+## INTERFAZ CIUDADANA Y TÉCNICA DE LA TRIADA DE MOTORES (PLAN DE DESARROLLO + PLAN DE ACCIÓN MULTIFORMATO 2016–2026 + INVERSIÓN Y EJECUCIÓN PRESUPUESTAL) Y CONECTOR TRANSPARENCIA CARTAGENA
 
-- **Prioridad:** ALTA — Experiencia Ciudadana, Lenguaje Claro, Mapa +20%, Panel Superior Oculto por Defecto y Scroll Fluido de Datos Estadísticos en el Geovisor (`/geovisor` y `/plataforma/geovisor`)
-- **Asignado por:** `agy` (Coordinador General / Auditor Forense EAF)
+- **Para:** Desarrollador Principal EDD (`agy2`)
+- **De:** Coordinador General / Auditor Forense EAF (`agy`)
 - **Fecha:** 2026-10-14
+- **Rama de trabajo:** `main` (Política **Zero-Push**: solo commit local)
+- **Trabajo concurrente en curso:** `codex` está ejecutando `[TRIADA-BACKEND-01]` exclusivamente sobre `backend/app/modules/compromisos/*`, `backend/tests/test_triada_motores.py` y `bridge/02_entrega_codex.md`. **NO modifiques ni agregues a tu commit ningún archivo de `backend/` ni `bridge/01_tarea_codex.md` o `bridge/02_entrega_codex.md`.**
 
 ---
 
-## 1. Contexto y Solicitud del Usuario
+## 1. Contexto y Objetivo de la Tarea
 
-El usuario revisó el Geovisor en vivo y destacó que a nivel tecnológico quedó excelente, pero solicitó corregir los siguientes aspectos de UX y lenguaje ciudadano:
-
-1. **Eliminar jerga técnica «Capa GeoJSON:» y «GeoJSON» de cara al ciudadano:**
-   - En el Geovisor dice `Capa GeoJSON:` y `Zona GeoJSON:`, lo cual es jerga técnica que el ciudadano no tiene por qué ver cuando lo que está consultando son **datos estadísticos**.
-   - En el sidebar izquierdo (`GeovisorControles`), en la parte inferior hay un botón llamado `Procesar y Gestionar GeoJSON` (y en la barra superior `Gestor GeoJSON`), nombres técnicos que deben cambiarse por nombres orientados a **Datos Estadísticos**.
-2. **Panel superior oculto por defecto (`topOpen: false`) con botón claro para mostrarlo/desplegarlo:**
-   - El panel superior (`GeovisorTopShelf` acoplado en el dock `top`) debe venir **oculto por defecto** al abrir el Geovisor, dejando por supuesto un botón claro y visible en la barra superior (`GeovisorWorkbenchBar`) que permita mostrar/ocultar ese panel superior cuando el usuario quiera desplegarlo.
-3. **Mapa ~20% más grande por defecto + Scroll vertical habilitado hacia los Datos Estadísticos + CTA «Ver Datos Estadísticos ↓» en la parte inferior:**
-   - Actualmente `/geovisor` bloquea el scroll (`h-dvh overflow-hidden`) y deja los datos estadísticos encerrados en una franja pequeña sin permitir hacer scroll cómodo en la página ni descubrir fácilmente la analítica que está debajo del mapa.
-   - El mapa debe verse **un 20% más amplio por defecto** (al ocultar el panel superior por defecto y darle mayor altura al bloque del mapa), debe **habilitarse el scroll hacia abajo** para recorrer con total fluidez todos los datos estadísticos (`GeovisorHurtosPanel`), y en la **parte final/inferior visible del mapa** debe mostrarse un botón/indicador claro (**«Ver datos estadísticos ↓»**) que al pulsarlo suba/despliegue automáticamente la capa/sección de datos estadísticos para hacer scroll e interactuar bidireccionalmente entre los datos estadísticos y el mapa.
-
----
-
-## 2. Especificaciones Técnicas Obligatorias
-
-### 2.1. Lenguaje Ciudadano Claro (Reemplazar «Capa GeoJSON» y «Procesar y Gestionar GeoJSON»)
-
-1. **`src/features/geovisor/components/geovisor-top-shelf.tsx` (y su test `geovisor-top-shelf.test.tsx`):**
-   - Cambia `Zona GeoJSON:` por **`Zona Territorial:`** (`aria-label="Seleccionar zona territorial"`).
-   - En `OPCIONES_ZONA`, usa nombres limpios para el ciudadano:
-     - `Distrito Completo (Urbano + Rural)`
-     - `Perímetro Urbano (75,3 km²)`
-     - `Zona Rural e Insular (597,4 km²)`
-   - Cambia `Capa GeoJSON:` por **`Datos Estadísticos:`** (`aria-label="Seleccionar categoría de datos estadísticos"`).
-   - En `OPCIONES_CAPA`, cambia `Consolidado 3 Capas Drive (18.242 casos)` por **`Consolidado General de Hurtos (18.242 casos)`**.
-   - En los 4 KPI Chips de la fila inferior:
-     - `Total Incidentes GeoJSON` → **`Total Casos Reportados`**
-     - `Registros GeoJSON (Drive)` / `features` → **`Registros Estadísticos SIEDCO`** y muestra `{kpis.features.toLocaleString("es-CO")} registros`
-     - `Perímetro Urbano (ID_POLIG 1)` → **`Perímetro Urbano`**
-     - `Zona Rural e Insular (ID_POLIG 2)` → **`Zona Rural e Insular`**
-
-2. **`src/features/geovisor/components/geovisor-controles.tsx` (Sidebar izquierdo):**
-   - Cambia el título `Capas GeoJSON Drive (SIEDCO 2018–2026)` por **`Capas de Datos Estadísticos (SIEDCO 2018–2026)`**.
-   - En los 3 checkboxes de capas, cambia la palabra técnica `features` por `registros`:
-     - `(4.683 casos · 2.520 registros)`
-     - `(5.044 casos · 3.853 registros)`
-     - `(8.515 casos · 5.907 registros)`
-   - Cambia el subtítulo `Polígonos Base GeoJSON` por **`Cobertura Territorial Analizada`**, el badge `EPSG:9377 → WGS84` por **`Cartagena de Indias`**, `ID_POLIG 1: Perímetro Urbano` por **`Zona 1: Perímetro Urbano`** y `ID_POLIG 2: Zona Rural e Insular` por **`Zona 2: Rural e Insular`**.
-   - En el botón inferior (línea 211), cambia **`Procesar y Gestionar GeoJSON`** por **`Ver Datos Estadísticos y Tablero`** (`data-testid="btn-sidebar-ver-estadisticas"`).
-
-3. **`src/features/geovisor/components/geovisor-workbench-bar.tsx`:**
-   - Cambia el texto del botón `Gestor GeoJSON` (`data-testid="workbench-btn-gestor-geojson"`) por **`Datos Estadísticos`** (con `title="Ver y explorar datos estadísticos (12.280 registros)"`).
-   - Añade un botón explícito en la barra (`data-testid="workbench-btn-toggle-top-panel"`) que permita mostrar/ocultar el Panel Superior con etiqueta clara:
-     - Cuando `topOpen === false`: **`Mostrar Panel Superior`**
-     - Cuando `topOpen === true`: **`Ocultar Panel Superior`**
-
-4. **`src/features/geovisor/components/mapa-cartagena.tsx`:**
-   - En el panel flotante superior izquierdo (cuando `modoGeojsonDrive === true`, líneas 176–224):
-     - Cambia `aria-label="Capas GeoJSON Drive"` a `aria-label="Filtro de datos estadísticos en el mapa"`.
-     - Cambia el título `Capas GeoJSON Drive (SIEDCO 2018–2026)` por **`Datos Estadísticos de Seguridad (2018–2026)`**.
-     - Cambia `EPSG:9377 → WGS84 · 2 Polígonos Oficiales` por **`Cartagena · Urbano y Rural`**.
-   - En el badge superior derecho (línea 335):
-     - Cambia `GeoJSON Drive Activo` por **`Mapa Estadístico Activo`**.
-
-5. **`src/features/geovisor/components/geovisor-hurtos-panel.tsx`:**
-   - En las 3 pestañas de modo y encabezados visibles para el usuario, suaviza la jerga:
-     - `1. Resumen y Gráficos` → **`1. Resumen y Gráficos Estadísticos`**
-     - `2. Procesador y Tabla (12.280)` → **`2. Explorador y Tabla de Datos (12.280)`**
-     - `3. Gestor e Importador GeoJSON` → **`3. Catálogo de Capas e Importador`**
-     - `Pintado Rápido de Capas GeoJSON:` → **`Visualización Rápida en el Mapa:`**
+El usuario solicitó construir una arquitectura de **Tres Motores Articulados** conectada con el portal **`https://www.cartagena.gov.co/transparencia`** (Sección **4. Planeación, Presupuesto e Informes**):
+1. **Motor 1 — Motor de Plan de Desarrollo (Lectura Estratégica Cuatrienal):**
+   - Permite leer y comparar los Planes de Desarrollo de Cartagena (`2016–2019 Primero la Gente`, `2020–2023 Salvemos Juntos a Cartagena`, `2024–2027 Cartagena Ciudad de Derechos`), sus Líneas Estratégicas, Programas MGA, Indicadores de Resultado/Bienestar y Metas de Producto Cuatrienales.
+2. **Motor 2 — Motor de Plan de Acción Multiformato 2016–2026 (Lectura Operativa Anual/Trimestral — Cat. `4.3`):**
+   - Cada vez que la Alcaldía cambia el formato del Excel (en **2016** era **1 sola hoja plana por entidad**; en **2020–2023** era una matriz híbrida por línea estratégica; en **2024–2026** es un libro **multihoja** con pestañas de `Identificación`, `Plan Indicativo`, `Plan de Acción T1–T4` y `Presupuesto`), el motor identifica automáticamente el tipo de formato (`Schema Fingerprinting`), mapea las columnas a un estándar canónico único, audita los verbos fuertes DNP y permite hacer **lectura comparativa interanual (2016 vs. 2020 vs. 2026)**.
+3. **Motor 3 — Motor de Inversión y Ejecución Presupuestal (Lectura Financiera — Cat. `4.1`, `4.2`, `4.4`):**
+   - Permite leer la cascada presupuestal completa (`Apropiación Inicial`, `Apropiación Definitiva`, `CDP`, `Compromisos/RP`, `Obligaciones`, `Pagos de Tesorería`), proyectos de inversión `BPIM`/`BPIN` y fuentes de financiación (`ICLD`, `SGP`, `FONSET`, `Regalías SGR`, `Crédito`, `Recursos Propios`).
+4. **Cruce de las 3 Lecturas (Semáforo de Coherencia Físico-Financiera-Estratégica):**
+   - Cruza automáticamente la ejecución presupuestal (Motor 3) con la entrega operativa en los Planes de Acción (Motor 2) y el avance estratégico del Plan de Desarrollo (Motor 1), detectando alertas forenses (`Sobreejecución financiera sin entrega física`, `Rezago contractual en inversión`, `Meta estratégica PDD suboperacionalizada`, `Coherencia integral alta`).
 
 ---
 
-### 2.2. Panel Superior Oculto por Defecto (`topOpen: false`) y Mapa ~20% Más Grande
+## 2. Alcance Exacto de Archivos Bajo Responsabilidad de `agy2`
 
-1. **`src/features/geovisor/state/geovisor-layout-store.ts`:**
-   - Cambia `DEFAULT_DOCK_VISIBILITY`:
-     ```ts
-     export const DEFAULT_DOCK_VISIBILITY: DockPanelVisibility = {
-       topOpen: false,
-       leftOpen: true,
-       rightOpen: false,
-       bottomOpen: true,
-     };
-     ```
-   - Ajusta `DEFAULT_DOCK_SIZES` para que el mapa tenga un protagonismo un 20% mayor en el área principal y el panel inferior tenga una apertura cómoda:
-     ```ts
-     export const DEFAULT_DOCK_SIZES: DockPanelSizes = {
-       top: 16,
-       left: 22,
-       right: 24,
-       bottom: 28,
-     };
-     ```
-   - Incrementa la versión de persistencia en `useGeovisorLayoutStore` de `version: 3` a **`version: 4`**, de modo que si el navegador tenía guardado un layout con versión `< 4` donde `topOpen` era `true`, migre limpiamente a `topOpen: false` y a los nuevos tamaños por defecto.
-   - Actualiza los tests unitarios de `geovisor-layout-store.test.ts` y `geovisor-workspace-layout.test.tsx` que verifiquen el estado inicial de `topOpen` para que sean coherentes con `topOpen: false` por defecto (y verifiquen que al activar `togglePanel("top")` o `setPanelOpen("top", true)` se despliega el panel superior).
+Debes crear/modificar **únicamente** los siguientes archivos en `src/features/seguimiento/` y `bridge/`:
+1. `src/features/seguimiento/data/triada-motores-cartagena.data.ts` *(nuevo — dataset canónico completo de los 3 Motores, los 4 perfiles de formato Excel 2016–2026, la comparativa interanual y el catálogo oficial de `cartagena.gov.co/transparencia` secciones `4.1` a `4.4` con los 23 archivos `.xlsx`/`.xls` de 2026)*
+2. `src/features/seguimiento/services/plan-accion-dnp-api.ts` *(ampliar con clientes tipados para `/compromisos/triada/resumen`, `/compromisos/triada/detectar-formato` y `/compromisos/triada/cruzar-lecturas`, con fallback resiliente al dataset canónico)*
+3. `src/features/seguimiento/components/triada-motores-tab.tsx` *(nuevo — componente interactivo completo de la Triada de Motores con sus 3 sub-vistas)*
+4. `src/features/seguimiento/components/triada-motores-tab.test.tsx` *(nuevo — suite de pruebas unitarias del componente y sus 3 sub-vistas)*
+5. `src/features/seguimiento/views/seguimiento-view.tsx` *(integrar la nueva pestaña `triada_motores` — `Triada de Motores (PDD · PA · Inversión)` — como pestaña destacada en `SeguimientoView`)*
+6. `bridge/02_resultado_agy2.md` *(reporte de entrega EDD)*
 
 ---
 
-### 2.3. Habilitar Scroll Vertical Hacia los Datos Estadísticos + Botón «Ver Datos Estadísticos ↓» e Interacción con el Mapa
+## 3. Especificación Técnica Detallada
 
-El objetivo clave del usuario es que:
-- En la primera vista, el mapa se vea amplio (~20% más grande gracias a que el panel superior está oculto por defecto y el lienzo del mapa tiene mayor altura, p. ej. `min-h-[42rem]` / `72dvh–78dvh`).
-- En la parte final/inferior del mapa se vea claramente una barra/botón interactivo **«Ver datos estadísticos (18.242 casos) ↓»** (`data-testid="btn-ver-datos-estadisticos"`).
-- El usuario pueda **hacer scroll hacia abajo** en la página/contenedor para explorar toda la información estadística (`GeovisorHurtosPanel`: gráficos, KPIs, explorador de 12.280 registros, tablas dinámicas) sin que quede cortada ni bloqueada por un `overflow-hidden` rígido, O pulsar el botón **«Ver datos estadísticos ↓»** para que automáticamente la sección de datos estadísticos suba / se expanda (`scrollIntoView({ behavior: "smooth" })` y/o expanda el panel inferior) y permita hacer scroll completo sobre todos los datos estadísticos.
-- **Interacción bidireccional Datos Estadísticos ↔ Mapa:**
-  - Al cambiar el delito (`Motocicletas`, `Residencias`, `Comercio` o `Consolidado`), el año (`2018`–`2026`) o hacer clic en una zona (`Perímetro Urbano` / `Rural e Insular`) dentro de `GeovisorHurtosPanel`, el mapa (`MapaCartagena`) actualiza inmediatamente su capa activa y su filtro temporal; y viceversa, al cambiar el filtro en el mapa o hacer clic en un polígono del mapa, los datos estadísticos se sincronizan en vivo.
+### 3.1. `src/features/seguimiento/data/triada-motores-cartagena.data.ts`
+Construir el catálogo canónico tipado con datos reales de Cartagena de Indias:
+1. **Catálogo Oficial del Portal `https://www.cartagena.gov.co/transparencia` (Sección 4 — Planeación, Presupuesto e Informes):**
+   - `4.1 Presupuesto general de ingresos, gastos e inversión` (`https://www.cartagena.gov.co/Transparencia/Planeación?categoria=50`)
+   - `4.2 Ejecución presupuestal` (`https://www.cartagena.gov.co/Transparencia/Planeación?categoria=51`)
+   - `4.3 Plan de Acción` (`https://www.cartagena.gov.co/Transparencia/Planeación?categoria=52`), incluyendo la ruta `/transparencia/4planeacion-presupuesto-informes/43-plan-accion/planes-accion-institucionales-2026` con los **23 archivos Excel individuales de 2026** detectados en el portal (`DADIS.xls`, `SECRETARIA DE HACIENDA.xlsx`, `SECRETARÍA DE PLANEACION.xlsx`, `SEC_EDUCACION.xlsx`, `DATT.xlsx`, `INFRAESTRUCTURA.xlsx`, `IDER.xlsx`, `IPCC.xlsx`, `CORVIVIENDA.xlsx`, `TRANSCARIBE.xlsx`, `EPA.xlsx`, `DISTRISEGURIDAD.xlsx`, `ESCUELA DE GOBERNO.xlsx`, `GERENCIA DE ESPACIO PUBLICO.xlsx`, `IDACCC.xlsx`, `OAGR.xlsx`, `PES-PR.xlsx`, `SECRETARIA GENERAL.xlsx`, `SICC.xlsx`, `SPDS - UMATA.xlsx`, `TURISMO.xlsx`, `UMAYOR.xlsx`, `VALORIZACION.xlsx`) y los cortes trimestrales (`31-marzo-2026`, `30-junio-2026`), indicando para cada archivo su dependencia, extensión (`.xls` vs `.xlsx`), perfil de formato detectado (`PA_MONOHOJA_2016_2019` vs `PA_MULTIHOJA_2024_2026`), número de hojas y estado de normalización.
+   - `4.4 Proyectos de Inversión` (`https://www.cartagena.gov.co/Transparencia/Planeación?categoria=53`).
+2. **Los 4 Perfiles Polimórficos de Formato Excel (`2016–2026`) y Muestras Interactivas:**
+   - `PA_MONOHOJA_2016_2019`: 1 sola hoja plana por entidad (ej. `DADIS 2016`), columnas `Objetivo | Meta 2016 | Indicador | Programado | Ejecutado | Presupuesto`.
+   - `PA_HIBRIDO_2020_2023`: Hojas por Pilar (`Salvemos Juntos a Cartagena 2020-2023`), seguimiento semestral/trimestral.
+   - `PA_MULTIHOJA_2024_2026`: Libro institucional multihoja (`Identificación`, `Plan Indicativo`, `Plan de Acción T1-T4`, `Presupuesto POAI`).
+   - `PA_CANONICO_DNP_POLIS`: Doble hoja (`Hoja 1: Plan_Accion`, `Hoja 2: Plan_Indicativo`).
+   - Incluir el diccionario de mapeo semántico (`Columna Original → Campo Canónico POLIS`) y la **Matriz Comparativa Interanual Estandarizada (`2016` vs. `2020` vs. `2026`)** por dependencia (`Secretaría del Interior`, `Distriseguridad`, `DADIS`, `Secretaría de Planeación`, `Secretaría de Hacienda`, `Secretaría de Educación`, `Secretaría de Infraestructura`, `DATT`, `EPA`, `Corvivienda`, `IPCC`, `IDER`, `PES-PR`).
+3. **Datos Articulados de los 3 Motores y el Cruce de las 3 Lecturas:**
+   - **Motor 1 (Plan de Desarrollo — Estratégico):** Cuatrienios `2016–2019 Primero la Gente`, `2020–2023 Salvemos Juntos a Cartagena` y `2024–2027 Cartagena Ciudad de Derechos`, Líneas Estratégicas, Programas MGA, Indicadores de Resultado y Metas de Producto Cuatrienales.
+   - **Motor 2 (Plan de Acción — Operativo):** Avance físico trimestral (`T1–T4`), total de actividades, porcentaje de verbos fuertes en infinitivo DNP y formato de origen.
+   - **Motor 3 (Inversión y Ejecución Presupuestal — Financiero):** Cascada presupuestal (`Apropiación Inicial`, `Apropiación Definitiva`, `CDP`, `Compromisos/RP`, `Obligaciones`, `Pagos`), proyectos `BPIM` y desglose por fuente (`ICLD`, `SGP`, `FONSET`, `Regalías SGR`, `Crédito`).
+   - **Cruce de las 3 Lecturas:** Matriz cruzada con `avance_estrategico_pdd_pct`, `avance_operativo_pa_pct`, `ejecucion_financiera_rp_pct`, `giro_pagos_pct`, `brecha_fisico_financiera_pts`, `estado_semaforo` (`COHERENCIA_INTEGRAL_ALTA`, `DESFASE_CRITICO_SOBREEJECUCION`, `REZAGO_CONTRACTUAL_INVERSION`, `META_PDD_SUBOPERACIONALIZADA`), `hallazgo_forense` y `recomendacion_tecnica`.
 
-**Implementación concreta recomendada para el Scroll y el CTA inferior:**
-1. En `src/app/geovisor/page.tsx` y `src/features/geovisor/views/geovisor-view.tsx` / `src/features/geovisor/components/geovisor-workspace-layout.tsx`:
-   - Permite que el espacio de trabajo del Geovisor tenga scroll vertical fluido (`overflow-y-auto`) o que debajo del bloque principal del mapa (`min-h-[75dvh]`) el contenedor de datos estadísticos (`bottomSlot` / sección `#geovisor-datos-estadisticos`) pueda recorrerse con scroll vertical de página completa y también expandirse con 1 clic.
-   - Asegúrate de que dentro de `#dock-panel-bottom` y de `GeovisorHurtosPanel` el scroll con rueda del ratón / trackpad funcione sin bloqueos (`overflow-y-auto`, sin contenedores padres que atrapen o recorten el contenido sin barra de desplazamiento).
-2. En la parte inferior central de `MapaCartagena` (`src/features/geovisor/components/mapa-cartagena.tsx`, cuando `modoGeojsonDrive === true`), añade un botón flotante tipo píldora de alto contraste (`data-testid="btn-ver-datos-estadisticos"`):
-   - Texto: **`Ver datos estadísticos (18.242 casos) ↓`**
-   - Al hacer clic:
-     - Abre la vista de estadísticas (`useGeovisorLayoutStore.getState().openView("hurtos")`), expande o enfoca el panel de estadísticas y ejecuta `document.getElementById("geovisor-datos-estadisticos")?.scrollIntoView({ behavior: "smooth", block: "start" })` (además de expandir el dock inferior si está contraído) para que la capa de datos estadísticos suba inmediatamente a primer plano y el ciudadano pueda hacer scroll por todos los gráficos y tablas.
-3. En `GeovisorHurtosPanel` (`src/features/geovisor/components/geovisor-hurtos-panel.tsx`), envuelve o identifica el contenedor raíz con `id="geovisor-datos-estadisticos"` y añade en su barra superior un botón rápido **`↑ Subir al Mapa / Ver Mapa Completo`** que permita alternar suavemente entre la vista expandida de datos estadísticos y el mapa.
+### 3.2. `src/features/seguimiento/components/triada-motores-tab.tsx`
+Diseñar e implementar un componente de nivel ejecutivo y ciudadano (usando exclusivamente primitivas de `@/shared/ui/*` y tokens semánticos CSS para cumplir `UI001`–`UI009`) organizado en **3 Sub-vistas interactivas**:
+
+1. **Sub-vista 1 — «Triada de Lecturas: Plan de Desarrollo · Plan de Acción · Inversión» (`data-testid="subvista-triada-lecturas"`):**
+   - Tarjetas resumen de los **3 Motores Articulados** (Estratégico PDD + Operativo Plan de Acción + Financiero POAI/BPIM/RP/Pagos).
+   - Filtros interactivos por **Cuatrienio / Plan de Desarrollo** (`2024–2027 Cartagena Ciudad de Derechos`, `2020–2023 Salvemos Juntos a Cartagena`, `2016–2019 Primero la Gente`), **Dependencia Distrital**, **Fuente de Financiación** (`ICLD`, `SGP`, `FONSET`, `SGR`, `Crédito`) y **Estado del Semáforo Tripartito**.
+   - **Visualizador de la Cascada Presupuestal (Motor 3):** Barra comparativa `Apropiación Inicial → Apropiación Definitiva → CDP → Compromisos (RP) → Obligaciones → Pagos`.
+   - **Matriz Cruzada de las 3 Lecturas:** Muestra por cada dependencia y proyecto `BPIM` la lectura estratégica (Meta PDD), la lectura operativa (Plan de Acción `T1–T4` + calidad verbal DNP), la lectura financiera (`% RP` y `% Pagos`), la brecha físico-financiera y el dictamen del semáforo con su hallazgo forense.
+
+2. **Sub-vista 2 — «Detector Polimórfico de Formatos Excel (2016 Monohoja ↔ 2026 Multihoja)» (`data-testid="subvista-detector-multiformato"`):**
+   - Permite seleccionar y simular en 1 clic cualquiera de los **4 formatos históricos reales** (`2016 Monohoja (1 hoja por entidad)`, `2020–2023 Híbrido por Pilar`, `2024–2026 Multihoja Institucional`, `2026 Canónico DNP Dual`) o pegar/cargar encabezados de un libro Excel para ejecutar la **Detección de Huella de Esquema (`Schema Fingerprinting`)**.
+   - Muestra visualmente:
+     - El **Perfil de Formato Detectado** y el **Nivel de Confianza (%)**.
+     - Las **Hojas Detectadas** en el libro (`1 hoja plana` en 2016 vs. `4+ hojas` en 2026).
+     - La **Tabla de Homologación Semántica de Columnas** (`Encabezado Original del Excel → Campo Canónico Estandarizado`).
+     - La **Lectura Comparativa Interanual Estandarizada (`2016 vs. 2020 vs. 2026`)**, demostrando cómo formatos distintos quedan normalizados bajo una misma métrica comparativa.
+
+3. **Sub-vista 3 — «Conector Transparencia Alcaldía de Cartagena (Categorías 4.1 a 4.4)» (`data-testid="subvista-conector-transparencia"`):**
+   - Panel de las 4 subcategorías oficiales de `https://www.cartagena.gov.co/transparencia` (`4.1 Presupuesto`, `4.2 Ejecución Presupuestal`, `4.3 Plan de Acción`, `4.4 Proyectos de Inversión`) con sus enlaces directos verificados.
+   - **Inventario Interactivo de los 23 Archivos Excel 2026 (`planes-accion-institucionales-2026`)** con buscador por dependencia, filtro por tipo de archivo (`.xls` vs `.xlsx`), formato detectado, hojas identificadas y botón para inspeccionar su normalización en el Detector Polimórfico.
+
+### 3.3. Integración en `src/features/seguimiento/views/seguimiento-view.tsx`
+- Agregar el `TabsTrigger` con `value="triada_motores"` y etiqueta **`Triada de Motores (PDD · PA · Inversión)`** junto a `motor_plan_accion` y `banco_conocimiento_dnp`.
+- Renderizar `<TriadaMotoresTab />` dentro de su `<TabsContent value="triada_motores">`.
 
 ---
 
-## 3. Quality Gates Obligatorios antes de Reportar
+## 4. Criterios de Aceptación y Quality Gates
 
-1. `/root/polis/venv/bin/pytest` -> **100% en verde**.
-2. `bun test` -> **100% en verde** (actualizando y ampliando los tests de `geovisor-top-shelf.test.tsx`, `geovisor-layout-store.test.ts`, `geovisor-workspace-layout.test.tsx` y `geovisor-hurtos-panel.test.tsx`).
-3. `bun run check` (`ui:check`, `tsc --noEmit`, `eslint .`) -> **0 errores**.
-4. `bun run ui:test` -> **100% historias Storybook aprobadas con `axe-core`**.
-5. `bun run build` -> **Build de producción exitoso** y reinicio de `polis-frontend` y `polis-backend`.
-6. Verificación headless con Playwright en `http://127.0.0.1:3000/geovisor` comprobando:
-   - 0 errores de consola.
-   - Panel superior oculto por defecto (`topOpen === false`) y botón `Mostrar Panel Superior` visible.
-   - Ausencia del rótulo `Capa GeoJSON:` y del botón `Procesar y Gestionar GeoJSON`.
-   - Presencia de `Datos Estadísticos`, botón `Ver datos estadísticos (18.242 casos) ↓` y scroll funcional sobre la sección de datos estadísticos.
-7. Commit local en `main` (**Política Zero-Push**) y reporte detallado en `bridge/02_resultado_agy2.md`.
+1. `node scripts/ui-policy.mjs` → **0 violaciones** (usar exclusivamente componentes de `@/shared/ui/*` y tokens semánticos CSS; cero colores literales hex/Tailwind arbitrarios).
+2. `bun run typecheck` y `bun run lint` → **0 errores**.
+3. `bun test src/features/seguimiento/` → **100% PASS** (incluyendo el nuevo `src/features/seguimiento/components/triada-motores-tab.test.tsx` probando las 3 sub-vistas, el detector polimórfico 2016 vs 2026, el cruce de las 3 lecturas y el catálogo de los 23 archivos de Transparencia).
+4. `bun run build` → **192 rutas compiladas sin errores**.
+5. Reiniciar `polis-frontend.service` (`systemctl restart polis-frontend.service`) y verificar con Playwright Headless en `http://127.0.0.1:3000/plataforma/seguimiento` que la pestaña `Triada de Motores (PDD · PA · Inversión)` y sus 3 sub-vistas renderizan con **0 errores de consola**.
+6. Hacer commit local en `main` **únicamente** de los archivos bajo `src/features/seguimiento/*` y `bridge/02_resultado_agy2.md`.
