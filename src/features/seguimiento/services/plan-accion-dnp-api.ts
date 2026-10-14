@@ -1534,3 +1534,424 @@ export async function procesarLotePlanAccionApi(
     return procesarLotePlanAccionLocal(solicitud);
   }
 }
+
+// ============================================================================
+// TRIADA DE MOTORES: CLIENTES TIPADOS, CONTRATOS Y RESILIENCIA
+// ============================================================================
+
+export {
+  CATEGORIAS_TRANSPARENCIA_CARTAGENA,
+  ARCHIVOS_EXCEL_PLAN_ACCION_2026,
+  PERFILES_FORMATO_EXCEL,
+  HOMOLOGACION_COLUMNAS_CANONICAS,
+  MATRIZ_COMPARATIVA_INTERANUAL,
+  MUESTRAS_SIMULACION_HUELLA,
+  METAS_ESTRATEGICAS_PDD_CANONICAS,
+  PROYECTOS_INVERSION_BPIM_CANONICOS,
+  CRUCE_TRIPARTITO_LECTURAS,
+  RESUMEN_CONSOLIDADO_TRIADA_CANONICO,
+  type PerfilFormatoId,
+  type EstadoSemaforoTripartito,
+  type FuenteFinanciacionTriada,
+  type CategoriaTransparenciaAlcaldia,
+  type ArchivoExcelPlanAccion2026,
+  type PerfilFormatoExcelConfig,
+  type HomologacionColumnaSemantica,
+  type ComparativaInteranualDependencia,
+  type MuestraSimulacionHuella,
+  type MetaEstrategicaPDD,
+  type ActividadOperativaPA,
+  type EjecucionFinancieraProyecto,
+  type CruceTripartitoLectura,
+  type ResumenConsolidadoTriada,
+} from "../data/triada-motores-cartagena.data";
+
+import {
+  CATEGORIAS_TRANSPARENCIA_CARTAGENA,
+  ARCHIVOS_EXCEL_PLAN_ACCION_2026,
+  PERFILES_FORMATO_EXCEL,
+  HOMOLOGACION_COLUMNAS_CANONICAS,
+  MATRIZ_COMPARATIVA_INTERANUAL,
+  MUESTRAS_SIMULACION_HUELLA,
+  METAS_ESTRATEGICAS_PDD_CANONICAS,
+  PROYECTOS_INVERSION_BPIM_CANONICOS,
+  CRUCE_TRIPARTITO_LECTURAS,
+  RESUMEN_CONSOLIDADO_TRIADA_CANONICO,
+  type PerfilFormatoId,
+  type EstadoSemaforoTripartito,
+  type FuenteFinanciacionTriada,
+  type CategoriaTransparenciaAlcaldia,
+  type ArchivoExcelPlanAccion2026,
+  type PerfilFormatoExcelConfig,
+  type ComparativaInteranualDependencia,
+  type MuestraSimulacionHuella,
+  type MetaEstrategicaPDD,
+  type EjecucionFinancieraProyecto,
+  type CruceTripartitoLectura,
+  type ResumenConsolidadoTriada,
+} from "../data/triada-motores-cartagena.data";
+
+export interface ResumenTriadaMotoresRespuesta {
+  resumen_consolidado: ResumenConsolidadoTriada;
+  catalogo_transparencia: CategoriaTransparenciaAlcaldia[];
+  archivos_excel_2026: ArchivoExcelPlanAccion2026[];
+  perfiles_formato: Record<PerfilFormatoId, PerfilFormatoExcelConfig>;
+  muestras_simulacion: MuestraSimulacionHuella[];
+  comparativa_interanual: ComparativaInteranualDependencia[];
+  metas_pdd: MetaEstrategicaPDD[];
+  proyectos_bpim: EjecucionFinancieraProyecto[];
+  cruce_lecturas: CruceTripartitoLectura[];
+  esContingencia?: boolean;
+}
+
+export interface DetectarFormatoPlanAccionSolicitud {
+  codigo_muestra?: string;
+  nombre_archivo?: string;
+  vigencia_declarada?: number;
+  dependencia_declarada?: string;
+  encabezados_detectados?: string[];
+  total_hojas?: number;
+  nombres_hojas?: string[];
+}
+
+export interface DetectarFormatoPlanAccionRespuesta {
+  perfil_detectado: PerfilFormatoId;
+  nombre_perfil: string;
+  confianza_porcentaje: number;
+  vigencia_inferida: number;
+  total_hojas_analizadas: number;
+  nombres_hojas_analizadas: string[];
+  mapeo_columnas_detectadas: Array<{
+    columna_detectada: string;
+    campo_canonico_polis: string;
+    estado_homologacion: "MAPEO_EXACTO" | "MAPEO_SEMANTICO" | "COLUMNA_ADICIONAL";
+  }>;
+  resumen_auditoria_dnp: {
+    total_actividades_evaluadas: number;
+    verbos_fuertes_validos: number;
+    verbos_debiles_detectados: number;
+    cumplimiento_calidad_pct: number;
+  };
+  comparativa_historica?: ComparativaInteranualDependencia | null;
+  esContingencia?: boolean;
+}
+
+export interface CruzarTresLecturasSolicitud {
+  cuatrienio?: string;
+  vigencia?: number;
+  dependencia?: string;
+  fuente_financiacion?: FuenteFinanciacionTriada | "TODAS";
+  estado_semaforo?: EstadoSemaforoTripartito | "TODOS";
+}
+
+export interface CruzarTresLecturasRespuesta {
+  cruces: CruceTripartitoLectura[];
+  totales_evaluados: number;
+  resumen_semaforo: {
+    coherencia_alta: number;
+    desfase_sobreejecucion: number;
+    rezago_contractual: number;
+    meta_suboperacionalizada: number;
+  };
+  esContingencia?: boolean;
+}
+
+export function obtenerResumenTriadaMotoresLocal(): ResumenTriadaMotoresRespuesta {
+  return {
+    resumen_consolidado: RESUMEN_CONSOLIDADO_TRIADA_CANONICO,
+    catalogo_transparencia: CATEGORIAS_TRANSPARENCIA_CARTAGENA,
+    archivos_excel_2026: ARCHIVOS_EXCEL_PLAN_ACCION_2026,
+    perfiles_formato: PERFILES_FORMATO_EXCEL,
+    muestras_simulacion: MUESTRAS_SIMULACION_HUELLA,
+    comparativa_interanual: MATRIZ_COMPARATIVA_INTERANUAL,
+    metas_pdd: METAS_ESTRATEGICAS_PDD_CANONICAS,
+    proyectos_bpim: PROYECTOS_INVERSION_BPIM_CANONICOS,
+    cruce_lecturas: CRUCE_TRIPARTITO_LECTURAS,
+    esContingencia: true,
+  };
+}
+
+export function detectarFormatoPlanAccionLocal(
+  solicitud: DetectarFormatoPlanAccionSolicitud
+): DetectarFormatoPlanAccionRespuesta {
+  let perfil: PerfilFormatoId = "PA_MULTIHOJA_2024_2026";
+  let confianza = 95.5;
+  let vigencia = solicitud.vigencia_declarada || 2026;
+  let hojas = solicitud.nombres_hojas || ["Identificación", "Plan Indicativo", "Plan de Acción T1-T4", "Presupuesto POAI"];
+  let totalHojas = solicitud.total_hojas || hojas.length;
+
+  const muestra = solicitud.codigo_muestra
+    ? MUESTRAS_SIMULACION_HUELLA.find(
+        (m) =>
+          m.id === solicitud.codigo_muestra ||
+          m.perfil_esperado === solicitud.codigo_muestra ||
+          (solicitud.codigo_muestra?.includes("2016") && m.vigencia === 2016) ||
+          (solicitud.codigo_muestra?.includes("2021") && m.vigencia === 2021) ||
+          (solicitud.codigo_muestra?.includes("CANONICO") && m.id === "muestra-2026-canonico-polis")
+      )
+    : null;
+
+  if (muestra) {
+    perfil = muestra.perfil_esperado;
+    vigencia = muestra.vigencia;
+    hojas = muestra.hojas.map((h) => h.nombre);
+    totalHojas = hojas.length;
+    confianza = 99.2;
+  } else {
+    const nombreLower = (solicitud.nombre_archivo || "").toLowerCase();
+    const headers = (solicitud.encabezados_detectados || []).map((h) => h.toLowerCase());
+
+    if (
+      nombreLower.endsWith(".xls") ||
+      nombreLower.includes("2016") ||
+      nombreLower.includes("2017") ||
+      nombreLower.includes("2018") ||
+      nombreLower.includes("2019") ||
+      totalHojas === 1
+    ) {
+      perfil = "PA_MONOHOJA_2016_2019";
+      vigencia = 2016;
+      hojas = ["Hoja1"];
+      totalHojas = 1;
+      confianza = 96.8;
+    } else if (
+      nombreLower.includes("pilar") ||
+      nombreLower.includes("salvemos") ||
+      hojas.some((h) => h.toLowerCase().includes("resiliente") || h.toLowerCase().includes("incluyente")) ||
+      (solicitud.vigencia_declarada && solicitud.vigencia_declarada >= 2020 && solicitud.vigencia_declarada <= 2023)
+    ) {
+      perfil = "PA_HIBRIDO_2020_2023";
+      vigencia = solicitud.vigencia_declarada || 2021;
+      hojas = ["Cartagena Resiliente", "Cartagena Incluyente", "Cartagena Transparente", "Cartagena Contingente"];
+      totalHojas = 4;
+      confianza = 97.4;
+    } else if (
+      nombreLower.includes("canonico") ||
+      hojas.some((h) => h.toLowerCase().includes("plan_accion") || h.toLowerCase().includes("plan_indicativo")) ||
+      headers.includes("compromiso_pas_codigo")
+    ) {
+      perfil = "PA_CANONICO_DNP_POLIS";
+      vigencia = 2026;
+      hojas = ["Plan_Accion", "Plan_Indicativo"];
+      totalHojas = 2;
+      confianza = 99.8;
+    } else {
+      perfil = "PA_MULTIHOJA_2024_2026";
+      vigencia = 2026;
+      hojas = ["Identificación", "Plan Indicativo", "Plan de Acción T1-T4", "Presupuesto POAI"];
+      totalHojas = 4;
+      confianza = 98.1;
+    }
+  }
+
+  const mapeoColumnas = HOMOLOGACION_COLUMNAS_CANONICAS.map((h) => ({
+    columna_detectada: h.encabezado_original.split("/")[0]?.trim() || h.encabezado_original,
+    campo_canonico_polis: h.campo_canonico_polis,
+    estado_homologacion: (h.es_obligatorio ? "MAPEO_EXACTO" : "MAPEO_SEMANTICO") as
+      | "MAPEO_EXACTO"
+      | "MAPEO_SEMANTICO"
+      | "COLUMNA_ADICIONAL",
+  }));
+
+  const compHistorica =
+    MATRIZ_COMPARATIVA_INTERANUAL.find(
+      (c) =>
+        solicitud.dependencia_declarada &&
+        (c.dependencia.toLowerCase().includes(solicitud.dependencia_declarada.toLowerCase()) ||
+          c.sigla.toLowerCase() === solicitud.dependencia_declarada.toLowerCase())
+    ) || MATRIZ_COMPARATIVA_INTERANUAL[0];
+
+  return {
+    perfil_detectado: perfil,
+    nombre_perfil: PERFILES_FORMATO_EXCEL[perfil]?.nombre || perfil,
+    confianza_porcentaje: confianza,
+    vigencia_inferida: vigencia,
+    total_hojas_analizadas: totalHojas,
+    nombres_hojas_analizadas: hojas,
+    mapeo_columnas_detectadas: mapeoColumnas,
+    resumen_auditoria_dnp: {
+      total_actividades_evaluadas: perfil === "PA_MONOHOJA_2016_2019" ? 22 : perfil === "PA_HIBRIDO_2020_2023" ? 34 : 58,
+      verbos_fuertes_validos: perfil === "PA_MONOHOJA_2016_2019" ? 9 : perfil === "PA_HIBRIDO_2020_2023" ? 20 : 53,
+      verbos_debiles_detectados: perfil === "PA_MONOHOJA_2016_2019" ? 13 : perfil === "PA_HIBRIDO_2020_2023" ? 14 : 5,
+      cumplimiento_calidad_pct: perfil === "PA_MONOHOJA_2016_2019" ? 40.9 : perfil === "PA_HIBRIDO_2020_2023" ? 58.8 : 91.4,
+    },
+    comparativa_historica: compHistorica,
+    esContingencia: true,
+  };
+}
+
+export function cruzarTresLecturasLocal(
+  solicitud?: CruzarTresLecturasSolicitud
+): CruzarTresLecturasRespuesta {
+  let cruces = [...CRUCE_TRIPARTITO_LECTURAS];
+
+  if (solicitud?.dependencia && solicitud.dependencia !== "TODAS") {
+    cruces = cruces.filter((c) =>
+      c.dependencia.toLowerCase().includes(solicitud.dependencia!.toLowerCase())
+    );
+  }
+
+  if (solicitud?.fuente_financiacion && solicitud.fuente_financiacion !== "TODAS") {
+    cruces = cruces.filter((c) => c.fuente_financiacion === solicitud.fuente_financiacion);
+  }
+
+  if (solicitud?.estado_semaforo && solicitud.estado_semaforo !== "TODOS") {
+    cruces = cruces.filter((c) => c.estado_semaforo === solicitud.estado_semaforo);
+  }
+
+  const resumenSemaforo = {
+    coherencia_alta: cruces.filter((c) => c.estado_semaforo === "COHERENCIA_INTEGRAL_ALTA").length,
+    desfase_sobreejecucion: cruces.filter((c) => c.estado_semaforo === "DESFASE_CRITICO_SOBREEJECUCION").length,
+    rezago_contractual: cruces.filter((c) => c.estado_semaforo === "REZAGO_CONTRACTUAL_INVERSION").length,
+    meta_suboperacionalizada: cruces.filter((c) => c.estado_semaforo === "META_PDD_SUBOPERACIONALIZADA").length,
+  };
+
+  return {
+    cruces,
+    totales_evaluados: cruces.length,
+    resumen_semaforo: resumenSemaforo,
+    esContingencia: true,
+  };
+}
+
+export async function obtenerResumenTriadaMotoresApi(
+  params?: { cuatrienio?: string; vigencia?: number; entidad?: string; fuente?: string }
+): Promise<ResumenTriadaMotoresRespuesta> {
+  const local = obtenerResumenTriadaMotoresLocal();
+  try {
+    const searchParams = new URLSearchParams();
+    if (params?.cuatrienio) searchParams.set("cuatrienio", params.cuatrienio);
+    if (params?.vigencia) searchParams.set("vigencia", params.vigencia.toString());
+    if (params?.entidad) searchParams.set("entidad", params.entidad);
+    if (params?.fuente) searchParams.set("fuente", params.fuente);
+
+    const query = searchParams.toString();
+    const endpoint = `/compromisos/triada/resumen${query ? `?${query}` : ""}`;
+    const raw = await apiFetch<Record<string, unknown>>(endpoint, { method: "GET" });
+
+    if (raw && (raw.resumen_consolidado || raw.motor_1_plan_desarrollo)) {
+      const rawM1 = (raw.motor_1_plan_desarrollo as Record<string, unknown>) || {};
+      const rawM2 = (raw.motor_2_plan_accion as Record<string, unknown>) || {};
+      const rawM3 = (raw.motor_3_inversion_presupuestal as Record<string, unknown>) || {};
+
+      const resumenConsolidado: ResumenConsolidadoTriada = (raw.resumen_consolidado as ResumenConsolidadoTriada) || {
+        totales_presupuesto: {
+          apropiacion_inicial_cop: Number(rawM3.apropiacion_inicial_cop) || local.resumen_consolidado.totales_presupuesto.apropiacion_inicial_cop,
+          apropiacion_definitiva_cop: Number(rawM3.apropiacion_definitiva_cop) || local.resumen_consolidado.totales_presupuesto.apropiacion_definitiva_cop,
+          cdp_acumulado_cop: Number(rawM3.cdp_acumulado_cop) || local.resumen_consolidado.totales_presupuesto.cdp_acumulado_cop,
+          compromisos_rp_cop: Number(rawM3.compromisos_rp_cop) || local.resumen_consolidado.totales_presupuesto.compromisos_rp_cop,
+          obligaciones_cop: Number(rawM3.obligaciones_cop) || local.resumen_consolidado.totales_presupuesto.obligaciones_cop,
+          pagos_tesoreria_cop: Number(rawM3.pagos_tesoreria_cop) || local.resumen_consolidado.totales_presupuesto.pagos_tesoreria_cop,
+          porcentaje_cdp_global: Number(rawM3.porcentaje_cdp_global) || local.resumen_consolidado.totales_presupuesto.porcentaje_cdp_global,
+          porcentaje_rp_global: Number(rawM3.porcentaje_rp_global) || local.resumen_consolidado.totales_presupuesto.porcentaje_rp_global,
+          porcentaje_pagos_global: Number(rawM3.porcentaje_pagos_global) || local.resumen_consolidado.totales_presupuesto.porcentaje_pagos_global,
+        },
+        totales_operativos: {
+          total_dependencias: Number(rawM2.total_dependencias) || local.resumen_consolidado.totales_operativos.total_dependencias,
+          total_archivos_transparencia: local.resumen_consolidado.totales_operativos.total_archivos_transparencia,
+          total_actividades_plan_accion: Number(rawM2.actividades_evaluadas) || local.resumen_consolidado.totales_operativos.total_actividades_plan_accion,
+          avance_fisico_promedio_pct: Number(rawM2.avance_fisico_promedio_pct) || local.resumen_consolidado.totales_operativos.avance_fisico_promedio_pct,
+          cumplimiento_verbos_fuertes_dnp_pct: local.resumen_consolidado.totales_operativos.cumplimiento_verbos_fuertes_dnp_pct,
+        },
+        totales_estrategicos: {
+          total_metas_cuatrienales_pdd: Number(rawM1.metas_evaluadas) || local.resumen_consolidado.totales_estrategicos.total_metas_cuatrienales_pdd,
+          avance_cuatrienal_promedio_pct: Number(rawM1.avance_cuatrienal_promedio_pct) || local.resumen_consolidado.totales_estrategicos.avance_cuatrienal_promedio_pct,
+          cuatrienio_activo: (rawM1.cuatrienio_activo as string) || local.resumen_consolidado.totales_estrategicos.cuatrienio_activo,
+        },
+        distribucion_semaforo: local.resumen_consolidado.distribucion_semaforo,
+      };
+
+      return {
+        resumen_consolidado: resumenConsolidado,
+        catalogo_transparencia: local.catalogo_transparencia,
+        archivos_excel_2026: local.archivos_excel_2026,
+        perfiles_formato: local.perfiles_formato,
+        muestras_simulacion: local.muestras_simulacion,
+        comparativa_interanual: local.comparativa_interanual,
+        metas_pdd: local.metas_pdd,
+        proyectos_bpim: local.proyectos_bpim,
+        cruce_lecturas: local.cruce_lecturas,
+        esContingencia: false,
+      };
+    }
+    return local;
+  } catch (error) {
+    console.warn("Fallo obtenerResumenTriadaMotoresApi, usando fallback local:", error);
+    return local;
+  }
+}
+
+export async function detectarFormatoPlanAccionApi(
+  solicitud: DetectarFormatoPlanAccionSolicitud
+): Promise<DetectarFormatoPlanAccionRespuesta> {
+  const local = detectarFormatoPlanAccionLocal(solicitud);
+  const muestraMap: Record<string, string> = {
+    "muestra-2016-dadis": "2016_MONOHOJA",
+    "muestra-2021-distriseguridad": "2021_HIBRIDO",
+    "muestra-2026-planeacion": "2026_MULTIHOJA",
+    "muestra-2026-canonico-polis": "2026_CANONICO_DNP",
+  };
+  const muestraVal = solicitud.codigo_muestra
+    ? muestraMap[solicitud.codigo_muestra] || solicitud.codigo_muestra
+    : undefined;
+
+  try {
+    const raw = await apiFetch<Record<string, unknown>>(
+      "/compromisos/triada/detectar-formato",
+      {
+        method: "POST",
+        body: {
+          nombre_archivo: solicitud.nombre_archivo || "Plan_Accion_Cartagena.xlsx",
+          vigencia_declarada: solicitud.vigencia_declarada,
+          entidad_declarada: solicitud.dependencia_declarada,
+          muestra: muestraVal,
+          hojas: [],
+        },
+      }
+    );
+    if (raw && (raw.perfil_detectado || raw.nombre_perfil)) {
+      return {
+        perfil_detectado: (raw.perfil_detectado as PerfilFormatoId) || local.perfil_detectado,
+        nombre_perfil: (raw.nombre_perfil as string) || local.nombre_perfil,
+        confianza_porcentaje:
+          typeof raw.confianza_porcentaje === "number"
+            ? raw.confianza_porcentaje
+            : typeof raw.confianza === "number"
+            ? raw.confianza * 100
+            : local.confianza_porcentaje,
+        vigencia_inferida: Number(raw.vigencia_inferida) || local.vigencia_inferida,
+        total_hojas_analizadas: Number(raw.total_hojas_analizadas) || local.total_hojas_analizadas,
+        nombres_hojas_analizadas: (raw.nombres_hojas_analizadas as string[]) || local.nombres_hojas_analizadas,
+        mapeo_columnas_detectadas: local.mapeo_columnas_detectadas,
+        resumen_auditoria_dnp: local.resumen_auditoria_dnp,
+        comparativa_historica: local.comparativa_historica,
+        esContingencia: false,
+      };
+    }
+    return local;
+  } catch (error) {
+    console.warn("Fallo detectarFormatoPlanAccionApi, usando fallback local:", error);
+    return local;
+  }
+}
+
+export async function cruzarTresLecturasApi(
+  solicitud?: CruzarTresLecturasSolicitud
+): Promise<CruzarTresLecturasRespuesta> {
+  try {
+    const raw = await apiFetch<CruzarTresLecturasRespuesta>(
+      "/compromisos/triada/cruzar-lecturas",
+      {
+        method: "POST",
+        body: solicitud || {},
+      }
+    );
+    if (raw && Array.isArray(raw.cruces)) {
+      return raw;
+    }
+    return cruzarTresLecturasLocal(solicitud);
+  } catch (error) {
+    console.warn("Fallo cruzarTresLecturasApi, usando fallback local:", error);
+    return cruzarTresLecturasLocal(solicitud);
+  }
+}

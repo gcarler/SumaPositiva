@@ -14,6 +14,7 @@ import {
   Scale,
   AlertTriangle,
   BookOpen,
+  TrendingUp,
 } from "lucide-react";
 import { PageHeader } from "@/shared/ui/page-header";
 import { Button } from "@/shared/ui/button";
@@ -43,6 +44,7 @@ import { CadenaValorTab } from "../components/cadena-valor-tab";
 import { RendicionCuentasTab } from "../components/rendicion-cuentas-tab";
 import { MotorPlanAccionTab } from "../components/motor-plan-accion-tab";
 import { BancoConocimientoDNPTab } from "../components/banco-conocimiento-dnp-tab";
+import { TriadaMotoresTab } from "../components/triada-motores-tab";
 import {
   useCompromisosStore,
   calcularKpisSeguimiento,
@@ -191,7 +193,9 @@ export function SeguimientoView() {
         <PageHeader
           eyebrow="Plan de Acción y Seguimiento (PAS) · Cartagena de Indias 2026–2036"
           title={
-            tabActiva === "motor_plan_accion"
+            tabActiva === "triada_motores"
+              ? "Triada de Motores (PDD · PA · Inversión)"
+              : tabActiva === "motor_plan_accion"
               ? "Motor de Planes de Acción DNP / SisPT"
               : tabActiva === "banco_conocimiento_dnp"
               ? "Banco de Conocimiento DNP / SisPT"
@@ -202,7 +206,9 @@ export function SeguimientoView() {
               : "Rendición de Cuentas y Devolución Ciudadana"
           }
           description={
-            tabActiva === "motor_plan_accion"
+            tabActiva === "triada_motores"
+              ? "Articulación tripartita de planeación y hacienda: Plan de Desarrollo cuatrienal (estratégico), Plan de Acción multiformato 2016–2026 (operativo anual T1–T4) e Inversión presupuestal POAI/BPIM/RP/Pagos con conector de Transparencia Cartagena."
+              : tabActiva === "motor_plan_accion"
               ? "Programación operativa anual, articulación con el Plan Indicativo cuatrienal, verificación de verbos fuertes y fuentes de financiación conforme a Ley 152/1994 y Ley 1474/2011."
               : tabActiva === "banco_conocimiento_dnp"
               ? "Guía metodológica oficial del Departamento Nacional de Planeación: encadenamiento de instrumentos (PDT, PI, POAI, MFMP, Presupuesto), 7 pasos de elaboración y validador lingüístico de verbos fuertes en infinitivo."
@@ -308,6 +314,13 @@ export function SeguimientoView() {
             aria-label="Pestañas del Plan de Acción y Seguimiento"
             className="bg-surface-2 p-1 border border-border"
           >
+            <TabsTrigger
+              value="triada_motores"
+              className="gap-2 text-xs data-[state=active]:bg-surface-1 data-[state=active]:text-text-primary"
+            >
+              <TrendingUp className="h-3.5 w-3.5 text-ember" />
+              <span>Triada de Motores (PDD · PA · Inversión)</span>
+            </TabsTrigger>
             <TabsTrigger
               value="motor_plan_accion"
               className="gap-2 text-xs data-[state=active]:bg-surface-1 data-[state=active]:text-text-primary"
@@ -464,6 +477,11 @@ export function SeguimientoView() {
         {/* Tab 5: Banco de Conocimiento DNP */}
         <TabsContent value="banco_conocimiento_dnp" className="space-y-6 outline-none">
           <BancoConocimientoDNPTab />
+        </TabsContent>
+
+        {/* Tab 6: Triada de Motores (PDD · PA · Inversión) */}
+        <TabsContent value="triada_motores" className="space-y-6 outline-none">
+          <TriadaMotoresTab puedeEditar={puedeEditarEfectivo} />
         </TabsContent>
       </Tabs>
     </div>
