@@ -1,57 +1,67 @@
-# Entrega Codex — Constructor de líneas y sublíneas estratégicas
+# Entrega EDD — `[ARCH-CONSOLIDACION-01]`
 
-Fecha: 2026-10-02T14:10:29.074399+00:00
-Commit de implementación: `841ce7de2be69e37f6571cddeebb7d13afa07024`
-Estado: IMPLEMENTADO, VERIFICADO Y DESPLEGADO EN EL ALCANCE. Dictamen independiente EAF/agy pendiente.
+- **Fecha:** 2026-10-14
+- **Responsable:** Codex
+- **Rama:** `main`
+- **Base de la asignación:** `0ed3e66f2a67fdd9aac25d86b4f0b3f1265492ed`
+- **Commit de implementación:** `6b956ab67808cf2b051fe3133755ad29252fab61` (`refactor(architecture): consolidate POLIS scaffold`)
+- **Dictamen EAF de esta entrega:** pendiente; este informe es evidencia EDD, no certificación independiente.
 
 ## Resultado
 
-- Jerarquía dimensión canónica → línea estratégica → sublínea/proyecto. Nuevas escrituras exigen una de las siete dimensiones activas y una fase DNP existente.
-- Backend: `SublineaSchema`, Create/Update/Read, JSONB `metadatos["sublineas"]`, service/repository transaccionales; sin modificar migraciones aplicadas ni crear otra persistencia.
-- POST/PUT/DELETE con `politicas:gestionar`; lectura administrativa completa por roles autorizados. Código único por fase y códigos hijos coherentes. Metadatos y campos opcionales omitidos del editor se conservan.
-- Eliminación bloqueada con 409 si hay aportes, mesas, indicadores, presupuesto o instrumentos vinculados; alternativa de desactivar sin borrar el expediente.
-- Panel lateral `linea-editor`, React Hook Form + Zod + useFieldArray. Dimensión visual con iconos/tokens; fase, problema, objetivo, entidad, financiación, costo y sublíneas dinámicas.
-- **Entidad Líder usa `DEPENDENCIAS_CARTAGENA_2026` de `src/features/politicas/data/entidades-cartagena.data.ts`**, según la nota del usuario. Se conserva una entidad histórica como opción al editar.
-- `/plataforma/contenido`: pestaña principal Dimensiones, Líneas y Sublíneas; siete tarjetas, acordeones y tabla de hijos. Creación/edición por panel; eliminación con confirmación contextual Zero-Modals.
-- Exportación CSV con protección anti-fórmulas y JSON jerárquico, incluyendo líneas inactivas y registros históricos sin dimensión.
-- Registro del panel, ancho y guard de acceso integrados. El auditor tiene lectura y carece de botones de escritura.
+Se actualizaron las cinco correcciones obligatorias y se ejecutaron las fases estructurales/documentales del plan. La arquitectura de paneles quedó desacoplada, se retiró el scaffold Prisma —incluido el uso que seguía oculto en `.zscripts`—, se habilitó el lint de Noticias/Testimonios, se añadió `bun test` a CI y se incorporó la matriz real de módulos.
 
-## Validación
+La ruta de cierre no se declara completa: `ruff check` reporta 840 hallazgos y `ruff format --check` detecta 110 archivos backend por formatear. El código backend de esos hallazgos no se cambió en esta tarea. Los recorridos de módulos sin pruebas end-to-end identificadas se clasifican como parciales o pendientes en la matriz.
 
-| Comprobación | Resultado |
+## Cambios por ajuste EAF
+
+1. **Lint frontend:** se retiraron las exclusiones globales de `noticias` y `testimonios`; se eliminaron imports sin uso. ESLint global y `bun run check` pasan.
+2. **Retiro Prisma:** se eliminaron `prisma/schema.prisma`, `src/core/database/legacy-prisma.ts`, paquetes y comandos `db:*` del manifiesto. También se retiró el generador SQLite de `.zscripts/dev.sh`, `.zscripts/build.sh`, `.zscripts/start.sh`, `.zscripts/database-runtime-build.sh` y su prueba obsoleta, que habían quedado fuera del censo EAF inicial.
+3. **Store de paneles:** `src/core/panels/panel-store.ts` conserva infraestructura genérica y una interfaz abierta. Los contratos viven en `src/app/_composition/panel-contracts.d.ts`. `PANEL_REGISTRY` usa un tipo mapeado exhaustivo con `satisfies`; el único cast dinámico se encapsula en `resolvePanelComponent`, después de comprobar la tabla completa. Se añadió [ADR 0001](../docs/adr/0001-desacople-panel-store.md), se ajustaron contratos discrepantes —incluido `vistaInicial`— y se añadieron pruebas de pila.
+4. **CI y EDD:** `.github/workflows/check.yml` ejecuta `bun test`; `docs/plan-consolidacion-arquitectura.md` lo incluye en sus validaciones.
+5. **Inventario y persistencia:** arquitectura y plan de trabajo reflejan Alembic `0062_motor_plan_accion_dnp`, los routers actuales y el modo CSP de código (`Report-Only` por defecto, enforcement configurable). La matriz distingue censo estructural de persistencia verificada y define reglas diferentes para fallos de lecturas y mutaciones.
+
+## Censo verificado
+
+- `src/features/`: **21** directorios directos, frente a los 23 esperados por la asignación.
+- `backend/app/api/router.py`: **22** llamadas `include_router`.
+- `backend/app/modules/`: **25** módulos con `router.py`; `actores`, `alternativas` y `fuentes` no están montados por el router raíz.
+- Alembic devuelve una cabeza: **`0062_motor_plan_accion_dnp`**.
+- La matriz [docs/matriz-trazabilidad-modulos.md](../docs/matriz-trazabilidad-modulos.md) registra las entradas y la discrepancia 23/23 sin inventar módulos. La presencia de UI, router o migración no se toma como prueba de preparación productiva.
+
+## Validaciones ejecutadas
+
+| Comando/validación | Resultado |
 | --- | --- |
-| Backend constructor, permisos y transacciones | **99 aprobadas**, 32,24 s; persistencia leída desde una conexión nueva. |
-| Integración PostgreSQL/migraciones | **1 aprobada**, 7,08 s, base aislada `polis_test_lineas_migraciones_20261002`. |
-| Historias del módulo y accesibilidad | **8/8 aprobadas**; incluye 320 px claro/oscuro, panel, Tab, Escape y retorno del foco. |
-| Lint y formato específicos | Aprobados, 7 archivos backend. |
-| `bun run check` | Aprobado, 0 errores TS/UI/ESLint; warning previo TanStack/React Compiler. |
-| `bun run build` | Aprobado; incluye `/plataforma/contenido`. Warning CSS previo. |
-| `bun run storybook:build` | Aprobado; advertencias de empaquetado documentadas. |
-| `bun run ui:test` global | 196/199 aprobadas en esa ejecución; tres fallos fuera del módulo en `platform.stories.tsx`. |
-| `bun run backend:check` global | Detenido por **44 errores Ruff fuera del módulo de políticas**; no se declara aprobación global. |
+| `bun install --frozen-lockfile` | Aprobado; 1037 instalaciones comprobadas, sin cambios de lockfile. |
+| `bun run check` | Aprobado: UI policy, TypeScript y ESLint global. |
+| `bun run ui:policy:test` | Aprobado: 10 pruebas. |
+| `bun test` | Aprobado: 607 pruebas en 71 archivos, 0 fallos. |
+| `bun run build` | Aprobado; Next.js prerenderizó 192 rutas. Reportó una advertencia CSS de un selector Tailwind con `stroke='#fff'`. |
+| `bun run storybook:build` | Aprobado; 4756 módulos transformados. Storybook/Vite emitieron advertencias de CSS y directivas `use client`, sin impedir la compilación. |
+| `bun run ui:test` | Aprobado en la corrida final: 213 pruebas en 17 archivos, 0 fallos. La corrida inicial ocurrió junto a otro Chromium de agy2 y fue inestable; la historia de paneles que falló entonces pasó aislada y toda la suite pasó al repetirla sin runners concurrentes. |
+| `uv run --project backend alembic -c backend/alembic.ini heads` | Aprobado: una cabeza, `0062_motor_plan_accion_dnp`. |
+| `alembic check` con `POLIS_DATABASE_URL` en `polis_test` | Aprobado: `No new upgrade operations detected.` |
+| `pytest backend/tests` con `POLIS_TEST_DATABASE_URL` en `polis_test` | Aprobado: 538 pruebas, 0 fallos, una advertencia deprecada de Starlette. La base tenía PostGIS y pgRouting. |
+| `uv run --project backend ruff check backend` | **Falló:** 840 hallazgos. Por esto `bun run backend:check` se detiene en Ruff antes de ejecutar sus siguientes pasos. |
+| `uv run --project backend ruff format --check backend` | **Falló:** 110 archivos requerirían formato. No se aplicó una reformateada masiva ajena al alcance. |
+| `bash -n .zscripts/dev.sh .zscripts/build.sh .zscripts/start.sh` | Aprobado. `rg` confirmó que esos scripts, manifiesto, CI, `scripts/` y `tests/` ya no contienen comandos de sincronización SQLite/Prisma. |
+| `git diff --cached --check` | Aprobado para el commit de implementación. |
 
-Los tres fallos globales de historias corresponden a Crear Mesa Completa, Formulario Accesible y Territorios Con Teclado. La prueba global se ejecutó antes de añadir las últimas historias de móvil y navegación, verificadas después en las 8 del módulo. No se deshabilitaron checks ni se modificaron historias ajenas para simular éxito.
+### Nota sobre la base de pruebas
 
-Pruebas negativas: dimensión/fase inexistente, títulos/códigos/costo inválidos, códigos hijos duplicados o ajenos, fuentes vacías y metadatos alternativos de sublíneas. Atomicidad: fallo tras flush en alta/edición/borrado, fallo de commit y cancelación; sin cambios residuales. Dos creaciones simultáneas con igual código producen 201/409 y una sola fila. Cuenta real de auditor en `polis_test`: GET 200 y POST/PUT/DELETE 403.
+Una primera base aislada (`polis_test_reparacion_tres_fallos_20261004b`) no tenía la extensión pgRouting y produjo seis fallos geoespaciales. Se verificaron los siete casos geoespaciales en `polis_test` con pgRouting (7/7) y luego se ejecutó allí la suite completa (538/538). Ambas son bases `polis_test*`; `bd_csh` no se usó ni modificó.
 
-Las escrituras sintéticas se limitaron a `polis_test*`; no se introdujeron líneas o proyectos de ejemplo en producción.
+## Coexistencia y límites
 
-## Despliegue comprobado
+- Se preservaron los archivos asignados a agy2. Los cambios de geovisor y los documentos `bridge/01_tarea_activa.md`, `bridge/02_resultado_agy2.md` y `bridge/03_dictamen_revision.md` no se incluyeron en el commit de Codex. El commit concurrente de geovisor quedó como ancestro independiente.
+- No se hizo `push`, reset ni checkout.
+- No se validaron infraestructura productiva, datos de servicios externos ni enforcement real de CSP en proxy/navegador. La matriz no declara 100% de módulos listos para producción.
+- El gate Ruff continúa pendiente; por tanto, el plan queda abierto hasta resolverlo y recibir dictamen EAF independiente.
 
-Frontend y backend reiniciados y activos. HTTPS con validación TLS:
+## Referencias
 
-- `/` → 200.
-- `/plataforma/contenido` → 200 (cascarón Next sujeto a guard de sesión del cliente).
-- `/api/v1/politicas/lineas` → 200, contrato con `sublineas` como array.
-- `/api/v1/politicas/lineas/gestion` sin token → 401.
-- POST `/api/v1/politicas/lineas` sin token → 401.
-
-Informe: [docs/lineas-sublineas-estrategicas.md](../docs/lineas-sublineas-estrategicas.md).
-Evidencias: `docs/evidencias/lineas-estrategicas-2026-10-02/`.
-Matriz: `docs/permisos-api.md`.
-
-## Límites metodológicos
-
-No se afirma que la jerarquía de tres niveles o los códigos LE sean texto literal del Decreto 037: se documenta como diseño solicitado para POLIS, articulado con la norma y las siete áreas PNUD. Meta e indicador son campos de planificación, no una ficha técnica validada del banco de indicadores ni registro BPIN. El costo es estimado, no ejecución presupuestal. La relación con árboles de objetivos es metodológica; no se crea automáticamente un vínculo a nodos del árbol.
-
-La tabla histórica mantiene dimensión nullable por compatibilidad; las rutas nuevas la exigen. La unicidad de código por fase se serializa en el servicio, sin nueva restricción que rompa históricos. La lectura administrativa completa se reserva a los tres roles documentados. La entrega no autoriza publicar respuestas ciudadanas ni añade la moderación de reportes pendientes.
+- [Plan ejecutado](../docs/plan-consolidacion-arquitectura.md)
+- [Matriz de trazabilidad](../docs/matriz-trazabilidad-modulos.md)
+- [ADR del store](../docs/adr/0001-desacople-panel-store.md)
+- [Arquitectura](../docs/arquitectura.md)
