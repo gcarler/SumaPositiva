@@ -1,93 +1,67 @@
-# ASIGNACIÓN TÉCNICA EDD: `[TRIADA-FRONTEND-02]`
-## INTERFAZ CIUDADANA Y TÉCNICA DE LA TRIADA DE MOTORES (PLAN DE DESARROLLO + PLAN DE ACCIÓN MULTIFORMATO 2016–2026 + INVERSIÓN Y EJECUCIÓN PRESUPUESTAL) Y CONECTOR TRANSPARENCIA CARTAGENA
+# ORDEN DE EJECUCIÓN FRONTEND E INTELIGENCIA ANALÍTICA (`agy2`) — `[TRIADA-FRONTEND-INTELIGENCIA-6M-06]`
 
-- **Para:** Desarrollador Principal EDD (`agy2`)
-- **De:** Coordinador General / Auditor Forense EAF (`agy`)
 - **Fecha:** 2026-10-14
-- **Rama de trabajo:** `main` (Política **Zero-Push**: solo commit local)
-- **Trabajo concurrente en curso:** `codex` está ejecutando `[TRIADA-BACKEND-01]` exclusivamente sobre `backend/app/modules/compromisos/*`, `backend/tests/test_triada_motores.py` y `bridge/02_entrega_codex.md`. **NO modifiques ni agregues a tu commit ningún archivo de `backend/` ni `bridge/01_tarea_codex.md` o `bridge/02_entrega_codex.md`.**
+- **Coordinador / Auditor Forense EAF:** `agy` (`=agy:0.0`)
+- **Ejecutor Frontend y Analítica Interactiva:** `agy2` (`=agy2:0.0`)
+- **Plan Maestro de referencia:** `bridge/00_plan_maestro_inteligencia_triada.md`
+- **Rama:** `main` (commit local exclusivo de tus archivos en `src/features/seguimiento/` y `bridge/02_resultado_agy2.md`; **PROHIBIDO `git push`**; **NO tocar archivos en `backend/` ni `bridge/01_tarea_codex.md` ni `bridge/02_entrega_codex.md` porque `codex` trabaja en paralelo en el backend**).
 
 ---
 
-## 1. Contexto y Objetivo de la Tarea
+## 1. Contexto y Objetivo
 
-El usuario solicitó construir una arquitectura de **Tres Motores Articulados** conectada con el portal **`https://www.cartagena.gov.co/transparencia`** (Sección **4. Planeación, Presupuesto e Informes**):
-1. **Motor 1 — Motor de Plan de Desarrollo (Lectura Estratégica Cuatrienal):**
-   - Permite leer y comparar los Planes de Desarrollo de Cartagena (`2016–2019 Primero la Gente`, `2020–2023 Salvemos Juntos a Cartagena`, `2024–2027 Cartagena Ciudad de Derechos`), sus Líneas Estratégicas, Programas MGA, Indicadores de Resultado/Bienestar y Metas de Producto Cuatrienales.
-2. **Motor 2 — Motor de Plan de Acción Multiformato 2016–2026 (Lectura Operativa Anual/Trimestral — Cat. `4.3`):**
-   - Cada vez que la Alcaldía cambia el formato del Excel (en **2016** era **1 sola hoja plana por entidad**; en **2020–2023** era una matriz híbrida por línea estratégica; en **2024–2026** es un libro **multihoja** con pestañas de `Identificación`, `Plan Indicativo`, `Plan de Acción T1–T4` y `Presupuesto`), el motor identifica automáticamente el tipo de formato (`Schema Fingerprinting`), mapea las columnas a un estándar canónico único, audita los verbos fuertes DNP y permite hacer **lectura comparativa interanual (2016 vs. 2020 vs. 2026)**.
-3. **Motor 3 — Motor de Inversión y Ejecución Presupuestal (Lectura Financiera — Cat. `4.1`, `4.2`, `4.4`):**
-   - Permite leer la cascada presupuestal completa (`Apropiación Inicial`, `Apropiación Definitiva`, `CDP`, `Compromisos/RP`, `Obligaciones`, `Pagos de Tesorería`), proyectos de inversión `BPIM`/`BPIN` y fuentes de financiación (`ICLD`, `SGP`, `FONSET`, `Regalías SGR`, `Crédito`, `Recursos Propios`).
-4. **Cruce de las 3 Lecturas (Semáforo de Coherencia Físico-Financiera-Estratégica):**
-   - Cruza automáticamente la ejecución presupuestal (Motor 3) con la entrega operativa en los Planes de Acción (Motor 2) y el avance estratégico del Plan de Desarrollo (Motor 1), detectando alertas forenses (`Sobreejecución financiera sin entrega física`, `Rezago contractual en inversión`, `Meta estratégica PDD suboperacionalizada`, `Coherencia integral alta`).
+El backend ya procesó, deduplicó (`SHA-256` binario + `huella_tabular_sha256` semántica) y saneó al **`99,97%`** el universo real de Planes de Acción de Cartagena en `bd_csh`:
+- **`217.740` registros normalizados** (`99.583` en `PLAN_DESARROLLO`, `63.023` en `PLAN_ACCION`, `55.134` en `INVERSION_PRESUPUESTAL`).
+- **`609` hashes binarios únicos** (`608` libros activos + `1` clon tabular de `DADIS 2021` fusionado con `477` filas eliminadas + `5` archivos alertados con `CONTENIDO_IDENTICO_OTRO_CORTE` en `Transcaribe`, `LHCN`, `Localidad Industrial y de la Bahía` e `IDER`).
+- **`30` entidades públicas oficiales canónicas** del Distrito de Cartagena (`0` nombres de funcionarios, `0` valores numéricos, `0` placeholders).
+- **`8` Dimensiones de Seguridad Humana** (`1. Seguridad Personal` a `8. Crisis`) y **`3` Periodos de Gobierno** (`ANTES_2020`, `2020_2023`, `2024_2027` entre `2016` y `2026`).
+- **`1.516` códigos BPIM**, **`4.600` metas PDD**, **`27.182` actividades con verbo débil DNP (`57,8%`)** vs. **`19.869` con verbo fuerte DNP (`42,2%`)**.
 
----
-
-## 2. Alcance Exacto de Archivos Bajo Responsabilidad de `agy2`
-
-Debes crear/modificar **únicamente** los siguientes archivos en `src/features/seguimiento/` y `bridge/`:
-1. `src/features/seguimiento/data/triada-motores-cartagena.data.ts` *(nuevo — dataset canónico completo de los 3 Motores, los 4 perfiles de formato Excel 2016–2026, la comparativa interanual y el catálogo oficial de `cartagena.gov.co/transparencia` secciones `4.1` a `4.4` con los 23 archivos `.xlsx`/`.xls` de 2026)*
-2. `src/features/seguimiento/services/plan-accion-dnp-api.ts` *(ampliar con clientes tipados para `/compromisos/triada/resumen`, `/compromisos/triada/detectar-formato` y `/compromisos/triada/cruzar-lecturas`, con fallback resiliente al dataset canónico)*
-3. `src/features/seguimiento/components/triada-motores-tab.tsx` *(nuevo — componente interactivo completo de la Triada de Motores con sus 3 sub-vistas)*
-4. `src/features/seguimiento/components/triada-motores-tab.test.tsx` *(nuevo — suite de pruebas unitarias del componente y sus 3 sub-vistas)*
-5. `src/features/seguimiento/views/seguimiento-view.tsx` *(integrar la nueva pestaña `triada_motores` — `Triada de Motores (PDD · PA · Inversión)` — como pestaña destacada en `SeguimientoView`)*
-6. `bridge/02_resultado_agy2.md` *(reporte de entrega EDD)*
+Tu misión es construir en el Frontend el **Laboratorio de Inteligencia Forense de 6 Motores (`InteligenciaForense6MPanel`)** conectado a los nuevos endpoints del backend (`/api/v1/compromisos/triada/inteligencia/...`) y dotado de un dataset semilla forense real de Cartagena (`inteligencia-triada-6m.data.ts`) con las cifras reales auditadas de `bd_csh` para carga instantánea y resiliencia total.
 
 ---
 
-## 3. Especificación Técnica Detallada
+## 2. Archivos de tu Dominio Exclusivo
 
-### 3.1. `src/features/seguimiento/data/triada-motores-cartagena.data.ts`
-Construir el catálogo canónico tipado con datos reales de Cartagena de Indias:
-1. **Catálogo Oficial del Portal `https://www.cartagena.gov.co/transparencia` (Sección 4 — Planeación, Presupuesto e Informes):**
-   - `4.1 Presupuesto general de ingresos, gastos e inversión` (`https://www.cartagena.gov.co/Transparencia/Planeación?categoria=50`)
-   - `4.2 Ejecución presupuestal` (`https://www.cartagena.gov.co/Transparencia/Planeación?categoria=51`)
-   - `4.3 Plan de Acción` (`https://www.cartagena.gov.co/Transparencia/Planeación?categoria=52`), incluyendo la ruta `/transparencia/4planeacion-presupuesto-informes/43-plan-accion/planes-accion-institucionales-2026` con los **23 archivos Excel individuales de 2026** detectados en el portal (`DADIS.xls`, `SECRETARIA DE HACIENDA.xlsx`, `SECRETARÍA DE PLANEACION.xlsx`, `SEC_EDUCACION.xlsx`, `DATT.xlsx`, `INFRAESTRUCTURA.xlsx`, `IDER.xlsx`, `IPCC.xlsx`, `CORVIVIENDA.xlsx`, `TRANSCARIBE.xlsx`, `EPA.xlsx`, `DISTRISEGURIDAD.xlsx`, `ESCUELA DE GOBERNO.xlsx`, `GERENCIA DE ESPACIO PUBLICO.xlsx`, `IDACCC.xlsx`, `OAGR.xlsx`, `PES-PR.xlsx`, `SECRETARIA GENERAL.xlsx`, `SICC.xlsx`, `SPDS - UMATA.xlsx`, `TURISMO.xlsx`, `UMAYOR.xlsx`, `VALORIZACION.xlsx`) y los cortes trimestrales (`31-marzo-2026`, `30-junio-2026`), indicando para cada archivo su dependencia, extensión (`.xls` vs `.xlsx`), perfil de formato detectado (`PA_MONOHOJA_2016_2019` vs `PA_MULTIHOJA_2024_2026`), número de hojas y estado de normalización.
-   - `4.4 Proyectos de Inversión` (`https://www.cartagena.gov.co/Transparencia/Planeación?categoria=53`).
-2. **Los 4 Perfiles Polimórficos de Formato Excel (`2016–2026`) y Muestras Interactivas:**
-   - `PA_MONOHOJA_2016_2019`: 1 sola hoja plana por entidad (ej. `DADIS 2016`), columnas `Objetivo | Meta 2016 | Indicador | Programado | Ejecutado | Presupuesto`.
-   - `PA_HIBRIDO_2020_2023`: Hojas por Pilar (`Salvemos Juntos a Cartagena 2020-2023`), seguimiento semestral/trimestral.
-   - `PA_MULTIHOJA_2024_2026`: Libro institucional multihoja (`Identificación`, `Plan Indicativo`, `Plan de Acción T1-T4`, `Presupuesto POAI`).
-   - `PA_CANONICO_DNP_POLIS`: Doble hoja (`Hoja 1: Plan_Accion`, `Hoja 2: Plan_Indicativo`).
-   - Incluir el diccionario de mapeo semántico (`Columna Original → Campo Canónico POLIS`) y la **Matriz Comparativa Interanual Estandarizada (`2016` vs. `2020` vs. `2026`)** por dependencia (`Secretaría del Interior`, `Distriseguridad`, `DADIS`, `Secretaría de Planeación`, `Secretaría de Hacienda`, `Secretaría de Educación`, `Secretaría de Infraestructura`, `DATT`, `EPA`, `Corvivienda`, `IPCC`, `IDER`, `PES-PR`).
-3. **Datos Articulados de los 3 Motores y el Cruce de las 3 Lecturas:**
-   - **Motor 1 (Plan de Desarrollo — Estratégico):** Cuatrienios `2016–2019 Primero la Gente`, `2020–2023 Salvemos Juntos a Cartagena` y `2024–2027 Cartagena Ciudad de Derechos`, Líneas Estratégicas, Programas MGA, Indicadores de Resultado y Metas de Producto Cuatrienales.
-   - **Motor 2 (Plan de Acción — Operativo):** Avance físico trimestral (`T1–T4`), total de actividades, porcentaje de verbos fuertes en infinitivo DNP y formato de origen.
-   - **Motor 3 (Inversión y Ejecución Presupuestal — Financiero):** Cascada presupuestal (`Apropiación Inicial`, `Apropiación Definitiva`, `CDP`, `Compromisos/RP`, `Obligaciones`, `Pagos`), proyectos `BPIM` y desglose por fuente (`ICLD`, `SGP`, `FONSET`, `Regalías SGR`, `Crédito`).
-   - **Cruce de las 3 Lecturas:** Matriz cruzada con `avance_estrategico_pdd_pct`, `avance_operativo_pa_pct`, `ejecucion_financiera_rp_pct`, `giro_pagos_pct`, `brecha_fisico_financiera_pts`, `estado_semaforo` (`COHERENCIA_INTEGRAL_ALTA`, `DESFASE_CRITICO_SOBREEJECUCION`, `REZAGO_CONTRACTUAL_INVERSION`, `META_PDD_SUBOPERACIONALIZADA`), `hallazgo_forense` y `recomendacion_tecnica`.
-
-### 3.2. `src/features/seguimiento/components/triada-motores-tab.tsx`
-Diseñar e implementar un componente de nivel ejecutivo y ciudadano (usando exclusivamente primitivas de `@/shared/ui/*` y tokens semánticos CSS para cumplir `UI001`–`UI009`) organizado en **3 Sub-vistas interactivas**:
-
-1. **Sub-vista 1 — «Triada de Lecturas: Plan de Desarrollo · Plan de Acción · Inversión» (`data-testid="subvista-triada-lecturas"`):**
-   - Tarjetas resumen de los **3 Motores Articulados** (Estratégico PDD + Operativo Plan de Acción + Financiero POAI/BPIM/RP/Pagos).
-   - Filtros interactivos por **Cuatrienio / Plan de Desarrollo** (`2024–2027 Cartagena Ciudad de Derechos`, `2020–2023 Salvemos Juntos a Cartagena`, `2016–2019 Primero la Gente`), **Dependencia Distrital**, **Fuente de Financiación** (`ICLD`, `SGP`, `FONSET`, `SGR`, `Crédito`) y **Estado del Semáforo Tripartito**.
-   - **Visualizador de la Cascada Presupuestal (Motor 3):** Barra comparativa `Apropiación Inicial → Apropiación Definitiva → CDP → Compromisos (RP) → Obligaciones → Pagos`.
-   - **Matriz Cruzada de las 3 Lecturas:** Muestra por cada dependencia y proyecto `BPIM` la lectura estratégica (Meta PDD), la lectura operativa (Plan de Acción `T1–T4` + calidad verbal DNP), la lectura financiera (`% RP` y `% Pagos`), la brecha físico-financiera y el dictamen del semáforo con su hallazgo forense.
-
-2. **Sub-vista 2 — «Detector Polimórfico de Formatos Excel (2016 Monohoja ↔ 2026 Multihoja)» (`data-testid="subvista-detector-multiformato"`):**
-   - Permite seleccionar y simular en 1 clic cualquiera de los **4 formatos históricos reales** (`2016 Monohoja (1 hoja por entidad)`, `2020–2023 Híbrido por Pilar`, `2024–2026 Multihoja Institucional`, `2026 Canónico DNP Dual`) o pegar/cargar encabezados de un libro Excel para ejecutar la **Detección de Huella de Esquema (`Schema Fingerprinting`)**.
-   - Muestra visualmente:
-     - El **Perfil de Formato Detectado** y el **Nivel de Confianza (%)**.
-     - Las **Hojas Detectadas** en el libro (`1 hoja plana` en 2016 vs. `4+ hojas` en 2026).
-     - La **Tabla de Homologación Semántica de Columnas** (`Encabezado Original del Excel → Campo Canónico Estandarizado`).
-     - La **Lectura Comparativa Interanual Estandarizada (`2016 vs. 2020 vs. 2026`)**, demostrando cómo formatos distintos quedan normalizados bajo una misma métrica comparativa.
-
-3. **Sub-vista 3 — «Conector Transparencia Alcaldía de Cartagena (Categorías 4.1 a 4.4)» (`data-testid="subvista-conector-transparencia"`):**
-   - Panel de las 4 subcategorías oficiales de `https://www.cartagena.gov.co/transparencia` (`4.1 Presupuesto`, `4.2 Ejecución Presupuestal`, `4.3 Plan de Acción`, `4.4 Proyectos de Inversión`) con sus enlaces directos verificados.
-   - **Inventario Interactivo de los 23 Archivos Excel 2026 (`planes-accion-institucionales-2026`)** con buscador por dependencia, filtro por tipo de archivo (`.xls` vs `.xlsx`), formato detectado, hojas identificadas y botón para inspeccionar su normalización en el Detector Polimórfico.
-
-### 3.3. Integración en `src/features/seguimiento/views/seguimiento-view.tsx`
-- Agregar el `TabsTrigger` con `value="triada_motores"` y etiqueta **`Triada de Motores (PDD · PA · Inversión)`** junto a `motor_plan_accion` y `banco_conocimiento_dnp`.
-- Renderizar `<TriadaMotoresTab />` dentro de su `<TabsContent value="triada_motores">`.
+1. `src/features/seguimiento/data/inteligencia-triada-6m.data.ts` *(nuevo — tipos TypeScript, las 8 Dimensiones de Seguridad Humana, los 3 Periodos de Gobierno, las 30 Entidades Oficiales con sus conteos reales de `bd_csh`, y los datos semilla auditados para los 6 motores)*
+2. `src/features/seguimiento/services/plan-accion-dnp-api.ts` *(ampliar con los clientes tipados para los 7 endpoints `/api/v1/compromisos/triada/inteligencia/...` y soporte de filtros `dimension`, `periodo`, `corte` en comparativa/resumen)*
+3. `src/features/seguimiento/components/inteligencia-forense-6m-panel.tsx` *(nuevo — componente interactivo con las 6 vistas/motores forenses)*
+4. `src/features/seguimiento/components/triada-motores-tab.tsx` *(integrar `InteligenciaForense6MPanel`, la insignia de Calidad Forense `99,97%` sobre `217.740` registros y los filtros por las 8 Dimensiones de Seguridad Humana y 3 Periodos de Gobierno)*
+5. `src/features/seguimiento/__tests__/inteligencia-forense-6m.test.tsx` *(nuevo — suite de pruebas con `bun test` verificando los 6 motores, filtros, buscador y simulador)*
+6. `bridge/02_resultado_agy2.md` *(reporte de entrega)*
 
 ---
 
-## 4. Criterios de Aceptación y Quality Gates
+## 3. Especificación de los 6 Motores en `InteligenciaForense6MPanel`
 
-1. `node scripts/ui-policy.mjs` → **0 violaciones** (usar exclusivamente componentes de `@/shared/ui/*` y tokens semánticos CSS; cero colores literales hex/Tailwind arbitrarios).
-2. `bun run typecheck` y `bun run lint` → **0 errores**.
-3. `bun test src/features/seguimiento/` → **100% PASS** (incluyendo el nuevo `src/features/seguimiento/components/triada-motores-tab.test.tsx` probando las 3 sub-vistas, el detector polimórfico 2016 vs 2026, el cruce de las 3 lecturas y el catálogo de los 23 archivos de Transparencia).
-4. `bun run build` → **192 rutas compiladas sin errores**.
-5. Reiniciar `polis-frontend.service` (`systemctl restart polis-frontend.service`) y verificar con Playwright Headless en `http://127.0.0.1:3000/plataforma/seguimiento` que la pestaña `Triada de Motores (PDD · PA · Inversión)` y sus 3 sub-vistas renderizan con **0 errores de consola**.
-6. Hacer commit local en `main` **únicamente** de los archivos bajo `src/features/seguimiento/*` y `bridge/02_resultado_agy2.md`.
+El panel debe ofrecer un selector de **6 Motores Analíticos** (con `data-testid` claros) + filtros globales (`dimension`, `periodo`, `entidad`):
+
+1. **Motor 1 (`patologias-dnp`): Detector Forense de «Efecto Espejismo» y Patologías DNP**
+   - Muestra el balance real de formulación: **`27.182` actividades con verbo débil (`57,8%`, reunionitis)** vs. **`19.869` con verbo fuerte DNP (`42,2%`)**.
+   - Tarjetas de patologías: `ESPEJISMO_OPERATIVO`, `DESACOPLE_FISICO_FINANCIERO` (sobreejecución financiera sin obra física), `CUELLO_BOTELLA_PRESUPUESTAL` (apropiación con RP/obligación en `$0`).
+   - Tabla interactiva con el **Ranking 0–100 de Calidad Técnica DNP de las 30 Entidades Oficiales** y lista de casos críticos.
+2. **Motor 2 (`continuidad-gobiernos`): «ADN de Continuidad vs. Ruptura» entre 3 Gobiernos (`2016–2026`)**
+   - Comparativa entre **`Antes de 2020`** (`43` archivos, `6.441` filas), **`2020–2023`** (`257` archivos, `71.898` filas) y **`2024–2027`** (`307` archivos, `137.829` filas).
+   - Indicadores de **Continuidad BPIM** (sobrevivientes en múltiples gobiernos vs. proyectos huérfanos de un solo gobierno).
+   - Matriz de **Migración de Prioridades en las 8 Dimensiones de Seguridad Humana** (`1. Seguridad Personal`, `2. Seguridad Económica`, `3. Seguridad Alimentaria`, `4. Seguridad en la Salud`, `5. Seguridad Ambiental`, `6. Seguridad Comunitaria`, `7. Seguridad Política`, `8. Crisis`) y detector de **Metas Recicladas**.
+3. **Motor 3 (`radar-transparencia`): Radar de Inercia, Copy-Paste Trimestral y Transparencia**
+   - Expone los **5 archivos reales marcados con `CONTENIDO_IDENTICO_OTRO_CORTE`** (`Transcaribe` Junio=Marzo 2026, `Alcaldía Local Histórica y del Caribe Norte` Marzo=Junio 2026, `Alcaldía Local Industrial y de la Bahía` Diciembre 2025 y Marzo 2026 = Anual 2026, e `IDER` Septiembre 2023 = Anual) y el clon fusionado de `DADIS 2021` (`477` filas).
+   - Lista de **Metas Zombies Congeladas** (`T1..T4` sin cambio), **Efecto Diciembre Mágico** (*hockey-stick* en `T4`) y **Matriz de Completitud de Transparencia (`30 Entidades × 11 Años 2016–2026`)**.
+4. **Motor 4 (`alineacion-territorial`): Cruce Geoespacial «Inversión Pública vs. Delito y Demanda Ciudadana»**
+   - Cruza para las **3 Localidades de Cartagena (`Localidad 1 - Histórica y del Caribe Norte`, `Localidad 2 - De la Virgen y Turística`, `Localidad 3 - Industrial y de la Bahía`)** y los **Barrios Foco** (Olaya Herrera, El Pozón, Nelson Mandela, Bocagrande, Centro Histórico, Pasacaballos, La Boquilla, Torices, etc.):
+     - Volumen de actividades y presupuesto en `registros_triada_normalizados` vs. concentración de los **`12.280` hurtos** y las **`33` Mesas Ciudadanas**, mostrando la **Brecha de Desalineación Territorial (%)** y el estado (`ALINEADO`, `SUBINVERSION_MODERADA`, `DEFICIT_CRITICO_ATENCION`).
+5. **Motor 5 (`buscador`): Buscador Semántico Transversal e Inspector de Duplicidad Institucional**
+   - Barra de búsqueda interactiva con chips rápidos (*«Primera infancia»*, *«Cámaras de seguridad»*, *«Caños y lagos»*, *«Habitante de calle»*, *«Embarazo adolescente»*, *«Vendedores informales»*) que consulta `/api/v1/compromisos/triada/inteligencia/buscador?q=...` (con filtrado reactivo local de respaldo) y muestra:
+     - Entidades que intervienen en el mismo tema, serie `2016–2026`, presupuesto asignado y **Alertas de Duplicidad Interinstitucional** (cuando `>= 2` secretarías ejecutan actividades superpuestas sin articulación).
+6. **Motor 6 (`simulador-cierre`): Simulador Predictivo de Cierre de Gobierno (`2024–2027`)**
+   - Proyección al `31 de diciembre de 2027` por entidad y por cada una de las `8` Dimensiones de Seguridad Humana, con **Semáforo Predictivo** (`CUMPLIRA`, `RIESGO_MODERADO`, `INCUMPLIMIENTO_INMINENTE`), velocidad histórica anual y un control deslizable o selector interactivo de aceleración trimestral para simular cuántos puntos sube el cumplimiento distrital si se corrigen los cuellos de botella.
+
+---
+
+## 4. Validación y Criterios de Cierre
+
+1. Ejecutar `bun test src/features/seguimiento/__tests__/inteligencia-forense-6m.test.tsx src/features/seguimiento/__tests__/triada-motores-tab.test.tsx` y luego la suite completa `bun test` (`0` fallos).
+2. Verificar que TypeScript compile sin errores en tus archivos (`bunx tsc --noEmit`).
+3. Documentar el resultado en `bridge/02_resultado_agy2.md`.
+4. Hacer **commit local en `main`** incluyendo **únicamente tus archivos de frontend y `bridge/02_resultado_agy2.md`** (`git add src/features/seguimiento/... bridge/02_resultado_agy2.md`). **PROHIBIDO `git push`** y prohibido incluir archivos de `backend/`.
+5. Notificar al coordinador en `=agy:0.0` al finalizar.
