@@ -26,15 +26,15 @@ describe("GeovisorTopShelf Component (GEO-DOCK-02)", () => {
     expect(html).toContain('role="region"');
     expect(html).toContain('data-testid="geovisor-top-shelf"');
 
-    // Etiquetas y selectores GeoJSON Drive
-    expect(html).toContain("Zona GeoJSON:");
-    expect(html).toContain("Capa GeoJSON:");
+    // Etiquetas y selectores ciudadanos
+    expect(html).toContain("Zona Territorial:");
+    expect(html).toContain("Datos Estadísticos:");
     expect(html).toContain("Año:");
     expect(html).toContain("Exportar PNG");
 
-    // 4 KPI Chips Reales del GeoJSON del Drive
-    expect(html).toContain("Total Incidentes GeoJSON");
-    expect(html).toContain("Registros GeoJSON (Drive)");
+    // 4 KPI Chips Reales
+    expect(html).toContain("Total Casos Reportados");
+    expect(html).toContain("Registros Estadísticos SIEDCO");
     expect(html).toContain("Perímetro Urbano");
     expect(html).toContain("Zona Rural e Insular");
     expect(html).toContain("18.242");

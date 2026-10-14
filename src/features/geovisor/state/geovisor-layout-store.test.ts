@@ -13,22 +13,22 @@ describe("GeovisorLayoutStore (GEO-DOCK-01)", () => {
   test("inicia con los valores de visibilidad y tamaños balanceados por defecto", () => {
     const state = useGeovisorLayoutStore.getState();
 
-    expect(state.topOpen).toBe(true);
+    expect(state.topOpen).toBe(false);
     expect(state.leftOpen).toBe(true);
     expect(state.rightOpen).toBe(false);
     expect(state.bottomOpen).toBe(true);
     expect(state.isMaximized).toBe(false);
 
-    expect(state.sizes.top).toBe(18);
-    expect(state.sizes.left).toBe(24);
-    expect(state.sizes.right).toBe(26);
-    expect(state.sizes.bottom).toBe(20);
+    expect(state.sizes.top).toBe(16);
+    expect(state.sizes.left).toBe(22);
+    expect(state.sizes.right).toBe(24);
+    expect(state.sizes.bottom).toBe(28);
   });
 
   test("permite alternar la visibilidad de cada panel con togglePanel", () => {
-    // Top está abierto inicialmente -> debe cerrarse
+    // Top está cerrado inicialmente -> debe abrirse
     useGeovisorLayoutStore.getState().togglePanel("top");
-    expect(useGeovisorLayoutStore.getState().topOpen).toBe(false);
+    expect(useGeovisorLayoutStore.getState().topOpen).toBe(true);
 
     // Left está abierto inicialmente -> debe cerrarse
     useGeovisorLayoutStore.getState().togglePanel("left");
@@ -47,8 +47,8 @@ describe("GeovisorLayoutStore (GEO-DOCK-01)", () => {
     useGeovisorLayoutStore.getState().setPanelOpen("right", true);
     expect(useGeovisorLayoutStore.getState().rightOpen).toBe(true);
 
-    useGeovisorLayoutStore.getState().setPanelOpen("top", false);
-    expect(useGeovisorLayoutStore.getState().topOpen).toBe(false);
+    useGeovisorLayoutStore.getState().setPanelOpen("top", true);
+    expect(useGeovisorLayoutStore.getState().topOpen).toBe(true);
   });
 
   test("permite calibrar el tamaño porcentual y acota dentro de rangos seguros", () => {
@@ -65,9 +65,10 @@ describe("GeovisorLayoutStore (GEO-DOCK-01)", () => {
   });
 
   test("maximizeMap colapsa todos los paneles y restaura el estado previo en la siguiente invocación", () => {
-    // Estado inicial: top y left abiertos, right y bottom cerrados
-    expect(useGeovisorLayoutStore.getState().topOpen).toBe(true);
+    // Estado inicial: left y bottom abiertos, top y right cerrados
+    expect(useGeovisorLayoutStore.getState().topOpen).toBe(false);
     expect(useGeovisorLayoutStore.getState().leftOpen).toBe(true);
+    expect(useGeovisorLayoutStore.getState().bottomOpen).toBe(true);
 
     // Maximizar mapa
     useGeovisorLayoutStore.getState().maximizeMap();
@@ -81,7 +82,7 @@ describe("GeovisorLayoutStore (GEO-DOCK-01)", () => {
     // Restaurar mapa
     useGeovisorLayoutStore.getState().maximizeMap();
     const restaurado = useGeovisorLayoutStore.getState();
-    expect(restaurado.topOpen).toBe(true);
+    expect(restaurado.topOpen).toBe(false);
     expect(restaurado.leftOpen).toBe(true);
     expect(restaurado.rightOpen).toBe(false);
     expect(restaurado.bottomOpen).toBe(true);

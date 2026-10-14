@@ -30,21 +30,24 @@ describe("GeovisorHurtosPanel Component (GEO-GESTOR-01 / GEO-HURTOS-01)", () => 
   test("renderiza el panel con la barra de navegación de 3 modos (Workbench)", () => {
     const html = renderPanel();
 
+    expect(html).toContain('id="geovisor-datos-estadisticos"');
     expect(html).toContain('data-testid="geovisor-hurtos-panel"');
     expect(html).toContain("Analítica Espacial de Hurtos SIEDCO");
     expect(html).toContain("2018–2026");
     expect(html).toContain("12.280 registros georreferenciados");
+    expect(html).toContain("↑ Subir al Mapa / Ver Mapa Completo");
 
     // Barra de 3 modos de trabajo
-    expect(html).toContain("1. Resumen y Gráficos");
-    expect(html).toContain("2. Procesador y Tabla (12.280 registros)");
-    expect(html).toContain("3. Gestor e Importador GeoJSON");
+    expect(html).toContain("1. Resumen y Gráficos Estadísticos");
+    expect(html).toContain("2. Explorador y Tabla de Datos (12.280)");
+    expect(html).toContain("3. Catálogo de Capas e Importador");
   });
 
   test("Modo 1: «Resumen y Gráficos» renderiza selectores, botones rápidos de pintado, KPIs y gráficos", () => {
     const html = renderPanel({ modoInicial: "resumen" });
 
     // Botones rápidos de pintado de capas en mapa
+    expect(html).toContain("Visualización Rápida en el Mapa:");
     expect(html).toContain("Pintar en Mapa: Motocicletas");
     expect(html).toContain("Pintar: Residencias");
     expect(html).toContain("Pintar: Comercio");

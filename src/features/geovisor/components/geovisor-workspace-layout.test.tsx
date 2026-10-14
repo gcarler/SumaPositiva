@@ -39,7 +39,7 @@ describe("GeovisorWorkspaceLayout Component (GEO-DOCK-01)", () => {
     expect(html).toContain('data-dock-panel="center"');
   });
 
-  test("refleja el estado por defecto del store: top, left y bottom activos, right colapsado", () => {
+  test("refleja el estado por defecto del store: top oculto, left y bottom activos, right colapsado", () => {
     const html = renderToString(
       <GeovisorWorkspaceLayout
         topSlot={<div>Contenido Superior</div>}
@@ -50,21 +50,21 @@ describe("GeovisorWorkspaceLayout Component (GEO-DOCK-01)", () => {
       />
     );
 
-    // Top activo (defaultSize 18)
+    // Top colapsado por defecto para dar ~20% más amplitud al mapa (defaultSize 0.0)
     expect(html).toContain('id="dock-panel-top"');
-    expect(html).toContain('data-panel-size="18.0"');
+    expect(html).toContain('data-panel-size="0.0"');
 
-    // Left activo (defaultSize 24)
+    // Left activo (defaultSize 22)
     expect(html).toContain('id="dock-panel-left"');
-    expect(html).toContain('data-panel-size="24.0"');
+    expect(html).toContain('data-panel-size="22.0"');
 
     // Right colapsado (defaultSize 0.0)
     expect(html).toContain('id="dock-panel-right"');
     expect(html).toContain('data-panel-size="0.0"');
 
-    // Bottom activo por defecto en layout limpio para analítica de hurtos (defaultSize 20.0)
+    // Bottom activo por defecto en layout limpio para analítica de hurtos (defaultSize 28.0)
     expect(html).toContain('id="dock-panel-bottom"');
-    expect(html).toContain('data-panel-size="20.0"');
+    expect(html).toContain('data-panel-size="28.0"');
 
     // Separador de panel derecho cerrado debe tener clase hidden
     expect(html).toContain('data-dock-handle="right"');
@@ -86,9 +86,9 @@ describe("GeovisorWorkspaceLayout Component (GEO-DOCK-01)", () => {
       />
     );
 
-    // Right ahora activo (26.0) y Bottom ahora colapsado (0.0)
+    // Right ahora activo (24.0) y Bottom ahora colapsado (0.0)
     expect(html).toContain('id="dock-panel-right"');
-    expect(html).toContain('data-panel-size="26.0"');
+    expect(html).toContain('data-panel-size="24.0"');
 
     expect(html).toContain('id="dock-panel-bottom"');
     expect(html).toContain('data-panel-size="0.0"');
@@ -141,8 +141,27 @@ describe("GeovisorWorkspaceLayout Component (GEO-DOCK-01)", () => {
       />
     );
 
-    expect(html).toContain('data-panel-size="18.0"'); // Top
-    expect(html).toContain('data-panel-size="24.0"'); // Left
+    expect(html).toContain('data-panel-size="0.0"'); // Top oculto por defecto
+    expect(html).toContain('data-panel-size="22.0"'); // Left activo
+    expect(html).toContain('data-panel-size="28.0"'); // Bottom activo
+  });
+
+  test("despliega el panel superior con su tamaño calibrado cuando se activa en el store", () => {
+    const store = useGeovisorLayoutStore.getState();
+    store.setPanelOpen("top", true);
+
+    const html = renderToString(
+      <GeovisorWorkspaceLayout
+        topSlot={<div>Contenido Superior</div>}
+        leftSlot={<div>Contenido Izquierdo</div>}
+        centerSlot={<div>Mapa Central</div>}
+        rightSlot={<div>Contenido Derecho</div>}
+        bottomSlot={<div>Contenido Inferior</div>}
+      />
+    );
+
+    expect(html).toContain('id="dock-panel-top"');
+    expect(html).toContain('data-panel-size="16.0"');
   });
 
   test("maneja slots ausentes sin fallar y mantiene los paneles colapsados", () => {

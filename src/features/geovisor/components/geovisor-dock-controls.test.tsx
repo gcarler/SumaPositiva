@@ -23,9 +23,11 @@ describe("GeovisorDockControls Component (GEO-DOCK-01)", () => {
   test("refleja los atributos ARIA y aria-pressed según estado inicial", () => {
     const html = renderToString(<GeovisorDockControls />);
 
-    // Top y Left están abiertos por defecto
+    // Left y Bottom están abiertos por defecto; Top está oculto por defecto
     expect(html).toContain('data-testid="dock-toggle-top"');
-    expect(html).toContain('aria-pressed="true"');
+    expect(html).toContain('data-testid="dock-toggle-left"');
+    expect(html).toContain('title="Mostrar panel superior (Filtros y KPIs)"');
+    expect(html).toContain('title="Ocultar panel izquierdo (Capas y Directorio de Mesas)"');
 
     // Toolbar semántica accesible
     expect(html).toContain('role="toolbar"');

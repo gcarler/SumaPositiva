@@ -170,21 +170,24 @@ const MapaCartagena = forwardRef<MapaCartagenaHandle, MapaCartagenaProps>(functi
   };
 
   return (
-    <div className="relative flex h-full min-h-[36rem] w-full flex-col overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface-1)] shadow-sm">
+    <div
+      id="geovisor-mapa-lienzo"
+      className="relative flex h-full min-h-[42rem] w-full flex-col overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface-1)] shadow-sm"
+    >
       {/* Panel Flotante de Capas GeoJSON o Búsqueda y Filtro Rápido */}
       {modoGeojsonDrive ? (
         <div
           role="region"
-          aria-label="Capas GeoJSON Drive"
+          aria-label="Filtro de datos estadísticos en el mapa"
           className="absolute left-3 right-3 top-3 z-10 flex flex-col gap-2 rounded-xl border border-[var(--border)] bg-[var(--surface-1)]/95 p-3 shadow-raised backdrop-blur sm:left-4 sm:right-auto sm:w-[min(30rem,calc(100%-2rem))]"
         >
           <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--border)] pb-2">
             <div className="flex items-center gap-1.5 text-xs font-bold text-[var(--text-primary)]">
               <span className="size-2 rounded-full bg-[var(--ember)]" />
-              <span>Capas GeoJSON Drive (SIEDCO 2018–2026)</span>
+              <span>Datos Estadísticos de Seguridad (2018–2026)</span>
             </div>
             <span className="text-[10px] text-[var(--text-tertiary)] font-mono">
-              EPSG:9377 → WGS84 · 2 Polígonos Oficiales
+              Cartagena · Urbano y Rural
             </span>
           </div>
           <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
@@ -332,7 +335,7 @@ const MapaCartagena = forwardRef<MapaCartagenaHandle, MapaCartagenaProps>(functi
           <>
             <span className="size-2 rounded-full bg-[var(--success)]" />
             <span className="text-[11px] font-medium text-[var(--text-secondary)]">
-              {modoGeojsonDrive ? "GeoJSON Drive Activo" : "Choropleth Activo"}
+              {modoGeojsonDrive ? "Mapa Estadístico Activo" : "Choropleth Activo"}
             </span>
           </>
         )}
@@ -370,10 +373,37 @@ const MapaCartagena = forwardRef<MapaCartagenaHandle, MapaCartagenaProps>(functi
         </Button>
       </div>
 
+      {/* Botón Flotante CTA: Ver datos estadísticos (18.242 casos) ↓ */}
+      {modoGeojsonDrive && (
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20">
+          <Button
+            type="button"
+            variant="ember"
+            size="sm"
+            data-testid="btn-ver-datos-estadisticos"
+            onClick={() => {
+              const store = useGeovisorLayoutStore.getState();
+              store.openView("hurtos");
+              store.setPanelOpen("bottom", true);
+              if (store.expandedDock !== "bottom") {
+                store.toggleDockExpanded("bottom");
+              }
+              setTimeout(() => {
+                const el = document.getElementById("geovisor-datos-estadisticos");
+                el?.scrollIntoView({ behavior: "smooth", block: "start" });
+              }, 100);
+            }}
+            className="h-9 px-4 gap-2 rounded-full shadow-raised text-xs font-bold transition-all hover:scale-105 active:scale-95"
+          >
+            <span>Ver datos estadísticos (18.242 casos) ↓</span>
+          </Button>
+        </div>
+      )}
+
       {/* Lienzo OpenLayers */}
       <div
         ref={establecerContenedor}
-        className="min-h-[32rem] flex-1 w-full"
+        className="min-h-[38rem] flex-1 w-full"
         role="application"
         aria-label="Mapa interactivo de Cartagena de Indias; busca territorios o usa la lista accesible de puntos"
       />

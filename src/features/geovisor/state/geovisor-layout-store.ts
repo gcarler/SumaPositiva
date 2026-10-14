@@ -139,14 +139,14 @@ function sanitizeActive(raw: unknown, tabs: DockTabs): DockActiveTab {
 }
 
 export const DEFAULT_DOCK_SIZES: DockPanelSizes = {
-  top: 18,
-  left: 24,
-  right: 26,
-  bottom: 20,
+  top: 16,
+  left: 22,
+  right: 24,
+  bottom: 28,
 };
 
 export const DEFAULT_DOCK_VISIBILITY: DockPanelVisibility = {
-  topOpen: true,
+  topOpen: false,
   leftOpen: true,
   rightOpen: false,
   bottomOpen: true,
@@ -331,9 +331,9 @@ export const useGeovisorLayoutStore = create<GeovisorLayoutState>()(
     }),
     {
       name: "polis_geovisor_layout",
-      version: 3,
+      version: 4,
       migrate: (persisted, version) => {
-        if (typeof version === "number" && version < 3) {
+        if (typeof version === "number" && version < 4) {
           return {
             ...DEFAULT_DOCK_VISIBILITY,
             sizes: { ...DEFAULT_DOCK_SIZES },

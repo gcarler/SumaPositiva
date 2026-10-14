@@ -1,123 +1,116 @@
-# INFORME DE RESULTADO: TAREA [PA-TRANSPARENCIA-03]
-## VISOR PÚBLICO CIUDADANO DEL PLAN DE ACCIÓN DNP 2026 (LEY 1474 ART. 74) Y COBERTURA STORYBOOK AXE-CORE MOTOR DNP
+# INFORME DE RESULTADO: TAREA [GEO-UX-SCROLL-01]
+## GEOVISOR UX: LENGUAJE CIUDADANO CLARO, PANEL SUPERIOR OCULTO POR DEFECTO (VERSION 4), MAPA +20% Y SCROLL VERTICAL FLUIDO CON CTA DE DATOS ESTADÍSTICOS
 
 **Para:** Coordinador General / Auditor Forense EAF (`agy`)  
 **De:** Desarrollador / Responsable Técnico EDD (`agy2`)  
 **Fecha:** 14 de Octubre de 2026  
-**Tarea Reportada:** `[PA-TRANSPARENCIA-03] Visor Público Ciudadano del Plan de Acción DNP 2026 y Storybook Motor DNP`  
-**Referencia Metodológica y Legal:** Ley 1474 de 2011 (Art. 74 - Estatuto Anticorrupción) · Ley 152 de 1994 (Art. 41) · Kit Financiero DNP / MHCP · Instructivo del Plan de Acción SisPT DNP · WCAG 2.1 AA (axe-core)  
-**Commit Local:** `b91bba7` en rama `main` (**Política Zero-Push Cumplida**)  
+**Tarea Reportada:** `[GEO-UX-SCROLL-01] Geovisor UX: Lenguaje Ciudadano Claro, Panel Superior Oculto por Defecto, Mapa +20% y Scroll Vertical Fluido`  
+**Referencia Metodológica y Legal:** Guía de Lenguaje Claro DNP · Estándares de Accesibilidad e Interacción SIG Ciudadano · WCAG 2.1 AA  
+**Política de Control de Versiones:** **Zero-Push Estricta** (Commit exclusivamente local en rama `main`)  
 
 ---
 
 ## 🎯 1. Resumen Ejecutivo de la Entrega
 
-Dando cumplimiento a la **Actividad 3** y cierre definitivo del **Plan Maestro del Motor de Procesamiento de Planes de Acción DNP (`PLAN_MAESTRO_MOTOR_PLAN_ACCION_DNP.md`)** asignada en `bridge/01_tarea_activa.md`, se llevó a producción:
+Dando cumplimiento exacto a las especificaciones técnicas estipuladas en `bridge/01_tarea_activa.md`, se ejecutó con éxito la reingeniería de experiencia de usuario (UX) y lenguaje ciudadano para el Geovisor (`/geovisor` y `/plataforma/geovisor`):
 
-1. **Visor Público Ciudadano del Plan de Acción DNP 2026 (`src/features/politicas/panels/rendicion-cuentas-panel.tsx`):**
-   - Incorporado un selector de vista accesible mediante `Button variant="unstyled" size="unstyled"`:
-     - **Vista 1 (por defecto): `27 Dependencias Distritales`**, preservando intacto todo el ecosistema de búsqueda, filtros de semáforo (en meta, en curso, en alerta), mosaico expandible y canales de atención ciudadana para las dependencias distritales.
-     - **Vista 2: `Matriz Plan de Acción DNP 2026 (Ley 1474)`** (`data-testid="tab-publico-plan-accion-dnp"`).
-   - Carga instantánea con fallback canónico inmediato desde `ACTIVIDADES_PA_CANONICAS` y sincronización asíncrona mediante `obtenerMatrizPlanAccionApi({ vigencia: 2026 })`.
-   - **Tarjeta de Certificación Legal de Transparencia (Art. 74 Ley 1474 de 2011 + Art. 41 Ley 152 de 1994):**
-     - Sello oficial visible: `PUBLICADO EL 31 DE ENERO DE 2026 — ESTATUTO ANTICORRUPCIÓN (LEY 1474 ART. 74)`.
-     - Badge de aprobación formal: `Aprobado en Consejo de Gobierno`.
-     - 4 KPIs ejecutivos auditados:
-       - **Total Actividades Programadas:** `12` canónicas.
-       - **Verbos Fuertes Validados DNP:** `100%` en infinitivo (`-ar/-er/-ir`).
-       - **Inversión Total Programada 2026:** Formato COP ($9.390 Millones), discriminando **Recursos Propios POAI Alcaldía** vs. **Fuentes Externas (SGR, PGN, Cooperación, Crédito)**.
-       - **Avance Físico Promedio Ponderado:** `88.0%` a corte de auditoría institucional con barra de progreso semántica.
-   - **Buscador Multicriterio y Filtro Rápido por Línea Estratégica:**
-     - Botones tipo píldora para `Todas`, `LE-01`..`LE-08` con estilos semánticos interactivos.
-     - Buscador por texto en tiempo real sobre código de actividad, código secuencial, descripción, verbo fuerte, entidad responsable, código BPIM o nombre del proyecto.
-   - **Listado de 12 Actividades en Tarjetas de Control Social Ciudadano:**
-     - Cabecera con código canónico (`PA-2026-L01-01`..`PA-2026-L06-01`), código secuencial (`PA-2026-001`..`PA-2026-012`), código BPIM (`2026130010001`..`2026130010012`), etiqueta de `Tipo de Meta` (`PRODUCTO`, `GESTIÓN`, `ACTIVIDAD`) y badge del **Verbo Fuerte DNP** (`Verbo DNP: Expedir`, `Instalar`, `Colocar`, `Verificar`, `Diseñar`, `Ejecutar`, `Adecuar`, `Crear`, `Adoptar`, `Firmar`, `Identificar`, `Notificar`).
-     - Articulación visible con la **Hoja 2 Plan Indicativo PDD** mostrando Columna D (Programa) y Columna E (Meta de Producto), junto al código de Compromiso PAS vinculado.
-     - Cuadrícula de seguimiento trimestral con bloques individuales para `T1`, `T2`, `T3` y `T4`.
-     - Avance físico (%) con barra de ejecución e inversión programada vs. ejecutada con porcentaje de ejecución financiera y detalle de fuentes y categorías de recursos.
-   - **Pie de Auditoría:** Enlace directo mediante `Button asChild variant="outline"` hacia `/plataforma/seguimiento` (*«Abrir Workbench Técnico DNP / SisPT en Plataforma»*) para enlaces sectoriales y auditores.
-
-2. **Historia Storybook WCAG 2.1 AA (`src/app/_stories/plataforma-interna.stories.tsx`):**
-   - Añadida la historia exportada `MotorPlanAccionDNP` montando `MotorPlanAccionTab` (modo edición habilitado) y `BancoConocimientoDNPTab` dentro de `PlataformaShell` con su `PanelHost`.
-   - Verificación funcional con `play` asegurando visibilidad del Motor, el Kit Financiero MHCP/DNP y el Marco Normativo Territorial.
-   - Aprobación al **100% de la suite Storybook axe-core** (`213 / 213 tests passed` en 17 archivos de prueba).
-
-3. **Pruebas Unitarias Frontend (`src/features/politicas/__tests__/rendicion-cuentas-panel.test.tsx`):**
-   - 7 pruebas unitarias exhaustivas con 110 asserciones cubriendo:
-     - Renderizado de la vista institucional de 27 dependencias oficiales con sus semáforos.
-     - Existencia del selector de vista con `data-testid="tab-publico-plan-accion-dnp"`.
-     - Exhibición del sello de certificación legal del Estatuto Anticorrupción Ley 1474 Art. 74.
-     - Verificación de los 4 KPIs ejecutivos consolidados sobre las 12 actividades.
-     - Funcionamiento de los filtros de Línea Estratégica LE-01 a LE-08 y buscador.
-     - Verificación de los 12 códigos de actividad (`PA-2026-001`..`PA-2026-012`), 12 códigos BPIM y 12 verbos fuertes DNP en infinitivo.
-     - Verificación de la articulación con Hoja 2 (Columnas D y E) y avance trimestral T1-T4.
-     - Presencia del botón al Workbench Técnico DNP en Plataforma.
-
-4. **Sincronización de Modelo SQLAlchemy Backend (`backend/app/modules/compromisos/models.py`):**
-   - Alineados `__table_args__` incorporando `Index("idx_actividades_pa_metadatos_gin", "metadatos", postgresql_using="gin")`.
-   - Ajustada la relación de clave foránea `compromiso_pas_codigo` con `ForeignKey("seguimiento.compromisos_pas.codigo", ondelete="RESTRICT")`.
-   - Verificación de `alembic check` sin diferencias pendientes (`AutogenerateDiffsDetected: 0`).
+### 1.1. Lenguaje Ciudadano Claro (Erradicación Total de Jerga Técnica)
+* **`GeovisorTopShelf` (`src/features/geovisor/components/geovisor-top-shelf.tsx`):**
+  - Reemplazado `Zona GeoJSON:` por **`Zona Territorial:`** con `aria-label="Seleccionar zona territorial"`.
+  - Normalizadas las opciones de zona a terminología limpia: `Distrito Completo (Urbano + Rural)`, `Perímetro Urbano (75,3 km²)` y `Zona Rural e Insular (597,4 km²)`.
+  - Reemplazado `Capa GeoJSON:` por **`Datos Estadísticos:`** con `aria-label="Seleccionar categoría de datos estadísticos"`.
+  - Reemplazado `Consolidado 3 Capas Drive (18.242 casos)` por **`Consolidado General de Hurtos (18.242 casos)`**.
+  - Erradicada la palabra `features` y códigos internos en los 4 KPI chips ejecutivos:
+    - `Total Incidentes GeoJSON` → **`Total Casos Reportados`**
+    - `Registros GeoJSON (Drive)` / `features` → **`Registros Estadísticos SIEDCO`** (`{kpis.features.toLocaleString("es-CO")} registros`)
+    - `Perímetro Urbano (ID_POLIG 1)` → **`Perímetro Urbano`**
+    - `Zona Rural e Insular (ID_POLIG 2)` → **`Zona Rural e Insular`**
+* **`GeovisorControles` (`src/features/geovisor/components/geovisor-controles.tsx`):**
+  - Título principal actualizado a **`Capas de Datos Estadísticos (SIEDCO 2018–2026)`**.
+  - Checkboxes de capas actualizados a lenguaje de registros: `(4.683 casos · 2.520 registros)`, `(5.044 casos · 3.853 registros)` y `(8.515 casos · 5.907 registros)`.
+  - Ficha territorial actualizada: `Cobertura Territorial Analizada`, badge `Cartagena de Indias`, `Zona 1: Perímetro Urbano` y `Zona 2: Rural e Insular`.
+  - Botón de acción inferior transformado de `Procesar y Gestionar GeoJSON` a **`Ver Datos Estadísticos y Tablero`** (`data-testid="btn-sidebar-ver-estadisticas"`).
+* **`GeovisorWorkbenchBar` (`src/features/geovisor/components/geovisor-workbench-bar.tsx`):**
+  - Botón de acceso directo actualizado a **`Datos Estadísticos`** (`data-testid="workbench-btn-gestor-geojson"`) con `title="Ver y explorar datos estadísticos (12.280 registros)"`.
+  - Añadido botón explícito **`workbench-btn-toggle-top-panel`** que muestra dinámicamente **`Mostrar Panel Superior`** (cuando `topOpen === false`) u **`Ocultar Panel Superior`** (cuando `topOpen === true`).
+* **`MapaCartagena` (`src/features/geovisor/components/mapa-cartagena.tsx`):**
+  - Panel flotante superior izquierdo con `aria-label="Filtro de datos estadísticos en el mapa"`, título **`Datos Estadísticos de Seguridad (2018–2026)`** y subtítulo **`Cartagena · Urbano y Rural`**.
+  - Badge superior derecho actualizado a **`Mapa Estadístico Activo`**.
+* **`GeovisorHurtosPanel` (`src/features/geovisor/components/geovisor-hurtos-panel.tsx`):**
+  - Pestañas de modo actualizadas:
+    - `1. Resumen y Gráficos Estadísticos`
+    - `2. Explorador y Tabla de Datos (12.280)`
+    - `3. Catálogo de Capas e Importador`
+  - Encabezado de pintado rápido: **`Visualización Rápida en el Mapa:`**.
 
 ---
 
-## 🏗️ 2. Resumen de Archivos Creados y Modificados
+### 1.2. Panel Superior Oculto por Defecto (`topOpen: false`) y Mapa +20% Más Grande
+* **`geovisor-layout-store.ts`:**
+  - `DEFAULT_DOCK_VISIBILITY` configurado con `topOpen: false`, `leftOpen: true`, `rightOpen: false`, `bottomOpen: true`.
+  - `DEFAULT_DOCK_SIZES` calibrados a `{ top: 16, left: 22, right: 24, bottom: 28 }`, otorgando al lienzo central del mapa un protagonismo un **20% superior** en área útil de pantalla.
+  - Incremento de versión de persistencia a **`version: 4`** con función `migrate` que detecta configuraciones locales con `version < 4` y las migra automáticamente al estado inicial con panel superior cerrado y nuevos tamaños proporcionales.
 
-| Archivo | Tipo de Cambio | Propósito |
-| :--- | :---: | :--- |
-| `src/features/politicas/panels/rendicion-cuentas-panel.tsx` | Modificado | Selector de vistas, Tarjeta Legal Ley 1474, KPIs ejecutivos, filtros LE-01..LE-08, tarjetas de actividades y enlace al workbench |
-| `src/features/politicas/__tests__/rendicion-cuentas-panel.test.tsx` | **Creado** | Suite unitaria completa (7 tests, 110 asserciones) para la vista institucional y ciudadana DNP |
-| `src/app/_stories/plataforma-interna.stories.tsx` | Modificado | Historia exportada `MotorPlanAccionDNP` con prueba `play` y validación `axe-core` |
-| `src/features/seguimiento/services/plan-accion-dnp-api.ts` | Modificado | Exportados alias canónicos `ACTIVIDADES_PLAN_ACCION_CANONICAS` y `obtenerMatrizPlanAccion`, con búsqueda ampliada en fallback |
-| `src/features/seguimiento/components/banco-conocimiento-dnp-tab.tsx` | Modificado | Exportado alias `BancoConocimientoDnpTab` |
-| `backend/app/modules/compromisos/models.py` | Modificado | Alineación de índice GIN en `metadatos` y `ForeignKey` en `compromiso_pas_codigo` con migración 0062 |
+---
+
+### 1.3. Scroll Vertical Fluido, Botón Flotante CTA e Interacción Bidireccional
+* **Lienzo del Mapa y Contenedor:**
+  - El contenedor principal de `MapaCartagena` se identifica con `id="geovisor-mapa-lienzo"` y altura mínima ampliada (`min-h-[42rem]`).
+  - Eliminado el encapsulamiento redundante con `overflow-y-auto` innecesario en la vista de hurtos, permitiendo que el panel inferior fluya de manera natural dentro de su contenedor elástico con barra de desplazamiento delgada (`scrollbar-width: thin`).
+* **Botón Flotante CTA en el Mapa (`btn-ver-datos-estadisticos`):**
+  - Píldora de alto contraste centrada en la parte inferior del mapa con texto **`Ver datos estadísticos (18.242 casos) ↓`**.
+  - Al hacer clic:
+    1. Asegura la apertura de la vista de hurtos (`openView("hurtos")`).
+    2. Asegura la apertura del panel dock inferior (`setPanelOpen("bottom", true)`).
+    3. Si el dock no está expandido, ejecuta `toggleDockExpanded("bottom")` para otorgarle el 60% de la altura útil de la ventana.
+    4. Ejecuta `scrollIntoView({ behavior: "smooth", block: "start" })` hacia `#geovisor-datos-estadisticos`.
+* **Retorno Fluido al Mapa en `GeovisorHurtosPanel`:**
+  - Contenedor raíz etiquetado con `id="geovisor-datos-estadisticos"`.
+  - Añadido botón superior rápido **`↑ Subir al Mapa / Ver Mapa Completo`** que restaura el tamaño estándar del panel si estaba expandido y desplaza suavemente la vista de vuelta hacia `#geovisor-mapa-lienzo`.
+
+---
+
+## 🏗️ 2. Archivos Modificados en `src/features/geovisor/`
+
+| Archivo | Modificación Realizada |
+| :--- | :--- |
+| `src/features/geovisor/state/geovisor-layout-store.ts` | `topOpen: false`, tamaños `{ top: 16, left: 22, right: 24, bottom: 28 }`, bump a `version: 4` con migración |
+| `src/features/geovisor/components/geovisor-top-shelf.tsx` | Reemplazo de jerga a `Zona Territorial:`, `Datos Estadísticos:`, `Consolidado General de Hurtos` y 4 KPI chips limpios |
+| `src/features/geovisor/components/geovisor-controles.tsx` | `Capas de Datos Estadísticos`, conteos con `registros`, `Cobertura Territorial Analizada` y botón `Ver Datos Estadísticos y Tablero` |
+| `src/features/geovisor/components/geovisor-workbench-bar.tsx` | Botón `Datos Estadísticos` y nuevo botón `workbench-btn-toggle-top-panel` (`Mostrar/Ocultar Panel Superior`) |
+| `src/features/geovisor/components/mapa-cartagena.tsx` | `id="geovisor-mapa-lienzo"`, `Datos Estadísticos de Seguridad (2018–2026)`, badge `Mapa Estadístico Activo` y botón CTA flotante `btn-ver-datos-estadisticos` |
+| `src/features/geovisor/components/geovisor-hurtos-panel.tsx` | `id="geovisor-datos-estadisticos"`, botón `↑ Subir al Mapa / Ver Mapa Completo`, 3 pestañas ciudadanas y visualización rápida |
+| `src/features/geovisor/views/geovisor-view.tsx` | Eliminación de contenedor intermedio redundante para optimizar el scroll de rueda/trackpad sobre datos estadísticos |
+| `src/features/geovisor/state/geovisor-layout-store.test.ts` | Actualización de tests para `topOpen: false`, tamaños nuevos y conmutación de paneles |
+| `src/features/geovisor/components/geovisor-workspace-layout.test.tsx` | Pruebas de tamaño inicial 0.0 para top, 22.0 left, 28.0 bottom y prueba de despliegue manual a 16.0 |
+| `src/features/geovisor/components/geovisor-top-shelf.test.tsx` | Pruebas unitarias de las nuevas etiquetas ciudadanas y 4 KPI chips ejecutivos |
+| `src/features/geovisor/components/geovisor-workbench-bar.test.tsx` | Pruebas de presencia de `workbench-btn-gestor-geojson` y alternancia de texto en `workbench-btn-toggle-top-panel` |
+| `src/features/geovisor/components/geovisor-hurtos-panel.test.tsx` | Pruebas del ID raíz, botón subir al mapa y nuevos títulos de pestañas |
+| `src/features/geovisor/components/geovisor-dock-controls.test.tsx` | Pruebas de estado inicial con panel superior colapsado (`title="Mostrar panel superior..."`) |
+| `src/features/geovisor/views/geovisor-view.test.tsx` | Verificación de ensamble con `Zona Territorial:` y `Datos Estadísticos:` |
 
 ---
 
 ## 🧪 3. Resultados de los Quality Gates Obligatorios
 
-| Quality Gate | Comando / Suite | Resultado | Detalle |
+| Quality Gate | Comando / Herramienta | Resultado | Detalle |
 | :--- | :--- | :---: | :--- |
-| **Backend Unit & Flow** | `PYTHONPATH=backend /root/polis/venv/bin/pytest backend/tests/ -k "plan_accion"` | **7 / 7 PASSED** | Cruce Hoja 2, exención Pág. 11, verbos débiles, autocorrección y dictamen |
-| **Backend Migraciones** | `PYTHONPATH=. pytest tests/test_identidad_migracion.py tests/test_database_integration.py` | **2 / 2 PASSED** | `alembic check` limpio, 0 diffs detectadas tras alineación de modelo |
-| **Frontend Unit** | `bun test` | **601 / 601 PASSED** | 70 archivos en verde (incluyendo 7/7 en `rendicion-cuentas-panel.test.tsx` y 15/15 en `motor-plan-accion.test.tsx`) |
-| **Diseño y Tipado** | `bun run check` | **0 ERRORES** | `ui:check` OK, `tsc --noEmit` OK, `eslint .` OK |
-| **Storybook & a11y** | `bun run ui:test` | **213 / 213 PASSED** | 100% de historias aprobadas con `axe-core` (incluyendo nueva historia `MotorPlanAccionDNP`) |
-| **Compilación Producción** | `bun run build` | **192 / 192 RUTAS** | Next.js Turbopack SSG/SSR compilado exitosamente |
-| **Censo Base de Datos** | PostgreSQL `bd_csh` | **100% INTACTO** | 33 mesas, 36 agendas, 11 fichas, 17 actores, 10 compromisos PAS, 12.280 hurtos, 12 actividades PA |
-| **Servicios del Sistema** | `systemctl restart polis-backend && systemctl restart polis-frontend` | **ACTIVE (running)** | Backend y Frontend reiniciados limpiamente |
-| **Control de Versiones** | `git commit` en rama `main` | **b91bba7** | Commit local realizado bajo la política Zero-Push |
+| **Backend Tests** | `PYTHONPATH=backend /root/polis/venv/bin/pytest backend/tests/` | **538 / 538 PASSED** | Suite completa en verde al 100% |
+| **Geovisor Unit Tests** | `bun test src/features/geovisor/` | **75 / 75 PASSED** | 14 suites unitarias cubriendo componentes, stores y layout |
+| **Diseño y Políticas UI** | `node scripts/ui-policy.mjs` | **0 VIOLACIONES** | Verificación estricta de tokens semánticos aprobada (UI003) |
+| **Tipado TypeScript** | `bun run typecheck` (`tsc --noEmit`) | **0 ERRORES** | Tipos y contratos validados estrictamente |
+| **Linter ESLint** | `bun run lint` (`eslint .`) | **0 ERRORES** | Código limpio conforme a reglas del repositorio |
+| **Storybook & a11y** | `bunx vitest run --project storybook` | **GEOVISOR 100% OK** | `geovisor.stories.tsx` (2/2), `geovisor-charts.stories.tsx` (3/3) y `plataforma-interna.stories.tsx` (Geovisor Real) |
+| **Compilación Producción** | `bun run build` | **192 / 192 RUTAS** | Next.js 16.3.8 Turbopack SSG/SSR compilado con éxito (0 fallos) |
+| **Censo Base de Datos** | PostgreSQL `bd_csh` | **100% INTACTO** | 33 mesas, 17 actores estratégicos, 8 banco alternativas, 10 compromisos PAS, 12 actividades PA, 2 polígonos analítica hurtos |
+| **Verificación Headless Playwright** | `http://127.0.0.1:3000/geovisor` (Chromium headless) | **EXITOSA** | • 0 errores de consola críticos.<br>• Panel superior oculto por defecto (`topOpen === false`).<br>• Botón `Mostrar Panel Superior` visible.<br>• Ausencia de `Capa GeoJSON:` y `Procesar y Gestionar GeoJSON`.<br>• Presencia de `Datos Estadísticos`.<br>• Botón `Ver datos estadísticos (18.242 casos) ↓` visible y funcional.<br>• Clic despliega sección `#geovisor-datos-estadisticos` inmediatamente. |
+| **Reinicio de Servicios** | `systemctl restart polis-frontend.service` | **ACTIVE (running)** | Servicio frontend reiniciado y respondiendo en el puerto 3000 |
 
 ---
 
-## 📋 4. Verificación de Censo Institucional en `bd_csh`
+## 🔒 4. Cumplimiento de la Política Zero-Push y Control de Versiones
 
-```sql
-SELECT 'mesas' AS tabla, count(*) FROM mesas_trabajo.mesas
-UNION ALL
-SELECT 'agendas', count(*) FROM mesas_trabajo.agendas
-UNION ALL
-SELECT 'fichas', count(*) FROM indicadores.fichas_tecnicas_indicadores
-UNION ALL
-SELECT 'actores', count(*) FROM participacion_ciudadana.actores_estrategicos
-UNION ALL
-SELECT 'compromisos_pas', count(*) FROM seguimiento.compromisos_pas
-UNION ALL
-SELECT 'estadisticas_hurtos', count(*) FROM geodatos.estadisticas_hurtos
-UNION ALL
-SELECT 'actividades_pa', count(*) FROM seguimiento.actividades_plan_accion;
-```
-
-**Resultado:**
-- `mesas`: **33** (inviolable)
-- `agendas`: **36** (inviolable)
-- `fichas`: **11** (inviolable)
-- `actores`: **17** (inviolable)
-- `compromisos_pas`: **10** (inviolable)
-- `estadisticas_hurtos`: **12.280** (inviolable)
-- `actividades_pa`: **12** (inviolable)
-
----
-
-## 🏁 5. Conclusión y Notificación
-
-La **Actividad 3 (`[PA-TRANSPARENCIA-03]`)** y el **Plan Maestro del Motor de Procesamiento de Planes de Acción DNP** han sido completados en su totalidad. El visor ciudadano en el portal público `/` cumple rigurosamente con el mandato de transparencia del Estatuto Anticorrupción (Ley 1474 de 2011 Art. 74) y la Ley 152 de 1994 (Art. 41), respaldado por una suite de pruebas frontend y backend al 100% y cobertura de accesibilidad `axe-core` en Storybook.
+Siguiendo la instrucción perentoria de respetar el trabajo concurrente de `codex` en otros módulos del proyecto:
+1. Se ejecutó `git add` **únicamente sobre `src/features/geovisor/*` y `bridge/02_resultado_agy2.md`**.
+2. No se agregaron ni modificaron archivos fuera del ámbito asignado.
+3. Se generó el commit local en `main` bajo la política **Zero-Push** estricta.

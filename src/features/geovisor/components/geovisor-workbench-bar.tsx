@@ -29,7 +29,7 @@ import { GeovisorDockControls } from "./geovisor-dock-controls";
 export function GeovisorWorkbenchBar({ className }: { className?: string }) {
   const clientStore = useGeovisorLayoutStore();
   const isServer = typeof window === "undefined";
-  const { tabs, openView, closeView } = isServer ? useGeovisorLayoutStore.getState() : clientStore;
+  const { tabs, openView, closeView, topOpen, togglePanel } = isServer ? useGeovisorLayoutStore.getState() : clientStore;
 
   return (
     <div
@@ -71,8 +71,20 @@ export function GeovisorWorkbenchBar({ className }: { className?: string }) {
         <span className="truncate">DANE 2025 • Policía Nacional / CCV • Alcaldía de Cartagena • Catastro Distrital</span>
       </div>
 
-      {/* Lado derecho: Acceso directo a Gestor GeoJSON, Menú de Vistas y Controles de los 4 Paneles */}
+      {/* Lado derecho: Botón Panel Superior, Datos Estadísticos, Menú de Vistas y Controles de los 4 Paneles */}
       <div className="flex items-center gap-1.5">
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={() => togglePanel("top")}
+          data-testid="workbench-btn-toggle-top-panel"
+          className="h-7.5 gap-1.5 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+          title={topOpen ? "Ocultar panel superior de controles y KPIs" : "Mostrar panel superior de controles y KPIs"}
+        >
+          <span>{topOpen ? "Ocultar Panel Superior" : "Mostrar Panel Superior"}</span>
+        </Button>
+
         <Button
           type="button"
           variant="outline"
@@ -80,10 +92,10 @@ export function GeovisorWorkbenchBar({ className }: { className?: string }) {
           onClick={() => openView("hurtos")}
           data-testid="workbench-btn-gestor-geojson"
           className="h-7.5 gap-1.5 text-xs border-[var(--ember)]/40 text-[var(--ember)] hover:bg-[var(--ember)]/10"
-          title="Abrir Procesador, Tabla y Gestor de Capas GeoJSON (12.280 registros)"
+          title="Ver y explorar datos estadísticos (12.280 registros)"
         >
           <Database className="size-3.5" aria-hidden="true" />
-          <span className="hidden sm:inline">Gestor GeoJSON</span>
+          <span className="hidden sm:inline">Datos Estadísticos</span>
         </Button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

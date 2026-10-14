@@ -48,7 +48,7 @@ export function GeovisorControles({
       <div className="flex items-center gap-2 border-b border-[var(--border)] pb-2.5">
         <Layers className="size-4 text-[var(--ember)]" />
         <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)]">
-          Capas GeoJSON Drive (SIEDCO 2018–2026)
+          Capas de Datos Estadísticos (SIEDCO 2018–2026)
         </h3>
       </div>
 
@@ -67,7 +67,7 @@ export function GeovisorControles({
             <span className="font-medium text-xs">
               Hurto a Motocicletas{" "}
               <span className="text-[11px] text-[var(--text-tertiary)]">
-                (2.520 features · 4.683 casos)
+                (4.683 casos · 2.520 registros)
               </span>
             </span>
           </div>
@@ -87,7 +87,7 @@ export function GeovisorControles({
             <span className="font-medium text-xs">
               Hurto a Residencias{" "}
               <span className="text-[11px] text-[var(--text-tertiary)]">
-                (3.853 features · 5.044 casos)
+                (5.044 casos · 3.853 registros)
               </span>
             </span>
           </div>
@@ -107,7 +107,7 @@ export function GeovisorControles({
             <span className="font-medium text-xs">
               Hurto a Comercio{" "}
               <span className="text-[11px] text-[var(--text-tertiary)]">
-                (5.907 features · 8.515 casos)
+                (8.515 casos · 5.907 registros)
               </span>
             </span>
           </div>
@@ -163,21 +163,21 @@ export function GeovisorControles({
         </Select>
       </div>
 
-      {/* 5. Ficha de Polígonos Base del GeoJSON */}
+      {/* 5. Cobertura Territorial Analizada */}
       <div className="border-t border-[var(--border)] pt-2.5 space-y-2">
         <div className="flex items-center justify-between text-[11px]">
           <span className="font-bold text-[var(--text-primary)] uppercase tracking-wider">
-            Polígonos Base GeoJSON
+            Cobertura Territorial Analizada
           </span>
           <span className="font-mono text-[10px] text-[var(--text-tertiary)]">
-            EPSG:9377 → WGS84
+            Cartagena de Indias
           </span>
         </div>
 
         <div className="space-y-1.5">
           <div className="rounded-lg border border-[var(--border)] bg-[var(--surface-0)] p-2.5 space-y-1">
             <div className="flex items-center justify-between font-semibold text-xs text-[var(--text-primary)]">
-              <span>ID_POLIG 1: Perímetro Urbano</span>
+              <span>Zona 1: Perímetro Urbano</span>
               <span className="size-2 rounded-full" style={{ backgroundColor: "#ef4444" }} />
             </div>
             <p className="text-[11px] text-[var(--text-secondary)]">
@@ -187,7 +187,7 @@ export function GeovisorControles({
 
           <div className="rounded-lg border border-[var(--border)] bg-[var(--surface-0)] p-2.5 space-y-1">
             <div className="flex items-center justify-between font-semibold text-xs text-[var(--text-primary)]">
-              <span>ID_POLIG 2: Zona Rural e Insular</span>
+              <span>Zona 2: Rural e Insular</span>
               <span className="size-2 rounded-full border border-dashed border-[var(--text-tertiary)]" />
             </div>
             <p className="text-[11px] text-[var(--text-secondary)]">
@@ -197,7 +197,7 @@ export function GeovisorControles({
         </div>
       </div>
 
-      {/* 6. Botón «Procesar y Gestionar GeoJSON» */}
+      {/* 6. Botón «Ver Datos Estadísticos y Tablero» */}
       {onAbrirTableroHurtos && (
         <div className="pt-1">
           <Button
@@ -205,10 +205,11 @@ export function GeovisorControles({
             variant="outline"
             size="sm"
             onClick={onAbrirTableroHurtos}
+            data-testid="btn-sidebar-ver-estadisticas"
             className="w-full h-8 gap-1.5 text-xs font-semibold border-[var(--ember)]/40 text-[var(--ember)] hover:bg-[var(--ember)]/10"
           >
             <BarChart3 className="size-3.5" />
-            Procesar y Gestionar GeoJSON
+            Ver Datos Estadísticos y Tablero
           </Button>
         </div>
       )}

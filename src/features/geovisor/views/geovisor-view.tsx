@@ -279,38 +279,36 @@ export function GeovisorView() {
         );
       case "hurtos":
         return (
-          <div className="h-full overflow-y-auto">
-            <GeovisorHurtosPanel
-              delitoSeleccionado={delitoHurto}
-              onDelitoChange={(del) => {
-                setDelitoHurto(del);
-                if (del === "hurto_motocicletas") {
-                  setCapas((c) => ({ ...c, hurtoMotocicletas: true, hurtoResidencias: false, hurtoComercio: false }));
-                } else if (del === "hurto_residencias") {
-                  setCapas((c) => ({ ...c, hurtoMotocicletas: false, hurtoResidencias: true, hurtoComercio: false }));
-                } else if (del === "hurto_comercio") {
-                  setCapas((c) => ({ ...c, hurtoMotocicletas: false, hurtoResidencias: false, hurtoComercio: true }));
-                }
-              }}
-              anioSeleccionado={anioHurto}
-              onAnioChange={setAnioHurto}
-              onActivarCapaMapa={(del) => {
-                if (del.includes("moto")) {
-                  setCapas((c) => ({ ...c, hurtoMotocicletas: true, hurtoResidencias: false, hurtoComercio: false }));
-                  setDelitoHurto("hurto_motocicletas");
-                } else if (del.includes("resid")) {
-                  setCapas((c) => ({ ...c, hurtoMotocicletas: false, hurtoResidencias: true, hurtoComercio: false }));
-                  setDelitoHurto("hurto_residencias");
-                } else if (del.includes("comerc")) {
-                  setCapas((c) => ({ ...c, hurtoMotocicletas: false, hurtoResidencias: false, hurtoComercio: true }));
-                  setDelitoHurto("hurto_comercio");
-                }
-              }}
-              onCargarGeojsonPersonalizado={(geojson, nombreCapa, color) => {
-                setCapaPersonalizada({ geojson, nombre: nombreCapa, color });
-              }}
-            />
-          </div>
+          <GeovisorHurtosPanel
+            delitoSeleccionado={delitoHurto}
+            onDelitoChange={(del) => {
+              setDelitoHurto(del);
+              if (del === "hurto_motocicletas") {
+                setCapas((c) => ({ ...c, hurtoMotocicletas: true, hurtoResidencias: false, hurtoComercio: false }));
+              } else if (del === "hurto_residencias") {
+                setCapas((c) => ({ ...c, hurtoMotocicletas: false, hurtoResidencias: true, hurtoComercio: false }));
+              } else if (del === "hurto_comercio") {
+                setCapas((c) => ({ ...c, hurtoMotocicletas: false, hurtoResidencias: false, hurtoComercio: true }));
+              }
+            }}
+            anioSeleccionado={anioHurto}
+            onAnioChange={setAnioHurto}
+            onActivarCapaMapa={(del) => {
+              if (del.includes("moto")) {
+                setCapas((c) => ({ ...c, hurtoMotocicletas: true, hurtoResidencias: false, hurtoComercio: false }));
+                setDelitoHurto("hurto_motocicletas");
+              } else if (del.includes("resid")) {
+                setCapas((c) => ({ ...c, hurtoMotocicletas: false, hurtoResidencias: true, hurtoComercio: false }));
+                setDelitoHurto("hurto_residencias");
+              } else if (del.includes("comerc")) {
+                setCapas((c) => ({ ...c, hurtoMotocicletas: false, hurtoResidencias: false, hurtoComercio: true }));
+                setDelitoHurto("hurto_comercio");
+              }
+            }}
+            onCargarGeojsonPersonalizado={(geojson, nombreCapa, color) => {
+              setCapaPersonalizada({ geojson, nombre: nombreCapa, color });
+            }}
+          />
         );
     }
   };

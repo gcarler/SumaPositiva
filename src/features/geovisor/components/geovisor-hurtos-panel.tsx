@@ -43,6 +43,7 @@ import {
   type ResumenHurtosResponse,
   type ExploradorHurtosResponse,
 } from "../services/hurtos-api";
+import { useGeovisorLayoutStore } from "../state/geovisor-layout-store";
 
 export type ModoHurtos = "resumen" | "procesador" | "gestor";
 
@@ -309,6 +310,7 @@ export function GeovisorHurtosPanel({
 
   return (
     <div
+      id="geovisor-datos-estadisticos"
       data-testid="geovisor-hurtos-panel"
       className="flex flex-col gap-4 p-4 text-[var(--text-primary)]"
     >
@@ -335,6 +337,27 @@ export function GeovisorHurtosPanel({
           </div>
 
           <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                const store = useGeovisorLayoutStore.getState();
+                if (store.expandedDock === "bottom") {
+                  store.toggleDockExpanded("bottom");
+                }
+                const mapEl = document.getElementById("geovisor-mapa-lienzo");
+                if (mapEl) {
+                  mapEl.scrollIntoView({ behavior: "smooth", block: "start" });
+                } else {
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }
+              }}
+              className="h-8 gap-1 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+              title="Volver a la vista del mapa central"
+            >
+              <span>↑ Subir al Mapa / Ver Mapa Completo</span>
+            </Button>
+
             {onActivarCapaMapa && (
               <Button
                 variant="outline"
@@ -380,7 +403,7 @@ export function GeovisorHurtosPanel({
             className="flex-1 sm:flex-none h-8 gap-1.5 text-xs font-semibold"
           >
             <BarChart3 className="size-3.5" />
-            <span>1. Resumen y Gráficos</span>
+            <span>1. Resumen y Gráficos Estadísticos</span>
           </Button>
 
           <Button
@@ -392,7 +415,7 @@ export function GeovisorHurtosPanel({
             className="flex-1 sm:flex-none h-8 gap-1.5 text-xs font-semibold"
           >
             <TableIcon className="size-3.5" />
-            <span>2. Procesador y Tabla (12.280 registros)</span>
+            <span>2. Explorador y Tabla de Datos (12.280)</span>
           </Button>
 
           <Button
@@ -404,7 +427,7 @@ export function GeovisorHurtosPanel({
             className="flex-1 sm:flex-none h-8 gap-1.5 text-xs font-semibold"
           >
             <Layers className="size-3.5" />
-            <span>3. Gestor e Importador GeoJSON</span>
+            <span>3. Catálogo de Capas e Importador</span>
           </Button>
         </div>
       </div>
@@ -417,7 +440,7 @@ export function GeovisorHurtosPanel({
           {/* Botones de Pintado Rápido en Mapa */}
           <div className="flex flex-wrap items-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] p-3">
             <span className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider">
-              Pintado Rápido de Capas GeoJSON:
+              Visualización Rápida en el Mapa:
             </span>
             <div className="flex flex-wrap items-center gap-2">
               <Button

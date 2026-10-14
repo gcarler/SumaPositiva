@@ -28,8 +28,8 @@ describe("GeovisorView Component (GEO-DOCK-02)", () => {
 
     // Dock superior (Top Shelf)
     expect(html).toContain('data-testid="geovisor-top-shelf"');
-    expect(html).toContain("Zona GeoJSON:");
-    expect(html).toContain("Capa GeoJSON:");
+    expect(html).toContain("Zona Territorial:");
+    expect(html).toContain("Datos Estadísticos:");
 
     // Dock izquierdo (Capas GeoJSON)
     expect(html).toContain('data-testid="geovisor-dock-host-left"');

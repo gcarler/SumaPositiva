@@ -38,12 +38,12 @@ export interface GeovisorTopShelfProps {
 
 const OPCIONES_ZONA = [
   { id: "todas", nombre: "Distrito Completo (Urbano + Rural)" },
-  { id: "URBANA", nombre: "ID_POLIG 1 — Perímetro Urbano (75,3 km²)" },
-  { id: "RURAL", nombre: "ID_POLIG 2 — Zona Rural e Insular (597,4 km²)" },
+  { id: "URBANA", nombre: "Perímetro Urbano (75,3 km²)" },
+  { id: "RURAL", nombre: "Zona Rural e Insular (597,4 km²)" },
 ] as const;
 
 const OPCIONES_CAPA = [
-  { id: "TODOS", nombre: "Consolidado 3 Capas Drive (18.242 casos)" },
+  { id: "TODOS", nombre: "Consolidado General de Hurtos (18.242 casos)" },
   { id: "hurto_comercio", nombre: "Hurto a Comercio (8.515 casos · 5.907 reg.)" },
   { id: "hurto_residencias", nombre: "Hurto a Residencias (5.044 casos · 3.853 reg.)" },
   { id: "hurto_motocicletas", nombre: "Hurto a Motocicletas (4.683 casos · 2.520 reg.)" },
@@ -132,16 +132,16 @@ export function GeovisorTopShelf({
     >
       {/* FILA SUPERIOR: Selectores de Zona GeoJSON, Capa GeoJSON y Año + Exportar PNG */}
       <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-        {/* Selector 1: Zona GeoJSON */}
+        {/* Selector 1: Zona Territorial */}
         <div className="flex items-center gap-1.5">
           <Compass className="size-3.5 text-[var(--ember)]" />
           <span className="text-[11px] font-semibold uppercase tracking-wider text-[var(--text-tertiary)]">
-            Zona GeoJSON:
+            Zona Territorial:
           </span>
           <Select value={zonaActiva} onValueChange={handleZona}>
             <SelectTrigger
               className="h-8 w-[190px] sm:w-[230px] text-xs bg-[var(--surface-0)] border-[var(--border)]"
-              aria-label="Seleccionar zona GeoJSON"
+              aria-label="Seleccionar zona territorial"
             >
               <SelectValue placeholder="Seleccionar zona" />
             </SelectTrigger>
@@ -155,11 +155,11 @@ export function GeovisorTopShelf({
           </Select>
         </div>
 
-        {/* Selector 2: Capa GeoJSON */}
+        {/* Selector 2: Datos Estadísticos */}
         <div className="flex items-center gap-1.5">
           <Layers className="size-3.5 text-[var(--info)]" />
           <span className="text-[11px] font-semibold uppercase tracking-wider text-[var(--text-tertiary)]">
-            Capa GeoJSON:
+            Datos Estadísticos:
           </span>
           <Select
             value={delitoClave}
@@ -167,7 +167,7 @@ export function GeovisorTopShelf({
           >
             <SelectTrigger
               className="h-8 w-[210px] sm:w-[260px] text-xs bg-[var(--surface-0)] border-[var(--border)]"
-              aria-label="Seleccionar capa GeoJSON"
+              aria-label="Seleccionar categoría de datos estadísticos"
             >
               <SelectValue />
             </SelectTrigger>
@@ -223,16 +223,16 @@ export function GeovisorTopShelf({
         )}
       </div>
 
-      {/* FILA INFERIOR: 4 KPI Chips Ejecutivos Reales del GeoJSON */}
+      {/* FILA INFERIOR: 4 KPI Chips Ejecutivos Reales */}
       <div className="flex flex-wrap items-center gap-2">
-        {/* Chip 1: Total Incidentes GeoJSON */}
+        {/* Chip 1: Total Casos Reportados */}
         <div className="flex items-center gap-2 rounded-lg border border-[var(--border)] bg-[var(--surface-0)]/70 px-2.5 py-1.5">
           <div className="flex size-7 shrink-0 items-center justify-center rounded-md bg-[var(--surface-2)]">
             <ShieldAlert className="size-3.5 text-[var(--danger)]" />
           </div>
           <div className="min-w-0">
             <span className="truncate text-[10px] text-[var(--text-tertiary)] block">
-              Total Incidentes GeoJSON
+              Total Casos Reportados
             </span>
             <span className="text-xs font-bold tabular text-[var(--text-primary)]">
               {kpis.incidentes.toLocaleString("es-CO")}
@@ -240,17 +240,17 @@ export function GeovisorTopShelf({
           </div>
         </div>
 
-        {/* Chip 2: Registros GeoJSON Drive */}
+        {/* Chip 2: Registros Estadísticos SIEDCO */}
         <div className="flex items-center gap-2 rounded-lg border border-[var(--border)] bg-[var(--surface-0)]/70 px-2.5 py-1.5">
           <div className="flex size-7 shrink-0 items-center justify-center rounded-md bg-[var(--surface-2)]">
             <Layers className="size-3.5 text-[var(--ember)]" />
           </div>
           <div className="min-w-0">
             <span className="truncate text-[10px] text-[var(--text-tertiary)] block">
-              Registros GeoJSON (Drive)
+              Registros Estadísticos SIEDCO
             </span>
             <span className="text-xs font-bold tabular text-[var(--text-primary)]">
-              {kpis.features.toLocaleString("es-CO")} features
+              {kpis.features.toLocaleString("es-CO")} registros
             </span>
           </div>
         </div>
@@ -262,7 +262,7 @@ export function GeovisorTopShelf({
           </div>
           <div className="min-w-0">
             <span className="truncate text-[10px] text-[var(--text-tertiary)] block">
-              Perímetro Urbano (ID_POLIG 1)
+              Perímetro Urbano
             </span>
             <span className="text-xs font-bold tabular text-[var(--text-primary)]">
               {kpis.urbano.toLocaleString("es-CO")} casos ({kpis.pctUrbano.toFixed(1).replace(".", ",")}%)
@@ -277,7 +277,7 @@ export function GeovisorTopShelf({
           </div>
           <div className="min-w-0">
             <span className="truncate text-[10px] text-[var(--text-tertiary)] block">
-              Zona Rural e Insular (ID_POLIG 2)
+              Zona Rural e Insular
             </span>
             <span className="text-xs font-bold tabular text-[var(--text-primary)]">
               {kpis.rural.toLocaleString("es-CO")} casos ({kpis.pctRural.toFixed(1).replace(".", ",")}%)
