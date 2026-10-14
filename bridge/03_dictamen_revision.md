@@ -1,5 +1,5 @@
-# DICTAMEN DE AUDITORÍA FORENSE EAF — TAREA [GEO-GESTOR-01]
-## PINTADO POR DEFECTO DE CAPAS GEOJSON Y HERRAMIENTA FRONTEND DE GESTIÓN, PROCESAMIENTO, EXPLORACIÓN TABULAR E IMPORTACIÓN DE ARCHIVOS GEOJSON EN EL GEOVISOR
+# DICTAMEN DE AUDITORÍA FORENSE EAF — TAREA [GEO-FIX-CONSOLE-01]
+## CORRECCIÓN QUIRÚRGICA DE ERRORES EN CONSOLA DEL GEOVISOR (`TypeError: .slice()`, 404 RECURSOS, `sw.js` `chrome-extension` Y DIRECTIVA CSP `media-src`)
 
 **Fecha:** 14 de Octubre de 2026
 **De:** Coordinador General / Auditor Forense EAF (`agy`)
@@ -10,30 +10,31 @@
 
 ## 1. Verificación Forense de Entregables
 
-1. **Visibilidad Inmediata y Apertura Automática en `/geovisor` (`geovisor-view.tsx`, `geovisor-layout-store.ts`, `geovisor-workbench-bar.tsx`, `geovisor-controles.tsx`):**
-   - Al entrar a `/geovisor`, la capa temática GeoJSON (`hurtoMotocicletas: true`, `delitoHurto: "hurto_motocicletas"`) inicia encendida y pintada en el mapa OpenLayers de Cartagena.
-   - La pestaña `"hurtos"` (*Analítica y Gestor GeoJSON*) está en `DEFAULT_DOCK_TABS.bottom`, se inyecta automáticamente en cualquier estado previo de `localStorage`, se abre al montar `GeovisorView` en el navegador (`openView("hurtos")`) y cuenta además con botones de acceso directo en la barra superior (`Gestor GeoJSON`) y en el panel izquierdo de Capas SIG (`Procesar y Gestionar GeoJSON`).
+1. **Resolución del Crash `TypeError: Cannot read properties of undefined (reading 'slice')` (`schemas.py`, `repository.py`, `hurtos-api.ts`, `geovisor-hurtos-panel.tsx`, `mapa-cartagena.tsx`, `use-mapa.ts`):**
+   - **Backend:** `SerieTemporalItem` en `backend/app/modules/geodatos/schemas.py` y las consultas en `repository.py` devuelven ahora de forma simétrica `periodo`, `etiqueta` y `porcentaje` en `serie_anual` y `serie_mensual`. Asimismo, `TopCategoriaItem` expone claves duales (`categoria`, `arma`, `sitio`) en `top_armas` y `top_sitios`.
+   - **Frontend:** `obtenerResumenHurtos` en `src/features/geovisor/services/hurtos-api.ts` normaliza defensivamente cada ítem temporal, y `src/features/geovisor/components/geovisor-hurtos-panel.tsx` protege todas las invocaciones a `.slice()` con `String(item.etiqueta ?? item.periodo ?? "")`. El tooltip de `src/features/geovisor/components/mapa-cartagena.tsx` resuelve `arma ?? categoria` y `sitio ?? categoria`.
 
-2. **Endpoint Backend de Exploración Tabular y Pivot (`GET /api/v1/geodatos/analitica/hurtos/registros`):**
-   - Verificado en vivo sobre los **12.280 registros** (`18.242` incidentes) de `geodatos.estadisticas_hurtos`.
-   - Soporta filtros combinables (`delito`, `anio`, `mes`, `zona`, `armas_medios`, `clase_sitio`, `dia_semana`, `busqueda`), paginación (`limit`, `offset`), agrupación dinámica (`agrupar_por`) y catálogos únicos para poblar los selectores del frontend.
-   - Registrado en `docs/permisos-api.md` y validado con `test_access_policy.py` y `test_geodatos_analitica_hurtos.py` (`105 / 105 pasadas`).
+2. **Eliminación de Errores `404 (Not Found)` de Recursos Estáticos (`public/fotos/testimonios/*.webp`):**
+   - Verificado `HTTP/1.1 200 OK` (`image/webp`) para las 4 fotografías referenciadas en `participacion_ciudadana.testimonios_comunitarios`:
+     - `/fotos/testimonios/ana_rosa_el_pozon.webp`
+     - `/fotos/testimonios/dionisio_la_boquilla.webp`
+     - `/fotos/testimonios/yorledis_mandela.webp`
+     - `/fotos/testimonios/carlos_getsemani.webp`
 
-3. **Workbench Frontend de 3 Modos (`src/features/geovisor/components/geovisor-hurtos-panel.tsx`):**
-   - **Modo 1 — Resumen y Gráficos:** 4 tarjetas KPI, serie anual 2018–2026, serie mensual, Top 5 Armas/Modalidades y Top 5 Clases de Sitio, más botones rápidos para pintar en el mapa cada capa GeoJSON (*Motocicletas*, *Residencias*, *Comercio*, *Consolidado*).
-   - **Modo 2 — Procesador y Tabla de Datos GeoJSON (12.280 registros):** Filtros multicriterio en vivo, selector de agrupación dinámica (Pivot) con tabla de frecuencias y porcentajes, tabla paginada de registros GeoJSON y botones de exportación en cliente (**«Exportar CSV Procesado»** y **«Exportar GeoJSON Filtrado»**).
-   - **Modo 3 — Gestor de Capas e Importador GeoJSON:** Catálogo interactivo de las 3 capas GeoJSON oficiales del Drive SIEDCO y cargador Drag & Drop de archivos `.geojson` / `.json` en navegador (extrae cantidad de features, tipos de geometría, columnas/propiedades, muestra de registros y pinta la capa con color configurable directamente sobre el mapa OpenLayers).
+3. **Guardia en Service Worker (`public/sw.js`):**
+   - Caché actualizada a `polis-pwa-v2`.
+   - El listener `fetch` descarta de inmediato cualquier URL cuyo protocolo no sea `http:` / `https:` o cuyo `origin !== self.location.origin` (evitando interceptar `chrome-extension://`), además de encadenar `.catch(() => {})` en `cache.put(...)`.
 
-4. **Integración en `/plataforma/geovisor` (`src/features/plataforma/views/geovisor-view.tsx`):**
-   - Incorporada la sección *«Capas GeoJSON e Inteligencia Delictiva SIEDCO (2018–2026)»* con `<GeovisorHurtosPanel />` embebido y enlace directo al Workbench en pantalla completa.
+4. **Directiva `media-src` en Content Security Policy (`next.config.ts`):**
+   - Verificado en la cabecera HTTP `Content-Security-Policy-Report-Only` en vivo que incluye `media-src 'self' data: blob:;`, eliminando el aviso de consola ante audios embebidos en `data:audio/wav;base64,...`.
 
 ---
 
 ## 2. Certificación Independiente de Calidad y Censo
 
-- **Pruebas Backend (`pytest`):** `105 / 105 pasadas`.
-- **Pruebas Frontend (`bun test`):** `577 / 577 pasadas` (`71 / 71` en `src/features/geovisor`).
+- **Pruebas Backend (`pytest`):** `110 / 110 pasadas` (`test_geodatos_analitica_hurtos.py`, `test_cierre05_csp_report.py`, `test_access_policy.py`).
+- **Pruebas Frontend (`bun test`):** `579 / 579 pasadas` (`73 / 73` en `src/features/geovisor/`).
 - **Quality Gates (`bun run ui:check` + `tsc --noEmit` + `eslint .`):** `0 errores`.
 - **Storybook (`bun run ui:test`):** `212 / 212 historias pasadas` con `axe-core`.
-- **Build y Servicios:** `192 / 192` rutas compiladas; `polis-backend` y `polis-frontend` activos (`HTTP 200 OK` en `/`, `/geovisor` y `/plataforma/geovisor`).
+- **Build y Servicios:** `192 / 192` rutas compiladas y desplegadas en standalone; `polis-backend` y `polis-frontend` activos (`0 errores` de consola en Chromium headless sobre `/geovisor`).
 - **Censo Institucional en `bd_csh`:** Intacto (`33` mesas, `36` agendas, `11` fichas, `17` actores, `12.280` registros de hurtos).
