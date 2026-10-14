@@ -239,6 +239,21 @@ export function GeovisorControles({
               </Select>
             </div>
           )}
+
+          {onAbrirTableroHurtos && (
+            <div className="pt-1.5">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={onAbrirTableroHurtos}
+                className="w-full h-8 text-[11px] font-semibold border-[var(--ember)]/40 text-[var(--ember)] hover:bg-[var(--ember)]/10"
+              >
+                <BarChart3 className="size-3.5 mr-1.5" />
+                Procesar y Gestionar GeoJSON
+              </Button>
+            </div>
+          )}
         </div>
       </div>
 

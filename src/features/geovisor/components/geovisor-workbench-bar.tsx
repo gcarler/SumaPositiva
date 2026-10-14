@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { ArrowLeft, Home, LayoutPanelLeft } from "lucide-react";
+import { ArrowLeft, Database, Home, LayoutPanelLeft } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import {
   DropdownMenu,
@@ -71,8 +71,20 @@ export function GeovisorWorkbenchBar({ className }: { className?: string }) {
         <span className="truncate">DANE 2025 • Policía Nacional / CCV • Alcaldía de Cartagena • Catastro Distrital</span>
       </div>
 
-      {/* Lado derecho: Menú de Vistas y Controles de los 4 Paneles */}
+      {/* Lado derecho: Acceso directo a Gestor GeoJSON, Menú de Vistas y Controles de los 4 Paneles */}
       <div className="flex items-center gap-1.5">
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={() => openView("hurtos")}
+          data-testid="workbench-btn-gestor-geojson"
+          className="h-7.5 gap-1.5 text-xs border-[var(--ember)]/40 text-[var(--ember)] hover:bg-[var(--ember)]/10"
+          title="Abrir Procesador, Tabla y Gestor de Capas GeoJSON (12.280 registros)"
+        >
+          <Database className="size-3.5" aria-hidden="true" />
+          <span className="hidden sm:inline">Gestor GeoJSON</span>
+        </Button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button

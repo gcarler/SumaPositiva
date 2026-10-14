@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useCallback, useMemo, useState, useRef } from "react";
+import { useCallback, useEffect, useMemo, useState, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { listarMesasGeovisor, type MesaGeovisor } from "../services/mesas-geovisor-api";
 import { usePanels } from "@/core/panels/panel-store";
@@ -70,12 +70,25 @@ export function GeovisorView() {
     hurtoComercio: false,
   });
 
+  useEffect(() => {
+    useGeovisorLayoutStore.getState().openView("hurtos");
+  }, []);
+
   const handleToggleCapa = useCallback((capa: keyof CapasConfig) => {
     setCapas((prev) => {
       const next = { ...prev, [capa]: !prev[capa] };
-      if (capa === "hurtoMotocicletas" && next[capa]) setDelitoHurto("hurto_motocicletas");
-      if (capa === "hurtoResidencias" && next[capa]) setDelitoHurto("hurto_residencias");
-      if (capa === "hurtoComercio" && next[capa]) setDelitoHurto("hurto_comercio");
+      if (capa === "hurtoMotocicletas" && next[capa]) {
+        setDelitoHurto("hurto_motocicletas");
+        useGeovisorLayoutStore.getState().openView("hurtos");
+      }
+      if (capa === "hurtoResidencias" && next[capa]) {
+        setDelitoHurto("hurto_residencias");
+        useGeovisorLayoutStore.getState().openView("hurtos");
+      }
+      if (capa === "hurtoComercio" && next[capa]) {
+        setDelitoHurto("hurto_comercio");
+        useGeovisorLayoutStore.getState().openView("hurtos");
+      }
       return next;
     });
   }, []);

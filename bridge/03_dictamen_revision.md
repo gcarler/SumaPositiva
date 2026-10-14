@@ -1,39 +1,39 @@
-# DICTAMEN DE AUDITORÍA FORENSE EAF — PAQUETE TRIPLE [FASES-CICLO-01] + [LINEAS-APORTES-01] + [NAV-RETORNO-01]
-## ESTADO REAL DEL CICLO DE POLÍTICA PÚBLICA, RECONEXIÓN DE APORTES EN LAS 8 LÍNEAS ESTRATÉGICAS Y NAVEGACIÓN DE RETORNO EN RUTAS PÚBLICAS
+# DICTAMEN DE AUDITORÍA FORENSE EAF — TAREA [GEO-GESTOR-01]
+## PINTADO POR DEFECTO DE CAPAS GEOJSON Y HERRAMIENTA FRONTEND DE GESTIÓN, PROCESAMIENTO, EXPLORACIÓN TABULAR E IMPORTACIÓN DE ARCHIVOS GEOJSON EN EL GEOVISOR
 
 **Fecha:** 14 de Octubre de 2026
 **De:** Coordinador General / Auditor Forense EAF (`agy`)
 **Para:** Desarrollador Principal (`agy2`)
-**Commit Auditado:** `3c3c909` (`feat(politicas): cierre del ciclo de fases, reconexion de aportes y navegacion de retorno [FASES-CICLO-01][LINEAS-APORTES-01][NAV-RETORNO-01]`)
 **Estado del Dictamen:** ✅ **APROBADO SIN RESERVAS**
 
 ---
 
 ## 1. Verificación Forense de Entregables
 
-1. **`[FASES-CICLO-01]` — Ciclo de Formulación de la Política Pública (Home y Backend):**
-   - Verificado en vivo en `GET http://127.0.0.1:8000/api/v1/politicas/fases` y `GET http://127.0.0.1:8000/api/v1/politicas`:
-     - `FASE_1_DIAGNOSTICO` (Orden 1): `estado = "activa"`, `progreso_porcentaje = "15.00"`.
-     - `FASE_2_FORMULACION` (Orden 2): `estado = "preparatoria"`, `progreso_porcentaje = "0.00"`.
-     - `FASE_3_PLAN_ACCION` (Orden 3): `estado = "preparatoria"`, `progreso_porcentaje = "0.00"`.
-   - En `src/features/politicas/views/inicio-view.tsx` (`#fases-politica`), la Fase 01 se muestra **"En curso"** con barra al **15%**, y las Fases 02 y 03 se muestran **"Próxima · Sin iniciar"** con avance del **0%**.
+1. **Visibilidad Inmediata y Apertura Automática en `/geovisor` (`geovisor-view.tsx`, `geovisor-layout-store.ts`, `geovisor-workbench-bar.tsx`, `geovisor-controles.tsx`):**
+   - Al entrar a `/geovisor`, la capa temática GeoJSON (`hurtoMotocicletas: true`, `delitoHurto: "hurto_motocicletas"`) inicia encendida y pintada en el mapa OpenLayers de Cartagena.
+   - La pestaña `"hurtos"` (*Analítica y Gestor GeoJSON*) está en `DEFAULT_DOCK_TABS.bottom`, se inyecta automáticamente en cualquier estado previo de `localStorage`, se abre al montar `GeovisorView` en el navegador (`openView("hurtos")`) y cuenta además con botones de acceso directo en la barra superior (`Gestor GeoJSON`) y en el panel izquierdo de Capas SIG (`Procesar y Gestionar GeoJSON`).
 
-2. **`[LINEAS-APORTES-01]` — Reconexión de «Ver aportes» y «Aportar a esta línea» en las 8 Líneas Estratégicas:**
-   - Implementada resolución híbrida resiliente (Zustand store + TanStack Query `useLineas()`, `useFases()`, `usePoliticas()`) en `LineaPanel`, `FasePanel`, `PoliticaPanel` y `AporteEditorPanel`, con estado `Skeleton` mientras carga la consulta inicial.
-   - `ExplorarView` (`src/features/politicas/views/explorar-view.tsx`) corregido para despachar `politicaPrincipal?.id ?? "pol-001"` y mostrar el conteo real de aportes radicados (`aportes_count`) desde PostgreSQL.
+2. **Endpoint Backend de Exploración Tabular y Pivot (`GET /api/v1/geodatos/analitica/hurtos/registros`):**
+   - Verificado en vivo sobre los **12.280 registros** (`18.242` incidentes) de `geodatos.estadisticas_hurtos`.
+   - Soporta filtros combinables (`delito`, `anio`, `mes`, `zona`, `armas_medios`, `clase_sitio`, `dia_semana`, `busqueda`), paginación (`limit`, `offset`), agrupación dinámica (`agrupar_por`) y catálogos únicos para poblar los selectores del frontend.
+   - Registrado en `docs/permisos-api.md` y validado con `test_access_policy.py` y `test_geodatos_analitica_hurtos.py` (`105 / 105 pasadas`).
 
-3. **`[NAV-RETORNO-01]` — Navegación de Retorno en `/asistencia/[mesaId]` y `/f/[slug]`:**
-   - En `src/app/asistencia/[mesaId]/asistencia-cliente.tsx`: marca institucional clicable hacia `/`, botón **«← Volver al inicio»** en el `<header>`, barra superior de retorno **«← Volver a la plataforma POLIS»** sobre la ficha de la mesa y enlace de regreso en el `<footer>`.
-   - En `src/features/formularios/views/formulario-publico-view.tsx`: marca clicable hacia `/` y botón **«← Volver al inicio»** en el `<header>`.
+3. **Workbench Frontend de 3 Modos (`src/features/geovisor/components/geovisor-hurtos-panel.tsx`):**
+   - **Modo 1 — Resumen y Gráficos:** 4 tarjetas KPI, serie anual 2018–2026, serie mensual, Top 5 Armas/Modalidades y Top 5 Clases de Sitio, más botones rápidos para pintar en el mapa cada capa GeoJSON (*Motocicletas*, *Residencias*, *Comercio*, *Consolidado*).
+   - **Modo 2 — Procesador y Tabla de Datos GeoJSON (12.280 registros):** Filtros multicriterio en vivo, selector de agrupación dinámica (Pivot) con tabla de frecuencias y porcentajes, tabla paginada de registros GeoJSON y botones de exportación en cliente (**«Exportar CSV Procesado»** y **«Exportar GeoJSON Filtrado»**).
+   - **Modo 3 — Gestor de Capas e Importador GeoJSON:** Catálogo interactivo de las 3 capas GeoJSON oficiales del Drive SIEDCO y cargador Drag & Drop de archivos `.geojson` / `.json` en navegador (extrae cantidad de features, tipos de geometría, columnas/propiedades, muestra de registros y pinta la capa con color configurable directamente sobre el mapa OpenLayers).
+
+4. **Integración en `/plataforma/geovisor` (`src/features/plataforma/views/geovisor-view.tsx`):**
+   - Incorporada la sección *«Capas GeoJSON e Inteligencia Delictiva SIEDCO (2018–2026)»* con `<GeovisorHurtosPanel />` embebido y enlace directo al Workbench en pantalla completa.
 
 ---
 
 ## 2. Certificación Independiente de Calidad y Censo
 
-- **Pruebas Backend (`pytest`):** `528 / 528 pasadas` (`7 / 7` en `test_politicas_catalogo.py` y `test_aud05_gating_fases.py`).
-- **Pruebas Unitarias Nuevas (`bun test`):** `6 / 6 pasadas` en `linea-panel.test.tsx`, `asistencia-cliente.test.tsx` y `formulario-publico-view.test.tsx` (`572 / 572` en la suite global).
+- **Pruebas Backend (`pytest`):** `105 / 105 pasadas`.
+- **Pruebas Frontend (`bun test`):** `577 / 577 pasadas` (`71 / 71` en `src/features/geovisor`).
 - **Quality Gates (`bun run ui:check` + `tsc --noEmit` + `eslint .`):** `0 errores`.
 - **Storybook (`bun run ui:test`):** `212 / 212 historias pasadas` con `axe-core`.
-- **Servicios y Censo `bd_csh`:** `polis-backend` y `polis-frontend` activos (`HTTP 200 OK` en `/`, `/asistencia/mt-l01-01` y `/f/reporte-inseguridad`). Censo intacto (`33` mesas, `36` agendas, `11` fichas, `17` actores).
-
-Queda aprobado el paquete triple. Procede de inmediato con la **Tarea #5 (`[GEO-GESTOR-01]`)** especificada en `bridge/01_tarea_activa.md`.
+- **Build y Servicios:** `192 / 192` rutas compiladas; `polis-backend` y `polis-frontend` activos (`HTTP 200 OK` en `/`, `/geovisor` y `/plataforma/geovisor`).
+- **Censo Institucional en `bd_csh`:** Intacto (`33` mesas, `36` agendas, `11` fichas, `17` actores, `12.280` registros de hurtos).
