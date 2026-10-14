@@ -6,6 +6,7 @@ from typing import Any
 
 from fastapi import HTTPException, status
 from sqlalchemy import select
+from sqlalchemy.orm import load_only
 
 from app.core.transactions import transaction
 from app.modules.compromisos.detector_multiformato import (
@@ -52,6 +53,14 @@ from app.modules.compromisos.triada_motores import (
 )
 
 
+def _porcentaje_triage(valor: Any) -> float:
+    try:
+        porcentaje = float(valor or 0)
+    except (TypeError, ValueError):
+        return 0.0
+    return porcentaje if 0 <= porcentaje <= 100 else 0.0
+
+
 class CompromisosService:
     def __init__(self, repository: CompromisosRepository) -> None:
         self.repo = repository
@@ -87,6 +96,8 @@ class CompromisosService:
         vigencia: int | None = None,
         entidad: str | None = None,
         fuente: str | None = None,
+        dimension: str | None = None,
+        periodo_gobierno: str | None = None,
     ) -> dict[str, Any]:
         """Summarize persisted PAS rows and identify absent strategic/financial feeds."""
         metas_pdd: list[MetaEstrategicaTriada] = []
@@ -104,19 +115,47 @@ class CompromisosService:
                 codigo_meta_pdd=a.compromiso_pas_codigo,
                 codigo_bpim=a.codigo_bpim,
                 descripcion_actividad=a.descripcion_actividad,
-                avance_operativo_fisico_pct=float(a.porcentaje_avance_fisico or 0),
+                avance_operativo_fisico_pct=_porcentaje_triage(a.porcentaje_avance_fisico),
                 formato_origen="POLIS_PAS_PERSISTIDO",
                 porcentaje_verbos_fuertes_dnp=100.0 if a.verbo_infinitivo else 0.0,
             )
             for a in actividades_db
         ]
         ejecuciones: list[EjecucionPresupuestalTriada] = []
-        ingesta_stmt = select(RegistroTriadaNormalizado)
+        ingesta_stmt = select(RegistroTriadaNormalizado).options(
+            load_only(
+                RegistroTriadaNormalizado.archivo_id,
+                RegistroTriadaNormalizado.motor_destino,
+                RegistroTriadaNormalizado.vigencia,
+                RegistroTriadaNormalizado.entidad_normalizada,
+                RegistroTriadaNormalizado.linea_estrategica,
+                RegistroTriadaNormalizado.codigo_meta_pdd,
+                RegistroTriadaNormalizado.codigo_bpim,
+                RegistroTriadaNormalizado.indicador,
+                RegistroTriadaNormalizado.descripcion_actividad,
+                RegistroTriadaNormalizado.verbo_fuerte_dnp,
+                RegistroTriadaNormalizado.avance_fisico_pct,
+                RegistroTriadaNormalizado.avance_estrategico_pct,
+                RegistroTriadaNormalizado.apropiacion_definitiva_cop,
+                RegistroTriadaNormalizado.cdp_cop,
+                RegistroTriadaNormalizado.compromisos_rp_cop,
+                RegistroTriadaNormalizado.obligaciones_cop,
+                RegistroTriadaNormalizado.pagos_tesoreria_cop,
+            )
+        )
         if vigencia is not None:
             ingesta_stmt = ingesta_stmt.where(RegistroTriadaNormalizado.vigencia == vigencia)
         if entidad:
             ingesta_stmt = ingesta_stmt.where(
                 RegistroTriadaNormalizado.entidad_normalizada.ilike(f"%{entidad}%")
+            )
+        if dimension:
+            ingesta_stmt = ingesta_stmt.where(
+                RegistroTriadaNormalizado.dimensiones_seguridad_humana.contains([dimension])
+            )
+        if periodo_gobierno:
+            ingesta_stmt = ingesta_stmt.where(
+                RegistroTriadaNormalizado.periodo_gobierno == periodo_gobierno
             )
         if periodo:
             ingesta_stmt = ingesta_stmt.where(
@@ -138,7 +177,9 @@ class CompromisosService:
                 codigo_meta_pdd=r.codigo_meta_pdd or "",
                 codigo_bpim=r.codigo_bpim or "",
                 indicador=r.indicador or "",
-                avance_estrategico_pct=float(r.avance_estrategico_pct or r.avance_fisico_pct or 0),
+                avance_estrategico_pct=_porcentaje_triage(
+                    r.avance_estrategico_pct or r.avance_fisico_pct
+                ),
             )
             for r in pdd_rows
         )
@@ -149,7 +190,7 @@ class CompromisosService:
                 codigo_meta_pdd=r.codigo_meta_pdd or "",
                 codigo_bpim=r.codigo_bpim or "",
                 descripcion_actividad=r.descripcion_actividad or "",
-                avance_operativo_fisico_pct=float(r.avance_fisico_pct or 0),
+                avance_operativo_fisico_pct=_porcentaje_triage(r.avance_fisico_pct),
                 formato_origen="INGESTA_BINARIA_PERSISTIDA",
                 porcentaje_verbos_fuertes_dnp=100 if r.verbo_fuerte_dnp else 0,
             )
@@ -160,11 +201,11 @@ class CompromisosService:
                 entidad=r.entidad_normalizada or "",
                 linea_estrategica=r.linea_estrategica or "",
                 codigo_bpim=r.codigo_bpim or "",
-                apropiacion_definitiva_cop=float(r.apropiacion_definitiva_cop or 0),
-                cdp_acumulado_cop=float(r.cdp_cop or 0),
-                compromisos_rp_cop=float(r.compromisos_rp_cop or 0),
-                obligaciones_cop=float(r.obligaciones_cop or 0),
-                pagos_tesoreria_cop=float(r.pagos_tesoreria_cop or 0),
+                apropiacion_definitiva_cop=max(0.0, float(r.apropiacion_definitiva_cop or 0)),
+                cdp_acumulado_cop=max(0.0, float(r.cdp_cop or 0)),
+                compromisos_rp_cop=max(0.0, float(r.compromisos_rp_cop or 0)),
+                obligaciones_cop=max(0.0, float(r.obligaciones_cop or 0)),
+                pagos_tesoreria_cop=max(0.0, float(r.pagos_tesoreria_cop or 0)),
             )
             for r in financial_rows
         )
@@ -176,12 +217,22 @@ class CompromisosService:
         for row in pa_rows:
             if row.vigencia in years:
                 years[row.vigencia] += 1
-        archivos_stmt = select(ArchivoPlanIngerido)
+        archivos_stmt = select(ArchivoPlanIngerido).options(
+            load_only(ArchivoPlanIngerido.perfil_detectado)
+        )
         if vigencia is not None:
             archivos_stmt = archivos_stmt.where(ArchivoPlanIngerido.vigencia == vigencia)
         if entidad:
             archivos_stmt = archivos_stmt.where(
                 ArchivoPlanIngerido.entidad_normalizada.ilike(f"%{entidad}%")
+            )
+        if dimension:
+            archivos_stmt = archivos_stmt.where(
+                ArchivoPlanIngerido.dimensiones_seguridad_humana.contains([dimension])
+            )
+        if periodo_gobierno:
+            archivos_stmt = archivos_stmt.where(
+                ArchivoPlanIngerido.periodo_gobierno == periodo_gobierno
             )
         if periodo:
             archivos_stmt = archivos_stmt.where(ArchivoPlanIngerido.vigencia.between(inicio, fin))
@@ -210,6 +261,8 @@ class CompromisosService:
                 "vigencia": vigencia,
                 "entidad": entidad,
                 "fuente": fuente,
+                "dimension": dimension,
+                "periodo": periodo_gobierno,
             },
             "motor_1_plan_desarrollo": {
                 "estado_fuente": "PERSISTENCIA_INGESTA_BINARIA"

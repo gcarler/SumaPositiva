@@ -23,6 +23,7 @@ from app.modules.compromisos.schemas import (
     EjecucionPresupuestalTriada,
     MetaEstrategicaTriada,
 )
+from app.modules.compromisos.taxonomia_seguridad import DIMENSIONES, PERIODOS, inferir_taxonomia
 from app.modules.compromisos.triada_motores import cruzar_tres_lecturas
 
 RAIZ_INGESTA = Path("/root/polis/data/planes_accion").resolve()
@@ -41,11 +42,34 @@ def _json_safe(value: Any) -> Any:
     return str(value)
 
 
-def _limpiar(valor: Any) -> str | None:
+def _limpiar(valor: Any, max_length: int | None = None) -> str | None:
     if valor is None:
         return None
     texto = str(valor).strip()
-    return texto or None
+    return texto[:max_length] if texto and max_length else texto or None
+
+
+def _numero_no_negativo(valor: Any) -> float:
+    try:
+        return max(0.0, float(valor or 0))
+    except (TypeError, ValueError):
+        return 0.0
+
+
+def _porcentaje(valor: Any) -> float:
+    try:
+        numero = float(valor or 0)
+    except (TypeError, ValueError):
+        return 0.0
+    return numero if 0 <= numero <= 100 else 0.0
+
+
+def _porcentaje_opcional(valor: Any) -> float | None:
+    try:
+        numero = float(valor) if valor is not None else None
+    except (TypeError, ValueError):
+        return None
+    return numero if numero is not None and 0 <= numero <= 100 else None
 
 
 def _datos_registro(
@@ -54,29 +78,30 @@ def _datos_registro(
     descripcion = _limpiar(fila.get("descripcion_actividad"))
     palabras = (descripcion or "").split(maxsplit=1)
     primera = palabras[0].strip(".,:;()[]{}") if palabras else ""
-    verbo = fila.get("verbo_detectado") or (primera.lower() if primera else None)
+    verbo = (fila.get("verbo_detectado") or (primera.lower() if primera else None) or "")[:50]
     return RegistroTriadaNormalizado(
         archivo_id=archivo_id,
         lote_id=lote_id,
         motor_destino=fila["motor_destino"],
         vigencia=archivo.vigencia,
         corte_periodo=archivo.corte,
-        entidad_normalizada=_limpiar(fila.get("entidad_normalizada")) or archivo.entidad,
+        entidad_normalizada=_limpiar(fila.get("entidad_normalizada"), 180)
+        or _limpiar(archivo.entidad, 180),
         linea_estrategica=_limpiar(fila.get("linea_estrategica")),
         codigo_meta_pdd=_limpiar(fila.get("codigo_meta_pdd")),
-        codigo_bpim=_limpiar(fila.get("codigo_bpim")),
+        codigo_bpim=_limpiar(fila.get("codigo_bpim"), 100),
         indicador=_limpiar(fila.get("indicador")),
         descripcion_actividad=descripcion,
         verbo_fuerte_dnp=fila.get("verbo_fuerte_dnp"),
         verbo_detectado=verbo,
         meta_programada_anual=fila.get("meta_programada_anual"),
         meta_ejecutada_anual=fila.get("meta_ejecutada_anual"),
-        avance_t1=fila.get("avance_t1"),
-        avance_t2=fila.get("avance_t2"),
-        avance_t3=fila.get("avance_t3"),
-        avance_t4=fila.get("avance_t4"),
-        avance_fisico_pct=fila.get("avance_fisico_pct"),
-        avance_estrategico_pct=fila.get("avance_estrategico_pct"),
+        avance_t1=_porcentaje_opcional(fila.get("avance_t1")),
+        avance_t2=_porcentaje_opcional(fila.get("avance_t2")),
+        avance_t3=_porcentaje_opcional(fila.get("avance_t3")),
+        avance_t4=_porcentaje_opcional(fila.get("avance_t4")),
+        avance_fisico_pct=_porcentaje_opcional(fila.get("avance_fisico_pct")),
+        avance_estrategico_pct=_porcentaje_opcional(fila.get("avance_estrategico_pct")),
         apropiacion_definitiva_cop=fila.get("apropiacion_definitiva_cop")
         or fila.get("apropiacion_inicial_cop"),
         cdp_cop=fila.get("cdp_cop"),
@@ -85,7 +110,16 @@ def _datos_registro(
         pagos_tesoreria_cop=fila.get("pagos_tesoreria_cop"),
         hoja_origen=fila.get("hoja_origen"),
         fila_origen_num=fila.get("fila_origen_num"),
-        datos_origen=_json_safe(fila.get("datos_origen") or {}),
+        datos_origen=_json_safe(
+            {
+                **(fila.get("datos_origen") or {}),
+                "_dimensiones_seguridad": archivo.metadatos_fuente or {},
+            }
+        ),
+        dimensiones_seguridad_humana=(archivo.metadatos_fuente or {}).get(
+            "dimensiones_seguridad_humana", []
+        ),
+        periodo_gobierno=(archivo.metadatos_fuente or {}).get("periodo_gobierno"),
     )
 
 
@@ -95,6 +129,8 @@ def _registro_dict(row: RegistroTriadaNormalizado) -> dict[str, Any]:
         "motor": row.motor_destino,
         "vigencia": row.vigencia,
         "corte_periodo": row.corte_periodo,
+        "dimensiones_seguridad_humana": row.dimensiones_seguridad_humana,
+        "periodo_gobierno": row.periodo_gobierno,
         "entidad": row.entidad_normalizada,
         "linea_estrategica": row.linea_estrategica,
         "codigo_meta_pdd": row.codigo_meta_pdd,
@@ -150,6 +186,7 @@ class IngestaMasivaService:
         vigencia: int | None = None,
         corte: str | None = None,
         persistir: bool = True,
+        metadatos_por_archivo: dict[str, dict[str, Any]] | None = None,
     ) -> dict[str, Any]:
         if not archivos:
             raise HTTPException(
@@ -159,7 +196,10 @@ class IngestaMasivaService:
         errores = []
         for nombre, raw in archivos:
             try:
-                leidos.extend(self.ingestor.leer_lote(nombre, raw, vigencia, corte))
+                metadatos = (metadatos_por_archivo or {}).get(nombre) or inferir_taxonomia(
+                    nombre.rsplit("!/", 1)[0], nombre.rsplit("!/", 1)[-1]
+                )
+                leidos.extend(self.ingestor.leer_lote(nombre, raw, vigencia, corte, metadatos))
             except Exception as exc:
                 errores.append({"nombre_archivo": nombre, "error": str(exc)[:500]})
         if not leidos and not errores:
@@ -211,7 +251,7 @@ class IngestaMasivaService:
                                 confianza_deteccion=book.confianza,
                                 vigencia=book.vigencia,
                                 corte_periodo=book.corte,
-                                entidad_normalizada=book.entidad,
+                                entidad_normalizada=_limpiar(book.entidad, 180),
                                 hojas_analizadas=[],
                                 mapeo_columnas={},
                                 filas_extraidas=0,
@@ -219,7 +259,14 @@ class IngestaMasivaService:
                                     "deduplicado": True,
                                     "archivo_original_id": str(existente.id),
                                     "lote_original_id": str(existente.lote_id),
+                                    **(book.metadatos_fuente or {}),
                                 },
+                                dimensiones_seguridad_humana=(book.metadatos_fuente or {}).get(
+                                    "dimensiones_seguridad_humana", []
+                                ),
+                                periodo_gobierno=(book.metadatos_fuente or {}).get(
+                                    "periodo_gobierno"
+                                ),
                             )
                         )
                         continue
@@ -245,11 +292,18 @@ class IngestaMasivaService:
                         confianza_deteccion=book.confianza,
                         vigencia=book.vigencia,
                         corte_periodo=book.corte,
-                        entidad_normalizada=book.entidad,
+                        entidad_normalizada=_limpiar(book.entidad, 180),
                         hojas_analizadas=metadata_hojas,
                         mapeo_columnas=mapeos,
                         filas_extraidas=sum(len(sheet.filas) for sheet in book.hojas),
-                        metadatos={"clasificacion_motores": dict(motores_book)},
+                        metadatos={
+                            "clasificacion_motores": dict(motores_book),
+                            **(book.metadatos_fuente or {}),
+                        },
+                        dimensiones_seguridad_humana=(book.metadatos_fuente or {}).get(
+                            "dimensiones_seguridad_humana", []
+                        ),
+                        periodo_gobierno=(book.metadatos_fuente or {}).get("periodo_gobierno"),
                     )
                     self.session.add(dbfile)
                     await self.session.flush()
@@ -323,9 +377,9 @@ class IngestaMasivaService:
                         **base,
                         codigo_meta_pdd=str(row.get("codigo_meta_pdd") or ""),
                         indicador=str(row.get("indicador") or ""),
-                        avance_estrategico_pct=row.get("avance_estrategico_pct")
-                        or row.get("avance_fisico_pct")
-                        or 0,
+                        avance_estrategico_pct=_porcentaje(
+                            row.get("avance_estrategico_pct") or row.get("avance_fisico_pct")
+                        ),
                     )
                 )
             elif motor == "PLAN_ACCION":
@@ -334,7 +388,7 @@ class IngestaMasivaService:
                         **base,
                         codigo_meta_pdd=str(row.get("codigo_meta_pdd") or ""),
                         descripcion_actividad=str(row.get("descripcion_actividad") or ""),
-                        avance_operativo_fisico_pct=row.get("avance_fisico_pct") or 0,
+                        avance_operativo_fisico_pct=_porcentaje(row.get("avance_fisico_pct")),
                         formato_origen="INGESTA_BINARIA",
                         porcentaje_verbos_fuertes_dnp=100 if row.get("verbo_fuerte_dnp") else 0,
                     )
@@ -344,22 +398,26 @@ class IngestaMasivaService:
                     EjecucionPresupuestalTriada(
                         **base,
                         fuente=str(row.get("fuente_financiacion") or "RECURSOS_PROPIOS"),
-                        apropiacion_definitiva_cop=row.get("apropiacion_definitiva_cop")
-                        or row.get("apropiacion_inicial_cop")
-                        or 0,
-                        cdp_acumulado_cop=row.get("cdp_cop") or 0,
-                        compromisos_rp_cop=row.get("compromisos_rp_cop") or 0,
-                        obligaciones_cop=row.get("obligaciones_cop") or 0,
-                        pagos_tesoreria_cop=row.get("pagos_tesoreria_cop") or 0,
+                        apropiacion_definitiva_cop=_numero_no_negativo(
+                            row.get("apropiacion_definitiva_cop")
+                            or row.get("apropiacion_inicial_cop")
+                        ),
+                        cdp_acumulado_cop=_numero_no_negativo(row.get("cdp_cop")),
+                        compromisos_rp_cop=_numero_no_negativo(row.get("compromisos_rp_cop")),
+                        obligaciones_cop=_numero_no_negativo(row.get("obligaciones_cop")),
+                        pagos_tesoreria_cop=_numero_no_negativo(row.get("pagos_tesoreria_cop")),
                     )
                 )
         return cruzar_tres_lecturas(metas, actividades, ejecuciones)
 
     async def listar_lotes(
-        self, limite: int = 50, vigencia: int | None = None, entidad: str | None = None
+        self,
+        limite: int = 50,
+        vigencia: int | None = None,
+        entidad: str | None = None,
+        dimension: str | None = None,
+        periodo: str | None = None,
     ) -> dict[str, Any]:
-        stmt = select(LoteIngestaPlan).order_by(LoteIngestaPlan.creado_en.desc()).limit(limite)
-        lotes = list((await self.session.scalars(stmt)).all())
         archivo_stmt = select(ArchivoPlanIngerido)
         if vigencia:
             archivo_stmt = archivo_stmt.where(ArchivoPlanIngerido.vigencia == vigencia)
@@ -367,13 +425,24 @@ class IngestaMasivaService:
             archivo_stmt = archivo_stmt.where(
                 ArchivoPlanIngerido.entidad_normalizada.ilike(f"%{entidad}%")
             )
+        if dimension:
+            archivo_stmt = archivo_stmt.where(
+                ArchivoPlanIngerido.dimensiones_seguridad_humana.contains([dimension])
+            )
+        if periodo:
+            archivo_stmt = archivo_stmt.where(ArchivoPlanIngerido.periodo_gobierno == periodo)
         archivos = list(
             (
                 await self.session.scalars(
-                    archivo_stmt.order_by(ArchivoPlanIngerido.creado_en.desc()).limit(500)
+                    archivo_stmt.order_by(ArchivoPlanIngerido.creado_en.desc()).limit(2000)
                 )
             ).all()
         )
+        lote_ids = {archivo.lote_id for archivo in archivos}
+        stmt = select(LoteIngestaPlan).order_by(LoteIngestaPlan.creado_en.desc())
+        if dimension or periodo:
+            stmt = stmt.where(LoteIngestaPlan.id.in_(lote_ids)) if lote_ids else stmt.where(False)
+        lotes = list((await self.session.scalars(stmt.limit(limite))).all())
         return {
             "lotes": [
                 {
@@ -400,11 +469,20 @@ class IngestaMasivaService:
                     "entidad": x.entidad_normalizada,
                     "filas": x.filas_extraidas,
                     "hojas": x.hojas_analizadas,
+                    "dimensiones_seguridad_humana": x.dimensiones_seguridad_humana,
+                    "periodo_gobierno": x.periodo_gobierno,
                 }
                 for x in archivos
             ],
-            "cobertura_motores": await self._conteo_motores(),
-            "filtros": {"vigencia": vigencia, "entidad": entidad},
+            "cobertura_motores": await self._conteo_motores(
+                vigencia=vigencia, entidad=entidad, dimension=dimension, periodo=periodo
+            ),
+            "filtros": {
+                "vigencia": vigencia,
+                "entidad": entidad,
+                "dimension": dimension,
+                "periodo": periodo,
+            },
         }
 
     async def comparativa(
@@ -416,18 +494,44 @@ class IngestaMasivaService:
         motor: str | None = None,
         desde: int = 2016,
         hasta: int = 2026,
+        dimension: str | None = None,
+        periodo: str | None = None,
     ) -> dict[str, Any]:
-        stmt = select(RegistroTriadaNormalizado).where(
-            RegistroTriadaNormalizado.vigencia.between(desde, hasta)
-        )
+        filtros_sql = [RegistroTriadaNormalizado.vigencia.between(desde, hasta)]
         if entidad:
-            stmt = stmt.where(RegistroTriadaNormalizado.entidad_normalizada.ilike(f"%{entidad}%"))
+            filtros_sql.append(RegistroTriadaNormalizado.entidad_normalizada.ilike(f"%{entidad}%"))
         if linea:
-            stmt = stmt.where(RegistroTriadaNormalizado.linea_estrategica.ilike(f"%{linea}%"))
+            filtros_sql.append(RegistroTriadaNormalizado.linea_estrategica.ilike(f"%{linea}%"))
         if bpim:
-            stmt = stmt.where(RegistroTriadaNormalizado.codigo_bpim == bpim)
+            filtros_sql.append(RegistroTriadaNormalizado.codigo_bpim == bpim)
         if motor:
-            stmt = stmt.where(RegistroTriadaNormalizado.motor_destino == motor.upper())
+            filtros_sql.append(RegistroTriadaNormalizado.motor_destino == motor.upper())
+        if dimension:
+            filtros_sql.append(
+                RegistroTriadaNormalizado.dimensiones_seguridad_humana.contains([dimension])
+            )
+        if periodo:
+            filtros_sql.append(RegistroTriadaNormalizado.periodo_gobierno == periodo)
+        total_registros = await self.session.scalar(
+            select(func.count()).select_from(RegistroTriadaNormalizado).where(*filtros_sql)
+        )
+        serie_result = await self.session.execute(
+            select(
+                RegistroTriadaNormalizado.vigencia,
+                RegistroTriadaNormalizado.motor_destino,
+                func.count(),
+            )
+            .where(*filtros_sql)
+            .group_by(
+                RegistroTriadaNormalizado.vigencia,
+                RegistroTriadaNormalizado.motor_destino,
+            )
+        )
+        by_year: dict[str, dict[str, int]] = {}
+        for year, engine, count in serie_result.all():
+            values = by_year.setdefault(str(year), {name: 0 for name in MOTORES})
+            values[engine] = count
+        stmt = select(RegistroTriadaNormalizado).where(*filtros_sql)
         rows = list(
             (
                 await self.session.scalars(
@@ -439,10 +543,6 @@ class IngestaMasivaService:
             ).all()
         )
         serializados = [_registro_dict(row) for row in rows]
-        by_year: dict[str, dict[str, int]] = {}
-        for row in serializados:
-            year = by_year.setdefault(str(row["vigencia"]), {m: 0 for m in MOTORES})
-            year[row["motor"]] += 1
         grouped = self._cruzar_persistidos(rows)
         return {
             "filtros": {
@@ -452,19 +552,125 @@ class IngestaMasivaService:
                 "motor": motor,
                 "vigencia_desde": desde,
                 "vigencia_hasta": hasta,
+                "dimension": dimension,
+                "periodo": periodo,
             },
-            "total_registros": len(rows),
+            "total_registros": total_registros or 0,
+            "registros_retornados": len(rows),
+            "registros_truncados": (total_registros or 0) > len(rows),
+            "limite_registros": 5000,
+            "cruce_muestra_truncada": (total_registros or 0) > len(rows),
             "serie": by_year,
             "registros": serializados,
             "cruce_tres_lecturas": grouped,
         }
 
-    async def _conteo_motores(self) -> dict[str, int]:
-        result = await self.session.execute(
-            select(RegistroTriadaNormalizado.motor_destino, func.count()).group_by(
-                RegistroTriadaNormalizado.motor_destino
+    async def resumen_dimensiones(
+        self, dimension: str | None = None, periodo: str | None = None
+    ) -> dict[str, Any]:
+        salida = {}
+        for dimension_name in [dimension] if dimension else DIMENSIONES:
+            archivos_stmt = (
+                select(
+                    ArchivoPlanIngerido.periodo_gobierno,
+                    func.count(func.distinct(ArchivoPlanIngerido.hash_sha256)),
+                )
+                .where(
+                    ArchivoPlanIngerido.dimensiones_seguridad_humana.contains([dimension_name]),
+                    ArchivoPlanIngerido.metadatos["origen_drive"].astext
+                    == "GOOGLE_DRIVE_SECTOR_SEGURIDAD",
+                )
+                .group_by(ArchivoPlanIngerido.periodo_gobierno)
             )
-        )
+            archivos_por_periodo = dict((await self.session.execute(archivos_stmt)).all())
+            registros_stmt = (
+                select(
+                    RegistroTriadaNormalizado.periodo_gobierno,
+                    RegistroTriadaNormalizado.vigencia,
+                    RegistroTriadaNormalizado.motor_destino,
+                    func.count(),
+                )
+                .where(
+                    RegistroTriadaNormalizado.dimensiones_seguridad_humana.contains(
+                        [dimension_name]
+                    )
+                )
+                .group_by(
+                    RegistroTriadaNormalizado.periodo_gobierno,
+                    RegistroTriadaNormalizado.vigencia,
+                    RegistroTriadaNormalizado.motor_destino,
+                )
+            )
+            if periodo:
+                archivos_por_periodo = {
+                    key: value for key, value in archivos_por_periodo.items() if key == periodo
+                }
+                registros_stmt = registros_stmt.where(
+                    RegistroTriadaNormalizado.periodo_gobierno == periodo
+                )
+            conteos = list((await self.session.execute(registros_stmt)).all())
+            entidades_stmt = select(RegistroTriadaNormalizado.entidad_normalizada).where(
+                RegistroTriadaNormalizado.dimensiones_seguridad_humana.contains([dimension_name]),
+                RegistroTriadaNormalizado.entidad_normalizada.is_not(None),
+            )
+            if periodo:
+                entidades_stmt = entidades_stmt.where(
+                    RegistroTriadaNormalizado.periodo_gobierno == periodo
+                )
+            entidades = sorted(set((await self.session.scalars(entidades_stmt)).all()))
+            registros_por_motor = {
+                motor: sum(
+                    count for _period, _year, found_motor, count in conteos if found_motor == motor
+                )
+                for motor in MOTORES
+            }
+            registros_por_periodo = {
+                found_period: sum(count for p, _year, _motor, count in conteos if p == found_period)
+                for found_period in PERIODOS
+            }
+            salida[dimension_name] = {
+                "archivos_drive": sum(archivos_por_periodo.values()),
+                "registros_normalizados": sum(registros_por_motor.values()),
+                "registros_por_motor": registros_por_motor,
+                "entidades": entidades,
+                "cobertura_interanual": {
+                    str(year): sum(
+                        count
+                        for _period, found_year, _motor, count in conteos
+                        if found_year == year
+                    )
+                    for year in range(2016, 2027)
+                },
+                "periodos": {
+                    period: {
+                        "archivos": archivos_por_periodo.get(period, 0),
+                        "registros": registros_por_periodo.get(period, 0),
+                    }
+                    for period in PERIODOS
+                },
+            }
+        return salida
+
+    async def _conteo_motores(
+        self,
+        *,
+        vigencia: int | None = None,
+        entidad: str | None = None,
+        dimension: str | None = None,
+        periodo: str | None = None,
+    ) -> dict[str, int]:
+        stmt = select(RegistroTriadaNormalizado.motor_destino, func.count())
+        if vigencia:
+            stmt = stmt.where(RegistroTriadaNormalizado.vigencia == vigencia)
+        if entidad:
+            stmt = stmt.where(RegistroTriadaNormalizado.entidad_normalizada.ilike(f"%{entidad}%"))
+        if dimension:
+            stmt = stmt.where(
+                RegistroTriadaNormalizado.dimensiones_seguridad_humana.contains([dimension])
+            )
+        if periodo:
+            stmt = stmt.where(RegistroTriadaNormalizado.periodo_gobierno == periodo)
+        result = await self.session.execute(stmt.group_by(RegistroTriadaNormalizado.motor_destino))
         data = dict(result.all())
         return {motor: data.get(motor, 0) for motor in MOTORES}
 

@@ -4,6 +4,7 @@ from typing import Annotated
 from fastapi import APIRouter, Body, Depends, File, Form, Query, UploadFile, status
 
 from app.core.database import SessionDependency
+from app.modules.compromisos.ingesta_masiva_excel import detectar_extension_archivo
 from app.modules.compromisos.ingesta_masiva_service import RAIZ_INGESTA, IngestaMasivaService
 from app.modules.compromisos.repository import CompromisosRepository
 from app.modules.compromisos.schemas import (
@@ -27,6 +28,7 @@ from app.modules.compromisos.schemas import (
     ValidarRedaccionSolicitud,
 )
 from app.modules.compromisos.service import CompromisosService
+from app.modules.compromisos.taxonomia_seguridad import DIMENSIONES, PERIODOS
 from app.modules.identidad.deps import SujetoAutenticadoDep, requerir_permiso
 from app.modules.politicas.gating import verificar_escritura_fase
 
@@ -121,15 +123,23 @@ async def ingerir_directorio_triada(
         )
     if not candidate.is_dir():
         raise HTTPException(status_code=404, detail="El directorio autorizado no existe.")
-    paths = sorted(
-        p
-        for p in candidate.rglob("*")
-        if p.is_file()
-        and p.resolve().is_relative_to(RAIZ_INGESTA)
-        and p.suffix.lower() in {".xlsx", ".xls", ".csv", ".zip"}
-        and not p.name.startswith(("~$", "."))
-        and "__MACOSX" not in p.parts
-    )
+    paths = []
+    for path in candidate.rglob("*"):
+        if (
+            not path.is_file()
+            or not path.resolve().is_relative_to(RAIZ_INGESTA)
+            or path.name.startswith(("~$", "."))
+            or "__MACOSX" in path.parts
+        ):
+            continue
+        if path.suffix.lower() in {".xlsx", ".xls", ".csv", ".zip"}:
+            paths.append(path)
+        elif not path.suffix and detectar_extension_archivo(path.name, path.read_bytes()) in {
+            ".xlsx",
+            ".xls",
+        }:
+            paths.append(path)
+    paths.sort()
     if len(paths) > 200:
         raise HTTPException(
             status_code=413, detail="El directorio supera el máximo de 200 archivos."
@@ -149,8 +159,12 @@ async def listar_lotes_triada(
     limite: int = Query(50, ge=1, le=200),
     vigencia: int | None = Query(None, ge=2016, le=2027),
     entidad: str | None = Query(None, max_length=180),
+    dimension: str | None = Query(None, max_length=120),
+    periodo: str | None = Query(None, max_length=40),
 ):
-    return await IngestaMasivaService(session).listar_lotes(limite, vigencia, entidad)
+    return await IngestaMasivaService(session).listar_lotes(
+        limite, vigencia, entidad, dimension, periodo
+    )
 
 
 @router.get(
@@ -167,6 +181,8 @@ async def comparativa_interanual_triada(
     ),
     vigencia_desde: int = Query(2016, ge=2016, le=2027),
     vigencia_hasta: int = Query(2026, ge=2016, le=2027),
+    dimension: str | None = Query(None, max_length=120),
+    periodo: str | None = Query(None, max_length=40),
 ):
     if vigencia_desde > vigencia_hasta:
         from fastapi import HTTPException
@@ -181,6 +197,8 @@ async def comparativa_interanual_triada(
         motor=motor,
         desde=vigencia_desde,
         hasta=vigencia_hasta,
+        dimension=dimension,
+        periodo=periodo,
     )
 
 
@@ -195,9 +213,27 @@ async def obtener_resumen_triada_motores(
     vigencia: int | None = Query(None, ge=2016, le=2027),
     entidad: str | None = Query(None, max_length=180),
     fuente: str | None = Query(None, max_length=40),
+    dimension: str | None = Query(None, max_length=120),
+    periodo: str | None = Query(None, max_length=40),
 ):
     """Consulta pública, agregada y de solo lectura para transparencia activa."""
-    return await service.obtener_resumen_triada(cuatrienio, vigencia, entidad, fuente)
+    from fastapi import HTTPException
+
+    if dimension and dimension not in DIMENSIONES:
+        raise HTTPException(status_code=422, detail="Dimensión de seguridad humana no reconocida.")
+    if periodo and periodo not in PERIODOS:
+        raise HTTPException(status_code=422, detail="Periodo de gobierno no reconocido.")
+    resumen = await service.obtener_resumen_triada(
+        cuatrienio, vigencia, entidad, fuente, dimension, periodo
+    )
+    session = getattr(service.repo, "session", None)
+    if session is not None:
+        resumen["resumen_dimensiones_seguridad"] = await IngestaMasivaService(
+            session
+        ).resumen_dimensiones(dimension, periodo)
+    resumen["filtros"]["dimension"] = dimension
+    resumen["filtros"]["periodo"] = periodo
+    return resumen
 
 
 @router.post(

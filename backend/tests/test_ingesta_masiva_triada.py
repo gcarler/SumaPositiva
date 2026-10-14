@@ -5,6 +5,7 @@ from __future__ import annotations
 import asyncio
 import hashlib
 import io
+import json
 import uuid
 import zipfile
 from pathlib import Path
@@ -21,15 +22,21 @@ from app.main import create_app
 from app.modules.compromisos.ingesta_masiva_excel import (
     IngestorBinarioTriada,
     buscar_fila_encabezado,
+    detectar_extension_archivo,
 )
-from app.modules.compromisos.ingesta_masiva_service import IngestaMasivaService
+from app.modules.compromisos.ingesta_masiva_service import (
+    IngestaMasivaService,
+    _porcentaje_opcional,
+)
 from app.modules.compromisos.models import (
     ArchivoPlanIngerido,
     LoteIngestaPlan,
     RegistroTriadaNormalizado,
 )
+from app.modules.compromisos.taxonomia_seguridad import DIMENSIONES, inferir_taxonomia
 from app.modules.identidad.deps import obtener_sujeto_autenticado
 from app.modules.identidad.schemas import SujetoAutenticadoContexto
+from scripts.sincronizar_drive_planes_accion import agrupar_por_sha256
 
 FIXTURES = Path(__file__).parent / "fixtures" / "triada"
 
@@ -144,14 +151,20 @@ def test_zip_processes_mixed_binary_members_and_skips_macos_metadata():
     archive = io.BytesIO()
     with zipfile.ZipFile(archive, "w", zipfile.ZIP_DEFLATED) as bundle:
         bundle.writestr(
-            "2016/Plan_Accion_2016_DADIS.xls",
+            "1. Seguridad Personal/2016/Plan_Accion_2016_DADIS.xls",
             (FIXTURES / "plan_accion_2016_dadis.xls").read_bytes(),
         )
-        bundle.writestr("2026/Plan_Accion_2026_DADIS.xlsx", _xlsx_multimotor())
+        bundle.writestr(
+            "8. Crisis/Periodo 2024 - 2027/2026/Plan_Accion_2026_DADIS.xlsx", _xlsx_multimotor()
+        )
         bundle.writestr("__MACOSX/._junk.csv", b"junk")
     result = IngestorBinarioTriada().leer_lote("planes.zip", archive.getvalue())
     assert len(result) == 2
     assert {book.vigencia for book in result} == {2016, 2026}
+    assert result[0].metadatos_fuente["dimensiones_seguridad_humana"] == ["1. Seguridad Personal"]
+    assert result[0].metadatos_fuente["periodo_gobierno"] == "ANTES_2020"
+    assert result[1].metadatos_fuente["dimensiones_seguridad_humana"] == ["8. Crisis"]
+    assert result[1].metadatos_fuente["periodo_gobierno"] == "2024_2027"
 
 
 def test_header_finder_ignores_titles_and_empty_rows():
@@ -165,6 +178,119 @@ def test_header_finder_ignores_titles_and_empty_rows():
     )
     assert row == 3
     assert set(mapping) == {"entidad", "codigo_bpim", "descripcion_actividad"}
+
+
+def test_drive_taxonomy_infers_all_eight_dimensions_and_three_periods():
+    for index, dimension in enumerate(DIMENSIONES, 1):
+        year = 2018 if index == 1 else 2021 if index == 2 else 2025
+        tags = inferir_taxonomia(f"{dimension}/Planes de acción/{year}/archivo.xlsx")
+        assert tags["dimensiones_seguridad_humana"] == [dimension]
+        assert tags["periodo_gobierno"] == (
+            "ANTES_2020" if year < 2020 else "2020_2023" if year < 2024 else "2024_2027"
+        )
+    assert (
+        inferir_taxonomia("Periodo Antes de 2020/2019/archivo.xlsx")["periodo_gobierno"]
+        == "ANTES_2020"
+    )
+    assert (
+        inferir_taxonomia("Periodo 2020 - 2023/2022/archivo.xlsx")["periodo_gobierno"]
+        == "2020_2023"
+    )
+    assert (
+        inferir_taxonomia("Periodo 2024 - 2027/2026/archivo.xlsx")["periodo_gobierno"]
+        == "2024_2027"
+    )
+    filename_prefix = inferir_taxonomia(
+        "Periodo 2020 - 2023/2023/Corte Junio/1. Seguimiento plan.xlsx"
+    )
+    assert filename_prefix["dimensiones_seguridad_humana"] == []
+    assert filename_prefix["periodo_gobierno"] == "2020_2023"
+    quarter_folder = inferir_taxonomia(
+        "Periodo 2024 - 2027/Planes de Acción/2024/1. Enero - Marzo/archivo.xls"
+    )
+    assert quarter_folder["dimensiones_seguridad_humana"] == []
+    assert quarter_folder["periodo_gobierno"] == "2024_2027"
+
+
+def test_drive_catalog_entries_keep_ids_paths_tags_and_hashes():
+    entry = {
+        "id": "drive-id",
+        "name": "Plan 2025 Microsoft",
+        "path": "8. Crisis/Planes de acción/2025/Plan 2025 Microsoft",
+        "raw_label": "Microsoft Excel",
+        "is_folder": False,
+        "sha256": "a" * 64,
+    }
+    from app.modules.compromisos.taxonomia_seguridad import enriquecer_entrada_catalogo
+
+    enriched = enriquecer_entrada_catalogo(entry)
+    assert enriched["dimensiones_seguridad_humana"] == ["8. Crisis"]
+    assert enriched["periodo_gobierno"] == "2024_2027"
+    assert enriched["rutas_drive"] == [entry["path"]]
+    assert enriched["drive_file_ids"] == ["drive-id"]
+    assert enriched["sha256"] == "a" * 64
+
+
+def test_drive_inventory_dimension_and_period_folder_counts_match_master_tree():
+    catalog_path = (
+        Path(__file__).resolve().parents[2]
+        / "data/planes_accion/drive_sector_seguridad/catalogo_drive_1383.json"
+    )
+    entries = json.loads(catalog_path.read_text(encoding="utf-8"))
+    roots = [entry["path"].split("/", 1)[0] for entry in entries]
+    counts = {root: roots.count(root) for root in set(roots)}
+    assert [counts[dimension] for dimension in DIMENSIONES] == [89, 140, 157, 80, 68, 88, 109, 93]
+    assert counts["Periodo Antes de 2020"] == 61
+    assert counts["Periodo 2020 - 2023"] == 249
+    assert counts["Periodo 2024 - 2027"] == 249
+
+
+def test_drive_sync_merges_dimensions_and_paths_for_identical_bytes():
+    rows = agrupar_por_sha256(
+        [
+            {
+                "sha256": "f" * 64,
+                "estado_descarga": "descargado",
+                "dimensiones_seguridad_humana": ["1. Seguridad Personal"],
+                "rutas_drive": ["1. Seguridad Personal/PA.xlsx"],
+                "drive_file_ids": ["drive-1"],
+            },
+            {
+                "sha256": "f" * 64,
+                "estado_descarga": "descargado",
+                "dimensiones_seguridad_humana": ["8. Crisis"],
+                "rutas_drive": ["8. Crisis/PA.xlsx"],
+                "drive_file_ids": ["drive-2"],
+            },
+        ]
+    )
+    assert len(rows) == 1
+    assert rows[0]["dimensiones_seguridad_humana"] == ["1. Seguridad Personal", "8. Crisis"]
+    assert rows[0]["drive_file_ids"] == ["drive-1", "drive-2"]
+    assert rows[0]["rutas_drive"] == ["1. Seguridad Personal/PA.xlsx", "8. Crisis/PA.xlsx"]
+
+
+def test_magic_bytes_detect_excel_even_without_filename_extension():
+    xlsx = _xlsx_multimotor()
+    prefixed_xlsx = b"prefix123456" + xlsx
+    xls = (FIXTURES / "plan_accion_2016_dadis.xls").read_bytes()
+    assert detectar_extension_archivo("Plan de Acción Microsoft", xlsx) == ".xlsx"
+    assert detectar_extension_archivo("Plan de Acción Microsoft", prefixed_xlsx) == ".xlsx"
+    assert detectar_extension_archivo("Plan de Acción Microsoft", xls) == ".xls"
+    assert (
+        IngestorBinarioTriada().leer_lote("Plan de Acción Microsoft", xlsx)[0].extension == "xlsx"
+    )
+    assert (
+        IngestorBinarioTriada().leer_lote("Plan de Acción Microsoft", prefixed_xlsx)[0].extension
+        == "xlsx"
+    )
+    assert IngestorBinarioTriada().leer_lote("Plan de Acción Microsoft", xls)[0].extension == "xls"
+
+
+def test_invalid_percentage_values_are_omitted_instead_of_overflowing_numeric_columns():
+    assert _porcentaje_opcional(65.25) == 65.25
+    assert _porcentaje_opcional(5_000_000) is None
+    assert _porcentaje_opcional(-1) is None
 
 
 def test_zip_rejects_archive_over_expanded_size_limit():
@@ -253,7 +379,19 @@ def test_service_persists_rows_and_deduplicates_binary_hash(database_url):
             service = IngestaMasivaService(session)
             first = await service.ingerir(
                 [("Plan_Accion_2026_DADIS.xlsx", payload)],
-                origen="UPLOAD_ARCHIVO",
+                origen="GOOGLE_DRIVE_SECTOR_SEGURIDAD",
+                metadatos_por_archivo={
+                    "Plan_Accion_2026_DADIS.xlsx": {
+                        "dimensiones_seguridad_humana": ["1. Seguridad Personal", "8. Crisis"],
+                        "periodo_gobierno": "2024_2027",
+                        "rutas_drive": [
+                            "1. Seguridad Personal/2026/PA.xlsx",
+                            "8. Crisis/2026/PA.xlsx",
+                        ],
+                        "drive_file_ids": ["drive-a", "drive-b"],
+                        "origen_drive": "GOOGLE_DRIVE_SECTOR_SEGURIDAD",
+                    }
+                },
             )
         async with sessions() as session:
             lot = await session.scalar(
@@ -271,12 +409,28 @@ def test_service_persists_rows_and_deduplicates_binary_hash(database_url):
             # The mixed 2016 style row and the consolidated PA row can be routed
             # into more than one engine where semantic columns overlap.
             assert len(rows) == 4
+            assert rows[0].periodo_gobierno == "2024_2027"
+            assert rows[0].dimensiones_seguridad_humana == ["1. Seguridad Personal", "8. Crisis"]
+            assert rows[0].datos_origen["_dimensiones_seguridad"]["drive_file_ids"] == [
+                "drive-a",
+                "drive-b",
+            ]
             assert lot.resumen_motores == {
                 "PLAN_DESARROLLO": 2,
                 "PLAN_ACCION": 1,
                 "INVERSION_PRESUPUESTAL": 1,
             }
             assert len(first["cruce_tres_lecturas"]["cruces"]) == 1
+            filtered = await IngestaMasivaService(session).comparativa(
+                dimension="8. Crisis", periodo="2024_2027", desde=2026, hasta=2026
+            )
+            assert filtered["total_registros"] == 4
+            assert filtered["filtros"]["dimension"] == "8. Crisis"
+            by_dimension = await IngestaMasivaService(session).resumen_dimensiones(
+                "1. Seguridad Personal", "2024_2027"
+            )
+            assert by_dimension["1. Seguridad Personal"]["archivos_drive"] == 1
+            assert by_dimension["1. Seguridad Personal"]["registros_normalizados"] == 4
         async with sessions() as session:
             duplicate = await IngestaMasivaService(session).ingerir(
                 [("Plan_Accion_2026_DADIS.xlsx", payload)],
@@ -331,7 +485,11 @@ def test_http_upload_authorized_persists_and_returns_tripartite_cross(database_u
             response = client.post(
                 "/api/v1/compromisos/triada/ingerir-archivos",
                 files={
-                    "files": ("Plan_Accion_2026_DADIS.xlsx", payload, "application/octet-stream")
+                    "files": (
+                        "1. Seguridad Personal/2026/Plan_Accion_2026_DADIS.xlsx",
+                        payload,
+                        "application/octet-stream",
+                    )
                 },
                 data={"persistir": "true"},
             )
@@ -345,6 +503,32 @@ def test_http_upload_authorized_persists_and_returns_tripartite_cross(database_u
             }
             assert body["cruce_tres_lecturas"]["total_cruces"] == 1
             assert body["comparativa_interanual_2016_2026"]["2026"]["PLAN_ACCION"] == 1
+            comparison = client.get(
+                "/api/v1/compromisos/triada/comparativa-interanual",
+                params={
+                    "dimension": "1. Seguridad Personal",
+                    "periodo": "2024_2027",
+                    "vigencia_desde": 2026,
+                    "vigencia_hasta": 2026,
+                },
+            )
+            assert comparison.status_code == 200, comparison.text
+            assert comparison.json()["total_registros"] == 4
+            lots = client.get(
+                "/api/v1/compromisos/triada/lotes",
+                params={"dimension": "1. Seguridad Personal", "periodo": "2024_2027"},
+            )
+            assert lots.status_code == 200, lots.text
+            assert len(lots.json()["archivos"]) == 1
+            dimension_summary = client.get(
+                "/api/v1/compromisos/triada/resumen",
+                params={"dimension": "1. Seguridad Personal", "periodo": "2024_2027"},
+            )
+            assert dimension_summary.status_code == 200, dimension_summary.text
+            dimension_data = dimension_summary.json()["resumen_dimensiones_seguridad"]
+            assert list(dimension_data) == ["1. Seguridad Personal"]
+            assert dimension_data["1. Seguridad Personal"]["archivos_drive"] == 0
+            assert dimension_data["1. Seguridad Personal"]["registros_normalizados"] == 4
 
             archive_payload = io.BytesIO()
             with zipfile.ZipFile(archive_payload, "w", zipfile.ZIP_DEFLATED) as archive:
@@ -407,6 +591,7 @@ def test_http_directory_ingest_reads_only_workspace_subdirectory(database_url):
     try:
         with TemporaryDirectory(prefix="triada-test-", dir=base) as directory:
             (Path(directory) / "PA_2026_DADIS.xlsx").write_bytes(_xlsx_multimotor())
+            (Path(directory) / "PA_2026_DADIS_sin_extension").write_bytes(_xlsx_multimotor())
             with TestClient(app) as client:
                 response = client.post(
                     "/api/v1/compromisos/triada/ingerir-directorio",
@@ -417,7 +602,7 @@ def test_http_directory_ingest_reads_only_workspace_subdirectory(database_url):
                     data={"subdirectorio": "../"},
                 )
         assert response.status_code == 201, response.text
-        assert response.json()["archivos_procesados"] == 1
+        assert response.json()["archivos_procesados"] == 2
         assert response.json()["persistido"] is False
         assert traversal.status_code == 400
     finally:

@@ -419,3 +419,4 @@ class ResumenTriadaRespuesta(BaseModel):
     perfiles_formato_excel: list[dict[str, Any]]
     catalogo_transparencia_cartagena: dict[str, Any]
     ingesta_masiva: dict[str, Any] = Field(default_factory=dict)
+    resumen_dimensiones_seguridad: dict[str, Any] = Field(default_factory=dict)

@@ -199,6 +199,12 @@ class ArchivoPlanIngerido(Base):
     __table_args__ = (
         Index("idx_archivos_plan_hash", "hash_sha256"),
         Index("idx_archivos_plan_entidad", "entidad_normalizada"),
+        Index("idx_archivos_plan_ingeridos_periodo_gobierno", "periodo_gobierno"),
+        Index(
+            "idx_archivos_plan_ingeridos_dimensiones_gin",
+            "dimensiones_seguridad_humana",
+            postgresql_using="gin",
+        ),
         {"schema": "seguimiento"},
     )
 
@@ -215,6 +221,10 @@ class ArchivoPlanIngerido(Base):
     confianza_deteccion: Mapped[float] = mapped_column(Numeric(5, 4), nullable=False)
     vigencia: Mapped[int | None] = mapped_column(Integer)
     corte_periodo: Mapped[str] = mapped_column(String(20), nullable=False)
+    dimensiones_seguridad_humana: Mapped[list[str]] = mapped_column(
+        JSONB, nullable=False, server_default=text("'[]'::jsonb")
+    )
+    periodo_gobierno: Mapped[str | None] = mapped_column(String(20))
     entidad_normalizada: Mapped[str | None] = mapped_column(String(180))
     hojas_analizadas: Mapped[list[dict[str, Any]]] = mapped_column(
         JSONB, nullable=False, server_default=text("'[]'::jsonb")
@@ -239,6 +249,12 @@ class RegistroTriadaNormalizado(Base):
         Index("idx_registros_triada_entidad", "entidad_normalizada"),
         Index("idx_registros_triada_meta", "codigo_meta_pdd"),
         Index("idx_registros_triada_bpim", "codigo_bpim"),
+        Index("idx_registros_triada_normalizados_periodo_gobierno", "periodo_gobierno"),
+        Index(
+            "idx_registros_triada_normalizados_dimensiones_gin",
+            "dimensiones_seguridad_humana",
+            postgresql_using="gin",
+        ),
         {"schema": "seguimiento"},
     )
 
@@ -254,6 +270,10 @@ class RegistroTriadaNormalizado(Base):
     motor_destino: Mapped[str] = mapped_column(String(30), nullable=False)
     vigencia: Mapped[int | None] = mapped_column(Integer)
     corte_periodo: Mapped[str] = mapped_column(String(20), nullable=False)
+    dimensiones_seguridad_humana: Mapped[list[str]] = mapped_column(
+        JSONB, nullable=False, server_default=text("'[]'::jsonb")
+    )
+    periodo_gobierno: Mapped[str | None] = mapped_column(String(20))
     entidad_normalizada: Mapped[str | None] = mapped_column(String(180))
     linea_estrategica: Mapped[str | None] = mapped_column(Text)
     codigo_meta_pdd: Mapped[str | None] = mapped_column(Text)

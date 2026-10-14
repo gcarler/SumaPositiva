@@ -9,14 +9,39 @@ import re
 import unicodedata
 import zipfile
 from dataclasses import dataclass
+from itertools import islice
 from pathlib import PurePosixPath
 from typing import Any
+
+from app.modules.compromisos.taxonomia_seguridad import inferir_taxonomia
 
 MAX_ARCHIVOS = 200
 MAX_BYTES_ARCHIVO = 25 * 1024 * 1024
 MAX_BYTES_ZIP = 150 * 1024 * 1024
 MAX_FILAS = 250_000
 EXTENSIONES = {".xlsx", ".xls", ".csv", ".zip"}
+MAGIC_XLSX = b"PK\x03\x04"
+MAGIC_XLS = b"\xd0\xcf\x11\xe0\xa1\xb1\x1a\xe1"
+
+
+def detectar_extension_archivo(nombre: str, contenido: bytes) -> str:
+    extension = PurePosixPath(nombre).suffix.lower()
+    es_excel_zip = contenido.startswith(MAGIC_XLSX)
+    if not es_excel_zip:
+        try:
+            with zipfile.ZipFile(io.BytesIO(contenido)) as archivo_zip:
+                es_excel_zip = "xl/workbook.xml" in archivo_zip.namelist()
+        except (OSError, zipfile.BadZipFile):
+            es_excel_zip = False
+    if es_excel_zip and extension not in {".xlsx", ".zip"}:
+        return ".xlsx"
+    if es_excel_zip and extension == ".zip":
+        return ".xlsx"
+    if contenido.startswith(MAGIC_XLS):
+        return ".xls"
+    return extension
+
+
 VERBOS_DEBILES_DNP = {
     "apropiar",
     "asegurar",
@@ -236,8 +261,8 @@ def buscar_fila_encabezado(filas: list[list[Any]]) -> tuple[int | None, dict[str
 
 
 def _vigencia(texto: str, defecto: int | None) -> int | None:
-    match = re.search(r"(?:20)?(1[6-9]|2[0-7])", texto)
-    year = int(match.group()) if match else defecto
+    matches = re.findall(r"(?:20)?(1[6-9]|2[0-7])", texto)
+    year = int(matches[-1]) + 2000 if matches else defecto
     if year is not None and year < 100:
         year += 2000
     return year if year is not None and 2016 <= year <= 2027 else None
@@ -365,6 +390,7 @@ class ArchivoLeido:
     corte: str
     entidad: str | None
     hojas: list[HojaLeida]
+    metadatos_fuente: dict[str, Any] | None = None
     error: str | None = None
 
 
@@ -375,25 +401,30 @@ class IngestorBinarioTriada:
         contenido: bytes,
         vigencia_defecto: int | None = None,
         corte_defecto: str | None = None,
+        metadatos_fuente: dict[str, Any] | None = None,
     ) -> list[ArchivoLeido]:
         if len(contenido) > MAX_BYTES_ZIP:
             raise ValueError("El archivo supera el límite de 150 MiB.")
         if nombre.lower().endswith(".zip"):
-            return self._leer_zip(nombre, contenido, vigencia_defecto, corte_defecto)
-        return [self._leer_archivo(nombre, contenido, vigencia_defecto, corte_defecto)]
+            return self._leer_zip(
+                nombre, contenido, vigencia_defecto, corte_defecto, metadatos_fuente
+            )
+        return [
+            self._leer_archivo(nombre, contenido, vigencia_defecto, corte_defecto, metadatos_fuente)
+        ]
 
     def _leer_zip(
-        self, nombre: str, raw: bytes, vigencia: int | None, corte: str | None
+        self,
+        nombre: str,
+        raw: bytes,
+        vigencia: int | None,
+        corte: str | None,
+        metadatos_fuente: dict[str, Any] | None = None,
     ) -> list[ArchivoLeido]:
         resultado = []
         acumulado = 0
         with zipfile.ZipFile(io.BytesIO(raw)) as archivo_zip:
-            miembros = [
-                m
-                for m in archivo_zip.infolist()
-                if not m.is_dir()
-                and PurePosixPath(m.filename).suffix.lower() in EXTENSIONES - {".zip"}
-            ]
+            miembros = [m for m in archivo_zip.infolist() if not m.is_dir()]
             if len(miembros) > MAX_ARCHIVOS:
                 raise ValueError(f"El ZIP contiene más de {MAX_ARCHIVOS} archivos procesables.")
             for miembro in miembros:
@@ -404,17 +435,55 @@ class IngestorBinarioTriada:
                 if acumulado > MAX_BYTES_ZIP or miembro.file_size > MAX_BYTES_ARCHIVO:
                     raise ValueError("El ZIP excede los límites de tamaño descomprimido.")
                 payload = archivo_zip.read(miembro)
+                if PurePosixPath(miembro.filename).suffix.lower() not in EXTENSIONES - {".zip"}:
+                    if detectar_extension_archivo(miembro.filename, payload) not in {
+                        ".xlsx",
+                        ".xls",
+                    }:
+                        continue
+                metadatos_miembro = inferir_taxonomia(miembro.filename)
+                if metadatos_fuente:
+                    metadatos_miembro["dimensiones_seguridad_humana"] = list(
+                        dict.fromkeys(
+                            [
+                                *metadatos_fuente.get("dimensiones_seguridad_humana", []),
+                                *metadatos_miembro.get("dimensiones_seguridad_humana", []),
+                            ]
+                        )
+                    )
+                    metadatos_miembro["periodo_gobierno"] = metadatos_miembro.get(
+                        "periodo_gobierno"
+                    ) or metadatos_fuente.get("periodo_gobierno")
+                    metadatos_miembro["rutas_drive"] = list(
+                        dict.fromkeys(
+                            [
+                                *metadatos_fuente.get("rutas_drive", []),
+                                f"{nombre}!/{miembro.filename}",
+                            ]
+                        )
+                    )
                 resultado.append(
-                    self._leer_archivo(f"{nombre}!/{miembro.filename}", payload, vigencia, corte)
+                    self._leer_archivo(
+                        f"{nombre}!/{miembro.filename}",
+                        payload,
+                        vigencia,
+                        corte,
+                        metadatos_miembro,
+                    )
                 )
         if not resultado:
             raise ValueError("El ZIP no contiene libros .xlsx, .xls o .csv válidos.")
         return resultado
 
     def _leer_archivo(
-        self, nombre: str, raw: bytes, vigencia_defecto: int | None, corte_defecto: str | None
+        self,
+        nombre: str,
+        raw: bytes,
+        vigencia_defecto: int | None,
+        corte_defecto: str | None,
+        metadatos_fuente: dict[str, Any] | None = None,
     ) -> ArchivoLeido:
-        ext = PurePosixPath(nombre.split("!/")[-1]).suffix.lower().lstrip(".")
+        ext = detectar_extension_archivo(nombre.split("!/")[-1], raw).lstrip(".")
         if ext not in {"xlsx", "xls", "csv"}:
             raise ValueError(f"Formato no permitido: .{ext}")
         if len(raw) > MAX_BYTES_ARCHIVO:
@@ -433,12 +502,15 @@ class IngestorBinarioTriada:
             libro = load_workbook(io.BytesIO(raw), data_only=True, read_only=True)
             try:
                 for sheet in libro.worksheets[:50]:
-                    filas = [
-                        list(row)
-                        for row in sheet.iter_rows(
+                    iterator = sheet.iter_rows(values_only=True)
+                    limite_filas = (
+                        islice(iterator, MAX_FILAS)
+                        if sheet.max_row is None
+                        else sheet.iter_rows(
                             max_row=min(sheet.max_row, MAX_FILAS), values_only=True
                         )
-                    ]
+                    )
+                    filas = [list(row) for row in limite_filas]
                     hojas_crudas.append((sheet.title, filas))
             finally:
                 libro.close()
@@ -548,6 +620,10 @@ class IngestorBinarioTriada:
                     trimestre = [fila.get(f"avance_t{i}") for i in range(1, 5)]
                     nums = [v for v in trimestre if v is not None]
                     fila["avance_fisico_pct"] = sum(nums) / len(nums) if nums else None
+                if fila.get("avance_fisico_pct") is not None and not (
+                    0 <= fila["avance_fisico_pct"] <= 100
+                ):
+                    fila["avance_fisico_pct"] = None
                 motores = _clasificar(sheet_name, mapping, fila, nombre_corto)
                 if not motores:
                     continue
@@ -606,6 +682,7 @@ class IngestorBinarioTriada:
                 None,
             ),
             hojas,
+            metadatos_fuente or {},
         )
 
 
