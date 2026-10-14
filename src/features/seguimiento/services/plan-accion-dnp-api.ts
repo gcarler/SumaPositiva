@@ -1,0 +1,1145 @@
+import { apiFetch } from "@/core/http/api-client";
+import type { CompromisoInstitucional } from "../models/compromiso";
+import { COMPROMISOS_PAS_CANONICOS } from "../data/compromisos-pas.data";
+
+export type TipoMetaDNP = "META_PRODUCTO" | "META_GESTION" | "ACTIVIDAD";
+export type TipoActividadDNP = "NORMATIVA" | "ADMINISTRATIVA" | "DE_GESTION" | "LOGISTICA";
+export type CategoriaRecursosDNP = "INVERSION" | "FUNCIONAMIENTO" | "RECURSOS_GESTION";
+export type FuenteFinanciacionDNP =
+  | "RECURSOS_PROPIOS"
+  | "SGP"
+  | "REGALIAS"
+  | "CREDITO"
+  | "COFINANCIACION"
+  | "GASTOS_PERSONAL"
+  | "GASTOS_GENERALES"
+  | "TRANSFERENCIAS"
+  | "GESTION_NO_PRESUPUESTAL";
+
+export type EstadoAprobacionDNP =
+  | "EN_ELABORACION"
+  | "REVISION_PLANEACION"
+  | "APROBADO_CONSEJO_GOBIERNO"
+  | "PUBLICADO_LEY_1474";
+
+export interface ActividadPlanAccion {
+  id: string;
+  codigo: string;
+  vigencia: number;
+  compromiso_pas_codigo: string;
+  linea_estrategica_codigo: string;
+  programa_nombre: string;
+  entidad_responsable: string;
+  lider_responsable: string;
+  dependencias_articuladas: string[];
+  tipo_meta: TipoMetaDNP;
+  meta_producto_vigencia: string;
+  meta_valor_vigencia: number;
+  unidad_medida: string;
+  codigo_bpim: string;
+  proyecto_nombre: string;
+  objetivo_proyecto: string;
+  tipo_actividad: TipoActividadDNP;
+  descripcion_actividad: string;
+  verbo_infinitivo: string;
+  fecha_inicio: string;
+  fecha_terminacion: string;
+  periodicidad_seguimiento: string;
+  avance_t1: number;
+  avance_t2: number;
+  avance_t3: number;
+  avance_t4: number;
+  porcentaje_avance_fisico: number;
+  categoria_recursos: CategoriaRecursosDNP;
+  fuente_financiacion: FuenteFinanciacionDNP;
+  monto_programado_cop: number;
+  monto_ejecutado_cop: number;
+  estado_aprobacion: EstadoAprobacionDNP;
+  evidencia_soporte?: string | null;
+  metadatos?: Record<string, unknown>;
+  creado_en?: string;
+  actualizado_en?: string;
+}
+
+export interface ResumenEjecutivoPlanAccion {
+  total_actividades: number;
+  total_metas_producto: number;
+  total_metas_gestion: number;
+  total_actividades_tipo: number;
+  avance_fisico_promedio: number;
+  presupuesto_total_programado_cop: number;
+  presupuesto_total_ejecutado_cop: number;
+  porcentaje_ejecucion_financiera: number;
+  desglose_fuentes: Record<string, { programado: number; ejecutado: number }>;
+  desglose_tipo_actividad: Record<string, number>;
+  semaforo_alertas: {
+    en_meta: number;
+    alerta_preventiva: number;
+    rezago_critico: number;
+  };
+}
+
+export interface MatrizPlanAccionRespuesta {
+  resumen_ejecutivo: ResumenEjecutivoPlanAccion;
+  hoja_1_plan_accion: ActividadPlanAccion[];
+  hoja_2_plan_indicativo: CompromisoInstitucional[];
+  esContingencia?: boolean;
+}
+
+export interface ValidarRedaccionRespuesta {
+  es_valida: boolean;
+  verbo_detectado: string;
+  es_infinitivo: boolean;
+  es_verbo_debil_prohibido: boolean;
+  mensaje_dnp: string;
+  verbos_fuertes_sugeridos: string[];
+}
+
+export interface BancoConocimientoDNP {
+  marco_normativo: Array<{
+    norma: string;
+    titulo: string;
+    descripcion: string;
+    obligatoriedad: string;
+  }>;
+  encadenamiento_instrumentos: Array<{
+    instrumento: string;
+    etapa: string;
+    actividad_dnp: string;
+    producto_dnp: string;
+  }>;
+  ruta_metodologica_7_pasos: Array<{
+    paso: number;
+    nombre: string;
+    responsable: string;
+    descripcion: string;
+  }>;
+  pasos_diligenciamiento_matriz: Array<{
+    numero: string;
+    nombre: string;
+    campos: string[];
+    guia: string;
+  }>;
+  taxonomia_metas: Array<{
+    tipo: string;
+    nombre: string;
+    definicion: string;
+    ejemplo: string;
+  }>;
+  taxonomia_actividades: Array<{
+    tipo: string;
+    nombre: string;
+    descripcion: string;
+    ejemplos_verbos: string[];
+  }>;
+  regla_linguistica_dnp: {
+    fundamento: string;
+    regla_oro: string;
+    verbos_debiles_prohibidos: string[];
+    motivo_prohibicion: string;
+    catalogo_verbos_fuertes: Record<string, string[]>;
+  };
+  catalogo_fuentes_financiacion: Record<
+    string,
+    Array<{ codigo: string; nombre: string }>
+  >;
+  enlaces_oficiales: Array<{ titulo: string; url: string }>;
+}
+
+export interface FiltrosMatrizPlanAccion {
+  vigencia?: number;
+  entidad?: string;
+  linea_codigo?: string;
+  tipo_meta?: string;
+  tipo_actividad?: string;
+  categoria_recursos?: string;
+  fuente_financiacion?: string;
+  busqueda?: string;
+}
+
+// =============================================================================
+// CATÁLOGO CANÓNICO DE 12 ACTIVIDADES Y BANCO DE CONOCIMIENTO (FALLBACK)
+// =============================================================================
+
+export const VERBOS_DEBILES_PROHIBIDOS_DNP = [
+  "apropiar",
+  "asegurar",
+  "colaborar",
+  "consolidar",
+  "contribuir",
+  "desarrollar",
+  "integrar",
+  "fomentar",
+  "fortalecer",
+  "garantizar",
+  "implementar",
+  "impulsar",
+  "mejorar",
+  "movilizar",
+  "proponer",
+  "promover",
+];
+
+export const SUGERENCIAS_VERBOS_FUERTES: Record<string, string[]> = {
+  NORMATIVA: ["Adecuar", "Modificar", "Fijar", "Adoptar", "Eliminar", "Expedir", "Reglamentar", "Derogar"],
+  ADMINISTRATIVA: ["Firmar", "Diseñar", "Ajustar", "Analizar", "Verificar", "Suscribir", "Tramitar", "Auditar"],
+  DE_GESTION: ["Crear", "Identificar", "Expedir", "Ejecutar", "Concertar", "Gestionar", "Asignar", "Convocar"],
+  LOGISTICA: ["Notificar", "Colocar", "Verificar", "Instalar", "Dotar", "Distribuir", "Adecuar", "Suministrar"],
+};
+
+export const ACTIVIDADES_PA_CANONICAS: ActividadPlanAccion[] = [
+  {
+    id: "01927360-0001-7000-8000-000000000001",
+    codigo: "PA-2026-L01-01",
+    vigencia: 2026,
+    compromiso_pas_codigo: "PAS-SEC-01",
+    linea_estrategica_codigo: "LE-01",
+    programa_nombre: "Prevención de ESCNNA y Protección Integral de Niñez",
+    entidad_responsable: "Distriseguridad",
+    lider_responsable: "Director Técnico de Distriseguridad",
+    dependencias_articuladas: ["Secretaría del Interior", "Policía de Infancia y Adolescencia", "ICBF"],
+    tipo_meta: "META_PRODUCTO",
+    meta_producto_vigencia: "Ruta interinstitucional de detección y protección contra ESCNNA adoptada y operativa en 5 zonas turísticas",
+    meta_valor_vigencia: 1,
+    unidad_medida: "Ruta interinstitucional",
+    codigo_bpim: "2026130010001",
+    proyecto_nombre: "Fortalecimiento de la Red de Protección contra ESCNNA en Zonas Turísticas y Periféricas",
+    objetivo_proyecto: "Articular las capacidades distritales y de fuerza pública para la detección oportuna de vulneraciones a NNA en entornos turísticos.",
+    tipo_actividad: "NORMATIVA",
+    descripcion_actividad: "Expedir el protocolo distrital unificado de atención inmediata y judicialización por alertas de ESCNNA en establecimientos turísticos y hoteleros.",
+    verbo_infinitivo: "expedir",
+    fecha_inicio: "2026-01-15",
+    fecha_terminacion: "2026-06-30",
+    periodicidad_seguimiento: "TRIMESTRAL",
+    avance_t1: 100,
+    avance_t2: 75,
+    avance_t3: 0,
+    avance_t4: 0,
+    porcentaje_avance_fisico: 87.5,
+    categoria_recursos: "INVERSION",
+    fuente_financiacion: "SGP",
+    monto_programado_cop: 450000000,
+    monto_ejecutado_cop: 380000000,
+    estado_aprobacion: "PUBLICADO_LEY_1474",
+    evidencia_soporte: "Decreto Distrital 0412 de 2026 y Actas de concertación turística publicadas en gaceta.",
+  },
+  {
+    id: "01927360-0002-7000-8000-000000000002",
+    codigo: "PA-2026-L01-02",
+    vigencia: 2026,
+    compromiso_pas_codigo: "PAS-SEG-03",
+    linea_estrategica_codigo: "LE-01",
+    programa_nombre: "Modernización Tecnológica de la Seguridad Ciudadana",
+    entidad_responsable: "Distriseguridad",
+    lider_responsable: "Coordinador de Telemática y Sistemas LPR",
+    dependencias_articuladas: ["Policía Metropolitana de Cartagena", "Secretaría General"],
+    tipo_meta: "META_PRODUCTO",
+    meta_producto_vigencia: "250 cámaras de videovigilancia y lectura LPR enlazadas al CAD MECAR",
+    meta_valor_vigencia: 250,
+    unidad_medida: "Cámaras operativas",
+    codigo_bpim: "2026130010002",
+    proyecto_nombre: "Modernización del Sistema de Videovigilancia LPR, Alarmas Comunitarias y Conectividad Policial Inteligente",
+    objetivo_proyecto: "Optimizar la cobertura y tiempo de respuesta ante delitos de alto impacto mediante analítica de placas vehiculares y videovigilancia en tiempo real.",
+    tipo_actividad: "LOGISTICA",
+    descripcion_actividad: "Instalar 85 nuevos puntos de captura con cámaras analíticas LPR y fibra óptica en los corredores viales Pedro de Heredia y Crisanto Luque.",
+    verbo_infinitivo: "instalar",
+    fecha_inicio: "2026-02-01",
+    fecha_terminacion: "2026-11-30",
+    periodicidad_seguimiento: "TRIMESTRAL",
+    avance_t1: 100,
+    avance_t2: 80,
+    avance_t3: 0,
+    avance_t4: 0,
+    porcentaje_avance_fisico: 90,
+    categoria_recursos: "INVERSION",
+    fuente_financiacion: "REGALIAS",
+    monto_programado_cop: 2800000000,
+    monto_ejecutado_cop: 2240000000,
+    estado_aprobacion: "PUBLICADO_LEY_1474",
+    evidencia_soporte: "Actas de entrega técnica de obra civil y enlaces IP activos al CAD de Manga.",
+  },
+  {
+    id: "01927360-0003-7000-8000-000000000003",
+    codigo: "PA-2026-L01-03",
+    vigencia: 2026,
+    compromiso_pas_codigo: "PAS-ALUM-04",
+    linea_estrategica_codigo: "LE-01",
+    programa_nombre: "Entornos Viales Seguros y Alumbrado Eficiente",
+    entidad_responsable: "Secretaría General (Alumbrado Público)",
+    lider_responsable: "Director de Servicios Públicos y Concesiones",
+    dependencias_articuladas: ["Distriseguridad", "Alcaldías Locales 1, 2 y 3"],
+    tipo_meta: "ACTIVIDAD",
+    meta_producto_vigencia: "4.800 luminarias LED instaladas en puntos oscuros de alto tránsito peatonal",
+    meta_valor_vigencia: 4800,
+    unidad_medida: "Luminarias sustituidas",
+    codigo_bpim: "2026130010003",
+    proyecto_nombre: "Modernización del Parque Lumínico y Erradicación de Puntos Oscuros de Miedo",
+    objetivo_proyecto: "Incrementar la percepción de seguridad ciudadana nocturna en paraderos, colegios y parques barriales.",
+    tipo_actividad: "LOGISTICA",
+    descripcion_actividad: "Colocar 1.200 luminarias LED de 150W en senderos escolares y paraderos del SITM en Localidades 2 de la Virgen y Turística y 3 Industrial y de la Bahía.",
+    verbo_infinitivo: "colocar",
+    fecha_inicio: "2026-03-01",
+    fecha_terminacion: "2026-10-31",
+    periodicidad_seguimiento: "TRIMESTRAL",
+    avance_t1: 100,
+    avance_t2: 60,
+    avance_t3: 0,
+    avance_t4: 0,
+    porcentaje_avance_fisico: 80,
+    categoria_recursos: "INVERSION",
+    fuente_financiacion: "RECURSOS_PROPIOS",
+    monto_programado_cop: 1950000000,
+    monto_ejecutado_cop: 1460000000,
+    estado_aprobacion: "PUBLICADO_LEY_1474",
+    evidencia_soporte: "Bitácoras de instalación de la cuadrilla técnica y actas de interventoría bimestral.",
+  },
+  {
+    id: "01927360-0004-7000-8000-000000000004",
+    codigo: "PA-2026-L01-04",
+    vigencia: 2026,
+    compromiso_pas_codigo: "PAS-POL-06",
+    linea_estrategica_codigo: "LE-01",
+    programa_nombre: "Seguridad y Convivencia Ciudadana en Territorio",
+    entidad_responsable: "Policía Metropolitana de Cartagena (MECAR)",
+    lider_responsable: "Comandante de Policía Comunitaria y Frentes de Seguridad",
+    dependencias_articuladas: ["Secretaría del Interior", "Distriseguridad", "Juntas de Acción Comunal"],
+    tipo_meta: "META_GESTION",
+    meta_producto_vigencia: "60 frentes de seguridad ciudadana activos con botones de pánico y comités barriales",
+    meta_valor_vigencia: 60,
+    unidad_medida: "Frentes certificados",
+    codigo_bpim: "2026130010004",
+    proyecto_nombre: "Fortalecimiento Operativo y Dotación a 60 Frentes Locales de Seguridad",
+    objetivo_proyecto: "Afianzar la corresponsabilidad comunitaria e interconexión vecinal con los cuadrantes de policía.",
+    tipo_actividad: "ADMINISTRATIVA",
+    descripcion_actividad: "Verificar el estado operacional de los sistemas de radiocomunicación y alarmas vecinales en 60 frentes locales de seguridad activa.",
+    verbo_infinitivo: "verificar",
+    fecha_inicio: "2026-01-10",
+    fecha_terminacion: "2026-12-15",
+    periodicidad_seguimiento: "TRIMESTRAL",
+    avance_t1: 100,
+    avance_t2: 70,
+    avance_t3: 0,
+    avance_t4: 0,
+    porcentaje_avance_fisico: 85,
+    categoria_recursos: "FUNCIONAMIENTO",
+    fuente_financiacion: "GASTOS_GENERALES",
+    monto_programado_cop: 320000000,
+    monto_ejecutado_cop: 256000000,
+    estado_aprobacion: "PUBLICADO_LEY_1474",
+    evidencia_soporte: "Informes técnicos de inspección policial de cuadrantes y actas suscritas con JAC.",
+  },
+  {
+    id: "01927360-0005-7000-8000-000000000005",
+    codigo: "PA-2026-L02-01",
+    vigencia: 2026,
+    compromiso_pas_codigo: "PAS-JUV-02",
+    linea_estrategica_codigo: "LE-02",
+    programa_nombre: "Convivencia Comunitaria y Transformación de Fronteras Invisibles",
+    entidad_responsable: "Secretaría de Participación y Desarrollo Social",
+    lider_responsable: "Coordinador de Juventudes y Convivencia",
+    dependencias_articuladas: ["SENA Seccional Bolívar", "Secretaría de Educación", "Secretaría del Interior"],
+    tipo_meta: "META_PRODUCTO",
+    meta_producto_vigencia: "500 jóvenes en riesgo formados e insertados en encadenamientos productivos y náuticos",
+    meta_valor_vigencia: 500,
+    unidad_medida: "Jóvenes vinculados",
+    codigo_bpim: "2026130010005",
+    proyecto_nombre: "Programa Integral de Oportunidades Laborales y Formación Técnico-Laboral para Jóvenes en Riesgo",
+    objetivo_proyecto: "Romper el ciclo de vinculación juvenil a bandas y líneas de microtráfico mediante formación laboral pertinente.",
+    tipo_actividad: "ADMINISTRATIVA",
+    descripcion_actividad: "Diseñar la malla curricular técnica en oficios portuarios, náuticos y logística turística articulada al SENA para jóvenes de Olaya Herrera y El Pozón.",
+    verbo_infinitivo: "diseñar",
+    fecha_inicio: "2026-02-15",
+    fecha_terminacion: "2026-07-31",
+    periodicidad_seguimiento: "TRIMESTRAL",
+    avance_t1: 100,
+    avance_t2: 85,
+    avance_t3: 0,
+    avance_t4: 0,
+    porcentaje_avance_fisico: 92.5,
+    categoria_recursos: "INVERSION",
+    fuente_financiacion: "COFINANCIACION",
+    monto_programado_cop: 1100000000,
+    monto_ejecutado_cop: 935000000,
+    estado_aprobacion: "PUBLICADO_LEY_1474",
+    evidencia_soporte: "Convenio Tripartito de Cooperación No. 018-2026 SENA-Distrito y resolución de planes de estudio.",
+  },
+  {
+    id: "01927360-0006-7000-8000-000000000006",
+    codigo: "PA-2026-L02-02",
+    vigencia: 2026,
+    compromiso_pas_codigo: "PAS-DES-08",
+    linea_estrategica_codigo: "LE-02",
+    programa_nombre: "Mediación Comunitaria y Desarme Social",
+    entidad_responsable: "Secretaría del Interior y Convivencia Ciudadana",
+    lider_responsable: "Director de Seguridad y Convivencia",
+    dependencias_articuladas: ["Personería Distrital", "MECAR", "Líderes Barriales de Paz"],
+    tipo_meta: "META_GESTION",
+    meta_producto_vigencia: "12 comités barriales de mediación y resolución de conflictos instalados y activos",
+    meta_valor_vigencia: 12,
+    unidad_medida: "Comités constituidos",
+    codigo_bpim: "2026130010006",
+    proyecto_nombre: "Programa Integral de Desarme Social, Oportunidades y Mediación Comunitaria Jóvenes Constructores de Paz",
+    objetivo_proyecto: "Desactivar riñas colectivas juveniles y líneas de frontera invisible en barrios con altos índices de homicidio.",
+    tipo_actividad: "DE_GESTION",
+    descripcion_actividad: "Ejecutar 48 jornadas territoriales de diálogo y mediación comunitaria para desarme voluntario en sectores focalizados de la Ciénaga de la Virgen.",
+    verbo_infinitivo: "ejecutar",
+    fecha_inicio: "2026-01-20",
+    fecha_terminacion: "2026-11-30",
+    periodicidad_seguimiento: "TRIMESTRAL",
+    avance_t1: 100,
+    avance_t2: 70,
+    avance_t3: 0,
+    avance_t4: 0,
+    porcentaje_avance_fisico: 85,
+    categoria_recursos: "INVERSION",
+    fuente_financiacion: "RECURSOS_PROPIOS",
+    monto_programado_cop: 850000000,
+    monto_ejecutado_cop: 680000000,
+    estado_aprobacion: "PUBLICADO_LEY_1474",
+    evidencia_soporte: "Pactos barriales de no agresión firmados y actas de desescalamiento con custodia personería.",
+  },
+  {
+    id: "01927360-0007-7000-8000-000000000007",
+    codigo: "PA-2026-L03-01",
+    vigencia: 2026,
+    compromiso_pas_codigo: "PAS-AMB-05",
+    linea_estrategica_codigo: "LE-03",
+    programa_nombre: "Seguridad Ambiental y Resiliencia en la Ciénaga de la Virgen",
+    entidad_responsable: "Establecimiento Público Ambiental (EPA Cartagena)",
+    lider_responsable: "Subdirector Técnico de Gestión Ambiental",
+    dependencias_articuladas: ["Cardique", "Secretaría de Infraestructura", "Aguas de Cartagena"],
+    tipo_meta: "META_PRODUCTO",
+    meta_producto_vigencia: "18 kilómetros lineales de canales y drenajes pluviales recuperados y reforestados con mangle",
+    meta_valor_vigencia: 18,
+    unidad_medida: "Kilómetros intervenidos",
+    codigo_bpim: "2026130010007",
+    proyecto_nombre: "Plan de Restauración Ecoterritorial, Borde de Protección y Drenajes en la Ciénaga de la Virgen",
+    objetivo_proyecto: "Mitigar inundaciones crónicas y mitigar focos de insalubridad y violencia en bordes de ciénaga.",
+    tipo_actividad: "NORMATIVA",
+    descripcion_actividad: "Adecuar la reglamentación distrital de rondas hídricas y delimitación de bordes de protección de la Ciénaga de la Virgen para prohibir rellenos ilegales.",
+    verbo_infinitivo: "adecuar",
+    fecha_inicio: "2026-02-01",
+    fecha_terminacion: "2026-08-31",
+    periodicidad_seguimiento: "TRIMESTRAL",
+    avance_t1: 100,
+    avance_t2: 90,
+    avance_t3: 0,
+    avance_t4: 0,
+    porcentaje_avance_fisico: 95,
+    categoria_recursos: "INVERSION",
+    fuente_financiacion: "SGP",
+    monto_programado_cop: 720000000,
+    monto_ejecutado_cop: 648000000,
+    estado_aprobacion: "PUBLICADO_LEY_1474",
+    evidencia_soporte: "Resolución conjunta EPA-Cardique 0314 de 2026 y cartografía oficial de borde de protección.",
+  },
+  {
+    id: "01927360-0008-7000-8000-000000000008",
+    codigo: "PA-2026-L03-02",
+    vigencia: 2026,
+    compromiso_pas_codigo: "PAS-BAZ-09",
+    linea_estrategica_codigo: "LE-03",
+    programa_nombre: "Seguridad Económica e Inclusión Productiva en Bazurto",
+    entidad_responsable: "Secretaría de Hacienda Distrital",
+    lider_responsable: "Director de Desarrollo Económico y Financiamiento Popular",
+    dependencias_articuladas: ["Gerencia de Espacio Público", "Banco Agrario / Findeter", "Asociaciones de Comerciantes de Bazurto"],
+    tipo_meta: "META_PRODUCTO",
+    meta_producto_vigencia: "800 comerciantes informales beneficiados con microcréditos a tasa subsidiada",
+    meta_valor_vigencia: 800,
+    unidad_medida: "Comerciantes bancarizados",
+    codigo_bpim: "2026130010008",
+    proyecto_nombre: "Fondo de Financiamiento Popular y Microcrédito Comunitario contra el Gota a Gota en el Mercado de Bazurto",
+    objetivo_proyecto: "Sustituir el préstamo extorsivo gota a gota y erradicar las estructuras de extorsión armada en el mercado central.",
+    tipo_actividad: "DE_GESTION",
+    descripcion_actividad: "Crear el fondo rotatorio de fomento microempresarial y créditos productivos comunitarios con tasa compensada para comerciantes de perecederos.",
+    verbo_infinitivo: "crear",
+    fecha_inicio: "2026-03-01",
+    fecha_terminacion: "2026-09-30",
+    periodicidad_seguimiento: "TRIMESTRAL",
+    avance_t1: 100,
+    avance_t2: 75,
+    avance_t3: 0,
+    avance_t4: 0,
+    porcentaje_avance_fisico: 87.5,
+    categoria_recursos: "INVERSION",
+    fuente_financiacion: "REGALIAS",
+    monto_programado_cop: 3200000000,
+    monto_ejecutado_cop: 2400000000,
+    estado_aprobacion: "PUBLICADO_LEY_1474",
+    evidencia_soporte: "Acuerdo Distrital de creación de la cuenta especial y convenio fiduciario de administración.",
+  },
+  {
+    id: "01927360-0009-7000-8000-000000000009",
+    codigo: "PA-2026-L04-01",
+    vigencia: 2026,
+    compromiso_pas_codigo: "PAS-CUID-07",
+    linea_estrategica_codigo: "LE-04",
+    programa_nombre: "Seguridad Económica y Sistema del Cuidado",
+    entidad_responsable: "Secretaría de Participación y Desarrollo Social",
+    lider_responsable: "Coordinadora Distrital del Sistema de Cuidado",
+    dependencias_articuladas: ["Secretaría de la Mujer", "Secretaría de Salud Distrital", "IDER"],
+    tipo_meta: "META_PRODUCTO",
+    meta_producto_vigencia: "2 Manzanas del Cuidado y Centros de Vida dotados y brindando servicios integrales de respiro y relevo",
+    meta_valor_vigencia: 2,
+    unidad_medida: "Manzanas del cuidado operativas",
+    codigo_bpim: "2026130010009",
+    proyecto_nombre: "Red Distrital de Manzanas del Cuidado y Centros de Día Comunitarios para Mujeres Cuidadoras",
+    objetivo_proyecto: "Reducir la sobrecarga de cuidados no remunerados que perpetúa la feminización de la pobreza en sectores vulnerables.",
+    tipo_actividad: "NORMATIVA",
+    descripcion_actividad: "Adoptar el modelo de operación intersectorial y canasta básica de servicios de respiro, lavandería comunitaria y formación para las Manzanas del Cuidado.",
+    verbo_infinitivo: "adoptar",
+    fecha_inicio: "2026-01-15",
+    fecha_terminacion: "2026-06-30",
+    periodicidad_seguimiento: "TRIMESTRAL",
+    avance_t1: 100,
+    avance_t2: 80,
+    avance_t3: 0,
+    avance_t4: 0,
+    porcentaje_avance_fisico: 90,
+    categoria_recursos: "INVERSION",
+    fuente_financiacion: "RECURSOS_PROPIOS",
+    monto_programado_cop: 1800000000,
+    monto_ejecutado_cop: 1350000000,
+    estado_aprobacion: "PUBLICADO_LEY_1474",
+    evidencia_soporte: "Decreto Distrital 0285 de 2026 de adopción del Modelo de Cuidado y Manual de Operaciones.",
+  },
+  {
+    id: "01927360-0010-7000-8000-000000000010",
+    codigo: "PA-2026-L04-02",
+    vigencia: 2026,
+    compromiso_pas_codigo: "PAS-ETN-10",
+    linea_estrategica_codigo: "LE-04",
+    programa_nombre: "Soberanía y Salvaguarda Étnica con Consejos Comunitarios",
+    entidad_responsable: "Dirección de Asuntos Étnicos",
+    lider_responsable: "Director de Asuntos Étnicos y Afrodescendientes",
+    dependencias_articuladas: ["Ministerio del Interior", "Consejos Comunitarios de Comunidades Negras", "Agencia Nacional de Tierras"],
+    tipo_meta: "ACTIVIDAD",
+    meta_producto_vigencia: "8 acuerdos de salvaguarda étnica y fortalecimiento de gobiernos propios comunitarios suscritos",
+    meta_valor_vigencia: 8,
+    unidad_medida: "Acuerdos suscritos",
+    codigo_bpim: "2026130010010",
+    proyecto_nombre: "Plan de Fortalecimiento Institucional y Seguridad Alimentaria para Consejos Comunitarios de Comunidades Negras",
+    objetivo_proyecto: "Garantizar la estabilidad jurídica, autonomía comunitaria y soberanía territorial en zonas rurales e insulares.",
+    tipo_actividad: "ADMINISTRATIVA",
+    descripcion_actividad: "Firmar acuerdos de articulación administrativa y co-gestión de proyectos productivos agropecuarios con 8 consejos comunitarios de La Boquilla, Pasacaballos y Tierrabomba.",
+    verbo_infinitivo: "firmar",
+    fecha_inicio: "2026-02-01",
+    fecha_terminacion: "2026-10-31",
+    periodicidad_seguimiento: "TRIMESTRAL",
+    avance_t1: 100,
+    avance_t2: 75,
+    avance_t3: 0,
+    avance_t4: 0,
+    porcentaje_avance_fisico: 87.5,
+    categoria_recursos: "RECURSOS_GESTION",
+    fuente_financiacion: "GESTION_NO_PRESUPUESTAL",
+    monto_programado_cop: 0,
+    monto_ejecutado_cop: 0,
+    estado_aprobacion: "PUBLICADO_LEY_1474",
+    evidencia_soporte: "Actas de asamblea general comunitaria y protocolos de relacionamiento bilateral registrados ante MinInterior.",
+  },
+  {
+    id: "01927360-0011-7000-8000-000000000011",
+    codigo: "PA-2026-L05-01",
+    vigencia: 2026,
+    compromiso_pas_codigo: "PAS-BAZ-09",
+    linea_estrategica_codigo: "LE-05",
+    programa_nombre: "Soberanía Alimentaria, Nutrición Comunitaria y Circuitos Cortos",
+    entidad_responsable: "Secretaría de Participación y Desarrollo Social",
+    lider_responsable: "Líder del Programa de Soberanía Alimentaria",
+    dependencias_articuladas: ["Secretaría de Agricultura de Bolívar", "UMATA Distrital", "Red de Comedores Comunitarios"],
+    tipo_meta: "META_GESTION",
+    meta_producto_vigencia: "35 comedores comunitarios abastecidos mediante compras públicas directas a campesinos locales",
+    meta_valor_vigencia: 35,
+    unidad_medida: "Comedores abastecidos",
+    codigo_bpim: "2026130010011",
+    proyecto_nombre: "Fomento de Circuitos Cortos de Abastecimiento Alimentario y Seguridad Nutricional Barrial",
+    objetivo_proyecto: "Vincular directamente la producción campesina periurbana con la canasta nutricional comunitaria sin intermediación abusiva.",
+    tipo_actividad: "DE_GESTION",
+    descripcion_actividad: "Identificar 120 productores campesinos y pescadores artesanales locales para el suministro directo de alimentos a los centros de desarrollo infantil y comedores.",
+    verbo_infinitivo: "identificar",
+    fecha_inicio: "2026-01-25",
+    fecha_terminacion: "2026-07-15",
+    periodicidad_seguimiento: "TRIMESTRAL",
+    avance_t1: 100,
+    avance_t2: 80,
+    avance_t3: 0,
+    avance_t4: 0,
+    porcentaje_avance_fisico: 90,
+    categoria_recursos: "INVERSION",
+    fuente_financiacion: "SGP",
+    monto_programado_cop: 650000000,
+    monto_ejecutado_cop: 520000000,
+    estado_aprobacion: "PUBLICADO_LEY_1474",
+    evidencia_soporte: "Directorio pericial de campesinos y pescadores inscritos en el registro distrital de compras públicas.",
+  },
+  {
+    id: "01927360-0012-7000-8000-000000000012",
+    codigo: "PA-2026-L06-01",
+    vigencia: 2026,
+    compromiso_pas_codigo: "PAS-DES-08",
+    linea_estrategica_codigo: "LE-06",
+    programa_nombre: "Atención Primaria, Salud Mental Barrial y Reducción del Daño",
+    entidad_responsable: "Departamento Administrativo Distrital de Salud (DADIS)",
+    lider_responsable: "Coordinador de Salud Mental y Prevención de Consumo",
+    dependencias_articuladas: ["ESE Hospital Local Cartagena de Indias", "Secretaría del Interior", "Líderes de Salud Barrial"],
+    tipo_meta: "ACTIVIDAD",
+    meta_producto_vigencia: "10 Zonas de Escucha y Acompañamiento Comunitario (ZEAC) en salud mental y reducción del daño operando",
+    meta_valor_vigencia: 10,
+    unidad_medida: "Zonas ZEAC activas",
+    codigo_bpim: "2026130010012",
+    proyecto_nombre: "Red de Atención Primaria en Salud Mental Comunitaria y Desescalamiento Psicosocial",
+    objetivo_proyecto: "Prevenir trastornos depresivos, desajustes psicosociales y consumos problemáticos de sustancias en barrios con mayor exposición a violencia.",
+    tipo_actividad: "LOGISTICA",
+    descripcion_actividad: "Notificar formalmente a 24 centros de salud de primer nivel y colegios públicos sobre la ruta barrial de primeros auxilios psicológicos y telemedicina mental.",
+    verbo_infinitivo: "notificar",
+    fecha_inicio: "2026-02-10",
+    fecha_terminacion: "2026-06-30",
+    periodicidad_seguimiento: "TRIMESTRAL",
+    avance_t1: 100,
+    avance_t2: 95,
+    avance_t3: 0,
+    avance_t4: 0,
+    porcentaje_avance_fisico: 97.5,
+    categoria_recursos: "FUNCIONAMIENTO",
+    fuente_financiacion: "GASTOS_GENERALES",
+    monto_programado_cop: 280000000,
+    monto_ejecutado_cop: 260000000,
+    estado_aprobacion: "PUBLICADO_LEY_1474",
+    evidencia_soporte: "Circulares informativas radicadas con acuse de recibo en la totalidad de centros asistenciales.",
+  },
+];
+
+export const BANCO_CONOCIMIENTO_CANONICO: BancoConocimientoDNP = {
+  marco_normativo: [
+    {
+      norma: "Ley 152 de 1994, Art. 41",
+      titulo: "Elaboración y Aprobación del Plan de Acción",
+      descripcion:
+        "Con base en los planes generales aprobados por el Concejo, cada secretaría y departamento administrativo preparará, con la coordinación de la Oficina de Planeación, su correspondiente Plan de Acción y lo someterá a la aprobación del Consejo de Gobierno distrital.",
+      obligatoriedad: "Obligatorio para todas las dependencias del Distrito.",
+    },
+    {
+      norma: "Ley 152 de 1994, Art. 29",
+      titulo: "Articulación Plan Indicativo (PI) y Planes de Acción (PA)",
+      descripcion:
+        "Articulación vinculante entre el Plan Indicativo cuatrienal del Plan de Desarrollo y los Planes de Acción anuales como instrumento base para la evaluación de resultados y gestión pública territorial.",
+      obligatoriedad: "Marco de evaluación del cuatrienio distrital.",
+    },
+    {
+      norma: "Ley 1474 de 2011, Art. 74",
+      titulo: "Estatuto Anticorrupción - Publicación Oficial a 31 de Enero",
+      descripcion:
+        "Todas las entidades del Estado, a más tardar el 31 de enero de cada año, deberán publicar en su página web el Plan de Acción para la vigencia (objetivos, estrategias, proyectos, metas, responsables, distribución presupuestal) y el informe de gestión del año anterior.",
+      obligatoriedad: "Fecha límite improrrogable: 31 de enero de cada vigencia fiscal.",
+    },
+    {
+      norma: "Decreto 2482 de 2012 / MIPG",
+      titulo: "Integración del Modelo de Planeación y Gestión",
+      descripcion:
+        "Adopción del Modelo Integrado de Planeación y Gestión (MIPG) articulando los instrumentos de planeación operativa y financiera en una sola matriz unificada por dependencia.",
+      obligatoriedad: "Estándar de gestión de calidad pública territorial.",
+    },
+  ],
+  encadenamiento_instrumentos: [
+    {
+      instrumento: "PDT y Plan Indicativo (PI)",
+      etapa: "Insumo Estratégico",
+      actividad_dnp: "Identificación de metas de producto y de gestión incorporadas en el Plan de Desarrollo.",
+      producto_dnp: "Metas de gestión y de producto de la vigencia sujetas a seguimiento en el Plan de Acción.",
+    },
+    {
+      instrumento: "POAI (Plan Operativo Anual de Inversiones)",
+      etapa: "Insumo Operativo de Inversión",
+      actividad_dnp: "Articulación de actividades requeridas con cada proyecto de inversión de la vigencia.",
+      producto_dnp: "Actividades necesarias con indicadores, recursos, fecha de inicio y terminación.",
+    },
+    {
+      instrumento: "MFMP (Marco Fiscal de Mediano Plazo)",
+      etapa: "Insumo de Consistencia Fiscal",
+      actividad_dnp: "Definición de la cuota global de inversión para la vigencia fiscal (Hacienda y Planeación).",
+      producto_dnp: "Cuota global de inversión distribuida entre sectores conforme a la capacidad de pago distrital.",
+    },
+    {
+      instrumento: "Presupuesto Anual y PAC",
+      etapa: "Insumo Presupuestal y Flujo de Caja",
+      actividad_dnp: "Definición de recursos destinados a inversión y funcionamiento y cronograma mensualizado de caja.",
+      producto_dnp: "Disponibilidad cierta de recursos financieros para financiar las actividades del Plan de Acción.",
+    },
+  ],
+  ruta_metodologica_7_pasos: [
+    {
+      paso: 1,
+      nombre: "Orientaciones Metodológicas y Competencias",
+      responsable: "Oficina de Planeación Distrital y Secretarías",
+      descripcion: "Planeación imparte lineamientos, cronograma y formatos a los enlaces designados por dependencia, revisando misión y competencias.",
+    },
+    {
+      paso: 2,
+      nombre: "Consolidación y Revisión de Insumos",
+      responsable: "Enlaces de Planeación por Dependencia",
+      descripcion: "Consolidación de metas de producto del PI, proyectos POAI, cuota MFMP y asignaciones presupuestales aprobadas.",
+    },
+    {
+      paso: 3,
+      nombre: "Incorporación de Metas de Gestión y Administrativas",
+      responsable: "Secretarías y Dependencias Ejecutoras",
+      descripcion: "Identificación de metas recurrentes, procesos internos clave y gestión de recursos externos/nacionales que requieran seguimiento.",
+    },
+    {
+      paso: 4,
+      nombre: "Programación de Actividades y Articulación Interinstitucional",
+      responsable: "Dependencias Ejecutoras y Co-responsables",
+      descripcion: "Definición de actividades indispensables por meta de producto/proyecto, identificando corresponsabilidad interinstitucional entre dependencias.",
+    },
+    {
+      paso: 5,
+      nombre: "Diligenciamiento de la Matriz Oficial (Hoja 1 y Hoja 2)",
+      responsable: "Líderes de Formulación por Secretaría",
+      descripcion: "Llenado técnico de la Matriz del Plan de Acción (Hoja 1 PA vinculada a Hoja 2 Plan Indicativo) con validación de verbos fuertes y fuentes.",
+    },
+    {
+      paso: 6,
+      nombre: "Presentación y Aprobación en Consejo de Gobierno",
+      responsable: "Alcalde Mayor, Secretario de Planeación y Gabinete",
+      descripcion: "Sometimiento formal de los Planes de Acción consolidados a la aprobación del Consejo de Gobierno distrital (Art. 41 Ley 152/94).",
+    },
+    {
+      paso: 7,
+      nombre: "Publicación Oficial a más tardar el 31 de Enero",
+      responsable: "Oficina de Planeación y Tecnologías de la Información",
+      descripcion: "Publicación en el portal web institucional distrital y reporte al SisPT antes del 31 de enero conforme al Art. 74 Ley 1474/11.",
+    },
+  ],
+  pasos_diligenciamiento_matriz: [
+    {
+      numero: "4.1",
+      nombre: "Paso 1: Responsables de la Ejecución",
+      campos: ["entidad_responsable", "lider_responsable", "dependencias_articuladas"],
+      guia: "Identificar la secretaría u organismo distrital que lidera y las dependencias articuladas en corresponsabilidad.",
+    },
+    {
+      numero: "4.2",
+      nombre: "Paso 2: Clasificación de la Meta",
+      campos: ["tipo_meta"],
+      guia: "Clasificar en META_PRODUCTO (bienes y servicios al ciudadano), META_GESTION (procesos y gestión de recursos) o ACTIVIDAD (tareas específicas de proyecto).",
+    },
+    {
+      numero: "4.3",
+      nombre: "Paso 3: Articulación con Hoja 2 Plan Indicativo",
+      campos: ["codigo_meta_pi", "programa_pi", "meta_producto_vigencia"],
+      guia: "Vincular con el código único del Plan Indicativo (PAS), el programa estratégico y la meta cuantitativa programada para el año.",
+    },
+    {
+      numero: "4.4",
+      nombre: "Paso 4: Vinculación con Proyectos BPIM / MGA",
+      campos: ["codigo_bpim", "proyecto_nombre", "objetivo_proyecto"],
+      guia: "Registrar el código de 13 dígitos del Banco de Proyectos de Inversión Municipal (BPIM), nombre y objetivo central priorizado en POAI.",
+    },
+    {
+      numero: "4.5",
+      nombre: "Paso 5: Programación de Actividades y Regla de Verbos Fuertes",
+      campos: ["tipo_actividad", "descripcion_actividad", "fecha_inicio", "fecha_terminacion", "avance_trimestral"],
+      guia: "Redactar iniciando obligatoriamente con verbo fuerte en infinitivo (-ar, -er, -ir), clasificar en NORMATIVA, ADMINISTRATIVA, DE_GESTION o LOGISTICA, y fijar metas trimestrales T1-T4.",
+    },
+    {
+      numero: "4.6",
+      nombre: "Paso 6: Fuentes de Financiación por Vigencia",
+      campos: ["categoria_recursos", "fuente_financiacion", "monto_programado_cop", "monto_ejecutado_cop"],
+      guia: "Asignar la categoría (INVERSION, FUNCIONAMIENTO, RECURSOS_GESTION) y la fuente presupuestal exacta (SGP, Regalías, Propios, Crédito, etc.).",
+    },
+  ],
+  taxonomia_metas: [
+    {
+      tipo: "META_PRODUCTO",
+      nombre: "Meta de Producto",
+      definicion: "Cuantifica los bienes y/o servicios públicos entregados a la comunidad para resolver la problemática diagnosticada en la política pública.",
+      ejemplo: "250 cámaras de videovigilancia y analítica LPR operativas enlazadas al CAD MECAR.",
+    },
+    {
+      tipo: "META_GESTION",
+      nombre: "Meta de Gestión",
+      definicion: "Cuantifica el nivel de cumplimiento de procesos, trámites y acciones internas o de gestión de recursos necesarias para materializar los productos.",
+      ejemplo: "12 comités barriales de mediación y resolución comunitaria de conflictos instalados.",
+    },
+    {
+      tipo: "ACTIVIDAD",
+      nombre: "Actividad de Proyecto / Recurrente",
+      definicion: "Acción específica o recurrente requerida durante la vigencia fiscal para avanzar en metas de proyectos o procesos misionales continuos.",
+      ejemplo: "Colocar 1.200 luminarias LED de 150W en senderos escolares y paraderos del SITM.",
+    },
+  ],
+  taxonomia_actividades: [
+    {
+      tipo: "NORMATIVA",
+      nombre: "Actividad Normativa",
+      descripcion: "Expedición o ajuste de normas, decretos, resoluciones, estatutos, tarifas o reglamentos distritales.",
+      ejemplos_verbos: ["Expedir", "Adecuar", "Adoptar", "Modificar", "Fijar", "Eliminar", "Reglamentar"],
+    },
+    {
+      tipo: "ADMINISTRATIVA",
+      nombre: "Actividad Administrativa",
+      descripcion: "Gestión de contratos, convenios, diseño de software, ajuste de procesos y trámites interinstitucionales.",
+      ejemplos_verbos: ["Firmar", "Diseñar", "Ajustar", "Analizar", "Verificar", "Suscribir", "Tramitar"],
+    },
+    {
+      tipo: "DE_GESTION",
+      nombre: "Actividad de Gestión",
+      descripcion: "Acciones operativas directas en territorio, ejecución de programas, fondos comunitarios y mesas de concertación.",
+      ejemplos_verbos: ["Crear", "Identificar", "Ejecutar", "Concertar", "Gestionar", "Asignar", "Convocar"],
+    },
+    {
+      tipo: "LOGISTICA",
+      nombre: "Actividad Logística",
+      descripcion: "Instalación de infraestructura, colocación de equipos, dotaciones físicas, distribución y notificaciones.",
+      ejemplos_verbos: ["Instalar", "Colocar", "Notificar", "Dotar", "Distribuir", "Adecuar", "Suministrar"],
+    },
+  ],
+  regla_linguistica_dnp: {
+    fundamento: "Instructivo Plan de Acción DNP / Kit Financiero, pág. 12",
+    regla_oro: "La redacción de toda actividad DEBE iniciar con un verbo fuerte en infinitivo (-ar, -er, -ir) que denote acción observable y resultado verificable.",
+    verbos_debiles_prohibidos: VERBOS_DEBILES_PROHIBIDOS_DNP,
+    motivo_prohibicion:
+      "El DNP prohíbe taxativamente estos 16 verbos porque denotan intenciones genéricas, difusas o ambiguas que impiden la verificación objetiva del avance físico y el control social y fiscal.",
+    catalogo_verbos_fuertes: SUGERENCIAS_VERBOS_FUERTES,
+  },
+  catalogo_fuentes_financiacion: {
+    INVERSION: [
+      { codigo: "RECURSOS_PROPIOS", nombre: "Recursos Propios (ICLD / Impuestos Distritales)" },
+      { codigo: "SGP", nombre: "Sistema General de Participaciones (Ley 715 de 2001)" },
+      { codigo: "REGALIAS", nombre: "Sistema General de Regalías (SGR / FCTI / Asignaciones Paz)" },
+      { codigo: "CREDITO", nombre: "Recursos de Crédito Público Autorizado" },
+      { codigo: "COFINANCIACION", nombre: "Cofinanciación de la Nación / Cooperación Internacional" },
+      { codigo: "OTROS", nombre: "Otros Recursos de Capital y Donaciones" },
+    ],
+    FUNCIONAMIENTO: [
+      { codigo: "GASTOS_PERSONAL", nombre: "Servicios Personales de Nómina y Supernumerarios" },
+      { codigo: "GASTOS_GENERALES", nombre: "Adquisición de Bienes, Servicios y Mantenimiento" },
+      { codigo: "TRANSFERENCIAS", nombre: "Transferencias Corrientes de Ley" },
+    ],
+    RECURSOS_GESTION: [
+      { codigo: "GESTION_NO_PRESUPUESTAL", nombre: "Gestión Interinstitucional Directa (Sin Afectación Presupuestal ET)" },
+    ],
+  },
+  enlaces_oficiales: [
+    { titulo: "SisPT - Sistema de Planeación Territorial DNP", url: "https://sispt.dnp.gov.co/" },
+    { titulo: "Portal Territorial DNP - Kit Financiero", url: "https://portalterritorial.dnp.gov.co/" },
+    { titulo: "Instructivo Metodológico Plan de Acción DNP", url: "/docs/Instructivo_PlandeAccion_DNP.pdf" },
+  ],
+};
+
+// =============================================================================
+// VALIDADOR LINGÜÍSTICO LOCAL DE RESPALDO (CLIENT-SIDE)
+// =============================================================================
+
+export function normalizarPalabra(palabra: string): string {
+  const limpia = palabra.replace(/[^\wáéíóúüñÁÉÍÓÚÜÑ]/g, "");
+  const mapa: Record<string, string> = {
+    á: "a",
+    é: "e",
+    í: "i",
+    ó: "o",
+    ú: "u",
+    ü: "u",
+    Á: "a",
+    É: "e",
+    Í: "i",
+    Ó: "o",
+    Ú: "u",
+    Ü: "u",
+  };
+  return limpia
+    .split("")
+    .map((c) => mapa[c] || c)
+    .join("")
+    .toLowerCase();
+}
+
+export function validarRedaccionLocal(
+  descripcion: string,
+  tipoActividad?: string
+): ValidarRedaccionRespuesta {
+  if (!descripcion || !descripcion.trim()) {
+    return {
+      es_valida: false,
+      verbo_detectado: "",
+      es_infinitivo: false,
+      es_verbo_debil_prohibido: false,
+      mensaje_dnp: "La descripción de la actividad no puede estar vacía.",
+      verbos_fuertes_sugeridos: SUGERENCIAS_VERBOS_FUERTES.NORMATIVA,
+    };
+  }
+
+  const palabras = descripcion.trim().split(/\s+/);
+  const primeraPalabra = palabras[0] || "";
+  const verboNorm = normalizarPalabra(primeraPalabra);
+
+  const sugerencias =
+    SUGERENCIAS_VERBOS_FUERTES[tipoActividad || ""] ||
+    SUGERENCIAS_VERBOS_FUERTES.NORMATIVA;
+
+  if (VERBOS_DEBILES_PROHIBIDOS_DNP.includes(verboNorm)) {
+    return {
+      es_valida: false,
+      verbo_detectado: verboNorm,
+      es_infinitivo:
+        verboNorm.endsWith("ar") ||
+        verboNorm.endsWith("er") ||
+        verboNorm.endsWith("ir"),
+      es_verbo_debil_prohibido: true,
+      mensaje_dnp: `El verbo '${primeraPalabra}' pertenece a la lista negra oficial de 16 verbos débiles prohibidos por el DNP (Instructivo Kit Financiero, pág. 12). Sustitúyalo por un verbo fuerte en infinitivo.`,
+      verbos_fuertes_sugeridos: sugerencias,
+    };
+  }
+
+  const esInfinitivo =
+    (verboNorm.endsWith("ar") ||
+      verboNorm.endsWith("er") ||
+      verboNorm.endsWith("ir")) &&
+    verboNorm.length >= 4;
+
+  if (!esInfinitivo) {
+    return {
+      es_valida: false,
+      verbo_detectado: verboNorm,
+      es_infinitivo: false,
+      es_verbo_debil_prohibido: false,
+      mensaje_dnp: `La actividad inicia con '${primeraPalabra}', que no es un verbo en infinitivo terminado en -ar, -er o -ir. Según la metodología DNP (pág. 12), toda actividad debe iniciar obligatoriamente con un verbo fuerte en infinitivo.`,
+      verbos_fuertes_sugeridos: sugerencias,
+    };
+  }
+
+  return {
+    es_valida: true,
+    verbo_detectado: verboNorm,
+    es_infinitivo: true,
+    es_verbo_debil_prohibido: false,
+    mensaje_dnp: `Redacción válida según el estándar DNP. Inicia con el verbo fuerte en infinitivo '${verboNorm}'.`,
+    verbos_fuertes_sugeridos: [],
+  };
+}
+
+export function calcularResumenEjecutivoLocal(
+  actividades: ActividadPlanAccion[]
+): ResumenEjecutivoPlanAccion {
+  const totalAct = actividades.length;
+  const totalProducto = actividades.filter(
+    (a) => a.tipo_meta === "META_PRODUCTO"
+  ).length;
+  const totalGestion = actividades.filter(
+    (a) => a.tipo_meta === "META_GESTION"
+  ).length;
+  const totalActTipo = actividades.filter((a) => a.tipo_meta === "ACTIVIDAD").length;
+
+  const promedioFisico =
+    totalAct > 0
+      ? Number(
+          (
+            actividades.reduce(
+              (acc, a) => acc + (a.porcentaje_avance_fisico || 0),
+              0
+            ) / totalAct
+          ).toFixed(2)
+        )
+      : 0;
+
+  const sumaProg = actividades.reduce(
+    (acc, a) => acc + (Number(a.monto_programado_cop) || 0),
+    0
+  );
+  const sumaEjec = actividades.reduce(
+    (acc, a) => acc + (Number(a.monto_ejecutado_cop) || 0),
+    0
+  );
+  const pctEjecFin =
+    sumaProg > 0 ? Number(((sumaEjec / sumaProg) * 100).toFixed(2)) : 0;
+
+  const desgloseFuentes: Record<string, { programado: number; ejecutado: number }> =
+    {};
+  const desgloseTipoAct: Record<string, number> = {};
+
+  for (const a of actividades) {
+    if (!desgloseFuentes[a.fuente_financiacion]) {
+      desgloseFuentes[a.fuente_financiacion] = { programado: 0, ejecutado: 0 };
+    }
+    desgloseFuentes[a.fuente_financiacion].programado +=
+      Number(a.monto_programado_cop) || 0;
+    desgloseFuentes[a.fuente_financiacion].ejecutado +=
+      Number(a.monto_ejecutado_cop) || 0;
+
+    desgloseTipoAct[a.tipo_actividad] =
+      (desgloseTipoAct[a.tipo_actividad] || 0) + 1;
+  }
+
+  return {
+    total_actividades: totalAct,
+    total_metas_producto: totalProducto,
+    total_metas_gestion: totalGestion,
+    total_actividades_tipo: totalActTipo,
+    avance_fisico_promedio: promedioFisico,
+    presupuesto_total_programado_cop: sumaProg,
+    presupuesto_total_ejecutado_cop: sumaEjec,
+    porcentaje_ejecucion_financiera: pctEjecFin,
+    desglose_fuentes: desgloseFuentes,
+    desglose_tipo_actividad: desgloseTipoAct,
+    semaforo_alertas: {
+      en_meta: actividades.filter((a) => (a.porcentaje_avance_fisico || 0) >= 80)
+        .length,
+      alerta_preventiva: actividades.filter(
+        (a) =>
+          (a.porcentaje_avance_fisico || 0) >= 50 &&
+          (a.porcentaje_avance_fisico || 0) < 80
+      ).length,
+      rezago_critico: actividades.filter(
+        (a) => (a.porcentaje_avance_fisico || 0) < 50
+      ).length,
+    },
+  };
+}
+
+// =============================================================================
+// LLAMADAS HTTP CON RESILIENCIA Y CONTINGENCIA
+// =============================================================================
+
+export async function obtenerBancoConocimientoApi(): Promise<BancoConocimientoDNP> {
+  try {
+    return await apiFetch<BancoConocimientoDNP>(
+      "/api/v1/compromisos/plan-accion/banco-conocimiento"
+    );
+  } catch (e) {
+    console.warn("Fallo al conectar con banco-conocimiento, usando canon local:", e);
+    return BANCO_CONOCIMIENTO_CANONICO;
+  }
+}
+
+export async function validarRedaccionDnpApi(
+  descripcion: string,
+  tipoActividad?: string
+): Promise<ValidarRedaccionRespuesta> {
+  try {
+    return await apiFetch<ValidarRedaccionRespuesta>(
+      "/api/v1/compromisos/plan-accion/validar-redaccion",
+      {
+        method: "POST",
+        body: JSON.stringify({
+          descripcion_actividad: descripcion,
+          tipo_actividad: tipoActividad,
+        }),
+      }
+    );
+  } catch {
+    return validarRedaccionLocal(descripcion, tipoActividad);
+  }
+}
+
+export async function obtenerMatrizPlanAccionApi(
+  filtros?: FiltrosMatrizPlanAccion
+): Promise<MatrizPlanAccionRespuesta> {
+  try {
+    const params = new URLSearchParams();
+    if (filtros?.vigencia) params.set("vigencia", String(filtros.vigencia));
+    if (filtros?.entidad && filtros.entidad !== "todas")
+      params.set("entidad", filtros.entidad);
+    if (filtros?.linea_codigo && filtros.linea_codigo !== "todas")
+      params.set("linea_codigo", filtros.linea_codigo);
+    if (filtros?.tipo_meta && filtros.tipo_meta !== "todas")
+      params.set("tipo_meta", filtros.tipo_meta);
+    if (filtros?.tipo_actividad && filtros.tipo_actividad !== "todas")
+      params.set("tipo_actividad", filtros.tipo_actividad);
+    if (filtros?.categoria_recursos && filtros.categoria_recursos !== "todas")
+      params.set("categoria_recursos", filtros.categoria_recursos);
+    if (filtros?.fuente_financiacion && filtros.fuente_financiacion !== "todas")
+      params.set("fuente_financiacion", filtros.fuente_financiacion);
+    if (filtros?.busqueda) params.set("busqueda", filtros.busqueda);
+
+    const query = params.toString();
+    const res = await apiFetch<MatrizPlanAccionRespuesta>(
+      `/api/v1/compromisos/plan-accion/matriz${query ? `?${query}` : ""}`
+    );
+
+    if (res && res.hoja_1_plan_accion && Array.isArray(res.hoja_1_plan_accion)) {
+      return {
+        ...res,
+        esContingencia: false,
+      };
+    }
+    throw new Error("Respuesta vacía o formato inválido");
+  } catch (error) {
+    console.warn("Fallo al consultar matriz de plan de acción, usando fallback local:", error);
+    let filtradas = [...ACTIVIDADES_PA_CANONICAS];
+
+    if (filtros?.linea_codigo && filtros.linea_codigo !== "todas") {
+      filtradas = filtradas.filter(
+        (a) => a.linea_estrategica_codigo === filtros.linea_codigo
+      );
+    }
+    if (filtros?.entidad && filtros.entidad !== "todas") {
+      filtradas = filtradas.filter(
+        (a) => a.entidad_responsable === filtros.entidad
+      );
+    }
+    if (filtros?.tipo_meta && filtros.tipo_meta !== "todas") {
+      filtradas = filtradas.filter((a) => a.tipo_meta === filtros.tipo_meta);
+    }
+    if (filtros?.tipo_actividad && filtros.tipo_actividad !== "todas") {
+      filtradas = filtradas.filter(
+        (a) => a.tipo_actividad === filtros.tipo_actividad
+      );
+    }
+    if (filtros?.fuente_financiacion && filtros.fuente_financiacion !== "todas") {
+      filtradas = filtradas.filter(
+        (a) => a.fuente_financiacion === filtros.fuente_financiacion
+      );
+    }
+    if (filtros?.busqueda && filtros.busqueda.trim() !== "") {
+      const q = filtros.busqueda.toLowerCase();
+      filtradas = filtradas.filter(
+        (a) =>
+          a.codigo.toLowerCase().includes(q) ||
+          a.descripcion_actividad.toLowerCase().includes(q) ||
+          a.proyecto_nombre.toLowerCase().includes(q) ||
+          a.codigo_bpim.toLowerCase().includes(q)
+      );
+    }
+
+    return {
+      resumen_ejecutivo: calcularResumenEjecutivoLocal(filtradas),
+      hoja_1_plan_accion: filtradas,
+      hoja_2_plan_indicativo: COMPROMISOS_PAS_CANONICOS,
+      esContingencia: true,
+    };
+  }
+}
+
+export async function crearActividadPlanAccionApi(
+  datos: Partial<ActividadPlanAccion>
+): Promise<ActividadPlanAccion> {
+  return await apiFetch<ActividadPlanAccion>(
+    "/api/v1/compromisos/plan-accion/actividades",
+    {
+      method: "POST",
+      body: JSON.stringify(datos),
+    }
+  );
+}
+
+export async function actualizarSeguimientoActividadApi(
+  idOcodigo: string,
+  datos: {
+    avance_t1?: number;
+    avance_t2?: number;
+    avance_t3?: number;
+    avance_t4?: number;
+    monto_ejecutado_cop?: number;
+    evidencia_soporte?: string;
+    observacion_cualitativa?: string;
+  }
+): Promise<ActividadPlanAccion> {
+  return await apiFetch<ActividadPlanAccion>(
+    `/api/v1/compromisos/plan-accion/actividades/${idOcodigo}/seguimiento`,
+    {
+      method: "PATCH",
+      body: JSON.stringify(datos),
+    }
+  );
+}

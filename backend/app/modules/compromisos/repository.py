@@ -6,7 +6,8 @@ from sqlalchemy import delete, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.modules.auditoria.models import RegistroAuditoria
-from app.modules.compromisos.models import CompromisoPAS
+from app.modules.compromisos.models import ActividadPlanAccion, CompromisoPAS
+
 
 
 class CompromisosRepository:
@@ -89,3 +90,77 @@ class CompromisosRepository:
         self.session.add(evento)
         await self.session.flush()
         return evento
+
+    async def listar_actividades(
+        self,
+        vigencia: int | None = None,
+        entidad: str | None = None,
+        linea_codigo: str | None = None,
+        tipo_meta: str | None = None,
+        tipo_actividad: str | None = None,
+        categoria_recursos: str | None = None,
+        fuente_financiacion: str | None = None,
+        busqueda: str | None = None,
+    ) -> Sequence[ActividadPlanAccion]:
+        stmt = select(ActividadPlanAccion).order_by(ActividadPlanAccion.codigo.asc())
+        if vigencia:
+            stmt = stmt.where(ActividadPlanAccion.vigencia == vigencia)
+        if entidad and entidad != "todas":
+            stmt = stmt.where(ActividadPlanAccion.entidad_responsable == entidad)
+        if linea_codigo and linea_codigo != "todas":
+            stmt = stmt.where(ActividadPlanAccion.linea_estrategica_codigo == linea_codigo)
+        if tipo_meta and tipo_meta != "todas":
+            stmt = stmt.where(ActividadPlanAccion.tipo_meta == tipo_meta)
+        if tipo_actividad and tipo_actividad != "todas":
+            stmt = stmt.where(ActividadPlanAccion.tipo_actividad == tipo_actividad)
+        if categoria_recursos and categoria_recursos != "todas":
+            stmt = stmt.where(ActividadPlanAccion.categoria_recursos == categoria_recursos)
+        if fuente_financiacion and fuente_financiacion != "todas":
+            stmt = stmt.where(ActividadPlanAccion.fuente_financiacion == fuente_financiacion)
+        if busqueda:
+            term = f"%{busqueda.strip()}%"
+            stmt = stmt.where(
+                or_(
+                    ActividadPlanAccion.codigo.ilike(term),
+                    ActividadPlanAccion.descripcion_actividad.ilike(term),
+                    ActividadPlanAccion.proyecto_nombre.ilike(term),
+                    ActividadPlanAccion.codigo_bpim.ilike(term),
+                    ActividadPlanAccion.entidad_responsable.ilike(term),
+                    ActividadPlanAccion.lider_responsable.ilike(term),
+                    ActividadPlanAccion.compromiso_pas_codigo.ilike(term),
+                )
+            )
+        res = await self.session.execute(stmt)
+        return res.scalars().all()
+
+    async def obtener_actividad_por_id_o_codigo(
+        self, id_o_codigo: str | uuid.UUID
+    ) -> ActividadPlanAccion | None:
+        if isinstance(id_o_codigo, uuid.UUID):
+            stmt = select(ActividadPlanAccion).where(ActividadPlanAccion.id == id_o_codigo)
+        else:
+            try:
+                parsed_uuid = uuid.UUID(str(id_o_codigo))
+                stmt = select(ActividadPlanAccion).where(
+                    or_(ActividadPlanAccion.id == parsed_uuid, ActividadPlanAccion.codigo == str(id_o_codigo))
+                )
+            except ValueError:
+                stmt = select(ActividadPlanAccion).where(ActividadPlanAccion.codigo == str(id_o_codigo))
+        res = await self.session.execute(stmt)
+        return res.scalar_one_or_none()
+
+    async def crear_actividad(self, actividad: ActividadPlanAccion) -> ActividadPlanAccion:
+        self.session.add(actividad)
+        await self.session.flush()
+        await self.session.refresh(actividad)
+        return actividad
+
+    async def actualizar_actividad(self, actividad: ActividadPlanAccion) -> ActividadPlanAccion:
+        await self.session.flush()
+        await self.session.refresh(actividad)
+        return actividad
+
+    async def eliminar_actividad(self, actividad: ActividadPlanAccion) -> None:
+        await self.session.delete(actividad)
+        await self.session.flush()
+

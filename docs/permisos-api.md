@@ -94,6 +94,11 @@ La última columna explica la excepción pública o la condición adicional.
 | GET | /api/v1/compromisos | publico | Máxima publicidad y transparencia activa de compromisos PAS Cartagena. |
 | POST | /api/v1/compromisos | permiso:seguimiento:gestionar@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |
 | GET | /api/v1/compromisos/kpis | publico | Consulta pública de KPIs consolidados de seguimiento del PAS. |
+| POST | /api/v1/compromisos/plan-accion/actividades | permiso:seguimiento:gestionar@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |
+| PATCH | /api/v1/compromisos/plan-accion/actividades/{id_o_codigo}/seguimiento | permiso:seguimiento:gestionar@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |
+| GET | /api/v1/compromisos/plan-accion/banco-conocimiento | publico | Consulta pública del Banco de Conocimiento oficial DNP y SisPT para formulación de Planes de Acción. |
+| GET | /api/v1/compromisos/plan-accion/matriz | publico | Consulta pública de Matriz DNP Hoja 1 Plan_Accion y Hoja 2 Plan_Indicativo. |
+| POST | /api/v1/compromisos/plan-accion/validar-redaccion | publico | Validador lingüístico DNP de verbos fuertes en infinitivo y detección de verbos débiles prohibidos. |
 | DELETE | /api/v1/compromisos/{id_o_codigo} | permiso:seguimiento:gestionar@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |
 | GET | /api/v1/compromisos/{id_o_codigo} | publico | Consulta pública de compromiso por UUID o código para control social. |
 | PATCH | /api/v1/compromisos/{id_o_codigo}/avance | permiso:seguimiento:gestionar@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |

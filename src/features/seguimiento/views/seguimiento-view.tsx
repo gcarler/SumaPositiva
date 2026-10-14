@@ -13,6 +13,7 @@ import {
   Layers,
   Scale,
   AlertTriangle,
+  BookOpen,
 } from "lucide-react";
 import { PageHeader } from "@/shared/ui/page-header";
 import { Button } from "@/shared/ui/button";
@@ -40,6 +41,8 @@ import { SeguimientoKpis } from "../components/seguimiento-kpis";
 import { CompromisosTabla } from "../components/compromisos-tabla";
 import { CadenaValorTab } from "../components/cadena-valor-tab";
 import { RendicionCuentasTab } from "../components/rendicion-cuentas-tab";
+import { MotorPlanAccionTab } from "../components/motor-plan-accion-tab";
+import { BancoConocimientoDNPTab } from "../components/banco-conocimiento-dnp-tab";
 import {
   useCompromisosStore,
   calcularKpisSeguimiento,
@@ -188,14 +191,22 @@ export function SeguimientoView() {
         <PageHeader
           eyebrow="Plan de Acción y Seguimiento (PAS) · Cartagena de Indias 2026–2036"
           title={
-            tabActiva === "matriz_compromisos"
+            tabActiva === "motor_plan_accion"
+              ? "Motor de Planes de Acción DNP / SisPT"
+              : tabActiva === "banco_conocimiento_dnp"
+              ? "Banco de Conocimiento DNP / SisPT"
+              : tabActiva === "matriz_compromisos"
               ? "Matriz de Compromisos Institucionales"
               : tabActiva === "cadena_valor"
               ? "Cadena de Valor y Seguimiento"
               : "Rendición de Cuentas y Devolución Ciudadana"
           }
           description={
-            tabActiva === "matriz_compromisos"
+            tabActiva === "motor_plan_accion"
+              ? "Programación operativa anual, articulación con el Plan Indicativo cuatrienal, verificación de verbos fuertes y fuentes de financiación conforme a Ley 152/1994 y Ley 1474/2011."
+              : tabActiva === "banco_conocimiento_dnp"
+              ? "Guía metodológica oficial del Departamento Nacional de Planeación: encadenamiento de instrumentos (PDT, PI, POAI, MFMP, Presupuesto), 7 pasos de elaboración y validador lingüístico de verbos fuertes en infinitivo."
+              : tabActiva === "matriz_compromisos"
               ? "Monitoreo de metas cuatrienales, asignación presupuestal y avance de gestión por secretarías del Distrito para la Seguridad Humana Integral."
               : tabActiva === "cadena_valor"
               ? "Estructuración lógica de causalidad técnica: Insumos financieros y operativos articulados a Productos entregados y Resultados transformadores de impacto en Cartagena."
@@ -297,6 +308,20 @@ export function SeguimientoView() {
             aria-label="Pestañas del Plan de Acción y Seguimiento"
             className="bg-surface-2 p-1 border border-border"
           >
+            <TabsTrigger
+              value="motor_plan_accion"
+              className="gap-2 text-xs data-[state=active]:bg-surface-1 data-[state=active]:text-text-primary"
+            >
+              <FileSpreadsheet className="h-3.5 w-3.5 text-ember" />
+              <span>Motor Plan de Acción (DNP / SisPT)</span>
+            </TabsTrigger>
+            <TabsTrigger
+              value="banco_conocimiento_dnp"
+              className="gap-2 text-xs data-[state=active]:bg-surface-1 data-[state=active]:text-text-primary"
+            >
+              <BookOpen className="h-3.5 w-3.5 text-info" />
+              <span>Banco de Conocimiento DNP</span>
+            </TabsTrigger>
             <TabsTrigger
               value="matriz_compromisos"
               className="gap-2 text-xs data-[state=active]:bg-surface-1 data-[state=active]:text-text-primary"
@@ -429,6 +454,16 @@ export function SeguimientoView() {
         {/* Tab 3: Rendición de Cuentas y Devolución Ciudadana */}
         <TabsContent value="rendicion_cuentas" className="space-y-6 outline-none">
           <RendicionCuentasTab puedeEditar={puedeEditarEfectivo} />
+        </TabsContent>
+
+        {/* Tab 4: Motor Plan de Acción (DNP / SisPT) */}
+        <TabsContent value="motor_plan_accion" className="space-y-6 outline-none">
+          <MotorPlanAccionTab puedeEditar={puedeEditarEfectivo} />
+        </TabsContent>
+
+        {/* Tab 5: Banco de Conocimiento DNP */}
+        <TabsContent value="banco_conocimiento_dnp" className="space-y-6 outline-none">
+          <BancoConocimientoDNPTab />
         </TabsContent>
       </Tabs>
     </div>
