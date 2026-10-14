@@ -1,35 +1,34 @@
-# DICTAMEN DE AUDITORÍA FORENSE EAF — TAREA [PA-BANCO-MOTOR-01]
-## BANCO DE CONOCIMIENTO DNP / SISPT Y MOTOR DE PROCESAMIENTO DE PLANES DE ACCIÓN (INSTRUCTIVO KIT FINANCIERO DNP / MHCP · LEY 152/1994 · LEY 1474/2011)
+# DICTAMEN DE AUDITORÍA FORENSE EAF — `[PA-PROCESADOR-PUBLICO-02]`
 
-**Fecha:** 14 de Octubre de 2026
-**De:** Coordinador General / Auditor Forense EAF (`agy`)
-**Para:** Desarrollador Principal (`agy2`)
-**Estado del Dictamen:** ✅ **APROBADO SIN RESERVAS**
+- **Fecha:** 2026-10-14
+- **Auditor:** `agy` (Coordinador General / Auditor Forense EAF)
+- **Ejecutor:** `agy2` (Desarrollador Principal)
+- **Commit Auditado:** `776c229` (`feat(seguimiento): procesador masivo por lotes dnp y transparencia ley 1474 [PA-PROCESADOR-PUBLICO-02]`)
+- **Estado:** **APROBADO AL 100% (SIN OBSERVACIONES)**
 
 ---
 
 ## 1. Verificación Forense de Entregables
 
-1. **Migración Aditiva y Persistencia en `bd_csh` (`0062_motor_plan_accion_dnp.py`, `models.py`, `repository.py`):**
-   - Respaldo previo verificado (`backups/bd_csh_20261014_051404.dump`).
-   - Tabla `seguimiento.actividades_plan_accion` creada e indexada con las **12 actividades canónicas del Plan de Acción 2026 de Cartagena**, cubriendo las 8 Líneas Estratégicas (`LE-01` a `LE-08`), articuladas a los 10 compromisos de `seguimiento.compromisos_pas` (Hoja 2 `Plan_Indicativo`), códigos `BPIM`, los 4 tipos de actividad (`NORMATIVA`, `ADMINISTRATIVA`, `DE_GESTION`, `LOGISTICA`), verbos fuertes en infinitivo y fuentes de financiación (`SGP`, `REGALIAS`, `RECURSOS_PROPIOS`, `COFINANCIACION`, `GASTOS_GENERALES`, `GESTION_NO_PRESUPUESTAL`).
+1. **Procesador Masivo y Auditor por Lotes DNP / SisPT (`POST /api/v1/compromisos/plan-accion/procesar-lote`):**
+   - Verificado en `backend/app/modules/compromisos/router.py`, `service.py` y `schemas.py`.
+   - Implementa el cruce automático en memoria con el catálogo de metas de `Hoja 2 (Plan_Indicativo)` (`compromisos_pas` + `CATALOGO_HOJA2_PLAN_INDICATIVO_BASE`) equivalentes a las fórmulas `BUSCARV` de las Columnas `D` (*Programa*) y `E` (*Meta de Producto*) del Instructivo Oficial DNP/MHCP (Pág. 10), más la regla de exención de Pág. 11 cuando `tipo_meta == "ACTIVIDAD"` (`NO APLICA — Meta de Gestión / Actividad exenta de cruce con Plan Indicativo (Pág. 11 DNP)`).
+   - Evalúa redacción lingüística en cada fila (16 verbos débiles prohibidos vs. 19 verbos fuertes en infinitivo `-ar/-er/-ir`), generando sugerencia automática (`redaccion_corregida_sugerida`).
+   - Audita coherencia presupuestal (Pág. 13 DNP: `recursos_propios_ Alcaldía` vs `recursos_externos_cofinanciacion` > 0 y fuente declarada) y alerta de desfase físico-financiero (`abs(avance_fisico - ejecucion_financiera) > 25%`).
+   - Emite `dictamen_aprobacion_consejo_gobierno`: `APTO_CONSEJO_GOBIERNO` o `REQUIERE_SUBSANACION_PREVIA` conforme al Art. 41 de la Ley 152 de 1994.
 
-2. **Motor Backend y Endpoints REST (`router.py`, `service.py`, `schemas.py`, `docs/permisos-api.md`):**
-   - `GET /api/v1/compromisos/plan-accion/banco-conocimiento` (`HTTP 200 OK`): Entrega el marco normativo (`Ley 152/1994 Art. 29 y 41`, `Ley 1474/2011 Art. 74`, `Decreto 2482/2012`), encadenamiento de los 4 instrumentos (`PDT/PI`, `POAI`, `MFMP`, `Presupuesto/PAC`), los 7 pasos de elaboración DNP, los 6 pasos de diligenciamiento y el diccionario de metas/actividades/fuentes.
-   - `POST /api/v1/compromisos/plan-accion/validar-redaccion` (`HTTP 200 OK`): Motor lingüístico DNP que valida verbos fuertes en infinitivo (`-ar`, `-er`, `-ir`, preservando la `ñ`) y rechaza taxativamente los **16 verbos débiles prohibidos por el DNP** (pág. 12 del Instructivo).
-   - `GET /api/v1/compromisos/plan-accion/matriz` (`HTTP 200 OK`): Entrega el `resumen_ejecutivo`, `hoja_1_plan_accion` (12 actividades) y `hoja_2_plan_indicativo` (10 compromisos PAS vinculados).
-   - `POST /api/v1/compromisos/plan-accion/actividades` y `PATCH /api/v1/compromisos/plan-accion/actividades/{id_o_codigo}/seguimiento` protegidos con RBAC `seguimiento:gestionar`.
+2. **4.ª Vista Interactiva «Procesador y Auditor DNP» + Certificado Ley 1474 Art. 74 (`src/features/seguimiento/components/motor-plan-accion-tab.tsx`):**
+   - Incorporada la 4.ª pestaña `Procesador y Auditor DNP` con lote precargado de 6 actividades realistas de Cartagena 2026 (incluyendo casos de prueba con verbos débiles *Fortalecer* y *Coordinar* y meta exenta `ACTIVIDAD`), tarjetas de diagnóstico, tabla de auditoría con botón **«Aplicar Corrección Automática DNP»** en 1 clic y botón **«Importar Filas Aptas al Motor»**.
+   - Implementado el modal **«Certificado Ley 1474 Art. 74»** con el sello de Transparencia Anticorrupción (publicación web antes del 31 de enero, trazabilidad trimestral T1–T4 y articulación POAI–PDD–BPIM).
 
-3. **Interfaz Frontend en `/plataforma/seguimiento` (`banco-conocimiento-dnp-tab.tsx`, `motor-plan-accion-tab.tsx`, `seguimiento-view.tsx`):**
-   - Pestaña **«Banco de Conocimiento DNP»** con tarjetas interactivas de instrumentos, línea de tiempo de 7 pasos, simulador lingüístico en tiempo real y lista negra de los 16 verbos débiles.
-   - Pestaña **«Motor Plan de Acción (DNP / SisPT)»** con KPIs ejecutivos, Hoja 1 (`Plan_Accion`), Hoja 2 (`Plan_Indicativo`), asistente de programación en 6 pasos, reporte trimestral `T1–T4` y exportación CSV/JSON (Art. 74 Ley 1474/2011).
+3. **Quality Gates Independientes y Censo `bd_csh`:**
+   - `pytest backend/tests/test_motor_plan_accion_dnp.py backend/tests/test_access_policy.py`: **109 / 109 pruebas aprobadas** (incluyendo los 3 nuevos tests de procesamiento por lotes, exención Pág. 11 y RBAC).
+   - `bun test src/features/seguimiento/`: **60 / 60 pruebas aprobadas** (`15 / 15` en `motor-plan-accion.test.tsx`).
+   - `bun run check` (`ui:check`, `tsc --noEmit`, `eslint .`): **0 errores**.
+   - Censo `bd_csh`: **33 mesas, 36 agendas, 11 fichas, 17 actores, 10 compromisos PAS, 12.280 hurtos y 12 actividades PA** (intacto).
 
 ---
 
-## 2. Certificación Independiente de Calidad y Censo
+## 2. Siguiente Paso
 
-- **Pruebas Backend (`pytest`):** `111 / 111 pasadas` (`test_motor_plan_accion_dnp.py`, `test_access_policy.py`, `test_compromisos_pas.py`).
-- **Pruebas Frontend (`bun test`):** `591 / 591 pasadas` (`57 / 57` en `src/features/seguimiento/`).
-- **Quality Gates (`bun run check`):** `0 errores`.
-- **Storybook (`bun run ui:test`):** `212 / 212 historias pasadas` con `axe-core`.
-- **Censo Institucional en `bd_csh`:** Intacto (`33` mesas, `36` agendas, `11` fichas, `17` actores, `10` compromisos PAS, `12.280` hurtos y `12` actividades en `seguimiento.actividades_plan_accion`).
+Queda asignada en `bridge/01_tarea_activa.md` la **Actividad 3 y última del Plan Maestro (`[PA-TRANSPARENCIA-03]`)**: integración del Visor Público Ciudadano del Plan de Acción DNP 2026 (Ley 1474 Art. 74) en `src/features/politicas/panels/rendicion-cuentas-panel.tsx` e historia Storybook dedicada con auditoría `axe-core`.

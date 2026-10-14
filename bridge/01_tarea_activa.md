@@ -1,107 +1,59 @@
-# TAREA ACTIVA PARA `agy2`: `[PA-PROCESADOR-PUBLICO-02]`
-## ACTIVIDAD 2 DEL BLOQUE DNP: MOTOR PROCESADOR POR LOTES (CRUCE AUTOMÁTICO HOJA 2 `PLAN_INDICATIVO` → HOJA 1 `PLAN_ACCION`, AUDITORÍA METODOLÓGICA DNP Y TRANSPARENCIA LEY 1474 DE 2011)
+# TAREA ACTIVA PARA AGY2: `[PA-TRANSPARENCIA-03]`
 
-**Fecha:** 14 de Octubre de 2026
-**De:** Coordinador General / Auditor Forense EAF (`agy`)
-**Para:** Desarrollador Principal (`agy2`)
-**Prioridad:** ALTA — EJECUCIÓN INMEDIATA
+- **Prioridad:** ALTA (Actividad 3 y cierre del Plan Maestro del Motor de Procesamiento de Planes de Acción DNP / SisPT)
+- **Asignado por:** `agy` (Coordinador General / Auditor Forense EAF)
+- **Estado previo:** Actividades 1 (`[PA-BANCO-MOTOR-01]`) y 2 (`[PA-PROCESADOR-PUBLICO-02]`) aprobadas al 100% en `bridge/03_dictamen_revision.md`.
 
 ---
 
-## 1. Contexto y Objetivo de la Actividad 2
+## 1. Contexto y Objetivo
 
-La Actividad 1 (`[PA-BANCO-MOTOR-01]`) quedó **APROBADA SIN RESERVAS** en `bridge/03_dictamen_revision.md`.
-Siguiendo el flujo secuencial acordado con el propietario y las reglas de las páginas 8, 9, 11, 12 y 13 del [Instructivo oficial del Plan de Acción DNP](file:///root/.gemini/antigravity-cli/brain/827a451d-ecea-4e9b-ab9d-e6b1b5fa6094/scratch/Instructivo_PlandeAccion_DNP.pdf), pasamos a la **Actividad 2 (`[PA-PROCESADOR-PUBLICO-02]`)** para completar el motor de procesamiento masivo, el cruce automático Hoja 2 → Hoja 1 del formato DNP y la certificación E2E en Storybook.
+En las Actividades 1 y 2 construimos el **Banco de Conocimiento DNP**, el **Motor de Plan de Acción (`Hoja 1 Plan_Accion` + `Hoja 2 Plan_Indicativo`)**, el **Validador Lingüístico de Verbos Fuertes** y el **Procesador/Auditor por Lotes DNP** dentro de `/plataforma/seguimiento`.
 
-### Fundamento en el Instructivo Oficial del DNP:
-1. **Cruce Automático Hoja 2 (`Plan_Indicativo`) → Hoja 1 (`Plan_Accion`) (Pág. 11):**
-   - *"Las metas de gestión y de producto del Plan de Acción tendrán la opción de ser asociadas con el código de la meta de producto y el formato traerá automáticamente el Programa (Columna D) y la Meta de Producto (Columna E) de la Hoja 2 `Plan_indicativo`."*
-   - *"En el caso de seleccionar como tipo de meta `ACTIVIDAD`, no será obligatorio diligenciar la programación de metas de producto o gestión, pasando directamente al Paso 4 (Programación de actividades)."*
-2. **Consolidación y Revisión por la Oficina de Planeación y Consejo de Gobierno (Pasos 2, 5 y 6 — Págs. 8, 9 y 13):**
-   - Cada dependencia remite su matriz del Plan de Acción a la Secretaría de Planeación (dependencia consolidadora), quien revisa la coherencia metodológica, presupuestal y lingüística antes de someterla a aprobación del **Consejo de Gobierno** (Art. 41 Ley 152 de 1994).
-3. **Publicación Web Ley 1474 de 2011 Art. 74 y Decreto 2482 de 2012 (Págs. 4, 9 y 13):**
-   - A más tardar el **31 de enero de cada año**, la entidad debe publicar el Plan de Acción especificando objetivos, estrategias, proyectos, metas, responsables, distribución presupuestal e indicadores, junto con el balance de ejecución.
+Para culminar el bloque completo del **Plan Maestro del Motor de Plan de Acción DNP (`PLAN_MAESTRO_MOTOR_PLAN_ACCION_DNP.md`)**, la **Actividad 3 (`[PA-TRANSPARENCIA-03]`)** consiste en:
+1. Llevar el cumplimiento del **Art. 74 de la Ley 1474 de 2011 (Estatuto Anticorrupción — Publicación Ciudadana del Plan de Acción Anual antes del 31 de enero)** directamente al **Portal Público Ciudadano (`/`)**, dentro del panel de **Rendición de Cuentas y Cumplimiento 2026** (`src/features/politicas/panels/rendicion-cuentas-panel.tsx`).
+2. Incorporar cobertura de historias Storybook (`axe-core` WCAG 2.1 AA) en `src/app/_stories/plataforma-interna.stories.tsx` para el Motor de Plan de Acción DNP y el Banco de Conocimiento DNP.
 
 ---
 
-## 2. Especificación Técnica Paso a Paso
+## 2. Especificaciones Técnicas Obligatorias
 
-### Paso 1: Endpoint Backend de Procesamiento y Auditoría Metodológica de Lotes DNP (`POST /api/v1/compromisos/plan-accion/procesar-lote`)
-En `backend/app/modules/compromisos/schemas.py`, `service.py` y `router.py` (registrándolo en `docs/permisos-api.md` como `publico` para permitir simulación/validación abierta sin barreras):
-- Recibe un payload `ProcesarLotePlanAccionSolicitud`:
-  ```python
-  class ItemLotePlanAccion(BaseModel):
-      codigo: str | None = None
-      entidad_responsable: str
-      lider_responsable: str = "Líder Funcional"
-      tipo_meta: str = "META_PRODUCTO"  # META_PRODUCTO | META_GESTION | ACTIVIDAD
-      compromiso_pas_codigo: str | None = None  # Código en Hoja 2 Plan_Indicativo (Columna D/E)
-      codigo_bpim: str = ""
-      proyecto_nombre: str = ""
-      objetivo_proyecto: str = ""
-      tipo_actividad: str = "DE_GESTION"  # NORMATIVA | ADMINISTRATIVA | DE_GESTION | LOGISTICA
-      descripcion_actividad: str
-      fecha_inicio: str = "2026-01-15"
-      fecha_terminacion: str = "2026-12-15"
-      avance_t1: float = 0.0
-      avance_t2: float = 0.0
-      avance_t3: float = 0.0
-      avance_t4: float = 0.0
-      categoria_recursos: str = "INVERSION"  # INVERSION | FUNCIONAMIENTO | RECURSOS_GESTION
-      fuente_financiacion: str = "RECURSOS_PROPIOS"
-      monto_programado_cop: float = 0.0
-      monto_ejecutado_cop: float = 0.0
-  ```
-- **Lógica del Motor de Procesamiento (`procesar_lote_plan_accion`):**
-  Para cada fila del lote:
-  1. **Cruce Automático Hoja 2 (`Plan_Indicativo`) → Hoja 1 (`Plan_Accion`) (Regla Pág. 11 DNP):**
-     - Si `tipo_meta` es `META_PRODUCTO` o `META_GESTION` y trae `compromiso_pas_codigo`, el motor busca en `seguimiento.compromisos_pas` (o catálogo canónico) y **autocompleta automáticamente**:
-       - `columna_d_programa`: Línea estratégica / programa del Plan Indicativo.
-       - `columna_e_meta_producto`: Descripción y meta cuatrienal del Plan Indicativo.
-     - Si `tipo_meta == "ACTIVIDAD"`, aplica la exención de la Pág. 11 del Instructivo DNP (*"En el caso de seleccionar como tipo de meta actividad no será obligatorio diligenciar programación de metas de producto o gestión, se pasa al paso 4"*).
-  2. **Validación Lingüística de Verbos Fuertes DNP (Regla Pág. 12):**
-     - Verifica que `descripcion_actividad` inicie con verbo fuerte en infinitivo (`-ar`, `-er`, `-ir`) y no use ninguno de los 16 verbos débiles prohibidos. Si detecta un verbo débil, propone automáticamente la **redacción corregida sugerida** reemplazando el verbo débil por el primer verbo fuerte recomendado según `tipo_actividad`!
-  3. **Validación Presupuestal y de Fuentes (Regla Pág. 13):**
-     - Verifica coherencia entre `categoria_recursos` y `fuente_financiacion`:
-       - `INVERSION` ↔ `RECURSOS_PROPIOS`, `SGP`, `REGALIAS`, `CREDITO`, `COFINANCIACION`, `OTROS`.
-       - `FUNCIONAMIENTO` ↔ `GASTOS_PERSONAL`, `GASTOS_GENERALES`, `TRANSFERENCIAS`.
-       - `RECURSOS_GESTION` ↔ `GESTION_NO_PRESUPUESTAL` (donde `monto_programado_cop` puede ser `0`).
-  4. **Cálculo de Avance Físico, Ejecución Financiera y Semáforo de Desfase:**
-     - Calcula `avance_fisico = round((avance_t1 + avance_t2 + avance_t3 + avance_t4) / 4, 2)` (o promedio de trimestres reportados).
-     - Calcula `ejecucion_financiera = round((monto_ejecutado_cop / monto_programado_cop) * 100, 2)` si `monto_programado_cop > 0` else `100.0`.
-     - Detecta **Alerta de Desfase Físico-Financiero** si la diferencia entre `avance_fisico` y `ejecucion_financiera` supera 25 puntos porcentuales.
-  5. **Puntaje y Dictamen Global para Consejo de Gobierno (Art. 41 Ley 152/94):**
-     - Devuelve `ProcesarLotePlanAccionRespuesta` con:
-       - `total_filas_procesadas`, `filas_conformes_dnp`, `filas_con_observaciones`, `puntaje_calidad_dnp` (`0–100%`), `estado_dictamen_planeacion` (`APTO_CONSEJO_GOBIERNO` si 100% conformes, o `REQUIERE_SUBSANACION_PREVIA` si hay verbos débiles o incoherencias), `monto_total_programado_cop`, `monto_total_ejecutado_cop` y el arreglo detallado `filas_procesadas` (con `hallazgos`, `redaccion_corregida_sugerida`, `columna_d_programa`, `columna_e_meta_producto`, `avance_fisico`, `ejecucion_financiera`, `alerta_desfase`).
+### 2.1. Integración del Visor Público Ciudadano del Plan de Acción DNP 2026 en `src/features/politicas/panels/rendicion-cuentas-panel.tsx`
+1. Añade en la parte superior de `RendicionCuentasPanel` un selector de vista (con `Button variant="unstyled" size="unstyled"`):
+   - **Vista 1 (por defecto): `27 Dependencias Distritales`** (conserva intacto todo el buscador, semáforos y mosaico actual de las 27 dependencias para no romper ningún test existente).
+   - **Vista 2: `Matriz Plan de Acción DNP 2026 (Ley 1474)`** (`data-testid="tab-publico-plan-accion-dnp"`).
+2. Cuando el ciudadano active la vista **`Matriz Plan de Acción DNP 2026 (Ley 1474)`**:
+   - Carga las actividades del Plan de Acción 2026 consumiendo `obtenerMatrizPlanAccion({ vigencia: 2026 })` de `@/features/seguimiento/services/plan-accion-dnp-api` (con estado inicial / fallback inmediato desde `ACTIVIDADES_PLAN_ACCION_CANONICAS` para que renderice instantáneamente sin parpadeos ni errores offline).
+   - Muestra una **Tarjeta de Certificación Legal de Transparencia (Art. 74 Ley 1474 de 2011 + Art. 41 Ley 152 de 1994)**:
+     - Sello: `PUBLICADO EL 31 DE ENERO DE 2026 — ESTATUTO ANTICORRUPCIÓN (LEY 1474 ART. 74)`.
+     - KPIs resumidos de las 12 actividades canónicas:
+       - Total Actividades Programadas (`12`)
+       - Verbos Fuertes Validados DNP (`100%` en infinitivo `-ar/-er/-ir`)
+       - Inversión Total Programada 2026 (suma de `total_programado_cop` en formato moneda COP, diferenciando Recursos Propios POAI Alcaldía vs. Fuentes Externas SGR/PGN/Cooperación)
+       - Avance Físico Promedio Pond. (`%`)
+   - Incluye un **filtro rápido por Línea Estratégica (`Todas`, `LE-01`..`LE-08`)** y buscador por texto (actividad, verbo fuerte, dependencia o código BPIM).
+   - Renderiza el listado de las **12 actividades del Plan de Acción 2026** en tarjetas claras para control social ciudadano, mostrando en cada una:
+     - Código de actividad (`PA-2026-001`..`PA-2026-012`), código `BPIM`, etiqueta de `Tipo de Meta` (`PRODUCTO` / `ACTIVIDAD`) y badge del **Verbo Fuerte DNP** (ej. `Verbo DNP: Implementar`, `Instalar`, `Construir`, etc.).
+     - `descripcion_actividad`, `dependencia_responsable` y cruce heredado de Hoja 2 (`columna_d_programa` + `columna_e_meta_producto`).
+     - Avance Trimestral (`T1`, `T2`, `T3`, `T4`), `% Avance Físico`, `% Ejecución Financiera`, `total_programado_cop` y `fuentes_financiacion`.
+   - Incluye al pie un botón/enlace hacia `/plataforma/seguimiento` (*«Abrir Workbench Técnico DNP / SisPT en Plataforma»*) para que los enlaces técnicos y auditores puedan ir directamente al motor completo.
 
-### Paso 2: Nueva Vista Interactiva en `MotorPlanAccionTab` (`src/features/seguimiento/components/motor-plan-accion-tab.tsx`)
-Añadir en el conmutador de vistas de `MotorPlanAccionTab` una cuarta vista protagonista:
-- **`procesador_lote`: «Procesador Masivo y Auditor DNP (Hoja 2 PI → Hoja 1 PA)»**:
-  1. **Botón «Cargar Lote de Prueba con Casos Reales y Hallazgos DNP»** + soporte para subir archivo `.csv` / `.json` o editar el lote en vivo:
-     - El lote de demostración precargado debe incluir **6 filas mixtas** (4 actividades 100% conformes y 2 actividades con errores típicos que el DNP rechaza en la vida real: por ejemplo, una que empieza con el verbo débil prohibido *"Fortalecer los frentes de seguridad..."* y otra con *"Garantizar la convivencia..."* o incoherencia de fuente de financiación), para que el usuario vea en acción cómo el **Motor de Procesamiento DNP**:
-       - Cruza automáticamente el código `PAS-*` con la **Hoja 2 (`Plan_Indicativo`)** trayendo `Columna D (Programa)` y `Columna E (Meta de Producto)`.
-       - Detecta en rojo los verbos débiles prohibidos (*"Fortalecer"*, *"Garantizar"*) y ofrece un botón **«Aplicar Corrección Automática DNP»** que transforma en 1 clic los verbos débiles en verbos fuertes en infinitivo (*"Ejecutar..."*, *"Verificar..."*) y vuelve a procesar el lote hasta alcanzar **100% Puntaje de Calidad DNP — `APTO_CONSEJO_GOBIERNO`**.
-  2. **Ficha Oficial de Publicación Web Ley 1474 de 2011 (Art. 74 — Corte 31 de Enero):**
-     - En `MotorPlanAccionTab`, incluir una tarjeta/sección desplegable o vista de **Certificado de Publicación Anual Ley 1474 de 2011 (Art. 74) y Decreto 2482 de 2012** que consolida por Dependencia Responsable: Objetivos, Estrategias, Proyectos BPIM, Metas de Producto/Gestión, Distribución Presupuestal por Fuente e Indicadores de Gestión, con botón de descarga inmediata.
-
-### Paso 3: Cobertura en Storybook (`src/app/_stories/plataforma-interna.stories.tsx`) y Pruebas Unitarias
-1. En `src/app/_stories/plataforma-interna.stories.tsx`:
-   - Verificar que la historia existente de `Seguimiento` (o una nueva historia `SeguimientoMotorPlanAccionDNP`) renderice `/plataforma/seguimiento`, permita navegar a las pestañas **«Motor Plan de Acción (DNP / SisPT)»** y **«Banco de Conocimiento DNP»** y pase la auditoría de accesibilidad `axe-core` con **0 violaciones**.
-2. En `backend/tests/test_motor_plan_accion_dnp.py` y `src/features/seguimiento/components/motor-plan-accion.test.tsx`:
-   - Añadir pruebas para `POST /api/v1/compromisos/plan-accion/procesar-lote`, verificando:
-     - El autocompletado automático de `Columna D (Programa)` y `Columna E (Meta de Producto)` desde la Hoja 2 `Plan_Indicativo`.
-     - La exención de Paso 3 cuando `tipo_meta == "ACTIVIDAD"`.
-     - La detección de verbos débiles en un lote y la generación de `redaccion_corregida_sugerida`.
-     - La transición de `REQUIERE_SUBSANACION_PREVIA` a `APTO_CONSEJO_GOBIERNO` cuando se corrigen los hallazgos.
+### 2.2. Pruebas Unitarias y Storybook (`axe-core`)
+1. **Pruebas unitarias (`bun test`):**
+   - Crea o amplía pruebas en `src/features/politicas/__tests__/rendicion-cuentas-panel.test.tsx` verificando:
+     - Que `RendicionCuentasPanel` renderiza la vista por defecto de 27 dependencias.
+     - Que al hacer clic en `Matriz Plan de Acción DNP 2026 (Ley 1474)` (`data-testid="tab-publico-plan-accion-dnp"`) se muestra el sello `LEY 1474 ART. 74`, las 12 actividades (`PA-2026-001`..`PA-2026-012`), sus verbos fuertes y códigos BPIM, y el filtro por Línea Estratégica.
+2. **Historia Storybook (`src/app/_stories/plataforma-interna.stories.tsx`):**
+   - Añade una historia exportada `MotorPlanAccionDNP` en `src/app/_stories/plataforma-interna.stories.tsx` que monte `BancoConocimientoDnpTab` y `MotorPlanAccionTab` dentro de `PlataformaShell` (con mock de `/api/v1/compromisos/plan-accion/*` en `beforeEach` si es necesario o usando sus fallbacks canónicos) y verifique con `play` que renderiza sin violaciones `axe-core` en `bun run ui:test`.
 
 ---
 
-## 3. Puertas de Calidad Obligatorias (Quality Gates)
+## 3. Quality Gates Obligatorios antes de Reportar
 
-1. `pytest`: `/root/polis/venv/bin/pytest backend/tests/test_motor_plan_accion_dnp.py backend/tests/test_access_policy.py` (100% en verde).
-2. `bun test`: Todas las pruebas unitarias del frontend en verde (`0 fail`).
-3. `bun run check`: `ui:check`, `tsc --noEmit` y `eslint .` con **0 errores**.
-4. `bun run ui:test`: Todas las historias de Storybook (incluyendo la nueva cobertura de Motor Plan de Acción DNP) al **100% en verde** con `axe-core`.
-5. `bun run build`, copia de assets a `.next/standalone`, reinicio de `polis-backend` y `polis-frontend`.
-6. Censo de `bd_csh` intacto (`33` mesas, `36` agendas, `11` fichas, `17` actores, `10` compromisos PAS, `12.280` hurtos y `12` actividades en `seguimiento.actividades_plan_accion`).
-7. Commit local en `main` (Zero-Push) y reporte en `bridge/02_resultado_agy2.md`.
+1. `/root/polis/venv/bin/pytest` -> **100% en verde**.
+2. `bun test` -> **100% en verde**.
+3. `bun run check` (`ui:check`, `tsc --noEmit`, `eslint .`) -> **0 errores**.
+4. `bun run ui:test` -> **100% historias Storybook aprobadas con `axe-core`**.
+5. `bun run build` -> **Build de producción exitoso** y reinicio limpio de `polis-frontend` y `polis-backend`.
+6. **Censo de `bd_csh` intacto:** 33 mesas, 36 agendas, 11 fichas, 17 actores, 10 compromisos PAS, 12.280 hurtos y 12 actividades PA.
+7. Commit local en `main` (**Política Zero-Push**) y reporte detallado en `bridge/02_resultado_agy2.md`.
