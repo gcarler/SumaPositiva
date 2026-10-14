@@ -46,6 +46,7 @@ interface MapaCartagenaProps {
   anioHurto?: number | null;
   delitoHurto?: string | null;
   onSelectHurto?: (poligonoId: number) => void;
+  capaPersonalizada?: { geojson: unknown; nombre?: string; color?: string } | null;
 }
 
 const LOCALIDADES = [
@@ -82,6 +83,7 @@ const MapaCartagena = forwardRef<MapaCartagenaHandle, MapaCartagenaProps>(functi
     anioHurto = null,
     delitoHurto = null,
     onSelectHurto,
+    capaPersonalizada = null,
   },
   ref,
 ) {
@@ -120,6 +122,7 @@ const MapaCartagena = forwardRef<MapaCartagenaHandle, MapaCartagenaProps>(functi
     anioHurto,
     delitoHurto,
     onSelectHurto,
+    capaPersonalizada,
   });
 
   useImperativeHandle(ref, () => ({

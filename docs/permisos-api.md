@@ -118,6 +118,7 @@ La última columna explica la excepción pública o la condición adicional.
 | POST | /api/v1/geodatos/estandarizar-direccion | publico | Normalización y georreferenciación inteligente de nomenclaturas cartageneras. |
 | GET | /api/v1/geodatos/analitica/hurtos/resumen | publico | Consulta pública y transparente de analítica agregada de hurtos para visualización ciudadana en el Geovisor. |
 | GET | /api/v1/geodatos/analitica/hurtos/geojson | publico | Consulta pública de polígonos y métricas de densidad delictiva para capas del Geovisor. |
+| GET | /api/v1/geodatos/analitica/hurtos/registros | publico | Exploración tabular, filtrado multicriterio y pivot analítico de registros GeoJSON de hurtos. |
 | GET | /api/v1/health/live | publico | Comprobación de vida/disponibilidad; no publicar credenciales ni errores internos. |
 | GET | /api/v1/health/ready | publico | Comprobación de vida/disponibilidad; no publicar credenciales ni errores internos. |
 | GET | /api/v1/health/system | publico | Comprobación de vida/disponibilidad; no publicar credenciales ni errores internos. |

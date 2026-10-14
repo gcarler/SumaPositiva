@@ -3,7 +3,7 @@ import uuid
 from collections.abc import Sequence
 from typing import Any
 
-from sqlalchemy import func, select, text
+from sqlalchemy import String, func, or_, select, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.modules.geodatos.models import (
@@ -406,5 +406,164 @@ class GeodatosRepository:
         return {
             "type": "FeatureCollection",
             "features": features,
+        }
+
+    async def explorar_registros_hurtos(
+        self,
+        delito: str | None = None,
+        anio: int | None = None,
+        mes: str | None = None,
+        zona: str | None = None,
+        armas_medios: str | None = None,
+        clase_sitio: str | None = None,
+        dia_semana: str | None = None,
+        busqueda: str | None = None,
+        agrupar_por: str = "armas_medios",
+        limit: int = 50,
+        offset: int = 0,
+    ) -> dict[str, Any]:
+        """Consulta tabular paginada, filtrado multicriterio y pivot dinámico de hurtos."""
+        condiciones = []
+        if delito:
+            condiciones.append(EstadisticaHurto.delito == delito)
+        if anio is not None:
+            condiciones.append(EstadisticaHurto.anio == anio)
+        if mes:
+            condiciones.append(func.upper(EstadisticaHurto.mes) == mes.strip().upper())
+        if zona:
+            condiciones.append(func.upper(EstadisticaHurto.zona) == zona.strip().upper())
+        if armas_medios:
+            condiciones.append(EstadisticaHurto.armas_medios.ilike(f"%{armas_medios.strip()}%"))
+        if clase_sitio:
+            condiciones.append(EstadisticaHurto.clase_sitio.ilike(f"%{clase_sitio.strip()}%"))
+        if dia_semana:
+            condiciones.append(func.upper(EstadisticaHurto.dia_semana) == dia_semana.strip().upper())
+        if busqueda and busqueda.strip():
+            pat = f"%{busqueda.strip()}%"
+            condiciones.append(
+                or_(
+                    EstadisticaHurto.delito.ilike(pat),
+                    EstadisticaHurto.armas_medios.ilike(pat),
+                    EstadisticaHurto.clase_sitio.ilike(pat),
+                    EstadisticaHurto.mes.ilike(pat),
+                    EstadisticaHurto.dia_semana.ilike(pat),
+                )
+            )
+
+        # 1. Total registros que cumplen el filtro
+        stmt_tot_reg = select(func.count(EstadisticaHurto.id))
+        if condiciones:
+            stmt_tot_reg = stmt_tot_reg.where(*condiciones)
+        total_registros = int((await self.session.execute(stmt_tot_reg)).scalar() or 0)
+
+        # 2. Total incidentes (suma de cantidad)
+        stmt_tot_inc = select(func.coalesce(func.sum(EstadisticaHurto.cantidad), 0))
+        if condiciones:
+            stmt_tot_inc = stmt_tot_inc.where(*condiciones)
+        total_incidentes = int((await self.session.execute(stmt_tot_inc)).scalar() or 0)
+
+        # 3. Registros paginados
+        stmt_reg = (
+            select(EstadisticaHurto)
+            .order_by(EstadisticaHurto.anio.desc(), EstadisticaHurto.id)
+            .limit(limit)
+            .offset(offset)
+        )
+        if condiciones:
+            stmt_reg = stmt_reg.where(*condiciones)
+        res_reg = await self.session.execute(stmt_reg)
+        filas = res_reg.scalars().all()
+        registros = [
+            {
+                "id": r.id,
+                "delito": r.delito,
+                "anio": r.anio,
+                "mes": r.mes,
+                "dia_semana": r.dia_semana,
+                "zona": r.zona,
+                "poligono_id": r.poligono_id,
+                "armas_medios": r.armas_medios,
+                "clase_sitio": r.clase_sitio,
+                "cantidad": r.cantidad,
+            }
+            for r in filas
+        ]
+
+        # 4. Agrupación dinámica (Pivot)
+        col_map = {
+            "delito": EstadisticaHurto.delito,
+            "anio": func.cast(EstadisticaHurto.anio, String),
+            "mes": EstadisticaHurto.mes,
+            "zona": EstadisticaHurto.zona,
+            "armas_medios": EstadisticaHurto.armas_medios,
+            "clase_sitio": EstadisticaHurto.clase_sitio,
+            "dia_semana": EstadisticaHurto.dia_semana,
+        }
+        col = col_map.get(agrupar_por, EstadisticaHurto.armas_medios)
+        stmt_agrup = (
+            select(
+                col.label("categoria"),
+                func.count(EstadisticaHurto.id).label("registros"),
+                func.coalesce(func.sum(EstadisticaHurto.cantidad), 0).label("incidentes"),
+            )
+            .group_by(col)
+            .order_by(text("incidentes DESC"))
+            .limit(30)
+        )
+        if condiciones:
+            stmt_agrup = stmt_agrup.where(*condiciones)
+        res_agrup = await self.session.execute(stmt_agrup)
+        agrupacion = [
+            {
+                "categoria": str(r.categoria) if r.categoria is not None else "SIN DATO",
+                "registros": int(r.registros),
+                "incidentes": int(r.incidentes),
+                "porcentaje": round((int(r.incidentes) / total_incidentes * 100), 2)
+                if total_incidentes > 0
+                else 0.0,
+            }
+            for r in res_agrup.all()
+        ]
+
+        # 5. Catálogos para selectores
+        meses = [
+            "ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO",
+            "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"
+        ]
+        dias_semana = [
+            "LUNES", "MARTES", "MIERCOLES", "JUEVES", "VIERNES", "SABADO", "DOMINGO"
+        ]
+
+        stmt_armas = (
+            select(EstadisticaHurto.armas_medios)
+            .group_by(EstadisticaHurto.armas_medios)
+            .order_by(func.sum(EstadisticaHurto.cantidad).desc())
+            .limit(25)
+        )
+        res_armas = await self.session.execute(stmt_armas)
+        top_armas = [str(r[0]) for r in res_armas.all() if r[0]]
+
+        stmt_sitios = (
+            select(EstadisticaHurto.clase_sitio)
+            .group_by(EstadisticaHurto.clase_sitio)
+            .order_by(func.sum(EstadisticaHurto.cantidad).desc())
+            .limit(25)
+        )
+        res_sitios = await self.session.execute(stmt_sitios)
+        top_sitios = [str(r[0]) for r in res_sitios.all() if r[0]]
+
+        return {
+            "total_registros": total_registros,
+            "total_incidentes": total_incidentes,
+            "limit": limit,
+            "offset": offset,
+            "registros": registros,
+            "agrupacion": agrupacion,
+            "catalogos": {
+                "meses": meses,
+                "dias_semana": dias_semana,
+                "top_armas_medios": top_armas,
+                "top_clases_sitio": top_sitios,
+            },
         }
 

@@ -36,14 +36,14 @@ export const DEFAULT_DOCK_TABS: DockTabs = {
   top: ["filtros"],
   left: ["capas", "mesas"],
   right: ["ficha", "territorio"],
-  bottom: ["datagrid", "graficos"],
+  bottom: ["hurtos", "datagrid", "graficos"],
 };
 
 export const DEFAULT_DOCK_ACTIVE: DockActiveTab = {
   top: "filtros",
   left: "capas",
   right: "ficha",
-  bottom: "datagrid",
+  bottom: "hurtos",
 };
 
 /** Límites (en %) de cada panel respecto a su grupo; también usados al expandir un panel. */
@@ -335,6 +335,9 @@ export const useGeovisorLayoutStore = create<GeovisorLayoutState>()(
         const saved = (persisted ?? {}) as Partial<GeovisorLayoutState>;
         const hasTabs = saved.tabs !== undefined;
         const tabs = hasTabs ? sanitizeDockTabs(saved.tabs) : cloneTabs(DEFAULT_DOCK_TABS);
+        if (!findViewDock(tabs, "hurtos")) {
+          tabs.bottom.unshift("hurtos");
+        }
         return {
           ...current,
           ...saved,

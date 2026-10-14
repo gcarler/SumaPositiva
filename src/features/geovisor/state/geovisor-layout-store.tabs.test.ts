@@ -11,15 +11,16 @@ const s = () => useGeovisorLayoutStore.getState();
 describe("GeovisorLayoutStore — vistas con pestañas por panel", () => {
   beforeEach(() => s().resetLayout());
 
-  test("distribuye las 7 vistas por defecto en los 4 paneles", () => {
+  test("distribuye las 8 vistas por defecto en los 4 paneles", () => {
     expect(s().tabs).toEqual(DEFAULT_DOCK_TABS);
     expect(s().activeTab.left).toBe("capas");
+    expect(s().activeTab.bottom).toBe("hurtos");
     expect(s().expandedDock).toBeNull();
   });
 
   test("moveView mueve una vista a otro panel, la activa y abre el destino", () => {
     s().moveView("graficos", "right");
-    expect(s().tabs.bottom).toEqual(["datagrid"]);
+    expect(s().tabs.bottom).toEqual(["hurtos", "datagrid"]);
     expect(s().tabs.right).toEqual(["ficha", "territorio", "graficos"]);
     expect(s().activeTab.right).toBe("graficos");
     expect(s().rightOpen).toBe(true);

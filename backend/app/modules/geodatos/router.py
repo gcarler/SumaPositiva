@@ -8,6 +8,7 @@ from app.modules.geodatos.schemas import (
     CapaGeovisorRead,
     DireccionEstandarizadaResponse,
     EstandarizarDireccionRequest,
+    ExploradorHurtosResponse,
     HurtosFeatureCollection,
     IsocronasFeatureCollection,
     ResumenHurtosResponse,
@@ -159,4 +160,48 @@ async def obtener_poligonos_hurtos_geojson(
     ),
 ) -> HurtosFeatureCollection:
     return await service.obtener_poligonos_hurtos_geojson(delito=delito, anio=anio, zona=zona)
+
+
+@router.get(
+    "/analitica/hurtos/registros",
+    response_model=ExploradorHurtosResponse,
+    summary="Exploración tabular, filtrado multicriterio y pivot analítico de hurtos",
+    description=(
+        "Permite paginar los 12.280 registros de hurtos, aplicar filtros cruzados "
+        "(delito, año, mes, día, armas, sitio, zona, texto) y agrupar dinámicamente por cualquier dimensión."
+    ),
+)
+async def explorar_registros_hurtos(
+    service: GeodatosServiceDep,
+    delito: str | None = Query(default=None, description="Delito a filtrar o variantes"),
+    anio: int | None = Query(default=None, ge=2018, le=2026, description="Año analizado"),
+    mes: str | None = Query(default=None, description="Mes del evento"),
+    zona: str | None = Query(
+        default=None, pattern="^(URBANA|RURAL|urbana|rural)$", description="Zona URBANA o RURAL"
+    ),
+    armas_medios: str | None = Query(default=None, description="Modalidad o arma empleada"),
+    clase_sitio: str | None = Query(default=None, description="Clase de sitio de ocurrencia"),
+    dia_semana: str | None = Query(default=None, description="Día de la semana"),
+    busqueda: str | None = Query(default=None, description="Búsqueda textual libre"),
+    agrupar_por: str = Query(
+        default="armas_medios",
+        pattern="^(delito|anio|mes|zona|armas_medios|clase_sitio|dia_semana)$",
+        description="Columna para agregación y tabla dinámica (pivot)",
+    ),
+    limit: int = Query(default=50, ge=1, le=500, description="Límite de registros por página"),
+    offset: int = Query(default=0, ge=0, description="Desplazamiento inicial para paginación"),
+) -> ExploradorHurtosResponse:
+    return await service.explorar_registros_hurtos(
+        delito=delito,
+        anio=anio,
+        mes=mes,
+        zona=zona,
+        armas_medios=armas_medios,
+        clase_sitio=clase_sitio,
+        dia_semana=dia_semana,
+        busqueda=busqueda,
+        agrupar_por=agrupar_por,
+        limit=limit,
+        offset=offset,
+    )
 

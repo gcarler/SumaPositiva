@@ -85,6 +85,7 @@ export interface UseMapaOptions {
   anioHurto?: number | null;
   delitoHurto?: string | null;
   onSelectHurto?: (poligonoId: number) => void;
+  capaPersonalizada?: { geojson: unknown; nombre?: string; color?: string } | null;
 }
 
 /**
@@ -202,6 +203,7 @@ export function useMapa({
   anioHurto = null,
   delitoHurto: _delitoHurto = null,
   onSelectHurto,
+  capaPersonalizada = null,
 }: UseMapaOptions) {
   const mapaRef = useRef<Map | null>(null);
   const [cargando, setCargando] = useState(true);
@@ -216,6 +218,7 @@ export function useMapa({
   const fuenteBarriosRef = useRef<VectorSource<Feature> | null>(null);
   const fuentePuntosRef = useRef<VectorSource<Feature> | null>(null);
   const fuenteMesasRef = useRef<VectorSource<Feature> | null>(null);
+  const fuentePersonalizadaRef = useRef<VectorSource<Feature> | null>(null);
   const mesasRef = useRef(mesas);
   const mesaSeleccionadaRef = useRef(mesaSeleccionadaId);
   const onSelectHurtoRef = useRef(onSelectHurto);
@@ -651,6 +654,26 @@ export function useMapa({
       },
     });
 
+    /* 5. Capa Vectorial de GeoJSON Personalizado (Cargado en Frontend) */
+    const fuentePersonalizada = new VectorSource<Feature>();
+    fuentePersonalizadaRef.current = fuentePersonalizada;
+    const capaPersonalizadaLayer = new VectorLayer({
+      source: fuentePersonalizada,
+      zIndex: 16,
+      style: (feature) => {
+        const color = (feature.get("customColor") as string) || "#e85d04";
+        return new Style({
+          fill: new Fill({ color: `${color}44` }),
+          stroke: new Stroke({ color: color, width: 2.5 }),
+          image: new CircleStyle({
+            radius: 7,
+            fill: new Fill({ color }),
+            stroke: new Stroke({ color: "#ffffff", width: 2 }),
+          }),
+        });
+      },
+    });
+
     const mapa = new Map({
       target,
       layers: [
@@ -660,6 +683,7 @@ export function useMapa({
         capaBarrios,
         capaPuntos,
         capaMesas,
+        capaPersonalizadaLayer,
       ],
       view: new View({
         center: fromLonLat([-75.5144, 10.391]),
@@ -897,8 +921,39 @@ export function useMapa({
       fuenteMesasRef.current = null;
       fuentePuntosRef.current = null;
       fuenteHurtosRef.current = null;
+      fuentePersonalizadaRef.current = null;
     };
   }, [target, onSelectTerritorio, onSelectBarrio, onHoverInfo, onSelectMesa]);
+
+  // Carga reactiva de capa GeoJSON personalizada importada en el frontend
+  useEffect(() => {
+    if (!fuentePersonalizadaRef.current || !mapaRef.current) return;
+    fuentePersonalizadaRef.current.clear(true);
+    if (!capaPersonalizada?.geojson) return;
+    try {
+      const format = new GeoJSON();
+      const feats = format.readFeatures(capaPersonalizada.geojson, {
+        dataProjection: "EPSG:4326",
+        featureProjection: "EPSG:3857",
+      });
+      const color = capaPersonalizada.color || "#e85d04";
+      feats.forEach((f) => {
+        f.set("customColor", color);
+        f.set("customName", capaPersonalizada.nombre);
+      });
+      fuentePersonalizadaRef.current.addFeatures(feats);
+      const extent = fuentePersonalizadaRef.current.getExtent();
+      if (extent && !extent.some((v) => !isFinite(v))) {
+        mapaRef.current.getView().fit(extent, {
+          duration: 600,
+          padding: [50, 50, 50, 50],
+          maxZoom: 16,
+        });
+      }
+    } catch (e) {
+      console.warn("Error al renderizar capa GeoJSON personalizada:", e);
+    }
+  }, [capaPersonalizada]);
 
   // Controles del mapa
   const zoomIn = useCallback(() => {

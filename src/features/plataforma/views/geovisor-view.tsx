@@ -2,11 +2,14 @@
 import dynamic from "next/dynamic";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import Link from "next/link";
+import { Compass } from "lucide-react";
 import { PageHeader } from "@/shared/ui/page-header";
 import { Button } from "@/shared/ui/button";
 import { Notice } from "@/shared/ui/notice";
 import { plataformaApi } from "../services/plataforma-api";
 import { EstadoConsulta } from "../components/estado-consulta";
+import { GeovisorHurtosPanel } from "@/features/geovisor/components/geovisor-hurtos-panel";
 const MapaApi = dynamic(
   () =>
     import("@/features/geovisor/components/mapa-territorios-api").then(
@@ -84,6 +87,26 @@ export function GeovisorAdministrativoView() {
             </p>
           </div>
         )}
+      </section>
+
+      <section className="space-y-4 rounded-2xl border border-[var(--border)] bg-[var(--surface-1)] p-4 shadow-sm">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--border)] pb-3">
+          <div>
+            <h2 className="text-lg font-bold text-[var(--text-primary)]">
+              Capas GeoJSON e Inteligencia Delictiva SIEDCO (2018–2026)
+            </h2>
+            <p className="text-xs text-[var(--text-secondary)]">
+              Herramienta integral de exploración tabular, pivot analítico y gestor de capas GeoJSON delictivas en Cartagena.
+            </p>
+          </div>
+          <Button asChild variant="default" size="sm" className="h-8 gap-1.5 text-xs font-semibold">
+            <Link href="/geovisor">
+              <span>Abrir Workbench Geovisor Pantalla Completa</span>
+              <Compass className="size-3.5" />
+            </Link>
+          </Button>
+        </div>
+        <GeovisorHurtosPanel />
       </section>
     </>
   );

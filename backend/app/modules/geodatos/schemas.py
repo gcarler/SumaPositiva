@@ -302,3 +302,50 @@ class HurtosFeatureCollection(BaseModel):
     )
 
 
+class RegistroHurtoItem(BaseModel):
+    """Registro individual estructurado del dataset GeoJSON de hurtos."""
+
+    id: uuid.UUID
+    delito: str
+    anio: int
+    mes: str
+    dia_semana: str
+    zona: str
+    poligono_id: int
+    armas_medios: str
+    clase_sitio: str
+    cantidad: int
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class AgrupacionHurtoItem(BaseModel):
+    """Fila agregada del procesamiento analítico / pivot dinámico."""
+
+    categoria: str
+    registros: int
+    incidentes: int
+    porcentaje: float
+
+
+class CatalogosHurtos(BaseModel):
+    """Catálogos de valores únicos para selectores y filtros del frontend."""
+
+    meses: list[str] = Field(default_factory=list)
+    dias_semana: list[str] = Field(default_factory=list)
+    top_armas_medios: list[str] = Field(default_factory=list)
+    top_clases_sitio: list[str] = Field(default_factory=list)
+
+
+class ExploradorHurtosResponse(BaseModel):
+    """Respuesta estructurada para exploración tabular, filtrado multicriterio y pivot dinámico."""
+
+    total_registros: int
+    total_incidentes: int
+    limit: int
+    offset: int
+    registros: list[RegistroHurtoItem] = Field(default_factory=list)
+    agrupacion: list[AgrupacionHurtoItem] = Field(default_factory=list)
+    catalogos: CatalogosHurtos
+
+

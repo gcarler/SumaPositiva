@@ -150,6 +150,97 @@ async def test_geojson_hurtos_ligero(async_client: AsyncClient):
         assert len(props["top_sitios"]) <= 3
 
 
+async def test_explorador_registros_hurtos_paginacion_y_pivot(async_client: AsyncClient):
+    """Valida la exploración tabular paginada, filtros multicriterio y pivot dinámico."""
+    # 1. Consulta general sin filtros
+    resp_base = await async_client.get("/api/v1/geodatos/analitica/hurtos/registros")
+    assert resp_base.status_code == 200
+    data_base = resp_base.json()
+    assert data_base["total_registros"] == 8
+    assert data_base["total_incidentes"] == 53
+    assert len(data_base["registros"]) == 8
+    assert len(data_base["agrupacion"]) > 0
+    assert "meses" in data_base["catalogos"]
+    assert "dias_semana" in data_base["catalogos"]
+    assert "top_armas_medios" in data_base["catalogos"]
+    assert "top_clases_sitio" in data_base["catalogos"]
+
+    # Validar estructura de registro individual
+    primer_reg = data_base["registros"][0]
+    assert "id" in primer_reg
+    assert "delito" in primer_reg
+    assert "anio" in primer_reg
+    assert "mes" in primer_reg
+    assert "dia_semana" in primer_reg
+    assert "zona" in primer_reg
+    assert "poligono_id" in primer_reg
+    assert "armas_medios" in primer_reg
+    assert "clase_sitio" in primer_reg
+    assert "cantidad" in primer_reg
+
+    # 2. Paginación con limit y offset
+    resp_pag1 = await async_client.get(
+        "/api/v1/geodatos/analitica/hurtos/registros",
+        params={"limit": 3, "offset": 0},
+    )
+    assert resp_pag1.status_code == 200
+    data_pag1 = resp_pag1.json()
+    assert data_pag1["total_registros"] == 8
+    assert len(data_pag1["registros"]) == 3
+    assert data_pag1["limit"] == 3
+    assert data_pag1["offset"] == 0
+
+    resp_pag2 = await async_client.get(
+        "/api/v1/geodatos/analitica/hurtos/registros",
+        params={"limit": 3, "offset": 3},
+    )
+    assert resp_pag2.status_code == 200
+    data_pag2 = resp_pag2.json()
+    assert len(data_pag2["registros"]) == 3
+    # Los IDs de la página 1 y 2 deben ser disyuntos
+    ids_p1 = {r["id"] for r in data_pag1["registros"]}
+    ids_p2 = {r["id"] for r in data_pag2["registros"]}
+    assert ids_p1.isdisjoint(ids_p2)
+
+    # 3. Filtros combinados (delito, anio, zona)
+    resp_filt = await async_client.get(
+        "/api/v1/geodatos/analitica/hurtos/registros",
+        params={"delito": "hurto_motocicletas", "anio": 2024},
+    )
+    assert resp_filt.status_code == 200
+    data_filt = resp_filt.json()
+    assert data_filt["total_registros"] == 2
+    assert data_filt["total_incidentes"] == 12
+    for r in data_filt["registros"]:
+        assert r["delito"] == "HURTO MOTOCICLETA"
+        assert r["anio"] == 2024
+
+    # 4. Filtro por búsqueda textual (ILIKE)
+    resp_busq = await async_client.get(
+        "/api/v1/geodatos/analitica/hurtos/registros",
+        params={"busqueda": "FUEGO"},
+    )
+    assert resp_busq.status_code == 200
+    data_busq = resp_busq.json()
+    assert data_busq["total_registros"] == 2
+    for r in data_busq["registros"]:
+        assert "FUEGO" in r["armas_medios"]
+
+    # 5. Agrupación dinámica (Pivot por delito)
+    resp_pivot = await async_client.get(
+        "/api/v1/geodatos/analitica/hurtos/registros",
+        params={"agrupar_por": "delito"},
+    )
+    assert resp_pivot.status_code == 200
+    data_pivot = resp_pivot.json()
+    delitos_agrupados = {a["categoria"] for a in data_pivot["agrupacion"]}
+    assert "HURTO COMERCIO" in delitos_agrupados
+    assert "HURTO MOTOCICLETA" in delitos_agrupados
+    assert "HURTO RESIDENCIAS" in delitos_agrupados
+    pct_total = sum(a["porcentaje"] for a in data_pivot["agrupacion"])
+    assert 99.0 <= pct_total <= 101.0
+
+
 async def test_inviolabilidad_censo_bd_csh():
     """Garantiza que el censo institucional de bd_csh continúe estrictamente intacto."""
     from sqlalchemy import text

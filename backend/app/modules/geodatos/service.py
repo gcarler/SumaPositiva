@@ -12,6 +12,7 @@ from app.modules.geodatos.repository import GeodatosRepository
 from app.modules.geodatos.schemas import (
     CoordenadasAproximadas,
     DireccionEstandarizadaResponse,
+    ExploradorHurtosResponse,
     HurtosFeatureCollection,
     IsocronaFeature,
     IsocronaProperties,
@@ -613,4 +614,35 @@ class GeodatosService:
             delito=delito_norm, anio=anio, zona=zona
         )
         return HurtosFeatureCollection.model_validate(raw)
+
+    async def explorar_registros_hurtos(
+        self,
+        delito: str | None = None,
+        anio: int | None = None,
+        mes: str | None = None,
+        zona: str | None = None,
+        armas_medios: str | None = None,
+        clase_sitio: str | None = None,
+        dia_semana: str | None = None,
+        busqueda: str | None = None,
+        agrupar_por: str = "armas_medios",
+        limit: int = 50,
+        offset: int = 0,
+    ) -> ExploradorHurtosResponse:
+        """Explora registros tabulares, ejecuta filtros multicriterio y pivot dinámico de hurtos."""
+        delito_norm = self.normalizar_delito(delito)
+        raw = await self.repository.explorar_registros_hurtos(
+            delito=delito_norm,
+            anio=anio,
+            mes=mes,
+            zona=zona,
+            armas_medios=armas_medios,
+            clase_sitio=clase_sitio,
+            dia_semana=dia_semana,
+            busqueda=busqueda,
+            agrupar_por=agrupar_por,
+            limit=limit,
+            offset=offset,
+        )
+        return ExploradorHurtosResponse.model_validate(raw)
 

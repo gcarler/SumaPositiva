@@ -51,7 +51,12 @@ export function GeovisorView() {
   const [variableMapa, setVariableMapa] = useState<VariableMapa>("ish");
   const [modoVistaMesas, setModoVistaMesas] = useState<ModoVistaMesas>("tabla");
   const [anioHurto, setAnioHurto] = useState<number | null>(null);
-  const [delitoHurto, setDelitoHurto] = useState<string | null>(null);
+  const [delitoHurto, setDelitoHurto] = useState<string | null>("hurto_motocicletas");
+  const [capaPersonalizada, setCapaPersonalizada] = useState<{
+    geojson: unknown;
+    nombre: string;
+    color: string;
+  } | null>(null);
 
   const [capas, setCapas] = useState<CapasConfig>({
     localidades: true,
@@ -60,7 +65,7 @@ export function GeovisorView() {
     puntos: true,
     etiquetas: true,
     isocronas: false,
-    hurtoMotocicletas: false,
+    hurtoMotocicletas: true,
     hurtoResidencias: false,
     hurtoComercio: false,
   });
@@ -256,6 +261,9 @@ export function GeovisorView() {
                   setDelitoHurto("hurto_comercio");
                 }
               }}
+              onCargarGeojsonPersonalizado={(geojson, nombreCapa, color) => {
+                setCapaPersonalizada({ geojson, nombre: nombreCapa, color });
+              }}
             />
           </div>
         );
@@ -283,6 +291,7 @@ export function GeovisorView() {
             anioHurto={anioHurto}
             delitoHurto={delitoHurto}
             onSelectHurto={() => useGeovisorLayoutStore.getState().openView("hurtos")}
+            capaPersonalizada={capaPersonalizada}
           />
         }
         rightSlot={<GeovisorDockHost dock="right" renderView={renderView} />}

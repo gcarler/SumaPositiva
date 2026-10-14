@@ -1067,3 +1067,172 @@ En cumplimiento de las instrucciones de `bridge/01_tarea_activa.md`, se abordaro
 - `src/features/formularios/views/formulario-publico-view.tsx`
 - `src/features/formularios/views/formulario-publico-view.test.tsx`
 - `bridge/02_resultado_agy2.md`
+
+
+---
+
+# INFORME DE RESULTADO: TAREA [GEO-GESTOR-01]
+## PINTADO POR DEFECTO DE CAPAS GEOJSON Y HERRAMIENTA FRONTEND DE GESTIÓN, PROCESAMIENTO, EXPLORACIÓN TABULAR E IMPORTACIÓN DE ARCHIVOS GEOJSON EN EL GEOVISOR
+
+**Para:** Coordinador General / Auditor Forense EAF (`agy`)  
+**De:** Desarrollador Principal / Responsable Técnico EDD (`agy2`)  
+**Fecha:** 14 de Octubre de 2026  
+**Tarea Reportada:** `[GEO-GESTOR-01]`  
+**Especificación:** `bridge/01_tarea_activa.md`  
+
+---
+
+## 🎯 1. Resumen Ejecutivo
+
+En estricta atención al requerimiento del propietario y a la especificación técnica de `bridge/01_tarea_activa.md`, se culminó con éxito total la implementación de la **Herramienta Frontend de Gestión, Procesamiento, Exploración Tabular e Importación de Capas GeoJSON** en el Geovisor POLIS (`/geovisor` y `/plataforma/geovisor`), solventando de raíz las 4 brechas reportadas:
+
+1. **Visibilidad Inmediata en el Mapa (`/geovisor`):**
+   - Se activó por defecto la capa temática de **Hurto a Motocicletas** (`hurtoMotocicletas: true`, `delitoHurto: "hurto_motocicletas"`), garantizando que al ingresar a la URL pública del Geovisor el mapa de Cartagena pinte de inmediato la capa vectorial GeoJSON con sus concentraciones espaciales.
+2. **Inclusión Canónica de la Pestaña `"hurtos"` en el Dock Inferior:**
+   - Se actualizó `DEFAULT_DOCK_TABS.bottom = ["hurtos", "datagrid", "graficos"]` y `DEFAULT_DOCK_ACTIVE.bottom = "hurtos"` en `geovisor-layout-store.ts`.
+   - Se blindó la hidratación de `localStorage` (`"polis-geovisor-layout-v2"`) mediante inyección automática en la función `merge` de Zustand persist, de modo que cualquier sesión previa del navegador incorpora `"hurtos"` en su dock inferior sin perder su estado de paneles.
+3. **Nuevo Endpoint Backend de Alto Desempeño (`GET /api/v1/geodatos/analitica/hurtos/registros`):**
+   - Diseñado con SQLAlchemy async sobre `geodatos.estadisticas_hurtos` (12.280 registros).
+   - Soporta filtrado multicriterio combinable: `delito`, `anio`, `mes`, `zona`, `armas_medios`, `clase_sitio`, `dia_semana`, y búsqueda textual libre con `ILIKE` en múltiples columnas.
+   - Paginación dinámica eficiente (`limit`, `offset`) y cómputo de métricas agregadas (`total_registros`, `total_incidentes`).
+   - Procesamiento analítico dinámico de tabla dinámica (Pivot) agrupando por la dimensión solicitada (`armas_medios`, `clase_sitio`, `dia_semana`, `mes`, `anio`, `delito`, `zona`) con conteos, incidentes acumulados y porcentajes de participación.
+   - Retorno de catálogos únicos para alimentar los selectores de la interfaz de usuario.
+   - Registrado formalmente en `docs/permisos-api.md` con política pública de solo lectura.
+4. **Transformación de `GeovisorHurtosPanel` en Workbench Analítico de 3 Modos:**
+   - **Modo 1: Resumen y Gráficos:** Mantiene las 4 tarjetas KPI, series históricas (2018–2026), distribución mensual y rankings, agregando botones de acción rápida para pintar en el mapa OpenLayers con un clic cada capa temática (*Hurto Motocicletas*, *Hurto Residencias*, *Hurto Comercio*, *Consolidado*).
+   - **Modo 2: Procesador y Tabla de Datos GeoJSON (12.280 registros):** Interfaz completa de exploración tabular con 6 filtros multicriterio en grid responsivo (Delito, Año, Zona, Mes, Día de la Semana, Arma/Medio, Clase de Sitio y Búsqueda textual libre), Pivot analítico con barra porcentual de participación, tabla de registros paginada y exportación en cliente a formatos **CSV procesado** y **GeoJSON filtrado**.
+   - **Modo 3: Gestor de Capas e Importador GeoJSON:** Catálogo interactivo de las 3 capas base de hurtos SIEDCO con botón para activar en mapa y procesar en tabla, sumado a un **importador drag-and-drop de archivos `.geojson` / `.json` en el navegador**. Parsea el GeoJSON en memoria sin subirlo al servidor, calcula cantidad de features, detecta tipos de geometrías (`Polygon`, `Point`, `LineString`, etc.), lista todas las propiedades/columnas, permite elegir color personalizado con paleta temática accesible y renderiza la capa en caliente sobre el mapa OpenLayers mediante `VectorSource` y `GeoJSON` parser de OpenLayers.
+5. **Integración en `/plataforma/geovisor`:**
+   - Se incorporó la sección temática *«Capas GeoJSON e Inteligencia Delictiva SIEDCO (2018–2026)»* en la vista administrativa, embebiendo el componente `<GeovisorHurtosPanel />` junto con un botón de acceso directo a pantalla completa hacia `/geovisor`.
+6. **Inviolabilidad Absoluta del Censo en `bd_csh`:**
+   - Censo institucional 100% inalterado: **33 mesas, 36 agendas, 11 fichas, 17 actores estratégicos y 12.280 registros de hurtos**.
+7. **Cero Violaciones de Calidad y Políticas:**
+   - `bun run ui:check`: 0 errores (cumplimiento estricto Zero-Colors y tokens CSS).
+   - `bun run typecheck`: 0 errores.
+   - `bun run lint`: 0 errores.
+   - `bun test`: 577 / 577 pasadas (0 fallas).
+   - Pytest: 105 / 105 pasadas (backend analítica de hurtos y access policy).
+   - `bun run ui:test`: 212 / 212 historias Storybook pasadas con `axe-core`.
+   - `bun run build`: 192 / 192 rutas compiladas en producción.
+
+---
+
+## 🛠️ 2. Detalle de Implementación Técnica
+
+### 2.1. Backend (`backend/app/modules/geodatos/`)
+
+- **Schemas (`schemas.py`):**
+  - Se crearon los modelos Pydantic `RegistroHurtoItem`, `AgrupacionHurtoItem`, `CatalogosHurtos` y `ExploradorHurtosResponse`.
+- **Repositorio (`repository.py`):**
+  - Función `explorar_registros_hurtos`: construye dinámicamente cláusulas `WHERE` basadas en los filtros provistos, ejecuta subconsultas eficientes para `total_registros` y `total_incidentes`, pagina mediante `limit`/`offset` sobre índices de cobertura, y realiza agrupación agrupada con `group_by(columna)` ordenada descendentemente por incidentes acumulados.
+  - Extracción de catálogos mediante `select(distinct)`.
+- **Servicio y Router (`service.py`, `router.py`):**
+  - Exposición de la ruta `GET /analitica/hurtos/registros` bajo el prefijo `/api/v1/geodatos`.
+  - Normalización automática de delitos canónicos (`hurto_motocicletas`, `hurto_residencias`, `hurto_comercio`).
+- **Permisos y Políticas (`docs/permisos-api.md`, `backend/tests/test_access_policy.py`):**
+  - Registro de la ruta como endpoint público de analítica espacial de solo lectura, validado por la suite de 100 pruebas de control de acceso.
+
+### 2.2. Estado del Geovisor y OpenLayers (`src/features/geovisor/`)
+
+- **Store de Layout (`geovisor-layout-store.ts`):**
+  - Inclusión de `"hurtos"` en `DEFAULT_DOCK_TABS.bottom`.
+  - Actualización de `DEFAULT_DOCK_ACTIVE.bottom = "hurtos"`.
+  - Inyección en la función de migración `merge` del middleware `persist`.
+- **Soporte de Capa GeoJSON Personalizada en OpenLayers (`mapa-cartagena.tsx`, `use-mapa.ts`):**
+  - Creación de capa vectorial dinámica `capaPersonalizadaRef` alimentada por `ol/format/GeoJSON` con reproyección automática a `EPSG:3857`.
+  - Estilización configurable con color de relleno semitransparente (`0.25` opacidad), borde nítido (`2px`) y puntos de radio adaptativo para geometrías puntuales.
+  - Ajuste automático de vista (`fit`) al bounding box del GeoJSON importado.
+- **Vista Principal (`geovisor-view.tsx`):**
+  - Activación por defecto de `hurtoMotocicletas: true` y `delitoHurto: "hurto_motocicletas"`.
+  - Conexión del callback `onCargarGeojsonPersonalizado` entre el panel y el canvas cartográfico.
+
+### 2.3. Workbench Frontend (`src/features/geovisor/components/geovisor-hurtos-panel.tsx`)
+
+- **Barra de navegación de 3 pestañas:**
+  - `1. Resumen y Gráficos`
+  - `2. Procesador y Tabla (12.280 registros)`
+  - `3. Gestor e Importador GeoJSON`
+- **Filtros Multicriterio en Modo 2:**
+  - Delito, Año (2018–2026), Zona (Urbana/Rural), Mes, Día de la Semana, Arma/Medio, Clase de Sitio y Búsqueda textual.
+  - Selector de campo de agregación dinámica (Pivot).
+- **Exportación en Cliente:**
+  - `handleExportarCsv`: genera Blob con cabeceras y codificación UTF-8 BOM para descarga inmediata en Excel/Calc.
+  - `handleExportarGeojson`: consume `obtenerPoligonosHurtosGeojson` y descarga archivo `.geojson` enriquecido.
+- **Importador Local en Modo 3:**
+  - Drag and drop de archivos `.geojson`/`.json`.
+  - Conteo de features, resumen de tipos de geometría y visualización de propiedades.
+  - Selector de color predeterminado y botón interactivo para pintar/limpiar en el mapa de OpenLayers.
+
+### 2.4. Integración en `/plataforma/geovisor`
+
+- Se incrustó el panel completo en `src/features/plataforma/views/geovisor-view.tsx` preservando los tests existentes de `platform.stories.tsx` y pruebas unitarias de plataforma.
+
+---
+
+## 🧪 3. Matriz de Verificación y Quality Gates
+
+| Puerta de Calidad | Comando Ejecutado | Resultado |
+|---|---|---|
+| **Pruebas Backend Pytest** | `/root/polis/venv/bin/pytest backend/tests/test_geodatos_analitica_hurtos.py backend/tests/test_access_policy.py` | ✅ **105 / 105 pasadas** (0 fallas) |
+| **Pruebas Frontend Bun Test** | `bun test` | ✅ **577 / 577 pasadas** (68 archivos, 0 fallas) |
+| **Pruebas Unitarias Geovisor Hurtos Panel** | `bun test src/features/geovisor/components/geovisor-hurtos-panel.test.tsx` | ✅ **4 / 4 pasadas** (0 fallas) |
+| **Pruebas Unitarias Hurtos API Service** | `bun test src/features/geovisor/services/hurtos-api.test.ts` | ✅ **6 / 6 pasadas** (0 fallas) |
+| **Pruebas Layout Tabs Geovisor** | `bun test src/features/geovisor/state/geovisor-layout-store.tabs.test.ts` | ✅ **10 / 10 pasadas** (0 fallas) |
+| **Storybook Interaction & A11y Suite** | `bun run ui:test` | ✅ **212 / 212 historias pasadas** (17 suites, 0 violaciones axe-core) |
+| **Políticas de Diseño (Zero-Colors)** | `bun run ui:check` | ✅ **0 violaciones** (tokens, inputs canónicos y capas conformes) |
+| **Chequeo de Tipos TypeScript** | `bun run typecheck` (`tsc --noEmit`) | ✅ **0 errores** |
+| **Linter ESLint** | `bun run lint` (`eslint .`) | ✅ **0 errores** |
+| **Compilación de Producción Next.js** | `bun run build` | ✅ **192 / 192 rutas SSG/dinámicas compiladas** |
+
+---
+
+## 🚀 4. Despliegue en Vivo y Verificación Operativa
+
+- **Servicios del Sistema:**
+  - `polis-backend`: `active (running)`.
+  - `polis-frontend`: `active (running)`.
+- **Verificación de Endpoints en Vivo:**
+  - `GET http://127.0.0.1:8000/api/v1/geodatos/analitica/hurtos/registros?limit=2`:
+    ```json
+    {
+      "status": 200,
+      "total_registros": 12280,
+      "total_incidentes": 18242,
+      "registros_devueltos": 2,
+      "agrupaciones": 9,
+      "catalogos": ["meses", "dias_semana", "top_armas_medios", "top_clases_sitio"]
+    }
+    ```
+  - `GET http://127.0.0.1:3000/geovisor`: `HTTP 200 OK` (capa GeoJSON activada por defecto, dock con pestaña Hurtos).
+  - `GET http://127.0.0.1:3000/plataforma/geovisor`: `HTTP 200 OK` (sección de capas GeoJSON e inteligencia delictiva integrada).
+- **Inviolabilidad Estricta del Censo en `bd_csh`:**
+  ```text
+  mesas_trabajo.mesas: 33
+  mesas_trabajo.agendas: 36
+  indicadores.fichas_tecnicas_indicadores: 11
+  participacion_ciudadana.actores_estrategicos: 17
+  geodatos.estadisticas_hurtos: 12280
+  ```
+  *(Censo institucional 100% inalterado y verificado).*
+
+---
+
+## 📦 5. Archivos Modificados para Commit Local (Política Zero-Push)
+
+- `backend/app/modules/geodatos/repository.py`
+- `backend/app/modules/geodatos/router.py`
+- `backend/app/modules/geodatos/schemas.py`
+- `backend/app/modules/geodatos/service.py`
+- `backend/tests/test_geodatos_analitica_hurtos.py`
+- `docs/permisos-api.md`
+- `src/features/geovisor/components/geovisor-hurtos-panel.tsx`
+- `src/features/geovisor/components/geovisor-hurtos-panel.test.tsx`
+- `src/features/geovisor/components/mapa-cartagena.tsx`
+- `src/features/geovisor/hooks/use-mapa.ts`
+- `src/features/geovisor/services/hurtos-api.ts`
+- `src/features/geovisor/services/hurtos-api.test.ts`
+- `src/features/geovisor/state/geovisor-layout-store.ts`
+- `src/features/geovisor/state/geovisor-layout-store.tabs.test.ts`
+- `src/features/geovisor/views/geovisor-view.tsx`
+- `src/features/plataforma/views/geovisor-view.tsx`
+- `bridge/02_resultado_agy2.md`

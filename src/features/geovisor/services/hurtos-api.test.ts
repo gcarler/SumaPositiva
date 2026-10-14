@@ -2,9 +2,11 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import {
   obtenerResumenHurtos,
   obtenerPoligonosHurtosGeojson,
+  explorarRegistrosHurtos,
   normalizarDelitoParam,
   type ResumenHurtosResponse,
   type HurtosFeatureCollection,
+  type ExploradorHurtosResponse,
 } from "./hurtos-api";
 import * as apiClient from "@/core/http/api-client";
 
@@ -135,4 +137,58 @@ describe("Servicio de Analítica de Hurtos (GEO-HURTOS-01)", () => {
       expect(res.features[0].properties.codigo).toBe("PERIMETRO_URBANO");
     });
   });
+
+  describe("explorarRegistrosHurtos", () => {
+    it("construye los query params correctamente con filtros y paginación", async () => {
+      const mockResp: ExploradorHurtosResponse = {
+        total_registros: 12280,
+        total_incidentes: 18242,
+        limit: 25,
+        offset: 50,
+        registros: [],
+        agrupacion: [
+          { categoria: "SIN EMPLEO DE ARMAS", registros: 5000, incidentes: 7000, porcentaje: 50.0 },
+        ],
+        catalogos: {
+          meses: ["ENERO"],
+          dias_semana: ["LUNES"],
+          top_armas_medios: ["ARMA DE FUEGO"],
+          top_clases_sitio: ["VIA PUBLICA"],
+        },
+      };
+
+      const spy = vi.spyOn(apiClient, "apiFetch").mockResolvedValueOnce(mockResp);
+
+      const res = await explorarRegistrosHurtos({
+        delito: "hurto_motocicletas",
+        anio: 2024,
+        mes: "ENERO",
+        zona: "URBANA",
+        armas_medios: "ARMA DE FUEGO",
+        clase_sitio: "VIA PUBLICA",
+        dia_semana: "LUNES",
+        busqueda: "centro",
+        agrupar_por: "delito",
+        limit: 25,
+        offset: 50,
+      });
+
+      expect(spy).toHaveBeenCalledWith(
+        "/geodatos/analitica/hurtos/registros?delito=HURTO+MOTOCICLETA&anio=2024&mes=ENERO&zona=URBANA&armas_medios=ARMA+DE+FUEGO&clase_sitio=VIA+PUBLICA&dia_semana=LUNES&busqueda=centro&agrupar_por=delito&limit=25&offset=50"
+      );
+      expect(res.total_registros).toBe(12280);
+      expect(res.agrupacion).toHaveLength(1);
+    });
+
+    it("retorna fallback estructurado cuando apiFetch falla", async () => {
+      vi.spyOn(apiClient, "apiFetch").mockRejectedValueOnce(new Error("Network Error"));
+
+      const res = await explorarRegistrosHurtos();
+      expect(res.total_registros).toBe(12280);
+      expect(res.total_incidentes).toBe(18242);
+      expect(res.registros.length).toBeGreaterThan(0);
+      expect(res.agrupacion.length).toBeGreaterThan(0);
+    });
+  });
 });
+

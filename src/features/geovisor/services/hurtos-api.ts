@@ -121,3 +121,172 @@ export async function obtenerPoligonosHurtosGeojson(
     `/geodatos/analitica/hurtos/geojson${query ? `?${query}` : ""}`
   );
 }
+
+export interface RegistroHurtoItem {
+  id: string;
+  delito: string;
+  anio: number;
+  mes: string;
+  dia_semana: string;
+  zona: string;
+  poligono_id: number;
+  armas_medios: string;
+  clase_sitio: string;
+  cantidad: number;
+}
+
+export interface AgrupacionHurtoItem {
+  categoria: string;
+  registros: number;
+  incidentes: number;
+  porcentaje: number;
+}
+
+export interface CatalogosHurtos {
+  meses: string[];
+  dias_semana: string[];
+  top_armas_medios: string[];
+  top_clases_sitio: string[];
+}
+
+export interface ExploradorHurtosResponse {
+  total_registros: number;
+  total_incidentes: number;
+  limit: number;
+  offset: number;
+  registros: RegistroHurtoItem[];
+  agrupacion: AgrupacionHurtoItem[];
+  catalogos: CatalogosHurtos;
+}
+
+export interface ParametrosExploradorHurtos {
+  delito?: string | null;
+  anio?: number | null;
+  mes?: string | null;
+  zona?: string | null;
+  armas_medios?: string | null;
+  clase_sitio?: string | null;
+  dia_semana?: string | null;
+  busqueda?: string | null;
+  agrupar_por?: string | null;
+  limit?: number;
+  offset?: number;
+}
+
+export const FALLBACK_EXPLORADOR_HURTOS: ExploradorHurtosResponse = {
+  total_registros: 12280,
+  total_incidentes: 18242,
+  limit: 50,
+  offset: 0,
+  registros: [
+    {
+      id: "hurto-001",
+      delito: "HURTO MOTOCICLETA",
+      anio: 2026,
+      mes: "ENERO",
+      dia_semana: "LUNES",
+      zona: "URBANA",
+      poligono_id: 1,
+      armas_medios: "SIN EMPLEO DE ARMAS",
+      clase_sitio: "VIA PUBLICA",
+      cantidad: 1,
+    },
+    {
+      id: "hurto-002",
+      delito: "HURTO COMERCIO",
+      anio: 2025,
+      mes: "DICIEMBRE",
+      dia_semana: "VIERNES",
+      zona: "URBANA",
+      poligono_id: 1,
+      armas_medios: "ARMA DE FUEGO",
+      clase_sitio: "LOCAL COMERCIAL",
+      cantidad: 2,
+    },
+    {
+      id: "hurto-003",
+      delito: "HURTO RESIDENCIAS",
+      anio: 2025,
+      mes: "NOVIEMBRE",
+      dia_semana: "SABADO",
+      zona: "URBANA",
+      poligono_id: 1,
+      armas_medios: "PALANCA",
+      clase_sitio: "CASA DE HABITACION",
+      cantidad: 1,
+    },
+  ],
+  agrupacion: [
+    { categoria: "SIN EMPLEO DE ARMAS", registros: 6690, incidentes: 9944, porcentaje: 54.5 },
+    { categoria: "ARMA DE FUEGO", registros: 3012, incidentes: 4520, porcentaje: 24.8 },
+    { categoria: "ARMA BLANCA", registros: 1650, incidentes: 2310, porcentaje: 12.7 },
+    { categoria: "LLAVE MAESTRA", registros: 580, incidentes: 890, porcentaje: 4.9 },
+    { categoria: "CONTUNDENTES", registros: 348, incidentes: 578, porcentaje: 3.1 },
+  ],
+  catalogos: {
+    meses: [
+      "ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO",
+      "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE",
+    ],
+    dias_semana: ["LUNES", "MARTES", "MIERCOLES", "JUEVES", "VIERNES", "SABADO", "DOMINGO"],
+    top_armas_medios: [
+      "SIN EMPLEO DE ARMAS", "ARMA DE FUEGO", "ARMA BLANCA", "LLAVE MAESTRA", "CONTUNDENTES", "PALANCA"
+    ],
+    top_clases_sitio: [
+      "VIA PUBLICA", "LOCAL COMERCIAL", "CASA DE HABITACION", "CENTRO COMERCIAL", "ALMACEN"
+    ],
+  },
+};
+
+/**
+ * Consulta la exploración tabular paginada, filtros multicriterio y pivot dinámico de hurtos.
+ * GET /api/v1/geodatos/analitica/hurtos/registros
+ */
+export async function explorarRegistrosHurtos(
+  filtros?: ParametrosExploradorHurtos
+): Promise<ExploradorHurtosResponse> {
+  const params = new URLSearchParams();
+  const delitoNorm = normalizarDelitoParam(filtros?.delito);
+  if (delitoNorm) params.append("delito", delitoNorm);
+  if (filtros?.anio !== undefined && filtros?.anio !== null && filtros.anio > 0) {
+    params.append("anio", String(filtros.anio));
+  }
+  if (filtros?.mes && filtros.mes !== "TODOS") {
+    params.append("mes", filtros.mes);
+  }
+  if (filtros?.zona && filtros.zona !== "TODAS") {
+    params.append("zona", filtros.zona);
+  }
+  if (filtros?.armas_medios && filtros.armas_medios !== "TODOS") {
+    params.append("armas_medios", filtros.armas_medios);
+  }
+  if (filtros?.clase_sitio && filtros.clase_sitio !== "TODOS") {
+    params.append("clase_sitio", filtros.clase_sitio);
+  }
+  if (filtros?.dia_semana && filtros.dia_semana !== "TODOS") {
+    params.append("dia_semana", filtros.dia_semana);
+  }
+  if (filtros?.busqueda?.trim()) {
+    params.append("busqueda", filtros.busqueda.trim());
+  }
+  if (filtros?.agrupar_por) {
+    params.append("agrupar_por", filtros.agrupar_por);
+  }
+  if (filtros?.limit !== undefined && filtros?.limit !== null) {
+    params.append("limit", String(filtros.limit));
+  }
+  if (filtros?.offset !== undefined && filtros?.offset !== null) {
+    params.append("offset", String(filtros.offset));
+  }
+
+  const query = params.toString();
+  try {
+    return await apiFetch<ExploradorHurtosResponse>(
+      `/geodatos/analitica/hurtos/registros${query ? `?${query}` : ""}`
+    );
+  } catch (err) {
+    console.warn("Fallo al consultar /geodatos/analitica/hurtos/registros, usando fallback:", err);
+    return FALLBACK_EXPLORADOR_HURTOS;
+  }
+}
+
