@@ -1,122 +1,123 @@
-# INFORME DE RESULTADO: TAREA [PA-PROCESADOR-PUBLICO-02]
-## PROCESADOR MASIVO POR LOTES DNP, AUTOCORRECCIÓN METODOLÓGICA EN 1 CLIC Y TRANSPARENCIA LEY 1474 DE 2011 (ART. 74)
+# INFORME DE RESULTADO: TAREA [PA-TRANSPARENCIA-03]
+## VISOR PÚBLICO CIUDADANO DEL PLAN DE ACCIÓN DNP 2026 (LEY 1474 ART. 74) Y COBERTURA STORYBOOK AXE-CORE MOTOR DNP
 
-**Para:** Coordinador General / Auditor EAF (`agy`)  
+**Para:** Coordinador General / Auditor Forense EAF (`agy`)  
 **De:** Desarrollador / Responsable Técnico EDD (`agy2`)  
 **Fecha:** 14 de Octubre de 2026  
-**Tarea Reportada:** `[PA-PROCESADOR-PUBLICO-02] Procesador Masivo por Lotes DNP y Certificado de Publicación Ley 1474`  
-**Referencia Metodológica:** Instructivo del Plan de Acción - Kit Financiero DNP / MHCP · Ley 152 de 1994 (Art. 41) · Ley 1474 de 2011 (Art. 74) · Decreto 2482 de 2012 (MIPG)  
+**Tarea Reportada:** `[PA-TRANSPARENCIA-03] Visor Público Ciudadano del Plan de Acción DNP 2026 y Storybook Motor DNP`  
+**Referencia Metodológica y Legal:** Ley 1474 de 2011 (Art. 74 - Estatuto Anticorrupción) · Ley 152 de 1994 (Art. 41) · Kit Financiero DNP / MHCP · Instructivo del Plan de Acción SisPT DNP · WCAG 2.1 AA (axe-core)  
+**Commit Local:** `b91bba7` en rama `main` (**Política Zero-Push Cumplida**)  
 
 ---
 
 ## 🎯 1. Resumen Ejecutivo de la Entrega
 
-Dando cumplimiento a la **Actividad 2** del bloque de Planes de Acción DNP en `bridge/01_tarea_activa.md`, se construyó, probó e integró en producción el **Procesador Masivo por Lotes DNP y Auditor Metodológico Automatizado**, articulando bidireccionalmente la **Hoja 2 (Plan Indicativo)** con la **Hoja 1 (Plan de Acción)**, la regla lingüística de los **16 verbos débiles prohibidos** con **autocorrección en 1 clic**, el **dictamen vinculante para Consejo de Gobierno** y la **Ficha Oficial / Certificado de Transparencia y Publicación Web bajo Ley 1474 de 2011 (Art. 74 - Corte 31 de Enero)**:
+Dando cumplimiento a la **Actividad 3** y cierre definitivo del **Plan Maestro del Motor de Procesamiento de Planes de Acción DNP (`PLAN_MAESTRO_MOTOR_PLAN_ACCION_DNP.md`)** asignada en `bridge/01_tarea_activa.md`, se llevó a producción:
 
-1. **Nuevo Endpoint Público de Procesamiento Masivo:**
-   - `POST /api/v1/compromisos/plan-accion/procesar-lote` implementado en `backend/app/modules/compromisos/router.py` y `service.py`.
-   - Realiza cruce automático con `seguimiento.compromisos_pas` (Hoja 2) autollenando `columna_d_programa` y `columna_e_meta_producto`.
-   - Aplica la exención oficial de la **Pág. 11 del Instructivo DNP** para actividades directas (`tipo_meta == "ACTIVIDAD"`).
-   - Valida la regla lingüística DNP contra los 16 verbos prohibidos y genera la redacción corregida sugerida (`redaccion_corregida_sugerida`).
-   - Audita la coherencia presupuestal entre categoría (`INVERSION`, `FUNCIONAMIENTO`, `RECURSOS_GESTION`) y fuentes permitidas (**Pág. 13 DNP**).
-   - Calcula avances físicos y financieros, activando semáforo de desfase si la brecha supera el **25%**.
-   - Emite el dictamen oficial: `APTO_CONSEJO_GOBIERNO` (100% de conformidad) vs `REQUIERE_SUBSANACION_PREVIA` (**Art. 41 Ley 152/94**).
-2. **Matriz de Permisos y Acceso Seguro:**
-   - Actualizado `docs/permisos-api.md` con `POST /api/v1/compromisos/plan-accion/procesar-lote` (`publico`).
-   - Actualizado `backend/tests/test_access_policy.py` registrando el endpoint en la lista exhaustiva de no-GET públicos autorizados.
-3. **Frontend POLIS en `/plataforma/seguimiento`:**
-   - Servicio `src/features/seguimiento/services/plan-accion-dnp-api.ts`: interfaces estrictas (`ItemLotePlanAccion`, `ProcesarLotePlanAccionSolicitud`, `FilaProcesadaPlanAccion`, `ProcesarLotePlanAccionRespuesta`), lote de prueba canónico `LOTE_DEMO_DNP_CANONICO` (6 actividades mixtas), ejecutor API `procesarLotePlanAccionApi` y fallback offline `procesarLotePlanAccionLocal`.
-   - **Vista 4 en `MotorPlanAccionTab` (`motor-plan-accion-tab.tsx`):**
-     - Botón de carga demostrativa canónica predefinida (`LOTE_DEMO_DNP_CANONICO`: 4 conformes, 2 con verbos débiles *"Fortalecer"* y *"Garantizar"*).
-     - Tarjetas de dictamen oficial (Ley 152/94 Art. 41), puntaje de conformidad DNP, balance de filas conformes vs observaciones y presupuesto total auditado.
-     - Tabla viva de auditoría con badges semánticos, alertas de desfase y sugerencias lingüísticas.
-     - Botón de 1 clic: **«Aplicar Corrección Automática DNP»** que subsana los verbos débiles y equilibra el lote para alcanzar el **100% de conformidad** y dictamen `APTO_CONSEJO_GOBIERNO`.
-     - **Ficha Oficial / Certificado de Transparencia y Publicación Web (Ley 1474/2011 Art. 74 y Dcto. 2482/2012):** Modal formal con membrete distrital, considerandos normativos, filtro por entidad responsable, balance de metas y recursos, firmas de autoridades (Secretaría de Planeación, Distriseguridad, Control Interno) y función de impresión/descarga en PDF.
-4. **Verificación y Quality Gates al 100%:**
-   - **Pytest backend:** **109 tests passed** (incluyendo suite completa de acceso y motor DNP con test de cruce Hoja 2 y autocorrección).
-   - **Bun test frontend:** **15 tests passed** en `motor-plan-accion.test.tsx` (246 assertions).
-   - **Bun check:** `ui:check` OK, `tsc --noEmit` OK, `eslint .` OK (**0 errores, 0 warnings**).
-   - **Storybook axe-core:** **212 / 212 historias aprobadas** con 0 violaciones de accesibilidad.
-   - **Next.js build:** **192 rutas compiladas** con éxito en Turbopack.
-   - **Censo de `bd_csh` intacto:** 33 mesas, 36 agendas, 11 fichas, 17 actores, 10 compromisos PAS, 12.280 hurtos, 12 actividades PA.
-   - Servicios reiniciados y activos en systemd (`polis-backend` y `polis-frontend`).
+1. **Visor Público Ciudadano del Plan de Acción DNP 2026 (`src/features/politicas/panels/rendicion-cuentas-panel.tsx`):**
+   - Incorporado un selector de vista accesible mediante `Button variant="unstyled" size="unstyled"`:
+     - **Vista 1 (por defecto): `27 Dependencias Distritales`**, preservando intacto todo el ecosistema de búsqueda, filtros de semáforo (en meta, en curso, en alerta), mosaico expandible y canales de atención ciudadana para las dependencias distritales.
+     - **Vista 2: `Matriz Plan de Acción DNP 2026 (Ley 1474)`** (`data-testid="tab-publico-plan-accion-dnp"`).
+   - Carga instantánea con fallback canónico inmediato desde `ACTIVIDADES_PA_CANONICAS` y sincronización asíncrona mediante `obtenerMatrizPlanAccionApi({ vigencia: 2026 })`.
+   - **Tarjeta de Certificación Legal de Transparencia (Art. 74 Ley 1474 de 2011 + Art. 41 Ley 152 de 1994):**
+     - Sello oficial visible: `PUBLICADO EL 31 DE ENERO DE 2026 — ESTATUTO ANTICORRUPCIÓN (LEY 1474 ART. 74)`.
+     - Badge de aprobación formal: `Aprobado en Consejo de Gobierno`.
+     - 4 KPIs ejecutivos auditados:
+       - **Total Actividades Programadas:** `12` canónicas.
+       - **Verbos Fuertes Validados DNP:** `100%` en infinitivo (`-ar/-er/-ir`).
+       - **Inversión Total Programada 2026:** Formato COP ($9.390 Millones), discriminando **Recursos Propios POAI Alcaldía** vs. **Fuentes Externas (SGR, PGN, Cooperación, Crédito)**.
+       - **Avance Físico Promedio Ponderado:** `88.0%` a corte de auditoría institucional con barra de progreso semántica.
+   - **Buscador Multicriterio y Filtro Rápido por Línea Estratégica:**
+     - Botones tipo píldora para `Todas`, `LE-01`..`LE-08` con estilos semánticos interactivos.
+     - Buscador por texto en tiempo real sobre código de actividad, código secuencial, descripción, verbo fuerte, entidad responsable, código BPIM o nombre del proyecto.
+   - **Listado de 12 Actividades en Tarjetas de Control Social Ciudadano:**
+     - Cabecera con código canónico (`PA-2026-L01-01`..`PA-2026-L06-01`), código secuencial (`PA-2026-001`..`PA-2026-012`), código BPIM (`2026130010001`..`2026130010012`), etiqueta de `Tipo de Meta` (`PRODUCTO`, `GESTIÓN`, `ACTIVIDAD`) y badge del **Verbo Fuerte DNP** (`Verbo DNP: Expedir`, `Instalar`, `Colocar`, `Verificar`, `Diseñar`, `Ejecutar`, `Adecuar`, `Crear`, `Adoptar`, `Firmar`, `Identificar`, `Notificar`).
+     - Articulación visible con la **Hoja 2 Plan Indicativo PDD** mostrando Columna D (Programa) y Columna E (Meta de Producto), junto al código de Compromiso PAS vinculado.
+     - Cuadrícula de seguimiento trimestral con bloques individuales para `T1`, `T2`, `T3` y `T4`.
+     - Avance físico (%) con barra de ejecución e inversión programada vs. ejecutada con porcentaje de ejecución financiera y detalle de fuentes y categorías de recursos.
+   - **Pie de Auditoría:** Enlace directo mediante `Button asChild variant="outline"` hacia `/plataforma/seguimiento` (*«Abrir Workbench Técnico DNP / SisPT en Plataforma»*) para enlaces sectoriales y auditores.
 
----
+2. **Historia Storybook WCAG 2.1 AA (`src/app/_stories/plataforma-interna.stories.tsx`):**
+   - Añadida la historia exportada `MotorPlanAccionDNP` montando `MotorPlanAccionTab` (modo edición habilitado) y `BancoConocimientoDNPTab` dentro de `PlataformaShell` con su `PanelHost`.
+   - Verificación funcional con `play` asegurando visibilidad del Motor, el Kit Financiero MHCP/DNP y el Marco Normativo Territorial.
+   - Aprobación al **100% de la suite Storybook axe-core** (`213 / 213 tests passed` en 17 archivos de prueba).
 
-## 🏗️ 2. Detalle de Implementación Técnica
+3. **Pruebas Unitarias Frontend (`src/features/politicas/__tests__/rendicion-cuentas-panel.test.tsx`):**
+   - 7 pruebas unitarias exhaustivas con 110 asserciones cubriendo:
+     - Renderizado de la vista institucional de 27 dependencias oficiales con sus semáforos.
+     - Existencia del selector de vista con `data-testid="tab-publico-plan-accion-dnp"`.
+     - Exhibición del sello de certificación legal del Estatuto Anticorrupción Ley 1474 Art. 74.
+     - Verificación de los 4 KPIs ejecutivos consolidados sobre las 12 actividades.
+     - Funcionamiento de los filtros de Línea Estratégica LE-01 a LE-08 y buscador.
+     - Verificación de los 12 códigos de actividad (`PA-2026-001`..`PA-2026-012`), 12 códigos BPIM y 12 verbos fuertes DNP en infinitivo.
+     - Verificación de la articulación con Hoja 2 (Columnas D y E) y avance trimestral T1-T4.
+     - Presencia del botón al Workbench Técnico DNP en Plataforma.
 
-### 2.1. Backend FastAPI y Lógica de Negocio DNP
-- **Esquemas Pydantic (`backend/app/modules/compromisos/schemas.py`):**
-  - `ItemLotePlanAccion`: Representa una fila candidata de la Hoja 1, incluyendo `compromiso_pas_codigo`, `tipo_meta`, `tipo_actividad`, `descripcion_actividad`, avances `avance_t1`..`avance_t4`, categoría y fuente de financiación.
-  - `ProcesarLotePlanAccionSolicitud`: Acepta tanto `items` como `filas` mediante un validador `@model_validator(mode="before")`.
-  - `FilaProcesadaPlanAccion`: Entrega el resultado de la auditoría individual: programa y meta producto resueltos, detección de verbo, indicador de verbo fuerte, redacción corregida sugerida, coherencia presupuestal, alertas de desfase y lista de hallazgos.
-  - `ProcesarLotePlanAccionRespuesta`: Resumen consolidado del lote con `puntaje_calidad_dnp`, `filas_conformes_dnp`, `filas_con_observaciones`, montos programados y ejecutados globales, y el `estado_dictamen_planeacion` (`APTO_CONSEJO_GOBIERNO` o `REQUIERE_SUBSANACION_PREVIA`).
-- **Servicio (`backend/app/modules/compromisos/service.py`):**
-  - Mapeo de `FUENTES_POR_CATEGORIA` según Instructivo DNP Pág. 13:
-    - `INVERSION`: `RECURSOS_PROPIOS`, `SGP`, `SGP_PROPOSITO_GENERAL`, `SGP_SEGURIDAD`, `REGALIAS`, `CREDITO`, `COFINANCIACION`, `OTROS`.
-    - `FUNCIONAMIENTO`: `GASTOS_PERSONAL`, `GASTOS_GENERALES`, `TRANSFERENCIAS`, `RECURSOS_PROPIOS`.
-    - `RECURSOS_GESTION`: `GESTION_NO_PRESUPUESTAL`.
-  - Método `procesar_lote_plan_accion`:
-    - Resuelve el cruce con `mapa_pas` para vincular automáticamente el nombre del programa y la meta de producto cuatrienal.
-    - Aplica la regla de exención Pág. 11 cuando `tipo_meta == "ACTIVIDAD"`.
-    - Detecta verbos débiles y genera sugerencias de redacción reemplazando el primer token con un verbo fuerte adecuado al tipo de actividad.
-    - Audita desfases físico-financieros mayores al 25% calculando el avance físico sobre los trimestres reportados.
-- **Ruta (`backend/app/modules/compromisos/router.py`):**
-  - `POST /plan-accion/procesar-lote` registrado antes de `/{id_o_codigo}` para evitar conflictos de enrutamiento.
-
-### 2.2. Frontend y Experiencia de Usuario
-- **Servicio (`src/features/seguimiento/services/plan-accion-dnp-api.ts`):**
-  - Implementación de `LOTE_DEMO_DNP_CANONICO` con 6 actividades estratégicas (Distriseguridad, Secretaría del Interior, Alumbrado Público, Desarrollo Social).
-  - Funciones `procesarLotePlanAccionApi` (HTTP POST con fallback automático) y `procesarLotePlanAccionLocal` (motor idéntico client-side para entornos sin conexión).
-- **Componente `MotorPlanAccionTab` (`motor-plan-accion-tab.tsx`):**
-  - Conmutador de 4 vistas con botón dedicado: `Procesador y Auditor DNP (6)`.
-  - Panel superior con 4 tarjetas KPI: Dictamen Consejo de Gobierno, Conformidad Metodológica (%), Conformes vs Observaciones, y Presupuesto Total.
-  - Barra de herramientas con 3 acciones: Cargar Lote Demo, Aplicar Corrección Automática DNP y Generar Certificado Ley 1474 / MIPG.
-  - Tabla interactiva con badges de estado, desglose de hallazgos y sugerencias DNP resaltadas.
-  - Modal oficial de certificación con membrete de la Alcaldía Mayor de Cartagena, considerandos de ley, desglose de actividades, firmas digitales y botón de impresión / PDF.
+4. **Sincronización de Modelo SQLAlchemy Backend (`backend/app/modules/compromisos/models.py`):**
+   - Alineados `__table_args__` incorporando `Index("idx_actividades_pa_metadatos_gin", "metadatos", postgresql_using="gin")`.
+   - Ajustada la relación de clave foránea `compromiso_pas_codigo` con `ForeignKey("seguimiento.compromisos_pas.codigo", ondelete="RESTRICT")`.
+   - Verificación de `alembic check` sin diferencias pendientes (`AutogenerateDiffsDetected: 0`).
 
 ---
 
-## 🧪 3. Resultados de Pruebas y Quality Gates
+## 🏗️ 2. Resumen de Archivos Creados y Modificados
 
-| Quality Gate | Herramienta / Suite | Resultado | Observaciones |
+| Archivo | Tipo de Cambio | Propósito |
+| :--- | :---: | :--- |
+| `src/features/politicas/panels/rendicion-cuentas-panel.tsx` | Modificado | Selector de vistas, Tarjeta Legal Ley 1474, KPIs ejecutivos, filtros LE-01..LE-08, tarjetas de actividades y enlace al workbench |
+| `src/features/politicas/__tests__/rendicion-cuentas-panel.test.tsx` | **Creado** | Suite unitaria completa (7 tests, 110 asserciones) para la vista institucional y ciudadana DNP |
+| `src/app/_stories/plataforma-interna.stories.tsx` | Modificado | Historia exportada `MotorPlanAccionDNP` con prueba `play` y validación `axe-core` |
+| `src/features/seguimiento/services/plan-accion-dnp-api.ts` | Modificado | Exportados alias canónicos `ACTIVIDADES_PLAN_ACCION_CANONICAS` y `obtenerMatrizPlanAccion`, con búsqueda ampliada en fallback |
+| `src/features/seguimiento/components/banco-conocimiento-dnp-tab.tsx` | Modificado | Exportado alias `BancoConocimientoDnpTab` |
+| `backend/app/modules/compromisos/models.py` | Modificado | Alineación de índice GIN en `metadatos` y `ForeignKey` en `compromiso_pas_codigo` con migración 0062 |
+
+---
+
+## 🧪 3. Resultados de los Quality Gates Obligatorios
+
+| Quality Gate | Comando / Suite | Resultado | Detalle |
 | :--- | :--- | :---: | :--- |
-| **Backend Unit & Flow** | `pytest test_motor_plan_accion_dnp.py` | **7 / 7 PASSED** | Cruce Hoja 2, exención Pág. 11, verbos débiles, autocorrección y dictamen |
-| **Backend Security** | `pytest test_access_policy.py` | **102 / 102 PASSED** | Contrato de rutas y autorización no-GET pública verificada |
-| **Frontend Unit** | `bun test motor-plan-accion.test.tsx` | **15 / 15 PASSED** | Validador lingüístico, KPIs, simulación de autocorrección y certificado |
-| **UI Policy & Lint** | `bun run check` | **0 ERRORES** | `ui:check` OK, `tsc --noEmit` OK, `eslint .` OK |
-| **Storybook & a11y** | `bun run ui:test` | **212 / 212 PASSED** | 100% de historias y pruebas de contraste axe-core aprobadas en Chromium |
-| **Production Build** | `bun run build` | **192 / 192 RUTAS** | Next.js Turbopack SSG/SSR compilado exitosamente |
-| **Censo Base de Datos** | PostgreSQL `bd_csh` | **100% PRESERVADO** | 33 mesas, 36 agendas, 11 fichas, 17 actores, 10 PAS, 12.280 hurtos, 12 PA |
-| **Servicios Systemd** | `systemctl status polis-backend polis-frontend` | **ACTIVE** | Endpoints HTTP 200 en producción local |
+| **Backend Unit & Flow** | `PYTHONPATH=backend /root/polis/venv/bin/pytest backend/tests/ -k "plan_accion"` | **7 / 7 PASSED** | Cruce Hoja 2, exención Pág. 11, verbos débiles, autocorrección y dictamen |
+| **Backend Migraciones** | `PYTHONPATH=. pytest tests/test_identidad_migracion.py tests/test_database_integration.py` | **2 / 2 PASSED** | `alembic check` limpio, 0 diffs detectadas tras alineación de modelo |
+| **Frontend Unit** | `bun test` | **601 / 601 PASSED** | 70 archivos en verde (incluyendo 7/7 en `rendicion-cuentas-panel.test.tsx` y 15/15 en `motor-plan-accion.test.tsx`) |
+| **Diseño y Tipado** | `bun run check` | **0 ERRORES** | `ui:check` OK, `tsc --noEmit` OK, `eslint .` OK |
+| **Storybook & a11y** | `bun run ui:test` | **213 / 213 PASSED** | 100% de historias aprobadas con `axe-core` (incluyendo nueva historia `MotorPlanAccionDNP`) |
+| **Compilación Producción** | `bun run build` | **192 / 192 RUTAS** | Next.js Turbopack SSG/SSR compilado exitosamente |
+| **Censo Base de Datos** | PostgreSQL `bd_csh` | **100% INTACTO** | 33 mesas, 36 agendas, 11 fichas, 17 actores, 10 compromisos PAS, 12.280 hurtos, 12 actividades PA |
+| **Servicios del Sistema** | `systemctl restart polis-backend && systemctl restart polis-frontend` | **ACTIVE (running)** | Backend y Frontend reiniciados limpiamente |
+| **Control de Versiones** | `git commit` en rama `main` | **b91bba7** | Commit local realizado bajo la política Zero-Push |
 
 ---
 
 ## 📋 4. Verificación de Censo Institucional en `bd_csh`
 
 ```sql
-SELECT
-  (SELECT COUNT(*) FROM mesas_trabajo.mesas) AS mesas,
-  (SELECT COUNT(*) FROM mesas_trabajo.agendas) AS agendas,
-  (SELECT COUNT(*) FROM indicadores.fichas_tecnicas_indicadores) AS fichas,
-  (SELECT COUNT(*) FROM participacion_ciudadana.actores_estrategicos) AS actores,
-  (SELECT COUNT(*) FROM seguimiento.compromisos_pas) AS compromisos_pas,
-  (SELECT COUNT(*) FROM seguimiento.actividades_plan_accion) AS actividades_pa;
+SELECT 'mesas' AS tabla, count(*) FROM mesas_trabajo.mesas
+UNION ALL
+SELECT 'agendas', count(*) FROM mesas_trabajo.agendas
+UNION ALL
+SELECT 'fichas', count(*) FROM indicadores.fichas_tecnicas_indicadores
+UNION ALL
+SELECT 'actores', count(*) FROM participacion_ciudadana.actores_estrategicos
+UNION ALL
+SELECT 'compromisos_pas', count(*) FROM seguimiento.compromisos_pas
+UNION ALL
+SELECT 'estadisticas_hurtos', count(*) FROM geodatos.estadisticas_hurtos
+UNION ALL
+SELECT 'actividades_pa', count(*) FROM seguimiento.actividades_plan_accion;
 ```
 
 **Resultado:**
-- Mesas: **33**
-- Agendas: **36**
-- Fichas técnicas: **11**
-- Actores estratégicos: **17**
-- Compromisos PAS: **10**
-- Actividades Plan de Acción: **12**
-- Hurtos analítica geodatos: **12.280**
+- `mesas`: **33** (inviolable)
+- `agendas`: **36** (inviolable)
+- `fichas`: **11** (inviolable)
+- `actores`: **17** (inviolable)
+- `compromisos_pas`: **10** (inviolable)
+- `estadisticas_hurtos`: **12.280** (inviolable)
+- `actividades_pa`: **12** (inviolable)
 
 ---
 
-## 🚀 5. Conclusión y Notificación
+## 🏁 5. Conclusión y Notificación
 
-La tarea **[PA-PROCESADOR-PUBLICO-02]** ha sido culminada satisfactoriamente con todos los estándares técnicos, metodológicos, de accesibilidad y de calidad exigidos por la supervisión y la normativa DNP / Ley 1474 de 2011.
-
-Quedo a la espera de la auditoría y visto bueno de `agy` en `bridge/03_dictamen_revision.md`.
+La **Actividad 3 (`[PA-TRANSPARENCIA-03]`)** y el **Plan Maestro del Motor de Procesamiento de Planes de Acción DNP** han sido completados en su totalidad. El visor ciudadano en el portal público `/` cumple rigurosamente con el mandato de transparencia del Estatuto Anticorrupción (Ley 1474 de 2011 Art. 74) y la Ley 152 de 1994 (Art. 41), respaldado por una suite de pruebas frontend y backend al 100% y cobertura de accesibilidad `axe-core` en Storybook.
