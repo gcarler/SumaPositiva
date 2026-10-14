@@ -1,15 +1,20 @@
 import re
-import unicodedata
 import uuid
 from collections.abc import Sequence
-from datetime import UTC, date, datetime
+from datetime import UTC, datetime
+from typing import Any
 
 from fastapi import HTTPException, status
 
 from app.core.transactions import transaction
+from app.modules.compromisos.detector_multiformato import (
+    detectar_y_normalizar_formato,
+    obtener_muestras_multiformato,
+)
 from app.modules.compromisos.models import ActividadPlanAccion, CompromisoPAS
 from app.modules.compromisos.repository import CompromisosRepository
 from app.modules.compromisos.schemas import (
+    ActividadOperativaTriada,
     ActividadPlanAccionActualizarSeguimiento,
     ActividadPlanAccionCrear,
     ActividadPlanAccionRespuesta,
@@ -18,22 +23,148 @@ from app.modules.compromisos.schemas import (
     CompromisoPASActualizarAvance,
     CompromisoPASCrear,
     CompromisoPASRespuesta,
+    CruzarTresLecturasSolicitud,
+    DetectarFormatoPlanAccionRespuesta,
+    DetectarFormatoPlanAccionSolicitud,
+    EjecucionPresupuestalTriada,
     FilaProcesadaPlanAccion,
-    ItemLotePlanAccion,
     KpisSeguimientoRespuesta,
     MatrizPlanAccionRespuesta,
+    MetaEstrategicaTriada,
     ProcesarLotePlanAccionRespuesta,
     ProcesarLotePlanAccionSolicitud,
     ResumenEjecutivoPlanAccion,
     ValidarRedaccionRespuesta,
-    ValidarRedaccionSolicitud,
 )
-
+from app.modules.compromisos.triada_motores import (
+    cruzar_tres_lecturas,
+    motor_inversion_presupuestal,
+    motor_plan_accion,
+    motor_plan_desarrollo,
+    obtener_catalogo_transparencia,
+)
 
 
 class CompromisosService:
     def __init__(self, repository: CompromisosRepository) -> None:
         self.repo = repository
+
+    def detectar_formato_plan_accion(
+        self, solicitud: DetectarFormatoPlanAccionSolicitud | str
+    ) -> DetectarFormatoPlanAccionRespuesta:
+        muestras = obtener_muestras_multiformato()
+        if isinstance(solicitud, str):
+            if solicitud not in muestras:
+                raise HTTPException(
+                    status_code=422, detail="Código de muestra multiformato desconocido."
+                )
+            solicitud = muestras[solicitud]
+        elif solicitud.muestra and not solicitud.hojas:
+            muestra = muestras.get(solicitud.muestra)
+            if muestra:
+                solicitud = muestra.model_copy(update={"nombre_archivo": solicitud.nombre_archivo})
+        return detectar_y_normalizar_formato(solicitud)
+
+    async def cruzar_lecturas_triada(
+        self, solicitud: CruzarTresLecturasSolicitud
+    ) -> dict[str, Any]:
+        return cruzar_tres_lecturas(
+            solicitud.metas_estrategicas,
+            solicitud.actividades_operativas,
+            solicitud.ejecuciones_presupuestales,
+        )
+
+    async def obtener_resumen_triada(
+        self,
+        cuatrienio: str | None = None,
+        vigencia: int | None = None,
+        entidad: str | None = None,
+        fuente: str | None = None,
+    ) -> dict[str, Any]:
+        """Summarize persisted PAS rows and identify absent strategic/financial feeds."""
+        metas_pdd: list[MetaEstrategicaTriada] = []
+        actividades_db = await self.repo.listar_actividades(
+            vigencia=vigencia, entidad=entidad, fuente_financiacion=fuente
+        )
+        periodo = re.search(r"(20\d{2})\D+(20\d{2})", cuatrienio or "")
+        if periodo:
+            inicio, fin = (int(periodo.group(i)) for i in (1, 2))
+            actividades_db = [item for item in actividades_db if inicio <= item.vigencia <= fin]
+        actividades = [
+            ActividadOperativaTriada(
+                entidad=a.entidad_responsable,
+                linea_estrategica=a.linea_estrategica_codigo,
+                codigo_meta_pdd=a.compromiso_pas_codigo,
+                codigo_bpim=a.codigo_bpim,
+                descripcion_actividad=a.descripcion_actividad,
+                avance_operativo_fisico_pct=float(a.porcentaje_avance_fisico or 0),
+                formato_origen="POLIS_PAS_PERSISTIDO",
+                porcentaje_verbos_fuertes_dnp=100.0 if a.verbo_infinitivo else 0.0,
+            )
+            for a in actividades_db
+        ]
+        ejecuciones: list[EjecucionPresupuestalTriada] = []
+        cruces = cruzar_tres_lecturas(metas_pdd, actividades, ejecuciones)
+        years = {2016: 0, 2020: 0, 2026: 0}
+        for actividad in actividades_db:
+            if actividad.vigencia in years:
+                years[actividad.vigencia] += 1
+        profiles = [
+            {"perfil": profile, "vigencias": year_range, "datos_cargados": False}
+            for profile, year_range in (
+                ("PA_MONOHOJA_2016_2019", "2016–2019"),
+                ("PA_HIBRIDO_2020_2023", "2020–2023"),
+                ("PA_MULTIHOJA_2024_2026", "2024–2026"),
+                ("PA_CANONICO_DNP_POLIS", "dual"),
+            )
+        ]
+        return {
+            "filtros": {
+                "cuatrienio": cuatrienio,
+                "vigencia": vigencia,
+                "entidad": entidad,
+                "fuente": fuente,
+            },
+            "motor_1_plan_desarrollo": {
+                "estado_fuente": "SIN_CARGA_ESTRUCTURADA",
+                "planes_referenciados": [
+                    {"nombre": "Primero la Gente", "cuatrienio": "2016-2019"},
+                    {"nombre": "Salvemos Juntos a Cartagena", "cuatrienio": "2020-2023"},
+                    {"nombre": "Cartagena Ciudad de Derechos", "cuatrienio": "2024-2027"},
+                ],
+                **motor_plan_desarrollo(metas_pdd),
+            },
+            "motor_2_plan_accion": {
+                "estado_fuente": "PERSISTENCIA_POLIS_PAS",
+                "origen_registros": "seguimiento.actividades_plan_accion",
+                "registros_persistidos": len(actividades_db),
+                "conteo_vigencias_comparativa": years,
+                **motor_plan_accion(actividades),
+            },
+            "motor_3_inversion_presupuestal": {
+                "estado_fuente": "SIN_CARGA_CASCADA_PRESUPUESTAL",
+                "cobertura_campos": [
+                    "apropiacion_inicial_cop",
+                    "apropiacion_definitiva_cop",
+                    "cdp_acumulado_cop",
+                    "compromisos_rp_cop",
+                    "obligaciones_cop",
+                    "pagos_tesoreria_cop",
+                ],
+                **motor_inversion_presupuestal(ejecuciones),
+            },
+            "cruce_tres_lecturas": cruces,
+            "comparativa_interanual_2016_2026": {
+                str(year): {
+                    "registros_persistidos": years[year],
+                    "dato_disponible": years[year] > 0,
+                }
+                for year in years
+            }
+            | {"metodo": "campos normalizados comunes; las fuentes ausentes no se imputan"},
+            "perfiles_formato_excel": profiles,
+            "catalogo_transparencia_cartagena": obtener_catalogo_transparencia(),
+        }
 
     async def listar_compromisos(
         self,
@@ -69,10 +200,8 @@ class CompromisosService:
                 if datos.porcentaje_cumplimiento is not None
                 else min(100.0, max(0.0, round((datos.avance_cuatrienal_valor / meta) * 100.0, 2)))
             )
-            estado = datos.estado if datos.estado != "sin_reporte" else "en_ejecucion"
         else:
             porcentaje = None
-            estado = datos.estado
 
         compromiso = CompromisoPAS(
             codigo=datos.codigo.strip().upper(),
@@ -101,7 +230,9 @@ class CompromisosService:
             await self.repo.registrar_auditoria(
                 registro_id=creado.id,
                 accion="compromiso_creado",
-                justificacion_motivada=f"Creación del compromiso institucional PAS {creado.codigo}: '{creado.nombre}'.",
+                justificacion_motivada=(
+                    f"Creación del compromiso institucional PAS {creado.codigo}: '{creado.nombre}'."
+                ),
                 usuario_id=actor_id,
                 causal="tecnica",
                 metadatos={
@@ -123,7 +254,11 @@ class CompromisosService:
         compromiso = await self.obtener_compromiso(id_o_codigo)
 
         if datos.avance_cuatrienal_valor is not None:
-            meta = float(compromiso.meta_cuatrienal_valor) if compromiso.meta_cuatrienal_valor > 0 else 1.0
+            meta = (
+                float(compromiso.meta_cuatrienal_valor)
+                if compromiso.meta_cuatrienal_valor > 0
+                else 1.0
+            )
             nuevo_avance = float(datos.avance_cuatrienal_valor)
             porcentaje = min(100.0, max(0.0, round((nuevo_avance / meta) * 100.0, 2)))
             compromiso.avance_cuatrienal_valor = nuevo_avance
@@ -160,7 +295,8 @@ class CompromisosService:
 
         justificacion = (
             f"Actualización de avance de compromiso {compromiso.codigo}: "
-            f"avance={nuevo_avance} {compromiso.unidad_medida} ({porcentaje}%), estado={nuevo_estado}."
+            f"avance={nuevo_avance} {compromiso.unidad_medida} "
+            f"({porcentaje}%), estado={nuevo_estado}."
         )
         if datos.observacion_cualitativa:
             justificacion += f" Observación: {datos.observacion_cualitativa}"
@@ -201,10 +337,18 @@ class CompromisosService:
                 campos_actualizados.append(campo)
 
         # Recalcular porcentaje si cambio avance o meta
-        if "avance_cuatrienal_valor" in campos_actualizados or "meta_cuatrienal_valor" in campos_actualizados:
-            meta = float(compromiso.meta_cuatrienal_valor) if compromiso.meta_cuatrienal_valor > 0 else 1.0
+        if (
+            "avance_cuatrienal_valor" in campos_actualizados
+            or "meta_cuatrienal_valor" in campos_actualizados
+        ):
+            meta = (
+                float(compromiso.meta_cuatrienal_valor)
+                if compromiso.meta_cuatrienal_valor > 0
+                else 1.0
+            )
             compromiso.porcentaje_cumplimiento = min(
-                100.0, max(0.0, round((float(compromiso.avance_cuatrienal_valor) / meta) * 100.0, 2))
+                100.0,
+                max(0.0, round((float(compromiso.avance_cuatrienal_valor) / meta) * 100.0, 2)),
             )
 
         async with transaction(self.repo.session):
@@ -213,7 +357,10 @@ class CompromisosService:
             await self.repo.registrar_auditoria(
                 registro_id=actualizado.id,
                 accion="compromiso_actualizado",
-                justificacion_motivada=f"Actualización general de compromiso {actualizado.codigo} (campos: {', '.join(campos_actualizados)}).",
+                justificacion_motivada=(
+                    f"Actualización general de compromiso {actualizado.codigo} "
+                    f"(campos: {', '.join(campos_actualizados)})."
+                ),
                 usuario_id=actor_id,
                 causal="tecnica",
                 metadatos={"codigo": actualizado.codigo, "campos": campos_actualizados},
@@ -232,7 +379,9 @@ class CompromisosService:
             await self.repo.registrar_auditoria(
                 registro_id=comp_id,
                 accion="compromiso_eliminado",
-                justificacion_motivada=f"Eliminación de compromiso PAS {codigo} de la matriz institucional.",
+                justificacion_motivada=(
+                    f"Eliminación de compromiso PAS {codigo} de la matriz institucional."
+                ),
                 usuario_id=actor_id,
                 causal="tecnica",
                 metadatos={"codigo": codigo},
@@ -254,7 +403,8 @@ class CompromisosService:
             )
 
         con_reporte = [
-            c for c in compromisos
+            c
+            for c in compromisos
             if c.porcentaje_cumplimiento is not None and c.estado != "sin_reporte"
         ]
         total_con_reporte = len(con_reporte)
@@ -311,13 +461,56 @@ class CompromisosService:
     }
 
     SUGERENCIAS_POR_TIPO: dict[str, list[str]] = {
-        "NORMATIVA": ["Adecuar", "Modificar", "Fijar", "Adoptar", "Eliminar", "Expedir", "Reglamentar", "Derogar"],
-        "ADMINISTRATIVA": ["Firmar", "Diseñar", "Ajustar", "Analizar", "Verificar", "Suscribir", "Tramitar", "Auditar"],
-        "DE_GESTION": ["Crear", "Identificar", "Expedir", "Ejecutar", "Concertar", "Gestionar", "Asignar", "Convocar"],
-        "LOGISTICA": ["Notificar", "Colocar", "Verificar", "Instalar", "Dotar", "Distribuir", "Adecuar", "Suministrar"],
+        "NORMATIVA": [
+            "Adecuar",
+            "Modificar",
+            "Fijar",
+            "Adoptar",
+            "Eliminar",
+            "Expedir",
+            "Reglamentar",
+            "Derogar",
+        ],
+        "ADMINISTRATIVA": [
+            "Firmar",
+            "Diseñar",
+            "Ajustar",
+            "Analizar",
+            "Verificar",
+            "Suscribir",
+            "Tramitar",
+            "Auditar",
+        ],
+        "DE_GESTION": [
+            "Crear",
+            "Identificar",
+            "Expedir",
+            "Ejecutar",
+            "Concertar",
+            "Gestionar",
+            "Asignar",
+            "Convocar",
+        ],
+        "LOGISTICA": [
+            "Notificar",
+            "Colocar",
+            "Verificar",
+            "Instalar",
+            "Dotar",
+            "Distribuir",
+            "Adecuar",
+            "Suministrar",
+        ],
     }
     SUGERENCIAS_GENERALES: list[str] = [
-        "Expedir", "Diseñar", "Instalar", "Ejecutar", "Crear", "Adoptar", "Verificar", "Adecuar"
+        "Expedir",
+        "Diseñar",
+        "Instalar",
+        "Ejecutar",
+        "Crear",
+        "Adoptar",
+        "Verificar",
+        "Adecuar",
     ]
 
     @classmethod
@@ -326,14 +519,13 @@ class CompromisosService:
         tabla = str.maketrans("áéíóúüÁÉÍÓÚÜ", "aeiouuAEIOUU")
         return limpia.translate(tabla).lower()
 
-
     @classmethod
     def validar_redaccion_dnp(
         cls, descripcion: str, tipo_actividad: str | None = None
     ) -> ValidarRedaccionRespuesta:
         """Validador Lingüístico Oficial del DNP (Instructivo Kit Financiero, Pág. 12).
-        
-        Verifica que la actividad inicie obligatoriamente con un verbo fuerte en infinitivo (-ar, -er, -ir)
+
+        Verifica que la actividad inicie con un verbo fuerte en infinitivo (-ar, -er, -ir)
         y detecta los 16 verbos débiles prohibidos taxativamente por el DNP.
         """
         if not descripcion or not descripcion.strip():
@@ -360,9 +552,11 @@ class CompromisosService:
                 es_infinitivo=verbo_norm.endswith(("ar", "er", "ir")),
                 es_verbo_debil_prohibido=True,
                 mensaje_dnp=(
-                    f"El verbo '{primera_palabra_cruda}' pertenece a la lista negra oficial de 16 verbos débiles "
+                    f"El verbo '{primera_palabra_cruda}' pertenece a la lista negra oficial "
+                    "de 16 verbos débiles "
                     f"prohibidos por el DNP (Instructivo Kit Financiero, pág. 12). "
-                    f"Sustitúyalo por un verbo fuerte en infinitivo que denote una acción concreta y verificable."
+                    "Sustitúyalo por un verbo fuerte en infinitivo que denote una acción "
+                    "concreta y verificable."
                 ),
                 verbos_fuertes_sugeridos=sugerencias,
             )
@@ -375,8 +569,9 @@ class CompromisosService:
                 es_infinitivo=False,
                 es_verbo_debil_prohibido=False,
                 mensaje_dnp=(
-                    f"La actividad inicia con '{primera_palabra_cruda}', que no es un verbo en infinitivo "
-                    f"terminado en -ar, -er o -ir. Según la metodología DNP (pág. 12), toda actividad debe "
+                    f"La actividad inicia con '{primera_palabra_cruda}', que no es un verbo "
+                    "en infinitivo terminado en -ar, -er o -ir. Según la metodología DNP "
+                    "(pág. 12), toda actividad debe "
                     f"iniciar obligatoriamente con un verbo fuerte en infinitivo."
                 ),
                 verbos_fuertes_sugeridos=sugerencias,
@@ -388,7 +583,8 @@ class CompromisosService:
             es_infinitivo=True,
             es_verbo_debil_prohibido=False,
             mensaje_dnp=(
-                f"Redacción válida según el estándar DNP. Inicia con el verbo fuerte en infinitivo '{verbo_norm}'."
+                "Redacción válida según el estándar DNP. Inicia con el verbo fuerte en "
+                f"infinitivo '{verbo_norm}'."
             ),
             verbos_fuertes_sugeridos=[],
         )
@@ -401,8 +597,10 @@ class CompromisosService:
                     "norma": "Ley 152 de 1994, Art. 41",
                     "titulo": "Elaboración y Aprobación del Plan de Acción",
                     "descripcion": (
-                        "Con base en los planes generales aprobados por el Concejo, cada secretaría y departamento administrativo "
-                        "preparará, con la coordinación de la Oficina de Planeación, su correspondiente Plan de Acción y lo "
+                        "Con base en los planes generales aprobados por el Concejo, cada "
+                        "secretaría y departamento administrativo "
+                        "preparará, con la coordinación de la Oficina de Planeación, su "
+                        "correspondiente Plan de Acción y lo "
                         "someterá a la aprobación del Consejo de Gobierno distrital."
                     ),
                     "obligatoriedad": "Obligatorio para todas las dependencias del Distrito.",
@@ -411,8 +609,10 @@ class CompromisosService:
                     "norma": "Ley 152 de 1994, Art. 29",
                     "titulo": "Articulación Plan Indicativo (PI) y Planes de Acción (PA)",
                     "descripcion": (
-                        "Articulación vinculante entre el Plan Indicativo cuatrienal del Plan de Desarrollo y los Planes "
-                        "de Acción anuales como instrumento base para la evaluación de resultados y gestión pública territorial."
+                        "Articulación vinculante entre el Plan Indicativo cuatrienal del "
+                        "Plan de Desarrollo y los Planes "
+                        "de Acción anuales como instrumento base para la evaluación de "
+                        "resultados y gestión pública territorial."
                     ),
                     "obligatoriedad": "Marco de evaluación del cuatrienio distrital.",
                 },
@@ -420,17 +620,22 @@ class CompromisosService:
                     "norma": "Ley 1474 de 2011, Art. 74",
                     "titulo": "Estatuto Anticorrupción - Publicación Oficial a 31 de Enero",
                     "descripcion": (
-                        "Todas las entidades del Estado, a más tardar el 31 de enero de cada año, deberán publicar en su "
-                        "página web el Plan de Acción para la vigencia (objetivos, estrategias, proyectos, metas, responsables, "
+                        "Todas las entidades del Estado, a más tardar el 31 de enero de "
+                        "cada año, deberán publicar en su "
+                        "página web el Plan de Acción para la vigencia (objetivos, "
+                        "estrategias, proyectos, metas, responsables, "
                         "distribución presupuestal) y el informe de gestión del año anterior."
                     ),
-                    "obligatoriedad": "Fecha límite improrrogable: 31 de enero de cada vigencia fiscal.",
+                    "obligatoriedad": (
+                        "Fecha límite improrrogable: 31 de enero de cada vigencia fiscal."
+                    ),
                 },
                 {
                     "norma": "Decreto 2482 de 2012 / MIPG",
                     "titulo": "Integración del Modelo de Planeación y Gestión",
                     "descripcion": (
-                        "Adopción del Modelo Integrado de Planeación y Gestión (MIPG) articulando los instrumentos de planeación "
+                        "Adopción del Modelo Integrado de Planeación y Gestión (MIPG) "
+                        "articulando los instrumentos de planeación "
                         "operativa y financiera en una sola matriz unificada por dependencia."
                     ),
                     "obligatoriedad": "Estándar de gestión de calidad pública territorial.",
@@ -440,26 +645,41 @@ class CompromisosService:
                 {
                     "instrumento": "PDT y Plan Indicativo (PI)",
                     "etapa": "Insumo Estratégico",
-                    "actividad_dnp": "Identificación de metas de producto y de gestión incorporadas en el Plan de Desarrollo.",
-                    "producto_dnp": "Metas de gestión y de producto de la vigencia sujetas a seguimiento en el Plan de Acción.",
+                    "actividad_dnp": "Identificación de metas de producto y de gestión "
+                    "incorporadas "
+                    "en "
+                    "el Plan de Desarrollo.",
+                    "producto_dnp": "Metas de gestión y de producto de la vigencia sujetas a "
+                    "seguimiento en el Plan de Acción.",
                 },
                 {
                     "instrumento": "POAI (Plan Operativo Anual de Inversiones)",
                     "etapa": "Insumo Operativo de Inversión",
-                    "actividad_dnp": "Articulación de actividades requeridas con cada proyecto de inversión de la vigencia.",
-                    "producto_dnp": "Actividades necesarias con indicadores, recursos, fecha de inicio y terminación.",
+                    "actividad_dnp": "Articulación de actividades requeridas con cada proyecto de "
+                    "inversión de la vigencia.",
+                    "producto_dnp": "Actividades necesarias con indicadores, recursos, fecha de "
+                    "inicio "
+                    "y terminación.",
                 },
                 {
                     "instrumento": "MFMP (Marco Fiscal de Mediano Plazo)",
                     "etapa": "Insumo de Consistencia Fiscal",
-                    "actividad_dnp": "Definición de la cuota global de inversión para la vigencia fiscal (Hacienda y Planeación).",
-                    "producto_dnp": "Cuota global de inversión distribuida entre sectores conforme a la capacidad de pago distrital.",
+                    "actividad_dnp": "Definición de la cuota global de inversión para la vigencia "
+                    "fiscal (Hacienda y Planeación).",
+                    "producto_dnp": "Cuota global de inversión distribuida entre sectores "
+                    "conforme a "
+                    "la capacidad de pago distrital.",
                 },
                 {
                     "instrumento": "Presupuesto Anual y PAC",
                     "etapa": "Insumo Presupuestal y Flujo de Caja",
-                    "actividad_dnp": "Definición de recursos destinados a inversión y funcionamiento y cronograma mensualizado de caja.",
-                    "producto_dnp": "Disponibilidad cierta de recursos financieros para financiar las actividades del Plan de Acción.",
+                    "actividad_dnp": "Definición de recursos destinados a inversión y "
+                    "funcionamiento "
+                    "y "
+                    "cronograma mensualizado de caja.",
+                    "producto_dnp": "Disponibilidad cierta de recursos financieros para financiar "
+                    "las "
+                    "actividades del Plan de Acción.",
                 },
             ],
             ruta_metodologica_7_pasos=[
@@ -467,161 +687,282 @@ class CompromisosService:
                     "paso": 1,
                     "nombre": "Orientaciones Metodológicas y Competencias",
                     "responsable": "Oficina de Planeación Distrital y Secretarías",
-                    "descripcion": "Planeación imparte lineamientos, cronograma y formatos a los enlaces designados por dependencia, revisando misión y competencias.",
+                    "descripcion": "Planeación imparte lineamientos, cronograma y formatos a los "
+                    "enlaces designados por dependencia, revisando misión y "
+                    "competencias.",
                 },
                 {
                     "paso": 2,
                     "nombre": "Consolidación y Revisión de Insumos",
                     "responsable": "Enlaces de Planeación por Dependencia",
-                    "descripcion": "Consolidación de metas de producto del PI, proyectos POAI, cuota MFMP y asignaciones presupuestales aprobadas.",
+                    "descripcion": "Consolidación de metas de producto del PI, proyectos POAI, "
+                    "cuota "
+                    "MFMP y asignaciones presupuestales aprobadas.",
                 },
                 {
                     "paso": 3,
                     "nombre": "Incorporación de Metas de Gestión y Administrativas",
                     "responsable": "Secretarías y Dependencias Ejecutoras",
-                    "descripcion": "Identificación de metas recurrentes, procesos internos clave y gestión de recursos externos/nacionales que requieran seguimiento.",
+                    "descripcion": "Identificación de metas recurrentes, procesos internos clave y "
+                    "gestión de recursos externos/nacionales que requieran seguimiento.",
                 },
                 {
                     "paso": 4,
                     "nombre": "Programación de Actividades y Articulación Interinstitucional",
                     "responsable": "Dependencias Ejecutoras y Co-responsables",
-                    "descripcion": "Definición de actividades indispensables por meta de producto/proyecto, identificando corresponsabilidad interinstitucional entre dependencias.",
+                    "descripcion": "Definición de actividades indispensables por meta de "
+                    "producto/proyecto, identificando corresponsabilidad "
+                    "interinstitucional entre dependencias.",
                 },
                 {
                     "paso": 5,
                     "nombre": "Diligenciamiento de la Matriz Oficial (Hoja 1 y Hoja 2)",
                     "responsable": "Líderes de Formulación por Secretaría",
-                    "descripcion": "Llenado técnico de la Matriz del Plan de Acción (Hoja 1 PA vinculada a Hoja 2 Plan Indicativo) con validación de verbos fuertes y fuentes.",
+                    "descripcion": "Llenado técnico de la Matriz del Plan de Acción (Hoja 1 PA "
+                    "vinculada a Hoja 2 Plan Indicativo) con validación de verbos "
+                    "fuertes y fuentes.",
                 },
                 {
                     "paso": 6,
                     "nombre": "Presentación y Aprobación en Consejo de Gobierno",
                     "responsable": "Alcalde Mayor, Secretario de Planeación y Gabinete",
-                    "descripcion": "Sometimiento formal de los Planes de Acción consolidados a la aprobación del Consejo de Gobierno distrital (Art. 41 Ley 152/94).",
+                    "descripcion": "Sometimiento formal de los Planes de Acción consolidados a la "
+                    "aprobación del Consejo de Gobierno distrital (Art. 41 Ley 152/94).",
                 },
                 {
                     "paso": 7,
                     "nombre": "Publicación Oficial a más tardar el 31 de Enero",
                     "responsable": "Oficina de Planeación y Tecnologías de la Información",
-                    "descripcion": "Publicación en el portal web institucional distrital y reporte al SisPT antes del 31 de enero conforme al Art. 74 Ley 1474/11.",
+                    "descripcion": "Publicación en el portal web institucional distrital y reporte "
+                    "al "
+                    "SisPT antes del 31 de enero conforme al Art. 74 Ley 1474/11.",
                 },
             ],
             pasos_diligenciamiento_matriz=[
                 {
                     "numero": "4.1",
                     "nombre": "Paso 1: Responsables de la Ejecución",
-                    "campos": ["entidad_responsable", "lider_responsable", "dependencias_articuladas"],
-                    "guia": "Identificar la secretaría u organismo distrital que lidera y las dependencias articuladas en corresponsabilidad.",
+                    "campos": [
+                        "entidad_responsable",
+                        "lider_responsable",
+                        "dependencias_articuladas",
+                    ],
+                    "guia": "Identificar la secretaría u organismo distrital que lidera y las "
+                    "dependencias articuladas en corresponsabilidad.",
                 },
                 {
                     "numero": "4.2",
                     "nombre": "Paso 2: Clasificación de la Meta",
                     "campos": ["tipo_meta"],
-                    "guia": "Clasificar en META_PRODUCTO (bienes y servicios al ciudadano), META_GESTION (procesos y gestión de recursos) o ACTIVIDAD (tareas específicas de proyecto).",
+                    "guia": "Clasificar en META_PRODUCTO (bienes y servicios al ciudadano), "
+                    "META_GESTION (procesos y gestión de recursos) o ACTIVIDAD (tareas "
+                    "específicas de proyecto).",
                 },
                 {
                     "numero": "4.3",
                     "nombre": "Paso 3: Articulación con Hoja 2 Plan Indicativo",
                     "campos": ["codigo_meta_pi", "programa_pi", "meta_producto_vigencia"],
-                    "guia": "Vincular con el código único del Plan Indicativo (PAS), el programa estratégico y la meta cuantitativa programada para el año.",
+                    "guia": "Vincular con el código único del Plan Indicativo (PAS), el "
+                    "programa estratégico y la meta cuantitativa programada para el "
+                    "año.",
                 },
                 {
                     "numero": "4.4",
                     "nombre": "Paso 4: Vinculación con Proyectos BPIM / MGA",
                     "campos": ["codigo_bpim", "proyecto_nombre", "objetivo_proyecto"],
-                    "guia": "Registrar el código de 13 dígitos del Banco de Proyectos de Inversión Municipal (BPIM), nombre y objetivo central priorizado en POAI.",
+                    "guia": "Registrar el código de 13 dígitos del Banco de Proyectos de "
+                    "Inversión Municipal (BPIM), nombre y objetivo central priorizado "
+                    "en POAI.",
                 },
                 {
                     "numero": "4.5",
                     "nombre": "Paso 5: Programación de Actividades y Regla de Verbos Fuertes",
-                    "campos": ["tipo_actividad", "descripcion_actividad", "fecha_inicio", "fecha_terminacion", "avance_trimestral"],
-                    "guia": "Redactar iniciando obligatoriamente con verbo fuerte en infinitivo (-ar, -er, -ir), clasificar en NORMATIVA, ADMINISTRATIVA, DE_GESTION o LOGISTICA, y fijar metas trimestrales T1-T4.",
+                    "campos": [
+                        "tipo_actividad",
+                        "descripcion_actividad",
+                        "fecha_inicio",
+                        "fecha_terminacion",
+                        "avance_trimestral",
+                    ],
+                    "guia": "Redactar iniciando obligatoriamente con verbo fuerte en "
+                    "infinitivo (-ar, -er, -ir), clasificar en NORMATIVA, "
+                    "ADMINISTRATIVA, DE_GESTION o LOGISTICA, y fijar metas "
+                    "trimestrales T1-T4.",
                 },
                 {
                     "numero": "4.6",
                     "nombre": "Paso 6: Fuentes de Financiación por Vigencia",
-                    "campos": ["categoria_recursos", "fuente_financiacion", "monto_programado_cop", "monto_ejecutado_cop"],
-                    "guia": "Asignar la categoría (INVERSION, FUNCIONAMIENTO, RECURSOS_GESTION) y la fuente presupuestal exacta (SGP, Regalías, Propios, Crédito, etc.).",
+                    "campos": [
+                        "categoria_recursos",
+                        "fuente_financiacion",
+                        "monto_programado_cop",
+                        "monto_ejecutado_cop",
+                    ],
+                    "guia": "Asignar la categoría (INVERSION, FUNCIONAMIENTO, "
+                    "RECURSOS_GESTION) y la fuente presupuestal exacta (SGP, Regalías, "
+                    "Propios, Crédito, etc.).",
                 },
             ],
             taxonomia_metas=[
                 {
                     "tipo": "META_PRODUCTO",
                     "nombre": "Meta de Producto",
-                    "definicion": "Cuantifica los bienes y/o servicios públicos entregados a la comunidad para resolver la problemática diagnosticada en la política pública.",
-                    "ejemplo": "250 cámaras de videovigilancia y analítica LPR operativas enlazadas al CAD MECAR.",
+                    "definicion": "Cuantifica los bienes y/o servicios públicos entregados a la "
+                    "comunidad para resolver la problemática diagnosticada en la "
+                    "política pública.",
+                    "ejemplo": "250 cámaras de videovigilancia y analítica LPR operativas "
+                    "enlazadas al CAD MECAR.",
                 },
                 {
                     "tipo": "META_GESTION",
                     "nombre": "Meta de Gestión",
-                    "definicion": "Cuantifica el nivel de cumplimiento de procesos, trámites y acciones internas o de gestión de recursos necesarias para materializar los productos.",
-                    "ejemplo": "12 comités barriales de mediación y resolución comunitaria de conflictos instalados.",
+                    "definicion": "Cuantifica el nivel de cumplimiento de procesos, trámites y "
+                    "acciones internas o de gestión de recursos necesarias para "
+                    "materializar los productos.",
+                    "ejemplo": "12 comités barriales de mediación y resolución comunitaria de "
+                    "conflictos instalados.",
                 },
                 {
                     "tipo": "ACTIVIDAD",
                     "nombre": "Actividad de Proyecto / Recurrente",
-                    "definicion": "Acción específica o recurrente requerida durante la vigencia fiscal para avanzar en metas de proyectos o procesos misionales continuos.",
-                    "ejemplo": "Colocar 1.200 luminarias LED de 150W en senderos escolares y paraderos del SITM.",
+                    "definicion": "Acción específica o recurrente requerida durante la vigencia "
+                    "fiscal para avanzar en metas de proyectos o procesos misionales "
+                    "continuos.",
+                    "ejemplo": "Colocar 1.200 luminarias LED de 150W en senderos escolares y "
+                    "paraderos del SITM.",
                 },
             ],
             taxonomia_actividades=[
                 {
                     "tipo": "NORMATIVA",
                     "nombre": "Actividad Normativa",
-                    "descripcion": "Expedición o ajuste de normas, decretos, resoluciones, estatutos, tarifas o reglamentos distritales.",
-                    "ejemplos_verbos": ["Expedir", "Adecuar", "Adoptar", "Modificar", "Fijar", "Eliminar", "Reglamentar"],
+                    "descripcion": "Expedición o ajuste de normas, decretos, resoluciones, "
+                    "estatutos, "
+                    "tarifas o reglamentos distritales.",
+                    "ejemplos_verbos": [
+                        "Expedir",
+                        "Adecuar",
+                        "Adoptar",
+                        "Modificar",
+                        "Fijar",
+                        "Eliminar",
+                        "Reglamentar",
+                    ],
                 },
                 {
                     "tipo": "ADMINISTRATIVA",
                     "nombre": "Actividad Administrativa",
-                    "descripcion": "Gestión de contratos, convenios, diseño de software, ajuste de procesos y trámites interinstitucionales.",
-                    "ejemplos_verbos": ["Firmar", "Diseñar", "Ajustar", "Analizar", "Verificar", "Suscribir", "Tramitar"],
+                    "descripcion": "Gestión de contratos, convenios, diseño de software, ajuste de "
+                    "procesos y trámites interinstitucionales.",
+                    "ejemplos_verbos": [
+                        "Firmar",
+                        "Diseñar",
+                        "Ajustar",
+                        "Analizar",
+                        "Verificar",
+                        "Suscribir",
+                        "Tramitar",
+                    ],
                 },
                 {
                     "tipo": "DE_GESTION",
                     "nombre": "Actividad de Gestión",
-                    "descripcion": "Acciones operativas directas en territorio, ejecución de programas, fondos comunitarios y mesas de concertación.",
-                    "ejemplos_verbos": ["Crear", "Identificar", "Ejecutar", "Concertar", "Gestionar", "Asignar", "Convocar"],
+                    "descripcion": "Acciones operativas directas en territorio, ejecución de "
+                    "programas, fondos comunitarios y mesas de concertación.",
+                    "ejemplos_verbos": [
+                        "Crear",
+                        "Identificar",
+                        "Ejecutar",
+                        "Concertar",
+                        "Gestionar",
+                        "Asignar",
+                        "Convocar",
+                    ],
                 },
                 {
                     "tipo": "LOGISTICA",
                     "nombre": "Actividad Logística",
-                    "descripcion": "Instalación de infraestructura, colocación de equipos, dotaciones físicas, distribución y notificaciones.",
-                    "ejemplos_verbos": ["Instalar", "Colocar", "Notificar", "Dotar", "Distribuir", "Adecuar", "Suministrar"],
+                    "descripcion": "Instalación de infraestructura, colocación de equipos, "
+                    "dotaciones "
+                    "físicas, distribución y notificaciones.",
+                    "ejemplos_verbos": [
+                        "Instalar",
+                        "Colocar",
+                        "Notificar",
+                        "Dotar",
+                        "Distribuir",
+                        "Adecuar",
+                        "Suministrar",
+                    ],
                 },
             ],
             regla_linguistica_dnp={
                 "fundamento": "Instructivo Plan de Acción DNP / Kit Financiero, pág. 12",
-                "regla_oro": "La redacción de toda actividad DEBE iniciar con un verbo fuerte en infinitivo (-ar, -er, -ir) que denote acción observable y resultado verificable.",
+                "regla_oro": "La redacción de toda actividad DEBE iniciar con un verbo fuerte "
+                "en infinitivo (-ar, -er, -ir) que denote acción observable y "
+                "resultado verificable.",
                 "verbos_debiles_prohibidos": sorted(list(self.VERBOS_DEBILES_PROHIBIDOS)),
                 "motivo_prohibicion": (
-                    "El DNP prohíbe taxativamente estos 16 verbos porque denotan intenciones genéricas, difusas o ambiguas "
-                    "que impiden la verificación objetiva del avance físico y el control social y fiscal."
+                    "El DNP prohíbe taxativamente estos 16 verbos porque denotan "
+                    "intenciones genéricas, difusas o ambiguas "
+                    "que impiden la verificación objetiva del avance físico y el "
+                    "control social y fiscal."
                 ),
                 "catalogo_verbos_fuertes": self.SUGERENCIAS_POR_TIPO,
             },
             catalogo_fuentes_financiacion={
                 "INVERSION": [
-                    {"codigo": "RECURSOS_PROPIOS", "nombre": "Recursos Propios (ICLD / Impuestos Distritales)"},
-                    {"codigo": "SGP", "nombre": "Sistema General de Participaciones (Ley 715 de 2001)"},
-                    {"codigo": "REGALIAS", "nombre": "Sistema General de Regalías (SGR / FCTI / Asignaciones Paz)"},
+                    {
+                        "codigo": "RECURSOS_PROPIOS",
+                        "nombre": "Recursos Propios (ICLD / Impuestos Distritales)",
+                    },
+                    {
+                        "codigo": "SGP",
+                        "nombre": "Sistema General de Participaciones (Ley 715 de 2001)",
+                    },
+                    {
+                        "codigo": "REGALIAS",
+                        "nombre": "Sistema General de Regalías (SGR / FCTI / Asignaciones Paz)",
+                    },
                     {"codigo": "CREDITO", "nombre": "Recursos de Crédito Público Autorizado"},
-                    {"codigo": "COFINANCIACION", "nombre": "Cofinanciación de la Nación / Cooperación Internacional"},
+                    {
+                        "codigo": "COFINANCIACION",
+                        "nombre": "Cofinanciación de la Nación / Cooperación Internacional",
+                    },
                     {"codigo": "OTROS", "nombre": "Otros Recursos de Capital y Donaciones"},
                 ],
                 "FUNCIONAMIENTO": [
-                    {"codigo": "GASTOS_PERSONAL", "nombre": "Servicios Personales de Nómina y Supernumerarios"},
-                    {"codigo": "GASTOS_GENERALES", "nombre": "Adquisición de Bienes, Servicios y Mantenimiento"},
+                    {
+                        "codigo": "GASTOS_PERSONAL",
+                        "nombre": "Servicios Personales de Nómina y Supernumerarios",
+                    },
+                    {
+                        "codigo": "GASTOS_GENERALES",
+                        "nombre": "Adquisición de Bienes, Servicios y Mantenimiento",
+                    },
                     {"codigo": "TRANSFERENCIAS", "nombre": "Transferencias Corrientes de Ley"},
                 ],
                 "RECURSOS_GESTION": [
-                    {"codigo": "GESTION_NO_PRESUPUESTAL", "nombre": "Gestión Interinstitucional Directa (Sin Erogación Presupuestal ET)"},
+                    {
+                        "codigo": "GESTION_NO_PRESUPUESTAL",
+                        "nombre": "Gestión Interinstitucional Directa (Sin Erogación Presupuestal "
+                        "ET)",
+                    },
                 ],
             },
             enlaces_oficiales=[
-                {"titulo": "SisPT - Sistema de Planeación Territorial DNP", "url": "https://sispt.dnp.gov.co/"},
-                {"titulo": "Portal Territorial DNP - Kit Financiero", "url": "https://portalterritorial.dnp.gov.co/"},
-                {"titulo": "Instructivo Metodológico Plan de Acción DNP", "url": "/docs/Instructivo_PlandeAccion_DNP.pdf"},
+                {
+                    "titulo": "SisPT - Sistema de Planeación Territorial DNP",
+                    "url": "https://sispt.dnp.gov.co/",
+                },
+                {
+                    "titulo": "Portal Territorial DNP - Kit Financiero",
+                    "url": "https://portalterritorial.dnp.gov.co/",
+                },
+                {
+                    "titulo": "Instructivo Metodológico Plan de Acción DNP",
+                    "url": "/docs/Instructivo_PlandeAccion_DNP.pdf",
+                },
             ],
         )
 
@@ -649,7 +990,6 @@ class CompromisosService:
         )
 
         compromisos_pas = await self.repo.listar()
-        hoja_2_map = {c.codigo: c for c in compromisos_pas}
 
         total_act = len(actividades)
         total_producto = sum(1 for a in actividades if a.tipo_meta == "META_PRODUCTO")
@@ -687,7 +1027,9 @@ class CompromisosService:
             "alerta_preventiva": sum(
                 1 for a in actividades if 50.0 <= float(a.porcentaje_avance_fisico) < 80.0
             ),
-            "rezago_critico": sum(1 for a in actividades if float(a.porcentaje_avance_fisico) < 50.0),
+            "rezago_critico": sum(
+                1 for a in actividades if float(a.porcentaje_avance_fisico) < 50.0
+            ),
         }
 
         resumen = ResumenEjecutivoPlanAccion(
@@ -714,7 +1056,9 @@ class CompromisosService:
 
         return MatrizPlanAccionRespuesta(
             resumen_ejecutivo=resumen,
-            hoja_1_plan_accion=[ActividadPlanAccionRespuesta.model_validate(a) for a in actividades],
+            hoja_1_plan_accion=[
+                ActividadPlanAccionRespuesta.model_validate(a) for a in actividades
+            ],
             hoja_2_plan_indicativo=hoja_2,
         )
 
@@ -748,7 +1092,9 @@ class CompromisosService:
         if existente:
             raise HTTPException(
                 status_code=status.HTTP_409_CONFLICT,
-                detail=f"Ya existe una actividad en el Plan de Acción con el código '{datos.codigo}'.",
+                detail=(
+                    f"Ya existe una actividad en el Plan de Acción con el código '{datos.codigo}'."
+                ),
             )
 
         # 3. Recalcular avance físico inicial
@@ -778,7 +1124,8 @@ class CompromisosService:
             objetivo_proyecto=datos.objetivo_proyecto.strip(),
             tipo_actividad=datos.tipo_actividad,
             descripcion_actividad=datos.descripcion_actividad.strip(),
-            verbo_infinitivo=valida.verbo_detectado or (datos.verbo_infinitivo or "").strip().lower(),
+            verbo_infinitivo=valida.verbo_detectado
+            or (datos.verbo_infinitivo or "").strip().lower(),
             fecha_inicio=datos.fecha_inicio,
             fecha_terminacion=datos.fecha_terminacion,
             periodicidad_seguimiento=datos.periodicidad_seguimiento or "TRIMESTRAL",
@@ -870,7 +1217,8 @@ class CompromisosService:
 
         justificacion = (
             f"Seguimiento trimestral actualizado en actividad {actividad.codigo}: "
-            f"avance={actividad.porcentaje_avance_fisico}%, ejecutado={actividad.monto_ejecutado_cop} COP."
+            f"avance={actividad.porcentaje_avance_fisico}%, "
+            f"ejecutado={actividad.monto_ejecutado_cop} COP."
         )
 
         async with transaction(self.repo.session):
@@ -944,18 +1292,21 @@ class CompromisosService:
                         columna_e_meta_producto = "No requerida para tipo ACTIVIDAD (Pág. 11 DNP)"
                     else:
                         columna_e_meta_producto = (
-                            f"{pas_obj.meta_cuatrienal_valor} {pas_obj.unidad_medida}: {pas_obj.descripcion}"
+                            f"{pas_obj.meta_cuatrienal_valor} {pas_obj.unidad_medida}: "
+                            f"{pas_obj.descripcion}"
                         )
                 else:
                     hallazgos.append(
-                        f"Código de Plan Indicativo '{item.compromiso_pas_codigo}' no encontrado en Hoja 2."
+                        f"Código de Plan Indicativo '{item.compromiso_pas_codigo}' "
+                        "no encontrado en Hoja 2."
                     )
             elif item.tipo_meta == "ACTIVIDAD":
                 columna_d_programa = "Exención DNP Pág. 11 (Actividad Directa)"
                 columna_e_meta_producto = "No requerida para tipo ACTIVIDAD (Pág. 11 DNP)"
             else:
                 hallazgos.append(
-                    f"Las metas de tipo {item.tipo_meta} requieren vinculación con el Plan Indicativo (Pág. 11 DNP)."
+                    f"Las metas de tipo {item.tipo_meta} requieren vinculación con "
+                    "el Plan Indicativo (Pág. 11 DNP)."
                 )
 
             # 2. Validación Lingüística DNP de Verbos Fuertes
@@ -980,7 +1331,8 @@ class CompromisosService:
 
             if not fuente_coherente:
                 hallazgos.append(
-                    f"La fuente '{item.fuente_financiacion}' no es coherente con la categoría de recursos "
+                    f"La fuente '{item.fuente_financiacion}' no es coherente con la "
+                    "categoría de recursos "
                     f"'{item.categoria_recursos}' (Instructivo DNP Pág. 13)."
                 )
 
@@ -1002,7 +1354,8 @@ class CompromisosService:
             alerta_desfase = abs(avance_fisico - ejecucion_financiera) > 25.0
             if alerta_desfase:
                 hallazgos.append(
-                    f"Alerta de desfase físico-financiero: Avance físico ({avance_fisico}%) difiere en más "
+                    f"Alerta de desfase físico-financiero: Avance físico ({avance_fisico}%) "
+                    "difiere en más "
                     f"de 25% frente a la ejecución presupuestal ({ejecucion_financiera}%)."
                 )
 
@@ -1052,9 +1405,13 @@ class CompromisosService:
         puntaje_calidad = (
             round((filas_conformes / total_filas) * 100.0, 2) if total_filas > 0 else 100.0
         )
-        estado_dictamen = "APTO_CONSEJO_GOBIERNO" if filas_con_obs == 0 else "REQUIERE_SUBSANACION_PREVIA"
+        estado_dictamen = (
+            "APTO_CONSEJO_GOBIERNO" if filas_con_obs == 0 else "REQUIERE_SUBSANACION_PREVIA"
+        )
         porcentaje_global = (
-            round((total_ejecutado / total_programado) * 100.0, 2) if total_programado > 0 else 100.0
+            round((total_ejecutado / total_programado) * 100.0, 2)
+            if total_programado > 0
+            else 100.0
         )
 
         return ProcesarLotePlanAccionRespuesta(
@@ -1069,5 +1426,3 @@ class CompromisosService:
             porcentaje_ejecucion_global=porcentaje_global,
             filas_procesadas=filas_procesadas,
         )
-
-

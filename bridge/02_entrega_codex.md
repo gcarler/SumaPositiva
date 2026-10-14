@@ -65,3 +65,60 @@ Una primera base aislada (`polis_test_reparacion_tres_fallos_20261004b`) no ten�
 - [Matriz de trazabilidad](../docs/matriz-trazabilidad-modulos.md)
 - [ADR del store](../docs/adr/0001-desacople-panel-store.md)
 - [Arquitectura](../docs/arquitectura.md)
+
+---
+
+# Entrega EDD — `[TRIADA-BACKEND-01]`
+
+- **Fecha:** 2026-10-14
+- **Responsable:** Codex
+- **Rama:** `main` (commit local; sin push)
+- **Alcance:** archivos del módulo `backend/app/modules/compromisos/`, pruebas y este informe.
+
+## Resultado
+
+Se añadieron los contratos, detector polimórfico, tres motores de cálculo, cruce
+tripartito y tres rutas bajo `/api/v1/compromisos/triada/*`. El detector normaliza
+filas a un esquema común y clasifica libros monohoja 2016–2019, híbridos
+2020–2023, multihoja 2024–2026 y la plantilla dual DNP/POLIS. Los datos de muestra
+se identifican como sintéticos.
+
+El motor operativo lee las actividades ya persistidas en
+`seguimiento.actividades_plan_accion`. No hay almacenamiento estructurado
+conectado para las metas del Plan de Desarrollo ni para la cascada CDP/RP/
+obligaciones/pagos. El resumen declara esos orígenes como no cargados y no inventa
+avances distritales; `cruzar-lecturas` evalúa los tres conjuntos que recibe en la
+petición.
+
+El catálogo lista las 23 denominaciones de archivo provistas en la asignación,
+los formatos estimados por extensión, las cuatro categorías y los cortes de marzo
+y junio de 2026. La [página oficial de Planes de Acción 2026](https://www.cartagena.gov.co/transparencia/4planeacion-presupuesto-informes/43-plan-accion/planes-accion-institucionales-2026)
+publica los adjuntos, pero el entorno no tiene instalada la dependencia Playwright.
+El conector devuelve la estrategia documentada para resolver el challenge y
+descubrir adjuntos; esta entrega no ejecuta una descarga ni persiste esos libros.
+
+## Validaciones
+
+| Validación | Resultado |
+| --- | --- |
+| Ruff `check` sobre los seis archivos asignados | Aprobado, 0 errores. |
+| Ruff `format --check` sobre los seis archivos asignados | Aprobado, 0 archivos pendientes. |
+| `pytest backend/tests/test_triada_motores.py backend/tests/test_compromisos_pas.py` | Aprobado: 21 pruebas. |
+| `pytest backend/tests/test_triada_motores.py backend/tests/test_compromisos_api.py` | No ejecutable: `backend/tests/test_compromisos_api.py` no existe en este checkout. La regresión PAS existente pasó. |
+| Guarda `test_matriz_cubre_todas_las_rutas_y_sus_controles` | Falla porque `docs/permisos-api.md` no contiene filas para las tres rutas nuevas. Esa documentación no está dentro de los archivos autorizados por esta asignación. |
+| Reinicio de `polis-backend.service` y consulta de `/api/v1/compromisos/triada/resumen` | Servicio activo; `curl` obtuvo HTTP 200. |
+
+## Pendientes de integración
+
+- Registrar las tres rutas públicas y su motivo de acceso en `docs/permisos-api.md`,
+  y volver a ejecutar la guarda de autorización antes de integrar esta entrega.
+- Instalar y fijar Playwright en el entorno backend para activar el descubrimiento
+  y descarga de adjuntos desde la página protegida por Cloudflare.
+- Incorporar fuentes persistentes verificables para los indicadores PDD y la
+  cascada presupuestal; hasta entonces el cruce en vivo usa datos suministrados en
+  la petición y el resumen marca esas fuentes como ausentes.
+
+La implementación está en backend, pero estos pendientes impiden declarar
+completada la conexión de las tres fuentes o la preparación integral para
+producción. No se modificaron archivos de `src/` ni los documentos de trabajo de
+agy2.

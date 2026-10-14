@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Body, Depends, Query, status
 
 from app.core.database import SessionDependency
 from app.modules.compromisos.repository import CompromisosRepository
@@ -13,10 +13,14 @@ from app.modules.compromisos.schemas import (
     CompromisoPASActualizarAvance,
     CompromisoPASCrear,
     CompromisoPASRespuesta,
+    CruceTresLecturasRespuesta,
+    CruzarTresLecturasSolicitud,
+    DetectarFormatoPlanAccionSolicitud,
     KpisSeguimientoRespuesta,
     MatrizPlanAccionRespuesta,
     ProcesarLotePlanAccionRespuesta,
     ProcesarLotePlanAccionSolicitud,
+    ResumenTriadaRespuesta,
     ValidarRedaccionRespuesta,
     ValidarRedaccionSolicitud,
 )
@@ -34,6 +38,47 @@ def get_compromisos_service(session: SessionDependency) -> CompromisosService:
 CompromisosServiceDep = Annotated[CompromisosService, Depends(get_compromisos_service)]
 
 
+@router.get(
+    "/triada/resumen",
+    response_model=ResumenTriadaRespuesta,
+    summary="Resumen de los motores articulados y el catálogo de transparencia",
+)
+async def obtener_resumen_triada_motores(
+    service: CompromisosServiceDep,
+    cuatrienio: str | None = Query(None, max_length=20),
+    vigencia: int | None = Query(None, ge=2016, le=2027),
+    entidad: str | None = Query(None, max_length=180),
+    fuente: str | None = Query(None, max_length=40),
+):
+    """Consulta pública, agregada y de solo lectura para transparencia activa."""
+    return await service.obtener_resumen_triada(cuatrienio, vigencia, entidad, fuente)
+
+
+@router.post(
+    "/triada/detectar-formato",
+    summary="Detectar y normalizar un Plan de Acción multiformato",
+)
+async def detectar_formato_plan_accion_multianual(
+    datos: Annotated[DetectarFormatoPlanAccionSolicitud | str, Body()],
+    service: CompromisosServiceDep,
+):
+    """Proceso sin persistencia; admite JSON con hojas o el código de una muestra."""
+    return service.detectar_formato_plan_accion(datos)
+
+
+@router.post(
+    "/triada/cruzar-lecturas",
+    response_model=CruceTresLecturasRespuesta,
+    summary="Cruzar avance estratégico, físico operativo y ejecución presupuestal",
+)
+async def ejecutar_cruce_tres_lecturas(
+    datos: CruzarTresLecturasSolicitud,
+    service: CompromisosServiceDep,
+):
+    """Evalúa lotes suministrados por el cliente; no escribe datos institucionales."""
+    return await service.cruzar_lecturas_triada(datos)
+
+
 @router.get("", response_model=list[CompromisoPASRespuesta])
 async def listar_compromisos(
     service: CompromisosServiceDep,
@@ -42,7 +87,7 @@ async def listar_compromisos(
     estado: str | None = Query(None, description="Filtrar por estado"),
 ):
     """Listar compromisos institucionales del PAS Cartagena con filtros opcionales.
-    
+
     NOTA DE AUDITORÍA FORENSE (Ley 1712/14 y Ley 1757/15):
     La lectura de compromisos institucionales, metas y avances es intencionalmente de acceso
     público irrestricto conforme al principio de máxima publicidad y transparencia activa.
@@ -83,8 +128,10 @@ async def obtener_banco_conocimiento_dnp(service: CompromisosServiceDep):
 async def validar_redaccion_actividad_dnp(
     datos: ValidarRedaccionSolicitud, service: CompromisosServiceDep
 ):
-    """Verifica en tiempo real si una redacción cumple la regla de oro DNP (iniciar con verbo fuerte en infinitivo)
-    o si incurre en la lista negra oficial de los 16 verbos débiles prohibidos (Instructivo DNP pág. 12)."""
+    """Verifica que la redacción cumpla la regla DNP del verbo fuerte en infinitivo.
+
+    También detecta los 16 verbos débiles prohibidos (Instructivo DNP, pág. 12).
+    """
     return service.validar_redaccion_dnp(datos.descripcion_actividad, datos.tipo_actividad)
 
 
@@ -115,14 +162,17 @@ async def obtener_matriz_plan_accion_dnp(
     vigencia: int | None = Query(None, description="Filtrar por vigencia fiscal (ej. 2026)"),
     entidad: str | None = Query(None, description="Filtrar por secretaría u organismo responsable"),
     linea_codigo: str | None = Query(None, description="Filtrar por línea estratégica"),
-    tipo_meta: str | None = Query(None, description="Filtrar por tipo de meta (META_PRODUCTO, META_GESTION, ACTIVIDAD)"),
+    tipo_meta: str | None = Query(
+        None, description="Filtrar por tipo de meta (META_PRODUCTO, META_GESTION, ACTIVIDAD)"
+    ),
     tipo_actividad: str | None = Query(None, description="Filtrar por tipo de actividad"),
     categoria_recursos: str | None = Query(None, description="Filtrar por categoría de recursos"),
     fuente_financiacion: str | None = Query(None, description="Filtrar por fuente de financiación"),
     busqueda: str | None = Query(None, description="Búsqueda libre por texto"),
 ):
     """Consulta pública de la Matriz Oficial DNP: Resumen Ejecutivo con semáforo de alertas,
-    Hoja 1 de actividades anuales programadas y Hoja 2 articulada con compromisos del Plan Indicativo."""
+    Hoja 1 contiene actividades anuales; Hoja 2 articula compromisos del Plan Indicativo.
+    """
     return await service.obtener_matriz_plan_accion(
         vigencia=vigencia,
         entidad=entidad,
@@ -148,7 +198,7 @@ async def crear_actividad_plan_accion(
     sujeto: SujetoAutenticadoDep,
     session: SessionDependency,
 ):
-    """Crea una nueva actividad en el Plan de Acción previa validación lingüística estricta del DNP."""
+    """Crea una actividad en el Plan de Acción tras validación lingüística DNP."""
     await verificar_escritura_fase("FASE_3_PLAN_ACCION", sujeto, session)
     return await service.crear_actividad(datos, actor_id=sujeto.sujeto_id)
 
@@ -166,9 +216,11 @@ async def actualizar_seguimiento_actividad_pa(
     sujeto: SujetoAutenticadoDep,
     session: SessionDependency,
 ):
-    """Actualiza avances trimestrales (T1 a T4), ejecución presupuestal y evidencias de una actividad."""
+    """Actualiza avances trimestrales, ejecución presupuestal y evidencias."""
     await verificar_escritura_fase("FASE_3_PLAN_ACCION", sujeto, session)
-    return await service.actualizar_seguimiento_actividad(id_o_codigo, datos, actor_id=sujeto.sujeto_id)
+    return await service.actualizar_seguimiento_actividad(
+        id_o_codigo, datos, actor_id=sujeto.sujeto_id
+    )
 
 
 # =============================================================================
@@ -178,9 +230,8 @@ async def actualizar_seguimiento_actividad_pa(
 
 @router.get("/{id_o_codigo}", response_model=CompromisoPASRespuesta)
 async def obtener_compromiso(id_o_codigo: str, service: CompromisosServiceDep):
-    """Consultar un compromiso específico por UUID o código institucional (acceso público para control social)."""
+    """Consultar un compromiso por UUID o código institucional para control social."""
     return await service.obtener_compromiso(id_o_codigo)
-
 
 
 @router.post(
@@ -212,7 +263,7 @@ async def actualizar_avance(
     sujeto: SujetoAutenticadoDep,
     session: SessionDependency,
 ):
-    """Actualizar avance cuantitativo/cualitativo de un compromiso con registro de auditoría forense."""
+    """Actualizar el avance con registro de auditoría forense."""
     await verificar_escritura_fase("FASE_3_PLAN_ACCION", sujeto, session)
     return await service.actualizar_avance(id_o_codigo, datos, actor_id=sujeto.sujeto_id)
 

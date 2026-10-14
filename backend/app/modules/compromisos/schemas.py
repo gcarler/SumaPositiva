@@ -298,3 +298,123 @@ class ProcesarLotePlanAccionRespuesta(BaseModel):
     filas_procesadas: list[FilaProcesadaPlanAccion]
 
 
+# --- Detector multiformato y cruce de lecturas de planeación ---
+
+PerfilFormatoPlanAccionType = Literal[
+    "PA_MONOHOJA_2016_2019",
+    "PA_HIBRIDO_2020_2023",
+    "PA_MULTIHOJA_2024_2026",
+    "PA_CANONICO_DNP_POLIS",
+    "DESCONOCIDO",
+]
+
+
+class HojaExcelEntrada(BaseModel):
+    nombre_hoja: str = Field(..., min_length=1, max_length=120)
+    encabezados_detectados: list[str] = Field(default_factory=list, max_length=300)
+    filas: list[dict[str, Any]] = Field(default_factory=list, max_length=10000)
+
+
+class DetectarFormatoPlanAccionSolicitud(BaseModel):
+    nombre_archivo: str = Field(..., min_length=1, max_length=255)
+    vigencia_declarada: int | None = Field(default=None, ge=2016, le=2026)
+    entidad_declarada: str | None = Field(default=None, max_length=180)
+    hojas: list[HojaExcelEntrada] = Field(default_factory=list, max_length=30)
+    muestra: (
+        Literal["2016_MONOHOJA", "2021_HIBRIDO", "2026_MULTIHOJA", "2026_CANONICO_DNP"] | None
+    ) = None
+
+
+class RegistroPlanAccionNormalizado(BaseModel):
+    vigencia: int | None = None
+    entidad: str | None = None
+    dependencia: str | None = None
+    linea_estrategica: str | None = None
+    codigo_meta_pdd: str | None = None
+    codigo_bpim: str | None = None
+    indicador: str | None = None
+    descripcion_actividad: str | None = None
+    meta_programada_anual: float | None = None
+    meta_ejecutada_anual: float | None = None
+    avance_t1: float | None = None
+    avance_t2: float | None = None
+    avance_t3: float | None = None
+    avance_t4: float | None = None
+    presupuesto_apropiado: float | None = None
+    presupuesto_ejecutado: float | None = None
+    verbo_fuerte_dnp: bool | None = None
+    verbo_detectado: str | None = None
+    hoja_origen: str | None = None
+    datos_origen: dict[str, Any] = Field(default_factory=dict)
+
+
+class DetectarFormatoPlanAccionRespuesta(BaseModel):
+    perfil_detectado: PerfilFormatoPlanAccionType
+    confianza: float = Field(ge=0, le=1)
+    vigencia: int | None = None
+    entidad: str | None = None
+    hojas_analizadas: list[str]
+    mapeo_columnas: dict[str, str]
+    registros_normalizados: list[RegistroPlanAccionNormalizado]
+    resumen_validacion_dnp: dict[str, Any]
+    comparativa_interanual: dict[str, Any]
+
+
+class MetaEstrategicaTriada(BaseModel):
+    entidad: str = ""
+    linea_estrategica: str = ""
+    codigo_meta_pdd: str = ""
+    codigo_bpim: str = ""
+    indicador: str = ""
+    avance_estrategico_pct: float = Field(default=0, ge=0, le=100)
+
+
+class ActividadOperativaTriada(BaseModel):
+    entidad: str = ""
+    linea_estrategica: str = ""
+    codigo_meta_pdd: str = ""
+    codigo_bpim: str = ""
+    descripcion_actividad: str = ""
+    avance_operativo_fisico_pct: float = Field(default=0, ge=0, le=100)
+    formato_origen: str | None = None
+    porcentaje_verbos_fuertes_dnp: float = Field(default=0, ge=0, le=100)
+
+
+class EjecucionPresupuestalTriada(BaseModel):
+    entidad: str = ""
+    linea_estrategica: str = ""
+    codigo_bpim: str = ""
+    fuente: str = "RECURSOS_PROPIOS"
+    apropiacion_inicial_cop: float = Field(default=0, ge=0)
+    apropiacion_definitiva_cop: float = Field(default=0, ge=0)
+    cdp_acumulado_cop: float = Field(default=0, ge=0)
+    compromisos_rp_cop: float = Field(default=0, ge=0)
+    obligaciones_cop: float = Field(default=0, ge=0)
+    pagos_tesoreria_cop: float = Field(default=0, ge=0)
+
+
+class CruzarTresLecturasSolicitud(BaseModel):
+    metas_estrategicas: list[MetaEstrategicaTriada] = Field(default_factory=list, max_length=10000)
+    actividades_operativas: list[ActividadOperativaTriada] = Field(
+        default_factory=list, max_length=10000
+    )
+    ejecuciones_presupuestales: list[EjecucionPresupuestalTriada] = Field(
+        default_factory=list, max_length=10000
+    )
+
+
+class CruceTresLecturasRespuesta(BaseModel):
+    total_cruces: int
+    cruces: list[dict[str, Any]]
+    alertas: list[dict[str, Any]]
+
+
+class ResumenTriadaRespuesta(BaseModel):
+    filtros: dict[str, Any]
+    motor_1_plan_desarrollo: dict[str, Any]
+    motor_2_plan_accion: dict[str, Any]
+    motor_3_inversion_presupuestal: dict[str, Any]
+    cruce_tres_lecturas: dict[str, Any]
+    comparativa_interanual_2016_2026: dict[str, Any]
+    perfiles_formato_excel: list[dict[str, Any]]
+    catalogo_transparencia_cartagena: dict[str, Any]
