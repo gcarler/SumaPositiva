@@ -176,6 +176,7 @@ class LineaEstrategicaRead(LineaEstrategicaBase):
     creado_en: datetime
     actualizado_en: datetime
     sublineas: list[SublineaSchema] = Field(default_factory=list)
+    aportes_count: int = Field(default=0, description="Cantidad de aportes ciudadanos radicados")
     model_config = ConfigDict(from_attributes=True)
 
 
@@ -186,6 +187,7 @@ class LineaPoliticaResumen(BaseModel):
     titulo: str
     descripcion: str
     aportes: list[Any] = Field(default_factory=list)
+    aportes_count: int = Field(default=0, alias="aportesCount")
     model_config = ConfigDict(populate_by_name=True)
 
 

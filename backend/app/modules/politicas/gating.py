@@ -45,7 +45,7 @@ async def calcular_progreso_real_fases(session: AsyncSession) -> dict[str, Decim
         "FASE_3_PLAN_ACCION": None,
     }
 
-    # 1. Diagnóstico Participativo: mesas de trabajo concertadas vs total
+    # 1. Diagnóstico Participativo: mesas de trabajo concertadas vs total (con piso de 15.00% para alistamiento en curso [FASES-CICLO-01])
     try:
         res_f1 = await session.execute(
             text(
@@ -55,21 +55,26 @@ async def calcular_progreso_real_fases(session: AsyncSession) -> dict[str, Decim
         )
         fila_f1 = res_f1.fetchone()
         if fila_f1 and fila_f1[1] and fila_f1[1] > 0:
-            progresos["FASE_1_DIAGNOSTICO"] = round(
+            pct_calculado = round(
                 Decimal(fila_f1[0]) / Decimal(fila_f1[1]) * 100, 2
             )
+            # Piso metodológico: alistamiento y diagnóstico en curso (15.00%)
+            progresos["FASE_1_DIAGNOSTICO"] = max(Decimal("15.00"), pct_calculado)
         else:
-            progresos["FASE_1_DIAGNOSTICO"] = Decimal("0.00")
+            progresos["FASE_1_DIAGNOSTICO"] = Decimal("15.00")
     except Exception as err:
         logger.error("Error SQL calculando progreso empírico de FASE_1_DIAGNOSTICO: %s", err)
         progresos["FASE_1_DIAGNOSTICO"] = None
 
     # 2. Formulación: dimensiones con líneas estratégicas activas respecto a las 7 dimensiones canónicas
+    # Compuerta [FASES-CICLO-01]: si la fase está en estado 'preparatoria' (sin iniciar), el progreso DEBE ser estrictamente 0.00
     try:
         res_f2 = await session.execute(
             text(
-                "SELECT count(DISTINCT dimension_id) "
-                "FROM motor_politicas.lineas_estrategicas WHERE activa = true"
+                "SELECT CASE "
+                "WHEN (SELECT estado FROM motor_politicas.fases_politica WHERE codigo = 'FASE_2_FORMULACION') = 'preparatoria' THEN 0 "
+                "ELSE (SELECT count(DISTINCT dimension_id) FROM motor_politicas.lineas_estrategicas WHERE activa = true) "
+                "END"
             )
         )
         dims_activas = res_f2.scalar() or 0
@@ -79,12 +84,14 @@ async def calcular_progreso_real_fases(session: AsyncSession) -> dict[str, Decim
         progresos["FASE_2_FORMULACION"] = None
 
     # 3. Plan de Acción / Seguimiento: promedio de cumplimiento de compromisos PAS que tengan reporte real
+    # Compuerta [FASES-CICLO-01]: si la fase está en estado 'preparatoria' (sin iniciar), el progreso DEBE ser estrictamente 0.00
     try:
         res_f3 = await session.execute(
             text(
-                "SELECT avg(porcentaje_cumplimiento) "
-                "FROM seguimiento.compromisos_pas "
-                "WHERE porcentaje_cumplimiento IS NOT NULL AND estado != 'sin_reporte'"
+                "SELECT CASE "
+                "WHEN (SELECT estado FROM motor_politicas.fases_politica WHERE codigo = 'FASE_3_PLAN_ACCION') = 'preparatoria' THEN 0.00 "
+                "ELSE (SELECT avg(porcentaje_cumplimiento) FROM seguimiento.compromisos_pas WHERE porcentaje_cumplimiento IS NOT NULL AND estado != 'sin_reporte') "
+                "END"
             )
         )
         promedio = res_f3.scalar()

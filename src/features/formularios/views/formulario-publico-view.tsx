@@ -1,6 +1,7 @@
 "use client";
 import { ApiError } from "@/core/http/api-client";
-import { Landmark } from "lucide-react";
+import { ArrowLeft, Landmark } from "lucide-react";
+import Link from "next/link";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -61,14 +62,32 @@ export function FormularioPublicoPage({
         Saltar al formulario
       </a>
       <header className="border-b border-border bg-surface-1">
-        <div className="mx-auto flex max-w-3xl items-center gap-3 px-4 py-5">
-          <Landmark
-            aria-hidden="true"
-            className="size-12 shrink-0 text-ember"
-          />
-          <p className="text-sm font-semibold">
-            Política Pública de Seguridad Humana Integral — Cartagena 2026–2036
-          </p>
+        <div className="mx-auto flex max-w-3xl items-center justify-between gap-4 px-4 py-4 sm:py-5">
+          <Link
+            href="/"
+            aria-label="Ir a la página principal de POLIS"
+            className="flex items-center gap-3 transition-opacity hover:opacity-85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-lg"
+          >
+            <Landmark
+              aria-hidden="true"
+              className="size-10 sm:size-12 shrink-0 text-ember"
+            />
+            <p className="text-xs sm:text-sm font-semibold text-foreground">
+              Política Pública de Seguridad Humana Integral — Cartagena 2026–2036
+            </p>
+          </Link>
+          <Button
+            asChild
+            variant="outline"
+            size="sm"
+            className="shrink-0 text-xs font-medium"
+          >
+            <Link href="/" className="inline-flex items-center gap-1.5">
+              <ArrowLeft className="size-3.5" />
+              <span className="hidden sm:inline">Volver al inicio</span>
+              <span className="sm:hidden">Inicio</span>
+            </Link>
+          </Button>
         </div>
       </header>
       <main

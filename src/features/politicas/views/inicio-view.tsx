@@ -163,18 +163,23 @@ export function InicioView() {
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {fases.map((fase) => {
               let tone: StatusTone = "neutral";
-              let labelEstado = "Próxima";
+              let labelEstado = "Próxima · Sin iniciar";
               if (fase.estado === "completada" || fase.estado === "cerrada") {
                 tone = "success";
                 labelEstado = "Completada";
               } else if (fase.estado === "activa") {
                 tone = "warning";
                 labelEstado = "En curso";
+              } else if (fase.estado === "preparatoria" || fase.estado === "proxima") {
+                tone = "neutral";
+                labelEstado = "Próxima · Sin iniciar";
               }
 
               const progreso =
-                fase.progreso_porcentaje != null
-                  ? Number(fase.progreso_porcentaje)
+                fase.estado === "preparatoria" || fase.estado === "proxima"
+                  ? 0
+                  : fase.progreso_porcentaje != null
+                  ? Math.round(Number(fase.progreso_porcentaje))
                   : 0;
 
               return (
@@ -202,8 +207,10 @@ export function InicioView() {
                     <div className="mb-2 flex items-center justify-between text-xs text-[var(--text-secondary)]">
                       <span className="font-medium">Progreso</span>
                       <span className="font-semibold tabular text-[var(--text-primary)]">
-                        {fase.progreso_porcentaje != null
-                          ? `${fase.progreso_porcentaje}%`
+                        {fase.estado === "preparatoria" || fase.estado === "proxima"
+                          ? "0%"
+                          : fase.progreso_porcentaje != null
+                          ? `${Math.round(Number(fase.progreso_porcentaje))}%`
                           : "Sin medición"}
                       </span>
                     </div>

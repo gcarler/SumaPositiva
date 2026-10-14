@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import {
@@ -13,6 +14,7 @@ import {
   UserCheck,
   Building2,
   ArrowRight,
+  ArrowLeft,
   RotateCcw,
   CloudOff,
   RefreshCw,
@@ -59,6 +61,7 @@ import {
 } from "@/features/mesas/models/asistencia";
 
 export function AsistenciaCliente({ mesaId }: { mesaId: string }) {
+  const router = useRouter();
   const registrarAsistente = useAsistenciaStore((s) => s.registrarAsistente);
   const sincronizarPendientes = useAsistenciaStore((s) => s.sincronizarPendientes);
   const cargarAsistentesDesdeBackend = useAsistenciaStore((s) => s.cargarAsistentesDesdeBackend);
@@ -68,6 +71,17 @@ export function AsistenciaCliente({ mesaId }: { mesaId: string }) {
   const [sincronizando, setSincronizando] = useState(false);
   const [mensajeSincronizacion, setMensajeSincronizacion] = useState<string | null>(null);
   const [estaOnline, setEstaOnline] = useState(true);
+
+  const handleVolverPlataforma = () => {
+    if (typeof window !== "undefined") {
+      const sameOrigin = document.referrer && document.referrer.startsWith(window.location.origin);
+      if (window.history.length > 1 && sameOrigin) {
+        router.back();
+        return;
+      }
+    }
+    router.push("/");
+  };
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -279,7 +293,11 @@ export function AsistenciaCliente({ mesaId }: { mesaId: string }) {
       {/* Barra institucional adaptable */}
       <header className="border-b border-[var(--border)] bg-[var(--surface-1)] py-3.5 px-4 sm:px-6 md:px-8 lg:px-10 xl:px-14 2xl:px-20">
         <div className="flex w-full items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
+          <Link
+            href="/"
+            aria-label="Ir a la página principal de POLIS"
+            className="flex items-center gap-3 transition-opacity hover:opacity-85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ember)] rounded-xl"
+          >
             <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[var(--ember)] text-[var(--surface-0)] font-bold text-sm shadow-sm">
               <Building2 className="size-5" />
             </div>
@@ -291,12 +309,24 @@ export function AsistenciaCliente({ mesaId }: { mesaId: string }) {
                 Secretaría del Interior y Convivencia • POLIS
               </p>
             </div>
-          </div>
+          </Link>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2.5">
+            <Button
+              asChild
+              variant="outline"
+              size="sm"
+              className="text-xs font-medium"
+            >
+              <Link href="/" className="inline-flex items-center gap-1.5">
+                <ArrowLeft className="size-3.5" />
+                <span className="hidden sm:inline">Volver al inicio</span>
+                <span className="sm:hidden">Inicio</span>
+              </Link>
+            </Button>
             <Badge
               variant="outline"
-              className="text-[11px] font-semibold tracking-wider border-[var(--border-strong)] bg-[var(--surface-2)] text-[var(--text-secondary)]"
+              className="hidden md:inline-flex text-[11px] font-semibold tracking-wider border-[var(--border-strong)] bg-[var(--surface-2)] text-[var(--text-secondary)]"
             >
               Ley Estatutaria 1757 de 2015
             </Badge>
@@ -467,8 +497,41 @@ export function AsistenciaCliente({ mesaId }: { mesaId: string }) {
             </div>
           </div>
         ) : (
-          /* Layout Adaptativo Responsivo a 2 Columnas */
-          <div className="lg:grid lg:grid-cols-12 lg:gap-8 xl:gap-10 items-start">
+          <>
+            {/* Barra de Retorno y Navegación POLIS */}
+            <nav aria-label="Navegación de retorno" className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-[var(--border)] bg-[var(--surface-1)] px-4 py-2.5 shadow-sm">
+              <div className="flex items-center gap-2">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleVolverPlataforma}
+                  className="gap-1.5 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+                >
+                  <ArrowLeft className="size-3.5" />
+                  <span>Volver a la plataforma POLIS</span>
+                </Button>
+              </div>
+              <div className="flex items-center gap-2 text-xs text-[var(--text-tertiary)]">
+                <Link
+                  href="/"
+                  className="font-medium text-[var(--ember)] hover:underline"
+                >
+                  Inicio
+                </Link>
+                <span>/</span>
+                <span>Mesas Territoriales</span>
+                {codigoMesa && (
+                  <>
+                    <span>/</span>
+                    <span className="font-mono text-[var(--text-secondary)]">{codigoMesa}</span>
+                  </>
+                )}
+              </div>
+            </nav>
+
+            {/* Layout Adaptativo Responsivo a 2 Columnas */}
+            <div className="lg:grid lg:grid-cols-12 lg:gap-8 xl:gap-10 items-start">
             {/* Columna Izquierda: Información de la Mesa (Sticky en desktop) */}
             <div className="lg:col-span-5 xl:col-span-4 mb-6 lg:mb-0 space-y-5 lg:sticky lg:top-8">
               <section className="rounded-2xl border border-[var(--border)] bg-[var(--surface-1)] p-5 sm:p-6 shadow-sm">
@@ -842,18 +905,28 @@ export function AsistenciaCliente({ mesaId }: { mesaId: string }) {
               </form>
             </div>
           </div>
+          </>
         )}
       </main>
 
       {/* Pie de página oficial adaptable */}
       <footer className="mt-12 border-t border-[var(--border)] py-6 text-center text-xs text-[var(--text-tertiary)] px-4 sm:px-6 md:px-8 lg:px-10 xl:px-14 2xl:px-20">
-        <div className="w-full text-center">
+        <div className="w-full text-center space-y-2">
           <p className="font-medium text-[var(--text-secondary)]">
             POLIS • Sistema Distrital de Participación Ciudadana y Seguridad Humana
           </p>
           <p className="mt-1 text-[11px]">
             Cartagena de Indias — Distrito Turístico y Cultural • Alcaldía Mayor
           </p>
+          <div className="pt-2">
+            <Link
+              href="/"
+              className="inline-flex items-center gap-1.5 text-xs font-medium text-[var(--ember)] underline-offset-4 hover:underline"
+            >
+              <ArrowLeft className="size-3.5" />
+              <span>Regresar al portal principal de Seguridad Humana Integral (POLIS)</span>
+            </Link>
+          </div>
         </div>
       </footer>
     </div>

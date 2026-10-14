@@ -62,6 +62,7 @@ export interface LineaEstrategicaApi {
   entidades_coresponsables?: string[];
   orden?: number;
   activa: boolean;
+  aportes_count?: number;
   metadatos?: Record<string, unknown>;
   creado_en?: string;
   actualizado_en?: string;

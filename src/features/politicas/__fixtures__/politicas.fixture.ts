@@ -32,8 +32,8 @@ export const POLITICAS_MOCK: PoliticaPublica[] = [
         tipo: "diagnostico",
         descripcion:
           "Levantamiento de línea base de diagnóstico cuantitativo, geovisor de conflictividad, alertas tempranas SAT de la Defensoría y mesas territoriales en las 3 localidades y zona corregimental e insular de Cartagena.",
-        estado: "completada",
-        progreso: 100,
+        estado: "activa",
+        progreso: 15,
         lineas: [
           {
             id: "lin-001-1-1",
@@ -229,8 +229,8 @@ export const POLITICAS_MOCK: PoliticaPublica[] = [
         tipo: "formulacion",
         descripcion:
           "Cocreación de las 4 líneas estratégicas, definición de metas cuatrienales cuantificables y programas de inversión con cargo al FONSET y fuentes distritales.",
-        estado: "activa",
-        progreso: 50,
+        estado: "proxima",
+        progreso: 0,
         lineas: [
           {
             id: "lin-001-2-1",

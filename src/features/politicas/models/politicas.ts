@@ -67,6 +67,7 @@ export interface LineaEstrategica {
   titulo: string;
   descripcion: string;
   aportes: Aporte[];
+  aportesCount?: number;
 }
 
 export interface Aporte {

@@ -8,7 +8,7 @@ import { Input } from "@/shared/ui/input";
 import { Textarea } from "@/shared/ui/textarea";
 import { Badge } from "@/shared/ui/badge";
 
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -35,10 +35,15 @@ import {
   usePoliticasStore,
 } from "@/features/politicas/state/politicas-store";
 import {
+  useLineas,
+  useFases,
+  usePoliticas,
+} from "@/features/politicas/services/use-politicas-queries";
+import {
   useSesionStore,
   nombreParaPublicar,
 } from "@/features/sesion/state/session-store";
-import type { TipoAporte } from "@/features/politicas/models/politicas";
+import type { Fase, LineaEstrategica, PoliticaPublica, TipoAporte } from "@/features/politicas/models/politicas";
 import {
   esImagenValida,
   MAX_FOTOS_POR_APORTE,
@@ -118,9 +123,85 @@ export function AporteEditorPanel({
 }) {
   const { openPanel, closeTop, closeToKey } = usePanels();
   const sesion = useSesionStore((s) => s.sesion);
-  const politica = usePolitica(props.politicaId);
-  const fase = useFase(props.politicaId, props.faseId);
-  const linea = useLinea(props.politicaId, props.faseId, props.lineaId);
+
+  const lineasQuery = useLineas();
+  const fasesQuery = useFases();
+  const politicasQuery = usePoliticas();
+
+  const storePolitica = usePolitica(props.politicaId);
+  const storeFase = useFase(props.politicaId, props.faseId);
+  const storeLinea = useLinea(props.politicaId, props.faseId, props.lineaId);
+
+  const linea: LineaEstrategica | undefined = useMemo(() => {
+    if (storeLinea) return storeLinea;
+    const encontrada = lineasQuery.data?.find(
+      (l) => l.id === props.lineaId || l.codigo === props.lineaId
+    );
+    if (!encontrada) return undefined;
+    return {
+      id: encontrada.id,
+      faseId: encontrada.fase_id,
+      codigo: encontrada.codigo,
+      titulo: encontrada.titulo,
+      descripcion: encontrada.descripcion,
+      aportes: [],
+      aportesCount: encontrada.aportes_count ?? 0,
+    };
+  }, [storeLinea, lineasQuery.data, props.lineaId]);
+
+  const fase: Fase | undefined = useMemo(() => {
+    if (storeFase) return storeFase;
+    const idBuscado = props.faseId || linea?.faseId;
+    const encontrada =
+      fasesQuery.data?.find((f) => f.id === idBuscado || f.codigo === idBuscado) ??
+      fasesQuery.data?.find((f) => f.estado === "activa") ??
+      fasesQuery.data?.[0];
+    if (!encontrada) return undefined;
+    return {
+      id: encontrada.id,
+      politicaId: props.politicaId,
+      orden: encontrada.orden,
+      nombre: encontrada.nombre,
+      tipo: "diagnostico",
+      descripcion: encontrada.descripcion ?? "",
+      estado: (encontrada.estado === "activa"
+        ? "activa"
+        : encontrada.estado === "completada"
+        ? "completada"
+        : "proxima") as "activa" | "completada" | "proxima",
+      progreso: Number(encontrada.progreso_porcentaje ?? 0),
+      lineas: [],
+    };
+  }, [storeFase, props.faseId, linea?.faseId, fasesQuery.data, props.politicaId]);
+
+  const politica: PoliticaPublica = useMemo(() => {
+    if (storePolitica) return storePolitica;
+    const encontrada = politicasQuery.data?.find(
+      (p) => p.id === props.politicaId || p.slug === props.politicaId
+    );
+    if (encontrada) return encontrada;
+    if (politicasQuery.data && politicasQuery.data.length > 0) {
+      return politicasQuery.data[0];
+    }
+    return {
+      id: "pol-001",
+      slug: "seguridad-humana-cartagena",
+      titulo: "Política Pública de Seguridad Humana Integral de Cartagena 2026–2036",
+      resumen:
+        "Construcción participativa de la Política Pública de Seguridad Humana Integral del Distrito de Cartagena de Indias.",
+      descripcion:
+        "Política Pública de Seguridad Humana Integral de Cartagena 2026–2036.",
+      problema: "",
+      sector: "seguridad",
+      estado: "consulta_publica",
+      cobertura:
+        "Distrito de Cartagena: 3 Localidades urbanas, 11 corregimientos y zonas insulares",
+      fechaInicio: "2026-02-01",
+      fechaCierre: "2026-12-31",
+      participantes: 0,
+      fases: [],
+    };
+  }, [storePolitica, politicasQuery.data, props.politicaId]);
 
   const parentKeyPolitica = usePanelStore(
     (s) => s.entries.find((e) => e.type === "politica")?.key,
@@ -227,7 +308,11 @@ export function AporteEditorPanel({
 
   const onSubmit = async (data: AporteForm) => {
     const conIdentidad = sesion?.modo === "identidad" && !!sesion.identidad;
-    const lineaIdReal = UUID_REGEX.test(props.lineaId) ? props.lineaId : UUID_CANONICO_LINEA;
+    const lineaIdReal = UUID_REGEX.test(linea?.id ?? "")
+      ? (linea?.id as string)
+      : UUID_REGEX.test(props.lineaId)
+        ? props.lineaId
+        : UUID_CANONICO_LINEA;
     const correoSesion = sesion?.identidad?.email || sesion?.usuario?.correo;
     const correoFinal = data.correo_contacto?.trim() || correoSesion || undefined;
 

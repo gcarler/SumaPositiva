@@ -55,3 +55,6 @@ export function useCatalogoPoliticas(): UseQueryResult<PoliticaPublica[], Error>
     staleTime: 1000 * 60 * 5,
   });
 }
+
+/** Alias para useCatalogoPoliticas exigido por la arquitectura */
+export const usePoliticas = useCatalogoPoliticas;

@@ -1,3 +1,4 @@
+from decimal import Decimal
 import logging
 import uuid
 
@@ -6,6 +7,7 @@ from sqlalchemy import func, select, text
 
 from app.core.database import SessionDependency
 from app.core.transactions import transaction
+from app.modules.aportes.models import PropuestaCiudadana
 from app.modules.identidad.deps import SujetoAutenticadoDep, requerir_permiso, requerir_rol
 from app.modules.politicas.gating import calcular_progreso_real_fases, verificar_escritura_fase
 from app.modules.politicas.models import (
@@ -97,6 +99,18 @@ async def listar_politicas(
     result_lineas = await session.execute(stmt_lineas)
     lineas = result_lineas.scalars().all()
 
+    # Conteo de aportes ciudadanos activos y no rechazados por línea
+    stmt_aportes = (
+        select(PropuestaCiudadana.linea_id, func.count(PropuestaCiudadana.id))
+        .where(
+            PropuestaCiudadana.estado != "rechazado",
+            PropuestaCiudadana.activo.is_(True),
+        )
+        .group_by(PropuestaCiudadana.linea_id)
+    )
+    res_aportes = await session.execute(stmt_aportes)
+    conteos_aportes = dict(res_aportes.all())
+
     lineas_por_fase: dict[uuid.UUID, list[LineaPoliticaResumen]] = {}
     for l in lineas:
         lineas_por_fase.setdefault(l.fase_id, []).append(
@@ -107,6 +121,7 @@ async def listar_politicas(
                 titulo=l.titulo,
                 descripcion=l.descripcion,
                 aportes=[],
+                aportesCount=conteos_aportes.get(l.id, 0),
             )
         )
 
@@ -121,10 +136,16 @@ async def listar_politicas(
 
     fases_resumen: list[FasePoliticaResumen] = []
     for f in fases:
-        prog = progresos.get(f.codigo)
-        if prog is None:
-            prog = f.progreso_porcentaje
-        prog_float = float(prog) if prog is not None else 0.0
+        if f.estado == "preparatoria":
+            prog_final = Decimal("0.00")
+        elif f.codigo == "FASE_1_DIAGNOSTICO" and f.estado == "activa":
+            prog_real = progresos.get(f.codigo)
+            prog_final = max(Decimal("15.00"), Decimal(str(prog_real or 0)))
+        elif f.codigo in progresos and progresos[f.codigo] is not None:
+            prog_final = Decimal(str(progresos[f.codigo]))
+        else:
+            prog_final = f.progreso_porcentaje or Decimal("0.00")
+        prog_float = float(prog_final)
 
         estado_front = (
             "activa"
@@ -186,7 +207,12 @@ async def listar_fases(
     salida = []
     for f in fases:
         item = FasePoliticaRead.model_validate(f)
-        if f.codigo in progresos:
+        if f.estado == "preparatoria":
+            item.progreso_porcentaje = Decimal("0.00")
+        elif f.codigo == "FASE_1_DIAGNOSTICO" and f.estado == "activa":
+            prog_actual = progresos.get(f.codigo)
+            item.progreso_porcentaje = max(Decimal("15.00"), Decimal(str(prog_actual or 0)))
+        elif f.codigo in progresos and progresos[f.codigo] is not None:
             item.progreso_porcentaje = progresos[f.codigo]
         salida.append(item)
     return salida
@@ -208,7 +234,25 @@ async def listar_lineas(
     )
     result = await session.execute(stmt)
     lineas = result.scalars().all()
-    return [LineaEstrategicaRead.model_validate(linea) for linea in lineas]
+
+    # Conteo de aportes ciudadanos activos y no rechazados por línea
+    stmt_aportes = (
+        select(PropuestaCiudadana.linea_id, func.count(PropuestaCiudadana.id))
+        .where(
+            PropuestaCiudadana.estado != "rechazado",
+            PropuestaCiudadana.activo.is_(True),
+        )
+        .group_by(PropuestaCiudadana.linea_id)
+    )
+    res_aportes = await session.execute(stmt_aportes)
+    conteos_aportes = dict(res_aportes.all())
+
+    salida = []
+    for linea in lineas:
+        item = LineaEstrategicaRead.model_validate(linea)
+        item.aportes_count = conteos_aportes.get(linea.id, 0)
+        salida.append(item)
+    return salida
 
 
 @router.get(
@@ -232,7 +276,12 @@ async def listar_fases_control(
     salida = []
     for fase, total_lineas in filas:
         item_base = FasePoliticaRead.model_validate(fase)
-        if fase.codigo in progresos:
+        if fase.estado == "preparatoria":
+            item_base.progreso_porcentaje = Decimal("0.00")
+        elif fase.codigo == "FASE_1_DIAGNOSTICO" and fase.estado == "activa":
+            prog_actual = progresos.get(fase.codigo)
+            item_base.progreso_porcentaje = max(Decimal("15.00"), Decimal(str(prog_actual or 0)))
+        elif fase.codigo in progresos and progresos[fase.codigo] is not None:
             item_base.progreso_porcentaje = progresos[fase.codigo]
         reglas = fase.reglas_participacion or {}
         habilitada = bool(reglas.get("habilitada_web", fase.estado == "activa"))

@@ -8,7 +8,7 @@ import {EmptyState} from "@/shared/ui/empty-state";
 import {Button} from "@/shared/ui/button";
 import {motion, useReducedMotion} from "framer-motion";
 import {Search, RotateCcw, ArrowUpRight, MessageSquare, Layers, Building2} from "lucide-react";
-import {useFases, useLineas} from "@/features/politicas/services/use-politicas-queries";
+import {useFases, useLineas, usePoliticas} from "@/features/politicas/services/use-politicas-queries";
 import {usePanels} from "@/core/panels/panel-store";
 import {FlujoInversionGobernanza} from "@/features/politicas/components/flujo-inversion-gobernanza";
 
@@ -26,6 +26,8 @@ export function ExplorarView() {
   const [busqueda, setBusqueda] = useState<string>("");
   const [pestana, setPestana] = useState<"lineas" | "gobernanza">("lineas");
 
+  const politicasQuery = usePoliticas();
+  const politicaPrincipal = politicasQuery.data?.[0];
   const fasesQuery = useFases();
   const lineasQuery = useLineas();
   const fases = fasesQuery.data ?? [];
@@ -43,6 +45,7 @@ export function ExplorarView() {
         titulo: linea.titulo,
         descripcion: linea.descripcion,
         aportes: [],
+        aportesCount: linea.aportes_count ?? 0,
         faseNombre: fase?.nombre ?? "Fase de la política",
         faseOrden: fase?.orden ?? 1,
         faseEstado: fase?.estado ?? "activa",
@@ -208,7 +211,7 @@ export function ExplorarView() {
                 }}
                 onClick={() =>
                   openPanel("linea", {
-                    politicaId: "pol-cartagena",
+                    politicaId: politicaPrincipal?.id ?? "pol-001",
                     faseId: linea.faseId,
                     lineaId: linea.id,
                   })
@@ -245,7 +248,11 @@ export function ExplorarView() {
 
                   <div className="flex items-center gap-1.5 font-medium text-[var(--text-primary)]">
                     <MessageSquare className="size-3.5 text-[var(--ember)]" />
-                    <span>Ver aportes</span>
+                    <span>
+                      {linea.aportesCount > 0
+                        ? `${linea.aportesCount} ${linea.aportesCount === 1 ? "aporte" : "aportes"} · Ver aportes`
+                        : "Ver aportes"}
+                    </span>
                   </div>
                 </div>
               </motion.button>

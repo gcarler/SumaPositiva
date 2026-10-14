@@ -2,12 +2,20 @@
 
 import { Button } from "@/shared/ui/button";
 
+import { useMemo } from "react";
 import { ArrowRight, Network } from "lucide-react";
 import { PanelShell } from "@/core/panels/panel-shell";
 import { usePanels, usePanelStore } from "@/core/panels/panel-store";
 import { useFase, usePolitica } from "@/features/politicas/state/politicas-store";
+import {
+  useFases,
+  useLineas,
+  usePoliticas,
+} from "@/features/politicas/services/use-politicas-queries";
+import type { Fase, LineaEstrategica, PoliticaPublica } from "@/features/politicas/models/politicas";
 import { EstadoFaseChip, FaseTipoTag } from "@/features/politicas/components/politica-ui";
 import { HairlineProgress } from "@/shared/components/participation-ui";
+import { Skeleton } from "@/shared/ui/skeleton";
 
 /**
  * Panel L2 — Fase del proceso con sus Líneas Estratégicas.
@@ -22,11 +30,107 @@ export function FasePanel({
   props: { politicaId: string; faseId: string };
 }) {
   const { openPanel, closeTop, closeToKey } = usePanels();
-  const politica = usePolitica(props.politicaId);
-  const fase = useFase(props.politicaId, props.faseId);
+
+  const lineasQuery = useLineas();
+  const fasesQuery = useFases();
+  const politicasQuery = usePoliticas();
+
+  const storePolitica = usePolitica(props.politicaId);
+  const storeFase = useFase(props.politicaId, props.faseId);
+
   const parentKey = usePanelStore(
     (s) => s.entries.find((e) => e.type === "politica")?.key
   );
+
+  const fase: Fase | undefined = useMemo(() => {
+    if (storeFase) return storeFase;
+    const encontrada =
+      fasesQuery.data?.find((f) => f.id === props.faseId || f.codigo === props.faseId) ??
+      fasesQuery.data?.find((f) => f.estado === "activa") ??
+      fasesQuery.data?.[0];
+    if (!encontrada) return undefined;
+
+    const lineasVinculadas: LineaEstrategica[] = (lineasQuery.data ?? [])
+      .filter((l) => l.fase_id === encontrada.id)
+      .map((l) => ({
+        id: l.id,
+        faseId: l.fase_id,
+        codigo: l.codigo,
+        titulo: l.titulo,
+        descripcion: l.descripcion,
+        aportes: [],
+        aportesCount: l.aportes_count ?? 0,
+      }));
+
+    return {
+      id: encontrada.id,
+      politicaId: props.politicaId,
+      orden: encontrada.orden,
+      nombre: encontrada.nombre,
+      tipo: "diagnostico",
+      descripcion: encontrada.descripcion ?? "",
+      estado: (encontrada.estado === "activa"
+        ? "activa"
+        : encontrada.estado === "completada"
+        ? "completada"
+        : "proxima") as "activa" | "completada" | "proxima",
+      progreso: Number(encontrada.progreso_porcentaje ?? 0),
+      lineas: lineasVinculadas,
+    };
+  }, [storeFase, props.faseId, fasesQuery.data, lineasQuery.data, props.politicaId]);
+
+  const politica: PoliticaPublica = useMemo(() => {
+    if (storePolitica) return storePolitica;
+    const encontrada = politicasQuery.data?.find(
+      (p) => p.id === props.politicaId || p.slug === props.politicaId
+    );
+    if (encontrada) return encontrada;
+    if (politicasQuery.data && politicasQuery.data.length > 0) {
+      return politicasQuery.data[0];
+    }
+    return {
+      id: "pol-001",
+      slug: "seguridad-humana-cartagena",
+      titulo: "Política Pública de Seguridad Humana Integral de Cartagena 2026–2036",
+      resumen:
+        "Construcción participativa de la Política Pública de Seguridad Humana Integral del Distrito de Cartagena de Indias.",
+      descripcion:
+        "Política Pública de Seguridad Humana Integral de Cartagena 2026–2036.",
+      problema: "",
+      sector: "seguridad",
+      estado: "consulta_publica",
+      cobertura:
+        "Distrito de Cartagena: 3 Localidades urbanas, 11 corregimientos y zonas insulares",
+      fechaInicio: "2026-02-01",
+      fechaCierre: "2026-12-31",
+      participantes: 0,
+      fases: [],
+    };
+  }, [storePolitica, politicasQuery.data, props.politicaId]);
+
+  if ((fasesQuery.isLoading || lineasQuery.isLoading) && !fase) {
+    return (
+      <PanelShell
+        entryKey={entryKey}
+        crumbs={[
+          { label: "Políticas públicas", targetKey: parentKey },
+          { label: "Fase" },
+        ]}
+        title="Cargando fase…"
+        onClose={closeTop}
+        onCloseToKey={closeToKey}
+      >
+        <div className="space-y-4 p-6">
+          <Skeleton className="h-6 w-3/4" />
+          <Skeleton className="h-4 w-full" />
+          <div className="pt-4 space-y-3">
+            <Skeleton className="h-16 w-full" />
+            <Skeleton className="h-16 w-full" />
+          </div>
+        </div>
+      </PanelShell>
+    );
+  }
 
   if (!fase || !politica) {
     return (
@@ -106,8 +210,8 @@ export function FasePanel({
                     type="button"
                     onClick={() =>
                       openPanel("linea", {
-                        politicaId: props.politicaId,
-                        faseId: props.faseId,
+                        politicaId: politica.id,
+                        faseId: fase.id,
                         lineaId: linea.id,
                       })
                     }

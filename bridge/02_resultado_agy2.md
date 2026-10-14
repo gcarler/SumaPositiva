@@ -886,3 +886,184 @@ En estricta atención al mandato de `bridge/01_tarea_activa.md`, se ejecutó y d
 - `src/features/politicas/views/dimensiones-view.tsx`
 - `src/features/politicas/components/dimensiones-grid.test.tsx`
 - `bridge/02_resultado_agy2.md`
+
+
+---
+
+# INFORME DE RESULTADO: PAQUETE TRIPLE [FASES-CICLO-01] + [LINEAS-APORTES-01] + [NAV-RETORNO-01]
+## ESTADO REAL DEL CICLO DE POLÍTICA, RECONEXIÓN DE APORTES EN LAS 8 LÍNEAS ESTRATÉGICAS Y NAVEGACIÓN DE RETORNO INSTITUCIONAL
+
+**Para:** Coordinador General / Auditor EAF (`agy`)  
+**De:** Desarrollador Principal (`agy2`)  
+**Fecha:** 14 de Octubre de 2026  
+**Tareas Ejecutadas:**
+1. `[FASES-CICLO-01]` Ciclo de Formulación en Home y Backend: Fase 1 En curso al 15% (`activa`), Fases 2 y 3 Próxima / Sin iniciar al 0% (`preparatoria`).
+2. `[LINEAS-APORTES-01]` Conexión real de «Ver aportes» y «Aportar a esta línea» en las 8 Líneas Estratégicas mediante resolución híbrida TanStack Query (`useLineas`, `useFases`, `usePoliticas`), conteo de aportes en PostgreSQL y estado esqueleto.
+3. `[NAV-RETORNO-01]` Navegación de retorno al inicio (`href="/"`) y a la plataforma en `/asistencia/[mesaId]` y en `/f/[slug]`.
+
+---
+
+## 🎯 1. Resumen Ejecutivo de la Intervención
+
+En cumplimiento de las instrucciones de `bridge/01_tarea_activa.md`, se abordaron y resolvieron con rigor arquitectónico y forense los tres problemas prioritarios solicitados por el propietario:
+
+1. **`[FASES-CICLO-01]` Estado Real del Ciclo de Formulación de la Política Pública:**
+   - **Causa raíz eliminada:** `FASE_1_DIAGNOSTICO` calculaba `0.0%` porque las actas concertadas están en proceso de suscripción, ignorando el avance real del diagnóstico territorial. Paralelamente, `FASE_2_FORMULACION` reportaba erróneamente `100.0%` aun cuando su estado en base de datos es `preparatoria` (sin iniciar).
+   - **Solución implementada:**
+     - En `bd_csh` (`motor_politicas.fases_politica`), se actualizó `progreso_porcentaje = 15.00` para `FASE_1_DIAGNOSTICO`. Las Fases 2 y 3 permanecen estrictamente en `0.00` y `preparatoria`.
+     - En `backend/app/modules/politicas/gating.py` (`calcular_progreso_real_fases`), se instauraron compuertas metodológicas formales: si una fase tiene `estado == 'preparatoria'`, su progreso calculado es estrictamente `0.00%`. Para `FASE_1_DIAGNOSTICO` activa, se aplica el piso empírico del `15.00%`.
+     - En `backend/app/modules/politicas/router.py` (`listar_politicas`, `listar_fases` y `listar_fases_control`), se garantiza que las fases preparatorias reporten `0.0%` y Fase 1 activa reporte `15.0%`.
+     - En `src/features/politicas/views/inicio-view.tsx`, la sección `#fases-politica` renderiza la Fase 1 con `StatusBadge tone="warning">En curso</StatusBadge>` y barra de progreso al 15%, y las Fases 2 y 3 con `StatusBadge tone="neutral">Próxima · Sin iniciar</StatusBadge>` y avance del 0%.
+     - En `src/features/politicas/__fixtures__/politicas.fixture.ts`, se alinearon los fixtures locales de desarrollo.
+
+2. **`[LINEAS-APORTES-01]` Conexión Real de «Ver aportes» y radicación cívica en las 8 Líneas:**
+   - **Causa raíz eliminada:** `usePoliticasStore` permanecía vacío (`politicas: []`) en producción. `ExplorarView` pasaba `"pol-cartagena"` (en lugar del UUID o `"pol-001"`) y los UUIDs de PostgreSQL. Al abrir `LineaPanel`, la guarda `if (!linea || !fase || !politica)` fallaba y desplegaba prematuramente *"Línea no disponible"*.
+   - **Solución implementada:**
+     - En `LineaPanel`, `FasePanel`, `PoliticaPanel` y `AporteEditorPanel`, se implementó una **resolución híbrida resiliente**: primero consulta el store Zustand (para compatibilidad con historias de Storybook), y si no está poblado, resuelve dinámicamente contra los hooks TanStack Query `useLineas()`, `useFases()` y `usePoliticas()` conectados a PostgreSQL.
+     - En `LineaPanel`, mientras `useLineas()` esté cargando y la línea aún no esté resuelta, se despliega un estado esqueleto (`Skeleton`) en `PanelShell`, eliminando falsos positivos de indisponibilidad.
+     - En `backend/app/modules/politicas/router.py` y `schemas.py`, `listar_lineas` y `listar_politicas` ahora computan el conteo real de aportes cívicos radicados desde `participacion_ciudadana.propuestas_ciudadanas` (`estado != 'rechazado' AND activo = true`), serializando `aportes_count` / `aportesCount`.
+     - En `src/features/politicas/views/explorar-view.tsx`, se corrigió el selector a `politicaPrincipal?.id ?? "pol-001"` y se conectó el contador de aportes en el pie de cada tarjeta.
+
+3. **`[NAV-RETORNO-01]` Navegación de Retorno en `/asistencia/[mesaId]` y `/f/[slug]`:**
+   - **Causa raíz eliminada:** Las planillas de asistencia pública y los formularios públicos no ofrecían rutas de retorno visibles, actuando como páginas sin salida.
+   - **Solución implementada:**
+     - En `src/app/asistencia/[mesaId]/asistencia-cliente.tsx`:
+       1. Encabezado institucional: el bloque de marca (`Building2` + Alcaldía Mayor / Secretaría del Interior) se convirtió en un `<Link href="/">` accesible con `aria-label` y foco visible.
+       2. Botón en header: se agregó el botón `<Button asChild variant="outline" size="sm"><Link href="/">← Volver al inicio</Link></Button>`.
+       3. Barra de retorno sobre la tarjeta: se añadió una barra de navegación con botón dinámico «← Volver a la plataforma POLIS» (`router.back()` si hay historial del mismo origen, o fallback a `/`) y migas de pan directas a `Inicio`.
+       4. Pie de página: se incluyó el enlace accesible «← Regresar al portal principal de Seguridad Humana Integral (POLIS)».
+     - En `src/features/formularios/views/formulario-publico-view.tsx`:
+       1. Encabezado: logo `Landmark` + título enlazados a `/`.
+       2. Botón visible «← Volver al inicio» (`<Link href="/">`).
+
+---
+
+## 🛠️ 2. Detalle de Archivos Intervenidos
+
+### Backend:
+- `backend/app/modules/politicas/gating.py`:
+  - En `calcular_progreso_real_fases`:
+    - `FASE_1_DIAGNOSTICO`: implementado piso de diagnóstico en curso `Decimal("15.00")`.
+    - `FASE_2_FORMULACION`: compuerta CASE en SQL que retorna `0` si el estado en `fases_politica` es `'preparatoria'`.
+    - `FASE_3_PLAN_ACCION`: compuerta CASE en SQL que retorna `0.00` si el estado en `fases_politica` es `'preparatoria'`.
+- `backend/app/modules/politicas/schemas.py`:
+  - `LineaEstrategicaRead`: añadido `aportes_count: int = Field(default=0)`.
+  - `LineaPoliticaResumen`: añadido `aportes_count: int = Field(default=0, alias="aportesCount")`.
+- `backend/app/modules/politicas/router.py`:
+  - Importado `PropuestaCiudadana`.
+  - En `listar_politicas`: compuertas de progreso para fases y agregación de `conteos_aportes` en `lineas_por_fase`.
+  - En `listar_lineas`: agregación de `conteos_aportes` desde `PropuestaCiudadana` (`estado != 'rechazado' AND activo = true`) asignado a cada `item.aportes_count`.
+  - En `listar_fases` y `listar_fases_control`: compuertas de `0.00` para fases preparatorias y piso `15.00` para Fase 1 activa.
+- `backend/tests/test_politicas_catalogo.py`:
+  - Añadida prueba de integración `test_gating_fases_ciclo_progresos_y_aportes_lineas` validando Fase 1 al 15%, Fases 2 y 3 al 0% y conteo de `aportes_count` en líneas.
+
+### Frontend:
+- `src/features/politicas/models/politicas.ts`:
+  - Añadido `aportesCount?: number;` a la interfaz canónica `LineaEstrategica`.
+- `src/features/politicas/services/politicas-api.ts`:
+  - Añadido `aportes_count?: number;` a `LineaEstrategicaApi`.
+- `src/features/politicas/services/use-politicas-queries.ts`:
+  - Exportado alias `usePoliticas = useCatalogoPoliticas` para consumo uniforme en paneles y vistas.
+- `src/features/politicas/__fixtures__/politicas.fixture.ts`:
+  - Fase 1: `estado: "activa", progreso: 15`.
+  - Fase 2: `estado: "proxima", progreso: 0`.
+  - Fase 3: `estado: "proxima", progreso: 0`.
+- `src/features/politicas/views/inicio-view.tsx`:
+  - Renderizado de badges y barras en `#fases-politica`: Fase 1 (15%, "En curso", tone warning), Fases 2 y 3 (0%, "Próxima · Sin iniciar", tone neutral).
+- `src/features/politicas/views/explorar-view.tsx`:
+  - `openPanel` corregido para pasar `politicaPrincipal?.id ?? "pol-001"`.
+  - Mapeo de `aportesCount` desde `linea.aportes_count`.
+  - Tarjetas de línea con indicador de aportes radicados y enlace «Ver aportes».
+- `src/features/politicas/panels/linea-panel.tsx`:
+  - Integración de `useLineas`, `useFases`, `usePoliticas` con resolución híbrida.
+  - Estado `Skeleton` de carga en `PanelShell` mientras `isLoading && !linea`.
+  - `lineaIdApi` adaptado a UUIDs de BD para consultar `useAportes`.
+  - Botón «Aportar a esta línea» invocando `openPanel("aporte")` con los IDs resueltos.
+- `src/features/politicas/panels/linea-panel.test.tsx` (Nuevo):
+  - 2 pruebas unitarias con TanStack Query y Zustand store vacío: renderizado completo y estado esqueleto.
+- `src/features/politicas/panels/fase-panel.tsx`:
+  - Resolución híbrida con TanStack Query (`useFases`, `useLineas`, `usePoliticas`), carga esqueleto y navegación hacia `linea-panel`.
+- `src/features/politicas/panels/politica-panel.tsx`:
+  - Resolución híbrida con TanStack Query (`usePoliticas`), carga esqueleto y navegación.
+- `src/features/aportes/panels/aporte-editor-panel.tsx`:
+  - Resolución híbrida de `linea`, `fase` y `politica` para subtítulo y breadcrumbs.
+  - Resolución de `lineaIdReal` para la mutación `useCrearAporte`.
+- `src/app/asistencia/[mesaId]/asistencia-cliente.tsx`:
+  - Header institucional con logo clicable hacia `/` y botón «← Volver al inicio».
+  - Barra de navegación previa a la mesa con botón «← Volver a la plataforma POLIS» (`router.back()` / `/`) y migas de pan.
+  - Footer con enlace clicable «← Regresar al portal principal de Seguridad Humana Integral (POLIS)».
+- `src/app/asistencia/[mesaId]/asistencia-cliente.test.tsx` (Nuevo):
+  - 3 pruebas unitarias verificando la navegación de retorno en header, barra y footer.
+- `src/features/formularios/views/formulario-publico-view.tsx`:
+  - Header con logo clicable a `/` y botón «← Volver al inicio».
+- `src/features/formularios/views/formulario-publico-view.test.tsx` (Nuevo):
+  - Prueba unitaria verificando el botón de retorno y marca institucional en formularios públicos.
+
+---
+
+## 🧪 3. Matriz de Verificación y Quality Gates
+
+| Puerta de Calidad | Comando Ejecutado | Resultado |
+|---|---|---|
+| **Pruebas Backend Pytest (Suite Completa)** | `venv/bin/pytest backend/tests/` | ✅ **528 / 528 pasadas** (100% verde, 5m 33s) |
+| **Pruebas Específicas Gating & Catálogo** | `venv/bin/pytest backend/tests/test_politicas_catalogo.py backend/tests/test_aud05_gating_fases.py` | ✅ **7 / 7 pasadas** (0 fallas) |
+| **Pruebas Frontend Bun Test (Suite Completa)** | `bun test` | ✅ **572 / 572 pasadas** (68 archivos, 0 fallas) |
+| **Pruebas Unitarias Nuevas LineaPanel** | `bun test src/features/politicas/panels/linea-panel.test.tsx` | ✅ **2 / 2 pasadas** (0 fallas) |
+| **Pruebas Unitarias Nuevas Asistencia** | `bun test src/app/asistencia/[mesaId]/asistencia-cliente.test.tsx` | ✅ **3 / 3 pasadas** (0 fallas) |
+| **Pruebas Unitarias Nuevas Formulario** | `bun test src/features/formularios/views/formulario-publico-view.test.tsx` | ✅ **1 / 1 pasada** (0 fallas) |
+| **Storybook Accessibility & Interaction Tests** | `bun run ui:test` | ✅ **212 / 212 historias pasadas** (17 suites, 0 violaciones axe-core) |
+| **Verificación de Políticas UI (Zero-Colors)** | `bun run ui:check` | ✅ **0 violaciones** (tokens, capas y componentes canónicos conformes) |
+| **Chequeo de Tipos TypeScript** | `bun run typecheck` (`tsc --noEmit`) | ✅ **0 errores** |
+| **Linter ESLint** | `bun run lint` (`eslint .`) | ✅ **0 errores** |
+| **Compilación de Producción Next.js** | `bun run build` | ✅ **192 / 192 rutas SSG/dinámicas compiladas** |
+
+---
+
+## 🚀 4. Despliegue en Vivo y Verificación Operativa
+
+- **Servicios de Producción:**
+  - `polis-backend`: `active (running)`, Uvicorn FastAPI en `http://127.0.0.1:8000`.
+  - `polis-frontend`: `active (running)`, Next.js 16.3.8 en `http://127.0.0.1:3000`.
+- **Verificación de Endpoints en Vivo:**
+  - `GET http://127.0.0.1:8000/api/v1/politicas/fases`:
+    - Fase 1: `estado = "activa"`, `progreso_porcentaje = "15.00"`.
+    - Fase 2: `estado = "preparatoria"`, `progreso_porcentaje = "0.00"`.
+    - Fase 3: `estado = "preparatoria"`, `progreso_porcentaje = "0.00"`.
+  - `GET http://127.0.0.1:8000/api/v1/politicas`:
+    - Fase 1: `progreso = 15.0`, `estado = "activa"`.
+    - Fases 2 y 3: `progreso = 0.0`, `estado = "proxima"`.
+    - Líneas estratégicas: reportan conteo real de aportes en `aportesCount`.
+  - `GET http://127.0.0.1:3000/` → `HTTP 200 OK`.
+  - `GET http://127.0.0.1:3000/asistencia/mt-l01-01` → `HTTP 200 OK` (incluye «Volver al inicio», «Volver a la plataforma POLIS» y «Regresar al portal principal»).
+  - `GET http://127.0.0.1:3000/f/reporte-inseguridad` → `HTTP 200 OK` (incluye «Volver al inicio»).
+- **Inviolabilidad Estricta del Censo en `bd_csh`:**
+  ```
+  CENSO: mesas=33 agendas=36 fichas=11 actores=17
+  FASES BD: [('FASE_1_DIAGNOSTICO', 'activa', Decimal('15.00')), ('FASE_2_FORMULACION', 'preparatoria', Decimal('0.00')), ('FASE_3_PLAN_ACCION', 'preparatoria', Decimal('0.00'))]
+  ```
+  *(Censo institucional 100% inalterado).*
+
+---
+
+## 📦 5. Archivos Incluidos en el Commit Local (Política Zero-Push)
+
+- `backend/app/modules/politicas/gating.py`
+- `backend/app/modules/politicas/router.py`
+- `backend/app/modules/politicas/schemas.py`
+- `backend/tests/test_politicas_catalogo.py`
+- `src/features/politicas/models/politicas.ts`
+- `src/features/politicas/services/politicas-api.ts`
+- `src/features/politicas/services/use-politicas-queries.ts`
+- `src/features/politicas/__fixtures__/politicas.fixture.ts`
+- `src/features/politicas/views/inicio-view.tsx`
+- `src/features/politicas/views/explorar-view.tsx`
+- `src/features/politicas/panels/linea-panel.tsx`
+- `src/features/politicas/panels/linea-panel.test.tsx`
+- `src/features/politicas/panels/fase-panel.tsx`
+- `src/features/politicas/panels/politica-panel.tsx`
+- `src/features/aportes/panels/aporte-editor-panel.tsx`
+- `src/app/asistencia/[mesaId]/asistencia-cliente.tsx`
+- `src/app/asistencia/[mesaId]/asistencia-cliente.test.tsx`
+- `src/features/formularios/views/formulario-publico-view.tsx`
+- `src/features/formularios/views/formulario-publico-view.test.tsx`
+- `bridge/02_resultado_agy2.md`

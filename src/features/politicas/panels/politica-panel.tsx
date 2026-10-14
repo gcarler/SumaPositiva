@@ -2,15 +2,18 @@
 
 import { Button } from "@/shared/ui/button";
 
+import { useMemo } from "react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { ArrowRight, CalendarDays, MapPin, Users, FileText } from "lucide-react";
 import { PanelShell } from "@/core/panels/panel-shell";
 import { usePanels } from "@/core/panels/panel-store";
 import { usePolitica } from "@/features/politicas/state/politicas-store";
-import { SECTOR_META, totalAportes, totalLineas } from "@/features/politicas/models/politicas";
+import { usePoliticas } from "@/features/politicas/services/use-politicas-queries";
+import { SECTOR_META, totalAportes, totalLineas, type PoliticaPublica } from "@/features/politicas/models/politicas";
 import { EstadoFaseChip, EstadoPoliticaChip, FaseTipoTag } from "@/features/politicas/components/politica-ui";
 import { HairlineProgress, SectionLabel } from "@/shared/components/participation-ui";
+import { Skeleton } from "@/shared/ui/skeleton";
 
 /**
  * Panel L1 — Detalle de la Política Pública.
@@ -19,7 +22,41 @@ import { HairlineProgress, SectionLabel } from "@/shared/components/participatio
 
 export function PoliticaPanel({ entryKey, props }: { entryKey: string; props: { politicaId: string } }) {
   const { openPanel, closeTop, closeToKey } = usePanels();
-  const politica = usePolitica(props.politicaId);
+  const politicasQuery = usePoliticas();
+  const storePolitica = usePolitica(props.politicaId);
+
+  const politica: PoliticaPublica | undefined = useMemo(() => {
+    if (storePolitica) return storePolitica;
+    const encontrada = politicasQuery.data?.find(
+      (p) => p.id === props.politicaId || p.slug === props.politicaId
+    );
+    if (encontrada) return encontrada;
+    if (politicasQuery.data && politicasQuery.data.length > 0) {
+      return politicasQuery.data[0];
+    }
+    return undefined;
+  }, [storePolitica, politicasQuery.data, props.politicaId]);
+
+  if (politicasQuery.isLoading && !politica) {
+    return (
+      <PanelShell
+        entryKey={entryKey}
+        crumbs={[{ label: "Políticas públicas" }]}
+        title="Cargando política…"
+        onClose={closeTop}
+        onCloseToKey={closeToKey}
+      >
+        <div className="space-y-4 p-6">
+          <Skeleton className="h-6 w-3/4" />
+          <Skeleton className="h-4 w-full" />
+          <div className="pt-4 space-y-3">
+            <Skeleton className="h-16 w-full" />
+            <Skeleton className="h-16 w-full" />
+          </div>
+        </div>
+      </PanelShell>
+    );
+  }
 
   if (!politica) {
     return (
