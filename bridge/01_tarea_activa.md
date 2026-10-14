@@ -1,116 +1,127 @@
-# TAREA ACTIVA PARA `agy2`: PAQUETE TRIPLE [FASES-CICLO-01] + [LINEAS-APORTES-01] + [NAV-RETORNO-01]
+# TAREA ACTIVA PARA `agy2`: [GEO-GESTOR-01]
+## PINTADO POR DEFECTO DE CAPAS GEOJSON Y HERRAMIENTA FRONTEND DE GESTIÓN, PROCESAMIENTO, EXPLORACIÓN TABULAR E IMPORTACIÓN DE ARCHIVOS GEOJSON EN EL GEOVISOR
 
 **Fecha:** 14 de Octubre de 2026
 **De:** Coordinador General / Auditor Forense EAF (`agy`)
 **Para:** Desarrollador Principal (`agy2`)
-**Prioridad:** P0 — Corrección de estado real del Ciclo de Política Pública, reconexión del muro y formulario de Aportes Ciudadanos en las 8 Líneas Estratégicas, y navegación de retorno en rutas públicas independientes (`/asistencia/[mesaId]` y `/f/[slug]`).
+**Prioridad:** P0 — Visibilidad inmediata de los GeoJSON de Hurtos en el mapa y construcción del Gestor, Procesador y Explorador de Datos GeoJSON en el frontend del Geovisor (`/geovisor` y `/plataforma/geovisor`).
 
 ---
 
-## 🎯 CONTEXTO Y OBJETIVO DEL PAQUETE
+## 🎯 CONTEXTO Y PROBLEMA REPORTADO POR EL PROPIETARIO
 
-El propietario ha solicitado tres mejoras críticas sobre la plataforma pública (`https://seguridadhumanaintegral.org/`):
+El propietario compartió la carpeta de Google Drive con los 3 archivos GeoJSON (`Hurto_Motocicletas.geojson`, `Hurto_Residencias.geojson`, `Hurto_Comerciantes.geojson` — **12.280 registros / 18.242 eventos** de 2018 a 2026) con el objetivo de:
+1. **Verlos pintados en el Geovisor**, y
+2. **Contar con una herramienta a nivel del frontend dentro del Geovisor que permita gestionar, procesar, filtrar, cruzar y manejar toda la información contenida en los GeoJSON** (así como incorporar/cargar capas GeoJSON desde la interfaz).
 
-1. **Tarea #2 — `[FASES-CICLO-01]` (Ciclo de Formulación de la Política Pública en el Home y Backend):**
-   - Hoy en el Home (`#fases-politica` de `src/features/politicas/views/inicio-view.tsx`) se muestran las 3 fases de la política pública con datos incoherentes:
-     - **Fase 01 — Diagnóstico Participativo e Intersectorial:** sale *"En curso"* pero con **`0%` de avance**.
-     - **Fase 02 — Formulación de Alternativas y Líneas Estratégicas:** sale *"Próxima"* pero con **`100%` de avance** (lo cual es falso porque la Fase 2 **no ha iniciado**).
-     - **Fase 03 — Plan de Acción, Aprobación y Seguimiento:** sale *"Próxima"* con `0%`.
-   - **Causa raíz identificada:** En `backend/app/modules/politicas/gating.py` (`calcular_progreso_real_fases`) y `backend/app/modules/politicas/router.py` (`listar_fases` y `listar_politicas`):
-     - Para `FASE_1_DIAGNOSTICO` se estaba calculando `mesas con estado = 'ACTA_CONCERTADA' / total_mesas = 0 / 33 = 0.0%`, ignorando el avance real del alistamiento, agendas e instrumentos de diagnóstico en curso.
-     - Para `FASE_2_FORMULACION` se estaba calculando `count(DISTINCT dimension_id) FROM lineas_estrategicas = 7 / 7 = 100.0%` **incluso cuando la fase está en estado `preparatoria` (sin iniciar)**.
-   - **Requerimiento exacto del propietario:**
-     - La **Fase 01 (Diagnóstico Participativo e Intersectorial)** es la **única fase iniciada y en curso** (`estado = "activa"`, etiqueta **"En curso"**, avance del **`15%`**).
-     - La **Fase 02 (Formulación de Alternativas y Líneas Estratégicas)** y la **Fase 03 (Plan de Acción, Aprobación y Seguimiento)** están **sin iniciar** (`estado = "preparatoria"`, etiqueta **"Próxima — Sin iniciar"** o **"Próxima"**, avance estrictamente en **`0%`**).
-
-2. **Tarea #3 — `[LINEAS-APORTES-01]` (Botón «Ver aportes» y radicación de aportes en las 8 Líneas Estratégicas):**
-   - En la vista pública **Líneas Estratégicas** (`src/features/politicas/views/explorar-view.tsx`), cada una de las 8 líneas estratégicas tiene una tarjeta clicable con el botón **«Ver aportes»**.
-   - Al hacer clic en **«Ver aportes»**, se abre `LineaPanel` (`src/features/politicas/panels/linea-panel.tsx`), pero muestra **"Línea no disponible — Esta línea estratégica ya no está disponible"** y no carga ni el muro de aportes ni el botón **«Aportar a esta línea»**.
-   - **Causa raíz identificada:**
-     1. `usePoliticasStore` (`src/features/politicas/state/politicas-store.ts`) tiene `politicas: []` y `setPoliticas` nunca se llama en la aplicación desde que las vistas migraron a TanStack Query (`usePoliticas()`, `useFases()`, `useLineas()`).
-     2. `ExplorarView` (`src/features/politicas/views/explorar-view.tsx:210`) llama a `openPanel("linea", { politicaId: "pol-cartagena", faseId: linea.faseId, lineaId: linea.id })` pasando `"pol-cartagena"` (mientras que en la API y fixtures es `"pol-001"`) y pasando los UUIDs reales de PostgreSQL (`linea.id` y `linea.faseId`).
-     3. `LineaPanel` (`src/features/politicas/panels/linea-panel.tsx:284-290`), `FasePanel` (`src/features/politicas/panels/fase-panel.tsx:25-26`), `PoliticaPanel` (`src/features/politicas/panels/politica-panel.tsx:22`) y `AporteEditorPanel` (`src/features/aportes/panels/aporte-editor-panel.tsx:121-123`) buscan `politica`, `fase` y `linea` únicamente en `usePoliticasStore` (`usePolitica`, `useFase`, `useLinea`), obteniendo `undefined` y cayendo en la guarda `if (!linea || !fase || !politica)`!
-
-3. **Tarea #4 — `[NAV-RETORNO-01]` (Botón «Volver al Inicio / Volver» en `/asistencia/[mesaId]` y `/f/[slug]`):**
-   - Cuando el usuario entra a una planilla pública de asistencia como `https://seguridadhumanaintegral.org/asistencia/mt-l01-01` (`src/app/asistencia/[mesaId]/asistencia-cliente.tsx`), **no existe ningún botón ni enlace en el encabezado o parte superior que permita regresar al Home (`/`) o a la vista anterior**. La página actúa como un callejón sin salida.
-   - Lo mismo sucede en las páginas de formularios públicos `/f/[slug]` (`src/features/formularios/views/formulario-publico-view.tsx`).
+Actualmente existen **4 brechas** por las cuales el propietario no ve los GeoJSON ni puede procesarlos como una herramienta completa:
+1. **Capas GeoJSON apagadas al abrir `/geovisor`:** En `src/features/geovisor/views/geovisor-view.tsx` (líneas 63–65), `hurtoMotocicletas`, `hurtoResidencias` y `hurtoComercio` inician en `false`, por lo que al abrir el Geovisor no se pinta ninguna capa de los GeoJSON en el mapa.
+2. **Pestaña `"hurtos"` ausente del layout por defecto del Geovisor:** En `src/features/geovisor/state/geovisor-layout-store.ts` (líneas 35–47), `DEFAULT_DOCK_TABS.bottom` solo tiene `["datagrid", "graficos"]` y **no incluye `"hurtos"`**. Además, como el store persiste en `localStorage` bajo `"polis-geovisor-layout-v2"`, el navegador nunca muestra la pestaña de Hurtos/GeoJSON por defecto.
+3. **Falta de un Procesador y Gestor de Datos GeoJSON en el Frontend (`GeovisorHurtosPanel`):** Actualmente `GeovisorHurtosPanel` (`src/features/geovisor/components/geovisor-hurtos-panel.tsx`) solo muestra tarjetas KPI y barras simples, pero **no permite**:
+   - Explorar los **12.280 registros** de los GeoJSON en una tabla paginada y buscable.
+   - Filtrar y cruzar dinámicamente por todas las dimensiones del GeoJSON (**Delito**, **Año**, **Mes**, **Día de la semana**, **Modalidad / Armas-Medios**, **Clase de Sitio**, **Zona Urbana/Rural**).
+   - Agrupar / hacer tabla dinámica (Pivot) por cualquiera de esas columnas y **exportar los datos procesados en CSV o GeoJSON**.
+   - **Gestionar las capas GeoJSON o cargar/incorporar un archivo `.geojson` / `.json` desde el navegador** para pintarlo en el mapa e inspeccionar sus atributos.
+4. **Vista administrativa `/plataforma/geovisor` desconectada:** `src/features/plataforma/views/geovisor-view.tsx` muestra una vista vieja que solo lista 4 territorios y no permite gestionar las capas GeoJSON ni abrir el Workbench analítico.
 
 ---
 
 ## 🛠️ ESPECIFICACIÓN TÉCNICA PASO A PASO
 
-### PARTE 1: `[FASES-CICLO-01]` — Ciclo de Formulación de la Política (Fase 1 al 15%, Fases 2 y 3 en 0% sin iniciar)
+### 1. Visibilidad por Defecto en el Mapa y en el Dock del Geovisor (`geovisor-layout-store.ts` y `geovisor-view.tsx`)
 
-1. **Base de datos y Backend (`backend/app/modules/politicas/gating.py` y `backend/app/modules/politicas/router.py`):**
-   - En `bd_csh` (tabla `motor_politicas.fases_politica`), actualiza el valor persistido de `progreso_porcentaje` de `FASE_1_DIAGNOSTICO` a `15.00` (actualmente tiene `21.65`), manteniendo `FASE_2_FORMULACION` en `0.00` (`estado = 'preparatoria'`) y `FASE_3_PLAN_ACCION` en `0.00` (`estado = 'preparatoria'`). *(Recuerda: NO alterar jamás las 33 mesas, 36 agendas, 11 fichas ni 17 actores).*
-   - En `backend/app/modules/politicas/gating.py` (`calcular_progreso_real_fases`):
-     - **Regla de compuerta para fases no iniciadas (`preparatoria`):** Si una fase en `motor_politicas.fases_politica` tiene `estado == 'preparatoria'`, su progreso real calculado **DEBE ser `0.0`** sin excepción (una fase que aún no ha iniciado en el ciclo metodológico no puede reportar 100% de avance).
-     - Para `FASE_1_DIAGNOSTICO` (cuando está `activa`): si el cálculo de actas concertadas aún es `0`, utiliza como piso el progreso base de diagnóstico/alistamiento en curso (`15.0%`, o `max(float(f.progreso_porcentaje or 15.0), pct_actas)`), de modo que refleje fielmente el **15% de avance en curso** de la Fase 1 de Diagnóstico.
-     - Para `FASE_2_FORMULACION` y `FASE_3_PLAN_ACCION`: mientras su `estado` en BD sea `'preparatoria'`, `progreso` debe ser **`0.0`**. Solo calcularán porcentaje > 0 cuando su estado pase a `'activa'` o `'completada'`.
-   - Verifica que tanto `GET /api/v1/politicas/fases` como `GET /api/v1/politicas` devuelvan:
-     - Fase 1 (`FASE_1_DIAGNOSTICO`, orden 1): `estado: "activa"`, `progreso_porcentaje: 15.0` (y `progreso: 15` en `/api/v1/politicas`).
-     - Fase 2 (`FASE_2_FORMULACION`, orden 2): `estado: "preparatoria"`, `progreso_porcentaje: 0.0` (y `progreso: 0`).
-     - Fase 3 (`FASE_3_PLAN_ACCION`, orden 3): `estado: "preparatoria"`, `progreso_porcentaje: 0.0` (y `progreso: 0`).
-   - Actualiza también el fixture/fallback en `src/features/politicas/__fixtures__/politicas.fixture.ts` y `src/features/politicas/services/politicas-service.ts` para que el fallback local coincida (`Fase 1: activa, 15%`, `Fase 2: preparatoria, 0%`, `Fase 3: preparatoria, 0%`).
-2. **Frontend Home (`src/features/politicas/views/inicio-view.tsx`):**
-   - En la sección `#fases-politica` (*"Ciclo de Formulación de la Política"*):
-     - Para la fase con `fase.estado === "activa"`, muestra `StatusBadge` con `tone="warning"` y texto **"En curso"**, y su barra de progreso al **`15%`** (`Math.round(progreso)`).
-     - Para las fases con `fase.estado === "preparatoria"`, muestra `StatusBadge` con `tone="neutral"` y texto **"Próxima · Sin iniciar"** (y en el texto inferior de avance `0%` / barra en `0`).
-   - Verifica y actualiza si algún test de backend (`backend/tests/`) o frontend (`src/features/politicas/`) valida el cálculo de `calcular_progreso_real_fases` para que todas las suites pasen en verde.
+1. **En `src/features/geovisor/state/geovisor-layout-store.ts`:**
+   - En `DEFAULT_DOCK_TABS` (líneas 35–40), incluye `"hurtos"` en el panel inferior (`bottom: ["hurtos", "datagrid", "graficos"]`) para que la pestaña **«Hurtos / GeoJSON»** aparezca siempre visible en el dock inferior.
+   - En la función `merge` del middleware `persist` (o actualizando la versión/hidratación en `sanitizeDockTabs`), asegúrate de que si el estado persistido en `localStorage` no contiene `"hurtos"` en ningún panel (`!findViewDock(tabs, "hurtos")`), se inserte automáticamente `"hurtos"` al inicio de `tabs.bottom`. *(Cuidado: verifica que los tests unitarios existentes en `src/features/geovisor/state/geovisor-layout-store.tabs.test.ts` sigan pasando al 100% o ajústalos coherentemente).*
+2. **En `src/features/geovisor/views/geovisor-view.tsx`:**
+   - Inicializa `delitoHurto` en `"TODOS"` (o `"hurto_motocicletas"`) y activa por defecto en `capas`:
+     ```ts
+     hurtoMotocicletas: true,
+     hurtoResidencias: false,
+     hurtoComercio: false,
+     ```
+     y `delitoHurto` en `"hurto_motocicletas"`, de modo que apenas el usuario abra el Geovisor, el mapa de Cartagena **pinte de inmediato la capa GeoJSON** y el usuario pueda alternar entre Motocicletas, Residencias, Comercio o Consolidado desde el control de capas o desde el Gestor GeoJSON.
+   - Además, pasa a `<GeovisorHurtosPanel>` un callback `onCargarGeojsonPersonalizado?: (geojson: FeatureCollection, nombreCapa: string, color: string) => void` (o manéjalo con estado compartido) para que las capas GeoJSON cargadas/gestionadas desde el panel también se pinten en `MapaCartagena`.
 
 ---
 
-### PARTE 2: `[LINEAS-APORTES-01]` — Conexión Real de «Ver aportes» y «Aportar a esta línea» en las 8 Líneas Estratégicas
+### 2. Nuevo Endpoint Backend de Exploración Tabular y Procesamiento (Pivot) de los GeoJSON (`backend/app/modules/geodatos/router.py`)
 
-1. **Hidratación y Resolución Unificada en `LineaPanel`, `FasePanel`, `PoliticaPanel` y `AporteEditorPanel`:**
-   - **Problema actual:** `usePoliticasStore` inicia con `politicas: []` y nunca recibe las políticas, fases ni líneas reales de PostgreSQL (`usePoliticas()`, `useFases()`, `useLineas()`). Además, en `GET /api/v1/politicas`, `fases[i].lineas` viene como arreglo vacío `[]` y las fases tienen IDs sintéticos `fase-001-1`, mientras que `GET /api/v1/politicas/fases` y `GET /api/v1/politicas/lineas` traen los UUIDs reales de PostgreSQL (`linea.id`, `linea.faseId`).
-   - **Solución limpia y resiliente:**
-     1. En `src/features/politicas/panels/linea-panel.tsx`:
-        - Además de consultar `useLinea`, `useFase` y `usePolitica` del store Zustand (necesario para compatibilidad con historias de Storybook que sí pre-cargan `usePoliticasStore`), consulta también los hooks de TanStack Query: `useLineas()`, `useFases()` y `usePoliticas()` de `@/features/politicas/services/use-politicas-queries`.
-        - Resuelve `linea` buscando primero en `useLinea(props.politicaId, props.faseId, props.lineaId)`, y si no existe en el store, búscala en el resultado de `useLineas()` por `l.id === props.lineaId || l.codigo === props.lineaId` (mapeándola al contrato `LineaEstrategica` con `aportes: []`).
-        - Resuelve `fase` buscando primero en `useFase(props.politicaId, props.faseId)`, y si no existe, búscala en `useFases()` por `f.id === props.faseId || f.id === lineaResuelta?.faseId` (o toma la primera fase activa de `useFases()` / `politica`).
-        - Resuelve `politica` buscando primero en `usePolitica(props.politicaId)`, y si no existe, toma la política principal de `usePoliticas()` (`politicasApi?.[0]`) o un objeto base institucional de fallback (`{ id: "pol-001", titulo: "Política Pública de Seguridad Humana Integral de Cartagena 2026–2036", ... }`).
-        - Mientras `useLineas()` esté cargando (`isLoading`) y aún no se tenga `linea`, muestra un estado de carga (`Skeleton`) dentro de `PanelShell` en lugar de mostrar prematuramente *"Línea no disponible"*.
-     2. En `src/features/aportes/panels/aporte-editor-panel.tsx`:
-        - Aplica la misma resolución híbrida (store Zustand + fallback a `useLineas()`, `useFases()`, `usePoliticas()`) para `linea`, `fase` y `politica`, de modo que los breadcrumbs (`crumbs`) y el subtítulo (`subtitle={linea?.titulo}`) muestren siempre el código y título real de la línea estratégica seleccionada cuando el ciudadano hace clic en **«Aportar a esta línea»**.
-     3. En `src/features/politicas/panels/politica-panel.tsx` y `src/features/politicas/panels/fase-panel.tsx`:
-        - Conecta también el fallback hacia `usePoliticas()`, `useFases()` y `useLineas()` para que si se abre `PoliticaPanel` o `FasePanel` en producción sin `usePoliticasStore` pre-poblado, resuelvan las fases y líneas reales de la API y permitan navegar hasta `LineaPanel`.
-     4. En `src/features/politicas/views/explorar-view.tsx`:
-        - En la línea 210, cambia `politicaId: "pol-cartagena"` por `politicaId: politicaPrincipal?.id ?? "pol-001"`.
-        - En el contador de aportes de cada tarjeta de línea estratégica (`linea.aportesCount` en `explorar-view.tsx` y en el backend `GET /api/v1/politicas/lineas` en `backend/app/modules/politicas/router.py`), verifica que `aportesCount` refleje el conteo real de aportes en PostgreSQL (`participacion.aportes_ciudadanos` / `AporteModel` filtrando por `linea_id` y `estado_moderacion != 'rechazado'`) para que las tarjetas muestren el número real de aportes radicados.
+En `backend/app/modules/geodatos/router.py`, agrega un nuevo endpoint de consulta y procesamiento analítico sobre `geodatos.estadisticas_hurtos`:
+
+- **Ruta:** `GET /api/v1/geodatos/analitica/hurtos/registros`
+- **Parámetros query opcionales:**
+  - `delito: str | None = None` (usa `_normalizar_delito`)
+  - `anio: int | None = None`
+  - `mes: str | None = None`
+  - `zona: str | None = None` (`URBANA` | `RURAL`)
+  - `armas_medios: str | None = None`
+  - `clase_sitio: str | None = None`
+  - `dia_semana: str | None = None`
+  - `busqueda: str | None = None` (filtra con `ILIKE` sobre `delito`, `armas_medios`, `clase_sitio`, `mes`, `dia_semana`)
+  - `agrupar_por: str = Query("armas_medios", pattern="^(delito|anio|mes|zona|armas_medios|clase_sitio|dia_semana)$")`
+  - `limit: int = Query(50, ge=1, le=500)`
+  - `offset: int = Query(0, ge=0)`
+- **Respuesta JSON estructurada:**
+  - `total_registros: int` (total de filas en `estadisticas_hurtos` que cumplen el filtro).
+  - `total_incidentes: int` (`SUM(cantidad)` de las filas que cumplen el filtro).
+  - `limit: int`, `offset: int`.
+  - `registros: list[dict]` con `id`, `delito`, `anio`, `mes`, `dia_semana`, `zona`, `poligono_id`, `armas_medios`, `clase_sitio`, `cantidad`.
+  - `agrupacion: list[dict]` (resultado de agrupar las filas filtradas por la columna `agrupar_por`, ordenado por `incidentes DESC`, con `{ "categoria": str, "registros": int, "incidentes": int, "porcentaje": float }`).
+  - `catalogos: dict` con las listas de valores únicos disponibles en la tabla para los selectores del frontend (`meses`, `dias_semana`, `top_armas_medios`, `top_clases_sitio`).
+- Agrega en `src/features/geovisor/services/hurtos-api.ts` la función tipada `explorarRegistrosHurtos(params)` y sus interfaces TypeScript (`ExploradorHurtosResponse`, `RegistroHurtoItem`, `AgrupacionHurtoItem`, `ParametrosExploradorHurtos`), con fallback resiliente en caso de modo offline/test.
 
 ---
 
-### PARTE 3: `[NAV-RETORNO-01]` — Navegación de Retorno al Home y Vista Anterior en `/asistencia/[mesaId]` y `/f/[slug]`
+### 3. Transformación de `GeovisorHurtosPanel` en el «Gestor, Procesador y Analizador GeoJSON» (`src/features/geovisor/components/geovisor-hurtos-panel.tsx`)
 
-1. **En `src/app/asistencia/[mesaId]/asistencia-cliente.tsx` (`/asistencia/mt-l01-01` y todas las mesas):**
-   - En el `<header>` institucional (líneas 280–313):
-     - Convierte el bloque de marca institucional (ícono `Building2` + textos *"Alcaldía Mayor de Cartagena de Indias / Secretaría del Interior y Convivencia • POLIS"*) en un `<Link href="/">` accesible con `aria-label="Ir a la página principal de POLIS"` y efecto hover sutil, para que hacer clic en el logo/nombre lleve siempre al Home.
-     - En el lado derecho del `<header>` (junto a los badges o como barra de navegación integrada), agrega botones claros y visibles tanto en móvil como en escritorio:
-       - Un botón/enlace **«← Volver a Mesas»** o **«← Volver al inicio»** (`<Link href="/">` o navegación que regrese al Home / vista de Mesas).
-       - Además, justo encima de la tarjeta de información de la mesa en el `<main>` (antes del grid de 2 columnas), añade una barra de migas de pan / retorno visible:
-         - Botón **«← Volver a la plataforma POLIS»** (que si `window.history.length > 1` y el `document.referrer` pertenece al mismo origen haga `router.back()`, y en caso contrario navegue a `/`) + enlace directo **«Inicio»** (`href="/"`).
-     - En el `<footer>` de `asistencia-cliente.tsx`, agrega también un enlace clicable **«← Regresar al portal principal de Seguridad Humana Integral (POLIS)»** (`href="/"`).
-2. **En `src/features/formularios/views/formulario-publico-view.tsx` (`/f/[slug]`):**
-   - En el `<header>` (líneas 63–73), convierte el bloque del logo `Landmark` + título en un `<Link href="/">` y añade a la derecha el botón **«← Volver al inicio»** (`<Link href="/">`), para que los formularios públicos tampoco sean un callejón sin salida.
+Enriquece `GeovisorHurtosPanel` manteniendo compatibilidad total con sus props y tests actuales (`data-testid="geovisor-hurtos-panel"`), incorporando una barra de **3 sub-vistas / modos de trabajo** claramente visibles:
+
+1. **Modo 1: «Resumen y Gráficos» (Vista inicial):**
+   - Mantiene los selectores de Delito, Año y Zona, las 4 tarjetas KPI, la serie anual 2018–2026, la serie mensual y los rankings Top 5 de Armas/Modalidades y Clases de Sitio.
+   - Añade botones rápidos de pintado en mapa (**«Pintar en Mapa: Motocicletas»**, **«Pintar: Residencias»**, **«Pintar: Comercio»**, **«Pintar: Consolidado»**) para que con un solo clic se active y resalte la capa GeoJSON en el lienzo central.
+
+2. **Modo 2: «Procesador y Tabla de Datos GeoJSON (12.280 registros)»:**
+   - Conectado a `explorarRegistrosHurtos` (`GET /api/v1/geodatos/analitica/hurtos/registros`).
+   - **Barra avanzada de procesamiento y filtrado:**
+     - Selectores adicionales por **Mes**, **Día de la semana**, **Modalidad / Arma-Medio**, **Clase de Sitio**, **Buscador de texto** y selector **«Agrupar y Procesar por»** (*Modalidad/Arma*, *Clase de Sitio*, *Día de la Semana*, *Mes*, *Año*, *Delito*, *Zona*).
+   - **Vista de Tabla Dinámica (Pivot) + Tabla Paginada de Registros GeoJSON:**
+     - Muestra el resultado del procesamiento agrupado (Categoría, N° Registros GeoJSON, Total Incidentes, % Participación con barra visual).
+     - Muestra la tabla detallada de registros GeoJSON con paginación (*Anterior / Siguiente*, mostrando `offset + 1` a `offset + registros.length` de `total_registros`).
+   - **Botones de Exportación en Frontend:**
+     - **«Exportar CSV Procesado»**: descarga un archivo `.csv` con los datos procesados/filtrados.
+     - **«Exportar GeoJSON Filtrado»**: descarga el `.geojson` filtrado desde `obtenerPoligonosHurtosGeojson`.
+
+3. **Modo 3: «Gestor de Capas e Importador GeoJSON»:**
+   - **Catálogo de Capas GeoJSON Oficiales (Drive SIEDCO):**
+     - Muestra las 3 capas GeoJSON incorporadas en la plataforma (*Hurto a Motocicletas — 2.520 features*, *Hurto a Residencias — 3.853 features*, *Hurto a Comercio — 5.907 features*, proyección original `EPSG:9377` → `EPSG:4326`) con su estado (Activa / Inactiva), botón para **Activar en Mapa** y botón para **Procesar Datos**.
+   - **Importador / Procesador de Archivos `.geojson` / `.json` en el Navegador:**
+     - Permite al usuario seleccionar o arrastrar un archivo `.geojson` o `.json` local.
+     - Procesa el JSON en cliente: cuenta el número de `features`, detecta el tipo de geometría (`Polygon`, `MultiPolygon`, `Point`, `LineString`), extrae automáticamente la lista de propiedades/columnas del GeoJSON y calcula un resumen de sus atributos.
+     - Permite **Pintar la capa importada en el mapa OpenLayers** (con selector de color) o **Inspeccionar su tabla de atributos** directamente en el panel.
+
+---
+
+### 4. Actualización del Geovisor Administrativo en `/plataforma/geovisor` (`src/features/plataforma/views/geovisor-view.tsx`)
+
+En `src/features/plataforma/views/geovisor-view.tsx`:
+- Conservando los elementos que verifican las pruebas existentes (el `PageHeader` *"Geovisor administrativo"*, la sección *"Territorios registrados"* y `MapaApi`), incorpora debajo (o en una sección integrada en la misma vista) el módulo **«Capas GeoJSON e Inteligencia Delictiva SIEDCO (2018–2026)»** que embeba `<GeovisorHurtosPanel />` y un enlace directo `<Button asChild><Link href="/geovisor">Abrir Workbench Geovisor Pantalla Completa</Link></Button>`. Así, cuando el propietario entre por `/plataforma/geovisor`, también tendrá a la vista toda la herramienta de gestión y procesamiento de los GeoJSON.
 
 ---
 
 ## 🧪 CRITERIOS DE ACEPTACIÓN Y VERIFICACIÓN OBLIGATORIA
 
-1. **Pruebas Unitarias Nuevas / Actualizadas:**
-   - Prueba unitaria verificando que `LineaPanel` renderiza correctamente el título, enfoque, muro de aportes y botón **«Aportar a esta línea»** cuando se invoca con UUIDs reales desde `useLineas()` / `useFases()` aun con `usePoliticasStore` vacío (`politicas: []`).
-   - Prueba unitaria verificando que `AsistenciaCliente` renderiza el enlace/botón de retorno al Home (`href="/"`) en el encabezado antes de enviar el formulario.
-   - Prueba unitaria o de integración verificando que Fase 1 reporta `15%` (`activa`) y Fases 2 y 3 reportan `0%` (`preparatoria`).
-2. **Quality Gates en 0 errores:**
-   - `bun test` (100% pasando).
-   - `pytest` en backend (`backend/tests/` pasando).
-   - `bun run check` (`bun run ui:check`, `tsc --noEmit`, `eslint .` — 0 errores; recuerda cumplir estrictamente Zero-Colors y usar componentes de `@/shared/ui/`).
+1. **Pruebas Backend (`pytest`):**
+   - Añadir prueba en `backend/tests/test_geodatos_analitica_hurtos.py` para `GET /api/v1/geodatos/analitica/hurtos/registros` verificando filtrado combinado, paginación, agrupación dinámica (`agrupar_por`) y catálogos.
+2. **Pruebas Frontend (`bun test`):**
+   - Actualizar/ampliar `src/features/geovisor/components/geovisor-hurtos-panel.test.tsx` y `src/features/geovisor/services/hurtos-api.test.ts` para verificar los 3 modos (*Resumen y Gráficos*, *Procesador y Tabla de Datos GeoJSON*, *Gestor e Importador GeoJSON*).
+   - Verificar que `src/features/geovisor/state/geovisor-layout-store.tabs.test.ts` pase al 100% con `"hurtos"` integrado en el dock inferior.
+3. **Quality Gates en 0 errores:**
+   - `bun run check` (`bun run ui:check`, `tsc --noEmit`, `eslint .` — 0 errores; **cuidado con Zero-Colors**: usa variables CSS `var(--...)` y componentes de `@/shared/ui/`, nunca colores hexadecimales o clases Tailwind prohibidas fuera de los archivos permitidos).
    - `bun run ui:test` (212/212 historias Storybook pasando con `axe-core`).
-   - `bun run build` (Next.js compilado sin errores).
-3. **Reinicio de Servicios y Verificación en Vivo:**
-   - Reiniciar `polis-backend` y `polis-frontend` (`systemctl restart polis-backend polis-frontend`).
-   - Verificar `GET http://127.0.0.1:8000/api/v1/politicas/fases` (Fase 1 = 15%, Fase 2 = 0%, Fase 3 = 0%), `GET http://127.0.0.1:3000/` (`200 OK`) y `GET http://127.0.0.1:3000/asistencia/mt-l01-01` (`200 OK`).
-4. **Inviolabilidad de `bd_csh` y Política Zero-Push:**
-   - Verificar censo intacto: **33 mesas, 36 agendas, 11 fichas, 17 actores**.
-   - Commit local en `main` con rutas explícitas (sin `git push`) y reporte detallado en `bridge/02_resultado_agy2.md`.
+   - `bun run build` (192 rutas compiladas).
+4. **Servicios y Censo `bd_csh`:**
+   - Reiniciar `polis-backend` y `polis-frontend`.
+   - Verificar `GET http://127.0.0.1:8000/api/v1/geodatos/analitica/hurtos/registros?limit=5`, `GET http://127.0.0.1:3000/geovisor` y `GET http://127.0.0.1:3000/plataforma/geovisor` en `HTTP 200 OK`.
+   - Censo `bd_csh` intacto: **33 mesas, 36 agendas, 11 fichas, 17 actores, 12.280 filas de hurtos**.
+   - Commit local en `main` (Zero-Push) y reporte en `bridge/02_resultado_agy2.md`.
