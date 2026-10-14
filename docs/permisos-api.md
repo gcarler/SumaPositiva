@@ -103,6 +103,10 @@ La última columna explica la excepción pública o la condición adicional.
 | GET | /api/v1/compromisos/triada/resumen | publico | Consulta pública de la Triada de Motores (Plan de Desarrollo, Plan de Acción Multiformato e Inversión) y catálogo de Transparencia Activa (Ley 1474/11 Art. 74 y Ley 1712/14). |
 | POST | /api/v1/compromisos/triada/detectar-formato | publico | Detección polimórfica y normalización pública de formatos Excel de Planes de Acción (2016 monohoja a 2026 multihoja) sin mutación de estado. |
 | POST | /api/v1/compromisos/triada/cruzar-lecturas | publico | Evaluación pública sin estado del cruce tripartito (Estratégico PDD, Operativo PA y Financiero POAI/BPIM/RP/Pagos) para control social. |
+| POST | /api/v1/compromisos/triada/ingerir-archivos | permiso:seguimiento:gestionar@declarada | Ingesta binaria Excel/CSV/ZIP con persistencia auditable en tres motores; requiere fase Plan de Acción habilitada. |
+| POST | /api/v1/compromisos/triada/ingerir-directorio | permiso:seguimiento:gestionar@declarada | Procesamiento masivo limitado al directorio data/planes_accion; requiere fase Plan de Acción habilitada. |
+| GET | /api/v1/compromisos/triada/lotes | publico | Consulta de lotes, archivos, perfiles y cobertura interanual persistida. |
+| GET | /api/v1/compromisos/triada/comparativa-interanual | publico | Consulta de registros normalizados y cruce estratégico, operativo y presupuestal por vigencia. |
 | DELETE | /api/v1/compromisos/{id_o_codigo} | permiso:seguimiento:gestionar@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |
 | GET | /api/v1/compromisos/{id_o_codigo} | publico | Consulta pública de compromiso por UUID o código para control social. |
 | PATCH | /api/v1/compromisos/{id_o_codigo}/avance | permiso:seguimiento:gestionar@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |

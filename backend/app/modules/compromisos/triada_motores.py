@@ -17,6 +17,38 @@ PAGINA_PLANES_2026 = (
     f"{BASE_TRANSPARENCIA}/4planeacion-presupuesto-informes/43-plan-accion/"
     "planes-accion-institucionales-2026"
 )
+FUENTES_HISTORICAS = {
+    2018: (
+        f"{BASE_TRANSPARENCIA}/planeacion-presupuesto-informes/planes-accion/"
+        "seguimiento-planes-accion-2018"
+    ),
+    2019: (
+        f"{BASE_TRANSPARENCIA}/planeacion-presupuesto-informes/planes-accion/planes-accion-2019"
+    ),
+    2020: (
+        f"{BASE_TRANSPARENCIA}/planeacion-presupuesto-informes/planes-accion/planes-accion-2020"
+    ),
+    2021: (
+        f"{BASE_TRANSPARENCIA}/4planeacion-presupuesto-informes/43-plan-accion/"
+        "planes-institucionales-del-modelo-integrado-planeacion-gestion-mipg-2021"
+    ),
+    2022: (
+        f"{BASE_TRANSPARENCIA}/4planeacion-presupuesto-e-informes/43-plan-accion/"
+        "seguimientos-planes-accion-diciembre-31-2022"
+    ),
+    2023: (
+        f"{BASE_TRANSPARENCIA}/4planeacion-presupuesto-informes/43-plan-accion/planes-accion-2023"
+    ),
+    2024: (
+        f"{BASE_TRANSPARENCIA}/4planeacion-presupuesto-informes/43-plan-accion/"
+        "planes-accion-2024-formulado"
+    ),
+    2025: (
+        f"{BASE_TRANSPARENCIA}/4planeacion-presupuesto-informes/43-plan-accion/"
+        "seguimientos-planes-accion-corte-30-junio-2025"
+    ),
+    2026: PAGINA_PLANES_2026,
+}
 
 ARCHIVOS_2026 = (
     "DADIS.xls",
@@ -109,6 +141,18 @@ def obtener_catalogo_transparencia() -> dict[str, Any]:
                 "nota": "Catálogo consultado; este endpoint no descarga ni persiste adjuntos.",
             },
         },
+        "inventario_historico_2018_2026": [
+            {"vigencia": year, "url_fuente": url, "categoria_transparencia": "4.3 Plan de Acción"}
+            for year, url in FUENTES_HISTORICAS.items()
+        ],
+        "categoria_ejecucion_presupuestal": {
+            "codigo": "4.2",
+            "url": f"{BASE_CATEGORIAS}?categoria=51",
+        },
+        "categoria_proyectos_inversion": {
+            "codigo": "4.4",
+            "url": f"{BASE_CATEGORIAS}?categoria=53",
+        },
         "estado_verificacion": (
             "inventario proporcionado en asignación; enlaces adjuntos sujetos "
             "a descubrimiento en vivo"
@@ -197,7 +241,10 @@ def cruzar_tres_lecturas(
     for rows in (metas, actividades, ejecuciones):
         grouped: dict[tuple[str, str, str], list[Any]] = defaultdict(list)
         for row in rows:
-            grouped[_clave(row)].append(row)
+            key = _clave(row)
+            # Never match unrelated records through an empty entity/line/BPIM key.
+            if all(key):
+                grouped[key].append(row)
         maps.append(grouped)
     keys = sorted(set().union(*(set(m) for m in maps)))
     cruces = []

@@ -122,3 +122,66 @@ La implementación está en backend, pero estos pendientes impiden declarar
 completada la conexión de las tres fuentes o la preparación integral para
 producción. No se modificaron archivos de `src/` ni los documentos de trabajo de
 agy2.
+
+---
+
+# Entrega — `[TRIADA-BACKEND-INGESTA-MASIVA-03]`
+
+- **Fecha:** 2026-10-14
+- **Responsable:** Codex
+- **Rama:** `main` (commit local; sin push)
+- **Alcance:** ingesta binaria masiva, normalización tripartita, persistencia PostgreSQL, corpus fuente, endpoints y controles de acceso.
+
+## Resultado
+
+Se incorporó lectura binaria real de `.xlsx` con `openpyxl`, BIFF8 `.xls` con `xlrd`, `.csv` con autodetección de codificación/delimitador y `.zip` con límites de miembros, tamaño expandido, hojas y filas. El escáner elige la fila de encabezado más semántica entre las primeras 25 filas no vacías; descarta subtotales/pies, infiere vigencia/corte, entidad y enruta los datos a Plan de Desarrollo, Plan de Acción y Ejecución Presupuestal. Los formatos 2016–2019, 2020–2023, 2024–2026, la matriz PDD y los consolidados trimestrales reciben perfiles detectados.
+
+La persistencia transaccional usa las tablas `seguimiento.lotes_ingesta_planes`, `seguimiento.archivos_plan_ingeridos` y `seguimiento.registros_triada_normalizados`, creadas por Alembic `0063_motor_ingesta_masiva_triada`. La deduplicación de reenvíos se basa en SHA-256. El cruce ocurre antes de confirmar la transacción y exige entidad, línea estratégica y BPIM completos, para no emitir coincidencias sobre llaves vacías.
+
+Se añadieron estos endpoints bajo `/api/v1/compromisos/triada/`:
+
+- `POST ingerir-archivos`: multipart para libros sueltos o ZIP, con permiso `seguimiento:gestionar`, fase de escritura 3, límites de carga y persistencia opcional.
+- `POST ingerir-directorio`: procesamiento de archivos en `data/planes_accion`, limitado a esa raíz y con defensa contra traversal y symlinks externos.
+- `GET lotes` y `GET comparativa-interanual`: consulta pública de lotes, cobertura, filas y cruces persistidos.
+- `GET resumen`: incorpora los registros persistidos y los perfiles detectados al resumen de los motores.
+
+Las dos escrituras y las consultas públicas están documentadas en `docs/permisos-api.md` y en la guarda de acceso.
+
+## Corpus y persistencia en `bd_csh`
+
+El generador reproducible es [generar_muestras_triada.py](../backend/scripts/generar_muestras_triada.py). Deja el corpus y los hashes en [muestras_reales_cartagena](../data/planes_accion/muestras_reales_cartagena/MANIFIESTO.md): 10 libros binarios descargados del portal oficial para 2018, 2019, 2020, 2024 y cortes de junio de 2026 de DADIS, Hacienda, Infraestructura, Planeación y Distriseguridad, además de la matriz PDD 2024–2027. Incluye un CSV derivado de una hoja pública y un ZIP determinístico con los libros. El fixture BIFF8 desplazado de 2016 está separado en pruebas; no se presenta como fuente histórica oficial.
+
+`bd_csh` quedó en `0063_motor_ingesta_masiva_triada` con un lote `SEMILLA_TRANSPARENCIA` de 10 libros y 6.830 registros normalizados: 3.587 estratégicos, 2.052 operativos y 1.191 presupuestales. El cruce arrojó 1 coincidencia que cumple la llave completa; las demás filas carecen de una combinación común suficiente y quedan sin emparejar. La consulta HTTP de `/resumen` devolvió 200 y reflejó los 10 archivos persistidos.
+
+Conteos canónicos antes y después de la migración y la semilla:
+
+| Tabla/dato | Antes | Después |
+| --- | ---: | ---: |
+| Mesas | 33 | 33 |
+| Agendas | 36 | 36 |
+| Fichas de indicadores | 11 | 11 |
+| Actores | 17 | 17 |
+| Compromisos PAS | 10 | 10 |
+| Actividades PA | 12 | 12 |
+| Filas de hurtos | 12.280 | 12.280 |
+
+La muestra descargada cubre años representativos, no todos los adjuntos publicados entre 2016 y 2026. El catálogo incorpora el inventario de Transparencia de 2018–2026; la extensión a libros adicionales usa la misma ruta de ingesta.
+
+## Validaciones
+
+| Validación | Resultado |
+| --- | --- |
+| Binarios `.xlsx`, `.xls`, CSV y ZIP; encabezados desplazados; deduplicación, persistencia, HTTP multipart para `.xlsx` y `.zip`, directorio restringido | Aprobado: 133 pruebas focales, 0 fallos. |
+| Suite completa `PYTHONPATH=backend /root/polis/venv/bin/pytest -q backend/tests` | Aprobada: 569 pruebas, 0 fallos y 2 advertencias. Una advierte que openpyxl no conserva extensiones de validación de un archivo fuente; la otra es un status HTTP deprecado en un endpoint previo. |
+| `bun test` | Aprobado: 628 pruebas, 0 fallos y 3.443 aserciones. |
+| Ruff `check` y `format --check` en los 11 archivos de esta entrega | Aprobados; 0 errores y 0 archivos por formatear. |
+| `/root/polis/venv/bin/ruff check backend` | 726 hallazgos en el backend completo; los archivos modificados para esta entrega pasan el chequeo enfocado. |
+| Alembic en `polis_test` y `bd_csh` | Migración 0063 aplicada; `alembic check`: `No new upgrade operations detected.` |
+| Consulta HTTP real de `/api/v1/compromisos/triada/resumen` contra `bd_csh` | HTTP 200; refleja 10 archivos y 6.830 registros. |
+| Integridad de datos canónicos en `bd_csh` | 7/7 conteos preservados exactamente. |
+
+## Commit
+
+- **Commit:** registrado localmente en `main`; el SHA se informa en la respuesta de entrega.
+- **Push:** no realizado, conforme a Zero-Push.
+- Se excluyó `bridge/01_tarea_codex.md`, que tiene cambios concurrentes de AGY.

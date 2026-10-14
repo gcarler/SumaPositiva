@@ -167,6 +167,23 @@ def test_cruce_tripartito_coherente():
     assert result["cruces"][0]["indice_coherencia_tripartita"] == 100
 
 
+def test_cruce_no_agrupa_registros_con_claves_incompletas():
+    meta = MetaEstrategicaTriada(
+        entidad="", linea_estrategica="", codigo_bpim="", avance_estrategico_pct=80
+    )
+    activity = ActividadOperativaTriada(
+        entidad="", linea_estrategica="", codigo_bpim="", avance_operativo_fisico_pct=10
+    )
+    expense = EjecucionPresupuestalTriada(
+        entidad="", linea_estrategica="", codigo_bpim="", apropiacion_definitiva_cop=100
+    )
+
+    result = cruzar_tres_lecturas([meta], [activity], [expense])
+
+    assert result["total_cruces"] == 0
+    assert result["alertas"] == []
+
+
 def test_cruce_alerta_sobreejecucion():
     activity = ActividadOperativaTriada(
         entidad="DATT",

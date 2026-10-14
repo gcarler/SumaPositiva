@@ -418,3 +418,4 @@ class ResumenTriadaRespuesta(BaseModel):
     comparativa_interanual_2016_2026: dict[str, Any]
     perfiles_formato_excel: list[dict[str, Any]]
     catalogo_transparencia_cartagena: dict[str, Any]
+    ingesta_masiva: dict[str, Any] = Field(default_factory=dict)

@@ -1,8 +1,10 @@
+from pathlib import Path
 from typing import Annotated
 
-from fastapi import APIRouter, Body, Depends, Query, status
+from fastapi import APIRouter, Body, Depends, File, Form, Query, UploadFile, status
 
 from app.core.database import SessionDependency
+from app.modules.compromisos.ingesta_masiva_service import RAIZ_INGESTA, IngestaMasivaService
 from app.modules.compromisos.repository import CompromisosRepository
 from app.modules.compromisos.schemas import (
     ActividadPlanAccionActualizarSeguimiento,
@@ -36,6 +38,150 @@ def get_compromisos_service(session: SessionDependency) -> CompromisosService:
 
 
 CompromisosServiceDep = Annotated[CompromisosService, Depends(get_compromisos_service)]
+
+
+@router.post(
+    "/triada/ingerir-archivos",
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(requerir_permiso("seguimiento:gestionar", nivel_minimo="declarada"))],
+    summary="Procesar libros Excel y ZIP de los tres motores de planeación",
+)
+async def ingerir_archivos_triada(
+    files: Annotated[list[UploadFile], File(description="Libros .xlsx, .xls, .csv o .zip")],
+    session: SessionDependency,
+    sujeto: SujetoAutenticadoDep,
+    vigencia_por_defecto: Annotated[int | None, Form(ge=2016, le=2027)] = None,
+    corte_por_defecto: Annotated[str | None, Form(max_length=20)] = None,
+    persistir: Annotated[bool, Form()] = True,
+):
+    await verificar_escritura_fase("FASE_3_PLAN_ACCION", sujeto, session)
+    if len(files) > 200:
+        from fastapi import HTTPException
+
+        raise HTTPException(
+            status_code=413, detail="El lote excede el máximo de 200 archivos adjuntos."
+        )
+    items = []
+    total = 0
+    for file in files:
+        per_file_limit = (
+            150 * 1024 * 1024
+            if (file.filename or "").lower().endswith(".zip")
+            else 25 * 1024 * 1024
+        )
+        data = await file.read(per_file_limit + 1)
+        if len(data) > per_file_limit:
+            from fastapi import HTTPException
+
+            raise HTTPException(
+                status_code=413,
+                detail="El archivo supera el límite permitido para su formato.",
+            )
+        total += len(data)
+        if total > 150 * 1024 * 1024:
+            from fastapi import HTTPException
+
+            raise HTTPException(status_code=413, detail="El lote excede el máximo de 150 MiB.")
+        items.append((file.filename or "sin_nombre", data))
+        await file.close()
+    origen = (
+        "UPLOAD_ZIP_MASIVO"
+        if any(name.lower().endswith(".zip") for name, _ in items)
+        else "UPLOAD_ARCHIVO"
+    )
+    return await IngestaMasivaService(session).ingerir(
+        items,
+        origen=origen,
+        vigencia=vigencia_por_defecto,
+        corte=corte_por_defecto,
+        persistir=persistir,
+    )
+
+
+@router.post(
+    "/triada/ingerir-directorio",
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(requerir_permiso("seguimiento:gestionar", nivel_minimo="declarada"))],
+    summary="Procesar un directorio local autorizado de planes de acción",
+)
+async def ingerir_directorio_triada(
+    session: SessionDependency,
+    sujeto: SujetoAutenticadoDep,
+    subdirectorio: Annotated[str, Form()] = "",
+    vigencia_por_defecto: Annotated[int | None, Form(ge=2016, le=2027)] = None,
+    persistir: Annotated[bool, Form()] = True,
+):
+    await verificar_escritura_fase("FASE_3_PLAN_ACCION", sujeto, session)
+    from fastapi import HTTPException
+
+    candidate = (RAIZ_INGESTA / subdirectorio).resolve()
+    if not candidate.is_relative_to(RAIZ_INGESTA) or ".." in Path(subdirectorio).parts:
+        raise HTTPException(
+            status_code=400, detail="La ruta debe permanecer dentro de data/planes_accion."
+        )
+    if not candidate.is_dir():
+        raise HTTPException(status_code=404, detail="El directorio autorizado no existe.")
+    paths = sorted(
+        p
+        for p in candidate.rglob("*")
+        if p.is_file()
+        and p.resolve().is_relative_to(RAIZ_INGESTA)
+        and p.suffix.lower() in {".xlsx", ".xls", ".csv", ".zip"}
+        and not p.name.startswith(("~$", "."))
+        and "__MACOSX" not in p.parts
+    )
+    if len(paths) > 200:
+        raise HTTPException(
+            status_code=413, detail="El directorio supera el máximo de 200 archivos."
+        )
+    total = sum(p.stat().st_size for p in paths)
+    if total > 150 * 1024 * 1024:
+        raise HTTPException(status_code=413, detail="El directorio supera el máximo de 150 MiB.")
+    items = [(str(p.relative_to(RAIZ_INGESTA)), p.read_bytes()) for p in paths]
+    return await IngestaMasivaService(session).ingerir(
+        items, origen="DIRECTORIO_LOCAL", vigencia=vigencia_por_defecto, persistir=persistir
+    )
+
+
+@router.get("/triada/lotes", summary="Consultar lotes y cobertura de ingestión multiformato")
+async def listar_lotes_triada(
+    session: SessionDependency,
+    limite: int = Query(50, ge=1, le=200),
+    vigencia: int | None = Query(None, ge=2016, le=2027),
+    entidad: str | None = Query(None, max_length=180),
+):
+    return await IngestaMasivaService(session).listar_lotes(limite, vigencia, entidad)
+
+
+@router.get(
+    "/triada/comparativa-interanual",
+    summary="Consultar registros y cruces interanuales persistidos",
+)
+async def comparativa_interanual_triada(
+    session: SessionDependency,
+    entidad: str | None = Query(None, max_length=180),
+    linea_estrategica: str | None = Query(None, max_length=250),
+    codigo_bpim: str | None = Query(None, max_length=100),
+    motor: str | None = Query(
+        None, pattern="^(PLAN_DESARROLLO|PLAN_ACCION|INVERSION_PRESUPUESTAL)$"
+    ),
+    vigencia_desde: int = Query(2016, ge=2016, le=2027),
+    vigencia_hasta: int = Query(2026, ge=2016, le=2027),
+):
+    if vigencia_desde > vigencia_hasta:
+        from fastapi import HTTPException
+
+        raise HTTPException(
+            status_code=422, detail="vigencia_desde debe ser menor o igual a vigencia_hasta."
+        )
+    return await IngestaMasivaService(session).comparativa(
+        entidad=entidad,
+        linea=linea_estrategica,
+        bpim=codigo_bpim,
+        motor=motor,
+        desde=vigencia_desde,
+        hasta=vigencia_hasta,
+    )
 
 
 @router.get(

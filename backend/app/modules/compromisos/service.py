@@ -5,13 +5,20 @@ from datetime import UTC, datetime
 from typing import Any
 
 from fastapi import HTTPException, status
+from sqlalchemy import select
 
 from app.core.transactions import transaction
 from app.modules.compromisos.detector_multiformato import (
     detectar_y_normalizar_formato,
     obtener_muestras_multiformato,
 )
-from app.modules.compromisos.models import ActividadPlanAccion, CompromisoPAS
+from app.modules.compromisos.ingesta_masiva_service import IngestaMasivaService
+from app.modules.compromisos.models import (
+    ActividadPlanAccion,
+    ArchivoPlanIngerido,
+    CompromisoPAS,
+    RegistroTriadaNormalizado,
+)
 from app.modules.compromisos.repository import CompromisosRepository
 from app.modules.compromisos.schemas import (
     ActividadOperativaTriada,
@@ -104,17 +111,96 @@ class CompromisosService:
             for a in actividades_db
         ]
         ejecuciones: list[EjecucionPresupuestalTriada] = []
+        ingesta_stmt = select(RegistroTriadaNormalizado)
+        if vigencia is not None:
+            ingesta_stmt = ingesta_stmt.where(RegistroTriadaNormalizado.vigencia == vigencia)
+        if entidad:
+            ingesta_stmt = ingesta_stmt.where(
+                RegistroTriadaNormalizado.entidad_normalizada.ilike(f"%{entidad}%")
+            )
+        if periodo:
+            ingesta_stmt = ingesta_stmt.where(
+                RegistroTriadaNormalizado.vigencia.between(inicio, fin)
+            )
+        session = getattr(self.repo, "session", None)
+        registros_ingesta = (
+            list((await session.scalars(ingesta_stmt)).all()) if session is not None else []
+        )
+        pdd_rows = [r for r in registros_ingesta if r.motor_destino == "PLAN_DESARROLLO"]
+        pa_rows = [r for r in registros_ingesta if r.motor_destino == "PLAN_ACCION"]
+        financial_rows = [
+            r for r in registros_ingesta if r.motor_destino == "INVERSION_PRESUPUESTAL"
+        ]
+        metas_pdd.extend(
+            MetaEstrategicaTriada(
+                entidad=r.entidad_normalizada or "",
+                linea_estrategica=r.linea_estrategica or "",
+                codigo_meta_pdd=r.codigo_meta_pdd or "",
+                codigo_bpim=r.codigo_bpim or "",
+                indicador=r.indicador or "",
+                avance_estrategico_pct=float(r.avance_estrategico_pct or r.avance_fisico_pct or 0),
+            )
+            for r in pdd_rows
+        )
+        actividades.extend(
+            ActividadOperativaTriada(
+                entidad=r.entidad_normalizada or "",
+                linea_estrategica=r.linea_estrategica or "",
+                codigo_meta_pdd=r.codigo_meta_pdd or "",
+                codigo_bpim=r.codigo_bpim or "",
+                descripcion_actividad=r.descripcion_actividad or "",
+                avance_operativo_fisico_pct=float(r.avance_fisico_pct or 0),
+                formato_origen="INGESTA_BINARIA_PERSISTIDA",
+                porcentaje_verbos_fuertes_dnp=100 if r.verbo_fuerte_dnp else 0,
+            )
+            for r in pa_rows
+        )
+        ejecuciones.extend(
+            EjecucionPresupuestalTriada(
+                entidad=r.entidad_normalizada or "",
+                linea_estrategica=r.linea_estrategica or "",
+                codigo_bpim=r.codigo_bpim or "",
+                apropiacion_definitiva_cop=float(r.apropiacion_definitiva_cop or 0),
+                cdp_acumulado_cop=float(r.cdp_cop or 0),
+                compromisos_rp_cop=float(r.compromisos_rp_cop or 0),
+                obligaciones_cop=float(r.obligaciones_cop or 0),
+                pagos_tesoreria_cop=float(r.pagos_tesoreria_cop or 0),
+            )
+            for r in financial_rows
+        )
         cruces = cruzar_tres_lecturas(metas_pdd, actividades, ejecuciones)
-        years = {2016: 0, 2020: 0, 2026: 0}
+        years = {year: 0 for year in range(2016, 2027)}
         for actividad in actividades_db:
             if actividad.vigencia in years:
                 years[actividad.vigencia] += 1
+        for row in pa_rows:
+            if row.vigencia in years:
+                years[row.vigencia] += 1
+        archivos_stmt = select(ArchivoPlanIngerido)
+        if vigencia is not None:
+            archivos_stmt = archivos_stmt.where(ArchivoPlanIngerido.vigencia == vigencia)
+        if entidad:
+            archivos_stmt = archivos_stmt.where(
+                ArchivoPlanIngerido.entidad_normalizada.ilike(f"%{entidad}%")
+            )
+        if periodo:
+            archivos_stmt = archivos_stmt.where(ArchivoPlanIngerido.vigencia.between(inicio, fin))
+        archivos_ingesta = (
+            list((await session.scalars(archivos_stmt)).all()) if session is not None else []
+        )
+        archivos_perfil = {item.perfil_detectado for item in archivos_ingesta}
         profiles = [
-            {"perfil": profile, "vigencias": year_range, "datos_cargados": False}
+            {
+                "perfil": profile,
+                "vigencias": year_range,
+                "datos_cargados": profile in archivos_perfil,
+            }
             for profile, year_range in (
                 ("PA_MONOHOJA_2016_2019", "2016–2019"),
                 ("PA_HIBRIDO_2020_2023", "2020–2023"),
                 ("PA_MULTIHOJA_2024_2026", "2024–2026"),
+                ("MATRIZ_PDD_2024_2027", "2024–2027"),
+                ("EJECUCION_PRESUPUESTAL_HACIENDA", "2016–2027"),
                 ("PA_CANONICO_DNP_POLIS", "dual"),
             )
         ]
@@ -126,7 +212,9 @@ class CompromisosService:
                 "fuente": fuente,
             },
             "motor_1_plan_desarrollo": {
-                "estado_fuente": "SIN_CARGA_ESTRUCTURADA",
+                "estado_fuente": "PERSISTENCIA_INGESTA_BINARIA"
+                if pdd_rows
+                else "SIN_CARGA_ESTRUCTURADA",
                 "planes_referenciados": [
                     {"nombre": "Primero la Gente", "cuatrienio": "2016-2019"},
                     {"nombre": "Salvemos Juntos a Cartagena", "cuatrienio": "2020-2023"},
@@ -135,14 +223,21 @@ class CompromisosService:
                 **motor_plan_desarrollo(metas_pdd),
             },
             "motor_2_plan_accion": {
-                "estado_fuente": "PERSISTENCIA_POLIS_PAS",
-                "origen_registros": "seguimiento.actividades_plan_accion",
-                "registros_persistidos": len(actividades_db),
+                "estado_fuente": "PERSISTENCIA_POLIS_PAS_E_INGESTA"
+                if pa_rows
+                else "PERSISTENCIA_POLIS_PAS",
+                "origen_registros": [
+                    "seguimiento.actividades_plan_accion",
+                    "seguimiento.registros_triada_normalizados",
+                ],
+                "registros_persistidos": len(actividades_db) + len(pa_rows),
                 "conteo_vigencias_comparativa": years,
                 **motor_plan_accion(actividades),
             },
             "motor_3_inversion_presupuestal": {
-                "estado_fuente": "SIN_CARGA_CASCADA_PRESUPUESTAL",
+                "estado_fuente": "PERSISTENCIA_INGESTA_BINARIA"
+                if financial_rows
+                else "SIN_CARGA_CASCADA_PRESUPUESTAL",
                 "cobertura_campos": [
                     "apropiacion_inicial_cop",
                     "apropiacion_definitiva_cop",
@@ -164,6 +259,18 @@ class CompromisosService:
             | {"metodo": "campos normalizados comunes; las fuentes ausentes no se imputan"},
             "perfiles_formato_excel": profiles,
             "catalogo_transparencia_cartagena": obtener_catalogo_transparencia(),
+            "ingesta_masiva": {
+                "archivos_persistidos": len({r.archivo_id for r in registros_ingesta}),
+                "registros_normalizados": len(registros_ingesta),
+                "registros_por_motor": {
+                    "PLAN_DESARROLLO": len(pdd_rows),
+                    "PLAN_ACCION": len(pa_rows),
+                    "INVERSION_PRESUPUESTAL": len(financial_rows),
+                },
+                "comparativa_interanual": IngestaMasivaService._cruzar_persistidos(
+                    registros_ingesta
+                ),
+            },
         }
 
     async def listar_compromisos(
