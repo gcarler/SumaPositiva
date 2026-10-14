@@ -65,8 +65,8 @@ export interface HoverInfo {
     porcentaje_total: number;
     delito_etiqueta: string;
     anio_etiqueta: string;
-    top_armas: Array<{ arma: string; cantidad: number; porcentaje: number }>;
-    top_sitios: Array<{ sitio: string; cantidad: number; porcentaje: number }>;
+    top_armas: Array<{ arma?: string; categoria?: string; cantidad: number; porcentaje: number }>;
+    top_sitios: Array<{ sitio?: string; categoria?: string; cantidad: number; porcentaje: number }>;
   };
 }
 

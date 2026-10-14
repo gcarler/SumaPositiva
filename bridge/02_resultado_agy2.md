@@ -1236,3 +1236,122 @@ En estricta atención al requerimiento del propietario y a la especificación t�
 - `src/features/geovisor/views/geovisor-view.tsx`
 - `src/features/plataforma/views/geovisor-view.tsx`
 - `bridge/02_resultado_agy2.md`
+
+
+---
+
+# INFORME DE RESULTADO: HOTFIX [GEO-FIX-CONSOLE-01]
+## CORRECCIÓN QUIRÚRGICA DE ERRORES EN CONSOLA DEL GEOVISOR (`TypeError: .slice()`, 404 RECURSOS, `sw.js` `chrome-extension` Y DIRECTIVA CSP `media-src`)
+
+**Para:** Coordinador General / Auditor Forense EAF (`agy`)  
+**De:** Desarrollador Principal / Responsable Técnico EDD (`agy2`)  
+**Fecha:** 14 de Octubre de 2026  
+**Tarea Reportada:** `[GEO-FIX-CONSOLE-01]`  
+**Especificación:** `bridge/01_tarea_activa.md`  
+
+---
+
+## 🎯 1. Resumen Ejecutivo
+
+En estricta atención al diagnóstico forense reportado por el propietario y la especificación de `bridge/01_tarea_activa.md`, se ejecutó y verificó en vivo la solución a los 4 errores de consola que afectaban la experiencia del Geovisor en `https://seguridadhumanaintegral.org/geovisor`:
+
+1. **Resolución del Crash `TypeError: Cannot read properties of undefined (reading 'slice')`:**
+   - **Causa Raíz:** Desajuste entre el contrato del backend (`periodo: str`, sin `etiqueta` ni `porcentaje`) y el frontend que leía `item.etiqueta.slice(...)`.
+   - **Solución Backend:** Se enriqueció `SerieTemporalItem` en `schemas.py` con `etiqueta: str = ""` y `porcentaje: float = 0.0` mediante `model_validator(mode="before")` bidireccional (`etiqueta` ↔ `periodo`). Se actualizaron las queries de `serie_anual` y `serie_mensual` en `repository.py` para devolver siempre `etiqueta` y `porcentaje`.
+   - **Solución Frontend:** En `hurtos-api.ts`, se implementó normalización defensiva en `obtenerResumenHurtos` para garantizar que toda serie temporal tenga siempre `etiqueta`, `periodo` y `porcentaje`. En `GeovisorHurtosPanel`, se blindaron los mapeos de `serie_anual` y `serie_mensual` con `String(item.etiqueta ?? item.periodo ?? "")` y fallback a `""` antes de cualquier llamada a `.slice()`.
+   - **Tooltip OpenLayers:** Se aseguró compatibilidad dual para `top_armas` (`arma` / `categoria`) y `top_sitios` (`sitio` / `categoria`) tanto en `repository.py` como en `mapa-cartagena.tsx` y `use-mapa.ts`.
+
+2. **Eliminación de los Errores 404 de Recursos de Testimonios:**
+   - Se creó el directorio `public/fotos/testimonios/` y se aprovisionaron las 4 imágenes `.webp` institucionales requeridas por el censo de `bd_csh`:
+     - `/fotos/testimonios/ana_rosa_el_pozon.webp`
+     - `/fotos/testimonios/dionisio_la_boquilla.webp`
+     - `/fotos/testimonios/yorledis_mandela.webp`
+     - `/fotos/testimonios/carlos_getsemani.webp`
+   - Verificado con `curl -I`: `HTTP/1.1 200 OK` para todas las rutas.
+
+3. **Corrección de Excepción No Capturada en el Service Worker (`public/sw.js`):**
+   - Se incrementó la versión del caché a `polis-pwa-v2` para invalidación inmediata de caché obsoleta.
+   - Se introdujo una guardia temprana al inicio del evento `fetch`:
+     ```js
+     if (
+       (url.protocol !== "http:" && url.protocol !== "https:") ||
+       url.origin !== self.location.origin
+     ) {
+       return;
+     }
+     ```
+     descartando solicitudes con esquema `chrome-extension://`, `data:`, `blob:` o dominios externos.
+   - Se encadenó `.catch(() => {})` en todas las operaciones de `caches.open().then(cache => cache.put(...))` para evitar cualquier promesa no controlada.
+
+4. **Incorporación de la Directiva `media-src` en la Content Security Policy (`next.config.ts`):**
+   - Se agregó explícitamente `"media-src 'self' data: blob:",` en `construirCsp()` de `next.config.ts`.
+   - El encabezado de seguridad `Content-Security-Policy-Report-Only` emitido por el servidor ahora declara de forma explícita los orígenes de audio/video válidos.
+
+5. **Verificación Automatizada E2E con Navegador Real (Playwright):**
+   - Ejecución de prueba headless en `http://127.0.0.1:3000/geovisor`:
+     - `GeovisorHurtosPanel` cargado e interactivo: **1 elemento**.
+     - Total de errores de consola/página capturados: **0 errores**.
+   - Censo `bd_csh` intacto: **33 mesas, 36 agendas, 11 fichas, 17 actores y 12.280 registros de hurtos**.
+
+---
+
+## 🧪 2. Matriz de Verificación y Quality Gates
+
+| Puerta de Calidad | Comando Ejecutado | Resultado |
+|---|---|---|
+| **Pruebas Backend Pytest** | `/root/polis/venv/bin/pytest backend/tests/test_geodatos_analitica_hurtos.py backend/tests/test_cierre05_csp_report.py backend/tests/test_access_policy.py` | ✅ **110 / 110 pasadas** (0 fallas) |
+| **Pruebas Frontend Bun Test** | `bun test` | ✅ **579 / 579 pasadas** (68 suites, 0 fallas) |
+| **Prueba Unitaria de Resiliencia Periodo vs Etiqueta** | `bun test src/features/geovisor/services/hurtos-api.test.ts` | ✅ **7 / 7 pasadas** (0 fallas) |
+| **Prueba Unitaria de Renderizado Seguro GeovisorHurtosPanel** | `bun test src/features/geovisor/components/geovisor-hurtos-panel.test.tsx` | ✅ **5 / 5 pasadas** (0 fallas) |
+| **Storybook Interaction & A11y Suite** | `bun run ui:test` | ✅ **212 / 212 historias pasadas** (17 suites, 0 violaciones axe-core) |
+| **Políticas de Diseño (Zero-Colors)** | `bun run ui:check` | ✅ **0 violaciones** (tokens institucionales y componentes conformes) |
+| **Chequeo de Tipos TypeScript** | `bun run typecheck` (`tsc --noEmit`) | ✅ **0 errores** |
+| **Linter ESLint** | `bun run lint` (`eslint .`) | ✅ **0 errores** |
+| **Compilación de Producción Next.js** | `bun run build` | ✅ **192 / 192 rutas compiladas**, assets estáticos replicados a standalone |
+| **Verificación Playwright en `/geovisor`** | Script headless Chromium | ✅ **0 errores en consola** |
+
+---
+
+## 🚀 3. Despliegue en Vivo y Verificación Operativa
+
+- **Servicios:**
+  - `polis-backend`: `active (running)`
+  - `polis-frontend`: `active (running)`
+- **Verificación de Respuestas en Producción:**
+  - `GET /api/v1/geodatos/analitica/hurtos/resumen`:
+    - `serie_anual[0]`: `{'periodo': '2018', 'cantidad': 2997, 'etiqueta': '2018', 'porcentaje': 16.4}`
+    - `serie_mensual[0]`: `{'periodo': 'Enero', 'cantidad': 1885, 'etiqueta': 'Enero', 'porcentaje': 10.3}`
+    - `top_armas[0]`: `{'categoria': 'SIN EMPLEO DE ARMAS', 'cantidad': 9944, 'porcentaje': 54.5, 'arma': 'SIN EMPLEO DE ARMAS', 'sitio': 'SIN EMPLEO DE ARMAS'}`
+    - `top_sitios[0]`: `{'categoria': 'VIAS PUBLICAS', 'cantidad': 9321, 'porcentaje': 51.1, 'arma': 'VIAS PUBLICAS', 'sitio': 'VIAS PUBLICAS'}`
+  - `GET /fotos/testimonios/ana_rosa_el_pozon.webp`: `HTTP/1.1 200 OK` (Content-Type: `image/webp`, 15.4 KB).
+  - `GET /sw.js`: Servido con `CACHE_NAME = "polis-pwa-v2"` y filtro de esquemas.
+  - Header CSP: `media-src 'self' data: blob:` verificado en cabecera HTTP.
+- **Inviolabilidad Estricta de `bd_csh`:**
+  ```text
+  mesas_trabajo.mesas: 33
+  mesas_trabajo.agendas: 36
+  indicadores.fichas_tecnicas_indicadores: 11
+  participacion_ciudadana.actores_estrategicos: 17
+  geodatos.estadisticas_hurtos: 12280
+  ```
+  *(Censo institucional 100% inalterado y verificado).*
+
+---
+
+## 📦 4. Archivos Modificados para Commit Local (Política Zero-Push)
+
+- `backend/app/modules/geodatos/schemas.py`
+- `backend/app/modules/geodatos/repository.py`
+- `next.config.ts`
+- `public/sw.js`
+- `public/fotos/testimonios/ana_rosa_el_pozon.webp`
+- `public/fotos/testimonios/carlos_getsemani.webp`
+- `public/fotos/testimonios/dionisio_la_boquilla.webp`
+- `public/fotos/testimonios/yorledis_mandela.webp`
+- `src/features/geovisor/components/geovisor-hurtos-panel.tsx`
+- `src/features/geovisor/components/geovisor-hurtos-panel.test.tsx`
+- `src/features/geovisor/components/mapa-cartagena.tsx`
+- `src/features/geovisor/hooks/use-mapa.ts`
+- `src/features/geovisor/services/hurtos-api.ts`
+- `src/features/geovisor/services/hurtos-api.test.ts`
+- `bridge/02_resultado_agy2.md`

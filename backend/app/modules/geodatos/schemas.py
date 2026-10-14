@@ -3,11 +3,10 @@ from datetime import datetime
 from decimal import Decimal
 from typing import Any
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 
 class TerritorioBase(BaseModel):
-    """Esquema base para división territorial del Distrito de Cartagena."""
 
     codigo: str = Field(..., max_length=50, description="Código único del territorio")
     nombre: str = Field(..., max_length=200, description="Nombre oficial del territorio")
@@ -225,6 +224,21 @@ class SerieTemporalItem(BaseModel):
 
     periodo: str = Field(..., description="Año o mes analizado")
     cantidad: int = Field(..., description="Cantidad total de incidentes")
+    etiqueta: str = Field(default="", description="Etiqueta para visualización frontend")
+    porcentaje: float = Field(default=0.0, description="Porcentaje de participación")
+
+    @model_validator(mode="before")
+    @classmethod
+    def asegurar_etiqueta_y_porcentaje(cls, data: Any) -> Any:
+        if isinstance(data, dict):
+            data = dict(data)
+            if not data.get("etiqueta") and data.get("periodo"):
+                data["etiqueta"] = str(data["periodo"])
+            if not data.get("periodo") and data.get("etiqueta"):
+                data["periodo"] = str(data["etiqueta"])
+            if "porcentaje" not in data:
+                data["porcentaje"] = 0.0
+        return data
 
 
 class CategoriaConteo(BaseModel):
@@ -233,6 +247,21 @@ class CategoriaConteo(BaseModel):
     categoria: str = Field(..., description="Nombre de la categoría")
     cantidad: int = Field(..., description="Número de incidentes")
     porcentaje: float = Field(..., description="Porcentaje sobre el total analizado")
+    arma: str | None = Field(default=None, description="Sinónimo para arma/medio")
+    sitio: str | None = Field(default=None, description="Sinónimo para clase de sitio")
+
+    @model_validator(mode="before")
+    @classmethod
+    def asegurar_sinonimos(cls, data: Any) -> Any:
+        if isinstance(data, dict):
+            data = dict(data)
+            cat = str(data.get("categoria") or data.get("arma") or data.get("sitio") or "")
+            data["categoria"] = cat
+            if "arma" not in data or data["arma"] is None:
+                data["arma"] = cat
+            if "sitio" not in data or data["sitio"] is None:
+                data["sitio"] = cat
+        return data
 
 
 class DistribucionZonaItem(BaseModel):

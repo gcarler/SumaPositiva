@@ -209,7 +209,12 @@ class GeodatosRepository:
         res_anual = await self.session.execute(stmt_anual)
         dict_anual = {r[0]: int(r[1]) for r in res_anual.all()}
         serie_anual = [
-            {"periodo": str(y), "cantidad": dict_anual.get(y, 0)}
+            {
+                "periodo": str(y),
+                "etiqueta": str(y),
+                "cantidad": dict_anual.get(y, 0),
+                "porcentaje": round((dict_anual.get(y, 0) / total_casos * 100), 1) if total_casos > 0 else 0.0,
+            }
             for y in range(2018, 2027)
         ]
 
@@ -227,7 +232,12 @@ class GeodatosRepository:
             "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre",
         ]
         serie_mensual = [
-            {"periodo": m, "cantidad": dict_mensual.get(m, 0)}
+            {
+                "periodo": m,
+                "etiqueta": m,
+                "cantidad": dict_mensual.get(m, 0),
+                "porcentaje": round((dict_mensual.get(m, 0) / total_casos * 100), 1) if total_casos > 0 else 0.0,
+            }
             for m in meses_orden
         ]
 
@@ -244,6 +254,7 @@ class GeodatosRepository:
         top_armas = [
             {
                 "categoria": str(r[0]),
+                "arma": str(r[0]),
                 "cantidad": int(r[1]),
                 "porcentaje": round((int(r[1]) / total_casos * 100), 1) if total_casos > 0 else 0.0,
             }
@@ -263,6 +274,7 @@ class GeodatosRepository:
         top_sitios = [
             {
                 "categoria": str(r[0]),
+                "sitio": str(r[0]),
                 "cantidad": int(r[1]),
                 "porcentaje": round((int(r[1]) / total_casos * 100), 1) if total_casos > 0 else 0.0,
             }
@@ -355,6 +367,7 @@ class GeodatosRepository:
             top_armas_p = [
                 {
                     "categoria": str(r[0]),
+                    "arma": str(r[0]),
                     "cantidad": int(r[1]),
                     "porcentaje": round((int(r[1]) / casos_p * 100), 1) if casos_p > 0 else 0.0,
                 }
@@ -373,6 +386,7 @@ class GeodatosRepository:
             top_sitios_p = [
                 {
                     "categoria": str(r[0]),
+                    "sitio": str(r[0]),
                     "cantidad": int(r[1]),
                     "porcentaje": round((int(r[1]) / casos_p * 100), 1) if casos_p > 0 else 0.0,
                 }

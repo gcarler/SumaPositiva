@@ -41,6 +41,7 @@ function construirCsp(isProd: boolean): string {
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: blob: https://*.tile.openstreetmap.org https://tile.openstreetmap.org https://*.tile.osm.org https://*.googleusercontent.com https://seguridadhumanaintegral.org https://www.seguridadhumanaintegral.org https://images.unsplash.com https://api.qrserver.com",
     "font-src 'self' data:",
+    "media-src 'self' data: blob:",
     `connect-src ${connectSrc}`,
     "frame-src 'self' https://accounts.google.com https://www.youtube-nocookie.com https://player.vimeo.com",
     "frame-ancestors 'none'",

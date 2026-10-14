@@ -3,15 +3,18 @@ import { apiFetch } from "@/core/http/api-client";
 export type DelitoTipo = "HURTO MOTOCICLETA" | "HURTO RESIDENCIAS" | "HURTO COMERCIO";
 
 export interface SerieTemporalItem {
-  etiqueta: string;
+  etiqueta?: string;
+  periodo?: string;
   cantidad: number;
-  porcentaje: number;
+  porcentaje?: number;
 }
 
 export interface CategoriaConteo {
   categoria: string;
   cantidad: number;
   porcentaje: number;
+  arma?: string;
+  sitio?: string;
 }
 
 export interface DistribucionZonaItem {
@@ -41,8 +44,8 @@ export interface HurtoPoligonoProperties {
   total_casos: number;
   densidad_casos_km2: number;
   porcentaje_total: number;
-  top_armas: Array<{ arma: string; cantidad: number; porcentaje: number }>;
-  top_sitios: Array<{ sitio: string; cantidad: number; porcentaje: number }>;
+  top_armas: Array<{ categoria?: string; arma?: string; cantidad: number; porcentaje: number }>;
+  top_sitios: Array<{ categoria?: string; sitio?: string; cantidad: number; porcentaje: number }>;
 }
 
 export interface HurtoFeature {
@@ -93,9 +96,47 @@ export async function obtenerResumenHurtos(
   }
 
   const query = params.toString();
-  return apiFetch<ResumenHurtosResponse>(
+  const data = await apiFetch<ResumenHurtosResponse>(
     `/geodatos/analitica/hurtos/resumen${query ? `?${query}` : ""}`
   );
+
+  const normalizarSerie = (items?: SerieTemporalItem[]): SerieTemporalItem[] => {
+    if (!Array.isArray(items)) return [];
+    return items.map((item) => {
+      const etiqueta = String(item.etiqueta ?? item.periodo ?? "");
+      const periodo = String(item.periodo ?? item.etiqueta ?? "");
+      const cantidad = Number(item.cantidad ?? 0);
+      const porcentaje = Number(item.porcentaje ?? 0);
+      return {
+        etiqueta,
+        periodo,
+        cantidad,
+        porcentaje,
+      };
+    });
+  };
+
+  const normalizarTop = (items?: CategoriaConteo[]): CategoriaConteo[] => {
+    if (!Array.isArray(items)) return [];
+    return items.map((item) => {
+      const cat = String(item.categoria ?? item.arma ?? item.sitio ?? "");
+      return {
+        categoria: cat,
+        arma: item.arma ?? cat,
+        sitio: item.sitio ?? cat,
+        cantidad: Number(item.cantidad ?? 0),
+        porcentaje: Number(item.porcentaje ?? 0),
+      };
+    });
+  };
+
+  return {
+    ...data,
+    serie_anual: normalizarSerie(data?.serie_anual),
+    serie_mensual: normalizarSerie(data?.serie_mensual),
+    top_armas: normalizarTop(data?.top_armas),
+    top_sitios: normalizarTop(data?.top_sitios),
+  };
 }
 
 /**

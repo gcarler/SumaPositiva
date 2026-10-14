@@ -610,16 +610,18 @@ export function GeovisorHurtosPanel({
 
               <div className="flex h-36 items-end gap-1.5 pt-4">
                 {resumen?.serie_anual.map((item) => {
+                  const etiqueta = String(item.etiqueta ?? item.periodo ?? "");
+                  const anioNum = Number(etiqueta);
                   const alturaPct = Math.max(8, (item.cantidad / maxCasosAnual) * 100);
-                  const esSeleccionado = anioActivo === Number(item.etiqueta);
+                  const esSeleccionado = anioActivo === anioNum;
                   return (
                     <Button
-                      key={item.etiqueta}
+                      key={etiqueta || item.periodo || String(item.cantidad)}
                       variant="unstyled"
                       size="unstyled"
-                      onClick={() => onAnioChange?.(esSeleccionado ? null : Number(item.etiqueta))}
+                      onClick={() => onAnioChange?.(esSeleccionado ? null : anioNum)}
                       className="group relative flex flex-1 flex-col items-center h-full justify-end focus:outline-none p-0"
-                      title={`${item.etiqueta}: ${item.cantidad.toLocaleString("es-CO")} casos (${item.porcentaje}%)`}
+                      title={`${etiqueta}: ${item.cantidad.toLocaleString("es-CO")} casos (${item.porcentaje ?? 0}%)`}
                     >
                       <div
                         className={`w-full rounded-t transition-all ${
@@ -630,7 +632,7 @@ export function GeovisorHurtosPanel({
                         style={{ height: `${alturaPct}%` }}
                       />
                       <span className="mt-1 text-[10px] font-medium text-[var(--text-secondary)] group-hover:text-[var(--text-primary)]">
-                        {item.etiqueta.slice(2)}
+                        {etiqueta.slice(2)}
                       </span>
                       <div className="pointer-events-none absolute -top-6 hidden rounded bg-[var(--surface-2)] px-1 py-0.5 text-[9px] font-bold text-[var(--text-primary)] shadow group-hover:block z-10 whitespace-nowrap">
                         {item.cantidad.toLocaleString("es-CO")}
@@ -656,13 +658,14 @@ export function GeovisorHurtosPanel({
 
               <div className="flex h-36 items-end gap-1 pt-4">
                 {resumen?.serie_mensual.map((item) => {
+                  const etiqueta = String(item.etiqueta ?? item.periodo ?? "");
                   const alturaPct = Math.max(8, (item.cantidad / maxCasosMensual) * 100);
-                  const mesCorto = item.etiqueta.slice(0, 3);
+                  const mesCorto = etiqueta.slice(0, 3);
                   return (
                     <div
-                      key={item.etiqueta}
+                      key={etiqueta || item.periodo || String(item.cantidad)}
                       className="group relative flex flex-1 flex-col items-center h-full justify-end"
-                      title={`${item.etiqueta}: ${item.cantidad.toLocaleString("es-CO")} casos`}
+                      title={`${etiqueta}: ${item.cantidad.toLocaleString("es-CO")} casos`}
                     >
                       <div
                         className="w-full rounded-t bg-[var(--info)]/80 transition-all hover:bg-[var(--info)]"

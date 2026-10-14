@@ -464,7 +464,7 @@ const MapaCartagena = forwardRef<MapaCartagenaHandle, MapaCartagenaProps>(functi
                 <div className="border-t border-[var(--border)] pt-1.5 text-[11px]">
                   <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase">Top Modalidad / Arma:</span>
                   <p className="truncate font-medium text-[var(--text-primary)]">
-                    1. {hoverInfo.hurtoDetalle.top_armas[0].arma} ({hoverInfo.hurtoDetalle.top_armas[0].porcentaje}%)
+                    1. {hoverInfo.hurtoDetalle.top_armas[0].arma ?? hoverInfo.hurtoDetalle.top_armas[0].categoria} ({hoverInfo.hurtoDetalle.top_armas[0].porcentaje}%)
                   </p>
                 </div>
               )}
@@ -473,7 +473,7 @@ const MapaCartagena = forwardRef<MapaCartagenaHandle, MapaCartagenaProps>(functi
                 <div className="text-[11px]">
                   <span className="text-[10px] font-bold text-[var(--text-tertiary)] uppercase">Top Clase de Sitio:</span>
                   <p className="truncate font-medium text-[var(--text-primary)]">
-                    1. {hoverInfo.hurtoDetalle.top_sitios[0].sitio} ({hoverInfo.hurtoDetalle.top_sitios[0].porcentaje}%)
+                    1. {hoverInfo.hurtoDetalle.top_sitios[0].sitio ?? hoverInfo.hurtoDetalle.top_sitios[0].categoria} ({hoverInfo.hurtoDetalle.top_sitios[0].porcentaje}%)
                   </p>
                 </div>
               )}

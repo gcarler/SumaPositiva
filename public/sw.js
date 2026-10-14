@@ -3,7 +3,7 @@
  * Diseñado para facilitadores en zonas insulares y rurales sin cobertura celular.
  */
 
-const CACHE_NAME = "polis-pwa-v1";
+const CACHE_NAME = "polis-pwa-v2";
 const STATIC_ASSETS = [
   "/",
   "/barrio",
@@ -43,6 +43,14 @@ self.addEventListener("fetch", (event) => {
   const { request } = event;
   const url = new URL(request.url);
 
+  // Ignorar esquemas no HTTP/HTTPS (ej. chrome-extension://, data:, blob:) y orígenes externos
+  if (
+    (url.protocol !== "http:" && url.protocol !== "https:") ||
+    url.origin !== self.location.origin
+  ) {
+    return;
+  }
+
   // Ignorar peticiones que no sean GET (POST/PUT/DELETE se gestionan con IndexedDB Outbox)
   if (request.method !== "GET") {
     return;
@@ -60,9 +68,12 @@ self.addEventListener("fetch", (event) => {
         .then((response) => {
           if (response.status === 200) {
             const responseClone = response.clone();
-            caches.open(CACHE_NAME).then((cache) => {
-              cache.put(request, responseClone);
-            });
+            caches
+              .open(CACHE_NAME)
+              .then((cache) => {
+                cache.put(request, responseClone).catch(() => {});
+              })
+              .catch(() => {});
           }
           return response;
         })
@@ -105,7 +116,10 @@ self.addEventListener("fetch", (event) => {
           fetch(request)
             .then((fresh) => {
               if (fresh.status === 200) {
-                caches.open(CACHE_NAME).then((cache) => cache.put(request, fresh));
+                caches
+                  .open(CACHE_NAME)
+                  .then((cache) => cache.put(request, fresh).catch(() => {}))
+                  .catch(() => {});
               }
             })
             .catch(() => {});
@@ -114,7 +128,10 @@ self.addEventListener("fetch", (event) => {
         return fetch(request).then((response) => {
           if (response.status === 200) {
             const responseClone = response.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(request, responseClone));
+            caches
+              .open(CACHE_NAME)
+              .then((cache) => cache.put(request, responseClone).catch(() => {}))
+              .catch(() => {});
           }
           return response;
         });

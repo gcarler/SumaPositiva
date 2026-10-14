@@ -7,6 +7,7 @@ import {
   type ResumenHurtosResponse,
   type HurtosFeatureCollection,
   type ExploradorHurtosResponse,
+  type SerieTemporalItem,
 } from "./hurtos-api";
 import * as apiClient from "@/core/http/api-client";
 
@@ -82,6 +83,34 @@ describe("Servicio de Analítica de Hurtos (GEO-HURTOS-01)", () => {
       expect(spy).toHaveBeenCalledWith(
         "/geodatos/analitica/hurtos/resumen?delito=HURTO+MOTOCICLETA&anio=2024&zona=URBANA"
       );
+    });
+
+    it("normaliza respuestas con periodo pero sin etiqueta ni porcentaje (GEO-FIX-CONSOLE-01)", async () => {
+      const rawResumen = {
+        total_casos: 2062,
+        serie_anual: [
+          { periodo: "2024", cantidad: 2062 } as unknown as SerieTemporalItem,
+        ],
+        serie_mensual: [
+          { periodo: "Enero", cantidad: 180 } as unknown as SerieTemporalItem,
+        ],
+        top_armas: [
+          { categoria: "ARMA DE FUEGO", cantidad: 1000, porcentaje: 48.5 },
+        ],
+        top_sitios: [
+          { categoria: "VIAS PUBLICAS", cantidad: 900, porcentaje: 43.6 },
+        ],
+        distribucion_zona: [],
+      };
+
+      vi.spyOn(apiClient, "apiFetch").mockResolvedValueOnce(rawResumen);
+
+      const res = await obtenerResumenHurtos();
+      expect(res.serie_anual[0].etiqueta).toBe("2024");
+      expect(res.serie_anual[0].periodo).toBe("2024");
+      expect(res.serie_anual[0].porcentaje).toBe(0);
+      expect(res.serie_mensual[0].etiqueta).toBe("Enero");
+      expect(res.serie_mensual[0].periodo).toBe("Enero");
     });
   });
 

@@ -113,4 +113,42 @@ describe("GeovisorHurtosPanel Component (GEO-GESTOR-01 / GEO-HURTOS-01)", () => 
     expect(html).toContain("Arrastra un archivo GeoJSON aquí o haz clic para examinar");
     expect(html).toContain("Seleccionar Archivo Local");
   });
+
+  test("Modo 1 no falla ante datos de serie con 'periodo' en lugar de 'etiqueta' (GEO-FIX-CONSOLE-01)", () => {
+    const queryClient = new QueryClient({
+      defaultOptions: {
+        queries: { retry: false },
+      },
+    });
+
+    queryClient.setQueryData(["analitica-hurtos", "hurto_motocicletas", 2024, "TODAS"], {
+      total_casos: 2062,
+      delito: "HURTO MOTOCICLETA",
+      anio: 2024,
+      zona: null,
+      serie_anual: [
+        { periodo: "2024", cantidad: 2062, porcentaje: 100 },
+      ],
+      serie_mensual: [
+        { periodo: "Enero", cantidad: 180, porcentaje: 8.7 },
+      ],
+      top_armas: [{ categoria: "SIN EMPLEO DE ARMAS", cantidad: 1200, porcentaje: 58.2 }],
+      top_sitios: [{ categoria: "VIAS PUBLICAS", cantidad: 1100, porcentaje: 53.3 }],
+      distribucion_zona: [{ zona: "URBANA", cantidad: 2062, porcentaje: 100 }],
+    });
+
+    const html = renderToString(
+      <QueryClientProvider client={queryClient}>
+        <GeovisorHurtosPanel
+          delitoSeleccionado="hurto_motocicletas"
+          anioSeleccionado={2024}
+          modoInicial="resumen"
+        />
+      </QueryClientProvider>
+    );
+
+    // Debe renderizar '24' (slice de '2024') y 'Ene' (slice de 'Enero') sin crashear
+    expect(html).toContain("24");
+    expect(html).toContain("Ene");
+  });
 });
