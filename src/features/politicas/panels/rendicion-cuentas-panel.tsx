@@ -48,7 +48,10 @@ export function RendicionCuentasPanel({
   props,
 }: {
   entryKey: string;
-  props?: { dependenciaId?: string; vistaInicial?: "dependencias" | "plan_accion_dnp" };
+  props?: {
+    dependenciaId?: string;
+    vistaInicial?: "dependencias" | "plan_accion_dnp";
+  };
 }) {
   const { closeTop, closeToKey } = usePanels();
   const [vistaActiva, setVistaActiva] = useState<"dependencias" | "plan_accion_dnp">(

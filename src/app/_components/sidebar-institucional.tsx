@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useSesionStore, esInstitucional, tienePermiso } from "@/features/sesion/state/session-store";
 import { useNavigationStore } from "@/core/navigation/navigation-store";
-import { usePanels, type PanelType, type PanelPropsMap } from "@/core/panels/panel-store";
+import { usePanels, type PanelType, type PanelPropsRegistry } from "@/core/panels/panel-store";
 import { useMesasStore } from "@/features/mesas/state/mesas-store";
 import { useFormulariosStore } from "@/features/formularios/state/formularios-store";
 import {
@@ -80,7 +80,7 @@ export const PERMISOS_MODULO: Record<string, string[]> = {
 export interface ParametrosConstruccionModulos {
   navigateTo: (viewName: "inicio" | "explorar" | "mesas" | "geovisor") => void;
   navigateToPlataforma: (path?: string) => void;
-  openPanel: <T extends PanelType>(type: T, props: PanelPropsMap[T]) => void;
+  openPanel: <T extends PanelType>(type: T, props: PanelPropsRegistry[T]) => void;
 }
 
 export function construirModulosInstitucionales({

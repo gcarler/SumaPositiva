@@ -14,7 +14,7 @@ import {
   Wand2,
 } from "lucide-react";
 import { PanelShell } from "@/core/panels/panel-shell";
-import { usePanels, type ArbolPanel } from "@/core/panels/panel-store";
+import { usePanels } from "@/core/panels/panel-store";
 import { useMesa, useMesasStore, useSubMesa } from "@/features/mesas/state/mesas-store";
 import { useMesaQuery, useActualizarSubMesa } from "@/features/mesas/services/use-mesas-queries";
 import {
@@ -28,7 +28,8 @@ import {
   type NodoArbol,
   type RamaArbol,
 } from "@/features/mesas/models/mesas";
-import type { PanelPropsMap } from "@/core/panels/panel-store";
+import type { PanelPropsRegistry } from "@/core/panels/panel-store";
+import type { ArbolPanel } from "@/features/mesas/models/arbol-panel";
 import { AdjuntosZona } from "@/features/mesas/components/adjuntos-zona";
 import { MatrizArbolRelatoria } from "@/features/mesas/components/matriz-arbol-relatoria";
 import { useSesionStore } from "@/features/sesion/state/session-store";
@@ -278,7 +279,7 @@ export function PapelografoPanel({
   props,
 }: {
   entryKey: string;
-  props: PanelPropsMap["papelografo"];
+  props: PanelPropsRegistry["papelografo"];
 }) {
   const { closeTop, closeToKey } = usePanels();
   const { data: mesaRemota } = useMesaQuery(props.mesaId);

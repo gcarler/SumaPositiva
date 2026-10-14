@@ -3,248 +3,85 @@
 import { create } from "zustand";
 
 /**
- * POLIS — Núcleo del patrón Zero-Modals
- * Un único store global controla la pila de paneles laterales.
- * Cualquier vista puede hacer push de un panel; los paneles se apilan
- * para navegación anidada (Política → Fase → Línea → Aporte).
+ * Núcleo genérico del sistema de paneles laterales.
+ * Los dominios agregan sus contratos en el punto de composición de la app.
  */
-
-export type PanelType =
-  | "politica"
-  | "fase"
-  | "linea-editor"
-  | "linea"
-  | "aporte"
-  | "sesion"
-  | "usuarios"
-  | "mesa"
-  | "papelografo"
-  | "mesa-editor"
-  | "agenda-editor"
-  | "territorio"
-  | "formularios"
-  | "formulario-editor"
-  | "formulario-analitica"
-  | "formulario-preview"
-  | "formulario-respuesta"
-  | "participacion-multicanal"
-  | "escenario-editor"
-  | "testimonios-galeria"
-  | "testimonio-editor"
-  | "testimonios-moderacion"
-  | "fases-control"
-  | "auditoria-consola"
-  | "usuario-invitar"
-  | "usuario-editor"
-  | "usuario-detalle"
-  | "noticia"
-  | "noticia-editor"
-  | "testimonio-nuevo"
-  | "mesa-acta"
-  | "rendicion-cuentas"
-  | "fuente-editor"
-  | "actor-editor"
-  | "medicion-editor"
-  | "validacion-mga"
-  | "ficha-territorial"
-  | "alternativa-editor"
-  | "evaluacion-viabilidad"
-  | "asignacion-presupuestal"
-  | "compromiso-editor"
-  | "indicador-detalle"
-  | "devolucion-detalle"
-  | "ficha-editor"
-  | "dimension-detalle";
-
-/** Árbol que se diligencia en el papelografo */
-export type ArbolPanel = "problemas" | "soluciones";
-
-/** Props tipadas por tipo de panel — imposible abrir un panel con props inválidas */
-export interface PanelPropsMap {
-  politica: { politicaId: string };
-  fase: { politicaId: string; faseId: string };
-  "linea-editor": { lineaId?: string };
-  linea: { politicaId: string; faseId: string; lineaId: string };
-  aporte: { politicaId: string; faseId: string; lineaId: string };
-  /** Panel de sesión/identidad — soporta flujos de recuperación, verificación y magic link */
-  sesion: { accion?: "recuperar" | "verificar" | "magic_link"; token?: string };
-  usuarios: Record<string, never>;
-  /** Área de trabajo: detalle de una mesa (plenaria + submesas) */
-  mesa: { mesaId: string; soloLectura?: boolean };
-  /** Papelografo: editor de árbol de problemas / soluciones de una submesa */
-  papelografo: {
-    mesaId: string;
-    submesaId: string;
-    arbol: ArbolPanel;
-    /** key del panel de mesa para el breadcrumb de regreso */
-    fromKey?: string;
-  };
-  /** Crear (sin mesaId) o editar una mesa de trabajo */
-  "mesa-editor": { mesaId?: string };
-  /** Programación y gestión de cronograma de agenda */
-  "agenda-editor": { agendaId?: string };
-  /** Ficha técnica del territorio en el geovisor */
-  territorio: { territorioId: string };
-  formularios: { soloRespuesta?: boolean; soloLectura?: boolean };
-  "formulario-editor": { formularioId?: string };
-  "formulario-analitica": { formularioId: string };
-  "formulario-preview": { borradorId: string };
-  "formulario-respuesta": { formularioId: string };
-  "participacion-multicanal": { canalInicial?: string };
-  "escenario-editor": Record<string, never>;
-  "testimonios-galeria": { territorioId?: string };
-  "testimonio-editor": { testimonioId?: string };
-  "testimonios-moderacion": { estadoInicial?: string };
-  "fases-control": Record<string, never>;
-  "auditoria-consola": Record<string, never>;
-  "usuario-invitar": Record<string, never>;
-  "usuario-editor": { usuarioId: string };
-  "usuario-detalle": { usuarioId: string };
-  noticia: { noticiaId: string };
-  "noticia-editor": { noticiaId?: string };
-  "testimonio-nuevo": Record<string, never>;
-  "mesa-acta": { mesaId: string };
-  "rendicion-cuentas": { dependenciaId?: string };
-  "fuente-editor": { fuenteId?: string; soloLectura?: boolean };
-  "actor-editor": { actorId?: string; soloLectura?: boolean };
-  "medicion-editor": {
-    fichaId: string;
-    codigoIndicador?: string;
-    nombreIndicador?: string;
-    unidadMedida?: string;
-    soloLectura?: boolean;
-    onMedicionGuardada?: () => void;
-  };
-  "validacion-mga": {
-    resultado: {
-      evaluacion_id: string;
-      politica_id: string;
-      es_valido: boolean;
-      puntaje_coherencia: number;
-      analisis_sintaxis: Array<{
-        texto_original: string;
-        cumple_sintaxis: boolean;
-        tipo_nodo: string;
-        sintaxis_esperada: string;
-        texto_corregido_sugerido: string;
-        observacion_metodologica: string;
-      }>;
-      problema_central_optimizado: string;
-      objetivo_central_derivado: string;
-      arbol_problemas_estructurado: Record<string, unknown>;
-      arbol_objetivos_derivado: Record<string, unknown>;
-      recomendaciones_dnp: string[];
-      resumen_ejecutivo: string;
-    };
-    instrumentoNombre?: string;
-    arbolTipo?: "problemas" | "objetivos";
-  };
-  "ficha-territorial": {
-    territorioId: string;
-    soloLectura?: boolean;
-  };
-  "alternativa-editor": {
-    alternativaId?: string | null;
-    modo?: "crear" | "editar" | "ver";
-    soloLectura?: boolean;
-  };
-  "evaluacion-viabilidad": {
-    alternativaId: string;
-    soloLectura?: boolean;
-  };
-  "asignacion-presupuestal": {
-    alternativaId?: string;
-    asignacionId?: string;
-    soloLectura?: boolean;
-    onAsignacionGuardada?: () => void;
-  };
-  "compromiso-editor": {
-    compromisoId?: string | null;
-    modo?: "crear" | "editar" | "ver";
-    soloLectura?: boolean;
-    onGuardado?: () => void;
-  };
-  "indicador-detalle": {
-    indicadorId?: string | null;
-    soloLectura?: boolean;
-    onMedicionGuardada?: () => void;
-  };
-  "devolucion-detalle": {
-    propuestaId?: string | null;
-    soloLectura?: boolean;
-    onGuardado?: () => void;
-  };
-  "ficha-editor": {
-    fichaId?: string | null;
-    ficha?: unknown;
-    soloLectura?: boolean;
-    onGuardado?: () => void;
-  };
-  "dimension-detalle": {
-    dimensionId: string;
-  };
+export declare const panelPropsRegistryBrand: unique symbol;
+export interface PanelPropsRegistry {
+  readonly [panelPropsRegistryBrand]?: never;
 }
 
-export type PanelEntry<T extends PanelType = PanelType> = {
-  /** clave única de instancia (permite dos paneles del mismo tipo si hiciera falta) */
+export type PanelType = keyof PanelPropsRegistry & string;
+
+export type PanelComponentProps<T extends PanelType = PanelType> = {
+  entryKey: string;
+  props: PanelPropsRegistry[T];
+};
+
+export type PanelEntry<T extends PanelType> = {
   key: string;
   type: T;
-  props: PanelPropsMap[T];
-  /** el panel del tope puede maximizarse a toda la pantalla */
+  props: PanelPropsRegistry[T];
   maximized: boolean;
 };
 
+export type AnyPanelEntry = {
+  [T in PanelType]: PanelEntry<T>;
+}[PanelType];
+
 interface PanelState {
-  entries: PanelEntry[];
-  /** índice (desde el tope) del panel activo — 0 = tope */
-  openPanel: <T extends PanelType>(type: T, props: PanelPropsMap[T]) => void;
+  entries: AnyPanelEntry[];
+  openPanel: <T extends PanelType>(type: T, props: PanelPropsRegistry[T]) => void;
   closeTop: () => void;
-  /** cierra la pila hasta cierto panel (inclusive si `inclusive`), usado por breadcrumbs */
   closeToKey: (key: string, inclusive?: boolean) => void;
   closeAll: () => void;
-  /** alterna maximizado del panel por clave (uso previsto: panel del tope) */
   toggleMaximized: (key: string) => void;
 }
 
-let seq = 0;
-const nextKey = (type: string) => `${type}-${++seq}-${Date.now()}`;
+let sequence = 0;
+const nextKey = (type: string) => `${type}-${++sequence}-${Date.now()}`;
+
+function createEntry<T extends PanelType>(
+  type: T,
+  props: PanelPropsRegistry[T],
+): AnyPanelEntry {
+  // The generic arguments keep `type` and `props` correlated; the mapped union
+  // is not inferred by TypeScript when T itself is generic.
+  return { key: nextKey(type), type, props, maximized: false } as AnyPanelEntry;
+}
 
 export const usePanelStore = create<PanelState>((set) => ({
   entries: [],
 
-  openPanel: (type, props) =>
-    set((s) => ({
-      // límite de seguridad: máximo 5 paneles apilados
-      entries: [
-        ...s.entries.slice(-4),
-        { key: nextKey(type), type, props, maximized: false } as PanelEntry,
-      ],
+  openPanel: <T extends PanelType>(type: T, props: PanelPropsRegistry[T]) =>
+    set((state) => ({
+      // Conserva un máximo de cinco instancias en la pila.
+      entries: [...state.entries.slice(-4), createEntry(type, props)],
     })),
 
-  closeTop: () => set((s) => ({ entries: s.entries.slice(0, -1) })),
+  closeTop: () => set((state) => ({ entries: state.entries.slice(0, -1) })),
 
   closeToKey: (key, inclusive = false) =>
-    set((s) => {
-      const idx = s.entries.findIndex((e) => e.key === key);
-      if (idx === -1) return { entries: [] };
-      return { entries: s.entries.slice(0, inclusive ? idx : idx + 1) };
+    set((state) => {
+      const index = state.entries.findIndex((entry) => entry.key === key);
+      if (index === -1) return { entries: [] };
+      return { entries: state.entries.slice(0, inclusive ? index : index + 1) };
     }),
 
   closeAll: () => set({ entries: [] }),
 
   toggleMaximized: (key) =>
-    set((s) => ({
-      entries: s.entries.map((e) =>
-        e.key === key ? { ...e, maximized: !e.maximized } : e,
+    set((state) => ({
+      entries: state.entries.map((entry) =>
+        entry.key === key ? { ...entry, maximized: !entry.maximized } : entry,
       ),
     })),
 }));
 
-/** Hook ergonómico para abrir paneles desde cualquier componente */
 export function usePanels() {
-  const openPanel = usePanelStore((s) => s.openPanel);
-  const closeTop = usePanelStore((s) => s.closeTop);
-  const closeAll = usePanelStore((s) => s.closeAll);
-  const closeToKey = usePanelStore((s) => s.closeToKey);
+  const openPanel = usePanelStore((state) => state.openPanel);
+  const closeTop = usePanelStore((state) => state.closeTop);
+  const closeAll = usePanelStore((state) => state.closeAll);
+  const closeToKey = usePanelStore((state) => state.closeToKey);
   return { openPanel, closeTop, closeAll, closeToKey };
 }

@@ -46,9 +46,16 @@ Reglas:
 ESLint comprueba los límites de imports `@/` de `shared` y `core`. El build verifica
 TypeScript y React funciona en modo estricto. No se ocultan errores de compilación.
 
-`core/database/legacy-prisma.ts` y `prisma/` son restos del starter. No son la fuente
-de persistencia del nuevo dominio; su retirada se hará cuando se revise el
-despliegue heredado.
+Los restos del starter Prisma (`src/core/database/legacy-prisma.ts`, `prisma/`,
+`prisma`, `@prisma/client` y sus comandos de esquema) fueron retirados en
+`[ARCH-CONSOLIDACION-01]`: el esquema SQLite de ejemplo no era una vía de
+persistencia del producto. La persistencia vigente usa FastAPI, SQLAlchemy y
+PostgreSQL; Alembic administra el esquema. La política UI prohíbe reintroducir
+el cliente, el módulo heredado o sus comandos de sincronización en manifiesto
+y scripts de despliegue. Esto describe el código del repositorio y no
+certifica el estado de una base desplegada.
+También se retiró el flujo SQLite heredado de `.zscripts/dev.sh`, `build.sh` y
+`start.sh`; el paquete Next.js no genera ni espera `db/custom.db`.
 
 ## Backend
 
@@ -116,9 +123,23 @@ Esta regla guía revisiones; no certifica la configuración de una base desplega
 ## Estado del dominio y fuentes de verdad
 
 La organización de módulos es normativa; el estado de entregas está en
-[el plan de trabajo](plan-trabajo.md). Existen módulos backend de políticas,
-aportes, sesión, identidad, evidencia, mesas, instrumentos, geodatos, IA,
-presupuesto e indicadores. Sus routers se ensamblan en `app/api/router.py`.
+[el plan de trabajo](plan-trabajo.md). `backend/app/api/router.py` registra 22
+routers: `health`, `aportes`, `sesion`, `politicas`, `identidad`, `evidencia`,
+`mesas`, `instrumentos`, `ia`, `geodatos`, `presupuesto`, `indicadores`,
+`formularios`, `participacion`, `testimonios`, `auditoria`, `compromisos`,
+`noticias`, `comunicaciones`, `notificaciones`, `canales/whatsapp` y `seguridad`.
+El repositorio contiene además routers no montados en `actores`, `alternativas`
+y `fuentes`; no son endpoints accesibles por el ensamblador actual. El
+inventario de features, módulos, conexión y límites de evidencia está en la
+[matriz de trazabilidad](matriz-trazabilidad-modulos.md). El censo encuentra
+21 directorios frontend, no los 23 esperados por la asignación; la diferencia
+queda pendiente de revisión EAF.
+
+Alembic informa la cabeza única `0062_motor_plan_accion_dnp`. En `next.config.ts`
+la CSP se envía como `Content-Security-Policy-Report-Only` por defecto; Next.js
+permite habilitar enforcement con `POLIS_CSP_ENFORCE=true` o
+`POLIS_CSP_REPORT_ONLY=false`. La configuración de código no demuestra que el
+proxy o el entorno productivo tenga enforcement activo.
 La presencia de un módulo o migración no acredita por sí sola cierre de entrega,
 integración frontend, cumplimiento jurídico ni operación en producción.
 

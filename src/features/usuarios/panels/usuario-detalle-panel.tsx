@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import { PanelShell } from "@/core/panels/panel-shell";
 import { usePanels } from "@/core/panels/panel-store";
-import type { PanelComponentProps } from "@/app/_composition/panel-registry";
+import type { PanelComponentProps } from "@/core/panels/panel-store";
 import { identidadApi } from "@/features/sesion/services/identidad-api";
 import { tienePermiso, useSesionStore } from "@/features/sesion/state/session-store";
 import { Badge } from "@/shared/ui/badge";
@@ -35,7 +35,7 @@ const rolMeta: Record<string, { label: string; style: string; token?: "authority
   ciudadano: { label: "Ciudadano", style: "border-border bg-surface-2 text-text-secondary" },
 };
 
-export function UsuarioDetallePanel({ entryKey, props }: PanelComponentProps) {
+export function UsuarioDetallePanel({ entryKey, props }: PanelComponentProps<"usuario-detalle">) {
   const usuarioId = "usuarioId" in props ? (props.usuarioId as string) : "";
   const { closeTop, openPanel } = usePanels();
   const cache = useQueryClient();

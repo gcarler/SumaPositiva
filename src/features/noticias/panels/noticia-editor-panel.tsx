@@ -9,11 +9,8 @@ import {
   Film,
   Plus,
   X,
-  Sparkles,
   Layers,
   Tag,
-  Eye,
-  FileEdit,
 } from "lucide-react";
 import { PanelShell } from "@/core/panels/panel-shell";
 import { usePanels } from "@/core/panels/panel-store";

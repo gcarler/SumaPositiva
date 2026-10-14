@@ -5,7 +5,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { PanelShell } from "@/core/panels/panel-shell";
 import { usePanels } from "@/core/panels/panel-store";
-import type { PanelComponentProps } from "@/app/_composition/panel-registry";
+import type { PanelComponentProps } from "@/core/panels/panel-store";
 import { identidadApi } from "@/features/sesion/services/identidad-api";
 import { ApiError } from "@/core/http/api-client";
 import { Button } from "@/shared/ui/button";
@@ -23,9 +23,9 @@ const ROLES_FALLBACK = [
   { id: "ciudadano", label: "Ciudadano" },
 ];
 
-interface EditorProps extends PanelComponentProps {
-  mode: "invite" | "edit";
-}
+type EditorProps =
+  | (PanelComponentProps<"usuario-invitar"> & { mode: "invite" })
+  | (PanelComponentProps<"usuario-editor"> & { mode: "edit" });
 
 export function UsuarioEditorPanel({ entryKey, props, mode }: EditorProps) {
   const usuarioId = mode === "edit" && "usuarioId" in props ? (props.usuarioId as string) : undefined;

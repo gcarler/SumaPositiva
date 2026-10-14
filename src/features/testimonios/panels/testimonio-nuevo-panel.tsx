@@ -3,11 +3,8 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import {
-  MessageSquareQuote,
   ShieldCheck,
   Send,
-  MapPin,
-  Sparkles,
 } from "lucide-react";
 import { PanelShell } from "@/core/panels/panel-shell";
 import { usePanels } from "@/core/panels/panel-store";

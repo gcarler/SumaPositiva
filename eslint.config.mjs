@@ -64,8 +64,6 @@ const eslintConfig = [...nextCoreWebVitals, ...nextTypescript, {
     "playwright-report/**",
     "skills/**",
     "docs/**",
-    "src/features/noticias/**",
-    "src/features/testimonios/**",
   ]
 }, {
   files: ["src/shared/**/*.{ts,tsx}"],

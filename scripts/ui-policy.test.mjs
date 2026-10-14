@@ -48,6 +48,26 @@ test("rejects forbidden dependencies through aliases, relative imports, exports 
     ["UI002", "UI004", "UI004", "UI004", "UI004", "UI005"].sort(),
   );
 });
+test("rejects Prisma imports and reintroduced legacy-prisma files", (t) => {
+  const root = fixture(t, {
+    "src/features/example/store.ts":
+      'import { PrismaClient } from "@prisma/client"; export const db = new PrismaClient();',
+    "src/features/example/legacy.ts":
+      'import db from "@/core/database/legacy-prisma"; export { db };',
+    "src/core/database/legacy-prisma.ts": "export const db = {};",
+  });
+  assert.deepEqual(rules(root).sort(), ["UI009", "UI009", "UI009"]);
+});
+test("rejects Prisma dependencies and SQLite runtime commands", (t) => {
+  const root = fixture(t, {
+    "package.json": JSON.stringify({
+      dependencies: { prisma: "^6.0.0" },
+      scripts: { "db:push": "prisma db push --accept-data-loss" },
+    }),
+    ".zscripts/build.sh": "bun run db:push",
+  });
+  assert.deepEqual(rules(root).sort(), ["UI009", "UI009"]);
+});
 test("rejects literal palettes, arbitrary colors, CSS colors and colors inside templates", (t) => {
   const root = fixture(t, {
     "src/features/example/view.tsx":

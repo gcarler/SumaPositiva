@@ -12,8 +12,8 @@ import { Notice } from "@/shared/ui/notice";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { usePanelStore } from "@/core/panels/panel-store";
 import {
-  PANEL_REGISTRY,
   PANEL_WIDTHS,
+  renderPanel,
 } from "@/app/_composition/panel-registry";
 import { AnimatedPanel } from "@/core/panels/panel-shell";
 
@@ -168,8 +168,25 @@ export function PanelHost() {
           <AnimatePresence initial={false}>
             {entries.map((entry, i) => {
               const depth = Math.min(entries.length - 1 - i, MAX_DEPTH);
-              const PanelComponent = PANEL_REGISTRY[entry.type];
               const width = PANEL_WIDTHS[entry.type];
+              let panelEntry = entry;
+              if (interno && entry.type === "mesa") {
+                panelEntry = {
+                  ...entry,
+                  props: {
+                    ...entry.props,
+                    soloLectura: !puedeEditar(sesion, "mesas"),
+                  },
+                };
+              } else if (interno && entry.type === "formularios") {
+                panelEntry = {
+                  ...entry,
+                  props: {
+                    ...entry.props,
+                    soloLectura: !puedeEditar(sesion, "formularios"),
+                  },
+                };
+              }
 
               return (
                 <motion.div
@@ -236,24 +253,7 @@ export function PanelHost() {
                           </div>
                         </PanelShell>
                       ) : (
-                        <PanelComponent
-                          entryKey={entry.key}
-                          props={
-                            interno &&
-                            (entry.type === "mesa" ||
-                              entry.type === "formularios")
-                              ? {
-                                  ...entry.props,
-                                  soloLectura: !puedeEditar(
-                                    sesion,
-                                    entry.type === "mesa"
-                                      ? "mesas"
-                                      : "formularios",
-                                  ),
-                                }
-                              : entry.props
-                          }
-                        />
+                        renderPanel(panelEntry)
                       )}
                     </AnimatedPanel>
 

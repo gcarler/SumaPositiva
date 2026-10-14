@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo } from "react";
-import { Film } from "lucide-react";
 
 interface NoticiaVideoPlayerProps {
   url?: string;

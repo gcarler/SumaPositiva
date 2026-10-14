@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { Lock, FileSpreadsheet, ShieldAlert } from "lucide-react";
 import { PanelShell } from "@/core/panels/panel-shell";
 import { usePanels } from "@/core/panels/panel-store";
-import type { PanelComponentProps } from "@/app/_composition/panel-registry";
+import type { PanelComponentProps } from "@/core/panels/panel-store";
 import { Button } from "@/shared/ui/button";
 import { Label } from "@/shared/ui/label";
 import { Input } from "@/shared/ui/input";

@@ -39,6 +39,22 @@ Las casillas operativas no representan código pendiente: la entrega no configur
 servicios externos ni modifica producción sin una tarea de activación específica.
 Los registros históricos siguientes deben interpretarse dentro de su alcance original.
 
+## Consolidación de scaffold y trazabilidad — 2026-10-14
+
+El snapshot actual de Alembic tiene cabeza `0062_motor_plan_accion_dnp`; las
+validaciones históricas que terminan en `0022` o `0025` no describen la cabeza
+actual ni certifican migraciones posteriores. El censo de frontend/backend y su
+clasificación conservadora están en [la matriz de trazabilidad](matriz-trazabilidad-modulos.md).
+El estado de CSP en código está descrito en [arquitectura](arquitectura.md):
+Report-Only por defecto, con enforcement configurable; no se afirma activación
+en producción sin evidencia del proxy y del navegador desplegado.
+
+La asignación `[ARCH-CONSOLIDACION-01]` ejecuta la consolidación en el snapshot
+local indicado en `bridge/02_entrega_codex.md`. El censo encontró 21 features,
+22 routers montados y 25 módulos con `router.py`; la discrepancia con la
+expectativa de 23/23 requiere confirmar el alcance con EAF. La presencia de UI,
+router o migración no equivale a recorrido productivo verificado.
+
 ## Reglas y equipos EDD/EAF — 2026-10-01
 
 Estado: implementación y revisión interna de EDD; dictamen independiente de EAF

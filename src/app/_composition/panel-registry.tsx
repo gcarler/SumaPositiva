@@ -2,16 +2,40 @@
 
 import dynamic from "next/dynamic";
 import type { ComponentType } from "react";
-import type { PanelType, PanelPropsMap } from "@/core/panels/panel-store";
+import type {
+  AnyPanelEntry,
+  PanelComponentProps,
+  PanelPropsRegistry,
+  PanelType,
+} from "@/core/panels/panel-store";
+import type {} from "./panel-contracts";
 
 /**
  * Registry tipado de paneles — mapa PanelType → Componente.
  * Carga diferida para mantener el bundle inicial ligero.
  */
 
-export interface PanelComponentProps<K extends PanelType = PanelType> {
-  entryKey: string;
-  props: PanelPropsMap[K];
+type PanelComponentRegistry = {
+  [K in PanelType]: ComponentType<PanelComponentProps<K>>;
+};
+
+function withEntryKey<K extends PanelType>(
+  Panel: ComponentType<{ entryKey: string }>,
+): ComponentType<PanelComponentProps<K>> {
+  return function EntryKeyPanel({ entryKey }: PanelComponentProps<K>) {
+    return <Panel entryKey={entryKey} />;
+  };
+}
+
+function withOptionalProps<K extends PanelType>(
+  Panel: ComponentType<{
+    entryKey: string;
+    props?: PanelPropsRegistry[K];
+  }>,
+): ComponentType<PanelComponentProps<K>> {
+  return function OptionalPropsPanel({ entryKey, props }: PanelComponentProps<K>) {
+    return <Panel entryKey={entryKey} props={props} />;
+  };
 }
 
 const PoliticaPanel = dynamic(
@@ -188,56 +212,74 @@ const DimensionDetallePanel = dynamic(
   { ssr: false }
 );
 
-export const PANEL_REGISTRY: Record<
-  PanelType,
-  ComponentType<PanelComponentProps>
-> = {
-  politica: PoliticaPanel as ComponentType<PanelComponentProps>,
-  fase: FasePanel as ComponentType<PanelComponentProps>,
-  "linea-editor": LineaEditorPanel as ComponentType<PanelComponentProps>,
-  linea: LineaPanel as ComponentType<PanelComponentProps>,
-  aporte: AporteEditorPanel as ComponentType<PanelComponentProps>,
-  sesion: SesionPanel as ComponentType<PanelComponentProps>,
-  usuarios: UsuariosPanel as ComponentType<PanelComponentProps>,
-  "usuario-invitar": ((props: PanelComponentProps) => <UsuarioInvitarPanel {...props} mode="invite" />) as ComponentType<PanelComponentProps>,
-  "usuario-editor": ((props: PanelComponentProps) => <UsuarioInvitarPanel {...props} mode="edit" />) as ComponentType<PanelComponentProps>,
-  "usuario-detalle": UsuarioDetallePanel as ComponentType<PanelComponentProps>,
-  mesa: MesaPanel as ComponentType<PanelComponentProps>,
-  papelografo: PapelografoPanel as ComponentType<PanelComponentProps>,
-  "mesa-editor": MesaEditorPanel as ComponentType<PanelComponentProps>,
-  "agenda-editor": AgendaEditorPanel as ComponentType<PanelComponentProps>,
-  territorio: TerritorioPanel as ComponentType<PanelComponentProps>,
-  formularios: FormulariosPanel as ComponentType<PanelComponentProps>,
-  "formulario-editor": FormularioEditorPanel as ComponentType<PanelComponentProps>,
-  "formulario-analitica": FormularioAnaliticaPanel as ComponentType<PanelComponentProps>,
-  "formulario-preview": FormularioPreviewPanel as ComponentType<PanelComponentProps>,
-  "formulario-respuesta": FormularioRespuestaPanel as ComponentType<PanelComponentProps>,
-  "participacion-multicanal": ParticipacionMulticanalPanel as ComponentType<PanelComponentProps>,
-  "escenario-editor": EscenarioEditorPanel as ComponentType<PanelComponentProps>,
-  "testimonios-galeria": TestimoniosGaleriaPanel as ComponentType<PanelComponentProps>,
-  "testimonio-editor": TestimonioEditorPanel as ComponentType<PanelComponentProps>,
-  "testimonios-moderacion": TestimoniosModeracionPanel as ComponentType<PanelComponentProps>,
-  "fases-control": FasesControlPanel as ComponentType<PanelComponentProps>,
-  "auditoria-consola": AuditoriaConsolaPanel as ComponentType<PanelComponentProps>,
-  noticia: NoticiaPanel as ComponentType<PanelComponentProps>,
-  "noticia-editor": NoticiaEditorPanel as ComponentType<PanelComponentProps>,
-  "testimonio-nuevo": TestimonioNuevoPanel as ComponentType<PanelComponentProps>,
-  "mesa-acta": MesaActaPanel as ComponentType<PanelComponentProps>,
-  "rendicion-cuentas": RendicionCuentasPanel as ComponentType<PanelComponentProps>,
-  "fuente-editor": FuenteEditorPanel as ComponentType<PanelComponentProps>,
-  "actor-editor": ActorEditorPanel as ComponentType<PanelComponentProps>,
-  "medicion-editor": MedicionEditorPanel as ComponentType<PanelComponentProps>,
-  "validacion-mga": ValidacionMgaPanel as ComponentType<PanelComponentProps>,
-  "ficha-territorial": FichaTerritorialPanel as ComponentType<PanelComponentProps>,
-  "alternativa-editor": AlternativaEditorPanel as ComponentType<PanelComponentProps>,
-  "evaluacion-viabilidad": EvaluacionViabilidadPanel as ComponentType<PanelComponentProps>,
-  "asignacion-presupuestal": AsignacionPresupuestalPanel as ComponentType<PanelComponentProps>,
-  "compromiso-editor": CompromisoEditorPanel as ComponentType<PanelComponentProps>,
-  "indicador-detalle": IndicadorDetallePanel as ComponentType<PanelComponentProps>,
-  "devolucion-detalle": DevolucionDetallePanel as ComponentType<PanelComponentProps>,
-  "ficha-editor": FichaEditorPanel as ComponentType<PanelComponentProps>,
-  "dimension-detalle": DimensionDetallePanel as ComponentType<PanelComponentProps>,
-};
+export const PANEL_REGISTRY = {
+  politica: PoliticaPanel,
+  fase: FasePanel,
+  "linea-editor": withOptionalProps<"linea-editor">(LineaEditorPanel),
+  linea: LineaPanel,
+  aporte: AporteEditorPanel,
+  sesion: withOptionalProps<"sesion">(SesionPanel),
+  usuarios: withEntryKey<"usuarios">(UsuariosPanel),
+  "usuario-invitar": (props: PanelComponentProps<"usuario-invitar">) => (
+    <UsuarioInvitarPanel {...props} mode="invite" />
+  ),
+  "usuario-editor": (props: PanelComponentProps<"usuario-editor">) => (
+    <UsuarioInvitarPanel {...props} mode="edit" />
+  ),
+  "usuario-detalle": UsuarioDetallePanel,
+  mesa: MesaPanel,
+  papelografo: PapelografoPanel,
+  "mesa-editor": MesaEditorPanel,
+  "agenda-editor": ({ entryKey, props }: PanelComponentProps<"agenda-editor">) => (
+    <AgendaEditorPanel entryKey={entryKey} props={props} />
+  ),
+  territorio: TerritorioPanel,
+  formularios: withOptionalProps<"formularios">(FormulariosPanel),
+  "formulario-editor": FormularioEditorPanel,
+  "formulario-analitica": FormularioAnaliticaPanel,
+  "formulario-preview": FormularioPreviewPanel,
+  "formulario-respuesta": FormularioRespuestaPanel,
+  "participacion-multicanal": ParticipacionMulticanalPanel,
+  "escenario-editor": withEntryKey<"escenario-editor">(EscenarioEditorPanel),
+  "testimonios-galeria": withEntryKey<"testimonios-galeria">(TestimoniosGaleriaPanel),
+  "testimonio-editor": withOptionalProps<"testimonio-editor">(TestimonioEditorPanel),
+  "testimonios-moderacion": withEntryKey<"testimonios-moderacion">(TestimoniosModeracionPanel),
+  "fases-control": withEntryKey<"fases-control">(FasesControlPanel),
+  "auditoria-consola": withEntryKey<"auditoria-consola">(AuditoriaConsolaPanel),
+  noticia: NoticiaPanel,
+  "noticia-editor": withOptionalProps<"noticia-editor">(NoticiaEditorPanel),
+  "testimonio-nuevo": withOptionalProps<"testimonio-nuevo">(TestimonioNuevoPanel),
+  "mesa-acta": MesaActaPanel,
+  "rendicion-cuentas": withOptionalProps<"rendicion-cuentas">(RendicionCuentasPanel),
+  "fuente-editor": FuenteEditorPanel,
+  "actor-editor": ActorEditorPanel,
+  "medicion-editor": MedicionEditorPanel,
+  "validacion-mga": ValidacionMgaPanel,
+  "ficha-territorial": FichaTerritorialPanel,
+  "alternativa-editor": AlternativaEditorPanel,
+  "evaluacion-viabilidad": EvaluacionViabilidadPanel,
+  "asignacion-presupuestal": AsignacionPresupuestalPanel,
+  "compromiso-editor": CompromisoEditorPanel,
+  "indicador-detalle": IndicadorDetallePanel,
+  "devolucion-detalle": DevolucionDetallePanel,
+  "ficha-editor": FichaEditorPanel,
+  "dimension-detalle": ({ entryKey, props }: PanelComponentProps<"dimension-detalle">) => (
+    <DimensionDetallePanel entryKey={entryKey} props={props} />
+  ),
+} satisfies PanelComponentRegistry;
+
+function resolvePanelComponent<K extends PanelType>(
+  type: K,
+): ComponentType<PanelComponentProps<K>> {
+  // PANEL_REGISTRY is exhaustively checked against PanelComponentRegistry above.
+  // This restores the key-to-props correlation lost when indexing with a runtime union.
+  return PANEL_REGISTRY[type] as ComponentType<PanelComponentProps<K>>;
+}
+
+export function renderPanel(entry: AnyPanelEntry) {
+  const Panel = resolvePanelComponent(entry.type);
+  return <Panel entryKey={entry.key} props={entry.props} />;
+}
 
 /**
  * Ancho del panel por tipo — fluido y adaptativo a cualquier resolución:

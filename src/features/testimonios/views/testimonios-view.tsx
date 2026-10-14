@@ -8,9 +8,7 @@ import {
   ShieldCheck,
   MapPin,
   Sparkles,
-  User,
   HeartHandshake,
-  CheckCircle2,
 } from "lucide-react";
 import { usePanels } from "@/core/panels/panel-store";
 import { HeroPageBanner } from "@/features/politicas/components/hero-page-banner";

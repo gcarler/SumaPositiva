@@ -77,6 +77,46 @@ function containsA11yBypass(node) {
 export function checkUiPolicy(root = projectRoot) {
   const failures = [];
   const storyImports = new Set();
+  const packageManifest = path.join(root, "package.json");
+  if (fs.existsSync(packageManifest)) {
+    const manifest = JSON.parse(fs.readFileSync(packageManifest, "utf8"));
+    const dependencies = {
+      ...manifest.dependencies,
+      ...manifest.devDependencies,
+    };
+    const scripts = manifest.scripts ?? {};
+    if (
+      dependencies.prisma ||
+      dependencies["@prisma/client"] ||
+      Object.entries(scripts).some(
+        ([name, command]) =>
+          /^db:(?:push|generate|migrate|reset)$/.test(name) ||
+          /\bprisma\s+(?:db\s+push|migrate)\b/i.test(command),
+      )
+    ) {
+      failures.push({
+        file: "package.json",
+        line: 1,
+        column: 1,
+        rule: "UI009",
+        message: "Retira dependencias y comandos Prisma del manifiesto de producto.",
+      });
+    }
+  }
+  for (const filename of filesUnder(path.join(root, ".zscripts"))) {
+    const contents = fs.readFileSync(filename, "utf8");
+    const match = /\b(?:bun|npm|npx)\s+run\s+db:(?:push|generate|migrate|reset)\b|\bprisma\s+(?:db\s+push|migrate)\b/i.exec(contents);
+    if (match) {
+      const line = contents.slice(0, match.index).split("\n").length;
+      failures.push({
+        file: slash(path.relative(root, filename)),
+        line,
+        column: 1,
+        rule: "UI009",
+        message: "El runtime de despliegue no debe invocar comandos Prisma ni sincronizar SQLite.",
+      });
+    }
+  }
   const filenames = [
     ...filesUnder(path.join(root, "src")),
     ...filesUnder(path.join(root, ".storybook")),
@@ -103,6 +143,14 @@ export function checkUiPolicy(root = projectRoot) {
   for (const filename of filenames) {
     const relative = slash(path.relative(root, filename));
     const contents = fs.readFileSync(filename, "utf8");
+    if (/^src\/core\/database\/legacy-prisma(?:\.[cm]?[jt]sx?)?$/.test(relative))
+      failures.push({
+        file: relative,
+        line: 1,
+        column: 1,
+        rule: "UI009",
+        message: "Retira el cliente heredado legacy-prisma; la persistencia de producto usa la API FastAPI.",
+      });
     if (filename.endsWith(".css")) {
       if (
         relative !== "src/shared/design-system/tokens.css" &&
@@ -131,6 +179,17 @@ export function checkUiPolicy(root = projectRoot) {
     const inUi = relative.startsWith("src/shared/ui/");
     const inStory = relative.includes(".stories.");
     const checkImport = (specifier, node) => {
+      if (
+        specifier.startsWith("@prisma/client") ||
+        specifier.includes("legacy-prisma")
+      )
+        report(
+          filename,
+          source,
+          node,
+          "UI009",
+          "No importes Prisma ni legacy-prisma; usa los servicios de API del dominio.",
+        );
       if (!inUi && primitivePackages.test(specifier))
         report(
           filename,

@@ -9,7 +9,7 @@ import {
 } from "@react-oauth/google";
 import { useRouter } from "next/navigation";
 import { PanelShell } from "@/core/panels/panel-shell";
-import { usePanels, type PanelPropsMap } from "@/core/panels/panel-store";
+import { usePanels, type PanelPropsRegistry } from "@/core/panels/panel-store";
 import { Button } from "@/shared/ui/button";
 import { Notice } from "@/shared/ui/notice";
 import { useSesionStore } from "@/features/sesion/state/session-store";
@@ -44,7 +44,7 @@ export function SesionPanel({
   props = {},
 }: {
   entryKey: string;
-  props?: PanelPropsMap["sesion"];
+  props?: PanelPropsRegistry["sesion"];
 }) {
   const { closeTop } = usePanels();
   const router = useRouter();

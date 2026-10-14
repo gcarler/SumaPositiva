@@ -9,7 +9,6 @@ import {
   Search,
   Sparkles,
   Newspaper,
-  Tag,
   Plus,
   Play,
   Layers,
