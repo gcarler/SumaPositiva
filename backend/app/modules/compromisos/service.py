@@ -18,8 +18,12 @@ from app.modules.compromisos.schemas import (
     CompromisoPASActualizarAvance,
     CompromisoPASCrear,
     CompromisoPASRespuesta,
+    FilaProcesadaPlanAccion,
+    ItemLotePlanAccion,
     KpisSeguimientoRespuesta,
     MatrizPlanAccionRespuesta,
+    ProcesarLotePlanAccionRespuesta,
+    ProcesarLotePlanAccionSolicitud,
     ResumenEjecutivoPlanAccion,
     ValidarRedaccionRespuesta,
     ValidarRedaccionSolicitud,
@@ -887,4 +891,183 @@ class CompromisosService:
             )
 
         return actualizada
+
+    FUENTES_POR_CATEGORIA: dict[str, set[str]] = {
+        "INVERSION": {
+            "RECURSOS_PROPIOS",
+            "SGP",
+            "SGP_PROPOSITO_GENERAL",
+            "SGP_SEGURIDAD",
+            "REGALIAS",
+            "CREDITO",
+            "COFINANCIACION",
+            "OTROS",
+        },
+        "FUNCIONAMIENTO": {
+            "GASTOS_PERSONAL",
+            "GASTOS_GENERALES",
+            "TRANSFERENCIAS",
+            "RECURSOS_PROPIOS",
+        },
+        "RECURSOS_GESTION": {"GESTION_NO_PRESUPUESTAL"},
+    }
+
+    async def procesar_lote_plan_accion(
+        self, datos: ProcesarLotePlanAccionSolicitud
+    ) -> ProcesarLotePlanAccionRespuesta:
+        """Procesa, audita y valida un lote de actividades para el Plan de Acción DNP.
+        Efectúa el cruce automático Hoja 2 (Plan_Indicativo) -> Hoja 1 (Plan_Accion),
+        aplica la regla lingüística DNP (generando sugerencias de autocorrección),
+        verifica la coherencia de fuentes de financiación y emite el dictamen oficial
+        para Consejo de Gobierno (Art. 41 Ley 152/1994)."""
+        compromisos_pas = await self.repo.listar()
+        mapa_pas: dict[str, CompromisoPAS] = {c.codigo: c for c in compromisos_pas}
+
+        filas_procesadas: list[FilaProcesadaPlanAccion] = []
+        filas_conformes = 0
+        filas_con_obs = 0
+        total_programado = 0.0
+        total_ejecutado = 0.0
+
+        for idx, item in enumerate(datos.items):
+            codigo_fila = item.codigo or f"PA-{datos.vigencia}-LOTE-{idx + 1:02d}"
+            hallazgos: list[str] = []
+            columna_d_programa: str | None = None
+            columna_e_meta_producto: str | None = None
+
+            # 1. Cruce Automático Hoja 2 (Plan_Indicativo) -> Hoja 1 (Plan_Accion)
+            if item.compromiso_pas_codigo:
+                pas_obj = mapa_pas.get(item.compromiso_pas_codigo)
+                if pas_obj:
+                    columna_d_programa = f"{pas_obj.linea_estrategica_codigo} - {pas_obj.nombre}"
+                    if item.tipo_meta == "ACTIVIDAD":
+                        columna_e_meta_producto = "No requerida para tipo ACTIVIDAD (Pág. 11 DNP)"
+                    else:
+                        columna_e_meta_producto = (
+                            f"{pas_obj.meta_cuatrienal_valor} {pas_obj.unidad_medida}: {pas_obj.descripcion}"
+                        )
+                else:
+                    hallazgos.append(
+                        f"Código de Plan Indicativo '{item.compromiso_pas_codigo}' no encontrado en Hoja 2."
+                    )
+            elif item.tipo_meta == "ACTIVIDAD":
+                columna_d_programa = "Exención DNP Pág. 11 (Actividad Directa)"
+                columna_e_meta_producto = "No requerida para tipo ACTIVIDAD (Pág. 11 DNP)"
+            else:
+                hallazgos.append(
+                    f"Las metas de tipo {item.tipo_meta} requieren vinculación con el Plan Indicativo (Pág. 11 DNP)."
+                )
+
+            # 2. Validación Lingüística DNP de Verbos Fuertes
+            val_ling = self.validar_redaccion_dnp(item.descripcion_actividad, item.tipo_actividad)
+            es_verbo_fuerte = val_ling.es_valida
+            redaccion_corregida_sugerida: str | None = None
+
+            if not es_verbo_fuerte:
+                hallazgos.append(val_ling.mensaje_dnp)
+                if val_ling.verbos_fuertes_sugeridos:
+                    verbo_sugerido = val_ling.verbos_fuertes_sugeridos[0]
+                    palabras = item.descripcion_actividad.strip().split()
+                    if palabras:
+                        palabras[0] = verbo_sugerido
+                        redaccion_corregida_sugerida = " ".join(palabras)
+
+            # 3. Validación Presupuestal y Coherencia de Fuentes
+            cat_norm = item.categoria_recursos.upper()
+            fuentes_permitidas = self.FUENTES_POR_CATEGORIA.get(cat_norm, set())
+            fuente_norm = item.fuente_financiacion.upper()
+            fuente_coherente = fuente_norm in fuentes_permitidas
+
+            if not fuente_coherente:
+                hallazgos.append(
+                    f"La fuente '{item.fuente_financiacion}' no es coherente con la categoría de recursos "
+                    f"'{item.categoria_recursos}' (Instructivo DNP Pág. 13)."
+                )
+
+            # 4. Avances Físico y Financiero y Semáforo de Desfase
+            t_vals = [item.avance_t1, item.avance_t2, item.avance_t3, item.avance_t4]
+            reported = [v for v in t_vals if v > 0]
+            avance_fisico = round(sum(reported) / len(reported), 2) if reported else 0.0
+
+            prog = max(0.0, float(item.monto_programado_cop))
+            ejec = max(0.0, float(item.monto_ejecutado_cop))
+            total_programado += prog
+            total_ejecutado += ejec
+
+            if prog > 0:
+                ejecucion_financiera = round((ejec / prog) * 100.0, 2)
+            else:
+                ejecucion_financiera = 100.0 if cat_norm == "RECURSOS_GESTION" else 0.0
+
+            alerta_desfase = abs(avance_fisico - ejecucion_financiera) > 25.0
+            if alerta_desfase:
+                hallazgos.append(
+                    f"Alerta de desfase físico-financiero: Avance físico ({avance_fisico}%) difiere en más "
+                    f"de 25% frente a la ejecución presupuestal ({ejecucion_financiera}%)."
+                )
+
+            es_conforme = len(hallazgos) == 0
+            if es_conforme:
+                filas_conformes += 1
+            else:
+                filas_con_obs += 1
+
+            filas_procesadas.append(
+                FilaProcesadaPlanAccion(
+                    codigo=codigo_fila,
+                    entidad_responsable=item.entidad_responsable,
+                    lider_responsable=item.lider_responsable,
+                    tipo_meta=item.tipo_meta,
+                    compromiso_pas_codigo=item.compromiso_pas_codigo,
+                    columna_d_programa=columna_d_programa,
+                    columna_e_meta_producto=columna_e_meta_producto,
+                    codigo_bpim=item.codigo_bpim,
+                    proyecto_nombre=item.proyecto_nombre,
+                    objetivo_proyecto=item.objetivo_proyecto,
+                    tipo_actividad=item.tipo_actividad,
+                    descripcion_actividad=item.descripcion_actividad,
+                    verbo_detectado=val_ling.verbo_detectado,
+                    es_verbo_fuerte=es_verbo_fuerte,
+                    redaccion_corregida_sugerida=redaccion_corregida_sugerida,
+                    fecha_inicio=item.fecha_inicio,
+                    fecha_terminacion=item.fecha_terminacion,
+                    avance_t1=item.avance_t1,
+                    avance_t2=item.avance_t2,
+                    avance_t3=item.avance_t3,
+                    avance_t4=item.avance_t4,
+                    avance_fisico=avance_fisico,
+                    categoria_recursos=item.categoria_recursos,
+                    fuente_financiacion=item.fuente_financiacion,
+                    fuente_coherente=fuente_coherente,
+                    monto_programado_cop=prog,
+                    monto_ejecutado_cop=ejec,
+                    ejecucion_financiera=ejecucion_financiera,
+                    alerta_desfase=alerta_desfase,
+                    es_conforme=es_conforme,
+                    hallazgos=hallazgos,
+                )
+            )
+
+        total_filas = len(datos.items)
+        puntaje_calidad = (
+            round((filas_conformes / total_filas) * 100.0, 2) if total_filas > 0 else 100.0
+        )
+        estado_dictamen = "APTO_CONSEJO_GOBIERNO" if filas_con_obs == 0 else "REQUIERE_SUBSANACION_PREVIA"
+        porcentaje_global = (
+            round((total_ejecutado / total_programado) * 100.0, 2) if total_programado > 0 else 100.0
+        )
+
+        return ProcesarLotePlanAccionRespuesta(
+            vigencia=datos.vigencia,
+            total_filas_procesadas=total_filas,
+            filas_conformes_dnp=filas_conformes,
+            filas_con_observaciones=filas_con_obs,
+            puntaje_calidad_dnp=puntaje_calidad,
+            estado_dictamen_planeacion=estado_dictamen,
+            monto_total_programado_cop=round(total_programado, 2),
+            monto_total_ejecutado_cop=round(total_ejecutado, 2),
+            porcentaje_ejecucion_global=porcentaje_global,
+            filas_procesadas=filas_procesadas,
+        )
+
 

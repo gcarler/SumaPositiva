@@ -2,7 +2,7 @@ import uuid
 from datetime import date, datetime
 from typing import Any, Literal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 EstadoCompromisoType = Literal[
     "sin_reporte",
@@ -210,4 +210,91 @@ class MatrizPlanAccionRespuesta(BaseModel):
     resumen_ejecutivo: ResumenEjecutivoPlanAccion
     hoja_1_plan_accion: list[ActividadPlanAccionRespuesta]
     hoja_2_plan_indicativo: list[CompromisoPASRespuesta]
+
+
+class ItemLotePlanAccion(BaseModel):
+    codigo: str | None = None
+    entidad_responsable: str
+    lider_responsable: str = "Líder Funcional"
+    tipo_meta: str = "META_PRODUCTO"  # META_PRODUCTO | META_GESTION | ACTIVIDAD
+    compromiso_pas_codigo: str | None = None  # Código en Hoja 2 Plan_Indicativo (Columna D/E)
+    codigo_bpim: str = ""
+    proyecto_nombre: str = ""
+    objetivo_proyecto: str = ""
+    tipo_actividad: str = "DE_GESTION"  # NORMATIVA | ADMINISTRATIVA | DE_GESTION | LOGISTICA
+    descripcion_actividad: str
+    fecha_inicio: str = "2026-01-15"
+    fecha_terminacion: str = "2026-12-15"
+    avance_t1: float = 0.0
+    avance_t2: float = 0.0
+    avance_t3: float = 0.0
+    avance_t4: float = 0.0
+    categoria_recursos: str = "INVERSION"  # INVERSION | FUNCIONAMIENTO | RECURSOS_GESTION
+    fuente_financiacion: str = "RECURSOS_PROPIOS"
+    monto_programado_cop: float = 0.0
+    monto_ejecutado_cop: float = 0.0
+
+
+class ProcesarLotePlanAccionSolicitud(BaseModel):
+    vigencia: int = 2026
+    items: list[ItemLotePlanAccion] = Field(default_factory=list)
+    filas: list[ItemLotePlanAccion] = Field(default_factory=list)
+
+    @model_validator(mode="before")
+    @classmethod
+    def sincronizar_filas_e_items(cls, data: Any) -> Any:
+        if isinstance(data, dict):
+            if "filas" in data and not data.get("items"):
+                data["items"] = data["filas"]
+            elif "items" in data and not data.get("filas"):
+                data["filas"] = data["items"]
+        return data
+
+
+class FilaProcesadaPlanAccion(BaseModel):
+    codigo: str
+    entidad_responsable: str
+    lider_responsable: str
+    tipo_meta: str
+    compromiso_pas_codigo: str | None
+    columna_d_programa: str | None
+    columna_e_meta_producto: str | None
+    codigo_bpim: str
+    proyecto_nombre: str
+    objetivo_proyecto: str
+    tipo_actividad: str
+    descripcion_actividad: str
+    verbo_detectado: str
+    es_verbo_fuerte: bool
+    redaccion_corregida_sugerida: str | None = None
+    fecha_inicio: str
+    fecha_terminacion: str
+    avance_t1: float
+    avance_t2: float
+    avance_t3: float
+    avance_t4: float
+    avance_fisico: float
+    categoria_recursos: str
+    fuente_financiacion: str
+    fuente_coherente: bool
+    monto_programado_cop: float
+    monto_ejecutado_cop: float
+    ejecucion_financiera: float
+    alerta_desfase: bool
+    es_conforme: bool
+    hallazgos: list[str]
+
+
+class ProcesarLotePlanAccionRespuesta(BaseModel):
+    vigencia: int
+    total_filas_procesadas: int
+    filas_conformes_dnp: int
+    filas_con_observaciones: int
+    puntaje_calidad_dnp: float
+    estado_dictamen_planeacion: str  # APTO_CONSEJO_GOBIERNO | REQUIERE_SUBSANACION_PREVIA
+    monto_total_programado_cop: float
+    monto_total_ejecutado_cop: float
+    porcentaje_ejecucion_global: float
+    filas_procesadas: list[FilaProcesadaPlanAccion]
+
 

@@ -288,3 +288,97 @@ def test_flujo_creacion_y_seguimiento_trimestral(database_url: str, cabeceras_ge
         assert actualizada["porcentaje_avance_fisico"] == 90.0
         assert actualizada["monto_ejecutado_cop"] == 400000000.0
         assert "gaceta" in actualizada["evidencia_soporte"]
+
+
+def test_procesar_lote_plan_accion_cruce_hoja2_y_autocorreccion(database_url: str):
+    """Verifica el endpoint POST /plan-accion/procesar-lote:
+    1. Cruce automático de Hoja 2 Plan Indicativo a Hoja 1 Plan de Acción (Programa y Meta Producto).
+    2. Exención de meta producto cuando tipo_meta == 'ACTIVIDAD' (Pág. 11 DNP).
+    3. Detección de verbos débiles prohibidos por DNP y sugerencia de redacción corregida.
+    4. Coherencia presupuestal (categoría de recursos vs fuentes de financiación).
+    5. Dictamen oficial Consejo de Gobierno (REQUIERE_SUBSANACION_PREVIA vs APTO_CONSEJO_GOBIERNO).
+    """
+    settings = Settings(_env_file=None, environment="test", database_url=database_url)
+    app = create_app(settings)
+    with TestClient(app) as client:
+        # Lote con 2 filas: 1 con verbo fuerte pero meta ACTIVIDAD, 1 con verbo débil
+        lote_inicial = [
+            {
+                "codigo": "PA-LOTE-01",
+                "compromiso_pas_codigo": "PAS-SEC-01",
+                "entidad_responsable": "Secretaría del Interior y Convivencia Ciudadana",
+                "lider_responsable": "Director de Seguridad",
+                "tipo_meta": "ACTIVIDAD",
+                "tipo_actividad": "NORMATIVA",
+                "descripcion_actividad": "Expedir el decreto distrital de zonas de especial protección comunitaria",
+                "categoria_recursos": "INVERSION",
+                "fuente_financiacion": "RECURSOS_PROPIOS",
+                "monto_programado_cop": 100000000.0,
+                "monto_ejecutado_cop": 50000000.0,
+                "avance_t1": 50.0,
+            },
+            {
+                "codigo": "PA-LOTE-02",
+                "compromiso_pas_codigo": "PAS-SEG-03",
+                "entidad_responsable": "Distriseguridad",
+                "lider_responsable": "Jefe de Operaciones",
+                "tipo_meta": "META_PRODUCTO",
+                "tipo_actividad": "LOGISTICA",
+                "descripcion_actividad": "Fortalecer la capacidad logística de los frentes de seguridad barrial",
+                "categoria_recursos": "INVERSION",
+                "fuente_financiacion": "SGP_PROPOSITO_GENERAL",
+                "monto_programado_cop": 200000000.0,
+                "monto_ejecutado_cop": 10000000.0,
+                "avance_t1": 80.0,
+            },
+        ]
+
+        resp = client.post(
+            "/api/v1/compromisos/plan-accion/procesar-lote",
+            json={"filas": lote_inicial, "vigencia": 2026},
+        )
+        assert resp.status_code == 200, resp.text
+        resultado = resp.json()
+
+        assert resultado["total_filas_procesadas"] == 2
+        assert resultado["filas_conformes_dnp"] == 1
+        assert resultado["filas_con_observaciones"] == 1
+        assert resultado["estado_dictamen_planeacion"] == "REQUIERE_SUBSANACION_PREVIA"
+
+        f1 = resultado["filas_procesadas"][0]
+        assert f1["es_conforme"] is True
+        assert f1["columna_d_programa"] != ""
+        assert "Pág. 11 DNP" in f1["columna_e_meta_producto"]
+        assert f1["verbo_detectado"] == "expedir"
+        assert f1["es_verbo_fuerte"] is True
+
+        f2 = resultado["filas_procesadas"][1]
+        assert f2["es_conforme"] is False
+        assert f2["es_verbo_fuerte"] is False
+        assert f2["redaccion_corregida_sugerida"] is not None
+        assert f2["redaccion_corregida_sugerida"] != f2["descripcion_actividad"]
+        assert any("desfase" in h.lower() for h in f2["hallazgos"])
+
+        # Aplicar la sugerencia de corrección automática para f2 y equilibrar financiero
+        lote_corregido = [
+            lote_inicial[0],
+            {
+                **lote_inicial[1],
+                "descripcion_actividad": f2["redaccion_corregida_sugerida"],
+                "monto_ejecutado_cop": 160000000.0,
+            },
+        ]
+
+        resp_corregido = client.post(
+            "/api/v1/compromisos/plan-accion/procesar-lote",
+            json={"filas": lote_corregido, "vigencia": 2026},
+        )
+        assert resp_corregido.status_code == 200, resp_corregido.text
+        res_corr = resp_corregido.json()
+
+        assert res_corr["total_filas_procesadas"] == 2
+        assert res_corr["filas_conformes_dnp"] == 2
+        assert res_corr["filas_con_observaciones"] == 0
+        assert res_corr["estado_dictamen_planeacion"] == "APTO_CONSEJO_GOBIERNO"
+        assert res_corr["puntaje_calidad_dnp"] == 100.0
+

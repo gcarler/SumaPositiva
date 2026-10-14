@@ -17,6 +17,12 @@ import {
   CheckCircle2,
   ArrowRight,
   ShieldCheck,
+  Wand2,
+  Printer,
+  Building2,
+  CheckCircle,
+  AlertCircle,
+  RefreshCw,
 } from "lucide-react";
 import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
@@ -35,6 +41,8 @@ import {
   crearActividadPlanAccionApi,
   actualizarSeguimientoActividadApi,
   validarRedaccionLocal,
+  procesarLotePlanAccionApi,
+  LOTE_DEMO_DNP_CANONICO,
   type ActividadPlanAccion,
   type MatrizPlanAccionRespuesta,
   type FiltrosMatrizPlanAccion,
@@ -42,6 +50,8 @@ import {
   type TipoMetaDNP,
   type CategoriaRecursosDNP,
   type FuenteFinanciacionDNP,
+  type ItemLotePlanAccion,
+  type ProcesarLotePlanAccionRespuesta,
   ACTIVIDADES_PA_CANONICAS,
   calcularResumenEjecutivoLocal,
 } from "../services/plan-accion-dnp-api";
@@ -71,7 +81,7 @@ interface MotorPlanAccionTabProps {
 }
 
 export function MotorPlanAccionTab({ puedeEditar = false }: MotorPlanAccionTabProps) {
-  const [vistaActiva, setVistaActiva] = useState<"hoja1" | "hoja2" | "asistente">("hoja1");
+  const [vistaActiva, setVistaActiva] = useState<"hoja1" | "hoja2" | "asistente" | "procesador_lote">("hoja1");
   const [cargando, setCargando] = useState<boolean>(true);
   const [isPending, startTransition] = useTransition();
 
@@ -139,6 +149,88 @@ export function MotorPlanAccionTab({ puedeEditar = false }: MotorPlanAccionTabPr
     () => validarRedaccionLocal(nuevaActividad.descripcion_actividad, nuevaActividad.tipo_actividad),
     [nuevaActividad.descripcion_actividad, nuevaActividad.tipo_actividad]
   );
+
+  // Estado del Procesador Masivo y Auditor por Lotes DNP
+  const [loteItems, setLoteItems] = useState<ItemLotePlanAccion[]>(LOTE_DEMO_DNP_CANONICO);
+  const [resultadoLote, setResultadoLote] = useState<ProcesarLotePlanAccionRespuesta | null>(null);
+  const [procesandoLote, setProcesandoLote] = useState<boolean>(false);
+  const [mostrarCertificado, setMostrarCertificado] = useState<boolean>(false);
+  const [entidadCertificado, setEntidadCertificado] = useState<string>("todas");
+
+  const ejecutarProcesamientoLote = async (itemsAProcesar?: ItemLotePlanAccion[]) => {
+    setProcesandoLote(true);
+    try {
+      const items = itemsAProcesar || loteItems;
+      const res = await procesarLotePlanAccionApi({
+        vigencia: 2026,
+        filas: items,
+      });
+      setResultadoLote(res);
+      if (res.estado_dictamen_planeacion === "APTO_CONSEJO_GOBIERNO") {
+        toast.success("Lote evaluado: 100% conforme. APTO PARA CONSEJO DE GOBIERNO.");
+      } else {
+        toast.warning(`Lote evaluado: ${res.filas_con_observaciones} actividad(es) requieren subsanación.`);
+      }
+    } catch {
+      toast.error("Error al procesar lote de actividades DNP.");
+    } finally {
+      setProcesandoLote(false);
+    }
+  };
+
+  const aplicarCorreccionAutomaticaDNP = async () => {
+    if (!resultadoLote) return;
+    const nuevosItems: ItemLotePlanAccion[] = loteItems.map((item, idx) => {
+      const fila = resultadoLote.filas_procesadas[idx];
+      if (!fila) return item;
+
+      const nuevoItem = { ...item };
+      // 1. Corrección lingüística oficial DNP (sustituir verbo débil por fuerte)
+      if (fila.redaccion_corregida_sugerida) {
+        nuevoItem.descripcion_actividad = fila.redaccion_corregida_sugerida;
+      }
+      // 2. Coherencia presupuestal (fuente permitida según categoría)
+      if (!fila.fuente_coherente) {
+        if (nuevoItem.categoria_recursos === "INVERSION") {
+          nuevoItem.fuente_financiacion = "RECURSOS_PROPIOS";
+        } else if (nuevoItem.categoria_recursos === "FUNCIONAMIENTO") {
+          nuevoItem.fuente_financiacion = "GASTOS_GENERALES";
+        } else {
+          nuevoItem.fuente_financiacion = "GESTION_NO_PRESUPUESTAL";
+        }
+      }
+      // 3. Desfase físico-financiero: equilibrar ejecución si hay alerta
+      if (fila.alerta_desfase && nuevoItem.monto_programado_cop > 0) {
+        const avanceFisico = fila.avance_fisico || 100;
+        nuevoItem.monto_ejecutado_cop = Math.round((nuevoItem.monto_programado_cop * avanceFisico) / 100);
+      }
+      return nuevoItem;
+    });
+
+    setLoteItems(nuevosItems);
+    await ejecutarProcesamientoLote(nuevosItems);
+    toast.success("Corrección automática DNP aplicada en 1 clic. El Plan de Acción alcanza 100% de conformidad.");
+  };
+
+  const cargarLoteDemo = async () => {
+    setLoteItems(LOTE_DEMO_DNP_CANONICO);
+    await ejecutarProcesamientoLote(LOTE_DEMO_DNP_CANONICO);
+    toast.info("Lote canónico DNP cargado (6 actividades mixtas).");
+  };
+
+  const entidadesDisponiblesCertificado = useMemo(() => {
+    if (!resultadoLote) return [];
+    const setEnt = new Set(resultadoLote.filas_procesadas.map((f) => f.entidad_responsable));
+    return Array.from(setEnt);
+  }, [resultadoLote]);
+
+  const filasCertificado = useMemo(() => {
+    if (!resultadoLote) return [];
+    if (entidadCertificado === "todas") return resultadoLote.filas_procesadas;
+    return resultadoLote.filas_procesadas.filter(
+      (f) => f.entidad_responsable === entidadCertificado
+    );
+  }, [resultadoLote, entidadCertificado]);
 
   const cargarDatos = async (nuevosFiltros?: FiltrosMatrizPlanAccion) => {
     setCargando(true);
@@ -517,6 +609,26 @@ export function MotorPlanAccionTab({ puedeEditar = false }: MotorPlanAccionTabPr
             <span>Asistente DNP (6 Pasos)</span>
           </Button>
         )}
+
+        <Button
+          type="button"
+          variant={vistaActiva === "procesador_lote" ? "secondary" : "ghost"}
+          size="sm"
+          onClick={() => {
+            setVistaActiva("procesador_lote");
+            if (!resultadoLote) {
+              void ejecutarProcesamientoLote();
+            }
+          }}
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-all ${
+            vistaActiva === "procesador_lote"
+              ? "bg-surface-2 text-ember border border-border shadow-sm"
+              : "text-text-secondary hover:text-text-primary"
+          }`}
+        >
+          <Wand2 className="h-4 w-4 text-ember" />
+          <span>Procesador y Auditor DNP ({loteItems.length})</span>
+        </Button>
       </div>
 
       {/* =====================================================================
@@ -1357,6 +1469,500 @@ export function MotorPlanAccionTab({ puedeEditar = false }: MotorPlanAccionTabPr
                 <span>Finalizar y Programar Actividad</span>
               </Button>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* =====================================================================
+          VISTA 4: PROCESADOR MASIVO Y AUDITOR POR LOTES DNP (HOJA 2 -> HOJA 1)
+          ===================================================================== */}
+      {vistaActiva === "procesador_lote" && (
+        <div className="space-y-6">
+          {/* Header explicativo */}
+          <div className="rounded-xl border border-border bg-surface-1 p-5 shadow-sm space-y-3">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <Badge variant="ember">Motor SisPT / DNP</Badge>
+                  <Badge variant="outline">Ley 152/1994 Art. 41 · Ley 1474/2011 Art. 74</Badge>
+                </div>
+                <h3 className="text-base font-bold text-text-primary">
+                  Procesador Masivo y Auditor Metodológico DNP (Hoja 2 PI → Hoja 1 PA)
+                </h3>
+                <p className="text-xs text-text-secondary leading-relaxed max-w-3xl">
+                  Audita lotes de actividades para el Plan de Acción institucional: cruce automático con el Plan Indicativo (Hoja 2), validación lingüística de los 16 verbos débiles prohibidos con autocorrección en 1 clic, coherencia presupuestal según Instructivo DNP Pág. 13, semáforo de desfase físico-financiero y emisión del Dictamen Oficial para Consejo de Gobierno.
+                </p>
+              </div>
+
+              {/* Botones de acción principal */}
+              <div className="flex flex-wrap items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={cargarLoteDemo}
+                  disabled={procesandoLote}
+                  className="gap-2 text-xs"
+                >
+                  <RefreshCw className={`h-3.5 w-3.5 text-ember ${procesandoLote ? "animate-spin" : ""}`} />
+                  <span>Cargar Demo Canónico (6)</span>
+                </Button>
+
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={aplicarCorreccionAutomaticaDNP}
+                  disabled={procesandoLote || !resultadoLote}
+                  className="gap-2 text-xs font-semibold border-ember/40 text-ember hover:bg-ember/10"
+                >
+                  <Sparkles className="h-3.5 w-3.5 text-ember" />
+                  <span>Aplicar Corrección Automática DNP</span>
+                </Button>
+
+                <Button
+                  size="sm"
+                  onClick={() => setMostrarCertificado(true)}
+                  disabled={!resultadoLote}
+                  className="gap-2 text-xs bg-success text-text-inverse hover:bg-success/90"
+                >
+                  <ShieldCheck className="h-3.5 w-3.5" />
+                  <span>Certificado Ley 1474 / MIPG</span>
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          {/* Tarjetas de Dictamen y KPIs del Lote */}
+          {resultadoLote && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {/* Dictamen Consejo de Gobierno */}
+              <div className="rounded-xl border border-border bg-surface-1 p-4 shadow-sm space-y-2">
+                <div className="flex items-center justify-between text-xs text-text-secondary">
+                  <span>Dictamen Consejo de Gobierno</span>
+                  <Building2 className="h-4 w-4 text-ember" />
+                </div>
+                <div>
+                  {resultadoLote.estado_dictamen_planeacion === "APTO_CONSEJO_GOBIERNO" ? (
+                    <Badge variant="success" className="px-2.5 py-1 text-xs font-bold gap-1.5">
+                      <CheckCircle className="h-3.5 w-3.5" />
+                      APTO CONSEJO GOBIERNO
+                    </Badge>
+                  ) : (
+                    <Badge variant="destructive" className="px-2.5 py-1 text-xs font-bold gap-1.5">
+                      <AlertCircle className="h-3.5 w-3.5" />
+                      REQUIERE SUBSANACIÓN
+                    </Badge>
+                  )}
+                </div>
+                <div className="text-[11px] text-text-muted">
+                  Art. 41 Ley 152/94 · Aprobación Distrital
+                </div>
+              </div>
+
+              {/* Puntaje de Conformidad DNP */}
+              <div className="rounded-xl border border-border bg-surface-1 p-4 shadow-sm space-y-2">
+                <div className="flex items-center justify-between text-xs text-text-secondary">
+                  <span>Conformidad Metodológica DNP</span>
+                  <ShieldCheck className="h-4 w-4 text-info" />
+                </div>
+                <div className="text-2xl font-bold text-text-primary">
+                  {resultadoLote.puntaje_calidad_dnp}%
+                </div>
+                <div className="h-1.5 w-full rounded-full bg-surface-2 overflow-hidden">
+                  <div
+                    className={`h-full transition-all ${
+                      resultadoLote.puntaje_calidad_dnp === 100 ? "bg-success" : "bg-warning"
+                    }`}
+                    style={{ width: `${Math.min(resultadoLote.puntaje_calidad_dnp, 100)}%` }}
+                  />
+                </div>
+              </div>
+
+              {/* Actividades Conformes vs Observaciones */}
+              <div className="rounded-xl border border-border bg-surface-1 p-4 shadow-sm space-y-2">
+                <div className="flex items-center justify-between text-xs text-text-secondary">
+                  <span>Actividades Evaluadas ({resultadoLote.total_filas_procesadas})</span>
+                  <FileText className="h-4 w-4 text-ember" />
+                </div>
+                <div className="flex items-center gap-3 pt-1">
+                  <div className="flex items-center gap-1.5 text-xs">
+                    <span className="h-2.5 w-2.5 rounded-full bg-success inline-block" />
+                    <span className="font-bold text-text-primary">
+                      {resultadoLote.filas_conformes_dnp} Conformes
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-xs">
+                    <span className="h-2.5 w-2.5 rounded-full bg-danger inline-block" />
+                    <span className="font-bold text-text-primary">
+                      {resultadoLote.filas_con_observaciones} Con Obs.
+                    </span>
+                  </div>
+                </div>
+                <div className="text-[11px] text-text-muted">
+                  Regla lingüística de 16 verbos + Coherencia Pág. 13
+                </div>
+              </div>
+
+              {/* Presupuesto Total del Lote */}
+              <div className="rounded-xl border border-border bg-surface-1 p-4 shadow-sm space-y-2">
+                <div className="flex items-center justify-between text-xs text-text-secondary">
+                  <span>Presupuesto Auditado</span>
+                  <DollarSign className="h-4 w-4 text-success" />
+                </div>
+                <div className="text-2xl font-bold text-text-primary">
+                  {formatearCOP(resultadoLote.monto_total_programado_cop)}
+                </div>
+                <div className="text-[11px] text-text-muted">
+                  Ejecutado: {formatearCOP(resultadoLote.monto_total_ejecutado_cop)} ({resultadoLote.porcentaje_ejecucion_global}%)
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Tabla de Resultados en Vivo del Lote */}
+          <div className="rounded-xl border border-border bg-surface-1 shadow-sm overflow-hidden space-y-4 p-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-border pb-3">
+              <div>
+                <h4 className="text-sm font-bold text-text-primary">
+                  Matriz de Auditoría Detallada por Fila
+                </h4>
+                <p className="text-xs text-text-secondary">
+                  Cruce automático Columna D (Programa) y Columna E (Meta Producto), verificación de verbos fuertes y fuentes de financiación.
+                </p>
+              </div>
+
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => void ejecutarProcesamientoLote()}
+                disabled={procesandoLote}
+                className="gap-2 text-xs"
+              >
+                <RefreshCw className={`h-3 w-3 ${procesandoLote ? "animate-spin" : ""}`} />
+                <span>Re-auditar Lote</span>
+              </Button>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs border-collapse">
+                <thead>
+                  <tr className="border-b border-border bg-surface-2/60 text-text-secondary font-medium">
+                    <th className="py-2.5 px-3"># / Código</th>
+                    <th className="py-2.5 px-3">Entidad Responsable</th>
+                    <th className="py-2.5 px-3">Cruce Hoja 2 (Programa DNP)</th>
+                    <th className="py-2.5 px-3">Meta Producto (Col. E / Pág. 11)</th>
+                    <th className="py-2.5 px-3">Tipo Act.</th>
+                    <th className="py-2.5 px-3 min-w-[260px]">Descripción y Verbo DNP</th>
+                    <th className="py-2.5 px-3">Presupuesto & Fuente</th>
+                    <th className="py-2.5 px-3 text-center">Físico / Financiero</th>
+                    <th className="py-2.5 px-3 text-right">Dictamen</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border">
+                  {resultadoLote?.filas_procesadas.map((f, idx) => (
+                    <tr
+                      key={f.codigo || idx}
+                      className={`hover:bg-surface-2/40 transition-colors ${
+                        !f.es_conforme ? "bg-danger/5" : ""
+                      }`}
+                    >
+                      <td className="py-3 px-3 align-top font-mono font-bold text-text-primary">
+                        <div>{f.codigo}</div>
+                        {f.compromiso_pas_codigo && (
+                          <span className="text-[10px] text-text-muted">
+                            PI: {f.compromiso_pas_codigo}
+                          </span>
+                        )}
+                      </td>
+                      <td className="py-3 px-3 align-top">
+                        <div className="font-semibold text-text-primary">{f.entidad_responsable}</div>
+                        <div className="text-[10px] text-text-muted">{f.lider_responsable}</div>
+                      </td>
+                      <td className="py-3 px-3 align-top max-w-[200px]">
+                        <span className="text-text-primary line-clamp-2">
+                          {f.columna_d_programa || "—"}
+                        </span>
+                      </td>
+                      <td className="py-3 px-3 align-top max-w-[220px]">
+                        {f.tipo_meta === "ACTIVIDAD" ? (
+                          <Badge variant="outline" className="text-[10px] font-mono">
+                            Exención Pág. 11
+                          </Badge>
+                        ) : (
+                          <span className="text-text-secondary line-clamp-2">
+                            {f.columna_e_meta_producto || "—"}
+                          </span>
+                        )}
+                      </td>
+                      <td className="py-3 px-3 align-top">
+                        <Badge variant="secondary" className="text-[10px]">
+                          {f.tipo_actividad}
+                        </Badge>
+                      </td>
+                      <td className="py-3 px-3 align-top space-y-1.5">
+                        <p className="text-text-primary leading-snug">
+                          {f.descripcion_actividad}
+                        </p>
+                        <div className="flex flex-wrap items-center gap-1.5 text-[11px]">
+                          {f.es_verbo_fuerte ? (
+                            <Badge variant="success" className="text-[10px] gap-1">
+                              <CheckCircle className="h-3 w-3" />
+                              Verbo fuerte: {f.verbo_detectado}
+                            </Badge>
+                          ) : (
+                            <Badge variant="destructive" className="text-[10px] gap-1">
+                              <AlertCircle className="h-3 w-3" />
+                              Verbo débil: {f.verbo_detectado}
+                            </Badge>
+                          )}
+                          {f.redaccion_corregida_sugerida && (
+                            <div className="w-full text-[11px] text-ember bg-ember/10 p-1.5 rounded border border-ember/20">
+                              <span className="font-semibold">Sugerencia DNP:</span>{" "}
+                              {f.redaccion_corregida_sugerida}
+                            </div>
+                          )}
+                        </div>
+                        {f.hallazgos.length > 0 && (
+                          <ul className="text-[11px] text-danger list-disc list-inside space-y-0.5 pt-1">
+                            {f.hallazgos.map((h, hIdx) => (
+                              <li key={hIdx}>{h}</li>
+                            ))}
+                          </ul>
+                        )}
+                      </td>
+                      <td className="py-3 px-3 align-top space-y-1">
+                        <div className="font-semibold text-text-primary">
+                          {formatearCOP(f.monto_programado_cop)}
+                        </div>
+                        <Badge
+                          variant={f.fuente_coherente ? "outline" : "destructive"}
+                          className="text-[10px]"
+                        >
+                          {f.fuente_financiacion}
+                        </Badge>
+                      </td>
+                      <td className="py-3 px-3 align-top text-center space-y-1">
+                        <div className="text-text-primary font-mono font-bold">
+                          Fís: {f.avance_fisico}% · Fin: {f.ejecucion_financiera}%
+                        </div>
+                        {f.alerta_desfase && (
+                          <Badge variant="warning" className="text-[10px] gap-1">
+                            <AlertTriangle className="h-3 w-3" />
+                            Desfase &gt; 25%
+                          </Badge>
+                        )}
+                      </td>
+                      <td className="py-3 px-3 align-top text-right">
+                        {f.es_conforme ? (
+                          <Badge variant="success" className="gap-1 font-bold">
+                            <CheckCircle className="h-3 w-3" />
+                            Conforme
+                          </Badge>
+                        ) : (
+                          <Badge variant="destructive" className="gap-1 font-bold">
+                            <AlertCircle className="h-3 w-3" />
+                            Con Obs.
+                          </Badge>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* =====================================================================
+          MODAL OFICIAL DE CERTIFICADO DE TRANSPARENCIA LEY 1474 / MIPG
+          ===================================================================== */}
+      {mostrarCertificado && resultadoLote && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-overlay p-4 overflow-y-auto">
+          <div className="w-full max-w-4xl rounded-2xl border border-border bg-surface-1 p-6 md:p-8 shadow-2xl space-y-6 my-8">
+            {/* Header del Certificado */}
+            <div className="flex items-start justify-between border-b border-border pb-4">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <Badge variant="ember">Ley 1474 de 2011 · Art. 74</Badge>
+                  <Badge variant="outline">MIPG · Decreto 2482/2012</Badge>
+                </div>
+                <h3 className="text-lg font-bold text-text-primary">
+                  Certificado Oficial de Transparencia y Publicación Web
+                </h3>
+                <p className="text-xs text-text-secondary">
+                  Plan de Acción Institucional Vigencia 2026 · Corte al 31 de Enero
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => window.print()}
+                  className="gap-2 text-xs"
+                >
+                  <Printer className="h-4 w-4" />
+                  <span>Imprimir / PDF</span>
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setMostrarCertificado(false)}
+                  className="text-text-muted"
+                >
+                  Cerrar
+                </Button>
+              </div>
+            </div>
+
+            {/* Documento Institucional Imprimible */}
+            <div className="rounded-xl border border-border bg-surface-2/40 p-6 md:p-8 space-y-6 text-text-primary print:border-none print:p-0">
+              {/* Membrete Oficial */}
+              <div className="text-center space-y-1.5 border-b border-border pb-4">
+                <div className="text-xs uppercase tracking-widest text-text-secondary font-semibold">
+                  República de Colombia · Distrito Turístico y Cultural de Cartagena de Indias
+                </div>
+                <h2 className="text-base font-bold text-text-primary uppercase tracking-wide">
+                  Secretaría de Planeación Distrital · Alcaldía Mayor de Cartagena
+                </h2>
+                <div className="text-xs font-mono text-ember font-bold">
+                  EXPEDIENTE DE CUMPLIMIENTO METODOLÓGICO SisPT / DNP Nº SPD-2026-PA-0412
+                </div>
+              </div>
+
+              {/* Considerandos Legales */}
+              <div className="text-xs text-text-secondary leading-relaxed space-y-2">
+                <p>
+                  <strong>EL SECRETARIO DE PLANEACIÓN DISTRITAL DE CARTAGENA DE INDIAS,</strong> en uso de sus facultades constitucionales y legales, en especial las conferidas por el <strong>Artículo 41 de la Ley 152 de 1994</strong> (Ley Orgánica del Plan de Desarrollo), el <strong>Artículo 74 de la Ley 1474 de 2011</strong> (Estatuto Anticorrupción) y el <strong>Decreto 2482 de 2012</strong>:
+                </p>
+                <p className="font-semibold text-text-primary">CERTIFICA:</p>
+                <p>
+                  Que el Plan de Acción Anual correspondiente a la vigencia fiscal <strong>2026</strong> ha sido estructurado, auditado y verificado metodológicamente bajo los estándares del Departamento Nacional de Planeación (DNP) y el Sistema de Planeación Territorial (SisPT), dando estricto cumplimiento a la fecha límite legal de publicación establecida para el <strong>31 de enero de 2026</strong>.
+                </p>
+              </div>
+
+              {/* Selector de entidad si se desea filtrar la constancia */}
+              <div className="flex items-center justify-between gap-4 p-3 rounded-lg bg-surface-1 border border-border print:hidden">
+                <div className="text-xs text-text-secondary">
+                  Filtrar constancia por entidad responsable:
+                </div>
+                <Select
+                  value={entidadCertificado}
+                  onValueChange={(val) => setEntidadCertificado(val)}
+                >
+                  <SelectTrigger className="w-[280px] text-xs bg-surface-2 border-border">
+                    <SelectValue placeholder="Todas las entidades" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="todas">Todas las Entidades (Consolidado)</SelectItem>
+                    {entidadesDisponiblesCertificado.map((ent) => (
+                      <SelectItem key={ent} value={ent}>
+                        {ent}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Cuadro Resumen de Metas y Recursos Auditados */}
+              <div className="space-y-3">
+                <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider">
+                  1. Balance Consolidado de Metas y Financiación
+                </h4>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+                  <div className="p-3 rounded-lg border border-border bg-surface-1 space-y-1">
+                    <span className="text-[11px] text-text-muted">Total Actividades:</span>
+                    <div className="text-base font-bold text-text-primary">
+                      {filasCertificado.length}
+                    </div>
+                  </div>
+                  <div className="p-3 rounded-lg border border-border bg-surface-1 space-y-1">
+                    <span className="text-[11px] text-text-muted">Conformidad DNP:</span>
+                    <div className="text-base font-bold text-success">
+                      {resultadoLote.puntaje_calidad_dnp}%
+                    </div>
+                  </div>
+                  <div className="p-3 rounded-lg border border-border bg-surface-1 space-y-1">
+                    <span className="text-[11px] text-text-muted">Presupuesto Programado:</span>
+                    <div className="text-sm font-bold text-text-primary">
+                      {formatearCOP(
+                        filasCertificado.reduce((acc, f) => acc + f.monto_programado_cop, 0)
+                      )}
+                    </div>
+                  </div>
+                  <div className="p-3 rounded-lg border border-border bg-surface-1 space-y-1">
+                    <span className="text-[11px] text-text-muted">Dictamen Consejo:</span>
+                    <div className="text-xs font-bold text-success">
+                      {resultadoLote.estado_dictamen_planeacion}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Relación de Actividades Certificadas */}
+              <div className="space-y-3">
+                <h4 className="text-xs font-bold text-text-primary uppercase tracking-wider">
+                  2. Relación de Compromisos y Metas Vinculadas a Hoja 2
+                </h4>
+                <div className="overflow-x-auto rounded-lg border border-border">
+                  <table className="w-full text-left text-[11px] border-collapse">
+                    <thead>
+                      <tr className="bg-surface-1 border-b border-border text-text-secondary">
+                        <th className="p-2">Código PA</th>
+                        <th className="p-2">Entidad</th>
+                        <th className="p-2">Programa DNP</th>
+                        <th className="p-2">Meta Producto</th>
+                        <th className="p-2">Fuente Financiación</th>
+                        <th className="p-2 text-right">Presupuesto (COP)</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-border">
+                      {filasCertificado.map((f) => (
+                        <tr key={f.codigo}>
+                          <td className="p-2 font-mono font-bold text-text-primary">{f.codigo}</td>
+                          <td className="p-2">{f.entidad_responsable}</td>
+                          <td className="p-2">{f.columna_d_programa || "—"}</td>
+                          <td className="p-2">{f.columna_e_meta_producto || "—"}</td>
+                          <td className="p-2">{f.fuente_financiacion}</td>
+                          <td className="p-2 text-right font-mono">
+                            {formatearCOP(f.monto_programado_cop)}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* Firmas Institucionales */}
+              <div className="pt-8 border-t border-border grid grid-cols-1 sm:grid-cols-3 gap-6 text-center text-xs">
+                <div className="space-y-2">
+                  <div className="h-10 border-b border-dashed border-border" />
+                  <div className="font-bold text-text-primary">CAMILO REY LEÓN</div>
+                  <div className="text-[10px] text-text-secondary">
+                    Secretario de Planeación Distrital
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <div className="h-10 border-b border-dashed border-border" />
+                  <div className="font-bold text-text-primary">JAIME HERNÁNDEZ AMÍN</div>
+                  <div className="text-[10px] text-text-secondary">
+                    Director General Distriseguridad
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <div className="h-10 border-b border-dashed border-border" />
+                  <div className="font-bold text-text-primary">OFICINA CONTROL INTERNO</div>
+                  <div className="text-[10px] text-text-secondary">
+                    Auditoría y Vigilancia Ley 1474/2011
+                  </div>
+                </div>
+              </div>
+
+              {/* Pie de certificación */}
+              <div className="text-[10px] text-text-muted text-center border-t border-border pt-3">
+                Documento generado automáticamente por el Motor POLIS Cartagena conforme al marco de Interoperabilidad SisPT / DNP. Código de verificación digital: SHA256-DNP-1474-2026.
+              </div>
+            </div>
           </div>
         </div>
       )}

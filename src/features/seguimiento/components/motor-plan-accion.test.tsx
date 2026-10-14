@@ -8,6 +8,8 @@ import {
   VERBOS_DEBILES_PROHIBIDOS_DNP,
   ACTIVIDADES_PA_CANONICAS,
   BANCO_CONOCIMIENTO_CANONICO,
+  procesarLotePlanAccionLocal,
+  LOTE_DEMO_DNP_CANONICO,
 } from "../services/plan-accion-dnp-api";
 import { BancoConocimientoDNPTab } from "./banco-conocimiento-dnp-tab";
 import { MotorPlanAccionTab } from "./motor-plan-accion-tab";
@@ -171,6 +173,84 @@ describe("Motor de Planes de Acción DNP y Banco de Conocimiento (Hito PA-BANCO-
       const htmlSinPermiso = renderToString(<MotorPlanAccionTab puedeEditar={false} />);
       expect(htmlSinPermiso).not.toContain("Programar Actividad");
       expect(htmlSinPermiso).not.toContain("Asistente DNP (6 Pasos)");
+    });
+
+    test("renderiza el botón del Procesador y Auditor DNP en el conmutador de vistas", () => {
+      const html = renderToString(<MotorPlanAccionTab puedeEditar={false} />);
+      expect(html).toContain("Procesador y Auditor DNP");
+    });
+  });
+
+  describe("5. Procesador Masivo por Lotes DNP y Certificado Ley 1474 (Hito PA-PROCESADOR-PUBLICO-02)", () => {
+    test("procesa lote canónico de demostración DNP de 6 actividades y detecta observaciones", () => {
+      const resultado = procesarLotePlanAccionLocal({
+        vigencia: 2026,
+        filas: LOTE_DEMO_DNP_CANONICO,
+      });
+
+      expect(resultado.total_filas_procesadas).toBe(6);
+      expect(resultado.filas_conformes_dnp).toBe(4);
+      expect(resultado.filas_con_observaciones).toBe(2);
+      expect(resultado.estado_dictamen_planeacion).toBe("REQUIERE_SUBSANACION_PREVIA");
+      expect(resultado.puntaje_calidad_dnp).toBeCloseTo(66.67, 1);
+
+      // Cruce Hoja 2 para PA-2026-LOTE-01
+      const f1 = resultado.filas_procesadas[0];
+      expect(f1.codigo).toBe("PA-2026-LOTE-01");
+      expect(f1.es_conforme).toBe(true);
+      expect(f1.columna_d_programa).toContain("LE-01");
+      expect(f1.columna_e_meta_producto).toBeDefined();
+
+      // Exención Pág. 11 para tipo ACTIVIDAD (PA-2026-LOTE-03)
+      const f3 = resultado.filas_procesadas[2];
+      expect(f3.tipo_meta).toBe("ACTIVIDAD");
+      expect(f3.columna_e_meta_producto).toContain("Pág. 11 DNP");
+      expect(f3.es_conforme).toBe(true);
+
+      // Fila 5 con verbo débil 'Fortalecer'
+      const f5 = resultado.filas_procesadas[4];
+      expect(f5.es_conforme).toBe(false);
+      expect(f5.es_verbo_fuerte).toBe(false);
+      expect(f5.verbo_detectado).toBe("fortalecer");
+      expect(f5.redaccion_corregida_sugerida).toBeDefined();
+      expect(f5.redaccion_corregida_sugerida).not.toContain("fortalecer");
+
+      // Fila 6 con verbo débil 'Garantizar'
+      const f6 = resultado.filas_procesadas[5];
+      expect(f6.es_conforme).toBe(false);
+      expect(f6.es_verbo_fuerte).toBe(false);
+      expect(f6.verbo_detectado).toBe("garantizar");
+      expect(f6.redaccion_corregida_sugerida).toBeDefined();
+      expect(f6.redaccion_corregida_sugerida).not.toContain("garantizar");
+    });
+
+    test("simula la autocorrección en 1 clic sustituyendo los verbos débiles por sugerencias", () => {
+      const resultadoInicial = procesarLotePlanAccionLocal({
+        vigencia: 2026,
+        filas: LOTE_DEMO_DNP_CANONICO,
+      });
+
+      const loteCorregido = LOTE_DEMO_DNP_CANONICO.map((item, idx) => {
+        const fila = resultadoInicial.filas_procesadas[idx];
+        if (fila.redaccion_corregida_sugerida) {
+          return {
+            ...item,
+            descripcion_actividad: fila.redaccion_corregida_sugerida,
+          };
+        }
+        return item;
+      });
+
+      const resultadoFinal = procesarLotePlanAccionLocal({
+        vigencia: 2026,
+        filas: loteCorregido,
+      });
+
+      expect(resultadoFinal.total_filas_procesadas).toBe(6);
+      expect(resultadoFinal.filas_conformes_dnp).toBe(6);
+      expect(resultadoFinal.filas_con_observaciones).toBe(0);
+      expect(resultadoFinal.puntaje_calidad_dnp).toBe(100);
+      expect(resultadoFinal.estado_dictamen_planeacion).toBe("APTO_CONSEJO_GOBIERNO");
     });
   });
 });

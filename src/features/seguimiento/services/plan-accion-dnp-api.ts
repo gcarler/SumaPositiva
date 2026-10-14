@@ -146,6 +146,83 @@ export interface BancoConocimientoDNP {
   enlaces_oficiales: Array<{ titulo: string; url: string }>;
 }
 
+export interface ItemLotePlanAccion {
+  codigo?: string;
+  entidad_responsable: string;
+  lider_responsable?: string;
+  tipo_meta: TipoMetaDNP;
+  compromiso_pas_codigo?: string;
+  codigo_bpim?: string;
+  proyecto_nombre?: string;
+  objetivo_proyecto?: string;
+  tipo_actividad: TipoActividadDNP;
+  descripcion_actividad: string;
+  fecha_inicio?: string;
+  fecha_terminacion?: string;
+  avance_t1?: number;
+  avance_t2?: number;
+  avance_t3?: number;
+  avance_t4?: number;
+  categoria_recursos: CategoriaRecursosDNP;
+  fuente_financiacion: FuenteFinanciacionDNP;
+  monto_programado_cop: number;
+  monto_ejecutado_cop?: number;
+}
+
+export interface ProcesarLotePlanAccionSolicitud {
+  vigencia?: number;
+  items?: ItemLotePlanAccion[];
+  filas?: ItemLotePlanAccion[];
+}
+
+export interface FilaProcesadaPlanAccion {
+  codigo: string;
+  entidad_responsable: string;
+  lider_responsable: string;
+  tipo_meta: string;
+  compromiso_pas_codigo: string | null;
+  columna_d_programa: string | null;
+  columna_e_meta_producto: string | null;
+  codigo_bpim: string;
+  proyecto_nombre: string;
+  objetivo_proyecto: string;
+  tipo_actividad: string;
+  descripcion_actividad: string;
+  verbo_detectado: string;
+  es_verbo_fuerte: boolean;
+  redaccion_corregida_sugerida: string | null;
+  fecha_inicio: string;
+  fecha_terminacion: string;
+  avance_t1: number;
+  avance_t2: number;
+  avance_t3: number;
+  avance_t4: number;
+  avance_fisico: number;
+  categoria_recursos: string;
+  fuente_financiacion: string;
+  fuente_coherente: boolean;
+  monto_programado_cop: number;
+  monto_ejecutado_cop: number;
+  ejecucion_financiera: number;
+  alerta_desfase: boolean;
+  es_conforme: boolean;
+  hallazgos: string[];
+}
+
+export interface ProcesarLotePlanAccionRespuesta {
+  vigencia: number;
+  total_filas_procesadas: number;
+  filas_conformes_dnp: number;
+  filas_con_observaciones: number;
+  puntaje_calidad_dnp: number;
+  estado_dictamen_planeacion: "APTO_CONSEJO_GOBIERNO" | "REQUIERE_SUBSANACION_PREVIA";
+  monto_total_programado_cop: number;
+  monto_total_ejecutado_cop: number;
+  porcentaje_ejecucion_global: number;
+  filas_procesadas: FilaProcesadaPlanAccion[];
+  esContingencia?: boolean;
+}
+
 export interface FiltrosMatrizPlanAccion {
   vigencia?: number;
   entidad?: string;
@@ -1142,4 +1219,312 @@ export async function actualizarSeguimientoActividadApi(
       body: JSON.stringify(datos),
     }
   );
+}
+
+// =============================================================================
+// PROCESADOR MASIVO Y AUDITOR POR LOTES DNP (HOJA 2 -> HOJA 1)
+// =============================================================================
+
+export const LOTE_DEMO_DNP_CANONICO: ItemLotePlanAccion[] = [
+  {
+    codigo: "PA-2026-LOTE-01",
+    compromiso_pas_codigo: "PAS-SEC-01",
+    entidad_responsable: "Distriseguridad",
+    lider_responsable: "Director Técnico de Distriseguridad",
+    tipo_meta: "META_PRODUCTO",
+    tipo_actividad: "NORMATIVA",
+    descripcion_actividad: "Expedir el protocolo distrital unificado de atención inmediata y judicialización por alertas de ESCNNA.",
+    categoria_recursos: "INVERSION",
+    fuente_financiacion: "SGP",
+    monto_programado_cop: 450000000,
+    monto_ejecutado_cop: 400000000,
+    avance_t1: 100,
+    avance_t2: 80,
+    codigo_bpim: "2026130010001",
+    proyecto_nombre: "Protección Integral contra ESCNNA",
+  },
+  {
+    codigo: "PA-2026-LOTE-02",
+    compromiso_pas_codigo: "PAS-SEG-03",
+    entidad_responsable: "Distriseguridad",
+    lider_responsable: "Coordinador de Telemática y Sistemas LPR",
+    tipo_meta: "META_PRODUCTO",
+    tipo_actividad: "LOGISTICA",
+    descripcion_actividad: "Instalar 85 nuevos puntos de captura con cámaras analíticas LPR y fibra óptica en los corredores viales.",
+    categoria_recursos: "INVERSION",
+    fuente_financiacion: "CREDITO",
+    monto_programado_cop: 1850000000,
+    monto_ejecutado_cop: 1500000000,
+    avance_t1: 100,
+    avance_t2: 75,
+    codigo_bpim: "2026130010002",
+    proyecto_nombre: "Modernización de Videovigilancia LPR",
+  },
+  {
+    codigo: "PA-2026-LOTE-03",
+    compromiso_pas_codigo: "PAS-JUV-02",
+    entidad_responsable: "Secretaría del Interior y Convivencia Ciudadana",
+    lider_responsable: "Coordinadora de Diálogo Social",
+    tipo_meta: "ACTIVIDAD",
+    tipo_actividad: "DE_GESTION",
+    descripcion_actividad: "Ejecutar 32 mesas territoriales de concertación comunitaria y prevención de riñas juveniles.",
+    categoria_recursos: "INVERSION",
+    fuente_financiacion: "RECURSOS_PROPIOS",
+    monto_programado_cop: 320000000,
+    monto_ejecutado_cop: 280000000,
+    avance_t1: 100,
+    avance_t2: 90,
+    codigo_bpim: "2026130010003",
+    proyecto_nombre: "Convivencia Ciudadana y Diálogo Social",
+  },
+  {
+    codigo: "PA-2026-LOTE-04",
+    compromiso_pas_codigo: "PAS-SEC-01",
+    entidad_responsable: "Secretaría del Interior y Convivencia Ciudadana",
+    lider_responsable: "Director de Seguridad Barrial",
+    tipo_meta: "ACTIVIDAD",
+    tipo_actividad: "NORMATIVA",
+    descripcion_actividad: "Adoptar el plan de contingencia y vigilancia preventiva para eventos masivos en el Centro Histórico.",
+    categoria_recursos: "FUNCIONAMIENTO",
+    fuente_financiacion: "GASTOS_GENERALES",
+    monto_programado_cop: 120000000,
+    monto_ejecutado_cop: 110000000,
+    avance_t1: 100,
+    avance_t2: 85,
+    codigo_bpim: "2026130010004",
+    proyecto_nombre: "Inspección, Vigilancia y Control",
+  },
+  {
+    // Observación 1: Verbo débil prohibido 'Fortalecer'
+    codigo: "PA-2026-LOTE-05",
+    compromiso_pas_codigo: "PAS-ALUM-04",
+    entidad_responsable: "Secretaría General - Alumbrado Público",
+    lider_responsable: "Subdirector Técnico de Operaciones",
+    tipo_meta: "META_PRODUCTO",
+    tipo_actividad: "LOGISTICA",
+    descripcion_actividad: "Fortalecer los corredores seguros con nuevas luminarias LED en barrios de la Localidad 3.",
+    categoria_recursos: "INVERSION",
+    fuente_financiacion: "RECURSOS_PROPIOS",
+    monto_programado_cop: 520000000,
+    monto_ejecutado_cop: 450000000,
+    avance_t1: 80,
+    avance_t2: 60,
+    codigo_bpim: "2026130010005",
+    proyecto_nombre: "Iluminación Segura y Senderos de Convivencia",
+  },
+  {
+    // Observación 2: Verbo débil prohibido 'Garantizar'
+    codigo: "PA-2026-LOTE-06",
+    compromiso_pas_codigo: "PAS-CUID-07",
+    entidad_responsable: "Secretaría de Desarrollo Social",
+    lider_responsable: "Líder de Centros de Vida",
+    tipo_meta: "META_PRODUCTO",
+    tipo_actividad: "DE_GESTION",
+    descripcion_actividad: "Garantizar la atención psicosocial y cuidado integral a personas mayores vulnerables en Manzanas del Cuidado.",
+    categoria_recursos: "INVERSION",
+    fuente_financiacion: "SGP",
+    monto_programado_cop: 380000000,
+    monto_ejecutado_cop: 320000000,
+    avance_t1: 90,
+    avance_t2: 70,
+    codigo_bpim: "2026130010006",
+    proyecto_nombre: "Manzanas del Cuidado y Centros de Vida",
+  },
+];
+
+const FUENTES_POR_CATEGORIA_LOCAL: Record<string, string[]> = {
+  INVERSION: [
+    "RECURSOS_PROPIOS",
+    "SGP",
+    "SGP_PROPOSITO_GENERAL",
+    "SGP_SEGURIDAD",
+    "REGALIAS",
+    "CREDITO",
+    "COFINANCIACION",
+    "OTROS",
+  ],
+  FUNCIONAMIENTO: [
+    "GASTOS_PERSONAL",
+    "GASTOS_GENERALES",
+    "TRANSFERENCIAS",
+    "RECURSOS_PROPIOS",
+  ],
+  RECURSOS_GESTION: ["GESTION_NO_PRESUPUESTAL"],
+};
+
+export function procesarLotePlanAccionLocal(
+  solicitud: ProcesarLotePlanAccionSolicitud
+): ProcesarLotePlanAccionRespuesta {
+  const items = solicitud.filas && solicitud.filas.length > 0
+    ? solicitud.filas
+    : (solicitud.items && solicitud.items.length > 0 ? solicitud.items : []);
+
+  const vigencia = solicitud.vigencia || 2026;
+  const mapaPAS = new Map(COMPROMISOS_PAS_CANONICOS.map((c) => [c.codigo.toUpperCase(), c]));
+  const verbosDebiles = new Set(VERBOS_DEBILES_PROHIBIDOS_DNP.map((v) => v.toLowerCase()));
+
+  const filasProcesadas: FilaProcesadaPlanAccion[] = [];
+  let filasConformes = 0;
+  let filasConObs = 0;
+  let totalProgramado = 0;
+  let totalEjecutado = 0;
+
+  for (let idx = 0; idx < items.length; idx++) {
+    const item = items[idx];
+    const codigoFila = item.codigo || `PA-${vigencia}-LOTE-${String(idx + 1).padStart(2, "0")}`;
+    const hallazgos: string[] = [];
+    let columnaDPrograma: string | null = null;
+    let columnaEMetaProducto: string | null = null;
+
+    // 1. Cruce Hoja 2 -> Hoja 1
+    if (item.compromiso_pas_codigo) {
+      const pasObj = mapaPAS.get(item.compromiso_pas_codigo.toUpperCase());
+      if (pasObj) {
+        columnaDPrograma = `${pasObj.linea_estrategica_codigo} - ${pasObj.nombre}`;
+        if (item.tipo_meta === "ACTIVIDAD") {
+          columnaEMetaProducto = "No requerida para tipo ACTIVIDAD (Pág. 11 DNP)";
+        } else {
+          columnaEMetaProducto = `${pasObj.meta_cuatrienal_valor} ${pasObj.unidad_medida}: ${pasObj.descripcion}`;
+        }
+      } else {
+        hallazgos.push(`Código de Plan Indicativo '${item.compromiso_pas_codigo}' no encontrado en Hoja 2.`);
+      }
+    } else if (item.tipo_meta === "ACTIVIDAD") {
+      columnaDPrograma = "Exención DNP Pág. 11 (Actividad Directa)";
+      columnaEMetaProducto = "No requerida para tipo ACTIVIDAD (Pág. 11 DNP)";
+    } else {
+      hallazgos.push(`Las metas de tipo ${item.tipo_meta} requieren vinculación con el Plan Indicativo (Pág. 11 DNP).`);
+    }
+
+    // 2. Validación lingüística de verbos
+    const tokens = item.descripcion_actividad.trim().split(/\s+/);
+    const primerPalabra = tokens.length > 0 ? tokens[0].toLowerCase().replace(/[^a-záéíóúñ]/g, "") : "";
+    const esDebil = verbosDebiles.has(primerPalabra);
+    const esInfinitivo = primerPalabra.endsWith("ar") || primerPalabra.endsWith("er") || primerPalabra.endsWith("ir");
+    const esVerboFuerte = esInfinitivo && !esDebil;
+
+    let redaccionCorregida: string | null = null;
+    if (esDebil) {
+      const sugerencias = SUGERENCIAS_VERBOS_FUERTES[item.tipo_actividad] || SUGERENCIAS_VERBOS_FUERTES["DE_GESTION"];
+      const verboFuerte = sugerencias[0] || "Ejecutar";
+      redaccionCorregida = `${verboFuerte} ${tokens.slice(1).join(" ")}`.trim();
+      hallazgos.push(
+        `Verbo inicial '${primerPalabra}' prohibido por DNP (verbo débil/aspiracional). Utilice un verbo fuerte como '${verboFuerte}'.`
+      );
+    } else if (!esInfinitivo) {
+      hallazgos.push("La redacción debe iniciar con un verbo fuerte en infinitivo (-ar, -er, -ir).");
+    }
+
+    // 3. Coherencia presupuestal
+    const catNorm = (item.categoria_recursos || "INVERSION").toUpperCase();
+    const fuentesPermitidas = FUENTES_POR_CATEGORIA_LOCAL[catNorm] || [];
+    const fuenteNorm = (item.fuente_financiacion || "RECURSOS_PROPIOS").toUpperCase();
+    const fuenteCoherente = fuentesPermitidas.includes(fuenteNorm);
+
+    if (!fuenteCoherente) {
+      hallazgos.push(
+        `La fuente '${item.fuente_financiacion}' no es coherente con la categoría de recursos '${item.categoria_recursos}' (Instructivo DNP Pág. 13).`
+      );
+    }
+
+    // 4. Avances físico y financiero
+    const tVals = [item.avance_t1 ?? 0, item.avance_t2 ?? 0, item.avance_t3 ?? 0, item.avance_t4 ?? 0];
+    const reported = tVals.filter((v) => v > 0);
+    const avanceFisico = reported.length > 0 ? Number((reported.reduce((a, b) => a + b, 0) / reported.length).toFixed(2)) : 0;
+
+    const prog = Math.max(0, item.monto_programado_cop || 0);
+    const ejec = Math.max(0, item.monto_ejecutado_cop || 0);
+    totalProgramado += prog;
+    totalEjecutado += ejec;
+
+    const ejecucionFinanciera = prog > 0
+      ? Number(((ejec / prog) * 100).toFixed(2))
+      : (catNorm === "RECURSOS_GESTION" ? 100 : 0);
+
+    const alertaDesfase = Math.abs(avanceFisico - ejecucionFinanciera) > 25;
+    if (alertaDesfase) {
+      hallazgos.push(
+        `Alerta de desfase físico-financiero: Avance físico (${avanceFisico}%) difiere en más de 25% frente a la ejecución presupuestal (${ejecucionFinanciera}%).`
+      );
+    }
+
+    const esConforme = hallazgos.length === 0;
+    if (esConforme) {
+      filasConformes++;
+    } else {
+      filasConObs++;
+    }
+
+    filasProcesadas.push({
+      codigo: codigoFila,
+      entidad_responsable: item.entidad_responsable || "Distriseguridad",
+      lider_responsable: item.lider_responsable || "Líder Funcional",
+      tipo_meta: item.tipo_meta,
+      compromiso_pas_codigo: item.compromiso_pas_codigo || null,
+      columna_d_programa: columnaDPrograma,
+      columna_e_meta_producto: columnaEMetaProducto,
+      codigo_bpim: item.codigo_bpim || "",
+      proyecto_nombre: item.proyecto_nombre || "",
+      objetivo_proyecto: item.objetivo_proyecto || "",
+      tipo_actividad: item.tipo_actividad,
+      descripcion_actividad: item.descripcion_actividad,
+      verbo_detectado: primerPalabra,
+      es_verbo_fuerte: esVerboFuerte,
+      redaccion_corregida_sugerida: redaccionCorregida,
+      fecha_inicio: item.fecha_inicio || "2026-01-15",
+      fecha_terminacion: item.fecha_terminacion || "2026-12-15",
+      avance_t1: item.avance_t1 ?? 0,
+      avance_t2: item.avance_t2 ?? 0,
+      avance_t3: item.avance_t3 ?? 0,
+      avance_t4: item.avance_t4 ?? 0,
+      avance_fisico: avanceFisico,
+      categoria_recursos: item.categoria_recursos,
+      fuente_financiacion: item.fuente_financiacion,
+      fuente_coherente: fuenteCoherente,
+      monto_programado_cop: prog,
+      monto_ejecutado_cop: ejec,
+      ejecucion_financiera: ejecucionFinanciera,
+      alerta_desfase: alertaDesfase,
+      es_conforme: esConforme,
+      hallazgos,
+    });
+  }
+
+  const totalFilas = items.length;
+  const puntajeCalidad = totalFilas > 0 ? Number(((filasConformes / totalFilas) * 100).toFixed(2)) : 100;
+  const estadoDictamen = filasConObs === 0 && totalFilas > 0
+    ? "APTO_CONSEJO_GOBIERNO"
+    : "REQUIERE_SUBSANACION_PREVIA";
+  const porcentajeGlobal = totalProgramado > 0 ? Number(((totalEjecutado / totalProgramado) * 100).toFixed(2)) : 100;
+
+  return {
+    vigencia,
+    total_filas_procesadas: totalFilas,
+    filas_conformes_dnp: filasConformes,
+    filas_con_observaciones: filasConObs,
+    puntaje_calidad_dnp: puntajeCalidad,
+    estado_dictamen_planeacion: estadoDictamen,
+    monto_total_programado_cop: Number(totalProgramado.toFixed(2)),
+    monto_total_ejecutado_cop: Number(totalEjecutado.toFixed(2)),
+    porcentaje_ejecucion_global: porcentajeGlobal,
+    filas_procesadas: filasProcesadas,
+    esContingencia: true,
+  };
+}
+
+export async function procesarLotePlanAccionApi(
+  solicitud: ProcesarLotePlanAccionSolicitud
+): Promise<ProcesarLotePlanAccionRespuesta> {
+  try {
+    return await apiFetch<ProcesarLotePlanAccionRespuesta>(
+      "/api/v1/compromisos/plan-accion/procesar-lote",
+      {
+        method: "POST",
+        body: JSON.stringify(solicitud),
+      }
+    );
+  } catch (error) {
+    console.warn("Fallo procesarLotePlanAccionApi, usando fallback local:", error);
+    return procesarLotePlanAccionLocal(solicitud);
+  }
 }

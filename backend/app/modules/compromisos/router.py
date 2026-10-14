@@ -15,6 +15,8 @@ from app.modules.compromisos.schemas import (
     CompromisoPASRespuesta,
     KpisSeguimientoRespuesta,
     MatrizPlanAccionRespuesta,
+    ProcesarLotePlanAccionRespuesta,
+    ProcesarLotePlanAccionSolicitud,
     ValidarRedaccionRespuesta,
     ValidarRedaccionSolicitud,
 )
@@ -84,6 +86,23 @@ async def validar_redaccion_actividad_dnp(
     """Verifica en tiempo real si una redacción cumple la regla de oro DNP (iniciar con verbo fuerte en infinitivo)
     o si incurre en la lista negra oficial de los 16 verbos débiles prohibidos (Instructivo DNP pág. 12)."""
     return service.validar_redaccion_dnp(datos.descripcion_actividad, datos.tipo_actividad)
+
+
+@router.post(
+    "/plan-accion/procesar-lote",
+    response_model=ProcesarLotePlanAccionRespuesta,
+    summary="Procesador y Auditor Metodológico de Lotes DNP (Hoja 2 PI -> Hoja 1 PA)",
+)
+async def procesar_lote_plan_accion_dnp(
+    datos: ProcesarLotePlanAccionSolicitud, service: CompromisosServiceDep
+):
+    """Procesamiento por lotes y auditoría metodológica oficial DNP:
+    Cruce automático Hoja 2 (Plan_Indicativo) -> Hoja 1 (Plan_Accion),
+    validación de verbos fuertes en infinitivo (con redacción corregida en 1 clic),
+    verificación de coherencia de fuentes de financiación (Pág. 13 DNP),
+    cálculo de avance físico/ejecución financiera con alertas de desfase
+    y emisión del dictamen oficial para aprobación en Consejo de Gobierno (Art. 41 Ley 152/94)."""
+    return await service.procesar_lote_plan_accion(datos)
 
 
 @router.get(
