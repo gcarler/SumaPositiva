@@ -1,108 +1,143 @@
-# TAREA ACTIVA PARA `agy2`: [GEO-FIX-CONSOLE-01]
-## CORRECCIÓN QUIRÚRGICA DE ERRORES EN CONSOLA DEL GEOVISOR (`TypeError: .slice()`, 404 RECURSOS, `sw.js` `chrome-extension` Y DIRECTIVA CSP `media-src`)
+# TAREA ACTIVA PARA `agy2`: `[GEO-CLEAN-DRIVE-01]`
+## LIMPIEZA INTEGRAL DE DATOS ANTIGUOS DEL GEOVISOR Y VISUALIZACIÓN EXCLUSIVA DE LAS CAPAS GEOJSON DEL DRIVE (`Hurto_Motocicletas`, `Hurto_Residencias`, `Hurto_Comerciantes` 2018–2026)
 
 **Fecha:** 14 de Octubre de 2026
 **De:** Coordinador General / Auditor Forense EAF (`agy`)
 **Para:** Desarrollador Principal (`agy2`)
-**Prioridad:** P0 CRÍTICO — El error `TypeError: Cannot read properties of undefined (reading 'slice')` rompe el renderizado en vivo del Geovisor (`/geovisor`) cuando `GeovisorHurtosPanel` recibe la respuesta real de FastAPI.
+**Prioridad:** CRÍTICA — EJECUCIÓN INMEDIATA
 
 ---
 
-## 🎯 DIAGNÓSTICO FORENSE DE LOS 4 ERRORES REPORTADOS POR EL PROPIETARIO
+## 1. Contexto y Solicitud del Usuario
 
-Al abrir `https://seguridadhumanaintegral.org/geovisor`, la consola del navegador reporta:
-1. `TypeError: Cannot read properties of undefined (reading 'slice')`
-2. `Failed to load resource: the server responded with a status of 404 (Not Found)`
-3. `sw.js:117 Uncaught (in promise) TypeError: Failed to execute 'put' on 'Cache': Request scheme 'chrome-extension' is unsupported`
-4. `Loading media from 'data:audio/wav;base64,...' violates the following Content Security Policy directive: "default-src 'self'". Note that 'media-src' was not explicitly set`
+El usuario revisó el Geovisor y solicitó explícitamente:
+> *"Creo que hay que limpiar el geovisor de los datos antiguos que tenía publicado ahí para poder dejar limpio lo que traemos del GeoJson, no sé si limpias todo primeramente al 100% y luego incorporas la información que te compartí en el Drive para el geovisor. Igual te vuelvo a compartir el link del Drive https://drive.google.com/drive/folders/1z704iQPAyEp__BZPsUhBiny4ikOyJMk4 — asignarle esta tarea a AGY2"*
 
-### Causas raíz exactas identificadas:
-
-1. **Causa Raíz 1 — Desajuste de contrato JSON entre Backend y Frontend en `/api/v1/geodatos/analitica/hurtos/resumen` y `/geojson` (`TypeError: Cannot read properties of undefined (reading 'slice')`):**
-   - El endpoint `GET /api/v1/geodatos/analitica/hurtos/resumen` (`backend/app/modules/geodatos/schemas.py` y `repository.py`) devuelve en `serie_anual` y `serie_mensual` objetos con la clave **`"periodo"`** (`{ "periodo": "2018", "cantidad": 2997 }`, `{ "periodo": "Enero", "cantidad": 1885 }`, sin `"etiqueta"` ni `"porcentaje"`).
-   - Sin embargo, en `src/features/geovisor/services/hurtos-api.ts` (`SerieTemporalItem`) y en `src/features/geovisor/components/geovisor-hurtos-panel.tsx` (líneas 614–678), el frontend accede directamente a:
-     - Línea 633: `{item.etiqueta.slice(2)}`
-     - Línea 660: `const mesCorto = item.etiqueta.slice(0, 3);`
-   - En los tests unitarios pasaba porque los mocks usaban `etiqueta`, pero en producción contra FastAPI `item.etiqueta` es `undefined`, lanzando `TypeError: Cannot read properties of undefined (reading 'slice')` apenas abre el panel en `/geovisor`!
-   - **Adicionalmente**, en `GET /api/v1/geodatos/analitica/hurtos/geojson`, cada polígono devuelve `top_armas: [{ "categoria": "...", "cantidad": ..., "porcentaje": ... }]` y `top_sitios: [{ "categoria": "...", "cantidad": ..., "porcentaje": ... }]`, mientras que el tooltip de hover en `src/features/geovisor/components/mapa-cartagena.tsx` (líneas 467 y 476) lee `hoverInfo.hurtoDetalle.top_armas[0].arma` y `hoverInfo.hurtoDetalle.top_sitios[0].sitio` (que dan `undefined`).
-
-2. **Causa Raíz 2 — `404 (Not Found)` en recursos de imagen:**
-   - En `/var/log/nginx/access.log` se identificó el 404 recurrente:
-     - `GET /fotos/testimonios/ana_rosa_el_pozon.webp` (y las otras 3 fotos sembradas en `participacion_ciudadana.testimonios_comunitarios` por la migración `0024_testimonios_memoria.py`: `/fotos/testimonios/dionisio_la_boquilla.webp`, `/fotos/testimonios/yorledis_mandela.webp`, `/fotos/testimonios/carlos_getsemani.webp`), porque el directorio `public/fotos/testimonios/` no existe.
-
-3. **Causa Raíz 3 — `sw.js:117 Uncaught (in promise) TypeError: Failed to execute 'put' on 'Cache': Request scheme 'chrome-extension' is unsupported`:**
-   - En `public/sw.js` (líneas 42–55 y 95–123), el listener `fetch` no verifica que `url.protocol` sea `http:` o `https:` ni que `url.origin === self.location.origin`. Cuando una extensión de Chrome solicita un `.png` o `.svg` con esquema `chrome-extension://`, entra al bloque de las líneas 95–120 e intenta ejecutar `cache.put(request, responseClone)`, lo cual lanza una excepción no capturada en promesa.
-
-4. **Causa Raíz 4 — Violación CSP `media-src` (`data:audio/wav;base64,...`):**
-   - En `next.config.ts` (`construirCsp`, líneas 38–52), no está declarada la directiva `media-src`, por lo que cae en el fallback `default-src 'self'` y bloquea/reporta cualquier audio `data:` o `blob:`.
+### Diagnóstico de los datos antiguos que hoy ensucian el Geovisor (`/geovisor` y `/plataforma/geovisor`)
+En este momento, aunque ya están ingeridos los **3 archivos GeoJSON del Drive** (`Hurto_Motocicletas.geojson`: 2.520 features / 4.683 casos; `Hurto_Residencias.geojson`: 3.853 features / 5.044 casos; `Hurto_Comerciantes.geojson`: 5.907 features / 8.515 casos → **12.280 features y 18.242 casos totales**, con los 2 polígonos reproyectados `ID_POLIG=1` Perímetro Urbano `75,28 km²` e `ID_POLIG=2` Zona Rural e Insular `597,38 km²`), el Geovisor sigue mostrando por encima y alrededor **datos simulados antiguos**:
+1. **En el mapa (`use-mapa.ts`, `mapa-cartagena.tsx`, `geovisor-view.tsx`):**
+   - Se pintan por defecto (`localidades: true`, `corregimientos: true`, `barrios: true`, `puntos: true`) los 4 polígonos rectangulares simulados de `GEOJSON_TERRITORIOS` (`territorios.geojson.ts`) coloreados con cifras ficticias de `ESTADISTICAS_TERRITORIOS` (`estadisticas.data.ts`: `ISH: 62/100`, `Homicidios: 42.9`, `Alertas SAT: 8`), los `217` barrios catastrales en azul, los círculos de `Puntos de Alerta SAT` simulados y los pines de mesas.
+   - Arriba a la izquierda del mapa aparece un buscador viejo de `"Busca un territorio o barrio · Todas las localidades (205 barrios)"` y abajo del mapa aparece una tira de botones de localidades/corregimientos antiguos (`Localidad 1`, `Localidad 2`, `Localidad 3`, `La Boquilla`, `Tierrabomba`, `Barú`, `Pasacaballos`, `Bayunca`).
+2. **En la barra superior (`GeovisorTopShelf` — `geovisor-top-shelf.tsx`):**
+   - Muestra selectores viejos (`Variable: Índice de Seguridad Humana (/100)`, `Alertas SAT/CIPRAT`, `Tasa de Homicidios`, `Alertas ESCNNA`) y 4 KPIs antiguos simulados (`Ciudadanos Participando: 8.420`, `Aportes Radicados: 0`, `Alertas SAT Activas: 54`, `ISH Promedio Distrital: 58 / 100`).
+3. **En el panel izquierdo (`GeovisorControles` — `geovisor-controles.tsx`):**
+   - Muestra arriba los checkboxes antiguos (`Localidades (3)`, `Corregimientos e Islas`, `Barrios Catastrales (217)`, `Puntos de Alerta SAT`, `Isócronas`) y abajo la leyenda antigua de `Índice de Seguridad Humana /100 (Min: 43, Max: 62)`.
+4. **En los paneles acoplados (`geovisor-layout-store.ts`):**
+   - Carga por defecto pestañas antiguas (`mesas`, `ficha`, `territorio` con `GeovisorBiSidebar` de ISH simulado, `datagrid` de mesas y `graficos` de radar simulado).
 
 ---
 
-## 🛠️ INSTRUCCIONES TÉCNICAS PASO A PASO
+## 2. Especificación Técnica de la Limpieza Integral (`[GEO-CLEAN-DRIVE-01]`)
 
-### PASO 1: Blindaje Total Backend + Frontend en `serie_anual`, `serie_mensual`, `top_armas` y `top_sitios`
-
-1. **En Backend (`backend/app/modules/geodatos/schemas.py` y `backend/app/modules/geodatos/repository.py`):**
-   - En `SerieHurtoItem` (`schemas.py`): mantén `periodo: str` y `cantidad: int`, y agrega `etiqueta: str = ""` y `porcentaje: float = 0.0` (con `model_validator` o poblados directamente en `repository.py` de modo que `etiqueta = periodo` y `porcentaje = round(cantidad / total_casos * 100, 1)`).
-   - En `obtener_hurtos_geojson` (`repository.py`): en los diccionarios dentro de `top_armas` incluye tanto `"categoria"` como `"arma"` (con el mismo valor), y en `top_sitios` incluye tanto `"categoria"` como `"sitio"` (con el mismo valor). Así tanto consumidores que lean `.categoria` como consumidores que lean `.arma` / `.sitio` tendrán siempre el string poblado.
-2. **En Frontend (`src/features/geovisor/services/hurtos-api.ts`, `src/features/geovisor/components/geovisor-hurtos-panel.tsx` y `src/features/geovisor/components/mapa-cartagena.tsx`):**
-   - En `SerieTemporalItem` (`hurtos-api.ts`): declara `etiqueta?: string; periodo?: string; cantidad: number; porcentaje?: number;`.
-   - En `obtenerResumenHurtos` (`hurtos-api.ts`): normaliza la respuesta recibida de `apiFetch` antes de retornarla para garantizar que cada item de `serie_anual` y `serie_mensual` tenga siempre `etiqueta: String(item.etiqueta ?? item.periodo ?? "")` y `periodo: String(item.periodo ?? item.etiqueta ?? "")` y `porcentaje: Number(item.porcentaje ?? 0)`.
-   - En `src/features/geovisor/components/geovisor-hurtos-panel.tsx` (líneas 612–680):
-     - En `serie_anual.map`: usa `const etiqueta = String(item.etiqueta ?? item.periodo ?? "");` y luego `etiqueta.slice(2)` (nunca llames `.slice()` directamente sobre una propiedad sin fallback a `""`).
-     - En `serie_mensual.map`: usa `const etiqueta = String(item.etiqueta ?? item.periodo ?? "");` y `const mesCorto = etiqueta.slice(0, 3);`.
-   - En `src/features/geovisor/components/mapa-cartagena.tsx` (líneas 463–480):
-     - Usa `hoverInfo.hurtoDetalle.top_armas[0].arma ?? hoverInfo.hurtoDetalle.top_armas[0].categoria` y `hoverInfo.hurtoDetalle.top_sitios[0].sitio ?? hoverInfo.hurtoDetalle.top_sitios[0].categoria` (actualizando el tipo en `use-mapa.ts` para incluir `categoria?: string`).
-
-### PASO 2: Eliminación de los 404 de Fotos de Testimonios (`public/fotos/testimonios/`)
-
-1. Crea el directorio `/root/polis/public/fotos/testimonios/` y coloca allí las 4 imágenes `.webp` válidas referenciadas en `bd_csh` (puedes copiar una de las imágenes `.webp` institucionales existentes en `public/images/` o generar 4 archivos `.webp` ligeros válidos):
-   - `/root/polis/public/fotos/testimonios/ana_rosa_el_pozon.webp`
-   - `/root/polis/public/fotos/testimonios/dionisio_la_boquilla.webp`
-   - `/root/polis/public/fotos/testimonios/yorledis_mandela.webp`
-   - `/root/polis/public/fotos/testimonios/carlos_getsemani.webp`
-2. Verifica que `curl -I http://127.0.0.1:3000/fotos/testimonios/ana_rosa_el_pozon.webp` responda `HTTP/1.1 200 OK`.
-
-### PASO 3: Corrección del Service Worker (`public/sw.js`) ante `chrome-extension://`
-
-1. En `public/sw.js`:
-   - Incrementa `const CACHE_NAME = "polis-pwa-v2";` para forzar la actualización inmediata del Service Worker en el navegador del usuario.
-   - Al inicio del listener `self.addEventListener("fetch", (event) => { ... })`, justo después de `const url = new URL(request.url);`:
-     ```js
-     // Ignorar esquemas no HTTP/HTTPS (ej. chrome-extension://, data:, blob:) y orígenes externos
-     if (
-       (url.protocol !== "http:" && url.protocol !== "https:") ||
-       url.origin !== self.location.origin
-     ) {
-       return;
-     }
+### Paso 1: Limpieza del Lienzo Cartográfico (`geovisor-view.tsx`, `use-mapa.ts`, `mapa-cartagena.tsx`)
+1. **En `src/features/geovisor/views/geovisor-view.tsx`:**
+   - Inicializar `capas` con todas las capas antiguas **desactivadas (`false`)** y las capas GeoJSON del Drive **activas**:
+     ```ts
+     const [capas, setCapas] = useState<CapasConfig>({
+       localidades: false,
+       corregimientos: false,
+       barrios: false,
+       puntos: false,
+       etiquetas: true,
+       isocronas: false,
+       hurtoMotocicletas: true,
+       hurtoResidencias: true,
+       hurtoComercio: true,
+     });
      ```
-   - Además, en todas las llamadas a `cache.put(...)` dentro de `public/sw.js` (líneas 64, 108 y 117), encadena `.catch(() => {})` para que jamás pueda producirse un `Uncaught (in promise) TypeError` en `Cache.put`.
+   - Permitir que cuando las 3 capas GeoJSON estén activas (o cuando `delitoHurto === null` / `"TODOS"`), `use-mapa.ts` consulte `obtenerPoligonosHurtosGeojson({ delito: undefined, anio: anioHurto ?? undefined })` mostrando el **Consolidado de los 3 GeoJSON del Drive (18.242 casos / 12.280 registros)**, y cuando se seleccione un delito específico (`HURTO MOTOCICLETA`, `HURTO RESIDENCIAS`, `HURTO COMERCIO`), filtre el GeoJSON correspondiente.
+   - Pasar `modoGeojsonDrive={true}` a `<MapaCartagena />` (y `mesas={[]}` para no ensuciar los polígonos del GeoJSON con pines ajenos).
+2. **En `src/features/geovisor/hooks/use-mapa.ts`:**
+   - En el `useEffect` que carga `obtenerPoligonosHurtosGeojson`:
+     - Si las 3 capas (`hurtoMotocicletas`, `hurtoResidencias`, `hurtoComercio`) están activas (o más de una), enviar `delito: undefined` (Consolidado de las 3 capas del Drive) o si `delitoHurto` tiene un delito específico seleccionado (`hurto_motocicletas`, `hurto_residencias`, `hurto_comercio`), usar ese delito.
+   - Mejorar la visualización de `capaHurtos` en OpenLayers para que los 2 polígonos reales del Drive (`ID_POLIG = 1` Perímetro Urbano de Cartagena y `ID_POLIG = 2` Zona Rural e Insular de Cartagena) luzcan claros, diferenciados y profesionales:
+     - Polígono Urbano (`zona === "URBANA"`): relleno semitransparente con mayor saturación (`55`), borde de `2.5px` del color de la capa activa (`#ef4444` para Consolidado, `#f97316` para Motocicletas, `#8b5cf6` para Residencias, `#06b6d4` para Comercio).
+     - Polígono Rural e Insular (`zona === "RURAL"`): relleno diferenciado (`28`), borde punteado o continuo de `2px` para distinguir claramente el área rural/insular (`597,4 km²`) del perímetro urbano (`75,3 km²`).
+3. **En `src/features/geovisor/components/mapa-cartagena.tsx`:**
+   - Añadir la prop opcional `modoGeojsonDrive?: boolean` (por defecto `false` cuando se monta aislado en `geovisor.stories.tsx` para no romper el test de Storybook `MapaYBarrios`, pero `true` cuando lo monta `GeovisorView` en `/geovisor` y `/`).
+   - Cuando `modoGeojsonDrive={true}`:
+     - **No renderizar visualmente** el buscador viejo de 205 barrios ni el selector `"Filtrar por localidad"`. En su lugar, mostrar una **Barra Flotante Compacta de Capas GeoJSON (Drive SIEDCO)** en la esquina superior izquierda del mapa con:
+       - Píldoras rápidas para alternar la capa pintada en el mapa: **Consolidado (18.242)**, **Motocicletas (4.683)**, **Residencias (5.044)**, **Comercio (8.515)**.
+       - Indicador del CRS reproyectado: `EPSG:9377 → WGS84 · 2 Polígonos Oficiales (Urbano / Rural)`.
+     - El badge superior derecho debe mostrar **`GeoJSON Drive Activo`** en lugar de `Choropleth Activo`.
+     - La tira inferior de botones `Abrir ficha territorial: ...` debe quedar con clase `sr-only` cuando `modoGeojsonDrive={true}` (invisible visualmente para no ensuciar la interfaz con localidades antiguas, pero presente en el árbol accesible para que la historia `TerritoriosConTeclado` de `platform.stories.tsx` siga pasando al 100%).
 
-### PASO 4: Inclusión de `media-src` en Content-Security-Policy (`next.config.ts`)
+### Paso 2: Limpieza del Panel Superior (`src/features/geovisor/components/geovisor-top-shelf.tsx`)
+Reemplazar los datos antiguos simulados (`8.420 ciudadanos`, `54 alertas SAT`, `ISH 58/100`) en `GeovisorTopShelf` por **indicadores y selectores 100% reales de los 3 archivos GeoJSON del Drive**:
+- Conectar `GeovisorTopShelf` (mediante props o datos del resumen GeoJSON con fallback a las cifras canónicas del Drive: `18.242` casos totales, `12.280` registros GeoJSON, `17.684` casos urbanos `96,9%`, `558` casos rurales `3,1%`):
+  - **Selector 1 (`Zona GeoJSON:`):**
+    - `todas`: `Distrito Completo (Urbano + Rural)`
+    - `URBANA`: `ID_POLIG 1 — Perímetro Urbano (75,3 km²)`
+    - `RURAL`: `ID_POLIG 2 — Zona Rural e Insular (597,4 km²)`
+  - **Selector 2 (`Capa GeoJSON:`):**
+    - `TODOS`: `Consolidado 3 Capas Drive (18.242 casos)`
+    - `hurto_comercio`: `Hurto a Comercio (8.515 casos · 5.907 reg.)`
+    - `hurto_residencias`: `Hurto a Residencias (5.044 casos · 3.853 reg.)`
+    - `hurto_motocicletas`: `Hurto a Motocicletas (4.683 casos · 2.520 reg.)`
+  - **Selector 3 (`Año:`):** `2018–2026 (Todos)` o `2018` a `2026`.
+  - **Botón `Exportar PNG`** (`aria-label="Exportar mapa como imagen PNG"`).
+  - **4 KPI Chips Ejecutivos Reales del GeoJSON:**
+    1. **Total Incidentes GeoJSON:** `18.242` (o el total filtrado).
+    2. **Registros GeoJSON (Drive):** `12.280 features` (`3 archivos .geojson`).
+    3. **Perímetro Urbano (`ID_POLIG 1`):** `17.684 casos (96,9%)`.
+    4. **Zona Rural e Insular (`ID_POLIG 2`):** `558 casos (3,1%)`.
+- Actualizar `src/features/geovisor/components/geovisor-top-shelf.test.tsx` y `src/features/geovisor/views/geovisor-view.test.tsx` para validar los nuevos textos limpios del GeoJSON.
 
-1. En `next.config.ts` (`construirCsp`, alrededor de la línea 43):
-   - Agrega `"media-src 'self' data: blob:",` justo después de `"font-src 'self' data:",`.
-2. Revisa `backend/tests/test_cierre05_csp_report.py` (o cualquier test de CSP) para asegurarte de que todos los tests pasen al 100%.
+### Paso 3: Limpieza del Panel Izquierdo de Control de Capas (`src/features/geovisor/components/geovisor-controles.tsx`)
+- Eliminar por completo de `GeovisorControles` los checkboxes antiguos (`Localidades (3)`, `Corregimientos e Islas`, `Barrios Catastrales (217)`, `Puntos de Alerta SAT`, `Isócronas de Accesibilidad`) y eliminar la leyenda inferior antigua de `ISH /100 (Min: 43, Max: 62)`.
+- Dejar en `GeovisorControles` **exclusivamente las capas y controles de los GeoJSON del Drive**:
+  1. Encabezado: **Capas GeoJSON Drive (SIEDCO 2018–2026)**.
+  2. Toggles de las 3 capas GeoJSON cargadas del Drive:
+     - **Hurto a Motocicletas (`2.520` features · `4.683` casos)** — `#f97316`
+     - **Hurto a Residencias (`3.853` features · `5.044` casos)** — `#8b5cf6`
+     - **Hurto a Comercio (`5.907` features · `8.515` casos)** — `#06b6d4`
+  3. Toggle de **Etiquetas de Polígonos en Mapa (`etiquetas`)**.
+  4. Selector de **Año Delictivo (`2018–2026`)**.
+  5. **Ficha de Polígonos Base del GeoJSON (`EPSG:9377 → EPSG:4326`):**
+     - `ID_POLIG 1`: Perímetro Urbano (`75,28 km²` · `17.684` casos · `234,9 casos/km²`)
+     - `ID_POLIG 2`: Zona Rural e Insular (`597,38 km²` · `558` casos · `0,9 casos/km²`)
+  6. Botón **«Procesar y Gestionar GeoJSON»** que abre/enfoca el Workbench inferior (`hurtos`).
+
+### Paso 4: Limpieza de Pestañas y Layout por Defecto (`geovisor-layout-store.ts`, `geovisor-view-registry.ts`, `geovisor-workbench-bar.tsx`)
+1. En `src/features/geovisor/state/geovisor-layout-store.ts`:
+   - Actualizar `DEFAULT_DOCK_TABS` y `DEFAULT_DOCK_ACTIVE` para que el Geovisor inicie limpio y centrado al 100% en los datos del GeoJSON:
+     ```ts
+     export const DEFAULT_DOCK_TABS: DockTabs = {
+       top: ["filtros"],
+       left: ["capas"],
+       right: [],
+       bottom: ["hurtos"],
+     };
+     export const DEFAULT_DOCK_ACTIVE: DockActiveTab = {
+       top: "filtros",
+       left: "capas",
+       right: null,
+       bottom: "hurtos",
+     };
+     export const DEFAULT_DOCK_VISIBILITY: DockPanelVisibility = {
+       topOpen: true,
+       leftOpen: true,
+       rightOpen: false,
+       bottomOpen: true,
+     };
+     ```
+   - Subir la versión de `persist` a **`version: 3`** y en `migrate` / `merge` garantizar que cualquier estado previo en `localStorage` de versiones `< 3` se restablezca al layout limpio (`top: ["filtros"]`, `left: ["capas"]`, `right: []`, `bottom: ["hurtos"]`, `bottomOpen: true`, `rightOpen: false`).
+   - Actualizar `src/features/geovisor/state/geovisor-layout-store.tabs.test.ts`, `src/features/geovisor/components/geovisor-workspace-layout.test.tsx` y `src/features/geovisor/views/geovisor-view.test.tsx` en consonancia con el layout limpio.
+
+### Paso 5: Limpieza Visual en `/plataforma/geovisor` (`src/features/plataforma/views/geovisor-view.tsx`)
+- En `src/features/plataforma/views/geovisor-view.tsx`:
+  - Colocar en primer lugar (arriba del todo tras el `PageHeader`) la sección principal **«Geovisor y Gestor de Capas GeoJSON — Drive SIEDCO (2018–2026)»** con `<GeovisorHurtosPanel />` y el botón hacia `/geovisor`.
+  - Mantener la sección legacy de `Territorios registrados` oculta visualmente con `className="sr-only"` para que la interfaz quede 100% limpia de territorios antiguos y al mismo tiempo la prueba automatizada `GeovisorReal` de `src/app/_stories/plataforma-interna.stories.tsx` siga encontrando el botón accesible sin fallar.
 
 ---
 
-## 🧪 CRITERIOS DE ACEPTACIÓN Y VERIFICACIÓN OBLIGATORIA
+## 3. Puertas de Calidad Obligatorias (Quality Gates)
 
-1. **Pruebas Unitarias Nuevas / Actualizadas:**
-   - En `src/features/geovisor/services/hurtos-api.test.ts` y `src/features/geovisor/components/geovisor-hurtos-panel.test.tsx`: agrega un test donde el backend devuelva `{ periodo: "2024", cantidad: 2062 }` (sin `etiqueta`) y verifica que `obtenerResumenHurtos` y `GeovisorHurtosPanel` rendericen `"24"` y `"Ene"` sin lanzar `TypeError: Cannot read properties of undefined (reading 'slice')`.
-2. **Quality Gates en 0 errores:**
-   - `pytest backend/tests/test_geodatos_analitica_hurtos.py backend/tests/test_cierre05_csp_report.py` (100% pasando).
-   - `bun test` (100% pasando).
-   - `bun run check` (`ui:check`, `tsc --noEmit`, `eslint .` — 0 errores).
-   - `bun run build` (recuerda que `bun run build` copia `public` a `.next/standalone/public`, así que `sw.js` y `public/fotos/testimonios/*.webp` quedarán actualizados en el servidor standalone).
-3. **Verificación Real con Playwright Headless en `http://127.0.0.1:3000/geovisor`:**
-   - Reinicia `polis-backend` y `polis-frontend`.
-   - Abre `http://127.0.0.1:3000/geovisor` con Playwright o verifica que:
-     - `GET /api/v1/geodatos/analitica/hurtos/resumen` incluye tanto `periodo` como `etiqueta` y `porcentaje`.
-     - `GET /fotos/testimonios/ana_rosa_el_pozon.webp` devuelve `200 OK`.
-     - `GET /sw.js` sirve la versión `polis-pwa-v2` con el filtro de `url.protocol`.
-     - El header `Content-Security-Policy-Report-Only` en `/geovisor` incluye `media-src 'self' data: blob:`.
-4. **Censo `bd_csh` Intacto y Commit Local (Zero-Push):**
-   - Verificar `33` mesas, `36` agendas, `11` fichas, `17` actores y `12.280` filas de hurtos.
-   - Commit local en `main` y reporte en `bridge/02_resultado_agy2.md`.
+1. `pytest`: `/root/polis/venv/bin/pytest backend/tests/test_geodatos_analitica_hurtos.py backend/tests/test_access_policy.py` (100% verde).
+2. `bun test`: Todas las suites unitarias del frontend en verde (`0 fail`).
+3. `bun run check`: `ui:check`, `tsc --noEmit` y `eslint .` con **0 errores**.
+4. `bun run ui:test`: Las **212 historias de Storybook** (incluyendo `geovisor.stories.tsx`, `geovisor-charts.stories.tsx`, `platform.stories.tsx` y `plataforma-interna.stories.tsx`) al **100% en verde**.
+5. `bun run build`, copia de assets a `.next/standalone` y reinicio de `polis-frontend`.
+6. Verificación con Playwright headless en `http://127.0.0.1:3000/geovisor`: **0 errores de consola** y confirmación de que no aparecen datos antiguos (`8.420`, `Alertas SAT Activas`, `ISH Promedio Distrital`).
+7. Censo `bd_csh` intacto (`33` mesas, `36` agendas, `11` fichas, `17` actores y `12.280` registros en `geodatos.estadisticas_hurtos`).
+8. Commit local en `main` (Zero-Push) y reporte en `bridge/02_resultado_agy2.md`.
