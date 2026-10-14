@@ -18,6 +18,8 @@ import { ConfiguracionView } from "@/features/plataforma/views/configuracion-vie
 import { PlataformaSidebar } from "@/features/plataforma/components/plataforma-sidebar";
 import { PlataformaHeader } from "@/features/plataforma/components/plataforma-header";
 import { MapaTerritoriosApi } from "@/features/geovisor/components/mapa-territorios-api";
+import { BancoConocimientoDNPTab } from "@/features/seguimiento/components/banco-conocimiento-dnp-tab";
+import { MotorPlanAccionTab } from "@/features/seguimiento/components/motor-plan-accion-tab";
 import { useSesionStore } from "@/features/sesion/state/session-store";
 import { useFormulariosStore } from "@/features/formularios/state/formularios-store";
 import { usePanelStore } from "@/core/panels/panel-store";
@@ -529,3 +531,55 @@ export const HeaderComponent: Story = {
     </QueryProvider>
   ),
 };
+
+export const MotorPlanAccionDNP: Story = {
+  parameters: {
+    nextjs: { navigation: { pathname: "/plataforma/seguimiento" } },
+  },
+  render: () => (
+    <QueryProvider>
+      <PlataformaShell>
+        <div className="space-y-8">
+          <div>
+            <h1 className="text-xl font-bold text-text-primary">
+              Motor de Plan de Acción DNP y Banco de Conocimiento
+            </h1>
+            <p className="text-xs text-text-secondary mt-1">
+              Instrumento Oficial SisPT / DNP articulado a Ley 152/94 y Ley 1474/11
+            </p>
+          </div>
+          <MotorPlanAccionTab puedeEditar={true} />
+          <div className="pt-6 border-t border-border">
+            <BancoConocimientoDNPTab />
+          </div>
+        </div>
+      </PlataformaShell>
+      <PanelHost />
+    </QueryProvider>
+  ),
+  play: async ({ canvasElement }) => {
+    const c = within(canvasElement);
+    await expect(
+      await c.findByText(
+        "Motor de Procesamiento de Planes de Acción",
+        {},
+        { timeout: 10000 }
+      )
+    ).toBeVisible();
+    await expect(
+      await c.findByText(
+        "Kit Financiero MHCP / DNP",
+        {},
+        { timeout: 10000 }
+      )
+    ).toBeVisible();
+    await expect(
+      await c.findByText(
+        "Marco Normativo y Principios de Formulación Territorial",
+        {},
+        { timeout: 10000 }
+      )
+    ).toBeVisible();
+  },
+};
+

@@ -2,7 +2,7 @@ import uuid
 from datetime import date, datetime
 from typing import Any
 
-from sqlalchemy import Date, DateTime, Index, Numeric, String, Text, text
+from sqlalchemy import Date, DateTime, ForeignKey, Index, Numeric, String, Text, text
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -83,7 +83,8 @@ class ActividadPlanAccion(Base):
         Index("idx_actividades_pa_tipo_meta", "tipo_meta"),
         Index("idx_actividades_pa_tipo_actividad", "tipo_actividad"),
         Index("idx_actividades_pa_fuente", "fuente_financiacion"),
-        {"schema": "seguimiento", "comment": "Matriz de actividades del Plan de Acción DNP / SisPT"},
+        Index("idx_actividades_pa_metadatos_gin", "metadatos", postgresql_using="gin"),
+        {"schema": "seguimiento"},
     )
 
     id: Mapped[uuid.UUID] = mapped_column(
@@ -91,7 +92,10 @@ class ActividadPlanAccion(Base):
     )
     codigo: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
     vigencia: Mapped[int] = mapped_column(server_default=text("2026"), nullable=False)
-    compromiso_pas_codigo: Mapped[str] = mapped_column(String(50), nullable=False)
+    compromiso_pas_codigo: Mapped[str] = mapped_column(
+        ForeignKey("seguimiento.compromisos_pas.codigo", ondelete="RESTRICT"),
+        nullable=False,
+    )
     linea_estrategica_codigo: Mapped[str] = mapped_column(String(50), nullable=False)
     programa_nombre: Mapped[str] = mapped_column(String(250), nullable=False)
     entidad_responsable: Mapped[str] = mapped_column(String(150), nullable=False)

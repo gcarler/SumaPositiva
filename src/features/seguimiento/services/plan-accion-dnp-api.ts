@@ -687,6 +687,8 @@ export const ACTIVIDADES_PA_CANONICAS: ActividadPlanAccion[] = [
   },
 ];
 
+export const ACTIVIDADES_PLAN_ACCION_CANONICAS = ACTIVIDADES_PA_CANONICAS;
+
 export const BANCO_CONOCIMIENTO_CANONICO: BancoConocimientoDNP = {
   marco_normativo: [
     {
@@ -1175,7 +1177,9 @@ export async function obtenerMatrizPlanAccionApi(
           a.codigo.toLowerCase().includes(q) ||
           a.descripcion_actividad.toLowerCase().includes(q) ||
           a.proyecto_nombre.toLowerCase().includes(q) ||
-          a.codigo_bpim.toLowerCase().includes(q)
+          a.codigo_bpim.toLowerCase().includes(q) ||
+          (a.verbo_infinitivo && a.verbo_infinitivo.toLowerCase().includes(q)) ||
+          a.entidad_responsable.toLowerCase().includes(q)
       );
     }
 
@@ -1187,6 +1191,8 @@ export async function obtenerMatrizPlanAccionApi(
     };
   }
 }
+
+export const obtenerMatrizPlanAccion = obtenerMatrizPlanAccionApi;
 
 export async function crearActividadPlanAccionApi(
   datos: Partial<ActividadPlanAccion>

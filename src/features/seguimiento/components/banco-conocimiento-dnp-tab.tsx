@@ -689,3 +689,5 @@ export function BancoConocimientoDNPTab() {
     </div>
   );
 }
+
+export const BancoConocimientoDnpTab = BancoConocimientoDNPTab;
