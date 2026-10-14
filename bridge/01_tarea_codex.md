@@ -1,328 +1,80 @@
-# TAREA ACTIVA — codex
-**Asignada por**: EAF (Antigravity Líder)
-**Fecha**: 2026-10-01T18:47Z
-**Prioridad**: ALTA
+# TAREA ACTIVA PARA CODEX: `[ARCH-CONSOLIDACION-01]`
+## EJECUCIÓN DEL PLAN DE CONSOLIDACIÓN DE ARQUITECTURA CON LOS AJUSTES DEL DICTAMEN FORENSE EAF
+
+- **Asignado por:** `agy` (Coordinador General / Auditor Forense EAF)
+- **Responsable de ejecución:** `codex` (Sesión `tmux` `codex:0.0`)
+- **Fecha:** 2026-10-14
+- **Documento base:** `docs/plan-consolidacion-arquitectura.md`
+- **Archivo de reporte de entrega de Codex:** `bridge/02_entrega_codex.md`
 
 ---
 
-## Objetivo
-Completar el módulo de **Formularios** de POLIS para que tenga paridad funcional
-con Google Forms. El estado actual es un scaffold básico con 5 tipos de pregunta
-y sin funcionalidades clave. Hay que completarlo de forma robusta.
+## 1. Dictamen Forense EAF y Ajustes Obligatorios Incorporados al Plan
 
-## Contexto Técnico
-- **Stack**: Next.js 16 / React 19 / TypeScript / Bun / Zustand / TanStack Query
-- **Regla Zero-Modals**: toda interacción ocurre en Drawers laterales (PanelShell).
-  Nunca modals centrados.
-- **Tokens CSS obligatorios**: `--surface-1`, `--text-primary`, `--ember`, `--border`.
-  No hardcodear colores.
-- **Archivos principales del módulo**:
-  - `src/features/formularios/models/formulario.ts` — modelo de datos
-  - `src/features/formularios/panels/formulario-editor-panel.tsx` — editor (scaffold)
-  - `src/features/formularios/panels/formularios-panel.tsx` — listado
-  - `src/features/formularios/panels/formulario-analitica-panel.tsx` — analítica
-  - `src/features/formularios/services/formularios-api.ts` — API calls
-  - `src/features/formularios/services/use-formularios-queries.ts` — TanStack hooks
+El plan en `docs/plan-consolidacion-arquitectura.md` ha sido **APROBADO CON 5 AJUSTES OBLIGATORIOS** tras contrastarlo contra la evidencia real del repositorio. Debes primero **incorporar estos 5 ajustes en `docs/plan-consolidacion-arquitectura.md`** y a continuación **ejecutar el plan consolidado**:
 
----
+### Ajuste 1 — `eslint.config.mjs` ignora silenciosamente `noticias` y `testimonios`
+- **Evidencia:** En `eslint.config.mjs` (líneas 67–68), el arreglo `ignores` excluye `"src/features/noticias/**"` y `"src/features/testimonios/**"`.
+- **Acción obligatoria:** Retirar esas dos exclusiones de `eslint.config.mjs` y corregir cualquier warning/error de lint en `src/features/noticias/**` y `src/features/testimonios/**` para que `bun run check` (`eslint .`) audite realmente el 100% de `src/features/`.
 
-## Brecha Actual vs. Google Forms
+### Ajuste 2 — Retiro directo de Prisma en Fase 3 (Evidencia concluyente de código muerto)
+- **Evidencia:**
+  - `prisma/schema.prisma` apunta a `sqlite` con modelos de plantilla `User` y `Post` (`cuid()`), sin relación alguna con PostgreSQL/PostGIS ni con `bd_csh`.
+  - Ningún archivo de `src/`, `backend/`, `scripts/` o `.github/` importa `src/core/database/legacy-prisma.ts` ni `@prisma/client`.
+  - `package.json` conserva scripts peligrosos (`"db:push": "prisma db push --accept-data-loss"`, `"db:reset": "prisma migrate reset"`).
+- **Acción obligatoria (Fase 3 inmediata):**
+  - Eliminar `src/core/database/legacy-prisma.ts` y `prisma/schema.prisma` (y el directorio `prisma/`).
+  - Retirar `@prisma/client` y `prisma` de `package.json`, así como los scripts `db:push`, `db:generate`, `db:migrate` y `db:reset`.
+  - Actualizar `docs/arquitectura.md` para reflejar que los restos de Prisma ya fueron retirados.
+  - Añadir una comprobación en `scripts/ui-policy.mjs` (y su test en `scripts/ui-policy.test.mjs`) que prohíba importar `@prisma/client` o reintroducir `legacy-prisma`.
 
-| Funcionalidad | Estado Actual | Estado Objetivo |
-|---|---|---|
-| Tipos de pregunta | 5 básicos | **12 tipos completos** |
-| Lógica condicional | ❌ No existe | ✅ Mostrar/ocultar preguntas según respuesta |
-| Reordenar preguntas | ❌ No existe | ✅ Drag & drop o botones ↑↓ |
-| Secciones/páginas | ❌ No existe | ✅ Agrupar preguntas en secciones |
-| Validaciones por campo | ❌ No existe | ✅ Obligatorio, min/max, regex, rango numérico |
-| Vista previa | ❌ No existe | ✅ Panel de vista previa del formulario final |
-| Responder formulario | ❌ No existe | ✅ Panel de respuesta ciudadana |
-| Confirmación de envío | ❌ No existe | ✅ Mensaje personalizable post-envío |
-| Límite de respuestas | ❌ No existe | ✅ Fecha de cierre + cupo máximo |
-| Analítica de respuestas | Básica | ✅ Gráficos por pregunta, exportar CSV |
-| Imagen en pregunta | ❌ No existe | ✅ URL de imagen en pregunta |
-| Descripción de sección | ❌ No existe | ✅ Texto explicativo entre preguntas |
+### Ajuste 3 — Desacople real de `src/core/panels/panel-store.ts` y eliminación de los 45 casts inseguros en `src/app/_composition/panel-registry.tsx` (Fase 2)
+- **Evidencia:**
+  - `src/core/panels/panel-store.ts` (líneas 12–186) incrustaba inline los 45 nombres de paneles y DTOs de negocio (`PanelPropsMap`, incluyendo estructuras de 23 líneas como `"validacion-mga"`).
+  - En `src/app/_composition/panel-registry.tsx` (líneas 191–240), las 45 entradas usan `as ComponentType<PanelComponentProps>`, silenciando divergencias reales entre `PanelPropsMap[K]` y las props del componente (por ejemplo, `RendicionCuentasPanel` acepta `{ dependenciaId?: string; vistaInicial?: "dependencias" | "plan_accion_dnp" }` mientras que `PanelPropsMap["rendicion-cuentas"]` solo tenía `{ dependenciaId?: string }`).
+- **Acción obligatoria (Fase 2):**
+  1. Redactar un ADR corto en `docs/adr/0001-desacople-panel-store.md`.
+  2. En `src/core/panels/panel-store.ts`, dejar únicamente la infraestructura genérica de la pila de paneles y una interfaz abierta `export interface PanelPropsRegistry {}` (o contrato genérico registrable por aumentación de módulos), sin ningún nombre ni DTO de negocio en `src/core/`.
+  3. Mover las declaraciones de contratos de paneles de dominio (`PanelPropsMap` / `declare module "@/core/panels/panel-store"`) a un módulo de contratos de composición (ej. `src/core/panels/panel-types.d.ts` o `src/app/_composition/panel-contracts.ts` + aumentación de tipos) respetando las reglas de `scripts/ui-policy.mjs` (`UI004`: `core` no importa `features` ni `app`).
+  4. En `src/app/_composition/panel-registry.tsx`, alinear las props de todos los paneles registrados (incluido `rendicion-cuentas`) y reemplazar los casts inseguros o verificar mediante un helper tipado que cada clave `K extends PanelType` coincida con las props de su componente.
 
----
+### Ajuste 4 — Incorporar `bun test` en `.github/workflows/check.yml` y en la Validación EDD (Fase 6)
+- **Evidencia:** `.github/workflows/check.yml` no ejecutaba `bun test` (las >600 pruebas unitarias de frontend).
+- **Acción obligatoria:** Añadir el paso `- run: bun test` en `.github/workflows/check.yml` y en la lista de validación de `docs/plan-consolidacion-arquitectura.md`.
 
-## T1 — Ampliar el Modelo de Datos
-
-**Archivo**: `src/features/formularios/models/formulario.ts`
-
-Ampliar `TipoPregunta` y el modelo completo:
-
-```ts
-export type TipoPregunta =
-  | "texto_corto"        // Input text
-  | "texto_largo"        // Textarea
-  | "opcion_unica"       // Radio buttons
-  | "opcion_multiple"    // Checkboxes
-  | "lista_desplegable"  // Select / dropdown
-  | "likert"             // Escala 1-5 (o 1-N configurable)
-  | "escala_lineal"      // Slider numérico con etiquetas extremos
-  | "fecha"              // Date picker
-  | "hora"               // Time picker
-  | "numero"             // Input numérico con min/max
-  | "carga_archivo"      // File upload (imagen/pdf)
-  | "seccion"            // Separador de sección (no captura respuesta)
-  | "descripcion";       // Bloque de texto informativo (no captura respuesta)
-
-export interface ValidacionCampo {
-  obligatoria?: boolean;
-  minLongitud?: number;
-  maxLongitud?: number;
-  minValor?: number;
-  maxValor?: number;
-  patron?: string;         // regex
-  mensajeError?: string;
-}
-
-export interface LogicaCondicional {
-  preguntaOrigenId: string;
-  operador: "igual" | "no_igual" | "contiene" | "mayor_que" | "menor_que";
-  valor: string;
-  accion: "mostrar" | "ocultar" | "ir_a_seccion";
-  preguntaDestinoId?: string;
-  seccionDestinoId?: string;
-}
-
-export interface PreguntaFormulario {
-  id: string;
-  tipo: TipoPregunta;
-  texto: string;
-  descripcion?: string;       // Texto de ayuda bajo la pregunta
-  imagenUrl?: string;         // URL de imagen ilustrativa
-  obligatoria: boolean;
-  opciones?: OpcionRespuesta[];
-  validacion?: ValidacionCampo;
-  logica?: LogicaCondicional[];
-  escalaMin?: number;          // Para likert/escala_lineal
-  escalaMax?: number;
-  etiquetaMin?: string;        // "Muy en desacuerdo"
-  etiquetaMax?: string;        // "Muy de acuerdo"
-  enfoqueDiferencial?: boolean;
-  orden: number;               // Para reordenar
-  seccionId?: string;          // A qué sección pertenece
-}
-
-export interface SeccionFormulario {
-  id: string;
-  titulo: string;
-  descripcion?: string;
-  orden: number;
-}
-
-export interface ConfiguracionFormulario {
-  mensajeConfirmacion: string;   // Texto post-envío
-  limiteRespuestas?: number;     // null = sin límite
-  fechaCierre?: string;          // ISO date
-  permitirEdicion: boolean;      // Responder más de una vez
-  requiereAutenticacion: boolean;
-  mostrarBarraProgreso: boolean;
-  ordenAleatorio: boolean;       // Mezclar preguntas
-}
-
-export interface Formulario {
-  id: string;
-  titulo: string;
-  descripcion: string;
-  estado: "borrador" | "activo" | "cerrado";
-  secciones: SeccionFormulario[];
-  preguntas: PreguntaFormulario[];
-  configuracion: ConfiguracionFormulario;
-  respuestasCount: number;
-  creadoEn: string;
-  actualizadoEn: string;
-}
-
-// Respuesta individual de un ciudadano
-export interface RespuestaCiudadana {
-  id: string;
-  formularioId: string;
-  sesionId?: string;      // null si anónimo
-  respuestas: Record<string, string | string[]>;  // preguntaId -> valor(es)
-  enviadoEn: string;
-  enfoqueDiferencial?: string;
-}
-```
+### Ajuste 5 — Cobertura completa de los 23 módulos backend y 23 features frontend hasta la migración `0062` (Fases 1, 4 y 5)
+- **Evidencia:**
+  - `docs/arquitectura.md` solo listaba 11 módulos backend, omitiendo 11 routers activos en `backend/app/api/router.py` (`auditoria`, `compromisos`, `formularios`, `noticias`, `participacion`, `testimonios`, `comunicaciones`, `notificaciones`, `canales`, `seguridad`, `health`).
+  - `docs/plan-trabajo.md` se detuvo en la migración `0025`, mientras la cabeza actual de Alembic es `0062_motor_plan_accion_dnp` (incluyendo `0061_estadisticas_hurtos_siedco` y `0062_motor_plan_accion_dnp`).
+  - En la Tarea 4.7 (fallbacks), se debe distinguir entre **mutaciones** (donde ningún fallo de API puede fingir éxito local) y **consultas/lecturas** (donde los catálogos semilla canónicos permiten que el prerenderizado SSG de las 192 rutas y las 213 historias de Storybook funcionen sin backend vivo).
 
 ---
 
-## T2 — Editor de Formularios Completo
+## 2. Reglas Operativas y de Coexistencia (MUY IMPORTANTE)
 
-**Archivo**: `src/features/formularios/panels/formulario-editor-panel.tsx`
-
-Reescribir el editor con:
-
-### 2.1 Gestión de Secciones
-- Botón "Añadir Sección" crea una `SeccionFormulario`
-- Título y descripción editables inline
-- Preguntas arrastradas o asignadas a secciones
-
-### 2.2 Constructor de Preguntas (uno por tipo)
-Para cada tipo de pregunta, el editor muestra controles específicos:
-
-- **texto_corto / texto_largo**: Placeholder, validación de longitud (min/max chars)
-- **opcion_unica / opcion_multiple / lista_desplegable**: 
-  - Lista editable de opciones (input inline + botón eliminar)
-  - Botón "Añadir opción" y "Añadir 'Otro' (texto libre)"
-  - Opción de orden aleatorio
-- **likert / escala_lineal**: Configurar min/max numérico y etiquetas de extremos
-- **numero**: Configurar min, max y paso (step)
-- **fecha / hora**: sin configuración extra
-- **carga_archivo**: Tipos permitidos (imagen, pdf, cualquiera)
-- **seccion / descripcion**: Solo texto enriquecido
-
-### 2.3 Reordenamiento
-- Botones ↑ y ↓ en cada pregunta para mover arriba/abajo dentro de la sección
-- (Opcional si hay tiempo: drag & drop con `@dnd-kit/core` si ya está instalado)
-
-### 2.4 Lógica Condicional
-En cada pregunta, sección "Lógica" expandible:
-- "Mostrar esta pregunta si [pregunta X] [operador] [valor]"
-- Controles: `Select pregunta origen` + `Select operador` + `Input valor`
-
-### 2.5 Configuración del Formulario
-Sección inferior "Configuración":
-- Mensaje de confirmación post-envío (textarea)
-- Límite de respuestas (número o ilimitado)
-- Fecha de cierre (DatePicker)
-- Toggle: Mostrar barra de progreso
-- Toggle: Requerir autenticación para responder
-
-### 2.6 Vista Previa
-Botón "Vista Previa" en el footer del panel → abre un sub-panel `formulario-preview-panel.tsx`
-que renderiza el formulario exactamente como lo verá el ciudadano.
+1. **Inviolabilidad de `bd_csh`:** PROHIBIDO alterar, truncar o ejecutar pruebas destructivas contra `bd_csh`. Toda prueba de integración/migración backend debe usar exclusivamente una base de datos aislada `polis_test*` vía `POLIS_TEST_DATABASE_URL`.
+2. **Coexistencia con `agy2`:**
+   - El agente `agy2` está trabajando simultáneamente en archivos de `src/features/geovisor/*`, `src/app/geovisor/page.tsx` y reporta en `bridge/01_tarea_activa.md` / `bridge/02_resultado_agy2.md`.
+   - **NO modifiques ni reviertas cambios en `src/features/geovisor/*`, `src/app/geovisor/page.tsx`, `bridge/01_tarea_activa.md`, `bridge/02_resultado_agy2.md` ni `bridge/03_dictamen_revision.md`.**
+   - Tu archivo exclusivo de entrega es **`bridge/02_entrega_codex.md`**.
+3. **Política Zero-Push:** Realiza commits locales atómicos y limpios en la rama `main` (solo agregando con `git add <archivos>` los archivos de tu alcance para no interferir con `agy2`). Nunca ejecutes `git push`, `git reset --hard` ni `git checkout -- .`.
 
 ---
 
-## T3 — Panel de Respuesta Ciudadana
+## 3. Entregables Esperados de Codex
 
-**Archivo nuevo**: `src/features/formularios/panels/formulario-respuesta-panel.tsx`
-
-Panel que el ciudadano usa para **responder** el formulario:
-
-- Renderiza pregunta por pregunta (o sección a sección con progreso)
-- Aplica lógica condicional: oculta/muestra preguntas según respuestas anteriores
-- Validación en tiempo real (campos obligatorios, longitud, rango)
-- Barra de progreso si `configuracion.mostrarBarraProgreso`
-- Al enviar: muestra `configuracion.mensajeConfirmacion`
-- Inputs por tipo:
-  - `texto_corto`: `<Input>`
-  - `texto_largo`: `<Textarea>`
-  - `opcion_unica`: radio buttons accesibles
-  - `opcion_multiple`: checkboxes accesibles
-  - `lista_desplegable`: `<Select>`
-  - `likert`: fila de botones numerados con etiquetas extremos
-  - `escala_lineal`: `<input type="range">` con valor numérico visible
-  - `fecha`: `<input type="date">`
-  - `hora`: `<input type="time">`
-  - `numero`: `<Input type="number">` con min/max
-  - `carga_archivo`: `<input type="file">` con preview de imagen
-  - `seccion` / `descripcion`: solo texto, no input
-
-Registrar el panel en `src/app/_composition/panel-registry.tsx` con id `"formulario-respuesta"`.
-Props: `{ formularioId: string }`.
-
----
-
-## T4 — Analítica Mejorada
-
-**Archivo**: `src/features/formularios/panels/formulario-analitica-panel.tsx`
-
-Mejorar el panel de analítica con:
-
-- **Por cada pregunta** un bloque con:
-  - `opcion_unica` / `lista_desplegable`: gráfico de barras horizontal (CSS puro con `width: X%`)
-  - `opcion_multiple`: idem con posibilidad de múltiple selección (porcentaje sobre total respuestas)
-  - `likert` / `escala_lineal`: promedio + distribución de respuestas
-  - `texto_corto` / `texto_largo`: lista de últimas 5 respuestas + total count
-  - `numero`: promedio, mínimo, máximo
-- **Botón "Exportar CSV"**: genera y descarga un CSV con todas las respuestas
-  (usar `Blob` + `URL.createObjectURL`)
-- **Sección "Enfoque Diferencial"**: torta/barra de respuestas por población diferencial
-
----
-
-## T5 — Estado Zustand y Mock de Formularios
-
-**Archivo nuevo**: `src/features/formularios/state/formularios-store.ts`
-
-Crear store Zustand con:
-
-```ts
-interface FormulariosState {
-  formularios: Formulario[];
-  // CRUD
-  crearFormulario: (f: Omit<Formulario, 'id' | 'creadoEn' | 'actualizadoEn' | 'respuestasCount'>) => Formulario;
-  actualizarFormulario: (id: string, cambios: Partial<Formulario>) => void;
-  eliminarFormulario: (id: string) => void;
-  // Respuestas
-  enviarRespuesta: (r: Omit<RespuestaCiudadana, 'id' | 'enviadoEn'>) => void;
-  respuestas: RespuestaCiudadana[];
-}
-```
-
-Incluir al menos **2 formularios mock** reales para la política de Seguridad Humana:
-
-1. **"Diagnóstico de Seguridad en mi Barrio"**
-   - Preguntas: ¿En qué barrio vives? (lista desplegable con BARRIOS_CARTAGENA),
-     ¿Cuál es el principal problema de seguridad? (opción única: violencia, hurto, ESCNNA, ambiental, otro),
-     ¿Te has sentido inseguro en el último mes? (likert 1-5),
-     Describe la situación de seguridad en tu barrio (texto largo),
-     ¿Has participado en alguna mesa comunitaria? (opción única: sí/no)
-   - 2 secciones: "Datos del Territorio" y "Tu Experiencia"
-
-2. **"Priorización de Líneas Estratégicas"**
-   - Preguntas: Ordenar las 7 Dimensiones ONU por prioridad (escala lineal por dimensión),
-     ¿Qué propuesta tiene mayor impacto? (opción única),
-     Observaciones adicionales (texto largo)
-
-**Importante**: el selector de barrio en el formulario mock debe importar
-`BARRIOS_CARTAGENA` de `@/features/geovisor/data/barrios.data.ts` y convertirlos
-en `OpcionRespuesta[]` para el tipo `lista_desplegable`.
-
----
-
-## T6 — Aseguramiento de Calidad y Despliegue
-
-```bash
-cd /root/polis
-
-# 1. TypeScript y ESLint
-bun run check
-
-# 2. Corregir errores antes de continuar
-
-# 3. Build
-bun run build
-
-# 4. Reiniciar frontend
-sudo systemctl restart polis-frontend.service
-sudo systemctl is-active polis-frontend.service
-
-# 5. Verificar respuesta
-curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:3000/
-
-# 6. Commit
-git add -A && git commit -m "feat(formularios): módulo completo con paridad funcional Google Forms
-
-- Ampliar TipoPregunta a 12 tipos (texto, opciones, likert, fecha, número, archivo, sección)
-- Modelo: SeccionFormulario, ValidacionCampo, LogicaCondicional, ConfiguracionFormulario
-- FormularioEditorPanel: editor completo con secciones, lógica condicional, reordenamiento, validaciones
-- FormularioRespuestaPanel: panel ciudadano con validación en tiempo real y lógica condicional
-- FormularioAnaliticaPanel: gráficos por tipo de pregunta + exportar CSV
-- FormulariosStore: Zustand con CRUD + 2 mocks reales (diagnóstico barrio + priorización dimensiones)
-- Integración con BARRIOS_CARTAGENA para selector de barrio en formularios"
-```
-
----
-
-## Entrega Esperada
-Al terminar escribe el resultado en `/root/polis/bridge/02_entrega_codex.md` con:
-- Estado T1–T6: ✅ CONFORME / ❌ ERROR
-- Tipos de pregunta implementados
-- Salida de `bun run check`
-- Salida de `bun run build`
-- Hash del commit
-- Decisiones de diseño relevantes
+1. **`docs/plan-consolidacion-arquitectura.md`** actualizado con los 5 ajustes del dictamen EAF.
+2. **Fase 0 y Fase 1:** Documento versionado **`docs/matriz-trazabilidad-modulos.md`** con el inventario real de las 23 features de `src/features/`, los 23 routers de `backend/app/api/router.py`, cabeza Alembic `0062_motor_plan_accion_dnp`, estado de conexión (`persistente verificado`, `parcial`, `solo lectura`, etc.) y referencia a `docs/permisos-api.md`.
+3. **Fase 3 (Retiro de Prisma):** Eliminación de `src/core/database/legacy-prisma.ts`, `prisma/schema.prisma`, dependencias/scripts Prisma en `package.json`, guarda en `scripts/ui-policy.mjs` (+ test en `scripts/ui-policy.test.mjs`) y actualización de `docs/arquitectura.md`.
+4. **Fase 2 (Desacople de `panel-store.ts`):**
+   - `docs/adr/0001-desacople-panel-store.md`
+   - `src/core/panels/panel-store.ts` libre de nombres y DTOs de negocio.
+   - Contratos de paneles por dominio ensamblados sin violar `UI004` y tipado verificado en `src/app/_composition/panel-registry.tsx`.
+5. **Rehabilitación de ESLint y CI:**
+   - `eslint.config.mjs` sin los `ignores` de `src/features/noticias/**` ni `src/features/testimonios/**`, con `0` errores en `bun run check`.
+   - `.github/workflows/check.yml` actualizado incluyendo `bun test`.
+6. **Fase 5 y 6 (Alineación documental y verificación):**
+   - `docs/arquitectura.md` actualizado con los 23 módulos de `backend/app/api/router.py`, estado real de CSP en `next.config.ts` (`Report-Only` por defecto, conmutable con `POLIS_CSP_ENFORCE=true`) y cabeza Alembic `0062_motor_plan_accion_dnp`.
+   - Ejecución de todos los quality gates (`bun run check`, `bun run ui:policy:test`, `bun test`, `pytest` en base `polis_test*`) y reporte completo con hashes de commit y evidencias en **`bridge/02_entrega_codex.md`**.
+   - Al terminar, envía notificación a `agy` ejecutando:
+     `tmux send-keys -t "=agy:0.0" "Hola agy. Soy codex. He completado la ejecucion de [ARCH-CONSOLIDACION-01] y deje el informe detallado en bridge/02_entrega_codex.md. Por favor procede con tu auditoria EAF." Enter`
