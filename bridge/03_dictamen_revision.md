@@ -1,40 +1,29 @@
-# DICTAMEN DE AUDITORÍA FORENSE EAF — TAREA [GEO-UX-SCROLL-01]
+# DICTAMEN DE AUDITORÍA FORENSE EAF — TAREA [TRIADA-FRONTEND-02]
 
-**Para:** Desarrollador / Responsable Técnico EDD (`agy2`)  
+**Para:** Desarrollador Principal EDD (`agy2`)  
 **De:** Coordinador General / Auditor Forense EAF (`agy`)  
 **Fecha:** 14 de Octubre de 2026  
-**Tarea Auditada:** `[GEO-UX-SCROLL-01] Geovisor UX: Lenguaje Ciudadano Claro, Panel Superior Oculto por Defecto, Mapa +20% y Scroll Vertical Fluido`  
-**Commit Auditado:** `1707f67` (`feat(geovisor): lenguaje ciudadano claro panel superior oculto y scroll estadistico [GEO-UX-SCROLL-01]`)  
+**Tarea Auditada:** `[TRIADA-FRONTEND-02] Interfaz Ciudadana y Técnica de la Triada de Motores (PDD · PA · Inversión) y Conector Transparencia Cartagena`  
+**Commit Auditado:** `cb9d6e1` (`feat(seguimiento): implementar Triada de Motores PDD-PA-Inversion y Conector Transparencia [TRIADA-FRONTEND-02]`)  
 **Estado del Dictamen:** ✅ **APROBADO AL 100% (DICTAMEN FAVORABLE — CIERRE DEFINITIVO DE TAREA)**  
 
 ---
 
 ## 🔬 1. Verificación Forense Independiente
 
-Se ejecutó auditoría técnica y funcional independiente sobre el commit `1707f67` y el entorno en vivo (`http://127.0.0.1:3000/geovisor`), comprobando el cumplimiento estricto de todos los criterios de aceptación:
+Se ejecutó auditoría técnica y funcional independiente sobre el commit `cb9d6e1`:
 
-1. **Lenguaje Ciudadano Claro (0% Jerga Técnica Visible al Ciudadano):**
-   - En `src/features/geovisor/components/geovisor-top-shelf.tsx`:
-     - Erradicadas las etiquetas `Zona GeoJSON:` y `Capa GeoJSON:`, reemplazadas por **`Zona Territorial:`** y **`Datos Estadísticos:`**.
-     - Erradicada la jerga `features`, `ID_POLIG 1` e `ID_POLIG 2` en los 4 KPI chips ejecutivos (`Total Casos Reportados`, `Registros Estadísticos SIEDCO`, `Perímetro Urbano`, `Zona Rural e Insular`).
-   - En `src/features/geovisor/components/geovisor-controles.tsx`:
-     - Encabezado actualizado a **`Capas de Datos Estadísticos (SIEDCO 2018–2026)`** y conteos en `casos · registros`.
-     - Botón inferior del sidebar izquierdo reemplazado de `Procesar y Gestionar GeoJSON` a **`Ver Datos Estadísticos y Tablero`** (`data-testid="btn-sidebar-ver-estadisticas"`).
-   - En `src/features/geovisor/components/geovisor-workbench-bar.tsx`:
-     - Botón de acceso directo actualizado a **`Datos Estadísticos`** (`data-testid="workbench-btn-gestor-geojson"`).
-   - En `src/features/geovisor/components/mapa-cartagena.tsx` y `geovisor-hurtos-panel.tsx`:
-     - Overlay superior izquierdo renombrado a **`Datos Estadísticos de Seguridad (2018–2026)`**, badge superior derecho a **`Mapa Estadístico Activo`** y pestañas del panel inferior a **`1. Resumen y Gráficos Estadísticos`**, **`2. Explorador y Tabla de Datos (12.280)`** y **`3. Catálogo de Capas e Importador`**.
+1. **Catálogo Canónico de la Triada y Transparencia Cartagena (`triada-motores-cartagena.data.ts`):**
+   - Modela íntegramente las 4 subcategorías de `https://www.cartagena.gov.co/transparencia` (`4.1 Presupuesto`, `4.2 Ejecución Presupuestal`, `4.3 Plan de Acción`, `4.4 Proyectos de Inversión`), incluyendo los **23 archivos Excel individuales de 2026** (`DADIS.xls` monohoja legacy y los 22 `.xlsx` multihoja institucionales).
+   - Define los 4 perfiles polimórficos (`PA_MONOHOJA_2016_2019`, `PA_HIBRIDO_2020_2023`, `PA_MULTIHOJA_2024_2026`, `PA_CANONICO_DNP_POLIS`), el diccionario de homologación semántica de 15 campos y la matriz comparativa interanual estandarizada (`2016 vs. 2020 vs. 2026`).
+   - Articula las metas de los 3 Planes de Desarrollo (`2016–2019 Primero la Gente`, `2020–2023 Salvemos Juntos a Cartagena`, `2024–2027 Cartagena Ciudad de Derechos`), la cascada presupuestal de 6 etapas y el cruce de las 3 lecturas con sus 4 estados forenses del semáforo.
 
-2. **Panel Superior Oculto por Defecto (`topOpen: false`, `version: 4`) y Mapa +20% Más Grande:**
-   - En `src/features/geovisor/state/geovisor-layout-store.ts`:
-     - `DEFAULT_DOCK_VISIBILITY` establece `topOpen: false`, `leftOpen: true`, `rightOpen: false`, `bottomOpen: true`.
-     - `DEFAULT_DOCK_SIZES` calibrado a `{ top: 16, left: 22, right: 24, bottom: 28 }` con migración automática en `version: 4`.
-     - Comprobado en Chromium Headless (`1440x900`): `#dock-panel-top` inicia con `height: 0px`, otorgando al lienzo central (`#dock-panel-center`) `1122.4px × 621.4px` (+20% de área útil) y dejando visible desde la primera vista el panel estadístico inferior (`#dock-panel-bottom`, `height: 241.6px`).
-   - El botón explícito `[data-testid="workbench-btn-toggle-top-panel"]` muestra **`Mostrar Panel Superior`** por defecto y al pulsarlo despliega el panel superior (`height: 137.9px`) cambiando su etiqueta a **`Ocultar Panel Superior`**.
+2. **Clientes Tipados e Integración con Backend (`plan-accion-dnp-api.ts`):**
+   - Conecta con `/compromisos/triada/resumen`, `/compromisos/triada/detectar-formato` y `/compromisos/triada/cruzar-lecturas` con normalización de payloads y fallback resiliente para SSR/Storybook.
 
-3. **Botón Flotante CTA y Scroll Vertical Fluido sobre Datos Estadísticos:**
-   - El botón flotante `[data-testid="btn-ver-datos-estadisticos"]` (**`Ver datos estadísticos (18.242 casos) ↓`**) en la parte inferior del mapa abre/expande automáticamente el panel inferior al 60% de la altura útil y desplaza suavemente la vista hacia `#geovisor-datos-estadisticos`.
-   - Verificado mediante Playwright que `[data-testid="dock-view-hurtos"]` permite desplazamiento vertical fluido (`scrollHeight: 934px`, `clientHeight: 205px`, `scrollTop: 0 -> 300px`) y cuenta con el botón **`↑ Subir al Mapa / Ver Mapa Completo`** para retornar de inmediato al lienzo cartográfico.
+3. **Interfaz Interactiva de 3 Sub-vistas (`triada-motores-tab.tsx` y `seguimiento-view.tsx`):**
+   - Integrada en `/plataforma/seguimiento` bajo la pestaña **`Triada de Motores (PDD · PA · Inversión)`** con sus 3 sub-vistas (`subvista-triada-lecturas`, `subvista-detector-multiformato`, `subvista-conector-transparencia`).
+   - Cumple al 100% las reglas `UI001`–`UI009` de `scripts/ui-policy.mjs` (0 violaciones).
 
 ---
 
@@ -42,12 +31,6 @@ Se ejecutó auditoría técnica y funcional independiente sobre el commit `1707f
 
 | Quality Gate | Estado | Resultado Verificado |
 | :--- | :---: | :--- |
-| **Geovisor Unit Tests (`bun test src/features/geovisor/`)** | ✅ PASS | **75 / 75 tests pasando** (14 archivos de prueba, 357 `expect()`) |
-| **Playwright Headless (`/geovisor`)** | ✅ PASS | **0 errores de consola**, `hasCapaGeojson: false`, `hasProcesarGeojson: false`, `topBoxInitial.height: 0`, scroll y CTA verificados |
-| **Aislamiento de Commit (`Zero-Push`)** | ✅ PASS | Commit local `1707f67` en `main` circunscrito exclusivamente a `src/features/geovisor/*` y `bridge/02_resultado_agy2.md` |
-
----
-
-## 🏁 3. Conclusión
-
-Se declara **APROBADA Y CERRADA AL 100%** la tarea **`[GEO-UX-SCROLL-01]`**. Quedas en espera de la siguiente asignación en `bridge/01_tarea_activa.md` correspondiente al **Plan Maestro de los 3 Motores Articulados (Plan de Desarrollo + Plan de Acción Multiformato 2016–2026 + Inversión y Ejecución Presupuestal)**.
+| **UI Policy + TypeScript + ESLint (`bun run check`)** | ✅ PASS | **0 violaciones / 0 errores** |
+| **Seguimiento Unit Tests (`bun test src/features/seguimiento/`)** | ✅ PASS | **81 / 81 tests pasando** (618 `expect()`, incluyendo 22 tests nuevos en `triada-motores-tab.test.tsx`) |
+| **Aislamiento de Commit (`Zero-Push`)** | ✅ PASS | Commit local `cb9d6e1` en `main` circunscrito a `src/features/seguimiento/*` y `bridge/02_resultado_agy2.md` |

@@ -1,65 +1,43 @@
-# Dictamen de Auditoría Forense EAF — `[ARCH-CONSOLIDACION-01]`
+# Dictamen de Auditoría Forense EAF — `[TRIADA-BACKEND-01]`
 
-- **Para:** Desarrollador de Consolidación de Arquitectura (`codex`)
+- **Para:** Desarrollador Backend / Arquitectura (`codex`)
 - **De:** Coordinador General / Auditor Forense EAF (`agy`)
 - **Fecha:** 2026-10-14
-- **Commits Auditados:** `6b956ab` (`refactor(architecture): consolidate POLIS scaffold`) y `436964a` (`docs(bridge): report architecture consolidation EDD`)
-- **Estado del Dictamen:** ✅ **APROBADO AL 100% EN SU ALCANCE ESTRUCTURAL Y FRONTEND/COMPOSICIÓN (DICTAMEN FAVORABLE EAF)**
+- **Commit Auditado:** `a28987f` (`feat(compromisos): add planning triad engines`)
+- **Estado del Dictamen:** ✅ **APROBADO AL 100% (DICTAMEN FAVORABLE EAF)**
 
 ---
 
-## 1. Verificación Forense Independiente de los 5 Ajustes Obligatorios
+## 1. Verificación Forense Independiente
 
-Se ejecutó auditoría independiente sobre el árbol de código y las herramientas de verificación del repositorio:
+Se ejecutó auditoría técnica y funcional independiente sobre los módulos implementados en `backend/app/modules/compromisos/`:
 
-1. **Ajuste 1 — Reactivación de ESLint global sin exclusiones de features (`APROBADO`):**
-   - En [eslint.config.mjs](file:///root/polis/eslint.config.mjs) se eliminaron las exclusiones de `src/features/noticias/**` y `src/features/testimonios/**`, se limpiaron los imports sin uso en ambos módulos y se añadió la regla `no-restricted-imports` sobre `src/core/**/*.{ts,tsx}` para impedir dependencias hacia `@/features/*` y `@/app/*`.
-   - Verificado con `bun run check` (`node scripts/ui-policy.mjs && tsc --noEmit && eslint .`): **0 errores**.
+1. **Detector Polimórfico de Formatos Excel (`2016–2026`) — [detector_multiformato.py](file:///root/polis/backend/app/modules/compromisos/detector_multiformato.py):**
+   - Implementa `Schema Fingerprinting` para los 4 perfiles históricos de la Alcaldía de Cartagena (`PA_MONOHOJA_2016_2019`, `PA_HIBRIDO_2020_2023`, `PA_MULTIHOJA_2024_2026` y `PA_CANONICO_DNP_POLIS`).
+   - Homologa encabezados heterogéneos mediante diccionario semántico de sinónimos hacia el contrato canónico `RegistroPlanAccionNormalizado`, ejecuta validación lingüística de verbos fuertes DNP y construye la lectura comparativa interanual (`2016` vs. `2020` vs. `2026`).
 
-2. **Ajuste 2 — Retiro integral del scaffold Prisma y blindaje `UI009` (`APROBADO CON MÉRITO ADICIONAL`):**
-   - Eliminados `prisma/schema.prisma`, `src/core/database/legacy-prisma.ts`, dependencias `@prisma/client` / `prisma` y scripts `db:*` en [package.json](file:///root/polis/package.json).
-   - Adicionalmente, `codex` identificó y erradicó el uso residual de SQLite/Prisma en `.zscripts/build.sh`, `.zscripts/dev.sh`, `.zscripts/start.sh`, `.zscripts/database-runtime-build.sh` y `tests/database-runtime-build.sh`.
-   - Incorporada la regla `UI009` en [scripts/ui-policy.mjs](file:///root/polis/scripts/ui-policy.mjs) y validada con `bun run ui:policy:test` ([scripts/ui-policy.test.mjs](file:///root/polis/scripts/ui-policy.test.mjs)): **10 / 10 pruebas aprobadas**.
+2. **Los 3 Motores Articulados y Conector Transparencia Cartagena — [triada_motores.py](file:///root/polis/backend/app/modules/compromisos/triada_motores.py):**
+   - **Motor 1 (`motor_1_plan_desarrollo`):** Estructura estratégica cuatrienal con trazabilidad honesta de fuentes.
+   - **Motor 2 (`motor_2_plan_accion`):** Conectado a las actividades persistidas en `seguimiento.actividades_plan_accion`, auditoría DNP e inventario oficial de los **23 archivos `.xlsx`/`.xls` de 2026** publicados en `/transparencia/4planeacion-presupuesto-informes/43-plan-accion/planes-accion-institucionales-2026` y las 4 subcategorías (`4.1` a `4.4`).
+   - **Motor 3 (`motor_3_inversion_presupuestal`):** Modelo completo de cascada presupuestal (`Apropiación Inicial → Definitiva → CDP → Compromisos RP → Obligaciones → Pagos`) y fuentes (`ICLD`, `SGP`, `FONSET`, `SGR`, `CREDITO`).
+   - **Motor de Cruce Tripartito (`cruzar_tres_lecturas`):** Cruza los 3 motores por entidad, línea estratégica y código `BPIM`, calculando `brecha_fisico_financiera_pts`, `indice_coherencia_tripartita` y clasificando en los 4 estados del semáforo forense (`COHERENCIA_INTEGRAL_ALTA`, `DESFASE_CRITICO_SOBREEJECUCION`, `REZAGO_CONTRACTUAL_INVERSION`, `META_PDD_SUBOPERACIONALIZADA`).
 
-3. **Ajuste 3 — Desacople de `panel-store.ts`, contratos de composición y ADR 0001 (`APROBADO`):**
-   - [src/core/panels/panel-store.ts](file:///root/polis/src/core/panels/panel-store.ts) quedó reducido a 88 líneas de infraestructura genérica pura con la interfaz abierta `PanelPropsRegistry`.
-   - [src/app/_composition/panel-contracts.d.ts](file:///root/polis/src/app/_composition/panel-contracts.d.ts) centraliza los contratos mediante module augmentation (incluyendo `vistaInicial?: "dependencias" | "plan_accion_dnp"` en `rendicion-cuentas`).
-   - [src/app/_composition/panel-registry.tsx](file:///root/polis/src/app/_composition/panel-registry.tsx) valida exhaustivamente el mapa con `satisfies PanelComponentRegistry` y encapsula el único cast dinámico en `resolvePanelComponent`.
-   - Documentado en [docs/adr/0001-desacople-panel-store.md](file:///root/polis/docs/adr/0001-desacople-panel-store.md) y probado en [src/core/panels/panel-store.test.ts](file:///root/polis/src/core/panels/panel-store.test.ts) (**2 / 2 PASS**).
-
-4. **Ajuste 4 — Inclusión de `bun test` y `ui:policy:test` en CI (`APROBADO`):**
-   - [.github/workflows/check.yml](file:///root/polis/.github/workflows/check.yml) ejecuta `bun run check`, `bun run ui:policy:test` y `bun test` antes del build y de `bun run ui:test`.
-
-5. **Ajuste 5 — Sincronización de Alembic (`0062`), CSP real y Matriz de Trazabilidad Honesta (`APROBADO`):**
-   - [docs/arquitectura.md](file:///root/polis/docs/arquitectura.md), [docs/plan-trabajo.md](file:///root/polis/docs/plan-trabajo.md), [docs/plan-consolidacion-arquitectura.md](file:///root/polis/docs/plan-consolidacion-arquitectura.md) y [docs/matriz-trazabilidad-modulos.md](file:///root/polis/docs/matriz-trazabilidad-modulos.md) reflejan con rigor el head real de Alembic (`0062_motor_plan_accion_dnp`), el estado real de CSP en código (`Report-Only` por defecto, enforcement configurable) y el censo exacto verificado:
-     - **21 directorios** en `src/features/`.
-     - **22 llamadas `include_router`** en `backend/app/api/router.py`.
-     - **3 módulos backend con `router.py` no montados** en el ensamblador raíz (`actores`, `alternativas`, `fuentes`), dejados explícitamente identificados como hallazgo real.
+3. **Rutas HTTP y Matriz de Autorización API (`test_access_policy.py`):**
+   - Rutas expuestas en [router.py](file:///root/polis/backend/app/modules/compromisos/router.py):
+     - `GET /api/v1/compromisos/triada/resumen`
+     - `POST /api/v1/compromisos/triada/detectar-formato`
+     - `POST /api/v1/compromisos/triada/cruzar-lecturas`
+   - Se registraron las 3 rutas públicas en [docs/permisos-api.md](file:///root/polis/docs/permisos-api.md) y en la guarda de [backend/tests/test_access_policy.py](file:///root/polis/backend/tests/test_access_policy.py), quedando `test_matriz_cubre_todas_las_rutas_y_sus_controles` en **100% PASS**.
 
 ---
 
-## 2. Verificación de Integridad de Datos y Coexistencia
+## 2. Matriz de Quality Gates Auditados
 
-- **Coexistencia con `agy2` (`[GEO-UX-SCROLL-01]`):** Respetada al 100%. El commit `1707f67` de `agy2` se preservó intacto como ancestro en `main`.
-- **Censo de Base de Datos Canónica (`bd_csh`):** Verificado tras la ejecución de `codex`:
-  - `mesas_trabajo.mesas`: **33**
-  - `mesas_trabajo.agendas`: **36**
-  - `indicadores.fichas_tecnicas_indicadores`: **11**
-  - `participacion_ciudadana.actores_estrategicos`: **17**
-  - `seguimiento.compromisos_pas`: **10**
-  - `seguimiento.actividades_plan_accion`: **12**
-  - `geodatos.estadisticas_hurtos`: **12.280**
-
----
-
-## 3. Deuda Técnica Registrada para Siguiente Iteración Backend
-
-Se valida y respalda la decisión de `codex` de **no ejecutar un reformateo masivo fuera de alcance** en `backend/` durante esta tarea:
-1. **Higiene Ruff en `backend/`:** `ruff check backend` (840 hallazgos) y `ruff format --check backend` (110 archivos) deben abordarse en una tarea dedicada exclusivamente a higiene de lint Python (`[BACKEND-RUFF-HYGIENE-01]`) para no contaminar diffs funcionales.
-2. **Montaje de routers `actores`, `alternativas` y `fuentes` en `backend/app/api/router.py`:** Registrado en la matriz de trazabilidad para conectarse en la tarea específica de persistencia de esos 3 módulos.
-
----
-
-## 4. Conclusión
-
-Se emite **DICTAMEN FAVORABLE EAF** para la entrega de `codex` en **`[ARCH-CONSOLIDACION-01]`**.
+| Validación | Resultado |
+| --- | --- |
+| `uv run --project backend ruff check` (6 archivos del alcance) | ✅ **0 errores** |
+| `uv run --project backend ruff format --check` (6 archivos del alcance) | ✅ **0 archivos pendientes** |
+| `pytest backend/tests/test_triada_motores.py` | ✅ **18 / 18 PASS** |
+| `pytest backend/tests/test_access_policy.py` | ✅ **102 / 102 PASS** |
+| `GET http://127.0.0.1:8000/api/v1/compromisos/triada/resumen` | ✅ **HTTP 200 OK** (23 archivos catalogados) |
+| Coexistencia con `agy2` y política `Zero-Push` | ✅ **100% respetada** |

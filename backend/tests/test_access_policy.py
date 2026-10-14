@@ -100,6 +100,8 @@ def test_matriz_cubre_todas_las_rutas_y_sus_controles():
                     ("POST", "/api/v1/identidad/mfa/verificar"),
                     ("POST", "/api/v1/compromisos/plan-accion/validar-redaccion"),
                     ("POST", "/api/v1/compromisos/plan-accion/procesar-lote"),
+                    ("POST", "/api/v1/compromisos/triada/detectar-formato"),
+                    ("POST", "/api/v1/compromisos/triada/cruzar-lecturas"),
                 }, "Una escritura pública nueva requiere decisión explícita y pruebas"
 
 

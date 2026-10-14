@@ -100,6 +100,9 @@ La última columna explica la excepción pública o la condición adicional.
 | GET | /api/v1/compromisos/plan-accion/matriz | publico | Consulta pública de Matriz DNP Hoja 1 Plan_Accion y Hoja 2 Plan_Indicativo. |
 | POST | /api/v1/compromisos/plan-accion/procesar-lote | publico | Procesamiento por lotes y auditoría metodológica oficial DNP con cruce Hoja 2 a Hoja 1 y autocorrección de verbos débiles. |
 | POST | /api/v1/compromisos/plan-accion/validar-redaccion | publico | Validador lingüístico DNP de verbos fuertes en infinitivo y detección de verbos débiles prohibidos. |
+| GET | /api/v1/compromisos/triada/resumen | publico | Consulta pública de la Triada de Motores (Plan de Desarrollo, Plan de Acción Multiformato e Inversión) y catálogo de Transparencia Activa (Ley 1474/11 Art. 74 y Ley 1712/14). |
+| POST | /api/v1/compromisos/triada/detectar-formato | publico | Detección polimórfica y normalización pública de formatos Excel de Planes de Acción (2016 monohoja a 2026 multihoja) sin mutación de estado. |
+| POST | /api/v1/compromisos/triada/cruzar-lecturas | publico | Evaluación pública sin estado del cruce tripartito (Estratégico PDD, Operativo PA y Financiero POAI/BPIM/RP/Pagos) para control social. |
 | DELETE | /api/v1/compromisos/{id_o_codigo} | permiso:seguimiento:gestionar@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |
 | GET | /api/v1/compromisos/{id_o_codigo} | publico | Consulta pública de compromiso por UUID o código para control social. |
 | PATCH | /api/v1/compromisos/{id_o_codigo}/avance | permiso:seguimiento:gestionar@declarada | Gestión autorizada según permiso o rol; validar también entrada y estado del recurso. |

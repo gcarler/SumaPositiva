@@ -40,7 +40,7 @@ declare module "@/core/panels/panel-store" {
     "mesa-acta": { mesaId: string };
     "rendicion-cuentas": {
       dependenciaId?: string;
-      vistaInicial?: "dependencias" | "plan_accion_dnp";
+      vistaInicial?: "dependencias" | "plan_accion_dnp" | "triada_motores";
     };
     "fuente-editor": { fuenteId?: string; soloLectura?: boolean };
     "actor-editor": { actorId?: string; soloLectura?: boolean };

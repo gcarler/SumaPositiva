@@ -29,6 +29,7 @@ import {
   ACTIVIDADES_PA_CANONICAS,
   type ActividadPlanAccion,
 } from "@/features/seguimiento/services/plan-accion-dnp-api";
+import { TriadaMotoresTab } from "@/features/seguimiento/components/triada-motores-tab";
 
 function formatearCOP(valor: number): string {
   return new Intl.NumberFormat("es-CO", {
@@ -50,11 +51,11 @@ export function RendicionCuentasPanel({
   entryKey: string;
   props?: {
     dependenciaId?: string;
-    vistaInicial?: "dependencias" | "plan_accion_dnp";
+    vistaInicial?: "dependencias" | "plan_accion_dnp" | "triada_motores";
   };
 }) {
   const { closeTop, closeToKey } = usePanels();
-  const [vistaActiva, setVistaActiva] = useState<"dependencias" | "plan_accion_dnp">(
+  const [vistaActiva, setVistaActiva] = useState<"dependencias" | "plan_accion_dnp" | "triada_motores">(
     props?.vistaInicial ?? "dependencias"
   );
 
@@ -185,13 +186,15 @@ export function RendicionCuentasPanel({
       subtitle={
         vistaActiva === "dependencias"
           ? `Informe Oficial de Avance a corte ${FECHA_CORTE_AUDITORIA} — 27 Dependencias Oficiales`
-          : "Matriz de Actividades DNP / SisPT 2026 — Publicación Oficial Ley 1474 Art. 74"
+          : vistaActiva === "plan_accion_dnp"
+          ? "Matriz de Actividades DNP / SisPT 2026 — Publicación Oficial Ley 1474 Art. 74"
+          : "Triada de Motores Articulados: Plan de Desarrollo · Plan de Acción Multiformato (2016–2026) · Inversión y Transparencia 4.1–4.4"
       }
       onClose={closeTop}
       onCloseToKey={closeToKey}
     >
       <div className="space-y-6 p-4 sm:p-6 min-w-0">
-        {/* Selector de Vista: Dependencias vs Matriz Plan de Acción DNP */}
+        {/* Selector de Vista: Dependencias vs Matriz Plan de Acción DNP vs Triada de Motores */}
         <div className="flex flex-wrap items-center gap-2 border-b border-border pb-3">
           <Button
             variant="unstyled"
@@ -220,6 +223,21 @@ export function RendicionCuentasPanel({
             }`}
           >
             Matriz Plan de Acción DNP 2026 (Ley 1474)
+          </Button>
+
+          <Button
+            variant="unstyled"
+            size="unstyled"
+            type="button"
+            data-testid="tab-publico-triada-motores"
+            onClick={() => setVistaActiva("triada_motores")}
+            className={`rounded-xl px-4 py-2 text-xs font-semibold transition-all ${
+              vistaActiva === "triada_motores"
+                ? "bg-ember-soft text-ember border border-ember/30 shadow-xs"
+                : "bg-surface-1 text-text-secondary hover:text-text-primary hover:bg-surface-2 border border-transparent"
+            }`}
+          >
+            Triada de Motores (PDD · PA · Inversión)
           </Button>
         </div>
 
@@ -804,6 +822,11 @@ export function RendicionCuentasPanel({
               </Button>
             </div>
           </div>
+        )}
+
+        {/* VISTA 3: TRIADA DE MOTORES (PDD · PLAN DE ACCIÓN MULTIFORMATO · INVERSIÓN) */}
+        {vistaActiva === "triada_motores" && (
+          <TriadaMotoresTab puedeEditar={false} />
         )}
       </div>
     </PanelShell>
