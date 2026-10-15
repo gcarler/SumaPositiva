@@ -388,7 +388,11 @@ def _network_efficiencies(dmus: list[dict[str, Any]]) -> list[dict[str, Any]]:
         results[row["entidad"]] = row | {
             "score_etapa1_operativa_pa": theta1[i],
             "score_etapa2_estrategica_pdd": theta2[i],
+            "score_ccr_estrategico": ccr[i],
+            "score_bcc_estrategico": theta2[i],
+            "score_sbm_operativo": sbm[i],
             "score_global_red": math.sqrt(theta1[i] * theta2[i]),
+            "frontera_pareto": theta1[i] >= 0.999999 and theta2[i] >= 0.999999,
             "brecha_ilusion_burocratica": gap,
             "clasificacion_red": classification,
             "estabilidad_ranking": {
@@ -1644,6 +1648,8 @@ class PddDeaService:
             plan["codigo_plan"]: {
                 "plan": plan["codigo_plan"],
                 "total_metas": 0,
+                "metas_unicas": 0,
+                "vinculadas_alta_confianza": 0,
                 "estado_cobertura": dict.fromkeys(coverage_keys, 0),
                 "taxonomia_mga": dict.fromkeys(taxonomy_keys, 0),
             }
@@ -1653,8 +1659,13 @@ class PddDeaService:
             audit = (row["datos_oficiales"] or {}).get("_auditoria_forense", {})
             item = meta_audit[row["codigo_plan"]]
             item["total_metas"] += 1
-            if audit.get("estado_cobertura") in item["estado_cobertura"]:
-                item["estado_cobertura"][audit["estado_cobertura"]] += 1
+            coverage = audit.get("estado_cobertura")
+            if coverage in item["estado_cobertura"]:
+                item["estado_cobertura"][coverage] += 1
+            if coverage != "DUPLICADA_ENTRE_FUENTES_PDD":
+                item["metas_unicas"] += 1
+            if coverage == "VINCULADA_ALTA_CONFIANZA":
+                item["vinculadas_alta_confianza"] += 1
             if audit.get("taxonomia_mga") in item["taxonomia_mga"]:
                 item["taxonomia_mga"][audit["taxonomia_mga"]] += 1
         for item in meta_audit.values():
@@ -1867,9 +1878,33 @@ class PddDeaService:
             key,
             {
                 "estado": "CALCULADO",
+                "cobertura_8_planes": {
+                    "metas_totales_brutas": sum(row["total_metas"] for row in meta_audit.values()),
+                    "metas_unicas_deduplicadas": sum(
+                        row["metas_unicas"] for row in meta_audit.values()
+                    ),
+                    "metas_vinculadas_alta_confianza": sum(
+                        row["vinculadas_alta_confianza"] for row in meta_audit.values()
+                    ),
+                    "cobertura_sobre_metas_unicas_pct": round(
+                        100
+                        * sum(row["vinculadas_alta_confianza"] for row in meta_audit.values())
+                        / max(1, sum(row["metas_unicas"] for row in meta_audit.values())),
+                        2,
+                    ),
+                },
                 "auditoria_metas_8_planes": {
                     "planes": list(meta_audit.values()),
                     "total_metas": sum(row["total_metas"] for row in meta_audit.values()),
+                    "metas_unicas_deduplicadas": sum(
+                        row["metas_unicas"] for row in meta_audit.values()
+                    ),
+                    "cobertura_sobre_metas_unicas_pct": round(
+                        100
+                        * sum(row["vinculadas_alta_confianza"] for row in meta_audit.values())
+                        / max(1, sum(row["metas_unicas"] for row in meta_audit.values())),
+                        2,
+                    ),
                     "indice_rigor_mga_por_plan": {
                         key: row["indice_rigor_mga_por_plan"] for key, row in meta_audit.items()
                     },

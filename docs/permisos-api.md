@@ -120,6 +120,8 @@ La última columna explica la excepción pública o la condición adicional.
 | GET | /api/v1/compromisos/triada/pdd-dea/explorador-programas-y-seguridad-humana | publico | Catálogo jerárquico de programas y metas PDD/PDL, con monitor de la línea Seguridad Humana. |
 | GET | /api/v1/compromisos/triada/pdd-dea/resumen-ejecutivo | publico | Resumen cacheado del catálogo, cumplimiento, frontera DEA y comparación econométrica. |
 | GET | /api/v1/compromisos/triada/pdd-dea/laboratorio-prescriptivo | publico | Network DEA exploratorio en dos etapas, escenarios presupuestales no causales, auditoría de cobertura MGA y métricas territoriales con fuentes y compuertas explícitas. |
+| GET | /api/v1/compromisos/triada/google-workspace/estado | publico | Estado de conexión y archivos nativos de las carpetas oficiales de Google Workspace. |
+| POST | /api/v1/compromisos/triada/google-workspace/sincronizar | permiso:seguimiento:gestionar@declarada | Actualiza las hojas y el documento nativos existentes con los datos auditables de Triada. |
 | POST | /api/v1/compromisos/triada/detectar-formato | publico | Detección polimórfica y normalización pública de formatos Excel de Planes de Acción (2016 monohoja a 2026 multihoja) sin mutación de estado. |
 | POST | /api/v1/compromisos/triada/cruzar-lecturas | publico | Evaluación pública sin estado del cruce tripartito (Estratégico PDD, Operativo PA y Financiero POAI/BPIM/RP/Pagos) para control social. |
 | POST | /api/v1/compromisos/triada/ingerir-archivos | permiso:seguimiento:gestionar@declarada | Ingesta binaria Excel/CSV/ZIP con persistencia auditable en tres motores; requiere fase Plan de Acción habilitada. |

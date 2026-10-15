@@ -724,3 +724,32 @@ El PPI per cápita se etiqueta como denominador de planeación, no como gasto ej
 - Ruff pasa en la migración nueva. Los archivos de pruebas/script existentes contienen hallazgos Ruff anteriores ajenos al cambio; su sintaxis quedó compilada y los tests pedidos pasaron.
 - `/tmp/polis_pdd_dea_cache_v11.json` se reconstruyó desde `bd_csh`; contiene los 7 payloads y muestra los conteos de mesas actualizados.
 - `polis-backend.service` reiniciado y activo. Después del startup, `/api/v1/mesas` (37 filas), `/api/v1/mesas/agendas` (38 filas) y `/api/v1/compromisos/triada/pdd-dea/resumen-ejecutivo` respondieron HTTP 200; el endpoint PDD reportó `HIT-V11`.
+
+## Entrega [TRIADA-BACKEND-CIERRE-GOOGLE-WORKSPACE-13]
+
+**Estado:** implementación en backend y escritura en vivo a los tres archivos nativos completadas; commit local en `main`, sin push. No se modificó `src/**`.
+
+### Implementación y datos persistidos
+
+- `backend/scripts/ingestar_pdfs_planes_accion_drive.py` descarga por API v3, verifica magic bytes y SHA-256, conserva las rutas/IDs alias del catálogo y es idempotente. Procesó las 78 entradas como 49 binarios únicos; las 49 tienen texto y entidad resuelta. La clasificación por título dejó 6.567 filas en `PLAN_ACCION` y 1.073 en `PLAN_DESARROLLO` (los documentos cuyo asunto explícito es PDD no se asignaron como PA). Extracción textual con `pdftotext -layout`; no se aplicó OCR.
+- `backend/scripts/cerrar_cobertura_pdd_workspace_13.py` marcó las 2.078 filas PDD: 1.805 metas canónicas y 273 clones con referencia a la primaria. El segundo pase revisó las 274 candidatas usando la entidad y un umbral conservador de similitud de 0,82 contra las filas PDF PA y actividades reales: no encontró coincidencias verificables nuevas; permanecen candidatas para revisión humana, sin elevar su confianza automáticamente. `pdd_dea_service.py` expone total bruto, universo deduplicado y cobertura calculada sobre el neto.
+- `backend/scripts/poblar_motor_plan_accion_real.py` insertó/upsertó 169 actividades trazables en 29 entidades: 57 de 2024, 56 de 2025 y 56 de 2026. Conservó las 12 semillas; el motor tiene 181 actividades en total.
+- `backend/app/modules/compromisos/google_workspace_sync_service.py` y el router implementan `GET /api/v1/compromisos/triada/google-workspace/estado` (público) y `POST /api/v1/compromisos/triada/google-workspace/sincronizar` (permiso `seguimiento:gestionar@declarada`). El estado enumera hojas/documentos nativos, URLs, cuenta de servicio y último resultado. `docs/permisos-api.md` registra ambas rutas.
+
+### Sincronización en Google Drive
+
+`sincronizar_workspace()` escribió y volvió a leer el contenido de los IDs existentes en `00_EXPEDIENTE_OFICIAL_POLIS_CSH`:
+
+- `Matriz_PDM`, `1hYDwrJbfqVbkAtlAqG-l1K4056Z0uPQ8W2kvEfEPEA4`: 4 pestañas para resumen de 8 planes, serie de 16 vigencias, Network DEA y justicia territorial/censo.
+- `Matriz_Plan_de_accion`, `1jNeqNsoCwc1ND9EYvixtPIdyuE3WIdIyYEbVE4UAslM`: 3 pestañas para resumen de las 29 entidades, las 181 actividades y las 37 mesas más la plenaria `pc-001` (rotulada como agenda, no como una mesa adicional).
+- `Analisis`, `1yN5IdFy6fh18yKTzC8jfURtakw-dBh5kpfYC4vszitE`: informe integral reemplazado con cobertura PDD, actividades, mesas, preguntas de control político y sello SHA-256. El informe distingue 12.280 filas estadísticas de hurtos de 18.242 casos ponderados. Suma poblacional territorial de referencia: 1.065.570; quedó expresamente identificada como cifra no certificada como DANE.
+
+La verificación de lectura posterior confirmó títulos, pestañas, encabezados y sello en los tres documentos. Resultado: 8 planes, 2.078 metas brutas, 1.805 únicas, 29 entidades, 169 actividades fuente, 181 actividades incluidas semillas, 37 mesas, 78 entradas PDF y 49 SHA-256 únicos. El Network DEA tiene 27 entidades elegibles en el corte; las filas restantes se muestran como no estimables, sin scores inventados.
+
+### Validación
+
+- `ruff check` en archivos modificados de servicio, router, scripts y prueba: **PASS**.
+- Pruebas focalizadas (`test_google_workspace_sync.py`, `test_access_policy.py`, `test_pdd_dea_triada.py`, `test_motor_plan_accion_dnp.py`): **141 passed**, una advertencia deprecada preexistente de Starlette.
+- `warm_pdd_cache()` regeneró los 7 payloads V11 tras los cambios de cobertura, red DEA y censo. `polis-backend.service` se reinició y quedó activo; `GET /api/v1/compromisos/triada/google-workspace/estado` respondió **HTTP 200**, `conectado=true`, con 2 Sheets y 1 Doc nativos detectados.
+- Lectura API directa tras la última escritura: PDM con 9/17/30/47 filas en sus cuatro pestañas; Plan de Acción con 30/182/39 filas en sus tres pestañas; el Doc tiene 12.856 caracteres, incluye PDD, las 37 mesas y el sello SHA-256.
+- Sincronización final: `2026-10-15T20:56:26.236616+00:00`; SHA-256 del cuerpo del informe: `2093a95adeb5b40d6a2b806a2f705f24aa51ac74126439e6407ef0d6c5c9db96`. Los nombres originales `Matriz_PDM` y `Matriz_Plan_de_accion` se conservaron.

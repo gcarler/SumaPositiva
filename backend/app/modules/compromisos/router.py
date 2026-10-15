@@ -6,6 +6,7 @@ from fastapi import APIRouter, Body, Depends, File, Form, Query, Request, Upload
 
 from app.core.database import SessionDependency
 from app.modules.compromisos.dea_econometria_service import DeaEconometriaService
+from app.modules.compromisos.google_workspace_sync_service import GoogleWorkspaceSyncService
 from app.modules.compromisos.ingesta_masiva_excel import detectar_extension_archivo
 from app.modules.compromisos.ingesta_masiva_service import RAIZ_INGESTA, IngestaMasivaService
 from app.modules.compromisos.inteligencia_triada_service import InteligenciaTriadaService
@@ -55,6 +56,23 @@ async def _compromisos_lifespan(_app):
 
 
 router = APIRouter(prefix="/compromisos", tags=["Compromisos PAS"], lifespan=_compromisos_lifespan)
+
+
+@router.get(
+    "/triada/google-workspace/estado",
+    summary="Estado de carpetas y archivos nativos de Google Workspace",
+)
+async def google_workspace_estado():
+    return await GoogleWorkspaceSyncService().obtener_estado_workspace()
+
+
+@router.post(
+    "/triada/google-workspace/sincronizar",
+    dependencies=[Depends(requerir_permiso("seguimiento:gestionar", nivel_minimo="declarada"))],
+    summary="Publicar matrices y análisis de Triada en los archivos nativos existentes",
+)
+async def google_workspace_sincronizar(session: SessionDependency, sujeto: SujetoAutenticadoDep):
+    return await GoogleWorkspaceSyncService(session).sincronizar_workspace()
 
 
 def get_compromisos_service(session: SessionDependency) -> CompromisosService:
