@@ -24,6 +24,7 @@ dependencies = [
   "qrcode[pil]>=8.2",
   "reportlab>=5.0.1",
   "shapely>=2.1.2",
+  "scipy>=1.14.0,<2",
   "sqlalchemy[asyncio]>=2.0,<2.1",
   "uvicorn[standard]>=0.35,<1",
   "xlrd>=2.0.2",

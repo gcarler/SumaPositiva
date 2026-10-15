@@ -5,6 +5,7 @@ from typing import Annotated
 from fastapi import APIRouter, Body, Depends, File, Form, Query, UploadFile, status
 
 from app.core.database import SessionDependency
+from app.modules.compromisos.dea_econometria_service import DeaEconometriaService
 from app.modules.compromisos.ingesta_masiva_excel import detectar_extension_archivo
 from app.modules.compromisos.ingesta_masiva_service import RAIZ_INGESTA, IngestaMasivaService
 from app.modules.compromisos.inteligencia_triada_service import InteligenciaTriadaService
@@ -600,3 +601,43 @@ async def inteligencia_simulador_cierre(
 )
 async def inteligencia_resumen_ejecutivo(session: SessionDependency):
     return await InteligenciaTriadaService(session).resumen_ejecutivo()
+
+
+@router.get("/triada/dea/auditoria-saneamiento", summary="Auditoría DEA del corpus y sus escalas")
+async def dea_auditoria_saneamiento(session: SessionDependency):
+    return await DeaEconometriaService(session).auditoria_saneamiento()
+
+
+@router.get("/triada/dea/frontera-eficiencia", summary="Frontera DEA y metas de eficiencia")
+async def dea_frontera_eficiencia(
+    session: SessionDependency,
+    vigencia: int = Query(2025, ge=2020, le=2026),
+    modo: str = Query("nucleo_1x2", pattern="^(nucleo_1x2|extendido_2x3|extendida_2x3)$"),
+    insumo: str = Query("apropiacion", pattern="^(apropiacion|pagos)$"),
+):
+    return await DeaEconometriaService(session).frontera_eficiencia(
+        vigencia=vigencia, modo=modo, insumo=insumo
+    )
+
+
+@router.get("/triada/dea/malmquist", summary="Productividad Malmquist de años cerrados")
+async def dea_malmquist(
+    session: SessionDependency,
+    desde: int = Query(2020, ge=2020, le=2025),
+    hasta: int = Query(2025, ge=2020, le=2025),
+):
+    from fastapi import HTTPException
+
+    if hasta <= desde:
+        raise HTTPException(status_code=422, detail="hasta debe ser mayor que desde")
+    return await DeaEconometriaService(session).malmquist(desde=desde, hasta=hasta)
+
+
+@router.get("/triada/dea/econometria-segunda-etapa", summary="Segunda etapa y pruebas DEA")
+async def dea_econometria_segunda_etapa(session: SessionDependency):
+    return await DeaEconometriaService(session).econometria_segunda_etapa()
+
+
+@router.get("/triada/dea/resumen-integral", summary="Resumen integral del laboratorio DEA")
+async def dea_resumen_integral(session: SessionDependency):
+    return await DeaEconometriaService(session).resumen_integral()
