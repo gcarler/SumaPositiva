@@ -459,3 +459,33 @@ El commit local incluye solo `backend/app/modules/compromisos/dea_econometria_se
 El ajuste regresó el panel observado con **129 DMU-años**, **26 clusters** y **112 observaciones completas**. Se obtuvieron 199 réplicas válidas de las 200 solicitadas. La especificación reportó pseudo-R² **0,02342**, Wald **2,2990** y p-value conjunto **0,68094**; los cinco coeficientes y sus intervalos se incluyen en la respuesta de la API. El primer acceso sigue pagando la carga histórica fría; el resultado repetido queda prácticamente instantáneo mientras el proceso conserve la caché.
 
 La verificación de calidad de código fue `ruff format`, `ruff check` y `PYTHONPATH=backend /root/polis/venv/bin/pytest -q backend/tests/test_dea_econometria_triada.py`: **10 pruebas aprobadas**. Servicio reiniciado; commit local asociado, sin push.
+
+# Entrega backend PDD DEA — [TRIADA-BACKEND-DEA-PDD-08]
+
+**Fecha:** 2026-10-15. **Rama:** `main`. Se implementaron las cinco rutas PDD DEA y se verificaron contra el servicio productivo y `bd_csh`.
+
+## Cambios
+
+- Nuevo `backend/app/modules/compromisos/pdd_dea_service.py`: catálogo de fuentes, series IPC, PPI 2020/2024 y conciliación; deduplicación de metas por entidad/año/código; verificación conservadora de escalas de avance; agregados por plan, línea, entidad y localidad; DEA BCC/CCR/SBM por entidad con proyección, pares y slacks; contraste pareado, ajuste BH y estadística descriptiva interplan. Los cálculos se cachean en `_RESULT` con el TTL compartido de 3.600 s y los registros se leen con cursor asíncrono por lotes.
+- `router.py` agrega `catalogo-y-conciliacion-ppi`, `cumplimiento-metas`, `frontera-dea-pdd`, `econometria-comparada-pdd` y `resumen-ejecutivo`. `plan=TODOS` está soportado. Las cinco rutas quedan registradas como públicas en `docs/permisos-api.md`.
+- `backend/tests/test_pdd_dea_triada.py` cubre conciliación de PPI, formatos monetarios, normalización de metas, deduplicación, escalas de avance, cotas DEA, FDR, productividad descriptiva y registro de rutas.
+
+## Verificación
+
+| Comprobación | Resultado |
+| --- | --- |
+| `ruff format` + `ruff check` sobre servicio, router y pruebas | Aprobados. |
+| `pytest -q tests/test_pdd_dea_triada.py tests/test_access_policy.py` | **120 aprobadas**. |
+| Reinicio de `polis-backend.service` | Servicio activo; el warmup existente de la aplicación tomó alrededor de 35 s por worker. |
+| Cinco rutas `/api/v1/compromisos/triada/pdd-dea/*` | **HTTP 200** en las cinco solicitudes en vivo. |
+| Catálogo vivo, registros PDD después de excluir clones | 2016–19: **3.013**; 2020–23: **24.328**; 2024–27: **70.609**; PDL locales: **5.900** filas asociadas. |
+| Latencia observada en la verificación final | Catálogo: **14,05 s**; cumplimiento: **11,24 s**; frontera: **2,86 s**; econometría: **0,19 s**; resumen: **2,94 s**. El frío de datos en cada worker supera 3 s; las rutas cacheadas dependen de qué worker reciba la solicitud y no acreditan consistentemente <50 ms. |
+
+## Límites que quedan visibles
+
+- La respuesta DEA marca `bootstrap_replicas: 0` e intervalos pendientes: no se simuló el bootstrap de 200 réplicas. Los scores BCC/CCR/SBM entregados son deterministas.
+- `malmquist_inter_planes` está reportado explícitamente como proxy geométrico de cambios del avance medio; no estima `EFFCH × TECHCH` mediante fronteras temporales Malmquist completas.
+- La econometría implementa asociación PPI/avance y Wilcoxon/Friedman sobre observaciones disponibles; la matriz solicitada con todas las variables de articulación PA/BPIM y los índices de desigualdad por línea no está completa. Las salidas y advertencias no presentan estos proxies como inferencia causal.
+- El total oficial 2020–23 es COP **6.022.982.600.000** constantes de dic-2019; las cuatro cifras anuales publicadas suman COP **6.022.982.500.000**. La API informa la diferencia de redondeo de COP 100 millones. Para 2016–19 está disponible el PDF escaneado de 363 páginas, pero no fue posible extraer OCR; el PPI histórico se conserva como no extraído en vez de inventar montos.
+
+El commit se limita a los cinco archivos backend/documentación asignados. No se añadieron cambios de `src/` ni se ejecutó `git push`.

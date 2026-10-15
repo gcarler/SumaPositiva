@@ -113,6 +113,11 @@ La última columna explica la excepción pública o la condición adicional.
 | GET | /api/v1/compromisos/triada/dea/malmquist | publico | Índice agregado de productividad interanual, sujeto a validación metodológica. |
 | GET | /api/v1/compromisos/triada/dea/econometria-segunda-etapa | publico | Asociaciones exploratorias de panel, no causales, basadas en el corpus ingerido. |
 | GET | /api/v1/compromisos/triada/dea/resumen-integral | publico | Resumen analítico agregado DEA, sujeto a advertencias metodológicas de cada motor. |
+| GET | /api/v1/compromisos/triada/pdd-dea/catalogo-y-conciliacion-ppi | publico | Catálogo de PDD/PDL, fuentes y conciliación del PPI frente a registros reconstruidos. |
+| GET | /api/v1/compromisos/triada/pdd-dea/cumplimiento-metas | publico | Avance de metas PDD deduplicado y agregado por línea, entidad y localidad; conserva advertencias de escala. |
+| GET | /api/v1/compromisos/triada/pdd-dea/frontera-dea-pdd | publico | Frontera DEA exploratoria de entidades por PDD e insumo presupuestal; no representa causalidad ni certificación. |
+| GET | /api/v1/compromisos/triada/pdd-dea/econometria-comparada-pdd | publico | Comparación estadística descriptiva interplan, correlaciones ajustadas por FDR y productividad exploratoria. |
+| GET | /api/v1/compromisos/triada/pdd-dea/resumen-ejecutivo | publico | Resumen cacheado del catálogo, cumplimiento, frontera DEA y comparación econométrica. |
 | POST | /api/v1/compromisos/triada/detectar-formato | publico | Detección polimórfica y normalización pública de formatos Excel de Planes de Acción (2016 monohoja a 2026 multihoja) sin mutación de estado. |
 | POST | /api/v1/compromisos/triada/cruzar-lecturas | publico | Evaluación pública sin estado del cruce tripartito (Estratégico PDD, Operativo PA y Financiero POAI/BPIM/RP/Pagos) para control social. |
 | POST | /api/v1/compromisos/triada/ingerir-archivos | permiso:seguimiento:gestionar@declarada | Ingesta binaria Excel/CSV/ZIP con persistencia auditable en tres motores; requiere fase Plan de Acción habilitada. |

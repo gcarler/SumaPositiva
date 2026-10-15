@@ -9,6 +9,7 @@ from app.modules.compromisos.dea_econometria_service import DeaEconometriaServic
 from app.modules.compromisos.ingesta_masiva_excel import detectar_extension_archivo
 from app.modules.compromisos.ingesta_masiva_service import RAIZ_INGESTA, IngestaMasivaService
 from app.modules.compromisos.inteligencia_triada_service import InteligenciaTriadaService
+from app.modules.compromisos.pdd_dea_service import PddDeaService
 from app.modules.compromisos.repository import CompromisosRepository
 from app.modules.compromisos.schemas import (
     ActividadPlanAccionActualizarSeguimiento,
@@ -641,3 +642,45 @@ async def dea_econometria_segunda_etapa(session: SessionDependency):
 @router.get("/triada/dea/resumen-integral", summary="Resumen integral del laboratorio DEA")
 async def dea_resumen_integral(session: SessionDependency):
     return await DeaEconometriaService(session).resumen_integral()
+
+
+@router.get(
+    "/triada/pdd-dea/catalogo-y-conciliacion-ppi",
+    summary="Catálogo de planes y conciliación del PPI",
+)
+async def pdd_dea_catalogo(session: SessionDependency):
+    return await PddDeaService(session).catalogo_y_conciliacion_ppi()
+
+
+@router.get("/triada/pdd-dea/cumplimiento-metas", summary="Cumplimiento deduplicado de metas PDD")
+async def pdd_dea_cumplimiento(
+    session: SessionDependency,
+    plan: str | None = Query(None, pattern="^(PDD_2016_2019|PDD_2020_2023|PDD_2024_2027|TODOS)$"),
+):
+    return await PddDeaService(session).cumplimiento_metas(plan=plan)
+
+
+@router.get(
+    "/triada/pdd-dea/frontera-dea-pdd", summary="Frontera DEA exploratoria por plan de desarrollo"
+)
+async def pdd_dea_frontera(
+    session: SessionDependency,
+    plan: str | None = Query(None, pattern="^(PDD_2016_2019|PDD_2020_2023|PDD_2024_2027|TODOS)$"),
+    insumo: str = Query("conciliado_ppi", pattern="^(conciliado_ppi|reportado)$"),
+):
+    return await PddDeaService(session).frontera_dea_pdd(plan=plan, insumo=insumo)
+
+
+@router.get(
+    "/triada/pdd-dea/econometria-comparada-pdd",
+    summary="Comparación econométrica descriptiva entre PDD",
+)
+async def pdd_dea_econometria(session: SessionDependency):
+    return await PddDeaService(session).econometria_comparada_pdd()
+
+
+@router.get(
+    "/triada/pdd-dea/resumen-ejecutivo", summary="Resumen ejecutivo del laboratorio PDD DEA"
+)
+async def pdd_dea_resumen(session: SessionDependency):
+    return await PddDeaService(session).resumen_ejecutivo()
