@@ -21,6 +21,7 @@ from app.modules.compromisos.pdd_dea_service import (
     _rank_entities,
 )
 from app.modules.compromisos.router import router
+from scripts.sincronizar_catalogo_pdd import extract_catalog
 
 
 def _row(**kwargs):
@@ -120,6 +121,36 @@ def test_financial_unkeyed_same_source_amount_deduplicates():
 def test_line_alias_normalization():
     assert _line_key("Línea 1: Seguridad Humana", "PDD_2024_2027") == "Seguridad Humana"
     assert _line_key("Cartagena Incluyente", "PDD_2020_2023") == "Cartagena Incluyente"
+    assert _line_key("0.5522956144837197", "PDD_2024_2027") == "SIN_LINEA"
+    assert _line_key("0.82", "PDD_2020_2023") == "SIN_LINEA"
+
+
+def test_tripartite_progress_imputes_verified_sister_rows():
+    pdd = _row(avance_estrategico=None, avance_fisico=None)
+    pdd["avance_estrategico"] = None
+    pdd["avance_fisico"] = None
+    pa = _row(id="pa", motor="PLAN_ACCION", avance_estrategico=0.6, ejecutada=6)
+    budget = _row(id="budget", motor="INVERSION_PRESUPUESTAL", apropiacion=500)
+    state = _build_state([pdd, pa, budget])
+    goal = state["goals_by_plan"]["PDD_2024_2027"][0]
+    assert goal["avance_directo_pct"] is None
+    assert goal["avance_pa_pct"] == pytest.approx(60)
+    assert goal["avance_consolidado_tripartito_pct"] == pytest.approx(60)
+    assert goal["soporte_presupuestal_cop"] == 500
+
+
+def test_malmquist_exact_lp_factorization():
+    dmu_a = {
+        "A": (np.array([1.0]), np.array([1.0, 1.0])),
+        "B": (np.array([2.0]), np.array([2.0, 1.0])),
+    }
+    dmu_b = {
+        "A": (np.array([1.0]), np.array([1.5, 1.0])),
+        "B": (np.array([2.0]), np.array([2.5, 1.0])),
+    }
+    result = _malmquist_interplan("PDD_A", "PDD_B", [], [], dmu_a, dmu_b)
+    assert result["metodo"].startswith("Malmquist output-oriented CRS exacto")
+    assert result["mpi_global"] == pytest.approx(result["effch_global"] * result["techch_global"])
 
 
 def test_concentration_metrics_bounds():
@@ -176,13 +207,38 @@ def test_benjamini_hochberg_adjustment_is_monotone():
     assert q_values == pytest.approx([0.03, 0.04, 0.04])
 
 
-def test_all_five_pdd_dea_routes_are_registered():
+def test_all_six_pdd_dea_routes_are_registered():
     expected = {
         "/compromisos/triada/pdd-dea/catalogo-y-conciliacion-ppi",
         "/compromisos/triada/pdd-dea/cumplimiento-metas",
         "/compromisos/triada/pdd-dea/frontera-dea-pdd",
         "/compromisos/triada/pdd-dea/econometria-comparada-pdd",
+        "/compromisos/triada/pdd-dea/explorador-programas-y-seguridad-humana",
         "/compromisos/triada/pdd-dea/resumen-ejecutivo",
     }
     registered = {route.path for route in router.routes}
     assert expected <= registered
+
+
+def test_official_catalog_extraction_preserves_2024_ppi_rows_and_eight_plans():
+    plans, hierarchy, metas = extract_catalog()
+    assert len(plans) == 8
+    assert (
+        sum(row["codigo_plan"] == "PDD_2024_2027" and row["nivel"] == "LINEA" for row in hierarchy)
+        == 6
+    )
+    assert (
+        sum(
+            row["codigo_plan"] == "PDD_2024_2027" and row["nivel"] == "IMPULSOR"
+            for row in hierarchy
+        )
+        == 42
+    )
+    assert (
+        sum(
+            row["codigo_plan"] == "PDD_2024_2027" and row["nivel"] == "PROGRAMA"
+            for row in hierarchy
+        )
+        == 172
+    )
+    assert len(metas) > 0

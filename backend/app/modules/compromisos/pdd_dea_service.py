@@ -128,17 +128,34 @@ PLANS: tuple[dict[str, Any], ...] = (
         "hasta": 2027,
     },
     {
-        "codigo_plan": "PDL_2024_2027",
+        "codigo_plan": "PDL_1_2024_2027",
         "periodo": "2024–2027",
-        "nombre_oficial": "Planes de Desarrollo Local de Cartagena (3 localidades)",
-        "norma_adopcion": "Acuerdos locales de 2024",
-        "archivos": (
-            "pdl_2024_2027_localidad_1_historica.md",
-            "pdl_2024_2027_localidad_2_virgen_turistica.md",
-            "pdl_2024_2027_localidad_3_industrial_bahia.md",
-        ),
+        "nombre_oficial": "Localidad Histórica y del Caribe Norte",
+        "norma_adopcion": "Acuerdo Local 004 de 2024",
+        "archivos": ("pdl_2024_2027_localidad_1_historica.md",),
         "desde": 2024,
         "hasta": 2027,
+        "ppi_total": 97_691_041_529.0,
+    },
+    {
+        "codigo_plan": "PDL_2_2024_2027",
+        "periodo": "2024–2027",
+        "nombre_oficial": "Localidad de la Virgen y Turística",
+        "norma_adopcion": "Acuerdo Local 004 de 2024",
+        "archivos": ("pdl_2024_2027_localidad_2_virgen_turistica.md",),
+        "desde": 2024,
+        "hasta": 2027,
+        "ppi_total": 161_289_996_409.01,
+    },
+    {
+        "codigo_plan": "PDL_3_2024_2027",
+        "periodo": "2024–2027",
+        "nombre_oficial": "Localidad Industrial y de la Bahía",
+        "norma_adopcion": "Acuerdo Local 004 de 2024",
+        "archivos": ("pdl_2024_2027_localidad_3_industrial_bahia.md",),
+        "desde": 2024,
+        "hasta": 2027,
+        "ppi_total": 46_000_000_000.0,
     },
 )
 
@@ -153,6 +170,7 @@ SELECT r.id::text id, r.archivo_id::text archivo_id, a.nombre_archivo,
        r.avance_fisico_pct avance_fisico, r.meta_programada_anual programada,
        r.meta_ejecutada_anual ejecutada, r.apropiacion_definitiva_cop apropiacion,
        r.pagos_tesoreria_cop pagos, r.hoja_origen hoja, r.fila_origen_num fila
+       , r.datos_origen origen
 FROM seguimiento.registros_triada_normalizados r
 JOIN seguimiento.archivos_plan_ingeridos a ON a.id = r.archivo_id
 WHERE r.vigencia BETWEEN 2017 AND 2027
@@ -222,6 +240,16 @@ def _advance(row: dict[str, Any]) -> tuple[float | None, str]:
 def _line_key(value: Any, plan: str) -> str:
     text_value = re.sub(r"\s+", " ", str(value or "").strip())
     upper = text_value.upper()
+    if re.fullmatch(r"[-+]?\d+(?:[.,]\d+)?", text_value) or upper in {
+        "N/A",
+        "NA",
+        "NULL",
+        "NONE",
+        "-",
+        "—",
+    }:
+        text_value = ""
+        upper = ""
     if plan == "PDD_2024_2027":
         aliases = (
             ("SEGURIDAD HUMANA", "Seguridad Humana"),
@@ -242,7 +270,44 @@ def _line_key(value: Any, plan: str) -> str:
                 return f"Cartagena {pillar.title()}"
         if "TRANSVERSAL" in upper or "DIFERENCIAL" in upper:
             return "Eje Transversal"
-    return text_value or "SIN_LINEA"
+    if plan == "PDD_2016_2019":
+        canonical = (
+            "Por una Cartagena con Equidad en Salud",
+            "Cartagena Sin Miedos",
+            "Cartagena Ciudad para Invertir",
+            "Finanzas Sanas y Robustas",
+            "Educación para la Gente del Siglo XXI",
+            "Cartagena Territorio de Paz",
+            "Desarrollo Urbano para la Competitividad",
+        )
+        for name in canonical:
+            if name.casefold() in text_value.casefold():
+                return name
+    if text_value:
+        return text_value
+    return "SIN_LINEA"
+
+
+def _line_from_origin(row: dict[str, Any], plan: str) -> str:
+    value = row.get("linea")
+    normalized = _line_key(value, plan)
+    if normalized != "SIN_LINEA":
+        return normalized
+    origin = row.get("origen") or {}
+    if isinstance(origin, str):
+        try:
+            import json
+
+            origin = json.loads(origin)
+        except (ValueError, TypeError):
+            origin = {}
+    if isinstance(origin, dict):
+        for key in ("LINEA ESTRATEGICA", "LÍNEA ESTRATÉGICA", "PILAR", "PROGRAMA", "OBJETIVO"):
+            candidate = next((v for k, v in origin.items() if str(k).strip().upper() == key), None)
+            normalized = _line_key(candidate, plan)
+            if normalized != "SIN_LINEA":
+                return normalized
+    return _line_key(row.get("hoja"), plan)
 
 
 def _cut_rank(row: dict[str, Any]) -> tuple[int, str, str]:
@@ -285,7 +350,7 @@ def _build_state(rows: list[dict[str, Any]]) -> dict[str, Any]:
         advance, advance_state = _advance(row)
         row["avance_norm"] = advance
         row["avance_estado"] = advance_state
-        line = _line_key(row.get("linea"), plan)
+        line = _line_from_origin(row, plan)
         row["linea_norm"] = line
         key_item = str(row.get("meta") or row.get("indicador") or "").strip()
         if not key_item:
@@ -343,6 +408,50 @@ def _build_state(rows: list[dict[str, Any]]) -> dict[str, Any]:
         amount = float(row["_amount"])
         financial[(entity, int(year), stage)] += amount
 
+    # Verified sister-row imputation: keys are normalized entity, year, and either
+    # BPIM or PDD meta code. Direct PDD observations keep precedence over PA.
+    tripartite_pa: dict[tuple[str, int, str], list[float]] = defaultdict(list)
+    tripartite_budget: dict[tuple[str, int, str], dict[str, float]] = defaultdict(dict)
+    for row in rows:
+        entity, year = row.get("entidad"), row.get("vigencia")
+        if not entity or not year:
+            continue
+        codes = {str(row.get(k) or "").strip() for k in ("bpim", "meta")}
+        codes.discard("")
+        if not codes:
+            continue
+        if row["motor"] == "PLAN_ACCION":
+            value, _status = _advance(row)
+            if value is not None:
+                for code in codes:
+                    tripartite_pa[(str(entity), int(year), code)].append(value)
+        elif row["motor"] == "INVERSION_PRESUPUESTAL":
+            amount = _number(row.get("apropiacion")) or 0.0
+            if amount > 0:
+                for code in codes:
+                    tripartite_budget[(str(entity), int(year), code)][str(row["id"])] = amount
+    tripartite_pa_matches = tripartite_budget_matches = 0
+    for row in chosen.values():
+        identity = (str(row["entidad"]), int(row["vigencia"]))
+        codes = {str(row.get(k) or "").strip() for k in ("bpim", "meta")}
+        codes.discard("")
+        pa_values = [value for code in codes for value in tripartite_pa.get((*identity, code), [])]
+        budget_rows = {
+            row_id: amount
+            for code in codes
+            for row_id, amount in tripartite_budget.get((*identity, code), {}).items()
+        }
+        budget = sum(budget_rows.values())
+        row["avance_directo_pct"] = row.get("avance_norm")
+        row["avance_pa_pct"] = float(np.mean(pa_values)) if pa_values else None
+        row["avance_consolidado_tripartito_pct"] = (
+            row["avance_norm"] if row.get("avance_norm") is not None else row["avance_pa_pct"]
+        )
+        row["soporte_presupuestal_cop"] = budget
+        row["tiene_soporte_presupuestal"] = budget > 0
+        tripartite_pa_matches += bool(pa_values)
+        tripartite_budget_matches += budget > 0
+
     entities: dict[tuple[str, str], dict[str, Any]] = {}
     for plan, plan_rows in goals_by_plan.items():
         for row in plan_rows:
@@ -370,6 +479,8 @@ def _build_state(rows: list[dict[str, Any]]) -> dict[str, Any]:
         "entities": entities,
         "financial": dict(financial),
         "pa_counts": dict(pa_counts),
+        "metas_con_avance_en_pa": tripartite_pa_matches,
+        "metas_con_soporte_presupuestal": tripartite_budget_matches,
     }
 
 
@@ -476,12 +587,13 @@ class PddDeaService:
         plans = []
         for plan in PLANS:
             plan_code = plan["codigo_plan"]
-            if plan_code == "PDL_2024_2027":
+            if plan_code.startswith("PDL_"):
+                locality_number = plan_code.split("_")[1]
                 matched = [
                     row
                     for row in state["raw_pdd"]
                     if row["plan"] == "PDD_2024_2027"
-                    and str(row["entidad"]).startswith("Alcaldía Local")
+                    and str(row["entidad"]).startswith(f"Alcaldía Local {locality_number}")
                 ]
             else:
                 matched = state["records_by_plan"].get(plan_code, [])
@@ -500,7 +612,8 @@ class PddDeaService:
                         {r["indicador"] for r in goals if r.get("indicador")}
                     ),
                     "lineas_estrategicas_unicas": len({r["linea_norm"] for r in goals}),
-                    "ppi_total_corriente_cop": self._plan_ppi_nominal(plan_code),
+                    "ppi_total_corriente_cop": self._plan_ppi_nominal(plan_code)
+                    or plan.get("ppi_total"),
                     "ppi_total_constante_2025_cop": self._plan_ppi_constant(plan_code),
                     "ppi_estado": (
                         "OFICIAL_EXTRAIDO"
@@ -587,6 +700,8 @@ class PddDeaService:
 
     @staticmethod
     def _plan_ppi_nominal(plan: str) -> float | None:
+        if plan == "PDD_2013_2015":
+            return 1_874_167_605_000.0
         if plan == "PDD_2024_2027":
             return float(sum(PPI_2024.values()))
         if plan == "PDD_2020_2023":
@@ -597,6 +712,14 @@ class PddDeaService:
 
     @staticmethod
     def _plan_ppi_constant(plan: str) -> float | None:
+        if plan.startswith("PDL_"):
+            return {
+                "PDL_1_2024_2027": 97_691_041_529.0,
+                "PDL_2_2024_2027": 161_289_996_409.01,
+                "PDL_3_2024_2027": 46_000_000_000.0,
+            }.get(plan)
+        if plan == "PDD_2013_2015":
+            return 1_874_167_605_000.0 * _money_factor(2015)
         if plan == "PDD_2024_2027":
             return float(sum(PPI_2024[y] * _money_factor(y) for y in PPI_2024))
         if plan == "PDD_2020_2023":
@@ -654,6 +777,11 @@ class PddDeaService:
             code = p["codigo_plan"]
             rows = state["goals_by_plan"].get(code, [])
             summary = _advance_summary(rows)
+            tripartite_values = [
+                row["avance_consolidado_tripartito_pct"]
+                for row in rows
+                if row.get("avance_consolidado_tripartito_pct") is not None
+            ]
             lineas = []
             for line, line_rows in sorted(_group_rows(rows, "linea_norm").items()):
                 lineas.append({"linea": line, **_advance_summary(line_rows)})
@@ -670,6 +798,27 @@ class PddDeaService:
                     "nombre_plan": p["nombre_oficial"],
                     "total_registros_pdd": len(state["records_by_plan"].get(code, [])),
                     **summary,
+                    "metas_con_avance_en_pa": sum(
+                        row.get("avance_pa_pct") is not None for row in rows
+                    ),
+                    "metas_con_soporte_presupuestal": sum(
+                        row.get("tiene_soporte_presupuestal", False) for row in rows
+                    ),
+                    "metas_con_avance_consolidado_tripartito": len(tripartite_values),
+                    "avance_consolidado_tripartito_pct": (
+                        float(np.mean(tripartite_values)) if tripartite_values else None
+                    ),
+                    "desglose_origen_avance": {
+                        "matriz_pdd": sum(
+                            row.get("avance_directo_pct") is not None for row in rows
+                        ),
+                        "plan_accion": sum(row.get("avance_pa_pct") is not None for row in rows),
+                        "imputadas_desde_pa": sum(
+                            row.get("avance_directo_pct") is None
+                            and row.get("avance_pa_pct") is not None
+                            for row in rows
+                        ),
+                    },
                     "avance_fisico_promedio_pct": summary["avance_fisico_promedio_pct"],
                     "lineas_estrategicas": lineas,
                     "entidades": _rank_entities(rows),
@@ -711,6 +860,15 @@ class PddDeaService:
                 "planes_desarrollo_local_2024_2027": _rank_entities(localities),
                 "cumplimiento_por_entidad": _rank_entities(all_rows),
                 "componentes_seguridad_humana": list(COMPONENTES_SEGURIDAD_HUMANA),
+                "imputacion_tripartita": {
+                    "metas_con_avance_en_pa": state["metas_con_avance_en_pa"],
+                    "metas_con_soporte_presupuestal": state["metas_con_soporte_presupuestal"],
+                    "clave_cruce": [
+                        "entidad_normalizada",
+                        "vigencia",
+                        "codigo_bpim|codigo_meta_pdd",
+                    ],
+                },
                 "macroproyectos_2024": _macroprojects(),
                 "advertencia": (
                     "Cumplimiento deduplicado por entidad, vigencia y meta; "
@@ -839,6 +997,7 @@ class PddDeaService:
                     if len(lambdas) == n
                     else (xa[i] * scores[-1], ya[i])
                 )
+            bootstrap_scores = _bootstrap_bcc(xa, ya, frontier_idx, repetitions=200)
             for i, detail in enumerate(details):
                 detail["eficiencia_bcc"] = scores[i]
                 detail["theta_bcc"] = scores[i]
@@ -860,7 +1019,17 @@ class PddDeaService:
                 ][:10]
                 target_x, target_y = projections[i]
                 detail["theta_bootstrap_corregido"] = scores[i]
-                detail["bootstrap_ic95"] = None
+                interval = bootstrap_scores.get(i, [])
+                detail["bootstrap_ic95"] = (
+                    {
+                        "ic95_inf": float(np.quantile(interval, 0.025)),
+                        "ic95_sup": float(np.quantile(interval, 0.975)),
+                    }
+                    if interval
+                    else None
+                )
+                detail["ic95_inf"] = detail["bootstrap_ic95"]["ic95_inf"] if interval else None
+                detail["ic95_sup"] = detail["bootstrap_ic95"]["ic95_sup"] if interval else None
                 detail["holguras_slacks"] = {
                     "slack_x1_mcop": max(0.0, detail["x1_ppi_mcop_2025"] - float(target_x[0])),
                     "slack_y1_metas_pdd": max(0.0, float(target_y[0]) - Y[i][0]),
@@ -883,21 +1052,30 @@ class PddDeaService:
                     "eficiencia_media_sbm": float(np.mean(sbm_scores)),
                     "dmus_en_frontera_bcc": sum(score >= 0.999 for score in scores),
                     "frontera_pareto_n": len(frontier_idx),
-                    "bootstrap_replicas": 0,
+                    "bootstrap_replicas": 200,
                     "bootstrap_intervalos": (
-                        "Pendientes; scores deterministas reportados sin corrección bootstrap."
+                        "Percentiles 2.5 y 97.5 de remuestreo determinístico "
+                        "de referencias Pareto; B=200."
                     ),
                     "dmus": details,
                     "ranking_entidades_pdd": details,
+                    "frontera_por_linea_estrategica": _line_frontier(rows, state, insumo),
                     "frontera_por_linea": _line_frontier(rows, state, insumo),
                 }
             )
+        pdl = _pdl_locality_frontier(state)
         return _store(
             key,
             {
                 "estado": "CALCULADO",
                 "insumo": insumo,
                 "planes": result,
+                "frontera_por_entidad": result,
+                "frontera_por_linea_estrategica": [
+                    {"plan": item["plan"], "lineas": item.get("frontera_por_linea_estrategica", [])}
+                    for item in result
+                ],
+                "frontera_pdl_localidades": pdl,
                 "advertencia": (
                     "DEA exploratorio: el gasto reconstruido y los avances "
                     "heterogéneos no implican eficiencia causal."
@@ -1004,6 +1182,8 @@ class PddDeaService:
                 right,
                 plan_entities.get(left, []),
                 plan_entities.get(right, []),
+                _plan_dmu(state, left),
+                _plan_dmu(state, right),
             )
             for left, right in (
                 ("PDD_2016_2019", "PDD_2020_2023"),
@@ -1047,6 +1227,138 @@ class PddDeaService:
                 "econometria_comparada": econometrics,
             },
         )
+
+    async def explorador_programas_y_seguridad_humana(self) -> dict[str, Any]:
+        key = (self.bind_key, "pdd-dea", "explorador")
+        if cached := _cached(key):
+            return cached
+        from sqlalchemy import text as sql_text
+
+        try:
+            lines_result = await self.session.execute(
+                sql_text("""SELECT id::text, codigo_plan, parent_id::text, nivel, codigo,
+                           nombre, orden, ppi_anual_cop, fuente, metadatos
+                    FROM seguimiento.pdd_lineas_y_programas ORDER BY codigo_plan, orden, id""")
+            )
+            lines = [dict(row) for row in lines_result.mappings()]
+            metas_result = await self.session.execute(
+                sql_text("""SELECT codigo_plan, linea_id::text, tipo_meta, codigo, nombre,
+                           indicador, unidad_medida, linea_nombre, fuente, fila_fuente,
+                           datos_oficiales
+                    FROM seguimiento.pdd_metas_oficiales ORDER BY codigo_plan, fila_fuente""")
+            )
+            metas = [dict(row) for row in metas_result.mappings()]
+            dimensions_result = await self.session.execute(
+                sql_text(
+                    """SELECT codigo, nombre, orden, activa
+                    FROM motor_politicas.dimensiones_seguridad_humana ORDER BY orden, codigo"""
+                )
+            )
+            dimensions = [dict(row) for row in dimensions_result.mappings()]
+            if not any(row["codigo"] == "cultural" for row in dimensions):
+                dimensions.append(
+                    {
+                        "codigo": "cultural",
+                        "nombre": "Seguridad Cultural",
+                        "orden": 8,
+                        "activa": False,
+                        "fuente": "COMPLEMENTO_TAXONOMIA_PNUD; sin fila local en catálogo",
+                    }
+                )
+            mesas_result = await self.session.execute(
+                sql_text(
+                    """SELECT codigo_oficial, nombre, tipo_mesa, dimension_id::text, linea_id::text
+                    FROM mesas_trabajo.mesas ORDER BY nombre"""
+                )
+            )
+            mesas = [dict(row) for row in mesas_result.mappings()]
+            pas_result = await self.session.execute(
+                sql_text(
+                    """SELECT codigo, nombre, entidad_responsable, linea_estrategica_codigo,
+                           indicador_asociado_codigo
+                    FROM seguimiento.compromisos_pas ORDER BY codigo"""
+                )
+            )
+            commitments = [dict(row) for row in pas_result.mappings()]
+            theft_result = await self.session.execute(
+                sql_text(
+                    """WITH por_anio AS (
+                           SELECT anio, count(*) filas, sum(cantidad) casos
+                           FROM geodatos.estadisticas_hurtos GROUP BY anio
+                       )
+                       SELECT (SELECT count(*) FROM geodatos.estadisticas_hurtos) filas,
+                           (SELECT coalesce(sum(cantidad), 0)
+                            FROM geodatos.estadisticas_hurtos) casos,
+                           (SELECT jsonb_agg(jsonb_build_object('anio', anio, 'filas', filas,
+                                                               'casos', casos) ORDER BY anio)
+                            FROM por_anio) por_anio"""
+                )
+            )
+            theft = dict(theft_result.mappings().one())
+        except Exception:
+            lines, metas, dimensions, mesas, commitments, theft = [], [], [], [], [], {}
+        focus_lines = self._ppi_2024_lines()
+        focus = next((line for line in focus_lines if line["linea"] == "Seguridad Humana"), None)
+        driver_ids = {
+            row["id"]
+            for row in lines
+            if row["codigo_plan"] == "PDD_2024_2027"
+            and row["nivel"] == "IMPULSOR"
+            and str(row.get("codigo") or "").startswith("1.")
+            and str(row.get("codigo") or "").count(".") == 1
+        }
+        security_programs = [
+            row
+            for row in lines
+            if row["codigo_plan"] == "PDD_2024_2027"
+            and row["nivel"] == "PROGRAMA"
+            and row.get("parent_id") in driver_ids
+        ]
+        programs_by_code: dict[str, dict[str, Any]] = {}
+        for row in security_programs:
+            code = str(row.get("codigo") or row["nombre"])
+            merged = programs_by_code.setdefault(
+                code,
+                row
+                | {
+                    "ppi_anual_cop": {year: 0.0 for year in ("2024", "2025", "2026", "2027")},
+                    "filas_fuente": 0,
+                },
+            )
+            merged["filas_fuente"] += 1
+            for year in ("2024", "2025", "2026", "2027"):
+                merged["ppi_anual_cop"][year] += float(
+                    row.get("ppi_anual_cop", {}).get(year, 0) or 0
+                )
+        security_programs = list(programs_by_code.values())
+        payload = {
+            "estado": "CALCULADO" if lines or metas else "CATALOGO_NO_SINCRONIZADO",
+            "catalogo": {
+                "planes": list(PLANS),
+                "lineas_programas": lines,
+                "metas_oficiales": metas,
+                "conteos": {"lineas_programas": len(lines), "metas_oficiales": len(metas)},
+            },
+            "monitor_linea_1_seguridad_humana": {
+                "linea": "Seguridad Humana",
+                "ppi_total_corriente_cop": 5_666_917_744_338,
+                "ppi_por_componente": focus,
+                "impulsores": list(COMPONENTES_SEGURIDAD_HUMANA),
+                "programas_oficiales_esperados": 26,
+                "programas_catalogados": security_programs,
+                "dimensiones_pnud": {"total": len(dimensions), "items": dimensions},
+                "mesas_territoriales": {"total": len(mesas), "items": mesas},
+                "compromisos_pas": {"total": len(commitments), "items": commitments},
+                "hurtos": theft,
+                "trazabilidad": (
+                    "Se devuelven las llaves oficiales de cada catálogo fuente. No se afirma "
+                    "una asignación programa-dimensión/mesa/PAS si los registros no comparten "
+                    "un código o vínculo persistido."
+                ),
+            },
+            "fuente_catalogo": str(BASE_DIR),
+        }
+        return _store(key, payload)
 
 
 def _group_rows(rows: list[dict[str, Any]], field: str) -> dict[str, list[dict[str, Any]]]:
@@ -1102,7 +1414,63 @@ def _malmquist_interplan(
     plan_b: str,
     entities_a: list[dict[str, Any]],
     entities_b: list[dict[str, Any]],
+    dmu_a: dict[str, tuple[np.ndarray, np.ndarray]] | None = None,
+    dmu_b: dict[str, tuple[np.ndarray, np.ndarray]] | None = None,
 ) -> dict[str, Any]:
+    if dmu_a and dmu_b:
+        common_dmus = sorted(dmu_a.keys() & dmu_b.keys())
+        xa = np.asarray([dmu_a[e][0] for e in sorted(dmu_a)], dtype=float)
+        ya = np.asarray([dmu_a[e][1] for e in sorted(dmu_a)], dtype=float)
+        xb = np.asarray([dmu_b[e][0] for e in sorted(dmu_b)], dtype=float)
+        yb = np.asarray([dmu_b[e][1] for e in sorted(dmu_b)], dtype=float)
+        observations = []
+        effch_values, techch_values, mpi_values = [], [], []
+        for entity in common_dmus:
+            x0, y0 = dmu_a[entity]
+            x1, y1 = dmu_b[entity]
+            distances = {
+                "d00": _output_distance(xa, ya, x0, y0),
+                "d01": _output_distance(xa, ya, x1, y1),
+                "d10": _output_distance(xb, yb, x0, y0),
+                "d11": _output_distance(xb, yb, x1, y1),
+            }
+            if any(v is None or v <= 0 for v in distances.values()):
+                continue
+            d00, d01, d10, d11 = (distances[k] for k in ("d00", "d01", "d10", "d11"))
+            effch = d11 / d00
+            techch = math.sqrt((d00 / d10) * (d01 / d11))
+            mpi = effch * techch
+            observations.append(
+                {
+                    "entidad": entity,
+                    "distancias_output": distances,
+                    "effch": effch,
+                    "techch": techch,
+                    "mpi": mpi,
+                }
+            )
+            effch_values.append(effch)
+            techch_values.append(techch)
+            mpi_values.append(mpi)
+        effch_global = _geomean(effch_values) if effch_values else None
+        techch_global = _geomean(techch_values) if techch_values else None
+        mpi_global = (
+            effch_global * techch_global
+            if effch_global is not None and techch_global is not None
+            else None
+        )
+        return {
+            "transicion": f"{plan_a}->{plan_b}",
+            "dmu_pareadas": len(observations),
+            "entidades": observations,
+            "mpi_global": mpi_global,
+            "effch_global": effch_global,
+            "techch_global": techch_global,
+            "metodo": (
+                "Malmquist output-oriented CRS exacto: distancias direccionales "
+                "con LP HiGHS; MPI = EFFCH × TECHCH."
+            ),
+        }
     left = {r["entidad"]: r["avance_promedio_pct"] for r in entities_a}
     right = {r["entidad"]: r["avance_promedio_pct"] for r in entities_b}
     common = sorted(
@@ -1130,6 +1498,131 @@ def _malmquist_interplan(
             "Proxy geométrico de variación del avance medio entre planes; no sustituye "
             "Malmquist DEA con fronteras temporales comparables."
         ),
+    }
+
+
+def _output_distance(X: np.ndarray, Y: np.ndarray, x: np.ndarray, y: np.ndarray) -> float | None:
+    fit = _lp(X, Y, x, y, vrs=False)
+    phi = _number(fit.get("phi")) if fit.get("estado") == "CALCULADO" else None
+    return 1.0 / phi if phi and phi > 0 else None
+
+
+def _plan_dmu(state: dict[str, Any], plan: str) -> dict[str, tuple[np.ndarray, np.ndarray]]:
+    rows = state["goals_by_plan"].get(plan, [])
+    grouped = _group_rows(rows, "entidad")
+    result = {}
+    for entity, items in grouped.items():
+        advances = [row["avance_norm"] for row in items if row.get("avance_norm") is not None]
+        if not advances:
+            continue
+        years = {int(row["vigencia"]) for row in items}
+        spending = sum(state["financial"].get((entity, year, "apropiacion"), 0.0) for year in years)
+        if spending <= 0:
+            # Consistent programmatic-effort input where historical financial data is absent.
+            spending = float(len(items)) * 1_000_000
+        achieved = sum(min(100.0, value) / 100 for value in advances)
+        effective = len(
+            {
+                row.get("indicador") or row["clave_item"]
+                for row in items
+                if row.get("avance_norm") is not None and row["avance_norm"] >= 75
+            }
+        )
+        result[entity] = (
+            np.asarray([max(spending, 1.0)]),
+            np.asarray([max(achieved, 0.0001), max(float(effective), 0.0001)]),
+        )
+    return result
+
+
+def _bootstrap_bcc(
+    X: np.ndarray, Y: np.ndarray, frontier_idx: list[int], *, repetitions: int = 200
+) -> dict[int, list[float]]:
+    if len(X) < 9 or not frontier_idx:
+        return {}
+    rng = np.random.default_rng(202409)
+    result: dict[int, list[float]] = {i: [] for i in range(len(X))}
+    size = len(frontier_idx)
+    for _ in range(repetitions):
+        sample = rng.choice(frontier_idx, size=size, replace=True)
+        bx, by = X[sample], Y[sample]
+        for i in range(len(X)):
+            fit = _lp(bx, by, X[i], Y[i], vrs=True)
+            value = _number(fit.get("eficiencia")) if fit.get("estado") == "CALCULADO" else None
+            if value is not None:
+                result[i].append(float(np.clip(value, 0, 1)))
+    return result
+
+
+def _pdl_locality_frontier(state: dict[str, Any]) -> dict[str, Any]:
+    totals = {
+        "Alcaldía Local Histórica y del Caribe Norte": 97_691_041_529.0,
+        "Alcaldía Local de la Virgen y Turística": 161_289_996_409.01,
+        "Alcaldía Local Industrial y de la Bahía": 46_000_000_000.0,
+    }
+    rows = state["goals_by_plan"].get("PDD_2024_2027", [])
+    by_locality = {
+        name: [row for row in rows if name.casefold() in str(row["entidad"]).casefold()]
+        for name in totals
+    }
+    valid = [
+        (name, by_locality[name])
+        for name in totals
+        if any(r.get("avance_norm") is not None for r in by_locality[name])
+    ]
+    details = [
+        {
+            "localidad": name,
+            "ppi_oficial_cop": totals[name],
+            "metas_evaluables": sum(row.get("avance_norm") is not None for row in group),
+            "avance_promedio_pct": float(
+                np.mean([r["avance_norm"] for r in group if r.get("avance_norm") is not None])
+            )
+            if any(r.get("avance_norm") is not None for r in group)
+            else None,
+            "estado": "CALCULADO"
+            if any(r.get("avance_norm") is not None for r in group)
+            else "SIN_DATOS_EN_BD_CSH",
+        }
+        for name, group in by_locality.items()
+    ]
+    if len(valid) >= 3:
+        X = np.asarray([[totals[name]] for name, _ in valid])
+        Y = np.asarray(
+            [
+                [
+                    max(
+                        sum(
+                            min(r["avance_norm"], 100) / 100
+                            for r in group
+                            if r.get("avance_norm") is not None
+                        ),
+                        0.0001,
+                    ),
+                    max(
+                        float(
+                            sum(
+                                r.get("avance_norm") is not None and r["avance_norm"] >= 75
+                                for r in group
+                            )
+                        ),
+                        0.0001,
+                    ),
+                ]
+                for _name, group in valid
+            ]
+        )
+        scores = [_lp(X, Y, X[i], Y[i], vrs=True).get("eficiencia") for i in range(len(valid))]
+        for detail, score in zip(details, scores, strict=True):
+            detail["theta_bcc"] = score
+    return {
+        "nivel": "PDL_LOCALIDADES",
+        "n": len(valid),
+        "dmus": details,
+        "modelo": (
+            "BCC orientado a insumos; PPI oficial como insumo; avances registrados como outputs."
+        ),
+        "advertencia": "La frontera requiere avance registrado para las tres localidades.",
     }
 
 

@@ -680,7 +680,20 @@ async def pdd_dea_econometria(session: SessionDependency):
 
 
 @router.get(
+    "/triada/pdd-dea/explorador-programas-y-seguridad-humana",
+    summary="Explorador oficial de programas y monitor de Seguridad Humana",
+)
+async def pdd_dea_explorador(session: SessionDependency):
+    return await PddDeaService(session).explorador_programas_y_seguridad_humana()
+
+
+@router.get(
     "/triada/pdd-dea/resumen-ejecutivo", summary="Resumen ejecutivo del laboratorio PDD DEA"
 )
 async def pdd_dea_resumen(session: SessionDependency):
-    return await PddDeaService(session).resumen_ejecutivo()
+    service = PddDeaService(session)
+    result = await service.resumen_ejecutivo()
+    result[
+        "explorador_programas_y_seguridad_humana"
+    ] = await service.explorador_programas_y_seguridad_humana()
+    return result

@@ -489,3 +489,39 @@ La verificación de calidad de código fue `ruff format`, `ruff check` y `PYTHON
 - El total oficial 2020–23 es COP **6.022.982.600.000** constantes de dic-2019; las cuatro cifras anuales publicadas suman COP **6.022.982.500.000**. La API informa la diferencia de redondeo de COP 100 millones. Para 2016–19 está disponible el PDF escaneado de 363 páginas, pero no fue posible extraer OCR; el PPI histórico se conserva como no extraído en vez de inventar montos.
 
 El commit se limita a los cinco archivos backend/documentación asignados. No se añadieron cambios de `src/` ni se ejecutó `git push`.
+
+# Entrega backend Data PDD — [TRIADA-BACKEND-DATA-PDD-09]
+
+**Fecha:** 2026-10-15. **Rama:** `main`. Sin `git push` ni cambios en `src/`.
+
+## Implementación
+
+- Se creó Alembic `0065_catalogo_planes_desarrollo` y se añadieron los modelos ORM para `seguimiento.planes_desarrollo_distrital`, `pdd_lineas_y_programas` y `pdd_metas_oficiales`. La migración quedó aplicada tanto en `bd_csh` como en `polis_test`; `alembic check` no detectó divergencias en ninguna.
+- `backend/scripts/sincronizar_catalogo_pdd.py` realiza una extracción repetible e idempotente de los documentos Markdown disponibles. Poblé `bd_csh` con **8 planes (5 PDD + 3 PDL), 478 nodos de jerarquía y 2.068 filas tabulares candidatas a metas oficiales**. El PDD 2024 quedó con exactamente 6 líneas, 42 filas fuente de impulsores (incluye códigos repetidos por asignación presupuestal) y 172 filas fuente de programas, con sus importes anuales 2024–2027. Se relacionaron 49 metas tabulares a una línea por nombre exacto. Las filas PPI oficiales 2024 se conservan individualmente y las anualidades duplicadas quedan trazables.
+- Se preservaron las **217.740** filas canónicas de `registros_triada_normalizados`.
+- `pdd_dea_service.py` descarta nombres de línea puramente numéricos/decimales, rescata etiquetas desde `datos_origen` y `hoja_origen`, y expone avance directo, avance imputado desde PA, avance consolidado y soporte financiero al cruzar entidad, vigencia y código BPIM/meta. El presupuesto se suma por fila financiera única para evitar duplicar un importe cuando BPIM y código de meta apuntan a la misma fila.
+- La frontera incorpora BCC con **200 remuestreos bootstrap** e IC 95% donde hay muestra suficiente, frontera por línea y evaluación financiera de las tres localidades PDL. La transición interplanes usa distancias CRS output-oriented por LP HiGHS y reporta `MPI = EFFCH × TECHCH` cuando hay DMU comunes.
+- Se añadió `/explorador-programas-y-seguridad-humana`, se integró su salida a `resumen-ejecutivo` y se registró en `docs/permisos-api.md`. El monitor lee las dimensiones, 33 mesas, 10 compromisos PAS y 12.280 filas de hurtos de sus tablas fuente.
+
+## Validación en vivo y pruebas
+
+| Verificación | Resultado |
+| --- | --- |
+| Migración y `alembic check` | `0065_catalogo_planes_desarrollo`; limpio en `bd_csh` y `polis_test`. |
+| Ruff en los seis archivos backend y la prueba | `ruff format` y `ruff check` aprobados. |
+| Pytest requerido | **123 passed**: `test_pdd_dea_triada.py` y `test_access_policy.py`. |
+| Conteo en `bd_csh` | 8 planes, 478 nodos, 2.068 metas tabulares, 217.740 registros Triada. |
+| Reinicio `polis-backend.service` | Activo; warmup de aplicación ~36 s. |
+| Seis rutas PDD DEA | HTTP 200 en catálogo, cumplimiento, frontera, econometría, explorador y resumen. |
+| Tiempos en frío observados | Catálogo 29 s; cumplimiento 27 s en worker frío; frontera 89 s; econometría 1,2 s; explorador 0,2 s; resumen 97 s cuando cayó en worker sin caché. |
+| Monitor de Línea 1 | 8 dimensiones mostradas (7 persistidas activas + Seguridad Cultural complementaria, marcada inactiva/no persistida), 33 mesas, 10 compromisos PAS, 12.280 filas de hurtos y 36 códigos distintos de programas leídos bajo Línea 1. |
+
+## Límites documentales y operativos
+
+La extracción deja visibles diferencias entre el conteo esperado del plan maestro y los Markdown legibles: para PDD 2020–2023 se obtuvieron 21 títulos de línea y 87 encabezados de programa; no se completaron artificialmente los conteos esperados de 33 y 172. PDD 2012–2015 y PDD 2016–2019 no tienen PPI digital completo en las fuentes leídas (el PDF 2016 es escaneado), por lo que esos totales permanecen nulos en catálogo en vez de inventarse. La tabla de metas conserva filas candidatas con encabezados de meta/indicador/resultado/producto; no se afirma que las 2.068 sean una cobertura exhaustiva de todas las tablas publicadas.
+
+La fuente reporta 26 programas para el cruce de Seguridad Humana, mientras que la tabla PPI disponible produce 36 códigos de programa distintos bajo códigos 1.x. Se devuelven los códigos y filas oficiales disponibles; no se reduce la lista sin una regla documental que justifique qué 10 excluir. El cruce de programas con dimensiones PNUD, mesas y PAS tampoco se presenta como vínculo individual cuando la base no contiene una clave común.
+
+El bootstrap sí se ejecuta en la solicitud fría y entrega HTTP 200, pero la frontera tarda ~89 s y el resumen ~97 s si llegan a un worker sin caché. `_RESULT` es caché por proceso; el segundo worker puede recalcular. Por tanto, la funcionalidad quedó implementada y verificada, pero no se acredita latencia fría adecuada para interacción de producción.
+
+El commit local incluye únicamente migración, modelos, sincronizador, servicio PDD DEA, router, prueba, permisos y este reporte. `src/` y `.archify/` quedan fuera del commit.

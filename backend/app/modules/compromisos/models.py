@@ -194,6 +194,94 @@ class LoteIngestaPlan(Base):
     )
 
 
+class PlanDesarrolloDistrital(Base):
+    __tablename__ = "planes_desarrollo_distrital"
+    __table_args__ = ({"schema": "seguimiento"},)
+
+    codigo_plan: Mapped[str] = mapped_column(String(40), primary_key=True)
+    periodo: Mapped[str] = mapped_column(String(20), nullable=False)
+    nombre_oficial: Mapped[str] = mapped_column(Text, nullable=False)
+    norma_adopcion: Mapped[str | None] = mapped_column(Text)
+    tipo_plan: Mapped[str] = mapped_column(String(10), nullable=False)
+    localidad: Mapped[str | None] = mapped_column(String(80))
+    ppi_total_corriente_cop: Mapped[float | None] = mapped_column(Numeric(22, 2))
+    ppi_total_constante_2025_cop: Mapped[float | None] = mapped_column(Numeric(22, 2))
+    ppi_anual_cop: Mapped[dict[str, Any]] = mapped_column(
+        JSONB, server_default=text("'{}'::jsonb"), nullable=False
+    )
+    fuentes: Mapped[list[dict[str, Any]]] = mapped_column(
+        JSONB, server_default=text("'[]'::jsonb"), nullable=False
+    )
+    metadatos: Mapped[dict[str, Any]] = mapped_column(
+        JSONB, server_default=text("'{}'::jsonb"), nullable=False
+    )
+    sincronizado_en: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=text("clock_timestamp()"), nullable=False
+    )
+
+
+class PddLineaPrograma(Base):
+    __tablename__ = "pdd_lineas_y_programas"
+    __table_args__ = (
+        Index("idx_pdd_lineas_codigo_plan", "codigo_plan"),
+        Index("idx_pdd_lineas_parent", "parent_id"),
+        {"schema": "seguimiento"},
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, server_default=text("public.generar_uuid_v7()")
+    )
+    codigo_plan: Mapped[str] = mapped_column(
+        ForeignKey("seguimiento.planes_desarrollo_distrital.codigo_plan", ondelete="CASCADE"),
+        nullable=False,
+    )
+    parent_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("seguimiento.pdd_lineas_y_programas.id", ondelete="CASCADE")
+    )
+    nivel: Mapped[str] = mapped_column(String(24), nullable=False)
+    codigo: Mapped[str | None] = mapped_column(String(80))
+    nombre: Mapped[str] = mapped_column(Text, nullable=False)
+    orden: Mapped[int] = mapped_column(Integer, nullable=False, server_default="0")
+    ppi_anual_cop: Mapped[dict[str, Any]] = mapped_column(
+        JSONB, server_default=text("'{}'::jsonb"), nullable=False
+    )
+    fuente: Mapped[str | None] = mapped_column(Text)
+    metadatos: Mapped[dict[str, Any]] = mapped_column(
+        JSONB, server_default=text("'{}'::jsonb"), nullable=False
+    )
+
+
+class PddMetaOficial(Base):
+    __tablename__ = "pdd_metas_oficiales"
+    __table_args__ = (
+        Index("idx_pdd_metas_plan", "codigo_plan"),
+        Index("idx_pdd_metas_linea", "linea_id"),
+        {"schema": "seguimiento"},
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, server_default=text("public.generar_uuid_v7()")
+    )
+    codigo_plan: Mapped[str] = mapped_column(
+        ForeignKey("seguimiento.planes_desarrollo_distrital.codigo_plan", ondelete="CASCADE"),
+        nullable=False,
+    )
+    linea_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("seguimiento.pdd_lineas_y_programas.id", ondelete="SET NULL")
+    )
+    tipo_meta: Mapped[str] = mapped_column(String(30), nullable=False)
+    codigo: Mapped[str | None] = mapped_column(String(100))
+    nombre: Mapped[str] = mapped_column(Text, nullable=False)
+    indicador: Mapped[str | None] = mapped_column(Text)
+    unidad_medida: Mapped[str | None] = mapped_column(String(120))
+    linea_nombre: Mapped[str | None] = mapped_column(Text)
+    fuente: Mapped[str | None] = mapped_column(Text)
+    fila_fuente: Mapped[int | None] = mapped_column(Integer)
+    datos_oficiales: Mapped[dict[str, Any]] = mapped_column(
+        JSONB, server_default=text("'{}'::jsonb"), nullable=False
+    )
+
+
 class ArchivoPlanIngerido(Base):
     __tablename__ = "archivos_plan_ingeridos"
     __table_args__ = (
