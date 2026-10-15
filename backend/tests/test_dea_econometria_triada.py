@@ -9,12 +9,14 @@ from fastapi.testclient import TestClient
 from app.core.config import Settings
 from app.main import create_app
 from app.modules.compromisos.dea_econometria_service import (
+    TTL,
     DeaEconometriaService,
     _bh,
     _factor,
     _geomean,
     _lp,
     _prepare,
+    _regression_truncated,
     _sbm,
     _scale,
     _unit_factor,
@@ -106,6 +108,39 @@ def test_contabilidad_separada_y_encabezado_conflictivo():
     assert m["pagos_cop"] == 0
     assert result["auditoria"]["pagos_encabezado_conflicto_excluidos"] == 1
     assert _unit_factor("Monto en miles de pesos") == (1000, "MILES_EXPLICITOS")
+
+
+def test_montos_sin_clave_se_despropagan_por_hoja_y_valor():
+    rows = [_row(i, motor="INVERSION_PRESUPUESTAL", app=500, avance=0.8) for i in (1, 2, 3)]
+    result = _prepare(rows, 2025)
+    assert result["metricas"]["Secretaría de Educación"]["apropiacion_cop"] == 500
+    assert result["auditoria"]["repeticiones_sin_clave_apropiacion"] == 2
+    assert TTL == 3600.0
+
+
+def test_regresion_segunda_etapa_admite_panel_26_entidades():
+    panel = []
+    for entity in range(26):
+        for year in range(4):
+            panel.append(
+                {
+                    "entidad": f"Entidad {entity}",
+                    "grupo": "SECTOR_CENTRAL_RECTOR"
+                    if entity < 10
+                    else "DESCENTRALIZADAS_Y_AUTORIDADES",
+                    "eficiencia": 0.5 + ((entity * 3 + year) % 10) / 20,
+                    "debil": ((entity + year) % 5) / 5,
+                    "continuidad": ((entity * 2 + year) % 7) / 7,
+                    "completitud_documental": ((entity + year * 2) % 6) / 5,
+                }
+            )
+    fit = _regression_truncated(panel, replicas=20)
+    assert fit["estado"] == "EXPLORATORIO_PANEL_CLUSTER"
+    assert fit["n_entidades"] == 26
+    assert fit["n_observaciones"] == 104
+    assert len(fit["coeficientes"]) == 5
+    assert 0 <= fit["ajuste_modelo"]["pseudo_r_cuadrado"] <= 1
+    assert 0 <= fit["ajuste_modelo"]["p_value_modelo"] <= 1
 
 
 def test_lp_crs_bcc_sbm_y_exclusion_financiera():

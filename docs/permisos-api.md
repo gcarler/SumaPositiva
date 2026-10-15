@@ -101,6 +101,18 @@ La última columna explica la excepción pública o la condición adicional.
 | POST | /api/v1/compromisos/plan-accion/procesar-lote | publico | Procesamiento por lotes y auditoría metodológica oficial DNP con cruce Hoja 2 a Hoja 1 y autocorrección de verbos débiles. |
 | POST | /api/v1/compromisos/plan-accion/validar-redaccion | publico | Validador lingüístico DNP de verbos fuertes en infinitivo y detección de verbos débiles prohibidos. |
 | GET | /api/v1/compromisos/triada/resumen | publico | Consulta pública de la Triada de Motores (Plan de Desarrollo, Plan de Acción Multiformato e Inversión) y catálogo de Transparencia Activa (Ley 1474/11 Art. 74 y Ley 1712/14). |
+| GET | /api/v1/compromisos/triada/inteligencia/patologias-dnp | publico | Analítica agregada de patologías DNP; filtros validados por dimensión y periodo. |
+| GET | /api/v1/compromisos/triada/inteligencia/continuidad-gobiernos | publico | Indicadores agregados de continuidad entre periodos de gobierno. |
+| GET | /api/v1/compromisos/triada/inteligencia/radar-transparencia | publico | Completitud y cobertura pública de cortes ingeridos. |
+| GET | /api/v1/compromisos/triada/inteligencia/alineacion-territorial | publico | Analítica territorial agregada de inversión, delitos y demanda ciudadana. |
+| GET | /api/v1/compromisos/triada/inteligencia/buscador | publico | Búsqueda de registros normalizados; filtros validados y sin mutación. |
+| GET | /api/v1/compromisos/triada/inteligencia/simulador-cierre | publico | Proyección exploratoria de cierre de gobierno; no constituye cifra oficial. |
+| GET | /api/v1/compromisos/triada/inteligencia/resumen-ejecutivo | publico | Resumen agregado de los seis motores de inteligencia de la Triada. |
+| GET | /api/v1/compromisos/triada/dea/auditoria-saneamiento | publico | Auditoría agregada de calidad y unidades del corpus DEA, sin mutación. |
+| GET | /api/v1/compromisos/triada/dea/frontera-eficiencia | publico | Frontera exploratoria DEA; intervalos bootstrap pueden indicar PENDIENTE mientras se calculan. |
+| GET | /api/v1/compromisos/triada/dea/malmquist | publico | Índice agregado de productividad interanual, sujeto a validación metodológica. |
+| GET | /api/v1/compromisos/triada/dea/econometria-segunda-etapa | publico | Asociaciones exploratorias de panel, no causales, basadas en el corpus ingerido. |
+| GET | /api/v1/compromisos/triada/dea/resumen-integral | publico | Resumen analítico agregado DEA, sujeto a advertencias metodológicas de cada motor. |
 | POST | /api/v1/compromisos/triada/detectar-formato | publico | Detección polimórfica y normalización pública de formatos Excel de Planes de Acción (2016 monohoja a 2026 multihoja) sin mutación de estado. |
 | POST | /api/v1/compromisos/triada/cruzar-lecturas | publico | Evaluación pública sin estado del cruce tripartito (Estratégico PDD, Operativo PA y Financiero POAI/BPIM/RP/Pagos) para control social. |
 | POST | /api/v1/compromisos/triada/ingerir-archivos | permiso:seguimiento:gestionar@declarada | Ingesta binaria Excel/CSV/ZIP con persistencia auditable en tres motores; requiere fase Plan de Acción habilitada. |

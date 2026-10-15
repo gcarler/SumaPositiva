@@ -403,3 +403,43 @@ La comprobación de solo lectura `uv lock --check --project backend` confirmó q
 | Conteos canónicos tras la ejecución | 217.740 registros; 616 archivos; 33 mesas; 36 agendas; 11 fichas; 17 actores; 10 compromisos PAS; 12 actividades PA; 12.280 filas de hurtos. |
 
 El commit local incluye **solo** los cinco archivos asignados en la orden 07B, sin `git push`.
+
+# Cierre Backend DEA — [TRIADA-BACKEND-DEA-CIERRE-07C]
+
+**Fecha:** 2026-10-15. **Rama:** `main`. Sin cambios en `src/` ni escritura en `bd_csh`.
+
+## Cambios
+
+- `_regression_truncated` ahora admite `>=20` entidades y `>=60` observaciones completas; el estado del ajuste es `EXPLORATORIO_PANEL_CLUSTER`. Se calcula el pseudo-R² por correlación al cuadrado, el pseudo-R² ajustado, el estadístico Wald conjunto y su p-value, además de los coeficientes e intervalos bootstrap por cluster.
+- Las filas de apropiación/RP/obligaciones/pagos sin BPIM ni meta ahora se agrupan mediante `SIN_CLAVE:{hoja}:{monto}` dentro del archivo, entidad y etapa. La auditoría cuenta `repeticiones_sin_clave_{etapa}` y los grupos despropagados.
+- TTL del servicio subió de 300 a 3.600 segundos. La ruta de frontera entrega primero el ranking DEA sin bootstrap y encola 400 réplicas con prefiltrado de referencias dominadas; durante ese cálculo muestra `bootstrap_estado: PENDIENTE`. El panel territorial también se completa en segundo plano.
+- `backend/uv.lock` quedó sincronizado con SciPy 1.18.1 y `docs/permisos-api.md` registra las siete rutas de inteligencia y las cinco rutas DEA como públicas, de acuerdo con las dependencias actuales del router.
+
+## Evidencia y límites operativos
+
+La auditoría en vivo respondió 200 con 217.740 registros. Para 2025 informó COP **15.544.009.098.127,95** de apropiación reconstruida y 403 repeticiones de apropiación sin clave despropagadas; el agregado 2020–2026 informó 1.457 repeticiones sin clave podadas. Estos montos siguen siendo **estimaciones del corpus no conciliadas**, no presupuesto oficial.
+
+La revisión de rendimiento en el servicio con dos workers encontró lo siguiente:
+
+| Ruta / comprobación | Resultado observado tras reinicio |
+| --- | --- |
+| `/health/ready` | HTTP 200; 0,06 s en el chequeo final. |
+| `dea/auditoria-saneamiento` | HTTP 200; 24,39 s en frío. **No cumple** el objetivo de 5 s. |
+| `dea/frontera-eficiencia` | HTTP 200; 0,27 s en un worker con datos ya preparados y 8,42 s al llegar a un worker frío. **No se acredita** <5 s en frío. |
+| `dea/malmquist` | HTTP 200; 2,16 s y 2,08 s en las solicitudes registradas. |
+| `dea/econometria-segunda-etapa` | No concluyó en más de 3 minutos; el worker ejecutaba carga histórica más 1.000 ajustes bootstrap. Se reinició el servicio para detener ese cálculo prolongado. |
+| `dea/resumen-integral` | No verificado en vivo en esta corrida. |
+
+La respuesta de la segunda etapa en frío y las cinco rutas por debajo de cinco segundos **quedan pendientes**. Para satisfacer ambas condiciones habrá que resolver la carga histórica previa y el costo del bootstrap mediante precálculo/precalentamiento compartido, sin etiquetar como calculados los coeficientes antes de terminar el ajuste. El último `polis-backend.service` está activo y `/health/ready` devuelve 200. Los endpoints sí quedaron cubiertos por pruebas HTTP con dependencias simuladas; esto no sustituye la verificación integral contra la base real.
+
+## Validaciones
+
+| Validación | Resultado |
+| --- | --- |
+| `ruff format` y `ruff check` en servicio y prueba DEA | Aprobados. |
+| `PYTHONPATH=backend /root/polis/venv/bin/pytest -q backend/tests/test_dea_econometria_triada.py` | 10 aprobadas. |
+| `PYTHONPATH=backend /root/polis/venv/bin/pytest -q backend/tests/test_dea_econometria_triada.py backend/tests/test_access_policy.py` | 114 aprobadas. |
+| `uv lock --check --project backend` | Aprobado. |
+| `git diff --check` | Aprobado. |
+
+El commit local incluye solo `backend/app/modules/compromisos/dea_econometria_service.py`, `backend/tests/test_dea_econometria_triada.py`, `backend/uv.lock`, `docs/permisos-api.md` y este reporte. No se ejecutó `git push`.

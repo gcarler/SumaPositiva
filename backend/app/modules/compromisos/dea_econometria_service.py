@@ -15,7 +15,7 @@ from typing import Any
 
 import numpy as np
 from scipy.optimize import linprog, minimize
-from scipy.stats import norm, pearsonr, spearmanr, wilcoxon
+from scipy.stats import chi2, norm, pearsonr, spearmanr, wilcoxon
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -32,11 +32,12 @@ IPC_DANE = {
 }
 CUT_RANK = {"FORMULADO": 0, "T1": 1, "T2": 2, "T3": 3, "T4": 4, "ANUAL": 5}
 CLONE = "CONTENIDO_IDENTICO_OTRO_CORTE"
-TTL = 300.0
+TTL = 3600.0
 _RAW: dict[tuple[str, int], tuple[float, list[dict[str, Any]]]] = {}
 _PREP: dict[tuple[str, int], tuple[float, dict[str, Any]]] = {}
 _RESULT: dict[tuple[Any, ...], tuple[float, dict[str, Any]]] = {}
 _LOCKS: dict[tuple[str, int], asyncio.Lock] = {}
+_FRONTIER_TASKS: dict[tuple[Any, ...], asyncio.Task] = {}
 
 _SQL = text("""
 SELECT r.id, r.archivo_id, r.entidad_normalizada entidad, r.vigencia anio,
@@ -246,16 +247,17 @@ def _prepare(rows: list[dict[str, Any]], year: int) -> dict[str, Any]:
             audit[f"unidad_{unit_state}"] += 1
             value *= factor
             audit[f"bruto_{stage}_cop"] += value
-            # Sin clave/celda combinada demostrada, no se colapsan montos iguales.
-            # Una posición en la misma plantilla puede repetirse entre cortes;
-            # esta clave sustituta es explícitamente de menor confianza.
-            source = money_key or f"FILA:{row['hoja']}:{row['fila']}:{value}"
+            # El mismo valor sin clave se cuenta una vez por hoja, archivo,
+            # entidad y etapa; se conserva la repetición en la auditoría.
+            source = money_key or f"SIN_CLAVE:{row['hoja']}:{value}"
             if not money_key:
                 audit["importe_sin_clave_proyecto"] += 1
             signature = (entity, row["archivo_id"], row["hoja"], source, stage, value)
             previous = money_by_source.get(signature)
             if previous is not None:
                 audit[f"repeticiones_{stage}"] += 1
+                if not money_key:
+                    audit[f"repeticiones_sin_clave_{stage}"] += 1
             else:
                 money_by_source[signature] = row
     # Conservar todos los importes distintos de un proyecto en el archivo de corte
@@ -609,7 +611,7 @@ def _frontier_contract(result: dict[str, Any], data: dict[str, Any]) -> dict[str
     return result
 
 
-def _regression_truncated(panel: list[dict[str, Any]], replicas: int = 300) -> dict[str, Any]:
+def _regression_truncated(panel: list[dict[str, Any]], replicas: int = 1000) -> dict[str, Any]:
     """Normal truncada en cero; bootstrap por entidad, solo con muestra defendible."""
     usable = [
         r
@@ -618,12 +620,12 @@ def _regression_truncated(panel: list[dict[str, Any]], replicas: int = 300) -> d
         and all(r.get(k) is not None for k in ("debil", "continuidad", "completitud_documental"))
     ]
     entities = sorted({r["entidad"] for r in usable})
-    if len(entities) < 30 or len(usable) < 100:
+    if len(entities) < 20 or len(usable) < 60:
         return {
             "estado": "NO_ESTIMABLE_MUESTRA_INSUFICIENTE",
             "n_entidades": len(entities),
             "n_observaciones": len(usable),
-            "minimo_entidades": 30,
+            "minimo_entidades": 20,
         }
     names = [
         "intercepto",
@@ -688,7 +690,7 @@ def _regression_truncated(panel: list[dict[str, Any]], replicas: int = 300) -> d
         }
     arr = np.asarray(draws)
     return {
-        "estado": "EXPLORATORIO",
+        "estado": "EXPLORATORIO_PANEL_CLUSTER",
         "n_entidades": len(entities),
         "n_observaciones": len(usable),
         "replicas": len(draws),
@@ -707,6 +709,40 @@ def _regression_truncated(panel: list[dict[str, Any]], replicas: int = 300) -> d
             }
             for i, name in enumerate(names)
         ],
+        "ajuste_modelo": _truncated_model_fit(usable, estimate, arr),
+    }
+
+
+def _truncated_model_fit(
+    rows: list[dict[str, Any]], estimate: np.ndarray, bootstrap_coefficients: np.ndarray
+) -> dict[str, Any]:
+    y = np.array([max(0.0, 1 / r["eficiencia"] - 1) for r in rows])
+    z = np.array(
+        [
+            [
+                1,
+                r["debil"],
+                r["continuidad"],
+                r["completitud_documental"],
+                float(r["grupo"] == "SECTOR_CENTRAL_RECTOR"),
+            ]
+            for r in rows
+        ],
+        dtype=float,
+    )
+    predicted = z @ estimate
+    r2 = float(np.corrcoef(y, predicted)[0, 1] ** 2) if np.std(predicted) and np.std(y) else 0.0
+    errors = np.std(bootstrap_coefficients[:, 1:], axis=0, ddof=1)
+    valid = errors > 0
+    statistic = float(np.sum((estimate[1:][valid] / errors[valid]) ** 2)) if np.any(valid) else 0.0
+    df = int(np.sum(valid))
+    adjusted = 1 - (1 - r2) * (len(y) - 1) / max(len(y) - z.shape[1], 1)
+    return {
+        "pseudo_r_cuadrado": r2,
+        "pseudo_r_cuadrado_ajustado": float(adjusted),
+        "estadistico_wald": statistic,
+        "grados_libertad": df,
+        "p_value_modelo": float(chi2.sf(statistic, df)),
     }
 
 
@@ -806,7 +842,11 @@ class DeaEconometriaService:
                     a["filas_interinstitucionales"] for a in audits
                 ),
                 "grupos_repetidos_despropagados": sum(
-                    a.get("repeticiones_apropiacion", 0) for a in audits
+                    sum(
+                        a.get(f"repeticiones_sin_clave_{stage}", 0)
+                        for stage in ("apropiacion", "rp", "obligaciones", "pagos")
+                    )
+                    for a in audits
                 ),
                 "sumatorios_podados": sum(a.get("sumatorios_explicitos", 0) for a in audits),
                 "presupuesto_anual_saneado_promedio_cop": sum(
@@ -871,11 +911,30 @@ class DeaEconometriaService:
                 },
                 data,
             )
-        response = await asyncio.to_thread(self._frontier_sync, data, modo, insumo, True)
-        if modo == "nucleo_1x2":
-            response["ventana_panel_localidades"] = await self._local_panel(insumo)
+        # El núcleo DEA síncrono entrega el ranking rápido. El bootstrap (400
+        # réplicas) y el panel territorial se completan después para mantener
+        # acotado el tiempo de respuesta en frío; el contrato indica PENDIENTE.
+        response = await asyncio.to_thread(self._frontier_sync, data, modo, insumo, False)
+        response["bootstrap_estado"] = "PENDIENTE"
+        response["ventana_panel_localidades"] = {"estado": "PENDIENTE"}
         _RESULT[key] = (time.monotonic(), response)
+        task = asyncio.create_task(self._complete_frontier(key, data, modo, insumo))
+        _FRONTIER_TASKS[key] = task
+        task.add_done_callback(lambda _task, cache_key=key: _FRONTIER_TASKS.pop(cache_key, None))
         return response
+
+    async def _complete_frontier(
+        self, key: tuple[Any, ...], data: dict[str, Any], modo: str, insumo: str
+    ) -> None:
+        try:
+            full = await asyncio.to_thread(self._frontier_sync, data, modo, insumo, True)
+            if modo == "nucleo_1x2":
+                full["ventana_panel_localidades"] = await self._local_panel(insumo)
+            _RESULT[key] = (time.monotonic(), full)
+        except Exception:
+            cached = _RESULT.get(key)
+            if cached:
+                cached[1]["bootstrap_estado"] = "ERROR_CALCULO_ASINCRONO"
 
     async def _local_panel(self, insumo: str) -> dict[str, Any]:
         years = [await self._year(y) for y in range(2020, 2026)]
@@ -997,11 +1056,19 @@ class DeaEconometriaService:
         if bootstrap:
             rng = np.random.default_rng(20261015)
             draws = [[] for _ in valid]
-            # 1.000 fronteras remuestreadas; intervalo exploratorio, no el
-            # bootstrap suavizado ni la correccion Simar-Wilson.
-            for _ in range(1000):
+            # 400 réplicas sobre referencias no dominadas. Es un intervalo
+            # exploratorio; no sustituye el bootstrap suavizado Simar-Wilson.
+            for _ in range(400):
                 indices = rng.integers(0, len(valid), size=len(valid))
                 bx, by = X[indices], Y[indices]
+                if modo == "nucleo_1x2":
+                    productivity = by / bx[:, :1]
+                    dominated = np.any(
+                        np.all(productivity[:, None, :] <= productivity[None, :, :], axis=2)
+                        & np.any(productivity[:, None, :] < productivity[None, :, :], axis=2),
+                        axis=1,
+                    )
+                    bx, by = bx[~dominated], by[~dominated]
                 for i in range(len(valid)):
                     result = _lp(bx, by, X[i], Y[i])
                     if result["estado"] == "CALCULADO":
@@ -1010,7 +1077,7 @@ class DeaEconometriaService:
                 if score["estado"] != "CALCULADO":
                     continue
                 vals = np.asarray(draws[i])
-                if len(vals) < 900:
+                if len(vals) < 360:
                     score["bootstrap"] = {"estado": "NO_ESTIMABLE_REPLICAS", "n": len(vals)}
                     continue
                 mean = float(np.mean(vals))
@@ -1023,7 +1090,7 @@ class DeaEconometriaService:
                     "ic95_inf": float(np.quantile(vals, 0.025)),
                     "ic95_sup": float(np.quantile(vals, 0.975)),
                 }
-        return _frontier_contract(
+        response = _frontier_contract(
             {
                 "estado": "CALCULADO",
                 "vigencia": data["vigencia"],
@@ -1050,6 +1117,8 @@ class DeaEconometriaService:
             },
             data,
         )
+        response["bootstrap_estado"] = "CALCULADO" if bootstrap else "PENDIENTE"
+        return response
 
     async def malmquist(self, desde: int = 2020, hasta: int = 2025) -> dict[str, Any]:
         if desde < 2020 or hasta > 2025 or hasta <= desde:
@@ -1248,6 +1317,7 @@ class DeaEconometriaService:
         else:
             compare = {"estado": "NO_ESTIMABLE_MUESTRA_O_VARIACION", "n_pareado": len(paired)}
         regression = await asyncio.to_thread(_regression_truncated, panel)
+        fit = regression.get("ajuste_modelo", {})
         corr_contract = [
             {
                 "variable_a": c["variable_a"],
@@ -1326,10 +1396,10 @@ class DeaEconometriaService:
                 "variable_dependiente": "ineficiencia_crs_1_sobre_theta_menos_1",
                 "metodo_estimacion": regression["estado"],
                 "observaciones_n": regression.get("n_observaciones", 0),
-                "r_cuadrado": 0,
-                "r_cuadrado_ajustado": 0,
-                "f_statistic": 0,
-                "p_value_modelo": 1,
+                "r_cuadrado": fit.get("pseudo_r_cuadrado", 0),
+                "r_cuadrado_ajustado": fit.get("pseudo_r_cuadrado_ajustado", 0),
+                "estadistico_wald": fit.get("estadistico_wald", 0),
+                "p_value_modelo": fit.get("p_value_modelo", 1),
                 "exclusion_endogeneidad": "Sin logaritmo de presupuesto; R2 y F no aplican",
                 "estado": regression["estado"],
             },
