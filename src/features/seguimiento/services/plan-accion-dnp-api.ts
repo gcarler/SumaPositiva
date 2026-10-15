@@ -2510,6 +2510,18 @@ export type {
   EconometriaComparadaPddRespuesta,
   ExploradorProgramasYSeguridadHumanaRespuesta,
   ResumenEjecutivoPddDeaRespuesta,
+  EstadoCoberturaForense,
+  TaxonomiaMgaDnp,
+  DesgloseCoberturaPlan,
+  DiagnosticoBiEtapa,
+  EstabilidadRanking,
+  NetworkDeaBiEtapaItem,
+  ReasignacionDmuInverseDea,
+  EscenarioInverseDea,
+  JusticiaTerritorialPdlItem,
+  BalanceTerritorialHurtos,
+  PliegoControlPoliticoItem,
+  LaboratorioPrescriptivoPddRespuesta,
 } from "../data/pdd-dea-cartagena.data";
 
 export {
@@ -2537,11 +2549,17 @@ export {
   CORRELACIONES_PDD_FDR_DATA,
   DESIGUALDAD_PPI_GINI_HHI,
   PRUEBAS_WILCOXON_INTER_PLANES,
+  AUDITORIA_METAS_8_PLANES,
+  NETWORK_DEA_BI_ETAPA,
+  SIMULADOR_INVERSE_DEA_PARETO,
+  JUSTICIA_TERRITORIAL_PDL_DANE,
+  PLIEGOS_CONTROL_POLITICO_FISCAL,
   obtenerCatalogoYConciliacionPpiLocal,
   obtenerCumplimientoMetasPddLocal,
   obtenerFronteraDeaPddLocal,
   obtenerEconometriaComparadaPddLocal,
   obtenerExploradorProgramasYSeguridadHumanaLocal,
+  obtenerLaboratorioPrescriptivoPddLocal,
   obtenerResumenEjecutivoPddDeaLocal,
 } from "../data/pdd-dea-cartagena.data";
 
@@ -2555,6 +2573,7 @@ import type {
   EconometriaComparadaPddRespuesta,
   ExploradorProgramasYSeguridadHumanaRespuesta,
   ResumenEjecutivoPddDeaRespuesta,
+  LaboratorioPrescriptivoPddRespuesta,
 } from "../data/pdd-dea-cartagena.data";
 
 import {
@@ -2563,6 +2582,7 @@ import {
   obtenerFronteraDeaPddLocal,
   obtenerEconometriaComparadaPddLocal,
   obtenerExploradorProgramasYSeguridadHumanaLocal,
+  obtenerLaboratorioPrescriptivoPddLocal,
   obtenerResumenEjecutivoPddDeaLocal,
 } from "../data/pdd-dea-cartagena.data";
 
@@ -2683,6 +2703,22 @@ export async function obtenerResumenEjecutivoPddDeaApi(): Promise<ResumenEjecuti
   } catch (error) {
     console.warn("Fallo obtenerResumenEjecutivoPddDeaApi, usando fallback local:", error);
     return obtenerResumenEjecutivoPddDeaLocal();
+  }
+}
+
+export async function obtenerLaboratorioPrescriptivoPddApi(): Promise<LaboratorioPrescriptivoPddRespuesta> {
+  try {
+    const res = await apiFetch<LaboratorioPrescriptivoPddRespuesta>(
+      "/compromisos/triada/pdd-dea/laboratorio-prescriptivo",
+      { method: "GET" }
+    );
+    if (res && Array.isArray(res.auditoria_metas_8_planes) && Array.isArray(res.network_dea_bi_etapa)) {
+      return res;
+    }
+    return obtenerLaboratorioPrescriptivoPddLocal();
+  } catch (error) {
+    console.warn("Fallo obtenerLaboratorioPrescriptivoPddApi, usando fallback local:", error);
+    return obtenerLaboratorioPrescriptivoPddLocal();
   }
 }
 

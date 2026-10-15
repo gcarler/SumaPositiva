@@ -31,6 +31,12 @@ import {
   obtenerEconometriaComparadaPddLocal,
   obtenerExploradorProgramasYSeguridadHumanaLocal,
   obtenerResumenEjecutivoPddDeaLocal,
+  AUDITORIA_METAS_8_PLANES,
+  NETWORK_DEA_BI_ETAPA,
+  SIMULADOR_INVERSE_DEA_PARETO,
+  JUSTICIA_TERRITORIAL_PDL_DANE,
+  PLIEGOS_CONTROL_POLITICO_FISCAL,
+  obtenerLaboratorioPrescriptivoPddLocal,
 } from "../data/pdd-dea-cartagena.data";
 import {
   obtenerCatalogoYConciliacionPpiApi,
@@ -39,6 +45,7 @@ import {
   obtenerEconometriaComparadaPddApi,
   obtenerExploradorProgramasYSeguridadHumanaApi,
   obtenerResumenEjecutivoPddDeaApi,
+  obtenerLaboratorioPrescriptivoPddApi,
 } from "../services/plan-accion-dnp-api";
 import { PddDeaEvaluacionPanel } from "../components/pdd-dea-evaluacion-panel";
 import { TriadaMotoresTab } from "../components/triada-motores-tab";
@@ -577,6 +584,231 @@ describe("Centro de Mando de Planes de Desarrollo, Conciliación PPI y DEA ([TRI
 
       const totalCorriente = TABLA_OFICIAL_PPI_ANUAL.reduce((sum, f) => sum + f.monto_corriente_mcop, 0);
       expect(totalCorriente).toBeGreaterThan(26_000_000);
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // 10. LABORATORIO PRESCRIPTIVO PDD, NETWORK DEA BI-ETAPA & CONTROL FISCAL
+  // ---------------------------------------------------------------------------
+  describe("10. Laboratorio Prescriptivo PDD, Network DEA Bi-Etapa, Simulador Inverse DEA Pareto y Control Fiscal ([TRIADA-FRONTEND-LAB-PDD-11B])", () => {
+    it("38. el modelo Network DEA Bi-Etapa evalúa las 12 entidades identificando ilusión burocrática (brecha theta_1 - theta_2 > 0.20) y estabilidad de ranking", () => {
+      expect(NETWORK_DEA_BI_ETAPA).toHaveLength(12);
+
+      for (const item of NETWORK_DEA_BI_ETAPA) {
+        expect(item.score_etapa1_operativa_pa).toBeGreaterThan(0);
+        expect(item.score_etapa1_operativa_pa).toBeLessThanOrEqual(1.0);
+        expect(item.score_etapa2_estrategica_pdd).toBeGreaterThan(0);
+        expect(item.score_etapa2_estrategica_pdd).toBeLessThanOrEqual(1.0);
+        expect(item.score_global_red).toBeGreaterThan(0);
+        expect(item.score_global_red).toBeLessThanOrEqual(1.0);
+        expect(item.brecha_ilusion_burocratica).toBeCloseTo(
+          item.score_etapa1_operativa_pa - item.score_etapa2_estrategica_pdd,
+          3
+        );
+        expect(["ESTABLE", "MODERADO", "VOLATIL"]).toContain(item.ranking_robustness);
+      }
+
+      // Ilusión burocrática en DATT, Corvivienda y EPA (> 0.20)
+      const ilusionBurocratica = NETWORK_DEA_BI_ETAPA.filter((n) => n.diagnostico === "ILUSION_BUROCRATICA");
+      expect(ilusionBurocratica).toHaveLength(3);
+      const siglasIlusion = ilusionBurocratica.map((n) => n.entidad_codigo);
+      expect(siglasIlusion).toContain("DATT");
+      expect(siglasIlusion).toContain("CORVIVIENDA");
+      expect(siglasIlusion).toContain("EPA_CARTAGENA");
+
+      for (const item of ilusionBurocratica) {
+        expect(item.brecha_ilusion_burocratica).toBeGreaterThan(0.20);
+      }
+
+      // Alta efectividad integral
+      const altaEfectividad = NETWORK_DEA_BI_ETAPA.filter((n) => n.diagnostico === "ALTA_EFECTIVIDAD_INTEGRAL");
+      expect(altaEfectividad).toHaveLength(6);
+      const siglasAlta = altaEfectividad.map((n) => n.entidad_codigo);
+      expect(siglasAlta).toContain("SEC_INTERIOR");
+      expect(siglasAlta).toContain("SEC_INFRAESTRUCTURA");
+      expect(siglasAlta).toContain("DISTRISEGURIDAD");
+    });
+
+    it("39. el simulador Inverse DEA Pareto implementa 3 escenarios (±5%, ±10%, ±15%) con suma cero estricta y ledger de restricciones", () => {
+      expect(SIMULADOR_INVERSE_DEA_PARETO).toHaveLength(3);
+
+      const niveles = SIMULADOR_INVERSE_DEA_PARETO.map((s) => s.nivel_flexibilidad);
+      expect(niveles).toEqual(["±5%", "±10%", "±15%"]);
+
+      // Escenario ±5%
+      const s5 = SIMULADOR_INVERSE_DEA_PARETO.find((s) => s.nivel_flexibilidad === "±5%")!;
+      expect(s5.factor_alpha).toBe(0.05);
+      expect(s5.monto_total_movilizado_mcop).toBe(152000.0);
+      expect(s5.ganancia_cumplimiento_pp).toBe(1.8);
+      expect(s5.suma_cero_verificada).toBe(true);
+
+      // Escenario ±10%
+      const s10 = SIMULADOR_INVERSE_DEA_PARETO.find((s) => s.nivel_flexibilidad === "±10%")!;
+      expect(s10.factor_alpha).toBe(0.10);
+      expect(s10.monto_total_movilizado_mcop).toBe(304000.0);
+      expect(s10.ganancia_cumplimiento_pp).toBe(3.4);
+      expect(s10.suma_cero_verificada).toBe(true);
+
+      // Escenario ±15%
+      const s15 = SIMULADOR_INVERSE_DEA_PARETO.find((s) => s.nivel_flexibilidad === "±15%")!;
+      expect(s15.factor_alpha).toBe(0.15);
+      expect(s15.monto_total_movilizado_mcop).toBe(456000.0);
+      expect(s15.ganancia_cumplimiento_pp).toBe(4.9);
+      expect(s15.suma_cero_verificada).toBe(true);
+
+      // Suma cero estricta en cada escenario: sum(delta_presupuesto_mcop) === 0
+      for (const s of SIMULADOR_INVERSE_DEA_PARETO) {
+        const sumaDelta = s.reasignaciones.reduce((acc, r) => acc + r.delta_presupuesto_mcop, 0);
+        expect(sumaDelta).toBe(0);
+
+        // Donantes vs Receptores
+        const donantes = s.reasignaciones.filter((r) => r.rol_reasignacion === "DONANTE_RECURSOS");
+        const receptores = s.reasignaciones.filter((r) => r.rol_reasignacion === "RECEPTOR_OPTIMO");
+        expect(donantes.length).toBeGreaterThan(0);
+        expect(receptores.length).toBeGreaterThan(0);
+
+        // Ledger de restricciones
+        expect(s.ledger_restricciones.vigencias_futuras_blindadas_mcop).toBe(412500.0);
+        expect(s.ledger_restricciones.destinacion_sgp_intocable_mcop).toBe(1680000.0);
+        expect(s.ledger_restricciones.limite_ley_617_cumplido).toBe(true);
+        expect(s.ledger_restricciones.advertencia_metodologica).toContain("Simulación");
+      }
+      expect(s5.ledger_restricciones.advertencia_metodologica).toContain("causalidad");
+    });
+
+    it("40. la auditoría forense de metas de los 8 planes (5 PDD + 3 PDL) desglosa 6 estados de cobertura y 4 niveles taxonómicos MGA", () => {
+      expect(AUDITORIA_METAS_8_PLANES).toHaveLength(8);
+
+      const codigos = AUDITORIA_METAS_8_PLANES.map((p) => p.plan_codigo);
+      expect(codigos).toContain("PDD_2024_2027");
+      expect(codigos).toContain("PDD_2020_2023");
+      expect(codigos).toContain("PDD_2016_2019");
+      expect(codigos).toContain("PDD_2013_2015");
+      expect(codigos).toContain("PDD_2012_2015");
+      expect(codigos).toContain("PDL_2024_2027_LOC1");
+      expect(codigos).toContain("PDL_2024_2027_LOC2");
+      expect(codigos).toContain("PDL_2024_2027_LOC3");
+
+      const totalMetas8Planes = AUDITORIA_METAS_8_PLANES.reduce((acc, p) => acc + p.total_metas_oficiales, 0);
+      expect(totalMetas8Planes).toBe(2428);
+
+      const metas5Pdd = AUDITORIA_METAS_8_PLANES
+        .filter((p) => p.tipo === "PDD")
+        .reduce((acc, p) => acc + p.total_metas_oficiales, 0);
+      expect(metas5Pdd).toBe(2068);
+
+      for (const p of AUDITORIA_METAS_8_PLANES) {
+        // Validación de suma de los 6 estados de cobertura
+        const sumaCobertura =
+          p.vinculadas_alta_confianza +
+          p.candidato_baja_confianza +
+          p.duplicadas_fuentes_pdd +
+          p.sin_corpus_historico +
+          p.sin_codigo_o_entidad +
+          p.sin_reporte_alerta_fiscal;
+        expect(sumaCobertura).toBe(p.total_metas_oficiales);
+
+        // Validación de suma de las 4 taxonomías MGA
+        const sumaMga =
+          p.mga_resultado_impacto +
+          p.mga_producto_cuantificable +
+          p.mga_gestion_proceso_blando +
+          p.mga_revision_humana;
+        expect(sumaMga).toBe(p.total_metas_oficiales);
+
+        expect(p.pct_cobertura_efectiva).toBeGreaterThan(0);
+        expect(p.pct_cobertura_efectiva).toBeLessThanOrEqual(100);
+      }
+    });
+
+    it("41. la justicia territorial DANE 2025 calcula inversión FDL per cápita para 1.065.570 hab., 33 mesas y compuerta Moran N < 30", () => {
+      expect(JUSTICIA_TERRITORIAL_PDL_DANE.poblacion_total_distrito).toBe(1_065_570);
+      expect(JUSTICIA_TERRITORIAL_PDL_DANE.mesas_totales_distrito).toBe(33);
+      expect(JUSTICIA_TERRITORIAL_PDL_DANE.fdl_total_distrito_mcop).toBe(304981.04);
+      expect(JUSTICIA_TERRITORIAL_PDL_DANE.inversion_per_capita_media_cop).toBe(286214.0);
+
+      expect(JUSTICIA_TERRITORIAL_PDL_DANE.localidades).toHaveLength(3);
+      const l1 = JUSTICIA_TERRITORIAL_PDL_DANE.localidades.find((l) => l.localidad_id === 1)!;
+      const l2 = JUSTICIA_TERRITORIAL_PDL_DANE.localidades.find((l) => l.localidad_id === 2)!;
+      const l3 = JUSTICIA_TERRITORIAL_PDL_DANE.localidades.find((l) => l.localidad_id === 3)!;
+
+      expect(l1.poblacion_dane_2025).toBe(412580);
+      expect(l2.poblacion_dane_2025).toBe(348190);
+      expect(l3.poblacion_dane_2025).toBe(304800);
+
+      const sumaPoblacion = l1.poblacion_dane_2025 + l2.poblacion_dane_2025 + l3.poblacion_dane_2025;
+      expect(sumaPoblacion).toBe(1_065_570);
+
+      const sumaMesas = l1.mesas_ciudadanas_count + l2.mesas_ciudadanas_count + l3.mesas_ciudadanas_count;
+      expect(sumaMesas).toBe(33);
+
+      // Balance hurtos: 12.280 totales
+      expect(JUSTICIA_TERRITORIAL_PDL_DANE.balance_hurtos).toHaveLength(2);
+      const urbano = JUSTICIA_TERRITORIAL_PDL_DANE.balance_hurtos.find((b) => b.zona === "URBANA")!;
+      const rural = JUSTICIA_TERRITORIAL_PDL_DANE.balance_hurtos.find((b) => b.zona === "RURAL_INSULAR")!;
+
+      expect(urbano.hurtos_count).toBe(11890);
+      expect(urbano.participacion_pct).toBe(96.82);
+      expect(rural.hurtos_count).toBe(390);
+      expect(rural.participacion_pct).toBe(3.18);
+      expect(urbano.hurtos_count + rural.hurtos_count).toBe(12280);
+
+      // Compuerta Moran N < 30
+      expect(urbano.compuerta_moran).toBe("NO_ESTIMABLE_N_MENOR_30");
+      expect(rural.compuerta_moran).toBe("NO_ESTIMABLE_N_MENOR_30");
+    });
+
+    it("42. los pliegos de control político/fiscal estructuran cuestionarios por dependencia con hash SHA-256 verificado", () => {
+      expect(PLIEGOS_CONTROL_POLITICO_FISCAL).toHaveLength(4);
+
+      const codigos = PLIEGOS_CONTROL_POLITICO_FISCAL.map((p) => p.entidad_codigo);
+      expect(codigos).toContain("DATT");
+      expect(codigos).toContain("CORVIVIENDA");
+      expect(codigos).toContain("EPA_CARTAGENA");
+      expect(codigos).toContain("SEC_INTERIOR");
+
+      const datt = PLIEGOS_CONTROL_POLITICO_FISCAL.find((p) => p.entidad_codigo === "DATT")!;
+      expect(datt.nivel_alerta).toBe("CRITICA");
+      expect(datt.brecha_ilusion_burocratica).toBe(0.230);
+      expect(datt.metas_sin_reporte_count).toBe(12);
+      expect(datt.cuestionario_control_politico.length).toBeGreaterThanOrEqual(3);
+      expect(datt.hash_sha256_dictamen).toHaveLength(64);
+
+      for (const p of PLIEGOS_CONTROL_POLITICO_FISCAL) {
+        expect(p.cuestionario_control_politico.length).toBeGreaterThan(0);
+        expect(p.hash_sha256_dictamen).toMatch(/^[a-f0-9]{64}$/);
+        expect(p.hallazgo_principal.length).toBeGreaterThan(10);
+        expect(p.recomendacion_fiscal.length).toBeGreaterThan(10);
+      }
+    });
+
+    it("43. el cliente API obtenerLaboratorioPrescriptivoPddApi devuelve estructura completa con fallback seguro offline", async () => {
+      const local = obtenerLaboratorioPrescriptivoPddLocal();
+      expect(local.auditoria_metas_8_planes).toBeDefined();
+      expect(local.network_dea_bi_etapa).toBeDefined();
+      expect(local.simulador_inverse_dea).toBeDefined();
+      expect(local.justicia_territorial).toBeDefined();
+      expect(local.pliegos_control_politico).toBeDefined();
+      expect(local.metadata.version_laboratorio).toContain("POLIS-LAB-PRESCRIPTIVO");
+
+      // Simular offline para verificar fallback
+      const fetchSpy = vi.spyOn(globalThis, "fetch").mockRejectedValue(new Error("Offline"));
+      try {
+        const res = await obtenerLaboratorioPrescriptivoPddApi();
+        expect(res).toBeDefined();
+        expect(res.network_dea_bi_etapa).toHaveLength(12);
+        expect(res.simulador_inverse_dea).toHaveLength(3);
+        expect(res.auditoria_metas_8_planes).toHaveLength(8);
+      } finally {
+        fetchSpy.mockRestore();
+      }
+    });
+
+    it("44. PddDeaEvaluacionPanel incluye la sub-pestaña 7 de Laboratorio Prescriptivo y el id pdd-tab-prescriptivo", () => {
+      const html = renderToString(<PddDeaEvaluacionPanel puedeEditar={false} />);
+      expect(html).toContain('data-testid="pdd-tab-laboratorio-prescriptivo"');
+      expect(html).toContain('id="pdd-tab-prescriptivo"');
+      expect(html).toContain("7. Laboratorio Prescriptivo &amp; Control Fiscal");
     });
   });
 });

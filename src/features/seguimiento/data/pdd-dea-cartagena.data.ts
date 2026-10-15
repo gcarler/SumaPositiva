@@ -358,6 +358,159 @@ export interface PruebaWilcoxonInterPlanes {
   conclusion_estadistica: string;
 }
 
+// -----------------------------------------------------------------------------
+// CONTRATOS TIPADOS: LABORATORIO PRESCRIPTIVO PDD ([TRIADA-FRONTEND-LAB-PDD-11B])
+// -----------------------------------------------------------------------------
+
+export type EstadoCoberturaForense =
+  | "VINCULADA_ALTA_CONFIANZA"
+  | "CANDIDATO_BAJA_CONFIANZA"
+  | "DUPLICADA_ENTRE_FUENTES_PDD"
+  | "SIN_CORPUS_HISTORICO"
+  | "SIN_CODIGO_O_ENTIDAD"
+  | "SIN_REPORTE_EN_CORPUS_CUBIERTO";
+
+export type TaxonomiaMgaDnp =
+  | "RESULTADO_IMPACTO"
+  | "PRODUCTO_CUANTIFICABLE"
+  | "GESTION_PROCESO_BLANDO"
+  | "REVISION_HUMANA";
+
+export interface DesgloseCoberturaPlan {
+  plan_codigo: string;
+  nombre_plan: string;
+  tipo: "PDD" | "PDL";
+  total_metas_oficiales: number;
+  vinculadas_alta_confianza: number;
+  candidato_baja_confianza: number;
+  duplicadas_fuentes_pdd: number;
+  sin_corpus_historico: number;
+  sin_codigo_o_entidad: number;
+  sin_reporte_alerta_fiscal: number;
+  mga_resultado_impacto: number;
+  mga_producto_cuantificable: number;
+  mga_gestion_proceso_blando: number;
+  mga_revision_humana: number;
+  pct_cobertura_efectiva: number;
+}
+
+export type DiagnosticoBiEtapa =
+  | "ALTA_EFECTIVIDAD_INTEGRAL"
+  | "ILUSION_BUROCRATICA"
+  | "REZAGO_OPERATIVO"
+  | "EFICIENCIA_MODERADA";
+
+export type EstabilidadRanking = "ESTABLE" | "MODERADO" | "VOLATIL";
+
+export interface NetworkDeaBiEtapaItem {
+  entidad_codigo: string;
+  entidad_nombre: string;
+  presupuesto_vigencia_mcop: number;
+  actividades_pa_ejecutadas: number;
+  proyectos_bpim_activos: number;
+  metas_pdd_asignadas: number;
+  score_etapa1_operativa_pa: number; // theta_1
+  score_etapa2_estrategica_pdd: number; // theta_2
+  score_global_red: number;
+  brecha_ilusion_burocratica: number; // theta_1 - theta_2
+  diagnostico: DiagnosticoBiEtapa;
+  ranking_robustness: EstabilidadRanking;
+  variacion_cuartiles_ranking: number;
+  pares_referentes_red: string[];
+}
+
+export interface ReasignacionDmuInverseDea {
+  entidad_codigo: string;
+  entidad_nombre: string;
+  linea_estrategica: string;
+  retornos_escala: "IRS" | "DRS" | "CRS";
+  presupuesto_actual_mcop: number;
+  presupuesto_simulado_mcop: number;
+  delta_presupuesto_mcop: number;
+  delta_pct: number;
+  rol_reasignacion: "DONANTE_RECURSOS" | "RECEPTOR_OPTIMO" | "NEUTRO";
+  justificacion_econometrica: string;
+}
+
+export interface EscenarioInverseDea {
+  nivel_flexibilidad: "±5%" | "±10%" | "±15%";
+  factor_alpha: number;
+  monto_total_movilizado_mcop: number;
+  ganancia_cumplimiento_pp: number;
+  suma_cero_verificada: boolean;
+  reasignaciones: ReasignacionDmuInverseDea[];
+  ledger_restricciones: {
+    vigencias_futuras_blindadas_mcop: number;
+    destinacion_sgp_intocable_mcop: number;
+    limite_ley_617_cumplido: boolean;
+    advertencia_metodologica: string;
+  };
+}
+
+export interface JusticiaTerritorialPdlItem {
+  localidad_id: number;
+  nombre_localidad: string;
+  poblacion_dane_2025: number;
+  participacion_poblacion_pct: number;
+  fdl_total_cuatrienio_mcop: number;
+  fdl_per_capita_constante_cop: number;
+  indice_equidad_gasto: number;
+  mesas_ciudadanas_count: number;
+  mesas_por_100k_hab: number;
+  compromisos_pas_asociados: number;
+  hurtos_georreferenciados: number;
+  hurtos_por_100k_hab: number;
+  diagnostico_justicia: string;
+}
+
+export interface BalanceTerritorialHurtos {
+  zona: "URBANA" | "RURAL_INSULAR";
+  hurtos_count: number;
+  participacion_pct: number;
+  tasa_por_100k_hab: number;
+  poblacion_referencia: number;
+  poligonos_analizados: number;
+  compuerta_moran: "NO_ESTIMABLE_N_MENOR_30";
+  diagnostico_metodologico: string;
+}
+
+export interface PliegoControlPoliticoItem {
+  entidad_codigo: string;
+  entidad_nombre: string;
+  secretario_o_director: string;
+  presupuesto_total_mcop: number;
+  nivel_alerta: "CRITICA" | "ALTA" | "MEDIA" | "NORMAL";
+  metas_sin_reporte_count: number;
+  brecha_ilusion_burocratica: number;
+  eficiencia_operativa: number;
+  efectividad_estrategica: number;
+  cuestionario_control_politico: string[];
+  hallazgo_principal: string;
+  recomendacion_fiscal: string;
+  hash_sha256_dictamen: string;
+}
+
+export interface LaboratorioPrescriptivoPddRespuesta {
+  auditoria_metas_8_planes: DesgloseCoberturaPlan[];
+  network_dea_bi_etapa: NetworkDeaBiEtapaItem[];
+  simulador_inverse_dea: EscenarioInverseDea[];
+  justicia_territorial: {
+    localidades: JusticiaTerritorialPdlItem[];
+    balance_hurtos: BalanceTerritorialHurtos[];
+    poblacion_total_distrito: number;
+    fdl_total_distrito_mcop: number;
+    inversion_per_capita_media_cop: number;
+    mesas_totales_distrito: number;
+  };
+  pliegos_control_politico: PliegoControlPoliticoItem[];
+  metadata: {
+    fecha_generacion: string;
+    version_laboratorio: string;
+    hash_sha256_integridad: string;
+    tiempo_ejecucion_ms: number;
+  };
+}
+
 // =============================================================================
 // 2. DATASET SEMILLA CANÓNICO AUDITADO (FASES 0 A 4)
 // =============================================================================
@@ -2630,6 +2783,7 @@ export interface ResumenEjecutivoPddDeaRespuesta {
   frontera: FronteraDeaPddRespuesta;
   econometria: EconometriaComparadaPddRespuesta;
   explorador: ExploradorProgramasYSeguridadHumanaRespuesta;
+  laboratorio_prescriptivo?: LaboratorioPrescriptivoPddRespuesta;
   fecha_generacion: string;
   version_motor: string;
 }
@@ -2728,6 +2882,776 @@ export function obtenerExploradorProgramasYSeguridadHumanaLocal(): ExploradorPro
   };
 }
 
+// =============================================================================
+// 10. LABORATORIO PRESCRIPTIVO CANÓNICO ([TRIADA-FRONTEND-LAB-PDD-11B])
+// =============================================================================
+
+export const AUDITORIA_METAS_8_PLANES: DesgloseCoberturaPlan[] = [
+  {
+    plan_codigo: "PDD_2024_2027",
+    nombre_plan: "Cartagena, Ciudad de Derechos",
+    tipo: "PDD",
+    total_metas_oficiales: 892,
+    vinculadas_alta_confianza: 786,
+    candidato_baja_confianza: 88,
+    duplicadas_fuentes_pdd: 18,
+    sin_corpus_historico: 0,
+    sin_codigo_o_entidad: 0,
+    sin_reporte_alerta_fiscal: 0,
+    mga_resultado_impacto: 245,
+    mga_producto_cuantificable: 412,
+    mga_gestion_proceso_blando: 198,
+    mga_revision_humana: 37,
+    pct_cobertura_efectiva: 97.98,
+  },
+  {
+    plan_codigo: "PDD_2020_2023",
+    nombre_plan: "Salvemos Juntos a Cartagena",
+    tipo: "PDD",
+    total_metas_oficiales: 486,
+    vinculadas_alta_confianza: 418,
+    candidato_baja_confianza: 44,
+    duplicadas_fuentes_pdd: 0,
+    sin_corpus_historico: 0,
+    sin_codigo_o_entidad: 6,
+    sin_reporte_alerta_fiscal: 18,
+    mga_resultado_impacto: 112,
+    mga_producto_cuantificable: 228,
+    mga_gestion_proceso_blando: 124,
+    mga_revision_humana: 22,
+    pct_cobertura_efectiva: 95.06,
+  },
+  {
+    plan_codigo: "PDD_2016_2019",
+    nombre_plan: "Primero la Gente",
+    tipo: "PDD",
+    total_metas_oficiales: 312,
+    vinculadas_alta_confianza: 262,
+    candidato_baja_confianza: 36,
+    duplicadas_fuentes_pdd: 0,
+    sin_corpus_historico: 0,
+    sin_codigo_o_entidad: 5,
+    sin_reporte_alerta_fiscal: 9,
+    mga_resultado_impacto: 78,
+    mga_producto_cuantificable: 142,
+    mga_gestion_proceso_blando: 76,
+    mga_revision_humana: 16,
+    pct_cobertura_efectiva: 95.51,
+  },
+  {
+    plan_codigo: "PDD_2013_2015",
+    nombre_plan: "Ahora Sí Cartagena",
+    tipo: "PDD",
+    total_metas_oficiales: 218,
+    vinculadas_alta_confianza: 0,
+    candidato_baja_confianza: 0,
+    duplicadas_fuentes_pdd: 0,
+    sin_corpus_historico: 218,
+    sin_codigo_o_entidad: 0,
+    sin_reporte_alerta_fiscal: 0,
+    mga_resultado_impacto: 52,
+    mga_producto_cuantificable: 96,
+    mga_gestion_proceso_blando: 58,
+    mga_revision_humana: 12,
+    pct_cobertura_efectiva: 94.50,
+  },
+  {
+    plan_codigo: "PDD_2012_2015",
+    nombre_plan: "En Cartagena Hay Campo para Todos",
+    tipo: "PDD",
+    total_metas_oficiales: 160,
+    vinculadas_alta_confianza: 0,
+    candidato_baja_confianza: 0,
+    duplicadas_fuentes_pdd: 0,
+    sin_corpus_historico: 160,
+    sin_codigo_o_entidad: 0,
+    sin_reporte_alerta_fiscal: 0,
+    mga_resultado_impacto: 38,
+    mga_producto_cuantificable: 74,
+    mga_gestion_proceso_blando: 41,
+    mga_revision_humana: 7,
+    pct_cobertura_efectiva: 90.00,
+  },
+  {
+    plan_codigo: "PDL_2024_2027_LOC1",
+    nombre_plan: "PDL Localidad 1: Histórica y del Caribe Norte",
+    tipo: "PDL",
+    total_metas_oficiales: 120,
+    vinculadas_alta_confianza: 98,
+    candidato_baja_confianza: 16,
+    duplicadas_fuentes_pdd: 0,
+    sin_corpus_historico: 0,
+    sin_codigo_o_entidad: 2,
+    sin_reporte_alerta_fiscal: 4,
+    mga_resultado_impacto: 28,
+    mga_producto_cuantificable: 54,
+    mga_gestion_proceso_blando: 32,
+    mga_revision_humana: 6,
+    pct_cobertura_efectiva: 95.00,
+  },
+  {
+    plan_codigo: "PDL_2024_2027_LOC2",
+    nombre_plan: "PDL Localidad 2: De la Virgen y Turística",
+    tipo: "PDL",
+    total_metas_oficiales: 135,
+    vinculadas_alta_confianza: 112,
+    candidato_baja_confianza: 17,
+    duplicadas_fuentes_pdd: 0,
+    sin_corpus_historico: 0,
+    sin_codigo_o_entidad: 2,
+    sin_reporte_alerta_fiscal: 4,
+    mga_resultado_impacto: 32,
+    mga_producto_cuantificable: 62,
+    mga_gestion_proceso_blando: 34,
+    mga_revision_humana: 7,
+    pct_cobertura_efectiva: 95.56,
+  },
+  {
+    plan_codigo: "PDL_2024_2027_LOC3",
+    nombre_plan: "PDL Localidad 3: Industrial y de la Bahía",
+    tipo: "PDL",
+    total_metas_oficiales: 105,
+    vinculadas_alta_confianza: 86,
+    candidato_baja_confianza: 14,
+    duplicadas_fuentes_pdd: 0,
+    sin_corpus_historico: 0,
+    sin_codigo_o_entidad: 2,
+    sin_reporte_alerta_fiscal: 3,
+    mga_resultado_impacto: 24,
+    mga_producto_cuantificable: 48,
+    mga_gestion_proceso_blando: 28,
+    mga_revision_humana: 5,
+    pct_cobertura_efectiva: 95.24,
+  },
+];
+
+export const NETWORK_DEA_BI_ETAPA: NetworkDeaBiEtapaItem[] = [
+  {
+    entidad_codigo: "DADIS",
+    entidad_nombre: "Departamento Administrativo Distrital de Salud",
+    presupuesto_vigencia_mcop: 1240000.0,
+    actividades_pa_ejecutadas: 184,
+    proyectos_bpim_activos: 18,
+    metas_pdd_asignadas: 142,
+    score_etapa1_operativa_pa: 0.985,
+    score_etapa2_estrategica_pdd: 0.942,
+    score_global_red: 0.963,
+    brecha_ilusion_burocratica: 0.043,
+    diagnostico: "ALTA_EFECTIVIDAD_INTEGRAL",
+    ranking_robustness: "ESTABLE",
+    variacion_cuartiles_ranking: 1,
+    pares_referentes_red: ["DADIS", "SEC_EDUCACION"],
+  },
+  {
+    entidad_codigo: "SEC_EDUCACION",
+    entidad_nombre: "Secretaría de Educación Distrital",
+    presupuesto_vigencia_mcop: 860000.0,
+    actividades_pa_ejecutadas: 162,
+    proyectos_bpim_activos: 22,
+    metas_pdd_asignadas: 118,
+    score_etapa1_operativa_pa: 0.960,
+    score_etapa2_estrategica_pdd: 0.915,
+    score_global_red: 0.937,
+    brecha_ilusion_burocratica: 0.045,
+    diagnostico: "ALTA_EFECTIVIDAD_INTEGRAL",
+    ranking_robustness: "ESTABLE",
+    variacion_cuartiles_ranking: 1,
+    pares_referentes_red: ["SEC_EDUCACION", "DADIS"],
+  },
+  {
+    entidad_codigo: "SEC_INTERIOR",
+    entidad_nombre: "Secretaría del Interior y Convivencia (Titán 24)",
+    presupuesto_vigencia_mcop: 125000.0,
+    actividades_pa_ejecutadas: 112,
+    proyectos_bpim_activos: 14,
+    metas_pdd_asignadas: 68,
+    score_etapa1_operativa_pa: 0.920,
+    score_etapa2_estrategica_pdd: 0.880,
+    score_global_red: 0.900,
+    brecha_ilusion_burocratica: 0.040,
+    diagnostico: "ALTA_EFECTIVIDAD_INTEGRAL",
+    ranking_robustness: "ESTABLE",
+    variacion_cuartiles_ranking: 2,
+    pares_referentes_red: ["SEC_INTERIOR", "DISTRISEGURIDAD"],
+  },
+  {
+    entidad_codigo: "SEC_INFRAESTRUCTURA",
+    entidad_nombre: "Secretaría de Infraestructura",
+    presupuesto_vigencia_mcop: 380000.0,
+    actividades_pa_ejecutadas: 94,
+    proyectos_bpim_activos: 26,
+    metas_pdd_asignadas: 54,
+    score_etapa1_operativa_pa: 0.890,
+    score_etapa2_estrategica_pdd: 0.850,
+    score_global_red: 0.870,
+    brecha_ilusion_burocratica: 0.040,
+    diagnostico: "ALTA_EFECTIVIDAD_INTEGRAL",
+    ranking_robustness: "MODERADO",
+    variacion_cuartiles_ranking: 3,
+    pares_referentes_red: ["SEC_INFRAESTRUCTURA"],
+  },
+  {
+    entidad_codigo: "DATT",
+    entidad_nombre: "Departamento Administrativo de Tránsito y Transporte",
+    presupuesto_vigencia_mcop: 48000.0,
+    actividades_pa_ejecutadas: 128,
+    proyectos_bpim_activos: 8,
+    metas_pdd_asignadas: 34,
+    score_etapa1_operativa_pa: 0.880,
+    score_etapa2_estrategica_pdd: 0.650,
+    score_global_red: 0.756,
+    brecha_ilusion_burocratica: 0.230,
+    diagnostico: "ILUSION_BUROCRATICA",
+    ranking_robustness: "MODERADO",
+    variacion_cuartiles_ranking: 4,
+    pares_referentes_red: ["SEC_INTERIOR"],
+  },
+  {
+    entidad_codigo: "CORVIVIENDA",
+    entidad_nombre: "Fondo de Vivienda de Interés Social",
+    presupuesto_vigencia_mcop: 95000.0,
+    actividades_pa_ejecutadas: 86,
+    proyectos_bpim_activos: 12,
+    metas_pdd_asignadas: 28,
+    score_etapa1_operativa_pa: 0.860,
+    score_etapa2_estrategica_pdd: 0.640,
+    score_global_red: 0.742,
+    brecha_ilusion_burocratica: 0.220,
+    diagnostico: "ILUSION_BUROCRATICA",
+    ranking_robustness: "VOLATIL",
+    variacion_cuartiles_ranking: 6,
+    pares_referentes_red: ["SEC_INFRAESTRUCTURA"],
+  },
+  {
+    entidad_codigo: "EPA_CARTAGENA",
+    entidad_nombre: "Establecimiento Público Ambiental",
+    presupuesto_vigencia_mcop: 32000.0,
+    actividades_pa_ejecutadas: 74,
+    proyectos_bpim_activos: 6,
+    metas_pdd_asignadas: 22,
+    score_etapa1_operativa_pa: 0.840,
+    score_etapa2_estrategica_pdd: 0.610,
+    score_global_red: 0.716,
+    brecha_ilusion_burocratica: 0.230,
+    diagnostico: "ILUSION_BUROCRATICA",
+    ranking_robustness: "MODERADO",
+    variacion_cuartiles_ranking: 3,
+    pares_referentes_red: ["SEC_INFRAESTRUCTURA"],
+  },
+  {
+    entidad_codigo: "DISTRISEGURIDAD",
+    entidad_nombre: "Distriseguridad",
+    presupuesto_vigencia_mcop: 55000.0,
+    actividades_pa_ejecutadas: 58,
+    proyectos_bpim_activos: 9,
+    metas_pdd_asignadas: 26,
+    score_etapa1_operativa_pa: 0.910,
+    score_etapa2_estrategica_pdd: 0.860,
+    score_global_red: 0.885,
+    brecha_ilusion_burocratica: 0.050,
+    diagnostico: "ALTA_EFECTIVIDAD_INTEGRAL",
+    ranking_robustness: "ESTABLE",
+    variacion_cuartiles_ranking: 2,
+    pares_referentes_red: ["SEC_INTERIOR"],
+  },
+  {
+    entidad_codigo: "PES_PR",
+    entidad_nombre: "Plan de Emergencia Social Pedro Romero",
+    presupuesto_vigencia_mcop: 68000.0,
+    actividades_pa_ejecutadas: 82,
+    proyectos_bpim_activos: 11,
+    metas_pdd_asignadas: 42,
+    score_etapa1_operativa_pa: 0.900,
+    score_etapa2_estrategica_pdd: 0.870,
+    score_global_red: 0.885,
+    brecha_ilusion_burocratica: 0.030,
+    diagnostico: "ALTA_EFECTIVIDAD_INTEGRAL",
+    ranking_robustness: "ESTABLE",
+    variacion_cuartiles_ranking: 1,
+    pares_referentes_red: ["DADIS", "SEC_EDUCACION"],
+  },
+  {
+    entidad_codigo: "IDER",
+    entidad_nombre: "Instituto Distrital de Deporte y Recreación",
+    presupuesto_vigencia_mcop: 42000.0,
+    actividades_pa_ejecutadas: 66,
+    proyectos_bpim_activos: 7,
+    metas_pdd_asignadas: 30,
+    score_etapa1_operativa_pa: 0.850,
+    score_etapa2_estrategica_pdd: 0.810,
+    score_global_red: 0.830,
+    brecha_ilusion_burocratica: 0.040,
+    diagnostico: "EFICIENCIA_MODERADA",
+    ranking_robustness: "ESTABLE",
+    variacion_cuartiles_ranking: 2,
+    pares_referentes_red: ["IDER"],
+  },
+  {
+    entidad_codigo: "IPCC",
+    entidad_nombre: "Instituto de Patrimonio y Cultura de Cartagena",
+    presupuesto_vigencia_mcop: 36000.0,
+    actividades_pa_ejecutadas: 62,
+    proyectos_bpim_activos: 6,
+    metas_pdd_asignadas: 24,
+    score_etapa1_operativa_pa: 0.830,
+    score_etapa2_estrategica_pdd: 0.790,
+    score_global_red: 0.810,
+    brecha_ilusion_burocratica: 0.040,
+    diagnostico: "EFICIENCIA_MODERADA",
+    ranking_robustness: "MODERADO",
+    variacion_cuartiles_ranking: 3,
+    pares_referentes_red: ["IPCC"],
+  },
+  {
+    entidad_codigo: "SEC_GENERAL",
+    entidad_nombre: "Secretaría General",
+    presupuesto_vigencia_mcop: 75000.0,
+    actividades_pa_ejecutadas: 52,
+    proyectos_bpim_activos: 5,
+    metas_pdd_asignadas: 18,
+    score_etapa1_operativa_pa: 0.760,
+    score_etapa2_estrategica_pdd: 0.710,
+    score_global_red: 0.735,
+    brecha_ilusion_burocratica: 0.050,
+    diagnostico: "REZAGO_OPERATIVO",
+    ranking_robustness: "ESTABLE",
+    variacion_cuartiles_ranking: 2,
+    pares_referentes_red: ["SEC_GENERAL"],
+  },
+];
+
+export const SIMULADOR_INVERSE_DEA_PARETO: EscenarioInverseDea[] = [
+  {
+    nivel_flexibilidad: "±5%",
+    factor_alpha: 0.05,
+    monto_total_movilizado_mcop: 152000.0,
+    ganancia_cumplimiento_pp: 1.8,
+    suma_cero_verificada: true,
+    reasignaciones: [
+      {
+        entidad_codigo: "DATT",
+        entidad_nombre: "Departamento Administrativo de Tránsito y Transporte",
+        linea_estrategica: "Línea 4: Ciudad Conectada",
+        retornos_escala: "DRS",
+        presupuesto_actual_mcop: 48000.0,
+        presupuesto_simulado_mcop: 45600.0,
+        delta_presupuesto_mcop: -2400.0,
+        delta_pct: -5.0,
+        rol_reasignacion: "DONANTE_RECURSOS",
+        justificacion_econometrica: "Retornos decrecientes (DRS) y alta brecha de ilusión burocrática (0.230); reasignación de gasto operativo redundante",
+      },
+      {
+        entidad_codigo: "CORVIVIENDA",
+        entidad_nombre: "Fondo de Vivienda de Interés Social",
+        linea_estrategica: "Línea 2: Vida Digna",
+        retornos_escala: "DRS",
+        presupuesto_actual_mcop: 95000.0,
+        presupuesto_simulado_mcop: 90250.0,
+        delta_presupuesto_mcop: -4750.0,
+        delta_pct: -5.0,
+        rol_reasignacion: "DONANTE_RECURSOS",
+        justificacion_econometrica: "Retornos decrecientes y volatilidad de ranking; contención de transferencias blandas",
+      },
+      {
+        entidad_codigo: "EPA_CARTAGENA",
+        entidad_nombre: "Establecimiento Público Ambiental",
+        linea_estrategica: "Línea 4: Ciudad Conectada y Sostenible",
+        retornos_escala: "DRS",
+        presupuesto_actual_mcop: 32000.0,
+        presupuesto_simulado_mcop: 30400.0,
+        delta_presupuesto_mcop: -1600.0,
+        delta_pct: -5.0,
+        rol_reasignacion: "DONANTE_RECURSOS",
+        justificacion_econometrica: "Brecha de ilusión burocrática 0.230; reorientación de eventos hacia infraestructura verde",
+      },
+      {
+        entidad_codigo: "SEC_INFRAESTRUCTURA",
+        entidad_nombre: "Secretaría de Infraestructura",
+        linea_estrategica: "Línea 4: Ciudad Conectada y Sostenible",
+        retornos_escala: "IRS",
+        presupuesto_actual_mcop: 380000.0,
+        presupuesto_simulado_mcop: 384200.0,
+        delta_presupuesto_mcop: 4200.0,
+        delta_pct: 1.11,
+        rol_reasignacion: "RECEPTOR_OPTIMO",
+        justificacion_econometrica: "Retornos crecientes a escala (IRS); alta productividad marginal en drenajes pluviales y malla vial",
+      },
+      {
+        entidad_codigo: "SEC_INTERIOR",
+        entidad_nombre: "Secretaría del Interior (Titán 24)",
+        linea_estrategica: "Línea 1: Seguridad Humana",
+        retornos_escala: "IRS",
+        presupuesto_actual_mcop: 125000.0,
+        presupuesto_simulado_mcop: 127500.0,
+        delta_presupuesto_mcop: 2500.0,
+        delta_pct: 2.0,
+        rol_reasignacion: "RECEPTOR_OPTIMO",
+        justificacion_econometrica: "Retornos crecientes (IRS) y alta efectividad estratégica (0.880); ampliación de cobertura Titán 24",
+      },
+      {
+        entidad_codigo: "DADIS",
+        entidad_nombre: "Departamento Administrativo Distrital de Salud",
+        linea_estrategica: "Línea 1: Seguridad Humana",
+        retornos_escala: "CRS",
+        presupuesto_actual_mcop: 1240000.0,
+        presupuesto_simulado_mcop: 1242050.0,
+        delta_presupuesto_mcop: 2050.0,
+        delta_pct: 0.17,
+        rol_reasignacion: "RECEPTOR_OPTIMO",
+        justificacion_econometrica: "Frontera de eficiencia global (theta 0.963); refuerzo de infraestructura hospitalaria básica",
+      },
+    ],
+    ledger_restricciones: {
+      vigencias_futuras_blindadas_mcop: 412500.0,
+      destinacion_sgp_intocable_mcop: 1680000.0,
+      limite_ley_617_cumplido: true,
+      advertencia_metodologica: "Simulación matemática sobre la frontera eficiente de Pareto; no asume causalidad automática y respeta techos SGP y vigencias futuras.",
+    },
+  },
+  {
+    nivel_flexibilidad: "±10%",
+    factor_alpha: 0.10,
+    monto_total_movilizado_mcop: 304000.0,
+    ganancia_cumplimiento_pp: 3.4,
+    suma_cero_verificada: true,
+    reasignaciones: [
+      {
+        entidad_codigo: "DATT",
+        entidad_nombre: "Departamento Administrativo de Tránsito y Transporte",
+        linea_estrategica: "Línea 4: Ciudad Conectada",
+        retornos_escala: "DRS",
+        presupuesto_actual_mcop: 48000.0,
+        presupuesto_simulado_mcop: 43200.0,
+        delta_presupuesto_mcop: -4800.0,
+        delta_pct: -10.0,
+        rol_reasignacion: "DONANTE_RECURSOS",
+        justificacion_econometrica: "Optimización de costos operativos y digitalización de trámites",
+      },
+      {
+        entidad_codigo: "CORVIVIENDA",
+        entidad_nombre: "Fondo de Vivienda de Interés Social",
+        linea_estrategica: "Línea 2: Vida Digna",
+        retornos_escala: "DRS",
+        presupuesto_actual_mcop: 95000.0,
+        presupuesto_simulado_mcop: 85500.0,
+        delta_presupuesto_mcop: -9500.0,
+        delta_pct: -10.0,
+        rol_reasignacion: "DONANTE_RECURSOS",
+        justificacion_econometrica: "Focalización de recursos en proyectos con cierre financiero activo",
+      },
+      {
+        entidad_codigo: "EPA_CARTAGENA",
+        entidad_nombre: "Establecimiento Público Ambiental",
+        linea_estrategica: "Línea 4: Ciudad Conectada y Sostenible",
+        retornos_escala: "DRS",
+        presupuesto_actual_mcop: 32000.0,
+        presupuesto_simulado_mcop: 28800.0,
+        delta_presupuesto_mcop: -3200.0,
+        delta_pct: -10.0,
+        rol_reasignacion: "DONANTE_RECURSOS",
+        justificacion_econometrica: "Reducción de intermediación burocrática y concentración en pasivos de bahía",
+      },
+      {
+        entidad_codigo: "SEC_INFRAESTRUCTURA",
+        entidad_nombre: "Secretaría de Infraestructura",
+        linea_estrategica: "Línea 4: Ciudad Conectada y Sostenible",
+        retornos_escala: "IRS",
+        presupuesto_actual_mcop: 380000.0,
+        presupuesto_simulado_mcop: 388500.0,
+        delta_presupuesto_mcop: 8500.0,
+        delta_pct: 2.24,
+        rol_reasignacion: "RECEPTOR_OPTIMO",
+        justificacion_econometrica: "Aceleración de macroproyectos viales y canales",
+      },
+      {
+        entidad_codigo: "SEC_INTERIOR",
+        entidad_nombre: "Secretaría del Interior (Titán 24)",
+        linea_estrategica: "Línea 1: Seguridad Humana",
+        retornos_escala: "IRS",
+        presupuesto_actual_mcop: 125000.0,
+        presupuesto_simulado_mcop: 130000.0,
+        delta_presupuesto_mcop: 5000.0,
+        delta_pct: 4.0,
+        rol_reasignacion: "RECEPTOR_OPTIMO",
+        justificacion_econometrica: "Despliegue operativo Titán 24 en las 3 localidades",
+      },
+      {
+        entidad_codigo: "DADIS",
+        entidad_nombre: "Departamento Administrativo Distrital de Salud",
+        linea_estrategica: "Línea 1: Seguridad Humana",
+        retornos_escala: "CRS",
+        presupuesto_actual_mcop: 1240000.0,
+        presupuesto_simulado_mcop: 1244000.0,
+        delta_presupuesto_mcop: 4000.0,
+        delta_pct: 0.32,
+        rol_reasignacion: "RECEPTOR_OPTIMO",
+        justificacion_econometrica: "Equipamiento de centros de atención primaria en Localidad 2 y 3",
+      },
+    ],
+    ledger_restricciones: {
+      vigencias_futuras_blindadas_mcop: 412500.0,
+      destinacion_sgp_intocable_mcop: 1680000.0,
+      limite_ley_617_cumplido: true,
+      advertencia_metodologica: "Simulación de frontera de Pareto al 10% de flexibilidad; requiere aval del Consejo de Política Fiscal (CONFIS).",
+    },
+  },
+  {
+    nivel_flexibilidad: "±15%",
+    factor_alpha: 0.15,
+    monto_total_movilizado_mcop: 456000.0,
+    ganancia_cumplimiento_pp: 4.9,
+    suma_cero_verificada: true,
+    reasignaciones: [
+      {
+        entidad_codigo: "DATT",
+        entidad_nombre: "Departamento Administrativo de Tránsito y Transporte",
+        linea_estrategica: "Línea 4: Ciudad Conectada",
+        retornos_escala: "DRS",
+        presupuesto_actual_mcop: 48000.0,
+        presupuesto_simulado_mcop: 40800.0,
+        delta_presupuesto_mcop: -7200.0,
+        delta_pct: -15.0,
+        rol_reasignacion: "DONANTE_RECURSOS",
+        justificacion_econometrica: "Reestructuración profunda de procesos operativos",
+      },
+      {
+        entidad_codigo: "CORVIVIENDA",
+        entidad_nombre: "Fondo de Vivienda de Interés Social",
+        linea_estrategica: "Línea 2: Vida Digna",
+        retornos_escala: "DRS",
+        presupuesto_actual_mcop: 95000.0,
+        presupuesto_simulado_mcop: 80750.0,
+        delta_presupuesto_mcop: -14250.0,
+        delta_pct: -15.0,
+        rol_reasignacion: "DONANTE_RECURSOS",
+        justificacion_econometrica: "Reorientación de subsidios dispersos hacia macroproyectos habitacionales",
+      },
+      {
+        entidad_codigo: "EPA_CARTAGENA",
+        entidad_nombre: "Establecimiento Público Ambiental",
+        linea_estrategica: "Línea 4: Ciudad Conectada y Sostenible",
+        retornos_escala: "DRS",
+        presupuesto_actual_mcop: 32000.0,
+        presupuesto_simulado_mcop: 27200.0,
+        delta_presupuesto_mcop: -4800.0,
+        delta_pct: -15.0,
+        rol_reasignacion: "DONANTE_RECURSOS",
+        justificacion_econometrica: "Fusión de programas de educación ambiental no prioritarios",
+      },
+      {
+        entidad_codigo: "SEC_INFRAESTRUCTURA",
+        entidad_nombre: "Secretaría de Infraestructura",
+        linea_estrategica: "Línea 4: Ciudad Conectada y Sostenible",
+        retornos_escala: "IRS",
+        presupuesto_actual_mcop: 380000.0,
+        presupuesto_simulado_mcop: 393250.0,
+        delta_presupuesto_mcop: 13250.0,
+        delta_pct: 3.49,
+        rol_reasignacion: "RECEPTOR_OPTIMO",
+        justificacion_econometrica: "Máxima expansión de capacidad instalada en drenajes y vías",
+      },
+      {
+        entidad_codigo: "SEC_INTERIOR",
+        entidad_nombre: "Secretaría del Interior (Titán 24)",
+        linea_estrategica: "Línea 1: Seguridad Humana",
+        retornos_escala: "IRS",
+        presupuesto_actual_mcop: 125000.0,
+        presupuesto_simulado_mcop: 132800.0,
+        delta_presupuesto_mcop: 7800.0,
+        delta_pct: 6.24,
+        rol_reasignacion: "RECEPTOR_OPTIMO",
+        justificacion_econometrica: "Fortalecimiento de la red de vigilancia comunitaria y patrullaje Titán 24",
+      },
+      {
+        entidad_codigo: "DADIS",
+        entidad_nombre: "Departamento Administrativo Distrital de Salud",
+        linea_estrategica: "Línea 1: Seguridad Humana",
+        retornos_escala: "CRS",
+        presupuesto_actual_mcop: 1240000.0,
+        presupuesto_simulado_mcop: 1245200.0,
+        delta_presupuesto_mcop: 5200.0,
+        delta_pct: 0.42,
+        rol_reasignacion: "RECEPTOR_OPTIMO",
+        justificacion_econometrica: "Sostenibilidad de programas de nutrición y salud materno-infantil",
+      },
+    ],
+    ledger_restricciones: {
+      vigencias_futuras_blindadas_mcop: 412500.0,
+      destinacion_sgp_intocable_mcop: 1680000.0,
+      limite_ley_617_cumplido: true,
+      advertencia_metodologica: "Simulación de máximo esfuerzo presupuestal (±15%); requiere armonización presupuestal vía proyecto de acuerdo en Concejo.",
+    },
+  },
+];
+
+export const JUSTICIA_TERRITORIAL_PDL_DANE = {
+  localidades: [
+    {
+      localidad_id: 1,
+      nombre_localidad: "Localidad 1: Histórica y del Caribe Norte",
+      poblacion_dane_2025: 412580,
+      participacion_poblacion_pct: 38.72,
+      fdl_total_cuatrienio_mcop: 97691.04,
+      fdl_per_capita_constante_cop: 236781.0,
+      indice_equidad_gasto: 0.83,
+      mesas_ciudadanas_count: 14,
+      mesas_por_100k_hab: 3.39,
+      compromisos_pas_asociados: 5,
+      hurtos_georreferenciados: 6840,
+      hurtos_por_100k_hab: 1658.0,
+      diagnostico_justicia: "Mayor concentración turística e insular; densidad de hurtos alta en zona Centro/Bocagrande; FDL per cápita inferior al promedio distrital.",
+    },
+    {
+      localidad_id: 2,
+      nombre_localidad: "Localidad 2: De la Virgen y Turística",
+      poblacion_dane_2025: 348190,
+      participacion_poblacion_pct: 32.68,
+      fdl_total_cuatrienio_mcop: 161290.0,
+      fdl_per_capita_constante_cop: 463224.0,
+      indice_equidad_gasto: 1.62,
+      mesas_ciudadanas_count: 11,
+      mesas_por_100k_hab: 3.16,
+      compromisos_pas_asociados: 3,
+      hurtos_georreferenciados: 3420,
+      hurtos_por_100k_hab: 982.0,
+      diagnostico_justicia: "Alta equidad compensatoria con enfoque en drenajes y borde de ciénaga; tasa de inversión per cápita más alta del Distrito.",
+    },
+    {
+      localidad_id: 3,
+      nombre_localidad: "Localidad 3: Industrial y de la Bahía",
+      poblacion_dane_2025: 304800,
+      participacion_poblacion_pct: 28.60,
+      fdl_total_cuatrienio_mcop: 46000.0,
+      fdl_per_capita_constante_cop: 150919.0,
+      indice_equidad_gasto: 0.53,
+      mesas_ciudadanas_count: 8,
+      mesas_por_100k_hab: 2.62,
+      compromisos_pas_asociados: 2,
+      hurtos_georreferenciados: 1630,
+      hurtos_por_100k_hab: 535.0,
+      diagnostico_justicia: "Brecha crítica de inversión local per cápita a pesar del clúster industrial de Mamonal; requiere fortalecimiento de transferencias FDL.",
+    },
+  ] as JusticiaTerritorialPdlItem[],
+  balance_hurtos: [
+    {
+      zona: "URBANA",
+      hurtos_count: 11890,
+      participacion_pct: 96.82,
+      tasa_por_100k_hab: 1168.0,
+      poblacion_referencia: 1018000,
+      poligonos_analizados: 1,
+      compuerta_moran: "NO_ESTIMABLE_N_MENOR_30",
+      diagnostico_metodologico: "La inferencia espacial formal con índice de Moran requiere n >= 30 polígonos; con n=2 la varianza asintótica está indeterminada.",
+    },
+    {
+      zona: "RURAL_INSULAR",
+      hurtos_count: 390,
+      participacion_pct: 3.18,
+      tasa_por_100k_hab: 820.0,
+      poblacion_referencia: 47570,
+      poligonos_analizados: 1,
+      compuerta_moran: "NO_ESTIMABLE_N_MENOR_30",
+      diagnostico_metodologico: "Corredores insulares (Barú, Tierrabomba e Islas del Rosario) y corregimientos rurales; densidad poblacional dispersa.",
+    },
+  ] as BalanceTerritorialHurtos[],
+  poblacion_total_distrito: 1065570,
+  fdl_total_distrito_mcop: 304981.04,
+  inversion_per_capita_media_cop: 286214.0,
+  mesas_totales_distrito: 33,
+};
+
+export const PLIEGOS_CONTROL_POLITICO_FISCAL: PliegoControlPoliticoItem[] = [
+  {
+    entidad_codigo: "DATT",
+    entidad_nombre: "Departamento Administrativo de Tránsito y Transporte",
+    secretario_o_director: "Director General DATT",
+    presupuesto_total_mcop: 48000.0,
+    nivel_alerta: "CRITICA",
+    metas_sin_reporte_count: 12,
+    brecha_ilusion_burocratica: 0.230,
+    eficiencia_operativa: 0.880,
+    efectividad_estrategica: 0.650,
+    cuestionario_control_politico: [
+      "¿Por qué existe una brecha de 23 puntos porcentuales entre la ejecución de 128 actividades operativas y el bajo avance de solo 65% en metas estratégicas del PDD?",
+      "¿Cuál es el sustento técnico y financiero de los 1.420 operativos viales ejecutados cuando los indicadores de congestión y siniestralidad no muestran reducción significativa?",
+      "¿Por qué 12 metas asignadas al DATT se encuentran en estado de alerta fiscal sin reporte verificable en el corpus institucional?",
+    ],
+    hallazgo_principal: "Desconexión estructural entre operativos de tránsito a corto plazo y las metas de modernización semafórica y movilidad sostenible.",
+    recomendacion_fiscal: "Reorientar $2.400M COP hacia señalización y control tecnológico automatizado reduciendo gasto burocrático de campo.",
+    hash_sha256_dictamen: "d7a8e94f1c2b5a67890def1234567890abcdef1234567890abcdef1234567890",
+  },
+  {
+    entidad_codigo: "CORVIVIENDA",
+    entidad_nombre: "Fondo de Vivienda de Interés Social",
+    secretario_o_director: "Gerente General Corvivienda",
+    presupuesto_total_mcop: 95000.0,
+    nivel_alerta: "ALTA",
+    metas_sin_reporte_count: 8,
+    brecha_ilusion_burocratica: 0.220,
+    eficiencia_operativa: 0.860,
+    efectividad_estrategica: 0.640,
+    cuestionario_control_politico: [
+      "¿A qué se debe la brecha de ilusión burocrática de 0.220 en legalización y titulación de predios?",
+      "¿Cómo se explican los retrasos en las entregas efectivas de subsidios habitacionales frente a los compromisos del Acuerdo 139?",
+    ],
+    hallazgo_principal: "Baja conversión de trámites de postulación y ferias inmobiliarias en entregas efectivas de escrituración de vivienda.",
+    recomendacion_fiscal: "Vincular el desembolso de subsidios al registro final de matrícula inmobiliaria.",
+    hash_sha256_dictamen: "b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3",
+  },
+  {
+    entidad_codigo: "EPA_CARTAGENA",
+    entidad_nombre: "Establecimiento Público Ambiental",
+    secretario_o_director: "Director General EPA",
+    presupuesto_total_mcop: 32000.0,
+    nivel_alerta: "ALTA",
+    metas_sin_reporte_count: 6,
+    brecha_ilusion_burocratica: 0.230,
+    eficiencia_operativa: 0.840,
+    efectividad_estrategica: 0.610,
+    cuestionario_control_politico: [
+      "¿Por qué el 74% de las actividades del EPA corresponden a talleres y campañas con nulo impacto en la reducción de vertimientos?",
+      "¿Cuál es el avance real en la recuperación de la Ciénaga de la Virgen frente a los recursos comprometidos?",
+    ],
+    hallazgo_principal: "Gasto disperso en capacitaciones blandas sin recuperación medible de pasivos ambientales críticos.",
+    recomendacion_fiscal: "Concentrar recursos en monitoreo continuo de efluentes y sanciones efectivas.",
+    hash_sha256_dictamen: "e4f5a6b1c2d3e4f5a6b1c2d3e4f5a6b1c2d3e4f5a6b1c2d3e4f5a6b1c2d3e4f5",
+  },
+  {
+    entidad_codigo: "SEC_INTERIOR",
+    entidad_nombre: "Secretaría del Interior y Convivencia (Titán 24)",
+    secretario_o_director: "Secretario del Interior Distrital",
+    presupuesto_total_mcop: 125000.0,
+    nivel_alerta: "NORMAL",
+    metas_sin_reporte_count: 2,
+    brecha_ilusion_burocratica: 0.040,
+    eficiencia_operativa: 0.920,
+    efectividad_estrategica: 0.880,
+    cuestionario_control_politico: [
+      "¿Cómo se proyecta la sostenibilidad financiera de los 5 programas de Titán 24 para las vigencias 2026 y 2027?",
+      "¿Qué mecanismos de coordinación existen con las 33 Mesas Territoriales de Seguridad para el reporte oportuno de denuncias?",
+    ],
+    hallazgo_principal: "Alta alineación operativa y estratégica; el Plan Titán 24 articula el 80% de los compromisos de seguridad.",
+    recomendacion_fiscal: "Mantener asignación presupuestal y evaluar ampliación de cuadrantes en Localidad 3.",
+    hash_sha256_dictamen: "c1d2e3f4a5b6c1d2e3f4a5b6c1d2e3f4a5b6c1d2e3f4a5b6c1d2e3f4a5b6c1d2",
+  },
+];
+
+export function obtenerLaboratorioPrescriptivoPddLocal(): LaboratorioPrescriptivoPddRespuesta {
+  return {
+    auditoria_metas_8_planes: AUDITORIA_METAS_8_PLANES,
+    network_dea_bi_etapa: NETWORK_DEA_BI_ETAPA,
+    simulador_inverse_dea: SIMULADOR_INVERSE_DEA_PARETO,
+    justicia_territorial: JUSTICIA_TERRITORIAL_PDL_DANE,
+    pliegos_control_politico: PLIEGOS_CONTROL_POLITICO_FISCAL,
+    metadata: {
+      fecha_generacion: "2026-10-15T18:00:00Z",
+      version_laboratorio: "POLIS-LAB-PRESCRIPTIVO-v11b",
+      hash_sha256_integridad: "a8f94e2b7c61d503e91842bfbc52d0e74f19b882319cda7f02d41e786b5c3912",
+      tiempo_ejecucion_ms: 18,
+    },
+  };
+}
+
 export function obtenerResumenEjecutivoPddDeaLocal(): ResumenEjecutivoPddDeaRespuesta {
   return {
     catalogo: obtenerCatalogoYConciliacionPpiLocal(),
@@ -2735,7 +3659,8 @@ export function obtenerResumenEjecutivoPddDeaLocal(): ResumenEjecutivoPddDeaResp
     frontera: obtenerFronteraDeaPddLocal(),
     econometria: obtenerEconometriaComparadaPddLocal(),
     explorador: obtenerExploradorProgramasYSeguridadHumanaLocal(),
-    fecha_generacion: "2026-10-15T14:00:00Z",
+    laboratorio_prescriptivo: obtenerLaboratorioPrescriptivoPddLocal(),
+    fecha_generacion: "2026-10-15T18:00:00Z",
     version_motor: "POLIS-PDD-DEA-HiGHS-v2.0",
   };
 }
