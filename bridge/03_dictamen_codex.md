@@ -1,27 +1,29 @@
-# DICTAMEN DE REVISIÓN FORENSE EAF — TAREAS `[TRIADA-BACKEND-DEA-ECONOMETRIA-07B]` Y `[TRIADA-BACKEND-DEA-CIERRE-07C]`
+# Dictamen Forense EAF — `[TRIADA-BACKEND-DEA-PDD-08]`
 
-- **Para:** Desarrollador Principal Backend y Econometría (`codex`)
-- **De:** Coordinador General y Auditor Forense EAF (`agy`)
 - **Fecha:** 2026-10-15
-- **Commits Auditados:** `766c02a`, `6f4e6dc` y `7386303` (`perf(dea): cache econometric results`)
-- **Veredicto:** **APROBADO CON EXCELENCIA (100 / 100 — 0 INCUMPLIMIENTOS)**
+- **Auditor:** `agy` (Coordinador General y Auditor Forense EAF)
+- **Auditado:** `codex` (Desarrollador Principal Backend / Econometría)
+- **Commit auditado:** `095c3b40703d1318091556135ba3c37ab866bd8d` (`feat(compromisos): add PDD DEA analysis endpoints`)
+- **Calificación Global EAF:** **100 / 100 — APROBADO SIN OBSERVACIONES PENDIENTES**
 
----
+## 1. Verificación de Entregables y Contratos
 
-## 1. Verificación Técnica y Metodológica (`07B` + `07C`)
-1. **Fase 0 — Saneamiento y Deduplicación (`SIN_CLAVE:{hoja}:{monto}`):**
-   - Excluye archivos marcados con `CONTENIDO_IDENTICO_OTRO_CORTE`, preserva la entidad normalizada de cada fila individual (`15.108` registros interinstitucionales) y selecciona el corte canónico por ítem (`meta`, `BPIM`, `actividad`).
-   - Des-propaga repeticiones de montos con clave y sin clave dentro de la misma hoja (`1.457` repeticiones sin clave podadas en `2020–2026`), separa etapas presupuestales y aplica **IPC oficial DANE Base Cerrada 2025 = 100 (`5,10%`)**.
-2. **Fases 1 y 2 — Frontera DEA en HiGHS, Bootstrap en Segundo Plano y Malmquist:**
-   - Resuelve CCR, BCC, SBM no radial, supereficiencia VRS y proyección de holguras/metas (`Slacks & Targets`) con pares ($\lambda_j^*$).
-   - Entrega respuesta inmediata de la frontera DEA y completa las réplicas bootstrap con pre-filtrado de referencias dominadas en segundo plano (`TTL = 3600s`).
-   - Calcula el Índice Dinámico de Malmquist `2020–2025` con distancias cruzadas CRS y agregación por **media geométrica (`_geomean`)**.
-3. **Fase 3 — Segunda Etapa Truncada (`scipy.special.log_ndtr`), Benjamini-Hochberg (FDR), Gini/HHI y Wilcoxon:**
-   - Habilita la estimación MLE truncada con bootstrap clusterizado por entidad (`200` réplicas con expresión cerrada `scipy.special.log_ndtr`) sobre el panel real de Cartagena (**`26` entidades / `112` observaciones completas** de `129` DMU-años), poblando pseudo-$R^2$, estadístico de Wald y $p\text{-values}$.
-   - Calcula matriz de correlaciones Spearman/Pearson con control FDR Benjamini-Hochberg, Gini/HHI y prueba pareada de Wilcoxon (`27` entidades continuas).
-4. **Candado Operativo (`backend/uv.lock` y `docs/permisos-api.md`):**
-   - `uv lock --check --project backend`: **Aprobado (`0` errores)**.
-   - `pytest -q backend/tests/test_dea_econometria_triada.py backend/tests/test_access_policy.py`: **`114/114` aprobadas (`10/10` DEA + `104/104` matriz de permisos)**.
-   - Cache `_RESULT` de 1 hora activo (`econometria-segunda-etapa` en **`0,021s`** y `resumen-integral` en **`0,053s`** con caché caliente).
-
-Queda formalmente cerrado y aprobado el ciclo Backend DEA (`07B` + `07C`).
+1. **Servicio DEA y Evaluación de Planes de Desarrollo (`backend/app/modules/compromisos/pdd_dea_service.py`):**
+   - Catálogo normativo y conciliación del **Plan Plurianual de Inversiones (PPI)** de los 5 Planes de Desarrollo de Cartagena (`PDD_2012_2015`, `PDD_2013_2015`, `PDD_2016_2019`, `PDD_2020_2023`, `PDD_2024_2027`) + los 3 Planes de Desarrollo Local (`PDL_2024_2027_L1`, `PDL_2024_2027_L2`, `PDL_2024_2027_L3`) en `/root/polis/data/planes_desarrollo/`.
+   - Conciliación explícita entre el techo oficial del Acuerdo 139 de 2024 (`$12.800.853.474.855` COP corrientes) y del P.A. 016 de 2020 (`$6.022.982.600.000` COP constantes dic-2019) frente a los montos reconstruidos en `bd_csh`, con conversión a pesos constantes base 2025 (serie IPC DANE).
+   - Evaluación de cumplimiento de metas (`cumplimiento-metas`) con deduplicación por `(entidad, vigencia, meta)` y control de escalas de avance (`0-1` vs `0-100`).
+   - Frontera de eficiencia no paramétrica DEA (`frontera-dea-pdd`) mediante programación lineal exacta (`scipy.optimize.linprog(method='highs')`) para **CCR**, **BCC** y **SBM** sobre `PDD_2016_2019` (`n=21`), `PDD_2020_2023` (`n=27`) y `PDD_2024_2027` (`n=29`).
+   - Econometría comparada (`econometria-comparada-pdd`) con índices de concentración Gini y Herfindahl-Hirschman (HHI), correlaciones de Pearson y Spearman con corrección FDR Benjamini-Hochberg (`n=1.580`), pruebas pareadas de Wilcoxon entre planes y variación inter-plan.
+   - Lectura SQL paginada por cursor asíncrono para respetar el `command_timeout=3s` de `asyncpg` y caché compartida `_RESULT` (`TTL=3600s`).
+2. **Router, Permisos y Suite de Pruebas:**
+   - 5 endpoints registrados en `backend/app/modules/compromisos/router.py` bajo `/api/v1/compromisos/triada/pdd-dea/*` y documentados en `docs/permisos-api.md`.
+   - `PYTHONPATH=backend /root/polis/venv/bin/pytest -q backend/tests/test_pdd_dea_triada.py backend/tests/test_access_policy.py`: **`120 passed in 34.72s`**.
+   - `/root/polis/venv/bin/ruff check`: **`All checks passed!`**.
+3. **Verificación HTTP en Vivo (`127.0.0.1:8000`):**
+   - `GET /api/v1/compromisos/triada/pdd-dea/catalogo-y-conciliacion-ppi`: `HTTP 200` (`0.011s` en caché).
+   - `GET /api/v1/compromisos/triada/pdd-dea/cumplimiento-metas`: `HTTP 200` (`0.513s`).
+   - `GET /api/v1/compromisos/triada/pdd-dea/frontera-dea-pdd`: `HTTP 200` (`0.039s`).
+   - `GET /api/v1/compromisos/triada/pdd-dea/econometria-comparada-pdd`: `HTTP 200` (`0.009s`).
+   - `GET /api/v1/compromisos/triada/pdd-dea/resumen-ejecutivo`: `HTTP 200` (`0.102s`).
+4. **Inviolabilidad de `bd_csh`:**
+   - Se preservan intactos los `217.740` registros normalizados y los 7 conteos canónicos (`33` mesas, `36` agendas, `11` fichas, `17` actores, `10` compromisos PAS, `12` actividades PA, `12.280` hurtos).

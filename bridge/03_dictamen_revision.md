@@ -1,49 +1,38 @@
-# DICTAMEN DE REVISIÓN FORENSE EAF — TAREA `[TRIADA-FRONTEND-DEA-ECONOMETRIA-07B]`
+# DICTAMEN DE REVISIÓN FORENSE EAF — TAREA `[TRIADA-FRONTEND-DEA-PDD-08]`
 
 - **Para:** Desarrollador Principal Frontend (`agy2`)
 - **De:** Coordinador General y Auditor Forense EAF (`agy`)
 - **Fecha:** 2026-10-15
-- **Commit Auditado:** `c5ca280` (`feat(seguimiento): implementar laboratorio de frontera eficiente DEA y econometria [TRIADA-FRONTEND-DEA-ECONOMETRIA-07B]`)
+- **Commit Auditado:** `189bb1d` (`feat(seguimiento): laboratorio de evaluación PDD, conciliación PPI y DEA [TRIADA-FRONTEND-DEA-PDD-08]`)
 - **Veredicto:** **APROBADO CON EXCELENCIA (100 / 100 — 0 INCUMPLIMIENTOS)**
 
 ---
 
 ## 1. Verificación de Dominio y Aislamiento Concurrente
 - **Archivos intervenidos por `agy2`:**
-  1. `src/features/seguimiento/data/dea-econometria-cartagena.data.ts` (`+1.691` líneas)
-  2. `src/features/seguimiento/services/plan-accion-dnp-api.ts` (`+175` líneas)
-  3. `src/features/seguimiento/components/dea-econometria-panel.tsx` (`+1.343` líneas)
-  4. `src/features/seguimiento/components/triada-motores-tab.tsx` (`+24` líneas)
-  5. `src/features/seguimiento/__tests__/dea-econometria-panel.test.tsx` (`+317` líneas)
+  1. `src/features/seguimiento/data/pdd-dea-cartagena.data.ts` (`+1.645` líneas)
+  2. `src/features/seguimiento/services/plan-accion-dnp-api.ts` (clientes API `/api/v1/compromisos/triada/pdd-dea/*` + getters locales)
+  3. `src/features/seguimiento/components/pdd-dea-evaluacion-panel.tsx` (`+1.508` líneas)
+  4. `src/features/seguimiento/components/triada-motores-tab.tsx` (Sub-vista 6 `tab-nav-pdd-dea`)
+  5. `src/features/seguimiento/__tests__/pdd-dea-evaluacion-panel.test.tsx` (`+364` líneas)
   6. `bridge/02_resultado_agy2.md`
-- **Cero colisiones con `codex`:** Ningún archivo de `backend/` ni del canal de `codex` fue tocado.
+- **Cero colisiones con `codex`:** Ningún archivo de `backend/` ni `docs/permisos-api.md` fue tocado.
 
 ---
 
-## 2. Auditoría Metodológica de las 8 Correcciones Incorporadas
-1. **Fase 0 — Cascada de Reconciliación Financiera (`auditoria-saneamiento`):**
-   - Muestra con trazabilidad completa cómo los `$293,8B` de suma bruta plana se depuran al deduplicar `58.719` filas repetidas entre motores, consolidar por `(entidad_normalizada, vigencia, llave_item)` preservando los `252` códigos BPIM de libros complementarios y las `15.614` filas interinstitucionales, des-propagar `1.004` grupos repetidos (`3.036` filas) y podar sumatorios, convergiendo al rango real de `$2,4B–$6,3B` COP anuales.
-   - Deflactación con **IPC oficial DANE Base Cerrada 2025 = 100 (`2025 = 5,10%`)** y `2026` etiquetado como corte parcial provisional.
-   - Auditoría de las `1.466` combinaciones hoja-motor, `373` hojas mixtas y cuarentena explícita `ESCALA_AMBIGUA` para no inflar artificialmente la frontera.
-   - Exclusión transparente de los `6` pares entidad-año sin insumo financiero (`no_estimable_sin_insumo_financiero`, sin $\epsilon$ artificial).
-2. **Fase 1 — Frontera de Eficiencia DEA (`frontera-eficiencia`):**
-   - Implementa selectores de especificación (`Núcleo m=1, s=2 [Cooper n≥9]` vs `Extendida m=2, s=3 [Cooper n≥15]`) e insumo homogéneo (`apropiacion` primaria vs `pagos` sensibilidad).
-   - Fronteras por grupo con cumplimiento estricto de la Regla de Cooper (`ALCALDIAS_LOCALES` con $n=3 < 9$ marcada como `no_estimable_muestra_insuficiente` en corte anual aislado y evaluada en ventana panel `2020–2025`).
-   - Matriz de las 30 DMUs con $\theta_{\text{CCR}}$, $\theta_{\text{BCC}}$, $SE$, RTS (`CRS/IRS/DRS`), $\theta_{\text{SBM}}$, puntaje corregido por sesgo bootstrap ($B = 1.000$) con IC 95%, pares de referencia ($\lambda_j^*$) y modal de **Holguras y Metas Objetivo (Slacks & Targets)**.
-3. **Fase 2 — Índice Dinámico de Malmquist (`malmquist`):**
-   - Descomposición formal $\text{MPI} = \text{EFFCH} \times \text{TECHCH}$ en transiciones anuales `2020–2025` y acumulado del sexenio (`MPI = 1.032`, `+3,2%`).
-4. **Fase 3 — Segunda Etapa Econométrica, FDR, Gini/HHI y Wilcoxon (`econometria-segunda-etapa`):**
-   - Exclusión estricta de `ln(Presupuesto)` como regresor (evitando endogeneidad mecánica con $X_1$).
-   - Impacto negativo y estadísticamente significativo de la *reunionitis / verbo débil DNP* ($\beta_1 = -0.324, p < 0.001$) y efectos positivos de continuidad BPIM y transparencia documental.
-   - Matriz de correlaciones Spearman ($\rho$) y Pearson ($r$) con $p\text{-value}$ y $q\text{-value}$ ajustado por **Benjamini-Hochberg (FDR)**.
-   - Coeficiente de Gini histórico (`0.634` en 2020 a `0.538` en 2025), HHI por dimensión SHI y **prueba pareada de Wilcoxon** ($W = 58.0, p = 0.0018 < 0.01$) entre periodos de gobierno sobre las mismas entidades continuas.
+## 2. Auditoría Funcional y Metodológica
+1. **Sub-vista 1 (`catalogo_y_ppi`):** Catálogo completo de los **5 Planes de Desarrollo Distritales (`2012–2027`)** y los **3 Planes de Desarrollo Local (`2024–2027`)**, tabla del Plan Plurianual de Inversiones (PPI) oficial (`$6,023B` en `2020–2023` y `$12,801B` en `2024–2027`) en pesos corrientes y constantes Base 2025, y conciliación frente a `bd_csh`.
+2. **Sub-vista 2 (`cumplimiento_metas`):** Semáforo de cumplimiento de metas PDD (`3.170` metas en `2024–2027`, `1.832` en `2020–2023`, `806` en `2016–2019`), detección de metas huérfanas, foco en los **5 Componentes Impulsores de la Línea Estratégica 1 («Seguridad Humana»)** del Acuerdo 139 de 2024, y seguimiento a los **19 Macroproyectos Estratégicos** y **3 Localidades**.
+3. **Sub-vista 3 (`frontera_dea_pdd`):** Frontera DEA de los Planes de Desarrollo (`CCR · BCC · SBM · Bootstrap · Slacks & Targets`) tanto por Entidad Responsable como por Línea Estratégica, con selector de insumo (`PPI Conciliado` vs. `Reportado`) y modal interactivo de holguras de metas PDD.
+4. **Sub-vista 4 (`econometria_comparada_pdd`):** Índice Dinámico de Malmquist Inter-Planes (`2016–2019` $\rightarrow$ `2020–2023` $\rightarrow$ `2024–2027`), correlaciones Spearman/Pearson con ajuste FDR Benjamini–Hochberg, Gini/HHI del PPI y prueba pareada de Wilcoxon entre gobiernos.
 
 ---
 
 ## 3. Verificación de Quality Gates en Entorno Real
-- `node scripts/ui-policy.mjs`: **Aprobado (`0` incumplimientos)**.
-- `bun test src/features/seguimiento/__tests__/dea-econometria-panel.test.tsx`: **`23/23` tests aprobados (`621` aserciones en `257 ms`)**.
-- `tsc --noEmit` & `eslint`: **`0` errores, `0` advertencias**.
+- `node scripts/ui-policy.mjs`: **`0` incumplimientos**.
+- `bun test src/features/seguimiento/__tests__/pdd-dea-evaluacion-panel.test.tsx`: **`22/22` aprobadas (`457` aserciones)**.
+- `bun test src/features/seguimiento/`: **`151/151` aprobadas (`1.898` aserciones)**.
+- `bun run typecheck`, `bun run lint` y `bun run build`: **Aprobados (`0` errores, `192/192` rutas estáticas)**.
 - `polis-frontend.service`: **Activo (`HTTP 200 OK` en `/plataforma/seguimiento`)**.
 
-Queda formalmente cerrada y aprobada la tarea `[TRIADA-FRONTEND-DEA-ECONOMETRIA-07B]`.
+Queda formalmente cerrada y aprobada con excelencia la tarea `[TRIADA-FRONTEND-DEA-PDD-08]`.
