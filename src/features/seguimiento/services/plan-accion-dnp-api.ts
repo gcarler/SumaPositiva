@@ -2298,3 +2298,178 @@ export async function obtenerSimuladorCierreApi(params?: {
   }
 }
 
+// =============================================================================
+// RE-EXPORTACIÓN Y CLIENTES API DE ECONOMETRÍA & FRONTERA EFICIENTE DEA
+// Hito: [TRIADA-FRONTEND-DEA-ECONOMETRIA-07B]
+// =============================================================================
+
+export * from "../data/dea-econometria-cartagena.data";
+
+import {
+  SEED_AUDITORIA_SANEAMIENTO,
+  SEED_FRONTERA_2025_RESPUESTA,
+  generarFronteraPorVigencia,
+  SEED_MALMQUIST_RESPUESTA,
+  SEED_SEGUNDA_ETAPA_ECONOMETRICA,
+  SEED_RESUMEN_INTEGRAL_DEA,
+  type AuditoriaSaneamientoRespuesta,
+  type FronteraDeaVigenciaRespuesta,
+  type MalmquistRespuesta,
+  type SegundaEtapaEconometricaRespuesta,
+  type ResumenIntegralDeaRespuesta,
+} from "../data/dea-econometria-cartagena.data";
+
+// -----------------------------------------------------------------------------
+// GETTERS LOCALES (SSR / MOCK RESILIENTE)
+// -----------------------------------------------------------------------------
+
+export function obtenerAuditoriaSaneamientoDeaLocal(): AuditoriaSaneamientoRespuesta {
+  return SEED_AUDITORIA_SANEAMIENTO;
+}
+
+export function obtenerFronteraEficienciaDeaLocal(params?: {
+  vigencia?: number | string;
+  modo?: "nucleo_1x2" | "extendida_2x3";
+  insumo?: "apropiacion" | "pagos";
+}): FronteraDeaVigenciaRespuesta {
+  const vig = params?.vigencia || 2025;
+  const mod = params?.modo || "nucleo_1x2";
+  const ins = params?.insumo || "apropiacion";
+
+  if (vig === 2025 && mod === "nucleo_1x2" && ins === "apropiacion") {
+    return SEED_FRONTERA_2025_RESPUESTA;
+  }
+  return generarFronteraPorVigencia(vig, mod, ins);
+}
+
+export function obtenerMalmquistDeaLocal(params?: {
+  desde?: number;
+  hasta?: number;
+}): MalmquistRespuesta {
+  if (!params?.desde && !params?.hasta) {
+    return SEED_MALMQUIST_RESPUESTA;
+  }
+  return {
+    ...SEED_MALMQUIST_RESPUESTA,
+    desde: params.desde || 2020,
+    hasta: params.hasta || 2025,
+  };
+}
+
+export function obtenerSegundaEtapaEconometricaDeaLocal(): SegundaEtapaEconometricaRespuesta {
+  return SEED_SEGUNDA_ETAPA_ECONOMETRICA;
+}
+
+export function obtenerResumenIntegralDeaLocal(): ResumenIntegralDeaRespuesta {
+  return SEED_RESUMEN_INTEGRAL_DEA;
+}
+
+// -----------------------------------------------------------------------------
+// CLIENTES API TIPADOS PARA LOS 5 ENDPOINTS DEA & ECONOMETRÍA
+// -----------------------------------------------------------------------------
+
+export async function obtenerAuditoriaSaneamientoDeaApi(): Promise<AuditoriaSaneamientoRespuesta> {
+  try {
+    const res = await apiFetch<AuditoriaSaneamientoRespuesta>(
+      "/compromisos/triada/dea/auditoria-saneamiento",
+      { method: "GET" }
+    );
+    if (res && res.embudo_financiero && Array.isArray(res.deflactacion_ipc_dane)) {
+      return res;
+    }
+    return obtenerAuditoriaSaneamientoDeaLocal();
+  } catch (error) {
+    console.warn("Fallo obtenerAuditoriaSaneamientoDeaApi, usando fallback local:", error);
+    return obtenerAuditoriaSaneamientoDeaLocal();
+  }
+}
+
+export async function obtenerFronteraEficienciaDeaApi(params?: {
+  vigencia?: number | string;
+  modo?: string;
+  insumo?: string;
+}): Promise<FronteraDeaVigenciaRespuesta> {
+  try {
+    const searchParams = new URLSearchParams();
+    if (params?.vigencia) searchParams.set("vigencia", params.vigencia.toString());
+    if (params?.modo) searchParams.set("modo", params.modo);
+    if (params?.insumo) searchParams.set("insumo", params.insumo);
+
+    const query = searchParams.toString();
+    const endpoint = `/compromisos/triada/dea/frontera-eficiencia${query ? `?${query}` : ""}`;
+    const res = await apiFetch<FronteraDeaVigenciaRespuesta>(endpoint, { method: "GET" });
+
+    if (res && Array.isArray(res.ranking_eficiencia) && typeof res.eficiencia_media_bcc === "number") {
+      return res;
+    }
+    return obtenerFronteraEficienciaDeaLocal(params as {
+      vigencia?: number | string;
+      modo?: "nucleo_1x2" | "extendida_2x3";
+      insumo?: "apropiacion" | "pagos";
+    });
+  } catch (error) {
+    console.warn("Fallo obtenerFronteraEficienciaDeaApi, usando fallback local:", error);
+    return obtenerFronteraEficienciaDeaLocal(params as {
+      vigencia?: number | string;
+      modo?: "nucleo_1x2" | "extendida_2x3";
+      insumo?: "apropiacion" | "pagos";
+    });
+  }
+}
+
+export async function obtenerMalmquistDeaApi(params?: {
+  desde?: number;
+  hasta?: number;
+}): Promise<MalmquistRespuesta> {
+  try {
+    const searchParams = new URLSearchParams();
+    if (params?.desde) searchParams.set("desde", params.desde.toString());
+    if (params?.hasta) searchParams.set("hasta", params.hasta.toString());
+
+    const query = searchParams.toString();
+    const endpoint = `/compromisos/triada/dea/malmquist${query ? `?${query}` : ""}`;
+    const res = await apiFetch<MalmquistRespuesta>(endpoint, { method: "GET" });
+
+    if (res && Array.isArray(res.transiciones) && res.resumen_periodo_completo) {
+      return res;
+    }
+    return obtenerMalmquistDeaLocal(params);
+  } catch (error) {
+    console.warn("Fallo obtenerMalmquistDeaApi, usando fallback local:", error);
+    return obtenerMalmquistDeaLocal(params);
+  }
+}
+
+export async function obtenerSegundaEtapaEconometricaDeaApi(): Promise<SegundaEtapaEconometricaRespuesta> {
+  try {
+    const res = await apiFetch<SegundaEtapaEconometricaRespuesta>(
+      "/compromisos/triada/dea/econometria-segunda-etapa",
+      { method: "GET" }
+    );
+    if (res && res.especificacion_modelo && Array.isArray(res.coeficientes_regresion)) {
+      return res;
+    }
+    return obtenerSegundaEtapaEconometricaDeaLocal();
+  } catch (error) {
+    console.warn("Fallo obtenerSegundaEtapaEconometricaDeaApi, usando fallback local:", error);
+    return obtenerSegundaEtapaEconometricaDeaLocal();
+  }
+}
+
+export async function obtenerResumenIntegralDeaApi(): Promise<ResumenIntegralDeaRespuesta> {
+  try {
+    const res = await apiFetch<ResumenIntegralDeaRespuesta>(
+      "/compromisos/triada/dea/resumen-integral",
+      { method: "GET" }
+    );
+    if (res && res.universo_analitico && res.frontera_vigente) {
+      return res;
+    }
+    return obtenerResumenIntegralDeaLocal();
+  } catch (error) {
+    console.warn("Fallo obtenerResumenIntegralDeaApi, usando fallback local:", error);
+    return obtenerResumenIntegralDeaLocal();
+  }
+}
+
+

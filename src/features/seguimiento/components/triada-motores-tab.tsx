@@ -19,6 +19,7 @@ import {
   Database,
   BarChart3,
   RefreshCw,
+  Compass,
 } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import { Badge } from "@/shared/ui/badge";
@@ -43,6 +44,7 @@ import {
   type ArchivoExcelPlanAccion2026,
 } from "../services/plan-accion-dnp-api";
 import { InteligenciaForense6MPanel } from "./inteligencia-forense-6m-panel";
+import { DeaEconometriaPanel } from "./dea-econometria-panel";
 
 export interface TriadaMotoresTabProps {
   puedeEditar?: boolean;
@@ -55,6 +57,7 @@ export function TriadaMotoresTab({ puedeEditar = false }: TriadaMotoresTabProps)
     | "detector_multiformato"
     | "conector_transparencia"
     | "inteligencia_forense"
+    | "dea_econometria"
   >("triada_lecturas");
 
   // Estado general de datos inicializado con catálogo canónico (SSR y resiliencia offline)
@@ -232,6 +235,18 @@ export function TriadaMotoresTab({ puedeEditar = false }: TriadaMotoresTabProps)
           >
             <ShieldCheck className="h-4 w-4" />
             <span>4. Laboratorio de Inteligencia Forense (6 Motores · 217k)</span>
+          </Button>
+
+          <Button
+            variant={subvistaActiva === "dea_econometria" ? "ember" : "outline"}
+            size="sm"
+            onClick={() => setSubvistaActiva("dea_econometria")}
+            className="gap-2 text-xs font-medium"
+            data-testid="tab-nav-dea-econometria"
+            aria-pressed={subvistaActiva === "dea_econometria"}
+          >
+            <Compass className="h-4 w-4" />
+            <span>5. Frontera Eficiente DEA & Econometría (CCR · BCC · SBM · Malmquist)</span>
           </Button>
         </div>
 
@@ -1156,6 +1171,15 @@ export function TriadaMotoresTab({ puedeEditar = false }: TriadaMotoresTabProps)
       {subvistaActiva === "inteligencia_forense" && (
         <section aria-labelledby="heading-subvista-inteligencia" className="space-y-6">
           <InteligenciaForense6MPanel puedeEditar={puedeEditar} />
+        </section>
+      )}
+
+      {/* ==================================================================== */}
+      {/* SUB-VISTA 5: FRONTERA EFICIENTE DEA & ECONOMETRÍA DE 2ª ETAPA       */}
+      {/* ==================================================================== */}
+      {subvistaActiva === "dea_econometria" && (
+        <section aria-labelledby="heading-subvista-dea-econometria" className="space-y-6">
+          <DeaEconometriaPanel puedeEditar={puedeEditar} />
         </section>
       )}
     </div>

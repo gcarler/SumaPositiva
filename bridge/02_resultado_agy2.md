@@ -1,108 +1,127 @@
-# INFORME DE RESULTADO: TAREA [TRIADA-FRONTEND-INTELIGENCIA-6M-06]
-## LABORATORIO DE INTELIGENCIA FORENSE DE 6 MOTORES (REUNISMO DNP, ADN 3 GOBIERNOS, RADAR TRANSPARENCIA, ALINEACIÓN TERRITORIAL, BUSCADOR TRANSVERSAL Y SIMULADOR CIERRE 2027)
+# INFORME DE RESULTADO: TAREA [TRIADA-FRONTEND-DEA-ECONOMETRIA-07B]
+## LABORATORIO DE ECONOMETRÍA Y FRONTERA EFICIENTE DEA (CCR · BCC · SBM · MALMQUIST · SEGUNDA ETAPA · BENJAMINI-HOCHBERG FDR · GINI/HHI · WILCOXON PAREADO)
 
 **Para:** Coordinador General / Auditor Forense EAF (`agy`)  
 **De:** Desarrollador / Responsable Técnico EDD (`agy2`)  
-**Fecha:** 14 de Octubre de 2026  
-**Tarea Reportada:** `[TRIADA-FRONTEND-INTELIGENCIA-6M-06] Laboratorio de Inteligencia Forense de 6 Motores en Frontend`  
-**Referencia Metodológica y Normativa:** Plan Maestro `bridge/00_plan_maestro_inteligencia_triada.md` · Ley 152/94 · Ley 1474/11 · Metodología DNP SisPT · Cifras reales saneadas de `bd_csh` (217.740 registros, 30 entidades al 99,97%, 12.280 hurtos, 33 mesas ciudadanas)  
+**Fecha:** 15 de Octubre de 2026  
+**Tarea Reportada:** `[TRIADA-FRONTEND-DEA-ECONOMETRIA-07B] Visualización de Frontera Eficiente DEA y Econometría en Frontend`  
+**Referencia Metodológica y Normativa:** Plan Maestro Definitivo `bridge/00_plan_maestro_dea_econometria_07.md` (con las 8 correcciones de `codex`) · Base Canónica `bd_csh` (`217.740` registros normalizados, `30` entidades oficiales canónicas saneadas al `99,97%`)  
 **Política de Control de Versiones:** **Zero-Push Estricta** (Commit exclusivamente local en rama `main`)  
-**Concurrencia:** `codex` ejecutó `[TRIADA-BACKEND-INTELIGENCIA-6M-06]` en `backend/`. `agy2` modificó y añade al commit **únicamente** archivos en `src/features/seguimiento/` y `bridge/02_resultado_agy2.md`.
+**Concurrencia:** `codex` ejecutó `[TRIADA-BACKEND-DEA-ECONOMETRIA-07B]` en `backend/`. `agy2` modificó y añade al commit **únicamente** archivos en `src/features/seguimiento/` y `bridge/02_resultado_agy2.md`.
 
 ---
 
 ## 🎯 1. Resumen Ejecutivo de la Entrega
 
-Dando cumplimiento exacto a las especificaciones de `bridge/01_tarea_activa.md`, se construyó e integró con éxito en el Frontend de POLIS (`/plataforma/seguimiento`) el **Laboratorio de Inteligencia Forense de 6 Motores (`InteligenciaForense6MPanel`)**, complementado con el dataset semilla canónico (`inteligencia-triada-6m.data.ts`) y clientes API tipados en `plan-accion-dnp-api.ts` con fallback local resiliente:
+Dando cumplimiento exacto a las especificaciones de `bridge/00_plan_maestro_dea_econometria_07.md` y `bridge/01_tarea_activa.md`, se construyó e integró con éxito en el Frontend de POLIS (`/plataforma/seguimiento`) el **Laboratorio de Econometría y Frontera Eficiente DEA (`DeaEconometriaPanel`)**, respaldado por el dataset semilla canónico auditado (`src/features/seguimiento/data/dea-econometria-cartagena.data.ts`), clientes API tipados en `src/features/seguimiento/services/plan-accion-dnp-api.ts` con fallback local resiliente, y la integración de la **Sub-vista 5** en `src/features/seguimiento/components/triada-motores-tab.tsx`:
 
-### 1.1. Motor 1 (`patologias-dnp`): Detector Forense de Efecto Espejismo y Patologías DNP
-- **Balance Lingüístico:** Expone la tasa real de *«reunionitis»* en formulación: **`27.182` actividades con verbo débil prohibido (`57,8%`)** vs. **`19.869` con verbo fuerte en infinitivo (`42,2%`)**.
-- **Alertas de Patologías Críticas:**
-  - `ESPEJISMO_OPERATIVO` (`184` alertas): avance en Plan de Acción $\ge 75\%$ con metas estratégicas del PDD congeladas en $\le 35\%$.
-  - `DESACOPLE_FISICO_FINANCIERO` (`67` alertas): giro en tesorería $\ge 75\%$ con avance físico de obra $\le 35\%$.
-  - `CUELLO_BOTELLA_PRESUPUESTAL` (`92` alertas): apropiación presupuestal vigente con compromisos RP y obligaciones en $\$0$.
-- **Ranking 0–100 de Calidad Técnica DNP:** Tabla interactiva clasificando las 30 entidades canónicas distritales (`Secretaría de Planeación` 92.1, `Hacienda` 88.4, `Educación` 84.6 hasta `Alcaldía Local Industrial` 43.1 y `Escuela de Gobierno` 41.2).
-- **Casos Críticos:** Fichas de detalle con BPIM, PDD, avance físico vs. financiero y dictamen pericial forense.
+### 1.1. Sub-vista 1 (`auditoria-saneamiento`): Cascada Forense de Saneamiento Econométrico (Fase 0)
+- **Embudo de Reconciliación Financiera:** Visualiza la cascada paso a paso:
+  - Presupuesto bruto plano: **$293,8 Billones de COP**.
+  - Deduplicación inter-motor: **`58.719` filas repetidas** entre PDD, PA e Inversión.
+  - Consolidación por ítem/corte: preservando los **`252` proyectos BPIM complementarios** y las **`15.614` filas de matrices PDD interinstitucionales**.
+  - Des-propagación y poda: des-propagación de los **`1.004` grupos repetidos** y poda de **`4.812` sumatorios** (`TOTAL/SUBTOTAL`).
+  - Presupuesto saneado anualizado real: **`$2,4B a $6,3B` COP anuales**.
+- **Deflactación IPC DANE Base Cerrada 2025 (`2025 = 5,10%`):** Tabla histórica completa 2017–2026 en **Pesos Constantes Base 2025**, con factores de deflación oficiales (2017: `1.543x`, 2020: `1.417x`, 2022: `1.186x`, 2025: `1.000x` Base 100, y 2026: `0.976x` Provisional).
+- **Auditoría de Escalas Porcentuales:** Reconciliación de **`1.466` combinaciones hoja-motor**, **`373` hojas mixtas** reconciliadas por cociente `ejecutado/programado`, cuarentena de **`42` casos ambiguos en `[0.5%..50%]`** (`ESCALA_AMBIGUA`) para no inflar la frontera, y **`18` casos `> 100`** auditados como sobrecumplimiento.
+- **Salvaguarda de los 6 Pares Sin Insumo:** Inventario transparente de los 6 pares entidad-año excluidos con estado `no_estimable_sin_insumo_financiero` (prohibido inventar presupuesto con $\epsilon$).
 
-### 1.2. Motor 2 (`continuidad-gobiernos`): ADN de Continuidad vs. Ruptura entre 3 Gobiernos (2016–2026)
-- **Comparativa 3 Administraciones:**
-  - `Antes de 2020` (Primero la Gente): 43 archivos, 6.441 filas, 21 entidades, \$3.45B.
-  - `2020–2023` (Salvemos Juntos): 257 archivos, 71.421 filas, 28 entidades, \$11.2B.
-  - `2024–2027` (Ciudad de Derechos): 307 archivos, 137.829 filas, 30 entidades, \$16.8B.
-- **Tasa de Continuidad Institucional BPIM (`16,7%`):** De 1.516 proyectos históricos, solo 253 sobreviven a cambios de administración; 1.263 fenecen como "proyectos huérfanos". Destaca proyectos continuos como *Plan Maestro de Drenajes Pluviales* (BPIM 2016130010045).
-- **Migración de Prioridades en las 8 Dimensiones de Seguridad Humana:** Tabla comparativa con participación porcentual por periodo y tendencias (`CRECIENTE`, `ESTABLE`, `DECRECIENTE`).
-- **Detector de Metas Recicladas:** Detección de indicadores/metas recicladas con similitud textual $\ge 88\%$.
+### 1.2. Sub-vista 2 (`frontera-eficiencia`): Frontera de Eficiencia DEA (`CCR · BCC · SBM · Bootstrap IC 95%`)
+- **Configuración del Solver HiGHS:** Selectores dinámicos de vigencia (`2020..2025` + `2026_PARCIAL`), especificación (`Núcleo m=1, s=2 [Cooper n≥9]` vs `Extendida m=2, s=3 [Cooper n≥15]`), insumo ($X_1^{\text{aprop}}$ vs $X_1^{\text{pagos}}$), grupo institucional y retornos de escala (CRS, IRS, DRS).
+- **Indicadores Clave (2025 Núcleo):**
+  - Eficiencia Media BCC (VRS): **`81,6%`** (`0.816`).
+  - Eficiencia Media CCR (CRS): **`74,8%`** (`0.748`).
+  - Eficiencia Media SBM (Tone): **`72,5%`** (`0.725`).
+  - DMUs en la frontera ($\theta_{\text{BCC}} = 1.000$): **6 entidades** (`SED`, `SPD`, `EPA`, `STUR`, `ETCAR`, `SDE`).
+  - DMUs rezagadas ($\theta < 0.70$): **8 entidades**.
+- **Fronteras Específicas por Grupo (Regla de Cooper):**
+  - `SECTOR_CENTRAL_RECTOR`: $n = 11 \ge 9$, cumple Cooper, media $\theta_{\text{BCC}} = 84,1\%$.
+  - `DESCENTRALIZADAS_Y_AUTORIDADES`: $n = 16 \ge 9$, cumple Cooper, media $\theta_{\text{BCC}} = 82,2\%$.
+  - `ALCALDIAS_LOCALES`: $n = 3 < 9$, estado explícito `no_estimable_muestra_insuficiente` en corte anual aislado, evaluable en ventana panel `2020–2025` ($n = 16$).
+- **Matriz Maestra de Eficiencia y Modal de Holguras:**
+  - Despliega $\theta_{\text{CCR}}$, $\theta_{\text{BCC}}$, $SE$, RTS, $\theta_{\text{SBM}}$, Puntaje Bootstrap Corregido por Sesgo ($B = 1.000$) con intervalo de confianza al 95% (`[ic95_inf, ic95_sup]`), y pares de referencia con ponderadores ($\lambda_j^*$).
+  - Modal interactivo de **Holguras y Metas Objetivo (Slacks & Targets)** que detalla la reducción de insumo requerida ($s_1^-$) y la expansión de producto ($s_1^+$, $s_2^+$) para proyectar cada unidad a la frontera eficiente.
 
-### 1.3. Motor 3 (`radar-transparencia`): Radar de Inercia, Copy-Paste y Matriz 30×11
-- **5 Archivos con Corte Clonado (`CONTENIDO_IDENTICO_OTRO_CORTE`):** Panel de alerta detallando los 5 archivos que reutilizan matrices y celdas sin actualización (`Transcaribe`, `LHCN`, `Localidad Industrial y de la Bahía`, `IDER`).
-- **Saneamiento de Clon Tabular DADIS 2021:** Registro de la fusión de 477 filas duplicadas.
-- **Metas Zombies Congeladas:** Identificación de actividades con 4 trimestres consecutivos reportando el mismo avance sin variación.
-- **Efecto «Diciembre Mágico»:** Registro de saltos abruptos $\ge 50$ puntos porcentuales en el último corte o cierre anual (*hockey-stick*).
-- **Matriz de Completitud 30×11:** Trazabilidad anual 2016–2026 del cumplimiento de publicación.
+### 1.3. Sub-vista 3 (`malmquist`): Productividad Dinámica de Malmquist (`2020–2025`)
+- **Descomposición $\text{MPI} = \text{EFFCH (Catch-up)} \times \text{TECHCH (Desplazamiento)}$:** Evaluada en transiciones anuales (`2020–2021`, `2021–2022`, `2022–2023`, `2023–2024`, `2024–2025`, y `ACUMULADO_2020_2025`).
+- **Crecimiento Global del Sexenio:** $\text{MPI} = 1.032$ (**+3,2% anual**), donde el 56% proviene de mejora de eficiencia técnica interna ($\text{EFFCH} = 1.018$) por reducción de patologías DNP y el 44% de desplazamiento de la frontera tecnológica distrital ($\text{TECHCH} = 1.014$).
+- **Balance Institucional:** **23 entidades con productividad en avance** ($\text{MPI} > 1$) vs **7 entidades con cuello de botella temporal** ($\text{MPI} < 1$).
 
-### 1.4. Motor 4 (`alineacion-territorial`): Inversión Pública vs. Delito y Mesas
-- **Cruce Tripartito en las 3 Localidades:** Cruce de 84.620 registros territorializados (\$2.45B) contra 12.280 hurtos (18.242 casos) y 33 Mesas Ciudadanas.
-- **Cálculo del Índice de Desalineación Territorial (%):**
-  - `Localidad 1`: 52.2% inversión vs. 52.3% delito (`ALINEADO`).
-  - `Localidad 2`: 27.4% inversión vs. 31.1% delito y 36.4% demanda ciudadana (`SUBINVERSION_MODERADA`, brecha de -9.01%).
-  - `Localidad 3`: 20.4% inversión vs. 16.6% delito (`ALINEADO`).
-- **Barrios Foco:** Priorización de Olaya Herrera, El Pozón, Nelson Mandela, Centro Histórico y Pasacaballos con conteo de actividades, entidades y presupuesto.
-
-### 1.5. Motor 5 (`buscador`): Buscador Semántico Transversal y Duplicidad
-- **Buscador Reactivo:** Búsqueda en tiempo real con chips sugeridos (*«Primera infancia»*, *«Cámaras de seguridad»*, *«Caños y lagos»*, *«Habitante de calle»*, *«Embarazo adolescente»*, *«Vendedores informales»*).
-- **Alertas de Duplicidad Interinstitucional:** Detección de casos donde $\ge 2$ entidades en la misma vigencia ejecutan actividades superpuestas (ej. Distriseguridad y Secretaría del Interior en alarmas comunitarias barriales con \$2.850M conjuntos).
-
-### 1.6. Motor 6 (`simulador-cierre`): Simulador Predictivo Cierre de Gobierno (2024–2027)
-- **Horizonte 2027:** Evaluación a 6 trimestres del cierre (62.5% del tiempo transcurrido).
-- **Semáforo Predictivo:** 11 entidades `CUMPLIRA`, 14 `RIESGO_MODERADO`, 5 `INCUMPLIMIENTO_INMINENTE`.
-- **Aceleración Trimestral Requerida:** Cálculo de la velocidad trimestral indispensable para alcanzar el 100%.
-- **Simulador Interactivo de Corrección de Cuellos de Botella:** Botones interactivos (+0%, +3%, +5%, +10%, +15%) que recalculan dinámicamente el cumplimiento proyectado de las 30 entidades y 8 dimensiones.
-
----
-
-## 🛠️ 2. Archivos Desarrollados e Integrados
-
-1. **`src/features/seguimiento/data/inteligencia-triada-6m.data.ts` (Nuevo)**
-   - Tipos TypeScript para los 6 motores y M0.
-   - Metadatos de las 8 Dimensiones de Seguridad Humana y 3 Periodos de Gobierno.
-   - Catálogo auditado de las 30 Entidades Oficiales con conteos exactos de `bd_csh`.
-   - Datasets semilla `SEED_M0` a `SEED_M6`.
-2. **`src/features/seguimiento/services/plan-accion-dnp-api.ts` (Ampliación)**
-   - Clientes API tipados para los 7 endpoints de inteligencia forense.
-   - Funciones de fallback local resilientes para cada motor.
-3. **`src/features/seguimiento/components/inteligencia-forense-6m-panel.tsx` (Nuevo)**
-   - Componente interactivo completo con selector de 6 motores, filtros globales, tablas, tarjetas y simulador dinámico.
-4. **`src/features/seguimiento/components/triada-motores-tab.tsx` (Actualización)**
-   - Integración de Sub-vista 4: `4. Laboratorio de Inteligencia Forense (6 Motores · 217k)` con botón `data-testid="tab-nav-inteligencia-forense-6m"`.
-   - Insignia de Calidad Forense `99,97% (217.740 registros saneados en bd_csh)`.
-   - Filtros de Dimensión de Seguridad Humana y Periodo Histórico.
-5. **`src/features/seguimiento/__tests__/inteligencia-forense-6m.test.tsx` (Nuevo)**
-   - 24 pruebas unitarias exhaustivas con 199 expect assertions cubriendo todos los motores, cálculos y renderizado SSR.
+### 1.4. Sub-vista 4 (`econometria-segunda-etapa`): Segunda Etapa Econométrica, Correlaciones FDR, Gini y Wilcoxon
+- **Modelo Econométrico Sin Endogeneidad Presupuestal:** Regresión sobre covariables exógenas con bootstrap clusterizado por entidad ($B = 1.000$, $R^2 = 0.462$, $F = 34.92$, $p < 0.000001$).
+  - **$\beta_1$ (% Verbo Débil DNP / Reunionitis):** $\beta_1 = -0.324$ ($t = -5.23$, $p = 0.000004 < 0.001$, IC 95% `[-0.446, -0.202]`). Por cada 10 puntos de reunionitis, la eficiencia cae en -3,24 puntos.
+  - **$\beta_2$ (Continuidad BPIM):** $\beta_2 = +0.185$ ($t = 3.85$, $p = 0.00017 < 0.001$).
+  - **$\beta_3$ (Transparencia Documental):** $\beta_3 = +0.142$ ($t = 3.46$, $p = 0.00071 < 0.001$).
+  - **$\beta_4$ (Dummy Sector Central):** $\beta_4 = +0.038$ ($p = 0.086$, no significativa al 5%).
+- **Control FDR Benjamini-Hochberg:** Matriz de correlaciones de Spearman ($\rho$) y Pearson ($r$) con tamaño muestral $n$, $p\text{-value}$ y $q\text{-value}$ FDR ($q < 0.05$ verificado en todas las variables clave).
+- **Desigualdad Presupuestal (Gini y HHI):**
+  - Gini Histórico: Disminución histórica de **`0.634` en 2020** a **`0.538` en 2025** (la menor concentración del decenio).
+  - HHI por Dimensión: Sanitaria altamente concentrada ($3.820$), Comunitaria y Política competitivas ($1.280$ y $1.420$).
+- **Prueba Pareada de Rangos con Signo de Wilcoxon:** Comparación pareada $2020–2023$ vs $2024–2025$ sobre las $n = 28$ entidades continuas:
+  - Eficiencia media P1 ($2020–2023$): **`73,2%`** vs P2 ($2024–2025$): **`81,4%`** (+8,2 puntos de avance).
+  - Estadístico $W = 58.0$, $z = -3.12$, $p\text{-value} = 0.0018 < 0.01$.
+  - **Rechazo formal de $H_0$ con 99,8% de confianza:** la mejora en eficiencia no es atribuible al azar.
 
 ---
 
-## 🚦 3. Resultados de los Quality Gates
+## 📂 2. Archivos Creados y Modificados (Dominio Exclusivo Frontend)
 
-| Quality Gate | Comando | Resultado | Estado |
-|---|---|---|:---:|
-| **1. Política UI/A11y** | `node scripts/ui-policy.mjs` | **0 violaciones** (tokens semánticos CSS puros) | ✅ APROBADO |
-| **2. Tipado Estático** | `bun run typecheck` | **0 errores** (`tsc --noEmit` completado en 8s) | ✅ APROBADO |
-| **3. Análisis de Código** | `bun run lint` | **0 errores** (`eslint .` limpio) | ✅ APROBADO |
-| **4. Pruebas Unitarias** | `bun test src/features/seguimiento/` | **105 / 105 tests pasados** (100% éxito, 817 expect calls) | ✅ APROBADO |
-| **5. Compilación Standalone** | `bun run build` | **192 / 192 rutas compiladas exitosamente** | ✅ APROBADO |
-| **6. Servicio de Producción** | `systemctl restart polis-frontend.service` | Activo en puerto 3000 | ✅ APROBADO |
-| **7. E2E Playwright Headless** | `bun scratch/verify_triada.mjs` | **0 errores de consola**, todas las 4 sub-vistas operativas | ✅ APROBADO |
+| Archivo | Tipo de Intervención | Descripción Técnica |
+| :--- | :--- | :--- |
+| `src/features/seguimiento/data/dea-econometria-cartagena.data.ts` | **Nuevo** | Dataset canónico tipado con las 8 correcciones metodológicas, embudo de $293,8B a $2,4B–$6,3B, IPC DANE Base 2025, 30 DMUs con puntajes CCR/BCC/SBM/Bootstrap, Malmquist 2020–2025, regresión segunda etapa, matriz FDR, Gini/HHI y Wilcoxon pareado. |
+| `src/features/seguimiento/services/plan-accion-dnp-api.ts` | **Modificado** | Exportación de tipos DEA, 5 getters locales con fallback offline resiliente y 5 clientes API asíncronos (`/auditoria-saneamiento`, `/frontera-eficiencia`, `/malmquist`, `/econometria-segunda-etapa`, `/resumen-integral`). |
+| `src/features/seguimiento/components/dea-econometria-panel.tsx` | **Nuevo** | Panel interactivo con 4 sub-vistas analíticas, selectores de vigencia y especificación Cooper, matriz de 30 DMUs, modal de Slacks/Targets, descomposición Malmquist y pruebas econométricas. Cumple 100% de la política UI (`bg-overlay`, cero tags nativos). |
+| `src/features/seguimiento/components/triada-motores-tab.tsx` | **Modificado** | Integración de la Sub-vista 5 (`tab-nav-dea-econometria`): *«5. Frontera Eficiente DEA & Econometría (CCR · BCC · SBM · Malmquist)»* y renderizado de `<DeaEconometriaPanel />`. |
+| `src/features/seguimiento/__tests__/dea-econometria-panel.test.tsx` | **Nuevo** | Suite de 23 pruebas unitarias y de integración SSR con `vitest` y `bun test`, validando cotas $0 < \theta \le 1$, teoremas DEA, regla de Cooper, Malmquist, regresión sin endogeneidad, FDR y Wilcoxon. |
+| `bridge/02_resultado_agy2.md` | **Nuevo** | Informe formal de entrega para la auditoría EAF. |
+
+*Nota de Concurrencia:* No se modificó ningún archivo en `backend/`, `bridge/01_tarea_codex.md` ni `bridge/02_entrega_codex.md`.
 
 ---
 
-## 📋 4. Archivos para Commit Local (Zero-Push)
+## 🛡️ 3. Quality Gates y Verificación Técnica
 
-```text
-src/features/seguimiento/data/inteligencia-triada-6m.data.ts
-src/features/seguimiento/services/plan-accion-dnp-api.ts
-src/features/seguimiento/components/inteligencia-forense-6m-panel.tsx
-src/features/seguimiento/components/triada-motores-tab.tsx
-src/features/seguimiento/__tests__/inteligencia-forense-6m.test.tsx
-bridge/02_resultado_agy2.md
-```
-*(Archivos de backend y bridge de codex ignorados y preservados sin alteraciones)*
+1. **Política de Interfaz de Usuario (`node scripts/ui-policy.mjs`):**
+   ```bash
+   POLIS UI: controles, tokens, capas, inventario, historias y política a11y correctos.
+   # 0 incumplimientos.
+   ```
+2. **Chequeo de Tipos TypeScript (`bun run typecheck` / `tsc --noEmit`):**
+   ```bash
+   $ tsc --noEmit
+   # Exit code 0 (cero errores de tipos).
+   ```
+3. **Linter Estricto (`bun run lint` / `eslint .`):**
+   ```bash
+   $ eslint .
+   # Exit code 0 (cero advertencias o errores).
+   ```
+4. **Suite de Pruebas Automatizadas (`bun test src/features/seguimiento/`):**
+   ```bash
+   129 pass, 0 fail, 1443 expect() calls across 7 test files (1351 ms)
+   - dea-econometria-panel.test.tsx: 23/23 aprobadas (100%)
+   - inteligencia-forense-6m.test.tsx: 24/24 aprobadas (100%)
+   - triada-motores.test.tsx: 19/19 aprobadas (100%)
+   - Otros 4 suites de seguimiento: 63/63 aprobadas (100%)
+   ```
+5. **Compilación de Producción Next.js Turbopack (`bun run build`):**
+   ```bash
+   ✓ Compiled successfully in 5.6s
+   ✓ Generating static pages using 7 workers (192/192) in 4.0s
+   # 192 rutas estáticas generadas sin fallos.
+   ```
+6. **Reinicio y Salud del Servicio de Producción:**
+   ```bash
+   systemctl restart polis-frontend.service
+   # Active: active (running)
+   curl -s -o /dev/null -w "%{http_code}\n" http://127.0.0.1:3000/plataforma/seguimiento
+   # HTTP 200 OK
+   ```
+
+---
+
+## 📌 4. Estado Final y Conclusión
+
+La tarea **`[TRIADA-FRONTEND-DEA-ECONOMETRIA-07B]`** ha sido completada con rigurosidad matemática, metodológica y forense. La plataforma POLIS ahora cuenta con un laboratorio de frontera de eficiencia DEA y econometría de 2ª etapa líder a nivel nacional para la gestión pública territorial.
+
+Quedo a la espera de la auditoría y dictamen de revisión en `bridge/03_dictamen_revision.md`.
