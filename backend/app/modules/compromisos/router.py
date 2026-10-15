@@ -1,3 +1,4 @@
+from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Annotated
 
@@ -6,6 +7,7 @@ from fastapi import APIRouter, Body, Depends, File, Form, Query, UploadFile, sta
 from app.core.database import SessionDependency
 from app.modules.compromisos.ingesta_masiva_excel import detectar_extension_archivo
 from app.modules.compromisos.ingesta_masiva_service import RAIZ_INGESTA, IngestaMasivaService
+from app.modules.compromisos.inteligencia_triada_service import InteligenciaTriadaService
 from app.modules.compromisos.repository import CompromisosRepository
 from app.modules.compromisos.schemas import (
     ActividadPlanAccionActualizarSeguimiento,
@@ -32,7 +34,25 @@ from app.modules.compromisos.taxonomia_seguridad import DIMENSIONES, PERIODOS
 from app.modules.identidad.deps import SujetoAutenticadoDep, requerir_permiso
 from app.modules.politicas.gating import verificar_escritura_fase
 
-router = APIRouter(prefix="/compromisos", tags=["Compromisos PAS"])
+
+@asynccontextmanager
+async def _compromisos_lifespan(_app):
+    from app.core.config import Settings
+
+    settings = Settings()
+    if settings.environment == "production":
+        from app.core.database import Database
+
+        database = Database(settings)
+        try:
+            async with database.sessions() as session:
+                await InteligenciaTriadaService(session).resumen_ejecutivo()
+        finally:
+            await database.engine.dispose()
+    yield
+
+
+router = APIRouter(prefix="/compromisos", tags=["Compromisos PAS"], lifespan=_compromisos_lifespan)
 
 
 def get_compromisos_service(session: SessionDependency) -> CompromisosService:
@@ -486,3 +506,97 @@ async def eliminar_compromiso(
     """Eliminar un compromiso institucional con registro previo en auditoría forense."""
     await verificar_escritura_fase("FASE_3_PLAN_ACCION", sujeto, session)
     await service.eliminar_compromiso(id_o_codigo, actor_id=sujeto.sujeto_id)
+
+
+def _validar_filtros_inteligencia(dimension: str | None = None, periodo: str | None = None) -> None:
+    from fastapi import HTTPException
+
+    if dimension and dimension not in DIMENSIONES:
+        raise HTTPException(status_code=422, detail="Dimensión de seguridad humana no reconocida.")
+    if periodo and periodo not in PERIODOS:
+        raise HTTPException(status_code=422, detail="Periodo de gobierno no reconocido.")
+
+
+@router.get("/triada/inteligencia/patologias-dnp", summary="Patologías DNP y efecto espejismo")
+async def inteligencia_patologias_dnp(
+    session: SessionDependency,
+    vigencia: int | None = Query(None, ge=2016, le=2027),
+    periodo: str | None = Query(None, max_length=20),
+    dimension: str | None = Query(None, max_length=120),
+    entidad: str | None = Query(None, max_length=180),
+):
+    _validar_filtros_inteligencia(dimension, periodo)
+    return await InteligenciaTriadaService(session).patologias_dnp(
+        vigencia=vigencia, periodo=periodo, dimension=dimension, entidad=entidad
+    )
+
+
+@router.get(
+    "/triada/inteligencia/continuidad-gobiernos", summary="Continuidad y ruptura entre gobiernos"
+)
+async def inteligencia_continuidad_gobiernos(
+    session: SessionDependency,
+    dimension: str | None = Query(None, max_length=120),
+    entidad: str | None = Query(None, max_length=180),
+):
+    _validar_filtros_inteligencia(dimension)
+    return await InteligenciaTriadaService(session).continuidad_gobiernos(
+        dimension=dimension, entidad=entidad
+    )
+
+
+@router.get("/triada/inteligencia/radar-transparencia", summary="Radar de cortes y completitud")
+async def inteligencia_radar_transparencia(
+    session: SessionDependency,
+    entidad: str | None = Query(None, max_length=180),
+    vigencia: int | None = Query(None, ge=2016, le=2027),
+):
+    return await InteligenciaTriadaService(session).radar_transparencia(
+        entidad=entidad, vigencia=vigencia
+    )
+
+
+@router.get(
+    "/triada/inteligencia/alineacion-territorial", summary="Inversión, delitos y demanda ciudadana"
+)
+async def inteligencia_alineacion_territorial(session: SessionDependency):
+    return await InteligenciaTriadaService(session).alineacion_territorial()
+
+
+@router.get("/triada/inteligencia/buscador", summary="Buscador semántico e inspector de duplicidad")
+async def inteligencia_buscador(
+    session: SessionDependency,
+    q: str = Query("seguridad", min_length=2, max_length=200),
+    vigencia: int | None = Query(None, ge=2016, le=2027),
+    periodo: str | None = Query(None, max_length=20),
+    dimension: str | None = Query(None, max_length=120),
+    motor: str | None = Query(
+        None, pattern="^(PLAN_DESARROLLO|PLAN_ACCION|INVERSION_PRESUPUESTAL)$"
+    ),
+    limite: int = Query(50, ge=1, le=200),
+):
+    _validar_filtros_inteligencia(dimension, periodo)
+    return await InteligenciaTriadaService(session).buscador(
+        q=q, vigencia=vigencia, periodo=periodo, dimension=dimension, motor=motor, limite=limite
+    )
+
+
+@router.get(
+    "/triada/inteligencia/simulador-cierre", summary="Proyección de cierre de gobierno 2027"
+)
+async def inteligencia_simulador_cierre(
+    session: SessionDependency,
+    entidad: str | None = Query(None, max_length=180),
+    dimension: str | None = Query(None, max_length=120),
+):
+    _validar_filtros_inteligencia(dimension)
+    return await InteligenciaTriadaService(session).simulador_cierre(
+        entidad=entidad, dimension=dimension
+    )
+
+
+@router.get(
+    "/triada/inteligencia/resumen-ejecutivo", summary="Resumen consolidado de los seis motores"
+)
+async def inteligencia_resumen_ejecutivo(session: SessionDependency):
+    return await InteligenciaTriadaService(session).resumen_ejecutivo()

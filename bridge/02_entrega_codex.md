@@ -275,3 +275,47 @@ Los siete conteos canónicos se conservaron: mesas 33, agendas 36, fichas 11, ac
 | `git diff --check` | Aprobado. |
 
 Se excluye `bridge/01_tarea_codex.md` del commit porque contiene la asignación concurrente de AGY. El commit incluye únicamente archivos de backend de esta orden, sus pruebas y este reporte; no se ejecuta `git push`.
+
+---
+
+# Entrega — `[TRIADA-BACKEND-INTELIGENCIA-6M-06]`
+
+- **Fecha:** 2026-10-15
+- **Responsable:** Codex
+- **Rama:** `main` (commit local; sin push)
+- **Orden:** seis motores analíticos de solo lectura y siete endpoints sobre el corpus de la Triada.
+
+## Implementación
+
+Se añadió [inteligencia_triada_service.py](../backend/app/modules/compromisos/inteligencia_triada_service.py), con los motores de patologías DNP, continuidad entre gobiernos, radar de cortes y transparencia, alineación territorial, búsqueda/duplicidad institucional y simulación del cierre 2027. Las siete rutas están en [router.py](../backend/app/modules/compromisos/router.py); se añadió [test_inteligencia_triada.py](../backend/tests/test_inteligencia_triada.py) para los contratos y la validación de filtros.
+
+Los motores leen los 217.740 registros y 616 archivos de `bd_csh`. Todos los análisis excluyen por defecto los cinco archivos con `CONTENIDO_IDENTICO_OTRO_CORTE`; el radar de transparencia los incluye como hallazgo. La consulta de búsqueda acepta texto, dimensión, periodo, vigencia y motor. Los identificadores BPIM vacíos o de relleno no se consideran proyectos continuos ni duplicidades. No se escribieron datos en las tablas canónicas.
+
+Para mantener las respuestas predeterminadas por debajo de dos segundos, cada worker precalcula el resumen consolidado en el lifespan de producción y cachea las lecturas durante cinco minutos. El último arranque tardó aproximadamente un minuto hasta readiness; durante la precarga el servicio consume alrededor de 1,1 GiB. Con la caché caliente, las siete rutas respondieron HTTP 200 entre **0,002 y 0,192 s** en el corpus real. La prueba de rendimiento corresponde a los filtros predeterminados; filtros distintos se calculan bajo demanda.
+
+## Hallazgos reales en `bd_csh`
+
+| Motor | Resultado observado |
+| --- | --- |
+| M0 — Resumen ejecutivo | 217.740 registros; 616 archivos; 30 entidades canónicas; 99,97% de cobertura de entidad; 4.600 metas PDD y 1.501 códigos BPIM utilizables. El inventario contiene 1.516 valores BPIM distintos antes de excluir 15 claves de relleno. |
+| M1 — Patologías DNP | 62.807 actividades evaluadas; 19.800 con verbo fuerte y 27.005 con verbo débil (42,30% de formulación fuerte entre las actividades clasificadas); 15 alertas de espejismo, 3.201 de sobreejecución financiera y 14.370 cuellos contractuales. |
+| M2 — Continuidad | 1.501 códigos BPIM utilizables; 400 aparecen en más de un periodo (26,65%); 1.101 quedan en un solo periodo. Filas analíticas por periodo: 6.441 antes de 2020, 72.027 para 2020–2023 y 136.845 para 2024–2027. |
+| M3 — Transparencia | Cinco archivos con corte clonado; 5.512 metas/actividades clasificadas como congeladas; ningún salto de diciembre de 50 puntos o más; matriz de completitud con 30 entidades y años 2016–2026. |
+| M4 — Territorio | 21.018 registros territorializados; apropiación asociada de COP 2.863.914.405.257,46; 33 mesas. `estadisticas_hurtos` tiene 12.280 filas cuya suma de `cantidad` es 18.242 hurtos. |
+| M5 — Buscador | La consulta destacada `seguridad` encontró 8.758 registros y 244 casos de duplicidad institucional. |
+| M6 — Simulador | 29 entidades con registros en 2024–2026; el cálculo actual clasifica 29 en incumplimiento inminente y proyecta 1,90% de avance ponderado actual frente a 2,71% al cierre de 2027. Es una proyección heurística basada en el cambio anual histórico observado. |
+
+Los conteos canónicos permanecen intactos: **33 mesas, 36 agendas, 11 fichas, 17 actores, 10 compromisos PAS, 12 actividades PA y 12.280 filas de hurtos**. Las lecturas cruzadas contra `bd_csh` fueron de solo lectura.
+
+## Validación
+
+| Validación | Resultado |
+| --- | --- |
+| Ruff `format` y `check` sobre servicio, router y prueba nuevos/modificados | Aprobados, sin hallazgos. |
+| `PYTHONPATH=backend /root/polis/venv/bin/pytest -q backend/tests/test_inteligencia_triada.py backend/tests/test_ingesta_masiva_triada.py` | 22 aprobadas, 0 fallos; una advertencia existente de OpenPyXL sobre extensiones de validación. |
+| `/api/v1/health/ready` después del reinicio | HTTP 200; base de datos, migraciones y extensiones listas. |
+| Siete rutas `/api/v1/compromisos/triada/inteligencia/*` | HTTP 200; 0,002–0,192 s con filtros predeterminados tras la precarga. |
+| Conteos SQL de verificación en `bd_csh` | 217.740 registros, 616 archivos, mesas 33, agendas 36, fichas 11, actores 17, compromisos 10, actividades 12 y hurtos 12.280. |
+| `git diff --check` | Aprobado. |
+
+Commit local exclusivamente de `backend/app/modules/compromisos/inteligencia_triada_service.py`, `backend/app/modules/compromisos/router.py`, `backend/tests/test_inteligencia_triada.py` y este reporte. No se modificó `src/` ni se ejecutó `git push`.
