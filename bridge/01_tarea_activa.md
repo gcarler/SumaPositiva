@@ -1,85 +1,48 @@
-# ORDEN DE TAREA FRONTEND: `[TRIADA-FRONTEND-DEA-PDD-08]`
-## LABORATORIO DE EVALUACIÓN DE CUMPLIMIENTO DE METAS, CONCILIACIÓN DEL PLAN PLURIANUAL DE INVERSIONES (PPI) Y DEA / ECONOMETRÍA DE LOS PLANES DE DESARROLLO DE CARTAGENA (2012–2027)
+# Orden de Ejecución Frontend — `[TRIADA-FRONTEND-DATA-PDD-09]`
 
-- **Para:** Desarrollador Principal Frontend (`agy2`)
-- **De:** Coordinador General y Auditor Forense EAF (`agy`)
 - **Fecha:** 2026-10-15
-- **Referencia:** `bridge/00_plan_maestro_dea_planes_desarrollo_08.md`
-- **Rama:** `main` (**Política Zero-Push Estricta**: solo commit local, prohibido `git push`)
+- **Coordinador General y Auditor Forense EAF:** `agy`
+- **Ejecutor:** `agy2`
+- **Rama:** `main` (commit local al finalizar; **prohibido `git push`**)
+- **Plan Maestro de referencia:** Lee obligatoriamente `bridge/00_plan_maestro_data_pdd_09.md`.
 
----
+## Objetivo
+Evolucionar el Laboratorio de Evaluación de Planes de Desarrollo (`src/features/seguimiento/components/pdd-dea-evaluacion-panel.tsx`, `src/features/seguimiento/data/pdd-dea-cartagena.data.ts`, `src/features/seguimiento/services/plan-accion-dnp-api.ts` y `src/features/seguimiento/__tests__/pdd-dea-evaluacion-panel.test.tsx`) hacia el **Centro de Mando Integral de la Data de los Planes de Desarrollo de Cartagena (`2012–2027` + `3 PDL`)**:
 
-## 1. Objetivo de la Tarea
+1. **Enriquecer `src/features/seguimiento/data/pdd-dea-cartagena.data.ts`:**
+   - Incorporar el **Plan Plurianual de Inversiones oficial recién extraído de `PDD_2013_2015` («Ahora Sí Cartagena» — Acuerdo 016 de 2013): `$1.874.167.605.000` COP** (`2014: $919.970.330.000`, `2015: $954.197.274.000`, estructurado en 4 Objetivos Estratégicos: `Inclusión Social`, `Desarrollo Económico`, `Desarrollo Territorial`, `Gobernabilidad`).
+   - Incorporar los **3 Planes de Desarrollo Local (`PDL 2024–2027` — Acuerdos Locales 004 de 2024)** con sus Fondos de Desarrollo Local oficiales extraídos de `/root/polis/data/planes_desarrollo/pdl_2024_2027_*.md`:
+     1. **Localidad 1 — Histórica y del Caribe Norte («Localidad con Derechos»):** **`$97.691.041.529` COP** (`2024: $22.390.236.924`, `2025: $23.851.707.764`, `2026: $25.125.173.348`, `2027: $26.323.923.493`), `5` Líneas Estratégicas y `15` componentes.
+     2. **Localidad 2 — De la Virgen y Turística («Localidad de Derechos, Deberes y Cuidados»):** **`$161.289.996.409,01` COP** (`2024: $36.958.466.088,34`, `2025: $39.325.286.256,64`, `2026: $41.355.128.312,56`, `2027: $43.651.115.751,48`).
+     3. **Localidad 3 — Industrial y de la Bahía («Por una Localidad Industrial y de la Bahía con Derechos»):** **`$46.000.000.000` COP** Fondo de Desarrollo Local (`2024: $7.000 M`, `2025: $10.000 M`, `2026: $13.000 M`, `2027: $16.000 M`; inversión directa PPI `$39.000.000.000` COP).
+   - Incorporar el árbol oficial de **42 Impulsores de Avance y Programas principales del PDD 2024–2027** (con énfasis completo en la **Línea Estratégica 1: «Seguridad Humana» — `$5.666.917.744.338` COP** y sus 5 Impulsores: `1.1 Seguridad Ciudadana y Orden Público - Titán 24 ($211.387,6 M)`, `1.2 Construcción de Paz, DDHH y Convivencia ($54.744,8 M)`, `1.3 Salud Pública y Aseguramiento ($5.213.654,3 M)`, `1.4 Atención Integral a Grupos de Especial Protección ($96.681,1 M)` y `1.5 Superación de la Pobreza Extrema y Soberanía Alimentaria ($82.066,0 M)`).
+   - Incorporar la estadística real del **Cruce Tripartito (`PDD ↔ PA ↔ Presupuesto`)** en `bd_csh`: de las `99.424` filas de `PLAN_DESARROLLO`, `32.330` tienen avance propio en matriz PDD, `28.630` tienen avance físico en su fila hermana de `PLAN_ACCION` y `20.953` tienen soporte presupuestal en `INVERSION_PRESUPUESTAL`.
 
-Construir e integrar en `/plataforma/seguimiento` la **Sub-vista 6 (`tab-nav-pdd-dea`): «6. Evaluación & DEA Planes de Desarrollo (2012–2027 · Acuerdo 139)»** mediante el componente `src/features/seguimiento/components/pdd-dea-evaluacion-panel.tsx`, respaldado por el dataset semilla auditado `src/features/seguimiento/data/pdd-dea-cartagena.data.ts` y los 5 clientes tipados en `src/features/seguimiento/services/plan-accion-dnp-api.ts` conectados a `/api/v1/compromisos/triada/pdd-dea/*`.
+2. **Actualizar `src/features/seguimiento/services/plan-accion-dnp-api.ts`:**
+   - Soportar el nuevo endpoint `/api/v1/compromisos/triada/pdd-dea/explorador-programas-y-seguridad-humana` y los nuevos campos de imputación tripartita, DEA multi-nivel (Entidades, Líneas Estratégicas y Localidades PDL) y Malmquist LP (`EFFCH × TECHCH`), con fallback tipado resiliente.
 
----
+3. **Evolucionar `src/features/seguimiento/components/pdd-dea-evaluacion-panel.tsx` con 6 sub-pestañas interactivas:**
+   - `pdd-tab-ppi`: **Catálogo & Conciliación PPI (5 PDD + 3 PDL)** con serie `2014–2027` corriente/constante 2025 y comparativa de los 3 Fondos de Desarrollo Local (`$304,98 mil millones COP` sumados entre Localidad 1, 2 y 3).
+   - `pdd-tab-explorador`: **Explorador de Líneas, Impulsores y Programas Oficiales** con buscador instantáneo y filtro por Plan (`2012–2027` + `3 PDL`), mostrando techos anuales y metas oficiales de bienestar/producto.
+   - `pdd-tab-cumplimiento`: **Cumplimiento de Metas & Imputación Tripartita (`PDD ↔ PA ↔ BPIM`)**, permitiendo alternar entre *Avance Directo en Sábana PDD* y *Avance Consolidado Tripartito* (`+28.630` filas con avance en PA y `+20.953` con soporte presupuestal), asegurando que nunca se muestren etiquetas numéricas basura en Líneas Estratégicas.
+   - `pdd-tab-seguridad-humana`: **Monitor Línea 1: Seguridad Humana (`$5,67B COP`)**, cruzando los 5 Impulsores de Avance y sus programas (como *Titán 24*, *Construcción de Paz*, *Salud Pública*, *Grupos de Especial Protección*, *Soberanía Alimentaria*) con las **8 Dimensiones PNUD**, las **33 Mesas Territoriales**, los **10 Compromisos PAS** y las **12.280 filas de hurtos**.
+   - `pdd-tab-frontera`: **Frontera DEA Multi-Nivel (Entidades, Líneas Estratégicas y Localidades PDL)** con selector de nivel (`ENTIDADES`, `LINEAS_ESTRATEGICAS`, `LOCALIDADES_PDL`), mostrando $\theta_{\text{BCC}}$, $\theta_{\text{CCR}}$, $\rho_{\text{SBM}}$, IC 95% Bootstrap (`B=200`), *peers* y *targets*.
+   - `pdd-tab-econometria`: **Econometría Comparada & Malmquist LP (`EFFCH × TECHCH`)** con descomposición exacta de cambio de eficiencia y cambio tecnológico entre gobiernos, Gini/HHI, Spearman/Pearson FDR y prueba pareada de Wilcoxon.
 
-## 2. Estructura de los 4 Sub-paneles Interactivos de `PddDeaEvaluacionPanel`
+4. **Ampliar `src/features/seguimiento/__tests__/pdd-dea-evaluacion-panel.test.tsx`:**
+   - Al menos **28 pruebas unitarias** cubriendo las 6 sub-pestañas, los 3 PDL, el PPI de 2013–2015, la conmutación de Imputación Tripartita, el Monitor de Línea 1 Seguridad Humana y el selector DEA Multi-Nivel.
 
-### Sub-vista 1 (`catalogo_y_ppi`): Catálogo Histórico (`2012–2027`) y Conciliación Oficial del Plan Plurianual de Inversiones (PPI)
-1. **Tarjetas de los 5 Planes de Desarrollo Distritales + 3 Planes Locales:**
-   - **PDD 2024–2027: «Cartagena, Ciudad de Derechos»** (*Acuerdo Distrital 139 del 29 de mayo de 2024*): `71.990` filas en `bd_csh`, `29` entidades, `3.170` metas PDD únicas, `1.753` indicadores, **Plan Plurianual de Inversiones (PPI) Oficial = `$12,801 Billones` COP** (`2024: $3,271B`, `2025: $2,954B`, `2026: $3,194B`, `2027: $3,382B`).
-   - **PDD 2020–2023: «Salvemos Juntos a Cartagena»** (*P.A. 016 / Acuerdo de mayo de 2020*): `24.421` filas en `bd_csh`, `27` entidades, `1.832` metas PDD únicas, `1.137` indicadores, **PPI Oficial = `$6,023 Billones` COP** (4 Pilares: *Resiliente, Incluyente, Contingente, Transparente* + Eje Transversal, `33` Líneas Estratégicas y `172` Programas).
-   - **PDD 2016–2019: «Primero la Gente para una Cartagena Sostenible y Competitiva»** (*Acuerdo 006 del 13 de junio de 2016*): `3.013` filas en `bd_csh`, `23` entidades, `806` metas PDD únicas, `1.184` indicadores.
-   - **PDD 2013–2015: «Ahora Sí Cartagena»** (*Acuerdo 016 del 26 de dic. de 2013*, `199` págs.) y **PDD 2012–2015: «Campo para Todos»** (*Acuerdo 001/012 de 2012*, `161` págs.).
-   - **3 Planes de Desarrollo Local 2024–2027:** *Localidad 1 Histórica y del Caribe Norte*, *Localidad 2 De la Virgen y Turística* y *Localidad 3 Industrial y de la Bahía*.
-2. **Tabla Oficial del Plan Plurianual de Inversiones (PPI) y Conciliación con `bd_csh`:**
-   - Desglose anual `2020–2027` en pesos corrientes y en **Pesos Constantes Base Cerrada 2025 (IPC DANE `2012–2025`)**.
-   - Comparación por Línea Estratégica (`Seguridad Humana`, `Vida Digna`, `Desarrollo Económico Equitativo`, `Ciudad Conectada y Sostenible`, `Innovación Pública y Participación Ciudadana`, `Capítulo Étnico`) y separación entre recursos ordinarios (`$12,57B` en 2024–2027) y Regalías SGR (`$227,8 mil M`).
-   - Tabla de **Conciliación PPI vs. Matrices Excel (`bd_csh`)** que muestra el factor de calibración por sobrerreporte de filas repetidas.
+## Archivos Autorizados para Modificar
+- `src/features/seguimiento/data/pdd-dea-cartagena.data.ts`
+- `src/features/seguimiento/services/plan-accion-dnp-api.ts`
+- `src/features/seguimiento/components/pdd-dea-evaluacion-panel.tsx`
+- `src/features/seguimiento/__tests__/pdd-dea-evaluacion-panel.test.tsx`
+- `bridge/02_resultado_agy2.md`
+*(Prohibido tocar `backend/` o los archivos de `codex`).*
 
-### Sub-vista 2 (`cumplimiento_metas`): Semáforo de Metas PDD, Línea Estratégica 1 («Seguridad Humana») y 19 Macroproyectos
-1. **Selector de Plan de Desarrollo (`PDD_2024_2027`, `PDD_2020_2023`, `PDD_2016_2019`, `TODOS`) y Filtro de Línea Estratégica / Entidad:**
-   - Indicadores de cabecera: Metas únicas formuladas, Metas con seguimiento activo, **Metas Huérfanas (sin avance reportado)**, Avance Físico Promedio (`%`), Metas Cumplidas o en Ruta (`>= 75%`), Alerta Media (`40%–74,9%`) y Rezago Crítico (`< 40%`).
-2. **Foco Especial en Línea Estratégica 1: «Seguridad Humana» (Acuerdo 139 de 2024):**
-   - Evaluación detallada de sus **5 Componentes Impulsores de Avance**:
-     1. *4.1 Seguridad Ciudadana y Orden Público*
-     2. *4.2 Construcción de Paz, Derechos Humanos y Convivencia*
-     3. *4.3 Salud Pública y Aseguramiento*
-     4. *4.4 Atención Integral a Grupos de Especial Protección*
-     5. *4.5 Superación de la Pobreza Extrema y Soberanía Alimentaria*
-3. **Seguimiento a los 19 Macroproyectos Estratégicos (`2024–2027`) y 3 Planes de Desarrollo Local:**
-   - Estado de *Malecón del Mar*, *Plan Maestro de Drenajes Pluviales*, *Parque Distrital Ciénaga de la Virgen*, *Terminación Vía Perimetral*, *Distrito Creativo*, *Nueva Cárcel Distrital*, *Puente Angola*, etc., y avance de las 3 Localidades.
-
-### Sub-vista 3 (`frontera_dea_pdd`): Frontera Eficiente DEA de los Planes de Desarrollo (`CCR · BCC · SBM · Slacks & Targets`)
-1. **Selectores Dinámicos:**
-   - Plan evaluado (`PDD 2024–2027 Ciudad de Derechos`, `PDD 2020–2023 Salvemos Juntos`, `PDD 2016–2019 Primero la Gente`).
-   - Insumo $X_1$: **`PPI Conciliado (Acuerdo Distrital)`** vs. **`Presupuesto Reportado en Matrices`**.
-2. **Dos Tablas DEA Interactivas:**
-   - **A. Frontera DEA por Entidad Responsable del Plan de Desarrollo ($n = 23\text{–}29$ DMUs, Regla de Cooper cumplida):**
-     - Muestra Insumo $X_1^{\text{PPI}}$ (MCOP constantes 2025), Output $Y_1$ (Metas PDD Equivalentes Cumplidas), Output $Y_2$ (Indicadores PDD en Meta Eficaz $\ge 75\%$), $\theta_{\text{CCR}}$, $\theta_{\text{BCC}}$, $SE$, Retornos (`CRS/IRS/DRS`), $\theta_{\text{SBM}}$, Puntaje Bootstrap con IC 95% y Pares de Referencia ($\lambda_j^*$).
-     - Botón para abrir el **Modal de Holguras y Metas Objetivo PDD (`Slacks & Targets`)**, prescribiendo cuántas metas PDD adicionales ($s_1^+$) e indicadores eficaces ($s_2^+$) debe cumplir cada entidad para llegar a la frontera.
-   - **B. Frontera DEA Programática por Línea Estratégica / Pilar del PDD:**
-     - Evalúa qué Líneas Estratégicas convierten con mayor eficiencia su tajada del Plan Plurianual de Inversiones en metas cumplidas.
-
-### Sub-vista 4 (`econometria_comparada_pdd`): Malmquist Inter-Planes (`2016–2027`), Correlaciones FDR, Gini/HHI y Cambio Estructural
-1. **Índice Dinámico de Malmquist Entre Planes de Desarrollo (`2016–2019` $\rightarrow$ `2020–2023` $\rightarrow$ `2024–2027`):**
-   - Descomposición con media geométrica $\text{MPI} = \text{EFFCH (Catch-up)} \times \text{TECHCH (Desplazamiento)}$ entre gobiernos sucesivos.
-2. **Matriz de Correlaciones con Control FDR Benjamini–Hochberg ($q\text{-value}$):**
-   - Spearman ($\rho$) y Pearson ($r$) entre asignación PPI ($X_1$), metas PDD cumplidas ($Y_1$), indicadores eficaces ($Y_2$), articulación con Plan de Acción anual y eficiencia DEA del PDD.
-3. **Desigualdad Presupuestal del PPI (Gini y HHI por Línea Estratégica y Dimensión SHI) y Prueba Pareada de Wilcoxon / Friedman entre Gobiernos.**
-
----
-
-## 3. Archivos Permitidos para `agy2` (Cero Colisiones con `codex`)
-
-1. `src/features/seguimiento/data/pdd-dea-cartagena.data.ts` *(nuevo)*
-2. `src/features/seguimiento/services/plan-accion-dnp-api.ts` *(modificado — añade tipos y los 5 clientes `/api/v1/compromisos/triada/pdd-dea/*` + getters locales)*
-3. `src/features/seguimiento/components/pdd-dea-evaluacion-panel.tsx` *(nuevo)*
-4. `src/features/seguimiento/components/triada-motores-tab.tsx` *(modificado — añade botón `tab-nav-pdd-dea` para la Sub-vista 6 y renderiza `<PddDeaEvaluacionPanel />`)*
-5. `src/features/seguimiento/__tests__/pdd-dea-evaluacion-panel.test.tsx` *(nuevo — mínimo 18 tests verificando los 4 bloques, cotas DEA, PPI oficial, Línea Seguridad Humana, Malmquist inter-planes, FDR y renderizado SSR)*
-6. `bridge/02_resultado_agy2.md` *(actualizado)*
-
-*(Prohibido tocar `backend/`, `docs/permisos-api.md`, `bridge/01_tarea_codex.md` o `bridge/02_entrega_codex.md`).*
-
----
-
-## 4. Quality Gates Obligatorios
-
-1. `node scripts/ui-policy.mjs` (`0` incumplimientos; modales con `bg-overlay`, componentes `@/shared/ui/*`, sin tags nativos prohibidos).
-2. `bun run typecheck` (`tsc --noEmit` con `0` errores).
-3. `bun run lint` (`eslint` con `0` errores).
-4. `bun test src/features/seguimiento/__tests__/pdd-dea-evaluacion-panel.test.tsx` y `bun test src/features/seguimiento/` (`100%` pass).
-5. `bun run build` y reinicio de `polis-frontend.service`.
-6. **Commit local en `main`** (sin `git push`) y reporte en `bridge/02_resultado_agy2.md`.
+## Validaciones Obligatorias Antes de Commit
+1. `node scripts/ui-policy.mjs` (`0` violaciones).
+2. `./node_modules/.bin/tsc --noEmit` y `./node_modules/.bin/eslint` sobre los archivos tocados (`0` errores).
+3. `bun test src/features/seguimiento/__tests__/pdd-dea-evaluacion-panel.test.tsx` y toda la carpeta `src/features/seguimiento/__tests__/` (`100%` en verde).
+4. `./node_modules/.bin/next build` (`192/192` páginas compiladas) y reinicio de `polis-frontend.service`.
+5. Commit local en `main` (sin `git push`) y reporte en `bridge/02_resultado_agy2.md`.
