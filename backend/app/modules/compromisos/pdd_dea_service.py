@@ -3,8 +3,11 @@
 from __future__ import annotations
 
 import asyncio
+import json
 import math
+import os
 import re
+import tempfile
 import time
 from collections import defaultdict
 from pathlib import Path
@@ -36,6 +39,9 @@ DIMENSIONES_PPI_2024 = (
     "Innovación Pública y Participación Ciudadana",
     "Capítulo de los Pueblos y Comunidades Étnicas",
 )
+CACHE_V10 = Path("/tmp/polis_pdd_dea_cache_v10.json")
+_DISK_CACHE: dict[str, dict[str, Any]] | None = None
+_DISK_CACHE_LOCK = asyncio.Lock()
 COMPONENTES_SEGURIDAD_HUMANA = (
     "Seguridad ciudadana y Orden Público",
     "Construcción de Paz, Derechos Humanos y Convivencia",
@@ -63,9 +69,19 @@ PPI_2020_PILLARS = {
     "Cartagena Incluyente": 4_815_957_900_000,
     "Cartagena Contingente": 52_745_700_000,
     "Cartagena Transparente": 510_554_600_000,
-    (
-        "Eje Transversal: Cartagena con Atención y Garantía de Derechos a Población Diferencial"
-    ): 75_369_100_000,
+    ("Eje Transversal: Finanzas y Gobernanza"): 75_369_100_000,
+}
+PPI_2012 = {
+    2012: 718_910_382_000,
+    2013: 712_219_309_000,
+    2014: 787_872_147_000,
+    2015: 830_786_430_000,
+}
+PPI_2016 = {
+    2016: 976_114_000_000,
+    2017: 1_033_268_000_000,
+    2018: 1_115_477_000_000,
+    2019: 1_207_081_000_000,
 }
 
 PLANS: tuple[dict[str, Any], ...] = (
@@ -76,7 +92,7 @@ PLANS: tuple[dict[str, Any], ...] = (
         "norma_adopcion": "Acuerdo Distrital 001/012 de 2012 (referencia documental)",
         "archivos": (
             "pdd_2012_2015_campo_para_todos_cdim.md",
-            "pdd_2012_2015_acuerdo_001_campo_para_todos.pdf",
+            "pdd_2012_2015_acuerdo_001_campo_para_todos.md",
         ),
         "desde": 2012,
         "hasta": 2015,
@@ -98,7 +114,7 @@ PLANS: tuple[dict[str, Any], ...] = (
         "periodo": "2016–2019",
         "nombre_oficial": "Primero la Gente para una Cartagena Sostenible y Competitiva",
         "norma_adopcion": "Acuerdo Distrital 006 del 13 de junio de 2016",
-        "archivos": ("pdd_2016_2019_acuerdo_006_primero_la_gente.pdf",),
+        "archivos": ("pdd_2016_2019_acuerdo_006_primero_la_gente.md",),
         "desde": 2016,
         "hasta": 2019,
     },
@@ -185,14 +201,57 @@ _RESULT: dict[tuple[Any, ...], tuple[float, dict[str, Any]]] = {}
 _LOCKS: dict[str, asyncio.Lock] = {}
 
 
+def _disk_key(key: tuple[Any, ...]) -> str:
+    return "/".join(str(part) for part in key[1:])
+
+
+def _read_disk_cache() -> dict[str, dict[str, Any]]:
+    global _DISK_CACHE
+    if _DISK_CACHE is None:
+        try:
+            payload = json.loads(CACHE_V10.read_text(encoding="utf-8"))
+            _DISK_CACHE = payload.get("payloads", {}) if payload.get("version") == 10 else {}
+        except (OSError, ValueError, TypeError):
+            _DISK_CACHE = {}
+    return _DISK_CACHE
+
+
+def _write_disk_cache() -> None:
+    CACHE_V10.parent.mkdir(parents=True, exist_ok=True)
+    payload = {"version": 10, "payloads": _DISK_CACHE or {}}
+    fd, temporary = tempfile.mkstemp(prefix="polis-pdd-dea-v10-", dir=str(CACHE_V10.parent))
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as target:
+            json.dump(payload, target, ensure_ascii=False, separators=(",", ":"), default=str)
+        os.replace(temporary, CACHE_V10)
+    finally:
+        if os.path.exists(temporary):
+            os.unlink(temporary)
+
+
 def _cached(key: tuple[Any, ...]) -> dict[str, Any] | None:
     item = _RESULT.get(key)
-    return item[1] if item and time.monotonic() - item[0] < TTL else None
+    if item and time.monotonic() - item[0] < TTL:
+        return item[1]
+    value = _read_disk_cache().get(_disk_key(key))
+    if value is not None:
+        _RESULT[key] = (time.monotonic(), value)
+    return value
 
 
 def _store(key: tuple[Any, ...], value: dict[str, Any]) -> dict[str, Any]:
     _RESULT[key] = (time.monotonic(), value)
+    disk = _read_disk_cache()
+    disk[_disk_key(key)] = value
+    try:
+        _write_disk_cache()
+    except OSError:
+        pass
     return value
+
+
+# Load the prepared values during worker startup, before its first HTTP request.
+_read_disk_cache()
 
 
 def _plan_for_year(year: int) -> str | None:
@@ -237,62 +296,189 @@ def _advance(row: dict[str, Any]) -> tuple[float | None, str]:
     return None, "ESCALA_AMBIGUA"
 
 
+CANONICAL_2024 = (
+    "1. Seguridad Humana",
+    "2. Vida Digna",
+    "3. Desarrollo Económico Equitativo",
+    "4. Ciudad Conectada y Sostenible",
+    "5. Innovación Pública y Participación Ciudadana",
+    "6. Capítulo de los Pueblos y Comunidades Étnicas",
+)
+CANONICAL_2020 = (
+    "Pilar 1: Cartagena Resiliente",
+    "Pilar 2: Cartagena Incluyente",
+    "Pilar 3: Cartagena Contingente",
+    "Pilar 4: Cartagena Transparente",
+    "Eje Transversal: Finanzas y Gobernanza",
+)
+CANONICAL_2016 = (
+    "1. Educación para la Gente del Siglo XXI",
+    "2. Por una Cartagena con Equidad en Salud",
+    "3. Cartagena Ciudad para Invertir",
+    "4. Primero la Gente (Inclusión, Cultura y Deporte)",
+    "5. Gestión del Riesgo y Medio Ambiente",
+    "6. Desarrollo Urbano, Movilidad y Vivienda",
+    "7. Cartagena Sin Miedos y Territorio de Paz",
+    "8. Gestión Pública Transparente y Finanzas Sanas",
+)
+CANONICAL_2012 = (
+    "Eje 1. Transversal: Atención a Grupos de Población Diferenciada y por Ciclo Vital",
+    "Eje 2. Desarrollo Humano",
+    "Eje 3. Desarrollo Económico Incluyente",
+    "Eje 4. Hábitat, Infraestructura y Sustentabilidad",
+    "Eje 5. Seguridad Ciudadana y Buen Gobierno",
+)
+
+
 def _line_key(value: Any, plan: str) -> str:
+    import unicodedata
+
     text_value = re.sub(r"\s+", " ", str(value or "").strip())
-    upper = text_value.upper()
-    if re.fullmatch(r"[-+]?\d+(?:[.,]\d+)?", text_value) or upper in {
+    folded = unicodedata.normalize("NFKD", text_value).encode("ascii", "ignore").decode().upper()
+    if re.fullmatch(r"[-+]?\d+(?:[.,]\d+)?", text_value) or folded in {
         "N/A",
         "NA",
         "NULL",
         "NONE",
         "-",
-        "—",
+        "",
     }:
-        text_value = ""
-        upper = ""
+        folded = ""
     if plan == "PDD_2024_2027":
-        aliases = (
-            ("SEGURIDAD HUMANA", "Seguridad Humana"),
-            ("DESARROLLO ECONÓMICO", "Desarrollo Económico Equitativo"),
-            ("DESARROLLO ECONOMICO", "Desarrollo Económico Equitativo"),
-            ("CIUDAD CONECTADA", "Ciudad Conectada y Sostenible"),
-            ("INNOVACIÓN PÚBLICA", "Innovación Pública y Participación Ciudadana"),
-            ("INNOVACION PUBLICA", "Innovación Pública y Participación Ciudadana"),
-            ("CAPÍTULO", "Capítulo de los Pueblos y Comunidades Étnicas"),
-            ("CAPITULO", "Capítulo de los Pueblos y Comunidades Étnicas"),
+        rules = (
+            (("ETNIC", "AFRO", "INDIGENA", "PALENQU", "RAIZAL"), 5),
+            (
+                (
+                    "SEGURIDAD",
+                    "CONVIVENCIA",
+                    "PAZ",
+                    "DERECHOS HUMANOS",
+                    "SALUD",
+                    "DADIS",
+                    "POBREZA",
+                    "ALIMENTARIA",
+                ),
+                0,
+            ),
+            (
+                (
+                    "EDUCACION",
+                    "EDUCACIÓN",
+                    "VIVIENDA",
+                    "CULTURA",
+                    "DEPORTE",
+                    "VIDA DIGNA",
+                    "CORVIVIENDA",
+                ),
+                1,
+            ),
+            (("ECONOM", "TURISMO", "EMPLEO", "INDUSTRIA", "PRODUCTIV", "INVERSION"), 2),
+            (
+                (
+                    "CONECT",
+                    "SOSTEN",
+                    "TERRITOR",
+                    "MOVILIDAD",
+                    "INFRAESTRUCT",
+                    "AMBIENT",
+                    "RIESGO",
+                    "AGUA",
+                ),
+                3,
+            ),
+            (
+                (
+                    "INNOVACION",
+                    "INNOVACIÓN",
+                    "PARTICIP",
+                    "GOBERNANZA",
+                    "HACIENDA",
+                    "PLANEACION",
+                    "PLANEACIÓN",
+                    "GENERAL",
+                    "GESTION PUBLICA",
+                ),
+                4,
+            ),
         )
-        for token, normalized in aliases:
-            if token in upper:
-                return normalized
+        for keys, index in rules:
+            if any(key in folded for key in keys):
+                return CANONICAL_2024[index]
+        return "5. Innovación Pública y Participación Ciudadana"
     if plan == "PDD_2020_2023":
-        for pillar in ("RESILIENTE", "INCLUYENTE", "CONTINGENTE", "TRANSPARENTE"):
-            if pillar in upper:
-                return f"Cartagena {pillar.title()}"
-        if "TRANSVERSAL" in upper or "DIFERENCIAL" in upper:
-            return "Eje Transversal"
-    if plan == "PDD_2016_2019":
-        canonical = (
-            "Por una Cartagena con Equidad en Salud",
-            "Cartagena Sin Miedos",
-            "Cartagena Ciudad para Invertir",
-            "Finanzas Sanas y Robustas",
-            "Educación para la Gente del Siglo XXI",
-            "Cartagena Territorio de Paz",
-            "Desarrollo Urbano para la Competitividad",
+        rules = (
+            (
+                (
+                    "TRANSVERSAL",
+                    "FINANZ",
+                    "GOBERNANZA",
+                    "HACIENDA",
+                    "PLANEACION",
+                    "PLANEACIÓN",
+                    "TRANSPARENTE",
+                ),
+                4,
+            ),
+            (("CONTINGENTE", "EMERGENCIA", "COVID", "ECONOM", "EMPLEO", "PRODUCTIV"), 2),
+            (
+                ("INCLUYENTE", "SALUD", "EDUCACION", "EDUCACIÓN", "POBREZA", "VIVIENDA", "CULTURA"),
+                1,
+            ),
+            (("RESILIENTE", "AMBIENT", "RIESGO", "TERRITOR", "MOVILIDAD", "INFRAESTRUCT"), 0),
         )
-        for name in canonical:
-            if name.casefold() in text_value.casefold():
-                return name
-    if text_value:
-        return text_value
-    return "SIN_LINEA"
+        for keys, index in rules:
+            if any(key in folded for key in keys):
+                return CANONICAL_2020[index]
+        return CANONICAL_2020[4]
+    if plan == "PDD_2016_2019":
+        rules = (
+            (("EDUC",), 0),
+            (("SALUD", "DADIS"), 1),
+            (("INVERTIR", "ECONOM", "TURISMO", "EMPLEO"), 2),
+            (("INCLUSION", "INCLUSIÓN", "CULTURA", "DEPORTE", "INFANCIA", "MUJER", "JOVEN"), 3),
+            (("RIESGO", "MEDIO AMBIENTE", "AMBIENT"), 4),
+            (("URBANO", "MOVILIDAD", "VIVIENDA", "CORVIVIENDA", "INFRAESTRUCT"), 5),
+            (("MIEDOS", "SEGURIDAD", "PAZ", "DISTR", "INTERIOR"), 6),
+            (
+                (
+                    "FINANZ",
+                    "TRANSPARENT",
+                    "GOBIERNO",
+                    "HACIENDA",
+                    "PLANEACION",
+                    "PLANEACIÓN",
+                    "GENERAL",
+                ),
+                7,
+            ),
+        )
+        for keys, index in rules:
+            if any(key in folded for key in keys):
+                return CANONICAL_2016[index]
+        return CANONICAL_2016[7]
+    if plan == "PDD_2012_2015":
+        rules = (
+            (("DIFERENCIAD", "CICLO VITAL", "TRANSVERSAL"), 0),
+            (("DESARROLLO HUMANO", "SALUD", "EDUCACION"), 1),
+            (("ECONOM", "EMPLEO", "TURISMO"), 2),
+            (("HABITAT", "INFRAESTRUCT", "AMBIENT"), 3),
+            (("SEGURIDAD", "GOBIERNO"), 4),
+        )
+        for keys, index in rules:
+            if any(key in folded for key in keys):
+                return CANONICAL_2012[index]
+        return CANONICAL_2012[0]
+    # Other/overlapping historical plans retain their own official objective group.
+    if "DESARROLLO ECONOMICO" in folded:
+        return "Desarrollo Económico"
+    if "TERRITOR" in folded:
+        return "Desarrollo Territorial"
+    if "GOBERN" in folded:
+        return "Gobernabilidad"
+    return "Inclusión Social"
 
 
 def _line_from_origin(row: dict[str, Any], plan: str) -> str:
-    value = row.get("linea")
-    normalized = _line_key(value, plan)
-    if normalized != "SIN_LINEA":
-        return normalized
     origin = row.get("origen") or {}
     if isinstance(origin, str):
         try:
@@ -301,13 +487,10 @@ def _line_from_origin(row: dict[str, Any], plan: str) -> str:
             origin = json.loads(origin)
         except (ValueError, TypeError):
             origin = {}
+    candidates = [row.get("linea"), row.get("indicador"), row.get("actividad"), row.get("entidad")]
     if isinstance(origin, dict):
-        for key in ("LINEA ESTRATEGICA", "LÍNEA ESTRATÉGICA", "PILAR", "PROGRAMA", "OBJETIVO"):
-            candidate = next((v for k, v in origin.items() if str(k).strip().upper() == key), None)
-            normalized = _line_key(candidate, plan)
-            if normalized != "SIN_LINEA":
-                return normalized
-    return _line_key(row.get("hoja"), plan)
+        candidates.extend(origin.values())
+    return _line_key(" ".join(str(value) for value in candidates if value), plan)
 
 
 def _cut_rank(row: dict[str, Any]) -> tuple[int, str, str]:
@@ -618,8 +801,6 @@ class PddDeaService:
                     "ppi_estado": (
                         "OFICIAL_EXTRAIDO"
                         if self._plan_ppi_nominal(plan_code) is not None
-                        else "PDF_ESCANEADO_SIN_OCR"
-                        if plan_code == "PDD_2016_2019"
                         else "NO_EXTRAIDO_DE_FUENTE_DIGITAL"
                     ),
                 }
@@ -700,6 +881,10 @@ class PddDeaService:
 
     @staticmethod
     def _plan_ppi_nominal(plan: str) -> float | None:
+        if plan == "PDD_2012_2015":
+            return 3_049_788_268_000.0
+        if plan == "PDD_2016_2019":
+            return 4_331_941_000_000.0
         if plan == "PDD_2013_2015":
             return 1_874_167_605_000.0
         if plan == "PDD_2024_2027":
@@ -713,11 +898,16 @@ class PddDeaService:
     @staticmethod
     def _plan_ppi_constant(plan: str) -> float | None:
         if plan.startswith("PDL_"):
-            return {
+            nominal = {
                 "PDL_1_2024_2027": 97_691_041_529.0,
                 "PDL_2_2024_2027": 161_289_996_409.01,
                 "PDL_3_2024_2027": 46_000_000_000.0,
             }.get(plan)
+            return nominal * _money_factor(2024) if nominal else None
+        if plan == "PDD_2012_2015":
+            return float(sum(amount * _money_factor(year) for year, amount in PPI_2012.items()))
+        if plan == "PDD_2016_2019":
+            return float(sum(amount * _money_factor(year) for year, amount in PPI_2016.items()))
         if plan == "PDD_2013_2015":
             return 1_874_167_605_000.0 * _money_factor(2015)
         if plan == "PDD_2024_2027":
@@ -852,7 +1042,7 @@ class PddDeaService:
                         (
                             line
                             for line in plan_2024.get("lineas_estrategicas", [])
-                            if line["linea"] == "Seguridad Humana"
+                            if line["linea"].startswith("1.")
                         ),
                         None,
                     ),
@@ -1331,13 +1521,24 @@ class PddDeaService:
                     row.get("ppi_anual_cop", {}).get(year, 0) or 0
                 )
         security_programs = list(programs_by_code.values())
+        link_counts: dict[str, int] = defaultdict(int)
+        for meta in metas:
+            link = (meta.get("datos_oficiales") or {}).get("_vinculo_triada", {})
+            link_counts[str(link.get("metodo_emparejamiento") or "SIN_VINCULO")] += 1
         payload = {
             "estado": "CALCULADO" if lines or metas else "CATALOGO_NO_SINCRONIZADO",
             "catalogo": {
                 "planes": list(PLANS),
                 "lineas_programas": lines,
                 "metas_oficiales": metas,
-                "conteos": {"lineas_programas": len(lines), "metas_oficiales": len(metas)},
+                "conteos": {
+                    "lineas_programas": len(lines),
+                    "metas_oficiales": len(metas),
+                    "metas_vinculadas_a_triada": sum(
+                        v for k, v in link_counts.items() if k != "SIN_VINCULO"
+                    ),
+                    "emparejamiento_por_metodo": dict(link_counts),
+                },
             },
             "monitor_linea_1_seguridad_humana": {
                 "linea": "Seguridad Humana",

@@ -3,8 +3,10 @@ from __future__ import annotations
 import numpy as np
 import pytest
 
+from app.modules.compromisos import pdd_dea_service as pdd_dea_module
 from app.modules.compromisos.dea_econometria_service import _bh, _lp
 from app.modules.compromisos.pdd_dea_service import (
+    CANONICAL_2016,
     PPI_2020_2019_COP,
     PPI_2020_TOTAL_2019_COP,
     PPI_2024,
@@ -68,6 +70,20 @@ def test_factor_ipc_a_base_2025_y_anio_base():
     assert _money_factor(2024) > 1
 
 
+def test_pdd_cache_v10_persists_payload_between_worker_memory_resets(tmp_path, monkeypatch):
+    cache_file = tmp_path / "pdd-cache.json"
+    monkeypatch.setattr(pdd_dea_module, "CACHE_V10", cache_file)
+    monkeypatch.setattr(pdd_dea_module, "_DISK_CACHE", {})
+    pdd_dea_module._RESULT.clear()
+    key = ("db-test", "pdd-dea", "catalogo")
+    payload = {"estado": "CALCULADO", "planes": ["PDD_2024_2027"]}
+    pdd_dea_module._store(key, payload)
+    pdd_dea_module._RESULT.clear()
+    monkeypatch.setattr(pdd_dea_module, "_DISK_CACHE", None)
+    assert pdd_dea_module._cached(key) == payload
+    assert pdd_dea_module._DISK_CACHE == {"pdd-dea/catalogo": payload}
+
+
 def test_advance_only_accepts_verified_scales():
     assert _advance(_row())[0:2] == (80.0, "COCIENTE_VERIFICADO")
     assert _advance(_row(avance_estrategico=0.8, ejecutada=2))[1] == "ESCALA_AMBIGUA"
@@ -119,10 +135,17 @@ def test_financial_unkeyed_same_source_amount_deduplicates():
 
 
 def test_line_alias_normalization():
-    assert _line_key("Línea 1: Seguridad Humana", "PDD_2024_2027") == "Seguridad Humana"
-    assert _line_key("Cartagena Incluyente", "PDD_2020_2023") == "Cartagena Incluyente"
-    assert _line_key("0.5522956144837197", "PDD_2024_2027") == "SIN_LINEA"
-    assert _line_key("0.82", "PDD_2020_2023") == "SIN_LINEA"
+    assert _line_key("Línea 1: Seguridad Humana", "PDD_2024_2027") == "1. Seguridad Humana"
+    assert _line_key("Cartagena Incluyente", "PDD_2020_2023") == "Pilar 2: Cartagena Incluyente"
+    assert _line_key("0.5522956144837197", "PDD_2024_2027") in {
+        "5. Innovación Pública y Participación Ciudadana",
+    }
+    assert _line_key("0.82", "PDD_2020_2023") == "Eje Transversal: Finanzas y Gobernanza"
+    assert _line_key("# DE VIVIENDAS ENTREGADAS 2018 Junio", "PDD_2024_2027") == "2. Vida Digna"
+    assert (
+        _line_key("FORMATO PLAN ACCION / PLAN ACCION IPCC 2019", "PDD_2016_2019")
+        == CANONICAL_2016[7]
+    )
 
 
 def test_tripartite_progress_imputes_verified_sister_rows():
@@ -223,6 +246,19 @@ def test_all_six_pdd_dea_routes_are_registered():
 def test_official_catalog_extraction_preserves_2024_ppi_rows_and_eight_plans():
     plans, hierarchy, metas = extract_catalog()
     assert len(plans) == 8
+    expected_ppi = {
+        "PDD_2012_2015": 3_049_788_268_000,
+        "PDD_2016_2019": 4_331_941_000_000,
+    }
+    for plan in plans:
+        assert plan["ppi_total_corriente_cop"] > 0
+        assert plan["ppi_total_constante_2025_cop"] > 0
+        assert plan["metadatos"]["ppi_estado"] == "OFICIAL_EXTRAIDO"
+    assert {
+        p["codigo_plan"]: p["ppi_total_corriente_cop"]
+        for p in plans
+        if p["codigo_plan"] in expected_ppi
+    } == expected_ppi
     assert (
         sum(row["codigo_plan"] == "PDD_2024_2027" and row["nivel"] == "LINEA" for row in hierarchy)
         == 6

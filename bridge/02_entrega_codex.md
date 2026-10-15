@@ -525,3 +525,32 @@ La fuente reporta 26 programas para el cruce de Seguridad Humana, mientras que l
 El bootstrap sí se ejecuta en la solicitud fría y entrega HTTP 200, pero la frontera tarda ~89 s y el resumen ~97 s si llegan a un worker sin caché. `_RESULT` es caché por proceso; el segundo worker puede recalcular. Por tanto, la funcionalidad quedó implementada y verificada, pero no se acredita latencia fría adecuada para interacción de producción.
 
 El commit local incluye únicamente migración, modelos, sincronizador, servicio PDD DEA, router, prueba, permisos y este reporte. `src/` y `.archify/` quedan fuera del commit.
+
+# Entrega backend cierre total PDD — [TRIADA-BACKEND-CIERRE-TOTAL-10]
+
+**Fecha:** 2026-10-15. **Rama:** `main`. Sin `git push`; sin cambios en `src/`.
+
+## Implementación y datos
+
+- Se incorporó el PPI oficial extraído por OCR para `PDD_2012_2015`: **COP 3.049.788.268.000**, con anualidades 2012–2015 y cinco ejes con sus techos. Para `PDD_2016_2019` se incorporó **COP 4.331.941.000.000**, con anualidades 2016–2019 y tres objetivos estratégicos con sus montos. Ambos planes usan el Markdown OCR como fuente.
+- `sincronizar_catalogo_pdd.py` persiste el estado `OFICIAL_EXTRAIDO` y los totales corrientes/constantes de 2025 de los **8 planes**. Verificación de lectura en `bd_csh`: los 8 tienen ambos importes mayores que cero y estado oficial.
+- El vínculo de cada meta se persiste en el JSONB existente `pdd_metas_oficiales.datos_oficiales._vinculo_triada`, porque el modelo/tabla no dispone de una columna `metadatos` ni `registro_triada_id`. El cruce exige el mismo periodo, compara código cuando la fuente provee uno, y usa entidad, indicadores y líneas como respaldo determinístico. El endpoint del explorador informa el total y el desglose por método.
+- Resultado actual sobre 2.068 metas oficiales: **1.267 vinculadas** (582 `INDICADOR_ENTIDAD`, 685 `SEMANTICO_PROGRAMA`) y 801 `SIN_VINCULO`. El catálogo OCR sincronizado no proporcionó un código legible para las filas evaluadas, de modo que no se acreditaron vínculos `CODIGO_EXACTO`; no se les asignó ese método por similitud textual.
+- El clasificador de `linea_estrategica` ya no devuelve el valor original arbitrario: asigna una de las líneas canónicas por periodo, incluyendo las seis líneas 2024–2027, cinco grupos oficiales 2020–2023 y ocho líneas 2016–2019; filas sin pista pasan al grupo transversal/institucional del plan. Se añadieron las ocho líneas de 2016 al catálogo.
+- Se implementó caché persistente versionada en `/tmp/polis_pdd_dea_cache_v10.json`. El sincronizador recalcula los seis payloads, los escribe atómicamente y el servicio los carga durante el inicio de cada worker además de guardarlos en `_RESULT`. El archivo final contiene seis claves y ocupa aproximadamente 3 MB.
+
+## Verificación
+
+| Comprobación | Resultado |
+| --- | --- |
+| `ruff check` en sincronizador, servicio y pruebas | Aprobado. |
+| `pytest -q tests/test_pdd_dea_triada.py` | **20 aprobadas**. |
+| `pytest -q tests/test_pdd_dea_triada.py tests/test_access_policy.py` | **124 aprobadas**. |
+| Catálogo sincronizado | 8 planes, 538 líneas/programas y 2.068 metas oficiales. |
+| `polis-backend.service` | Reiniciado y activo; ambos workers completaron startup. |
+| Seis rutas `/api/v1/compromisos/triada/pdd-dea/*` | HTTP 200 en las seis tras reinicio. |
+| Latencia total medida en la primera pasada | Catálogo 196 ms; cumplimiento 12 ms; frontera 28 ms; econometría 7 ms; explorador 326 ms; resumen 143 ms. La segunda pasada previa al último warmup dio 13, 13, 37, 9, 118 y 148 ms, respectivamente. |
+
+**Límite de rendimiento:** el caché elimina los recálculos caros, pero no se alcanzaron menos de 50 ms en todas las rutas. Explorador y resumen devuelven 2,08 MB y 2,58 MB; FastAPI aún codifica esos objetos y la medición HTTP excede 50 ms. Cumplimiento y explorador también incluyen filas completas de metas oficiales. Para cumplir ese umbral de extremo a extremo hará falta una respuesta HTTP pre-serializada/compactada o reducir el contrato de respuesta; los archivos autorizados para esta tarea no incluyen el router ni middleware de respuesta. La inicialización general de la aplicación también ejecuta su warmup existente, alrededor de 32 s por worker.
+
+El commit local contiene exclusivamente `backend/scripts/sincronizar_catalogo_pdd.py`, `backend/app/modules/compromisos/pdd_dea_service.py`, `backend/tests/test_pdd_dea_triada.py` y este reporte.

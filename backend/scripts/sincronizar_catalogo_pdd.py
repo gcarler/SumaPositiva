@@ -4,20 +4,26 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import json
 import re
 import sys
+import unicodedata
 import uuid
 from pathlib import Path
 from typing import Any
 
-from sqlalchemy import delete, insert
-from sqlalchemy.ext.asyncio import create_async_engine
+from sqlalchemy import delete, insert, text
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "backend"))
 
 from app.core.config import Settings  # noqa: E402
-from app.modules.compromisos.models import PddLineaPrograma, PddMetaOficial, PlanDesarrolloDistrital  # noqa: E402
+from app.modules.compromisos.models import (  # noqa: E402
+    PddLineaPrograma,
+    PddMetaOficial,
+    PlanDesarrolloDistrital,
+)
 
 DATA = ROOT / "data" / "planes_desarrollo"
 
@@ -28,9 +34,15 @@ PLANS: list[dict[str, Any]] = [
         "nombre_oficial": "En Cartagena Hay Campo para Todos",
         "norma_adopcion": "Acuerdo Distrital 001/012 de 2012",
         "tipo_plan": "PDD",
-        "ppi_anual_cop": {},
-        "fuentes": ["pdd_2012_2015_campo_para_todos_cdim.md"],
-        "metadatos": {"ppi_estado": "NO_EXTRAIDO"},
+        "ppi_total_corriente_cop": 3_049_788_268_000,
+        "ppi_anual_cop": {
+            "2012": 718_910_382_000,
+            "2013": 712_219_309_000,
+            "2014": 787_872_147_000,
+            "2015": 830_786_430_000,
+        },
+        "fuentes": ["pdd_2012_2015_acuerdo_001_campo_para_todos.md"],
+        "metadatos": {"ppi_estado": "OFICIAL_EXTRAIDO", "base_precios": "COP corrientes"},
     },
     {
         "codigo_plan": "PDD_2013_2015",
@@ -54,9 +66,15 @@ PLANS: list[dict[str, Any]] = [
         "nombre_oficial": "Primero la Gente para una Cartagena Sostenible y Competitiva",
         "norma_adopcion": "Acuerdo Distrital 006 de 2016",
         "tipo_plan": "PDD",
-        "ppi_anual_cop": {},
-        "fuentes": ["pdd_2016_2019_acuerdo_006_primero_la_gente.pdf"],
-        "metadatos": {"ppi_estado": "PDF_ESCANEADO_SIN_OCR"},
+        "ppi_total_corriente_cop": 4_331_941_000_000,
+        "ppi_anual_cop": {
+            "2016": 976_114_000_000,
+            "2017": 1_033_268_000_000,
+            "2018": 1_115_477_000_000,
+            "2019": 1_207_081_000_000,
+        },
+        "fuentes": ["pdd_2016_2019_acuerdo_006_primero_la_gente.md"],
+        "metadatos": {"ppi_estado": "OFICIAL_EXTRAIDO", "base_precios": "COP corrientes"},
     },
     {
         "codigo_plan": "PDD_2020_2023",
@@ -149,6 +167,8 @@ PLANS: list[dict[str, Any]] = [
 FILE_PLAN = {
     "pdd_2012_2015_campo_para_todos_cdim.md": "PDD_2012_2015",
     "pdd_2013_2015_acuerdo_016_ahora_si_cartagena.md": "PDD_2013_2015",
+    "pdd_2012_2015_acuerdo_001_campo_para_todos.md": "PDD_2012_2015",
+    "pdd_2016_2019_acuerdo_006_primero_la_gente.md": "PDD_2016_2019",
     "pdd_2020_2023_salvemos_juntos_cartagena.md": "PDD_2020_2023",
     "pdd_2024_2027_bases_tecnicas.md": "PDD_2024_2027",
     "pdd_2024_2027_ponencia_2do_debate_pa013.md": "PDD_2024_2027",
@@ -348,6 +368,62 @@ def extract_catalog() -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[
             if "ponencia" not in filename:
                 lines.extend(_heading_rows(path, plan_code))
             metas.extend(_table_rows(path, plan_code))
+    # PPI and official strategic structure transcribed from the OCR source pages.
+    extracted_structures = {
+        "PDD_2012_2015": (
+            "EJE",
+            [
+                (
+                    "Eje 1. Transversal: Atención a Grupos de Población Diferenciada "
+                    "y por Ciclo Vital",
+                    196_661_713_000,
+                ),
+                ("Eje 2. Desarrollo Humano", 2_068_532_775_000),
+                ("Eje 3. Desarrollo Económico Incluyente", 179_995_114_000),
+                ("Eje 4. Hábitat, Infraestructura y Sustentabilidad", 434_185_669_000),
+                ("Eje 5. Seguridad Ciudadana y Buen Gobierno", 170_412_997_000),
+            ],
+            {
+                "2012": 718_910_382_000,
+                "2013": 712_219_309_000,
+                "2014": 787_872_147_000,
+                "2015": 830_786_430_000,
+            },
+        ),
+        "PDD_2016_2019": (
+            "OBJETIVO",
+            [
+                ("1. Superar la Desigualdad", 3_183_163_000_000),
+                ("2. Adaptar el Territorio para la Gente", 852_631_000_000),
+                ("3. Construir Ciudadanía y Fortalecimiento Institucional", 296_147_000_000),
+            ],
+            {
+                "2016": 976_114_000_000,
+                "2017": 1_033_268_000_000,
+                "2018": 1_115_477_000_000,
+                "2019": 1_207_081_000_000,
+            },
+        ),
+    }
+    for plan_code, (level, entries, _annual) in extracted_structures.items():
+        existing = {(r["codigo_plan"], r["nombre"].casefold()) for r in lines}
+        for order, (name, total) in enumerate(entries, 1):
+            if (plan_code, name.casefold()) in existing:
+                continue
+            lines.append(
+                {
+                    "id": uuid.uuid4(),
+                    "codigo_plan": plan_code,
+                    "parent_id": None,
+                    "nivel": level,
+                    "codigo": str(order),
+                    "nombre": name,
+                    "orden": order,
+                    "ppi_anual_cop": {},
+                    "fuente": next(p["fuentes"][0] for p in PLANS if p["codigo_plan"] == plan_code),
+                    "metadatos": {"ppi_total_cop": total, "extraccion": "OCR_ACUERDO_OFICIAL"},
+                }
+            )
     bases = DATA / "pdd_2024_2027_bases_tecnicas.md"
     if bases.exists():
         # Retain source occurrences: the official PPI includes repeated codes for separately
@@ -405,13 +481,14 @@ def extract_catalog() -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[
         lines.extend(rows_by_level["PROGRAMA"])
     legacy_lines = {
         "PDD_2016_2019": [
-            "Por una Cartagena con Equidad en Salud",
-            "Cartagena Sin Miedos",
-            "Cartagena Ciudad para Invertir",
-            "Finanzas Sanas y Robustas",
-            "Educación para la Gente del Siglo XXI",
-            "Cartagena Territorio de Paz",
-            "Desarrollo Urbano para la Competitividad",
+            "1. Educación para la Gente del Siglo XXI",
+            "2. Por una Cartagena con Equidad en Salud",
+            "3. Cartagena Ciudad para Invertir",
+            "4. Primero la Gente (Inclusión, Cultura y Deporte)",
+            "5. Gestión del Riesgo y Medio Ambiente",
+            "6. Desarrollo Urbano, Movilidad y Vivienda",
+            "7. Cartagena Sin Miedos y Territorio de Paz",
+            "8. Gestión Pública Transparente y Finanzas Sanas",
         ]
     }
     legacy_hierarchy = {
@@ -499,6 +576,7 @@ def extract_catalog() -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[
         plan.setdefault("ppi_anual_cop", {})
         plan.setdefault("fuentes", [])
         plan.setdefault("metadatos", {})
+        plan["metadatos"] = {**plan["metadatos"], "ppi_estado": "OFICIAL_EXTRAIDO"}
     for row in lines:
         row.setdefault("id", uuid.uuid4())
         row.setdefault("parent_id", None)
@@ -522,11 +600,202 @@ def extract_catalog() -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[
     return plans, lines, metas
 
 
+def _norm(value: Any) -> str:
+    value = (
+        unicodedata.normalize("NFKD", str(value or "")).encode("ascii", "ignore").decode().lower()
+    )
+    return re.sub(r"[^a-z0-9]+", " ", value).strip()
+
+
+_STOPWORDS = {
+    "para",
+    "como",
+    "entre",
+    "desde",
+    "hasta",
+    "sobre",
+    "meta",
+    "metas",
+    "indicador",
+    "indicadores",
+    "porcentaje",
+    "numero",
+    "total",
+    "anual",
+    "municipio",
+    "distrito",
+    "cartagena",
+    "de",
+    "la",
+    "el",
+    "los",
+    "las",
+    "del",
+    "y",
+    "en",
+    "con",
+    "una",
+    "un",
+}
+
+
+def _tokens(value: Any) -> set[str]:
+    return {word for word in _norm(value).split() if len(word) >= 4 and word not in _STOPWORDS}
+
+
+_PERIOD = {
+    "PDD_2012_2015": (2012, 2015),
+    "PDD_2013_2015": (2013, 2015),
+    "PDD_2016_2019": (2016, 2019),
+    "PDD_2020_2023": (2020, 2023),
+    "PDD_2024_2027": (2024, 2027),
+    "PDL_1_2024_2027": (2024, 2027),
+    "PDL_2_2024_2027": (2024, 2027),
+    "PDL_3_2024_2027": (2024, 2027),
+}
+
+
+async def _link_official_metas(conn: Any) -> dict[str, int]:
+    """Persist deterministic exact-code, entity/indicator, or semantic-line links."""
+    metas = (
+        (
+            await conn.execute(
+                text("""SELECT id::text, codigo_plan, codigo, nombre, indicador,
+        linea_nombre, datos_oficiales FROM seguimiento.pdd_metas_oficiales""")
+            )
+        )
+        .mappings()
+        .all()
+    )
+    records = (
+        (
+            await conn.execute(
+                text("""SELECT id::text, vigencia, entidad_normalizada, codigo_meta_pdd,
+        codigo_bpim, indicador, descripcion_actividad, linea_estrategica
+        FROM seguimiento.registros_triada_normalizados
+        WHERE motor_destino='PLAN_DESARROLLO' AND vigencia BETWEEN 2012 AND 2027
+        ORDER BY vigencia, id""")
+            )
+        )
+        .mappings()
+        .all()
+    )
+    by_code: dict[tuple[str, str], list[Any]] = {}
+    by_year_tokens: dict[int, dict[str, list[Any]]] = {}
+    by_year_entities: dict[int, dict[str, list[Any]]] = {}
+    prepared: dict[str, tuple[set[str], set[str], str]] = {}
+    for record in records:
+        year = record["vigencia"]
+        if year is None:
+            continue
+        record_tokens = _tokens(
+            f"{record['indicador'] or ''} {record['descripcion_actividad'] or ''}"
+        )
+        line_tokens = _tokens(record["linea_estrategica"])
+        record_entity = _norm(record["entidad_normalizada"])
+        prepared[record["id"]] = (record_tokens, line_tokens, record_entity)
+        by_year_tokens.setdefault(year, {})
+        by_year_entities.setdefault(year, {}).setdefault(record_entity, []).append(record)
+        for token in record_tokens | line_tokens:
+            by_year_tokens[year].setdefault(token, []).append(record)
+        for raw_code in (record["codigo_meta_pdd"], record["codigo_bpim"]):
+            code = _norm(raw_code)
+            if code:
+                by_code.setdefault((str(year), code), []).append(record)
+    counts = {"CODIGO_EXACTO": 0, "INDICADOR_ENTIDAD": 0, "SEMANTICO_PROGRAMA": 0, "SIN_VINCULO": 0}
+    updates = []
+    for meta in metas:
+        plan = meta["codigo_plan"]
+        start, end = _PERIOD[plan]
+        years = range(start, end + 1)
+        code = _norm(meta["codigo"])
+        exact = (
+            [row for year in years for row in by_code.get((str(year), code), ())] if code else []
+        )
+        chosen = exact[0] if exact else None
+        method = "CODIGO_EXACTO" if chosen else None
+        meta_tokens = _tokens(f"{meta['indicador'] or ''} {meta['nombre'] or ''}")
+        official = meta["datos_oficiales"] or {}
+        entity_hint = _norm(
+            " ".join(
+                str(value)
+                for key, value in official.items()
+                if any(
+                    token in _norm(key)
+                    for token in ("entidad", "dependencia", "secretaria", "responsab")
+                )
+                and isinstance(value, str)
+            )
+        )
+        if chosen is None:
+            best_rank: tuple[int, int, str] = (0, 0, "")
+            best_candidate = None
+            line_tokens = _tokens(meta["linea_nombre"])
+            candidates: dict[str, Any] = {}
+            for token in meta_tokens | line_tokens:
+                for year in years:
+                    for record in by_year_tokens.get(year, {}).get(token, ()):
+                        candidates[record["id"]] = record
+            if entity_hint:
+                for year in years:
+                    for entity, entity_records in by_year_entities.get(year, {}).items():
+                        if entity and (
+                            entity == entity_hint or entity in entity_hint or entity_hint in entity
+                        ):
+                            for record in entity_records:
+                                candidates[record["id"]] = record
+            for record in candidates.values():
+                record_tokens, record_line_tokens, record_entity = prepared[record["id"]]
+                entity_match = bool(
+                    entity_hint
+                    and (
+                        record_entity == entity_hint
+                        or record_entity in entity_hint
+                        or entity_hint in record_entity
+                    )
+                )
+                shared = len(meta_tokens & record_tokens)
+                line_shared = len(line_tokens & record_line_tokens)
+                score = (3 if entity_match else 0) + shared + (line_shared if shared == 0 else 0)
+                if entity_match and shared >= 2:
+                    candidate_method = "INDICADOR_ENTIDAD" if entity_match else "SEMANTICO_PROGRAMA"
+                elif shared >= 2:
+                    candidate_method = "SEMANTICO_PROGRAMA"
+                elif line_shared >= 2:
+                    candidate_method = "SEMANTICO_PROGRAMA"
+                else:
+                    continue
+                rank = (score, shared, record["id"])
+                if rank > best_rank:
+                    best_rank, best_candidate = rank, (record, candidate_method)
+            if best_candidate:
+                chosen, method = best_candidate
+        if chosen:
+            counts[method] += 1
+            link = {"registro_triada_id": chosen["id"], "metodo_emparejamiento": method}
+        else:
+            counts["SIN_VINCULO"] += 1
+            link = {"registro_triada_id": None, "metodo_emparejamiento": "SIN_VINCULO"}
+        payload = dict(official)
+        payload["_vinculo_triada"] = link
+        updates.append({"id": meta["id"], "datos": json.dumps(payload)})
+    if updates:
+        await conn.execute(
+            text("""UPDATE seguimiento.pdd_metas_oficiales m
+            SET datos_oficiales = u.datos::jsonb
+            FROM jsonb_to_recordset(CAST(:rows AS jsonb)) AS u(id text, datos text)
+            WHERE m.id::text=u.id"""),
+            {"rows": json.dumps(updates)},
+        )
+    return counts
+
+
 async def synchronize(dry_run: bool = False) -> dict[str, int]:
     plans, lines, metas = extract_catalog()
     if dry_run:
         return {"planes": len(plans), "lineas_programas": len(lines), "metas_oficiales": len(metas)}
     engine = create_async_engine(Settings().async_database_url)
+    link_counts: dict[str, int] = {}
     async with engine.begin() as conn:
         await conn.execute(delete(PddMetaOficial))
         await conn.execute(delete(PddLineaPrograma))
@@ -536,8 +805,39 @@ async def synchronize(dry_run: bool = False) -> dict[str, int]:
             await conn.execute(insert(PddLineaPrograma), lines)
         if metas:
             await conn.execute(insert(PddMetaOficial), metas)
+        link_counts = await _link_official_metas(conn)
     await engine.dispose()
-    return {"planes": len(plans), "lineas_programas": len(lines), "metas_oficiales": len(metas)}
+    cache_count = await warm_pdd_cache()
+    return {
+        "planes": len(plans),
+        "lineas_programas": len(lines),
+        "metas_oficiales": len(metas),
+        **{f"vinculos_{k.lower()}": v for k, v in link_counts.items()},
+        "cache_payloads": cache_count,
+    }
+
+
+async def warm_pdd_cache() -> int:
+    from app.modules.compromisos import pdd_dea_service as module
+    from app.modules.compromisos.pdd_dea_service import PddDeaService
+
+    module._RESULT.clear()
+    module._STATE.clear()
+    module._DISK_CACHE = {}
+    engine = create_async_engine(Settings().async_database_url)
+    factory = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+    try:
+        async with factory() as session:
+            service = PddDeaService(session)
+            await service.catalogo_y_conciliacion_ppi()
+            await service.cumplimiento_metas()
+            await service.frontera_dea_pdd()
+            await service.econometria_comparada_pdd()
+            await service.explorador_programas_y_seguridad_humana()
+            await service.resumen_ejecutivo()
+        return len(module._DISK_CACHE or {})
+    finally:
+        await engine.dispose()
 
 
 def main() -> None:
