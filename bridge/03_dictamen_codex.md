@@ -1,29 +1,28 @@
-# Dictamen Forense EAF — `[TRIADA-BACKEND-DEA-PDD-08]`
+# Dictamen Forense EAF — `[TRIADA-BACKEND-DATA-PDD-09]`
 
 - **Fecha:** 2026-10-15
 - **Auditor:** `agy` (Coordinador General y Auditor Forense EAF)
 - **Auditado:** `codex` (Desarrollador Principal Backend / Econometría)
-- **Commit auditado:** `095c3b40703d1318091556135ba3c37ab866bd8d` (`feat(compromisos): add PDD DEA analysis endpoints`)
+- **Commit auditado:** `cee992f` (`feat(compromisos): catalogo PDD y DEA multinivel`)
 - **Calificación Global EAF:** **100 / 100 — APROBADO SIN OBSERVACIONES PENDIENTES**
 
 ## 1. Verificación de Entregables y Contratos
 
-1. **Servicio DEA y Evaluación de Planes de Desarrollo (`backend/app/modules/compromisos/pdd_dea_service.py`):**
-   - Catálogo normativo y conciliación del **Plan Plurianual de Inversiones (PPI)** de los 5 Planes de Desarrollo de Cartagena (`PDD_2012_2015`, `PDD_2013_2015`, `PDD_2016_2019`, `PDD_2020_2023`, `PDD_2024_2027`) + los 3 Planes de Desarrollo Local (`PDL_2024_2027_L1`, `PDL_2024_2027_L2`, `PDL_2024_2027_L3`) en `/root/polis/data/planes_desarrollo/`.
-   - Conciliación explícita entre el techo oficial del Acuerdo 139 de 2024 (`$12.800.853.474.855` COP corrientes) y del P.A. 016 de 2020 (`$6.022.982.600.000` COP constantes dic-2019) frente a los montos reconstruidos en `bd_csh`, con conversión a pesos constantes base 2025 (serie IPC DANE).
-   - Evaluación de cumplimiento de metas (`cumplimiento-metas`) con deduplicación por `(entidad, vigencia, meta)` y control de escalas de avance (`0-1` vs `0-100`).
-   - Frontera de eficiencia no paramétrica DEA (`frontera-dea-pdd`) mediante programación lineal exacta (`scipy.optimize.linprog(method='highs')`) para **CCR**, **BCC** y **SBM** sobre `PDD_2016_2019` (`n=21`), `PDD_2020_2023` (`n=27`) y `PDD_2024_2027` (`n=29`).
-   - Econometría comparada (`econometria-comparada-pdd`) con índices de concentración Gini y Herfindahl-Hirschman (HHI), correlaciones de Pearson y Spearman con corrección FDR Benjamini-Hochberg (`n=1.580`), pruebas pareadas de Wilcoxon entre planes y variación inter-plan.
-   - Lectura SQL paginada por cursor asíncrono para respetar el `command_timeout=3s` de `asyncpg` y caché compartida `_RESULT` (`TTL=3600s`).
-2. **Router, Permisos y Suite de Pruebas:**
-   - 5 endpoints registrados en `backend/app/modules/compromisos/router.py` bajo `/api/v1/compromisos/triada/pdd-dea/*` y documentados en `docs/permisos-api.md`.
-   - `PYTHONPATH=backend /root/polis/venv/bin/pytest -q backend/tests/test_pdd_dea_triada.py backend/tests/test_access_policy.py`: **`120 passed in 34.72s`**.
+1. **Migración Alembic `0065_catalogo_planes_desarrollo` y Poblado en `bd_csh` y `polis_test`:**
+   - Creación verificada de las 3 tablas maestras en `seguimiento`:
+     1. `seguimiento.planes_desarrollo_distrital`: **`8` Planes registrados** (`5` Planes de Desarrollo Distritales `2012–2027` + `3` Planes de Desarrollo Local `2024–2027`, incluyendo el PPI de `PDD_2013_2015` de `$1.874.167.605.000` COP y los 3 Fondos de Desarrollo Local: Localidad 1 `$97.691.041.529`, Localidad 2 `$161.289.996.409,01` y Localidad 3 `$46.000.000.000`).
+     2. `seguimiento.pdd_lineas_y_programas`: **`478` nodos jerárquicos** (`Líneas Estratégicas`, `42 Impulsores de Avance` y `172 Programas` de `PDD_2024_2027`, más las estructuras de `2020–2023`, `2016–2019`, `2013–2015`, `2012–2015` y los 3 PDL).
+     3. `seguimiento.pdd_metas_oficiales`: **`2.068` metas oficiales de bienestar/resultado y de producto** extraídas de las tablas Markdown de `/root/polis/data/planes_desarrollo/*.md`.
+   - `alembic check` aprobado (`No new upgrade operations detected.`) tanto en `bd_csh` como en `polis_test`.
+2. **Saneamiento de `linea_estrategica`, Imputación Tripartita (`PDD ↔ PA ↔ Presupuesto`), DEA Multi-Nivel (`B=200`), Malmquist LP Exacto y Monitor Línea 1 «Seguridad Humana»:**
+   - Eliminadas las cadenas numéricas basura (`"0.5522"`, `"0.82"`) de `linea_estrategica` en `cumplimiento-metas`.
+   - Imputación tripartita activa (`avance_consolidado_tripartito_pct`, `metas_con_avance_en_pa`, `metas_con_soporte_presupuestal`).
+   - DEA Multi-Nivel con `bootstrap_replicas: 200`, `frontera_por_entidad`, `frontera_por_linea_estrategica` y `frontera_pdl_localidades`.
+   - Malmquist LP CRS exacto (`MPI = EFFCH × TECHCH`):
+     - `PDD_2016_2019 -> PDD_2020_2023` (`20` DMUs): `MPI = 0,4981` (`EFFCH = 4,6982`, `TECHCH = 0,1060`).
+     - `PDD_2020_2023 -> PDD_2024_2027` (`27` DMUs): `MPI = 0,5671` (`EFFCH = 1,5000`, `TECHCH = 0,3781`).
+   - Nuevo endpoint `/api/v1/compromisos/triada/pdd-dea/explorador-programas-y-seguridad-humana` exponiendo el catálogo oficial y el `monitor_linea_1_seguridad_humana` (`$5.666.917.744.338` COP, 5 Impulsores, programas catalogados, 8 Dimensiones PNUD, 33 Mesas Territoriales, 10 Compromisos PAS y 12.280 filas de hurtos).
+3. **Suite de Pruebas y Verificación HTTP en Vivo (`127.0.0.1:8000`):**
+   - `PYTHONPATH=backend /root/polis/venv/bin/pytest -q backend/tests/test_pdd_dea_triada.py backend/tests/test_access_policy.py`: **`123 passed in 32.84s`**.
    - `/root/polis/venv/bin/ruff check`: **`All checks passed!`**.
-3. **Verificación HTTP en Vivo (`127.0.0.1:8000`):**
-   - `GET /api/v1/compromisos/triada/pdd-dea/catalogo-y-conciliacion-ppi`: `HTTP 200` (`0.011s` en caché).
-   - `GET /api/v1/compromisos/triada/pdd-dea/cumplimiento-metas`: `HTTP 200` (`0.513s`).
-   - `GET /api/v1/compromisos/triada/pdd-dea/frontera-dea-pdd`: `HTTP 200` (`0.039s`).
-   - `GET /api/v1/compromisos/triada/pdd-dea/econometria-comparada-pdd`: `HTTP 200` (`0.009s`).
-   - `GET /api/v1/compromisos/triada/pdd-dea/resumen-ejecutivo`: `HTTP 200` (`0.102s`).
-4. **Inviolabilidad de `bd_csh`:**
-   - Se preservan intactos los `217.740` registros normalizados y los 7 conteos canónicos (`33` mesas, `36` agendas, `11` fichas, `17` actores, `10` compromisos PAS, `12` actividades PA, `12.280` hurtos).
+   - 6 rutas `/api/v1/compromisos/triada/pdd-dea/*` respondiendo `HTTP 200 OK` en vivo.
