@@ -45,6 +45,7 @@ import {
 } from "../services/plan-accion-dnp-api";
 import { InteligenciaForense6MPanel } from "./inteligencia-forense-6m-panel";
 import { DeaEconometriaPanel } from "./dea-econometria-panel";
+import { PddDeaEvaluacionPanel } from "./pdd-dea-evaluacion-panel";
 
 export interface TriadaMotoresTabProps {
   puedeEditar?: boolean;
@@ -58,6 +59,7 @@ export function TriadaMotoresTab({ puedeEditar = false }: TriadaMotoresTabProps)
     | "conector_transparencia"
     | "inteligencia_forense"
     | "dea_econometria"
+    | "pdd_dea"
   >("triada_lecturas");
 
   // Estado general de datos inicializado con catálogo canónico (SSR y resiliencia offline)
@@ -247,6 +249,18 @@ export function TriadaMotoresTab({ puedeEditar = false }: TriadaMotoresTabProps)
           >
             <Compass className="h-4 w-4" />
             <span>5. Frontera Eficiente DEA & Econometría (CCR · BCC · SBM · Malmquist)</span>
+          </Button>
+
+          <Button
+            variant={subvistaActiva === "pdd_dea" ? "ember" : "outline"}
+            size="sm"
+            onClick={() => setSubvistaActiva("pdd_dea")}
+            className="gap-2 text-xs font-medium"
+            data-testid="tab-nav-pdd-dea"
+            aria-pressed={subvistaActiva === "pdd_dea"}
+          >
+            <TrendingUp className="h-4 w-4" />
+            <span>6. Evaluación & DEA Planes de Desarrollo (2012–2027 · Acuerdo 139)</span>
           </Button>
         </div>
 
@@ -1180,6 +1194,15 @@ export function TriadaMotoresTab({ puedeEditar = false }: TriadaMotoresTabProps)
       {subvistaActiva === "dea_econometria" && (
         <section aria-labelledby="heading-subvista-dea-econometria" className="space-y-6">
           <DeaEconometriaPanel puedeEditar={puedeEditar} />
+        </section>
+      )}
+
+      {/* ==================================================================== */}
+      {/* SUB-VISTA 6: EVALUACIÓN & DEA PLANES DE DESARROLLO (ACUERDO 139)    */}
+      {/* ==================================================================== */}
+      {subvistaActiva === "pdd_dea" && (
+        <section aria-labelledby="heading-subvista-pdd-dea" className="space-y-6">
+          <PddDeaEvaluacionPanel puedeEditar={puedeEditar} />
         </section>
       )}
     </div>

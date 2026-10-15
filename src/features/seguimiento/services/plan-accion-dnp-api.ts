@@ -2472,4 +2472,175 @@ export async function obtenerResumenIntegralDeaApi(): Promise<ResumenIntegralDea
   }
 }
 
+// =============================================================================
+// SUB-VISTA 6: EVALUACIÓN & DEA PLANES DE DESARROLLO (2012–2027 · ACUERDO 139)
+// Hito: [TRIADA-FRONTEND-DEA-PDD-08]
+// =============================================================================
+
+export type {
+  CodigoPlanDesarrollo,
+  InsumoDeaPdd,
+  PlanDesarrolloInfo,
+  DetalleAnualPpi,
+  PpiPorLineaEstrategica,
+  ConciliacionPpiVsBdCshItem,
+  DatoIpcHistorico,
+  ResumenCumplimientoPlan,
+  ComponenteSeguridadHumana,
+  MacroproyectoEstrategico,
+  PlanDesarrolloLocalAvance,
+  DmuDeaPddEntidad,
+  DmuDeaPddLineaEstrategica,
+  MalmquistTransicionInterPlanes,
+  CorrelacionPddFdr,
+  DesigualdadPpiGiniHhi,
+  PruebaWilcoxonInterPlanes,
+  CatalogoYConciliacionPpiRespuesta,
+  CumplimientoMetasPddRespuesta,
+  FronteraDeaPddRespuesta,
+  EconometriaComparadaPddRespuesta,
+  ResumenEjecutivoPddDeaRespuesta,
+} from "../data/pdd-dea-cartagena.data";
+
+export {
+  CATALOGO_PLANES_DESARROLLO,
+  TABLA_OFICIAL_PPI_ANUAL,
+  PPI_POR_LINEA_PDD_2024_2027,
+  CONCILIACION_PPI_BD_CSH,
+  SERIE_IPC_DANE_HISTORICA,
+  RESUMEN_CUMPLIMIENTO_PLANES,
+  COMPONENTES_SEGURIDAD_HUMANA_2024_2027,
+  MACROPROYECTOS_ESTRATEGICOS_2024_2027,
+  PLANES_DESARROLLO_LOCAL_AVANCE,
+  DMUS_DEA_PDD_ENTIDADES,
+  DMUS_DEA_PDD_LINEAS_ESTRATEGICAS,
+  MALMQUIST_INTER_PLANES_DATA,
+  CORRELACIONES_PDD_FDR_DATA,
+  DESIGUALDAD_PPI_GINI_HHI,
+  PRUEBAS_WILCOXON_INTER_PLANES,
+  obtenerCatalogoYConciliacionPpiLocal,
+  obtenerCumplimientoMetasPddLocal,
+  obtenerFronteraDeaPddLocal,
+  obtenerEconometriaComparadaPddLocal,
+  obtenerResumenEjecutivoPddDeaLocal,
+} from "../data/pdd-dea-cartagena.data";
+
+import type {
+  InsumoDeaPdd,
+  CatalogoYConciliacionPpiRespuesta,
+  CumplimientoMetasPddRespuesta,
+  FronteraDeaPddRespuesta,
+  EconometriaComparadaPddRespuesta,
+  ResumenEjecutivoPddDeaRespuesta,
+} from "../data/pdd-dea-cartagena.data";
+
+import {
+  obtenerCatalogoYConciliacionPpiLocal,
+  obtenerCumplimientoMetasPddLocal,
+  obtenerFronteraDeaPddLocal,
+  obtenerEconometriaComparadaPddLocal,
+  obtenerResumenEjecutivoPddDeaLocal,
+} from "../data/pdd-dea-cartagena.data";
+
+// -----------------------------------------------------------------------------
+// CLIENTES API TIPADOS PARA LOS 5 ENDPOINTS PDD-DEA Y PPI
+// -----------------------------------------------------------------------------
+
+export async function obtenerCatalogoYConciliacionPpiApi(): Promise<CatalogoYConciliacionPpiRespuesta> {
+  try {
+    const res = await apiFetch<CatalogoYConciliacionPpiRespuesta>(
+      "/compromisos/triada/pdd-dea/catalogo-y-conciliacion-ppi",
+      { method: "GET" }
+    );
+    if (res && Array.isArray(res.catalogo_planes) && Array.isArray(res.tabla_ppi_anual)) {
+      return res;
+    }
+    return obtenerCatalogoYConciliacionPpiLocal();
+  } catch (error) {
+    console.warn("Fallo obtenerCatalogoYConciliacionPpiApi, usando fallback local:", error);
+    return obtenerCatalogoYConciliacionPpiLocal();
+  }
+}
+
+export async function obtenerCumplimientoMetasPddApi(params?: {
+  plan?: string;
+  linea?: string;
+  entidad?: string;
+}): Promise<CumplimientoMetasPddRespuesta> {
+  try {
+    const searchParams = new URLSearchParams();
+    if (params?.plan) searchParams.set("plan", params.plan);
+    if (params?.linea) searchParams.set("linea", params.linea);
+    if (params?.entidad) searchParams.set("entidad", params.entidad);
+
+    const query = searchParams.toString();
+    const endpoint = `/compromisos/triada/pdd-dea/cumplimiento-metas${query ? `?${query}` : ""}`;
+    const res = await apiFetch<CumplimientoMetasPddRespuesta>(endpoint, { method: "GET" });
+
+    if (res && Array.isArray(res.resumen_planes) && Array.isArray(res.componentes_seguridad_humana)) {
+      return res;
+    }
+    return obtenerCumplimientoMetasPddLocal(params);
+  } catch (error) {
+    console.warn("Fallo obtenerCumplimientoMetasPddApi, usando fallback local:", error);
+    return obtenerCumplimientoMetasPddLocal(params);
+  }
+}
+
+export async function obtenerFronteraDeaPddApi(params?: {
+  plan?: string;
+  insumo?: InsumoDeaPdd;
+}): Promise<FronteraDeaPddRespuesta> {
+  try {
+    const searchParams = new URLSearchParams();
+    if (params?.plan) searchParams.set("plan", params.plan);
+    if (params?.insumo) searchParams.set("insumo", params.insumo);
+
+    const query = searchParams.toString();
+    const endpoint = `/compromisos/triada/pdd-dea/frontera-dea-pdd${query ? `?${query}` : ""}`;
+    const res = await apiFetch<FronteraDeaPddRespuesta>(endpoint, { method: "GET" });
+
+    if (res && Array.isArray(res.ranking_entidades) && typeof res.eficiencia_media_bcc_entidades === "number") {
+      return res;
+    }
+    return obtenerFronteraDeaPddLocal(params);
+  } catch (error) {
+    console.warn("Fallo obtenerFronteraDeaPddApi, usando fallback local:", error);
+    return obtenerFronteraDeaPddLocal(params);
+  }
+}
+
+export async function obtenerEconometriaComparadaPddApi(): Promise<EconometriaComparadaPddRespuesta> {
+  try {
+    const res = await apiFetch<EconometriaComparadaPddRespuesta>(
+      "/compromisos/triada/pdd-dea/econometria-comparada-pdd",
+      { method: "GET" }
+    );
+    if (res && Array.isArray(res.malmquist_inter_planes) && Array.isArray(res.correlaciones_fdr)) {
+      return res;
+    }
+    return obtenerEconometriaComparadaPddLocal();
+  } catch (error) {
+    console.warn("Fallo obtenerEconometriaComparadaPddApi, usando fallback local:", error);
+    return obtenerEconometriaComparadaPddLocal();
+  }
+}
+
+export async function obtenerResumenEjecutivoPddDeaApi(): Promise<ResumenEjecutivoPddDeaRespuesta> {
+  try {
+    const res = await apiFetch<ResumenEjecutivoPddDeaRespuesta>(
+      "/compromisos/triada/pdd-dea/resumen-ejecutivo",
+      { method: "GET" }
+    );
+    if (res && res.catalogo && res.cumplimiento && res.frontera) {
+      return res;
+    }
+    return obtenerResumenEjecutivoPddDeaLocal();
+  } catch (error) {
+    console.warn("Fallo obtenerResumenEjecutivoPddDeaApi, usando fallback local:", error);
+    return obtenerResumenEjecutivoPddDeaLocal();
+  }
+}
+
+
 
