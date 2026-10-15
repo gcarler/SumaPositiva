@@ -11,6 +11,8 @@ import {
   Underline,
   Sparkles,
   ChevronRight,
+  Volume2,
+  ExternalLink,
 } from "lucide-react";
 import { Button } from "./button";
 import { Label } from "./label";
@@ -536,6 +538,37 @@ export function AccesibilidadWidget({
                 </span>
               </div>
             </button>
+          </li>
+
+          {/* 6. Centro de Relevo / Signos en Red (Enlace externo oficial) */}
+          <li className="relative h-12 w-[52px]">
+            <a
+              href="https://centroderelevo.gov.co/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Centro de Relevo Colombia (abre en una nueva pestaña)"
+              className={cn(
+                "group absolute right-0 top-0 flex h-12 w-[52px] items-center overflow-hidden rounded-l-lg border-y border-l border-transparent bg-[var(--surface-1)] shadow-none transition-[width] duration-[250ms] ease-out focus-visible:outline-2 focus-visible:outline-[var(--ring)] motion-reduce:transition-none",
+                clasesExpansionBoton,
+                reducedMotion && "transition-none!"
+              )}
+            >
+              <div className="flex h-full w-[196px] items-center pl-[13px] pr-3">
+                <div className="flex size-[26px] shrink-0 items-center justify-center rounded-[6px] bg-[var(--surface-2)] text-[var(--text-primary)] font-bold transition-colors group-hover:bg-[var(--ember)] group-hover:text-[var(--ember-foreground)]">
+                  <Volume2 className="size-3.5" aria-hidden="true" />
+                </div>
+                <div
+                  className={cn(
+                    "ml-2.5 flex items-center gap-1.5 whitespace-nowrap text-xs font-semibold text-[var(--text-primary)] opacity-0 transition-opacity duration-200",
+                    clasesOpacidadEtiqueta,
+                    reducedMotion && "transition-none!"
+                  )}
+                >
+                  <span>Centro de Relevo</span>
+                  <ExternalLink className="size-3 text-[var(--text-tertiary)]" aria-hidden="true" />
+                </div>
+              </div>
+            </a>
           </li>
         </ul>
       </nav>

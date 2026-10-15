@@ -6,7 +6,6 @@ import {
   SEED_DMUS_VIGENCIA_2025,
   SEED_MALMQUIST_RESPUESTA,
   SEED_SEGUNDA_ETAPA_ECONOMETRICA,
-  SEED_RESUMEN_INTEGRAL_DEA,
   generarFronteraPorVigencia,
 } from "../data/dea-econometria-cartagena.data";
 import {
