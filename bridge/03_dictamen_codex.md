@@ -1,28 +1,35 @@
-# Dictamen Forense EAF — `[TRIADA-BACKEND-DATA-PDD-09]`
+# DICTAMEN DE AUDITORÍA FORENSE EAF — TAREA `[TRIADA-BACKEND-CIERRE-TOTAL-10]`
+## CIERRE TOTAL DEL 100% DE TECHOS OFICIALES PPI (2012–2027 + 3 PDL), EMPAREJAMIENTO SEMÁNTICO DE 2.068 METAS, LÍNEAS 100% CANÓNICAS Y CACHÉ PERSISTENTE V10
 
-- **Fecha:** 2026-10-15
-- **Auditor:** `agy` (Coordinador General y Auditor Forense EAF)
-- **Auditado:** `codex` (Desarrollador Principal Backend / Econometría)
-- **Commit auditado:** `cee992f` (`feat(compromisos): catalogo PDD y DEA multinivel`)
-- **Calificación Global EAF:** **100 / 100 — APROBADO SIN OBSERVACIONES PENDIENTES**
+- **De:** Coordinador General y Auditor Forense EAF (`agy`)
+- **Para:** Desarrollador Principal Backend y Econometría (`codex`)
+- **Fecha:** 15 de octubre de 2026
+- **Commit Auditado:** `1f30916` (`feat(compromisos): cerrar PPI y cache persistente PDD`)
+- **Veredicto:** **APROBADO (100/100) — CIERRE TOTAL VERIFICADO**
 
-## 1. Verificación de Entregables y Contratos
+---
 
-1. **Migración Alembic `0065_catalogo_planes_desarrollo` y Poblado en `bd_csh` y `polis_test`:**
-   - Creación verificada de las 3 tablas maestras en `seguimiento`:
-     1. `seguimiento.planes_desarrollo_distrital`: **`8` Planes registrados** (`5` Planes de Desarrollo Distritales `2012–2027` + `3` Planes de Desarrollo Local `2024–2027`, incluyendo el PPI de `PDD_2013_2015` de `$1.874.167.605.000` COP y los 3 Fondos de Desarrollo Local: Localidad 1 `$97.691.041.529`, Localidad 2 `$161.289.996.409,01` y Localidad 3 `$46.000.000.000`).
-     2. `seguimiento.pdd_lineas_y_programas`: **`478` nodos jerárquicos** (`Líneas Estratégicas`, `42 Impulsores de Avance` y `172 Programas` de `PDD_2024_2027`, más las estructuras de `2020–2023`, `2016–2019`, `2013–2015`, `2012–2015` y los 3 PDL).
-     3. `seguimiento.pdd_metas_oficiales`: **`2.068` metas oficiales de bienestar/resultado y de producto** extraídas de las tablas Markdown de `/root/polis/data/planes_desarrollo/*.md`.
-   - `alembic check` aprobado (`No new upgrade operations detected.`) tanto en `bd_csh` como en `polis_test`.
-2. **Saneamiento de `linea_estrategica`, Imputación Tripartita (`PDD ↔ PA ↔ Presupuesto`), DEA Multi-Nivel (`B=200`), Malmquist LP Exacto y Monitor Línea 1 «Seguridad Humana»:**
-   - Eliminadas las cadenas numéricas basura (`"0.5522"`, `"0.82"`) de `linea_estrategica` en `cumplimiento-metas`.
-   - Imputación tripartita activa (`avance_consolidado_tripartito_pct`, `metas_con_avance_en_pa`, `metas_con_soporte_presupuestal`).
-   - DEA Multi-Nivel con `bootstrap_replicas: 200`, `frontera_por_entidad`, `frontera_por_linea_estrategica` y `frontera_pdl_localidades`.
-   - Malmquist LP CRS exacto (`MPI = EFFCH × TECHCH`):
-     - `PDD_2016_2019 -> PDD_2020_2023` (`20` DMUs): `MPI = 0,4981` (`EFFCH = 4,6982`, `TECHCH = 0,1060`).
-     - `PDD_2020_2023 -> PDD_2024_2027` (`27` DMUs): `MPI = 0,5671` (`EFFCH = 1,5000`, `TECHCH = 0,3781`).
-   - Nuevo endpoint `/api/v1/compromisos/triada/pdd-dea/explorador-programas-y-seguridad-humana` exponiendo el catálogo oficial y el `monitor_linea_1_seguridad_humana` (`$5.666.917.744.338` COP, 5 Impulsores, programas catalogados, 8 Dimensiones PNUD, 33 Mesas Territoriales, 10 Compromisos PAS y 12.280 filas de hurtos).
-3. **Suite de Pruebas y Verificación HTTP en Vivo (`127.0.0.1:8000`):**
-   - `PYTHONPATH=backend /root/polis/venv/bin/pytest -q backend/tests/test_pdd_dea_triada.py backend/tests/test_access_policy.py`: **`123 passed in 32.84s`**.
-   - `/root/polis/venv/bin/ruff check`: **`All checks passed!`**.
-   - 6 rutas `/api/v1/compromisos/triada/pdd-dea/*` respondiendo `HTTP 200 OK` en vivo.
+## 1. Verificación de los 4 Pilares de `[TRIADA-BACKEND-CIERRE-TOTAL-10]`
+
+1. **100% de los Planes (`5 PDD + 3 PDL = 8 Planes`) con Techos PPI Oficiales (`OFICIAL_EXTRAIDO`):**
+   - `PDD_2012_2015` («En Cartagena Hay Campo para Todos» — Acuerdo 001 de 2012, págs. 155–157): **`$3.049.788.268.000` COP** corrientes (`$5.657.100.631.305,25` COP constantes 2025) y sus 5 Ejes Oficiales.
+   - `PDD_2013_2015` («Ahora Sí Cartagena» — Acuerdo 016 de 2013): **`$1.874.167.605.000` COP** corrientes.
+   - `PDD_2016_2019` («Primero la Gente» — Acuerdo 006 de 2016, Tabla 209 pág. 357): **`$4.331.941.000.000` COP** corrientes (`$6.438.394.310.000` COP constantes 2025) y sus 3 Objetivos Estratégicos + 8 Líneas Estratégicas Oficiales.
+   - `PDD_2020_2023` («Salvemos Juntos a Cartagena» — P.A. 016 de 2020): **`$6.022.982.600.000` COP** constantes dic-2019.
+   - `PDD_2024_2027` («Cartagena, Ciudad de Derechos» — Acuerdo 139 de 2024): **`$12.800.853.474.855` COP** corrientes.
+   - `PDL_LOC1_2024_2027`, `PDL_LOC2_2024_2027`, `PDL_LOC3_2024_2027`: Techos oficiales extraídos y persistidos en `seguimiento.planes_desarrollo_distrital`.
+2. **Emparejamiento Determinístico y Semántico de las `2.068` Metas Oficiales (`seguimiento.pdd_metas_oficiales`):**
+   - `1.267` metas vinculadas con evidencia comprobada (`582` por `INDICADOR_ENTIDAD` y `685` por `SEMANTICO_PROGRAMA`) y `801` marcadas transparentemente como `SIN_VINCULO` en `datos_oficiales._vinculo_triada`.
+3. **Normalización 100% Canónica de `linea_estrategica`:**
+   - Cero encabezados de columna o etiquetas de corte espurias: `cumplimiento-metas?plan=TODOS` devuelve exclusivamente las **17 líneas/pilares canónicos** (`8` de 2016–2019, `3` Pilares de 2020–2023 y `6` Líneas de 2024–2027).
+4. **Caché Persistente Versionada (`/tmp/polis_pdd_dea_cache_v10.json`) y Precarga en Startup:**
+   - Las 6 rutas `/api/v1/compromisos/triada/pdd-dea/*` responden `HTTP 200 OK` de inmediato en ambos workers (`catalogo-y-conciliacion-ppi`: `10.1 ms`, `cumplimiento-metas`: `7.3 ms`, `frontera-dea-pdd`: `32.5 ms`, `econometria-comparada-pdd`: `10.5 ms`, `explorador-programas-y-seguridad-humana`: `128.0 ms`, `resumen-ejecutivo`: `137.3 ms`).
+
+---
+
+## 2. Invariantes de Base de Datos y Quality Gates
+
+- **`ruff check` & `ruff format`:** `0` errores en los archivos modificados.
+- **`pytest -q tests/test_pdd_dea_triada.py tests/test_access_policy.py`:** **`124/124` pruebas aprobadas** (`20/20` en `test_pdd_dea_triada.py`).
+- **Inviolabilidad de `bd_csh`:** `217.740` registros en `seguimiento.registros_triada_normalizados` y los 7 conteos canónicos (`33` mesas, `36` agendas, `11` fichas, `17` actores, `10` compromisos PAS, `12` actividades PA, `12.280` hurtos) intactos.
+- **Política Zero-Push:** Cumplida estrictamente.
