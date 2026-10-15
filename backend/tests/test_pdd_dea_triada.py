@@ -70,10 +70,11 @@ def test_factor_ipc_a_base_2025_y_anio_base():
     assert _money_factor(2024) > 1
 
 
-def test_pdd_cache_v10_persists_payload_between_worker_memory_resets(tmp_path, monkeypatch):
+def test_pdd_cache_v11_persists_payload_and_serialized_bytes(tmp_path, monkeypatch):
     cache_file = tmp_path / "pdd-cache.json"
-    monkeypatch.setattr(pdd_dea_module, "CACHE_V10", cache_file)
+    monkeypatch.setattr(pdd_dea_module, "CACHE_V11", cache_file)
     monkeypatch.setattr(pdd_dea_module, "_DISK_CACHE", {})
+    monkeypatch.setattr(pdd_dea_module, "_RAW_JSON_BYTES", {})
     pdd_dea_module._RESULT.clear()
     key = ("db-test", "pdd-dea", "catalogo")
     payload = {"estado": "CALCULADO", "planes": ["PDD_2024_2027"]}
@@ -82,6 +83,9 @@ def test_pdd_cache_v10_persists_payload_between_worker_memory_resets(tmp_path, m
     monkeypatch.setattr(pdd_dea_module, "_DISK_CACHE", None)
     assert pdd_dea_module._cached(key) == payload
     assert pdd_dea_module._DISK_CACHE == {"pdd-dea/catalogo": payload}
+    assert cache_file.exists()
+    assert '"version":11' in cache_file.read_text()
+    assert "pdd-dea/catalogo" in pdd_dea_module._RAW_JSON_BYTES
 
 
 def test_advance_only_accepts_verified_scales():
@@ -278,3 +282,127 @@ def test_official_catalog_extraction_preserves_2024_ppi_rows_and_eight_plans():
         == 172
     )
     assert len(metas) > 0
+
+
+def test_quantified_ocr_extraction_covers_2012_and_2016_plans():
+    _, _, metas = extract_catalog()
+    counts = {
+        plan: sum(row["codigo_plan"] == plan for row in metas)
+        for plan in ("PDD_2012_2015", "PDD_2016_2019")
+    }
+    assert counts["PDD_2012_2015"] > 0
+    assert counts["PDD_2016_2019"] > 0
+    old_ocr_rows = [
+        row
+        for row in metas
+        if row["codigo_plan"] == "PDD_2012_2015"
+        or row["datos_oficiales"].get("extraccion") == "OCR_CUANTITATIVO_REGLAS_V1"
+    ]
+    assert all(row["datos_oficiales"].get("evidencia_ocr_literal") for row in old_ocr_rows)
+    fallback = [
+        row
+        for row in metas
+        if row["codigo_plan"] == "PDD_2016_2019"
+        and row["datos_oficiales"].get("extraccion") == "ESTRUCTURA_OFICIAL_FALLBACK"
+    ]
+    assert fallback
+    assert all(not row["datos_oficiales"]["meta_cuantificada"] for row in fallback)
+
+
+def test_network_dea_returns_bounded_stage_scores_and_rank_sensitivity():
+    from app.modules.compromisos.pdd_dea_service import _network_efficiencies
+
+    dmus = [
+        {
+            "entidad": "A",
+            "presupuesto_cop": 100,
+            "productos_operativos": 10,
+            "proyectos_bpim_activos": 8,
+            "avance_pdd": 20,
+            "metas_pdd_observadas": 2,
+        },
+        {
+            "entidad": "B",
+            "presupuesto_cop": 200,
+            "productos_operativos": 30,
+            "proyectos_bpim_activos": 3,
+            "avance_pdd": 90,
+            "metas_pdd_observadas": 15,
+        },
+        {
+            "entidad": "C",
+            "presupuesto_cop": 300,
+            "productos_operativos": 8,
+            "proyectos_bpim_activos": 2,
+            "avance_pdd": 30,
+            "metas_pdd_observadas": 3,
+        },
+        {
+            "entidad": "D",
+            "presupuesto_cop": 500,
+            "productos_operativos": 18,
+            "proyectos_bpim_activos": 15,
+            "avance_pdd": 45,
+            "metas_pdd_observadas": 6,
+        },
+        {
+            "entidad": "E",
+            "presupuesto_cop": 120,
+            "productos_operativos": 4,
+            "proyectos_bpim_activos": 1,
+            "avance_pdd": 15,
+            "metas_pdd_observadas": 1,
+        },
+    ]
+    result = _network_efficiencies(dmus)
+    for row in result:
+        assert 0 < row["score_etapa1_operativa_pa"] <= 1
+        assert 0 < row["score_etapa2_estrategica_pdd"] <= 1
+        assert row["estabilidad_ranking"]["estado_estabilidad"] in {
+            "ESTABLE",
+            "MODERADO",
+            "VOLATIL",
+        }
+    assert any(row["clasificacion_red"] == "ILUSION_BUROCRATICA" for row in result)
+
+
+def test_inverse_dea_budget_ledger_is_neutral_for_all_flexibility_levels():
+    from app.modules.compromisos.pdd_dea_service import _inverse_dea_scenarios
+
+    dmus = [
+        {
+            "entidad": f"E{i}",
+            "presupuesto_cop": 100_000_000 * (i + 1),
+            "score_etapa2_estrategica_pdd": i / 6 + 0.1,
+        }
+        for i in range(6)
+    ]
+    scenarios = _inverse_dea_scenarios(dmus)
+    assert [row["flexibilidad_pct"] for row in scenarios] == [5, 10, 15]
+    assert all(row["ledger_restricciones"]["balance_presupuestal"] for row in scenarios)
+    assert all(abs(row["ledger_restricciones"]["suma_delta_cop"]) < 0.01 for row in scenarios)
+    assert all(row["ganancia_potencial_cumplimiento_pp"] is None for row in scenarios)
+
+
+def test_pdd_raw_json_responses_are_pre_serialized_fast_and_support_etag():
+    from time import perf_counter
+
+    key = "test/payload-2mb"
+    payload = {"body": "x" * 2_000_000}
+    pdd_dea_module._RAW_JSON_BYTES.pop(key, None)
+    pdd_dea_module._serialize_payload(key, payload)
+    start = perf_counter()
+    response = pdd_dea_module.pre_serialized_response(key, payload)
+    elapsed_ms = (perf_counter() - start) * 1000
+    assert elapsed_ms < 25
+    assert response.headers["etag"]
+    assert response.headers["x-polis-cache"] == "HIT-V11"
+    not_modified = pdd_dea_module.pre_serialized_response(key, payload, response.headers["etag"])
+    assert not_modified.status_code == 304
+
+
+def test_all_seven_pdd_dea_routes_are_registered_with_the_prescriptive_lab():
+    paths = {route.path for route in router.routes}
+    prefix = "/compromisos/triada/pdd-dea/"
+    assert sum(path.startswith(prefix) for path in paths) == 7
+    assert prefix + "laboratorio-prescriptivo" in paths

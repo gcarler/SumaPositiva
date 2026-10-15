@@ -667,3 +667,42 @@ Para rutas existentes, la entrega de bytes precalculados debería usar `Response
 ## Evidencia y alcance
 
 Las cifras de esta sección vienen de consultas `SELECT` en transacciones PostgreSQL `READ ONLY`, de `information_schema`/`geometry_columns` y de inspección del ORM. No estimé candidatos NLP no adjudicados ni corrí regresiones espaciales porque los datos no soportan una cifra fiable. Esta es una revisión de diseño, no aprobación de inferencia causal, del simulador fiscal ni de un expediente legal.
+
+## Entrega [TRIADA-BACKEND-LAB-PDD-11B]
+
+**Estado:** implementación, sincronización, caché y reinicio completados. Commit local en `main`; no se hizo push. Se preservó `src/`.
+
+### Cambios entregados
+
+- El extractor del catálogo recupera siete enunciados cuantificados con evidencia OCR literal para `PDD_2012_2015`. El OCR disponible de `PDD_2016_2019` solo permite recuperar sus tres objetivos oficiales, no metas cuantificadas; se incorporaron como filas estructurales con `meta_cuantificada=false` y revisión humana pendiente. No se presentan como outcomes medidos.
+- La sincronización clasifica la cobertura en las seis categorías requeridas y la formulación MGA en las cuatro categorías, persiste score y método de vínculo, y marca duplicados coincidentes de Bases/Ponencia con ID de fila primaria.
+- Se implementaron Network DEA PA→PDD por entidad, sensibilidad del ranking, escenarios presupuestales balanceados ±5/10/15, auditoría de 8 planes, justicia territorial descriptiva y borradores de preguntas de control con hash SHA-256. La ganancia de cumplimiento de los escenarios se deja `null`: los datos no identifican una conversión causal COP→puntos de cumplimiento.
+- Las siete respuestas PDD-DEA se sirven desde bytes JSON pre-serializados, con SHA-256 ETag, `If-None-Match`/304 y `X-Polis-Cache: HIT-V11`. CORS acepta `If-None-Match` y expone ETag/cache al cliente web. Se registró la ruta nueva en `docs/permisos-api.md`.
+
+### Sincronización y datos
+
+`sincronizar_catalogo_pdd.py` completó con 8 planes, 538 nodos de jerarquía y 2.078 filas de metas/proxies estructurales:
+
+| Plan | Filas catalogadas |
+| --- | ---: |
+| PDD 2012–2015 | 7 |
+| PDD 2013–2015 | 195 |
+| PDD 2016–2019 | 3 objetivos no cuantificados |
+| PDD 2020–2023 | 226 |
+| PDD 2024–2027 | 1.246 |
+| PDL 1 | 110 |
+| PDL 2 | 89 |
+| PDL 3 | 202 |
+
+La auditoría persistió 761 vínculos de alta confianza, 274 candidatos de baja confianza, 273 duplicados entre fuentes, 202 filas sin corpus histórico, 71 sin código/entidad y 497 sin reporte en corpus cubierto. Clasificación MGA: 72 resultado/impacto, 292 producto cuantificable, 36 gestión/proceso y 1.678 revisión humana.
+
+La verificación SQL posterior confirmó intactos los **217.740** registros de `seguimiento.registros_triada_normalizados`. En `geodatos.territorios` quedaron poblados, solo si estaban nulos, el Distrito (1.065.570, DANE/CNPV 2018, proyección 2023) y las Localidades 1–3 (412.580, 348.190 y 304.800). Las cifras por localidad fueron las proporcionadas en la orden; no encontré soporte DANE/TerriData por localidad dentro del repositorio y quedaron etiquetadas como `ORDEN_11B_CIFRA_LOCALIDAD_NO_CERTIFICADA_DANE`, sin año. Las otras 11 geometrías permanecen intactas y sin población: no hay una tabla de cifras verificables para repartirlas.
+
+El PPI per cápita se etiqueta como denominador de planeación, no como gasto ejecutado. El conjunto de hurtos sigue agregado en dos polígonos y el endpoint reporta `NO_ESTIMABLE_N_MENOR_30`. En las 27 entidades elegibles de la Network DEA no se observó una brecha `theta1-theta2 > 0,20`; por eso no se etiqueta ninguna como `ILUSION_BUROCRATICA` en el corte actual. El test sintético sí verifica que la regla la detecta cuando corresponde.
+
+### Caché, servicio y pruebas
+
+- `warm_pdd_cache()` dejó 7 payloads y 7 cuerpos pre-serializados en `/tmp/polis_pdd_dea_cache_v11.json` (versión 11; aproximadamente 14 MB, incluye base64 de bytes y ETags). El resumen es 3.140.537 bytes y el explorador 2.592.785 bytes.
+- `polis-backend.service` se reinició. En HTTP local, las siete rutas dieron 200 con ETag. Medianas de lectura completa: catálogo 3,32 ms; cumplimiento 2,88 ms; frontera 3,47 ms; econometría 3,27 ms; explorador 10,98 ms; resumen 15,17 ms; laboratorio 6,11 ms. Respuestas condicionales 304: 2,9–5 ms. Los logs del handler quedaron por debajo de 3,3 ms; la medición cubre localhost y el worker con caché caliente.
+- `ruff check` pasa en los archivos de la tarea. `ruff check backend` completo informa 729 hallazgos preexistentes en otras partes del repositorio.
+- `tests/test_pdd_dea_triada.py`: 25 passed; `tests/test_access_policy.py`: 104 passed. La suite completa se ejecutó desde `backend/` y dio 614 passed, con dos fallos de rutas relativas al ejecutarla allí; las dos pruebas fallidas se repitieron desde `/root/polis` y dieron 2 passed. A petición del usuario, se canceló la repetición integral de 616 pruebas; no queda pendiente.

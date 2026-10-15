@@ -2,14 +2,14 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Annotated
 
-from fastapi import APIRouter, Body, Depends, File, Form, Query, UploadFile, status
+from fastapi import APIRouter, Body, Depends, File, Form, Query, Request, UploadFile, status
 
 from app.core.database import SessionDependency
 from app.modules.compromisos.dea_econometria_service import DeaEconometriaService
 from app.modules.compromisos.ingesta_masiva_excel import detectar_extension_archivo
 from app.modules.compromisos.ingesta_masiva_service import RAIZ_INGESTA, IngestaMasivaService
 from app.modules.compromisos.inteligencia_triada_service import InteligenciaTriadaService
-from app.modules.compromisos.pdd_dea_service import PddDeaService
+from app.modules.compromisos.pdd_dea_service import PddDeaService, pre_serialized_response
 from app.modules.compromisos.repository import CompromisosRepository
 from app.modules.compromisos.schemas import (
     ActividadPlanAccionActualizarSeguimiento,
@@ -648,52 +648,76 @@ async def dea_resumen_integral(session: SessionDependency):
     "/triada/pdd-dea/catalogo-y-conciliacion-ppi",
     summary="Catálogo de planes y conciliación del PPI",
 )
-async def pdd_dea_catalogo(session: SessionDependency):
-    return await PddDeaService(session).catalogo_y_conciliacion_ppi()
+async def pdd_dea_catalogo(request: Request, session: SessionDependency):
+    payload = await PddDeaService(session).catalogo_y_conciliacion_ppi()
+    return pre_serialized_response(
+        "pdd-dea/catalogo", payload, request.headers.get("if-none-match")
+    )
 
 
 @router.get("/triada/pdd-dea/cumplimiento-metas", summary="Cumplimiento deduplicado de metas PDD")
 async def pdd_dea_cumplimiento(
+    request: Request,
     session: SessionDependency,
     plan: str | None = Query(None, pattern="^(PDD_2016_2019|PDD_2020_2023|PDD_2024_2027|TODOS)$"),
 ):
-    return await PddDeaService(session).cumplimiento_metas(plan=plan)
+    service = PddDeaService(session)
+    payload = await service.cumplimiento_metas(plan=plan)
+    key = f"pdd-dea/cumplimiento/{plan or 'TODOS'}"
+    return pre_serialized_response(key, payload, request.headers.get("if-none-match"))
 
 
 @router.get(
     "/triada/pdd-dea/frontera-dea-pdd", summary="Frontera DEA exploratoria por plan de desarrollo"
 )
 async def pdd_dea_frontera(
+    request: Request,
     session: SessionDependency,
     plan: str | None = Query(None, pattern="^(PDD_2016_2019|PDD_2020_2023|PDD_2024_2027|TODOS)$"),
     insumo: str = Query("conciliado_ppi", pattern="^(conciliado_ppi|reportado)$"),
 ):
-    return await PddDeaService(session).frontera_dea_pdd(plan=plan, insumo=insumo)
+    service = PddDeaService(session)
+    payload = await service.frontera_dea_pdd(plan=plan, insumo=insumo)
+    key = f"pdd-dea/frontera/{plan or 'TODOS'}/{insumo}"
+    return pre_serialized_response(key, payload, request.headers.get("if-none-match"))
 
 
 @router.get(
     "/triada/pdd-dea/econometria-comparada-pdd",
     summary="Comparación econométrica descriptiva entre PDD",
 )
-async def pdd_dea_econometria(session: SessionDependency):
-    return await PddDeaService(session).econometria_comparada_pdd()
+async def pdd_dea_econometria(request: Request, session: SessionDependency):
+    payload = await PddDeaService(session).econometria_comparada_pdd()
+    return pre_serialized_response(
+        "pdd-dea/econometria", payload, request.headers.get("if-none-match")
+    )
 
 
 @router.get(
     "/triada/pdd-dea/explorador-programas-y-seguridad-humana",
     summary="Explorador oficial de programas y monitor de Seguridad Humana",
 )
-async def pdd_dea_explorador(session: SessionDependency):
-    return await PddDeaService(session).explorador_programas_y_seguridad_humana()
+async def pdd_dea_explorador(request: Request, session: SessionDependency):
+    payload = await PddDeaService(session).explorador_programas_y_seguridad_humana()
+    return pre_serialized_response(
+        "pdd-dea/explorador", payload, request.headers.get("if-none-match")
+    )
 
 
 @router.get(
     "/triada/pdd-dea/resumen-ejecutivo", summary="Resumen ejecutivo del laboratorio PDD DEA"
 )
-async def pdd_dea_resumen(session: SessionDependency):
-    service = PddDeaService(session)
-    result = await service.resumen_ejecutivo()
-    result[
-        "explorador_programas_y_seguridad_humana"
-    ] = await service.explorador_programas_y_seguridad_humana()
-    return result
+async def pdd_dea_resumen(request: Request, session: SessionDependency):
+    payload = await PddDeaService(session).resumen_ejecutivo()
+    return pre_serialized_response("pdd-dea/resumen", payload, request.headers.get("if-none-match"))
+
+
+@router.get(
+    "/triada/pdd-dea/laboratorio-prescriptivo",
+    summary="Laboratorio prescriptivo PDD con Network DEA, escenarios y trazabilidad",
+)
+async def pdd_dea_laboratorio_prescriptivo(request: Request, session: SessionDependency):
+    payload = await PddDeaService(session).laboratorio_prescriptivo_pdd()
+    return pre_serialized_response(
+        "pdd-dea/laboratorio-prescriptivo", payload, request.headers.get("if-none-match")
+    )

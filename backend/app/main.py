@@ -22,9 +22,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     log_level = settings.log_level
     if settings.environment == "production" and log_level == "DEBUG":
         log_level = "INFO"
-    logging.basicConfig(
-        level=log_level, format="%(asctime)s %(levelname)s %(name)s %(message)s"
-    )
+    logging.basicConfig(level=log_level, format="%(asctime)s %(levelname)s %(name)s %(message)s")
 
     @asynccontextmanager
     async def lifespan(app: FastAPI):
@@ -51,7 +49,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         allow_origins=settings.cors_origins_efectivos,
         allow_credentials=True,
         allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE"],
-        allow_headers=["Content-Type", "Authorization", "Accept"],
+        allow_headers=["Content-Type", "Authorization", "Accept", "If-None-Match"],
+        expose_headers=["ETag", "X-Polis-Cache"],
     )
 
     @application.exception_handler(IntegrityError)
@@ -65,7 +64,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         return JSONResponse(
             status_code=409,
             content={
-                "detail": "Conflicto de integridad de datos: el recurso ya existe o infringe una restricción de unicidad distrital."
+                "detail": (
+                    "Conflicto de integridad de datos: el recurso ya existe o infringe "
+                    "una restricción de unicidad distrital."
+                )
             },
         )
 
@@ -81,7 +83,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         return JSONResponse(
             status_code=500,
             content={
-                "detail": "Error interno del servidor. La incidencia ha sido registrada para revisión técnica institucional."
+                "detail": (
+                    "Error interno del servidor. La incidencia ha sido registrada para "
+                    "revisión técnica institucional."
+                )
             },
         )
 
@@ -89,8 +94,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     async def security_headers_and_cookies_middleware(request: Request, call_next):
         response = await call_next(request)
         is_https = (
-            request.url.scheme == "https"
-            or request.headers.get("x-forwarded-proto") == "https"
+            request.url.scheme == "https" or request.headers.get("x-forwarded-proto") == "https"
         )
         is_prod = settings.environment == "production"
 
@@ -101,7 +105,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         response.headers.setdefault(
             "Permissions-Policy", "camera=(), microphone=(), geolocation=(self)"
         )
-        # CSP restrictiva propia de endpoints API (previene framing y ejecución si se carga directamente en navegador)
+        # CSP restrictiva propia de endpoints API.
         response.headers.setdefault(
             "Content-Security-Policy", "default-src 'none'; frame-ancestors 'none'"
         )

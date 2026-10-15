@@ -9,6 +9,7 @@ import re
 import sys
 import unicodedata
 import uuid
+from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
@@ -344,6 +345,69 @@ def _table_rows(source: Path, plan_code: str) -> list[dict[str, Any]]:
     return result
 
 
+def _quantified_ocr_metas(source: Path, plan_code: str) -> list[dict[str, Any]]:
+    """Extract attributable quantified goal statements from OCR prose.
+
+    This deliberately keeps the verbatim OCR evidence and abstains from promoting
+    headings, budget rows, years, or bare percentages to goals.
+    """
+    lines = source.read_text(encoding="utf-8").splitlines()
+    heading = ""
+    result: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    target = re.compile(
+        r"(?:\b(?:aumentar|disminuir|reducir|incrementar|alcanzar|atender|"
+        r"beneficiar|crear|construir|garantizar|ampliar|mantener)\b.{0,160}\d"
+        r"|\d[^\n]{0,100}%[^\n]{0,120}\b(?:reducir|disminuir|aumentar|"
+        r"meta|porcentaje|poblaci[oó]n|tasa)\b)",
+        re.I,
+    )
+    numeric = re.compile(r"\d+(?:[.,]\d+)?\s*(?:%|puntos|personas|zonas|viviendas|km\b)", re.I)
+    for index, raw in enumerate(lines):
+        clean = re.sub(r"\s+", " ", raw).strip(" |\t-–—")
+        if re.search(r"\b(?:EJE|OBJETIVO)\s*(?:ESTRAT[EÉ]GICO\s*)?\d+\b", clean, re.I):
+            heading = clean[:240]
+        if len(clean) < 25 or not target.search(clean) or not numeric.search(clean):
+            continue
+        quote = clean
+        for following in lines[index + 1 : index + 3]:
+            continuation = re.sub(r"\s+", " ", following).strip(" |\t-–—")
+            if not continuation or re.search(r"^(?:#{1,6}|P[aá]gina\s+\d+)", continuation):
+                break
+            if re.search(
+                r"\b(?:ART[IÍ]CULO|ACUERDO\s+NO\.?|VIGENCIA\s+20\d\d)\b", continuation, re.I
+            ):
+                break
+            quote = f"{quote} {continuation}"
+        quote = quote[:700]
+        signature = re.sub(r"\W+", " ", quote.casefold()).strip()
+        if signature in seen:
+            continue
+        seen.add(signature)
+        result.append(
+            {
+                "codigo_plan": plan_code,
+                "tipo_meta": "RESULTADO"
+                if "%" in quote or "puntos" in quote.casefold()
+                else "PRODUCTO",
+                "codigo": None,
+                "nombre": quote,
+                "indicador": quote,
+                "unidad_medida": "%" if "%" in quote else "unidad reportada en el OCR",
+                "linea_nombre": heading or None,
+                "fuente": source.name,
+                "fila_fuente": index + 1,
+                "datos_oficiales": {
+                    "evidencia_ocr_literal": quote,
+                    "encabezado_contexto": heading or None,
+                    "extraccion": "OCR_CUANTITATIVO_REGLAS_V1",
+                    "revision_humana_pendiente": True,
+                },
+            }
+        )
+    return result
+
+
 def extract_catalog() -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]:
     from app.modules.compromisos.pdd_dea_service import _money_factor
 
@@ -368,6 +432,49 @@ def extract_catalog() -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[
             if "ponencia" not in filename:
                 lines.extend(_heading_rows(path, plan_code))
             metas.extend(_table_rows(path, plan_code))
+    # The older OCRs flatten their goal matrices into prose rather than Markdown
+    # tables. Keep only literal, quantified statements with an attributable source row.
+    for plan_code, filename in (
+        ("PDD_2012_2015", "pdd_2012_2015_acuerdo_001_campo_para_todos.md"),
+        ("PDD_2016_2019", "pdd_2016_2019_acuerdo_006_primero_la_gente.md"),
+    ):
+        source = DATA / filename
+        if source.exists() and not any(meta["codigo_plan"] == plan_code for meta in metas):
+            metas.extend(_quantified_ocr_metas(source, plan_code))
+            if not any(meta["codigo_plan"] == plan_code for meta in metas):
+                # The 2016 OCR contains the adopted objectives and budget matrix,
+                # but no recoverable quantified goal table. Preserve the official
+                # objective statements as explicit structural proxies; never imply
+                # that these rows have a numeric target or measured outcome.
+                structural = (
+                    [
+                        "Superar la Desigualdad",
+                        "Adaptar el Territorio para la Gente",
+                        "Construir Ciudadanía y Fortalecimiento Institucional",
+                    ]
+                    if plan_code == "PDD_2016_2019"
+                    else []
+                )
+                metas.extend(
+                    {
+                        "codigo_plan": plan_code,
+                        "tipo_meta": "OBJETIVO_ESTRATEGICO",
+                        "codigo": str(index),
+                        "nombre": name,
+                        "indicador": None,
+                        "unidad_medida": None,
+                        "linea_nombre": name,
+                        "fuente": filename,
+                        "fila_fuente": None,
+                        "datos_oficiales": {
+                            "objetivo_estrategico_literal": name,
+                            "extraccion": "ESTRUCTURA_OFICIAL_FALLBACK",
+                            "meta_cuantificada": False,
+                            "revision_humana_pendiente": True,
+                        },
+                    }
+                    for index, name in enumerate(structural, 1)
+                )
     # PPI and official strategic structure transcribed from the OCR source pages.
     extracted_structures = {
         "PDD_2012_2015": (
@@ -660,8 +767,11 @@ async def _link_official_metas(conn: Any) -> dict[str, int]:
     metas = (
         (
             await conn.execute(
-                text("""SELECT id::text, codigo_plan, codigo, nombre, indicador,
-        linea_nombre, datos_oficiales FROM seguimiento.pdd_metas_oficiales""")
+                text(
+                    """SELECT id::text, codigo_plan, codigo, nombre, indicador,
+        linea_nombre, unidad_medida, fuente, datos_oficiales
+        FROM seguimiento.pdd_metas_oficiales"""
+                )
             )
         )
         .mappings()
@@ -704,6 +814,38 @@ async def _link_official_metas(conn: Any) -> dict[str, int]:
                 by_code.setdefault((str(year), code), []).append(record)
     counts = {"CODIGO_EXACTO": 0, "INDICADOR_ENTIDAD": 0, "SEMANTICO_PROGRAMA": 0, "SIN_VINCULO": 0}
     updates = []
+    duplicate_primary: dict[str, str] = {}
+    normalized_goals: dict[tuple[str, str, str], str] = {}
+    for meta in metas:
+        if meta["codigo_plan"] != "PDD_2024_2027":
+            continue
+        source_name = str(meta.get("fuente") or "")
+        if "bases_tecnicas" not in source_name and "ponencia" not in source_name:
+            continue
+        normalized = " ".join(
+            _norm(
+                " ".join(
+                    (
+                        meta["codigo"] or "",
+                        meta["indicador"] or "",
+                        meta["nombre"] or "",
+                        meta["linea_nombre"] or "",
+                    )
+                ).split()
+            )
+        )
+        if not normalized:
+            continue
+        signature = (normalized, "", "")
+        if "bases_tecnicas" in source_name:
+            normalized_goals[signature] = str(meta["id"])
+        else:
+            primary = normalized_goals.get(signature)
+            if primary:
+                duplicate_primary[str(meta["id"])] = primary
+
+    coverage_counts: dict[str, int] = defaultdict(int)
+    mga_counts: dict[str, int] = defaultdict(int)
     for meta in metas:
         plan = meta["codigo_plan"]
         start, end = _PERIOD[plan]
@@ -770,14 +912,80 @@ async def _link_official_metas(conn: Any) -> dict[str, int]:
                     best_rank, best_candidate = rank, (record, candidate_method)
             if best_candidate:
                 chosen, method = best_candidate
+        score = None
         if chosen:
             counts[method] += 1
-            link = {"registro_triada_id": chosen["id"], "metodo_emparejamiento": method}
+            if method == "CODIGO_EXACTO":
+                score = 1.0
+            elif method == "INDICADOR_ENTIDAD":
+                score = 0.8
+            elif best_candidate:
+                score = min(
+                    0.75,
+                    best_rank[0] / max(1, len(meta_tokens) + len(_tokens(meta["linea_nombre"]))),
+                )
+            link = {
+                "registro_triada_id": chosen["id"],
+                "metodo_emparejamiento": method,
+                "score": score,
+            }
         else:
             counts["SIN_VINCULO"] += 1
-            link = {"registro_triada_id": None, "metodo_emparejamiento": "SIN_VINCULO"}
+            link = {
+                "registro_triada_id": None,
+                "metodo_emparejamiento": "SIN_VINCULO",
+                "score": 0.0,
+            }
         payload = dict(official)
+        indicator_entity_match = bool(chosen and method == "INDICADOR_ENTIDAD")
+        if str(meta["id"]) in duplicate_primary:
+            coverage = "DUPLICADA_ENTRE_FUENTES_PDD"
+            link["fila_primaria_id"] = duplicate_primary[str(meta["id"])]
+        elif indicator_entity_match or (chosen and score is not None and score >= 0.55):
+            coverage = "VINCULADA_ALTA_CONFIANZA"
+        elif chosen and score is not None and score >= 0.30:
+            coverage = "CANDIDATO_BAJA_CONFIANZA"
+        elif plan in {"PDD_2012_2015", "PDD_2013_2015"}:
+            coverage = "SIN_CORPUS_HISTORICO"
+        elif not entity_hint and not _tokens(meta["linea_nombre"]):
+            coverage = "SIN_CODIGO_O_ENTIDAD"
+        else:
+            coverage = "SIN_REPORTE_EN_CORPUS_CUBIERTO"
+        text_for_taxonomy = " ".join(
+            (
+                str(meta["nombre"] or ""),
+                str(meta["indicador"] or ""),
+                str(meta.get("unidad_medida") or ""),
+            )
+        ).casefold()
+        if re.search(
+            r"\b(tasa|indice|reducci[oó]n|mortalidad|pobreza|brecha|incidencia|prevalencia|delito)\b",
+            text_for_taxonomy,
+        ):
+            taxonomy = "RESULTADO_IMPACTO"
+        elif meta.get("unidad_medida") or re.search(
+            r"\b(km|viviendas|cupos|subsidios|unidades|personas|zonas|obras)\b", text_for_taxonomy
+        ):
+            taxonomy = "PRODUCTO_CUANTIFICABLE"
+        elif re.search(
+            r"\b(documentos?|campa[nñ]as?|reuniones?|capacitaciones?|diagn[oó]sticos?)\b",
+            text_for_taxonomy,
+        ):
+            taxonomy = "GESTION_PROCESO_BLANDO"
+        else:
+            taxonomy = "REVISION_HUMANA"
         payload["_vinculo_triada"] = link
+        payload["_auditoria_forense"] = {
+            "estado_cobertura": coverage,
+            "taxonomia_mga": taxonomy,
+            "score_emparejamiento": score,
+            "fuente_primaria_id": duplicate_primary.get(str(meta["id"])),
+            "regla": "EAF_11B_V1",
+            "requiere_revision_humana": coverage == "CANDIDATO_BAJA_CONFIANZA"
+            or taxonomy == "REVISION_HUMANA",
+        }
+        coverage_counts[coverage] += 1
+        mga_counts[taxonomy] += 1
         updates.append({"id": meta["id"], "datos": json.dumps(payload)})
     if updates:
         await conn.execute(
@@ -787,7 +995,11 @@ async def _link_official_metas(conn: Any) -> dict[str, int]:
             WHERE m.id::text=u.id"""),
             {"rows": json.dumps(updates)},
         )
-    return counts
+    return (
+        counts
+        | {f"cobertura_{key.lower()}": value for key, value in coverage_counts.items()}
+        | {f"mga_{key.lower()}": value for key, value in mga_counts.items()}
+    )
 
 
 async def synchronize(dry_run: bool = False) -> dict[str, int]:
@@ -806,6 +1018,43 @@ async def synchronize(dry_run: bool = False) -> dict[str, int]:
         if metas:
             await conn.execute(insert(PddMetaOficial), metas)
         link_counts = await _link_official_metas(conn)
+        population_rows = [
+            ("DISTRITO-CTG", 1_065_570, "DANE_CNPV2018_PROYECCION_2023", 2023),
+            ("LOC-1", 412_580, "ORDEN_11B_CIFRA_LOCALIDAD_NO_CERTIFICADA_DANE", None),
+            ("LOC-2", 348_190, "ORDEN_11B_CIFRA_LOCALIDAD_NO_CERTIFICADA_DANE", None),
+            ("LOC-3", 304_800, "ORDEN_11B_CIFRA_LOCALIDAD_NO_CERTIFICADA_DANE", None),
+        ]
+        await conn.execute(
+            text("""UPDATE geodatos.territorios t
+                SET poblacion_estimada = CAST(source.pop AS integer),
+                    metadatos = coalesce(t.metadatos, '{}'::jsonb) ||
+                      jsonb_build_object('poblacion_fuente', source.provenance,
+                                         'poblacion_vigencia', CAST(source.year AS integer),
+                                         'poblacion_revision', '11B')
+                FROM (VALUES (CAST(:district AS text), CAST(:pop_district AS integer),
+                               CAST(:src_district AS text), CAST(:year_district AS integer)),
+                             (CAST(:loc1 AS text), CAST(:pop1 AS integer),
+                              CAST(:src_loc AS text), NULL::integer),
+                             (CAST(:loc2 AS text), CAST(:pop2 AS integer),
+                              CAST(:src_loc AS text), NULL::integer),
+                             (CAST(:loc3 AS text), CAST(:pop3 AS integer),
+                              CAST(:src_loc AS text), NULL::integer))
+                     AS source(code, pop, provenance, year)
+                WHERE t.codigo = source.code AND t.poblacion_estimada IS NULL"""),
+            {
+                "district": population_rows[0][0],
+                "pop_district": population_rows[0][1],
+                "src_district": population_rows[0][2],
+                "year_district": population_rows[0][3],
+                "loc1": population_rows[1][0],
+                "pop1": population_rows[1][1],
+                "loc2": population_rows[2][0],
+                "pop2": population_rows[2][1],
+                "loc3": population_rows[3][0],
+                "pop3": population_rows[3][1],
+                "src_loc": "ORDEN_11B_CIFRA_LOCALIDAD_NO_CERTIFICADA_DANE",
+            },
+        )
     await engine.dispose()
     cache_count = await warm_pdd_cache()
     return {
@@ -824,6 +1073,7 @@ async def warm_pdd_cache() -> int:
     module._RESULT.clear()
     module._STATE.clear()
     module._DISK_CACHE = {}
+    module._RAW_JSON_BYTES.clear()
     engine = create_async_engine(Settings().async_database_url)
     factory = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
     try:
@@ -835,6 +1085,7 @@ async def warm_pdd_cache() -> int:
             await service.econometria_comparada_pdd()
             await service.explorador_programas_y_seguridad_humana()
             await service.resumen_ejecutivo()
+            await service.laboratorio_prescriptivo_pdd()
         return len(module._DISK_CACHE or {})
     finally:
         await engine.dispose()

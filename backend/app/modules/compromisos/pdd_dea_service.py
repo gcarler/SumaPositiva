@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import asyncio
+import base64
+import hashlib
 import json
 import math
 import os
@@ -39,8 +41,11 @@ DIMENSIONES_PPI_2024 = (
     "Innovación Pública y Participación Ciudadana",
     "Capítulo de los Pueblos y Comunidades Étnicas",
 )
-CACHE_V10 = Path("/tmp/polis_pdd_dea_cache_v10.json")
+CACHE_V11 = Path("/tmp/polis_pdd_dea_cache_v11.json")
+# Backwards-compatible alias used by older tests and local operators.
+CACHE_V10 = CACHE_V11
 _DISK_CACHE: dict[str, dict[str, Any]] | None = None
+_RAW_JSON_BYTES: dict[str, tuple[bytes, str]] = {}
 _DISK_CACHE_LOCK = asyncio.Lock()
 COMPONENTES_SEGURIDAD_HUMANA = (
     "Seguridad ciudadana y Orden Público",
@@ -205,25 +210,62 @@ def _disk_key(key: tuple[Any, ...]) -> str:
     return "/".join(str(part) for part in key[1:])
 
 
+def _json_safe(value: Any) -> Any:
+    if isinstance(value, dict):
+        return {str(key): _json_safe(item) for key, item in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [_json_safe(item) for item in value]
+    if isinstance(value, np.generic):
+        value = value.item()
+    if isinstance(value, float) and not math.isfinite(value):
+        return None
+    if value is None or isinstance(value, (str, int, float, bool)):
+        return value
+    return str(value)
+
+
+def _serialize_payload(key: str, value: dict[str, Any]) -> tuple[bytes, str]:
+    raw, etag = _RAW_JSON_BYTES.get(key, (None, None))
+    if raw is None:
+        raw = json.dumps(
+            _json_safe(value), ensure_ascii=False, separators=(",", ":"), allow_nan=False
+        ).encode("utf-8")
+        etag = hashlib.sha256(raw).hexdigest()
+        _RAW_JSON_BYTES[key] = (raw, etag)
+    return raw, str(etag)
+
+
 def _read_disk_cache() -> dict[str, dict[str, Any]]:
     global _DISK_CACHE
     if _DISK_CACHE is None:
         try:
-            payload = json.loads(CACHE_V10.read_text(encoding="utf-8"))
-            _DISK_CACHE = payload.get("payloads", {}) if payload.get("version") == 10 else {}
+            payload = json.loads(CACHE_V11.read_text(encoding="utf-8"))
+            if payload.get("version") == 11:
+                _DISK_CACHE = payload.get("payloads", {})
+                for key, item in payload.get("raw_json", {}).items():
+                    raw = base64.b64decode(item["body_b64"])
+                    etag = hashlib.sha256(raw).hexdigest()
+                    if etag == item.get("etag"):
+                        _RAW_JSON_BYTES[key] = (raw, etag)
+            else:
+                _DISK_CACHE = {}
         except (OSError, ValueError, TypeError):
             _DISK_CACHE = {}
     return _DISK_CACHE
 
 
 def _write_disk_cache() -> None:
-    CACHE_V10.parent.mkdir(parents=True, exist_ok=True)
-    payload = {"version": 10, "payloads": _DISK_CACHE or {}}
-    fd, temporary = tempfile.mkstemp(prefix="polis-pdd-dea-v10-", dir=str(CACHE_V10.parent))
+    CACHE_V11.parent.mkdir(parents=True, exist_ok=True)
+    raw_json = {
+        key: {"body_b64": base64.b64encode(raw).decode("ascii"), "etag": etag}
+        for key, (raw, etag) in _RAW_JSON_BYTES.items()
+    }
+    payload = {"version": 11, "payloads": _DISK_CACHE or {}, "raw_json": raw_json}
+    fd, temporary = tempfile.mkstemp(prefix="polis-pdd-dea-v11-", dir=str(CACHE_V11.parent))
     try:
         with os.fdopen(fd, "w", encoding="utf-8") as target:
             json.dump(payload, target, ensure_ascii=False, separators=(",", ":"), default=str)
-        os.replace(temporary, CACHE_V10)
+        os.replace(temporary, CACHE_V11)
     finally:
         if os.path.exists(temporary):
             os.unlink(temporary)
@@ -236,6 +278,7 @@ def _cached(key: tuple[Any, ...]) -> dict[str, Any] | None:
     value = _read_disk_cache().get(_disk_key(key))
     if value is not None:
         _RESULT[key] = (time.monotonic(), value)
+        _serialize_payload(_disk_key(key), value)
     return value
 
 
@@ -244,10 +287,186 @@ def _store(key: tuple[Any, ...], value: dict[str, Any]) -> dict[str, Any]:
     disk = _read_disk_cache()
     disk[_disk_key(key)] = value
     try:
+        _serialize_payload(_disk_key(key), value)
         _write_disk_cache()
     except OSError:
         pass
     return value
+
+
+def pre_serialized_response(
+    cache_key: str, payload: dict[str, Any], if_none_match: str | None = None
+):
+    """Build a FastAPI response from cached JSON bytes, preserving ordinary JSON semantics."""
+    from fastapi import Response
+
+    raw, etag = _serialize_payload(cache_key, payload)
+    quoted = f'"{etag}"'
+    headers = {"ETag": quoted, "X-Polis-Cache": "HIT-V11"}
+    if if_none_match and any(
+        tag.strip() in {quoted, etag, "*"} for tag in if_none_match.split(",")
+    ):
+        return Response(status_code=304, headers=headers)
+    return Response(content=raw, media_type="application/json", headers=headers)
+
+
+def _network_efficiencies(dmus: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Solve two exploratory DEA stages from entity-level operational/strategic measures."""
+    eligible = [
+        row
+        for row in dmus
+        if row.get("presupuesto_cop", 0) > 0
+        and row.get("productos_operativos", 0) > 0
+        and row.get("avance_pdd", 0) > 0
+    ]
+    if len(eligible) < 4:
+        return [
+            row
+            | {
+                "score_etapa1_operativa_pa": None,
+                "score_etapa2_estrategica_pdd": None,
+                "score_global_red": None,
+                "brecha_ilusion_burocratica": None,
+                "clasificacion_red": "NO_ESTIMABLE",
+                "estabilidad_ranking": {
+                    "rango_cuartiles": None,
+                    "estado_estabilidad": "NO_ESTIMABLE",
+                },
+                "elegibilidad": (
+                    "Se requieren al menos cuatro entidades con presupuesto, productos PA "
+                    "y avance PDD positivo."
+                ),
+            }
+            for row in dmus
+        ]
+    x = np.asarray([[row["presupuesto_cop"] / 1_000_000] for row in eligible], dtype=float)
+    z = np.asarray(
+        [[row["productos_operativos"], row.get("proyectos_bpim_activos", 0)] for row in eligible],
+        dtype=float,
+    )
+    y = np.asarray(
+        [[row["avance_pdd"], row.get("metas_pdd_observadas", 1)] for row in eligible], dtype=float
+    )
+    theta1 = [
+        float(np.clip(_lp(x, z, x[i], z[i], vrs=True).get("eficiencia", 1.0), 1e-9, 1))
+        for i in range(len(eligible))
+    ]
+    theta2 = [
+        float(np.clip(_lp(z, y, z[i], y[i], vrs=True).get("eficiencia", 1.0), 1e-9, 1))
+        for i in range(len(eligible))
+    ]
+    ccr = [
+        float(np.clip(_lp(z, y, z[i], y[i]).get("eficiencia", theta2[i]), 1e-9, 1))
+        for i in range(len(eligible))
+    ]
+    sbm = [
+        float(np.clip(_sbm(x, z, i).get("eficiencia", theta1[i]), 1e-9, 1))
+        for i in range(len(eligible))
+    ]
+    window = [
+        float(np.clip(_lp(z, y, z[i], y[i], vrs=True).get("eficiencia", theta2[i]), 1e-9, 1))
+        for i in range(len(eligible))
+    ]
+    ranks = [
+        [int(v) for v in np.argsort(np.argsort(-np.asarray(values), kind="stable"), kind="stable")]
+        for values in (theta2, ccr, sbm, window)
+    ]
+    results: dict[str, dict[str, Any]] = {}
+    for i, row in enumerate(eligible):
+        quartiles = [min(4, int((ranking[i] * 4) / len(eligible)) + 1) for ranking in ranks]
+        spread = max(quartiles) - min(quartiles)
+        gap = theta1[i] - theta2[i]
+        classification = (
+            "ILUSION_BUROCRATICA"
+            if gap > 0.20
+            else "ALTA_EFECTIVIDAD_INTEGRAL"
+            if theta1[i] >= 0.8 and theta2[i] >= 0.8
+            else "REZAGO_OPERATIVO"
+            if theta1[i] < 0.5
+            else "ALTA_EFECTIVIDAD_INTEGRAL"
+        )
+        results[row["entidad"]] = row | {
+            "score_etapa1_operativa_pa": theta1[i],
+            "score_etapa2_estrategica_pdd": theta2[i],
+            "score_global_red": math.sqrt(theta1[i] * theta2[i]),
+            "brecha_ilusion_burocratica": gap,
+            "clasificacion_red": classification,
+            "estabilidad_ranking": {
+                "rango_cuartiles": [min(quartiles), max(quartiles)],
+                "estado_estabilidad": "ESTABLE"
+                if spread == 0
+                else "MODERADO"
+                if spread <= 1
+                else "VOLATIL",
+                "especificaciones": ["BCC_VRS", "CCR_CRS", "SBM_NO_RADIAL", "VENTANA_PANEL"],
+            },
+        }
+    return [
+        results.get(row["entidad"], row | {"clasificacion_red": "NO_ESTIMABLE"}) for row in dmus
+    ]
+
+
+def _inverse_dea_scenarios(dmus: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    scenarios = []
+    eligible = [row for row in dmus if row.get("score_etapa2_estrategica_pdd") is not None]
+    for flexibility in (0.05, 0.10, 0.15):
+        assignments = []
+        budget_total = 0.0
+        balance = 0.0
+        if len(eligible) >= 4:
+            scores = np.asarray([row["score_etapa2_estrategica_pdd"] for row in eligible])
+            budgets = np.asarray([row["presupuesto_cop"] for row in eligible], dtype=float)
+            median = float(np.median(scores))
+            bounds = []
+            for score, budget in zip(scores, budgets, strict=True):
+                limit = float(budget * flexibility)
+                bounds.append(
+                    (-limit, 0.0)
+                    if score < median
+                    else (0.0, limit)
+                    if score > median
+                    else (0.0, 0.0)
+                )
+            solution = __import__("scipy.optimize", fromlist=["linprog"]).linprog(
+                -scores,
+                A_eq=np.ones((1, len(eligible))),
+                b_eq=[0.0],
+                bounds=bounds,
+                method="highs",
+            )
+            if solution.success:
+                deltas = solution.x
+                balance = float(np.sum(deltas))
+                budget_total = float(np.maximum(deltas, 0).sum())
+                assignments = [
+                    {
+                        "entidad": row["entidad"],
+                        "delta_presupuesto_cop": float(delta),
+                        "score_estrategico_observado": float(row["score_etapa2_estrategica_pdd"]),
+                    }
+                    for row, delta in zip(eligible, deltas, strict=True)
+                    if abs(float(delta)) > 0.01
+                ]
+        scenarios.append(
+            {
+                "flexibilidad_pct": int(flexibility * 100),
+                "presupuesto_reasignable_cop": budget_total,
+                "ganancia_potencial_cumplimiento_pp": None,
+                "asignaciones_por_linea": assignments,
+                "ledger_restricciones": {
+                    "suma_delta_cop": balance,
+                    "balance_presupuestal": abs(balance) < 0.01,
+                    "limite_individual_pct": int(flexibility * 100),
+                    "limite_legal_validado": False,
+                    "estado": "NO_ESTIMABLE" if not assignments else "ESCENARIO_MATEMATICO",
+                },
+                "advertencia_no_causal": (
+                    "La frontera observada no identifica el efecto de reasignar recursos; "
+                    "la ganancia en puntos porcentuales no es estimable causalmente."
+                ),
+            }
+        )
+    return scenarios
 
 
 # Load the prepared values during worker startup, before its first HTTP request.
@@ -1399,6 +1618,298 @@ class PddDeaService:
             },
         )
 
+    async def laboratorio_prescriptivo_pdd(self) -> dict[str, Any]:
+        key = (self.bind_key, "pdd-dea", "laboratorio-prescriptivo")
+        if cached := _cached(key):
+            return cached
+        state = await self._state()
+        metas_result = await self.session.execute(
+            text("SELECT codigo_plan, datos_oficiales FROM seguimiento.pdd_metas_oficiales")
+        )
+        coverage_keys = (
+            "VINCULADA_ALTA_CONFIANZA",
+            "CANDIDATO_BAJA_CONFIANZA",
+            "DUPLICADA_ENTRE_FUENTES_PDD",
+            "SIN_CORPUS_HISTORICO",
+            "SIN_CODIGO_O_ENTIDAD",
+            "SIN_REPORTE_EN_CORPUS_CUBIERTO",
+        )
+        taxonomy_keys = (
+            "RESULTADO_IMPACTO",
+            "PRODUCTO_CUANTIFICABLE",
+            "GESTION_PROCESO_BLANDO",
+            "REVISION_HUMANA",
+        )
+        meta_audit = {
+            plan["codigo_plan"]: {
+                "plan": plan["codigo_plan"],
+                "total_metas": 0,
+                "estado_cobertura": dict.fromkeys(coverage_keys, 0),
+                "taxonomia_mga": dict.fromkeys(taxonomy_keys, 0),
+            }
+            for plan in PLANS
+        }
+        for row in metas_result.mappings():
+            audit = (row["datos_oficiales"] or {}).get("_auditoria_forense", {})
+            item = meta_audit[row["codigo_plan"]]
+            item["total_metas"] += 1
+            if audit.get("estado_cobertura") in item["estado_cobertura"]:
+                item["estado_cobertura"][audit["estado_cobertura"]] += 1
+            if audit.get("taxonomia_mga") in item["taxonomia_mga"]:
+                item["taxonomia_mga"][audit["taxonomia_mga"]] += 1
+        for item in meta_audit.values():
+            item["indice_rigor_mga_por_plan"] = item.pop("taxonomia_mga")
+
+        operational: dict[str, dict[str, Any]] = {}
+        for row in state["rows"]:
+            if row.get("motor") != "PLAN_ACCION" or not row.get("entidad"):
+                continue
+            advance, _ = _advance(row)
+            if advance is None or advance <= 0:
+                continue
+            entity = str(row["entidad"])
+            item = operational.setdefault(
+                entity, {"activities": set(), "bpim": set(), "weighted": 0.0}
+            )
+            item["activities"].add(str(row.get("id")))
+            origin = row.get("origen") or {}
+            if isinstance(origin, str):
+                try:
+                    origin = json.loads(origin)
+                except ValueError:
+                    origin = {}
+            strong = bool(origin.get("verbo_fuerte_dnp")) if isinstance(origin, dict) else False
+            item["weighted"] += 1.25 if strong else 1.0
+            if row.get("bpim"):
+                item["bpim"].add(str(row["bpim"]))
+        strategic: dict[str, list[float]] = defaultdict(list)
+        for rows in state["goals_by_plan"].values():
+            for goal in rows:
+                if goal.get("avance_norm") is not None:
+                    strategic[str(goal["entidad"])].append(float(goal["avance_norm"]))
+        dmus = []
+        for entity in sorted(set(operational) & set(strategic)):
+            spend = sum(
+                amount
+                for (name, _year, stage), amount in state["financial"].items()
+                if name == entity and stage == "apropiacion"
+            )
+            dmus.append(
+                {
+                    "entidad": entity,
+                    "presupuesto_cop": float(spend),
+                    "productos_operativos": operational[entity]["weighted"]
+                    + 0.5 * len(operational[entity]["bpim"]),
+                    "actividades_pa_ejecutadas": len(operational[entity]["activities"]),
+                    "proyectos_bpim_activos": len(operational[entity]["bpim"]),
+                    "avance_pdd": float(np.mean(strategic[entity])),
+                    "metas_pdd_observadas": len(strategic[entity]),
+                }
+            )
+        network = _network_efficiencies(dmus)
+        scenarios = _inverse_dea_scenarios(network)
+
+        territories = (
+            (
+                await self.session.execute(
+                    text(
+                        """SELECT codigo, poblacion_estimada, metadatos FROM geodatos.territorios
+               WHERE codigo IN ('LOC-1','LOC-2','LOC-3') ORDER BY codigo"""
+                    )
+                )
+            )
+            .mappings()
+            .all()
+        )
+        population = {row["codigo"]: row for row in territories}
+        mesa_rows = (
+            (
+                await self.session.execute(
+                    text(
+                        """WITH RECURSIVE ancestors AS (
+                            SELECT id origin_id,id ancestor_id,tipo_territorio,codigo,0 depth
+                            FROM geodatos.territorios
+                            UNION ALL
+                            SELECT a.origin_id,p.id,p.tipo_territorio,p.codigo,a.depth+1
+                            FROM ancestors a
+                            JOIN geodatos.territorios child ON child.id=a.ancestor_id
+                            JOIN geodatos.territorios p ON p.id=child.territorio_padre_id
+                            WHERE a.depth<5
+                        )
+                        SELECT a.codigo,count(DISTINCT m.id)::int mesas
+                        FROM mesas_trabajo.mesas m
+                        JOIN ancestors a ON a.origin_id=m.territorio_id
+                            AND a.tipo_territorio='localidad'
+                        GROUP BY a.codigo"""
+                    )
+                )
+            )
+            .mappings()
+            .all()
+        )
+        mesa_counts = {row["codigo"]: row["mesas"] for row in mesa_rows}
+        pdl_codes = {
+            "LOC-1": ("PDL_1_2024_2027", "Localidad Histórica y del Caribe Norte"),
+            "LOC-2": ("PDL_2_2024_2027", "Localidad de la Virgen y Turística"),
+            "LOC-3": ("PDL_3_2024_2027", "Localidad Industrial y de la Bahía"),
+        }
+        territorial = []
+        for code, (plan_code, name) in pdl_codes.items():
+            poprow = population.get(code)
+            pop = poprow["poblacion_estimada"] if poprow else None
+            plan = next(p for p in PLANS if p["codigo_plan"] == plan_code)
+            current = float(plan.get("ppi_total_corriente_cop") or plan.get("ppi_total") or 0)
+            constant = self._plan_ppi_constant(plan_code) or 0.0
+            mesa_count = mesa_counts.get(code, 0)
+            territorial.append(
+                {
+                    "localidad": name,
+                    "codigo_territorio": code,
+                    "poblacion_dane": pop,
+                    "poblacion_fuente": (poprow["metadatos"] or {}).get("poblacion_fuente")
+                    if poprow
+                    else None,
+                    "poblacion_vigencia": (poprow["metadatos"] or {}).get("poblacion_vigencia")
+                    if poprow
+                    else None,
+                    "ppi_corriente_cop": current,
+                    "ppi_constante_2025_cop": constant,
+                    "inversion_per_capita_cop": constant / pop if pop else None,
+                    "mesas_ciudadanas": mesa_count,
+                    "mesas_por_100k_hab": mesa_count * 100_000 / pop if pop else None,
+                    "advertencia": (
+                        "PPI aprobado/planeado, no gasto ejecutado; población de referencia 2023."
+                    ),
+                }
+            )
+        theft_rows = (
+            (
+                await self.session.execute(
+                    text(
+                        """SELECT p.zona,p.nombre zona_nombre,count(h.id)::int filas,
+                      coalesce(sum(h.cantidad),0)::bigint casos
+               FROM geodatos.poligonos_analitica_hurtos p
+               LEFT JOIN geodatos.estadisticas_hurtos h ON h.poligono_id=p.id
+               GROUP BY p.zona,p.nombre ORDER BY p.zona"""
+                    )
+                )
+            )
+            .mappings()
+            .all()
+        )
+        theft = [
+            dict(row)
+            | {"interpretacion": "Descriptivo; dos polígonos no permiten inferencia espacial."}
+            for row in theft_rows
+        ]
+        network_by_entity = {row["entidad"]: row for row in network}
+        pdd_by_entity: dict[str, list[dict[str, Any]]] = defaultdict(list)
+        for rows in state["goals_by_plan"].values():
+            for goal in rows:
+                pdd_by_entity[str(goal["entidad"])].append(goal)
+        briefs = []
+        for entity, goals in sorted(pdd_by_entity.items()):
+            no_report = sum(goal.get("avance_norm") is None for goal in goals)
+            net = network_by_entity.get(entity, {})
+            findings = [f"{no_report} metas sin avance verificado"] if no_report else []
+            gap = net.get("brecha_ilusion_burocratica")
+            if gap is not None and gap > 0.20:
+                findings.append(
+                    "brecha observada entre scores operativos y estratégicos mayor a 0,20"
+                )
+            evidence = {
+                "entidad": entity,
+                "metas": [
+                    {
+                        "plan": g["plan"],
+                        "clave": g.get("clave_item"),
+                        "avance": g.get("avance_norm"),
+                    }
+                    for g in goals
+                ],
+                "network": net,
+            }
+            digest = hashlib.sha256(
+                json.dumps(
+                    _json_safe(evidence), ensure_ascii=False, sort_keys=True, separators=(",", ":")
+                ).encode()
+            ).hexdigest()
+            briefs.append(
+                {
+                    "entidad": entity,
+                    "nivel_alerta": "ALTA"
+                    if gap is not None and gap > 0.20 and findings
+                    else "REVISAR"
+                    if findings
+                    else "SIN_ALERTA_OBSERVADA",
+                    "metas_sin_reporte": no_report,
+                    "brecha_network_dea": gap,
+                    "hallazgos_clave": findings
+                    or ["Sin hallazgo automático en las variables observadas."],
+                    "preguntas_control_politico": [
+                        "¿Qué evidencia y corte soportan el avance reportado?",
+                        "¿Cómo se articula el producto operativo con la meta PDD y su indicador?",
+                    ],
+                    "hash_evidencia_sha256": digest,
+                    "naturaleza": (
+                        "Borrador descriptivo para revisión, no imputación ni dictamen legal."
+                    ),
+                }
+            )
+        briefs.sort(
+            key=lambda row: (
+                row["nivel_alerta"] != "ALTA",
+                -row["metas_sin_reporte"],
+                row["entidad"],
+            )
+        )
+        return _store(
+            key,
+            {
+                "estado": "CALCULADO",
+                "auditoria_metas_8_planes": {
+                    "planes": list(meta_audit.values()),
+                    "total_metas": sum(row["total_metas"] for row in meta_audit.values()),
+                    "indice_rigor_mga_por_plan": {
+                        key: row["indice_rigor_mga_por_plan"] for key, row in meta_audit.items()
+                    },
+                    "advertencia": (
+                        "Clasificación textual determinística inicial; requiere revisión humana, "
+                        "no certificación DNP."
+                    ),
+                },
+                "network_dea_bi_etapa": {
+                    "estado": "CALCULADO"
+                    if any(row.get("score_global_red") is not None for row in network)
+                    else "NO_ESTIMABLE",
+                    "entidades_elegibles": sum(
+                        row.get("score_global_red") is not None for row in network
+                    ),
+                    "dmus": network,
+                    "advertencia": (
+                        "La etapa estratégica mide avance PDD reportado, "
+                        "no impacto social ni causalidad."
+                    ),
+                },
+                "simulador_inverse_dea_pareto": scenarios,
+                "justicia_territorial_pdl": {
+                    "localidades": territorial,
+                    "zonas_hurtos": theft,
+                    "compuerta_moran": {
+                        "estado": "NO_ESTIMABLE_N_MENOR_30",
+                        "n_poligonos_delito": len(theft),
+                        "n_localidades": len(territorial),
+                        "minimo_requerido": 30,
+                    },
+                    "advertencia": (
+                        "No se estimó población para barrios/corregimientos/zonas insulares "
+                        "sin cifras fuente verificables."
+                    ),
+                },
+                "pliegos_control_politico": briefs,
+            },
+        )
+
     async def resumen_ejecutivo(self) -> dict[str, Any]:
         key = (self.bind_key, "pdd-dea", "resumen")
         if cached := _cached(key):
@@ -1407,6 +1918,8 @@ class PddDeaService:
         fulfillment = await self.cumplimiento_metas()
         frontier = await self.frontera_dea_pdd()
         econometrics = await self.econometria_comparada_pdd()
+        explorer = await self.explorador_programas_y_seguridad_humana()
+        laboratory = await self.laboratorio_prescriptivo_pdd()
         return _store(
             key,
             {
@@ -1415,6 +1928,8 @@ class PddDeaService:
                 "cumplimiento": fulfillment,
                 "frontera_dea": frontier,
                 "econometria_comparada": econometrics,
+                "explorador_programas_y_seguridad_humana": explorer,
+                "laboratorio_prescriptivo_pdd": laboratory,
             },
         )
 
