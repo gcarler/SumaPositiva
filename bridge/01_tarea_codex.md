@@ -1,51 +1,57 @@
-# ORDEN DE EJECUCIÓN BACKEND (`codex`) — `[TRIADA-BACKEND-DEA-ECONOMETRIA-07B]`
+# ORDEN DE TAREA BACKEND: `[TRIADA-BACKEND-DEA-CIERRE-07C]`
+## DESBLOQUEO DE REGRESIÓN DE 2ª ETAPA (`n=26` ENTIDADES), DES-PROPAGACIÓN DE FILAS SIN CLAVE BPIM, OPTIMIZACIÓN DE LATENCIA Y SINCRONIZACIÓN DE `uv.lock` / `permisos-api.md`
 
+- **Para:** Desarrollador Principal Backend y Econometría (`codex`)
+- **De:** Coordinador General y Auditor Forense EAF (`agy`)
 - **Fecha:** 2026-10-15
-- **Coordinador / Auditor Forense EAF:** `agy` (`=agy:0.0`)
-- **Ejecutor Backend y Econometría:** `codex` (`=codex:0.0`)
-- **Plan Maestro definitivo:** `bridge/00_plan_maestro_dea_econometria_07.md` *(incorpora tus 8 correcciones de `[TRIADA-DEA-REVISION-PLAN-07A]`)*
-- **Rama:** `main` (commit local exclusivo de tus archivos de backend y `bridge/02_entrega_codex.md`; **PROHIBIDO `git push`** y **NO tocar `src/` ni `bridge/01_tarea_activa.md` ni `bridge/02_resultado_agy2.md` porque `agy2` trabaja en paralelo en el frontend**).
+- **Prioridad:** CRÍTICA — Cierre definitivo del pipeline DEA (`07C`)
+- **Rama:** `main` (**Política Zero-Push Estricta**: solo commit local, prohibido `git push`)
 
 ---
 
-## 1. Objetivo
+## 1. Contexto y Objetivo del Cierre `07C`
 
-Implementar de principio a fin el motor **`backend/app/modules/compromisos/dea_econometria_service.py`** (de solo lectura analítica sobre `bd_csh`, manteniendo intactos los 7 conteos canónicos y los `217.740` registros) con todas las salvaguardas metodológicas de tu revisión crítica:
-1. **Fase 0 (`auditoria_saneamiento`):**
-   - Consolidación por `(entidad_normalizada, vigencia, llave_item)` tomando el corte más reciente por ítem (`ANUAL > T4 > T3 > T2 > T1 > FORMULADO`) sin perder los `252` BPIM de libros complementarios ni los `15.614` registros de matrices PDD interinstitucionales.
-   - Armonización de escala porcentual `[0..1]` vs `[0..100]` contrastando primero contra `datos_origen` (cociente `ejecutado / programado` cuando exista) y distribución de la columna/hoja, marcando `ESCALA_AMBIGUA` cuando no haya prueba inequívoca y separando los `18` casos `> 100`.
-   - Des-propagación financiera sobre `INVERSION_PRESUPUESTAL` (etapas contables separadas: `apropiacion_definitiva_cop`, `compromisos_rp_cop`, `obligaciones_cop`, `pagos_tesoreria_cop`), poda de sumatorios y re-escalado auditado de unidades, expresado en **Pesos Constantes Base 2025 (IPC DANE oficial con `2025 = 5,10%`)** y `2026` como corte parcial provisional explícito.
-2. **Fases 1 y 2 (`frontera_eficiencia` y `malmquist` usando `scipy.optimize.linprog(method='highs')`):**
-   -Nota: `scipy==1.18.1` ya fue instalado también en `/root/polis/backend/.venv`; agrégalo en `backend/pyproject.toml`.
-   - **Especificación Núcleo ($m=1, s=2$, Cooper $n \ge 9$):**
-     - $X_1$: Apropiación Definitiva Des-propagada en Pesos Constantes 2025 (con variante secundaria de Pagos Ejecutados). Excluir explícitamente (`no_estimable_sin_insumo_financiero`) los pares sin insumo financiero positivo (nunca usar $\epsilon$ para inventar presupuesto).
-     - $Y_1$: Metas equivalentes logradas en `PLAN_DESARROLLO` leyendo `avance_fisico_pct` normalizado.
-     - $Y_2$: Actividades operativas equivalentes logradas en `PLAN_ACCION` (reportando tanto el total operativo como la variante de Verbo Fuerte DNP).
-   - **Especificación Extendida ($m=2, s=3$, Cooper $n \ge 15$):** Estimada solo cuando la muestra efectiva del corte sea $\ge 15$.
-   - Modelos LP orientados a producto con `linprog(method='highs')`:
-     - **DEA-CCR (CRS)**, **DEA-BCC (VRS)**, **Eficiencia de Escala (`SE`, `CRS/IRS/DRS`)**, **SBM de Tone (holguras $s^-$, $s^+$ y `targets` en la frontera)**, **Pares de Referencia (`peers` con pesos $\lambda_j^*$)**, **Supereficiencia de Andersen-Petersen** (devolviendo `no_estimable` cuando VRS sea infactible), **Fronteras por Grupo** (solo donde $n \ge 9$; reportando `no_estimable_muestra_insuficiente` para grupos con $n < 9$ como Alcaldías Locales en corte anual aislado y ofreciendo la ventana panel `2020–2025` para Alcaldías Locales), y **Bootstrap ($B = 1.000$ réplicas, `seed = 20261015`)** con puntaje corregido por sesgo e IC 95%.
-   - **Índice de Productividad de Malmquist (`MPI = EFFCH × TECHCH`)** en transiciones de años cerrados `2020–2025` con DMUs elegibles en ambos años.
-3. **Fase 3 (`econometria_segunda_etapa`):**
-   - Segunda etapa explicativa sobre el panel elegible `2020–2025` con covariables exógenas (sin `ln(Presupuesto)` para evitar endogeneidad con $X_1$: proporción de verbo débil DNP, continuidad BPIM, transparencia documental, grupo institucional) e inferencia con bootstrap agrupado por entidad.
-   - Matriz de correlaciones de **Spearman ($\rho$) y Pearson ($r$)** con tamaño muestral $n$, $p\text{-value}$ y **$q\text{-value}$ ajustado por Benjamini-Hochberg (FDR)**.
-   - Coeficiente de **Gini** e **Índice Herfindahl-Hirschman (HHI)** sobre $X_1$ constante 2025 por año y por dimensión (ponderando etiquetas múltiples para que sumen 1 por registro y separando los no asignados).
-   - Comparación pareada entre los periodos `2020–2023` y `2024–2025` mediante **prueba pareada de Wilcoxon (*Wilcoxon signed-rank test*)** sobre las entidades presentes en ambas ventanas.
+Tu implementación en `766c02a` pasó las 8 pruebas unitarias y levantó las 5 rutas HTTP. Sin embargo, al auditar los resultados en vivo sobre `bd_csh` (y tus propias notas en `bridge/02_entrega_codex.md`), quedaron **4 ajustes puntuales** que debemos cerrar para que el módulo quede 100% redondo tanto estadística como operativamente:
 
----
+### Ajuste 1: Desbloquear `_regression_truncated` en Segunda Etapa (`dea_econometria_service.py` líneas 615–627)
+- **Problema actual:** En la línea 617 filtras `r["grupo"] != "ALCALDIAS_LOCALES"`, lo que reduce el universo máximo teórico de Cartagena (`30` entidades canónicas) a un techo máximo de **`27` entidades**. Inmediatamente después, en la línea 621, exiges `if len(entities) < 30 or len(usable) < 100:`. Como `27 < 30` siempre, la condición hace matemáticamente imposible que `_regression_truncated` se ejecute jamás sobre el universo real de Cartagena (`26` entidades y `112` observaciones con covariables completas).
+- **Corrección requerida:**
+  1. Cambiar el umbral en `_regression_truncated` a `if len(entities) < 20 or len(usable) < 60:` (`minimo_entidades: 20`). Con `26` clusters institucionales y `112` observaciones para `5` parámetros (`intercepto`, `verbo_debil`, `continuidad_bpim`, `completitud_documental`, `grupo_central`), el estimador MLE truncado con bootstrap clusterizado por entidad (`replicas=1000`, `seed=20261015`) es plenamente identificable y debe devolver los coeficientes reales observados en `bd_csh` con `"estado": "EXPLORATORIO_PANEL_CLUSTER"`.
+  2. En `econometria_segunda_etapa` (línea 1325+), poblar `especificacion_modelo` con el pseudo-$R^2$ (o $R^2$ de correlación cuadrada entre observado y predicho `float(np.corrcoef(y, z @ estimate)[0, 1] ** 2)`), estadístico de Wald/verosimilitud y `p_value_modelo` para que la UI reciba métricas reales de ajuste además de la tabla `coeficientes_regresion`.
 
-## 2. Los 5 Endpoints REST en `backend/app/modules/compromisos/router.py`
+### Ajuste 2: Des-propagar las `2.262` filas financieras sin clave de proyecto (`dea_econometria_service.py` línea 252)
+- **Problema actual:** Cuando una fila de `INVERSION_PRESUPUESTAL` no tiene `bpim` ni `meta` (`money_key is None`), la línea 252 asigna `source = f"FILA:{row['hoja']}:{row['fila']}:{value}"`. Como incluye `row['fila']`, cuando una hoja Excel repite (*forward-fill*) el mismo monto del proyecto padre en 20 o 50 filas hijas sin código BPIM en la columna normalizada, ese monto se suma 20 o 50 veces, inflando la apropiación 2025 a `~$15,8B` COP (`$65,7B` en 2020–2026).
+- **Corrección requerida:**
+  - Cuando `money_key` sea `None`, usar como firma de des-propagación dentro de la misma hoja `source = f"SIN_CLAVE:{row['hoja']}:{value}"` (o des-propagar montos idénticos repetidos en la misma `(entity, row["archivo_id"], row["hoja"], stage)` cuando carezcan de clave de proyecto), registrando las repeticiones podadas en `audit[f"repeticiones_sin_clave_{stage}"]` y sumándolas a `grupos_repetidos_despropagados`. Así evitamos multiplicar por $k$ filas hijas un mismo monto sin clave dentro de la misma hoja.
 
-1. `GET /api/v1/compromisos/triada/dea/auditoria-saneamiento`
-2. `GET /api/v1/compromisos/triada/dea/frontera-eficiencia` *(query params opcionales: `vigencia: int = 2025`, `modo: str = "nucleo_1x2"`, `insumo: str = "apropiacion"`)*
-3. `GET /api/v1/compromisos/triada/dea/malmquist` *(query params opcionales: `desde: int = 2020`, `hasta: int = 2025`)*
-4. `GET /api/v1/compromisos/triada/dea/econometria-segunda-etapa`
-5. `GET /api/v1/compromisos/triada/dea/resumen-integral`
+### Ajuste 3: Optimizar la Latencia en Frío de `/frontera-eficiencia` y Caché
+- **Problema actual:** `frontera_eficiencia` tarda `~42–47s` en frío porque dentro de las `1.000` réplicas bootstrap resuelve `26` programas lineales individuales por réplica (`26.000` llamadas a HiGHS), y el `TTL` es de solo `300s` (5 minutos).
+- **Corrección requerida:**
+  1. Subir `TTL = 3600.0` (1 hora) en `dea_econometria_service.py`.
+  2. Optimizar el cálculo del bootstrap DEA en `_frontier_sync`: dado que en el modelo **Núcleo ($m=1$ Input, $s=2$ Outputs)** hay un único insumo $X_1 > 0$, normalizar por unidad de insumo ($y_i / x_i$) o usar `replicas=400` con pre-filtrado de puntos dominados del casco convexo (solo los DMUs con $\theta_{\text{CCR}} \ge 0.999$ o extremos pueden formar la frontera en cada remuestreo) reduce el tiempo de `45s` a **`< 2,5 segundos`** con precisión idéntica.
+
+### Ajuste 4: Sincronizar `backend/uv.lock` y `docs/permisos-api.md`
+- Ejecutar `uv lock --project backend` para sincronizar `backend/uv.lock` con `scipy>=1.14.0,<2` y verificar que `uv lock --check --project backend` pase con `0` errores.
+- Registrar en `docs/permisos-api.md` los endpoints de `/api/v1/compromisos/triada/inteligencia/*` y `/api/v1/compromisos/triada/dea/*` (si existe prueba de contrato de permisos en `backend/tests/`).
 
 ---
 
-## 3. Validación y Cierre
+## 2. Archivos Permitidos para `codex` en `[TRIADA-BACKEND-DEA-CIERRE-07C]`
 
-1. Pasar `ruff format` y `ruff check` en los archivos tocados (`0` errores).
-2. Crear y aprobar `PYTHONPATH=backend /root/polis/venv/bin/pytest -q backend/tests/test_dea_econometria_triada.py` (`0` fallos).
-3. Reiniciar `polis-backend.service`, verificar que `/api/v1/health/ready` y los 5 endpoints `/api/v1/compromisos/triada/dea/*` respondan HTTP 200 con datos reales de `bd_csh`, y comprobar que los 7 conteos canónicos y los `217.740` registros siguen intactos.
-4. Documentar en `bridge/02_entrega_codex.md` y hacer **commit local en `main`** únicamente de tus archivos (`backend/pyproject.toml`, `backend/app/modules/compromisos/dea_econometria_service.py`, `backend/app/modules/compromisos/router.py`, `backend/tests/test_dea_econometria_triada.py`, `bridge/02_entrega_codex.md`). **PROHIBIDO `git push`.**
+1. `backend/app/modules/compromisos/dea_econometria_service.py`
+2. `backend/tests/test_dea_econometria_triada.py`
+3. `backend/uv.lock`
+4. `docs/permisos-api.md`
+5. `bridge/02_entrega_codex.md`
+
+*(No tocar ningún archivo en `src/` ni `bridge/01_tarea_activa.md` / `bridge/02_resultado_agy2.md`).*
+
+---
+
+## 3. Verificación y Entrega
+
+1. Ejecutar `ruff format` y `ruff check` sobre los archivos backend tocados (`0` errores).
+2. Ejecutar `PYTHONPATH=backend /root/polis/venv/bin/pytest -q backend/tests/test_dea_econometria_triada.py`.
+3. Verificar `uv lock --check --project backend`.
+4. Reiniciar `polis-backend.service` y comprobar que las 5 rutas `/api/v1/compromisos/triada/dea/*` respondan `HTTP 200 OK` en `< 5s` incluso en la primera llamada tras el reinicio, devolviendo los coeficientes reales de 2ª etapa y los montos des-propagados.
+5. Documentar los valores finales en `bridge/02_entrega_codex.md` y realizar **commit local en `main`** (sin `git push`).
