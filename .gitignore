@@ -90,3 +90,4 @@ backend/media/evidencias/*
 
 # Temporary bridge and prompt files
 bridge/.*
+backend/.secrets/
