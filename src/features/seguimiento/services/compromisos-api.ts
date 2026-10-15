@@ -82,3 +82,15 @@ export async function eliminarCompromisoApi(idOcodigo: string): Promise<void> {
     method: "DELETE",
   });
 }
+
+// Re-exportación de Sincronización con Google Workspace ([TRIADA-FRONTEND-CIERRE-GOOGLE-WORKSPACE-13])
+export {
+  obtenerEstadoGoogleWorkspace,
+  sincronizarGoogleWorkspace,
+  ESTADO_WORKSPACE_INICIAL,
+  type ArchivoNativoWorkspace,
+  type EstadoGoogleWorkspaceRespuesta,
+  type SincronizarGoogleWorkspaceRespuesta,
+  type UltimoResultadoSincronizacion,
+} from "./google-workspace-api";
+

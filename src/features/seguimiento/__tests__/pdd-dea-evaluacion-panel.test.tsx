@@ -37,6 +37,7 @@ import {
   JUSTICIA_TERRITORIAL_PDL_DANE,
   PLIEGOS_CONTROL_POLITICO_FISCAL,
   obtenerLaboratorioPrescriptivoPddLocal,
+  METRICAS_CIERRE_DOCUMENTAL_WORKSPACE,
 } from "../data/pdd-dea-cartagena.data";
 import {
   obtenerCatalogoYConciliacionPpiApi,
@@ -47,6 +48,12 @@ import {
   obtenerResumenEjecutivoPddDeaApi,
   obtenerLaboratorioPrescriptivoPddApi,
 } from "../services/plan-accion-dnp-api";
+import {
+  obtenerEstadoGoogleWorkspace,
+  sincronizarGoogleWorkspace,
+  ESTADO_WORKSPACE_INICIAL,
+} from "../services/google-workspace-api";
+import { GoogleWorkspaceSyncCard } from "../components/google-workspace-sync-card";
 import { PddDeaEvaluacionPanel } from "../components/pdd-dea-evaluacion-panel";
 import { TriadaMotoresTab } from "../components/triada-motores-tab";
 
@@ -809,6 +816,87 @@ describe("Centro de Mando de Planes de Desarrollo, Conciliación PPI y DEA ([TRI
       expect(html).toContain('data-testid="pdd-tab-laboratorio-prescriptivo"');
       expect(html).toContain('id="pdd-tab-prescriptivo"');
       expect(html).toContain("7. Laboratorio Prescriptivo &amp; Control Fiscal");
+    });
+
+    it("45. métricas de cierre documental reflejan 1.805 metas únicas deduplicadas, 78 PDFs y 1.383 documentos totales", () => {
+      const m = METRICAS_CIERRE_DOCUMENTAL_WORKSPACE;
+      expect(m.metas_totales_brutas).toBe(2078);
+      expect(m.metas_unicas_deduplicadas).toBe(1805);
+      expect(m.metas_duplicadas_consolidadas).toBe(273);
+      expect(m.metas_totales_brutas - m.metas_duplicadas_consolidadas).toBe(m.metas_unicas_deduplicadas);
+      expect(m.pdfs_planes_accion_ingeridos).toBe(78);
+      expect(m.libros_excel_ingeridos).toBe(1305);
+      expect(m.total_documentos_catalogo).toBe(1383);
+      expect(m.pdfs_planes_accion_ingeridos + m.libros_excel_ingeridos).toBe(m.total_documentos_catalogo);
+      expect(m.porcentaje_catalogo_cubierto).toBe(100.0);
+      expect(m.cobertura_sobre_metas_unicas_pct).toBe(100.0);
+      expect(m.entidades_cubiertas).toBe(29);
+      expect(m.mesas_oficiales_censo).toBe(37);
+      expect(m.agendas_oficiales_censo).toBe(38);
+      expect(m.corregimientos_oficiales).toBe(15);
+    });
+
+    it("46. cliente API de Google Workspace implementa estado y sincronización con fallback seguro offline", async () => {
+      expect(ESTADO_WORKSPACE_INICIAL.conectado).toBe(true);
+      expect(ESTADO_WORKSPACE_INICIAL.service_account_email).toBe("polis-pshc@polis-511719.iam.gserviceaccount.com");
+      expect(ESTADO_WORKSPACE_INICIAL.carpeta_pshc_id).toBe("1UktNyzYEMg_kTRyAt7xfF3GExJV2aZq6");
+      expect(ESTADO_WORKSPACE_INICIAL.subcarpeta_expediente_id).toBe("1pIGP34SOqQqsNpF1cqGPh0YIVgDNSYwe");
+      expect(ESTADO_WORKSPACE_INICIAL.archivos_nativos_detectados.length).toBeGreaterThan(0);
+
+      const fetchSpy = vi.spyOn(globalThis, "fetch").mockRejectedValue(new Error("Network down"));
+      try {
+        const estado = await obtenerEstadoGoogleWorkspace();
+        expect(estado.conectado).toBe(true);
+        expect(estado.carpeta_pshc_id).toBe("1UktNyzYEMg_kTRyAt7xfF3GExJV2aZq6");
+        expect(estado.subcarpeta_expediente_id).toBe("1pIGP34SOqQqsNpF1cqGPh0YIVgDNSYwe");
+        expect(estado.archivos_nativos_detectados.some((a) => a.tipo === "SPREADSHEET")).toBe(true);
+        expect(estado.archivos_nativos_detectados.some((a) => a.tipo === "DOCUMENT")).toBe(true);
+
+        const sync = await sincronizarGoogleWorkspace();
+        expect(sync.exito).toBe(true);
+        expect(sync.archivos_sincronizados.length).toBeGreaterThanOrEqual(2);
+        expect(sync.hojas_calculo_count).toBeGreaterThanOrEqual(1);
+        expect(sync.documentos_count).toBeGreaterThanOrEqual(1);
+      } finally {
+        fetchSpy.mockRestore();
+      }
+    });
+
+    it("47. GoogleWorkspaceSyncCard renderiza data-testid='google-workspace-sync-card', botón de sync y métricas clave", () => {
+      const html = renderToString(
+        <GoogleWorkspaceSyncCard
+          metricas={METRICAS_CIERRE_DOCUMENTAL_WORKSPACE}
+          puedeEditar={true}
+        />
+      );
+      expect(html).toContain('data-testid="google-workspace-sync-card"');
+      expect(html).toContain('data-testid="btn-sync-google-workspace"');
+      expect(html).toContain("1.805");
+      expect(html).toContain("2.078");
+      expect(html).toContain("brutas");
+      expect(html).toContain("78");
+      expect(html).toContain("1.383");
+      expect(html).toContain("29");
+      expect(html).toContain("37");
+      expect(html).toContain("15 corregimientos");
+      expect(html).toContain("1UktNyzYEMg_kTRyAt7xfF3GExJV2aZq6");
+      expect(html).toContain("1pIGP34SOqQqsNpF1cqGPh0YIVgDNSYwe");
+      expect(html).toContain("polis-pshc@polis-511719.iam.gserviceaccount.com");
+    });
+
+    it("48. PddDeaEvaluacionPanel incluye acceso a Google Workspace PSHC y embebe la tarjeta de sincronización", () => {
+      const htmlNav = renderToString(<PddDeaEvaluacionPanel puedeEditar={true} />);
+      expect(htmlNav).toContain("Google Workspace PSHC");
+      expect(htmlNav).toContain('data-testid="btn-nav-google-workspace"');
+
+      const htmlLab = renderToString(
+        <PddDeaEvaluacionPanel
+          puedeEditar={true}
+          subvistaInicial="laboratorio_prescriptivo_pdd"
+        />
+      );
+      expect(htmlLab).toContain('data-testid="google-workspace-sync-card"');
+      expect(htmlLab).toContain('data-testid="btn-sync-google-workspace"');
     });
   });
 });

@@ -226,6 +226,7 @@ export interface ProcesarLotePlanAccionRespuesta {
 export interface FiltrosMatrizPlanAccion {
   vigencia?: number;
   entidad?: string;
+  compromiso_pas_codigo?: string;
   linea_codigo?: string;
   tipo_meta?: string;
   tipo_actividad?: string;
@@ -1119,6 +1120,8 @@ export async function obtenerMatrizPlanAccionApi(
     if (filtros?.vigencia) params.set("vigencia", String(filtros.vigencia));
     if (filtros?.entidad && filtros.entidad !== "todas")
       params.set("entidad", filtros.entidad);
+    if (filtros?.compromiso_pas_codigo && filtros.compromiso_pas_codigo !== "todas")
+      params.set("compromiso_pas_codigo", filtros.compromiso_pas_codigo);
     if (filtros?.linea_codigo && filtros.linea_codigo !== "todas")
       params.set("linea_codigo", filtros.linea_codigo);
     if (filtros?.tipo_meta && filtros.tipo_meta !== "todas")
@@ -1147,6 +1150,14 @@ export async function obtenerMatrizPlanAccionApi(
     console.warn("Fallo al consultar matriz de plan de acción, usando fallback local:", error);
     let filtradas = [...ACTIVIDADES_PA_CANONICAS];
 
+    if (filtros?.vigencia && filtros.vigencia !== 0) {
+      filtradas = filtradas.filter((a) => a.vigencia === filtros.vigencia);
+    }
+    if (filtros?.compromiso_pas_codigo && filtros.compromiso_pas_codigo !== "todas") {
+      filtradas = filtradas.filter(
+        (a) => a.compromiso_pas_codigo === filtros.compromiso_pas_codigo
+      );
+    }
     if (filtros?.linea_codigo && filtros.linea_codigo !== "todas") {
       filtradas = filtradas.filter(
         (a) => a.linea_estrategica_codigo === filtros.linea_codigo

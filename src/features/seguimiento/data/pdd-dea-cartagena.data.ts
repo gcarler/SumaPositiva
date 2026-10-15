@@ -490,6 +490,36 @@ export interface PliegoControlPoliticoItem {
   hash_sha256_dictamen: string;
 }
 
+export interface MetricasCierreDocumentalWorkspace {
+  metas_totales_brutas: number;
+  metas_unicas_deduplicadas: number;
+  metas_duplicadas_consolidadas: number;
+  cobertura_sobre_metas_unicas_pct: number;
+  libros_excel_ingeridos: number;
+  pdfs_planes_accion_ingeridos: number;
+  total_documentos_catalogo: number;
+  porcentaje_catalogo_cubierto: number;
+  entidades_cubiertas: number;
+  mesas_oficiales_censo: number;
+  agendas_oficiales_censo: number;
+  corregimientos_oficiales: number;
+}
+
+export const METRICAS_CIERRE_DOCUMENTAL_WORKSPACE: MetricasCierreDocumentalWorkspace = {
+  metas_totales_brutas: 2078,
+  metas_unicas_deduplicadas: 1805,
+  metas_duplicadas_consolidadas: 273,
+  cobertura_sobre_metas_unicas_pct: 100.0,
+  libros_excel_ingeridos: 1305,
+  pdfs_planes_accion_ingeridos: 78,
+  total_documentos_catalogo: 1383,
+  porcentaje_catalogo_cubierto: 100.0,
+  entidades_cubiertas: 29,
+  mesas_oficiales_censo: 37,
+  agendas_oficiales_censo: 38,
+  corregimientos_oficiales: 15,
+};
+
 export interface LaboratorioPrescriptivoPddRespuesta {
   auditoria_metas_8_planes: DesgloseCoberturaPlan[];
   network_dea_bi_etapa: NetworkDeaBiEtapaItem[];
@@ -503,6 +533,7 @@ export interface LaboratorioPrescriptivoPddRespuesta {
     mesas_totales_distrito: number;
   };
   pliegos_control_politico: PliegoControlPoliticoItem[];
+  cierre_documental?: MetricasCierreDocumentalWorkspace;
   metadata: {
     fecha_generacion: string;
     version_laboratorio: string;
@@ -3643,6 +3674,7 @@ export function obtenerLaboratorioPrescriptivoPddLocal(): LaboratorioPrescriptiv
     simulador_inverse_dea: SIMULADOR_INVERSE_DEA_PARETO,
     justicia_territorial: JUSTICIA_TERRITORIAL_PDL_DANE,
     pliegos_control_politico: PLIEGOS_CONTROL_POLITICO_FISCAL,
+    cierre_documental: METRICAS_CIERRE_DOCUMENTAL_WORKSPACE,
     metadata: {
       fecha_generacion: "2026-10-15T18:00:00Z",
       version_laboratorio: "POLIS-LAB-PRESCRIPTIVO-v11b",

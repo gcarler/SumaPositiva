@@ -29,7 +29,9 @@ import {
   X,
   FileSpreadsheet,
   FileCode,
+  FolderSync,
 } from "lucide-react";
+import { GoogleWorkspaceSyncCard } from "./google-workspace-sync-card";
 import { Button } from "@/shared/ui/button";
 import { Badge } from "@/shared/ui/badge";
 import { Input } from "@/shared/ui/input";
@@ -73,10 +75,6 @@ import {
   type PliegoControlPoliticoItem,
 } from "../services/plan-accion-dnp-api";
 
-export interface PddDeaEvaluacionPanelProps {
-  puedeEditar?: boolean;
-}
-
 export type SubvistaPddTipo =
   | "catalogo_y_ppi"
   | "explorador_programas"
@@ -86,9 +84,17 @@ export type SubvistaPddTipo =
   | "econometria_comparada_pdd"
   | "laboratorio_prescriptivo_pdd";
 
-export function PddDeaEvaluacionPanel({ puedeEditar: _puedeEditar = false }: PddDeaEvaluacionPanelProps) {
-  // Navegación entre las 6 sub-vistas del Panel PDD
-  const [subvistaPdd, setSubvistaPdd] = useState<SubvistaPddTipo>("catalogo_y_ppi");
+export interface PddDeaEvaluacionPanelProps {
+  puedeEditar?: boolean;
+  subvistaInicial?: SubvistaPddTipo;
+}
+
+export function PddDeaEvaluacionPanel({
+  puedeEditar: _puedeEditar = false,
+  subvistaInicial = "catalogo_y_ppi",
+}: PddDeaEvaluacionPanelProps) {
+  // Navegación entre las 7 sub-vistas del Panel PDD
+  const [subvistaPdd, setSubvistaPdd] = useState<SubvistaPddTipo>(subvistaInicial);
 
   // Estado con fallback local inmediato (SSR y tolerancia a desconexión)
   const [datosCatalogo, setDatosCatalogo] = useState<CatalogoYConciliacionPpiRespuesta>(
@@ -348,6 +354,18 @@ export function PddDeaEvaluacionPanel({ puedeEditar: _puedeEditar = false }: Pdd
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            data-testid="btn-nav-google-workspace"
+            onClick={() => setSubvistaPdd("laboratorio_prescriptivo_pdd")}
+            className="border-success/30 bg-surface-2 text-xs font-semibold text-success hover:bg-surface-3 gap-1.5"
+            aria-label="Ir a Sincronización Google Workspace"
+          >
+            <FolderSync className="h-3.5 w-3.5 text-success" />
+            <span>Google Workspace PSHC</span>
+          </Button>
           <Badge variant="outline" className="border-primary/40 bg-primary/10 text-xs font-semibold text-primary gap-1">
             <ShieldCheck className="h-3.5 w-3.5" />
             <span>Acuerdo 139/2024 · 3 PDL 004/2024</span>
@@ -2291,6 +2309,9 @@ export function PddDeaEvaluacionPanel({ puedeEditar: _puedeEditar = false }: Pdd
               <span className="text-[11px] text-text-muted">5 PDD + 3 PDL (100% Cobertura)</span>
             </div>
           </div>
+
+          {/* Sincronización Nativa con Google Workspace (Google Sheets & Google Docs PSHC) */}
+          <GoogleWorkspaceSyncCard metricas={datosLaboratorio.cierre_documental} />
 
           {/* 1. SIMULADOR INVERSE DEA / FRONTERA DE PARETO */}
           <div className="rounded-xl border border-border bg-surface-1 shadow-sm overflow-hidden">

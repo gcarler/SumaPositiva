@@ -96,6 +96,8 @@ export function MotorPlanAccionTab({ puedeEditar = false }: MotorPlanAccionTabPr
   // Filtros
   const [filtros, setFiltros] = useState<FiltrosMatrizPlanAccion>({
     entidad: "todas",
+    vigencia: undefined,
+    compromiso_pas_codigo: "todas",
     linea_codigo: "todas",
     tipo_meta: "todas",
     tipo_actividad: "todas",
@@ -218,6 +220,40 @@ export function MotorPlanAccionTab({ puedeEditar = false }: MotorPlanAccionTabPr
     toast.info("Lote canónico DNP cargado (6 actividades mixtas).");
   };
 
+  const entidadesDisponiblesHoja1 = useMemo(() => {
+    const setEnt = new Set<string>();
+    matriz.hoja_1_plan_accion.forEach((act) => {
+      if (act.entidad_responsable) setEnt.add(act.entidad_responsable);
+    });
+    const canonicas29 = [
+      "Distriseguridad",
+      "Secretaría del Interior y Convivencia Ciudadana",
+      "Secretaría de Participación y Desarrollo Social",
+      "Secretaría General (Alumbrado Público)",
+      "Establecimiento Público Ambiental (EPA Cartagena)",
+      "Policía Metropolitana de Cartagena (MECAR)",
+      "Secretaría de Hacienda Distrital",
+      "Dirección de Asuntos Étnicos",
+      "DADIS",
+      "PES Pedro Romero",
+      "Secretaría de Educación",
+      "Corvivienda",
+      "Secretaría de Infraestructura",
+      "Secretaría de Planeación / Informática",
+      "Instituto de Patrimonio y Cultura (IPCC)",
+      "IDER",
+      "DATT - Tránsito y Transporte",
+      "Alcaldía Local Histórica y del Caribe Norte (Localidad 1)",
+      "Alcaldía Local de la Virgen y Turística (Localidad 2)",
+      "Alcaldía Local Industrial y de la Bahía (Localidad 3)",
+      "Oficina Asesora para la Gestión del Riesgo (OAGRD)",
+      "Colegio Mayor de Bolívar",
+      "Transcaribe S.A.",
+    ];
+    canonicas29.forEach((e) => setEnt.add(e));
+    return Array.from(setEnt).sort((a, b) => a.localeCompare(b));
+  }, [matriz.hoja_1_plan_accion]);
+
   const entidadesDisponiblesCertificado = useMemo(() => {
     if (!resultadoLote) return [];
     const setEnt = new Set(resultadoLote.filas_procesadas.map((f) => f.entidad_responsable));
@@ -258,6 +294,8 @@ export function MotorPlanAccionTab({ puedeEditar = false }: MotorPlanAccionTabPr
   const limpiarFiltros = () => {
     const f: FiltrosMatrizPlanAccion = {
       entidad: "todas",
+      vigencia: undefined,
+      compromiso_pas_codigo: "todas",
       linea_codigo: "todas",
       tipo_meta: "todas",
       tipo_actividad: "todas",
@@ -638,7 +676,7 @@ export function MotorPlanAccionTab({ puedeEditar = false }: MotorPlanAccionTabPr
         <div className="space-y-4">
           {/* Filtros multicriterio */}
           <div className="rounded-xl border border-border bg-surface-1 p-4 shadow-sm space-y-3">
-            <div className="flex flex-col md:flex-row gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-text-muted" />
                 <Input
@@ -646,81 +684,158 @@ export function MotorPlanAccionTab({ puedeEditar = false }: MotorPlanAccionTabPr
                   onChange={(e) =>
                     aplicarFiltros({ ...filtros, busqueda: e.target.value })
                   }
-                  placeholder="Buscar por código, actividad, proyecto o BPIM..."
+                  placeholder="Buscar por código, actividad, proyecto, entidad o BPIM..."
                   className="pl-9 text-xs"
                 />
               </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                <Select
-                  value={filtros.linea_codigo || "todas"}
-                  onValueChange={(val) =>
-                    aplicarFiltros({ ...filtros, linea_codigo: val })
-                  }
-                >
-                  <SelectTrigger aria-label="Filtrar por Línea Estratégica" className="text-xs bg-surface-2 border-border">
-                    <SelectValue placeholder="Todas las Líneas" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="todas">Todas las Líneas</SelectItem>
-                    <SelectItem value="LE-01">LE-01 Niñez / Videovigilancia</SelectItem>
-                    <SelectItem value="LE-02">LE-02 Convivencia y Desarme</SelectItem>
-                    <SelectItem value="LE-03">LE-03 Ambiente y Bazurto</SelectItem>
-                    <SelectItem value="LE-04">LE-04 Cuidado y Étnico</SelectItem>
-                    <SelectItem value="LE-05">LE-05 Soberanía Alimentaria</SelectItem>
-                    <SelectItem value="LE-06">LE-06 Salud Mental</SelectItem>
-                  </SelectContent>
-                </Select>
-
-                <Select
-                  value={filtros.tipo_actividad || "todas"}
-                  onValueChange={(val) =>
-                    aplicarFiltros({ ...filtros, tipo_actividad: val })
-                  }
-                >
-                  <SelectTrigger aria-label="Filtrar por Tipo Actividad" className="text-xs bg-surface-2 border-border">
-                    <SelectValue placeholder="Todos los Tipos" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="todas">Todos los Tipos</SelectItem>
-                    <SelectItem value="NORMATIVA">Normativa</SelectItem>
-                    <SelectItem value="ADMINISTRATIVA">Administrativa</SelectItem>
-                    <SelectItem value="DE_GESTION">De Gestión</SelectItem>
-                    <SelectItem value="LOGISTICA">Logística</SelectItem>
-                  </SelectContent>
-                </Select>
-
-                <Select
-                  value={filtros.fuente_financiacion || "todas"}
-                  onValueChange={(val) =>
-                    aplicarFiltros({ ...filtros, fuente_financiacion: val })
-                  }
-                >
-                  <SelectTrigger aria-label="Filtrar por Fuente Financiación" className="text-xs bg-surface-2 border-border">
-                    <SelectValue placeholder="Todas las Fuentes" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="todas">Todas las Fuentes</SelectItem>
-                    <SelectItem value="SGP">SGP</SelectItem>
-                    <SelectItem value="REGALIAS">Regalías</SelectItem>
-                    <SelectItem value="RECURSOS_PROPIOS">Recursos Propios</SelectItem>
-                    <SelectItem value="COFINANCIACION">Cofinanciación</SelectItem>
-                    <SelectItem value="GASTOS_GENERALES">Gastos Generales</SelectItem>
-                    <SelectItem value="GESTION_NO_PRESUPUESTAL">Gestión Directa</SelectItem>
-                  </SelectContent>
-                </Select>
-
+              <div className="flex items-center gap-2">
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={limpiarFiltros}
-                  className="gap-1.5 text-xs"
+                  className="gap-1.5 text-xs text-text-secondary hover:text-text-primary"
                   aria-label="Limpiar Filtros"
                 >
                   <RotateCcw className="h-3 w-3" />
                   <span>Limpiar</span>
                 </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => void cargarDatos()}
+                  disabled={cargando || isPending}
+                  className="gap-1.5 text-xs bg-surface-2"
+                  aria-label="Recargar actividades"
+                >
+                  <RefreshCw className={`h-3 w-3 ${cargando || isPending ? "animate-spin" : ""}`} />
+                  <span>Actualizar</span>
+                </Button>
               </div>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
+              {/* Filtro Entidad Responsable (29 Entidades) */}
+              <Select
+                value={filtros.entidad || "todas"}
+                onValueChange={(val) =>
+                  aplicarFiltros({ ...filtros, entidad: val })
+                }
+              >
+                <SelectTrigger aria-label="Filtrar por Entidad Responsable" className="text-xs bg-surface-2 border-border truncate">
+                  <SelectValue placeholder="Todas las Entidades (29)" />
+                </SelectTrigger>
+                <SelectContent className="max-h-72">
+                  <SelectItem value="todas">Todas las Entidades (29)</SelectItem>
+                  {entidadesDisponiblesHoja1.map((ent) => (
+                    <SelectItem key={ent} value={ent}>
+                      {ent}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              {/* Filtro Vigencia (2024 / 2025 / 2026) */}
+              <Select
+                value={filtros.vigencia ? String(filtros.vigencia) : "todas"}
+                onValueChange={(val) =>
+                  aplicarFiltros({
+                    ...filtros,
+                    vigencia: val === "todas" ? undefined : Number(val),
+                  })
+                }
+              >
+                <SelectTrigger aria-label="Filtrar por Vigencia" className="text-xs bg-surface-2 border-border">
+                  <SelectValue placeholder="Todas las Vigencias" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="todas">Todas las Vigencias</SelectItem>
+                  <SelectItem value="2024">Vigencia 2024</SelectItem>
+                  <SelectItem value="2025">Vigencia 2025</SelectItem>
+                  <SelectItem value="2026">Vigencia 2026</SelectItem>
+                </SelectContent>
+              </Select>
+
+              {/* Filtro Compromiso PAS */}
+              <Select
+                value={filtros.compromiso_pas_codigo || "todas"}
+                onValueChange={(val) =>
+                  aplicarFiltros({ ...filtros, compromiso_pas_codigo: val })
+                }
+              >
+                <SelectTrigger aria-label="Filtrar por Compromiso PAS" className="text-xs bg-surface-2 border-border truncate">
+                  <SelectValue placeholder="Compromiso PAS" />
+                </SelectTrigger>
+                <SelectContent className="max-h-72">
+                  <SelectItem value="todas">Todos los PAS</SelectItem>
+                  {COMPROMISOS_PAS_CANONICOS.map((pas) => (
+                    <SelectItem key={pas.codigo} value={pas.codigo}>
+                      {pas.codigo} - {pas.nombre.slice(0, 24)}...
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              {/* Filtro Línea Estratégica */}
+              <Select
+                value={filtros.linea_codigo || "todas"}
+                onValueChange={(val) =>
+                  aplicarFiltros({ ...filtros, linea_codigo: val })
+                }
+              >
+                <SelectTrigger aria-label="Filtrar por Línea Estratégica" className="text-xs bg-surface-2 border-border truncate">
+                  <SelectValue placeholder="Todas las Líneas" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="todas">Todas las Líneas</SelectItem>
+                  <SelectItem value="LE-01">LE-01 Niñez / Videovigilancia</SelectItem>
+                  <SelectItem value="LE-02">LE-02 Convivencia y Desarme</SelectItem>
+                  <SelectItem value="LE-03">LE-03 Ambiente y Bazurto</SelectItem>
+                  <SelectItem value="LE-04">LE-04 Cuidado y Étnico</SelectItem>
+                  <SelectItem value="LE-05">LE-05 Soberanía Alimentaria</SelectItem>
+                  <SelectItem value="LE-06">LE-06 Salud Mental</SelectItem>
+                </SelectContent>
+              </Select>
+
+              {/* Filtro Tipo Actividad */}
+              <Select
+                value={filtros.tipo_actividad || "todas"}
+                onValueChange={(val) =>
+                  aplicarFiltros({ ...filtros, tipo_actividad: val })
+                }
+              >
+                <SelectTrigger aria-label="Filtrar por Tipo Actividad" className="text-xs bg-surface-2 border-border truncate">
+                  <SelectValue placeholder="Todos los Tipos" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="todas">Todos los Tipos</SelectItem>
+                  <SelectItem value="NORMATIVA">Normativa</SelectItem>
+                  <SelectItem value="ADMINISTRATIVA">Administrativa</SelectItem>
+                  <SelectItem value="DE_GESTION">De Gestión</SelectItem>
+                  <SelectItem value="LOGISTICA">Logística</SelectItem>
+                </SelectContent>
+              </Select>
+
+              {/* Filtro Fuente Financiación */}
+              <Select
+                value={filtros.fuente_financiacion || "todas"}
+                onValueChange={(val) =>
+                  aplicarFiltros({ ...filtros, fuente_financiacion: val })
+                }
+              >
+                <SelectTrigger aria-label="Filtrar por Fuente Financiación" className="text-xs bg-surface-2 border-border truncate">
+                  <SelectValue placeholder="Todas las Fuentes" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="todas">Todas las Fuentes</SelectItem>
+                  <SelectItem value="SGP">SGP</SelectItem>
+                  <SelectItem value="REGALIAS">Regalías</SelectItem>
+                  <SelectItem value="RECURSOS_PROPIOS">Recursos Propios</SelectItem>
+                  <SelectItem value="COFINANCIACION">Cofinanciación</SelectItem>
+                  <SelectItem value="GASTOS_GENERALES">Gastos Generales</SelectItem>
+                  <SelectItem value="GESTION_NO_PRESUPUESTAL">Gestión Directa</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
