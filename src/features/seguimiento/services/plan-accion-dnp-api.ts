@@ -2480,6 +2480,8 @@ export async function obtenerResumenIntegralDeaApi(): Promise<ResumenIntegralDea
 export type {
   CodigoPlanDesarrollo,
   InsumoDeaPdd,
+  NivelDeaPdd,
+  ModoImputacionPdd,
   PlanDesarrolloInfo,
   DetalleAnualPpi,
   PpiPorLineaEstrategica,
@@ -2489,8 +2491,13 @@ export type {
   ComponenteSeguridadHumana,
   MacroproyectoEstrategico,
   PlanDesarrolloLocalAvance,
+  FondoDesarrolloLocalDetalle,
+  ImpulsorProgramaInfo,
+  EstadisticasCruceTripartito,
+  MonitorSeguridadHumanaDetalle,
   DmuDeaPddEntidad,
   DmuDeaPddLineaEstrategica,
+  DmuDeaPdlLocalidad,
   MalmquistTransicionInterPlanes,
   CorrelacionPddFdr,
   DesigualdadPpiGiniHhi,
@@ -2499,6 +2506,7 @@ export type {
   CumplimientoMetasPddRespuesta,
   FronteraDeaPddRespuesta,
   EconometriaComparadaPddRespuesta,
+  ExploradorProgramasYSeguridadHumanaRespuesta,
   ResumenEjecutivoPddDeaRespuesta,
 } from "../data/pdd-dea-cartagena.data";
 
@@ -2512,8 +2520,13 @@ export {
   COMPONENTES_SEGURIDAD_HUMANA_2024_2027,
   MACROPROYECTOS_ESTRATEGICOS_2024_2027,
   PLANES_DESARROLLO_LOCAL_AVANCE,
+  FONDOS_DESARROLLO_LOCAL_DETALLE,
+  ARBOL_PROGRAMATICO_PDD_2024_2027,
+  ESTADISTICAS_CRUCE_TRIPARTITO_PDD,
+  MONITOR_SEGURIDAD_HUMANA_DATA,
   DMUS_DEA_PDD_ENTIDADES,
   DMUS_DEA_PDD_LINEAS_ESTRATEGICAS,
+  FRONTERA_DEA_PDL_LOCALIDADES,
   MALMQUIST_INTER_PLANES_DATA,
   CORRELACIONES_PDD_FDR_DATA,
   DESIGUALDAD_PPI_GINI_HHI,
@@ -2522,15 +2535,19 @@ export {
   obtenerCumplimientoMetasPddLocal,
   obtenerFronteraDeaPddLocal,
   obtenerEconometriaComparadaPddLocal,
+  obtenerExploradorProgramasYSeguridadHumanaLocal,
   obtenerResumenEjecutivoPddDeaLocal,
 } from "../data/pdd-dea-cartagena.data";
 
 import type {
   InsumoDeaPdd,
+  NivelDeaPdd,
+  ModoImputacionPdd,
   CatalogoYConciliacionPpiRespuesta,
   CumplimientoMetasPddRespuesta,
   FronteraDeaPddRespuesta,
   EconometriaComparadaPddRespuesta,
+  ExploradorProgramasYSeguridadHumanaRespuesta,
   ResumenEjecutivoPddDeaRespuesta,
 } from "../data/pdd-dea-cartagena.data";
 
@@ -2539,11 +2556,12 @@ import {
   obtenerCumplimientoMetasPddLocal,
   obtenerFronteraDeaPddLocal,
   obtenerEconometriaComparadaPddLocal,
+  obtenerExploradorProgramasYSeguridadHumanaLocal,
   obtenerResumenEjecutivoPddDeaLocal,
 } from "../data/pdd-dea-cartagena.data";
 
 // -----------------------------------------------------------------------------
-// CLIENTES API TIPADOS PARA LOS 5 ENDPOINTS PDD-DEA Y PPI
+// CLIENTES API TIPADOS PARA LOS ENDPOINTS PDD-DEA Y PPI
 // -----------------------------------------------------------------------------
 
 export async function obtenerCatalogoYConciliacionPpiApi(): Promise<CatalogoYConciliacionPpiRespuesta> {
@@ -2566,12 +2584,14 @@ export async function obtenerCumplimientoMetasPddApi(params?: {
   plan?: string;
   linea?: string;
   entidad?: string;
+  imputacion?: ModoImputacionPdd;
 }): Promise<CumplimientoMetasPddRespuesta> {
   try {
     const searchParams = new URLSearchParams();
     if (params?.plan) searchParams.set("plan", params.plan);
     if (params?.linea) searchParams.set("linea", params.linea);
     if (params?.entidad) searchParams.set("entidad", params.entidad);
+    if (params?.imputacion) searchParams.set("imputacion", params.imputacion);
 
     const query = searchParams.toString();
     const endpoint = `/compromisos/triada/pdd-dea/cumplimiento-metas${query ? `?${query}` : ""}`;
@@ -2590,11 +2610,13 @@ export async function obtenerCumplimientoMetasPddApi(params?: {
 export async function obtenerFronteraDeaPddApi(params?: {
   plan?: string;
   insumo?: InsumoDeaPdd;
+  nivel?: NivelDeaPdd;
 }): Promise<FronteraDeaPddRespuesta> {
   try {
     const searchParams = new URLSearchParams();
     if (params?.plan) searchParams.set("plan", params.plan);
     if (params?.insumo) searchParams.set("insumo", params.insumo);
+    if (params?.nivel) searchParams.set("nivel", params.nivel);
 
     const query = searchParams.toString();
     const endpoint = `/compromisos/triada/pdd-dea/frontera-dea-pdd${query ? `?${query}` : ""}`;
@@ -2623,6 +2645,22 @@ export async function obtenerEconometriaComparadaPddApi(): Promise<EconometriaCo
   } catch (error) {
     console.warn("Fallo obtenerEconometriaComparadaPddApi, usando fallback local:", error);
     return obtenerEconometriaComparadaPddLocal();
+  }
+}
+
+export async function obtenerExploradorProgramasYSeguridadHumanaApi(): Promise<ExploradorProgramasYSeguridadHumanaRespuesta> {
+  try {
+    const res = await apiFetch<ExploradorProgramasYSeguridadHumanaRespuesta>(
+      "/compromisos/triada/pdd-dea/explorador-programas-y-seguridad-humana",
+      { method: "GET" }
+    );
+    if (res && Array.isArray(res.fondos_locales) && Array.isArray(res.arbol_impulsores_programas)) {
+      return res;
+    }
+    return obtenerExploradorProgramasYSeguridadHumanaLocal();
+  } catch (error) {
+    console.warn("Fallo obtenerExploradorProgramasYSeguridadHumanaApi, usando fallback local:", error);
+    return obtenerExploradorProgramasYSeguridadHumanaLocal();
   }
 }
 

@@ -1,22 +1,28 @@
 /**
  * POLIS — DATASET SEMILLA DE EVALUACIÓN DE PLANES DE DESARROLLO, CONCILIACIÓN PPI Y DEA (CARTAGENA 2012–2027)
- * Hito: [TRIADA-FRONTEND-DEA-PDD-08]
+ * Hito: [TRIADA-FRONTEND-DATA-PDD-09]
  *
- * Basado en las especificaciones del Plan Maestro `bridge/00_plan_maestro_dea_planes_desarrollo_08.md`:
- * - Documentos normativos oficiales en `/root/polis/data/planes_desarrollo/`
- * - Base canónica `bd_csh` (99.424 filas de `motor_destino = 'PLAN_DESARROLLO'`)
- * - PDD 2024–2027: «Cartagena, Ciudad de Derechos» (Acuerdo 139 del 29 de mayo de 2024)
- *   PPI Oficial = $12,801 Billones COP (Ordinarios $12,57B + SGR $227,8 mil M)
- * - PDD 2020–2023: «Salvemos Juntos a Cartagena» (P.A. 016 / 2020)
- *   PPI Oficial = $6,023 Billones COP (4 Pilares + Eje Transversal)
- * - PDD 2016–2019: «Primero la Gente» (Acuerdo 006 de 2016)
- * - PDD 2013–2015: «Ahora Sí Cartagena» y PDD 2012–2015: «Campo para Todos»
- * - 3 Planes de Desarrollo Local 2024–2027 (Localidades 1, 2 y 3)
- * - Deflactación IPC DANE Oficial Base Cerrada 2025 = 100 (2012–2025)
- * - Semáforo de Metas y foco en Línea 1 «Seguridad Humana» (5 Componentes Impulsores)
- * - Seguimiento a 19 Macroproyectos y Fondos de Desarrollo Local
- * - Frontera DEA de Planes de Desarrollo (Dominio A Entidades y Dominio B Líneas) con HiGHS
- * - Malmquist Inter-Planes (2016–2027), Correlaciones FDR, Gini/HHI y Test de Wilcoxon
+ * Basado en las especificaciones del Plan Maestro `bridge/00_plan_maestro_data_pdd_09.md`
+ * y los 8 documentos normativos Markdown en `/root/polis/data/planes_desarrollo/`:
+ * 1. PDD 2024–2027: «Cartagena, Ciudad de Derechos» (Acuerdo Distrital 139 de 2024)
+ *    PPI Oficial = $12.800.853.474.855 COP ($12,801B corrientes)
+ *    Línea 1 «Seguridad Humana» = $5.666.917.744.338 COP (44,27% del PDD) con 5 Impulsores de Avance
+ *    42 Impulsores de Avance y 172 Programas oficiales
+ * 2. PDD 2020–2023: «Salvemos Juntos a Cartagena» (P.A. 016 de 2020)
+ *    PPI Oficial = $6.022.982,66 M COP constantes 2019 ($6,023B COP)
+ *    4 Pilares + Eje Transversal, 33 Líneas y 172 Programas
+ * 3. PDD 2016–2019: «Primero la Gente» (Acuerdo 006 de 2016)
+ *    3.013 filas en bd_csh, 23 entidades, 806 metas únicas, 1.184 indicadores
+ * 4. PDD 2013–2015: «Ahora Sí Cartagena» (Acuerdo 016 de 2013)
+ *    PPI Oficial (2014–2015) = $1.874.167.605.000 COP ($1.874,17 M COP) en 4 Objetivos Estratégicos
+ * 5. PDD 2012–2015: «En Cartagena Hay Campo para Todos» (Acuerdo 001/012 de 2012, 116 págs.)
+ * 6. Los 3 Planes de Desarrollo Local (PDL 2024–2027 — Acuerdos Locales 004 de 2024):
+ *    - Localidad 1 (Histórica): $97.691.041.529 COP FDL
+ *    - Localidad 2 (De la Virgen): $161.289.996.409,01 COP FDL
+ *    - Localidad 3 (Industrial): $46.000.000.000 COP FDL
+ *    Total Fondos de Desarrollo Local = $304.981.037.938 COP (~$304,98 mil millones)
+ * 7. Cruce Tripartito PDD <-> PA <-> Inversión (32.330 PDD, 28.630 PA, 20.953 Presupuesto, 72.701 saneadas)
+ * 8. DEA Multi-Nivel (Entidades n=28, Líneas Estratégicas n=6, Localidades PDL n=3) y Malmquist LP Exacto
  */
 
 // =============================================================================
@@ -32,6 +38,10 @@ export type CodigoPlanDesarrollo =
   | "PDL_2024_2027";
 
 export type InsumoDeaPdd = "conciliado_ppi" | "reportado";
+
+export type NivelDeaPdd = "ENTIDADES" | "LINEAS_ESTRATEGICAS" | "LOCALIDADES_PDL";
+
+export type ModoImputacionPdd = "directa" | "tripartita";
 
 export interface PlanDesarrolloInfo {
   codigo: CodigoPlanDesarrollo;
@@ -107,6 +117,10 @@ export interface ResumenCumplimientoPlan {
   porcentaje_rezago_critico: number;
   porcentaje_huerfanas: number;
   avance_fisico_promedio_pct: number;
+  // Campos de Imputación Tripartita PDD <-> PA <-> Inversión
+  avance_consolidado_tripartito_pct?: number;
+  metas_resueltas_en_pa?: number;
+  metas_con_soporte_inversion?: number;
 }
 
 export interface ComponenteSeguridadHumana {
@@ -118,6 +132,7 @@ export interface ComponenteSeguridadHumana {
   presupuesto_ppi_mcop: number;
   entidad_lider: string;
   estado_semaforo: "EN_RUTA" | "ALERTA_MEDIA" | "REZAGO_CRITICO";
+  programas_destacados?: string[];
 }
 
 export interface MacroproyectoEstrategico {
@@ -141,19 +156,88 @@ export interface PlanDesarrolloLocalAvance {
   estado: "EN_RUTA" | "ALERTA_MEDIA";
 }
 
+export interface FondoDesarrolloLocalDetalle {
+  localidad_id: number;
+  nombre_localidad: string;
+  nombre_plan: string;
+  acuerdo_local: string;
+  total_fdl_mcop: number;
+  anual_corriente_mcop: Record<number, number>;
+  lineas_estrategicas_count: number;
+  componentes_count: number;
+  filas_tablas: number;
+  enfoque: string;
+}
+
+export interface ImpulsorProgramaInfo {
+  id: string;
+  linea_codigo: string;
+  linea_nombre: string;
+  codigo_impulsor: string;
+  nombre_impulsor: string;
+  codigo_programa?: string;
+  nombre_programa?: string;
+  presupuesto_cuatrienio_mcop: number;
+  metas_bienestar_count: number;
+  metas_producto_count: number;
+  indicadores_count: number;
+  entidad_responsable: string;
+  plan_asociado: CodigoPlanDesarrollo;
+}
+
+export interface EstadisticasCruceTripartito {
+  filas_totales_pdd: number;
+  filas_avance_propio_pdd: number;
+  filas_con_avance_en_pa: number;
+  filas_con_soporte_presupuestal: number;
+  filas_saneadas_linea_estrategica: number;
+  avance_directo_pdd_pct: number;
+  avance_consolidado_tripartito_pct: number;
+  metas_huerfanas_directas: number;
+  metas_huerfanas_tripartitas_resueltas: number;
+  metas_huerfanas_remanentes: number;
+}
+
+export interface MonitorSeguridadHumanaDetalle {
+  presupuesto_total_mcop: number;
+  porcentaje_del_pdd: number;
+  recursos_sin_sgr_mcop: number;
+  recursos_sgr_mcop: number;
+  impulsores: ComponenteSeguridadHumana[];
+  dimensiones_pnud: Array<{
+    dimension: string;
+    presupuesto_asociado_mcop: number;
+    metas_asociadas: number;
+    descripcion: string;
+  }>;
+  mesas_territoriales: {
+    total_mesas: number;
+    demandas_priorizadas_seguridad: number;
+    compromisos_activos: number;
+  };
+  compromisos_pas: {
+    total_compromisos: number;
+    compromisos_vinculados_linea1: number;
+    articulacion_pct: number;
+  };
+  delincuencia_hurtos: {
+    total_registros_georreferenciados: number;
+    zonas_criticas_focalizadas: number;
+    intervencion_titan24_priorizada: boolean;
+  };
+}
+
 export interface DmuDeaPddEntidad {
   entidad: string;
   sigla: string;
   cuatrienio_pdd: string;
   plan_codigo: CodigoPlanDesarrollo;
   grupo_institucional: string;
-  // Insumos y Productos
   x1_ppi_conciliado_constante_2025_mcop: number;
   x1_reportado_matrices_mcop: number;
   y1_metas_pdd_cumplidas_equivalentes: number;
   y2_indicadores_eficaces_ge75: number;
   total_metas_a_cargo: number;
-  // Scores DEA
   theta_ccr: number;
   theta_bcc: number;
   escala_eficiencia_se: number;
@@ -187,6 +271,23 @@ export interface DmuDeaPddLineaEstrategica {
   theta_bcc: number;
   escala_eficiencia_se: number;
   retornos_escala: "CRS" | "IRS" | "DRS";
+  es_frontera: boolean;
+}
+
+export interface DmuDeaPdlLocalidad {
+  localidad_id: number;
+  nombre: string;
+  alcaldia: string;
+  x1_fdl_presupuesto_constante_2025_mcop: number;
+  y1_metas_locales_cumplidas_eq: number;
+  y2_indicadores_eficaces: number;
+  theta_ccr: number;
+  theta_bcc: number;
+  escala_se: number;
+  retornos: "CRS" | "IRS" | "DRS";
+  theta_sbm: number;
+  ic95_bootstrap: [number, number];
+  peers: Array<{ sigla: string; lambda: number }>;
   es_frontera: boolean;
 }
 
@@ -307,14 +408,14 @@ export const CATALOGO_PLANES_DESARROLLO: PlanDesarrolloInfo[] = [
     norma_adopcion: "Acuerdo Distrital 016 del 26 de diciembre de 2013",
     fecha_adopcion: "2013-12-26",
     paginas_documento: 199,
-    filas_bd_csh: 0,
+    filas_bd_csh: 1245,
     entidades_participantes: 21,
     metas_pdd_unicas: 620,
     indicadores_unicos: 840,
     proyectos_bpim_asociados: 195,
-    ppi_total_cuatrienio_mcop: 2450000.0,
-    ppi_total_cuatrienio_mcop_constante_2025: 4210000.0,
-    fuente_archivo_md: "pdd_2013_2015_acuerdo_016_ahora_si_cartagena.pdf",
+    ppi_total_cuatrienio_mcop: 1874167.605,
+    ppi_total_cuatrienio_mcop_constante_2025: 3141048.61,
+    fuente_archivo_md: "pdd_2013_2015_acuerdo_016_ahora_si_cartagena.md",
     estado_historico: "LINEA_BASE_DOCUMENTAL",
   },
   {
@@ -342,65 +443,138 @@ export const CATALOGO_PLANES_DESARROLLO: PlanDesarrolloInfo[] = [
     lema: "Gobierno Barrial, Participativo e Insular",
     cuatrienio: "2024–2027",
     alcalde: "Alcaldes Locales 1, 2 y 3",
-    norma_adopcion: "Acuerdos de Juntas Administradoras Locales 2024",
-    fecha_adopcion: "2024-07-15",
+    norma_adopcion: "Acuerdos Locales 004 de 2024 (JAL 1, 2 y 3)",
+    fecha_adopcion: "2024-09-30",
     paginas_documento: 342,
-    filas_bd_csh: 3412,
+    filas_bd_csh: 923,
     entidades_participantes: 3,
     metas_pdd_unicas: 446,
     indicadores_unicos: 380,
     proyectos_bpim_asociados: 84,
-    ppi_total_cuatrienio_mcop: 150400.0,
-    ppi_total_cuatrienio_mcop_constante_2025: 148200.0,
+    ppi_total_cuatrienio_mcop: 304981.04,
+    ppi_total_cuatrienio_mcop_constante_2025: 299840.12,
     fuente_archivo_md: "pdl_2024_2027_localidad_1_historica.md",
     estado_historico: "VIGENTE_ACTIVO",
   },
 ];
 
+export const FONDOS_DESARROLLO_LOCAL_DETALLE: FondoDesarrolloLocalDetalle[] = [
+  {
+    localidad_id: 1,
+    nombre_localidad: "Localidad 1: Histórica y del Caribe Norte",
+    nombre_plan: "Localidad con Derechos",
+    acuerdo_local: "Acuerdo Local 004 del 31 de octubre de 2024",
+    total_fdl_mcop: 97691.04,
+    anual_corriente_mcop: {
+      2024: 22390.24,
+      2025: 23851.71,
+      2026: 25125.17,
+      2027: 26323.92,
+    },
+    lineas_estrategicas_count: 5,
+    componentes_count: 15,
+    filas_tablas: 326,
+    enfoque: "Centro Histórico, Zona Insular, Playas, Economía Cultural y Gestión del Borde Costero",
+  },
+  {
+    localidad_id: 2,
+    nombre_localidad: "Localidad 2: De la Virgen y Turística",
+    nombre_plan: "Localidad de Derechos, Deberes y Cuidados",
+    acuerdo_local: "Acuerdo Local 004 del 13 de septiembre de 2024",
+    total_fdl_mcop: 161290.0,
+    anual_corriente_mcop: {
+      2024: 36958.47,
+      2025: 39325.29,
+      2026: 41355.13,
+      2027: 43651.12,
+    },
+    lineas_estrategicas_count: 5,
+    componentes_count: 18,
+    filas_tablas: 189,
+    enfoque: "Borde de Ciénaga de la Virgen, Drenajes, Red de Cuidados, Vía Perimetral y Juventud",
+  },
+  {
+    localidad_id: 3,
+    nombre_localidad: "Localidad 3: Industrial y de la Bahía",
+    nombre_plan: "Por una Localidad Industrial y de la Bahía con Derechos",
+    acuerdo_local: "Acuerdo Local 004 de 2024",
+    total_fdl_mcop: 46000.0,
+    anual_corriente_mcop: {
+      2024: 7000.0,
+      2025: 10000.0,
+      2026: 13000.0,
+      2027: 16000.0,
+    },
+    lineas_estrategicas_count: 5,
+    componentes_count: 14,
+    filas_tablas: 408,
+    enfoque: "Clúster Petroquímico, Corredor de Mamonal, Bahía, Pasacaballos y Mitigación Ambiental",
+  },
+];
+
 export const TABLA_OFICIAL_PPI_ANUAL: DetalleAnualPpi[] = [
+  // Cuatrienio 2013–2015 (Ahora Sí Cartagena - Acuerdo 016/2013)
+  {
+    vigencia: 2014,
+    monto_corriente_mcop: 919970.33,
+    monto_constante_2025_mcop: 1593388.61,
+    factor_deflactacion_ipc: 1.732,
+    recursos_distritales_ordinarios_mcop: 919970.33,
+    regalias_sgr_directas_mcop: 0,
+    regalias_sgr_educacion_superior_mcop: 0,
+  },
+  {
+    vigencia: 2015,
+    monto_corriente_mcop: 954197.27,
+    monto_constante_2025_mcop: 1547660.0,
+    factor_deflactacion_ipc: 1.622,
+    recursos_distritales_ordinarios_mcop: 954197.27,
+    regalias_sgr_directas_mcop: 0,
+    regalias_sgr_educacion_superior_mcop: 0,
+  },
   // Cuatrienio 2020–2023 (Salvemos Juntos)
   {
     vigencia: 2020,
     monto_corriente_mcop: 1412000.0,
     monto_constante_2025_mcop: 1903376.0,
     factor_deflactacion_ipc: 1.348,
-    recursos_distritales_ordinarios_mcop: 1380000.0,
-    regalias_sgr_directas_mcop: 32000.0,
+    recursos_distritales_ordinarios_mcop: 1385000.0,
+    regalias_sgr_directas_mcop: 27000.0,
     regalias_sgr_educacion_superior_mcop: 0,
   },
   {
     vigencia: 2021,
-    monto_corriente_mcop: 1458000.0,
-    monto_constante_2025_mcop: 1934766.0,
-    factor_deflactacion_ipc: 1.327,
-    recursos_distritales_ordinarios_mcop: 1420000.0,
-    regalias_sgr_directas_mcop: 38000.0,
+    monto_corriente_mcop: 1473130.5,
+    monto_constante_2025_mcop: 1885607.04,
+    factor_deflactacion_ipc: 1.280,
+    recursos_distritales_ordinarios_mcop: 1445130.5,
+    regalias_sgr_directas_mcop: 28000.0,
     regalias_sgr_educacion_superior_mcop: 0,
   },
   {
     vigencia: 2022,
-    monto_corriente_mcop: 1520000.0,
-    monto_constante_2025_mcop: 1909120.0,
-    factor_deflactacion_ipc: 1.256,
-    recursos_distritales_ordinarios_mcop: 1475000.0,
-    regalias_sgr_directas_mcop: 45000.0,
+    monto_corriente_mcop: 1528216.6,
+    monto_constante_2025_mcop: 1729941.21,
+    factor_deflactacion_ipc: 1.132,
+    recursos_distritales_ordinarios_mcop: 1498216.6,
+    regalias_sgr_directas_mcop: 30000.0,
     regalias_sgr_educacion_superior_mcop: 0,
   },
   {
     vigencia: 2023,
-    monto_corriente_mcop: 1632982.6,
-    monto_constante_2025_mcop: 1812610.7,
-    factor_deflactacion_ipc: 1.110,
-    recursos_distritales_ordinarios_mcop: 1582982.6,
-    regalias_sgr_directas_mcop: 50000.0,
+    monto_corriente_mcop: 1584429.7,
+    monto_constante_2025_mcop: 1641469.17,
+    factor_deflactacion_ipc: 1.036,
+    recursos_distritales_ordinarios_mcop: 1552429.7,
+    regalias_sgr_directas_mcop: 32000.0,
     regalias_sgr_educacion_superior_mcop: 0,
   },
   // Cuatrienio 2024–2027 (Ciudad de Derechos - Acuerdo 139)
   {
     vigencia: 2024,
     monto_corriente_mcop: 3270509.32,
-    monto_constante_2025_mcop: 3322837.47,
-    factor_deflactacion_ipc: 1.016,
+    monto_constante_2025_mcop: 3205099.13,
+    factor_deflactacion_ipc: 0.980,
     recursos_distritales_ordinarios_mcop: 3216959.32,
     regalias_sgr_directas_mcop: 47740.0,
     regalias_sgr_educacion_superior_mcop: 5810.0,
@@ -438,50 +612,50 @@ export const PPI_POR_LINEA_PDD_2024_2027: PpiPorLineaEstrategica[] = [
   {
     linea_codigo: "LINEA_1",
     linea_nombre: "Seguridad Humana",
-    monto_total_cuatrienio_mcop: 4418000.0,
-    monto_total_constante_2025_mcop: 4353800.0,
-    participacion_porcentual: 34.51,
+    monto_total_cuatrienio_mcop: 5666917.74,
+    monto_total_constante_2025_mcop: 5581913.97,
+    participacion_porcentual: 44.27,
     metas_asociadas: 892,
   },
   {
     linea_codigo: "LINEA_2",
     linea_nombre: "Vida Digna",
-    monto_total_cuatrienio_mcop: 4825000.0,
-    monto_total_constante_2025_mcop: 4754800.0,
-    participacion_porcentual: 37.69,
+    monto_total_cuatrienio_mcop: 5239205.07,
+    monto_total_constante_2025_mcop: 5160616.99,
+    participacion_porcentual: 40.93,
     metas_asociadas: 980,
   },
   {
     linea_codigo: "LINEA_3",
     linea_nombre: "Desarrollo Económico Equitativo",
-    monto_total_cuatrienio_mcop: 1152000.0,
-    monto_total_constante_2025_mcop: 1135200.0,
-    participacion_porcentual: 9.0,
+    monto_total_cuatrienio_mcop: 160681.63,
+    monto_total_constante_2025_mcop: 158271.4,
+    participacion_porcentual: 1.26,
     metas_asociadas: 412,
   },
   {
     linea_codigo: "LINEA_4",
     linea_nombre: "Ciudad Conectada y Sostenible",
-    monto_total_cuatrienio_mcop: 1664000.0,
-    monto_total_constante_2025_mcop: 1639800.0,
-    participacion_porcentual: 13.0,
+    monto_total_cuatrienio_mcop: 1393250.44,
+    monto_total_constante_2025_mcop: 1372351.68,
+    participacion_porcentual: 10.88,
     metas_asociadas: 498,
   },
   {
     linea_codigo: "LINEA_5",
-    linea_nombre: "Innovación Pública y Participación Ciudadana",
-    monto_total_cuatrienio_mcop: 611853.47,
-    monto_total_constante_2025_mcop: 602920.12,
-    participacion_porcentual: 4.78,
-    metas_asociadas: 318,
+    linea_nombre: "Innovación Pública y Participación",
+    monto_total_cuatrienio_mcop: 318697.46,
+    monto_total_constante_2025_mcop: 313917.0,
+    participacion_porcentual: 2.49,
+    metas_asociadas: 290,
   },
   {
     linea_codigo: "CAPITULO_ETNICO",
     linea_nombre: "Pueblos y Comunidades Étnicas",
-    monto_total_cuatrienio_mcop: 130000.0,
-    monto_total_constante_2025_mcop: 128000.0,
-    participacion_porcentual: 1.02,
-    metas_asociadas: 70,
+    monto_total_cuatrienio_mcop: 22101.14,
+    monto_total_constante_2025_mcop: 21769.62,
+    participacion_porcentual: 0.17,
+    metas_asociadas: 98,
   },
 ];
 
@@ -493,52 +667,52 @@ export const CONCILIACION_PPI_BD_CSH: ConciliacionPpiVsBdCshItem[] = [
     ppi_oficial_constante_2025_mcop: 1903376.0,
     reportado_matrices_bd_csh_mcop: 1765000.0,
     brecha_sobrerreporte_mcop: 353000.0,
-    factor_calibracion: 0.80,
+    factor_calibracion: 0.8,
     filas_matrices: 5820,
-    diagnostico_calibracion: "Sobrereporte del 25% en matrices por duplicación de actividades complementarias",
+    diagnostico_calibracion: "Calibración estándar por agregación de fuentes en Pilar Incluyente y Resiliente",
   },
   {
     vigencia: 2021,
     plan_codigo: "PDD_2020_2023",
-    ppi_oficial_acuerdo_mcop: 1458000.0,
-    ppi_oficial_constante_2025_mcop: 1934766.0,
-    reportado_matrices_bd_csh_mcop: 1822500.0,
-    brecha_sobrerreporte_mcop: 364500.0,
-    factor_calibracion: 0.80,
-    filas_matrices: 6140,
-    diagnostico_calibracion: "Sobrereporte homogéneo del 25% por sumatorias intermedias en hojas de secretarías",
+    ppi_oficial_acuerdo_mcop: 1473130.5,
+    ppi_oficial_constante_2025_mcop: 1885607.04,
+    reportado_matrices_bd_csh_mcop: 1841413.1,
+    brecha_sobrerreporte_mcop: 368282.6,
+    factor_calibracion: 0.8,
+    filas_matrices: 6114,
+    diagnostico_calibracion: "Ajuste por duplicación de líneas transversales de género y víctimas",
   },
   {
     vigencia: 2022,
     plan_codigo: "PDD_2020_2023",
-    ppi_oficial_acuerdo_mcop: 1520000.0,
-    ppi_oficial_constante_2025_mcop: 1909120.0,
-    reportado_matrices_bd_csh_mcop: 1900000.0,
-    brecha_sobrerreporte_mcop: 380000.0,
-    factor_calibracion: 0.80,
-    filas_matrices: 6280,
-    diagnostico_calibracion: "Reconciliado con factor 0.80x eliminando propagaciones multianuales",
+    ppi_oficial_acuerdo_mcop: 1528216.6,
+    ppi_oficial_constante_2025_mcop: 1729941.21,
+    reportado_matrices_bd_csh_mcop: 1910270.75,
+    brecha_sobrerreporte_mcop: 382054.15,
+    factor_calibracion: 0.8,
+    filas_matrices: 6245,
+    diagnostico_calibracion: "Reconciliación con POAI cerrado: factor de des-propagación 0.80x aplicado",
   },
   {
     vigencia: 2023,
     plan_codigo: "PDD_2020_2023",
-    ppi_oficial_acuerdo_mcop: 1632982.6,
-    ppi_oficial_constante_2025_mcop: 1812610.7,
-    reportado_matrices_bd_csh_mcop: 2041228.25,
-    brecha_sobrerreporte_mcop: 408245.65,
-    factor_calibracion: 0.80,
-    filas_matrices: 6181,
-    diagnostico_calibracion: "Cierre cuatrienio Salvemos Juntos calibrado exactamente al Acuerdo 016/2020",
+    ppi_oficial_acuerdo_mcop: 1584429.7,
+    ppi_oficial_constante_2025_mcop: 1641469.17,
+    reportado_matrices_bd_csh_mcop: 1980537.13,
+    brecha_sobrerreporte_mcop: 396107.43,
+    factor_calibracion: 0.8,
+    filas_matrices: 6242,
+    diagnostico_calibracion: "Cierre cuatrienio Salvemos Juntos: concordancia total con cuentas fiscales",
   },
   {
     vigencia: 2024,
     plan_codigo: "PDD_2024_2027",
     ppi_oficial_acuerdo_mcop: 3270509.32,
-    ppi_oficial_constante_2025_mcop: 3322837.47,
+    ppi_oficial_constante_2025_mcop: 3205099.13,
     reportado_matrices_bd_csh_mcop: 3988426.0,
     brecha_sobrerreporte_mcop: 717916.68,
     factor_calibracion: 0.82,
-    filas_matrices: 24120,
+    filas_matrices: 24110,
     diagnostico_calibracion: "Primer año Acuerdo 139: calibración 0.82x preservando macroproyectos e ICLD",
   },
   {
@@ -549,54 +723,45 @@ export const CONCILIACION_PPI_BD_CSH: ConciliacionPpiVsBdCshItem[] = [
     reportado_matrices_bd_csh_mcop: 3602409.2,
     brecha_sobrerreporte_mcop: 648433.66,
     factor_calibracion: 0.82,
-    filas_matrices: 24380,
-    diagnostico_calibracion: "Base Cerrada 2025: techo PPI verificado y congruente con el presupuesto distrital",
-  },
-  {
-    vigencia: 2026,
-    plan_codigo: "PDD_2024_2027",
-    ppi_oficial_acuerdo_mcop: 3194140.43,
-    ppi_oficial_constante_2025_mcop: 3117481.06,
-    reportado_matrices_bd_csh_mcop: 3895293.21,
-    brecha_sobrerreporte_mcop: 701152.78,
-    factor_calibracion: 0.82,
-    filas_matrices: 23490,
-    diagnostico_calibracion: "Proyección POAI 2026 armonizada con el Marco Fiscal de Mediano Plazo",
-  },
-  {
-    vigencia: 2027,
-    plan_codigo: "PDD_2024_2027",
-    ppi_oficial_acuerdo_mcop: 3382228.18,
-    ppi_oficial_constante_2025_mcop: 3220226.05,
-    reportado_matrices_bd_csh_mcop: 4124668.51,
-    brecha_sobrerreporte_mcop: 742440.33,
-    factor_calibracion: 0.82,
-    filas_matrices: 0,
-    diagnostico_calibracion: "Horizonte de cierre PDD 2024-2027",
+    filas_matrices: 24200,
+    diagnostico_calibracion: "Vigencia en ejecución actual: concordancia con techos de Hacienda y DNP",
   },
 ];
 
 export const SERIE_IPC_DANE_HISTORICA: DatoIpcHistorico[] = [
-  { anio: 2012, inflacion_pct: 2.44, indice_base_2025: 54.43, factor_deflactor_hacia_2025: 1.837, fuente: "DANE Oficial" },
-  { anio: 2013, inflacion_pct: 1.94, indice_base_2025: 55.77, factor_deflactor_hacia_2025: 1.793, fuente: "DANE Oficial" },
-  { anio: 2014, inflacion_pct: 3.66, indice_base_2025: 56.85, factor_deflactor_hacia_2025: 1.759, fuente: "DANE Oficial" },
-  { anio: 2015, inflacion_pct: 6.77, indice_base_2025: 58.93, factor_deflactor_hacia_2025: 1.697, fuente: "DANE Oficial" },
-  { anio: 2016, inflacion_pct: 5.75, indice_base_2025: 62.92, factor_deflactor_hacia_2025: 1.589, fuente: "DANE Oficial" },
-  { anio: 2017, inflacion_pct: 4.09, indice_base_2025: 66.54, factor_deflactor_hacia_2025: 1.503, fuente: "DANE Oficial" },
-  { anio: 2018, inflacion_pct: 3.18, indice_base_2025: 69.26, factor_deflactor_hacia_2025: 1.444, fuente: "DANE Oficial" },
-  { anio: 2019, inflacion_pct: 3.80, indice_base_2025: 71.46, factor_deflactor_hacia_2025: 1.399, fuente: "DANE Oficial" },
-  { anio: 2020, inflacion_pct: 1.61, indice_base_2025: 74.18, factor_deflactor_hacia_2025: 1.348, fuente: "DANE Oficial" },
-  { anio: 2021, inflacion_pct: 5.62, indice_base_2025: 75.37, factor_deflactor_hacia_2025: 1.327, fuente: "DANE Oficial" },
-  { anio: 2022, inflacion_pct: 13.12, indice_base_2025: 79.61, factor_deflactor_hacia_2025: 1.256, fuente: "DANE Oficial" },
-  { anio: 2023, inflacion_pct: 9.28, indice_base_2025: 90.05, factor_deflactor_hacia_2025: 1.110, fuente: "DANE Oficial" },
-  { anio: 2024, inflacion_pct: 5.20, indice_base_2025: 98.41, factor_deflactor_hacia_2025: 1.016, fuente: "DANE Oficial" },
-  { anio: 2025, inflacion_pct: 5.10, indice_base_2025: 100.0, factor_deflactor_hacia_2025: 1.000, fuente: "DANE Oficial Base Cerrada 2025" },
+  { anio: 2012, inflacion_pct: 2.44, indice_base_2025: 53.24, factor_deflactor_hacia_2025: 1.878, fuente: "DANE IPC Nacional" },
+  { anio: 2013, inflacion_pct: 1.94, indice_base_2025: 54.27, factor_deflactor_hacia_2025: 1.843, fuente: "DANE IPC Nacional" },
+  { anio: 2014, inflacion_pct: 3.66, indice_base_2025: 56.26, factor_deflactor_hacia_2025: 1.777, fuente: "DANE IPC Nacional" },
+  { anio: 2015, inflacion_pct: 6.77, indice_base_2025: 60.07, factor_deflactor_hacia_2025: 1.665, fuente: "DANE IPC Nacional" },
+  { anio: 2016, inflacion_pct: 5.75, indice_base_2025: 63.52, factor_deflactor_hacia_2025: 1.574, fuente: "DANE IPC Nacional" },
+  { anio: 2017, inflacion_pct: 4.09, indice_base_2025: 66.12, factor_deflactor_hacia_2025: 1.512, fuente: "DANE IPC Nacional" },
+  { anio: 2018, inflacion_pct: 3.18, indice_base_2025: 68.22, factor_deflactor_hacia_2025: 1.466, fuente: "DANE IPC Nacional" },
+  { anio: 2019, inflacion_pct: 3.8, indice_base_2025: 70.81, factor_deflactor_hacia_2025: 1.412, fuente: "DANE IPC Nacional" },
+  { anio: 2020, inflacion_pct: 1.61, indice_base_2025: 71.95, factor_deflactor_hacia_2025: 1.39, fuente: "DANE IPC Nacional" },
+  { anio: 2021, inflacion_pct: 5.62, indice_base_2025: 75.99, factor_deflactor_hacia_2025: 1.316, fuente: "DANE IPC Nacional" },
+  { anio: 2022, inflacion_pct: 13.12, indice_base_2025: 85.96, factor_deflactor_hacia_2025: 1.163, fuente: "DANE IPC Nacional" },
+  { anio: 2023, inflacion_pct: 9.28, indice_base_2025: 93.94, factor_deflactor_hacia_2025: 1.065, fuente: "DANE IPC Nacional" },
+  { anio: 2024, inflacion_pct: 5.2, indice_base_2025: 98.82, factor_deflactor_hacia_2025: 1.012, fuente: "DANE IPC / Proyección DNP" },
+  { anio: 2025, inflacion_pct: 5.1, indice_base_2025: 100.0, factor_deflactor_hacia_2025: 1.0, fuente: "DANE IPC Base Cerrada 100" },
 ];
+
+export const ESTADISTICAS_CRUCE_TRIPARTITO_PDD: EstadisticasCruceTripartito = {
+  filas_totales_pdd: 99424,
+  filas_avance_propio_pdd: 32330,
+  filas_con_avance_en_pa: 28630,
+  filas_con_soporte_presupuestal: 20953,
+  filas_saneadas_linea_estrategica: 72701,
+  avance_directo_pdd_pct: 67.98,
+  avance_consolidado_tripartito_pct: 78.42,
+  metas_huerfanas_directas: 328,
+  metas_huerfanas_tripartitas_resueltas: 226,
+  metas_huerfanas_remanentes: 102,
+};
 
 export const RESUMEN_CUMPLIMIENTO_PLANES: ResumenCumplimientoPlan[] = [
   {
     plan_codigo: "PDD_2024_2027",
-    nombre_plan: "Cartagena, Ciudad de Derechos",
+    nombre_plan: "Cartagena, Ciudad de Derechos (Acuerdo 139)",
     cuatrienio: "2024–2027",
     metas_totales_unicas: 3170,
     metas_con_avance_verificado: 2842,
@@ -609,6 +774,9 @@ export const RESUMEN_CUMPLIMIENTO_PLANES: ResumenCumplimientoPlan[] = [
     porcentaje_rezago_critico: 8.03,
     porcentaje_huerfanas: 10.35,
     avance_fisico_promedio_pct: 72.4,
+    avance_consolidado_tripartito_pct: 78.42,
+    metas_resueltas_en_pa: 28630,
+    metas_con_soporte_inversion: 20953,
   },
   {
     plan_codigo: "PDD_2020_2023",
@@ -625,6 +793,7 @@ export const RESUMEN_CUMPLIMIENTO_PLANES: ResumenCumplimientoPlan[] = [
     porcentaje_rezago_critico: 6.0,
     porcentaje_huerfanas: 6.11,
     avance_fisico_promedio_pct: 78.9,
+    avance_consolidado_tripartito_pct: 82.15,
   },
   {
     plan_codigo: "PDD_2016_2019",
@@ -641,59 +810,287 @@ export const RESUMEN_CUMPLIMIENTO_PLANES: ResumenCumplimientoPlan[] = [
     porcentaje_rezago_critico: 10.11,
     porcentaje_huerfanas: 7.94,
     avance_fisico_promedio_pct: 69.5,
+    avance_consolidado_tripartito_pct: 73.1,
   },
 ];
 
 export const COMPONENTES_SEGURIDAD_HUMANA_2024_2027: ComponenteSeguridadHumana[] = [
   {
-    codigo: "4.1",
-    nombre: "Seguridad Ciudadana y Orden Público",
-    metas_cantidad: 194,
+    codigo: "1.1",
+    nombre: "1.1 Seguridad Ciudadana y Orden Público (Titán 24)",
+    metas_cantidad: 184,
     indicadores_cantidad: 98,
     avance_promedio_pct: 76.2,
-    presupuesto_ppi_mcop: 548200.0,
-    entidad_lider: "Secretaría del Interior y Convivencia Ciudadana",
+    presupuesto_ppi_mcop: 211387.6,
+    entidad_lider: "Secretaría del Interior y Convivencia Ciudadana / Distriseguridad",
     estado_semaforo: "EN_RUTA",
+    programas_destacados: ["1.1.1 Plan Estratégico de Seguridad Integral Titán 24 ($35.547,3M)", "1.1.2 Prevención del Delito y Red de Videovigilancia"],
   },
   {
-    codigo: "4.2",
-    nombre: "Construcción de Paz, Derechos Humanos y Convivencia",
-    metas_cantidad: 126,
+    codigo: "1.2",
+    nombre: "1.2 Construcción de Paz, Derechos Humanos y Convivencia",
+    metas_cantidad: 142,
     indicadores_cantidad: 62,
     avance_promedio_pct: 73.5,
-    presupuesto_ppi_mcop: 184600.0,
-    entidad_lider: "Secretaría del Interior / Plan de Emergencia Social (PES)",
+    presupuesto_ppi_mcop: 54744.8,
+    entidad_lider: "Secretaría del Interior / Personería Distrital",
     estado_semaforo: "ALERTA_MEDIA",
+    programas_destacados: ["1.2.1 Mediación Comunitaria y Desarme Social", "1.2.2 Garantías de no repetición y memoria"],
   },
   {
-    codigo: "4.3",
-    nombre: "Salud Pública y Aseguramiento",
-    metas_cantidad: 285,
+    codigo: "1.3",
+    nombre: "1.3 Salud Pública y Aseguramiento",
+    metas_cantidad: 268,
     indicadores_cantidad: 154,
     avance_promedio_pct: 82.1,
-    presupuesto_ppi_mcop: 2412000.0,
+    presupuesto_ppi_mcop: 5213654.3,
     entidad_lider: "Departamento Administrativo Distrital de Salud (DADIS)",
     estado_semaforo: "EN_RUTA",
+    programas_destacados: ["1.3.1 Aseguramiento Régimen Subsidiado", "1.3.2 Red Hospitalaria de Primer Nivel y Salud Mental"],
   },
   {
-    codigo: "4.4",
-    nombre: "Atención Integral a Grupos de Especial Protección",
-    metas_cantidad: 142,
+    codigo: "1.4",
+    nombre: "1.4 Atención Integral a Grupos de Especial Protección",
+    metas_cantidad: 176,
     indicadores_cantidad: 76,
     avance_promedio_pct: 69.4,
-    presupuesto_ppi_mcop: 421500.0,
-    entidad_lider: "Secretaría de Desarrollo Social",
+    presupuesto_ppi_mcop: 96681.1,
+    entidad_lider: "Secretaría de Participación y Desarrollo Social / Mujer",
     estado_semaforo: "ALERTA_MEDIA",
+    programas_destacados: ["1.4.1 Sistema Distrital de Cuidado", "1.4.2 Erradicación de ESCNNA y Protección a la Niñez"],
   },
   {
-    codigo: "4.5",
-    nombre: "Superación de la Pobreza Extrema y Soberanía Alimentaria",
-    metas_cantidad: 145,
+    codigo: "1.5",
+    nombre: "1.5 Superación de la Pobreza Extrema y Soberanía Alimentaria",
+    metas_cantidad: 122,
     indicadores_cantidad: 82,
     avance_promedio_pct: 68.9,
-    presupuesto_ppi_mcop: 851700.0,
+    presupuesto_ppi_mcop: 82066.0,
     entidad_lider: "Plan de Emergencia Social Pedro Romero (PES)",
     estado_semaforo: "ALERTA_MEDIA",
+    programas_destacados: ["1.5.1 Red de Comedores Comunitarios", "1.5.2 Bancos de Alimentos y Circuitos Cortos Campesinos"],
+  },
+];
+
+export const MONITOR_SEGURIDAD_HUMANA_DATA: MonitorSeguridadHumanaDetalle = {
+  presupuesto_total_mcop: 5666917.74,
+  porcentaje_del_pdd: 44.27,
+  recursos_sin_sgr_mcop: 5658533.74,
+  recursos_sgr_mcop: 8384.0,
+  impulsores: COMPONENTES_SEGURIDAD_HUMANA_2024_2027,
+  dimensiones_pnud: [
+    { dimension: "Económica", presupuesto_asociado_mcop: 182000.0, metas_asociadas: 78, descripcion: "Ingresos dignos, microcrédito popular en Bazurto y empleo juvenil" },
+    { dimension: "Alimentaria", presupuesto_asociado_mcop: 82066.0, metas_asociadas: 64, descripcion: "Soberanía nutricional, comedores comunitarios y compras campesinas" },
+    { dimension: "Salud", presupuesto_asociado_mcop: 5213654.26, metas_asociadas: 285, descripcion: "Aseguramiento universal, infraestructura hospitalaria y salud mental" },
+    { dimension: "Ambiental", presupuesto_asociado_mcop: 45000.0, metas_asociadas: 42, descripcion: "Protección contra riesgos climáticos, drenajes pluviales y rondas hídricas" },
+    { dimension: "Personal", presupuesto_asociado_mcop: 211387.6, metas_asociadas: 184, descripcion: "Plan Titán 24, reducción de homicidios, videovigilancia y erradicación de ESCNNA" },
+    { dimension: "Comunitaria", presupuesto_asociado_mcop: 54744.8, metas_asociadas: 126, descripcion: "Paz urbana, desarme social, mediación de conflictos barriales y convivencia" },
+    { dimension: "Política", presupuesto_asociado_mcop: 96681.1, metas_asociadas: 98, descripcion: "Protección a grupos étnicos, mujeres cuidadoras, infancia y víctimas" },
+    { dimension: "Digital", presupuesto_asociado_mcop: 28000.0, metas_asociadas: 15, descripcion: "Conectividad barrial segura, telemedicina y ciberseguridad distrital" },
+  ],
+  mesas_territoriales: {
+    total_mesas: 33,
+    demandas_priorizadas_seguridad: 142,
+    compromisos_activos: 89,
+  },
+  compromisos_pas: {
+    total_compromisos: 10,
+    compromisos_vinculados_linea1: 8,
+    articulacion_pct: 80.0,
+  },
+  delincuencia_hurtos: {
+    total_registros_georreferenciados: 12280,
+    zonas_criticas_focalizadas: 48,
+    intervencion_titan24_priorizada: true,
+  },
+};
+
+export const ARBOL_PROGRAMATICO_PDD_2024_2027: ImpulsorProgramaInfo[] = [
+  // Línea 1: Seguridad Humana
+  {
+    id: "IMP_1_1",
+    linea_codigo: "LINEA_1",
+    linea_nombre: "Seguridad Humana",
+    codigo_impulsor: "1.1",
+    nombre_impulsor: "Seguridad Ciudadana y Orden Público",
+    codigo_programa: "1.1.1",
+    nombre_programa: "Plan Estratégico de Seguridad Integral Titán 24",
+    presupuesto_cuatrienio_mcop: 35547.29,
+    metas_bienestar_count: 14,
+    metas_producto_count: 48,
+    indicadores_count: 32,
+    entidad_responsable: "Distriseguridad",
+    plan_asociado: "PDD_2024_2027",
+  },
+  {
+    id: "IMP_1_2",
+    linea_codigo: "LINEA_1",
+    linea_nombre: "Seguridad Humana",
+    codigo_impulsor: "1.2",
+    nombre_impulsor: "Construcción de Paz, Derechos Humanos y Convivencia",
+    codigo_programa: "1.2.1",
+    nombre_programa: "Mediación Comunitaria y Justicia Barrial",
+    presupuesto_cuatrienio_mcop: 24100.0,
+    metas_bienestar_count: 8,
+    metas_producto_count: 36,
+    indicadores_count: 22,
+    entidad_responsable: "Secretaría del Interior",
+    plan_asociado: "PDD_2024_2027",
+  },
+  {
+    id: "IMP_1_3",
+    linea_codigo: "LINEA_1",
+    linea_nombre: "Seguridad Humana",
+    codigo_impulsor: "1.3",
+    nombre_impulsor: "Salud Pública y Aseguramiento",
+    codigo_programa: "1.3.1",
+    nombre_programa: "Acceso y Continuidad del Régimen Subsidiado",
+    presupuesto_cuatrienio_mcop: 5213654.3,
+    metas_bienestar_count: 24,
+    metas_producto_count: 112,
+    indicadores_count: 88,
+    entidad_responsable: "DADIS",
+    plan_asociado: "PDD_2024_2027",
+  },
+  {
+    id: "IMP_1_4",
+    linea_codigo: "LINEA_1",
+    linea_nombre: "Seguridad Humana",
+    codigo_impulsor: "1.4",
+    nombre_impulsor: "Atención Integral a Grupos de Especial Protección",
+    codigo_programa: "1.4.1",
+    nombre_programa: "Red Distrital de Manzanas del Cuidado",
+    presupuesto_cuatrienio_mcop: 48200.0,
+    metas_bienestar_count: 12,
+    metas_producto_count: 52,
+    indicadores_count: 38,
+    entidad_responsable: "Participación Social / Mujer",
+    plan_asociado: "PDD_2024_2027",
+  },
+  {
+    id: "IMP_1_5",
+    linea_codigo: "LINEA_1",
+    linea_nombre: "Seguridad Humana",
+    codigo_impulsor: "1.5",
+    nombre_impulsor: "Superación de la Pobreza Extrema y Soberanía Alimentaria",
+    codigo_programa: "1.5.1",
+    nombre_programa: "Cartagena sin Hambre y Nutrición Integral",
+    presupuesto_cuatrienio_mcop: 82066.0,
+    metas_bienestar_count: 16,
+    metas_producto_count: 64,
+    indicadores_count: 46,
+    entidad_responsable: "PES Pedro Romero",
+    plan_asociado: "PDD_2024_2027",
+  },
+  // Línea 2: Vida Digna
+  {
+    id: "IMP_2_1",
+    linea_codigo: "LINEA_2",
+    linea_nombre: "Vida Digna",
+    codigo_impulsor: "2.1",
+    nombre_impulsor: "Educación de Calidad y Primera Infancia",
+    codigo_programa: "2.1.1",
+    nombre_programa: "Infraestructura Escolar y Bilingüismo",
+    presupuesto_cuatrienio_mcop: 2150000.0,
+    metas_bienestar_count: 22,
+    metas_producto_count: 98,
+    indicadores_count: 74,
+    entidad_responsable: "Secretaría de Educación",
+    plan_asociado: "PDD_2024_2027",
+  },
+  {
+    id: "IMP_2_2",
+    linea_codigo: "LINEA_2",
+    linea_nombre: "Vida Digna",
+    codigo_impulsor: "2.2",
+    nombre_impulsor: "Acceso a Servicios Básicos y Agua Potable",
+    codigo_programa: "2.2.1",
+    nombre_programa: "Cobertura de Acueducto y Alcantarillado Insular",
+    presupuesto_cuatrienio_mcop: 1420000.0,
+    metas_bienestar_count: 18,
+    metas_producto_count: 72,
+    indicadores_count: 54,
+    entidad_responsable: "Secretaría General / Servicios Públicos",
+    plan_asociado: "PDD_2024_2027",
+  },
+  {
+    id: "IMP_2_3",
+    linea_codigo: "LINEA_2",
+    linea_nombre: "Vida Digna",
+    codigo_impulsor: "2.3",
+    nombre_impulsor: "Vivienda Digna y Hábitat Resiliente",
+    codigo_programa: "2.3.1",
+    nombre_programa: "Mejoramiento Integral de Barrios y Titulación",
+    presupuesto_cuatrienio_mcop: 985000.0,
+    metas_bienestar_count: 14,
+    metas_producto_count: 60,
+    indicadores_count: 42,
+    entidad_responsable: "Corvivienda",
+    plan_asociado: "PDD_2024_2027",
+  },
+  // Línea 3: Desarrollo Económico Equitativo
+  {
+    id: "IMP_3_1",
+    linea_codigo: "LINEA_3",
+    linea_nombre: "Desarrollo Económico Equitativo",
+    codigo_impulsor: "3.1",
+    nombre_impulsor: "Competitividad, Empleo Juvenil e Innovación",
+    codigo_programa: "3.1.1",
+    nombre_programa: "Economía Popular y Microcrédito no Extorsivo",
+    presupuesto_cuatrienio_mcop: 82000.0,
+    metas_bienestar_count: 10,
+    metas_producto_count: 44,
+    indicadores_count: 32,
+    entidad_responsable: "Secretaría de Hacienda / Desarrollo Económico",
+    plan_asociado: "PDD_2024_2027",
+  },
+  // Línea 4: Ciudad Conectada y Sostenible
+  {
+    id: "IMP_4_1",
+    linea_codigo: "LINEA_4",
+    linea_nombre: "Ciudad Conectada y Sostenible",
+    codigo_impulsor: "4.1",
+    nombre_impulsor: "Ordenamiento Territorial Alrededor del Agua",
+    codigo_programa: "4.1.1",
+    nombre_programa: "Plan Maestro de Drenajes Pluviales y Protección Costera",
+    presupuesto_cuatrienio_mcop: 520000.0,
+    metas_bienestar_count: 15,
+    metas_producto_count: 68,
+    indicadores_count: 50,
+    entidad_responsable: "Secretaría de Infraestructura",
+    plan_asociado: "PDD_2024_2027",
+  },
+  // Línea 5: Innovación Pública
+  {
+    id: "IMP_5_1",
+    linea_codigo: "LINEA_5",
+    linea_nombre: "Innovación Pública y Participación",
+    codigo_impulsor: "5.1",
+    nombre_impulsor: "Transparencia, Gobierno Abierto y Transformación Digital",
+    codigo_programa: "5.1.1",
+    nombre_programa: "Modernización Institucional y Datos Abiertos",
+    presupuesto_cuatrienio_mcop: 185000.0,
+    metas_bienestar_count: 12,
+    metas_producto_count: 48,
+    indicadores_count: 36,
+    entidad_responsable: "Secretaría de Planeación / Informática",
+    plan_asociado: "PDD_2024_2027",
+  },
+  // Capítulo 6: Étnico
+  {
+    id: "IMP_6_1",
+    linea_codigo: "CAPITULO_ETNICO",
+    linea_nombre: "Pueblos y Comunidades Étnicas",
+    codigo_impulsor: "6.1",
+    nombre_impulsor: "Salvaguarda y Desarrollo Autónomo Étnico",
+    codigo_programa: "6.1.1",
+    nombre_programa: "Planes de Vida y Fortalecimiento de Consejos Comunitarios",
+    presupuesto_cuatrienio_mcop: 22101.14,
+    metas_bienestar_count: 8,
+    metas_producto_count: 32,
+    indicadores_count: 24,
+    entidad_responsable: "Dirección de Asuntos Étnicos",
+    plan_asociado: "PDD_2024_2027",
   },
 ];
 
@@ -760,93 +1157,93 @@ export const MACROPROYECTOS_ESTRATEGICOS_2024_2027: MacroproyectoEstrategico[] =
   },
   {
     id: "MACRO_07",
-    nombre: "Puente Angola y Conectividad Vial",
+    nombre: "Puente Benjamín Herrera y Puente Angola",
     linea_estrategica: "Línea 4: Ciudad Conectada y Sostenible",
     entidad_responsable: "Secretaría de Infraestructura",
-    inversion_ppi_mcop: 62000.0,
-    avance_fisico_pct: 78.4,
+    inversion_ppi_mcop: 38000.0,
+    avance_fisico_pct: 72.0,
     estado: "EN_RUTA",
-    descripcion: "Desembotellamiento de barrios populares y arterias de interconexión urbana.",
+    descripcion: "Interconexión y alivio vehicular entre Manga, Getsemaní y la zona sur.",
   },
   {
     id: "MACRO_08",
-    nombre: "Ciudad Hospitalaria y Centros de Salud (CAPs)",
-    linea_estrategica: "Línea 1: Seguridad Humana",
-    entidad_responsable: "DADIS",
-    inversion_ppi_mcop: 215000.0,
-    avance_fisico_pct: 81.2,
-    estado: "EN_RUTA",
-    descripcion: "Red primaria de atención médica resolutiva y terminación de centros inconclusos.",
+    nombre: "Intercambiador Vial La Carola / El Pozón",
+    linea_estrategica: "Línea 4: Ciudad Conectada y Sostenible",
+    entidad_responsable: "Secretaría de Infraestructura",
+    inversion_ppi_mcop: 82000.0,
+    avance_fisico_pct: 34.0,
+    estado: "REZAGO_CRITICO",
+    descripcion: "Solución a nudo vial de acceso en la Troncal de Occidente.",
   },
   {
     id: "MACRO_09",
-    nombre: "Acueducto y Alcantarillado Zona Insular",
-    linea_estrategica: "Línea 2: Vida Digna",
-    entidad_responsable: "Secretaría General / Aguas de Cartagena",
-    inversion_ppi_mcop: 135000.0,
-    avance_fisico_pct: 45.0,
-    estado: "ALERTA_MEDIA",
-    descripcion: "Agua potable continua para Tierra Bomba, Barú y comunidades de la zona insular.",
+    nombre: "Hospital de San José de los Campanos",
+    linea_estrategica: "Línea 1: Seguridad Humana",
+    entidad_responsable: "DADIS",
+    inversion_ppi_mcop: 65000.0,
+    avance_fisico_pct: 88.5,
+    estado: "EN_RUTA",
+    descripcion: "Dotación y apertura de nodo asistencial de segundo nivel en el suroccidente.",
   },
   {
     id: "MACRO_10",
-    nombre: "Sistema Inteligente de Transporte y Chatarrización Transcaribe",
-    linea_estrategica: "Línea 4: Ciudad Conectada y Sostenible",
-    entidad_responsable: "Transcaribe S.A. / DATT",
-    inversion_ppi_mcop: 190000.0,
-    avance_fisico_pct: 71.5,
-    estado: "EN_RUTA",
-    descripcion: "Renovación de flota con buses eléctricos y optimización de frecuencias.",
+    nombre: "Centro de Alto Rendimiento Deportivo IDER",
+    linea_estrategica: "Línea 2: Vida Digna",
+    entidad_responsable: "Instituto Distrital de Deporte y Recreación (IDER)",
+    inversion_ppi_mcop: 52000.0,
+    avance_fisico_pct: 54.0,
+    estado: "ALERTA_MEDIA",
+    descripcion: "Modernización de pistas, coliseos y semilleros para atletas de alto rendimiento.",
   },
   {
     id: "MACRO_11",
-    nombre: "Corredores Verdes y Reforestación Urbana",
+    nombre: "Avenida Bicentenario y Quinta Avenida de Manga",
     linea_estrategica: "Línea 4: Ciudad Conectada y Sostenible",
-    entidad_responsable: "EPA Cartagena",
-    inversion_ppi_mcop: 48000.0,
-    avance_fisico_pct: 64.2,
-    estado: "EN_RUTA",
-    descripcion: "Siembra de 100.000 árboles nativos y microclimas urbanos contra islas de calor.",
+    entidad_responsable: "Secretaría de Infraestructura",
+    inversion_ppi_mcop: 175000.0,
+    avance_fisico_pct: 22.0,
+    estado: "REZAGO_CRITICO",
+    descripcion: "Ampliación de capacidad portuaria y descongestión de tráfico pesado.",
   },
   {
     id: "MACRO_12",
-    nombre: "Titulación Masiva de Predios y Regularización",
-    linea_estrategica: "Línea 2: Vida Digna",
-    entidad_responsable: "Corvivienda",
+    nombre: "Parque Metropolitano Chambacú",
+    linea_estrategica: "Línea 4: Ciudad Conectada y Sostenible",
+    entidad_responsable: "Gerencia de Espacio Público / EPA",
     inversion_ppi_mcop: 32000.0,
-    avance_fisico_pct: 85.0,
+    avance_fisico_pct: 78.0,
     estado: "EN_RUTA",
-    descripcion: "Entrega de títulos de propiedad jurídica a familias vulnerables.",
+    descripcion: "Pulmón verde urbano integrado al Parque Espíritu del Manglar.",
   },
   {
     id: "MACRO_13",
-    nombre: "Megacolegios y Ambientes de Aprendizaje Dignos",
-    linea_estrategica: "Línea 2: Vida Digna",
-    entidad_responsable: "Secretaría de Educación Distrital (SED)",
-    inversion_ppi_mcop: 310000.0,
-    avance_fisico_pct: 79.1,
-    estado: "EN_RUTA",
-    descripcion: "Construcción y dotación tecnológica de 6 megacolegios y comedores escolares.",
+    nombre: "Sistema de Transporte Inteligente SITM Transcaribe",
+    linea_estrategica: "Línea 4: Ciudad Conectada y Sostenible",
+    entidad_responsable: "Transcaribe S.A.",
+    inversion_ppi_mcop: 89000.0,
+    avance_fisico_pct: 61.5,
+    estado: "ALERTA_MEDIA",
+    descripcion: "Flota a gas/eléctrica, telemetría y ampliación de rutas alimentadoras.",
   },
   {
     id: "MACRO_14",
-    nombre: "Central de Abastos y Mercados Sectoriales",
-    linea_estrategica: "Línea 3: Desarrollo Económico Equitativo",
-    entidad_responsable: "Secretaría de Hacienda / Apoyo Logístico",
-    inversion_ppi_mcop: 160000.0,
-    avance_fisico_pct: 35.0,
-    estado: "REZAGO_CRITICO",
-    descripcion: "Reubicación de Bazurto y creación de centros de abastecimiento modernos.",
+    nombre: "Manzanas del Cuidado San Francisco y El Pozón",
+    linea_estrategica: "Línea 1: Seguridad Humana",
+    entidad_responsable: "Secretaría de Desarrollo Social",
+    inversion_ppi_mcop: 24000.0,
+    avance_fisico_pct: 84.0,
+    estado: "EN_RUTA",
+    descripcion: "Servicios de relevo a cuidadoras, lavandería pública y guarderías comunitarias.",
   },
   {
     id: "MACRO_15",
-    nombre: "Centro de Alto Rendimiento Deportivo",
-    linea_estrategica: "Línea 2: Vida Digna",
-    entidad_responsable: "IDER",
-    inversion_ppi_mcop: 54000.0,
-    avance_fisico_pct: 58.0,
-    estado: "ALERTA_MEDIA",
-    descripcion: "Complejo de entrenamiento biomecánico y preparación atlética para jóvenes.",
+    nombre: "Revitalización del Mercado de Bazurto",
+    linea_estrategica: "Línea 3: Desarrollo Económico Equitativo",
+    entidad_responsable: "Secretaría General / Hacienda",
+    inversion_ppi_mcop: 115000.0,
+    avance_fisico_pct: 29.0,
+    estado: "REZAGO_CRITICO",
+    descripcion: "Saneamiento higiénico, reubicación de minoristas y formalización crediticia.",
   },
   {
     id: "MACRO_16",
@@ -897,7 +1294,7 @@ export const PLANES_DESARROLLO_LOCAL_AVANCE: PlanDesarrolloLocalAvance[] = [
     alcaldia_local: "Alcaldía Local Histórica",
     metas_locales_cantidad: 142,
     avance_promedio_pct: 74.2,
-    presupuesto_fdl_mcop: 48200.0,
+    presupuesto_fdl_mcop: 97691.04,
     estado: "EN_RUTA",
   },
   {
@@ -906,7 +1303,7 @@ export const PLANES_DESARROLLO_LOCAL_AVANCE: PlanDesarrolloLocalAvance[] = [
     alcaldia_local: "Alcaldía Local de la Virgen",
     metas_locales_cantidad: 156,
     avance_promedio_pct: 68.5,
-    presupuesto_fdl_mcop: 52400.0,
+    presupuesto_fdl_mcop: 161290.0,
     estado: "ALERTA_MEDIA",
   },
   {
@@ -915,10 +1312,14 @@ export const PLANES_DESARROLLO_LOCAL_AVANCE: PlanDesarrolloLocalAvance[] = [
     alcaldia_local: "Alcaldía Local Industrial",
     metas_locales_cantidad: 148,
     avance_promedio_pct: 71.8,
-    presupuesto_fdl_mcop: 49800.0,
+    presupuesto_fdl_mcop: 46000.0,
     estado: "EN_RUTA",
   },
 ];
+
+// =============================================================================
+// DOMINIO A: FRONTERA DEA ENTIDADES (n = 28 DMUs para PDD 2024–2027)
+// =============================================================================
 
 export const DMUS_DEA_PDD_ENTIDADES: DmuDeaPddEntidad[] = [
   {
@@ -933,13 +1334,13 @@ export const DMUS_DEA_PDD_ENTIDADES: DmuDeaPddEntidad[] = [
     y2_indicadores_eficaces_ge75: 184,
     total_metas_a_cargo: 395,
     theta_ccr: 0.942,
-    theta_bcc: 1.000,
+    theta_bcc: 1.0,
     escala_eficiencia_se: 0.942,
     retornos_escala: "DRS",
     theta_sbm: 0.935,
     theta_bootstrap_corregido: 0.978,
     ic95_inf: 0.925,
-    ic95_sup: 1.000,
+    ic95_sup: 1.0,
     peers: [{ sigla: "SED", lambda: 1.0 }],
     slacks: { slack_x1_mcop: 0, slack_y1_metas: 0, slack_y2_indicadores: 0 },
     targets: { target_x1_mcop: 1854200.0, target_y1_metas: 312.4, target_y2_indicadores: 184 },
@@ -957,13 +1358,13 @@ export const DMUS_DEA_PDD_ENTIDADES: DmuDeaPddEntidad[] = [
     y2_indicadores_eficaces_ge75: 126,
     total_metas_a_cargo: 285,
     theta_ccr: 0.915,
-    theta_bcc: 1.000,
+    theta_bcc: 1.0,
     escala_eficiencia_se: 0.915,
     retornos_escala: "DRS",
     theta_sbm: 0.898,
     theta_bootstrap_corregido: 0.962,
     ic95_inf: 0.895,
-    ic95_sup: 1.000,
+    ic95_sup: 1.0,
     peers: [{ sigla: "DADIS", lambda: 1.0 }],
     slacks: { slack_x1_mcop: 0, slack_y1_metas: 0, slack_y2_indicadores: 0 },
     targets: { target_x1_mcop: 2412000.0, target_y1_metas: 234.0, target_y2_indicadores: 126 },
@@ -988,7 +1389,7 @@ export const DMUS_DEA_PDD_ENTIDADES: DmuDeaPddEntidad[] = [
     theta_bootstrap_corregido: 0.835,
     ic95_inf: 0.782,
     ic95_sup: 0.892,
-    peers: [{ sigla: "SED", lambda: 0.18 }, { sigla: "CORPOTURISMO", lambda: 0.42 }, { sigla: "EPA", lambda: 0.40 }],
+    peers: [{ sigla: "SED", lambda: 0.18 }, { sigla: "CORPOTURISMO", lambda: 0.42 }, { sigla: "EPA", lambda: 0.4 }],
     slacks: { slack_x1_mcop: 42100.0, slack_y1_metas: 18.2, slack_y2_indicadores: 11 },
     targets: { target_x1_mcop: 506100.0, target_y1_metas: 166.0, target_y2_indicadores: 85 },
     es_frontera: false,
@@ -999,22 +1400,22 @@ export const DMUS_DEA_PDD_ENTIDADES: DmuDeaPddEntidad[] = [
     cuatrienio_pdd: "2024–2027",
     plan_codigo: "PDD_2024_2027",
     grupo_institucional: "DESCENTRALIZADAS_Y_AUTORIDADES",
-    x1_ppi_conciliado_constante_2025_mcop: 112500.0,
-    x1_reportado_matrices_mcop: 137250.0,
-    y1_metas_pdd_cumplidas_equivalentes: 92.4,
-    y2_indicadores_eficaces_ge75: 58,
-    total_metas_a_cargo: 110,
+    x1_ppi_conciliado_constante_2025_mcop: 95400.0,
+    x1_reportado_matrices_mcop: 116388.0,
+    y1_metas_pdd_cumplidas_equivalentes: 84.5,
+    y2_indicadores_eficaces_ge75: 48,
+    total_metas_a_cargo: 98,
     theta_ccr: 0.985,
-    theta_bcc: 1.000,
+    theta_bcc: 1.0,
     escala_eficiencia_se: 0.985,
     retornos_escala: "CRS",
-    theta_sbm: 0.978,
+    theta_sbm: 0.98,
     theta_bootstrap_corregido: 0.988,
-    ic95_inf: 0.952,
-    ic95_sup: 1.000,
+    ic95_inf: 0.95,
+    ic95_sup: 1.0,
     peers: [{ sigla: "EPA", lambda: 1.0 }],
     slacks: { slack_x1_mcop: 0, slack_y1_metas: 0, slack_y2_indicadores: 0 },
-    targets: { target_x1_mcop: 112500.0, target_y1_metas: 92.4, target_y2_indicadores: 58 },
+    targets: { target_x1_mcop: 95400.0, target_y1_metas: 84.5, target_y2_indicadores: 48 },
     es_frontera: true,
   },
   {
@@ -1023,22 +1424,22 @@ export const DMUS_DEA_PDD_ENTIDADES: DmuDeaPddEntidad[] = [
     cuatrienio_pdd: "2024–2027",
     plan_codigo: "PDD_2024_2027",
     grupo_institucional: "DESCENTRALIZADAS_Y_AUTORIDADES",
-    x1_ppi_conciliado_constante_2025_mcop: 65400.0,
-    x1_reportado_matrices_mcop: 79788.0,
-    y1_metas_pdd_cumplidas_equivalentes: 68.2,
-    y2_indicadores_eficaces_ge75: 44,
-    total_metas_a_cargo: 78,
-    theta_ccr: 1.000,
-    theta_bcc: 1.000,
-    escala_eficiencia_se: 1.000,
+    x1_ppi_conciliado_constante_2025_mcop: 48500.0,
+    x1_reportado_matrices_mcop: 59170.0,
+    y1_metas_pdd_cumplidas_equivalentes: 62.4,
+    y2_indicadores_eficaces_ge75: 38,
+    total_metas_a_cargo: 72,
+    theta_ccr: 1.0,
+    theta_bcc: 1.0,
+    escala_eficiencia_se: 1.0,
     retornos_escala: "CRS",
-    theta_sbm: 1.000,
-    theta_bootstrap_corregido: 0.992,
-    ic95_inf: 0.965,
-    ic95_sup: 1.000,
+    theta_sbm: 1.0,
+    theta_bootstrap_corregido: 0.995,
+    ic95_inf: 0.982,
+    ic95_sup: 1.0,
     peers: [{ sigla: "CORPOTURISMO", lambda: 1.0 }],
     slacks: { slack_x1_mcop: 0, slack_y1_metas: 0, slack_y2_indicadores: 0 },
-    targets: { target_x1_mcop: 65400.0, target_y1_metas: 68.2, target_y2_indicadores: 44 },
+    targets: { target_x1_mcop: 48500.0, target_y1_metas: 62.4, target_y2_indicadores: 38 },
     es_frontera: true,
   },
   {
@@ -1047,23 +1448,23 @@ export const DMUS_DEA_PDD_ENTIDADES: DmuDeaPddEntidad[] = [
     cuatrienio_pdd: "2024–2027",
     plan_codigo: "PDD_2024_2027",
     grupo_institucional: "DESCENTRALIZADAS_Y_AUTORIDADES",
-    x1_ppi_conciliado_constante_2025_mcop: 89400.0,
-    x1_reportado_matrices_mcop: 109068.0,
-    y1_metas_pdd_cumplidas_equivalentes: 76.5,
-    y2_indicadores_eficaces_ge75: 51,
-    total_metas_a_cargo: 92,
-    theta_ccr: 0.920,
-    theta_bcc: 1.000,
-    escala_eficiencia_se: 0.920,
+    x1_ppi_conciliado_constante_2025_mcop: 112000.0,
+    x1_reportado_matrices_mcop: 136640.0,
+    y1_metas_pdd_cumplidas_equivalentes: 88.2,
+    y2_indicadores_eficaces_ge75: 46,
+    total_metas_a_cargo: 118,
+    theta_ccr: 0.884,
+    theta_bcc: 0.925,
+    escala_eficiencia_se: 0.956,
     retornos_escala: "IRS",
-    theta_sbm: 0.908,
-    theta_bootstrap_corregido: 0.971,
-    ic95_inf: 0.912,
-    ic95_sup: 1.000,
-    peers: [{ sigla: "IDER", lambda: 1.0 }],
-    slacks: { slack_x1_mcop: 0, slack_y1_metas: 0, slack_y2_indicadores: 0 },
-    targets: { target_x1_mcop: 89400.0, target_y1_metas: 76.5, target_y2_indicadores: 51 },
-    es_frontera: true,
+    theta_sbm: 0.862,
+    theta_bootstrap_corregido: 0.898,
+    ic95_inf: 0.845,
+    ic95_sup: 0.952,
+    peers: [{ sigla: "EPA", lambda: 0.72 }, { sigla: "CORPOTURISMO", lambda: 0.28 }],
+    slacks: { slack_x1_mcop: 11400.0, slack_y1_metas: 12.4, slack_y2_indicadores: 8 },
+    targets: { target_x1_mcop: 100600.0, target_y1_metas: 100.6, target_y2_indicadores: 54 },
+    es_frontera: false,
   },
   {
     entidad: "Instituto de Patrimonio y Cultura",
@@ -1071,23 +1472,23 @@ export const DMUS_DEA_PDD_ENTIDADES: DmuDeaPddEntidad[] = [
     cuatrienio_pdd: "2024–2027",
     plan_codigo: "PDD_2024_2027",
     grupo_institucional: "DESCENTRALIZADAS_Y_AUTORIDADES",
-    x1_ppi_conciliado_constante_2025_mcop: 72100.0,
-    x1_reportado_matrices_mcop: 87962.0,
-    y1_metas_pdd_cumplidas_equivalentes: 64.0,
+    x1_ppi_conciliado_constante_2025_mcop: 76400.0,
+    x1_reportado_matrices_mcop: 93208.0,
+    y1_metas_pdd_cumplidas_equivalentes: 74.0,
     y2_indicadores_eficaces_ge75: 42,
-    total_metas_a_cargo: 80,
-    theta_ccr: 0.884,
-    theta_bcc: 1.000,
-    escala_eficiencia_se: 0.884,
+    total_metas_a_cargo: 88,
+    theta_ccr: 0.932,
+    theta_bcc: 0.975,
+    escala_eficiencia_se: 0.956,
     retornos_escala: "IRS",
-    theta_sbm: 0.872,
-    theta_bootstrap_corregido: 0.954,
-    ic95_inf: 0.898,
-    ic95_sup: 1.000,
-    peers: [{ sigla: "IPCC", lambda: 1.0 }],
-    slacks: { slack_x1_mcop: 0, slack_y1_metas: 0, slack_y2_indicadores: 0 },
-    targets: { target_x1_mcop: 72100.0, target_y1_metas: 64.0, target_y2_indicadores: 42 },
-    es_frontera: true,
+    theta_sbm: 0.918,
+    theta_bootstrap_corregido: 0.945,
+    ic95_inf: 0.9,
+    ic95_sup: 0.99,
+    peers: [{ sigla: "CORPOTURISMO", lambda: 0.85 }, { sigla: "EPA", lambda: 0.15 }],
+    slacks: { slack_x1_mcop: 4200.0, slack_y1_metas: 6.2, slack_y2_indicadores: 4 },
+    targets: { target_x1_mcop: 72200.0, target_y1_metas: 80.2, target_y2_indicadores: 46 },
+    es_frontera: false,
   },
   {
     entidad: "Secretaría de Infraestructura",
@@ -1096,46 +1497,46 @@ export const DMUS_DEA_PDD_ENTIDADES: DmuDeaPddEntidad[] = [
     plan_codigo: "PDD_2024_2027",
     grupo_institucional: "SECTOR_CENTRAL_RECTOR",
     x1_ppi_conciliado_constante_2025_mcop: 1120000.0,
-    x1_reportado_matrices_mcop: 1365853.0,
-    y1_metas_pdd_cumplidas_equivalentes: 124.5,
-    y2_indicadores_eficaces_ge75: 68,
-    total_metas_a_cargo: 210,
-    theta_ccr: 0.642,
-    theta_bcc: 0.725,
-    escala_eficiencia_se: 0.886,
+    x1_reportado_matrices_mcop: 1366400.0,
+    y1_metas_pdd_cumplidas_equivalentes: 165.2,
+    y2_indicadores_eficaces_ge75: 72,
+    total_metas_a_cargo: 245,
+    theta_ccr: 0.692,
+    theta_bcc: 0.742,
+    escala_eficiencia_se: 0.933,
     retornos_escala: "DRS",
-    theta_sbm: 0.618,
-    theta_bootstrap_corregido: 0.692,
-    ic95_inf: 0.625,
-    ic95_sup: 0.760,
-    peers: [{ sigla: "SED", lambda: 0.35 }, { sigla: "EPA", lambda: 0.65 }],
-    slacks: { slack_x1_mcop: 198000.0, slack_y1_metas: 42.0, slack_y2_indicadores: 24 },
-    targets: { target_x1_mcop: 922000.0, target_y1_metas: 166.5, target_y2_indicadores: 92 },
+    theta_sbm: 0.665,
+    theta_bootstrap_corregido: 0.712,
+    ic95_inf: 0.655,
+    ic95_sup: 0.772,
+    peers: [{ sigla: "SED", lambda: 0.45 }, { sigla: "EPA", lambda: 0.55 }],
+    slacks: { slack_x1_mcop: 142000.0, slack_y1_metas: 34.5, slack_y2_indicadores: 18 },
+    targets: { target_x1_mcop: 978000.0, target_y1_metas: 199.7, target_y2_indicadores: 90 },
     es_frontera: false,
   },
   {
-    entidad: "Plan de Emergencia Social (PES)",
+    entidad: "Plan de Emergencia Social Pedro Romero",
     sigla: "PES",
     cuatrienio_pdd: "2024–2027",
     plan_codigo: "PDD_2024_2027",
-    grupo_institucional: "SECTOR_CENTRAL_RECTOR",
-    x1_ppi_conciliado_constante_2025_mcop: 851700.0,
-    x1_reportado_matrices_mcop: 1038658.0,
-    y1_metas_pdd_cumplidas_equivalentes: 99.8,
-    y2_indicadores_eficaces_ge75: 56,
-    total_metas_a_cargo: 145,
-    theta_ccr: 0.698,
-    theta_bcc: 0.762,
-    escala_eficiencia_se: 0.916,
-    retornos_escala: "IRS",
-    theta_sbm: 0.684,
-    theta_bootstrap_corregido: 0.732,
-    ic95_inf: 0.675,
-    ic95_sup: 0.795,
-    peers: [{ sigla: "DADIS", lambda: 0.22 }, { sigla: "EPA", lambda: 0.58 }, { sigla: "CORPOTURISMO", lambda: 0.20 }],
-    slacks: { slack_x1_mcop: 82000.0, slack_y1_metas: 21.4, slack_y2_indicadores: 14 },
-    targets: { target_x1_mcop: 769700.0, target_y1_metas: 121.2, target_y2_indicadores: 70 },
-    es_frontera: false,
+    grupo_institucional: "DESCENTRALIZADAS_Y_AUTORIDADES",
+    x1_ppi_conciliado_constante_2025_mcop: 82066.0,
+    x1_reportado_matrices_mcop: 100120.52,
+    y1_metas_pdd_cumplidas_equivalentes: 84.1,
+    y2_indicadores_eficaces_ge75: 48,
+    total_metas_a_cargo: 122,
+    theta_ccr: 0.954,
+    theta_bcc: 1.0,
+    escala_eficiencia_se: 0.954,
+    retornos_escala: "CRS",
+    theta_sbm: 0.942,
+    theta_bootstrap_corregido: 0.985,
+    ic95_inf: 0.938,
+    ic95_sup: 1.0,
+    peers: [{ sigla: "PES", lambda: 1.0 }],
+    slacks: { slack_x1_mcop: 0, slack_y1_metas: 0, slack_y2_indicadores: 0 },
+    targets: { target_x1_mcop: 82066.0, target_y1_metas: 84.1, target_y2_indicadores: 48 },
+    es_frontera: true,
   },
   {
     entidad: "Distriseguridad",
@@ -1143,22 +1544,22 @@ export const DMUS_DEA_PDD_ENTIDADES: DmuDeaPddEntidad[] = [
     cuatrienio_pdd: "2024–2027",
     plan_codigo: "PDD_2024_2027",
     grupo_institucional: "DESCENTRALIZADAS_Y_AUTORIDADES",
-    x1_ppi_conciliado_constante_2025_mcop: 78000.0,
-    x1_reportado_matrices_mcop: 95121.0,
-    y1_metas_pdd_cumplidas_equivalentes: 65.1,
-    y2_indicadores_eficaces_ge75: 41,
-    total_metas_a_cargo: 78,
-    theta_ccr: 0.852,
-    theta_bcc: 0.894,
-    escala_eficiencia_se: 0.953,
+    x1_ppi_conciliado_constante_2025_mcop: 125000.0,
+    x1_reportado_matrices_mcop: 152500.0,
+    y1_metas_pdd_cumplidas_equivalentes: 92.4,
+    y2_indicadores_eficaces_ge75: 54,
+    total_metas_a_cargo: 115,
+    theta_ccr: 0.912,
+    theta_bcc: 0.965,
+    escala_eficiencia_se: 0.945,
     retornos_escala: "IRS",
-    theta_sbm: 0.838,
-    theta_bootstrap_corregido: 0.865,
-    ic95_inf: 0.810,
-    ic95_sup: 0.924,
-    peers: [{ sigla: "CORPOTURISMO", lambda: 0.65 }, { sigla: "EPA", lambda: 0.35 }],
-    slacks: { slack_x1_mcop: 8500.0, slack_y1_metas: 7.2, slack_y2_indicadores: 5 },
-    targets: { target_x1_mcop: 69500.0, target_y1_metas: 72.3, target_y2_indicadores: 46 },
+    theta_sbm: 0.895,
+    theta_bootstrap_corregido: 0.935,
+    ic95_inf: 0.885,
+    ic95_sup: 0.985,
+    peers: [{ sigla: "EPA", lambda: 0.65 }, { sigla: "CORPOTURISMO", lambda: 0.35 }],
+    slacks: { slack_x1_mcop: 8200.0, slack_y1_metas: 8.5, slack_y2_indicadores: 6 },
+    targets: { target_x1_mcop: 116800.0, target_y1_metas: 100.9, target_y2_indicadores: 60 },
     es_frontera: false,
   },
   {
@@ -1167,22 +1568,22 @@ export const DMUS_DEA_PDD_ENTIDADES: DmuDeaPddEntidad[] = [
     cuatrienio_pdd: "2024–2027",
     plan_codigo: "PDD_2024_2027",
     grupo_institucional: "DESCENTRALIZADAS_Y_AUTORIDADES",
-    x1_ppi_conciliado_constante_2025_mcop: 145000.0,
-    x1_reportado_matrices_mcop: 176829.0,
-    y1_metas_pdd_cumplidas_equivalentes: 88.0,
-    y2_indicadores_eficaces_ge75: 48,
-    total_metas_a_cargo: 112,
-    theta_ccr: 0.772,
-    theta_bcc: 0.814,
-    escala_eficiencia_se: 0.948,
+    x1_ppi_conciliado_constante_2025_mcop: 284000.0,
+    x1_reportado_matrices_mcop: 346480.0,
+    y1_metas_pdd_cumplidas_equivalentes: 112.5,
+    y2_indicadores_eficaces_ge75: 58,
+    total_metas_a_cargo: 168,
+    theta_ccr: 0.785,
+    theta_bcc: 0.835,
+    escala_eficiencia_se: 0.94,
     retornos_escala: "IRS",
-    theta_sbm: 0.755,
-    theta_bootstrap_corregido: 0.785,
-    ic95_inf: 0.730,
-    ic95_sup: 0.845,
-    peers: [{ sigla: "EPA", lambda: 0.50 }, { sigla: "IDER", lambda: 0.50 }],
-    slacks: { slack_x1_mcop: 18200.0, slack_y1_metas: 12.5, slack_y2_indicadores: 8 },
-    targets: { target_x1_mcop: 126800.0, target_y1_metas: 100.5, target_y2_indicadores: 56 },
+    theta_sbm: 0.765,
+    theta_bootstrap_corregido: 0.805,
+    ic95_inf: 0.75,
+    ic95_sup: 0.865,
+    peers: [{ sigla: "EPA", lambda: 0.45 }, { sigla: "SED", lambda: 0.55 }],
+    slacks: { slack_x1_mcop: 24000.0, slack_y1_metas: 16.0, slack_y2_indicadores: 10 },
+    targets: { target_x1_mcop: 260000.0, target_y1_metas: 128.5, target_y2_indicadores: 68 },
     es_frontera: false,
   },
   {
@@ -1192,21 +1593,21 @@ export const DMUS_DEA_PDD_ENTIDADES: DmuDeaPddEntidad[] = [
     plan_codigo: "PDD_2024_2027",
     grupo_institucional: "DESCENTRALIZADAS_Y_AUTORIDADES",
     x1_ppi_conciliado_constante_2025_mcop: 98000.0,
-    x1_reportado_matrices_mcop: 119512.0,
-    y1_metas_pdd_cumplidas_equivalentes: 71.0,
-    y2_indicadores_eficaces_ge75: 39,
-    total_metas_a_cargo: 96,
-    theta_ccr: 0.745,
-    theta_bcc: 0.792,
-    escala_eficiencia_se: 0.941,
+    x1_reportado_matrices_mcop: 119560.0,
+    y1_metas_pdd_cumplidas_equivalentes: 78.4,
+    y2_indicadores_eficaces_ge75: 42,
+    total_metas_a_cargo: 105,
+    theta_ccr: 0.842,
+    theta_bcc: 0.892,
+    escala_eficiencia_se: 0.944,
     retornos_escala: "IRS",
-    theta_sbm: 0.728,
-    theta_bootstrap_corregido: 0.764,
-    ic95_inf: 0.710,
-    ic95_sup: 0.822,
-    peers: [{ sigla: "EPA", lambda: 0.45 }, { sigla: "IDER", lambda: 0.55 }],
-    slacks: { slack_x1_mcop: 12500.0, slack_y1_metas: 11.0, slack_y2_indicadores: 7 },
-    targets: { target_x1_mcop: 85500.0, target_y1_metas: 82.0, target_y2_indicadores: 46 },
+    theta_sbm: 0.825,
+    theta_bootstrap_corregido: 0.865,
+    ic95_inf: 0.81,
+    ic95_sup: 0.925,
+    peers: [{ sigla: "CORPOTURISMO", lambda: 0.6 }, { sigla: "EPA", lambda: 0.4 }],
+    slacks: { slack_x1_mcop: 9500.0, slack_y1_metas: 9.2, slack_y2_indicadores: 5 },
+    targets: { target_x1_mcop: 88500.0, target_y1_metas: 87.6, target_y2_indicadores: 47 },
     es_frontera: false,
   },
   {
@@ -1215,23 +1616,23 @@ export const DMUS_DEA_PDD_ENTIDADES: DmuDeaPddEntidad[] = [
     cuatrienio_pdd: "2024–2027",
     plan_codigo: "PDD_2024_2027",
     grupo_institucional: "SECTOR_CENTRAL_RECTOR",
-    x1_ppi_conciliado_constante_2025_mcop: 184000.0,
-    x1_reportado_matrices_mcop: 224390.0,
-    y1_metas_pdd_cumplidas_equivalentes: 112.0,
-    y2_indicadores_eficaces_ge75: 64,
-    total_metas_a_cargo: 135,
-    theta_ccr: 0.824,
-    theta_bcc: 0.875,
-    escala_eficiencia_se: 0.942,
-    retornos_escala: "IRS",
-    theta_sbm: 0.810,
-    theta_bootstrap_corregido: 0.848,
-    ic95_inf: 0.795,
-    ic95_sup: 0.905,
-    peers: [{ sigla: "EPA", lambda: 0.60 }, { sigla: "CORPOTURISMO", lambda: 0.40 }],
-    slacks: { slack_x1_mcop: 15400.0, slack_y1_metas: 9.8, slack_y2_indicadores: 6 },
-    targets: { target_x1_mcop: 168600.0, target_y1_metas: 121.8, target_y2_indicadores: 70 },
-    es_frontera: false,
+    x1_ppi_conciliado_constante_2025_mcop: 142000.0,
+    x1_reportado_matrices_mcop: 173240.0,
+    y1_metas_pdd_cumplidas_equivalentes: 124.0,
+    y2_indicadores_eficaces_ge75: 68,
+    total_metas_a_cargo: 148,
+    theta_ccr: 0.965,
+    theta_bcc: 1.0,
+    escala_eficiencia_se: 0.965,
+    retornos_escala: "CRS",
+    theta_sbm: 0.952,
+    theta_bootstrap_corregido: 0.985,
+    ic95_inf: 0.94,
+    ic95_sup: 1.0,
+    peers: [{ sigla: "HACIENDA", lambda: 1.0 }],
+    slacks: { slack_x1_mcop: 0, slack_y1_metas: 0, slack_y2_indicadores: 0 },
+    targets: { target_x1_mcop: 142000.0, target_y1_metas: 124.0, target_y2_indicadores: 68 },
+    es_frontera: true,
   },
   {
     entidad: "Secretaría de Participación y Desarrollo Social",
@@ -1239,22 +1640,22 @@ export const DMUS_DEA_PDD_ENTIDADES: DmuDeaPddEntidad[] = [
     cuatrienio_pdd: "2024–2027",
     plan_codigo: "PDD_2024_2027",
     grupo_institucional: "SECTOR_CENTRAL_RECTOR",
-    x1_ppi_conciliado_constante_2025_mcop: 421500.0,
-    x1_reportado_matrices_mcop: 514024.0,
-    y1_metas_pdd_cumplidas_equivalentes: 98.5,
-    y2_indicadores_eficaces_ge75: 53,
-    total_metas_a_cargo: 142,
-    theta_ccr: 0.685,
-    theta_bcc: 0.742,
-    escala_eficiencia_se: 0.923,
+    x1_ppi_conciliado_constante_2025_mcop: 320000.0,
+    x1_reportado_matrices_mcop: 390400.0,
+    y1_metas_pdd_cumplidas_equivalentes: 168.5,
+    y2_indicadores_eficaces_ge75: 84,
+    total_metas_a_cargo: 220,
+    theta_ccr: 0.852,
+    theta_bcc: 0.905,
+    escala_eficiencia_se: 0.941,
     retornos_escala: "IRS",
-    theta_sbm: 0.665,
-    theta_bootstrap_corregido: 0.715,
-    ic95_inf: 0.655,
-    ic95_sup: 0.778,
-    peers: [{ sigla: "DADIS", lambda: 0.15 }, { sigla: "EPA", lambda: 0.50 }, { sigla: "IDER", lambda: 0.35 }],
-    slacks: { slack_x1_mcop: 48000.0, slack_y1_metas: 18.0, slack_y2_indicadores: 12 },
-    targets: { target_x1_mcop: 373500.0, target_y1_metas: 116.5, target_y2_indicadores: 65 },
+    theta_sbm: 0.835,
+    theta_bootstrap_corregido: 0.875,
+    ic95_inf: 0.82,
+    ic95_sup: 0.935,
+    peers: [{ sigla: "SED", lambda: 0.35 }, { sigla: "EPA", lambda: 0.65 }],
+    slacks: { slack_x1_mcop: 22000.0, slack_y1_metas: 18.5, slack_y2_indicadores: 10 },
+    targets: { target_x1_mcop: 298000.0, target_y1_metas: 187.0, target_y2_indicadores: 94 },
     es_frontera: false,
   },
   {
@@ -1263,50 +1664,366 @@ export const DMUS_DEA_PDD_ENTIDADES: DmuDeaPddEntidad[] = [
     cuatrienio_pdd: "2024–2027",
     plan_codigo: "PDD_2024_2027",
     grupo_institucional: "SECTOR_CENTRAL_RECTOR",
-    x1_ppi_conciliado_constante_2025_mcop: 142000.0,
-    x1_reportado_matrices_mcop: 173170.0,
-    y1_metas_pdd_cumplidas_equivalentes: 118.0,
-    y2_indicadores_eficaces_ge75: 72,
-    total_metas_a_cargo: 138,
-    theta_ccr: 0.892,
-    theta_bcc: 0.934,
-    escala_eficiencia_se: 0.955,
+    x1_ppi_conciliado_constante_2025_mcop: 115000.0,
+    x1_reportado_matrices_mcop: 140300.0,
+    y1_metas_pdd_cumplidas_equivalentes: 135.0,
+    y2_indicadores_eficaces_ge75: 78,
+    total_metas_a_cargo: 154,
+    theta_ccr: 0.985,
+    theta_bcc: 1.0,
+    escala_eficiencia_se: 0.985,
+    retornos_escala: "CRS",
+    theta_sbm: 0.978,
+    theta_bootstrap_corregido: 0.992,
+    ic95_inf: 0.965,
+    ic95_sup: 1.0,
+    peers: [{ sigla: "PLANEACION", lambda: 1.0 }],
+    slacks: { slack_x1_mcop: 0, slack_y1_metas: 0, slack_y2_indicadores: 0 },
+    targets: { target_x1_mcop: 115000.0, target_y1_metas: 135.0, target_y2_indicadores: 78 },
+    es_frontera: true,
+  },
+  {
+    entidad: "Secretaría General Distrital",
+    sigla: "GENERAL",
+    cuatrienio_pdd: "2024–2027",
+    plan_codigo: "PDD_2024_2027",
+    grupo_institucional: "SECTOR_CENTRAL_RECTOR",
+    x1_ppi_conciliado_constante_2025_mcop: 245000.0,
+    x1_reportado_matrices_mcop: 298900.0,
+    y1_metas_pdd_cumplidas_equivalentes: 142.0,
+    y2_indicadores_eficaces_ge75: 70,
+    total_metas_a_cargo: 180,
+    theta_ccr: 0.825,
+    theta_bcc: 0.88,
+    escala_eficiencia_se: 0.938,
     retornos_escala: "IRS",
-    theta_sbm: 0.880,
-    theta_bootstrap_corregido: 0.910,
-    ic95_inf: 0.865,
-    ic95_sup: 0.962,
-    peers: [{ sigla: "EPA", lambda: 0.70 }, { sigla: "CORPOTURISMO", lambda: 0.30 }],
-    slacks: { slack_x1_mcop: 6200.0, slack_y1_metas: 4.5, slack_y2_indicadores: 3 },
-    targets: { target_x1_mcop: 135800.0, target_y1_metas: 122.5, target_y2_indicadores: 75 },
+    theta_sbm: 0.805,
+    theta_bootstrap_corregido: 0.845,
+    ic95_inf: 0.795,
+    ic95_sup: 0.91,
+    peers: [{ sigla: "HACIENDA", lambda: 0.5 }, { sigla: "PLANEACION", lambda: 0.5 }],
+    slacks: { slack_x1_mcop: 18500.0, slack_y1_metas: 14.0, slack_y2_indicadores: 8 },
+    targets: { target_x1_mcop: 226500.0, target_y1_metas: 156.0, target_y2_indicadores: 78 },
+    es_frontera: false,
+  },
+  {
+    entidad: "Oficina para la Gestión del Riesgo (OAGRD)",
+    sigla: "GESTION_RIESGO",
+    cuatrienio_pdd: "2024–2027",
+    plan_codigo: "PDD_2024_2027",
+    grupo_institucional: "SECTOR_CENTRAL_RECTOR",
+    x1_ppi_conciliado_constante_2025_mcop: 68000.0,
+    x1_reportado_matrices_mcop: 82960.0,
+    y1_metas_pdd_cumplidas_equivalentes: 58.4,
+    y2_indicadores_eficaces_ge75: 32,
+    total_metas_a_cargo: 75,
+    theta_ccr: 0.895,
+    theta_bcc: 0.945,
+    escala_eficiencia_se: 0.947,
+    retornos_escala: "IRS",
+    theta_sbm: 0.875,
+    theta_bootstrap_corregido: 0.915,
+    ic95_inf: 0.86,
+    ic95_sup: 0.97,
+    peers: [{ sigla: "CORPOTURISMO", lambda: 0.4 }, { sigla: "EPA", lambda: 0.6 }],
+    slacks: { slack_x1_mcop: 4500.0, slack_y1_metas: 5.5, slack_y2_indicadores: 4 },
+    targets: { target_x1_mcop: 63500.0, target_y1_metas: 63.9, target_y2_indicadores: 36 },
+    es_frontera: false,
+  },
+  {
+    entidad: "Escuela de Gobierno y Liderazgo",
+    sigla: "ESCUELA_GOBIERNO",
+    cuatrienio_pdd: "2024–2027",
+    plan_codigo: "PDD_2024_2027",
+    grupo_institucional: "SECTOR_CENTRAL_RECTOR",
+    x1_ppi_conciliado_constante_2025_mcop: 24500.0,
+    x1_reportado_matrices_mcop: 29890.0,
+    y1_metas_pdd_cumplidas_equivalentes: 38.0,
+    y2_indicadores_eficaces_ge75: 22,
+    total_metas_a_cargo: 46,
+    theta_ccr: 0.945,
+    theta_bcc: 1.0,
+    escala_eficiencia_se: 0.945,
+    retornos_escala: "IRS",
+    theta_sbm: 0.932,
+    theta_bootstrap_corregido: 0.975,
+    ic95_inf: 0.92,
+    ic95_sup: 1.0,
+    peers: [{ sigla: "ESCUELA_GOBIERNO", lambda: 1.0 }],
+    slacks: { slack_x1_mcop: 0, slack_y1_metas: 0, slack_y2_indicadores: 0 },
+    targets: { target_x1_mcop: 24500.0, target_y1_metas: 38.0, target_y2_indicadores: 22 },
+    es_frontera: true,
+  },
+  {
+    entidad: "Gerencia de Espacio Público y Movilidad",
+    sigla: "ESPACIO_PUBLICO",
+    cuatrienio_pdd: "2024–2027",
+    plan_codigo: "PDD_2024_2027",
+    grupo_institucional: "SECTOR_CENTRAL_RECTOR",
+    x1_ppi_conciliado_constante_2025_mcop: 42000.0,
+    x1_reportado_matrices_mcop: 51240.0,
+    y1_metas_pdd_cumplidas_equivalentes: 48.0,
+    y2_indicadores_eficaces_ge75: 28,
+    total_metas_a_cargo: 62,
+    theta_ccr: 0.885,
+    theta_bcc: 0.935,
+    escala_eficiencia_se: 0.947,
+    retornos_escala: "IRS",
+    theta_sbm: 0.865,
+    theta_bootstrap_corregido: 0.905,
+    ic95_inf: 0.85,
+    ic95_sup: 0.96,
+    peers: [{ sigla: "CORPOTURISMO", lambda: 0.8 }, { sigla: "EPA", lambda: 0.2 }],
+    slacks: { slack_x1_mcop: 3200.0, slack_y1_metas: 4.8, slack_y2_indicadores: 3 },
+    targets: { target_x1_mcop: 38800.0, target_y1_metas: 52.8, target_y2_indicadores: 31 },
+    es_frontera: false,
+  },
+  {
+    entidad: "Departamento de Valorización Distrital",
+    sigla: "VALORIZACION",
+    cuatrienio_pdd: "2024–2027",
+    plan_codigo: "PDD_2024_2027",
+    grupo_institucional: "DESCENTRALIZADAS_Y_AUTORIDADES",
+    x1_ppi_conciliado_constante_2025_mcop: 18500.0,
+    x1_reportado_matrices_mcop: 22570.0,
+    y1_metas_pdd_cumplidas_equivalentes: 24.0,
+    y2_indicadores_eficaces_ge75: 14,
+    total_metas_a_cargo: 32,
+    theta_ccr: 0.875,
+    theta_bcc: 0.92,
+    escala_eficiencia_se: 0.951,
+    retornos_escala: "IRS",
+    theta_sbm: 0.85,
+    theta_bootstrap_corregido: 0.89,
+    ic95_inf: 0.835,
+    ic95_sup: 0.945,
+    peers: [{ sigla: "ESCUELA_GOBIERNO", lambda: 0.7 }, { sigla: "CORPOTURISMO", lambda: 0.3 }],
+    slacks: { slack_x1_mcop: 1800.0, slack_y1_metas: 2.8, slack_y2_indicadores: 2 },
+    targets: { target_x1_mcop: 16700.0, target_y1_metas: 26.8, target_y2_indicadores: 16 },
+    es_frontera: false,
+  },
+  {
+    entidad: "Cuerpo Oficial de Bomberos de Cartagena",
+    sigla: "BOMBEROS",
+    cuatrienio_pdd: "2024–2027",
+    plan_codigo: "PDD_2024_2027",
+    grupo_institucional: "SECTOR_CENTRAL_RECTOR",
+    x1_ppi_conciliado_constante_2025_mcop: 32000.0,
+    x1_reportado_matrices_mcop: 39040.0,
+    y1_metas_pdd_cumplidas_equivalentes: 36.5,
+    y2_indicadores_eficaces_ge75: 20,
+    total_metas_a_cargo: 45,
+    theta_ccr: 0.925,
+    theta_bcc: 0.98,
+    escala_eficiencia_se: 0.944,
+    retornos_escala: "IRS",
+    theta_sbm: 0.905,
+    theta_bootstrap_corregido: 0.95,
+    ic95_inf: 0.91,
+    ic95_sup: 0.995,
+    peers: [{ sigla: "CORPOTURISMO", lambda: 0.5 }, { sigla: "ESCUELA_GOBIERNO", lambda: 0.5 }],
+    slacks: { slack_x1_mcop: 1500.0, slack_y1_metas: 2.5, slack_y2_indicadores: 2 },
+    targets: { target_x1_mcop: 30500.0, target_y1_metas: 39.0, target_y2_indicadores: 22 },
+    es_frontera: false,
+  },
+  {
+    entidad: "Alcaldía Local Histórica y del Caribe Norte",
+    sigla: "ALHCN",
+    cuatrienio_pdd: "2024–2027",
+    plan_codigo: "PDD_2024_2027",
+    grupo_institucional: "ALCALDIAS_LOCALES",
+    x1_ppi_conciliado_constante_2025_mcop: 95800.0,
+    x1_reportado_matrices_mcop: 116876.0,
+    y1_metas_pdd_cumplidas_equivalentes: 105.4,
+    y2_indicadores_eficaces_ge75: 54,
+    total_metas_a_cargo: 142,
+    theta_ccr: 0.912,
+    theta_bcc: 1.0,
+    escala_eficiencia_se: 0.912,
+    retornos_escala: "IRS",
+    theta_sbm: 0.895,
+    theta_bootstrap_corregido: 0.965,
+    ic95_inf: 0.915,
+    ic95_sup: 1.0,
+    peers: [{ sigla: "ALHCN", lambda: 1.0 }],
+    slacks: { slack_x1_mcop: 0, slack_y1_metas: 0, slack_y2_indicadores: 0 },
+    targets: { target_x1_mcop: 95800.0, target_y1_metas: 105.4, target_y2_indicadores: 54 },
+    es_frontera: true,
+  },
+  {
+    entidad: "Alcaldía Local de la Virgen y Turística",
+    sigla: "ALVT",
+    cuatrienio_pdd: "2024–2027",
+    plan_codigo: "PDD_2024_2027",
+    grupo_institucional: "ALCALDIAS_LOCALES",
+    x1_ppi_conciliado_constante_2025_mcop: 158200.0,
+    x1_reportado_matrices_mcop: 193004.0,
+    y1_metas_pdd_cumplidas_equivalentes: 112.0,
+    y2_indicadores_eficaces_ge75: 58,
+    total_metas_a_cargo: 156,
+    theta_ccr: 0.845,
+    theta_bcc: 0.91,
+    escala_eficiencia_se: 0.929,
+    retornos_escala: "DRS",
+    theta_sbm: 0.82,
+    theta_bootstrap_corregido: 0.875,
+    ic95_inf: 0.815,
+    ic95_sup: 0.935,
+    peers: [{ sigla: "ALHCN", lambda: 0.65 }, { sigla: "ALIB", lambda: 0.35 }],
+    slacks: { slack_x1_mcop: 14500.0, slack_y1_metas: 15.0, slack_y2_indicadores: 8 },
+    targets: { target_x1_mcop: 143700.0, target_y1_metas: 127.0, target_y2_indicadores: 66 },
+    es_frontera: false,
+  },
+  {
+    entidad: "Alcaldía Local Industrial y de la Bahía",
+    sigla: "ALIB",
+    cuatrienio_pdd: "2024–2027",
+    plan_codigo: "PDD_2024_2027",
+    grupo_institucional: "ALCALDIAS_LOCALES",
+    x1_ppi_conciliado_constante_2025_mcop: 45200.0,
+    x1_reportado_matrices_mcop: 55144.0,
+    y1_metas_pdd_cumplidas_equivalentes: 98.6,
+    y2_indicadores_eficaces_ge75: 48,
+    total_metas_a_cargo: 148,
+    theta_ccr: 0.965,
+    theta_bcc: 1.0,
+    escala_eficiencia_se: 0.965,
+    retornos_escala: "CRS",
+    theta_sbm: 0.948,
+    theta_bootstrap_corregido: 0.985,
+    ic95_inf: 0.945,
+    ic95_sup: 1.0,
+    peers: [{ sigla: "ALIB", lambda: 1.0 }],
+    slacks: { slack_x1_mcop: 0, slack_y1_metas: 0, slack_y2_indicadores: 0 },
+    targets: { target_x1_mcop: 45200.0, target_y1_metas: 98.6, target_y2_indicadores: 48 },
+    es_frontera: true,
+  },
+  {
+    entidad: "Transcaribe S.A.",
+    sigla: "TRANSCARIBE",
+    cuatrienio_pdd: "2024–2027",
+    plan_codigo: "PDD_2024_2027",
+    grupo_institucional: "DESCENTRALIZADAS_Y_AUTORIDADES",
+    x1_ppi_conciliado_constante_2025_mcop: 148000.0,
+    x1_reportado_matrices_mcop: 180560.0,
+    y1_metas_pdd_cumplidas_equivalentes: 88.0,
+    y2_indicadores_eficaces_ge75: 44,
+    total_metas_a_cargo: 110,
+    theta_ccr: 0.815,
+    theta_bcc: 0.875,
+    escala_eficiencia_se: 0.931,
+    retornos_escala: "IRS",
+    theta_sbm: 0.795,
+    theta_bootstrap_corregido: 0.84,
+    ic95_inf: 0.785,
+    ic95_sup: 0.898,
+    peers: [{ sigla: "SED", lambda: 0.25 }, { sigla: "EPA", lambda: 0.75 }],
+    slacks: { slack_x1_mcop: 12500.0, slack_y1_metas: 10.5, slack_y2_indicadores: 6 },
+    targets: { target_x1_mcop: 135500.0, target_y1_metas: 98.5, target_y2_indicadores: 50 },
+    es_frontera: false,
+  },
+  {
+    entidad: "Institución Universitaria Mayor de Cartagena",
+    sigla: "COLEGIO_MAYOR",
+    cuatrienio_pdd: "2024–2027",
+    plan_codigo: "PDD_2024_2027",
+    grupo_institucional: "DESCENTRALIZADAS_Y_AUTORIDADES",
+    x1_ppi_conciliado_constante_2025_mcop: 38000.0,
+    x1_reportado_matrices_mcop: 46360.0,
+    y1_metas_pdd_cumplidas_equivalentes: 42.0,
+    y2_indicadores_eficaces_ge75: 24,
+    total_metas_a_cargo: 52,
+    theta_ccr: 0.935,
+    theta_bcc: 0.985,
+    escala_eficiencia_se: 0.949,
+    retornos_escala: "IRS",
+    theta_sbm: 0.915,
+    theta_bootstrap_corregido: 0.955,
+    ic95_inf: 0.91,
+    ic95_sup: 1.0,
+    peers: [{ sigla: "ESCUELA_GOBIERNO", lambda: 0.6 }, { sigla: "CORPOTURISMO", lambda: 0.4 }],
+    slacks: { slack_x1_mcop: 1800.0, slack_y1_metas: 3.2, slack_y2_indicadores: 2 },
+    targets: { target_x1_mcop: 36200.0, target_y1_metas: 45.2, target_y2_indicadores: 26 },
+    es_frontera: false,
+  },
+  {
+    entidad: "Fondo Territorial de Pensiones",
+    sigla: "FONDO_PENSIONES",
+    cuatrienio_pdd: "2024–2027",
+    plan_codigo: "PDD_2024_2027",
+    grupo_institucional: "DESCENTRALIZADAS_Y_AUTORIDADES",
+    x1_ppi_conciliado_constante_2025_mcop: 28000.0,
+    x1_reportado_matrices_mcop: 34160.0,
+    y1_metas_pdd_cumplidas_equivalentes: 32.0,
+    y2_indicadores_eficaces_ge75: 18,
+    total_metas_a_cargo: 38,
+    theta_ccr: 0.952,
+    theta_bcc: 1.0,
+    escala_eficiencia_se: 0.952,
+    retornos_escala: "CRS",
+    theta_sbm: 0.94,
+    theta_bootstrap_corregido: 0.98,
+    ic95_inf: 0.935,
+    ic95_sup: 1.0,
+    peers: [{ sigla: "FONDO_PENSIONES", lambda: 1.0 }],
+    slacks: { slack_x1_mcop: 0, slack_y1_metas: 0, slack_y2_indicadores: 0 },
+    targets: { target_x1_mcop: 28000.0, target_y1_metas: 32.0, target_y2_indicadores: 18 },
+    es_frontera: true,
+  },
+  {
+    entidad: "Unidad Municipal de Asistencia Técnica Agropecuaria",
+    sigla: "UMATA",
+    cuatrienio_pdd: "2024–2027",
+    plan_codigo: "PDD_2024_2027",
+    grupo_institucional: "SECTOR_CENTRAL_RECTOR",
+    x1_ppi_conciliado_constante_2025_mcop: 18500.0,
+    x1_reportado_matrices_mcop: 22570.0,
+    y1_metas_pdd_cumplidas_equivalentes: 26.5,
+    y2_indicadores_eficaces_ge75: 16,
+    total_metas_a_cargo: 34,
+    theta_ccr: 0.92,
+    theta_bcc: 0.97,
+    escala_eficiencia_se: 0.948,
+    retornos_escala: "IRS",
+    theta_sbm: 0.902,
+    theta_bootstrap_corregido: 0.94,
+    ic95_inf: 0.89,
+    ic95_sup: 0.99,
+    peers: [{ sigla: "ESCUELA_GOBIERNO", lambda: 0.5 }, { sigla: "CORPOTURISMO", lambda: 0.5 }],
+    slacks: { slack_x1_mcop: 1200.0, slack_y1_metas: 2.2, slack_y2_indicadores: 2 },
+    targets: { target_x1_mcop: 17300.0, target_y1_metas: 28.7, target_y2_indicadores: 18 },
     es_frontera: false,
   },
 ];
+
+// =============================================================================
+// DOMINIO B: FRONTERA DEA LÍNEAS ESTRATÉGICAS
+// =============================================================================
 
 export const DMUS_DEA_PDD_LINEAS_ESTRATEGICAS: DmuDeaPddLineaEstrategica[] = [
   {
     linea_codigo: "LINEA_1",
     linea_nombre: "Seguridad Humana",
     plan_codigo: "PDD_2024_2027",
-    x1_ppi_mcop_constante_2025: 4353800.0,
-    y1_metas_cumplidas_equivalentes: 667.2,
-    y2_indicadores_eficaces_ge75: 382,
-    theta_ccr: 0.842,
-    theta_bcc: 0.885,
-    escala_eficiencia_se: 0.951,
+    x1_ppi_mcop_constante_2025: 5581913.97,
+    y1_metas_cumplidas_equivalentes: 684.2,
+    y2_indicadores_eficaces_ge75: 412,
+    theta_ccr: 0.885,
+    theta_bcc: 1.0,
+    escala_eficiencia_se: 0.885,
     retornos_escala: "DRS",
-    es_frontera: false,
+    es_frontera: true,
   },
   {
     linea_codigo: "LINEA_2",
     linea_nombre: "Vida Digna",
     plan_codigo: "PDD_2024_2027",
-    x1_ppi_mcop_constante_2025: 4754800.0,
-    y1_metas_cumplidas_equivalentes: 754.6,
-    y2_indicadores_eficaces_ge75: 442,
-    theta_ccr: 0.875,
-    theta_bcc: 0.912,
-    escala_eficiencia_se: 0.959,
+    x1_ppi_mcop_constante_2025: 5160616.99,
+    y1_metas_cumplidas_equivalentes: 712.5,
+    y2_indicadores_eficaces_ge75: 448,
+    theta_ccr: 0.842,
+    theta_bcc: 0.915,
+    escala_eficiencia_se: 0.92,
     retornos_escala: "DRS",
     es_frontera: false,
   },
@@ -1314,7 +2031,7 @@ export const DMUS_DEA_PDD_LINEAS_ESTRATEGICAS: DmuDeaPddLineaEstrategica[] = [
     linea_codigo: "LINEA_3",
     linea_nombre: "Desarrollo Económico Equitativo",
     plan_codigo: "PDD_2024_2027",
-    x1_ppi_mcop_constante_2025: 1135200.0,
+    x1_ppi_mcop_constante_2025: 158271.4,
     y1_metas_cumplidas_equivalentes: 314.1,
     y2_indicadores_eficaces_ge75: 185,
     theta_ccr: 0.724,
@@ -1327,7 +2044,7 @@ export const DMUS_DEA_PDD_LINEAS_ESTRATEGICAS: DmuDeaPddLineaEstrategica[] = [
     linea_codigo: "LINEA_4",
     linea_nombre: "Ciudad Conectada y Sostenible",
     plan_codigo: "PDD_2024_2027",
-    x1_ppi_mcop_constante_2025: 1639800.0,
+    x1_ppi_mcop_constante_2025: 1372351.68,
     y1_metas_cumplidas_equivalentes: 298.8,
     y2_indicadores_eficaces_ge75: 164,
     theta_ccr: 0.651,
@@ -1340,12 +2057,12 @@ export const DMUS_DEA_PDD_LINEAS_ESTRATEGICAS: DmuDeaPddLineaEstrategica[] = [
     linea_codigo: "LINEA_5",
     linea_nombre: "Innovación Pública y Participación",
     plan_codigo: "PDD_2024_2027",
-    x1_ppi_mcop_constante_2025: 602920.12,
+    x1_ppi_mcop_constante_2025: 313917.0,
     y1_metas_cumplidas_equivalentes: 242.0,
     y2_indicadores_eficaces_ge75: 148,
     theta_ccr: 0.798,
-    theta_bcc: 0.840,
-    escala_eficiencia_se: 0.950,
+    theta_bcc: 0.84,
+    escala_eficiencia_se: 0.95,
     retornos_escala: "IRS",
     es_frontera: false,
   },
@@ -1353,16 +2070,75 @@ export const DMUS_DEA_PDD_LINEAS_ESTRATEGICAS: DmuDeaPddLineaEstrategica[] = [
     linea_codigo: "CAPITULO_ETNICO",
     linea_nombre: "Pueblos y Comunidades Étnicas",
     plan_codigo: "PDD_2024_2027",
-    x1_ppi_mcop_constante_2025: 128000.0,
+    x1_ppi_mcop_constante_2025: 21769.62,
     y1_metas_cumplidas_equivalentes: 55.3,
     y2_indicadores_eficaces_ge75: 32,
-    theta_ccr: 0.920,
-    theta_bcc: 1.000,
-    escala_eficiencia_se: 0.920,
+    theta_ccr: 0.92,
+    theta_bcc: 1.0,
+    escala_eficiencia_se: 0.92,
     retornos_escala: "CRS",
     es_frontera: true,
   },
 ];
+
+// =============================================================================
+// DOMINIO C: FRONTERA DEA PLANES DE DESARROLLO LOCAL (LOCALIDADES 1, 2 Y 3)
+// =============================================================================
+
+export const FRONTERA_DEA_PDL_LOCALIDADES: DmuDeaPdlLocalidad[] = [
+  {
+    localidad_id: 1,
+    nombre: "Localidad 1: Histórica y del Caribe Norte",
+    alcaldia: "Alcaldía Local Histórica",
+    x1_fdl_presupuesto_constante_2025_mcop: 95800.0,
+    y1_metas_locales_cumplidas_eq: 105.4,
+    y2_indicadores_eficaces: 54,
+    theta_ccr: 0.912,
+    theta_bcc: 1.0,
+    escala_se: 0.912,
+    retornos: "IRS",
+    theta_sbm: 0.895,
+    ic95_bootstrap: [0.88, 1.0],
+    peers: [{ sigla: "ALHCN", lambda: 1.0 }],
+    es_frontera: true,
+  },
+  {
+    localidad_id: 2,
+    nombre: "Localidad 2: De la Virgen y Turística",
+    alcaldia: "Alcaldía Local de la Virgen",
+    x1_fdl_presupuesto_constante_2025_mcop: 158200.0,
+    y1_metas_locales_cumplidas_eq: 112.0,
+    y2_indicadores_eficaces: 58,
+    theta_ccr: 0.845,
+    theta_bcc: 0.91,
+    escala_se: 0.929,
+    retornos: "DRS",
+    theta_sbm: 0.82,
+    ic95_bootstrap: [0.805, 0.942],
+    peers: [{ sigla: "ALHCN", lambda: 0.65 }, { sigla: "ALIB", lambda: 0.35 }],
+    es_frontera: false,
+  },
+  {
+    localidad_id: 3,
+    nombre: "Localidad 3: Industrial y de la Bahía",
+    alcaldia: "Alcaldía Local Industrial",
+    x1_fdl_presupuesto_constante_2025_mcop: 45200.0,
+    y1_metas_locales_cumplidas_eq: 98.6,
+    y2_indicadores_eficaces: 48,
+    theta_ccr: 0.965,
+    theta_bcc: 1.0,
+    escala_se: 0.965,
+    retornos: "CRS",
+    theta_sbm: 0.948,
+    ic95_bootstrap: [0.93, 1.0],
+    peers: [{ sigla: "ALIB", lambda: 1.0 }],
+    es_frontera: true,
+  },
+];
+
+// =============================================================================
+// ECONOMETRÍA, MALMQUIST, FDR, GINI/HHI Y WILCOXON
+// =============================================================================
 
 export const MALMQUIST_INTER_PLANES_DATA: MalmquistTransicionInterPlanes[] = [
   {
@@ -1391,7 +2167,7 @@ export const MALMQUIST_INTER_PLANES_DATA: MalmquistTransicionInterPlanes[] = [
     periodo_transicion: "ACUMULADO 2016–2027 (Sexenio Extendido)",
     plan_base: "Primero la Gente (2016)",
     plan_comparado: "Ciudad de Derechos (2027)",
-    mpi_medio_geometrico: 1.050,
+    mpi_medio_geometrico: 1.05,
     effch_catch_up_medio: 1.028,
     techch_desplazamiento_medio: 1.021,
     entidades_con_avance_mpi: 23,
@@ -1486,8 +2262,8 @@ export const DESIGUALDAD_PPI_GINI_HHI: DesigualdadPpiGiniHhi[] = [
     hhi_ppi_lineas: 1810,
     gini_dimensiones_shi: 0.528,
     hhi_dimensiones_shi: 1940,
-    linea_mayor_participacion: "Línea 2: Vida Digna",
-    pct_linea_mayor: 37.69,
+    linea_mayor_participacion: "Línea 1: Seguridad Humana",
+    pct_linea_mayor: 44.27,
     tendencia_concentracion: "Menor desigualdad histórica (Gini 0.512, HHI 1.810) con equilibrio entre Vida Digna y Seguridad Humana",
   },
 ];
@@ -1514,7 +2290,7 @@ export const PRUEBAS_WILCOXON_INTER_PLANES: PruebaWilcoxonInterPlanes[] = [
 ];
 
 // =============================================================================
-// 3. FUNCIONES DE APOYO Y FILTRADO LOCAL RESILIENTE
+// 3. RESPUESTAS Y GETTERS LOCALES RESILIENTES
 // =============================================================================
 
 export interface CatalogoYConciliacionPpiRespuesta {
@@ -1523,6 +2299,7 @@ export interface CatalogoYConciliacionPpiRespuesta {
   lineas_estrategicas_ppi: PpiPorLineaEstrategica[];
   conciliacion_ppi: ConciliacionPpiVsBdCshItem[];
   serie_ipc: DatoIpcHistorico[];
+  fondos_desarrollo_local: FondoDesarrolloLocalDetalle[];
 }
 
 export interface CumplimientoMetasPddRespuesta {
@@ -1530,14 +2307,17 @@ export interface CumplimientoMetasPddRespuesta {
   componentes_seguridad_humana: ComponenteSeguridadHumana[];
   macroproyectos: MacroproyectoEstrategico[];
   planes_locales: PlanDesarrolloLocalAvance[];
-  filtro_aplicado?: { plan?: string; linea?: string; entidad?: string };
+  cruce_tripartito: EstadisticasCruceTripartito;
+  filtro_aplicado?: { plan?: string; linea?: string; entidad?: string; imputacion?: ModoImputacionPdd };
 }
 
 export interface FronteraDeaPddRespuesta {
   plan_evaluado: CodigoPlanDesarrollo;
   insumo_utilizado: InsumoDeaPdd;
+  nivel_evaluado: NivelDeaPdd;
   ranking_entidades: DmuDeaPddEntidad[];
   ranking_lineas_estrategicas: DmuDeaPddLineaEstrategica[];
+  ranking_localidades_pdl: DmuDeaPdlLocalidad[];
   eficiencia_media_bcc_entidades: number;
   eficiencia_media_ccr_entidades: number;
   entidades_en_frontera_cantidad: number;
@@ -1551,11 +2331,25 @@ export interface EconometriaComparadaPddRespuesta {
   pruebas_wilcoxon: PruebaWilcoxonInterPlanes[];
 }
 
+export interface ExploradorProgramasYSeguridadHumanaRespuesta {
+  fondos_locales: FondoDesarrolloLocalDetalle[];
+  arbol_impulsores_programas: ImpulsorProgramaInfo[];
+  cruce_tripartito: EstadisticasCruceTripartito;
+  monitor_seguridad_humana: MonitorSeguridadHumanaDetalle;
+  frontera_multi_nivel: {
+    nivel_activo: NivelDeaPdd;
+    entidades: DmuDeaPddEntidad[];
+    lineas: DmuDeaPddLineaEstrategica[];
+    localidades: DmuDeaPdlLocalidad[];
+  };
+}
+
 export interface ResumenEjecutivoPddDeaRespuesta {
   catalogo: CatalogoYConciliacionPpiRespuesta;
   cumplimiento: CumplimientoMetasPddRespuesta;
   frontera: FronteraDeaPddRespuesta;
   econometria: EconometriaComparadaPddRespuesta;
+  explorador: ExploradorProgramasYSeguridadHumanaRespuesta;
   fecha_generacion: string;
   version_motor: string;
 }
@@ -1567,6 +2361,7 @@ export function obtenerCatalogoYConciliacionPpiLocal(): CatalogoYConciliacionPpi
     lineas_estrategicas_ppi: PPI_POR_LINEA_PDD_2024_2027,
     conciliacion_ppi: CONCILIACION_PPI_BD_CSH,
     serie_ipc: SERIE_IPC_DANE_HISTORICA,
+    fondos_desarrollo_local: FONDOS_DESARROLLO_LOCAL_DETALLE,
   };
 }
 
@@ -1574,6 +2369,7 @@ export function obtenerCumplimientoMetasPddLocal(params?: {
   plan?: string;
   linea?: string;
   entidad?: string;
+  imputacion?: ModoImputacionPdd;
 }): CumplimientoMetasPddRespuesta {
   let macroproyectos = [...MACROPROYECTOS_ESTRATEGICOS_2024_2027];
   if (params?.linea && params.linea !== "TODAS") {
@@ -1592,6 +2388,7 @@ export function obtenerCumplimientoMetasPddLocal(params?: {
     componentes_seguridad_humana: COMPONENTES_SEGURIDAD_HUMANA_2024_2027,
     macroproyectos,
     planes_locales: PLANES_DESARROLLO_LOCAL_AVANCE,
+    cruce_tripartito: ESTADISTICAS_CRUCE_TRIPARTITO_PDD,
     filtro_aplicado: params,
   };
 }
@@ -1599,10 +2396,12 @@ export function obtenerCumplimientoMetasPddLocal(params?: {
 export function obtenerFronteraDeaPddLocal(params?: {
   plan?: string;
   insumo?: InsumoDeaPdd;
+  nivel?: NivelDeaPdd;
 }): FronteraDeaPddRespuesta {
   const plan: CodigoPlanDesarrollo =
     (params?.plan as CodigoPlanDesarrollo) || "PDD_2024_2027";
   const insumo: InsumoDeaPdd = params?.insumo || "conciliado_ppi";
+  const nivel: NivelDeaPdd = params?.nivel || "ENTIDADES";
 
   const entidades = DMUS_DEA_PDD_ENTIDADES.filter((d) => d.plan_codigo === plan);
   const ranking = entidades.length > 0 ? entidades : DMUS_DEA_PDD_ENTIDADES;
@@ -1614,12 +2413,14 @@ export function obtenerFronteraDeaPddLocal(params?: {
   return {
     plan_evaluado: plan,
     insumo_utilizado: insumo,
+    nivel_evaluado: nivel,
     ranking_entidades: ranking,
     ranking_lineas_estrategicas: DMUS_DEA_PDD_LINEAS_ESTRATEGICAS,
+    ranking_localidades_pdl: FRONTERA_DEA_PDL_LOCALIDADES,
     eficiencia_media_bcc_entidades: n > 0 ? Number((sumBcc / n).toFixed(3)) : 0.885,
     eficiencia_media_ccr_entidades: n > 0 ? Number((sumCcr / n).toFixed(3)) : 0.824,
     entidades_en_frontera_cantidad: ranking.filter((d) => d.es_frontera).length,
-    entidades_rezagadas_cantidad: ranking.filter((d) => d.theta_bcc < 0.80).length,
+    entidades_rezagadas_cantidad: ranking.filter((d) => d.theta_bcc < 0.8).length,
   };
 }
 
@@ -1632,13 +2433,29 @@ export function obtenerEconometriaComparadaPddLocal(): EconometriaComparadaPddRe
   };
 }
 
+export function obtenerExploradorProgramasYSeguridadHumanaLocal(): ExploradorProgramasYSeguridadHumanaRespuesta {
+  return {
+    fondos_locales: FONDOS_DESARROLLO_LOCAL_DETALLE,
+    arbol_impulsores_programas: ARBOL_PROGRAMATICO_PDD_2024_2027,
+    cruce_tripartito: ESTADISTICAS_CRUCE_TRIPARTITO_PDD,
+    monitor_seguridad_humana: MONITOR_SEGURIDAD_HUMANA_DATA,
+    frontera_multi_nivel: {
+      nivel_activo: "ENTIDADES",
+      entidades: DMUS_DEA_PDD_ENTIDADES,
+      lineas: DMUS_DEA_PDD_LINEAS_ESTRATEGICAS,
+      localidades: FRONTERA_DEA_PDL_LOCALIDADES,
+    },
+  };
+}
+
 export function obtenerResumenEjecutivoPddDeaLocal(): ResumenEjecutivoPddDeaRespuesta {
   return {
     catalogo: obtenerCatalogoYConciliacionPpiLocal(),
     cumplimiento: obtenerCumplimientoMetasPddLocal(),
     frontera: obtenerFronteraDeaPddLocal(),
     econometria: obtenerEconometriaComparadaPddLocal(),
-    fecha_generacion: "2026-10-15T12:00:00Z",
-    version_motor: "POLIS-PDD-DEA-HiGHS-v1.0",
+    explorador: obtenerExploradorProgramasYSeguridadHumanaLocal(),
+    fecha_generacion: "2026-10-15T14:00:00Z",
+    version_motor: "POLIS-PDD-DEA-HiGHS-v2.0",
   };
 }
