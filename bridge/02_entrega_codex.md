@@ -706,3 +706,21 @@ El PPI per cápita se etiqueta como denominador de planeación, no como gasto ej
 - `polis-backend.service` se reinició. En HTTP local, las siete rutas dieron 200 con ETag. Medianas de lectura completa: catálogo 3,32 ms; cumplimiento 2,88 ms; frontera 3,47 ms; econometría 3,27 ms; explorador 10,98 ms; resumen 15,17 ms; laboratorio 6,11 ms. Respuestas condicionales 304: 2,9–5 ms. Los logs del handler quedaron por debajo de 3,3 ms; la medición cubre localhost y el worker con caché caliente.
 - `ruff check` pasa en los archivos de la tarea. `ruff check backend` completo informa 729 hallazgos preexistentes en otras partes del repositorio.
 - `tests/test_pdd_dea_triada.py`: 25 passed; `tests/test_access_policy.py`: 104 passed. La suite completa se ejecutó desde `backend/` y dio 614 passed, con dos fallos de rutas relativas al ejecutarla allí; las dos pruebas fallidas se repitieron desde `/root/polis` y dieron 2 passed. A petición del usuario, se canceló la repetición integral de 616 pruebas; no queda pendiente.
+
+## Entrega [MESAS-BACKEND-15-CORREGIMIENTOS-12]
+
+**Estado:** completada en backend y base de datos; migración 0066 aplicada a `bd_csh` y `polis_test`. Caché PDD V11 regenerada y servicio reiniciado. Commit local en `main`, sin push. No se modificó `src/**`.
+
+### Cambios
+
+- `backend/alembic/versions/0066_quince_mesas_corregimientos.py`: upsert repetible de `MR-ISL-12` Barú, `MR-ISL-13` Ararca, `MR-ISL-14` Caño del Oro y `MR-RUR-15` Pontezuela; elimina `mr-007b`, mueve `mr-012` a su mesa Barú independiente e inserta/actualiza las agendas `mr-013` a `mr-015`. Si existe la mesa canónica `MT-L01-01`, la migración aborta si el censo no cumple 37 mesas (3/15/8/11), 38 agendas y 37 vínculos únicos, con `pc-001` sin mesa.
+- Actualicé las pruebas de agendas, el invariante de hurtos y el script `ingestar_hurtos.py` de 33/36 a 37/38. El conteo de mesas por localidad de `pdd_dea_service.py` ya es dinámico; no tenía el literal anterior.
+
+### Verificación
+
+- `bd_csh`: 37 mesas: 3 `TERRITORIAL`, 15 `RURAL_INSULAR`, 8 `POBLACIONAL`, 11 `SECTORIAL`; 38 agendas, 37 `mesa_id` no nulos y 37 `mesa_id` distintos; `pc-001` es la única agenda sin mesa. `mr-012` a `mr-015` enlazan sus códigos canónicos nuevos.
+- `polis_test`: Alembic aplicado hasta `0066_quince_mesas_corregimientos`.
+- Pruebas solicitadas (`test_mesas_seguridad_auditoria.py`, `test_geodatos_analitica_hurtos.py`, `test_pdd_dea_triada.py`): **39 passed**.
+- Ruff pasa en la migración nueva. Los archivos de pruebas/script existentes contienen hallazgos Ruff anteriores ajenos al cambio; su sintaxis quedó compilada y los tests pedidos pasaron.
+- `/tmp/polis_pdd_dea_cache_v11.json` se reconstruyó desde `bd_csh`; contiene los 7 payloads y muestra los conteos de mesas actualizados.
+- `polis-backend.service` reiniciado y activo. Después del startup, `/api/v1/mesas` (37 filas), `/api/v1/mesas/agendas` (38 filas) y `/api/v1/compromisos/triada/pdd-dea/resumen-ejecutivo` respondieron HTTP 200; el endpoint PDD reportó `HIT-V11`.

@@ -4,7 +4,7 @@ Tarea: [GEO-HURTOS-01]
 Valida:
 1. GET /api/v1/geodatos/analitica/hurtos/resumen (con filtros de delito, año y zona).
 2. GET /api/v1/geodatos/analitica/hurtos/geojson (FeatureCollection < 150 KB).
-3. Inviolabilidad del censo bd_csh (33 mesas, 36 agendas, 11 fichas, 17 actores).
+3. Inviolabilidad del censo bd_csh (37 mesas, 38 agendas, 11 fichas, 17 actores).
 """
 
 import json
@@ -275,8 +275,8 @@ async def test_inviolabilidad_censo_bd_csh():
             )
         ).scalar()
 
-        assert mesas_c == 33, f"Censo mesas alterado: {mesas_c} != 33"
-        assert agendas_c == 36, f"Censo agendas alterado: {agendas_c} != 36"
+        assert mesas_c == 37, f"Censo mesas alterado: {mesas_c} != 37"
+        assert agendas_c == 38, f"Censo agendas alterado: {agendas_c} != 38"
         assert fichas_c == 11, f"Censo fichas alterado: {fichas_c} != 11"
         assert actores_c == 17, f"Censo actores alterado: {actores_c} != 17"
 

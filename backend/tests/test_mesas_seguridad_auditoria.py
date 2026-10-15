@@ -378,27 +378,40 @@ async def test_vinculacion_agendas_con_mesas_canonicas_h05(database_url: str, ca
         resp = client.get("/api/v1/mesas/agendas")
         assert resp.status_code == 200
         agendas = resp.json()
-        assert len(agendas) >= 36
+        assert len(agendas) >= 38
 
         # pc-001 es la plenaria institucional y tiene mesa_id = None
         pc_001 = next((a for a in agendas if a["id"] == "pc-001"), None)
         assert pc_001 is not None
         assert pc_001["mesa_id"] is None
 
-        # Agendas de Barú apuntan a la misma mesa si están vinculadas
+        # Cada corregimiento debe tener su mesa canónica independiente.
         agendas_con_mesa = [a for a in agendas if a.get("mesa_id") is not None]
-        if agendas_con_mesa:
-            mr_007 = next((a for a in agendas if a["id"] == "mr-007"), None)
-            mr_007b = next((a for a in agendas if a["id"] == "mr-007b"), None)
-            mr_012 = next((a for a in agendas if a["id"] == "mr-012"), None)
-            if mr_007 and mr_007b and mr_012 and mr_007["mesa_id"]:
-                assert mr_007["mesa_id"] == mr_007b["mesa_id"] == mr_012["mesa_id"]
+        por_id = {agenda["id"]: agenda for agenda in agendas}
+        assert "mr-007b" not in por_id
+        for agenda_id in ("mr-007", "mr-012", "mr-013", "mr-014", "mr-015"):
+            assert agenda_id in por_id
+        for agenda_id in ("mr-012", "mr-013", "mr-014", "mr-015"):
+            assert por_id[agenda_id]["mesa_id"] is not None
+        if por_id["mr-007"]["mesa_id"] is not None:
+            assert por_id["mr-007"]["mesa_id"] != por_id["mr-012"]["mesa_id"]
+            assert len(agendas_con_mesa) == 37
+            assert len({agenda["mesa_id"] for agenda in agendas_con_mesa}) == 37
 
-            # Resolucion transparente por codigo de agenda
-            agenda_ejemplo = agendas_con_mesa[0]
-            resp_part = client.get(f"/api/v1/mesas/{agenda_ejemplo['id']}/participantes")
-            assert resp_part.status_code == 200
-            assert isinstance(resp_part.json(), list)
+        mesas = {m["codigo_oficial"]: m for m in client.get("/api/v1/mesas").json()}
+        assert {"MR-ISL-12", "MR-ISL-13", "MR-ISL-14", "MR-RUR-15"} <= mesas.keys()
+        assert all(
+            mesas[codigo]["tipo_mesa"] == "RURAL_INSULAR"
+            for codigo in ("MR-ISL-12", "MR-ISL-13", "MR-ISL-14", "MR-RUR-15")
+        )
+        if "MR-RUR-01" in mesas:
+            assert sum(m["tipo_mesa"] == "RURAL_INSULAR" for m in mesas.values()) == 15
+
+        # Resolucion transparente por codigo de agenda
+        agenda_ejemplo = agendas_con_mesa[0]
+        resp_part = client.get(f"/api/v1/mesas/{agenda_ejemplo['id']}/participantes")
+        assert resp_part.status_code == 200
+        assert isinstance(resp_part.json(), list)
 
 
 async def test_crear_mesa_persistencia_auditoria_y_unicidad(database_url: str, cabeceras_gestion):

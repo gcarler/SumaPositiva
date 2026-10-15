@@ -372,7 +372,7 @@ async def verificar_integridad_y_censo(session: AsyncSession) -> None:
     assert total_poligonos == 2, f"Deben existir exactamente 2 polígonos: {total_poligonos}"
     print("   ✓ Polígonos analíticos base verificados: 2 (Urbano y Rural)")
 
-    # 4. Inviolabilidad del censo bd_csh: 33 mesas, 36 agendas, 11 fichas, 17 actores
+    # 4. Inviolabilidad del censo bd_csh: 37 mesas, 38 agendas, 11 fichas, 17 actores
     mesas_c = (await session.execute(text("SELECT count(*) FROM mesas_trabajo.mesas;"))).scalar()
     agendas_c = (await session.execute(text("SELECT count(*) FROM mesas_trabajo.agendas;"))).scalar()
     fichas_c = (
@@ -385,8 +385,8 @@ async def verificar_integridad_y_censo(session: AsyncSession) -> None:
     ).scalar()
 
     print(f"   🏛️  Censo canónico bd_csh: mesas={mesas_c}, agendas={agendas_c}, fichas={fichas_c}, actores={actores_c}")
-    assert mesas_c == 33, f"Censo mesas alterado: {mesas_c} != 33"
-    assert agendas_c == 36, f"Censo agendas alterado: {agendas_c} != 36"
+    assert mesas_c == 37, f"Censo mesas alterado: {mesas_c} != 37"
+    assert agendas_c == 38, f"Censo agendas alterado: {agendas_c} != 38"
     assert fichas_c == 11, f"Censo fichas alterado: {fichas_c} != 11"
     assert actores_c == 17, f"Censo actores alterado: {actores_c} != 17"
     print("   🛡️  ¡Censo canónico bd_csh 100% INTACTO e INVIOLADO!")
