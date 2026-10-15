@@ -2483,6 +2483,8 @@ export type {
   NivelDeaPdd,
   ModoImputacionPdd,
   PlanDesarrolloInfo,
+  PlanDesarrolloIndividual,
+  MetaOficialResumen,
   DetalleAnualPpi,
   PpiPorLineaEstrategica,
   ConciliacionPpiVsBdCshItem,
@@ -2512,6 +2514,10 @@ export type {
 
 export {
   CATALOGO_PLANES_DESARROLLO,
+  PLANES_OCTETO_CANONICO,
+  EJES_OFICIALES_PDD_2012_2015,
+  OBJETIVOS_OFICIALES_PDD_2016_2019,
+  RESUMEN_EMPAREJAMIENTO_METAS_OFICIALES,
   TABLA_OFICIAL_PPI_ANUAL,
   PPI_POR_LINEA_PDD_2024_2027,
   CONCILIACION_PPI_BD_CSH,

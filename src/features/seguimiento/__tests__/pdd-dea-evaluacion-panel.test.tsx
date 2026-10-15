@@ -21,6 +21,10 @@ import {
   CORRELACIONES_PDD_FDR_DATA,
   DESIGUALDAD_PPI_GINI_HHI,
   PRUEBAS_WILCOXON_INTER_PLANES,
+  PLANES_OCTETO_CANONICO,
+  EJES_OFICIALES_PDD_2012_2015,
+  OBJETIVOS_OFICIALES_PDD_2016_2019,
+  RESUMEN_EMPAREJAMIENTO_METAS_OFICIALES,
   obtenerCatalogoYConciliacionPpiLocal,
   obtenerCumplimientoMetasPddLocal,
   obtenerFronteraDeaPddLocal,
@@ -427,6 +431,152 @@ describe("Centro de Mando de Planes de Desarrollo, Conciliación PPI y DEA ([TRI
       expect(res.econometria).toBeDefined();
       expect(res.explorador).toBeDefined();
       expect(res.version_motor).toBe("POLIS-PDD-DEA-HiGHS-v2.0");
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  // 9. CIERRE TOTAL DE TECHOS OFICIALES OCR, METAS Y SERIE PLURIANUAL 2012–2027
+  // ---------------------------------------------------------------------------
+  describe("9. Cierre Total de Techos Oficiales OCR, Metas de Acuerdos y Serie 2012–2027 ([TRIADA-FRONTEND-CIERRE-TOTAL-10])", () => {
+    it("33. el PPI OCR de PDD 2012–2015 («Campo para Todos» - Acuerdo 001/2012) es exactamente $3.049.788.268.000 COP y desglosa sus 5 Ejes Oficiales", () => {
+      const pdd2012 = CATALOGO_PLANES_DESARROLLO.find((p) => p.codigo === "PDD_2012_2015");
+      expect(pdd2012).toBeDefined();
+      expect(pdd2012?.ppi_total_cuatrienio_mcop).toBe(3049788.268);
+      expect(pdd2012?.ppi_estado).toBe("OFICIAL_EXTRAIDO");
+      expect(pdd2012?.norma_adopcion).toBe("Acuerdo Distrital 001 del 4 de julio de 2012");
+      expect(pdd2012?.fuente_archivo_md).toBe("pdd_2012_2015_acuerdo_001_campo_para_todos.md");
+
+      expect(EJES_OFICIALES_PDD_2012_2015).toHaveLength(5);
+      const totalEjes = EJES_OFICIALES_PDD_2012_2015.reduce((sum, e) => sum + e.monto_total_cuatrienio_mcop, 0);
+      expect(totalEjes).toBeCloseTo(3049788.268, 2);
+
+      const eje1 = EJES_OFICIALES_PDD_2012_2015.find((e) => e.eje_codigo === "EJE_1");
+      expect(eje1?.monto_total_cuatrienio_mcop).toBe(196661.713);
+      expect(eje1?.participacion_pct).toBe(6.45);
+
+      const eje2 = EJES_OFICIALES_PDD_2012_2015.find((e) => e.eje_codigo === "EJE_2");
+      expect(eje2?.monto_total_cuatrienio_mcop).toBe(2068532.775);
+      expect(eje2?.participacion_pct).toBe(67.83);
+
+      const eje3 = EJES_OFICIALES_PDD_2012_2015.find((e) => e.eje_codigo === "EJE_3");
+      expect(eje3?.monto_total_cuatrienio_mcop).toBe(179995.114);
+      expect(eje3?.participacion_pct).toBe(5.9);
+
+      const eje4 = EJES_OFICIALES_PDD_2012_2015.find((e) => e.eje_codigo === "EJE_4");
+      expect(eje4?.monto_total_cuatrienio_mcop).toBe(434185.669);
+      expect(eje4?.participacion_pct).toBe(14.24);
+
+      const eje5 = EJES_OFICIALES_PDD_2012_2015.find((e) => e.eje_codigo === "EJE_5");
+      expect(eje5?.monto_total_cuatrienio_mcop).toBe(170412.997);
+      expect(eje5?.participacion_pct).toBe(5.59);
+    });
+
+    it("34. el PPI OCR de PDD 2016–2019 («Primero la Gente» - Acuerdo 006/2016 Tabla 209) es $4.331.941.000.000 COP con 3 Objetivos Estratégicos y conciliación 1.06x", () => {
+      const pdd2016 = CATALOGO_PLANES_DESARROLLO.find((p) => p.codigo === "PDD_2016_2019");
+      expect(pdd2016).toBeDefined();
+      expect(pdd2016?.ppi_total_cuatrienio_mcop).toBe(4331941.0);
+      expect(pdd2016?.ppi_estado).toBe("OFICIAL_EXTRAIDO");
+      expect(pdd2016?.norma_adopcion).toBe("Acuerdo Distrital 006 del 13 de junio de 2016");
+      expect(pdd2016?.fuente_archivo_md).toBe("pdd_2016_2019_acuerdo_006_primero_la_gente.md");
+
+      expect(OBJETIVOS_OFICIALES_PDD_2016_2019).toHaveLength(3);
+      const totalObj = OBJETIVOS_OFICIALES_PDD_2016_2019.reduce((sum, o) => sum + o.monto_total_cuatrienio_mcop, 0);
+      expect(totalObj).toBe(4331941.0);
+
+      const obj1 = OBJETIVOS_OFICIALES_PDD_2016_2019.find((o) => o.objetivo_codigo === "OBJ_1");
+      expect(obj1?.monto_total_cuatrienio_mcop).toBe(3183163.0);
+      expect(obj1?.participacion_pct).toBe(73.0);
+
+      const obj2 = OBJETIVOS_OFICIALES_PDD_2016_2019.find((o) => o.objetivo_codigo === "OBJ_2");
+      expect(obj2?.monto_total_cuatrienio_mcop).toBe(852631.0);
+      expect(obj2?.participacion_pct).toBe(20.0);
+
+      const obj3 = OBJETIVOS_OFICIALES_PDD_2016_2019.find((o) => o.objetivo_codigo === "OBJ_3");
+      expect(obj3?.monto_total_cuatrienio_mcop).toBe(296147.0);
+      expect(obj3?.participacion_pct).toBe(7.0);
+
+      const conc2016 = CONCILIACION_PPI_BD_CSH.find((c) => c.plan_codigo === "PDD_2016_2019");
+      expect(conc2016).toBeDefined();
+      expect(conc2016?.ppi_oficial_acuerdo_mcop).toBe(4331941.0);
+      expect(conc2016?.reportado_matrices_bd_csh_mcop).toBe(4603448.54);
+      expect(conc2016?.factor_calibracion).toBe(1.06);
+      expect(conc2016?.brecha_sobrerreporte_mcop).toBeCloseTo(271507.54, 1);
+    });
+
+    it("35. el octeto canónico de 8 planes (5 PDD + 3 PDL) tiene el 100% de techos oficiales extraídos (ppi_estado === 'OFICIAL_EXTRAIDO' y ppi_total_corriente_cop > 0)", () => {
+      expect(PLANES_OCTETO_CANONICO).toHaveLength(8);
+
+      const pdds = PLANES_OCTETO_CANONICO.filter((p) => p.tipo === "PDD");
+      const pdls = PLANES_OCTETO_CANONICO.filter((p) => p.tipo === "PDL");
+      expect(pdds).toHaveLength(5);
+      expect(pdls).toHaveLength(3);
+
+      for (const plan of PLANES_OCTETO_CANONICO) {
+        expect(plan.ppi_estado).toBe("OFICIAL_EXTRAIDO");
+        expect(plan.ppi_total_corriente_cop).toBeGreaterThan(0);
+        expect(plan.ppi_total_constante_2025_cop).toBeGreaterThan(0);
+        expect(plan.lineas_o_ejes_count).toBeGreaterThan(0);
+      }
+
+      for (const plan of CATALOGO_PLANES_DESARROLLO) {
+        expect(plan.ppi_estado).toBe("OFICIAL_EXTRAIDO");
+        expect(plan.ppi_total_cuatrienio_mcop).toBeGreaterThan(0);
+      }
+    });
+
+    it("36. el emparejamiento semántico vincula las 2.068 metas oficiales extraídas de los Acuerdos con bd_csh", () => {
+      expect(RESUMEN_EMPAREJAMIENTO_METAS_OFICIALES).toHaveLength(5);
+
+      const totalOficiales = RESUMEN_EMPAREJAMIENTO_METAS_OFICIALES.reduce(
+        (sum, r) => sum + r.total_metas_oficiales_acuerdo,
+        0
+      );
+      expect(totalOficiales).toBe(2068);
+
+      const pdd2024 = RESUMEN_EMPAREJAMIENTO_METAS_OFICIALES.find((r) => r.plan_codigo === "PDD_2024_2027");
+      expect(pdd2024?.total_metas_oficiales_acuerdo).toBe(892);
+      expect(pdd2024?.metas_vinculadas_bd_csh).toBe(874);
+
+      const pdd2020 = RESUMEN_EMPAREJAMIENTO_METAS_OFICIALES.find((r) => r.plan_codigo === "PDD_2020_2023");
+      expect(pdd2020?.total_metas_oficiales_acuerdo).toBe(486);
+      expect(pdd2020?.metas_vinculadas_bd_csh).toBe(462);
+
+      const pdd2016 = RESUMEN_EMPAREJAMIENTO_METAS_OFICIALES.find((r) => r.plan_codigo === "PDD_2016_2019");
+      expect(pdd2016?.total_metas_oficiales_acuerdo).toBe(312);
+      expect(pdd2016?.metas_vinculadas_bd_csh).toBe(298);
+
+      const pdd2013 = RESUMEN_EMPAREJAMIENTO_METAS_OFICIALES.find((r) => r.plan_codigo === "PDD_2013_2015");
+      expect(pdd2013?.total_metas_oficiales_acuerdo).toBe(218);
+      expect(pdd2013?.metas_vinculadas_bd_csh).toBe(206);
+
+      const pdd2012 = RESUMEN_EMPAREJAMIENTO_METAS_OFICIALES.find((r) => r.plan_codigo === "PDD_2012_2015");
+      expect(pdd2012?.total_metas_oficiales_acuerdo).toBe(160);
+      expect(pdd2012?.metas_vinculadas_bd_csh).toBe(144);
+
+      const totalVinculadas = RESUMEN_EMPAREJAMIENTO_METAS_OFICIALES.reduce(
+        (sum, r) => sum + r.metas_vinculadas_bd_csh,
+        0
+      );
+      expect(totalVinculadas).toBe(1984);
+      expect(totalVinculadas / totalOficiales).toBeGreaterThan(0.95);
+    });
+
+    it("37. la tabla anualizada oficial del PPI cubre las 16 vigencias completas (2012–2027) sin vacíos", () => {
+      expect(TABLA_OFICIAL_PPI_ANUAL).toHaveLength(16);
+
+      const vigencias = TABLA_OFICIAL_PPI_ANUAL.map((t) => t.vigencia);
+      const esperadas = [2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027];
+      expect(vigencias).toEqual(esperadas);
+
+      for (const fila of TABLA_OFICIAL_PPI_ANUAL) {
+        expect(fila.monto_corriente_mcop).toBeGreaterThan(0);
+        expect(fila.monto_constante_2025_mcop).toBeGreaterThan(0);
+        expect(fila.factor_deflactacion_ipc).toBeGreaterThan(0);
+        expect(fila.recursos_distritales_ordinarios_mcop).toBeGreaterThan(0);
+      }
+
+      const totalCorriente = TABLA_OFICIAL_PPI_ANUAL.reduce((sum, f) => sum + f.monto_corriente_mcop, 0);
+      expect(totalCorriente).toBeGreaterThan(26_000_000);
     });
   });
 });

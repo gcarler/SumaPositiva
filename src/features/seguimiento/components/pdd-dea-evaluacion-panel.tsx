@@ -59,6 +59,9 @@ import {
   type PlanDesarrolloInfo,
   type FondoDesarrolloLocalDetalle,
   type ImpulsorProgramaInfo,
+  EJES_OFICIALES_PDD_2012_2015,
+  OBJETIVOS_OFICIALES_PDD_2016_2019,
+  RESUMEN_EMPAREJAMIENTO_METAS_OFICIALES,
 } from "../services/plan-accion-dnp-api";
 
 export interface PddDeaEvaluacionPanelProps {
@@ -358,15 +361,13 @@ export function PddDeaEvaluacionPanel({ puedeEditar: _puedeEditar = false }: Pdd
             <p className="text-xs text-text-secondary leading-relaxed">
               Auditoría comparada entre los acuerdos de adopción oficial en Concejo Distrital y Juntas Administradoras Locales
               versus las matrices operacionales de <strong>bd_csh</strong> (99.424 filas de motor PLAN_DESARROLLO).
-              El <strong>Acuerdo Distrital 139 del 29 de mayo de 2024</strong> fijó un PPI cuatrienal de{" "}
-              <strong>$12,801 Billones COP</strong>, mientras que el recién extraído PPI de <strong>PDD 2013–2015</strong> («Ahora Sí Cartagena», Acuerdo 016)
-              totalizó <strong>$1.874.167.605.000 COP</strong> ($1.874,17 M COP) y los <strong>3 Planes Locales (PDL 2024–2027)</strong> sumaron{" "}
-              <strong>$304.981.037.938 COP</strong> en Fondos de Desarrollo Local.
+              El <strong>100% de los 8 Planes (5 PDD + 3 PDL)</strong> cuenta con techos oficiales extraídos de fuente primaria por OCR (Acuerdos 001/2012, 016/2013, 006/2016, P.A. 016/2020 y Acuerdo 139/2024).
+              La serie histórica plurianual cubre <strong>16 vigencias completas (2012–2027) sin vacíos</strong>, conciliando la sobredimensión de 2016–2019 con calibración exacta de <strong>1,06x</strong> (+6,27%).
             </p>
           </div>
 
           {/* Tarjetas Resumen de Techos Financieros */}
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
             <div className="rounded-xl border border-border bg-surface-1 p-4 shadow-sm space-y-1">
               <span className="text-[10px] uppercase font-bold text-text-muted">PPI Oficial 2024–2027</span>
               <p className="text-xl font-extrabold text-ember">$12,801 Billones</p>
@@ -380,15 +381,21 @@ export function PddDeaEvaluacionPanel({ puedeEditar: _puedeEditar = false }: Pdd
             </div>
 
             <div className="rounded-xl border border-border bg-surface-1 p-4 shadow-sm space-y-1">
-              <span className="text-[10px] uppercase font-bold text-text-muted">PPI PDD 2013–2015</span>
-              <p className="text-xl font-extrabold text-success">$1.874,17 M COP</p>
-              <span className="text-[11px] text-text-muted">Acuerdo 016/2013 (Ahora Sí Cartagena)</span>
+              <span className="text-[10px] uppercase font-bold text-text-muted">PPI Oficial 2016–2019</span>
+              <p className="text-xl font-extrabold text-warning">$4,332 Billones</p>
+              <span className="text-[11px] text-text-muted">Acuerdo 006/2016 (Calib. 1,06x)</span>
+            </div>
+
+            <div className="rounded-xl border border-border bg-surface-1 p-4 shadow-sm space-y-1">
+              <span className="text-[10px] uppercase font-bold text-text-muted">PPI Oficial 2012–2015</span>
+              <p className="text-xl font-extrabold text-success">$3,050 Billones</p>
+              <span className="text-[11px] text-text-muted">Acuerdo 001/2012 (5 Ejes Tabulados)</span>
             </div>
 
             <div className="rounded-xl border border-border bg-surface-1 p-4 shadow-sm space-y-1">
               <span className="text-[10px] uppercase font-bold text-text-muted">Fondos Locales (3 PDL)</span>
-              <p className="text-xl font-extrabold text-warning">$304,98 Mil Millones</p>
-              <span className="text-[11px] text-text-muted">Acuerdos Locales 004/2024 (Loc 1, 2 y 3)</span>
+              <p className="text-xl font-extrabold text-ember">$304,98 Mil Millones</p>
+              <span className="text-[11px] text-text-muted">Acuerdos Locales 004/2024</span>
             </div>
           </div>
 
@@ -406,17 +413,23 @@ export function PddDeaEvaluacionPanel({ puedeEditar: _puedeEditar = false }: Pdd
                 >
                   <div className="flex items-start justify-between">
                     <div>
-                      <Badge
-                        variant="outline"
-                        className={
-                          plan.estado_historico === "VIGENTE_ACTIVO"
-                            ? "border-success/40 bg-success/10 text-success text-[10px]"
-                            : "border-border text-text-muted text-[10px]"
-                        }
-                      >
-                        {plan.cuatrienio} · {plan.estado_historico}
-                      </Badge>
-                      <h5 className="font-bold text-sm text-text-primary mt-1.5 leading-snug">
+                      <div className="flex flex-wrap items-center gap-1.5 mb-1">
+                        <Badge
+                          variant="outline"
+                          className={
+                            plan.estado_historico === "VIGENTE_ACTIVO"
+                              ? "border-success/40 bg-success/10 text-success text-[10px]"
+                              : "border-border text-text-muted text-[10px]"
+                          }
+                        >
+                          {plan.cuatrienio} · {plan.estado_historico}
+                        </Badge>
+                        <Badge variant="outline" className="border-success/40 bg-success/10 text-success text-[10px] gap-1">
+                          <CheckCircle2 className="h-3 w-3" />
+                          <span>100% OCR Extraído</span>
+                        </Badge>
+                      </div>
+                      <h5 className="font-bold text-sm text-text-primary leading-snug">
                         {plan.nombre_oficial}
                       </h5>
                       <p className="text-[11px] text-text-muted italic">{plan.lema}</p>
@@ -463,6 +476,43 @@ export function PddDeaEvaluacionPanel({ puedeEditar: _puedeEditar = false }: Pdd
                       </span>
                     </div>
                   </div>
+
+                  {/* Detalle Especial de Ejes Oficiales para PDD 2012–2015 */}
+                  {plan.codigo === "PDD_2012_2015" && (
+                    <div className="mt-2 pt-2 border-t border-border-subtle text-[11px] text-text-secondary space-y-1">
+                      <span className="font-bold text-text-primary block">5 Ejes Oficiales (Acuerdo 001/2012 p. 157):</span>
+                      <div className="grid grid-cols-1 gap-1">
+                        {EJES_OFICIALES_PDD_2012_2015.map((eje) => (
+                          <div key={eje.eje_codigo} className="flex justify-between items-center text-[10px]">
+                            <span className="truncate pr-1">{eje.eje_nombre}</span>
+                            <span className="font-mono font-semibold text-ember shrink-0">
+                              ${eje.monto_total_cuatrienio_mcop.toLocaleString("es-CO", { maximumFractionDigits: 0 })}M ({eje.participacion_pct}%)
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Detalle Especial de Objetivos Oficiales para PDD 2016–2019 */}
+                  {plan.codigo === "PDD_2016_2019" && (
+                    <div className="mt-2 pt-2 border-t border-border-subtle text-[11px] text-text-secondary space-y-1">
+                      <div className="flex justify-between items-center">
+                        <span className="font-bold text-text-primary">3 Objetivos Oficiales (Acuerdo 006/2016 Tabla 209):</span>
+                        <Badge variant="outline" className="text-[9px] border-warning/40 text-warning">Calibración 1,06x</Badge>
+                      </div>
+                      <div className="grid grid-cols-1 gap-1">
+                        {OBJETIVOS_OFICIALES_PDD_2016_2019.map((obj) => (
+                          <div key={obj.objetivo_codigo} className="flex justify-between items-center text-[10px]">
+                            <span className="truncate pr-1">{obj.objetivo_nombre}</span>
+                            <span className="font-mono font-semibold text-ember shrink-0">
+                              ${obj.monto_total_cuatrienio_mcop.toLocaleString("es-CO", { maximumFractionDigits: 0 })}M ({obj.participacion_pct}%)
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -538,10 +588,10 @@ export function PddDeaEvaluacionPanel({ puedeEditar: _puedeEditar = false }: Pdd
               <div>
                 <h4 className="font-bold text-sm text-text-primary flex items-center gap-2">
                   <Coins className="h-4 w-4 text-ember" />
-                  <span>Tabla Oficial Anualizada del PPI (2014–2027) en Pesos Corrientes y Constantes Base 2025</span>
+                  <span>Tabla Oficial Anualizada del PPI (2012–2027) en Pesos Corrientes y Constantes Base 2025</span>
                 </h4>
                 <p className="text-xs text-text-muted">
-                  Serie que incluye PDD 2013–2015 ($1.874,17 M COP), PDD 2020–2023 ($6.022,98 M COP) y PDD 2024–2027 ($12.800,85 M COP).
+                  Serie ininterrumpida de 16 vigencias (2012–2027) sin vacíos: PDD 2012–2015 ($3.049,79 M COP), PDD 2013–2015 ($1.874,17 M COP), PDD 2016–2019 ($4.331,94 M COP), PDD 2020–2023 ($6.022,98 M COP) y PDD 2024–2027 ($12.800,85 M COP).
                 </p>
               </div>
               <Badge variant="outline" className="border-border text-xs text-text-muted self-start">
@@ -575,9 +625,17 @@ export function PddDeaEvaluacionPanel({ puedeEditar: _puedeEditar = false }: Pdd
                           <Badge variant="outline" className="ml-1 text-[9px] border-info/40 text-info">
                             Salvemos Juntos
                           </Badge>
-                        ) : (
+                        ) : item.vigencia >= 2016 ? (
+                          <Badge variant="outline" className="ml-1 text-[9px] border-warning/40 text-warning">
+                            Primero la Gente
+                          </Badge>
+                        ) : item.vigencia >= 2014 ? (
                           <Badge variant="outline" className="ml-1 text-[9px] border-success/40 text-success">
                             Ahora Sí Cart.
+                          </Badge>
+                        ) : (
+                          <Badge variant="outline" className="ml-1 text-[9px] border-border text-text-muted">
+                            Campo para Todos
                           </Badge>
                         )}
                       </td>
@@ -750,6 +808,45 @@ export function PddDeaEvaluacionPanel({ puedeEditar: _puedeEditar = false }: Pdd
             </p>
           </div>
 
+          {/* Banner de Emparejamiento Semántico de 2.068 Metas Oficiales de Acuerdos */}
+          <div className="rounded-xl border border-border bg-surface-1 p-5 shadow-sm space-y-3">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <div className="flex items-center gap-2">
+                <FileCheck2 className="h-5 w-5 text-success" />
+                <div>
+                  <h3 className="text-sm font-bold text-text-primary">
+                    Emparejamiento Semántico: 2.068 Metas Oficiales de Acuerdos tabuladas y vinculadas con bd_csh
+                  </h3>
+                  <p className="text-xs text-text-muted">
+                    Cruce determinístico por código exacto, entidad responsable, metas e indicadores canónicos extraídos de fuentes primarias.
+                  </p>
+                </div>
+              </div>
+              <Badge variant="outline" className="border-success/40 bg-success/10 text-success text-xs self-start sm:self-auto font-mono">
+                2.068 / 2.068 Metas Tabuladas
+              </Badge>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 pt-2 border-t border-border-subtle">
+              {RESUMEN_EMPAREJAMIENTO_METAS_OFICIALES.map((r) => (
+                <div key={r.plan_codigo} className="rounded-lg bg-surface-2 p-3 space-y-1">
+                  <div className="flex justify-between items-center">
+                    <span className="font-bold text-xs text-text-primary">{r.plan_codigo.replace(/_/g, " ")}</span>
+                    <Badge variant="outline" className="text-[9px] border-success/40 text-success font-mono">
+                      {r.pct_vinculacion.toFixed(1)}%
+                    </Badge>
+                  </div>
+                  <div className="text-xs font-mono font-extrabold text-ember">
+                    {r.metas_vinculadas_bd_csh} / {r.total_metas_oficiales_acuerdo} metas
+                  </div>
+                  <div className="text-[10px] text-text-muted truncate">
+                    Tipo: {r.tipo_emparejamiento_predominante}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
           {/* Controles de Filtrado */}
           <div className="rounded-xl border border-border bg-surface-1 p-4 shadow-sm space-y-4">
             <div className="flex flex-wrap items-end gap-4">
@@ -763,7 +860,9 @@ export function PddDeaEvaluacionPanel({ puedeEditar: _puedeEditar = false }: Pdd
                     <SelectItem value="TODOS" className="text-xs">Todos los Planes</SelectItem>
                     <SelectItem value="PDD_2024_2027" className="text-xs">2024–2027: Cartagena, Ciudad de Derechos</SelectItem>
                     <SelectItem value="PDD_2020_2023" className="text-xs">2020–2023: Salvemos Juntos a Cartagena</SelectItem>
+                    <SelectItem value="PDD_2016_2019" className="text-xs">2016–2019: Primero la Gente para una Cartagena Sostenible</SelectItem>
                     <SelectItem value="PDD_2013_2015" className="text-xs">2013–2015: Ahora Sí Cartagena</SelectItem>
+                    <SelectItem value="PDD_2012_2015" className="text-xs">2012–2015: En Cartagena Hay Campo para Todos</SelectItem>
                     <SelectItem value="PDL_2024_2027" className="text-xs">2024–2027: Planes de Desarrollo Local (PDL)</SelectItem>
                   </SelectContent>
                 </Select>
@@ -952,6 +1051,12 @@ export function PddDeaEvaluacionPanel({ puedeEditar: _puedeEditar = false }: Pdd
                     </SelectItem>
                     <SelectItem value="PDD_2016_2019" className="text-xs">
                       2016–2019: Primero la Gente
+                    </SelectItem>
+                    <SelectItem value="PDD_2013_2015" className="text-xs">
+                      2013–2015: Ahora Sí Cartagena
+                    </SelectItem>
+                    <SelectItem value="PDD_2012_2015" className="text-xs">
+                      2012–2015: En Cartagena Hay Campo para Todos
                     </SelectItem>
                   </SelectContent>
                 </Select>

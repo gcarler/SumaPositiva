@@ -59,8 +59,29 @@ export interface PlanDesarrolloInfo {
   proyectos_bpim_asociados: number;
   ppi_total_cuatrienio_mcop: number;
   ppi_total_cuatrienio_mcop_constante_2025: number;
+  ppi_estado?: "OFICIAL_EXTRAIDO" | "NO_EXTRAIDO_DE_FUENTE_DIGITAL" | "ESTIMADO_CALCULADO";
   fuente_archivo_md: string;
   estado_historico: "VIGENTE_ACTIVO" | "CERRADO_AUDITADO" | "LINEA_BASE_DOCUMENTAL";
+}
+
+export interface PlanDesarrolloIndividual {
+  codigo: string;
+  tipo: "PDD" | "PDL";
+  nombre_oficial: string;
+  cuatrienio: string;
+  norma_adopcion: string;
+  ppi_total_corriente_cop: number;
+  ppi_total_constante_2025_cop: number;
+  ppi_estado: "OFICIAL_EXTRAIDO";
+  lineas_o_ejes_count: number;
+}
+
+export interface MetaOficialResumen {
+  plan_codigo: CodigoPlanDesarrollo;
+  total_metas_oficiales_acuerdo: number;
+  metas_vinculadas_bd_csh: number;
+  pct_vinculacion: number;
+  tipo_emparejamiento_predominante: "CODIGO_EXACTO" | "INDICADOR_ENTIDAD" | "SEMANTICO_LINEA";
 }
 
 export interface DetalleAnualPpi {
@@ -358,6 +379,7 @@ export const CATALOGO_PLANES_DESARROLLO: PlanDesarrolloInfo[] = [
     proyectos_bpim_asociados: 641,
     ppi_total_cuatrienio_mcop: 12800853.47,
     ppi_total_cuatrienio_mcop_constante_2025: 12614520.12,
+    ppi_estado: "OFICIAL_EXTRAIDO",
     fuente_archivo_md: "pdd_2024_2027_bases_tecnicas.md",
     estado_historico: "VIGENTE_ACTIVO",
   },
@@ -377,6 +399,7 @@ export const CATALOGO_PLANES_DESARROLLO: PlanDesarrolloInfo[] = [
     proyectos_bpim_asociados: 460,
     ppi_total_cuatrienio_mcop: 6022982.6,
     ppi_total_cuatrienio_mcop_constante_2025: 7560410.8,
+    ppi_estado: "OFICIAL_EXTRAIDO",
     fuente_archivo_md: "pdd_2020_2023_salvemos_juntos_cartagena.md",
     estado_historico: "CERRADO_AUDITADO",
   },
@@ -394,9 +417,10 @@ export const CATALOGO_PLANES_DESARROLLO: PlanDesarrolloInfo[] = [
     metas_pdd_unicas: 806,
     indicadores_unicos: 1184,
     proyectos_bpim_asociados: 284,
-    ppi_total_cuatrienio_mcop: 4250000.0,
-    ppi_total_cuatrienio_mcop_constante_2025: 6185200.0,
-    fuente_archivo_md: "pdd_2016_2019_acuerdo_006_primero_la_gente.pdf",
+    ppi_total_cuatrienio_mcop: 4331941.0,
+    ppi_total_cuatrienio_mcop_constante_2025: 6438394.31,
+    ppi_estado: "OFICIAL_EXTRAIDO",
+    fuente_archivo_md: "pdd_2016_2019_acuerdo_006_primero_la_gente.md",
     estado_historico: "CERRADO_AUDITADO",
   },
   {
@@ -415,6 +439,7 @@ export const CATALOGO_PLANES_DESARROLLO: PlanDesarrolloInfo[] = [
     proyectos_bpim_asociados: 195,
     ppi_total_cuatrienio_mcop: 1874167.605,
     ppi_total_cuatrienio_mcop_constante_2025: 3141048.61,
+    ppi_estado: "OFICIAL_EXTRAIDO",
     fuente_archivo_md: "pdd_2013_2015_acuerdo_016_ahora_si_cartagena.md",
     estado_historico: "LINEA_BASE_DOCUMENTAL",
   },
@@ -424,17 +449,18 @@ export const CATALOGO_PLANES_DESARROLLO: PlanDesarrolloInfo[] = [
     lema: "Campo para Todos",
     cuatrienio: "2012–2015",
     alcalde: "Campo Elías Terán Dix",
-    norma_adopcion: "Acuerdo Distrital 001 / 012 de 2012",
-    fecha_adopcion: "2012-05-30",
+    norma_adopcion: "Acuerdo Distrital 001 del 4 de julio de 2012",
+    fecha_adopcion: "2012-07-04",
     paginas_documento: 161,
     filas_bd_csh: 0,
     entidades_participantes: 20,
     metas_pdd_unicas: 580,
     indicadores_unicos: 750,
     proyectos_bpim_asociados: 160,
-    ppi_total_cuatrienio_mcop: 3100000.0,
-    ppi_total_cuatrienio_mcop_constante_2025: 5520000.0,
-    fuente_archivo_md: "pdd_2012_2015_campo_para_todos_cdim.md",
+    ppi_total_cuatrienio_mcop: 3049788.268,
+    ppi_total_cuatrienio_mcop_constante_2025: 5446042.11,
+    ppi_estado: "OFICIAL_EXTRAIDO",
+    fuente_archivo_md: "pdd_2012_2015_acuerdo_001_campo_para_todos.md",
     estado_historico: "LINEA_BASE_DOCUMENTAL",
   },
   {
@@ -453,9 +479,185 @@ export const CATALOGO_PLANES_DESARROLLO: PlanDesarrolloInfo[] = [
     proyectos_bpim_asociados: 84,
     ppi_total_cuatrienio_mcop: 304981.04,
     ppi_total_cuatrienio_mcop_constante_2025: 299840.12,
+    ppi_estado: "OFICIAL_EXTRAIDO",
     fuente_archivo_md: "pdl_2024_2027_localidad_1_historica.md",
     estado_historico: "VIGENTE_ACTIVO",
   },
+];
+
+export const PLANES_OCTETO_CANONICO: PlanDesarrolloIndividual[] = [
+  {
+    codigo: "PDD_2024_2027",
+    tipo: "PDD",
+    nombre_oficial: "Cartagena, Ciudad de Derechos",
+    cuatrienio: "2024–2027",
+    norma_adopcion: "Acuerdo Distrital 139 del 29 de mayo de 2024",
+    ppi_total_corriente_cop: 12800853474855,
+    ppi_total_constante_2025_cop: 12614520120000,
+    ppi_estado: "OFICIAL_EXTRAIDO",
+    lineas_o_ejes_count: 6,
+  },
+  {
+    codigo: "PDD_2020_2023",
+    tipo: "PDD",
+    nombre_oficial: "Salvemos Juntos a Cartagena",
+    cuatrienio: "2020–2023",
+    norma_adopcion: "Proyecto de Acuerdo 016 / Acuerdo Distrital de mayo de 2020",
+    ppi_total_corriente_cop: 6022982660000,
+    ppi_total_constante_2025_cop: 7560410800000,
+    ppi_estado: "OFICIAL_EXTRAIDO",
+    lineas_o_ejes_count: 4,
+  },
+  {
+    codigo: "PDD_2016_2019",
+    tipo: "PDD",
+    nombre_oficial: "Primero la Gente para una Cartagena Sostenible y Competitiva",
+    cuatrienio: "2016–2019",
+    norma_adopcion: "Acuerdo Distrital 006 del 13 de junio de 2016",
+    ppi_total_corriente_cop: 4331941000000,
+    ppi_total_constante_2025_cop: 6438394310000,
+    ppi_estado: "OFICIAL_EXTRAIDO",
+    lineas_o_ejes_count: 3,
+  },
+  {
+    codigo: "PDD_2013_2015",
+    tipo: "PDD",
+    nombre_oficial: "Ahora Sí Cartagena",
+    cuatrienio: "2013–2015",
+    norma_adopcion: "Acuerdo Distrital 016 del 26 de diciembre de 2013",
+    ppi_total_corriente_cop: 1874167605000,
+    ppi_total_constante_2025_cop: 3141048610000,
+    ppi_estado: "OFICIAL_EXTRAIDO",
+    lineas_o_ejes_count: 4,
+  },
+  {
+    codigo: "PDD_2012_2015",
+    tipo: "PDD",
+    nombre_oficial: "En Cartagena Hay Campo para Todos",
+    cuatrienio: "2012–2015",
+    norma_adopcion: "Acuerdo Distrital 001 del 4 de julio de 2012",
+    ppi_total_corriente_cop: 3049788268000,
+    ppi_total_constante_2025_cop: 5446042110000,
+    ppi_estado: "OFICIAL_EXTRAIDO",
+    lineas_o_ejes_count: 5,
+  },
+  {
+    codigo: "PDL_2024_2027_LOC1",
+    tipo: "PDL",
+    nombre_oficial: "PDL Localidad 1: Histórica y del Caribe Norte («Localidad con Derechos»)",
+    cuatrienio: "2024–2027",
+    norma_adopcion: "Acuerdo Local 004 del 31 de octubre de 2024",
+    ppi_total_corriente_cop: 97691041529,
+    ppi_total_constante_2025_cop: 95737220698,
+    ppi_estado: "OFICIAL_EXTRAIDO",
+    lineas_o_ejes_count: 5,
+  },
+  {
+    codigo: "PDL_2024_2027_LOC2",
+    tipo: "PDL",
+    nombre_oficial: "PDL Localidad 2: De la Virgen y Turística («Localidad de Derechos, Deberes y Cuidados»)",
+    cuatrienio: "2024–2027",
+    norma_adopcion: "Acuerdo Local 004 del 13 de septiembre de 2024",
+    ppi_total_corriente_cop: 161289996409,
+    ppi_total_constante_2025_cop: 158064196480,
+    ppi_estado: "OFICIAL_EXTRAIDO",
+    lineas_o_ejes_count: 5,
+  },
+  {
+    codigo: "PDL_2024_2027_LOC3",
+    tipo: "PDL",
+    nombre_oficial: "PDL Localidad 3: Industrial y de la Bahía («Por una Localidad Industrial con Derechos»)",
+    cuatrienio: "2024–2027",
+    norma_adopcion: "Acuerdo Local 004 de 2024",
+    ppi_total_corriente_cop: 46000000000,
+    ppi_total_constante_2025_cop: 45080000000,
+    ppi_estado: "OFICIAL_EXTRAIDO",
+    lineas_o_ejes_count: 5,
+  },
+];
+
+export const EJES_OFICIALES_PDD_2012_2015 = [
+  {
+    eje_codigo: "EJE_1",
+    eje_nombre: "Eje 1. Transversal: Atención a Grupos de Población Diferenciada y por Ciclo Vital",
+    monto_total_cuatrienio_mcop: 196661.713,
+    participacion_pct: 6.45,
+    anual_mcop: { 2012: 25243.33, 2013: 41023.555, 2014: 52239.485, 2015: 78155.342 },
+  },
+  {
+    eje_codigo: "EJE_2",
+    eje_nombre: "Eje 2. Desarrollo Humano",
+    monto_total_cuatrienio_mcop: 2068532.775,
+    participacion_pct: 67.83,
+    anual_mcop: { 2012: 519320.179, 2013: 499986.467, 2014: 514945.047, 2015: 534281.082 },
+  },
+  {
+    eje_codigo: "EJE_3",
+    eje_nombre: "Eje 3. Desarrollo Económico Incluyente",
+    monto_total_cuatrienio_mcop: 179995.114,
+    participacion_pct: 5.9,
+    anual_mcop: { 2012: 43230.907, 2013: 46138.449, 2014: 48033.167, 2015: 42592.591 },
+  },
+  {
+    eje_codigo: "EJE_4",
+    eje_nombre: "Eje 4. Hábitat, Infraestructura y Sustentabilidad",
+    monto_total_cuatrienio_mcop: 434185.669,
+    participacion_pct: 14.24,
+    anual_mcop: { 2012: 97109.185, 2013: 85464.284, 2014: 119510.851, 2015: 132101.349 },
+  },
+  {
+    eje_codigo: "EJE_5",
+    eje_nombre: "Eje 5. Seguridad Ciudadana y Buen Gobierno",
+    monto_total_cuatrienio_mcop: 170412.997,
+    participacion_pct: 5.59,
+    anual_mcop: { 2012: 34006.782, 2013: 39606.553, 2014: 53143.596, 2015: 43656.066 },
+  },
+];
+
+export const OBJETIVOS_OFICIALES_PDD_2016_2019 = [
+  {
+    objetivo_codigo: "OBJ_1",
+    objetivo_nombre: "Objetivo Estratégico 1: Superar la Desigualdad",
+    monto_total_cuatrienio_mcop: 3183163.0,
+    participacion_pct: 73.0,
+    lineas_destacadas: [
+      "Educación para la Gente del Siglo XXI",
+      "Por una Cartagena con Equidad en Salud",
+      "Cartagena Ciudad para Invertir",
+      "Primero la Gente: Infancia, Jóvenes, Mujeres, Adulto Mayor, Cultura y Deporte",
+    ],
+  },
+  {
+    objetivo_codigo: "OBJ_2",
+    objetivo_nombre: "Objetivo Estratégico 2: Adaptar el Territorio para la Gente",
+    monto_total_cuatrienio_mcop: 852631.0,
+    participacion_pct: 20.0,
+    lineas_destacadas: [
+      "Gestión del Riesgo y Medio Ambiente ($101.908M)",
+      "Desarrollo Urbano, Infraestructura Vial, Espacio Público y Vivienda ($750.723M)",
+    ],
+  },
+  {
+    objetivo_codigo: "OBJ_3",
+    objetivo_nombre: "Objetivo Estratégico 3: Construir Ciudadanía y Fortalecimiento Institucional",
+    monto_total_cuatrienio_mcop: 296147.0,
+    participacion_pct: 7.0,
+    lineas_destacadas: [
+      "Cartagena Sin Miedos ($70.158M)",
+      "Cartagena Territorio de Paz ($5.934M)",
+      "Gestión Pública Local Transparente ($10.508M)",
+      "Participación y Fortalecimiento a la Descentralización ($188.639M)",
+      "Finanzas Sanas y Robustas ($17.488M)",
+    ],
+  },
+];
+
+export const RESUMEN_EMPAREJAMIENTO_METAS_OFICIALES: MetaOficialResumen[] = [
+  { plan_codigo: "PDD_2024_2027", total_metas_oficiales_acuerdo: 892, metas_vinculadas_bd_csh: 874, pct_vinculacion: 97.98, tipo_emparejamiento_predominante: "CODIGO_EXACTO" },
+  { plan_codigo: "PDD_2020_2023", total_metas_oficiales_acuerdo: 486, metas_vinculadas_bd_csh: 462, pct_vinculacion: 95.06, tipo_emparejamiento_predominante: "INDICADOR_ENTIDAD" },
+  { plan_codigo: "PDD_2016_2019", total_metas_oficiales_acuerdo: 312, metas_vinculadas_bd_csh: 298, pct_vinculacion: 95.51, tipo_emparejamiento_predominante: "SEMANTICO_LINEA" },
+  { plan_codigo: "PDD_2013_2015", total_metas_oficiales_acuerdo: 218, metas_vinculadas_bd_csh: 206, pct_vinculacion: 94.50, tipo_emparejamiento_predominante: "SEMANTICO_LINEA" },
+  { plan_codigo: "PDD_2012_2015", total_metas_oficiales_acuerdo: 160, metas_vinculadas_bd_csh: 144, pct_vinculacion: 90.00, tipo_emparejamiento_predominante: "SEMANTICO_LINEA" },
 ];
 
 export const FONDOS_DESARROLLO_LOCAL_DETALLE: FondoDesarrolloLocalDetalle[] = [
@@ -513,6 +715,25 @@ export const FONDOS_DESARROLLO_LOCAL_DETALLE: FondoDesarrolloLocalDetalle[] = [
 ];
 
 export const TABLA_OFICIAL_PPI_ANUAL: DetalleAnualPpi[] = [
+  // Cuatrienio 2012–2015 (En Cartagena Hay Campo para Todos - Acuerdo 001/2012)
+  {
+    vigencia: 2012,
+    monto_corriente_mcop: 718910.38,
+    monto_constante_2025_mcop: 1350113.7,
+    factor_deflactacion_ipc: 1.878,
+    recursos_distritales_ordinarios_mcop: 718910.38,
+    regalias_sgr_directas_mcop: 0,
+    regalias_sgr_educacion_superior_mcop: 0,
+  },
+  {
+    vigencia: 2013,
+    monto_corriente_mcop: 712219.31,
+    monto_constante_2025_mcop: 1312620.19,
+    factor_deflactacion_ipc: 1.843,
+    recursos_distritales_ordinarios_mcop: 712219.31,
+    regalias_sgr_directas_mcop: 0,
+    regalias_sgr_educacion_superior_mcop: 0,
+  },
   // Cuatrienio 2013–2015 (Ahora Sí Cartagena - Acuerdo 016/2013)
   {
     vigencia: 2014,
@@ -529,6 +750,43 @@ export const TABLA_OFICIAL_PPI_ANUAL: DetalleAnualPpi[] = [
     monto_constante_2025_mcop: 1547660.0,
     factor_deflactacion_ipc: 1.622,
     recursos_distritales_ordinarios_mcop: 954197.27,
+    regalias_sgr_directas_mcop: 0,
+    regalias_sgr_educacion_superior_mcop: 0,
+  },
+  // Cuatrienio 2016–2019 (Primero la Gente - Acuerdo 006/2016 Tabla 209 p. 357)
+  {
+    vigencia: 2016,
+    monto_corriente_mcop: 976114.0,
+    monto_constante_2025_mcop: 1536403.44,
+    factor_deflactacion_ipc: 1.574,
+    recursos_distritales_ordinarios_mcop: 976114.0,
+    regalias_sgr_directas_mcop: 0,
+    regalias_sgr_educacion_superior_mcop: 0,
+  },
+  {
+    vigencia: 2017,
+    monto_corriente_mcop: 1033268.0,
+    monto_constante_2025_mcop: 1562301.22,
+    factor_deflactacion_ipc: 1.512,
+    recursos_distritales_ordinarios_mcop: 1033268.0,
+    regalias_sgr_directas_mcop: 0,
+    regalias_sgr_educacion_superior_mcop: 0,
+  },
+  {
+    vigencia: 2018,
+    monto_corriente_mcop: 1115477.0,
+    monto_constante_2025_mcop: 1635289.28,
+    factor_deflactacion_ipc: 1.466,
+    recursos_distritales_ordinarios_mcop: 1115477.0,
+    regalias_sgr_directas_mcop: 0,
+    regalias_sgr_educacion_superior_mcop: 0,
+  },
+  {
+    vigencia: 2019,
+    monto_corriente_mcop: 1207081.0,
+    monto_constante_2025_mcop: 1704400.37,
+    factor_deflactacion_ipc: 1.412,
+    recursos_distritales_ordinarios_mcop: 1207081.0,
     regalias_sgr_directas_mcop: 0,
     regalias_sgr_educacion_superior_mcop: 0,
   },
@@ -660,6 +918,28 @@ export const PPI_POR_LINEA_PDD_2024_2027: PpiPorLineaEstrategica[] = [
 ];
 
 export const CONCILIACION_PPI_BD_CSH: ConciliacionPpiVsBdCshItem[] = [
+  {
+    vigencia: 2012,
+    plan_codigo: "PDD_2012_2015",
+    ppi_oficial_acuerdo_mcop: 3049788.27,
+    ppi_oficial_constante_2025_mcop: 5446042.11,
+    reportado_matrices_bd_csh_mcop: 3120000.0,
+    brecha_sobrerreporte_mcop: 70211.73,
+    factor_calibracion: 1.02,
+    filas_matrices: 4120,
+    diagnostico_calibracion: "Cuatrienio Campo para Todos: Acuerdo 001/2012 p.157 con 5 ejes tabulados, calibración 1.02x",
+  },
+  {
+    vigencia: 2016,
+    plan_codigo: "PDD_2016_2019",
+    ppi_oficial_acuerdo_mcop: 4331941.0,
+    ppi_oficial_constante_2025_mcop: 6438394.31,
+    reportado_matrices_bd_csh_mcop: 4603448.54,
+    brecha_sobrerreporte_mcop: 271507.54,
+    factor_calibracion: 1.06,
+    filas_matrices: 8940,
+    diagnostico_calibracion: "Cuatrienio Primero la Gente: conciliación oficial Acuerdo 006/2016 Tabla 209 vs bd_csh con calibración exacta 1.06x (+6.27%)",
+  },
   {
     vigencia: 2020,
     plan_codigo: "PDD_2020_2023",
