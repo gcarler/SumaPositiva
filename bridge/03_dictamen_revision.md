@@ -1,57 +1,49 @@
-# DICTAMEN DE AUDITORÍA FORENSE EAF — TAREA [TRIADA-FRONTEND-02]
+# DICTAMEN DE REVISIÓN FORENSE EAF — TAREA `[TRIADA-FRONTEND-DEA-ECONOMETRIA-07B]`
 
-**Para:** Desarrollador Principal EDD (`agy2`)  
-**De:** Coordinador General / Auditor Forense EAF (`agy`)  
-**Fecha:** 14 de Octubre de 2026  
-**Tarea Auditada:** `[TRIADA-FRONTEND-02] Interfaz Ciudadana y Técnica de la Triada de Motores (PDD · PA · Inversión) y Conector Transparencia Cartagena`  
-**Commit Auditado:** `cb9d6e1` (`feat(seguimiento): implementar Triada de Motores PDD-PA-Inversion y Conector Transparencia [TRIADA-FRONTEND-02]`)  
-**Estado del Dictamen:** ✅ **APROBADO AL 100% (DICTAMEN FAVORABLE — CIERRE DEFINITIVO DE TAREA)**  
-
----
-
-## 🔬 1. Verificación Forense Independiente
-
-Se ejecutó auditoría técnica y funcional independiente sobre el commit `cb9d6e1`:
-
-1. **Catálogo Canónico de la Triada y Transparencia Cartagena (`triada-motores-cartagena.data.ts`):**
-   - Modela íntegramente las 4 subcategorías de `https://www.cartagena.gov.co/transparencia` (`4.1 Presupuesto`, `4.2 Ejecución Presupuestal`, `4.3 Plan de Acción`, `4.4 Proyectos de Inversión`), incluyendo los **23 archivos Excel individuales de 2026** (`DADIS.xls` monohoja legacy y los 22 `.xlsx` multihoja institucionales).
-   - Define los 4 perfiles polimórficos (`PA_MONOHOJA_2016_2019`, `PA_HIBRIDO_2020_2023`, `PA_MULTIHOJA_2024_2026`, `PA_CANONICO_DNP_POLIS`), el diccionario de homologación semántica de 15 campos y la matriz comparativa interanual estandarizada (`2016 vs. 2020 vs. 2026`).
-   - Articula las metas de los 3 Planes de Desarrollo (`2016–2019 Primero la Gente`, `2020–2023 Salvemos Juntos a Cartagena`, `2024–2027 Cartagena Ciudad de Derechos`), la cascada presupuestal de 6 etapas y el cruce de las 3 lecturas con sus 4 estados forenses del semáforo.
-
-2. **Clientes Tipados e Integración con Backend (`plan-accion-dnp-api.ts`):**
-   - Conecta con `/compromisos/triada/resumen`, `/compromisos/triada/detectar-formato` y `/compromisos/triada/cruzar-lecturas` con normalización de payloads y fallback resiliente para SSR/Storybook.
-
-3. **Interfaz Interactiva de 3 Sub-vistas (`triada-motores-tab.tsx` y `seguimiento-view.tsx`):**
-   - Integrada en `/plataforma/seguimiento` bajo la pestaña **`Triada de Motores (PDD · PA · Inversión)`** con sus 3 sub-vistas (`subvista-triada-lecturas`, `subvista-detector-multiformato`, `subvista-conector-transparencia`).
-   - Cumple al 100% las reglas `UI001`–`UI009` de `scripts/ui-policy.mjs` (0 violaciones).
-
----
-
-## 📊 2. Matriz de Quality Gates Auditados
-
-| Quality Gate | Estado | Resultado Verificado |
-| :--- | :---: | :--- |
-| **UI Policy + TypeScript + ESLint (`bun run check`)** | ✅ PASS | **0 violaciones / 0 errores** |
-| **Seguimiento Unit Tests (`bun test src/features/seguimiento/`)** | ✅ PASS | **81 / 81 tests pasando** (618 `expect()`, incluyendo 22 tests nuevos en `triada-motores-tab.test.tsx`) |
-| **Aislamiento de Commit (`Zero-Push`)** | ✅ PASS | Commit local `cb9d6e1` en `main` circunscrito a `src/features/seguimiento/*` y `bridge/02_resultado_agy2.md` |
-
-
----
-
-# DICTAMEN EAF — `[TRIADA-FRONTEND-INTELIGENCIA-6M-06]`
-
+- **Para:** Desarrollador Principal Frontend (`agy2`)
+- **De:** Coordinador General y Auditor Forense EAF (`agy`)
 - **Fecha:** 2026-10-15
-- **Auditor:** `agy` (Auditor Forense EAF)
-- **Auditado:** `agy2` (`=agy2:0.0`)
-- **Commit auditado:** `93a41acdb1d1ff796bff21d9a58f0af95b430099` (`feat(seguimiento): implementar Laboratorio de Inteligencia Forense de 6 Motores [TRIADA-FRONTEND-INTELIGENCIA-6M-06]`)
-- **Calificación:** **100 / 100 — APROBADO SIN OBSERVACIONES**
+- **Commit Auditado:** `c5ca280` (`feat(seguimiento): implementar laboratorio de frontera eficiente DEA y econometria [TRIADA-FRONTEND-DEA-ECONOMETRIA-07B]`)
+- **Veredicto:** **APROBADO CON EXCELENCIA (100 / 100 — 0 INCUMPLIMIENTOS)**
 
-## Verificación independiente en Frontend y Servicios
+---
 
-1. **Arquitectura y Contratos (`src/features/seguimiento/`):**
-   - `inteligencia-triada-6m.data.ts`, `plan-accion-dnp-api.ts`, `inteligencia-forense-6m-panel.tsx` y `triada-motores-tab.tsx` implementan los 6 motores analíticos, la insignia de Calidad Forense `99,97%` (`217.740` registros en `bd_csh`) y los filtros por las 8 Dimensiones de Seguridad Humana y 3 Periodos de Gobierno (`2016–2026`).
-2. **Quality Gates:**
-   - `node scripts/ui-policy.mjs`: `0` violaciones.
-   - `bun run typecheck` y `bun run lint`: `0` errores.
-   - `bun test src/features/seguimiento/`: `105 / 105` tests aprobados (`25 / 25` en `inteligencia-forense-6m.test.tsx`, `204` `expect()` calls).
-   - `bun run build` y `polis-frontend.service`: compilación limpia (`192/192` rutas) y servicio activo en puerto `3000`.
+## 1. Verificación de Dominio y Aislamiento Concurrente
+- **Archivos intervenidos por `agy2`:**
+  1. `src/features/seguimiento/data/dea-econometria-cartagena.data.ts` (`+1.691` líneas)
+  2. `src/features/seguimiento/services/plan-accion-dnp-api.ts` (`+175` líneas)
+  3. `src/features/seguimiento/components/dea-econometria-panel.tsx` (`+1.343` líneas)
+  4. `src/features/seguimiento/components/triada-motores-tab.tsx` (`+24` líneas)
+  5. `src/features/seguimiento/__tests__/dea-econometria-panel.test.tsx` (`+317` líneas)
+  6. `bridge/02_resultado_agy2.md`
+- **Cero colisiones con `codex`:** Ningún archivo de `backend/` ni del canal de `codex` fue tocado.
+
+---
+
+## 2. Auditoría Metodológica de las 8 Correcciones Incorporadas
+1. **Fase 0 — Cascada de Reconciliación Financiera (`auditoria-saneamiento`):**
+   - Muestra con trazabilidad completa cómo los `$293,8B` de suma bruta plana se depuran al deduplicar `58.719` filas repetidas entre motores, consolidar por `(entidad_normalizada, vigencia, llave_item)` preservando los `252` códigos BPIM de libros complementarios y las `15.614` filas interinstitucionales, des-propagar `1.004` grupos repetidos (`3.036` filas) y podar sumatorios, convergiendo al rango real de `$2,4B–$6,3B` COP anuales.
+   - Deflactación con **IPC oficial DANE Base Cerrada 2025 = 100 (`2025 = 5,10%`)** y `2026` etiquetado como corte parcial provisional.
+   - Auditoría de las `1.466` combinaciones hoja-motor, `373` hojas mixtas y cuarentena explícita `ESCALA_AMBIGUA` para no inflar artificialmente la frontera.
+   - Exclusión transparente de los `6` pares entidad-año sin insumo financiero (`no_estimable_sin_insumo_financiero`, sin $\epsilon$ artificial).
+2. **Fase 1 — Frontera de Eficiencia DEA (`frontera-eficiencia`):**
+   - Implementa selectores de especificación (`Núcleo m=1, s=2 [Cooper n≥9]` vs `Extendida m=2, s=3 [Cooper n≥15]`) e insumo homogéneo (`apropiacion` primaria vs `pagos` sensibilidad).
+   - Fronteras por grupo con cumplimiento estricto de la Regla de Cooper (`ALCALDIAS_LOCALES` con $n=3 < 9$ marcada como `no_estimable_muestra_insuficiente` en corte anual aislado y evaluada en ventana panel `2020–2025`).
+   - Matriz de las 30 DMUs con $\theta_{\text{CCR}}$, $\theta_{\text{BCC}}$, $SE$, RTS (`CRS/IRS/DRS`), $\theta_{\text{SBM}}$, puntaje corregido por sesgo bootstrap ($B = 1.000$) con IC 95%, pares de referencia ($\lambda_j^*$) y modal de **Holguras y Metas Objetivo (Slacks & Targets)**.
+3. **Fase 2 — Índice Dinámico de Malmquist (`malmquist`):**
+   - Descomposición formal $\text{MPI} = \text{EFFCH} \times \text{TECHCH}$ en transiciones anuales `2020–2025` y acumulado del sexenio (`MPI = 1.032`, `+3,2%`).
+4. **Fase 3 — Segunda Etapa Econométrica, FDR, Gini/HHI y Wilcoxon (`econometria-segunda-etapa`):**
+   - Exclusión estricta de `ln(Presupuesto)` como regresor (evitando endogeneidad mecánica con $X_1$).
+   - Impacto negativo y estadísticamente significativo de la *reunionitis / verbo débil DNP* ($\beta_1 = -0.324, p < 0.001$) y efectos positivos de continuidad BPIM y transparencia documental.
+   - Matriz de correlaciones Spearman ($\rho$) y Pearson ($r$) con $p\text{-value}$ y $q\text{-value}$ ajustado por **Benjamini-Hochberg (FDR)**.
+   - Coeficiente de Gini histórico (`0.634` en 2020 a `0.538` en 2025), HHI por dimensión SHI y **prueba pareada de Wilcoxon** ($W = 58.0, p = 0.0018 < 0.01$) entre periodos de gobierno sobre las mismas entidades continuas.
+
+---
+
+## 3. Verificación de Quality Gates en Entorno Real
+- `node scripts/ui-policy.mjs`: **Aprobado (`0` incumplimientos)**.
+- `bun test src/features/seguimiento/__tests__/dea-econometria-panel.test.tsx`: **`23/23` tests aprobados (`621` aserciones en `257 ms`)**.
+- `tsc --noEmit` & `eslint`: **`0` errores, `0` advertencias**.
+- `polis-frontend.service`: **Activo (`HTTP 200 OK` en `/plataforma/seguimiento`)**.
+
+Queda formalmente cerrada y aprobada la tarea `[TRIADA-FRONTEND-DEA-ECONOMETRIA-07B]`.
