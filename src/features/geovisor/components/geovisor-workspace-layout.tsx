@@ -23,7 +23,7 @@ import {
 export interface GeovisorWorkspaceLayoutProps {
   /** Slot superior colapsable (filtros globales, KPIs, controles dock) */
   topSlot?: React.ReactNode;
-  /** Slot izquierdo colapsable (capas SIG, directorio de 33 mesas) */
+  /** Slot izquierdo colapsable (capas SIG, directorio de 37 mesas) */
   leftSlot?: React.ReactNode;
   /** Slot central fijo y elástico (lienzo OpenLayers). Nunca se desmonta. */
   centerSlot: React.ReactNode;

@@ -160,20 +160,7 @@ export const AGENDA_MESAS: MesaAgenda[] = [
     dimensionesONU: ["Seguridad Alimentaria", "Seguridad Comunitaria"],
   },
 
-  // Día 3 (oct 22): Barú · Santa Ana · Tierrabomba · Bocachica
-  {
-    id: "mr-007b",
-    tipo: "rural_insular",
-    nombre: "Mesa Insular — Barú y Comunidades del Archipiélago",
-    territorio: "Isla de Barú",
-    lugar: "Institución Educativa de Barú",
-    fecha: "2026-10-22",
-    horaInicio: "07:30", horaFin: "10:00",
-    estado: "programada",
-    dimensionesONU: ["Seguridad Alimentaria", "Seguridad Ambiental", "Seguridad Comunitaria"],
-    responsable: "Consejo Comunitario de Barú",
-    observaciones: "Mesa con protocolo diferencial étnico — Comunidad afrodescendiente. Requiere Consulta Previa conforme Convenio 169 OIT y Sentencia SU-123/18. Coordinar con Consejo Comunitario con anterioridad mínima de 30 días.",
-  },
+  // Día 3 (oct 22): Santa Ana · Tierrabomba · Bocachica
   {
     id: "mr-007",
     tipo: "rural_insular",
@@ -235,17 +222,61 @@ export const AGENDA_MESAS: MesaAgenda[] = [
     dimensionesONU: ["Seguridad Ambiental", "Seguridad Alimentaria"],
     observaciones: "La isla más alejada — logística especial requerida",
   },
+
+  // Día 5 (oct 24): Barú · Ararca (Península de Barú)
   {
     id: "mr-012",
     tipo: "rural_insular",
-    nombre: "Mesa Rural e Insular — Barú",
+    nombre: "Mesa Insular — Barú",
     territorio: "Corregimiento de Barú",
-    lugar: "Institución Educativa de Barú",
+    lugar: "Institución Educativa Luis Felipe Cabrera de Barú",
     fecha: "2026-10-24",
-    horaInicio: "09:00", horaFin: "12:00",
+    horaInicio: "08:30", horaFin: "11:30",
     estado: "programada",
-    dimensionesONU: ["Seguridad Ambiental", "Seguridad Económica", "Seguridad Comunitaria"],
-    observaciones: "Comunidad étnica afrodescendiente — énfasis en sostenibilidad costera y consulta comunitaria",
+    dimensionesONU: ["Seguridad Ambiental", "Seguridad Económica", "Seguridad Comunitaria", "Seguridad Alimentaria"],
+    responsable: "Consejo Comunitario de Barú",
+    observaciones: "Mesa con protocolo diferencial étnico — Comunidad afrodescendiente. Requiere Consulta Previa conforme Convenio 169 OIT y Sentencia SU-123/18. Énfasis en sostenibilidad costera y gobernanza de playas.",
+  },
+  {
+    id: "mr-013",
+    tipo: "rural_insular",
+    nombre: "Mesa Insular — Ararca",
+    territorio: "Corregimiento de Ararca",
+    lugar: "Institución Educativa de Ararca",
+    fecha: "2026-10-24",
+    horaInicio: "13:30", horaFin: "16:30",
+    estado: "programada",
+    dimensionesONU: ["Seguridad Comunitaria", "Seguridad Ambiental", "Seguridad Económica"],
+    responsable: "Consejo Comunitario de Ararca",
+    observaciones: "Comunidad afrodescendiente de la península de Barú — énfasis en transición ambiental, manglares, saneamiento básico y empleo juvenil local.",
+  },
+
+  // Día 6 (oct 25): Caño del Oro · Pontezuela
+  {
+    id: "mr-014",
+    tipo: "rural_insular",
+    nombre: "Mesa Insular — Caño del Oro",
+    territorio: "Corregimiento Caño del Oro",
+    lugar: "Institución Educativa Caño del Oro",
+    fecha: "2026-10-25",
+    horaInicio: "08:30", horaFin: "11:30",
+    estado: "programada",
+    dimensionesONU: ["Seguridad de la Salud", "Seguridad Ambiental", "Seguridad Comunitaria"],
+    responsable: "Consejo Comunitario de Caño del Oro",
+    observaciones: "Requiere transporte marítimo desde el Hospital de Bocagrande / Muelle de La Bodeguita — énfasis en patrimonio hospitalario insular, defensa costera y agua potable.",
+  },
+  {
+    id: "mr-015",
+    tipo: "rural_insular",
+    nombre: "Mesa Rural — Pontezuela",
+    territorio: "Corregimiento de Pontezuela",
+    lugar: "Institución Educativa de Pontezuela",
+    fecha: "2026-10-25",
+    horaInicio: "13:30", horaFin: "16:30",
+    estado: "programada",
+    dimensionesONU: ["Seguridad Alimentaria", "Seguridad Comunitaria", "Seguridad Personal"],
+    responsable: "Consejo Comunitario y JAC de Pontezuela",
+    observaciones: "Corregimiento de la Zona Norte (Localidad 2) — énfasis en defensa del territorio ancestral frente a la expansión inmobiliaria, alcantarillado y juventud.",
   },
 
   // ── MESAS POBLACIONALES — nov 5, 6, 12, 13 ───────────────────────

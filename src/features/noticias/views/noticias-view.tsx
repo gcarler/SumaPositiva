@@ -224,7 +224,7 @@ export function NoticiasView() {
               )}
             </div>
             <p className="text-xs text-[var(--text-secondary)] mt-1">
-              Registro documental e institucional de las 33 mesas de trabajo en Cartagena
+              Registro documental e institucional de las 37 mesas de trabajo en Cartagena
             </p>
           </div>
 

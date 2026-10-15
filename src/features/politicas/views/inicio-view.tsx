@@ -302,7 +302,7 @@ export function InicioView() {
                 Últimas Noticias de la Política Pública
               </h2>
               <p className="mt-2 text-sm leading-relaxed text-[var(--text-secondary)]">
-                Seguimiento continuo al cronograma, decisiones concertadas y avances de las 33 mesas de trabajo.
+                Seguimiento continuo al cronograma, decisiones concertadas y avances de las 37 mesas de trabajo.
               </p>
             </div>
             <Button

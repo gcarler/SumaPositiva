@@ -246,8 +246,8 @@ describe("Centro de Mando de Planes de Desarrollo, Conciliación PPI y DEA ([TRI
       expect(nombres).toContain("Personal");
     });
 
-    it("17. el monitor cruza 33 Mesas Territoriales, 10 Compromisos PAS y 12.280 hurtos georreferenciados", () => {
-      expect(MONITOR_SEGURIDAD_HUMANA_DATA.mesas_territoriales.total_mesas).toBe(33);
+    it("17. el monitor cruza 37 Mesas Territoriales, 10 Compromisos PAS y 12.280 hurtos georreferenciados", () => {
+      expect(MONITOR_SEGURIDAD_HUMANA_DATA.mesas_territoriales.total_mesas).toBe(37);
       expect(MONITOR_SEGURIDAD_HUMANA_DATA.mesas_territoriales.demandas_priorizadas_seguridad).toBe(142);
       expect(MONITOR_SEGURIDAD_HUMANA_DATA.compromisos_pas.total_compromisos).toBe(10);
       expect(MONITOR_SEGURIDAD_HUMANA_DATA.compromisos_pas.articulacion_pct).toBe(80.0);
@@ -721,9 +721,9 @@ describe("Centro de Mando de Planes de Desarrollo, Conciliación PPI y DEA ([TRI
       }
     });
 
-    it("41. la justicia territorial DANE 2025 calcula inversión FDL per cápita para 1.065.570 hab., 33 mesas y compuerta Moran N < 30", () => {
+    it("41. la justicia territorial DANE 2025 calcula inversión FDL per cápita para 1.065.570 hab., 37 mesas y compuerta Moran N < 30", () => {
       expect(JUSTICIA_TERRITORIAL_PDL_DANE.poblacion_total_distrito).toBe(1_065_570);
-      expect(JUSTICIA_TERRITORIAL_PDL_DANE.mesas_totales_distrito).toBe(33);
+      expect(JUSTICIA_TERRITORIAL_PDL_DANE.mesas_totales_distrito).toBe(37);
       expect(JUSTICIA_TERRITORIAL_PDL_DANE.fdl_total_distrito_mcop).toBe(304981.04);
       expect(JUSTICIA_TERRITORIAL_PDL_DANE.inversion_per_capita_media_cop).toBe(286214.0);
 
@@ -740,7 +740,7 @@ describe("Centro de Mando de Planes de Desarrollo, Conciliación PPI y DEA ([TRI
       expect(sumaPoblacion).toBe(1_065_570);
 
       const sumaMesas = l1.mesas_ciudadanas_count + l2.mesas_ciudadanas_count + l3.mesas_ciudadanas_count;
-      expect(sumaMesas).toBe(33);
+      expect(sumaMesas).toBe(37);
 
       // Balance hurtos: 12.280 totales
       expect(JUSTICIA_TERRITORIAL_PDL_DANE.balance_hurtos).toHaveLength(2);

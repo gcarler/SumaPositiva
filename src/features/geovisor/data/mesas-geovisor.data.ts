@@ -115,16 +115,6 @@ export const COORDENADAS_AGENDA_MESAS: Record<string, CoordenadaReferencia> = {
     totalAsistentes: 0,
     aforo: 50,
   },
-  "mr-007b": {
-    lat: 10.2300,
-    lng: -75.5900,
-    territorioCodigo: "loc-3",
-    territorioNombre: "Isla de Barú",
-    estadoDefault: "PROGRAMADA",
-    realizada: false,
-    totalAsistentes: 0,
-    aforo: 65,
-  },
   "mr-007": {
     lat: 10.2550,
     lng: -75.5450,
@@ -176,10 +166,40 @@ export const COORDENADAS_AGENDA_MESAS: Record<string, CoordenadaReferencia> = {
     aforo: 40,
   },
   "mr-012": {
-    lat: 10.2150,
-    lng: -75.5780,
-    territorioCodigo: "loc-3",
+    lat: 10.1456,
+    lng: -75.6761,
+    territorioCodigo: "loc-1",
     territorioNombre: "Corregimiento de Barú",
+    estadoDefault: "PROGRAMADA",
+    realizada: false,
+    totalAsistentes: 0,
+    aforo: 65,
+  },
+  "mr-013": {
+    lat: 10.2730,
+    lng: -75.5240,
+    territorioCodigo: "loc-1",
+    territorioNombre: "Corregimiento de Ararca",
+    estadoDefault: "PROGRAMADA",
+    realizada: false,
+    totalAsistentes: 0,
+    aforo: 55,
+  },
+  "mr-014": {
+    lat: 10.3420,
+    lng: -75.5410,
+    territorioCodigo: "loc-1",
+    territorioNombre: "Corregimiento Caño del Oro",
+    estadoDefault: "PROGRAMADA",
+    realizada: false,
+    totalAsistentes: 0,
+    aforo: 55,
+  },
+  "mr-015": {
+    lat: 10.5250,
+    lng: -75.4020,
+    territorioCodigo: "loc-2",
+    territorioNombre: "Corregimiento de Pontezuela",
     estadoDefault: "PROGRAMADA",
     realizada: false,
     totalAsistentes: 0,
@@ -423,12 +443,14 @@ export const MAPA_AGENDA_A_CODIGO_OFICIAL: Record<string, string> = {
   "mr-005": "MR-RUR-05",
   "mr-006": "MR-RUR-06",
   "mr-007": "MR-ISL-07",
-  "mr-007b": "MR-ISL-07",
   "mr-008": "MR-ISL-08",
   "mr-009": "MR-ISL-09",
   "mr-010": "MR-ISL-10",
   "mr-011": "MR-ISL-11",
-  "mr-012": "MR-ISL-07",
+  "mr-012": "MR-ISL-12",
+  "mr-013": "MR-ISL-13",
+  "mr-014": "MR-ISL-14",
+  "mr-015": "MR-RUR-15",
 };
 
 export const MAPA_CODIGO_OFICIAL_A_AGENDA: Record<string, string> = {
@@ -465,6 +487,10 @@ export const MAPA_CODIGO_OFICIAL_A_AGENDA: Record<string, string> = {
   "MR-ISL-09": "mr-009",
   "MR-ISL-10": "mr-010",
   "MR-ISL-11": "mr-011",
+  "MR-ISL-12": "mr-012",
+  "MR-ISL-13": "mr-013",
+  "MR-ISL-14": "mr-014",
+  "MR-RUR-15": "mr-015",
 };
 
 export const MAPA_SHORTCODE_A_AGENDA: Record<string, string> = {
@@ -501,6 +527,10 @@ export const MAPA_SHORTCODE_A_AGENDA: Record<string, string> = {
   "MR109": "mr-009",
   "MR110": "mr-010",
   "MR111": "mr-011",
+  "MR112": "mr-012",
+  "MR113": "mr-013",
+  "MR114": "mr-014",
+  "MR115": "mr-015",
 };
 
 export const MAPA_UUID_A_AGENDA: Record<string, string> = {
@@ -537,6 +567,10 @@ export const MAPA_UUID_A_AGENDA: Record<string, string> = {
   "01a0f5fe-86e2-70f0-84de-854dae52dc89": "mr-009",
   "01a0f5fe-86e2-7c68-a9f7-4ecbfa5236b5": "mr-010",
   "01a0f5fe-86e3-7288-8425-1317a98eebd4": "mr-011",
+  "01a0f5fe-86e3-7312-9001-000000000012": "mr-012",
+  "01a0f5fe-86e3-7313-9001-000000000013": "mr-013",
+  "01a0f5fe-86e3-7314-9001-000000000014": "mr-014",
+  "01a0f5fe-86e3-7315-9001-000000000015": "mr-015",
 };
 
 export function buscarCoordenadasMesa(identificador: {

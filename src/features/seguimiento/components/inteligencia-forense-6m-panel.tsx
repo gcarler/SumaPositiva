@@ -242,7 +242,7 @@ export function InteligenciaForense6MPanel({
           </div>
           <p className="mt-1 text-sm text-muted-foreground">
             Auditoría algorítmica profunda sobre los 3 Gobiernos (2016–2026), 30 Entidades Oficiales,
-            8 Dimensiones de Seguridad Humana, 12.280 hurtos y 33 Mesas Ciudadanas.
+            8 Dimensiones de Seguridad Humana, 12.280 hurtos y 37 Mesas Ciudadanas.
           </p>
         </div>
 

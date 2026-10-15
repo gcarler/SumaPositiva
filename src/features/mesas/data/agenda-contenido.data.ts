@@ -465,57 +465,6 @@ export const CONTENIDO_MESAS: Record<string, ContenidoMesa> = {
     ],
   },
 
-  "mr-007b": {
-    proposito:
-      "Garantizar la participación con enfoque étnico diferencial de la comunidad afrodescendiente de Barú, Ararca y Santa Ana, abordando la consulta previa, la protección de playones comunales y la soberanía hídrica.",
-    ordenDelDia: [
-      "Apertura con el Consejo Comunitario de Barú bajo protocolo étnico",
-      "Contextualización de la Sentencia SU-123 de 2018 y derechos territoriales",
-      "Trabajo en papelógrafos de mesas de trabajo por áreas temáticas",
-      "Plenaria de concertación sobre turismo de bajo impacto y medio ambiente",
-      "Cierre y firma del acta con veedores comunitarios",
-    ],
-    preguntasOrientadoras: [
-      "¿Cuáles son los mayores impactos socioambientales generados por la presión turística desmedida en Playa Blanca y la ensenada?",
-      "¿Qué avances y desafíos persisten en el suministro continuo de agua dulce para las familias nativas?",
-      "¿Cómo hacer cumplir de manera estricta los protocolos de Consulta Previa frente a megaproyectos en la península?",
-      "¿Qué estrategias garantizan que los ingresos turísticos se reinviertan en la educación y salud de los habitantes de Barú?",
-    ],
-    submesasSugeridas: [
-      {
-        nombre: "Consulta previa y derechos territoriales étnicos",
-        tema: "Protección de predios ancestrales, títulos colectivos y gobernanza",
-        participantes: 14,
-      },
-      {
-        nombre: "Soberanía hídrica y saneamiento insular",
-        tema: "Acueducto por gravedad, pozos desalinizadores y recolección de basuras",
-        participantes: 12,
-      },
-      {
-        nombre: "Turismo sostenible y economía comunitaria",
-        tema: "Capacidad de carga de playas, cooperativas nativas y regulación de operadores",
-        participantes: 14,
-      },
-      {
-        nombre: "Salud, niñez y educación intercultural",
-        tema: "Puesto de salud insular, prevención de vulneraciones y bachillerato técnico",
-        participantes: 12,
-      },
-    ],
-    resultadosEsperados: [
-      "Protocolo comunitario de veeduría y aplicación de Consulta Previa (SU-123/18)",
-      "Plan de acción para la gobernanza ambiental de Playa Blanca y áreas comunales",
-      "Cronograma para la solución estructural del suministro de agua potable",
-    ],
-    marcoNormativo: [
-      "Convenio 169 de la OIT",
-      "Sentencia SU-123 de 2018 (Corte Constitucional)",
-      "Ley 70 de 1993",
-      "Decreto 1320 de 1998",
-    ],
-  },
-
   "mr-007": {
     proposito:
       "Priorizar la inversión en infraestructura básica, alcantarillado, educación secundaria técnica y protección del empleo local en el corregimiento de Santa Ana (Isla de Barú).",
@@ -770,52 +719,205 @@ export const CONTENIDO_MESAS: Record<string, ContenidoMesa> = {
 
   "mr-012": {
     proposito:
-      "Fortalecer el pliego de acuerdos para la zona corregimental de Barú con énfasis en sostenibilidad ambiental costera, ordenamiento comunal de playas y garantía de derechos étnicos afrodescendientes.",
+      "Garantizar la participación con enfoque étnico diferencial del Corregimiento de Barú (Pueblo) bajo el marco del Consejo Comunitario de Barú, la Sentencia SU-123 de 2018 y el Convenio 169 de la OIT, fortaleciendo el ordenamiento comunal de playas, la soberanía hídrica y la gobernanza ambiental costera.",
     ordenDelDia: [
-      "Verificación de asistentes e instalación de la mesa",
-      "Contextualización de la vulnerabilidad de ecosistemas de manglar y costa",
-      "Trabajo deliberativo en papelógrafo sobre las dimensiones de seguridad humana",
-      "Socialización plenaria de propuestas de desarrollo endógeno",
-      "Suscripción del pliego de conclusiones comunitarias",
+      "Instalación solemne con el Consejo Comunitario de Barú bajo protocolo étnico diferencial",
+      "Contextualización de la Sentencia SU-123 de 2018, derechos territoriales y Consulta Previa",
+      "Trabajo deliberativo en papelógrafos sobre dimensiones de seguridad humana, agua potable y turismo",
+      "Plenaria de concertación sobre ordenamiento de playas, pesca artesanal y protección del manglar",
+      "Suscripción del acta comunitaria y pliego de acuerdos con veedores",
     ],
     preguntasOrientadoras: [
-      "¿Qué acciones coordinadas frenarán el relleno no autorizado de manglares y la privatización indebida de playas públicas?",
-      "¿Cómo mejorar las condiciones de trabajo de los pescadores artesanales y operadores de lanchas nativos?",
-      "¿Qué deficiencias críticas presenta la infraestructura escolar y cómo solventarlas?",
-      "¿Cuáles son las metas para alcanzar una cobertura universal de acueducto y energía en los tres poblados de la península?",
+      "¿Cómo garantizar la aplicación estricta del protocolo de Consulta Previa (SU-123/18) frente a megaproyectos en Barú?",
+      "¿Qué acciones coordinadas frenarán el relleno no autorizado de manglares y la privatización indebida de playas comunales?",
+      "¿Qué avances y cronograma se concertarán para el suministro continuo de agua potable y saneamiento en el corregimiento?",
+      "¿Cómo fortalecer a los pescadores artesanales y cooperativas nativas de turismo frente a la presión comercial desmedida?",
     ],
     submesasSugeridas: [
       {
-        nombre: "Gobernanza ambiental y defensa del manglar",
-        tema: "Vigilancia comunitaria, reforestación de manglares y protección costera",
-        participantes: 12,
-      },
-      {
-        nombre: "Economía comunitaria y pesca responsable",
-        tema: "Dotación de equipos de navegación, formalización y turismo ético",
+        nombre: "Consulta previa y derechos territoriales étnicos",
+        tema: "Protección de predios ancestrales, títulos colectivos (SU-123/18) y gobernanza comunal",
         participantes: 14,
       },
       {
-        nombre: "Servicios esenciales y calidad de vida",
-        tema: "Conectividad de acueducto, saneamiento básico y energía limpia",
+        nombre: "Soberanía hídrica, acueducto y saneamiento insular",
+        tema: "Acueducto por gravedad, pozos desalinizadores y gestión integral de residuos",
         participantes: 12,
       },
       {
-        nombre: "Etnoeducación y cultura afro",
-        tema: "Preservación del patrimonio oral, festividades tradicionales y escuelas de música",
-        participantes: 10,
+        nombre: "Turismo sostenible, playas comunales y pesca responsable",
+        tema: "Capacidad de carga en playas, cooperativas nativas y formalización marítima",
+        participantes: 14,
+      },
+      {
+        nombre: "Educación intercultural, salud y juventud nativa",
+        tema: "Puesto de salud insular, bachillerato técnico y preservación del patrimonio afro",
+        participantes: 12,
       },
     ],
     resultadosEsperados: [
-      "Matriz de compromisos para el monitoreo de manglares y humedales de Barú",
-      "Estrategia comunitaria para la formalización del turismo náutico nativo",
-      "Plan de acción coordinado para la culminación de redes de servicios básicos",
+      "Protocolo comunitario de veeduría y aplicación de Consulta Previa conforme a la Sentencia SU-123/18",
+      "Plan de acción y gobernanza ambiental para la protección de playas comunales y manglares de Barú",
+      "Cronograma concertado para la culminación de obras de acueducto y servicios esenciales",
     ],
     marcoNormativo: [
       "Convenio 169 de la OIT",
-      "Sentencia SU-123 de 2018",
+      "Sentencia SU-123 de 2018 (Corte Constitucional)",
       "Ley 70 de 1993",
       "Decreto 1320 de 1998",
+    ],
+  },
+
+  "mr-013": {
+    proposito:
+      "Promover el desarrollo sostenible del Corregimiento de Ararca con enfoque étnico diferencial, abordando la transición socioecológica ante la presión industrial y de canteras, la restauración de manglares, el saneamiento básico y la inclusión laboral de la juventud nativa.",
+    ordenDelDia: [
+      "Apertura comunitaria con el Consejo Comunitario de Ararca y líderes corregimentales",
+      "Diagnóstico participativo sobre impactos de canteras, transporte de carga pesada y pasivos ambientales",
+      "Mesas temáticas de trabajo: manglares, caños, agua potable, alcantarillado y empleabilidad",
+      "Plenaria de concertación sobre gobernanza territorial étnica y proyectos productivos",
+      "Firma del acta de compromisos y priorización de proyectos del corregimiento",
+    ],
+    preguntasOrientadoras: [
+      "¿Cómo mitigar los impactos ambientales y de polución derivados de las canteras y tráfico pesado en las vías de Ararca?",
+      "¿Qué plan de restauración socioecológica se requiere para recuperar los manglares y caños tradicionales?",
+      "¿Qué inversiones prioritarias garantizarán la cobertura universal de agua potable y saneamiento básico en Ararca?",
+      "¿De qué manera asegurar que las empresas y desarrollos del entorno contraten preferencialmente mano de obra local nativa?",
+    ],
+    submesasSugeridas: [
+      {
+        nombre: "Transición socioambiental y mitigación de canteras",
+        tema: "Control de polución, pasivos ambientales y convivencia con la actividad de extracción",
+        participantes: 12,
+      },
+      {
+        nombre: "Restauración de manglares y soberanía hídrica",
+        tema: "Recuperación de canales de marea, reforestación de mangle y acueducto",
+        participantes: 12,
+      },
+      {
+        nombre: "Infraestructura, saneamiento y hábitat digno",
+        tema: "Alcantarillado, mejoramiento de vivienda rural y espacio público",
+        participantes: 12,
+      },
+      {
+        nombre: "Empleabilidad juvenil y proyectos productivos comunitarios",
+        tema: "Formación técnica, encadenamiento productivo y etnoturismo responsable",
+        participantes: 12,
+      },
+    ],
+    resultadosEsperados: [
+      "Mesa técnica permanente de vigilancia socioambiental frente a canteras y transporte pesado",
+      "Plan maestro de reforestación de manglares y recuperación de cuerpos hídricos comunitarios",
+      "Pacto de empleo local y formación técnica con las empresas del sector para jóvenes de Ararca",
+    ],
+    marcoNormativo: [
+      "Ley 70 de 1993",
+      "Convenio 169 de la OIT",
+      "Sentencia SU-123 de 2018",
+      "Ley 99 de 1993",
+    ],
+  },
+
+  "mr-014": {
+    proposito:
+      "Abordar integralmente las necesidades del Corregimiento de Caño del Oro en la Isla de Tierra Bomba, priorizando la defensa costera frente a la erosión marítima, la puesta en valor de la memoria histórica del Lazareto, el acceso continuo a agua potable, la salud insular y el transporte marítimo seguro.",
+    ordenDelDia: [
+      "Instalación en la IE Caño del Oro con el Consejo Comunitario y autoridades del corregimiento",
+      "Presentación de la situación de erosión costera, marejadas y vulnerabilidad climática",
+      "Mesas de deliberación comunitaria: defensa costera, salud, agua potable y patrimonio",
+      "Socialización de acuerdos sobre conectividad náutica segura y dignificación comunitaria",
+      "Firma del acta de acuerdos y conformación del comité de seguimiento comunitario",
+    ],
+    preguntasOrientadoras: [
+      "¿Cuáles son las obras prioritarias de defensa costera y diques para contener la erosión marina y marejadas en Caño del Oro?",
+      "¿Cómo dignificar y preservar la memoria histórica y patrimonio arquitectónico del antiguo Lazareto como polo cultural?",
+      "¿Qué esquema interinstitucional garantizará médicos permanentes y dotación en el puesto de salud insular?",
+      "¿Qué subsidios y mejoras operativas se implementarán para garantizar un transporte marítimo seguro y asequible?",
+    ],
+    submesasSugeridas: [
+      {
+        nombre: "Defensa costera, mitigación de riesgo y cambio climático",
+        tema: "Espolones, muros de contención marina y protocolos de alerta temprana",
+        participantes: 12,
+      },
+      {
+        nombre: "Salud pública insular y soberanía hídrica",
+        tema: "Dotación del centro de salud, lancha-ambulancia, acueducto y desalinizadores",
+        participantes: 12,
+      },
+      {
+        nombre: "Memoria histórica, patrimonio y turismo comunitario",
+        tema: "Conservación de ruinas del Lazareto, museo comunitario y rutas históricas",
+        participantes: 12,
+      },
+      {
+        nombre: "Conectividad marítima, seguridad y juventud",
+        tema: "Muelle seguro, regulación tarifaria de lanchas y espacios deportivos juveniles",
+        participantes: 12,
+      },
+    ],
+    resultadosEsperados: [
+      "Plan de obras de mitigación costera y protección contra marejadas para Caño del Oro",
+      "Protocolo operativo para el puesto de salud con servicio continuo y transporte de urgencias",
+      "Ruta patrimonial y comunitaria de memoria histórica del Lazareto de Caño del Oro",
+    ],
+    marcoNormativo: [
+      "Ley 70 de 1993",
+      "Ley 1523 de 2012 (Gestión del Riesgo de Desastres)",
+      "Convenio 169 de la OIT",
+      "Ley 397 de 1997 (Ley General de Cultura)",
+    ],
+  },
+
+  "mr-015": {
+    proposito:
+      "Garantizar la protección del territorio ancestral afrodescendiente del Corregimiento de Pontezuela frente a la rápida expansión inmobiliaria de la Zona Norte, priorizando el saneamiento básico, drenajes pluviales, seguridad vial en la Ruta 90A y el desarrollo productivo y deportivo comunitario.",
+    ordenDelDia: [
+      "Apertura en la Institución Educativa de Pontezuela con el Consejo Comunitario y la Junta de Acción Comunal",
+      "Exposición técnica sobre el ordenamiento del territorio (POT) y presión de megaproyectos urbanísticos",
+      "Talleres deliberativos en papelógrafos: saneamiento, seguridad vial, juventud y producción agrícola",
+      "Plenaria de concertación y presentación de soluciones a la administración distrital",
+      "Suscripción formal de la agenda de compromisos de Pontezuela",
+    ],
+    preguntasOrientadoras: [
+      "¿Cómo blindar el territorio ancestral y títulos colectivos de Pontezuela ante la expansión urbana no concertada?",
+      "¿Cuándo y cómo se culminará el sistema de alcantarillado y drenajes pluviales que evite inundaciones recurrentes?",
+      "¿Qué medidas de seguridad vial, reductores y pasos peatonales seguros se instalarán en el cruce de la Vía al Mar / Ruta 90A?",
+      "¿Qué programas de apoyo técnico y crediticio impulsarán la agricultura tradicional, las microempresas y el deporte juvenil?",
+    ],
+    submesasSugeridas: [
+      {
+        nombre: "Ordenamiento territorial ancestral y hábitat",
+        tema: "Protección de linderos, regularización predial y armonización con el POT",
+        participantes: 12,
+      },
+      {
+        nombre: "Saneamiento básico, alcantarillado y drenajes pluviales",
+        tema: "Redes hidrosanitarias, tratamiento de aguas y canalización de arroyos",
+        participantes: 14,
+      },
+      {
+        nombre: "Seguridad vial y conectividad comunitaria",
+        tema: "Intervenciones seguras en la Vía al Mar, señalización y transporte público",
+        participantes: 12,
+      },
+      {
+        nombre: "Seguridad alimentaria, juventud y desarrollo deportivo",
+        tema: "Huertas comunitarias, canchas múltiples y becas de educación superior",
+        participantes: 12,
+      },
+    ],
+    resultadosEsperados: [
+      "Mecanismo interinstitucional de concertación para el desarrollo urbanístico respetando la comunidad ancestral",
+      "Cronograma perentorio de finalización del alcantarillado y drenaje de aguas de escorrentía",
+      "Plan de seguridad vial para el paso urbano del corregimiento en la Vía al Mar",
+    ],
+    marcoNormativo: [
+      "Ley 70 de 1993",
+      "Ley 388 de 1997 (Desarrollo Territorial)",
+      "Convenio 169 de la OIT",
+      "Ley 1083 de 2006 (Movilidad Urbana Sostenible)",
     ],
   },
 
@@ -1779,7 +1881,7 @@ export const CONTENIDO_MESAS: Record<string, ContenidoMesa> = {
   // ── PLENARIA DE CIERRE ──────────────────────────────────────────────
   "pc-001": {
     proposito:
-      "Consolidar y validar los resultados de las 35 mesas previas de consulta ciudadana, entregando la devolución motivada exigida por la Sentencia C-150/15 y suscribiendo el Acta de Compromisos 2026-2036.",
+      "Consolidar y validar los resultados de las 37 mesas previas de consulta ciudadana, entregando la devolución motivada exigida por la Sentencia C-150/15 y suscribiendo el Acta de Compromisos 2026-2036.",
     ordenDelDia: [
       "Instalación solemne por el Alcalde Mayor de Cartagena y el Consejo Distrital de Planeación",
       "Presentación del informe general de aportes, árboles de problemas y soluciones sistematizados",

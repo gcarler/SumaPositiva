@@ -57,30 +57,35 @@ describe("Geovisor Territorial — Resolución Multiclave de Coordenadas (H-05)"
       expect(geo?.lng).toBe(-75.5506);
     });
 
-    test("resuelve correctamente las mesas de Barú (mr-007, mr-007b, mr-012)", () => {
+    test("resuelve correctamente las mesas de Barú e insulares (mr-007, mr-012, mr-013, mr-014, mr-015)", () => {
       const geo007 = buscarCoordenadasMesa({ id: "mr-007" });
-      const geo007b = buscarCoordenadasMesa({ id: "mr-007b" });
       const geo012 = buscarCoordenadasMesa({ id: "mr-012" });
+      const geo013 = buscarCoordenadasMesa({ id: "mr-013" });
+      const geo014 = buscarCoordenadasMesa({ id: "mr-014" });
+      const geo015 = buscarCoordenadasMesa({ id: "mr-015" });
 
       expect(geo007).toBeDefined();
-      expect(geo007b).toBeDefined();
       expect(geo012).toBeDefined();
+      expect(geo013).toBeDefined();
+      expect(geo014).toBeDefined();
+      expect(geo015).toBeDefined();
 
-      // Las tres apuntan al territorio de Barú
       expect(geo007?.territorioNombre).toContain("Santa Ana");
-      expect(geo007b?.territorioNombre).toContain("Barú");
       expect(geo012?.territorioNombre).toContain("Barú");
+      expect(geo013?.territorioNombre).toContain("Ararca");
+      expect(geo014?.territorioNombre).toContain("Caño del Oro");
+      expect(geo015?.territorioNombre).toContain("Pontezuela");
     });
 
-    test("mapeo cubre exactamente las 33 mesas canónicas oficiales", () => {
+    test("mapeo cubre exactamente las 37 mesas canónicas oficiales", () => {
       const codigosOficiales = Object.keys(MAPA_CODIGO_OFICIAL_A_AGENDA);
-      expect(codigosOficiales.length).toBe(33);
+      expect(codigosOficiales.length).toBe(37);
 
       const shortcodes = Object.keys(MAPA_SHORTCODE_A_AGENDA);
-      expect(shortcodes.length).toBe(33);
+      expect(shortcodes.length).toBe(37);
 
       const uuids = Object.keys(MAPA_UUID_A_AGENDA);
-      expect(uuids.length).toBe(33);
+      expect(uuids.length).toBe(37);
     });
   });
 

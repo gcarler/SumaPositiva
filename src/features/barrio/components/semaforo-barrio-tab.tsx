@@ -86,7 +86,7 @@ export function SemaforoBarrioTab({ barrio }: SemaforoBarrioTabProps) {
       nombre: "Mesas de Diálogo y Acuerdos Ciudadanos",
       categoria: "Gobernanza y Participación",
       nivel: "verde",
-      valorActual: "33 mesas / 36 agendas",
+      valorActual: "37 mesas / 38 agendas",
       metaCuatrienio: "100% cobertura distrital",
       fuente: "Alcaldía Mayor de Cartagena de Indias",
       estadoTexto: "Meta Cumplida",

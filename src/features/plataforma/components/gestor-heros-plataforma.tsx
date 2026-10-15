@@ -61,7 +61,7 @@ const ESPACIOS_PUBLICOS: EspacioPublico[] = [
     key: "mesas",
     nombre: "Mesas de Diálogo",
     ruta: "/mesas",
-    descripcion: "Cabecera territorial de concertación cívica para las 33 mesas distritales.",
+    descripcion: "Cabecera territorial de concertación cívica para las 37 mesas distritales.",
     configDefecto: HERO_PAGES_CONFIG.mesas,
   },
   {

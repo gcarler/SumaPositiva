@@ -4,7 +4,7 @@ export const NOTICIAS_MOCK: Noticia[] = [
   {
     id: "noticia-1",
     slug: "cartagena-inicia-seguridad-humana-33-mesas",
-    titulo: "Cartagena inicia su proceso de Seguridad Humana Integral con 33 mesas de trabajo",
+    titulo: "Cartagena inicia su proceso de Seguridad Humana Integral con 37 mesas de trabajo",
     resumen:
       "La Alcaldía Mayor de Cartagena, en coordinación con las comunidades y la academia, despliega la agenda territorial para construir la política pública 2026–2036.",
     imagenPortada:
@@ -26,7 +26,7 @@ export const NOTICIAS_MOCK: Noticia[] = [
 
 El Distrito Turístico y Cultural de Cartagena de Indias dio inicio formal al ciclo de deliberación participativa para la formulación de la **Política Pública de Seguridad Humana Integral 2026–2036**. 
 
-A través de un despliegue sin precedentes en las tres localidades urbanas y la zona rural-insular, se llevarán a cabo **33 mesas de trabajo sectoriales, territoriales y poblacionales**, garantizando la vinculación directa de líderes comunitarios, gremios, academia, jóvenes y organizaciones sociales.
+A través de un despliegue sin precedentes en las tres localidades urbanas y la zona rural-insular, se llevarán a cabo **37 mesas de trabajo sectoriales, territoriales y poblacionales**, garantizando la vinculación directa de líderes comunitarios, gremios, academia, jóvenes y organizaciones sociales.
 
 ### Principales ejes del proceso
 

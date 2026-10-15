@@ -1433,12 +1433,12 @@ export function PddDeaEvaluacionPanel({ puedeEditar: _puedeEditar = false }: Pdd
 
             {/* Cruce con Mesas Territoriales, PAS y Registros de Delincuencia */}
             <div className="space-y-4">
-              {/* 33 Mesas Territoriales */}
+              {/* 37 Mesas Territoriales */}
               <div className="rounded-xl border border-border bg-surface-1 p-4 shadow-sm space-y-2">
                 <div className="flex items-center justify-between">
                   <h4 className="font-bold text-sm text-text-primary flex items-center gap-2">
                     <Building2 className="h-4 w-4 text-ember" />
-                    <span>33 Mesas Territoriales de Seguridad Ciudadana</span>
+                    <span>37 Mesas Territoriales de Seguridad Ciudadana</span>
                   </h4>
                   <Badge variant="outline" className="border-info/40 text-info text-xs">
                     3 Localidades
@@ -2240,7 +2240,7 @@ export function PddDeaEvaluacionPanel({ puedeEditar: _puedeEditar = false }: Pdd
               <strong> Ilusión Burocrática</strong> (brecha &theta;₁ - &theta;₂ &gt; 0.20);
               2) <strong>Simulador Inverse DEA / Frontera de Pareto</strong> (&plusmn;5%, &plusmn;10%, &plusmn;15%) bajo suma cero (&Sigma; &Delta;X = 0) con ledger de restricciones normativas (Ley 617, vigencias futuras y SGP);
               3) <strong>Auditoría Forense de Metas</strong> en los 8 planes (5 PDD + 3 PDL) bajo 6 estados de cobertura y taxonomía DNP MGA;
-              4) <strong>Justicia Territorial DANE 2025</strong> (1.065.570 hab., 3 PDL, 33 mesas ciudadanas, 12.280 hurtos y compuerta Moran N &lt; 30);
+              4) <strong>Justicia Territorial DANE 2025</strong> (1.065.570 hab., 3 PDL, 37 mesas ciudadanas, 12.280 hurtos y compuerta Moran N &lt; 30);
               y 5) <strong>Pliegos Cuestionarios Fiscales</strong> para control político en Concejo Distrital con exportación certificada.
             </p>
           </div>

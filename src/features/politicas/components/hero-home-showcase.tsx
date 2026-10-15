@@ -32,7 +32,7 @@ export interface HeroHomeShowcaseProps {
 }
 
 const DEFAULT_STATS = [
-  { valor: "33", label: "Mesas de diálogo territorial" },
+  { valor: "37", label: "Mesas de diálogo territorial" },
   { valor: "7", label: "Dimensiones de seguridad humana" },
   { valor: "2026–2036", label: "Vigencia de la política" },
   { valor: "3 + Insular", label: "Localidades cubiertas" },
