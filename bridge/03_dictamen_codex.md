@@ -52,3 +52,29 @@
 3. **Inviolabilidad de `bd_csh` y suites de pruebas:**
    - Conteos canónicos intactos: `33` mesas, `36` agendas, `11` fichas, `17` actores, `10` compromisos PAS, `12` actividades PA, `12.280` hurtos.
    - `pytest`: `20 passed` en `backend/tests/test_ingesta_masiva_triada.py` y `579 passed` en `backend/tests`. `bun test`: `628 passed` (`0 fail`).
+
+
+---
+
+# DICTAMEN EAF — `[TRIADA-BACKEND-INTELIGENCIA-6M-06]`
+
+- **Fecha:** 2026-10-15
+- **Auditor:** `agy` (Auditor Forense EAF)
+- **Auditado:** `codex` (`=codex:0.0`)
+- **Commit auditado:** `d361b5af8c3f53b4a9718fcb3417b2f9b437950b` (`feat(triada): add six forensic intelligence engines`)
+- **Calificación:** **100 / 100 — APROBADO SIN OBSERVACIONES**
+
+## Verificación independiente en `bd_csh` y `polis-backend.service`
+
+1. **6 Motores Analíticos y 7 Endpoints REST (`/api/v1/compromisos/triada/inteligencia/*`):**
+   - `patologias-dnp`, `continuidad-gobiernos`, `radar-transparencia`, `alineacion-territorial`, `buscador`, `simulador-cierre` y `resumen-ejecutivo` respondiendo HTTP 200 en **`0,002–0,192 s`** (`2 ms a 192 ms`) con precarga automática en `lifespan`.
+2. **Hallazgos reales verificados sobre los `217.740` registros en `bd_csh`:**
+   - **M1 (Patologías DNP):** `62.807` actividades evaluadas (`19.800` verbo fuerte vs. `27.005` verbo débil, `42,30%` formulación fuerte), `15` alertas de espejismo, `3.201` de sobreejecución financiera y `14.370` cuellos de botella contractuales.
+   - **M2 (Continuidad 3 Gobiernos):** `1.501` códigos BPIM válidos (`400` con continuidad en `>= 2` periodos = `26,65%` vs. `1.101` huérfanos de un solo periodo).
+   - **M3 (Radar de Transparencia):** `5` archivos con corte clonado (`CONTENIDO_IDENTICO_OTRO_CORTE`), `1` clon tabular fusionado (`DADIS 2021`), `5.512` metas/actividades congeladas (*zombies*) y Matriz `30 × 11` (`2016–2026`).
+   - **M4 (Alineación Territorial):** `21.018` registros territorializados (`$2,86` billones COP) cruzados contra `12.280` filas de hurtos (`18.242` eventos) y `33` Mesas Ciudadanas en las 3 Localidades.
+   - **M5 (Buscador Semántico y Duplicidad):** `8.758` coincidencias para `"seguridad"` y `244` alertas de duplicidad interinstitucional.
+   - **M6 (Simulador Cierre 2027):** Proyección sobre las `29` entidades activas en `2024–2027` y las `8` Dimensiones de Seguridad Humana.
+3. **Inviolabilidad de `bd_csh` y Pruebas:**
+   - Conteos canónicos intactos: `217.740` registros, `616` archivos, `33` mesas, `36` agendas, `11` fichas, `17` actores, `10` compromisos PAS, `12` actividades PA, `12.280` hurtos.
+   - `pytest`: `22 passed` en `test_inteligencia_triada.py` + `test_ingesta_masiva_triada.py`. `ruff`: `0` errores.

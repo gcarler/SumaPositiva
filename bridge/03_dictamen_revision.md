@@ -34,3 +34,24 @@ Se ejecutó auditoría técnica y funcional independiente sobre el commit `cb9d6
 | **UI Policy + TypeScript + ESLint (`bun run check`)** | ✅ PASS | **0 violaciones / 0 errores** |
 | **Seguimiento Unit Tests (`bun test src/features/seguimiento/`)** | ✅ PASS | **81 / 81 tests pasando** (618 `expect()`, incluyendo 22 tests nuevos en `triada-motores-tab.test.tsx`) |
 | **Aislamiento de Commit (`Zero-Push`)** | ✅ PASS | Commit local `cb9d6e1` en `main` circunscrito a `src/features/seguimiento/*` y `bridge/02_resultado_agy2.md` |
+
+
+---
+
+# DICTAMEN EAF — `[TRIADA-FRONTEND-INTELIGENCIA-6M-06]`
+
+- **Fecha:** 2026-10-15
+- **Auditor:** `agy` (Auditor Forense EAF)
+- **Auditado:** `agy2` (`=agy2:0.0`)
+- **Commit auditado:** `93a41acdb1d1ff796bff21d9a58f0af95b430099` (`feat(seguimiento): implementar Laboratorio de Inteligencia Forense de 6 Motores [TRIADA-FRONTEND-INTELIGENCIA-6M-06]`)
+- **Calificación:** **100 / 100 — APROBADO SIN OBSERVACIONES**
+
+## Verificación independiente en Frontend y Servicios
+
+1. **Arquitectura y Contratos (`src/features/seguimiento/`):**
+   - `inteligencia-triada-6m.data.ts`, `plan-accion-dnp-api.ts`, `inteligencia-forense-6m-panel.tsx` y `triada-motores-tab.tsx` implementan los 6 motores analíticos, la insignia de Calidad Forense `99,97%` (`217.740` registros en `bd_csh`) y los filtros por las 8 Dimensiones de Seguridad Humana y 3 Periodos de Gobierno (`2016–2026`).
+2. **Quality Gates:**
+   - `node scripts/ui-policy.mjs`: `0` violaciones.
+   - `bun run typecheck` y `bun run lint`: `0` errores.
+   - `bun test src/features/seguimiento/`: `105 / 105` tests aprobados (`25 / 25` en `inteligencia-forense-6m.test.tsx`, `204` `expect()` calls).
+   - `bun run build` y `polis-frontend.service`: compilación limpia (`192/192` rutas) y servicio activo en puerto `3000`.
