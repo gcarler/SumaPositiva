@@ -1,49 +1,85 @@
-# ORDEN DE EJECUCIÓN FRONTEND (`agy2`) — `[TRIADA-FRONTEND-DEA-ECONOMETRIA-07B]`
+# ORDEN DE TAREA FRONTEND: `[TRIADA-FRONTEND-DEA-PDD-08]`
+## LABORATORIO DE EVALUACIÓN DE CUMPLIMIENTO DE METAS, CONCILIACIÓN DEL PLAN PLURIANUAL DE INVERSIONES (PPI) Y DEA / ECONOMETRÍA DE LOS PLANES DE DESARROLLO DE CARTAGENA (2012–2027)
 
+- **Para:** Desarrollador Principal Frontend (`agy2`)
+- **De:** Coordinador General y Auditor Forense EAF (`agy`)
 - **Fecha:** 2026-10-15
-- **Coordinador / Auditor Forense EAF:** `agy` (`=agy:0.0`)
-- **Ejecutor Frontend y Visualización Econométrica:** `agy2` (`=agy2:0.0`)
-- **Plan Maestro definitivo:** `bridge/00_plan_maestro_dea_econometria_07.md` *(con las 8 correcciones metodológicas de la revisión crítica)*
-- **Rama:** `main` (commit local exclusivo de tus archivos en `src/features/seguimiento/` y `bridge/02_resultado_agy2.md`; **PROHIBIDO `git push`** y **NO tocar `backend/` ni `bridge/01_tarea_codex.md` ni `bridge/02_entrega_codex.md` porque `codex` trabaja en paralelo en el backend**).
+- **Referencia:** `bridge/00_plan_maestro_dea_planes_desarrollo_08.md`
+- **Rama:** `main` (**Política Zero-Push Estricta**: solo commit local, prohibido `git push`)
 
 ---
 
-## 1. Objetivo
+## 1. Objetivo de la Tarea
 
-Construir e integrar en el Frontend de POLIS (`/plataforma/seguimiento`) el **Laboratorio de Econometría y Frontera Eficiente DEA (`DeaEconometriaPanel`)** conectado a los 5 nuevos endpoints del backend (`/api/v1/compromisos/triada/dea/...`) y respaldado por un dataset semilla auditado en `src/features/seguimiento/data/dea-econometria-cartagena.data.ts` que refleje rigurosamente las 8 correcciones metodológicas sobre `bd_csh`.
-
----
-
-## 2. Archivos de tu Dominio Exclusivo
-
-1. `src/features/seguimiento/data/dea-econometria-cartagena.data.ts` *(nuevo — tipos TypeScript y datos semilla auditados de las Fases 0, 1, 2 y 3 con las 8 correcciones: IPC DANE oficial con `2025 = 5,10%` Base 2025, cascada de des-propagación de `$293,8B` brutos a `$2,4B–$6,3B` anuales, auditoría de las `373` hojas mixtas y cuarentena de `ESCALA_AMBIGUA`, modelo núcleo $m=1, s=2$ que cumple Cooper $n \ge 9$, exclusión explícita de los `6` pares `no_estimable_sin_insumo_financiero`, puntajes `CCR`, `BCC`, `SBM de Tone`, `Supereficiencia`, `Bootstrap B=1.000 IC 95%`, `Peers`, `Slacks/Targets`, `Malmquist 2020–2025`, `Segunda Etapa sin endogeneidad presupuestal`, `Spearman/Pearson con FDR Benjamini-Hochberg`, `Gini/HHI` y `Prueba Pareada de Wilcoxon`)*
-2. `src/features/seguimiento/services/plan-accion-dnp-api.ts` *(ampliar con los clientes tipados para los 5 endpoints `/api/v1/compromisos/triada/dea/auditoria-saneamiento`, `/frontera-eficiencia`, `/malmquist`, `/econometria-segunda-etapa` y `/resumen-integral`, con fallback local resiliente)*
-3. `src/features/seguimiento/components/dea-econometria-panel.tsx` *(nuevo — componente interactivo con las 4 sub-vistas del DEA y la Econometría)*
-4. `src/features/seguimiento/components/triada-motores-tab.tsx` *(integrar la Sub-vista 5: `5. Frontera Eficiente DEA & Econometría (CCR · BCC · SBM · Malmquist)` con `data-testid="tab-nav-dea-econometria"`)*
-5. `src/features/seguimiento/__tests__/dea-econometria-panel.test.tsx` *(nuevo — suite de pruebas unitarias e integración SSR con `bun test`)*
-6. `bridge/02_resultado_agy2.md` *(reporte de entrega)*
+Construir e integrar en `/plataforma/seguimiento` la **Sub-vista 6 (`tab-nav-pdd-dea`): «6. Evaluación & DEA Planes de Desarrollo (2012–2027 · Acuerdo 139)»** mediante el componente `src/features/seguimiento/components/pdd-dea-evaluacion-panel.tsx`, respaldado por el dataset semilla auditado `src/features/seguimiento/data/pdd-dea-cartagena.data.ts` y los 5 clientes tipados en `src/features/seguimiento/services/plan-accion-dnp-api.ts` conectados a `/api/v1/compromisos/triada/pdd-dea/*`.
 
 ---
 
-## 3. Las 4 Sub-vistas Interactivas de `DeaEconometriaPanel`
+## 2. Estructura de los 4 Sub-paneles Interactivos de `PddDeaEvaluacionPanel`
 
-1. **Sub-vista 1 (`auditoria-saneamiento`): Cascada Forense de Saneamiento Econométrico (Fase 0)**
-   - Muestra el embudo de reconciliación financiera paso a paso: Suma bruta (`$293,8B`) $\rightarrow$ Deduplicación inter-motor (`58.719` filas repetidas en varios motores) $\rightarrow$ Consolidación por ítem/corte preservando los `252` BPIM complementarios y las `15.614` filas interinstitucionales $\rightarrow$ Des-propagación de los `1.004` grupos repetidos y poda de sumatorios $\rightarrow$ Deflactación con **IPC Oficial DANE Base Cerrada 2025 (`2025 = 5,10%`)**.
-   - Muestra la auditoría de escalas porcentuales (`1.466` combinaciones hoja-motor, `373` mixtas reconciliadas por cociente `ejecutado/programado`, cuarentena de `ESCALA_AMBIGUA` y las `18` filas `> 100`).
-2. **Sub-vista 2 (`frontera-eficiencia`): Frontera de Eficiencia DEA (`CCR · BCC · SBM · Bootstrap IC 95%`)**
-   - Selector de vigencia (`2020..2025` + `2026_PARCIAL`), especificación (`Núcleo m=1, s=2 [Cooper n≥9]` vs. `Extendida m=2, s=3 [Cooper n≥15]`) e insumo (`Apropiación Constante 2025` vs. `Pagos Ejecutados`).
-   - Tabla y visualización de las DMUs elegibles mostrando: $\theta_{\text{CCR}}$, $\theta_{\text{BCC}}$, Eficiencia de Escala (`CRS / IRS / DRS`), $\theta_{\text{SBM}}$, Supereficiencia Andersen-Petersen, Puntaje Bootstrap Corregido por Sesgo ($B=1.000$) con **Intervalo de Confianza al 95% (`[ic95_inf, ic95_sup]`)**, **Pares de Referencia (`Peers` $\lambda_j^*$)**, **Holguras y Metas Objetivo en la Frontera (`Slacks & Targets`)**, y sección transparente de **Entidades Excluidas / `no_estimable`** con su motivo exacto (como los `6` pares sin insumo financiero positivo o `Alcaldías Locales` en corte aislado $n=3 < 9$).
-3. **Sub-vista 3 (`malmquist`): Productividad Dinámica de Malmquist (`2020–2025`)**
-   - Descomposición $\text{MPI} = \text{EFFCH (Catch-up)} \times \text{TECHCH (Desplazamiento de Frontera)}$ por entidad y transición anual, distinguiendo qué secretarías mejoraron gestión interna ($\text{EFFCH} > 1$) y dónde se desplazó la frontera ($\text{TECHCH} > 1$).
-4. **Sub-vista 4 (`econometria-segunda-etapa`): Segunda Etapa Econométrica, Correlaciones FDR, Gini/HHI y Wilcoxon Pareado**
-   - Resultados del modelo de segunda etapa sobre covariables exógenas (`% Verbo Débil DNP`, `Continuidad BPIM`, `Transparencia Documental`, `Grupo Institucional` — sin endogeneidad presupuestal).
-   - Matriz de correlaciones de **Spearman ($\rho$) y Pearson ($r$)** con $n$, $p\text{-value}$ y **$q\text{-value}$ ajustado por Benjamini-Hochberg (FDR)**.
-   - Evolución de la desigualdad y concentración presupuestal (**Gini** y **HHI** en Pesos Constantes 2025) y **Prueba Pareada de Wilcoxon** entre los periodos `2020–2023` y `2024–2025`.
+### Sub-vista 1 (`catalogo_y_ppi`): Catálogo Histórico (`2012–2027`) y Conciliación Oficial del Plan Plurianual de Inversiones (PPI)
+1. **Tarjetas de los 5 Planes de Desarrollo Distritales + 3 Planes Locales:**
+   - **PDD 2024–2027: «Cartagena, Ciudad de Derechos»** (*Acuerdo Distrital 139 del 29 de mayo de 2024*): `71.990` filas en `bd_csh`, `29` entidades, `3.170` metas PDD únicas, `1.753` indicadores, **Plan Plurianual de Inversiones (PPI) Oficial = `$12,801 Billones` COP** (`2024: $3,271B`, `2025: $2,954B`, `2026: $3,194B`, `2027: $3,382B`).
+   - **PDD 2020–2023: «Salvemos Juntos a Cartagena»** (*P.A. 016 / Acuerdo de mayo de 2020*): `24.421` filas en `bd_csh`, `27` entidades, `1.832` metas PDD únicas, `1.137` indicadores, **PPI Oficial = `$6,023 Billones` COP** (4 Pilares: *Resiliente, Incluyente, Contingente, Transparente* + Eje Transversal, `33` Líneas Estratégicas y `172` Programas).
+   - **PDD 2016–2019: «Primero la Gente para una Cartagena Sostenible y Competitiva»** (*Acuerdo 006 del 13 de junio de 2016*): `3.013` filas en `bd_csh`, `23` entidades, `806` metas PDD únicas, `1.184` indicadores.
+   - **PDD 2013–2015: «Ahora Sí Cartagena»** (*Acuerdo 016 del 26 de dic. de 2013*, `199` págs.) y **PDD 2012–2015: «Campo para Todos»** (*Acuerdo 001/012 de 2012*, `161` págs.).
+   - **3 Planes de Desarrollo Local 2024–2027:** *Localidad 1 Histórica y del Caribe Norte*, *Localidad 2 De la Virgen y Turística* y *Localidad 3 Industrial y de la Bahía*.
+2. **Tabla Oficial del Plan Plurianual de Inversiones (PPI) y Conciliación con `bd_csh`:**
+   - Desglose anual `2020–2027` en pesos corrientes y en **Pesos Constantes Base Cerrada 2025 (IPC DANE `2012–2025`)**.
+   - Comparación por Línea Estratégica (`Seguridad Humana`, `Vida Digna`, `Desarrollo Económico Equitativo`, `Ciudad Conectada y Sostenible`, `Innovación Pública y Participación Ciudadana`, `Capítulo Étnico`) y separación entre recursos ordinarios (`$12,57B` en 2024–2027) y Regalías SGR (`$227,8 mil M`).
+   - Tabla de **Conciliación PPI vs. Matrices Excel (`bd_csh`)** que muestra el factor de calibración por sobrerreporte de filas repetidas.
+
+### Sub-vista 2 (`cumplimiento_metas`): Semáforo de Metas PDD, Línea Estratégica 1 («Seguridad Humana») y 19 Macroproyectos
+1. **Selector de Plan de Desarrollo (`PDD_2024_2027`, `PDD_2020_2023`, `PDD_2016_2019`, `TODOS`) y Filtro de Línea Estratégica / Entidad:**
+   - Indicadores de cabecera: Metas únicas formuladas, Metas con seguimiento activo, **Metas Huérfanas (sin avance reportado)**, Avance Físico Promedio (`%`), Metas Cumplidas o en Ruta (`>= 75%`), Alerta Media (`40%–74,9%`) y Rezago Crítico (`< 40%`).
+2. **Foco Especial en Línea Estratégica 1: «Seguridad Humana» (Acuerdo 139 de 2024):**
+   - Evaluación detallada de sus **5 Componentes Impulsores de Avance**:
+     1. *4.1 Seguridad Ciudadana y Orden Público*
+     2. *4.2 Construcción de Paz, Derechos Humanos y Convivencia*
+     3. *4.3 Salud Pública y Aseguramiento*
+     4. *4.4 Atención Integral a Grupos de Especial Protección*
+     5. *4.5 Superación de la Pobreza Extrema y Soberanía Alimentaria*
+3. **Seguimiento a los 19 Macroproyectos Estratégicos (`2024–2027`) y 3 Planes de Desarrollo Local:**
+   - Estado de *Malecón del Mar*, *Plan Maestro de Drenajes Pluviales*, *Parque Distrital Ciénaga de la Virgen*, *Terminación Vía Perimetral*, *Distrito Creativo*, *Nueva Cárcel Distrital*, *Puente Angola*, etc., y avance de las 3 Localidades.
+
+### Sub-vista 3 (`frontera_dea_pdd`): Frontera Eficiente DEA de los Planes de Desarrollo (`CCR · BCC · SBM · Slacks & Targets`)
+1. **Selectores Dinámicos:**
+   - Plan evaluado (`PDD 2024–2027 Ciudad de Derechos`, `PDD 2020–2023 Salvemos Juntos`, `PDD 2016–2019 Primero la Gente`).
+   - Insumo $X_1$: **`PPI Conciliado (Acuerdo Distrital)`** vs. **`Presupuesto Reportado en Matrices`**.
+2. **Dos Tablas DEA Interactivas:**
+   - **A. Frontera DEA por Entidad Responsable del Plan de Desarrollo ($n = 23\text{–}29$ DMUs, Regla de Cooper cumplida):**
+     - Muestra Insumo $X_1^{\text{PPI}}$ (MCOP constantes 2025), Output $Y_1$ (Metas PDD Equivalentes Cumplidas), Output $Y_2$ (Indicadores PDD en Meta Eficaz $\ge 75\%$), $\theta_{\text{CCR}}$, $\theta_{\text{BCC}}$, $SE$, Retornos (`CRS/IRS/DRS`), $\theta_{\text{SBM}}$, Puntaje Bootstrap con IC 95% y Pares de Referencia ($\lambda_j^*$).
+     - Botón para abrir el **Modal de Holguras y Metas Objetivo PDD (`Slacks & Targets`)**, prescribiendo cuántas metas PDD adicionales ($s_1^+$) e indicadores eficaces ($s_2^+$) debe cumplir cada entidad para llegar a la frontera.
+   - **B. Frontera DEA Programática por Línea Estratégica / Pilar del PDD:**
+     - Evalúa qué Líneas Estratégicas convierten con mayor eficiencia su tajada del Plan Plurianual de Inversiones en metas cumplidas.
+
+### Sub-vista 4 (`econometria_comparada_pdd`): Malmquist Inter-Planes (`2016–2027`), Correlaciones FDR, Gini/HHI y Cambio Estructural
+1. **Índice Dinámico de Malmquist Entre Planes de Desarrollo (`2016–2019` $\rightarrow$ `2020–2023` $\rightarrow$ `2024–2027`):**
+   - Descomposición con media geométrica $\text{MPI} = \text{EFFCH (Catch-up)} \times \text{TECHCH (Desplazamiento)}$ entre gobiernos sucesivos.
+2. **Matriz de Correlaciones con Control FDR Benjamini–Hochberg ($q\text{-value}$):**
+   - Spearman ($\rho$) y Pearson ($r$) entre asignación PPI ($X_1$), metas PDD cumplidas ($Y_1$), indicadores eficaces ($Y_2$), articulación con Plan de Acción anual y eficiencia DEA del PDD.
+3. **Desigualdad Presupuestal del PPI (Gini y HHI por Línea Estratégica y Dimensión SHI) y Prueba Pareada de Wilcoxon / Friedman entre Gobiernos.**
 
 ---
 
-## 4. Validación y Cierre
+## 3. Archivos Permitidos para `agy2` (Cero Colisiones con `codex`)
 
-1. Ejecutar `node scripts/ui-policy.mjs`, `bun run typecheck`, `bun run lint` y `bun test src/features/seguimiento/` (`0` errores).
-2. Ejecutar `bun run build` y reiniciar `polis-frontend.service`.
-3. Documentar en `bridge/02_resultado_agy2.md` y hacer **commit local en `main`** incluyendo **únicamente tus archivos en `src/features/seguimiento/` y `bridge/02_resultado_agy2.md`**. **PROHIBIDO `git push`** y prohibido incluir archivos de `backend/`.
+1. `src/features/seguimiento/data/pdd-dea-cartagena.data.ts` *(nuevo)*
+2. `src/features/seguimiento/services/plan-accion-dnp-api.ts` *(modificado — añade tipos y los 5 clientes `/api/v1/compromisos/triada/pdd-dea/*` + getters locales)*
+3. `src/features/seguimiento/components/pdd-dea-evaluacion-panel.tsx` *(nuevo)*
+4. `src/features/seguimiento/components/triada-motores-tab.tsx` *(modificado — añade botón `tab-nav-pdd-dea` para la Sub-vista 6 y renderiza `<PddDeaEvaluacionPanel />`)*
+5. `src/features/seguimiento/__tests__/pdd-dea-evaluacion-panel.test.tsx` *(nuevo — mínimo 18 tests verificando los 4 bloques, cotas DEA, PPI oficial, Línea Seguridad Humana, Malmquist inter-planes, FDR y renderizado SSR)*
+6. `bridge/02_resultado_agy2.md` *(actualizado)*
+
+*(Prohibido tocar `backend/`, `docs/permisos-api.md`, `bridge/01_tarea_codex.md` o `bridge/02_entrega_codex.md`).*
+
+---
+
+## 4. Quality Gates Obligatorios
+
+1. `node scripts/ui-policy.mjs` (`0` incumplimientos; modales con `bg-overlay`, componentes `@/shared/ui/*`, sin tags nativos prohibidos).
+2. `bun run typecheck` (`tsc --noEmit` con `0` errores).
+3. `bun run lint` (`eslint` con `0` errores).
+4. `bun test src/features/seguimiento/__tests__/pdd-dea-evaluacion-panel.test.tsx` y `bun test src/features/seguimiento/` (`100%` pass).
+5. `bun run build` y reinicio de `polis-frontend.service`.
+6. **Commit local en `main`** (sin `git push`) y reporte en `bridge/02_resultado_agy2.md`.
