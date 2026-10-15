@@ -443,3 +443,19 @@ La respuesta de la segunda etapa en frío y las cinco rutas por debajo de cinco 
 | `git diff --check` | Aprobado. |
 
 El commit local incluye solo `backend/app/modules/compromisos/dea_econometria_service.py`, `backend/tests/test_dea_econometria_triada.py`, `backend/uv.lock`, `docs/permisos-api.md` y este reporte. No se ejecutó `git push`.
+
+# Optimización de verosimilitud y caché DEA — seguimiento 07C
+
+**Fecha:** 2026-10-15. Se reemplazó la evaluación `norm.logpdf`/`norm.logcdf` en `_regression_truncated` por la expresión cerrada con `scipy.special.log_ndtr`, configurando L-BFGS-B con `ftol=1e-6`, `maxiter=60` y 200 réplicas cluster bootstrap. Se añadieron resultados con TTL de una hora a `_RESULT` para `econometria_segunda_etapa`, `auditoria_saneamiento` y `malmquist`; `resumen_integral` reutiliza esos resultados.
+
+## Evidencia en vivo posterior al reinicio
+
+| Ruta | Primer resultado observado | Repetición con caché |
+| --- | --- | --- |
+| `/api/v1/compromisos/triada/dea/econometria-segunda-etapa` | HTTP 200, **21,73 s** en frío, incluyendo la carga de 2020–2025. | HTTP 200, **0,021 s**. |
+| `/api/v1/compromisos/triada/dea/resumen-integral` | HTTP 200, **4,50 s** después de poblar la caché de la segunda etapa. | HTTP 200, **0,053 s**. |
+| `/api/v1/health/ready` | HTTP 200, base, migraciones y extensiones listas. | — |
+
+El ajuste regresó el panel observado con **129 DMU-años**, **26 clusters** y **112 observaciones completas**. Se obtuvieron 199 réplicas válidas de las 200 solicitadas. La especificación reportó pseudo-R² **0,02342**, Wald **2,2990** y p-value conjunto **0,68094**; los cinco coeficientes y sus intervalos se incluyen en la respuesta de la API. El primer acceso sigue pagando la carga histórica fría; el resultado repetido queda prácticamente instantáneo mientras el proceso conserve la caché.
+
+La verificación de calidad de código fue `ruff format`, `ruff check` y `PYTHONPATH=backend /root/polis/venv/bin/pytest -q backend/tests/test_dea_econometria_triada.py`: **10 pruebas aprobadas**. Servicio reiniciado; commit local asociado, sin push.

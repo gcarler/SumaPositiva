@@ -15,6 +15,7 @@ from typing import Any
 
 import numpy as np
 from scipy.optimize import linprog, minimize
+from scipy.special import log_ndtr
 from scipy.stats import chi2, norm, pearsonr, spearmanr, wilcoxon
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -38,6 +39,19 @@ _PREP: dict[tuple[str, int], tuple[float, dict[str, Any]]] = {}
 _RESULT: dict[tuple[Any, ...], tuple[float, dict[str, Any]]] = {}
 _LOCKS: dict[tuple[str, int], asyncio.Lock] = {}
 _FRONTIER_TASKS: dict[tuple[Any, ...], asyncio.Task] = {}
+
+
+def _get_result(key: tuple[Any, ...]) -> dict[str, Any] | None:
+    cached = _RESULT.get(key)
+    if cached and time.monotonic() - cached[0] < TTL:
+        return cached[1]
+    return None
+
+
+def _set_result(key: tuple[Any, ...], value: dict[str, Any]) -> dict[str, Any]:
+    _RESULT[key] = (time.monotonic(), value)
+    return value
+
 
 _SQL = text("""
 SELECT r.id, r.archivo_id, r.entidad_normalizada entidad, r.vigencia anio,
@@ -611,7 +625,7 @@ def _frontier_contract(result: dict[str, Any], data: dict[str, Any]) -> dict[str
     return result
 
 
-def _regression_truncated(panel: list[dict[str, Any]], replicas: int = 1000) -> dict[str, Any]:
+def _regression_truncated(panel: list[dict[str, Any]], replicas: int = 200) -> dict[str, Any]:
     """Normal truncada en cero; bootstrap por entidad, solo con muestra defendible."""
     usable = [
         r
@@ -659,12 +673,21 @@ def _regression_truncated(panel: list[dict[str, Any]], replicas: int = 1000) -> 
         def objective(v):
             mu = z @ v[:-1]
             sigma = np.exp(v[-1])
-            value = norm.logpdf((y - mu) / sigma) - v[-1] - norm.logcdf(mu / sigma)
+            value = (
+                -0.5 * ((y - mu) / sigma) ** 2
+                - 0.5 * math.log(2 * math.pi)
+                - v[-1]
+                - log_ndtr(mu / sigma)
+            )
             return -float(np.sum(value)) if np.all(np.isfinite(value)) else 1e100
 
         start = np.r_[np.linalg.lstsq(z, y, rcond=None)[0], np.log(max(np.std(y), 0.01))]
         result = minimize(
-            objective, start, method="L-BFGS-B", bounds=[(None, None)] * z.shape[1] + [(-10, 5)]
+            objective,
+            start,
+            method="L-BFGS-B",
+            bounds=[(None, None)] * z.shape[1] + [(-10, 5)],
+            options={"ftol": 1e-6, "maxiter": 60},
         )
         return result.x[:-1] if result.success and np.all(np.isfinite(result.x)) else None
 
@@ -781,6 +804,10 @@ class DeaEconometriaService:
             return data
 
     async def auditoria_saneamiento(self) -> dict[str, Any]:
+        result_key = (self.bind_key, "auditoria_saneamiento")
+        cached = _get_result(result_key)
+        if cached is not None:
+            return cached
         years = [await self._year(y) for y in range(2020, 2027)]
         audits = [x["auditoria"] for x in years]
         total = (
@@ -820,7 +847,7 @@ class DeaEconometriaService:
                 "estado": "CORTE_PARCIAL_PROVISIONAL",
             }
         )
-        return {
+        response = {
             "estado": "CALCULADO",
             "base_ipc": 2025,
             "fuente_ipc": "DANE IPC variacion anual, cierre diciembre 2025 = 5,10%",
@@ -884,6 +911,7 @@ class DeaEconometriaService:
                 "solo se reescalan unidades explicitas",
             ],
         }
+        return _set_result(result_key, response)
 
     async def frontera_eficiencia(
         self, vigencia: int = 2025, modo: str = "nucleo_1x2", insumo: str = "apropiacion"
@@ -1123,6 +1151,10 @@ class DeaEconometriaService:
     async def malmquist(self, desde: int = 2020, hasta: int = 2025) -> dict[str, Any]:
         if desde < 2020 or hasta > 2025 or hasta <= desde:
             return {"estado": "NO_ESTIMABLE_RANGO", "transiciones": []}
+        result_key = (self.bind_key, "malmquist", desde, hasta)
+        cached = _get_result(result_key)
+        if cached is not None:
+            return cached
         years = {y: await self._year(y) for y in range(desde, hasta + 1)}
         transitions = []
         for y in range(desde, hasta):
@@ -1193,7 +1225,7 @@ class DeaEconometriaService:
             )
         all_scores = [r for tr in transitions for r in tr.get("desglose_por_entidad", [])]
         global_mpi = _geomean([r["mpi"] for r in all_scores])
-        return {
+        response = {
             "estado": "EXPLORATORIO",
             "desde": desde,
             "hasta": hasta,
@@ -1218,8 +1250,13 @@ class DeaEconometriaService:
                 ),
             },
         }
+        return _set_result(result_key, response)
 
     async def econometria_segunda_etapa(self) -> dict[str, Any]:
+        result_key = (self.bind_key, "econometria_segunda_etapa")
+        cached = _get_result(result_key)
+        if cached is not None:
+            return cached
         years = [await self._year(y) for y in range(2020, 2026)]
         panel = []
         concentration = []
@@ -1385,7 +1422,7 @@ class DeaEconometriaService:
             else "No estimable",
             "estado": compare["estado"],
         }
-        return {
+        response = {
             "estado": "EXPLORATORIO",
             "n_panel": len(panel),
             "segunda_etapa": regression,
@@ -1422,6 +1459,7 @@ class DeaEconometriaService:
                 "Asociaciones descriptivas; no prueban causalidad ni presupuesto oficial"
             ),
         }
+        return _set_result(result_key, response)
 
     async def resumen_integral(self) -> dict[str, Any]:
         audit = await self.auditoria_saneamiento()
