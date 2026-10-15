@@ -554,3 +554,116 @@ El commit local incluye únicamente migración, modelos, sincronizador, servicio
 **Límite de rendimiento:** el caché elimina los recálculos caros, pero no se alcanzaron menos de 50 ms en todas las rutas. Explorador y resumen devuelven 2,08 MB y 2,58 MB; FastAPI aún codifica esos objetos y la medición HTTP excede 50 ms. Cumplimiento y explorador también incluyen filas completas de metas oficiales. Para cumplir ese umbral de extremo a extremo hará falta una respuesta HTTP pre-serializada/compactada o reducir el contrato de respuesta; los archivos autorizados para esta tarea no incluyen el router ni middleware de respuesta. La inicialización general de la aplicación también ejecuta su warmup existente, alrededor de 32 s por worker.
 
 El commit local contiene exclusivamente `backend/scripts/sincronizar_catalogo_pdd.py`, `backend/app/modules/compromisos/pdd_dea_service.py`, `backend/tests/test_pdd_dea_triada.py` y este reporte.
+
+# Revisión Crítica y Aportes al Laboratorio Prescriptivo PDD — [TRIADA-PDD-REVISION-LAB-11A]
+
+**Fecha:** 2026-10-15. **Tipo:** auditoría metodológica y empírica de solo lectura. Consulté `bd_csh` dentro de transacciones `READ ONLY`, inspeccioné modelos y servicios existentes, y revisé el catálogo documental. No se modificó código productivo, no se escribió en la base y no se hizo commit para esta revisión. El archivo `bridge/01_tarea_codex.md` ya estaba modificado al iniciar la sesión; ese cambio ajeno se preservó.
+
+## Dictamen ejecutivo
+
+La propuesta es una agenda sólida de investigación y control, pero **los datos actuales no sustentan todavía un Network DEA de resultados sociales, un optimizador fiscal listo para decidir ni inferencia espacial por localidad**. Sí permiten construir diagnósticos exploratorios de operación, calidad de formulación y distribución descriptiva. Los bloqueos empíricos principales son: metas oficiales de solo seis de los ocho planes, 801 metas sin vínculo (incluidas 195 del PDD 2013–2015 sin corpus operativo de sus años), cero códigos explícitos entre las 2.068 filas de metas, cero reportes de los 10 compromisos PAS, solo 11 fichas de indicadores, y hurtos distribuidos en dos polígonos urbanos/rurales sin población en los territorios.
+
+Una meta sin vínculo no equivale a una meta incumplida. En especial, la base observada de registros Triada empieza en 2017, por lo que la ausencia de filas para periodos previos es una limitación de corpus, no evidencia de incumplimiento administrativo.
+
+## 1. Auditoría empírica de `bd_csh`
+
+### Metas y vínculo con ejecución
+
+| Plan/fuente de las filas `SIN_VINCULO` | Total huérfanas | Con línea declarada | Con indicador | Observación de periodo |
+| --- | ---: | ---: | ---: | --- |
+| PDD 2013–2015 | 195 | 190 | 192 | No hay filas Triada de 2013–2015; el corpus de ejecución consultado empieza en 2017. Estas 195 son principalmente `SIN_CORPUS_HISTORICO`, no huérfanas reales. |
+| PDD 2020–2023 | 67 | 41 | 42 | Sí hay volumen de ejecución en esos años; falta evaluar una segunda pasada con concordancias validadas. |
+| PDD 2024–2027, bases técnicas | 164 | 152 | 156 | Corpus de ejecución amplio, pero la coincidencia no prueba que el indicador esté operacionalizado. |
+| PDD 2024–2027, ponencia | 202 | 172 | 193 | Posible solapamiento documental con bases técnicas; deduplicar versiones antes de tratarlo como 366 metas independientes. |
+| PDL 1 2024–2027 | 21 | 20 | 20 | Hay filas locales; se requiere conservar el identificador de localidad en la vinculación. |
+| PDL 2 2024–2027 | 3 | 3 | 3 | Muestra demasiado pequeña para generalizar desempeño. |
+| PDL 3 2024–2027 | 149 | 117 | 146 | Hay 1.279 filas locales 2024–2027; revisar alias de entidad, cobertura de línea y diferencias de estructura del PDL. |
+| **Total** | **801** | — | — | 801/2.068 = 38,8% sin vínculo persistido. |
+
+Los otros conteos por plan son: PDD 2020–2023, 226 metas (67 sin vínculo); PDD 2024–2027, 1.246 (366 sin vínculo); PDL 1, 110 (21); PDL 2, 89 (3); PDL 3, 202 (149). **PDD 2012–2015 y PDD 2016–2019 tienen cero filas en `pdd_metas_oficiales`**, aunque los planes y estructuras estén en el catálogo. Por tanto, los 2.068 registros no representan todavía una extracción de metas de los ocho planes ni una serie completa 2012–2027.
+
+En las 2.068 metas, la auditoría encontró 0 con `codigo` explícito, 1.893 con `linea_nombre`, 1.928 con `indicador` y 831 con la llave OCR `Meta del cuatrienio`. La presencia de `linea_nombre` o `indicador` no demuestra calidad o validez semántica. El método `CODIGO_EXACTO` no puede tener cobertura positiva hasta que el extractor recupere un código comparable o el catálogo oficial proporcione una llave estable. En los documentos PDD 2024, las 366 filas huérfanas se reparten entre 164 de bases técnicas y 202 de ponencia; esas fuentes pueden duplicar productos y no deben sumarse sin una huella de meta/versionado.
+
+La tabla de ejecución ofrece cobertura temporal desigual: por año hay 5 DMU entidad-año PDD en 2017, 18 en 2018, 21 en 2019, 24–27 entre 2020–2023, 29 en 2024–2025, 30 en 2026 y solo 1 en 2027. No aparece 2016 ni 2012–2015. El año 2027 es futuro/planificado al corte de esta revisión y debe tratarse como censura temporal, no como rezago. En 2017–2027 se observan 237 combinaciones distintas entidad-año para `PLAN_DESARROLLO`, 224 para presupuesto y 229 para plan de acción; hay aproximadamente 1.515 códigos BPIM distintos por motor. Esos conteos aún contienen cortes/versiones y no equivalen a contratos adjudicados.
+
+### Cobertura de outcomes y articulación institucional
+
+| Fuente | Cobertura observada | Qué sí permite afirmar | Qué no permite afirmar |
+| --- | --- | --- | --- |
+| `indicadores.fichas_tecnicas_indicadores` | 11 fichas; 11 con avance no nulo/cero; 11 mediciones, todas con `es_demostracion=false` | Existe un pequeño set con observaciones reportadas en la BD. | No representa cobertura suficiente ni se verificó enlace a las metas oficiales, comparabilidad temporal o fuente independiente. |
+| `seguimiento.compromisos_pas` | 10 filas, 8 entidades; **0 con estado distinto de `sin_reporte`** | Hay estructura programática y responsables identificados. | No hay outcomes de cumplimiento PAS observados en la tabla. Cobertura PAS no puede usarse hoy como producto efectivo medido. |
+| `seguimiento.actividades_plan_accion` | 12 filas, 12 con algún avance, una vigencia y 10 códigos PAS cubiertos | Hay un núcleo operativo pequeño y articulado. | Doce filas de una vigencia no son muestra longitudinal representativa de los 217.740 registros Triada ni una serie distrital completa. |
+| `mesas_trabajo.mesas` | 33 mesas; las 33 tienen fecha y `territorio_id`; las 33 enlazan a un territorio con geometría | El enlace de mesa a territorio permite agregación descriptiva por territorio identificado. | La mesa no es automáticamente una medida de demanda atendida; faltan asistencia, acuerdos ejecutados y regla de atribución. |
+| `mesas_trabajo.agendas` | 36 agendas; 35 asociadas a una mesa, 36 con fecha | Se puede vincular la mayoría agenda→mesa→territorio. | La agenda es actividad programada, no resultado ni demanda resuelta. |
+
+### Geografía y hurtos
+
+PostGIS tiene geometrías EPSG:4326 en `geodatos.territorios` (geometría multipolígono y centroide), `geodatos.geometrias_capas`, y `geodatos.poligonos_analitica_hurtos` (multipolígono y centroide). `geodatos.geometrias_capas` solo tiene 4 geometrías, una por categoría (ALERTA_SAT, CONFLICTIVIDAD_ICS, RECURSO_HIDRICO y ZONA_FONSET); `geodatos.capas_geovisor` tiene 7 capas activas. El catálogo `geodatos.territorios` contiene 15 elementos: 1 distrito, 3 localidades, 5 barrios, 3 corregimientos y 3 zonas insulares; todos los registros de ese catálogo tienen geometría y centroide, pero **los 15 tienen `poblacion_estimada` nula**. No hay cobertura barrial exhaustiva: solo cinco barrios cargados. No existe una tabla `cuadrantes` en los esquemas consultados. `mesas_trabajo.mesas` no almacena geometría propia: sus 33 filas apuntan a `territorio_id`, y la geometría se hereda mediante `geodatos.territorios`.
+
+`geodatos.estadisticas_hurtos` contiene 12.280 filas y 18.242 casos entre 2018 y 2026, pero se asignan a solo **dos polígonos**: perímetro urbano (75,28 km²) y zona rural/insular (597,38 km²). Hay únicamente dos zonas espaciales para el outcome; el registro detallado por fecha/delito no equivale a resolución espacial fina. Las 33 mesas sí enlazan a territorios, pero `registros_triada_normalizados` no tiene FK ni geometría territorial; la asignación local depende de texto/entidad. Para un cruce local reproducible se necesita una llave geográfica normalizada.
+
+## 2. Crítica metodológica y propuesta por módulo
+
+### Módulo 1 — Network DEA de dos etapas
+
+**Lo aprovechable:** `registros_triada_normalizados` ofrece apropiación definitiva, pagos, avances físicos/estratégicos, metas ejecutadas/programadas, entidad, vigencia, códigos BPIM y dimensiones. Se pueden formar paneles exploratorios entidad-año y calcular por separado eficiencia operativa y brechas de resultados cuando haya outcome observable.
+
+**Límites:** BPIM es identificador de proyecto, no número de contratos; los registros contienen cortes y duplicados y deben deduplicarse antes de agregar. La PPI plurianual es un techo de plan, no apropiación ejecutada por entidad. `avance físico` y `porcentaje de producto` son outputs de operación, no outcomes de seguridad humana. En la segunda etapa, PAS no tiene reporte, las fichas son 11 y los hurtos solo varían en dos zonas; mesas/agendas son actividades, no outcomes. Usarlos juntos inflaría dimensiones y dejaría una frontera dominada por ceros, proxies y escala de reporte.
+
+**Propuesta matemática:** definir DMU como entidad×vigencia con un único corte anual consolidado y elegibilidad de datos previamente fijada. Etapa 1, un input financiero deflactado (apropiación ejecutada o pagos, con una definición fija) y, solo si se valida cobertura, un insumo físico de proyectos activos; enlace `Z` como productos de meta con ejecución y meta ejecutada/esperada en unidades comparables. Etapa 2: `Z` entra una sola vez como input intermedio; outcome positivo solo cuando exista indicador social válido (por ejemplo, tasa de hurto por población y geografía coincidente, con la dirección invertida como output deseable o modelado explícitamente como output indeseable). Mantener modelos de red VRS/SBM por etapa y score global; reportar `Etapa 2 = no estimable` ante falta de Y, nunca “baja efectividad”. Aplicar bootstrap por entidad/cluster, sensibilidad a cortes y exclusión de valores imputados.
+
+Con 30 entidades en años recientes y 237 entidad-año irregulares, un modelo mínimo de una X, una Z y una Y podría explorarse si las DMU completas son suficientes; no agregaría variables de contratos, mesas, PAS, hurtos y fichas hasta tener cobertura. Las reglas usuales de tamaño DEA son heurísticas, no garantía de identificabilidad ni de inferencia. Para el Network DEA propuesto no hay hoy una Y social con N territorial y temporal adecuado.
+
+### Módulo 2 — Inverse DEA / reasignación presupuestal
+
+**Riesgo central:** DEA identifica posiciones relativas frente a una frontera observada, no retornos causales de mover COP. Clasificar IRS/DRS y convertirlo automáticamente en reasignación confunde eficiencia técnica relativa con elasticidad causal de gasto. El PPI de $12,80 billones es un techo agregado 2024–2027; no hay desglose íntegro por entidad y apropiación legalmente reprogramable en una sola tabla.
+
+**Propuesta:** formularlo como simulador de escenarios, no recomendación fiscal automática. Resolver un inverse DEA con outputs meta fijados y cambios mínimos de input sujeto a balance presupuestal, límites de variación, montos protegidos y límites de competencia validados como datos normativos versionados. Si esas restricciones no tienen fuente y responsable, mantenerlas como parámetros de escenario visibles y no como “restricciones legales”. Usar conjunto eficiente y regiones de incertidumbre (bootstrap/intervalos) más frontera Pareto con `ε`-constraint; mostrar costo de oportunidad y sensibilidad ±5/10/15%. Nunca ejecutar cambios de presupuesto ni presentar `ΔX→ΔY` como efecto causal. El outcome prescriptivo debe ser “escenario matemáticamente factible bajo supuestos A”, no “reasignación que reduce delitos”.
+
+### Módulo 3 — NLP, rigor de formulación y metas sin vínculo
+
+**Lo aprovechable:** hay texto de indicador en 1.928/2.068 metas y línea declarada en 1.893. El JSON de origen conserva campos de tabla útiles para recuperar unidad, meta de cuatrienio, indicador de producto y responsable. La cobertura de metas meta-cuantificadas cae a 831; esa ausencia es en sí misma una señal de formulación, condicionada por la calidad OCR/extractor.
+
+**Riesgos:** las categorías “gestión/proceso”, “producto/cobertura” y “resultado/impacto” no se deben inferir por una palabra aislada. “Documento”, “atendido”, “fortalecido” o “implementado” dependen de unidad, magnitud, población y definición de indicador. Los 2024 bases/ponencia contienen riesgo de duplicados; para el 2012 y 2016 no hay filas de metas en la tabla. El 38,8% sin vínculo mezcla falta de historia (2013), falta de identificador, discrepancia OCR, entidad/línea mal extraída y posible falta de reporte; solo esta última categoría podría acercarse a una “meta huérfana real”.
+
+**Propuesta de segundo pase y medición:** conservar `SIN_VINCULO` como estado técnico y descomponerlo en `SIN_CORPUS_PERIODO`, `SIN_CODIGO`, `SIN_ENTIDAD`, `SIN_INDICADOR`, `CANDIDATO_BAJA_CONFIANZA`, `SIN_REPORTE_EN_CORPUS_CUBIERTO`. Construir índice por periodo, entidad y tokens normalizados con lematización/reglas de abreviatura; candidatos de plan de acción/PAS se sugieren, pero no se consideran ejecución verificada hasta revisión de evidencia. Guardar score, reglas activadas y fila fuente. Preparar un gold set estratificado de 200–300 pares, con doble anotación y adjudicación; publicar precisión/recobrado por plan y por tipo. Taxonomía MGA/Sinergia como clasificación humana supervisada o reglas auditables con abstención (`REVISIÓN`), unidad, línea base, meta numérica, población y periodicidad. Índice de rigor separado de avance/desempeño y acompañado por intervalos de confianza del clasificador.
+
+No estimo un número “recuperable” de las 801 sin ese gold set: la base actual no tiene una llave verdadera para distinguir un falso negativo semántico de una meta realmente sin reporte. Para 2013, las 195 se deben marcar como fuera de cobertura histórica. Para 2020–2026, la existencia de filas a nivel de año solo demuestra disponibilidad de corpus, no que cada meta tuviera que reportarse por cada entidad. Para 2027, tratar los datos como planificados/censurados.
+
+### Módulo 4 — Econometría espacial y justicia territorial
+
+**Conclusión empírica:** no hay N espacial suficiente para Moran’s I, regresión espacial, autocorrelación o clúster de hurtos: las estadísticas de delito se asignan a dos polígonos. Las 3 localidades oficiales sí tienen geometría, pero no población (`poblacion_estimada IS NULL`); hay cinco barrios, no todos los barrios. No se puede construir inversión per cápita fiable ni tasa de delito local con estas tablas. La cobertura 33 mesas→territorio está completa, pero los conteos por mesa no representan por sí solos demanda resuelta.
+
+**Propuesta por etapas:** primero consolidar fuente oficial población anual, barrios/localidades y código DANE/territorial; geocodificar delitos a una unidad pública suficientemente fina y auditable; y persistir `territorio_id` en asignaciones/corpus. Hasta entonces, publicar solo comparativos urbano/rural descriptivos (n=2, sin inferencia), tres PDL como tabla de localidad con gasto nominal/deflactado y etiqueta `sin denominador poblacional`, y mapas de cobertura de datos. Cuando existan ≥30 unidades espaciales comparables con tasas y matriz de pesos W documentada, evaluar Moran global/local con permutaciones, corrección de multiplicidad y sensibilidad de W. Para Theil/Gini, fijar población/beneficiarios como ponderador; sin ese denominador el índice mide concentración de montos, no equidad territorial.
+
+### Módulo 5 — Dictamen, exportación y latencia
+
+Las consultas previas del cierre 10 midieron HTTP 200 en las seis rutas; el explorador y resumen actuales son aproximadamente 2,08 MB y 2,58 MB, y superaron 50 ms en lectura completa pese al caché. El archivo JSON persistente reduce recomputación, pero el endpoint vuelve a codificar el objeto en FastAPI. **No es honesto prometer `<25 ms` de extremo a extremo para respuestas multi-megabyte** sin acotar transferencia, compresión y hardware.
+
+Un pliego automático puede agrupar evidencia: entidad, periodo, meta/indicador, corte fuente, alerta, monto, avance validado, reglas y enlaces. Debe llamarse borrador de hallazgo, con confianza y datos faltantes; no acusación, dictamen legal ni causalidad. “Sobre-ejecución sin avance” exige alinear vigencia, entidad, BPIM/meta y mismo corte financiero/físico. Clones y cortes deben excluirse por huella tabular/corte antes de calcular. Exportación JSON/CSV/Markdown/XLSX debe reproducir filtros, versión de fórmula, timestamps y hashes del payload.
+
+## 3. Ideas Pro de Codex y orden de trabajo sugerido
+
+1. **Grafo de trazabilidad con proveniencia:** meta oficial → programa/línea → meta Triada → BPIM → actividad PA → rubro/pagos → indicador/outcome → territorio. Cada arista guarda método, confianza, fecha, fuente y estado de revisión. Los nodos sin arista se tipifican; no se “rellenan” por inferencia opaca.
+2. **Compuerta de elegibilidad antes de cualquier DEA:** cobertura de input/intermedio/outcome, estabilidad de unidad, cortes deduplicados, deflactor y periodo alineado. Emitir `NO_ESTIMABLE` con razones antes de correr solver; registrar variables, DMU y sensibilidad junto al resultado.
+3. **Auditoría de descomposición de varianza/reporte:** separar diferencias de avance real de diferencias de completitud documental, frecuencia de corte y calidad OCR. Reportar tanto score observado como score con conjunto de datos balanceado y no imputar ausencia a cero.
+4. **Pruebas placebo y estabilidad:** cambiar especificación (CRS/VRS/SBM), ventana de años, unidad DMU, inclusión de ceros, IPC y regla de deduplicación; publicar cuántas entidades cambian de cuartil. Si rangos son inestables, no emitir ranking individual.
+5. **Validador fiscal de escenarios:** ledger de restricciones con norma, artículo, entidad dueña, periodo y fuente; si falta un constraint requerido, el modelo opera solo en sandbox y rotula el resultado como ilustrativo.
+6. **Control de sesgo y justicia:** revisar si entidades con mejor reporte parecen más eficientes; calcular sensibilidad a cobertura y estratificar por tipo de entidad/localidad. Hacer revisión humana antes de cualquier expediente de control.
+
+## 4. Propuesta de contrato API y SLO
+
+| Operación propuesta | Contrato | Objetivo servidor cacheado |
+| --- | --- | --- |
+| `GET /triada/pdd-lab/resumen` | Resumen compacto: periodo, estado de elegibilidad, conteos, top alertas, versión de datos/fórmula; sin incluir miles de filas. | p50 <25 ms, p95 <50 ms de tiempo de handler, medido después del warmup. |
+| `GET /triada/pdd-lab/metas?plan=&estado=&cursor=&limit=100` | Lista paginada; cada fila incluye fuente, estado de enlace, método/score y enlace verificable. Cursor estable; máximo por página limitado. | p50 <25 ms en caché. |
+| `GET /triada/pdd-lab/huerfanas/resumen` y `.../huerfanas?plan=&cursor=` | Conteos separados por falta de corpus/llave/entidad/candidato y detalle paginado. | p50 <25 ms; sin devolver el catálogo completo por defecto. |
+| `GET /triada/pdd-lab/territorial?nivel=&anio=` | Solo estadísticas cuya unidad geográfica y denominador estén validados; hoy debe responder `NO_ESTIMABLE` para inferencia y exponer los 2 polígonos disponibles. | p50 <25 ms para el estado/metadata. |
+| `POST /triada/pdd-lab/inverse-dea/simular` | Parámetros explícitos, solo simulación, sin escritura fiscal; devuelve baseline, restricciones aplicadas, frontera Pareto, sensibilidad y advertencias. | Asíncrono si solver/bootstrap excede el umbral; `202 + job_id`. |
+| `POST /triada/pdd-lab/exportaciones` / `GET .../{job_id}` | Export reproducible JSON/CSV/XLSX/Markdown con versión, hash, filtros y expiración. | `202` rápido; descarga desde artefacto ya generado. |
+
+Para rutas existentes, la entrega de bytes precalculados debería usar `Response(content=bytes, media_type="application/json")`, ETag versionado, `If-None-Match`/304 y, si el cliente lo acepta, contenido comprimido precalculado. El payload entero de metas no debe ser la vista por defecto: paginar y ofrecer un export job. Definir SLO como **tiempo de handler/TTFB**, tamaño máximo y compresión; el tiempo de transferencia completa depende del ancho de banda y no puede garantizarse como `<25 ms` para 2 MB. No cambiar el contrato productivo hasta aprobación de compatibilidad de frontend y pruebas de carga con ambos workers.
+
+## Evidencia y alcance
+
+Las cifras de esta sección vienen de consultas `SELECT` en transacciones PostgreSQL `READ ONLY`, de `information_schema`/`geometry_columns` y de inspección del ORM. No estimé candidatos NLP no adjudicados ni corrí regresiones espaciales porque los datos no soportan una cifra fiable. Esta es una revisión de diseño, no aprobación de inferencia causal, del simulador fiscal ni de un expediente legal.

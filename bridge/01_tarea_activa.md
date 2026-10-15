@@ -1,43 +1,39 @@
-# Orden de Ejecución Frontend — `[TRIADA-FRONTEND-CIERRE-TOTAL-10]`
+# TAREA FRONTEND: `[TRIADA-FRONTEND-LAB-PDD-11B]`
+## LABORATORIO PRESCRIPTIVO PDD EN EL CENTRO DE MANDO: SUB-PESTAÑA 7 («LABORATORIO PRESCRIPTIVO & CONTROL FISCAL»), NETWORK DEA BI-ETAPA, SIMULADOR INVERSE DEA PARETO, AUDITORÍA DE 8 PLANES / METAS HUÉRFANAS, JUSTICIA TERRITORIAL DANE Y PLIEGOS EXPORTABLES
 
-- **Fecha:** 2026-10-15
-- **Coordinador General y Auditor Forense EAF:** `agy`
-- **Ejecutor:** `agy2`
-- **Rama:** `main` (commit local al finalizar; **prohibido `git push`**)
-- **Plan Maestro de referencia:** Lee obligatoriamente `bridge/00_plan_cierre_total_pdd_10.md`.
+- **Para:** Desarrollador Principal Frontend (`agy2`)
+- **De:** Coordinador General y Auditor Forense EAF (`agy`)
+- **Fecha:** 15 de octubre de 2026
+- **Plan Maestro de Referencia:** `bridge/00_plan_lab_prescriptivo_pdd_11b.md`
+- **Política Git:** **Zero-Push Estricta** (Solo commit local en `main`). Prohibido tocar cualquier archivo en `backend/`, `docs/permisos-api.md`, `bridge/01_tarea_codex.md` o `bridge/02_entrega_codex.md`.
 
-## Objetivo
-Cerrar al 100% la serie histórica y el Centro de Mando de Planes de Desarrollo en `src/features/seguimiento/data/pdd-dea-cartagena.data.ts`, `src/features/seguimiento/components/pdd-dea-evaluacion-panel.tsx` y `src/features/seguimiento/__tests__/pdd-dea-evaluacion-panel.test.tsx`:
+---
 
-1. **Completar el 100% de los Techos Oficiales del Plan Plurianual de Inversiones (`OFICIAL_EXTRAIDO` en los 8 Planes: `5 PDD + 3 PDL`):**
-   - Ya extrajimos por OCR con `tesseract` las tablas oficiales de los dos Acuerdos que faltaban:
-     - **`PDD_2012_2015` («En Cartagena Hay Campo para Todos» — Acuerdo 001 del 4 de julio de 2012, pág. 157):**
-       - **Total Cuatrienio:** **`$3.049.788.268.000` COP** (`2012: $718.910.382.000`, `2013: $712.219.309.000`, `2014: $787.872.147.000`, `2015: $830.786.430.000`), `ppi_estado: 'OFICIAL_EXTRAIDO'`, con sus **5 Ejes Oficiales**:
-         1. `Eje 1. Transversal: Atención a Grupos de Población Diferenciada y por Ciclo Vital`: `$196.661.713.000` COP
-         2. `Eje 2. Desarrollo Humano`: `$2.068.532.775.000` COP
-         3. `Eje 3. Desarrollo Económico Incluyente`: `$179.995.114.000` COP
-         4. `Eje 4. Hábitat, Infraestructura y Sustentabilidad`: `$434.185.669.000` COP
-         5. `Eje 5. Seguridad Ciudadana y Buen Gobierno`: `$170.412.997.000` COP
-     - **`PDD_2016_2019` («Primero la Gente para una Cartagena Sostenible y Competitiva» — Acuerdo 006 del 13 de junio de 2016, Tabla 209 pág. 357):**
-       - **Total Cuatrienio:** **`$4.331.941.000.000` COP** (`2016: $976.114.000.000`, `2017: $1.033.268.000.000`, `2018: $1.115.477.000.000`, `2019: $1.207.081.000.000`), `ppi_estado: 'OFICIAL_EXTRAIDO'`, con sus **3 Objetivos Estratégicos Oficiales**:
-         1. `Objetivo Estratégico 1: Superar la Desigualdad`: `$3.183.163.000.000` COP (`73%`)
-         2. `Objetivo Estratégico 2: Adaptar el Territorio para la Gente`: `$852.631.000.000` COP (`20%`)
-         3. `Objetivo Estratégico 3: Construir Ciudadanía y Fortalecimiento Institucional`: `$296.147.000.000` COP (`7%`)
-       - Además, con el techo oficial de `$4.331.941.000.000` COP frente a los `$4.603.448.539.806` COP reconstruidos en `bd_csh`, calcula y muestra su factor de conciliación exacta (**`1,06x` / `+6,27%`**).
+## 1. Alcance Exacto a Implementar por `agy2`
 
-2. **Visualización de Emparejamiento Semántico de las `2.068` Metas Oficiales y Líneas Estratégicas 100% Canónicas:**
-   - En `pdd-dea-evaluacion-panel.tsx`, muestra en la sub-pestaña **Explorador (`pdd-tab-explorador`)** y **Cumplimiento (`pdd-tab-cumplimiento`)** el desglose de metas oficiales extraídas de los Acuerdos (`2.068` metas tabulares en `seguimiento.pdd_metas_oficiales`) y su vinculación semántica/exacta con las filas operativas de `bd_csh`, garantizando que las Líneas Estratégicas sean 100% las canónicas del Acuerdo.
+### 1.1. `src/features/seguimiento/data/pdd-dea-cartagena.data.ts` y `src/features/seguimiento/services/plan-accion-dnp-api.ts`
+1. Añadir los contratos tipados, datos canónicos auditados y función cliente `obtenerLaboratorioPrescriptivoPddApi()` (contra `/api/v1/compromisos/triada/pdd-dea/laboratorio-prescriptivo` con fallback resiliente a datos locales):
+   - **`AUDITORIA_METAS_8_PLANES`:** Cobertura de metas oficiales en los **8 Planes (`5 PDD + 3 PDL`)** (incluyendo las metas rescatadas por OCR de `PDD_2012_2015` y `PDD_2016_2019`), desglosadas en las **6 categorías forenses de cobertura** (`VINCULADA_ALTA_CONFIANZA`, `CANDIDATO_BAJA_CONFIANZA`, `DUPLICADA_ENTRE_FUENTES_PDD`, `SIN_CORPUS_HISTORICO`, `SIN_CODIGO_O_ENTIDAD`, `SIN_REPORTE_EN_CORPUS_CUBIERTO`) y las **4 categorías de Rigor MGA/Sinergia DNP** (`RESULTADO_IMPACTO`, `PRODUCTO_CUANTIFICABLE`, `GESTION_PROCESO_BLANDO`, `REVISION_HUMANA`).
+   - **`NETWORK_DEA_BI_ETAPA`:** Matriz de secretarías con `score_etapa1_operativa_pa` (*Gasto → Actividades PA*), `score_etapa2_estrategica_pdd` (*Actividades PA → Metas PDD*), `score_global_red`, `brecha_ilusion_burocratica` ($\theta_1 - \theta_2$), diagnóstico (`ALTA_EFECTIVIDAD_INTEGRAL`, `ILUSION_BUROCRATICA`, `REZAGO_OPERATIVO`) y **Prueba de Estabilidad de Ranking (`ESTABLE`, `MODERADO`, `VOLATIL`)**.
+   - **`SIMULADOR_INVERSE_DEA_PARETO`:** Los 3 escenarios interactivos de flexibilidad presupuestal (`±5%`, `±10%`, `±15%`) con suma cero ($\sum \Delta X = 0$), reasignación desde entidades con retornos decrecientes (`DRS`) hacia líneas/entidades con retornos crecientes (`IRS`), ganancia potencial en puntos porcentuales de cumplimiento PDD y **Ledger de Restricciones Normativas + Advertencia No-Causal**.
+   - **`JUSTICIA_TERRITORIAL_PDL_DANE`:** Tabla de las 3 Localidades (`Localidad 1: 412.580 hab.`, `Localidad 2: 348.190 hab.`, `Localidad 3: 304.800 hab.`, total Distrito `1.065.570 hab.`) con **Inversión PDL per cápita (COP constantes 2025 / hab.)**, **Mesas Ciudadanas por cada 100.000 hab.**, comparativo Urbano vs. Rural/Insular de hurtos (`n=2` polígonos) y badge de **Compuerta Estadística Espacial (`Moran's I: NO_ESTIMABLE_N_MENOR_30`)**.
+   - **`PLIEGOS_CONTROL_POLITICO_FISCAL`:** Tarjetas interactivas por entidad con nivel de alerta, metas sin reporte en corpus cubierto, brecha de ilusión burocrática, preguntas generadas para debate de control político en el Concejo Distrital y botón de **Exportación de Dictamen Forense (`.md` / `.csv` / `.json` con hash SHA-256)**.
 
-3. **Ampliar `src/features/seguimiento/__tests__/pdd-dea-evaluacion-panel.test.tsx` a `>= 36` pruebas:**
-   - Añade tests explícitos para verificar:
-     - El PPI OCR de `PDD_2012_2015` (`$3.049.788.268.000` COP) y sus 5 Ejes.
-     - El PPI OCR de `PDD_2016_2019` (`$4.331.941.000.000` COP), sus 3 Objetivos Estratégicos y su factor de conciliación `1,06x`.
-     - Que los 8 planes (`5 PDD + 3 PDL`) tengan `ppi_estado === 'OFICIAL_EXTRAIDO'` y `ppiTotalCorrienteCop > 0`.
+### 1.2. `src/features/seguimiento/components/pdd-dea-evaluacion-panel.tsx`
+- Incorporar la **Sub-pestaña 7 (`data-testid="pdd-tab-laboratorio-prescriptivo"` — «7. Laboratorio Prescriptivo & Control Fiscal»)** con:
+  1. **Selector interactivo de Escenario Inverse DEA Pareto (`±5%`, `±10%`, `±15%`)** mostrando la tabla de reasignación óptima suma-cero y el Ledger de Restricciones.
+  2. **Matriz Network DEA Bi-Etapa (`Operación PA → Estrategia PDD`) & Detector de Ilusión Burocrática + Estabilidad de Ranking**.
+  3. **Descomposición Forense de las Metas de los 8 Planes (6 estados de cobertura + 4 niveles de Rigor MGA/Sinergia)**.
+  4. **Panel de Justicia Territorial Per Cápita DANE (`3 PDL × 33 Mesas × 2 Polígonos Hurtos` + Compuerta Moran $N<30$)**.
+  5. **Generador de Pliegos de Control Político y Descarga de Expediente Forense**.
 
-## Archivos Autorizados
-- `src/features/seguimiento/data/pdd-dea-cartagena.data.ts`
-- `src/features/seguimiento/services/plan-accion-dnp-api.ts`
-- `src/features/seguimiento/components/pdd-dea-evaluacion-panel.tsx`
-- `src/features/seguimiento/__tests__/pdd-dea-evaluacion-panel.test.tsx`
-- `bridge/02_resultado_agy2.md`
-*(Prohibido tocar `backend/` o hacer `git push`).*
+### 1.3. Pruebas y Build de Producción
+- Ampliar `src/features/seguimiento/__tests__/pdd-dea-evaluacion-panel.test.tsx` a **`>= 43` pruebas unitarias** cubriendo los 5 bloques nuevos y el renderizado SSR de `pdd-tab-laboratorio-prescriptivo`.
+- Ejecutar y aprobar:
+  1. `node scripts/ui-policy.mjs` (`0` violaciones)
+  2. `./node_modules/.bin/tsc --noEmit` (`0` errores)
+  3. `./node_modules/.bin/eslint` sobre los archivos modificados (`0` errores)
+  4. `bun test src/features/seguimiento/__tests__/pdd-dea-evaluacion-panel.test.tsx` (`>= 43` tests en verde)
+  5. `./node_modules/.bin/next build` (`192/192` páginas generadas)
+  6. `systemctl restart polis-frontend.service` (que ya sincroniza automáticamente `.next/static` en `standalone`).
+- Documentar en `bridge/02_resultado_agy2.md` y registrar **commit local en `main`**.
