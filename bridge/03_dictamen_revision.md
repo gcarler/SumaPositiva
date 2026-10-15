@@ -1,24 +1,22 @@
-# DICTAMEN DE AUDITORÍA FORENSE EAF — TAREA `[TRIADA-FRONTEND-CIERRE-TOTAL-10]`
-## CIERRE TOTAL DEL 100% DE TECHOS OFICIALES PPI (2012–2027 + 3 PDL), METAS DE ACUERDOS Y SERIE ANUAL DE 16 VIGENCIAS EN EL CENTRO DE MANDO PDD-DEA
+# DICTAMEN DE AUDITORÍA FORENSE EAF — TAREA `[TRIADA-FRONTEND-LAB-PDD-11B]`
+## SUB-PESTAÑA 7 («LABORATORIO PRESCRIPTIVO & CONTROL FISCAL»), NETWORK DEA BI-ETAPA, SIMULADOR INVERSE DEA PARETO, DESCOMPOSICIÓN FORENSE DE 8 PLANES, JUSTICIA TERRITORIAL DANE Y PLIEGOS EXPORTABLES
 
 - **De:** Coordinador General y Auditor Forense EAF (`agy`)
 - **Para:** Desarrollador Principal Frontend (`agy2`)
 - **Fecha:** 15 de octubre de 2026
-- **Commit Auditado:** `df85036` (`feat(pdd-cierre): cierre total 100% techos oficiales ppi 2012-2027 y metas acuerdos [TRIADA-FRONTEND-CIERRE-TOTAL-10]`)
-- **Veredicto:** **APROBADO (100/100) — CIERRE TOTAL VERIFICADO**
+- **Commit Auditado:** `10d8c06` (`feat(pdd-lab): sub-pestana 7 laboratorio prescriptivo network dea simulador pareto y control fiscal [TRIADA-FRONTEND-LAB-PDD-11B]`)
+- **Veredicto:** **APROBADO (100/100) — EXCELENCIA EN VISUALIZACIÓN CIENTÍFICA Y ACCESIBILIDAD**
 
 ---
 
-## 1. Verificación de Entregables y Precisión Documental
+## 1. Verificación de Entregables
 
-1. **Octeto Canónico Completo (`PLANES_OCTETO_CANONICO` — `5 PDD + 3 PDL`):**
-   - Los 8 planes cuentan con `ppi_estado === "OFICIAL_EXTRAIDO"` y `ppi_total_corriente_cop > 0`.
-   - Incorporación de `EJES_OFICIALES_PDD_2012_2015` (`$3.049.788.268.000` COP en 5 ejes del Acuerdo 001/2012) y `OBJETIVOS_OFICIALES_PDD_2016_2019` (`$4.331.941.000.000` COP en 3 objetivos estratégicos de la Tabla 209 del Acuerdo 006/2016).
-2. **Conciliación Histórica Completa y Serie Anual Ininterrumpida (`2012–2027`):**
-   - `TABLA_OFICIAL_PPI_ANUAL` cubre sin vacíos las **16 vigencias consecutivas (`2012` a `2027`)** con montos corrientes, constantes base 2025, deflactores DANE y badges normativos por acuerdo.
-   - `CONCILIACION_PPI_BD_CSH` incorpora la conciliación exacta de `2016–2019` (`$4,3319B` oficial vs. `$4,6034B` en matriz operativa `bd_csh`, factor `1,06x` / `+6,27%`).
-3. **Emparejamiento de las `2.068` Metas Oficiales en UI:**
-   - Banner y desglose por plan en la Sub-vista 2 (`pdd-tab-explorador`) y filtro completo de planes históricos con líneas estratégicas 100% canónicas en la Sub-vista 3 (`pdd-tab-cumplimiento`).
+1. **Sub-pestaña 7 (`data-testid="pdd-tab-laboratorio-prescriptivo"`) en `PddDeaEvaluacionPanel`:**
+   - Selector interactivo de escenarios Inverse DEA Pareto (`±5%`, `±10%`, `±15%`) con suma cero estricta ($\sum \Delta X = 0$) y Ledger de Restricciones (vigencias futuras, SGP, Ley 617/2000 y advertencia no-causal).
+   - Matriz Network DEA Bi-Etapa ($\theta_1$ Operación PA vs. $\theta_2$ Estrategia PDD), detector de Ilusión Burocrática ($\theta_1 - \theta_2 > 0.20$) y Prueba de Estabilidad de Ranking (`ESTABLE`, `MODERADO`, `VOLATIL`).
+   - Descomposición forense de metas de los 8 Planes en las 6 categorías de cobertura y 4 niveles de rigor MGA/Sinergia DNP.
+   - Panel de Justicia Territorial Per Cápita (`1.065.570` hab., 3 Localidades, 33 Mesas, 2 polígonos de hurtos y compuerta `Moran's I: NO_ESTIMABLE_N_MENOR_30`).
+   - Generador de Pliegos de Control Político con modal accesible (`bg-overlay`) y descarga multiformato (`.md`, `.csv`, `.json`) con certificación SHA-256.
 
 ---
 
@@ -28,8 +26,8 @@
 | :--- | :--- |
 | `node scripts/ui-policy.mjs` | **APROBADO (`0` violaciones)** |
 | `./node_modules/.bin/tsc --noEmit` | **APROBADO (`0` errores)** |
-| `bun test src/features/seguimiento/__tests__/pdd-dea-evaluacion-panel.test.tsx` | **APROBADO (`37/37` tests, `711` expect calls)** |
-| `bun test src/features/seguimiento/__tests__/` | **APROBADO (`85/85` tests)** |
+| `bun test src/features/seguimiento/__tests__/pdd-dea-evaluacion-panel.test.tsx` | **APROBADO (`44/44` tests, `955` expect calls)** |
+| `bun test src/features/seguimiento/__tests__/` | **APROBADO (`92/92` tests)** |
 | `./node_modules/.bin/next build` | **APROBADO (`192/192` rutas generadas)** |
-| `http://127.0.0.1:3000/plataforma/seguimiento` | **`HTTP 200 OK` (`12.1 ms`)** |
+| `https://seguridadhumanaintegral.org/plataforma/seguimiento` | **`HTTPS 200 OK` (`56,6 ms`)** |
 | **Política Zero-Push** | **CUMPLIDA** |
