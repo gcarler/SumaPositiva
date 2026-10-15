@@ -2,11 +2,27 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Annotated
 
-from fastapi import APIRouter, Body, Depends, File, Form, Query, Request, UploadFile, status
+from fastapi import (
+    APIRouter,
+    Body,
+    Depends,
+    File,
+    Form,
+    HTTPException,
+    Query,
+    Request,
+    UploadFile,
+    status,
+)
+from fastapi.responses import FileResponse
 
 from app.core.database import SessionDependency
 from app.modules.compromisos.dea_econometria_service import DeaEconometriaService
-from app.modules.compromisos.google_workspace_sync_service import GoogleWorkspaceSyncService
+from app.modules.compromisos.google_workspace_sync_service import (
+    CHART_DIR,
+    CHART_NAMES,
+    GoogleWorkspaceSyncService,
+)
 from app.modules.compromisos.ingesta_masiva_excel import detectar_extension_archivo
 from app.modules.compromisos.ingesta_masiva_service import RAIZ_INGESTA, IngestaMasivaService
 from app.modules.compromisos.inteligencia_triada_service import InteligenciaTriadaService
@@ -56,6 +72,20 @@ async def _compromisos_lifespan(_app):
 
 
 router = APIRouter(prefix="/compromisos", tags=["Compromisos PAS"], lifespan=_compromisos_lifespan)
+
+
+@router.get(
+    "/triada/google-workspace/graficas/{nombre_archivo}",
+    summary="Servir gráficas PNG públicas del informe técnico de diagnóstico",
+    include_in_schema=True,
+)
+async def google_workspace_grafica(nombre_archivo: str):
+    if nombre_archivo not in CHART_NAMES:
+        raise HTTPException(status_code=404, detail="Gráfica no encontrada")
+    path = CHART_DIR / nombre_archivo
+    if not path.is_file():
+        raise HTTPException(status_code=404, detail="Gráfica aún no generada")
+    return FileResponse(path, media_type="image/png", filename=nombre_archivo)
 
 
 @router.get(

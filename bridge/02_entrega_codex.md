@@ -753,3 +753,30 @@ La verificación de lectura posterior confirmó títulos, pestañas, encabezados
 - `warm_pdd_cache()` regeneró los 7 payloads V11 tras los cambios de cobertura, red DEA y censo. `polis-backend.service` se reinició y quedó activo; `GET /api/v1/compromisos/triada/google-workspace/estado` respondió **HTTP 200**, `conectado=true`, con 2 Sheets y 1 Doc nativos detectados.
 - Lectura API directa tras la última escritura: PDM con 9/17/30/47 filas en sus cuatro pestañas; Plan de Acción con 30/182/39 filas en sus tres pestañas; el Doc tiene 12.856 caracteres, incluye PDD, las 37 mesas y el sello SHA-256.
 - Sincronización final: `2026-10-15T20:56:26.236616+00:00`; SHA-256 del cuerpo del informe: `2093a95adeb5b40d6a2b806a2f705f24aa51ac74126439e6407ef0d6c5c9db96`. Los nombres originales `Matriz_PDM` y `Matriz_Plan_de_accion` se conservaron.
+
+## Entrega [TRIADA-DIAGNOSTICO-OFICIAL-DECRETO-037-14B]
+
+**Estado:** documento y matrices sincronizados en vivo en Google Drive; verificación nativa completada. `polis-backend.service` reiniciado y activo. Sin push.
+
+### Publicación
+
+- `Matriz_PDM` conserva sus **7 hojas** completas, incluidas las 2.078 metas, líneas y programas, serie 2012–2027, DEA/Pareto y censo de 37 mesas; lectura API posterior: **4 gráficos nativos**.
+- `Matriz_Plan_de_accion` conserva sus **7 hojas**, con consolidado por 29 entidades, actividades del motor (181, incluidas 12 semillas), registros fuente, catálogo PDF y mesas; lectura API posterior: **4 gráficos nativos**.
+- El Google Doc `Analisis` fue actualizado con el guion oficial del usuario, **7 capítulos y 4 anexos**, estilos Docs `HEADING_1` (8 párrafos capitulares) y `HEADING_2` (45 subsecciones), **58.988 caracteres**, 6 gráficas PNG embebidas y 3 tablas nativas.
+- Las seis gráficas quedaron en `/tmp/polis_workspace_charts/` como PNG de **1600×900**. Las seis rutas públicas HTTPS respondieron **200 `image/png`** tras el reinicio.
+- `_verify_live()` confirmó: 7 pestañas / 4 gráficos en cada Sheet; 7 capítulos, 4 anexos, 6 imágenes, estilos y más de 45.000 caracteres en el Doc. Sello SHA-256 del informe: `acfaa8007845139f60f68a5f60a3af6fe1c8ec203ee7132d74be7cdc4eefcff8`.
+
+### Cambios técnicos y evidencia
+
+- El sincronizador genera las seis figuras, reemplaza los marcadores del documento por imágenes obtenidas por URL pública, llena tablas nativas y formatea secciones. El endpoint público sirve solo nombres incluidos en la lista permitida `CHART_NAMES`; nombres desconocidos y archivos inexistentes devuelven 404. La ruta quedó registrada en `docs/permisos-api.md`.
+- Corregí la especificación de gráficos nativos (ejes para barras y `stackedType` solo en tipos compatibles) y la posición de inserción de texto en celdas Docs, validadas durante la publicación real.
+- La serie anual se arma con agregados completos por motor; evita sumar desde el recorte de 1.500 filas. La ejecución financiera reporta obligaciones sin sumarlas otra vez a los pagos, que pueden ser subconjunto de aquellas.
+- La lectura final de `bd_csh` confirmó 225.380 filas normalizadas, 69.908 filas `PLAN_ACCION`, 8 planes, 2.078 metas (1.805 únicas), 29 entidades y 37 mesas.
+- Precisión normativa del informe: el PDD 2024–2027 fue adoptado por Acuerdo 139 de 2024; el Acuerdo 138 de 2024 se identifica como incorporación/autorización presupuestal. El marco nacional se refiere al Decreto 37 de 2026.
+
+### Validación
+
+- `ruff check` en el servicio y router: **PASS**.
+- `pytest backend/tests/test_access_policy.py backend/tests/test_pdd_dea_triada.py`: **130 passed**.
+- `polis-backend.service`: `active (running)` luego del reinicio.
+- Sincronización `2026-10-15T22:37:25.208006+00:00`; el `_verify_live()` ejecutado al cierre devolvió todas las comprobaciones requeridas en estado conforme.
