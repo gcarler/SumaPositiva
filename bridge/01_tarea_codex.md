@@ -1,103 +1,72 @@
-# ORDEN DE EJECUCIÓN: `[MOTOR-EXTRACCION-HOMOLOGACION-PDD-SEGURIDAD-HUMANA-16]`
+# ORDEN DE EJECUCIÓN: `[SISTEMA-MULTIAGENTE-ABSORCION-INTEGRAL-PDD-17]`
 
 **Agente Asignado:** `codex` (`=codex:0.0`)
-**Rol:** Arquitecto Backend, Ingeniería de Datos PDD y Sincronización Google Workspace
-**Rama:** `main` (Única rama autorizada; prohibido crear ramas secundarias. Commit local en `main` al cerrar).
-**Estado de Aprobación:** El usuario revisó tu dictamen `[REVISION-RUTA-PDD-SEGURIDAD-HUMANA-15A]` y aprobó ejecutar de inmediato la reconstrucción estructural/financiera y la publicación `PDD-Only`.
+**Rol:** Arquitecto del Sistema Multi-Agente Backend de Planeación y Diagnóstico de Seguridad Humana
+**Rama:** `main` (Única rama autorizada. **Cero Frontend:** no tocar `src/**`).
 
 ---
 
-## 1. Objetivo y Alcance Estricto (`PDD-Only`)
+## 1. Directriz Expresa del Usuario
 
-Ejecutar la **Hoja de Ruta y Motor de Procedimiento (`Fases 0, 1, 2, 3 y 4`)** que diseñaste en tu dictamen `[15A]` para reconstruir con rigor documental los **5 Planes de Desarrollo Distritales (`2012–2027`)** y el anexo separado de los **3 Planes de Desarrollo Local (`2024–2027`)**, clasificarlos bajo la matriz dual **`Frontalidad (A/B/C/N)` $\times$ `7 Dimensiones de Seguridad Humana (PNUD / Decreto 037 de 2026)`** sin doble conteo presupuestal, y publicar la nueva versión `PDD-Only` de:
-- **Google Sheet `Matriz_PDM`:** `1hYDwrJbfqVbkAtlAqG-l1K4056Z0uPQ8W2kvEfEPEA4`
-- **Google Doc `Analisis`:** `1yN5IdFy6fh18yKTzC8jfURtakw-dBh5kpfYC4vszitE`
+> *"es que no me interasa el forntend en estos momentos, necesito es un motor -sistema multigante- que pueda absorver y procesar toda la data que tenemos de lso planes de desarrollo para po der genrar un diagnostico de los planes de desarrollo en materia de seguridad humana."*
 
-### Restricciones Metodológicas Inquebrantables del Usuario
-1. **CERO Resultados de Mesas de Trabajo:** No se ha realizado ninguna mesa de trabajo (las 37 mesas están en estado `PROGRAMADA`). Ni el documento `Analisis` ni `Matriz_PDM` pueden simular hallazgos o resultados de mesas comunitarias.
-2. **CERO Análisis de Planes de Acción (PA):** Dejar completamente quietos los Planes de Acción en este informe y en `Matriz_PDM`. No mezclar las 225.380 filas de Planes de Acción ni el Network DEA PA→PDD dentro del informe `Analisis` ni en `Matriz_PDM`.
-3. **Los 3 PDL (`2024–2027`) van en Anexo Territorial Separado:** Nunca sumar el presupuesto o las metas de los 3 PDL al denominador de los 5 PDD distritales.
-
----
-
-## 2. Fases de Ejecución Requeridas
-
-### Fase 0 y Fase 1 — Reconstrucción Estructural y Financiera de los Planes de Desarrollo en `bd_csh`
-Construye y ejecuta un motor reproducible en `backend/scripts/reconstruir_catalogo_pdd_seguridad_humana_16.py` (y las mejoras necesarias en el esquema/metadatos de `seguimiento.planes_desarrollo_distrital`, `seguimiento.pdd_lineas_y_programas` y `seguimiento.pdd_metas_oficiales`) que resuelva los 3 bloqueos que diagnosticaste en `[15A]`:
-
-1. **`PDD_2012_2015` (*Acuerdo 001 de 2012 — Campo para Todos*):**
-   - Fuente primaria exclusiva: `data/planes_desarrollo/pdd_2012_2015_acuerdo_001_campo_para_todos.pdf` y `.md` (excluir del árbol estructural los encabezados contaminados del estudio secundario `cdim`).
-   - Poblar en `seguimiento.pdd_lineas_y_programas` los **5 Ejes Estratégicos** con su `ppi_anual_cop` (2012, 2013, 2014, 2015) y `ppi_total_cop` (`$3.049.788.268.000` total; Eje 5 *Seguridad Ciudadana y Buen Gobierno* = `$170.412.997.000`, más Ejes 1, 2, 3 y 4) y sus Programas/Componentes hijos con `parent_id` válido.
-   - Extraer del Acuerdo 001 de 2012 el conjunto limpio de metas e indicadores (reemplazando las 7 filas contaminadas) y enlazar cada meta a su nodo estratégico mediante `linea_id` no nulo.
-2. **`PDD_2013_2015` (*Acuerdo 016 de 2013 — Ahora Sí Cartagena*):**
-   - Fuente primaria: `data/planes_desarrollo/pdd_2013_2015_acuerdo_016_ahora_si_cartagena.pdf` y `.md`.
-   - Reconstruir el árbol de **4 Objetivos Estratégicos $\rightarrow$ Estrategias / Programas / Subprogramas** con `parent_id`, poblando los montos del PPI 2014–2015 (`$1.874.167.605.000` total en pesos corrientes) y registrando explícitamente la nota metodológica del Acuerdo 016 (vigencia 2013 ejecutada al ~90% antes de la adopción del plan atípico; PPI programado para 2014–2015).
-   - Extraer y clasificar adecuadamente tanto las metas de `BIENESTAR`/`RESULTADO` como las metas de `PRODUCTO` de las matrices del Acuerdo 016 y enlazarlas con `linea_id` no nulo.
-3. **`PDD_2016_2019` (*Acuerdo 006 de 2016 — Primero la Gente*):**
-   - Fuente primaria: `data/planes_desarrollo/pdd_2016_2019_acuerdo_006_primero_la_gente.md` y `.pdf`.
-   - **Purgar las 48 filas basura de títulos de página (`"Página X (OCR Oficial...)"`)** en `seguimiento.pdd_lineas_y_programas`.
-   - Poblar los **3 Objetivos Estratégicos** y las **Líneas Estratégicas reales** con sus montos anuales 2016–2019 de la tabla financiera oficial (`$4.331.941.000.000` total; p. ej., *Cartagena Sin Miedos* `$70.158.000.000`, *Cartagena Territorio de Paz* `$5.934.000.000`, *Superar la Desigualdad*, etc.) y relación `parent_id`.
-   - Extraer todos los programas/metas/indicadores legibles del texto OCR disponible en `pdd_2016_2019_acuerdo_006_primero_la_gente.md`, vinculándolos con `linea_id` a su línea estratégica y documentando con transparencia el alcance de la fuente escaneada.
-4. **`PDD_2020_2023` (*Acuerdo 024 de 2020 — Salvemos Juntos a Cartagena*):**
-   - Fuente primaria: `data/planes_desarrollo/pdd_2020_2023_salvemos_juntos_cartagena.pdf` y `.md`.
-   - Conectar jerárquicamente (`parent_id`) los **4 Pilares $\rightarrow$ 21 Líneas Estratégicas $\rightarrow$ 87 Programas** y poblar su `ppi_anual_cop` y total por línea/programa desde las tablas financieras plurianuales del documento (verificando unidad en millones de COP convertida a COP exactos, p. ej., línea *Convivencia y Seguridad para la Gobernabilidad* = `$62.628.600.000`, más líneas de Derechos Humanos/Paz, Víctimas, Gestión del Riesgo, etc.).
-   - Enlazar las metas de resultado y de producto a su programa/línea mediante `linea_id` no nulo y recuperar los indicadores/líneas base faltantes desde el documento.
-5. **`PDD_2024_2027` (*Acuerdo 139 de 2024 — Cartagena, Ciudad de Derechos*):**
-   - Mantener los `220` nodos (`6` Líneas Estratégicas, `42` Impulsores, `172` Programas) con su `ppi_anual_cop` (`$12.800.853.474.855` total; Línea 1 *Seguridad Humana* = `$5.666.917.744.338` = `44,27%`), completando la relación `parent_id` de `PROGRAMA -> IMPULSOR -> LINEA_ESTRATEGICA`.
-   - Enlazar las metas canónicas únicas (`973` metas netas deduplicadas, manteniendo trazabilidad de las `273` filas secundarias de Bases/Ponencia) a su programa/línea con `linea_id` no nulo.
-6. **Anexo Separado `PDL_2024_2027` (`Localidades 1, 2 y 3`):**
-   - Poblar los montos por línea de los 3 PDL distinguiendo **Inversión** vs. **Funcionamiento** (ej. en PDL 1 `$6.868.680.000` funcionamiento; en PDL 2 fila explícita de funcionamiento; en PDL 3 `$39.000.000.000` inversión plurianual vs. `$7.000.000.000` funcionamiento/honorarios de ediles) y enlazar sus `401` metas a sus líneas locales con `linea_id`.
-
-### Puerta de Calidad A (Verificación Automática)
-- `0` filas con títulos falsos `"Página X"` en `seguimiento.pdd_lineas_y_programas`.
-- `100%` de las metas canónicas activas en `seguimiento.pdd_metas_oficiales` con `linea_id IS NOT NULL` apuntando a un nodo válido de su mismo plan.
-- Suma de `ppi_total_cop` de las líneas de primer nivel de cada uno de los 5 PDD conciliada contra el PPI total oficial del plan (documentando cualquier diferencia por redondeo o partidas de funcionamiento/deuda).
-- Serie monetaria normalizada tanto en **COP corrientes (nominales)** como en **COP constantes de base 2025 (deflactados con IPC oficial DANE)**.
+### Por qué la corrida anterior (`[16]`) aún no absorbió toda la data de los PDD:
+1. **`PDD 2012–2015` (`pdd_2012_2015_acuerdo_001_campo_para_todos.pdf` — 161 páginas):**
+   - Antes, el archivo `.md` estaba truncado a `77 KB`, por lo que solo se habían extraído `7` compromisos de la visión y el PPI de 2012 quedó con **`A = $0` y `B = $0` (`100%` en `C`)**.
+   - **Ahora:** Ya extrajimos las **161 páginas completas (`365.872` caracteres)** en `/root/polis/data/planes_desarrollo/pdd_2012_2015_acuerdo_001_campo_para_todos.md` (y también se está generando `/root/polis/data/planes_desarrollo/estructurado_pdd_2012_2015.json`). Allí están **todos los 5 Ejes, todas las Políticas, todos los Programas y Subprogramas, sus metas de resultado y de producto y la tabla del PPI por Ejes y Programas**.
+2. **`PDD 2013–2015` (`pdd_2013_2015_acuerdo_016_ahora_si_cartagena.pdf` — 199 páginas):**
+   - En `[16]` el PPI de `2013–2015` quedó con **`A = $0` y `B = $0` (`100%` en `C`)** porque solo había `4` objetivos y `7` programas sin montos desglosados en BD.
+   - **Ahora:** En las páginas `172–195` del PDF (`pdd_2013_2015_acuerdo_016_ahora_si_cartagena.pdf` y `.md`, más `/root/polis/data/planes_desarrollo/estructurado_pdd_2013_2015.json`) está la **tabla completa del Plan Plurianual de Inversiones 2014–2015 desglosada por Objetivo Estratégico, Estrategia, Programa y Subprograma** (en miles de pesos), y en las páginas `35–171` están **todas las matrices de Metas de Resultado y Metas de Producto por Programa y Subprograma**.
+3. **`PDD 2016–2019` (`pdd_2016_2019_acuerdo_006_primero_la_gente.pdf` — 363 páginas):**
+   - Antes, `pdd_2016_2019_acuerdo_006_primero_la_gente.md` solo tenía OCR de las páginas `1–24` y `340–363` (`70 KB`), por lo que en BD solo había `3` objetivos estratégicos y **`0` metas cuantificadas**.
+   - **Ahora:** Se acaba de ejecutar el **OCR integral de las 363 páginas completas en español (`tesseract -l spa`)** sobre `pdd_2016_2019_acuerdo_006_primero_la_gente.md`, donde están todas las Líneas Estratégicas, Programas, Indicadores de Resultado, Indicadores de Producto, Líneas Base y Metas del cuatrienio 2016–2019.
+4. **`PDD 2020–2023` (`pdd_2020_2023_salvemos_juntos_cartagena.pdf` — 370 páginas):**
+   - Tiene las matrices completas de los 4 Pilares, 21 Líneas, 87 Programas, metas de resultado/producto y tablas financieras plurianuales por programa (también consolidándose en `/root/polis/data/planes_desarrollo/estructurado_pdd_2020_2023.json`).
 
 ---
 
-### Fase 2 — Clasificación Rigurosa en Seguridad Humana (`A / B / C / N` $\times$ `7 Dimensiones`)
-Implementa un clasificador auditable, determinístico y basado en reglas explícitas sobre el objeto programático (no simple coincidencia ciega de una palabra suelta) que asigne a cada programa/línea (`pdd_lineas_y_programas`) y a cada meta (`pdd_metas_oficiales`) en su JSON `metadatos` (o columnas estructuradas):
+## 2. Arquitectura Requerida: Sistema Multi-Agente de Absorción y Diagnóstico PDD (`backend/app/modules/compromisos/motor_multiagente_pdd.py`)
 
-1. **Grado de Frontalidad hacia la Seguridad Humana (`grado_frontalidad_sh`):**
-   - **`A_NUCLEO_FRONTAL`:** Programas/metas cuyo objeto explícito es seguridad ciudadana, convivencia, prevención de violencia y delito, acceso a la justicia, derechos humanos, construcción de paz, atención a víctimas del conflicto o gestión del riesgo de desastres / emergencias. *(Nota: dentro de un eje mixto como "Seguridad Ciudadana y Buen Gobierno" en 2012 o la línea "Seguridad Humana" en 2024, clasifica como `A` los programas/metas del núcleo de seguridad/convivencia/justicia/DD.HH./riesgo y como `B`, `C` o `N` los programas que sean determinantes sociales o buen gobierno administrativo).*
-   - **`B_DETERMINANTE_DIRECTO`:** Programas/metas sectoriales que atacan de forma directa y focalizada una amenaza a la supervivencia, dignidad o medios de vida en las 7 dimensiones de la Seguridad Humana (seguridad alimentaria y nutrición, salud pública/mental/materno-infantil, inclusión productiva/superación de pobreza extrema, hábitat seguro/saneamiento básico, protección de niñez/juventud/mujeres/grupos étnicos vulnerables).
-   - **`C_CONTEXTUAL_HABILITANTE`:** Infraestructura vial macro, competitividad general, turismo, equipamiento urbano general o educación/salud administrativa general que habilita el desarrollo pero no está focalizada como intervención directa de seguridad humana.
-   - **`N_NO_ASOCIADO_FUNCIONAMIENTO`:** Administración general, recaudo tributario, servicio de la deuda, catastro, fortalecimiento institucional interno o gastos de funcionamiento.
-2. **Asignación a las 7 Dimensiones de Seguridad Humana (PNUD 1994 / Decreto 037 de 2026) sin Doble Conteo:**
-   - Para cada nodo/meta en categoría `A` o `B`, asignar `dimension_sh_primaria` (`Seguridad Personal`, `Seguridad Comunitaria`, `Seguridad Económica`, `Seguridad Alimentaria`, `Seguridad en la Salud`, `Seguridad Ambiental`, `Seguridad Política`) y un vector de pesos `pesos_7d` cuya suma sea exactamente `1.0` (`100%`) para que al agregar el PPI por las 7 dimensiones **la suma de las 7 dimensiones cuadre exactamente con el subtotal `A + B` sin duplicar un solo peso**.
+Debes construir un **Sistema Multi-Agente de Backend real y modular** en `backend/app/modules/compromisos/motor_multiagente_pdd.py` (invocable tanto por CLI `backend/scripts/ejecutar_sistema_multiagente_pdd_17.py` como por API `POST /api/v1/compromisos/triada/pdd-dea/ejecutar-sistema-multiagente` y `GET /api/v1/compromisos/triada/pdd-dea/estado-sistema-multiagente`) compuesto por **5 Agentes Especializados con estado compartido, bitácora de auditoría por agente y puertas de validación**:
+
+### Agente 1 — `AgenteAbsorcionDocumentalPDD` (Ingesta Profunda PDF / OCR / Tablas)
+- Absorbe el **100% de las páginas y tablas** de los 8 planes en `/root/polis/data/planes_desarrollo/` (usando `pymupdf`, `pdfplumber`, los `.md` completos —incluyendo las 161 páginas de 2012 y las 363 páginas OCR de 2016— y los archivos `estructurado_pdd_*.json` si están presentes en `data/planes_desarrollo/`).
+- Extrae para **los 5 PDD (`2012–2015`, `2013–2015`, `2016–2019`, `2020–2023`, `2024–2027`)** y los **3 PDL (`2024–2027`)**:
+  - En **`PDD 2012–2015`**: Los 5 Ejes Estratégicos, todas sus Políticas, **todos sus Programas y Subprogramas** (más de 30 programas y 80 subprogramas en las págs. 25–145 del Acuerdo 001), **todas las metas de resultado y de producto** (más de 150 metas cuantificadas con indicador, línea base y meta 2015) y el PPI por Eje/Programa.
+  - En **`PDD 2013–2015`**: Los 4 Objetivos Estratégicos, **todas sus Estrategias, Programas y Subprogramas**, el **PPI 2014–2015 desglosado por Estrategia/Programa/Subprograma** de las tablas financieras del Acuerdo 016, y **todas las metas de resultado y de producto** vinculadas a su programa/subprograma.
+  - En **`PDD 2016–2019`**: Los 3 Objetivos Estratégicos, las Líneas Estratégicas, **los Programas extraídos del OCR completo de 363 páginas**, el PPI anual 2016–2019 por línea y **todas las metas de resultado y de producto cuantificadas** presentes en las matrices de las páginas 25–339 del Acuerdo 006 de 2016.
+  - En **`PDD 2020–2023`**: Los 4 Pilares, 21 Líneas, 87 Programas con su PPI plurianual por línea/programa y todas sus metas de resultado y producto con indicadores completos.
+  - En **`PDD 2024–2027`**: Las 6 Líneas Estratégicas, 42 Impulsores, 172 Programas con su PPI plurianual y las 973 metas canónicas únicas enlazadas a su programa.
+
+### Agente 2 — `AgenteReconstructorJerarquicoMGA` (Árbol Programático y Auditoría MGA-DNP)
+- Construye y persiste en `seguimiento.pdd_lineas_y_programas` y `seguimiento.pdd_metas_oficiales` el árbol completo (`Plan → Eje/Objetivo/Pilar → Línea/Estrategia → Programa → Subprograma → Meta Resultado → Meta Producto`) con `parent_id` y `linea_id` 100% poblados (`0` huérfanas, `0` títulos de página).
+- Audita cada meta contra la doctrina del **Banco de Conocimiento MGA-DNP** (`Resultado/Bienestar` vs. `Producto`, filtro `CREMA`, presencia de Indicador, Unidad, Línea Base y Meta Cuatrienio), calculando el **Índice de Rigor y Profundidad Estratégica MGA** de cada Plan de Desarrollo.
+- Ejecuta la **Puerta de Calidad A**.
+
+### Agente 3 — `AgenteTaxonomoSeguridadHumana` (Frontalidad `A/B/C/N` $\times$ `7 Dimensiones PNUD / Decreto 037`)
+- Evalúa cada línea, programa, subprograma y meta de **los 5 PDD (incluyendo 2012–2015 y 2013–2015)** bajo la rúbrica de dos ejes:
+  - **Grado de Frontalidad (`A` Núcleo Frontal, `B` Determinante Multidimensional Directo, `C` Contextual/Habilitante, `N` No Asociado/Funcionamiento)**.
+  - **Prohibido dejar `2012–2015` o `2013–2015` con `A = 0` y `B = 0`:** En `2012–2015` y `2013–2015`, los programas y subprogramas de seguridad ciudadana, convivencia, justicia, derechos humanos, víctimas y gestión del riesgo se clasifican en `A`, y los programas de superación de pobreza, nutrición/seguridad alimentaria, salud pública, hábitat vulnerable y protección de grupos vulnerables se clasifican en `B` (y si en 2012 el PPI solo está desglosado a nivel de Eje o Política/Programa, asigna los montos de los programas o pondera el PPI de cada Eje según la composición programática verificada de sus programas/metas `A`, `B`, `C`, `N`, documentando explícitamente la regla de atribución para que los 5 PDD sean financieramente comparables).
+  - Asigna el vector `pesos_7d` en las **7 Dimensiones de Seguridad Humana (`Personal`, `Comunitaria`, `Económica`, `Alimentaria`, `Salud`, `Ambiental`, `Política`)** sumando exactamente `1.00` (`100%`) por cada unidad `A/B`.
+
+### Agente 4 — `AgenteFinancieroPPI` (Conciliación Plurianual, Deflactación DANE 2025 y Cero Doble Conteo)
+- Evita cualquier doble conteo padre-hijo (solo suma nodos hoja con presupuesto o pondera desde el padre cuando los hijos no desglosan monto).
+- Convierte todas las cifras a **COP corrientes** y a **COP constantes de base 2025 (IPC oficial DANE)**.
+- Ejecuta la **Puerta de Calidad B**: verifica matemáticamente que para cada uno de los 5 PDD:
+  $$\text{PPI}_A + \text{PPI}_B + \text{PPI}_C + \text{PPI}_N = \text{PPI Total Oficial}$$
+  $$\sum_{d=1}^{7} \text{PPI}_{\text{Dimensión } d} = \text{PPI}_A + \text{PPI}_B$$
+
+### Agente 5 — `AgenteEstrategaDiagnosticoPDD` (Síntesis Comparativa de las 4 Preguntas y Publicación Viva)
+- Genera el dictamen comparativo integral de los **5 Planes de Desarrollo (2012–2027)** respondiendo con datos completos las **4 preguntas del usuario**:
+  1. *¿Qué contemplaba cada Plan de Desarrollo?* (arquitectura completa absorbida de los 5 PDD, programas y metas reales de los 5 periodos).
+  2. *¿Cuál fue la apuesta a nivel de Metas y a nivel Financiero/Presupuestal hacia la Seguridad Humana en cada uno de los 5 PDD?* (comparativa real de los 5 planes en `A`, `B`, `C`, `N` y en las `7 Dimensiones`).
+  3. *¿Qué Plan de Desarrollo fue más frontal y cuál fue más estratégico en clave de Seguridad Humana?* (comparando Frontalidad Nominal, Frontalidad de Núcleo Duro `A`, Apuesta Ampliada `A+B` y Profundidad de Cadena Estratégica MGA).
+  4. *¿Cómo ha sido el abordaje de los problemas de la Seguridad Humana desde la Planeación Estratégica entre 2012 y 2027?*
+- Actualiza en vivo **`Matriz_PDM`** (`1hYDwrJbfqVbkAtlAqG-l1K4056Z0uPQ8W2kvEfEPEA4`) y el Google Doc **`Analisis`** (`1yN5IdFy6fh18yKTzC8jfURtakw-dBh5kpfYC4vszitE`) con las nuevas cifras completas de los 5 PDD, las 6 gráficas PNG regeneradas a 300 DPI y la trazabilidad de los 5 agentes del motor.
 
 ---
 
-### Fase 3 y Fase 4 — Actualización de API, `Matriz_PDM` y Documento `Analisis` (`PDD-Only`)
-1. **Servicio y Endpoints Backend:**
-   - Actualizar `pdd_dea_service.py` y `google_workspace_sync_service.py` para exponer la evaluación comparativa de los **5 PDD (2012–2027)** + anexo **3 PDL (2024–2027)** con las métricas de las **4 preguntas estratégicas del usuario**, la desagregación `A / B / C / N` y la matriz de las `7 Dimensiones` en pesos corrientes y constantes 2025.
-2. **Actualización en vivo de Google Sheet `Matriz_PDM` (`1hYDwrJbfqVbkAtlAqG-l1K4056Z0uPQ8W2kvEfEPEA4`):**
-   - Estructurar las hojas nativas en modo `PDD-Only` (sin Planes de Acción ni resultados de Mesas):
-     1. `00_Guia_Alcance_y_Calidad`: Alcance `PDD-Only`, fuentes primarias, puertas de calidad, IPC DANE base 2025, rúbrica `A/B/C/N` y nota de que las 37 mesas están `PROGRAMADAS`.
-     2. `01_Comparativo_5_PDD`: Tabla maestra comparativa de los 5 PDD (`2012–2015`, `2013–2015`, `2016–2019`, `2020–2023`, `2024–2027`) con PPI total nominal y constante 2025, PPI en `A (Núcleo Frontal)`, `B (Determinantes Directos)`, `C (Contextual)` y `N (No Asociado)`, `% de Frontalidad (A)`, `% Ampliado SH (A+B)`, conteo de metas únicas de Resultado y Producto y puntaje de Profundidad Estratégica (completitud de cadena de valor).
-     3. `02_Arquitectura_y_PPI_Programas`: Todos los ejes/pilares/líneas/programas de los 5 PDD con su código, nivel, padre, PPI anual y total (corriente y constante 2025), clasificación `A/B/C/N` y dimensión SH primaria.
-     4. `03_Matriz_7_Dimensiones_SH`: Distribución presupuestal (COP constantes 2025 y %) y de metas de cada uno de los 5 PDD en las 7 Dimensiones de Seguridad Humana (sin doble conteo).
-     5. `04_Catalogo_Metas_Unicas_PDD`: Las metas canónicas únicas de los 5 PDD enlazadas a su línea/programa (`linea_id`), tipo (`RESULTADO`/`PRODUCTO`), indicador, línea base, meta cuatrienio, clasificación `A/B/C/N` y dimensión SH.
-     6. `05_Abordaje_Estrategico_4_Preguntas`: Síntesis matricial comparativa respondiendo las 4 preguntas para cada PDD (enfoque del problema, frontalidad vs. transversalidad, articulación causal diagnóstico→meta→presupuesto, territorialización y poblaciones).
-     7. `06_Anexo_3_PDL_Localidades`: Análisis separado de los 3 Planes de Desarrollo Local (`2024–2027`) separando Inversión vs. Funcionamiento.
-   - Insertar **4 gráficos nativos de Google Sheets** en `Matriz_PDM` basados en estas tablas (1. Evolución del PPI por PDD según Frontalidad `A/B/C/N` en COP constantes 2025; 2. Distribución por las 7 Dimensiones de Seguridad Humana; 3. Metas de Resultado y Producto en Seguridad Humana por PDD; 4. Índice de Frontalidad Presupuestal vs. Profundidad de Cadena Estratégica por PDD).
-3. **Actualización en vivo del Google Doc `Analisis` (`1yN5IdFy6fh18yKTzC8jfURtakw-dBh5kpfYC4vszitE`):**
-   - Redactar e inyectar un **Documento Técnico de Diagnóstico Preliminar Basado Exclusivamente en los Planes de Desarrollo de Cartagena (2012–2027) a la luz de la Política Pública de Seguridad Humana (Decreto 037 de 2026 y Estándar PNUD)**, estructurado con estilos nativos `HEADING_1`, `HEADING_2`, **tablas nativas de Google Docs** y **6 gráficos PNG de alta resolución (300 DPI) embebidos vía `InsertInlineImageRequest`** generados desde los datos reales reconstruidos:
-     - **Capítulo 1 — Alcance Metodológico, Hoja de Ruta y Motor de Procedimiento (`PDD-Only`):** Explicación transparente de por qué el diagnóstico preliminar se concentra exclusivamente en los Planes de Desarrollo (sin simular resultados de las 37 mesas `PROGRAMADAS` y dejando en congelamiento los Planes de Acción hasta su homologación), el uso del Decreto 037 de 2026 / PNUD 1994 como lente retrospectiva común, las Puertas de Calidad `A` y `B`, la serie IPC DANE base 2025 y la rúbrica bidimensional `Frontalidad (A/B/C/N)` $\times$ `7 Dimensiones` sin doble conteo.
-     - **Capítulo 2 — Pregunta 1: ¿Qué contemplaba cada Plan de Desarrollo del Distrito (2012–2027)?** Radiografía estructural e histórica detallada de cada uno de los 5 PDD (`2012–2015 Campo para Todos`, `2013–2015 Ahora Sí Cartagena`, `2016–2019 Primero la Gente`, `2020–2023 Salvemos Juntos a Cartagena` y `2024–2027 Cartagena, Ciudad de Derechos`), su arquitectura de ejes/líneas/programas, su diagnóstico de ciudad y sus metas de resultado y producto.
-     - **Capítulo 3 — Pregunta 2: ¿Cuál fue la apuesta a nivel de Metas y a nivel Financiero/Presupuestal hacia la Seguridad Humana?** Análisis cuantitativo riguroso del PPI nominal y constante 2025 de cada PDD desglosado entre **Núcleo Frontal (`A`)**, **Determinantes Multidimensionales Directos (`B`)**, **Gasto Contextual/Habilitante (`C`)** y **No Asociado/Funcionamiento (`N`)**, y su reparto exacto entre las **7 Dimensiones de la Seguridad Humana**, distinguiendo la etiqueta nominal de una línea frente al contenido real de sus programas.
-     - **Capítulo 4 — Pregunta 3: ¿Qué Plan de Desarrollo fue más frontal y más estratégico en clave de Seguridad Humana?** Contraste técnico entre **Frontalidad Nominal/Presupuestal** (donde el PDD 2024–2027 titula explícitamente su Línea 1 *"Seguridad Humana"* con `$5,667 billones` = `44,27%` del PPI, pero agrupa allí tanto seguridad ciudadana/justicia/riesgo `A` como determinantes sociales amplios `B` de educación, salud y deporte) vs. **Frontalidad de Núcleo Duro (`A`)** vs. **Profundidad de Diseño Estratégico** (trazabilidad de la cadena `Diagnóstico → Objetivo → Programa → Meta de Resultado → Meta de Producto → PPI` en cada uno de los 5 planes).
-     - **Capítulo 5 — Pregunta 4: Evolución del Abordaje de los Problemas de la Seguridad Humana desde la Planeación Estratégica (2012–2027):** Análisis comparado de cómo evolucionó la concepción del problema público a lo largo de los 5 gobiernos (del enfoque de seguridad policiva y buen gobierno en 2012, pasando por inclusión social en 2013, convivencia y paz territorial en 2016, gobernabilidad y resiliencia post-pandemia en 2020, hasta la adopción explícita del paradigma de Seguridad Humana y Ciudad de Derechos en 2024), identificando rupturas, continuidades y vacíos estructurales.
-     - **Capítulo 6 — Anexo Territorial Separado: Los 3 Planes de Desarrollo Local (`PDL 2024–2027` — Localidades 1, 2 y 3):** Lectura desagregada de la apuesta local en Seguridad Humana separando inversión real vs. gastos de funcionamiento de los Fondos de Desarrollo Local.
-     - **Capítulo 7 — Hallazgos de Calidad Documental, Limitaciones del Corpus e Insumos Base para la Fase Participativa (37 Mesas Programadas):** Síntesis de brechas documentales (ej. PDF escaneado en 2016 y PDL 2, ventana 2014–2015 en PDD 2013) y preguntas orientadoras que este diagnóstico entrega como insumo técnico para cuando se instalen las 37 mesas de trabajo.
-
----
-
-## 3. Controles de Calidad y Entrega
-
-1. Ejecutar el script de reconstrucción y verificar en `bd_csh` que los 8 planes queden con jerarquía limpia, `0` filas `"Página X"`, `linea_id` poblado en las metas canónicas y clasificación `A/B/C/N` + `7D` conciliada.
-2. Regenerar la caché si aplica, reiniciar `polis-backend.service` y ejecutar la sincronización en vivo con Google Sheets (`Matriz_PDM`) y Google Docs (`Analisis`).
-3. Verificar con lectura real desde Google Sheets API v4 y Google Docs API v1 que `Matriz_PDM` y `Analisis` quedaron actualizados, con tablas y gráficos nativos/embebidos y **cero referencias a resultados de mesas realizadas**.
-4. Ejecutar `ruff check` y `pytest` sobre los archivos modificados.
-5. Documentar todo en `/root/polis/bridge/02_entrega_codex.md` y hacer commit en `main`.
+## 3. Verificación y Cierre
+1. Ejecuta el pipeline completo de los 5 agentes (`ejecutar_sistema_multiagente_pdd_17.py`), verifica que `bd_csh`, `Matriz_PDM` y `Analisis` reflejen las metas y programas extraídos de **los 5 PDD completos (incluyendo 2012, 2013 y 2016)** y que ningún PDD tenga `A=0` ni `B=0`.
+2. Ejecuta `ruff check` y `pytest` sobre el nuevo motor multi-agente.
+3. Reinicia `polis-backend.service`, registra el reporte en `bridge/02_entrega_codex.md` y haz commit local en `main`.

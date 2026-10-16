@@ -1177,7 +1177,7 @@ def extract_catalog() -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[
         }[year]
         payload = json.loads(path.read_text(encoding="utf-8"))
         for entry in structured_items(payload):
-            name = next(
+            node_name = next(
                 (
                     entry.get(key)
                     for key in ("nombre", "name", "programa", "titulo", "título")
@@ -1185,27 +1185,36 @@ def extract_catalog() -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[
                 ),
                 None,
             )
+            name = node_name or (
+                entry.get("descripcion")
+                if isinstance(entry.get("descripcion"), str)
+                else None
+            )
             if not name or len(name.strip()) < 5:
                 continue
             level_raw = str(entry.get("nivel") or entry.get("level") or "").upper()
-            level = next(
-                (
-                    key
-                    for key in (
-                        "SUBPROGRAMA",
-                        "PROGRAMA",
-                        "ESTRATEGIA",
-                        "OBJETIVO",
-                        "EJE",
-                        "PILAR",
-                        "LINEA",
-                    )
-                    if key in level_raw
-                ),
-                None,
+            level = (
+                next(
+                    (
+                        key
+                        for key in (
+                            "SUBPROGRAMA",
+                            "PROGRAMA",
+                            "ESTRATEGIA",
+                            "OBJETIVO",
+                            "EJE",
+                            "PILAR",
+                            "LINEA",
+                        )
+                        if key in level_raw
+                    ),
+                    None,
+                )
+                if node_name and len(node_name.strip()) >= 5
+                else None
             )
             if level:
-                signature = (plan_code, level, re.sub(r"\W+", " ", name.casefold()).strip())
+                signature = (plan_code, level, re.sub(r"\W+", " ", node_name.casefold()).strip())
                 if signature not in structured_node_signatures:
                     lines.append(
                         {
@@ -1214,7 +1223,7 @@ def extract_catalog() -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[
                             "parent_id": None,
                             "nivel": level,
                             "codigo": str(entry.get("codigo") or entry.get("code") or "") or None,
-                            "nombre": name.strip(),
+                            "nombre": node_name.strip(),
                             "orden": len(lines) + 1,
                             "ppi_anual_cop": entry.get("ppi_anual_cop") or {},
                             "fuente": path.name,
@@ -1246,7 +1255,7 @@ def extract_catalog() -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[
                     "valor_meta",
                 )
             )
-            if indicator and has_goal:
+            if indicator and has_goal and plan_code != "PDD_2024_2027":
                 signature = (
                     plan_code,
                     re.sub(r"\W+", " ", name.casefold()).strip(),
@@ -1261,11 +1270,21 @@ def extract_catalog() -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[
                             "nombre": name.strip(),
                             "indicador": indicator,
                             "unidad_medida": entry.get("unidad_medida"),
-                            "linea_nombre": entry.get("programa") or entry.get("linea_nombre"),
+                            "linea_nombre": (
+                                entry.get("programa_nombre")
+                                or entry.get("programa")
+                                or entry.get("linea_nombre")
+                                or entry.get("estrategia_nombre")
+                                or entry.get("eje_nombre")
+                            ),
                             "fuente": path.name,
-                            "fila_fuente": int(entry.get("fila_fuente") or 0) or None,
+                            "fila_fuente": int(
+                                entry.get("fila_fuente") or entry.get("pagina_origen") or 0
+                            )
+                            or None,
                             "datos_oficiales": {
                                 **entry,
+                                "evidencia_ocr_literal": f"{name.strip()} | {indicator}",
                                 "extraccion": "JSON_ESTRUCTURADO_PDD",
                                 "revision_humana_pendiente": True,
                             },

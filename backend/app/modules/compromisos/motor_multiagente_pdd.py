@@ -206,13 +206,14 @@ class AgenteAbsorcionDocumentalPDD:
                         text = chunks[page_no]
                         source = "MARKDOWN_OCR"
                     page_tables = []
-                    try:
-                        for table in page.find_tables().tables:
-                            rows = table.extract()
-                            if rows:
-                                page_tables.append({"filas": rows})
-                    except (AttributeError, RuntimeError, ValueError):
-                        page_tables = []
+                    if source != "MARKDOWN_OCR" and page.get_drawings():
+                        try:
+                            for table in page.find_tables().tables:
+                                rows = table.extract()
+                                if rows:
+                                    page_tables.append({"filas": rows})
+                        except (AttributeError, RuntimeError, ValueError):
+                            page_tables = []
                     item = EvidenciaPagina(
                         codigo_plan=plan_code,
                         archivo=filename,
@@ -259,21 +260,24 @@ class AgenteAbsorcionDocumentalPDD:
         if found_plans != expected_plans:
             raise ValueError("No se cubrieron los ocho planes registrados en la tarea.")
         # Structured exports are evidence inputs too; include their digest and JSON structure.
-        for path in sorted(DATA_DIR.glob("estructurado_pdd_*.json")):
+        for path in sorted(DATA_DIR.glob("estructurado_*.json")):
             payload = json.loads(path.read_text(encoding="utf-8"))
             plan_code_match = re.search(r"(2012|2013|2016|2020|2024)", path.name)
-            plan_code = (
-                f"PDD_{plan_code_match.group(1)}_"
-                + {
-                    "2012": "2015",
-                    "2013": "2015",
-                    "2016": "2019",
-                    "2020": "2023",
-                    "2024": "2027",
-                }[plan_code_match.group(1)]
-                if plan_code_match
-                else "PDD_2024_2027"
-            )
+            if "pdl_" in path.name:
+                plan_code = "PDL_1_2024_2027"
+            else:
+                plan_code = (
+                    f"PDD_{plan_code_match.group(1)}_"
+                    + {
+                        "2012": "2015",
+                        "2013": "2015",
+                        "2016": "2019",
+                        "2020": "2023",
+                        "2024": "2027",
+                    }[plan_code_match.group(1)]
+                    if plan_code_match
+                    else "PDD_2024_2027"
+                )
             json_content = json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
             estado.paginas.append(
                 EvidenciaPagina(
