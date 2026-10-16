@@ -144,6 +144,62 @@ export interface BancoConocimientoDNP {
     Array<{ codigo: string; nombre: string }>
   >;
   enlaces_oficiales: Array<{ titulo: string; url: string }>;
+  modulos_mga_estructuracion?: ModuloMGAEstructuracion[];
+  cadena_valor_proyecto_mga?: EslabonCadenaValorMGA[];
+  criterios_evaluacion_ex_ante?: CriterioEvaluacionExAnteMGA[];
+  plantillas_proyectos_seguridad_humana?: PlantillaProyectoMGA[];
+}
+
+export interface SubetapaMGA {
+  nombre: string;
+  descripcion: string;
+  entregable_clave: string;
+}
+
+export interface ModuloMGAEstructuracion {
+  numero: number;
+  nombre: string;
+  titulo_corto: string;
+  objetivo_modulo: string;
+  subetapas: SubetapaMGA[];
+  entregables_obligatorios: string[];
+  regla_oro_dnp: string;
+  errores_comunes_rechazo: string[];
+}
+
+export interface EslabonCadenaValorMGA {
+  eslabon: "INSUMOS" | "ACTIVIDADES" | "PRODUCTOS" | "RESULTADOS" | "IMPACTOS";
+  orden: number;
+  nombre: string;
+  definicion_dnp: string;
+  regla_formulacion: string;
+  ejemplo_cartagena: string;
+  unidad_o_indicador_ejemplo: string;
+}
+
+export interface CriterioEvaluacionExAnteMGA {
+  criterio: string;
+  sigla: string;
+  formula_o_metodologia: string;
+  tasa_o_umbral_referencia: string;
+  cuando_utilizar: string;
+  interpretacion_viabilidad: string;
+}
+
+export interface PlantillaProyectoMGA {
+  codigo_bpim_proyectado: string;
+  sector_mga: string;
+  programa_pdd: string;
+  entidad_responsable: string;
+  problema_central: string;
+  objetivo_general: string;
+  producto_mga_catalogo: string;
+  indicador_producto: string;
+  meta_cuatrienio: string;
+  actividades_clave: string[];
+  metodologia_evaluacion: string;
+  costo_total_estimado_cop: number;
+  fuentes_financiacion: string[];
 }
 
 export interface ItemLotePlanAccion {
@@ -905,6 +961,406 @@ export const BANCO_CONOCIMIENTO_CANONICO: BancoConocimientoDNP = {
     { titulo: "SisPT - Sistema de Planeación Territorial DNP", url: "https://sispt.dnp.gov.co/" },
     { titulo: "Portal Territorial DNP - Kit Financiero", url: "https://portalterritorial.dnp.gov.co/" },
     { titulo: "Instructivo Metodológico Plan de Acción DNP", url: "/docs/Instructivo_PlandeAccion_DNP.pdf" },
+    { titulo: "Manual Conceptual MGA - DNP", url: "https://colaboracion.dnp.gov.co/CDI/Inversiones%20y%20finanzas%20pblicas/MGA_Manual_Conceptual.pdf" },
+  ],
+  modulos_mga_estructuracion: [
+    {
+      numero: 1,
+      nombre: "Módulo 1: Identificación del Problema y Alineación Estratégica",
+      titulo_corto: "1. Identificación",
+      objetivo_modulo:
+        "Definir el problema central como una situación negativa verificable, analizar a los actores involucrados, delimitar la población objetivo y transformar causas y efectos en objetivos y alternativas viables.",
+      subetapas: [
+        {
+          nombre: "1.1 Articulación y Contribución al PND/PDD",
+          descripcion:
+            "Alinear el proyecto con el Plan Nacional de Desarrollo, el Plan de Desarrollo Distrital 'Cartagena Ciudad de Derechos' y el Catálogo de Clasificación Presupuestal (CCP).",
+          entregable_clave: "Matriz de alineación estratégica con sector MGA y programa PDD.",
+        },
+        {
+          nombre: "1.2 Diagnóstico y Árbol de Problemas",
+          descripcion:
+            "Formular el problema central (tronco), sus causas directas e indirectas (raíces) y sus efectos directos e indirectos (ramas), con evidencia cuantitativa y cualitativa.",
+          entregable_clave: "Árbol de Problemas validado con fuentes DANE, Terridata y SISPRO.",
+        },
+        {
+          nombre: "1.3 Análisis de Participantes e Involucrados",
+          descripcion:
+            "Mapear beneficiarios directos, cooperantes institucionales, oponentes y potenciales perjudicados, definiendo acuerdos de concertación comunitaria.",
+          entregable_clave: "Matriz de involucrados y acuerdos de concertación ciudadana.",
+        },
+        {
+          nombre: "1.4 Población Afectada vs. Población Objetivo",
+          descripcion:
+            "Cuantificar demográficamente la población afectada y focalizar la población objetivo según criterios etarios, territoriales (UCG/Corregimientos) y Sisbén IV.",
+          entregable_clave: "Línea base sociodemográfica y criterios de focalización diferencial.",
+        },
+        {
+          nombre: "1.5 Árbol de Objetivos y Selección de Alternativas",
+          descripcion:
+            "Transformar el problema central en objetivo general con verbo fuerte en infinitivo, causas en medios y efectos en fines, preseleccionando alternativas de solución.",
+          entregable_clave: "Árbol de Objetivos y alternativas evaluadas para preparación técnica.",
+        },
+      ],
+      entregables_obligatorios: [
+        "Árbol de Problemas estructurado",
+        "Árbol de Objetivos en positivo",
+        "Matriz de Involucrados y concertación",
+        "Focalización cuantificada de población objetivo",
+        "Alternativas de solución preseleccionadas",
+      ],
+      regla_oro_dnp:
+        "El problema central debe redactarse siempre como una situación negativa real y verificable que afecta a una comunidad, NUNCA como la ausencia o falta de una solución tecnológica o de obra física.",
+      errores_comunes_rechazo: [
+        "Redactar el problema como 'Falta de un centro de monitoreo' en vez del fenómeno delictivo que afecta al territorio.",
+        "Confundir causas inmediatas con efectos estructurales del problema.",
+        "No justificar la población objetivo con fuentes oficiales (DANE/Sisbén IV).",
+        "Plantear alternativas que no atacan las causas directas identificadas.",
+      ],
+    },
+    {
+      numero: 2,
+      nombre: "Módulo 2: Preparación de la Alternativa y Cadena de Valor",
+      titulo_corto: "2. Preparación",
+      objetivo_modulo:
+        "Dimensionar la necesidad mediante el balance de oferta y demanda, realizar estudios técnicos, de localización y riesgos climáticos, y estructurar la Cadena de Valor con productos oficiales del Catálogo DNP.",
+      subetapas: [
+        {
+          nombre: "2.1 Estudio de Necesidades (Oferta vs. Demanda)",
+          descripcion:
+            "Estimar la demanda insatisfecha proyectando la necesidad social, la capacidad actual de oferta pública y el déficit cuantitativo a cubrir durante la vida útil.",
+          entregable_clave: "Balance oferta-demanda y cálculo del déficit de atención anual.",
+        },
+        {
+          nombre: "2.2 Estudio Técnico y Localización Territorial",
+          descripcion:
+            "Definir microlocalización en Localidades, UCG o los 15 Corregimientos de Cartagena, planos, especificaciones de ingeniería y normatividad sectorial.",
+          entregable_clave: "Ficha técnica, coordenadas georreferenciadas y memoria de cálculo.",
+        },
+        {
+          nombre: "2.3 Análisis de Riesgos y Cambio Climático",
+          descripcion:
+            "Evaluar amenazas por inundación, erosión costera, marejadas y riesgos operativos bajo la Ley 1523/2012, asignando medidas de mitigación.",
+          entregable_clave: "Matriz de riesgos de desastres y plan de contingencia financiado.",
+        },
+        {
+          nombre: "2.4 Estructuración de la Cadena de Valor DNP",
+          descripcion:
+            "Conectar Insumos -> Actividades -> Productos DNP -> Resultados -> Impactos, seleccionando códigos del Catálogo Único de Productos DNP.",
+          entregable_clave: "Cadena de valor con productos estandarizados e indicadores oficiales.",
+        },
+        {
+          nombre: "2.5 Costeo Detallado y Presupuesto por Fases",
+          descripcion:
+            "Costear insumos y actividades a precios de mercado para las fases de preinversión, ejecución/inversión y operación/sostenibilidad plurianual.",
+          entregable_clave: "Presupuesto detallado por actividades, insumos y fuentes.",
+        },
+      ],
+      entregables_obligatorios: [
+        "Estudio de balance oferta-demanda y déficit",
+        "Estudio técnico y microlocalización territorial",
+        "Matriz de gestión del riesgo (Ley 1523 de 2012)",
+        "Cadena de Valor con Productos del Catálogo DNP",
+        "Presupuesto integral (inversión y sostenibilidad)",
+      ],
+      regla_oro_dnp:
+        "Todo Producto debe seleccionarse obligatoriamente del Catálogo Único de Productos del DNP; representa el bien o servicio final entregado a la ciudadanía, nunca una tarea interna ni un insumo administrativo.",
+      errores_comunes_rechazo: [
+        "Formular tareas internas ('Reuniones de coordinación', 'Comprar computadores') como productos del proyecto.",
+        "Omitir los costos de operación y mantenimiento, condenando la infraestructura al abandono.",
+        "No cuantificar el déficit de demanda con series históricas creíbles.",
+        "Ignorar los riesgos de erosión costera o climáticos en proyectos insulares de Cartagena.",
+      ],
+    },
+    {
+      numero: 3,
+      nombre: "Módulo 3: Evaluación Ex-Ante Financiera, Económica y Social",
+      titulo_corto: "3. Evaluación Ex-Ante",
+      objetivo_modulo:
+        "Determinar la viabilidad socioeconómica del proyecto utilizando la Tasa Social de Descuento (TSD = 12% anual), Razones Precio-Cuenta (RPC) y metodologías Costo-Beneficio (VPNE/TIRS) o Costo-Efectividad (CAE/ACE).",
+      subetapas: [
+        {
+          nombre: "3.1 Conversión a Precios Cuenta (Precios Sombra)",
+          descripcion:
+            "Ajustar los flujos a precios de mercado aplicando las Razones Precio-Cuenta (RPC) del DNP para corregir distorsiones de impuestos, aranceles y mano de obra.",
+          entregable_clave: "Flujo de caja social a precios económicos de cuenta.",
+        },
+        {
+          nombre: "3.2 Aplicación de la Tasa Social de Descuento (TSD = 12%)",
+          descripcion:
+            "Descontar los flujos netos intertemporales utilizando la tasa oficial del 12% anual fijada por el DNP para la inversión pública en Colombia.",
+          entregable_clave: "Tasa de descuento de referencia 12% aplicada en el modelo financiero.",
+        },
+        {
+          nombre: "3.3 Evaluación Costo-Beneficio (VPNE, TIRS, RBC)",
+          descripcion:
+            "Calcular el Valor Presente Neto Económico (VPNE), la Tasa Interna de Retorno Social (TIRS >= 12%) y la Relación Beneficio-Costo (RBC >= 1,0) para proyectos con beneficios monetizables.",
+          entregable_clave: "Indicadores de rentabilidad social (VPNE > 0, TIRS >= 12%).",
+        },
+        {
+          nombre: "3.4 Análisis Costo-Efectividad (CAE / ACE) para Seguridad Humana",
+          descripcion:
+            "Evaluar el Costo Anual Equivalente (CAE) y el costo unitario por beneficiario atendido o delito prevenido cuando los beneficios sociales no son monetizables.",
+          entregable_clave: "Ratio de Costo-Efectividad (CAE / meta social anual alcanzada).",
+        },
+      ],
+      entregables_obligatorios: [
+        "Flujo financiero y flujo económico social descontado",
+        "Cálculo de VPNE, TIRS y RBC o CAE/ACE según tipología",
+        "Análisis de sensibilidad ante variaciones de costos y tiempos",
+        "Dictamen de viabilidad socioeconómica ex-ante",
+      ],
+      regla_oro_dnp:
+        "Toda evaluación ex-ante debe aplicar la TSD del 12% anual. En proyectos de Seguridad Humana y Convivencia donde monetizar beneficios sea arbitrario, debe aplicarse rigurosamente el Análisis Costo-Efectividad (CAE/ACE).",
+      errores_comunes_rechazo: [
+        "Utilizar tasas de descuento arbitrarias o comerciales del sector privado en vez del 12% social.",
+        "Monetizar beneficios sin respaldo técnico o duplicar beneficios en el flujo.",
+        "Omitir el análisis de sensibilidad en proyectos de alta volatilidad presupuestal.",
+        "No justificar la alternativa con menor CAE cuando se aplica Costo-Efectividad.",
+      ],
+    },
+    {
+      numero: 4,
+      nombre: "Módulo 4: Programación, Fuentes de Financiación y Marco Lógico",
+      titulo_corto: "4. Programación",
+      objetivo_modulo:
+        "Estructurar los indicadores de producto y gestión bajo criterio CREMA, programar las fuentes de financiación plurianuales por clasificador presupuestal (CCP) y consolidar la Matriz de Marco Lógico (MML).",
+      subetapas: [
+        {
+          nombre: "4.1 Selección y Ficha de Indicadores (Filtro CREMA)",
+          descripcion:
+            "Asignar indicadores oficiales de producto y gestión que cumplan los 5 criterios: Claro, Relevante, Económico, Medible y Adecuado, con línea base y metas anuales.",
+          entregable_clave: "Fichas técnicas de indicadores CREMA con medios de verificación.",
+        },
+        {
+          nombre: "4.2 Programación Plurianual de Fuentes de Financiación",
+          descripcion:
+            "Asignar los techos de gasto por vigencia según el Clasificador Presupuestal (ICLD, SGP, SGR, Crédito, Cofinanciación, FONSECON).",
+          entregable_clave: "Cronograma financiero plurianual armonizado con el Marco Fiscal (MFMP).",
+        },
+        {
+          nombre: "4.3 Consolidación de la Matriz de Marco Lógico (4x4)",
+          descripcion:
+            "Estructurar Fin, Propósito, Componentes y Actividades con su resumen narrativo, indicadores verificables, medios de verificación y supuestos críticos.",
+          entregable_clave: "Matriz de Marco Lógico de 4 filas x 4 columnas con lógica vertical y horizontal.",
+        },
+        {
+          nombre: "4.4 Radicación y Transferencia al BPIM / BPIN",
+          descripcion:
+            "Cerrar la formulación en MGA Web, transferir al Banco de Proyectos de Cartagena para asignación del código BPIM de 13 dígitos y emisión de Ficha EBI.",
+          entregable_clave: "Proyecto transferido y radicado en el Banco de Proyectos con Ficha EBI.",
+        },
+      ],
+      entregables_obligatorios: [
+        "Fichas técnicas de indicadores CREMA con línea base",
+        "Programación de fuentes presupuestales por vigencia",
+        "Matriz de Marco Lógico (MML) completa",
+        "Ficha EBI del Banco Distrital de Proyectos (BPIM)",
+      ],
+      regla_oro_dnp:
+        "La Matriz de Marco Lógico debe guardar estricta coherencia causal vertical (si se realizan actividades, se logran componentes; si se logran componentes, se alcanza el propósito) y horizontal (indicadores y medios verificables independientes).",
+      errores_comunes_rechazo: [
+        "Redactar supuestos que dependen de la propia entidad formuladora y no del entorno externo.",
+        "Indicadores sin fórmula matemática, sin periodicidad o sin fuente oficial de reporte.",
+        "Programar fuentes de financiación que no corresponden a la naturaleza legal del gasto (ej. SGP con restricciones).",
+        "Desconectar las metas anuales del proyecto de la Hoja 1 del Plan de Acción Institucional.",
+      ],
+    },
+  ],
+  cadena_valor_proyecto_mga: [
+    {
+      eslabon: "INSUMOS",
+      orden: 1,
+      nombre: "1. Insumos (Inputs)",
+      definicion_dnp:
+        "Recursos financieros, humanos, técnicos y físicos necesarios para ejecutar las actividades previstas del proyecto.",
+      regla_formulacion:
+        "Se cuantifican en unidades físicas y se costean a precios de mercado desagregados por clasificadores de gasto.",
+      ejemplo_cartagena:
+        "$4.850 millones COP (FONSET e ICLD), 12 ingenieros de telecomunicaciones, 75 cámaras LPR/PTZ, 12 km fibra óptica y servidores CAD.",
+      unidad_o_indicador_ejemplo: "Pesos COP / Número de profesionales / Equipos adquiridos",
+    },
+    {
+      eslabon: "ACTIVIDADES",
+      orden: 2,
+      nombre: "2. Actividades",
+      definicion_dnp:
+        "Conjunto de procesos y acciones secuenciales que transforman los insumos en productos.",
+      regla_formulacion:
+        "Se redactan obligatoriamente con verbo fuerte en infinitivo, tienen cronograma trimestral y presupuesto asignado.",
+      ejemplo_cartagena:
+        "Instalar el tendido de fibra óptica submarino y aéreo, e integrar los flujos de video con el Sistema Integrado SIES 123.",
+      unidad_o_indicador_ejemplo: "Porcentaje de avance físico de obra / Cronograma T1-T4",
+    },
+    {
+      eslabon: "PRODUCTOS",
+      orden: 3,
+      nombre: "3. Productos (Outputs)",
+      definicion_dnp:
+        "Bienes y servicios tangibles e intangibles entregados directamente a la población beneficiaria.",
+      regla_formulacion:
+        "Debe seleccionarse obligatoriamente del Catálogo Único de Productos del DNP. Nunca puede ser una actividad interna ni un insumo.",
+      ejemplo_cartagena:
+        "Catálogo DNP 4001015 — Servicio de videovigilancia y analítica para la seguridad ciudadana implementado (Meta: 75 cámaras en operación continua).",
+      unidad_o_indicador_ejemplo: "Número de cámaras analíticas en operación continua conectadas al CAD",
+    },
+    {
+      eslabon: "RESULTADOS",
+      orden: 4,
+      nombre: "4. Resultados (Outcomes)",
+      definicion_dnp:
+        "Efectos directos e inmediatos en el bienestar, capacidad o comportamiento de la población objetivo.",
+      regla_formulacion:
+        "Se asocia al Objetivo Específico del proyecto y al Programa presupuestal del Plan de Desarrollo.",
+      ejemplo_cartagena:
+        "Disminución del 25% en el tiempo medio de respuesta de las patrullas policiales de cuadrante ante llamados comunitarios en Localidades 2 y 3.",
+      unidad_o_indicador_ejemplo: "Minutos de respuesta policial / Tasa de victimización barrial",
+    },
+    {
+      eslabon: "IMPACTOS",
+      orden: 5,
+      nombre: "5. Impactos",
+      definicion_dnp:
+        "Transformaciones estructurales y de largo plazo en el goce efectivo de derechos y el desarrollo socioeconómico territorial.",
+      regla_formulacion:
+        "Se evalúa ex-post mediante metodologías econométricas (DiD, RDD) y estadísticas oficiales DANE / Medicina Legal.",
+      ejemplo_cartagena:
+        "Reducción sostenida de la tasa distrital de homicidios y hurtos por cada 100.000 habitantes en los polígonos urbanos y corregimientos de Cartagena.",
+      unidad_o_indicador_ejemplo: "Tasa de homicidios por 100.000 hab. / Índice Multidimensional de Calidad de Vida",
+    },
+  ],
+  criterios_evaluacion_ex_ante: [
+    {
+      criterio: "Tasa Social de Descuento",
+      sigla: "TSD",
+      formula_o_metodologia: "Tasa oficial fijada por el DNP para Colombia = 12% anual en términos reales.",
+      tasa_o_umbral_referencia: "12,0% anual",
+      cuando_utilizar:
+        "Obligatoria en todos los proyectos de inversión pública en Colombia para descontar flujos financieros y sociales.",
+      interpretacion_viabilidad:
+        "Representa el costo de oportunidad social del capital público del país.",
+    },
+    {
+      criterio: "Valor Presente Neto Social / Económico",
+      sigla: "VPNE / VNA",
+      formula_o_metodologia: "VPNE = sum( (Beneficios_t - Costos_t) / (1 + TSD)^t ) con TSD = 12%",
+      tasa_o_umbral_referencia: "VPNE > 0 COP",
+      cuando_utilizar:
+        "En proyectos de infraestructura económica y servicios donde los beneficios sociales son cuantificables y monetizables.",
+      interpretacion_viabilidad:
+        "Si VPNE > 0, el proyecto genera riqueza neta para la sociedad y es elegible; si es < 0, se rechaza.",
+    },
+    {
+      criterio: "Tasa Interna de Retorno Social",
+      sigla: "TIRS",
+      formula_o_metodologia: "Tasa de descuento r que satisface: sum( (Beneficios_t - Costos_t) / (1 + r)^t ) = 0",
+      tasa_o_umbral_referencia: "TIRS >= 12,0%",
+      cuando_utilizar:
+        "Indicador complementario al VPNE para evaluar la rentabilidad social porcentual de la inversión pública.",
+      interpretacion_viabilidad:
+        "Viable si TIRS >= 12%. Refleja que la rentabilidad social supera el costo de oportunidad del Estado.",
+    },
+    {
+      criterio: "Costo Anual Equivalente y Análisis Costo-Efectividad",
+      sigla: "CAE / ACE",
+      formula_o_metodologia:
+        "CAE = VPC * [ i*(1+i)^n / ((1+i)^n - 1) ] con i = 12%. Ratio ACE = CAE / Beneficiarios atendidos o delitos prevenidos.",
+      tasa_o_umbral_referencia: "Menor CAE / Menor costo por unidad de resultado social",
+      cuando_utilizar:
+        "En proyectos de Seguridad Humana, Convivencia, Salud Mental y Justicia donde monetizar los beneficios es complejo o éticamente cuestionable.",
+      interpretacion_viabilidad:
+        "Permite seleccionar la alternativa que cumple la meta social al menor costo económico anualizado para el Distrito.",
+    },
+    {
+      criterio: "Relación Beneficio-Costo Social",
+      sigla: "RBC",
+      formula_o_metodologia: "RBC = VNP(Beneficios Sociales) / VNP(Costos de Inversión y Operación) a TSD 12%",
+      tasa_o_umbral_referencia: "RBC >= 1,00",
+      cuando_utilizar:
+        "En proyectos con beneficios monetizables directos e indirectos evaluados con Razones Precio-Cuenta (RPC).",
+      interpretacion_viabilidad:
+        "Si RBC >= 1,0, cada peso invertido por el Distrito genera al menos un peso de bienestar social para la comunidad.",
+    },
+  ],
+  plantillas_proyectos_seguridad_humana: [
+    {
+      codigo_bpim_proyectado: "2026130010021",
+      sector_mga: "40 - Gobierno Territorial y Convivencia",
+      programa_pdd: "Programa 01 - Inteligencia y Tecnología para la Seguridad Humana",
+      entidad_responsable: "Distriseguridad / Secretaría del Interior",
+      problema_central:
+        "Altas tasas de comisión de delitos de alto impacto y débil capacidad de reacción policial en cuadrantes críticos de las Localidades 2 y 3 de Cartagena.",
+      objetivo_general:
+        "Optimizar la capacidad de vigilancia, detección temprana y judicialización de delitos en los corredores críticos del Distrito de Cartagena.",
+      producto_mga_catalogo:
+        "Catálogo DNP 4001015 — Servicio de videovigilancia y analítica para la seguridad ciudadana implementado",
+      indicador_producto:
+        "Número de cámaras analíticas en operación continua conectadas al CAD",
+      meta_cuatrienio: "75 cámaras analíticas LPR y domos PTZ 4K operando",
+      actividades_clave: [
+        "Adquirir 75 dispositivos de videovigilancia LPR/PTZ con analítica facial y vehicular",
+        "Tender 12 km de fibra óptica monomodo aérea y subterránea en puntos críticos",
+        "Integrar los flujos de video con el Sistema Integrado de Emergencias SIES 123",
+      ],
+      metodologia_evaluacion: "Análisis Costo-Efectividad (ACE) con CAE = $745M COP/año (TSD 12%)",
+      costo_total_estimado_cop: 4850000000,
+      fuentes_financiacion: [
+        "Fondo Territorial de Seguridad y Convivencia (FONSET): $3.500.000.000 COP",
+        "Recursos Propios (ICLD Inversión): $1.350.000.000 COP",
+      ],
+    },
+    {
+      codigo_bpim_proyectado: "2026130010042",
+      sector_mga: "37 - Inclusión Social y Reconciliación",
+      programa_pdd: "Programa 02 - Jóvenes Tejedores de Paz y Oportunidades Barriales",
+      entidad_responsable: "Secretaría de Participación y Desarrollo Social / PES Pedro Romero",
+      problema_central:
+        "Alta vinculación de adolescentes y jóvenes a pandillas y economías delictivas barriales en las UCG 4, 5 y 6 de la Localidad de la Virgen y Turística.",
+      objetivo_general:
+        "Promover alternativas formativas, psicosociales y de inclusión productiva para jóvenes en riesgo de vulnerabilidad social y violencia.",
+      producto_mga_catalogo:
+        "Catálogo DNP 3702008 — Personas en situación de vulnerabilidad formadas y acompañadas psicosocialmente",
+      indicador_producto:
+        "Número de jóvenes en riesgo vinculados y certificados en la ruta integral de prevención social",
+      meta_cuatrienio: "600 jóvenes certificados y 120 iniciativas productivas apoyadas",
+      actividades_clave: [
+        "Caracterizar a 600 jóvenes en situación de vulnerabilidad y riesgo delictivo en sectores priorizados",
+        "Impartir talleres en habilidades socioemocionales, resolución pacífica de conflictos y DDHH",
+        "Entregar incentivos de capital semilla y asistencia técnica a 120 emprendimientos juveniles",
+      ],
+      metodologia_evaluacion: "Análisis Costo-Efectividad (ACE) con costo de $4.333.333 COP por joven resocializado (TSD 12%)",
+      costo_total_estimado_cop: 2600000000,
+      fuentes_financiacion: [
+        "Sistema General de Participaciones (SGP Propósito General): $1.600.000.000 COP",
+        "Recursos Propios (ICLD): $1.000.000.000 COP",
+      ],
+    },
+    {
+      codigo_bpim_proyectado: "2026130010058",
+      sector_mga: "03 - Justicia y del Derecho",
+      programa_pdd: "Programa 03 - Convivencia, Paz y Justicia Comunitaria Descentralizada",
+      entidad_responsable: "Secretaría del Interior y Convivencia Ciudadana",
+      problema_central:
+        "Barreras geográficas y económicas de acceso a mecanismos formales y alternativos de resolución de conflictos en los 15 corregimientos rurales e insulares de Cartagena.",
+      objetivo_general:
+        "Garantizar el acceso efectivo a la justicia local, la mediación comunitaria y la conciliación en equidad en los 15 corregimientos del Distrito.",
+      producto_mga_catalogo:
+        "Catálogo DNP 0301012 — Servicio de acceso a la justicia y conciliación en equidad prestado en territorio",
+      indicador_producto:
+        "Número de casos atendidos y resueltos mediante mecanismos alternativos de solución de conflictos en zona rural e insular",
+      meta_cuatrienio: "1.500 controversias comunitarias resueltas pacíficamente y 90 conciliadores formados",
+      actividades_clave: [
+        "Desplegar jornadas itinerantes quincenales de Casas de Justicia Móviles en los 15 corregimientos oficiales",
+        "Formar y habilitar a 90 líderes comunitarios como Conciliadores en Equidad reconocidos por MinJusticia",
+        "Tramitar controversias de linderos, convivencia vecinal y violencia intrafamiliar mediante acuerdos concertados",
+      ],
+      metodologia_evaluacion: "Análisis Costo-Efectividad (ACE) con costo de $1.166.666 COP por conflicto resuelto (TSD 12%)",
+      costo_total_estimado_cop: 1750000000,
+      fuentes_financiacion: [
+        "Recursos Propios (ICLD Inversión): $1.200.000.000 COP",
+        "Cooperación Internacional / FCTI: $550.000.000 COP",
+      ],
+    },
   ],
 };
 
@@ -1083,9 +1539,31 @@ export function calcularResumenEjecutivoLocal(
 
 export async function obtenerBancoConocimientoApi(): Promise<BancoConocimientoDNP> {
   try {
-    return await apiFetch<BancoConocimientoDNP>(
+    const res = await apiFetch<BancoConocimientoDNP>(
       "/api/v1/compromisos/plan-accion/banco-conocimiento"
     );
+    if (!res) return BANCO_CONOCIMIENTO_CANONICO;
+    return {
+      ...BANCO_CONOCIMIENTO_CANONICO,
+      ...res,
+      modulos_mga_estructuracion:
+        res.modulos_mga_estructuracion && res.modulos_mga_estructuracion.length > 0
+          ? res.modulos_mga_estructuracion
+          : BANCO_CONOCIMIENTO_CANONICO.modulos_mga_estructuracion,
+      cadena_valor_proyecto_mga:
+        res.cadena_valor_proyecto_mga && res.cadena_valor_proyecto_mga.length > 0
+          ? res.cadena_valor_proyecto_mga
+          : BANCO_CONOCIMIENTO_CANONICO.cadena_valor_proyecto_mga,
+      criterios_evaluacion_ex_ante:
+        res.criterios_evaluacion_ex_ante && res.criterios_evaluacion_ex_ante.length > 0
+          ? res.criterios_evaluacion_ex_ante
+          : BANCO_CONOCIMIENTO_CANONICO.criterios_evaluacion_ex_ante,
+      plantillas_proyectos_seguridad_humana:
+        res.plantillas_proyectos_seguridad_humana &&
+        res.plantillas_proyectos_seguridad_humana.length > 0
+          ? res.plantillas_proyectos_seguridad_humana
+          : BANCO_CONOCIMIENTO_CANONICO.plantillas_proyectos_seguridad_humana,
+    };
   } catch (e) {
     console.warn("Fallo al conectar con banco-conocimiento, usando canon local:", e);
     return BANCO_CONOCIMIENTO_CANONICO;

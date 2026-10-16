@@ -145,6 +145,51 @@ describe("Motor de Planes de Acción DNP y Banco de Conocimiento (Hito PA-BANCO-
         expect(html).toContain(verbo);
       }
     });
+
+    test("renderiza la Sección 5 de Estructuración y Formulación MGA-DNP y Cadena de Valor", () => {
+      const html = renderToString(<BancoConocimientoDNPTab />);
+      expect(html).toContain('data-testid="seccion-mga-proyectos-inversion"');
+      expect(html).toContain("5. Estructuración y Formulación de Proyectos de Inversión Pública");
+      expect(html).toContain("MGA Web &amp; BPIM DNP");
+      expect(html).toContain("TSD = 12% Anual");
+      expect(html).toContain("4 Módulos MGA");
+    });
+
+    test("renderiza los 4 módulos oficiales de la MGA Web con subetapas y reglas de oro", () => {
+      const html = renderToString(<BancoConocimientoDNPTab />);
+      expect(html).toContain("Los Cuatro (4) Módulos Oficiales de la MGA Web (DNP)");
+      expect(html).toContain("1. Identificación");
+      expect(html).toContain("2. Preparación");
+      expect(html).toContain("3. Evaluación Ex-Ante");
+      expect(html).toContain("4. Programación");
+      expect(html).toContain("Regla de Oro DNP");
+      expect(html).toContain("Errores Comunes Rechazados en Banco de Proyectos");
+    });
+
+    test("renderiza los 5 eslabones de la Cadena de Valor Pública con ejemplos de Cartagena", () => {
+      const html = renderToString(<BancoConocimientoDNPTab />);
+      expect(html).toContain("Cadena de Valor Pública: Los Cinco (5) Eslabones Oficiales del DNP");
+      expect(html).toContain("1. Insumos (Inputs)");
+      expect(html).toContain("2. Actividades");
+      expect(html).toContain("3. Productos (Outputs)");
+      expect(html).toContain("4. Resultados (Outcomes)");
+      expect(html).toContain("5. Impactos");
+      expect(html).toContain("Ejemplo Cartagena");
+    });
+
+    test("renderiza los criterios de evaluación ex-ante (TSD 12%, VPNE, CAE/ACE, RBC) y plantillas BPIM", () => {
+      const html = renderToString(<BancoConocimientoDNPTab />);
+      expect(html).toContain("Criterios Técnicos de Evaluación Ex-Ante (TSD = 12% Anual, VNA, CAE/ACE y RBC)");
+      expect(html).toContain("TSD");
+      expect(html).toContain("12,0% anual");
+      expect(html).toContain("VPNE / VNA");
+      expect(html).toContain("CAE / ACE");
+      expect(html).toContain("RBC");
+      expect(html).toContain("Fichas Modelo de Proyectos MGA para Seguridad Humana en Cartagena (BPIM)");
+      expect(html).toContain("2026130010021");
+      expect(html).toContain("4001015");
+      expect(html).toContain("FONSET");
+    });
   });
 
   describe("4. Componente MotorPlanAccionTab", () => {

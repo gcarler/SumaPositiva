@@ -142,4 +142,26 @@ Según el nivel administrativo, una política pública en Colombia se adopta med
 | **Diálogo Social y Aportes Ciudadanos** | Entidad `Aporte` (propuestas, anotaciones, preguntas; con fotos y trazabilidad de identidad o anonimato garantizado). |
 | **Mesas Participativas (Ley 1757 / SGR)** | Módulo `MesaDeTrabajo` ([mesas.ts](file:///root/polis/src/features/mesas/models/mesas.ts)), con facilitador, entidad convocante, lugar y acuerdos de plenaria. |
 | **Marco Lógico DNP (MGA)** | Módulo `Papelografo` con editor reactivo de **Árbol de Problemas** (causas/efectos) y derivación automática a **Árbol de Soluciones** (medios/fines). |
+| **Cadena de Valor MGA (Insumos $\rightarrow$ Actividades $\rightarrow$ Productos $\rightarrow$ Resultados $\rightarrow$ Impactos)** | **Motor Plan de Acción DNP** ([motor-plan-accion-tab.tsx](file:///root/polis/src/features/seguimiento/components/motor-plan-accion-tab.tsx)) con homologación obligatoria al Catálogo de Productos DNP y verbos fuertes en infinitivo. |
+| **Evaluación Ex-Ante (TSD 12% / VPNE / CAE / RBC)** | **Simulador DEA y Laboratorio Prescriptivo** ([pdd-dea-evaluacion-panel.tsx](file:///root/polis/src/features/seguimiento/components/pdd-dea-evaluacion-panel.tsx)) evaluando la frontera de eficiencia y reasignación de Pareto. |
+| **Banco de Proyectos (BPIM / BPIN / POAI)** | **Tríada de Motores** ([triada-motores-tab.tsx](file:///root/polis/src/features/seguimiento/components/triada-motores-tab.tsx)) con cruce tripartito de Metas PDD $\leftrightarrow$ Actividades PA $\leftrightarrow$ Proyectos BPIM. |
+| **Doctrina Interactiva MGA-DNP** | **Banco de Conocimiento DNP** ([banco-conocimiento-dnp-tab.tsx](file:///root/polis/src/features/seguimiento/components/banco-conocimiento-dnp-tab.tsx)) con simulador lingüístico y módulo pedagógico interactivo de formulación de proyectos. |
 | **Principio de Incidencia y Zero-Modals** | Navegación deslizante apilada (`PanelHost`) que permite al ciudadano profundizar desde el contexto macro hasta la propuesta puntual sin perder la visión sistémica. |
+
+---
+
+## 7. Estructuración y Formulación de Proyectos de Inversión Pública (MGA-DNP)
+
+Para viabilizar y materializar las metas del Plan de Desarrollo y las políticas públicas, las entidades formulan proyectos de inversión registrados en la plataforma **MGA Web** del Departamento Nacional de Planeación (DNP) y en el **Banco Distrital de Programas y Proyectos de Inversión (BPIM de Cartagena)**:
+
+### 7.1 Los Cuatro Módulos de la Metodología General Ajustada (MGA)
+1. **Identificación**: Alineación con el PND/PDD, delimitación del Problema Central (Árbol de Problemas), Análisis de Involucrados, Población Afectada vs. Objetivo y Árbol de Objetivos.
+2. **Preparación**: Estudio de Necesidades (Déficit de Atención = Demanda - Oferta), localización territorial (Localidades, UCG y los 15 Corregimientos), análisis de riesgos y estructuración de la **Cadena de Valor Pública**:
+   $$\text{Insumos} \longrightarrow \text{Actividades} \longrightarrow \text{Productos (Catálogo DNP)} \longrightarrow \text{Resultados} \longrightarrow \text{Impactos}$$
+3. **Evaluación Ex-Ante**: Evaluación financiera, económica y social a precios sombra (Razones Precio-Cuenta DNP) con la **Tasa Social de Descuento (TSD = 12% anual)**:
+   - **VNA / VPNE y TIRS**: Para proyectos con beneficios monetizables.
+   - **Relación Beneficio-Costo (RBC $\ge$ 1,0)**.
+   - **Costo Anual Equivalente (CAE)** y **Análisis Costo-Efectividad (ACE)**: Para proyectos de Seguridad Humana, Convivencia y Justicia Comunitaria.
+4. **Programación**: Indicadores de Producto y Gestión bajo estándar CREMA, fuentes de financiación plurianuales (ICLD, SGP, SGR, Crédito) y **Matriz de Marco Lógico (MML de 4 filas $\times$ 4 columnas)**.
+
+Para la guía técnica exhaustiva y fichas modelo aplicadas a Cartagena, consulte el **[Módulo 12 del Banco de Conocimiento](file:///root/polis/knowledge-base/12_ESTRUCTURACION_PROYECTOS_INVERSION_PUBLICA_MGA_DNP.md)**.

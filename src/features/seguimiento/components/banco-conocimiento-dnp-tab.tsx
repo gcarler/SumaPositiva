@@ -46,6 +46,23 @@ export function BancoConocimientoDNPTab() {
   // Paso seleccionado en la Ruta Metodológica
   const [pasoSeleccionado, setPasoSeleccionado] = useState<number>(1);
 
+  // Estados para MGA y Proyectos de Inversión Pública
+  const [moduloMgaSeleccionado, setModuloMgaSeleccionado] = useState<number>(1);
+  const [plantillaSeleccionada, setPlantillaSeleccionada] =
+    useState<string>("2026130010021");
+
+  const modulosMga = BANCO_CONOCIMIENTO_CANONICO.modulos_mga_estructuracion || [];
+  const moduloMgaActual =
+    modulosMga.find((m) => m.numero === moduloMgaSeleccionado) || modulosMga[0];
+
+  const cadenaValor = BANCO_CONOCIMIENTO_CANONICO.cadena_valor_proyecto_mga || [];
+  const criteriosExAnte = BANCO_CONOCIMIENTO_CANONICO.criterios_evaluacion_ex_ante || [];
+  const plantillasMga = BANCO_CONOCIMIENTO_CANONICO.plantillas_proyectos_seguridad_humana || [];
+
+  const plantillaActual =
+    plantillasMga.find((p) => p.codigo_bpim_proyectado === plantillaSeleccionada) ||
+    plantillasMga[0];
+
   // Validación en vivo
   const resultadoValidacion: ValidarRedaccionRespuesta = validarRedaccionLocal(
     textoPrueba,
@@ -684,6 +701,428 @@ export function BancoConocimientoDNPTab() {
               ))}
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* =====================================================================
+          SECCIÓN 5: ESTRUCTURACIÓN Y FORMULACIÓN DE PROYECTOS DE INVERSIÓN PÚBLICA
+          (METODOLOGÍA MGA-DNP Y CADENA DE VALOR BPIM/BPIN)
+          ===================================================================== */}
+      <section
+        aria-labelledby="seccion-estructuracion-mga"
+        className="rounded-2xl border border-border bg-surface-1 p-6 shadow-sm space-y-8"
+        data-testid="seccion-mga-proyectos-inversion"
+      >
+        {/* Encabezado Principal */}
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between border-b border-border pb-5">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <Badge variant="outline" className="text-ember border-ember/30">
+                MGA Web &amp; BPIM DNP
+              </Badge>
+              <span className="text-xs text-text-muted">
+                Metodología General Ajustada Oficial DNP
+              </span>
+            </div>
+            <h2
+              id="seccion-estructuracion-mga"
+              className="text-lg font-extrabold text-text-primary flex items-center gap-2"
+            >
+              <Layers className="h-5 w-5 text-ember" />
+              <span>5. Estructuración y Formulación de Proyectos de Inversión Pública (Metodología MGA-DNP y Cadena de Valor BPIM/BPIN)</span>
+            </h2>
+            <p className="text-xs text-text-secondary max-w-3xl">
+              Doctrina técnica oficial para la formulación, preparación, evaluación ex-ante y programación de proyectos de inversión en Colombia. Estructuración de la Cadena de Valor del gasto público, articulación con el Banco de Proyectos (BPIM/BPIN) y evaluación socioeconómica con Tasa Social de Descuento (TSD = 12% anual).
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <Badge variant="outline" className="border-info/30 bg-surface-2 text-info text-xs gap-1">
+              <Scale className="h-3.5 w-3.5" />
+              <span>TSD = 12% Anual</span>
+            </Badge>
+            <Badge variant="outline" className="border-success/30 bg-surface-2 text-success text-xs gap-1">
+              <CheckCircle2 className="h-3.5 w-3.5" />
+              <span>4 Módulos MGA</span>
+            </Badge>
+          </div>
+        </div>
+
+        {/* -------------------------------------------------------------------
+            5.1 SELECTOR DE LOS 4 MÓDULOS OFICIALES DE LA MGA WEB
+            ------------------------------------------------------------------- */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-bold text-text-primary flex items-center gap-2">
+              <Sparkles className="h-4 w-4 text-ember" />
+              <span>Los Cuatro (4) Módulos Oficiales de la MGA Web (DNP)</span>
+            </h3>
+            <span className="text-[11px] text-text-muted font-mono">
+              Módulo {moduloMgaActual ? moduloMgaActual.numero : 1} de 4
+            </span>
+          </div>
+
+          {/* Botones de navegación entre módulos */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+            {modulosMga.map((m) => {
+              const activo = m.numero === moduloMgaSeleccionado;
+              return (
+                <Button
+                  key={m.numero}
+                  type="button"
+                  variant="outline"
+                  onClick={() => setModuloMgaSeleccionado(m.numero)}
+                  aria-pressed={activo}
+                  className={`h-auto flex flex-col items-start text-left p-3 rounded-xl border transition-all ${
+                    activo
+                      ? "border-ember bg-surface-2 shadow-sm ring-1 ring-ember/30"
+                      : "border-border bg-surface-1 hover:bg-surface-2/60 text-text-secondary"
+                  }`}
+                >
+                  <span
+                    className={`text-[10px] font-mono font-bold uppercase tracking-wider ${
+                      activo ? "text-ember" : "text-text-muted"
+                    }`}
+                  >
+                    Módulo {m.numero}
+                  </span>
+                  <span className="text-xs font-bold text-text-primary line-clamp-1 mt-0.5">
+                    {m.titulo_corto}
+                  </span>
+                </Button>
+              );
+            })}
+          </div>
+
+          {/* Tarjeta del Módulo Activo */}
+          {moduloMgaActual && (
+            <div className="rounded-xl border border-border bg-surface-2 p-5 space-y-4">
+              <div className="space-y-1">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-sm font-bold text-text-primary">
+                    {moduloMgaActual.nombre}
+                  </h4>
+                  <Badge variant="outline" className="text-[10px] border-ember/30 text-ember bg-surface-1">
+                    {moduloMgaActual.subetapas.length} Subetapas Obligatorias
+                  </Badge>
+                </div>
+                <p className="text-xs text-text-secondary leading-relaxed">
+                  {moduloMgaActual.objetivo_modulo}
+                </p>
+              </div>
+
+              {/* Subetapas del Módulo */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+                {moduloMgaActual.subetapas.map((sub, idx) => (
+                  <div
+                    key={idx}
+                    className="p-3 rounded-lg border border-border/60 bg-surface-1 space-y-1.5"
+                  >
+                    <span className="font-bold text-xs text-text-primary block">
+                      {sub.nombre}
+                    </span>
+                    <p className="text-[11px] text-text-secondary leading-relaxed">
+                      {sub.descripcion}
+                    </p>
+                    <div className="text-[10px] text-text-muted pt-1 flex items-start gap-1">
+                      <span className="font-semibold text-text-primary shrink-0">Entregable:</span>
+                      <span className="line-clamp-2">{sub.entregable_clave}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Regla de Oro y Errores Comunes */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
+                {/* Regla de Oro */}
+                <div className="p-3.5 rounded-lg border border-success/30 bg-success/5 space-y-1.5">
+                  <div className="flex items-center gap-1.5 text-success font-bold text-xs">
+                    <Lightbulb className="h-4 w-4" />
+                    <span>Regla de Oro DNP ({moduloMgaActual.titulo_corto})</span>
+                  </div>
+                  <p className="text-[11px] text-text-secondary leading-relaxed">
+                    {moduloMgaActual.regla_oro_dnp}
+                  </p>
+                </div>
+
+                {/* Errores Comunes de Rechazo */}
+                <div className="p-3.5 rounded-lg border border-danger/30 bg-danger/5 space-y-1.5">
+                  <div className="flex items-center gap-1.5 text-danger font-bold text-xs">
+                    <AlertTriangle className="h-4 w-4" />
+                    <span>Errores Comunes Rechazados en Banco de Proyectos</span>
+                  </div>
+                  <ul className="text-[11px] text-text-secondary space-y-1 list-disc list-inside">
+                    {moduloMgaActual.errores_comunes_rechazo.map((err, errIdx) => (
+                      <li key={errIdx} className="leading-relaxed">
+                        {err}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* -------------------------------------------------------------------
+            5.2 CADENA DE VALOR DE LA INVERSIÓN PÚBLICA (5 ESLABONES DNP)
+            ------------------------------------------------------------------- */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between border-b border-border pb-2">
+            <h3 className="text-sm font-bold text-text-primary flex items-center gap-2">
+              <ArrowRight className="h-4 w-4 text-ember" />
+              <span>Cadena de Valor Pública: Los Cinco (5) Eslabones Oficiales del DNP</span>
+            </h3>
+            <Badge variant="outline" className="text-[10px]">
+              Insumos &rarr; Actividades &rarr; Productos &rarr; Resultados &rarr; Impactos
+            </Badge>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+            {cadenaValor.map((esl) => (
+              <div
+                key={esl.orden}
+                className="rounded-xl border border-border bg-surface-2 p-3.5 space-y-2 flex flex-col justify-between"
+              >
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between border-b border-border/50 pb-1">
+                    <span className="font-mono text-[10px] font-bold text-ember">
+                      Eslabón {esl.orden}
+                    </span>
+                    <Badge variant="outline" className="text-[9px]">
+                      {esl.eslabon}
+                    </Badge>
+                  </div>
+                  <h4 className="text-xs font-bold text-text-primary">
+                    {esl.nombre}
+                  </h4>
+                  <p className="text-[11px] text-text-secondary leading-relaxed">
+                    {esl.definicion_dnp}
+                  </p>
+                </div>
+
+                <div className="pt-2 border-t border-border/40 space-y-1 text-[10px]">
+                  <div>
+                    <span className="font-semibold text-text-primary block">Regla DNP:</span>
+                    <span className="text-text-muted">{esl.regla_formulacion}</span>
+                  </div>
+                  <div className="pt-1">
+                    <span className="font-semibold text-ember block">Ejemplo Cartagena:</span>
+                    <span className="text-text-secondary leading-relaxed block">
+                      {esl.ejemplo_cartagena}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* -------------------------------------------------------------------
+            5.3 CRITERIOS TÉCNICOS DE EVALUACIÓN EX-ANTE (TSD 12%, VNA, CAE/ACE, RBC)
+            ------------------------------------------------------------------- */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between border-b border-border pb-2">
+            <h3 className="text-sm font-bold text-text-primary flex items-center gap-2">
+              <Scale className="h-4 w-4 text-ember" />
+              <span>Criterios Técnicos de Evaluación Ex-Ante (TSD = 12% Anual, VNA, CAE/ACE y RBC)</span>
+            </h3>
+            <span className="text-xs text-text-muted">
+              Precios Cuenta &amp; Sombra DNP
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+            {criteriosExAnte.map((crit, idx) => (
+              <div
+                key={idx}
+                className="rounded-xl border border-border bg-surface-2 p-4 space-y-2.5"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="font-mono font-bold text-xs text-ember">
+                    {crit.sigla}
+                  </span>
+                  <Badge variant="outline" className="text-[10px] border-info/30 text-info bg-surface-1">
+                    {crit.tasa_o_umbral_referencia}
+                  </Badge>
+                </div>
+
+                <h4 className="text-xs font-bold text-text-primary">
+                  {crit.criterio}
+                </h4>
+
+                <div className="rounded bg-surface-1 p-2 font-mono text-[10px] text-text-secondary border border-border/50">
+                  {crit.formula_o_metodologia}
+                </div>
+
+                <div className="space-y-1 text-[11px]">
+                  <div>
+                    <span className="font-semibold text-text-primary">Cuándo usar: </span>
+                    <span className="text-text-secondary">{crit.cuando_utilizar}</span>
+                  </div>
+                  <div>
+                    <span className="font-semibold text-success">Viabilidad: </span>
+                    <span className="text-text-secondary">{crit.interpretacion_viabilidad}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* -------------------------------------------------------------------
+            5.4 PLANTILLAS MODELO DE PROYECTOS MGA PARA SEGURIDAD HUMANA EN CARTAGENA
+            ------------------------------------------------------------------- */}
+        <div className="space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-border pb-2">
+            <div>
+              <h3 className="text-sm font-bold text-text-primary flex items-center gap-2">
+                <FileText className="h-4 w-4 text-ember" />
+                <span>Fichas Modelo de Proyectos MGA para Seguridad Humana en Cartagena (BPIM)</span>
+              </h3>
+              <p className="text-xs text-text-muted">
+                Proyectos estructurados con código BPIM proyectado de 13 dígitos y Catálogo DNP
+              </p>
+            </div>
+
+            {/* Selector de plantilla */}
+            <div className="flex items-center gap-2">
+              {plantillasMga.map((p) => {
+                const activo = p.codigo_bpim_proyectado === plantillaSeleccionada;
+                return (
+                  <Button
+                    key={p.codigo_bpim_proyectado}
+                    variant={activo ? "ember" : "outline"}
+                    size="sm"
+                    onClick={() => setPlantillaSeleccionada(p.codigo_bpim_proyectado)}
+                    className="text-xs font-semibold gap-1.5"
+                    aria-pressed={activo}
+                  >
+                    <span>BPIM {p.codigo_bpim_proyectado.slice(-4)}</span>
+                  </Button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Detalle de la Plantilla Seleccionada */}
+          {plantillaActual && (
+            <div className="rounded-xl border border-border bg-surface-2 p-5 space-y-4">
+              {/* Metadatos Cabecera */}
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-border/60 pb-3">
+                <div className="space-y-0.5">
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono text-xs font-bold text-ember">
+                      BPIM: {plantillaActual.codigo_bpim_proyectado}
+                    </span>
+                    <Badge variant="outline" className="text-[10px]">
+                      Sector: {plantillaActual.sector_mga}
+                    </Badge>
+                  </div>
+                  <h4 className="text-sm font-bold text-text-primary">
+                    {plantillaActual.programa_pdd}
+                  </h4>
+                  <span className="text-xs text-text-muted block">
+                    Entidad Responsable: <strong>{plantillaActual.entidad_responsable}</strong>
+                  </span>
+                </div>
+
+                <div className="sm:text-right shrink-0">
+                  <span className="text-[10px] text-text-muted uppercase font-bold block">
+                    Costo Total Estimado
+                  </span>
+                  <span className="text-base font-extrabold text-ember">
+                    ${(plantillaActual.costo_total_estimado_cop / 1000000).toLocaleString("es-CO")}M COP
+                  </span>
+                </div>
+              </div>
+
+              {/* Problema y Objetivo */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="p-3 rounded-lg border border-border/50 bg-surface-1 space-y-1">
+                  <span className="text-[10px] uppercase font-bold text-danger block">
+                    Problema Central (Árbol de Problemas)
+                  </span>
+                  <p className="text-xs text-text-secondary leading-relaxed">
+                    {plantillaActual.problema_central}
+                  </p>
+                </div>
+
+                <div className="p-3 rounded-lg border border-border/50 bg-surface-1 space-y-1">
+                  <span className="text-[10px] uppercase font-bold text-success block">
+                    Objetivo General (Árbol de Objetivos)
+                  </span>
+                  <p className="text-xs text-text-secondary leading-relaxed">
+                    {plantillaActual.objetivo_general}
+                  </p>
+                </div>
+              </div>
+
+              {/* Producto MGA e Indicador */}
+              <div className="p-3.5 rounded-lg border border-border/60 bg-surface-1 space-y-2">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
+                  <span className="text-[10px] uppercase font-bold text-info">
+                    Producto Oficial del Catálogo DNP
+                  </span>
+                  <span className="text-[11px] font-semibold text-text-primary">
+                    Meta: {plantillaActual.meta_cuatrienio}
+                  </span>
+                </div>
+                <div className="text-xs font-bold text-text-primary">
+                  {plantillaActual.producto_mga_catalogo}
+                </div>
+                <div className="text-xs text-text-secondary">
+                  <strong>Indicador de Producto: </strong>
+                  {plantillaActual.indicador_producto}
+                </div>
+              </div>
+
+              {/* Actividades Clave y Evaluación */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+                {/* Actividades con verbo fuerte */}
+                <div className="p-3.5 rounded-lg border border-border/60 bg-surface-1 space-y-2">
+                  <span className="text-[10px] uppercase font-bold text-text-primary block">
+                    Actividades Clave (Verbos Fuertes en Infinitivo)
+                  </span>
+                  <ul className="text-xs text-text-secondary space-y-1.5 list-disc list-inside">
+                    {plantillaActual.actividades_clave.map((act, actIdx) => (
+                      <li key={actIdx} className="leading-relaxed">
+                        {act}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Evaluación Ex-Ante y Fuentes */}
+                <div className="p-3.5 rounded-lg border border-border/60 bg-surface-1 space-y-2">
+                  <div>
+                    <span className="text-[10px] uppercase font-bold text-text-primary block">
+                      Evaluación Ex-Ante (TSD 12% Anual)
+                    </span>
+                    <p className="text-xs text-text-secondary leading-relaxed mt-0.5">
+                      {plantillaActual.metodologia_evaluacion}
+                    </p>
+                  </div>
+
+                  <div className="pt-2 border-t border-border/40">
+                    <span className="text-[10px] uppercase font-bold text-text-primary block mb-1">
+                      Fuentes de Financiación Programadas
+                    </span>
+                    <div className="space-y-1">
+                      {plantillaActual.fuentes_financiacion.map((fte, fteIdx) => (
+                        <div
+                          key={fteIdx}
+                          className="rounded bg-surface-2 px-2 py-1 text-[11px] text-text-secondary font-mono"
+                        >
+                          {fte}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </section>
     </div>

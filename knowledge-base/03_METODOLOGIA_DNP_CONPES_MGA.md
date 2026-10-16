@@ -139,3 +139,21 @@ flowchart TD
    - *Regresión Discontinua (RDD)*.
    - *Propensity Score Matching (PSM)*.
    - *Variables Instrumentales (IV)*.
+
+---
+
+## 6. De la Política Pública al Proyecto de Inversión Pública (MGA Web del DNP)
+
+Las líneas estratégicas y compromisos de una política pública o plan de desarrollo se operativizan en el Estado colombiano a través de **Proyectos de Inversión Pública** formulados bajo la **Metodología General Ajustada (MGA Web)** y registrados en el **Banco de Programas y Proyectos de Inversión (BPIM / BPIN)**.
+
+Para la doctrina técnica completa, consulte el documento especializado:
+👉 **[Módulo 12: Estructuración y Formulación de Proyectos de Inversión Pública en Colombia (MGA Web del DNP)](file:///root/polis/knowledge-base/12_ESTRUCTURACION_PROYECTOS_INVERSION_PUBLICA_MGA_DNP.md)**.
+
+### 6.1 Síntesis de los Cuatro (4) Módulos MGA Web
+1. **Módulo 1 - Identificación**: Articulación con PND/PDD, Árbol de Problemas, Análisis de Participantes, Población Afectada vs. Objetivo, Árbol de Objetivos y Alternativas.
+2. **Módulo 2 - Preparación**: Estudio de Necesidades (Déficit de Atención), localización territorial, análisis de riesgos y estructuración de la **Cadena de Valor Pública (Insumos $\rightarrow$ Actividades $\rightarrow$ Productos del Catálogo DNP $\rightarrow$ Resultados $\rightarrow$ Impactos)**.
+3. **Módulo 3 - Evaluación Ex-Ante**: Flujo de caja a precios cuenta con la **Tasa Social de Descuento (TSD = 12% anual)** del DNP, cálculo de **VPNE, TIRS, Relación Beneficio-Costo (RBC)** y **Costo Anual Equivalente / Análisis Costo-Efectividad (CAE/ACE)** para proyectos sociales y de Seguridad Humana.
+4. **Módulo 4 - Programación**: Indicadores bajo filtro CREMA, asignación de fuentes presupuestales plurianuales (ICLD, SGP, SGR, Crédito) y **Matriz de Marco Lógico (MML de 4x4)**.
+
+### 6.2 Ciclo de Viabilidad Institucional
+El proyecto formulado transita desde la MGA Web hacia la Secretaría de Planeación para la emisión de la **Ficha EBI (Concepto de Viabilidad en el BPIM)**, su inclusión obligatoria en el **Plan Operativo Anual de Inversiones (POAI)** y su desagregación en las metas trimestrales de la Hoja 1 del **Plan de Acción Institucional**.
