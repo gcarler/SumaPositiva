@@ -1,107 +1,68 @@
-# TAREA ACTIVA PARA `codex`: `[TRIADA-BACKEND-CIERRE-GOOGLE-WORKSPACE-13]`
+# SOLICITUD DE REVISIÓN CRÍTICA Y SUGERENCIAS METODOLÓGICAS PARA `codex`: `[REVISION-RUTA-PDD-SEGURIDAD-HUMANA-15A]`
 
 - **De:** `agy` (Coordinador General y Auditor Forense EAF)
-- **Para:** `codex` (Desarrollador Principal Backend / PostGIS / Econometría / Google Workspace API)
-- **Fecha:** 2026-10-15
+- **Para:** `codex` (Arquitecto Principal Backend / Econometría / Análisis de Políticas Públicas)
+- **Fecha:** 2026-10-16
 - **Prioridad:** CRÍTICA INMEDIATA
-- **Referencia:** `bridge/00_plan_cierre_integral_google_workspace_13.md`
+- **Modo:** SOLO REVISIÓN CRÍTICA, AUDITORÍA DE DATOS Y PROPUESTA DE MEJORAS (No modificar código productivo aún; escribir dictamen y sugerencias en `bridge/02_entrega_codex.md`).
 
 ---
 
-## 1. Objetivo de la Misión
+## 1. Contexto y Directriz Estratégica del Usuario
 
-Ejecutar en el backend y en `bd_csh` los **4 pilares de cierre definitivo** del análisis de Planes de Desarrollo (PDD/PDL), Planes de Acción (PA DNP) y el conector nativo con **Google Sheets (`application/vnd.google-apps.spreadsheet`) y Google Docs (`application/vnd.google-apps.document`)** sobre la carpeta `PSHC` (`1UktNyzYEMg_kTRyAt7xfF3GExJV2aZq6` y subcarpeta `00_EXPEDIENTE_OFICIAL_POLIS_CSH` `1pIGP34SOqQqsNpF1cqGPh0YIVgDNSYwe`) usando `/root/polis/backend/.secrets/gdrive-service-account.json`.
+El usuario ha hecho una crítica metodológica profunda y totalmente acertada sobre el trabajo previo:
 
----
-
-## 2. Entregables Técnicos Exactos
-
-### 2.1 Pilar 1: Ingesta de los 78 Archivos PDF de Planes de Acción (`formato_no_excel`)
-1. En `data/planes_accion/drive_sector_seguridad/catalogo_drive_1383.json` hay **78 entradas** con `estado_descarga == "formato_no_excel"` (son PDFs de Planes de Acción 2018 e Informes Técnicos de Planes de Acción 2025 a corte junio 30 de 2025).
-2. Crear y ejecutar un script idempotente `backend/scripts/ingestar_pdfs_planes_accion_drive.py` que:
-   - Descargue de Google Drive (o lea desde caché local en `data/planes_accion/drive_sector_seguridad/archivos_pdf/`) los PDFs únicos por `sha256` (usando `https://drive.google.com/uc?export=download&id=<id>` o la API v3 con `/root/polis/backend/.secrets/gdrive-service-account.json`).
-   - Extraiga mediante `pypdf` / `pdfplumber` las líneas, actividades, metas, indicadores y avances porcentuales de cada PDF.
-   - Registre cada PDF único en `seguimiento.archivos_plan_ingeridos` (`formato_extension = '.pdf'`, `perfil_detectado = 'PDF_PLAN_ACCION_OFICIAL'`) y sus filas extraídas en `seguimiento.registros_triada_normalizados` (`motor_destino = 'PLAN_ACCION'`), asociándolas a su `entidad_normalizada`, `vigencia` (`2018` o `2025`), `periodo_gobierno` (`ANTES_2020` o `2024_2027`) y `dimensiones_seguridad_humana`.
-
-### 2.2 Pilar 2: Deduplicación Canónica y Segundo Pase Semántico en `seguimiento.pdd_metas_oficiales` (`2.078` filas)
-1. En `seguimiento.pdd_metas_oficiales`:
-   - Marcar en `datos_oficiales->'_auditoria_forense'` los campos:
-     - `es_meta_unica_canonica`: `true` para las `1.805` metas únicas (`2.078 - 273` duplicadas en `PDD_2024_2027`) y `false` para las `273` filas con `estado_cobertura == 'DUPLICADA_ENTRE_FUENTES_PDD'`.
-     - Mejorar el emparejamiento de las `274` metas en `CANDIDATO_BAJA_CONFIANZA` cruzándolas también con los nuevos registros extraídos de los PDFs y con las actividades por entidad/línea, promoviendo a `VINCULADA_ALTA_CONFIANZA` aquellas con coincidencia verificada de entidad + indicador/meta, y documentando en `resumen_ejecutivo` / `cobertura_8_planes` de `pdd_dea_service.py`:
-       - `metas_totales_brutas`: `2078`
-       - `metas_unicas_deduplicadas`: `1805`
-       - `cobertura_sobre_metas_unicas_pct`: porcentaje calculado sobre el universo deduplicado (`1.805` metas netas).
-
-### 2.3 Pilar 3: Población Real del Motor Operativo de Planes de Acción DNP (`seguimiento.actividades_plan_accion`)
-1. Actualmente `seguimiento.actividades_plan_accion` tiene solo `12` filas semilla (`PA-2026-*`), pero `seguimiento.registros_triada_normalizados` tiene miles de filas reales de `PLAN_ACCION` en `2024_2027` para las **29 entidades distritales**.
-2. Crear un script/migración `backend/scripts/poblar_motor_plan_accion_real.py` (y ejecutarlo en `bd_csh`) que:
-   - Mantenga intactas las `12` filas semilla (`PA-2026-*`) para no romper ningún test existente.
-   - Seleccione e inserte (`ON CONFLICT (codigo) DO UPDATE`) desde `seguimiento.registros_triada_normalizados` (`motor_destino = 'PLAN_ACCION'`) un conjunto representativo y curado de **al menos 120 a 250 actividades reales** cubriendo **todas las 29 entidades distritales** en las vigencias `2024`, `2025` y `2026`:
-     - Mapeando cada entidad a su línea estratégica (`LE-01` a `LE-06`) y compromiso PAS (`PAS-SEC-01`, `PAS-JUV-02`, `PAS-SEG-03`, `PAS-ALUM-04`, `PAS-AMB-05`, `PAS-POL-06`, `PAS-CUID-07`, `PAS-DES-08`, `PAS-BAZ-09`, `PAS-ETN-10`).
-     - Poniendo `codigo` determinístico (`PA-REAL-2024-001`, `PA-REAL-2025-001`, etc.), `entidad_responsable` real, `codigo_bpim` real (o `'BPIM-INST-' || codigo` cuando sea actividad de funcionamiento), `verbo_infinitivo` extraído de la actividad real, `avance_t1..t4`, `porcentaje_avance_fisico` (`0..100`), `monto_programado_cop` (`apropiacion_definitiva_cop`) y `monto_ejecutado_cop` (`COALESCE(pagos_tesoreria_cop, obligaciones_cop, compromisos_rp_cop, 0)`), y en `metadatos` el `registro_triada_id` y `archivo_id` para trazabilidad forense 100% verificable.
-
-### 2.4 Pilar 4: Servicio y Endpoints de Sincronización Nativa con Google Sheets y Google Docs (`PSHC`)
-1. Crear `backend/app/modules/compromisos/google_workspace_sync_service.py`:
-   - Usa la cuenta de servicio `/root/polis/backend/.secrets/gdrive-service-account.json` (`polis-pshc@polis-511719.iam.gserviceaccount.com`) con scopes `drive`, `spreadsheets` y `documents` (firmando el JWT RS256 con `cryptography`, que ya está instalado en `.venv`).
-   - Carpeta raíz `PSHC`: `1UktNyzYEMg_kTRyAt7xfF3GExJV2aZq6`.
-   - Subcarpeta oficial: `1pIGP34SOqQqsNpF1cqGPh0YIVgDNSYwe` (`00_EXPEDIENTE_OFICIAL_POLIS_CSH`).
-   - Implementar dos operaciones públicas:
-     - **`obtener_estado_workspace()` (`GET /api/v1/compromisos/triada/google-workspace/estado`)**:
-       - Lista todos los archivos presentes en `PSHC` y en `00_EXPEDIENTE_OFICIAL_POLIS_CSH`.
-       - Clasifica cuántos `Google Sheets` (`application/vnd.google-apps.spreadsheet`) y cuántos `Google Docs` (`application/vnd.google-apps.document`) hay disponibles para sincronización nativa, sus nombres, IDs y `webViewLink`.
-       - Devuelve `conectado: true`, `service_account_email: "polis-pshc@polis-511719.iam.gserviceaccount.com"`, `carpeta_pshc_id`, `subcarpeta_expediente_id`, `archivos_nativos_detectados`, `ultimo_resultado_sincronizacion` y `instrucciones_plantillas` (indicando cuántos Sheets/Docs adicionales en blanco puede crear el usuario si desea más documentos nativos, dado que las Service Accounts en Mi Unidad personal requieren reutilizar archivos creados por el propietario de la carpeta o un token OAuth de usuario).
-     - **`sincronizar_workspace()` (`POST /api/v1/compromisos/triada/google-workspace/sincronizar`)**:
-       - Busca los `Google Sheets` y `Google Docs` existentes dentro de `00_EXPEDIENTE_OFICIAL_POLIS_CSH` o `PSHC` (o los crea si hay token OAuth de usuario en `/root/polis/backend/.secrets/gdrive-oauth-token.json`).
-       - Si encuentra al menos **1 Google Sheet**, lo renombra (si tenía título genérico) y crea/actualiza sus pestañas nativas mediante `https://sheets.googleapis.com/v4/spreadsheets/{spreadsheetId}:batchUpdate` y `values:batchUpdate`:
-         - Pestaña `1_Resumen_8_Planes_PDD`: tabla de los 8 planes de desarrollo (`2012–2027`), PPI oficial corriente y constante, metas brutas (`2.078`), metas únicas (`1.805`) y cobertura.
-         - Pestaña `2_Serie_Anual_2012_2027`: las 16 vigencias anuales continuas.
-         - Pestaña `3_Network_DEA_29_Entidades`: ranking de las 29 entidades con eficiencia operativa PA (`E1`), eficiencia estratégica PDD (`E2`), estado de ilusión burocrática y frontera de Pareto.
-         - Pestaña `4_Planes_Accion_DNP`: resumen por las 29 entidades en `seguimiento.actividades_plan_accion` y `registros_triada_normalizados` (incluyendo los 78 PDFs recién ingeridos).
-         - Pestaña `5_Censo_37_Mesas_15_Corregimientos`: las 37 mesas oficiales (`3` de localidad, `15` de corregimientos `MR-01..MR-15`, `8` poblacionales, `11` sectoriales + Plenaria `pc-001`).
-         - Si hay un **segundo o tercer Google Sheet**, distribuye en el Sheet 2 la matriz detallada de Planes de Acción DNP y en el Sheet 3 las 37 Mesas de Trabajo.
-       - Si encuentra al menos **1 Google Doc**, lo renombra a `[POLIS] Informe Forense Integral PDD, Planes de Acción y Pliegos de Control Político` y escribe el informe estructurado completo mediante `https://docs.googleapis.com/v1/documents/{documentId}:batchUpdate`.
-       - Guarda el estado de la última sincronización en `/tmp/polis_google_workspace_sync_state.json`.
-2. Registrar las dos rutas (`GET /triada/google-workspace/estado` y `POST /triada/google-workspace/sincronizar`) en `backend/app/modules/compromisos/router.py` y en `backend/app/core/access_Catalog` / `docs/permisos-api.md` (con acceso público de lectura en `GET` o autenticado/público consistente con las demás rutas de `/compromisos/triada/*` para que `test_access_policy.py` pase al 100%).
+1. **Prohibición absoluta de analizar resultados de Mesas de Trabajo:**
+   - En este momento **no se ha realizado ninguna de las 37 mesas de trabajo** con las comunidades (todas están en estado `PROGRAMADA`). Por tanto, el documento diagnóstico preliminar **NO puede contener análisis de resultados de mesas**.
+2. **Congelamiento total del análisis de Planes de Acción (PA):**
+   - El usuario señala con razón que aún **no tenemos una hoja de ruta ni un motor de procedimiento riguroso** que permita extraer y leer con certeza los avances y el cumplimiento de los Planes de Acción sin caer en cruces dudosos, incompletos o ruidosos. Por ende, **dejamos quietos los Planes de Acción por ahora**.
+3. **Foco exclusivo en un Análisis Riguroso, Exhaustivo y Estratégico de los Planes de Desarrollo del Distrito (`5 PDD 2012–2027` + `3 PDL 2024–2027`) a la luz de la Política de Seguridad Humana:**
+   El usuario pide construir primero una **Hoja de Ruta y Motor de Procedimiento** para procesar, ingerir y analizar los Planes de Desarrollo que tenemos en `/root/polis/data/planes_desarrollo/` y responder con rigor científico estas **4 grandes preguntas**:
+   - **Pregunta 1:** ¿Qué contemplaba cada Plan de Desarrollo? (Arquitectura estratégica, visión, ejes/objetivos/pilares/líneas, programas y problemas priorizados).
+   - **Pregunta 2:** ¿Cuál fue la apuesta a nivel de **Metas** y a nivel **Financiero / Presupuestal (PPI)** desde cada Plan de Desarrollo hacia la Política de Seguridad Humana (o hacia lo que hoy entendemos como Seguridad Humana en sus 7 dimensiones PNUD / Decreto 037 de 2026)?
+   - **Pregunta 3:** ¿Qué Plan de Desarrollo fue **más frontal y más estratégico** en clave de la Política de Seguridad Humana?
+   - **Pregunta 4:** Desde la **Planeación Estratégica**, ¿cómo ha sido el abordaje de los problemas de la Seguridad Humana dentro de los Planes de Desarrollo de Cartagena (`2012–2027`)?
 
 ---
 
-## 3. Reglas de Coordinación y Entrega
+## 2. Diagnóstico Preliminar que `agy` encontró en `bd_csh` y en `/root/polis/data/planes_desarrollo/`
 
-1. **Aislamiento de Archivos:**
-   - Tu ámbito es `backend/**` y `docs/permisos-api.md`. **NO modifiques `src/**`** (ámbito de `agy2`).
-2. **Validación Obligatoria:**
-   - Regenerar `/tmp/polis_pdd_dea_cache_v11.json` tras actualizar `pdd_metas_oficiales`, `actividades_plan_accion` y los 78 PDFs.
-   - Ejecutar `pytest` en `backend/tests/test_access_policy.py`, `backend/tests/test_pdd_dea_triada.py`, `backend/tests/test_plan_accion_dnp.py` (o tests de compromisos) y agregar pruebas unitarias para `google-workspace/estado`.
-   - Reiniciar `polis-backend.service`.
-3. **Commit y Reporte:**
-   - Hacer commit local sin push: `feat(triada-workspace): ingesta 78 PDFs PA, deduplicacion metas PDD, motor PA 29 entidades y sync nativo Google Docs/Sheets [TRIADA-BACKEND-CIERRE-GOOGLE-WORKSPACE-13]`.
-   - Escribir tu reporte en `bridge/02_entrega_codex.md`.
+Al inspeccionar `seguimiento.planes_desarrollo_distrital`, `seguimiento.pdd_lineas_y_programas` y `seguimiento.pdd_metas_oficiales` frente a los archivos fuente de `/root/polis/data/planes_desarrollo/`, `agy` detectó estas debilidades graves que hoy impiden un análisis riguroso:
+- En **`PDD_2012_2015`** (*Campo para Todos*): solo hay `7` metas en `pdd_metas_oficiales`, `8` filas en `pdd_lineas_y_programas` (`5` ejes y `3` componentes genéricos `"Objetivos"`, `"Objetivo general"`, `"Objetivos específicos"`) y `ppi_anual_cop = {}` vacío por eje/programa, a pesar de que tenemos `/root/polis/data/planes_desarrollo/pdd_2012_2015_campo_para_todos_cdim.md` (`258 KB`) y `pdd_2012_2015_acuerdo_001_campo_para_todos.md` (`76 KB`).
+- En **`PDD_2013_2015`** (*Ahora Sí Cartagena*): hay `195` metas, pero en `pdd_lineas_y_programas` solo hay `4` objetivos y `7` programas sueltos con `ppi_anual_cop = {}` vacío, a pesar de tener `pdd_2013_2015_acuerdo_016_ahora_si_cartagena.md` (`416 KB`).
+- En **`PDD_2016_2019`** (*Primero la Gente*): solo hay `3` metas en `pdd_metas_oficiales` y en `pdd_lineas_y_programas` hay `59` filas donde la mayoría son basura de encabezados OCR (`"Página 1 (OCR Oficial Acuerdo 006 de 2016)"` ... `"Página 50"`), con `ppi_anual_cop = {}` vacío por línea/programa, a pesar de tener `pdd_2016_2019_acuerdo_006_primero_la_gente.pdf` (`12 MB`) y `.md` (`70 KB`).
+- En **`PDD_2020_2023`** (*Salvemos Juntos a Cartagena*): hay `4` pilares, `21` líneas, `87` programas y `226` metas, y el archivo fuente `pdd_2020_2023_salvemos_juntos_cartagena.md` (`735 KB`) tiene aún más riqueza programática y tablas plurianuales.
+- En **`PDD_2024_2027`** (*Cartagena, Ciudad de Derechos*): hay `6` líneas, `42` impulsores, `172` programas y `1.246` metas brutas (`973` únicas), más `pdd_2024_2027_bases_tecnicas.md` (`1 MB`) y `pdd_2024_2027_ponencia_2do_debate_pa013.md` (`1.1 MB`).
+- **Falta una Taxonomía/Homologación Rigurosa hacia Seguridad Humana:** Ni las líneas/programas (`pdd_lineas_y_programas`) ni las metas (`pdd_metas_oficiales`) tienen hoy una clasificación auditada que permita distinguir entre:
+  1. **Seguridad Humana Frontal / Explícita (Núcleo Directo):** Programas y metas concebidos explícitamente como Seguridad Ciudadana, Convivencia, Justicia, Derechos Humanos, Paz, Víctimas y Gestión del Riesgo.
+  2. **Seguridad Humana Multidimensional / Implícita (Las 7 Dimensiones PNUD / Decreto 037 de 2026):** Cómo cada programa y meta de los 8 planes tributa a *Seguridad Personal, Comunitaria, Económica, Alimentaria, en Salud, Ambiental y Política*.
 
 ---
-## 4. IDs EXACTOS DE LOS DOCUMENTOS NATIVOS YA CREADOS POR EL USUARIO EN `00_EXPEDIENTE_OFICIAL_POLIS_CSH`
-El usuario ya creó los 3 documentos nativos dentro de `00_EXPEDIENTE_OFICIAL_POLIS_CSH` (`1pIGP34SOqQqsNpF1cqGPh0YIVgDNSYwe`) y nuestra Service Account (`polis-pshc@polis-511719.iam.gserviceaccount.com`) ya tiene acceso completo de lectura/escritura sobre ellos:
 
-1. **Google Sheet PDD / PDM (`Matriz_PDM`):**
-   - `spreadsheetId`: `"1hYDwrJbfqVbkAtlAqG-l1K4056Z0uPQ8W2kvEfEPEA4"`
-   - `webViewLink`: `"https://docs.google.com/spreadsheets/d/1hYDwrJbfqVbkAtlAqG-l1K4056Z0uPQ8W2kvEfEPEA4/edit"`
-   - **Qué debes escribir en este Google Sheet cuando se ejecute `sincronizar_workspace()`:**
-     - Pestaña `1_Resumen_8_Planes_PPI`: Los 8 planes (`5 PDD + 3 PDL`), PPI oficial corriente y constante 2025, metas brutas (`2.078`), metas únicas deduplicadas (`1.805`) y cobertura física/financiera.
-     - Pestaña `2_Serie_Anual_2012_2027`: Las 16 vigencias anuales continuas (2012–2027).
-     - Pestaña `3_Network_DEA_29_Entidades`: Ranking de las 29 entidades con CCR, BCC, Network DEA Bi-Etapa (`E1` PA vs `E2` PDD), ilusión burocrática y frontera de Pareto.
-     - Pestaña `4_Justicia_Territorial_37_Mesas`: Desglose DANE (`1.065.570` hab.), las 37 mesas oficiales y los `12.280` hurtos.
+## 3. Propuesta de Hoja de Ruta de 4 Etapas (para tu Revisión Crítica)
 
-2. **Google Sheet Planes de Acción y Mesas (`Matriz_Plan_de_accion`):**
-   - `spreadsheetId`: `"1jNeqNsoCwc1ND9EYvixtPIdyuE3WIdIyYEbVE4UAslM"`
-   - `webViewLink`: `"https://docs.google.com/spreadsheets/d/1jNeqNsoCwc1ND9EYvixtPIdyuE3WIdIyYEbVE4UAslM/edit"`
-   - **Qué debes escribir en este Google Sheet cuando se ejecute `sincronizar_workspace()`:**
-     - Pestaña `1_Consolidado_29_Entidades_PA`: Resumen por cada una de las 29 entidades distritales en `PLAN_ACCION` (archivos Excel + los 78 PDFs ingeridos, actividades, verbos fuertes/débiles DNP, avance físico y ejecución financiera).
-     - Pestaña `2_Motor_Plan_Accion_DNP`: Todas las actividades de `seguimiento.actividades_plan_accion` (las 12 semilla + las actividades reales de las 29 entidades).
-     - Pestaña `3_Censo_37_Mesas_15_Corregimientos`: Las 37 mesas canónicas (incluyendo las 15 mesas de corregimientos `MR-01..MR-15`) + Plenaria `pc-001`.
+`agy` propuso al usuario una Hoja de Ruta en 4 etapas:
+1. **Etapa 1 — Extracción y Reconstrucción Estructural Completa de los 8 Planes de Desarrollo desde `/root/polis/data/planes_desarrollo/`:** Limpiar la basura OCR de `pdd_lineas_y_programas`, extraer la totalidad de ejes/objetivos/líneas/programas, sus presupuestos plurianuales (PPI por eje/línea/programa) y el universo completo de metas de resultado y producto de `PDD 2012–2015`, `PDD 2013–2015`, `PDD 2016–2019`, `PDD 2020–2023`, `PDD 2024–2027` y los `3 PDL`.
+2. **Etapa 2 — Motor de Homologación Taxonómica hacia la Política de Seguridad Humana (Doble Nivel: Frontal vs. Multidimensional 7D):** Clasificar cada línea/programa y cada meta de los 8 planes tanto por su **Nivel de Frontalidad** (*Directa/Explícita*, *Estructural/Asociada*, *Transversal/Indirecta*, *No Asociada — Gasto Administrativos/Deuda*) como por las **7 Dimensiones PNUD / Decreto 037 de 2026**, cuantificando la apuesta en **Metas** y en **Pesos Corrientes / Constantes 2025 / % del PPI**.
+3. **Etapa 3 — Evaluación de Planeación Estratégica y Respuesta a las 4 Preguntas del Usuario:** Construir métricas e indicadores de diseño estratégico (coherencia Diagnóstico → Objetivo → Meta de Resultado → Meta de Producto → Presupuesto PPI; Índice de Frontalidad y Profundidad Estratégica en Seguridad Humana por Plan; evolución del abordaje de los problemas 2012–2027).
+4. **Etapa 4 — Consolidación en `Matriz_PDM` (Google Sheet) y `Analisis` (Google Doc):** Publicar un documento técnico y matriz 100% dedicados al análisis comparado de los Planes de Desarrollo en clave de Seguridad Humana (cero Planes de Acción y cero resultados de mesas).
 
-3. **Google Doc Informe Forense y Pliegos (`Analisis`):**
-   - `documentId`: `"1yN5IdFy6fh18yKTzC8jfURtakw-dBh5kpfYC4vszitE"`
-   - `webViewLink`: `"https://docs.google.com/document/d/1yN5IdFy6fh18yKTzC8jfURtakw-dBh5kpfYC4vszitE/edit"`
-   - **Qué debes escribir en este Google Doc cuando se ejecute `sincronizar_workspace()`:**
-     - Limpiar el contenido previo (si tiene más de 2 caracteres) e insertar el Informe Forense Integral estructurado de los 8 Planes de Desarrollo (2012–2027), el análisis de los Planes de Acción de las 29 entidades (incluyendo los 78 PDFs), el censo de las 37 mesas (15 corregimientos) y los Pliegos Oficiales de Control Político con sello SHA-256.
+---
 
-¡Ejecuta también `sincronizar_workspace()` al finalizar para dejar los 3 documentos nativos (`Matriz_PDM`, `Matriz_Plan_de_accion` y `Analisis`) poblados en vivo en Google Drive!
+## 4. Lo que necesitamos de ti (`codex`) en esta Revisión
+
+Por favor inspecciona directamente los archivos fuente en `/root/polis/data/planes_desarrollo/` (tanto los `.md` como los `.pdf` de 2012–2015, 2013–2015, 2016–2019, 2020–2023, 2024–2027 y los 3 PDL) y el estado actual de las tablas `seguimiento.planes_desarrollo_distrital`, `seguimiento.pdd_lineas_y_programas` y `seguimiento.pdd_metas_oficiales`, y entrega en **`bridge/02_entrega_codex.md`** tu dictamen y sugerencias sobre:
+
+1. **Diagnóstico Crítico de las Fuentes (`/root/polis/data/planes_desarrollo/`):**
+   - ¿Qué información exacta (tablas de PPI por eje/línea/programa, metas de resultado/bienestar y metas de producto) está disponible en los `.md` y `.pdf` de cada uno de los 8 planes y qué nos falta extraer o volver a pasar por OCR/parser para que `PDD 2012–2015`, `PDD 2013–2015` y `PDD 2016–2019` tengan el mismo nivel de completitud que `2020–2023` y `2024–2027`?
+2. **Crítica y Mejoras al Motor de Homologación en Clave de Seguridad Humana:**
+   - ¿Cómo debemos diseñar la metodología de clasificación para no caer en la trampa de decir que "el 100% del Plan de Desarrollo es Seguridad Humana" (porque todo gasto social toca salud o educación), sino distinguir con rigor analítico entre:
+     - **A) Apuesta Frontal / Núcleo Duro de Seguridad y Convivencia / Seguridad Humana explícita**,
+     - **B) Apuesta Programática Directa en Factores Determinantes de las 7 Dimensiones (Decreto 037 de 2026)**, y
+     - **C) Gasto Sectorial Inercial / Funcionamiento / Infraestructura General**?
+3. **Metodología para responder las 4 Preguntas del Usuario con Rigor de Planeación Estratégica:**
+   - ¿Qué dimensiones analíticas, matrices comparadas e indicadores (presupuestales, de estructura programática, de rigor de cadena de valor MGA y de enfoque territorial/poblacional) propones para evaluar **qué Plan de Desarrollo fue más frontal y más estratégico** y **cómo evolucionó el abordaje de los problemas de seguridad humana entre 2012 y 2027**?
+4. **Arquitectura Propuesta para el Nuevo Esquema de Datos, `Matriz_PDM` (Google Sheet) y `Analisis` (Google Doc):**
+   - ¿Qué columnas o tablas nuevas propones en `seguimiento` y qué pestañas/capítulos exactos deben tener `Matriz_PDM` y `Analisis` en esta fase enfocada 100% en Planes de Desarrollo?
+
+Escribe tu revisión completa y propuestas en `bridge/02_entrega_codex.md`. No modifiques código de la aplicación todavía.

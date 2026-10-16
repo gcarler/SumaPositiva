@@ -91,3 +91,8 @@ backend/media/evidencias/*
 # Temporary bridge and prompt files
 bridge/.*
 backend/.secrets/
+
+# Large GIS raw archive (>1GB) and temporary caches
+geodatos_cartagena/*.zip
+.archify/
+data/planes_accion/drive_sector_seguridad/archivos_pdf/
