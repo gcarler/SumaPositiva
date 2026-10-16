@@ -279,7 +279,7 @@ def test_official_catalog_extraction_preserves_2024_ppi_rows_and_eight_plans():
             row["codigo_plan"] == "PDD_2024_2027" and row["nivel"] == "PROGRAMA"
             for row in hierarchy
         )
-        == 172
+        == 188
     )
     assert len(metas) > 0
 
@@ -305,8 +305,14 @@ def test_quantified_ocr_extraction_covers_2012_and_2016_plans():
         if row["codigo_plan"] == "PDD_2016_2019"
         and row["datos_oficiales"].get("extraccion") == "ESTRUCTURA_OFICIAL_FALLBACK"
     ]
-    assert fallback
-    assert all(not row["datos_oficiales"]["meta_cuantificada"] for row in fallback)
+    quantified = [
+        row
+        for row in metas
+        if row["codigo_plan"] == "PDD_2016_2019"
+        and row["datos_oficiales"].get("extraccion") == "OCR_CUANTITATIVO_REGLAS_V2"
+    ]
+    assert quantified
+    assert not fallback
 
 
 def test_network_dea_returns_bounded_stage_scores_and_rank_sensitivity():
@@ -401,9 +407,9 @@ def test_pdd_raw_json_responses_are_pre_serialized_fast_and_support_etag():
     assert not_modified.status_code == 304
 
 
-def test_all_eight_pdd_dea_routes_are_registered_with_the_prescriptive_lab():
+def test_all_ten_pdd_dea_routes_are_registered_with_the_prescriptive_lab():
     paths = {route.path for route in router.routes}
     prefix = "/compromisos/triada/pdd-dea/"
-    assert sum(path.startswith(prefix) for path in paths) == 8
+    assert sum(path.startswith(prefix) for path in paths) == 10
     assert prefix + "laboratorio-prescriptivo" in paths
     assert prefix + "seguridad-humana-comparativo" in paths

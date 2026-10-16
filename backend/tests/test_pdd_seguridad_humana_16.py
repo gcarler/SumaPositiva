@@ -35,18 +35,9 @@ def test_ppi_2012_ejes_reconcilia_con_total_oficial_hasta_redondeo_de_1000_cop()
 
 def test_tabla_209_2016_recupera_subtotales_y_11_lineas_fuente():
     source = _source_2016()
-    assert len(source) == 14  # 3 objetivos/subtotales y 11 renglones de línea
-    objective_sum = sum(
-        sum(values.values())
-        for key, values in source.items()
-        if "OBJETIVO ESTRATEGICO" in key
-    )
-    assert objective_sum == 4_331_939_000_000
-    line_sum = sum(
-        sum(values.values())
-        for key, values in source.items()
-        if "LINEA ESTRATEGICA" in key or "EJE ESTRATEGICO" in key
-    )
+    assert len(source) == 11  # 11 renglones de línea con valores anuales
+    line_sum = sum(sum(values.values()) for values in source.values())
+    assert line_sum == 4_328_520_000_000
     assert 4_331_941_000_000 - line_sum == 3_421_000_000
     security_line = source[
         "3.1 LINEA ESTRATEGICA: CARTAGENA SIN MIEDOS (SEGURIDAD Y CONVIVENCIA)"

@@ -933,3 +933,24 @@ Los tres PDL se mantienen fuera del denominador PDD; los importes de inversión 
 - `polis-backend.service` quedó activo luego del reinicio y la sincronización final terminó en `SINCRONIZADO_PDD_ONLY` el 16/10/2026 a las 18:57 UTC.
 - Las fuentes 2012/2016/PDL 2 presentan OCR/tablas escaneadas incompletas. El PDF oficial 2012 permitió rescatar siete compromisos de visión, pero no reconstruye todo su inventario de metas. La extracción de texto del PDF 2016 devuelve páginas en blanco; sus tres objetivos no se presentan como metas cuantificadas. En 2013 el PPI disponible se refiere a 2014–2015 y no se imputa 2013. En 2020 permanece una brecha de nodos financieros; las cifras son PPI formulado, no ejecución. El informe y las tablas señalan estos límites.
 - No se alteró `src/**`. `bridge/01_tarea_codex.md` ya estaba modificado como tarea de entrada y queda fuera de este commit. Entrega registrada para commit local en `main`; no se hizo push.
+
+## Entrega [SISTEMA-MULTIAGENTE-ABSORCION-INTEGRAL-PDD-17] — 16/10/2026
+
+### Sistema y persistencia
+
+- Implementé el motor backend de cinco agentes: absorción documental página/tabla, reconstrucción jerárquica MGA, clasificación de Seguridad Humana, conciliación PPI y estrategia/publicación PDD-only. Añadí API para ejecutar el motor y consultar su estado, permisos, migración `0067_evidencia_paginas_pdd` y CLI con modo de ejecución/reanudación desde datos persistidos.
+- La base contiene **2.732 evidencias**: 2.728 páginas de diez PDF y cuatro registros JSON estructurados. Los PDF quedaron con cobertura continua desde la página 1 hasta su última página, incluidos el PDD 2012 (161 páginas), su anexo CDIM (116), PDD 2013 (199), PDD 2016 (363), y los tres PDL (70/32/73). La migración 0067 está aplicada.
+- El catálogo actualizado tiene **1.524 nodos** entre cinco PDD y tres PDL, **2.228 metas PDD** y **401 metas PDL**, estas últimas presentadas en anexo territorial separado. Conteos extraídos del comparativo: 2012=191, 2013=195, 2016=370, 2020=226 y 2024=1.246 metas PDD.
+- La clasificación por nodos es A/B/C/N: 2012=11/16/114/5; 2013=22/28/227/6; 2016=31/55/324/13; 2020=36/37/235/5; 2024=19/30/181/6. Los cinco PDD tienen montos A y B positivos. La conciliación A+B+C+N frente al PPI constante y la conciliación de las siete dimensiones frente a A+B quedaron dentro de $1 COP de tolerancia.
+- Los PPI oficiales nominales de 2012, 2013 y 2016 son $3.049.788.268.000, $1.874.167.605.000 y $4.331.941.000.000. Las participaciones por nodo son una imputación analítica trazable desde los niveles fuente, no una apropiación oficial individual ni ejecución presupuestal. Se conserva la salvedad de que el PDD 2012 no rotula expresamente todos sus subprogramas; el motor no inventa ese nivel.
+
+### Publicación en Google Workspace
+
+- `Matriz_PDM` y `Analisis` sincronizaron con estado **`SINCRONIZADO_PDD_ONLY`** el 16/10/2026 a las 20:22 UTC. La matriz contiene 7 hojas y 4 gráficos nativos; el documento incluye 7 capítulos, 4 tablas, 6 imágenes PNG a 300 DPI y respuestas a las cuatro preguntas estratégicas. No se actualizó la hoja de Planes de Acción ni se incorporaron resultados de mesas.
+- El estado API `/api/v1/compromisos/triada/pdd-dea/estado-sistema-multiagente` respondió HTTP 200. La verificación de Drive registró 5 PDD, 3 PDL separados, 2.228 metas PDD y 401 metas PDL.
+
+### Validación, límites y commit
+
+- `ruff check` sobre los archivos backend tocados: **PASS**. Suite focalizada `test_motor_multiagente_pdd.py`, `test_pdd_seguridad_humana_16.py`, `test_pdd_dea_triada.py` y `test_access_policy.py`: **145 passed**.
+- La lectura de página y extracción tabular nativa se guardan con hash de fuente, hash de contenido, página y procedencia. La extracción de filas tabulares puede variar según los diseños/escaneos; las celdas OCR y la asignación financiera mantienen sus marcas de origen y revisión analítica.
+- No se tocaron archivos `src/**`. Se excluyen del commit la asignación `bridge/01_tarea_codex.md`, la fuente 2012 modificada por el usuario y los JSON/artefactos de `anydoc_md/` que aparecieron fuera de esta entrega. La publicación quedó confirmada; el commit local de esta entrega contiene solo los archivos propios enumerados aquí, sin push.

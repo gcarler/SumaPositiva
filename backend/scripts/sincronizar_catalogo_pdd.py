@@ -190,8 +190,19 @@ def _heading_rows(source: Path, plan_code: str) -> list[dict[str, Any]]:
         title = re.sub(r"[*`]+", "", match.group(2)).strip()
         if len(title) < 4 or title.startswith(("Tabla de contenido", "Contenido")):
             continue
+        if re.fullmatch(r"SUB\s*PROGRAMA\s*: ?", title, re.I):
+            continue
         number = re.match(r"^(\d+(?:\.\d+){0,4})[.)]?\s+(.+)$", title)
         code, name = (number.group(1), number.group(2)) if number else (None, title)
+        if code is None:
+            program_code = re.match(
+                r"^(?:PROGRAMA|SUBPROGRAMA)\s+(\d+(?:[.,]\d+){1,5})\.?\s+(.+)$",
+                title,
+                re.I,
+            )
+            if program_code:
+                code = program_code.group(1).replace(",", ".").rstrip(".")
+                name = f"{title.split(maxsplit=1)[0]} {program_code.group(2)}"
         level = len(match.group(1))
         upper = name.upper()
         is_program = bool(re.search(r"(?<![A-Z])PROGRAMA\s*:", upper)) or bool(
@@ -356,18 +367,29 @@ def _quantified_ocr_metas(source: Path, plan_code: str) -> list[dict[str, Any]]:
     result: list[dict[str, Any]] = []
     seen: set[str] = set()
     target = re.compile(
-        r"(?:\b(?:aumentar|disminuir|reducir|incrementar|alcanzar|atender|"
-        r"beneficiar|crear|construir|garantizar|ampliar|mantener)\b.{0,160}\d"
-        r"|\d[^\n]{0,100}%[^\n]{0,120}\b(?:reducir|disminuir|aumentar|"
-        r"meta|porcentaje|poblaci[oó]n|tasa)\b)",
+        r"\b(?:aumentar|disminuir|reducir|incrementar|alcanzar|atender|beneficiar|"
+        r"crear|construir|garantizar|ampliar|mantener|ejecutar|formular|implementar|"
+        r"entregar|lograr|reparar|prevenir|proteger|fortalecer|cubrir|vacunar|"
+        r"restituir|asistir|capacitar|mejorar|disminuir|proteger)\b",
         re.I,
     )
-    numeric = re.compile(r"\d+(?:[.,]\d+)?\s*(?:%|puntos|personas|zonas|viviendas|km\b)", re.I)
+    numeric = re.compile(
+        r"\d+(?:[.,]\d+)?\s*(?:%|%?\s*(?:puntos|personas|familias|ni[nñ]os|"
+        r"mujeres|v[ií]ctimas|zonas|viviendas|km\b|sedes|instituciones|"
+        r"establecimientos|casos|cupos|beneficiarios|unidades|millones|mil))"
+        r"|\b\d+\s*(?:%|por ciento|porciento)\b",
+        re.I,
+    )
     for index, raw in enumerate(lines):
         clean = re.sub(r"\s+", " ", raw).strip(" |\t-–—")
         if re.search(r"\b(?:EJE|OBJETIVO)\s*(?:ESTRAT[EÉ]GICO\s*)?\d+\b", clean, re.I):
             heading = clean[:240]
-        if len(clean) < 25 or not target.search(clean) or not numeric.search(clean):
+        # Historic scans often split the verb, indicator and target into separate OCR
+        # lines. Preserve a quantified row as a low-confidence candidate when it has
+        # real numeric measure text; page evidence keeps the surrounding table intact.
+        if len(clean) < 18 or not numeric.search(clean):
+            continue
+        if not target.search(clean) and len(re.findall(r"[A-Za-zÁÉÍÓÚáéíóúÑñ]", clean)) < 10:
             continue
         quote = clean
         for following in lines[index + 1 : index + 3]:
@@ -389,7 +411,9 @@ def _quantified_ocr_metas(source: Path, plan_code: str) -> list[dict[str, Any]]:
                 "codigo_plan": plan_code,
                 "tipo_meta": "RESULTADO"
                 if "%" in quote or "puntos" in quote.casefold()
-                else "PRODUCTO",
+                else "PRODUCTO"
+                if target.search(quote)
+                else "OCR_CANDIDATA",
                 "codigo": None,
                 "nombre": quote,
                 "indicador": quote,
@@ -400,11 +424,298 @@ def _quantified_ocr_metas(source: Path, plan_code: str) -> list[dict[str, Any]]:
                 "datos_oficiales": {
                     "evidencia_ocr_literal": quote,
                     "encabezado_contexto": heading or None,
-                    "extraccion": "OCR_CUANTITATIVO_REGLAS_V1",
+                    "extraccion": "OCR_CUANTITATIVO_REGLAS_V2",
                     "revision_humana_pendiente": True,
+                    "estado_extraccion": "CANDIDATO_OCR_CUANTIFICADO"
+                    if target.search(quote)
+                    else "CANDIDATO_OCR_NUMERICO_REVISION_HUMANA",
+                    "pagina_origen": int(re.search(r"PAGINA\s+(\d+)", clean, re.I).group(1))
+                    if re.search(r"PAGINA\s+(\d+)", clean, re.I)
+                    else None,
                 },
             }
         )
+    return result
+
+
+def _legacy_program_rows(source: Path, plan_code: str) -> list[dict[str, Any]]:
+    """Recover explicit program/subprogram labels from OCR and numbered indexes."""
+    if plan_code not in {"PDD_2012_2015", "PDD_2013_2015", "PDD_2016_2019"}:
+        return []
+    result: list[dict[str, Any]] = []
+    seen: set[tuple[str, str]] = set()
+    page = 1
+    order = 0
+    current_axis: str | None = None
+    current_program: uuid.UUID | None = None
+    in_subprograms = False
+    lines = source.read_text(encoding="utf-8", errors="replace").splitlines()
+    toc_pattern = re.compile(
+        r"^\s*([0-9OIl.,]{1,18})\s+(OBJETIVO\s+ESTRAT[EÉ]GICO|L[IÍ]NEA\s+ESTRAT[EÉ]GICA|ESTRATEGIA|PROGRAMA|SUBPROGRAMA)\s+(.+?)\s*(?:[-—–]\s*)?(\d{1,3})?\s*$",
+        re.I,
+    )
+    for raw in lines:
+        page_match = re.search(r"PAGINA\s+(\d+)", raw, re.I)
+        if page_match:
+            page = int(page_match.group(1))
+        axis_match = re.search(r"\bEJE\s+(\d)\b", raw, re.I)
+        if plan_code == "PDD_2012_2015" and axis_match:
+            current_axis = axis_match.group(1)
+        clean = re.sub(r"\s+", " ", raw).strip(" #|\t-–—")
+        if len(clean) < 8:
+            continue
+        if plan_code == "PDD_2013_2015":
+            if re.match(r"^ESTRATEGIA\s+", clean, re.I):
+                in_subprograms = False
+                current_program = None
+                strategy_match = re.match(
+                    r"^ESTRATEGIA\s+(\d+(?:[.,]\d+){0,4})\.?\s*(.*?)\s*"
+                    r"(?:Desde|Se |En |Busca|Con el|Para )",
+                    clean,
+                    re.I,
+                )
+                if strategy_match:
+                    name = strategy_match.group(2).strip(" .:-")
+                    code = strategy_match.group(1).replace(",", ".")
+                    key = ("ESTRATEGIA", re.sub(r"\W+", " ", name.casefold()).strip())
+                    if len(key[1]) > 4 and key not in seen:
+                        seen.add(key)
+                        order += 1
+                        result.append(
+                            {
+                                "id": uuid.uuid4(),
+                                "codigo_plan": plan_code,
+                                "parent_id": None,
+                                "nivel": "ESTRATEGIA",
+                                "codigo": code,
+                                "nombre": name[:500],
+                                "orden": order,
+                                "ppi_anual_cop": {},
+                                "fuente": source.name,
+                                "metadatos": {
+                                    "extraccion": "ROTULO_ESTRATEGIA_2013",
+                                    "pagina_indice": page,
+                                },
+                            }
+                        )
+                continue
+            if re.match(r"^SUBPROGRAMAS?\s*:?.*$", clean, re.I):
+                in_subprograms = True
+                continue
+            program_match = re.match(
+                r"^PROGRAMA\s+(\d+(?:[.,]\d+){1,5})\.?\s+([^:]+?)(?:\.\s+|:\s*|$)",
+                clean,
+                re.I,
+            )
+            if program_match:
+                in_subprograms = False
+                current_program = None
+                code = program_match.group(1).replace(",", ".")
+                name = program_match.group(2).strip(" .:-")
+                key = ("PROGRAMA", re.sub(r"\W+", " ", name.casefold()).strip())
+                if len(key[1]) > 5 and key not in seen:
+                    seen.add(key)
+                    order += 1
+                    row_id = uuid.uuid4()
+                    result.append(
+                        {
+                            "id": row_id,
+                            "codigo_plan": plan_code,
+                            "parent_id": None,
+                            "nivel": "PROGRAMA",
+                            "codigo": code,
+                            "nombre": name[:500],
+                            "orden": order,
+                            "ppi_anual_cop": {},
+                            "fuente": source.name,
+                            "metadatos": {
+                                "extraccion": "ROTULO_PROGRAMA_2013",
+                                "pagina_indice": page,
+                            },
+                        }
+                    )
+                    current_program = row_id
+                continue
+            if in_subprograms and current_program:
+                subprogram_match = re.match(
+                    r"^([A-ZÁÉÍÓÚÑ][A-ZÁÉÍÓÚÑ0-9 ,/().’'\-]{4,}):\s+\S",
+                    clean,
+                )
+                if subprogram_match:
+                    name = subprogram_match.group(1).strip(" .:-")
+                    folded = re.sub(r"\W+", " ", name.casefold()).strip()
+                    key = ("SUBPROGRAMA", folded)
+                    if len(folded) > 5 and key not in seen:
+                        seen.add(key)
+                        order += 1
+                        result.append(
+                            {
+                                "id": uuid.uuid4(),
+                                "codigo_plan": plan_code,
+                                "parent_id": current_program,
+                                "nivel": "SUBPROGRAMA",
+                                "codigo": None,
+                                "nombre": name[:500],
+                                "orden": order,
+                                "ppi_anual_cop": {},
+                                "fuente": source.name,
+                                "metadatos": {
+                                    "extraccion": "ROTULO_SUBPROGRAMA_2013",
+                                    "pagina_indice": page,
+                                },
+                            }
+                        )
+            if not clean.startswith("#"):
+                continue
+        match = toc_pattern.match(clean)
+        if match:
+            code = re.sub(r"[OIl]", "1", match.group(1)).replace(",", ".").rstrip(".")
+            label = match.group(2).upper()
+            kind = (
+                "SUBPROGRAMA"
+                if label.startswith("SUB")
+                else "ESTRATEGIA"
+                if label.startswith("ESTRATEGIA")
+                else "PROGRAMA"
+                if label == "PROGRAMA"
+                else "LINEA"
+                if "LINEA" in label or "LÍNEA" in label
+                else "OBJETIVO"
+            )
+            name = re.sub(r"\s+\d{1,3}$", "", match.group(3)).strip(" .:-")
+        elif plan_code == "PDD_2012_2015" and re.match(r"^PROGRAMA\s+", clean, re.I):
+            kind, code, name = "PROGRAMA", None, re.sub(r"^PROGRAMA\s+", "", clean, flags=re.I)
+        else:
+            continue
+        name = re.sub(r"\s+", " ", name).strip()
+        folded = re.sub(r"\W+", " ", name.casefold()).strip()
+        if len(folded) < 8 or folded in {"programa", "subprograma", "programas", "subprogramas"}:
+            continue
+        key = (kind, folded)
+        if key in seen:
+            continue
+        seen.add(key)
+        order += 1
+        result.append(
+            {
+                "id": uuid.uuid4(),
+                "codigo_plan": plan_code,
+                "parent_id": None,
+                "nivel": kind,
+                "codigo": code,
+                "nombre": name[:500],
+                "orden": order,
+                "ppi_anual_cop": {},
+                "fuente": source.name,
+                "metadatos": {
+                    "extraccion": "INDICE_OCR_OFICIAL" if code else "ROTULO_OCR_OFICIAL",
+                    "pagina_indice": page,
+                    "eje_contexto": current_axis if plan_code == "PDD_2012_2015" else None,
+                    "revision_humana_pendiente": True,
+                    "jerarquia_no_confirmada": True,
+                },
+            }
+        )
+    # Numbered PDD 2016 contents expose the official chain code. Reconnect the
+    # recovered nodes to their nearest indexed parent when that parent exists.
+    by_code = {str(row["codigo"]): row for row in result if row.get("codigo")}
+    for row in result:
+        code = str(row.get("codigo") or "")
+        compact = re.sub(r"\D", "", code)
+        parents = [
+            candidate
+            for candidate in result
+            if candidate["id"] != row["id"]
+            and candidate.get("codigo")
+            and len(re.sub(r"\D", "", str(candidate["codigo"]))) < len(compact)
+            and compact.startswith(re.sub(r"\D", "", str(candidate["codigo"])))
+        ]
+        if parents:
+            parent = max(
+                parents, key=lambda candidate: len(re.sub(r"\D", "", str(candidate["codigo"])))
+            )
+            row["parent_id"] = parent["id"]
+        else:
+            for cut in range(len(code.split(".")) - 1, 0, -1):
+                parent = by_code.get(".".join(code.split(".")[:cut]))
+                if parent and parent["id"] != row["id"]:
+                    row["parent_id"] = parent["id"]
+                    break
+    return result
+
+
+def _matrix_hierarchy_rows(source: Path, plan_code: str) -> list[dict[str, Any]]:
+    """Normalize the explicit 2013 objective/strategy/program/subprogram matrix."""
+    if plan_code != "PDD_2013_2015":
+        return []
+    result: list[dict[str, Any]] = []
+    ids: dict[tuple[str, str], uuid.UUID] = {}
+    carried = [""] * 5
+    order = 0
+    in_matrix = False
+    for line_no, raw in enumerate(
+        source.read_text(encoding="utf-8", errors="replace").splitlines(), 1
+    ):
+        if not raw.lstrip().startswith("|"):
+            carried = [""] * 5
+            in_matrix = False
+            continue
+        cells = [
+            re.sub(r"\s+", " ", cell.replace("`", "")).strip()
+            for cell in raw.strip().strip("|").split("|")
+        ]
+        if len(cells) < 4 or all(re.fullmatch(r"[-: ]*", cell) for cell in cells):
+            continue
+        normalized_header = " ".join(cells).casefold()
+        if all(
+            token in normalized_header
+            for token in ("objetivo", "estrategia", "programa", "subprograma")
+        ):
+            in_matrix = True
+            carried = [""] * 5
+            continue
+        if not in_matrix:
+            continue
+        while len(cells) < 5:
+            cells.append("")
+        for index in range(4):
+            if cells[index]:
+                carried[index] = cells[index]
+            else:
+                cells[index] = carried[index]
+        names = [cells[0], cells[1], cells[2], cells[3]]
+        names = [re.sub(r"\*+", "", name).strip() for name in names]
+        levels = ("OBJETIVO", "ESTRATEGIA", "PROGRAMA", "SUBPROGRAMA")
+        parent_id = None
+        for _index, (level, name) in enumerate(zip(levels, names, strict=True)):
+            folded = re.sub(r"\W+", " ", name.casefold()).strip()
+            if len(folded) < 4:
+                continue
+            key = (level, folded)
+            if key not in ids:
+                order += 1
+                row_id = uuid.uuid4()
+                ids[key] = row_id
+                result.append(
+                    {
+                        "id": row_id,
+                        "codigo_plan": plan_code,
+                        "parent_id": parent_id,
+                        "nivel": level,
+                        "codigo": None,
+                        "nombre": name[:500],
+                        "orden": order,
+                        "ppi_anual_cop": {},
+                        "fuente": source.name,
+                        "metadatos": {
+                            "extraccion": "MATRIZ_ESTRUCTURAL_ACUERDO_016",
+                            "fila_markdown": line_no,
+                            "responsable": cells[4] or None,
+                            "revision_humana_pendiente": True,
+                        },
+                    }
+                )
+            parent_id = ids[key]
     return result
 
 
@@ -432,15 +743,106 @@ def extract_catalog() -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[
             if "ponencia" not in filename:
                 lines.extend(_heading_rows(path, plan_code))
             metas.extend(_table_rows(path, plan_code))
-    # The older OCRs flatten their goal matrices into prose rather than Markdown
-    # tables. Keep only literal, quantified statements with an attributable source row.
+    for plan_code, filename in (
+        ("PDD_2012_2015", "pdd_2012_2015_acuerdo_001_campo_para_todos.md"),
+        ("PDD_2013_2015", "pdd_2013_2015_acuerdo_016_ahora_si_cartagena.md"),
+        ("PDD_2016_2019", "pdd_2016_2019_acuerdo_006_primero_la_gente.md"),
+    ):
+        source = DATA / filename
+        if not source.exists():
+            continue
+        extracted_rows = _legacy_program_rows(source, plan_code) + _matrix_hierarchy_rows(
+            source, plan_code
+        )
+        known_rows = {
+            (
+                row["codigo_plan"],
+                row["nivel"],
+                re.sub(r"\W+", " ", row["nombre"].casefold()).strip(),
+            ): row
+            for row in lines
+        }
+        row_id_map: dict[uuid.UUID, uuid.UUID] = {}
+        appended_rows = []
+        for row in extracted_rows:
+            signature = (
+                row["codigo_plan"],
+                row["nivel"],
+                re.sub(r"\W+", " ", row["nombre"].casefold()).strip(),
+            )
+            duplicate = known_rows.get(signature)
+            if duplicate:
+                row_id_map[row["id"]] = duplicate["id"]
+                continue
+            known_rows[signature] = row
+            row_id_map[row["id"]] = row["id"]
+            appended_rows.append(row)
+        for row in appended_rows:
+            if row.get("parent_id") in row_id_map:
+                row["parent_id"] = row_id_map[row["parent_id"]]
+        lines.extend(appended_rows)
+    # Link OCR 2012 program labels to the official PPI axes where page context
+    # supplies an axis number. The 2013 matrix strategies are rooted at the four
+    # canonical objective nodes used by the PPI summary.
+    axes_2012 = {
+        str(row.get("codigo")): row
+        for row in lines
+        if row["codigo_plan"] == "PDD_2012_2015" and row["nivel"] == "EJE"
+    }
+    for row in lines:
+        if row["codigo_plan"] == "PDD_2012_2015" and row["nivel"] in {
+            "PROGRAMA",
+            "COMPONENTE",
+        }:
+            axis = row.get("metadatos", {}).get("eje_contexto")
+            if not axis and row["nivel"] == "COMPONENTE":
+                code = str(row.get("codigo") or "")
+                axis = code.split(".", 1)[0] if code else None
+            normalized_name = unicodedata.normalize("NFKD", row["nombre"])
+            normalized_name = normalized_name.encode("ascii", "ignore").decode().upper()
+            if not axis:
+                for candidate_axis, pattern in (
+                    ("5", r"SEGURIDAD|JUSTICIA|CONVIVENCIA|VICTIMA|PAZ|DERECHOS HUMANOS"),
+                    ("4", r"HABITAT|AMBIENT|AGUA|VIVIENDA|MOVILIDAD|RIESGO"),
+                    ("3", r"EMPLE|ECONOM|PRODUCT|BANCA|INGRESO|EMPRES"),
+                    ("2", r"SALUD|EDUC|NUTRIC|CULTUR|DEPORTE|INFANCIA"),
+                    ("1", r"DIFERENCIAD|MUJER|DISCAPAC|AFRO|ETNIC|CICLO VITAL"),
+                ):
+                    if re.search(pattern, normalized_name):
+                        axis = candidate_axis
+                        row.setdefault("metadatos", {})["vinculo_eje_metodo"] = (
+                            "COINCIDENCIA_SEMANTICA_OCR"
+                        )
+                        break
+            if axis and axis in axes_2012:
+                row["parent_id"] = axes_2012[axis]["id"]
+    matrix_objectives = {
+        row["id"]: row
+        for row in lines
+        if row["codigo_plan"] == "PDD_2013_2015"
+        and row["nivel"] == "OBJETIVO"
+        and row.get("codigo") is None
+    }
+    # Older source tables flatten into OCR prose. Keep all quantified candidates
+    # with literal evidence and distinguish low-confidence numeric rows explicitly.
     for plan_code, filename in (
         ("PDD_2012_2015", "pdd_2012_2015_acuerdo_001_campo_para_todos.md"),
         ("PDD_2016_2019", "pdd_2016_2019_acuerdo_006_primero_la_gente.md"),
     ):
         source = DATA / filename
-        if source.exists() and not any(meta["codigo_plan"] == plan_code for meta in metas):
-            metas.extend(_quantified_ocr_metas(source, plan_code))
+        if source.exists():
+            existing_signatures = {
+                re.sub(r"\W+", " ", str(meta.get("nombre") or "").casefold()).strip()
+                for meta in metas
+                if meta["codigo_plan"] == plan_code
+            }
+            candidates = _quantified_ocr_metas(source, plan_code)
+            metas.extend(
+                meta
+                for meta in candidates
+                if re.sub(r"\W+", " ", str(meta.get("nombre") or "").casefold()).strip()
+                not in existing_signatures
+            )
             if not any(meta["codigo_plan"] == plan_code for meta in metas):
                 # The 2016 OCR contains the adopted objectives and budget matrix,
                 # but no recoverable quantified goal table. Preserve the official
@@ -531,6 +933,32 @@ def extract_catalog() -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[
                     "metadatos": {"ppi_total_cop": total, "extraccion": "OCR_ACUERDO_OFICIAL"},
                 }
             )
+    axes_2012 = {
+        str(row.get("codigo")): row
+        for row in lines
+        if row["codigo_plan"] == "PDD_2012_2015" and row["nivel"] == "EJE"
+    }
+    for row in lines:
+        if row["codigo_plan"] == "PDD_2012_2015" and row["nivel"] == "PROGRAMA":
+            axis = row.get("metadatos", {}).get("eje_contexto")
+            if not axis:
+                normalized_name = unicodedata.normalize("NFKD", row["nombre"])
+                normalized_name = normalized_name.encode("ascii", "ignore").decode().upper()
+                for candidate_axis, pattern in (
+                    ("5", r"SEGURIDAD|JUSTICIA|CONVIVENCIA|VICTIMA|PAZ|DERECHOS HUMANOS"),
+                    ("4", r"HABITAT|AMBIENT|AGUA|VIVIENDA|MOVILIDAD|RIESGO"),
+                    ("3", r"EMPLE|ECONOM|PRODUCT|BANCA|INGRESO|EMPRES"),
+                    ("2", r"SALUD|EDUC|NUTRIC|CULTUR|DEPORTE|INFANCIA"),
+                    ("1", r"DIFERENCIAD|MUJER|DISCAPAC|AFRO|ETNIC|CICLO VITAL"),
+                ):
+                    if re.search(pattern, normalized_name):
+                        axis = candidate_axis
+                        row.setdefault("metadatos", {})["vinculo_eje_metodo"] = (
+                            "COINCIDENCIA_SEMANTICA_OCR"
+                        )
+                        break
+            if axis and axis in axes_2012:
+                row["parent_id"] = axes_2012[axis]["id"]
     bases = DATA / "pdd_2024_2027_bases_tecnicas.md"
     if bases.exists():
         # Retain source occurrences: the official PPI includes repeated codes for separately
@@ -624,7 +1052,9 @@ def extract_catalog() -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[
         if not (row["codigo_plan"] == "PDD_2020_2023" and row["nivel"] == "PILAR")
     ]
     present_hierarchy = {
-        (row["codigo_plan"], row["nivel"], row["nombre"].casefold()) for row in lines
+        (row["codigo_plan"], row["nivel"], row["nombre"].casefold())
+        for row in lines
+        if row["id"] not in matrix_objectives
     }
     for plan_code, (level, names) in legacy_hierarchy.items():
         for order, name in enumerate(names, 1):
@@ -642,6 +1072,53 @@ def extract_catalog() -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[
                         "metadatos": {"estado": "NORMALIZACION_ESTRUCTURAL"},
                     }
                 )
+    canonical_objectives = {
+        re.sub(r"\W+", " ", row["nombre"].casefold()).strip(): row
+        for row in lines
+        if row["codigo_plan"] == "PDD_2013_2015" and row["nivel"] == "OBJETIVO"
+    }
+    objective_by_code = {
+        str(row.get("codigo")): row
+        for row in lines
+        if row["codigo_plan"] == "PDD_2013_2015"
+        and row["nivel"] == "OBJETIVO"
+        and row.get("codigo")
+    }
+    for row in lines:
+        if row["codigo_plan"] != "PDD_2013_2015" or row["nivel"] not in {
+            "ESTRATEGIA",
+            "PROGRAMA",
+        }:
+            continue
+        code_prefix = re.match(r"^(7|8|9|10)(?:\.|$)", str(row.get("codigo") or ""))
+        if code_prefix and not row.get("parent_id"):
+            objective_number = str(int(code_prefix.group(1)) - 6)
+            objective = objective_by_code.get(objective_number)
+            if objective:
+                row["parent_id"] = objective["id"]
+    objective_aliases = (
+        ("INCLUSION SOCIAL", "Inclusión Social"),
+        ("DESARROLLO ECONOMICO", "Desarrollo Económico"),
+        ("DESARROLLO TERRITORIAL", "Desarrollo Territorial"),
+        ("LO CIUDADANO Y GUBERNAMENTAL", "Gobernabilidad"),
+    )
+    matrix_objective_ids_to_drop: set[uuid.UUID] = set()
+    for matrix_id, matrix_objective in matrix_objectives.items():
+        source_text = re.sub(r"\W+", " ", matrix_objective["nombre"].casefold()).strip()
+        alias = next(
+            (target for needle, target in objective_aliases if needle.casefold() in source_text),
+            None,
+        )
+        target = canonical_objectives.get(
+            re.sub(r"\W+", " ", alias.casefold()).strip() if alias else ""
+        )
+        if not target:
+            continue
+        matrix_objective_ids_to_drop.add(matrix_id)
+        for row in lines:
+            if row["codigo_plan"] == "PDD_2013_2015" and row.get("parent_id") == matrix_id:
+                row["parent_id"] = target["id"]
+    lines = [row for row in lines if row["id"] not in matrix_objective_ids_to_drop]
     from app.modules.compromisos.pdd_dea_service import PddDeaService
 
     for index, entry in enumerate(PddDeaService._ppi_2024_lines(), 1):
@@ -658,6 +1135,143 @@ def extract_catalog() -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[
                 "metadatos": {"ppi_total_cuatrienio_cop": entry["total_cuatrienio_cop"]},
             }
         )
+    structured_files = sorted(DATA.glob("estructurado_pdd_*.json"))
+    structured_node_signatures = {
+        (
+            row["codigo_plan"],
+            row["nivel"],
+            re.sub(r"\W+", " ", row["nombre"].casefold()).strip(),
+        )
+        for row in lines
+    }
+    structured_meta_signatures = {
+        (
+            row["codigo_plan"],
+            re.sub(r"\W+", " ", str(row.get("nombre") or "").casefold()).strip(),
+            re.sub(r"\W+", " ", str(row.get("indicador") or "").casefold()).strip(),
+        )
+        for row in metas
+    }
+
+    def structured_items(value: Any):
+        if isinstance(value, list):
+            for item in value:
+                yield from structured_items(item)
+        elif isinstance(value, dict):
+            yield value
+            for item in value.values():
+                if isinstance(item, (dict, list)):
+                    yield from structured_items(item)
+
+    for path in structured_files:
+        period = re.search(r"(2012|2013|2016|2020|2024)", path.name)
+        if not period:
+            continue
+        year = period.group(1)
+        plan_code = {
+            "2012": "PDD_2012_2015",
+            "2013": "PDD_2013_2015",
+            "2016": "PDD_2016_2019",
+            "2020": "PDD_2020_2023",
+            "2024": "PDD_2024_2027",
+        }[year]
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        for entry in structured_items(payload):
+            name = next(
+                (
+                    entry.get(key)
+                    for key in ("nombre", "name", "programa", "titulo", "título")
+                    if isinstance(entry.get(key), str)
+                ),
+                None,
+            )
+            if not name or len(name.strip()) < 5:
+                continue
+            level_raw = str(entry.get("nivel") or entry.get("level") or "").upper()
+            level = next(
+                (
+                    key
+                    for key in (
+                        "SUBPROGRAMA",
+                        "PROGRAMA",
+                        "ESTRATEGIA",
+                        "OBJETIVO",
+                        "EJE",
+                        "PILAR",
+                        "LINEA",
+                    )
+                    if key in level_raw
+                ),
+                None,
+            )
+            if level:
+                signature = (plan_code, level, re.sub(r"\W+", " ", name.casefold()).strip())
+                if signature not in structured_node_signatures:
+                    lines.append(
+                        {
+                            "id": uuid.uuid4(),
+                            "codigo_plan": plan_code,
+                            "parent_id": None,
+                            "nivel": level,
+                            "codigo": str(entry.get("codigo") or entry.get("code") or "") or None,
+                            "nombre": name.strip(),
+                            "orden": len(lines) + 1,
+                            "ppi_anual_cop": entry.get("ppi_anual_cop") or {},
+                            "fuente": path.name,
+                            "metadatos": {
+                                **entry,
+                                "extraccion": "JSON_ESTRUCTURADO_PDD",
+                                "revision_humana_pendiente": True,
+                            },
+                        }
+                    )
+                    structured_node_signatures.add(signature)
+            indicator = next(
+                (
+                    entry.get(key)
+                    for key in ("indicador", "nombre_indicador", "indicator")
+                    if isinstance(entry.get(key), str)
+                ),
+                None,
+            )
+            has_goal = any(
+                key in entry
+                for key in (
+                    "meta",
+                    "meta_2015",
+                    "meta_2019",
+                    "meta_2023",
+                    "meta_2027",
+                    "meta_cuatrienio",
+                    "valor_meta",
+                )
+            )
+            if indicator and has_goal:
+                signature = (
+                    plan_code,
+                    re.sub(r"\W+", " ", name.casefold()).strip(),
+                    re.sub(r"\W+", " ", indicator.casefold()).strip(),
+                )
+                if signature not in structured_meta_signatures:
+                    metas.append(
+                        {
+                            "codigo_plan": plan_code,
+                            "tipo_meta": str(entry.get("tipo_meta") or "OCR_CANDIDATA").upper(),
+                            "codigo": str(entry.get("codigo") or "") or None,
+                            "nombre": name.strip(),
+                            "indicador": indicator,
+                            "unidad_medida": entry.get("unidad_medida"),
+                            "linea_nombre": entry.get("programa") or entry.get("linea_nombre"),
+                            "fuente": path.name,
+                            "fila_fuente": int(entry.get("fila_fuente") or 0) or None,
+                            "datos_oficiales": {
+                                **entry,
+                                "extraccion": "JSON_ESTRUCTURADO_PDD",
+                                "revision_humana_pendiente": True,
+                            },
+                        }
+                    )
+                    structured_meta_signatures.add(signature)
     present = {(row["codigo_plan"], row["nombre"].casefold()) for row in lines}
     for plan_code, names in legacy_lines.items():
         for order, name in enumerate(names, 1):
@@ -675,6 +1289,88 @@ def extract_catalog() -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[
                         "metadatos": {"estado": "EXTRACCION_DOCUMENTAL_SECUNDARIA"},
                     }
                 )
+    indexed_lines = [
+        row
+        for row in lines
+        if row["codigo_plan"] == "PDD_2016_2019"
+        and row["nivel"] == "LINEA"
+        and row.get("fuente") == "pdd_2016_2019_acuerdo_006_primero_la_gente.md"
+        and row.get("codigo")
+    ]
+    canonical_lines = [
+        row
+        for row in lines
+        if row["codigo_plan"] == "PDD_2016_2019"
+        and row["nivel"] == "LINEA"
+        and row.get("fuente") != "pdd_2016_2019_acuerdo_006_primero_la_gente.md"
+    ]
+    remove_index_line_ids: set[uuid.UUID] = set()
+    for source_line in indexed_lines:
+        source_tokens = {
+            token
+            for token in re.findall(
+                r"[A-ZÁÉÍÓÚÑ]{4,}", unicodedata.normalize("NFKC", source_line["nombre"]).upper()
+            )
+        }
+        ranked = []
+        for canonical in canonical_lines:
+            target_text = unicodedata.normalize("NFKD", canonical["nombre"])
+            target_tokens = set(
+                re.findall(r"[A-Z]{4,}", target_text.encode("ascii", "ignore").decode().upper())
+            )
+            shared = len(source_tokens & target_tokens)
+            if shared:
+                ranked.append((shared, canonical))
+        if not ranked:
+            continue
+        score, chosen = max(ranked, key=lambda item: item[0])
+        if score < 2:
+            continue
+        chosen.setdefault("metadatos", {}).setdefault("aliases_indice_ocr", []).append(
+            {"codigo": source_line["codigo"], "nombre": source_line["nombre"]}
+        )
+        old_id = source_line["id"]
+        for descendant in lines:
+            if descendant.get("parent_id") == old_id:
+                descendant["parent_id"] = chosen["id"]
+        remove_index_line_ids.add(old_id)
+    lines = [row for row in lines if row.get("id") not in remove_index_line_ids]
+    objective_by_code_2016 = {
+        str(row.get("codigo")): row
+        for row in lines
+        if row["codigo_plan"] == "PDD_2016_2019"
+        and row["nivel"] == "OBJETIVO"
+        and row.get("codigo")
+    }
+    for row in lines:
+        if (
+            row["codigo_plan"] != "PDD_2016_2019"
+            or row["nivel"] not in {"LINEA", "PROGRAMA", "SUBPROGRAMA"}
+            or row.get("parent_id")
+        ):
+            continue
+        code = str(row.get("codigo") or "")
+        compact = re.sub(r"\D", "", code)
+        candidate_lines = []
+        for candidate in canonical_lines:
+            aliases = candidate.get("metadatos", {}).get("aliases_indice_ocr", [])
+            for alias in aliases:
+                alias_compact = re.sub(r"\D", "", str(alias.get("codigo") or ""))
+                if (
+                    alias_compact
+                    and len(alias_compact) < len(compact)
+                    and compact.startswith(alias_compact)
+                ):
+                    candidate_lines.append((len(alias_compact), candidate))
+        if candidate_lines:
+            row["parent_id"] = max(candidate_lines, key=lambda item: item[0])[1]["id"]
+            continue
+        prefix = re.match(r"^(8|9|10)(?:\.|$)", code)
+        if prefix:
+            objective_number = str(int(prefix.group(1)) - 7)
+            objective = objective_by_code_2016.get(objective_number)
+            if objective:
+                row["parent_id"] = objective["id"]
     for plan in plans:
         plan.setdefault("ppi_total_corriente_cop", None)
         plan.setdefault("ppi_total_constante_2025_cop", None)
@@ -1002,8 +1698,13 @@ async def _link_official_metas(conn: Any) -> dict[str, int]:
     )
 
 
-async def synchronize(dry_run: bool = False) -> dict[str, int]:
-    plans, lines, metas = extract_catalog()
+async def synchronize(
+    dry_run: bool = False,
+    extracted: tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]
+    | None = None,
+) -> dict[str, int]:
+    plans, lines, metas = extracted or extract_catalog()
+    lines = _order_hierarchy_parent_first(lines)
     if dry_run:
         return {"planes": len(plans), "lineas_programas": len(lines), "metas_oficiales": len(metas)}
     engine = create_async_engine(Settings().async_database_url)
@@ -1064,6 +1765,30 @@ async def synchronize(dry_run: bool = False) -> dict[str, int]:
         **{f"vinculos_{k.lower()}": v for k, v in link_counts.items()},
         "cache_payloads": cache_count,
     }
+
+
+def _order_hierarchy_parent_first(lines: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Order the bulk insert so every parent row exists before its children."""
+    ids = {str(row["id"]) for row in lines}
+    children: dict[str | None, list[dict[str, Any]]] = defaultdict(list)
+    for row in lines:
+        parent = str(row["parent_id"]) if row.get("parent_id") else None
+        if parent and parent not in ids:
+            raise ValueError(
+                f"Nodo {row['id']} referencia un padre ausente en el catálogo: {parent}"
+            )
+        children[parent].append(row)
+    ordered: list[dict[str, Any]] = []
+    queue = list(children[None])
+    cursor = 0
+    while cursor < len(queue):
+        row = queue[cursor]
+        cursor += 1
+        ordered.append(row)
+        queue.extend(children.get(str(row["id"]), []))
+    if len(ordered) != len(lines):
+        raise ValueError("La jerarquía del catálogo contiene un ciclo de parent_id.")
+    return ordered
 
 
 async def warm_pdd_cache() -> int:

@@ -115,6 +115,8 @@ La última columna explica la excepción pública o la condición adicional.
 | GET | /api/v1/compromisos/triada/dea/resumen-integral | publico | Resumen analítico agregado DEA, sujeto a advertencias metodológicas de cada motor. |
 | GET | /api/v1/compromisos/triada/pdd-dea/catalogo-y-conciliacion-ppi | publico | Catálogo de PDD/PDL, fuentes y conciliación del PPI frente a registros reconstruidos. |
 | GET | /api/v1/compromisos/triada/pdd-dea/seguridad-humana-comparativo | publico | Estructura PDD, metas enlazadas y PPI clasificado A/B/C/N con reparto no duplicado en siete dimensiones; PDL separado. |
+| POST | /api/v1/compromisos/triada/pdd-dea/ejecutar-sistema-multiagente | permiso:seguimiento:gestionar@declarada | Absorción y reconstrucción PDD/PDL; mutación autenticada y auditada. |
+| GET | /api/v1/compromisos/triada/pdd-dea/estado-sistema-multiagente | publico | Cobertura documental, puertas de calidad y bitácora resumida del motor multiagente. |
 | GET | /api/v1/compromisos/triada/pdd-dea/cumplimiento-metas | publico | Avance de metas PDD deduplicado y agregado por línea, entidad y localidad; conserva advertencias de escala. |
 | GET | /api/v1/compromisos/triada/pdd-dea/frontera-dea-pdd | publico | Frontera DEA exploratoria de entidades por PDD e insumo presupuestal; no representa causalidad ni certificación. |
 | GET | /api/v1/compromisos/triada/pdd-dea/econometria-comparada-pdd | publico | Comparación estadística descriptiva interplan, correlaciones ajustadas por FDR y productividad exploratoria. |

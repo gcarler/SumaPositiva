@@ -282,6 +282,38 @@ class PddMetaOficial(Base):
     )
 
 
+class PddEvidenciaPagina(Base):
+    """Immutable source-page evidence consumed by the PDD absorption pipeline."""
+
+    __tablename__ = "pdd_evidencia_paginas"
+    __table_args__ = (
+        Index("idx_pdd_evidencia_plan_archivo", "codigo_plan", "archivo", "pagina"),
+        Index("idx_pdd_evidencia_archivo_hash", "sha256_archivo"),
+        {"schema": "seguimiento"},
+    )
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, server_default=text("public.generar_uuid_v7()")
+    )
+    codigo_plan: Mapped[str] = mapped_column(
+        ForeignKey("seguimiento.planes_desarrollo_distrital.codigo_plan", ondelete="CASCADE"),
+        nullable=False,
+    )
+    archivo: Mapped[str] = mapped_column(Text, nullable=False)
+    sha256_archivo: Mapped[str] = mapped_column(String(64), nullable=False)
+    pagina: Mapped[int] = mapped_column(Integer, nullable=False)
+    contenido: Mapped[str] = mapped_column(Text, nullable=False)
+    sha256_contenido: Mapped[str] = mapped_column(String(64), nullable=False)
+    tablas: Mapped[list[dict[str, Any]]] = mapped_column(
+        JSONB, server_default=text("'[]'::jsonb"), nullable=False
+    )
+    filas_tabla_detectadas: Mapped[int] = mapped_column(Integer, nullable=False, server_default="0")
+    origen_texto: Mapped[str] = mapped_column(String(30), nullable=False)
+    metadatos: Mapped[dict[str, Any]] = mapped_column(
+        JSONB, server_default=text("'{}'::jsonb"), nullable=False
+    )
+
+
 class ArchivoPlanIngerido(Base):
     __tablename__ = "archivos_plan_ingeridos"
     __table_args__ = (

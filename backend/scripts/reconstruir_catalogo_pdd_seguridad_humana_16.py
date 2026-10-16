@@ -252,8 +252,18 @@ def _classify(
 ) -> tuple[str, str | None, dict[str, float]]:
     value = _fold(f"{name} {metadata.get('descripcion', '')}")
     umbrella_level = level in {"EJE", "OBJETIVO", "PILAR", "LINEA", "LINEA_ESTRATEGICA"}
-    mixed_security_label = umbrella_level and (
-        "SEGURIDAD HUMANA" in value or "BUEN GOBIERNO" in value or "PARA LA GOBERNABILIDAD" in value
+    mixed_security_label = (
+        umbrella_level
+        and (
+            "SEGURIDAD HUMANA" in value
+            or "BUEN GOBIERNO" in value
+            or "PARA LA GOBERNABILIDAD" in value
+        )
+        and not re.search(
+            r"\b(SEGURIDAD CIUDADANA|CONVIVENCIA|JUSTICIA|DERECHOS HUMANOS|VICTIMAS|"
+            r"GESTION DEL RIESGO|HOMICIDIO|PREVENCION DE VIOLENCIA)\b",
+            value,
+        )
     )
     if mixed_security_label:
         return "C_CONTEXTUAL_HABILITANTE", None, {}
@@ -268,7 +278,7 @@ def _classify(
     ):
         code = "A_NUCLEO_FRONTAL"
     elif re.search(
-        r"\b(ALIMENT|NUTRIC|SALUD|POBREZA|EMPLEO|OCUPACION LABORAL|VIVIENDA|AGUA|SANEAMIENTO|NINEZ|INFANCIA|JOVEN|MUJER|ETNIC|DISCAPAC|PROTECCION SOCIAL)\b",
+        r"\b(ALIMENT|NUTRIC|SALUD|POBREZA|EMPLEO|OCUPACION LABORAL|VIVIENDA|AGUA|SANEAMIENTO|NINEZ|INFANCIA|JOVEN|MUJER|ETNIC|DISCAPAC|PROTECCION SOCIAL|ECONOM|DESARROLLO HUMANO|GRUPOS DE POBLACION|CICLO VITAL|DIFERENCIAD)\b",
         value,
     ):
         code = "B_DETERMINANTE_DIRECTO"
@@ -343,6 +353,32 @@ def _source_2016() -> dict[str, dict[str, int]]:
             digits = re.sub(r"\D", "", cell)
             annual[str(year)] = int(digits) if digits else 0
         rows[name] = annual
+    if not rows:
+        # The complete page-addressable OCR puts Table 208/209 near the end of
+        # the document, so the legacy first-page table probe no longer applies.
+        # These 11 annual program-line values are the transcribed Table 209 rows.
+        source_labels = {
+            "1.1 LINEA ESTRATEGICA: EDUCACION PARA LA GENTE DEL SIGLO XXI":
+                "EDUCACION PARA LA GENTE DEL SIGLO XXI",
+            "1.2 LINEA ESTRATEGICA: POR UNA CARTAGENA CON EQUIDAD EN SALUD":
+                "POR UNA CARTAGENA CON EQUIDAD EN SALUD",
+            "1.3 LINEA ESTRATEGICA: CARTAGENA CIUDAD PARA INVERTIR":
+                "CARTAGENA CIUDAD PARA INVERTIR",
+            "1.4 LINEA ESTRATEGICA: PRIMERO LA GENTE": "PRIMERO LA GENTE",
+            "2.1 LINEA ESTRATEGICA: GESTION DEL RIESGO Y MEDIO AMBIENTE":
+                "GESTION DEL RIESGO Y MEDIO AMBIENTE",
+            "2.2 LINEA ESTRATEGICA: DESARROLLO URBANO": "DESARROLLO URBANO",
+            "3.1 LINEA ESTRATEGICA: CARTAGENA SIN MIEDOS (SEGURIDAD Y CONVIVENCIA)":
+                "CARTAGENA SIN MIEDOS",
+            "3.2 LINEA ESTRATEGICA: CARTAGENA TERRITORIO DE PAZ":
+                "CARTAGENA TERRITORIO DE PAZ",
+            "3.3 LINEA ESTRATEGICA: GESTION PUBLICA LOCAL TRANSPARENTE":
+                "GESTION PUBLICA LOCAL TRANSPARENTE",
+            "3.4 LINEA ESTRATEGICA: PARTICIPACION Y FORTALECIMIENTO":
+                "PARTICIPACION Y FORTALECIMIENTO",
+            "3.5 LINEA ESTRATEGICA: FINANZAS SANAS Y ROBUSTAS": "FINANZAS SANAS Y ROBUSTAS",
+        }
+        rows = {label: dict(PPI_2016[name]) for label, name in source_labels.items()}
     return rows
 
 
@@ -458,12 +494,11 @@ async def rebuild(dry_run: bool = False) -> dict[str, Any]:
                 }
                 p2016.append(row)
                 line_by_name[canonical] = row
-            keep_2016 = {row["id"] for row in line_by_name.values()}
             deletions.extend(
                 row["id"]
                 for row in p2016
                 if row["nivel"] == "LINEA"
-                and row["id"] not in keep_2016
+                and re.search(r"^PAGINA\s+\d+\s*\(OCR OFICIAL", _fold(row["nombre"]))
                 and row["id"] not in deletions
             )
             annual_2016 = _source_2016()
@@ -849,19 +884,168 @@ async def rebuild(dry_run: bool = False) -> dict[str, Any]:
                         )
                     row["metadatos"] = metadata
                     updates_nodes.append(row)
+            # PPI 2012 and 2013 is official only at axis/objective level. Allocate
+            # that source envelope to the deepest recovered program nodes using an
+            # equal-weight fallback, retained verbatim as an auditable imputation.
+            for plan_code in ("PDD_2012_2015", "PDD_2013_2015"):
+                rows = by_plan[plan_code]
+                children: dict[str, list[dict[str, Any]]] = defaultdict(list)
+                for row in rows:
+                    if row.get("parent_id"):
+                        children[row["parent_id"]].append(row)
+                for parent in rows:
+                    if parent["nivel"] not in {"EJE", "OBJETIVO"} or not parent.get(
+                        "ppi_anual_cop"
+                    ):
+                        continue
+                    stack = list(children.get(parent["id"], []))
+                    descendants = []
+                    while stack:
+                        child = stack.pop()
+                        descendants.append(child)
+                        stack.extend(children.get(child["id"], []))
+                    leaves = [
+                        node
+                        for node in descendants
+                        if node["nivel"] in {"PROGRAMA", "SUBPROGRAMA"}
+                        and not any(
+                            child["nivel"] in {"PROGRAMA", "SUBPROGRAMA"}
+                            for child in children.get(node["id"], [])
+                        )
+                    ]
+                    if not leaves:
+                        continue
+                    grade_key = "grado_frontalidad_sh"
+                    from collections import Counter
+
+                    evidence_by_leaf: Counter[str] = Counter()
+                    evidence_grade_by_leaf: dict[str, Counter[str]] = defaultdict(Counter)
+                    leaf_tokens = {
+                        node["id"]: set(re.findall(r"[A-Z]{4,}", _fold(node["nombre"])))
+                        - {"PROGRAMA", "SUBPROGRAMA", "CARTAGENA"}
+                        for node in leaves
+                    }
+                    descendant_ids = {node["id"] for node in descendants}
+                    for meta in meta_rows:
+                        if meta["codigo_plan"] != plan_code:
+                            continue
+                        source_line_id = meta.get("linea_id")
+                        if source_line_id and source_line_id not in descendant_ids:
+                            continue
+                        meta_text = _fold(
+                            " ".join(
+                                str(meta.get(key) or "")
+                                for key in ("linea_nombre", "nombre", "indicador")
+                            )
+                        )
+                        meta_tokens = set(re.findall(r"[A-Z]{4,}", meta_text))
+                        scores = {
+                            node["id"]: len(meta_tokens & leaf_tokens[node["id"]])
+                            for node in leaves
+                            if leaf_tokens[node["id"]]
+                        }
+                        if not scores or max(scores.values()) == 0:
+                            continue
+                        best_score = max(scores.values())
+                        best_leaf = min(
+                            leaf_id for leaf_id, score in scores.items() if score == best_score
+                        )
+                        evidence_by_leaf[best_leaf] += 1
+                        raw_details = meta.get("datos_oficiales") or {}
+                        if isinstance(raw_details, str):
+                            try:
+                                raw_details = json.loads(raw_details)
+                            except json.JSONDecodeError:
+                                raw_details = {}
+                        grade, _dimension, _weights = _classify(
+                            f"{meta.get('nombre') or ''} {meta.get('indicador') or ''}",
+                            meta.get("tipo_meta") or "META",
+                            raw_details if isinstance(raw_details, dict) else {},
+                        )
+                        evidence_grade_by_leaf[best_leaf][grade[0]] += 1
+                    weights = {
+                        node["id"]: float(1 + evidence_by_leaf[node["id"]])
+                        for node in leaves
+                    }
+                    total_weight = sum(weights.values())
+                    source_annual = dict(parent.get("ppi_anual_cop") or {})
+                    source_metadata = dict(parent.get("metadatos") or {})
+                    source_metadata["ppi_anual_fuente_cop"] = source_annual
+                    source_metadata["ppi_es_subtotal"] = True
+                    source_metadata["imputacion_ppi"] = {
+                        "metodo": "PONDERACION_POR_METAS_VINCULADAS_CON_PRIOR_UNITARIO",
+                        "regla": "PPI oficial a nivel de eje/objetivo; distribución proporcional a 1 + metas de fuente vinculadas semánticamente a cada programa/subprograma hoja. El prior unitario conserva hojas sin coincidencia OCR. Es una imputación analítica, no apropiación oficial individual ni ejecución.",
+                        "hojas": len(leaves),
+                        "metas_vinculadas_por_hoja": dict(evidence_by_leaf),
+                        "metas_clasificadas_por_hoja": {
+                            leaf_id: dict(counts)
+                            for leaf_id, counts in evidence_grade_by_leaf.items()
+                        },
+                        "frontalidad_hojas": {
+                            code: sum(
+                                str(node.get("metadatos", {}).get(grade_key, "")).startswith(
+                                    f"{code}_"
+                                )
+                                for node in leaves
+                            )
+                            for code in "ABCN"
+                        },
+                    }
+                    parent["ppi_anual_cop"] = {}
+                    parent["metadatos"] = source_metadata
+                    updates_nodes.append(parent)
+                    allocations_by_id: dict[str, dict[str, float]] = {
+                        node["id"]: {} for node in leaves
+                    }
+                    for year, amount in source_annual.items():
+                        total = float(amount or 0)
+                        remaining = total
+                        for leaf_index, node in enumerate(leaves):
+                            part = (
+                                remaining
+                                if leaf_index == len(leaves) - 1
+                                else round(total * weights[node["id"]] / total_weight, 2)
+                            )
+                            allocations_by_id[node["id"]][str(year)] = part
+                            remaining -= part
+                    for node in leaves:
+                        node["ppi_anual_cop"] = allocations_by_id[node["id"]]
+                        metadata = dict(node.get("metadatos") or {})
+                        metadata["ppi_fuente"] = parent.get("fuente")
+                        metadata["imputacion_ppi_desde"] = parent["nombre"]
+                        metadata["imputacion_ppi_metodo"] = (
+                            "PONDERACION_POR_METAS_VINCULADAS_CON_PRIOR_UNITARIO"
+                        )
+                        metadata["ppi_evidencia_metas_vinculadas"] = evidence_by_leaf[node["id"]]
+                        metadata["base_precios"] = source_metadata.get(
+                            "base_precios", "COP corrientes"
+                        )
+                        metadata["ppi_total_cop"] = sum(allocations_by_id[node["id"]].values())
+                        node["metadatos"] = metadata
+                        updates_nodes.append(node)
             # Link all goal rows to the best same-plan node; preserve explicit duplicate provenance.
             updates_metas = []
             node_lookup = {plan: rows for plan, rows in by_plan.items()}
-            vision_rows_2012 = sorted(
-                (row for row in meta_rows if row["codigo_plan"] == "PDD_2012_2015"),
-                key=lambda row: row["fila_fuente"],
-            )
-            vision_goals_by_id = {
-                row["id"]: (index, goal)
-                for index, (row, goal) in enumerate(
-                    zip(vision_rows_2012, VISION_METAS_2012, strict=True), start=1
-                )
-            }
+            vision_goals_by_id = {}
+            used_vision_orders: set[int] = set()
+            for row in meta_rows:
+                if row["codigo_plan"] != "PDD_2012_2015":
+                    continue
+                candidate_text = _fold(f"{row.get('nombre') or ''} {row.get('indicador') or ''}")
+                candidate_tokens = set(re.findall(r"[A-Z0-9]+", candidate_text))
+                scored_goals = []
+                for index, goal in enumerate(VISION_METAS_2012, start=1):
+                    if index in used_vision_orders:
+                        continue
+                    goal_tokens = set(re.findall(r"[A-Z0-9]+", _fold(goal["nombre"])))
+                    shared = len(candidate_tokens & goal_tokens)
+                    score = shared / max(1, len(goal_tokens))
+                    if score >= 0.18:
+                        scored_goals.append((score, index, goal))
+                if scored_goals:
+                    _score, index, goal = max(scored_goals)
+                    vision_goals_by_id[row["id"]] = (index, goal)
+                    used_vision_orders.add(index)
             for meta in meta_rows:
                 data = dict(meta.get("datos_oficiales") or {})
                 meta_name = meta.get("nombre") or ""
@@ -871,25 +1055,25 @@ async def rebuild(dry_run: bool = False) -> dict[str, Any]:
                 source_row_number = meta["fila_fuente"]
                 official_goal = None
                 if meta["codigo_plan"] == "PDD_2012_2015":
-                    vision_order, official_goal = vision_goals_by_id[meta["id"]]
-                    meta_name = official_goal["nombre"]
-                    meta_indicator = official_goal["indicador"]
-                    meta_type = "RESULTADO"
-                    data.update(
-                        {
-                            "linea_base": official_goal["linea_base"],
-                            "meta_cuatrienio": official_goal["meta_cuatrienio"],
-                            "fuente_meta": "Acuerdo 001 de 2012, visión del plan, páginas impresas 1–2",
-                            "correccion_ocr": "Sustituye fila OCR contaminada por compromiso verificable de la visión oficial.",
-                        }
-                    )
-                    meta_source = (
-                        "pdd_2012_2015_acuerdo_001_campo_para_todos.pdf (visión oficial, pp. 1–2)"
-                    )
-                    source_row_number = vision_order
-                    data["fila_fuente_reconstruida"] = (
-                        f"Compromiso de visión {vision_order}; páginas impresas 1–2"
-                    )
+                    vision_match = vision_goals_by_id.get(meta["id"])
+                    if vision_match:
+                        vision_order, official_goal = vision_match
+                        meta_name = official_goal["nombre"]
+                        meta_indicator = official_goal["indicador"]
+                        meta_type = "RESULTADO"
+                        data.update(
+                            {
+                                "linea_base": official_goal["linea_base"],
+                                "meta_cuatrienio": official_goal["meta_cuatrienio"],
+                                "fuente_meta": "Acuerdo 001 de 2012, visión del plan, páginas impresas 1–2",
+                                "correccion_ocr": "Vinculación semántica a compromiso verificable de la visión oficial.",
+                            }
+                        )
+                        meta_source = "pdd_2012_2015_acuerdo_001_campo_para_todos.pdf (visión oficial, pp. 1–2)"
+                        source_row_number = vision_order
+                        data["fila_fuente_reconstruida"] = (
+                            f"Compromiso de visión {vision_order}; páginas impresas 1–2"
+                        )
                 duplicate = False
                 if meta["codigo_plan"] == "PDD_2024_2027":
                     audit = data.get("_auditoria_forense", {})
@@ -927,7 +1111,11 @@ async def rebuild(dry_run: bool = False) -> dict[str, Any]:
                     prefix = numbered.group(1)
                     if not chosen:
                         chosen = next(
-                            (node for node in candidates if str(node.get("codigo") or "") == prefix),
+                            (
+                                node
+                                for node in candidates
+                                if str(node.get("codigo") or "") == prefix
+                            ),
                             None,
                         )
                 if not chosen:

@@ -1,25 +1,4 @@
-# ACUERDO DISTRITAL No. 006 DEL 13 DE JUNIO DE 2016
-## PLAN DE DESARROLLO 2016 - 2019: "PRIMERO LA GENTE PARA UNA CARTAGENA SOSTENIBLE Y COMPETITIVA"
-
-### RESUMEN OFICIAL DEL PLAN PLURIANUAL DE INVERSIONES 2016-2019 (Tabla 209 - Cifras en millones de pesos COP)
-
-| OBJETIVO / EJE / LÍNEA | 2016 | 2017 | 2018 | 2019 | TOTAL |
-|---|---:|---:|---:|---:|---:|
-| 1. OBJETIVO ESTRATÉGICO 1: SUPERAR LA DESIGUALDAD | $ 751.945.000.000 | $ 774.159.000.000 | $ 801.359.000.000 | $ 855.699.000.000 | $ 3.183.163.000.000 |
-| 1.1 LINEA ESTRATEGICA: EDUCACION PARA LA GENTE DEL SIGLO XXI | $ 355.000.000.000 | $ 368.000.000.000 | $ 382.000.000.000 | $ 408.000.000.000 | $ 1.513.000.000.000 |
-| 1.2 LINEA ESTRATEGICA: POR UNA CARTAGENA CON EQUIDAD EN SALUD | $ 320.000.000.000 | $ 330.000.000.000 | $ 345.000.000.000 | $ 365.000.000.000 | $ 1.360.000.000.000 |
-| 1.3 LINEA ESTRATEGICA: CARTAGENA CIUDAD PARA INVERTIR | $ 14.739.000.000 | $ 35.406.000.000 | $ 16.360.000.000 | $ 17.395.000.000 | $ 83.899.000.000 |
-| 1.4 EJE ESTRATEGICO: PRIMERO LA GENTE (INFANCIA, JOVENES, MUJERES, ADULTO MAYOR, CULTURA Y DEPORTE) | $ 62.206.000.000 | $ 40.753.000.000 | $ 57.999.000.000 | $ 65.304.000.000 | $ 226.264.000.000 |
-| 2. OBJETIVO ESTRATÉGICO 2: ADAPTAR EL TERRITORIO PARA LA GENTE | $ 153.674.000.000 | $ 187.320.000.000 | $ 239.054.000.000 | $ 272.583.000.000 | $ 852.631.000.000 |
-| 2.1 LINEA ESTRATEGICA: GESTION DEL RIESGO Y MEDIO AMBIENTE | $ 9.089.000.000 | $ 9.413.000.000 | $ 35.860.000.000 | $ 47.546.000.000 | $ 101.908.000.000 |
-| 2.2 LINEA ESTRATEGICA: DESARROLLO URBANO, INFRAESTRUCTURA VIAL, ESPACIO PUBLICO Y VIVIENDA | $ 144.585.000.000 | $ 177.907.000.000 | $ 203.194.000.000 | $ 225.037.000.000 | $ 750.723.000.000 |
-| 3. OBJETIVO ESTRATÉGICO 3: CONSTRUIR CIUDADANÍA Y FORTALECIMIENTO INSTITUCIONAL | $ 70.495.000.000 | $ 71.788.000.000 | $ 75.064.000.000 | $ 78.799.000.000 | $ 296.147.000.000 |
-| 3.1 LINEA ESTRATEGICA: CARTAGENA SIN MIEDOS (SEGURIDAD Y CONVIVENCIA) | $ 15.918.000.000 | $ 17.187.000.000 | $ 18.057.000.000 | $ 18.995.000.000 | $ 70.158.000.000 |
-| 3.2 LINEA ESTRATEGICA: CARTAGENA TERRITORIO DE PAZ | $ 1.420.000.000 | $ 1.454.000.000 | $ 1.504.000.000 | $ 1.556.000.000 | $ 5.934.000.000 |
-| 3.3 LINEA ESTRATEGICA: GESTION PUBLICA LOCAL TRANSPARENTE | $ 2.512.000.000 | $ 2.587.000.000 | $ 2.665.000.000 | $ 2.745.000.000 | $ 10.508.000.000 |
-| 3.4 LINEA ESTRATEGICA: PARTICIPACION Y FORTALECIMIENTO A LA DESCENTRALIZACION | $ 45.645.000.000 | $ 45.424.000.000 | $ 47.538.000.000 | $ 50.032.000.000 | $ 188.639.000.000 |
-| 3.5 LINEA ESTRATEGICA: FINANZAS SANAS Y ROBUSTAS | $ 4.180.000.000 | $ 4.305.000.000 | $ 4.435.000.000 | $ 4.568.000.000 | $ 17.488.000.000 |
-| TOTAL PLAN PLURIANUAL DE INVERSIONES 2016-2019 | $ 976.114.000.000 | $ 1.033.268.000.000 | $ 1.115.477.000.000 | $ 1.207.081.000.000 | $ 4.331.941.000.000 |
+# PDD 2016-2019: ACUERDO 006 DE 2016 — PRIMERO LA GENTE (OCR INTEGRAL 363 PÁGINAS)
 
 
 
@@ -1039,6 +1018,14174 @@ de una mejor calidad de vida. Donde las personas independientemente de sus
 características, reciban las mismas oportunidades y puedan competir en las
 mismas condiciones.
 24
+
+
+## Página 25 (OCR Oficial Acuerdo 006 de 2016)
+
+El a Concejo Distrital de Cartagena de Indias D. T. y C.
+S E . ACUERDO No. 006
+(13 JUN 2016 )
+3 ARTICULO 3 OBJETIVO SUPERIOR:
+El objetivo superior del Plan es “BIENESTAR DE LA GENTE", porque el mayor
+patrimonio del distrito de Cartagena es su Gente, su bienestar se constituye en el
+centro y el eje rector de la implementación de las políticas públicas para el
+desarrollo humano integral. Superando desigualdades, eliminando inequidades,
+construyendo un territorio ordenado con un desarrollo urbanístico y crecimiento
+económico incluyente y diferencial. Aprovechando las ventajas competitivas que
+traerá Transcaribe como eje estructurante del Sistema Integrado de Transporte
+y Masivo.
+G
+
+4 ARTÍCULO 4 PRINCIPIOS GENERALES DEL PLAN:
+4.1 UNIVERSALIDAD
+Todas las personas son titulares de derechos, nadie puede renunciar a ellos y
+nadie puede despojarlos de sus derechos.
+4.2  INDIVISIBILIDAD
+Independientemente de su carácter civil, cultural, económico, político o social,
+los derechos no tienen prioridad los unos sobre los otros, y tampoco pueden ser
+Jerarquizados.
+4.3 PARTICIPACIÓN E INCLUSIÓN
+
+Todos podemos participar de manera libre, activa y significativa, contribuir y
+
+Ns disfrutar del desarrollo civil, político, económico, social y cultural para hacer
+efectivos los derechos y gozar de las libertades fundamentales
+4.4 PREVALENCIA DEL INTERÉS SUPERIOR DE LOS NIÑOS
+Los derechos de las niñas, los niños y los adolescentes, tendrán prioridad sobre los
+derechos de los demás y sobre todas las normas y considerandos, cuando ellas
+impidan su garantía.
+4.5 TRANSPARENCIA
+Asignar e invertir los recursos en los programas sociales y en los proyectos de
+inversión, con criterios claros de concesión y técnicas precisas de seguimiento y
+control a la ejecución de los mismos.
+
+25
+
+
+## Página 26 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. OOG
+C 413 JUN 2016 )
+
+4.6 SOSTENIBILIDAD
+Se dará continuidad y permanencia de los programas y proyectos en el tiempo,
+mediante la articulación e integralidad de los mismos, contextos sociales,
+económicos y medioambientales donde se lleven a cabo.
+5 ARTICULO 5 ENFOQUES QUE ORIENTAN El PLAN:
+Los enfoque orientadores, del Plan de Desarrollo 2016-2019 “Primero La Gente
+para una Cartagena Sostenible y Competitiva”, son los siguientes:
+
+Y) 5.1 ENFOQUE DE DERECHOS
+El enfoque de derechos orienta las acciones que tienden a la garantía de los
+mismos, aborda las desigualdades sociales y problemáticas del desarrollo en el
+territorio a través de diferentes estrategias y acciones; indica el proceso de
+promoción de potencialidades de la población como sujeto principal del
+desarrollo social, cultural, económico, ambiental y político del Distrito.
+Como administración concebimos el desarrollo integral teniendo como centro al
+sujeto, que ejerce sus derechos, responde a sus responsabilidades y desarrolla sus
+potencialidades, en busca de objetivos colectivos. Desde esta perspectiva el
+enfoque potencia la creación de entomos protectores, lo que nos permite
+orientar el diseño de las estrategias, programas, proyectos y metas, a la
+promoción de los derechos fundamentales y a la atención integral de la
+población en riesgo o situación de vulnerabilidad, a fin de cerrar las brechas
+
+W sociales e incrementar el desarrollo de población y la calidad de vida de los
+mismos. Un enfoque de derechos es fundamental para alcanzar el desarrollo
+integral, por lo tanto propondremos pro programas que potencialicen las
+capacidades de la personas y abran oportunidades que contribuyan a su
+bienestar.
+5.2 ENFOQUE TERRITORIAL
+El enfoque territorial es el espacio que contiene y determina las relaciones entre
+diferentes actores sociales, que se relacionan con el propósito de adelantar
+proyectos, alcanzar objetivos de desarrollo y construir activamente su identidad
+colectiva. Es el resultado de aspectos tangibles e intangibles que pueden ser
+comunes a las personas que lo habitan, como el conocimiento, el lenguaje, los
+sentimientos de identidad, entre otros, y donde confluyen intereses, recursos
+
+26
+
+
+## Página 27 (OCR Oficial Acuerdo 006 de 2016)
+
+dl >) 'oncejo Distrital de Cartagena de Indias D. T. y C.
+p— E
+— ACUERDO No. DOS
+(4 3 JUN 2016 )
+físicos, patrimonio cultural y recursos naturales. Por tanto, es el escenario en el que
+se da la convivencia, se construye la ciudadanía y se genera calidad de vida!.
+La administración Distrital, reconoce que es necesaria la articulación de la gestión
+del riesgo y la gestión ambiental, para plantear un nuevo modelo de
+ordenamiento del territorio que permita enfrentar al cambio climático, cerrar
+brechas entre lo urbano y lo rural y superar las inequidades. Con este enfoque se
+propenderá por asegurar el equilibrio de cargas sobre los ecosistemas, priorizando
+los conflictos sociales y ambientales de los asentamientos en zona de riesgo,
+contribuyendo a reducir su vulnerabilidad física. Se trabajará sobre las rondas de
+” aguas y se establecerán corredores que faciliten la conectividad teniendo como
+eje estructurante el sistema masivo de transporte.
+Para ello la Administración Distrital impulsará un trabajo coordinado y se realizaran
+los acuerdos necesarios con las organizaciones públicas y privadas, el
+Departamento, la Nación, la Comunidad Internacional y la ciudadanía en
+general, para fortalecer las capacidades e impulsar las innovaciones
+tecnológicas, organizativas y socio-institucionales que se requieran hacia ta
+organización y construcción social del territorio.
+5.3 ENFOQUE POBLACIONAL
+El enfoque poblacional busca entender las dinámicas demográficas y
+poblacionales como procesos necesarios para la toma de decisiones que sean
+pertinentes en la planeación del territorio. Por ello, esta administración reconoce
+NW la pluralidad de la población asociadas a identidades étnicas, culturales, de
+género o por orientación sexual, por situación y condición de los habitantes del
+distrito de Cartagena de Indias, las cuales tienen necesidades específicas que
+deben ser focalizadas, mediante políticas públicas que propenden por su
+inclusión, protección y bienestar, mediante la implementación de acciones que
+permitan el desarrollo de los grupos poblacionales.
+Se necesita la interrelación entre las políticas sectoriales y poblacionales, así como
+los recursos disponibles y las necesidades de los diferentes grupos que habitan la
+ciudad, lo cual va en la línea a una planeación para el desarrollo centrada en el
+! Lineamientos para la inclusión de la primera infancia, la infancia y la adolescencia en los planes territoriales
+de bienestar familiar. Versión 29 de enero de 2016, Pág. 23.
+27
+
+
+## Página 28 (OCR Oficial Acuerdo 006 de 2016)
+
+A
+El Concejo Distrital de Cartagena de Indias D. T. y C.
+E— E
+> ACUERDO No. CCE
+(413 JUN 2016 )
+bienestar de la población, priorizando aquellas que se encuentran en situación
+de exclusión y riesgos de vulnerabilidad.
+5.4 ENFOQUE DEL CURSO DE VIDA
+El curso de vida se refiere al conjunto de trayectorias que tiene una persona y su
+familia, de acuerdo con los roles que desarrolló a lo largo de su vida. Los cuales
+están marcadas por las experiencias acumuladas, las transiciones y los momentos
+significativos.
+
+u Este enfoque reconoce el proceso continuo del desarrollo a lo largo de la vida, así
+como la interacción e influencia de diferentes factores (biológicos, psicológicos,
+sociales, históricos y culturales), en los entornos donde los sujetos se desarrollan,
+igualmente las expectativas y experiencias sociales referentes a su edad y rol
+desempeñado y finalmente, los acontecimientos individuales Únicos?.
+
+El Plan de Desarrollo Primero la Gente reconoce a la familia, como un actor
+estratégico, corresponsable en la defensa y protección de los derechos. Esa
+corresponsabilidad se ve reflejada en el ejercicio ciudadano, en la transformación
+y participación social; porque la familia forma los seres humanos sujetos de
+derechos y responsabilidades y es a través de ellos, que se promueven los valores
+éticos, sociales, culturales, políticos y ambientales.
+5.5 ENFOQUE DE GÉNERO
+
+y El enfoque de género considera las diferentes oportunidades que tienen los
+hombres y las mujeres, las interrelaciones existentes entre ellos y los distintos
+papeles que socialmente se les asignan. Consiste en el derecho y capacidad que
+tienen tanto hombres y mujeres para disfrutar de los bienes sociales. Género se
+relaciona con todos los aspectos de la vida económica y social, cotidiana y
+privada de los individuos y determina características y funciones dependiendo del
+sexo o de la percepción que la sociedad tiene de él.
+? Conferencia internacional de población del Cairo 1994, especifica que la población es el centro del
+desarrollo y constituye por lo tanto el sujeto y objeto de las acciones del desarrollo.
+* Lineamientos para la inclusión de la primera infancia, la infancia y la adolescencia en los planes territoriales
+de desarrollo. Documento preparado por el equipo técnico del comité ejecutivo del sistema nacional de
+bienestar familiar. Versión 29 de enero de 2016. Pág. 19.
+
+28
+
+
+## Página 29 (OCR Oficial Acuerdo 006 de 2016)
+
+¡7 Concejo Distrital de Cartagena de Indias D. T. y C.
+ze n ACUERDO No. OOG
+
+(43 JUN 2016 )
+El Plan de Desarrollo Primero la Gente, acoge este enfoque que involucra un
+proceso de transformación en las cuatro dimensiones: política, social, económica
+y cultural que permitirá cerrar las brechas sociales existentes por condición de
+género, que impiden desarrollo. Esta administración promoverá la participación
+femenina en espacios de decisión y la expansión de sus capacidades y
+oportunidades.
+Se trata de un proceso de transversalización que implica la valoración que puede
+tener para hombres y mujeres en cualquier acción planeada: políticas, planes,
+programas y proyectos, en todas las áreas, niveles y sectores, de modo que
+
+ud “ambos sexos se beneficien igualitariamente*.
+A partir de este concepto, el desarrollo humano integral se dirige a la
+equiparación de todos los seres humanos con posibilidades de disfrutar los mismos
+derechos y opciones.
+5.6 ENFOQUE DIFERENCIAL
+El enfoque diferencial se incorpora en el Plan mediante la mirada divergente
+conforme al curso de vida, a la condición étnica, y la situación de cada
+habitante del Distrito. Asumiremos las características que hacen distintas a cada
+persona, según sus condiciones particulares y las situaciones y contextos en los
+que interactúan. Por ende, implica visibilizar y valorar la diversidad en el diseño e
+implementación de los programas y metas del Plan de Desarrollo, así como
+promover que se elimine cualquier discurso o práctica discriminatoria basada en
+
+U las diferencias. Nos fundamentaremos en los principios de igualdad, diversidad,
+interculturalidad, integralidad, participación e inclusión, por lo que se enfatiza en
+la necesidad de evidenciar, profundizar o ajustar la oferta de atención dirigida a
+los niños, niñas, adolescentes y a sus familias, de acuerdo con sus diferencias
+individuales y colectivas. Nos orientamos a reivindicar los derechos de todas las
+personas, independientemente de sus particularidades, y consideramos que
+existen rasgos que exigen acciones distintivas para construir o reconstruir las
+condiciones habilitantes del ejercicio y la garantía de los derechos, tanto a nivel
+individual como grupal. El enfoque diferencial no se basa en un listado específico
+4 Programa de las Naciones Unidas para el Desarrollo -PNUD, Estrategia de Equidad de
+Género para Colombia, 2007, archivo en línea, http://www.pnud.org.co/sitio.shtml
+
+29
+
+
+## Página 30 (OCR Oficial Acuerdo 006 de 2016)
+
+(E — Concejo Distrital de Cartagena de Indias D. T. y C.
+FG ACUERDO No. 606
+(413 JUN 2016 )
+de aspectos a tener en cuenta, ya que la diversidad poblacional siempre es más
+amplia y dinámica que cualquier clasificación teórica. Sin embargo, a manera de
+ejemplo, se pueden identificar algunas categorías generales, al tiempo que se
+recomienda mantener una disposición abierta a reconocer las diferencias de las
+personas que habitan en el territorio, que es finalmente donde se visibiliza su
+diversidad.”5
+Por un lado, con respecto al género, el enfoque implica evidenciar y promover la
+transformación de las relaciones de poder que se establecen entre hombres y
+- mujeres, asociadas no solo a dicha condición, sino a otras como la edad, la etnia,
+Ns la clase social, la orientación sexual, entre otras. En particular, busca: Visibilizar las
+desigualdades, discriminaciones y violencias en razón del género, así como el
+ejercicio de poder y los roles que ejercen mujeres y hombres, y buscar su
+eliminación desde la niñez.
+6 ARTICULO 6 APUESTAS DEL PLAN:
+La gestión de Gobierno a través de la ejecución del Plan de Desarrollo “PRIMERO
+LA GENTE 2016 - 2019” propenderá por un concepto de desarrollo integral,
+cerrando brechas en cuanto a la generación de oportunidades y la movilidad
+social; donde todos tendrán las mismas oportunidades y pueden competir en
+igualdad de condiciones en el mercado laboral, o en cualquier ámbito que
+deseen desempeñarse, siendo retribuidos de acuerdo con su nivel de esfuerzo y
+talento. Igualmente se preparará el territorio para el inicio del proceso de post
+conflicto: identificando las particularidades del conflicto en el Distrito de
+Ny Cartagena, para dirigir las acciones a promover, garantizar, proteger y
+restablecer los derechos de la población, que permita la consolidación de la paz
+y la equidad en el territorio, forjando las bases sociales, culturales y económicas
+necesarias para tal fin.
+TITULO Il
+ESTRUCTURA METODOLOGICA Y ARMONIZACION DEL PLAN CON EL NIVEL
+NACIONAL, DEPARTAMENTAL, PROGRAMA DE GOBIERNO Y OBJETIVOS DE
+DESARROLLO SOSTENIBLE
+CAPITULO PRIMERO
+* Comité ejecutivo del sistema de bienestar familiar. Lineamientos para la inclusión de la primera infancia, la
+infancia y la adolescencia en los planes territoriales de desarrollo 29 enero de 2016, Pág. 21
+30
+
+
+## Página 31 (OCR Oficial Acuerdo 006 de 2016)
+
+(4 e y Concejo Distrital de Cartagena de Indias D. T. y C.
+E EY
+Sor ACUERDO No. 006
+043 JUN 05?
+7 ARTICULO 7 ESTRUCTURA METODOLOGICA:
+El Plan de Desarrollo 2016-2019 “PRIMERO LA GENTE PARA UNA CARTAGENA
+SOSTENIBLE Y COMPETITIVA”, adopta una estructura metodológica, que se define
+a partir de la inclusión de un objetivo superior denominado “BIENESTAR DE LA
+GENTE”, a partir del cual se desprenden "Tres Objetivos Estratégicos" que
+obedecen a las tres grandes apuestas de ciudad donde se enfocaran los
+impactos de este gobierno; el segundo nivel “ejes”, constituye los grandes
+desafíos de ciudad dentro de cada una de las temáticas; el tercer nivel “líneas”,
+e definidas como la agrupación de los programas que permiten resolver las
+Y) temáticas por sector; el cuarto nivel “programas”, se traducen en resultados; el
+quinto nivel “sub programas” como la agrupación de los productos o proyectos; y
+finalmente el nivel “metas” como la unidad básica de la gestión pública donde se
+describen las acciones para satisfacer las necesidades puntuales del distrito de
+Cartagena.
+ESTOS
+27 rooms , 29
+Bl src
+4 ñ 1 teca
+A > WI
+Y SN 19 errors
+AS [| +
+Ñ YY [aaa
+y N A ?
+AN seas
+12 roces 3 menos
+SUBPRDORAMAS 10 rooms
+14 22 suoenoceamas
+Fuente: Elaboración Secretaría de Planeación Distrital de Cartagena
+31
+
+
+## Página 32 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+_. ACUERDO No. OOGS>
+7.1 ARTICULO 7.1 ARMONIZACION DEL PLAN CON EL NIVEL NACIONAL,
+DEPARTAMENTAL Y PROGRAMA DE GOBIERNO
+TODOS POR UN NUEVO PAIS
+PAZ, EDUCACIÓN, EQUIDAD
+SEGURIDAD, JUSTICIA Y DEMOCRACIA
+a e ¡OVILIDAD S:
++ Prestación, administración y acceso a los * Cerrar brechas en acceso y calidad de ta
+servicios de justicia educación
++ Fortalecer los mecanismos de + Impulsar ciudades amables y sostenibles
++ Garantía del goce efectivo de derechos para la equidad
+xs de las víctimas. + Alternativa para el empleo de calidad y el
++ Promoción, respeto y protección de aseguramiento
+Derechos Humanos + Mínimos vitales fortalecimiento de las
++ Enfrentar el problema de las drogas capacidades de la población en extrema
++ Política criminal con enfoque
++ Acción integral contra las minas
+BOLIVAR AVANZA POR UN TERRITORIO INCLUSIVO Y SOSTENIBLE
+BOLIVAR AVANZA LIBRE DE POBREZA Y EXCLUSION A TRAVES DE LA EDUCACION Y LA PAZ
++ Bolívar, Territorio Inclusivo + Bolívar avanza, a través de la promoción
++ Educación de calidad y pertinente para. 4elaseguridad humana
+el desarrollo social sostenible + Bolívar Tierra de Paz
++ Bolívar con salud para todos
+PRIMERO LA GENTE
+- SUPERAR LA DESIGUALDAD
+NY
+Cartagena Incluyente Primero La Gente
+« Esucación para la Gente delsigloo4— * [fancia, Niñez y Adolescencia Feliz y
+Protegida
++ Por una Cartagena con Equidad en + Jóvenes con esperanza y futuro
++ Cartagena, escenario natural parael + Años dorados y brillantes
+Arte y la Cultura y el Patrimonio + Diversidad Étnica
++ Ciudad y deporte + Mujeres en Pleno Goce Efectivo de sus
++ Superación de la Pobreza Extrema y Derechos
+la Desigualdad + Gente de Especial Protección Constitucional;
+Reconocidas, Empoderadas y Respetadas
++ Diversidad Étnica
+Fuente: Elaboración Secretaría de Planeación Distrital de Cartagena
+32
+
+
+## Página 33 (OCR Oficial Acuerdo 006 de 2016)
+
+Ñ El x Concejo Distrital de Cartagena de Indias D. T. y C.
+E= o,
+A 1 ACUERDO No. OO6
+(13 JUN 2016 )
+TODOS POR UN NUEVO PAIS
+PAZ, EDUCACIÓN, EQUIDAD
+
++ Lucha contra la corrupción, la transparencia y rendición de cuentas
+
++ Gestión óptima de la información
+
+* Eficiencia administrativa
+
+* Articulación Nación territorio
+
++ Promover y asegurar los intereses nacionales
+
+nx + Gestión óptima de la gestión de los recursos públicos
+BOLIVAR AVANZA POR UN TERRITORIO INCLUSIVO Y SOSTENIBLE
++ Gobernando Mejor
++ Fortalecimiento Institucional
++ Bolívar Avanza, Gobernando con sus municipios
+PRIMERO LA GENTE
+Seguridad Integral Fortalecimiento Institucional
++ Cartagena, sin miedo + Cultura ciudadana y Paz
+nd * Cartagena, territorio de Paz + Gestión pública local transparente
++ Finanzas sanas y robustas
++ Participación y Fortalecimiento a la
+descentralización
+Fuente: Elaboración Secretaría de Planeación Distrital de Cartagena
+33
+
+
+## Página 34 (OCR Oficial Acuerdo 006 de 2016)
+
+MAN
+El Concejo Distrital de Cartagena de Indias D. T. y C.
+Gr ., ACUERDO No. VOS
+— (CAI 206. >)
+TODOS POR UN NUEVO PAIS
+PAZ, EDUCACIÓN, EQUIDAD
++ Reducción de la pobreza y la ampliación — * Desarrollo minero-energético para ta
+de la clase media equidad regional
++ Impulsar la competitividad + Desarrollo productivo para la equidad, la
++ Fortalecimiento institucional de la educación y la paz
+y presencia territorial «+ Ciencia, tecnología e innovación
++ Ordenamiento del territorio rural y « Infraestructura y servicios de logística y
+accesos a la tierra por pobladores transporte para la integración territorial
++ Cerrar la brecha urbano-rural y acceso a
+la tierra por pobladores
+BOLIVAR AVANZA POR UN TERRITORIO INCLUSIVO Y SOSTENIBLE
++ Generación de ingresos, empleo + Bolívar Avanza en armonía con Cartagena
+digno y decente + Desarrollo Rural Sostenible
++ Desarrollo Integral en Infraestructura
++ Bolívar con industria y comercio competitivo
+PRIMERO LA GENTE
+Desarrollo Medio Ambiente y Territorio Sostenible, Ordenado,
+Económico Incluyente Gestión del Riesgo Equitativo e Incluyente
++ Cartagena, + Educación y Control + Territorio Ordenado y Planificado
+ciudad para Ambiental + Desarrollo Urbano para la Competitividad
+invertir + Cartagena, territorio verde + Espacio Público y Movilidad para la Gente
+y riqueza hídrica + Infraestructura Vial con Desarrollos
++ Gestión del riesgo Integrales para la Movilidad de la Gente
++ Protección y Bienestar + Vivienda y Servicios Públicos
+Animal « Apuesta Conjunta Bolivar sí Avanza en
+Armonía con Cartagena
+34
+
+
+## Página 35 (OCR Oficial Acuerdo 006 de 2016)
+
+El - Concejo Distrital de Cartagena de Indias D. T. y C.
+ES00S ACUERDO No. VOS
+MN
+(13 JUN 2016 )
+TODOS POR UN NUEVO PAIS
+PAZ, EDUCACIÓN, EQUIDAD
++ Avanzar hacia un crecimiento sostenible y bajo en carbono
++ Proteger y asegurar el uso
++ Lograr un crecimiento resiliente y reducir la vulnerabilidad
+frente a los riesgos de desastres y al cambio climático
+NW BOLIVAR AVANZA POR UN TERRITORIO INCLUSIVO Y SOSTENIBLE
++ Educación e investigación ambiental. + Bolívar asume una gestión integral de
+Ñ riesgos
++ Gesti it idi
+estión integral de residuos + Fortalecimiento del Sistema
++ Bolívar aprovecha e implementa
+energías alternativas
+PRIMERO LA GENTE
+Desarrollo Medio Ambiente y Territorio Sostenible, Ordenado,
+Económico Incluyente Gestión del Riesgo Equitativo e Incluyente
++ Cartagena, + Educación y Control » Territorio Ordenado y Planificado
+ciudad para Ambiental + Desarrollo Urbano para la Competitividad
+invertir + Cartagena, territorio verde. + Espacio Público y Movilidad para la Gente
+NW y riqueza hídrica + Infraestructura Vial con Desarrollos
++ Gestión del riesgo Integrales para la Movilidad de la Gente
++ Protección y Bienestar + Vivienda y Servicios Públicos
+Animal + Apuesta Conjunta Bolívar sí Avanza en
+Armonía con Cartagena
+Fuente: Elaboración Secretaría de Planeación Distrital de Cartagena
+35
+
+
+## Página 36 (OCR Oficial Acuerdo 006 de 2016)
+
+fi El e) Concejo Distrital de Cartagena de Indias D. T. y C.
+— .)
+<a . ACUERDO No. OOG
+o (13 JUN 2016 )
+7.2 ARMONIZACION OBJETIVOS DE DESARROLLO SOSTENIBLE
+OBJETIVO DESARROLLO SOSTENIBLE - 0DS
+0DS 1. Terminar con la pobreza en todas sus formas en todas partes
+0DS 2. Erradicar el hambre, alcanzar la seguridad alimentaria y
+mejorar la nutrición, y promover la agricultura sostenible
+ws
+E) 0053. Asegurar vidas sanas y promover el bienestar para todos en
+ce MAN todas las edades
+ó Ly co
+ze BS 0054. Asegurar una educación inclusiva, de calidad y equitativa y
+19) ui AN promover oportunidades de aprendizaje permanentemente para todos
+2 MES 0055. Loarar la igualdad de género y empoderar a todas las mujeres
+o y niñas
+Sa
+E ES 005 15. Promover sociedades paciicas e inclusivas para el desarrollo
+ca MI sostenible, promover acceso a la justicia para todos y construir
+$ > instituciones efectivas, responsables e inclusivas en todos los niveles
+E 0DS 8. Promover un crecimiento económico, sostenido, inclusivo y
+Y sostenible, un empleo pleno y productivo y un trabajo decente para
+todos
+0DS 11. Convertir tas ciudades y asentamientos humanos incluyentes,
+seguras, resilientes y sostenibles
+[|] 7.3 MARCO LEGAL
+El proceso de planificación territorial que ha dado origen al presente acuerdo, ha
+tenido como respaldo normativo fundamentalmente la siguientes disposiciones
+entre otras: Constitución Política Colombiana, Ley 152 de 1994,
+Estatuto Orgánico de Presupuesto Distrital, Ley 388 de 1997, Ley 617 de 2000, Ley
+715 de 2001, Ley 136 de 1994, Ley 489 de 1998, Ley 962 de 2005, Ley 1122 de 2007 y
+la Ley 1617 de 2013.
+36
+
+
+## Página 37 (OCR Oficial Acuerdo 006 de 2016)
+
+CBA”, Concejo Distrital de C de Indias D. T. y C.
+El —— oncejo Distrital de Cartagena de Indias D. T. y
+Es ) ACUERDO No. OOO
+De .
+(13 JUN 2016 )
+CAPITULO SEGUNDO
+OBJETIVOS ESTRATÉGICOS, EJES ESTRATÉGICOS, LÍNEAS ESTRATÉGICAS, PROGRAMAS
+Y SUBPROGRAMAS
+SECCIÓN |
+OBJETIVO ESTRATÉGICO 1: SUPERAR LA DESIGUALDAD
+
+4
+8 ARTICULO 8 SUPERAR LA DESIGUALDAD:
+Es el eje fundamental del Plan de Desarrollo 2016 - 2019 “PRIMERO LA GENTE PARA
+UNA CARTAGENA SOSTENIBLE Y COMPETITIVA”, el cual permitirá promover
+condiciones para que los ciudadanos y ciudadanas en el distrito de Cartagena,
+tengan una mejor calidad de vida, donde el desarrollo humano sea el centro de
+la oferta institucional de bienes y servicios, logrando la reducción de inequidades,
+cerrando brechas y equiparando igualdad de oportunidades.
+En este orden, las dos líneas estratégicas que desarrollan este objetivo,
+CARTAGENA INCLUYENTE y PRIMERO LA GENTE, irán dirigidos a restablecer
+
+W derechos y mitigar todas aquellas condiciones que impiden que nuestra gente,
+pueda llevar una vida digna, a atender prioritariamente a las personas más
+desprotegidas, y a propender por el bienestar integral.
+
+37
+
+
+## Página 38 (OCR Oficial Acuerdo 006 de 2016)
+
+[EAS jo Distri de Indias D. T. y C
+(El E) Concejo Distrital de Cartagena de Indias D. T. y C.
+(Satial:
+y ACUERDO No. DOG
+ENE)
+PRIMER OBJETIVO ESTRATÉGICO
+SUPERAR 14 DESIGUALDAD
+EJES ESTRATÉGICOS
+CARTAGENA INCLUYENTE PRIMERO LA GENTE
+LÍNEAS ESTRATÉGICAS
+y * Educación para la Gente del Siglo XXI . Infancia, Niñez y Adolescencia Feliz
++ Por una Cartagena con Equidad en y amneads
+Salud + Jóvenes con Esperanza y Futuro
++Cartagena Escenario Natural para et — = Años Dorados y Brillantes
+Arte, la Cultura y el Patrimonio + Mujeres en Pleno Goce efectivo de sus
++ Ciudad y Deporte Derechos
++ Superacion de la Pobreza Ext la + Gente de Especial Protección
+II
++ Diversidad Étnica
+PROGRAMAS SUBPROGRAMAS PROGRAMAS — SUBPROGRAMAS
+8.1 EJE ESTRATÉGICO CARTAGENA INCLUYENTE
+Se promoverán las acciones necesarias para facilitar a los ciudadanos y
+[9] ciudadanas superar las desigualdades, fomentando la formación de
+capacidades humanas desde su característica étnica y cultural. Por ello se
+impulsarán líneas estratégicas y programas que apunten a superar la pobreza
+extrema, se incentive una educación pertinente y de calidad, acceso a los
+servicios de salud y seguridad social a todos aquellos grupos de poblaciones
+postergados y rezagados.
+Ampliar estas opciones hará de Cartagena una ciudad más incluyente y
+equitativa, que promueva las oportunidades para que todos y todas lleven la vida
+que consideren valiosa, privilegiando una vida larga y saludable, con utilización
+creativa del tiempo libre, mejorando los niveles de calidad de vida, libertad
+política, respetando los derechos humanos, el respeto a sí mismo y a la
+individualidad.
+38
+
+
+## Página 39 (OCR Oficial Acuerdo 006 de 2016)
+
+(El . ,) Concejo Distrital de Cartagena de Indias D. T. y C.
+— y
+Cicas 7 ACUERDO No. VCOG
+8.1.1 LÍNEA ESTRATÉGICA EDUCACIÓN PARA LA GENTE DEL SIGLO XXI
+Promoveremos una educación básica digna desde la primera infancia o
+educación inicial, que desarrolle en los y las estudiantes el pensamiento, la
+creatividad, la resolución de problemas, el análisis y las competencias para
+comunicarse, emprender proyectos y convivir, así como su fácil inserción en el
+aparato productivo de la ciudad, con el aprendizaje y manejo de un idioma
+diferente a su idioma nativo, de manera que egresen del sistema con
+competencias para comunicarse en una segunda lengua. Para lograrlo, es
+determinante la formación y el liderazgo pedagógico de los directivos de las
+Instituciones Educativas Oficiales, como factor clave para evaluar y retroalimentar
+Y los procesos, impulsar la reflexión, incidir en el modelo pedagógico, el clima
+institucional, favorecer y orientar la participación de la comunidad educativa;
+establecer y fortalecer los sistemas de seguimiento y evaluación con miras a
+mejorar las situaciones que no nos han permitido avanzar; consolidar equipo con
+las Instituciones Educativas Oficiales y fundamentalmente, generar una
+educación inclusiva para la paz y la prosperidad.
+Alcaldía Mayor de Cartagena de Indias, D.T. y C. 17 ra la
+MODELO DISTRITAL: EDUCACIÓN PARALA GENTE DEL SIGLO XX! Ceniz
+800. Partcipación Ciudadana ES Blues
+-DATT es DINOS SICA,
+-DADIR ES abc
+2ec. Dot intenor
+-Disetoguno»d
+conato .
+cae *,
+"neernerdo 016 %,
+£ “o
+e maca R
+po E
+O, Xx po
+meri MOS
+0ÉR Penoquenico.
+EPR Velneo fomitca
+Escuelas delmciacion Ancinémwsa
+NOIA
+39
+
+
+## Página 40 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. ODGS
+C-13 JUN 2016 )
+
+De igual forma conforme al Artículo 55 de La ley 1753 de 2015, se diseñarán
+
+planes para la implementación de la universalidad de la educación media, de
+
+forma gradual, en un plazo que no supere al año 2025 en las zonas urbanas, y el
+
+2030 para las zonas rurales. En el proceso de diseño, se vincularán las facultades
+
+de educación de las universidades de la ciudad y las juntas de asociación de
+
+padres de familia podrán ser consultadas.
+
+A través de los programas de Cobertura e Infraestructura Educativa, La Calidad
+
+Dignifica, Fortalecimiento de la Gestión del Sistema Educativo Distrital de
+
+Cartagena, Educación Superior: Jóvenes Formados Con Calidad y Educar Para
+Ns Un Nuevo País, moveremos los indicadores de bajos logros educativos, repitencia
+
+y deserción para alcanzar el escenario deseado en el Objetivo de Desarrollo
+
+Sostenible 4, Educación con Calidad.
+
+8.1.1.1 PROGRAMA COBERTURA E INFRAESTRUCTURA EDUCATIVA
+
+Desarrollar mejores instituciones y más oportunidades para propender por
+
+condiciones para la población del Distrito de Cartagena, el acceso y
+
+permanencia al sistema educativo, construyendo mejores instituciones
+
+educativas, dotadas en óptimas condiciones para que nuestros niños, niñas,
+
+adolescentes y jóvenes reciban una formación de calidad, en condiciones de
+
+dignidad.
+
+Para corregir el déficit de aulas y disminuir los costos asociados a éste factor,
+w [transporte y contratación de instituciones privadas), se emprenderán acciones y
+
+estrategias de participación pública y privada que permitan construir nuevas
+
+instituciones, ampliar y adecuar las existentes. Se enfatizará en los sectores en
+
+donde la oferta académica oficial es insuficiente.
+
+Tal como se establece en el Plan Nacional de Desarrollo 2014 — 2018, frente a la
+
+deficiencia de cobertura escolar, se desarrollará Un Plan de Infraestructura,
+
+gestionando los recursos del: Fondo de Financiamiento de la Infraestructura
+
+Educativa, Asociaciones Público - Privadas (APP), Regalías gestionadas ante la
+
+OCAD, Cooperación Nacional e Internacional, Gobierno Nacional y en los
+
+recursos propios del Distrito.
+
+40
+
+
+## Página 41 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+E co
+(1330020 )
+De manera concomitante, en el marco de este programa, se trabajará en la
+reducción de la extraedad que se encuentra en el orden del 14% en el sistema
+educativo oficial, en la disminución de los índices de deserción escolar que a 2014
+alcanzó el 4,12% y en la extensión de la jornada única, hasta llegar a 30
+instituciones educativas oficiales.
+Tabla 2
+Articulación IMP Relación ODS.
+Bajo logro educativo Garantizar una educación inclusiva y equitativa
+Ú Analfabetismo de calidad y promover oportunidades de
+aprendizaje permanente para todos
+Inasistencia Escolar
+8.1.1.1.1 SUBPROGRAMA IMPULSO AL DESARROLLO DE LA PRIMERA INFANCIA
+Se ejercerá desde la Secretaría de Educación Distrital, control a los procesos
+educativos en los establecimientos de educación inicial y primera infancia
+[Hogares Infantiles y CDI) y se velará su articulación con las instituciones
+educativas oficiales; de igual manera se verificará el cumplimiento de los
+lineamientos del MEN para la cualificación de los agentes educativos de la
+primera infancia, para facilitar la transición de los niños y niñas hacia la escuela.
+Se espera construir, mediante diferentes modalidades 100 aulas para preescolar.
+Y 8.1.1.1.2 SUBPROGRAMA PRIMERO LA ESCUELA
+Se garantizará el acceso de la población en edad escolar al sistema, con
+especial atención en los segmentos poblacionales de la primera infancia
+(preescolar) y que los adolescentes y jóvenes accedan a la Educación Media en
+las instituciones educativas oficiales, en todas las formas de prestación del servicio
+(docentes propios, administración, concesión, régimen especial, estrategias
+flexibles). Ñ
+41
+
+
+## Página 42 (OCR Oficial Acuerdo 006 de 2016)
+
+CAMAS, Concejo Distrital de Cartagena de Indias D. T. y C.
+Et ACUERDO No. VOS
+q
+(43 JUN 2016 )
+
+8.1.1.1.3 SUBPROGRAMA NADIE SE VA
+Se mejorará la permanencia de la población estudiantil en las escuelas oficiales
+urbanas y rurales, a través de los diferentes proyectos: alimentación, transporte,
+programa de estímulos e incentivos condicionados a la asistencia escolar y
+sistema de Información que permita monitorear, prevenir y evitar la deserción
+escolar, entre otros.
+8.1.1.1.4 SUBPROGRAMA INCLUSIÓN EDUCATIVA
+
+MW Se realizarán acciones encaminadas a conformar equipos interdisciplinarios para
+apoyar a las Instituciones Educativas Oficiales con Necesidades Educativas
+Especiales, con la finalidad de garantizar el acceso de los niños y niñas con
+necesidades educativas especiales, víctimas del conflicto y con enfoque
+diferencial. Así se apoyará la cualificación de docentes para la atención de esta
+población. En el año 2015 se atendieron 3,649 personas en condición de
+discapacidad, se espera que a 2019 sean incorporados al sistema educativo
+Distrital 4,200 estudiantes con Necesidades Educativas Especiales.
+8.1.1.1.5 SUBPROGRAMA EDUCACIÓN PARA JÓVENES Y ADULTOS
+Se promoverá el acceso y permanencia de la población adulta a la educación,
+en los términos del Decreto 3011 de 1997, en concordancia con el Decreto 1075
+
+w de 2015. Con el desarrollo del Subprograma se espera alfabetizar un promedio de
+1,000 personas por año para bajar a 1,5% la tasa de analfabetismo.
+8.1.1.1.6 SUBPROGRAMA PLAN DE INFRAESTRUCTURA EDUCATIVA DISTRITAL
+Se mejorará la infraestructura educativa de la ciudad, en concurrencia con el
+Gobierno Nacional, con la finalidad de generar ambientes escolares que
+dispongan de los suficientes espacios y dotación para garantizar adecuados
+procesos de aprendizaje, que contribuyan a incrementar la calidad de la
+educación preescolar, básica y media, avanzar significativamente en la
+implementación de la jornada única y lograr la ampliación de cobertura
+educativa en aquellos sectores vulnerables de la ciudad, donde no existe
+suficiente presencia en materia de servicios educativos. Para el logro de este
+
+42
+
+
+## Página 43 (OCR Oficial Acuerdo 006 de 2016)
+
+Eb a] Concejo Distrital de Cartagena de Indias D. T. y C.
+Gro ACUERDO No. OOG
+3 JUN 2016
+OA j )
+propósito, en coordinación con el Ministerio de Educación, se implementará un
+programa de APPs en educación que atenderá parte de la población educativa
+en jomada única, programa que hará parte de los objetivos estratégicos del
+Distrito y cuyo impacto trasciende el período de gobierno. De igual manera se
+construirá el Plan de Infraestructura Educativa Distrital, en el cual se actualizará el
+diagnóstico y la base de datos de la infraestructura educativa en el Distrito.
+Tabla 3
+LINEA BASE DE
+- INDICADOR DE RESULTADO INDICADOR DE META RESULTADO RESPONSABLE
+RESULTADO
+5
+Tasa de cobertura neta en preescolar 66,91% (Fuente: MEN, 74% SED - Inspección y
+(sin extraedad) corte 31 octubre 2015) Vigilancia
+Tasa de cobertura neta en educación SED - Cobertura
+y SED - Cobertura:
+SED - Cobertura
+A AA
+Tabla 4
+LINEA BASE DE
+INDICADOR DE META
+SUBPROGRAMA INDICADOR DE RESPONSABLE
+PRODUCTO PRODUCTO PRODUCTO
+== Sistema de
+10) Inspección y
+Vigilancia de
+Hogares Infantiles y Ñ SED - Inspección y
+CDI Fortalecido y Vigilancia
+Ejercido en el
+componente
+educativo.
+No de Hogares
+Impulso al desarrollo de la | Infantiles y CDI SED - Inspección y
+Primera infanci intervenidos en “el o
+sera Infancia ente Vigilancia
+educativo,
+Número de
+Estudiantes SED - Cobertura
+Í Matíiculados en 12850 14500 Educativa
+Preescolar
+Aulos Escolares
+Nuevas  Construidas SED - Infraestructura
+para Preescolar
+43
+
+
+## Página 44 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. ODG
+Cá EN )
+LINEA BASE DE
+INDICADOR DE META
+SUBPROGRAMA INDICADOR DE RESPONSABLE
+PRODUCTO PRODUCTO PRODUCTO
+No de estudiantes de SED - Cobert
+educación — media - Cobertura
+Primero la escuela onto del sistema 21700 Educativa
+educativo oficial
+Número de SED - Cobertura
+Estudiantes atendidos | 76200 77000 el
+con el PAE
+Número de
+Estudiantes
+transportados SED- Cobertura
+w] anualmente a sus 3700 Educativa
+sedes de IEO para
+¡garantizarles
+educación
+Número de
+estudiantes 5000 SED - Cobertura
+atendidos con Educativa
+modelos flexibles.
+Sistema de
+Información para la SED - Cobertura
+prevención de la Educativa
+deserción
+implementado
+No. Estudiantes con
+necesidades
+educativas 3649 SED - Cobertura
+especiales Atendidos Educativa
+por el sistema
+educativo oficial
+Número de equipos
+interdisciplinarios -
+NM para apoyo a las IEO 5 o
+, tiva [en la atención de
+Inclusión educ Estudiantes con NEE.
+Número de docentes $£D- Cobertura
+eualiicados en 520 Educativa (Calidad
+atención de Educativa)
+estudiantes con NEE.
+Nomero de
+estudiantes . victimos 744 SED - Cobertura
+dentro del sistema Educativa
+educativo
+No de jóvenes y
+Educación para Jóvenes y | 2uitos clendidos en 200 SED - Cobertura
+adultos dado ectivo Educativa
+educativo 1 (CLEl
+Nivel 1)
+44
+
+
+## Página 45 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+P—
+Cinesa ACUERDO No. VOG
+(13 JUN 2018 )
+LINEA BASE DE
+SUBPROGRAMA DUETO INDICADOR DE PRODUCTO RESPONSABLE
+Plan de SED-
+A
+Plan de Infraestructura
+al servicio de la o 432 SED=
+educación en Infraestructura
+jornada única,
+y 8.1.1.2 PROGRAMA LA CALIDAD DIGNIFICA
+se buscará formar niños y jóvenes como seres integrales, capaces de responder a
+los retos que le demandan el proceso formativo y su proyecto de vida desde la
+educación básica y media. Para ello, es imprescindible emprender, mediante
+planes de acompañamiento, acciones y estrategias que les permitan a los
+estudiantes un mejor desempeño en sus labores académicas diarias y en las
+evaluaciones que deben afrontar, tales como, las pruebas Saber 3, 5, 7, 9 y 11, y
+los exámenes de admisión en las instituciones de educación superior, esto
+apuntando a disminuir la brecha de calidad entre la educación pública y la
+privada y los sectores urbano y rural, promoviendo la respetabilidad y la dignidad
+de la educación pública.
+Igualmente, en el marco de la calidad, es necesario seguir desarrollando los
+> procesos de resignificación de los PEI, de tal manera que las instituciones evalúen
+WM todos los procesos y los enmarquen en las particularidades y vocaciones de su
+entorno, armonizándolos al proyecto educativo de ciudad y de la Administración
+Distrital.
+Lo anterior se realizará amparados en los lineamientos gubernamentales, en las
+políticas, objetivos y metas que se plantean en los planes de desarrollo (nacional y
+distrital).
+45
+
+
+## Página 46 (OCR Oficial Acuerdo 006 de 2016)
+
+AOS
+(El MN, Concejo Distrital de Cartagena de Indias D. T. y C.
+P— E
+Gr ACUERDO No. OO6b
+( a )
+Tabla 5
+ARTICULACIÓN IMP RELACIÓN ODS
+Objetivo 4, Garantizar una educación inclusiva y
+Rezago Escolar equitativa de calidad y promover oportunidades
+de aprendizaje permanente para todos
+8.1.1.2.1 SUBPROGRAMA SABER MÁS, SABER MEJOR
+W Se aumentará el número de JEO ubicadas en la clasificación A+, A y B, pasando
+de 15 a 25 y mejorar el desempeño ISCE, para lo cual se adelantarán planes de
+
+acompañamiento para mejorar las competencias de los estudiantes oficiales y
+
+lograr un mejor desempeño en las pruebas Saber 32, 5%, 92 y 11%, así como en los
+
+procesos de admisión a la educación superior. Se realizará el esfuerzo en las
+competencias de lecto-escritura y matemática, para alcanzar el mejoramiento
+de los resultados de pruebas que miden el desempeño como componente de
+
+ISCE.
+
+8.1.1.2,2 SUBPROGRAMA MEJORES DOCENTES Y DIRECTIVOS DOCENTES
+
+El docente es el motor que impulsa la calidad educativa en el aula, por lo tanto
+
+es necesario que su formación sea acorde con su alto compromiso social. En ese
+
+sentido, se hace imprescindible cualificar el talento humano de las instituciones
+¡y educativas encargadas de las funciones administrativas y docentes. De allí que
+sea una prioridad movilizar recursos y gestiones para desarrollar un plan de
+
+formación post gradual y contínua de los educadores [en el ámbito disciplinario y
+
+pedagógico, en tecnologías, bilingúismo y en postconflicto), que permita un
+
+mejor desempeño en su práctica pedagógica e investigativa.
+
+En el marco de este subprograma se impulsarán las siguientes iniciativas:
+
++ Formación en estudios de especialización, maestría y doctorado. Incrementar
+el número de docentes del Distrito con estudios en segundo y tercer ciclo,
+aprovechando, inicialmente, la oferta de la ciudad; fomentando convenios
+con instituciones nacionales e internacionales. Estos estudios se pueden
+
+46
+
+
+## Página 47 (OCR Oficial Acuerdo 006 de 2016)
+
+El ae» Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. OCOG
+ESA ”
+(13 JUN 2016 )
+desarrollar en los componente disciplinares y pedagógicos, pero también en
+estudios de alta pertinencia (Construcción de paz, medio ambiente, etc.).
+
++ Ciclos de formación: Organizar, en conjunto con las instituciones, una agenda
+de formación permanente (diplomado, seminarios, foros, etc.), en temas de
+interés, como ciencia y tecnología, competitividad, TIC, didácticas, ambientes
+escolares, entre otros.
+
++ Fortalecimiento de la formación de directivos docentes en gestión, planeación
+
+- estratégica y pedagogía. Con ello, se pretende que los directivos docentes
+NM estén en permanente actualización de la gestión administrativa y financiera,
+manejo de los recursos, planeación escolar y los modelos pedagógicos.
+8.1.1.2.3 SUBPROGRAMA ACTUALIZACIÓN DE CURRÍCULOS ESCOLARES
+
+Se apunta a los pilares esenciales de la educación: el conocimiento de las
+
+disciplinas (el saber), la formación en valores [el ser y el convivir), la formación
+
+estética y del cuerpo [el bienestar) y la práctica de los saberes (el hacer).
+
+Lideraremos el rediseño de los currículos académicos en nuestra educación, de
+
+manera que tengamos una educación no sólo pertinente, sino también acorde
+
+con los intereses de los estudiantes y de la sociedad en general.
+
+8.1.1.2.4 SUBPROGRAMA ESCUELAS BILINGUES
+
+ad Se promoverá el proceso formativo de inglés desde la primaria, con el apoyo de
+los programas del MEN y de prestigiosas instituciones internacionales (Purdue
+
+University, University of the West Indies, entre otras). Fortaleceremos en nuestros
+
+estudiantes el aprendizaje y manejo de un idioma diferente a su idioma nativo, de
+
+manera que egresen del sistema con competencias para comunicarse en una
+segunda lengua; esto se medirá a través de los resultados obtenidos en las
+pruebas saber 11? por las instituciones educativas oficiales, con jornada extendida
+bilingúe del Distrito, utilizando los parámetros del Marco común europeo de
+referencia para las lenguas (MCERL).
+
+47
+
+
+## Página 48 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+Ar No. OCOG
+( 13 JUN 2016 )
+8.1,1.2.5 SUBPROGRAMA FORTALECIMIENTO DE LA ETNOEDUCACIÓN
+Se fortalecerán los procesos de inclusión educativa y social de las comunidades
+étnicas en los términos de identidad, de equidad, de calidad y de
+reconocimiento de los derechos.
+8.1.1.2.6 SUBPROGRAMA INCORPORACIÓN DE LA TECNOLOGÍA EN EL
+PROCESO DE ENSEÑANZA APRENDIZAJE
+Se pretende ubicar la educación a la altura y necesidades del Siglo XXI, mediante
+la utilización de los medios y tecnologías de la información y la comunicación, en
+y función de los procesos de aprendizaje en las escuelas.
+8.1.1.2.7 SUBPROGRAMA LA ESCUELA COMO EJE INTEGRADOR DE LOS
+PROCESOS FORMATIVOS
+Articular los procesos del Gobierno Distrital, en el eje educativo, asumiendo la
+formación como un ejercicio integral, en cuatro dimensiones: el saber de las
+disciplinas, la formación ética y axiológica, la aplicación de los saberes en su
+realidad circundante y el cultivo corporal y estético. Es decir, un proceso que se
+centra en la Gente como un ente multidimensional.
+8.1.1.2.8 SUBPROGRAMA EDUCAR PARA LA COMPETITIVIDAD Y LA
+CONFIANZA SOCIAL
+vo Se fomentará la educación desde la media técnica en las instituciones
+educativas oficiales Distritales, en torno a la vocación económica y productiva de
+Cartagena, para incentivar en los y las jóvenes, el emprendimiento y el
+empresarismo.
+8.1.1.2.9 SUBPROGRAMA ESCUELAS VERDES: LA CONCIENCIA ECOLÓGICA
+DESDE LAS ESCUELAS
+Se promoverá una conciencia ambiental buscando la sostenibilidad y
+sustentabilidad de Cartagena de Indias, de sus corregimientos y de sus islas,
+desde las instituciones educativas y con el apoyo de entidades públicas y
+privadas.
+48
+
+
+## Página 49 (OCR Oficial Acuerdo 006 de 2016)
+
+al Concejo Distrital de Cartagena de Indias D. T. y C.
+Ú UR,
+A ACUERDO No. OO
+(13 JUN 2016)
+8.1.1.2.10 SUBPROGRAMA CIUDAD - ESCUELA: COMPROMISOS DE TODOS Y
+PARA TODOS
+Se desarrollarán acciones y estrategias de formación permanente para los
+padres, los líderes comunales y políticos, los empresarios, los trabajadores, los
+empleados, y la ciudadanía en general, de tal manera que el proyecto
+“Cartagena, una sola escuela” sea dinámico, incluyente y participativo; y en
+donde se asuma que -más allá de la escuela- todos tememos una
+corresponsabilidad social frente a la educación.
+Ns Este programa buscará rescatar la corresponsabilidad edificante y reactiva, para
+pl pi
+ello, se utilizará la Escuela de Padres, a través de la cual, se fomentará la
+participación activa de los padres en los procesos educativos de los niños, niñas y
+jóvenes; además, en las escuelas y otros escenarios se organizarán eventos
+permanentes de formación para los padres.
+Tabla 6
+LINEA BASE DE
+INDICADOR DE RESULTADO INDICADOR DE META RESULTADO RESPONSABLE
+RESULTADO
+Índice Sintético de Calidad Educativa-SCE, en y
+Básica Primaria (FUENTE: MEN. corle 2015) 5.09 57 so - Calidad
+Informe Colombia Aprende 2016 Educativa
+Índice Sintético de Calidad EducativaWSCE, en SED - Calidad
+NG Básica Secundaria an 57 Educativa
+Índice Sintético de Calidad Educativa-SCE, en $17 SED - Calidad
+La Media . $2 Educativa
+Brecha porcentual entre área rural y urbana.
+de IEO en la clasificación "D" en prueba Saber 62% so. Calidad
+me Educativa
+49
+
+
+## Página 50 (OCR Oficial Acuerdo 006 de 2016)
+
+Az dl
+E” Concejo Distrital de Cartagena de Indias D. T. y C.
+bad
+StprO ACUERDO No. DOG
+(13 JUN 2016)
+Tabla 7
+LINEA BASE DE META
+SUBPROGRAMA INDICADOR DE PRODUCTO INDICADOR DE PRODUCTO RESPONSABLE
+PRODUCTO
+Ne de Establecimientos
+Educativos — Oficiales con
+Índice Sintético de Calidad Ñ Ñ
+Educotiva-SCE en la Medio, 35 IS
+con nivel al menos igual al
+ISCE promedio del Nivel
+Nacional.
+N* de Esloblecimientos
+Educativos Oficiales con
+y grado 11* con desempeños 15 25 O
+alineados en la clasificación
+At AyB
+Saber más, Saber | Mejorar Componente -
+mejor Desempeño — (ISCE) Básica 232 a
+ano lucativa
+Mejorar componente car
+Desempeño — [ICE]. Básica 218 Nr
+secundaria
+Mejorar Componente 231 27 SED - Colldad
+Desempeño (ICE) Media j j Educativa
+No de IEO con semileros de SED - Calidad
+investigación implementados Educativa
+N* de docentes formados en 1700 SED - Calidad
+evaluación por competencias Educativa
+Y N* de docentes formados en
+metodología de Investigación SED - Colidad
+para el mejoramiento de la Educativa
+calidad educativa.
+N* de docentes y directivos
+docentes — formados en SED - Calidad
+Mejores Docentes y bei 250 A
+fejore especializaciones y/o Educativa
+Directivos Docentes maestrías
+N* de directivos docentes se
+cualificados en gestión SE lidad
+escolar Educativa
+N* de Docentes y directivos
+docentes con experiencias
+educativas innovadoras para 720 od
+el mejoramiento de la calidad ucativa
+educativa
+50
+
+
+## Página 51 (OCR Oficial Acuerdo 006 de 2016)
+
+ETA
+El Concejo Distrital de Cartagena de Indias D. T. y C.
+[E — UE)
+fu ACUERDO ge 0065
+a
+(43 JUN 20 )
+LINEA BASE DE META
+SUBPROGRAMA — INDICADORDEPRODUCIO — INDICADORDE — propycro — RESPONSABLE
+N* de instituciones educativas
+con currículos ajustados a la SED - Calidad
+política vigente e Educativa
+implementados
+No de Establecimientos
+a Educativos Oficiales con bajo
+Actualización de | índice en los indicadores de SED - Calidad
+Currículos Escolares | Calidad y Eficiencia Intema, Educativa
+fortalecidos en la gestión
+escolar integral
+y N* de IEO con Proyectos SED - Calidad
+Educativos —— Institucionales Educoliva
+resignificados
+Porcentaje de estudiantes de
+IEO con jomada extendida SED - Calidad
+Escuelas Bilíngúes — | bilingie con nivel mínimo "B1" 3% Educativa
+en las pruebas saber 11%
+según el MCERL
+N* de IEO Elnoeducativas con 26 SED - Calidad
+PEl ajustados y actualizados Educativa
+Fortalecimiento de
+la Elnoeducación [> de 1£0 que desarolan la SED - Calidad
+Cóledra de Estudios 52 Educativa
+Afrocolombianos
+memo po Comeutodor HON Eco
+¡W] N* de Docentes y directivos SED - Colidad
+Incorporación de la | docentes formados en uso y 3664 Educativa
+tecnología en el | APropiación de TIC
+proceso de N> de Di ha lc
+enseñarza '* de Docentes que aplican o e
+aprendizaje las TIC en proceso Enseñanza ND O
+y Aprendizaje fucaliva
+Número de usuarios que
+interactúan con la Plataforma SED - Calidad
+Académica Colombia Educativa
+Evaluadora
+Nodo — social humanístico 1 SED - Calidad
+La escuela como | Mplementado Educativa
+eje integrador de
+los procesos | N* de Instituciones Educativas
+formativos Oficiales beneficiada con el SED - Colidad
+Nodo — social — humanístico Educativa
+implementado.
+51
+
+
+## Página 52 (OCR Oficial Acuerdo 006 de 2016)
+
+El + > E) Concejo Distrital de Cartagena de Indias D. T. y C.
+E 3 ¿ACUERDO No. VOG
+(13 JUN 2016 y
+LINEA BASE DE META ESPONSABLE
+DIC, E PRODUCTO INDICADOR DE RI
+ES INDICADOR DI CTI PRODUCTO, PRODUCTO
+Educar para  la|N* De IEO con Programas de SED - Calidad
+competitividad y la | emprendimiento y 52 Educativa
+confianza social___ | empresorismo desarrollados
+Proyectos Ambientales SED - Calidad
+Escuelas verdes Educativos-PRAES — ajustados 40 Educativa
+en lEO
+Ciudad -escuela|No. De IEO con el Programa SED - Calidad
+compromiso de[Escuela para Padres Educaliva
+todos y para todos | Fortalecido
+y
+8.1.1.3 PROGRAMA FORTALECIMIENTO DE LA GESTIÓN DEL SISTEMA EDUCATIVO
+DISTRITAL DE CARTAGENA
+La gestión de la calidad, dinamiza los procesos administrativos, por cuanto
+permite la eficiencia, la eficacia, la efectividad de las acciones y la
+racionalización de los recursos, mejora los índices de transparencia y posibilita la
+satisfacción de los usuarios.
+Para ello, estableceremos el Índice de Satisfacción Integral, con el que se espera
+medir el nivel de satistacción de los ciudadanos y la sociedad cartagenera, con
+el servicio que se lidera desde la Administración Distrital a los establecimientos
+educativos. De igual manera se trabajará en la construcción del índice de
+Ñ Eficacia de la Gestión Educativa, a fin de lograr avanzar en la correspondencia
+NM que debe existir, entre el sistema de gestión de la calidad y los resultados en el
+comportamiento de los indicadores de calidad, cobertura, eficiencia y
+pertinencia del sector.
+Por último, se trabajará en la estandarización de procesos, para el mejoramiento
+de la gestión de las instituciones educativas oficiales del Distrito.
+8.1.1.3.1 SUBPROGRAMA FORTALECIMIENTO DE LA GESTIÓN Y
+CONSTRUCCIÓN DE SINERGIAS POR LA EDUCACIÓN
+Este subprograma trabajará en el mejoramiento de las condiciones institucionales
+y organizativas que permitan garantizar, la prestación de un servicio educativo de
+calidad en la ciudad de Cartagena, a través de una organización fortalecida
+52
+
+
+## Página 53 (OCR Oficial Acuerdo 006 de 2016)
+
+[El —— Concejo Distrital de Cartagena de Indias D. T. y C.
+— E
+Art ACUERDO No. 0065
+Ss
+(a 3 JUN 2016 )
+
+que garantizará respuestas efectivas a las necesidades del sector; se revisará y
+actualizará el Sistema de Gestión de la Calidad y el perfil institucional de la SED, se
+cualificará a los funcionarios administrativos para garantizar una mejor y oportuna
+atención a los ciudadanos.
+
+Se fortalecerán las Unidades Administrativas Descentralizadas de Educación -
+UNALDES- para mejorar la eficacia en los servicios descentralizados de la
+Secretaría a su cargo; se trabajará en el fortalecimiento de los programas de
+bienestar dirigidos a los funcionarios de la Planta Central y de las IEO, con el
+propósito de generar un clima laboral que favorezca de manera significativa el
+
+GM cumplimiento de objetivos y metas; finalmente, para alcanzar estos objetivos, se
+
+trabajará con diferentes aliados de orden gubernamental y no gubernamental, a
+fin de aunar esfuerzos y formalizar convenios de colaboración y cooperación que
+permitan la prestación de un servicio educativo de calidad y pertinente en la
+ciudad de Cartagena.
+
+8.1.1.3,2 SUBPROGRAMA ESTANDARIZACIÓN DE PROCESOS EN
+
+INSTITUCIONES EDUCATIVAS OFICIALES
+Se diseñará, documentará e implementará una estrategia de estandarización de
+procesos que agregue valor a la gestión escolar de las lEO de la ciudad; así
+mismo se trabajará en la actualización y mantenimiento de los Sistemas de
+Gestión de Calidad de las IEO certificadas con la Norma ISO 9001:2008 para que
+y migren a la versión 2015.
+Tabla 8
+LINEA BASE DE INDICADOR META
+INDICADOR DE RESULTADO DE RESULTADO RESULTADO. RESPONSABLE
+
+% Satisfacción de los usuarios del sector SED-Planeación
+Educativo oficial del Distrito de Cartagena 70% Educativa
+
+premiere [| ro |
+
+53
+
+
+## Página 54 (OCR Oficial Acuerdo 006 de 2016)
+
+El Concejo Distrital de Cartagena de Indias D. T. y C.
+E— E
+SEE ACUERDO No. 0OGS
+HN
+(13 JUN 2016 )
+Tabla 9
+LINEA BASE DE META.
+SUBPROGRAMA INDICADOR DE PRODUCTO INDICADOR DE PR RESPONSABLE
+PRODUCTO 'ODUCIO
+Diseño y desarrollo del modelo de
+medición del nivel de satisfacción Ñ SED-Ploneación
+de los usuarios del servicio Educativa
+educativo oficial del DC
+Diseño e implementación de la
+nueva Estrategia Institucional de la SED-Despacho
+SED
+o ñ «dio de días dl
+Fortalecimiento de la tempo promedio de dos de SED-Atención Al
+gestión y construcción de | "9sPuesta a peticiones quejas y 15 Ciudadano
+sinergias por la reclamos
+educación
+Capacitación de funcionarios
+“administrativos en carrera O
+administrativa
+Actualización de SGC de la SED SED-Admón.
+(ISO 9001:2008 a 9001:2015) s6C
+No de las metas de Indicadores 15 SED-Admón.
+, S5GC cumplidos sGC
+e
+Modelo de gestión de procesos y
+estandarizados conforme a la SEDAcImÓn
+Norma ISO 9001:2015
+Estandarización de SED-Admó
+procesos entrsilaciones | 1EO.Con procesos estandarizados so | SD:Admón
+Educativas Oficiales
+Actualización de SGC de lEO 5
+certiicadas (ISO 9001:2008 a seoAsmón.
+9001:2015)
+8.1.1.4 PROGRAMA EDUCACIÓN SUPERIOR: JÓVENES FORMADOS CON CALIDAD
+Se propenderá por aumentar el número de los egresados del sistema educativo
+oficial que acceden a la educación superior, ya sea técnica, tecnológica y
+universitaria; igualmente, se espera facilitar la transición de los estudiantes de la
+54
+
+
+## Página 55 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+, ACUERDO No. OOG
+(413 JUN 2016 )
+
+educación media a la educación superior, a través de procesos académicos de
+articulación.
+
+Con el Fondo Bicentenario, se les brinda la oportunidad a los jóvenes bachilleres
+de las escuelas públicas distritales con buenos resultados académicos de ingresar
+a las instituciones de educación superior con sede en Cartagena de Indias.
+También ha servido como fondo para cofinanciar el acceso y la permanencia en
+los CERES. En el marco de este programa se impulsarán iniciativas orientadas a
+garantizar alimentación para estudiantes de estratos 1 y 2 de las instituciones de
+
+U educación superior públicas, asentadas en nuestro territorio.
+8.1.1.4.1 SUBPROGRAMA FORTALECIMIENTO DE LA EDUCACIÓN MEDIA
+TÉCNICA Y SU ARTICULACIÓN CON LA EDUCACIÓN SUPERIOR
+
+Se fortalecerá la cadena de formación desde la media técnica, a partir de la
+evaluación, resignificación y el mejoramiento de las capacidades técnicas de los
+Nodos existentes, [Petroquímico-Plástico, Logística y Puertos, Telemática y
+Teleinformática, Agroindustria, Biocombustible y Turismo) y la creación de los
+nodos Social Humanístico e Industrial, con el que se pretende fortalecer los
+procesos de formación creativa y estética, para aprovechar las aptitudes y
+vocaciones de los niños y jóvenes en la música, la danza, la literatura, el teatro, la
+pintura, la escultura, el deporte, la formación ciudadana, así como competencias
+en el área industrial y productiva.
+
+” También se articulará la educación media de las instituciones públicas con
+entidades de formación técnica, de manera que nuestros bachilleres obtengan
+competencias laborales; se realizarán asesorías y acompañamiento técnico para
+lograr una mayor potencialización de las instituciones de educación para el
+trabajo y el desarrollo humano, buscando en primera instancia el aumento del
+número de cupos en los cursos ofrecidos en estas instituciones.
+
+Para esto se propiciará coparticipación de entidades distritales como el IPCC,
+IDER, Escuela de Gobierno y liderazgo, EPA, Secretaría de Participación y
+Desarrollo Social, SENA e Institución Universitaria Bellas Artes y Ciencias de Bolívar,
+así mismo se gestionará el apoyo de las instituciones de educación superior, las
+fundaciones y organizaciones no gubernamentales.
+
+55
+
+
+## Página 56 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. DOG
+UN 5
+(43 JUN 2016 )
+8.1.1.4.2 SUBPROGRAMA FORTALECIMIENTO DEL COLEGIO MAYOR DE
+BOLÍVAR
+Se mejorará la oferta actual de programas técnicos, tecnológicos, así como la
+creación de nuevos programas que sean pertinentes y acordes con las
+necesidades de la ciudad y la región.
+Se prepararán las condiciones para que el Colegio Mayor haga el tránsito -en el
+mediano plazo- hacia universidad, tal como ha ocurrido con otras instituciones
+similares en el país, fundamentado en nuevas y modernas instalaciones que se
+proyecten para atender en un futuro a 20,000 alumnos en diferentes
+9) modalidades.
+8.1.1.4.3 SUBPROGRAMA BECAS A LA EXCELENCIA
+Se brindarán oportunidades a bachilleres oficiales con buenos resultados
+académicos, para que adelanten estudios superiores en Instituciones de
+Educación Superior, a través de los programas especiales establecidos (Fondo
+Bicentenario, Ceres, Convenios Interadministrativos y Ser Pilo Paga).
+Así mismo se ofrecerán becas (Ser Pilo Va), que estarán dirigidas a los estudiantes
+oficiales que a pesar de tener un excelente desempeño en la Pruebas Saber 119,
+por diversas razones no fueron beneficiarios de los programas especiales
+señalados en el párrafo anterior, y que no cuenten con los recursos económicos
+para financiar sus estudios superiores.
+NY
+Tabla 10
+LINEA BASE DE
+INDICADOR DE RESULTADO INDICADOR DE META RESULTADO RESPONSABLE
+RESULTADO
+ES
+sistema educativo oficial financiados por el Distrito Superior
+56
+
+
+## Página 57 (OCR Oficial Acuerdo 006 de 2016)
+
+f y» . es .
+y Concejo Distrital de Cartagena de Indias D. T. y C.
+i—
+Ú "TR
+Si A ACUERDO No. O0OG
+!
+( 4 3 JUN 2016 )
+Tabla 11
+LINEA BASE DE pepa
+SUBPROGRAMA INDICADOR DE PRODUCTO INDICADOR DE PRODUCTO RESPONSABLE
+PRODUCTO
+Número de Nodos
+Educativos de Media|s 7 O or cación
+Técnica ampliados per
+No de Instituciones
+W Educativas Oficiales con
+Educación Media Técnica SED Educación
+Fortalecimiento de la | cop ambientes y $ Superior
+Educación Media | materiales de
+Técnica y su articulación | dorencizojes fortalecidos
+con la educación
+superor No de instituciones
+Educativas con sy
+Educación Media Técnica 15 or «Educación
+articuladas ala Pp
+Educación Superior
+No de IFTDH con SED «Educación
+“acompañamiento técnico Superior
+No de Programas en la
+Fortalecimiento del | Institución Tecnológica 28 SED «Educación
+Colegio Mayor de Bolivar | Colegio Mayor de Bolivar Superior
+con registro calificado
+Número de egresados del
+sistema educativo oficial 12.503 SED «Educación
+becados en estudios Superior
+Becas ala excelencia. PURSToreS
+No de beneficiarios del ñ
+PA
+Cortagena pS
+8.1.1.5 PROGRAMA EDUCAR PARA UN NUEVO PAÍS
+Enmarcar las acciones gubernamentales, privadas y sociales, en especial, el
+proceso educativo, en la reconfiguración del país, en el escenario del post
+conflicto, y en la necesidad de formar ciudadanos que emprendan, desde las
+regiones, la reconstrucción del tejido social y la dignificación de la Gente.
+57
+
+
+## Página 58 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+. ACUERDO No. VOOG5>
+(13 JUN 2016 )
+Con esto se sustenta la educación formativa y se apunta a la edificación
+humana, a la prevalencia de la ética, de la tolerancia, del respeto y del
+reconocimiento de las minorías (étnicas, sociales, sexuales, políticas, etc.).
+También, convierte a la escuela en escenario de sostenibilidad de la
+reconciliación nacional en el marco del post conflicto.
+8.1.1.5.1 SUBPROGRAMA DE JÓVENES EN RIESGO A JÓVENES CON FUTURO
+Ñ Desde la escuela se apoyarán los procesos de inclusión social de los jóvenes en
+Y riesgo, para lograr un aporte desde el sector educativo a la construcción de paz
+en la ciudad, incidiendo directamente en aquellos jóvenes que se encuentran en
+riesgo de ingresar a grupos al margen de la Ley, ofreciéndoles alternativas de
+formación para su inserción laboral o generación de empresas. De la misma
+manera, se establecerán convenios con otras entidades Distritales, en aras de
+ampliar la oferta a otros grupos vulnerables de la ciudad.
+8.1.1.5.2 SUBPROGRAMA IMPLEMENTACIÓN DE LA CÁTEDRA CARTAGENA EN
+PAZ
+Se implementará la cátedra Cartagena en Paz, con el fin de fomentar
+conocimientos y experiencias frente a las situaciones que generan los conflictos,
+para discutilas y proponer alternativas de solución. Esta cátedra debe
+desarrollarse como un taller, con metodologías dinámicas y en lo posible, con
+Ns estudios de caso.
+Tabla 12
+LINEA BASE DE
+INDICADOR DE RESULTADO INDICADOR DE META RESULTADO RESPONSABLE
+RESULTADO
+para la construcción de poz Superior
+58
+
+
+## Página 59 (OCR Oficial Acuerdo 006 de 2016)
+
+TAS
+Pen a] Concejo Distrital de Cartagena de Indias D. T. y C.
+a .E
+br ACUERDO No. COG
+(13 JUN 2016 )
+Tabla 13
+LINEA BASE DE
+SUBPROGRAMA INDICADOR DE PRODUCTO INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO
+h No de Jóvenes en fi
+Ei bendiciados con programas SED -Educación
+O aro E 09 | de educación para el trabajo Superior
+y desarrollo humano
+ws Docentes formados en
+justicia, — reconciliación — y 1500 a dd
+implementación | 'YlStancia
+de la cátedra
+Cortagena en poz
+No de I¡EO con la Cátedra be
+Cortagena en Paz SED 30 aio
+implementada
+8.1.2 LINEA ESTRATEGICA POR UNA CARTAGENA CON EQUIDAD EN SALUD
+El Plan de Desarrollo 2016 - 2019 “PRIMERO LA GENTE PARA UNA CARTAGENA
+SOSTENIBLE Y COMPETITIVA” asume la salud con un abordaje transectorial, que
+logre intervenir los determinantes sociales en salud, logrando avanzar
+o significativamente hacia su goce efectivo, mejorando las condiciones de vida de
+¡w] los habitantes del distrito de Cartagena.
+En materia de salud, el Plan Decenal de Salud Pública 2012-2021, que contiene la
+política de Estado en materia de salud pública para Colombia, y que se
+constituye en la política sectorial, transectorial y comunitaria, que tiene como
+visión lograr la paz, la equidad en salud y el desarrollo sostenible, reconoce la
+salud como un derecho fundamental, acogiendo el enfoque de los derechos
+económicos sociales y culturales.
+Este plan retoma la definición incluida en la Ley 1122 de 2007, con relación a que
+la salud pública, está constituida por el conjunto de políticas, que buscan
+garantizar de una manera integrada, la salud de la población por medio de
+acciones de salubridad, dirigidas tanto de manera individual como colectiva,
+59
+
+
+## Página 60 (OCR Oficial Acuerdo 006 de 2016)
+
+bal dl y Concejo Distrital de Cartagena de Indias D. T. y C.
+E EEN]
+A
+cuyos resultados se constituyen en indicadores de las condiciones de vida,
+bienestar y desarrollo del país, y recoge los elementos esenciales, principios,
+derechos y deberes de la Ley Estatutaria en Salud.
+En ese orden de ideas, el Plan Decenal de Salud Pública, es la respuesta política
+del Estado, en el marco de la estrategia de atención primaria en salud, para
+alcanzar la equidad en salud, la cual se logra cuando todas las personas
+alcanzan su potencial de salud independientemente de sus condiciones sociales,
+culturales y económicas, y se convierte en un mandato ciudadano que define la
+actuación articulada entre actores y sectores públicos, privados y comunitarios,
+” para crear condiciones que garanticen el bienestar integra! y la calidad de vida
+en Colombia. Es pues, la carta de navegación del país, que plantea la línea de
+trabajo, para dar respuesta a los desafíos actuales en salud pública en Colombia,
+en busca de la reducción de la desigualdad en salud, planteando tres objetivos
+estratégicos: 1) Avanzar hacia la garantía del goce efectivo del derecho a la
+salud; 2) Mejorar las condiciones de vida que modifican la situación de salud y
+disminuyen la carga de enfermedad existente; 3) Mantener cero tolerancia frente
+a la mortalidad, la morbilidad y la discapacidad evitable.
+Es responsabilidad de las entidades territoriales, de acuerdo con sus
+competencias y necesidades, condiciones y características de su territorio,
+adaptar y adoptar los contenidos establecidos en el Plan Decenal de Salud
+Pública 2012-2021, en cada cuatrienio a través del Plan Territorial de Salud y
+coordinar su implementación en su área de influencia, de conformidad con los
+Nu lineamientos que para el efecto, defina el Ministerio de Salva y Protección Social.
+El Distrito de Cartagena de Indias, armonizado con las políticas y lineamientos
+nacionales pretende ser, un territorio próspero e incluyente, una Cartagena
+saludable, con disminución en las brechas sociales, sin fronteras imaginarias, con
+ciudadanos conscientes, responsables y conocedores de sus derechos en salud y
+su autocuidado, capaces de transformar su entomo familiar, social y ambiental,
+con una autoridad sanitaria líder, vigilante y articuladora, que logra la
+participación activa y armonizada de los otros sectores determinantes en la salud
+del territorio, dotado con los recursos suficientes, libre de corrupción,
+operativizando un modelo de atención en salud incluyente, soportado con una
+adecuada red de prestación de servicios, con enfoque poblacional y de
+determinantes sociales, impactando con una disminución con tendencia
+60
+
+
+## Página 61 (OCR Oficial Acuerdo 006 de 2016)
+
+El « dl A Concejo Distrital de Cartagena de Indias D. T. y C.
+ZE ACUERDO No. DOS
+(13 JUN 2016)
+sostenida de las tasas de morbimortalidad evitable, con mejoramiento de las
+condiciones de salud de la población, con corregimientos (insulares y
+continentales) con accesos y cobertura permanente a servicios públicos (agua
+potable, acueducto y alcantarillado), servicios de transporte, servicios de salud
+oportunos y de calidad, manifestado esto, en un mejoramiento de la percepción
+año a año en salud por parte de la población cartagenera.
+De otra parte, y guardando relación con los programas y subprogramas
+relacionados con el empleo, la administración promoverá la firma de convenios
+7 con las diferentes facultades de medicina del Distrito, con el fin de crear una
+v oferta de profesionales especializados. Así mismo se promoverá la creación de
+plazas rurales de medicina, enfermería y odontología, para cada uno de los
+centros y puestos de salud de la ciudad. Todo lo anterior, redundará
+adicionalmente en una mejor prestación de los servicios de salud.
+Todas estas acciones y responsabilidades se operativizarán a través de la
+implementación del Plan Distrital de Salud Pública “Por una Cartagena con
+equidad en salud”, estableciendo un Modelo Integral de Atención en Salud
+[MIAS), fundamentado en la atención primaria en salud (APS), con un enfoque
+poblacional y territorial, que atienda los principios de integralidad, calidad y
+humanización de la atención, el cual se constituye en parte integral del presente
+Plan de Desarrollo 2016 - 2019 “Primero la Gente para una Cartagena Sostenible y
+Competitiva", con base en las prioridades en salud, resultado de la
+implementación de la estrategia PASE a la equidad en salud en el Distrito, a través
+N de líneas operativas de promoción de la salud, gestión del riesgo y gestión de la
+salud pública enfocados en alcanzar mayor equidad en salud, fortaleciendo la
+cooperación intersectorial y transectorial que permita mejorar el sistema de
+respuesta en atención, promoción y prestación de servicios de salud con
+adecuación al ciclo de vida, género, etnicidad y a las necesidades diferenciales
+de la población con discapacidad y de la población víctima del conflicto,
+mejorar las condiciones de salud individual y colectiva de la población residente
+en el Distrito de Cartagena, consolidando capacidades institucionales que
+afecten positivamente los determinantes sociales en salud y disminuir la
+morbilidad, mortalidad y discapacidad evitable en el distrito de Cartagena
+mejorando el acceso y la calidad en la atención en salud.
+61
+
+
+## Página 62 (OCR Oficial Acuerdo 006 de 2016)
+
+(El A Concejo Distrital de Cartagena de Indias D. T. y C.
+Er ACUERDO No. 006
+(13 JUN 2016 )
+
+En ese sentido, para garantizar una vida sana se pretende asegurar que toda la
+población acceda a servicios de salud de alta calidad lo que implica el
+fortalecimiento de los sistemas de salua, la difusión del conocimiento médico, de
+la salud pública y tecnologías modernas, así como también lograr y mantener
+Una cobertura universal, la eliminación del trabajo y la mortalidad infantil, hábitat
+y estilos de vida saludables, alimentación segura y confiable, sana convivencia y
+salud mental y finalmente, el acceso a la salud sexual y reproductiva y la
+reducción de las muertes maternas.
+Como una estrategia adicional para lograr que la población acceda a servicios
+
+id de salud de alta calidad, para atender problemas de salud de alta calidad, para
+antender problemas de salud de alta complejidad, se gestionará, ante el
+Gobierno Nacional, en la medida de nuestras capacidades, previo estudios de
+prefactibilidad y factibilidad correspondientes, la conformación en la ciudad, de
+Una zona franca de salud y la obtención de recursos financieros adicionales con
+la nación, que posibiliten el diseño y la viabilidad de un macroproyecto
+denominado “Ciudadela de la Salud” (Ciudad Bicentenario).
+La Estrategia de Salud del presente Plan adopta en todo su extensión el Plan
+Territorial de Salud, resultante de un ejercicio colectivo de revisar las cinco
+Dimensiones: Social, Económica, Ambiental, Poblacional e Institucional en su
+interacción y de las tensiones resultantes de dicha interacción. Este enfoque
+multisectorial, permite responder de manera articulada a cada una de las
+falencias en la garantía de los derechos de salud.
+
+Nu
+Todo estas acciones y responsabilidades se implementarán, a través de la
+operativización del Plan Distrital de Salud Pública “Por Una Cartagena con
+Equidad en Salud”, que se constituye en parte Integral del presente Plan de
+Desarrollo 2016 - 2019 “Primero la Gente para una Cartagena Sostenible y
+Competitiva”.
+8.1.2.1 PROGRAMA FORTALECIMIENTO DE LA AUTORIDAD SANITARIA PARA LA
+
+GESTIÓN EN SALUD
+Desde este programa se pretende fortalecer la autoridad sanitaria en salud para
+el Distrito, enfocado a la generación de gobernanza en salva, con el objetivo que
+62
+
+
+## Página 63 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. OCOG
+(13 JUN 2016 )
+las respuestas desde los diferentes sectores y respuestas comunitarias, se
+desarrollen en forma articulada y orientados al logro de resultados en salud.
+Se busca disminuir el riesgo primario en la población, es decir, la aparición de
+nueva morbilidad, evidenciada por la disminución de la incidencia de los
+eventos, controlando el riesgo técnico, entendido como la disminución de los
+eventos derivados de fallas de atención en los servicios de salud, y de la mayor
+carga de enfermedad por mortalidad y discapacidad evitable, fortaleciendo los
+procesos de gestión en salud pública y la implementación del plan de
+> intervenciones colectivas en el Distrito.
+NS
+En ese orden de ideas, con el objetivo de mantener la salud, entendida más allá
+de la ausencia de enfermedad, la gestión de la salud busca la intervención
+organizada de la sociedad para promoverla y prolongar la vida, minimizando y si
+es posible, eliminando, los comportamientos dañinos y las influencias perjudiciales
+de factores medioambientales y sociales, y así mismo la respuesta adecuada de
+los servicios de salud en los casos en que se requieren para prevenir las
+enfermedades, detectarlas cuando existen y recuperar la salud o como mínimo, a
+reducir el sufrimiento y la dependencia.
+Con este fortalecimiento se logrará que el Distrito de Cartagena como ente
+territorial, recupere la confianza en la comunidad como la autoridad sanitaria a
+fin de garantizar de manera efectiva el acceso a los planes de beneficios en
+salud [individuales y colectivos), para toda la población residente en el territorio,
+W mejoraremos nuestra función como autoridad sanitaria, mediante el ejercicio de
+planificación e integración de las acciones relacionadas con la producción social
+de la salud, dentro y fuera del sector salud, y con la respuesta del sector, por
+medio del fortalecimiento de la regulación, conducción, gestión financiera,
+fiscalización, vigilancia epidemiológica y sanitaria, movilización social, ejecución
+de las acciones colectivas y garantía del aseguramiento y la provisión adecuada
+de servicios de salud. Se logrará que en todas las políticas de todos los sectores se
+incorpore como uno de sus objetivos el logro del bienestar y la reducción de
+inequidades a través del abordaje de los determinantes sociales de la Salud.
+63
+
+
+## Página 64 (OCR Oficial Acuerdo 006 de 2016)
+
+(¿bn : $ oncejo Distrital de Cartagena de Indias D. T. y C.
+rf ACUERDO No. DOGS
+e (43 JUN 2016 )
+8.1.2.1.1 SUBPROGRAMA ASEGURAMIENTO
+Entendiendo el aseguramiento como la administración del riesgo financiero, la
+gestión del riesgo en salud, la articulación de los servicios que garanticen el
+acceso efectivo a los mismos, la garantía de la calidad en la prestación de los
+servicios de salud, la representación del afiliado ante el prestador de servicios y los
+demás actores del sistema, sin perjuicio de la autonomía del usuario, lo cual exige
+la asunción de parte de las Empresas Prestadoras de Salud Subsidiados de los
+riesgos en salud transferidos por los usuarios y el cumplimiento de su parte, de las
+obligaciones establecidas en el Plan Obligatorio de Salud, según lo dispuesto en
+NW la Ley 1122 de 2007, la Resolución 5261 de 1994, los acuerdos 244, 228, 282, 306,
+336, 356, 363, del CNSSS y demás normas que las modifiquen, complementen y/o
+sustituyan, para la organización del mismo, se busca universalizar la afiliación al
+Sistema General de Seguridad Social en Salud en la población residente en el
+distrito de Cartagena, gestionando y asegurando el uso eficiente de los recursos y
+vigilando la calidad de la atención en salud de la población.
+8.1.2.1.2 SUBPROGRAMA PRESTACIÓN Y DESARROLLO DE LOS SERVICIOS DE
+SALUD
+Se realizará una atención en salud con enfoque aplicado en la organización de
+la prestación del servicio de salud, mediante la implementación de un modelo
+integral de atención en salud, según lineamientos nacionales, enmarcado en la
+9 estrategia de atención primaria en salud, con acciones encaminadas hacia el
+control y la disminución de los factores de riesgo, potencializando factores
+protectores y minimizando los daños de la población priorizada, que incluya la
+detección temprana, protección específica, recuperación de la salud,
+rehabilitación del daño y atención paliativa, con acciones de seguimiento a los
+atributos de la calidad y mediciones de percepción por parte de los usuarios
+hacia el sistema.
+De este modelo se derivan, cómo se organizan las instituciones de salud y los
+recursos para la atención en salud, desde la perspectiva del servicio a las
+personas, incluyendo las funciones asistenciales y logísticas, su capacidad
+resolutiva, la responsabilidad sobre los usuarios que requieren servicios, así como el
+proceso de referencia y contra referencia.
+64
+
+
+## Página 65 (OCR Oficial Acuerdo 006 de 2016)
+
+rs
+(4 — Concejo Distrital de Cartagena de Indias D. T. y C.
+EA E
+or ACUERDO o. DOG
+QS
+ES
+8.1.2.1.3 SUBPROGRAMA DESARROLLO INSTITUCIONAL
+El Desarrollo Institucional de una entidad tendrá como finalidad principal realizar
+aportes en el desarrollo social, económico, competitivo, científico, tecnológico y
+financiero de la misma y de manera sostenible, posicionando a la Entidad como
+una institución que preste servicios de alta calidad y pertinencia social y en el
+caso del DADIS también en salud.
+Se implementará un redireccionamiento institucional que permita aumentar, el
+> grado de satisfacción con respecto a los servicios prestados por la entidad y por
+NM la calidad en la atención en salud que se recibe.
+Para el cabal cumplimiento de las competencias de ley asignadas, de acuerdo
+con criterios de calidad, eficiencia, eficacia, equidad y oportunidad, que logren
+el bienestar y una mejor calidad de vida a la población del Distrito de Cartagena,
+se considera como aportes de solución a la gestión y visión institucional, el
+Fortalecimiento administrativo y funcional del Departamento Administrativo
+Distrital de Salud [DADIS), con sus componentes de mejoramiento de la
+Infraestructura física existente, gestión integral por parte de las áreas de apoyo
+institucional, calidad en la prestación de los servicios de salud por parte de las IPS
+contratadas, así como propender por garantizar la sostenibilidad financiera o
+gestión correspondiente que fortalezca la seguridad de bienes y usuarios del
+DADIS.
+ww Se desarrollará la mejora de gestión de la calidad de los servicios de salud,
+mediante el análisis de la aplicación del conocimiento profesional en la
+prestación de los servicios de salud, a través de la vinculación del conocimiento
+profesional en las áreas que lo requieran.
+Así mismo y paralelo a estas competencias el DADIS realizara los estudios de
+factibilidad, que permitan reforzar el cumplimiento a la gestión correspondiente
+como autoridad sanitaria.
+8.1.2.1.4 SUBPROGRAMA PROMOCIÓN VIGILANCIA Y CONTROL DEL SISTEMA
+OBLIGATORIO DE GARANTÍA DE LA CALIDAD DE LA ATENCIÓN EN
+SALUD - SOGC
+Se realizarán acciones de desarrollo de capacidades al personal de las diferentes
+instituciones prestadoras de salud, mediante asesorías, asistencias técnicas y
+65
+
+
+## Página 66 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. VOG
+(E 3 JUN 2016 )
+capacitación a los prestadores de servicios de salud, con el propósito de
+promocionar el Sistema Obligatorio de Garantía de la Calidad de la Atención en
+Salud y fortalecer los procesos que conllevan a su implementación; de igual
+forma, se ejecutarán acciones de inspección, vigilancia y control al Sistema
+General de Seguridad Social en Salud, mediante la aplicación de las políticas y
+normas legales vigentes para garantizar la calidad en la prestación de servicios
+de salud en el Distrito de Cartagena de Indias. Todo lo anterior, fundamentado en
+los procesos y procedimientos definidos en la Dirección Operativa de Vigilancia y
+Control.
+pl Así mismo, se tramitará la totalidad de las quejas presentadas en la Dirección
+Operativa de Vigilancia y Control del DADIS, relacionadas con presuntas fallas en
+la prestación de los servicios de salud, para identificar faltas puntuales y presentar
+acciones correctivas que impidan la reaparición de estas irregularidades.
+También, se tramitarán los procesos administrativos a los prestadores de servicios
+de salud, que hayan presentado incumplimiento a lo establecido en las
+disposiciones del Sistema Obligatorio de Garantía de la Calidad de la Atención en
+Salud del Sistema General de Seguridad Social en Salud.
+Estas acciones pretenden que los prestadores de servicios de salud cumplan y
+mantengan las condiciones de habilitación y su sistema de gestión de calidad de
+forma permanente, controlen el riesgo asociado a la prestación de los servicios
+de salud y brinden seguridad a sus usuarios, lo que se traducirá en una adecuada
+prestación de servicios de salud con calidad enfocado en Una atención en salud
+¡W) humanizada reflejado en una mejor calidad de vida.
+Se mantendrá actualizada la base de datos de los prestadores inscritos en el
+Registro Especial de Prestadores de Servicios de Salud —REPSS-, para lo cual se
+contactará, vía página web, oficio, e-mail o telefónica, a cada uno de los
+prestadores que deben realizar la Autoevaluación, y se les brindará asesoría a
+quienes lo soliciten, para así evitar que sean retirados del Registro Especial de
+Prestadores de Servicios de Salud (REPSS).
+8.1.2.1.5 SUBPROGRAMA VIGILANCIA Y CONTROL DE MEDICAMENTOS
+Se fortalecerán las acciones de inspección, vigilancia y control en materia de
+medicamentos, dispositivos médicos y otros productos farmacéuticos disponibles
+66
+
+
+## Página 67 (OCR Oficial Acuerdo 006 de 2016)
+
+ip Concejo Distrital de Cartagena de Indias D. T. y C.
+a ACUERDO No. OCOG
+C 43 JUN 2016 )
+para el consumo y uso en el Distrito, con el objetivo de disminuir el riesgo de
+enfermar por el consumo o uso de los mismos, enmarcadas en las directrices de la
+Política Farmacéutica Nacional, fortaleciendo el sistema de vigilancia
+postconsumo de estos productos mediante las acciones de Farmacovigilancia y
+Tecnovigilancia como función esencial del estado y enmarcado en el modelo de
+Inspección, Vigilancia y Control Sanitario que establezca a nivel nacional.
+8.1.2.1.6 SUBPROGRAMA SISTEMA DE INFORMACIÓN Y APLICACIONES
+- En el ámbito departamental, distrital y municipal, la Ley 715 del 21 de Diciembre
+5 de 2001 establece adoptar, administrar e implementar el sistema integral de
+información en salud, así como generar y reportar la información requerida por el
+Sistema. Las responsabilidades otorgadas a las entidades territoriales en salud en
+lo referente al aseguramiento, la salud pública y el control a entidades,
+demandan un gran esfuerzo y responsabilidad, constituyéndose en un imperativo,
+la automatización de todos sus procesos a través de un sistema integrado de
+salud territorial, el cual debe garantizar la operación, gestión y control de cada
+uno de sus componentes, tanto al interior como entre cada instancia territorial.
+En este contexto resultará vital, ampliar sistemas de información que apoyen la
+gestión y ejecución de la política social. El buen uso de la información, permite a
+la toma acertada de decisiones y favorece el ejercicio de la democracia, porque
+permite puntualizar la realidad y generar condiciones, para que las autoridades
+desarrollen a cabalidad sus funciones y las personas hagan uso de sus derechos.
+” El desarrollo del sistema de información de la salud está soportado no sólo por la
+definición de roles en las leyes pertinentes, sino también por un plan nacional de
+fomento de la utilización de tecnologías de la información.
+El Departamento Administrativo Distrital de Salud DADIS, a través de la
+implementación de este subprograma, buscará fortalecer el sistema de
+información de la Entidad, mediante la gestión para la implementación de un
+Sistema Integrado de Información, con el fin de centralizar la Información
+institucional y de interés en salud, se gestionaran recursos que permitan Integrar la
+información de las diferentes dependencias del DADIS, adecuando el centro de
+datos para dar soporte al sistema de información, mejorando la infraestructura
+tecnológica, mantenimiento y correcto funcionamiento de los equipos de
+cómputo del centro de datos y de las oficinas, así como adquisición de
+67
+
+
+## Página 68 (OCR Oficial Acuerdo 006 de 2016)
+
+fl > Concejo Distrital de Cartagena de Indias D. T. y C.
+Guré, ACUERDO No. OOG
+(3 JUN 2016)
+tecnología de punta y sobre todo el seguir manteniendo a las instituciones que
+generan estadísticas vitales, generándolas por medio de la WEB con cobertura y
+calidad.
+8.1.2.1.7 SUBPROGRAMA VIGILANCIA EN SALUD PÚBLICA
+Desde el Departamento Administrativo Distrital de Salud- DADIS, se realiza la
+recolección, análisis, interpretación y divulgación de datos específicos en salua,
+según lineamientos nacionales emitidos por el Instituto Nacional de Salud,
+- generando información dinámica de los eventos de interés en salud pública que
+¡Y afecten o puedan afectar la salud de la población del Distrito, con el fin de
+orientar acciones y toma de decisiones para prevención y control de
+enfermedades y factores de riesgo en salud, propendiendo por la protección de
+la salud individual y colectiva.
+Para tal efecto, en el distrito de Cartagena se fortalecerá la capacidad técnica y
+operativa del Sistema de Vigilancia en Salud Pública, que permitan definir áreas
+prioritarias de intervención en salud pública y orientar las acciones de prevención
+y control de los eventos bajo vigilancia en nuestra jurisdicción, así como la
+formulación, implementación y evaluación de los planes de respuesta a
+situaciones evidenciadas mediante este proceso.
+8.1.2.1.8 SUBPROGRAMA GESTIÓN DEL PLAN DE SALUD PÚBLICA
+Desde este subprograma se realizará la gestión integral de los programas,
+proyectos, intervenciones y estrategias establecidos en salud pública, incluyendo
+” el seguimiento y evaluación de los mismos, se fomentará la investigación en salud
+pública y la gestión de sistemas de información en salud que permita orientar
+acciones y toma de decisiones para el logro de resultados en salud en el marco
+de la gestión del conocimiento. Así mismo, se liderará la implementación y
+seguimiento del proceso de gestión de las intervenciones colectivas de
+promoción de la salud y gestión del riesgo, dirigidas a grupos poblacionales a lo
+largo del curso de la vida, acorde a los lineamientos establecidos en el orden
+nacional, así como el desarrollo de capacidades en el talento humano en
+actores del sistema general de seguridad social en salud, que contribuyan a que
+las políticas en salud se ejecuten de forma eficiente y sostenible.
+68
+
+
+## Página 69 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+An E
+aj AC 0. OOG
+== 13 se
+CAN z )
+Tabla 14
+UNEA BASE DE
+INDICADOR DE RESULTADO INDICADOR DE META RESULTADO RESPONSABLE
+RESULTADO
+Cobertura de Afiliación Régimen Aumentar la cobertura de |DADIS Dirección
+Subsidiado en Salud en el área afiliación al Régimen Subsidiado | Operativa de
+urbana en Salud en el órea urbana del | Aseguramiento
+Distito de Cartagena de Indias
+para alcanzar la universalización
+100%)
+Cobertura de afación al|52% Aumentar la cobertura de|DADIS Dirección
+Régimen Subsidiado en Salud en afilación al Régimen Subsidiado | Operativa de
+elérea rural en Salud en el área rural del | Aseguramiento
+U Distito de Cartagena de Indias
+para alcanzar la universalización
+100%).
+Tabla 15
+LINEA — BASE DE
+SUBPROGRAMA INOCADOR DE INDICADOR DE META PRODUCTO — RESPONSABLE
+PRODUCTO
+ASEGURAMIENTO — [Número de | 503921 Garantizar y | DADIS Dirección
+personas afiladas mantener la | Operativa de
+que se les debe continuidad de la | Aseguramiento
+garantizar la aliiación de
+continuidad de la 503.921 — personas
+afiación. que vienen
+afiladas del 2015.
+Número de | 32.218 Afiar a 14.000|DADIS Dirección
+personas con nuevas — personas | Operativa de
+nueva afiliación. clasificadas en los | Aseguramiento
+niveles 1 y 2 del
+SISBEN, validados y
+certificados por el
+xo DNP.
+Tabla 16
+LINEA BASE DE
+INDICADOR DE RESULTADO INDICADOR DE META RESULTADO RESPONSABLE
+RESULTADO
+Oportunidad en la atención Mejorar la oportunidad en | DADIS-Dirección
+por consulta extema medica la atención por consulta | Operativa de Prestación
+de medina y alla extema medico de|desServicios
+complejidad. mediana y alla
+complejidad a 10 Días.
+Oportunidad en la atención | 2 días Mantener la oportunidad | DADIS-Dirección
+por consulta extema de baja en la atención  por|Operaliva de Prestación
+complejidad. consulta extema de baja | de Servicios y Dirección
+complejidad en 2 Dias | Operativa de Vigilancia
+Control
+69
+
+
+## Página 70 (OCR Oficial Acuerdo 006 de 2016)
+
+TS
+AllA Concejo Distrital de Ci de Indias D. T. y C.
+E - 'oncejo Distrital de Cartagena de Indias D. T. y C.
+P— 8
+ut ACUERDO No. DOG
+- a
+RECO)
+LINEA BASE DE
+INDICADOR DE RESULTADO INDICADOR DE META RESULTADO RESPONSABLE
+RESULTADO
+Porcentaje de — usuarios | mp, Lograr que el 65% de la | DADIS-Dirección
+satistechos con la calidad de población se encuentren | Operativa de Prestación
+la atención en salud recibida sotistecho con lo calidad | de Servicios
+de los servicios de
+atención en salud
+Tabla 17
+LINEA BASE DE
+v SUBPROGRAMA — puosiorr DE INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO
+PRESTACION — Y|Número IPS de|25 Realizar anualmente la | DADIS-Dirección
+DESARROLLO — DE| mediana y alta auditoria de calidad | Operativa de
+LOS SERVICIOS DE | complejidad con en la prestación a 25 | Prestación de Servicios
+SALUD auditoria de IPS con servicios de | y Dirección Operativa
+calidad urgencia — hablitados | de Vigilancia y Control
+de mediana y alla
+complejidad,
+Número IPS. de Realizar la auditoria de | DADIS-Dirección
+boja complejidad calidad en lo| Operativa de
+con audiloria de prestación a 43 1PS con | Prestación de Servicios
+calidad sericios de urgencia | y Dirección Operativa
+habiítados de baja | de Vigllancia y Control
+compleidad
+Número EPS e IPS | 15 EPS Lograr que 15 EPS y 3| Dirección — Operativa
+reportando 1PS Públicas | de — Prestación de
+oportunamente — | 31PS anualmente _ reporten | Servicios y Vigilancia y
+indicadores de oportunamente — sus | Control- DADIS
+u calidad indicadores de calidad
+según lo establecido
+en la circular 030 de
+2006 y 056 de 2009
+Número de|142servicios Lograr que mínimo 142 | DADIS-Dirección
+servicios de salud servicios de salud | Operativa de
+hoblilados — que hoblilados conformen | Prestación de Servicios
+conforman la red la red integrada de
+de servicios. salud del Distito de
+Cartagena para
+atender Población
+Pobre No Asegurada.
+DESARROLLO Número de Realizar anuolmente | DADIS-Dirección
+INSTITUCIONAL encuestas de dos encuestas  de|Operaliva de
+sotistacción sotistacción de usuarios | Prestación de Servicios
+realizadas frente a la calidad de
+los — servicios de
+alención en salud
+recibido
+70
+
+
+## Página 71 (OCR Oficial Acuerdo 006 de 2016)
+
+O
+El e Concejo Distrital de Cartagena de Indias D. T. y C.
+— ,
+ft y ACUERDO No. OOG
+(434 2016 )
+LINEA — BASE
+113
+INDICADOR DE RESULTADO INDICADOR META RESULTADO RESPONSABLE
+DE
+RESULTADO
+Porcentaje de IPS visitadas Aumentar a 60% de  los[|Dirección Operativa
+manteniendo de forma permanente prestadores de servicios de salud | de Vigilancia y Control
+las condiciones de habilitación, que mantengan de forma |-DADIS
+controlando el riesgo asociado a la permanente las condiciones de
+prestación de los servicios de salva, habilitación, controlen el riesgo
+Ñ brindando seguridad a sus usuarios y asociado a la prestación de los
+y mejorando — continuamente la servicios de salud, brinden
+colidad en la atención en salud. seguridad a sus usuaos y
+mejoren continuamente la
+calidad en la atención en salud.
+Tabla 18
+ES
+SUBPROGRAMA O DÉ INDICADOR — META PRODUCTO RESPONSABLE
+DE PRODUCTO
+Promoción Vigilancia Y | Número de 339 realizar vigilancia y control | Dirección
+Control del Sistema | prestadores anual mente a 266|Operalva de
+Obligatorio de | visitados. prestadores de servicios de | Vigilancia y
+Garanfía de La salud Control - DADIS
+Calidad de la
+atención en salud Locó
+Dirección
+Número de Lograr que 1.064 prestadores | Operaliva — de
+prestadores de servicios de salud realicen | Vigilancia y
+autoevaluados. el proceso de autoevaluación | Control - DADIS
+de sus servicios de salud,
+Y
+Dirección
+, Verificar anualmente — los | Operativa de
+O os e condiciones de habilitación a | vigilancia y
+presion servicios 25 25 Instituciones Prestadoras de | Control - DADIS
+críticos verificados. Servicios de Solud que prestan
+servicios críficos
+Capacitar anualmente — 50 | Dirección
+Número de personas personas de 25 Instituciones | Operativa de
+capacitadas, — de Prestadoras de Servicios de| Vigilancia y
+Instituciones que Salud que prestan servicios | Control - DADIS
+prestan servicios críticos (Urgencias, servicios
+Críticos hospitalarios, quirúrgicos y de
+alta complejidad).
+71
+
+
+## Página 72 (OCR Oficial Acuerdo 006 de 2016)
+
+ES
+AN
+al Concejo Distrital de Cartagena de Indias D. T. y C.
+[E — kB
+Sá cas ACUERDO No. OOG
+—- (44,3 JUN 2016 )
+Tabla 19
+LINEA BASE DE INDICADOR
+INDICADOR DE RESULTADO DERESUAADO META RESULTADO RESPONSABLE
+Lograr que el 90% de
+Porcentaje de establecimientos establecimientos
+intervenidos con concepto farmacéuticos alcancen ecc
+favorable al cumplimiento de las 70% concepto favorable al | hoja rección
+condiciones sanitarias cumplimiento — de tas | Chos pupiog
+establecidas en la normatividad condiciones sonitañas
+vigente establecidas en la
+normatividad
+Tabla 20
+LINEA BASE DE
+SUBPROGRAMA INDICADOR — DÉ INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO OUT
+o Vigilar y controlar
+VIGILANCIA Y a iento anualmente con enfoque | DADIS-Dirección
+CONTROL DE ligados. de riesgo a  200|Operaliva de
+MEDICAMENTOS odos establecimientos Salud Pública
+farmacéuticos.
+Tabla 21
+INDICADOR DE LINEA BASE DE METARESULTADO RESPONSABLE
+RESULTADO INDICADOR DE
+RESULTADO
+Porcentaje de Mantener el 100% de
+Instituciones generando 100% cobertura en generación de | DADIS- Oficina Asesora
+NW estadísticas vitales por estadísticas vitales por medio de Planeación
+medio de la web. de la WEB.
+Tabla 22
+SUBPROGRAMA INDICADOR DE LINEA BASE DE META PRODUCTO RESPONSABLE
+PRODUCTO INDICADOR — DE
+PRODUCTO
+Número de Mantener que las 44 Ñ
+con y | Istituciones as instituciones generen A aa
+ONES generando estadísticas vilales, por ón
+estadísticas vitales. medio de la WEB.
+72
+
+
+## Página 73 (OCR Oficial Acuerdo 006 de 2016)
+
+A al E) Concejo Distrital de Cartagena de Indias D. T. y C.
+E —  É
+250087 ACUERDO No. COG
+D== r
+(13 JUN 2016 )
+Tabla 23
+LINEA BASE DE
+INDICADOR DE RESULTADO — INDICADOR DE META RESULTADO RESPONSABLE
+RESULTADO
+Porcentaje de eventos de Intervenir oportunamente el 100% delos | o A01s-Dirección
+Hi Vs | 00% eventos de interés en salud pública | CAoraa de salud
+O nofificados — según  Ineamientos | Pipe
+notificados e intervenidos. o onaies.
+Tabla 24
+LINEA BASE DE
+y) SUBPROGRAMA — PRODUCIO, DE INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO
+Número de  UPGD Intervenir a 164 UPGD en
+VIGILANCIA — EN intervenidas en desarrollo de capacidades | DADIS-Dirección
+o PRA | ineamientos nacionales en lineamientos nacionales | Operativa de
+de los Eventos de Interés de Notificación Obligatoria | Salud Pública
+en Salud Publica Inmediata y rutinaria
+Tabla 25
+INDICADOR DE RESULTADO LINEA BASE DE META RESULTADO RESPONSABLE
+INDICADOR DE
+RESULTADO
+% de aseguradoras implementando Lograr que el 100% de las|DADIS-Dirección
+modelo de atención en salud aseguradoras del Distilo  de|Operativa de
+basado en la estrategia de Cartagena tengan implementado | Salud Pública
+Atención — Primaria en Salud modelo de atención en salud basado
+implementado en el Distrito de en la estrategia de Atención Primaria
+Cartagena. en Salud.
+dl % de EAPB con programación de | 100% Lograr que el 100% de los
+actividades preventivas en salud oseguradoras del Distilo de
+[acciones de protección específica Cartagena tengan la programación
+y detección temprano]. de actividades preventivas en salud
+(acciones de protección específica y
+detección temprana
+Tabla 26
+LINEA BASE DE
+SUBPROGRAMA INDICADOR DE PRODUCTO INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO
+GESTION DEL|No. de EAPB con Implementar la Estrategia | DADIS-
+PLAN DE SALUD | capacidades Atención Primaria en Salud | Dirección
+PÚBLICA desarrolladas en Atención en 20 EAPB del Distrito de | Operativa de
+Primoria en Salud Cartagena Salud Pública
+73
+
+
+## Página 74 (OCR Oficial Acuerdo 006 de 2016)
+
+Eb Concejo Distrital de Cartagena de Indias D. T. y C.
+— op
+(E TÍ,
+tsncÉ ACUERDO No. OO
+is 4300 S
+(43 UN 2016 )
+LINEA BASE DE
+SUBPROGRAMA — INDICADOR DE PRODUCTO INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO
+No. De  EAPB con Lograr que 20 EAPB del
+capacidades Distito de Cartagena
+desarrolladas en el tengan la programación de
+diseño, programación y las actividades preventivas
+ejecución — de las en salud. (acciones de
+actividades preventivas protección específica y
+en solud (acciones de detección temprana)
+protección especifica y
+detección temprana
+
+NU
+
+8.1.2.2 PROGRAMA TRANSVERSAL GESTIÓN DIFERENCIAL DE POBLACIONES
+
+VULNERABLES
+
+El presente programa comprende el conjunto de acciones e intervenciones
+sectoriales y transectoriales desde la autoridad de salud, que buscan el
+reconocimiento de las diferencias sociales y en consecuencia, la aplicación de
+medidas en favor de aquellos grupos sociales tales como niños, niñas y
+adolescentes, grupos étnicos, personas en situación de discapacidad, adulto
+mayor, y personas víctimas del conflicto armado, en quienes esas diferencias
+significa desventaja o situación de mayor vulnerabilidad. Estas acciones están
+encaminadas a lograr mayor equidad en salud en el marco de los derechos de
+sujetos y colectivos.
+
+y) Por ello atenderemos los determinantes particulares que conllevan a superar esa
+inequidades desde la primera infancia, infancia y adolescencia; envejecimiento y
+vejez; salud y género; salud en poblaciones étnicas; discapacidad.
+Fomentaremos buenas prácticas de gestión y desarrollo de capacidades, que
+favorezcan la movilización social de todos los sectores, la participación de la
+sociedad civil y de los grupos organizados en los procesos de planeación y control
+social a la ejecución de las intervenciones y recursos, controlando los conflictos
+de intereses
+Buscaremos garantizar la promoción de entornos que respondan a la realización
+definida, en el marco de la Política Pública Nacional de la Estrategia “De Cero a
+Siempre", cuando establece, "Que todos los niños y niñas viven y disfrutan del
+nivel más alto posible de salud”, que reconozcan a las niñas, niños y adolescentes
+
+74
+
+
+## Página 75 (OCR Oficial Acuerdo 006 de 2016)
+
+A El ii: | Concejo Distrital de Cartagena de Indias D. T. y C.
+NA ACUERDO No. VO6>
+(413 JUN 2016 )
+como sujetos de derechos, al proveer atención humanizada que cumpla con los
+atributos de calidad, de acuerdo con las particularidades poblacionales y
+territoriales, y orientada a los resultados en salud y al acortamiento de brechas de
+inequidad en el territorio.
+8.1.2.2.1 SUBPROGRAMA GARANTÍA DE LOS DEBERES Y DERECHOS DE LOS
+GRUPOS POBLACIONALES VULNERABLES Y FORTALECIMIENTO DE LA
+PARTICIPACIÓN SOCIAL
+N El desarrollo de este Subprograma se ha ajustado a la necesidad de brindar a la
+comunidad, acciones que van en mejora de la salud, la vigilancia en salud
+pública, el manejo de factores de riesgo, el mejoramiento del ambiente, la
+vigilancia de los recursos, la participación social en el SGSSS y todas aquellas
+afines a la razón de ser del Plan de Salud de Intervenciones Colectivas del Distrito
+y el Plan Decenal de Salud Pública, como también, la posibilidad de la
+comunidad a participar en la construcción de los planes del sector, al igual que
+en la gestión, evaluación y control de los servicios.
+Así mismo, en el marco de la definición de la salud como un derecho
+fundamental, desde este subprograma, se realizará la gestión y seguimiento a las
+no conformidades expresadas por los usuarios del SGSSS, relacionadas con la
+atención en salud de tal manera que no se vulneren los derechos de las personas,
+contribuyendo de esta forma a la disminución de las barreras para alcanzar el
+Gu goce efectivo a la salud, mejora de las condiciones de vida de la población,
+enfocado en cero tolerancia de mortalidad evitable en el Distrito, persiguiendo
+lograr una mejor calidad en la prestación de servicios de salud, se fortalecerá la
+estrategia de la Defensoría del Paciente, generando una institucionalidad en el
+Departamento Administrativo Distrital de Salud. Este departamento deberá
+apoyarse, entre otros aspectos y en la medida de lo posible, en las
+recomendaciones que para tal efecto dé la Superintendencia Nacional de Salud.
+8.1.2.2.2 SUBPROGRAMA PROMOCIÓN Y PREVENCIÓN DE LA SALUD EN LA
+INFANCIA
+Este subprograma busca iniciar, reforzar y sostener los comportamientos y
+prácticas familiares, que son esenciales para el desarrollo físico y mental
+75
+
+
+## Página 76 (OCR Oficial Acuerdo 006 de 2016)
+
+Ea
+pS Concejo Distrital de Cartagena de Indias D. T. y C.
+és ACUERDO No. QOG
+Ss ER!
+
+(lactancia materna, alimentación complementaria, micronutrientes, desarrollo
+mental y social), para la prevención de enfermedades (vacunación, higiene,
+protección contra malaria, VIH/SIDA), para asegurar la atención adecuada en el
+hogar (alimentación durante enfermedades, tratamiento en el hogar, accidentes,
+abuso, participación del hombre), y búsqueda de ayuda fuera del hogar
+(identificación de enfermedades, uso de servicios adecuados, referencia y uso de
+medicamentos).
+Se alinea y armoniza con el Plan Decenal de Salud Pública 2012-2021, en la
+dimensión transversal para la gestión diferencial de poblaciones vulnerables, así
+
+Ús como con la estrategia “Hechos y Derechos” de la Procuraduría General de la
+Nación, y con la estrategia para la Atención Integral de la Primera Infancia De
+Cero a Siempre, poniendo en el centro a las mujeres gestantes, niñas y niños
+desde su nacimiento hasta los seis años de edad, y responde a lo descrito en la
+realización vive y disfruta del nivel más alto posible de salud, porque se enfoca en
+acciones asociadas al acogimiento y pautas de crianza por parte de cuidadores,
+crecimiento y desarrollo, promoción de la salud, de forma diferencial y
+especializada si es requerida, contemplando los entornos familiar, social, sanitario
+y educativo, contribuyendo al impacto de los siguientes indicadores: Tasa de
+mortalidad menor de un año; Tasa de mortalidad menor de 5 años, Tasa de
+enfermedad diarreica aguda EDA, Tasa de Enfermedad respiratoria aguda ERA.
+Los esfuerzos apuntan a mejorar capacidades permanentemente en cuarenta
+[40] instituciones prestadoras de salud, para que ofrezcan atención con calidad y
+
+NY humanización a niños y niñas, promoviendo trato preferente y reducción de
+inequidades; del mismo modo, motivar y movilizar a las comunidades para
+mejorar sus conocimientos y habilidades relacionadas con la salud y el desarrollo
+infantil, conformando cuarenta (40) redes comunitarias para la salud y bienestar
+de la infancia que impacten a 120 barrios y/o corregimientos en el Distrito de
+Cartagena.
+
+76
+
+
+## Página 77 (OCR Oficial Acuerdo 006 de 2016)
+
+TS
+2
+(El Concejo Distrital de Cartagena de Indias D. T. y C.
+Ent ACUERDO, No. DOG
+( 43 JUN 2016 )
+Tabla 27
+UNEA BASE DE
+INDICADOR DE RESULTADO INDICADOR DE META RESULTADO RESPONSABLE
+RESULTADO
+Porcentaje de EPS e IPS|40% Lograr aumentar al 100% de EPS e IPS | Oficina Participación
+Públicas que implementan la públicas, implementen la atención | Social y Atención al
+atención — diferencial con diferencial con poblaciones | Usuario del DADIS
+poblaciones vulnerables. vulnerables.
+Porcentaje de no|88s% Aumentar la gestión de respuesta al | Oficina Participación
+conformidades — notificadas 100% de las no confomidades|Social y Atención al
+relacionados con la atención relacionadas con la atención en salud | Usuario del DADIS
+en salud gestionados expresadas por los usuarios del $GS$5
+Y OLDADAS.
+Tabla 28
+LINEA BASE DE
+SUBPROGRAMA MOTO E INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO
+Capacitar como
+agentes de cambio a
+800 funcionarios de
+atención al usuario
+[actores] del Sistema
+Número de funcionarios General de Seguridad | Oficina Participación
+actores del $GS5$ 290 Social en Salva, en — | Socialy Atención al
+copacitados. Deberes y Derechos, | Usuario del DADIS
+atención prelerencial
+. con enfoque diferencial
+GARANTÍA DE y Políticas de los grupos
+LOS DEBERES Y poblacionales
+DERECHOS DE Vulnerables.
+Ns LOS GRUPOS -
+IASIEN AE Realizar osistencia
+AUIDIERABLES Y | Nomero de entidades técnica a 160 entidades
+TALCA del SGSSS (EPS, IPS, del Sistema General de
+PA. | Centros Días, ESE) con Seguridad Social en
+no planes de Salud, (EPS, IPS, Centros
+copacitacionesen | Días, ESE) en función de
+Deberes y Derechos en la implementación y . | Oficina Participación
+salud, veríficación de la 2 verificación de planes de | Social y Atención al
+Implementación de capacitaciones en — | Usuario del DADIS
+Procesos y protocolos Deberes y Derechos en
+de atención prioritaria y solud a usuarios y
+diiterencial a Grupos Procesos y protocolos de
+Poblacionales atención prioritaria y
+Vulnerables. diferencial a Grupos de
+Poblaciones Vulnerables.
+77
+
+
+## Página 78 (OCR Oficial Acuerdo 006 de 2016)
+
+(E Concejo Distrital de Cartagena de Indias D. T. y C.
+E— E
+Er És ACUERDO No. V0OG6
+> í
+( [13 JUN 2016 )
+LINEA BASE DE
+SUBPROGRAMA TO INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO
+capacitadas en de sus Deberes Oficina Participación
+promoción social, Derechos ensalud a | Social y Atención al
+deberes y derechos en 25.000 personas del Usuario del DADIS
+Lo Distrito de Cartagena.
+loc Conformar y/o renovar
+O ers cien (100) Asociaciones | Oficina Participación
+PS conformadas y/o de Usuarios en salud en | Social y Atención al
+Y) as Y EPS e IPS en el Distrito de | Usuario del DADIS
+Cartagena.
+Responder a todas las
+Número de peticiones, peticiones, quejas y | Oficina Participación
+quejas y reclamos reclamos relacionadas Social y Atención al
+atendidas con la atención en salud Usuario del DADIS
+notificadas al DADIS
+Tabla 29
+INDICADOR DE | LINEA BASE DE INDICADOR | |
+RESULTADO. DE RESULTADO. | META RESULTADO | RESPONSABLE
+: : I
+TASA DE ¡ TASA MINFANTIL (DADIS- | Disminuir la taso de mortalidad | DADIS-Dirección
+MORTALIDAD — ¡RUAF) 2014: 10,8 X1000 NV | infantil menos de 108 pormil. | — Operativa de Salud
+INFANTIL 1 | ¡nacidos vivos | Pública
+1] | i
+NW-
+Tabla 30
+INDICADOR DI INEA BASE DE
+SUBPROGRAMA DO DE INDICADOR DE RESPONSABLE
+AS PRODUCIO META PRODUCTO
+N* de IPS con s
+capacidades Desarrollar capacidades | Os otección
+desarolladas en en estrategias de salud | POCO
+ges perativa de
+estrategias de salud infantil a 40 instituciones Salud Públi
+PROMOCIÓN Y infant prestadoras de salud, blica
+PREVENCIÓN DE LA
+SALUD ENLA
+INFANCIA N? redes para la salud y Fortalecer 40 redes
+bienestar de la infancia comunitarias parala | DADIS-Dirección
+enel distrito de salud y bienestar de la | Operativa de
+Cartagena fortalecidas infancia en el distrito de | Salud Pública
+Cartagena.
+78
+
+
+## Página 79 (OCR Oficial Acuerdo 006 de 2016)
+
+Fs le E 9 , . . .
+> Concejo Distrital de Cartagena de Indias D. T. y C.
+B—
+S ) ACUERDO No. DOGS
+(13 JUN 2016 )
+ADO LINEA BASE DE
+SUBPROGRAMA INDICADOR DE INDICADOR DE RESPONSABLE
+PRODUCT PRODUCTO META PRODUCTO
+ir te % JA
+Niños menores de un aras o, | DADIS- Dirección
+año con control de 30000 un año tengan control Operativa de
+crecimiento y de crecimiento y Prestación de
+desarrollo. desarrollo Servicios
+Realizar anualmente
+IPS con servicios de monitoreo y evaluación
+atención infanti cdo o | DADIS- Dirección
+monitoreados y nmanación en so | Operativa de
+evaluadas para la estaciones de salva | Prestación de
+9] atención en salud con con servicios de Servicios
+colidad y humanización atención malemo -
+infantil
+Mantener la afiliación Direcció
+Niños menores de un 12341 anualalsGsss de — | arosao
+año afiliados al $GSS Ñ mínimo 12.341 niños Aseguramiento
+menores de un año.
+8.1.2.3 PROGRAMA SALUD AMBIENTAL
+Se propenderá por la búsqueda de un ambiente sano e integrado en las
+poblaciones de las diferentes localidades del Distrito, urbano y rural, mediante el
+desarrollo de acciones relacionadas con el ambiente, que favorezcan y
+promuevan la calidad de vida y salud de la población; y acciones relacionadas
+con el cambio climático, con la calidad del agua para consumo humano, con
+entornos saludables y manejo de residuos.
+y
+Se buscará desde este programa que se intervengan positivamente los
+determinantes sanitarios y ambientales de la salud, mediante la gestión
+intersectorial y participación comunitaria y social, con prioridad en la calidad del
+Agua para consumo humano disponible para la población del Distrito, agua de
+Uso recreacional, la calidad del aire, la gestión de los residuos sólidos y líquidos,
+con enfoque diferencial, contribuyendo además al mejoramiento de las
+condiciones de vida de la población cartagenera mediante la prevención,
+vigilancia y control sanitario.
+Teniendo en cuenta las características propias del Distrito, se fortalecerá la
+vigilancia y control sanitario en terminales portuarios y puntos de entrada, así
+como en establecimientos de interés sanitario abiertos al público.
+79
+
+
+## Página 80 (OCR Oficial Acuerdo 006 de 2016)
+
+j + A Concejo Distrital de Cartagena de Indias D. T. y C.
+réÉ ACUERDO No. VOS
+ss (4 3 JUN 2016 )
+
+La salud ambiental tiene aproximadamente 20 áreas de actuación, dentro de las
+
+que podemos mencionar el agua para consumo humano, aguas residuales, aire
+
+interior y exterior, desechos sólidos peligrosos y no peligrosos, emergencias
+
+químicas, excretas, plaguicidas, ruidos, sanidad de puertos, vectores, zoonosis,
+
+entre otras. La actuación local sobre estas áreas se priorizarán, de acuerdo a los
+
+perfiles de morbimortalidad territorial.
+
+Los mayores esfuerzos estarán orientados a atender áreas como: la vigilancia y el
+
+control de enfermedades zoonóticas, las de transmisión hídrica, las de
+
+saneamiento de puertos, aeropuertos y fronteras y establecimiento de alto riesgo
+No. sanitario, implementando estrategias de monitoreo e intervención para evitar o
+
+disminuir el riesgo de enfermar o morir por acción de los factores de riesgos
+
+ambientales.
+
+8.1.2,3.1 SUBPROGRAMA VIGILANCIA Y CONTROL DE ZOONOSIS
+
+Se Implementarán intervenciones sectoriales, transectoriales y comunitarias,
+
+dirigidas a afectar los determinantes sociales así como a prevenir, controlar y
+
+minimizar los riesgos que favorecerán la aparición de eventos que se
+
+caracterizan, por endemias focalizadas disminuyendo la carga de las
+
+enfermedades transmitidas por animales vertebrados en el Distrito.
+
+Se desarrollarán estrategias de gestión integradas de las zoonosis de interés en
+
+salud pública en el Distrito, vacunación en animales susceptibles para interrumpir
+ad la circulación viral en los reservorios y la transmisión a otras especies incluyendo al
+
+humano, y la atención integral de los casos de agresión animal en humanos que
+
+se presenten en el territorio.
+
+Se buscará impactar positivamente la incidencia de estas patologías a través de
+
+campañas de información, educación y comunicación en salud, así como
+
+acciones de promoción en salud, relacionadas con la tenencia responsable de
+
+mascotas.
+
+80
+
+
+## Página 81 (OCR Oficial Acuerdo 006 de 2016)
+
+E MA”, Concejo Distrital de Cartagena de Indias D. T. y C.
+¿Sia
+EA ACUERDO No. OOG
+C-.13 JUN 2016 )
+8.1.2.3,2 SUBPROGRAMA VIGILANCIA Y CONTROL DEL AGUA PARA
+CONSUMO HUMANO
+El agua potable es considerada un alimento de alto riesgo epidemiológico, por lo
+tanto su vigilancia y control es estrictamente necesaria, para así evitar o disminuir
+la probabilidad de que a través de ella se puedan vehiculizar algunos agentes
+patógenos hacia los consumidores.
+Se continuarán con los monitoreos periódicos que permiten tener el conocimiento
+y determinar la calidad físico química y microbiológica del agua para consumo
+Ni humano, que se suministra y consume en Cartagena.
+También se realizará la vigilancia y el control sanitario al agua de contacto
+primario para diversión, es decir, las de las piscinas, en la cual se realizara,
+inspección higiénico-sanitaria y toma de muestras aleatorias del agua para
+verificar su calidad físico químico y microbiológico.
+8.1.2.3.3 SUBPROGRAMA SEGURIDAD SANITARIA DEL AMBIENTE
+En este componente se verificará el cumplimiento de las condiciones higiénico-
+sanitarias locativas y funcionales de los establecimientos abiertos al público, como
+Puntos de entrada (Puertos Marítimos o terrestres y aeropuertos de carácter
+Internacional), bares, discotecas, instituciones educativas, hogares de bienestar
+familiar, así como factores de riesgos relacionados con la calidad del aire o
+Í contaminación ambiental y atmosférica, por medio de visitas periódicas
+priorizando su nivel de riesgo, con el recurso humano profesional o técnico según
+los casos y actividades.
+Con lo anterior, se busca identificar oportunamente los factores de riesgos, con el
+propósito de intervenirlos de manera inmediata y así disminuir la probabilidad de
+deterioro del estado de salud, tanto individual como colectiva de las personas
+que acuden a dichos sitios.
+81
+
+
+## Página 82 (OCR Oficial Acuerdo 006 de 2016)
+
+A . os .
+El . Concejo Distrital de Cartagena de Indias D. T. yC
+(Sl
+Er ACUERDO No. OOG
+> Nos
+C- 13 JUN 2016 )
+Tabla 31
+LINEA BASE DE INDICADOR :S
+RESPONSABLE
+INDICADOR DE RESULTADO DE RESULTADO META RESULTADO
+Índice de Riesgo de Calidad Mantener el Índice de Riesgo de | DADIS-Dirección
+del Agua para consumos <o=5% Calidad del Agua (IRCA] igual o Operativa de
+Humano. inferior al 5% Salud Pública
+Índice de Riesgo por Mantener Índice de Riesgo por | DADIS-Dirección
+Abastecimiento de Agua 25.1 - 40.0% Abastecimiento de Agua Operativa de
+Municipal IRABA] igual o inferior al 25% | Salud Pública
+irme Lograr que el 80% de
+Cobertura de 50% de Establecimientos y 6 A 5
+dl esjoblecimientos abiertos al | e Interés Sanitarios con | ¿SInvIecimientos de Interés. A oección
+Público de Interés Sanitarios | — concepto sanitario alcancen concepto sonia. | Ramis
+Vigilados y Controlados favorable lava
+Tasa de mortalidad porrabia Mantener la Mortalidad por. | PADSDracción
+humana rabia humano en Cero (0) Sola PUDO
+Tabla 32
+LUNEA BASE DE
+SUBPROGRAMA INDICADOR DE INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO
+PRODUCTO
+VIGILANCIA Y Número de muestras a
+CONTROL DE de agua para ar lee DADIS-Dirección
+CALIDAD DEL AGUA | consumo humano | 500 Muestras-2015 pai Operativa de Salud
+PARA CONSUMO tomadas y estos de agua Pública
+HUMANO. Onalizadas Potable.
+Nal Tomar y analizar
+VIGILANCIA Y — | Número de muestras Side
+CONTROL DE de agua para as. | DADIS-Dirección
+CALIDAD DEL AGUA | consumo humano so qe ave anvatmente | sraliva de Salva
+PARA CONSUMO tomadas y en Coregimientos y Pública
+HUMANO analizadas Veredas[
+Carrotanques y
+Bongos)
+E Número de Visitar e Inspeccionar
+tablecimiento s de 8000
+SEGURIDAD nee miento 4.800 DADIS- ló
+terés sanitarios s Establecimiento: Dirección
+SANITARIA DEL a pr a - ¡entos ñ
+INV abiertos al público | ES os abiertos al público DAS de salud
+_ visitados e de interés sanitario uolica
+inspeccionados durante el año
+VIGILANCIA Y Numero de Dosis de Aplicar 143.850 Dosis DADIS-Dir Ó
+; , . irección
+nOs eE | Vacuna contra rabia |, pazasaDOS  l  ntarabia Animal | Opera ds ova
+200NOSIs animal aplicadas anualmente Pública
+82
+
+
+## Página 83 (OCR Oficial Acuerdo 006 de 2016)
+
+os
+El *. Y Concejo Distrital de Cartagena de Indias D. T. y C.
+PF
+or ACUERDO No. OD6
+=> a
+(43 JUN 2016 )
+8.1.2.4 PROGRAMA VIDA SALUDABLE Y CONDICIONES NO TRANSMISIBLES
+Promoveremos el bienestar y el disfrute de una vida sana en las diferentes etapas
+del curso de vida, promoviendo modos, condiciones y estilos de vida saludables,
+en los espacios cotidianos de las personas, familias y comunidades, así como el
+acceso a una atención integrada de condiciones no transmisibles con enfoque
+diferencial a través de políticas e intervenciones sectoriales, transectoriales y
+comunitarias, que eleve como prioridad la promoción de la salud, el control de
+las Enfermedades No Transmisibles ENT y las alteraciones de la salud
+No Se generarán condiciones y se fortalecerá la capacidad de gestión de los
+servicios, para mejorar la accesibilidad y la atención integral e integrada de las
+Enfermedades No Transmisibles ENT y las alteraciones de la salud bucal, visual y
+auditiva, reduciendo brechas en la morbilidad, mortalidad, discapacidad,
+eventos evitables y en los factores de riesgo modificables.
+8.1.2.4.1 SUBPROGRAMA PREVENCIÓN Y CONTROL DE ENFERMEDADES
+CRONICAS NO TRANSMISIBLES
+Se trabajara en la construcción de Una agenda transectorial que favorezca una
+vida saludable, desarrollando políticas públicas saludables que sensibilicen y
+produzcan cambios comportamentales de autocuidado y educación en la
+población del Distrito de Cartagena, políticas o acciones que así mismo
+garantizaran infraestructuras, bienes y servicios saludables de manera diferencial
+Nu e incluyente.
+En la situación de salud de un determinado grupo de población, se buscará
+desarrollar acciones encaminadas al fortalecimiento de la movilización,
+construcción de alianzas y desarrollo de redes de apoyo para el
+empoderamiento y la corresponsabilidad social, por una cultura que promueva y
+proteja la salud.
+Un alto porcentaje de ENT puede prevenirse mediante la reducción de los
+factores de riesgo comportamentales más importantes: el tabaquismo, el
+sedentarismo, el uso nocivo del alcohol y las dietas malsanas; por ende, fomentar
+Una cultura saludable basada en la educación y promoción de la salud y
+prevención de la enfermedad son elementos vitales, para que los pacientes
+83
+
+
+## Página 84 (OCR Oficial Acuerdo 006 de 2016)
+
+El me Concejo Distrital de Cartagena de Indias D. T. y C.
+[— E
+«rr ts ACUERDO No. DO 6
+Í (43 JUN 2016 )
+disminuyan la exposición a factores de riesgo y sigan indicaciones en cuanto a
+temas nutricionales y estilos de vida saludable, con el fin de ayudar a prevenirlas.
+Esta cultura en salud, es de tipo intersectorial y multidisciplinaria, la cual
+pretenderá mejorar el compromiso de las comunidades y en la adherencia en
+los planes de mejoramiento de estilos de vida que se recomienden.
+Se mejorará en el Distrito la capacidad de respuesta institucional del Sistema
+General de Seguridad Social en Salud SGSSS, que fortalezca la prestación y
+gestión de servicios de salud individuales y colectivos en los territorios, así como su
+articulación con servicios socio-sanitarios para la prevención, control, intervención
+dl y atención integral de las ENT, en los servicios de salud y otros servicios sociales, a
+través de la gestión del riesgo y la intervención de los Determinantes Sociales de
+la Salud, incluidos los factores de riesgo y el daño acumulado para disminuir la
+carga de enfermedad evitable y discapacidad de los individuos, familias y
+comunidades de acuerdo con las realidades territoriales.
+8.1.2.4.2 SUBPROGRAMA PREVENCIÓN Y CONTROL DE LAS ALTERACIONES DE
+LA SALUD ORAL, VISUAL Y AUDITIVA
+La prevención y control de salud bucal, visual y auditiva, se pueden asumir por
+medio de programas de educación con el fin de generar cambios positivos en las
+condiciones de higiene oral a nivel de las instituciones educativas, Centro De
+Desarrollo Infantil- CDI y Jardines infantiles, ya que este es el lugar más adecuado
+Y para la enseñanza y el refuerzo de hábitos saludables desde los primeros años de
+vida, lo cual es la base de una excelente salud, a medida que se van dando las
+primeras etapas de crecimiento, por lo tanto la educación en salud debe partir
+desde la infancia.
+Mejoraremos en el Distrito, la capacidad de respuesta institucional del Sistema
+General de Seguridad Social en Salud SGSSS que fortalezca la prestación y
+gestión de servicios de salud individuales y colectivos en los territorios, así como su
+articulación con servicios socio-sanitarios para la prevención, control, intervención
+y atención integral de las alteraciones de la salud bucal, visual y auditiva en los
+servicios de salud y otros servicios sociales, a través de la gestión del riesgo y la
+intervención de los Determinantes Sociales de la Salud, incluidos los factores de
+riesgo y el daño acumulado para disminuir la carga de enfermedad evitable y
+84
+
+
+## Página 85 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. VOS
+discapacidad de los individuos, familias y comunidades de acuerdo con las
+realidades territoriales.
+Tabla 33
+LINEA BASE DE
+MSUADO INDICADOR DE META RESULTADO RESPONSABLE
+RESULTADO
+Porcentaje de Aumentar la supervivencia de los menores de DADIS-Dirección
+supervivencia por 41% 18 años con leucemia pediátrica por encima | Operativa de Salud
+cáncer infantil del 41% Pública
+jj )ADIS-Dirección
+Porcentaje de Lograr que el 65% de las personas se D
+GM progreso de mantengan sin enfermedad renal crónico o en | OPerativa de Salud
+enfermedad renal estadio 1 y 2 a pesar de tener enfermedades Pública
+crónico precursoros (Hipertensión y diabetes)
+Tabla 34
+LINEA BASE DE
+SUBPROGRAMA MISADE INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO
+Realizar desarrollo de
+capacidades a los
+profesionales de la salud
+Número de IPS y de 44 1PS Y 20 EAPB del |  DADIS-Dirección
+EAPB con asesoría y 77 distrito de Cartagena en Operativa de Salud
+compañamiento el componente de Pública
+diagnóstico temprano
+delas leucemias y
+linfomas pediátricos.
+Ny o
+Número de Desarrollar capacidades
+Personas A 400 personas miembros DADIS-Dirección
+PREVENCION Y — | entrenados para de redes multiplicadoras | Operativa de Salva
+CONTROL DE red de en detección temprana Pública
+ENFERMEDADES multiplicadores de cáncer infantil
+CRONICAS NO
+TRANSMISIBLES — | Número de historias Ñ Ñ
+clínicas de niños O A rección
+diagnosticados con a atv de
+cáncer infantil.con inanejo de cáncer Prestación de
+acciones de iniontl alos 56 niños Servicios
+seguimiento iognosticados
+Número de EAPB Realizar seguimiento a
+intervenidas con las 20 EAPB para el
+acciones de cumplimiento de la ley DADIS-Dirección
+seguimiento en de cáncer infantil entos | “Operativa de
+Cumplimiento. de menores de 18 años Aseguramiento
+ley de cáncer diagnosticados con
+infantil cáncer infantil
+85
+
+
+## Página 86 (OCR Oficial Acuerdo 006 de 2016)
+
+Te
+¡JE Concejo Distrital de Cartagena de Indias D. T. y C.
+— E
+SY ACUERDO No. VO6
+ST
+(43 JUN 2016 )
+LINEA BASE DE
+INDICADOR DE PRODUCTO RESPONSABLE
+SUBPROGRAMA INDICADOR DE META
+PRODUCIO PRODUCTO
+Realizar desarrollo de
+capacidades en ECNT al
+recurso humano de
+—_$1_ IPS y 20 EAPB del
+distito de Cartagena
+sobre la detección
+Numero de IPS Y temprana de DADIS-Dirección
+EAPB con asesoría y no oleraciones dela | Operativa de Salva
+- “acompañamiento población adolescente, ei
+en ECNT adulto joven y del adulto
+xs mayor yla
+implementación de
+guias de práctica en
+cuanto al componente
+preventivo de las
+patologías crónicas.
+Realizar anualmente
+Número de IPS Y seguimiento al DADIS-Dirección
+EAPB con acciones so cumplimiento de las Operativa de
+de seguimiento de normas técnicas de los Prestación de
+los programas ECNT programas de ECNT a 20 Servicios
+EAPB y 20 IPS
+Tabla 35
+LINEA BASE DE
+PENAS DE INDICADOR DE META RESULTADO RESPONSABLE
+RESULTADO.
+Nu Índice de caries dental - | 2.3 Mantener el logro del|Salud Pública DADIS-Dirección
+coP índice de caries dentales | Operativa de Salud Pública
+(COP) menor a 2.3 en
+menores de doce (12)
+años
+Porcentaje de niños del | so Garantizar la atención al | Salud Pública DADIS-Dirección
+Distito de Cartagena 100% de los defectos | Operativa de Salud Pública
+entre 2 y 8 años refractivos en niños entre
+identificados con 2 y 8 años identificados.
+defectos refractivos y
+tratados
+Porcentaje de niños del | $D Garantizar la atención al | Salud Pública DADIS-Dirección
+Distrito de Cartagena de 100% de los niños de alto | Operativa de Salud Pública
+primera infancia fiesgo de 0 a 12 años
+identificados con identificados con
+hipoacusia y tratados hipoacusia
+86
+
+
+## Página 87 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. VCO6
+In
+(413 JUN 2016 )
+Tabla 36
+LINEA BASE DE
+SUBPROGRAMA MA SADOR DE INDICADOR DE META PRODUCTO — RESPONSABLE
+PRODUCTO
+Realizar desarrollo
+Numero de IPS Y EPS con e copacidades [salud Pública
+desarollo de o e so ips y 200s, | DADIS-Dirección
+capacidades sobre Geroisióo de. | Operativa de
+salud oral Cartagena sobre Salud Pública
+salud Oral
+Realizar desarrollo
+ES Numero de IPS Y EPS con des Salud Pública
+desarrollo de deso lps y202pS | DADIS-Dirección
+capacidades sobre el Disilo de Operativa de
+salud visual Solud Pública
+Cartagena sobre
+salud visual
+Realizar
+Nómero de niños go | alud Pública
+identificados con >) Bonos 9 | DADIS-Dirección
+acciones de identiécados con | OPeraliva de
+seguimiento electos Salud Pública
+PREVENCIÓN Y refractivos
+CONTROL DE LAS
+ALTERACIONES DE SALUD li
+ORAL, VISUAL Y AUDITIVA Pa desrao
+Porcentoje de IPS Y EPS artecuño numano | Salud Pública
+con desarrollo de de 80 1PS y 20 EPS DADIS-Dirección
+capacidades sobre delotode | Operativa de
+salud auditiva Cartagena sobre Salud Pública
+salud auditiva.
+Realizar
+seguimiento al
+O Sen cumplimiento del | Salud Pública
+pr protocolo de — | DADIS-Dirección
+A AO lv atención en salud | Operativa de
+peo auditiva a 80 | Salud Pública
+. prestadores de
+salud
+Número de niños é cor
+identificados con Fealzor Salva Público
+pea seguimiento a 335 | DADIS-Dirección
+rara niños entre 0 y 12 | Operativa de
+aro ren años identificados | Salud Pública
+seguimiento realizadas con problemas de
+hipoacusia
+87
+
+
+## Página 88 (OCR Oficial Acuerdo 006 de 2016)
+
+TA
+il .- Concejo Distrital de Cartagena de Indias D. T. y C.
+< 4 ACUERDO No. OOG
+(13 JUN 2016)
+8.1.2.5 PROGRAMA CONVIVENCIA SOCIAL Y SALUD MENTAL
+La salud mental es un estado dinámico que se expresa en la vida cotidiana a
+través del comportamiento y la interacción, de manera tal que permite a los
+sujetos individuales y colectivos desplegar sus recursos emocionales, cognitivos y
+mentales para transitar por la vida cotidiana, trabajar, establecer relaciones
+significativas y contribuir a la comunidad (Ley 1616 de 2013).
+La convivencia es entendida como el desarrollo y sostenimiento de relaciones
+- interpersonales basadas en el respeto, la equidaa, la solidaridad, el sentido de
+o pertenencia, el reconocimiento de la diferencia, la participación para la
+construcción de acuerdos y el ejercicio de los derechos humanos para el logro
+del bien común, el desarrollo humano y social.
+Se busca generar espacios de construcción, participación y acción transectorial y
+comunitaria que mediante la promoción de la salud mental, la convivencia social
+, la transformación de problemas, trastornos prevalentes en salud mental y la
+intervención sobre las diferentes formas de la violencia, factores de riesgo y
+capacidad de respuesta, contribuyan al bienestar al desarrollo humano y social
+en todas las etapas del ciclo de vida, con equidad y enfoque diferencial, en los
+territorios cotidianos.
+8.1.2.5.1 SUPROGRAMA SALUD MENTAL
+Ñs Se busca contribuir para que la atención en salud mental en el Distrito de
+Cartagena se dé temprana y oportunamente, proveyendo oportunidades que
+permitan el despliegue óptimo de recursos individuales y colectivos para el
+disfrute de la vida cotidiana, estableciendo relaciones interpersonales basadas en
+el respeto, la solidaridad y el ejercicio de los derechos humanos para el logro del
+bien común, el desarrollo humano y social, fomentando la cultura del
+autocuidado y la corresponsabilidad social en torno a la salud mental e
+interviniendo de manera positiva los determinantes psicosociales de la salud y la
+calidad de vida de la población víctima del conflicto, mediante procesos de
+acción transectorial.
+Prevenir y atender de manera integral, aquellos estados temporales o
+permanentes identificables por el individuo y/o por otras personas en los que las
+88
+
+
+## Página 89 (OCR Oficial Acuerdo 006 de 2016)
+
+(El Concejo Distrital de Cartagena de Indias D. T. y C.
+P— El
+== j ACUERDO No. OD6
+! IN
+C-4.3 JUN 2016 )
+emociones, pensamientos, percepciones o comportamientos, afectan o ponen
+en riesgo el estado de bienestar o la relación consigo mismo, con la comunidad y
+el entorno, y alteran las habilidades de las personas para identificar sus propias
+capacidades, afrontar las tensiones normales de la vida, trabajar de forma
+productiva y fructífera y contribuir a su comunidad. Igualmente incluye la
+prevención de la violencia en entornos familiares, escolares, comunitarios y
+laborales y la atención del impacto de las diferentes formas de violencia sobre la
+salud mental, se fortalecerá la gestión institucional y comunitaria para garantizar
+la atención integral de los problemas y trastornos mentales y los eventos
+só asociados, incluyendo el consumo de sustancias psicoactivas, epilepsia, violencia
+escolar entre pares, suicidio y otros eventos emergentes, en población general y
+poblaciones e individuos en riesgos específicos.
+Tabla 37
+INDICADOR DE LINEA BASE DE INDICADOR DE
+RESULTADO RESULTADO. META RESULTADO RESPONSABLE
+Mantener la Tasa de
+Tasa de mortalidad por 5 mortalidad por suicidio por eli
+suicidio 3.8 por 100.000 habitantes debajo de 3.3 por 100.000 Salud Pública DADIS
+habitantes
+Vigilar que el 100% de las
+instituciones de atención a
+Porcentaje de la drogadicción
+instituciones de atención hablitados apliquen er
+ala drogadicción so protocolos de tratamiento |. S0Ivd Pública DADIS
+vigiladas de consumo de sustancias
+psicoactivas a los casos
+notificados
+xs
+Tabla 38
+UNEA BASE DE
+IS CO e INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO
+Número de personas .e Ñ
+con intentos de suicidios anios de co | Salud Pública
+SALUD MENTAL | con seguimiento y 130 casos por intentos ¡cidos alud Publica
+atención en salva notificados al Sistema de Vigilancia DADIS
+mental. Epidemiológica del DADIS
+89
+
+
+## Página 90 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. OOG
+IN
+(43 JUN 2016 )
+LINEA BASE DE
+SUBPROGRAMA Moor INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO
+o He Desarrollar capacidades en
+nO e ces promoción de la salud mental en
+das O 94 entidades (72 Instituciones — | Salud Pública
+promoción de la salud Prestadoras de Servicios de Salud DADIS
+mental 22 Empresas Administradoras de
+Planes de Beneficios )
+Formular e implementar el Plan
+Plan formulado e distitol de reducción de consumo | Salud Pública
+Ed implementado. de SPA conforme a los lineamientos DADIS
+definidos por el MSPS
+Vigilar anualmente la aplicación de
+Número de centros de protocolos y tratamientos at
+atención ala Consumo de sustancias Solud Pública
+drogadicción psicoactivas en cinco (5) centros DADIS
+habilitados en el Distrito de atención a la drogadicción
+habilitados en el Distrito
+8.1.2.6 PROGRAMA NUTRICIÓN E INOCUIDAD DE ALIMENTOS
+Desde este programa, como componentes de la seguridad alimentaria y
+nutricional, se busca a través de la implementación, seguimiento y evaluación de
+acciones transectoriales, garantizar el derecho a la alimentación sana con
+equidad, mediante la reducción y prevención de la malnutrición, el control de los
+riesgos sanitarios y fitosanitarios de los alimentos y la gestión transectorial de la
+buy" seguridad alimentaria y nutricional con perspectiva territorial, logrando
+incrementar a 3.0 la duración media de la lactancia materna en menores de 6
+meses y hasta 2 años de edad con alimentación complementaria, como también
+mantener por debajo de 5.4 % la desnutrición global (bajo peso para la edad), en
+menores de 5 años y manteniendo en menos de 8.23% la proporción de bajo
+peso al nacer.
+8.1.2.6.1 SUBPROGRAMA NUTRICION
+Se realizarán acciones que busquen fortalecer la nutrición en la población infantil
+del Distrito, mediante la implementación de la estrategia Instituciones Amigas de
+la Mujer y la Infancia, IAMI, en una (1) institución prestadora de servicio por año.
+90
+
+
+## Página 91 (OCR Oficial Acuerdo 006 de 2016)
+
+El -> la Concejo Distrital de Cartagena de Indias D. T. y C.
+
+A— E
+
+as ,, ACUERDO No. VOG
+
+C4.3 Jin 2016 )
+
+Las Instituciones Amigas de la Mujer y la Infancia IAMI, son instituciones que
+apoyan la lactancia materna, que ofrecen atención integral a las madres, niñas y
+niños y que mejoran la calidad de la atención que se les presta. Esta estrategia
+consta de 10 pasos y dedicaremos especial atención fomentando el paso
+número 4 de ésta, que es la atención del trabajo de parto y el parto con calidad
+y calidez, en compañía de una persona significativa para la madre, dentro de un
+ambiente de respeto y libre de intervenciones profesionales innecesarias,
+favoreciendo el contacto piel a piel y el inicio temprano de la lactancia materna
+dentro de la media hora siguiente al parto.
+
+La selección adecuada, suficiente y completa de los alimentos y la práctica de
+
+hábitos alimentarios saludables que le permitan mantener un estado de salud y
+nutrición adecuado, incluye factores determinantes del medio ambiente,
+entornos y estilos de vida, situación nutricional de la población, disponibilidad,
+calidad y acceso a los servicios de salud, agua potable y saneamiento básico,
+bajo este panorama lograremos disminuir el bajo peso al nacer, y control de
+pesos adecuado para menores de 5 años.
+Se promocionará el consumo de alimentos saludables en las tiendas escolares,
+mediante el desarrollo de guías alimentarias para padres de familia y cuidadores
+de niños y niñas en CDI y hogares infantiles, como también a estudiantes,
+docentes y padres de familias de Instituciones educativas del Distrito.
+
+Y 8.1.2.6.2 SUBPROGRAMA VIGILANCIA Y CONTROL DE ALIMENTOS
+Contribuir a la seguridad alimentaria de la población, fortaleciendo las acciones
+de inspección, vigilancia y control en alimentos, enfocados en la disminución del
+riesgo de enfermar por la ingesta de los mismos en el Distrito. Nos apoyaremos en
+un marco regulatorio nacional que facilita y promueva la coordinación con todos
+los sectores involucrados, de tal forma que el sistema de inspección, vigilancia y
+control de los alimentos, sea más preventivo e integrado, enmarcado en el
+modelo de inspección, vigilancia y control establecido a nivel nacional acorde a
+la norma sanitaria vigente.
+
+91
+
+
+## Página 92 (OCR Oficial Acuerdo 006 de 2016)
+
+Oy
+El Concejo Distrital de Cartagena de Indias D. T. y C.
+¿bn
+<= 00 ACUERDO No.
+A ( mm o
+Tabla 39
+LINEA BASE DE
+INDICADOR DE RESULTADO INDICADOR DE META RESULTADO RESPONSABLE
+RESULTADO
+Duración de la lactancia adela | Dirección Operativa
+'matema exclusiva en menores de 24 a duración media dela | Vigilancia y Contar
+6 meses (media en meses) menores de 6 meses Programa Nutrición-DADIS
+Mantener por debajo de
+Prevalencia de desnutrición 5.4 % la desnutrición JA
+¿global (bajo peso para la edad) 5.4% global (bajo peso para | PES Programa Nutición
+en menores de 5 años la edad) en menores de
+Nu 5:años
+Porcentoje de nacidos vivos con Monteneren menos de | Dirección Operativa
+bajo peso al nacer 8,23% 8.23% la proporción de | - Prestación de Servicio-
+bajo peso al nacer DADIS- Salud Pública
+Logror que el 80% de los
+establecimientos de
+alimentos y bebidas
+Porcentaje de establecimientos alcohólicas alcancen A y A
+viglados y controlados con 0% concepto favorable al. | DADIS Dirección Operativa
+enfoque de riesgo. “cumplimiento de las
+condiciones sanitarias
+establecidas en la
+normatividad
+Tabla 40
+UNEA BASE DE
+SUBPROGRAMA INDICADOR DÉ INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO PRODUCTO
+Nu)
+Desarrollar las
+00 capacidades para la Dirección Operativa
+Instituciones t e
+implementación de la | Vigilancia y Control-
+NUTRICIÓN o de estrategia lAMien 4 | Programa Nutrición-
+instituciones prestadoras DADIS
+de servicios de salud
+Desarollo de
+capacidades en guías
+Número de CDI y alimentarias a padres de Secretaria
+Hogares Infantiles 20 familia y cuidadores de Educación Distrital,
+beneficiados con niños y niñas en 80 CDIy | — PES, Programa
+guías alimentarias hogares infantiles. Nutrición DADIS.
+o Desarollo de Secretaria
+Número de IEO ie e a
+guias alimentarias estudiantes, docentes y | — Nutrición DADIS.
+92
+
+
+## Página 93 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. VOG
+LINEA BASE DE
+SUBPROGRAMA MA ODICTO. INDICADOR DE META PRODUCIO RESPONSABLE
+PRODUCTO
+padres de familias de 48
+Instituciones educativas
+del Distrito.
+Vigllor el estado Viglar el estado Drección Operaliva
+nutricional de las nutricional de 18.000 Servicio-DADIS- Salud
+mujeres gestantes mujeres gestantes PbIcO
+Vigilar y controlar
+(Y) anualmente con
+enfoque de riesgo a
+Número de mínimo 3.300 de si
+AUS | establecimientos establecimientos de — | ¿DADIS-Dirección
+¡ONTROL DE » % Operativa de Salud
+ALIMENTOS vigilados y alimentos y Pública
+controlados transportadores según lo
+establecido en el Plan
+Decenal de Salud
+Pública
+8.1.2.7 PROGRAMA SEXUALIDAD, DERECHOS SEXUALES Y REPRODUCTIVOS
+Promover, generar y desarrollar medios y mecanismos para buscar garantizar
+condiciones sociales, económicas, políticas y culturales, que incidan en el
+ejercicio pleno y autónomo de los derechos sexuales y reproductivos de las
+personas, grupos y comunidades, en el marco de los enfoques de género y
+diferencial, asegurando reducir las condiciones de vulnerabilidad y garantizando
+Y) la atención integral de las personas y la promoción de prácticas y conductas
+protectoras para el ejercicio de una salud sexual y reproductiva sana, segura y
+responsable, que permita disminuir índices de ITS , VIH-SIDA , abortos y embarazos
+no deseados y la mortalidad perinatal y materna; así mismo desarrollaremos
+acciones sectoriales, transectoriales y comunitarias para promover las
+condiciones sociales, económicas, políticas y culturales que permitan, desde un
+enfoque de derechos humanos, de género y diferencial, el ejercicio libre,
+autónomo e informado de la sexualidad.
+8.1.2.7.1 SUBPROGRAMA SALUD SEXUAL Y REPRODUCTIVA
+Se logrará a través de un proceso permanente y articulado de los diferentes
+sectores e instituciones del Estado y de la sociedad civil, que las personas, grupos
+93
+
+
+## Página 94 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+Ñ $9 O No. DOG
+qu UR 2016 )
+y comunidad del Distrito de Cartagena, gocen del nivel más alto de la Salud
+Sexual y Reproductiva SSR y ejerzan los derechos sexuales y los derechos
+reproductivos a través de la toma de decisiones autónomas, libres e informadas
+sobre el cuerpo, la sexualidad y la reproducción.
+Dentro del subprograma de Salud Sexual y Reproductiva, se realizarán acciones
+que pretendan mejorar la salud sexual y la salud reproductiva de los cartageneros
+y cartageneras, promoviendo prácticas y conductas protectoras para el ejercicio
+de una salud sexual y reproductiva sana, segura y responsable, que permita
+disminuir índices de Infecciones de Transmisión Sexual, VIH-SIDA, abortos y
+ww embarazos no deseados y reducir la mortalidad por cáncer de seno, Útero y
+próstata, así mismo detectar, prevenir y atender integralmente a través de los
+servicios que garantiza el Sistema General de Seguridad Social en Salud a las
+mujeres, niños y niñas víctimas de violencia, e implementar mecanismos para
+hacer efectivo el derecho a la salud.
+8.1.2.7.2 SUBPROGRAMA PREVENCIÓN DE LA MORBIMORTALIDAD MATERNA
+Y PERINATAL
+Se realizarán acciones para mejorar la salud sexual y la salud reproductiva de las
+cartageneras embarazadas y sus productos, promoviendo prácticas y conductas
+protectoras para el ejercicio de una gestación tranquila y saludable, sana, segura
+y responsable, que permita disminuir índices de morbimortalidad materna y
+perinatal, así mismo detectar, prevenir y atender integralmente a través de los
+v servicios que garantiza el Sistema General de Seguridad Social en Salud a las
+embarazadas y sus recién nacidos, e implementar mecanismos para hacer
+efectivo el derecho a la salud.
+Se implementarán acciones de prevención de la mortalidad materna y
+mortalidad infantil, garantizándole una atención integral en salud desde el vientre
+matemo hasta que el niño nace, mediante el seguimiento de los controles
+prenatales, controles de crecimiento y desarrollo y mejoramiento de los estados
+nutricionales de la madre y el menor de cinco años como complemento de la
+estrategia de atención a la primera infancia y maternidad segura a nivel
+hacional. Se capacitará a todo el equipo de salud en los protocolos de atención
+94
+
+
+## Página 95 (OCR Oficial Acuerdo 006 de 2016)
+
+ON
+a TAG
+7 Concejo Distrital de Cartagena de Indias D. T. y C.
+STE AGERnO No. 006
+3 ai
+para la prevención de la mortalidad materna y perinatal, como parte integral de
+la estrategia.
+Tabla 41
+INDICADOR DE LINEA BASE DE INDICADOR
+RESULTADO DE RESULTADO META RESULTADO RESPONSABLE
+% de trasmisión 11.53% Disminuir al 2% la trasmisión materno
+materno infantil - infantil del VIH, sobre el número de DADIS
+del VIH niños expuestos
+N
+Tasa de ] ,
+incidencia del VIH Mantener la incidencia de infección DADIS
+en personas de 15 del VIH en menos de 1%
+a 49 años
+proporción de 19.60 Disminuir la proporción de DADIS
+es adolescentes embarazadas al 19%
+Razón de 46,55 (EEVV.DANE-RUAF Disminuir la mortalidad materma a DADIS- DIRECCION
+Mortalidad 2015) 31,2 x 100.000 nacidos vivos 'OPERATIVA DE SALUD
+Matema PUBLICA
+Tabla 42
+LINEA BASE DE
+SUBPROGRAMA E INDICADOR DE META PRODUCTO RESPONSABLE
+Ne PRODUCTO
+Nómero de fortalecer las
+entidades con planes capacidades de las 22
+de mejoramiento EAPB y 78 IPS a través de DADIS-
+desarrollados en la un plan de DIRECCION
+estrategia de mejoramiento en la OPERATIVA DE
+promoción de los estrategia de promoción | SALUD PUBLICA
+derechos sexuales y de los derechos sexuales
+reproductivos reproductivos
+SALUD SEXUAL Y a
+REPRODUCTIVA Número de mujeres [A DADIS-
+gestantes a las que so 18.000 mujeres gestantes | PRESTACIÓN DE
+se les practicó
+pruebo de VIH se les practique la SERVICIOS
+pruebo de VIH
+Número de 30 instituciones DADIS-
+instituciones educativas intervenidas DIRECCION
+educativas con programas de OPERATIVA DE
+intervenidas con. promoción de los SALUD PUBLICA
+95
+
+
+## Página 96 (OCR Oficial Acuerdo 006 de 2016)
+
+nn
+zm
+El + Concejo Distrital de Cartagena de Indias D. T. y C.
+(PA:
+0.04) ACUERDO No.
+006
+C- 13 JUN 2016 )
+LINEA BASE DE
+SUBPROGRAMA EAS INDICADOR DE META PRODUCIO RESPONSABLE
+PRODUCTO
+programas de derechos sexuales y
+promoción de los reproductivos
+derechos sexuales y enfocados a una
+reproductivos sexualidad autónoma,
+sana y responsable
+a de Formular e implementar
+Fimbarazo en de una estrategia Mesa Distrital de
+latas intersectorial pora la | Prevención del
+formulada y prevención del Embarazo en
+efeculoco en loma embaczoen | adolescentes
+Ny intersectorial.
+Tabla 43
+LINEA BASE DE
+SUBPROGRAMA Penco DE INDICADOR — META PRODUCTO RESPONSABLE
+DE PRODUCTO
+Fortalecer las
+Número de entidades capacidades de las 20 EPS | | pg.
+con capacidades y 781PS a través de un plan | DRe o cioy
+desarrolladas en de mejoramiento en la OPERATIVA DE
+estrategia de estrategia de promoción SALUD PUBLICA
+Maternidad Segura de los derechos sexuales y
+reproductivos
+Número de
+profesionales de la DADIS-
+salud con Desarrollar capacidades en DIRECCION
+WM capacidades la estrategia Matemidad | ObesArwA DE
+PREVENCIÓN DE La |SeSorolladas en segura a 150 médicos SALUD PUBLICA
+estrategia de
+MORBIMORTALIDAD Maternidad segura
+MATERNA Y PERINATAL =
+Realizar seguimiento anual
+al cumplimiento de la| pp.
+Mujeres con 4 0 más realización de 4 o más
+controles prenatales. | 15985 controles prenatales a PRESTACIÓN DE
+mínimo 18.000 mujeres del
+Distito de Cartagena.
+Número de casos de Sm Comité de
+morbilidad matema o eno 8 | Mortlidad
+extrema con [so mnorolidaS ne | matema
+acciones de extrema notificados extrema del
+eguimiento eo: DADIS
+96
+
+
+## Página 97 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. VCOG
+ñ
+(4,3 JUN 2016 )
+
+8.1.2.8 PROGRAMA VIDA SALUDABLE Y ENFERMEDADES TRANSMISIBLES
+
+El Gobierno Distrital fortalecerá las acciones sectoriales, transectoriales y
+
+comunitarias creando condiciones y capacidades en el sector y en otros sectores,
+
+organizaciones, instituciones, servicios de salud y en la comunidad, para la gestión
+
+de planes, programas y proyectos enfocados en lograr el disfrute de una vida
+
+sana en las diferentes etapas del ciclo de vida mediante la promoción de modos,
+
+condiciones y estilos de vida saludables mediante un modelo de intervención
+
+transectorial denominado Estrategia de Gestión Integral EG!, que permita reducir
+- de manera progresiva y sostenida la exposición a condiciones y factores de riesgo
+v” ambientales, sanitarios y biológicos, así como la garantía del acceso a una
+
+atención integrada ante situaciones, condiciones y eventos transmisibles,
+M mejorando en el acceso y calidad de los servicios de promoción de la salud,
+
+prevención, protección y atención de los eventos transmisibles, un enfoque
+
+diferencial y de equidad, disminuyendo la morbimortalidad y discapacidad
+
+evitable asociada a enfermedades transmisibles en el Distrito.
+
+8.1.2.8.1 SUBPROGRAMA PREVENCIÓN Y CONTROL DE LEPRA
+
+Se Implementaran intervenciones sectoriales, transectoriales y comunitarias con el
+
+objetivo de reducir el impacto sobre la salud, el bienestar social y económico en
+
+la población del Distrito, de enfermedades infecciosas consideradas emergentes,
+
+re-emergentes y desatendidas como la Enfermedad de Hansen, reduciendo la
+
+carga de esta enfermedad mediante acciones promocionales, gestión del riesgo
+
+” y acciones intersectoriales.
+
+8.1.2.8.2 SUBPROGRAMA PREVENCIÓN Y CONTROL DE TUBERCULOSIS
+
+Se Implementarán intervenciones sectoriales, transectoriales y comunitarias con el
+
+objetivo de reducir el impacto sobre la salud, el bienestar social y económico en
+
+la población del Distrito de enfermedades infecciosas consideradas emergentes,
+
+re-emergentes y desatendidas como la Tuberculosis, reduciendo la carga de esta
+
+enfermedad mediante acciones promocionales, gestión del riesgo y acciones
+
+intersectoriales
+
+97
+
+
+## Página 98 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. OG
+(13 JUN 2016 )
+8.1.2.8.3 SUBPROGRAMA PREVENCIÓN Y CONTROL DE LAS ENFERMEDADES
+INMUNOPREVENIBLES
+Se Implementarán intervenciones sectoriales, transectoriales y comunitarias así
+como el fortalecimiento del Programa Ampliado de Inmunización del Distrito, con
+el objetivo de prevenir, controlar y minimizar los riesgos que propician la aparición
+de las enfermedades prevenibles por vacunas y sus efectos negativos en la
+población, logrando coberturas útiles de vacunación en la población objeto.
+Y 8.1.2.8.4 SUBPROGRAMA VIGILANCIA Y CONTROL DE ENFERMEDADES
+TRANSMITIDAS POR VECTORES
+Se implementarán intervenciones sectoriales, transectoriales y comunitarias
+dirigidas a afectar los determinantes sociales así como a prevenir, controlar y
+minimizar los riesgos que favorecen la aparición de eventos que se caracterizan
+por endemias focalizadas, disminuyendo la carga de las enfermedades
+transmitidas por vectores.
+La manera de enfrentar la presentación habitual de estas patologías se enmarca
+en términos generales en dos grandes componente: primero la atención Integral
+de casos, es decir la atención médica con calidad y en oportunidad a pacientes
+que padezcan la patología y segundo, el control entomológico que se refiere al
+control del Vector,
+wW En el primer componente, se socializan los protocolos y las guías de atención
+clínica existentes al recurso humano sanitario y se realiza auditoria a la adherencia
+a los mismos. Y en el segundo componente, el entomológico, se busca controlar
+los vectores en sus formas inmaduras a través de la destrucción de criaderos de
+mosquitos ya sea físico mecánicamente, biológico o químico y con la aplicación
+de sustancia química plaguicida cuando de controlar focos o brotes de estos
+eventos epidemiológicos.
+Con el desarrollo de actividades de Información y comunicación en salud se
+imparte conocimiento básico a las comunidades sobre hábitos y biología de estos
+vectores, así como la manera de desarrollar actividades comunitarias que
+permitan controlar los criaderos y que los afectados acudan a la atención
+médica de manera oportuna de ser necesaria.
+98
+
+
+## Página 99 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. COG
+a
+(13 ¿UN 2016 )
+8.1.2.8.5 SUBPROGRAMA PREVENCIÓN, MANEJO Y CONTROL DE LA
+INFECCIÓN RESPIRATORIA AGUDA
+Este subprograma pretende reducir la morbilidad grave y la mortalidad evitable
+por infección respiratoria aguda en niños y niñas de cero a 5 años, para mitigar la
+alta demanda de atención, mejorar la calidad y humanización en los servicios de
+baja alta y mediana complejidad.
+Dentro de ese panorama se generará un proceso de trabajo comunitario con
+- participación social, que lleve a la comunidad y a sus actores sociales claves, a
+Gu empoderarse del problema y de sus posibles soluciones mediante el
+entrenamiento de seiscientos (600) agentes comunitarios y fortalecimiento de
+capacidades en la prevención y atención de la infección respiratoria en 4000
+madres y cuidadores residentes en la localidad virgen y turística y rural del Distrito.
+De igual manera, se reforzarán acciones de inspección, vigilancia y control a las
+Instituciones prestadoras de salud, para el funcionamiento de salas para la
+atención de las Enfermedades Respiratorias Agudas.
+Tabla 44
+LINEA BASE DE
+DO INDICADOR DE META RESULTADO RESPONSABLE
+RESULTADO
+Mantener la meta de
+- PREVALENCIA DE | 0,18 Casos x 10.000 | _ liminación de lalepra | Apis. DIRECCION OPERATIVA DE
+como enfermedad en salud
+=s LEPRA HABITANTES (2015) publica en menos de 1 caso SALUD PUBLICA
+x 10.000 habitante
+Tabla 45
+LINEA BASE DE
+SUBPROGRAMA mobuera DE INDICADOR — DE META PRODUCTO RESPONSABLE
+PRODUCTO
+PREVENCIÓN Y | Número de estudios | 53 REALIZAR ANUALMENTE | DADIS-
+CONTROL DE LEPRA realizados a ESTUDIO A CONTACTOS Y | DIRECCION
+contactos. CONVIVIENTES. DE  53|OPERATIVA DE
+CASOS PAUSIBACILARES | SALUD PUBLICA
+INSCRITOS EN EL
+PROGRAMA DE LEPRA.
+99
+
+
+## Página 100 (OCR Oficial Acuerdo 006 de 2016)
+
+ZA
+E Concejo Distrital de Cartagena de Indias D. T. y C.
+A e E
+k É
+o ACUERDO No. DOS
+(43 JUN 2016 )
+LINEA BASE DE
+SUBPROGRAMA CALOR DÉ INDICADOR — DE META PRODUCTO RESPONSABLE
+PRODUCTO
+NUMERO DE| 127 REALIZAR — ANUALMENTE | DADIS-
+ESTUDIO A ESTUDIO A CONTACTOS Y | DIRECCION
+CONTACTOS CONVIVIENTES DE 127 | OPERATIVA DE
+REALIZADOS CASOS MULTIBACILARES | SALUD PUBLICA
+INSCRITOS EN EL
+PROGRAMA DE LEPRA.
+Tabla 46
+ha
+LINEA BASE DE INDICADOR DE
+INDICADOR DE RESULTADO RESULTADO META RESULTADO
+TASA DE MORTALIDAD POR Disminvirla tasa de morlalidad por
+TUBERCULOSIS 28 CASOS X 100.000 HAB, tuberculosis a 1,96 x 100.000
+Tabla 47
+LINEA BASE DE
+SUBPROGRAMA E INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO
+Desarrollar anualmente
+NUMERO DE ENTIDADES caes sa DADIS-
+DESALUD CON , DIRECCION
+estrategia de Tuberculosis
+CAPACIDADES 12 caidados de sud | OPERATIVA DE
+PREVENCIÓN Y DESARROLLADAS 2 (22EAP y tools] | SALUD PUBLICA
+CONTROL DE z
+. TUBERCULOSIS ñ
+Ñ Realizar anualmente DADIS-
+NUMERO E STUDIO A 27 estudio a contactos de 250 | — DIRECCION
+AULADOS casos inscritos en el OPERATIVA DE
+programa de tuberculosis- | SALUD PUBLICA
+Tabla 48
+LINEA BASE DE
+INDICADOR DE RESULTADO — INDICADOR DE META RESULTADO RESPONSABLE
+RESULTADO
+6 DADIS- DIRECCION
+Coberturas de vacunación Lograr Coberturas del OPERANVA DE SALUD
+en niños y niñas menores de | 96.6% vacunación del 95% en niños y | PUBLICA
+un año niñas menores de un año
+Coberturas de vacunación | 98.7% Lograr Coberturas de|DADIS- DIRECCION
+en niños y niñas de un año. vacunación del 95% en niños y | OPERATIVA DE SALUD
+niñas de un año PUBLICA
+100
+
+
+## Página 101 (OCR Oficial Acuerdo 006 de 2016)
+
+OS
+(E Concejo Distrital de Cartagena de Indias D. T. y C.
+E— E
+Si A ACUERDO No. OOO
+'
+(13 JUN 2016 )
+Tabla 49
+LINEA BASE DE
+SUBPROGRAMA IcbucTO —  INDICADORDE — META PRODUCTO RESPONSABLE
+PRODUCTO
+Número de niños Í Vacunar
+y niñas de 0a 11 anualmente a
+meses, 29 días 18400 niños y niñas DADIS- DIRECCION
+vacunados con 18086 de0a 11 meses, OPERATIVA DE SALUD
+todos los 29 días con todos PUBLICA
+biológicos del los biológicos del
+esquema. esquema.
+PREVENCION Y CONTROL DE
+LAS ENFERMEDADES — | Número de niños a
+Nu niñas de un añ anualmente a
+INMUNOPREVENIBLES con Sd e o 18608 niños y niñas | DADIS- DIRECCION
+(os Con 18125 de unañocon | OPERATIVA DE SALUD
+todos los h IC,
+biológicos del » lodos los PUBLICA
+poc biológicos del
+sal esquema.
+Tabla 50
+LINEA BASE DE
+INDICADOR DE RESULTADO INDICADOR DE META RESULTADO RESPONSABLE
+RESULTADO
+DISMINUIR LA LETALIDAD DADIS- DIRECCION
+Letalidad por Dengue 54% A POR DENGUE A MENOS OPERATIVA DE SALUD
+ww DEL 2% EN EL DISTRITO PUBLICA
+Tabla 51
+LINEA BASE DE
+SUBPROGRAMA ISOLOR DE INDICADORDE — META PRODUCTO RESPONSABLE
+PRODUCTO
+VIGILANCIA Y A Revisar y Evaluar
+CR a casos todos los casos de | DADIS- DIRECCION
+ENFERMEDADES dos atendidos dengue Grave OPERATIVA DE SALUD
+TRASMITIDAS POR OMAR en Notificados durante PUBLICA
+VECTORES el Cuatrienio.
+101
+
+
+## Página 102 (OCR Oficial Acuerdo 006 de 2016)
+
+El Concejo Distrital de Cartagena de Indias D. T. y C.
+El— E
+DS
+of ACUERDO No. O0OG
+(43 JUN 2016 )
+Tabla 52
+LINEA BASE DE
+O INDICADOR DE META RESULTADO RESPONSABLE
+RESULTADO
+TASA M. POR IRA EN
+MENORES DE 5 AÑOS
+Tasa de Mortalidad por | RUAF-DADIS) 2014: — | DISMINUIR LA TASA DE MORTALIDAD | — DADIS-Dirección
+Infección Respiratoria POR IRA EN MENORES DE 5 AÑOS a Operativa de Salud
+Aguda 18.22X100.000 <5 15 X100.000 Pública
+AÑOS,
+N/
+Tabla 53
+LINEA BASE DE
+AS aan INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO
+Número de agentes de Fortalecer capacidades
+cambio (voluntarios en prevención y manejo
+AIEPI- EPS) y cuidadores la Infección respiratoria | DADIS-Dirección
+con capacidades or | Agudaenmenores5 | Operativa de
+adecuadas pora años a 600 agentes de | Salud Pública
+prevenir y manejar la cambio (líderes
+IRA en menores 5 años. voluntarios AIEPI- EPS)
+PREVENCION,
+MANEJO Y Fortalecer capacidades
+CONTROL DE LA Número de madres o en la prevención y
+INFECCION cuidadores con atención de la recció
+Y RESPIRATORIA capacidades so Infección Respiratorios | P4OS Orección
+AGUDA. adecuadas para en 4000 madres y SA PUBICO
+prevenir y manejar la cuidadores residentes
+IRA en menores 5 años. en la locolidad dos y
+órea rural.
+Número de solas ERA Reolzar Inspección, | PAD S-orección
+con acciones de vigilancia y control a 10 tana
+inspección, vigilancia y salas Enfermedad ol e
+control Respiratoria Aguda. SOGC
+8.1.2.9 PROGRAMA SALUD PÚBLICA EN EMERGENCIAS Y DESASTRES
+Se Protegerán a las personas, colectividades y el ambiente en el Distrito ante los
+riesgos de emergencias y desastres que tengan impacto en la salud pública a
+102
+
+
+## Página 103 (OCR Oficial Acuerdo 006 de 2016)
+
+aos
+(E Concejo Distrital de Cartagena de Indias D. T. yC.
+i— Y
+> ACUERDO No. OOG
+QS y
+(132016
+
+través de la promoción de la gestión integral del riesgo como una práctica
+sistemática con espacios de acción sectorial, transectorial y comunitario que
+permita educar, prevenir, enfrentar y manejar situaciones de urgencia,
+emergencia o de desastres, contribuyendo en la seguridad sanitaria y al
+mejoramiento de las condiciones de vida y salud de la población.
+
+8.1.2.9.1 SUBPROGRAMA GESTIÓN INTEGRAL Y RESPUESTA EN SALUD ANTE
+
+EMERGENCIAS Y DESASTRES
+Y) El Distrito fortalecerá la capacidad de respuesta integral desde los diferentes
+sectores, frente a los desastres que se puedan presentar reduciendo el impacto
+negativo sobre la población mediante la integración del proceso de desarrollo y
+planificación sectorial, transectorial y comunitaria tendientes a la identificación,
+prevención y mitigación de los riesgos, generando espacios de información y
+conocimiento sobre el riesgo de desastres en sus diferentes ámbitos, planificación
+de las emergencias y desastres, atención, seguimiento y evaluación de la gestión
+y resultados, así como reducir el riesgo de desastres actual y futuro para enfrentar
+las consecuencias asociadas a los impactos del cambio climático. Así mismo
+desarrollaremos acciones sectoriales, transectoriales y comunitarias en salud, ante
+situaciones de emergencias y desastres incluidas en los planes para la gestión del
+riesgo de desastres dirigidas a gestionar la atención de las contingencias que
+puedan afectar la salud de la población.
+Ns
+Tabla 54
+3
+INDICADOR DE RESULTADO INDICADOR DE META RESULTADO
+RESULTADO
+Tasa de mortalidad por 1,7 por 100.000 Reducir a niveles menores a 1 por cada 100.000
+urgencias, emergencias y “habitantes habitantes la mortalidad por urgencias, emergencias
+desastres, y desastres.
+103
+
+
+## Página 104 (OCR Oficial Acuerdo 006 de 2016)
+
+5 TAO
+' Concejo Distrital de Cartagena de Indias D. T. y C.
+E ACUERDO No. DOG
+']
+C 13 JUN 2016 )
+Tabla 55
+LINEA BASE DE
+SUBPROGRAMA OR DE INDICADOR META PRODUCTO RESPONSABLE
+DE PRODUCTO
+Socializar el Plan Distrital de lr je
+a Dirección
+Número de sectores Deestón de Riesgo de Operativa de
+socializados Solud, Comunidad y entes | Mdrancioy
+transectorales.
+Número de
+instituciones con Lograr que 33 Instituciones | Dirección
+í servicios de urgencias con servicios de urgencias Operativa de
+NY oplicando el apliquen el reglamento. Vigilancia y
+SUBPROGRAMA reglamento sanitario sanitario intemacional. Control - CRUE
+GESTIÓN INTEGRAL Y internacional.
+RESPUESTA EN SALUD
+ANTE EMERGENCIAS Y | Centro Regulador de Construcción y dotación Dirección
+DESASTRES Urgencias de de un Centro Regulador de | Operativa de
+Cartagena y Bolívar Urgencias de Cartagena y | — Vigilancia y
+construido y dotado. Bolívar. Control - CRUE
+6 Lograr que 33 Instituciones a
+Número de uo Dirección
+instituciones con con servicios de prendas Operativa de
+respuesta desastres que enfrenten. Control - CRUE
+8.1.2.10 PROGRAMA SALUD Y ÁMBITO LABORAL
+El Distrito, fortalecerá las acciones sectoriales y transectoriales que buscan el
+9] bienestar y protección de la salud de los trabajadores, a través de la promoción
+de modos, condiciones y estilos de vida saludables en el ámbito laboral, el
+mantenimiento del bienestar físico mental y social de las personas en todas las
+ocupaciones y el fomento de las intervenciones que modifican positivamente las
+situaciones y condiciones de interés para la salud de los trabajadores del sector
+formal e informal de la economía, así como, el mejoramiento de las condiciones
+de salud y medio ambiente de trabajo de la población trabajadora del distrito de
+Cartagena, mediante la prevención de los riesgos laborales y ocupacionales, que
+puedan afectar negativamente el estado de bienestar y salud; de igual manera
+promover la salud de las poblaciones laborales vulnerables a riesgos
+ocupacionales, con enfoque diferencial.
+104
+
+
+## Página 105 (OCR Oficial Acuerdo 006 de 2016)
+
+AOS
+fi El e: 3 Concejo Distrital de Cartagena de Indias D. T. y C.
+Er A 006
+(43 JNA )
+
+8.1.2.10.1 SUBPROGRAMA SEGURIDAD Y SALUD EN EL TRABAJO
+Se busca disminuir la mortalidad asociada con enfermedades profesionales y
+accidentes laborales en el distrito de Cartagena, mediante la promoción, la
+aplicación de los programas de salud ocupacional en el ámbito laboral, la
+aplicación de medidas de seguridad y protección adecuada para los
+trabajadores en el desempeño laboral, el impulsar la articulación de las ARL con
+las EPS y Régimen Especial para la realización de programas de promoción y
+prevención dirigidos a los trabajadores, así como contribuir a que las ARL
+
+Y sensibilicen a la población trabajadora sobre el autocuidado de la salud y las
+condiciones laborales seguras.
+8.1.2.10.2 SUBPROGRAMA SITUACIONES PREVALENTES DE ORIGEN LABORAL
+El objetivo de este subprograma, es crear una serie de acciones enfocadas en la
+disminución de accidentes de trabajo, que evidencien las enfermedades
+laborales y fortalezcan el proceso de calificación de origen y pérdida de la
+capacidad laboral; con el fin de disminuir tiempos para el reconocimiento de
+derechos y establecer un adecuado flujo de recursos entre los sistemas de salud y
+riesgos laborales. Igualmente se busca definir, la política nacional de investigación
+científica en seguridad y salud en el trabajo, que permita establecer los
+problemas de mayor incidencia y prevalencia de la salud de los trabajadores, así
+como identificar e intervenir problemas emergentes o sin intervención,
+
+Y relacionados con la salud y el bienestar de los trabajadores.
+La meta para el año 2021, es reducir el sub-registro de los eventos ocupacionales,
+a través del fortalecimiento del talento humano en salud, para la calificación del
+origen de eventos y pérdida de capacidad laboral.
+Además estableceremos la línea base de las enfermedades laborales,
+diagnosticadas por cada 100.000 trabajadores afiliados al Sistema General de
+Riesgos Laborales, junto con el desarrollo de la línea de investigación en salud en
+el ámbito laboral.
+
+105
+
+
+## Página 106 (OCR Oficial Acuerdo 006 de 2016)
+
+E
+El ¿) Concejo Distrital de Cartagena de Indias D. T. y C.
+Da ACUERDO No. OOG
+e 13:30N 2016
+Co )
+Tabla 56
+LINEA BASE DE
+INDICADOR DE RESULTADO INDICADOR DE META RESULTADO RESPONSABLE
+LU)
+Porcentaje de población en 25% de la población del sector Direcc
+economía informal con acciones 0% informal de la economía con — | Pobsrorección
+de promoción de la salud y Occiones de promoción dela solud | Css anno
+prevención de riesgos laborales y prevención de riesgos laborales
+. Disminuir a 6% la tasa de DADIS-Dirección
+Tasa de od enel | 59% (añiiados] | accidentalidad en el trabajo en el | — Operativa de
+ral Distrito. Salud Pública
+Ny
+Tabla 57
+LINEA BASE
+INDICADOR DE DE
+SUBPROGRAMA INDICADOR META PRODUCTO RESPONSABLE
+PRODUCTO DE
+PRODUCTO
+Realizar en las tres
+A Localidades del Distrito
+dados Caracterización demográfica
+(cria eidentificación de riesgos | DADIS-Dirección
+aemogrón laborales asociados a las. | Operativa de Salud
+identificación de be h
+laborales actividades desarrolladas en Pública
+SEGURIDAD Y mesgos el ámbito informal de la
+SALUD EN El realizadas. economía con enfoque
+TRABAJO diferencial.
+Número de acciones Realizar 15 acciones en " Je
+realizadas en romoción de la salud DADIS-Dirección
+promoción de la salud pr tevención de riesgos” | OPerativa de Salud
+y prevención de riesgos AS Pública
+5 laborales
+Nómero de empresas Realizar acciones de
+con acciones de promoción y prevención de Direcció
+promoción y 120 situaciones prevalentes de | Dan Drección
+prevención de origen laboral a 480 ico
+SITUACIONES situaciones prevalentes empresas del Distrito de
+PREVALENTES DE de origen laboral Cartagena.
+ORIGEN LABORAL
+Realizar anualmente mA
+Número de ARL con coordinación intersectorial | Dan orección
+coordinación. con 9 ARL del Distrito de eolica
+Cartagena
+106
+
+
+## Página 107 (OCR Oficial Acuerdo 006 de 2016)
+
+El oncejo Distrital de Cartagena de Indias D. T. y C.
+E— E
+rt ACUERDO No. OO6>
+(43 JUN 2016 )
+8.1.3 LINEA ESTRATÉGICA CARTAGENA ESCENARIO NATURAL PARA EL ARTE LA
+CULTURA Y EL PATRIMONIO
+El Arte y la Cultura son herramientas para combatir la pobreza y la desigualdad.
+Cartagena toda se convertirá en un espacio para poner en escena el
+resurgimiento de la vida y de la reconciliación entre los cartageneros.
+Se fomentará la creatividad del cartagenero, el talento y su herencia cultural que
+hacen parte de los activos sociales desaprovechados, que bien utilizados son un
+> valioso factor de inclusión y de mejoramiento de las condiciones de vida.
+MS Impulsaremos la economía creativa local, apoyando la producción de bienes y
+servicios creativos, para lo cual transformaremos estructuralmente el IPCC,
+fortaleciéndolo presupuestal, técnica y administrativamente.
+Auspiciaremos la implementación de una agenda artística y cultural permanente
+a nivel barrial. Promoveremos el arte y la cultura en todas sus dimensiones.
+Impulsaremos el acceso de toda la población cartagenera, en especial la más
+pobre y vulnerable, al arte y a los espacios museísticos y culturales. Impulsaremos,
+gestionando ante el Ministerio de la Cultura, la construcción de casas de la
+cultura en los barrios con mayor incidencia de la violencia juvenil, prostitución y
+drogadicción, para fomentar la creatividad artística, y revitalizaremos las casas
+de cultura barriales existentes.
+Motivaremos la formación de público como productor y consumidor de arte y
+Y cultura para lograr una ciudadanía empoderada. Dignificaremos la actividad de
+los artistas y gestores culturales, dinamizando y fortaleciendo el sector artístico y
+cultural, para apalancar nuestra propuesta de fortalecimiento de la cultura
+ciudadana.
+Se fortalecerá la agenda cultural de las Fiestas de Independencia, con el fin de
+rescatar nuestra tradición novembrina. Para conmemorar la fundación de
+Cartagena de Indias, promoveremos la creación e institucionalización del festival
+Distrital de las artes, como un espacio de encuentro del sector artístico y cultural
+proveniente de los barrios y corregimientos de la ciudad.
+Cartagena de Indias debe contar con un proyecto cultural a corto, mediano y
+largo plazo, fruto de una institucionalidad fortalecida y un sector cultural
+participante en la construcción de los procesos políticos, culturales y sociales, con
+107
+
+
+## Página 108 (OCR Oficial Acuerdo 006 de 2016)
+
+(El Concejo Distrital de Cartagena de Indias D. T. y C.
+a ACUERDO No. DOG
+Ss (13 JUN 2016,
+miras a jalonar un mejoramiento en la calidad de vida, en la cultura ciudadana y
+en la transformación urbana, ambiental y económica. Trabajando en la
+consolidación de las políticas culturales de la ciudad a partir de la práctica de los
+derechos culturales y de categorías como inclusión social, cultural y desarrollo,
+superación de la pobreza, valoración de la identidad, emprendimiento y
+profesionalización artística.
+8.1.3.1 PROGRAMA PATRIMONIO, IDENTIDAD Y MEMORIA
+NY Este programa busca proteger difundir y salvaguardar, el patrimonio cultural,
+material e inmaterial y su apropiación social para el fortalecimiento de las
+identidades y la memoria en el distrito de Cartagena de Indias.
+8.1.3.1.1 SUBPROGRAMA PATRIMONIO MATERIAL E INMATERIAL
+Pretende proteger y salvaguardar las manifestaciones del patrimonio inmaterial
+de las comunidades y de las diversas expresiones artísticas, y del patrimonio
+material desde su identificación, intervención, conservación, manejo y
+recuperación.
+8.1.3,1.2 SUBPROGRAMA CONTEXTOS POBLACIONALES: DIVERSIDAD E
+INTERCULTURALIDAD
+Md Se contribuirá al reconocimiento y fortalecimiento de los diversos grupos
+poblacionales para la salvaguardia de su patrimonio cultural, promoviendo la
+interculturalidad y el respeto por la diferencia.
+8.1.3.1.3 SUBPROGRAMA CARTAGENA INVESTIGA Y  DIVULGA SU
+PATRIMONIO CULTURAL
+Se realizarán estrategias de producción y circulación de contenidos culturales,
+que buscan documentar, conservar y divulgar el patrimonio material e inmaterial
+de Cartagena de Indias para la preservación de la memoria.
+108
+
+
+## Página 109 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. yC
+ACUERDO No. VDOG>
+C 13 JUN 2016 )
+Tabla 58
+LINEA BASE DE
+INDICADOR DE RESULTADO INDICADOR DE META RESULTADO RESPONSABLE
+RESULTADO
+% personas impactadas por impactar al 30% de la
+actividades culturales trabajadas N/D población del Distrito de PCC
+desde un enfoque poblacional para Cartagena de contextos
+fortalecer la interculturalidad. poblacionales.
+Ns
+Tabla 59
+LINEA BASE DE
+SUBPROGRAMA JOR DE INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO
+Número de Acciones a nÚMErO
+Patrimonio malerial de protección y 33 protección y salvaguarda IPCC
+e inmaterial salvaguarda del del patrimonio cultural a la
+Patrimonio cultural, población a impactar
+Personas impactadas
+ml Impactar a 319.500
+por actividades personas en actividades
+Contexto culturales trabajadas Culturales trabajadas
+Poblacionales: desde un enfoque y
+e > N/D desde un enfoque rec
+diversidad e poblacional y poblacional y diferencia!
+interculturalidad diferencial para para fortalecer lo
+No! orclcerla interculturalidad
+interculturalidad,
+¡e Realizar 6 procesos de
+. MN? de procesos de patrimonio cultural que
+Cartagena investiga | patrimonio cultural que buscan preservar la
+y divulga su buscan preservar la memoria comunicados PCC
+pattimonio cultural | memoria comunicados difundidos a lo población
+y difundidos, a impactar.
+8.1.3.2 PROGRAMA FOMENTO AL ARTE Y CULTURA PARA LA VIDA
+Tiene como objetivo fomentar la cultura, es decir, propiciar un desarrollo positivo
+en las prácticas artísticas y culturales de la ciudad, acompañando la labor de las
+109
+
+
+## Página 110 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. 0OG
+mr
+
+entidades culturales, de los gestores y creadores culturales, propendiendo por el
+fortalecimiento de estrategias artísticas, valoración social de la cultura y la
+formación de públicos en el distrito de Cartagena.
+
+8.1.3.2.1 SUBPROGRAMA LEER PARA CRECER
+
+Esta iniciativa pretende, que cada día más cartageneras y cartageneros integren
+la lectura y la escritura a su vida cotidiana, fomentando el desarrollo de las
+competencias del lenguaje, mediante el mejoramiento de los niveles de lectura.
+
+NM
+8.1.3.2.2 SUBPROGRAMA CREACIÓN — ARTÍSTICA, FORMACIÓN Y
+FORTALECIMIENTO A ARTISTAS
+
+Se impulsarán procesos de formación y profesionalización artística en teatro,
+danza, música, artes plásticas, artes visuales, literatura y otras áreas
+representativas de la vida cultural en el distrito de Cartagena.
+
+8.1.3.2.3 SUBPROGRAMA CARTAGENA, ESCENARIO DE ARTE
+
+Agenda cultural, para fomentar el acceso a bienes y servicios culturales en
+igualdad de condiciones a toda la población de Cartagena, propendiendo por
+la formación de públicos.
+
+ú
+8.1.3.2,4 SUBPROGRAMA ESCENARIOS PARA LAS ARTES
+Se emprenderán la gestiones administrativas necesarios, para la construcción,
+adecuación, mantenimiento, restauración de infraestructura cultural y/o espacios
+físicos apropiados, que dispongan de los elementos e insumos necesarios para el
+desarrollo y disfrute de los procesos artísticos y culturales.
+110
+
+
+## Página 111 (OCR Oficial Acuerdo 006 de 2016)
+
+E Concejo Distrital de Cartagena de Indias D. T. y C.
+E— E
+ar, ACUERDO No. OVOG
+<A IN
+(-43JUN 2016 >)
+Tabla 60
+LINEA BASE DE
+INDICADOR DE RESULTADO INDICADOR DE META RESULTADO RESPONSABLE
+RESULTADO
+Aumentar en un 100% los
+Procesos de formación artística y de procesos de tomación
+circulación para la profesionalización 4 porala rcfesionaltación de IPCC
+de los artistas y agentes culturales. los artistas y agentes
+culturales.
+” Tabla 61
+LINEA BASE DE
+SUBPROGRAMA INDICADOR DE PRODUCTO — INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO
+N* de programaciones
+realizadas para que
+cortageneros y
+Leer pora crecer cartageneras vinculen la Pee
+lectura y escritura a su vida
+cotidiana.
+CIÓN: Artistas o colectivos
+A rtísticos fortalecidos en
+Formación yo . IPCC
+fortalecimiento a | Procesos de formación y
+artistas
+Cartagena, N* de actividades de IPcC
+escenario de arte | agenda cultural
+y Dotación de escenaños lece |
+Culturales 15 ¡pee
+Escenarios para
+las artes Mantenimiento básico
+anual / adecuación de 30 IPCC
+escenarios culturales
+8.1.3.3 PROGRAMA ECONOMÍA CULTURAL Y CREATIVA
+Este programa tiene como objetivo, promover y fortalecer el emprendimiento
+creativo y cultural, propiciando la formación, formalización y circulación de las
+empresas culturales, integrándolas a la cadena productiva de la economía local;
+creando así capacidades gerenciales en los artistas y gestores culturales,
+fortaleciendo los productos y servicios creativos y encadenamientos productivos
+111
+
+
+## Página 112 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. 0OGS
+(13JUN 2016 )
+con otros sectores de la economía, con miras a un desarrollo social y económico
+donde los artistas, se conviertan en gestores de iniciativas competitivas,
+innovadoras y sostenibles.
+8.1.3.3.1 SUBPROGRAMA ECONOMÍA CULTURAL Y CREATIVA
+Formación para el emprendimiento cultural y creativo, producción de bienes y
+servicios sostenibles e innovadores, circulación y encadenamientos productivos.
+'w) Tabla 62
+LINEA BASE DE INDICADOR DE
+INDICADOR DE RESULTADO RESULTADO, META RESULTADO RESPONSABLE
+Número de procesos | Aumentar en un 300%
+dirigidos al fortalecimiento 1 las organizaciones con PCC
+de los emprendimientos emprendimientos
+creativos y culturales Creativos y culturales.
+Tabla 63
+LINEA BASE DE
+SUBPROGRAMA DE INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCIO
+. Aumentar a 3 el
+Número de procesos a
+Economía dirigidos al Lao
+cultural y fortalecimiento de los mie rec
+ceamo | Cemprendimientos toteciniento delos
+u Creativos y culturales creativos y culturales
+8.1.3.4 PROGRAMA FORTALECER LA INSTITUCIONALIDAD CULTURAL Y LA
+PARTICIPACIÓN CIUDADANA
+Este programa tiene como propósito fortalecer técnica y administrativamente el
+sector, generar procesos estratégicos para el desarrollo de las áreas: medir,
+documentar, sistematizar y difundir buenas prácticas y la oferta cultural;
+consolidar procesos de políticas culturales y establecer cooperación, integración
+y desarrollo.
+112
+
+
+## Página 113 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. COG
+(13 JUN 2016 )
+8.1.3.4.1 SUBPROGRAMA HAGÁMOSLO BIEN, INSTITUCIONALIDAD CULTURAL
+PÚBLICA
+Con este subprograma se busca el fortalecimiento técnico y administrativo de la
+entidad que rige la cultura en Cartagena, con el objetivo de garantizar el apoyo,
+en los procesos artísticos y culturales que se viven en nuestro territorio.
+8.1.3.4,2 SUBPROGRAMA SISTEMA DISTRITAL DE CULTURA
+uv Se propenderá a la creación, dinamización y cualificación de los consejos de
+cultura y otros espacios de participación cultural.
+8.1.3.4.3 SUBPROGRAMA FORMACIÓN EN GESTIÓN CULTURAL
+Se establecerán procesos de formación y cualificación de creadores y gestores
+culturales, que permita la formulación de proyectos que se gestionen a través de
+este subprograma, para lograr el acceso a diferentes fuentes de financiación en
+materia de cultura.
+8.1.3.4,4 SUBPROGRAMA SISTEMA DE INFORMACIÓN EN CULTURA
+A través de este subprograma se generará la producción y uso de información
+estratégica, para la formulación de políticas culturales y la toma de decisiones.
+Nod
+Tabla 64
+INDICADOR DE RESULTADO — MMÉA BASE DS A ADOR META RESULTADO RESPONSABLE
+se Aumente un 100% el
+¡Erategios porel número de estrategias para el
+Institucionalidad cultural y la 2 la Pe
+Participación ciudadano. participación ciudadana.
+113
+
+
+## Página 114 (OCR Oficial Acuerdo 006 de 2016)
+
+ñ El ** E) Concejo Distrital de Cartagena de Indias D. T. y C.
+es ACUERDO No. DOG
+== 1
+(43 JUN 2016)
+Tabla 65
+LINEA BASE DE
+SUBPROGRAMA INDICADOR DE INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO PRODUCTO
+Hagómosto [Número de procesos Implementar 2 Procesos
+bien, dirigidos a fortalecer la dffigidos a fortalecer la | po
+Institucionalidad | institucionalidad institucionalidad cultural
+Cultural Pública | cultural pública pública
+o se Mantener en
+ctrif Número de Sistemas y 5
+Sistema Distrital funcionamiento los
+Z de Cultura conformados Y Sistemas — Distital dejo
+y funcionando Cultura
+Número de procesos Desarrollar 3 procesos de
+Formación en|de formación cultural formación cultural ecc
+Gestión cultural | dirigido a agentes diigido a agentes
+culturales culturales
+Sistema de| sistema de Crear 1 Sistema de
+información en | información — cultural Información — Cultural | IPCC
+Cultural distrital distrital
+8.1.4 LINEA ESTRATÉGICA CIUDAD Y DEPORTE
+Se asumirá el deporte como una poderosa herramienta de inclusión y desarrollo
+social, con la puesta en marcha de los JUEGOS DEPORTIVOS NACIONALES PARA LA
+PAZ 2019, en una alianza estratégica con el Departamento de Bolívar. Teniendo
+en cuenta las ventajas competitivas como el mar, el escenario histórico y el
+- talento de los cartageneros, se incrementará el número de deportistas y el
+y) número de medallas ganadas que servirán de estímulo, para que chicos y chicas
+de las barriadas constituyan nuestro semillero de futuros campeones.
+Para ello, se garantizará la correcta aplicación de los recursos públicos destinados
+al deporte, a través de la formulación de un Plan Estratégico Distrital para la
+Recreación y el Deporte a 2025. Se dará inicio al mejoramiento y construcción de
+nuevos escenarios deportivos, ubicados en los barrios y corregimientos de la
+ciudad. Fomentaremos hábitos saludables entre los ciudadanos y ciudadanas de
+Cartagena, dentro de una cultura de calidad. Lo anterior se realizará de la mano
+de todos los actores del deporte y la recreación (Clubes, Ligas, Juntas de Acción
+Comunal, Profesores de Educación Física, Cajas de Compensación Familiar,
+Escuelas Deportivas, Instituciones Educativas), sin excluir a los gestores,
+entrenadores, dirigentes deportivos, empresarios y deportistas.
+114
+
+
+## Página 115 (OCR Oficial Acuerdo 006 de 2016)
+
+(4 er e) Concejo Distrital de Cartagena de Indias D. T. y C.
+—
+_S eos
+Ss
+Se promocionará a Cartagena en el escenario mundial, para que los equipos
+internacionales de Futbol, Béisbol, Basquetbol etc., instalen escuelas para nuevos
+talentos en nuestro territorio. Lideraremos la internacionalización del deporte local,
+con el apoyo de organismos gubernamentales y no gubernamentales del orden
+nacional e internacional. Fomentaremos y apoyaremos la cultura de la
+excelencia y la calidad en todas las disciplinas deportivas recreacionales y
+competitivas; la cultura deportiva, los hábitos saludables, el juego, la integración
+comunitaria, la convivencia y la formación ciudadana.
+Se fomentará y se apoyará de manera directa, eventos deportivos de gran
+Nu trascendencia o importancia en nuestra ciudad [eventos de playas, carreras
+atléticas, festivales de cometas, torneos barriales, tormmeos nacionales, etc.).
+Impulsaremos el deporte escolar y social comunitario para desarrollar entornos de
+convivencia y paz; al tiempo, lideraremos la creación de escuelas deportivas
+barriales y se focalizará la capacitación deportiva en entrenadores y profesores
+de educación física.
+8.1.4.1 PROGRAMA ESCUELA DE INICIACIÓN Y FORMACIÓN DEPORTIVA
+“ESCUELA DEPORTE”
+Se desarrollarán actividades tendientes a lograr, las primeras experiencias
+familiarizadoras de los contenidos fundamentales de una o más disciplinas
+deportivas, se fortalecerán las habilidades para la vida, actividades locomotrices
+yu y se realizarán recomendaciones respecto a los estilos de vida saludable.
+8.1.4.1.1 SUBPROGRAMA ESCUELA DE INICIACIÓN Y FORMACIÓN
+DEPORTIVA "ESCUELA DEPORTE”
+Iniciar a las niñas, niños y adolescentes, en la enseñanza y práctica deportiva con
+el fin de desarrollar sus potencialidades motrices, físicas, cognitivas, psicológicas,
+sociales y afectivas, contribuyendo así, a su incorporación a la práctica del
+deporte de manera progresiva y el desarrollo de los futuros (as) deportistas del
+distrito de Cartagena de Indias, causando sostenibilidad de procesos de
+transformación sociocultural. Además se articularán acciones entre el IDER y la
+Secretaria de Educación Distrital, de tal manera que esto permita a las
+instituciones educativas distritales en la básica primaria y secundaria, desarrollar
+115
+
+
+## Página 116 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+_. ACUERDO No. OOG
+C 413 JUN 2016 )
+sus clases de educación física en los 37 núcleos con que cuenta la Escuela de
+Iniciación y Formación Deportiva del IDER.
+Tabla 66
+INDICADOR DE RESULTADO ai oo META RESULTADO RESPONSABLE
+Porcentaje de niñas, niños y Incrementar E] 50% los
+adolescentes en la Escuela de ple Y IDER
+A o Ñ adolescentes en la
+Iniciación y formación deportivo/ Escuela. de Iniciación y SE.D.
+Y el rango población de 6 a 17 años. formación deportiva
+Tabla 67
+LINEA BASE DE
+SUBPROGRAMA INDICADOR DE PRODUCTO INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO
+Incrementar a 27.714
+a sl a el Número de niñas,
+Escuela de — [Número de niñas, niños y niños y adolescentes
+ciori adolescentes entre 6 y 17 ñ
+Iniciación y años vinculados a. la entre 6 y 17 años IDER
+Formación Escuela de Iniciación 18.476 vinculados a la
+Deportiva "Escuela Lo . y Escuela de Iniciación y S.E. D.
+Deporte" Formación Deportiva en Formación Deportiva
+zona rural y urbana por
+en zona mral y
+urbana.
+Ny
+8.1.4.2 PROGRAMA DEPORTE ESTUDIANTIL
+Agrupa aquellas actividades motrices, deportivas y recreativas, que de forma
+organizada, aportan a la integralidad de los niños, niñas y adolescentes escolares,
+como complemento al desarrollo educativo.
+8.1.4.2.1 SUBPROGRAMA DEPORTE ESTUDIANTIL
+Se pretende incrementar el deporte al interior de las aulas, desarrollando en la
+educación básica primaria, los festivales escolares y en la secundaria los juegos
+Supérate- Intercolegiados, el cual aporta a los niños, niñas y adolescentes en su
+avance físico y mental, a estar sanos y a relacionarse de una forma saludable con
+116
+
+
+## Página 117 (OCR Oficial Acuerdo 006 de 2016)
+
+O
+pa
+Concejo Distrital de Cartagena de Indias D. T. y C.
+(EMail):
+< ay ACUERDO No. DOG
+—= í INa
+(413 JUN 2016 )
+los demás; también busca lograr una masiva asistencia de las Instituciones
+Educativas en representación del Distrito de Cartagena, al programa Supérate
+Intercolegiados organizado por COLDEPORTES y el Ministerio de Educación, para
+poder mostrar los talentos deportivos con los que cuenta el Distrito para el futuro.
+Tabla 68
+INDICADOR DE RESULTADO A IAOSADOR — META RESULTADO — RESPONSABLE
+Incrementar a
+WM 28,8% los Niños,
+Porcentaje de Niñas, niños, adolescentes y niñas, adolescentes Y
+jóvenes entre 6 y 17 años vinculados al 97% y jóvenes entre 6 y CIÓN
+programa Supérate-Intercolegiados sobre: “e 17 años, vinculados DISTRITAL
+población entre é y 17 años del Distrito al programa
+Supérate-
+Intercolegiados
+Incrementar a 54%
+Porcentoje de las instituciones educativas las instituciones
+vinculadas al programa Supérate- educativas IDER-SECRETRIA
+Intercolegiados/ número de Instituciones 388% e LON
+educativas públicas y privadas del Distrito Supérate-
+Intercolegiados
+Tabla 69
+LINEA BASE DE
+SUBPROGRAMA INDICADOR DE INDICADOR DE META PRODUCTO RESPONSABLE
+Ñ PRODUCTO PRODUCTO
+Aumentar a 30.932
+Número de Niñas, eo de
+niños, odolescentes y adolescentes — y | IDER-SECRETRIA
+jóvenes entre 6 y 17 20.757 lÓ
+años, vinculados al k venes entre 6y17|DE EDUCACION
+programa Supérate- e ados al | DISTRITAL
+Deporte Estudiantil | Intercolegiados Supérate-
+Intercolegiados
+6 Aumentar a 200 el
+e E Número de lE — | IDER-SECRETRIA
+Muegos  supérale: 144 vinculadas alos | DE_ EDUCACION
+Intercolegiados, Juegos Supérate- | DISTRITAL
+Intercolegiados
+117
+
+
+## Página 118 (OCR Oficial Acuerdo 006 de 2016)
+
+El Y Concejo Distrital de Cartagena de Indias D. T. y C.
+E 7 o No. VOG
+C 43 JUN 2016 )
+8.1.4.3 PROGRAMA HABITOS Y ESTILOS DE VIDA SALUDABLE
+Se buscará fomentar la práctica regular de la actividad física, la promoción de
+Hábitos y Estilos de Vida Saludable y actividades recreativas, que permitan
+favorecer el acceso de la población, a una oferta con cobertura y calidad,
+desarrollando positivamente procesos de socialización y auto cuidado.
+8.1.4,3.1 SUBPROGRAMA PROMOCIÓN MASIVA DE UNA VIDA ACTIVA
+"ACTÍVATE POR TU SALUD"
+
+au Se propenderá por el fomento de una vida activa, a fin de mejorar el estado de
+la salud y el bienestar a cualquier edad. Esto por cuanto, ayuda a prevenir un sin
+numero de problemas de salud; por lo que se auspiciará, la práctica de la
+actividad física, como pieza de fundamental importancia en todas las personas,
+en atención a su directa incidencia en el estado de salud de los seres humanos,
+considerándose como una estrategia de desarrollo humano y social en la
+prevención de enfermedades crónicas no transmisibles y el mejoramiento de la
+calidad de vida.
+8.1.4.3.2 SUBPROGRAMA EVENTOS RECREATIVOS COMUNITARIOS
+
+"RECREANDO LA GENTE"
+
+Vincular a las comunidades del distrito de Cartagena con enfoque diferencial y
+
+u territorial, en el desarrollo de actividades recreativas, lúdicas y aprovechamiento
+del tiempo libre, como un medio para el desarrollo humano e instrumento de
+progreso personal, comunitario y social.
+Tabla 70
+
+INDICADOR DE RESULTADO UNEA o OR META RESULTADO — RESPONSABLE
+Porcentoje de población que realiza una Incrementar a 33% la
+dcividad tico /e rango de población de 18% A e y | IDER-DADIS
+física
+118
+
+
+## Página 119 (OCR Oficial Acuerdo 006 de 2016)
+
+OS
+(El e Concejo Distrital de Cartagena de Indias D. T. y C.
+— E
+S a ACUERDO No. OOG
+=2S5 ne y
+(43 JUN 2016 )
+INDICADOR DE RESULTADO LINEA BASE DE NDICADOR — META RESULTADO — RESPONSABLE
+Incrementar a 65% la
+Porcentaje de población participantes de población
+eventos recreativos comunitarios / la 42% participantes de
+población de 3 años a más de 80 años eventos recreativos
+comunitarios
+Tabla 71
+Ns
+LINEA BASE DE
+TS INDICADOR DE INDICADOR DE METAPRODUCTO — RESPONSABLE
+RODUCIO PRODUCTO
+ón Aumentar a
+Promoción Masiva de Dn 300.000 el número
+Una Vida Activa do la 160.058 de participantes | — IDER-DADIS
+“Actívate por tu Salud" nados a vinculados a la
+actividad física vda fala
+Aumentar a
+Número de 646.969 el número
+Eventos Recreativos participantes de participantes
+Comunitarios ” vinculados a los. 404,356 vinculados a los
+Recreando la Gente". | Eventos Recreativos Eventos
+Comunitarios Recreativos
+Comunitarios
+Ns
+8.1.4.4 PROGRAMA INFRAESTRUCTURA DEPORTIVA
+Este programa realizará la construcción, adecuación y reconstrucción de
+escenarios deportivos, que posibiliten la integración de la comunidad a través del
+deporte, la recreación, actividad física y aprovechamiento del tiempo libre,
+siendo estas actividades el eje formador e integrador de las comunidades. Con
+estos escenarios buscamos la inclusión de población con enfoque territorial y
+diferencial.
+119
+
+
+## Página 120 (OCR Oficial Acuerdo 006 de 2016)
+
+==
+El e Concejo Distrital de Cartagena de Indias D. T. y C.
+A E
+A ACUERDO No. OOG
+' IN
+C 43 JUN 2016 )
+8.1.4.4.1 SUBPROGRAMA CONSTRUCCIÓN, ADECUACIÓN, MEJORAMIENTO Y
+MANTENIMIENTO DE LOS ESCENARIOS DEPORTIVOS "MÁS GENTE
+INTEGRADA"
+Optimizar la adecuación, mejoramiento de los escenarios deportivos existentes,
+Jl
+pero además la construcción y reconstrucción de los escenarios deportivos en los
+diferentes barrios y corregimientos con miras a masificar la actividad deportiva,
+para ofrecerles a la población del distrito de Cartagena de Indias, los espacios
+necesarios para la utilización adecuada del tiempo libre y la integración
+y comunitaria, a través de la práctica del deporte, recreación, y la actividad física.
+Tabla 72
+INDICADOR DE RESULTADO A OR META RESULTADO RESPONSABLE
+Porcentaje de construcción y TO
+reconstrucción de escenarios in e
+deportivos en las tres localidades reconst o e
+del Distrito de Cartagena de escenarios deportivos en
+Indias / el número de los o e e
+% istrito le
+escenarios públicos existentes Indias
+Porcentoje de mantenimiento, Incrementar 9 43% el
+adecuación y mejoramiento de mantenimiento
+escenarios deportivos en el 31% «adecuación y
+Distrito de Cartagena de Indias / mejoramiento de ¡DER
+xs el número de escenarios O deportivos en
+o » el Distrito de Cartagena
+deportivos públicos existentes nio
+120
+
+
+## Página 121 (OCR Oficial Acuerdo 006 de 2016)
+
+El AE, Concejo Distrital de Cartagena de Indias D. T. y C.
+So ACUERDO No. VOGC
+C 43 JUN 2016 )
+Tabla 73
+LINEA BASE DE
+INDICADOR DE
+SUBPROGRAMA INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO PRODUCTO
+o Aumentar a 72 el
+a número de escenarios
+os. y 32 deporlivos construidos
+Construcción, reconstruidos y reconstruidos
+Adecuación
+> Mejoramiento y
+Ny Mantenimiento de los
+Escenarios Deportivos "
+Mós Gente Integrada" | Número de Aumentar a 100 el
+escanros Número de escenarios
+existentes 73 existentes. mantenidos,
+mantenidos, adecuados Y
+adecuados y mejorados
+mejorados
+8.1.4.5 PROGRAMA DEPORTE SOCIAL Y COMUNITARIO
+Este programa se traduce en el aprovechamiento del deporte, con fines de
+esparcimiento, recreación y desarrollo físico de la comunidad; procura
+integración, descanso y creatividad. Se realiza mediante la acción
+interinstitucional y la participación comunitaria para el mejoramiento de la
+calidad de vida, con la inclusión en diversos ámbitos sociales, sin discriminación
+vv de edad, genero, condición física, social, cultural o étnica, entendiendo al
+deporte como un ámbito propicio para el desarrollo humano integral.
+8.1.4.5.1 SUBPROGRAMA DEPORTE Y RECREACIÓN CON INCLUSIÓN SOCIAL
+“GENTE DIVERSA”
+Se propiciará la inclusión de la primera infancia con olimpiadas de teteros y
+caminadores, articulados con la política nacional de "0 a Siempre”; la población
+en condición de discapacidad, jóvenes en riesgo, LGBTI, población afro,
+indígenas, victimas con enfoque diferencial y territorial, a través del desarrollo de
+actividades deportivas y recreativas, con el fin de garantizar un mejoramiento de
+la calidad de vida y el aprovechamiento del tiempo libre, la sana convivencia y
+la paz. Finalmente procuraremos sensibilizar y comprometer a todas las
+121
+
+
+## Página 122 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. yC
+ACUERDO No. VOG>
+instituciones y autoridades sobre la importancia necesidad de brindar a la
+p:
+población vulnerable una mayor integración al entorno.
+8.1.4,5.2 SUBPROGRAMA DEPORTE SOCIAL Y COMUNITARIO "PRIMERO LA
+GENTE, PRIMERO EL DEPORTE"
+Se atenderán las diferentes iniciativas presentadas por la comunidad y
+desarrollaremos un conjunto de competiciones deportivas y recreativas que
+promuevan la integración de la comunidad en las localidades, barrios, comunas,
+Y) corregimientos y la atención a la población carcelaria, a través de la realización
+de las siguientes actividades: Juegos Comunales, Juegos Carcelarios, Juegos
+Corregimentales, Torneos de Integración comunitaria entre otros: motivando a la
+9
+comunidad a través de la recreación y el deporte para que lo asuma, como una
+opción de vida y fomentar así en las personas el sentido de pertenencia, la sana
+convivencia y la paz.
+Tabla 74
+INDICADOR DE RESULTADO LINEA DS OR METARESULTADO — RESPONSABLE
+Porcentaje de la Población
+participantes en las actividades a O 9% os
+deportivas y recreativas con inclusión dado 1es en los
+social / la población del Distrito de 7% a IDER
+Cartagena de Indias atendidas en sd y
+nd actividades deportivas y recreativas erp
+enel Distrito de Cartagena de Indias Inclusión social
+Ñ a Incrementar a 55% los
+Porcentoje de población participantes
+en los Juegos  Coregimentales, Darticipontes en los
+Comunales, Corcelarios y torneos de Coróolmental
+integración comunitaria /el número de eS. JDER
+participantes en las actividades Peso ñ
+deportivas y recreativas en el Distrito de megración
+de Cartagena de Indias comunitaria
+Mantener en un 100%.
+Porcentaje de iniciativas presentadas las Iniciativas
+por la comunidad atendidas /sobre el presentadas por la IDER
+número de iniciativas atendida comunidad
+atendidas
+122
+
+
+## Página 123 (OCR Oficial Acuerdo 006 de 2016)
+
+El te Concejo Distrital de Cartagena de Indias D. T. y C.
+— Et
+— E
+Borre ACUERDO No. DOG
+N
+(43 JUN 2016. )
+Tabla 75
+LINEA BASE DE
+SUBEROGRA INDICADOR DE PRODUCTO — INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO
+Deporte y | — Número de población A
+Recreación | vulnerable participantes en vonerable pricipontos
+con Inclusión | actividades de deporte y 29.378 Mn ocivdade de
+Social recreación con inclusión deporte y recteación
+ente, social y enfoque con inclusión social y
+vers "terencial enfoque diferencial
+Ns
+A bei Aumentar a 81.225 el
+No de none Número de participantes
+Coregimentales, enlos Juegos
+Dl o aros 45.059 Corregimentales, IDER
+Social y Tomeos de Integración” Comunales, Carcelarios
+Comunitario pt pd aci y Torneos de Integración
+* Primero la unitaria Comunitaria
+Gente,
+Primero el
+Deporte" Número de iniciativas Mantener 100 iniciativas
+presentadas por la presentadas por la
+comunidad atendidas comunidad atendidas
+8.1.4.6 PROGRAMA DEPORTE ASOCIADO
+Busca incrementar el número de deportistas de alto logro en el distrito de
+¡Y Cartagena, las disciplinas deportivas y las medallas ganadas en los diferentes
+eventos deportivos nacionales e internacionales, a través de una atención
+integral que incluya la preparación física y mental del talento humano, apoyo
+logístico, financiero, formativo y técnico, aplicados en la preparación del
+deportista.
+Así mismo convertir a Cartagena de Indias, en una sede de eventos deportivos y
+recreativos de talla nacional e internacional, como los JUEGOS DEPORTIVOS
+NACIONALES PARA LA PAZ 2019, aprovechando todas las ventajas competitivas
+del territorio.
+123
+
+
+## Página 124 (OCR Oficial Acuerdo 006 de 2016)
+
+El E Concejo Distrital de Cartagena de Indias D. T. y C.
+A ACUERDO No. DOG
+(43 JUN 2016 )
+8.1.4.6.1 SUBPROGRAMA JUEGOS DEPORTIVOS NACIONALES
+La realización de los Juegos Deportivos Nacionales brindará la coyuntura propicia
+para complementar la infraestructura de escenarios de alta competencia, en
+conjunto con el Gobierno Departamental. Se buscará igualmente, promover la
+practica activa entre los cartageneros y la organización de una red de
+voluntariado juvenil. En este sentido la política debe orientar la realización de los
+juegos.
+- Para efectos de la ejecución de este subprograma la Administración Distrital, en
+vu coordinación con el Departamento y/o la Nación, deberá desarrollar o proponer
+ante la entidad u organismo competente, según sea el caso, la institucionalidad,
+o los mecanismos o instrumentos legales que permitan, de manera transparente y
+eficiente ejecutar los recursos públicos para llevar a cabo dichos juegos.
+8.1,4.6.2 SUBPROGRAMA CARTAGENA DE INDIAS SIN FRONTERAS AL DEPORTE
+Y LA RECREACIÓN
+Fomentar y apoyar a través de las alianzas estratégicas con las diferentes
+organizaciones deportivas, la realización de eventos deportivos y recreativos de
+carácter nacional e internacional, que posicionen a Cartagena de Indias como la
+vitrina de los eventos deportivos y recreativos en Colombia.
+as 8.1.4.6.3 SUBPROGRAMA DEPORTE ASOCIADO "PRIMERO EL TALENTO
+DEPORTIVO"
+Se establecerán mecanismos idóneos para desarrollar las acciones ligadas al
+cuidado integral al deportista de altos logros, a los futuros ídolos del deporte, a las
+glorias del deporte y a los organismos deportivos, para garantizar su participación
+digna en eventos de alta competencia a nivel local, nacional e internacional.
+124
+
+
+## Página 125 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. OOO
+IN
+(13 JUN 2016 )
+Tabla 76
+LINEA BASE DE
+INDICADOR DE RESULTADO INDICADOR DE META RESULTADO RESPONSABLE
+RESULTADO
+Porcentaje de deportista de altos logros y eros
+leportista de altos logros y
+futuras estrellas del deporte apoyados / futuras estrellas del deporte
+deportista identificados de alto logros apoyados
+NM Tabla 77
+LINEA BASE DE
+SUBPROGRAMA IO INDICADORDE META PRODUCTO RESPONSABLE
+PRODUCTO
+Diseñar, formular y
+Ñ ejecutar un plan de
+Juegos deportivos intervenciones de
+nacionales Plan formulado y ND infraestructura
+ejecutado deportiva y de
+organización de los
+Juegos deportivos
+nacionales
+o e or Realizar 48 eventos de
+Cartagena de Indias, | 99:00 Al corécter nacional O
+Sin fronteras al deporte intemacional con intemacional con sede
+y la recreación teca on Cartagena a Cartagena de
+de Indias
+ud
+Número de
+A Apoyar a 100
+deportistas de altos deporlistas de altos
+logros y futuros ñ ¡DER
+estrellas del Da y futuros Bi las
+deporte apoyados el deporte apoyados
+Deporte Asociado
+"Primero el Talento
+Deportivo" Número de
+inicialivas Apoyar 430 iniciativas
+apoyadas a ligas, a de ligas, clubes y otras
+clubes y otras organizaciones
+organizaciones deportivas
+deporlivas.
+125
+
+
+## Página 126 (OCR Oficial Acuerdo 006 de 2016)
+
+(ES y Concejo Distrital de Cartagena de Indias D. T. y C.
+A E
+A AC 0.No. DOG
+=S
+CAP OS
+8.1.4.7 PROGRAMA OBSERVATORIO DE CIENCIAS APLICADAS AL DEPORTE DE
+CARTAGENA DE INDIAS
+Se implantará una herramienta que ayude a conocer y a estudiar de primera
+mano, la finalidad y los componentes de la política pública Distrital en materia de
+deporte, recreación, actividad física y el aprovechamiento del tiempo libre en el
+distrito de Cartagena y plantear estrategias para su buen desarrollo.
+_ 8.1.4,7.1 SUBPROGRAMA OBSERVATORIO DE CIENCIAS APLICADAS AL
+Y DEPORTE DE CARTAGENA DE INDIAS
+Se pretende desarrollar un espacio de producción de información, conocimiento
+y datos específicos para los diferentes sectores de la educación, la salud, la
+economía, la política, entre otros, que tengan interrelación o interés con el
+Deporte, la Recreación, la Actividad Física y el Aprovechamiento del Tiempo
+Libre, en el distrito de Cartagena de Indias, tomando como referencia el contexto
+Local, Departamental y Nacional. Dentro del observatorio realizaremos el Plan
+Estratégico Distrital para la Recreación y el Deporte a 2025 y La Política de
+Promoción, Fomento y Desarrollo de las actividades recreativas y deportivas.
+Además se establecerá un sistema de formación académica y técnica, dirigidos
+al talento humano a cargo de estas actividades.
+Tabla 78
+us LINEA BASE DE
+INDICADOR DE RESULTADO INDICADOR DE META RESULTADO RESPONSABLE
+RESULTADO
+Plan Estratégico Distrital para la
+Recreación y el Deporte a 2025 y Formulación de la Política
+la Política de Promoción, Pública y Plan Estratégico
+fomento y desarrollo de las Distrital para lo Recreación
+actividades recreativas y y el Deporte.
+deportivas
+126
+
+
+## Página 127 (OCR Oficial Acuerdo 006 de 2016)
+
+(El Concejo Distrital de Cartagena de Indias D. T. y C.
+E y:
+STE O No. OD6G
+e EII
+Tabla 79
+LINEA BASE DE
+suBPROGRAMA — INPCADOR DE INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO
+Plan Estratégico
+Distrital para la Formular 2 acciones
+Recreación y el estratégicas de
+Deporte a 2025 y promoción y fomento
+la Política de de actividades
+Promoción, deportivas y
+fomento y 0% recreativas mediante
+Ñ desarrollo de la la formulación de la
+actividades Política Pública y Plan
+nu recreativas y Estratégico Distrital
+se deportivas , para la Recreación y
+cds realizado e el Deporte.
+al Deporte do implementado
+Cartagena de indias | — Numero de
+entrenadores,
+líderes Capacitar 7595
+comunitarios , entrenadores, lideres |
+administradores comunitarios ,
+de 7.405 administradores de IDER
+organizaciones organizaciones
+deportivas . deportivas , jueces ,
+jueces, diigentes dirigentes deportivos
+deportivos
+Copacitados
+8.1.5 LÍNEA ESTRATÉGICA SUPERACION DE LA POBREZA EXTREMA Y LA
+DESIGUALDAD
+= Esta línea estratégica se dirige a las familias ubicadas en zonas urbanas y rurales
+"s/ en situación de extrema pobreza; el objetivo principal de esta apuesta, es
+alcanzar las nueve dimensiones del desarrollo humano, bajo un enfoque de
+derechos, que promueva el acceso integral a los servicios básicos, en articulación
+principalmente con Prosperidad Social y organizaciones No Gubernamentales;
+estas dimensiones son: identificación, salud, nutrición, educación, acceso a la
+justicia, dinámica familiar, bancarización y ahorro, ingreso y trabajo y
+habitabilidad. El Distrito utilizará como estrategia, al Plan de Emergencia Social
+para acercar la oferta institucional a la población en extrema pobreza, mediante
+el acompañamiento de las familias, con el objetivo de mejorar su calidad de vida
+y de esta manera alcanzar los mínimos vitales para el desarrollo humano integral,
+facilitando su inclusión social y económica.
+127
+
+
+## Página 128 (OCR Oficial Acuerdo 006 de 2016)
+
+fas
+El Concejo Distrital de Cartagena de Indias D. T. y C.
+i—
+IDO, ACUERDO No. COG
+e (13JUN 2016)
+8.1.5.1 PROGRAMA SUPERACIÓN DE LA POBREZA EXTREMA Y LA DESIGUALDAD
+Este programa pretende aumentar la atención de hogares y/o personas en
+situación de pobreza extrema o en situación de desplazamiento, a partir de la
+articulación de la oferta institucional que responda a las necesidades
+encontradas en las familias. El proceso inicia con el acompañamiento de las
+familias teniendo el enfoque étnico (afrodescendientes, raizales, palenqueros e
+indígenas). la realización en el territorio de jornadas de atención integral y el
+acceso preferente a los programas de las diferentes entidades distritales, hasta
+9] superar las barreras que generan exclusión, tanto del área urbana como rural,
+con énfasis en los corregimientos insulares.
+Con esta estrategia se pretende apuntar al cierre de brecha territorial, entre
+hogares en condición de pobreza extrema y no pobreza, en zonas urbanas y
+rurales, saldando la deuda histórica con las poblaciones autoreconocidas como
+afrodescendientes, negros y palenqueros, en los sectores de educación, acceso
+a salud, generación de ingresos, servicios públicos y vivienda.
+8.1.5.1.1 SUBPROGRAMA IDENTIFICACIÓN PARA LA SUPERACIÓN DE
+POBREZA Y DESIGUALDAD
+Se realizarán jornadas de identificación, con el apoyo de la Unidad de Atención a
+la Población Vulnerable — UAPV- de la Registraduría Nacional del Estado Civil, con
+UA el propósito de apoyar a los miembros de las familias en situación de pobreza
+extrema, para que logren acceder a sus documentos de identificación acorde
+con su edad, cumpliendo con el primer derecho fundamental de la sociedad.
+Igualmente, se les apoyará en la actualización de sus documentos en la base de
+datos SISBEN, de tal manera que se facilite el acceso de los servicios del Estado.
+8.1.5.1.2 SUBPROGRAMA SALUD PARA LA SUPERACIÓN DE POBREZA Y
+DESIGUALDAD
+Se articulará con el DADIS, con el propósito de que las personas en situación de
+pobreza extrema o desplazamiento, accedan de manera preferente al Sistema
+General de Seguridad Social en Salud [SGSSS), a través de las jomadas de
+atención integral, garantizándoles los servicios de salud subsidiada. Se realizarán
+128
+
+
+## Página 129 (OCR Oficial Acuerdo 006 de 2016)
+
+fos
+kl E >) Concejo Distrital de Cartagena de Indias D. T. y C.
+E— E
+rt ACUERDO No. COS
+—= IN
+C M3 JUN 2016 )
+encuentros formativos con el fin de sensibilizar a jóvenes y adolescentes de las
+familias en extrema pobreza, en la promoción de salud sexual y prevención de
+embarazos.
+8.1.5.1.3 SUBPROGRAMA EDUCACIÓN PARA LA SUPERACIÓN DE POBREZA Y
+DESIGUALDAD
+Se apoyará a los niños, niñas, jóvenes y adultos miembros de las familias en
+situación de pobreza extrema o de desplazamiento, para que accedan y
+e permanezcan en el sistema educativo, así como para que adquieran
+competencias básicas, ciudadanas y laborales, que contribuyan a su desarrollo
+integral. Para estos efectos, el Plan de Emergencia Social articulará con la Oficina
+de Prosperidad Social, los Centros de Educación Superior, la Secretaría de
+Educación Distrital, el SENA, las Instituciones Técnicas y Tecnológicas, las
+Organizaciones No Gubernamentales dedicadas al servicio educativo inicial y
+programas de capacitación complementaria.
+8.1.5.1.4 SUBPROGRAMA HABITABILIDAD PARA LA SUPERACIÓN DE POBREZA
+Y DESIGUALDAD
+Este subprograma tiene como objetivo, articular y gestionar proyectos para que
+las familias en extrema pobreza obtengan: legalización de predios, mejoramiento
+de vivienda, mejoramiento de condiciones de habitabilidad y una vivienda con
+o servicios públicos. Para ello se desarrollarán capacidades en estas familias que les
+permitan mejorar las condiciones de seguridad y salubridad de la vivienda,
+fomentar el arraigo y el fortalecimiento de las redes de apoyo social, con el fin de
+que conozcan los mecanismos existentes para formalizar la tenencia de la
+vivienda y de las entidades que ofrecen servicios relacionados con su adquisición
+y su mejora.
+Se tramitaran alianzas estratégicas con entidades como el D.P,S., Viceministerio
+de Vivienda, Corvivienda y el Departamento de Bolívar, con el fin de ejecutar
+proyectos que mejoren las condiciones de habitabilidad acordes con su contexto
+cultural y condición socioeconómica. En este sentido se apuntalará la propuesta
+de agenda común del Departamento de Bolívar y el Distrito “Laboratorio Social”,
+como proyecto piloto de intervención social a lo largo del barrio Olaya Herrera,
+129
+
+
+## Página 130 (OCR Oficial Acuerdo 006 de 2016)
+
+j sá Concejo Distrital de Cartagena de Indias D. T. y C.
+(Saa:
+e E ACUERDO No. COS
+(43 JUN 2016 )
+
+en los sectores Playas Blancas, Zarabanda y la Magdalena, donde es evidente un
+déficit cualitativo de vivienda en esta zona.
+De manera adicional se desarrollarán proyectos que ayuden a mitigar el aumento
+de temperatura en la tierra, que origina el cambio climático, se plantea esta
+acción como respuesta a la implementación de la Estrategia 4C (Cartagena
+Competitiva y Compatible con el Clima), cuya finalidad es reducir la
+vulnerabilidad de la ciudad e incrementar su capacidad de respuesta frente a las
+amenazas e impactos del cambio climático.
+
+Ns
+8.1.5.1.5 SUBPROGRAMA INGRESO Y TRABAJO PARA LA SUPERACIÓN DE
+
+POBREZA Y DESIGUALDAD
+
+Con este subprograma se promoverán y ejecutarán programas de generación de
+ingresos en familias en situación de pobreza extrema, desplazamiento o
+vulnerabilidad, a través de estrategias de emprendimiento y empresarismo, de
+igual forma se desarrollarán proyectos que apunten a mejorar la Empleabilidad
+de esta población.
+En primer lugar se apoyará la creación de nuevas unidades productivas que sean
+el resultado de un proceso lógico que implique: capacitación, generación de
+planes de negocios y búsqueda de fuentes de financiación, cuyo resultado sea el
+aumento en la generación de ingresos de forma creativa e innovadora.
+
+iu A las unidades productivas ya creadas, y pertenecientes a familias o personas en
+situación de pobreza extrema, se les implementará procesos que permitan
+formalizarlas para que mejoren su capacidad administrativa y de sostenibilidad,
+para generar ingresos, a través de capacitaciones en gestión empresarial, que les
+facilite consecución de recursos de microcrédito, conllevando así a su
+fortalecimiento técnico y financiero.
+Se promoverá la generación de empleo para jóvenes y adultos desempleados en
+las familias en situación de pobreza extrema, desplazamiento o vulnerabilidad,
+buscando su inserción al mercado laboral, con procesos de orientación laboral
+pertinente, utilizando como principal herramienta el Registro en el Servicio Público
+de Empleo - SPE. A través de la alianza con el SENA, se solicitará la evaluación de
+la población inscrita en este servicio, para que sea certificada por competencia
+
+130
+
+
+## Página 131 (OCR Oficial Acuerdo 006 de 2016)
+
+A
+EZ 0: Concejo Distrital de Cartagena de Indias D. T. y C.
+NS ACUERDO No. O06
+(43 JUN 2016 )
+laboral, y que a su vez realice su inscripción en la Agencia Pública de Empleo
+Sena. Para potencializar la empleabilidad, se realizarán gestiones directas con los
+Macroproyectos que se desarrollarán en la ciudad, tanto de inversión pública
+como privada, ya que serán generadores de empleo, con el objetivo que estas
+empresas, como las nuevas que se instalen en la ciudad, permitan insertar en el
+mercado laboral a la población desempleada.
+8.1.5.1.6 SUBPROGRAMA BANCARIZACIÓN Y AHORRO PARA LA SUPERACIÓN
+DE POBREZA Y DESIGUALDAD
+NS
+El Distrito promoverá la inserción al sistema financiero como medio de acceso a
+oportunidades de trabajo, generación de ingresos y seguridad familiar. Para este
+propósito, el Plan de Emergencia Social Pedro Romero, coordinará con la Red
+Microfinanciera del Distrito, la realización de Ferias Microfinancieras para
+promover la bancarización a través del Ahorro, Inversión y Crédito. Como
+elemento novedoso, para este cuatrienio, se realizarán jornadas, para beneficiar
+a la población en pobreza extrema para que accedan al Programa de Beneficios
+Económicos Periódicos - BEPS — (Programa de Ahorro Voluntario para la Vejez),
+impulsado por el Gobierno Nacional, lo que favorecerá a los colombianos que
+hoy no cuentan con la posibilidad de cotizar para una pensión, o que habiéndolo
+hecho, cumplieron la edad y no lograron obtenerla, esto basado en el Decreto
+604 de 2013, cuyo aliado principal será Colpensiones.
+MX 8.1.5.1.7 SUBPROGRAMA ACCESO A LA JUSTICIA PARA LA SUPERACIÓN DE
+POBREZA Y DESIGUALDAD
+El objetivo de este subprograma, es fomentar que las familias en situación de
+pobreza extrema o desplazamiento, accedan y conozcan los servicios de justicia
+formal y no formal mediante los operadores de Justicia como: Comisarías de
+Familia, Inspección de Policía, Conciliadores en Equidad, Defensoría del Pueblo,
+Personería Distrital, Centro de Atención a Víctimas, Agencia Colombiana para la
+Reintegración ACR, Instituto Colombiano de Bienestar Familiar ICBF (procesales y
+extraprocesales), además con: Secretaría del Interior y Convivencia Ciudadana,
+Secretaría de Participación y Desarrollo Social, !.E Superior [Centros de
+conciliación de sus facultades de derecho), de tal manera que puedan hacer
+valer sus derechos y deberes.
+131
+
+
+## Página 132 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. DOG
+(413 JUN 2016 )
+8.1.5.1.8 SUBPROGRAMA DINÁMICA FAMILIAR PARA LA SUPERACIÓN DE
+POBREZA Y DESIGUALDAD
+
+Por medio de este subprograma, se plantea el desafío de disminuir las
+
+manifestaciones de violencia intrafamiliar, juvenil y de género, las malas
+
+relaciones de convivencia comunitaria, el abuso sexual infantil, el alcoholismo y la
+
+drogadicción. Para ello se promoverá el fortalecimiento del núcleo familiar y el
+
+entorno social y comunitario de las familias en situación de pobreza extrema o
+
+desplazamiento, con el fin de que cuenten con un tejido familiar consolidado,
+y mecanismos saludables de convivencia y expresiones de afecto, que conlleven a
+
+que sean más partícipes de las organizaciones sociales en el desarrollo
+
+económico, social y humano.
+
+Igualmente, se ayudará a que las personas víctimas del conflicto, se puedan
+
+adaptar al territorio y a su dinámica social a través de actividades que le
+
+permitan el reconocimiento y disfrute de los espacios de participación
+
+ciudadana.
+
+8.1.5.1.9 SUBPROGRAMA NUTRICIÓN Y SEGURIDAD ALIMENTARIA PARA LA
+
+SUPERACIÓN DE POBREZA Y DESIGUALDAD
+
+En el marco de lo establecido en el Acuerdo No. 017 de 2004 por el cual se crea
+
+el Sistema Integral de Nutrición para la población vulnerable de Cartagena de
+uy Indias, se promoverá la Política Pública Integral de Nutrición y Seguridad
+
+Alimentaria, para garantizar a las familias en situación de pobreza O
+
+desplazamiento, el derecho a recibir una alimentación adecuada y desarrollar
+
+buenos hábitos en el manejo de los alimentos.
+
+Para lograr esto, se propone manejar tres líneas, en donde en primera instancia,
+
+se le facilitará el acceso a la alimentación balanceada y de calidad a través del
+
+fortalecimiento de los comedores comunitarios. Así mismo proponemos
+
+actividades con entes pertinentes y el equipo de trabajo de valorización
+
+nutricional, con el fin de identificar y atender las niñas y niños mayores de seis (6)
+
+meses y menores de cinco (5) años, con el fin de evitar la presencia de tamizaje
+
+positivo por desnutrición aguda y así implementar acciones que disminuyan esta
+
+problemática y sus consecuencias en el desarrollo de su niñez.
+
+132
+
+
+## Página 133 (OCR Oficial Acuerdo 006 de 2016)
+
+(E E Concejo Distrital de Cartagena de Indias D. T. y C.
+A— Y
+Qe ACUERDO No. COG
+C 43 JUN 2016 )
+De igual manear, apoyaremos las iniciativas que contribuyan al aseguramiento
+alimentario y desarrollo nutricional de los estudiantes universitarios en situación de
+pobreza extrema o vulnerabilidad que se encuentren cursando estudios
+académicos en las entidades universitarias públicas del Distrito, ya que hace
+parte de los logros de la familias * El consumo de alimentos variados y de manera
+saludable". Con este fin lograremos alcanzar unos de los objetivos básicos del
+primer escalón del desarrollo que es poner fin a la pobreza y hambre cero.
+Igualmente se Implementará la Política Pública de Seguridad Alimentaria y
+Nutricional Distrital “Tintililillo” PASAN, la cual fue aprobada mediante Decreto 1556
+” del 10 de diciembre de 2014, en aras de garantizar el suministro de grupos de
+alimentos prioritarios en la población en situación de pobreza en Cartagena, a
+continuación se detallan los objetivos de esta política, los cuales serán los pasos a
+seguir en su implementación, a saber:
++ Incrementar la producción agropecuaria regional y local.
++ Aumentar los esfuerzos institucionales para mejorar la salud y nutrición de la
+población.
++ Mejorar los hábitos, patrones y estilos de vida saludables en la población
+pobre y vulnerable.
+8.1.5.1.10 SUBPROGRAMA DE FORTALECIMIENTO INSTITUCIONAL PARA LA
+ws SUPERACIÓN DE POBREZA Y DESIGUALDAD
+El Distrito a través del Plan de Emergencia Social Pedro Romero, coordinará toda
+la logística e infraestructura física, tecnológica y de recursos humanos necesarios
+para la ejecución de los diferentes subprogramas descritos anteriormente en el
+Programa para "Superar la Desigualdad”. Se fortalecerá el Sistema de
+Información de registro, control, monitoreo georeferenciado y personalizado de
+los miembros de las familias en situación de vulnerabilidad, desplazamiento, de tal
+manera que se mantengan actualizados los datos de caracterización
+socioeconómica de las familias, la demanda y oferta de servicios, así como los
+logros alcanzados y pendientes e indicadores pertinentes para conocer el
+avance de las familias en su proceso de movilidad social, hacia las sendas de la
+prosperidad. Para este propósito, se articularán acciones con las demás
+133
+
+
+## Página 134 (OCR Oficial Acuerdo 006 de 2016)
+
+El Concejo Distrital de Cartagena de Indias D. T. y Cc.
+A E
+ES ACUERDO NO. v06S
+o CoASóN )
+dependencias de la administración Distrital, las Universidades Públicas y Privadas y
+demás organizaciones que sean pertinentes.
+El Programa de Emergencia Social Pedro Romero "PES PR” se institucionalizó a
+través del Acuerdo Distrital número 014 de Diciembre 12 de 2.011 del Concejo
+Distrital, el cual continúa ejecutándose a través del presente Plan; sin embargo,
+existe la necesidad de evaluar su impacto y la estrategia de continuidad del
+mismo, de ser necesario por intermedio de una instancia articuladora de gestión y
+ejecución, para focalizar las inversiones del Distrito, la Nación, la empresa privada,
+U las organizaciones no gubernamentales (ONG), la Cooperación Internacional y la
+ciudadonía, para la atención de personas en situación de pobreza extrema o en
+situación de desplazamiento, como instrumento de canalización y proyectos de
+las políticas públicas de infancia, adolescencia, tercera edad y demás sujetos de
+especial protección constitucional en el distrito de Cartagena de Indias.
+Tabla 80
+LINEA BASE DE
+INDICADOR DE RESULTADO INDICADOR DE META RESULTADO RESPONSABLE
+RESULTADO
+PORCENTAJE DE HOGARES PLAN DE
+ACOMPAÑADOS EN POBREZA 8,0% 10.0% EMERGENCIA
+EXTREMA/NUMERO DE HOGARES DEL y y SOCIAL PEDRO
+DISTRITO DE CARTAGENA ROMERO PES-PR
+Ns
+Tabla 81
+LINEA BASE DE
+US EROS INDICADOR DE META e A RESPONSABLE
+PRODUCTO
+Número de Identificar a 18431
+personas personas en pobreza
+identificadas extrema en el área
+a Urbana urbana PLAN DE
+Identificación para la 7273 (fuente: DPS, EMERGENCIA
+Superación de Pobreza y , corte 31 SOCIAL PEDRO
+Desigualdad Número de diciembre 2015 | Identificara 2000
+personas personas en pobreza ROMERO PES-PR
+Identificadas extrema en el órea
+Rural sural
+134
+
+
+## Página 135 (OCR Oficial Acuerdo 006 de 2016)
+
+El Concejo Distrital de Cartagena de Indias D. T. y C.
+Lar ACUERDO No. OOG
+E 13 JUN 2016
+UNEA BASE DE
+1
+SUBPROGRAMA INDICADOR DE INDICADOR DE META PRODUCTO A RESPONSABLE
+PRODUCTO PRODUCTO 2019
+Lo Realizar 5 jomadas
+¿omacs de | 5 (Fuente: PES. | qe identificación con
+identificación corte 31 a Rogiacuña
+realizadas diciembre 2015) Nacional.
+Número de
+personas en Gestionar con el
+pobreza 10.857 DADIS que 11520 de
+extrema que > pobreza extrema
+acceden al “accedan al SGSS
+Ns $GSS
+Salud para la Superación Número de
+de pobreza y adolescentes Formar a 2000
+Desiguoldod en pobreza adolescentes en
+extrema pobreza extrema en
+formados en N.D Promoción de la
+Promoción de la Salud Sexual y
+Salud Sexual y Prevención de
+Prevención de embarazos,
+Embarazos
+Personas
+vinculados ala Vincular 6412 de
+Oferta de pobreza extrema a la
+Servicio 3.523 oferta de servicios
+educativos en educativos de
+formación formación pertinente
+pertinente.
+0 Número de
+Educación para la niños, niñas,
+Superación de pobreza y | adolescentes, Gestionar que 5140
+Desigualdad jóvenes y niños, niñas,
+is adultos de 2984 (Fuente: adolescentes,
+pobreza D.P.S. corte 31 dic jóvenes y adultos de
+extrema que 2015 pobreza extrema
+acceden alos accedan alos
+diferentes diferentes nivetes del
+niveles del sistema educativo
+sistema
+educativo
+Número de
+ns de Intervenir 500
+Habitablidad pora la cad 7009 (Fuente: | viviendas de famillas
+Superación de pobreza y | — Baremo |D.P5.corte 31 dic | en pobreza extrema
+Desigualdad Ñ A 2015) en habitabilidad con
+intervenidas en calidad.
+habitabilidad
+con calidad.
+135
+
+
+## Página 136 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. OOG
+N 9
+(43 JUN 2016 )
+LINEA BASE DE
+1
+SUBPROGRAMA INDICADOR DE INDICADOR DE META PRODUCTO A RESPONSABLE
+PRODUCTO 2019
+PRODUCTO
+Número de
+tl 1704 personas en
+po pobreza extrema
+extremo úcerfficadas en
+certificadas en | 171 (DPS, corte 31 tenci
+Competencias dic 2015) SUSAN
+laborales e laborales e insertadas
+insertados en l enelmercado
+> mercado
+y laboral
+Número de
+. unidades
+Ingreso y Trabajo para la | productivas Crear 2556 unidades
+superación de pobreza y | 'creadasa — | 4.550 (Fuente: PES | productivas a través
+desigualdad través de corte dic 2015) de proceso de
+proceso de emprendimiento
+'emprendimient
+o
+Número de
+Unidades Fortalecidas técnica
+productivos y financiera 4261
+fortalecidas 2.792 (Fuente: PES unidades productivas
+técnicay | corte dic 2015) pales
+financiera a
+través de empresarismo
+empresarismo.
+Número de
+personas en
+pobreza
+extrema que
+Ns tienen Garantizar el acceso
+microempresas | 12897 (DPS, corte | a 13374 personas en
+Bancarización y Ahorro | O Pequeños dic 31 2015) pobreza extrema al
+Pora la Superación de. |, Negocios en sistema financiero
+Pobreza y Desigualdad | funcionamiento
+que accedan al
+sistema
+financiero
+Ferias micro a 4
+e Realizor 8 terias micro
+financieras de
+EJES
+Número de
+Familias en
+siluación de Formar 9231 familias
+Acceso ala Justicia para | — Pobreza 3.801 (Plan de _ | en pobreza extrema
+la superación de pobreza | Extremao — | Acción PES, dic 31| en Mecanismos de
+y desigualdad Desplazamiento | — de 2015) Resolución de
+con Conflictos
+conocimiento
+en Mecanismo
+136
+
+
+## Página 137 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. QOG
+(113 JUN 2016 )
+LINEA BASE DE
+ROD!
+IS O ¡moIcADOR DE MEOAPIORUCION RESPONSABLE
+PRODUCTO
+de Resolución
+de Conflictos
+Número de
+familias en
+situación de
+Pobreza $90 acceden alos
+uy extremo o servicios de justicia
+desplazamiento | 181 (DPS, corte 31 formal y no formal
+hon accedido a dic 2015) Ml
+para la solución de
+los servicios de conflictos
+justicia formal y
+no formal para
+la solución de
+sus conflictos
+Número de
+familias en
+ra ue Fortalecer 10577
+hon fortalecido pomos de pobreza
+el núcleo extremo en
+familiar, 9.852 los de
+desarrollando A o
+convivencia y
+mecanismos y
+saludables de a Oe
+convivencia y
+expresiones de
+fecto.
+Dinámica Famlior depara
+la superación de pobreza Número de
+v y eiguoldad | adolescente y Sensibizar 3200
+Pureza 3.387 adolescente y
+Esrema (adolescentes y | jóvenes en pobreza
+sensipiizados en |. Jóvenes extremo en
+endo | Scompañados | prevención de
+pr por DPS a 2015) | consumo de alcohol
+consumo de la drogadicción
+alcohol y la yla dro
+drogadicción
+Número de '
+famiñas víctimas so pende o amas
+en postconflicto mo stconflicio
+atendidas po
+Nutrición y Seguridad Implementación Implementar 3
+Alimentaría para la de comedores comedores
+superación de la pobreza | comunitarios comunitarios
+137
+
+
+## Página 138 (OCR Oficial Acuerdo 006 de 2016)
+
+OS
+El * Concejo Distrital de Cartagena de Indias D. T. y C.
+== ..Y
+rt ACUERDO No. OOG
+Su Ñ
+(13 JUN 2016 )
+LINEA BASE DE
+RODUCTO A
+SUBPROGRAMA INDICADOR DE INDICADOR DE META oo o RESPONSABLE
+PRODUCTO MN
+y desigualdad Número de
+Personas en Garantizar el acceso
+pobreza de 9377 personas en
+ame pobreza extrema a os
+10.993 programas de
+programas de nutrición a través de
+nutición los comedores
+Iravés de los comunitarios.
+comedores
+Y comunitarios.
+Número de
+niñas y niños
+mayores de seis
+(6) lp Atender 2494 niñas y
+menores de niños mayores de seis
+cinco (5) en 2370 (DPS, (6) meses y menores
+pobreza población de cinco (5) en
+extrema atendida de0a | oobreza extrema en
+identificados y | 5,corte2015) | P' programa de
+caracterizados nutrición
+nutricionalment
+e para
+programar su
+atención.
+Número de
+o (os, , Vincular 1200 familias
+vinculados ala en pobreza extrema
+tt 19 fica o ala Política Pública
+k istrital e Distrital de Seguridad
+Alimentar y Aicion Tena
+y NUTICIÓN Nutrición "Tintilillo"
+*Tintiliillo”
+Fortalecimiento
+institucional para la Bose de delos Crear e implementar
+superación la pobreza y | | base de datos
+presta implementada
+8.2 EJE ESTRATEGICO PRIMERO LA GENTE
+En consonancia con el enfoque de Desarrollo Humano, los ciudadanos y
+ciudadanas habitantes del distrito de Cartagena, independiente de su color de
+piel, etnia, género, edad, condición y situación, en consonancia con lo
+establecido en la Constitución Nacional y las Leyes que rigen la materia, tendrán
+138
+
+
+## Página 139 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. DOG
+(CA3 JUN 2016)
+la posibilidad de ampliar sus opciones y generar las capacidades para que en
+condiciones de igualdad, accedan a los bienes y servicios que otorgarán las
+oportunidades de su inserción al desarrollo y condiciones de vida decente,
+respetuosa y participativa; utilizando como principal estrategia la articulación
+interinstitucional que promuevan la gama de oferta para la inclusión de grupos
+más desprotegidos que viven en extrema pobreza, orientado a eliminar la
+exclusión social y situaciones intolerables de violencia, maltrato, discriminación,
+desprotección y abusos. Esto implica acciones orientadas a resultados concretos
+que van a mejorar ostensiblemente la vida de los niños y las niñas en su primera
+9) infancia, niñez, y adolescencia. Los y las jóvenes, las personas mayores, las
+personas en condición de discapacidad, las mujeres, y la población LGBTI; todos
+transversalizados con la política étnica afro, negra, palenquera e indígena, en el
+marco de los derechos humanos y la diversidad.
+8.2.1 LÍNEA ESTRATÉGICA INFANCIA, NIÑEZ Y ADOLESCENCIA FELIZ Y
+PROTEGIDA
+Garantizar, mejorar, promover y restituir el pleno ejercicio de todos los derechos
+de los niños, las niñas, los y las adolescentes, priorizando la atención en los
+factores de vulnerabilidad y los comportamientos que implican riesgos sociales,
+tanto en la familia como en la comunidad, a través de la apropiación de
+estrategias y conocimiento por parte de los padres, siendo la familia sujeto
+colectivo de derechos y núcleo primario de protección y desarrollo para los niños,
+niñas y adolescentes. La familia es el grupo afectivo y de acogida fundamental
+NN de los seres humanos e incide en forma significativa, en el desarrollo de los niños,
+niñas y adolescentes, es por ello que se convierte en una condición fundamental
+para su vida; de igual forma se debe priorizar la construcción de espacios de
+protección y de creación que respondan a sus características étnicas, físicas y
+sociales.
+Como una de las principales acciones de este Plan en el marco de los derechos
+de la infancia, está la formulación de la Política Pública de la Infancia, la Niñez y
+la Adolescencia, luego de un proceso de revisión rigurosa de los avances
+conquistados con la ejecución la política indicativa Voces escuchadas, Voces
+que deciden.
+139
+
+
+## Página 140 (OCR Oficial Acuerdo 006 de 2016)
+
+(El A, Concejo Distrital de Cartagena de Indias D. T. y C.
+E — f
+Sanz ACUERDO No. DOG
+(13 JUN 2016)
+8.2.1.1 PROGRAMA PRIMERA INFANCIA FELIZ Y PROTEGIDA
+El Plan de Desarrollo Primero la Gente para una Cartagena Competitiva y
+Sostenible a través de este programa, propone una atención oportuna con
+calidad y calor humano, que apunte a mejorar las condiciones de vida de los
+niños, niñas y adolescentes, a través del desarrollo de acciones articuladas,
+intersectoriales e interinstitucionales, mediante la implementación de políticas,
+programas, subprogramas y estrategias que involucren la promoción, la
+prevención, la movilización y la atención, con la participación activa de la
+blación interesada.
+u poblacii resada
+Se promoverá el fortalecimiento familiar, dado que ésta, es Un referente
+fundamental para el adecuado desarrollo de los niños, niñas, adolescentes.
+Se avanzará en la formulación e implementación de la política pública de
+primera infancia, infancia, adolescencia y fortalecimiento familiar, a partir de la
+evaluación de Voces Escuchadas Voces Que Deciden, lo cual permitirá contar
+con un conjunto de directrices, orientaciones, criterios y lineamientos estratégicos,
+encaminados a solucionar los problemas, satisfacer necesidades e identificar las
+capacidades para generar bienestar y desarrollo.
+8.2.1.1.1 SUBPROGRAMA MI PRIMERA INFANCIA FELIZ Y ACOGIDA POR MI
+FAMILIA
+Ns Este subprograma está fundamentado en los lineamientos que establece la
+Política Pública Nacional de Atención Integral para la Primera Infancia, de
+acuerdo con la Estrategia de Cero a Siempre, donde se establece proporcionar
+la atención desde los distintos entornos, a los niños y las niñas en edad de 0-5
+años. En concordancia con esto la Alcaldía Mayor de Cartagena busca la
+garantía y el restablecimiento de los derechos de esta población, a través de la
+articulación —interinstitucional, teniendo en cuenta el principio de
+corresponsabilidad y de cooperación mutua.
+Tiene como propósito fundamental Impulsar la generación de entornos familiares
+e institucionales que favorecen y potencian el desarrollo integral de la primera
+infancia en el Distrito de Cartagena, con enfoque de derecho y diferencial,
+avanzando hacia la cualificación de su cuidado y atención, garantizando:
+140
+
+
+## Página 141 (OCR Oficial Acuerdo 006 de 2016)
+
+El —— Concejo Distrital de Cartagena de Indias D. T. y Cc.
+P— <=
+y E
+ACUERDO o. DOG
+CC 13 JUN 2016 )
++ Que padres, madres y cuidadores estén formados en pautas de crianza
+que favorecen su desarrollo integral.
++ La promoción de entornos protectores que favorecen su desarrollo. (Hogar,
+Educativo, Cultural, Salud)
++ La promoción de espacios lúdicos y de encuentro que faciliten la
+construcción de su identidad en un marco de diversidad,
++ La promoción de espacios que les permitan expresar sentimientos, ideas y
+opiniones en sus entomos cotidianos en un marco de respeto.
++ La promoción de sus derechos y acciones de prevención, ante la
+Y exposición a situaciones de riesgo o vulneración.
+Tabla 82
+LINEA BASE DE INDICADOR DE
+INDICADOR DE RESULTADO RESULTADO. META RESULTADO RESPONSABLE
+Porcentajes de padres y/o
+cuidadores que participan en
+Acciones que promuevan el
+desarollo de habilidades en
+entornos protectores y pautas de 3.3% SPDS
+crianza que favorecen el desarrollo
+integral de los niños y las niñas de
+primera infancia
+Tabla 83
+No LINEA BASE DE
+SUBPROGRAMA MAC INDICADORDE — METAPRODUCTO — RESPONSABLE
+PRODUCTO
+Numero de
+Padres, madres
+y/o cuidadores
+que porticipan
+he J a iones de
+Mi primera Infancia Fetizy | Sh Seco
+n y promoción para 3.321 10.000 SPDS
+Acogida por mi Familia la “atención
+integral de la
+primera infancia
+con enfoque
+diferencial.
+141
+
+
+## Página 142 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. DOG
+(43 JUN 2016)
+INDICADOR DE LINEA BASE DE
+SUBPROGRAMA INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO PRODUCTO
+
+Numero de CDI
+
+Construidos
+
+para la
+
+atención — de 7 sPDS
+
+niñas y niños (0-
+
+5 años)
+
+uy 8.2.1.2 PROGRAMA NIÑEZ Y ADOLESCENCIA FELIZ Y PROTEGIDA
+Este programa realizará una atención oportuna con calidad, eficiencia y calor
+humano, con miras a mejorar las condiciones de vida de los niños, niñas y
+adolescentes, a través de la puesta en marcha de acciones articuladas que
+involucren la promoción, prevención, movilización y atención con la participación
+activa de la población interesada, para garantizar las realizaciones que
+permitirán: “Crecer en entornos que promocionan sus derechos y actúen ante la
+exposición a situaciones de riesgo o vulneración, construye su identidad en un
+marco de diversidad y expresa libremente sentimientos, ideas y opiniones, e
+inciden en los asuntos que son de su interés, realiza practica de autoprotección y
+autocuidado y disfruta de entornos que lo protegen” , todo esto en el marco del
+Plan Decenal para la Infancia y Adolescencia 2009-2019.
+[9] 8.2.1.2.1 SUBPROGRAMA NIÑEZ Y ADOLESCENCIA FELIZ CON ESPACIOS PARA
+LA PROMOCIÓN, PROTECCIÓN Y GARANTÍA DE SUS DERECHOS
+
+A través de este subprograma se busca, impulsar en los niños, niñas, adolescentes
+y sus familias, prácticas de autoprotección y auto cuidado que les facilite el
+manejo de sus emociones, la prevención de riesgos sociales, y estimule la
+construcción de proyectos de vida en el marco del respeto, la promoción, la
+garantía, el restablecimiento de sus derechos y de la convivencia pacífica.
+Estimulando:
+
++ Familias y cuidadores con pautas y estrategias que favorecen su desarrollo
+integral, y le reconocen como agente activo al interior de la misma y en la
+comunidad, a través de un dispositivo de acompañamiento psicosocial,
+
+142
+
+
+## Página 143 (OCR Oficial Acuerdo 006 de 2016)
+
+¡— Concejo Distrital de Cartagena de Indias D. T. y C.
+Gr ACUERDO No. O06,
+C13JUN 2016)
+para prevenir riesgos sociales como, el embarazo a temprana edad, la
+violencia sexual, la explotación laboral, entre otros.
+
++ La Promoción de programas de formación que facilite su desarrollo y
+potencien sus capacidades, habilidades y destrezas, que construya su
+identidad en un marco de diversidad, realizar prácticas de autoprotección
+y autocuidado, y disfrutar de entomos protectores y protegidos, frente a
+situaciones de riesgo o vulneración.
+
++ La Promoción de entomos protectores que favorecen su desarrollo. (Hogar,
+Educativo, Cultural, Salud, Virtual, Trabajo Protegido).
+
+W] + Establecer oferta de servicios que garanticen el restablecimiento de
+derechos a través de la atención transitoria, inmediata o especializada de
+niños, niñas y adolescentes con derechos amenazados, vulnerados e
+inobservados.
+
++ En consonancia con el Plan Nacional de Desarrollo, quien establece
+“Reformular la estrategia nacional para erradicar las peores formas de
+trabajo infantil y proteger el joven trabajador”, el presente Plan de
+Desarrollo promoverá la actualización de la línea base y caracterización
+de la población en riesgo y en situación de trabajo infantil; se diseñará una
+estrategia a partir del fortalecimiento del Comité Interinstitucional de
+Erradicación y Prevención del Trabajo Infantil — CIETI con el fin de superar
+esta vulneración de los derechos de infancia.
+
+8.2.1.2.2 SUBPROGRAMA NIÑEZ Y ADOLESCENCIA ACTIVA CON ESPACIOS
+Y PARA LA LÚDICA, LA PARTICIPACIÓN Y LA INCIDENCIA EN SU
+
+PROPIO DESARROLLO
+
+Este subprograma está dirigido a Promover en los niños, niñas, adolescentes el
+
+disfrute del juego, la lúdica y la participación en los diferentes espacios locales,
+
+que tienen incidencia en sus vidas, con el apoyo de la familia y la comunidad,
+
+quienes además reconocen estos escenarios como parte de su desarrollo integral
+
+e intervienen en la construcción y gestión de políticas públicas.
+
+Estimulando:
+
++ La promoción de espacios lúdicos y de encuentro que faciliten la
+construcción de su identidad en un marco de diversidad.
+
+143
+
+
+## Página 144 (OCR Oficial Acuerdo 006 de 2016)
+
+el A Concejo Distrital de Cartagena de Indias D. T. y C.
+(¿Saa
+rd ACUERDO No. OO
+> 1 3 JUN 5
+CAS 2016 )
++ La gestión para garantizar articulación interinstitucional que permita la
+construcción colectiva de agendas estratégicas, a través del Consejo de
+Política Social, el Comité Interinstitucional para la Erradicación del Trabajo
+Infantil y la Mesa Distrital de Primera Infancia.
++ La formulación u actualización, implementación y evaluación de la política
+pública de Infancia, Adolescencia y Fortalecimiento Familiar.
+Tabla 84
+y LINEA BASE DE INDICADOR DE
+NM INDICADOR DE RESULTADO RESULTADO. META RESULTADO RESPONSABLE
+Porcentoje de niñas, niños
+derechos amenazados, dl tl ") did
+hobseIvados y/o adolescentes atendidos en
+y 0.7% (atendidos por SPDS) forma transitoria e inmediata sPDS
+vulnerados atendidos en o especiolkada con
+forma transitoria e y e
+nmediala y/o derechos amenazados,
+especializada inobservados y/o vulnerados
+Porcentaje de Adultos
+que participan en
+acciones de prevención
+de riesgos sociales que
+afectan a los niños, niñas
+y adolescentes para el 2.00% sPOS
+fortalecimiento de
+vínculos afectivos y |
+entomos protectores
+(nivel 1,2 y 3 del SISBEN)
+_ Porcentoje de niñas, Mantener el porcentaje de
+107 niños, adolescentes y 15% de niñas, niños,
+adultos que impulsan y adolescentes y adultos que
+desarrollan acciones de 15% impulsan y desarrollan SPDS.
+promoción de derechos, acciones de promoción de
+de participación, de derechos, de participación,
+lódica y de gestión de de lúdica y de gestión de
+políticas publicas políticas publicas
+144
+
+
+## Página 145 (OCR Oficial Acuerdo 006 de 2016)
+
+f al Concejo Distrital de Cartagena de Indias D. T. y C.
+S=3rg ACUERDO No. DOG
+> 2 $“ a
+C.13 JUN 2015 )
+Tabla 85
+LINEA BASE DE
+INDICADOR DE META
+SUBPROGRAMA INDICADOR DE RESPONSABLE
+PRODUCTO PRODUCTO PRODUCTO
+Numero de niñas, niños y
+adolescentes con
+derechos amenazados,
+inobservados y/o SPDS
+vulnerados atendidos de
+forma transitoria e
+- inmediata a través de
+Hogar de Paso
+vu
+Numero de niñas, niños y
+adolescentes con 1297 1360
+derechos amenazados,
+inobservados y/o
+vulnerados (en situación
+de explotación laboral SPDS
+y/o víctimas de violencia
+sexual u otro tipo de
+violencia) olendidos
+mediante atención
+especializada
+Número de niñas, niños y
+1] adolescentes en
+. - | situación de alto riesgo
+Niñez y Adolescencia social vinculados a 1659; 17170 SPDS
+Feliz con Espacios acciones de prevención 16597
+para la Promoción, "que favorecen el
+Protección y Garantía desarrollo de factores
+de sus Derechos autoprotectores
+Ñ Numero de Adultos que
+participan en acciones
+Ns de prevención de riesgos
+sociales que afectan a
+los niños, niñas y 2968 SPDS
+adolescentes para el
+fortalecimiento de
+vínculos afectivos y
+entomos protectores
+Servicio de Orientación y
+Acompañamiento a la SPDS
+Familia
+Número de Iniciativas
+Productivas impulsadas.
+con padres de familia
+comprometidos con la
+protección y el desarrollo
+de los niños, niñas y
+adolescentes de su
+entormo hogar
+145
+
+
+## Página 146 (OCR Oficial Acuerdo 006 de 2016)
+
+E Concejo Distrital de Cartagena de Indias D. T. y C.
+P— E
+ÉL A . DO!
+es 13 o No. 6
+OA Ñ 2016 )
+LINEA BASE DE
+SUBPROGRAMA INDICADOR DE INDICADOR DE META RESPONSABLE
+PRODUCTO PRODUCTO PRODUCTO
+Implementación
+Campaña de
+Comunicación
+Ciudadana para la 1 seDS
+prevención de la
+violencia sexual
+Numero de niñas, niños,
+adolescentes que
+ww participan y disfrutan de
+actividades lúdicas sPDS
+extramurales y del
+ejercicio del juego al
+interior de las ludotecas
+Numero de niñas, niños,
+se adolescentes que
+Niñez y Adolescencia participan de los
+Activa con Espacios fancik SPDS
+parala Lúdica, la. | Consejos de infancia y
+Participación y la adolescencia u otros 47436 47276
+Incidencia en su Ecenaros
+Propio Desarrollo Numero de niñas, niños,
+adolescentes, adultos e
+instituciones que
+participan en la
+formulación,
+Implementación y sPDS
+seguimiento de la
+Polífica Pública de
+Infancia y Adolescencia
+Fortalecimiento Familiar
+Nu 8.2.2 LÍNEA ESTRATÉGICA JOVENES CON ESPERANZA Y FUTURO
+La estructura poblacional del distrito de Cartagena nos demanda acciones
+concretas, en respuesta a la situación que evidencian los indicadores de la
+población joven en la ciudad. Por ello la Línea estratégica Jóvenes con
+esperanza y futuro reconoce a los y las jóvenes como sujetos de derechos,
+genera las condiciones para crear las capacidades que les permitan insertarse al
+desarrollo de la ciudad de manera efectiva, asumiendo el concepto de
+ciudadanía juvenil. La presente estrategia asume lo dispuesto en el artículo 45 de
+la Constitución Nacional, la Ley 1622 del 2013 o Estatuto de la Ciudadanía Juvenil,
+y La Ley 1098 del 2006 Código de Infancia y Adolescencia.
+146
+
+
+## Página 147 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. OO€>
+A
+(43 JUN 2016 )
+Se promoverá la participación activa de los jóvenes como actores políticos de su
+propio desarrollo, desde Una mirada innovadora con el propósito de impulsar su
+organización, representación y por ende incidencia, en las decisiones que le
+afectan. De igual forma promoveremos la convivencia pacífica articulada a la
+estrategia de cultura, deporte y seguridad.
+8.2.2.1 PROGRAMA JÓVENES INNOVADORES CON ESPERANZA Y FUTURO
+El programa “JÓVENES INNOVADORES CON ESPERANZA Y FUTURO”, estimula a los
+vu jóvenes a convertirse en agentes de cambio en sus territorios, participando
+activamente en el desarrollo social, económico y la construcción de paz en su
+ciudad.
+Reconocer a los jóvenes como sujetos de derechos y deberes, con capacidades
+y fortalezas, que posibiliten entornos favorables para la disminución de las
+principales condiciones de vulnerabilidad, riesgo y exclusión que enfrentan, los
+jóvenes de las localidades y corregimientos del Distrito de Cartagena.
+El programa busca desarrollar habilidades sociales, para el fortalecimiento de los
+valores, la convivencia y nuevas formas de resolver los conflictos, basado en tres
+principios creer, atreverse y conectarse.
+8.2.2.1.1 SUBPROGRAMA GENTE JOVEN PARTICIPANDO Y A SALVO
+v Se generarán acciones para la promoción de la participación, con nuevos
+liderazgos para fomentar la organización, la asociación juvenil y el capital social,
+respetando su autonomía para que constituyan mecanismos democráticos de
+representación en las diferentes instancias de participación, concertación y
+control social, propiciando los espacios y condiciones para que los y las jóvenes,
+se sientan partícipes y responsables de la transformación en sus comunidades y
+de la sociedad cartagenera, que vean en esta administración la oportunidad
+para no continuar o replicar los ciclos de violencia, de cambiar sus vidas e
+impactar positivamente en el desarrollo local de su ciudad.
+147
+
+
+## Página 148 (OCR Oficial Acuerdo 006 de 2016)
+
+El Concejo Distrital de Cartagena de Indias D. T. y C.
+(¿Sala
+as y ACUERDO No. DOG
+(43 JUN 2016 )
+Tabla 86
+LINEA BASE DE INDICADOR DE
+INDICADOR DE RESULTADO RESULTADO META RESULTADO RESPONSABLE
+Loació Incrementar al 10% los
+¿y Ponticipación de los jóvenes que participan en
+jóvenes enlosaerentes A orenio espacion do
+espacios de
+representación y 5% ón la — | SPDS= OFICINA DE
+organización de la blación juveni LA JUVENTUD
+población juvenil, -,
+programas y proyectos
+Programas y proyectos que los benefician.
+que los benefician. 130.587]
+NM
+Tabla 87
+LINEA BASE DE
+SUBPROGRAMA MODO INDICADOR DE META PRODUCTO — RESPONSABLE
+PRODUCTO
+Número de jóvenes :
+p 500 jóvenes
+según sexo y edad participan en
+que po en instancias de
+instancias de cios
+participación ra
+ciudadana
+Número de jóvenes
+que participan en 3000 jóvenes
+Subprograma Gente | Ageniaciónes 2005 Patcpon de | sos - OFICINA
+Joven Participando y A | 9PP9 Y comités 'goní es DELA,
+Nu o juveniles que grupos y comités | Eo
+olvo operan en el Juveniles. ul
+temitorio.
+Número de jóvenes 3000 jóvenes
+1] que participan de participan de la
+la construcción, construcción,
+socialización y 1800 socialización y
+seguimiento de la seguimiento de la
+políica pública de política pública
+juventud. de juventud
+148
+
+
+## Página 149 (OCR Oficial Acuerdo 006 de 2016)
+
+...
+( El + 5 Concejo Distrital de Cartagena de Indias D. T. y C.
+P— E
+cf ACUERDO No.
+(43 JUN 2016 )
+UNEA BASE DE
+SUBPROGRAMA MITO INDICADOR DE META PRODUCTO — RESPONSABLE
+PRODUCTO
+Número de jóvenes
+que participan en
+actividades de 5000 jóvenes
+formación socio- participan de
+política, 2176 actividades de
+mecanismo de formación
+participación y la sociopolítica.
+z ley 1622 de
+xs juventud.
+1000 jóvenes
+Número de jóvenes Pacos de
+que participan en pactos de
+espacios de 260 representación
+camación juvenil (Consejos
+juvenil de juventud,
+? plataformas y
+asambleas).
+Número de jóvenes .
+que participan y/o 2000 ba
+benefician de las ¡participan en 1
+iniciativas Juventes iniciativas juveniles
+sociales o de sociales en el
+prevención. Distrito
+Nómero de jóvenes 12087 jóvenes que
+que se benefician se benefician
+An con acciones de espacios
+prevención a través 5870 culfurales,
+de la cultura, el deportivos y
+deporte y acciones acciones de
+de cultura de paz Cultura de paz
+4000 jóvenes
+Número de jóvenes participan de
+que participan de 3482 proceso
+procesos formativos de
+formativos. prevención de
+fiesgos sociales.
+8.2.3 LÍNEA ESTRATÉGICA AÑOS DORADOS Y BRILLANTES
+En el Distrito se requiere mejorar las condiciones de acceso y accesibilidad a los
+servicios y atención de la población mayor. Al mismo tiempo se debe apuntar a
+149
+
+
+## Página 150 (OCR Oficial Acuerdo 006 de 2016)
+
+(El + 3) Concejo Distrital de Cartagena de Indias D. T. y C.
+i— E
+S a ACUERDO No. OOG
+C 43 JUN 2016 )
+
+elevar los niveles educativos, al mejoramiento del desarrollo cognitivo, la
+optimización de la atención y la garantía de derechos.
+Articulado con la política pública de Envejecimiento y Vejez, en el marco del
+enfoque de derechos y la protección social, se facilitará a las personas mayores
+las condiciones de accesibilidad para mejorar su condición de vida con
+fundamento en cuatro principios: Promover su independencia, propiciar su
+autorrealización, protección, el reconocimiento y participación. Para la
+consecución de estos objetivos se proponen los siguientes programas.
+
+v
+8.2.3.1 PROGRAMA PROMOCIÓN Y GARANTÍA DE LOS DERECHOS HUMANOS DE
+
+LAS PERSONAS MAYORES
+
+Desde el programa de promoción y garantía de los derechos humanos de las
+personas mayores, velaremos por garantizar la protección, el reconocimiento y la
+participación desde la promoción de la cultura del respeto, la prevención y la
+erradicación del maltrato y/o el abandono a las personas mayores. Así mismo se
+promoverás la participación de este grupo poblacional, tanto en la vida familiar
+como en el ámbito comunitario y político, a través de la educación, la
+información, la comunicación desde un ejercicio de toma de conciencia, con el
+propósito de fortalecer su rol en la sociedad y su efectividad en los espacios de
+toma de decisiones sobre aspectos que afectan su entorno.
+
+Ns 8.2.3.1.1 SUBPROGRAMA PROMOCIÓN, PREVENCIÓN Y ERRADICACIÓN DEL
+
+MALTRATO Y/O El ABANDONO A LAS PERSONAS MAYORES
+Pensando en el proceso de envejecimiento y la necesidad de tener personas
+mayores saludables, este subprograma generará estrategias de información,
+educación y comunicación, que promueva la cultura del respeto, del
+envejecimiento activo y saludable, la prevención y erradicación del maltrato y/o
+el abandono a las personas mayores, la creación de redes de apoyo comunitaria
+que permitan a la comunidad en general, además de conocer sobre el
+envejecimiento, prevenir y acompañar casos de maltrato o abandono. Así mismo
+se propenderá por mantener y aumentar la cobertura de atención integral, en
+hogares geriátricos teniendo en cuenta el enfoque diferencial.
+150
+
+
+## Página 151 (OCR Oficial Acuerdo 006 de 2016)
+
+Eh el 3 Concejo Distrital de Cartagena de Indias D. T. y C.
+XI ACUERDO No. OOG
+(413 JUN 2016)
+8.2.3.1.2 SUBPROGRAMA PARTICIPACIÓN Y FORTALECIMIENTO A
+ORGANIZACIONES DE PERSONAS MAYORES PARA LA INCIDENCIA
+POLÍTICA Y/O CIUDADANA
+La población mayor cuenta con la existencia de 114 organizaciones de base,
+organizadas en asociaciones, y además cuentan con la participación activa del
+Consejo de Venerables, la veeduría de Canitas de Amor y las veedurías locales
+conformadas en 2015. Se contrarrestara la falta de continuidad en el
+fortalecimiento de las mismas. Entre 2016-2019 se propenderá por fortalecer 60; así
+- como las veedurías locales que sólo se conformaron, y se hará acompañamiento
+” en el empoderamiento de su labor.
+8.2.3.1.3 SUBPROGRAMA SISTEMA INTEGRADO DE ATENCIÓN A PERSONAS
+MAYORES - SIAM
+El Sistema Integrado de Atención a Personas Mayores SIAM, apunta a la garantía
+plena de los derechos de las personas mayores desde la intersectorialidad y la
+articulación de las diferentes dependencias de la Alcaldía Mayor, sobre todo
+para garantizar el acceso a derechos básicos y los DESC. El proceso llevará a
+cabo, la articulación e implementación del sistema, buscando dar continuidad a
+la implementación del Comité Interinstitucional de Personas Mayores CIP y los CIP
+Locales; espacio donde se da cuenta de los procesos que lleva cada
+dependencia del Distrito. Así mismo, se buscará la articulación con los
+U departamentos administrativos, entes descentralizados, instituciones mixtas,
+academia e incluso el sector privado; por ello esperamos aumentar en 10 los
+programas formalmente establecidos, para la atención e inclusión de personas
+mayores. La competencia de la Secretaría de Participación y Desarrollo Social
+como secretaría técnica de la política pública debe asesorar, evaluar las
+entidades distritales y demás instituciones involucradas en la implementación y
+gestión de ésta. El reto de la Secretaría en este periodo sería, lograr la
+implementación articulada de la política y la elaboración de una batería de
+indicadores y metas establecidas para la evaluación.
+151
+
+
+## Página 152 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. OOG
+C 43JUN 2016  ?
+Tabla 88
+LINEA BASE DE INDICADOR
+INDICADOR DE RESULTADO DE RESULTADO META RESULTADO RESPONSABLE
+% de personas mayores en 75% (Fuente: Plan de Disminuir en un 50 % el
+abandono en personas acción. Corte 31 de índice de personas
+mayores diciembre 2015) mayores abandonadas
+NM
+Secrelaria de
+Participación y desarrollo
+social. Adulto Mayor
+Aumentar 53%
+ha cioaci 24% (21 orgonizaciones | Organizaciones de
+O o tortalecidas de 118 según personas mayores
+er informe final programa capacitados y
+vor ¡adulto mayor 2013) tortalecidas para su
+funcionamiento,
+% de instituciones Implementar en un 100%
+atendiendo al enfoque el Sistema Integrado de Secretaría de
+NA diferencial de Atención a Personas Participación
+envejecimiento y vejez mayores articulado
+Tabla 89
+LINEA BASE DE
+suBrroGRAMA CAC R E INDICADORDE META PRODUCTO RESPONSABLE
+PRODUCTO
+2 estrategias anuales:
+No. de :
+Ina de información-
+Promoción. — |. estategias Comunicación y una
+prevención y | implementadas CO
+li . Secretaria de
+erradicación del Secre
+maltato y/o el Participación y desarrollo
+abandono alas | o dores éredes de apoyo de | “9cÍal Adulto Mayor
+personas mayores | nomentadas atención psico-
+socia-comunitaria
+152
+
+
+## Página 153 (OCR Oficial Acuerdo 006 de 2016)
+
+JA » Concejo Distrital de Cartagena de Indias D. T. y C.
+E—
+Sa ACUERDO No. (9.27)
+(13 JUN 2016 )
+LINEA BASE DE
+suserocrama — IMDICADORDE — INDICADORDE — META PRODUCTO hESPONSADE
+UCTO PRODUCTO
+465 personas
+atendidas en
+No. de personas hogares geriátricos
+mayores en 310 teniendo en cuenta
+hogares el enfoque
+geriátricos diferencial étnico,
+víctima y
+discapacidad
+y 0 Organizaciones
+y No, De copaciladas y
+organizaciones 21 fortalecidas para la
+fortalecidas participación e
+incidencia política
+Participación y
+fortalecimiento a Fortalecer las 0
+organizaciones de veedurías 4 voca occles
+personas mayores locales 'ortalecidos
+para la incidencia
+política y/o. 400 personas
+ciudadana. formadas para la
+participación e
+No. De personas incidencia política
+mayores teniendo en cuenta
+formadas elenfoque
+diferencial étnico,
+víctima y
+discapacidad
+No. de
+acuerdos
+creados y
+o aprobados 1 acuerdo aprobado
+para la
+reglamentación
+Sistema integrado de |—“eLCIP
+Atención a Personas
+Mayores
+No. de 5 subcomités creados
+subcomités Y operando para la
+creados para la articulación de la
+articulación del atención a personas
+SIAM mayores
+153
+
+
+## Página 154 (OCR Oficial Acuerdo 006 de 2016)
+
+(El + 2) Concejo Distrital de Cartagena de Indias D. T. y C.
+Y
+És ACUERDO No. DOGS
+(13 JUN 2016 )
+LINEA BASE DE
+SUBPROGRAMA INDICADOR DE INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO PRODUCTO
+No. dé
+programas o Aumentar o J0el
+estrategias para O
+personas esralegios poro
+an educación, salud,
+Bal a, depa! te, cultura, recreación y
+cultura deporte.
+Ny
+8.2.3.2 PROGRAMA ENVEJECIMIENTO ACTIVO Y SALUDABLE
+El programa de envejecimiento activo y saludable apunta a generar
+independencia, propiciar la autorrealización de las personas mayores y promover
+hábitos de vida saludable, para alcanzar un envejecimiento activo. Se propone la
+formación a las personas mayores, familiares, cuidadores y comunidad en general
+en cultura del envejecimiento saludable; la generación de ingresos, prevención
+de enfermedades y discapacidades, desde el fortalecimiento a los procesos
+misionales del programa de atención integral al adulto mayor.
+Se garantizan espacios de encuentro intergeneracional, que permitan el
+intercambio de saberes y el fomento del autocuidado y estilos de vida saludable;
+así como la conciencia de prepararse para la vejez en cada etapa del curso de
+AD) vida (proceso de envejecimiento).
+8.2.3.2.1 SUBPROGRAMA PROMOCIÓN DEL AUTOCUIDADO Y HÁBITOS DE
+VIDA SALUDABLE
+Partiendo de la base de la población atendida en Centros de Vida CDV y Grupos
+Organizados G.O. para la promoción del autocuidado y hábitos de vida
+saludable, se pretende desarrollar jomadas de formación a personas mayores,
+familiares y/o cuidadores en los derechos de las personas mayores y cultura del
+envejecimiento activo y saludable. Así mismo, realizar encuentros
+intergeneracionales, en los que las personas mayores inculquen a los NNAJ la
+154
+
+
+## Página 155 (OCR Oficial Acuerdo 006 de 2016)
+
+El adi Concejo Distrital de Cartagena de Indias D. T. yC
+— Bb
+P— E
+ÉSE ACUERDO No. COG
+ALE 5
+(13 JUN 2016 )
+importancia de hábitos de vida saludable, para alcanzar el envejecimiento
+activo,
+8.2.3.2.2 SUBPROGRAMA GENERACIÓN DE INGRESOS
+Éste subprograma, apunta a la autorrealización e independencia de las personas
+mayores desde el fortalecimiento a las unidades productivas de los Centros de
+Vida (CDV), así mismo al fortalecimiento de ideas de negocios de los Grupos
+Organizados (G.O.) y a la creación de nuevas unidades, que permitan a más
+y personas mayores vinculadas a estos, generar recursos para su supervivencia.
+8.2.3.2.3 SUBPROGRAMA ATENCIÓN INTEGRAL
+Con éste subprograma, se pretende mantener y aumentar en un 10% la cobertura
+en atención integral a personas mayores en CDV y G.O., en procesos de
+mejoramiento nutricional y en proceso de promoción y prevención de
+enfermedades y discapacidades, buscando el fortalecimiento de los procesos
+misionales y estratégicos del programa adulto mayor y así brindar atención con
+calidad y ofrecer espacios dignos para el desarrollo del envejecimiento activo y
+saludable al Adulto Mayor.
+Tabla 90
+LINEA BASE DE
+ODE INDICADOR DE META RESULTADO RESPONSABLE
+¡97 RESULTADO
+% de personas mayores | 8,388 (Fuente: Plan de Mantener y aumentar un 10% la | Secretaria de
+con atención integral acción. Corte 31 de Cobertura en atención integral a | Participación y desarrollo
+en CDV y GO diciembre 2015) personas mayores en CDV y G.O. | social, Adulto Mayor
+Tabla 91
+LINEA BASE DE
+SUBPROGRAMA INDICADOR DE PRODUCTO INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO
+No. De personas mayores | 3689 (Fuente:
+Promoción — del | formados Plan de — [6,272 personas formadas | Secretaria. de
+autocuidado — y acción. Corte | en derecho y cultura del | Participación — y
+hábitos de vidalNo. de familias o cuidador] 3lde [envejecimiento activo y | desarollo social.
+saludable formados diciembre — | saludable Adulto Mayor
+2015]
+155
+
+
+## Página 156 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. VOS
+Mo
+C 13 JUN 2016 )
+LINEA BASE DE
+SUBPROGRAMA INDICADOR DE PRODUCTO INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO
+40 encuentros
+No. De encuentros W >
+intergeneracionales para la in Pa
+promoción del autocuisiado autocuidado y cultura
+y cultura del envejecimiento Sal envejecimiento
+activo activo
+nuevas funcionando y
+No. de unidades productivas generando ingresos en
+de CDV fortalecidos cov
+NY Secretaría de
+No. — Personas mayores a e icipación
+Generación de | beneficiados con programas programas y proyectos | “Adulto Mayor,
+ingresos — [y proyectos — producivos productivos Proyectos
+implementados. ol productivos y
+implementados. UMATA.
+3 fortalecimientos a ideas
+No. de unidades productivas ND de doo o des
+de GO fortalecidas produciivas de ls
+organizaciones de
+personas mayores G.O
+No. De personas mayores
+atendidas en CDV y GO, en 358% Fuente:
+procesos de mejoramiento | ,_Eóf Cos [9.227 personas mayores | Secretaría de
+Atención integral | nutricional y en proceso de de de atendidas integralmente | participación
+promoción y prevención de diciembre en CDVyGO :Adulto Mayor
+enfermedades y 2015)
+discapacidades
+8.2.4 LÍNEA ESTRATÉGICA MUJERES EN PLENO GOCE EFECTIVO DE SUS
+A DERECHOS
+La violencia de género, sea cual sea su tipología es otra problemática notable;
+de los casos registrados, en más del 80% la víctima es una mujer. Si a lo anterior, se
+adiciona que la mujer pertenezca a un grupo étnico, sea menor de edaa, viva en
+el área rural o sea víctima del conflicto armado, la situación se hace aún más
+compleja.
+La mujer cartagenera gozará plenamente de sus derechos. Se fortalecerán los
+mecanismos de atención, protección y sanción de manera integral y efectiva
+contra los maltratadores de mujeres, definiendo los mecanismos que garanticen
+la eliminación de toda forma de violencia contra las mujeres: para lo cual se
+promoverán campañas masivas de sensibilización contra el machismo y la
+156
+
+
+## Página 157 (OCR Oficial Acuerdo 006 de 2016)
+
+El sd ,) Concejo Distrital de Cartagena de Indias D. T. y C.
+— Y
+ACUERDO No. 006
+(43 JUN 2016, )
+violencia contra las mujeres. Se visibilizarán las acciones emprendidas por nuestras
+mujeres, en procura de salvaguardar sus derechos y su integridad. Al igual que se
+apoyarán y fortalecerán los colectivos de mujeres, como instancia de consulta y
+participación. Así mismo, brindaremos apoyo a las organizaciones sociales de
+mujeres y capacitación a lideresas para que masifiquen el mensaje.
+Lideraremos programas de protección a las mujeres víctimas de violencias; y se
+fortalecerán la estrategia, hogares para mujeres víctimas de violencias.
+Promoveremos acciones afirmativas que fortalezcan la equidad de género.
+9] 8.2.4.1 PROGRAMA UNA VIDA LIBRE DE VIOLENCIAS PARA LAS MUJERES
+Impactar los índices de violencia contra las mujeres, como una violación de
+Derechos Humanos, para lo cual se fortalecerá en la ciudad, el proceso de
+atención a víctimas de todo tipo de violencias, y mejorará las políticas de
+prevención, atención, sanción y eliminación de las violencias de género contra
+las mujeres en el Distrito.
+8.2.4,1.1 SUBPROGRAMA PRIMERO TÚ MUJER, LIBRE DE VIOLENCIAS
+Todas las expresiones de violencia contra las mujeres, responden a una estructura
+social que posibilita visibilizar a las mujeres en posición desigual. Las razones como
+la condición, el hecho de ser mujer, son un factor de riesgo que las hace
+susceptibles de ser objeto de violencia con interdependencia de la clase social, a
+nivel educativo, la capacidad adquisitiva, el lugar geográfico que se habite, la
+pertenencia étnica, la orientación sexual, el conflicto armado o las creencias que
+se tengan. Dicho riesgo se concreta más en la violencia de pareja, las agresiones
+0] y abusos sexuales, la violación, el acoso sexual en el trabajo, la mutilación sexual,
+el tráfico de mujeres y otras muchas expresiones de una violencia a veces muy
+sutil y otras veces muy directa.
+Tabla 92
+LINEA BASE DE INDICADOR DE
+INDICADOR DE RESULTADO RESULTADO. META RESULTADO RESPONSABLE
+Incrementar en un
+Ñ 25% las personas
+ici lali 10% De La Población De | que participan en | SPDS - OFICINA DE
+pan en : Cartagena acciones pora LA MUJER
+prevenir y eliminar las violencias prevenir y eliminar
+las violencias
+157
+
+
+## Página 158 (OCR Oficial Acuerdo 006 de 2016)
+
+El - Concejo Distrital de Cartagena de Indias D. T. y C.
+[E —— TK)
+A ACUERDO No. OOG
+== IN
+(13 JUN 2016 )
+Tabla 93
+LÍNEA BASE DE META
+SUBPROGRAMA INDICADOR DE PRODUCTO INDICADOR DE PRODUCTO RESPONSABLE
+PRODUCTO
+Número de acciones de
+prevención de las diferentes 180
+formas de violencia basadas en
+genero
+Programas y estrategias de
+movilización social para prevenir
+la violencia con organizaciones
+de carácter municipal a nivel
+urbano y rural
+” Número de mujeres víctimas de
+violencia de pareja y violencia
+sexual atendidas en el Hogar de 70 130
+Paso o Casa de Acogida con hijos
+e hijas menores de edad
+Número de funcionarios o.
+Primero Tú funcionarias con procesos de -
+mujer, bre de | formación y actualización 260 520 INIA
+Violencias normativa en derechos humanos
+de las mujeres y prevención de
+violencia
+Número de hombres atendidos en
+modelo terapéutico para manejo 78 250
+de la ira
+Número de escuelas libres de
+sexismo realizadas en las
+instituciones educativas del
+Distrito.
+Nel
+Numero de enlaces sectoriales y 7 1
+tenitoriales
+8.2.4.2 PROGRAMA LAS MUJERES DECIDIMOS SOBRE EJERCICIO DEL PODER
+Propender por el empoderamiento y la participación de las mujeres en espacios
+de toma de decisión, promocionando escaños, listas y organizaciones de mujeres.
+8.2.4.2.1 SUBPROGRAMA PRIMERO TÚ MUJER EN EL EJERCICIO DEL PODER
+Se promoverá el fortalecimiento de la participación política y de la ciudadanía
+de las mujeres en aras de desarrollar procesos de inclusión social que permitan
+158
+
+
+## Página 159 (OCR Oficial Acuerdo 006 de 2016)
+
+Tr
+, El e Concejo Distrital de Cartagena de Indias D. T. y C.
+E E
+E ACUERDO No. OO6
+— C13JUN 2016)
+cerrar las brechas, para ello no basta con nombrar mujeres, también se deben
+promover acciones específicas para garantizar sus derechos; se debe tener
+coherencia con los objetivos de desarrollo sostenible para lograr la igualdad entre
+los géneros y el empoderamiento de las mujeres. Por ello buscaremos la efectiva
+participación de la mujer en las instancias de decisión en sus territorios.
+Tabla 94
+INDICADOR DE RESULTADO LINEA BASE DE INDICADOR META RESULTADO RESPONSABLE
+DE RESULTADO
+C Ñ Incrementar en un 40% las
+y Mujeres participando en mujeres participando en
+procesos formativos en 728 esas formativos en. [SPDS - OFICINA DE
+liderazgo femenino y osrasao femenino LA MUJER
+empoderamiento sociopolítico morena SOCIA Afico.
+Tabla 95
+LINEA BASE DE
+SUBPROGRAMA — MACADOR DE INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO
+Número de
+mujeres
+política, liderazgo <omunitao y pollico.
+social,
+comunitario y
+político.
+NN Primero Tú Mujer en SPDS - OFICINA DE
+el Ejercicio del Poder Diplomado las Realizar 4 diplomados "Las LA MUJER
+OA Mujeres toman la palabra"
+Proyectos pilotos
+para impulsar la
+creación de los 3
+Consejos Locales
+de Mujeres.
+8.2.4.3 PROGRAMA PRIMERO TÚ MUJER
+El plan para el goce efectivo de los derechos de las mujeres, las jóvenes y las
+niñas victimas sobrevivientes del conflicto armado, es una herramienta que se
+basa en el Auto 092 de 2008 de la Corte Constitucional, que parte del
+159
+
+
+## Página 160 (OCR Oficial Acuerdo 006 de 2016)
+
+7 e Concejo Distrital de Cartagena de Indias D. T. y C.
+al
+P— E
+rf ACUERDO No, O
+Co 143JUN 206)
+presupuesto de la existencia del impacto desproporcionado en términos
+cuantitativos y cualitativos que tiene el conflicto armado interno y el
+desplazamiento forzado sobre la vida de las mujeres colombianas, así como del
+supuesto jurídico de que las mismas son sujetos de protección constitucional
+reforzada.
+8.2.4.3.1 SUBPROGRAMA PRIMERO TÚ MUJER, CONSTRUCTORA DE PAZ
+Se implementará la gestión para la construcción de un Plan de Acción en el
+NS marco del cumplimiento de la Resolución 1325 de la ONU, cuyo propósito es
+reafirmar el importante papel, que desempeñan las mujeres en la prevención y
+solución de conflictos y en la consolidación de la paz. Así mismo, se harán
+acompañamientos en los procesos de autonomía económica y de
+reconstrucción del tejido social.
+También se realizaran actividades de reconstrucción de memoria histórica, como
+símbolo de no repetición de aquellos actos dolorosos, siendo un acto de
+levantamiento de la voz de la mujer víctima.
+Tabla 96
+LINEA BASE DE INDICADOR DE
+INDICADOR DE RESULTADO RESULTADO. META RESULTADO RESPONSABLE
+a Se Incrementar en un 100% el
+Mujeres víctimas del e Acs
+conflicto armado con 74 nO a peronas ctas | 5PDs - OFICINA DE
+Y procesos de reconstrucción coman cciór LA MUJER
+del tejido social procesos de reconstrucción
+del tejido social
+Tabla 97
+LINEA BASE DE
+IS INDICADOR DE PRODUCTO INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO
+Plan de Acción para el
+cumplimiento de la Resolución
+Primero Tú 1325 de la ONU
+Mujer, Iniciativas de ore OC SPDS - OFICINA
+"ganizaciones
+COCIO1O | de mujeres víctimas del DELA MUJER
+Conflicto Armado 2 n
+¡acompañadas en procesos de
+autonomía económica
+160
+
+
+## Página 161 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. COGO
+(443 JUN 2016 )
+LINEA BASE DE
+SUBPROGRAMA INDICADOR DE PRODUCTO INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO
+Iniciativas de organizaciones
+de mujeres víctimas del
+Conflicto Armado 1 4
+“acompañadas en procesos de
+reconstrucción del tejido social
+se] 07
+contadas desde las mujeres
+Mujeres víctimas del conflictos
+vu atendidas en el proceso de 274
+reconstrucción de poz
+8.2.5 LÍNEA ESTRATÉGICA GENTE DE ESPECIAL PROTECCIÓN CONSTITUCIONAL:
+RECONOCIDAS, EMPODERADAS Y RESPETADAS
+Existe en la ciudad una serie de barreras que impiden que las personas con
+orientaciones e identidades sexuales diversas, la población en condición de
+discapacidad y habitantes de calle, puedan ejercer efectivamente sus derechos.
+La Constitución Política de Colombia prohíbe toda forma de discriminación en
+razón de la orientación sexual e identidad de género, o condición y promueve las
+garantías para el ejercicio de las libertades y derechos de la población.
+Para la población en condición de discapacidad, a través del modelo de
+promoción social como titulares de derechos, se garantizará para el ejercicio de
+Ny sus derechos Un conjunto de acciones públicas dirigidas a fomentar su movilidad
+social. Por ello, desde la estrategia de educación, se promoverá su habilitación,
+desde la estrategia de salud su rehabilitación y desde lo económico su inserción
+al medio laboral y la generación de ingresos, teniendo como especial aliada la
+misma oferta Distrital. Es de resaltar que finalizada la puesta en escena de la
+política indicativa INCLUSIÓN PARA LA PRODUCTIVIDAD DE LA POBLACIÓN EN
+CONDICIÓN DE DISCAPACIDAD, el presente plan revisará su efecto y reformulará
+las líneas de acción de acuerdo a la realidad y las nuevas formas de atención.
+De igual manera, formularemos e implementaremos el Plan Distrital para la
+atención, inclusión social y reconocimiento de derechos de la población de
+especial protección constitucional HABITANTE DE CALLE, dirigidas especialmente a
+la recuperación del daño y la reinserción al medio familiar.
+161
+
+
+## Página 162 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. CO6
+(143 JUN 2016 )
+8.2.5.1 PROGRAMA DIVERSIDAD SEXUAL
+Se buscará dar a conocer a la ciudadanía cartagenera, la necesidad que se
+exige de sensibilizar sobre los derechos humanos de la población LGBTI, por medio
+de procesos de formación de respeto por las diferencias, desarrollar rutas y
+protocolos de atención y acciones afirmativas para la promoción y respeto de los
+derechos que como ciudadanos tienen. Por ello, promoveremos acciones
+afirmativas para efectos de lograr el reconocimiento de derechos, erradicar la
+violencia, los maltratos psicológicos, la exclusión, estigmatización y prejuicios
+causados en virtud de la orientación sexual o identidad de género. Aumentar el
+nd conocimiento de los servidores públicos, de las necesidades y condiciones
+particulares de la población LGBTI, e Implementar estrategias que lleven a
+garantizar la aplicación de protocolos de atención diferenciada en salud, justicia
+y seguridad, que reconozcan las condiciones particulares en materia de
+orientación sexual e identidad de género. Se promoverán nuevos liderazgos
+sociales, individuales y colectivos, así como estrategias de información que
+generen ciudadanas y ciudadanos críticos y reflexivos sobre sus realidades. Todos
+estas acciones en consonancia con el Plan Nacional de Desarrollo.
+8.2.5.1.1 SUBPROGRAMA DIVERSIDAD SEXUAL E IDENTIDADES DE GÉNERO
+Por medio de la formulación y puesta en ejecución de la Política Publica Distrital
+de Diversidad Sexual y Genero, se buscará dar a conocer a la ciudadanía
+Y) cartagenera, la necesidad que se exige, de sensibilizar sobre los derechos
+humanos de la población LGBTI, por medio de procesos de formación de respeto
+por las diferencias, desarrollar rutas y protocolos de atención y acciones
+afirmativas para la promoción y respeto de los derechos que como ciudadanos
+tienen. Por ello, promoveremos acciones afirmativas para efectos de lograr el
+reconocimiento de derechos, erradicar la violencia, los maltratos psicológicos, la
+exclusión, estigmatización y prejuicios debidos a la orientación sexual o identidad
+de género. Aumentar el conocimiento de los servidores públicos de las
+necesidades y condiciones particulares de la población LGBTI e Implementar
+estrategias que lleven a garantizar la aplicación de protocolos de atención
+diferenciada en salva, justicia y seguridad, que reconozcan las condiciones
+particulares en materia de orientación sexual e identidad de género. Promover
+programas de promoción de liderazgos sociales, individuales y colectivos para la
+162
+
+
+## Página 163 (OCR Oficial Acuerdo 006 de 2016)
+
+Sy A . sms .
+] Concejo Distrital de Cartagena de Indias D. T. y C.
+(CBA:
+É, ACUERDO No. DO6
+1
+C 13 JUN 2016)
+población LGBTI. Promover estrategias de información que generen ciudadanas y
+ciudadanos críticos y reflexivos sobre sus realidades. Todos estas acciones en
+consonancia con el Plan Nacional de Desarrollo.
+Tabla 98
+INDICADOR DE RESULTADO INEA BASE META DE RESULTADO RESPONSABLE
+Política Pública En Política Pública En Diversidad
+Diversidad Sexual Y Sexual Y Genero Formulada Y | Secretaria Participación
+Género. Ejecutada
+ir
+Tabla 99
+INDICADOR DE META DE RESPONSABLE
+SUBPROGRAMA PRODUCTO. LÍNEA BASE PRODUCTO
+Formular 1 Política Secretaria
+Política Pública En Pública en — | Participación y
+Diversidad Sexual e Diversidad Sexual | Desarrollo Social
+Identidades de e Identidades de
+Género Distrital. Género Distrital
+Realizar 4 Secretaría
+Acciones Participación y
+Número De Acciones Afirmativas para | Desarrollo Social
+Diversidad Sexual e Afimativas pora el el
+Identidades de Género Reconocimiento de Reconocimiento
+Derechos. de Derechos
+Numero Capacitar 500| Secretaria
+Capacitaciones a Funcionarios Participación y
+Funcionarios Públicos Públicos sobre las | Desarrollo Social
+sobre las necesidades Necesidades y
+Ns y Condiciones Condiciones
+particulares. de la particulares de la
+Población LGBTI, Población LGBTI..
+8.2.5.2 PROGRAMA PROTECCIÓN Y ATENCIÓN INTEGRAL A LAS PERSONAS CON
+DISCAPACIDAD, SU FAMILIA Y/O CUIDADOR Y CUIDADORAS
+El presenta programa promueve el adecuado acceso a bienes y servicios,
+procesos de elección colectiva, la garantía plena de los derechos de los
+ciudadanos y la eliminación de toda practica y barreras que conlleve a una
+marginación y segregación de cualquier tipo de las personas con discapacidad
+habitantes del distrito de Cartagena, tanto en el área urbana como en el área
+rural. Facilita la inserción en todos los espacios sociales, culturales, políticos y
+163
+
+
+## Página 164 (OCR Oficial Acuerdo 006 de 2016)
+
+(e sl A) Concejo Distrital de Cartagena de Indias D. T. y C.
+as
+Sr ACUERDO No. DOG
+C 13 JUN 2016 )
+económicos en igualdad de oportunidades, con acciones de protección y
+atención, con el único fin de proteger y asegurar el goce pleno de sus derechos.
+En concordancia con los artículos 3, 47, 54 y 68- de la Constitución Política de
+1991, que establece la especial protección que gozan las personas con
+limitaciones o con discapacidad, y define como destinatarios de las disposiciones,
+todas aquellas personas que “tengan deficiencias físicas, mentales, intelectuales
+o sensoriales a largo plazo que, al interactuar con diversas barreras, puedan
+impedir su participación plena y efectiva en la sociedad, en igualdad de
+ww condiciones con los demás se desarrollarán acciones articuladas con los sectores
+de Educación, Salud, Arte y Cultura, Deporte y Desarrollo Económico, para
+responder a las necesidades y expectativas de la población, basados en
+Acciones Afirmativas, Ajustes Razonables' y Manejo Social Del Riesgo.
+8.2.5.2.1 SUBPROGRAMA "YO TAMBIÉN CUENTO"
+Partiendo de una línea base de aproximadamente 14.402 PCD autodeclaradas,
+registradas en la plataforma del Registro Localización, Caracterización de
+Personas con Discapacidad -RLCPD- del Ministerio de Salud y Protección Social,
+"YO TAMBIEN CUENTO", se pretende a través de campañas de registro y
+actualización, el fortalecimiento de las unidades generadoras de datos en cada
+localidad administrativa del Distrito y participación de las Organizaciones de y
+para personas con discapacidad, generando no sólo un conteo nominal de las
+9) personas con discapacidad a nivel Distrital sino impulsando el
+autorreconocimiento como pieza fundamental en el concepto de los derechos
+humanos, y de allí abordar las variables que inciden en el desarrollo social,
+económico, cultural y sostenible de las PCD.
+8.2.5.2.2 SUBPROGRAMA POLÍTICA INTEGRADORA FOCALIZADA DE
+INCLUSIÓN SOCIAL A LAS PERSONAS CON DISCAPACIDAD
+Las políticas públicas han sido Un instrumento de restitución de derechos a las
+poblaciones con debilidades manifiestas, razón por la cual se hace necesario,
+$ AJUSTES RAZONABLES: se entenderán las modificaciones y adaptaciones necesarias y adecuadas que no impongan una carga desproporcionada o
+indebida, cuando se requieran en un caso partcula, para garantizar las personas con discapacidad el goce o ejercicio, en igualdad de condiciones con ls
+demás, de todos los derechos humanos y libertades fundamentales
+164
+
+
+## Página 165 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. OO6
+(13 JUN 2016 )
+
+crear los ciclos de actualización de la POLÍTICA PÚBLICA DE DISCAPACIDAD EN EL
+
+DISTRITO DE CARTAGENA “CLAVES PARA LA PARTICIPACIÓN CON INCLUSIÓN
+
+SOCIAL" 2010-2015, donde predomine el concepto de Diseños Universales en la
+
+atención, los ajustes razonables en la protección: desde una perspectiva genérica
+
+y jurídica, promoviendo el desarrollo social, humano y económico en su ciclo vital
+
+y con enfoque diferencial.
+
+La actualización de la Política Integradora, inicia con los 4 ciclos de actualización
+
+de la Política Publica de discapacidad e Inclusión social así: ELABORACION DE LA
+Y AGENDA PUBLICA, FORMULACIÓN/ACTUALIZACIÓN, ADOPCIÓN DE LA DECISIÓN,
+
+IMPLEMENTACIÓN y SEGUIMIENTO/EVALUACIÓN. Cada uno de estos ciclos,
+
+tendrán unas acciones estratégicas que definirán las actividades concretas en la
+
+formulación/actualización Política.
+
+8.2.5.2.3 SUBPROGRAMA ATENCIÓN INTERSECTORIAL PARA EL DESARROLLO
+
+LOCAL DE LA POBLACIÓN CON DISCAPACIDAD
+
+El programa de discapacidad de la Secretaría de Participación y Desarrollo
+
+Social, dentro de su responsabilidad Institucional y misional respecto al Tema de
+
+Discapacidad, presenta deficiencia para abordar la atención de las Personas con
+
+Discapacidad -PcD-, basado en la "Orientación", “Asistencia y Acompañamiento”
+
+en el abordaje de sus necesidades y debilidades manifiestas.
+
+Ga Por lo anterior, con el subprograma “Atención Intersectorial para el Desarrollo
+Local de la Población Con Discapacidad”, se pretende construir una "Ruta Única
+de protección y atención a las personas con Discapacidad, su familia y/o
+cuidadores, basado en los lineamientos RBC", que permita unificar criterios desde
+Una perspectiva genérica y jurídica unificada en lo institucional y comunitario,
+Esta ruta será estructurada en los contextos comunitarios, sociales y jurídicos,
+basado en los conceptos normativos, conceptuales del desarrollo social y los
+derechos humanos.
+
+165
+
+
+## Página 166 (OCR Oficial Acuerdo 006 de 2016)
+
+(El E) Concejo Distrital de Cartagena de Indias D. T. y C.
+— E
+N DA
+hc ACUERDO No. OOG
+C- 13 JUN 2016 )
+8.2.5.2,4 SUBPROGRAMA GERENCIA SOCIAL TRANSECTORIAL PARA
+TRANSFORMAR IMAGINARIOS DE LA DISCAPACIDAD
+Para lograr establecer un Sistema de Protección Social, clasificado por la forma
+como la población con discapacidad accede a los derechos sociales y
+reducción del riesgo social, el subprograma Gerencia Social Transectorial para
+Transformar imaginarios de la Discapacidad, realizará medidas especializadas
+orientadoras en ajustes razonables”, acciones afirmativas? y de diseño Universal”, a
+las entidades públicas y privadas que permitan el fortalecimiento de la
+Y capacidad instalada territorial y asistencia técnica en las dimensiones sociales,
+institucionales y económicas hacia la inclusión social de las PCD.
+8.2.5.2.5 SUBPROGRAMA FORTALECIMIENTO INSTITUCIONAL DEL SISTEMA
+DISTRITAL DE DISCAPACIDAD E INCLUSIÓN SOCIAL
+El fortalecimiento institucional del Sistema Distrital de Discapacidad e Inclusión
+Social, se llevará a cabo a través de la actualización del Acuerdo 020 de 2006; se
+realizará asesoría y acompañamiento a las organizaciones sociales de PcD, a
+través de la Secretaría de Participación y Desarrollo Social, organizaciones para
+personas con discapacidad entre otros integrantes, de acuerdo con la norma,
+para promover su organización, articulación, movilización e incidencia política de
+las personas con discapacidad. Se desarrollarán los encuentros Distritales de
+Discapacidad e Inclusión social y la gestión administrativa de los comité
+Ns Territoriales de Discapacidad.
+7 Se entenderán las modificaciones y adaptaciones necesarias y adecuadas que no impongan una carga desproporcionada o indebida,
+cuando se requieran en un caso particular, para garantizar a las personas con discapacidad el goce o ejercicio, en Igualdad de conciciones
+con las demás, de todos los derechos humanos y libertades fundamentales. Convención Intemacional de Derechos de las PCD
+8 Sentencia C-371 de 2001 la Corte explicó lo siguiente: “Con esta expresión se designan políticas o medidas dirigidas a favorecer a
+determinadas personas o grupos, ya sea con el fin de eliminar o reducir las desigualdades de tipo social, cultural o económico que los
+afectan, bien de lograr que los miembros de un grupo subrepresentado, usualmente un grupo que ha sido discíminado, tengan una mayor
+representación, con el fin de conseguir una mayor igualdad sustantiva entre grupos sociales con problemas de discriminación o de
+desigualdad de oportunidades.”
+9 Se entenderá el diseño de productos, entornos, programas y servicios que puedan utlizar todas las personas, en la mayor medida posible
+sin necesidad de adaptación ni diseño especializado. El “diseño universal" no exclurá las ayudas técnicas para grupos particulares de
+personas con discapacidad, cuando se necesiten, Convención Intemacional de Derechos de las PGD.
+166
+
+
+## Página 167 (OCR Oficial Acuerdo 006 de 2016)
+
+El Concejo Distrital de Cartagena de Indias D. T. y C.
+dE
+( E)
+Sar ; ACUERDO No. os
+Tabla 100
+UNEA BASE DE
+O DE INDICADOR DE META RESULTADO RESPONSABLE
+RESULTADO
+30,36% de PCD
+autoreconocidas y | Garantizar al 30% de las PCD
+registradas (14.402 PcD|los ojustes razonables de sus
+Tasa de cobertura en | autodeciarada derechos — desde UNA secre de
+los ajustes razonables | registradas. Fuente de|perspectiva genérica — y Ponieipación :
+de los derechos de las | Datos: Ministerio de Salud |juídico, — promoviendo el Sonarina Sac
+PCD. y Protección Social. | desarollo social, humano y
+Cubo de Datos RLCPD. | económico en su ciclo vital y
+Corle 31 de Diciembre | con enfoque diferencial.
+= de 2015)
+Ns
+Tabla 101
+ODUCIO PRODUCTO
+Integrar los 4 ciclos de
+No. De Ciclos actualización de la política
+Políticas realizados en la Publica Distrital de
+integradora — [actualización de la Discapacidad e Inclusión | Secretaría de
+Focalizada de | Política Publica | ND. Social, de acuerdo con el [Participación y
+Inclusión - Social | Distrital de CONPES 166 de 2013 y la Ley | Desarrollo Social
+alas PcD. Discapacidad e 1618 DE 2013 como
+Inclusión Social. herramienta para el ejercicio
+de los Derechos de las PCD.
+Uno "Ruta Única de
+A Construir 1 “Ruta Única de
+protección y atención a las .
+personas con personas con Discapacidad, Secretaría de
+Na) Discapacidad, su su famila y/o Cuidadores, Participación y
+familia y/o asado en ez Inecmientos | Desarrollo Social
+Atención Cuidadores. basado eS
+Intersectoríar | en los ineamientos
+para el | REC
+Desarrollo Local
+de la Población | Numero de PCD [93% ¿a
+pS autodeciarada
+con registrado registrada Aumentar a 4320 PCD|Secretaría «e
+Discapacidad  |autodeclarada en |'59' A a co de
+el RCLPD atendidas atendidas a 2015 | registrada autodeciarada en | Participación y
+4 (plan de acción | el RCLPD atendidas | Desarrollo Social
+Intersectorialmente 2015 SI py a
+en estrategias de 115 SPDS) (1.217 | Intersectorialmente enty Comité.
+De PCD estrategias de Desarrollo | Distrital de
+lesarrollo. » institucio pá » je
+de atendidas/14.402 | institucional y comunitario. Discapacidad.
+Institucional y todeclarad
+comunitaño eutodeciorada
+registrada]
+Gerencia social| No. De Medidas Implementar 16 — medidas
+Transectorial.— | especializadas especializadas — orientadoras | Secretaría de
+para orientadoras en en ajustes razonables a las | Participación y
+Transformar ajustes razonables entidades públicas y privadas | Desarrollo Social
+imaginaños _de | realizados para el fortalecimiento de la
+167
+
+
+## Página 168 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+LS
+INDICADOR LINEA BASE DE
+suBpROGRAMA — MDICADOR DE INDICADOR — DE META PRODUCTO RESPONSABLE
+> PRODUCTO.
+la Discapacidad capacidad instalada
+terítorial y asistencia técnica
+en las dimensiones sociales,
+Institucionales y económicas
+en lo inclusión social de las
+PCD
+Fortalecer los 4 comités
+pa teríiloriales de Discapacidad
+No. De Comités Ñ Ñ Ñ
+Fortalecimiento | Teitoriales O oo y | Secretaría de
+Institucional. del | Operando 2 comites | cación de la puesta en| Participación y
+u Sistema Distrital | adecuadamente — | Territoriales na de las” polficas, | Desarrollo Social
+de de acuerdo a la Ley | Operando con | rsroaias e | Y Comité
+Discapacidad e | 1145 de 2007 y la| fallas estructurales Sora pe a integración Distrital de
+Inclusión Social ESgución 3317 de social de las personas con y Discapacidad.
+en situación de
+discapacidad.
+8.2.5.3 PROGRAMA HABITANTE DE CALLE INTEGRADO A LA SOCIEDAD
+Brindar condiciones de rehabilitación e inserción integral en la sociedad,
+partiendo de la promoción de derechos, a través de las Rutas de Atención
+Integral al Habitante de la Calle, con acceso al programa de salud mental
+articulado con el Departamento Administrativo de Salud (DADIS).
+p
+Nel 8.2.5.3.1 SUBPROGRAMA ATENCIÓN HUMANITARIA A LOS HABITANTES DE
+CALLE
+A través de un modelo de atención institucionalizada, basado en el
+restablecimiento de sus derechos que se inicia con un proceso de conquista en la
+calle, se busca la reparación del daño y la inserción de hombres y mujeres a la
+familia de origen, luego de una intervención psicosocial y terapéutica en los
+hogares de paso.
+168
+
+
+## Página 169 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. 0O6
+Tabla 102
+a META DE
+INDICADOR DE RESULTADO LÍNEA BASE RESULTADO RESPONSABLE
+Aumentar a 80% la
+Porcentoje de Habitantes en | 5% (FuentessP.D5.Como de | ronción de los | meiga, y
+siluación de calle Atendidos a O E
+identificadas, dic 2015) ua Desarrollo Social
+situación de calle
+NY Tabla 103
+INDICADOR DE LS
+SUBPROGRAMA PRODUCTO LÍNEA BASE PRODUCTO
+Atender a 448
+Atención N ro de habitantt habitantes de
+Humanitaria A | unero de habilante | y (Fuente: | calle en el modelo | Secretaria — de
+" atendidos en las Rutas a mel 4
+o ate e renciónitegrar | 5P.DS.Censo — de | de Reparación al | Participación y
+De Calle e Habitante 560 | daño y devolverlo | desarrollo Social
+personas al entorno familiar
+identificadas, dic
+2015)
+8.2.6 LÍNEA ESTRATÉGICA DIVERSIDAD ÉTNICA
+Se contempla disminuir las barreras estructurales que impiden el desarrollo de esta
+población Afrodescendientes e Indígenas, por lo que se hará implícita la
+implementación de programas y líneas de acción, de las políticas públicas con
+enfoque diferencial inclusión real para la población Negra, Afro Colombiana,
+Palanquera y Raizal en el distrito de Cartagena de Indias, que permitan la
+inclusión social, y hagan efectiva la participación afro e indígena en todas las
+esferas políticas y socio-económicas de la ciudad.
+La Ley 1551 de 2012, por la cual se dictan normas para modernizar la organización
+y el funcionamiento de los municipios, en el numeral 2” del artículo 3? dispone que
+corresponde a los municipios “Elaborar los planes de desarrollo municipal, en
+concordancia con el plan de desarrollo departamental, los planes de vida de los
+territorios y resguardos indígenas, incorporando las visiones de las minorías étnicas,
+169
+
+
+## Página 170 (OCR Oficial Acuerdo 006 de 2016)
+
+Ens
+El + Y Concejo Distrital de Cartagena de Indias D. T. y C.
+— E
+ot ACUERDO No. VOG
+(13 JUN 2016 )
+de las organizaciones comunales y de los grupos de población vulnerables
+presentes en su territorio”. En tal sentido promoveremos la implementación de
+acciones afirmativas, teniendo en cuenta las condiciones de marginación y
+prácticas sociales de discriminación que han afectado a estos grupos
+poblacionales históricamente” (DNP, 2010). Así mismo, el presente Plan acoge la
+definición de Acciones Afirmativas definida por la Corte Constitucional en la
+Sentencia T422 de 1996, cuando manifiesta que: "acciones afirmativas
+corresponden al conjunto de acciones que reconocen la situación de
+marginación social de que ha sido víctima la población de los grupos étnicos,
+ue particularmente la afrocolombiana, y que ha repercutido negativamente en el
+acceso a las oportunidades de desarrollo". Se plantea por ello, que siendo estas
+personas de especial protección, hay que eliminar toda aquella práctica que
+discrimine y no implique un mejoramiento de su calidad de vida.
+Se plantea por ello, que siendo estas personas de especial protección, se debe
+eliminar toda aquella practica que discrimine y no implique un mejoramiento de
+su calidad de vida. Reconocer e integrar a la población indígena desde su
+cosmovisión y ancestralidad, para facilitar su inserción al medio urbano, sin perder
+su estructura de valores que los identifica y los une como pueblo.
+Promoveremos la concertación con los pueblos y organizaciones indígenas, sobre
+los lineamientos para la formulación de política pública, dirigidos a incorporar este
+grupo poblacional al desarrollo de la ciudad sin desconocer su tradición, su
+Ñ lengua, su cultura, su ancestralidad, y su estilo de vida. Fomentaremos sus juegos
+iu tradicionales, autóctonos y populares, actividades deportivas y deporte
+convencional. Así como los conceptos de justicia ancestral y salud originaria.
+8.2.6.1 PROGRAMA FORTALECIMIENTO DE LOS GRUPOS ÉTNICOS EN EL DISTRITO
+La formulación del Plan de Etnodesarrollo para la población afrodescendiente y
+los Planes de Vida para la población Indígena residentes en el Distrito de
+Cartagena, se convierte en una verdadera herramienta para la inserción de este
+grupo poblacional al desarrollo de la ciudad, que contribuye a resolver en el
+marco de ejecución de la política pública, las serias necesidades por las que
+atraviesa esta comunidad desde un enfoque de derechos. Esta herramienta
+debe ser asumida con gran responsabilidad por el Distrito, para coadyuvar no
+170
+
+
+## Página 171 (OCR Oficial Acuerdo 006 de 2016)
+
+ll Ey Concejo Distrital de Cartagena de Indias D, T. y C.
+sr ACUERDO No. OO
+— EEN,
+sólo en la inclusión de la comunidad afro e indígena dentro de los planes de
+desarrollo territorial, sino en el mejoramiento, de sus condiciones de vida, como un
+imperativo para cerrar las brechas que por años ostenta la ciudad con estos
+grupos.
+8.2.6.1.1 SUBPROGRAMA AFRODESCENDIENTES E INDIGENAS
+Mediante un proceso de movilización con la participación activa de la
+comunidad identificada como Afro e Indígena, se formularán tanto los Planes de
+5] Etnodesarrollo, como los Planes de Vida. Así mismo se acompañará a los Consejos
+Comunitarios en los procesos de titulación colectiva, formación de los líderes para
+la incidencia política, establecimiento de rutas de trabajo a través de la
+formulación de los reglamentos internos de los consejos comunitarios y por último,
+se trabajará en la implementación de las autoridades autóctonas, guardas
+ancestrales y cimarrones.
+Tabla 104
+LINEA BASE DE
+INDICADOR DE RESULTADO INDICADOR DE META RESULTADO RESPONSABLE
+RESULTADO
+se taria del
+comunidades afros) con Convivencia
+Aumentar a un 100% las .
+planes de elnodesarrolo, | Aymentar a Un 109% las dana
+% de comunidades afros con Planes indígenas con planes de | Secretaria de
+de etnodesarrollo Formulados etnodesorollo y planes | —Planeación
+xs El 25% ( 1 de 4«|de Vida Indigenas secretaria del
+comunidad Indigena) | formulados Interior y
+con plan de vida Convivencia
+formulado Ciudadana
+Tabla 105
+LINEA BASE DE
+SUBPROGRAMA — CADOR DE INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO
+Formular 4 planes de
+Numero de elnodesarollo en igual Ñ
+AFRODESCENDI| Comunidades Afro | 3 de 28 comunidades | número de comunidades a del
+ENTES E ¡con planes de afros con planes de | Afro y articularlos 4 secrotao dl
+INDIGENAS etnodesarollo etnodesarollo planes de Elnodesarrollo pr la de
+formulados al plan de Desarrollo laneación
+Distrital.
+171
+
+
+## Página 172 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. VOG
+1
+(43 JUN 2016 )
+UNEA BASE DE
+SUBPROGRAMA — INCADOR DE INDICADOR DE META PRODUCTO RESPONSABLE
+> PRODUCTO
+Formular plan de vida en
+tres (3), comunidades
+Numero de incl
+comunidades ; A ado en | secretaria del
+Indígenas con planes En m7 Interior
+de vida formulados Planes de Enodesarollo
+al plan de Desarrollo
+Distrital.
+Acompañar
+Consejos comunitarios técnicamente el proceso a
+con titulación 2 de itulación colectiva | *eretaia del
+u colectiva. de 4 consejos
+comunitarios Afros.
+a ari Acompañar a los 25
+Consejos comunitarios consejos comunitarios en Secretaria del
+aos 3 la formulación de sus Interior
+internos formulados. reglamentos internos
+Acompañar a los 26
+Comunidades Afros consejos comunitarios en a
+con guardia ancestral 2 el proceso de Secretoña del
+conformado. conformación de
+guardas ancestrales
+Generar capacidades a
+Organizaciones 15 organizaciones Secretaría del
+Afrodescendiente Afrodescendiente dela | nato ri
+Forlolecidas ciudad para la ueno
+incidencia poítica.
+8.2.6.2 PROGRAMA OBSERVATORIO DISTRITAL DE DISCRIMINACIÓN
+nd El Observatorio Distrital de Discriminación Racial es un espacio de investigación y
+acción, para visibilizar toda práctica de discriminación en el distrito de
+Cartagena, no solo de las manifestaciones de negación de los habitantes de la
+ciudad, sino de la exclusión que por años han sido sometidos los afros, negros,
+roizales, palenqueros e indígenas de la oferta del Estado para resolver sus
+situaciones conflictivas, en temas trascendentales para su desarrollo como
+educación, salud, vivienda, agua potable, saneamiento, entre otros. Por ello
+Investigar para divulgar y reconocer las prácticas discriminatorias, significa cortar
+caminos a la exclusión y avanzar hacia propiciar las bases para insertar las
+poblaciones minoritarias en el desarrollo de la ciudad.
+172
+
+
+## Página 173 (OCR Oficial Acuerdo 006 de 2016)
+
+El Concejo Distrital de Cartagena de Indias D. T. y C.
+(Ana
+E)
+Gr ACUERDO No. OO6
+S C 13 JUN 2016 )
+Tabla 106
+LINEA BASE DE INDICADOR
+INDICADOR DE RESULTADO DE RESULTADO. META RESULTADO RESPONSABLE
+% de registro de casos de Aumentar en un 100% el | Aumentar en un 100% el| Secretaria del
+discriminación en la ciudad registro de casos de registro de casos de Interior
+de Cartagena. Discriminación Racial en | Discriminación Racial en de
+de registro, e Investigación | registro, e Investigación,
+Tabla 107
+Z LINEA BASE DE
+NM SUBPROGRAMA INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO
+Reglamentar
+mediante
+acuerdo y Poner [7 43 Secretaría
+" 5 del
+funcionamiento el le
+CELO | Obsenatato pr Cbsematodo Corunen
+DISCRIMINACION gonizado s on cia
+racial pora el Cue
+registro de todos pe
+los casos de
+discriminación en
+la ciudad.
+2 Investigaciones
+realizadas: 1Memoria
+Histórica de Casos de
+Discriminación Racial
+en Cartagena 2005- 8.2.6.4 Secretaría
+- Investigaciones 2. Discriminación de “anual sobre las Interior y
+nm realizadas por el Mercado en las diferentes formas Conviven
+ODAR. empresas privadas en n cia
+. de discriminación ss
+Cartagena: de sctninació Ciudada
+Determinantes para na
+posiciones de Alto.
+rango de
+Afrocolombianos.
+Palenqueros y raizales.
+Compas Realizar una
+Compañas, . campaña anual | Secretaría del interior y
+a ninación [1 Campaña el scriminación Convivencia
+realizadas por el es Hermoso' ”*
+racial en Ciudadana
+'ODAR.
+Cartagena.
+Funcionarios Capacitar a 400 ”
+capacitados en tuncionarios en | Secretaría del interior y
+Enfoque Entoque Convivencia
+diferencial Diferencial ludadana
+173
+
+
+## Página 174 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. OOO
+C 43 JUN 2016 )
+SECCIÓN II
+OBJETIVO ESTRATÉGICO 2: ADAPTAR El TERRITORIO PARA LA GENTE
+9 ARTICULO 9 ADAPTAR EL TERRITORIO PARA LA GENTE:
+En este objetivo estratégico se pretende garantizar la sostenibilidad del territorio,
+con el que se preparará a la ciudad para mejorar la dinámica urbana y el
+hábitat, generando crecimiento económico para equilibrar la demanda de la
+población de acuerdo con la oferta, en el marco de un territorio ordenado para
+el desarrollo sostenible.
+
+dl Nuestro Plan “Primero La Gente para una Cartagena Competitiva y Sostenible”
+propenderá por impulsar la planificación y actuación, acorde con las
+necesidades de movilidad, vivienda, agua potable y saneamiento básico, que
+favorezcan la productividad y la competitividad de la ciudad, buscando ofrecer
+una ciudad amable y sostenible, logrando un crecimiento resiliente, realizando las
+acciones pertinentes para mitigar la vulnerabilidad frente a los riesgos de
+desastres y cambio climático.
+
+Este objetivo lo conforman tres (3) ejes estratégicos que son: Desarrollo Económico
+Incluyente, Medio Ambiente y Gestión del riesgo y Territorio sostenible, ordenado e
+incluyente.
+sEOUNDO OBsETIWO ESTRATÉGICO
+Na
+eses esTRutocos
+Lens Estrarécicas
++ Cartagena Crudad a o a
+mos, 12 * Gestión del eso LCR vemo
+Un PRI pt nestor «Inttaestructura Vial.con
+PS RS ras
+Pen
+aragon
+nes 02
+174
+
+
+## Página 175 (OCR Oficial Acuerdo 006 de 2016)
+
+Aye > . e .
+E + 1 Concejo Distrital de Cartagena de Indias D. T. y C.
+A
+ar ACUERDO No. DOG
+_ (13 JUN 2016)
+9.1 EJE ESTRATÉGICO DESARROLLO ECONOMICO INCLUYENTE
+Esta estrategia busca fortalecer la estructura económica de la ciudad-región,
+para generar crecimiento y desarrollo económico, a través del mejoramiento de
+los factores de la competitividad local, sostenibilidad del sector turístico, fomento
+del emprendimiento y de la inclusión productiva y promoción del sector agrario y
+pesquero, todo bajo las concesiones de Ciencia Tecnología e Innovación que se
+traduzcan en aumento en los indicadores de ingreso y empleo.
+La ciudad necesita mejorar en la capacitación al capital humano, y estructurar
+- sus sectores económicos hacia una visión de desarrollo sostenible y sustentable. En
+” este contexto se hace indispensable continuar estrategias de inclusión
+productiva, a través del desarrollo de modelos productivos incluyentes y del
+fomento del emprendimiento social en los diferentes estabones de la cadena de
+valor de los sectores potenciales de la ciudad.
+9.1.1 LÍNEA ESTRATÉGICA CARTAGENA CIUDAD PARA INVERTIR
+Se buscará un desarrollo económico incluyente y diferencial, que permita la
+articulación de la ciudad de Cartagena y la región, con el fomento de las
+Unidades de emprendimiento y empresarismo de la ciudad que sean
+generadoras de ingresos y empleos formales, con el fortalecimiento y
+mantenimiento del sector turístico, impulsando la inclusión productiva en donde
+se estimule la creación de redes de microempresarios y agremiación por sector y
+mipymes para ofrecer productos locales, fortaleciendo la red de mercados y por
+Y último reactivando la producción local rural, que permita el cierre de brechas, no
+sólo entre lo rural y urbano, sino entre la población beneficiada con el desarrollo
+rural integral.
+Las políticas públicas hacen más viables las estrategias y acciones de largo plazo
+por lo cual, el plan apoyará aquellas que se necesiten construir, mejorar o
+fortalecer en los aspectos económicos, sociales y ambientales, que son los pilares
+de un modelo propuesto por la visión de Primero la Gente.
+La interacción de los sectores económicos, así como las apuestas productivas y
+los instrumentos para dinamizarlas como lo son las rutas competitivas, establecidas
+y alineadas al plan de competitividad del departamento y al plan de ciencia,
+tecnología e innovación, son los que permitirán fortalecer y fomentar programas
+175
+
+
+## Página 176 (OCR Oficial Acuerdo 006 de 2016)
+
+(E e” B ) Concejo Distrital de Cartagena de Indias D. T. y C.
+es ACUERDO No. VCOG
+C13JUN 2016)
+
+para soportar a la economía existente y las nuevas tendencias que se visualizan
+para la ciudad.
+9.1.1.1 PROGRAMA CARTAGENA CIUDAD PARA INVERTIR
+Este programa busca generar crecimiento y desarrollo económico a través del
+fortalecimiento de la competitividad local y del dinamismo económico,
+generando las bases que permitan enfrentar las condiciones cambiantes de
+carácter económico, político, ambiental y social.
+
+dl Para la obtención de estos objetivos, nos apoyaremos en proyectos como: la
+Implementación de un programa de créditos y microcréditos para jóvenes
+emprendedores, ejecución de proyectos de ciencia tecnología e innovación, el
+establecimiento de alianzas que fortalezcan la relación Universidad - Empresa —
+Estado, implementación de programas de capacitación para el trabajo, en el
+marco de la política pública de trabajo decente. Así mismo, se desarrollará lo
+previsto en el Acuerdo 022 de 2015, para asociarmos con la Agencia de
+Promoción de Inversiones de Cartagena de Indias INVEST CARTAGENA, con el fin
+de seguir promoviendo la inversión nacional y extranjera en la ciudad.
+
+Se consolidará y apoyará las rutas competitivas que presenten y formulen su plan
+de acción, construido desde los actores y que incidan en la inversión y nuevas
+formas de desarrollar proyectos.
+
+NG Se desarrollarán acciones tendientes a participar en convocatorias de
+cooperación internacional, que permita jalonar recursos internacionales para
+apuestas productivas o mejoras de calidad de vida a partir de proyectos con
+inclusiones productivas incluyentes y sociales.
+9.1.1.1.1 SUBPROGRAMA FORTALECIMIENTO INSTITUCIONAL PARA LA
+
+COMPETITIVIDAD Y CRECIMIENTO ECONÓMICO
+La capacidad de las empresas está en el desarrollo de nuevos productos,
+servicios, cambios en el mercado, procesos y/u otras formas de innovar. A través
+de este programa se plantea un nuevo modelo de negocio para la ciudad de
+Cartagena incorporando la innovación empresarial con apuestas de plataformas
+176
+
+
+## Página 177 (OCR Oficial Acuerdo 006 de 2016)
+
+A”, Concejo Distrital de C de Indias D. T. y C.
+ph e $ oncejo Distrital de Cartagena de Indias D. T. y
+A ACUERDO No.006
+(13 JUN 2016 )
+para el impulso de emprendedores, la innovación social con apuestas para el
+desarrollo de soluciones — productos y servicios para generar beneficios directos a
+la ciudadanía, la economía naranja para el incentivo y fomento de la cultura a
+través del fortalecimiento de las industrias culturales de la ciudad con políticas de
+innovación en materia de patrimonio cultural material e inmaterial.
+Desarrollar en conjunto con la sociedad aspectos necesarios que impacten los
+cambios en las comunidades a través de la innovación social, por ello es
+necesario la construcción de escenarios culturales (Centros de Desarrollo Cultural)
+que ayuden al aprovechamiento y la explotación de los mismos como fuente de
+NW ingreso.
+9.1.1.1.2 SUBPROGRAMA CON CIENCIA, TECNOLOGÍA E INNOVACIÓN
+CARTAGENA VA
+Este subprograma está orientado a la aplicación de la ciencia desde la
+investigación básica, permitiendo tanto en el sector privado como en el público
+elementos que transformen el que hacer en la gestión empresarial, los procesos
+productivos y las estrategias de inversión y desarrollo de ciudad, donde la gente
+se beneficie con nuevas tendencias tecnológicas en los espacios colectivos de
+las comunidades o en los distintos sectores de la ciudad. Se Fortalecerá el apoyo
+a la ciencia (investigación), tecnología e innovación buscando hacer posible el
+aprovechamiento de recursos para el desarrollo de procesos de alto impacto
+- para la ciudadanía Cartagenera.
+Ne
+Se apoyarán las iniciativas que fortalezcan la relación Universidad — Empresa —
+Estado, como una estrategia para promover la investigación, el desarrollo
+tecnológico y la innovación. De igual manera se impulsará la productividad y
+competitividad en el Distrito.
+Igualmente se aprovecharán las acciones del Gobierno Nacional en cuanto a la
+participación de políticas públicas, CONPES u otro instrumento que fortalezcan las
+condiciones de proyectos de ciencia, tecnología e innovación para la
+investigación y la transferencia tecnológica en todos sus niveles, que se sustente
+en vigilancias tecnológicas para el uso de nuevas tecnologías a los diferentes
+actores (academia, empresa, estado y sociedad). Además se impulsará la
+estrategia de ciudades digitales.
+177
+
+
+## Página 178 (OCR Oficial Acuerdo 006 de 2016)
+
+El Concejo Distrital de Cartagena de Indias D. T. y C.
+E— E
+kE
+ES ACUERDO No. DOG
+v
+Co 43 JUN 2016 )
+Tabla 108
+LINEA BASE DE
+INDICADOR DE RESULTADO INDICADOR DE META RESULTADO RESPONSABLE
+RESULTADO
+Al 2019, el Distrito
+Reducción de ubicación en la Puesto 18 de 23 estará por debojo .
+medición del Doing Business ciudades en el Doing | 99!A Posición 16 en | Secretaría de Hacienda
+se : la medición de Distrital
+Colombia Business a
+Doing Business
+Colombia
+Puesto 12 de 22
+Posición en Ronking de ciudades en | ciudades en el factor | Pasar del puesto 12 | ecretaría de Hacienda
+medición IGC en factor de Cn. | CTlen elranking que | al 10 enel factor mal
+. mide el índice global de CTI del IGC
+de competitividad
+Tabla 109
+LINEA BASE DE
+suBPROGRAMA — INDCADORDE INDICADOR METAPRODUCIO RESPONSABLE
+DE PRODUCTO.
+Número de p
+empresas 20 empresas | 4) empresas nstaladas | secretaria de Hacienda
+instaladas en la instaladas si Distrital
+ciudad ciudad
+Numero de Diseñ y he
+Ventanillas Única ca aa | Secretaría de Hacienda
+de Construcción la Ventanilla Única de pesredás
+implementada Construcción (VUC)
+de Diseñar e implementar
+0] monitoreo de clima Doncel Secretaria de Hacienda
+Fortalecimiento e negocio clima de inversión en la Distrital
+A iseñados e
+institucional para la | implementados ciudad
+competitividad y
+crecimiento e
+" mm Diseñar la Polífica
+SN A Publica de desarrollo. | Secretaria de Hacienda
+5 empresarial de la Distrital
+implementados ciudad de Cartagena
+Numero de len m
+. Diseñar la Política
+políticas económica del Distrito Secretaria de Hacienda
+económicas de Cart Distrital
+diseñadas le Cartagena
+Número de Diseñar e implementar
+procesos de el proceso de Secretaria de Hacienda
+estructuración estructuración Distrital
+económica y económica y
+financiera financiera de
+178
+
+
+## Página 179 (OCR Oficial Acuerdo 006 de 2016)
+
+¿ Concejo Distrital de Cartagena de Indias D. T. y C.
+[E — k
+€ a ACUERDO No.
+Ss ; cos
+LINEA BASE DE
+susrroGrama — INPCAD OE INDICADOR META PRODUCTO RESPONSABLE
+DEPRODUCIO
+diseñados e proyectos unificados
+implementados de la Administración
+distrital
+Rediseñor la estructura
+Estructura organizacional de la. | Secretaria de Hacienda
+organizacional " .
+rediseñada Secretaria de Distrital
+Hacienda Distital
+No, Programa de pres peralos
+Ñ encadenamientos no miantos - | Secretaría de Hacienda
+ados productos en la ciudad Distrital
+P de Cartagena
+Tabla 110
+LINEA BASE DE
+susrroGraMa — INDICADORDE INDICADOR METAPRODUCIO RESPONSABLE
+DEPRODUCTO
+Realizar 03 proyectos
+Número de de investigación sobre
+proyectos de tecnologías disponibles | Secretaría de Hacienda
+investigación para ciudades Distrital
+realizados sostenibles e
+inteligentes.
+Numero de Diseñar 01 plataforma
+Plataformas de de conectividad para | Secretaría de Hacienda
+conectividad encadenamientos Distrital
+diseñados productivos.
+Formular y ejecutar 03
+enc o proyectos de Clen
+Con Ciencia, Nómero de conjunto con grupos
+Tecnología e proyectos 2 de investi DA Secretaría de Hacienda
+3 igación de 1 de
+Innovación formulados y universidades Distrital
+Cartagena Va ejecutados acreditadas por el
+CUEE
+Diseñor e implementar
++ Un programa de
+innovación social que
+Numero de beneficie a 150
+innovadores cotageneros.e Secretaría de Hacienda
+sociales generación de empleo Distrital
+beneficiados nl
+fortalecimiento del
+tejido empresarial
+cortagenero
+179
+
+
+## Página 180 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. 006
+LINEA BASE DE
+a SR ra proDucro dESPONSANLE
+> DE PRODUCTO
+Crear un fondo de
+Numero de Fondos fortalecimiento ”
+de fortalecimiento empresaral con éntasis | Secretaría dá Hacienda
+empresarial creado en innovación social y
+empresarial
+Realizar un estudio
+a os DIAGNÓSTICO dela | Secretaría de Hacienda
+ROS economía naranja en Distrital
+Y la ciudad.
+Número de
+” doctorados y $0 profesionales
+formados entre
+a maestías y doctorados
+tecnología
+Número de jóvenes .
+fomados en 100 jóvenes
+ciencia tecnología ados
+e innovación Onvalmente
+Número de 10 de aumento en las
+empresas con base ND empresas con base
+tecnológica tecnológica
+ld ES creación de fondo fic
+Secretaría general -
+Sentra de oficina asesora de
+Consulta pora Centro de informática
+IA investigación en
+ÑU competencias y seguridad electrónica
+demás a nivel de Ybindoje de
+seguridad de la Información
+información
+Consorcio de centro
+. de desarollo de
+Consorcio universidades y
+empresas
+No
+RA 857 personas 5000 personas
+vulnerables vulnerables vulnerables
+copaciladas — | SOPacitadas capacitadas
+Número de 1620 Lona
+funcionarios — | Funcionarios | tuncionaros
+capacitados — | capacitados | “9Pacitados en
+180
+
+
+## Página 181 (OCR Oficial Acuerdo 006 de 2016)
+
+El - ,) Concejo Distrital de Cartagena de Indias D. T. yC
+es ACUERDO No. OOG>
+- (13 JUN 2016 )
+LINEA BASE DE
+SUBPROGRAMA MODUORDE INDICADOR META PRODUCIO RESPONSABLE
+DE PRODUCTO.
+Número de eventos
+de violación a la nio de
+¿equidad seguldod coplurados
+tecnológicos tecnológicos
+9.1.1.2 PROGRAMA EMPLEO, INGRESO, EMPRENDIMIENTO
+U Con este programa se busca incidir en la mitigación de los resultados de la tasa
+de desempleo y en el cierre de brechas de la empleabilidad en el territorio, para
+ello, se creará con los gremios de la ciudad, el comité de empleabilidad que
+buscará estrategias para reducir el desempleo y combatir la informalidad.
+Se implementarán programas de capacitación y de formación del recurso
+humano que conlleven a la reducción de brechas de la vinculación laboral,
+contando con una oferta educativa adecuada y pertinente en los niveles de
+técnicos laborales, por ello se articulará con el programa de la Secretaria de
+Educación "Jóvenes Formados con Calidad”.
+Además se trabajará en lograr alianzas con el sector privado para acercar la
+oferta y la demanda laboral de los cartageneros, que ayuden en la
+determinación de las necesidades, oportunidades y potencialidades locales, todo
+esto enmarcado en la política de inclusión productiva. Dentro de estas alianzas,
+NN en asocio con la industria de la construcción, propiciaremos la creación del
+centro de la información y la formación para dicho sector, así como del fondo
+para el fomento de la misma, que permita de lograrse la alianza, la financiación
+de esta finalidad.
+Se promoverá el emprendimiento entre nuestros jóvenes alrededor de la
+innovación y la nueva tecnología de las comunicaciones, elaborando planes de
+capacitación para estructurar planes y modelos de negocios del siglo XXI. Se
+adoptarán mecanismos que promuevan la vinculación de la mano de obra local
+en todos los proyectos con recursos públicos. Incentivaremos la formalización
+laboral y empresarial en tomo de las FAMI y microempresas, en procura de
+generar nuevas fuentes de empleo. Fomentaremos la actividad empresarial a
+181
+
+
+## Página 182 (OCR Oficial Acuerdo 006 de 2016)
+
+El e» y Concejo Distrital de Cartagena de Indias D. T. y C.
+E = E
+á z ACUERDO No. VO GO
+— C )
+(13 JUN 2016
+través de la implementación de créditos y microcréditos que faciliten el capital
+semilla para las ideas de negocios de jóvenes recién graduados de la universidad
+que generen empleos. Dinamizaremos la inversión en obras públicas como una
+estrategia de generación de empleo calificado y no calificado que priorice la
+mano de obra local.
+A través de una política donde haya una articulación con las diferentes entidades
+distritales, se desarrollarán un conjunto de acciones que permitan disminuir el
+desempleo, generar un ingreso digno y aumentar la calidad de vida de nuestra
+población.
+
+Nu
+9.1.1.2.1 SUBPROGRAMA INCLUSIÓN PARA LA TRANSFORMACIÓN DE LA
+
+INFORMALIDAD
+Este subprograma busca disminuir la informalidad, a través de un plan de
+intervención donde se ofrezcan alternativas viables a las personas que tengan
+condición de informalidad, especialmente a vendedores informales
+semiestacionarios y estacionarios con confianza legítima. El plan de intervención
+consiste en lo siguiente:
+1) Capacitación empresarial para organizar su negocio.
+2) Reubicación en zonas de espacio público de manera legal, pagando una
+contraprestación por el uso del espacio público, de conformidad con las
+disposiciones superiores que regulen la materia.
+
+NW 3) Los vendedores deberán presentar un proyecto o idea de negocio que sea
+aprobada, para que el Distrito de Cartagena de Indias, les otorgue de acuerdo
+con el proyecto que se estructure para el efecto, un capital semilla que les
+permita iniciar su negocio.
+9.1.1.2.2 SUBPROGRAMA PRIMERO TÚ MUJER CON AUTONOMÍA
+
+ECONÓMICA
+
+Se promoverá el ejercicio pleno de los derechos económicos de las mujeres, su
+cualificación laboral, sus aportes a la vida económica de la ciudad en
+condiciones de igualdad, así como el acceso a servicios financieros. Se realizarán
+acciones de promoción de emprendimientos en áreas de desarrollo, en los
+mercados y sus oportunidades. Entre otros factores mediremos si existe o no un
+cambio en la situación de las mujeres en relación con la acción.
+
+182
+
+
+## Página 183 (OCR Oficial Acuerdo 006 de 2016)
+
+(el ll Concejo Distrital de Cartagena de Indias D. T. y C.
+A E
+E ACUERDO No. OOG
+9.1.1.2.3 SUBPROGRAMA GENTE JOVEN Y EMPRENDEDORA
+La promoción de oportunidades y escenarios de empleabilidad y
+emprendimiento para la gente joven del Distrito, permitirá el desarrollo
+económico de esta población a partir del impulso de estrategias y alianzas con el
+sector productivo de la ciudad, propiciando la inclusión en el mercado, en el
+marco del Sistema de intermediación laboral con las agencias públicas de
+empleo y generación de ingresos.
+9.1.1,2,4 SUBPROGRAMA EMPRENDIMIENTO ÉTNICO
+Y) El emprendimiento es el mejor camino que este plan de desarrollo ha escogido
+para propiciar las opciones productivas a la población afro, negra raizal,
+palenquera e indígena, para crecer económicamente, ser independientes, y
+tener una calidad de vida acorde a sus expectativas. Este programa se articulará
+con la Línea Estratégica de Desarrollo Económico Incluyente y con el programa
+de Empresas Creativas y Culturales de la línea estratégica Cartagena Escenario
+Natural para la Cultura, el Arte y El Patrimonio, lo cual implica desarrollar una
+estrategia de articulación que permita aprovechar las ventajas de Cartagena,
+como sitio de predilección turística y desarrollar con la población étnica una
+cultura del emprendimiento encaminada a crear las oportunidades de generar
+ingreso desde su contexto.
+Tabla 111
+LINEA BASE DE
+INDICADOR DE RESULTADO INDICADOR DE META RESULTADO RESPONSABLE
+RESULTADO
+Intervenirel 10% de
+Ns unidades de negocios
+Porcentaje de unidades de 543% informales de cadenas Gerencia de
+negocios intervenidas o productivas populares del | Espacio Publico |.
+Distrito de Cartagena de
+Indias.
+Disminuir al 14% la tasa de | Secretaria de
+ven desempleo juvenil en el Participación
+Tosa de desempleo juvenil Distito de Cartagena Unidad de
+(1.909) Juventud
+Secretaria del
+Iniciativas productivas afro e Apoyar en un 190% Interior y
+inet ND iniciativas productivas mi
+indígenas apoyados ato e nciaenas Convivencia
+a Ciudadana
+183
+
+
+## Página 184 (OCR Oficial Acuerdo 006 de 2016)
+
+ll + Concejo Distrital de Cartagena de Indias D. T. y C.
+¡E— E
+E,
+A ACUERDO No. DOGS
+(13 JUN 2016 )
+Tabla 112
+LINEA BASE DE
+SUNPRoSRAM aa INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO
+vi lizar a 2
+'endeciores 1252 Vendedores Formalizar a 200
+estacionarios vendedores ,
+informales y » Gerencia de
+Informales en se 5 estacionarios informales s
+Le il estacionarios A Espacio Publico.
+espacio público % en espacio público
+ño formolizados
+legal formalizados legal
+Incentivos para los
+M procesos de trámites y
+registros mercantiles de
+Unidades de 53783 (fuente DANE) 10.000 unidades de.
+negocios con sus | Encuestas Integrada A
+registros mercantiles, de Hogares, negocios favoreciendo
+y cadenas de
+microempresas de
+¡“acumulación simple.
+Inclusión Para Fomentar diez (10)
+la campañas de tipo
+Transtormación Numero de informativo y
+dela campañas pedagógico que Secretaría de
+Informalidad realizados. promuevan los Participación
+beneficios de la Unidad de
+formalización. Proyectos
+Productivos
+Promover la generación
+Ns Micro y pequeñas 14,327 [datos de IO
+empresas que calculados de base , e
+0 mejoramiento de la
+mejoran su de cámara de
+Jive 4 productividad de 2.000
+competitividad. comercio). y e
+micros y pequeñas
+empresas,
+Área de Ei e
+Empleabilidad emplecbildas
+Diseñada 'empresarial con los
+gremios.
+Primero Tú Número de Mujeres 500 Mujeres Secretaria de
+Mujer con Capacitadas y Capacitadas y Participación
+Autonomía cualificadas en cualificadas en oficios Oficina de la
+184
+
+
+## Página 185 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. VO6
+' e UNEA BASE DE
+A nUCTO, INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO
+e o Ñ
+DVD de pes ND 200 Mujeres vinculadas
+vinculadas en el en el mercado laboral
+mercado laboral
+NN
+Número de, mujeres 200 mujeres
+A beneficiados con
+AN créditos en entidades
+entidades financieras
+financieras
+Nomer de mujeres <00 mujeres
+enefeiogos co benelicindas con
+A 340 asistencia técnica para
+para promoción de e
+NR promoción de sus ideas
+sust eos e de negocios
+negocios
+Número de jóvenes
+ubicados
+laboralmente en el 22 1309 jóvenes ubicados
+y marco del sistema laboralmente.
+de intermediación
+laboral
+nio de Crear 40 iniciativas Secretaria de
+a elvas crecí 2 productivas y fortalecer | Participación
+a RE 20 unidades existentes. Unidad de
+otonalecióos Juventud
+eno ens 1000 jóvenes se
+9 : 868 benefician de iniciativas
+de iniciativas juveniles.
+productivas. A
+ada 800 jóvenes tomados
+formados en
+185
+
+
+## Página 186 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. VDOb
+INDICADOR DE UNEA BASE DE
+SUBPROGRAM 1 p el INDICADOR DE META PRODUCTO RESPONSABLE
+A RODU PRODUCTO
+ihiciat Creación y
+Iniciativos de Fortalecimiento de 50
+o 2 iniciativas de
+nena ne emprendimiento
+Distito Indígenas en el Distrito
+Ny
+Creación y
+iniciativas de Fortalecimiento de 50 Secretaria del
+Emprendimient | emprendimiento de 4 iniciativas de Interior y
+oéfhnico Población Afro emprendimiento para | Convivencia
+población Afro Ciudadona
+Caracterizar y atender
+Familas 1,000 familias
+Afrodescendientes Afrodescendientes a
+caracterizados y través de la estrategia
+atendidas. del PES para superar las
+trampas de la pobreza
+9.1.1.3 PROGRAMA TURISMO COMPETITIVO Y FUENTE DE DESARROLLO
+SOSTENIBLE
+NW
+Se tendrá como apuesta el posicionamiento de Cartagena de Indias como
+destino turístico competitivo y fuente de desarrollo sostenible alrededor de 4 líneas
+estratégicas, que se abordarán en los subprogramas descritos a continuación y
+en los que el componente humano, 'Primero la Gente' será el factor transversal a
+todas las acciones.
+Como elemento de competitividad, se trabajará en el fomento de alianzas
+público-privadas, y la canalización de los recursos del Sistema General de
+Regalías, del Ministerio de Comercio, Industria y Turismo, y otras fuentes,
+promoviendo esquemas de cooperación en torno a la investigación e innovación
+en el sector, gestión turística del territorio, certificación de calidad y
+estandarización de procesos, formación y capacitación del recurso humano,
+186
+
+
+## Página 187 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. 006
+C 13 JUN 2016 )
+
+apertura y consolidación de mercados emisores, dotación de infraestructura
+turística y desarrollo de nuevos productos; al tiempo que se fortalezcan los
+procesos de formalidad de los prestadores del sector.
+Adicionalmente, se liderará la creación de una dependencia distrital, como
+instancia que ejerza funciones de vigilancia, regulación y control de la actividad
+turística en Cartagena. Con el apoyo del Gobierno Nacional, de las empresas del
+sector Turístico y del gremio que los reúne, se desarrollará las estrategias
+programas y proyectos definidos o recomendados en el Plan Sectorial de Turismo
+de Cartagena 2014-2017.
+
+NW
+9.1.1.3,1 SUBPROGRAMA NUEVA Y VARIADA OFERTA TURÍSTICA
+Teniendo en cuenta que uno de los factores que permite un mayor impacto
+económico del turismo es el número de días promedio de estadía, los destinos
+deben reinventarse con el fin de prolongar esa estancia y garantizar el factor de
+recompra o fidelidad de los visitantes. Desde esta óptica el gobierno "Primero la
+gente Para Una Cartagena sostenible y Competitiva”, propenderá por facilitar la
+creación de nuevos productos turísticos e identificar circuitos que amplíen la
+oferta y permita que los visitantes tengan acceso a más opciones de actividades.
+Dada la vocación de destino cultural y alineado a las tendencias del turismo a
+nivel internacional, estos productos estarán enfocados a experiencias Únicas y
+productos auténticos, que permitan que haya una interacción e intercambio
+
+hd cultural, visitante-lugareño y permita comunicar los valores propios de la cultura
+cartagenera en diversas dimensiones.
+9.1.1.3.2 SUBPROGRAMA CARTAGENA DESTINO TURÍSTICO SOSTENIBLE Y DE
+
+CALIDAD
+A través de sostenimiento del sistema de gestión, mantendremos el sello de
+calidad turística reactivado en 2015 para el Centro Histórico de Cartagena de
+Indias. Le apostaremos al rediseño del paisaje turístico de acuerdo a la normativa
+nacional, local y a los estándares internacionales, a través de la implementación
+de modelos de ordenamiento y se trabajará por un destino orientado a un
+consumidor que busca encadenamientos productivos entre atractivos, productos
+187
+
+
+## Página 188 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. DOG
+CO 13 JUN 2016. )
+y servicios, certificados y con elevados estándares de calidad; con un recurso
+humano idóneo y con altos niveles de educación. En términos de infraestructura,
+accesible para toda la población (jóvenes, adultos mayores y en condiciones de
+discapacidad); a la vez, adecuadamente equipado, amoblado, conectado,
+señalizado y seguro en playas.
+El refuerzo de la competitividad del turismo de Cartagena incluye el compromiso
+con la productividad, por lo que se trabajará en la formalización de prestadores
+de servicios turísticos y cualificación del talento humano con el concurso de
+instituciones, organizaciones del sector y fortalecimiento de productos que hoy se
+MY ofrecen, en busca de garantizar no sólo la prestación del servicio bajo estándares
+internacionales, sino también la sostenibilidad financiera del negocio, que
+redundará en beneficios económicos para la sociedad.
+Se posicionará a Cartagena de Indias como destino amigable con el medio
+ambiente y compatible con el cambio climático, a través del desarrollo de
+iniciativas que promuevan el uso eficiente del agua y la energía y que
+contribuyan a la disminución de la huella de carbono, y la preservación de los
+ecosistemas que constituyen la base de gran parte de nuestra oferta turística; lo
+que se traducirá en elevación de los índices de competitividad.
+9.1.1.3.3 SUBPROGRAMA APERTURA Y CONSOLIDACIÓN DE MERCADOS
+EMISORES ESTRATÉGICOS A NIVEL NACIONAL E INTERNACIONAL
+v Tanto en el plano nacional como en el internacional la carrera por posicionar
+destinos turísticos es cada vez más competida, en ese sentido Cartagena
+aumentará sus esfuerzos para mantenerse posicionada en los mercados ya
+maduros y abrir o estimular aquellos con potencial de visitantes y de alto impacto
+en gasto.
+Cartagena de Indias ha venido «aumentando el número de turistas
+significativamente año tras año, hoy en día se tiene plenamente identificado los
+mercados emisores principales a nivel nacional e internacional y es preciso
+intensificar la promoción en ambos canales: intermediario (agencias/operadores
+mayoristas) y público final (turistas potenciales). En ese sentido se focalizarán las
+acciones de promoción en: productos, nichos y experiencias que permitan
+posicionar a Cartagena como un destino turístico a nivel internacional, se
+188
+
+
+## Página 189 (OCR Oficial Acuerdo 006 de 2016)
+
+(El el > Concejo Distrital de Cartagena de Indias D. T. y C.
+S=zuz ACUERDO No. OO65
+C 43 JUN 2016 )
+desarrollarán acciones de mercadeo de la ciudad a nivel nacional e
+internacional, con participación en ferias, famtrips, press trips, campañas BTL, ATL,
+y desarrollo de caravanas turísticas.
+9.1.1.3.4 SUBPROGRAMA TURISMO RESPONSABLE E INCLUYENTE
+Se hará del turismo una herramienta más en la lucha contra la desigualdad social
+y la inclusión. Con el Gobierno “Primero la Gente” y en concordancia con lo
+estipulado por el Plan Sectorial de Turismo del Distito de Cartagena, le
+W apostaremos a mejorar las condiciones de las comunidades locales en zonas
+periféricas e insulares que ocupan un lugar preponderante. Esto, dado el
+compromiso del Gobierno Nacional y su MinCIT, de ejecutar la política de turismo
+comunitario formulada para poner en valor, la oferta de servicios turísticos de las
+comunidades organizadas que se benefician e involucran en los diferentes
+eslabones de la cadena productiva del turismo.
+En el marco del mismo Plan Sectorial de Turismo local alineado con el Plan
+Sectorial Nacional, se plantea la necesidad de gestionar el destino con el
+componente de “turismo responsable" como factor transversal a las acciones que
+en ésta materia se adelanten. Es por esto que en los próximos 4 años seguirán
+siendo "Primero nuestros niños, niñas y adolescentes" a través del fortalecimiento
+de la estrategia de prevención de la explotación sexual de éstos grupos -
+ESCNNA-; para lo que se liderará la sensibilización con los empresarios y las
+y organizaciones de base del sector turístico, para que se reconozcan y activen
+como garantes de derechos de nuestra sociedad del futuro, ejerciendo
+responsablemente la actividad turística en Colombia.
+Cartagena de Indias no sólo será para los turistas, 'Nuestra Gente" también
+entenderá que la actividad turística es el insttumento de desarrollo de nuestra
+sociedad; no sólo por cómo dinamiza la economía, sino también porque el
+cartagenero tendrá las facilidades para disfrutar del turismo en su ciudad. Para
+ello, se fortalecerá la campaña "Cartagena Mía", estrategia merecedora de
+reconocimientos de nivel nacional e internacional que permite a los cartageneros
+conocer su historia, sus atractivos, sus potencialidades, su riqueza y las
+oportunidades que ofrece, pues sólo conociéndola más... podremos quererla
+más.
+189
+
+
+## Página 190 (OCR Oficial Acuerdo 006 de 2016)
+
+El re, » Concejo Distrital de Cartagena de Indias D. T. y C.
+— A
+== AO y
+9.1.1.3.5 SUBPROGRAMA CARTAGENA MÁS CONECTADA
+En términos de competitividad turística la conectividad surge como el elemento
+fundamental para el cumplimiento de los indicadores cuantitativos y cualitativos
+de impacto, pues se convierte en la plataforma para materializar la llegada de
+turistas al destino.
+Como lo indica el Plan Sectorial de Turismo Nacional 2014-2018 según el estudio
+sobre rutas aéreas adelantando por FONTUR en el año 2011, ciudades como
+Bogotá, Armenia, Barranquilla, Bucaramanga, Cali, Cartagena, Cúcuta, San
+xn Andrés, entre otras, son consideradas polos de desarrollo en materia aérea
+debido al incremento en los últimos años en su afluencia de pasajeros.
+Adicionalmente, en términos de ser atractivos para los turistas potenciales, sea
+cual sea el segmento, vacacional, de reuniones, de convenciones u otro, la
+facilidad con la que puedan llegar al destino en términos de conectividad se
+convierte en un factor para su decisión de viaje, por lo que trabajar en garantizar
+la competitividad turística del destino debe iniciar por asegurar alternativas de
+conectividad aérea principalmente.
+Para lograrlo se identificarán las rutas y aerolíneas con las que mejor se pueda
+conectar el destino para impulsar el número de visitantes, y se implementarán
+planes de trabajo que incluirán desde agendas comerciales de sensibilización,
+participación en eventos especializados y encuentros uno a Uno, planes de
+u mercadeo para potenciar rutas potenciales y existentes, todo lo anterior con las
+aerolíneas priorizadas.
+Tabla 113
+LINEA — BASE DE
+INDICADOR DE RESULTADO INDICADOR — DE META RESULTADO RESPONSABLE
+RESULTADO
+Aumentar en un
+Porcentaje de turistas llegado 40% los turistas que
+a la ciudad de Cartagena de | 7.982.259 llegan a la ciudad | CORPOTURISMO
+Indias de Cartagena de
+Indios.
+190
+
+
+## Página 191 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. OOG
+ñ
+(13 JUN 2016 )
+Tabla 114
+LINEA BASE
+INDICADOR DE DE
+SUBPROGRAMAS INDICADOR META PRODUCTO RESPONSABLE
+PRODUCTO DE
+PRODUCTO
+Número de nuevos
+productos turísticos
+Nueva y variada oferta ofertados en la
+turística ciudad de
+Cartagena de
+Indias
+Sostenimiento de
+ws Cartagena destino — | la certificación del
+turístico sostenible y de centro histórico 1
+Calidad como destino
+turístico sostenible
+Número de
+pasajeros llegando 263.908 355.071
+por vía marítima
+Número de
+Apertura y pasajeros
+consolidación de nacionales 1.746.469 2.520.663
+mercados emisores llegando por vía
+estratégicos a nivel aérea
+nacional e internacional CORPOTURISMO
+Número de
+pasajeros
+internacionales 232.015 287.753
+llegando por vía
+aérea
+Fortalecimiento de
+¡w] la campaña de
+pertenencia del
+Turismo responsable e. | MÍSMO POr Parte
+incluyente, cartageneros y su
+responsabilidad
+como anfitriones
+en el destino
+Nuevas rutas
+conectando
+Cartagena más directamente a 7
+conectada Cartagena de
+Indias con el
+mundo
+191
+
+
+## Página 192 (OCR Oficial Acuerdo 006 de 2016)
+
+y Y HE Concejo Distrital de Cartagena de Indias D. T. y C.
+E E)
+Sr 3HRRDO No. 006
+— ( 13 JUN 2bib )
+9.1.1.4 PROGRAMA INTEGRACIÓN TERRITORIAL
+Se fortalecerá la integración del área regional del Distrito de Cartagena dentro
+del contexto de la economía regional, nacional e internacional. Todo esto
+mediante acciones que aseguren su vocación como centro turístico del Caribe,
+puerto internacional competitivo y ciudad industrial, que impulsen la reactivación
+del área rural y favorezcan el desarrollo del comercio y los servicios de apoyo a
+los sectores productivos, mediante la identificación de los encadenamientos
+productivos, la comercialización de los servicios regionales, la vinculación de las
+rutas intermunicipales al SITM y la cooperación horizontal de las entidades
+NS distritales con las entidades municipales de esta zona, garantizado su crecimiento
+en términos de seguridad, progreso económico, social, cultura y de mejoramiento
+de la calidad de vida de sus habitantes. Para ello se impulsará el área
+metropolitana y la ciudad región para que actué como una plataforma vital para
+el desarrollo económico y social de la ciudad.
+Este programa permitirá procesos de generación de proyectos, en los cuales se
+puedan presentar iniciativas ante los organismos del orden regional, nacional o
+internacional que favorezcan dos o más ciudades capitales, un municipio o varios
+y la ciudad de Cartagena.
+9.1.1,4.1 SUBPROGRAMA PROYECTOS ENTRE CIUDADES
+Cartagena tiene la necesidad de liderar proyectos de integración territorial con
+nd los municipios de sus alrededores para Impulsar el ordenamiento del territorio, por
+ello se formularán proyectos conjuntos y de beneficio común para un desarrollo
+sostenible, competitivo y productivo.
+9.1.1.4,2 SUBPROGRAMA COMPETITIVIDAD SOCIAL
+Se presenta alrededor de la competitividad, no solo la competitividad
+empresarial, sino como es el sentir del gobierno primero la gente, el esquema de
+volver a la sociedad competitiva entorno a sus cambios y dinamismo económico;
+es por ello que el programa propone competitividad para la exportación de
+productos y servicios, la generación de innovación en la sociedad como
+192
+
+
+## Página 193 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. OOGS
+proveedores inclusivos, así como la plataforma de inversión y desarrollo del
+destino turístico como fuente de trabajo digno e incluyente.
+Tabla 115
+INDICADOR DE LINEA BASE DE INDICADOR
+RESULTADO. DE RESULTADO META RESULTADO RESPONSABLE
+Instancia: Constitución de instancia de | Secretaria de
+Constituida integración territorial Planeación Distrital
+NW
+Tabla 116
+LINEA BASE DE
+SUBPROGRAMA ICO INDICADOR DE RESPONSABLE
+PRODUCTO META PRODUCTO
+Diseñar 2 proyectos
+Proyectos con en conjunto con Secretaria de
+yo municipios cercanos | — Planeación
+municipios Diseñados y/o ciudades de la Distrital
+región
+Proyectos entre Proyectos de ciudades Desarrollar 1 Secretaria de
+Cludades inteligentes proyecto de Planeación
+Desarrollados ciudades inteligentes. Distrital
+Impulsar 1 proyecto
+Proyecto Medio medio ambiental. | Sacreroro,de
+Ñ laneación
+ambiental Impulsado para la Distrital
+competitividad
+Crear tres rutos .
+Ny Rutas competitivas competitivas que ld
+creadas dinomicen la psi
+| competitividad Sl
+| Mejorar 2 zonas de la ñ
+| Competitividad social | Zonas dela Ciudad ciudad con apoyo Secreto la de
+Mejoradas nacional y/o poi
+internacional. ama
+Impulsar 2 proyecto Secretaria de
+Proyectos Impulsados de la mesa anti Planeación
+tramite Distrital
+9.1.1.5 PROGRAMA MERCADOS PRIMERO LA GENTE
+Se fortalecerá la red de mercados para el Distrito de Cartagena, mediante la
+dotación completa del mercado de Santa Rita, la construcción de la central de
+193
+
+
+## Página 194 (OCR Oficial Acuerdo 006 de 2016)
+
+El E Concejo Distrital de Cartagena de Indias D. T. y C.
+DG ACUERDO No. 0OG
+=D. A. N
+(413 JUN 2016 )
+abastos mayoristas y minoristas, la formalización de los comerciantes del mercado
+de Bazurto y Santa Rita, y la conservación de un nivel óptimo de la seguridad, con
+el fin de reducir la desigualdad en la ciudad y contar con una atención
+diferenciada.
+9.1.1.5.1 SUBPROGRAMA COMERCIANTES DE LOS MERCADOS PÚBLICOS DE
+CARTAGENA CON CONDICIONES MEJORADAS
+Las condiciones de higiene, aseo y salubridad son de vital importancia para la
+uy prestación de un excelente servicio, por ello este programa busca mejorar esas
+condiciones, así como la formalización de comerciantes de los mercados
+públicos de la ciudad.
+9.1.1.5.2 SUBPROGRAMA RED DE MERCADOS PÚBLICOS PARA CARTAGENA
+El Mercado de Bazurto se ha quedado pequeño para responder a las demandas
+de la ciudad y todos los puntos geográficos de habitabilidad de sus ciudadanos.
+Además, Cartagena como una de las principales ciudades del país debe contar
+con una red de mercados articulada a todo el sistema comercial de la ciudad,
+por ello se fortalecerá la red de mercados de la ciudad, poniendo en
+funcionamiento el mercado de Santa Rita, organización del traslado del mercado
+de Bazurto y la construcción de la central de abastos.
+NY Tabla 117
+LNEA BASE DE
+INDICADOR DE RESULTADO INDICADOR DE META RESULTADO RESPONSABLE
+RESULTADO:
+Porcentaje de la Red de
+Mercados Públicos para el | 30% de la red de | 9% de la Red de Mercados
+Distíto de — Cortageno | Mercados Públicos para el Disilo de [Mercados
+funcionando. Cartagena funcionando.
+194
+
+
+## Página 195 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. OOG
+Tabla 118
+LINEA BASE DE
+TS
+SUBPROGRAMA AS DE PRODUCTO PRODUCTO RESPONSABLE
+PRODUCTO
+Mercado de
+Mercado — de Sonta Rila en
+Santa Rita funcionamiento
+Comerciantes de 1os| Funcionando y dotado Mercados
+mercados públicos de
+Cartagena con
+condiciones mejoradas Uno central
+NA Construcción mayorista de
+Central Abastos
+Mayorista construida Mercados
+No. De
+Comerciantes
+con
+condiciones de 1.600
+higiene, comerciantes
+salubridad y con mejores
+aseo en la condiciones de
+Red de mercados públicos | Plaza de higiene,
+para Cartagena mercado salubridad y
+mejoradas o aseo. Mercados
+300
+comerciantes
+No, De Santa Rita y
+Nx comerciantes Bozurlo
+formalizados Formalizados Mercados
+9.1.1.6 PROGRAMA REACTIVACIÓN DEL CAMPO PARA LA COMPETITIVIDAD
+La crisis del sector agropecuario y pesquero del distrito de Cartagena, se hace
+evidente con el desplazamiento de la gente hacia el casco urbano, incidiendo
+en los factores negativos de la producción agropecuaria y pesquera en el sector
+rural. Con la política Nacional “Colombia Siembra" se creará un ambiente
+favorable para impulsar las inversiones que se requieren en las nuevas áreas,
+paquetes tecnológicos, soluciones de agua, infraestructura, maquinaria,
+investigación y transferencia tecnológica, a través del eje estratégico desarrollo
+195
+
+
+## Página 196 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. VOOGS
+C 43 JUN 2016 )
+
+económico incluyente para el mejoramiento de la tecnología local de
+
+producción, con extensión rural, tecnologías de puntas, fortalecimiento de las
+
+organizaciones rurales, definiendo y protegiendo el área agropecuaria y
+
+pesquera, con encadenamientos productivos y valor agregado.
+
+9.1.1.6.1 SUBPROGRAMA REACTIVACIÓN AGRICOLA PARA LA GENTE
+
+El Distrito de Cartagena, reactivará el sector agrícola a través de la Unidad
+
+Municipal de Asistencia Técnica-UMATA, apoyada en la política Nacional
+NW “Colombia Siembra” con el desarrollo de la estrategia Desarrollo Económico
+
+Incluyente, con la puesta en marcha de acciones en la extensión rural,
+
+transferencia de tecnología, expansión de las áreas productiva de los cultivos
+
+tradicionales, y no tradicionales, uso de maquinarias agrícolas, generando
+
+productos agrícolas con Buenas Prácticas Agrícolas (BPA) y valor agregado,
+
+incrementando los ingresos económicos de los pequeños y medianos productores
+
+del distrito de Cartagena.
+
+9.1.1.6.2 SUBPROGRAMA REACTIVACIÓN SOSTENIBLE, DEL SECTOR PECUARIO
+
+PARA LA GENTE
+
+El Sector Pecuario, en el Distrito de Cartagena, se consolidará con un desarrollo
+
+sostenible de acuerdo a la vocación y potencialidades de los pequeños
+
+productores que permita, un mejoramiento económico y bienestar a cada una
+Ns de las familias productoras, promoviendo la participación de las organizaciones
+
+de productores pecuarios.
+
+Con la identificación, la delimitación y la protección de las áreas agropecuarias
+
+con potencial productivo para la actividad agropecuaria y el establecimiento de
+
+los canales de comercialización para los productores pecuarios de distrito de
+
+Cartagena; se ampliarán las nuevas áreas de producción, con disposición de
+
+agua permanente, infraestructuras, banco de maquinaria, utilizados para la
+
+extensión rural y transferir tecnología, con perspectivas de mercado.
+
+196
+
+
+## Página 197 (OCR Oficial Acuerdo 006 de 2016)
+
+(El el y Concejo Distrital de Cartagena de Indias D. T. y C.
+A TA
+Gr ACUERDO No. VO >
+C— 13JUN Zuib )
+9.1.1.6.3 SUBPROGRAMA SOSTENIBILIDAD DE LA PESCA Y ACUICULTURA
+PARA LA GENTE
+El distrito de Cartagena, cuenta con un recurso ictiológico, hídrico y condiciones
+costeras aptas para la captura y explotaciones confinadas, con transferencia de
+huevas tecnologías, asistencia técnica y procesos, se ampliarán los niveles de
+producción en general, con los encadenomientos productivos integrales,
+sostenibles y amigables con el medio ambiente, procurando el ordenamiento
+pesquero para la conservación del recurso y aumento de los ingresos de los
+pequeños y medianos pescadores y, acuicultores artesanales.
+NM
+9.1.1.6.4 SUBPROGRAMA ASOCIACIONES RURALES ORGANIZADAS Y
+FORTALECIDAS PARA LA PRODUCCIÓN AGROPECUARIA
+DIVERSIFICADA Y COMPETITIVA
+Se trabajará en la creación y fortalecimiento de organizaciones legalmente
+constituidas, para lograr una producción de sector primario, sostenible y
+competitivo de las áreas de producción; agrícola, pecuaria y pesquera, para
+lograr la integración de las nuevas apuestas tecnológicas, permitiendo un
+desarrollo económico y social integral de manera sostenible, sustentado en el
+fortalecimiento de la organización de los gremios.
+Tabla 119
+LINEA BASE DE
+INDICADOR DE RESULTADO INDICADOR DE META RESULTADO RESPONSABLE
+RESULTADO
+y] Aumentar en un 38% el
+Pequeños — productores que qgs pequenos Número de pequeños Ñ
+adoptaron is tecnologías ») productores del sector Umata
+apropiados de producción productores atendidos ronecuao en el
+Distrito de Cartagena
+Tabla 120
+LINEA BASE DE
+SUBPROGRAMA NOR DE INDICADOR DE METAPRODUCIO — RESPONSABLE
+PRODUCTO
+Pequeños
+Productores
+REACTIVACIÓN AGRICOLA A e
+PARA LA GENTE atencicios Umata
+Sistemas de
+producción ND
+Ogrícolas
+197
+
+
+## Página 198 (OCR Oficial Acuerdo 006 de 2016)
+
+OS
+(El 2) Concejo Distrital de Cartagena de Indias D. T. y C.
+iA— BE
+rt ACUERDO No. DOGS
+=> Cd3JÚN 206)
+LINEA BASE DE
+SUBPROGRAMA STO INDICADOR DE META PRODUCIO — RESPONSABLE
+PRODUCTO
+Banco de
+maquinaria ND
+agrícola
+Hectáreas — de
+cultivos 7500 7650
+expandida
+Pequeños
+Productores de
+especies
+REACTIVACIÓN _ SOSTENIBLE, | Menores
+Ns DEL SECTOR PECUARIO PARA |Qlendido
+LA GENTE Pequeños
+Productores de
+ganadería so 428
+bovina atendido
+Organizaciones
+de pequeños
+productores
+agropecuarios y
+pescadores
+ASOCIACIONES RURALES | legalizados.
+ORGANIZADAS Y
+FORTALECIDAS — PARA LA | Organizaciones
+PRODUCCIÓN de pequeños
+AGROPECUARIA produciores. del 4s
+DIVERSIFICADA, Y [sector primario
+COMPETITIVA forlolecidas
+Organizaciones
+de mujeres 3 “
+rurales del sector
+7 primario,
+Unidades
+acuícolas 7 2
+instaladas
+SOSTENIBILIDAD DE LA PESCA | fescadores — y
+E iCUICULTURA PARA LA artesanales 245
+asistidos
+Toneladas de
+pescado 12528 14028
+producidas
+9.2 EJE ESTRATÉGICO MEDIO AMBIENTE Y GESTIÓN DEL RIESGO
+Es finalidad de este eje el proteger la diversidad e integridad del ambiente dentro
+de un ordenamiento ambiental del territorio, que identifique y conserve áreas
+198
+
+
+## Página 199 (OCR Oficial Acuerdo 006 de 2016)
+
+CAMA”, Concejo Distrital de Cartagena de Indias D. T. y C.
+P—
+S CA ACUERDO No. DOG
+
+especiales en materia de estructuras ecológicas, como ejes ambientales y
+corredores verdes, fomentando la educación para el logro de estos fines, así
+como aprovechar y proyectar el manejo de los recursos naturales, para así
+garantizar su desarrollo, conservar y preservar el recurso hídrico, restaurando,
+previniendo, aminorando e interviniendo los factores que provocan el deterioro
+ambiental adaptándose a los fenómenos naturales locales y globales como el
+cambio climático.
+Este eje se articula al Plan Nacional de Desarrollo Todos Por Un Nuevo País, en su
+
+a estrategia Crecimiento Verde, donde se plantea la apuesta del país en temas de
+
+y] cambio climático, crecimiento sostenible y bajo carbono, el uso sostenible del
+capital natural, el crecimiento resiliente y asociado a la disminución de la
+vulnerabilidad frente a los riesgos de desastres. De la misma manera se articula
+con los Objetivos de Desarrollo Sostenible — ODS- como cumplimiento de la
+agenda de gobierno internacional.
+9.2.1 LÍNEA ESTRATÉGICA EDUCACIÓN Y CONTROL AMBIENTAL
+Esta línea está orientada a la formulación del Sistema Distrital de Monitoreo
+Ambiental, que permita actividades y factores que influyen en la mejora,
+conservación o deterioro del ambiente distrital, creando una cultura de
+educación.
+9.2.1.1 PROGRAMA MONITOREO AMBIENTAL
+
+4
+El programa pretende implementar un Sistema Distrital de Monitoreo Ambiental y
+todos sus recursos a nivel distrital, de manera que se establezca e informe a la
+ciudadanía sobre el estado ambiental de Cartagena, sus zonas críticas, riqueza,
+nivel de deterioro, potencialidades y limitaciones.
+El estado ambiental del Distrito debe ser un vehículo para ampliar el
+conocimiento ciudadano del ambiente de su territorio, para la puesta en
+valor de sus activos ambientales, resaltar los limitantes y potencialidades del
+ambiente distrital, contribuyendo también a regular y promover los
+comportamientos y hábitos ciudadanos encaminados al mantenimiento,
+conservación y aprovechamiento de los recursos ambientales y ecosistemas
+distritales,
+
+199
+
+
+## Página 200 (OCR Oficial Acuerdo 006 de 2016)
+
+(El Concejo Distrital de Cartagena de Indias D. T. y C.
+> ACUERDO No. DOGS
+ad (M3 JUN 206)
+Se implementará además del Sistema Distrital de Monitoreo, y la difusión periódica
+del estado ambiental distrital, un Observatorio Ambiental Distrital capaz de ilustrar
+a todos los potenciales usuarios de esta instancia, acerca del estado, evolución,
+circunstancias, consideraciones, indicadores y fuentes de la información
+ambiental del Distrito.
+Tabla 121
+UNEA BASE DE
+INDICADOR DE RESULTADO INDICADOR DE META RESULTADO RESPONSABLE
+RESULTADO
+NW Contormor en un 100%
+sistema integrado de
+Sistema de monitoreo monitoreo — ambiental EPA
+conformado urbano de acuerdo a
+los factores de Aire,
+Ruido y Agua
+Tabla 122
+LINEA BASE DF
+INDICADOR DE PRODUCTO INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO
+Implementar 1
+Sistema integrado de monitoreo sistema integrado de
+ambiental urbano implementado monitoreo ambiental
+urbano.
+Elaborar 1 informe
+¡anual sobre el estado
+Informe anval elaborado de los recursos
+y naturales y del
+Ambiente urbano EPA
+Diseñar, conformar y
+e de operar el
+Observatorio ambientalconformado rematado
+Ambiental distrital
+Inventario. de Gases
+Inventario efectuado efecto  invemadero
+*“GEl "para el distrito
+9.2.1.2 PROGRAMA CONTROL, VIGILANCIA Y SEGUIMIENTO AMBIENTAL
+Este programa se orienta al cumplimiento de las funciones de la autoridad
+ambiental en materia de vigilancia, control y seguimiento a las empresas,
+200
+
+
+## Página 201 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No, OOG
+337
+C 13 JUN 2016 )
+
+actividades y factores que influyen en la mejora, conservación o deterioro del
+Ambiente distrital.
+Incluye la realización periódica de jomadas de control y vigilancia a los
+principales vectores potenciales de contaminación ambiental en el área urbana
+del distrito de Cartagena. Con los resultados de las actividades de control,
+vigilancia y seguimiento ambiental que se realicen, se derivarán los correctivos,
+ajustes y medidas que se deben implementar para mejorar, conservar y preservar
+las condiciones ambientales del Distrito.
+
+Y) Tabla 123
+
+LINEA BASE DE
+INDICADOR DE PRODUCTO INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO
+Visitas de control y viglancia pealzar > Mioncio
+realizadas cs.
+EPA
+Ñ mi Realizar 150 Evaluaciones y
+
+Evalvaciones y Seguimientos 127 Seguimientos Ambientales
+Ambientales realizados “anuales
+9.2.1.3 PROGRAMA EDUCACIÓN Y CULTURA AMBIENTAL
+Con este programa se busca formar y sensibilizar en materia ambiental a la
+población distrital, promoviendo una cultura ambiental que privilegie la
+conservación y aprovechamiento sostenible de los recursos ambientales distritales,
+
+Y facilitando de esta manera, el mantenimiento de comportamientos ciudadanos
+regidos por una mayor conciencia del valor, importancia y rol del ambiente
+distrital, para el progreso y desarrollo de la ciudad para todos sus habitantes.
+En el marco de este programa, se propone adelantar actividades pedagógicas
+en materia ambiental, entre las que se contará con un aula ambiental distrital
+virtual, acompañado con el centro de documentación e información ambiental
+de Cartagena, así como incidir desde los espacios escolares, universitarios y
+comunitarios, para procurar la adopción de mejores prácticas ambientales y la
+apropiación social de las acciones estratégicas del sector ambiente, que se
+orienten a la conservación, preservación y sostenibilidad del medio ambiente en
+el Distrito.
+
+201
+
+
+## Página 202 (OCR Oficial Acuerdo 006 de 2016)
+
+ye > ns Indias D. T.yC.
+Ml . 'oncejo Distrital de Cartagena de Indias D. T. y C.
+Ñ Y:
+( : 3 JUN mts 1.028
+Las acciones incluidas en este programa, se orientan a propiciar entre la
+comunidad, el desarrollo de acciones educativas a favor del mejoramiento de las
+condiciones ambientales de su entorno, fomentar la investigación sobre la
+situación ambiental distrital, y la articulación de los sectores productivo y
+comercial distrital a las estrategias de educación ambiental diseñadas.
+Tabla 124
+UNEA BASE DE
+INDICADOR DE PRODUCTO INDICADOR DE META PRODUCIO RESPONSABLE
+PRODUCTO
+y Capacitar y/o sensibilizar
+Personas capacitadas y/o a ÓN
+sensiblizados conservación del
+ambiente
+ictri Asesorar y/o acompañar
+RAS
+A lo acompañar ERA
+sesorar y, r
+PROCEDAS asesorados 5 5 PROCEDAS.
+No de guardianes ambientales Formar 1200 Guardianes
+formados ambientales.
+Ejecutar una campaña
+con reconocidos
+Campañas de concientización habitantes de
+ejecutadas Cartagena para
+mé
+concientización del
+cambio climático
+9.2.2 LÍNEA ESTRATÉGICA CARTAGENA TERRITORIO VERDE Y RIQUEZA HÍDRICA
+Para el Distrito de Cartagena es muy importante lograr que sus habitantes se
+identifiquen con una ciudad que protege, restaura y promueve la utilización
+sostenible de los ecosistemas terrestres, combatiendo la deforestación buscando
+detener y revertir la degradación de nuestros suelos, y frenar la pérdida de
+diversidad biológica. (ODS 15).
+Con el fin de garantizar la oferta hídrica de la ciudad el Distrito generará los
+mecanismos para la conservación del recurso hídrico y las cuencas
+abastecedoras del acueducto de la ciudad.
+202
+
+
+## Página 203 (OCR Oficial Acuerdo 006 de 2016)
+
+El il Concejo Distrital de Cartagena de Indias D. T. y C.
+P— E
+a / o No 006
+CA Ñ ¿Q10 )
+9.2.2.1 PROGRAMA GESTIÓN INTEGRAL DEL RECURSO HÍDRICO
+Con la incorporación de la Política de Gestión Integral del Recurso Hídrico, el
+Distrito de Cartagena efectuará los ajustes y desarrollos normativos relacionados
+con los instumentos económicos y financieros, que responden por la oferta del
+recurso hídrico y el control de su contaminación, buscando que estén acordes
+con las necesidades sectoriales y regionales que incentiven las inversiones
+requeridas de prestadores, entidades territoriales y las autoridades ambientales.
+Tabla 125
+NM LINEA BASE DE
+INDICADOR DE PRODUCTO INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO
+Realizar 1 relimpio
+Relimpia realizada en la Ciénaga anual (en Ciénaga de
+de la virgen la Virgen)
+EPA
+¿elumen de desechos extraidos 1570 m3 as de desechos
+1e los manglare manglores (cuatrienio)
+9.2.2.2 PROGRAMA VEGETACIÓN BIODIVERSIDAD Y SERVICIOS ECOSISTÉMICOS
+El presente programa tiene por finalidad, facilitar la adopción y ejecución de un
+Plan de Silvicultura urbana, capaz de reducir el déficit de árboles en la ciudad y
+mejorar el ambiente urbano. Incluye la promoción de la adecuación e
+intervención de zonas verdes de forma articulada con otros actores interesados
+v” en el desarrollo ambiental del Distrito.
+El programa abarca la delimitación y georeferenciación de áreas y suelos de
+protección, y la formulación e implementación de planes de manejo de los
+ecosistemas estratégicos en el Distrito.
+Tabla 126
+UNEA BASE DE
+INDICADOR DE PRODUCTO INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO
+Plan Maestro de Siviculuio ubano lo [asentar ion Maeso!
+adoptado. de Silvicultura urbana. EPA
+203
+
+
+## Página 204 (OCR Oficial Acuerdo 006 de 2016)
+
+El ++ y Concejo Distrital de Cartagena de Indias D. T. y C.
+(ua:
+SI ACUERDO No. COS
+ZE
+(13. JUN 2016 )
+9.2.2.3 PROGRAMA NEGOCIOS VERDES PRODUCCIÓN Y CONSUMO SOSTENIBLE
+Este programa busca fomentar en el Distrito, las actividades económicas y
+productivas que tienen capacidad para generar impactos positivos e incorporar
+buenas prácticas ambientales, económicas y sociales que contribuyan a la
+conservación del ambiente.
+El reconocimiento de que la generación de ingresos para las comunidades,
+puede simultáneamente producir altos dividendos desde el punto de vista
+ambiental y social, es el principio rector del fomento de los negocios verdes en el
+Ns distrito de Cartagena, y en tomo al cual, se plantea este programa de desarrollo.
+Ofrece ventajas ya que:
++ Promueve patrones de producción y consumo sostenibles de bienes y
+servicios de los negocios verdes.
+e Propicia la creación de una cultura alineada con principios ambientales,
+sociales y éticos.
+e Facilita la toma de decisiones a los consumidores (públicos o privados) al
+momento de elegir un bien o servicio. Fomento de economía verde y
+sostenible ambientalmente.
+e Visibiliza una oferta de bienes y servicios de cara al mercado nacional e
+w internacional,!0
+Incluye el fomento a la creación, asesoría y desarrollo de “negocios verdes" en el
+Distrito, la realización y fomento de Ferias de Negocios Verdes, y la promoción de
+Planes de producción y/o consumo sostenible.
+10 Ministerio de Ambiente y Desarrollo Sostenible de la República de Colombia. (Negocios verdes), 2016
+204
+
+
+## Página 205 (OCR Oficial Acuerdo 006 de 2016)
+
+El + Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. VO G
+C-— 43JUN 2016 )
+Tabla 127
+LINEA BASF Di
+INDICADOR DE PRODUCIO INDICADOR DE MEIA PRODUCTO, RESPONSABLE
+PRODUCT
+Ejecutar el
+. establecimiento de dos
+líneas de negocios verdes establecidas líneas de . negocios EPA
+verdes
+9.2.2.4 PROGRAMA OPERACIÓN Y MANTENIMIENTO DE BOCANA DE MAREA
+NS ESTABILIZADA Y DARSENA
+La operación y mantenimiento de la Bocana de Marea estabilizada de
+Cartagena de Indias, da origen a este programa de inversión para el desarrollo.
+El programa incluirá el Mantenimiento preventivo y remedial de las estructuras y
+de la infraestructura, la ejecución de obras y medidas para el Control de la
+sedimentación por medio de relimpias en las trampas de arena, el canal y el
+cono de transición. Caso especial acontece con las compuertas, y la pantalla
+direccional instaladas en la Bocana, de manera que se conserve su capacidad
+para facilitar el paso e intercambio dinámico de aguas entre el Mar Caribe y La
+Ciénaga de La Virgen.
+Tabla 128
+Y MR A IACADOR META PRODUCTO RESPONSABLE
+
+e A re
+Actividades anuales de EPA
+mantenimiento del Realizar 1 actividad anual de
+sistema Bocana, mantenimiento del sistema Bocana
+cumplidas
+9.2.3 LÍNEA ESTRATÉGICA GESTIÓN DEL RIESGO
+El distrito de Cartagena desde el Plan de Desarrollo “Primero La Gente para una
+Cartagena Sostenible y Competitiva" pretende ofrecer protección a la
+población, mejorar la seguridad, el bienestar y la calidad de vida y contribuir al
+desarrollo sostenible, mediante el fortalecimiento de los procesos de gestión del
+
+205
+
+
+## Página 206 (OCR Oficial Acuerdo 006 de 2016)
+
+(El — Concejo Distrital de Cartagena de Indias D. T. y C.
+NET TY
+<a ( ACUERDO No. es
+
+riesgo como son conocimiento del riesgo, reducción del riesgo y manejo del
+desastre. Fortaleciendo el conocimiento del riesgo de desastre, reduciendo la
+formación de nuevas condiciones de riesgo en los procesos de desarrollo y
+planificación territorial, así como fortalecer la capacidad de respuesta; mediante
+la recuperación, rehabilitación y reconstrucción postdesastres.
+En la disminución del riesgo, se trabajara en la formulación del Plan Integral para
+el Sistema de Caños y Lagos y Ciénaga de la Virgen, bajo un enfoque que
+busque la recuperación, protección y manejo adecuado de las zonas que
+garantizan el mantenimiento de las relaciones que se deben presentar entre los
+
+NY componentes biofísicos del área de estudio para que la estructura ecológica del
+principal del sistema se conserve.
+9.2.3.1 PROGRAMA GESTIÓN DEL RIESGO
+El Distrito de Cartagena comprometido en la gestión del riesgo de desastres en su
+territorio considera políticas, estrategias y acciones orientadas a reducir factores
+que generan riesgo, buscando evitar o reducir la posibilidad de daños, así como
+brindar más seguridad a la población y medios de vida.
+El programa de la Gestión del Riesgo de Desastres, pretende: Fortalecer los
+procesos de gestión del Riesgo de Desastres en el distrito de Cartagena de Indias
+a través de los siguientes subprogramas:
+9.2.3.1.1 SUBPROGRAMA TODOS Y TODAS CONOCEDORES DE LA SITUACIÓN
+
+dl DE NUESTRO TERRITORIO (CONOCIMIENTO DEL RIESGO)
+Consiste en el proceso de la gestión del riesgo, encargado de realizar la
+identificación de escenarios de riesgo, el análisis y evaluación del riesgo,
+monitoreo y seguimiento del riesgo, así como desarrollar las actividades de
+comunicación para efectuar una mayor conciencia sobre las condiciones de los
+riesgos que sirvan como insumo para la ejecución de procesos de reducción de
+riesgo y manejo de desastres. Por ello se propone adelantar y o ajustar estudios de
+tres riesgos del Distrito priorizados, que por su recurrencia generan afectaciones
+en la vida, en los bienes y medios de vidas. La apuesta es: Fortalecer el
+conocimiento del riesgo a través de la producción, transformación y transferencia
+de información, para soportar el óptimo desarrollo de los procesos de reducción
+del riesgo y de manejo de desastres.
+
+206
+
+
+## Página 207 (OCR Oficial Acuerdo 006 de 2016)
+
+fal A Concejo Distrital de Cartagena de Indias D. T. y C.
+Sr ACUERDO No. DOG
+== (13 JÓN 2018.)
+9.2.3.1.2 SUBPROGRAMA COMUNIDADES MENOS VULNERABLES (REDUCCIÓN
+DEL RIESGO)
+En un proceso de la gestión del riesgo, se trata de gestionar la aplicación de
+medidas de intervención correctiva y prospectivas, dirigidas a modificar o
+disminuir las condiciones de riesgo actuales, a evitar nuevos riesgos y a generar
+mecanismos oO instrumentos financieros que permitan obtener recursos
+económicos oportunos para la atención de emergencias y la recuperación. Se
+propone que el Distrito de Cartagena adelante las acciones que en materia de
+reducción del riesgo [obras y de prevención) se requieran para mitigar los
+grandes riesgos identificados en el territorio, contribuyen a la capacidad de
+w resiliencia de la ciudad. La apuesta es incrementar en los sitios priorizados en el
+Plan de Distrital de Gestión del Riesgo las obras de mitigación requeridas, según lo
+establecido en el decreto 0655 del 3 de junio de 2014.
+9.2.3.1.3 SUBPROGRAMA BARRIOS MÁS RESILIENTES (MANEJO DE DESASTRE)
+Proceso de la gestión del riesgo el cual coordina y ejecuta actividades de forma
+eficaz y efectiva para atender los efectos negativos causados por las
+emergencias, así mismo para la recuperación postdesastre, la ejecución de las
+respuesta y la respectiva recuperación: rehabilitación y reconstrucción segura,
+garantizando las necesidades básicas como alimentación, alojamiento, agua,
+saneamiento, accesibilidad y transporte entre otros. Se propone con este
+programa que el distrito de Cartagena, fortalezca sus capacidades de respuesta
+frente a los desastres y emergencias, en la recuperación, rehabilitación,
+W reconstrucción postdesastres. La apuesta desde este subprograma es fortalecer la
+capacidad de respuesta del distrito de Cartagena frente a los desastres; en su
+recuperación, rehabilitación y reconstrucción post desastres.
+Tabla 129
+RESULTADO
+30 % del Distrito de
+Cartagena fortalecido | OFICINA ASESORA
+enla gestión delriesgo, | PARA LA GESTION DEL
+Distrito de Cartagena Fortalecido logrando un RIESGO DE DESASTRES
+an EA
+comunidad menos
+vulnerables
+207
+
+
+## Página 208 (OCR Oficial Acuerdo 006 de 2016)
+
+( El Concejo Distrital de Cartagena de Indias D. T. y C.
+(CAMAS:
+CA ACUERDO No. 006
+Tabla 130
+LINEA BASE DE
+SUBPROGRAMA INDICADOR DE INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO PRODUCTO
+Estudios por Realizar 3 estudios
+inundación de amenazas por
+realizados inundación.
+Estudios por Realizar 2 estudios
+remoción en masa de amenazas por
+realizados remoción en masa.
+- 5 ” Realizar 1 estudio
+Estudio por tsunam!
+de amenaza por
+o SS
+» Actualizar y ajustar
+tuo olustado y 1% 012013 el Plan Disttal de
+Todos y todas actualizado gestión de riesgo
+conocedores de la -
+situación de nuestro Inventarios de nono 100%
+lorlo asentamientos s
+(Conocimiento del dos asentamientos en
+Riesgo) zona de alo riesgo.
+Catálogo de . ,
+: Realizar 1 Catálogo
+inventario de delinventario de
+riesgos riesgos OFICINA ASESORA
+tecnológicos tecnológicos. PARA LA GESTION
+realizado DEL RIESGO DE
+DESASTRES.
+Comité de riesgos Creación de 1
+tecnológicos comité de riesgos | /SECRETARIA DE
+creado tecnológicos. PLANEACION
+Estudio de Realizar 1 estudio
+W dlapirismo realizado de diapirismo
+Formular 1
+Documento documento base
+formulado conceptual del POT
+sus derivados.
+Metros lineales de Construir 1000
+muros de 129,27 Mts lineales Metros lineales de
+Comunidades menos | — contención construidos al 2015 muros de
+vulnerables construidos contención.
+(Reducción del
+Riesgo] Personas Capacitar a 3000
+capacitados 1125012015 personas
+Miembros ,
+ñ Capacitar 1000
+id de miembros de la
+idad en
+tecnológicos comuni
+Dil flesgos tecnológico.
+208
+
+
+## Página 209 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+¿JUN 30 No. OOGS
+LINEA BASE DE
+SUBPROGRAMA Icon INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO
+one de OFICINA ASESORA
+Estrategia PARA LA GESTIÓN
+actualizada Respuesta alas | "DEL RIESGO DE
+Emergencias del DESASTRES
+Distrito
+ESCUELA DE
+Redes de apoyo Fortalecer 80 redes | ¿SRL Ne
+“comunitario 44 de apoyo PARTPACIÓN Y
+- fortalecidas comunitario. DESARROLLO
+Y SOCIAL
+Capacitar 25
+entidades-
+adas dependencias en
+Bomios más reslientes | — simulaciones y as,
+(Manejo de Desastre) simulacros plagiado
+realizados gestión de riesgo
+de desastres.
+Subsidios de Cancelar 2023 OFICINA ASESORA
+amiendos subsidios de PARA LA GESTION
+cancelados arriendos. DEL RIESGO DE
+a DESASTRES
+oración de Elaborar 1 manual
+respuesta ante de crei ante
+riesgos e
+tecnolónicos tecnológicos.
+Emergencias de Atender el 100% de
+riesgo tecnológico las emergencias de
+atendidas riesgo tecnológico.
+e
+9.2.3.2 PROGRAMA PLAN DE DRENAJES PLUVIALES
+El objetivo de este programa es definir la política del Distrito en cuanto al manejo
+técnico, institucional, legal y ambiental de las estructuras que integran la red de
+drenaje pluvial existente, y de las que se deberán proyectar para mejorarlo en el
+área del suelo urbano y para ampliar su cobertura a la zona de expansión
+urbana.
+209
+
+
+## Página 210 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. VOG
+(43 JUN 2016 )
+9.2.3.2,1 SUBPROGRAMA DISEÑO DE INGENIERÍA DE DETALLE DEL PLAN
+MAESTRO DE DRENAJES PLUVIALES PMDP
+Este subprograma está orientado al diseño de la Ingeniería de detalle, mediante
+la contratación de los diseños de ingeniería,
+para el área de las cuencas del Distrito con el fin de poder ejecutar la
+construcción de los proyectos que permitan preparar a la ciudad contra las
+inundaciones.
+N 9.2,3.2.2 SUBPROGRAMA CONSTRUCCIÓN DE CANALES EN EL PLAN MAESTRO
+DE DRENAJES
+Con este subprograma se pretende la ejecución de las obras necesarias de
+acuerdo al diseño de la ingeniería de detalle de cada canal o sección y que son
+necesarias para la mitigación de los efectos producidos por las aguas lluvias.
+Tabla 131
+INDICADOR DE LINEA BASE DE INDICADOR DE
+RESULTADO. RESULTADO META RESULTADO RESPONSABLE
+541 km de construcción y
+Kiómetros de 2.55 km de construcción y e anales EN
+_ Plan de Drenajes | revestimiento en Concreto Rígido, | drenajes pluvicles y 32.3 km de | DEPARTAMENTO.
+Pluviales del 5.41 km de diseño de ingenieria de “diseños de Ingeniera de ADMINISIRATIVO DE
+No Distrito de detalle y 66.7 km de factibiidade | geral del Plan de drenojes VALORIZACIÓN
+Cartagena ingeniería conceptual realizado pluviales
+realizado (Fuente; Valorización 2015)
+(cuencas Matute y Ricaurte)
+210
+
+
+## Página 211 (OCR Oficial Acuerdo 006 de 2016)
+
+El Concejo Distrital de Cartagena de Indias D. T. y C.
+— ob
+P— E
+SE ( JUN No. es
+Tabla 132
+LINEA BASE DE
+INDICADOR DE
+SUBPROGRAMA INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCIO PRODUCTO
+> ario 5.41 Kms de diseño de
+Diseño de Ingeniería RA Diseño de
+de detalle del Plan | Kms de conales | "92mria de detale del ingeniería
+Maestro de Drenajes | diseñados plovicles. rooms detallada de 17.71
+pluviales - PMDP Valorización 2015] Kms de canales
+DEPARTAMENTO
+ADMINISTRATIVO DE
+y 2.55 Kms de construcción VALORIZACIÓN
+Construcción de | me de canales |  Y'evestimiento en Construcción de
+canales en el plan Construidos concreto rígido de 3,38 Kms de
+maestro de drenajes canales del Plan de conales
+Drenajes pluviales
+92.4 LÍNEA ESTRATÉGICA PROTECCIÓN Y BIENESTAR ANIMAL
+De acuerdo con las orientaciones del Programa de Gobierno y teniendo en
+cuenta la Ley 1774 de 2016, esta línea estratégica a través del programa
+respectivo, permitirá incorporar altemativas de manejo y control a la
+problemática del maltrato animal, que vive la ciudad. Por ello se concibe desde
+el Distrito de Cartagena, un programa que nos permitirá desarrollar acciones que
+contribuyan a otorgar a los animales las condiciones mínimas que garanticen su
+buen trato, a partir de la cultura ciudadana comprometida con el bienestar
+ww animal.
+9.2.4.1 PROGRAMA POLÍTICA PÚBLICA DE CONSERVACIÓN Y PROTECCIÓN
+ANIMAL
+Con la participación activa de las organizaciones de la sociedad civil,
+promoveremos la puesta en marcha de la Ley 1774 de 2016, que dignifica y
+protege la vida de los animales, mediante la Política Pública Distrital que
+garantice la protección y el bienestar de la población animal de Cartagena.
+211
+
+
+## Página 212 (OCR Oficial Acuerdo 006 de 2016)
+
+E
+5 Concejo Distrital de Cartagena de Indias D. T. y C.
+( —.k
+cy ACUERDO No. VO
+e EN 5
+Tabla 133
+LINEA BASE DE
+INDICADOR DE RESULTADO INDICADOR DE META RESULTADO RESPONSABLE
+RESULTADO
+o Ml Puesta en valor y con
+Protección y conservación de política sectorial adoptada UMATA
+animales en el Distrito, puesta en ND la protección y A
+valor y con política sectorial conservación de animales
+adoptada en el Distrito,
+y Tabla 134
+LINEA BASE DE
+INDICADOR DE PRODUCTO INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO
+hi ra ” Formular, concertar y
+Política pública de protección y A. pri A
+conservación animal: formulada, laca
+concertada y adoptada conservación animal.
+an A Implementar y socializar la:
+Política Público implementada y política de protección y UMATA
+y conservación animal.
+Diseño y gestión para la Realizar el diseño y gestión
+construcción del Coso distrital y para la construcción del
+albergue de especies menores, Coso distrital y albergue de
+realizados. especies menores.
+de 4 S Instalar 2 Unidades móviles
+Unidad móvil de atención Medico de atención Medico UMATA
+Veterinaria instalada
+Veterinaria
+Ny
+Esterilizar e identificar 50.000
+Animales domésticos en estado de animales domésticos en
+“abandono o maltratados con 3.500 estado de abandono o UMATA
+atención medico veterinaria, Ñ maltratados con atención
+esterilizados e identificados medico veterinaria,
+esterilizados e identificados
+Caballos cocheros con atención Atención medico Veterinaria UMATA
+medico Veterinaria a 120 Caballos cocheros
+Animales utilizados en vehículos de Recuperar, identificar y
+tracción animal " VTA", recuperados, “adoptar 800 animales UMATA
+identificados y adoptados utilizados en VTA
+212
+
+
+## Página 213 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. VO6>
+LINEA BASE DE
+INDICADOR DE PRODUCTO INDICADOR DE META PRODUCIO RESPONSABLE
+PRODUCTO
+hn Efectuar 80 Campañas
+Campañas ed ti di ' se
+. animal.
+
+9.2.4.2 ARTÍCULO 9.2.4.2 PROTECCIÓN ANIMAL
+
+y El EPA y la UMATA desde el orden de sus respectivas competencias, trabajaran de
+manera articulada y con observancia de los lineamientos jurídicos previstos en la
+Ley 1774 de 2016 en materia de protección animal; con el propósito de generar las
+acciones necesarias que propendan por su correcta aplicación y su efectivo
+cumplimiento.
+9.3 EJE ESTRATÉGICO TERRITORIO SOSTENIBLE, ORDENADO, EQUITATIVO E
+
+INCLUYENTE
+
+Se plantea un territorio sostenible, ordenado, equitativo e incluyente que nos lleve
+a alinear el desarrollo de nuestra ciudad en el contexto de la sostenibilidad,
+mediante la mejora y el mantenimiento de su capital natural, desarrollando un
+modelo de ocupación y la explotación responsable de los recursos naturales, en
+concordancia con los desafíos del desarrollo social y económico, que lleve
+camino a la equidad y la armonía del territorio.
+
+ud 9.3.1 LÍNEA ESTRATÉGICA: TERRITORIO ORDENADO Y PLANIFICADO
+Se establecerá el desarrollo territorial en el marco de la sostenibilidad, mediante la
+adopción de un modelo de ocupación territorial de acuerdo a los retos del
+desarrollo social y económico, que propenda por la equidad y el equilibrio
+funcional del territorio. Bajo el concepto de “Ciudades Amables y Sostenibles para
+la Equidad” se mantendra una concepción integral del desarrollo urbano, que
+conlleve la planificación y actuación coherente y articulada de los sectores de
+vivienda, agua potable, saneamiento básico y movilidad urbana, en el marco de
+actuaciones urbanas integrales y del fortalecimiento de los instrumentos de
+planeación y ordenamiento regional y local.
+
+213
+
+
+## Página 214 (OCR Oficial Acuerdo 006 de 2016)
+
+E Concejo Distrital de Cartagena de Indias D. T. yC.
+di DS
+Lor . AIEEnO No. VOG
+=S (13 JUN 2016 OS
+9.3.1.1 PROGRAMA DESARROLLO URBANO TERRITORIAL
+La Visión y Objetivos contenidos en el Plan de Ordenamiento Territorial aprobado
+en el año 2001, fueron proyectados con una vigencia de tres periodos
+Constitucionales, los cuales se cumplieron el 31 de diciembre de 2015. Por esta
+razón la ciudad está en la posibilidad de reconsiderar su estrategia de desarrollo
+urbanístico de largo plazo, para propender por Una nueva idea de ciudad con
+prosperidad colectiva y construida para la gente.
+Ns 9.3.1.1.1 SUBPROGRAMA PLANIFICACIÓN DEL ORDENAMIENTO DEL
+TERRITORIO
+Con este subprograma se realizará la revisión general del Plan de Ordenamiento
+Territorial (POT), de acuerdo con el crecimiento, desarrollo y las necesidades de la
+ciudad.
+Lo anterior, debido a que los contenidos de largo plazo señalados en el plan
+vigente, deben ser revisados, por lo que se evaluarán las condiciones y
+necesidades actuales del Distrito, en materia jurídica, técnica, económica, social,
+ambiental y de riesgos, de conformidad con las necesidades de poblacional
+creciente, a fin de promover el desarrollo adecuado y ordenado del territorio,
+identificando los objetivos, estrategias y medidas requeridas, entre otros, en
+materia de:
+ne Q. Generación de suelo y obras para infraestructura de servicios públicos
+domiciliarios.
+b. Localización y características para la ejecución de obras de infraestructura
+vial.
+Cc. Identificación de necesidades de Espacio Público a partir del análisis del
+espacio público existente y las necesidades de! Distrito.
+d. Determinación de los elementos que constituyen la estructura ecológica
+principal.
+e. Gestión del riesgo de acuerdo con lo dispuesto en la Ley 1523 de 2012.
+214
+
+
+## Página 215 (OCR Oficial Acuerdo 006 de 2016)
+
+Í E 5 os .
+El - a Concejo Distrital de Cartagena de Indias D. T. y C.
+¡El— -E)
+E ACUERDO No. DOGS
+(13 JUN 2016 )
+f.. Tratamientos urbanísticos, usos e intensidad de los usos del suelo.
+g. Definición de mormas volumétricas, de acuerdo con las condiciones
+específicas de cada sector.
+h. Evalvación de las normas urbanísticas estructurales, generales y
+complementarias.
+Para esto, se tendrán en cuenta los parámetros e indicadores de seguimiento
+relacionados con cambios significativos en las previsiones sobre población
+Ns urbana; la necesidad o conveniencia de ejecutar proyectos de impacto en
+materia de transporte masivo, infraestructuras, marinas, expansión de servicios
+públicos o proyectos de renovación urbana; la ejecución de macroproyectos de
+infraestructura regional o metropolitana, en caso de adoptarse esta figura, que
+generen impactos sobre el ordenamiento del territorio distrital, así como la
+demanda de habilitación de suelo en el Distrito y la posibilidad de generar su
+oferta conforme con las condiciones urbanísticas del mismo.
+9.3.1.1.2 SUBPROGRAMA IMPLEMENTACIÓN DE LOS INSTRUMENTOS DE
+PLANIFICACIÓN Y GESTIÓN
+Este subprograma busca desarrollar y modernizar los insttumentos de
+ordenamiento territorial e incorporar los estudios realizados y normatividad vigente
+a la de revisión ordinaria del Plan de Ordenamiento Territorial, respaldada en la
+/ decisión del actual gobierno de hacer dicha revisión, lo cual permitirá en gran
+medida fundar un ajuste normativo que sirva como base para la materialización
+de muchos de los programas bandera del presente Plan de Desarrollo,
+implementando instrumentos de planificación, gestión y financiación para el
+ordenamiento territorial.
+Es así, como entre otros aspectos la Administración Distrital promoverá la
+adopción de un proyecto de Acuerdo por el cual se reglamentará la
+participación en plusvalía en el Distrito, ante el Concejo Distrital, de acuerdo con
+el artículo 79 de la Ley 388 de 1997 y demás normas concordantes sobre la
+materia.
+215
+
+
+## Página 216 (OCR Oficial Acuerdo 006 de 2016)
+
+E ER . o ..
+(El r Concejo Distrital de Cartagena de Indias D. T. y C.
+S G ACUERDO No. OOO
+QS
+(13 JUN 2016)
+9.3.1.1.3 SUBPROGRAMA PLANES PARCIALES ESTRUCTURANTES
+El desarrollo específico de piezas urbanas que propicien la regeneración social,
+económica y urbanística de las áreas degradadas físicamente, se pueden realizar
+a través de la herramienta de gestión denominada Plan Parcial, especialmente
+en aquellos que se identificaron como de carácter estructurante del territorio, por
+ser las zonas más deprimidas de la ciudad; estableciendo en ellos las herramientas
+de gestión y financiación [Sistema de Reparto de cargas y beneficios).
+Y 9.3.1.1.4 SUBPROGRAMA PLAN DE MANEJO Y PROTECCION PATRIMONIAL
+El Plan Especial de Manejo y Protección PEPM, se enmarca en las estrategias que
+se establecen desde el Plan de Ordenamiento Territorial - POT- para el subsistema
+de Patrimonio Inmueble del Distrito, como instrumento de planificación
+complementario orientado a definir un conjunto de acciones político
+administrativas y de planificación con miras a proteger y revitalizar las áreas e
+inmuebles considerados patrimonio cultural inserto dentro de los sectores
+definidos como tratamientos urbanísticos de Conservación. Para estos efectos la
+administración Distrital a través de la Secretaría de Planeación y el Instituto de
+Patrimonio y Cultura, deberán realizar los análisis pertinentes, que permitan
+determinar si se hace necesario hacer algunos ajustes al PEMP, de acuerdo con la
+legislación que regula la materia, con el fin de que sean puestos a consideración
+del Ministerio de Cultura, si a ello hubiere lugar según sus competencias.
+ml
+9.3.1.1.5 SUBPROGRAMA FORTALECIMIENTO DEL SISTEMA CATASTRAL DEL
+DISTRITO
+Este subprograma pretende desarrollar estrategias de fortalecimiento institucional
+para el Catastro Distrital, y el acompañamiento para el desarrollo de las
+estrategias complementarias de apoyo institucional a la gestión catastral, como
+estratificación, estrategias de gestión de los usos del suelo, estrategias del modelo
+de actualización catastral y el fortalecimiento del sistema de información
+geográfica del Distrito. Así mismo, se pretende realizar los estudios pertinentes
+para que un catastro diferente al IGAC, pueda proveer los servicios de
+actualización y administración catastral al distrito de Cartagena. Esto con el fin
+adicional de incrementar los recaudos y a su vez, que sirva de fuente de
+216
+
+
+## Página 217 (OCR Oficial Acuerdo 006 de 2016)
+
+E
+CA =) Concejo Distrital Indias D.
+ME 'oncejo Distrital de Cartagena de Indias D. T. y C.
+(ES E,
+rt ACUERDO No. VOG
+C13JUN 2016)
+financiación al referido subprograma. Todo lo anterior, teniendo en cuenta lo
+dispuesto en la Ley 1753 de 2015, en su Artículo 180.
+9.3.1.1.6 SUBPROGRAMA FORTALECIMIENTO DE LA DINÁMICA URBANA Y
+TERRITORIAL “OJOS EN LA CIUDAD”
+Tabla 135
+UNEA BASE DE INDICADOR
+INDICADOR DE RESULTADO DE RESULTADO. META RESULTADO RESPONSABLE
+Formular, aprobar y
+Nuevo Plan de Ordenamiento | UnPian de Ordenamiento | OPINAN 100% secrotoría
+Tenitoriol adoptado Territorial namiento Planeación
+tenitorial
+1 plan parcial 5
+Planes parciales estructurantes — | estructurante adoptado | cies Secretaría
+adoptados Triangulo de Desarollo. la Le Planeación
+Social) gestiona:
+Revisión, formulación y
+Plan de Manejo y protección Plan de Manejo de aprobación delPlan | ecrotaía de
+patrimonial revisado, formulado y Protección Patrimonial de Manejo y Planeación - IPCC
+aprobado formulado protección
+patrimonial
+El programa tiene como objetivo principal, mejorar los procesos de control
+urbano, vigilando el cumplimiento de las normas urbanísticas señaladas en el POT,
+apoyando el proceso de conservación dinámica, seguimiento y control a las
+ad licencias urbanas en articulación con un sistema de información con las
+curadurías urbanas y las tres 3 localidades del Distrito.
+Tabla 136
+LINEA BASE DE
+SUBPROGRAMA on INDICADOR DE META PRODUCTO — RESPONSABLE
+PRODUCTO
+Diagnóstico para
+Planificación del modificaciones de
+ordenamiento del | Diagnóstico elaborado excepcionales AN a de
+teritorio elaborado y estudios 9 .
+generales ejecutados
+217
+
+
+## Página 218 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. OCOG
+(413 JUN 2016 )
+LINEA BASE DE
+SUBPROGRAMA IODICTO INDICADOR DE META PRODUCTO — RESPONSABLE
+PRODUCIO
+Formulación de
+modificaciones
+excepcionales Formular Plan de
+Formulación elaborada | elaborado y precisión Ordenamiento
+de zonas de Tenitorial
+protección y riesgo
+concertadas
+Ns Adoptar el Plan
+POT Adoptado aro. — | de Ordenamiento
+Territorial
+Adoptar
+implementación de | — Instrumentos de Instrumentos de
+los instrumentos de | planificación y gestión No planificación y
+planificación y del ordenamiento gestión del
+gestión territorial adoptado ordenamiento
+territorial.
+Formulación del Plan il lan
+Plan de manejo y | Especial de Manejo y Ir ormutación elaborada | — Especial de Secretaría de
+protección Protección del Centro Sn revisión onojo Planeación ¿IPCC
+pattimonial- Histórico revisada y Y Protección del
+complementado Centro Histórico
+Instancia de
+Total de Actuaciones No decisión tente a | secretaria de
+urbanísticas normas Planeación
+ES Fortalecimiento a la ubanísticos
+Dinámica Urbana y
+Tenitoriol “Ojos En Instancia de Secretaría de
+La Ciudad” inspección y Planeación
+Labor preventiva de vigilancia del
+control urbano cumplimiento de | Secretaría de
+las normas Planeación
+urbanísticas
+Actualización Catastral
+Gestionada en el marco
+Fortalecimiento Del de la delegación de Tener octualizdo Secretaría de
+Sistema Catastral | competencias de la Ley el SIG y el sistema Planeación y
+Del Distrito 1753 de 2015. Y de catastro Hacienda Distrital
+fortalecimiento de la
+oficina de catastro
+218
+
+
+## Página 219 (OCR Oficial Acuerdo 006 de 2016)
+
+ñ 5 > Y Concejo Distrital de Cartagena de Indias D. T. y C.
+Sé ACUERDO No, VOS
+(13 JUN 2016 )
+
+9.3.2 LÍNEA ESTRATÉGICA DESARROLLO URBANO PARA LA COMPETITIVIDAD
+El Distrito de Cartagena le apuesta al desarrollo integral y sostenible, para
+potenciar su competitividad, se debe contar con una infraestructura física
+apropiada. Esta línea está orientada a garantizar a los cartageneros y visitantes
+dentro de la ciudad y el Distrito, desplazamientos rápidos, seguros, sin
+contaminación, con calidad en los espacios que consientan y respeten su vida así
+como disminuir la accidentalidad, con más andenes, puentes peatonales, vías,
+intercambios viales y el predominio del transporte público sobre el privado. Es así
+que en consecuencia con lo anterior, esta estrategia tendrá como foco la
+
+hd movilidad sostenible, es decir la movilidad que contribuye a disminuir los efectos
+negativos del uso excesivo de vehículos y concientiza al ciudadano para que use
+medios alternos de desplazamientos (a pie, en bicicleta o en transporte público).
+9.3.2.1 PROGRAMA EQUIPAMIENTOS PARA LA COMPETITIVIDAD
+Con este programa se pretende mejorar la movilidad de los habitantes del Distrito
+de Cartagena mediante la construcción y rehabilitación de vías, la generación
+de espacios públicos para el esparcimiento y la recreación, favoreciendo al
+progreso y mejoramiento de la calidad de vida de los habitantes y la
+competitividad.
+9.3,2.1.1 SUBPROGRAMA CONSTRUCCIÓN Y REHABILITACION DE VIAS
+
+SS
+Este subprograma tiene como fin, incrementar la construcción de la malla vial
+que contribuye a generar integralidad y desarrollo de la ciudad, lo cual
+coadyuva e incentiva la competitividad y la movilidad del Distrito.
+9.3.2.1.2 SUBPROGRAMA CONSTRUCCIÓN VÍAS REGIONALES
+Es objetivo de este subprograma contribuir a la generación de competitividad del
+Distrito, mediante la construcción de vías en concreto rígido o en asfalto para
+circulación vehicular que comunican la región o el departamento.
+
+219
+
+
+## Página 220 (OCR Oficial Acuerdo 006 de 2016)
+
+al - Concejo Distrital de Cartagena de Indias D. T. y C.
+e ACUERDO No. VO:
+” 13 JUN 201 '
+( 6 )
+9.3.2.1.3 SUBPROGRAMA CONSTRUCCIÓN DE VÍAS URBANAS
+Tiene como objetivo la construcción de vías en concreto o asfalto para
+circulación vehicular dentro de la ciudad.
+9.3.2.1.4 SUBPROGRAMA CONSTRUCCIÓN ZONAS DE ESPACIO PÚBLICO
+Con este subprograma se logrará la habilitación de terrenos o zonas para el libre
+esparcimiento o recreación, parques lineales, intervención de andenes entre
+otros.
+wn
+Tabla 137
+LINEA BASE DE
+INDICADOR DE RESULTADO INDICADOR DE META RESULTADO RESPONSABLE
+RESULTADO
+Recuperar en un 19% la
+TOTAL: 1834,4 de malla vial en regular y
+Km/Conil de malla mal estado para
+vial fomentar la integralidad
+Estrategia de desarollo en la malla vial de BUENO e institucionalidad de la
+la ciudad. 1.239,38/67,6%] ciudad
+MALO
+548,93/29.9%) Rehabilitar en un 3% vías
+REGULAR 45.8/2.5%) | POra la competitividad y
+TOTAL VIAS el turismo Secretaria de
+RECUPERADAS 6,24 | — Generorun 3% v de Infraestructura
+PC conexiones viales en
+) Ñ 20n0s de mayor
+Vías renabiitadas., PAVIMENTADAS — | obstrucción de la ciudad
+31.07 KM/CARRIL | que mejore la movilidad
+nx FUENTE: INFORME de la gente
+SECRETARÍA DE
+INFRAESTRUCTURA | Creación del fondo para
+Fondo creado DICIEMBRE 2015. el mantenimiento de la
+malla vial de la ciudad.
+37 km de vías — | Incrementaren 25% las
+ñ DEPARTAMENTO
+Kms de vías regionales construidas regionales vías regionales . 50% de | A MINISTRATIVO DE
+(Fuente: vías urbanas y 60 en mal ACION
+Valorización 2015) de espacio público
+220
+
+
+## Página 221 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. ODO
+UN
+(13 JUN 2016 )
+Tabla 138
+LINEA BASE DE
+SUBPROGRAMA PRODUCTO E INDICADOR — DE META PRODUCTO RESPONSABLE
+PRODUCTO
+km/carril (V1- | TOTAL: 1834,4 de | intervenir 113 km/canil
+V2AB,C.E-V4-V7] | Km/Canil de | de malla vial en regular y
+de vías | malla: vial | mal estado.
+intervenidas. BUENO
+1.239,38167,6*
+km/cami de vias | aro ol | Intervenir 17 km/cami de
+regionales 548,93/29.9%) vías para el desarrollo
+intervenidas (VI) | REGULAR regional,
+km/ canil de vías | 45.8(2,5%) TOTAL | intervenir 17 km/cam de
+Ns intervenidas e oERADAS — [U8S macro para la
+Construcción y HV2l. RECUPERADAS q, Hdescongestión vial
+REHABILITACIÓN DE VÍAS | Unfondode — [TOTAL VIAS | Implementar el fondo de
+emergencia NUEVAS emergencias públicas de Secretaría de
+implementado |PAVIMENTADAS — | Infraestructura en la| Infraestructura
+31,07 KM/CARRIL | ciudad.
+FUENTE: INFORME
+SECRETARIA — DE
+INFRAESTRUCTURA
+DICIEMBRE 2015.
+Consolidar una red de
+1 ciclo-uta ciclouta y espacios
+consolidado. biosaludables
+CONSTRUCCIÓN DE Kms de Vías 37 km de vías Construcción de 46.25 DEPARTAMENTO
+VÍAS REGIONALES regionales regionales Kms de vías regionales | ADMINISTRATIVO DE
+construidas ( Fuente: VALORIZACIÓN
+Valorización 2015)
+CONSTRUCCIÓN DE kms de Vías — | 396kmde vías | Construcción de 5,96 kms
+VÍAS URBANAS urbanas urbanas de vías urbanas
+construidas
+/ CONSTRUCCIÓN ZONAS | Mis 2 de zonos de 2500 m2 de Construcción de 6,500
+DEESPACIO PÚBLICO | espacio público | espacio público | mts2de zonas de
+construidas espacio público(Zonas
+recreacionales, andenes,
+parques lineales
+9.3.2.2 PROGRAMA SISTEMA DE LAGOS Y CAÑOS COMO SOPORTE ESTRUCTURAL
+DEL DESARROLLO DE LA CIUDAD Y SUS SISTEMAS DE ESPACIO PÚBLICO,
+MOVILIDAD Y TRANSPORTE
+El sistema de cuerpos internos de lagos, las ciénagas y la Bahía de Cartagena, son
+los principales elementos articuladores del territorio urbano, que con una
+adecuada implementación de la infraestructura verde, el refuerzo del sistema de
+movilidad, generando actividad vinculada al uso de las zonas húmedas del
+221
+
+
+## Página 222 (OCR Oficial Acuerdo 006 de 2016)
+
+El Concejo Distrital de Cartagena de Indias D. T. y C.
+Gr ACUERDO No. DOG
+— (43 JUN 2016 )
+sistema, el desarrollo de ejes de conexión entre las áreas de nueva actividad y los
+ejes centrales de actividad comercial y servicios, propiciarían áreas con los más
+altos potenciales ambientales y urbanístico del área urbana.
+9.3,2,2.1 SUBPROGRAMA RECUPERACIÓN DE LOS CUERPOS DE AGUA
+INTERNOS
+Con este subprograma se pretende desarrollar todas aquellas actividades
+necesarias para lograr que los cuerpos de aguas internos existentes en el Distrito
+Y) de Cartagena puedan ser recuperados, entre los que se cuenta con las revisiones
+y adopciones de planes parciales como el de Lomas de Peyé, así como la
+implementacion de planes de renovación, plan de manejo de la cuenca hídrica
+y limpieza de canales.
+Tabla 139
+LINEA 1103 DE
+INDICADOR DE RESULTADO INDICADOR DE META RESULTADO RESPONSABLE
+RESULTADO
+Plan de Renovación Urbana Sistema | Macroproyecto de la no Secretaria de
+de Lagos, caños intemos y Ciénaga | Ciénaga de la Virgen y | sitema ao Locos coños | Infraestructura
+dela Virgen formulado, adoptado e | Sistema de Caños — | ¡emos y cisnggo dela
+implementado. revisados en 2015, o
+Tabla 140
+LINEA 103 DE
+y SUBPROGRAMA Praia DE INDICADOR DE META PRODUCIO RESPONSABLE
+PRODUCTO
+Planes parciales | Plan parcial | Revisión y adopción
+Adoptados formulado del plan Parcial de
+Renovación urbana R1:
+Lomas del Peyé
+Planes de | Ejecución cero de | 2 planes de renovación
+RECUPERACIÓN DE |enovación plones de | implementados
+LOS CUERPOS DE ejecutados renovación Secretaría de
+AGUA INTERNOS — [8 proyectos | 8 proyectos en etapa | 2 proyectos | Planeación
+priorizados de formulación implementados
+Plan de Manejo de ND Elaborar Plan de
+la Cuenca Hídrica y Manejo de la Cuenca
+Drenajes — Pluviales Hídfica y  Drenojes
+elaborado Pluviales
+222
+
+
+## Página 223 (OCR Oficial Acuerdo 006 de 2016)
+
+ma) =) Concejo Distrital de Cartagena de Indias D. T. y C.
+ás LS
+SS ACUERDO No. OOO
+(13 JUN 2016 )
+LINEA BASE DE
+'SUBPROGRAMA Pra DE INDICADOR DE META PRODUCTO RESPONSABLE
+Plan de N.D Elaborar plan  de| Departamento
+recuperación — de recuperación de | Administrativo de
+l caños, lagos y caños, lagos y lagunas | valorización /
+lagunas Secretaría de
+recuperados Planeación
+M3 de retiro de| TOTAL: 55.000 M3 de | Extracción de 60.000
+desechos sólidos y| retiro de desechos |M3 de residuos sólidos y | Secretaria de
+M2 de retiro del sólidos y89.000de ¡sedimentos de los Infraestructura.
+malezas malezas FUENTE, canales pluviales de la
+LO) Secretañía de ciudad
+infraestructura
+9.3.2.3 PROGRANA CARTAGENA SOSTENIBLE Y COMPETITIVA
+Este programa se orienta a la sostenibilidad y bienestar de la ciudad en materia
+Urbana, que permita realizar una adecuada planeación sobre el desarrollo de la
+ciudad. Para ello utiliza las cuatro dimensiones de sostenibilidad contempladas
+por Ciudades Sostenibles y Competitivas: [i) Sostenibilidad Ambiental y Cambio
+Climático; (ii) Sostenibilidad Urbana (iii) Sostenibilidad Fiscal y Gobernabilidad; y
+(iv) Sostenibilidad Económica y Social.
+Por lo tanto el Distrito se articula a la estrategia de ciudades amables y sostenibles
+para la equidad del gobierno nacional, como pilar de la superación de la
+pobreza, así mismo al proyecto Diamante Caribe del Gobierno Nacional.
+NM
+9.3.2.3.1 SUBPROGRAMA CARTAGENA COMPETITIVA Y COMPATIBLE CON EL
+CLIMA 4C
+Este Subprograma, está orientado a la implementación del Plan de Adaptación
+del Cambio Climático de Cartagena Competitiva y Compatible con el Clima -
+“Plan 4C", que establece la armonización de las determinaciones de
+ordenamiento ambiental territorial y responde al liderazgo Distrital en materia de
+adaptación al cambio climático, bajo las estrategias de puertos e industrias
+compatibles con el clima, turismo comprometido con el cambio climático,
+protección del patrimonio histórico, barrios adaptados al cambio climático y
+adaptación basada en ecosistemas.
+223
+
+
+## Página 224 (OCR Oficial Acuerdo 006 de 2016)
+
+1] Concejo Distrital de Cartagena de Indias D. T. y C.
+És ACUERDO No.0OS
+9.3.2.3.2 SUBPROGRAMA PROTECCIÓN COSTERA
+Se pretende lograr una visión sostenible e integrada en el Distrito, para lograr la
+protección de la línea costera, que incluya obras para mitigar la erosión o
+impactos causados por el aumento del nivel del mar generado por el Cambio
+Climático, mejorando las condiciones de estas zonas, porque solo así podremos
+mejorar la calidad de vida de los habitantes, reducir la pobreza y el alto riesgo
+existente.
+Tabla 141
+¡W LINEA BASE DE
+INDICADOR DE RESULTADO INDICADOR DE META RESULTADO RESPONSABLE
+RESULTADO
+ls EPA, Secretaria de
+Distrito de Cartagena Cana o slble Planeación,
+Compatible y adaptado al Plan 40 y adaplada al cambio Corpoturismo,
+cambio clméático, para eloño “climático, pora el año Distiseguridad
+2019 Secretaria de Educación
+Tabla 142
+LINEA BASE DE
+SUBPROGRAMA — "ERONDORO E INDICADORDE META PRODUCTO RESPONSABLE
+PRODUCTO
+Barrio modelo Seleccionar, diseñar y
+que se adapta al puesta en marcha de ”
+wW cambio climático Un barrio modelo que O de
+seleccionado y se adopte al cambio
+diseñado. climático.
+Campaña a
+Formular campaña
+CARTAGENA educativa para educativa para
+COMPETITIVA Y Promoverla promover la EPA
+COMPATIBLE CON eS conservación de los
+EL CLIMA 4C o, manglares.
+Cambio climático
+como eje Cambio climático
+transversal en los como eje transversal seo
+Praes, Praus y en los Praes, Praus y
+Procedos, Procedos.
+implementada.
+224
+
+
+## Página 225 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. DOG
+ÑN
+(13 JUN 2016 )
+UNEA BASE DE
+INDICADOR DE
+SUBPROGRAMA INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO PRODUCTO
+kms de línea Proteger 0,5 kms de DEPARTAMENTO
+costera línea costera ADMINISTRATIVO DE
+protegidos 'VALORIZACION
+Número de
+franjas de playa
+reglamentados
+Y) Km de playas señalizar 30 km de
+Ml urbanas, rurales e playas DISTRISEGURIDAD
+Protección Costera insulares
+reglomentados y
+señalizadas
+Plan de
+Protección Elaborar Plan de
+Costera que Protección Costera
+incluye que incluye
+reglamentación ND reglamentación de SECRETARÍA DE
+de playas, playas, marinas y ley
+marinas y ley de de costas
+costas a implementada
+implementar
+9.3.3 LÍNEA ESTRATÉGICA ESPACIO PUBLICO Y MOVILIDAD PARA LA GENTE
+Es objetivo de esta línea estratégica destacar la importancia de que el gobierno
+local incorpore acciones que contribuyan a generar los espacios públicos, que
+ayudarán a mejorar la sostenibilidad ambiental de nuestra ciudad.
+G .
+El Plan de Desarrollo Primero la Gente para una Cartagena Sostenible y
+competitiva trabaja para que el espacio público sea de alta calidad y en el que
+su Gente, tenga unas posibilidades de movilidad sin limitaciones, implementando
+Una estrategia de desarrollo sostenible y competitivo alrededor de las apuestas
+productivas de la ciudad.
+9.3.3.1 PROGRAMA ESPACIO PÚBLICO
+El programa de Espacio Público, está diseñado para que Cartagena sea una
+ciudad incluyente, donde todos sus habitantes disfruten del espacio público
+efectivo de la ciudad sin distinción de sexo, edad, raza o situación
+225
+
+
+## Página 226 (OCR Oficial Acuerdo 006 de 2016)
+
+(El > la Concejo Distrital de Cartagena de Indias D. T. y C.
+ETT UE)
+ENS ACUERDO No. DOG
+(13 JUN 2016 )
+socioeconómica. Esto basado en el objetivo estratégico del plan de desarrollo
+que es adaptar el territorio para la gente.
+Se busca con el programa que exista equidad en la distribución del espacio
+público dentro de las distintas localidades, para con esto lograr un mejoramiento
+de la calidad de vida de la población. El espacio público está hecho para que
+todos los ciudadanos gocen de él y es un indicador que mide la calidad de vida
+urbana al igual que la movilidad de las ciudades. Todo esto para cumplir con el
+eje estratégico en el que Cartagena debe ser un territorio sostenible, ordenado,
+equitativo e incluyente.
+uy
+9.3.3.1.1 SUBPROGRAMA PLAN ESTRATEGICO DE RECUPERACIÓN Y
+PROTECCIÓN DEL ESPACIO PÚBLICO
+El espacio público permite medir la calidad de vida urbana de los ciudadanos.
+Esta calidad de vida se fundamenta sobre la idea que una ciudad debe tener
+espacios de goce y disfrute para sus residentes, zonas verdes, espacios deportivos
+y recreativos, espacios estratégicos que permitan la socialización entre
+ciudadanos y garantizar una movilidad despejada y efectiva. La ciudad tiene
+que ser un espacio incluyente donde todos sin ninguna distinción puedan hacer
+uso y disfrute de ella; Cartagena tiene que estar adaptada a las necesidades
+sociales de sus residentes, transformarse en una ciudad en la que sus espacios
+públicos estén acorde a las necesidades de la gente, por lo cual este
+y subprograma busca cumplir los siguientes objetivos:
++ Recuperar M2 de espacio público efectivo por habitante.
++  Inventariar M2 de espacio público correspondiente al Sistema Integrado de
+Transporte Masivo (SITM).
++ Aumentar M2 de espacio público efectivo recuperado convertidos en
+accesibles para discapacitados.
+9.3.3.1.2 SUBPROGRAMA MÁS ESPACIO PÚBLICO PARA LA GENTE
+El distrito Cartagena no sólo está compuesto del área urbana que enmarca la
+ciudad. También hacen parte los corregimientos, que constituyen el suelo rural en
+226
+
+
+## Página 227 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. COC
+(13.JUN 2018)
+el que reside un porcentaje de la población de Cartagena; estos corregimientos
+también están integrados por la zona insular de la ciudad.
+Para garantizar el espacio público efectivo de los habitantes de estas zonas de
+Cartagena, se hace necesario inventariar, articular y aumentar el espacio público
+en las zonas rurales. Para iniciar este proceso de inclusión y equidad con los
+habitantes de los corregimientos del Distrito, de los 15 corregimientos que se
+encuentran en zona rural y territorio insular, se seleccionaron 7 por su importancia
+dentro del sector turístico y su mayor número de habitantes, estos son:
+Tierabomba, Bocachica, Barú, La Boquilla, Punta Canoa, Bayunca y
+Ns Pasacaballos.
+9.3.3.1.3 SUBPROGRAMA SISTEMA DE INFORMACIÓN Y DE GESTIÓN
+Este subprograma pretende desarrollar a partir de la segunda hasta la cuarta fase
+del proyecto, un sistema integral de información que permita el registro, gestión,
+seguimiento y control del Espacio Público, en un 100% accesible para todos los
+funcionarios de la GEPM y demás funcionarios del Distrito de Cartagena; y
+enlazado con una página web de la Gerencia que brinde información a sus
+habitantes a través de internet y finalmente poner en funcionamiento los KIDI
+(Kiosco de Información Distrital) para que el acceso a la información también sea
+incluyente.
+1) 9.3.3.1.4 SUBPROGRAMA REGLAMENTACIÓN Y GESTIÓN DE ESPACIO
+PÚBLICO EFECTIVO PRIORIZADO
+Es necesario continuar con el proceso de reglamentación de plazas, plazoletas,
+parques, zonas verdes y en general zonas estratégicas de espacio público, con el
+objetivo de lograr un aprovechamiento económico de actividades formales e
+informales en cuanto a sus usos temporales y eventuales.
+La reglamentación se hace necesaria porque evita la ocupación del espacio
+público por actividades informales y formales de manera indiscriminada e
+irresponsable, generando caos en movilidad y en el ordenamiento del espacio
+público para la gente: Restaurantes ubicando mesas, puestos de comida, venta
+de artículos de todo tipo, cargue y descargue de mercancías, vehículos
+227
+
+
+## Página 228 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. O0DGS
+
+ocupando el espacio público indebidamente, entre otras ocupaciones del
+espacio público efectivo priorizado.
+Al no existir una reglamentación suficiente, no se puede efectuar un correcto
+control por parte de las autoridades locales. Es prioritario definir parámetros para
+el uso y protección del espacio público efectivo, compuesto por parques, plazas,
+plazoletas, zonas verdes, paseos peatonales, andenes, alamedas, entre otros.
+Del mismo modo se hace necesario el aprovechamiento económico de estos
+espacios, logrando que la protección, el mantenimiento y cuidado de las áreas
+
+19] estén garantizados a través de los recursos que se generen del aprovechamiento
+mismo, siempre y cuando no se afecte su uso para los residentes.
+Adicionalmente, es importante que exista un mobiliario urbano que permita
+organizar la venta de productos dentro del espacio público reglamentado, por
+parte de los vendedores informales estacionarios que cuenten con el amparo del
+principio de confianza legítima.
+El objetivo es dotar de kioscos, casetas, puestos o stand de trabajo, a los
+vendedores informales estacionarios que tengan la confianza legítima para que
+trabajen de manera organizada y cumpliendo con las normatividad ambiental y
+en salud para vender sus productos en plazas, parques, plazoletas y demás zonas
+estratégicas: asegurando una mejor organización del espacio público y el servicio
+que se presta al usuario del mismo. Este mobiliario no será fijo, será desmontable o
+de fácil remoción.
+
+04
+9.3.3.1.5 SUBPROGRAMA PLAN INTEGRAL DE GESTIÓN DE ÁREAS PÚBLICAS
+
+VERDES
+Para el desarrollo del ser humano, se necesita dentro de su espacio de vida, áreas
+verdes, y es responsabilidad del gobierno garantizar áreas públicas verdes donde
+los ciudadanos puedan realizar actividades de entretenimiento, recreación,
+relajación, integrarse con otras personas, sitios de encuentro y esparcimiento.
+Éstas áreas públicas verdes se convierten también en los pulmones de la ciudad,
+protección de los rayos solares, disminución de las emisiones de dióxido de
+carbono, hábitat para diversas especies, pequeños ecosistemas que llenan de
+228
+
+
+## Página 229 (OCR Oficial Acuerdo 006 de 2016)
+
+El Concejo Distrital de Cartagena de Indias D. T. y C.
+Ú —«f
+cr, ACUERDO No. COS
+ss (13: JUN 2016)
+vida la ciudad; forman también parte del embellecimiento del entorno urbano,
+volviéndolo más amigable y mejorando las condiciones de vida de los
+ciudadanos.
+Tabla 143
+LÍNEA BASE DE
+INDICADOR DE RESULTADO INDICADOR DE META RESULTADO RESPONSABLE
+RESULTADO
+Aumentar a 860
+col A GERENCIA DE
+M2 de Espacio Público Efeciivo pOr|. oy 27 m2/nob el espacio oO PuBLiCo Y
+habitante público efectivo en el MOVILIDAD
+Nx distrito de Cartagena.
+Tabla 144
+LÍNEA BASE DE
+SUBPROGRAMAS aso INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCIO
+228561 m2 de
+M2 de espacio público | espacio público | Recuperar 73139 m2
+efectivo por habitante efectivo de espacio público
+recuperado. recuperado en efectivo
+Cartagena
+Inventorior en un 100%,
+Espacio Público en m2 elm2 de espacio
+7 del sistema integrado cone-ron leal
+oc sistema Integrado de
+tr Massi
+PLAN ESTRATEGICO a) CEYO || GERENCIA DE
+DE RECUPERACIÓN Y ESPACIO
+PROTECCIÓN DEL Aumento de m2 de , PÚBLICO Y
+ESPACIO PÚBLICO espacio público 52.69 m2 de 400 m2 de espacio MOVILIDAD
+electivo recuperado | espacio público | PI o
+Ñ para el disfrute de la
+pora el distrute de la porniño Primera Infancia
+primera infancia
+Aumento de m2 de 228561 m2 de
+espacio público espacio público
+el 68568 m2 del espacio
+efectivo recuperado efectivo recuperado accesible
+convertidos en recuperado en O scapacilados
+accesibles para Cartagena (Fuente
+discapacitados 'GEP Dic 2015)
+229
+
+
+## Página 230 (OCR Oficial Acuerdo 006 de 2016)
+
+el Concejo Distrital de Cartagena de Indias D. T. y C.
+G ACUERDO No. OVOG>
+(13 JUN 2016. )
+LÍNEA BASE DE
+SUBPROGRAMAS INDICADOR DE INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCIO PRODUCTO
+inventariar el espací Inventoriar en un 100%,
+bie lar os Did el M2 de espacio.
+Público efeciivo en Público efectivo en
+Á territorio insular Haro ii
+MÁS ESPACIO: (Tierabomba, territorio insular
+PÚBLICO PARA LA e Merrabomba,
+GENTE Bocachica y Barú) y en Bocachica y Barú) y en
+zona rural (Boquilla, zona mural (Boquilla,
+Bayunca y B
+Pasacaballos) JOyunca y
+Pasacaballos)
+Desarrollar segunda,
+197 tercera y cuarta fase
+del sistema integral de
+información que
+Sistema integral de permita el registro,
+Información y Gestión gestión, seguimiento y
+del Espacio Público PRIMERA FASE control del Espacio
+accesible y. Público, en un 100%
+desarrollado. accesible pora todos
+los funcionarios de la
+'GEPM, funcionarios del
+Distrito y enlazado con
+SISTEMA DE el KIDI
+INFORMACIÓN Y DE
+GESTIÓN Numero de Kioscos
+digitales de
+información Distrital
+relacionada con el instalar 32 KID!
+espacio público (KIDI)
+instalado
+Número brigadistas
+capacitados en o
+y] información Capacitar 100
+geográfica de la brigadistas
+ciudad e información y
+manejo de los KIDI.
+Reglamentar m2 de
+espacio público
+(plazas, plazoletas Regiomentarso000mz | erecta DE
+, parques, zonas verdes le espacio público en a
+Reglomentación Y | y zonas estratégicas de | 28.120 m2 espacio cuanto a su A
+o pida prin la ciudad). que público aprovechamiento MOVILIDAD.
+OLI permitan su reglamentado | económico, sususos | secretaria de
+p aprovechamiento temporales y Poll
+económico bolo sus eventuales
+usos temporales y
+eventuales
+230
+
+
+## Página 231 (OCR Oficial Acuerdo 006 de 2016)
+
+(5 Concejo Distrital de Cartagena de Indias D. T. y C.
+E— E)
+OS ACUERDO No. OOG
+(13 JUN 2016 )
+LÍNEA BASE DE
+SUBPROGRAMAS TO INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO
+Campañas de cultura
+ciudadana sobre el Ñ
+Realizar 10 campañas
+correcto uso del
+espacio público de cultura ciudadana
+realizada
+Jornadas pedagógicas Realizar 10 jornadas
+sobre el espacio pedagógicas sobre
+público espacio público
+Ns
+Entregar 50 casetas,
+Número de casetas y puestos o stands de
+puestos o stand de moblliario urbano a los
+trabajo a los vendedores informales
+vendedores informales estacionarios para que
+estacionarios que trabajen en parques,
+tengan la confianza plazoletas, plazas y
+legítima entregados demás zonas
+estratégicas.
+176.981m2
+M2de óreas públicos | adecuacióny | mariener 90.000 m2
+verdes, adecuados y | mantenimiento | mrdor ssppcas
+mantenidos (Fuente GEPM de
+as verdes
+Parques y zonas verdes Formalizar 55
+auto sostenibles a convenios de
+través de convenios de | 126parquesy | adopción de parques
+adopción por parte de | zonas verdes auto | y zonas verdes con
+jj sostenibles otras entidades para
+PLAN INTEGRAL DE | PMidades privadas, "ble: pa
+7 ESTIÓN á tormalizados. lograr su auto
+GESTIÓN DE ÁREAS sostenibilidad
+PÚBLICAS VERDES
+Número de bancas Instalar 50 bancas en
+instaladas en espacio espacio público
+público efectivo como efectivo como
+parques, plazas, parques, plazas,
+plazoletas, paseos plazoletas, paseos
+peatonales y peatonales y
+marítimos, entre otras marítimos, entre otras
+zonas estratégicas zonas estratégicas
+dentro de toda la dentro de toda la
+ciudad. ciudad.
+231
+
+
+## Página 232 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. OOG
+(13 JUN 2016)
+9.3.4 LÍNEA ESTRATÉGICA INFRAESTRUCTURA VIAL CON DESARROLLOS
+INTEGRALES PARA LA MOVILIDAD PARA LA GENTE
+Se pretende lograr una ciudad equitativa en cuanto al disfrute territorial y
+competitivo en sus condiciones de accesibilidad y conectividad, realizando
+proyectos de infraestructura vial encaminados a mejorar la movilidad vehicular y
+peatonal, especialmente mejorando la conectividad territorial al interior de la
+ciudad.
+Y 9.3.4.1 PROGRAMA MOVILIDAD PARA El DESARROLLO
+A través de este programa se busca generar un cambio de gran impacto para la
+ciudad, teniendo en cuenta que Cartagena, en su condición de Patrimonio
+Histórico y Cultural, será un territorio reconocido a nivel nacional e internacional
+como un lugar acogedor y seguro en materia de tránsito y transporte para
+propios y visitantes, propiciando una movilidad ordenada, disminuyendo las tasas
+de accidentalidad vial y los impactos negativos causados por la congestión vial.
+Será un territorio planificado, con un hábitat urbano y rural en el que el espacio
+público sea de alta calidad, y en el que la Gente tenga unas posibilidades de
+movilidad sin limitaciones a fin de garantizar un medio ambiente sostenible y
+sustentable.
+9.3.4.1.1 SUBPROGRAMA MEJOR CULTURA CIUDADANA MÁS SEGURIDAD
+y VIAL
+Con este Subprograma se pretende reducir la mortalidad y la accidentalidad por
+evento de tránsito, prevenir al máximo los accidentes a través de campañas
+masivas de Educación y Seguridad Vial, para mejorar la cultura ciudadana
+asociada al respeto de las normas y señales de tránsito. Se buscará organizar la
+movilidad urbana mediante la formulación e implementación del Plan Estratégico
+de Seguridad Vial que oriente a conductores y peatones sobre comportamientos
+adecuados en las vías para garantizar y preservar la vida de los ciudadanos.
+232
+
+
+## Página 233 (OCR Oficial Acuerdo 006 de 2016)
+
+CAE? Concejo Distrital de Cartagena de Indias D. T. y C.
+So ACUERDO No. DOG
+o ( 13JUX 2016 )
+9.3.4.1.2 SUBPROGRAMA DESPLAZAMIENTO ORDENADO EN MENOR TIEMPO
+Este subprograma busca, entre otras cosas, organizar el tráfico automotor para
+facilitar el desplazamiento vehicular y peatonal en las principales calles y
+avenidas de la ciudad, dándole prelación al peatón; disminuyendo los tiempos
+de desplazamiento una vez puesto en funcionamiento Transcaribe, adelantando
+campañas de sensibilización en cuanto al uso del servicio público de transporte
+masivo, para lo cual es imperioso ejercer control sobre el transporte informal.
+Y 9.3.4.1.3 SUBPROGRAMA MOVILIDAD PARA LA GENTE
+La Gerencia de Espacio Público y Movilidad Urbana, la Secretaría de Planeación
+Distrital y el Departamento Administrativo de Tránsito y Transporte Distrital,
+elaborarán una propuesta de política de movilidad sobre el espacio público,
+velando por una movilidad articulada al SITM Transcaribe. La meta es que a 2017
+se presente un documento - propuesta de políica de movilidad urbana
+articulada con el DATT, Gerencia de Espacio Público y Secretaría de Planeación.
+De igual manera se formulará el plan maestro de parqueaderos y
+estacionamientos para el Distrito de Cartagena, esto con el fin de dar solución a
+la ocupación indebida del espacio público que es utilizado como parqueadero.
+Tabla 145
+INDICADOR DE RESULTADO ÚNEA O O ADE META RESULTADO — RESPONSABLE
+0d
+Reducir en 1 punto
+do la tasa de
+e se 7 víctimas fatales en accidentes
+Tasa de Mortalidad en Accidentes Ansi! Mortalidad en
+de tránsito por cada 100.000
+de Transito S cidentes de
+j habitantes tránsito en el Dist
+de Cartagena
+DAT
+Disminuir en un 10%
+el tiempo de
+Tiempo de desplazamiento desplazamiento
+vehicular vehicular a 2019 en
+5 corredores viales
+de la ciudad
+233
+
+
+## Página 234 (OCR Oficial Acuerdo 006 de 2016)
+
+El Concejo Distrital de Cartagena de Indias D. T. y C.
+Ca ACUERDO No. DOS
+(13 JUN 2016 )
+LINEA BASE DE
+suerrocrama — INDICADOR DE INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCIO
+Accidentes 6411 Reducir en 200 el número
+de tránsito reducidos de accidentes de transito
+Víctimas fatales en Reducir en 10 el número
+accidentes de tránsito 74 de víctimas fatales en
+reducidas accidentes de transito
+Lesionados en Reducir en 50 el número
+accidentes de transito 2707 de lesionados por
+reducidos accidentes de transito
+Personas capacitadas en Capacitar a 60000
+educación y seguridad 38846 personas en educación y
+vial seguridad vial.
+Campañas educativas Realizar 3 campañas
+en seguridad vial anuales educativas en
+realizadas, eguridad vial
+MEJOR CULTURA
+CIUDADANA MAS Ñ
+SEGURIDAD VIAL Señales verticales 5.749 Instalar 2. 124 señales
+instaladas verticales
+DATT
+Metros lineales en marcas Demarcar 124.000 metros
+longitudinales 392.081 lineales en marcas
+demarcados longitudinales
+y)
+Metros cuadrados en
+'marcas transversales 56.744 Dalla ice
+demarcadas
+Bandas reductoras de 240 Instalar 224 bandas de
+velocidad instaladas Reductoras de velocidad
+Plan Estratégico de Formular e implementar
+seguridad vial Formulado 1 Plan Estratégico de
+e implementado Seguridad Vial.
+DESPLAZAMIENTO Planes de manejos de Aprobar 40 planes de
+ORDENADO EN tráfico 73 'monejos de trafico
+MENOR TIEMPO aprobados
+234
+
+
+## Página 235 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. DOG
+UNEA BASE DE
+SUBPROGRAMA pronto. DÉ INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO
+Tiempo de . SSA S el
+E desplazamiento vehicular
+!¡ en 5 corredores viales.
+| Capacitar 3216
+Conductores de conductores de servicio
+transporte público especial e
+público especial e individual en cultura
+Individual capacitados ciudadana, educación
+Ns vial y atención al usuario.
+Estimular a 635878
+Personas activas e 5
+estimuladas para el uso usuarios de la población
+a + Mind Ñ
+Plan de Movilidad Formular 1 Plan Maestro
+Formulado Donento | de Movildaa del Distito
+lgma de Cartagena
+DATT, GEPM,
+MO PARA SECRETARÍA
+PLANEACIÓN
+Plan maestro de Formular 1 plan maestro
+parqueaderos y de parqueaderos y
+estacionamientos estacionamientos para el
+formulado Distrito de Cartagena
+ad
+934.2 PROGRAMA SISTEMA INTEGRADO DE TRANSPORTE MASIVO Y
+MULTIMODAL
+Se pretende mejorar la calidad de vida de la ciudadanía, a través de la
+óptima funcionalidad del sistema integrado de transporte masivo y
+multimodal, a partir de intervenciones físicas, logísticas, para hacer de este
+un sistema eficiente, cómodo, seguro, económico, incluyente y sostenible,
+que se integre física, operacional y tarifariamente, asociado a la gestión
+ante el Gobierno Nacional de implementar el transporte acuático; todo
+ello con la finalidad de mejorar la calidad de vida de la ciudadanía.
+235
+
+
+## Página 236 (OCR Oficial Acuerdo 006 de 2016)
+
+el sl Concejo Distrital de Cartagena de Indias D. T. y C.
+DG Ñ ¿A No. COS
+> CAS 2016 )
+Para el caso particular de Transcaribe se gestionará la consecución de
+fuentes de financiación, que permitan la prestación del servicio a cargo de
+la entidad, para efectos de garantizar la implementación plena del
+sistema. Dando cumplimiento a los documentos Conpes que han definido
+la política del sistema en conjunto con el Gobierno Nacional.
+Para el 2019, se prevé la puesta en marcha de todo el sistema, previo
+cumplimiento de los siguientes puntos:
+y + Terminación de estaciones de parada.
++ Construcción de dos patios complementarios.
++ Chatarrización. Terminación de patio-portal.
+Tabla 146
+INDICADOR DE RESULTADO AO INDICADOR META RESULTADO RESPONSABLE
+Entrar en 100% de
+operación el SITM Incluidos
+SITM en operación ro 98 los alimentadores y TRANSCARIBE
+operación del compromisos
+contractuales
+LS Tabla 147
+LINEA BASE DE INDICADOR
+INDICADOR DE PRODUCTO DE PRODUCTO META PRODUCTO RESPONSABLE
+Estaciones de parada Terminar 8 estaciones de
+terminados, parada.
+a Construir 1 patio.
+Potios a entarios complementario (sujeto a | TRANSCARIBE
+constr! demanda).
+236
+
+
+## Página 237 (OCR Oficial Acuerdo 006 de 2016)
+
+el Concejo Distrital de Cartagena de Indias D. T. y C.
+ST ACUERDO No. COG
+(13 JUN 2016 )
+inoicaDor De ProDucto — HNEABASEDEÍNDICADOR MEA PRODUCTO RESPONSAME
+E o
+9.3.5 LÍNEA ESTRATÉGICA VIVIENDA Y SERVICIOS PÚBLICOS
+Se pretende disminuir el déficit de vivienda cuantitativo y cualitativo, así como
+ampliar la oferta de tierras con servicios públicos básicos, para garantizar el
+derecho de vivienda y habitabilidad a los Cartageneros más vulnerables.
+ws
+9.3.5.1 PROGRAMA VIVIENDA
+Este programa es concebido para que la Gente Cartagenera avance en sus
+niveles de satisfacción con su barrio y la vivienda donde vive.Es así que a partir de
+un plan masivo de mejoramiento estructural y/o saludable de viviendas urbanas y
+rurales, se requiere dinamizar la construcción, así como la legalización y titulación
+de predios en la ciudad, mediante un proceso de acompañamiento y asesoría
+para que los propietarios de viviendas que se han levantado o mejorado sin
+licencia de construcción, puedan tener su propiedad, y los que no tienen una
+propia puedan acceder a ella.
+9.3.5.1.1 SUBPROGRAMA CONSTRUCCIÓN DE VIVIENDA NUEVA
+dl Con este subprograma el Distrito hace referencia a la adjudicación de vivienda,
+mediante un subsidio demandado por el beneficiario.
+9.3.5.1.2 SUBPROGRAMA MI CASA MEJORADA (MEJORAMIENTO DE
+VIVIENDA)
+Corresponde a la intervención que tiene como propósito la mejora de la vivienda,
+sustituir o reforzar elementos estructurales en espacios habitados, así como sus
+condiciones sanitarias y de habitabilidad.
+237
+
+
+## Página 238 (OCR Oficial Acuerdo 006 de 2016)
+
+AOS
+ll Concejo Distrital de Cartagena de Indias D. T. y C.
+SSI ACUERDO No. DOS
+—:S ,
+(43 JUN 2016 )
+9.3.5.1.3 SUBPROGRAMA MI CASA, MI TITULO (LEGALIZACIÓN Y TITULACIÓN
+DE PREDIOS)
+Es un proceso que se hace para legitimar la situación de aquellos predios cuyos
+poseedores se encuentran en ocupaciones de hecho o ilegales, con el fin de
+obtener su título de propiedad.
+Tabla 148
+LINEA BASE DE
+INDICADOR DE RESULTADO INDICADOR DE META RESULTADO RESPONSABLE
+RESULTADO
+Ny
+76,868 Déficit
+habitacional Disminución en 22.1% el
+RUIDO HABITACIONAL | cuente: Plan Maestro de | déficit — habitacional — del | CORVIVIENDA
+vivienda, DANE, | Distito de Cartagena
+Corvivienda 2015)
+Tabla 149
+LINEA — BASE DE
+SUBPROGRAMA CIO. e INDICADOR — DE META PRODUCTO RESPONSABLE
+PRODUCTO
+Construir 9000 nuevas
+viviendas vis o vip
+DESTINADAS A vivienda
+nueva: flor del compo
+(24), vivienda nueva
+población víctima del
+conflicto armado (280)
+”¡l Vivienda Nueva
+reubicación: san
+francisco (130).
+vivienda nueva pobres
+NO DE VIVIENDAS históricos (1200),
+CONSTRUCCION DE NUEVAS 35693 déficit — | vivienda nueva | HCORVIVIENDA
+VIVIENDA NUEVA CONSTRUIDAS VIS cuantitativo proyecto San Carlos y 2
+o vip proyectos adicionales
+(1200), vivienda nueva
+gestión con gobiemo
+nacional (1200),
+vivienda nueva MI
+CASA YA (766),
+vivienda nueva sector
+privado (4000).
+Cumpliendo
+condiciones de
+adaptación del
+cambio climático.
+238
+
+
+## Página 239 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+A No. OOO
+LINEA BASE DE
+SUBPROGRAMA ooUcta DE INDICADOR — DE META PRODUCTO RESPONSABLE
+PRODUCTO
+Crear 1 banco de
+se tierras con 40
+có banco hectáreas, destinados
+para pul a la construcción de
+construcción de MO Caos
+vivienda vis o vip desastre naturales y
+familia post-conflicto
+Mejorar 3100 viviendas
+Ñ en el sector urbano del
+ni N* de vivienda distrito de Cartagena,
+mejoradas sector cumpliendo
+urbano | condiciones de
+adaptación al cambio
+29,175 dénct climático
+cualitativo Mejorar 900 viviendas
+en el sector rural del
+N* de vivienda distrito de Cartagena,
+MICASA MEJORADA Il ncioradas sector cumpliendo
+(MELORAMIAO DE na Sacos e
+adaptación al cambio
+Climático.
+Mejorar 8 banios en el
+distrito de Cartagena
+mediante la
+'N* de barrios construcción de
+mejorados parques, que cumplan
+las condiciones de
+adaptación al cambio
+climático
+MICASA, MI TITULO o 18000 solicitudes de
+4 (LEGALIZACION Y N de eos predios por Legalizar 4000 predios
+TITULACIÓN DE PREDIOS) 'egolzados legalizar
+9.3.5.2 PROGRAMA SERVICIOS PÚBLICOS PARA LA GENTE
+Con este programa se busca garantizar el derecho de los ciudadanos
+Cartageneros, a contar con unos servicios públicos domiciliarios confiables y
+continuos, implementando labores que conlleven a optimizar la prestación de
+estos, respondiendo así a la adecuada y correcta provisión de los mismos.
+239
+
+
+## Página 240 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. OOGS
+(13 JUN 2016 )
+
+9.3.5.2.1 SUBPROGRAMA ASEO
+
+Corresponde a la entidad territorial la formulación, implementación, evaluación,
+
+seguimiento, control y actualización del PGIRS. En tal razón se pretende con este
+
+subprograma realizar las acciones del esquema diferenciado de aseo que
+
+muestre conforme la eficacia y garantía en la prestación del servicio.
+
+9.3.5.2.2 SUBPROGRAMA ALUMBRADO PÚBLICO
+
+El Distrito de Cartagena de Indias suscribió contrato de concesión N* 9-1333889 el
+NG 27 de Octubre de 1998 con la Unión Temporal Ecosodio S.A. por un término de 20
+
+años, que tiene como objeto el Suministro, Expansión, Reposición, Operación,
+
+Mantenimiento y Administración del Servicio de Alumbrado Público en el Distrito
+
+de Cartagena de Indias, así como en la totalidad de los caseríos y asentamientos
+
+que actualmente existen y los que llegaren a conformarse en la jurisdicción
+
+territorial del Distrito durante el término de la concesión, igualmente los sistemas
+
+de semaforización y relojes electrónicos, teniendo en cuenta el término de
+
+duración. Ésta se encuentra próxima a terminar, para lo cual el Distrito tendrá que
+
+determinar la forma de prestación del servicio de alumbrado público a partir del
+
+2019
+
+De conformidad con los informes remitidos por la Interventoría de la Concesión en
+
+el Fondo de expansión se tienen proyectados ingresar TRECE MIL SETECIENTOS
+
+MILLONES DE PESOS ($ 13.700.000.000), de los cuales se tienen programas
+nl inversiones por DOS MIL QUINIENTOS MILLONES DE PESOS ($2.500.000.000) para la
+
+extensión u optimización de las redes de alumbrado público en los sectores
+
+subnormales de la ciudad, teniendo en cuenta corregimientos y zona insular,
+
+OCHO MIL DOSCIENTOS CINCUENTA MILLONES DE PESOS ($8.250.000.000) para las
+
+instalaciones de redes de alumbrado público en 220 parques de la zona urbana y
+
+rural de la ciudad.
+
+Teniendo en cuenta el vencimiento del plazo de la concesión del servicio de
+
+alumbrado, es necesaria la elaboración de un estudio en donde se precisen las
+
+condiciones técnicas, financieras y jurídicas en las que se prestada el servicio de
+
+alumbrado público de la ciudad, así como la modalidad en la cual este será
+
+administrado.
+
+240
+
+
+## Página 241 (OCR Oficial Acuerdo 006 de 2016)
+
+(E - | Concejo Distrital de Cartagena de Indias D. T. y C.
+Y
+as ACUERDO No. OOO
+(43 JUN 2016 )
+9.3.5.2.3 SUBPROGRAMA ENERGÍA
+La resolución CREG 120 del 2001 “Por medio de la cual se regula la prestación del
+servicio de energía eléctrica de los barrios subnormales conectados al sistema
+interconectado nacional SIN", regula la prestación del servicio público
+domiciliario de energía eléctrica en barrios subnormales conectados al sistema
+interconectado nacional, que cumplan con las condiciones mínimas
+determinadas por la misma resolución.
+En este marco de ideas la Alcaldía de Cartagena deberá propender por la
+Ny normalización del servicio de energía en por lo menos 35 sectores de la ciudad,
+que actualmente se encuentren en estado de subnormalidad yapoyar
+institucionalmente a la construcción de dos (2) subestaciones de energía.
+El Plan 5 Caribe consiste en un paquete de cinco medidas que optimizará y
+fortalecerá el servicio de energía eléctrica en el Caribe Colombiano, este Plan fue
+formulado por el Ministerio de Minas y Energía y presentado al país el 12 de junio
+de 2015, éste contempla inversiones por más de $4 billones para los proyectos en
+el sistema de transmisión y normalización de redes, los cuales se ejecutarán a la
+par de la ejecución por parte de Electricaribe de acciones de corto y mediano
+plazo que ayudarán a mejorar el servicio, que van desde el aumento de brigadas
+de poda y mejora del servicio al cliente, hasta inversiones en la infraestructura
+eléctrica. En el marco de este plan en el Distrito de Cartagena de Indias se
+construirán dos subestaciones de energía ubicadas en las zonas de Manzanillo y
+A La Marina, que entrarán a optimizar y potenciar el sistema eléctrico de las zonas
+aledañas.
+Para lograr exitosamente la ejecución de estos proyectos en el término
+proyectado en el Plan 5 Caribe, es necesario el apoyo Institucional de la Alcaldía
+de Cartagena, facilitando la consecución de permisos, adquisición de predios,
+legalización y en general la cooperación interinstitucional permanente hasta que
+el proyecto llegue a feliz término.
+9.3.5.2.4 SUBPROGRAMA CEMENTERIOS
+En los Cementerios Distritales se ha venido implementando el proyecto
+“ADECUACION FISICA Y AMBIENTAL DE LOS CEMENTERIOS DISTRITALES”, que sin
+241
+
+
+## Página 242 (OCR Oficial Acuerdo 006 de 2016)
+
+El e Concejo Distrital de Cartagena de Indias D. T. y C.
+E— E
+z 1 TA No. DOG
+duda ha generado impacto positivo en la percepción de la población
+cartagenera. Se continuará con el proyecto en mención, que se fundamenta en
+jomadas permanentes de recolección de escombro y fumigación de maleza,
+complementada con adecuación de la fachada (repello y pintura), reparación
+de sistema eléctrico y lámparas y la señalización, para así cumplir con la
+normatividad que rige dichos santos sagrados. Para lo anterior, se propone
+explorar la posibilidad de ampliar la oferta de servicios fúnebres y de cementerios
+en el Distrito a fin de poder satisfacer la demanda de éstos servicios, a través de
+iniciativas públicas o privadas,
+y Tabla 150
+LINEA BASE DE INDICADOR
+INDICADOR DE RESULTADO DE RESULTADO. META RESULTADO RESPONSABLE
+| incrementar en 100% la!
+1] | Í
+% DE PERSONAS CON] yy A E de
+SERVICIOS MEJORADOS — | ¡es infraestructura
+' | servicios públicos
+| | domiciliarios,
+Tabla 151
+LINEA BASE META
+SUBPROGRAMA — INDICADOR PRODUCTO META RESPONSABLE
+Realizar 4 contratos
+de seguimiento al
+esquema operativo
+) de aseo domiciliario
+Ed del Distrito de
+Número de contratos ri]
+Deal Un contrato (2015) | - especializada en
+realizados. supervisión del
+servicio público de
+aseo e
+ASEO implementación de 4 Secretaría de
+estrategias IEC sobre Infraestructura
+el fomento de la
+cultura de pago.
+Diseñar e
+Ruta de recolección implementar (1) ruta
+de residuos sólidos de recolección de
+aprovechables y residuos sólidos
+estrategias IEC aprovechables en 5
+diseñadas e unidades comuneras
+implementados del Distrito,
+coadyuvado con la
+242
+
+
+## Página 243 (OCR Oficial Acuerdo 006 de 2016)
+
+] Concejo Distrital de Cartagena de Indias D. T. y C.
+PB =
+ÉSTE ACUERDO No. OOG
+C- 43 JUN 2016 )
+SUBPROGRAMA — INDICADOR o MEA mera RESPONSABLE
+implementación de 4
+campañas IEC en
+Deberes y Derechos
+de los usuarios.
+Ajustes ol documento RS
+POIRS porela Lineamientos de acuerdo a la
+da, — | establecidos según | normatividad
+componente e | elDecreto 1077 de vigente, en el
+barrido y Impieza de 2015 e eplera de
+éreas públicas. éreas públicas.
+w
+N? de playas con Instalar contenedores
+contenedores ND en (3) playas del
+instalados Distrito
+Establecer los
+lineamientos técnicos
+Criterios para la limpieza
+lineamientos — | establecidos en el adecuada,
+definidos. programa de mantenimiento,
+Limpieza de playas. | seguimiento y control
+de cuerpos de agua
+Canales.
+. Definir Metros
+Áreas públicas cuadrados (m2) de
+definidas. áreas públicas objeto
+de arborización.
+Implementar (3)
+Numero de de
+Ñ Estrategias IEC en la
+estrategias IEC ND higiene de las áreos
+implementados, públicas del Distrito,
+w Cinco (5) unidades
+Nú de unidad comuneras del
+mero de unidades oisito entregando
+residuos separados
+separando gracias a la
+adecuadamente ión
+institucional.
+Diseñar técnica y
+financieramente la
+Estación de
+% de infraestructura Clasificación y
+Instalada Aprovechamiento
+(ECA) e instalar en 5
+unidades comuneras
+del Distrito.
+1,931 recicladores | Fortalecer a 773
+N* de recicladores de oficio. ( recicladores de
+fortalecidos. caracterización | oficio, técnica y
+2015) socialmente, al
+243
+
+
+## Página 244 (OCR Oficial Acuerdo 006 de 2016)
+
+y
+El Concejo Distrital de Cartagena de Indias D. T. y C.
+t— E
+uE
+Ad ACUERDO No.
+rr 3d A eos
+16
+UNEA BASE META
+SUBPROGRAMA INDICADOR PRODUCTO. META RESPONSABLE
+aprovechamiento de
+residuos sólidos del
+Distrito mediante la
+agenda social
+Distrital, coadyuvado
+por cuatro (4)
+estrategias de
+concienciación
+Ciudadana.
+Construir 1 planta de
+Construcción de la tratamiento de
+planta de ND Ibóviados en el
+Ns tratamiento, Relleno Sanitario
+Loma de los Cocos.
+Clausurar área
+% de área Relleno sanitario de intervenida en el
+intervenida Henequén. — | relenosanitario de
+Henequén.
+Política Publica Ñ
+Distítal de Residuos dl
+carios pública Distrital de
+Residuos de Aparatos
+eléctricos y eléctricos y
+Electrónicos RAEE bc
+formulada. Electrónicos RAEE.
+Esquema de control, emo
+seguimiento, y ontrol
+yy seguimiento y
+evaluación de los "
+evaluación de los
+sistemas de ND sistemas de
+recolección sleciva recolección solciva
+Vd tantas usados y gestión ambiental
+A de llantas usadas.
+7 Implementar 4
+estrategias IEC al
+mp Residuos de
+construcción y
+Demolición. (RCD)
+Realizar 1 estudio de
+" factibilidad para el
+o e diseño y construcción
+: de escombreras
+Distitales.
+Reolizar 1 estudio de
+Moria No Localización de los
+colación, centros de acopio en
+: la Zona Insular,
+N* de contenedores No Diseñar e
+ubicados en la Zona implementar 1
+244
+
+
+## Página 245 (OCR Oficial Acuerdo 006 de 2016)
+
+E E . as .
+El É) Concejo Distrital de Cartagena de Indias D. T. y C.
+( YE
+Saz ACUERDO No. OO6S
+(13 JUN 2016.)
+LINEA BASE META
+SUBPROGRAMA INDICADOR PRODUCTO. META RESPONSABLE
+contenerización
+Diseñar y ejecutar 1
+N? de plan diseñado NO plan permanente de
+e implementado. Educación Ambiental
+enla Zona Insular.
+Reolizar 1 estudio de
+amenaza,
+vulnerabilidad y
+riesgo miligable que
+incluya
+Y . cuantificación de
+Numero de estudio.
+realizado dentro del NO on Saa
+término. gestión del riesgo
+asociado al manejo y
+uso de los residuos
+sólidos en el (zona
+urbana y rural)
+realizado.
+Legalizar la red de
+Sectores Alumbrado Público
+normalizados con ND en 35 sectores
+alumbrado público subnormales del
+Distrito.
+Parques o zonas Instalar u optimizar
+verdes con con Alumbrado
+alumbrado público ND Público A 220
+Alumbrado instalado u parques o zonas
+Publico optimizado verdes
+Elaborar 1 estudio
+para la
+y determinación de las
+Estudio realizado. ND ancora del
+nuevo esquema del
+servicio de
+alumbrado.
+Apoyo institucional a
+la construcción de
+dos (2) subestaciones
+de energía para
+repolenciar el
+sistema eléctico de
+> Sectores la zona de
+Energía repotenciados. No Manzanillo, Zona
+Norte, Centro,
+Bocagrande,
+Castilogrande,
+Laguito, y
+Chambacú del
+Distilo.
+245
+
+
+## Página 246 (OCR Oficial Acuerdo 006 de 2016)
+
+El + 5) Concejo Distrital de Cartagena de Indias D. T. y C.
+a ACUERDO No. OOG
+(— 13JUN 2016 )
+LINEA BASE META
+SUBPROGRAMA INDICADOR PRODUCTO META RESPONSABLE
+omoltados con No sectores subnomoles
+alo del Distrito.
+Obras de ro caro 4
+mantenimiento. Ser
+preventivo y eno
+correctivo en los provantivo y
+cementerios ND correctivo en los
+distritales, una por ¿ementerios
+- $ distritales, una por
+cementerio (Temera, do (Te
+y Mongo, Olaya y cementerio (Temera,
+Albornoz) realizados Manga. Oloya y
+Albomoz
+Obras de ampliación Realizar 3 obras de
+para la construcción ampliación para la
+Cementerios [de bóvedas y nichos construcción de
+en los cementerios bóvedas y nichos en
+distritales, una por los cementerios
+cementerio (Temera, distritales, una por
+Olaya y Albomoz) cementerio (Temero,
+realizados. Olaya y Albornoz)
+Estudio preliminar Realizar 1 estudio
+para la intervención preliminar para la
+integral del intervención integral
+Cementerio de del Cementerio de
+Manga realizado. Mango.
+9.3.5.2.5 SUBPROGRAMA ACUEDUCTO Y ALCANTARILLADO
+?
+El interés del Distrito de Cartagena es continuar con la política de ampliación de
+la capacidad del acueducto de Cartagena, diseñando estrategias para la
+ampliación de cobertura y mejora en la calidad.
+De otra parte, la Administración Distrital, a fin de facilitar el acceso de más
+cartageneros al servicio público de acueducto, adelantará los estudios
+pertinentes de viabilidad que permitan, de ser el caso, la implementación de un
+mínimo vital de agua gratuita, que beneficie a la población más pobre y
+vulnerable del Distrito.
+Si los estudios así lo determinan, dicha medida sólo podrá implementarse previa
+aprobación del Concejo Distrital, a iniciativa del ejecutivo, de manera gradual y
+246
+
+
+## Página 247 (OCR Oficial Acuerdo 006 de 2016)
+
+1] Concejo Distrital de Cartagena de Indias D. T. y C.
+e ACUERDO No. VCO >
+(o 43JUN 2016)
+con una fuente de financiamiento especifica que no genere déficit presupuestal
+o financiero o afecte otros programas o políticas distritales que se sostengan con
+dichos recursos. En todo caso, los estudios deberán determinar que no se afectan
+compromisos, equilibrio y riesgos contractuales existentes.
+9.3.5.2.6 SUBPROGRAMA CARTAGENA CERTIFICADA EN SERVICIOS PUBLICOS
+Es objetivo de este subprograma equilibrar los factores de subsidio y contribución,
+lograr llevar al 90% la cobertura del Agua Potable y saneamiento básico y
+. equilibrar el FSRDI.
+NM
+Tabla 152
+LINEA BASE DE INDICADOR META
+INDICADOR DE RESULTADO DE RESULTADO RESULTADO RESPONSABLE
+Incrementar en
+100% la
+cobertura de la
+%, DE, PERSONAS CON SERVICIOS yy preacin “ae | secretaria Genera
+los servicios
+públicos
+domiciliarios.
+Tabla 153
+UBPROGRAMA INDICADOR SIA META RESPONSABLE
+Ampliar el sistema
+o de acueducto,
+5d Mts3 O agua ND tratamiento de
+atada 20000 mis3 de
+agua
+Ampliar el sistema
+Km Tubería ND de acueducto,
+Conducción conducción de 8
+km de tubería
+ACUEDUCTO Y . A
+Vincular a 100.000 | Secretaría General
+ALCANTARILLADO Nuevos usuarios NO nuevos usuarios al
+vinculados sistema de
+acueducto
+Sistema de
+Nuevos usuarios acueducto de
+vinculados Tierra Bomba, y
+Barú
+Nuevos usuarios ND Ampliar el sistema
+vinculados de alcantarillado
+247
+
+
+## Página 248 (OCR Oficial Acuerdo 006 de 2016)
+
+SS
+E . es .
+al Concejo Distrital de Cartagena de Indias D. T. y C.
+P— E
+a ACUERDO No. COS
+Dec
+( 413 JUN 2016 )
+SUBPROGRAMA INDICADOR ni META RESPONSABLE
+zona urbana .
+estación de
+bombeo e
+impulsión Arroz
+Barato, Policarpa y
+Puerta de Hierro
+y Ampliar el sistema
+N de alcantarillado
+zona rural
+Nuevos usuarios bombeo de agua
+vinculados residual en
+Bayunca,
+Pontezuela,
+Tierrabaja
+Ampliación
+sistema de
+alcantarilado
+> zona rural, redes
+Nuevos usuarios de alcantarillado
+vinculados en Bayunca,
+Pontezuela,
+Tierrabaja y Puerto
+rey.
+Proteger 50 predios
+Protección áreas en 3 ecosistemas
+estratégicas para ND de fuente de
+acueducto captación de
+Agua
+Ns Plan maestro de Formular el plan
+acueducto y maestro de
+alcantarillado acueducto y
+formulado alcantarillado
+FSRDI Equilibrados IO Equilibrar 3 FSDR.
+Equiibror 3
+Factores de subsidio Toros de
+Equillbrados subsidios
+Factores de 3 Factores de
+CARTAGENA Contribución ND contiibución — | secretaría General
+CERTIFICADA EN Equilbrados equilibrados
+SERVICIOS PÚBLICOS 0
+Subsidios Pagados so | pogados.en
+subsidios
+Coberturas
+Coberturas APS e
+248
+
+
+## Página 249 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. VOG
+(43 JUN 2016 )
+9.3.6 LÍNEA ESTRATÉGICA APUESTA CONJUNTA BOLÍVAR AVANZA EN ARMONÍA
+CON CARTAGENA
+
+Esta apuesta busca la articulación entre gobierno Departamental y Distrital, para
+el logro de obras y proyectos estratégicos en los que ambos entes territoriales
+están ligados por intereses comunes y de impacto regional, para su progreso y
+desarrollo.
+Se trabajará desde un ejercicio riguroso de planificación y consolidación de una
+agenda conjunta con el Distrito donde se priorizarán los siguientes temas:
+
+ná 1. La extensión del modelo de trasporte masivo - Transcaribe - hacia algunos
+
+municipios circunvecinos de Cartagena.
+2. La red de infraestructuras para la seguridad y el abastecimiento alimentario
+que fortalezca el clúster de la cadena alimentaria. - Central de Abastos
+
+3. Recuperación de Canal del Dique.
+4. Consolidación del Área Metropolitana
+5. Complementariedad en planes estratégicos para la seguridad y convivencia
+6. Centros Penitenciarios de Cartagena y Bolívar
+7. Juegos Nacionales para la Paz 2019
+
+W
+8. Casa del Alcalde y Casa Bolívar
+
+SECCIÓN lll
+OBJETIVO ESTRATÉGICO 3: CONSTRUIR CIUDADANIA Y FORTALECER LA
+INSTITUCIONALIDAD
+10 ARTICULO 10 CONSTRUIR CIUDADANIA Y FORTALECER LA INSTITUCIONALIDAD:
+Este objetivo se sustenta en unos principios orientadores como son transparencia,
+participación y servicio al ciudadano, la lucha contra la corrupción, gestión
+pública efectiva y vocación de servicio, una administración cercana al
+ciudadano, que opera de manera armónica en sus distintos niveles a través de
+249
+
+
+## Página 250 (OCR Oficial Acuerdo 006 de 2016)
+
+SARA nos .
+(E E Concejo Distrital de Cartagena de Indias D. T. y C.
+Sanz ACUERDO No. DOG
+C- 13 JUN 2016 )
+servidores íntegros y comprometidos, para cumplir lo que promete y rendir
+cuentas, donde se planea y ejecuta sus recursos de manera eficiente, eficaz y
+transparente.
+En la siguiente ilustración se detalla los ejes y líneas estratégicas de este objetivo:
+TERCER OBJETIVO ESTRATÉGICO
+CONSTRUIR CIUDADANÍA Y FORTALECER
+LA INSTITUCIONALIDAD
+Ns z
+EJES ESTRATÉGICOS.
+SEGURIDAD FORTALECIMIENTO
+INTEGRAL INSTITUCIONAL
+LÍNEAS ESTRATÉGICAS
++ Gestión Pública Local
+» Cartagena Sin Miedos Transparente
++ Cartagena Territorio De Paz + Cultura Ciudadana y Paz
++ Finanzas Sanas y Robustas
+y PROGRAMAS — SUBPROGRAMAS PROGRAMAS — SUBPROGRAMAS
+10.1 EJE ESTRATÉGICO SEGURIDAD INTEGRAL
+En el marco de la seguridad integral, la seguridad ciudadana es uno de los
+principales activos de la Gente. Creemos que la lucha por erradicar la
+desigualdad solo es posible con una ciudadanía empoderada, que participa en
+el diseño, formulación y seguimiento de políticas públicas, en la toma de
+decisiones por parte del gobierno y de unas instituciones estables, transparentes y
+robustas, capaces de propiciar desarrollo y bienestar colectivo.
+250
+
+
+## Página 251 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. yC
+ACUERDO No. dels
+CI JUN 2016 )
+Por lo tanto se promoverá la participación ciudadana en la prevención de la
+delincuencia y la disminución del miedo y se Impulsarán iniciativas de control y de
+inteligencia policial y medios tecnológicos para la seguridad, con medidas de
+prevención social e inversión para contribuir, desde la sociedad civil y el Estado, a
+disminuir la violencia y el temor, en los barrios con los índices delincuenciales más
+críticos.
+Laconvivencia ciudadana efectiva y armónica, en la que se garantiza la vida, los
+bienes y la honra de la Gente, se logra cuando, por una parte, las personas
+actúan en consecuencia con su condición de ciudadanos y de su
+ss responsabilidad frente al cumplimiento de sus deberes y el ejercicio de sus
+derechos; y por la otra, cuando contamos con un sistema de instituciones
+robustas y a la vez flexibles, capaz de lograr que los servidores públicos y la
+administración en su conjunto cumplan con normas y estándares establecidos
+dentro de una dinámica que provoque el mejoramiento de la calidad de vida de
+los asociados.
+Se promoverá, con la ayuda de artistas, comunicadores sociales líderes
+comunitarios y gestores culturales, la realización de campañas masivas de
+sensibilización para crear conciencia ciudadana y estimular el comportamiento
+hacia la convivencia pacífica, buscando que los ciudadanos vivan y disfruten la
+ciudad, gocen de los bienes públicos, usen el espacio público y convivan sin
+Agredirse unos a otros.
+En este Plan se trabajará de la mano con la ciudadanía, para que Cartagena sea
+NW Un lugar seguro para el encuentro y disfrute de sus habitantes, un territorio de paz,
+que garantice el libre desarrollo, la movilidad y el uso efectivo del espacio
+público. En este contexto, el liderazgo del Alcalde desempeña un papel central
+en esta estrategia de seguridaa, frente al incremento de la delincuencia urbana y
+rural, por ello se liderarán acciones como los Consejos de Seguridad, como una
+estrategia de articulación y respuesta ante la criminalidad y la violencia que se
+refleja en una política criminal concreta y efectiva.
+10.1.1 LÍNEA ESTRATÉGICA CARTAGENA SIN MIEDOS
+Esta línea busca promover la participación ciudadana en la prevención de la
+delincuencia y la disminución del miedo e Impulsar iniciativas de control y de
+inteligencia policial, medios tecnológicos para la seguridad, con medidas de
+251
+
+
+## Página 252 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. OOG
+
+C-13 Jun 2016 )
+prevención social e inversión para contribuir, desde la sociedad civil y el Estado, a
+disminuir la violencia y el temor, en los barrios con los índices delincuenciales más
+críticos.
+Para ello se realizarán campañas de difusión del número Único de emergencia se
+promoverá una relación de mayor amistad, confianza y respeto entre la fuerza
+pública y la comunidad, para asi lograr reducir la frecuencia de diversos delitos,
+tales como asaltos, hurtos, atracos callejeros, tráfico de drogas, lesiones
+personales.
+
+0] A partir de inteligencia policial y con el apoyo de la ciudadanía, desmontaremos
+los puntos de venta y consumo de drogas. Se ampliará el sistema de video
+vigilancia a sectores con alto índice de criminalidad, se onstruirás de forma
+colectiva una estructura lógica de análisis y conocimiento delictual, a través del
+diseño y puesta en funcionamiento de una “Plataforma Estratégica de Monitoreo
+y Análisis Criminal" que permita identificar mutaciones, cambios, tendencias y
+readaptaciones de las variables involucradas con la criminalidad y el delito e
+incluso, de la misma acción Estatal y Distrital.
+10.1.1.1 PROGRAMA BARRIO SEGURO, UNIDAD COMUNERA SEGURA-UNCOS
+Se promoverá la participación ciudadana en la prevención de la delincuencia y
+la disminución del miedo, ligado a la realización de los Consejos Comunales de
+Seguridad, presididos por el Alcalde, en los que coincidan organismos de
+
+n/ seguridad del Estado, autoridades civiles y representantes de la sociedad civil,
+logrando una intensificación de relaciones policía — comunidad, promoviendo
+iniciativas de control y de inteligencia policial para la prevención de la comisión
+de los delitos, disminuir la violencia y el temor en el Distrito de Cartagena,
+especialmente en los barrios con los índices delincuenciales más críticos, reducir el
+número de muertes violentas como Homicidios, Muertes en Accidentes de
+Tránsito, Muertes por causas no intencionales y el Suicidio, y la disminución de la
+frecuencia de diversos delitos, tales como: Asaltos, hurtos, atracos callejeros,
+tráfico de drogas, lesiones personales.
+
+252
+
+
+## Página 253 (OCR Oficial Acuerdo 006 de 2016)
+
+(El * Y Concejo Distrital de Cartagena de Indias D. T. y C.
+cr ACUERDO No. OOGC
+(43 JUN 2016 )
+10.1.1.1.1 SUBPROGRAMA PLAN INTEGRAL DE SEGURIDAD CIUDADANA
+Este subprograma pretende generar condiciones y mecanismos que permitan
+recuperar a Cartagena como una de las ciudades más seguras de Colombia. En
+tal sentido, el gobierno Distrital liderará acciones de recuperación de la ciudad
+de las bandas criminales y la delincuencia común, cuyos lineamientos generales
+se concentran en el Plan Integral de seguridad y Convivencia ciudadana de
+Cartagena, como instrumento orientador de la política distrital de seguridad que
+contempla el fortalecimiento de los organismos de seguridad a través de la
+adquisición de bienes para la movilidad, equipos de comunicación y tecnología,
+Ns servicios logísticos para la seguridad y convivencia, que propicie la preservación
+del orden público, la seguridad y la convivencia ciudadana.
+Se contempla desde este programa la implementación de los Consejos
+Comunales de Seguridad, presididos por el Alcalde, en los que coincidan
+organismos de seguridad del Estado, autoridades civiles y representantes de la
+sociedad civil con el fin de disminuir la violencia y el temor en los barrios con los
+Índices delincuenciales más críticos.
+10.1.1.1.2 SUBPROGRAMA FORTALECIMIENTO DE LOS MECANISMOS
+COMUNITARIOS DE PREVENCIÓN DEL DELITO
+Entendiendo la seguridad desde una perspectiva integral, donde la comunidad
+cumple Un papel significativo en la prevención de la delincuencia y la
+dl disminución del miedo, este subprograma está orientado a la realización de
+9
+Campañas de promoción de la denuncia ciudadana, erradicación de la
+delincuencia común y bandas criminales a través de los medios comunitarios,
+radiales, prensa y televisión.
+Así mismo, se promoverá y facilitará la participación de las organizaciones
+sociales y comunitarias para la prevención del deterioro de los entornos urbanos,
+como también para la recuperación de los mismos, de tal manera que sean
+apropiados como espacios y escenarios institucionales de todos y para todos.
+253
+
+
+## Página 254 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. VCOG
+(43 JUN 2016 )
+Tabla 154
+LINEA BASE DE
+INDICADOR DE RESULTADO INDICADOR DE META RESULTADO RESPONSABLE
+RESULTADO
+st Secretaría del
+TASA DE HOMICIDIO POR CIEN | 27 Tasa de Homicidio por | Feaucy nieoralmente la Interior y
+MIL HABITANTES cien mil hobitantes cien ml habitantes Convivencia
+P ciudadana
+Reducirintegralmente en | Departamento
+TASA DE MUERTES EN A a caes | un(I)puntolatasade | Administalivo de
+ACCIDENTES DE TRANSITO Fuente COSED 2015 y muerte en accidente de | Tránsito y Transporte
+transito. [DATT]
+1,3T0 d erte Reducirinte lí te
+.3 Tosa de muertes por | Reducirintegralmente en
+TASA DE MUERTES ENCUERPO | sumersión (Playas), | O4lataso de muertes | DISTRSEGURIDAD
+Fuente COSED 2015 | porsumersión (Playas)
+Secretaría del
+TASA DE EXTORSION POR CIEN 11.21 Reducir integralmente Interior y
+MIL HABITANTES Fuente: COSED 2014 | 94la Tasa de extorsión Convivencia
+ciudadana
+Reducirintegralmente a | — Secretaría del
+TASA DE HURTO A PERSONAS 109.07 80 la tasa de hurtos a Interior y
+POR CIEN MIL HABITANTES Fuente: COSED 2014 personas por cien mil Convivencia
+habitantes ciudadana
+217 Reducir integralmente en taa del
+HURTOS A RESIDENCIAS un 50% el número de Comvivendia
+Fuente: COSED 2014 ST
+hurtos a residencias pei
+Nu
+Tabla 155
+LINEA BASE DE
+SUBPROGRAMA INDICADOR DE INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO
+Número de víctimas | 4 so Reduciren 10el | Departamento
+fatales en denietmes totales en || número de víctimas | Administrativo de
+PLAN INTEGRAL | accidentes de fuente costo 2015, | falales en accidentes Tránsito y
+DESEGURIDAD | tránsito reducidos de transito ronsporte (DAT)
+CIUDADANA, 13 muertes por Reducir a 9 el
+Número de muerte | aries sorccda | MÚMETO de víctimas
+por sumersión en Irc ¡e fatales por sumersión | DISTRISEGURIDAD
+playas reducido fuete. coso 2018, | 2n playas del Distrito
+_ de Cartagena.
+254
+
+
+## Página 255 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. VDOG
+LINEA BASE DE
+SUBPROGRAMAS INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO
+Plan Integral de
+seguridad y id Secretaría del
+convivencia 1 Pan f Y Ms Interior y
+ciudadana lan formulado ¿eguridad y Convivencia
+Ñ Convivencia
+ormulado y udadana ciudadana
+ejecutado.
+Realizar 10 consejos
+Consejos comunales de Secretaría del
+Comunales de seguridad Interior y
+Seguridad anualmente enlos | Convivencia
+N realizados barrios con mayores | ciudadana
+índices de Violencia
+Campañas de
+promoción de la Realizar 2 Campañas | Secretaría del
+denuncia R de promoción de la Interior y
+FORTALECIMIENT | ciudadana  |2SOmpañasrealizadas | enuncia ciudadana | Convivencia
+ODELOS realizadas anualmente. ciudadana
+MECANIMOS anualmente.
+E EVENCIÓN Bam lorizado: R 20
+DE PREVENCIÓN Jarrios priorizados 'ecuperar de
+DEL DELITO, con entomos 15 Entornos Urbanos | Entormos Urbanos | Pcterado del
+urbanos deteriorados deteriorados entos | Comventia
+recuperados para recuperados barrios con mayores udadana
+la convivencia. índices de Violencia
+10.1.1.2 PROGRAMA FORTALECIMIENTO INSTITUCIONAL DE LA SECRETARÍA DEL
+INTERIOR Y CONVIVENCIA CIUDADANA
+Se ampliara la capacidad de respuesta institucional y operativa de la Secretaría
+Y del Interior y Convivencia Ciudadana, frente a las diversas situaciones que
+amenacen o violen normas de convivencia y seguridad en la ciudad de
+Cartagena, por ello es importante fortalecer la Secretaría con una estructura
+institucional fuerte y operativa que le permita atender los requerimientos de las
+comunidades. Se hace necesario el traslado definitivo de la Cárcel Distrital de
+Cartagena y ampliar el número de estaciones de bomberos actuales de la
+Ciudad para mejorar cobertura y tiempo de respuesta ante las emergencias.
+255
+
+
+## Página 256 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. OOG
+C 413 JUN 2016 )
+10.1.1.2.1 SUBPROGRAMA FORTALECIMIENTO DE LA SECRETARÍA DEL INTERIOR
+Y CONVIVENCIA CIUDADANA
+La Secretaría del Interior y Convivencia Ciudadana del Distrito juega el papel más
+importante en la reconstrucción del escenario de paz en Cartagena, puesto que
+es la dependencia de la Alcaldía Distrital encargada del manejo de los temas de
+seguridad y convivencia ciudadana. Se busca entonces fortalecer su capacidad
+de respuesta institucional para que encare eficiente y eficazmente los problemas
+atinentes y lidere la política de seguridad y convivencia en Cartagena.
+Y
+10.1.1.2.2 SUBPROGRAMA FORTALECIMIENTO CARCELARIO Y PENITENCIARIO
+Este subprograma está orientado a mejorar la atención a la población interna de
+la Cárcel Distrital y del Establecimiento Penitenciario de Mediana Seguridad y
+Carcelario de Cartagena, para minimizar los efectos del proceso de
+pricionalización, con énfasis en la humanización del individuo. Para ello se
+trasladará la actual Cárcel Distrital a un inmueble que cumpla con todas las
+condiciones de seguridad e infraestructurales y se adelantaran las gestiones
+necesarias para el diseño y construcción de una nueva cárcel Distrital.
+10.1.1.2.3 SUBPROGRAMA FORTALECIMIENTO CUERPO DE BOMBEROS
+El Cuerpo de Bomberos de Cartagena de Indias realiza sus operaciones en tres (3)
+Y estaciones ubicadas estratégicamente en la ciudad: Bocagrande, Santa Lucía y
+El Bosque, donde se encuentran asignadas maquinarias, equipos y un recurso
+humano de 93 efectivos, quienes laboran bajo la modalidad de turnos a fin de
+garantizar disponibilidad inmediata las 24 horas del día durante todos los días del
+año.
+Sin embargo, dichas estaciones, maquinaria, equipos y recurso humano
+asignados, resultan insuficientes ante el desarrollo de la ciudad y la tendencia
+cada vez más creciente de sus riesgos intrínsecos, lo cual podría generar
+consecuencias graves en caso de incumplir con los estándares de seguridad y
+calidad para la atención de emergencias, tales como desconfianza en los
+diferentes sectores de la economía Distrital, pérdidas humanas y económicas, y
+retrasos en los proyectos que se desarrollan en la ciudad. Por lo tanto, con el
+256
+
+
+## Página 257 (OCR Oficial Acuerdo 006 de 2016)
+
+E
+E MA) Concejo Distrital de Cartagena de Indias D. T. y C.
+E— E
+a ACUERDO No.
+— ATEN
+fortalecimiento del cuerpo de Bomberos se pretende mejorar los tiempos de
+respuesta frente a los llamados de emergencias en la ciudad, conforme a los
+estándares internacionales y ampliar su cobertura mediante la construcción y
+puesta en funcionamiento de dos nuevas estaciones Bomberiles: una terrestre y
+Una acuática.
+Tabla 156
+LINEA BASE DE
+ISO e INDICADOR DE META RESULTADO RESPONSABLE
+RESULTADO
+Ns
+Operativos de control Aumentar en un 50% los
+preventivo y 110 operativos: 25 Operativos de control
+sancionatorio realizados | operativos de controla | preventivo y sancionatorio Ñ Ñ
+pora el cumplimiento de | - juegos de azar y 85 a realizados para el Socretoro de nteñory,
+las normas de espectáculos públicos. | cumplimiento de las normas
+convivencia y seguridad | Fuente: SICC 2014 de convivencia y seguridad
+enla ciudad. en la ciudad.
+Cárcel Distrital de
+Mujeres en declaratoria Secretaria del Interior y
+Nueva cárcel Distrital de Obra Ruinosa y moore an POR cárcel | convivencia cludadana-
+ubicada en Centro DISTRISEGURIDAD
+Histórico de Cartagena.
+Atención de
+emergencias en la zona
+Industrial de Mamonal en | Reducir en un 50% el tiempo
+Tiempo de respuesta del Cartagena de respuesta a la zona Secretaria del Interior y
+cuerpo de Bomberos. con tiempos de industrial de Mamonal en convivencia ciudadana
+Na) respuesta con rango Carlagena.
+promedio entre 10 a 20
+minutos,
+0% de cobertura de
+Cobertura de respuesta Bomberos para oso oro Galgo | Secretaría del Interior y
+del cuerpo de Bomberos. | respuesta acuática e Cana convivencia ciudadana
+insular en el Distrito. nagena.
+Tres estaciones de
+Bomberos terrestres: Incrementar en un 20 % la
+Capacidad operativa | Bocagrande, Santa Lucia | capacidad operativa del | Secretaria del Interior y
+del cuerpo de Bomberos y Bosque cuerpo de Bomberos enel | convivencia ciudadano
+Con capacidad Distrito de Cartagena
+operativa de un 70%.
+257
+
+
+## Página 258 (OCR Oficial Acuerdo 006 de 2016)
+
+>
+E DR . es, ..
+f El al Concejo Distrital de Cartagena de Indias D. T. y C.
+ot ACUERDO No. OOG
+Tabla 157
+UNEA BASE DE
+SUBPROGRAMA CTO INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO
+; rt
+25 Operativos de control | Re9Izar 50 operalivos
+ueno asar | de controla juegos
+ForraLEcIMen | OPerativos de de azar en el Distrito
+TODELA.. | Sontrola juegos de Secretaria del Interior y
+azar y espectáculos convivencia
+SECRETARÍA DEL ha
+so TERIOR públicos realizados Realizar 170 ciudadana
+INTERIO! en elDistito. | 85 Operalivos de control | Operativos de control
+. a espectáculos públicos | a espectáculos
+ud públicos en el Distrito
+Cárcel Distrital de
+Cortagena
+funcionando en Trasladar la Cárcel. | Secretaria delinteror y
+inmueble que Distrital de convivencia
+cumpla Cartagena ciudadana
+iio | Condiciones de
+a E
+PENITENCIARIO
+Suscribir Convenio ,
+,
+Convenio con el con elINPEC parala | + erano del interior y
+convivencia
+INPEC atención de los acia
+indiciados
+N/ Diseñar, construir y
+1 estación de dotar una estación | Secretaria del Interior y
+Bomberos acuática de Bomberos convivencia
+enel Distrito. acuática en el ciudadana
+FORTALECIMIEN Distrito.
+TO CUERPO DE
+BOMBEROS Diseñor, construir y
+Y estación Ñ Secretaria del Inter
+estación de dotar una estación OY
+Bomberos terrestre convivencia
+enel Distito. ge Bomberos ciudadana
+. terrestre en el Distrito.
+258
+
+
+## Página 259 (OCR Oficial Acuerdo 006 de 2016)
+
+El y Concejo Distrital de Cartagena de Indias D. T. yC.
+(EMMA)
+80 00% A RD: . OO
+e RENE]
+LINEA BASE DE
+SUBPROGRAMA — INRCADORDE INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO
+Estaciones de
+Bomberos Dotar con equipos
+existentes dotadas operativos de
+con equipos rescate, control de 4
+te
+operativos y de incendios e Secretaria del Interior y
+h convivencia
+rescate, control de Incidentes con 4
+h se a se ciudadana
+incendios e materiales peligrosos
+incidentes con las 3 estaciones de
+a materiales Bomberos existentes.
+Ny peligrosos
+10.1.1.3. PROGRAMA JUSTICIA CERCANA AL CIUDADANO
+El programa está orientado a acercar a la ciudadanía a los servicios de un
+sistema de justicia de fácil acceso, ágil y gratuito que se prestan a través de
+Casas de Justicia, Inspecciones de Policía, Comisarias de Familias y conciliadores
+en equidad.
+Tabla 158
+LINEA BASE DE INDICADOR DE
+INDICADOR DE RESULTADO RESULTADO. META RESULTADO RESPONSABLE
+= TASA DE VIOLENCIA a
+xs INTRAFAMILIAR POR CIEN MIL 19 Pi al crataría del interior y
+Fuente: Cosed 2014 tasa de Violencia 5 Ja ci
+HABITANTES Convivencia ciudadana
+Intrafamiliar
+Reducir en un
+485 Ñ Secretaría del Interior y
+DELITOS SEXUALES Fuente: Cosed 2014 Convivencia ciudadana
+sexuales
+259
+
+
+## Página 260 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. OO6>
+Tabla 159
+LINEA BASE DE
+SUBPROGRAMA MoDUETa . INDICADORDE — META PRODUCTO RESPONSABLE
+PRODUCTO
+| Realizar una (1)
+| Conclliadores en actualización
+equidad 40 conciliadores Normativa anual
+actualizados | capacitados en el a todos los ecretaría delinear y
+normativamente, Distro. conciliadores en
+equidad activos
+en el Distrito.
+Ampliar la red de
+y Conciladores en
+Nuevos pa el Distrito con la di
+JUSTICIA CERCANA AL | Conciliadores | % Copcladeres en | tommación de 40 | Secretaría detimerory
+CIUDADANO formados quico nuevos enviencia ciudadana
+Conciliadores en
+equidad.
+Realizar 120
+jornadas de
+Jomadas de “Justicia a los
+Justicia a los barrios" para Secretaría del Interior y
+banios acercarlos — | Convivencia ciudadana
+realizadas. servicios de
+justicia ala
+ciudadanía.
+10.1.1.4 PROGRAMA CARTAGENA POR LA CONVIVENCIA
+Se promoverá la convivencia ciudadana en el distrito de Cartagena, a fin de
+crear conciencia en los ciudadanos y ciudadanas de la necesidad de modificar
+nn comportamientos que afectan la vida en comunidad y le apuesten a la
+generación de buenas prácticas. Esta tarea se realizará mediante la
+implementación de estrategias como los festivales de convivencia en los barrios
+con mayores índices de criminalidad y la difusión de normas de Convivencias.
+260
+
+
+## Página 261 (OCR Oficial Acuerdo 006 de 2016)
+
+El *- Concejo Distrital de Cartagena de Indias D. T. y C.
+(AAA:
+s
+Á ay ACUERDO No.
+— 13 JUN 2016
+CA
+Tabla 160
+LINEA BASE DE
+INDICADOR DE RESULTADO INDICADOR DE META RESULTADO RESPONSABLE
+RESULTADO
+Aumentar a 21.4 el
+Porcentaje de personas que porcentaje de personas se Ñ
+se respetan las normas de omo vamos do1á. | Cartagena se respetan las udadono
+convivencia ciudadana , normas de convivencia
+ciudadana
+NM
+Tabla 161
+LINEA BASE DE
+suBPROGRAMA — INDCADORDE INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO
+Campaña de "
+promoción de dos campOño*. | secretaría del interior y
+buenas prácticas no Prácticas Convivencia
+ciudadanas ciudadanas en el pisito ciudadana
+realizados Ñ
+Realizar 60 festivales para
+Festivales para la convivencia en los Secretaría del Interior y
+convivencia 15 barrios priorizados con Convivencia
+CARTAGENA realizados. mayor índice de violencia ciudadana
+PORLA en el Distrito
+CONVIVENCIA
+NÓ DISTRISEGURIDAD
+”s ¡mero de en el 2015 les Socializar las normas de
+Pegaciondado- 2 socializó las Normas | conducta y convivencia
+los nomas de | E COnduciay Conor (20000) on el DISTRISEGURIDAD -
+conducta y | ciudadana a 4622 | Distrito de Cartagena
+convivencia pernos.
+ciudadana
+10.1.1.5 PROGRAMA PRIMERO LOS JOVENES
+Se fortalecerá la oferta institucional del distrito en materia de atención Psicosocial
+y emprendimiento dirigido a la familia, adolescentes y jóvenes en riesgo
+vinculados a pandillas para restablecer sus derechos. Se implementarán mesas de
+diálogo para lograr el desmonte de los grupos de pandillas juveniles, en las que
+representantes del Gobierno local puedan discutir de manera civilizada con estos
+261
+
+
+## Página 262 (OCR Oficial Acuerdo 006 de 2016)
+
+AGS
+(El il ) Concejo Distrital de Cartagena de Indias D. T. y C.
+i— E
+e ENE
+jóvenes, para lograr consensos en torno a lo que ellos esperan del Estado en aras
+de brindárselos.
+10.1.1.5.1 SUBPROGRAMA ATENCIÓN INTEGRAL A LOS Y LAS ADOLESCENTES Y
+JÓVENES EN RIESGO DE VINCULARSE A ACTIVIDADES DELICTIVAS Y
+EN CONFLICTO CON LA LEY PENAL
+Tiene como objetivo promover la integración social de los y las jóvenes que se
+encuentren en situación de pandillas, para prevenir y protegerlos de la violencia,
+M el delito y las adicciones, garantizar el ejercicio pleno de sus derechos, así como
+Ny generar una mejor convivencia familiar y comunitaria. Se busca brindar Una
+oferta de oportunidades para la inclusión social donde estos sean
+corresponsables y participes de cada una de las acciones promoviendo la
+convivencia armónica con la ciudadanía.
+10.1.1.5.2 SUBPROGRAMA FORTALECIMIENTO DEL SISTEMA DE
+RESPONSABILIDAD PENAL ADOLESCENTE
+Con este subprograma se pretende dar cumplimiento a la responsabilidad del
+Distrito en el marco del Sistema de Responsabilidad Penal del Adolescente,
+apoyando las estrategias de atención integral a estos jóvenes con una finalidad
+protectiva, educativa y restaurativa, y promover la reinserción social de los niños,
+adolescentes y jóvenes que hayan violado la ley.
+Tabla 162
+Ny LINEA BASE DE
+INDICADOR DE RESULTADO INDICADOR DE META RESULTADO RESPONSABLE
+RESULTADO
+51 cuyos victimarios son | Reduciren un 30% el | 19116 Secretaría del
+adolescentes y jóvenes | Número de homicidios il Interior y
+que pertenecen a cuyos victimarios son Convivencia
+Porcentaje de reducción | grupos de pandilla. | adolescentes y jóvenes ciudadana
+del número de pandillas, Fuente: Policía que pertenecen a
+Homicidios, hurtos, y riñas Nacional a 2014 grupos de pandilla.
+cometidos por
+adolescentes y jóvenes que | 24 hurtos perpetrados | Reducir en un 40% el
+pertenecen a grupos de | Pr adolescentes y Número de hurtos — | 10.1.1.7 Secretaría del
+pandillas en el Distrito de Jóvenes que perpetrados por Interior y
+Cortagena pertenecen a grupos | adolescentes y jóvenes Convivencia
+de pandila “que pertenecen a ciudadana
+Fuente: Policía grupos de pandilla.
+Nacional a 2014
+262
+
+
+## Página 263 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. DOG
+LINEA BASE DE
+INDICADOR DE RESULTADO INDICADOR DE META RESULTADO RESPONSABLE
+RESULTADO
+adolescontes y févenes | , Reducirenun20% — [101.18 Sectetafadel
+“que pertenecen a Numero de riñas entre Interior y
+as pandia | Sdolescentes y jóvenes Convivencia
+Fuente: Policía que pertenecen a ciudadana
+Nacional a 2014 grupos de pandilla
+Cerna Reducir en 12% las Secretaría del Interior y
+NG Fuente (sec. Interior | Pandillas en elcistito de | vivencia ciudadana
+2015] Cartagena
+400 Adolescentes y ,
+Porcentaje de reducción | Jóvenes que ngresan | aegugt en un 15%
+del Número de al Sistema de ¡mero de Adolescentes
+Adolescentes y Jóvenes | Responsabilidad Penal | Y ¡Óvenes de Carlagena .
+que ingresan al Sistema de | pora Adolescentes en | Ie Íngresan al sistemo | Secretaria del Interior y
+Rasporsabllidod Penal pora recent de Responsabilidad | convivencia ciudadana
+Adolescentes en las modalidades Penal pora Adolescentes
+distintas modalidades — | Fuente: Asomenores e entos astros
+ICBF 2014. modalidades
+Tabla 163
+LINEA BASE DE
+INDICADOR DE
+SUBPROGRAMA —McnncTO . INDICADORDE META PRODUCTO RESPONSABLE
+PRODUCTO
+NS
+Estrategia de
+Atención y
+orientación Atender
+Psicosocial a 800 jóvenes A Secretaría del Interior y
+pri > Psicosocialmente a 1000 y se
+familic e y y il
+Atención integrar | Sia y óvenos | atendidos cosa | Convivencia ciudadana
+alos y las pandillas Pandillas y sus familias.
+Adolescentes y diseñada
+Jóvenes en
+Riesgo de Banco de
+Vinculase a os Identificar y ejecutar 80
+Actividades juveniles para NO Iniciativas juveniles para Secretaría del Interior y
+Delictivas y en promover promover Convivencia ciudadano
+Conficto con ley | emprendimiento. emprendimiento
+penal -
+Festivales
+. deportivos Realizar 2 festivales Si taría del »
+juveniles en los ND pios Pc ao,
+Los pl “onvivencia ciudadana
+priorizados.
+263
+
+
+## Página 264 (OCR Oficial Acuerdo 006 de 2016)
+
+( 7 Concejo Distrital de Cartagena de Indias D. T. y C.
+f É
+fs ACUERDO No.0O0G
+Co d3JUN 2016)
+LINEA BASE DE
+SuBPROGRAMA INCA E— INDICADORDE META PRODUCTO RESPONSABLE
+PRODUCTO
+Festivales sa
+de p Realizar 2 festivales a
+artísticos juveniles Secretoría del Interior y
+en los banos No onísicos portocalidad | Convivencia ciudadana
+priorizados.
+Mesas de Dialogo
+Realizadas con 2 mesas de Poz | Implementar 2 Mesas de | Secretaría del Interior y
+grupos de realizada en 2015 Dialogo anualmente. Convivencia ciudadana
+pandillas
+FORTALECIMIENT
+O DEL SISTEMA Convenio con Abi de
+DE ASOMENORES | UnConwenio [Sucia on convenio Con secretaria del Interior y
+RESPONSABILIDA suscrito. Asomenores 2015 anualmente. convivencia ciudadana
+D PENAL anualmente.
+ADOLESCENTE
+10.1.1.9 PROGRAMA OPTIMIZACIÓN TECNOLÓGICA A LAS HERRAMIENTAS DE
+SEGURIDAD
+Se busca potenciar los sistemas tecnológicos de seguridad en el distrito de
+Cartagena como cámaras de Video Vigilancia, Alarmas comunitarias y/o
+botones de pánico, Línea de Atención y Prevención de Emergencias 123, equipos
+de comunicación de alta tecnología, salas de monitoreo y otras tecnologías,
+involucrando a la ciudadanía en el uso de dichas herramientas de prevención y
+alerta temprana que el Distrito ponga a su disposición para que se logre una
+respuesta efectiva en materia de neutralización de los delitos y se genere un
+v Clima seguro a lo largo del distrito de Cartagena.
+Tabla 164
+LÍNEA BASE DE INDICADOR
+INDICADOR DE RESULTADO DE RESULTADO META RESULTADO RESPONSABLE
+Cámaras de video 2,8 cámaras de video y Ampliar a una tasa de
+vigllancia por cada 100 mil | vigilancia por cada 100 mil | 39,4 cámaras de video
+habitantes ampllada habitantes fuente vigllancia por cada 100 | DISTRISEGURIDAD
+Distriseguridad 2015 mil habitantes
+Cobertura de alarmas Ampliar una tasa de
+comunitarias de vigilancia | Cero (0) a 31 de diciembre | cobertura de 16,5 DISTRSEGURIDAD
+por cada 100 mil habitantes de 2015 alarmas comunitarias por
+ampliada cada 100 mil habitantes
+264
+
+
+## Página 265 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+_ ACUERDO No. OOG
+LINEA BASE DE INDICADOR
+INDICADOR DE RESULTADO DE RESULTADO META RESULTADO RESPONSABLE
+Cámaras de video 2.8 cámaras de video y Ampliar a una tasa de
+vigilancia por cada 100 mil | vigilancia por cada 100 mil 39,4 cámaras de video
+habitantes ampliada habitantes. fuente vigilancia porcada 100 | PISTRISEGURIDAD
+Distriseguridad 2015 mil habitantes
+Equipos de comunicación Ampliar a una tasa de
+para la seguridad e 56,2 equipos de
+ciudadana por cada cada | 95031 de Aejembre de | omunicación para la DISTRISEGURIDAD
+100 mil habitantes seguridad por cada 100
+ampliados mil habitantes
+GU Tabla 165
+LINEA BASE DE
+SUBPROGRAMA MODE INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO
+Instalar 430 cámaras de
+Nuevas cámaras de fibra óptica como
+video vigilancia con componente del sistema
+fibra Óptica en el integrado de video
+Distrito de Cartagena vigilancia del Distrito de
+Cartagena
+ISS Instalar 50 cámaras
+nues mas e inclémbricas como.
+video vigilancia da coria 31 | Componente del sistema
+cs e de. | ., legrado de video
+Distito de Cartagena | “e IE ATare vigilancia del Distrito de
+'OPTIMIZACION Cartagena
+TECN
+a DSSIcA Nuevas cámaras de Instalar 8 cámaras como
+ALA video vigilancia de componente del sistema
+HERRAMIENTAS | control de acceso en de video vigilancia para DISTRISEGURIDAD
+DE SEGURIDAD el Distrito de el control de acceso del
+Y) Cartagena Distrito de Cartagena
+Sistema integrador Instalar e implementar un
+de oo volncia (1) sistema integrador de
+implementado Oplicativos de seguridad
+y vigilancia
+Sala de
+aaa > | Construir e implementar
+Nueva sala de Cartagena el centro de comando y
+monitoreo y control nato control de la policía
+funcionando on metropolitana de
+Distiseguridad Cartagena
+2015
+A corte de 31 de
+Nuevos sistemas de diciembre de Instalar doscientos (200)
+alarmas comunitarias | 2015 el Distrito de nuevos sistemas de
+en el Distito de — | Cartagenano | alarmas comunitarias en | PISTRISEGURIDAD
+Corlagena cuenta con — | el Distrito de Cartagena
+sistemas de
+265
+
+
+## Página 266 (OCR Oficial Acuerdo 006 de 2016)
+
+pS
+El y ) Concejo Distrital de Cartagena de Indias D. T. y C.
+— E
+P— E
+él ACUERDO No. OOG
+LINEA BASE DE
+SUBPROGRAMAS INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO
+alarmas
+comunitarias
+funcionando.
+Adquirir setecientos
+Eauipos de A cone 31 de | ochenta (780) equipos
+a oe | de comunicación para DISTRISEGURIDAD
+la seguridad 015 se la seguridad en el Distrito
+adquiridos entregaron 435 e Cortanena
+“Plataforma
+Crear una (1)
+aos “plataforma estratégica
+Nu observación social y mono y y DISTRSEGURIDAD
+seguimiento al detito' seguimiento al delito"
+creado
+Salas de audiencias Ñ
+Crear e implementar tres
+acusatorio para los ¿vales Como APOYO al DISTRISEGURIDAD
+Indiciados del Distrito pora las indlciados del
+creados e Do
+implementados
+Chip de localización Instalar doscientos (200)
+de seguridad para Chip de localización de
+taxs/ botón de seguridad para toxis/ DISTRISEGURIDAD
+pánico, instalados botón de pánico
+10.1.1.10 PROGRAMA FORTALECIMIENTO LOGÍSTICO A LOS ORGANISMOS DE
+SEGURIDAD, SOCORRO, JUSTICIA EN EL DISTRITO DE CARTAGENA”
+NN
+Se brindará apoyo logístico para obtener mayores resultados por parte de las
+entidades encargadas de la seguridad, vigilancia, socorro, justicia y convivencia
+ciudadana, con jurisdicción en el distrito de Cartagena, para la disuasión y
+control del delito, especialmente el que opera en el marco de una criminalidad
+organizada.
+266
+
+
+## Página 267 (OCR Oficial Acuerdo 006 de 2016)
+
+OS
+El - a] Concejo Distrital de Cartagena de Indias D. T. y C.
+A
+A E)
+<a ACUERDO No. VOS
+CC 13 JUN 2016 )
+Tabla 166
+UNEA BASE DE
+INDICADOR DE RESULTADO INDICADOR — DE META RESULTADO RESPONSABLE
+RESULTADO
+MOVILIDAD DE ENTIDADES DE 63% A 31 DE AMPLIAR UNA
+SEGURIDAD, JUSTICIA Y DICIEMBRE DE | MOVILIDAD EN UN
+SOCORRO AMPLIADA 2015, FUENTE 100% , DELAS
+DISTRISEGURIDAD | ENTIDADES DE DISTRISEGURIDAD
+2015 SEGURIDAD, JUSTICIA
+Y SOCORRO
+NIVEL DE SUFICIENCIA DE SUFICIENCIA DE OBTENER UN
+w INFRAESTRUCTURA PARA LA | INFRAESTRUCTURA | PORCENTAJE DE
+SEGURIDAD, JUSTICIA SOCORRO | DE78% A 31 DE SUFICIENCIA DE DISTRISEGURIDAD
+Y CONVIVENCIA CIUDADANA | DICIEMBRE DE | INFRAESTRUCTURA DE
+AMPLIADA 2015 UN 84%
+10.1.1.10.1 SUBPROGRAMA FORTALECIMIENTO LOGÍSTICO DE MOVILIDAD PARA
+LA SEGURIDAD Y CONVIVENCIA
+Se fortalecerá a los organismos de seguridad, vigilancia, justicia, socorro y fuerza
+pública con la entrega de vehículos, combustible y mantenimiento necesario
+para la operatividad de los programas definidos en el Plan Integral de Seguridad y
+Convivencia del distrito de Cartagena, dentro del marco de la lucha contra la
+criminalidad.
+NU 10.1.1.10.2 SUBPROGRAMA FORTALECIMIENTO LOGÍSTICO DE LA
+INFRAESTRUCTURA PARA LA SEGURIDAD, JUSTICIA, SOCORRO Y
+CONVIVENCIA CIUDADANA EN EL DISTRITO DE CARTAGENA
+Se erigirán las nuevas edificaciones necesarias para preservar la seguridad,
+justicia y convivencia ciudadana en todo el territorio del distrito de Cartagena.
+También se realizará mantenimiento preventivo y correctivo a las edificaciones ya
+existentes garantizando así su funcionamiento y la óptima respuesta de los
+organismos de seguridad, socorro, justicia y convivencia ciudadana.
+Ante la problemática de hacinamiento, salubridad, seguridad e insuficiencia de
+la infraestructura de los dos centros penitenciarios de la ciudad (Centro carcelario
+y penitenciario de mediana seguridad Cárcel San Sebastián de Temera y la
+267
+
+
+## Página 268 (OCR Oficial Acuerdo 006 de 2016)
+
+El —— Concejo Distrital de Cartagena de Indias D. T. y C.
+— E
+[— =E
+O ACUERDO No. VOS
+EN
+C 13 ¿UN 2016 )
+cárcel Distrital de San Diego), y en cumplimiento de los fallos judiciales que
+ordenan que se adopten las medidas administrativas y presupuestales necesarias
+para la construcción de un COMPLEJO PENITENCIARIO, CARCELARIO Y DE
+RECLUSIÓN EN CARTAGENA, se adelantarán las acciones necesarias para la
+consecución de los recursos que permitan ejecutar los estudios, diseños,
+construcción e interventoría de una nueva infraestructura carcelaria para el
+Distrito de Cartagena, en coordinación con el Ministerio de Justicia, Instituto
+Nacional Penitenciario y Carcelario, Departamento Nacional de Planeación, la
+Unidad de Servicios Penitenciarios y Carcelarios “USPEC" y la Gobemación de
+Bolívar.
+y
+Tabla 167
+LINEA BASE DE
+INDICADOR DE RESULTADO INDICADOR DE META RESULTADO RESPONSABLE
+RESULTADO
+63% A 31 DE AMPLIAR UNA
+MOVILIDAD DE ENTIDADES DE DICIEMBRE DE 2015, | MOVILIDAD EN UN 100% ,
+SEGURIDAD, JUSTICIA Y SOCORRO FUENTE DELAS ENTIDADES DE DISTRISEGURIDAD
+AMPLIADA DISTRISEGURIDAD | SEGURIDAD, JUSTICIA Y
+2015 SOCORRO
+NIVEL DE SUFICIENCIA DE OBTENER UN
+INFRAESTRUCTURA PARA LA Ia PORCENTAJE DE
+SEGURIDAD, JUSTICIA SOCORRO Y DE 78% A 3l DE SUFICIENCIA DE DISTRISEGURIDAD
+CONVIVENCIA CIUDADANA INFRAESTRUCTURA DE UN
+Ne AMPLIADA DICIEMBRE DE 2015 84%
+268
+
+
+## Página 269 (OCR Oficial Acuerdo 006 de 2016)
+
+E ¿) Concejo Distrital de Cartagena de Indias D. T. yC
+E— - E
+Ñ TN
+A? ACUERDO No. 6
+Tabla 168
+LINEA BASE DE
+susProGrRAmA — INDICADORDE INDICADOR DE META PRODUCTO RESPONSABLE
+RODUCTO PRODUCTO
+Vehículos para la
+seguridad, justicia Adquirir y entregar
+ysocomoenel | A cone a1 de | noventa (90) vehículos
+Distrito de 20lsse cuenta | , Parala seguridad, DISTRISEGURIDAD
+Cartagena — | 5 317 venículos | JUSTicia y socorro en el
+adquiridos y Distrito de Cartagena
+entregados
+FORTALECIMIENTO
+LOGÍSTICO DE Combustible í si
+MOVILIDAD PARA | entregado alos Soministror AAN
+LA SEGURIDAD Y organismos de En el 2015 se veinte mil galones
+CONVIVENCIA — | seguiidad justicia, | entregaron — | Combustible (120.000)
+mo . (204,875) anualmente a los
+socorro o organismos de DISTRISEGURIDAD.
+convivencia con galones de seguridad, justicia,
+jurisdicción enel | Combustible — | socoro o convivencia
+Pcia (204875) con jurisdicción en el
+anualmente Distrito de Cartagena
+Alamedas
+conecto le rimetrales aos Construir 3 alamedas
+posiico De La centros de perimetrales a los
+In Loseguidad. |. integración centros de integración
+es %, y | ciudadana para la ciudadana pora la
+pda, Socomo Y convivencia de los Convivencia de los DISTRISEGURIDAD
+ciueedona dae | bamos pozón, banos el Pozón,
+ee bicentenario y Bicentenario y Villas de
+Cor rtogena villas de Aranjuez Aranjuez
+9 construidos
+Edificaciones que
+DA Construir cuatro (4)
+ww institucional en rio
+cuanto a justicia, na
+seguridad, patilla DISTRISEGURIDAD
+a y seguridad, convivencia
+Listo de y socoro en el Distrito
+Cartagena de Cartagena
+construidas
+10,1.1.11 PROGRAMA ORDENAMIENTO Y SEGURIDAD DE LAS PLAYAS DEL DISTRITO
+DE CARTAGENA
+Se implementará y se adoptará la “REGLAMENTACIÓN DE PLAYAS DEL DISTRITO DE
+y
+CARTAGENA”, aprobado por el comité local para la organización de las playas,
+según el decreto 1766 de agosto de 2013 y su Decreto reglamentario 1811 de
+269
+
+
+## Página 270 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. ON) 6
+C13JUN 2018)
+diciembre 2015 de la Alcaldía Distrital de Cartagena. Mediante acto
+administrativo se regularán las Playas habilitados, los horarios y los roles de cada
+uno de los actores inmersos en el óptimo funcionamiento de las Playas, se
+implementarán proyectos piloto para ajustar la reglamentación.
+10.1.1.11.1 SUBPROGRAMA IMPLEMENTACIÓN Y MANTENIMIENTO PARA EL
+EQUIPAMIENTO Y SEÑALIZACIÓN DE SEGURIDAD EN LAS PLAYAS DE
+CARTAGENA
+w Se gestionarán recursos del orden Distrital y Nacional para adelantar por fases la
+implementación del Plan de Equipamiento y señalización para la seguridad de las
+Playas de Cartagena y se destinarán, los recursos Distritales para el mantenimiento
+preventivo y correctivo de la infraestructura instalada.
+10.1.1.11.2 SUBPROGRAMA CUERPO DE SALVAVIDAS
+Sostenimiento y/o financiación del Cuerpo de Salvavidas, de acuerdo a la
+habilitación de Playas, con sus dotaciones y equipamiento, así como
+entrenamiento y capacitación necesaria para su desempeño.
+10.1.1.11.3 SUBPROGRAMA ATENCIÓN PREHOSPITALARIA EN LAS PLAYAS DEL
+DISTRITO DE CARTAGENA
+Nod El Distrito implementará el sistema de gestión del riesgo para las playas de
+Cartagena, que permita la intervención integral de las diferentes entidades ante
+situaciones potenciales de riesgo. Se hace necesario entonces dotar de personal
+y equipos para la atención prehospitalaria.
+Tabla 169
+LINEA BASE DE
+INDICADOR DE RESULTADO INDICADOR DE META RESULTADO RESPONSABLE
+RESULTADO
+Cobertura Del 100% De seguridad Obtener una cobertura de | DISTRISEGURIDAD
+de Playas En El Distrito De playas en el Distrito de
+Cartagena Alcanzada Cartagena del 100%
+270
+
+
+## Página 271 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. OOG
+Tabla 170
+LINEA BASE DE
+SUBPROGRAMA INDICADOR DE INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO PRODUCTO
+Reglamentación de Implementar la
+playas urbanas del reglamentación de
+Distrito de Cartagena en playas del Distrito de
+su componente de Cartagena en su
+IMPLEMENTACIÓN — Y señalización y componente de — | DISTRISEGURIDAD
+MANTENIMIENTO. PARA | _ SGuipamiento de la señalización y
+EL EQUIPAMIENTO Y seguridad de las playas equipamiento de la
+SENALZACIÓN pt |— Implementado seguridad de los playas
+u SEGURIDAD EN LAS A 2015 existen
+PLAYAS DE 16 goritas o ni
+CARTAGENA. Gaitas adicionales en | puestos as
+las playas del Distrito de | salvavidas en layas del Distrito de DISTRISEGURIDAD
+Cartagena construidas | las playas del | PYIACUAN
+Distrito de 09
+Cartagena
+Tabla 171
+LINEA BASE DE
+SUBPROGRAMA INDICADOR DE INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO PRODUCTO
+Cuerpo de
+salvavidas del ados, | Fortalecer el cuerpo
+CUERPO DE Distrito de de salvavidas del
+SALVAVIDAS Cartagena ¿emporadas clas | Ditto de Cartagena | PISTRISEGURIDAD
+anualmente ocuidod 2015 anualmente
+fortalecido Sau
+NS ATENCIÓN PRE Centro de atención Construir un (1)
+HOSPITALARIA EN Las | PIS hospitalaria en centro de atención
+PLAYAS DEL DISTRITO. las playas del Distrito pre hospitalaria en | DISTRISEGURIDAD
+DE CARTAGENA de Cartagena las playas del Distrito
+construido de Corlagena
+10.1.1.12 PROGRAMA FORTALECIMIENTO INSTITUCIONAL DE DISTRISEGURIDAD
+Ante la disminución de los Ingresos de Distriseguridad, con la reglamentación del
+Fondo de Seguridad Territorial (FONSET), y ante los compromisos adquiridos de
+sostenimiento y mantenimiento de los proyectos cofinanciados con recursos del
+gobierno nacional en cumplimiento misional de la entidad como son: Proyecto
+Implementación del Ordenamiento de Playas Urbanas del Distrito de Cartagena
+de Indias; Fortalecimiento de la seguridad ciudadana en el Distrito de Cartagena
+271
+
+
+## Página 272 (OCR Oficial Acuerdo 006 de 2016)
+
+kl E Concejo Distrital de Cartagena de Indias D. T. y C.
+É Y)
+nc ( A 3 JUN on No. ES
+: 2016
+de Indias 2013; Diseño, suministro, instalación, implementación, prueba, puesta en
+servicio, mantenimiento preventivo, correctivo y soporte técnico del sistema
+integrado de emergencia y seguridad SIES - subsistemas 123, para el Distrito de
+Cartagena; Fortalecimiento al modelo nacional de vigilancia comunitaria por
+cuadrantes a través de la implementación de un circuito cerrado de televisión
+para el Distrito de Cartagena de Indias (primera fase cámaras); Fortalecimiento
+del equipamiento de la seguridad del Distrito de Cartagena de Indias D.T y C (CAI
+móviles), “Fortalecimiento al modelo nacional de vigilancia comunitaria por
+cuadrantes a través de la ampliación del circuito cerrado de televisión de
+Cartagena de Indias — cobertura total”; Centros de Integración Ciudadana de los
+NM barrios El Pozón, Villas de Aranjuez y Bicentenario. Se realizarán las acciones para
+el fortalecimiento de los ingresos de Distriseguridad como establecimiento público
+distrital, destinando recursos ordinarios del presupuesto del Distrito y definir las
+nuevas fuentes de financiación que permitan dar cumplimiento a lo antes
+expuesto, y a su vez los compromisos y proyectos definidos a ejecutar en virtud del
+desarrollo misional de la entidad.
+10.1.2 LÍNEA ESTRATÉGICA CARTAGENA TERRITORIO DE PAZ
+Esta línea está orientada a la garantía de los derechos y el fortalecimiento de la
+institucionalidad que permita la satisfacción de los derechos de la ciudadanía y el
+trámite efectivo de sus demandas, teniendo en cuenta el alcance distrital. Para
+ello proponemos la creación de una zona de desarrollo social con la
+combinación de esfuerzos conjuntos desde las diferentes secretarías y entes
+Y) descentralizados con inversión focalizada, que permita reducir las desigualdades
+sociales y territoriales entre los ámbito urbanos y rurales mediante el desarrollo
+integral como garantía para la igualdad de oportunidades. Para ello es necesario
+articular estrategias y acciones con el nivel nacional y departamental que
+permita brindar los servicios básicos e integrales a las poblaciones afectadas por
+el conflicto, de esta manera se afianzará el respeto por la diferencia, nos permitirá
+una convivencia pacífica, porque la Paz se logra con desarrollo.
+10.1.2.1 PROGRAMA VÍCTIMAS DEL CONFLICTO ARMADO INTEGRADAS
+Se promoverán acciones para poner en marcha de manera concreta y efectiva
+el programa de Atención Psicosocial, Salud Integral a Víctimas y hábitat [vivienda
+digna). Adicionalmente, se desplegaran medidas de rehabilitación consistentes
+272
+
+
+## Página 273 (OCR Oficial Acuerdo 006 de 2016)
+
+==
+El 8 Concejo Distrital de Cartagena de Indias D. T. y C.
+So, ACUERDO No. 006
+Co 13JuUN 2016?
+en atención de carácter jurídico, médico, psicológico y social dirigidos al
+restablecimiento de las condiciones físicas y psicológicas de las víctimas en
+especial niños, niñas y adolescentes, según los consagra la aplicación de la
+norma de inclusión efectiva de los derechos establecidos de NNA Construcción
+de Paz.
+10.1.2.1.1 SUBPROGRAMA ASISTENCIA Y REPARACIÓN INTEGRAL A VÍCTIMAS
+DEL CONFLICTO ARMADO
+Este subprograma para la atención y reparación integral de la población víctima
+1] 9
+asentada en el Distrito, busca la inclusión a la oferta Distrital y restablecimiento
+efectivo de los derechos de las Victimas con enfoque de género, diferencial y
+étnico, con el fin último de mitigar su vulnerabilidad y aportar a la construcción de
+paz. Para ello plantea metas y productos según los componentes de atención:
+Asistencia y atención, prevención y protección, participación efectiva, verdad,
+justicia y reparación y fortalecimiento Institucional.
+Tabla 172
+LINEA BASE DE
+INDICADOR DE RESULTADO INDICADOR DE META RESULTADO RESPONSABLE
+RESULTADO
+Reducir en un 100% los
+) imizaci riesgos de Secretaria del interior y
+Riesgo de Victimización No Victimización enla | Convivencia Ciudadana
+población
+NS
+Un punto de
+atención a víctimas
+ento modalidad de | Construir en un 100% un
+Centro para la atención integral a - centro para la .
+las víctimas del conficto asentadas | PS [0 atención de | atención integral alas o
+en el Distrito en funcionamiento Sentados ener | Vctimos del conficto na
+Distrito Fuente: Red asentadas en el Distrito
+Nacional de
+información 2016
+se Diseñar y Construir en
+Centro de atención penal integral
+para víctimas(CAPIV), diseñado y Ia Centro de | DISTRISEGURIDAD
+Construido tención Penal Integral
+para víctimas (CAPIV)
+273
+
+
+## Página 274 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. OOG
+Ñí
+(13 JUN 2016 )
+LINEA BASE DE
+INDICADOR DE RESULTADO INDICADOR DE META RESULTADO RESPONSABLE
+RESULTADO
+Aumentar a un 22% la
+11% (1261 Cobertura de
+Cobertura de población víctima | aenciónes/ 11 ma |, Población víctima
+que hasido atendida en urgencia | ccraciones | Slendida en Urgencia | secretaria del interior y
+enla modalidad de Albergue y comodo onles | Snlamodalidadde | vuencia Ciudadana
+externa Con enfoque de género, MN limos 4 oños) Albergue y extema
+diferencial y étnico Poo E 2015 Con enfoque de
+género, diferencial y
+étnico
+ud Aumentar a un 40% la
+31% (7378 hogares “cobertura de
+cobertura de población víctima han recibido población víctima que
+que ha sido atendida en DOES A Un | hasido atendida en
+6 total de 23800
+programas de Generación de cesos programas de Secretarto del Interior y
+ingresos, apoyo al auto Generación de Convivencia Cludadana
+sostenimiento, y vinculación laborai | Jemandanesa | ingresos, apoyo al auto
+con enfoque de género, atención) sostenimiento, y
+diferencial y étnico Fuente: Subdirección | Vinculación laboral con
+RNI2015 enfoque de género,
+diferencial y étnico
+22% ( 16,375 personas
+que manifiestan
+contar con vivienda
+Porcentaje de personas víctimas sobre el total Aumentar a 24% el | secretaria del Interior y
+del confiicto que occede a persones sin ad Se o Convivencia Ciudadana
+ivi información de lenda
+vivienda Urbana vivienda 73,719) urbana CORVIVIENDA
+Fuente: Fonvivienda
+2014
+Ns
+Aumentar a 8% la
+1% (975 personas Cobertura en
+manifiestan haber programas de
+Cobertura en programas de recibido atención Psicosocial y
+atención sicosocial y salud mental | rehabilitación salud mental para | Secretaria del interior y
+para Población víctima del Psicológica sobre | Población víctima del | Convivencia Ciudadana
+conflicto 87.014 Victimas, — | Conficto asentada en
+el Distrito con enfoque
+Fuente: UARIV 2014 | de género, diferencial
+y étnico
+274
+
+
+## Página 275 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. 0OG
+A >
+LINEA BASE DE
+INDICADOR DE RESULTADO INDICADOR DE META RESULTADO RESPONSABLE
+RESULTADO
+Construir en un 100% un
+Museo de Memoria
+Histórica en el Distrito
+Museo de Memoria Histórica den como | secretaria del interior y
+construido O Macao de | Convivencia Ciudadana
+Salistacción a
+Población Victima en
+el Distro
+NM
+e Atender en un 100% a
+Mesa Distrital de n ñ
+Mesa Distrital de victimas atendida | Victimas integrada points daa E racara
+por 22 lideres so sia
+Realizar
+Caracterización de la población caracterización del ,
+Víctima del Conficto asentada en 100% de la población | SScretaria del nifory
+el Distrito realizada Víctima del Conflicto
+asentada en el Distilo
+Promover la creación
+en un 100% de la
+instancia administrativa
+Instancia administrativa de Programa de | 9 caráciar IS secretaría del Interior y
+Corácter sii de alto nivel | Victimos adicto ala | aricutación del sstema | Convivencia Ciudadana
+local de atención
+integral a Víctimas del
+conflicto en
+Cartagena.
+Tabla 173
+LINEA BASE DE
+SUBPROGRAMA Aa INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO
+o Diseñar e
+ASISTENCIA Y Plan Distrital de
+REPARACIÓN prevención y implementar un Plan .
+ARA acción de Distrital de Secretaria del Interior
+METAS DEL | violecionosereves no prevención y — | y Comivenca
+CONFLICTO los DDHH y DIH e a
+ARMADO. implementado los E >
+275
+
+
+## Página 276 (OCR Oficial Acuerdo 006 de 2016)
+
+E)
+E TAG)
+(5 Concejo Distrital de Cartagena de Indias D. T. y C.
+( —_.
+Sr ACUERDO No. OOG
+De
+(13 JUN 2016 )
+RS
+SUBPROGRAMA ronca INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCIO
+Un punto de
+Centro porala — | atención a víctimas | Construir un centro
+atención integral a | en la modalidad de para la atención 4 e
+las víctimas del — | aniendo insuficiente | — integral alas ra deatoror
+conflicto asentadas | pora la atención de víctimas del Y dadena
+en el Distrito 119,485 víctimas — | conficto osentadas
+Construido asentadas en el en el Distrito.
+Distrito
+e Pod Diseñar y Construir el
+Ns no Integra! por Centro de Atención
+MSI ON Penal Integral para DISTRISEGURIDAD
+liseñado y Víctimas "CAPIV".
+construido
+Atención inmediata | — Un albergue de Sorantzar atención
+con enfoque de atención Secretaria del Interior
+h enfoque de género, :
+género, diferencial y | Humanidaden | emorvear Sanero” | y Convivencia
+étnico a Víctimas del | modalidad de DEV MA pe Ciudadana
+Conflicto convenio O
+conflicto
+Programas de Garantizar el acceso
+Generación de de 2156 hogares
+ingresos, auto. — | 7378 hogares han Victimas del
+sostenimiento y accedido a conflicto armado a
+alianzas estraégicas | programas de TN
+para procesos de generación de Generación de Y udadana
+vinculación laboral ingreso, Ingresos y auto
+con enfoque de sostenimiento con
+género, diferencial y enfoque de género,
+étnico garantizado. diferencial y étnico.
+NW fet Garantizar el acceso | Secretaria del Interior
+na timos 16,375 personas que | a vivienda Urbana a | y Convivencia
+al manifiestan contar 1,488 personas Ciudadano
+“accede a vivienda 5 cti del
+Urbana con vivienda víctimas del
+conficio CORVIVIENDA
+Personas víctimas a inter
+. solución de ecrelaria del Interior
+de mejoramiento de habilablidad a 400 Ciudadana
+Find víctimas del CORVIVIENDA -
+habitabilidad cio
+276
+
+
+## Página 277 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+AUN No. DOG
+LINEA BASE DE
+SUBPROGRAMA ICO INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO
+Garantizar el acceso
+Personas victimas elos 4ricadd
+del conflicto que ¡atención sicosocial y se
+accede a salud mental para | Secretaria del Interior
+o rogramas de 975 personas 6,825 víctimas del y Convivencia
+Pornos conflicto asentada Ciudadana
+atención sicosocial y “en el Distrito con
+salud mental enfoque de género,
+diferencial y étnico
+5 Construir un Museo
+de Memoria
+Museo de Memoria de
+Histórica construido Cortagena como Secretaria dei Interior
+y al servicio de las 9 y Convivencia
+con Acción de Memoria
+víctimas y la Históric Medi Ciudadana
+sociedad. istórico y Mecida
+de Salistacción a
+Población Víctima
+en el Distrito.
+Representantes de Garantizar que los
+la población victima 22 miembros de la
+que reciben mesa Distrital de A Ñ
+incentivos técnicos y Víctimos accedan a | Secretaria de nieior
+logísticos para incentivos técnicos y Yo udadona
+participar en logísticos para la
+espacios de participación
+participación efectiva.
+Realizar una
+Estrategia de caracterización con
+Y) caracterización con enfoque de género,
+enfoque de género, diferencial y étnico | Secretaria del Interior
+diferencial y étnico ND de la totalidad dela | y Convivencia
+de la población población víctima Ciudadana
+víctima del conflicto del conflicto
+implementada asentada en el
+Distrito.
+Promoverla
+creación de una
+instancia
+administrativa de
+carácter cistital de | VIMOS OSCMO a | aiculación del a
+alto nivel creada. sistema local de
+atención integral a
+Víctimas del
+conticto en
+Cartagena.
+277
+
+
+## Página 278 (OCR Oficial Acuerdo 006 de 2016)
+
+AGS
+ki — Concejo Distrital de Cartagena de Indias D. T. y C.
+E Y
+rf y ACUERDO No. OOGC>
+(413 JUN 2016 )
+10.1.2.2 PROGRAMA FORTALECIMIENTO DEL PROCESO DE REINTEGRACIÓN
+SOCIAL EN EL DISTRITO DE CARTAGENA
+Este programa busca ser articulador de iniciativas ciudadanas e institucionales en
+favor de acciones locales de reconciliación y dialogo constructivo entre
+victimarios, victimas, sociedad civil e instituciones, sin perder de vista las
+demandas de bienes materiales de la población desmovilizada y de manera
+especial la inclusión productiva de estas personas a la dinámica económica de la
+ciudad, el fortalecimiento de los planes educativos para el trabajo y la garantía
+de mejores condiciones de habitabilidad.
+19)
+10.1.2.2.1 SUBPROGRAMA ACOMPAÑAMIENTO A LA POBLACIÓN EN
+PROCESO DE REINTEGRACIÓN SOCIAL PARA GARANTIZAR SU
+ACCESO A LA OFERTA DE SERVICIOS DEL ESTADO
+Se orientará y acompañará a la población en proceso de reintegración social,
+para garantizar la reconciliación y el acceso a la oferta de servicios del Estado. A
+través de un trabajo articulado con las entidades distritales y nacionales, se busca
+generar impacto, brindando apoyo a la población en proceso de reintegración y
+garantizando de igual manera su participación en las actividades propuestas
+para que la población objeto no reincida en conductas delincuenciales después
+de su desmovilización. Para ello se propone implementar mesas de diálogos y
+reconciliación con la población en proceso de reintegración social y las
+comunidades receptoras; formar a personas en proceso de reintegración social
+como gestores de Paz para el desarrollo de una cultura de paz, vincularlos a
+Y) iniciativas de generación de ingresos y que accedan a VIS en el Distrito
+Tabla 174
+LINEA BASE DE
+INDICADOR DE RESULTADO INDICADOR DE META RESULTADO RESPONSABLE
+RESULTADO
+» Vincular al 70% de las
+Porcentaje de person 453 Secretaria del
+acceden a procesos de relnsertados en el Distrito. | Baco ervocosos | Convivencia
+reconciliación en el Distrito Fuente: ACR de reconciliación. ciudadana
+278
+
+
+## Página 279 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. yC.
+ACUERDO No. DOG
+Co J43JUN 2016 )
+LINEA BASE DE
+INDICADOR DE RESULTADO INDICADOR DE META RESULTADO RESPONSABLE
+RESULTADO
+Solo el 8% (40 de 453 Vincular al 50% de las
+Porcentaje de personas en proceso | personas en proceso de | personas en proceso de Secretaria del
+de reintegración social que reintegración social reintegración asentadas Interior y
+acceden a iniciativas de generación ]Jbeneficiadas con en el Distrito a iniciativas convivencia
+de ingresos en el Distrito iniciativas de generación de generación de ciudadana
+de ingreso ingreso
+solo el 10% (45 de 453 Aumentar en un 10% las
+v Porcentaje de personas en proceso | personas en proceso de | personas en proceso de | Secretaria cel
+de reintegración social que reintegración social | reintegración social que | ¿nro
+acceden a una vivienda digna Ibeneficiados con _ | acceden a vviendade | Orwivencio
+vivienda de Interés social | interés social en el Distrito.
+Tabla 175
+LINEA BASE DE
+SUBPROGRAMA OR DE INDICADOR DE META PRODUCTO RESPONSABLE
+o PRODUCTO
+Implementar 6 mesas
+Mesos de Diálogo y de diálogos y Secretaria del
+reconciliación feconcitación con la interior y
+Realizados población en proceso | convivencia
+dereintegración social udadana
+y las comunidades
+receptoras.
+Ns ACOMPAÑAMIENTO
+ALA POBLACIÓN EN Formar a 317 personas
+PROCESO DE Personas en proceso en proceso de Secretaria del
+REINTEGRACION de reintegración reintegración social Interior y
+SOCIAL PARA social como gestores como gestores de Paz convivencia
+GARANTIZAR SU de Paz, para el desarrollo de ciudadana
+ACCESO ALA una cultura de paz.
+OFERTA DE
+SERVICIOS DEL
+ESTADO Población Vincular a 226 personas
+desmovilizada que en procesos de Secretaria del
+accede a iniciativas reintegración social a Interior y
+productivas de iniciativas de convivencia
+generación de generación de ciudadana
+ingreso ingresos.
+Población Garantizar que 45 Secretaría del
+desmovilizada que 45 personas en proceso Interior y
+accede a viviendas de reintegración convivencia
+279
+
+
+## Página 280 (OCR Oficial Acuerdo 006 de 2016)
+
+=
+>
+y Concejo Distrital de Cartagena de Indias D. T. y C.
+=="
+nr ACUERDO No. OOGC
+(13 JUN 2016 )
+LINEA BASE DE
+SUBPROGRAMA EAU INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO
+de interés social accedan a VIS en el ciudadana
+Dstito CORVIVIENDA
+10.1.2.3 PROGRAMA DERECHOS HUMANOS
+Este programa está orientado a la promoción, prevención y atención en la
+garantía y respeto de las vulneraciones de derechos, para que exista una ciudad
+hd libre de cualquier tipo de violencia que afecte a sus ciudadanos, para ello se
+propone asumir el liderazgo en la promoción, defensa y respeto de los derechos y
+las libertades fundamentales del Ciudadano en el distrito de Cartagena a través
+de la formulación de Una Política Publica Distrital de DDHH.
+Tabla 176
+LINEA BASE DE
+INDICADOR DE RESULTADO INDICADOR DE META RESULTADO RESPONSABLE
+RESULTADO
+Secretaria del
+Porcentaje de ejecución de la Política Ejecutar en un 25% la Interior y
+Publica de DDHH Poífica Publica de DDHH | — convivencia
+ciudadana
+N* cosos de abuso
+sexual nna:
+Ny 397
+N* de casos de
+denuncias atendidos s Secretaria del
+Porcentaje de reducción del número de | por amenazas: 747 | . Reducen un 40% el Interior y
+violaciones a los DDHH en el Distrito E onel Dio | Convivencia
+Ne de casos los DDHH en el Distrito udadona
+atendidos en trata
+de personas: 3
+N* de casos por
+Agresiones físicas, por
+discriminación
+sexual:4
+280
+
+
+## Página 281 (OCR Oficial Acuerdo 006 de 2016)
+
+SA ns Indias D. T. y C.
+El E) Concejo Distrital de Cartagena de Indias D. T. y C.
+a
+SE ACUERDO No.
+. 006
+Tun
+(13 JUN 2016 )
+Tabla 177
+LINEA BASE DE
+SUBPROGRAMA INDICADOR DE INDICADOR DE METAPRODUCTO RESPONSABLE
+PRODUCTO
+Construir
+ó: colectivamente un
+fica Pú DIAGNÓSTICO de | — documento de Secretaria del
+nopalfica Pública | la Poltica Pública | Políica Pública de interior y
+ada Y | de DDHH en el DDHH y sus convivencia
+Ú Distrito. instrumentos de ciudadana
+seguimiento y
+evaluación
+Ny Realizar 12 Jornadas
+de sensibilización en
+Jormadas de DDHH en las IE del Secretaría del
+Promoción. NO Distito, servidores Interior y
+Prevención y públicos, entidades convivencia
+atención en DDHH, privadas y ciudadana
+comunidad en
+General.
+Realizar 4 Jomadas
+Pr Ó »
+Jomados de Y | Secretaría del
+Promoción. Interior y
+Pre 2 en los IE del Distrito, A se
+evención y encore púbices. | Convivencia
+DERECHOS HUMANOS | Stención en ESCNNA ae pavodosy | Sludadana
+comunidad en Gral.
+Realizar 12 Jomadas
+de Prevención y
+la atención en Trata de | Secretaria del
+ión Personas en las IE del Interior y
+y Prevención y 1 Distito, servidores | convivencia
+atención en Trata de bli id /
+Deronas teclados públicos, entidades | ciudadana
+privados y
+comunidad en Gral.
+Modificar el acuerdo
+014 de 2008 que
+reglamenta el
+Comité DDHH para | Sedetaja del
+Acuerdo Modificado | 1 Comité DDHH reorganizarlo y convento
+ampliar su dada
+denominación a eludadona
+comité de DDHH, Poz
+y Post Conficto
+281
+
+
+## Página 282 (OCR Oficial Acuerdo 006 de 2016)
+
+— Concejo Distrital de Cartagena de Indias D. T. y C.
+i pS
+SIT ACUERDO No. 006
+(43 JUN 2016 )
+10.2 EJE ESTRATÉGICO FORTALECIMIENTO INSTITUCIONAL
+Se mejorará la gestión pública a partir de la vocación de servicio que permita la
+excelencia, la eficacia, la eficiencia y la integridad, fundamentando las
+decisiones en información estratégica y comunicación pública. El manejo
+transparente de los recursos, permitirá construir una organización distrital al
+servicio de la gente, adaptando y optimizando la capacidad institucional del
+Distrito a las necesidades de la ciudadanía y a los retos de su sostenibilidad
+administrativa, que integre en un modelo de operación por procesos con la
+estructura organizacional, que involucre el talento humano como garante y
+Ny esencia de la calidad del servicio, los servicios logísticos y una arquitectura
+tecnológica que se apoye en un modelo de gobierno de tecnologías de
+información y comunicaciones, como pilares de la competitividad y efectividad
+en la satistacción de la ciudadanía.
+10.2.1 LÍNEA ESTRATÉGICA GESTIÓN PÚBLICA LOCAL TRANSPARENTE
+A través de la estrategia Gestión Pública Local Transparente se busca fortalecer
+integralmente, las competencias de los funcionarios públicos para el desarrollo de
+un gobierno transparente, así mismo dotar de herramientas a los ciudadanos para
+que puedan hacer efectivo su derecho a participar en los asuntos públicos y
+administrativos del distrito de Cartagena.
+10.2.1.1 PROGRAMA FORTALECIMIENTO DE COMPETENCIAS DEL SERVIDOR
+y PÚBLICO
+A partir de este programa se pretende fortalecer la entidad pública, mediante el
+desarrollo de la experticia de los servidores públicos en competencias éticas,
+referidas a los principios, valores y directrices que en coherencia con el Código de
+Buen Gobierno, todo servidor público de la entidad debe observar en el ejercicio
+de su función administrativa; el buen gobierno para garantizar una gestión
+integra, eficiente y transparente de quienes ejercen la dirección, administración y
+gestión, con el fin de generar confianza de los públicos internos y externos hacia
+la entidad público, y el liderazgo para influir en los demás a través de las
+actitudes, conductas y habilidades que optimicen el quehacer del día a día y así
+lograr los objetivos deseados para el crecimiento de los individuos y la entidad.
+282
+
+
+## Página 283 (OCR Oficial Acuerdo 006 de 2016)
+
+el e» ,) Concejo Distrital de Cartagena de Indias D. T. y C.
+re ( ACUERDO No. os
+13 JUN 2016
+
+Por tal razón se hace indispensable aumentar el número de servidores públicos
+
+fortalecidos en estas competencias.
+
+Su objetivo es brindar herramientas a los servidores públicos que les permita
+
+desarrollar competencias propias de su quehacer diario dentro de la
+
+administración distrital.
+
+10.2.1.1.1 SUBPROGRAMA FORTALECIMIENTO DE COMPETENCIAS DEL
+v SERVIDOR PÚBLICO
+
+Este subprograma busca fortalecer las competencias de los servidores públicos de
+
+la administración, mediante la formación y capacitación en temas de
+
+transparencia, liderazgo, buen gobierno, ética, entre otros relacionados con su
+
+quehacer diario.
+
+10.2.1.1.2 SUBPROGRAMA SISTEMA INTEGRADO DE ATENCIÓN “DE UNA”
+
+Este subprograma busca acercar a los ciudadanos con la administración Distrital y
+
+lograr celeridad en los trámites y servicios de atención para los cartageneros.
+
+Actualmente se ha logrado que 39.045 habitantes sean atendidos (año) y se
+NW busca aumentar este número para contribuir al mejoramiento de la gestión de la
+
+administración pública.
+
+Está orientado a brindar a los ciudadanos cartageneros la oportunidad de
+
+acercarse a los procesos desarrollados en la administración y así mismo
+
+proporcionar agilidad a los diferentes procesos adelantados en las diferentes
+
+dependencias de la alcaldía distrital de Cartagena.
+
+283
+
+
+## Página 284 (OCR Oficial Acuerdo 006 de 2016)
+
+El al Concejo Distrital de Cartagena de Indias D. T. y C.
+AA
+G a
+3006 ACUERDO No. OCOG
+NE
+O 13JUN 2016)
+Tabla 178
+LINEA BASE DE
+AECI VA INDICADOR DE META RESULTADO RESPONSABLE
+RESULTADO ¿|
+p) Escuela de
+Porcentaje de Incrementar en Un 75% le
+servidores públicos 25% de servidores el tortolecimiento de Gobierno y
+fortalecidos en sus | Públicos fortalecidos | mo ctencias de los Liderazgo
+competencias. | 9Nsus competencias | oe públicos
+Porcentaje de 39.045 usuarios Aumentar en un 5% el
+ciudadanos ¡atendidos en el número anual de Escuela de
+atendidos último año a través | ciudadanos atendidos Gobiemo y
+Nx directamente porla | del sistema integrado | en el sistema integrado Uderazgo
+administración. __ | de atención - DEUNA | de atención DE UNA,
+Tabla 179
+LINEA BASE DE
+SUBPROGRAMA Epa INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO
+FORTALECIMIENTO | Funcionarios 254 servidores ac
+DE COMPETENCIAS públicos públicos os competencias | ESCUELA DE GOBIERNO Y
+DEL SERVIDOR — | competentes para | fortalecidos en sus (Ético, Buen goblemo y LIDERAZGO
+PÚBLICO. asumir su rol. competencias. útiderazao)
+Atender 47.460
+SISTEMA > ciudadanos y
+INTEGRADO DE aer | cludadanasentos | CUELA DE GONERNO Y
+ATENCIÓN DE UNA. 'encidos centros de atención
+unificado - DE UNA
+Ny
+10.2.1.2 PROGRAMA GESTIÓN PÚBLICA LOCAL TRANSPARENTE
+Se implementará el mejoramiento continuo en la gestión administrativa a través
+de los procesos y procedimientos del sistema de gestión de calidad, donde se
+fortalezca el control a la gestión administrativa, se disminuyan los riesgos de
+corrupción, se garantice el acceso de la ciudadanía a la información pública
+como derecho fundamental, lo cual permitirá dinamizar la capacidad del
+gobierno local, para generar, socializar, y entregar información pública, ligada a
+las decisiones y los actos de las autoridades, con capacidad estratégica de
+transparencia y la institucionalidad de la administración a través de los canales
+de atención y sistema de información de carácter municipal y nacional.
+284
+
+
+## Página 285 (OCR Oficial Acuerdo 006 de 2016)
+
+El B Concejo Distrital de Cartagena de Indias D. T. y C.
+A— E
+A ACUERD! S
+ze 0 No. OO
+Se AOS
+10.2.1.2.1 SUBPROGRAMA GESTIÓN DE CALIDAD
+Se implementará el mejoramiento continuo en la Gestión Administrativa a través
+de los procesos y procedimientos del Sistema de Gestión de Calidad, se buscara
+promover y fortalecer el control de la gestión administrativa, y disminuir los riesgos
+de corrupción en los diferentes procesos de la Gestión Administrativa.
+10.2.1.2.2 SUBPROGRAMA ACCESO A LA INFORMACIÓN PÚBLICA
+Se garantizará el acceso de la ciudadanía a la información pública como
+eS derecho fundamental y se dinamizará la capacidad del Gobierno Local, para
+generar, socializar y entregar información pública a través de la rendición de
+cuentas ligada a las decisiones y los actos de Gobierno.
+10.2.1.2.3 SUBPROGRAMA MODERNIZACIÓN DE LA INFORMACIÓN Y
+COMUNICACIONES
+Se fortalecerá la capacidad estratégica de transparencia y la institucionalidad de
+la administración, a través de los canales de atención y Sistema de Información
+de carácter municipal y nacional.
+10.2.1.2.4 SUBPROGRAMA FORTALECIMIENTO INSTITUCIONAL DEL ARCHIVO
+DEL DISTRITO DE CARTAGENA
+Na
+Se dará cumplimiento a la Ley de Archivo 1712 de 2014, Gestión documental,
+planificación, procesamiento, manejo y organización de la documentación
+producida y recibida por los sujetos obligados desde su origen hasta su destino
+final, con el objeto de facilitar, su utilización y conservación.
+10.2.1.2.5 SUBPROGRAMA FORTALECIMIENTO DE LA ESTRUCTURA
+ADMINISTRATIVA DE LA ALCALDÍA DE CARTAGENA
+Este subprograma busca fortalecer la estructura administrativa de la Alcaldía
+Mayor de Cartagena, para efectos de poder desarrollar algumos de los
+285
+
+
+## Página 286 (OCR Oficial Acuerdo 006 de 2016)
+
+ns
+El Concejo Distrital de Cartagena de Indias D. T. y C.
+(¿Bio
+a ACUERDO No. OD6>
+30M
+(13 JUN 2016 )
+programas y subprogramas que hacen parte de este Plan de Desarrollo, si así se
+hiciere necesario.
+10.2.1.2.6 SUBPROGRAMA IDENTIFICACIÓN DE BIENES INMUEBLES DEL DISTRITO
+Este subprograma busca la identificación de los bienes inmuebles del Distrito, a
+través de un inventario actualizado de los mismos, para su gestión.
+M 10.2.1.2.7 SUBPROGRAMA ENCUENTROS CON MI GENTE
+Se institucionalizarán encuentros con el objetivo de rendir cuentas sobre la gestión
+del público, en los principales sectores económicos y sociales de las finanzas
+públicas, la gestión ambiental y los proyectos de interés general.
+Tabla 180
+LINEA BASE DE INDICADOR DE
+INDICADOR DE RESULTADO RESULTADO META RESULTADO RESPONSABLE
+. ie e Mejorar la posición en
+Porcentaje de Posición en el Ranking de Índice í ps
+posicionamiento mejorado de Gobierno Abierto nado | Secretaría General
+en eliGA 399(Fuente: IGA 2014) del puesto 399 al 300.
+Ns Tabla 181
+LINEA BASE DE
+SUBPROGRAMA nit INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO
+GESTIÓN DE Macroprocesos 2 macroprocesos Cerillicarios 16 macro
+CALIDAD certificados cerfiicados — | PI9Cesosa través de
+ISO 9000
+Centro integral Crear un Centro Secretaría General
+ACCESO ALA creado Integral de Servicio
+INFORMACIÓN
+PÚBLICA Oficina de Crear una de oficina
+Atención ol de Atención al
+Ciudadano creada Ciudadano
+286
+
+
+## Página 287 (OCR Oficial Acuerdo 006 de 2016)
+
+(E E) Concejo Distrital de Cartagena de Indias D. T. y C.
+P— E
+Í, IA No. DOS
+LINEA BASE DE
+SUBPROGRAMA AR INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO
+Numerode — | 2lendcione: de | cogi 2 rendiciones
+rendiciones de | cena eocrotaa | e cuenta al año ala
+cuenta realizadas General ciudadanía
+Visibilzar en la página
+WEB 160 trámites y
+Trámites y servicios servicios institucionales
+visibilizack 107 conforme a la
+isibiizados estrategia de Gobiemo
+Ne en Línea en el Distrito
+de Cartagena
+24 puntos vive
+o Vive DIgial | igilal Fuente: | Ampliarla cobertura a
+OS ios, Oficina de 75 puntos Vive Digital
+O oor | Informática en Cartagena y sus
+ee Alcaldía de corregimientos
+Cartagena 2015
+nero e | 381000 hogares | Uevarinteret a 55.000
+hogares cartageneros hogares cartageneros
+Mi pymes Se
+de 650 mipymes con
+conectados a 127 mipymes
+Ped banda ancha
+_. Número emisoras Creación de una
+Modernización de de radio emisora de radio
+Nx la Información y
+comunicaciones
+5 puntos de auto
+consulta, Fuente Ampliar la cobertura a
+Numero de punto Oficina de 40 puntos de auto
+de Auto consulta >
+Smpllados Informática consulta en Cartagena
+Alcaldía de y sus corregimientos
+Cartagena 2015
+Aumentar los canales
+Interconectividad e dependencias actuales para mejorar
+delos Fuentes Oncinas | lanavegación yla
+dependencias del Asesora Informática conectividad de las 24
+Distrito. 2015 dependencias del
+Distrito de Cartagena
+287
+
+
+## Página 288 (OCR Oficial Acuerdo 006 de 2016)
+
+=D
+a
+ES Ñ Concejo Distrital de Cartagena de Indias D. T. y C.
+—.
+IF 1 3170 No. DOG
+LINEA BASE DE
+TS O INDICADOR DE META PRODUCIO RESPONSABLE
+PRODUCTO
+Número de puntos | 9 puntos de acceso | — Incrementar a 50
+de acceso a a internet. Fuente: puntos de acceso a
+internet gratuito Oficina Asesora. | intemet gratuito en el
+incrementado Informática 2015 Distrito de Cartagena
+2 canales de Aumentar a 5 los
+Canales de atención al | canales de atención al
+Atención ciudadano. Fuente: ciudadano para
+v ampliados Oficina Asesora. | facilitar el acceso a
+Informática 2015 | trámites con el Distrito
+Numero de Datacenter espejo ( 2
+datacenter datacenter)
+Sedes educativas 175 sedes 207 de sedes
+oficiales con tada: tad
+od conectadas conectadas
+Número de . 22 nuevos sistemas de
+aplicaciones o 14 sistemas de información
+información
+sistemos de a desaallados o
+información O OODOSO | integrados a la función
+desarrollados 'e9l publica
+24 dependencias
+con video Fortalecer el sistema de
+Sistema de video | conferencian. | videoconferencia de
+conferencia del Fuente: Oficina de las 24 dependencias
+Distito fortalecido | Informática de la del Distilo de
+Nud Alcaldía de Cartagena
+Cartagena
+ERP implementado ERP Centralizado ERP centralizado
+$50 metros lineales | Modernizar y digitalizar
+aras | contratamiento. | 7000 metros lineales de
+á archivístico. Fuente: | documentos/Ley 594
+modemizados y a
+demi Secretaría General | — de 2000 y demás
+digitalizados .
+2015 normas reglamentarias
+Fortalecimiento Centro C de
+institucional del | administrativo onstruit 1 centro
+archivo del Distrito | — documental administrativo
+de Corlagena. “construido documental
+288
+
+
+## Página 289 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. OO6
+' e
+(13 JUN 2016 )
+LINEA BASE DE
+SUBPROGRAMA Urano INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO
+Fortalecimiento de
+la estructura | branta de persona: | 936 Personal dela | Modemizara planta Secretaría General
+a o planta de personal de la
+Alcaldía de . administrativa — | Alcaldía de Cartagena
+Cartagena
+Ñ Inventario de A de
+identificación de de Y Actualizar inventario de
+bienes inmuebles | Pienes inmuebles 281 predios [113719 bienes inmuebles
+del Distrito del Distritos identificados del Distrito Secretaría General
+actualizados ecrelaía General
+Realizar 4 encuentros
+NM Encuentros con mi Numero de anuales con la
+jente encuentros _ciudadanía para
+9 realizados visbbiizor la oferta de
+servicios del Distrito.
+10.2.2 LÍNEA ESTRATÉGICA CULTURA CIUDADANA Y PAZ
+La Escuela de Gobierno y Liderazgo a través de su estrategia Cultura Ciudadana
+y Paz busca fortalecer la regulación propia del comportamiento entre personas,
+mediante mecanismos que permitan la coexistencia entre la cultura, la moral y la
+ley sin dejar de garantizar el pluralismo, las libertades y la inclusión; pero,
+transformando algunos hábitos y costumbres para fomentar comportamientos
+sanos, libres de violencia y corrupción. Para esto se trabajará en la comunicación
+efectiva no sólo dentro de las familias sino también entre desconocidos, en
+espacios de encuentros ciudadanos tales como, establecimientos públicos,
+sistema integrado de transporte, entre otros, involucrando de manera especial a
+NN las autoridades.
+El gobierno Distrital a través de la Escuela de Gobierno y Liderazgo articulará
+todos los procesos de capacitación, formación y cultura ciudadana, a fin de que
+se vean reflejados mejores resultados y se produzca un mayor impacto en los
+procesos de formación en las distintas áreas, que se financian con recursos del
+Distrito.
+10.2.2.1 PROGRAMA EN ARMONÍA CON MI GENTE
+Este programa busca dar respuesta a los problemas de seguridad ciudadana y
+conflicto social, facilitando la convivencia urbana, y el respeto al patrimonio
+289
+
+
+## Página 290 (OCR Oficial Acuerdo 006 de 2016)
+
+es
+(El - B Concejo Distrital de Cartagena de Indias D. T. y C.
+ar ACUERDO No. OOG
+Co 13 JUN 2016)
+común y el reconocimiento de los derechos y deberes ciudadanos. El resultado
+será habitantes que se sienten satistechos con su ciudad, Por lo tanto el objetivo
+es brindar herramientas a la ciudadanía que permitan vivir en armonía y disfrutar
+acertadamente los espacios de integración social en la ciudad.
+10.2.2.1.1 SUBPROGRAMA INCLUSIÓN SOCIAL Y BUENAS PRÁCTICAS
+CIUDADANAS
+Se busca materializar la posibilidad de participación igualitaria de todas las
+, personas de la ciudad, en todas las dimensiones sociales (económica, legal,
+v” política, cultural, etc.), integrándolos a la vida comunitaria, independientemente
+de su origen, condición social o actividad y acercándolos a una vida más digna
+donde puedan ejercer sus derechos, aprovechar sus habilidades y tomar ventaja
+de las oportunidades que se presentan.
+10.2.2.1.2 SUBPROGRAMA FORMACIÓN PARA EL BARRISMO SOCIAL Y BUENAS
+PRACTICAS CIUDADANAS
+Se implementarán acciones encaminadas a redimensionar las formas de
+expresión y las prácticas de los integrantes de las barras de fútbol que inciden
+negativamente en los ámbitos individual, comunitario y colectivo, y de potenciar
+los aspectos positivos que de la esencia del barrismo deben rescatarse. Esta
+propuesta se fundamenta en procesos formativos tales como, el diálogo de
+U saberes, que recogen valores sociales, normas, creencias, ideales y sentimientos, y
+le permiten a los barristas resignificar la realidad que los sumerge en su pasión por
+el mundo del fútbol, y a asumir así su identidad como sujetos sociales y
+participativos. (Decreto 1007 de 2012).
+A través de este subprograma se vincula al Plan de Desarrollo 2016 - 2019 “Primero
+la Gente para una Cartagena sostenible y Competitiva" el Plan Decenal de
+Seguridad, Comodidad y Convivencia en el fútbol 2014-2024 Política Pública que
+determina «acciones concretas para que el fútbol se constituya en una
+herramienta de transformación social para la paz. Adicionalmente se
+implementará La Mesa de Barrismo Social.
+290
+
+
+## Página 291 (OCR Oficial Acuerdo 006 de 2016)
+
+El E) Concejo Distrital de Cartagena de Indias D. T. y C.
+E — eE
+S)
+os aoeDO po os
+— CASI )
+Tabla 182
+LINEA BASE DE INDICADOR
+INDICADOR DE RESULTADO DE RESULTADO META RESULTADO RESPONSABLE
+Mejorar a un 60% el
+, ¿Solo el 42% de los indice de satistacción
+Porcentaje de Habitantes ciudadanos se sienten de la ciudad de
+que se sienten satisfechos | satisfechos de Cartagena | Cámacena caga y
+con la ciudad de Cartagena | como un lugar para vivir. No io Escuela de Gobiemo y
+como un lugar para vivir. | existen registros de mesas de | ,q9m Paa add: | Liderazgo de Cartagena
+Porcentaje de mesas de barrismo social. Fuente conformación de una
+barrismo social, Cortageno como vamos 'mesa de banismo.
+social.
+NM
+Tabla 183
+LINEA BASE DE
+SUBPROGRAMA OA DE INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO
+a 469.980 ciudadanos Lograr que 202.400
+Número de hs Si
+m " » satistechos con ciudadanos
+osa Sl somtecion os | Cartagena como un | adicionales se sientan
+ciudadanas Cartagena como un lugar para vivir. . satistechos con su
+ñ me Fuente Cortagena | ciudad como un lugar
+gor pora vivi. como vamos 2015 para vivir, Escuela de
+- Gobiemo y
+Liderazgo de
+só Cartagena
+Formación para el | No existen registros
+bartismo social y | Número de mesas de de mesas de Conformar una mesa
+buenas practicas barrismo social. bartismo social. de barrismo social.
+cludadanas. Ismo social.
+291
+
+
+## Página 292 (OCR Oficial Acuerdo 006 de 2016)
+
+( d - Concejo Distrital de Cartagena de Indias D. T. y C.
+(¿Aia
+€ A ACUERDO No. COS
+=> (C A13JUN 2016 >)
+10.2.2,2 PROGRAMA LA DEMOCRACIA VA
+Adoptar un enfoque que favorezca la participación y el ejercicio de la
+democracia, a pesar de las diferentes actitudes morales y tradiciones culturales,
+garantizando el pluralismo y la participación de todos. Este programa está
+orientado a organizar a los ciudadanos para adoptar una conducta participativa
+y ordenada política y socialmente, fomentando el respeto a la dignidad humana,
+ala libertada y a los derechos de todos y cada uno.
+Y 10.2.2.2.1 SUBPROGRAMA LIDERAZGO Y DEMOCRACIA
+Este subprograma busca fortalecer las organizaciones comunitarias activas para
+la construcción de tejido social mediante la formación, determinando así de
+manera decisiva, de integración de todos los sectores de la sociedad.
+Tabla 184
+INDICADOR DE RESULTADO LINEA BASE DE INDICADOR DE META RESULTADO RESPONSABLE
+RESULTADO
+Porcentoje de| No existen registros de|Fortalecer en un 70% los Escuela de
+Oo Orgonizaciones Comunales | Organizaciones — comunales | Gobiemo y
+9 AO Activas fortalecidas en la|activas para la construcción | liderazgo de
+comunales fortalecidas. : Ñ Cartagena
+construcción del tejido social. | de tejido asociativo. 9
+w
+Tabla 185
+LINEA BASE DE
+SUBPROGRAMA ADE INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO
+Numero de
+organizaciones Fortalecer 262 Escuela de
+Liderazgo y comunales activas lOs IO Gobierno y
+democracia fortalecidas en la pd Sn el Liderazgo de
+construcción del tejido o trucción del Cartagena
+po tejido social
+292
+
+
+## Página 293 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+1 TN 0 No. COS
+10.223 PROGRAMA CULTURA CIUDADANA Y PAZ
+A partir de este programa se pretende formar al ciudadano para que geste una
+mayor libertad y mayor seguridad social, como un ser responsable de sí mismo y
+de los demás: adquiriendo una visión ética de su entorno comprometido con el
+respeto a los derechos, el cumplimiento de sus deberes y la protección y el
+mejoramiento de la calidad de vida. Busca promover con los ciudadanos formas
+de armonizar los puntos de encuentro vital respetando y construyendo
+ciudadanía.
+NW
+10.2.2.3.1 SUBPROGRAMA CULTURA CIUDADANA
+Este subprograma busca formar ciudadanos que tengan presente en sus
+decisiones los efectos que estas tienen en las personas, traduciendo estas
+intenciones en comportamientos, hábitos y competencias; que son testimonio de
+vida cotidiana en la ciudad.
+Tabla 186
+INDICADOR DE RESULTADO — MNEA BASE DE INDICADOR META RESULTADO RESPONSABLE
+49% de los cartageneros 5
+Porcentaje de Habitantes reconocen mal Disminir a un 30% e ,
+que reconocen mal comportamiento en los reconocimiento de mal Escuela de Gobierno y
+comportamiento en los puntos de encuentro. o o o e
+Y puntos de encuentro. Fuente Cartagena como | 'Wdadano en los puntos arogena
+vamos 2015. de encuentro.
+Tabla 187
+LINEA BASE DE
+SUBPROGRAMA MAJOR DE INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO
+a Reducir a 335.700 el
+eos OS: | 548310 ciudadanos número de Escuela de
+Cultura ciudadana feconocen mal que reconocen mal ciudadanos que Gobierno y
+comportamiento en los | “OMportamiento en los reconocen mal Liderazgo de
+puntos de encuentro. puntos de encuentro. | comportamiento en los Cartagena
+puntos de encuentro
+293
+
+
+## Página 294 (OCR Oficial Acuerdo 006 de 2016)
+
+/ Y . o .
+El dl : Concejo Distrital de Cartagena de Indias D. T. y C.
+PE
+ES CAN)
+10.2.2.4 PROGRAMA VOY CON CARTAGENA
+A partir de este programa se pretende formar al ciudadano para el cuidado y
+conservación del patrimonio material e inmaterial, considerado como parte
+integral de la cultura ciudadana, a través de la generación de conciencia
+ciudadana y protección de la riqueza patrimonial de la ciudad. Su objetivo es
+brindar herramientas a la ciudadanía que permita desarrollar conciencia de
+cuidado por el patrimonio material e inmaterial de la ciudad.
+Y) 10.2.2.4.1 SUBPROGRAMA CIUDADANIA Y PERTENENCIA
+Este subprograma busca sensibilizar al ciudadano y que este se identifique con el
+patrimonio material e inmaterial de la ciudad: logrando la conservación y el
+respeto hacia los mismos, como elemento tangible e intangible de la cultura
+ciudadana.
+Tabla 188
+INDICADOR DE RESULTADO — UNFA BASE DE MOICADOR META RESULTADO RESPONSABLE
+Aumentar en un 60% las
+
+No. De personas fortalecidos estrategias de promoción se
+on valores de conservación | ¿mae peconos | y civulgación del ' Y
+ll a nonio palrimonio de Cartagena | Ramon maraca de. Cartagena
+
+Ns Cartagena de Indias
+
+294
+
+
+## Página 295 (OCR Oficial Acuerdo 006 de 2016)
+
+oa
+(El sl Concejo Distrital de Cartagena de Indias D. T. y C.
+7 Uf
+uf ACUERDO No. OOO
+(33 JUN 2016 )
+Tabla 189
+LINEA BASE DE
+INDICADOR DE
+SUBPROGRAMA INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO PRODUCTO
+2.500 personas
+o fortalecidos con
+Número de Escuela de
+Cuaacionia y | eludadonos que se AS OÓN y ¿Eobiemo y
+pertenenci identifican con su . iderazgo de
+patimonio patrimonio de Cartagena pato pol “Carlagena
+Cortageno.
+10.2.3 LÍNEA ESTRATÉGICA PARTICIPACIÓN Y FORTALECIMIENTO A LA
+” DESCENTRALIZACIÓN
+Se busca consolidar el sistema de gestión pública descentralizado, se fortalecerá
+el sistema de planeación distrital, mediante la aplicación de los instrumentos de
+gestión tanto en la zona urbana como rural, las Unidades comuneras de gobierno
+serán tortalecidas con los fondos de desarrollo locales y los bancos de programas
+y proyectos de cada una de las localidades, se promoverá los Consejos
+Comuneros de Gobiernos Urbanos y Rurales como Unidades Primarias de
+Planeación Territorial.
+10.2.3.1 PROGRAMA FORTALECIMIENTO DEL SISTEMA DISTRITAL DE PLANEACIÓN Y
+DESCENTRALIZACIÓN
+Fortalecer la Secretaría de Planeación Distrital como el eje del Sistema Distrital de
+” Planeación a través de la articulación de los diferentes planes y políticas para que
+desde su formulación y/o elaboración tengan coherencia en la visión, objetivos,
+estrategias, programas y subprogramas, con el apoyo de los sistemas de
+información, que permita generar sinergias y esfuerzos conjuntos que maximicen y
+racionalicen los recursos humanos, logísticos y financieros. De igual manera,
+propende por un sistema Único de seguimiento y evaluación de los mismos,
+eficiente y oportuno para generar la información pertinente a la administración
+en pro de la toma de decisiones. De igual manera se propenderá por consolidar
+el sistema de gestión pública descentralizado, se fortalecerá el sistema de
+Planeación Distrital, mediante la aplicación de los instumentos de gestión tanto
+en la zona urbana como rural y las unidades comuneras de gobierno serán
+fortalecidas con los fondos de desarrollo locales y los bancos de programas y
+295
+
+
+## Página 296 (OCR Oficial Acuerdo 006 de 2016)
+
+ES —J) Concejo Distrital de Cartagena de Indias D. T. y C.
+133050 o. DOS
+GC. 2016 )
+proyectos de cada una de las localidades, así miso se promoverán los Consejos
+Comuneros de Gobiernos Urbanos y Rurales como Unidades Primarias de
+Planeación Territorial.
+10.2.3.1.1 SUBPROGRAMA FORTALECIMIENTO A LA DESCENTRALIZACIÓN
+Se fortaleceránlos Fondos de Desarrollo Locales y Bancos de Programas de
+Proyectos de cada una de las localidades, se promoverán y estimularán los
+Consejos Comuneros de Gobiernos urbanos y rurales como unidades primarias de
+y planeación territorial, que permita estructurar un mecanismo de planeación
+participativa en las Localidades, iniciando con la localidad de la virgen y Turística,
+que se formalice en un nuevo marco regulatorio de Descentralización en el
+Distrito de Cartagena.
+10.2.3.1.2 SUBPROGRAMA NUEVA ESTRATIFICACIÓN
+Se realizarán las fases que permitan la adopción y aplicación de la nueva
+estratificación en el Distrito de Cartagena
+10.2.3.1.3 SUBPROGRAMA FORTALECIMIENTO DEL SISTEMA DE PLANEACIÓN
+Este subprograma pretende fortalecer el sistema de información distrital
+haciéndolo robusto, de tal manera que permita el seguimiento y evaluación de
+Ns los distintos instrumentos de planeación. El sistema de información geográfica se
+convierte en la heramienta que permitiá mantener georreferenciada los
+indicadores de la ciudad para el planeamiento estratégico y toma de decisiones,
+para ello se aplicará una encuesta de calidad de vida de manera anual. Se
+diseñará e implementar la nomenclatura de predios, espacio púbico y vías en las
+localidades del Distrito, la actualización y georreferenciación de la Información
+catastral de predios y la proveniente de los distintos sectores públicos y privados
+en el distrito de Cartagena.
+296
+
+
+## Página 297 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. yC
+ACUERDO No. COG
+(13 JUN 2016)
+10.2.3.1.4 SUBPROGRAMA SISTEMA DE PLANEACIÓN DESDE EL AMBITO
+TERRITORIAL
+Para lograr el objetivo de superar la desigualdad e insertar los sectores de la
+ciudad con más rezago al desarrollo y la construcción de sectores o barrios en
+paz y la convivencia, se promoverá la movilización social de la comunidad, como
+actor fundamental para la autogestión en la solución de sus propios problemas.
+En tal sentido y tomando como referente el aprendizaje de los procesos realizados
+por S.J JOSE MARIA CAMPOAMOR, asumiremos la estrategia de Desarrollo Integral
+(Y) Local - DIL: como modelo de intervención en la sociedad que facilita la
+articulación, la organización, participación de la comunidad y la planeación
+como impulsor de cambio. Este proceso se desarrollará en la Localidad de la
+Virgen y tTurística,compuesta por 4 unidades comuneras de gobierno que ostenta
+los indicadores de mayor rezago, y se insertan en la estructura administrativa
+formal del Distrito. Se desarrollarán alianzas con ONGs que permitan el
+acompañamiento directo a los grupos y organizaciones sociales de base y la
+convocatoria general a los habitantes, para definir proyectos colectivos que
+mejoren la calidad de vida y la convivencia en los territorios.
+10.2.3.1.5 SUBPROGRAMA SISBEN
+Se ampliarán los puntos de atención del SISBEN, para la recepción de solicitudes a
+la demanda, en la zona rural y se fortalecerán en infraestructura y
+Ns tecnológicamente puntos de atención y un centro administrativo y de recepción
+existentes en la ciudad. Lo anterior se implementará a partir de las estrategias
+Juégale Limpio al Sisben y Amigos Sisben.
+Tabla 190
+INDICADOR DE RESULTADO A INDICADOR mera RESULTADO RESPONSABLE
+Sistema de Información Distrital 70% Actualizar en un 100% | Secretaría de
+Actualizado el Sistema de Planeación Distrital
+Información Distrital
+297
+
+
+## Página 298 (OCR Oficial Acuerdo 006 de 2016)
+
+ES
+E Concejo Distrital de Cartagena de Indias D. T. y C.
+E — fp
+< ACUERDO No. OOGS
+— (413 JUN 2016 )
+LINEA BASE DE INDICADOR
+INDICADOR DE RESULTADO DERESUADO: META RESULTADO RESPONSABLE
+%. de procesos de descentralización 50% proceso de Aumentar a un 100% | Secretaría de
+alcanzados descentralización Distrito elproceso de — [Planeación Distrital
+de Cartagena, (Fuente . | descentralización en
+Secretaría de Planeación, el Distito de
+2015] Cartagena
+Tabla 191
+UNEA BASE DE
+Ns SUBPROGRAMA ianeia INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO
+Reolizar las cinco (5)
+Adopción y c
+aplicación de la posos ue ponla
+nueva pción de la Secretoría de
+Estratificación en pl , Planeación Distrital
+omogeno nueva estratificación
+Nueva realizada enel Distito de
+estratificación 9
+Expedir 12 actos
+administrativos
+Actos 9 Actos Administrativos. | anuales en primera Ñ
+administrativos — | (Fuente: Secretaría de | instancia donde se il
+expedidos planeación 2015) resuelven las
+solicitudes de revisión
+de estrato
+Diseñar e
+MaS Y en implementar la
+¡w] Localidades del Nomenciatura de Nomenclatura de
+to de 261495 Predios y de | 261495 Predios y de Secretaría de
+Canogena 5834 Vios (Secretaría. | 5834 Vías en las tres Planeación
+ano! de Planeación 2016) | (3) Localidades del
+diseñada e Distito de
+implementada Cortogena,
+Fortalecimiento del
+sistema de as oo Homologar la base
+Planeación empresas ds. — | 5 [Oficina de Sericios | de datos con cinco Secretaría de
+servicios PÚbICOS Públicos 2015) (5) empresas de Planeación
+homologados servicios públicos.
+Actualizar y
+Predios del Distrito 190471 Predios Georeferenciar la
+de Cartagena, | Georeferenciados | Información Catastral Secretaría de
+Actualizados y (secretaría de de 71024 predios en Planeación
+Georeferenciados | — Planeación 2016) el Distilo de
+Cartagena
+298
+
+
+## Página 299 (OCR Oficial Acuerdo 006 de 2016)
+
+E
+(El > Concejo Distrital de Cartagena de Indias D. T. y C.
+Ú E)
+E G ACÍ JO No. o
+eS 13 2016
+CAS )
+LINEA BASE DE
+SUBPROGRAMA — INDICADORDE  INDICADORDE  METAPRODUCIO RESPONSABLE
+PRODUCTO
+Encuesta de Aplicar una encuesta e
+Calidad de vida de calidad de vida ía de
+aplicada anual
+Actualizar
+, información
+ón 12 Sectores Georreferenciada
+delos Sectores Georreterenciados proveniente de las Secretaría de
+ed Patentes (secretañía de Distintos sectores Planeación
+AcUO zado Planeación) Públicos y privados
+enel Distilo de
+Cartagena
+No, De Bancos de | 3 Bancos de Programas | Forlalecerjos tes (3)
+Programas y y Proyectos (Fuente os de Secretaría de
+Proyectos Secretaría de Proyectos en los Planeación
+fortalecidos Planeación Localidades.
+Asesorar a los Tres (3)
+Bancos de
+No, De Bancos de | 3 Bancos de Programas | y” olas
+Programas y y Proyectos (Fuente oyo
+Proyectos Secretaría de estad para
+Fortalecimiento ala | asesorados ES abi odas
+descentralización de formulación BPIN
+MGA.
+NY Capacitar a los Tres
+. Tres (3) Consejos — | (3) Consejos Locales
+No De conssios | Locales de Planeación | . de Planeación.
+plonccción, | « Consejo Temilorial de | Consejo Teritorial de
+sl Planeación, Consejo Planeación, Consejo
+Consejo Teritorial n »
+de Consultivo de Consultivo de
+de Planeación, -
+> Ordenamiento Ordenamiento
+Consejo Consulivo n .
+Territorial (Fuente Territorial para
+de Ordenamiento
+ñ Secretaría de formular proyectos
+Tenitorial SA Pi ps
+capacitados Planeación Distrital, con metodología de
+po 2015) formulación BPIN y
+MGA.
+299
+
+
+## Página 300 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. CO6G
+LINEA BASE DE
+SUBPROGRAMA OR DE INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO
+7 puntos de atención Ampliar en dos (2)
+al usuario y un Centro puntos de atención
+Puntos de atención administrativo y de del SISBEN, para la
+del SISBEN, recepción. Fuente recepción de
+ampliados Secretaría de solicitudes a la
+Planeación Distrital demando, en la zona
+2015 rural.
+7 puntos de atención Fortalecer en tora
+Puntos de atención | alusuario y un Centro | infraestructura y , Secretaría de N
+del SISBEN, administrativo y de | tecnológicamente | Planeación- SISBEl
+fortalecidos en recepción. Fuente — | los siete (7) puntos de
+Infraestructura y Secretaría de atención y un centro
+Tecnología Planeación Distrital | administrativo y de
+2015 recepción.
+SISBEN
+Número de 3.048 solicitudes de Atender 6.300
+solicitudes de — | revisión de puntaje, solicitudes de
+inconformidad | Fuente Secretaría de | inconformidades de
+atendidas Planeación 2015 puntaje anual.
+Se cuenta con una
+población sisbenizada
+de 801203 personas, a
+Distrlbvidas: Primera Pope tores pora
+Foses del nuevo infancia 0 a 5 ela Cuaro
+¡w] SISBEN en el Distrito | 129,076,Infanciaé a 12 Metodología del Secretaría de
+de Cartagena | :111.817Adolecencia | Meno suogres y Planeación.
+Realizado 13 a 17: 79,942, Jovenes e
+? Distrito de
+14018: 169,469 Cartagena.
+Adulto 29 a 54: 240968, ¡seno
+Adulto mayor 55 en
+adelante : 74,931
+Número de
+personas ans Secretaría de
+capacitadas para y rísti Planeación.
+el Desarollo virgen y Turística
+SISTEMA DE Jon, a
+PLANEACIÓN Diseñar y ejecutar
+una estrategia de
+TO | Estrategia de NO comunicación pora Secretada de
+Comunicación la Planeación planeación.
+Formulada Participativa.
+Numero de Crear 4 Consejos de Secretaría de
+Consejos de Planeación ploneación.
+300
+
+
+## Página 301 (OCR Oficial Acuerdo 006 de 2016)
+
+(Eb PA, a] Concejo Distrital de Cartagena de Indias D. T. y C.
+Gra ACUERDO No. VOG
+=> "
+(413 JUN 2016 )
+LINEA BASE DE
+SUBPROGRAMA cares aRd INDICADOR DE META PRODUCTO RESPONSABLE
+E
+participativos
+creados
+Numero de Realizar 4 .
+diagnósticos Diagnostico Secretaría de
+Participativos Participativos con planeación
+realizados líneas bases banales
+Numero de Planes Apoyarta
+Estratégicos por Formulación de 4 Secretaría de
+U Unidad Comunera Planes Estratégicos planeación
+Formulados de Desarrollo
+10.2.3.2 PROGRAMA FORTALECIMIENTO DE ORGANIZACIONES DE PARTICIPACION
+CIUDADANA Y COMUNITARIAS
+Se brindará capacitación y asesoría a las Juntas de Acción Comunal, Asociación
+de Juntas de Acción Comunal, Federación de Juntas de Acción Comunal y
+demás organismos de participación en lo técnico y legal; de igual manera se
+entregará apoyo logístico a los mismos, para lograr una mayor participación en
+las actividades que desarrolla el Distrito de Cartagena que a su vez impulse la
+formulación de la política pública comunal.
+10.2.3.2.1 SUBPROGRAMA MEJORES ORGANIZACIONES COMUNALES MÁS
+Ñ DESARROLLO
+Un ejercicio eficiente y oportuno de inspección, vigilancia y control para las
+organizaciones comunales, acompañados de herramientas formativas y
+metodológicas, orientadas al desarrollo de habilidades en los líderes comunales
+fortalecerá la dinámica comunal y generará más desarrollo para las
+comunidades del Distrito de Cartagena.
+Mejorar la participación de la ciudadanía cartagenera identificando los espacios
+en donde la gente participa dinamizará, los procesos participativos en el Distrito.
+301
+
+
+## Página 302 (OCR Oficial Acuerdo 006 de 2016)
+
+Pos
+5 Concejo Distrital de Cartagena de Indias D. T. y C.
+l— $
+o ACUERDO No. OO 6,
+1
+(13 JUN 2016 )
+Tabla 192
+LINEA BASE DE
+INDICADOR DE RESULTADO INDICADOR DE META RESULTADO RESPONSABLE
+RESULTADO
+% Organizaciones Sociales 373 Organizaciones 70% Or se
+. 'gonizaciones Sociales
+fortalecidos para el Comunales Activas — | Fortalecidos para el Desarrollo,
+Grupo de Formación
+15% personas mayores de 10. | TUdadana y Gastión
+% de personas mayores de eolica rtagena comunitaria
+10 años que participan en participan en actividades
+actividades organizadas por organizados por la
+Y) la Administración Distrital Administración Distrital
+Tabla 193
+LINEA BASE DE
+SUBPROGRAMA — oEpRGoUcro — INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCTO
+No de 373 Organizaciones
+Organizacion | Comunales Activas
+es Comunales (Grupo de 261 Organizaciones
+: Comunales asesorados,
+. asesoradas, Formación ; .
+Inspecciones, vigiladas y
+Inspecciones, Ciudadana y “controladas
+mM vigiladas y Gestión
+ejores controladas | Comunitario) Grupo de Formación
+Organizaciones a
+S Ciudadana y Gestión
+Comunales más No do 820,588 personas comunitaria
+Desarrollo Peon ae lores de 10
+participan en años residentes en 123,088 Personas que
+actividades o participan en actividades
+Ny Organizados anegeno Organizados por la
+(Proyección Censo ps Po
+pora administración distrital
+acrimistració | DANE Secretaria de
+W Planeación)
+n Distrital
+10.2.3.3 PROGRAMA PRESUPUESTO PARTICIPATIVO
+Se fomentarán los espacios de participación ciudadana en el Distrito de
+Cartagena, para la toma de decisiones que permitan priorizar acciones del
+gobierno de acuerdo con las necesidades identificadas por la misma comunidad
+y ejecutar el proceso de Presupuesto Participativo acorde a lo establecido en el
+acuerdo 003 de 2009 y su decreto reglamentario 0761 de 2009.
+302
+
+
+## Página 303 (OCR Oficial Acuerdo 006 de 2016)
+
+==
+El E) Concejo Distrital de Cartagena de Indias D. T. y C.
+¡[— TA
+20.04 ACUERDO No. VOS
+(43 JUN 2016 )
+10.2.4 LÍNEA ESTRATÉGICA PARTICIPACIÓN Y FORTALECIMIENTO A LA
+DESCENTRALIZACIÓN
+Se busca consolidar el sistema de gestión pública descentralizado, se fortalecerá
+el sistema de planeación distrital, mediante la aplicación de los instumentos de
+gestión tanto en la zona urbana como rural, las unidades comuneras de gobierno
+serán fortalecidas con los fondos de desarrollo locales y los bancos de programas
+y proyectos de cada una de las localidades, se promoverá los Consejos
+Comuneros de Gobiernos Urbanos y Rurales como Unidades Primarias de
+Planeación Territorial.
+NW
+10.241 PROGRAMA FORTALECIMIENTO DEL SISTEMA DISTRITAL DE PLANEACIÓN Y
+DESCENTRALIZACIÓN
+Se busca consolidar el sistema de gestión pública descentralizado, y fortalecer el
+sistema de planeación distrital, mediante la aplicación de los instrumentos de
+gestión tanto en la zona urbana como rural, las unidades comuneras de gobierno
+serán fortalecidas con los fondos de desarrollo locales y los bancos de programas
+y proyectos de cada una de las localidades, se promoverá los Consejos
+Comuneros de Gobiernos Urbanos y Rurales como Unidades Primarias de
+Planeación Territorial.
+Tabla 194
+LINEA BASE DE
+¡w] INDICADOR DE RESULTADO INDICADOR DE META RESULTADO RESPONSABLE
+RESULTADO
+47% ( 82 proyectos
+Porcentaje de los proyectos de ca, 173 | Contratarel 100% delos | Secretaría del interior y
+presupuesto participativo Fuente: punt) la des | Poyectos de presupuesto convivencia
+contratados. Interior y Convivencia participativo priorizados ciudadana
+ciudadana
+303
+
+
+## Página 304 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D, T. y C.
+ACUERDO No. OO GS
+GC 13JUN 2016
+Tabla 195
+LINEA BASE DE
+INDICADOR DE
+SUBPROGRAMA INDICADOR DE META PRODUCTO RESPONSABLE
+PRODUCIO PRODUCTO
+rc Realizar 1 nuevo
+Ejercicios de ejercicio de Secretaría del
+priorización de Ultima Priorización | priorización de Interior y
+Lesupuesto realizada en 2009 Presupuesto convivencia
+Participativo realizados Participativo en el ciudadana
+en el Distrito Distrito
+nd Formular e inscribir
+o 173 proyectos ante el Banco de Secretaría del
+FORTALECIMIENTO | Proyectos Priorizados en | oizados en los | Proyectos la totalidad Interior y
+DEL SISTEMA, cada UCO segúnele | aircicios de 2007 Y de los nuevos convivencia
+DISTRITAL DE delmenión. 2009 proyectos priorizados | ciudadana
+PLANEACIÓN Y por la comunidad
+DESCENTRALIZACIÓN
+Priorizoros nuevos | — Secretaría del
+proyectos Interior y
+concertados por la convivencia
+82 Proyectos comunidad ciudadana
+Proyectos priorizados contratados de las
+pa
+contratados iia Priorizarlos 91 Secretaría del
+proyectos Interior y
+concretados en 2007 | — convivencia
+y 2009 ciudadana
+10.2.5 LÍNEA ESTRATÉGICA FINANZAS SANAS Y ROBUSTAS
+Y Se aumentará el presupuesto general de ingresos de Cartagena de Indias a un
+nivel cercano a los dos billones de pesos anuales, a partir del fortalecimiento del
+Recurso Humano de la Secretaría de Hacienda, enfatizando en la Dirección de
+Impuestos y sus procesos de fiscalización y cobros coactivos y persuasivo. Se
+implementará un sistema de información gerencial de finanzas públicas robusto,
+integrado y seguro; de igual manera se diseñará e implementará una estrategia
+de Cultura Tributaria que permita hacer más eficiente el proceso de recaudo de
+los impuestos locales y la recuperación de la alta cartera que tienen las empresas,
+ciudadanos y organizaciones con el Distrito de Cartagena de Indias; también se
+realizarán procesos de valorización por beneficio general y plusvalía, como
+fuentes de financiación del desarrollo territorial.
+304
+
+
+## Página 305 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. OOS
+(13 JUN 2016 )
+
+Promoveremos un gobierno austero que optimice los ingresos distritales y
+racionalice los gastos de funcionamiento, mejorando la calidad del gasto
+público. Se procurará la eficiencia, eficacia y efectividad en la inversión de los
+recursos de inversión provenientes del Sistema General de Participaciones (SGP),
+el Sistema General de Regalías (SGR) y otros recursos.
+Se estudiará y promoverá la implementación del “Presupuesto inteligente” en el
+Distrito de Cartagena de Indias.
+
+W 10.2.5.1 PROGRAMA FINANZAS PÚBLICAS, SANAS Y ROBUSTAS
+Se fortalecerán las finanzas públicas de la ciudad para el saneamiento de su
+situación actual de endeudamiento y generación de mayor capacidad en el
+servicio de la deuda, que se visibilicen por intermedio de estrategias cuyos focos
+persigan incrementar el recaudo de ingresos tributarios y no tributarios, se
+consolidará un Sistema de información integral de las finanzas públicas y se
+fortalecerán los procesos de fiscalización y cobros coactivo y persuasivo para
+incrementar el presupuesto de ingresos a través de el robustecimiento de la base
+tributaria.
+10.2.5.1.1 SUBPROGRAMA CON MÁS INGRESOS CARTAGENA VA
+Se incrementará el recaudo de las principales fuentes rentística del Distrito de
+
+9] Cartagena como: Impuesto predial unificado, Industria y Comercio, Sobretasa a
+la Gasolina, Contraprestación Portuaria, y Delineación Urbana a través del
+fortalecimiento de los procesos de recuperación de cartera y de otros
+instrumentos de financiación como Plusvalía, Valorización entre otros.
+10.2.5.1.2 SUBPROGRAMA FORTALECIMIENTO DE LA SECRETARÍA DE
+
+HACIENDA
+Se implementará una estrategia de modernización administrativa que permita el
+fortalecimiento del recurso humano y la generación de procesos y
+procedimientos claros, para cumplir con eficiencia, oportunidaa, transparencia y
+economía. Para ello se promoverá el fortalecimiento institucional que permita
+305
+
+
+## Página 306 (OCR Oficial Acuerdo 006 de 2016)
+
+OS
+El +» Concejo Distrital de Cartagena de Indias D. T. y C.
+El e
+SIT acu No. SOS
+( A3JUN 2016 )
+generar condiciones de estabilidad y transparencia, propiciando desarrollo y
+crecimiento colectivo propendiendo por el bienestar y la prosperidad colectiva.
+10.2.5.1.3 SUBPROGRAMA COOPERACIÓN INTERNACIONAL PARA El
+DESARROLLO Y PAZ
+Se facilitarán procesos de cooperación en la ciudad de Cartagena a partir de la
+articulación de recursos y voluntades de actores internacionales, nacionales y
+locales, en procura de incrementar los niveles de desarrollo humano y la paz en la
+[w) ciudad de Cartagena.
+Tabla 196
+LINEA BASE DE
+INDICADOR DE RESULTADO — INDICADOR DE META RESULTADO RESPONSABLE
+RESULTADO
+Porcentaje de incremento
+en el recaudo real sobre el
+presupuestado. (Aplica
+% de incremento en el poa po O
+recaudoreal sobre el — | 6% de Recaudo de o eto manera, 0% Secretaría de Hacienda
+presupuestado (opica para | los tados ingresos |... po cado, Distrital
+cada uno de los ingresos | incrementados | "PY A nom E, | Oficina de Impuestos
+comentes y otras fuentes) enun7RICAT en unt1%
+delineación urbana, en un
+7% sobretasa a la gasolina
+y 10% en contraprestación
+u portuaria].
+Tabla 197
+LINEA BASE DE
+r
+SUBPROGRAMA pene INDICADOR DE META PRODUCTO — RESPONSABLE
+PRODUCTO
+Monto Recaudado Recaudar
+de impuesto predial, | *761-525618.031 $931.838.490.672
+impuesto de industia | — Impuesto Predial : Secretaría de
+i dona s del impuesto Haciend
+Con másingresos | y comercio, avisosy | (vigencia actual+ e y Ps
+Cartagena Vaj | tableros delineación | vigencias anteriores, | "Cool vigencia Dista!
+urbano, actual+ vigencias | Oficina de
+contraprestación anteriores] Impuestos
+Portuaria, sobretasa
+306
+
+
+## Página 307 (OCR Oficial Acuerdo 006 de 2016)
+
+: (El te: Concejo Distrital de Cartagena de Indias D. T. y C.
+t p S ACUERDO No. OOG>
+CAS JUN 2016 )
+LINEA BASE DE
+i INDICADOR DE ¡CADOR DE META PRODUCTO — RESPONSABLE
+¿ SUBPROGRAMA PRODUCTO INDICADOR
+ala gasolina. Recaudar
+29. aos $1.052.980.949.605
+Impuesto no del impuesto
+1 comercio, avisos y 4 y
+H Industria, comercio,
+i tobleros avisos y tableros
+| Recaudar
+io. $ 111.581.349.000 $141.298.575.616
+LoS Sobretasa a la gasolina | Valor Sobretasa a
+á la gasolina
+| Recoudar
+|
+$93.340.137.211Valo
+| $18.426.359.712 'Deineación
+Delineación Urbana
+Urbana
+Recaudar
+$13.497.534.172 $18.227.947.566
+contraprestación Valor
+portuaria contraprestación
+portuaria
+Gestionar
+$40.000.000.000 (|
+Cuarenta mil.
+N/ millones de pesos
+Cooperación en recursos de
+y Recursos de JA
+Intemacional y cooperación) a he
+Alianzas pora el nación 25.140.424.866 través de las Secotaía
+Desarrollo de a diferentes 'eneral
+Cortagena gestionados modalidades y
+fuentes de acceso
+ala cooperación
+para la paz y el
+desarollo humano
+11 ARTÍCULO 11 PROYECTOS ESTRA: 'ÉGICOS DE CIUDAD O MACROPROYECTOS:
+El consejo de gobierno en los términos de la Ley 819 de 2003 establecerá, como
+proyectos especiales o de importancia estratégica para el Distrito de Cartagena
+los que se enuncian a continuación y se consignan en este Plan.
+307
+
+
+## Página 308 (OCR Oficial Acuerdo 006 de 2016)
+
+El +»: Y Concejo Distrital de Cartagena de Indias D. T. y C.
+E
+Era ACUERDO No. £0O6>
+GC 13JUN 2016 )
+Su financiación se gestionará a través de diferentes instumentos con entidades
+nacionales, organismos internacionales o asociaciones público privadas, entre
+otros:
+Tabla 198
+11.1 Proyectos Especiales o de Importancia Estratégica
+11.1.1 Sistema integrado de Transporte Masivo - Transcaribe
+Y 11.1.2 Plan Maestro de Drenajes Pluvlales
+11.1.3 Transformación por la paz, la inclusión y la equidad. Plan de
+Mejoramiento de barrios.
+11.14 Recuperación de los cuerpos de internos agua Eje 1, Eje 2 y Eje 3.
+11.1.5 Transporte Acuático
+11.1.6 Quinta avenida de Manga
+11.1.7 Ampliación del Corredor de Carga
+11.1.8 Culminación de la Vía Perimetral
+nu
+11.1.9 Construcción del Recinto Ferial
+11.1.10 Marginal del Sur
+11.1.11  Circunvalar del Sur
+11.1.12 Vía Bicentenario
+11.1.13 Sede Administrativa del Distrito
+11.1.14 Sistema de Mercados
+308
+
+
+## Página 309 (OCR Oficial Acuerdo 006 de 2016)
+
+El > a] Concejo Distrital de Cartagena de Indias D. T. y C.
+i— Y
+ACUERDO No. VOGO
+(43 JUN 2016)
+11.1 Proyectos Especiales o de Importancia Estratégica
+11.1.15 Potenciación de zonas urbanas de la ciudad tales como las
+Identificadas en los Planes Parciales
+11.1.16 Mitigación y adaptación al cambio climático (Plan 4C y Ciudades
+Sostenibles y Competitivas
+y 11.1.17 Centro internacional de Cruceros y Turismo
+
+11.1.18 Protección Costera
+
+11.1.19  Ecobulevar Pedro de Heredia
+
+11,1.20 Parque del Agua Diamante Carlbe
+
+11.1.21 Puerto Híbrido
+
+11.122 Diamante Caribe
+
+11.123  Pozón Tierra baja
+
+Nx 12 ARTICULO 12 REGLAMENTACION DE PLAYAS:
+
+El Gobierno Distrital adelantará a través de planes pilotos, la implementación del
+
+modelo de ocupación en las playas urbanas y rurales del Distrito de Cartagena, a
+
+fin de evaluar su funcionamiento y generar los ajustes que sea necesario
+
+incorporar, a las normas expedidas. Dichos pilotos podrán ser de iniciativa pública
+
+o privada.
+
+13 ARTICULO 13 INDICADORES DE CIUDADES SOSTENIBLES Y COMPETITIVAS:
+
+El Gobierno Distrital a través de la Secretaría de Planeación, adelantará la
+
+formulación de un modelo de desarrollo integral para el Distrito de Cartagena,
+
+articulado con las cuatro dimensiones o indicadores establecidos por el Banco
+
+Interamericano de Desarrollo BID y para su seguimiento y evaluación hará parte
+309
+
+
+## Página 310 (OCR Oficial Acuerdo 006 de 2016)
+
+AOS
+El y Concejo Distrital de Cartagena de Indias D. T. y C.
+SS)
+ca ACUERDO No. OOG
+(43 JUN 2016)
+integral de este Plan de Desarrollo los indicadores de la metodología Ciudades
+Sostenibles y Competitivas.
+14 ARTÍCULO 14 PLAN MAESTRO DE PARQUEADEROS Y ESTACIONAMIENTOS:
+EL Gobierno Distrital a través de la Secretaría de Planeación y las demás
+entidades competentes, adelantará las gestiones necesarias para la formulación
+del plan maestro de parqueaderos y estacionamientos, que conduzca a
+determinar las zonas susceptibles para el desarrollo de esta actividad y su
+respectivo reglamento de funcionamiento.
+o 15 ARTICULO 15 REVISIÓN ESTRUCTURA ADMINISTRATIVA:
+El gobierno Distrital adelantará un estudio técnico que le permita determinar el
+estado actual de la plata de personal Distrital y su estructura organizacional, con
+el fin de identificar puntualmente las acciones que conduzcan a generar un
+proceso integral de optimización de la misma.
+16 ARTICULO 16 PARTE INTEGRAL DE ESTE ACUERDO:
+El documento denominado Bases del Plan de Desarrollo Distrital 2016 - 2019
+Primero la Gente para una Cartagena Sostenible y Competitiva, con las
+modificaciones realizadas en el trámite ante el Concejo Distrital, es parte integral
+del Plan de Desarrollo Distrital y se incorpora al presente acuerdo como anexo.
+17 ARTICULO 17 PLAN SECTORIAL DE TURISMO:
+
+Ns Apruébese el Plan Sectorial de Turismo Distrital 2016-2019 e incorpórese al presente
+Plan de Desarrollo, de conformidad con lo previsto en la Ley. Dicho Plan Sectorial
+de Turismo se incorporá como un anexo al presente Acuerdo, el cual regirá hasta
+tanto no se adopte un nuevo Plan Sectorial de Turismo.
+
+18 ARTICULO 18 PLAN DISTRITAL DE SALUD:
+Apruébese el Plan Distrital de Salud e incorpórese al presente Plan de Desarrollo,
+de conformidad con lo previsto en la resolución 1536 de mayo 11 de 2015. Dicho
+Plan Distrital de salud se incorpora como un anexo al presente acuerdo.
+
+310
+
+
+## Página 311 (OCR Oficial Acuerdo 006 de 2016)
+
+El . ,) Concejo Distrital de Cartagena de Indias D. T. y C.
+XX ACUERDO No. DOGO
+(43 JUN 2616 )
+MPARTE
+PARTE FINANCIERA - OPERATIVA
+TITULO 1
+MARCO FISCAL DE MEDIANO PLAZO
+19 ARTICULO 19 EL PLAN FINANCIERO:
+Ny
+El Distrito de Cartagena de Indias para la estructuración del capítulo financiero
+del Plan de Desarrollo 2016-2019 “Primero la Gente para una Cartagena
+Soatenible y Competitiva” realizó el análisis, proyección, consolidación y
+aprobación del Marco Fiscal de Mediano Plazo [en adelante MFMP) 2016-2026.
+Los resultados y propósitos de la política fiscal del Distrito de Cartagena de Indias
+se encuentran consignados en el Marco Fiscal de Mediano Plazo (MFMP),
+instrumento cuyo alimentación y análisis se encuentra a cargo de la Secretaría de
+Hacienda Distrital, en este se observa el comportamiento de la actividad
+económica y fiscal proyectado a diez años.
+En sesión del 22 de abril de 2016 del Consejo Municipal de Política Fiscal [CONFIS)
+fue aprobado el citado MFMP proyectado según lo señala la norma, para un
+periodo de 10 años, siendo esta versión el MFMP vigente. Los supuestos tenidos en
+Nx Cuenta en el citado instrumento son los señalados a continuación:
+311
+
+
+## Página 312 (OCR Oficial Acuerdo 006 de 2016)
+
+sá NS
+(El y Concejo Distrital de Cartagena de Indias D. T. y C.
+— Y
+K ACUERDO No. CO 6
+C 13JUN 2016)
+Tabla 199 XX
+Supuestos % Fuente
+2 . . Ministerio de Hacienda y
+Inflación Colombia 45 Crédito público
+e . Ministerio de Hacienda y
+Crédito público
+¡Crecimiento Real- predial vig. Secretaría de Hacienda
+¡Actual 10% Distrital
+NG
+¡Crecimiento Real- vig. Anteriores| Secretaría de Hacienda
+IPU 6% Distrital
+Secretaría de Hacienda
+¡Crecimiento Real- ICA actual 7% Distrital
+Secretaría de Hacienda
+¡Crecimiento Real: vig. Anteriores 6% Distrital
+Secretaría de Hacienda
+¡crecimiento sobretasa gasolina 7% Distrital
+¡Crecimiento Real- Delineaciónl
+jubana Secretaría de Hacienda
+Distrital
+NW
+312
+
+
+## Página 313 (OCR Oficial Acuerdo 006 de 2016)
+
+E TAO A
+(ES sl o) Concejo Distrital de Cartagena de Indias D. T. y C.
+iZ
+LEE ACUERDO No. VOG
+C 43JUN 2016 )
+Supuestos % Fuente
+Secretaría de Hacienda
+icrecimiento contraprestación) Distrital
+portuaria 10%
+Documento
+Recomendaciones para la
+, proyección y estimación de
+Proyecciones del SGP DNP los recursos del Sistema
+Y General de Participaciones
+SGP 2017-2019
+Secretaría de Hacienda
+[Crecimiento gastos de personal 7% Distrital
+
++ La inflación se venía manejando con un porcentaje del 3% siendo este el
+valor meta del Banco de la República, Este valor se ajustó al 4,5%
+soportados en el valor meta del Ministerio de Hacienda y Crédito Público.
+
++ El crecimiento real de la economía Colombiana luego del descuento de la
+inflación también es actualizado en razón a datos del Banco de la
+República.
+
++ El Marco Fiscal tenía proyectado todos sus ingresos al 3%,meta propuesta
+por el Banco de la República, se realizó un análisis de las principales rentas
+del Distrito y se propuso lo siguiente soportado en un análisis de la media
+aritmética del crecimiento histórico de dichos ingresos:
+
+> Impuesto Predial (Vigencia Actual): Crecimiento del 10%, basado en
+las reformas tributarias Nacional y Distrital que están en estudio y que
+para el caso Nacional abarataría los costos de mano de obra
+aumentando la rentabilidad del aparato productivo impactando en
+una mayor tasa de crecimiento [especialmente en los sectores
+intensivos en mano de obra) adicionalmente traería como
+consecuencia ingresos adicionales por el cambio en las tarifas entre
+otros.
+Otra estrategia a utilizar seria realizar un convenio con el IGAC para la
+actualización dinámica de los predios.
+313
+
+
+## Página 314 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. ODG>
+(13 JÚN 2018)
+> Impuesto Predial (Vigencias Anteriores): Crecimiento de 6%, este
+incremento se programa basados en el fortalecimiento de la gestión
+administrativa, formalización de mandamientos de pagos de
+vigencias 2011-2015, donde no se puede prescribir la deuda y genera
+Una base de cobro más amplia, además de realizar Cobro persuasivo
+y cobro coactivo, embargos de cuentas, y remate y secuestro de
+bienes.
+> Impuesto de Industria y Comercio (vigencia actual): Crecimiento del
+7%. Las declaraciones de ICA son declaraciones privadas realizadas
+con pago, se tuvieron en cuenta los ingresos adicionales que se
+uv generarían producto de las inversiones recientes para la ampliación
+de la industria petroquímica de la ciudad.
+> Impuesto de Industria y Comercio (vigencia anteriores): Crecimiento
+del 6%, para el cumplimiento de esta meta se ha tenido en cuenta la
+gestión administrativa apalancada en programas de fiscalización y
+gestión de cobro de las sanciones generadas, igualmente, este
+ingreso se considera que es inercial porque las vigencias anteriores
+son generadas por el bimestre noviembre - diciembre que se cancela
+en enero, más la declaración anual que se hace en abril del año
+siguiente.
+> Sobretasa a la gasolina: Crecimiento del 8% soportado en el rango de
+valores entre el promedio del recaudo de este ingreso en los últimos
+cinco (5) años, y el cual encuentra congruencia con el aumento en el
+parque automotor de la ciudad de Cartagena el cual ha crecido en
+” un 84% en los últimos 5 años.
+> Delineación Urbana: Crecimiento del 11%, siendo este el promedio
+representativo de los últimos años, adicionalmente el gran auge en la
+construcción conjuntamente con la gestión administrativa en la
+fiscalización en el pago se verá reflejada en este aumento.
+> Contraprestación Portuaria: Crecimiento del 10%, este ingreso
+generado de los contratos que se tienen con los puertos y de la
+participación enviada por el Gobierno Nacional se encuentra
+alrededor de este promedio en los últimos años.
+> Sistema General de Participación: se realizó la aplicación de la
+metodología de proyección y estimación de los recursos del Sistema
+General de Participaciones - SGP para los años 2017-2019,
+314
+
+
+## Página 315 (OCR Oficial Acuerdo 006 de 2016)
+
+TA
+El ENS ,) Concejo Distrital de Cartagena de Indias D. T. y C.
+ua ACUERDO No. OOG
+(43 JUN 2015)
+desarrollada por el Departamento Nacional de Planeación y que
+presenta tasas de crecimiento de 7,52, 8,02 y 8,89 respectivamente.
+
++ Entre los supuestos de los gastos se ajustó el crecimiento de los gastos de
+personal, que se venían proyectando con la inflación del 3% y se
+contempla un crecimiento promedio anual del 7%.
+
+CONTEXTO ECONÓMICO Y FINANCIERO PARA EL MFMP 2016-2026
+Análisis de las variables Macroeconómicas tenidas en cuenta en el MEMP 2016-
+2026
+N Entre las variables analizadas cuyo impacto determina el contexto para la
+proyección del MFMP de las entidades territoriales se encuentra; el desarrollo
+empresarial y su influencia sobre el robustecimiento de la base productiva
+tributaria, el crecimiento económico medido a través del incremento del PIB, la
+pobreza medida a través del Índice de pobreza y el empleo con indicadores de
+desempleo.
+Desarrollo empresarial, crecimiento económico, pobreza y empleo.
+De acuerdo con la información de la Cámara de Comercio de Cartagena, la
+estructura empresarial de la ciudad está conformada por cerca de 30.500
+empresas, de estas, el 91,2% corresponde a microempresas, el 8,3% a pequeñas y
+medianas empresas y las grandes empresas tan solo el 0,5%)".
+Las grandes empresas tienen Una participación pequeña en la composición
+NY empresarial de la ciudad, pero se caracterizan por acumular el mayor número de
+empleos y capital invertido en la ciudad.
+* Para todos los efectos, se entiende por micro incluidas las Famiempresas pequeña y mediana
+empresa, toda unidad de explotación económica, realizada por persona natural o jurídica, en
+actividades empresariales, agropecuarias, industriales, comerciales o de servicios, rural o urbana,
+que responda a dos (2) de los siguientes parámetros” (Establecido por la Ley 905 de 2004 que
+modificó la Ley 590 de 2000 sobre promoción y desarrollo de la micro, pequeña y mediana
+empresa colombiana): medianas empresas; a) Planta de personal entre cincuenta y uno (51) y
+doscientos (200) trabajadores, b) Activos totales por valor entre cinco mil uno (5.001) a treinta mil
+(30.000) salarios mínimos mensuales legales vigentes. 2. Pequeña empresa: a) Planta de personal
+entre once (11) y cincuenta (50) trabajadores, o b) Activos totales por valor entre quinientos uno
+(501) y menos de cinco mil (5000) salarios mínimos mensuales legales vigentes o, 3.
+Microempresa: a) Planta de personal no superior a los diez (10) trabajadores, o b) Activos totales
+excluida la vivienda por valor inferior a quinientos (500) salarios mínimos mensuales legales
+vigentes.
+315
+
+
+## Página 316 (OCR Oficial Acuerdo 006 de 2016)
+
+(El — y Concejo Distrital de Cartagena de Indias D. T. y C.
+A E
+Y
+ze ACUERDO No. VOG
+C- 13 JUN 2016 )
+| Gráfico 1. Estructura empresarial 2015
+| Pymes Grande
+y
+8,30% 0,50%
+|
+Microempresa |
+91,02% l
+[Y AAA)
+Fuente: Elaboración propia con base en Informe final de Jurisdicción Cámara de
+Comercio Cgena-2015.
+Tabla 200
+MICRO ES GRANDES
+2520
+empresas empresas
+y
+. $6,25
+$391,9 mil $38,38
+$660,02 mil $10 billones
+[menes | tomes]
+Fuente: Informe jurisdicción Cámara de Comercio 2015.
+316
+
+
+## Página 317 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. COG
+(— 43JUN 2016 >)
+Gráfico2. Empleo reportado por tamaño de empresas,
+2015
+Ñ
+Fuente: Elaboración propia con base en Informe final de Jurisdicción
+Cámara de Comercio Cgena-2015
+Lo anterior evidencia como las grandes empresas tienen un nivel de activos
+superior, pero no son estas las que mayor número de empleos genera, pues es
+superior la cifra de empleos generados registrada por las Pymes. Es importante
+entonces destacar, que se evidencia un crecimiento notorio en la creación de
+pequeñas y medianas empresas, generando una cifra significativa de empleo, y
+asu vez, un buen valor de activos.
+Desempeño productivo y su crecimiento
+El Distrito de Cartagena por ser la capital del departamento de Bolívar, es el
+principal motor de crecimiento del departamento. Las actividades económicas
+que más se destacan son: La industria manufacturera con un 19,1%, en segundo
+Ns lugar, las actividades de servicios a las empresas exceptuando los servicios
+financieros e inmobiliarios con un 5,9% y en tercer lugar se encuentra el comercio
+y la construcción con un 5,2%, tal como lo muestra el gráfico 3.
+Lo anterior refleja que la industria manufacturera sigue siendo la principal
+actividad económica, cabe destacar que haciendo un comparativo con el año
+2010, esta actividad ha disminuido su participación mientras que sectores como la
+construcción y las obras civiles han tomado fuerza y mejorado su participación en
+el PIB departamental.
+317
+
+
+## Página 318 (OCR Oficial Acuerdo 006 de 2016)
+
+AOS
+(El - y Concejo Distrital de Cartagena de Indias D. T. y C.
+A e E
+pS
+á z ACUERDO No. ODO
+(13 JUN 2016 )
+Gráfico 3. Aportes % al PIB departamental
+2014
+Construcción de edificaciones... |, 52 |
+Educación de no mercado 18
+|
+o
+7 | |
+Hoteles, restaurantes, bares y. 5 | |
+| 1] V
+y Transporte por vía terrestre 3%, | | 22014
+9 |
+4, | | m2010
+Administración pública y defensa; . 28 |
+Comercio 84 | |
+a
+Industria manufacturera a,
+0 5 10 15 20 25
+Fuente: Fuente: Elaboración propia con base en DANE
+Empleo
+Se tiene en cuenta el análisis de indicador de desempleo y subempleo
+u entendiendo que a través de este se diagnostica la capacidad del sistema
+productivo de incluir a las personas que desean insertarse en el mercado laboral,
+siendo el subempleo un indicador que nos permite analizar el porcentaje de
+aquellos que logran insertarse en condiciones no favorables.
+318
+
+
+## Página 319 (OCR Oficial Acuerdo 006 de 2016)
+
+El eo: Y Concejo Distrital de Cartagena de Indias D. T. y C.
+i— E
+AS ACUERDO No. OOS
+> ( A3JÚN 2016 )
+Gráfico 4. Tasa de desempleo 2001-2015
+18,5 ——
+16,5 ; ——
+14,5 | _
+P 125 -— y Y A Cartagena
+10,55 [ >> => ——=Nacional
+8 AA A -
+e. __>z>_——
+y 3883885882: 82:32
+1 388823888223 2333
+IAAAAAAAAAAAANAR
+Fuente: Elaboración propia con base en DANE
+A partir del 2010, la ciudad ha mostrado una tendencia a la baja en la tasa de
+desempleo; obras como la expansión de la refinería, han requerido de gran
+cantidad de mano de obra, pero, es importante resaltar que dicha obra pronto
+finalizará, y que se debe impulsar la creación de empresas, para la generación de
+empleo, aumentando el capital humano y generando así competencias que
+estén a un nivel competitivo entre las empresas.
+Gráfico 5. Subempleo
+q  (AÓAá=>Xl mm A AAA
+NM l
+27 Ps =>
+É 2 | ——Cartagena
+q —— y TARO ——Nacional
+| Ny, Y
+12 II ooo ———eu
+Ss 8 9 5 gora. 2. : 2.
+REESE ERES
+Fuente: Elaboración propia con base en DANE
+Tal y como se evidencia en el gráfico 5, el subempleo a pesar de ser inferior al
+promedio nacional, sigue registrando cifras elevadas, y su tendencia es a la alza.
+319
+
+
+## Página 320 (OCR Oficial Acuerdo 006 de 2016)
+
+[El * Concejo Distrital de Cartagena de Indias D. T. y C.
+A E
+> ACUERDO No. OOG>
+(— 13JUN 2016 )
+Por otro lado, de las cifras presentadas sobre ingresos, pobreza y desempleo,
+cabe resaltar que: muy a pesar de que la dinámica productiva de la ciudad ha
+impulsado un importante crecimiento económico, en términos de variables
+macroeconómicas como el PIB, y en cuanto a la reducción del desempleo, pero,
+es importante aclarar, que dicho crecimiento no se ha traducido en un mejor
+desarrollo económico, pues es evidente que la tasa de subempleo tiende a la
+alza y esto es un signo de que a pesar de haber puestos de trabajos ocupados, el
+trabajo no responde a los ideales de los profesionales.
+” Tabla 201
+Empleo por Actividad Económica
+e Amat Sept- Nov Sept- Nov
+Actividad Económica 2014 2015
+2.053
+Agricultura, pesca, ganadería, caza y silvicultura 3.521
+Explotación de Minas y Canteras 7.839 3.357
+Industria manufacturera. 43.099 40.637
+u Suministro de Electricidad Gas y Agua 2.594 3.093
+Construcción 40.563
+Comercio, hoteles y restaurantes
+127.843 135.527
+Transporte, almacenamiento y comunicaciones 57.491 60.531
+Intermediación financiera 6,227 3.297
+Actividades inmobiliarias. empresariales y de 35.292 34.498
+alquiler
+320
+
+
+## Página 321 (OCR Oficial Acuerdo 006 de 2016)
+
+(El l Concejo Distrital de Cartagena de Indias D. T. y C.
+7) ACUERDO No. O0OG
+(13 JUN 2016 )
+A Sept- Nov Sept- Nov
+Actividad Económica 2014 2015
+103.917
+Servicios comunales, sociales y personales 106.773
+Total Ocupados 428.639 | 427.504
+Fuente: Fuente: DANE — GEIH, Informe de Jurisdicción Cámara de Comercio 2015
+hd De las 428.639 personas ocupadas, 127.843 obtienen empleo por medio de
+actividades como el comercio, hoteles y restaurantes, mientras que es importante
+destacar la participación en cuanto a número de personas ocupadas en
+actividades de servicio comunal, social y personal. Es evidente que a pesar de
+que la actividad de la industria manufacturera genera una buena cifra de
+activos, en cuanto a la ocupación, tiene la cuarta posición con un total de 43.099
+puestos ocupados.
+Tabla 202
+Inversión 2015
+Actividad INK (SM)
+¡Y Industria manufacturera MIN 68.341,6
+Transporte y
+almacenamiento 61.734,90
+Ce nena
+Comercio ol por mayor y al por menor MA 41.623,20
+Actividades de servicios administrativas de apoyo 27.182,70
+Actividades Inmobiliarias [|] 22.952,90
+Fuente: Informe jurisdicción Cámara de Comercio 2015
+321
+
+
+## Página 322 (OCR Oficial Acuerdo 006 de 2016)
+
+(El Ñ a Concejo Distrital de Cartagena de Indias D. T. y C.
+A— E
+Ss ACUERDO No.00S
+(13 JUN 2016)
+De las principales actividades económicas de Cartagena, la industria
+manufacturera representa el mayor monto destinado a inversión. Durante el año
+2015, se registraron 68.341,6 INK [$M) en esta industria, 61.734,90 INK [$M) en
+transporte y almacenamiento y en tercer lugar, el sector de la construcción con
+un monto de 44.980,30 INK ($M). La explicación a las grandes inversiones en el
+sector de la industria manufacturera, se debe en gran parte a la expansión de la
+refinería de Cartagena, la cual ha tenido la inversión más alta en toda
+Latinoamérica.
+Tabla 203
+NW Exportaciones e Importaciones
+Exportaciones Importaciones
+Actividad Actividad
+económica Participación económica Participación
+Químicos industriales 68,20% Químicos industriales 31,50%
+9,60% Refinería de petróleo 26,10%
+Derivados del 14,80%
+lonria petróleo
+Fabricación de 5,80%
+productos
+alimenticios
+N 4,90%
+Papel y sus 2.50% Maquinaria excluida
+productos 2 la eléctrica
+Material de
+transporte 3,90%
+2,50%
+Metálicas básicas de
+hierro y acero
+Fabricación de 3,70%
+Producción 2,10% productos
+Agropecuaria l alimenticios
+Metalmecánica 1,70% Metálicas básicas de
+322
+
+
+## Página 323 (OCR Oficial Acuerdo 006 de 2016)
+
+no
+El —J Concejo Distrital de Cartagena de Indias D. T. y C.
+iA— E
+S A ACUERDO No. COG
+<D
+(43 JUN 2016 )
+Exportaciones Importaciones
+Actividad Actividad
+económica Participación económica Participación
+A A AO
+Fuente: DIAN- informe de jurisdicción Cámara de comercio 2015
+NM
+Participación porcentual de las exportaciones de bolivar
+según país de destino, 2015
+a Brasil
+mPerú
+m Ecuador
+m Estados Unidos
+Ns
+
+Fuente: Elaboración propia con base en informe de jurisdicción Cámara de
+
+comercio 2015
+
+En cuanto a exportaciones, los productos químicos industriales son los de mayor
+
+volumen de exportación con un 68.2%, en segundo lugar están los plásticos con
+
+tan solo 9.6%, lo que marca una gran diferencia destacando entonces, que los
+
+productos industriales son los que aportan significativamente al movimiento de las
+
+exportaciones de bolívar.
+
+323
+
+
+## Página 324 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. COS
+(13 JUN 2016 )
+Por otro lado, el principal socio comercial de Bolívar es Brasil con un 21.8% de las
+exportaciones del departamento, seguido de Ecuador y Perú con 7.7% y 7.2%
+respectivamente.
++ Inflación:
+Cartagena 2016 (hasta marzo 31): 7,4
+Colombia 2016 (hasta marzo 31): 7,98
+. PIB
+10)
+Gráfico 7. Variación PIB -Bolívar
+15,0% -  _  __—__ _ _ _—-
+a
+2 10,0% E [A —— . —
+3 5,0% —
+le 5%
+E. — —  —_Z  _ 7%
+2011 2014
+50% 011 2012 2013 J
+-—-Bolivar
+Fuente: Elaboración propia con base en DANE
+Ns En cuanto a la tendencia del PIB para Bolívar en los años 2012 y 2013 presentó
+comportamientos favorables, alcanzando su máximo en el año 2013 con un 9.9%,
+pero, es preocupante la tendencia que desde el año 2014 presenta, pues esta es
+decreciente y de hecho su variación fue negativa con un -0.7%.
+Población total de Cartagena
+324
+
+
+## Página 325 (OCR Oficial Acuerdo 006 de 2016)
+
+(El e de Concejo Distrital de Cartagena de Indias D. T. y C.
+E E
+AS ACUERDO No. DOG
+(13 JUN 2016 )
+1.200.000
+800.000
+600.000
+É-_—__—-——_————_—_———— —K—K<á
+400.000
+200.000
+Ñ
+7 2006 2008 2007 2008 2009 2010 2011 2012 2013 2014 2015
+——Total ——Hombres  ——Mujeres
+Fuente: Censo DANE Proyección poblacional 2005-2015
+Según estimaciones del Departamento Administrativo Nacional de Estadística
+([DANE), para la vigencia 2015 la Población Total de Cartagena es igual a
+1.001.755 habitantes, de los cuales el 51,67% son mujeres y el 48,33%, hombres.
+Para la vigencia 2016, la Población Total de Cartagena llegaría a ser igual a
+1.013.389 habitantes, de los cuales 523.353 son mujeres lo que representa el 51,64%
+y 490.036 son hombres, es decir, un 48,36%. Entre 2005 y 2015, la población de
+Cartagena pasó de 893.033 habitantes a 1.001.755 habitantes, equivalente a un
+xs crecimiento del 12,17%. En promedio, la población cartagenera ha crecido
+anualmente a una tasa igual a 1,16%, durante el período de análisis.
+325
+
+
+## Página 326 (OCR Oficial Acuerdo 006 de 2016)
+
+(El > o) Concejo Distrital de Cartagena de Indias D. T. y C.
+Art ACUERDO No. CO6S>
+AB JUN 2016)
+Gráfico 9. Desigualdad 2002-2014
+0,580
+0.560 EC A««m>>
+0,540
+0,520
+0,500
+0,480
+0,460
+0,440 A A AA Á A Á
+ga 8 3 8 8 E 2 3 2 2 YE
+u SN 8 8 8 8 8 NR RN 82 8
+—— Cartagena ———Nacional
+Fuente: Elaboración propia con base en DANE
+Gráfico 10. Pobreza monetaria 2002-2014
+5 ___ _->-_  _ ____———-
+50 ( _(EÁ _—_a—_ _—_—_
+40 IIA Ty AOAAXÉÁ
+30 - zz ————— -
+2  _ > > -  _ __ ___ _—
+ww 1 __—_—_— _—___—— —_—————>>>>>>>>>>—————mm>kAA«>á]—]
+¡D QA
+xa 2 D Dd 2 2 NN mm y
+3858888553335
+SS dd A A A NN NS AS SNS A QA
+——Cartagena ——Nacional
+Fuente: Elaboración propia con base en DANE
+La desigualdad en Cartagena es inferior a la Nacional, pero a pesar de alcanzar
+su mínimo en el año 2005, esta tiene una tendencia a seguir creciendo, lo que
+podría explicar que en Cartagena hay concentración de riqueza. Por otro lado, la
+pobreza monetaria a lo largo de los años ha presentado comportamientos
+326
+
+
+## Página 327 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. DOG
+CC 13JUN 2016 )
+decrecientes a partir del año 2010, lo que explica que existen menos personas en
+condiciones salariales mínimas.
+Calificación de Riesgo del Distrito: incidencia de la calificación AA-
+El Distrito de Cartagena de Indias, se caracteriza por contar con una economía
+sólida, sus principales actividades económicas están relacionadas con la industria,
+el turismo, el comercio y la logística internacional, destacando que el puerto de la
+ciudad es el que mayor carga mueve en el país, tanto de exportación, como de
+importación.
+NM Después de analizar todas y cada una de las variables financieras, económicas y
+de gestión de la ciudad, la calificadora Fitch Ratings, da la calificación de:
++ Escala local:
+Largo plazo: AA-(col)
+Corto plazo: F1+[col)
++. Perspectiva crediticia:
+Largo plazo: Negativa
+Fitch Ratings en su informe de calificación publicado el 22 de abril aclara, que
+dicha calificación fue otorgada por ciertos factores, tales como:
++ Riesgo indirecto por cuenta de Transcaribe
++ Contingencias judiciales
+Ny + Riesgo del sector descentralizado por contingencias provenientes de:
+Empresa de Desarrollo Urbano de Bolívar, la empresa Social del Estado,
+Transcaribe y el fondo de Interés Social y Reforma Urbana Distrital
+Según el informe de FitchRatings (2016), dicha calificación obedece a una muy
+alta calidad crediticia. Implica Una muy sólida calidad crediticia respecto de
+otros emisores o emisiones del país. El riesgo crediticio inherente a estas
+obligaciones financieras difiere levemente de los emisores o emisiones domésticas
+mejor calificadas.
+De lo anterior, se puede concluir que el Distrito puede acceder , si así lo
+considera, a Un nuevo cupo de endeudamiento para financiar su Plan de
+Desarrollo 2016-2019, incluyendo las acciones que permitan garantizar la deuda
+327
+
+
+## Página 328 (OCR Oficial Acuerdo 006 de 2016)
+
+nos
+(4 — Concejo Distrital de Cartagena de Indias D. T. yC
+ts CUERDO No. OOG,
+que adquiera su entidad descentralizada TRANSCARIBE, como operador del
+Sistema Integrado de Transporte Masivo -SITM-.
+ANÁLISIS DE LOS INGRESOS, GASTOS Y SERVICIO DE LA DEUDA EN EL PERIODO 2012-
+2015
+Ingresos totales 2012-2015
+Los ingresos totales en estos últimos 4 años han tenido Una variación significativa
+del 67% al pasar de $1.213.082 millones de pesos en la vigencia 2012 a $2.025.302
+millones en la vigencia 2015, es decir, los ingresos casi se han duplicado.
+Y
+Tabla 204
+[ae [> 8 Jos [ARAGON
+po || esisios| ssmzadoslo]  Jerasasmam] asesora cores | 40% |
+poe | saamsmeso] — seoraseasco| — sootoo977] — seemowos7| 0% |
+[reicipecioes |” orasarosse]  enomoas[  somsima] 110000225009] 106]
+[Recursos Fondos Especiales | 520306260382) 725 x50330200] pcia ao] cosas2mmsas[ 30%]
+[Esaeciiento Públeos | 2650700] asmaszr625| ammm] seomase| 1109 ]
+[Sistema Generale geles | 1902692290] 19202706788] armocsasee]  anocsmooosÍ| am]
+Fuente: MFMP 2015-202512
+Los Ingresos generados por los Fondos Especiales son los que más representación
+tienen dentro del total de los Ingresos, esto debido a que aquí se encuentran las
+NG transferencias realizadas a los Fondos de Educación y Salud por el nivel central, sin
+embargo, de la vigencia 2012 donde participaban con un 43% han disminuido al
+representar en la vigencia 2015 un 34% del total de ingresos.
+Aunque la participación dentro del total de los ingresos ha disminuido, en términos
+generales de la vigencia 2012 a la vigencia 2015 estos se han incrementado en un
+34%, al pasar de $520.346 millones a $695.352 millones.
+* Los datos referentes a indicadores financieros (Ingresos, gastos y deuda) están soportados en el
+MFMP 2015-2025, estos datos no sufrieron modificación con la actualización del Marco Fiscal
+realizada el 22 de abril de 2016.
+328
+
+
+## Página 329 (OCR Oficial Acuerdo 006 de 2016)
+
+E Ly Concejo Distrital de Cartagena de Indias D. T. y C.
+zu ACUERDO No. COGS
+==
+C- 13 JUN 2016 )
+y 0 qq
+700.000 ———
+3 600.000 1] 2012
+400.000 2014
+300.000 | h -— 3015
+200.000 | Ñ
+00. _ E
+S $ ra e e
+S PES e A
+CEA
+E 7
+NW
+Fuente: MFMP 2015-2025
+
+Los Ingresos Corrientes de Libre Destinación (ICLD), los cuales son aquellos con
+que cuenta el Distrito para gastar e invertir en programas que considere
+prioritarios de acuerdo con las condiciones y necesidades de la ciudad. Y
+representan la segunda fuente en importancia de ingresos del Distrito, han
+
+aumentado en un 40% de la vigencia 2012 a 2015.
+
+Los ICLD se componen de los Ingresos Tributarios (Impuesto Predial Unificado,
+
+Impuesto de Industria y Comercio y Delineación Urbana) y los No Tributarios
+(Arrendamientos, Alquileres, Multas y Sanciones, entre otros).
+
+Los ICLD está representado mayoritariamente por los Ingresos Tributarios, estos
+
+5 corresponde casi el 100% de todo este rubro. Por tal razón se profundiza en el
+recaudo total de estos impuestos.
+
+Tabla 205
+IO O A TO
+AseLamosT]  SAAZLAI] — BOSIAOS609| — MATA
+[mpuslo Pedal Unificado 136908589475] —187861307.M05| — 219512698385] — 21719293766
+Impuesto de Industria y Comercio 18548594025] 201610974534] — 218932370718] — 283094208779
+
+Fuente: MFMP 2015-2025
+
+329
+
+
+## Página 330 (OCR Oficial Acuerdo 006 de 2016)
+
+(E sl E) Concejo Distrital de Cartagena de Indias D. T. y C.
+pp AS)
+A ACUERDO No. VOS
+(43 JUN 2016 )
+El recaudo del impuesto de Delineación Urbana casi se ha duplicado de la
+vigencia 2012 a la vigencia 2015, creciendo en promedio 16%, se destaca la
+vigencia 2014 donde creció un 48% al pasar de $5.474 millones de 2013 a $8.097
+millones, para la vigencia 2015 presentó una disminución de 10%.
+En el mismo período, el recaudo de los impuestos predial e ICA también se han
+incrementado en 59% y 26% respectivamente. Del impuesto predial se destaca el
+periodo 2012-2013 en donde se incrementó un 37%, jalonado principalmente por
+las vigencias anteriores que aumentaron un 97% debido a los incentivos tributarios
+generados de pagar la vigencia 2010 y anteriores (incluyendo intereses), mientras
+Ns que el recaudo de la vigencia 2014-2015 disminuyó en un 1%. El Impuesto de
+Industria y Comercio ha crecido en promedio 8%.
+Impuesto Predial e Ica
+500.000.000.000  --———  _______-
+400.000.000.000. —— AITOR A
+300.000.000.000 _ _ - q IAS
+200.000.000.000 q AMA2< <ÁA4+>—>
+100.000.000.000  ——————  ______ _- _
+2012 2013 2014 2015
+impuesto Predial Unificado A Impuesto de Industria y Comercio
+NY
+Los ingresos corrientes de Destinación específica (ICDE) al igual que las
+Participaciones, han aumentado levemente en un 8% y 17% respectivamente.
+Destacando que en la vigencia 2015 se realizó el prepago de la Deuda Externa
+con el Banco Internacional de Reconstrucción y Desarrollo - BIRF y el cual tenía
+destinado el 18% del Impuesto Predial Unificado para cumplir con dicha
+obligación.
+Los recursos de capital, han pasado de $213.145 millones en la vigencia 2012 a
+$616.835 millones en la vigencia 2015, lo que representa Un incremento de 189%.
+En estos recursos se destaca el crédito interno realizado por valor de $250.000
+millones en donde la vigencia 2014 se hizo Un desembolso de $105.000 millones y
+330
+
+
+## Página 331 (OCR Oficial Acuerdo 006 de 2016)
+
+(ES Y Concejo Distrital de Cartagena de Indias D. T. yC
+3 E, ACUERDO No. OOC
+e ( A1A3SIUN 2016)
+
+en la vigencia 2015 el restante de $145.000 millones, este crédito tuvo como fin
+invertir en infraestructura, salud y educación principalmente. Esta es una de las
+principales razones por las que la participación de los recursos de capital en el
+total de los ingresos haya aumentado, de representar en la vigencia 2012 el 18% a
+representar en la vigencia 2015 el 30%.
+Los ingresos generados por los Establecimientos públicos, es otra fuente a
+destacar por la variabilidad presentada entre las vigencia 2012-2015 de 111%, al
+pasar de $26.591 millones a $56.046 millones, lo que significa $29.459 millones
+adicionales.
+
+ws
+En los establecimientos públicos se destaca el incremento en los ingresos del IDER
+Instituto de Deportes y Recreación- de un 89% en el periodo en estudio, jalonado
+principalmente por el incremento en el recaudo de la sobretasa deportiva que se
+incrementó en este mismo porcentaje. Otro ingreso a destacar se presenta en
+Distriseguridad, en donde el impuesto de Obras Viales pasó de $3.918 millones en
+el 2012 a $17.049 en el 2015 e incidió para que se presentara un 138% en el
+Gumento del ingreso de este establecimiento público. Por Último el ingreso del
+Colegio Mayor de Bolívar, presenta una variación de 187% del 2012 al 2015, al
+pasar de $4.440 millones a $12.688 millones destacado por los Aportes de la
+Nación que se incrementaron en un 113%.
+Las regalías pasaron de $18.026 millones en la vigencia 2012 a $86.065 millones en
+la vigencia 2015, siendo esta ultima cifra un valor acumulado de las asignaciones
+del Distrito ejecutadas y no ejecutadas por la no aprobación de proyectos,
+
+ud resaltando que desde la vigencia 2012 entró en vigencia el nuevo Sistema
+General de Regalías (SGR), que sólo permite registrar las Ejecuciones
+Presupuestales una vez sean aprobados los proyectos por los Órganos Colegiados
+de Administración y Decisión [OCAD).
+
+331
+
+
+## Página 332 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. OV06S>
+( 13 JUN 2016 )
+Gastos del Distrito 2012-2015
+Gráfico1. Gastos totales Gráfico3. Gastos de
+del Distrito funcionamiento del Distrito
+2.000.000.000.000 200.000.000.000
+1.500.000.000.000 150.000.000.000 _——
+1.000.000.000.000 100.000.000.000
+> 500.000.000.000 50.000.000.000
+NM
+0 0
+2012 2013 2014 2015 2012 2013 2014 2015
+Gráfico5. Gastos de
+funcionamiento Institutos
+descentralizados
+40.000.000.000
+30.000.000.000 “NS
+20.000.000.000
+10.000.000.000
+o
+2012 2013 2014 2015
+Ny
+Fuente: MFMP 2015-2025
+332
+
+
+## Página 333 (OCR Oficial Acuerdo 006 de 2016)
+
+(E me E) Concejo Distrital de Cartagena de Indias D. T. y C.
+A— E
+S z ACUERDO No. VOS
+(13 JUN 2016 )
+Análisis de Gastos Distrito de Cartagena 2012-2015
+Tabla 206
+GASTOS 2012 2013 2014 2015 Variación A
+ato. oerazorza soraoroosa EIA
+del distrito 908.316.737.233 | 1.224.706.808.930 | 1.507.409.014.068 85%
+Gastos de
+142.909.142.305 | 168.431.785.053 | 174.981.669.725 | 205.393.081.236 44%
+Ns 705.698.439.896 | 967.466.031.101 |1.215.682.939.250 | 1.312.670.974.916 86%
+Fuente: MFMP 2015-2025
+Gastos: 2012-2015
+2.000.000.000.000
+1.500.000.000.000
+1.000.000.000.000 SO
+500.000.000.000
+nd -
+2012 2013 2014 2015
+—e- Gastos totales del distrito Gastos de funcionamiento
+—+-- Gastos de inversión
+Fuente: MEFMP 2015-2025
+Los gastos totales del Distrito de Cartagena desde el año 2012 presentan un
+comportamiento creciente, se evidencia por un aumento en los gastos de
+inversión y en menos proporción, por el gasto en funcionamiento.
+333
+
+
+## Página 334 (OCR Oficial Acuerdo 006 de 2016)
+
+Concejo Distrital de Cartagena de Indias D. T. y C.
+ACUERDO No. 0OGS
+C— 13JUN 2016 ) :
+Los gastos se han aumentado en cierta parte, por un jalonamiento en el gasto
+que ha hecho el distrito en cuanto a inversión, con una variación porcentual de
+86% desde el año 2012 al año 2015. Esa inversión fue mayor en cuanto a
+educación, salud, siguiendo los objetivos y estrategias plasmados en el plan de
+desarrollo que estuviese vigente en los años estudiados. Por otra parte, los gastos
+de funcionamiento han tenido una variación porcentual de 44%, jalonado por el
+gasto en servicios personales, y en cuanto los gastos de funcionamiento por parte
+de los descentralizados, es importante aclarar que para el año 2014, muchas de
+estas entidades no enviaron la información de tipo financiero, por lo que se
+puede inferir que la reducción que se evidencia del año 2014 al 2015, puede ser
+NW producto de esa falta de información.
+En general, los gastos totales del distrito han registrado una variación positiva del
+85%, y cabe resaltar, que los gastos en los que ha incurrido el distrito en cuanto a
+los institutos descentralizados, han mostrado una tendencia a crecer, pero no
+significativa en comparación con el gasto total, de funcionamiento y de inversión.
+SERVICIO DE LA DEUDA
+El servicio de la Deuda pasó de $49.378 millones en la vigencia 2012 a $78.554
+millones en la vigencia 2015, es decir se incrementó en un 59%. Mientras que en la
+vigencia 2012 la Deuda Interna participó en el servicio de la Deuda con un 54% y
+la Deuda Externa con un 46%, para la vigencia 2015 esta participación se
+intercambió siendo la Deuda Externa la que mayor participación presentó con un
+52%, esto generado por el prepago de la Deuda Externa con el Banco
+v Internacional de Reconstrucción y Desarrollo - BIRF
+Tabla 207
+SERODELADEA das | | 106 SAA] 0% | SI m0 |
+64548920] 50% [ RMN 0 | ISA] 54 | III 8 |
+DEIDAENERA AAEAOAAAEmME
+Fuente: MFMP 2015-2025
+334
+
+
+## Página 335 (OCR Oficial Acuerdo 006 de 2016)
+
+IAS
+(El cl Concejo Distrital de Cartagena de Indias D. T. y C.
+xn as ACUERDO No. VO6>
+C- 43 JUN 2010 )
+
+DEUDA INTERNA
+En la composición de la Deuda Interna para la vigencia 2015, se le agrega el
+nuevo Crédito Sindicado por $250.000 millones, adicional al crédito sindicado de
+2009 por valor de $100.000 y una Sustitución de la Deuda Interna desembolsada
+en las Vigencias 2006 y 2007. A sí mismo, el saldo más representativo dentro del
+total de la Deuda pública Interna del Distrito de Cartagena para esta vigencia es
+el Crédito Sindicado que representa 96% y el 4% restante, corresponde al Crédito
+con el Banco Agrario para la Sustitución de la deuda adquirida en las Vigencias
+2006 y 2007.
+
+No
+El primer crédito sindicado se realizó mediante el Acuerdo 21 de Diciembre 17 de
+2008, en donde el Honorable Concejo Distrital de Cartagena autorizó a la
+Alcaldesa Mayor a la celebración de operaciones de crédito público hasta por la
+suma de $100.000 millones, con el fin de financiar los proyectos de inversión
+contemplados en el Plan de Desarrollo 2008-2011: “Por Una Sola Cartagena”. El 30
+de Diciembre de 2009 se desembolsó en su totalidad el Crédito Interno Sindicado
+con pignoración de rentas por la suma de $100.000 millones.
+Las principales condiciones de este Crédito fueron de un plazo de 84 meses, un
+periodo de gracia de 18 meses, amortizaciones trimestre vencido y las rentas
+pignoradas: IPU, ICAT y AVISOS, TABLEROS y VALLAS
+El nuevo Crédito Sindicado 2014, mediante el Acuerdo 002 de Marzo 21 de 2014,
+el Honorable Concejo Distrital de Cartagena autorizó al Alcalde Mayor a la
+
+Ú celebración de operaciones de crédito público hasta por la suma de $250.000
+millones, con el fin de financiar los proyectos de inversión contemplados en el Plan
+de Desarrollo “Ahora Si Cartagena”.
+Las principales condiciones de este Crédito fueron de Un plazo de 84 meses, un
+periodo de gracia de 1l2meses, amortizaciones mes vencido y las rentas
+pignoradas: IPU, ICAT y AVISOS, TABLEROS y VALLAS, SGP PROPOSITO GENERAL.
+Para el crédito de Sustitución, se firmó el 4 de junio de 2010 con el Banco Agrario
+de Colombia S.A. un Contrato de Empréstito y Pignoración de Rentas por la suma
+de $12.468.750.000 para la Sustitución de los Pasivos (Créditos desembolsados en
+las vigencias 2006 y 2007).
+
+335
+
+
+## Página 336 (OCR Oficial Acuerdo 006 de 2016)
+
+ki —_ Concejo Distrital de Cartagena de Indias D. T. y C.
+Al ACUERDO No. COS
+== 1
+(18 JÓN 2018.)
+El perfil de vencimiento de la Deuda Interna se muestra en la siguiente gráfica:
+2013 2014 2015 2016 2017 2018 2019 2020
+
+Fuente: Área de Crédito Público - Tesorería Distrital
+DEUDA EXTERNA
+La Deuda Externa estaba compuesta por el crédito adquirido con el BANCO
+INTERNACIONAL DE RECONSTRUCCIÓN Y DESARROLLO - BIRF y el BANCO
+INTERAMERICANO DE DESARROLLO - BID.
+
+u En la vigencia 2015 se pre pagó la Deuda con el BIRF, Por lo que la amortización
+de capital aumentó en un 118% de la vigencia 2012 a la vigencia 2015, al pasar
+de pagar $17.420 millones a $38.027 millones.
+
+ESTRATEGIAS FINANCIERAS
+El Distrito de Cartagena de Indias ha alcanzado un avance en la medición de
+desempeño fiscal, pasando de la categoría vulnerable (2009) a la categoría
+sostenible (2013), este avance se materializa en importantes conclusiones sobre el
+estado actual de las finanzas públicas:
+
+Y El porcentaje de ingresos por transferencias muestra una tendencia
+creciente lo que evidencia una gestión favorable para jalonar dichos
+recursos.
+
+336
+
+
+## Página 337 (OCR Oficial Acuerdo 006 de 2016)
+
+ON
+(E —J Concejo Distrital de Cartagena de Indias D. T. y C.
+A— uE
+IE, ACUERDO No. DOG
+(13 JUN 2016 )
+
+Y Del año 2013 al 2014 se evidencia un crecimiento considerable del
+porcentaje de ingresos propios lo que muestra un importante esfuerzo
+fiscal, este porcentaje muestra adicionalmente que los ingresos no son
+mayoritariamente dependientes de las transferencias y este esfuerzo
+permite la financiación del gasto en razón al cumplimiento de las
+competencias territoriales.
+
+Y Más de la mitad del gasto de la entidad es destinado a la inversión lo que
+permite el incremento en la capacidad de producción y prestación de
+servicios por parte de la entidad.
+
+Y El porcentaje de capacidad de ahorro muestra una tendencia creciente y
+al ser comparado con el nivel departamental es considerablemente
+superior.
+
+NN Y El porcentaje de desempeño fiscal ha mostrado un comportamiento
+constante manteniéndose por encima del indicador promedio que es de
+68,8 para 2014, lo que concluye un comportamiento fiscal estable, aun así
+se genera el reto de incrementar el porcentaje para posicionarse en las
+mejores calificaciones (superior al 90%).
+Lo anterior evidencia un panorama positivo frente al estado de las finanzas
+públicas de la ciudad de cara a la responsabilidad de atender las necesidades
+básicas insatistechas de la ciudadanía cartagenera, a pesar de esto los esfuerzos
+que debe enfrentar la administración para atender las necesidades de inversión
+son múltiples, entre estos esfuerzos se señalan:
+Fortalecimiento de los Ingresos tributarios y no tributarios:
+El Fortalecimiento de los ingresos representa una de las estrategias fundamentales
+para esta administración a través de la cual se pretende generar un aumento en
+A los recursos destinados a inversión. A través de la actualización y consolidación
+del MFMP 2016-2026 se ha proyectado un incremento de los impuestos
+sustentados en:
+
+“Fortalecimiento de la gestión de fiscalización y cobro.
+
+-Aprovechamiento del impacto de las estrategias de localización de nuevas
+
+empresas en la ciudad.
+
+-Impacto de la reforma tributaria Nacional y de la implementación de la
+
+reforma al estatuto tributario del Distrito,
+
+A continuación se evidencia el incremento proyectado de los citados
+
+impuestos:
+
+337
+
+
+## Página 338 (OCR Oficial Acuerdo 006 de 2016)
+
+ZA
+ES e y Concejo Distrital de Cartagena de Indias D. T. y C.
+iZ E
+e ACUERDO No. VOS
+(13 JUN 2016 )
+Proyección IPU-ICA
+2016-2026
+600.000.000.000
+500.000.000.000
+400.000.000.000 A ÑU
+300.000.000.000 a | jo
+200.000.000.00 ¿Na
+100.000.000.000 |
+Y : Proy Proy Proy Proy Proy Proy Proy Proy Proy Proy Proy
+2016 2017 2018 2019 2020 2021 2022 2023 2024 2025 2026
+mas PU mas ICA +++ +<<+> Lineal (IPU) += Lineal (ICA)
+Fuente: MFMP 2016-2026
+
+1. Implementación de un presupuesto inteligente que fortalezca la coherencia
+entre el gasto y las prioridades de la administración, para esto se fortalecerá la
+planeación y programación del presupuesto público identificando en este
+ejercicio necesidades de reasignación de recursos de ICLD.
+
+2. Reforma al estatuto tributario buscando el incremento en el recaudo de
+ingresos tributarios y no tributarios, el fortalecimiento de la estructura de
+cobranza y recuperación de la cartera actual. Se busca propiciar una
+estrategia de cultura tributaria y fortalecer los procesos de fiscalización y
+cobros coactivo y persuasivo para incrementar el presupuesto de ingresos a
+
+uy través del robustecimiento de la base tributaria.
+
+Con la intención de fortalecer los ingresos tributarios del Distrito de Cartagena
+de Indias, a través de la Unidad de Cobro Coactivo y bajo la coordinación de
+la Tesorería Distrital, se adelantaran procesos de cobro coactivos contra
+contribuyentes morosos por el pago del impuesto predial unificado.
+Los cuales representan en capital una obligación superior a los
+$158.721.000.000,00 (CIENTO CINCUENTA Y OCHO MIL SETECIENTOS VEINTIUN
+MILLONES DE PESOS).
+Desplegando actividades de emisión de embargos masivos, con los que se
+espera recaudar [bajo constitución de títulos de depósito judicial), el
+equivalente al 30% de la obligación principal en un plazo no superior a 3
+meses.
+
+338
+
+
+## Página 339 (OCR Oficial Acuerdo 006 de 2016)
+
+El $ Concejo Distrital de Cartagena de Indias D. T. y C.
+A— E
+=D. a ACUERDO No. ODO
+
+— (413 JUN 2016 )
+
+3. Diversificación de las fuentes de financiación a través de la presentación de
+propuestas a fondos reembolsables y no reembolsables del orden nacional e
+internacional, como: INNPULSA, CAF, GTZ, BID, PROEXPORT, BANCOLDEX, entre
+otros.
+
+4. Alianzas con el nivel Departamental para el acceso a recursos asignados al
+Departamento de Bolívar provenientes del Sistema General de Regalías, se
+fortalecerá la relación entre ambas entidades buscando la financiación de
+proyectos de inversión de impacto departamental a través de las
+asignaciones directas, el fondo de compensación Regional, el Fondo de
+Desarrollo Regional y el Fondo de Ciencia, Tecnología e Innovación del
+
+, Departamento.
+SU
+
+5. Racionalización de los gastos de funcionamiento, para lo cual se promoverá
+un gobierno austero que optimice los ingresos distritales y racionalice los gastos
+de funcionamiento, generando un ahorro operacional y mejorando la calidad
+del gasto público.
+
+6. Implementar una estrategia de modernización administrativa que permita el
+fortalecimiento del recurso humano de la secretaría de hacienda y la
+generación de procesos y procedimientos claros para cumplir con eficiencia,
+oportunidad, transparencia y economía las funciones misionales y
+garantizando el aumento de las capacidades para gestionar las finanzas del
+Distrito.
+
+FUENTES NO RECURRENTES
+Sabemos que alcanzar el sueño del Programa de Gobierno "Primero La Gente”
+w no lo haremos únicamente con nuestras fuentes tradicionales de ingresos, por eso
+se hace necesario buscar alternativas de financiación para fortalecer y dar
+cumplimiento a nuestros programas, metas y proyectos contemplados en la parte
+estratégica del documento. Por lo tanto, hemos considerado algunas fuentes no
+recurrentes o alternativas, que se orientarían primordialmente a los sectores
+
+sociales con énfasis en educación y salud, así como ala infraestructura y
+
+equipamiento de la ciudad para hacer de Cartagena una ciudad sostenible y
+
+competitiva: Plan 4C, Drenajes Pluviales, Caños y Lagos y Malla Vial, entre otros.
+
+A continuación se mencionan dichas fuentes:
+
++ Recursos provenientes del Sistema General de Regalías, para lo cual se
+fortalecerá la capacidad técnica para la formulación y presentación de
+339
 
 
 ## Página 340 (OCR Oficial Acuerdo 006 de 2016)

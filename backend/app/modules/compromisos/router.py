@@ -26,6 +26,10 @@ from app.modules.compromisos.google_workspace_sync_service import (
 from app.modules.compromisos.ingesta_masiva_excel import detectar_extension_archivo
 from app.modules.compromisos.ingesta_masiva_service import RAIZ_INGESTA, IngestaMasivaService
 from app.modules.compromisos.inteligencia_triada_service import InteligenciaTriadaService
+from app.modules.compromisos.motor_multiagente_pdd import (
+    ejecutar_sistema_multiagente_pdd,
+    obtener_estado_sistema_multiagente_pdd,
+)
 from app.modules.compromisos.pdd_dea_service import PddDeaService, pre_serialized_response
 from app.modules.compromisos.repository import CompromisosRepository
 from app.modules.compromisos.schemas import (
@@ -122,6 +126,23 @@ async def google_workspace_sincronizar_pdd_only(
 )
 async def pdd_seguridad_humana_comparativo(session: SessionDependency):
     return await PddDeaService(session).comparativo_seguridad_humana_pdd_only()
+
+
+@router.post(
+    "/triada/pdd-dea/ejecutar-sistema-multiagente",
+    dependencies=[Depends(requerir_permiso("seguimiento:gestionar", nivel_minimo="declarada"))],
+    summary="Absorber PDD/PDL, reconstruir el diagnóstico y actualizar Matriz_PDM y Analisis",
+)
+async def ejecutar_multiagente_pdd(sujeto: SujetoAutenticadoDep):
+    return await ejecutar_sistema_multiagente_pdd(publicar=True, persistir=True)
+
+
+@router.get(
+    "/triada/pdd-dea/estado-sistema-multiagente",
+    summary="Consultar cobertura, puertas de calidad y bitácora de los cinco agentes PDD",
+)
+async def estado_multiagente_pdd():
+    return obtener_estado_sistema_multiagente_pdd()
 
 
 def get_compromisos_service(session: SessionDependency) -> CompromisosService:
