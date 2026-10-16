@@ -885,3 +885,51 @@ Estas proporciones son indicadores exploratorios, no una serie homogénea: 2012 
 **Estructura de `Analisis` (documento de diseño estratégico PDD-only):** 1) alcance y límites (sin PA/mesas; Seguridad Humana 2026 como lente retrospectiva); 2) corpus, actos, metodología y calidad de extracción; 3) definición de frontalidad, multidimensionalidad y reglas contra doble conteo; 4) fichas por cada uno de los cinco PDD; 5) PPI comparado y fuentes, precios, funcionamiento y periodos no comparables; 6) metas y cadena estratégica; 7) evolución 2012–2027 y respuesta sustentada a las cuatro preguntas; 8) apéndice separado de los tres PDL; 9) limitaciones, vacíos de fuente, decisiones pendientes y registro de trazabilidad. Las cifras no reconciliadas se presentan como brechas, no se rellenan.
 
 **Recomendación de cierre 15A:** aprobar primero la reconstrucción estructural y financiera con los criterios de las puertas A/B. No emitir todavía clasificación cuantitativa final ni “ganador” de profundidad estratégica. La única conclusión comparativa actual defendible es que el PDD 2024–2027 tiene la línea más explícitamente rotulada como Seguridad Humana; la comparación sustantiva requiere completar y adjudicar las fuentes y metas faltantes de 2012, 2013, 2016, 2020 y PDL.
+
+## Entrega [MOTOR-EXTRACCION-HOMOLOGACION-PDD-SEGURIDAD-HUMANA-16]
+
+**Estado:** ejecutado en `main`; reconstrucción en `bd_csh`, API PDD-only, publicación en vivo de `Matriz_PDM` y `Analisis`. No se incorporaron datos de Planes de Acción ni resultados de mesas.
+
+### Motor y reconstrucción de `bd_csh`
+
+- Se añadió `backend/scripts/reconstruir_catalogo_pdd_seguridad_humana_16.py`, transaccional e idempotente. Lee el corpus oficial disponible, rehace parent_id por plan, repara PPI del PDD 2012, 2013, 2016 y 2020, marca fuente/base de precios, clasifica A/B/C/N y enlaza las metas a nodos del mismo plan. Ejecuté el motor dos veces consecutivas y el segundo resultado fue estable.
+- Los siete fragmentos OCR de metas 2012 se sustituyeron por los siete compromisos legibles en la visión del PDF oficial, con indicador, línea base, meta 2015, eje correcto y procedencia de páginas impresas 1–2. El catálogo deja claro que son los compromisos de la visión, no un censo de todas las matrices sectoriales.
+- PDD 2016 quedó en 3 objetivos y 8 líneas canónicas. El parser conserva los subtotales por objetivo de la Tabla 209 y consolida en ocho líneas las partidas reales. El acuerdo declara `$4.331.941.000.000`; sus subtotales por objetivo suman `$4.331.939.000.000` y el detalle de líneas no desglosa `$3.421.000.000` del objetivo 3. Se conserva el remanente en el nivel objetivo/N y se documenta la diferencia de `$2.000.000` frente al total oficial; no se redistribuye a líneas.
+- PDD 2020 se reconstruyó desde la tabla financiera en millones de COP: 4 pilares, 21 líneas y 87 programas, con base de precios de diciembre de 2019. El PPI reportado es `$6.022.982.660.000`; la línea `10.4.3` de Convivencia y Seguridad suma `$62.628.600.000`. El importe no cubierto por nodos financieros identificables queda como brecha en N.
+- Quedaron **484 nodos** entre los cinco PDD y tres PDL. Se retiró el encabezado OCR falso hallado; el conteo de encabezados `Página X` restantes es **0**. Las **2.078 metas** tienen enlace no nulo a un nodo válido de su propio plan (**0 inválidos / 0 sin vínculo**). Se preservan **273 duplicados secundarios** de 2024 con su procedencia; quedan **1.404 metas canónicas PDD** y **401 metas PDL** (universo PDL separado).
+- Los vectores A/B reparten cada peso en las siete dimensiones sin duplicación. Para los cinco PDD, `A+B+C+N` reconcilia al PPI oficial constante 2025 dentro de tolerancia de redondeo; la suma de las siete dimensiones reconcilia con A+B. La brecha de fuente se incluye en N y se muestra además como columna de memo no sumable. PPI constante 2025 (miles de millones COP) y categorías resumidas:
+
+| PDD | PPI constante 2025 | A | B | C | N (incluye brecha) |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 2012–2015 | 5.657,101 | 0,000 | 0,000 | 5.657,101 | 0,000 |
+| 2013–2015 | 3.348,649 | 0,000 | 0,000 | 3.348,649 | 0,000 |
+| 2016–2019 | 6.688,427 | 271,557 | 3.257,781 | 2.818,721 | 340,367 |
+| 2020–2023 | 8.834,719 | 21,154 | 3.608,052 | 5.080,560 | 124,954 |
+| 2024–2027 | 12.967,649 | 256,041 | 6.238,803 | 6.443,524 | 29,282 |
+
+En 2012 y 2013 el PPI solo aparece a nivel de eje/objetivo, insuficiente para atribuir importes A/B por programa: por eso la clasificación financiera queda contextual y no se presenta como gasto de Seguridad Humana comprobado. Las metas sí se clasifican individualmente cuando su objeto lo permite. En 2016 hay tres registros de tipo objetivo estructural, no metas cuantificadas de producto/resultado.
+
+### Anexo PDL separado
+
+| PDL | PPI declarado COP | Inversión documentada COP | Funcionamiento documentado COP | Metas |
+| --- | ---: | ---: | ---: | ---: |
+| Localidad 1 | 97.691.041.529 | 90.822.361.529 | 6.868.680.000 | 110 |
+| Localidad 2 | 161.289.996.409,01 | 154.248.545.013,45 | 7.041.451.395,56 | 89 |
+| Localidad 3 | 46.000.000.000 | 39.000.000.000 | 7.000.000.000 | 202 |
+
+Los tres PDL se mantienen fuera del denominador PDD; los importes de inversión y funcionamiento aparecen en columnas separadas.
+
+### API y publicación en vivo
+
+- Se agregó `GET /api/v1/compromisos/triada/pdd-dea/seguridad-humana-comparativo` y `POST /api/v1/compromisos/triada/google-workspace/sincronizar-pdd-only`; ambos quedaron registrados en `docs/permisos-api.md`. La respuesta comparativa contiene 5 PDD, 3 PDL, 484 nodos, 1.404 metas canónicas PDD y 401 metas PDL.
+- `Matriz_PDM` ahora tiene las 7 pestañas PDD-only solicitadas: guía, comparativo de 5 PDD, 361 nodos PDD, matriz de 7 dimensiones, 1.404 metas, cuatro preguntas estratégicas y anexo con 3 PDL/401 metas. La dimensión incluye presupuesto A+B y conteo de metas A+B ponderado.
+- En el documento de Drive se actualizó el título a **“Analisis · Diagnóstico PDD y Seguridad Humana 2012–2027”** y el contenido a siete capítulos. Tiene estilos nativos HEADING_1/HEADING_2, cuatro tablas nativas (arquitectura, frontalidad, 7 dimensiones y PDL) y seis PNG de 300 DPI embebidos. Los 4 gráficos de Sheets quedaron insertados en `Matriz_PDM`.
+- Lectura posterior desde Sheets API v4 y Docs API v1: 7 títulos esperados, 4 gráficos nativos, 1.405 filas (encabezado + metas) en el catálogo, 406 filas (encabezados/resúmenes + 401 metas) en PDL; Doc con 7 H1, 52 H2, 4 tablas (filas 6/6/36/4) y 6 imágenes. La validación del cuerpo no encontró cifras de PA (`225.380`, `NETWORK DEA PA`) ni frases que afirmen resultados de mesas realizadas. El comparativo HTTP local respondió 200 y la ruta pública de PNG respondió 200 `image/png`.
+- La hoja de Planes de Acción no se modificó. La sincronización escribió únicamente los IDs de `Matriz_PDM` y `Analisis`.
+
+### Validación y límites de la evidencia
+
+- `ruff check` sobre los archivos de backend tocados: **PASS**. `pytest` sobre el motor nuevo, `test_pdd_dea_triada.py` y `test_access_policy.py`: **137 passed**.
+- `polis-backend.service` quedó activo luego del reinicio y la sincronización final terminó en `SINCRONIZADO_PDD_ONLY` el 16/10/2026 a las 18:57 UTC.
+- Las fuentes 2012/2016/PDL 2 presentan OCR/tablas escaneadas incompletas. El PDF oficial 2012 permitió rescatar siete compromisos de visión, pero no reconstruye todo su inventario de metas. La extracción de texto del PDF 2016 devuelve páginas en blanco; sus tres objetivos no se presentan como metas cuantificadas. En 2013 el PPI disponible se refiere a 2014–2015 y no se imputa 2013. En 2020 permanece una brecha de nodos financieros; las cifras son PPI formulado, no ejecución. El informe y las tablas señalan estos límites.
+- No se alteró `src/**`. `bridge/01_tarea_codex.md` ya estaba modificado como tarea de entrada y queda fuera de este commit. Entrega registrada para commit local en `main`; no se hizo push.

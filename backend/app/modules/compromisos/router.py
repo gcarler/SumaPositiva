@@ -105,6 +105,25 @@ async def google_workspace_sincronizar(session: SessionDependency, sujeto: Sujet
     return await GoogleWorkspaceSyncService(session).sincronizar_workspace()
 
 
+@router.post(
+    "/triada/google-workspace/sincronizar-pdd-only",
+    dependencies=[Depends(requerir_permiso("seguimiento:gestionar", nivel_minimo="declarada"))],
+    summary="Publicar exclusivamente la comparación PDD y el anexo PDL separado",
+)
+async def google_workspace_sincronizar_pdd_only(
+    session: SessionDependency, sujeto: SujetoAutenticadoDep
+):
+    return await GoogleWorkspaceSyncService(session).sincronizar_pdd_only()
+
+
+@router.get(
+    "/triada/pdd-dea/seguridad-humana-comparativo",
+    summary="Comparación de estructura, PPI y metas PDD por frontalidad y siete dimensiones",
+)
+async def pdd_seguridad_humana_comparativo(session: SessionDependency):
+    return await PddDeaService(session).comparativo_seguridad_humana_pdd_only()
+
+
 def get_compromisos_service(session: SessionDependency) -> CompromisosService:
     return CompromisosService(CompromisosRepository(session))
 

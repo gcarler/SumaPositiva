@@ -29,7 +29,31 @@ CHART_NAMES = (
     "fig4_network_dea_29_entidades.png",
     "fig5_evaluacion_financiera_historica_pdd.png",
     "fig6_cumplimiento_planes_accion_y_verbos_dnp.png",
+    "pdd16_fig1_ppi_frontalidad.png",
+    "pdd16_fig2_siete_dimensiones.png",
+    "pdd16_fig3_metas_resultado_producto.png",
+    "pdd16_fig4_frontalidad_y_profundidad.png",
+    "pdd16_fig5_serie_financiera_pdd.png",
+    "pdd16_fig6_anexo_financiero_pdl.png",
 )
+PDD_ONLY_CHARTS = (
+    "pdd16_fig1_ppi_frontalidad.png",
+    "pdd16_fig2_siete_dimensiones.png",
+    "pdd16_fig3_metas_resultado_producto.png",
+    "pdd16_fig4_frontalidad_y_profundidad.png",
+    "pdd16_fig5_serie_financiera_pdd.png",
+    "pdd16_fig6_anexo_financiero_pdl.png",
+)
+PDD_ONLY_SHEETS = [
+    "00_Guia_Alcance_y_Calidad",
+    "01_Comparativo_5_PDD",
+    "02_Arquitectura_y_PPI_Programas",
+    "03_Matriz_7_Dimensiones_SH",
+    "04_Catalogo_Metas_Unicas_PDD",
+    "05_Abordaje_Estrategico_4_Preguntas",
+    "06_Anexo_3_PDL_Localidades",
+]
+PDD_ONLY_ANALYSIS_TITLE = "Analisis · Diagnóstico PDD y Seguridad Humana 2012–2027"
 
 ROOT = Path(__file__).resolve().parents[4]
 SERVICE_ACCOUNT = ROOT / "backend/.secrets/gdrive-service-account.json"
@@ -299,6 +323,793 @@ class GoogleWorkspaceSyncService:
         }
         self._write_state(result)
         return result
+
+    async def sincronizar_pdd_only(self) -> dict[str, Any]:
+        """Publish only the district PDD matrix and its PDD-only technical document."""
+        if self.session is None:
+            raise RuntimeError("La publicación requiere sesión de base de datos")
+        token = await self._access_token()
+        data = await PddDeaService(self.session).comparativo_seguridad_humana_pdd_only()
+        self._generate_pdd_only_charts(data)
+        pdm_id, sheet_ids = await self._prepare_spreadsheet(
+            token, FILES["pdm"]["id"], PDD_ONLY_SHEETS
+        )
+        sheet_values = self._pdd_only_values(data)
+        await self._write_sheets(token, pdm_id, sheet_ids, sheet_values)
+        await self._write_pdd_only_charts(token, pdm_id, sheet_ids)
+        report, report_tables = self._pdd_only_report(data)
+        self._report_tables = report_tables
+        await self._write_document(token, FILES["analisis"]["id"], report)
+        await self._request(
+            "PATCH",
+            f"https://www.googleapis.com/drive/v3/files/{FILES['analisis']['id']}",
+            token,
+            params={"supportsAllDrives": "true"},
+            json={"name": PDD_ONLY_ANALYSIS_TITLE},
+        )
+        verified = await self._verify_pdd_only(token)
+        result = {
+            "estado": "SINCRONIZADO_PDD_ONLY",
+            "sincronizado_en": datetime.now(UTC).isoformat(),
+            "archivos_actualizados": [FILES["pdm"]["id"], FILES["analisis"]["id"]],
+            "resumen": {
+                "planes_distritales": len(data["planes_pdd"]),
+                "pdl_anexo_separado": len(data["anexo_pdl"]),
+                "nodos": len(data["nodos"]),
+                "metas_canonicas_pdd": sum(plan["metas_unicas"] for plan in data["planes_pdd"]),
+                "metas_pdl": sum(plan["metas_unicas"] for plan in data["anexo_pdl"]),
+                "imagenes_png_300_dpi": len(PDD_ONLY_CHARTS),
+            },
+            "verificacion": verified,
+        }
+        self._write_state(result)
+        return result
+
+    @staticmethod
+    def _pdd_only_values(data: dict[str, Any]) -> list[list[list[Any]]]:
+        pdds = data["planes_pdd"]
+        intro = [
+            [
+                "POLIS · MATRIZ COMPARADA DE PLANES DE DESARROLLO DISTRITAL",
+                "PDD-Only",
+                "Corte documental 2012–2027",
+            ],
+            [
+                "Alcance",
+                "Cinco PDD distritales; los tres PDL se informan en hoja territorial independiente.",
+            ],
+            [
+                "Exclusiones",
+                "No se incorporan registros de Planes de Acción ni resultados de mesas de trabajo.",
+            ],
+            [
+                "Mesas",
+                "Las 37 mesas permanecen PROGRAMADAS; no hay hallazgos participativos en este documento.",
+            ],
+            [
+                "Moneda constante",
+                "COP base 2025; factores IPC anual DANE codificados en pdd_dea_service._money_factor.",
+            ],
+            [
+                "Clasificación",
+                "A núcleo frontal; B determinante directo; C contextual/habilitante; N funcionamiento, no asociado o brecha no desagregada.",
+            ],
+            [
+                "Regla financiera",
+                "Cada monto se registra una vez en el nodo financiado más profundo; la brecha no desagregada se incluye en N y se muestra como memo, no sumable.",
+            ],
+            [
+                "Calidad",
+                "La cobertura documental varía por plan. Una cifra ausente en la fuente no se imputa.",
+            ],
+            [
+                "PPI no es ejecución",
+                "Los valores corresponden al Plan Plurianual de Inversiones formulado, no a ejecución certificada.",
+            ],
+        ]
+        comparison = [
+            [
+                "Código",
+                "Periodo",
+                "Plan",
+                "PPI total en base de fuente COP",
+                "Base de precios de fuente",
+                "PPI total constante 2025 COP",
+                "Total A+B+C+N reconciliado 2025 COP",
+                "Memo: brecha dentro de N (no sumar) 2025 COP",
+                "A núcleo 2025 COP",
+                "B directo 2025 COP",
+                "C contextual 2025 COP",
+                "N no asociado + brecha 2025 COP",
+                "% A",
+                "% A+B",
+                "Metas únicas",
+                "Resultado",
+                "Producto",
+                "Objetivos estructurales no cuantificados",
+                "Profundidad cadena %",
+            ]
+        ]
+        for plan in pdds:
+            finance = plan["ppi_por_frontalidad_constante_2025_cop"]
+            source_total = plan["ppi_total_corriente_cop"]
+            a, b = finance["A_NUCLEO_FRONTAL"], finance["B_DETERMINANTE_DIRECTO"]
+            ppi_total = plan["ppi_total_constante_2025_cop"]
+            comparison.append(
+                [
+                    plan["codigo_plan"],
+                    plan["periodo"],
+                    plan["nombre"],
+                    source_total,
+                    plan["metadata"].get("base_precios", "COP corrientes"),
+                    ppi_total,
+                    plan["ppi_asignable_constante_2025_cop"],
+                    plan["ppi_sin_desagregacion_constante_2025_cop"],
+                    a,
+                    b,
+                    finance["C_CONTEXTUAL_HABILITANTE"],
+                    finance["N_NO_ASOCIADO_FUNCIONAMIENTO"],
+                    (a / ppi_total if ppi_total else None),
+                    ((a + b) / ppi_total if ppi_total else None),
+                    plan["metas_unicas"],
+                    plan["metas_resultado"],
+                    plan["metas_producto"],
+                    plan["metas_objetivo_estructural"],
+                    plan["profundidad_cadena_pct"],
+                ]
+            )
+        architecture = [
+            [
+                "Plan",
+                "Periodo",
+                "Nivel",
+                "Código",
+                "Nodo",
+                "ID padre",
+                "PPI anual fuente (JSON)",
+                "PPI anual constante 2025 (JSON)",
+                "PPI asignable corriente COP",
+                "PPI asignable 2025 COP",
+                "Frontalidad",
+                "Dimensión primaria",
+                "Pesos 7D (JSON)",
+                "Fuente",
+            ]
+        ]
+        for plan in pdds:
+            for node in plan["nodos"]:
+                annual = node["ppi_anual_cop"] or {}
+                base_2019 = node["metadatos"].get("base_precios") == "COP constantes diciembre 2019"
+                constant = {
+                    str(year): float(amount or 0)
+                    * __import__(
+                        "app.modules.compromisos.pdd_dea_service", fromlist=["_money_factor"]
+                    )._money_factor(2019 if base_2019 else int(year))
+                    for year, amount in annual.items()
+                }
+                architecture.append(
+                    [
+                        plan["codigo_plan"],
+                        plan["periodo"],
+                        node["nivel"],
+                        node["codigo"],
+                        node["nombre"],
+                        node["parent_id"],
+                        json.dumps(annual, ensure_ascii=False),
+                        json.dumps(constant, ensure_ascii=False),
+                        node.get("ppi_asignable_corriente_cop", 0),
+                        node.get("ppi_asignable_constante_2025_cop", 0),
+                        node["grado_frontalidad_sh"],
+                        node["dimension_sh_primaria"],
+                        json.dumps(node["pesos_7d"], ensure_ascii=False),
+                        node["fuente"],
+                    ]
+                )
+        dims = [["Dimensión SH (asignación A+B)", *[plan["codigo_plan"] for plan in pdds]]]
+        for dimension in data["dimensiones"]:
+            dims.append(
+                [dimension, *[plan["ppi_por_7d_constante_2025_cop"][dimension] for plan in pdds]]
+            )
+        dims.append(
+            [
+                "Metas canónicas A+B ponderadas (conteo, sin duplicación)",
+                *[
+                    sum(
+                        float(goal["pesos_7d"].get(dimension, 0))
+                        for goal in plan["metas"]
+                        for dimension in data["dimensiones"]
+                    )
+                    for plan in pdds
+                ],
+            ]
+        )
+        dims.append(
+            [
+                "% del PPI A+B asignado a dimensión",
+                *[
+                    sum(plan["ppi_por_7d_constante_2025_cop"].values())
+                    / max(
+                        1,
+                        plan["ppi_por_frontalidad_constante_2025_cop"]["A_NUCLEO_FRONTAL"]
+                        + plan["ppi_por_frontalidad_constante_2025_cop"]["B_DETERMINANTE_DIRECTO"],
+                    )
+                    for plan in pdds
+                ],
+            ]
+        )
+        goals = [
+            [
+                "Plan",
+                "Tipo",
+                "Código meta",
+                "Meta / resultado",
+                "Indicador",
+                "Unidad",
+                "Línea base",
+                "Meta cuatrienio",
+                "Línea / referencia",
+                "Nodo enlazado ID",
+                "Frontalidad",
+                "Dimensión primaria",
+                "Pesos 7D",
+                "Fuente",
+                "Fila fuente",
+                "Ocurrencia canónica",
+            ]
+        ]
+        for plan in pdds:
+            for goal in plan["metas"]:
+                goals.append(
+                    [
+                        plan["codigo_plan"],
+                        goal["tipo_meta"],
+                        goal["codigo"],
+                        goal["nombre"],
+                        goal["indicador"],
+                        goal["unidad_medida"],
+                        goal["linea_base"],
+                        goal["meta_cuatrienio"],
+                        goal["linea_nombre"],
+                        goal["linea_id"],
+                        goal["grado_frontalidad_sh"],
+                        goal["dimension_sh_primaria"],
+                        json.dumps(goal["pesos_7d"], ensure_ascii=False),
+                        goal["fuente"],
+                        goal["fila_fuente"],
+                        goal["unica"],
+                    ]
+                )
+        q4 = [["Pregunta estratégica", "Plan", "Lectura del diseño con evidencia disponible"]]
+        for plan in pdds:
+            architecture_levels = ", ".join(
+                f"{n}: {sum(x['nivel'] == n for x in plan['nodos'])}"
+                for n in sorted({x["nivel"] for x in plan["nodos"]})
+            )
+            q4.extend(
+                [
+                    [
+                        "P1 · Arquitectura y problema",
+                        plan["codigo_plan"],
+                        f"{plan['nombre']}; {architecture_levels}. Las metas se leen con el alcance de fuente indicado en la guía.",
+                    ],
+                    [
+                        "P2 · Metas y presupuesto",
+                        plan["codigo_plan"],
+                        f"PPI nominal {plan['ppi_total_corriente_cop']:.0f} COP; asignación en nodos clasificados {plan['ppi_asignable_constante_2025_cop']:.0f} COP constantes 2025; {plan['metas_unicas']} metas únicas.",
+                    ],
+                    [
+                        "P3 · Frontalidad y estrategia",
+                        plan["codigo_plan"],
+                        f"Frontalidad A={(plan['ppi_por_frontalidad_constante_2025_cop']['A_NUCLEO_FRONTAL'] / plan['ppi_total_constante_2025_cop'] if plan['ppi_total_constante_2025_cop'] else 0):.1%}; profundidad estructural {plan['profundidad_cadena_pct']:.1f}%. Etiqueta temática y diseño programático se interpretan por separado.",
+                    ],
+                    [
+                        "P4 · Evolución",
+                        plan["codigo_plan"],
+                        "El plan se compara por su diagnóstico, arquitectura, metas y PPI. Los documentos disponibles delimitan la fuerza de la conclusión; no se infiere causalidad de resultados observados.",
+                    ],
+                ]
+            )
+        pdl_rows = [
+            [
+                "Plan local",
+                "Localidad",
+                "PPI total COP en base de fuente",
+                "PPI constante 2025 estimado COP",
+                "Inversión directa declarada COP",
+                "Funcionamiento identificado COP",
+                "Metas vinculadas",
+                "Nota de alcance",
+            ]
+        ]
+        for plan in data["anexo_pdl"]:
+            metadata = plan["metadata"]
+            pdl_rows.append(
+                [
+                    plan["nombre"],
+                    plan["codigo_plan"].split("_")[1],
+                    plan["ppi_total_corriente_cop"],
+                    plan["ppi_total_constante_2025_cop"],
+                    metadata.get("ppi_inversion_directa_cop"),
+                    metadata.get("ppi_funcionamiento_cop"),
+                    plan["metas_unicas"],
+                    "Denominador local separado del PPI de los cinco PDD; la fuente y el tipo de gasto constan en metadatos.",
+                ]
+            )
+        pdl_rows.append(
+            [
+                "METAS LOCALES · UNIVERSO SEPARADO DEL PDD",
+                "Localidad",
+                "Plan",
+                "Tipo",
+                "Código",
+                "Meta / resultado",
+                "Indicador",
+                "Unidad",
+                "Nodo enlazado",
+                "Fuente",
+            ]
+        )
+        for plan in data["anexo_pdl"]:
+            for goal in plan["metas"]:
+                pdl_rows.append(
+                    [
+                        plan["codigo_plan"].split("_")[1],
+                        plan["nombre"],
+                        plan["codigo_plan"],
+                        goal["tipo_meta"],
+                        goal["codigo"],
+                        goal["nombre"],
+                        goal["indicador"],
+                        goal["unidad_medida"],
+                        goal["linea_id"],
+                        goal["fuente"],
+                    ]
+                )
+        return [intro, comparison, architecture, dims, goals, q4, pdl_rows]
+
+    def _generate_pdd_only_charts(self, data: dict[str, Any]) -> None:
+        import matplotlib
+
+        matplotlib.use("Agg")
+        import matplotlib.pyplot as plt
+        import numpy as np
+
+        CHART_DIR.mkdir(parents=True, exist_ok=True)
+        pdds = data["planes_pdd"]
+        labels = [plan["codigo_plan"].replace("PDD_", "") for plan in pdds]
+        colors = ["#9B1C31", "#D17A22", "#397A66", "#3D6686"]
+
+        def save(fig: Any, index: int) -> None:
+            fig.tight_layout()
+            fig.savefig(
+                CHART_DIR / PDD_ONLY_CHARTS[index], dpi=300, facecolor="white", bbox_inches="tight"
+            )
+            plt.close(fig)
+
+        fig, ax = plt.subplots(figsize=(10, 6))
+        bottom = np.zeros(len(pdds))
+        for grade, label, color in zip(
+            (
+                "A_NUCLEO_FRONTAL",
+                "B_DETERMINANTE_DIRECTO",
+                "C_CONTEXTUAL_HABILITANTE",
+                "N_NO_ASOCIADO_FUNCIONAMIENTO",
+            ),
+            (
+                "A · Núcleo frontal",
+                "B · Determinantes directos",
+                "C · Contextual",
+                "N · No asociado",
+            ),
+            colors,
+            strict=True,
+        ):
+            values = np.array(
+                [plan["ppi_por_frontalidad_constante_2025_cop"][grade] / 1e12 for plan in pdds]
+            )
+            ax.bar(labels, values, bottom=bottom, label=label, color=color)
+            bottom += values
+        ax.set_title("PPI clasificable por frontalidad · COP constantes de 2025")
+        ax.set_ylabel("Billones de COP")
+        ax.legend(frameon=False)
+        save(fig, 0)
+
+        fig, ax = plt.subplots(figsize=(11, 6))
+        x = np.arange(len(data["dimensiones"]))
+        width = 0.15
+        for i, plan in enumerate(pdds):
+            values = [
+                plan["ppi_por_7d_constante_2025_cop"][dimension] / 1e12
+                for dimension in data["dimensiones"]
+            ]
+            ax.bar(x + (i - 2) * width, values, width, label=labels[i])
+        ax.set_xticks(
+            x, [d.replace("Seguridad ", "") for d in data["dimensiones"]], rotation=20, ha="right"
+        )
+        ax.set_title("Presupuesto A+B distribuido entre las siete dimensiones")
+        ax.set_ylabel("Billones de COP constantes 2025")
+        ax.legend(frameon=False)
+        save(fig, 1)
+
+        fig, ax = plt.subplots(figsize=(10, 6))
+        x = np.arange(len(pdds))
+        width = 0.36
+        result = [plan["metas_resultado"] for plan in pdds]
+        product = [plan["metas_producto"] for plan in pdds]
+        ax.bar(x - width / 2, result, width, label="Resultado / bienestar", color="#397A66")
+        ax.bar(x + width / 2, product, width, label="Producto", color="#3D6686")
+        ax.set_xticks(x, labels, rotation=15, ha="right")
+        ax.set_title("Metas únicas por tipo · corpus documental enlazado")
+        ax.legend(frameon=False)
+        save(fig, 2)
+
+        fig, ax = plt.subplots(figsize=(9, 6))
+        for plan, label, color in zip(pdds, labels, colors + ["#775A9E"], strict=True):
+            denominator = plan["ppi_total_constante_2025_cop"] or 1
+            frontal = (
+                plan["ppi_por_frontalidad_constante_2025_cop"]["A_NUCLEO_FRONTAL"]
+                / denominator
+                * 100
+            )
+            depth = plan["profundidad_cadena_pct"]
+            ax.scatter(frontal, depth, s=110, color=color, label=label)
+            ax.annotate(
+                label, (frontal, depth), xytext=(6, 5), textcoords="offset points", fontsize=8
+            )
+        ax.set_xlabel("Frontalidad de núcleo A (% del PPI constante 2025)")
+        ax.set_ylabel("Nodos con padre (%; profundidad estructural disponible)")
+        ax.set_title("Frontalidad presupuestal y profundidad de cadena")
+        ax.legend(frameon=False)
+        save(fig, 3)
+
+        fig, ax = plt.subplots(figsize=(10, 6))
+        nominal = np.array([plan["ppi_total_corriente_cop"] / 1e12 for plan in pdds])
+        constant = np.array([plan["ppi_total_constante_2025_cop"] / 1e12 for plan in pdds])
+        x = np.arange(len(pdds))
+        ax.bar(x - 0.18, nominal, 0.36, label="Nominal reportado", color="#D17A22")
+        ax.bar(x + 0.18, constant, 0.36, label="Constante 2025", color="#3D6686")
+        ax.set_xticks(x, labels, rotation=15, ha="right")
+        ax.set_ylabel("Billones de COP")
+        ax.set_title("PPI total por periodo del plan · bases de precios documentadas")
+        ax.legend(frameon=False)
+        save(fig, 4)
+
+        fig, ax = plt.subplots(figsize=(9, 6))
+        pdl = data["anexo_pdl"]
+        pdl_labels = [
+            plan["codigo_plan"].replace("PDL_", "Localidad ").replace("_2024_2027", "")
+            for plan in pdl
+        ]
+        pdl_amounts = [plan["ppi_total_corriente_cop"] / 1e9 for plan in pdl]
+        ax.bar(pdl_labels, pdl_amounts, color=["#557A95", "#7A9E7E", "#B98755"])
+        ax.set_title("Anexo PDL · PPI reportado por localidad, sin sumar al PDD")
+        ax.set_ylabel("Miles de millones de COP")
+        save(fig, 5)
+
+    async def _write_pdd_only_charts(
+        self, token: str, spreadsheet_id: str, sheet_ids: list[int]
+    ) -> None:
+        url = f"https://sheets.googleapis.com/v4/spreadsheets/{spreadsheet_id}"
+        book = await self._request("GET", url, token, params={"fields": "sheets(charts(chartId))"})
+        requests = [
+            {"deleteEmbeddedObject": {"objectId": chart["chartId"]}}
+            for sheet in book.get("sheets", [])
+            for chart in sheet.get("charts", [])
+        ]
+
+        def source(sheet: int, rows: tuple[int, int], cols: tuple[int, int]) -> dict[str, Any]:
+            return {
+                "sheetId": sheet_ids[sheet],
+                "startRowIndex": rows[0],
+                "endRowIndex": rows[1],
+                "startColumnIndex": cols[0],
+                "endColumnIndex": cols[1],
+            }
+
+        specs = [
+            (
+                "PPI constante 2025 por frontalidad A/B/C/N",
+                source(1, (1, 6), (0, 1)),
+                [source(1, (1, 6), (column, column + 1)) for column in range(8, 12)],
+                "COLUMN",
+                (18, 0),
+            ),
+            (
+                "Distribución presupuestal por siete dimensiones",
+                source(3, (1, 8), (0, 1)),
+                [source(3, (1, 8), (column, column + 1)) for column in range(1, 6)],
+                "COLUMN",
+                (18, 9),
+            ),
+            (
+                "Metas únicas de resultado y producto por PDD",
+                source(1, (1, 6), (0, 1)),
+                [source(1, (1, 6), (15, 16)), source(1, (1, 6), (16, 17))],
+                "COLUMN",
+                (38, 0),
+            ),
+            (
+                "Frontalidad A frente a profundidad de cadena",
+                source(1, (1, 6), (0, 1)),
+                [source(1, (1, 6), (12, 13)), source(1, (1, 6), (18, 19))],
+                "COLUMN",
+                (38, 9),
+            ),
+        ]
+        for title, domain, series_ranges, chart_type, anchor in specs:
+            requests.append(
+                {
+                    "addChart": {
+                        "chart": {
+                            "spec": {
+                                "title": title,
+                                "basicChart": {
+                                    "chartType": chart_type,
+                                    "legendPosition": "BOTTOM_LEGEND",
+                                    "domains": [{"domain": {"sourceRange": {"sources": [domain]}}}],
+                                    "series": [
+                                        {"series": {"sourceRange": {"sources": [item]}}}
+                                        for item in series_ranges
+                                    ],
+                                    "stackedType": "STACKED"
+                                    if title.startswith("PPI constante 2025")
+                                    else "NOT_STACKED",
+                                },
+                            },
+                            "position": {
+                                "overlayPosition": {
+                                    "anchorCell": {
+                                        "sheetId": sheet_ids[0],
+                                        "rowIndex": anchor[0],
+                                        "columnIndex": anchor[1],
+                                    },
+                                    "widthPixels": 620,
+                                    "heightPixels": 340,
+                                }
+                            },
+                        }
+                    }
+                }
+            )
+        await self._request("POST", f"{url}:batchUpdate", token, json={"requests": requests})
+
+    @staticmethod
+    def _pdd_only_report(data: dict[str, Any]) -> tuple[str, list[tuple[str, list[list[Any]]]]]:
+        plans = data["planes_pdd"]
+        names = [
+            "En Cartagena Hay Campo para Todos",
+            "Ahora Sí Cartagena",
+            "Primero la Gente",
+            "Salvemos Juntos a Cartagena",
+            "Cartagena, Ciudad de Derechos",
+        ]
+        plan_by_code = {plan["codigo_plan"]: plan for plan in plans}
+        pdd_codes = [
+            "PDD_2012_2015",
+            "PDD_2013_2015",
+            "PDD_2016_2019",
+            "PDD_2020_2023",
+            "PDD_2024_2027",
+        ]
+        architecture = [[
+            "Código", "Plan", "Periodo", "Nodos por nivel", "Metas únicas",
+            "Resultado/bienestar", "Producto", "Objetivos estructurales sin cuantificar",
+            "PPI en base de fuente COP", "PPI constante 2025 COP",
+        ]]
+        for index, code in enumerate(pdd_codes):
+            plan = plan_by_code.get(code)
+            if not plan:
+                continue
+            counts: dict[str, int] = {}
+            for node in plan["nodos"]:
+                counts[node["nivel"]] = counts.get(node["nivel"], 0) + 1
+            architecture.append(
+                [
+                    code,
+                    names[index],
+                    plan["periodo"],
+                    json.dumps(counts, ensure_ascii=False),
+                    plan["metas_unicas"],
+                    plan["metas_resultado"],
+                    plan["metas_producto"],
+                    plan["metas_objetivo_estructural"],
+                    plan["ppi_total_corriente_cop"],
+                    plan["ppi_total_constante_2025_cop"],
+                ]
+            )
+        frontal = [
+            [
+                "Plan",
+                "A núcleo frontal COP 2025",
+                "B determinantes directos COP 2025",
+                "C habilitante COP 2025",
+                "N no asociado + brecha sin desagregar COP 2025",
+                "% A del PPI oficial constante",
+                "% A+B del PPI oficial constante",
+                "Profundidad estructural",
+            ]
+        ]
+        for plan in plans:
+            finance = plan["ppi_por_frontalidad_constante_2025_cop"]
+            total = plan["ppi_total_constante_2025_cop"] or 1
+            frontal.append(
+                [
+                    plan["codigo_plan"],
+                    finance["A_NUCLEO_FRONTAL"],
+                    finance["B_DETERMINANTE_DIRECTO"],
+                    finance["C_CONTEXTUAL_HABILITANTE"],
+                    finance["N_NO_ASOCIADO_FUNCIONAMIENTO"],
+                    finance["A_NUCLEO_FRONTAL"] / total,
+                    (finance["A_NUCLEO_FRONTAL"] + finance["B_DETERMINANTE_DIRECTO"]) / total,
+                    plan["profundidad_cadena_pct"] / 100,
+                ]
+            )
+        dims = [["Plan", "Dimensión SH", "PPI A+B COP constantes 2025", "% del A+B", "Metas A+B ponderadas"]]
+        for plan in plans:
+            total_ab = sum(
+                plan["ppi_por_frontalidad_constante_2025_cop"][grade]
+                for grade in ("A_NUCLEO_FRONTAL", "B_DETERMINANTE_DIRECTO")
+            )
+            for dimension in data["dimensiones"]:
+                dims.append(
+                    [
+                        plan["codigo_plan"],
+                        dimension,
+                        plan["ppi_por_7d_constante_2025_cop"][dimension],
+                        plan["ppi_por_7d_constante_2025_cop"][dimension] / max(1, total_ab),
+                        sum(
+                            float(goal["pesos_7d"].get(dimension, 0))
+                            for goal in plan["metas"]
+                            if goal["grado_frontalidad_sh"].startswith(("A_", "B_"))
+                        ),
+                    ]
+                )
+        pdl_rows = [
+            [
+                "Plan local",
+                "Localidad",
+                "PPI en base de fuente COP",
+                "Metas únicas",
+                "Inversión directa documentada COP",
+                "Funcionamiento documentado COP",
+            ]
+        ]
+        for plan in data["anexo_pdl"]:
+            pdl_rows.append(
+                [
+                    plan["nombre"],
+                    plan["codigo_plan"].split("_")[1],
+                    plan["ppi_total_corriente_cop"],
+                    plan["metas_unicas"],
+                    plan["metadata"].get("ppi_inversion_directa_cop"),
+                    plan["metadata"].get("ppi_funcionamiento_cop"),
+                ]
+            )
+        out = [
+            "DOCUMENTO TÉCNICO DE DIAGNÓSTICO PRELIMINAR · PLANES DE DESARROLLO DISTRITAL 2012–2027",
+            "Marco del Decreto 037 de 2026 y estándar PNUD de Seguridad Humana",
+            "Corte analítico retrospectivo con fuentes de los cinco PDD y anexo territorial PDL",
+            "",
+            "CAPÍTULO 1: ALCANCE METODOLÓGICO, HOJA DE RUTA Y MOTOR DE PROCEDIMIENTO",
+            "Este documento reconstruye la arquitectura programática, las metas disponibles y el Plan Plurianual de Inversiones formulado en los cinco Planes de Desarrollo Distrital de Cartagena adoptados entre 2012 y 2024, con horizonte hasta 2027. El Decreto Distrital 037 de 2026 y las siete dimensiones del marco PNUD se usan como lente común de lectura retrospectiva: esta clasificación no implica que planes anteriores hubieran adoptado formalmente ese marco.",
+            "El alcance es PDD-Only. El informe no usa registros de Planes de Acción ni estima desempeño institucional desde ellos. Las 37 mesas de trabajo están PROGRAMADAS y no han producido resultados; por tanto, el documento no les atribuye hallazgos, acuerdos ni prioridades. Los tres Planes de Desarrollo Local se presentan en un anexo independiente y nunca entran en el denominador presupuestal distrital.",
+            "La rúbrica A/B/C/N se asigna por el objeto concreto del programa o meta: A corresponde al núcleo explícito de seguridad, convivencia, justicia, derechos humanos, paz, víctimas y gestión del riesgo; B a determinantes directos de supervivencia, dignidad y medios de vida; C a habilitadores generales; N a administración, funcionamiento, deuda o brecha sin desagregación identificable. Para los objetos A/B se asigna una dimensión primaria y un vector de siete pesos cuya suma es 1. Cada monto se agrega una vez en el nodo financiado más profundo disponible, con IPC DANE anual para expresar COP constantes de 2025. El PPI es programación formulada, no gasto ejecutado.",
+            "Cuando el PPI de los nodos con detalle no cubre exactamente el total oficial, el remanente aparece en N como brecha no desagregada; no se imputa a programas ni a dimensiones. Si subtotales de padre e hijo se solapan, se conserva un solo nivel de agregación y el detalle se limita al techo oficial del padre. La cobertura financiera del detalle queda visible en la matriz.",
+            "Puerta de calidad A verifica jerarquía, referencias de padre, pertenencia de metas al plan y conciliación de importes frente a los totales oficiales. Puerta B verifica procedencia, ocurrencias duplicadas y clasificación reproducible. La completitud se reporta por fuente y no se sustituye con imputaciones. Las cifras OCR sin tabla recuperable conservan su condición de evidencia parcial.",
+            "CAPÍTULO 2: PREGUNTA 1 · ¿QUÉ CONTEMPLABA CADA PLAN DE DESARROLLO?",
+            "1. PDD 2012–2015 · En Cartagena Hay Campo para Todos",
+            "2012–2015 · En Cartagena Hay Campo para Todos. El Acuerdo 001 de 2012 estructura cinco ejes: atención diferenciada por población y ciclo vital; desarrollo humano; desarrollo económico incluyente; hábitat, infraestructura y sustentabilidad; seguridad ciudadana y buen gobierno. La tabla oficial por ejes contiene PPI anual 2012–2015 y suma $3.049.788.268.000 corrientes. Se reemplazaron siete filas OCR fragmentadas por los siete compromisos de la visión transcritos desde las páginas impresas 1–2 del PDF oficial. Son resultados estratégicos del resumen, no un censo de todas las metas sectoriales, porque la extracción de las matrices extensas sigue incompleta.",
+            "2. PDD 2013–2015 · Ahora Sí Cartagena",
+            "2013–2015 · Ahora Sí Cartagena. El Acuerdo 016 de 2013 organiza cuatro objetivos (Inclusión Social, Desarrollo Económico, Desarrollo Territorial y Gobernabilidad) con estrategias, programas y subprogramas. Por su adopción tardía, el PPI cuantifica 2014 y 2015, por $1.874.167.605.000; no se atribuye presupuesto 2013. El corpus legible contiene metas de resultado/bienestar y de producto, con 195 filas de fuente antes de armonizar duplicados internos.",
+            "3. PDD 2016–2019 · Primero la Gente",
+            "2016–2019 · Primero la Gente. El Acuerdo 006 de 2016 formula tres objetivos estratégicos y ocho líneas financieras: educación; salud; inversión; inclusión, cultura y deporte; riesgo y ambiente; desarrollo urbano, movilidad y vivienda; seguridad y paz; y gestión pública/finanzas. La tabla oficial 209 declara $4.331.941.000.000 corrientes. Sus subtotales por objetivo suman $4.331.939.000.000; la diferencia de $2.000.000 queda como brecha no desagregada en N. Los renglones de línea suman menos que el total porque el objetivo 3 conserva un residual de jerarquía; no se imputa a sus líneas. Se retiró el encabezado OCR falso identificable. El Markdown disponible preserva resumen financiero y tres objetivos, pero no matrices completas de metas: no se tratan esos objetivos como indicadores de resultado.",
+            "4. PDD 2020–2023 · Salvemos Juntos a Cartagena",
+            "2020–2023 · Salvemos Juntos a Cartagena. El Acuerdo 024 de 2020 organiza cuatro pilares, 21 líneas y 87 programas, orientados por resiliencia, inclusión, contingencia y transparencia. Su diagnóstico incorpora pandemia, inequidad, informalidad, pobreza y vulnerabilidad económica. El PPI se expresa originalmente en COP constantes de diciembre de 2019, con total $6.022.982.660.000; se convierte a base 2025 usando el factor acumulado de IPC documentado. Las cifras por programa se conservan solo cuando la tabla financiera permite identificar fila y vigencia.",
+            "5. PDD 2024–2027 · Cartagena, Ciudad de Derechos",
+            "2024–2027 · Cartagena, Ciudad de Derechos. El Acuerdo 139 de 2024 explicita seis líneas, 42 impulsores y 172 programas. La línea 1 se denomina Seguridad Humana y contiene seguridad ciudadana y orden público, así como programas de protección social y otros determinantes; su etiqueta no convierte automáticamente todo su presupuesto en núcleo frontal A. El PPI total oficial es $12.800.853.474.855 y la línea 1 representa $5.666.917.744.338 (44,27%). El catálogo conserva 1.246 ocurrencias, identifica 273 registros secundarios repetidos y cuenta 973 metas canónicas.",
+            "[[CHART:" + PDD_ONLY_CHARTS[4] + "]]",
+            "CAPÍTULO 3: PREGUNTA 2 · ¿CUÁL FUE LA APUESTA EN METAS Y PRESUPUESTO?",
+            "La comparación combina el total oficial del PPI en su base documental y en COP constantes 2025 con la parte asignable a nodos clasificados. Los montos A/B/C/N son programación formulada y no apropiación ejecutada. El remanente sin desagregación se presenta explícitamente en N, con una bandera de calidad: no se trata como un programa ni se distribuye entre dimensiones. Las hojas incluyen total oficial, asignación documentada y brecha para auditar la cobertura financiera.",
+            "En 2012, el Eje 5 suma $170.412.997.000 corrientes en cuatro vigencias y ofrece una señal nominal de seguridad ciudadana, pero su propio nombre mezcla seguridad y buen gobierno. El catálogo disponible no contiene componentes presupuestales legibles para partir el monto: por eso el eje mixto permanece C y la seguridad no se reporta como gasto A probado. El Eje 2 tampoco se interpreta automáticamente como gasto de seguridad humana. En 2013 el monto disponible cubre únicamente 2014–2015; metas de bienestar y producto se mantienen separadas y el presupuesto por objetivo no permite atribuir una fracción sectorial.",
+            "En 2016 la línea Cartagena Sin Miedos suma $70.158.000.000 y Cartagena Territorio de Paz $5.934.000.000. Juntas representan una apuesta explícita A, diferenciada de inclusión general. Educación, salud y hábitat seguro se tratan como B cuando la denominación evidencia atención directa, mientras gestión administrativa queda en N. La fuente accesible presenta tres objetivos estructurales y no las matrices completas de metas de resultado/producto; esos objetivos no se cuentan como indicadores.",
+            "En 2020, convivencia y seguridad para la gobernabilidad tiene un PPI de $62.628.600.000 según el anexo financiero citado en el plan. Derechos humanos, paz, víctimas y riesgo se clasifican en A cuando el programa los hace objeto directo. La resiliencia ambiental y la inclusión económica/sanitaria se distribuyen en las dimensiones respectivas. El valor de PPI total se conserva en base diciembre 2019 antes de su paso a COP 2025. El presupuesto de los cuatro pilares, la línea transversal de finanzas y los nodos con detalle no completan por sí solos el PPI oficial; el faltante se conserva en N como brecha no desagregada.",
+            "En 2024 la etiqueta Seguridad Humana identifica una línea de $5,667 billones y 44,27% del PPI. Para responder cuánto fue realmente frontal, la clasificación baja al programa y a la meta: seguridad ciudadana, convivencia, justicia, paz, DD.HH., víctimas y riesgo son A; salud, educación, vivienda y protección focalizada son B; y los componentes generales de conectividad, competitividad o gestión son C/N según su finalidad. Los vectores de dimensión reparten cada peso una sola vez.",
+            "[[CHART:" + PDD_ONLY_CHARTS[0] + "]]",
+            "[[CHART:" + PDD_ONLY_CHARTS[1] + "]]",
+            "[[CHART:" + PDD_ONLY_CHARTS[2] + "]]",
+            "CAPÍTULO 4: PREGUNTA 3 · ¿QUÉ PLAN FUE MÁS FRONTAL Y ESTRATÉGICO?",
+            "La respuesta depende del indicador. En frontalidad nominal, 2024–2027 es el plan que declara explícitamente Seguridad Humana como línea y asigna allí 44,27% del PPI. Esa proporción es una cota temática de línea y no equivale al gasto A. La frontalidad de núcleo duro debe medirse con el presupuesto de programas A frente al PPI oficial del mismo plan; los determinantes directos B se informan aparte.",
+            "La estrategia se evalúa por profundidad y trazabilidad de la cadena diagnóstico → objetivo → línea → programa → meta de resultado → meta de producto → PPI. Los planes 2020 y 2024 presentan las arquitecturas más legibles en el corpus estructural disponible (87 programas y 172 programas, respectivamente). Esto no prueba por sí solo mejor diseño: la completitud de metas y el vínculo causal deben compararse junto al número de nodos. El indicador de profundidad es una aproximación a la presencia de relaciones padre/hijo, no una evaluación de calidad causal. En 2020 se identifican $8,724 billones constantes de 2025 en nodos frente a $8,835 billones del total oficial; los $110.6 mil millones restantes quedan en N sin desagregar. En los planes 2012, 2013 y 2016, la fuente parcial impide concluir frontalidad presupuestal bajo el nivel agregado disponible.",
+            "No se declara un ganador único sin que coincidan tres dimensiones: proporción A sobre total oficial, articulación entre metas de resultado/producto y presupuesto, y cobertura territorial/poblacional explícita. La etiqueta nominal, el monto A medido por contenido y la profundidad estructural se presentan por separado para evitar confundirlos.",
+            "[[CHART:" + PDD_ONLY_CHARTS[3] + "]]",
+            "CAPÍTULO 5: PREGUNTA 4 · ¿CÓMO EVOLUCIONÓ EL ABORDAJE ENTRE 2012 Y 2027?",
+            "La secuencia documental muestra un desplazamiento desde seguridad ciudadana y buen gobierno como eje entre varios en 2012, hacia objetivos sociales amplios y bienestar en 2013; luego convivencia, paz territorial y gestión institucional en 2016; resiliencia frente a riesgos múltiples, inclusión y respuesta a crisis en 2020; y adopción explícita del lenguaje de Seguridad Humana y Ciudad de Derechos en 2024. Es una evolución del diseño y del vocabulario programático; no constituye prueba causal de reducción o aumento de amenazas.",
+            "Hay continuidades: la seguridad personal y convivencia reaparecen como preocupación expresa; salud, educación y hábitat operan como determinantes; y las capacidades de gobierno habilitan la ejecución. Las rupturas principales son el paso a estructuras de programas más detalladas y a una arquitectura multidimensional explícita. Los vacíos persistentes son la comparabilidad de indicadores entre acuerdos, la cobertura desigual del OCR, la separación de funcionamiento frente a inversión, y la trazabilidad territorial homogénea en las metas históricas.",
+            "[[CHART:" + PDD_ONLY_CHARTS[5] + "]]",
+            "CAPÍTULO 6: ANEXO TERRITORIAL SEPARADO · TRES PLANES DE DESARROLLO LOCAL",
+            "Los PDL 2024–2027 de las Localidades Histórica y del Caribe Norte, de la Virgen y Turística, e Industrial y de la Bahía se reportan en un universo financiero aparte. El catálogo enlaza 401 metas locales (110, 89 y 202 por localidad). PDL 1 reporta $97.691 millones, de los cuales $90.822 millones son inversión y $6.868,68 millones funcionamiento. PDL 2 reporta $161.290 millones, con $154.249 millones de inversión y $7.041 millones de funcionamiento. PDL 3 identifica $39.000 millones de inversión y $7.000 millones de honorarios/operación, total de $46.000 millones. Ninguno de estos denominadores se mezcla con el PPI distrital.",
+            "CAPÍTULO 7: CALIDAD DOCUMENTAL, LIMITACIONES E INSUMOS PARA LA FASE PARTICIPATIVA",
+            "El catálogo de trabajo tiene 2.078 ocurrencias entre cinco PDD y tres PDL; tras retirar 273 ocurrencias secundarias duplicadas de 2024 quedan 1.805 metas únicas en los ocho planes: 1.404 corresponden al conjunto PDD y 401 al anexo PDL. El inventario de 2024 conserva procedencia de bases técnicas/ponencia. Las cantidades describen cobertura del catálogo, no número de compromisos cumplidos.",
+            "El PDD 2012 ofrece una tabla PPI por eje completa, pero sus metas OCR presentan filas partidas y cobertura parcial. El PDD 2013 permite extraer tablas de producto y bienestar, aunque con importes solo 2014–2015. El PDD 2016 deja visible la tabla financiera y objetivos, pero el Markdown disponible omite matrices extensas y contiene páginas escaneadas. El PDD 2020 tiene tablas financieras en millones y una estructura legible; el Acuerdo 2024 requiere contrastar fuentes secundarias con el acuerdo adoptado. Los PDL 2 y 3 también requieren cotejo de base inversión/funcionamiento.",
+            "La línea base participativa queda abierta para cuando se instalen las 37 mesas programadas: validar territorialización, poblaciones priorizadas, brechas entre meta y recursos, amenazas y mecanismos de seguimiento. Este documento entrega preguntas y trazabilidad documental; no anticipa respuestas comunitarias.",
+            "",
+            "CUADRO NATIVO 1 · ARQUITECTURA, METAS Y PPI DE LOS CINCO PDD",
+            "CUADRO NATIVO 2 · CLASIFICACIÓN FINANCIERA Y PROFUNDIDAD ESTRATÉGICA",
+            "CUADRO NATIVO 3 · DISTRIBUCIÓN EN LAS SIETE DIMENSIONES",
+            "CUADRO NATIVO 4 · ANEXO FINANCIERO DE LOS TRES PDL",
+        ]
+        tables = [
+            ("CUADRO NATIVO 1 · ARQUITECTURA, METAS Y PPI DE LOS CINCO PDD", architecture),
+            ("CUADRO NATIVO 2 · CLASIFICACIÓN FINANCIERA Y PROFUNDIDAD ESTRATÉGICA", frontal),
+            ("CUADRO NATIVO 3 · DISTRIBUCIÓN EN LAS SIETE DIMENSIONES (COP CONSTANTES 2025)", dims),
+            ("CUADRO NATIVO 4 · ANEXO FINANCIERO DE LOS TRES PDL", pdl_rows),
+        ]
+        return "\n".join(out), tables
+
+    async def _verify_pdd_only(self, token: str) -> dict[str, Any]:
+        drive_file = await self._request(
+            "GET",
+            f"https://www.googleapis.com/drive/v3/files/{FILES['analisis']['id']}",
+            token,
+            params={"fields": "id,name,mimeType"},
+        )
+        if drive_file.get("name") != PDD_ONLY_ANALYSIS_TITLE:
+            raise RuntimeError("El archivo Analisis no tiene el título PDD-only esperado")
+        book = await self._request(
+            "GET",
+            f"https://sheets.googleapis.com/v4/spreadsheets/{FILES['pdm']['id']}",
+            token,
+            params={
+                "fields": "spreadsheetId,properties(title),sheets(properties(title),charts(chartId))"
+            },
+        )
+        titles = [sheet["properties"]["title"] for sheet in book.get("sheets", [])]
+        if titles != PDD_ONLY_SHEETS:
+            raise RuntimeError(f"La matriz PDD-only tiene hojas inesperadas: {titles}")
+        chart_count = sum(len(sheet.get("charts", [])) for sheet in book.get("sheets", []))
+        if chart_count != 4:
+            raise RuntimeError(f"Se esperaban cuatro gráficos nativos; recibidos {chart_count}")
+        doc = await self._request(
+            "GET", f"https://docs.googleapis.com/v1/documents/{FILES['analisis']['id']}", token
+        )
+        text_parts = []
+        images = 0
+        heading1 = 0
+        native_tables = 0
+        for block in doc.get("body", {}).get("content", []):
+            if block.get("table"):
+                native_tables += 1
+            paragraph = block.get("paragraph", {})
+            heading1 += paragraph.get("paragraphStyle", {}).get("namedStyleType") == "HEADING_1"
+            for element in paragraph.get("elements", []):
+                text_parts.append(element.get("textRun", {}).get("content", ""))
+                images += int("inlineObjectElement" in element)
+        body = "".join(text_parts)
+        if len(body) < 12_000 or heading1 < 7 or native_tables < 4 or images != 6:
+            raise RuntimeError(
+                "El documento PDD-only no pasó los controles de estructura, tablas y seis PNG embebidos"
+            )
+        forbidden = (
+            "225.380",
+            "NETWORK DEA PA",
+            "HALLAZGOS DE MESAS REALIZADAS",
+            "RESULTADOS DE LAS MESAS",
+        )
+        if any(term in body.upper() for term in forbidden):
+            raise RuntimeError("El documento contiene contenido fuera del alcance PDD-only")
+        expected = ["PREGUNTA 1", "PREGUNTA 2", "PREGUNTA 3", "PREGUNTA 4"]
+        if not all(term in body.upper() for term in expected):
+            raise RuntimeError("Falta responder alguna de las cuatro preguntas estratégicas")
+        return {
+            "matriz_pdm": {"hojas": titles, "graficos_nativos": chart_count},
+            "analisis": {
+                "caracteres": len(body),
+                "heading_1": heading1,
+                "tablas_nativas": native_tables,
+                "imagenes_inline": images,
+                "preguntas_respondidas": expected,
+            },
+        }
 
     def _credentials(self) -> dict[str, Any]:
         if not SERVICE_ACCOUNT.is_file():
@@ -831,11 +1642,15 @@ class GoogleWorkspaceSyncService:
             style = None
             if clean.startswith("DOCUMENTO TÉCNICO DE DIAGNÓSTICO"):
                 style = "TITLE"
-            elif clean.startswith("Marco del Decreto 37 de 2026"):
+            elif clean.startswith(
+                ("Marco del Decreto 37 de 2026", "Marco del Decreto 037 de 2026")
+            ):
                 style = "SUBTITLE"
             elif clean.startswith(("CAPÍTULO ", "ANEXOS OBLIGATORIOS")):
                 style = "HEADING_1"
-            elif re.match(r"^(?:[1-7]\.\s|4\.[1-8]\.\s|Anexo [A-D])", clean) or clean.startswith(
+            elif re.match(
+                r"^(?:[1-7]\.\s|4\.[1-8]\.\s|Anexo [A-D]|PREGUNTA [1-4])", clean
+            ) or clean.startswith(
                 (
                     "FICHA TÉCNICA",
                     "ANEXO ",
@@ -846,6 +1661,7 @@ class GoogleWorkspaceSyncService:
                     "LECTURA DE FUENTES",
                     "PLIEGOS TRANSVERSALES",
                     "PROTOCOLO DETALLADO",
+                    "CUADRO NATIVO",
                 )
             ):
                 style = "HEADING_2"

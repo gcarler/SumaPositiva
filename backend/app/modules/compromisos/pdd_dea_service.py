@@ -41,6 +41,15 @@ DIMENSIONES_PPI_2024 = (
     "Innovación Pública y Participación Ciudadana",
     "Capítulo de los Pueblos y Comunidades Étnicas",
 )
+DIMENSIONES_SH = (
+    "Seguridad Personal",
+    "Seguridad Comunitaria",
+    "Seguridad Económica",
+    "Seguridad Alimentaria",
+    "Seguridad en la Salud",
+    "Seguridad Ambiental",
+    "Seguridad Política",
+)
 CACHE_V11 = Path("/tmp/polis_pdd_dea_cache_v11.json")
 # Backwards-compatible alias used by older tests and local operators.
 CACHE_V10 = CACHE_V11
@@ -1032,6 +1041,7 @@ class PddDeaService:
         official_2024_constant = sum(
             PPI_2024[y] * _money_factor(y) for y in (2024, 2025, 2026, 2027)
         )
+
         conciliacion = []
         for year in range(2020, 2026):
             official, source = _ppi_official(year)
@@ -1101,6 +1111,266 @@ class PddDeaService:
                 ),
             },
         )
+
+    async def comparativo_seguridad_humana_pdd_only(self) -> dict[str, Any]:
+        """Read the reconstructed catalog for the PDD-only report and export."""
+        plans_rows = (
+            (
+                await self.session.execute(
+                    text("""SELECT codigo_plan,periodo,nombre_oficial,norma_adopcion,
+                    ppi_total_corriente_cop,ppi_total_constante_2025_cop,ppi_anual_cop,metadatos
+                    FROM seguimiento.planes_desarrollo_distrital
+                    WHERE codigo_plan LIKE 'PDD_%' OR codigo_plan LIKE 'PDL_%'
+                    ORDER BY codigo_plan""")
+                )
+            )
+            .mappings()
+            .all()
+        )
+        node_rows = (
+            (
+                await self.session.execute(
+                    text("""SELECT id::text id,codigo_plan,parent_id::text parent_id,nivel,codigo,
+                    nombre,orden,ppi_anual_cop,fuente,metadatos
+                    FROM seguimiento.pdd_lineas_y_programas ORDER BY codigo_plan,orden""")
+                )
+            )
+            .mappings()
+            .all()
+        )
+        meta_rows = (
+            (
+                await self.session.execute(
+                    text("""SELECT id::text id,codigo_plan,linea_id::text linea_id,tipo_meta,codigo,
+                    nombre,indicador,unidad_medida,linea_nombre,fuente,fila_fuente,datos_oficiales
+                    FROM seguimiento.pdd_metas_oficiales ORDER BY codigo_plan,fuente,fila_fuente""")
+                )
+            )
+            .mappings()
+            .all()
+        )
+        plans: dict[str, dict[str, Any]] = {}
+        for row in plans_rows:
+            plans[row["codigo_plan"]] = {
+                "codigo_plan": row["codigo_plan"],
+                "periodo": row["periodo"],
+                "nombre": row["nombre_oficial"],
+                "norma": row["norma_adopcion"],
+                "ppi_total_corriente_cop": float(row["ppi_total_corriente_cop"] or 0),
+                "ppi_total_constante_2025_cop": float(row["ppi_total_constante_2025_cop"] or 0),
+                "ppi_anual_cop": row["ppi_anual_cop"] or {},
+                "metadata": row["metadatos"] or {},
+                "nodos": [],
+                "metas": [],
+            }
+        for row in node_rows:
+            plan = plans.get(row["codigo_plan"])
+            if not plan:
+                continue
+            metadata = row["metadatos"] or {}
+            node = {
+                "id": row["id"],
+                "codigo_plan": row["codigo_plan"],
+                "parent_id": row["parent_id"],
+                "nivel": row["nivel"],
+                "codigo": row["codigo"],
+                "nombre": row["nombre"],
+                "orden": row["orden"],
+                "ppi_anual_cop": row["ppi_anual_cop"] or {},
+                "fuente": row["fuente"],
+                "metadatos": metadata,
+                "grado_frontalidad_sh": metadata.get(
+                    "grado_frontalidad_sh", "C_CONTEXTUAL_HABILITANTE"
+                ),
+                "dimension_sh_primaria": metadata.get("dimension_sh_primaria"),
+                "pesos_7d": metadata.get("pesos_7d", {}),
+            }
+            plan["nodos"].append(node)
+        for row in meta_rows:
+            plan = plans.get(row["codigo_plan"])
+            if not plan:
+                continue
+            details = row["datos_oficiales"] or {}
+            goal = {
+                "id": row["id"],
+                "codigo_plan": row["codigo_plan"],
+                "linea_id": row["linea_id"],
+                "tipo_meta": row["tipo_meta"],
+                "codigo": row["codigo"],
+                "nombre": row["nombre"],
+                "indicador": row["indicador"],
+                "unidad_medida": row["unidad_medida"],
+                "linea_nombre": row["linea_nombre"],
+                "fuente": row["fuente"],
+                "fila_fuente": row["fila_fuente"],
+                "datos_oficiales": details,
+                "linea_base": details.get("linea_base", details.get("linea_base_indicador")),
+                "meta_cuatrienio": details.get("meta_cuatrienio", details.get("meta")),
+                "grado_frontalidad_sh": details.get(
+                    "grado_frontalidad_sh", "C_CONTEXTUAL_HABILITANTE"
+                ),
+                "dimension_sh_primaria": details.get("dimension_sh_primaria"),
+                "pesos_7d": details.get("pesos_7d", {}),
+                "unica": details.get("ocurrencia_canonica") is not False,
+            }
+            plan["metas"].append(goal)
+        for plan in plans.values():
+            children_by_parent: dict[str, list[dict[str, Any]]] = defaultdict(list)
+            for node in plan["nodos"]:
+                if node["parent_id"]:
+                    children_by_parent[node["parent_id"]].append(node)
+
+            def node_amount(node: dict[str, Any]) -> tuple[float, float]:
+                annual = node["ppi_anual_cop"] or {}
+                if not annual:
+                    return 0.0, 0.0
+                in_2019_prices = (
+                    node["metadatos"].get("base_precios") == "COP constantes diciembre 2019"
+                )
+                current = sum(float(value or 0) for value in annual.values())
+                constant = sum(
+                    float(value or 0)
+                    * (_money_factor(2019) if in_2019_prices else _money_factor(int(year)))
+                    for year, value in annual.items()
+                )
+                return current, constant
+
+            allocations: dict[str, tuple[float, float]] = {}
+
+            def allocate(node: dict[str, Any]) -> None:  # noqa: B023
+                node_current, node_constant = node_amount(node)
+                children = children_by_parent.get(node["id"], [])  # noqa: B023
+                if node_constant and children:
+                    previous_ids = set(allocations)  # noqa: B023
+                    for child in children:
+                        allocate(child)
+                    child_ids = set(allocations) - previous_ids  # noqa: B023
+                    child_current = sum(allocations[item][0] for item in child_ids)  # noqa: B023
+                    child_constant = sum(allocations[item][1] for item in child_ids)  # noqa: B023
+                    if not child_constant:
+                        allocations[node["id"]] = (node_current, node_constant)  # noqa: B023
+                        return
+                    if child_constant > node_constant:
+                        # Detailed source rows may repeat a code or exceed a subtotal.
+                        # Normalize the children to the adopted parent ceiling.
+                        scale = node_constant / child_constant
+                        for item in child_ids:
+                            current_value, constant_value = allocations[item]  # noqa: B023
+                            allocations[item] = (current_value * scale, constant_value * scale)  # noqa: B023
+                    elif child_constant < node_constant:
+                        # Keep the documented child distribution and retain the uncovered
+                        # source difference on its parent. The total remains reconciled.
+                        allocations[node["id"]] = (  # noqa: B023
+                            max(0.0, node_current - child_current),
+                            node_constant - child_constant,
+                        )
+                    return
+                if node_constant:
+                    allocations[node["id"]] = (node_current, node_constant)  # noqa: B023
+                    return
+                for child in children:
+                    allocate(child)
+
+            for node in plan["nodos"]:
+                if not node["parent_id"]:
+                    allocate(node)
+            budget = {
+                "A_NUCLEO_FRONTAL": 0.0,
+                "B_DETERMINANTE_DIRECTO": 0.0,
+                "C_CONTEXTUAL_HABILITANTE": 0.0,
+                "N_NO_ASOCIADO_FUNCIONAMIENTO": 0.0,
+            }
+            seven_d = {dimension: 0.0 for dimension in DIMENSIONES_SH}
+            assignable = 0.0
+            for _ in range(2):
+                # Reconcile source coverage to the official plan envelope. Any
+                # residual remains visible as N (unattributed), never spread
+                # across security dimensions or represented as program spend.
+                assignable = sum(value[1] for value in allocations.values())
+                official = plan["ppi_total_constante_2025_cop"]
+                if assignable <= official or assignable <= 0:
+                    break
+                scale = official / assignable
+                allocations = {
+                    node_id: (current * scale, constant * scale)
+                    for node_id, (current, constant) in allocations.items()
+                }
+            for node in plan["nodos"]:
+                current, constant = allocations.get(node["id"], (0.0, 0.0))
+                node["ppi_asignable_corriente_cop"] = current
+                node["ppi_asignable_constante_2025_cop"] = constant
+                grade = node["grado_frontalidad_sh"]
+                if grade not in budget:
+                    grade = "C_CONTEXTUAL_HABILITANTE"
+                budget[grade] += constant
+                if grade.startswith(("A_", "B_")):
+                    weights = node["pesos_7d"] or {}
+                    for dimension in DIMENSIONES_SH:
+                        seven_d[dimension] += constant * float(weights.get(dimension, 0))
+            assigned_current = sum(value[0] for value in allocations.values())
+            assigned_constant = sum(value[1] for value in allocations.values())
+            residual_constant = max(
+                0.0, plan["ppi_total_constante_2025_cop"] - assigned_constant
+            )
+            residual_current = max(
+                0.0, plan["ppi_total_corriente_cop"] - assigned_current
+            )
+            budget["N_NO_ASOCIADO_FUNCIONAMIENTO"] += residual_constant
+            assignable = assigned_constant + residual_constant
+            unique_goals = [goal for goal in plan["metas"] if goal["unica"]]
+            plan["metas"] = unique_goals
+            plan["metas_unicas"] = len(unique_goals)
+            plan["metas_resultado"] = sum(
+                goal["tipo_meta"] in {"RESULTADO", "BIENESTAR"}
+                for goal in unique_goals
+            )
+            plan["metas_producto"] = sum(goal["tipo_meta"] == "PRODUCTO" for goal in unique_goals)
+            plan["metas_objetivo_estructural"] = sum(
+                goal["tipo_meta"] == "OBJETIVO_ESTRATEGICO" for goal in unique_goals
+            )
+            plan["ppi_por_frontalidad_constante_2025_cop"] = budget
+            plan["ppi_por_7d_constante_2025_cop"] = seven_d
+            plan["ppi_asignable_constante_2025_cop"] = assignable
+            plan["ppi_sin_desagregacion_corriente_cop"] = residual_current
+            plan["ppi_sin_desagregacion_constante_2025_cop"] = residual_constant
+            plan["nodos_total"] = len(plan["nodos"])
+            plan["nodos_con_padre"] = sum(bool(node["parent_id"]) for node in plan["nodos"])
+            plan["profundidad_cadena_pct"] = round(
+                100 * plan["nodos_con_padre"] / max(1, plan["nodos_total"]), 2
+            )
+            plan["metas_por_dimension"] = {
+                dimension: sum(float(goal["pesos_7d"].get(dimension, 0)) for goal in unique_goals)
+                for dimension in DIMENSIONES_SH
+            }
+        pdd = sorted(
+            (plan for code, plan in plans.items() if code.startswith("PDD_")),
+            key=lambda item: item["codigo_plan"],
+        )
+        pdl = sorted(
+            (plan for code, plan in plans.items() if code.startswith("PDL_")),
+            key=lambda item: item["codigo_plan"],
+        )
+        return {
+            "alcance": (
+                "PDD-Only; planes de acción y resultados de mesas fuera del conjunto analítico"
+            ),
+            "base_constante": ("COP 2025; serie IPC DANE codificada en _money_factor"),
+            "dimensiones": list(DIMENSIONES_SH),
+            "planes_pdd": pdd,
+            "anexo_pdl": pdl,
+            "nodos": [node for plan in plans.values() for node in plan["nodos"]],
+            "conciliacion": {
+                code: {
+                    "ppi_plan_corriente_cop": plan["ppi_total_corriente_cop"],
+                    "ppi_nodos_constante_2025_cop": plan["ppi_asignable_constante_2025_cop"],
+                    "ppi_A_mas_B_constante_2025_cop": plan[
+                        "ppi_por_frontalidad_constante_2025_cop"
+                    ]["A_NUCLEO_FRONTAL"]
+                    + plan["ppi_por_frontalidad_constante_2025_cop"]["B_DETERMINANTE_DIRECTO"],
+                }
+                for code, plan in plans.items()
+            },
+        }
 
     @staticmethod
     def _plan_ppi_nominal(plan: str) -> float | None:

@@ -114,6 +114,7 @@ La última columna explica la excepción pública o la condición adicional.
 | GET | /api/v1/compromisos/triada/dea/econometria-segunda-etapa | publico | Asociaciones exploratorias de panel, no causales, basadas en el corpus ingerido. |
 | GET | /api/v1/compromisos/triada/dea/resumen-integral | publico | Resumen analítico agregado DEA, sujeto a advertencias metodológicas de cada motor. |
 | GET | /api/v1/compromisos/triada/pdd-dea/catalogo-y-conciliacion-ppi | publico | Catálogo de PDD/PDL, fuentes y conciliación del PPI frente a registros reconstruidos. |
+| GET | /api/v1/compromisos/triada/pdd-dea/seguridad-humana-comparativo | publico | Estructura PDD, metas enlazadas y PPI clasificado A/B/C/N con reparto no duplicado en siete dimensiones; PDL separado. |
 | GET | /api/v1/compromisos/triada/pdd-dea/cumplimiento-metas | publico | Avance de metas PDD deduplicado y agregado por línea, entidad y localidad; conserva advertencias de escala. |
 | GET | /api/v1/compromisos/triada/pdd-dea/frontera-dea-pdd | publico | Frontera DEA exploratoria de entidades por PDD e insumo presupuestal; no representa causalidad ni certificación. |
 | GET | /api/v1/compromisos/triada/pdd-dea/econometria-comparada-pdd | publico | Comparación estadística descriptiva interplan, correlaciones ajustadas por FDR y productividad exploratoria. |
@@ -121,8 +122,9 @@ La última columna explica la excepción pública o la condición adicional.
 | GET | /api/v1/compromisos/triada/pdd-dea/resumen-ejecutivo | publico | Resumen cacheado del catálogo, cumplimiento, frontera DEA y comparación econométrica. |
 | GET | /api/v1/compromisos/triada/pdd-dea/laboratorio-prescriptivo | publico | Network DEA exploratorio en dos etapas, escenarios presupuestales no causales, auditoría de cobertura MGA y métricas territoriales con fuentes y compuertas explícitas. |
 | GET | /api/v1/compromisos/triada/google-workspace/estado | publico | Estado de conexión y archivos nativos de las carpetas oficiales de Google Workspace. |
-| GET | /api/v1/compromisos/triada/google-workspace/graficas/{nombre_archivo} | publico | Sirve exclusivamente las seis imágenes PNG del informe técnico de diagnóstico para inserción en Google Docs. |
+| GET | /api/v1/compromisos/triada/google-workspace/graficas/{nombre_archivo} | publico | Sirve PNG generadas para los informes técnicos de diagnóstico; limita el acceso a nombres incluidos en lista permitida. |
 | POST | /api/v1/compromisos/triada/google-workspace/sincronizar | permiso:seguimiento:gestionar@declarada | Actualiza las hojas y el documento nativos existentes con los datos auditables de Triada. |
+| POST | /api/v1/compromisos/triada/google-workspace/sincronizar-pdd-only | permiso:seguimiento:gestionar@declarada | Actualiza solo Matriz_PDM y Analisis con PDD-Only y PDL en anexo separado. |
 | POST | /api/v1/compromisos/triada/detectar-formato | publico | Detección polimórfica y normalización pública de formatos Excel de Planes de Acción (2016 monohoja a 2026 multihoja) sin mutación de estado. |
 | POST | /api/v1/compromisos/triada/cruzar-lecturas | publico | Evaluación pública sin estado del cruce tripartito (Estratégico PDD, Operativo PA y Financiero POAI/BPIM/RP/Pagos) para control social. |
 | POST | /api/v1/compromisos/triada/ingerir-archivos | permiso:seguimiento:gestionar@declarada | Ingesta binaria Excel/CSV/ZIP con persistencia auditable en tres motores; requiere fase Plan de Acción habilitada. |

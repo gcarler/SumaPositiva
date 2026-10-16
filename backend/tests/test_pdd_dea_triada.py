@@ -401,8 +401,9 @@ def test_pdd_raw_json_responses_are_pre_serialized_fast_and_support_etag():
     assert not_modified.status_code == 304
 
 
-def test_all_seven_pdd_dea_routes_are_registered_with_the_prescriptive_lab():
+def test_all_eight_pdd_dea_routes_are_registered_with_the_prescriptive_lab():
     paths = {route.path for route in router.routes}
     prefix = "/compromisos/triada/pdd-dea/"
-    assert sum(path.startswith(prefix) for path in paths) == 7
+    assert sum(path.startswith(prefix) for path in paths) == 8
     assert prefix + "laboratorio-prescriptivo" in paths
+    assert prefix + "seguridad-humana-comparativo" in paths
