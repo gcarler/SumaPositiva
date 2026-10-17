@@ -27,6 +27,7 @@ from app.modules.compromisos.ingesta_masiva_excel import detectar_extension_arch
 from app.modules.compromisos.ingesta_masiva_service import RAIZ_INGESTA, IngestaMasivaService
 from app.modules.compromisos.inteligencia_triada_service import InteligenciaTriadaService
 from app.modules.compromisos.motor_multiagente_pdd import (
+    AgenteArticulacionPlanAccionBPIM,
     ejecutar_sistema_multiagente_pdd,
     obtener_estado_sistema_multiagente_pdd,
 )
@@ -142,7 +143,15 @@ async def ejecutar_multiagente_pdd(sujeto: SujetoAutenticadoDep):
     summary="Consultar cobertura, puertas de calidad y bitácora de los cinco agentes PDD",
 )
 async def estado_multiagente_pdd():
-    return obtener_estado_sistema_multiagente_pdd()
+    return await obtener_estado_sistema_multiagente_pdd()
+
+
+@router.get(
+    "/triada/pdd-dea/cruce-multiagente-pa-bpim",
+    summary="Cruce PDD/PDL, Planes de Acción y cadena MGA/BPIM",
+)
+async def cruce_multiagente_pa_bpim():
+    return await AgenteArticulacionPlanAccionBPIM().ejecutar()
 
 
 def get_compromisos_service(session: SessionDependency) -> CompromisosService:

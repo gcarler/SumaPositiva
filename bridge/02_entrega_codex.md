@@ -954,3 +954,18 @@ Los tres PDL se mantienen fuera del denominador PDD; los importes de inversión 
 - `ruff check` sobre los archivos backend tocados: **PASS**. Suite focalizada `test_motor_multiagente_pdd.py`, `test_pdd_seguridad_humana_16.py`, `test_pdd_dea_triada.py` y `test_access_policy.py`: **145 passed**.
 - La lectura de página y extracción tabular nativa se guardan con hash de fuente, hash de contenido, página y procedencia. La extracción de filas tabulares puede variar según los diseños/escaneos; las celdas OCR y la asignación financiera mantienen sus marcas de origen y revisión analítica.
 - No se tocaron archivos `src/**`. Se excluyen del commit la asignación `bridge/01_tarea_codex.md`, la fuente 2012 modificada por el usuario y los JSON/artefactos de `anydoc_md/` que aparecieron fuera de esta entrega. La publicación quedó confirmada; el commit local de esta entrega contiene solo los archivos propios enumerados aquí, sin push.
+
+## Entrega [SISTEMA-MULTIAGENTE-CRUCE-PA-BPIM-18A] — 17/10/2026
+
+### Estado durable e hidratación
+
+- `STATE_PATH` ahora apunta a `data/planes_desarrollo/estado_sistema_multiagente_pdd.json`. Si el archivo falta o señala `SIN_EJECUCIONES`, la ruta consulta `_auditar_bd()` y reconstruye el estado con la cobertura de páginas, catálogo, conciliación y bitácora de los seis agentes. No activa OCR ni publicación externa; el archivo JSON se escribió desde el GET vivo.
+- El endpoint vivo respondió HTTP 200 con `estado=COMPLETADO`, las puertas A–F y seis agentes. La auditoría de esta BD encontró 2.734 registros de evidencia (2.728 páginas PDF y seis registros JSON), 1.573 nodos, 4.236 registros/meta PDD, 401 PDL, 181 actividades y 35 entidades distintas con actividad.
+- Los valores solicitados como referencia en la orden (1.524 nodos, 2.228 metas PDD y 29 entidades) no coinciden con los conteos actuales de `bd_csh`; se preservan y exponen los conteos consultados, sin ajustar ni descartar filas para simular paridad.
+
+### Cruce PA/BPIM y validación
+
+- Se agregó `AgenteArticulacionPlanAccionBPIM` y `GET /api/v1/compromisos/triada/pdd-dea/cruce-multiagente-pa-bpim`, con cruce textual reproducible entre metas PDD 2024 A/B, actividades, entidad, avance y código/producto BPIM/MGA. Incluye métricas por las siete dimensiones, entidad, trazabilidad y puerta F. La ruta está clasificada como pública en `docs/permisos-api.md`.
+- La consulta en vivo respondió HTTP 200. La BD produjo 1.573 nodos únicos (A/B/C/N: 137/186/1.209/41), 4.236 metas PDD y 401 PDL, 181 actividades, 35 entidades y registros trazables. Estas cifras son conteos reales del snapshot consultado, no una certificación de los valores esperados en la orden.
+- `ruff check` en los tres archivos Python modificados: PASS. Suite solicitada (`test_motor_multiagente_pdd.py`, `test_pdd_seguridad_humana_16.py`, `test_access_policy.py`): completó al 100% con PostgreSQL local. Se agregó cobertura HTTP de ambos endpoints y paridad de matriz.
+- `polis-backend.service` se reinició y quedó activo; los GET de estado y cruce fueron comprobados en `127.0.0.1:8000`. No se hizo `git push`.

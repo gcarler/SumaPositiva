@@ -11,6 +11,55 @@ from scripts.reconstruir_catalogo_pdd_seguridad_humana_16 import _classify
 from scripts.sincronizar_catalogo_pdd import _order_hierarchy_parent_first, extract_catalog
 
 
+def test_rutas_multiagente_publican_estado_y_cruce(monkeypatch):
+    from fastapi.testclient import TestClient
+
+    from app.core.config import Settings
+    from app.main import create_app
+    from app.modules.compromisos import router as router_module
+
+    dimensions = [
+        "Personal",
+        "Comunitaria",
+        "Económica",
+        "Alimentaria",
+        "Salud",
+        "Ambiental",
+        "Política",
+    ]
+
+    async def fake_state():
+        return {
+            "estado": "COMPLETADO",
+            "puertas": {key: {"estado": "APROBADA"} for key in "ABCDEF"},
+        }
+
+    async def fake_cross():
+        return {
+            "articulacion_por_dimension_sh": [{"dimension": value} for value in dimensions],
+            "articulacion_por_entidad": [{"entidad": "Entidad"}],
+            "matriz_trazabilidad_pa_bpim": [{"estado_articulacion": "ARTICULADA"}],
+            "puerta_f": {"estado": "APROBADA"},
+        }
+
+    monkeypatch.setattr(router_module, "obtener_estado_sistema_multiagente_pdd", fake_state)
+    monkeypatch.setattr(
+        router_module.AgenteArticulacionPlanAccionBPIM, "ejecutar", lambda self: fake_cross()
+    )
+    with TestClient(create_app(Settings(_env_file=None, environment="test"))) as client:
+        state_response = client.get("/api/v1/compromisos/triada/pdd-dea/estado-sistema-multiagente")
+        cross_response = client.get("/api/v1/compromisos/triada/pdd-dea/cruce-multiagente-pa-bpim")
+    assert state_response.status_code == 200
+    assert state_response.json()["estado"] == "COMPLETADO"
+    assert len(state_response.json()["puertas"]) == 6
+    assert cross_response.status_code == 200
+    assert [
+        item["dimension"] for item in cross_response.json()["articulacion_por_dimension_sh"]
+    ] == dimensions
+    assert cross_response.json()["articulacion_por_entidad"]
+    assert cross_response.json()["matriz_trazabilidad_pa_bpim"]
+
+
 def test_page_chunks_recupera_paginas_ocr_y_delimitadores_de_conversion():
     source = """--- PAGINA 1 ---\ntexto uno\n
 ## Página 2 (OCR Oficial Acuerdo 006 de 2016)\ntexto dos\n
@@ -49,12 +98,15 @@ def test_json_structurado_cuenta_registros_anidados():
 def test_catalogo_profundo_recupera_pdd_historicos_y_conserva_padres_validos():
     plans, nodes, goals = extract_catalog()
     node_ids = {row["id"] for row in nodes}
-    plan_nodes = {code: [row for row in nodes if row["codigo_plan"] == code] for code in (
-        "PDD_2012_2015",
-        "PDD_2013_2015",
-        "PDD_2016_2019",
-        "PDL_2_2024_2027",
-    )}
+    plan_nodes = {
+        code: [row for row in nodes if row["codigo_plan"] == code]
+        for code in (
+            "PDD_2012_2015",
+            "PDD_2013_2015",
+            "PDD_2016_2019",
+            "PDL_2_2024_2027",
+        )
+    }
     plan_goals = {code: [row for row in goals if row["codigo_plan"] == code] for code in plan_nodes}
 
     assert len(plans) == 8
