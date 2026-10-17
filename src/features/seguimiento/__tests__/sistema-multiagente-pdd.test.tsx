@@ -166,4 +166,121 @@ describe("Sistema Multiagente PDD/PDL y Diagnóstico Comparativo de Seguridad Hu
     expect(htmlMotor).toContain('data-testid="tab-motor-multiagente-pdd"');
     expect(htmlMotor).toContain("Sistema Multiagente PDD/PDL (2012–2027)");
   });
+
+  it("8. obtenerCruceMultiagentePaBpim normaliza el payload real del backend en vivo sin campos undefined ni NaN", async () => {
+    const backendPayloadVivo = {
+      resumen_ejecutivo: {
+        total_nodos_pdd_pdl: 1524,
+        desglose_frontalidad: { A: 205, B: 416, C: 263, N: 640 },
+        total_metas_pdd: 2228,
+        total_metas_pdl: 401,
+        total_actividades_pa: 281,
+        entidades_activas: 29,
+        cobertura_articulacion_vigente_2024_2027: {
+          articuladas: 265,
+          brechas: 16,
+        },
+      },
+      articulacion_por_dimension_sh: [
+        {
+          dimension: "Personal",
+          nodos_ab: 47,
+          ppi_constante_asignado_cop: 1369619394914.62,
+          actividades_pa: 365,
+          avance_fisico_promedio: 39.01,
+          entidades_lideres: ["Secretaría del Interior y Convivencia Ciudadana", "Distriseguridad"],
+        },
+        {
+          dimension: "Salud",
+          nodos_ab: 88,
+          ppi_constante_asignado_cop: 4820410290110,
+          actividades_pa: 38,
+          avance_fisico_promedio: 73.1,
+          entidades_lideres: ["DADIS"],
+        },
+      ],
+      articulacion_por_entidad: [
+        {
+          entidad: "Secretaría del Interior y Convivencia Ciudadana",
+          actividades_pa: 39,
+          metas_pdd_asociadas: 39,
+          productos_mga_bpim: 39,
+          grado_frontalidad_predominante: "A",
+        },
+      ],
+      matriz_trazabilidad_pa_bpim: [
+        {
+          codigo_plan: "PDD_2024_2027",
+          codigo_nodo: "PDD24-L1-P01",
+          nombre_programa: "Cartagena Segura, Ordenada y en Paz (Plan Titán 24)",
+          grado_frontalidad: "A",
+          dimension_sh_principal: "Personal",
+          meta_pdd: "MP-2024-001: Reducir la tasa de homicidios por cada 100.000 habitantes",
+          actividad_pa_id: "PA-2026-SECINT-001",
+          descripcion_actividad_pa: "Ejecutar operativos integrados de control territorial",
+          dependencia_responsable: "Secretaría del Interior y Convivencia Ciudadana",
+          codigo_bpim_sugerido: "2024130010012",
+          producto_mga_dnp: "4501001 - Servicio de apoyo a la convivencia y seguridad ciudadana",
+          avance_fisico_pct: 18.0,
+          estado_articulacion: "ARTICULADA",
+        },
+      ],
+    };
+
+    const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValue(
+      new Response(JSON.stringify(backendPayloadVivo), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      })
+    );
+
+    try {
+      const cruce = await obtenerCruceMultiagentePaBpim();
+
+      // 1. Resumen ejecutivo normalizado
+      expect(cruce.resumen_ejecutivo.nodos_grado_a).toBe(205);
+      expect(cruce.resumen_ejecutivo.nodos_grado_b).toBe(416);
+      expect(cruce.resumen_ejecutivo.nodos_grado_c).toBe(263);
+      expect(cruce.resumen_ejecutivo.nodos_grado_n).toBe(640);
+      expect(cruce.resumen_ejecutivo.cobertura_articulacion_vigente_2024_2027_pct).toBeCloseTo(
+        94.31,
+        1
+      );
+
+      // 2. Dimensiones normalizadas
+      const dimPersonal = cruce.articulacion_por_dimension_sh[0]!;
+      expect(dimPersonal.dimension).toBe("Seguridad Personal");
+      expect(dimPersonal.nodos_a_mas_b).toBe(47);
+      expect(dimPersonal.presupuesto_ppi_constante_2025_cop).toBeCloseTo(1369619394914.62, 2);
+      expect(dimPersonal.actividades_pa_vinculadas).toBe(365);
+      expect(dimPersonal.avance_fisico_promedio_pct).toBe(39.01);
+
+      const dimSalud = cruce.articulacion_por_dimension_sh[1]!;
+      expect(dimSalud.dimension).toBe("Seguridad en la Salud");
+      expect(dimSalud.nodos_a_mas_b).toBe(88);
+
+      // 3. Entidad normalizada
+      const ent = cruce.articulacion_por_entidad[0]!;
+      expect(ent.entidad_responsable).toBe("Secretaría del Interior y Convivencia Ciudadana");
+      expect(ent.sigla).toBeTruthy();
+      expect(ent.actividades_pa_count).toBe(39);
+      expect(ent.metas_pdd_asociadas).toBe(39);
+      expect(ent.productos_mga_bpim).toBe(39);
+      expect(Number.isNaN(ent.presupuesto_pa_programado_cop)).toBe(false);
+      expect(Number.isNaN(ent.avance_fisico_promedio_pct)).toBe(false);
+
+      // 4. Matriz de trazabilidad normalizada
+      const reg = cruce.matriz_trazabilidad_pa_bpim[0]!;
+      expect(reg.id_trazabilidad).toBe("TRZ-001-PDD24-L1-P01-PA-2026-SECINT-001");
+      expect(reg.dimension_sh_principal).toBe("Seguridad Personal");
+      expect(reg.meta_pdd_codigo).toContain("MP-2024-001");
+      expect(reg.meta_pdd_descripcion).toContain("Reducir la tasa de homicidios");
+      expect(reg.actividad_pa_codigo).toBe("PA-2026-SECINT-001");
+      expect(reg.codigo_bpim).toBe("2024130010012");
+      expect(reg.estado_articulacion).toBe("ARTICULADO_VERIFICADO");
+    } finally {
+      fetchSpy.mockRestore();
+    }
+  });
 });
+

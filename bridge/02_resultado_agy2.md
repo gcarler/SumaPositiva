@@ -47,8 +47,9 @@ Se diseñó, implementó, integró y verificó en `/plataforma/seguimiento` la c
   - **Bloque 2 (`bloque-comparativo-5-pdd`):** Matriz comparativa de los 5 PDD (`2012–2027`), vector interactivo de las **7 Dimensiones PNUD** y bloque separado del **Anexo Territorial de los 3 PDL (`2024–2027`)** (`401` metas y `$304.981M COP`).
   - **Bloque 3 (`bloque-4-preguntas-estrategicas`):** Tarjetas interactivas con las **4 respuestas estratégicas** del diagnóstico comparativo, tabla de articulación PDD (`A/B`) $\leftrightarrow$ Plan de Acción (`29` entidades) $\leftrightarrow$ códigos BPIM (`13` dígitos), y **Drawer Lateral (`SidePanel` de `@/shared/ui/side-panel`)** que inspecciona los 11 PDFs verificados con SHA-256 (`161`, `116`, `199`, `363`, `370`, `304`, `491`, `549`, `70`, `32`, `73` págs.) y la trazabilidad PA/BPIM sin usar popups modales centrados.
 
-### 2.3 Suite de Pruebas Unitarias y Documentación
-- **Nuevo archivo de pruebas:** `src/features/seguimiento/__tests__/sistema-multiagente-pdd.test.tsx` (7 pruebas exhaustivas).
+### 2.3 Suite de Pruebas Unitarias, Normalizador de Contrato en Vivo y Documentación
+- **Subsanación EAF (`normalizarCruceMultiagentePaBpim` y `normalizarDimensionSeguridadHumana` en `src/features/seguimiento/services/plan-accion-dnp-api.ts`):** Mapeo elemento por elemento del payload real del backend en vivo (`nodos_ab` $\rightarrow$ `nodos_a_mas_b`, `ppi_constante_asignado_cop` $\rightarrow$ `presupuesto_ppi_constante_2025_cop`, `actividades_pa` $\rightarrow$ `actividades_pa_vinculadas` / `actividades_pa_count`, `avance_fisico_promedio` $\rightarrow$ `avance_fisico_promedio_pct`, `dimension: "Personal" / "Salud"` $\rightarrow$ `"Seguridad Personal" / "Seguridad en la Salud"`, `entidad` $\rightarrow$ `entidad_responsable` + extracción de `sigla`, `meta_pdd` $\rightarrow$ `meta_pdd_codigo` / `meta_pdd_descripcion`, `actividad_pa_id` $\rightarrow$ `actividad_pa_codigo`, `codigo_bpim_sugerido` $\rightarrow$ `codigo_bpim`, generación determinista de `id_trazabilidad`, normalización de `estado_articulacion: "ARTICULADA"` $\rightarrow$ `"ARTICULADO_VERIFICADO"`, y `desglose_frontalidad` / `cobertura_articulacion_vigente_2024_2027` en `resumen_ejecutivo`).
+- **Archivo de pruebas:** `src/features/seguimiento/__tests__/sistema-multiagente-pdd.test.tsx` (8 pruebas exhaustivas, incluyendo simulación de respuesta HTTP 200 con el payload real del backend en vivo).
 - **Ampliación de pruebas existentes:** `src/features/seguimiento/components/motor-plan-accion.test.tsx` (Sección 6 con 3 pruebas adicionales).
 - **Documentación actualizada:** `docs/banco-conocimiento-politica-publica.md` (Sección 6 y nueva Sección 8).
 
@@ -58,4 +59,5 @@ Se diseñó, implementó, integró y verificó en `/plataforma/seguimiento` la c
 
 1. `bun run ui:check` $\rightarrow$ **0 violaciones** (cumplimiento 100% de primitivas, tokens semánticos y regla Zero-Modals).
 2. `bun run check` $\rightarrow$ **0 errores y 0 warnings** (`ui:check` + `tsc --noEmit` + `eslint`).
-3. `bun test` $\rightarrow$ **100% pruebas aprobadas**.
+3. `bun test` $\rightarrow$ **739 pass / 0 fail** (100% pruebas aprobadas).
+

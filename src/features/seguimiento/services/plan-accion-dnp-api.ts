@@ -3252,8 +3252,12 @@ export {
 } from "../data/sistema-multiagente-pdd.data";
 
 import type {
+  DimensionSeguridadHumanaNombre,
   EstadoSistemaMultiagentePddRespuesta,
   ComparativoSeguridadHumanaPddRespuesta,
+  ArticulacionDimensionSeguridadHumana,
+  ArticulacionEntidadPaBpim,
+  RegistroTrazabilidadPaBpim,
   CruceMultiagentePaBpimRespuesta,
 } from "../data/sistema-multiagente-pdd.data";
 
@@ -3396,6 +3400,404 @@ export async function obtenerComparativoSeguridadHumanaPdd(): Promise<Comparativ
   }
 }
 
+export function normalizarDimensionSeguridadHumana(
+  valor: unknown
+): DimensionSeguridadHumanaNombre {
+  if (typeof valor !== "string") return "Seguridad Personal";
+  const limpio = valor.trim().toLowerCase();
+  if (limpio.includes("personal")) return "Seguridad Personal";
+  if (limpio.includes("comunitaria")) return "Seguridad Comunitaria";
+  if (limpio.includes("econ")) return "Seguridad Económica";
+  if (limpio.includes("alimentaria")) return "Seguridad Alimentaria";
+  if (limpio.includes("salud")) return "Seguridad en la Salud";
+  if (limpio.includes("ambiental")) return "Seguridad Ambiental";
+  if (limpio.includes("pol")) return "Seguridad Política";
+  return "Seguridad Personal";
+}
+
+function extraerSiglaEntidad(nombre: string): string {
+  const matchParentesis = nombre.match(/\(([A-ZÁÉÍÓÚÑ0-9-]{2,12})\)/);
+  if (matchParentesis?.[1]) return matchParentesis[1];
+  const palabras = nombre
+    .replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, "")
+    .split(/\s+/)
+    .filter((p) => p.length > 3);
+  if (palabras.length === 0) return "DIST";
+  return palabras
+    .slice(0, 4)
+    .map((p) => p[0]?.toUpperCase() ?? "")
+    .join("");
+}
+
+export function normalizarCruceMultiagentePaBpim(
+  raw: unknown
+): CruceMultiagentePaBpimRespuesta {
+  const canonico = obtenerCruceMultiagentePaBpimLocal();
+  if (!esObjetoRegistro(raw)) {
+    return canonico;
+  }
+
+  // 1. Normalizar resumen_ejecutivo
+  const resumenRaw = esObjetoRegistro(raw.resumen_ejecutivo)
+    ? raw.resumen_ejecutivo
+    : {};
+  const desgloseFrontalidad = esObjetoRegistro(resumenRaw.desglose_frontalidad)
+    ? resumenRaw.desglose_frontalidad
+    : {};
+  const coberturaVig = esObjetoRegistro(
+    resumenRaw.cobertura_articulacion_vigente_2024_2027
+  )
+    ? resumenRaw.cobertura_articulacion_vigente_2024_2027
+    : {};
+
+  let coberturaPct = canonico.resumen_ejecutivo.cobertura_articulacion_vigente_2024_2027_pct;
+  if (
+    typeof resumenRaw.cobertura_articulacion_vigente_2024_2027_pct === "number" &&
+    !Number.isNaN(resumenRaw.cobertura_articulacion_vigente_2024_2027_pct)
+  ) {
+    coberturaPct = resumenRaw.cobertura_articulacion_vigente_2024_2027_pct;
+  } else if (
+    typeof coberturaVig.porcentaje_cobertura === "number" &&
+    !Number.isNaN(coberturaVig.porcentaje_cobertura)
+  ) {
+    coberturaPct = coberturaVig.porcentaje_cobertura;
+  } else if (
+    typeof coberturaVig.articuladas === "number" &&
+    typeof coberturaVig.brechas === "number" &&
+    coberturaVig.articuladas + coberturaVig.brechas > 0
+  ) {
+    coberturaPct = Number(
+      (
+        (coberturaVig.articuladas /
+          (coberturaVig.articuladas + coberturaVig.brechas)) *
+        100
+      ).toFixed(2)
+    );
+  }
+
+  const resumenEjecutivo: CruceMultiagentePaBpimRespuesta["resumen_ejecutivo"] = {
+    total_nodos_pdd_pdl:
+      typeof resumenRaw.total_nodos_pdd_pdl === "number"
+        ? resumenRaw.total_nodos_pdd_pdl
+        : canonico.resumen_ejecutivo.total_nodos_pdd_pdl,
+    nodos_grado_a:
+      typeof resumenRaw.nodos_grado_a === "number"
+        ? resumenRaw.nodos_grado_a
+        : typeof desgloseFrontalidad.A === "number"
+          ? desgloseFrontalidad.A
+          : canonico.resumen_ejecutivo.nodos_grado_a,
+    nodos_grado_b:
+      typeof resumenRaw.nodos_grado_b === "number"
+        ? resumenRaw.nodos_grado_b
+        : typeof desgloseFrontalidad.B === "number"
+          ? desgloseFrontalidad.B
+          : canonico.resumen_ejecutivo.nodos_grado_b,
+    nodos_grado_c:
+      typeof resumenRaw.nodos_grado_c === "number"
+        ? resumenRaw.nodos_grado_c
+        : typeof desgloseFrontalidad.C === "number"
+          ? desgloseFrontalidad.C
+          : canonico.resumen_ejecutivo.nodos_grado_c,
+    nodos_grado_n:
+      typeof resumenRaw.nodos_grado_n === "number"
+        ? resumenRaw.nodos_grado_n
+        : typeof desgloseFrontalidad.N === "number"
+          ? desgloseFrontalidad.N
+          : canonico.resumen_ejecutivo.nodos_grado_n,
+    total_metas_pdd:
+      typeof resumenRaw.total_metas_pdd === "number"
+        ? resumenRaw.total_metas_pdd
+        : canonico.resumen_ejecutivo.total_metas_pdd,
+    total_metas_pdl:
+      typeof resumenRaw.total_metas_pdl === "number"
+        ? resumenRaw.total_metas_pdl
+        : canonico.resumen_ejecutivo.total_metas_pdl,
+    total_actividades_pa:
+      typeof resumenRaw.total_actividades_pa === "number"
+        ? resumenRaw.total_actividades_pa
+        : canonico.resumen_ejecutivo.total_actividades_pa,
+    entidades_activas:
+      typeof resumenRaw.entidades_activas === "number"
+        ? resumenRaw.entidades_activas
+        : canonico.resumen_ejecutivo.entidades_activas,
+    cobertura_articulacion_vigente_2024_2027_pct: coberturaPct,
+  };
+
+  // 2. Normalizar articulacion_por_dimension_sh
+  const canonDimMap = new Map(
+    canonico.articulacion_por_dimension_sh.map((d) => [d.dimension, d])
+  );
+  const dimApi: ArticulacionDimensionSeguridadHumana[] =
+    Array.isArray(raw.articulacion_por_dimension_sh) &&
+    raw.articulacion_por_dimension_sh.length > 0
+      ? raw.articulacion_por_dimension_sh
+          .filter(esObjetoRegistro)
+          .map((item) => {
+            const dimNombre = normalizarDimensionSeguridadHumana(item.dimension);
+            const fallbackDim =
+              canonDimMap.get(dimNombre) ??
+              canonico.articulacion_por_dimension_sh[0]!;
+            const nodosAMasB =
+              typeof item.nodos_a_mas_b === "number" && !Number.isNaN(item.nodos_a_mas_b)
+                ? item.nodos_a_mas_b
+                : typeof item.nodos_ab === "number" && !Number.isNaN(item.nodos_ab)
+                  ? item.nodos_ab
+                  : fallbackDim.nodos_a_mas_b;
+            const ppiConstante =
+              typeof item.presupuesto_ppi_constante_2025_cop === "number" &&
+              !Number.isNaN(item.presupuesto_ppi_constante_2025_cop)
+                ? item.presupuesto_ppi_constante_2025_cop
+                : typeof item.ppi_constante_asignado_cop === "number" &&
+                    !Number.isNaN(item.ppi_constante_asignado_cop)
+                  ? item.ppi_constante_asignado_cop
+                  : fallbackDim.presupuesto_ppi_constante_2025_cop;
+            const actividadesPa =
+              typeof item.actividades_pa_vinculadas === "number" &&
+              !Number.isNaN(item.actividades_pa_vinculadas)
+                ? item.actividades_pa_vinculadas
+                : typeof item.actividades_pa === "number" &&
+                    !Number.isNaN(item.actividades_pa)
+                  ? item.actividades_pa
+                  : fallbackDim.actividades_pa_vinculadas;
+            const avancePromedio =
+              typeof item.avance_fisico_promedio_pct === "number" &&
+              !Number.isNaN(item.avance_fisico_promedio_pct)
+                ? item.avance_fisico_promedio_pct
+                : typeof item.avance_fisico_promedio === "number" &&
+                    !Number.isNaN(item.avance_fisico_promedio)
+                  ? item.avance_fisico_promedio
+                  : fallbackDim.avance_fisico_promedio_pct;
+            const entidadesLideres =
+              Array.isArray(item.entidades_lideres) &&
+              item.entidades_lideres.length > 0
+                ? item.entidades_lideres.filter(
+                    (e): e is string => typeof e === "string" && e.trim().length > 0
+                  )
+                : fallbackDim.entidades_lideres;
+
+            return {
+              dimension: dimNombre,
+              nodos_a_mas_b: nodosAMasB,
+              presupuesto_ppi_constante_2025_cop: ppiConstante,
+              actividades_pa_vinculadas: actividadesPa,
+              avance_fisico_promedio_pct: avancePromedio,
+              entidades_lideres:
+                entidadesLideres.length > 0
+                  ? entidadesLideres
+                  : fallbackDim.entidades_lideres,
+            };
+          })
+      : canonico.articulacion_por_dimension_sh;
+
+  // 3. Normalizar articulacion_por_entidad
+  const entApi: ArticulacionEntidadPaBpim[] =
+    Array.isArray(raw.articulacion_por_entidad) &&
+    raw.articulacion_por_entidad.length > 0
+      ? raw.articulacion_por_entidad
+          .filter(esObjetoRegistro)
+          .map((item, idx) => {
+            const nombreRaw =
+              typeof item.entidad_responsable === "string" &&
+              item.entidad_responsable.trim().length > 0
+                ? item.entidad_responsable.trim()
+                : typeof item.entidad === "string" && item.entidad.trim().length > 0
+                  ? item.entidad.trim()
+                  : "";
+            const canonMatch = canonico.articulacion_por_entidad.find(
+              (c) =>
+                c.entidad_responsable.toLowerCase() === nombreRaw.toLowerCase() ||
+                (typeof item.sigla === "string" &&
+                  c.sigla.toLowerCase() === item.sigla.trim().toLowerCase())
+            );
+            const entidadResponsable =
+              nombreRaw ||
+              canonMatch?.entidad_responsable ||
+              `Entidad Distrital ${idx + 1}`;
+            const sigla =
+              typeof item.sigla === "string" && item.sigla.trim().length > 0
+                ? item.sigla.trim()
+                : canonMatch?.sigla ?? extraerSiglaEntidad(entidadResponsable);
+            const actividadesCount =
+              typeof item.actividades_pa_count === "number" &&
+              !Number.isNaN(item.actividades_pa_count)
+                ? item.actividades_pa_count
+                : typeof item.actividades_pa === "number" &&
+                    !Number.isNaN(item.actividades_pa)
+                  ? item.actividades_pa
+                  : canonMatch?.actividades_pa_count ?? 0;
+            const metasAsociadas =
+              typeof item.metas_pdd_asociadas === "number" &&
+              !Number.isNaN(item.metas_pdd_asociadas)
+                ? item.metas_pdd_asociadas
+                : canonMatch?.metas_pdd_asociadas ?? actividadesCount;
+            const productosBpim =
+              typeof item.productos_mga_bpim === "number" &&
+              !Number.isNaN(item.productos_mga_bpim)
+                ? item.productos_mga_bpim
+                : canonMatch?.productos_mga_bpim ?? actividadesCount;
+            const gradoFrontalidad: "A" | "B" =
+              item.grado_frontalidad_predominante === "B" ? "B" : "A";
+            const presupuestoCop =
+              typeof item.presupuesto_pa_programado_cop === "number" &&
+              !Number.isNaN(item.presupuesto_pa_programado_cop)
+                ? item.presupuesto_pa_programado_cop
+                : typeof item.presupuesto_cop === "number" &&
+                    !Number.isNaN(item.presupuesto_cop)
+                  ? item.presupuesto_cop
+                  : canonMatch?.presupuesto_pa_programado_cop ?? 0;
+            const avancePromedio =
+              typeof item.avance_fisico_promedio_pct === "number" &&
+              !Number.isNaN(item.avance_fisico_promedio_pct)
+                ? item.avance_fisico_promedio_pct
+                : typeof item.avance_fisico_promedio === "number" &&
+                    !Number.isNaN(item.avance_fisico_promedio)
+                  ? item.avance_fisico_promedio
+                  : canonMatch?.avance_fisico_promedio_pct ?? 0;
+
+            return {
+              entidad_responsable: entidadResponsable,
+              sigla,
+              actividades_pa_count: actividadesCount,
+              metas_pdd_asociadas: metasAsociadas,
+              productos_mga_bpim: productosBpim,
+              grado_frontalidad_predominante: gradoFrontalidad,
+              presupuesto_pa_programado_cop: presupuestoCop,
+              avance_fisico_promedio_pct: avancePromedio,
+            };
+          })
+      : canonico.articulacion_por_entidad;
+
+  // 4. Normalizar matriz_trazabilidad_pa_bpim
+  const trzApi: RegistroTrazabilidadPaBpim[] =
+    Array.isArray(raw.matriz_trazabilidad_pa_bpim) &&
+    raw.matriz_trazabilidad_pa_bpim.length > 0
+      ? raw.matriz_trazabilidad_pa_bpim
+          .filter(esObjetoRegistro)
+          .map((item, idx) => {
+            const codigoPlan =
+              typeof item.codigo_plan === "string" && item.codigo_plan.trim().length > 0
+                ? item.codigo_plan.trim()
+                : "PDD_2024_2027";
+            const codigoNodo =
+              typeof item.codigo_nodo === "string" && item.codigo_nodo.trim().length > 0
+                ? item.codigo_nodo.trim()
+                : `NODO-${String(idx + 1).padStart(3, "0")}`;
+            const nombrePrograma =
+              typeof item.nombre_programa === "string" &&
+              item.nombre_programa.trim().length > 0
+                ? item.nombre_programa.trim()
+                : "Programa PDD";
+            const gradoFrontalidad: "A" | "B" =
+              item.grado_frontalidad === "B" ? "B" : "A";
+            const dimensionSh = normalizarDimensionSeguridadHumana(
+              item.dimension_sh_principal
+            );
+
+            const metaPddRaw =
+              typeof item.meta_pdd === "string" && item.meta_pdd.trim().length > 0
+                ? item.meta_pdd.trim()
+                : "";
+            const metaPddCodigo =
+              typeof item.meta_pdd_codigo === "string" &&
+              item.meta_pdd_codigo.trim().length > 0
+                ? item.meta_pdd_codigo.trim()
+                : metaPddRaw || `MP-${codigoNodo}`;
+            const metaPddDescripcion =
+              typeof item.meta_pdd_descripcion === "string" &&
+              item.meta_pdd_descripcion.trim().length > 0
+                ? item.meta_pdd_descripcion.trim()
+                : metaPddRaw || nombrePrograma;
+
+            const actividadPaCodigo =
+              typeof item.actividad_pa_codigo === "string" &&
+              item.actividad_pa_codigo.trim().length > 0
+                ? item.actividad_pa_codigo.trim()
+                : typeof item.actividad_pa_id === "string" &&
+                    item.actividad_pa_id.trim().length > 0
+                  ? item.actividad_pa_id.trim()
+                  : `PA-2026-${String(idx + 1).padStart(3, "0")}`;
+
+            const descripcionActividadPa =
+              typeof item.descripcion_actividad_pa === "string" &&
+              item.descripcion_actividad_pa.trim().length > 0
+                ? item.descripcion_actividad_pa.trim()
+                : metaPddDescripcion;
+
+            const dependenciaResponsable =
+              typeof item.dependencia_responsable === "string" &&
+              item.dependencia_responsable.trim().length > 0
+                ? item.dependencia_responsable.trim()
+                : "Entidad Distrital";
+
+            const codigoBpim =
+              typeof item.codigo_bpim === "string" && item.codigo_bpim.trim().length > 0
+                ? item.codigo_bpim.trim()
+                : typeof item.codigo_bpim_sugerido === "string" &&
+                    item.codigo_bpim_sugerido.trim().length > 0
+                  ? item.codigo_bpim_sugerido.trim()
+                  : `2024130010${String(idx + 1).padStart(3, "0")}`;
+
+            const productoMgaDnp =
+              typeof item.producto_mga_dnp === "string" &&
+              item.producto_mga_dnp.trim().length > 0
+                ? item.producto_mga_dnp.trim()
+                : "Producto MGA-DNP";
+
+            const avanceFisicoPct =
+              typeof item.avance_fisico_pct === "number" &&
+              !Number.isNaN(item.avance_fisico_pct)
+                ? item.avance_fisico_pct
+                : 0;
+
+            const estadoRaw =
+              typeof item.estado_articulacion === "string"
+                ? item.estado_articulacion.trim().toUpperCase()
+                : "";
+            const estadoArticulacion: "ARTICULADO_VERIFICADO" | "EN_HOMOLOGACION_BPIM" =
+              estadoRaw === "EN_HOMOLOGACION_BPIM" ||
+              estadoRaw === "PENDIENTE" ||
+              estadoRaw === "BRECHA"
+                ? "EN_HOMOLOGACION_BPIM"
+                : "ARTICULADO_VERIFICADO";
+
+            const idTrazabilidad =
+              typeof item.id_trazabilidad === "string" &&
+              item.id_trazabilidad.trim().length > 0
+                ? item.id_trazabilidad.trim()
+                : `TRZ-${String(idx + 1).padStart(3, "0")}-${codigoNodo}-${actividadPaCodigo}`;
+
+            return {
+              id_trazabilidad: idTrazabilidad,
+              codigo_plan: codigoPlan,
+              codigo_nodo: codigoNodo,
+              nombre_programa: nombrePrograma,
+              grado_frontalidad: gradoFrontalidad,
+              dimension_sh_principal: dimensionSh,
+              meta_pdd_codigo: metaPddCodigo,
+              meta_pdd_descripcion: metaPddDescripcion,
+              actividad_pa_codigo: actividadPaCodigo,
+              descripcion_actividad_pa: descripcionActividadPa,
+              dependencia_responsable: dependenciaResponsable,
+              codigo_bpim: codigoBpim,
+              producto_mga_dnp: productoMgaDnp,
+              avance_fisico_pct: avanceFisicoPct,
+              estado_articulacion: estadoArticulacion,
+            };
+          })
+      : canonico.matriz_trazabilidad_pa_bpim;
+
+  return {
+    ...canonico,
+    resumen_ejecutivo: resumenEjecutivo,
+    articulacion_por_dimension_sh:
+      dimApi.length > 0 ? dimApi : canonico.articulacion_por_dimension_sh,
+    articulacion_por_entidad:
+      entApi.length > 0 ? entApi : canonico.articulacion_por_entidad,
+    matriz_trazabilidad_pa_bpim:
+      trzApi.length > 0 ? trzApi : canonico.matriz_trazabilidad_pa_bpim,
+  };
+}
+
 export async function obtenerCruceMultiagentePaBpim(): Promise<CruceMultiagentePaBpimRespuesta> {
   const canonico = obtenerCruceMultiagentePaBpimLocal();
   try {
@@ -3403,30 +3805,13 @@ export async function obtenerCruceMultiagentePaBpim(): Promise<CruceMultiagenteP
       "/api/v1/compromisos/triada/pdd-dea/cruce-multiagente-pa-bpim",
       { method: "GET" }
     );
-    if (!esObjetoRegistro(res)) {
-      return canonico;
-    }
-    const dimApi = Array.isArray(res.articulacion_por_dimension_sh) && res.articulacion_por_dimension_sh.length === 7
-      ? (res.articulacion_por_dimension_sh as CruceMultiagentePaBpimRespuesta["articulacion_por_dimension_sh"])
-      : canonico.articulacion_por_dimension_sh;
-    const entApi = Array.isArray(res.articulacion_por_entidad) && res.articulacion_por_entidad.length > 0
-      ? (res.articulacion_por_entidad as CruceMultiagentePaBpimRespuesta["articulacion_por_entidad"])
-      : canonico.articulacion_por_entidad;
-    const trzApi = Array.isArray(res.matriz_trazabilidad_pa_bpim) && res.matriz_trazabilidad_pa_bpim.length > 0
-      ? (res.matriz_trazabilidad_pa_bpim as CruceMultiagentePaBpimRespuesta["matriz_trazabilidad_pa_bpim"])
-      : canonico.matriz_trazabilidad_pa_bpim;
-
-    return {
-      ...canonico,
-      articulacion_por_dimension_sh: dimApi,
-      articulacion_por_entidad: entApi,
-      matriz_trazabilidad_pa_bpim: trzApi,
-    };
+    return normalizarCruceMultiagentePaBpim(res);
   } catch (error) {
     console.warn("Fallo obtenerCruceMultiagentePaBpim, usando cruce canónico:", error);
     return canonico;
   }
 }
+
 
 
 
