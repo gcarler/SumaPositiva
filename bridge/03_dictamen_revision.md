@@ -1,15 +1,25 @@
-# DICTAMEN FORENSE EAF — `agy2` (`[TRIADA-FRONTEND-CIERRE-GOOGLE-WORKSPACE-13]`)
+# DICTAMEN FORENSE EAF — `agy2` (`[FRONTEND-TABLERO-MULTIAGENTE-PDD-18B]`)
 
-- **Auditor Forense EAF:** `agy`
-- **Agente Evaluado:** `agy2`
-- **Commit Auditado:** `9a8c3b4` (`feat(seguimiento-workspace): panel sincronizacion nativa Google Sheets/Docs PSHC y cierre documental 1383 archivos [TRIADA-FRONTEND-CIERRE-GOOGLE-WORKSPACE-13]`)
-- **Fecha:** 2026-10-15
-- **Calificación EAF:** **100 / 100 — APROBADO SIN OBSERVACIONES**
+- **Auditor Forense EAF:** `agy` (`=agy:0.0`)
+- **Agente Evaluado:** `agy2` (`=agy2:0.0`)
+- **Commits Auditados:** `e3bc550` + `f034c79` (`fix(seguimiento): normalizador de contrato vivo en obtenerCruceMultiagentePaBpim [18B]`)
+- **Fecha:** 2026-10-17
+- **Calificación EAF:** **100 / 100 — CONFORME (APROBADO SIN OBSERVACIONES)**
 
-## Verificaciones Ejecutadas
-1. **Panel de Sincronización Nativa con Google Workspace (`google-workspace-sync-card`):**
-   - Muestra estado en vivo, enlaces directos a `PSHC`, `00_EXPEDIENTE_OFICIAL_POLIS_CSH`, `Matriz_PDM`, `Matriz_Plan_de_accion` y `Analisis`, y botón de sincronización directa (`btn-sync-google-workspace`).
-2. **Motor Plan de Acción DNP (29 Entidades):**
-   - Filtros por las 29 entidades distritales, vigencias `2024/2025/2026` y compromisos `PAS-SEC-01` a `PAS-ETN-10`.
-3. **Quality Gates:**
-   - `ui-policy.mjs`: `0` violaciones; `tsc --noEmit` y `eslint`: `0` errores; `bun test`: `177/177 pass` en seguimiento; `next build` y `polis-frontend.service`: activos.
+---
+
+## 1. Verificaciones Forenses Ejecutadas
+
+1. **Aislamiento y Frontera de Archivos:**
+   - Modificaciones circunscritas estrictamente a `src/features/seguimiento/**`, `docs/banco-conocimiento-politica-publica.md` y `bridge/02_resultado_agy2.md`. Cero archivos tocados en `backend/**` o `docs/permisos-api.md`.
+2. **Subsanación del Normalizador de Contrato en Vivo (`normalizarCruceMultiagentePaBpim`):**
+   - Implementados y exportados `normalizarDimensionSeguridadHumana` y `normalizarCruceMultiagentePaBpim` en `src/features/seguimiento/services/plan-accion-dnp-api.ts`.
+   - Mapeo completo de los campos del backend en vivo (`nodos_ab` $\rightarrow$ `nodos_a_mas_b`, `ppi_constante_asignado_cop` $\rightarrow$ `presupuesto_ppi_constante_2025_cop`, `actividades_pa` $\rightarrow$ `actividades_pa_vinculadas`, `avance_fisico_promedio` $\rightarrow$ `avance_fisico_promedio_pct`, `dimension: "Personal" / "Salud"` $\rightarrow$ `"Seguridad Personal" / "Seguridad en la Salud"`, `meta_pdd`, `actividad_pa_id`, `codigo_bpim_sugerido`, `id_trazabilidad`).
+   - Prueba unitaria #8 en `src/features/seguimiento/__tests__/sistema-multiagente-pdd.test.tsx` verificando el payload real del backend sin campos `undefined` ni `NaN`.
+3. **Tablero Ejecutivo y Regla Zero-Modals (`SistemaMultiagentePddPanel`):**
+   - Integrado en `PddDeaEvaluacionPanel` y `MotorPlanAccionTab` en `/plataforma/seguimiento`.
+   - Telemetría de `2.732` evidencias, `1.524` nodos, `2.228` metas PDD, `401` metas PDL, semáforo de Puertas `A` a `F`, comparativo de los 5 PDD (`A/B/C/N` + 7 dimensiones PNUD), Anexo Territorial de los 3 PDL, las 4 preguntas estratégicas y Drawer lateral `SidePanel` (`Zero-Modals`).
+4. **Quality Gates Frontend:**
+   - `bun run ui:check`: **PASS (0 violaciones)**.
+   - `bun run check` (`tsc --noEmit` + `eslint .`): **PASS (0 errores, 0 warnings)**.
+   - `bun test src/features/seguimiento/__tests__/sistema-multiagente-pdd.test.tsx src/features/seguimiento/components/motor-plan-accion.test.tsx`: **30/30 pruebas aprobadas (416 assertions)**.

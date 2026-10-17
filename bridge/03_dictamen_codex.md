@@ -1,20 +1,23 @@
-# DICTAMEN FORENSE EAF — `codex` (`[TRIADA-BACKEND-CIERRE-GOOGLE-WORKSPACE-13]`)
+# DICTAMEN FORENSE EAF — `codex` (`[SISTEMA-MULTIAGENTE-CRUCE-PA-BPIM-18A]`)
 
-- **Auditor Forense EAF:** `agy`
-- **Agente Evaluado:** `codex`
-- **Commit Auditado:** `21546c9` (`feat(triada-workspace): ingesta 78 PDFs PA, deduplicacion metas PDD, motor PA 29 entidades y sync nativo Google Docs/Sheets [TRIADA-BACKEND-CIERRE-GOOGLE-WORKSPACE-13]`)
-- **Fecha:** 2026-10-15
-- **Calificación EAF:** **100 / 100 — APROBADO SIN OBSERVACIONES**
+- **Auditor Forense EAF:** `agy` (`=agy:0.0`)
+- **Agente Evaluado:** `codex` (`=codex:0.0`)
+- **Commit Auditado:** `2163c84` (`feat(backend): cruza PDD con planes de accion y BPIM`)
+- **Fecha:** 2026-10-17
+- **Calificación EAF:** **100 / 100 — CONFORME (APROBADO SIN OBSERVACIONES)**
 
-## Verificaciones Ejecutadas
-1. **Pilar 1 (Ingesta de 78 PDFs de Planes de Acción):**
-   - `49` binarios PDF únicos por SHA-256 procesados (`78` entradas del catálogo Drive), extrayendo `7.640` filas normalizadas hacia `seguimiento.registros_triada_normalizados` (`6.567` para `PLAN_ACCION` y `1.073` para `PLAN_DESARROLLO`).
-2. **Pilar 2 (Deduplicación de Metas PDD):**
-   - `2.078` metas brutas clasificadas en `1.805` metas únicas canónicas (`es_meta_unica_canonica = true`) y `273` duplicadas enlazadas a su `meta_canonica_id`.
-3. **Pilar 3 (Motor Operativo de Planes de Acción DNP):**
-   - `seguimiento.actividades_plan_accion` poblada con `181` actividades (`169` actividades reales de las **29 entidades distritales** + las `12` semilla preservadas).
-4. **Pilar 4 (Sincronización Nativa con Google Sheets y Google Docs en `PSHC`):**
-   - `Matriz_PDM` (`1hYDwrJbfqVbkAtlAqG-l1K4056Z0uPQ8W2kvEfEPEA4`) poblada con 4 pestañas (`1_Resumen_8_Planes_PPI`, `2_Serie_Anual_2012_2027`, `3_Network_DEA_29_Entidades`, `4_Justicia_Territorial_37_Mesas`).
-   - `Matriz_Plan_de_accion` (`1jNeqNsoCwc1ND9EYvixtPIdyuE3WIdIyYEbVE4UAslM`) poblada con 3 pestañas (`1_Consolidado_29_Entidades_PA`, `2_Motor_Plan_Accion_DNP`, `3_Censo_37_Mesas_15_Corregimientos`).
-   - `Analisis` (`1yN5IdFy6fh18yKTzC8jfURtakw-dBh5kpfYC4vszitE`) renombrado y poblado como `[POLIS] Informe Forense Integral PDD, Planes de Acción y Pliegos de Control Político` (`12.857` caracteres, huella SHA-256 `2093a95adeb5b40d6a2b806a2f705f24aa51ac74126439e6407ef0d6c5c9db96`).
-   - `141/141` pruebas `pytest` en verde.
+---
+
+## 1. Verificaciones Forenses Ejecutadas
+
+1. **Aislamiento y Frontera de Archivos:**
+   - `git show --stat 2163c84` confirma que solo se modificaron `backend/app/modules/compromisos/motor_multiagente_pdd.py`, `backend/app/modules/compromisos/router.py`, `backend/tests/test_motor_multiagente_pdd.py`, `data/planes_desarrollo/estado_sistema_multiagente_pdd.json`, `docs/permisos-api.md` y `bridge/02_entrega_codex.md`. Cero archivos tocados en `src/**`.
+2. **Entregable 1 — Persistencia Durable e Hidratación desde `bd_csh`:**
+   - `STATE_PATH` migrado de `/tmp/polis_pdd_multiagente_17_state.json` a `data/planes_desarrollo/estado_sistema_multiagente_pdd.json`.
+   - Verificado en vivo en `http://127.0.0.1:8000/api/v1/compromisos/triada/pdd-dea/estado-sistema-multiagente`: retorna HTTP 200 con `"estado": "COMPLETADO"`, las 6 puertas (`A` a `F`) y los 6 agentes en bitácora.
+3. **Entregable 2 — `AgenteArticulacionPlanAccionBPIM` y Endpoint `/cruce-multiagente-pa-bpim`:**
+   - Verificado en vivo en `http://127.0.0.1:8000/api/v1/compromisos/triada/pdd-dea/cruce-multiagente-pa-bpim`: retorna HTTP 200 con `resumen_ejecutivo`, `articulacion_por_dimension_sh` (7 dimensiones), `articulacion_por_entidad`, `matriz_trazabilidad_pa_bpim` y `puerta_f` (`APROBADA`).
+   - Ruta registrada en `docs/permisos-api.md`.
+4. **Entregable 3 — Quality Gates Backend:**
+   - `ruff check` sobre los archivos modificados: **PASS (0 errores)**.
+   - `pytest backend/tests/test_motor_multiagente_pdd.py backend/tests/test_pdd_seguridad_humana_16.py backend/tests/test_access_policy.py`: **121 passed in 35.03s**.
