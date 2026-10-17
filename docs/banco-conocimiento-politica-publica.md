@@ -146,7 +146,8 @@ Según el nivel administrativo, una política pública en Colombia se adopta med
 | **Evaluación Ex-Ante (TSD 12% / VPNE / CAE / RBC)** | **Simulador DEA y Laboratorio Prescriptivo** ([pdd-dea-evaluacion-panel.tsx](file:///root/polis/src/features/seguimiento/components/pdd-dea-evaluacion-panel.tsx)) evaluando la frontera de eficiencia y reasignación de Pareto. |
 | **Banco de Proyectos (BPIM / BPIN / POAI)** | **Tríada de Motores** ([triada-motores-tab.tsx](file:///root/polis/src/features/seguimiento/components/triada-motores-tab.tsx)) con cruce tripartito de Metas PDD $\leftrightarrow$ Actividades PA $\leftrightarrow$ Proyectos BPIM. |
 | **Doctrina Interactiva MGA-DNP** | **Banco de Conocimiento DNP** ([banco-conocimiento-dnp-tab.tsx](file:///root/polis/src/features/seguimiento/components/banco-conocimiento-dnp-tab.tsx)) con simulador lingüístico y módulo pedagógico interactivo de formulación de proyectos. |
-| **Principio de Incidencia y Zero-Modals** | Navegación deslizante apilada (`PanelHost`) que permite al ciudadano profundizar desde el contexto macro hasta la propuesta puntual sin perder la visión sistémica. |
+| **Sistema Multiagente PDD/PDL y Seguridad Humana (2012–2027)** | **Tablero Multiagente PDD/PDL** ([sistema-multiagente-pdd-panel.tsx](file:///root/polis/src/features/seguimiento/components/sistema-multiagente-pdd-panel.tsx)) con telemetría de 6 agentes, puertas de calidad `A` a `F`, comparativo de 5 PDD (`A/B/C/N` y 7 Dimensiones PNUD), anexo separado de 3 PDL y Drawer lateral `SidePanel` (`Zero-Modals`). |
+| **Principio de Incidencia y Zero-Modals** | Navegación deslizante apilada (`PanelHost` / `SidePanel`) que permite al ciudadano profundizar desde el contexto macro hasta la propuesta puntual sin perder la visión sistémica. |
 
 ---
 
@@ -165,3 +166,13 @@ Para viabilizar y materializar las metas del Plan de Desarrollo y las políticas
 4. **Programación**: Indicadores de Producto y Gestión bajo estándar CREMA, fuentes de financiación plurianuales (ICLD, SGP, SGR, Crédito) y **Matriz de Marco Lógico (MML de 4 filas $\times$ 4 columnas)**.
 
 Para la guía técnica exhaustiva y fichas modelo aplicadas a Cartagena, consulte el **[Módulo 12 del Banco de Conocimiento](file:///root/polis/knowledge-base/12_ESTRUCTURACION_PROYECTOS_INVERSION_PUBLICA_MGA_DNP.md)**.
+
+---
+
+## 8. Diagnóstico Longitudinal Multiagente PDD/PDL y Seguridad Humana (2012–2027)
+
+El módulo de Seguimiento integra el tablero interactivo del **Sistema Multiagente de Absorción y Diagnóstico PDD/PDL** ([sistema-multiagente-pdd-panel.tsx](file:///root/polis/src/features/seguimiento/components/sistema-multiagente-pdd-panel.tsx)), que consolida:
+- **Corpus auditado**: `2.732` evidencias (`2.728` páginas continuas de 11 PDFs oficiales verificados con SHA-256 + JSONs estructurados), `1.524` nodos jerárquicos MGA, `2.228` metas PDD (`2012–2027`) y `401` metas PDL (`2024–2027`).
+- **Rúbrica de Frontalidad (`POLIS_SH_A_B_C_N_V1`)**: Clasificación determinística en Grado `A` (Núcleo Frontal), Grado `B` (Determinante Multidimensional Directo), Grado `C` (Contextual/Habilitante) y Grado `N` (No Asociado), ponderada sin doble conteo en las **7 Dimensiones de Seguridad Humana (PNUD 1994 / Decreto 037 de 2026)**.
+- **Articulación Operativa (`Puerta F`)**: Cruce de metas `A` y `B` con las actividades de los Planes de Acción de las 29 entidades distritales y los códigos BPIM de 13 dígitos.
+

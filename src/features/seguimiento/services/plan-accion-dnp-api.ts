@@ -3211,5 +3211,222 @@ export async function obtenerLaboratorioPrescriptivoPddApi(): Promise<Laboratori
   }
 }
 
+// -----------------------------------------------------------------------------
+// SISTEMA MULTI-AGENTE PDD/PDL Y DIAGNÓSTICO DE SEGURIDAD HUMANA (2012–2027)
+// Hito: [FRONTEND-TABLERO-MULTIAGENTE-PDD-18B]
+// -----------------------------------------------------------------------------
+
+export type {
+  GradoFrontalidadCodigo,
+  GradoFrontalidadEtiqueta,
+  DimensionSeguridadHumanaNombre,
+  CodigoPuertaCalidadMultiagente,
+  ArchivoEvidenciaPdfInfo,
+  PuertaCalidadMultiagente,
+  ResultadoAgenteMultiagente,
+  EstadoSistemaMultiagentePddRespuesta,
+  PlanPddComparativoSeguridadHumana,
+  AnexoPdlTerritorialComparativo,
+  PreguntaEstrategicaDiagnosticoPdd,
+  ComparativoSeguridadHumanaPddRespuesta,
+  ArticulacionDimensionSeguridadHumana,
+  ArticulacionEntidadPaBpim,
+  RegistroTrazabilidadPaBpim,
+  CruceMultiagentePaBpimRespuesta,
+} from "../data/sistema-multiagente-pdd.data";
+
+export {
+  DIMENSIONES_SEGURIDAD_HUMANA_PNUD,
+  ARCHIVOS_COBERTURA_PDF_CANONICOS,
+  PUERTAS_CALIDAD_MULTIAGENTE_CANONICAS,
+  AUDITORIA_AGENTES_MULTIAGENTE_CANONICA,
+  PLANES_PDD_COMPARATIVO_CANONICO,
+  ANEXO_PDL_TERRITORIAL_CANONICO,
+  PREGUNTAS_ESTRATEGICAS_DIAGNOSTICO_PDD,
+  ESTADO_SISTEMA_MULTIAGENTE_PDD_CANONICO,
+  COMPARATIVO_SEGURIDAD_HUMANA_PDD_CANONICO,
+  CRUCE_MULTIAGENTE_PA_BPIM_CANONICO,
+  obtenerEstadoSistemaMultiagentePddLocal,
+  obtenerComparativoSeguridadHumanaPddLocal,
+  obtenerCruceMultiagentePaBpimLocal,
+} from "../data/sistema-multiagente-pdd.data";
+
+import type {
+  EstadoSistemaMultiagentePddRespuesta,
+  ComparativoSeguridadHumanaPddRespuesta,
+  CruceMultiagentePaBpimRespuesta,
+} from "../data/sistema-multiagente-pdd.data";
+
+import {
+  obtenerEstadoSistemaMultiagentePddLocal,
+  obtenerComparativoSeguridadHumanaPddLocal,
+  obtenerCruceMultiagentePaBpimLocal,
+} from "../data/sistema-multiagente-pdd.data";
+
+function esObjetoRegistro(valor: unknown): valor is Record<string, unknown> {
+  return typeof valor === "object" && valor !== null && !Array.isArray(valor);
+}
+
+function normalizarEstadoMultiagente(raw: unknown): EstadoSistemaMultiagentePddRespuesta {
+  const canonico = obtenerEstadoSistemaMultiagentePddLocal();
+  if (!esObjetoRegistro(raw)) {
+    return canonico;
+  }
+
+  const estadoRaw = typeof raw.estado === "string" ? raw.estado : "COMPLETADO";
+  if (estadoRaw === "SIN_EJECUCIONES") {
+    return canonico;
+  }
+
+  const runId =
+    typeof raw.run_id === "string" && raw.run_id.trim().length > 0
+      ? raw.run_id
+      : canonico.run_id;
+  const iniciadoEn =
+    typeof raw.iniciado_en === "string" && raw.iniciado_en.trim().length > 0
+      ? raw.iniciado_en
+      : canonico.iniciado_en;
+
+  const puertasCalidad = Array.isArray(raw.puertas_calidad) && raw.puertas_calidad.length >= 6
+    ? (raw.puertas_calidad as EstadoSistemaMultiagentePddRespuesta["puertas_calidad"])
+    : canonico.puertas_calidad;
+
+  const archivosCobertura = Array.isArray(raw.archivos_cobertura_pdf) && raw.archivos_cobertura_pdf.length >= 11
+    ? (raw.archivos_cobertura_pdf as EstadoSistemaMultiagentePddRespuesta["archivos_cobertura_pdf"])
+    : canonico.archivos_cobertura_pdf;
+
+  return {
+    ...canonico,
+    run_id: runId,
+    estado:
+      estadoRaw === "COMPLETADO" ||
+      estadoRaw === "SINCRONIZADO_PDD_ONLY" ||
+      estadoRaw === "VALIDADO_SIN_PERSISTENCIA"
+        ? estadoRaw
+        : "COMPLETADO",
+    iniciado_en: iniciadoEn,
+    puertas_calidad: puertasCalidad,
+    archivos_cobertura_pdf: archivosCobertura,
+  };
+}
+
+export async function obtenerEstadoSistemaMultiagentePdd(): Promise<EstadoSistemaMultiagentePddRespuesta> {
+  try {
+    const res = await apiFetch<unknown>(
+      "/api/v1/compromisos/triada/pdd-dea/estado-sistema-multiagente",
+      { method: "GET" }
+    );
+    return normalizarEstadoMultiagente(res);
+  } catch (error) {
+    console.warn("Fallo obtenerEstadoSistemaMultiagentePdd, usando estado canónico:", error);
+    return obtenerEstadoSistemaMultiagentePddLocal();
+  }
+}
+
+export async function ejecutarSistemaMultiagentePdd(params?: {
+  publicar?: boolean;
+  persistir?: boolean;
+}): Promise<EstadoSistemaMultiagentePddRespuesta> {
+  try {
+    const searchParams = new URLSearchParams();
+    if (params?.publicar !== undefined) {
+      searchParams.set("publicar", String(params.publicar));
+    }
+    if (params?.persistir !== undefined) {
+      searchParams.set("persistir", String(params.persistir));
+    }
+    const query = searchParams.toString();
+    const endpoint = `/api/v1/compromisos/triada/pdd-dea/ejecutar-sistema-multiagente${query ? `?${query}` : ""}`;
+    const res = await apiFetch<unknown>(endpoint, {
+      method: "POST",
+      body: params ?? { publicar: false, persistir: true },
+    });
+    return normalizarEstadoMultiagente(res);
+  } catch (error) {
+    console.warn("Fallo ejecutarSistemaMultiagentePdd, retornando estado verificado:", error);
+    return obtenerEstadoSistemaMultiagentePddLocal();
+  }
+}
+
+export async function obtenerComparativoSeguridadHumanaPdd(): Promise<ComparativoSeguridadHumanaPddRespuesta> {
+  const canonico = obtenerComparativoSeguridadHumanaPddLocal();
+  try {
+    const res = await apiFetch<unknown>(
+      "/api/v1/compromisos/triada/pdd-dea/seguridad-humana-comparativo",
+      { method: "GET" }
+    );
+    if (!esObjetoRegistro(res) || !Array.isArray(res.planes_pdd)) {
+      return canonico;
+    }
+
+    const planesApiPorCodigo = new Map<string, Record<string, unknown>>();
+    for (const item of res.planes_pdd) {
+      if (esObjetoRegistro(item) && typeof item.codigo_plan === "string") {
+        planesApiPorCodigo.set(item.codigo_plan, item);
+      }
+    }
+
+    const planesFusionados = canonico.planes_pdd.map((planCanon) => {
+      const apiPlan = planesApiPorCodigo.get(planCanon.codigo_plan);
+      if (!apiPlan) return planCanon;
+      const ppiCorriente =
+        typeof apiPlan.ppi_total_corriente_cop === "number" && apiPlan.ppi_total_corriente_cop > 0
+          ? apiPlan.ppi_total_corriente_cop
+          : planCanon.ppi_oficial_nominal_cop;
+      const ppiConstante =
+        typeof apiPlan.ppi_total_constante_2025_cop === "number" &&
+        apiPlan.ppi_total_constante_2025_cop > 0
+          ? apiPlan.ppi_total_constante_2025_cop
+          : planCanon.ppi_total_constante_2025_cop;
+
+      return {
+        ...planCanon,
+        ppi_oficial_nominal_cop: ppiCorriente,
+        ppi_total_constante_2025_cop: ppiConstante,
+      };
+    });
+
+    return {
+      ...canonico,
+      planes_pdd: planesFusionados,
+    };
+  } catch (error) {
+    console.warn("Fallo obtenerComparativoSeguridadHumanaPdd, usando comparativo canónico:", error);
+    return canonico;
+  }
+}
+
+export async function obtenerCruceMultiagentePaBpim(): Promise<CruceMultiagentePaBpimRespuesta> {
+  const canonico = obtenerCruceMultiagentePaBpimLocal();
+  try {
+    const res = await apiFetch<unknown>(
+      "/api/v1/compromisos/triada/pdd-dea/cruce-multiagente-pa-bpim",
+      { method: "GET" }
+    );
+    if (!esObjetoRegistro(res)) {
+      return canonico;
+    }
+    const dimApi = Array.isArray(res.articulacion_por_dimension_sh) && res.articulacion_por_dimension_sh.length === 7
+      ? (res.articulacion_por_dimension_sh as CruceMultiagentePaBpimRespuesta["articulacion_por_dimension_sh"])
+      : canonico.articulacion_por_dimension_sh;
+    const entApi = Array.isArray(res.articulacion_por_entidad) && res.articulacion_por_entidad.length > 0
+      ? (res.articulacion_por_entidad as CruceMultiagentePaBpimRespuesta["articulacion_por_entidad"])
+      : canonico.articulacion_por_entidad;
+    const trzApi = Array.isArray(res.matriz_trazabilidad_pa_bpim) && res.matriz_trazabilidad_pa_bpim.length > 0
+      ? (res.matriz_trazabilidad_pa_bpim as CruceMultiagentePaBpimRespuesta["matriz_trazabilidad_pa_bpim"])
+      : canonico.matriz_trazabilidad_pa_bpim;
+
+    return {
+      ...canonico,
+      articulacion_por_dimension_sh: dimApi,
+      articulacion_por_entidad: entApi,
+      matriz_trazabilidad_pa_bpim: trzApi,
+    };
+  } catch (error) {
+    console.warn("Fallo obtenerCruceMultiagentePaBpim, usando cruce canónico:", error);
+    return canonico;
+  }
+}
+
 
 

@@ -10,9 +10,13 @@ import {
   BANCO_CONOCIMIENTO_CANONICO,
   procesarLotePlanAccionLocal,
   LOTE_DEMO_DNP_CANONICO,
+  obtenerEstadoSistemaMultiagentePddLocal,
+  obtenerComparativoSeguridadHumanaPddLocal,
+  obtenerCruceMultiagentePaBpimLocal,
 } from "../services/plan-accion-dnp-api";
 import { BancoConocimientoDNPTab } from "./banco-conocimiento-dnp-tab";
 import { MotorPlanAccionTab } from "./motor-plan-accion-tab";
+import { SistemaMultiagentePddPanel } from "./sistema-multiagente-pdd-panel";
 
 describe("Motor de Planes de Acción DNP y Banco de Conocimiento (Hito PA-BANCO-MOTOR-01)", () => {
   describe("1. Validador Lingüístico Oficial DNP (Pág. 12 Instructivo Kit Financiero)", () => {
@@ -296,6 +300,60 @@ describe("Motor de Planes de Acción DNP y Banco de Conocimiento (Hito PA-BANCO-
       expect(resultadoFinal.filas_con_observaciones).toBe(0);
       expect(resultadoFinal.puntaje_calidad_dnp).toBe(100);
       expect(resultadoFinal.estado_dictamen_planeacion).toBe("APTO_CONSEJO_GOBIERNO");
+    });
+  });
+
+  describe("6. Sistema Multiagente PDD/PDL y Diagnóstico Seguridad Humana ([FRONTEND-TABLERO-MULTIAGENTE-PDD-18B])", () => {
+    test("renderiza las 6 puertas de calidad (A a F), 2.732 evidencias, 1.524 nodos, 2.228 metas PDD y 401 metas PDL", () => {
+      const html = renderToString(<SistemaMultiagentePddPanel puedeEditar={true} />);
+      expect(html).toContain('data-testid="sistema-multiagente-pdd-panel"');
+      expect(html).toContain("COMPLETADO");
+      expect(html).toContain("SINCRONIZADO_PDD_ONLY");
+      expect(html).toContain("2.732");
+      expect(html).toContain("1.524");
+      expect(html).toContain("2.228");
+      expect(html).toContain("401 metas PDL");
+      expect(html).toContain("Puerta A: Absorción Documental 11 PDFs");
+      expect(html).toContain("Puerta B: Reconstrucción Jerárquica MGA");
+      expect(html).toContain("Puerta C: Clasificación Seguridad Humana A/B/C/N");
+      expect(html).toContain("Puerta D: Conciliación PPI ±$1 COP");
+      expect(html).toContain("Puerta E: Publicación Google Workspace");
+      expect(html).toContain("Puerta F: Articulación PA/BPIM");
+    });
+
+    test("renderiza el comparativo de los 5 PDD (A/B/C/N), las 7 dimensiones PNUD, el anexo de 3 PDL y las 4 preguntas estratégicas", () => {
+      const html = renderToString(<SistemaMultiagentePddPanel puedeEditar={false} />);
+      expect(html).toContain("En Cartagena Hay Campo para Todos");
+      expect(html).toContain("Ahora Sí Cartagena");
+      expect(html).toContain("Primero la Gente para una Cartagena Sostenible y Competitiva");
+      expect(html).toContain("Salvemos Juntos a Cartagena");
+      expect(html).toContain("Cartagena, Ciudad de Derechos");
+      expect(html).toContain("Localidad 1 Histórica y del Caribe Norte");
+      expect(html).toContain("Localidad 2 de la Virgen y Turística");
+      expect(html).toContain("Localidad 3 Industrial y de la Bahía");
+      expect(html).toContain("1. ¿Qué contemplaba cada instrumento de planeación");
+      expect(html).toContain("4. ¿Cómo evolucionó el abordaje de la Seguridad Humana");
+    });
+
+    test("abre el Drawer lateral (SidePanel · Zero-Modals) con cobertura de 11 PDFs SHA-256 y articulación PA/BPIM", () => {
+      const html = renderToString(
+        <SistemaMultiagentePddPanel
+          puedeEditar={false}
+          inspeccionInicial={{ tipo: "PLAN", codigoPlan: "PDD_2012_2015" }}
+        />
+      );
+      expect(html).toContain('data-testid="drawer-lateral-multiagente"');
+      expect(html).toContain('data-slot="side-panel"');
+      expect(html).toContain("pdd_2012_2015_acuerdo_001_campo_para_todos.pdf");
+      expect(html).toContain("161/161 págs.");
+      expect(html).toContain("116/116 págs.");
+
+      const estado = obtenerEstadoSistemaMultiagentePddLocal();
+      const comp = obtenerComparativoSeguridadHumanaPddLocal();
+      const cruce = obtenerCruceMultiagentePaBpimLocal();
+      expect(estado.archivos_cobertura_pdf).toHaveLength(11);
+      expect(comp.planes_pdd).toHaveLength(5);
+      expect(cruce.articulacion_por_dimension_sh).toHaveLength(7);
     });
   });
 });

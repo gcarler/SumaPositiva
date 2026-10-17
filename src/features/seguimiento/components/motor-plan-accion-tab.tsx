@@ -23,7 +23,9 @@ import {
   CheckCircle,
   AlertCircle,
   RefreshCw,
+  Bot,
 } from "lucide-react";
+import { SistemaMultiagentePddPanel } from "./sistema-multiagente-pdd-panel";
 import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
 import { Input } from "@/shared/ui/input";
@@ -81,7 +83,7 @@ interface MotorPlanAccionTabProps {
 }
 
 export function MotorPlanAccionTab({ puedeEditar = false }: MotorPlanAccionTabProps) {
-  const [vistaActiva, setVistaActiva] = useState<"hoja1" | "hoja2" | "asistente" | "procesador_lote">("hoja1");
+  const [vistaActiva, setVistaActiva] = useState<"hoja1" | "hoja2" | "asistente" | "procesador_lote" | "multiagente_pdd">("hoja1");
   const [cargando, setCargando] = useState<boolean>(true);
   const [isPending, startTransition] = useTransition();
 
@@ -666,6 +668,22 @@ export function MotorPlanAccionTab({ puedeEditar = false }: MotorPlanAccionTabPr
         >
           <Wand2 className="h-4 w-4 text-ember" />
           <span>Procesador y Auditor DNP ({loteItems.length})</span>
+        </Button>
+
+        <Button
+          type="button"
+          variant={vistaActiva === "multiagente_pdd" ? "secondary" : "ghost"}
+          size="sm"
+          data-testid="tab-motor-multiagente-pdd"
+          onClick={() => setVistaActiva("multiagente_pdd")}
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-all ${
+            vistaActiva === "multiagente_pdd"
+              ? "bg-surface-2 text-ember border border-border shadow-sm"
+              : "text-text-secondary hover:text-text-primary"
+          }`}
+        >
+          <Bot className="h-4 w-4 text-ember" />
+          <span>Sistema Multiagente PDD/PDL (2012–2027)</span>
         </Button>
       </div>
 
@@ -2080,6 +2098,13 @@ export function MotorPlanAccionTab({ puedeEditar = false }: MotorPlanAccionTabPr
             </div>
           </div>
         </div>
+      )}
+
+      {/* =====================================================================
+          VISTA 5: SISTEMA MULTIAGENTE PDD/PDL & DIAGNÓSTICO SH (2012–2027)
+          ===================================================================== */}
+      {vistaActiva === "multiagente_pdd" && (
+        <SistemaMultiagentePddPanel puedeEditar={puedeEditar} />
       )}
 
       {/* =====================================================================

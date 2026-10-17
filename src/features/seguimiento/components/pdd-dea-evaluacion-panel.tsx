@@ -30,8 +30,10 @@ import {
   FileSpreadsheet,
   FileCode,
   FolderSync,
+  Bot,
 } from "lucide-react";
 import { GoogleWorkspaceSyncCard } from "./google-workspace-sync-card";
+import { SistemaMultiagentePddPanel } from "./sistema-multiagente-pdd-panel";
 import { Button } from "@/shared/ui/button";
 import { Badge } from "@/shared/ui/badge";
 import { Input } from "@/shared/ui/input";
@@ -82,7 +84,8 @@ export type SubvistaPddTipo =
   | "monitor_seguridad_humana"
   | "frontera_dea_pdd"
   | "econometria_comparada_pdd"
-  | "laboratorio_prescriptivo_pdd";
+  | "laboratorio_prescriptivo_pdd"
+  | "sistema_multiagente_pdd";
 
 export interface PddDeaEvaluacionPanelProps {
   puedeEditar?: boolean;
@@ -470,6 +473,19 @@ export function PddDeaEvaluacionPanel({
         >
           <SlidersHorizontal className="h-4 w-4" />
           <span>7. Laboratorio Prescriptivo & Control Fiscal</span>
+        </Button>
+
+        <Button
+          id="pdd-tab-multiagente"
+          variant={subvistaPdd === "sistema_multiagente_pdd" ? "ember" : "outline"}
+          size="sm"
+          onClick={() => setSubvistaPdd("sistema_multiagente_pdd")}
+          className="gap-2 text-xs font-medium"
+          data-testid="pdd-tab-sistema-multiagente"
+          aria-pressed={subvistaPdd === "sistema_multiagente_pdd"}
+        >
+          <Bot className="h-4 w-4" />
+          <span>8. Sistema Multiagente PDD/PDL (2.732 Evidencias · A/B/C/N)</span>
         </Button>
       </div>
 
@@ -2890,6 +2906,13 @@ export function PddDeaEvaluacionPanel({
             </div>
           </div>
         </section>
+      )}
+
+      {/* ==================================================================== */}
+      {/* SUB-VISTA 8: SISTEMA MULTIAGENTE PDD/PDL & DIAGNÓSTICO SH (2012–2027) */}
+      {/* ==================================================================== */}
+      {subvistaPdd === "sistema_multiagente_pdd" && (
+        <SistemaMultiagentePddPanel puedeEditar={_puedeEditar} />
       )}
 
       {/* Modal para Ver Pliego Completo */}
