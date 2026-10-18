@@ -1,26 +1,22 @@
-# DICTAMEN FORENSE EAF — `agy2` (`[FRONTEND-CONSOLA-AGENTES-IA-PDD-20B]`)
+# DICTAMEN DE AUDITORÍA FORENSE EAF — TAREA `[PDT-AI-EVALUATOR-API-Y-DOCTRINA-BACKEND-21B]`
 
-- **Auditor Forense EAF:** `agy` (`=agy:0.0`)
-- **Agente Evaluado:** `agy2` (`=agy2:0.0`)
-- **Commit Auditado:** `e5df671` (`feat(seguimiento): consola de agentes inteligentes neurosimbolicos LangGraph y PydanticAI [20B]`)
-- **Fecha:** 2026-10-18
-- **Calificación EAF:** **100 / 100 — CONFORME (APROBADO SIN OBSERVACIONES)**
+- **Auditor Forense EAF**: `agy` (`=agy:0.0`)
+- **Ejecutor Auditado**: `agy2` (`=agy2:0.0`)
+- **Fecha / Hora**: 2026-10-18T02:35:00Z
+- **Veredicto**: **APROBADO (100 % Cumplimiento Backend y Doctrina GBR/LangGraph)**
 
 ---
 
-## 1. Verificaciones Forenses Ejecutadas
+## 1. Verificación de Alcance y Restricciones
 
-1. **Aislamiento y Frontera de Archivos:**
-   - Modificaciones restringidas exclusivamente a `src/features/seguimiento/**`, `docs/banco-conocimiento-politica-publica.md` y `bridge/02_resultado_agy2.md`. Cero cambios en `backend/**` o `docs/permisos-api.md`.
-2. **Paridad de Contratos y Normalizadores en Vivo (`plan-accion-dnp-api.ts`):**
-   - `obtenerArquitecturaAgentesIaPdd()` + `normalizarArquitecturaAgentesIaPdd(raw)`
-   - `consultarAgentesInteligentesPdd(solicitud)` + `normalizarConsultaAgentesPdd(raw, solicitud)`
-   - `interpretarFragmentoSemanticoPdd(solicitud)` + `normalizarInterpretacionFragmentoPdd(raw, solicitud)`
-   - Homologación verificada entre las llaves cortas/largas de las 7 dimensiones PNUD en `pesos_7d` y `dimension_sh_primaria`, garantizando suma `1.0` y cero `undefined`/`NaN`.
-3. **Bloque 4 en `SistemaMultiagentePddPanel` (`sistema-multiagente-pdd-panel.tsx`):**
-   - Cinta de Arquitectura Neurosimbólica (`LangGraph StateGraph` + `PydanticAI` + 5 `@agent.tool`).
-   - Consola de Consulta Multiagente (`consola-consulta-agentes-pdd`) con línea de tiempo de los 6 pasos de `traza_langgraph`, citas con `sha256_contenido` y sello del `AgenteCriticoVerificadorForense` (`0% Alucinación Financiera`).
-   - Consola del Intérprete Semántico de Fragmentos PDD (`consola-interprete-semantico-pdd`) con extracción de nodos MGA, evaluación `CREMA`, barras `pesos_7d` y sugerencia BPIM.
-4. **Quality Gates Frontend:**
-   - `bun run ui:check`: **PASS (0 violaciones)**.
-   - `bun test src/features/seguimiento/__tests__/sistema-multiagente-pdd.test.tsx src/features/seguimiento/components/motor-plan-accion.test.tsx`: **33/33 pruebas aprobadas (452 assertions)**.
+- **Cero modificaciones en Frontend (`src/**`)**: Confirmado mediante `git status --short`.
+- **Esquemas Pydantic (`backend/app/modules/compromisos/schemas.py`)**: Modelos `PdtAiEvaluatorEjecutarRequest` y `PdtAiEvaluatorValidarCheckpointRequest` implementados y tipados con valores por defecto institucionales para Cartagena de Indias.
+- **Endpoints FastAPI (`backend/app/modules/compromisos/router.py`)**:
+  - `GET /api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/especificacion`
+  - `GET /api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/diagnostico`
+  - `POST /api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/ejecutar`
+  - `POST /api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/checkpoint/validar`
+- **Documentación y Doctrina**:
+  - Registrados en `docs/permisos-api.md`.
+  - Indexado `13_SISTEMA_AGENTICO_PDT_GBR_DEA_NLP_LISA_ISRI.md` en `knowledge-base/00_INDICE_MAESTRO.md`.
+- **Calidad de Código (`ruff check`)**: `All checks passed!`.

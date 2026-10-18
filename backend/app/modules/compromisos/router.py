@@ -61,6 +61,8 @@ from app.modules.compromisos.schemas import (
     DetectarFormatoPlanAccionSolicitud,
     KpisSeguimientoRespuesta,
     MatrizPlanAccionRespuesta,
+    PdtAiEvaluatorEjecutarRequest,
+    PdtAiEvaluatorValidarCheckpointRequest,
     ProcesarLotePlanAccionRespuesta,
     ProcesarLotePlanAccionSolicitud,
     ResumenTriadaRespuesta,
@@ -72,8 +74,37 @@ from app.modules.compromisos.taxonomia_seguridad import DIMENSIONES, PERIODOS
 from app.modules.identidad.deps import SujetoAutenticadoDep, requerir_permiso
 from app.modules.politicas.gating import verificar_escritura_fase
 
+try:
+    from .pdt_ai_evaluator_graph import (
+        ejecutar_pdt_ai_evaluator,
+        obtener_especificacion_pdt_ai_evaluator,
+        validar_checkpoint_pdt_ai_evaluator,
+    )
+except ImportError:  # pragma: no cover - cargado perezosamente si aún está en construcción
+    ejecutar_pdt_ai_evaluator = None  # type: ignore[assignment]
+    obtener_especificacion_pdt_ai_evaluator = None  # type: ignore[assignment]
+    validar_checkpoint_pdt_ai_evaluator = None  # type: ignore[assignment]
+
 # Workers load their durable PDD payload index during import, before accepting requests.
 _read_disk_cache()
+
+
+async def _precargar_caches_pesados(session=None) -> None:
+    try:
+        cache_pdt = (
+            Path(__file__).resolve().parents[4]
+            / "data"
+            / "planes_desarrollo"
+            / "cache_pdt_ai_evaluator.json"
+        )
+        if cache_pdt.is_file():
+            from .pdt_ai_evaluator_graph import (
+                ejecutar_pdt_ai_evaluator as _warm_pdt_ai_evaluator,
+            )
+
+            await _warm_pdt_ai_evaluator(session, force_refresh=False)
+    except Exception:
+        pass
 
 
 @asynccontextmanager
@@ -112,6 +143,7 @@ async def _compromisos_lifespan(_app):
                 await inteligencia.alineacion_territorial()
                 await inteligencia.simulador_cierre()
                 await inteligencia.resumen_ejecutivo()
+                await _precargar_caches_pesados(session)
         finally:
             if owns_database:
                 await database.engine.dispose()
@@ -971,3 +1003,97 @@ async def pdd_dea_laboratorio_prescriptivo(request: Request):
         payload,
         request.headers.get("if-none-match"),
     )
+
+
+def _cargar_pdt_ai_evaluator_fns():
+    global ejecutar_pdt_ai_evaluator
+    global obtener_especificacion_pdt_ai_evaluator
+    global validar_checkpoint_pdt_ai_evaluator
+    if (
+        obtener_especificacion_pdt_ai_evaluator is None
+        or ejecutar_pdt_ai_evaluator is None
+        or validar_checkpoint_pdt_ai_evaluator is None
+    ):
+        from . import pdt_ai_evaluator_graph as _pdt_mod
+
+        ejecutar_pdt_ai_evaluator = _pdt_mod.ejecutar_pdt_ai_evaluator
+        obtener_especificacion_pdt_ai_evaluator = (
+            _pdt_mod.obtener_especificacion_pdt_ai_evaluator
+        )
+        validar_checkpoint_pdt_ai_evaluator = (
+            _pdt_mod.validar_checkpoint_pdt_ai_evaluator
+        )
+    return (
+        obtener_especificacion_pdt_ai_evaluator,
+        ejecutar_pdt_ai_evaluator,
+        validar_checkpoint_pdt_ai_evaluator,
+    )
+
+
+@router.get(
+    "/triada/pdd-dea/pdt-ai-evaluator/especificacion",
+    summary="Especificación arquitectónica y metodológica GBR/LangGraph del motor PDT-AI-EVALUATOR",
+)
+async def pdt_ai_evaluator_especificacion():
+    import inspect
+
+    fn_espec, _, _ = _cargar_pdt_ai_evaluator_fns()
+    resultado = fn_espec()
+    if inspect.isawaitable(resultado):
+        return await resultado
+    return resultado
+
+
+@router.get(
+    "/triada/pdd-dea/pdt-ai-evaluator/diagnostico",
+    summary="Diagnóstico multidimensional PDT-AI-EVALUATOR (DEA, NLP, LISA, Predictivo e ISRI)",
+)
+async def pdt_ai_evaluator_diagnostico(
+    db: SessionDependency,
+    thread_id: str = Query(default="pdt-cartagena-2024-2027"),
+    force_refresh: bool = Query(default=False),
+):
+    _, fn_ejecutar, _ = _cargar_pdt_ai_evaluator_fns()
+    return await fn_ejecutar(db, thread_id=thread_id, force_refresh=force_refresh)
+
+
+@router.post(
+    "/triada/pdd-dea/pdt-ai-evaluator/ejecutar",
+    summary="Ejecutar grafo de estados LangGraph PDT-AI-EVALUATOR sobre el corpus territorial",
+)
+async def pdt_ai_evaluator_ejecutar(
+    db: SessionDependency,
+    payload: Annotated[PdtAiEvaluatorEjecutarRequest | None, Body()] = None,
+):
+    req = payload or PdtAiEvaluatorEjecutarRequest()
+    _, fn_ejecutar, _ = _cargar_pdt_ai_evaluator_fns()
+    return await fn_ejecutar(
+        db,
+        jurisdiction=req.jurisdiction,
+        time_horizon=req.time_horizon,
+        thread_id=req.thread_id,
+        force_refresh=req.force_refresh,
+    )
+
+
+@router.post(
+    "/triada/pdd-dea/pdt-ai-evaluator/checkpoint/validar",
+    summary="Intervención Human-in-the-Loop sobre el Checkpointer del grafo PDT-AI-EVALUATOR",
+)
+async def pdt_ai_evaluator_validar_checkpoint(
+    payload: PdtAiEvaluatorValidarCheckpointRequest,
+):
+    import inspect
+
+    _, _, fn_validar = _cargar_pdt_ai_evaluator_fns()
+    resultado = fn_validar(
+        payload.thread_id,
+        aprobado=payload.aprobado,
+        auditor=payload.auditor,
+        observaciones=payload.observaciones,
+    )
+    if inspect.isawaitable(resultado):
+        return await resultado
+    return resultado
+
+

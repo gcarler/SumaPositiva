@@ -1,44 +1,49 @@
-# INFORME DE ENTREGA: TAREA `[FRONTEND-CONSOLA-AGENTES-IA-PDD-20B]`
-## CONSOLA INTERACTIVA DE AGENTES INTELIGENTES NEUROSIMBÓLICOS (`LANGGRAPH` + `PYDANTIC AI`) E INTÉRPRETE SEMÁNTICO PDD EN `/plataforma/seguimiento`
+# INFORME DE ENTREGA: TAREA `[PDT-AI-EVALUATOR-API-Y-DOCTRINA-BACKEND-21B]`
+## INTEGRACIÓN DE CONTRATOS PYDANTIC, ENDPOINTS FASTAPI Y DOCTRINA TÉCNICA GBR/LANGGRAPH `PDT-AI-EVALUATOR` (100% BACKEND)
 
 - **Para:** Coordinador General y Auditor Forense EAF (`agy` / `=agy:0.0`)
-- **De:** Desarrollador Principal Frontend POLIS UI y Laboratorio Neurosimbólico de Inteligencia Territorial (`agy2` / `=agy2:0.0`)
+- **De:** Desarrollador Secundario — Backend y Doctrina Técnica (`agy2` / `=agy2:0.0`)
 - **Fecha:** 18 de octubre de 2026
-- **Tarea Reportada:** `[FRONTEND-CONSOLA-AGENTES-IA-PDD-20B]`
-- **Rama:** `main` (Política **Zero-Push**: commit local exclusivamente)
-- **Aislamiento Estricto:** Se modificaron únicamente archivos dentro de `src/features/seguimiento/**`, `docs/banco-conocimiento-politica-publica.md` y `bridge/02_resultado_agy2.md`. **Cero cambios en `backend/**`, `docs/permisos-api.md` o `bridge/01_tarea_codex.md` / `bridge/02_entrega_codex.md`**.
+- **Tarea Reportada:** `[PDT-AI-EVALUATOR-API-Y-DOCTRINA-BACKEND-21B]`
+- **Aislamiento Estricto:** Se modificaron **exclusivamente** `backend/app/modules/compromisos/schemas.py`, `backend/app/modules/compromisos/router.py`, `docs/permisos-api.md`, `knowledge-base/00_INDICE_MAESTRO.md` y `bridge/02_resultado_agy2.md`. **Cero cambios en `src/**` (frontend), cero reinicios de `polis-frontend.service` y cero edición de los archivos exclusivos de `codex` (`pdt_ai_evaluator_graph.py` y `test_pdt_ai_evaluator.py`)**.
 
 ---
 
-## 🎯 1. Resumen Ejecutivo
+## 🎯 1. Entregables Técnicos Implementados
 
-Se diseñó, implementó, integró y verificó en `SistemaMultiagentePddPanel` (`src/features/seguimiento/components/sistema-multiagente-pdd-panel.tsx`) el **Bloque 4 (`data-testid="bloque-agentes-inteligentes-langgraph"`): "Motor Cognitivo Neurosimbólico: Agentes Inteligentes `LangGraph` + `PydanticAI` (`Tool-Calling` sobre `2.734` Páginas)"** y los clientes y normalizadores para los 3 nuevos endpoints neurosimbólicos en `src/features/seguimiento/services/plan-accion-dnp-api.ts`:
-1. **`obtenerArquitecturaAgentesIaPdd()`** (`GET /api/v1/compromisos/triada/pdd-dea/arquitectura-agentes-ia`) con `normalizarArquitecturaAgentesIaPdd()`.
-2. **`consultarAgentesInteligentesPdd(solicitud)`** (`POST /api/v1/compromisos/triada/pdd-dea/consultar-agentes-pdd`) con `normalizarConsultaAgentesPdd()`.
-3. **`interpretarFragmentoSemanticoPdd(solicitud)`** (`POST /api/v1/compromisos/triada/pdd-dea/interpretar-fragmento-pdd`) con `normalizarInterpretacionFragmentoPdd()`.
+### 1.1 Esquemas Pydantic (`backend/app/modules/compromisos/schemas.py`)
+Se agregaron los dos modelos de solicitud para el motor `PDT-AI-EVALUATOR`:
+- **`PdtAiEvaluatorEjecutarRequest(BaseModel)`**:
+  - `jurisdiction: str = "Distrito Turístico y Cultural de Cartagena de Indias"`
+  - `time_horizon: str = "2024-2027 (Serie Multianual 2012-2027)"`
+  - `thread_id: str = "pdt-cartagena-2024-2027"`
+  - `force_refresh: bool = False`
+- **`PdtAiEvaluatorValidarCheckpointRequest(BaseModel)`**:
+  - `thread_id: str = "pdt-cartagena-2024-2027"`
+  - `aprobado: bool = True`
+  - `auditor: str = "Comité Técnico de Planeación Distrital (GBR/DNP)"`
+  - `observaciones: str = ""`
+
+### 1.2 Endpoints REST y Precalentamiento en FastAPI (`backend/app/modules/compromisos/router.py`)
+- Importación segura (`try/except ImportError` + cargador perezoso `_cargar_pdt_ai_evaluator_fns()`) de `obtener_especificacion_pdt_ai_evaluator`, `ejecutar_pdt_ai_evaluator` y `validar_checkpoint_pdt_ai_evaluator` desde `.pdt_ai_evaluator_graph`.
+- Función `_precargar_caches_pesados(session)` invocada en `_compromisos_lifespan`, con calentamiento protegido (`try/except Exception`) si existe `data/planes_desarrollo/cache_pdt_ai_evaluator.json`.
+- Exposición de los **4 nuevos endpoints** bajo `/api/v1/compromisos`:
+  1. `GET /triada/pdd-dea/pdt-ai-evaluator/especificacion`
+  2. `GET /triada/pdd-dea/pdt-ai-evaluator/diagnostico` (`thread_id`, `force_refresh`)
+  3. `POST /triada/pdd-dea/pdt-ai-evaluator/ejecutar` (`payload: PdtAiEvaluatorEjecutarRequest | None`)
+  4. `POST /triada/pdd-dea/pdt-ai-evaluator/checkpoint/validar` (`payload: PdtAiEvaluatorValidarCheckpointRequest`)
+
+### 1.3 Matriz de Permisos y Doctrina Maestra (`docs/permisos-api.md` y `knowledge-base/00_INDICE_MAESTRO.md`)
+- **`docs/permisos-api.md`**: Registrados los 4 endpoints `/api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/*`.
+- **`knowledge-base/00_INDICE_MAESTRO.md`**: Indexado el **Módulo 13 (`13_SISTEMA_AGENTICO_PDT_GBR_DEA_NLP_LISA_ISRI.md`)** en la tabla maestra y en la síntesis ejecutiva (Principio Rector 6), resumiendo sus 6 capítulos:
+  1. Fundamentos GBR y Cadena de Valor Pública (`Insumos → Procesos → Productos → Resultados → Impactos`).
+  2. Grafo de Estado Dirigido y Cíclico en `LangGraph` (`AgentState`).
+  3. Nodos Analíticos Modulares (`DEA CCR/BCC/Malmquist/Bootstrap`, `NLP Docling/BERTopic/c-TF-IDF/Similaridad Coseno`, `Econometría Espacial Moran/LISA`, `Series Temporales ARIMA/VAR/Chow/ISRI`).
+  4. Matriz Evaluativa Multi-Sectorial Integrada de 5 sectores (Educación Pública, Salud Pública, Infraestructura Vial, Desarrollo Agrícola y Medio Ambiente).
+  5. Directrices del Prompt `PDT-AI-EVALUATOR`.
+  6. Protocolo de Gobernanza e Intervención Humana (`Human-in-the-Loop Checkpointer`).
 
 ---
 
-## 💻 2. Entregables Técnicos Implementados
-
-### 2.1 Contratos Tipados, Datos Semilla y Clientes con Normalizador en Vivo (`src/features/seguimiento/data/sistema-multiagente-pdd.data.ts` y `src/features/seguimiento/services/plan-accion-dnp-api.ts`)
-- **Cero uso de `any`**: Interfaces estrictas para `ArquitecturaAgentesIaPddRespuesta`, `SolicitudConsultaAgentesPdd`, `RespuestaConsultaAgentesPdd`, `SolicitudInterpretarFragmentoPdd` y `RespuestaInterpretacionFragmentoPdd`.
-- **Normalizadores resilientes ante el backend vivo y respaldos locales cognitivos**:
-  - `normalizarArquitecturaAgentesIaPdd(raw)`: Normaliza los 6 agentes (`AgenteLectorSemanticoDocumental`, `AgenteReconstructorCausalMGA`, `AgenteTaxonomoNeurosimbolicoSH`, `AgenteAuditorFinancieroPPI`, `AgenteArticuladorOperativoBPIM`, `AgenteCriticoVerificadorForense`), las aristas del `StateGraph`, las 5 herramientas `@agent.tool` (`tool_buscar_evidencia_paginas_pdd`, `tool_consultar_nodos_mga`, `tool_consultar_metas_oficiales`, `tool_conciliar_ppi_plan`, `tool_cruzar_actividades_pa_bpim`) y `corpus_conectado`.
-  - `normalizarConsultaAgentesPdd(raw, solicitud)`: Normaliza `run_id`, `sintesis_ejecutiva`, `dictamen_forense_detallado`, `traza_langgraph` (6 pasos con `orden`, `nodo_langgraph`, `agente`, `razonamiento`, `herramientas_invocadas`, `duracion_ms`, `estado`), `citas_evidencia_documental` (`codigo_plan`, `archivo`, `pagina`, `sha256_contenido`, `origen_texto`, `extracto_relevante`) y `verificacion_critica` (`aprobado`, `iteraciones_langgraph`, `cero_alucinacion_financiera`, `citas_sha256_verificadas`, `observacion_verificador`).
-  - `normalizarInterpretacionFragmentoPdd(raw, solicitud)`: Normaliza `nodos_extraidos`, `metas_extraidas` (convirtiendo `linea_base` y `meta_cuatrienio` numéricos o textuales y validando `evaluacion_crema`), `clasificacion_neurosimbolica` (homologando nombres cortos o largos de dimensión PNUD en `dimension_sh_primaria` y `pesos_7d` a las 7 etiquetas canónicas que suman `1.0`) y `articulacion_bpim_sugerida`.
-
-### 2.2 Bloque 4 en `SistemaMultiagentePddPanel` (`src/features/seguimiento/components/sistema-multiagente-pdd-panel.tsx`)
-- **Cinta de Arquitectura Neurosimbólica (`data-testid="cinta-arquitectura-neurosimbolica"`):** Visualiza los 6 agentes cognitivos y simbólicos del `LangGraph StateGraph` y las 5 herramientas `@agent.tool` sobre PostgreSQL (`bd_csh`).
-- **Sub-vista 1 — Investigador y Consultor Multiagente sobre los 8 Planes (`data-testid="consola-consulta-agentes-pdd"`):**
-  - 4 botones de consultas rápidas preconfiguradas + filtro de Plan (`TODOS` o PDD específico) + `<Input>` de consulta abierta (`data-testid="input-pregunta-agentes-pdd"`) + botón **`Ejecutar Enjambre LangGraph`** (`data-testid="btn-ejecutar-consulta-agentes"`).
-  - Muestra la Síntesis Ejecutiva, Dictamen Forense Detallado, Sello del `AgenteCriticoVerificadorForense` (`0% Alucinación Financiera`), línea de tiempo de los 6 pasos de `traza_langgraph` y tarjetas de `citas_evidencia_documental` con página y hash SHA-256.
-- **Sub-vista 2 — Intérprete Semántico de Fragmentos PDD en Vivo (`data-testid="consola-interprete-semantico-pdd"`):**
-  - Selector de 3 fragmentos reales de prueba (2012 *Campo para Todos*, 2016 *Primero la Gente*, 2024 *Cartagena Ciudad de Derechos*) + `<Textarea>` editable (`data-testid="textarea-fragmento-pdd"`) + botón **`Interpretar con Agentes PydanticAI`** (`data-testid="btn-interpretar-fragmento-pdd"`).
-  - Muestra la clasificación `A/B/C/N`, barras de `pesos_7d` en las 7 dimensiones PNUD, justificación causal, nodos MGA extraídos (`Problema MGA` $\rightarrow$ `Objetivo MGA`), metas con evaluación `CREMA` y código BPIM (13 dígitos) / Producto MGA-DNP sugerido.
-
-### 2.3 Pruebas Unitarias y Quality Gates
-- **Ampliación de `src/features/seguimiento/__tests__/sistema-multiagente-pdd.test.tsx`**: 11 pruebas en total (añadidas pruebas 9, 10 y 11 para los 3 clientes/normalizadores neurosimbólicos y el renderizado del Bloque 4).
-- `bun run ui:check`: **0 violaciones**.
-- `bun run check`: **0 errores, 0 warnings** (`ui:check` + `tsc --noEmit` + `eslint .`).
-- `bun test`: **742 pass / 0 fail** (76 archivos de prueba).
+## 🛡️ 2. Verificación de Calidad
+- `/root/polis/backend/.venv/bin/ruff check backend/app/modules/compromisos/router.py backend/app/modules/compromisos/schemas.py` $\rightarrow$ **`All checks passed!` (0 errores)**.

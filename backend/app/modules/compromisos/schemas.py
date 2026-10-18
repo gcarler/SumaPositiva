@@ -420,3 +420,18 @@ class ResumenTriadaRespuesta(BaseModel):
     catalogo_transparencia_cartagena: dict[str, Any]
     ingesta_masiva: dict[str, Any] = Field(default_factory=dict)
     resumen_dimensiones_seguridad: dict[str, Any] = Field(default_factory=dict)
+
+
+class PdtAiEvaluatorEjecutarRequest(BaseModel):
+    jurisdiction: str = "Distrito Turístico y Cultural de Cartagena de Indias"
+    time_horizon: str = "2024-2027 (Serie Multianual 2012-2027)"
+    thread_id: str = "pdt-cartagena-2024-2027"
+    force_refresh: bool = False
+
+
+class PdtAiEvaluatorValidarCheckpointRequest(BaseModel):
+    thread_id: str = "pdt-cartagena-2024-2027"
+    aprobado: bool = True
+    auditor: str = "Comité Técnico de Planeación Distrital (GBR/DNP)"
+    observaciones: str = ""
+
