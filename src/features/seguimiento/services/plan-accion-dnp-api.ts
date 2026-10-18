@@ -3233,6 +3233,25 @@ export type {
   ArticulacionEntidadPaBpim,
   RegistroTrazabilidadPaBpim,
   CruceMultiagentePaBpimRespuesta,
+  NodoLangGraphInfo,
+  AristaLangGraphInfo,
+  HerramientaPydanticAiInfo,
+  ArquitecturaAgentesIaPddRespuesta,
+  SolicitudConsultaAgentesPdd,
+  HerramientaInvocadaTraza,
+  PasoTrazaLangGraph,
+  CitaEvidenciaDocumentalPdd,
+  VerificacionCriticaForense,
+  RespuestaConsultaAgentesPdd,
+  SolicitudInterpretarFragmentoPdd,
+  NodoMgaExtraidoIa,
+  EvaluacionCremaIndicadorIa,
+  MetaExtraidaIa,
+  ClasificacionNeurosimbolicaFragmento,
+  ArticulacionBpimSugeridaIa,
+  RespuestaInterpretacionFragmentoPdd,
+  ConsultaRapidaAgentesPreset,
+  FragmentoPruebaInterpretePreset,
 } from "../data/sistema-multiagente-pdd.data";
 
 export {
@@ -3246,12 +3265,20 @@ export {
   ESTADO_SISTEMA_MULTIAGENTE_PDD_CANONICO,
   COMPARATIVO_SEGURIDAD_HUMANA_PDD_CANONICO,
   CRUCE_MULTIAGENTE_PA_BPIM_CANONICO,
+  ARQUITECTURA_AGENTES_IA_PDD_CANONICA,
+  CONSULTAS_RAPIDAS_AGENTES_PDD,
+  FRAGMENTOS_PRUEBA_INTERPRETE_PDD,
   obtenerEstadoSistemaMultiagentePddLocal,
   obtenerComparativoSeguridadHumanaPddLocal,
   obtenerCruceMultiagentePaBpimLocal,
+  obtenerArquitecturaAgentesIaPddLocal,
+  consultarAgentesInteligentesPddLocal,
+  interpretarFragmentoSemanticoPddLocal,
 } from "../data/sistema-multiagente-pdd.data";
 
 import type {
+  GradoFrontalidadCodigo,
+  GradoFrontalidadEtiqueta,
   DimensionSeguridadHumanaNombre,
   EstadoSistemaMultiagentePddRespuesta,
   ComparativoSeguridadHumanaPddRespuesta,
@@ -3259,12 +3286,30 @@ import type {
   ArticulacionEntidadPaBpim,
   RegistroTrazabilidadPaBpim,
   CruceMultiagentePaBpimRespuesta,
+  NodoLangGraphInfo,
+  AristaLangGraphInfo,
+  HerramientaPydanticAiInfo,
+  ArquitecturaAgentesIaPddRespuesta,
+  SolicitudConsultaAgentesPdd,
+  HerramientaInvocadaTraza,
+  PasoTrazaLangGraph,
+  CitaEvidenciaDocumentalPdd,
+  VerificacionCriticaForense,
+  RespuestaConsultaAgentesPdd,
+  SolicitudInterpretarFragmentoPdd,
+  NodoMgaExtraidoIa,
+  MetaExtraidaIa,
+  RespuestaInterpretacionFragmentoPdd,
 } from "../data/sistema-multiagente-pdd.data";
 
 import {
+  DIMENSIONES_SEGURIDAD_HUMANA_PNUD,
   obtenerEstadoSistemaMultiagentePddLocal,
   obtenerComparativoSeguridadHumanaPddLocal,
   obtenerCruceMultiagentePaBpimLocal,
+  obtenerArquitecturaAgentesIaPddLocal,
+  consultarAgentesInteligentesPddLocal,
+  interpretarFragmentoSemanticoPddLocal,
 } from "../data/sistema-multiagente-pdd.data";
 
 function esObjetoRegistro(valor: unknown): valor is Record<string, unknown> {
@@ -3811,6 +3856,687 @@ export async function obtenerCruceMultiagentePaBpim(): Promise<CruceMultiagenteP
     return canonico;
   }
 }
+
+// ============================================================================
+// CLIENTES Y NORMALIZADORES DEL MOTOR COGNITIVO NEUROSIMBÓLICO (HITO 20B)
+// ============================================================================
+
+export function normalizarArquitecturaAgentesIaPdd(
+  raw: unknown
+): ArquitecturaAgentesIaPddRespuesta {
+  const canonico = obtenerArquitecturaAgentesIaPddLocal();
+  if (!esObjetoRegistro(raw)) {
+    return canonico;
+  }
+
+  const motor =
+    typeof raw.motor === "string" && raw.motor.trim().length > 0
+      ? raw.motor.trim()
+      : canonico.motor;
+  const orquestador =
+    typeof raw.orquestador === "string" && raw.orquestador.trim().length > 0
+      ? raw.orquestador.trim()
+      : canonico.orquestador;
+  const frameworkAgentes =
+    typeof raw.framework_agentes === "string" && raw.framework_agentes.trim().length > 0
+      ? raw.framework_agentes.trim()
+      : canonico.framework_agentes;
+
+  const nodosLanggraph: NodoLangGraphInfo[] =
+    Array.isArray(raw.nodos_langgraph) && raw.nodos_langgraph.length > 0
+      ? raw.nodos_langgraph.filter(esObjetoRegistro).map((item, idx) => {
+          const fallbackNodo =
+            canonico.nodos_langgraph[idx] ?? canonico.nodos_langgraph[0]!;
+          const idNodo =
+            typeof item.id_nodo === "string" && item.id_nodo.trim().length > 0
+              ? item.id_nodo.trim()
+              : typeof item.nodo === "string" && item.nodo.trim().length > 0
+                ? item.nodo.trim()
+                : fallbackNodo.id_nodo;
+          const nombreAgente =
+            typeof item.nombre_agente === "string" && item.nombre_agente.trim().length > 0
+              ? item.nombre_agente.trim()
+              : typeof item.agente === "string" && item.agente.trim().length > 0
+                ? item.agente.trim()
+                : fallbackNodo.nombre_agente;
+          const rol =
+            typeof item.rol === "string" && item.rol.trim().length > 0
+              ? item.rol.trim()
+              : typeof item.descripcion === "string" && item.descripcion.trim().length > 0
+                ? item.descripcion.trim()
+                : fallbackNodo.rol;
+          const capa: "COGNITIVA" | "SIMBOLICA" =
+            item.capa === "SIMBOLICA" ||
+            idNodo.includes("auditor") ||
+            idNodo.includes("articulador") ||
+            idNodo.includes("critico")
+              ? "SIMBOLICA"
+              : "COGNITIVA";
+          const herramientasAsignadas =
+            Array.isArray(item.herramientas_asignadas) &&
+            item.herramientas_asignadas.length > 0
+              ? item.herramientas_asignadas.filter(
+                  (h): h is string => typeof h === "string" && h.trim().length > 0
+                )
+              : fallbackNodo.herramientas_asignadas;
+          const esquemaSalida =
+            typeof item.esquema_salida === "string" && item.esquema_salida.trim().length > 0
+              ? item.esquema_salida.trim()
+              : fallbackNodo.esquema_salida;
+
+          return {
+            id_nodo: idNodo,
+            nombre_agente: nombreAgente,
+            rol,
+            capa,
+            herramientas_asignadas:
+              herramientasAsignadas.length > 0
+                ? herramientasAsignadas
+                : fallbackNodo.herramientas_asignadas,
+            esquema_salida: esquemaSalida,
+          };
+        })
+      : canonico.nodos_langgraph;
+
+  const aristasGrafo: AristaLangGraphInfo[] =
+    Array.isArray(raw.aristas_grafo) && raw.aristas_grafo.length > 0
+      ? raw.aristas_grafo.filter(esObjetoRegistro).map((item, idx) => {
+          const fallbackArista =
+            canonico.aristas_grafo[idx] ?? canonico.aristas_grafo[0]!;
+          const origen =
+            typeof item.origen === "string" && item.origen.trim().length > 0
+              ? item.origen.trim()
+              : typeof item.desde === "string" && item.desde.trim().length > 0
+                ? item.desde.trim()
+                : fallbackArista.origen;
+          const destino =
+            typeof item.destino === "string" && item.destino.trim().length > 0
+              ? item.destino.trim()
+              : typeof item.hacia === "string" && item.hacia.trim().length > 0
+                ? item.hacia.trim()
+                : fallbackArista.destino;
+          const tipo: "DIRECTA" | "CONDICIONAL" =
+            item.tipo === "CONDICIONAL" || typeof item.condicion === "string"
+              ? "CONDICIONAL"
+              : "DIRECTA";
+          const condicion =
+            typeof item.condicion === "string" && item.condicion.trim().length > 0
+              ? item.condicion.trim()
+              : undefined;
+
+          return {
+            origen,
+            destino,
+            tipo,
+            ...(condicion ? { condicion } : {}),
+          };
+        })
+      : canonico.aristas_grafo;
+
+  const herramientasRegistradas: HerramientaPydanticAiInfo[] =
+    Array.isArray(raw.herramientas_registradas) &&
+    raw.herramientas_registradas.length > 0
+      ? raw.herramientas_registradas.filter(esObjetoRegistro).map((item, idx) => {
+          const fallbackTool =
+            canonico.herramientas_registradas[idx] ??
+            canonico.herramientas_registradas[0]!;
+          const nombre =
+            typeof item.nombre === "string" && item.nombre.trim().length > 0
+              ? item.nombre.trim()
+              : typeof item.herramienta === "string" && item.herramienta.trim().length > 0
+                ? item.herramienta.trim()
+                : fallbackTool.nombre;
+          const descripcion =
+            typeof item.descripcion === "string" && item.descripcion.trim().length > 0
+              ? item.descripcion.trim()
+              : fallbackTool.descripcion;
+          const tablaPostgresql =
+            typeof item.tabla_postgresql === "string" &&
+            item.tabla_postgresql.trim().length > 0
+              ? item.tabla_postgresql.trim()
+              : typeof item.tabla_bd === "string" && item.tabla_bd.trim().length > 0
+                ? item.tabla_bd.trim()
+                : typeof item.tabla === "string" && item.tabla.trim().length > 0
+                  ? item.tabla.trim()
+                  : fallbackTool.tabla_postgresql;
+
+          return {
+            nombre,
+            descripcion,
+            tabla_postgresql: tablaPostgresql,
+          };
+        })
+      : canonico.herramientas_registradas;
+
+  const corpusRaw = esObjetoRegistro(raw.corpus_conectado)
+    ? raw.corpus_conectado
+    : {};
+
+  return {
+    motor,
+    orquestador,
+    framework_agentes: frameworkAgentes,
+    nodos_langgraph:
+      nodosLanggraph.length > 0 ? nodosLanggraph : canonico.nodos_langgraph,
+    aristas_grafo:
+      aristasGrafo.length > 0 ? aristasGrafo : canonico.aristas_grafo,
+    herramientas_registradas:
+      herramientasRegistradas.length > 0
+        ? herramientasRegistradas
+        : canonico.herramientas_registradas,
+    corpus_conectado: {
+      evidencias_paginas:
+        typeof corpusRaw.evidencias_paginas === "number" &&
+        !Number.isNaN(corpusRaw.evidencias_paginas)
+          ? corpusRaw.evidencias_paginas
+          : canonico.corpus_conectado.evidencias_paginas,
+      nodos_mga:
+        typeof corpusRaw.nodos_mga === "number" && !Number.isNaN(corpusRaw.nodos_mga)
+          ? corpusRaw.nodos_mga
+          : canonico.corpus_conectado.nodos_mga,
+      metas_pdd:
+        typeof corpusRaw.metas_pdd === "number" && !Number.isNaN(corpusRaw.metas_pdd)
+          ? corpusRaw.metas_pdd
+          : canonico.corpus_conectado.metas_pdd,
+      metas_pdl:
+        typeof corpusRaw.metas_pdl === "number" && !Number.isNaN(corpusRaw.metas_pdl)
+          ? corpusRaw.metas_pdl
+          : canonico.corpus_conectado.metas_pdl,
+    },
+  };
+}
+
+export async function obtenerArquitecturaAgentesIaPdd(): Promise<ArquitecturaAgentesIaPddRespuesta> {
+  try {
+    const res = await apiFetch<unknown>(
+      "/api/v1/compromisos/triada/pdd-dea/arquitectura-agentes-ia",
+      { method: "GET" }
+    );
+    return normalizarArquitecturaAgentesIaPdd(res);
+  } catch (error) {
+    console.warn("Fallo obtenerArquitecturaAgentesIaPdd, usando arquitectura canónica:", error);
+    return obtenerArquitecturaAgentesIaPddLocal();
+  }
+}
+
+export function normalizarConsultaAgentesPdd(
+  raw: unknown,
+  solicitud?: Partial<SolicitudConsultaAgentesPdd>
+): RespuestaConsultaAgentesPdd {
+  const canonico = consultarAgentesInteligentesPddLocal(solicitud);
+  if (!esObjetoRegistro(raw)) {
+    return canonico;
+  }
+
+  const runId =
+    typeof raw.run_id === "string" && raw.run_id.trim().length > 0
+      ? raw.run_id.trim()
+      : canonico.run_id;
+  const motor =
+    typeof raw.motor === "string" && raw.motor.trim().length > 0
+      ? raw.motor.trim()
+      : canonico.motor;
+  const pregunta =
+    typeof raw.pregunta === "string" && raw.pregunta.trim().length > 0
+      ? raw.pregunta.trim()
+      : canonico.pregunta;
+  const sintesisEjecutiva =
+    typeof raw.sintesis_ejecutiva === "string" &&
+    raw.sintesis_ejecutiva.trim().length > 0
+      ? raw.sintesis_ejecutiva.trim()
+      : canonico.sintesis_ejecutiva;
+  const dictamenForense =
+    typeof raw.dictamen_forense_detallado === "string" &&
+    raw.dictamen_forense_detallado.trim().length > 0
+      ? raw.dictamen_forense_detallado.trim()
+      : canonico.dictamen_forense_detallado;
+
+  const trazaLanggraph: PasoTrazaLangGraph[] =
+    Array.isArray(raw.traza_langgraph) && raw.traza_langgraph.length > 0
+      ? raw.traza_langgraph.filter(esObjetoRegistro).map((item, idx) => {
+          const fallbackPaso =
+            canonico.traza_langgraph[idx] ?? canonico.traza_langgraph[0]!;
+          const orden =
+            typeof item.orden === "number" && !Number.isNaN(item.orden)
+              ? item.orden
+              : idx + 1;
+          const nodoLanggraph =
+            typeof item.nodo_langgraph === "string" &&
+            item.nodo_langgraph.trim().length > 0
+              ? item.nodo_langgraph.trim()
+              : fallbackPaso.nodo_langgraph;
+          const agente =
+            typeof item.agente === "string" && item.agente.trim().length > 0
+              ? item.agente.trim()
+              : fallbackPaso.agente;
+          const razonamiento =
+            typeof item.razonamiento === "string" &&
+            item.razonamiento.trim().length > 0
+              ? item.razonamiento.trim()
+              : fallbackPaso.razonamiento;
+          const duracionMs =
+            typeof item.duracion_ms === "number" && !Number.isNaN(item.duracion_ms)
+              ? item.duracion_ms
+              : fallbackPaso.duracion_ms;
+          const estado: "COMPLETADO" | "REINTENTO_VERIFICACION" =
+            item.estado === "REINTENTO_VERIFICACION"
+              ? "REINTENTO_VERIFICACION"
+              : "COMPLETADO";
+
+          const herramientasInvocadas: HerramientaInvocadaTraza[] =
+            Array.isArray(item.herramientas_invocadas) &&
+            item.herramientas_invocadas.length > 0
+              ? item.herramientas_invocadas.filter(esObjetoRegistro).map((h) => ({
+                  herramienta:
+                    typeof h.herramienta === "string" && h.herramienta.trim().length > 0
+                      ? h.herramienta.trim()
+                      : typeof h.nombre === "string" && h.nombre.trim().length > 0
+                        ? h.nombre.trim()
+                        : "tool_buscar_evidencia_paginas_pdd",
+                  parametros: esObjetoRegistro(h.parametros) ? h.parametros : undefined,
+                  registros_recuperados:
+                    typeof h.registros_recuperados === "number" &&
+                    !Number.isNaN(h.registros_recuperados)
+                      ? h.registros_recuperados
+                      : 1,
+                }))
+              : fallbackPaso.herramientas_invocadas;
+
+          return {
+            orden,
+            nodo_langgraph: nodoLanggraph,
+            agente,
+            razonamiento,
+            herramientas_invocadas: herramientasInvocadas,
+            duracion_ms: duracionMs,
+            estado,
+          };
+        })
+      : canonico.traza_langgraph;
+
+  const citasEvidencia: CitaEvidenciaDocumentalPdd[] =
+    Array.isArray(raw.citas_evidencia_documental) &&
+    raw.citas_evidencia_documental.length > 0
+      ? raw.citas_evidencia_documental.filter(esObjetoRegistro).map((item, idx) => {
+          const fallbackCita =
+            canonico.citas_evidencia_documental[idx] ??
+            canonico.citas_evidencia_documental[0]!;
+          return {
+            codigo_plan:
+              typeof item.codigo_plan === "string" && item.codigo_plan.trim().length > 0
+                ? item.codigo_plan.trim()
+                : fallbackCita.codigo_plan,
+            archivo:
+              typeof item.archivo === "string" && item.archivo.trim().length > 0
+                ? item.archivo.trim()
+                : fallbackCita.archivo,
+            pagina:
+              typeof item.pagina === "number" && !Number.isNaN(item.pagina)
+                ? item.pagina
+                : fallbackCita.pagina,
+            sha256_contenido:
+              typeof item.sha256_contenido === "string" &&
+              item.sha256_contenido.trim().length > 0
+                ? item.sha256_contenido.trim()
+                : typeof item.sha256 === "string" && item.sha256.trim().length > 0
+                  ? item.sha256.trim()
+                  : fallbackCita.sha256_contenido,
+            origen_texto:
+              typeof item.origen_texto === "string" &&
+              item.origen_texto.trim().length > 0
+                ? item.origen_texto.trim()
+                : fallbackCita.origen_texto,
+            extracto_relevante:
+              typeof item.extracto_relevante === "string" &&
+              item.extracto_relevante.trim().length > 0
+                ? item.extracto_relevante.trim()
+                : typeof item.extracto === "string" && item.extracto.trim().length > 0
+                  ? item.extracto.trim()
+                  : fallbackCita.extracto_relevante,
+          };
+        })
+      : canonico.citas_evidencia_documental;
+
+  const verifRaw = esObjetoRegistro(raw.verificacion_critica)
+    ? raw.verificacion_critica
+    : {};
+  const verificacionCritica: VerificacionCriticaForense = {
+    aprobado:
+      typeof verifRaw.aprobado === "boolean"
+        ? verifRaw.aprobado
+        : canonico.verificacion_critica.aprobado,
+    iteraciones_langgraph:
+      typeof verifRaw.iteraciones_langgraph === "number" &&
+      !Number.isNaN(verifRaw.iteraciones_langgraph)
+        ? verifRaw.iteraciones_langgraph
+        : canonico.verificacion_critica.iteraciones_langgraph,
+    cero_alucinacion_financiera:
+      typeof verifRaw.cero_alucinacion_financiera === "boolean"
+        ? verifRaw.cero_alucinacion_financiera
+        : canonico.verificacion_critica.cero_alucinacion_financiera,
+    citas_sha256_verificadas:
+      typeof verifRaw.citas_sha256_verificadas === "number" &&
+      !Number.isNaN(verifRaw.citas_sha256_verificadas)
+        ? verifRaw.citas_sha256_verificadas
+        : citasEvidencia.length,
+    observacion_verificador:
+      typeof verifRaw.observacion_verificador === "string" &&
+      verifRaw.observacion_verificador.trim().length > 0
+        ? verifRaw.observacion_verificador.trim()
+        : canonico.verificacion_critica.observacion_verificador,
+  };
+
+  return {
+    run_id: runId,
+    motor,
+    pregunta,
+    sintesis_ejecutiva: sintesisEjecutiva,
+    dictamen_forense_detallado: dictamenForense,
+    traza_langgraph:
+      trazaLanggraph.length > 0 ? trazaLanggraph : canonico.traza_langgraph,
+    citas_evidencia_documental:
+      citasEvidencia.length > 0
+        ? citasEvidencia
+        : canonico.citas_evidencia_documental,
+    verificacion_critica: verificacionCritica,
+  };
+}
+
+export async function consultarAgentesInteligentesPdd(
+  solicitud: SolicitudConsultaAgentesPdd
+): Promise<RespuestaConsultaAgentesPdd> {
+  try {
+    const payload = {
+      pregunta: solicitud.pregunta,
+      codigo_plan: solicitud.codigo_plan ?? "TODOS",
+      dimension_sh: solicitud.dimension_sh ?? "TODAS",
+      grado_frontalidad: solicitud.grado_frontalidad ?? "TODOS",
+      profundidad: solicitud.profundidad ?? "forense",
+    };
+    const res = await apiFetch<unknown>(
+      "/api/v1/compromisos/triada/pdd-dea/consultar-agentes-pdd",
+      {
+        method: "POST",
+        body: payload,
+      }
+    );
+    return normalizarConsultaAgentesPdd(res, solicitud);
+  } catch (error) {
+    console.warn("Fallo consultarAgentesInteligentesPdd, usando motor cognitivo local:", error);
+    return consultarAgentesInteligentesPddLocal(solicitud);
+  }
+}
+
+function normalizarGradoFrontalidad(valor: unknown): {
+  grado: GradoFrontalidadCodigo;
+  etiqueta: GradoFrontalidadEtiqueta;
+} {
+  const str = typeof valor === "string" ? valor.trim().toUpperCase() : "";
+  if (str.startsWith("A")) {
+    return { grado: "A", etiqueta: "A_NUCLEO_FRONTAL" };
+  }
+  if (str.startsWith("C")) {
+    return { grado: "C", etiqueta: "C_CONTEXTUAL_HABILITANTE" };
+  }
+  if (str.startsWith("N")) {
+    return { grado: "N", etiqueta: "N_NO_ASOCIADO_FUNCIONAMIENTO" };
+  }
+  return { grado: "B", etiqueta: "B_DETERMINANTE_DIRECTO" };
+}
+
+export function normalizarInterpretacionFragmentoPdd(
+  raw: unknown,
+  solicitud?: Partial<SolicitudInterpretarFragmentoPdd>
+): RespuestaInterpretacionFragmentoPdd {
+  const canonico = interpretarFragmentoSemanticoPddLocal(solicitud);
+  if (!esObjetoRegistro(raw)) {
+    return canonico;
+  }
+
+  const nodosExtraidos: NodoMgaExtraidoIa[] =
+    Array.isArray(raw.nodos_extraidos) && raw.nodos_extraidos.length > 0
+      ? raw.nodos_extraidos.filter(esObjetoRegistro).map((item, idx) => {
+          const fallbackNodo =
+            canonico.nodos_extraidos[idx] ?? canonico.nodos_extraidos[0]!;
+          const nivelRaw =
+            typeof item.nivel === "string" ? item.nivel.trim().toUpperCase() : "";
+          const nivel: "LINEA" | "PROGRAMA" | "SUBPROGRAMA" =
+            nivelRaw === "LINEA" || nivelRaw === "SUBPROGRAMA"
+              ? nivelRaw
+              : "PROGRAMA";
+          return {
+            nivel,
+            codigo_detectado:
+              typeof item.codigo_detectado === "string" &&
+              item.codigo_detectado.trim().length > 0
+                ? item.codigo_detectado.trim()
+                : fallbackNodo.codigo_detectado,
+            nombre:
+              typeof item.nombre === "string" && item.nombre.trim().length > 0
+                ? item.nombre.trim()
+                : fallbackNodo.nombre,
+            problema_central_inferido:
+              typeof item.problema_central_inferido === "string" &&
+              item.problema_central_inferido.trim().length > 0
+                ? item.problema_central_inferido.trim()
+                : fallbackNodo.problema_central_inferido,
+            objetivo_mga_inferido:
+              typeof item.objetivo_mga_inferido === "string" &&
+              item.objetivo_mga_inferido.trim().length > 0
+                ? item.objetivo_mga_inferido.trim()
+                : fallbackNodo.objetivo_mga_inferido,
+          };
+        })
+      : canonico.nodos_extraidos;
+
+  const metasExtraidas: MetaExtraidaIa[] =
+    Array.isArray(raw.metas_extraidas) && raw.metas_extraidas.length > 0
+      ? raw.metas_extraidas.filter(esObjetoRegistro).map((item, idx) => {
+          const fallbackMeta =
+            canonico.metas_extraidas[idx] ?? canonico.metas_extraidas[0]!;
+          const tipoRaw =
+            typeof item.tipo_meta === "string"
+              ? item.tipo_meta.trim().toUpperCase()
+              : "";
+          const tipoMeta: "RESULTADO" | "PRODUCTO" =
+            tipoRaw === "PRODUCTO" ? "PRODUCTO" : "RESULTADO";
+          const cremaRaw = esObjetoRegistro(item.evaluacion_crema)
+            ? item.evaluacion_crema
+            : {};
+          const claro =
+            typeof cremaRaw.claro === "boolean"
+              ? cremaRaw.claro
+              : fallbackMeta.evaluacion_crema.claro;
+          const relevante =
+            typeof cremaRaw.relevante === "boolean"
+              ? cremaRaw.relevante
+              : fallbackMeta.evaluacion_crema.relevante;
+          const economico =
+            typeof cremaRaw.economico === "boolean"
+              ? cremaRaw.economico
+              : fallbackMeta.evaluacion_crema.economico;
+          const medible =
+            typeof cremaRaw.medible === "boolean"
+              ? cremaRaw.medible
+              : fallbackMeta.evaluacion_crema.medible;
+          const adecuado =
+            typeof cremaRaw.adecuado === "boolean"
+              ? cremaRaw.adecuado
+              : fallbackMeta.evaluacion_crema.adecuado;
+          const cumplidos = [claro, relevante, economico, medible, adecuado].filter(
+            Boolean
+          ).length;
+          const puntajeCrema =
+            typeof cremaRaw.puntaje_crema_pct === "number" &&
+            !Number.isNaN(cremaRaw.puntaje_crema_pct)
+              ? cremaRaw.puntaje_crema_pct
+              : cumplidos * 20;
+
+          const lineaBaseStr =
+            typeof item.linea_base === "string" && item.linea_base.trim().length > 0
+              ? item.linea_base.trim()
+              : typeof item.linea_base === "number" && !Number.isNaN(item.linea_base)
+                ? String(item.linea_base)
+                : fallbackMeta.linea_base;
+          const metaCuatrienioStr =
+            typeof item.meta_cuatrienio === "string" &&
+            item.meta_cuatrienio.trim().length > 0
+              ? item.meta_cuatrienio.trim()
+              : typeof item.meta_cuatrienio === "number" &&
+                  !Number.isNaN(item.meta_cuatrienio)
+                ? String(item.meta_cuatrienio)
+                : fallbackMeta.meta_cuatrienio;
+
+          return {
+            tipo_meta: tipoMeta,
+            descripcion_meta:
+              typeof item.descripcion_meta === "string" &&
+              item.descripcion_meta.trim().length > 0
+                ? item.descripcion_meta.trim()
+                : fallbackMeta.descripcion_meta,
+            indicador_sugerido:
+              typeof item.indicador_sugerido === "string" &&
+              item.indicador_sugerido.trim().length > 0
+                ? item.indicador_sugerido.trim()
+                : fallbackMeta.indicador_sugerido,
+            linea_base: lineaBaseStr,
+            meta_cuatrienio: metaCuatrienioStr,
+            evaluacion_crema: {
+              claro,
+              relevante,
+              economico,
+              medible,
+              adecuado,
+              puntaje_crema_pct: puntajeCrema,
+              observacion_dnp:
+                typeof cremaRaw.observacion_dnp === "string" &&
+                cremaRaw.observacion_dnp.trim().length > 0
+                  ? cremaRaw.observacion_dnp.trim()
+                  : fallbackMeta.evaluacion_crema.observacion_dnp,
+            },
+          };
+        })
+      : canonico.metas_extraidas;
+
+  const clasifRaw = esObjetoRegistro(raw.clasificacion_neurosimbolica)
+    ? raw.clasificacion_neurosimbolica
+    : {};
+  const { grado, etiqueta } = normalizarGradoFrontalidad(
+    clasifRaw.grado_frontalidad ??
+      clasifRaw.etiqueta_frontalidad ??
+      canonico.clasificacion_neurosimbolica.grado_frontalidad
+  );
+  const dimPrimaria =
+    clasifRaw.dimension_sh_primaria !== undefined
+      ? normalizarDimensionSeguridadHumana(clasifRaw.dimension_sh_primaria)
+      : canonico.clasificacion_neurosimbolica.dimension_sh_primaria;
+
+  const pesos7dNormalizados: Record<DimensionSeguridadHumanaNombre, number> = {
+    ...canonico.clasificacion_neurosimbolica.pesos_7d,
+  };
+  if (esObjetoRegistro(clasifRaw.pesos_7d)) {
+    const tempPesos: Partial<Record<DimensionSeguridadHumanaNombre, number>> = {};
+    let suma = 0;
+    for (const [k, v] of Object.entries(clasifRaw.pesos_7d)) {
+      if (typeof v === "number" && !Number.isNaN(v) && v >= 0) {
+        const dimKey = normalizarDimensionSeguridadHumana(k);
+        tempPesos[dimKey] = (tempPesos[dimKey] ?? 0) + v;
+        suma += v;
+      }
+    }
+    if (suma > 0) {
+      for (const dim of DIMENSIONES_SEGURIDAD_HUMANA_PNUD) {
+        const valorRaw = tempPesos[dim] ?? 0;
+        pesos7dNormalizados[dim] =
+          suma > 1.5
+            ? Number((valorRaw / suma).toFixed(4))
+            : Number(valorRaw.toFixed(4));
+      }
+    }
+  }
+
+  const artRaw = esObjetoRegistro(raw.articulacion_bpim_sugerida)
+    ? raw.articulacion_bpim_sugerida
+    : {};
+
+  return {
+    texto_fragmento:
+      typeof raw.texto_fragmento === "string" && raw.texto_fragmento.trim().length > 0
+        ? raw.texto_fragmento.trim()
+        : canonico.texto_fragmento,
+    codigo_plan_referencia:
+      typeof raw.codigo_plan_referencia === "string" &&
+      raw.codigo_plan_referencia.trim().length > 0
+        ? raw.codigo_plan_referencia.trim()
+        : canonico.codigo_plan_referencia,
+    archivo_origen:
+      typeof raw.archivo_origen === "string" && raw.archivo_origen.trim().length > 0
+        ? raw.archivo_origen.trim()
+        : canonico.archivo_origen,
+    pagina:
+      typeof raw.pagina === "number" && !Number.isNaN(raw.pagina)
+        ? raw.pagina
+        : canonico.pagina,
+    nodos_extraidos:
+      nodosExtraidos.length > 0 ? nodosExtraidos : canonico.nodos_extraidos,
+    metas_extraidas:
+      metasExtraidas.length > 0 ? metasExtraidas : canonico.metas_extraidas,
+    clasificacion_neurosimbolica: {
+      grado_frontalidad: grado,
+      etiqueta_frontalidad: etiqueta,
+      dimension_sh_primaria: dimPrimaria,
+      pesos_7d: pesos7dNormalizados,
+      justificacion_causal_ia:
+        typeof clasifRaw.justificacion_causal_ia === "string" &&
+        clasifRaw.justificacion_causal_ia.trim().length > 0
+          ? clasifRaw.justificacion_causal_ia.trim()
+          : canonico.clasificacion_neurosimbolica.justificacion_causal_ia,
+    },
+    articulacion_bpim_sugerida: {
+      codigo_bpim_sugerido:
+        typeof artRaw.codigo_bpim_sugerido === "string" &&
+        artRaw.codigo_bpim_sugerido.trim().length > 0
+          ? artRaw.codigo_bpim_sugerido.trim()
+          : canonico.articulacion_bpim_sugerida.codigo_bpim_sugerido,
+      producto_catalogo_mga_dnp:
+        typeof artRaw.producto_catalogo_mga_dnp === "string" &&
+        artRaw.producto_catalogo_mga_dnp.trim().length > 0
+          ? artRaw.producto_catalogo_mga_dnp.trim()
+          : canonico.articulacion_bpim_sugerida.producto_catalogo_mga_dnp,
+      entidad_responsable_sugerida:
+        typeof artRaw.entidad_responsable_sugerida === "string" &&
+        artRaw.entidad_responsable_sugerida.trim().length > 0
+          ? artRaw.entidad_responsable_sugerida.trim()
+          : canonico.articulacion_bpim_sugerida.entidad_responsable_sugerida,
+    },
+  };
+}
+
+export async function interpretarFragmentoSemanticoPdd(
+  solicitud: SolicitudInterpretarFragmentoPdd
+): Promise<RespuestaInterpretacionFragmentoPdd> {
+  try {
+    const payload = {
+      texto_fragmento: solicitud.texto_fragmento,
+      codigo_plan_referencia: solicitud.codigo_plan_referencia ?? "PDD_2024_2027",
+      archivo_origen:
+        solicitud.archivo_origen ?? "pdd_2024_2027_acuerdo_139_oficial.pdf",
+      pagina: solicitud.pagina ?? 84,
+    };
+    const res = await apiFetch<unknown>(
+      "/api/v1/compromisos/triada/pdd-dea/interpretar-fragmento-pdd",
+      {
+        method: "POST",
+        body: payload,
+      }
+    );
+    return normalizarInterpretacionFragmentoPdd(res, solicitud);
+  } catch (error) {
+    console.warn("Fallo interpretarFragmentoSemanticoPdd, usando intérprete local:", error);
+    return interpretarFragmentoSemanticoPddLocal(solicitud);
+  }
+}
+
 
 
 

@@ -21,21 +21,35 @@ import {
 } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import { Badge } from "@/shared/ui/badge";
+import { Input } from "@/shared/ui/input";
+import { Textarea } from "@/shared/ui/textarea";
 import { SidePanel } from "@/shared/ui/side-panel";
 import {
   obtenerEstadoSistemaMultiagentePdd,
   ejecutarSistemaMultiagentePdd,
   obtenerComparativoSeguridadHumanaPdd,
   obtenerCruceMultiagentePaBpim,
+  obtenerArquitecturaAgentesIaPdd,
+  consultarAgentesInteligentesPdd,
+  interpretarFragmentoSemanticoPdd,
   obtenerEstadoSistemaMultiagentePddLocal,
   obtenerComparativoSeguridadHumanaPddLocal,
   obtenerCruceMultiagentePaBpimLocal,
+  obtenerArquitecturaAgentesIaPddLocal,
+  consultarAgentesInteligentesPddLocal,
+  interpretarFragmentoSemanticoPddLocal,
+  CONSULTAS_RAPIDAS_AGENTES_PDD,
+  FRAGMENTOS_PRUEBA_INTERPRETE_PDD,
+  DIMENSIONES_SEGURIDAD_HUMANA_PNUD,
   type EstadoSistemaMultiagentePddRespuesta,
   type ComparativoSeguridadHumanaPddRespuesta,
   type CruceMultiagentePaBpimRespuesta,
   type PlanPddComparativoSeguridadHumana,
   type ResultadoAgenteMultiagente,
   type DimensionSeguridadHumanaNombre,
+  type ArquitecturaAgentesIaPddRespuesta,
+  type RespuestaConsultaAgentesPdd,
+  type RespuestaInterpretacionFragmentoPdd,
 } from "../services/plan-accion-dnp-api";
 
 function formatearCOP(valor: number): string {
@@ -77,6 +91,52 @@ export function SistemaMultiagentePddPanel({
   const [crucePaBpim, setCrucePaBpim] = useState<CruceMultiagentePaBpimRespuesta>(
     obtenerCruceMultiagentePaBpimLocal
   );
+  const [arquitecturaIa, setArquitecturaIa] = useState<ArquitecturaAgentesIaPddRespuesta>(
+    obtenerArquitecturaAgentesIaPddLocal
+  );
+
+  // Estado para Sub-vista 1: Consultor Multiagente LangGraph
+  const [preguntaConsultaIa, setPreguntaConsultaIa] = useState<string>(
+    CONSULTAS_RAPIDAS_AGENTES_PDD[0]!.pregunta
+  );
+  const [planConsultaIa, setPlanConsultaIa] = useState<string>("TODOS");
+  const [resultadoConsultaIa, setResultadoConsultaIa] =
+    useState<RespuestaConsultaAgentesPdd>(() =>
+      consultarAgentesInteligentesPddLocal({
+        pregunta: CONSULTAS_RAPIDAS_AGENTES_PDD[0]!.pregunta,
+        codigo_plan: "TODOS",
+      })
+    );
+  const [ejecutandoConsultaIa, setEjecutandoConsultaIa] = useState<boolean>(false);
+
+  // Estado para Sub-vista 2: Intérprete Semántico PydanticAI
+  const [fragmentoPresetId, setFragmentoPresetId] = useState<string>(
+    FRAGMENTOS_PRUEBA_INTERPRETE_PDD[0]!.id
+  );
+  const [textoFragmentoIa, setTextoFragmentoIa] = useState<string>(
+    FRAGMENTOS_PRUEBA_INTERPRETE_PDD[0]!.texto_fragmento
+  );
+  const [planFragmentoIa, setPlanFragmentoIa] = useState<string>(
+    FRAGMENTOS_PRUEBA_INTERPRETE_PDD[0]!.codigo_plan_referencia
+  );
+  const [archivoFragmentoIa, setArchivoFragmentoIa] = useState<string>(
+    FRAGMENTOS_PRUEBA_INTERPRETE_PDD[0]!.archivo_origen
+  );
+  const [paginaFragmentoIa, setPaginaFragmentoIa] = useState<number>(
+    FRAGMENTOS_PRUEBA_INTERPRETE_PDD[0]!.pagina
+  );
+  const [resultadoInterpretacionIa, setResultadoInterpretacionIa] =
+    useState<RespuestaInterpretacionFragmentoPdd>(() =>
+      interpretarFragmentoSemanticoPddLocal({
+        texto_fragmento: FRAGMENTOS_PRUEBA_INTERPRETE_PDD[0]!.texto_fragmento,
+        codigo_plan_referencia:
+          FRAGMENTOS_PRUEBA_INTERPRETE_PDD[0]!.codigo_plan_referencia,
+        archivo_origen: FRAGMENTOS_PRUEBA_INTERPRETE_PDD[0]!.archivo_origen,
+        pagina: FRAGMENTOS_PRUEBA_INTERPRETE_PDD[0]!.pagina,
+      })
+    );
+  const [ejecutandoInterpreteIa, setEjecutandoInterpreteIa] =
+    useState<boolean>(false);
 
   const [actualizandoEstado, setActualizandoEstado] = useState<boolean>(false);
   const [ejecutandoMotor, setEjecutandoMotor] = useState<boolean>(false);
@@ -91,15 +151,17 @@ export function SistemaMultiagentePddPanel({
     let activo = true;
     async function sincronizarEnVivo() {
       try {
-        const [estRes, compRes, cruceRes] = await Promise.all([
+        const [estRes, compRes, cruceRes, arqRes] = await Promise.all([
           obtenerEstadoSistemaMultiagentePdd(),
           obtenerComparativoSeguridadHumanaPdd(),
           obtenerCruceMultiagentePaBpim(),
+          obtenerArquitecturaAgentesIaPdd(),
         ]);
         if (activo) {
           setEstadoMotor(estRes);
           setComparativo(compRes);
           setCrucePaBpim(cruceRes);
+          setArquitecturaIa(arqRes);
         }
       } catch (err) {
         console.warn("Usando respaldo local auditado del Sistema Multiagente PDD/PDL:", err);
@@ -114,14 +176,16 @@ export function SistemaMultiagentePddPanel({
   const consultarEstadoEnVivo = async () => {
     setActualizandoEstado(true);
     try {
-      const [estRes, compRes, cruceRes] = await Promise.all([
+      const [estRes, compRes, cruceRes, arqRes] = await Promise.all([
         obtenerEstadoSistemaMultiagentePdd(),
         obtenerComparativoSeguridadHumanaPdd(),
         obtenerCruceMultiagentePaBpim(),
+        obtenerArquitecturaAgentesIaPdd(),
       ]);
       setEstadoMotor(estRes);
       setComparativo(compRes);
       setCrucePaBpim(cruceRes);
+      setArquitecturaIa(arqRes);
     } finally {
       setActualizandoEstado(false);
     }
@@ -137,6 +201,59 @@ export function SistemaMultiagentePddPanel({
       setEstadoMotor(nuevoEstado);
     } finally {
       setEjecutandoMotor(false);
+    }
+  };
+
+  const dispararConsultaAgentesLangGraph = async (overridePregunta?: string, overridePlan?: string) => {
+    const preg = (overridePregunta ?? preguntaConsultaIa).trim();
+    const plan = overridePlan ?? planConsultaIa;
+    if (!preg) return;
+    setEjecutandoConsultaIa(true);
+    try {
+      const respuesta = await consultarAgentesInteligentesPdd({
+        pregunta: preg,
+        codigo_plan: plan,
+        dimension_sh: dimensionSeleccionada,
+        grado_frontalidad: "TODOS",
+        profundidad: "forense",
+      });
+      setResultadoConsultaIa(respuesta);
+    } finally {
+      setEjecutandoConsultaIa(false);
+    }
+  };
+
+  const seleccionarFragmentoPreset = (presetId: string) => {
+    const preset = FRAGMENTOS_PRUEBA_INTERPRETE_PDD.find((f) => f.id === presetId);
+    if (!preset) return;
+    setFragmentoPresetId(preset.id);
+    setTextoFragmentoIa(preset.texto_fragmento);
+    setPlanFragmentoIa(preset.codigo_plan_referencia);
+    setArchivoFragmentoIa(preset.archivo_origen);
+    setPaginaFragmentoIa(preset.pagina);
+    setResultadoInterpretacionIa(
+      interpretarFragmentoSemanticoPddLocal({
+        texto_fragmento: preset.texto_fragmento,
+        codigo_plan_referencia: preset.codigo_plan_referencia,
+        archivo_origen: preset.archivo_origen,
+        pagina: preset.pagina,
+      })
+    );
+  };
+
+  const dispararInterpretacionFragmento = async () => {
+    if (!textoFragmentoIa.trim()) return;
+    setEjecutandoInterpreteIa(true);
+    try {
+      const res = await interpretarFragmentoSemanticoPdd({
+        texto_fragmento: textoFragmentoIa,
+        codigo_plan_referencia: planFragmentoIa,
+        archivo_origen: archivoFragmentoIa,
+        pagina: paginaFragmentoIa,
+      });
+      setResultadoInterpretacionIa(res);
+    } finally {
+      setEjecutandoInterpreteIa(false);
     }
   };
 
@@ -850,6 +967,597 @@ export function SistemaMultiagentePddPanel({
                 ))}
               </tbody>
             </table>
+          </div>
+        </div>
+      </div>
+
+      {/* ==================================================================== */}
+      {/* BLOQUE 4: MOTOR COGNITIVO NEUROSIMBÓLICO (LANGGRAPH + PYDANTIC AI)   */}
+      {/* ==================================================================== */}
+      <div
+        data-testid="bloque-agentes-inteligentes-langgraph"
+        className="rounded-2xl border border-ember/40 bg-surface-1 p-5 sm:p-6 space-y-6 shadow-sm"
+      >
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between border-b border-border pb-4">
+          <div className="space-y-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <Badge
+                variant="outline"
+                className="border-ember/40 bg-ember/10 font-mono text-[11px] font-bold text-ember"
+              >
+                {`${arquitecturaIa.orquestador} + ${arquitecturaIa.framework_agentes}`}
+              </Badge>
+              <Badge
+                variant="outline"
+                className="border-success/40 bg-success/10 font-mono text-[11px] font-bold text-success"
+              >
+                {`${arquitecturaIa.nodos_langgraph.length} Agentes Cognitivos · ${arquitecturaIa.herramientas_registradas.length} @agent.tool`}
+              </Badge>
+              <Badge
+                variant="outline"
+                className="border-info/40 bg-info/10 font-mono text-[11px] font-bold text-info"
+              >
+                {`${arquitecturaIa.corpus_conectado.evidencias_paginas.toLocaleString("es-CO")} Evidencias PostgreSQL`}
+              </Badge>
+            </div>
+            <h3 className="text-base sm:text-lg font-bold text-text-primary flex items-center gap-2">
+              <Sparkles className="h-5 w-5 text-ember" aria-hidden="true" />
+              <span>
+                4. Motor Cognitivo Neurosimbólico: Agentes Inteligentes LangGraph + PydanticAI (Tool-Calling sobre 2.734 Páginas)
+              </span>
+            </h3>
+            <p className="text-xs text-text-secondary max-w-4xl">
+              Arquitectura neurosimbólica que articula la{" "}
+              <strong className="text-text-primary">
+                Capa Cognitiva (Lectura Semántica, Inferencia Causal MGA y Razonamiento de Seguridad Humana)
+              </strong>{" "}
+              con la{" "}
+              <strong className="text-text-primary">
+                Capa Simbólica (Cero Alucinación Financiera ±$1 COP y Verificación Criptográfica SHA-256)
+              </strong>{" "}
+              conectada en vivo a PostgreSQL (<code className="font-mono text-ember">bd_csh</code>).
+            </p>
+          </div>
+        </div>
+
+        {/* Cinta de Arquitectura Neurosimbólica: 6 Agentes LangGraph + 5 @agent.tool */}
+        <div
+          data-testid="cinta-arquitectura-neurosimbolica"
+          className="rounded-xl border border-border bg-surface-2/40 p-4 space-y-4"
+        >
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <span className="text-xs font-bold uppercase tracking-wider text-text-primary flex items-center gap-1.5">
+              <GitBranch className="h-4 w-4 text-ember" aria-hidden="true" />
+              <span>
+                Grafo de Estado Cognitivo (LangGraph StateGraph · 6 Nodos Especializados)
+              </span>
+            </span>
+            <span className="text-[11px] font-mono text-text-muted">
+              START → Lector → Reconstructor MGA → Taxónomo 7D → Auditor PPI → Articulador BPIM → Crítico Forense → END
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
+            {arquitecturaIa.nodos_langgraph.map((nodo, idx) => (
+              <div
+                key={nodo.id_nodo}
+                data-testid={`nodo-langgraph-${nodo.id_nodo}`}
+                className="rounded-lg border border-border bg-surface-1 p-3 space-y-1.5"
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-xs font-bold font-mono text-text-primary truncate">
+                    {`${idx + 1}. ${nodo.nombre_agente}`}
+                  </span>
+                  <Badge
+                    variant="outline"
+                    className={
+                      nodo.capa === "SIMBOLICA"
+                        ? "border-success/40 bg-success/10 font-mono text-[10px] font-bold text-success"
+                        : "border-ember/40 bg-ember/10 font-mono text-[10px] font-bold text-ember"
+                    }
+                  >
+                    {`CAPA ${nodo.capa}`}
+                  </Badge>
+                </div>
+                <p className="text-[11px] text-text-secondary leading-snug">
+                  {nodo.rol}
+                </p>
+                <div className="flex flex-wrap items-center gap-1 pt-1">
+                  {nodo.herramientas_asignadas.map((tool) => (
+                    <span
+                      key={tool}
+                      className="rounded bg-surface-2 px-1.5 py-0.5 font-mono text-[10px] text-info"
+                    >
+                      {`@${tool}`}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Cinta de las 5 herramientas @agent.tool */}
+          <div className="border-t border-border pt-3">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-text-muted block mb-2">
+              5 Herramientas @agent.tool Registradas en PydanticAI sobre PostgreSQL (bd_csh):
+            </span>
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-5">
+              {arquitecturaIa.herramientas_registradas.map((tool) => (
+                <div
+                  key={tool.nombre}
+                  data-testid={`tool-pydantic-${tool.nombre}`}
+                  className="rounded-lg border border-border/80 bg-surface-1 p-2.5 space-y-1"
+                >
+                  <span className="font-mono text-[11px] font-bold text-ember block truncate">
+                    {tool.nombre}
+                  </span>
+                  <span className="font-mono text-[10px] text-info block truncate">
+                    {tool.tabla_postgresql}
+                  </span>
+                  <p className="text-[10px] text-text-secondary line-clamp-2">
+                    {tool.descripcion}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Grid de las 2 Sub-vistas Interactivas: Consultor LangGraph + Intérprete Semántico PydanticAI */}
+        <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+          {/* ================================================================ */}
+          {/* SUB-VISTA 1: INVESTIGADOR Y CONSULTOR MULTIAGENTE (8 PLANES)     */}
+          {/* ================================================================ */}
+          <div
+            data-testid="consola-consulta-agentes-pdd"
+            className="rounded-xl border border-border bg-surface-2/20 p-4 sm:p-5 space-y-4 flex flex-col justify-between"
+          >
+            <div className="space-y-4">
+              <div className="flex items-center justify-between gap-2 border-b border-border pb-3">
+                <div>
+                  <span className="text-[11px] font-mono uppercase tracking-wider text-ember font-bold block">
+                    SUB-VISTA 1 · POST /consultar-agentes-pdd
+                  </span>
+                  <h4 className="text-sm font-bold text-text-primary">
+                    Investigador y Consultor Multiagente sobre los 8 Planes (5 PDD + 3 PDL)
+                  </h4>
+                </div>
+                <Badge
+                  variant="outline"
+                  className="border-success/40 bg-success/10 font-mono text-[10px] font-bold text-success shrink-0"
+                >
+                  0% Alucinación Financiera
+                </Badge>
+              </div>
+
+              {/* Botones de consultas rápidas preconfiguradas */}
+              <div className="space-y-1.5">
+                <span className="text-[11px] font-semibold text-text-muted block">
+                  Consultas Estratégicas Preconfiguradas:
+                </span>
+                <div className="flex flex-wrap gap-1.5">
+                  {CONSULTAS_RAPIDAS_AGENTES_PDD.map((preset) => (
+                    <Button
+                      key={preset.id}
+                      type="button"
+                      variant={
+                        preguntaConsultaIa === preset.pregunta ? "ember" : "outline"
+                      }
+                      size="sm"
+                      data-testid={`preset-consulta-${preset.id}`}
+                      onClick={() => {
+                        setPreguntaConsultaIa(preset.pregunta);
+                        setPlanConsultaIa(preset.codigo_plan);
+                        void dispararConsultaAgentesLangGraph(
+                          preset.pregunta,
+                          preset.codigo_plan
+                        );
+                      }}
+                      className="h-auto py-1 px-2.5 text-[11px] text-left"
+                    >
+                      {preset.etiqueta_corta}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Selector de Plan y Caja de Consulta Abierta */}
+              <div className="space-y-2">
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <span className="text-[11px] font-semibold text-text-muted mr-1">
+                    Alcance Plan:
+                  </span>
+                  {[
+                    "TODOS",
+                    "PDD_2012_2015",
+                    "PDD_2013_2015",
+                    "PDD_2016_2019",
+                    "PDD_2020_2023",
+                    "PDD_2024_2027",
+                  ].map((cod) => (
+                    <Button
+                      key={cod}
+                      type="button"
+                      variant={planConsultaIa === cod ? "ember" : "outline"}
+                      size="sm"
+                      onClick={() => setPlanConsultaIa(cod)}
+                      className="h-6 px-2 text-[10px] font-mono"
+                    >
+                      {cod}
+                    </Button>
+                  ))}
+                </div>
+
+                <div className="flex flex-col gap-2 sm:flex-row">
+                  <Input
+                    type="text"
+                    value={preguntaConsultaIa}
+                    onChange={(e) => setPreguntaConsultaIa(e.target.value)}
+                    placeholder="Formula una pregunta forense sobre los 5 PDD y 3 PDL..."
+                    aria-label="Pregunta para el enjambre multiagente LangGraph"
+                    data-testid="input-pregunta-agentes-pdd"
+                    className="flex-1 text-xs h-10"
+                  />
+                  <Button
+                    type="button"
+                    variant="ember"
+                    size="sm"
+                    disabled={ejecutandoConsultaIa}
+                    data-testid="btn-ejecutar-consulta-agentes"
+                    onClick={() => void dispararConsultaAgentesLangGraph()}
+                    className="h-10 px-4 shrink-0"
+                  >
+                    <Play
+                      className={`h-3.5 w-3.5 mr-1.5 ${
+                        ejecutandoConsultaIa ? "animate-spin" : ""
+                      }`}
+                      aria-hidden="true"
+                    />
+                    <span>
+                      {ejecutandoConsultaIa
+                        ? "Razonando..."
+                        : "Ejecutar Enjambre LangGraph"}
+                    </span>
+                  </Button>
+                </div>
+              </div>
+
+              {/* Resultado: Síntesis Ejecutiva + Dictamen Forense */}
+              <div
+                data-testid="resultado-consulta-agentes-pdd"
+                className="rounded-lg border border-ember/30 bg-surface-1 p-3.5 space-y-2.5"
+              >
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <span className="text-xs font-bold text-ember font-mono">
+                    {`Corrida: ${resultadoConsultaIa.run_id}`}
+                  </span>
+                  <Badge
+                    variant="outline"
+                    className="border-success/40 bg-success/10 font-mono text-[10px] font-bold text-success"
+                  >
+                    {resultadoConsultaIa.verificacion_critica.aprobado
+                      ? `VERIFICADO · ${resultadoConsultaIa.verificacion_critica.citas_sha256_verificadas} Citas SHA-256`
+                      : "EN REVISIÓN"}
+                  </Badge>
+                </div>
+                <p className="text-xs font-medium text-text-primary leading-relaxed">
+                  {resultadoConsultaIa.sintesis_ejecutiva}
+                </p>
+                <p className="text-[11px] text-text-secondary leading-relaxed border-t border-border pt-2">
+                  {resultadoConsultaIa.dictamen_forense_detallado}
+                </p>
+                <div className="rounded bg-success/10 border border-success/30 px-2.5 py-1.5 text-[11px] text-success font-medium">
+                  {resultadoConsultaIa.verificacion_critica.observacion_verificador}
+                </div>
+              </div>
+
+              {/* Traza de Razonamiento LangGraph (6 Nodos) */}
+              <div className="space-y-2">
+                <span className="text-xs font-bold text-text-primary block">
+                  Traza de Razonamiento LangGraph (6 Nodos y @agent.tool Invocadas):
+                </span>
+                <div className="space-y-1.5 max-h-64 overflow-y-auto pr-1">
+                  {resultadoConsultaIa.traza_langgraph.map((paso) => (
+                    <div
+                      key={`${paso.orden}-${paso.nodo_langgraph}`}
+                      data-testid={`traza-paso-${paso.orden}`}
+                      className="rounded-lg border border-border bg-surface-1 p-2.5 space-y-1"
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="font-mono text-[11px] font-bold text-text-primary">
+                          {`${paso.orden}. ${paso.agente} (${paso.nodo_langgraph})`}
+                        </span>
+                        <span className="font-mono text-[10px] text-success font-bold">
+                          {`${paso.estado} · ${paso.duracion_ms}ms`}
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-text-secondary">
+                        {paso.razonamiento}
+                      </p>
+                      <div className="flex flex-wrap gap-1.5 pt-0.5">
+                        {paso.herramientas_invocadas.map((h, i) => (
+                          <Badge
+                            key={`${h.herramienta}-${i}`}
+                            variant="outline"
+                            className="font-mono text-[10px] text-info border-info/30 bg-info/5"
+                          >
+                            {`@${h.herramienta} (${h.registros_recuperados} regs)`}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Citas Documentales Extraídas con SHA-256 */}
+              <div className="space-y-2">
+                <span className="text-xs font-bold text-text-primary block">
+                  Citas Documentales Verificadas (seguimiento.pdd_evidencia_paginas):
+                </span>
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                  {resultadoConsultaIa.citas_evidencia_documental.map((cita, idx) => (
+                    <div
+                      key={`${cita.archivo}-${cita.pagina}-${idx}`}
+                      data-testid={`cita-documental-${idx}`}
+                      className="rounded-lg border border-border bg-surface-1 p-2.5 space-y-1"
+                    >
+                      <div className="flex items-center justify-between gap-1">
+                        <span className="font-mono text-[10px] font-bold text-ember truncate">
+                          {`${cita.codigo_plan} · Pág. ${cita.pagina}`}
+                        </span>
+                        <span className="font-mono text-[9px] text-text-muted">
+                          {`SHA-256: ${cita.sha256_contenido.slice(0, 12)}...`}
+                        </span>
+                      </div>
+                      <span className="text-[10px] font-mono text-text-muted block truncate">
+                        {cita.archivo}
+                      </span>
+                      <p className="text-[11px] text-text-secondary line-clamp-2">
+                        {cita.extracto_relevante}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* ================================================================ */}
+          {/* SUB-VISTA 2: INTÉRPRETE SEMÁNTICO DE FRAGMENTOS PDD EN VIVO      */}
+          {/* ================================================================ */}
+          <div
+            data-testid="consola-interprete-semantico-pdd"
+            className="rounded-xl border border-border bg-surface-2/20 p-4 sm:p-5 space-y-4 flex flex-col justify-between"
+          >
+            <div className="space-y-4">
+              <div className="flex items-center justify-between gap-2 border-b border-border pb-3">
+                <div>
+                  <span className="text-[11px] font-mono uppercase tracking-wider text-info font-bold block">
+                    SUB-VISTA 2 · POST /interpretar-fragmento-pdd
+                  </span>
+                  <h4 className="text-sm font-bold text-text-primary">
+                    Intérprete Semántico de Fragmentos PDD en Vivo (Extracción MGA, CREMA y 7D)
+                  </h4>
+                </div>
+                <Badge
+                  variant="outline"
+                  className="border-info/40 bg-info/10 font-mono text-[10px] font-bold text-info shrink-0"
+                >
+                  PydanticAI Structured Output
+                </Badge>
+              </div>
+
+              {/* Selector de 3 fragmentos reales de prueba */}
+              <div className="space-y-1.5">
+                <span className="text-[11px] font-semibold text-text-muted block">
+                  Fragmentos Oficiales de Prueba (2012, 2016 y 2024):
+                </span>
+                <div className="flex flex-wrap gap-1.5">
+                  {FRAGMENTOS_PRUEBA_INTERPRETE_PDD.map((frag) => (
+                    <Button
+                      key={frag.id}
+                      type="button"
+                      variant={fragmentoPresetId === frag.id ? "ember" : "outline"}
+                      size="sm"
+                      data-testid={`preset-fragmento-${frag.id}`}
+                      onClick={() => seleccionarFragmentoPreset(frag.id)}
+                      className="h-auto py-1 px-2.5 text-[11px]"
+                    >
+                      {frag.etiqueta}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Textarea editable + Botón Interpretar con Agentes PydanticAI */}
+              <div className="space-y-2">
+                <Textarea
+                  value={textoFragmentoIa}
+                  onChange={(e) => setTextoFragmentoIa(e.target.value)}
+                  placeholder="Pega aquí cualquier párrafo, programa o meta de un Plan de Desarrollo..."
+                  aria-label="Texto del fragmento de Plan de Desarrollo a interpretar"
+                  data-testid="textarea-fragmento-pdd"
+                  className="text-xs min-h-24"
+                />
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-[11px] font-mono text-text-muted truncate">
+                    {`Origen: ${planFragmentoIa} · ${archivoFragmentoIa} (Pág. ${paginaFragmentoIa})`}
+                  </span>
+                  <Button
+                    type="button"
+                    variant="ember"
+                    size="sm"
+                    disabled={ejecutandoInterpreteIa}
+                    data-testid="btn-interpretar-fragmento-pdd"
+                    onClick={() => void dispararInterpretacionFragmento()}
+                  >
+                    <Sparkles
+                      className={`h-3.5 w-3.5 mr-1.5 ${
+                        ejecutandoInterpreteIa ? "animate-spin" : ""
+                      }`}
+                      aria-hidden="true"
+                    />
+                    <span>
+                      {ejecutandoInterpreteIa
+                        ? "Interpretando..."
+                        : "Interpretar con Agentes PydanticAI"}
+                    </span>
+                  </Button>
+                </div>
+              </div>
+
+              {/* Resultado 1: Clasificación Neurosimbólica A/B/C/N + Pesos 7D */}
+              <div
+                data-testid="resultado-interprete-fragmento-pdd"
+                className="rounded-lg border border-info/30 bg-surface-1 p-3.5 space-y-3"
+              >
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <Badge
+                      variant="outline"
+                      className="border-ember/40 bg-ember/10 font-mono text-xs font-bold text-ember"
+                    >
+                      {`Grado ${resultadoInterpretacionIa.clasificacion_neurosimbolica.grado_frontalidad} · ${resultadoInterpretacionIa.clasificacion_neurosimbolica.etiqueta_frontalidad}`}
+                    </Badge>
+                    <Badge
+                      variant="outline"
+                      className="border-info/40 bg-info/10 font-mono text-xs font-bold text-info"
+                    >
+                      {resultadoInterpretacionIa.clasificacion_neurosimbolica.dimension_sh_primaria}
+                    </Badge>
+                  </div>
+                  <span className="font-mono text-[11px] font-bold text-success">
+                    {`BPIM ${resultadoInterpretacionIa.articulacion_bpim_sugerida.codigo_bpim_sugerido}`}
+                  </span>
+                </div>
+
+                <p className="text-xs text-text-secondary leading-relaxed">
+                  {resultadoInterpretacionIa.clasificacion_neurosimbolica.justificacion_causal_ia}
+                </p>
+
+                {/* Barras de pesos_7d */}
+                <div className="space-y-1.5 pt-1 border-t border-border">
+                  <span className="text-[11px] font-bold text-text-primary block">
+                    Vector Neurosimbólico pesos_7d (7 Dimensiones PNUD · Suma = 100%):
+                  </span>
+                  <div className="grid grid-cols-1 gap-1.5 sm:grid-cols-2">
+                    {DIMENSIONES_SEGURIDAD_HUMANA_PNUD.map((dim) => {
+                      const peso =
+                        resultadoInterpretacionIa.clasificacion_neurosimbolica
+                          .pesos_7d[dim] ?? 0;
+                      const pct = Math.round(peso * 100);
+                      return (
+                        <div key={dim} className="space-y-0.5">
+                          <div className="flex items-center justify-between text-[10px]">
+                            <span className="text-text-secondary truncate">
+                              {dim}
+                            </span>
+                            <span className="font-mono font-bold text-text-primary">
+                              {`${pct}%`}
+                            </span>
+                          </div>
+                          <div className="h-1.5 w-full rounded-full bg-surface-2 overflow-hidden">
+                            <div
+                              className="h-full bg-ember rounded-full"
+                              style={{ width: `${Math.min(100, Math.max(2, pct))}%` }}
+                            />
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+
+              {/* Resultado 2: Nodos MGA Extraídos */}
+              <div className="space-y-2">
+                <span className="text-xs font-bold text-text-primary block">
+                  Nodos MGA Extraídos (Problema Central Inferido → Objetivo MGA):
+                </span>
+                <div className="space-y-2">
+                  {resultadoInterpretacionIa.nodos_extraidos.map((nodo, i) => (
+                    <div
+                      key={`${nodo.codigo_detectado}-${i}`}
+                      className="rounded-lg border border-border bg-surface-1 p-2.5 space-y-1"
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-xs font-bold text-text-primary">
+                          {`${nodo.nivel}: ${nodo.nombre}`}
+                        </span>
+                        <span className="font-mono text-[10px] text-ember font-bold">
+                          {nodo.codigo_detectado}
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-text-secondary">
+                        <strong className="text-text-primary">Problema MGA:</strong>{" "}
+                        {nodo.problema_central_inferido}
+                      </p>
+                      <p className="text-[11px] text-text-secondary">
+                        <strong className="text-text-primary">Objetivo MGA:</strong>{" "}
+                        {nodo.objetivo_mga_inferido}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Resultado 3: Metas e Indicadores con Evaluación CREMA + Sugerencia BPIM */}
+              <div className="space-y-2">
+                <span className="text-xs font-bold text-text-primary block">
+                  Metas Extraídas, Validación CREMA y Articulación BPIM/MGA-DNP:
+                </span>
+                {resultadoInterpretacionIa.metas_extraidas.map((meta, i) => (
+                  <div
+                    key={i}
+                    className="rounded-lg border border-border bg-surface-1 p-3 space-y-2"
+                  >
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <Badge
+                        variant="outline"
+                        className="font-mono text-[10px] font-bold text-info border-info/40"
+                      >
+                        {`META DE ${meta.tipo_meta}`}
+                      </Badge>
+                      <Badge
+                        variant="outline"
+                        className="border-success/40 bg-success/10 font-mono text-[10px] font-bold text-success"
+                      >
+                        {`Puntaje CREMA: ${meta.evaluacion_crema.puntaje_crema_pct}%`}
+                      </Badge>
+                    </div>
+                    <p className="text-xs font-medium text-text-primary">
+                      {meta.descripcion_meta}
+                    </p>
+                    <div className="flex flex-wrap gap-3 text-[11px] font-mono text-text-secondary">
+                      <span>{`Indicador: ${meta.indicador_sugerido}`}</span>
+                      <span>{`LB: ${meta.linea_base}`}</span>
+                      <span>{`Meta Cuatrienio: ${meta.meta_cuatrienio}`}</span>
+                    </div>
+                    <p className="text-[11px] text-text-muted">
+                      {meta.evaluacion_crema.observacion_dnp}
+                    </p>
+                  </div>
+                ))}
+
+                <div className="rounded-lg border border-ember/30 bg-ember/5 p-2.5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs">
+                  <div>
+                    <span className="font-bold text-text-primary block">
+                      {resultadoInterpretacionIa.articulacion_bpim_sugerida.producto_catalogo_mga_dnp}
+                    </span>
+                    <span className="text-[11px] text-text-secondary">
+                      {`Entidad sugerida: ${resultadoInterpretacionIa.articulacion_bpim_sugerida.entidad_responsable_sugerida}`}
+                    </span>
+                  </div>
+                  <Badge
+                    variant="outline"
+                    className="border-ember/40 bg-surface-1 font-mono text-xs font-bold text-ember shrink-0"
+                  >
+                    {`BPIM ${resultadoInterpretacionIa.articulacion_bpim_sugerida.codigo_bpim_sugerido}`}
+                  </Badge>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

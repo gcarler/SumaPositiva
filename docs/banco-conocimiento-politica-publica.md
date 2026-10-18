@@ -169,10 +169,12 @@ Para la guía técnica exhaustiva y fichas modelo aplicadas a Cartagena, consult
 
 ---
 
-## 8. Diagnóstico Longitudinal Multiagente PDD/PDL y Seguridad Humana (2012–2027)
+## 8. Diagnóstico Longitudinal Multiagente PDD/PDL y Motor Neurosimbólico (2012–2027)
 
-El módulo de Seguimiento integra el tablero interactivo del **Sistema Multiagente de Absorción y Diagnóstico PDD/PDL** ([sistema-multiagente-pdd-panel.tsx](file:///root/polis/src/features/seguimiento/components/sistema-multiagente-pdd-panel.tsx)), que consolida:
-- **Corpus auditado**: `2.732` evidencias (`2.728` páginas continuas de 11 PDFs oficiales verificados con SHA-256 + JSONs estructurados), `1.524` nodos jerárquicos MGA, `2.228` metas PDD (`2012–2027`) y `401` metas PDL (`2024–2027`).
+El módulo de Seguimiento integra el tablero interactivo del **Sistema Multiagente de Absorción y Diagnóstico PDD/PDL y Consola Neurosimbólica** ([sistema-multiagente-pdd-panel.tsx](file:///root/polis/src/features/seguimiento/components/sistema-multiagente-pdd-panel.tsx)), que consolida:
+- **Corpus auditado**: `2.732` / `2.734` evidencias (`2.728` páginas continuas de 11 PDFs oficiales verificados con SHA-256 + JSONs estructurados), `1.524` nodos jerárquicos MGA, `2.228` metas PDD (`2012–2027`) y `401` metas PDL (`2024–2027`).
 - **Rúbrica de Frontalidad (`POLIS_SH_A_B_C_N_V1`)**: Clasificación determinística en Grado `A` (Núcleo Frontal), Grado `B` (Determinante Multidimensional Directo), Grado `C` (Contextual/Habilitante) y Grado `N` (No Asociado), ponderada sin doble conteo en las **7 Dimensiones de Seguridad Humana (PNUD 1994 / Decreto 037 de 2026)**.
+- **Motor Cognitivo Neurosimbólico (`LangGraph StateGraph` + `PydanticAI`)**: 6 agentes especializados (`AgenteLectorSemanticoDocumental`, `AgenteReconstructorCausalMGA`, `AgenteTaxonomoNeurosimbolicoSH`, `AgenteAuditorFinancieroPPI`, `AgenteArticuladorOperativoBPIM`, `AgenteCriticoVerificadorForense`) y 5 herramientas `@agent.tool` conectadas a PostgreSQL (`bd_csh`), con Consola de Investigación sobre los 8 Planes (`POST /consultar-agentes-pdd`) e Intérprete Semántico de Fragmentos PDD en Vivo (`POST /interpretar-fragmento-pdd`).
 - **Articulación Operativa (`Puerta F`)**: Cruce de metas `A` y `B` con las actividades de los Planes de Acción de las 29 entidades distritales y los códigos BPIM de 13 dígitos.
+
 

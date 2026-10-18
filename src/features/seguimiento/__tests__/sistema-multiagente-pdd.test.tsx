@@ -6,6 +6,9 @@ import {
   ejecutarSistemaMultiagentePdd,
   obtenerComparativoSeguridadHumanaPdd,
   obtenerCruceMultiagentePaBpim,
+  obtenerArquitecturaAgentesIaPdd,
+  consultarAgentesInteligentesPdd,
+  interpretarFragmentoSemanticoPdd,
   obtenerEstadoSistemaMultiagentePddLocal,
   obtenerComparativoSeguridadHumanaPddLocal,
   obtenerCruceMultiagentePaBpimLocal,
@@ -14,6 +17,8 @@ import {
   ANEXO_PDL_TERRITORIAL_CANONICO,
   PREGUNTAS_ESTRATEGICAS_DIAGNOSTICO_PDD,
   PUERTAS_CALIDAD_MULTIAGENTE_CANONICAS,
+  ARQUITECTURA_AGENTES_IA_PDD_CANONICA,
+  FRAGMENTOS_PRUEBA_INTERPRETE_PDD,
 } from "../services/plan-accion-dnp-api";
 import { SistemaMultiagentePddPanel } from "../components/sistema-multiagente-pdd-panel";
 import { PddDeaEvaluacionPanel } from "../components/pdd-dea-evaluacion-panel";
@@ -282,5 +287,204 @@ describe("Sistema Multiagente PDD/PDL y Diagnóstico Comparativo de Seguridad Hu
       fetchSpy.mockRestore();
     }
   });
+
+  it("9. obtenerArquitecturaAgentesIaPdd y consultarAgentesInteligentesPdd normalizan respuestas reales de LangGraph + PydanticAI ([20B])", async () => {
+    const mockArquitectura = {
+      motor: "POLIS_NEUROSIMBOLICO_LANGGRAPH_PYDANTIC_AI_V2",
+      orquestador: "LangGraph StateGraph",
+      framework_agentes: "PydanticAI",
+      nodos_langgraph: ARQUITECTURA_AGENTES_IA_PDD_CANONICA.nodos_langgraph,
+      aristas_grafo: ARQUITECTURA_AGENTES_IA_PDD_CANONICA.aristas_grafo,
+      herramientas_registradas: ARQUITECTURA_AGENTES_IA_PDD_CANONICA.herramientas_registradas,
+      corpus_conectado: {
+        evidencias_paginas: 2734,
+        nodos_mga: 1573,
+        metas_pdd: 4236,
+        metas_pdl: 401,
+      },
+    };
+
+    const mockConsulta = {
+      run_id: "LG-VIVO-001",
+      motor: "POLIS_NEUROSIMBOLICO_LANGGRAPH_PYDANTIC_AI_V2",
+      pregunta: "¿Cómo evolucionó la inversión frontal en Seguridad Personal?",
+      sintesis_ejecutiva: "Síntesis verificada desde PostgreSQL con 0% alucinación.",
+      dictamen_forense_detallado: "Comparativo longitudinal 2012-2027 verificado.",
+      traza_langgraph: [
+        {
+          orden: 1,
+          nodo_langgraph: "lector_semantico_documental",
+          agente: "AgenteLectorSemanticoDocumental",
+          razonamiento: "Búsqueda en pdd_evidencia_paginas",
+          herramientas_invocadas: [
+            { herramienta: "tool_buscar_evidencia_paginas_pdd", registros_recuperados: 12 },
+          ],
+          duracion_ms: 35.4,
+          estado: "COMPLETADO",
+        },
+      ],
+      citas_evidencia_documental: [
+        {
+          codigo_plan: "PDD_2024_2027",
+          archivo: "pdd_2024_2027_acuerdo_139_oficial.pdf",
+          pagina: 84,
+          sha256_contenido: "d5e6f7a8b9c01234567890abcdef1234567890abcdef1234567890abcdef1234",
+          origen_texto: "TEXTO_NATIVO_PDF",
+          extracto_relevante: "Línea Estratégica 1: Vida Digna",
+        },
+      ],
+      verificacion_critica: {
+        aprobado: true,
+        iteraciones_langgraph: 1,
+        cero_alucinacion_financiera: true,
+        citas_sha256_verificadas: 1,
+        observacion_verificador: "Citas y cifras conciliadas al 100%.",
+      },
+    };
+
+    const fetchSpy = vi
+      .spyOn(globalThis, "fetch")
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify(mockArquitectura), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        })
+      )
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify(mockConsulta), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        })
+      );
+
+    try {
+      const arq = await obtenerArquitecturaAgentesIaPdd();
+      expect(arq.orquestador).toBe("LangGraph StateGraph");
+      expect(arq.framework_agentes).toBe("PydanticAI");
+      expect(arq.nodos_langgraph).toHaveLength(6);
+      expect(arq.herramientas_registradas).toHaveLength(5);
+      expect(arq.corpus_conectado.evidencias_paginas).toBe(2734);
+
+      const res = await consultarAgentesInteligentesPdd({
+        pregunta: "¿Cómo evolucionó la inversión frontal en Seguridad Personal?",
+        codigo_plan: "TODOS",
+      });
+      expect(res.run_id).toBe("LG-VIVO-001");
+      expect(res.verificacion_critica.aprobado).toBe(true);
+      expect(res.verificacion_critica.cero_alucinacion_financiera).toBe(true);
+      expect(res.traza_langgraph[0]?.agente).toBe("AgenteLectorSemanticoDocumental");
+      expect(res.citas_evidencia_documental[0]?.pagina).toBe(84);
+    } finally {
+      fetchSpy.mockRestore();
+    }
+  });
+
+  it("10. interpretarFragmentoSemanticoPdd normaliza extracción MGA, evaluación CREMA, pesos_7d y sugerencia BPIM ([20B])", async () => {
+    const mockInterpretacion = {
+      texto_fragmento: FRAGMENTOS_PRUEBA_INTERPRETE_PDD[0]!.texto_fragmento,
+      codigo_plan_referencia: "PDD_2024_2027",
+      archivo_origen: "pdd_2024_2027_acuerdo_139_oficial.pdf",
+      pagina: 84,
+      nodos_extraidos: [
+        {
+          nivel: "PROGRAMA",
+          codigo_detectado: "PRG-ALIM-01",
+          nombre: "Cartagena Sin Hambre y Soberanía Alimentaria",
+          problema_central_inferido: "Inseguridad alimentaria severa en hogares vulnerables",
+          objetivo_mga_inferido: "Garantizar acceso nutricional mediante comedores y huertas",
+        },
+      ],
+      metas_extraidas: [
+        {
+          tipo_meta: "RESULTADO",
+          descripcion_meta: "Reducir del 18,4% al 10,0% la prevalencia de inseguridad alimentaria severa",
+          indicador_sugerido: "Prevalencia de inseguridad alimentaria severa (%)",
+          linea_base: 18.4,
+          meta_cuatrienio: 10.0,
+          evaluacion_crema: {
+            claro: true,
+            relevante: true,
+            economico: true,
+            medible: true,
+            adecuado: true,
+            puntaje_crema_pct: 100,
+            observacion_dnp: "Indicador cumple 5/5 atributos CREMA.",
+          },
+        },
+      ],
+      clasificacion_neurosimbolica: {
+        grado_frontalidad: "B",
+        etiqueta_frontalidad: "B_DETERMINANTE_DIRECTO",
+        dimension_sh_primaria: "Alimentaria",
+        pesos_7d: {
+          Alimentaria: 0.65,
+          Salud: 0.15,
+          Economica: 0.1,
+          Comunitaria: 0.05,
+          Personal: 0.03,
+          Ambiental: 0.01,
+          Politica: 0.01,
+        },
+        justificacion_causal_ia: "Mitigación directa de vulnerabilidad nutricional en hogares.",
+      },
+      articulacion_bpim_sugerida: {
+        codigo_bpim_sugerido: "2026130010103",
+        producto_catalogo_mga_dnp: "4102019 - Servicios de asistencia alimentaria",
+        entidad_responsable_sugerida: "PES Pedro Romero",
+      },
+    };
+
+    const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValue(
+      new Response(JSON.stringify(mockInterpretacion), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      })
+    );
+
+    try {
+      const interp = await interpretarFragmentoSemanticoPdd({
+        texto_fragmento: FRAGMENTOS_PRUEBA_INTERPRETE_PDD[0]!.texto_fragmento,
+        codigo_plan_referencia: "PDD_2024_2027",
+      });
+      expect(interp.nodos_extraidos[0]?.codigo_detectado).toBe("PRG-ALIM-01");
+      expect(interp.metas_extraidas[0]?.linea_base).toBe("18.4");
+      expect(interp.metas_extraidas[0]?.meta_cuatrienio).toBe("10");
+      expect(interp.metas_extraidas[0]?.evaluacion_crema.puntaje_crema_pct).toBe(100);
+      expect(interp.clasificacion_neurosimbolica.grado_frontalidad).toBe("B");
+      expect(interp.clasificacion_neurosimbolica.dimension_sh_primaria).toBe(
+        "Seguridad Alimentaria"
+      );
+      expect(interp.clasificacion_neurosimbolica.pesos_7d["Seguridad Alimentaria"]).toBeCloseTo(
+        0.65,
+        2
+      );
+      expect(interp.clasificacion_neurosimbolica.pesos_7d["Seguridad en la Salud"]).toBeCloseTo(
+        0.15,
+        2
+      );
+      expect(interp.articulacion_bpim_sugerida.codigo_bpim_sugerido).toBe("2026130010103");
+    } finally {
+      fetchSpy.mockRestore();
+    }
+  });
+
+  it("11. Bloque 4 renderiza los 6 agentes LangGraph, las 5 @agent.tool, la Consola de Consulta y el Intérprete Semántico ([20B])", () => {
+    const html = renderToString(<SistemaMultiagentePddPanel puedeEditar={true} />);
+
+    expect(html).toContain('data-testid="bloque-agentes-inteligentes-langgraph"');
+    expect(html).toContain('data-testid="cinta-arquitectura-neurosimbolica"');
+    expect(html).toContain('data-testid="consola-consulta-agentes-pdd"');
+    expect(html).toContain('data-testid="btn-ejecutar-consulta-agentes"');
+    expect(html).toContain('data-testid="consola-interprete-semantico-pdd"');
+    expect(html).toContain('data-testid="btn-interpretar-fragmento-pdd"');
+
+    for (const nodo of ARQUITECTURA_AGENTES_IA_PDD_CANONICA.nodos_langgraph) {
+      expect(html).toContain(nodo.nombre_agente);
+    }
+    for (const tool of ARQUITECTURA_AGENTES_IA_PDD_CANONICA.herramientas_registradas) {
+      expect(html).toContain(tool.nombre);
+    }
+  });
 });
+
 
