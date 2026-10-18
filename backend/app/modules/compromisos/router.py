@@ -19,6 +19,13 @@ from fastapi.responses import FileResponse
 from sqlalchemy.engine import make_url
 
 from app.core.database import SessionDependency
+from app.modules.compromisos.agentes_inteligentes_pdd import (
+    ConsultaAgentesPDD,
+    InterpretarFragmentoPDD,
+    arquitectura_agentes_ia,
+    ejecutar_consulta_pdd,
+    interpretar_fragmento,
+)
 from app.modules.compromisos.dea_econometria_service import DeaEconometriaService
 from app.modules.compromisos.google_workspace_sync_service import (
     CHART_DIR,
@@ -220,7 +227,45 @@ async def ejecutar_multiagente_pdd(sujeto: SujetoAutenticadoDep):
     summary="Consultar cobertura, puertas de calidad y bitácora de los cinco agentes PDD",
 )
 async def estado_multiagente_pdd():
-    return await obtener_estado_sistema_multiagente_pdd()
+    state = await obtener_estado_sistema_multiagente_pdd()
+    state["motor_cognitivo_ia"] = {
+        "activo": True,
+        "orquestador": "LangGraph StateGraph",
+        "framework_agentes": "PydanticAI",
+        "agentes_cognitivos": 6,
+        "herramientas_bd": 5,
+    }
+    return state
+
+
+@router.get(
+    "/triada/pdd-dea/arquitectura-agentes-ia",
+    summary="Especificación y cobertura viva del motor cognitivo neurosimbólico PDD",
+)
+async def arquitectura_motor_agentes_pdd(session: SessionDependency):
+    return await arquitectura_agentes_ia(session)
+
+
+@router.post(
+    "/triada/pdd-dea/consultar-agentes-pdd",
+    summary="Consultar PDD/PDL mediante agentes PydanticAI y grafo LangGraph",
+)
+async def consultar_agentes_pdd(
+    consulta: ConsultaAgentesPDD,
+    session: SessionDependency,
+):
+    return await ejecutar_consulta_pdd(session, consulta)
+
+
+@router.post(
+    "/triada/pdd-dea/interpretar-fragmento-pdd",
+    summary="Interpretar un fragmento PDD con extracción MGA/CREMA y taxonomía SH",
+)
+async def interpretar_fragmento_pdd(
+    solicitud: InterpretarFragmentoPDD,
+    session: SessionDependency,
+):
+    return await interpretar_fragmento(session, solicitud)
 
 
 @router.get(

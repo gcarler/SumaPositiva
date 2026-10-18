@@ -117,6 +117,9 @@ La última columna explica la excepción pública o la condición adicional.
 | GET | /api/v1/compromisos/triada/pdd-dea/seguridad-humana-comparativo | publico | Estructura PDD, metas enlazadas y PPI clasificado A/B/C/N con reparto no duplicado en siete dimensiones; PDL separado. |
 | POST | /api/v1/compromisos/triada/pdd-dea/ejecutar-sistema-multiagente | permiso:seguimiento:gestionar@declarada | Absorción y reconstrucción PDD/PDL; mutación autenticada y auditada. |
 | GET | /api/v1/compromisos/triada/pdd-dea/estado-sistema-multiagente | publico | Cobertura documental, puertas de calidad y bitácora resumida del motor multiagente. |
+| GET | /api/v1/compromisos/triada/pdd-dea/arquitectura-agentes-ia | publico | Especificación viva de LangGraph/PydanticAI, tools BD y cobertura del corpus PDD/PDL. |
+| POST | /api/v1/compromisos/triada/pdd-dea/consultar-agentes-pdd | publico | Consulta de lectura PDD/PDL con citas SHA-256, datos financieros de BD y traza del StateGraph. |
+| POST | /api/v1/compromisos/triada/pdd-dea/interpretar-fragmento-pdd | publico | Interpretación provisional MGA/CREMA/SH de fragmento aportado; no reemplaza validación oficial. |
 | GET | /api/v1/compromisos/triada/pdd-dea/cruce-multiagente-pa-bpim | publico | Cruce determinístico agregado del catálogo PDD/PDL con actividades de Plan de Acción y códigos MGA/BPIM. |
 | GET | /api/v1/compromisos/triada/pdd-dea/cumplimiento-metas | publico | Avance de metas PDD deduplicado y agregado por línea, entidad y localidad; conserva advertencias de escala. |
 | GET | /api/v1/compromisos/triada/pdd-dea/frontera-dea-pdd | publico | Frontera DEA exploratoria de entidades por PDD e insumo presupuestal; no representa causalidad ni certificación. |

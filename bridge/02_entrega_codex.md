@@ -984,3 +984,19 @@ Los tres PDL se mantienen fuera del denominador PDD; los importes de inversión 
 - Suite focalizada (`test_motor_multiagente_pdd.py`, `test_pdd_seguridad_humana_16.py`, `test_pdd_dea_triada.py`, `test_access_policy.py`): **147 passed**.
 - `polis-backend.service` se reinició y quedó `active`. Después del reinicio, los siete endpoints PDD, el comparativo compacto y el resumen de Inteligencia respondieron HTTP 200. Tiempos observados: cumplimiento 7,9 ms; econometría 5,2 ms; explorador 21,5 ms; resumen PDD 28,0 ms; laboratorio 9,9 ms; comparativo compacto 5,7 ms; resumen Inteligencia 12,6 ms. Las primeras peticiones atendidas por cada worker midieron ~521 ms y ~518 ms durante la inicialización del worker; las peticiones siguientes quedaron por debajo de 100 ms. El cache de resultados se cargó antes de aceptar tráfico, pero ese costo de arranque HTTP por worker sigue visible en la primera petición.
 - No se modificó `src/**`. La orden de entrada `bridge/01_tarea_codex.md` permanece fuera del commit. Commit local en `main`; sin push.
+
+## Entrega [MOTOR-NEUROSIMBOLICO-AGENTES-IA-PDD-20A] — 18/10/2026
+
+### Motor cognitivo y herramientas
+
+- Añadí `backend/app/modules/compromisos/agentes_inteligentes_pdd.py` con un `StateGraph` de seis nodos, cinco agentes `pydantic_ai.Agent` y cinco tools SQL registradas con `@agent.tool`. Sin API key se usa `FunctionModel` para orquestar las llamadas deterministas a las tools; con `OPENAI_API_KEY` y un modelo configurado se construyen agentes con ese modelo. Las consultas y las cifras salen de PostgreSQL; la síntesis no crea valores financieros.
+- Las tools consultan `pdd_evidencia_paginas`, `pdd_lineas_y_programas`, `pdd_metas_oficiales`, `planes_desarrollo_distrital` y `actividades_plan_accion`. La herramienta documental recalcula SHA-256 sobre el texto recuperado y solo incluye citas cuyo hash coincide con la BD. Si no hay cita verificable, el crítico permite una ampliación léxica única y termina en un máximo de dos pasadas.
+- Añadí arquitectura/cobertura viva, consulta forense e interpretación de fragmentos. La clasificación del fragmento y la evaluación CREMA se etiquetan como heurísticas provisionales y no como datos oficiales; sus pesos 7D normalizados suman 1.
+- Registré los tres endpoints como públicos en `docs/permisos-api.md` y añadí `motor_cognitivo_ia` al estado general. La matriz de permisos y sus excepciones de POST público quedaron actualizadas.
+
+### Verificación y servicio
+
+- `ruff check` sobre el módulo nuevo, router y pruebas modificadas: **PASS**.
+- Suite solicitada (`test_agentes_inteligentes_pdd.py`, `test_motor_multiagente_pdd.py`, `test_pdd_dea_triada.py`, `test_access_policy.py`): **144 passed**.
+- `polis-backend.service` se reinició y quedó `active`. Los tres endpoints respondieron HTTP 200 en vivo: arquitectura 166,8 ms (6 nodos, 5 tools; corpus reportado: 2.734 páginas, 1.573 nodos, 4.236 metas PDD y 401 PDL); consulta forense 770,7 ms (6 pasos, 40 citas SHA-256 verificadas, dictamen aprobado); interpretación de fragmento 52,7 ms (2 nodos extraídos, una meta, vector 7D suma 1, traza de 3 agentes).
+- No se modificó `src/**` ni los archivos de coordinación. Commit local en `main`, sin push.
