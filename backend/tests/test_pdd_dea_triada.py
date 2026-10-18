@@ -410,10 +410,15 @@ def test_pdd_raw_json_responses_are_pre_serialized_fast_and_support_etag():
 def test_all_pdd_dea_routes_are_registered_with_the_prescriptive_lab():
     paths = {route.path for route in router.routes}
     prefix = "/compromisos/triada/pdd-dea/"
-    assert sum(path.startswith(prefix) for path in paths) == 14
+    assert sum(path.startswith(prefix) for path in paths) == 19
     assert prefix + "laboratorio-prescriptivo" in paths
     assert prefix + "seguridad-humana-comparativo" in paths
     assert prefix + "cruce-multiagente-pa-bpim" in paths
     assert prefix + "arquitectura-agentes-ia" in paths
     assert prefix + "consultar-agentes-pdd" in paths
     assert prefix + "interpretar-fragmento-pdd" in paths
+    assert prefix + "pdt-ai-evaluator/especificacion" in paths
+    assert prefix + "pdt-ai-evaluator/diagnostico" in paths
+    assert prefix + "pdt-ai-evaluator/ejecutar" in paths
+    assert prefix + "pdt-ai-evaluator/checkpoint/validar" in paths
+    assert prefix + "pdt-ai-evaluator/dictamen-ejecutivo" in paths
