@@ -1,23 +1,23 @@
-# Entrega Codex — Fase [23A] PDT-AI-EVALUATOR
+# Entrega Codex — Fase [24A] Integración PDT-AI-EVALUATOR
 
-## Cambios realizados
+## Cambios
 
-- `backend/app/modules/compromisos/pdt_ai_evaluator_graph.py`
-  - La consulta territorial incorpora `ST_AsGeoJSON(ST_SimplifyPreserveTopology(...))`; GeoPandas reconstruye polígonos reales en EPSG:4326 y mantiene el punto de centroide como respaldo.
-  - El estado DEA/Malmquist añade DMUs anuales desde `planes_desarrollo_distrital.ppi_anual_cop` y, cuando ese desglose no existe, suma asignaciones anuales de nodos hoja en `pdd_lineas_y_programas` para evitar contar a la vez padres e hijos.
-  - La procedencia queda explícita como `apropiacion_definitiva_cop` o `ppi_oficial_desagregado_pdd`. Los montos PPI se usan solo en vigencias sin apropiaciones observadas positivas; se identifica el plan y se etiqueta el conteo de líneas como proxy estructural, no como producto ejecutado.
-  - Alertas de coherencia NLP conservan la dependencia responsable para que el dictamen pueda vincularlas.
-- `backend/app/modules/compromisos/pdt_dictamen_ejecutivo.py`: genera el pliego por dependencia, síntesis de sectores GBR, recomendaciones trazables e informe Markdown.
-- `backend/app/modules/compromisos/router.py` y `schemas.py`: exponen y tipan `GET /api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/dictamen-ejecutivo`, con filtros opcionales `dependencia`, `sector` y `force_refresh`.
-- `docs/permisos-api.md`: documenta la ruta.
-- `backend/tests/test_pdt_dictamen_ejecutivo.py`: cubre años 2012–2027, prioridad de apropiaciones observadas, geometría GeoJSON, dictamen por filtros e integración de la ruta.
+- `backend/app/modules/compromisos/agentes_inteligentes_pdd.py`
+  - Registrada la herramienta PydanticAI `tool_consultar_evaluador_pdt_gbr` dentro de `AGENT_SPECS` y `TOOL_SPECS`, ejecutada en el nodo financiero del StateGraph.
+  - Carga el cache durable de PDT-AI-EVALUATOR fuera del event loop; si no existe, invoca el evaluador de forma asíncrona con la sesión actual.
+  - Filtra DMUs DEA, alertas mission creep, coldspots, trampas territoriales, series ISRI > 0.40, Chow 2024 y dictámenes usando consulta y código de plan. El bloque `evaluacion_pdt_gbr` aparece en el dictamen forense y en la evidencia financiera.
+  - Añadida la clave aditiva `integracion_pdt_ai_evaluator` en `obtener_arquitectura_agentes`; `arquitectura_agentes_ia` conserva compatibilidad con la ruta existente. Incluye estado y conteos del motor, incluyendo DMUs, Malmquist, polígonos PostGIS, trampas, riesgo ISRI, dependencias y sectores.
+- `backend/app/modules/compromisos/pdd_dea_service.py`
+  - El laboratorio prescriptivo y el consolidado ejecutivo incluyen `evaluacion_multidimensional_pdt_ai`, con resúmenes DEA/NLP/LISA, riesgos ISRI y Chow 2024, sectores GBR y dictámenes prioritarios.
+  - Lee el cache durable sin bloquear el event loop y enriquece también payloads previamente cacheados.
+- Ampliadas `backend/tests/test_agentes_inteligentes_pdd.py` y `backend/tests/test_pdd_dea_triada.py` para verificar estructura, filtros, herramienta y ambos payloads. El conteo de rutas acepta `>= 19`.
 
 ## Verificación
 
-- Ruff sobre los módulos y pruebas de esta fase: correcto (`All checks passed`).
-- Pytest solicitado: `11 passed` (`tests/test_pdt_ai_evaluator.py` y `tests/test_pdt_dictamen_ejecutivo.py`).
-- Ruff completo desde `backend/` detecta 729 hallazgos en el repositorio (principalmente imports y líneas largas en numerosos archivos). Los archivos de esta entrega pasan al ejecutarlo de forma dirigida.
+- Ruff solicitado sobre los cuatro archivos de la fase: correcto (`All checks passed`).
+- Pytest solicitado: `29 passed` (`test_agentes_inteligentes_pdd.py` y `test_pdd_dea_triada.py`).
+- `git diff --check` sobre los cuatro archivos: correcto.
 
 ## Alcance
 
-No se modificó `src/**`, `pdt_nodos_espacial_predictivo.py` ni `test_pdt_nodos_espacial_predictivo.py`. No se hizo commit ni push.
+No se modificaron `src/**`, `pdt_ai_evaluator_graph.py`, `router.py` ni `schemas.py`. No se hizo commit ni push.

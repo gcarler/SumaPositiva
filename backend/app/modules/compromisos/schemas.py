@@ -446,3 +446,17 @@ class PdtDictamenEjecutivoRespuesta(BaseModel):
     sintesis_sectores: list[dict[str, Any]]
     informe_markdown: str
     trazabilidad: dict[str, Any] = Field(default_factory=dict)
+
+
+class PdtHistorialAuditoriaRespuesta(BaseModel):
+    motor: str = "PDT-AI-EVALUATOR"
+    esquema_pg: str = "seguimiento"
+    tablas: list[str]
+    filtro_thread_id: str | None = None
+    limite: int = 50
+    total_evaluaciones: int = 0
+    total_checkpoints_hitl: int = 0
+    evaluaciones: list[dict[str, Any]] = Field(default_factory=list)
+    checkpoints_hitl: list[dict[str, Any]] = Field(default_factory=list)
+    consultado_en: str
+

@@ -52,6 +52,7 @@ DIMENSIONES_SH = (
 )
 _LEGACY_CACHE_V11 = Path("/tmp/polis_pdd_dea_cache_v11.json")
 CACHE_V11 = BASE_DIR / "cache_pdd_dea_v11.json"
+PDT_AI_CACHE = BASE_DIR / "cache_pdt_ai_evaluator.json"
 # Backwards-compatible alias used by older tests and local operators.
 CACHE_V10 = CACHE_V11
 _DISK_CACHE: dict[str, dict[str, Any]] | None = None
@@ -312,6 +313,111 @@ def _store(key: tuple[Any, ...], value: dict[str, Any]) -> dict[str, Any]:
     except OSError:
         pass
     return value
+
+
+def _read_pdt_ai_cache() -> dict[str, Any] | None:
+    try:
+        payload = json.loads(PDT_AI_CACHE.read_text(encoding="utf-8"))
+        runs = payload.get("runs", {})
+        return (
+            max(
+                runs.values(),
+                key=lambda item: str(item.get("generado_en") or item.get("thread_id") or ""),
+            )
+            if runs
+            else None
+        )
+    except (OSError, TypeError, ValueError):
+        return None
+
+
+async def _evaluacion_multidimensional_pdt_ai() -> dict[str, Any]:
+    """Summarize the durable PDT evaluator cache without blocking the event loop."""
+    diagnostic = await asyncio.to_thread(_read_pdt_ai_cache)
+    if not diagnostic:
+        return {
+            "estado": "PENDIENTE_CACHE_PDT_AI_EVALUATOR",
+            "fuente": str(PDT_AI_CACHE),
+            "dea_resumen": {"total_dmus": 0, "modelo": None},
+            "nlp_coherencia_resumen": {"pares_evaluados": 0, "alertas_mission_creep": 0},
+            "econometria_espacial_lisa": {
+                "estado": "PENDIENTE",
+                "coldspots": [],
+                "trampas_territoriales": [],
+            },
+            "riesgo_isri_chow": {"series_alto_riesgo": [], "pruebas_chow_2024": []},
+            "sectores_gbr": [],
+            "top_dictamenes_dependencias": [],
+        }
+    dea = diagnostic.get("dea_scores", {})
+    dea_rows = dea.get("resultados_dmu", [])
+    theta_ccr = [float(row["theta_ccr"]) for row in dea_rows if row.get("theta_ccr") is not None]
+    theta_bcc = [float(row["theta_bcc"]) for row in dea_rows if row.get("theta_bcc") is not None]
+    nlp = diagnostic.get("nlp_coherence", {})
+    cosine = nlp.get("similaridad_coseno", {})
+    spatial = diagnostic.get("spatial_lisa", {})
+    forecast = diagnostic.get("time_series_forecast", {})
+    high_risk = [
+        row
+        for row in forecast.get("series", [])
+        if row.get("ISRI") is not None and float(row["ISRI"]) > 0.40
+    ]
+    from app.modules.compromisos.pdt_dictamen_ejecutivo import generar_dictamen_ejecutivo_pdt
+
+    report = generar_dictamen_ejecutivo_pdt(diagnostic)
+    briefs = [
+        row
+        for row in report.get("dictamenes_dependencias", [])
+        if not str(row.get("dependencia", "")).startswith("PPI oficial agregado")
+    ]
+    briefs.sort(
+        key=lambda row: (
+            not row.get("dictamen_prescriptivo", {}).get("requiere_auditoria_focalizada"),
+            -row.get("nlp", {}).get("alertas_vinculadas_total", 0),
+        )
+    )
+    return {
+        "estado": "DISPONIBLE",
+        "fuente": str(PDT_AI_CACHE),
+        "generado_en": diagnostic.get("generado_en"),
+        "dea_resumen": {
+            "modelo": dea.get("modelo"),
+            "total_dmus": len(dea_rows),
+            "dmu_con_theta": len(theta_ccr),
+            "theta_ccr_promedio": round(sum(theta_ccr) / len(theta_ccr), 6) if theta_ccr else None,
+            "theta_bcc_promedio": round(sum(theta_bcc) / len(theta_bcc), 6) if theta_bcc else None,
+            "pares_malmquist": len(dea.get("malmquist", {}).get("pares", [])),
+        },
+        "nlp_coherencia_resumen": {
+            "pares_evaluados": cosine.get("pares_evaluados", 0),
+            "similaridad_coseno_promedio": cosine.get("promedio"),
+            "umbral_mission_creep": cosine.get("umbral_alerta", 0.45),
+            "alertas_mission_creep": nlp.get(
+                "alertas_total", len(nlp.get("alertas_mission_creep", []))
+            ),
+        },
+        "econometria_espacial_lisa": {
+            "estado": spatial.get("estado"),
+            "moran_global_i": spatial.get("moran_global_i"),
+            "p_valor_permutacion": spatial.get("p_valor_permutacion"),
+            "poligonos_postgis": spatial.get(
+                "poligonos_reales_postgis", spatial.get("territorios_con_poligono_geojson", 0)
+            ),
+            "coldspots": spatial.get("coldspots", []),
+            "trampas_territoriales": spatial.get("trampas_territoriales_gestion_publica", []),
+        },
+        "riesgo_isri_chow": {
+            "umbral_isri": forecast.get("umbral_alto_riesgo", 0.40),
+            "series_alto_riesgo": high_risk,
+            "pruebas_chow_2024": [
+                {"indicador": row.get("indicador"), **(row.get("chow") or {})}
+                for row in high_risk
+                if (row.get("chow") or {}).get("anio_ruptura") == 2024
+            ],
+        },
+        "sectores_gbr": report.get("sintesis_sectores", []),
+        "top_dictamenes_dependencias": briefs[:10],
+    }
 
 
 def pre_serialized_response(
@@ -1939,6 +2045,12 @@ class PddDeaService:
     async def laboratorio_prescriptivo_pdd(self) -> dict[str, Any]:
         key = (self.bind_key, "pdd-dea", "laboratorio-prescriptivo")
         if cached := _cached(key):
+            if "evaluacion_multidimensional_pdt_ai" not in cached:
+                cached = dict(cached)
+                cached[
+                    "evaluacion_multidimensional_pdt_ai"
+                ] = await _evaluacion_multidimensional_pdt_ai()
+                _store(key, cached)
             return cached
         state = await self._state()
         metas_result = await self.session.execute(
@@ -2256,12 +2368,19 @@ class PddDeaService:
                     ),
                 },
                 "pliegos_control_politico": briefs,
+                "evaluacion_multidimensional_pdt_ai": await _evaluacion_multidimensional_pdt_ai(),
             },
         )
 
     async def resumen_ejecutivo(self) -> dict[str, Any]:
         key = (self.bind_key, "pdd-dea", "resumen")
         if cached := _cached(key):
+            if "evaluacion_multidimensional_pdt_ai" not in cached:
+                cached = dict(cached)
+                cached[
+                    "evaluacion_multidimensional_pdt_ai"
+                ] = await _evaluacion_multidimensional_pdt_ai()
+                _store(key, cached)
             return cached
         catalog = await self.catalogo_y_conciliacion_ppi()
         fulfillment = await self.cumplimiento_metas()
@@ -2279,6 +2398,9 @@ class PddDeaService:
                 "econometria_comparada": econometrics,
                 "explorador_programas_y_seguridad_humana": explorer,
                 "laboratorio_prescriptivo_pdd": laboratory,
+                "evaluacion_multidimensional_pdt_ai": laboratory[
+                    "evaluacion_multidimensional_pdt_ai"
+                ],
             },
         )
 

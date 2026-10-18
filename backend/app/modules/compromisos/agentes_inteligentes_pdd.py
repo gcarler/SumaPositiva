@@ -2,13 +2,16 @@
 
 from __future__ import annotations
 
+import asyncio
 import hashlib
+import json
 import os
 import re
 import time
 import uuid
 from dataclasses import dataclass, field
 from decimal import Decimal
+from pathlib import Path
 from typing import Any, TypedDict
 
 from langgraph.graph import END, START, StateGraph
@@ -30,6 +33,12 @@ DIMENSIONES = (
     "Política",
 )
 MAX_RESULTADOS = 40
+PDT_CACHE_PATH = (
+    Path(__file__).resolve().parents[4]
+    / "data"
+    / "planes_desarrollo"
+    / "cache_pdt_ai_evaluator.json"
+)
 
 
 class ConsultaAgentesPDD(BaseModel):
@@ -66,6 +75,7 @@ class GrafoState(TypedDict, total=False):
     metas: list[dict[str, Any]]
     conciliacion: list[dict[str, Any]]
     articulacion: list[dict[str, Any]]
+    evaluacion_pdt_gbr: dict[str, Any]
     iteracion: int
     aprobado: bool
     observacion: str
@@ -90,6 +100,156 @@ def _row_dict(row: Any) -> dict[str, Any]:
 
 def _terms(query: str) -> list[str]:
     return [term for term in re.findall(r"[\wáéíóúñ]{4,}", query.casefold())[:12]]
+
+
+def _read_pdt_cache() -> dict[str, Any] | None:
+    try:
+        payload = json.loads(PDT_CACHE_PATH.read_text(encoding="utf-8"))
+        runs = payload.get("runs", {})
+        if not runs:
+            return None
+        return max(
+            runs.values(),
+            key=lambda item: str(item.get("generado_en") or item.get("thread_id") or ""),
+        )
+    except (OSError, TypeError, ValueError):
+        return None
+
+
+async def _load_pdt_diagnostic(session: AsyncSession) -> tuple[dict[str, Any] | None, str]:
+    diagnostic = await asyncio.to_thread(_read_pdt_cache)
+    if diagnostic:
+        return diagnostic, "cache_pdt_ai_evaluator.json"
+    try:
+        from app.modules.compromisos.pdt_ai_evaluator_graph import ejecutar_pdt_ai_evaluator
+
+        return await ejecutar_pdt_ai_evaluator(session), "ejecucion_pdt_ai_evaluator"
+    except Exception:
+        return None, "PDT-AI-EVALUATOR no disponible"
+
+
+def _matches_pdt_filter(value: Any, terms: list[str], plan_code: str) -> bool:
+    haystack = str(value or "").casefold()
+    if plan_code != "TODOS":
+        plan = plan_code.casefold()
+        years = re.findall(r"20\d{2}", plan)
+        if plan in haystack:
+            return True
+        row_year = re.search(r"20\d{2}", haystack)
+        if years and row_year and int(years[0]) <= int(row_year.group()) <= int(years[-1]):
+            return True
+        return False
+    return not terms or any(term in haystack for term in terms)
+
+
+async def _evaluacion_pdt_gbr(
+    session: AsyncSession, consulta: ConsultaAgentesPDD
+) -> dict[str, Any]:
+    diagnostic, source = await _load_pdt_diagnostic(session)
+    if not diagnostic:
+        return {
+            "estado": "PENDIENTE",
+            "fuente": source,
+            "dmu_dea": [],
+            "alertas_mission_creep": [],
+            "trampas_territoriales": [],
+            "indicadores_isri_alto_riesgo": [],
+            "dictamenes_dependencias": [],
+        }
+    terms = _terms(consulta.pregunta)
+    dea = diagnostic.get("dea_scores", {})
+    selected_dmus = [
+        row
+        for row in dea.get("resultados_dmu", [])
+        if _matches_pdt_filter(row.get("dmu"), terms, consulta.codigo_plan)
+    ]
+    relevant_dependencies = {str(row.get("dmu", "")).rsplit("|", 1)[0] for row in selected_dmus}
+    nlp = diagnostic.get("nlp_coherence", {})
+    alerts = [
+        row
+        for row in nlp.get("alertas_mission_creep", [])
+        if _matches_pdt_filter(
+            " ".join(
+                str(row.get(key) or "")
+                for key in (
+                    "codigo_plan",
+                    "actividad_operativa",
+                    "meta_estrategica",
+                    "dependencias",
+                )
+            ),
+            terms,
+            consulta.codigo_plan,
+        )
+    ][:100]
+    spatial = diagnostic.get("spatial_lisa", {})
+    traps = [
+        row
+        for row in spatial.get("trampas_territoriales_gestion_publica", [])
+        if _matches_pdt_filter(
+            row.get("unidad_dmu") or row.get("diagnostico"), terms, consulta.codigo_plan
+        )
+    ][:100]
+    forecast = diagnostic.get("time_series_forecast", {})
+    risks = [
+        row
+        for row in forecast.get("series", [])
+        if row.get("ISRI") is not None
+        and float(row["ISRI"]) > 0.40
+        and (
+            _matches_pdt_filter(row.get("indicador"), terms, consulta.codigo_plan)
+            or any(
+                dependency.casefold() in str(row.get("indicador", "")).casefold()
+                for dependency in relevant_dependencies
+            )
+        )
+    ][:100]
+    from app.modules.compromisos.pdt_dictamen_ejecutivo import generar_dictamen_ejecutivo_pdt
+
+    report = generar_dictamen_ejecutivo_pdt(diagnostic)
+    briefs = [
+        row
+        for row in report.get("dictamenes_dependencias", [])
+        if (
+            any(row["dependencia"].casefold() in name.casefold() for name in relevant_dependencies)
+            if relevant_dependencies
+            else _matches_pdt_filter(row.get("dependencia"), terms, consulta.codigo_plan)
+        )
+    ]
+    return {
+        "estado": diagnostic.get("estado_checkpointer", "DISPONIBLE"),
+        "fuente": source,
+        "consulta": consulta.pregunta,
+        "codigo_plan": consulta.codigo_plan,
+        "dmu_dea": [
+            {
+                key: row.get(key)
+                for key in (
+                    "dmu",
+                    "theta_ccr",
+                    "theta_bcc",
+                    "SE_o",
+                    "rendimientos_escala",
+                    "slacks",
+                    "origen_insumo",
+                )
+            }
+            for row in selected_dmus[:100]
+        ],
+        "alertas_mission_creep": alerts,
+        "coldspots_lisa": [
+            row
+            for row in spatial.get("lisa", [])
+            if "Bajo-Bajo" in str(row.get("cluster", ""))
+            and _matches_pdt_filter(row.get("unidad"), terms, "TODOS")
+        ],
+        "trampas_territoriales": traps,
+        "indicadores_isri_alto_riesgo": risks,
+        "pruebas_chow_2024": [
+            {"indicador": row.get("indicador"), **(row.get("chow") or {})} for row in risks
+        ],
+        "dictamenes_dependencias": briefs,
+    }
 
 
 async def _query_evidencias(ctx: ToolContext) -> list[dict[str, Any]]:
@@ -437,6 +597,26 @@ def _build_agents(ctx: ToolContext) -> dict[str, Agent]:
             await _query_ppi(ctx),
         )
 
+    @agents["auditor_financiero_ppi"].tool
+    async def tool_consultar_evaluador_pdt_gbr(
+        run: RunContext[ToolContext],
+    ) -> dict[str, Any]:
+        """Cruzar la consulta con DEA, mission creep, LISA, ISRI/Chow y dictamen PDT."""
+        ctx = run.deps
+        result = await _evaluacion_pdt_gbr(ctx.session, ctx.consulta)
+        ctx.invocaciones.append(
+            {
+                "herramienta": "tool_consultar_evaluador_pdt_gbr",
+                "parametros": {
+                    "pregunta": ctx.consulta.pregunta,
+                    "codigo_plan": ctx.consulta.codigo_plan,
+                },
+                "registros_recuperados": len(result.get("dmu_dea", [])),
+            }
+        )
+        ctx.resultados["tool_consultar_evaluador_pdt_gbr"] = result
+        return result
+
     @agents["articulador_operativo_bpim"].tool
     async def tool_cruzar_actividades_pa_bpim(run: RunContext[ToolContext]) -> list[dict[str, Any]]:
         """Cruzar nodos A/B con actividades PA y códigos BPIM disponibles."""
@@ -477,8 +657,11 @@ AGENT_SPECS = [
         "id_nodo": "auditor_financiero_ppi",
         "nombre_agente": "AgenteAuditorFinancieroPPI",
         "rol": "Conciliación de montos PPI desde la BD",
-        "herramientas_asignadas": ["tool_conciliar_ppi_plan"],
-        "esquema_salida": "PPI observado y desglose",
+        "herramientas_asignadas": [
+            "tool_conciliar_ppi_plan",
+            "tool_consultar_evaluador_pdt_gbr",
+        ],
+        "esquema_salida": "PPI observado, desglose y evaluación PDT-AI-EVALUATOR",
     },
     {
         "id_nodo": "articulador_operativo_bpim",
@@ -517,6 +700,11 @@ TOOL_SPECS = [
         "tabla": "seguimiento.planes_desarrollo_distrital + pdd_lineas_y_programas",
     },
     {
+        "nombre": "tool_consultar_evaluador_pdt_gbr",
+        "descripcion": "Cruce consultivo con DEA, NLP, LISA, ISRI/Chow y dictamen ejecutivo PDT",
+        "tabla": "cache_pdt_ai_evaluator.json + PDT-AI-EVALUATOR",
+    },
+    {
         "nombre": "tool_cruzar_actividades_pa_bpim",
         "descripcion": "Cruce de nodos A/B con actividades, entidades y BPIM",
         "tabla": "seguimiento.actividades_plan_accion",
@@ -543,7 +731,7 @@ GRAPH_EDGES = [
 ]
 
 
-async def arquitectura_agentes_ia(session: AsyncSession) -> dict[str, Any]:
+async def obtener_arquitectura_agentes(session: AsyncSession) -> dict[str, Any]:
     counts = (
         (
             await session.execute(
@@ -562,6 +750,8 @@ async def arquitectura_agentes_ia(session: AsyncSession) -> dict[str, Any]:
         .mappings()
         .one()
     )
+    diagnostic, diagnostic_source = await _load_pdt_diagnostic(session)
+    pdt = _pdt_architecture_summary(diagnostic, diagnostic_source)
     return {
         "motor": MOTOR,
         "orquestador": "LangGraph StateGraph",
@@ -570,6 +760,52 @@ async def arquitectura_agentes_ia(session: AsyncSession) -> dict[str, Any]:
         "aristas_grafo": GRAPH_EDGES,
         "herramientas_registradas": TOOL_SPECS,
         "corpus_conectado": _row_dict(counts),
+        "integracion_pdt_ai_evaluator": pdt,
+    }
+
+
+async def arquitectura_agentes_ia(session: AsyncSession) -> dict[str, Any]:
+    """Compatibilidad con la ruta existente de arquitectura de agentes."""
+    return await obtener_arquitectura_agentes(session)
+
+
+def _pdt_architecture_summary(diagnostic: dict[str, Any] | None, source: str) -> dict[str, Any]:
+    if not diagnostic:
+        return {
+            "estado": "NO_DISPONIBLE",
+            "fuente": source,
+            "total_dmus": 0,
+            "pares_malmquist": 0,
+            "poligonos_postgis_lisa": 0,
+            "trampas_territoriales": 0,
+            "series_alto_riesgo_isri": 0,
+            "dependencias_dictaminadas": 0,
+            "sectores_gbr": 0,
+        }
+    dea = diagnostic.get("dea_scores", {})
+    spatial = diagnostic.get("spatial_lisa", {})
+    forecast = diagnostic.get("time_series_forecast", {})
+    from app.modules.compromisos.pdt_dictamen_ejecutivo import generar_dictamen_ejecutivo_pdt
+
+    report = generar_dictamen_ejecutivo_pdt(diagnostic)
+    return {
+        "estado": diagnostic.get("estado_checkpointer", "DISPONIBLE"),
+        "motor": diagnostic.get("motor", "PDT-AI-EVALUATOR"),
+        "fuente": source,
+        "total_dmus": len(dea.get("resultados_dmu", [])),
+        "pares_malmquist": len(dea.get("malmquist", {}).get("pares", [])),
+        "poligonos_postgis_lisa": int(
+            spatial.get(
+                "poligonos_reales_postgis", spatial.get("territorios_con_poligono_geojson", 0)
+            )
+        ),
+        "trampas_territoriales": len(spatial.get("trampas_territoriales_gestion_publica", [])),
+        "series_alto_riesgo_isri": len(forecast.get("alto_riesgo_indicadores", [])),
+        "dependencias_dictaminadas": sum(
+            not str(row.get("dependencia", "")).startswith("PPI oficial agregado")
+            for row in report.get("dictamenes_dependencias", [])
+        ),
+        "sectores_gbr": len(report.get("sintesis_sectores", [])),
     }
 
 
@@ -651,8 +887,11 @@ async def ejecutar_consulta_pdd(
                     "metas": "tool_consultar_metas_oficiales",
                     "conciliacion": "tool_conciliar_ppi_plan",
                     "articulacion": "tool_cruzar_actividades_pa_bpim",
+                    "evaluacion_pdt_gbr": "tool_consultar_evaluador_pdt_gbr",
                 }
-                update[output_field] = ctx.resultados.get(tool_by_field[output_field], [])
+                output_fields = output_field if isinstance(output_field, tuple) else (output_field,)
+                for field_name in output_fields:
+                    update[field_name] = ctx.resultados.get(tool_by_field[field_name], [])
             return update
 
         return handler
@@ -676,7 +915,7 @@ async def ejecutar_consulta_pdd(
         (
             "auditor_financiero_ppi",
             "Reconcilia exclusivamente montos persistidos en las tablas de planes y nodos.",
-            "conciliacion",
+            ("conciliacion", "evaluacion_pdt_gbr"),
         ),
         (
             "articulador_operativo_bpim",
@@ -748,6 +987,7 @@ async def ejecutar_consulta_pdd(
         "sintesis_ejecutiva": synthesis,
         "dictamen_forense_detallado": {
             "planes_analizados": plan_summary,
+            "evaluacion_pdt_gbr": result.get("evaluacion_pdt_gbr", {}),
             "limites": (
                 "La clasificación es la persistida en la BD; las coincidencias con "
                 "actividades son léxicas y no prueban causalidad."
@@ -760,7 +1000,9 @@ async def ejecutar_consulta_pdd(
             "nodos_destacados": nodes[:20],
             "metas_destacadas": metas[:20],
             "articulacion_pa_bpim": result.get("articulacion", []),
+            "evaluacion_pdt_gbr": result.get("evaluacion_pdt_gbr", {}),
         },
+        "evaluacion_pdt_gbr": result.get("evaluacion_pdt_gbr", {}),
         "verificacion_critica": {
             "aprobado": approved,
             "iteraciones_langgraph": result.get("iteracion", 1),

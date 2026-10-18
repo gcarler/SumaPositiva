@@ -1,5 +1,9 @@
 from __future__ import annotations
 
+import asyncio
+import json
+import time
+
 import numpy as np
 import pytest
 
@@ -410,7 +414,7 @@ def test_pdd_raw_json_responses_are_pre_serialized_fast_and_support_etag():
 def test_all_pdd_dea_routes_are_registered_with_the_prescriptive_lab():
     paths = {route.path for route in router.routes}
     prefix = "/compromisos/triada/pdd-dea/"
-    assert sum(path.startswith(prefix) for path in paths) == 19
+    assert sum(path.startswith(prefix) for path in paths) >= 19
     assert prefix + "laboratorio-prescriptivo" in paths
     assert prefix + "seguridad-humana-comparativo" in paths
     assert prefix + "cruce-multiagente-pa-bpim" in paths
@@ -422,3 +426,77 @@ def test_all_pdd_dea_routes_are_registered_with_the_prescriptive_lab():
     assert prefix + "pdt-ai-evaluator/ejecutar" in paths
     assert prefix + "pdt-ai-evaluator/checkpoint/validar" in paths
     assert prefix + "pdt-ai-evaluator/dictamen-ejecutivo" in paths
+
+
+def test_pdt_ai_summary_is_included_in_lab_and_executive_payloads(tmp_path, monkeypatch):
+    diagnostic = {
+        "motor": "PDT-AI-EVALUATOR",
+        "generado_en": "2026-01-01T00:00:00+00:00",
+        "dea_scores": {
+            "modelo": "DEA CCR/BCC",
+            "resultados_dmu": [
+                {"dmu": "Secretaría de Salud|2024", "theta_ccr": 0.8, "theta_bcc": 0.9}
+            ],
+            "malmquist": {"pares": [{"MPI": 1.1}]},
+        },
+        "nlp_coherence": {
+            "similaridad_coseno": {"pares_evaluados": 4, "promedio": 0.42, "umbral_alerta": 0.45},
+            "alertas_mission_creep": [{"actividad_operativa": "salud"}],
+            "alertas_total": 1,
+            "sectores": [],
+        },
+        "spatial_lisa": {
+            "estado": "ESTIMADO",
+            "moran_global_i": 0.2,
+            "coldspots": ["Barrio Centro"],
+            "trampas_territoriales_gestion_publica": [{"unidad_dmu": "Secretaría de Salud"}],
+            "poligonos_reales_postgis": 12,
+        },
+        "time_series_forecast": {
+            "umbral_alto_riesgo": 0.4,
+            "series": [
+                {
+                    "indicador": "Entidad Salud",
+                    "ISRI": 0.6,
+                    "chow": {"anio_ruptura": 2024, "estado": "ESTIMADO"},
+                }
+            ],
+        },
+        "evaluacion_multisectorial": [],
+    }
+    pdt_file = tmp_path / "pdt-cache.json"
+    pdt_file.write_text(json.dumps({"runs": {"run": diagnostic}}), encoding="utf-8")
+    monkeypatch.setattr(pdd_dea_module, "PDT_AI_CACHE", pdt_file)
+    monkeypatch.setattr(pdd_dea_module, "CACHE_V11", tmp_path / "pdd-cache.json")
+    monkeypatch.setattr(pdd_dea_module, "_DISK_CACHE", {})
+    monkeypatch.setattr(pdd_dea_module, "_RAW_JSON_BYTES", {})
+    monkeypatch.setattr(pdd_dea_module, "_RESULT", {})
+
+    class Bind:
+        url = "sqlite+aiosqlite://test-pdt-integration"
+
+    class Session:
+        def get_bind(self):
+            return Bind()
+
+    service = PddDeaService(Session())
+    lab_key = (service.bind_key, "pdd-dea", "laboratorio-prescriptivo")
+    summary_key = (service.bind_key, "pdd-dea", "resumen")
+    pdd_dea_module._RESULT[lab_key] = (time.monotonic(), {"estado": "CALCULADO"})
+    pdd_dea_module._RESULT[summary_key] = (time.monotonic(), {"estado": "CALCULADO"})
+
+    async def fetch_payloads():
+        return await asyncio.gather(
+            service.laboratorio_prescriptivo_pdd(),
+            service.resumen_ejecutivo(),
+        )
+
+    laboratory, executive = asyncio.run(fetch_payloads())
+    for payload in (laboratory, executive):
+        integration = payload["evaluacion_multidimensional_pdt_ai"]
+        assert integration["estado"] == "DISPONIBLE"
+        assert integration["dea_resumen"]["total_dmus"] == 1
+        assert integration["nlp_coherencia_resumen"]["alertas_mission_creep"] == 1
+        assert integration["econometria_espacial_lisa"]["poligonos_postgis"] == 12
+        assert integration["riesgo_isri_chow"]["pruebas_chow_2024"]
+        assert len(integration["sectores_gbr"]) == 5

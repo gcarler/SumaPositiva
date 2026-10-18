@@ -2,9 +2,11 @@ from __future__ import annotations
 
 import asyncio
 import hashlib
+import json
 
 import pytest
 
+from app.modules.compromisos import agentes_inteligentes_pdd as agents_module
 from app.modules.compromisos.agentes_inteligentes_pdd import (
     AGENT_SPECS,
     TOOL_SPECS,
@@ -14,6 +16,69 @@ from app.modules.compromisos.agentes_inteligentes_pdd import (
     ejecutar_consulta_pdd,
     interpretar_fragmento,
 )
+
+
+def _pdt_cache(tmp_path):
+    diagnostic = {
+        "motor": "PDT-AI-EVALUATOR",
+        "estado_checkpointer": "COMPLETADO_SIN_BLOQUEO",
+        "unidades_dmu": ["Secretaría de Salud", "Secretaría de Infraestructura"],
+        "dea_scores": {
+            "resultados_dmu": [
+                {
+                    "dmu": "Secretaría de Salud|2024",
+                    "theta_ccr": 0.8,
+                    "theta_bcc": 0.9,
+                    "SE_o": 0.89,
+                    "rendimientos_escala": "IRS",
+                    "slacks": {},
+                    "origen_insumo": "apropiacion_definitiva_cop",
+                },
+                {
+                    "dmu": "Secretaría de Infraestructura|2024",
+                    "theta_ccr": 0.7,
+                    "theta_bcc": 0.8,
+                    "SE_o": 0.875,
+                    "rendimientos_escala": "DRS",
+                    "slacks": {},
+                    "origen_insumo": "ppi_oficial_desagregado_pdd",
+                },
+            ],
+            "malmquist": {"pares": [{"unidad": "Secretaría de Salud", "MPI": 1.1}]},
+            "bias_corrected": {"por_dmu": {}},
+        },
+        "nlp_coherence": {
+            "alertas_mission_creep": [
+                {
+                    "codigo_plan": "PDD_2024_2027",
+                    "dependencias": ["Secretaría de Salud"],
+                    "actividad_operativa": "salud sin articulación",
+                }
+            ],
+            "similaridad_coseno": {"pares_evaluados": 1, "promedio": 0.4},
+            "sectores": [],
+        },
+        "spatial_lisa": {
+            "lisa": [{"unidad": "Barrio Salud", "cluster": "Bajo-Bajo (Coldspots)"}],
+            "trampas_territoriales_gestion_publica": [
+                {"unidad_dmu": "Secretaría de Salud|2024", "alerta": "Trampa Territorial"}
+            ],
+            "poligonos_reales_postgis": 1,
+        },
+        "time_series_forecast": {
+            "series": [
+                {
+                    "indicador": "Secretaría de Salud",
+                    "ISRI": 0.6,
+                    "chow": {"anio_ruptura": 2024, "estado": "ESTIMADO"},
+                }
+            ]
+        },
+        "evaluacion_multisectorial": [],
+    }
+    path = tmp_path / "cache_pdt_ai_evaluator.json"
+    path.write_text(json.dumps({"runs": {"run": diagnostic}}), encoding="utf-8")
+    return path
 
 
 class FakeResult:
@@ -108,21 +173,30 @@ class FakeSession:
         return FakeResult([])
 
 
-def test_arquitectura_expone_seis_agentes_y_cinco_tools():
+def test_arquitectura_expone_seis_agentes_y_pdt_ai_evaluator(tmp_path, monkeypatch):
+    monkeypatch.setattr(agents_module, "PDT_CACHE_PATH", _pdt_cache(tmp_path))
     architecture = asyncio.run(arquitectura_agentes_ia(FakeSession()))
 
     assert architecture["motor"] == "POLIS_NEUROSIMBOLICO_LANGGRAPH_PYDANTIC_AI_V2"
     assert len(architecture["nodos_langgraph"]) == 6
-    assert len(architecture["herramientas_registradas"]) == 5
+    assert len(architecture["herramientas_registradas"]) == 6
     assert {tool["nombre"] for tool in architecture["herramientas_registradas"]} == {
         tool["nombre"] for tool in TOOL_SPECS
     }
     assert {node["id_nodo"] for node in architecture["nodos_langgraph"]} == {
         node["id_nodo"] for node in AGENT_SPECS
     }
+    integration = architecture["integracion_pdt_ai_evaluator"]
+    assert integration["total_dmus"] == 2
+    assert integration["pares_malmquist"] == 1
+    assert integration["poligonos_postgis_lisa"] == 1
+    assert "tool_consultar_evaluador_pdt_gbr" in {
+        item["nombre"] for item in architecture["herramientas_registradas"]
+    }
 
 
-def test_stategraph_invoca_tools_y_verifica_cita_sha256():
+def test_stategraph_invoca_tools_y_verifica_cita_sha256(tmp_path, monkeypatch):
+    monkeypatch.setattr(agents_module, "PDT_CACHE_PATH", _pdt_cache(tmp_path))
     result = asyncio.run(
         ejecutar_consulta_pdd(
             FakeSession(),
@@ -153,6 +227,12 @@ def test_stategraph_invoca_tools_y_verifica_cita_sha256():
     assert result["verificacion_critica"]["aprobado"] is True
     assert result["verificacion_critica"]["cero_alucinacion_financiera"] is True
     assert result["evidencia_financiera_y_metas"]["planes_analizados"]
+    evaluation = result["dictamen_forense_detallado"]["evaluacion_pdt_gbr"]
+    assert evaluation["dmu_dea"][0]["dmu"] == "Secretaría de Salud|2024"
+    assert evaluation["alertas_mission_creep"]
+    assert evaluation["trampas_territoriales"]
+    assert evaluation["indicadores_isri_alto_riesgo"][0]["chow"]["anio_ruptura"] == 2024
+    assert result["evidencia_financiera_y_metas"]["evaluacion_pdt_gbr"] == evaluation
 
 
 def test_interpretacion_fragmento_extrae_mga_crema_y_vector_7d():

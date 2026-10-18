@@ -2321,6 +2321,39 @@ async def ejecutar_pdt_ai_evaluator(
             "checkpoint_durable": str(CHECKPOINT_PATH),
         }
         _save_cached(cache_key, thread_id, result)
+        if isinstance(db, AsyncSession):
+            try:
+                from .pdt_persistencia_pg import (
+                    guardar_evaluacion_pdt_pg,
+                    registrar_checkpoint_hitl_pdt_pg,
+                )
+
+                pg_eval = await guardar_evaluacion_pdt_pg(result, db=db)
+                patrones = (result_state.get("time_series_forecast") or {}).get(
+                    "patrones_compuestos_criticos", []
+                )
+                pg_ckpt = await registrar_checkpoint_hitl_pdt_pg(
+                    thread_id=thread_id,
+                    estado=ckpt_status,
+                    aprobado=None,
+                    auditor=result_state.get("auditor") or None,
+                    observaciones=result_state.get("observaciones_auditor") or None,
+                    patrones_criticos=patrones,
+                    recomendaciones=result_state.get("recommendations", []),
+                    db=db,
+                )
+                if owns_engine:
+                    await db.commit()
+                result["persistencia_pg"] = {
+                    "estado": "SINCRONIZADO_PG",
+                    "sha256_payload": pg_eval.get("sha256_payload"),
+                    "sha256_checkpoint": pg_ckpt.get("sha256_checkpoint"),
+                }
+            except Exception:
+                try:
+                    await db.rollback()
+                except Exception:
+                    pass
         return result
     finally:
         if owns_engine and engine is not None:
@@ -2334,6 +2367,7 @@ async def validar_checkpoint_pdt_ai_evaluator(
     aprobado: bool,
     auditor: str,
     observaciones: str = "",
+    db: AsyncSession | None = None,
 ) -> dict[str, Any]:
     """Registra dictamen humano y descongela el checkpoint durable asociado al hilo."""
     checkpoints = _safe_json_read(CHECKPOINT_PATH, {"version": 1, "threads": {}})
@@ -2406,4 +2440,35 @@ async def validar_checkpoint_pdt_ai_evaluator(
         "persistencia": str(CHECKPOINT_PATH),
     }
     _save_cached(cache_key, thread_id, result)
+    try:
+        from .pdt_persistencia_pg import (
+            guardar_evaluacion_pdt_pg,
+            registrar_checkpoint_hitl_pdt_pg,
+        )
+
+        pg_session = db if isinstance(db, AsyncSession) else None
+        pg_eval = await guardar_evaluacion_pdt_pg(result, db=pg_session)
+        patrones = (state.get("time_series_forecast") or {}).get(
+            "patrones_compuestos_criticos", []
+        )
+        pg_ckpt = await registrar_checkpoint_hitl_pdt_pg(
+            thread_id=thread_id,
+            estado=str(state.get("estado_checkpointer") or "APROBADO_POR_AUDITOR"),
+            aprobado=bool(aprobado),
+            auditor=auditor.strip(),
+            observaciones=observaciones.strip(),
+            patrones_criticos=patrones,
+            recomendaciones=decision_recommendations,
+            db=pg_session,
+        )
+        if pg_session is not None:
+            await pg_session.commit()
+        result["auditoria_humana"]["sha256_checkpoint"] = pg_ckpt.get("sha256_checkpoint")
+        result["auditoria_humana"]["sha256_payload"] = pg_eval.get("sha256_payload")
+    except Exception:
+        if isinstance(db, AsyncSession):
+            try:
+                await db.rollback()
+            except Exception:
+                pass
     return result

@@ -47,6 +47,7 @@ from app.modules.compromisos.pdd_dea_service import (
     pre_serialized_response,
 )
 from app.modules.compromisos.pdt_dictamen_ejecutivo import generar_dictamen_ejecutivo_pdt
+from app.modules.compromisos.pdt_persistencia_pg import obtener_historial_auditoria_pdt_pg
 from app.modules.compromisos.repository import CompromisosRepository
 from app.modules.compromisos.schemas import (
     ActividadPlanAccionActualizarSeguimiento,
@@ -65,6 +66,7 @@ from app.modules.compromisos.schemas import (
     PdtAiEvaluatorEjecutarRequest,
     PdtAiEvaluatorValidarCheckpointRequest,
     PdtDictamenEjecutivoRespuesta,
+    PdtHistorialAuditoriaRespuesta,
     ProcesarLotePlanAccionRespuesta,
     ProcesarLotePlanAccionSolicitud,
     ResumenTriadaRespuesta,
@@ -1109,3 +1111,17 @@ async def pdt_ai_evaluator_validar_checkpoint(
     if inspect.isawaitable(resultado):
         return await resultado
     return resultado
+
+
+@router.get(
+    "/triada/pdd-dea/pdt-ai-evaluator/historial-auditoria",
+    response_model=PdtHistorialAuditoriaRespuesta,
+    summary="Historial transaccional PostgreSQL de corridas PDT-AI-EVALUATOR y auditoría HITL",
+)
+async def pdt_ai_evaluator_historial_auditoria(
+    db: SessionDependency,
+    thread_id: str | None = Query(default=None),
+    limit: int = Query(default=50, ge=1, le=200),
+):
+    return await obtener_historial_auditoria_pdt_pg(db, thread_id=thread_id, limit=limit)
+
