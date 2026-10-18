@@ -197,6 +197,33 @@ def test_arquitectura_expone_seis_agentes_y_pdt_ai_evaluator(tmp_path, monkeypat
 
 def test_stategraph_invoca_tools_y_verifica_cita_sha256(tmp_path, monkeypatch):
     monkeypatch.setattr(agents_module, "PDT_CACHE_PATH", _pdt_cache(tmp_path))
+    from app.modules.compromisos import pdt_hoshin_kanri, pdt_revision_por_meta
+
+    monkeypatch.setattr(
+        pdt_hoshin_kanri,
+        "construir_matriz_x_hoshin_kanri_pdt",
+        lambda **kwargs: {
+            "evaluacion_fair": {
+                "focus_score": 0.8,
+                "alignment_score": 0.7,
+                "integration_score": 0.6,
+                "review_score": 0.5,
+                "fair_global_index": 0.65,
+            },
+            "bowling_charts": [
+                {"color_semaforo": "ROJO_CONTENCION_PDCA"},
+                {"color_semaforo": "VERDE"},
+            ],
+        },
+    )
+    monkeypatch.setattr(
+        pdt_revision_por_meta,
+        "construir_matriz_revision_por_meta_pdt",
+        lambda codigo_plan=None, limit=100: {
+            "resumen_ejecutivo_revision": {"hallazgos_criticos": 2},
+            "total_metas_evaluadas": 4,
+        },
+    )
     result = asyncio.run(
         ejecutar_consulta_pdd(
             FakeSession(),
@@ -232,6 +259,16 @@ def test_stategraph_invoca_tools_y_verifica_cita_sha256(tmp_path, monkeypatch):
     assert evaluation["alertas_mission_creep"]
     assert evaluation["trampas_territoriales"]
     assert evaluation["indicadores_isri_alto_riesgo"][0]["chow"]["anio_ruptura"] == 2024
+    assert evaluation["hoshin_kanri_fair"]["fair_global_index"] == 0.65
+    assert (
+        evaluation["hoshin_kanri_fair"]["bowling_charts_pdca"]["conteo_estados"][
+            "ROJO_CONTENCION_PDCA"
+        ]
+        == 1
+    )
+    assert evaluation["revision_10d_resumen"]["resumen_ejecutivo_revision"] == {
+        "hallazgos_criticos": 2
+    }
     assert result["evidencia_financiera_y_metas"]["evaluacion_pdt_gbr"] == evaluation
 
 
@@ -260,3 +297,10 @@ def test_interpretacion_fragmento_extrae_mga_crema_y_vector_7d():
     assert sum(result["clasificacion_neurosimbolica"]["pesos_7d"].values()) == pytest.approx(1.0)
     assert result["clasificacion_neurosimbolica"]["grado_frontalidad"] in "ABCN"
     assert len(result["traza_agentes"]) == 3
+
+
+def test_filtro_pdt_exige_plan_y_termino_tematico():
+    matches = agents_module._matches_pdt_filter
+    assert matches("PDD_2024_2027 Secretaría de Salud", ["salud"], "PDD_2024_2027")
+    assert not matches("PDD_2024_2027 Secretaría de Infraestructura", ["salud"], "PDD_2024_2027")
+    assert not matches("PDD_2020_2023 Secretaría de Salud", ["salud"], "PDD_2024_2027")

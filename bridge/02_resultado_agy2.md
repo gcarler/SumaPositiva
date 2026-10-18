@@ -1,61 +1,44 @@
-# Resultado de Ejecución — AGY2 (`=agy2:0.0`) — Fase `[24B]`
+# Resultado de Ejecución AGY2 — Fase `[27B]` (`PDT-PERSISTENCIA-Y-DOCTRINA-10D-HOSHIN-27B`)
 
-- **ID de Tarea**: `Fase [24B]` (`Persistencia Transaccional PostgreSQL seguimiento.pdt_ai_evaluaciones + seguimiento.pdt_ai_checkpoints_hitl y Endpoint /historial-auditoria`)
-- **Fecha / Hora UTC**: `2026-10-18T16:53:30Z`
-- **Agente Ejecutor**: `agy2` (`=agy2:0.0`)
-- **Estado**: **COMPLETADO — LISTO PARA AUDITORÍA EAF (`=agy:0.0`)**
-
----
-
-## 1. Archivos Creados / Actualizados (Aislamiento Estricto Cumplido)
-
-1. `backend/app/modules/compromisos/pdt_persistencia_pg.py` (**CREADO Y EJECUTADO**)
-   - Crea y gestiona de forma idempotente en PostgreSQL (`bd_csh`, esquema `seguimiento`) las dos tablas transaccionales:
-     - `seguimiento.pdt_ai_evaluaciones` (`id`, `thread_id UNIQUE`, `jurisdiction`, `time_horizon`, `total_budget`, `total_dmus`, `pares_malmquist`, `alertas_mission_creep`, `trampas_territoriales`, `series_alto_riesgo_isri`, `estado_checkpointer`, `is_valid_human`, `sha256_payload`, `payload_resumen JSONB`, `creado_en`, `actualizado_en`).
-     - `seguimiento.pdt_ai_checkpoints_hitl` (`id`, `thread_id`, `estado_checkpointer`, `aprobado`, `auditor`, `observaciones`, `patrones_criticos JSONB`, `recomendaciones JSONB`, `sha256_checkpoint`, `registrado_en`).
-   - Funciones asíncronas implementadas:
-     - `asegurar_tablas_pdt_ai_pg(db: AsyncSession | None = None) -> None`
-     - `guardar_evaluacion_pdt_pg(payload: dict[str, Any], db: AsyncSession | None = None) -> dict[str, Any]`
-     - `registrar_checkpoint_hitl_pdt_pg(thread_id: str, estado: str, aprobado: bool | None, auditor: str | None, observaciones: str | None, patrones_criticos: list[Any], recomendaciones: list[Any], db: AsyncSession | None = None) -> dict[str, Any]`
-     - `obtener_historial_auditoria_pdt_pg(db: AsyncSession | None = None, thread_id: str | None = None, limit: int = 50) -> dict[str, Any]`
-     - `sincronizar_cache_y_checkpoints_a_pg(db: AsyncSession | None = None, ...) -> dict[str, Any]`
-   - Sincronización inicial ejecutada contra `bd_csh`:
-     ```json
-     {
-       "sincronizacion": {
-         "evaluaciones_sincronizadas": 1,
-         "checkpoints_sincronizados": 1,
-         "cache_path": "/root/polis/data/planes_desarrollo/cache_pdt_ai_evaluator.json",
-         "checkpoint_path": "/root/polis/data/planes_desarrollo/checkpoints_pdt_ai_evaluator.json"
-       },
-       "total_evaluaciones_pg": 1,
-       "total_checkpoints_hitl_pg": 1
-     }
-     ```
-
-2. `backend/app/modules/compromisos/pdt_ai_evaluator_graph.py` (**ACTUALIZADO**)
-   - Integrada la invocación transaccional segura (`try/except` no bloqueante) de `guardar_evaluacion_pdt_pg` y `registrar_checkpoint_hitl_pdt_pg` en `ejecutar_pdt_ai_evaluator` y `validar_checkpoint_pdt_ai_evaluator`.
-
-3. `backend/app/modules/compromisos/router.py` y `backend/app/modules/compromisos/schemas.py` (**ACTUALIZADOS**)
-   - Expuesto el endpoint `GET /api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/historial-auditoria` con modelo de respuesta `PdtHistorialAuditoriaRespuesta` y parámetros opcionales `thread_id: str | None = None`, `limit: int = 50`.
-
-4. `docs/permisos-api.md` (**ACTUALIZADO**)
-   - Documentada la ruta pública `GET /api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/historial-auditoria`.
-
-5. `backend/tests/test_pdt_persistencia_pg.py` (**CREADO**)
-   - Verifica la creación de tablas en `bd_csh`, sincronización inicial desde disco, inserción/actualización de evaluaciones y checkpoints HITL con hashes `SHA-256`, y respuesta HTTP 200 del endpoint `/historial-auditoria`.
-
-> **Verificación de Aislamiento**: Cero archivos tocados en `src/**` (frontend), ni en `agentes_inteligentes_pdd.py`, `pdd_dea_service.py`, `test_agentes_inteligentes_pdd.py` o `test_pdd_dea_triada.py`.
+- **Fecha / Hora UTC:** 2026-10-18T18:26:30Z
+- **Agente:** `agy2` (Backend Python: Persistencia PostgreSQL + Doctrina Canónica)
+- **Estado:** **COMPLETADO AL 100% (`0` errores `ruff`, `5 passed` en `pytest`)**
 
 ---
 
-## 2. Evidencia de Verificación (`ruff` y `pytest`)
+## 1. Archivos Modificados Exclusivamente dentro del Alcance `[27B]`
+
+1. `backend/app/modules/compromisos/pdt_persistencia_pg.py`
+   - Se implementó `_construir_resumen_ejecutivo(run_data)` (manteniendo `_build_payload_resumen = _construir_resumen_ejecutivo` para compatibilidad total) que enriquece el campo `JSONB` `payload_resumen` (expuesto también como `resumen_ejecutivo` en `guardar_evaluacion_pdt_pg` y `obtener_historial_auditoria_pdt_pg`) de `seguimiento.pdt_ai_evaluaciones` con:
+     - **Trazabilidad Reproducible (`H11`):** `version_metodologica` y `fingerprint_fuentes_sha256` extraídos de `run_data` con fallback determinista `SHA-256`.
+     - **Atribución Ejecutora ISRI (`H1`):** `_contar_isri_sin_atribucion(run_data)` que contabiliza `total_indicadores_isri_sin_atribucion` sobre las series con `isri > 0.40`.
+     - **Resumen Hoshin Kanri (`Marco FAIR` + `PDCA`):** `_obtener_resumen_hoshin_fair(run_data)` invocando resiliente y perezosamente `construir_matriz_x_hoshin_kanri_pdt(diagnostico=run_data)` para almacenar `hoshin_kanri_fair` (`fair_global_index`, `focus_score`, `alignment_score`, `integration_score`, `review_score`, `rojos_contencion_pdca`, `sesiones_catchball_activas`).
+     - **Resumen Revisión 10D (`7 Revisores`):** `_obtener_resumen_revision_10d(run_data)` invocando resilientemente `construir_matriz_revision_por_meta_pdt(limit=25)` con caché en memoria para almacenar `revision_10d_resumen` (`version_regla`, `total_metas_plan`, `con_contradicciones`, `con_brecha_informacion`, `con_ceros_observados`, `total_hallazgos_estructurados`).
+
+2. `backend/tests/test_pdt_persistencia_pg.py`
+   - Se agregaron 2 pruebas adicionales (`test_construir_resumen_ejecutivo_h11_h1_hoshin_y_revision_10d` y `test_persistencia_pg_resumen_enriquecido_hoshin_fair_y_10d`), completando **5 pruebas automatizadas** contra `bd_csh` que verifican la persistencia real en `seguimiento.pdt_ai_evaluaciones` de `version_metodologica`, `fingerprint_fuentes_sha256`, `total_indicadores_isri_sin_atribucion`, `hoshin_kanri_fair` y `revision_10d_resumen`.
+
+3. `knowledge-base/13_SISTEMA_AGENTICO_PDT_GBR_DEA_NLP_LISA_ISRI.md`
+   - Se añadió la **Sección 7**: catálogo completo de endpoints REST (`/hoshin-kanri/especificacion`, `/hoshin-kanri/matriz-x`, `/revision-por-meta`), la Matriz Auditable de 10 Dimensiones por Meta (`D1`–`D10`), los 7 Roles Especializados de Revisión y la matriz de cierre verificado de los hallazgos `H1–H12` de `revision_motores_18_10_2026.md`.
+
+4. `knowledge-base/14_MODELO_HOSHIN_KANRI_MATRIZ_X_PDT_GBR.md`
+   - Se añadió la **Sección 5**: especificación de los endpoints REST de Hoshin Kanri y Revisión 10D, y su integración con la persistencia auditable PostgreSQL (`seguimiento.pdt_ai_evaluaciones`).
+
+---
+
+## 2. Evidencia de Verificación (`ruff` + `pytest`)
 
 ```text
-$ /root/polis/backend/.venv/bin/ruff check backend/app/modules/compromisos/pdt_persistencia_pg.py backend/app/modules/compromisos/pdt_ai_evaluator_graph.py backend/app/modules/compromisos/router.py backend/app/modules/compromisos/schemas.py backend/tests/test_pdt_persistencia_pg.py
+$ /root/polis/backend/.venv/bin/ruff check backend/app/modules/compromisos/pdt_persistencia_pg.py backend/tests/test_pdt_persistencia_pg.py
 All checks passed!
 
-$ /root/polis/backend/.venv/bin/pytest backend/tests/test_pdt_persistencia_pg.py backend/tests/test_pdt_ai_evaluator.py -q
-..........                                                               [100%]
-10 passed in 8.53s
+$ /root/polis/backend/.venv/bin/pytest backend/tests/test_pdt_persistencia_pg.py -q
+.....                                                                    [100%]
+5 passed in 5.88s
 ```
+
+---
+
+## 3. Cumplimiento de Restricciones de Frontera
+- **Cero modificaciones** en `src/**` (Frontend).
+- **Cero modificaciones** en `router.py`, `schemas.py`, `agentes_inteligentes_pdd.py`, `pdd_dea_service.py`, `test_pdt_ai_evaluator.py` o `test_agentes_inteligentes_pdd.py`.

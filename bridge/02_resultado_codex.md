@@ -1,23 +1,19 @@
-# Entrega Codex — Fase [24A] Integración PDT-AI-EVALUATOR
+# Resultado Codex — Fase [26A]
 
-## Cambios
+**Fecha:** 2026-10-18
+**Alcance:** integración backend de revisión por meta 10D/7 revisores y Hoshin Kanri.
 
-- `backend/app/modules/compromisos/agentes_inteligentes_pdd.py`
-  - Registrada la herramienta PydanticAI `tool_consultar_evaluador_pdt_gbr` dentro de `AGENT_SPECS` y `TOOL_SPECS`, ejecutada en el nodo financiero del StateGraph.
-  - Carga el cache durable de PDT-AI-EVALUATOR fuera del event loop; si no existe, invoca el evaluador de forma asíncrona con la sesión actual.
-  - Filtra DMUs DEA, alertas mission creep, coldspots, trampas territoriales, series ISRI > 0.40, Chow 2024 y dictámenes usando consulta y código de plan. El bloque `evaluacion_pdt_gbr` aparece en el dictamen forense y en la evidencia financiera.
-  - Añadida la clave aditiva `integracion_pdt_ai_evaluator` en `obtener_arquitectura_agentes`; `arquitectura_agentes_ia` conserva compatibilidad con la ruta existente. Incluye estado y conteos del motor, incluyendo DMUs, Malmquist, polígonos PostGIS, trampas, riesgo ISRI, dependencias y sectores.
-- `backend/app/modules/compromisos/pdd_dea_service.py`
-  - El laboratorio prescriptivo y el consolidado ejecutivo incluyen `evaluacion_multidimensional_pdt_ai`, con resúmenes DEA/NLP/LISA, riesgos ISRI y Chow 2024, sectores GBR y dictámenes prioritarios.
-  - Lee el cache durable sin bloquear el event loop y enriquece también payloads previamente cacheados.
-- Ampliadas `backend/tests/test_agentes_inteligentes_pdd.py` y `backend/tests/test_pdd_dea_triada.py` para verificar estructura, filtros, herramienta y ambos payloads. El conteo de rutas acepta `>= 19`.
+## Implementación
+
+- Se expuso `GET /api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/revision-por-meta` con filtros de plan, sector, dependencia, límite y `force_refresh`; la respuesta Pydantic adapta tanto el contrato nuevo como la salida heredada del motor.
+- Se documentó la ruta pública en `docs/permisos-api.md`.
+- El Consejo Multiagente incluye `hoshin_kanri_fair` (puntajes FAIR y distribución de estados PDCA) y `revision_10d_resumen`, con invocación resiliente de ambos motores.
+- El resumen multidimensional DEA agrega `hoshin_kanri_resumen` con puntajes FAIR y conteos de alertas PDCA/Catchball; si no hay caché, marca el resumen como pendiente.
+- No se modificaron `src/**`, `pdt_revision_por_meta.py` ni `test_pdt_revision_por_meta.py`.
 
 ## Verificación
 
-- Ruff solicitado sobre los cuatro archivos de la fase: correcto (`All checks passed`).
-- Pytest solicitado: `29 passed` (`test_agentes_inteligentes_pdd.py` y `test_pdd_dea_triada.py`).
-- `git diff --check` sobre los cuatro archivos: correcto.
-
-## Alcance
-
-No se modificaron `src/**`, `pdt_ai_evaluator_graph.py`, `router.py` ni `schemas.py`. No se hizo commit ni push.
+- Ruff sobre los seis módulos/pruebas tocados: **All checks passed!**
+- `pytest tests/test_pdt_ai_evaluator.py tests/test_agentes_inteligentes_pdd.py`: **15 passed**.
+- `pytest tests/test_pdd_dea_triada.py tests/test_access_policy.py`: **133 passed**.
+- `pytest tests/test_access_policy.py -k test_matriz_cubre_todas_las_rutas_y_sus_controles`: **1 passed, 106 deselected**.

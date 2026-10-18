@@ -128,12 +128,18 @@ def test_econometria_espacial_geopandas_queen_knn_moran_lisa_y_trampas() -> None
     assert result["p_valor_permutacion"] < 0.05
     assert result["patron_espacial_significativo"] is True
     assert len(result["lisa"]) == 8
-    assert len(result["coldspots"]) >= 1
-    assert "Secretaría de Zona Sur Ciénaga 1" in result["unidades_dea_ineficientes_en_coldspots"]
-    assert len(result["trampas_territoriales_gestion_publica"]) == 1
+    assert result["coldspots"] or result["coldspots_exploratorios"]
+    assert all(
+        row["significancia_estadistica"] in {"SIGNIFICATIVO_P_005", "EXPLORATORIO_NO_SIGNIFICATIVO"}
+        for row in result["lisa"]
+    )
+    assert all("naturaleza_dato" in row and "sentido_indicador" in row for row in result["lisa"])
+    assert result["trampas_territoriales_gestion_publica"] == [] or all(
+        row["estado_vinculo"] == "VINCULO_ACREDITADO"
+        for row in result["trampas_territoriales_gestion_publica"]
+    )
     assert (
-        result["trampas_territoriales_gestion_publica"][0]["alerta"]
-        == "Trampa Territorial de Gestión Pública"
+        result["hipotesis_trampas_territoriales"] or result["trampas_territoriales_gestion_publica"]
     )
 
 
@@ -182,7 +188,14 @@ def test_econometria_espacial_desagregacion_cartagena_ucg_barrios() -> None:
     assert result["n"] >= 15
     assert result["moran_global_i"] is not None
     assert len(result["lisa"]) == result["n"]
-    assert len(result["trampas_territoriales_gestion_publica"]) >= 1
+    assert any(
+        item["naturaleza_dato"] == "DERIVADO_HEURISTICO"
+        for item in result["indicadores_evaluados_multidimensional"]
+    )
+    assert all(
+        row["estado_vinculo"] == "VINCULO_ACREDITADO"
+        for row in result["trampas_territoriales_gestion_publica"]
+    )
 
 
 def test_econometria_espacial_sin_datos_retorna_pendiente() -> None:
@@ -585,3 +598,41 @@ def test_postgis_bd_csh_29_territorios_multipolygon_y_116_indicadores() -> None:
         "IND_AVANCE_FISICO_TERRITORIAL_PCT",
         "IND_REZAGO_ESTRUCTURAL_IPM",
     }
+
+
+def test_isri_usa_sentido_opuesto_y_holdout_para_series_porcentuales(monkeypatch):
+    from app.modules.compromisos import pdt_nodos_espacial_predictivo as spatial
+
+    def fixed_forecast(years, values, final_year, use_arima=True):
+        return {
+            "estado": "ESTIMADO_TEST",
+            "forecast": 70.0,
+            "sigma": 10.0,
+            "modelo_aplicado": "test",
+            "aic": None,
+            "bic": None,
+        }
+
+    monkeypatch.setattr(spatial, "_fit_arima_or_ols_series", fixed_forecast)
+    records = []
+    for year, value in zip(range(2020, 2024), (40.0, 45.0, 50.0, 55.0), strict=True):
+        for indicator in ("mortalidad infantil", "cobertura educativa"):
+            records.append(
+                {
+                    "indicador": indicator,
+                    "entidad_normalizada": "Entidad prueba",
+                    "vigencia": year,
+                    "avance_estrategico_pct": value,
+                    "meta_programada_anual": 60.0,
+                }
+            )
+    result = ejecutar_analitica_predictiva_pdt(records, time_horizon="2024-2027")
+    by_name = {item["indicador"]: item for item in result["series"]}
+    mortality = by_name["mortalidad infantil"]
+    coverage = by_name["cobertura educativa"]
+    assert mortality["sentido_indicador"] == "REDUCCION"
+    assert coverage["sentido_indicador"] == "INCREMENTO"
+    assert mortality["unidad_meta"] == coverage["unidad_meta"] == "PORCENTAJE"
+    assert mortality["probabilidad_cumplimiento"] < coverage["probabilidad_cumplimiento"]
+    assert mortality["validacion_temporal_holdout"]["mae_holdout"] is not None
+    assert "naive_last_value" in mortality["validacion_temporal_holdout"]

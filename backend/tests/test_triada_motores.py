@@ -167,6 +167,47 @@ def test_cruce_tripartito_coherente():
     assert result["cruces"][0]["indice_coherencia_tripartita"] == 100
 
 
+def test_cruce_triadas_deduplica_cortes_y_separa_vigencias():
+    metas = [
+        MetaEstrategicaTriada(
+            entidad="DADIS",
+            linea_estrategica="Salud",
+            codigo_bpim="BPIM-1",
+            vigencia=2025,
+            corte="T1",
+            avance_estrategico_pct=25,
+        ),
+        MetaEstrategicaTriada(
+            entidad="DADIS",
+            linea_estrategica="Salud",
+            codigo_bpim="BPIM-1",
+            vigencia=2025,
+            corte="T2",
+            avance_estrategico_pct=50,
+        ),
+    ]
+    actividad = ActividadOperativaTriada(
+        entidad="DADIS",
+        linea_estrategica="Salud",
+        codigo_bpim="BPIM-1",
+        vigencia=2025,
+        corte="T2",
+        avance_operativo_fisico_pct=50,
+    )
+    ejecucion = EjecucionPresupuestalTriada(
+        entidad="DADIS",
+        linea_estrategica="Salud",
+        codigo_bpim="BPIM-1",
+        vigencia=2025,
+        corte="T2",
+        apropiacion_definitiva_cop=100,
+    )
+    result = cruzar_tres_lecturas(metas, [actividad], [ejecucion])
+    assert result["total_cruces"] == 1
+    assert result["cruces"][0]["avance_estrategico_pdd_pct"] == 50
+    assert result["cruces"][0]["vigencia"] == 2025
+
+
 def test_cruce_no_agrupa_registros_con_claves_incompletas():
     meta = MetaEstrategicaTriada(
         entidad="", linea_estrategica="", codigo_bpim="", avance_estrategico_pct=80

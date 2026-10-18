@@ -56,13 +56,133 @@ def _canonical_sha256(data: Any) -> str:
     return hashlib.sha256(serialized.encode("utf-8")).hexdigest()
 
 
-def _build_payload_resumen(payload: dict[str, Any]) -> dict[str, Any]:
-    """Construye un resumen auditable y compacto del resultado PDT-AI-EVALUATOR."""
-    dea = payload.get("dea_scores") or {}
-    nlp = payload.get("nlp_coherence") or {}
-    spatial = payload.get("spatial_lisa") or {}
-    forecast = payload.get("time_series_forecast") or {}
-    unidades_dmu = payload.get("unidades_dmu") or payload.get("units_dmu") or []
+_CACHED_REVISION_10D_RESUMEN: dict[str, Any] | None = None
+
+
+def _normalizar_texto(valor: Any) -> str:
+    return " ".join(str(valor or "").strip().casefold().split())
+
+
+def _contar_isri_sin_atribucion(run_data: dict[str, Any]) -> int:
+    if run_data.get("total_indicadores_isri_sin_atribucion") is not None:
+        return int(run_data["total_indicadores_isri_sin_atribucion"])
+    forecast = run_data.get("time_series_forecast") or {}
+    series = forecast.get("series") or []
+    critical_series = [
+        item
+        for item in series
+        if isinstance(item, dict) and item.get("ISRI") is not None and float(item["ISRI"]) > 0.40
+    ]
+    if not critical_series:
+        return 0
+
+    dea_rows = (run_data.get("dea_scores") or {}).get("resultados_dmu") or []
+    known_deps = {
+        _normalizar_texto(str(r.get("dmu") or "").rsplit("|", 1)[0])
+        for r in dea_rows
+        if isinstance(r, dict) and r.get("dmu")
+    }
+    for u in run_data.get("unidades_dmu") or []:
+        known_deps.add(_normalizar_texto(str(u).rsplit("|", 1)[0]))
+    known_deps.discard("")
+
+    unattributed = 0
+    for item in critical_series:
+        ent = _normalizar_texto(item.get("entidad"))
+        if ent and (not known_deps or ent in known_deps):
+            continue
+        ind_txt = str(item.get("indicador") or "").strip()
+        if _normalizar_texto(ind_txt).startswith("entidad ejecutora:"):
+            credited = _normalizar_texto(ind_txt.split(":", 1)[1])
+            if credited and (not known_deps or credited in known_deps):
+                continue
+        unattributed += 1
+    return unattributed
+
+
+def _obtener_resumen_hoshin_fair(run_data: dict[str, Any]) -> dict[str, Any]:
+    try:
+        from app.modules.compromisos.pdt_hoshin_kanri import (
+            SEMAFORO_ROJO,
+            construir_matriz_x_hoshin_kanri_pdt,
+        )
+
+        hoshin = construir_matriz_x_hoshin_kanri_pdt(diagnostico=run_data)
+        fair = hoshin.get("evaluacion_fair") or {}
+        bowling = hoshin.get("bowling_charts") or []
+        catchball = hoshin.get("catchball_sesiones") or []
+        rojos = sum(
+            1
+            for bc in bowling
+            if isinstance(bc, dict) and bc.get("color_semaforo") == SEMAFORO_ROJO
+        )
+        return {
+            "fair_global_index": float(fair.get("fair_global_index") or 0.0),
+            "focus_score": float(fair.get("focus_score") or 0.0),
+            "alignment_score": float(fair.get("alignment_score") or 0.0),
+            "integration_score": float(fair.get("integration_score") or 0.0),
+            "review_score": float(fair.get("review_score") or 0.0),
+            "rojos_contencion_pdca": int(rojos),
+            "sesiones_catchball_activas": len(catchball),
+        }
+    except Exception:
+        return {
+            "fair_global_index": 0.0,
+            "focus_score": 0.0,
+            "alignment_score": 0.0,
+            "integration_score": 0.0,
+            "review_score": 0.0,
+            "rojos_contencion_pdca": 0,
+            "sesiones_catchball_activas": 0,
+        }
+
+
+def _obtener_resumen_revision_10d(run_data: dict[str, Any]) -> dict[str, Any]:
+    global _CACHED_REVISION_10D_RESUMEN
+    datos_entrada = run_data.get("datos_revision_10d")
+    if datos_entrada is None and _CACHED_REVISION_10D_RESUMEN is not None:
+        return dict(_CACHED_REVISION_10D_RESUMEN)
+    try:
+        from app.modules.compromisos.pdt_revision_por_meta import (
+            VERSION_REGLA_CANONICA,
+            construir_matriz_revision_por_meta_pdt,
+        )
+
+        rev = construir_matriz_revision_por_meta_pdt(
+            codigo_plan=str(run_data.get("codigo_plan") or "PDD_2024_2027"),
+            limit=25,
+            datos_entrada=datos_entrada,
+        )
+        aud = rev.get("resumen_auditoria") or {}
+        resumen_10d = {
+            "version_regla": str(rev.get("version_regla") or VERSION_REGLA_CANONICA),
+            "total_metas_plan": int(rev.get("total_metas_plan") or 0),
+            "con_contradicciones": int(aud.get("con_contradicciones") or 0),
+            "con_brecha_informacion": int(aud.get("con_brecha_informacion") or 0),
+            "con_ceros_observados": int(aud.get("con_ceros_observados") or 0),
+            "total_hallazgos_estructurados": int(aud.get("total_hallazgos_estructurados") or 0),
+        }
+        if datos_entrada is None and resumen_10d["total_metas_plan"] > 0:
+            _CACHED_REVISION_10D_RESUMEN = dict(resumen_10d)
+        return resumen_10d
+    except Exception:
+        return {
+            "version_regla": "EAF_REV_META_26B_V1",
+            "total_metas_plan": 0,
+            "con_contradicciones": 0,
+            "con_brecha_informacion": 0,
+            "con_ceros_observados": 0,
+            "total_hallazgos_estructurados": 0,
+        }
+
+
+def _construir_resumen_ejecutivo(run_data: dict[str, Any]) -> dict[str, Any]:
+    """Construye un resumen auditable y compacto de PDT-AI-EVALUATOR (H1, H11, FAIR y 10D)."""
+    dea = run_data.get("dea_scores") or {}
+    nlp = run_data.get("nlp_coherence") or {}
+    spatial = run_data.get("spatial_lisa") or {}
+    forecast = run_data.get("time_series_forecast") or {}
+    unidades_dmu = run_data.get("unidades_dmu") or run_data.get("units_dmu") or []
     dmu_rows = dea.get("resultados_dmu") or dea.get("dmus") or []
     malmquist_pairs = (dea.get("malmquist") or {}).get("pares") or []
     mission_creep = nlp.get("alertas_mission_creep") or []
@@ -72,17 +192,35 @@ def _build_payload_resumen(payload: dict[str, Any]) -> dict[str, Any]:
         for item in (forecast.get("series") or [])
         if (item.get("ISRI") or 0.0) > 0.40
     ]
+    fuentes = (
+        run_data.get("trazabilidad_fuentes")
+        or run_data.get("source_counts")
+        or {}
+    )
+    version_metodologica = str(
+        run_data.get("version_metodologica") or "PDT-AI-EVALUATOR-2026.10-EAF"
+    )
+    fingerprint_fuentes_sha256 = str(
+        run_data.get("fingerprint_fuentes_sha256")
+        or run_data.get("fingerprint_sources_sha256")
+        or _canonical_sha256(fuentes)
+    )
+    total_isri_sin_atribucion = _contar_isri_sin_atribucion(run_data)
+    hoshin_kanri_fair = _obtener_resumen_hoshin_fair(run_data)
+    revision_10d_resumen = _obtener_resumen_revision_10d(run_data)
 
     return _plain_json(
         {
-            "motor": payload.get("motor", "PDT-AI-EVALUATOR"),
-            "thread_id": payload.get("thread_id", "pdt-cartagena-2024-2027"),
-            "jurisdiction": payload.get(
+            "motor": run_data.get("motor", "PDT-AI-EVALUATOR"),
+            "thread_id": run_data.get("thread_id", "pdt-cartagena-2024-2027"),
+            "jurisdiction": run_data.get(
                 "jurisdiction",
                 "Distrito Turístico y Cultural de Cartagena de Indias",
             ),
-            "time_horizon": payload.get("time_horizon", "2024-2027"),
-            "total_budget": float(payload.get("total_budget") or 0.0),
+            "time_horizon": run_data.get("time_horizon", "2024-2027"),
+            "version_metodologica": version_metodologica,
+            "fingerprint_fuentes_sha256": fingerprint_fuentes_sha256,
+            "total_budget": float(run_data.get("total_budget") or 0.0),
             "total_dmus": len(unidades_dmu) or len(dmu_rows),
             "unidades_ineficientes_dea": dea.get("unidades_ineficientes", []),
             "pares_malmquist": len(malmquist_pairs),
@@ -91,19 +229,23 @@ def _build_payload_resumen(payload: dict[str, Any]) -> dict[str, Any]:
             "coldspots": spatial.get("coldspots", []),
             "trampas_territoriales": len(traps),
             "series_alto_riesgo_isri": len(high_risk_series),
+            "total_indicadores_isri_sin_atribucion": total_isri_sin_atribucion,
             "alto_riesgo_indicadores": high_risk_series[:25],
-            "evaluacion_multisectorial": payload.get("evaluacion_multisectorial", []),
-            "trazabilidad_fuentes": payload.get("trazabilidad_fuentes")
-            or payload.get("source_counts")
-            or {},
-            "estado_checkpointer": payload.get("estado_checkpointer", "COMPLETADO_SIN_BLOQUEO"),
-            "is_valid_human": bool(payload.get("is_valid_human", False)),
-            "requiere_validacion_humana": bool(payload.get("requiere_validacion_humana", False)),
-            "recommendations": payload.get("recommendations", []),
-            "auditoria_humana": payload.get("auditoria_humana"),
-            "generado_en": payload.get("generado_en") or datetime.now(UTC).isoformat(),
+            "evaluacion_multisectorial": run_data.get("evaluacion_multisectorial", []),
+            "trazabilidad_fuentes": fuentes,
+            "hoshin_kanri_fair": hoshin_kanri_fair,
+            "revision_10d_resumen": revision_10d_resumen,
+            "estado_checkpointer": run_data.get("estado_checkpointer", "COMPLETADO_SIN_BLOQUEO"),
+            "is_valid_human": bool(run_data.get("is_valid_human", False)),
+            "requiere_validacion_humana": bool(run_data.get("requiere_validacion_humana", False)),
+            "recommendations": run_data.get("recommendations", []),
+            "auditoria_humana": run_data.get("auditoria_humana"),
+            "generado_en": run_data.get("generado_en") or datetime.now(UTC).isoformat(),
         }
     )
+
+
+_build_payload_resumen = _construir_resumen_ejecutivo
 
 
 async def _run_with_session(
@@ -314,6 +456,8 @@ async def guardar_evaluacion_pdt_pg(
             "estado_checkpointer": estado_checkpointer,
             "is_valid_human": is_valid_human,
             "sha256_payload": sha256_hash,
+            "payload_resumen": resumen,
+            "resumen_ejecutivo": resumen,
             "creado_en": row.creado_en.isoformat() if row and row.creado_en else None,
             "actualizado_en": (
                 row.actualizado_en.isoformat() if row and row.actualizado_en else None
@@ -478,31 +622,36 @@ async def obtener_historial_auditoria_pdt_pg(
             )
         ).fetchall()
 
-        evaluaciones = [
-            {
-                "id": str(r.id),
-                "thread_id": str(r.thread_id),
-                "jurisdiction": str(r.jurisdiction),
-                "time_horizon": str(r.time_horizon),
-                "total_budget": float(r.total_budget or 0.0),
-                "total_dmus": int(r.total_dmus or 0),
-                "pares_malmquist": int(r.pares_malmquist or 0),
-                "alertas_mission_creep": int(r.alertas_mission_creep or 0),
-                "trampas_territoriales": int(r.trampas_territoriales or 0),
-                "series_alto_riesgo_isri": int(r.series_alto_riesgo_isri or 0),
-                "estado_checkpointer": str(r.estado_checkpointer),
-                "is_valid_human": bool(r.is_valid_human),
-                "sha256_payload": str(r.sha256_payload),
-                "payload_resumen": (
-                    json.loads(r.payload_resumen)
-                    if isinstance(r.payload_resumen, str)
-                    else r.payload_resumen
-                ),
-                "creado_en": r.creado_en.isoformat() if r.creado_en else None,
-                "actualizado_en": (r.actualizado_en.isoformat() if r.actualizado_en else None),
-            }
-            for r in eval_rows
-        ]
+        evaluaciones = []
+        for r in eval_rows:
+            parsed_resumen = (
+                json.loads(r.payload_resumen)
+                if isinstance(r.payload_resumen, str)
+                else r.payload_resumen
+            )
+            evaluaciones.append(
+                {
+                    "id": str(r.id),
+                    "thread_id": str(r.thread_id),
+                    "jurisdiction": str(r.jurisdiction),
+                    "time_horizon": str(r.time_horizon),
+                    "total_budget": float(r.total_budget or 0.0),
+                    "total_dmus": int(r.total_dmus or 0),
+                    "pares_malmquist": int(r.pares_malmquist or 0),
+                    "alertas_mission_creep": int(r.alertas_mission_creep or 0),
+                    "trampas_territoriales": int(r.trampas_territoriales or 0),
+                    "series_alto_riesgo_isri": int(r.series_alto_riesgo_isri or 0),
+                    "estado_checkpointer": str(r.estado_checkpointer),
+                    "is_valid_human": bool(r.is_valid_human),
+                    "sha256_payload": str(r.sha256_payload),
+                    "payload_resumen": parsed_resumen,
+                    "resumen_ejecutivo": parsed_resumen,
+                    "creado_en": r.creado_en.isoformat() if r.creado_en else None,
+                    "actualizado_en": (
+                        r.actualizado_en.isoformat() if r.actualizado_en else None
+                    ),
+                }
+            )
 
         checkpoints = [
             {

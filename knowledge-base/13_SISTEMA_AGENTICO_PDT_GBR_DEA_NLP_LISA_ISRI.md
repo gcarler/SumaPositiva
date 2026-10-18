@@ -249,3 +249,48 @@ Para la puesta en marcha de esta plataforma en secretarías de planeación o ent
 3. **Mesa de Intervención Híbrida (*Human-in-the-Loop*)**: Sesiones periódicas del comité técnico de planeación para revisar los estados congelados por el agente ante desalineaciones o ineficiencias críticas.
 4. **Ajuste Presupuestal Vinculante**: Traducción de los rankings DEA y mapas LISA en decisiones administrativas de reasignación financiera para el siguiente ciclo fiscal de las Matrices de Plan de Acción.
 
+---
+
+## 7. Endpoints Operativos de Gobierno Estratégico, Revisión 10D y Cierre de Hallazgos (`H1–H12`)
+
+### 7.1 Catálogo de Endpoints del Subsistema `PDT-AI-EVALUATOR`
+| Método | Ruta Canónica | Propósito Técnico |
+| :--- | :--- | :--- |
+| `GET` | `/api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/especificacion` | Contrato declarativo del grafo agéntico de 5 nodos (`LangGraph`), fórmulas LaTeX y reglas de auditoría. |
+| `GET` | `/api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/diagnostico` | Ejecuta el grafo `PDT-AI-EVALUATOR` completo con trazabilidad `H11` (`version_metodologica`, `fingerprint_fuentes_sha256`), atribución ejecutora `ISRI` (`H1`) y sincronización automática en PostgreSQL (`seguimiento.pdt_ai_evaluaciones`). |
+| `POST` | `/api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/resolver-hitl` | Resuelve checkpoints `Human-in-the-Loop` persistiendo dictamen y bitácora en `seguimiento.pdt_ai_checkpoints_hitl`. |
+| `GET` | `/api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/historial-auditoria` | Consulta el historial persistente de evaluaciones (`payload_resumen` / `resumen_ejecutivo` enriquecido con `H11`, `H1`, `hoshin_kanri_fair` y `revision_10d_resumen`) y checkpoints HITL. |
+| `GET` | `/api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/hoshin-kanri/especificacion` | Especificación metodológica del modelo **Hoshin Kanri + Matriz X**: Marco **FAIR** (*Focus, Alignment, Integration, Review*), 7 pasos de implementación y comparativa estructural `SMART vs OKR vs Hoshin Kanri`. |
+| `GET` | `/api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/hoshin-kanri/matriz-x` | Construye la **Matriz X** de 4 cuadrantes (`Sur`, `Oeste`, `Norte`, `Este`), las 4 esquinas de correlación (`●`/`○`/`△`), los *Bowling Charts* con semáforo **PDCA** y las sesiones de *Catchball* (*Nemawashi*). |
+| `GET` | `/api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/revision-por-meta` | Ejecuta la **Matriz Auditable de 10 Dimensiones por Meta** y el veredicto de los **7 Roles Especializados de Revisión** sobre las `1246` metas oficiales de `bd_csh` (`PDD_2024_2027`). |
+
+### 7.2 Matriz Auditable de 10 Dimensiones por Meta y 7 Roles Revisores
+Cada meta del Plan de Desarrollo se audita en `pdt_revision_por_meta.py` bajo **10 dimensiones obligatorias**:
+1. **Integridad de Datos (`D1`):** preservación estricta de `0.0` observado frente a `None` (`BRECHA_DE_INFORMACION`, sin coerciones `or 1.0`).
+2. **Coherencia Estratégica y Cadena de Valor (`D2`):** enlace Línea Estratégica $\rightarrow$ Programa $\rightarrow$ Meta $\rightarrow$ Indicador.
+3. **Viabilidad Financiera (`D3`):** articulación con el Plan Plurianual de Inversiones (`PPI`).
+4. **Eficiencia DEA y Slacks (`D4`):** frontera de eficiencia técnica BCC ($\theta^{\text{BCC}}$) y holguras.
+5. **Autocorrelación Espacial LISA (`D5`):** detección de trampas territoriales en las 15 UCGs de Cartagena (`PostGIS`).
+6. **Riesgo Predictivo ISRI y Ruptura de Chow (`D6`):** pronóstico `ARIMA/VAR` con atribución explícita de secretaría ejecutora (`H1`).
+7. **Semántica de Ceros vs. Nulos (`D7`):** separación entre ejecución nula real (`0.0`) y ausencia de reporte (`None`).
+8. **Conciliación de Contradicciones Entre Motores (`D8`):** arbitraje formal cuando dos motores emiten señales opuestas.
+9. **Gobernanza HITL y Catchball (`D9`):** trazabilidad de intervención humana y acuerdos *Nemawashi*.
+10. **Trazabilidad Reproducible (`D10`):** versión de regla, marca temporal UTC y huella `SHA-256` (`H11`).
+
+Los hallazgos estructurados (`17` campos canónicos) son emitidos y consolidados por **7 Roles Especializados de Revisión**:
+1. `REVISOR_INTEGRIDAD_DATOS`
+2. `REVISOR_CADENA_VALOR_DNP`
+3. `REVISOR_FINANCIERO_MGA_PPI`
+4. `REVISOR_ECONOMETRICO_DEA`
+5. `REVISOR_ESPACIAL_LISA`
+6. `REVISOR_PREDICTIVO_ISRI`
+7. `REVISOR_ARBITRO_CONTRADICCIONES`
+
+### 7.3 Cierre Verificado de los Hallazgos `H1–H12` (`revision_motores_18_10_2026.md`)
+- **`H1` (Atribución ejecutora en series ISRI):** Resuelto en `pdt_nodos_espacial_predictivo.py`, `pdt_ai_evaluator_graph.py` y auditado en `pdt_persistencia_pg.py` (`total_indicadores_isri_sin_atribucion = 0`).
+- **`H2` y `H3` (Fuga de ceros/nulos y denominadores artificiales `or 1.0`):** Erradicados; se preserva `0.0` observado y se clasifica `None` como `BRECHA_DE_INFORMACION` con severidad `ALTA`.
+- **`H4` a `H7` (Alineación Hoshin Kanri, Matriz X, Bowling Charts PDCA y Catchball):** Implementados en `pdt_hoshin_kanri.py` y expuestos en `/hoshin-kanri/especificacion` y `/hoshin-kanri/matriz-x`.
+- **`H8` a `H10` (Matriz de 10 Dimensiones por Meta, 7 Revisores y Arbitraje de Contradicciones):** Implementados en `pdt_revision_por_meta.py` y expuestos en `/revision-por-meta`.
+- **`H11` y `H12` (Trazabilidad reproducible `SHA-256` y persistencia PostgreSQL enriquecida):** `version_metodologica`, `fingerprint_fuentes_sha256`, `hoshin_kanri_fair` y `revision_10d_resumen` quedan almacenados en `seguimiento.pdt_ai_evaluaciones`.
+
+

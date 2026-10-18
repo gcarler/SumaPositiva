@@ -145,6 +145,67 @@ def test_dictamen_endpoint_is_registered_and_returns_schema(monkeypatch):
     assert result["resumen_ejecutivo"].startswith("Dictamen PDT para Cartagena")
     route_paths = {route.path for route in router.router.routes}
     assert any(
-        path.endswith("/triada/pdd-dea/pdt-ai-evaluator/dictamen-ejecutivo")
-        for path in route_paths
+        path.endswith("/triada/pdd-dea/pdt-ai-evaluator/dictamen-ejecutivo") for path in route_paths
     )
+
+
+def test_isri_sin_entidad_no_se_asigna_a_todas_las_dependencias():
+    diagnostic = {
+        "jurisdiction": "Cartagena",
+        "dea_scores": {
+            "resultados_dmu": [
+                {"dmu": "Secretaría de Salud|2024", "theta_bcc": 0.8},
+                {"dmu": "Secretaría de Educación|2024", "theta_bcc": 0.9},
+            ]
+        },
+        "time_series_forecast": {
+            "series": [
+                {"indicador": "cobertura", "ISRI": 0.8},
+                {"indicador": "Entidad Ejecutora: Secretaría de Salud", "ISRI": 0.7},
+            ]
+        },
+    }
+    report = dictamen.generar_dictamen_ejecutivo_pdt(diagnostic)
+    assert report["total_indicadores_isri_sin_atribucion"] == 1
+    assert report["indicadores_isri_sin_atribucion"][0]["indicador"] == "cobertura"
+    by_dependency = {row["dependencia"]: row for row in report["dictamenes_dependencias"]}
+    salud = next(row for key, row in by_dependency.items() if "salud" in key.casefold())
+    educacion = next(row for key, row in by_dependency.items() if "educación" in key.casefold())
+    assert len(salud["indicadores_isri_mayor_040"]) == 1
+    assert educacion["indicadores_isri_mayor_040"] == []
+
+
+def test_hoshin_kanri_routes_registered_and_dynamic_functions_called(monkeypatch):
+    async def specification():
+        return {"version": "test"}
+
+    async def matrix(db, codigo_plan=None, sector=None, dependencia=None, force_refresh=False):
+        return {
+            "plan": codigo_plan,
+            "sector": sector,
+            "dependencia": dependencia,
+            "refresh": force_refresh,
+        }
+
+    monkeypatch.setattr(router, "_cargar_hoshin_kanri_fns", lambda: (specification, matrix))
+
+    async def execute(db, force_refresh=False):
+        assert force_refresh is True
+        return {"fresh": True}
+
+    monkeypatch.setattr(router, "_cargar_pdt_ai_evaluator_fns", lambda: (None, execute, None))
+    spec = asyncio.run(router.pdt_hoshin_kanri_especificacion())
+    table = asyncio.run(
+        router.pdt_hoshin_kanri_matriz_x(
+            object(),
+            codigo_plan="PDD_2024_2027",
+            sector="Salud",
+            dependencia=None,
+            force_refresh=True,
+        )
+    )
+    paths = {route.path for route in router.router.routes}
+    assert spec == {"version": "test"}
+    assert table["plan"] == "PDD_2024_2027" and table["refresh"] is True
+    assert any(path.endswith("/hoshin-kanri/especificacion") for path in paths)
+    assert any(path.endswith("/hoshin-kanri/matriz-x") for path in paths)

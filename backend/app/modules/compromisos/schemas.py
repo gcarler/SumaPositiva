@@ -361,6 +361,8 @@ class DetectarFormatoPlanAccionRespuesta(BaseModel):
 
 
 class MetaEstrategicaTriada(BaseModel):
+    vigencia: int | None = None
+    corte: str | None = None
     entidad: str = ""
     linea_estrategica: str = ""
     codigo_meta_pdd: str = ""
@@ -370,6 +372,8 @@ class MetaEstrategicaTriada(BaseModel):
 
 
 class ActividadOperativaTriada(BaseModel):
+    vigencia: int | None = None
+    corte: str | None = None
     entidad: str = ""
     linea_estrategica: str = ""
     codigo_meta_pdd: str = ""
@@ -381,6 +385,8 @@ class ActividadOperativaTriada(BaseModel):
 
 
 class EjecucionPresupuestalTriada(BaseModel):
+    vigencia: int | None = None
+    corte: str | None = None
     entidad: str = ""
     linea_estrategica: str = ""
     codigo_bpim: str = ""
@@ -448,6 +454,28 @@ class PdtDictamenEjecutivoRespuesta(BaseModel):
     trazabilidad: dict[str, Any] = Field(default_factory=dict)
 
 
+class HoshinKanriEspecificacionRespuesta(BaseModel):
+    model_config = ConfigDict(extra="allow")
+
+
+class HoshinKanriMatrizXRespuesta(BaseModel):
+    model_config = ConfigDict(extra="allow")
+
+
+class PdtRevisionPorMetaRespuesta(BaseModel):
+    model_config = ConfigDict(extra="allow")
+
+    sistema: str
+    generado_en: str
+    filtros_aplicados: dict[str, Any] = Field(default_factory=dict)
+    total_metas_evaluadas: int = 0
+    catalogo_10_dimensiones: list[dict[str, Any]] = Field(default_factory=list)
+    catalogo_7_revisores: list[dict[str, Any]] = Field(default_factory=list)
+    resumen_ejecutivo_revision: dict[str, Any] = Field(default_factory=dict)
+    informe_7_revisores: dict[str, Any] = Field(default_factory=dict)
+    matriz_metas: list[dict[str, Any]] = Field(default_factory=list)
+
+
 class PdtHistorialAuditoriaRespuesta(BaseModel):
     motor: str = "PDT-AI-EVALUATOR"
     esquema_pg: str = "seguimiento"
@@ -459,4 +487,3 @@ class PdtHistorialAuditoriaRespuesta(BaseModel):
     evaluaciones: list[dict[str, Any]] = Field(default_factory=list)
     checkpoints_hitl: list[dict[str, Any]] = Field(default_factory=list)
     consultado_en: str
-

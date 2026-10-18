@@ -348,6 +348,7 @@ async def _evaluacion_multidimensional_pdt_ai() -> dict[str, Any]:
             "riesgo_isri_chow": {"series_alto_riesgo": [], "pruebas_chow_2024": []},
             "sectores_gbr": [],
             "top_dictamenes_dependencias": [],
+            "hoshin_kanri_resumen": {"estado": "PENDIENTE"},
         }
     dea = diagnostic.get("dea_scores", {})
     dea_rows = dea.get("resultados_dmu", [])
@@ -376,6 +377,7 @@ async def _evaluacion_multidimensional_pdt_ai() -> dict[str, Any]:
             -row.get("nlp", {}).get("alertas_vinculadas_total", 0),
         )
     )
+    hoshin_resumen = await _resumen_hoshin_kanri_pdt(diagnostic)
     return {
         "estado": "DISPONIBLE",
         "fuente": str(PDT_AI_CACHE),
@@ -417,7 +419,49 @@ async def _evaluacion_multidimensional_pdt_ai() -> dict[str, Any]:
         },
         "sectores_gbr": report.get("sintesis_sectores", []),
         "top_dictamenes_dependencias": briefs[:10],
+        "hoshin_kanri_resumen": hoshin_resumen,
     }
+
+
+async def _resumen_hoshin_kanri_pdt(diagnostic: dict[str, Any]) -> dict[str, Any]:
+    """Attach FAIR scores and PDCA/Catchball alert counts to the DEA summary."""
+    try:
+        from app.modules.compromisos.pdt_hoshin_kanri import construir_matriz_x_hoshin_kanri_pdt
+
+        result = await asyncio.to_thread(
+            construir_matriz_x_hoshin_kanri_pdt, diagnostico=diagnostic
+        )
+        import inspect
+
+        if inspect.isawaitable(result):
+            result = await result
+        fair = result.get("evaluacion_fair", {})
+        charts = result.get("bowling_charts", [])
+        states = Counter(
+            str(row.get("color_semaforo") or row.get("estado") or "SIN_ESTADO") for row in charts
+        )
+        catchball = result.get("catchball_sesiones", [])
+        pdca_alerts = sum(state.upper().startswith(("ROJO", "ALERTA")) for state in states)
+        catchball_alerts = sum(bool(row.get("brechas_criticas_detectadas")) for row in catchball)
+        return {
+            "estado": "DISPONIBLE",
+            "evaluacion_fair": {
+                key: fair.get(key)
+                for key in (
+                    "focus_score",
+                    "alignment_score",
+                    "integration_score",
+                    "review_score",
+                    "fair_global_index",
+                )
+            },
+            "estados_bowling_chart": dict(states),
+            "alertas_pdca": pdca_alerts,
+            "sesiones_catchball": len(catchball),
+            "alertas_catchball": catchball_alerts,
+        }
+    except Exception as exc:
+        return {"estado": "NO_DISPONIBLE", "detalle": type(exc).__name__}
 
 
 def pre_serialized_response(

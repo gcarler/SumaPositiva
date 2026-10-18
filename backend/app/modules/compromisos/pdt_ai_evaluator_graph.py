@@ -52,6 +52,7 @@ BOOTSTRAP_REPLICATES = 1000
 SPATIAL_PERMUTATIONS = 999
 COSINE_ALERT_THRESHOLD = 0.45
 ISRI_ALERT_THRESHOLD = 0.40
+VERSION_METODOLOGICA_PDT = "25A-2026.10.18.1"
 
 SYSTEM_INSTRUCTIONS_PDT_AI_EVALUATOR = (
     "### INSTRUCCIONES DEL SISTEMA PARA EL AGENTE DE EVALUACIÓN DE PLANES DE "
@@ -399,7 +400,7 @@ def _atomic_json_write(path: Path, payload: Any) -> None:
 
 
 def _cache_key(jurisdiction: str, time_horizon: str, thread_id: str) -> str:
-    material = "|".join((jurisdiction, time_horizon, thread_id))
+    material = "|".join((VERSION_METODOLOGICA_PDT, jurisdiction, time_horizon, thread_id))
     return hashlib.sha256(material.encode()).hexdigest()
 
 
@@ -811,6 +812,23 @@ def _build_state(
         ),
         **{f"documento:{code}": value for code, value in corpus_by_plan.items()},
     }
+    fingerprint_payload = {
+        name: data.get(name, [])
+        for name in (
+            "plans",
+            "goals",
+            "nodes",
+            "activities",
+            "normalized",
+            "documents",
+            "territories",
+        )
+    }
+    fingerprint_sources = hashlib.sha256(
+        json.dumps(
+            _plain(fingerprint_payload), sort_keys=True, ensure_ascii=False, default=str
+        ).encode()
+    ).hexdigest()
     grouped: dict[tuple[str, int | None], dict[str, Any]] = {}
     observed_positive_years: set[int] = set()
     if normalized:
@@ -825,22 +843,29 @@ def _build_state(
                     "insumo_cop": 0.0,
                     "producto_programado": 0.0,
                     "producto_ejecutado": 0.0,
+                    "avance_fisico_pct": [],
                     "avance_estrategico_pct": [],
                     "codigo_metas": [],
+                    "grupo_comparabilidad_dea": "EJECUCION_PRESUPUESTAL_OBSERVADA",
                 },
             )
             dmu["insumo_cop"] += float(row.get("apropiacion_definitiva_cop") or 0)
             if float(row.get("apropiacion_definitiva_cop") or 0) > 0 and row.get("vigencia"):
                 observed_positive_years.add(int(row["vigencia"]))
             dmu["producto_programado"] += float(row.get("meta_programada_anual") or 0)
-            dmu["producto_ejecutado"] += float(
-                row.get("meta_ejecutada_anual") or row.get("avance_fisico_pct") or 0
-            )
+            executed = row.get("meta_ejecutada_anual")
+            if executed is None:
+                executed = row.get("avance_fisico_pct")
+            dmu["producto_ejecutado"] += float(executed or 0)
+            physical_pct = row.get("avance_fisico_pct")
+            if physical_pct is not None and 0 <= float(physical_pct) <= 100:
+                dmu["avance_fisico_pct"].append(float(physical_pct))
             avance_val = row.get("avance_estrategico_pct")
             if avance_val is None:
                 avance_val = row.get("avance_fisico_pct")
             if avance_val is not None:
-                dmu["avance_estrategico_pct"].append(float(avance_val))
+                if 0 <= float(avance_val) <= 100:
+                    dmu["avance_estrategico_pct"].append(float(avance_val))
             if row.get("codigo_meta_pdd"):
                 dmu["codigo_metas"].append(row["codigo_meta_pdd"])
     for plan in plans:
@@ -857,6 +882,8 @@ def _build_state(
                 "producto_programado": float(len(plan_goals)),
                 "producto_ejecutado": float(len(plan_goals)),
                 "avance_estrategico_pct": [],
+                "avance_fisico_pct": [],
+                "grupo_comparabilidad_dea": "CAPACIDAD_PROGRAMADA_PPI",
                 "codigo_metas": [item.get("codigo") for item in plan_goals if item.get("codigo")],
                 "origen_insumo": "ppi_oficial_desagregado_pdd",
                 "codigo_plan": code,
@@ -869,6 +896,8 @@ def _build_state(
     for dmu in grouped.values():
         progresses = dmu.pop("avance_estrategico_pct", [])
         dmu["resultado_pct"] = float(np.mean(progresses)) if progresses else None
+        physical_progress = dmu.pop("avance_fisico_pct", [])
+        dmu["avance_fisico_pct"] = float(np.mean(physical_progress)) if physical_progress else None
         dmus.append(_plain(dmu))
     finances = []
     outputs = []
@@ -880,6 +909,7 @@ def _build_state(
                 "vigencia": dmu["vigencia"],
                 "insumo_cop": dmu["insumo_cop"],
                 "origen_insumo": dmu.get("origen_insumo", "apropiacion_definitiva_cop"),
+                "grupo_comparabilidad_dea": dmu["grupo_comparabilidad_dea"],
                 "fuente": dmu.get("origen_insumo", "apropiacion_definitiva_cop"),
                 "codigo_plan": dmu.get("codigo_plan"),
             }
@@ -890,6 +920,8 @@ def _build_state(
                 "vigencia": dmu["vigencia"],
                 "programado": dmu["producto_programado"],
                 "ejecutado": dmu["producto_ejecutado"],
+                "ejecutado_pct": dmu.get("resultado_pct"),
+                "grupo_comparabilidad_dea": dmu["grupo_comparabilidad_dea"],
                 "fuente_producto": dmu.get(
                     "nota_producto", "seguimiento.registros_triada_normalizados"
                 ),
@@ -901,6 +933,8 @@ def _build_state(
                 "dmu": dmu["dmu"],
                 "vigencia": dmu["vigencia"],
                 "avance_estrategico_pct": dmu["resultado_pct"],
+                "avance_fisico_pct": dmu.get("avance_fisico_pct"),
+                "grupo_comparabilidad_dea": dmu["grupo_comparabilidad_dea"],
                 "origen_insumo": dmu.get("origen_insumo", "apropiacion_definitiva_cop"),
             }
         )
@@ -944,6 +978,8 @@ def _build_state(
         "thread_id": thread_id,
         "trace": [],
         "source_counts": counts,
+        "fingerprint_sources_sha256": fingerprint_sources,
+        "version_metodologica": VERSION_METODOLOGICA_PDT,
         "plan_records": plans,
         "node_records": nodes,
         "goal_records": goals,
@@ -1358,6 +1394,98 @@ def _dea_node(state: AgentState) -> dict[str, Any]:
     started = time.perf_counter()
     financial_frame = pd.DataFrame(state["df_financial"])
     dmus = financial_frame.to_dict(orient="records")
+    comparability_groups: dict[str, list[str]] = defaultdict(list)
+    for record in dmus:
+        group = record.get("grupo_comparabilidad_dea") or (
+            "CAPACIDAD_PROGRAMADA_PPI"
+            if record.get("origen_insumo") == "ppi_oficial_desagregado_pdd"
+            else "EJECUCION_PRESUPUESTAL_OBSERVADA"
+        )
+        comparability_groups[str(group)].append(str(record["dmu"]) + "|" + str(record["vigencia"]))
+    if len(comparability_groups) > 1:
+        group_results = []
+        for group, labels in comparability_groups.items():
+            selected = set(labels)
+            subset_state = {
+                **state,
+                "df_financial": [
+                    row
+                    for row in state["df_financial"]
+                    if str(row["dmu"]) + "|" + str(row["vigencia"]) in selected
+                ],
+                "df_outputs": [
+                    row
+                    for row in state["df_outputs"]
+                    if str(row["dmu"]) + "|" + str(row["vigencia"]) in selected
+                ],
+                "df_outcomes": [
+                    row
+                    for row in state["df_outcomes"]
+                    if str(row["dmu"]) + "|" + str(row["vigencia"]) in selected
+                ],
+            }
+            group_results.append((group, _dea_node(subset_state)["dea_scores"]))
+        combined_rows = [
+            {**row, "grupo_comparabilidad_dea": group}
+            for group, result in group_results
+            for row in result.get("resultados_dmu", [])
+        ]
+        combined = dict(group_results[0][1])
+        combined["resultados_dmu"] = combined_rows
+        combined["grupos_comparabilidad"] = {
+            group: result.get("estado") for group, result in group_results
+        }
+        combined["unidades_dmu"] = len(combined_rows)
+        combined["unidades_eficientes"] = sum(
+            row.get("theta_bcc") is not None and row["theta_bcc"] >= 1 - 1e-6
+            for row in combined_rows
+        )
+        combined["unidades_ineficientes"] = [
+            row["dmu"]
+            for row in combined_rows
+            if row.get("theta_bcc") is not None and row["theta_bcc"] < 1 - 1e-6
+        ]
+        combined["bootstrap_suavizado"] = {
+            "estado": "ESTIMADO_POR_GRUPO",
+            "por_dmu": {
+                label: value
+                for _, result in group_results
+                for label, value in result.get("bootstrap_suavizado", {}).get("por_dmu", {}).items()
+            },
+            "metodo": "Simar-Wilson suavizado estimado por grupo de comparabilidad",
+        }
+        combined["bias_corrected"] = combined["bootstrap_suavizado"]
+        combined["malmquist"] = {
+            **group_results[0][1].get("malmquist", {}),
+            "pares": [
+                pair
+                for _, result in group_results
+                for pair in result.get("malmquist", {}).get("pares", [])
+            ],
+            "estado": "ESTIMADO_POR_GRUPO",
+        }
+        solver_checks = [
+            check
+            for _, result in group_results
+            for check in result.get("equivalencia_solvers", {}).get("pulp_cbc_vs_scipy_highs", [])
+        ]
+        combined["equivalencia_solvers"] = {
+            "pulp_cbc_vs_scipy_highs": solver_checks,
+            "equivalencia_total": all(
+                check["ccr_equivalente"] and check["bcc_equivalente"] for check in solver_checks
+            ),
+        }
+        return {
+            "dea_scores": combined,
+            "next_node": "nodo_espacial",
+            "messages": [
+                *state["messages"],
+                f"DEA: fronteras separadas en {len(group_results)} grupos.",
+            ],
+            "trace": _append_trace(
+                state, "nodo_dea", started, "Fronteras separadas por comparabilidad"
+            ),
+        }
     outputs_by_dmu = {
         item["dmu"] + "|" + str(item["vigencia"]): item for item in state["df_outputs"]
     }
@@ -1372,25 +1500,21 @@ def _dea_node(state: AgentState) -> dict[str, Any]:
         for item in dmus
     }
     raw_inputs = [max(0.0, float(item.get("insumo_cop") or 0)) for item in dmus]
-    use_log_scale = max(raw_inputs, default=0.0) > 1_000_000.0
-    inputs = [
-        math.log1p(val / 1_000_000.0)
-        if (use_log_scale and val >= 1_000_000.0)
-        else (0.0 if use_log_scale else val)
-        for val in raw_inputs
-    ]
+    input_scale = max(float(np.mean(raw_inputs)) if raw_inputs else 0.0, 1.0)
+    inputs = [val / input_scale for val in raw_inputs]
     output_matrix = []
     for label in labels:
         item = outputs_by_dmu.get(label, {})
         outcome = outcomes_by_dmu.get(label, {})
-        raw_out = max(0.0, float(item.get("ejecutado") or 0))
-        scaled_out = math.log1p(raw_out) if use_log_scale and raw_out > 0 else raw_out
-        output_matrix.append(
-            [
-                scaled_out,
-                max(0.0, float(outcome.get("avance_estrategico_pct") or 0)),
-            ]
-        )
+        group = item.get("grupo_comparabilidad_dea") or "EJECUCION_PRESUPUESTAL_OBSERVADA"
+        if group == "CAPACIDAD_PROGRAMADA_PPI":
+            comparable_output = max(0.0, float(item.get("programado") or 0))
+        else:
+            pct = outcome.get("avance_estrategico_pct")
+            if pct is None:
+                pct = outcome.get("avance_fisico_pct")
+            comparable_output = min(100.0, max(0.0, float(pct or 0)))
+        output_matrix.append([comparable_output])
     results = []
     scores = []
     efficiency_by_label: dict[str, float | None] = {}
@@ -1459,6 +1583,12 @@ def _dea_node(state: AgentState) -> dict[str, Any]:
         )
         row = {
             "dmu": label,
+            "grupo_comparabilidad_dea": dmus[index].get("grupo_comparabilidad_dea")
+            or (
+                "CAPACIDAD_PROGRAMADA_PPI"
+                if origins_by_label.get(label) == "ppi_oficial_desagregado_pdd"
+                else "EJECUCION_PRESUPUESTAL_OBSERVADA"
+            ),
             "origen_insumo": origins_by_label.get(label, "apropiacion_definitiva_cop"),
             "theta_ccr": round(ccr, 8) if ccr is not None else None,
             "theta_bcc": round(bcc, 8) if bcc is not None else None,
@@ -1667,13 +1797,14 @@ def _moran_lisa(
         local_p = (sum(abs(value) >= abs(local_i) for value in null_values) + 1) / (
             len(null_values) + 1
         )
-        if local_p < 0.05 and z_scores[index] >= 0 and lag >= 0:
+        is_significant = local_p <= 0.05
+        if is_significant and z_scores[index] >= 0 and lag >= 0:
             cluster = "Alto-Alto (Hotspots)"
-        elif local_p < 0.05 and z_scores[index] < 0 and lag < 0:
+        elif is_significant and z_scores[index] < 0 and lag < 0:
             cluster = "Bajo-Bajo (Coldspots)"
-        elif local_p < 0.05 and z_scores[index] >= 0 > lag:
+        elif is_significant and z_scores[index] >= 0 > lag:
             cluster = "Alto-Bajo (Outlier espacial)"
-        elif local_p < 0.05 and z_scores[index] < 0 <= lag:
+        elif is_significant and z_scores[index] < 0 <= lag:
             cluster = "Bajo-Alto (Outlier espacial)"
         else:
             cluster = "No significativo"
@@ -1682,6 +1813,9 @@ def _moran_lisa(
                 "unidad": names[index],
                 "Ii": round(local_i, 8),
                 "p_valor_permutacion": round(local_p, 6),
+                "significancia_estadistica": (
+                    "SIGNIFICATIVO_P_005" if is_significant else "EXPLORATORIO_NO_SIGNIFICATIVO"
+                ),
                 "cluster": cluster,
                 "z_score": round(float(z_scores[index]), 6),
             }
@@ -1793,7 +1927,11 @@ async def _spatial_node(state: AgentState) -> dict[str, Any]:
             "coldspots": sorted(coldspots),
             "unidades_dea_ineficientes_en_coldspots": traps,
             "trampas_territoriales_gestion_publica": [
-                {"unidad_dmu": unit, "alerta": "Trampa Territorial de Gestión Pública"}
+                {
+                    "unidad_dmu": unit,
+                    "estado_vinculo": "VINCULO_ACREDITADO",
+                    "alerta": "Trampa Territorial de Gestión Pública",
+                }
                 for unit in traps
             ],
             "geometrias": (
@@ -1883,8 +2021,12 @@ def _forecast_series(state: AgentState) -> dict[str, Any]:
             value = record.get("avance_fisico_pct")
         if indicator and year is not None and value is not None:
             grouped[indicator][int(year)].append(float(value))
-            if record.get("meta_programada_anual") is not None:
-                targets[indicator].append(float(record["meta_programada_anual"]))
+            target_pct = record.get("meta_cuatrienio_pct")
+            annual_target = record.get("meta_programada_anual")
+            if target_pct is None and annual_target is not None and 0 < float(annual_target) <= 100:
+                target_pct = annual_target
+            if target_pct is not None and 0 < float(target_pct) <= 100:
+                targets[indicator].append(float(target_pct))
         entity_name = record.get("entidad_normalizada")
         if entity_name and year is not None and value is not None:
             ent_key = f"Entidad Ejecutora: {entity_name}"
@@ -1935,15 +2077,51 @@ def _forecast_series(state: AgentState) -> dict[str, Any]:
             forecast = float(np.polyval(coefficients, final_year))
             residuals = y - np.polyval(coefficients, x)
             forecast_sigma = float(np.std(residuals, ddof=2)) if len(residuals) > 2 else 0.0
-        target = max(targets[indicator]) if targets[indicator] else 100.0
+        is_percentage = all(0 <= value <= 100 for value in values)
+        target = max(targets[indicator]) if targets[indicator] and is_percentage else 100.0
+        reduction_terms = (
+            "mortalidad",
+            "desercion",
+            "pobreza",
+            "homicidio",
+            "embarazo adolescente",
+            "desnutricion",
+            "hurto",
+            "rezago",
+        )
+        direction = (
+            "REDUCCION"
+            if any(term in _normalize(indicator) for term in reduction_terms)
+            else "INCREMENTO"
+        )
         if forecast_sigma > 0:
-            probability_meet = float(norm.cdf((forecast - target) / forecast_sigma))
+            z_value = (target - forecast) / forecast_sigma
+            probability_meet = float(norm.cdf(z_value if direction == "REDUCCION" else -z_value))
         else:
-            probability_meet = float(forecast >= target)
+            probability_meet = float(
+                forecast <= target if direction == "REDUCCION" else forecast >= target
+            )
         isri = max(0.0, min(1.0, 1.0 - probability_meet))
+        holdout = None
+        if len(values) >= 4:
+            train = np.asarray(values[:-1], dtype=float)
+            observed = float(values[-1])
+            last_value = float(train[-1])
+            holdout_prediction = float(
+                np.polyval(np.polyfit(np.arange(len(train)), train, 1), len(train))
+            )
+            holdout = {
+                "vigencia_holdout": years[-1],
+                "mae_holdout": round(abs(observed - holdout_prediction), 6),
+                "naive_last_value": {
+                    "pronostico": last_value,
+                    "mae": round(abs(observed - last_value), 6),
+                },
+            }
         series_results.append(
             {
                 "indicador": indicator,
+                "sentido_indicador": direction,
                 "estado": "ESTIMADO",
                 "n_observaciones": len(years),
                 "serie": [
@@ -1954,8 +2132,10 @@ def _forecast_series(state: AgentState) -> dict[str, Any]:
                 "modelo_aplicado": model_name,
                 "pronostico_arima_var": {"vigencia": final_year, "valor": round(forecast, 6)},
                 "meta_cuatrienio": target,
+                "unidad_meta": "PORCENTAJE" if is_percentage else "UNIDAD_INDICADOR",
                 "probabilidad_cumplimiento": round(probability_meet, 8),
                 "ISRI": round(isri, 8),
+                "validacion_temporal_holdout": holdout,
                 "bandera": "Alto Riesgo de Incumplimiento" if isri > ISRI_ALERT_THRESHOLD else None,
                 "chow": _chow_test(years, values),
             }
@@ -2210,6 +2390,8 @@ async def _public_result(state: AgentState) -> dict[str, Any]:
     )
     return {
         "motor": "PDT-AI-EVALUATOR",
+        "version_metodologica": state.get("version_metodologica", VERSION_METODOLOGICA_PDT),
+        "fingerprint_fuentes_sha256": state.get("fingerprint_sources_sha256"),
         "thread_id": state["thread_id"],
         "jurisdiction": state["jurisdiction"],
         "time_horizon": state["time_horizon"],
@@ -2283,12 +2465,6 @@ async def ejecutar_pdt_ai_evaluator(
 ) -> dict[str, Any]:
     """Carga evidencia, ejecuta el grafo y conserva resultados/checkpoints en disco."""
     cache_key = _cache_key(jurisdiction, time_horizon, thread_id)
-    if not force_refresh:
-        cache = _safe_json_read(CACHE_PATH, {})
-        cached = cache.get("runs", {}).get(cache_key)
-        if cached:
-            cached["cache"] = {"estado": "HIT", "ruta": str(CACHE_PATH)}
-            return cached
     owns_engine = db is None
     engine = None
     if db is None:
@@ -2301,6 +2477,16 @@ async def ejecutar_pdt_ai_evaluator(
     try:
         data = await _load_corpus(db)
         state = _build_state(data, jurisdiction, time_horizon, thread_id)
+        if not force_refresh:
+            cache = _safe_json_read(CACHE_PATH, {})
+            cached = cache.get("runs", {}).get(cache_key)
+            if (
+                cached
+                and cached.get("version_metodologica") == VERSION_METODOLOGICA_PDT
+                and cached.get("fingerprint_fuentes_sha256") == state["fingerprint_sources_sha256"]
+            ):
+                cached["cache"] = {"estado": "HIT", "ruta": str(CACHE_PATH)}
+                return cached
         result_state = await _compiled_graph().ainvoke(
             state,
             {"configurable": {"thread_id": thread_id}},
@@ -2448,9 +2634,7 @@ async def validar_checkpoint_pdt_ai_evaluator(
 
         pg_session = db if isinstance(db, AsyncSession) else None
         pg_eval = await guardar_evaluacion_pdt_pg(result, db=pg_session)
-        patrones = (state.get("time_series_forecast") or {}).get(
-            "patrones_compuestos_criticos", []
-        )
+        patrones = (state.get("time_series_forecast") or {}).get("patrones_compuestos_criticos", [])
         pg_ckpt = await registrar_checkpoint_hitl_pdt_pg(
             thread_id=thread_id,
             estado=str(state.get("estado_checkpointer") or "APROBADO_POR_AUDITOR"),

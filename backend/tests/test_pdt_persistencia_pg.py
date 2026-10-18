@@ -194,3 +194,135 @@ def test_endpoint_get_historial_auditoria_pdt_ai_evaluator() -> None:
     assert body["total_checkpoints_hitl"] >= 1
     assert len(body["evaluaciones"][0]["sha256_payload"]) == 64
     assert len(body["checkpoints_hitl"][0]["sha256_checkpoint"]) == 64
+
+
+def test_construir_resumen_ejecutivo_h11_h1_hoshin_y_revision_10d() -> None:
+    """Verifica que _construir_resumen_ejecutivo calcula determinísticamente H11, H1,
+    Hoshin Kanri FAIR y Revisión 10D.
+    """
+    from app.modules.compromisos.pdt_persistencia_pg import _construir_resumen_ejecutivo
+
+    run_data = {
+        "motor": "PDT-AI-EVALUATOR",
+        "thread_id": "pdt-test-unit-27b",
+        "jurisdiction": "Distrito Turístico y Cultural de Cartagena de Indias",
+        "time_horizon": "2024-2027",
+        "version_metodologica": "PDT-AI-EVALUATOR-2026.10-EAF-V2",
+        "fingerprint_fuentes_sha256": "a" * 64,
+        "total_budget": 1_500_000_000_000.0,
+        "unidades_dmu": ["Secretaría de Educación", "Secretaría de Hacienda"],
+        "dea_scores": {
+            "resultados_dmu": [
+                {
+                    "dmu": "Secretaría de Educación|2025",
+                    "theta_ccr": 0.72,
+                    "theta_bcc": 0.78,
+                    "SE_o": 0.9231,
+                }
+            ]
+        },
+        "time_series_forecast": {
+            "series": [
+                {
+                    "indicador": "Entidad Ejecutora: Secretaría de Educación",
+                    "ISRI": 0.55,
+                },
+                {
+                    "indicador": "Indicador Huérfano Sin Entidad",
+                    "entidad": None,
+                    "ISRI": 0.82,
+                },
+            ]
+        },
+    }
+
+    resumen = _construir_resumen_ejecutivo(run_data)
+    assert resumen["version_metodologica"] == "PDT-AI-EVALUATOR-2026.10-EAF-V2"
+    assert resumen["fingerprint_fuentes_sha256"] == "a" * 64
+    assert resumen["total_indicadores_isri_sin_atribucion"] == 1
+
+    fair = resumen["hoshin_kanri_fair"]
+    for key in (
+        "fair_global_index",
+        "focus_score",
+        "alignment_score",
+        "integration_score",
+        "review_score",
+        "rojos_contencion_pdca",
+        "sesiones_catchball_activas",
+    ):
+        assert key in fair
+    assert fair["fair_global_index"] > 0.0
+
+    rev10d = resumen["revision_10d_resumen"]
+    for key in (
+        "version_regla",
+        "total_metas_plan",
+        "con_contradicciones",
+        "con_brecha_informacion",
+        "con_ceros_observados",
+        "total_hallazgos_estructurados",
+    ):
+        assert key in rev10d
+    assert rev10d["total_metas_plan"] == 1246
+
+
+def test_persistencia_pg_resumen_enriquecido_hoshin_fair_y_10d() -> None:
+    """Verifica que guardar_evaluacion_pdt_pg y obtener_historial_auditoria_pdt_pg
+    persisten y recuperan en PostgreSQL (bd_csh) los bloques H11, H1, hoshin_kanri_fair
+    y revision_10d_resumen dentro del JSONB payload_resumen / resumen_ejecutivo.
+    """
+    test_thread = "pdt-test-pg-27b-hoshin-10d"
+
+    async def _run() -> dict[str, Any]:
+        engine = create_async_engine(_bd_csh_url(), pool_pre_ping=True)
+        sessions = async_sessionmaker(engine, expire_on_commit=False)
+        try:
+            async with sessions() as session:
+                payload = {
+                    "motor": "PDT-AI-EVALUATOR",
+                    "thread_id": test_thread,
+                    "jurisdiction": "Distrito Turístico y Cultural de Cartagena de Indias",
+                    "time_horizon": "2024-2027",
+                    "version_metodologica": "PDT-AI-EVALUATOR-2026.10-EAF",
+                    "total_budget": 2_100_000_000_000.0,
+                    "trazabilidad_fuentes": {
+                        "seguimiento.pdd_metas_oficiales": 1246,
+                        "seguimiento.pdd_lineas_y_programas": 1573,
+                    },
+                    "unidades_dmu": ["Secretaría de Hacienda"],
+                    "time_series_forecast": {
+                        "series": [
+                            {
+                                "indicador": "Indicador Global Sin Atribución",
+                                "entidad": None,
+                                "ISRI": 0.71,
+                            }
+                        ]
+                    },
+                }
+                await guardar_evaluacion_pdt_pg(payload, db=session)
+                await session.commit()
+                hist = await obtener_historial_auditoria_pdt_pg(
+                    session, thread_id=test_thread, limit=5
+                )
+                await session.execute(
+                    text("DELETE FROM seguimiento.pdt_ai_evaluaciones WHERE thread_id = :tid"),
+                    {"tid": test_thread},
+                )
+                await session.commit()
+                return hist
+        finally:
+            await engine.dispose()
+
+    hist = asyncio.run(_run())
+    assert hist["total_evaluaciones"] == 1
+    ev = hist["evaluaciones"][0]
+    resumen = ev["resumen_ejecutivo"]
+    assert resumen == ev["payload_resumen"]
+    assert resumen["version_metodologica"] == "PDT-AI-EVALUATOR-2026.10-EAF"
+    assert len(resumen["fingerprint_fuentes_sha256"]) == 64
+    assert resumen["total_indicadores_isri_sin_atribucion"] == 1
+    assert resumen["hoshin_kanri_fair"]["fair_global_index"] > 0.0
+    assert resumen["revision_10d_resumen"]["total_metas_plan"] == 1246
+

@@ -224,21 +224,28 @@ def motor_inversion_presupuestal(
     }
 
 
-def _clave(fila: Any) -> tuple[str, str, str]:
+def _clave(fila: Any) -> tuple[str, ...]:
     return (
         str(fila.entidad or "").strip().casefold(),
         str(fila.linea_estrategica or "").strip().casefold(),
         str(fila.codigo_bpim or "").strip().casefold(),
+        str(getattr(fila, "vigencia", None) or "").strip().casefold(),
     )
 
 
-def _clave_valida(clave: tuple[str, str, str]) -> bool:
+def _clave_valida(clave: tuple[str, ...]) -> bool:
     invalidos = {"-", "----", "n/a", "na", "nd", "ninguno", "0", "sin codigo"}
-    for valor in clave:
+    for valor in clave[:3]:
         normalizado = " ".join(valor.strip().casefold().split())
         if not normalizado or normalizado in invalidos:
             return False
     return not bool(re.fullmatch(r"\d+(?:[.,]\d+)*", clave[0].strip()))
+
+
+def _corte_rank(fila: Any) -> tuple[int, str]:
+    corte = str(getattr(fila, "corte", None) or "").strip().upper()
+    match = re.search(r"(?:T|TRIMESTRE\s*)([1-4])", corte)
+    return (int(match.group(1)) if match else 0, corte)
 
 
 def cruzar_tres_lecturas(
@@ -247,14 +254,18 @@ def cruzar_tres_lecturas(
     ejecuciones: list[EjecucionPresupuestalTriada],
 ) -> dict[str, Any]:
     """Match strategic, physical and financial rows by entity, strategic line and BPIM."""
-    maps: list[dict[tuple[str, str, str], list[Any]]] = []
+    maps: list[dict[tuple[str, ...], list[Any]]] = []
     for rows in (metas, actividades, ejecuciones):
-        grouped: dict[tuple[str, str, str], list[Any]] = defaultdict(list)
+        grouped: dict[tuple[str, ...], list[Any]] = defaultdict(list)
         for row in rows:
             key = _clave(row)
             # Never match unrelated records through an empty entity/line/BPIM key.
             if _clave_valida(key):
                 grouped[key].append(row)
+        for key, keyed_rows in grouped.items():
+            if any(getattr(row, "corte", None) for row in keyed_rows):
+                latest_cut = max(_corte_rank(row) for row in keyed_rows)
+                grouped[key] = [row for row in keyed_rows if _corte_rank(row) == latest_cut]
         maps.append(grouped)
     keys = sorted(set().union(*(set(m) for m in maps)))
     cruces = []
@@ -329,6 +340,7 @@ def cruzar_tres_lecturas(
             "entidad": key[0],
             "linea_estrategica": key[1],
             "codigo_bpim": key[2],
+            "vigencia": int(key[3]) if key[3].isdigit() else None,
             "avance_estrategico_pdd_pct": strategy_pct,
             "avance_operativo_pa_pct": physical_pct,
             "ejecucion_financiera_rp_pct": financial_pct,

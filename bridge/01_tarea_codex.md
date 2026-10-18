@@ -1,36 +1,52 @@
-# Orden de Trabajo EAF — Fase [24A] (`codex`)
+# Orden de Trabajo EAF (`=agy:0.0`) para `codex` (`=codex:0.0`) — Fase `[26A]` (100% BACKEND)
 
-- **Agente Asignado:** `codex` (`=codex:0.0`)
-- **Auditor EAF:** `agy` (`=agy:0.0`)
-- **Trabajo en Paralelo con:** `agy2` (`[24B]`, propietario de `pdt_persistencia_pg.py`, `pdt_ai_evaluator_graph.py`, `router.py`, `schemas.py`, `test_pdt_persistencia_pg.py`).
-- **RESTRICCIÓN ABSOLUTA DE ALCANCE:**
-  - **100% BACKEND (`backend/app/modules/compromisos/agentes_inteligentes_pdd.py`, `backend/app/modules/compromisos/pdd_dea_service.py`, `backend/tests/test_agentes_inteligentes_pdd.py`, `backend/tests/test_pdd_dea_triada.py`, `bridge/`).**
-  - **PROHIBIDO tocar cualquier archivo en `src/**` (Frontend) y PROHIBIDO tocar `pdt_ai_evaluator_graph.py`, `router.py` o `schemas.py` (asignados a `agy2`).**
+**Estado de `[25A]`:** **APROBADO** en `/root/polis/bridge/03_dictamen_codex.md` (`59 passed`, `ruff` limpio).
+
+**RESTRICCIÓN ABSOLUTA DE ALCANCE:**
+- **100% BACKEND (`backend/**`, `docs/permisos-api.md`).**
+- **PROHIBIDO TOCAR `src/**` (Frontend) bajo ninguna circunstancia.**
+- **PROHIBIDO TOCAR `backend/app/modules/compromisos/pdt_revision_por_meta.py` ni `backend/tests/test_pdt_revision_por_meta.py`** (esos dos archivos están asignados en paralelo a `agy2` en la Fase `[26B]`).
 
 ---
 
-## 1. Objetivo de la Fase [24A]: Integración Unificada de `PDT-AI-EVALUATOR` en `agentes_inteligentes_pdd.py` y `pdd_dea_service.py`
+## Objetivo de la Fase `[26A]` (`codex`)
+Integrar de forma unificada en el Router FastAPI (`router.py`, `schemas.py`, `docs/permisos-api.md`), en el Consejo Multiagente (`agentes_inteligentes_pdd.py`) y en el Servicio DEA/Tríada (`pdd_dea_service.py`):
+1. El **Motor Hoshin Kanri (`pdt_hoshin_kanri.py`)** ya completado en `[25B]`.
+2. El **Motor de Revisión Integral por Meta de las 10 Dimensiones y 7 Revisores (`pdt_revision_por_meta.py`)** que expone:
+   ```python
+   async def construir_matriz_revision_por_meta_pdt(
+       db: AsyncSession | None = None,
+       *,
+       diagnostico: dict[str, Any] | None = None,
+       codigo_plan: str | None = None,
+       sector: str | None = None,
+       dependencia: str | None = None,
+       limit: int = 100,
+   ) -> dict[str, Any]
+   ```
+   Con llaves de retorno:
+   - `sistema` (`"PDT-AI-EVALUATOR-REVISION-10D-META"`), `generado_en`, `filtros_aplicados`, `total_metas_evaluadas`
+   - `catalogo_10_dimensiones` (`list[dict]`), `catalogo_7_revisores` (`list[dict]`)
+   - `resumen_ejecutivo_revision` (`dict`), `informe_7_revisores` (`dict`), `matriz_metas` (`list[dict]`)
 
-1. **Integración en `backend/app/modules/compromisos/agentes_inteligentes_pdd.py`:**
-   - Añadir una herramienta analítica (`tool_consultar_evaluador_pdt_gbr`) registrada en `AGENT_SPECS` y ejecutada dentro del grafo `LangGraph` + `PydanticAI` que cargue sin bloqueo el diagnóstico de `PDT-AI-EVALUATOR` (leyendo `data/planes_desarrollo/cache_pdt_ai_evaluator.json` o invocando `obtener_diagnostico_pdt_ai_evaluator` + `generar_dictamen_ejecutivo_pdt`) y filtre por los términos de `consulta.pregunta` y `consulta.codigo_plan`.
-   - En `obtener_arquitectura_agentes(session)`:
-     - Mantener todas las llaves actuales del diccionario devuelto y agregar una clave aditiva `"integracion_pdt_ai_evaluator"` con el estado real del motor `PDT-AI-EVALUATOR` (`total_dmus`, `pares_malmquist`, `poligonos_postgis_lisa`, `trampas_territoriales`, `series_alto_riesgo_isri`, `dependencias_dictaminadas`, `sectores_gbr`).
-   - En `ejecutar_consulta_pdd(session, consulta)`:
-     - Enriquecer `dictamen_forense_detallado` y `evidencia_financiera_y_metas` con la llave `"evaluacion_pdt_gbr"` que incluya:
-       - DMUs DEA (`CCR`, `BCC`, `SE_o`, `rendimientos_escala`) vinculadas a la consulta.
-       - Alertas de *mission creep* (`similaridad_coseno < 0.45`) relevantes.
-       - Coldspots y `"Trampas Territoriales de Gestión Pública"` LISA.
-       - Indicadores en Alto Riesgo (`ISRI > 0.40`) y resultado de prueba de Chow (`2024`).
-       - Síntesis del pliego pericial por dependencia (`generar_dictamen_ejecutivo_pdt`).
+---
 
-2. **Integración en `backend/app/modules/compromisos/pdd_dea_service.py`:**
-   - En el payload del laboratorio prescriptivo (`obtener_laboratorio_prescriptivo_pdd_dea` / constructor del laboratorio) y del consolidado ejecutivo, añadir una clave aditiva `"evaluacion_multidimensional_pdt_ai"` que exponga el resumen estructurado de `PDT-AI-EVALUATOR` (`dea_resumen`, `nlp_coherencia_resumen`, `econometria_espacial_lisa`, `riesgo_isri_chow`, `sectores_gbr`, `top_dictamenes_dependencias`) leído desde `data/planes_desarrollo/cache_pdt_ai_evaluator.json` y `pdt_dictamen_ejecutivo.py`.
-   - Nota: En `test_pdd_dea_triada.py`, actualiza el conteo de rutas `/compromisos/triada/pdd-dea/` para aceptar `>= 19` (`assert sum(path.startswith(prefix) for path in paths) >= 19`) de modo que sea compatible con la ruta `/historial-auditoria` que agrega `agy2`.
+## Tareas Específicas (`[26A]`)
 
-3. **Pruebas y Calidad:**
-   - Ampliar `backend/tests/test_agentes_inteligentes_pdd.py` y `backend/tests/test_pdd_dea_triada.py` verificando la presencia y estructura de `"integracion_pdt_ai_evaluator"`, `"evaluacion_pdt_gbr"` y `"evaluacion_multidimensional_pdt_ai"`.
-   - Ejecutar `/root/polis/backend/.venv/bin/ruff check backend/app/modules/compromisos/agentes_inteligentes_pdd.py backend/app/modules/compromisos/pdd_dea_service.py backend/tests/test_agentes_inteligentes_pdd.py backend/tests/test_pdd_dea_triada.py` y `/root/polis/backend/.venv/bin/pytest backend/tests/test_agentes_inteligentes_pdd.py backend/tests/test_pdd_dea_triada.py -q`.
-   - Documentar el reporte en `bridge/02_resultado_codex.md` y notificar a `agy:0.0`:
-     ```bash
-     tmux send-keys -t =agy:0.0 "CODEX LISTO [24A]: Integracion unificada PDT-AI-EVALUATOR en agentes_inteligentes_pdd.py y pdd_dea_service.py completada y probada. Solicito auditoria EAF." Enter
-     ```
+1. **Endpoint FastAPI y Esquema Pydantic (`router.py`, `schemas.py`, `docs/permisos-api.md`):**
+   - En `backend/app/modules/compromisos/schemas.py`, define `PdtRevisionPorMetaRespuesta(BaseModel)` con `model_config = ConfigDict(extra="allow")` y los campos principales (`sistema: str`, `generado_en: str`, `filtros_aplicados: dict[str, Any] = Field(default_factory=dict)`, `total_metas_evaluadas: int = 0`, `catalogo_10_dimensiones: list[dict[str, Any]] = Field(default_factory=list)`, `catalogo_7_revisores: list[dict[str, Any]] = Field(default_factory=list)`, `resumen_ejecutivo_revision: dict[str, Any] = Field(default_factory=dict)`, `informe_7_revisores: dict[str, Any] = Field(default_factory=dict)`, `matriz_metas: list[dict[str, Any]] = Field(default_factory=list)`).
+   - En `backend/app/modules/compromisos/router.py`, carga dinámicamente `construir_matriz_revision_por_meta_pdt` desde `.pdt_revision_por_meta` (igual que `_cargar_hoshin_kanri_fns()`) y expón:
+     - `GET /triada/pdd-dea/pdt-ai-evaluator/revision-por-meta` (`response_model=PdtRevisionPorMetaRespuesta`), recibiendo `db: SessionDependency`, `codigo_plan: str | None = Query(default=None)`, `sector: str | None = Query(default=None)`, `dependencia: str | None = Query(default=None)`, `limit: int = Query(default=100, ge=1, le=500)`, `force_refresh: bool = Query(default=False)`.
+   - Registra la ruta `GET | /api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/revision-por-meta | publico | ...` en `docs/permisos-api.md`.
+
+2. **Integración en `agentes_inteligentes_pdd.py` y `pdd_dea_service.py`:**
+   - En `agentes_inteligentes_pdd.py`, dentro de la integración con `PDT-AI-EVALUATOR` (`integracion_pdt_ai_evaluator` / `tool_consultar_evaluador_pdt_gbr`), incluye un resumen compacto de:
+     - `hoshin_kanri_fair`: `fair_global_index`, `focus_score`, `alignment_score`, `integration_score`, `review_score` y conteo de estados en `bowling_charts_pdca` obtenidos invocando `construir_matriz_x_hoshin_kanri_pdt(diagnostico=...)` de forma resiliente.
+     - `revision_10d_resumen`: si `pdt_revision_por_meta` está disponible, incluye `resumen_ejecutivo_revision` de forma resiliente.
+   - En `pdd_dea_service.py`, dentro de `evaluacion_multidimensional_pdt_ai`, añade `hoshin_kanri_resumen` (puntajes `FAIR` y conteo de alertas PDCA/Catchball).
+
+3. **Pruebas y Calidad (`ruff` + `pytest`):**
+   - Añade pruebas en `backend/tests/test_pdt_ai_evaluator.py` y `backend/tests/test_agentes_inteligentes_pdd.py` validando la ruta `/triada/pdd-dea/pdt-ai-evaluator/revision-por-meta` y el resumen `hoshin_kanri_fair` en el consejo multiagente.
+   -Verifica que `test_access_policy.py` pase al 100% (`pytest tests/test_access_policy.py -k test_matriz_cubre_todas_las_rutas_y_sus_controles`).
+   - Escribe el reporte en `/root/polis/bridge/02_resultado_codex.md` y notifica por tmux a `=agy:0.0`:
+     `tmux send-keys -t =agy:0.0 "CODEX LISTO [26A]: Endpoint /revision-por-meta + integracion Hoshin Kanri y 10D en Consejo Multiagente completados y probados. Solicito auditoria EAF." Enter`

@@ -205,6 +205,25 @@ def _normalize_text(text_val: str) -> str:
     return re.sub(r"[^a-z0-9\s]", " ", without_accents.lower()).strip()
 
 
+def _sentido_indicador(name: Any) -> str:
+    terms = (
+        "mortalidad",
+        "desercion",
+        "pobreza",
+        "homicidio",
+        "embarazo adolescente",
+        "desnutricion",
+        "hurto",
+        "rezago",
+    )
+    normalized = _normalize_text(str(name or ""))
+    return (
+        "DESCENDENTE_FAVORABLE"
+        if any(term in normalized for term in terms)
+        else "ASCENDENTE_FAVORABLE"
+    )
+
+
 def _tokenize(text_val: str) -> set[str]:
     return {tok for tok in _normalize_text(text_val).split() if len(tok) >= 3}
 
@@ -299,6 +318,8 @@ def _enrich_cartagena_ucg_records(
                 "inversion_per_capita_cop": round(1850000.0 / max(derived_value, 5.0), 2),
                 "anio_corte": 2025,
                 "fuente_datos": "knowledge-base/barrios_cartagena.json + geodatos.territorios",
+                "naturaleza_dato": "DERIVADO_HEURISTICO",
+                "sentido_indicador": _sentido_indicador(indicator_name),
             }
         )
     return enriched
@@ -583,6 +604,17 @@ def ejecutar_econometria_espacial_pdt(
         working_records = _enrich_cartagena_ucg_records(working_records)
         enriched_with_ucg = True
 
+    for record in working_records:
+        if not record.get("naturaleza_dato"):
+            source_name = str(record.get("fuente_datos") or "").casefold()
+            record["naturaleza_dato"] = (
+                "ESTIMADO_EVIDENCIA_PDD" if "pdd" in source_name else "OBSERVADO_BD"
+            )
+        record.setdefault(
+            "sentido_indicador",
+            _sentido_indicador(record.get("nombre_indicador") or record.get("codigo_indicador")),
+        )
+
     grouped: dict[str, dict[str, Any]] = {}
     for record in working_records:
         name = str(record.get("nombre") or record.get("codigo") or "").strip()
@@ -601,6 +633,9 @@ def ejecutar_econometria_espacial_pdt(
                 "geojson_geom": record.get("geojson_geom"),
                 "wkt_geom": record.get("wkt_geom"),
                 "indicadores": [],
+                "naturaleza_dato": record.get("naturaleza_dato") or "OBSERVADO_BD",
+                "sentido_indicador": record.get("sentido_indicador")
+                or _sentido_indicador(record.get("nombre_indicador")),
             },
         )
         if not entry.get("geojson_geom") and record.get("geojson_geom"):
@@ -619,6 +654,16 @@ def ejecutar_econometria_espacial_pdt(
                     "valor": ind_val,
                     "anio": record.get("anio_corte"),
                     "fuente": record.get("fuente_datos"),
+                    "naturaleza_dato": record.get("naturaleza_dato")
+                    or (
+                        "ESTIMADO_EVIDENCIA_PDD"
+                        if "pdd" in str(record.get("fuente_datos") or "").casefold()
+                        else "OBSERVADO_BD"
+                    ),
+                    "sentido_indicador": record.get("sentido_indicador")
+                    or _sentido_indicador(
+                        record.get("nombre_indicador") or "Indicador Territorial"
+                    ),
                 }
             )
 
@@ -627,6 +672,7 @@ def ejecutar_econometria_espacial_pdt(
         return _plain(
             {
                 "estado": "PENDIENTE_GEOMETRIAS_O_INDICADORES",
+                "registros_territoriales": _plain(working_records),
                 "n": len(grouped),
                 "moran_global_i": None,
                 "p_valor_permutacion": None,
@@ -678,6 +724,13 @@ def ejecutar_econometria_espacial_pdt(
                     "valor": val,
                     "inversion_x": float(inv_x),
                     "fuente": ind.get("fuente"),
+                    "naturaleza_dato": ind.get(
+                        "naturaleza_dato", territory.get("naturaleza_dato", "OBSERVADO_BD")
+                    ),
+                    "sentido_indicador": ind.get(
+                        "sentido_indicador",
+                        territory.get("sentido_indicador", "ASCENDENTE_FAVORABLE"),
+                    ),
                 }
             )
 
@@ -698,6 +751,7 @@ def ejecutar_econometria_espacial_pdt(
         return _plain(
             {
                 "estado": "PENDIENTE_DATOS_ESPACIALES",
+                "registros_territoriales": _plain(working_records),
                 "n": count,
                 "indicador": most_covered,
                 "moran_global_i": None,
@@ -760,6 +814,23 @@ def ejecutar_econometria_espacial_pdt(
             {
                 "codigo_indicador": indicator_code_by_name.get(ind_name, "IND-TERR"),
                 "nombre_indicador": ind_name,
+                "naturaleza_dato": (
+                    "DERIVADO_HEURISTICO"
+                    if any(row.get("naturaleza_dato") == "DERIVADO_HEURISTICO" for row in rows_ind)
+                    else rows_ind[0].get("naturaleza_dato", "OBSERVADO_BD")
+                ),
+                "naturaleza_dato_por_observacion": {
+                    value: sum(row.get("naturaleza_dato") == value for row in rows_ind)
+                    for value in (
+                        "OBSERVADO_BD",
+                        "ESTIMADO_EVIDENCIA_PDD",
+                        "DERIVADO_HEURISTICO",
+                    )
+                    if any(row.get("naturaleza_dato") == value for row in rows_ind)
+                },
+                "sentido_indicador": rows_ind[0].get(
+                    "sentido_indicador", _sentido_indicador(ind_name)
+                ),
                 "n_territorios": len(arr_ind),
                 "media": round(float(np.mean(arr_ind)), 4),
                 "desviacion_estandar": round(float(np.std(arr_ind)), 4),
@@ -815,14 +886,22 @@ def ejecutar_econometria_espacial_pdt(
         else:
             cuadrante = "Bajo-Alto (Outlier espacial)"
 
-        cluster = cuadrante if local_p < 0.05 else "No significativo"
+        is_significant = local_p <= 0.05
+        cluster = cuadrante if is_significant else "No significativo"
         local_rows.append(
             {
                 "codigo": codes[idx],
                 "unidad": names[idx],
+                "naturaleza_dato": selected_rows[idx].get("naturaleza_dato", "OBSERVADO_BD"),
+                "sentido_indicador": selected_rows[idx].get(
+                    "sentido_indicador", _sentido_indicador(most_covered)
+                ),
                 "valor": round(float(numbers[idx]), 4),
                 "Ii": round(local_i, 8),
                 "p_valor_permutacion": round(float(local_p), 6),
+                "significancia_estadistica": "SIGNIFICATIVO_P_005"
+                if is_significant
+                else "EXPLORATORIO_NO_SIGNIFICATIVO",
                 "cluster": cluster,
                 "cuadrante_moran": cuadrante,
                 "z_score": round(float(z_scores[idx]), 6),
@@ -845,43 +924,29 @@ def ejecutar_econometria_espacial_pdt(
         for item in local_rows
         if "Bajo-Bajo" in item["cuadrante_moran"] and item["z_score"] <= -0.35
     }
-    coldspots = sorted(coldspots_sig | (coldspots_quad if not coldspots_sig else set()))
+    coldspots = sorted(coldspots_sig)
+    coldspots_exploratorios = sorted(coldspots_quad - coldspots_sig)
     outliers = sorted({item["unidad"] for item in local_rows if "Outlier" in item["cluster"]})
 
     # Cruce de unidades ineficientes DEA con Coldspots (por localidad/UCG)
     traps: list[str] = []
     trap_details: list[dict[str, Any]] = []
+    trap_hypotheses: list[dict[str, Any]] = []
     for unit in sorted(set(inefficient_units)):
         matched_coldspot = next(
             (
                 cs
                 for cs in coldspots
-                if cs.casefold() in unit.casefold()
-                or unit.casefold() in cs.casefold()
-                or (
-                    (enriched_with_ucg or real_poly_count >= 5)
-                    and any(
-                        tok in _normalize_text(unit)
-                        for tok in ("educacion", "salud", "infraestructura", "social", "localidad")
-                    )
-                )
+                if cs.casefold() in unit.casefold() or unit.casefold() in cs.casefold()
             ),
             None,
         )
-        if matched_coldspot is None and any(
-            cs.casefold() in unit.casefold() or unit.casefold() in cs.casefold()
-            for cs in coldspots_quad
-        ):
-            matched_coldspot = next(
-                cs
-                for cs in sorted(coldspots_quad)
-                if cs.casefold() in unit.casefold() or unit.casefold() in cs.casefold()
-            )
         if matched_coldspot is not None:
             traps.append(unit)
             trap_details.append(
                 {
                     "unidad_dmu": unit,
+                    "estado_vinculo": "VINCULO_ACREDITADO",
                     "coldspot_asociado": matched_coldspot,
                     "alerta": "Trampa Territorial de Gestión Pública",
                     "diagnostico": (
@@ -890,11 +955,49 @@ def ejecutar_econometria_espacial_pdt(
                     ),
                 }
             )
+            continue
+        matched_exploratory = next(
+            (
+                cs
+                for cs in coldspots_exploratorios
+                if cs.casefold() in unit.casefold() or unit.casefold() in cs.casefold()
+            ),
+            None,
+        )
+        if matched_exploratory is not None:
+            trap_hypotheses.append(
+                {
+                    "unidad_dmu": unit,
+                    "estado_vinculo": "HIPOTESIS_PENDIENTE_REVISION",
+                    "coldspots_candidatos": [matched_exploratory],
+                    "coincidencia_territorial_explicita": True,
+                    "significancia_estadistica": "EXPLORATORIO_NO_SIGNIFICATIVO",
+                    "requiere_soporte_proyecto_territorio": True,
+                }
+            )
+            continue
+        normalized_unit = _normalize_text(unit)
+        generic_terms = ("educacion", "salud", "infraestructura", "social", "localidad")
+        if any(token in normalized_unit for token in generic_terms) and (
+            coldspots or coldspots_exploratorios
+        ):
+            trap_hypotheses.append(
+                {
+                    "unidad_dmu": unit,
+                    "estado_vinculo": "HIPOTESIS_PENDIENTE_REVISION",
+                    "coldspots_candidatos": sorted(set(coldspots + coldspots_exploratorios)),
+                    "senal_generica": [
+                        token for token in generic_terms if token in normalized_unit
+                    ],
+                    "requiere_soporte_proyecto_territorio": True,
+                }
+            )
 
     fuentes = sorted({str(row["fuente"]) for row in selected_rows if row.get("fuente")})
     return _plain(
         {
             "estado": "ESTIMADO_GEOPANDAS_LISA",
+            "registros_territoriales": _plain(working_records),
             "n": count,
             "indicador": most_covered,
             "codigo_indicador": indicator_code_by_name.get(most_covered, "IND-TERR"),
@@ -931,9 +1034,11 @@ def ejecutar_econometria_espacial_pdt(
             "desagregacion_ucg_cartagena": enriched_with_ucg or real_poly_count >= 15,
             "hotspots": hotspots,
             "coldspots": coldspots,
+            "coldspots_exploratorios": coldspots_exploratorios,
             "outliers_espaciales": outliers,
             "unidades_dea_ineficientes_en_coldspots": traps,
             "trampas_territoriales_gestion_publica": trap_details,
+            "hipotesis_trampas_territoriales": trap_hypotheses,
             "geometrias": (
                 f"GeoPandas GeoDataFrame proyectado en EPSG:3116 (MAGNA-SIRGAS) con "
                 f"{real_poly_count}/{count} polígonos ST_MultiPolygon PostGIS reales "
@@ -1192,6 +1297,16 @@ def ejecutar_analitica_predictiva_pdt(
     """
     grouped: dict[str, dict[int, list[float]]] = defaultdict(lambda: defaultdict(list))
     targets: dict[str, list[float]] = defaultdict(list)
+    reduction_terms = (
+        "mortalidad",
+        "desercion",
+        "pobreza",
+        "homicidio",
+        "embarazo adolescente",
+        "desnutricion",
+        "hurto",
+        "rezago",
+    )
 
     for record in normalized_records or []:
         indicator = str(record.get("indicador") or record.get("codigo_meta_pdd") or "").strip()
@@ -1201,8 +1316,16 @@ def ejecutar_analitica_predictiva_pdt(
             value = record.get("avance_fisico_pct")
         if indicator and year is not None and value is not None:
             grouped[indicator][int(year)].append(float(value))
-            if record.get("meta_programada_anual") is not None:
-                targets[indicator].append(float(record["meta_programada_anual"]))
+            percentage_target = record.get("meta_cuatrienio_pct")
+            annual_target = record.get("meta_programada_anual")
+            if (
+                percentage_target is None
+                and annual_target is not None
+                and 0 < float(annual_target) <= 100
+            ):
+                percentage_target = annual_target
+            if percentage_target is not None and 0 < float(percentage_target) <= 100:
+                targets[indicator].append(float(percentage_target))
         entity_name = record.get("entidad_normalizada")
         if entity_name and year is not None and value is not None:
             ent_key = f"Entidad Ejecutora: {entity_name}"
@@ -1236,18 +1359,52 @@ def ejecutar_analitica_predictiva_pdt(
         fit_info = _fit_arima_or_ols_series(years, values, final_year, use_arima=use_arima)
         forecast = float(fit_info["forecast"])
         sigma = float(fit_info["sigma"])
-        target = max(targets[indicator]) if targets[indicator] else 100.0
+        is_percentage = all(0 <= value <= 100 for value in values)
+        target = (
+            max(targets[indicator])
+            if targets[indicator] and is_percentage
+            else 100.0
+            if is_percentage
+            else max(targets[indicator], default=0.0)
+        )
+        direction = (
+            "REDUCCION"
+            if any(term in _normalize_text(indicator) for term in reduction_terms)
+            else "INCREMENTO"
+        )
         if sigma > 1e-9:
-            probability_meet = float(norm.cdf((forecast - target) / sigma))
+            z_score = (target - forecast) / sigma
+            probability_meet = float(norm.cdf(z_score if direction == "REDUCCION" else -z_score))
         else:
-            probability_meet = 1.0 if forecast >= target else 0.0
+            met = forecast <= target if direction == "REDUCCION" else forecast >= target
+            probability_meet = 1.0 if met else 0.0
         isri = max(0.0, min(1.0, 1.0 - probability_meet))
         ci_low = forecast - 1.96 * sigma
         ci_high = forecast + 1.96 * sigma
 
+        holdout = None
+        if len(values) >= 4:
+            train = np.asarray(values[:-1], dtype=float)
+            actual = float(values[-1])
+            naive = float(train[-1])
+            # One-step linear trend forecast on the training window, held out by year.
+            model_holdout = float(
+                np.polyval(np.polyfit(np.arange(len(train)), train, 1), len(train))
+            )
+            holdout = {
+                "vigencia_holdout": years[-1],
+                "valor_observado": round(actual, 6),
+                "pronostico_modelo": round(model_holdout, 6),
+                "mae_holdout": round(abs(actual - model_holdout), 6),
+                "naive_last_value": {
+                    "pronostico": round(naive, 6),
+                    "mae": round(abs(actual - naive), 6),
+                },
+            }
         series_results.append(
             {
                 "indicador": indicator,
+                "sentido_indicador": direction,
                 "estado": fit_info["estado"],
                 "n_observaciones": len(years),
                 "serie": [
@@ -1265,8 +1422,10 @@ def ejecutar_analitica_predictiva_pdt(
                     "ic_95": [round(ci_low, 4), round(ci_high, 4)],
                 },
                 "meta_cuatrienio": round(target, 4),
+                "unidad_meta": "PORCENTAJE" if is_percentage else "UNIDAD_INDICADOR",
                 "probabilidad_cumplimiento": round(probability_meet, 8),
                 "ISRI": round(isri, 8),
+                "validacion_temporal_holdout": holdout,
                 "bandera": ("Alto Riesgo de Incumplimiento" if isri > isri_threshold else None),
                 "chow": chow_res,
             }

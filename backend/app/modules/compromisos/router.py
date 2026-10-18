@@ -61,12 +61,15 @@ from app.modules.compromisos.schemas import (
     CruceTresLecturasRespuesta,
     CruzarTresLecturasSolicitud,
     DetectarFormatoPlanAccionSolicitud,
+    HoshinKanriEspecificacionRespuesta,
+    HoshinKanriMatrizXRespuesta,
     KpisSeguimientoRespuesta,
     MatrizPlanAccionRespuesta,
     PdtAiEvaluatorEjecutarRequest,
     PdtAiEvaluatorValidarCheckpointRequest,
     PdtDictamenEjecutivoRespuesta,
     PdtHistorialAuditoriaRespuesta,
+    PdtRevisionPorMetaRespuesta,
     ProcesarLotePlanAccionRespuesta,
     ProcesarLotePlanAccionSolicitud,
     ResumenTriadaRespuesta,
@@ -1125,3 +1128,170 @@ async def pdt_ai_evaluator_historial_auditoria(
 ):
     return await obtener_historial_auditoria_pdt_pg(db, thread_id=thread_id, limit=limit)
 
+
+def _cargar_hoshin_kanri_fns():
+    import importlib
+
+    module = importlib.import_module(".pdt_hoshin_kanri", package="app.modules.compromisos")
+    return (
+        module.obtener_especificacion_hoshin_kanri_pdt,
+        module.construir_matriz_x_hoshin_kanri_pdt,
+    )
+
+
+async def _invocar_hoshin(fn, **kwargs):
+    import inspect
+
+    parameters = inspect.signature(fn).parameters
+    call_kwargs = {name: value for name, value in kwargs.items() if name in parameters}
+    result = fn(**call_kwargs)
+    return await result if inspect.isawaitable(result) else result
+
+
+@router.get(
+    "/triada/pdd-dea/pdt-ai-evaluator/hoshin-kanri/especificacion",
+    response_model=HoshinKanriEspecificacionRespuesta,
+    summary="Especificación metodológica Hoshin Kanri y Matriz X para PDT",
+)
+async def pdt_hoshin_kanri_especificacion():
+    fn_especificacion, _ = _cargar_hoshin_kanri_fns()
+    return await _invocar_hoshin(fn_especificacion)
+
+
+@router.get(
+    "/triada/pdd-dea/pdt-ai-evaluator/hoshin-kanri/matriz-x",
+    response_model=HoshinKanriMatrizXRespuesta,
+    summary="Matriz X Hoshin Kanri del Plan de Desarrollo Territorial",
+)
+async def pdt_hoshin_kanri_matriz_x(
+    db: SessionDependency,
+    codigo_plan: str | None = Query(default=None),
+    sector: str | None = Query(default=None),
+    dependencia: str | None = Query(default=None),
+    force_refresh: bool = Query(default=False),
+):
+    _, fn_matriz = _cargar_hoshin_kanri_fns()
+    diagnostic = None
+    if force_refresh:
+        _, fn_ejecutar, _ = _cargar_pdt_ai_evaluator_fns()
+        diagnostic = await fn_ejecutar(db, force_refresh=True)
+    return await _invocar_hoshin(
+        fn_matriz,
+        db=db,
+        session=db,
+        diagnostico=diagnostic,
+        codigo_plan=codigo_plan,
+        sector=sector,
+        dependencia=dependencia,
+        force_refresh=force_refresh,
+    )
+
+
+def _cargar_revision_por_meta_fn():
+    import importlib
+
+    module = importlib.import_module(".pdt_revision_por_meta", package="app.modules.compromisos")
+    return module.construir_matriz_revision_por_meta_pdt, module
+
+
+async def _invocar_revision_por_meta(fn, **kwargs):
+    import asyncio
+    import inspect
+
+    parameters = inspect.signature(fn).parameters
+    call_kwargs = {name: value for name, value in kwargs.items() if name in parameters}
+    if inspect.iscoroutinefunction(fn):
+        return await fn(**call_kwargs)
+    result = await asyncio.to_thread(fn, **call_kwargs)
+    return await result if inspect.isawaitable(result) else result
+
+
+def _normalizar_revision_por_meta(resultado: dict, module, filtros: dict) -> dict:
+    resultado = resultado if isinstance(resultado, dict) else {}
+    specification = module.obtener_especificacion_revision_por_meta()
+    dimensions = resultado.get("catalogo_10_dimensiones")
+    if dimensions is None:
+        dimensions = [
+            {"dimension": name, **details}
+            for name, details in specification.get("diez_dimensiones_revision", {}).items()
+        ]
+    reviewers = resultado.get("catalogo_7_revisores")
+    if reviewers is None:
+        reviewers = [
+            {"rol": name, **details}
+            for name, details in specification.get("siete_roles_revisores", {}).items()
+        ]
+    metas = resultado.get("matriz_metas", resultado.get("metas_auditadas", []))
+    summary = resultado.get("resumen_ejecutivo_revision")
+    if summary is None:
+        summary = resultado.get("resumen_auditoria") or {
+            "total_metas_plan": resultado.get("total_metas_plan", len(metas)),
+            "total_metas_filtradas": resultado.get("total_metas_filtradas", len(metas)),
+            "metas_devueltas": resultado.get("metas_devueltas", len(metas)),
+        }
+    reviewers_report = resultado.get("informe_7_revisores")
+    if reviewers_report is None:
+        reviewers_report = {
+            "roles": reviewers,
+            "revisiones_por_meta": [
+                {
+                    "codigo_meta": item.get("codigo_meta"),
+                    "revisores": item.get("dictamen_7_revisores", {}),
+                }
+                for item in metas
+                if item.get("dictamen_7_revisores")
+            ],
+        }
+    return {
+        **resultado,
+        "sistema": resultado.get("sistema", "PDT-AI-EVALUATOR-REVISION-10D-META"),
+        "generado_en": str(resultado.get("generado_en") or ""),
+        "filtros_aplicados": resultado.get("filtros_aplicados") or filtros,
+        "total_metas_evaluadas": int(
+            resultado.get("total_metas_evaluadas", resultado.get("metas_devueltas", len(metas)))
+            or 0
+        ),
+        "catalogo_10_dimensiones": dimensions,
+        "catalogo_7_revisores": reviewers,
+        "resumen_ejecutivo_revision": summary,
+        "informe_7_revisores": reviewers_report,
+        "matriz_metas": metas,
+    }
+
+
+@router.get(
+    "/triada/pdd-dea/pdt-ai-evaluator/revision-por-meta",
+    response_model=PdtRevisionPorMetaRespuesta,
+    summary="Revisión integral por meta PDD en 10 dimensiones y 7 revisores",
+)
+async def pdt_ai_evaluator_revision_por_meta(
+    db: SessionDependency,
+    codigo_plan: str | None = Query(default=None),
+    sector: str | None = Query(default=None),
+    dependencia: str | None = Query(default=None),
+    limit: int = Query(default=100, ge=1, le=500),
+    force_refresh: bool = Query(default=False),
+):
+    fn_revision, module = _cargar_revision_por_meta_fn()
+    diagnostico = None
+    if force_refresh:
+        _, fn_ejecutar, _ = _cargar_pdt_ai_evaluator_fns()
+        diagnostico = await fn_ejecutar(db, force_refresh=True)
+    filters = {
+        "codigo_plan": codigo_plan,
+        "sector": sector,
+        "dependencia": dependencia,
+        "limit": limit,
+        "force_refresh": force_refresh,
+    }
+    resultado = await _invocar_revision_por_meta(
+        fn_revision,
+        db=db,
+        diagnostico=diagnostico,
+        codigo_plan=codigo_plan or "PDD_2024_2027",
+        sector=sector,
+        dependencia=dependencia,
+        limit=limit,
+        force_refresh=force_refresh,
+    )
+    return _normalizar_revision_por_meta(resultado, module, filters)

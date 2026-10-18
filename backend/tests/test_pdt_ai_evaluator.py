@@ -6,6 +6,7 @@ import re
 import pytest
 
 from app.modules.compromisos import pdt_ai_evaluator_graph as evaluator
+from app.modules.compromisos import router
 
 
 def _state() -> evaluator.AgentState:
@@ -52,6 +53,38 @@ def test_specification_covers_methodology_and_sectors():
     )
     assert "0.45" in str(specification)
     assert "0.4" in str(specification)
+
+
+def test_revision_por_meta_route_normalizes_legacy_builder(monkeypatch):
+    class FakeModule:
+        @staticmethod
+        def obtener_especificacion_revision_por_meta():
+            return {
+                "diez_dimensiones_revision": {"coherencia": {"peso": 0.1}},
+                "siete_roles_revisores": {"curador": {"funcion": "validar"}},
+            }
+
+    def builder(codigo_plan, dependencia, limit):
+        assert codigo_plan == "PDD_TEST"
+        assert dependencia == "Salud"
+        assert limit == 25
+        return {
+            "metas_auditadas": [{"codigo_meta": "M1"}],
+            "resumen_auditoria": {"total_metas_plan": 1},
+            "generado_en": "2026-10-18T00:00:00Z",
+        }
+
+    monkeypatch.setattr(router, "_cargar_revision_por_meta_fn", lambda: (builder, FakeModule))
+    result = asyncio.run(
+        router.pdt_ai_evaluator_revision_por_meta(object(), "PDD_TEST", None, "Salud", 25, False)
+    )
+
+    assert result["sistema"] == "PDT-AI-EVALUATOR-REVISION-10D-META"
+    assert result["total_metas_evaluadas"] == 1
+    assert result["catalogo_10_dimensiones"][0]["dimension"] == "coherencia"
+    assert result["catalogo_7_revisores"][0]["rol"] == "curador"
+    assert result["resumen_ejecutivo_revision"] == {"total_metas_plan": 1}
+    assert result["matriz_metas"][0]["codigo_meta"] == "M1"
 
 
 def test_system_prompt_matches_knowledge_specification():
@@ -236,3 +269,97 @@ def test_dea_node_reports_slacks_simar_wilson_and_four_distance_malmquist():
     )
     assert dea["malmquist"]["pares"]
     assert all({"Pech", "Techch", "MPI"} <= pair.keys() for pair in dea["malmquist"]["pares"])
+
+
+def test_dea_eficiencia_invariante_a_unidad_monetaria_comun():
+    state = _state()
+    state["df_financial"] = [
+        {"dmu": "A", "vigencia": 2024, "insumo_cop": 100_000.0},
+        {"dmu": "B", "vigencia": 2024, "insumo_cop": 250_000.0},
+        {"dmu": "C", "vigencia": 2024, "insumo_cop": 300_000.0},
+    ]
+    state["df_outputs"] = [
+        {"dmu": name, "vigencia": 2024, "ejecutado_pct": pct}
+        for name, pct in zip(("A", "B", "C"), (30.0, 80.0, 90.0), strict=True)
+    ]
+    state["df_outcomes"] = [
+        {"dmu": name, "vigencia": 2024, "avance_estrategico_pct": pct}
+        for name, pct in zip(("A", "B", "C"), (30.0, 80.0, 90.0), strict=True)
+    ]
+    baseline = evaluator._dea_node(state)["dea_scores"]["resultados_dmu"]
+    scaled_state = {
+        **state,
+        "df_financial": [
+            {**row, "insumo_cop": row["insumo_cop"] * 1000} for row in state["df_financial"]
+        ],
+    }
+    scaled = evaluator._dea_node(scaled_state)["dea_scores"]["resultados_dmu"]
+    for left, right in zip(baseline, scaled, strict=True):
+        assert left["theta_ccr"] == pytest.approx(right["theta_ccr"], abs=1e-8)
+        assert left["theta_bcc"] == pytest.approx(right["theta_bcc"], abs=1e-8)
+
+
+def test_build_state_preserva_ejecucion_cero_y_fingerprint():
+    data = {
+        "plans": [],
+        "documents": [],
+        "nodes": [],
+        "goals": [],
+        "activities": [],
+        "normalized": [
+            {
+                "entidad_normalizada": "Secretaría de Salud",
+                "vigencia": 2024,
+                "apropiacion_definitiva_cop": 100,
+                "meta_ejecutada_anual": 0.0,
+                "avance_fisico_pct": 75.0,
+                "avance_estrategico_pct": 70.0,
+            }
+        ],
+        "territories": [],
+    }
+    state = evaluator._build_state(data, "Cartagena", "2024-2027", "zero-test")
+    assert state["df_outputs"][0]["ejecutado"] == 0.0
+    assert state["df_outputs"][0]["grupo_comparabilidad_dea"] == "EJECUCION_PRESUPUESTAL_OBSERVADA"
+    assert len(state["fingerprint_sources_sha256"]) == 64
+    assert state["version_metodologica"] == evaluator.VERSION_METODOLOGICA_PDT
+
+
+def test_cache_se_reutiliza_solo_con_fingerprint_de_fuentes_igual(tmp_path, monkeypatch):
+    data = {
+        "plans": [],
+        "documents": [],
+        "nodes": [],
+        "goals": [],
+        "activities": [],
+        "normalized": [],
+        "territories": [],
+    }
+    state = evaluator._build_state(data, "Cartagena", "2024-2027", "fingerprint-test")
+    monkeypatch.setattr(evaluator, "CACHE_PATH", tmp_path / "cache.json")
+    cached = {
+        "version_metodologica": evaluator.VERSION_METODOLOGICA_PDT,
+        "fingerprint_fuentes_sha256": state["fingerprint_sources_sha256"],
+        "cached_result": True,
+    }
+    evaluator._save_cached(
+        evaluator._cache_key("Cartagena", "2024-2027", "fingerprint-test"),
+        "fingerprint-test",
+        cached,
+    )
+
+    async def load(_db):
+        return data
+
+    monkeypatch.setattr(evaluator, "_load_corpus", load)
+    monkeypatch.setattr(evaluator, "_compiled_graph", lambda: pytest.fail("cache miss"))
+    result = asyncio.run(
+        evaluator.ejecutar_pdt_ai_evaluator(
+            object(),
+            jurisdiction="Cartagena",
+            time_horizon="2024-2027",
+            thread_id="fingerprint-test",
+        )
+    )
+    assert result["cached_result"] is True
+    assert result["cache"]["estado"] == "HIT"

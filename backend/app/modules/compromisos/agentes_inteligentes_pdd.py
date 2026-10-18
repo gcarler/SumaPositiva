@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import asyncio
 import hashlib
+import inspect
 import json
 import os
 import re
@@ -130,16 +131,17 @@ async def _load_pdt_diagnostic(session: AsyncSession) -> tuple[dict[str, Any] | 
 
 def _matches_pdt_filter(value: Any, terms: list[str], plan_code: str) -> bool:
     haystack = str(value or "").casefold()
+    plan_matches = True
     if plan_code != "TODOS":
         plan = plan_code.casefold()
         years = re.findall(r"20\d{2}", plan)
-        if plan in haystack:
-            return True
+        plan_matches = plan in haystack
         row_year = re.search(r"20\d{2}", haystack)
-        if years and row_year and int(years[0]) <= int(row_year.group()) <= int(years[-1]):
-            return True
-        return False
-    return not terms or any(term in haystack for term in terms)
+        plan_matches = plan_matches or bool(
+            years and row_year and int(years[0]) <= int(row_year.group()) <= int(years[-1])
+        )
+    terms_match = not terms or any(term.casefold() in haystack for term in terms)
+    return plan_matches and terms_match
 
 
 async def _evaluacion_pdt_gbr(
@@ -155,6 +157,8 @@ async def _evaluacion_pdt_gbr(
             "trampas_territoriales": [],
             "indicadores_isri_alto_riesgo": [],
             "dictamenes_dependencias": [],
+            "hoshin_kanri_fair": {"estado": "PENDIENTE"},
+            "revision_10d_resumen": {"estado": "PENDIENTE"},
         }
     terms = _terms(consulta.pregunta)
     dea = diagnostic.get("dea_scores", {})
@@ -216,6 +220,8 @@ async def _evaluacion_pdt_gbr(
             else _matches_pdt_filter(row.get("dependencia"), terms, consulta.codigo_plan)
         )
     ]
+    hoshin_summary = await _resumen_hoshin_kanri(diagnostic, consulta)
+    revision_summary = await _resumen_revision_10d(session, diagnostic, consulta)
     return {
         "estado": diagnostic.get("estado_checkpointer", "DISPONIBLE"),
         "fuente": source,
@@ -249,7 +255,88 @@ async def _evaluacion_pdt_gbr(
             {"indicador": row.get("indicador"), **(row.get("chow") or {})} for row in risks
         ],
         "dictamenes_dependencias": briefs,
+        "hoshin_kanri_fair": hoshin_summary,
+        "revision_10d_resumen": revision_summary,
     }
+
+
+async def _resumen_hoshin_kanri(
+    diagnostic: dict[str, Any], consulta: ConsultaAgentesPDD
+) -> dict[str, Any]:
+    try:
+        from app.modules.compromisos.pdt_hoshin_kanri import construir_matriz_x_hoshin_kanri_pdt
+
+        result = await asyncio.to_thread(
+            construir_matriz_x_hoshin_kanri_pdt,
+            diagnostico=diagnostic,
+            codigo_plan=None if consulta.codigo_plan == "TODOS" else consulta.codigo_plan,
+        )
+        if inspect.isawaitable(result):
+            result = await result
+        fair = result.get("evaluacion_fair") or {}
+        charts = result.get("bowling_charts") or []
+        states: dict[str, int] = {}
+        for chart in charts:
+            state = str(chart.get("color_semaforo") or chart.get("estado") or "SIN_ESTADO")
+            states[state] = states.get(state, 0) + 1
+        return {
+            "estado": "DISPONIBLE",
+            **{
+                key: fair.get(key)
+                for key in (
+                    "fair_global_index",
+                    "focus_score",
+                    "alignment_score",
+                    "integration_score",
+                    "review_score",
+                )
+            },
+            "bowling_charts_pdca": {
+                "total": len(charts),
+                "conteo_estados": states,
+            },
+        }
+    except Exception as exc:
+        return {"estado": "NO_DISPONIBLE", "detalle": type(exc).__name__}
+
+
+async def _resumen_revision_10d(
+    session: AsyncSession, diagnostic: dict[str, Any], consulta: ConsultaAgentesPDD
+) -> dict[str, Any]:
+    try:
+        from app.modules.compromisos.pdt_revision_por_meta import (
+            construir_matriz_revision_por_meta_pdt,
+        )
+
+        parameters = inspect.signature(construir_matriz_revision_por_meta_pdt).parameters
+        kwargs = {
+            "db": session,
+            "diagnostico": diagnostic,
+            "codigo_plan": (
+                "PDD_2024_2027" if consulta.codigo_plan == "TODOS" else consulta.codigo_plan
+            ),
+            "dependencia": None,
+            "limit": 100,
+        }
+        kwargs = {name: value for name, value in kwargs.items() if name in parameters}
+        if inspect.iscoroutinefunction(construir_matriz_revision_por_meta_pdt):
+            result = await construir_matriz_revision_por_meta_pdt(**kwargs)
+        else:
+            result = await asyncio.to_thread(construir_matriz_revision_por_meta_pdt, **kwargs)
+            if inspect.isawaitable(result):
+                result = await result
+        if not isinstance(result, dict):
+            return {"estado": "NO_DISPONIBLE"}
+        summary = result.get("resumen_ejecutivo_revision") or result.get("resumen_auditoria")
+        return {
+            "estado": "DISPONIBLE" if summary is not None else "RESUMEN_NO_DISPONIBLE",
+            "total_metas_evaluadas": result.get(
+                "total_metas_evaluadas", result.get("metas_devueltas", 0)
+            ),
+            "resumen_ejecutivo_revision": summary or {},
+        }
+    except Exception as exc:
+        return {"estado": "NO_DISPONIBLE", "detalle": type(exc).__name__}
 
 
 async def _query_evidencias(ctx: ToolContext) -> list[dict[str, Any]]:

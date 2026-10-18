@@ -134,6 +134,24 @@ def generar_dictamen_ejecutivo_pdt(
         if item.get("ISRI") is not None and float(item["ISRI"]) > 0.40
     ]
 
+    def _explicitly_attributed(item: dict[str, Any], dependency: str) -> bool:
+        if _normalizar(item.get("entidad")) == _normalizar(dependency):
+            return True
+        prefix = "entidad ejecutora:"
+        for field in ("indicador", "serie", "nombre", "identificador"):
+            value = str(item.get(field) or "").strip()
+            if _normalizar(value).startswith(prefix):
+                credited = value.split(":", maxsplit=1)[1].strip()
+                if _normalizar(credited) == _normalizar(dependency):
+                    return True
+        return False
+
+    unattributed_critical = [
+        item
+        for item in critical_series
+        if not any(_explicitly_attributed(item, name) for name in dependency_names)
+    ]
+
     briefs = []
     for name in dependency_names:
         rows = by_dependency[name]
@@ -148,13 +166,7 @@ def generar_dictamen_ejecutivo_pdt(
         dep_malmquist = [
             item for item in malmquist_rows if _normalizar(item.get("unidad")) == _normalizar(name)
         ]
-        dep_critical = [
-            item
-            for item in critical_series
-            if _normalizar(name) in _normalizar(item.get("indicador", ""))
-            or _normalizar(item.get("entidad")) == _normalizar(name)
-            or item.get("entidad") is None
-        ]
+        dep_critical = [item for item in critical_series if _explicitly_attributed(item, name)]
         inefficient = any(
             row.get("theta_bcc") is not None and float(row["theta_bcc"]) < 1 - 1e-6 for row in rows
         )
@@ -308,6 +320,8 @@ def generar_dictamen_ejecutivo_pdt(
     )
     return {
         "filtros": {"dependencia": dependencia, "sector": sector},
+        "indicadores_isri_sin_atribucion": unattributed_critical,
+        "total_indicadores_isri_sin_atribucion": len(unattributed_critical),
         "dependencia": dependencia,
         "sector": sector,
         "resumen_ejecutivo": summary,
