@@ -25,8 +25,8 @@ import pandas as pd
 import statsmodels.api as sm
 from scipy.stats import f as f_distribution
 from scipy.stats import norm
-from shapely import box, voronoi_polygons
-from shapely.geometry import MultiPoint, Point, Polygon
+from shapely import box, make_valid, voronoi_polygons, wkt
+from shapely.geometry import MultiPoint, MultiPolygon, Point, Polygon, shape
 from statsmodels.tsa.arima.model import ARIMA
 from statsmodels.tsa.vector_ar.var_model import VAR
 
@@ -326,17 +326,49 @@ def _should_enrich_cartagena(records: list[dict[str, Any]]) -> bool:
     return "cartagena" in joined_all or "localidad" in joined_all or "13001" in joined_all
 
 
+def _parse_postgis_polygon(raw_geom: Any) -> Polygon | MultiPolygon | None:
+    """Parsea una geometría poligonal desde GeoJSON (str/dict), WKT o instancia Shapely."""
+    if raw_geom is None:
+        return None
+    if isinstance(raw_geom, (Polygon, MultiPolygon)):
+        return make_valid(raw_geom) if not raw_geom.is_valid else raw_geom
+    if isinstance(raw_geom, dict):
+        try:
+            geom = shape(raw_geom)
+            if isinstance(geom, (Polygon, MultiPolygon)) and not geom.is_empty:
+                return make_valid(geom) if not geom.is_valid else geom
+        except Exception:
+            return None
+    if isinstance(raw_geom, str):
+        text_geom = raw_geom.strip()
+        if not text_geom:
+            return None
+        try:
+            if text_geom.startswith("{"):
+                geom = shape(json.loads(text_geom))
+            else:
+                geom = wkt.loads(text_geom)
+            if isinstance(geom, (Polygon, MultiPolygon)) and not geom.is_empty:
+                return make_valid(geom) if not geom.is_valid else geom
+        except Exception:
+            return None
+    return None
+
+
 def _build_spatial_geodataframe(
     territories: list[dict[str, Any]],
 ) -> gpd.GeoDataFrame:
     """Construye un GeoDataFrame en EPSG:4326, lo proyecta a EPSG:3116 (MAGNA-SIRGAS) y
-    calcula polígonos de Voronoi acotados para habilitar contigüidad Queen real.
+    prioriza los polígonos reales MultiPolygon/Polygon de PostGIS (geojson_geom/wkt_geom)
+    antes de recurrir al Voronoi sintético acotado.
     """
     rows = []
-    geometries = []
+    point_geometries = []
+    raw_polygons_wgs84: list[Polygon | MultiPolygon | None] = []
     for item in territories:
         lon = float(item["lon"])
         lat = float(item["lat"])
+        poly_wgs84 = _parse_postgis_polygon(item.get("geojson_geom") or item.get("wkt_geom"))
         rows.append(
             {
                 "codigo": str(item.get("codigo") or item["nombre"]),
@@ -347,50 +379,79 @@ def _build_spatial_geodataframe(
                 "valor": float(item["valor"]),
                 "inversion_x": float(item.get("inversion_x", 0.0)),
                 "poblacion_estimada": int(item.get("poblacion_estimada") or 0),
+                "es_poligono_postgis": poly_wgs84 is not None,
             }
         )
-        geometries.append(Point(lon, lat))
+        point_geometries.append(Point(lon, lat))
+        raw_polygons_wgs84.append(poly_wgs84)
 
-    gdf_wgs84 = gpd.GeoDataFrame(rows, geometry=geometries, crs="EPSG:4326")
+    gdf_wgs84 = gpd.GeoDataFrame(rows, geometry=point_geometries, crs="EPSG:4326")
     try:
         gdf_projected = gdf_wgs84.to_crs("EPSG:3116")
     except Exception:
-        # Fallback determinista a proyección métrica aproximada si PROJ no tiene datos
         gdf_projected = gdf_wgs84.copy()
 
     gdf_projected["centroide_x_m"] = gdf_projected.geometry.x.astype(float)
     gdf_projected["centroide_y_m"] = gdf_projected.geometry.y.astype(float)
 
-    # Construcción de polígonos de cobertura territorial (Voronoi acotado o buffers métricos)
+    # Proyectar polígonos reales PostGIS a EPSG:3116 cuando estén presentes
+    projected_real_polys: list[Polygon | MultiPolygon | None] = [None] * len(rows)
+    valid_indices = [idx for idx, p in enumerate(raw_polygons_wgs84) if p is not None]
+    if valid_indices:
+        try:
+            poly_series = gpd.GeoSeries(
+                [raw_polygons_wgs84[idx] for idx in valid_indices],
+                crs="EPSG:4326",
+            ).to_crs("EPSG:3116")
+            for pos, orig_idx in enumerate(valid_indices):
+                proj_geom = poly_series.iloc[pos]
+                projected_real_polys[orig_idx] = (
+                    make_valid(proj_geom) if not proj_geom.is_valid else proj_geom
+                )
+        except Exception:
+            for orig_idx in valid_indices:
+                projected_real_polys[orig_idx] = raw_polygons_wgs84[orig_idx]
+
+    # Construcción de polígonos Voronoi acotados únicamente como respaldo si falta polígono real
     points_list = list(gdf_projected.geometry)
     n_pts = len(points_list)
-    polygons: list[Polygon] = []
-    if n_pts >= 4:
-        try:
-            mp = MultiPoint(points_list)
-            minx, miny, maxx, maxy = mp.bounds
-            span = max(maxx - minx, maxy - miny, 1000.0)
-            envelope = box(
-                minx - span * 0.25,
-                miny - span * 0.25,
-                maxx + span * 0.25,
-                maxy + span * 0.25,
-            )
-            vor_collection = voronoi_polygons(mp, extend_to=envelope)
-            vor_polys = list(vor_collection.geoms)
-            for pt in points_list:
-                matched = next(
-                    (poly for poly in vor_polys if poly.contains(pt) or poly.touches(pt)), None
+    fallback_polygons: list[Polygon | MultiPolygon] = []
+    if len(valid_indices) < n_pts:
+        if n_pts >= 4:
+            try:
+                mp = MultiPoint(points_list)
+                minx, miny, maxx, maxy = mp.bounds
+                span = max(maxx - minx, maxy - miny, 1000.0)
+                envelope = box(
+                    minx - span * 0.25,
+                    miny - span * 0.25,
+                    maxx + span * 0.25,
+                    maxy + span * 0.25,
                 )
-                if matched is None:
-                    matched = min(vor_polys, key=lambda poly: poly.distance(pt))
-                polygons.append(matched.intersection(envelope))
-        except Exception:
-            polygons = [pt.buffer(1500.0) for pt in points_list]
+                vor_collection = voronoi_polygons(mp, extend_to=envelope)
+                vor_polys = list(vor_collection.geoms)
+                for pt in points_list:
+                    matched = next(
+                        (poly for poly in vor_polys if poly.contains(pt) or poly.touches(pt)),
+                        None,
+                    )
+                    if matched is None:
+                        matched = min(vor_polys, key=lambda poly: poly.distance(pt))
+                    fallback_polygons.append(matched.intersection(envelope))
+            except Exception:
+                fallback_polygons = [pt.buffer(1500.0) for pt in points_list]
+        else:
+            fallback_polygons = [pt.buffer(1500.0) for pt in points_list]
     else:
-        polygons = [pt.buffer(1500.0) for pt in points_list]
+        fallback_polygons = [pt.buffer(1500.0) for pt in points_list]
 
-    gdf_projected["poligono_territorial"] = polygons
+    final_polygons = [
+        projected_real_polys[idx]
+        if projected_real_polys[idx] is not None
+        else fallback_polygons[idx]
+        for idx in range(n_pts)
+    ]
+    gdf_projected["poligono_territorial"] = final_polygons
     return gdf_projected
 
 
@@ -431,11 +492,13 @@ def _build_knn_weights_from_gdf(
 def _build_queen_weights_from_gdf(
     gdf: gpd.GeoDataFrame,
     fallback_knn: list[dict[int, float]],
+    tolerance_m: float = 15.0,
 ) -> list[dict[int, float]]:
-    """Construye matriz de contigüidad Queen (arista o vértice compartido) sobre los
-    polígonos territoriales del GeoDataFrame, estandarizada por fila.
+    """Construye matriz de contigüidad Queen (arista, vértice o separación <= 15m por caños
+    y canales internos de Cartagena) sobre los polígonos proyectados en EPSG:3116,
+    estandarizada por fila.
     """
-    polys: list[Polygon] = list(gdf["poligono_territorial"])
+    polys: list[Polygon | MultiPolygon] = list(gdf["poligono_territorial"])
     n = len(polys)
     queen_weights: list[dict[int, float]] = []
     for i in range(n):
@@ -443,7 +506,12 @@ def _build_queen_weights_from_gdf(
         neighbors = [
             j
             for j in range(n)
-            if j != i and (poly_i.touches(polys[j]) or poly_i.intersects(polys[j]))
+            if j != i
+            and (
+                poly_i.touches(polys[j])
+                or poly_i.intersects(polys[j])
+                or float(poly_i.distance(polys[j])) <= tolerance_m
+            )
         ]
         if neighbors:
             w_val = 1.0 / len(neighbors)
@@ -496,11 +564,14 @@ def ejecutar_econometria_espacial_pdt(
 ) -> dict[str, Any]:
     """Ejecuta el Nodo de Econometría Espacial (Paso 3) con GeoPandas y Shapely.
 
-    - Construye un GeoDataFrame proyectado en EPSG:3116 (MAGNA-SIRGAS Colombia).
-    - Genera matrices de pesos espaciales W_Queen (contigüidad poligonal Voronoi) y
-      W_kNN (k=min(4, N-1) vecinos más cercanos).
+    - Construye un GeoDataFrame proyectado en EPSG:3116 (MAGNA-SIRGAS Colombia) usando
+      los polígonos reales ST_MultiPolygon de PostGIS (`geojson_geom` / `wkt_geom`) cuando
+      están disponibles.
+    - Genera matrices de pesos espaciales W_Queen (contigüidad poligonal exacta en EPSG:3116
+      con tolerancia de 15m para canales/cuerpos de agua) y W_kNN (k=min(4, N-1)).
     - Calcula I de Moran Global, E[I] = -1/(N-1), Z-score, p-valor por permutación
-      Monte Carlo (R=999) e I de Moran Bivariado.
+      Monte Carlo (R=999), I de Moran Bivariado y resumen multidimensional de los 4
+      indicadores territoriales (`indicadores_evaluados_multidimensional`).
     - Calcula estadísticos LISA (Moran Local I_i) y clasifica Hotspots, Coldspots y
       Outliers espaciales, cruzándolos con unidades DEA ineficientes para detectar
       Trampas Territoriales de Gestión Pública.
@@ -527,15 +598,25 @@ def ejecutar_econometria_espacial_pdt(
                 "lat": float(record["lat"]),
                 "poblacion_estimada": record.get("poblacion_estimada"),
                 "inversion_per_capita_cop": record.get("inversion_per_capita_cop"),
+                "geojson_geom": record.get("geojson_geom"),
+                "wkt_geom": record.get("wkt_geom"),
                 "indicadores": [],
             },
         )
+        if not entry.get("geojson_geom") and record.get("geojson_geom"):
+            entry["geojson_geom"] = record.get("geojson_geom")
+        if not entry.get("wkt_geom") and record.get("wkt_geom"):
+            entry["wkt_geom"] = record.get("wkt_geom")
         if record.get("valor") is not None:
+            ind_code = str(record.get("codigo_indicador") or "IND-TERR")
+            ind_val = float(record["valor"])
+            if ind_code == "IND_INVERSION_PER_CAPITA_PDT_COP":
+                entry["inversion_per_capita_cop"] = ind_val
             entry["indicadores"].append(
                 {
-                    "codigo": record.get("codigo_indicador") or "IND-TERR",
+                    "codigo": ind_code,
                     "nombre": record.get("nombre_indicador") or "Indicador Territorial",
-                    "valor": float(record["valor"]),
+                    "valor": ind_val,
                     "anio": record.get("anio_corte"),
                     "fuente": record.get("fuente_datos"),
                 }
@@ -552,6 +633,8 @@ def ejecutar_econometria_espacial_pdt(
                 "lisa": [],
                 "territorios_con_geometria": len(grouped),
                 "territorios_con_indicador": 0,
+                "poligonos_reales_postgis": 0,
+                "indicadores_evaluados_multidimensional": [],
                 "hotspots": [],
                 "coldspots": [],
                 "outliers_espaciales": [],
@@ -562,16 +645,22 @@ def ejecutar_econometria_espacial_pdt(
                     "comparable."
                 ),
                 "geometrias": (
-                    "ST_X/ST_Y de centroides PostGIS, EPSG:4326 -> EPSG:3116; "
+                    "ST_MultiPolygon / ST_X/ST_Y PostGIS, EPSG:4326 -> EPSG:3116; "
                     "no se fabrican geometrías faltantes"
                 ),
             }
         )
 
     indicators_by_name: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    indicator_code_by_name: dict[str, str] = {}
     for territory in territories_with_ind:
+        seen_ind_names: set[str] = set()
         for ind in territory["indicadores"]:
             ind_name = str(ind["nombre"] or "Indicador Territorial")
+            if ind_name in seen_ind_names:
+                continue
+            seen_ind_names.add(ind_name)
+            indicator_code_by_name[ind_name] = str(ind.get("codigo") or "IND-TERR")
             val = float(ind["valor"])
             inv_x = territory.get("inversion_per_capita_cop")
             if inv_x is None:
@@ -584,13 +673,23 @@ def ejecutar_econometria_espacial_pdt(
                     "lon": territory["lon"],
                     "lat": territory["lat"],
                     "poblacion_estimada": territory.get("poblacion_estimada") or 0,
+                    "geojson_geom": territory.get("geojson_geom"),
+                    "wkt_geom": territory.get("wkt_geom"),
                     "valor": val,
                     "inversion_x": float(inv_x),
                     "fuente": ind.get("fuente"),
                 }
             )
 
-    most_covered = max(indicators_by_name, key=lambda key: len(indicators_by_name[key]))
+    # Priorizar a igual cobertura el indicador de Rezago Estructural IPM o Densidad PDT
+    most_covered = max(
+        indicators_by_name,
+        key=lambda key: (
+            len(indicators_by_name[key]),
+            indicator_code_by_name.get(key) == "IND_REZAGO_ESTRUCTURAL_IPM",
+            indicator_code_by_name.get(key) == "IND_DENSIDAD_PROGRAMATICA_PDT",
+        ),
+    )
     selected_rows = indicators_by_name[most_covered]
     count = len(selected_rows)
     values_arr = np.asarray([row["valor"] for row in selected_rows], dtype=float)
@@ -606,6 +705,8 @@ def ejecutar_econometria_espacial_pdt(
                 "lisa": [],
                 "territorios_con_geometria": len(grouped),
                 "territorios_con_indicador": len(territories_with_ind),
+                "poligonos_reales_postgis": 0,
+                "indicadores_evaluados_multidimensional": [],
                 "hotspots": [],
                 "coldspots": [],
                 "outliers_espaciales": [],
@@ -618,31 +719,70 @@ def ejecutar_econometria_espacial_pdt(
         )
 
     gdf = _build_spatial_geodataframe(selected_rows)
+    real_poly_count = int(gdf["es_poligono_postgis"].sum())
     knn_weights, mean_nn_dist_m = _build_knn_weights_from_gdf(gdf, k=4)
-    queen_weights = _build_queen_weights_from_gdf(gdf, knn_weights)
+    queen_weights = _build_queen_weights_from_gdf(gdf, knn_weights, tolerance_m=15.0)
 
     numbers = gdf["valor"].to_numpy(dtype=float)
     inv_x_arr = gdf["inversion_x"].to_numpy(dtype=float)
     names = gdf["nombre"].astype(str).tolist()
     codes = gdf["codigo"].astype(str).tolist()
 
+    # Cuando existen polígonos reales PostGIS para la mayoría de las unidades, usar Queen
+    # como ponderación primaria de adyacencia territorial, o k-NN en caso contrario.
+    primary_weights = queen_weights if real_poly_count >= max(5, count // 2) else knn_weights
     observed_knn = _global_moran_from_weights(numbers, knn_weights)
     observed_queen = _global_moran_from_weights(numbers, queen_weights)
-    bivariate_i = _bivariate_moran_xy(inv_x_arr, numbers, knn_weights)
+    observed_primary = observed_queen if primary_weights is queen_weights else observed_knn
+    bivariate_i = _bivariate_moran_xy(inv_x_arr, numbers, primary_weights)
+
+    # Resumen comparativo multidimensional de los indicadores territoriales
+    multidimensional_summary: list[dict[str, Any]] = []
+    code_order_map = {code: idx for idx, code in enumerate(codes)}
+    for ind_name, rows_ind in sorted(
+        indicators_by_name.items(),
+        key=lambda item: indicator_code_by_name.get(item[0], item[0]),
+    ):
+        if len(rows_ind) < 5:
+            continue
+        ordered_rows = sorted(rows_ind, key=lambda r: code_order_map.get(str(r["codigo"]), 9999))
+        arr_ind = np.asarray([float(r["valor"]) for r in ordered_rows], dtype=float)
+        if len(arr_ind) == count and float(np.var(arr_ind)) > 1e-12:
+            m_knn = round(_global_moran_from_weights(arr_ind, knn_weights), 6)
+            m_queen = round(_global_moran_from_weights(arr_ind, queen_weights), 6)
+        else:
+            gdf_ind = _build_spatial_geodataframe(ordered_rows)
+            w_knn_i, _ = _build_knn_weights_from_gdf(gdf_ind, k=4)
+            w_queen_i = _build_queen_weights_from_gdf(gdf_ind, w_knn_i, tolerance_m=15.0)
+            m_knn = round(_global_moran_from_weights(arr_ind, w_knn_i), 6)
+            m_queen = round(_global_moran_from_weights(arr_ind, w_queen_i), 6)
+        multidimensional_summary.append(
+            {
+                "codigo_indicador": indicator_code_by_name.get(ind_name, "IND-TERR"),
+                "nombre_indicador": ind_name,
+                "n_territorios": len(arr_ind),
+                "media": round(float(np.mean(arr_ind)), 4),
+                "desviacion_estandar": round(float(np.std(arr_ind)), 4),
+                "minimo": round(float(np.min(arr_ind)), 4),
+                "maximo": round(float(np.max(arr_ind)), 4),
+                "moran_global_knn_i": m_knn,
+                "moran_global_queen_i": m_queen,
+            }
+        )
 
     expected_i = -1.0 / (count - 1)
     rng = np.random.default_rng(20261018)
     sim_is = np.asarray(
         [
-            _global_moran_from_weights(rng.permutation(numbers), knn_weights)
+            _global_moran_from_weights(rng.permutation(numbers), primary_weights)
             for _ in range(permutations)
         ],
         dtype=float,
     )
-    extreme = int(np.sum(np.abs(sim_is) >= abs(observed_knn)))
+    extreme = int(np.sum(np.abs(sim_is) >= abs(observed_primary)))
     p_value = (extreme + 1) / (permutations + 1)
     sim_std = float(np.std(sim_is)) if len(sim_is) > 1 else 0.0
-    z_score_global = (observed_knn - expected_i) / sim_std if sim_std > 1e-12 else 0.0
+    z_score_global = (observed_primary - expected_i) / sim_std if sim_std > 1e-12 else 0.0
 
     centered = numbers - numbers.mean()
     std_val = float(numbers.std())
@@ -652,7 +792,7 @@ def ejecutar_econometria_espacial_pdt(
     local_rows: list[dict[str, Any]] = []
     local_rng = np.random.default_rng(20261019)
     local_perms = min(permutations, 199)
-    for idx, row_weights in enumerate(knn_weights):
+    for idx, row_weights in enumerate(primary_weights):
         lag = float(sum(w_ij * centered[j] for j, w_ij in row_weights.items()))
         local_i = float(centered[idx] * lag / m2) if m2 > 1e-12 else 0.0
         null_values = []
@@ -687,6 +827,7 @@ def ejecutar_econometria_espacial_pdt(
                 "cuadrante_moran": cuadrante,
                 "z_score": round(float(z_scores[idx]), 6),
                 "lag_espacial": round(lag, 6),
+                "vecinos_queen": len(queen_weights[idx]),
             }
         )
 
@@ -718,7 +859,7 @@ def ejecutar_econometria_espacial_pdt(
                 if cs.casefold() in unit.casefold()
                 or unit.casefold() in cs.casefold()
                 or (
-                    enriched_with_ucg
+                    (enriched_with_ucg or real_poly_count >= 5)
                     and any(
                         tok in _normalize_text(unit)
                         for tok in ("educacion", "salud", "infraestructura", "social", "localidad")
@@ -756,17 +897,26 @@ def ejecutar_econometria_espacial_pdt(
             "estado": "ESTIMADO_GEOPANDAS_LISA",
             "n": count,
             "indicador": most_covered,
+            "codigo_indicador": indicator_code_by_name.get(most_covered, "IND-TERR"),
             "fuentes": fuentes,
             "formula_moran": ECUACIONES_ESPACIAL_PREDICTIVO["moran_global"],
             "formula_lisa": ECUACIONES_ESPACIAL_PREDICTIVO["lisa_local"],
             "crs_origen": "EPSG:4326",
             "crs_proyectado": "EPSG:3116",
+            "poligonos_reales_postgis": real_poly_count,
+            "tolerancia_queen_canales_m": 15.0,
             "distancia_media_vecino_mas_cercano_m": round(mean_nn_dist_m, 2),
             "matriz_pesos": (
-                "Híbrida GeoPandas: Contigüidad Queen (Voronoi EPSG:3116) + "
-                "k-NN (k=min(4,n-1)) estandarizada por fila"
+                "Contigüidad Queen Exacta sobre ST_MultiPolygon PostGIS en EPSG:3116 "
+                "(tolerancia 15m para canales) + k-NN (k=min(4,n-1)) estandarizada por fila"
+                if real_poly_count > 0
+                else (
+                    "Híbrida GeoPandas: Contigüidad Queen (Voronoi EPSG:3116) + "
+                    "k-NN (k=min(4,n-1)) estandarizada por fila"
+                )
             ),
-            "moran_global_i": round(float(observed_knn), 8),
+            "moran_global_i": round(float(observed_primary), 8),
+            "moran_global_knn_i": round(float(observed_knn), 8),
             "moran_global_queen_i": round(float(observed_queen), 8),
             "moran_bivariado_xy": round(float(bivariate_i), 8),
             "valor_esperado_e_i": round(float(expected_i), 8),
@@ -774,18 +924,20 @@ def ejecutar_econometria_espacial_pdt(
             "p_valor_permutacion": round(float(p_value), 6),
             "patron_espacial_significativo": bool(p_value < 0.05),
             "permutaciones_globales": permutations,
+            "indicadores_evaluados_multidimensional": multidimensional_summary,
             "lisa": local_rows,
             "territorios_con_geometria": len(grouped),
             "territorios_con_indicador": len(territories_with_ind),
-            "desagregacion_ucg_cartagena": enriched_with_ucg,
+            "desagregacion_ucg_cartagena": enriched_with_ucg or real_poly_count >= 15,
             "hotspots": hotspots,
             "coldspots": coldspots,
             "outliers_espaciales": outliers,
             "unidades_dea_ineficientes_en_coldspots": traps,
             "trampas_territoriales_gestion_publica": trap_details,
             "geometrias": (
-                "GeoPandas GeoDataFrame proyectado en EPSG:3116 (MAGNA-SIRGAS) con "
-                "teselación Voronoi acotada (Shapely) y centroides PostGIS EPSG:4326"
+                f"GeoPandas GeoDataFrame proyectado en EPSG:3116 (MAGNA-SIRGAS) con "
+                f"{real_poly_count}/{count} polígonos ST_MultiPolygon PostGIS reales "
+                "y respaldo Voronoi acotado (Shapely)"
             ),
         }
     )
@@ -1079,13 +1231,9 @@ def ejecutar_analitica_predictiva_pdt(
             continue
 
         use_arima = (
-            len(years) >= 6
-            or indicator.startswith("Entidad Ejecutora:")
-            or len(grouped) <= 30
+            len(years) >= 6 or indicator.startswith("Entidad Ejecutora:") or len(grouped) <= 30
         )
-        fit_info = _fit_arima_or_ols_series(
-            years, values, final_year, use_arima=use_arima
-        )
+        fit_info = _fit_arima_or_ols_series(years, values, final_year, use_arima=use_arima)
         forecast = float(fit_info["forecast"])
         sigma = float(fit_info["sigma"])
         target = max(targets[indicator]) if targets[indicator] else 100.0

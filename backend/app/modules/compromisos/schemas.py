@@ -435,3 +435,14 @@ class PdtAiEvaluatorValidarCheckpointRequest(BaseModel):
     auditor: str = "Comité Técnico de Planeación Distrital (GBR/DNP)"
     observaciones: str = ""
 
+
+class PdtDictamenEjecutivoRespuesta(BaseModel):
+    filtros: dict[str, Any]
+    dependencia: str | None = None
+    sector: str | None = None
+    resumen_ejecutivo: str
+    fecha_generacion: datetime
+    dictamenes_dependencias: list[dict[str, Any]]
+    sintesis_sectores: list[dict[str, Any]]
+    informe_markdown: str
+    trazabilidad: dict[str, Any] = Field(default_factory=dict)

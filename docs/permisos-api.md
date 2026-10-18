@@ -129,6 +129,7 @@ La última columna explica la excepción pública o la condición adicional.
 | GET | /api/v1/compromisos/triada/pdd-dea/laboratorio-prescriptivo | publico | Network DEA exploratorio en dos etapas, escenarios presupuestales no causales, auditoría de cobertura MGA y métricas territoriales con fuentes y compuertas explícitas. |
 | GET | /api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/especificacion | publico | Especificación arquitectónica y metodológica GBR, cadena de valor pública, grafo LangGraph, ecuaciones LaTeX, matriz de 5 sectores y SYSTEM_INSTRUCTIONS_PDT_AI_EVALUATOR. |
 | GET | /api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/diagnostico | publico | Diagnóstico multidimensional PDT-AI-EVALUATOR (DEA CCR/BCC/Malmquist/Bootstrap, NLP BERTopic/c-TF-IDF/Coseno, LISA/Moran, ARIMA/Chow/ISRI y Checkpointer). |
+| GET | /api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/dictamen-ejecutivo | publico | Dictamen pericial ejecutivo por dependencia y sector GBR, con trazabilidad DEA, Malmquist, coherencia NLP, alertas territoriales e indicadores críticos. |
 | POST | /api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/ejecutar | publico | Ejecución parametrizada del grafo de estados LangGraph PDT-AI-EVALUATOR sobre el corpus de Planes de Desarrollo. |
 | POST | /api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/checkpoint/validar | publico | Intervención Human-in-the-Loop sobre el Checkpointer del grafo PDT-AI-EVALUATOR para validación técnica y reasignación presupuestal vinculante. |
 | GET | /api/v1/compromisos/triada/google-workspace/estado | publico | Estado de conexión y archivos nativos de las carpetas oficiales de Google Workspace. |
@@ -398,5 +399,4 @@ El listado público existente sigue mostrando líneas activas. No se conceden nu
 | GET | /api/v1/canales/whatsapp/webhook | publico | Handshake de suscripción y verificación exigido por Meta WhatsApp Cloud API. |
 | POST | /api/v1/canales/whatsapp/webhook | publico | Recepción asíncrona de eventos y mensajes comunitarios entrantes desde Meta. |
 | POST | /api/v1/canales/whatsapp/simular | publico | Ingesta de reportes y propuestas comunitarias directas para pruebas y auditoría forense. |
-
 

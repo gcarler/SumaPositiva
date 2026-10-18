@@ -408,3 +408,180 @@ def test_evaluar_matriz_multisectorial_gbr_cinco_sectores_canonicos() -> None:
     salud = by_sector["Salud Pública"]
     assert salud["riesgo_isri_promedio"] == pytest.approx(0.52)
     assert salud["estado_auditoria_gbr"] == "ALTO_RIESGO_INCUMPLIMIENTO_ISRI"
+
+
+def test_econometria_espacial_geojson_geom_poligonal_queen_exacta() -> None:
+    """Verifica el soporte de polígonos reales PostGIS (geojson_geom MultiPolygon),
+    contigüidad Queen exacta en EPSG:3116 (incluyendo tolerancia de 15m para canales)
+    y el resumen multidimensional de indicadores.
+    """
+    import json
+
+    from shapely.geometry import MultiPolygon, box, mapping
+
+    # Malla de 6 polígonos adyacentes en coordenadas de Cartagena
+    base_lon, base_lat = -75.520, 10.400
+    step = 0.008
+    records = []
+    vals_ipm = [62.0, 59.5, 58.0, 18.0, 15.5, 14.0]
+    vals_inv = [1250000.0, 1310000.0, 1280000.0, 2150000.0, 2240000.0, 2310000.0]
+
+    for idx in range(6):
+        col = idx % 3
+        row = idx // 3
+        # Separación de ~5 metros (0.00004 grados) en fila 1 para probar tolerancia de canales (15m)
+        gap = 0.00004 if row == 1 else 0.0
+        minx = base_lon + col * step
+        miny = base_lat + row * (step + gap)
+        poly = MultiPolygon([box(minx, miny, minx + step, miny + step)])
+        geojson_str = json.dumps(mapping(poly))
+        cx, cy = minx + step / 2.0, miny + step / 2.0
+
+        records.append(
+            {
+                "codigo": f"UCG-TEST-{idx + 1:02d}",
+                "nombre": f"UCG Experimental {idx + 1}",
+                "tipo_territorio": "ucg",
+                "lon": cx,
+                "lat": cy,
+                "geojson_geom": geojson_str,
+                "codigo_indicador": "IND_REZAGO_ESTRUCTURAL_IPM",
+                "nombre_indicador": "Índice de Rezago Estructural y Presión Social Territorial",
+                "valor": vals_ipm[idx],
+                "fuente_datos": "PostGIS Test",
+            }
+        )
+        records.append(
+            {
+                "codigo": f"UCG-TEST-{idx + 1:02d}",
+                "nombre": f"UCG Experimental {idx + 1}",
+                "tipo_territorio": "ucg",
+                "lon": cx,
+                "lat": cy,
+                "geojson_geom": geojson_str,
+                "codigo_indicador": "IND_INVERSION_PER_CAPITA_PDT_COP",
+                "nombre_indicador": "Inversión Pública Territorial Estimada per Cápita",
+                "valor": vals_inv[idx],
+                "fuente_datos": "PostGIS Test",
+            }
+        )
+
+    result = ejecutar_econometria_espacial_pdt(
+        territory_records=records,
+        unidades_ineficientes_dea=["Entidad UCG Experimental 5"],
+        permutations=199,
+    )
+
+    assert result["estado"] == "ESTIMADO_GEOPANDAS_LISA"
+    assert result["poligonos_reales_postgis"] == 6
+    assert result["tolerancia_queen_canales_m"] == 15.0
+    assert "ST_MultiPolygon PostGIS" in result["matriz_pesos"]
+    assert len(result["indicadores_evaluados_multidimensional"]) == 2
+    assert all(row["vecinos_queen"] >= 2 for row in result["lisa"])
+    assert result["moran_bivariado_xy"] != 0.0
+
+
+def test_postgis_bd_csh_29_territorios_multipolygon_y_116_indicadores() -> None:
+    """Verifica contra bd_csh que geodatos.territorios tenga >= 29 territorios sub-distritales
+    con ST_MultiPolygon (incluyendo las 15 UCGs) y >= 116 indicadores en
+    geodatos.indicadores_territorio, y que ejecutar_econometria_espacial_pdt procese los
+    polígonos reales y los 4 indicadores oficiales.
+    """
+    import asyncio
+
+    from sqlalchemy import text
+    from sqlalchemy.engine import make_url
+    from sqlalchemy.ext.asyncio import create_async_engine
+
+    from app.core.config import Settings
+    from scripts.poblar_geodatos_territorios_pdt import (
+        poblar_geodatos_territorios_e_indicadores,
+    )
+
+    async def _fetch_from_postgis() -> list[dict[str, object]]:
+        bd_csh_url = (
+            make_url(Settings().async_database_url)
+            .set(database="bd_csh")
+            .render_as_string(hide_password=False)
+        )
+        engine = create_async_engine(bd_csh_url, pool_pre_ping=True)
+        try:
+            summary = await poblar_geodatos_territorios_e_indicadores(engine)
+            assert summary["territorios_sub_distritales"] >= 29
+            assert summary["total_ucgs"] == 15
+            assert summary["total_indicadores_territorio"] >= 116
+            async with engine.connect() as conn:
+                counts = (
+                    await conn.execute(
+                        text(
+                            """
+                            SELECT
+                                COUNT(*) FILTER (
+                                    WHERE tipo_territorio <> 'distrito'
+                                ) AS sub_distritales,
+                                COUNT(*) FILTER (WHERE tipo_territorio = 'ucg') AS total_ucgs,
+                                COUNT(*) FILTER (
+                                    WHERE tipo_territorio <> 'distrito'
+                                      AND ST_GeometryType(geometria) = 'ST_MultiPolygon'
+                                ) AS sub_multipolygons,
+                                (
+                                    SELECT COUNT(*) FROM geodatos.indicadores_territorio
+                                ) AS total_ind
+                            FROM geodatos.territorios
+                            """
+                        )
+                    )
+                ).fetchone()
+                assert counts is not None
+                assert int(counts.sub_distritales) >= 29
+                assert int(counts.total_ucgs) == 15
+                assert int(counts.sub_multipolygons) >= 29
+                assert int(counts.total_ind) >= 116
+
+                rows = (
+                    await conn.execute(
+                        text(
+                            """
+                            SELECT t.codigo, t.nombre, t.tipo_territorio,
+                                   t.poblacion_estimada,
+                                   ST_X(COALESCE(t.centroide, ST_Centroid(t.geometria))) AS lon,
+                                   ST_Y(COALESCE(t.centroide, ST_Centroid(t.geometria))) AS lat,
+                                   ST_AsGeoJSON(
+                                       ST_SimplifyPreserveTopology(t.geometria, 0.0003)
+                                   ) AS geojson_geom,
+                                   i.codigo_indicador,
+                                   i.nombre_indicador,
+                                   i.valor::float AS valor,
+                                   i.anio_corte,
+                                   i.fuente_datos
+                            FROM geodatos.territorios t
+                            JOIN geodatos.indicadores_territorio i ON i.territorio_id = t.id
+                            WHERE t.tipo_territorio <> 'distrito'
+                            ORDER BY t.codigo, i.codigo_indicador
+                            """
+                        )
+                    )
+                ).fetchall()
+                return [dict(r._mapping) for r in rows]
+        finally:
+            await engine.dispose()
+
+    records = asyncio.run(_fetch_from_postgis())
+    spatial_res = ejecutar_econometria_espacial_pdt(
+        territory_records=records,
+        unidades_ineficientes_dea=["Secretaría de Educación Pública"],
+        permutations=199,
+    )
+    assert spatial_res["estado"] == "ESTIMADO_GEOPANDAS_LISA"
+    assert spatial_res["n"] >= 29
+    assert spatial_res["poligonos_reales_postgis"] >= 29
+    assert len(spatial_res["indicadores_evaluados_multidimensional"]) == 4
+    codigos_eval = {
+        item["codigo_indicador"] for item in spatial_res["indicadores_evaluados_multidimensional"]
+    }
+    assert codigos_eval == {
+        "IND_DENSIDAD_PROGRAMATICA_PDT",
+        "IND_INVERSION_PER_CAPITA_PDT_COP",
+        "IND_AVANCE_FISICO_TERRITORIAL_PCT",
+        "IND_REZAGO_ESTRUCTURAL_IPM",
+    }

@@ -35,6 +35,7 @@ from langgraph.types import Command, interrupt
 from scipy.optimize import linprog
 from scipy.stats import f as f_distribution
 from scipy.stats import norm
+from shapely.geometry import Point, shape
 from sklearn.cluster import HDBSCAN
 from sklearn.decomposition import TruncatedSVD
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -611,6 +612,9 @@ def _load_corpus(db: AsyncSession) -> Any:
                         """SELECT t.codigo, t.nombre, t.tipo_territorio, t.poblacion_estimada,
                                   ST_X(COALESCE(t.centroide, ST_Centroid(t.geometria))) AS lon,
                                   ST_Y(COALESCE(t.centroide, ST_Centroid(t.geometria))) AS lat,
+                                  ST_AsGeoJSON(
+                                    ST_SimplifyPreserveTopology(t.geometria, 0.0003)
+                                  ) AS geojson_geom,
                                   COALESCE(
                                     i.codigo_indicador, 'IND_DENSIDAD_PROGRAMATICA_PDT'
                                   ) AS codigo_indicador,
@@ -668,14 +672,88 @@ def _load_corpus(db: AsyncSession) -> Any:
 
 def _to_geodataframe(records: list[dict[str, Any]]) -> gpd.GeoDataFrame:
     frame = pd.DataFrame(records)
-    if frame.empty or not {"lon", "lat"}.issubset(frame.columns):
+    if frame.empty:
         return gpd.GeoDataFrame(frame, geometry=gpd.GeoSeries([], crs="EPSG:4326"), crs="EPSG:4326")
-    valid = frame[frame["lon"].notna() & frame["lat"].notna()].copy()
+    geometries = []
+    valid_indices = []
+    for index, record in frame.iterrows():
+        geometry = None
+        geojson = record.get("geojson_geom")
+        if geojson:
+            try:
+                geometry = shape(json.loads(geojson) if isinstance(geojson, str) else geojson)
+            except (TypeError, ValueError):
+                geometry = None
+        if geometry is None and record.get("lon") is not None and record.get("lat") is not None:
+            geometry = Point(float(record["lon"]), float(record["lat"]))
+        if geometry is not None:
+            valid_indices.append(index)
+            geometries.append(geometry)
+    valid = frame.loc[valid_indices].copy()
     return gpd.GeoDataFrame(
         valid,
-        geometry=gpd.points_from_xy(valid["lon"], valid["lat"]),
+        geometry=geometries,
         crs="EPSG:4326",
     )
+
+
+def _yearly_ppi(plan: dict[str, Any], nodes: list[dict[str, Any]]) -> dict[int, float]:
+    """Return auditable official annual PPI values without inventing allocations."""
+    raw = plan.get("ppi_anual_cop")
+    if isinstance(raw, str):
+        try:
+            raw = json.loads(raw)
+        except (TypeError, ValueError):
+            raw = None
+    annual: dict[int, float] = {}
+    if isinstance(raw, dict):
+        for key, value in raw.items():
+            match = re.search(r"20\d{2}", str(key))
+            if match and value is not None:
+                try:
+                    amount = float(value)
+                except (TypeError, ValueError):
+                    continue
+                if amount > 0:
+                    annual[int(match.group())] = amount
+    if annual:
+        return annual
+
+    plan_nodes = [node for node in nodes if node.get("codigo_plan") == plan.get("codigo_plan")]
+    values_by_node: list[tuple[dict[str, Any], dict[int, float]]] = []
+    for node in plan_nodes:
+        value = node.get("ppi_anual_cop")
+        if isinstance(value, str):
+            try:
+                value = json.loads(value)
+            except (TypeError, ValueError):
+                value = None
+        parsed: dict[int, float] = {}
+        if isinstance(value, dict):
+            for key, amount in value.items():
+                match = re.search(r"20\d{2}", str(key))
+                try:
+                    numeric = float(amount)
+                except (TypeError, ValueError):
+                    continue
+                if match and numeric > 0:
+                    parsed[int(match.group())] = numeric
+        if parsed:
+            values_by_node.append((node, parsed))
+    # Prefer leaf allocations for each year so parent and child PPI are not added twice.
+    for year in {year for _, values in values_by_node for year in values}:
+        annual[year] = sum(
+            values[year]
+            for node, values in values_by_node
+            if year in values
+            and not any(
+                parent.get("id") == node.get("parent_id") and year in child_values
+                for parent, child_values in values_by_node
+            )
+        )
+        if annual[year] <= 0:
+            annual.pop(year)
+    return annual
 
 
 async def _optional_pdt_enrichment(function_name: str, context: dict[str, Any]) -> Any:
@@ -734,6 +812,7 @@ def _build_state(
         **{f"documento:{code}": value for code, value in corpus_by_plan.items()},
     }
     grouped: dict[tuple[str, int | None], dict[str, Any]] = {}
+    observed_positive_years: set[int] = set()
     if normalized:
         for row in normalized:
             entity = row.get("entidad_normalizada") or "UNIDAD_SIN_ENTIDAD"
@@ -751,6 +830,8 @@ def _build_state(
                 },
             )
             dmu["insumo_cop"] += float(row.get("apropiacion_definitiva_cop") or 0)
+            if float(row.get("apropiacion_definitiva_cop") or 0) > 0 and row.get("vigencia"):
+                observed_positive_years.add(int(row["vigencia"]))
             dmu["producto_programado"] += float(row.get("meta_programada_anual") or 0)
             dmu["producto_ejecutado"] += float(
                 row.get("meta_ejecutada_anual") or row.get("avance_fisico_pct") or 0
@@ -762,19 +843,27 @@ def _build_state(
                 dmu["avance_estrategico_pct"].append(float(avance_val))
             if row.get("codigo_meta_pdd"):
                 dmu["codigo_metas"].append(row["codigo_meta_pdd"])
-    if not grouped:
-        for plan in plans:
-            code = str(plan.get("codigo_plan"))
-            plan_goals = [item for item in goals if item.get("codigo_plan") == code]
-            grouped[(code, None)] = {
-                "dmu": code,
-                "vigencia": None,
-                "insumo_cop": float(plan.get("ppi_total_corriente_cop") or 0),
+    for plan in plans:
+        code = str(plan.get("codigo_plan"))
+        plan_goals = [item for item in goals if item.get("codigo_plan") == code]
+        for year, amount in _yearly_ppi(plan, nodes).items():
+            if year in observed_positive_years:
+                continue
+            dmu_id = f"PPI_OFICIAL:{code}"
+            grouped[(dmu_id, year)] = {
+                "dmu": dmu_id,
+                "vigencia": year,
+                "insumo_cop": amount,
                 "producto_programado": float(len(plan_goals)),
                 "producto_ejecutado": float(len(plan_goals)),
                 "avance_estrategico_pct": [],
                 "codigo_metas": [item.get("codigo") for item in plan_goals if item.get("codigo")],
-                "origen_insumo": "PPI total oficial del plan; no equivale a ejecución",
+                "origen_insumo": "ppi_oficial_desagregado_pdd",
+                "codigo_plan": code,
+                "nota_producto": (
+                    "conteo_lineas_programaticas_con_PPI; proxy de estructura, "
+                    "no producto ejecutado"
+                ),
             }
     dmus = []
     for dmu in grouped.values():
@@ -790,9 +879,9 @@ def _build_state(
                 "dmu": dmu["dmu"],
                 "vigencia": dmu["vigencia"],
                 "insumo_cop": dmu["insumo_cop"],
-                "fuente": dmu.get(
-                    "origen_insumo", "registros_triada_normalizados.apropiacion_definitiva_cop"
-                ),
+                "origen_insumo": dmu.get("origen_insumo", "apropiacion_definitiva_cop"),
+                "fuente": dmu.get("origen_insumo", "apropiacion_definitiva_cop"),
+                "codigo_plan": dmu.get("codigo_plan"),
             }
         )
         outputs.append(
@@ -801,6 +890,10 @@ def _build_state(
                 "vigencia": dmu["vigencia"],
                 "programado": dmu["producto_programado"],
                 "ejecutado": dmu["producto_ejecutado"],
+                "fuente_producto": dmu.get(
+                    "nota_producto", "seguimiento.registros_triada_normalizados"
+                ),
+                "codigo_plan": dmu.get("codigo_plan"),
             }
         )
         outcomes.append(
@@ -808,6 +901,7 @@ def _build_state(
                 "dmu": dmu["dmu"],
                 "vigencia": dmu["vigencia"],
                 "avance_estrategico_pct": dmu["resultado_pct"],
+                "origen_insumo": dmu.get("origen_insumo", "apropiacion_definitiva_cop"),
             }
         )
     budget = sum(float(plan.get("ppi_total_corriente_cop") or 0) for plan in plans)
@@ -820,6 +914,9 @@ def _build_state(
         "seguimiento.actividades_plan_accion": len(activities),
         "seguimiento.registros_triada_normalizados": int(
             data.get("normalized_count") or len(normalized)
+        ),
+        "dmu_ppi_oficial_desagregado_pdd": sum(
+            item.get("origen_insumo") == "ppi_oficial_desagregado_pdd" for item in finances
         ),
         "geodatos.territorios_con_indicadores": sum(
             item.get("valor") is not None for item in data["territories"]
@@ -875,13 +972,17 @@ def _nlp_node(state: AgentState) -> dict[str, Any]:
     action_texts: list[str] = []
     text_to_index: dict[str, int] = {}
     by_code: dict[str, list[int]] = defaultdict(list)
+    action_dependencies: list[set[str]] = []
 
-    def _register_action(text_val: str) -> int:
+    def _register_action(text_val: str, dependency: str | None = None) -> int:
         idx = text_to_index.get(text_val)
         if idx is None:
             idx = len(action_texts)
             text_to_index[text_val] = idx
             action_texts.append(text_val)
+            action_dependencies.append(set())
+        if dependency:
+            action_dependencies[idx].add(str(dependency))
         return idx
 
     for item in activities:
@@ -894,7 +995,8 @@ def _nlp_node(state: AgentState) -> dict[str, Any]:
                     "proyecto_nombre",
                     "descripcion_actividad",
                 )
-            )
+            ),
+            item.get("entidad_responsable"),
         )
     for record in norm_records:
         act_idx = _register_action(
@@ -906,7 +1008,8 @@ def _nlp_node(state: AgentState) -> dict[str, Any]:
                     "indicador",
                     "descripcion_actividad",
                 )
-            )
+            ),
+            record.get("entidad_normalizada"),
         )
         if record.get("codigo_meta_pdd"):
             code_list = by_code[str(record["codigo_meta_pdd"])]
@@ -976,6 +1079,7 @@ def _nlp_node(state: AgentState) -> dict[str, Any]:
                         "codigo_meta": goal.get("codigo"),
                         "meta_estrategica": objective[:300],
                         "actividad_operativa": action_texts[best_index][:240],
+                        "dependencias": sorted(action_dependencies[best_index]),
                         "similaridad_coseno_lexica": round(score, 6),
                         "metodo_vectorizacion": "TfidfVectorizer + cosine_similarity",
                     }
@@ -1261,6 +1365,12 @@ def _dea_node(state: AgentState) -> dict[str, Any]:
         item["dmu"] + "|" + str(item["vigencia"]): item for item in state["df_outcomes"]
     }
     labels = [item["dmu"] + "|" + str(item["vigencia"]) for item in dmus]
+    origins_by_label = {
+        item["dmu"] + "|" + str(item["vigencia"]): item.get(
+            "origen_insumo", "apropiacion_definitiva_cop"
+        )
+        for item in dmus
+    }
     raw_inputs = [max(0.0, float(item.get("insumo_cop") or 0)) for item in dmus]
     use_log_scale = max(raw_inputs, default=0.0) > 1_000_000.0
     inputs = [
@@ -1349,6 +1459,7 @@ def _dea_node(state: AgentState) -> dict[str, Any]:
         )
         row = {
             "dmu": label,
+            "origen_insumo": origins_by_label.get(label, "apropiacion_definitiva_cop"),
             "theta_ccr": round(ccr, 8) if ccr is not None else None,
             "theta_bcc": round(bcc, 8) if bcc is not None else None,
             "SE_o": round(scale_efficiency, 8) if scale_efficiency is not None else None,
@@ -1606,6 +1717,7 @@ async def _spatial_node(state: AgentState) -> dict[str, Any]:
                 "lon": float(record["lon"]),
                 "lat": float(record["lat"]),
                 "poblacion_estimada": record.get("poblacion_estimada"),
+                "geojson_geom": record.get("geojson_geom"),
                 "indicadores": [],
             },
         )
@@ -1620,6 +1732,7 @@ async def _spatial_node(state: AgentState) -> dict[str, Any]:
                 }
             )
     territories = [item for item in grouped.values() if item["indicadores"]]
+    polygon_count = sum(bool(item.get("geojson_geom")) for item in territories)
     if territories:
         spatial_frame = _to_geodataframe(territories)
         territories = spatial_frame.drop(columns="geometry").to_dict(orient="records")
@@ -1676,6 +1789,7 @@ async def _spatial_node(state: AgentState) -> dict[str, Any]:
             **lisa,
             "territorios_con_geometria": len(grouped),
             "territorios_con_indicador": len(territories),
+            "territorios_con_poligono_geojson": polygon_count,
             "coldspots": sorted(coldspots),
             "unidades_dea_ineficientes_en_coldspots": traps,
             "trampas_territoriales_gestion_publica": [
@@ -1683,7 +1797,7 @@ async def _spatial_node(state: AgentState) -> dict[str, Any]:
                 for unit in traps
             ],
             "geometrias": (
-                "ST_X/ST_Y de centroides PostGIS, EPSG:4326; no se fabrican geometrías faltantes"
+                "ST_AsGeoJSON de polígonos PostGIS simplificados y centroides EPSG:4326"
             ),
             "motor_geoespacial": (
                 f"GeoPandas GeoDataFrame ({len(territories)} territorios, EPSG:4326)"

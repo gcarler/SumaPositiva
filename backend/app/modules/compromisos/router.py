@@ -46,6 +46,7 @@ from app.modules.compromisos.pdd_dea_service import (
     _read_disk_cache,
     pre_serialized_response,
 )
+from app.modules.compromisos.pdt_dictamen_ejecutivo import generar_dictamen_ejecutivo_pdt
 from app.modules.compromisos.repository import CompromisosRepository
 from app.modules.compromisos.schemas import (
     ActividadPlanAccionActualizarSeguimiento,
@@ -63,6 +64,7 @@ from app.modules.compromisos.schemas import (
     MatrizPlanAccionRespuesta,
     PdtAiEvaluatorEjecutarRequest,
     PdtAiEvaluatorValidarCheckpointRequest,
+    PdtDictamenEjecutivoRespuesta,
     ProcesarLotePlanAccionRespuesta,
     ProcesarLotePlanAccionSolicitud,
     ResumenTriadaRespuesta,
@@ -1017,12 +1019,8 @@ def _cargar_pdt_ai_evaluator_fns():
         from . import pdt_ai_evaluator_graph as _pdt_mod
 
         ejecutar_pdt_ai_evaluator = _pdt_mod.ejecutar_pdt_ai_evaluator
-        obtener_especificacion_pdt_ai_evaluator = (
-            _pdt_mod.obtener_especificacion_pdt_ai_evaluator
-        )
-        validar_checkpoint_pdt_ai_evaluator = (
-            _pdt_mod.validar_checkpoint_pdt_ai_evaluator
-        )
+        obtener_especificacion_pdt_ai_evaluator = _pdt_mod.obtener_especificacion_pdt_ai_evaluator
+        validar_checkpoint_pdt_ai_evaluator = _pdt_mod.validar_checkpoint_pdt_ai_evaluator
     return (
         obtener_especificacion_pdt_ai_evaluator,
         ejecutar_pdt_ai_evaluator,
@@ -1055,6 +1053,22 @@ async def pdt_ai_evaluator_diagnostico(
 ):
     _, fn_ejecutar, _ = _cargar_pdt_ai_evaluator_fns()
     return await fn_ejecutar(db, thread_id=thread_id, force_refresh=force_refresh)
+
+
+@router.get(
+    "/triada/pdd-dea/pdt-ai-evaluator/dictamen-ejecutivo",
+    response_model=PdtDictamenEjecutivoRespuesta,
+    summary="Dictamen pericial ejecutivo PDT por dependencia y sector GBR",
+)
+async def pdt_ai_evaluator_dictamen_ejecutivo(
+    db: SessionDependency,
+    dependencia: str | None = Query(default=None),
+    sector: str | None = Query(default=None),
+    force_refresh: bool = Query(default=False),
+):
+    _, fn_ejecutar, _ = _cargar_pdt_ai_evaluator_fns()
+    diagnostico = await fn_ejecutar(db, force_refresh=force_refresh)
+    return generar_dictamen_ejecutivo_pdt(diagnostico, dependencia=dependencia, sector=sector)
 
 
 @router.post(
@@ -1095,5 +1109,3 @@ async def pdt_ai_evaluator_validar_checkpoint(
     if inspect.isawaitable(resultado):
         return await resultado
     return resultado
-
-
