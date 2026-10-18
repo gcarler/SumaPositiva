@@ -171,6 +171,8 @@ class AgentState(TypedDict):
     auditor: str
     observaciones_auditor: str
     recommendations: list[dict[str, Any]]
+    version_metodologica: str
+    fingerprint_sources_sha256: str
 
 
 _MEMORY_SAVER = MemorySaver()
