@@ -1,7 +1,7 @@
-# ORDEN DE EJECUCIÓN: `[FRONTEND-TABLERO-MULTIAGENTE-PDD-18B]`
+# ORDEN DE EJECUCIÓN: `[FRONTEND-CONSOLA-AGENTES-IA-PDD-20B]`
 
 **Agente Asignado:** `agy2` (`=agy2:0.0`)
-**Rol:** Desarrollador Principal Frontend POLIS UI y Visualización de Inteligencia Territorial
+**Rol:** Desarrollador Principal Frontend POLIS UI y Laboratorio Neurosimbólico de Inteligencia Territorial
 **Coordinador y Auditor Forense EAF:** `agy` (`=agy:0.0`)
 **Rama:** `main` (Única rama autorizada. Política **Zero-Push**: commit local únicamente).
 **Ámbito Exclusivo:** `src/features/seguimiento/**`, `docs/banco-conocimiento-politica-publica.md` y `bridge/02_resultado_agy2.md`.
@@ -11,52 +11,58 @@
 
 ## 1. Contexto y Objetivo de la Misión
 
-El motor backend del **Sistema Multi-Agente de Absorción y Diagnóstico PDD/PDL** ya procesó el 100% del corpus histórico de planeación de Cartagena (`2.732+` evidencias página a página de 11 PDFs + 6 JSONs estructurados, `1.524` nodos jerárquicos MGA, `2.228` metas PDD `2012–2027` y `401` metas PDL `2024–2027`), clasificándolos bajo la rúbrica de **Grado de Frontalidad (`A` Núcleo Frontal, `B` Determinante Multidimensional, `C` Contextual/Habilitante, `N` No Asociado)** y el vector de las **7 Dimensiones de Seguridad Humana (PNUD 1994 / Decreto 037 de 2026)**, además de articularlos con los Planes de Acción y códigos BPIM/MGA.
+El motor de lectura y diagnóstico de Planes de Desarrollo está evolucionando en la Fase 20 a un **Motor Multiagente Neurosimbólico Inteligente (`LangGraph StateGraph` + `PydanticAI` + `Tool-Calling` sobre las `2.734` evidencias documentales en PostgreSQL)**.
 
-Tu misión en `[FRONTEND-TABLERO-MULTIAGENTE-PDD-18B]` es **conectar e integrar en vivo en `/plataforma/seguimiento`** la consola y tablero interactivo del **Sistema Multiagente PDD/PDL y Diagnóstico Comparativo de Seguridad Humana (2012–2027)**, cumpliendo al 100% las reglas de `docs/kit-ui-rules.md` (Zero-Modals, tokens semánticos, accesibilidad y pruebas unitarias).
+Mientras `codex` expone los 3 nuevos endpoints en el backend (`arquitectura-agentes-ia`, `consultar-agentes-pdd` e `interpretar-fragmento-pdd`), tu misión en `[FRONTEND-CONSOLA-AGENTES-IA-PDD-20B]` es **incorporar en `/plataforma/seguimiento` (dentro de `SistemaMultiagentePddPanel`) la Consola Interactiva de Agentes Inteligentes Neurosimbólicos PDD/PDL (`LangGraph` + `PydanticAI`)**, permitiendo al usuario:
+1. **Visualizar el Grafo Multiagente `LangGraph` + `PydanticAI`** (los 6 nodos cognitivos y las 5 herramientas `@agent.tool` conectadas a `bd_csh`).
+2. **Consultar e Investigar en Vivo los 8 Planes (`POST /consultar-agentes-pdd`):** Hacer preguntas abiertas o seleccionar consultas estratégicas sobre los 5 PDD (`2012–2027`) y 3 PDL (`2024–2027`), observando paso a paso la **Traza de Razonamiento `LangGraph`**, las **Herramientas `@agent.tool` invocadas**, las **Citas Documentales Verificadas con página y SHA-256** y el **Dictamen del Crítico Verificador Forense (`0% alucinación financiera`)**.
+3. **Probar el Intérprete Semántico de Fragmentos PDD en Vivo (`POST /interpretar-fragmento-pdd`):** Pegar o cargar cualquier párrafo/tabla de un Plan de Desarrollo y ver cómo los agentes `PydanticAI` extraen automáticamente la jerarquía MGA (`Programa/Subprograma`), evalúan el filtro `CREMA` del indicador, razonan el Grado de Frontalidad (`A/B/C/N`), calculan el vector `pesos_7d` (7 Dimensiones PNUD) y sugieren el código BPIM y Producto MGA-DNP.
 
 ---
 
 ## 2. Entregables Técnicos Obligatorios
 
-### Entregable 1 — Integración de Servicios y Contratos Tipados (`src/features/seguimiento/services/plan-accion-dnp-api.ts`)
-1. Añadir los tipos e interfaces TypeScript estrictas (cero `any`) y funciones cliente con fallback canónico resiliente (para SSG/tests cuando el servidor no esté disponible, pero consumiendo la API real en vivo) para los endpoints del motor multiagente:
-   - `obtenerEstadoSistemaMultiagentePdd()` $\rightarrow$ `GET /api/v1/compromisos/triada/pdd-dea/estado-sistema-multiagente`
-   - `ejecutarSistemaMultiagentePdd()` $\rightarrow$ `POST /api/v1/compromisos/triada/pdd-dea/ejecutar-sistema-multiagente`
-   - `obtenerComparativoSeguridadHumanaPdd()` $\rightarrow$ `GET /api/v1/compromisos/triada/pdd-dea/seguridad-humana-comparativo`
-   - `obtenerCruceMultiagentePaBpim()` $\rightarrow$ `GET /api/v1/compromisos/triada/pdd-dea/cruce-multiagente-pa-bpim`
-2. Los datos de respaldo/semilla para pruebas o modo offline deben reflejar fielmente las cifras reales auditadas de los 5 PDD y 3 PDL:
-   - **Evidencias absorbidas:** `2.732` (`2.728` páginas PDF continuas + registros JSON estructurados), `1.524` nodos, `2.228` metas PDD (`2012=191`, `2013=195`, `2016=370`, `2020=226`, `2024=1.246`) y `401` metas PDL en anexo territorial separado.
-   - **Clasificación A/B/C/N por nodos:**
-     - `PDD_2012_2015` (*Campo para Todos*): `A=11`, `B=16`, `C=114`, `N=5` (PPI Oficial Nominal `$3.049.788.268.000`).
-     - `PDD_2013_2015` (*Ahora Sí Cartagena*): `A=22`, `B=28`, `C=227`, `N=6` (PPI Oficial Nominal `$1.874.167.605.000`).
-     - `PDD_2016_2019` (*Primero la Gente*): `A=31`, `B=55`, `C=324`, `N=13` (PPI Oficial Nominal `$4.331.941.000.000`).
-     - `PDD_2020_2023` (*Salvemos Juntos a Cartagena*): `A=36`, `B=37`, `C=235`, `N=5`.
-     - `PDD_2024_2027` (*Cartagena, Ciudad de Derechos*): `A=19`, `B=30`, `C=181`, `N=6`.
+### Entregable 1 — Contratos Tipados, Datos Semilla y Clientes con Normalizador En Vivo (`src/features/seguimiento/data/sistema-multiagente-pdd.data.ts` y `src/features/seguimiento/services/plan-accion-dnp-api.ts`)
 
-### Entregable 2 — Componente `SistemaMultiagentePddPanel` e Integración en `/plataforma/seguimiento`
-1. Crear `src/features/seguimiento/components/sistema-multiagente-pdd-panel.tsx` e integrarlo de forma prominente y navegable dentro del módulo de Seguimiento (`src/features/seguimiento/components/pdd-dea-evaluacion-panel.tsx` o como pestaña/sección dedicada en `motor-plan-accion-tab.tsx`).
-2. El panel debe presentar con diseño institucional POLIS UI (`--surface-1`, `--surface-2`, `--text-primary`, `--text-secondary`, `--ember`, `--border`, controles de `src/shared/ui`):
-   - **Bloque 1 — Telemetría de los Agentes y Puertas de Calidad (`A` a `F`):**
-     - Estado general del motor (`COMPLETADO` / `SINCRONIZADO_PDD_ONLY`), `run_id`, botón de actualización/consulta de estado y tarjetas de métricas (`2.732` evidencias, `1.524` nodos, `2.228` metas PDD, `401` metas PDL).
-     - Semáforo de las Puertas de Calidad (`Puerta A` Absorción Documental 11 PDFs, `Puerta B` Reconstrucción Jerárquica MGA, `Puerta C` Clasificación Seguridad Humana A/B/C/N, `Puerta D` Conciliación PPI ±$1 COP, `Puerta E` Publicación Google Workspace, `Puerta F` Articulación PA/BPIM).
-   - **Bloque 2 — Comparativo Longitudinal de los 5 PDD (`2012–2027`) y 7 Dimensiones de Seguridad Humana:**
-     - Tabla/matriz comparativa interactiva de los 5 PDD mostrando: Periodo, Acuerdo, Total Nodos, Metas PDD, distribución por Grado de Frontalidad (`A` Núcleo Frontal, `B` Determinante Multidimensional, `C` Contextual, `N` No Asociado), inversión `A + B` y participación en las 7 Dimensiones PNUD (`Personal`, `Comunitaria`, `Económica`, `Alimentaria`, `Salud`, `Ambiental`, `Política`).
-     - Separación explícita del **Anexo Territorial de los 3 PDL (`2024–2027`)** (Localidad 1 Histórica y del Caribe Norte, Localidad 2 de la Virgen y Turística, Localidad 3 Industrial y de la Bahía — `401` metas PDL y `$304.981M` COP) para no contaminar el denominador distrital.
-   - **Bloque 3 — Las 4 Respuestas Estratégicas del Diagnóstico e Inspección en Drawer Lateral (`Zero-Modals`):**
-     - Acordeón o tarjetas ejecutivas con las respuestas a las **4 preguntas estratégicas** del diagnóstico comparativo 2012–2027.
-     - **Drawer lateral (`Zero-Modals`)** al seleccionar un Plan de Desarrollo o un Agente para inspeccionar:
-       - Cobertura de páginas PDF verificadas con SHA-256 (`161` págs. 2012, `116` págs. CDIM, `199` págs. 2013, `363` págs. 2016, `370` págs. 2020, `304+491+549` págs. 2024, `70+32+73` págs. PDL).
-       - Articulación de sus metas `A` y `B` con las actividades del Plan de Acción (29 entidades) y códigos BPIM/MGA.
+1. Definir las interfaces TypeScript estrictas (cero `any`) y funciones normalizadoras para los 3 nuevos endpoints del motor neurosimbólico:
+   - **`obtenerArquitecturaAgentesIaPdd()`** $\rightarrow$ `GET /api/v1/compromisos/triada/pdd-dea/arquitectura-agentes-ia`:
+     - Normaliza `motor`, `orquestador` (`"LangGraph StateGraph"`), `framework_agentes` (`"PydanticAI"`), `nodos_langgraph` (los 6 agentes: `AgenteLectorSemanticoDocumental`, `AgenteReconstructorCausalMGA`, `AgenteTaxonomoNeurosimbolicoSH`, `AgenteAuditorFinancieroPPI`, `AgenteArticuladorOperativoBPIM`, `AgenteCriticoVerificadorForense`), `herramientas_registradas` (las 5 `@agent.tool`: `tool_buscar_evidencia_paginas_pdd`, `tool_consultar_nodos_mga`, `tool_consultar_metas_oficiales`, `tool_conciliar_ppi_plan`, `tool_cruzar_actividades_pa_bpim`) y `corpus_conectado`.
+   - **`consultarAgentesInteligentesPdd(solicitud)`** $\rightarrow$ `POST /api/v1/compromisos/triada/pdd-dea/consultar-agentes-pdd`:
+     - Envía `{ pregunta, codigo_plan, dimension_sh, grado_frontalidad, profundidad }` y normaliza el resultado (`normalizarConsultaAgentesPdd(raw, solicitud)`), mapeando tanto la respuesta real del backend como el motor cognitivo local de respaldo si el backend está reiniciando:
+       - `run_id`, `motor`, `pregunta`, `sintesis_ejecutiva`, `dictamen_forense_detallado`
+       - `traza_langgraph`: arreglo de los 6 pasos con `orden`, `nodo_langgraph`, `agente`, `razonamiento`, `herramientas_invocadas` (`herramienta`, `registros_recuperados`), `duracion_ms`, `estado`.
+       - `citas_evidencia_documental`: arreglo con `codigo_plan`, `archivo`, `pagina`, `sha256_contenido`, `origen_texto`, `extracto_relevante`.
+       - `verificacion_critica`: `{ aprobado, iteraciones_langgraph, cero_alucinacion_financiera, citas_sha256_verificadas, observacion_verificador }`.
+   - **`interpretarFragmentoSemanticoPdd(solicitud)`** $\rightarrow$ `POST /api/v1/compromisos/triada/pdd-dea/interpretar-fragmento-pdd`:
+     - Envía `{ texto_fragmento, codigo_plan_referencia, archivo_origen, pagina }` y normaliza el resultado (`normalizarInterpretacionFragmentoPdd(raw, solicitud)`):
+       - `nodos_extraidos` (`nivel`, `codigo_detectado`, `nombre`, `problema_central_inferido`, `objetivo_mga_inferido`)
+       - `metas_extraidas` (`tipo_meta`, `descripcion_meta`, `indicador_sugerido`, `linea_base`, `meta_cuatrienio`, `evaluacion_crema` con `claro`, `relevante`, `economico`, `medible`, `adecuado`, `puntaje_crema_pct`, `observacion_dnp`)
+       - `clasificacion_neurosimbolica` (`grado_frontalidad`, `etiqueta_frontalidad`, `dimension_sh_primaria`, `pesos_7d`, `justificacion_causal_ia`)
+       - `articulacion_bpim_sugerida` (`codigo_bpim_sugerido`, `producto_catalogo_mga_dnp`, `entidad_responsable_sugerida`).
 
-### Entregable 3 — Pruebas y Quality Gates Frontend
-1. Añadir o ampliar pruebas unitarias en `src/features/seguimiento/components/motor-plan-accion.test.tsx` (o `src/features/seguimiento/__tests__/sistema-multiagente-pdd.test.tsx`) verificando el renderizado de las puertas de calidad, los 5 PDD, el anexo de 3 PDL, las 4 preguntas estratégicas y la apertura del Drawer lateral sin modales prohibidos.
+### Entregable 2 — Bloque 4 en `SistemaMultiagentePddPanel` (`src/features/seguimiento/components/sistema-multiagente-pdd-panel.tsx`)
+
+1. Añadir en `SistemaMultiagentePddPanel` el **Bloque 4 (`data-testid="bloque-agentes-inteligentes-langgraph"`): "Motor Cognitivo Neurosimbólico: Agentes Inteligentes `LangGraph` + `PydanticAI` (`Tool-Calling` sobre `2.734` Páginas)"** con:
+   - ** Cinta de Arquitectura Neurosimbólica:** Muestra los **6 Agentes Cognitivos (`PydanticAI`)** encadenados en el **`StateGraph` de `LangGraph`** y sus **5 herramientas `@agent.tool`** conectadas a PostgreSQL (`bd_csh`), destacando la separación entre la **Capa Cognitiva (Lectura Semántica, Inferencia Causal MGA y Razonamiento de Seguridad Humana)** y la **Capa Simbólica (Cero Alucinación Financiera ±$1 COP y Verificación Criptográfica SHA-256)**.
+   - **Sub-vista 1 — Investigador y Consultor Multiagente sobre los 8 Planes (`data-testid="consola-consulta-agentes-pdd"`):**
+     - Botones de consultas rápidas preconfiguradas (ej. *"Evolución de inversión frontal A+B 2012–2027"*, *"Comparativo de Seguridad Personal y Convivencia en los 5 PDD"*, *"Brechas de Seguridad Alimentaria y Salud Pública"*, *"Articulación de los 3 PDL con el PDD 2024–2027"*) + input de consulta abierta, selector de Plan (`TODOS` o un PDD/PDL específico) y botón **`Ejecutar Enjambre LangGraph`** (`data-testid="btn-ejecutar-consulta-agentes"`).
+     - Panel de resultados mostrando:
+       - **Síntesis Ejecutiva y Dictamen Forense Detallado**.
+       - **Traza de Razonamiento `LangGraph` (6 Nodos):** línea de tiempo de los 6 agentes mostrando su razonamiento, las tools `@agent.tool` invocadas y el sello del `AgenteCriticoVerificadorForense` (`Cero Alucinación Financiera · Citas SHA-256 Verificadas`).
+       - **Citas Documentales Extraídas (`seguimiento.pdd_evidencia_paginas`):** tarjetas con `archivo`, `página`, `hash SHA-256` y el extracto textual de la fuente.
+   - **Sub-vista 2 — Intérprete Semántico de Fragmentos PDD en Vivo (`data-testid="consola-interprete-semantico-pdd"`):**
+     - Selector de 3 fragmentos reales de prueba (2012 *Campo para Todos*, 2016 *Primero la Gente*, 2024 *Cartagena Ciudad de Derechos*) + `textarea` editable y botón **`Interpretar con Agentes PydanticAI`** (`data-testid="btn-interpretar-fragmento-pdd"`).
+     - Muestra los **Nodos MGA Extraídos** (`Problema Central Inferido` $\rightarrow$ `Objetivo MGA`), las **Metas e Indicadores con Evaluación `CREMA`**, la **Clasificación Neurosimbólica `A/B/C/N` + barras de `pesos_7d` + Justificación Causal de la IA** y el **Código BPIM (13 dígitos) / Producto MGA-DNP sugerido**.
+
+### Entregable 3 — Pruebas Unitarias y Quality Gates
+1. Ampliar `src/features/seguimiento/__tests__/sistema-multiagente-pdd.test.tsx` con pruebas para:
+   - Normalizadores en vivo de `consultarAgentesInteligentesPdd` e `interpretarFragmentoSemanticoPdd`.
+   - Renderizado e interacción con el nuevo **Bloque 4 (`bloque-agentes-inteligentes-langgraph`)**, ejecución de una consulta a los agentes `LangGraph` y uso del intérprete semántico de fragmentos PDD.
 2. Ejecutar y pasar al 100%:
-   - `bun run ui:check` (0 violaciones de tokens, primitivas y reglas Zero-Modals)
-   - `bun run check` (TypeScript + ESLint 100% limpio)
-   - `bun test` (100% pruebas pasando)
-3. Documentar tu entrega detallada en `/root/polis/bridge/02_resultado_agy2.md`.
-4. **Notificación obligatoria a `agy`:** Al terminar tu implementación, pruebas y commit local en `main` (sin `git push`), notifica inmediatamente a `agy` (`=agy:0.0`) vía `tmux` ejecutando:
+   - `bun run ui:check` (0 violaciones)
+   - `bun run check` (TypeScript + ESLint 0 errores)
+   - `bun test` (100% en verde)
+3. Documentar en `bridge/02_resultado_agy2.md`, hacer commit local en `main` (sin `git push`) y notificar de inmediato por `tmux` a `=agy:0.0`:
    ```bash
-   tmux send-keys -t =agy:0.0 "AGY2 LISTO [18B]: Tablero Frontend Sistema Multiagente PDD/PDL en /plataforma/seguimiento completado y verificado. Solicito auditoria EAF." Enter
+   tmux send-keys -t =agy:0.0 "AGY2 LISTO [20B]: Consola Frontend de Agentes Inteligentes Neurosimbolicos (LangGraph + PydanticAI) completada y verificada. Solicito auditoria EAF." Enter
    ```
