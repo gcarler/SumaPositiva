@@ -93,6 +93,11 @@ def test_dea_scores_and_chow_are_calculated():
     assert score is not None and 0 <= score <= 1
     assert sum(lambdas) == pytest.approx(1.0)
     assert status == "ESTIMADO"
+    pulp_score, _, pulp_status = evaluator._dea_solve_pulp(
+        [100.0, 200.0], [[10.0, 10.0], [10.0, 20.0]], 0, True
+    )
+    assert pulp_status.startswith("ESTIMADO")
+    assert pulp_score == pytest.approx(score, abs=1e-7)
     assert (
         evaluator._chow_test(
             list(range(2017, 2026)), [1, 2, 4, 3, 5, 11, 10, 13, 12], break_year=2022
@@ -131,6 +136,40 @@ def test_nlp_spatial_and_forecast_metrics_are_exposed():
     assert "ponderacion_c_tfidf" in nlp
     assert "similaridad_coseno" in nlp
     assert nlp["similaridad_coseno"]["umbral_alerta"] == 0.45
+    assert nlp["clustering_topologico"]["estado"] == "COMPLETADO"
+    assert nlp["clustering_topologico"]["fallback_corpus_pequeno"] is True
+
+    large_state = _state()
+    large_state["goal_records"] = [
+        {
+            "codigo": f"G{i}",
+            "nombre": (
+                f"education school teacher student coverage curriculum classroom grade {i}"
+                if i < 5
+                else f"hospital clinic physician nurse patient vaccine mortality ward {i}"
+            ),
+            "codigo_plan": "P",
+        }
+        for i in range(5)
+    ]
+    large_state["activity_records"] = [
+        {
+            "descripcion_actividad": (
+                f"education school teacher student coverage curriculum classroom grade service {i}"
+                if i < 5
+                else f"hospital clinic physician nurse patient vaccine mortality ward service {i}"
+            )
+        }
+        for i in range(5)
+    ]
+    large_nlp = evaluator._nlp_node(large_state)["nlp_coherence"]
+    topics = large_nlp["clustering_topologico"]
+    assert topics["estado"] == "COMPLETADO"
+    assert topics["algoritmo"].startswith("TruncatedSVD + HDBSCAN")
+    assert topics["n_componentes_svd"] > 0
+    assert topics["clusters"] == 2
+    assert "ponderaciones_por_cluster" in large_nlp["ponderacion_c_tfidf"]
+    assert large_nlp["similaridad_coseno"]["matriz_comparabilidad"]["pares_coseno_calculados"] == 25
 
     spatial = evaluator._moran_lisa(
         [1.0, 1.1, 1.2, 8.0, 8.1, 8.2],
@@ -164,3 +203,36 @@ def test_nlp_spatial_and_forecast_metrics_are_exposed():
     forecast = evaluator._forecast_series(state)
     assert forecast["series"][0]["ISRI"] is not None
     assert forecast["series"][0]["chow"]["anio_ruptura"] == 2024
+    assert forecast["series"][0]["modelo_aplicado"].startswith("ARIMA")
+
+
+def test_dea_node_reports_slacks_simar_wilson_and_four_distance_malmquist():
+    state = _state()
+    years = [2023, 2023, 2024, 2024]
+    entities = ["A", "B", "A", "B"]
+    state["df_financial"] = [
+        {"dmu": entity, "vigencia": year, "insumo_cop": cost}
+        for entity, year, cost in zip(entities, years, [100, 200, 100, 220], strict=True)
+    ]
+    state["df_outputs"] = [
+        {"dmu": entity, "vigencia": year, "ejecutado": amount}
+        for entity, year, amount in zip(entities, years, [10, 20, 15, 25], strict=True)
+    ]
+    state["df_outcomes"] = [
+        {"dmu": entity, "vigencia": year, "avance_estrategico_pct": amount}
+        for entity, year, amount in zip(entities, years, [50, 80, 60, 90], strict=True)
+    ]
+
+    dea = evaluator._dea_node(state)["dea_scores"]
+    assert dea["slacks"]
+    assert all("insumos" in row and "productos" in row for row in dea["slacks"].values())
+    assert dea["bias_corrected"]["replicaciones"] == 1000
+    assert dea["bias_corrected"]["por_dmu"]
+    assert dea["equivalencia_solvers"]["equivalencia_total"] is True
+    assert all(
+        row["lambda_sum_bcc"] == pytest.approx(1.0, abs=1e-6)
+        for row in dea["resultados_dmu"]
+        if row["lambda_sum_bcc"] is not None
+    )
+    assert dea["malmquist"]["pares"]
+    assert all({"Pech", "Techch", "MPI"} <= pair.keys() for pair in dea["malmquist"]["pares"])

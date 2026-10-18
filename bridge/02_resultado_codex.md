@@ -1,16 +1,20 @@
-# Entrega Codex — PDT-AI-EVALUATOR-GRAFO-NODOS-21A
+# Entrega Codex — PDT-NODOS-DEA-PULP-NLP-SKLEARN-ORQUESTACION-22A
 
-## Implementación
+## Cambios
 
-- Añadido `backend/app/modules/compromisos/pdt_ai_evaluator_graph.py` con el `AgentState`, topología cíclica `StateGraph` y `MemorySaver`, ingesta de fuentes PostgreSQL PDT, y nodos NLP, DEA, espacial, predictivo, supervisor y Human-in-the-Loop.
-- Incluye la especificación GBR, cinco sectores, ecuaciones, umbrales de alerta, recomendaciones de revisión y persistencia atómica de caché/checkpoints. La extracción geográfica usa centroides PostGIS existentes; no inventa observaciones faltantes.
-- Añadido `backend/tests/test_pdt_ai_evaluator.py` con cobertura de especificación, igualdad literal del prompt con la sección 5, recorrido de nodos, DEA/Chow, c-TF-IDF/coseno, Moran/LISA, ISRI y validación durable del auditor.
+- Actualizado `backend/app/modules/compromisos/pdt_ai_evaluator_graph.py`:
+  - DEA CCR/BCC formula LP con comparación PuLP contra SciPy/HiGHS, verificación de equivalencia, holguras de insumos/productos, suma de lambdas BCC y clasificación de escala.
+  - Bootstrap suavizado con reflexión en la frontera de eficiencia, Silverman bandwidth, corrección de sesgo e intervalos del 95% por DMU y agregado (1,000 réplicas).
+  - Índice Malmquist entre períodos consecutivos con cuatro distancias cruzadas CRS y descomposición Pech BCC / Techch.
+  - Pipeline TF-IDF (1,2) + TruncatedSVD + HDBSCAN, c-TF-IDF de clusters y sectores, y cosine similarity en bloques de 128 metas con alertas bajo 0.45.
+  - ARIMA de `statsmodels`, GeoDataFrame de GeoPandas y enriquecimiento opcional desde `pdt_nodos_espacial_predictivo.py` para análisis espacial, series y matriz GBR; mantiene el cálculo local cuando no está disponible.
+- Actualizado `backend/tests/test_pdt_ai_evaluator.py` para verificar clustering, BCC/CCR, holguras, bootstrap, Malmquist, ARIMA, coseno y c-TF-IDF.
 
 ## Verificación
 
 - `uv run --project backend ruff check backend/app/modules/compromisos/pdt_ai_evaluator_graph.py backend/tests/test_pdt_ai_evaluator.py` — correcto.
-- `uv run --project backend pytest backend/tests/test_pdt_ai_evaluator.py -q` — 6 passed.
+- `uv run --project backend pytest backend/tests/test_pdt_ai_evaluator.py -q` — 7 passed.
 
-## Límites declarados
+## Nota del entorno
 
-En este entorno no están instalados BERTopic/UMAP/HDBSCAN, SentenceTransformers, PySAL ni los paquetes ARIMA/VAR. El evaluador etiqueta los cálculos de respaldo léxico, espacial exploratorio u OLS, y deja las métricas pendientes cuando los datos o geometrías no permiten una estimación. El bootstrap DEA está identificado como aproximación suavizada y no como corrección Simar-Wilson. El análisis con PostgreSQL/PostGIS real no se ejecutó en estas pruebas unitarias.
+El entorno tiene PuLP 4.0.1, que ya no expone `PULP_CBC_CMD`, y no tiene CBC ejecutable ni `highspy`. El código construye el modelo PuLP y trata de usar CBC/COIN cuando estén disponibles; en este entorno informa el respaldo de SciPy/HiGHS y compara sus puntuaciones. El bootstrap sigue el suavizado/reflexión solicitado sobre scores DEA y etiqueta su estimación como aproximada, pues no vuelve a estimar la frontera dentro de cada réplica. El helper paralelo `pdt_nodos_espacial_predictivo.py` se importa en tiempo de ejecución y no se editó.

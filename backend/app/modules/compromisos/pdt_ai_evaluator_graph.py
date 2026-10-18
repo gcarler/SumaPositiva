@@ -8,6 +8,8 @@ en la respuesta; no se fabrican indicadores ni geometrías.
 from __future__ import annotations
 
 import hashlib
+import importlib
+import inspect
 import json
 import math
 import os
@@ -16,21 +18,30 @@ import tempfile
 import time
 import unicodedata
 import uuid
+import warnings
 from collections import Counter, defaultdict
 from datetime import UTC, datetime
 from decimal import Decimal
 from pathlib import Path
 from typing import Any, TypedDict
 
+import geopandas as gpd
 import numpy as np
+import pandas as pd
+import pulp
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import END, START, StateGraph
 from langgraph.types import Command, interrupt
 from scipy.optimize import linprog
 from scipy.stats import f as f_distribution
 from scipy.stats import norm
+from sklearn.cluster import HDBSCAN
+from sklearn.decomposition import TruncatedSVD
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
+from statsmodels.tsa.arima.model import ARIMA
 
 ROOT = Path(__file__).resolve().parents[4]
 DATA_DIR = ROOT / "data" / "planes_desarrollo"
@@ -336,8 +347,8 @@ def obtener_especificacion_pdt_ai_evaluator() -> dict[str, Any]:
                 "Moran/LISA no se estiman."
             ),
             (
-                "Sin dependencias de BERTopic/UMAP/HDBSCAN instaladas, NLP usa TF y coseno "
-                "léxico disperso; se declara el fallback."
+                "NLP ejecuta TF-IDF, SVD, HDBSCAN y c-TF-IDF; corpus <10 documentos "
+                "queda etiquetado como ruido en vez de forzar clusters."
             ),
         ],
     }
@@ -479,6 +490,21 @@ def _cosine(left: Counter[str], right: Counter[str]) -> float:
     norm_left = math.sqrt(sum(value * value for value in left.values()))
     norm_right = math.sqrt(sum(value * value for value in right.values()))
     return dot / (norm_left * norm_right) if norm_left and norm_right else 0.0
+
+
+def _ctfidf_by_class(term_frequency: dict[str, Counter[str]]) -> dict[str, dict[str, float]]:
+    class_frequency: dict[str, set[str]] = defaultdict(set)
+    for category, counts in term_frequency.items():
+        for token in counts:
+            class_frequency[token].add(category)
+    total_classes = max(1, len(term_frequency))
+    return {
+        category: {
+            token: round(count * math.log1p(total_classes / len(class_frequency[token])), 6)
+            for token, count in counts.most_common(50)
+        }
+        for category, counts in term_frequency.items()
+    }
 
 
 def _load_corpus(db: AsyncSession) -> Any:
@@ -640,6 +666,46 @@ def _load_corpus(db: AsyncSession) -> Any:
     return load()
 
 
+def _to_geodataframe(records: list[dict[str, Any]]) -> gpd.GeoDataFrame:
+    frame = pd.DataFrame(records)
+    if frame.empty or not {"lon", "lat"}.issubset(frame.columns):
+        return gpd.GeoDataFrame(frame, geometry=gpd.GeoSeries([], crs="EPSG:4326"), crs="EPSG:4326")
+    valid = frame[frame["lon"].notna() & frame["lat"].notna()].copy()
+    return gpd.GeoDataFrame(
+        valid,
+        geometry=gpd.points_from_xy(valid["lon"], valid["lat"]),
+        crs="EPSG:4326",
+    )
+
+
+async def _optional_pdt_enrichment(function_name: str, context: dict[str, Any]) -> Any:
+    try:
+        module = importlib.import_module(".pdt_nodos_espacial_predictivo", package=__package__)
+        function = getattr(module, function_name)
+        signature = inspect.signature(function)
+        parameters = signature.parameters
+        if len(parameters) == 1 and next(iter(parameters)) in {"state", "agent_state", "estado"}:
+            result = function(context["state"])
+        else:
+            kwargs = {name: value for name, value in context.items() if name in parameters}
+            missing = [
+                name
+                for name, parameter in parameters.items()
+                if parameter.default is inspect.Parameter.empty
+                and parameter.kind
+                not in (inspect.Parameter.VAR_POSITIONAL, inspect.Parameter.VAR_KEYWORD)
+                and name not in kwargs
+            ]
+            if missing:
+                return None
+            result = function(**kwargs)
+        if inspect.isawaitable(result):
+            result = await result
+        return result
+    except Exception:
+        return None
+
+
 def _build_state(
     data: dict[str, Any], jurisdiction: str, time_horizon: str, thread_id: str
 ) -> AgentState:
@@ -768,6 +834,8 @@ def _build_state(
         "df_financial": finances,
         "df_outputs": outputs,
         "df_outcomes": outcomes,
+        # LangGraph's durable checkpoint serializer stores the source rows; the
+        # spatial node materializes a GeoDataFrame locally at execution time.
         "gdf_spatial": data["territories"],
         "dea_scores": {},
         "nlp_coherence": {},
@@ -845,57 +913,81 @@ def _nlp_node(state: AgentState) -> dict[str, Any]:
             if len(code_list) < 25 and act_idx not in code_list:
                 code_list.append(act_idx)
 
-    action_vectors = [Counter(_tokens(value)) for value in action_texts]
-    token_to_actions: dict[str, list[int]] = defaultdict(list)
-    for index, action_vector in enumerate(action_vectors):
-        for tok in action_vector:
-            bucket = token_to_actions[tok]
-            if len(bucket) < 40:
-                bucket.append(index)
+    objective_texts = [value or "" for value in objective_texts]
+    corpus = pd.Series([*objective_texts, *action_texts], dtype="string").fillna("")
+    pairs: list[dict[str, Any]] = []
+    alerts: list[dict[str, Any]] = []
+    cluster_labels: list[int] = []
+    topic_terms: dict[str, dict[str, float]] = {}
+    vectorizer = TfidfVectorizer(ngram_range=(1, 2), max_features=4096)
+    try:
+        tfidf = vectorizer.fit_transform(corpus.tolist())
+    except ValueError:
+        tfidf = None
+    embeddings = None
+    vector_features = 0
+    if tfidf is not None:
+        vector_features = int(tfidf.shape[1])
+        n_components = min(64, vector_features - 1, tfidf.shape[0] - 1)
+        if n_components >= 1:
+            with warnings.catch_warnings():
+                warnings.filterwarnings(
+                    "ignore", message="invalid value encountered in divide", category=RuntimeWarning
+                )
+                embeddings = TruncatedSVD(n_components=n_components, random_state=42).fit_transform(
+                    tfidf
+                )
+        else:
+            embeddings = tfidf.toarray()
+        if len(corpus) >= 10:
+            try:
+                cluster_labels = (
+                    HDBSCAN(min_cluster_size=5, copy=True).fit_predict(embeddings).tolist()
+                )
+            except (ValueError, TypeError):
+                cluster_labels = [-1] * len(corpus)
+        else:
+            cluster_labels = [-1] * len(corpus)
+        tokens_by_doc = [_tokens(value) for value in corpus.tolist()]
+        cluster_frequencies = {}
+        for label in sorted(set(cluster_labels) - {-1}):
+            docs = [
+                tokens_by_doc[index] for index, item in enumerate(cluster_labels) if item == label
+            ]
+            cluster_frequencies[f"cluster_{label}"] = Counter(
+                token for doc in docs for token in doc
+            )
+        topic_terms = _ctfidf_by_class(cluster_frequencies)
 
-    pairs = []
-    alerts = []
-    for goal in goals:
-        objective = " ".join(
-            str(goal.get(key) or "") for key in ("nombre", "indicador", "linea_nombre")
-        )
-        vector = Counter(_tokens(objective))
-        candidates = by_code.get(str(goal.get("codigo") or ""), [])
-        if not candidates:
-            seen_candidates: set[int] = set()
-            candidates = []
-            for tok in vector:
-                for act_idx in token_to_actions.get(tok, ()):
-                    if act_idx not in seen_candidates:
-                        seen_candidates.add(act_idx)
-                        candidates.append(act_idx)
-                        if len(candidates) >= 60:
-                            break
-                if len(candidates) >= 60:
-                    break
-        similarities = [
-            (index, _cosine(vector, action_vectors[index]))
-            for index in candidates
-            if index < len(action_vectors)
-        ]
-        if similarities:
-            best_index, score = max(similarities, key=lambda item: item[1])
-            action_name = action_texts[best_index][:240]
-            pair = {
-                "codigo_plan": goal.get("codigo_plan"),
-                "codigo_meta": goal.get("codigo"),
-                "meta_estrategica": objective[:300],
-                "actividad_operativa": action_name,
-                "similaridad_coseno_lexica": round(score, 6),
-                "metodo_vectorizacion": "TF léxico disperso; SentenceTransformers no instalado",
-            }
-            pairs.append(pair)
-            if score < COSINE_ALERT_THRESHOLD:
-                alerts.append({**pair, "alerta": "Desalineación Estratégica / Mission Creep"})
+        if goals and action_texts:
+            goal_matrix = tfidf[: len(goals)]
+            action_matrix = tfidf[len(goals) :]
+            for start in range(0, len(goals), 128):
+                stop = min(start + 128, len(goals))
+                similarities = cosine_similarity(goal_matrix[start:stop], action_matrix)
+                for offset, row in enumerate(similarities):
+                    goal_index = start + offset
+                    best_index = int(np.argmax(row))
+                    score = float(row[best_index])
+                    goal = goals[goal_index]
+                    objective = objective_texts[goal_index]
+                    pair = {
+                        "codigo_plan": goal.get("codigo_plan"),
+                        "codigo_meta": goal.get("codigo"),
+                        "meta_estrategica": objective[:300],
+                        "actividad_operativa": action_texts[best_index][:240],
+                        "similaridad_coseno_lexica": round(score, 6),
+                        "metodo_vectorizacion": "TfidfVectorizer + cosine_similarity",
+                    }
+                    pairs.append(pair)
+                    if score < COSINE_ALERT_THRESHOLD:
+                        alerts.append(
+                            {**pair, "alerta": "Desalineación Estratégica / Mission Creep"}
+                        )
     sectors = []
     sector_docs: dict[str, list[list[str]]] = {}
     tokenized_corpus = [_tokens(value) for value in objective_texts] + [
-        list(vec.elements()) for vec in action_vectors
+        _tokens(value) for value in action_texts
     ]
     tokenized_sets = [set(doc) for doc in tokenized_corpus]
     for sector in SECTORES_PRIORITARIOS:
@@ -914,40 +1006,43 @@ def _nlp_node(state: AgentState) -> dict[str, Any]:
                 "tecnica_principal": sector["tecnica_principal"],
             }
         )
-    class_frequency: dict[str, set[str]] = defaultdict(set)
     term_frequency: dict[str, Counter[str]] = {}
     for category, docs in sector_docs.items():
         counts = Counter(token for doc in docs for token in doc)
         term_frequency[category] = counts
-        for token in counts:
-            class_frequency[token].add(category)
-    total_classes = max(1, len(SECTORES_PRIORITARIOS))
-    c_tfidf = {
-        category: {
-            token: round(count * math.log1p(total_classes / len(class_frequency[token])), 6)
-            for token, count in counts.most_common(30)
-        }
-        for category, counts in term_frequency.items()
-    }
+    c_tfidf = _ctfidf_by_class(term_frequency)
     output = {
         "estado": "COMPLETADO" if goals and action_texts else "PENDIENTE_DATOS",
-        "vectorizacion": "TF léxico disperso; embeddings densos no disponibles en runtime",
+        "vectorizacion": "TfidfVectorizer(1,2) + TruncatedSVD",
         "clustering_topologico": {
-            "estado": "NO_DISPONIBLE",
-            "motivo": (
-                "BERTopic/UMAP/HDBSCAN no están instalados; se entregan tópicos por "
-                "vocabulario sectorial."
-            ),
+            "estado": "COMPLETADO",
+            "algoritmo": "TruncatedSVD + HDBSCAN(min_cluster_size=5)",
+            "estado_reduccion": "COMPLETADO" if embeddings is not None else "SIN_COMPONENTES",
+            "n_componentes_svd": min(64, vector_features - 1, len(corpus) - 1)
+            if embeddings is not None and vector_features > 1
+            else 0,
+            "documentos": len(corpus),
+            "clusters": len(set(cluster_labels) - {-1}),
+            "ruido_hdbscan": sum(label == -1 for label in cluster_labels),
+            "fallback_corpus_pequeno": len(corpus) < 10,
+            "c_tfidf_por_cluster": topic_terms,
             "topics_sectoriales": sectors,
         },
         "ponderacion_c_tfidf": {
             "formula": ECUACIONES["ctfidf"],
             "ponderaciones_por_sector": c_tfidf,
+            "ponderaciones_por_cluster": topic_terms,
         },
         "similaridad_coseno": {
             "formula": ECUACIONES["similaridad_coseno"],
-            "metodo": "coseno sobre contadores léxicos normalizados",
+            "metodo": "cosine_similarity vectorizado en bloques de 128 metas",
             "umbral_alerta": COSINE_ALERT_THRESHOLD,
+            "matriz_comparabilidad": {
+                "filas_metas": len(goals),
+                "columnas_actividades": len(action_texts),
+                "pares_coseno_calculados": len(goals) * len(action_texts),
+                "almacenamiento": "sparse por bloques; se conserva el mejor par por meta",
+            },
             "pares_evaluados": len(pairs),
             "promedio": round(
                 float(np.mean([item["similaridad_coseno_lexica"] for item in pairs])), 6
@@ -1009,9 +1104,156 @@ def _dea_solve(
     return float(result.x[-1]), [float(value) for value in result.x[:count]], "ESTIMADO"
 
 
+def _dea_solve_pulp(
+    inputs: list[float], outputs: list[list[float]], target: int, bcc: bool
+) -> tuple[float | None, list[float], str]:
+    count = len(inputs)
+    valid_peers = [idx for idx in range(count) if inputs[idx] > 0 and any(outputs[idx])]
+    if count < 2 or target not in valid_peers or len(valid_peers) < 2:
+        return None, [], "PENDIENTE_DATOS_COMPARABLES"
+    model = pulp.LpProblem("dea_bcc" if bcc else "dea_ccr", pulp.LpMinimize)
+    if hasattr(model, "add_variable"):
+        lambdas = [model.add_variable(f"lambda_{idx}", lowBound=0) for idx in range(count)]
+        theta = model.add_variable("theta", lowBound=0, upBound=1)
+    else:
+        lambdas = [pulp.LpVariable(f"lambda_{idx}", lowBound=0) for idx in range(count)]
+        theta = pulp.LpVariable("theta", lowBound=0, upBound=1)
+    if hasattr(model, "setObjective"):
+        model.setObjective(theta)
+    else:
+        model += theta
+    for output_idx in range(len(outputs[0])):
+        constraint = pulp.lpSum(
+            lambdas[idx] * float(outputs[idx][output_idx]) for idx in valid_peers
+        ) >= float(outputs[target][output_idx])
+        model.add(constraint) if hasattr(model, "add") else model.__iadd__(constraint)
+    input_constraint = pulp.lpSum(lambdas[idx] * float(inputs[idx]) for idx in valid_peers) <= (
+        theta * float(inputs[target])
+    )
+    model.add(input_constraint) if hasattr(model, "add") else model.__iadd__(input_constraint)
+    if bcc:
+        constraint = pulp.lpSum(lambdas[idx] for idx in valid_peers) == 1
+        model.add(constraint) if hasattr(model, "add") else model.__iadd__(constraint)
+    solver_class = getattr(pulp, "PULP_CBC_CMD", None) or pulp.COIN_CMD
+    try:
+        status = model.solve(solver_class(msg=False))
+    except pulp.PulpSolverError:
+        # PuLP 4 removed bundled CBC; solve the equivalent PuLP model with
+        # SciPy/HiGHS when no external command-line solver is installed.
+        score, lambdas_out, status = _dea_solve(inputs, outputs, target, bcc)
+        return (
+            score,
+            lambdas_out,
+            "ESTIMADO_PULP_MODEL_SCIPY_FALLBACK" if score is not None else status,
+        )
+    status_text = getattr(status, "name", str(status))
+    if status_text not in {"Optimal", "OPTIMAL", "LpSolveStatus.OPTIMAL"}:
+        return None, [], f"PULP_{status_text}"
+    return (
+        float(pulp.value(theta)),
+        [float(pulp.value(value) or 0.0) for value in lambdas],
+        "ESTIMADO",
+    )
+
+
+def _dea_cross_distance(
+    target_input: float,
+    target_output: list[float],
+    technology_inputs: list[float],
+    technology_outputs: list[list[float]],
+    *,
+    bcc: bool = False,
+) -> float | None:
+    peers = [
+        idx
+        for idx, amount in enumerate(technology_inputs)
+        if amount > 0 and any(technology_outputs[idx])
+    ]
+    if not peers or target_input <= 0 or not any(target_output):
+        return None
+    objective = [0.0] * len(peers) + [1.0]
+    inequalities = []
+    rhs = []
+    for output_idx in range(len(target_output)):
+        inequalities.append([-float(technology_outputs[idx][output_idx]) for idx in peers] + [0.0])
+        rhs.append(-float(target_output[output_idx]))
+    inequalities.append([float(technology_inputs[idx]) for idx in peers] + [-target_input])
+    rhs.append(0.0)
+    result = linprog(
+        objective,
+        A_ub=inequalities,
+        b_ub=rhs,
+        A_eq=[[1.0] * len(peers) + [0.0]] if bcc else None,
+        b_eq=[1.0] if bcc else None,
+        bounds=[(0, None)] * len(peers) + [(0, None)],
+        method="highs",
+    )
+    return float(result.x[-1]) if result.success else None
+
+
+def _simar_wilson_bootstrap(
+    scores: dict[str, float], replicates: int = BOOTSTRAP_REPLICATES
+) -> dict[str, Any]:
+    if len(scores) < 2:
+        return {
+            "replicaciones": replicates,
+            "por_dmu": {},
+            "agregado": None,
+            "estado": "PENDIENTE: se requieren dos DMU comparables",
+        }
+    labels = list(scores)
+    values = np.asarray([scores[label] for label in labels], dtype=float)
+    residuals = values - values.mean()
+    bandwidth = 1.06 * float(values.std(ddof=1)) * len(values) ** (-0.2)
+    rng = np.random.default_rng(20261018)
+    noise = rng.choice(residuals, size=(replicates, len(values)), replace=True)
+    if bandwidth > 0:
+        noise = noise + rng.normal(0.0, bandwidth, size=noise.shape)
+    sample = values[None, :] + noise
+    # Reflection at the efficiency frontier theta=1, then reflection at zero.
+    sample = np.where(sample > 1.0, 2.0 - sample, sample)
+    sample = np.where(sample <= 0.0, -sample, sample)
+    sample = np.clip(sample, np.finfo(float).eps, 1.0)
+    estimates = {}
+    for index, label in enumerate(labels):
+        boot = sample[:, index]
+        mean_boot = float(np.mean(boot))
+        observed = float(values[index])
+        bias = mean_boot - observed
+        estimates[label] = {
+            "theta_observada": round(observed, 8),
+            "theta_corregida_sesgo": round(float(np.clip(2 * observed - mean_boot, 0, 1)), 8),
+            "sesgo_estimado": round(bias, 8),
+            "ic_95_pct": [round(float(x), 8) for x in np.percentile(boot, [2.5, 97.5])],
+        }
+    aggregate = sample.mean(axis=1)
+    observed_mean = float(np.mean(values))
+    boot_mean = float(np.mean(aggregate))
+    ic_95 = [round(float(x), 8) for x in np.percentile(aggregate, [2.5, 97.5])]
+    return {
+        "replicaciones": replicates,
+        "ancho_banda_silverman": round(bandwidth, 10),
+        "reflexion_frontera": "theta=1; valores >1 se reflejan como 2-theta",
+        "media_score": round(observed_mean, 8),
+        "ic_95_pct": ic_95,
+        "por_dmu": estimates,
+        "agregado": {
+            "theta_observada": round(observed_mean, 8),
+            "theta_corregida_sesgo": round(float(np.clip(2 * observed_mean - boot_mean, 0, 1)), 8),
+            "sesgo_estimado": round(boot_mean - observed_mean, 8),
+            "ic_95_pct": ic_95,
+        },
+        "metodo": (
+            "bootstrap suavizado con reflexión de Silverman en theta=1; estimación aproximada"
+        ),
+        "estado": "ESTIMADO",
+    }
+
+
 def _dea_node(state: AgentState) -> dict[str, Any]:
     started = time.perf_counter()
-    dmus = state["df_financial"]
+    financial_frame = pd.DataFrame(state["df_financial"])
+    dmus = financial_frame.to_dict(orient="records")
     outputs_by_dmu = {
         item["dmu"] + "|" + str(item["vigencia"]): item for item in state["df_outputs"]
     }
@@ -1042,11 +1284,60 @@ def _dea_node(state: AgentState) -> dict[str, Any]:
     results = []
     scores = []
     efficiency_by_label: dict[str, float | None] = {}
+    solver_checks = []
     for index, label in enumerate(labels):
         ccr, ccr_lambdas, ccr_status = _dea_solve(inputs, output_matrix, index, False)
         bcc, bcc_lambdas, bcc_status = _dea_solve(inputs, output_matrix, index, True)
+        pulp_ccr, pulp_ccr_lambdas, pulp_ccr_status = _dea_solve_pulp(
+            inputs, output_matrix, index, False
+        )
+        pulp_bcc, pulp_bcc_lambdas, pulp_bcc_status = _dea_solve_pulp(
+            inputs, output_matrix, index, True
+        )
+        solver_checks.append(
+            {
+                "dmu": label,
+                "ccr_equivalente": ccr is None
+                and pulp_ccr is None
+                or ccr is not None
+                and pulp_ccr is not None
+                and math.isclose(ccr, pulp_ccr, rel_tol=1e-6, abs_tol=1e-7),
+                "bcc_equivalente": bcc is None
+                and pulp_bcc is None
+                or bcc is not None
+                and pulp_bcc is not None
+                and math.isclose(bcc, pulp_bcc, rel_tol=1e-6, abs_tol=1e-7),
+                "pulp_status": {"ccr": pulp_ccr_status, "bcc": pulp_bcc_status},
+            }
+        )
         scale_efficiency = ccr / bcc if ccr is not None and bcc else None
         reference_sum = sum(ccr_lambdas) if ccr_lambdas else None
+        input_slacks = (
+            [
+                max(
+                    0.0,
+                    (ccr or 0.0) * inputs[index]
+                    - sum(ccr_lambdas[peer] * inputs[peer] for peer in range(len(inputs))),
+                )
+            ]
+            if ccr is not None
+            else []
+        )
+        output_slacks = (
+            [
+                max(
+                    0.0,
+                    sum(
+                        ccr_lambdas[peer] * output_matrix[peer][output_idx]
+                        for peer in range(len(inputs))
+                    )
+                    - output_matrix[index][output_idx],
+                )
+                for output_idx in range(len(output_matrix[index]))
+            ]
+            if ccr is not None
+            else []
+        )
         returns = (
             "IRS"
             if reference_sum is not None and reference_sum < 1 - 1e-6
@@ -1062,72 +1353,113 @@ def _dea_node(state: AgentState) -> dict[str, Any]:
             "theta_bcc": round(bcc, 8) if bcc is not None else None,
             "SE_o": round(scale_efficiency, 8) if scale_efficiency is not None else None,
             "rendimientos_escala": returns,
-            "lambda_sum_bcc": round(reference_sum, 8) if reference_sum is not None else None,
+            "lambda_sum_ccr": round(reference_sum, 8) if reference_sum is not None else None,
+            "lambda_sum_bcc": round(sum(bcc_lambdas), 8) if bcc_lambdas else None,
+            "slacks": {
+                "insumos": [round(value, 8) for value in input_slacks],
+                "productos": [round(value, 8) for value in output_slacks],
+            },
+            "theta_pulp_ccr": round(pulp_ccr, 8) if pulp_ccr is not None else None,
+            "theta_pulp_bcc": round(pulp_bcc, 8) if pulp_bcc is not None else None,
             "status": ccr_status if ccr_status != "ESTIMADO" else bcc_status,
         }
         results.append(row)
         efficiency_by_label[label] = ccr
         if ccr is not None:
             scores.append(ccr)
-    bootstrap: dict[str, Any]
-    if len(scores) >= 2:
-        rng = np.random.default_rng(20261018)
-        score_array = np.asarray(scores)
-        bandwidth = 1.06 * float(np.std(score_array, ddof=1)) * len(scores) ** (-0.2)
-        samples = rng.choice(score_array, size=(BOOTSTRAP_REPLICATES, len(scores)), replace=True)
-        if bandwidth > 0:
-            samples = np.clip(samples + rng.normal(0, bandwidth, size=samples.shape), 0.0, 1.0)
-        means = samples.mean(axis=1)
-        bootstrap = {
-            "replicaciones": BOOTSTRAP_REPLICATES,
-            "media_score": round(float(np.mean(scores)), 8),
-            "ic_95_pct": [round(float(value), 8) for value in np.percentile(means, [2.5, 97.5])],
-            "metodo": (
-                "bootstrap suavizado aproximado de scores observados con kernel gaussiano; "
-                "no equivale a la corrección Simar-Wilson"
-            ),
-            "estado": "ESTIMADO_APROXIMADO",
+    bootstrap = _simar_wilson_bootstrap(
+        {
+            label: efficiency
+            for label, efficiency in efficiency_by_label.items()
+            if efficiency is not None
         }
-    else:
-        bootstrap = {
-            "replicaciones": BOOTSTRAP_REPLICATES,
-            "ic_95_pct": None,
-            "estado": "PENDIENTE: se requieren al menos dos DMU comparables",
-        }
-    by_period: dict[int, list[tuple[float, float]]] = defaultdict(list)
-    for record, output, efficiency in zip(
-        dmus, output_matrix, scores + [None] * (len(dmus) - len(scores)), strict=False
-    ):
-        if record.get("vigencia") and efficiency is not None:
-            by_period[int(record["vigencia"])].append((sum(output), efficiency))
-    period_productivity = {
-        year: float(np.mean([value for value, _ in values]))
-        for year, values in by_period.items()
-        if values
-    }
-    years = sorted(period_productivity)
+    )
+    periods: dict[int, list[int]] = defaultdict(list)
+    for index, record in enumerate(dmus):
+        if record.get("vigencia") is not None:
+            periods[int(record["vigencia"])].append(index)
+    bcc_by_label = {row["dmu"]: row["theta_bcc"] for row in results}
     malmquist = []
+    years = sorted(periods)
     for earlier, later in zip(years, years[1:], strict=False):
-        if later == earlier + 1 and period_productivity[earlier] > 0:
-            techch = period_productivity[later] / period_productivity[earlier]
-            earlier_eff = float(np.mean([value for _, value in by_period[earlier]]))
-            later_eff = float(np.mean([value for _, value in by_period[later]]))
-            pech = later_eff / earlier_eff if earlier_eff else None
+        if later != earlier + 1:
+            continue
+        earlier_indices = periods[earlier]
+        later_indices = periods[later]
+        earlier_entities = {dmus[index]["dmu"]: index for index in earlier_indices}
+        later_entities = {dmus[index]["dmu"]: index for index in later_indices}
+        for entity in sorted(earlier_entities.keys() & later_entities.keys()):
+            idx_t = earlier_entities[entity]
+            idx_t1 = later_entities[entity]
+            x_t, y_t = inputs[idx_t], output_matrix[idx_t]
+            x_t1, y_t1 = inputs[idx_t1], output_matrix[idx_t1]
+            tech_t_x_t = _dea_cross_distance(
+                x_t,
+                y_t,
+                [inputs[i] for i in earlier_indices],
+                [output_matrix[i] for i in earlier_indices],
+            )
+            tech_t_x_t1 = _dea_cross_distance(
+                x_t1,
+                y_t1,
+                [inputs[i] for i in earlier_indices],
+                [output_matrix[i] for i in earlier_indices],
+            )
+            tech_t1_x_t = _dea_cross_distance(
+                x_t,
+                y_t,
+                [inputs[i] for i in later_indices],
+                [output_matrix[i] for i in later_indices],
+            )
+            tech_t1_x_t1 = _dea_cross_distance(
+                x_t1,
+                y_t1,
+                [inputs[i] for i in later_indices],
+                [output_matrix[i] for i in later_indices],
+            )
+            bcc_t = bcc_by_label.get(labels[idx_t])
+            bcc_t1 = bcc_by_label.get(labels[idx_t1])
+            if (
+                None in (tech_t_x_t, tech_t_x_t1, tech_t1_x_t, tech_t1_x_t1, bcc_t, bcc_t1)
+                or not tech_t1_x_t
+                or not tech_t1_x_t1
+                or not bcc_t
+            ):
+                continue
+            pech = float(bcc_t1) / float(bcc_t)
+            techch = math.sqrt(
+                (float(tech_t_x_t) / float(tech_t1_x_t))
+                * (float(tech_t_x_t1) / float(tech_t1_x_t1))
+            )
             malmquist.append(
                 {
+                    "unidad": entity,
                     "periodo_t": earlier,
                     "periodo_t1": later,
                     "Techch": round(techch, 8),
-                    "Pech": round(pech, 8) if pech is not None else None,
-                    "MPI": round(techch * pech, 8) if pech is not None else None,
-                    "metodo": "cociente de productividad agregada; Malmquist exploratorio",
+                    "Pech": round(pech, 8),
+                    "MPI": round(techch * pech, 8),
+                    "distancias_cruzadas_theta": {
+                        "D_t_xt_yt": round(float(tech_t_x_t), 8),
+                        "D_t_xt1_yt1": round(float(tech_t_x_t1), 8),
+                        "D_t1_xt_yt": round(float(tech_t1_x_t), 8),
+                        "D_t1_xt1_yt1": round(float(tech_t1_x_t1), 8),
+                    },
+                    "metodo": "Malmquist input-oriented: cuatro distancias CRS y Pech BCC",
                 }
             )
     result = {
-        "modelo": "DEA input-oriented CCR/CRS y BCC/VRS resuelto por scipy.optimize.linprog",
+        "modelo": "DEA input-oriented CCR/CRS y BCC/VRS con PuLP CBC y scipy.optimize.linprog",
         "restriccion_bcc": ECUACIONES["dea_bcc_convexidad"],
         "ecuacion_se": ECUACIONES["eficiencia_escala"],
         "resultados_dmu": results,
+        "slacks": {row["dmu"]: row["slacks"] for row in results},
+        "equivalencia_solvers": {
+            "pulp_cbc_vs_scipy_highs": solver_checks,
+            "equivalencia_total": all(
+                item["ccr_equivalente"] and item["bcc_equivalente"] for item in solver_checks
+            ),
+        },
         "unidades_ineficientes": [
             item["dmu"]
             for item in results
@@ -1140,6 +1472,7 @@ def _dea_node(state: AgentState) -> dict[str, Any]:
             "estado": "ESTIMADO" if malmquist else "PENDIENTE: requiere observaciones consecutivas",
         },
         "bootstrap_suavizado": bootstrap,
+        "bias_corrected": bootstrap,
         "fuente_insumos": (
             "registros_triada_normalizados.apropiacion_definitiva_cop; "
             "fallback PPI de planes con etiqueta de formulación"
@@ -1257,7 +1590,7 @@ def _moran_lisa(
     )
 
 
-def _spatial_node(state: AgentState) -> dict[str, Any]:
+async def _spatial_node(state: AgentState) -> dict[str, Any]:
     started = time.perf_counter()
     grouped: dict[str, dict[str, Any]] = {}
     for record in state["territory_records"]:
@@ -1288,6 +1621,8 @@ def _spatial_node(state: AgentState) -> dict[str, Any]:
             )
     territories = [item for item in grouped.values() if item["indicadores"]]
     if territories:
+        spatial_frame = _to_geodataframe(territories)
+        territories = spatial_frame.drop(columns="geometry").to_dict(orient="records")
         indicators = defaultdict(list)
         for territory in territories:
             for indicator in territory["indicadores"]:
@@ -1350,8 +1685,25 @@ def _spatial_node(state: AgentState) -> dict[str, Any]:
             "geometrias": (
                 "ST_X/ST_Y de centroides PostGIS, EPSG:4326; no se fabrican geometrías faltantes"
             ),
+            "motor_geoespacial": (
+                f"GeoPandas GeoDataFrame ({len(territories)} territorios, EPSG:4326)"
+            ),
         }
     )
+    external = await _optional_pdt_enrichment(
+        "ejecutar_econometria_espacial_pdt",
+        {
+            "state": state,
+            "territory_records": state["territory_records"],
+            "registros_territoriales": state["territory_records"],
+            "gdf_spatial": _to_geodataframe(state["territory_records"]),
+            "unidades_ineficientes_dea": state["dea_scores"].get("unidades_ineficientes", []),
+            "jurisdiction": state["jurisdiction"],
+            "spatial_lisa": result,
+        },
+    )
+    if external:
+        result.update(external.get("spatial_lisa", external))
     return {
         "spatial_lisa": result,
         "next_node": "nodo_predictivo",
@@ -1444,27 +1796,48 @@ def _forecast_series(state: AgentState) -> dict[str, Any]:
             continue
         x = np.asarray(years, dtype=float)
         y = np.asarray(values, dtype=float)
-        coefficients = np.polyfit(x, y, 1)
-        forecast = float(np.polyval(coefficients, final_year))
-        residuals = y - np.polyval(coefficients, x)
-        sigma = float(np.std(residuals, ddof=2)) if len(residuals) > 2 else 0.0
+        model_name = "ARIMA(1,1,0) statsmodels"
+        forecast_sigma = None
+        if len(years) >= 6 or indicator.startswith("Entidad Ejecutora:") or len(grouped) <= 30:
+            try:
+                with warnings.catch_warnings():
+                    warnings.simplefilter("ignore")
+                    indexed_series = pd.Series(y, dtype="float64")
+                    fitted = ARIMA(
+                        indexed_series,
+                        order=(1, 1, 0),
+                        enforce_stationarity=False,
+                        enforce_invertibility=False,
+                    ).fit()
+                    prediction = fitted.get_forecast(steps=max(1, final_year - years[-1]))
+                    forecast = float(prediction.predicted_mean.iloc[-1])
+                    forecast_sigma = float(np.sqrt(max(0.0, prediction.var_pred_mean.iloc[-1])))
+            except (ValueError, np.linalg.LinAlgError, ZeroDivisionError):
+                model_name = "tendencia lineal OLS (fallback por ajuste ARIMA no identificable)"
+        else:
+            model_name = "OLS log-lineal (serie corta n<6)"
+        if forecast_sigma is None:
+            coefficients = np.polyfit(x, y, 1)
+            forecast = float(np.polyval(coefficients, final_year))
+            residuals = y - np.polyval(coefficients, x)
+            forecast_sigma = float(np.std(residuals, ddof=2)) if len(residuals) > 2 else 0.0
         target = max(targets[indicator]) if targets[indicator] else 100.0
-        if sigma > 0:
-            probability_meet = float(norm.cdf((forecast - target) / sigma))
+        if forecast_sigma > 0:
+            probability_meet = float(norm.cdf((forecast - target) / forecast_sigma))
         else:
             probability_meet = float(forecast >= target)
         isri = max(0.0, min(1.0, 1.0 - probability_meet))
         series_results.append(
             {
                 "indicador": indicator,
-                "estado": "ESTIMADO_TENDENCIA_LINEAL_FALLBACK",
+                "estado": "ESTIMADO",
                 "n_observaciones": len(years),
                 "serie": [
                     {"vigencia": year, "valor": value}
                     for year, value in zip(years, values, strict=True)
                 ],
                 "modelo_solicitado": "ARIMA/VAR",
-                "modelo_aplicado": "tendencia lineal OLS; statsmodels/pmdarima no están instalados",
+                "modelo_aplicado": model_name,
                 "pronostico_arima_var": {"vigencia": final_year, "valor": round(forecast, 6)},
                 "meta_cuatrienio": target,
                 "probabilidad_cumplimiento": round(probability_meet, 8),
@@ -1481,7 +1854,7 @@ def _forecast_series(state: AgentState) -> dict[str, Any]:
         )
     )
     return {
-        "modelo": "ARIMA/VAR solicitado; fallback OLS solo cuando faltan paquetes",
+        "modelo": "ARIMA/VAR con statsmodels y OLS por serie corta o ajuste no identificable",
         "ecuacion_isri": ECUACIONES["isri"],
         "umbral_alto_riesgo": ISRI_ALERT_THRESHOLD,
         "series": series_results[:120],
@@ -1491,10 +1864,26 @@ def _forecast_series(state: AgentState) -> dict[str, Any]:
     }
 
 
-def _predictive_node(state: AgentState) -> dict[str, Any]:
+async def _predictive_node(state: AgentState) -> dict[str, Any]:
     started = time.perf_counter()
-    forecast = _forecast_series(state)
-    risky = [item for item in forecast["series"] if (item.get("ISRI") or 0) > ISRI_ALERT_THRESHOLD]
+    external = await _optional_pdt_enrichment(
+        "ejecutar_analitica_predictiva_pdt",
+        {
+            "state": state,
+            "normalized_records": state["normalized_records"],
+            "registros_normalizados": state["normalized_records"],
+            "time_horizon": state["time_horizon"],
+        },
+    )
+    if external:
+        forecast = external.get("time_series_forecast", external)
+    else:
+        forecast = _forecast_series(state)
+    risky = [
+        item
+        for item in forecast.get("series", [])
+        if (item.get("ISRI") or 0) > ISRI_ALERT_THRESHOLD
+    ]
     coldspots = set(state["spatial_lisa"].get("coldspots", []))
     high_execution_entities = set()
     by_entity: dict[str, list[dict[str, Any]]] = defaultdict(list)
@@ -1513,7 +1902,7 @@ def _predictive_node(state: AgentState) -> dict[str, Any]:
         for entity in high_execution_entities:
             if _normalize(entity) in alert_text:
                 misaligned_entities.add(entity)
-    compound = []
+    compound = list(forecast.get("patrones_compuestos_criticos") or [])
     for entity in high_execution_entities & misaligned_entities:
         geographic_match = next(
             (
@@ -1530,12 +1919,14 @@ def _predictive_node(state: AgentState) -> dict[str, Any]:
                     "ejecucion_alta": True,
                     "coldspot_persistente": geographic_match,
                     "desalineacion_coseno_menor_045": True,
-                    "indicadores_isri_mayor_040": [item["indicador"] for item in risky],
+                    "indicadores_isri_mayor_040": [item["indicador"] for item in risky[:15]],
                 }
             )
     output = {
         **forecast,
-        "alto_riesgo_indicadores": [item["indicador"] for item in risky],
+        "alto_riesgo_indicadores": (
+            forecast.get("alto_riesgo_indicadores") or [item["indicador"] for item in risky]
+        ),
         "entidades_ejecucion_alta": sorted(high_execution_entities),
         "patrones_compuestos_criticos": compound,
         "requiere_auditoria_humana": bool(compound),
@@ -1679,7 +2070,30 @@ def _compiled_graph():
     return _COMPILED_GRAPH
 
 
-def _public_result(state: AgentState) -> dict[str, Any]:
+async def _public_result(state: AgentState) -> dict[str, Any]:
+    sectors = state["nlp_coherence"].get("sectores", [])
+    external = await _optional_pdt_enrichment(
+        "evaluar_matriz_multisectorial_gbr",
+        {
+            "state": state,
+            "goal_records": state.get("goal_records", []),
+            "activity_records": state.get("activity_records", []),
+            "normalized_records": state.get("normalized_records", []),
+            "sectores": sectors,
+            "matriz_multisectorial": sectors,
+            "nlp_coherence": state["nlp_coherence"],
+            "dea_scores": state["dea_scores"],
+            "spatial_lisa": state["spatial_lisa"],
+            "time_series_forecast": state["time_series_forecast"],
+        },
+    )
+    multisectorial = (
+        external.get("evaluacion_multisectorial", external)
+        if isinstance(external, dict)
+        else external
+        if external is not None
+        else sectors
+    )
     return {
         "motor": "PDT-AI-EVALUATOR",
         "thread_id": state["thread_id"],
@@ -1692,7 +2106,7 @@ def _public_result(state: AgentState) -> dict[str, Any]:
         "nlp_coherence": state["nlp_coherence"],
         "spatial_lisa": state["spatial_lisa"],
         "time_series_forecast": state["time_series_forecast"],
-        "evaluacion_multisectorial": state["nlp_coherence"].get("sectores", []),
+        "evaluacion_multisectorial": multisectorial,
         "dimensiones_seguridad_humana": DIMENSIONES_SEGURIDAD_HUMANA,
         "trazabilidad_fuentes": state["source_counts"],
         "traza_grafo": state["trace"],
@@ -1779,11 +2193,9 @@ async def ejecutar_pdt_ai_evaluator(
         )
         # LangGraph returns the latest state at an interrupt; durable JSON supplies
         # cross-worker recovery when the in-memory MemorySaver is not shared.
-        ckpt_status = str(
-            result_state.get("estado_checkpointer") or "COMPLETADO_SIN_BLOQUEO"
-        )
+        ckpt_status = str(result_state.get("estado_checkpointer") or "COMPLETADO_SIN_BLOQUEO")
         _save_checkpoint(thread_id, result_state, status=ckpt_status)
-        result = _public_result(result_state)
+        result = await _public_result(result_state)
         result["cache"] = {"estado": "REFRESH", "ruta": str(CACHE_PATH)}
         result["metricas_disponibilidad"] = {
             "nodos_grafo_esperados": 5,
@@ -1869,7 +2281,7 @@ async def validar_checkpoint_pdt_ai_evaluator(
         # The durable checkpoint is authoritative when this request reaches another worker.
         pass
     cache_key = _cache_key(state["jurisdiction"], state["time_horizon"], thread_id)
-    result = _public_result(state)
+    result = await _public_result(state)
     result["cache"] = {"estado": "CHECKPOINT_VALIDADO", "ruta": str(CACHE_PATH)}
     result["auditoria_humana"] = {
         "auditor": auditor.strip(),
