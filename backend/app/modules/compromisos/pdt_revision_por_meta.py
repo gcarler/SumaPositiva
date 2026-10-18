@@ -24,6 +24,8 @@ from typing import Any
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import create_async_engine
 
+from app.modules.compromisos.service import auditar_consistencia_serie_y_sentido_indicador
+
 ESTADO_BRECHA_INFO = "BRECHA_DE_INFORMACION"
 ESTADO_CERO_OBSERVADO = "CERO_OBSERVADO_VERIFICADO"
 ESTADO_CON_EVIDENCIA = "CON_EVIDENCIA_VERIFICABLE"
@@ -814,6 +816,50 @@ def _evaluar_meta_individual(
         f"{fuente_doc}#fila={fila_fuente}" if fila_fuente is not None else fuente_doc
     )
 
+    origen_trim = reg_triada if isinstance(reg_triada, dict) else meta
+    auditoria_meta = auditar_consistencia_serie_y_sentido_indicador(
+        {
+            "indicador": indicador_texto,
+            "nombre_meta": nombre_meta,
+            "unidad_medida": unidad_medida,
+            "formula": _extraer_campo_dict(datos_of, ("Fórmula", "Formula", "formula")),
+            "linea_base": linea_base_num,
+            "meta_cuatrienio": valor_meta_num,
+            "meta_valor_vigencia": meta_prog_anual,
+            "porcentaje_avance_fisico": avance_fisico_pct,
+            "avance_t1": origen_trim.get("avance_t1"),
+            "avance_t2": origen_trim.get("avance_t2"),
+            "avance_t3": origen_trim.get("avance_t3"),
+            "avance_t4": origen_trim.get("avance_t4"),
+            "datos_oficiales": datos_of,
+        }
+    )
+
+    auditorias_pa = [
+        auditar_consistencia_serie_y_sentido_indicador(act) for act in pa_vinculadas
+    ]
+    pa_con_trimestres = [
+        a["consistencia_trimestral_t1_t4"]
+        for a in auditorias_pa
+        if a["consistencia_trimestral_t1_t4"]["trimestres_reportados_count"] > 0
+        or a["inconsistencia_aritmetica_trimestral"]
+    ]
+    if pa_con_trimestres:
+        base_trim = dict(pa_con_trimestres[0])
+        incons_list: list[str] = []
+        for item_t in pa_con_trimestres:
+            incons_list.extend(item_t["detalle_inconsistencia_trimestral"])
+        if auditoria_meta["inconsistencia_aritmetica_trimestral"]:
+            incons_list.extend(auditoria_meta["detalle_inconsistencia_trimestral"])
+        base_trim["inconsistencia_aritmetica_trimestral"] = len(incons_list) > 0
+        base_trim["detalle_inconsistencia_trimestral"] = incons_list
+        base_trim["actividades_pa_auditadas_count"] = len(auditorias_pa)
+        consistencia_trimestral_consolidada = base_trim
+    else:
+        base_trim = dict(auditoria_meta["consistencia_trimestral_t1_t4"])
+        base_trim["actividades_pa_auditadas_count"] = len(auditorias_pa)
+        consistencia_trimestral_consolidada = base_trim
+
     dim_1_diagnostico = {
         "estado": (
             ESTADO_CON_EVIDENCIA
@@ -839,9 +885,17 @@ def _evaluar_meta_individual(
     )
     dim_2_formulacion = {
         "estado": (
-            ESTADO_CERO_OBSERVADO
-            if valor_meta_num == 0.0
-            else (ESTADO_CON_EVIDENCIA if tiene_formulacion_completa else ESTADO_BRECHA_INFO)
+            ESTADO_ALERTA_REVISION
+            if auditoria_meta["meta_regresiva"]
+            else (
+                ESTADO_CERO_OBSERVADO
+                if valor_meta_num == 0.0
+                else (
+                    ESTADO_CON_EVIDENCIA
+                    if tiene_formulacion_completa
+                    else ESTADO_BRECHA_INFO
+                )
+            )
         ),
         "indicador": indicador_texto or ESTADO_BRECHA_INFO,
         "formula": (
@@ -849,15 +903,25 @@ def _evaluar_meta_individual(
             if "%" in indicador_texto or "porcentaje" in _normalizar(indicador_texto)
             else "CONTEO_ACUMULADO_UNIDAD"
         ),
+        "formula_documental_explicita": auditoria_meta["formula_documental_explicita"],
         "unidad_medida": unidad_medida if unidad_medida is not None else ESTADO_BRECHA_INFO,
         "sentido_indicador": sentido_ind,
+        "sentido_indicador_detectado": auditoria_meta["sentido_indicador"],
+        "meta_regresiva": auditoria_meta["meta_regresiva"],
+        "evaluacion_linea_base_vs_meta": auditoria_meta["evaluacion_linea_base_vs_meta"],
         "meta_cuatrienio_texto": (
             valor_meta_cuatrienio_raw or nombre_meta or ESTADO_BRECHA_INFO
         ),
         "meta_cuatrienio_numerica": valor_meta_num,
         "horizonte_temporal": str(plan_info.get("periodo") or codigo_plan),
         "consistencia_crema": (
-            "CUMPLE_ESTRUCTURA_BASICA" if tiene_formulacion_completa else ESTADO_BRECHA_INFO
+            "ALERTA_META_REGRESIVA"
+            if auditoria_meta["meta_regresiva"]
+            else (
+                "CUMPLE_ESTRUCTURA_BASICA"
+                if tiene_formulacion_completa
+                else ESTADO_BRECHA_INFO
+            )
         ),
     }
 
@@ -940,6 +1004,7 @@ def _evaluar_meta_individual(
         "meta_programada_anual": meta_prog_anual,
         "meta_ejecutada_anual": meta_ejec_anual,
         "avance_fisico_pct": avance_fisico_pct,
+        "consistencia_trimestral_t1_t4": consistencia_trimestral_consolidada,
         "cortes_reportados": (
             str(reg_triada.get("corte_periodo"))
             if reg_triada and reg_triada.get("corte_periodo")
@@ -1217,6 +1282,77 @@ def _evaluar_meta_individual(
             )
         )
 
+    if auditoria_meta["meta_regresiva"]:
+        eval_lb = auditoria_meta["evaluacion_linea_base_vs_meta"]
+        hallazgos.append(
+            _construir_hallazgo_canonico(
+                id_hallazgo=f"HAL-{codigo_plan}-{cod_meta}-META-REGRESIVA",
+                codigo_plan=codigo_plan,
+                codigo_meta=cod_meta,
+                dependencia=dependencia_resp,
+                territorio=str(territorio_obj or "PENDIENTE_LOCALIZACION"),
+                periodo=str(plan_info.get("periodo") or codigo_plan),
+                regla_aplicada="REGLA_META_REGRESIVA_VS_LINEA_BASE",
+                hechos_observados=str(eval_lb["detalle"]),
+                citas_evidencia=[cita_principal],
+                calculo_reproducible=(
+                    f"sentido={auditoria_meta['sentido_indicador']}, "
+                    f"linea_base={eval_lb['linea_base']}, "
+                    f"meta={eval_lb['meta_evaluada']}"
+                ),
+                severidad="ALTA",
+                incertidumbre="BAJA (comparación directa entre línea base y meta declarada)",
+                evidencia_contradictoria=(
+                    "La dirección del cambio entre línea base y meta contradice el sentido "
+                    "esperado del indicador."
+                ),
+                recomendacion=(
+                    "Verificar en sesión técnica si el indicador mide flujo nuevo anual o si "
+                    "existe error tipográfico entre línea base y meta cuatrienal."
+                ),
+                responsable=dependencia_resp,
+            )
+        )
+
+    if consistencia_trimestral_consolidada["inconsistencia_aritmetica_trimestral"]:
+        det_trim = "; ".join(
+            consistencia_trimestral_consolidada["detalle_inconsistencia_trimestral"]
+        )
+        contradicciones_detectadas.append(det_trim)
+        hallazgos.append(
+            _construir_hallazgo_canonico(
+                id_hallazgo=f"HAL-{codigo_plan}-{cod_meta}-INCONSISTENCIA-T1-T4",
+                codigo_plan=codigo_plan,
+                codigo_meta=cod_meta,
+                dependencia=dependencia_resp,
+                territorio=str(territorio_obj or "PENDIENTE_LOCALIZACION"),
+                periodo=str(plan_info.get("periodo") or codigo_plan),
+                regla_aplicada="REGLA_INCONSISTENCIA_ARITMETICA_TRIMESTRAL_T1_T4",
+                hechos_observados=det_trim,
+                citas_evidencia=[cita_principal],
+                calculo_reproducible=(
+                    f"trimestres_reportados="
+                    f"{consistencia_trimestral_consolidada['trimestres_reportados_count']}, "
+                    f"ceros_observados="
+                    f"{consistencia_trimestral_consolidada['trimestres_en_cero_observado_count']}, "
+                    f"suma_trimestral={consistencia_trimestral_consolidada['suma_trimestral']}, "
+                    f"porcentaje_avance_fisico="
+                    f"{consistencia_trimestral_consolidada['porcentaje_avance_fisico']}"
+                ),
+                severidad="ALTA",
+                incertidumbre="BAJA (verificación aritmética directa sobre cortes T1-T4)",
+                evidencia_contradictoria=(
+                    "Desacuerdo aritmético entre los cortes trimestrales T1-T4 y el porcentaje "
+                    "de avance físico consolidado."
+                ),
+                recomendacion=(
+                    "Reconstruir el porcentaje de avance físico desde los numeradores "
+                    "trimestrales T1-T4 y el denominador de la meta anual."
+                ),
+                responsable=dependencia_resp,
+            )
+        )
+
     dim_10_control_y_aprendizaje = {
         "estado": ESTADO_ALERTA_REVISION if hallazgos else ESTADO_CON_EVIDENCIA,
         "revisor_asignado": "Comité Técnico Planeación + Auditoría EAF",
@@ -1277,12 +1413,19 @@ def _evaluar_meta_individual(
         "revisor_formulacion": {
             "estado": dim_2_formulacion["estado"],
             "sentido_detectado": sentido_ind,
+            "sentido_indicador_detectado": auditoria_meta["sentido_indicador"],
+            "meta_regresiva": auditoria_meta["meta_regresiva"],
+            "formula_documental_explicita": auditoria_meta["formula_documental_explicita"],
             "unidad_medida": dim_2_formulacion["unidad_medida"],
             "meta_cuatrienio_numerica": valor_meta_num,
             "observacion": (
-                f"Indicador con sentido {sentido_ind}; meta numérica={valor_meta_num}."
-                if tiene_formulacion_completa
-                else "Formulación incompleta: falta unidad, valor verificable o línea base."
+                auditoria_meta["evaluacion_linea_base_vs_meta"]["detalle"]
+                if auditoria_meta["meta_regresiva"]
+                else (
+                    f"Indicador con sentido {sentido_ind}; meta numérica={valor_meta_num}."
+                    if tiene_formulacion_completa
+                    else "Formulación incompleta: falta unidad, valor verificable o línea base."
+                )
             ),
         },
         "revisor_articulacion": {
@@ -1309,10 +1452,17 @@ def _evaluar_meta_individual(
                 or avance_fisico_pct == 0.0
                 or apropiacion_cop == 0.0
                 or compromisos_rp_cop == 0.0
+                or consistencia_trimestral_consolidada["ceros_observados_preservados"]
             ),
+            "inconsistencia_aritmetica_trimestral": consistencia_trimestral_consolidada[
+                "inconsistencia_aritmetica_trimestral"
+            ],
+            "consistencia_trimestral_t1_t4": consistencia_trimestral_consolidada,
             "observacion": (
                 f"Físico={estado_ej_fisica} (avance={avance_fisico_pct}), "
-                f"Financiero={estado_ej_fin} (apropiación={apropiacion_cop})."
+                f"Financiero={estado_ej_fin} (apropiación={apropiacion_cop}), "
+                f"Inconsistencia T1-T4="
+                f"{consistencia_trimestral_consolidada['inconsistencia_aritmetica_trimestral']}."
             ),
         },
         "analista_metodologico": {

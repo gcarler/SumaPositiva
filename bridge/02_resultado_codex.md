@@ -1,19 +1,19 @@
-# Resultado Codex — Fase [26A]
+# Resultado Codex — Fase [28A]
 
 **Fecha:** 2026-10-18
-**Alcance:** integración backend de revisión por meta 10D/7 revisores y Hoshin Kanri.
+**Alcance:** cobertura SQL universal, PPI base 2024 y auditoría de trazabilidad en backend.
 
 ## Implementación
 
-- Se expuso `GET /api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/revision-por-meta` con filtros de plan, sector, dependencia, límite y `force_refresh`; la respuesta Pydantic adapta tanto el contrato nuevo como la salida heredada del motor.
-- Se documentó la ruta pública en `docs/permisos-api.md`.
-- El Consejo Multiagente incluye `hoshin_kanri_fair` (puntajes FAIR y distribución de estados PDCA) y `revision_10d_resumen`, con invocación resiliente de ambos motores.
-- El resumen multidimensional DEA agrega `hoshin_kanri_resumen` con puntajes FAIR y conteos de alertas PDCA/Catchball; si no hay caché, marca el resumen como pendiente.
-- No se modificaron `src/**`, `pdt_revision_por_meta.py` ni `test_pdt_revision_por_meta.py`.
+- En el Consejo Multiagente, las consultas de metas calculan conteos por plan y coincidencias sin truncar antes de generar la muestra. El resumen `cobertura_universo_bd` aparece en las herramientas de metas/PPI y en el dictamen final.
+- El cruce de actividades consulta nodos y actividades sin límite para calcular coincidencias, agregados financieros de registros de Tríada y avance físico sobre el universo. La herramienta y el dictamen publican `cobertura_universo_operativo`; la muestra de resultados permanece acotada.
+- En el catálogo/conciliación DEA se añadió `comparativa_pesos_constantes_base_2024`, con índices indicados en la orden, PPI corriente, valores deflactados y variación contra el plan previo.
+- Se añadió `auditoria_huerfanos_y_trazabilidad` con conteos y muestras de metas oficiales sin articulación al Plan de Acción, actividades sin respaldo financiero de Tríada y registros presupuestales sin vínculo a metas oficiales.
+- La orden nombra `tool_consultar_planes_desarrollo`, `tool_consultar_plan_accion_y_triada` y `generar_cruce_pdd_dea_triada`; en esta versión del repositorio las funciones equivalentes son `_query_metas` / `_query_ppi`, `_query_actividades` y `PddDeaService.catalogo_y_conciliacion_ppi`.
 
 ## Verificación
 
-- Ruff sobre los seis módulos/pruebas tocados: **All checks passed!**
-- `pytest tests/test_pdt_ai_evaluator.py tests/test_agentes_inteligentes_pdd.py`: **15 passed**.
-- `pytest tests/test_pdd_dea_triada.py tests/test_access_policy.py`: **133 passed**.
-- `pytest tests/test_access_policy.py -k test_matriz_cubre_todas_las_rutas_y_sus_controles`: **1 passed, 106 deselected**.
+- Ruff sobre los cuatro archivos de la Fase 28A: **All checks passed!**
+- `pytest tests/test_agentes_inteligentes_pdd.py tests/test_pdd_dea_triada.py`: **33 passed**.
+
+No modifiqué `src/**`, `backend/app/modules/compromisos/service.py` ni `backend/app/modules/compromisos/pdt_revision_por_meta.py`.

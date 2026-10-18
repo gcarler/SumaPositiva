@@ -1,27 +1,45 @@
-# Orden de Trabajo EAF (`=agy:0.0`) para `agy2` (`=agy2:0.0`) — Fase `[27B]` (100% BACKEND)
+# Orden de Trabajo EAF (`=agy:0.0`) para `agy2` (`=agy2:0.0`) — Fase `[28B]` (100% BACKEND)
 
-**Estado de `[26B]`:** **APROBADO** en `/root/polis/bridge/03_dictamen_revision.md` (`6 passed in 1.63s`, `ruff` limpio).
+**Estado de `[27B]`:** **APROBADO** en `/root/polis/bridge/03_dictamen_revision.md`.
 
 **RESTRICCIÓN ABSOLUTA DE ALCANCE:**
-- **100% BACKEND (`backend/app/modules/compromisos/pdt_persistencia_pg.py`, `backend/tests/test_pdt_persistencia_pg.py`, `knowledge-base/13_SISTEMA_AGENTICO_PDT_GBR_DEA_NLP_LISA_ISRI.md`, `knowledge-base/14_MODELO_HOSHIN_KANRI_MATRIZ_X_PDT_GBR.md`).**
+- **100% BACKEND (`backend/app/modules/compromisos/service.py`, `backend/app/modules/compromisos/pdt_revision_por_meta.py`, `backend/tests/test_motor_plan_accion_dnp.py`, `backend/tests/test_pdt_revision_por_meta.py`, `revision_motores_18_10_2026.md`).**
 - **PROHIBIDO TOCAR `src/**` (Frontend) bajo ninguna circunstancia.**
-- **PROHIBIDO TOCAR `router.py`, `schemas.py`, `agentes_inteligentes_pdd.py`, `pdd_dea_service.py`, `test_pdt_ai_evaluator.py` o `test_agentes_inteligentes_pdd.py`** (esos archivos están asignados en paralelo a `codex` en la Fase `[26A]`).
+- **PROHIBIDO TOCAR `agentes_inteligentes_pdd.py`, `pdd_dea_service.py`, `test_agentes_inteligentes_pdd.py` o `test_pdd_dea_triada.py`** (esos archivos están asignados en paralelo a `codex` en la Fase `[28A]`).
 
 ---
 
-## Objetivo de la Fase `[27B]` (`agy2`)
-1. **Enriquecer la Persistencia PostgreSQL (`backend/app/modules/compromisos/pdt_persistencia_pg.py` y `backend/tests/test_pdt_persistencia_pg.py`):**
-   - Actualizar `_construir_resumen_ejecutivo(run_data: dict[str, Any]) -> dict[str, Any]` en `pdt_persistencia_pg.py` para persistir dentro del `JSONB` `resumen_ejecutivo` de `seguimiento.pdt_ai_evaluaciones`:
-     - **Trazabilidad Reproducible (`H11`):** `version_metodologica` y `fingerprint_fuentes_sha256` extraídos de `run_data`.
-     - **Atribución ISRI (`H1`):** `total_indicadores_isri_sin_atribucion` (conteo de series críticas `ISRI > 0.40` sin entidad ejecutora atribuida).
-     - **Resumen Hoshin Kanri (`Marco FAIR` + `PDCA`):** Invocar de forma resiliente `construir_matriz_x_hoshin_kanri_pdt(datos_evaluador=run_data)` desde `.pdt_hoshin_kanri` para almacenar `hoshin_kanri_fair` (`fair_global_index`, `focus_score`, `alignment_score`, `integration_score`, `review_score`, `rojos_contencion_pdca`, `sesiones_catchball_activas`).
-     - **Resumen Revisión 10D (`7 Revisores`):** Invocar de forma resiliente `construir_matriz_revision_por_meta_pdt(limit=25)` desde `.pdt_revision_por_meta` (o con `datos_entrada` cuando aplique) para almacenar `revision_10d_resumen` (`version_regla`, `total_metas_plan`, `con_contradicciones`, `con_brecha_informacion`, `con_ceros_observados`, `total_hallazgos_estructurados`).
-   - Añadir al menos 2 nuevas pruebas en `backend/tests/test_pdt_persistencia_pg.py` que verifiquen que `resumen_ejecutivo` en PostgreSQL incluye `version_metodologica`, `fingerprint_fuentes_sha256`, `hoshin_kanri_fair` y `revision_10d_resumen`.
+## Objetivo de la Fase `[28B]` (`agy2`)
+Implementar las mejoras estructurales de la **Sección 4.2** y el cierre documental de `/root/polis/revision_motores_18_10_2026.md`:
 
-2. **Actualizar la Doctrina Canónica (`knowledge-base/13_SISTEMA_AGENTICO_PDT_GBR_DEA_NLP_LISA_ISRI.md` y `knowledge-base/14_MODELO_HOSHIN_KANRI_MATRIZ_X_PDT_GBR.md`):**
-   - Documentar los nuevos endpoints (`GET /api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/hoshin-kanri/especificacion`, `GET /api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/hoshin-kanri/matriz-x`, `GET /api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/revision-por-meta`), la Matriz Auditable de 10 Dimensiones, los 7 Roles Revisores Especializados y el cierre de los hallazgos `H1–H12` de `revision_motores_18_10_2026.md`.
+### 1. Validación Aritmética Trimestral (`T1–T4`), Sentido del Indicador y Línea Base vs. Meta en `service.py` (Sección 4.2)
+- En `backend/app/modules/compromisos/service.py` (donde residen las funciones del motor de validación DNP/MGA/CREMA de Planes de Acción, probadas en `backend/tests/test_motor_plan_accion_dnp.py`):
+  1. Crea una función pública determinista `auditar_consistencia_serie_y_sentido_indicador(registro: dict[str, Any]) -> dict[str, Any]` (e intégrala de forma 100% retrocompatible en el flujo de validación / procesamiento de Plan de Acción en `service.py`) que audite:
+     - **`sentido_indicador`**: Clasifica en `"ASCENDENTE"`, `"DESCENDENTE"` o `"MANTENIMIENTO"` a partir del texto del indicador, meta o actividad (`reducir`, `disminuir`, `mortalidad`, `deserción`, `pobreza`, `homicidios`, `embarazo adolescente`, `deforestación` -> `DESCENDENTE`; `mantener`, `conservar`, `sostener` -> `MANTENIMIENTO`; por defecto `ASCENDENTE`).
+     - **`consistencia_trimestral_t1_t4`**:
+       - Extrae `avance_t1`, `avance_t2`, `avance_t3`, `avance_t4`, `meta_valor_vigencia` y `porcentaje_avance_fisico` preservando estrictamente `0.0` observado (`is not None`) separado de `None`.
+       - Calcula `trimestres_reportados_count`, `trimestres_en_cero_observado_count`, `suma_trimestral` y `max_trimestral`.
+       - Detecta y marca `inconsistencia_aritmetica_trimestral: bool` y `detalle_inconsistencia_trimestral` cuando:
+         - Todos los trimestres reportados son `0.0` pero `porcentaje_avance_fisico > 0.0` (avance porcentual sin respaldo en cortes trimestrales), o
+         - `suma_trimestral > 0` y `meta_valor_vigencia > 0`, pero `porcentaje_avance_fisico == 0.0`, o
+         - `porcentaje_avance_fisico > 100.0` sin nota de sobrecumplimiento.
+     - **`evaluacion_linea_base_vs_meta`**:
+       - Si existen `linea_base` y `meta_cuatrienio` (o `meta_valor_vigencia`), evalúa si la meta es consistente con el `sentido_indicador`:
+         - Marca `meta_regresiva: True` cuando `sentido_indicador == "ASCENDENTE"` y `meta < linea_base` (en indicadores acumulativos/de nivel) o cuando `sentido_indicador == "DESCENDENTE"` y `meta > linea_base`.
+     - **`formula_documental_explicita`**:
+       - Verifica si un indicador expresado en porcentaje/tasa/índice explicita numerador/denominador o referencia metodológica.
 
-3. **Verificación y Reporte:**
-   - Pasar `ruff check` y `pytest backend/tests/test_pdt_persistencia_pg.py -q`.
-   - Escribir `/root/polis/bridge/02_resultado_agy2.md` y notificar a `=agy:0.0`:
-     `tmux send-keys -t =agy:0.0 "AGY2 LISTO [27B]: Persistencia PG enriquecida (H11 + Hoshin Kanri FAIR + Revision 10D) y doctrina KB 13/14 actualizadas y probadas. Solicito auditoria EAF." Enter`
+### 2. Integración en `pdt_revision_por_meta.py`
+- Importa e invoca `auditar_consistencia_serie_y_sentido_indicador` dentro de `backend/app/modules/compromisos/pdt_revision_por_meta.py` para enriquecer:
+  - `dim_2_formulacion` (incluyendo `sentido_indicador_detectado`, `meta_regresiva`, `formula_documental_explicita`),
+  - `dim_6_ejecucion_fisica` (incluyendo `consistencia_trimestral_t1_t4` sobre las actividades del Plan de Acción vinculadas a la meta), y
+  - `revisor_formulacion` / `conciliador_ejecucion` (generando hallazgo canónico si se detecta `inconsistencia_aritmetica_trimestral` o `meta_regresiva`).
+
+### 3. Cierre Documental en `revision_motores_18_10_2026.md`
+- Añade al final de `/root/polis/revision_motores_18_10_2026.md` la **Sección 9: Estado de Implementación y Verificación EAF (`Fases [25A]–[28B]`)**, documentando con precisión técnica cómo quedaron implementados y probados los hallazgos `H1–H12`, la Matriz de 10 Dimensiones y 7 Revisores (`pdt_revision_por_meta.py`), el Modelo Hoshin Kanri (`pdt_hoshin_kanri.py`), y las mejoras estructurales de las Secciones 4.1, 4.2 y 4.4.
+
+### 4. Pruebas y Reporte (`ruff` + `pytest`)
+- Añade pruebas unitarias en `backend/tests/test_motor_plan_accion_dnp.py` y `backend/tests/test_pdt_revision_por_meta.py` validando `auditar_consistencia_serie_y_sentido_indicador` (casos `ASCENDENTE`, `DESCENDENTE`, `meta_regresiva`, e `inconsistencia_aritmetica_trimestral` con `0.0` preservado).
+- Pasa `ruff check` y `pytest` sobre ambos archivos.
+- Escribe el reporte en `/root/polis/bridge/02_resultado_agy2.md` y notifica a `=agy:0.0`:
+  `tmux send-keys -t =agy:0.0 "AGY2 LISTO [28B]: Auditoria aritmetica T1-T4, sentido de indicador y meta regresiva en service.py + pdt_revision_por_meta.py + Seccion 9 de revision_motores_18_10_2026.md completados y probados. Solicito auditoria EAF." Enter`

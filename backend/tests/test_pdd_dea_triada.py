@@ -92,6 +92,99 @@ def test_pdd_cache_v11_persists_payload_and_serialized_bytes(tmp_path, monkeypat
     assert pdd_dea_module._disk_key(key) in pdd_dea_module._RAW_JSON_BYTES
 
 
+def test_pesos_constantes_base_2024_usa_indices_y_variaciones_reales():
+    series = PddDeaService._comparativa_pesos_constantes_base_2024()
+    by_plan = {row["codigo_plan"]: row for row in series}
+    assert len(series) == 5
+    assert by_plan["PDD_2012_2015"]["indice_ipc_base_2024"] == 53.4
+    assert by_plan["PDD_2016_2019"]["indice_ipc_base_2024"] == 65.8
+    assert by_plan["PDD_2020_2023"]["indice_ipc_base_2024"] == 81.2
+    assert by_plan["PDD_2024_2027"]["indice_ipc_base_2024"] == 100.0
+    assert by_plan["PDD_2024_2027"]["ppi_constante_base_2024_cop"] == sum(PPI_2024.values())
+    assert by_plan["PDD_2012_2015"]["variacion_real_vs_plan_anterior_pct"] is None
+    assert by_plan["PDD_2016_2019"]["variacion_real_vs_plan_anterior_pct"] is not None
+
+
+def test_auditoria_huerfanos_cuantifica_las_tres_brechas():
+    class Result:
+        def __init__(self, rows):
+            self.rows = rows
+
+        def mappings(self):
+            return self
+
+        def all(self):
+            return self.rows
+
+    class Session:
+        def get_bind(self):
+            class Bind:
+                url = "sqlite+aiosqlite://audit-test"
+
+            return Bind()
+
+        async def execute(self, statement):
+            if "pdd_metas_oficiales" in str(statement):
+                return Result(
+                    [
+                        {"codigo": "M1", "nombre": "Meta con actividad", "linea_nombre": "Linea1"},
+                        {"codigo": "M2", "nombre": "Meta huérfana", "linea_nombre": "Otra"},
+                        {
+                            "codigo": "M3",
+                            "nombre": "Meta sin actividad",
+                            "linea_nombre": "Linea huérfana",
+                        },
+                    ]
+                )
+            return Result(
+                [
+                    {
+                        "codigo": "A1",
+                        "compromiso_pas_codigo": "M1",
+                        "linea_estrategica_codigo": "Linea1",
+                        "entidad_responsable": "DADIS",
+                        "codigo_bpim": "BP1",
+                        "programa_nombre": "Salud",
+                        "proyecto_nombre": "Salud",
+                        "monto_programado_cop": 10,
+                        "monto_ejecutado_cop": 0,
+                        "porcentaje_avance_fisico": 0,
+                    },
+                    {
+                        "codigo": "A2",
+                        "compromiso_pas_codigo": "M2",
+                        "linea_estrategica_codigo": "Otra",
+                        "entidad_responsable": "DADIS",
+                        "codigo_bpim": "BP2",
+                        "programa_nombre": "Otro",
+                        "proyecto_nombre": "Otro",
+                        "monto_programado_cop": 0,
+                        "monto_ejecutado_cop": 0,
+                        "porcentaje_avance_fisico": 0,
+                    },
+                ]
+            )
+
+    service = PddDeaService(Session())
+    state = {
+        "rows": [
+            {"motor": "INVERSION_PRESUPUESTAL", "meta": "M1", "bpim": "BP1", "apropiacion": 10},
+            {
+                "motor": "INVERSION_PRESUPUESTAL",
+                "meta": "M-ORPHAN",
+                "bpim": "BP-X",
+                "apropiacion": 2,
+            },
+        ]
+    }
+    report = asyncio.run(service._auditoria_huerfanos_y_trazabilidad(state))
+    assert report["metas_pdd_sin_plan_accion_count"] == 1
+    assert report["actividades_pa_sin_respaldo_triada_count"] == 1
+    assert report["registros_triada_sin_meta_pdd_count"] == 1
+    assert report["actividades_pa_sin_respaldo_triada_muestra"][0]["codigo"] == "A2"
+    assert report["registros_triada_sin_meta_pdd_muestra"][0]["meta"] == "M-ORPHAN"
+
+
 def test_advance_only_accepts_verified_scales():
     assert _advance(_row())[0:2] == (80.0, "COCIENTE_VERIFICADO")
     assert _advance(_row(avance_estrategico=0.8, ejecutada=2))[1] == "ESCALA_AMBIGUA"

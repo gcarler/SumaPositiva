@@ -314,3 +314,82 @@ def test_integracion_bd_csh_filtro_por_dependencia() -> None:
     assert len(resultado["metas_auditadas"]) > 0
     for meta in resultado["metas_auditadas"]:
         assert "hacienda" in meta["dependencia_responsable"].casefold()
+
+
+def test_revision_por_meta_integra_consistencia_trimestral_y_meta_regresiva() -> None:
+    datos = _datos_sinteticos_revision()
+    datos["actividades_pa"].append(
+        {
+            "id": "ACT-REGRESIVA-01",
+            "codigo": "PA-2025-REG",
+            "vigencia": 2025,
+            "entidad_responsable": "Secretaría de Educación Distrital",
+            "programa_nombre": "Seguridad Humana y Salud",
+            "meta_producto_vigencia": "Reducir deserción escolar anual",
+            "meta_valor_vigencia": 100.0,
+            "avance_t1": 0.0,
+            "avance_t2": 0.0,
+            "avance_t3": 0.0,
+            "avance_t4": None,
+            "porcentaje_avance_fisico": 60.0,
+            "monto_programado_cop": 200_000_000.0,
+            "monto_ejecutado_cop": 120_000_000.0,
+        }
+    )
+    datos["metas"].append(
+        {
+            "id": "META-REG-TRIM-05",
+            "codigo": "M-REG-TRIM-05",
+            "nombre": "Reducir tasa de deserción escolar en instituciones oficiales",
+            "indicador": "Tasa de deserción escolar intraanual",
+            "unidad_medida": "Porcentaje",
+            "linea_id": "LIN-01",
+            "linea_nombre": "Seguridad Humana y Salud",
+            "fuente": "pdd_2024_2027.md",
+            "fila_fuente": 505,
+            "dependencia": "Secretaría de Educación Distrital",
+            "meta_programada_anual": 4.0,
+            "meta_ejecutada_anual": 2.4,
+            "avance_fisico_pct": 60.0,
+            "apropiacion_definitiva_cop": 200_000_000.0,
+            "compromisos_rp_cop": 120_000_000.0,
+            "datos_oficiales": {
+                "Población": "Estudiantes matriculados",
+                "Línea base": "3.5",
+                "Meta del cuatrienio": "5.8",
+            },
+        }
+    )
+    datos["total_metas_plan"] = len(datos["metas"])
+
+    resultado = construir_matriz_revision_por_meta_pdt(
+        codigo_plan="PDD_2024_2027",
+        datos_entrada=datos,
+    )
+    por_codigo = {m["codigo_meta"]: m for m in resultado["metas_auditadas"]}
+    meta_audit = por_codigo["M-REG-TRIM-05"]
+
+    dim_2 = meta_audit["evaluacion_10_dimensiones"]["formulacion"]
+    assert dim_2["sentido_indicador_detectado"] == "DESCENDENTE"
+    assert dim_2["meta_regresiva"] is True
+    assert dim_2["formula_documental_explicita"] is False
+
+    dim_6 = meta_audit["evaluacion_10_dimensiones"]["ejecucion_fisica"]
+    trim_info = dim_6["consistencia_trimestral_t1_t4"]
+    assert trim_info["inconsistencia_aritmetica_trimestral"] is True
+    assert trim_info["trimestres_reportados_count"] == 3
+    assert trim_info["trimestres_en_cero_observado_count"] == 3
+    assert trim_info["ceros_observados_preservados"] is True
+
+    rev_form = meta_audit["dictamen_7_revisores"]["revisor_formulacion"]
+    assert rev_form["meta_regresiva"] is True
+    assert rev_form["sentido_indicador_detectado"] == "DESCENDENTE"
+
+    conc_ejec = meta_audit["dictamen_7_revisores"]["conciliador_ejecucion"]
+    assert conc_ejec["inconsistencia_aritmetica_trimestral"] is True
+    assert conc_ejec["ceros_observados_preservados"] is True
+
+    reglas = {h["regla_aplicada"] for h in meta_audit["hallazgos"]}
+    assert "REGLA_META_REGRESIVA_VS_LINEA_BASE" in reglas
+    assert "REGLA_INCONSISTENCIA_ARITMETICA_TRIMESTRAL_T1_T4" in reglas
+

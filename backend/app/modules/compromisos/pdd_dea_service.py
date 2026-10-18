@@ -99,6 +99,13 @@ PPI_2016 = {
     2018: 1_115_477_000_000,
     2019: 1_207_081_000_000,
 }
+IPC_INDICE_BASE_2024 = {
+    "PDD_2012_2015": 53.4,
+    "PDD_2013_2015": 53.4,
+    "PDD_2016_2019": 65.8,
+    "PDD_2020_2023": 81.2,
+    "PDD_2024_2027": 100.0,
+}
 
 PLANS: tuple[dict[str, Any], ...] = (
     {
@@ -201,7 +208,8 @@ SELECT r.id::text id, r.archivo_id::text archivo_id, a.nombre_archivo,
        r.descripcion_actividad actividad, r.avance_estrategico_pct avance_estrategico,
        r.avance_fisico_pct avance_fisico, r.meta_programada_anual programada,
        r.meta_ejecutada_anual ejecutada, r.apropiacion_definitiva_cop apropiacion,
-       r.pagos_tesoreria_cop pagos, r.hoja_origen hoja, r.fila_origen_num fila
+       r.compromisos_rp_cop compromisos, r.pagos_tesoreria_cop pagos,
+       r.hoja_origen hoja, r.fila_origen_num fila
        , r.datos_origen origen
 FROM seguimiento.registros_triada_normalizados r
 JOIN seguimiento.archivos_plan_ingeridos a ON a.id = r.archivo_id
@@ -1160,6 +1168,8 @@ class PddDeaService:
         if cached is not None:
             return cached
         state = await self._state()
+        comparativa_base_2024 = self._comparativa_pesos_constantes_base_2024()
+        auditoria_huerfanos = await self._auditoria_huerfanos_y_trazabilidad(state)
         plans = []
         for plan in PLANS:
             plan_code = plan["codigo_plan"]
@@ -1266,12 +1276,122 @@ class PddDeaService:
                     "pilares": PPI_2020_PILLARS,
                 },
                 "conciliacion_anual_ppi_vs_bd": conciliacion,
+                "comparativa_pesos_constantes_base_2024": comparativa_base_2024,
+                "auditoria_huerfanos_y_trazabilidad": auditoria_huerfanos,
                 "advertencia": (
                     "La reconstrucción de bd_csh es documental y no equivale a "
                     "ejecución presupuestal certificada."
                 ),
             },
         )
+
+    @staticmethod
+    def _comparativa_pesos_constantes_base_2024() -> list[dict[str, Any]]:
+        """Deflate official plan investment totals to the requested 2024 index base."""
+        rows = []
+        for plan in PLANS:
+            code = str(plan["codigo_plan"])
+            if code not in IPC_INDICE_BASE_2024:
+                continue
+            nominal = PddDeaService._plan_ppi_nominal(code)
+            if nominal is None:
+                continue
+            index = IPC_INDICE_BASE_2024[code]
+            real = float(nominal) * 100.0 / index
+            previous = rows[-1]["ppi_constante_base_2024_cop"] if rows else None
+            rows.append(
+                {
+                    "codigo_plan": code,
+                    "periodo": plan["periodo"],
+                    "indice_ipc_base_2024": index,
+                    "ppi_corriente_cop": float(nominal),
+                    "ppi_constante_base_2024_cop": real,
+                    "variacion_real_vs_plan_anterior_pct": (
+                        (real / previous - 1) * 100 if previous else None
+                    ),
+                    "nota_metodologica": (
+                        "Deflactado a base 2024=100 con índice IPC medio de período; "
+                        "serie comparativa exploratoria, sujeta a validación DANE."
+                    ),
+                }
+            )
+        return rows
+
+    async def _auditoria_huerfanos_y_trazabilidad(self, state: dict[str, Any]) -> dict[str, Any]:
+        metas = (
+            (
+                await self.session.execute(
+                    text("""SELECT codigo, nombre, linea_nombre FROM seguimiento.pdd_metas_oficiales
+                           WHERE codigo_plan='PDD_2024_2027' ORDER BY fila_fuente""")
+                )
+            )
+            .mappings()
+            .all()
+        )
+        activities = (
+            (
+                await self.session.execute(
+                    text("""SELECT codigo, compromiso_pas_codigo, linea_estrategica_codigo,
+                           entidad_responsable, codigo_bpim, programa_nombre, proyecto_nombre,
+                           monto_programado_cop, monto_ejecutado_cop, porcentaje_avance_fisico
+                           FROM seguimiento.actividades_plan_accion
+                           ORDER BY vigencia DESC, codigo""")
+                )
+            )
+            .mappings()
+            .all()
+        )
+
+        def norm(value: Any) -> str:
+            return str(value or "").strip().casefold()
+
+        meta_codes = {norm(row.get("codigo")) for row in metas if norm(row.get("codigo"))}
+        activity_codes = {
+            norm(row.get(key))
+            for row in activities
+            for key in ("codigo", "compromiso_pas_codigo", "codigo_bpim")
+            if norm(row.get(key))
+        }
+        pdd_orphans = [
+            row
+            for row in metas
+            if not (
+                norm(row.get("codigo")) in activity_codes
+                or norm(row.get("linea_nombre"))
+                and any(
+                    norm(activity.get("linea_estrategica_codigo")) == norm(row.get("linea_nombre"))
+                    or norm(activity.get("entidad_responsable")) in norm(row.get("linea_nombre"))
+                    for activity in activities
+                )
+            )
+        ]
+        activity_supported = {
+            norm(row.get("bpim"))
+            for row in state["rows"]
+            if row.get("motor") == "INVERSION_PRESUPUESTAL"
+            and (
+                (_number(row.get("apropiacion")) or 0) > 0
+                or (_number(row.get("compromisos")) or 0) > 0
+            )
+        }
+        pa_orphans = [
+            row for row in activities if norm(row.get("codigo_bpim")) not in activity_supported
+        ]
+        triad_orphans = [
+            row
+            for row in state["rows"]
+            if row.get("motor") == "INVERSION_PRESUPUESTAL"
+            and norm(row.get("meta")) not in meta_codes
+            and norm(row.get("bpim")) not in activity_codes
+        ]
+        return {
+            "metas_pdd_sin_plan_accion_count": len(pdd_orphans),
+            "metas_pdd_sin_plan_accion_muestra": pdd_orphans[:10],
+            "actividades_pa_sin_respaldo_triada_count": len(pa_orphans),
+            "actividades_pa_sin_respaldo_triada_muestra": pa_orphans[:10],
+            "registros_triada_sin_meta_pdd_count": len(triad_orphans),
+            "registros_triada_sin_meta_pdd_muestra": triad_orphans[:10],
+        }
 
     async def comparativo_seguridad_humana_pdd_only(
         self, *, incluir_detalle: bool = True

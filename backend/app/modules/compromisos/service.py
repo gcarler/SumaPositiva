@@ -1,7 +1,9 @@
 import re
+import unicodedata
 import uuid
 from collections.abc import Sequence
 from datetime import UTC, datetime
+from decimal import Decimal
 from typing import Any
 
 from fastapi import HTTPException, status
@@ -61,7 +63,320 @@ def _porcentaje_triage(valor: Any) -> float:
     return porcentaje if 0 <= porcentaje <= 100 else 0.0
 
 
+def _normalizar_texto_auditoria(valor: Any) -> str:
+    texto = unicodedata.normalize("NFKD", str(valor or ""))
+    texto = "".join(ch for ch in texto if not unicodedata.combining(ch))
+    return re.sub(r"\s+", " ", texto).strip().casefold()
+
+
+def _a_float_preservando_cero(valor: Any) -> float | None:
+    """Convierte a float preservando estrictamente 0.0 observado y retornando None si falta."""
+    if valor is None or isinstance(valor, bool):
+        return None
+    if isinstance(valor, (int, float, Decimal)):
+        return float(valor)
+    texto = str(valor).strip()
+    if not texto or texto.upper() in {"NA", "N/A", "NONE", "NULL", "SIN DATO", "PENDIENTE"}:
+        return None
+    limpio = texto.replace("$", "").replace("%", "").replace(" ", "")
+    if "," in limpio and "." in limpio:
+        if limpio.rfind(",") > limpio.rfind("."):
+            limpio = limpio.replace(".", "").replace(",", ".")
+        else:
+            limpio = limpio.replace(",", "")
+    elif "," in limpio:
+        partes = limpio.split(",")
+        if len(partes) == 2 and len(partes[1]) <= 2:
+            limpio = limpio.replace(",", ".")
+        else:
+            limpio = limpio.replace(",", "")
+    try:
+        return float(limpio)
+    except ValueError:
+        match = re.search(r"-?\d+(?:\.\d+)?", limpio)
+        return float(match.group(0)) if match else None
+
+
+def auditar_consistencia_serie_y_sentido_indicador(registro: dict[str, Any]) -> dict[str, Any]:
+    """Audita el sentido del indicador, la consistencia trimestral T1-T4 y línea base vs meta.
+
+    Implementa las reglas deterministas de la Sección 4.2 de `revision_motores_18_10_2026.md`:
+    1. `sentido_indicador`: ASCENDENTE | DESCENDENTE | MANTENIMIENTO.
+    2. `consistencia_trimestral_t1_t4`: preserva 0.0 observado (`is not None`) separado de `None`
+       y detecta inconsistencias aritméticas entre cortes trimestrales y avance físico anual.
+    3. `evaluacion_linea_base_vs_meta`: detecta `meta_regresiva` según el sentido del indicador.
+    4. `formula_documental_explicita`: verifica si indicadores relativos (porcentaje/tasa/índice)
+       explicitan numerador/denominador o referencia metodológica.
+    """
+    datos = registro if isinstance(registro, dict) else {}
+    datos_of = (
+        datos.get("datos_oficiales") if isinstance(datos.get("datos_oficiales"), dict) else {}
+    )
+
+    texto_combinado = " ".join(
+        str(
+            datos.get(k)
+            or datos_of.get(k)
+            or ""
+        )
+        for k in (
+            "indicador",
+            "Indicador de producto",
+            "Indicador de resultado",
+            "nombre_meta",
+            "nombre",
+            "meta_producto_vigencia",
+            "descripcion_actividad",
+            "Meta del cuatrienio",
+        )
+    )
+    norm_texto = _normalizar_texto_auditoria(texto_combinado)
+
+    palabras_descendentes = (
+        "reducir",
+        "disminuir",
+        "bajar",
+        "mortalidad",
+        "desercion",
+        "pobreza",
+        "homicidio",
+        "homicidios",
+        "embarazo adolescente",
+        "deforestacion",
+        "hurto",
+        "siniestralidad",
+        "desempleo",
+        "deficit",
+        "morbilidad",
+        "letalidad",
+    )
+    palabras_mantenimiento = (
+        "mantener",
+        "conservar",
+        "sostener",
+        "estabilizar",
+        "preservar",
+    )
+
+    sentido_explicito = _normalizar_texto_auditoria(datos.get("sentido_indicador"))
+    if sentido_explicito.startswith("descendente"):
+        sentido_indicador = "DESCENDENTE"
+    elif sentido_explicito.startswith("mantenimiento"):
+        sentido_indicador = "MANTENIMIENTO"
+    elif sentido_explicito.startswith("ascendente"):
+        sentido_indicador = "ASCENDENTE"
+    elif any(p in norm_texto for p in palabras_descendentes):
+        sentido_indicador = "DESCENDENTE"
+    elif any(p in norm_texto for p in palabras_mantenimiento):
+        sentido_indicador = "MANTENIMIENTO"
+    else:
+        sentido_indicador = "ASCENDENTE"
+
+    t1 = _a_float_preservando_cero(datos.get("avance_t1"))
+    t2 = _a_float_preservando_cero(datos.get("avance_t2"))
+    t3 = _a_float_preservando_cero(datos.get("avance_t3"))
+    t4 = _a_float_preservando_cero(datos.get("avance_t4"))
+    meta_vigencia = _a_float_preservando_cero(
+        datos.get("meta_valor_vigencia")
+        if datos.get("meta_valor_vigencia") is not None
+        else datos.get("meta_programada_anual")
+    )
+    avance_pct = _a_float_preservando_cero(
+        datos.get("porcentaje_avance_fisico")
+        if datos.get("porcentaje_avance_fisico") is not None
+        else (
+            datos.get("avance_fisico_pct")
+            if datos.get("avance_fisico_pct") is not None
+            else datos.get("avance_fisico")
+        )
+    )
+
+    trimestres = [t1, t2, t3, t4]
+    reportados = [v for v in trimestres if v is not None]
+    ceros_observados = [v for v in reportados if v == 0.0]
+    trimestres_reportados_count = len(reportados)
+    trimestres_en_cero_count = len(ceros_observados)
+    suma_trimestral = round(sum(reportados), 4) if reportados else None
+    max_trimestral = round(max(reportados), 4) if reportados else None
+    promedio_trimestral = (
+        round(sum(reportados) / len(reportados), 4) if reportados else None
+    )
+
+    nota_sobrecumplimiento = str(
+        datos.get("nota_sobrecumplimiento")
+        or datos.get("justificacion_sobrecumplimiento")
+        or datos.get("observacion_cualitativa")
+        or ""
+    ).strip()
+
+    detalles_inconsistencia: list[str] = []
+    if (
+        trimestres_reportados_count > 0
+        and trimestres_en_cero_count == trimestres_reportados_count
+        and avance_pct is not None
+        and avance_pct > 0.0
+    ):
+        detalles_inconsistencia.append(
+            f"Todos los trimestres reportados ({trimestres_reportados_count}) registran 0.0 "
+            f"observado, pero porcentaje_avance_fisico={avance_pct}% (> 0.0) carece de respaldo "
+            "en cortes T1-T4."
+        )
+
+    if (
+        suma_trimestral is not None
+        and suma_trimestral > 0.0
+        and (meta_vigencia is None or meta_vigencia > 0.0)
+        and avance_pct is not None
+        and avance_pct == 0.0
+    ):
+        detalles_inconsistencia.append(
+            f"Suma trimestral positiva ({suma_trimestral}) con meta_valor_vigencia="
+            f"{meta_vigencia}, pero porcentaje_avance_fisico reportado en 0.0%."
+        )
+
+    if avance_pct is not None and avance_pct > 100.0 and not nota_sobrecumplimiento:
+        detalles_inconsistencia.append(
+            f"porcentaje_avance_fisico={avance_pct}% supera 100.0% sin nota o justificación "
+            "documentada de sobrecumplimiento."
+        )
+
+    inconsistencia_trimestral = len(detalles_inconsistencia) > 0
+    consistencia_trimestral_t1_t4 = {
+        "avance_t1": t1,
+        "avance_t2": t2,
+        "avance_t3": t3,
+        "avance_t4": t4,
+        "meta_valor_vigencia": meta_vigencia,
+        "porcentaje_avance_fisico": avance_pct,
+        "trimestres_reportados_count": trimestres_reportados_count,
+        "trimestres_en_cero_observado_count": trimestres_en_cero_count,
+        "ceros_observados_preservados": bool(
+            trimestres_en_cero_count > 0 or avance_pct == 0.0
+        ),
+        "suma_trimestral": suma_trimestral,
+        "max_trimestral": max_trimestral,
+        "promedio_trimestral": promedio_trimestral,
+        "inconsistencia_aritmetica_trimestral": inconsistencia_trimestral,
+        "detalle_inconsistencia_trimestral": detalles_inconsistencia,
+    }
+
+    linea_base = _a_float_preservando_cero(
+        datos.get("linea_base")
+        if datos.get("linea_base") is not None
+        else (
+            datos.get("linea_base_numerica")
+            if datos.get("linea_base_numerica") is not None
+            else (
+                datos_of.get("Línea base")
+                if datos_of.get("Línea base") is not None
+                else datos_of.get("Linea base")
+            )
+        )
+    )
+    meta_ref = _a_float_preservando_cero(
+        datos.get("meta_cuatrienio")
+        if datos.get("meta_cuatrienio") is not None
+        else (
+            datos.get("meta_cuatrienio_numerica")
+            if datos.get("meta_cuatrienio_numerica") is not None
+            else (
+                datos.get("valor_meta_cuatrienio")
+                if datos.get("valor_meta_cuatrienio") is not None
+                else (
+                    datos_of.get("Meta del cuatrienio")
+                    if datos_of.get("Meta del cuatrienio") is not None
+                    else meta_vigencia
+                )
+            )
+        )
+    )
+
+    meta_regresiva = False
+    detalle_lb_meta = "Sin línea base o meta numérica comparable para evaluar regresividad."
+    if linea_base is not None and meta_ref is not None:
+        if sentido_indicador == "ASCENDENTE" and meta_ref < linea_base:
+            meta_regresiva = True
+            detalle_lb_meta = (
+                f"Meta regresiva detectada: indicador ASCENDENTE con meta ({meta_ref}) "
+                f"inferior a la línea base ({linea_base})."
+            )
+        elif sentido_indicador == "DESCENDENTE" and meta_ref > linea_base:
+            meta_regresiva = True
+            detalle_lb_meta = (
+                f"Meta regresiva detectada: indicador DESCENDENTE con meta ({meta_ref}) "
+                f"superior a la línea base ({linea_base})."
+            )
+        else:
+            detalle_lb_meta = (
+                f"Consistente con sentido {sentido_indicador}: "
+                f"línea base={linea_base}, meta={meta_ref}."
+            )
+
+    evaluacion_linea_base_vs_meta = {
+        "linea_base": linea_base,
+        "meta_evaluada": meta_ref,
+        "sentido_indicador": sentido_indicador,
+        "meta_regresiva": meta_regresiva,
+        "es_consistente_con_sentido": not meta_regresiva,
+        "detalle": detalle_lb_meta,
+    }
+
+    unidad_txt = _normalizar_texto_auditoria(
+        datos.get("unidad_medida") or datos_of.get("Unidad de medida") or ""
+    )
+    formula_txt = _normalizar_texto_auditoria(
+        datos.get("formula")
+        or datos.get("formula_indicador")
+        or datos_of.get("Fórmula")
+        or datos_of.get("Formula")
+        or ""
+    )
+    es_relativo = any(
+        tok in norm_texto or tok in unidad_txt
+        for tok in ("%", "porcentaje", "tasa", "indice", "razon", "proporcion")
+    )
+    tiene_ref_formula = bool(
+        (formula_txt and formula_txt not in {"cociente_porcentual", "conteo_acumulado_unidad"})
+        or any(
+            patron in norm_texto or patron in formula_txt
+            for patron in (
+                "/",
+                "numerador",
+                "denominador",
+                "por 100",
+                "por cada 100",
+                "por 1.000",
+                "por 10.000",
+                "por 100.000",
+                "sobre el total",
+                "respecto a",
+                "dividido",
+            )
+        )
+    )
+    formula_documental_explicita = True if not es_relativo else tiene_ref_formula
+
+    return {
+        "sentido_indicador": sentido_indicador,
+        "consistencia_trimestral_t1_t4": consistencia_trimestral_t1_t4,
+        "inconsistencia_aritmetica_trimestral": inconsistencia_trimestral,
+        "detalle_inconsistencia_trimestral": detalles_inconsistencia,
+        "evaluacion_linea_base_vs_meta": evaluacion_linea_base_vs_meta,
+        "meta_regresiva": meta_regresiva,
+        "formula_documental_explicita": formula_documental_explicita,
+        "detalle_formula_documental": {
+            "es_indicador_relativo": es_relativo,
+            "tiene_referencia_numerador_denominador": tiene_ref_formula,
+            "formula_documental_explicita": formula_documental_explicita,
+        },
+    }
+
+
 class CompromisosService:
+    auditar_consistencia_serie_y_sentido_indicador = staticmethod(
+        auditar_consistencia_serie_y_sentido_indicador
+    )
+
     def __init__(self, repository: CompromisosRepository) -> None:
         self.repo = repository
 
@@ -1526,6 +1841,21 @@ class CompromisosService:
                     "difiere en más "
                     f"de 25% frente a la ejecución presupuestal ({ejecucion_financiera}%)."
                 )
+
+            auditoria_serie = auditar_consistencia_serie_y_sentido_indicador(
+                {
+                    "descripcion_actividad": item.descripcion_actividad,
+                    "avance_t1": item.avance_t1,
+                    "avance_t2": item.avance_t2,
+                    "avance_t3": item.avance_t3,
+                    "avance_t4": item.avance_t4,
+                    "porcentaje_avance_fisico": avance_fisico,
+                }
+            )
+            if auditoria_serie["inconsistencia_aritmetica_trimestral"]:
+                hallazgos.extend(auditoria_serie["detalle_inconsistencia_trimestral"])
+            if auditoria_serie["meta_regresiva"]:
+                hallazgos.append(auditoria_serie["evaluacion_linea_base_vs_meta"]["detalle"])
 
             es_conforme = len(hallazgos) == 0
             if es_conforme:

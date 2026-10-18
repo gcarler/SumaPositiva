@@ -7,7 +7,7 @@ Matriz Hoja 1 Plan_Accion + Hoja 2 Plan_Indicativo y Seguimiento Trimestral.
 """
 
 import uuid
-import pytest
+
 from fastapi.testclient import TestClient
 
 from app.core.config import Settings
@@ -24,7 +24,10 @@ def test_validador_linguistico_dnp_unidad():
         "implementar", "impulsar", "mejorar", "movilizar", "proponer", "promover"
     ]
     for verbo in verbos_prohibidos:
-        frase = f"{verbo.capitalize()} las capacidades de seguridad comunitaria en barrios priorizados"
+        frase = (
+            f"{verbo.capitalize()} las capacidades de seguridad comunitaria "
+            "en barrios priorizados"
+        )
         res = CompromisosService.validar_redaccion_dnp(frase, "NORMATIVA")
         assert not res.es_valida, f"Debe rechazar '{verbo}'"
         assert res.es_verbo_debil_prohibido
@@ -70,7 +73,8 @@ def test_validador_linguistico_dnp_unidad():
 
 
 def test_banco_conocimiento_dnp_endpoint(database_url: str):
-    """Verifica que el endpoint GET /plan-accion/banco-conocimiento retorne la estructura oficial DNP."""
+    """Verifica que el endpoint GET /plan-accion/banco-conocimiento
+    retorne la estructura oficial DNP."""
     settings = Settings(_env_file=None, environment="test", database_url=database_url)
     app = create_app(settings)
     with TestClient(app) as client:
@@ -120,7 +124,10 @@ def test_validar_redaccion_endpoint_http(database_url: str):
         # Prueba con verbo prohibido
         resp_debil = client.post(
             "/api/v1/compromisos/plan-accion/validar-redaccion",
-            json={"descripcion_actividad": "Fortalecer la red de salud", "tipo_actividad": "ADMINISTRATIVA"},
+            json={
+                "descripcion_actividad": "Fortalecer la red de salud",
+                "tipo_actividad": "ADMINISTRATIVA",
+            },
         )
         assert resp_debil.status_code == 200
         d_debil = resp_debil.json()
@@ -132,7 +139,10 @@ def test_validar_redaccion_endpoint_http(database_url: str):
         # Prueba con verbo fuerte
         resp_fuerte = client.post(
             "/api/v1/compromisos/plan-accion/validar-redaccion",
-            json={"descripcion_actividad": "Expedir la resolución distrital", "tipo_actividad": "NORMATIVA"},
+            json={
+                "descripcion_actividad": "Expedir la resolución distrital",
+                "tipo_actividad": "NORMATIVA",
+            },
         )
         assert resp_fuerte.status_code == 200
         d_fuerte = resp_fuerte.json()
@@ -187,7 +197,8 @@ def test_matriz_plan_accion_consulta_y_filtros(database_url: str):
 
 
 def test_crear_actividad_rechaza_verbo_debil(database_url: str, cabeceras_gestion):
-    """Verifica que la creación de actividad rechace con HTTP 422 si la redacción contiene un verbo débil."""
+    """Verifica que la creación de actividad rechace con HTTP 422
+    si la redacción contiene un verbo débil."""
     settings = Settings(_env_file=None, environment="test", database_url=database_url)
     app = create_app(settings)
     with TestClient(app, headers=cabeceras_gestion) as client:
@@ -208,7 +219,8 @@ def test_crear_actividad_rechaza_verbo_debil(database_url: str, cabeceras_gestio
             "proyecto_nombre": "Proyecto Prueba",
             "objetivo_proyecto": "Objetivo Prueba",
             "tipo_actividad": "NORMATIVA",
-            "descripcion_actividad": "Fortalecer la red institucional distrital de seguridad",  # VERBO PROHIBIDO
+            # VERBO PROHIBIDO
+            "descripcion_actividad": "Fortalecer la red institucional distrital de seguridad",
             "fecha_inicio": "2026-01-01",
             "fecha_terminacion": "2026-12-31",
             "categoria_recursos": "INVERSION",
@@ -223,7 +235,8 @@ def test_crear_actividad_rechaza_verbo_debil(database_url: str, cabeceras_gestio
 
 
 def test_flujo_creacion_y_seguimiento_trimestral(database_url: str, cabeceras_gestion):
-    """Prueba ciclo completo: creación con verbo fuerte, actualización de avance T1-T4 y auditoría."""
+    """Prueba ciclo completo: creación con verbo fuerte,
+    actualización de avance T1-T4 y auditoría."""
     settings = Settings(_env_file=None, environment="test", database_url=database_url)
     app = create_app(settings)
     with TestClient(app, headers=cabeceras_gestion) as client:
@@ -245,7 +258,8 @@ def test_flujo_creacion_y_seguimiento_trimestral(database_url: str, cabeceras_ge
             "proyecto_nombre": "Protección Integral",
             "objetivo_proyecto": "Erradicar vulneraciones",
             "tipo_actividad": "NORMATIVA",
-            "descripcion_actividad": "Adoptar el manual distrital de inspección técnica en hoteles",  # VERBO FUERTE
+            # VERBO FUERTE
+            "descripcion_actividad": "Adoptar el manual distrital de inspección técnica en hoteles",
             "fecha_inicio": "2026-02-01",
             "fecha_terminacion": "2026-11-30",
             "avance_t1": 100.0,
@@ -292,7 +306,8 @@ def test_flujo_creacion_y_seguimiento_trimestral(database_url: str, cabeceras_ge
 
 def test_procesar_lote_plan_accion_cruce_hoja2_y_autocorreccion(database_url: str):
     """Verifica el endpoint POST /plan-accion/procesar-lote:
-    1. Cruce automático de Hoja 2 Plan Indicativo a Hoja 1 Plan de Acción (Programa y Meta Producto).
+    1. Cruce automático de Hoja 2 Plan Indicativo a Hoja 1 Plan de Acción
+       (Programa y Meta Producto).
     2. Exención de meta producto cuando tipo_meta == 'ACTIVIDAD' (Pág. 11 DNP).
     3. Detección de verbos débiles prohibidos por DNP y sugerencia de redacción corregida.
     4. Coherencia presupuestal (categoría de recursos vs fuentes de financiación).
@@ -310,7 +325,9 @@ def test_procesar_lote_plan_accion_cruce_hoja2_y_autocorreccion(database_url: st
                 "lider_responsable": "Director de Seguridad",
                 "tipo_meta": "ACTIVIDAD",
                 "tipo_actividad": "NORMATIVA",
-                "descripcion_actividad": "Expedir el decreto distrital de zonas de especial protección comunitaria",
+                "descripcion_actividad": (
+                    "Expedir el decreto distrital de zonas de especial protección comunitaria"
+                ),
                 "categoria_recursos": "INVERSION",
                 "fuente_financiacion": "RECURSOS_PROPIOS",
                 "monto_programado_cop": 100000000.0,
@@ -324,7 +341,9 @@ def test_procesar_lote_plan_accion_cruce_hoja2_y_autocorreccion(database_url: st
                 "lider_responsable": "Jefe de Operaciones",
                 "tipo_meta": "META_PRODUCTO",
                 "tipo_actividad": "LOGISTICA",
-                "descripcion_actividad": "Fortalecer la capacidad logística de los frentes de seguridad barrial",
+                "descripcion_actividad": (
+                    "Fortalecer la capacidad logística de los frentes de seguridad barrial"
+                ),
                 "categoria_recursos": "INVERSION",
                 "fuente_financiacion": "SGP_PROPOSITO_GENERAL",
                 "monto_programado_cop": 200000000.0,
@@ -381,4 +400,93 @@ def test_procesar_lote_plan_accion_cruce_hoja2_y_autocorreccion(database_url: st
         assert res_corr["filas_con_observaciones"] == 0
         assert res_corr["estado_dictamen_planeacion"] == "APTO_CONSEJO_GOBIERNO"
         assert res_corr["puntaje_calidad_dnp"] == 100.0
+
+
+def test_auditar_consistencia_serie_y_sentido_indicador_casos_dnp():
+    """Valida auditar_consistencia_serie_y_sentido_indicador (Sección 4.2):
+    - Sentido ASCENDENTE, DESCENDENTE y MANTENIMIENTO.
+    - Detección de meta_regresiva según sentido y línea base vs meta.
+    - Preservación estricta de 0.0 observado en T1-T4 e inconsistencia_aritmetica_trimestral.
+    - Verificación de formula_documental_explicita en indicadores relativos.
+    """
+    from app.modules.compromisos.service import auditar_consistencia_serie_y_sentido_indicador
+
+    # 1. Caso DESCENDENTE consistente + fórmula explícita + trimestres consistentes
+    res_desc_ok = auditar_consistencia_serie_y_sentido_indicador(
+        {
+            "indicador": "Tasa de mortalidad infantil por 1.000 nacidos vivos",
+            "unidad_medida": "Tasa",
+            "linea_base": 14.5,
+            "meta_cuatrienio": 9.0,
+            "meta_valor_vigencia": 10.0,
+            "avance_t1": 25.0,
+            "avance_t2": 50.0,
+            "avance_t3": None,
+            "avance_t4": None,
+            "porcentaje_avance_fisico": 37.5,
+        }
+    )
+    assert res_desc_ok["sentido_indicador"] == "DESCENDENTE"
+    assert res_desc_ok["meta_regresiva"] is False
+    assert res_desc_ok["formula_documental_explicita"] is True
+    assert res_desc_ok["inconsistencia_aritmetica_trimestral"] is False
+    assert res_desc_ok["consistencia_trimestral_t1_t4"]["trimestres_reportados_count"] == 2
+    assert res_desc_ok["consistencia_trimestral_t1_t4"]["trimestres_en_cero_observado_count"] == 0
+
+    # 2. Caso DESCENDENTE con meta_regresiva (meta > línea base en pobreza/deserción)
+    res_desc_reg = auditar_consistencia_serie_y_sentido_indicador(
+        {
+            "indicador": "Reducir porcentaje de deserción escolar oficial",
+            "unidad_medida": "Porcentaje",
+            "linea_base": 4.2,
+            "meta_cuatrienio": 6.8,
+        }
+    )
+    assert res_desc_reg["sentido_indicador"] == "DESCENDENTE"
+    assert res_desc_reg["meta_regresiva"] is True
+    assert res_desc_reg["evaluacion_linea_base_vs_meta"]["es_consistente_con_sentido"] is False
+    assert res_desc_reg["formula_documental_explicita"] is False
+
+    # 3. Caso ASCENDENTE con meta_regresiva (meta < línea base) + inconsistencia T1-T4 con 0.0
+    res_asc_incons = auditar_consistencia_serie_y_sentido_indicador(
+        {
+            "indicador": "Cobertura de acueducto urbano (hogares conectados / total hogares)",
+            "unidad_medida": "Porcentaje",
+            "linea_base": 92.0,
+            "meta_cuatrienio": 85.0,
+            "meta_valor_vigencia": 90.0,
+            "avance_t1": 0.0,
+            "avance_t2": 0.0,
+            "avance_t3": 0.0,
+            "avance_t4": None,
+            "porcentaje_avance_fisico": 75.0,
+        }
+    )
+    assert res_asc_incons["sentido_indicador"] == "ASCENDENTE"
+    assert res_asc_incons["meta_regresiva"] is True
+    assert res_asc_incons["formula_documental_explicita"] is True
+    assert res_asc_incons["inconsistencia_aritmetica_trimestral"] is True
+    trim = res_asc_incons["consistencia_trimestral_t1_t4"]
+    assert trim["avance_t1"] == 0.0
+    assert trim["avance_t4"] is None
+    assert trim["trimestres_reportados_count"] == 3
+    assert trim["trimestres_en_cero_observado_count"] == 3
+    assert trim["ceros_observados_preservados"] is True
+    assert trim["suma_trimestral"] == 0.0
+
+    # 4. Caso suma trimestral > 0 y meta_valor_vigencia > 0 pero porcentaje_avance_fisico == 0.0
+    res_suma_pos_avance_cero = CompromisosService.auditar_consistencia_serie_y_sentido_indicador(
+        {
+            "indicador": "Mantener aulas escolares adecuadas",
+            "unidad_medida": "Unidades",
+            "meta_valor_vigencia": 20.0,
+            "avance_t1": 5.0,
+            "avance_t2": 10.0,
+            "porcentaje_avance_fisico": 0.0,
+        }
+    )
+    assert res_suma_pos_avance_cero["sentido_indicador"] == "MANTENIMIENTO"
+    assert res_suma_pos_avance_cero["inconsistencia_aritmetica_trimestral"] is True
+    assert res_suma_pos_avance_cero["consistencia_trimestral_t1_t4"]["suma_trimestral"] == 15.0
+
 

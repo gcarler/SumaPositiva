@@ -65,6 +65,8 @@ class ToolContext:
     invocaciones: list[dict[str, Any]] = field(default_factory=list)
     resultados: dict[str, Any] = field(default_factory=dict)
     ampliar_busqueda: bool = False
+    cobertura_universo_bd: dict[str, Any] = field(default_factory=dict)
+    cobertura_universo_operativo: dict[str, Any] = field(default_factory=dict)
 
 
 class GrafoState(TypedDict, total=False):
@@ -396,7 +398,9 @@ async def _query_evidencias(ctx: ToolContext) -> list[dict[str, Any]]:
     return evidence
 
 
-async def _query_nodos(ctx: ToolContext) -> list[dict[str, Any]]:
+async def _query_nodos(
+    ctx: ToolContext, *, limit: int | None = MAX_RESULTADOS
+) -> list[dict[str, Any]]:
     consulta = ctx.consulta
     rows = (
         (
@@ -423,7 +427,7 @@ async def _query_nodos(ctx: ToolContext) -> list[dict[str, Any]]:
                     "busqueda_like": f"%{_terms(consulta.pregunta)[0]}%"
                     if _terms(consulta.pregunta)
                     else "%%",
-                    "limite": MAX_RESULTADOS,
+                    "limite": limit,
                 },
             )
         )
@@ -436,6 +440,28 @@ async def _query_nodos(ctx: ToolContext) -> list[dict[str, Any]]:
 async def _query_metas(ctx: ToolContext) -> list[dict[str, Any]]:
     terms = _terms(ctx.consulta.pregunta)
     needle = terms[0] if terms else ""
+    coverage_rows = (
+        (
+            await ctx.session.execute(
+                text(
+                    """SELECT codigo_plan, count(*)::int AS total_metas,
+                       count(*) FILTER (WHERE
+                         (:needle = '' OR nombre ILIKE :pattern OR indicador ILIKE :pattern)
+                       )::int AS total_coincidentes
+                       FROM seguimiento.pdd_metas_oficiales
+                       WHERE (:plan = 'TODOS' OR codigo_plan = :plan)
+                       GROUP BY codigo_plan ORDER BY codigo_plan"""
+                ),
+                {
+                    "plan": ctx.consulta.codigo_plan,
+                    "needle": needle,
+                    "pattern": f"%{needle}%",
+                },
+            )
+        )
+        .mappings()
+        .all()
+    )
     rows = (
         (
             await ctx.session.execute(
@@ -458,7 +484,17 @@ async def _query_metas(ctx: ToolContext) -> list[dict[str, Any]]:
         .mappings()
         .all()
     )
-    return [_row_dict(row) for row in rows]
+    metas = [_row_dict(row) for row in rows]
+    totals = {str(row["codigo_plan"]): int(row["total_metas"]) for row in coverage_rows}
+    matched = sum(int(row["total_coincidentes"]) for row in coverage_rows)
+    ctx.cobertura_universo_bd = {
+        "planes_evaluados_count": len(totals),
+        "metas_por_plan_totales": totals,
+        "total_metas_coincidentes_sin_truncar": matched,
+        "metas_incluidas_en_muestra": len(metas),
+        "muestra_truncada": matched > len(metas),
+    }
+    return metas
 
 
 async def _query_ppi(ctx: ToolContext) -> list[dict[str, Any]]:
@@ -510,6 +546,39 @@ async def _query_ppi(ctx: ToolContext) -> list[dict[str, Any]]:
         plan["desglose_7d_constante_2025_cop"] = dimensions
         plan["fuente_cifras"] = "seguimiento.planes_desarrollo_distrital y pdd_lineas_y_programas"
         output.append(plan)
+    terms = _terms(ctx.consulta.pregunta)
+    needle = terms[0] if terms else ""
+    meta_counts = (
+        (
+            await ctx.session.execute(
+                text(
+                    """SELECT codigo_plan, count(*)::int AS total_metas,
+                       count(*) FILTER (WHERE
+                         (:needle = '' OR nombre ILIKE :pattern OR indicador ILIKE :pattern)
+                       )::int AS total_coincidentes
+                       FROM seguimiento.pdd_metas_oficiales
+                       WHERE (:plan = 'TODOS' OR codigo_plan = :plan)
+                       GROUP BY codigo_plan"""
+                ),
+                {
+                    "plan": ctx.consulta.codigo_plan,
+                    "needle": needle,
+                    "pattern": f"%{needle}%",
+                },
+            )
+        )
+        .mappings()
+        .all()
+    )
+    meta_totals = {str(row["codigo_plan"]): int(row["total_metas"]) for row in meta_counts}
+    total_matches = sum(int(row["total_coincidentes"]) for row in meta_counts)
+    ctx.cobertura_universo_bd = {
+        "planes_evaluados_count": len(output),
+        "metas_por_plan_totales": meta_totals,
+        "total_metas_coincidentes_sin_truncar": total_matches,
+        "metas_incluidas_en_muestra": 0,
+        "muestra_truncada": total_matches > 0,
+    }
     return output
 
 
@@ -523,7 +592,7 @@ async def _query_actividades(ctx: ToolContext) -> list[dict[str, Any]]:
                           proyecto_nombre, descripcion_actividad, porcentaje_avance_fisico,
                           monto_programado_cop, monto_ejecutado_cop
                    FROM seguimiento.actividades_plan_accion
-                   ORDER BY vigencia DESC, codigo LIMIT 500"""
+                   ORDER BY vigencia DESC, codigo"""
                 )
             )
         )
@@ -531,7 +600,7 @@ async def _query_actividades(ctx: ToolContext) -> list[dict[str, Any]]:
         .all()
     )
     activities = [_row_dict(row) for row in rows]
-    nodes = await _query_nodos(ctx)
+    nodes = await _query_nodos(ctx, limit=None)
     terms = set(_terms(ctx.consulta.pregunta))
     matches = []
     for node in nodes:
@@ -566,9 +635,66 @@ async def _query_actividades(ctx: ToolContext) -> list[dict[str, Any]]:
                         "terminos_coincidentes": sorted(overlap),
                     }
                 )
-                if len(matches) >= MAX_RESULTADOS:
-                    return matches
-    return matches
+    matched_activity_codes = {
+        str(row["actividad_pa_codigo"]) for row in matches if row.get("actividad_pa_codigo")
+    }
+    sample = matches[:MAX_RESULTADOS]
+    matched_activities = [
+        row for row in activities if str(row.get("codigo")) in matched_activity_codes
+    ]
+    activity_codes = list(
+        {
+            str(row[key])
+            for row in matched_activities
+            for key in ("codigo", "compromiso_pas_codigo", "codigo_bpim")
+            if row.get(key)
+        }
+    )
+    triad_rows = []
+    if activity_codes:
+        triad_rows = (
+            (
+                await ctx.session.execute(
+                    text(
+                        """SELECT count(*)::int AS total_registros,
+                           count(*) FILTER (WHERE coalesce(apropiacion_definitiva_cop,0)>0
+                             OR coalesce(compromisos_rp_cop,0)>0)::int AS registros_con_soporte,
+                           coalesce(sum(apropiacion_definitiva_cop),0)::float AS apropiacion,
+                           coalesce(sum(compromisos_rp_cop),0)::float AS compromisos
+                           FROM seguimiento.registros_triada_normalizados
+                           WHERE codigo_bpim = ANY(:codigos) OR codigo_meta_pdd = ANY(:codigos)"""
+                    ),
+                    {"codigos": activity_codes},
+                )
+            )
+            .mappings()
+            .all()
+        )
+    triad = triad_rows[0] if triad_rows else {}
+    advances = [
+        float(row["porcentaje_avance_fisico"])
+        for row in matched_activities
+        if row.get("porcentaje_avance_fisico") is not None
+    ]
+    ctx.cobertura_universo_operativo = {
+        "total_actividades_pa_coincidentes_sin_truncar": len(matched_activity_codes),
+        "actividades_incluidas_en_muestra": len(
+            {str(row["actividad_pa_codigo"]) for row in sample if row.get("actividad_pa_codigo")}
+        ),
+        "total_registros_triada_coincidentes_sin_truncar": int(
+            triad.get("total_registros", 0) or 0
+        ),
+        "registros_incluidos_en_muestra": min(
+            int(triad.get("total_registros", 0) or 0), MAX_RESULTADOS
+        ),
+        "suma_apropiacion_universo_filtrado_cop": float(triad.get("apropiacion", 0) or 0),
+        "suma_compromisos_universo_filtrado_cop": float(triad.get("compromisos", 0) or 0),
+        "promedio_avance_fisico_universo_filtrado_pct": (
+            sum(advances) / len(advances) if advances else None
+        ),
+    }
+    ctx.resultados["cobertura_universo_operativo"] = ctx.cobertura_universo_operativo
+    return sample
 
 
 def _record(ctx: ToolContext, name: str, params: dict[str, Any], value: Any) -> Any:
@@ -663,26 +789,30 @@ def _build_agents(ctx: ToolContext) -> dict[str, Agent]:
         )
 
     @agents["reconstructor_causal_mga"].tool
-    async def tool_consultar_metas_oficiales(run: RunContext[ToolContext]) -> list[dict[str, Any]]:
+    async def tool_consultar_metas_oficiales(run: RunContext[ToolContext]) -> dict[str, Any]:
         """Consultar metas oficiales, indicadores, línea base y meta de cuatrienio."""
         ctx = run.deps
-        return _record(
+        metas = await _query_metas(ctx)
+        _record(
             ctx,
             "tool_consultar_metas_oficiales",
             {"codigo_plan": ctx.consulta.codigo_plan, "pregunta": ctx.consulta.pregunta},
-            await _query_metas(ctx),
+            metas,
         )
+        return {"metas": metas, "cobertura_universo_bd": ctx.cobertura_universo_bd}
 
     @agents["auditor_financiero_ppi"].tool
-    async def tool_conciliar_ppi_plan(run: RunContext[ToolContext]) -> list[dict[str, Any]]:
+    async def tool_conciliar_ppi_plan(run: RunContext[ToolContext]) -> dict[str, Any]:
         """Leer PPI corriente/constante y desgloses persistidos por frontalidad y 7D."""
         ctx = run.deps
-        return _record(
+        plans = await _query_ppi(ctx)
+        _record(
             ctx,
             "tool_conciliar_ppi_plan",
             {"codigo_plan": ctx.consulta.codigo_plan},
-            await _query_ppi(ctx),
+            plans,
         )
+        return {"planes": plans, "cobertura_universo_bd": ctx.cobertura_universo_bd}
 
     @agents["auditor_financiero_ppi"].tool
     async def tool_consultar_evaluador_pdt_gbr(
@@ -705,15 +835,20 @@ def _build_agents(ctx: ToolContext) -> dict[str, Agent]:
         return result
 
     @agents["articulador_operativo_bpim"].tool
-    async def tool_cruzar_actividades_pa_bpim(run: RunContext[ToolContext]) -> list[dict[str, Any]]:
+    async def tool_cruzar_actividades_pa_bpim(run: RunContext[ToolContext]) -> dict[str, Any]:
         """Cruzar nodos A/B con actividades PA y códigos BPIM disponibles."""
         ctx = run.deps
-        return _record(
+        matches = await _query_actividades(ctx)
+        _record(
             ctx,
             "tool_cruzar_actividades_pa_bpim",
             {"codigo_plan": ctx.consulta.codigo_plan, "pregunta": ctx.consulta.pregunta},
-            await _query_actividades(ctx),
+            matches,
         )
+        return {
+            "actividades": matches,
+            "cobertura_universo_operativo": ctx.cobertura_universo_operativo,
+        }
 
     return agents
 
@@ -1088,7 +1223,11 @@ async def ejecutar_consulta_pdd(
             "metas_destacadas": metas[:20],
             "articulacion_pa_bpim": result.get("articulacion", []),
             "evaluacion_pdt_gbr": result.get("evaluacion_pdt_gbr", {}),
+            "cobertura_universo_bd": ctx.cobertura_universo_bd,
+            "cobertura_universo_operativo": ctx.cobertura_universo_operativo,
         },
+        "cobertura_universo_bd": ctx.cobertura_universo_bd,
+        "cobertura_universo_operativo": ctx.cobertura_universo_operativo,
         "evaluacion_pdt_gbr": result.get("evaluacion_pdt_gbr", {}),
         "verificacion_critica": {
             "aprobado": approved,

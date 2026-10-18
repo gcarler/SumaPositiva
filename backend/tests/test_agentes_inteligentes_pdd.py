@@ -12,6 +12,9 @@ from app.modules.compromisos.agentes_inteligentes_pdd import (
     TOOL_SPECS,
     ConsultaAgentesPDD,
     InterpretarFragmentoPDD,
+    ToolContext,
+    _query_actividades,
+    _query_metas,
     arquitectura_agentes_ia,
     ejecutar_consulta_pdd,
     interpretar_fragmento,
@@ -136,6 +139,16 @@ class FakeSession:
             return FakeResult([self.evidence])
         if "FROM seguimiento.pdd_lineas_y_programas" in query:
             return FakeResult([self.node])
+        if "total_coincidentes" in query:
+            return FakeResult(
+                [
+                    {
+                        "codigo_plan": "PDD_2024_2027",
+                        "total_metas": 1,
+                        "total_coincidentes": 1,
+                    }
+                ]
+            )
         if "FROM seguimiento.pdd_metas_oficiales" in query:
             return FakeResult(
                 [
@@ -270,6 +283,97 @@ def test_stategraph_invoca_tools_y_verifica_cita_sha256(tmp_path, monkeypatch):
         "hallazgos_criticos": 2
     }
     assert result["evidencia_financiera_y_metas"]["evaluacion_pdt_gbr"] == evaluation
+
+
+def test_cobertura_universal_metas_y_operacion_sin_truncar(monkeypatch):
+    class Result:
+        def __init__(self, rows):
+            self.rows = rows
+
+        def mappings(self):
+            return self
+
+        def all(self):
+            return self.rows
+
+    class Session:
+        async def execute(self, statement, params=None):
+            query = str(statement)
+            if "total_coincidentes" in query:
+                return Result(
+                    [
+                        {
+                            "codigo_plan": "PDD_2024_2027",
+                            "total_metas": 1246,
+                            "total_coincidentes": 70,
+                        }
+                    ]
+                )
+            if "FROM seguimiento.pdd_metas_oficiales" in query:
+                return Result([{"codigo": f"M{i}"} for i in range(20)])
+            if "FROM seguimiento.actividades_plan_accion" in query:
+                return Result(
+                    [
+                        {
+                            "codigo": "A1",
+                            "programa_nombre": "Salud",
+                            "entidad_responsable": "DADIS",
+                            "codigo_bpim": "BP1",
+                            "proyecto_nombre": "Salud barrial",
+                            "descripcion_actividad": "Salud",
+                            "porcentaje_avance_fisico": 40,
+                        },
+                        {
+                            "codigo": "A2",
+                            "programa_nombre": "Salud",
+                            "entidad_responsable": "DADIS",
+                            "codigo_bpim": "BP2",
+                            "proyecto_nombre": "Salud pública",
+                            "descripcion_actividad": "Salud",
+                            "porcentaje_avance_fisico": 80,
+                        },
+                    ]
+                )
+            if "registros_triada_normalizados" in query:
+                return Result([{"total_registros": 3, "apropiacion": 900, "compromisos": 700}])
+            return Result([])
+
+    consulta = ConsultaAgentesPDD(
+        pregunta="Salud", codigo_plan="PDD_2024_2027", dimension_sh="Salud", grado_frontalidad="A"
+    )
+    context = ToolContext(session=Session(), consulta=consulta)
+    metas = asyncio.run(_query_metas(context))
+    assert len(metas) == 20
+    assert context.cobertura_universo_bd == {
+        "planes_evaluados_count": 1,
+        "metas_por_plan_totales": {"PDD_2024_2027": 1246},
+        "total_metas_coincidentes_sin_truncar": 70,
+        "metas_incluidas_en_muestra": 20,
+        "muestra_truncada": True,
+    }
+    monkeypatch.setattr(
+        agents_module,
+        "_query_nodos",
+        lambda _ctx, **_kwargs: asyncio.sleep(
+            0,
+            result=[
+                {
+                    "codigo_plan": "PDD_2024_2027",
+                    "codigo": "N1",
+                    "nombre": "Salud",
+                    "metadatos": {"grado_frontalidad_sh": "A"},
+                }
+            ],
+        ),
+    )
+    activities = asyncio.run(_query_actividades(context))
+    assert len(activities) == 2
+    coverage = context.cobertura_universo_operativo
+    assert coverage["total_actividades_pa_coincidentes_sin_truncar"] == 2
+    assert coverage["total_registros_triada_coincidentes_sin_truncar"] == 3
+    assert coverage["suma_apropiacion_universo_filtrado_cop"] == 900
+    assert coverage["suma_compromisos_universo_filtrado_cop"] == 700
+    assert coverage["promedio_avance_fisico_universo_filtrado_pct"] == 60
 
 
 def test_interpretacion_fragmento_extrae_mga_crema_y_vector_7d():

@@ -259,3 +259,39 @@ El próximo entregable más valioso sería una matriz auditable de revisión por
 - [Dictamen ejecutivo](backend/app/modules/compromisos/pdt_dictamen_ejecutivo.py), [persistencia de evaluaciones](backend/app/modules/compromisos/pdt_persistencia_pg.py), [clasificación de rutas](docs/permisos-api.md).
 
 Los nombres de funciones indicados en cada hallazgo permiten localizar la evidencia aunque cambien las líneas del archivo. El documento no modifica los motores ni constituye aprobación de despliegue.
+
+---
+
+## 9. Estado de Implementación y Verificación EAF (`Fases [25A]–[28B]`)
+
+Con corte al `2026-10-18`, el Equipo de Arquitectura y Auditoría Forense (`EAF`) ejecutó y verificó en backend y suite automatizada (`pytest` + `ruff`) el cierre estructural de los hallazgos `H1–H12`, las mejoras metodológicas de las Secciones `4.1`, `4.2` y `4.4`, el despliegue de políticas **Hoshin Kanri + Matriz X** y la **Matriz Auditable de 10 Dimensiones y 7 Revisores por Meta**:
+
+### 9.1 Matriz de Cierre Técnico de Hallazgos (`H1–H12`)
+| Hallazgo | Estado | Implementación Técnica y Verificación Automatizada |
+| :--- | :--- | :--- |
+| **H1.** Atribución de riesgo `ISRI` sin vínculo acreditado | **CERRADO / VERIFICADO** | Eliminada la condición `or item.get("entidad") is None` en `pdt_dictamen_ejecutivo.py`. Toda serie en `pdt_nodos_espacial_predictivo.py` y `pdt_ai_evaluator_graph.py` explicita `entidad_atribuida` o se mantiene en `SIN_ATRIBUCION` sin contaminar dependencias ajenas (`total_indicadores_isri_sin_atribucion` auditado en `pdt_persistencia_pg.py`). |
+| **H2.** Trampas territoriales inferidas por nombre de dependencia | **CERRADO / VERIFICADO** | En `pdt_nodos_espacial_predictivo.py` y `pdt_revision_por_meta.py` (`dim_8_resultados_y_equidad`), las alertas espaciales exigen vínculo territorial acreditado; cuando no existe localización documental se clasifica explícitamente como `SIN_VINCULO_TERRITORIAL_ACREDITADO` / `HIPOTESIS_PENDIENTE_LOCALIZACION`. |
+| **H3.** Mezcla de magnitudes y sustitución de `0.0` en DEA | **CERRADO / VERIFICADO** | Preservación estricta de `0.0` observado (`is not None`) separado de `None` (`BRECHA_DE_INFORMACION`) en `pdt_ai_evaluator_graph.py`, `pdt_revision_por_meta.py` y `service.py` (`_a_float_preservando_cero`). Erradicado el encadenamiento `or` que reemplazaba ceros observados por porcentajes o denominadores ficticios. |
+| **H4.** Escalas homogéneas DEA y bootstrap | **CERRADO / VERIFICADO** | Invarianza de escala monetaria común preservada en `_dea_node` y documentados los supuestos de incertidumbre y las condiciones de aptitud metodológica (`apto_para_dea` en `analista_metodologico`). |
+| **H5.** Sentido del indicador y compatibilidad de unidades en `ISRI` | **CERRADO / VERIFICADO** | Implementada detección determinista de sentido (`ASCENDENTE`, `DESCENDENTE`, `MANTENIMIENTO`), evaluación de `meta_regresiva` frente a línea base y verificación de `formula_documental_explicita` en `auditar_consistencia_serie_y_sentido_indicador` (`service.py`) e integrada en `pdt_revision_por_meta.py`. |
+| **H6.** Clasificación de procedencia de datos territoriales | **CERRADO / VERIFICADO** | Geometrías multipoligonales reales de las 15 UCGs de Cartagena en `PostGIS` (`geodatos.territorios`) con etiquetado explícito de `clasificacion_dato_territorial` (`OBSERVADO_EN_DOCUMENTO_PDD` vs. `NO_ATRIBUIBLE_SIN_SOPORTE_LOCALIZADO`). |
+| **H7.** Combinación estricta de filtro de plan y relevancia temática en agentes | **CERRADO / VERIFICADO** | En `agentes_inteligentes_pdd.py`, `_matches_pdt_filter` exige simultáneamente pertenencia canónica al plan seleccionado y relevancia léxica/temática con la consulta, evitando que consultas sectoriales (p. ej. Salud) arrastren dependencias no relacionadas. |
+| **H8.** Claves de cruce temporal y consistencia trimestral `T1–T4` | **CERRADO / VERIFICADO** | Validación aritmética de `avance_t1..avance_t4` frente a `meta_valor_vigencia` y `porcentaje_avance_fisico` en `auditar_consistencia_serie_y_sentido_indicador` (`service.py`), detectando avances porcentuales positivos con trimestres en `0.0`, sumas trimestrales positivas con avance anual en `0.0%` y sobrecumplimientos `> 100%` sin soporte. |
+| **H9.** Coherencia textual NLP con citas y revisión experta | **CERRADO / VERIFICADO** | Cada alerta de *mission creep* ($\text{Sim} < 0.45$) conserva par meta–actividad, cita documental y es contrastada por el `revisor_contradicciones` cuando coexiste con ejecución presupuestal positiva (`REGLA_CONTRADICCION_PRESUPUESTO_VS_MISSION_CREEP_NLP`). |
+| **H10.** Separación entre cuadrante descriptivo y significancia LISA | **CERRADO / VERIFICADO** | El nodo espacial distingue significancia local ($p < 0.05$) de cuadrantes exploratorios y cruza la interpretación con el sentido del indicador. |
+| **H11.** Versionado reproducible y huellas `SHA-256` en caché y BD | **CERRADO / VERIFICADO** | Cada ejecución persiste `version_metodologica` y `fingerprint_fuentes_sha256` tanto en el grafo `PDT-AI-EVALUATOR` como en PostgreSQL (`seguimiento.pdt_ai_evaluaciones`). |
+| **H12.** Gobernanza `Human-in-the-Loop` y bitácora auditable | **CERRADO / VERIFICADO** | Checkpoints HITL persistidos en `seguimiento.pdt_ai_checkpoints_hitl`, expuestos en `/historial-auditoria` y documentados en `docs/permisos-api.md` con separación explícita entre diagnóstico técnico y decisión administrativa. |
+
+### 9.2 Entregables Estructurales Implementados (`Secciones 4.1, 4.2, 4.4, 5 y 6`)
+1. **Modelo Hoshin Kanri y Matriz X ([pdt_hoshin_kanri.py](backend/app/modules/compromisos/pdt_hoshin_kanri.py)):**
+   - Implementa el **Marco FAIR** (`Focus`, `Alignment`, `Integration`, `Review`), la **Matriz X** de 4 cuadrantes (`Sur`, `Oeste`, `Norte`, `Este`) y 4 esquinas de correlación (`●`/`○`/`△`), los **Bowling Charts** con semáforo **PDCA** (`VERDE_EN_META`, `AMARILLO_PREVENTIVO`, `ROJO_CONTENCION_PDCA`), las sesiones de **Catchball (*Nemawashi*)**, el ciclo de 7 pasos y la comparativa `SMART vs OKR vs Hoshin Kanri`.
+   - Expuesto en `GET /api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/hoshin-kanri/especificacion` y `GET /api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/hoshin-kanri/matriz-x`.
+2. **Matriz Auditable de 10 Dimensiones y 7 Revisores por Meta ([pdt_revision_por_meta.py](backend/app/modules/compromisos/pdt_revision_por_meta.py)):**
+   - Evalúa las `1246` metas oficiales de `bd_csh` (`PDD_2024_2027`) en las **10 dimensiones** (`diagnostico`, `formulacion`, `cadena_resultados`, `operacionalizacion`, `viabilidad_financiera`, `ejecucion_fisica`, `ejecucion_financiera`, `resultados_y_equidad`, `cambios_del_plan`, `control_y_aprendizaje`) sin mezclarlas en un score opaco.
+   - Ejecuta los **7 roles especializados** (`curador_evidencia`, `revisor_formulacion`, `revisor_articulacion`, `conciliador_ejecucion`, `analista_metodologico`, `revisor_contradicciones`, `redactor_informe`) emitiendo hallazgos con los **17 campos obligatorios** del contrato canónico.
+   - Expuesto en `GET /api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/revision-por-meta`.
+3. **Auditoría Determinista de Serie Trimestral `T1–T4`, Sentido de Indicador y Meta Regresiva ([service.py](backend/app/modules/compromisos/service.py)):**
+   - Función `auditar_consistencia_serie_y_sentido_indicador(registro)` integrada en el flujo de validación del Plan de Acción DNP (`procesar_lote_plan_accion`) y en `pdt_revision_por_meta.py` (`dim_2_formulacion`, `dim_6_ejecucion_fisica`, `revisor_formulacion` y `conciliador_ejecucion`).
+4. **Persistencia PostgreSQL Enriquecida ([pdt_persistencia_pg.py](backend/app/modules/compromisos/pdt_persistencia_pg.py)):**
+   - `_construir_resumen_ejecutivo(run_data)` almacena en `seguimiento.pdt_ai_evaluaciones` la huella `H11`, el conteo de atribución `H1`, el resumen `hoshin_kanri_fair` y el resumen `revision_10d_resumen`.
+
