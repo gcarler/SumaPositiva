@@ -1,3 +1,4 @@
+import hashlib
 from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Annotated
@@ -15,6 +16,7 @@ from fastapi import (
     status,
 )
 from fastapi.responses import FileResponse
+from sqlalchemy.engine import make_url
 
 from app.core.database import SessionDependency
 from app.modules.compromisos.dea_econometria_service import DeaEconometriaService
@@ -31,7 +33,12 @@ from app.modules.compromisos.motor_multiagente_pdd import (
     ejecutar_sistema_multiagente_pdd,
     obtener_estado_sistema_multiagente_pdd,
 )
-from app.modules.compromisos.pdd_dea_service import PddDeaService, pre_serialized_response
+from app.modules.compromisos.pdd_dea_service import (
+    PddDeaService,
+    _cached,
+    _read_disk_cache,
+    pre_serialized_response,
+)
 from app.modules.compromisos.repository import CompromisosRepository
 from app.modules.compromisos.schemas import (
     ActividadPlanAccionActualizarSeguimiento,
@@ -58,6 +65,9 @@ from app.modules.compromisos.taxonomia_seguridad import DIMENSIONES, PERIODOS
 from app.modules.identidad.deps import SujetoAutenticadoDep, requerir_permiso
 from app.modules.politicas.gating import verificar_escritura_fase
 
+# Workers load their durable PDD payload index during import, before accepting requests.
+_read_disk_cache()
+
 
 @asynccontextmanager
 async def _compromisos_lifespan(_app):
@@ -65,18 +75,60 @@ async def _compromisos_lifespan(_app):
 
     settings = Settings()
     if settings.environment == "production":
+        # Parse the durable payload index before declaring the worker ready so the
+        # first request does not pay the JSON disk-load cost.
+        _read_disk_cache()
+        from sqlalchemy import text
+
         from app.core.database import Database
 
-        database = Database(settings)
+        database = getattr(_app.state, "database", None)
+        owns_database = database is None
+        if owns_database:
+            database = Database(settings)
         try:
             async with database.sessions() as session:
-                await InteligenciaTriadaService(session).resumen_ejecutivo()
+                await session.execute(text("SELECT 1"))
+                pdd = PddDeaService(session)
+                await pdd.catalogo_y_conciliacion_ppi()
+                await pdd.cumplimiento_metas()
+                await pdd.frontera_dea_pdd()
+                await pdd.econometria_comparada_pdd()
+                await pdd.explorador_programas_y_seguridad_humana()
+                await pdd.laboratorio_prescriptivo_pdd()
+                await pdd.resumen_ejecutivo()
+                await pdd.comparativo_seguridad_humana_pdd_only(incluir_detalle=False)
+                inteligencia = InteligenciaTriadaService(session)
+                await inteligencia.patologias_dnp()
+                await inteligencia.continuidad_gobiernos()
+                await inteligencia.radar_transparencia()
+                await inteligencia.alineacion_territorial()
+                await inteligencia.simulador_cierre()
+                await inteligencia.resumen_ejecutivo()
         finally:
-            await database.engine.dispose()
+            if owns_database:
+                await database.engine.dispose()
     yield
 
 
 router = APIRouter(prefix="/compromisos", tags=["Compromisos PAS"], lifespan=_compromisos_lifespan)
+
+
+def _pdd_bind_key(request: Request) -> str:
+    return str(make_url(request.app.state.settings.async_database_url))
+
+
+def _pdd_http_cache_key(request: Request, key: str) -> str:
+    scope = hashlib.sha256(_pdd_bind_key(request).encode()).hexdigest()
+    return f"{scope}/{key}"
+
+
+async def _pdd_payload(request: Request, cache_parts: tuple[str, ...], method: str, **kwargs):
+    key = (_pdd_bind_key(request), *cache_parts)
+    if cached := _cached(key):
+        return cached
+    async with request.app.state.database.sessions() as session:
+        return await getattr(PddDeaService(session), method)(**kwargs)
 
 
 @router.get(
@@ -125,8 +177,33 @@ async def google_workspace_sincronizar_pdd_only(
     "/triada/pdd-dea/seguridad-humana-comparativo",
     summary="Comparación de estructura, PPI y metas PDD por frontalidad y siete dimensiones",
 )
-async def pdd_seguridad_humana_comparativo(session: SessionDependency):
-    return await PddDeaService(session).comparativo_seguridad_humana_pdd_only()
+async def pdd_seguridad_humana_comparativo(
+    request: Request,
+    incluir_detalle: bool = Query(False, description="Incluir arreglos crudos de nodos y metas"),
+):
+    if incluir_detalle:
+        async with request.app.state.database.sessions() as session:
+            payload = await PddDeaService(session).comparativo_seguridad_humana_pdd_only(
+                incluir_detalle=True
+            )
+    else:
+        payload = await _pdd_payload(
+            request,
+            ("pdd-dea", "comparativo-sh", "resumen"),
+            "comparativo_seguridad_humana_pdd_only",
+            incluir_detalle=False,
+        )
+    if not incluir_detalle:
+        return pre_serialized_response(
+            _pdd_http_cache_key(request, "pdd-dea/comparativo-sh/resumen"),
+            payload,
+            request.headers.get("if-none-match"),
+        )
+    return pre_serialized_response(
+        _pdd_http_cache_key(request, "pdd-dea/comparativo-seguridad-humana/detalle"),
+        payload,
+        request.headers.get("if-none-match"),
+    )
 
 
 @router.post(
@@ -745,23 +822,30 @@ async def dea_resumen_integral(session: SessionDependency):
     "/triada/pdd-dea/catalogo-y-conciliacion-ppi",
     summary="Catálogo de planes y conciliación del PPI",
 )
-async def pdd_dea_catalogo(request: Request, session: SessionDependency):
-    payload = await PddDeaService(session).catalogo_y_conciliacion_ppi()
+async def pdd_dea_catalogo(request: Request):
+    payload = await _pdd_payload(request, ("pdd-dea", "catalogo"), "catalogo_y_conciliacion_ppi")
     return pre_serialized_response(
-        "pdd-dea/catalogo", payload, request.headers.get("if-none-match")
+        _pdd_http_cache_key(request, "pdd-dea/catalogo"),
+        payload,
+        request.headers.get("if-none-match"),
     )
 
 
 @router.get("/triada/pdd-dea/cumplimiento-metas", summary="Cumplimiento deduplicado de metas PDD")
 async def pdd_dea_cumplimiento(
     request: Request,
-    session: SessionDependency,
     plan: str | None = Query(None, pattern="^(PDD_2016_2019|PDD_2020_2023|PDD_2024_2027|TODOS)$"),
 ):
-    service = PddDeaService(session)
-    payload = await service.cumplimiento_metas(plan=plan)
+    payload = await _pdd_payload(
+        request,
+        ("pdd-dea", "cumplimiento", plan or "TODOS"),
+        "cumplimiento_metas",
+        plan=plan,
+    )
     key = f"pdd-dea/cumplimiento/{plan or 'TODOS'}"
-    return pre_serialized_response(key, payload, request.headers.get("if-none-match"))
+    return pre_serialized_response(
+        _pdd_http_cache_key(request, key), payload, request.headers.get("if-none-match")
+    )
 
 
 @router.get(
@@ -769,24 +853,32 @@ async def pdd_dea_cumplimiento(
 )
 async def pdd_dea_frontera(
     request: Request,
-    session: SessionDependency,
     plan: str | None = Query(None, pattern="^(PDD_2016_2019|PDD_2020_2023|PDD_2024_2027|TODOS)$"),
     insumo: str = Query("conciliado_ppi", pattern="^(conciliado_ppi|reportado)$"),
 ):
-    service = PddDeaService(session)
-    payload = await service.frontera_dea_pdd(plan=plan, insumo=insumo)
+    payload = await _pdd_payload(
+        request,
+        ("pdd-dea", "frontera", plan or "TODOS", insumo),
+        "frontera_dea_pdd",
+        plan=plan,
+        insumo=insumo,
+    )
     key = f"pdd-dea/frontera/{plan or 'TODOS'}/{insumo}"
-    return pre_serialized_response(key, payload, request.headers.get("if-none-match"))
+    return pre_serialized_response(
+        _pdd_http_cache_key(request, key), payload, request.headers.get("if-none-match")
+    )
 
 
 @router.get(
     "/triada/pdd-dea/econometria-comparada-pdd",
     summary="Comparación econométrica descriptiva entre PDD",
 )
-async def pdd_dea_econometria(request: Request, session: SessionDependency):
-    payload = await PddDeaService(session).econometria_comparada_pdd()
+async def pdd_dea_econometria(request: Request):
+    payload = await _pdd_payload(request, ("pdd-dea", "econometria"), "econometria_comparada_pdd")
     return pre_serialized_response(
-        "pdd-dea/econometria", payload, request.headers.get("if-none-match")
+        _pdd_http_cache_key(request, "pdd-dea/econometria"),
+        payload,
+        request.headers.get("if-none-match"),
     )
 
 
@@ -794,27 +886,43 @@ async def pdd_dea_econometria(request: Request, session: SessionDependency):
     "/triada/pdd-dea/explorador-programas-y-seguridad-humana",
     summary="Explorador oficial de programas y monitor de Seguridad Humana",
 )
-async def pdd_dea_explorador(request: Request, session: SessionDependency):
-    payload = await PddDeaService(session).explorador_programas_y_seguridad_humana()
+async def pdd_dea_explorador(request: Request):
+    payload = await _pdd_payload(
+        request,
+        ("pdd-dea", "explorador"),
+        "explorador_programas_y_seguridad_humana",
+    )
     return pre_serialized_response(
-        "pdd-dea/explorador", payload, request.headers.get("if-none-match")
+        _pdd_http_cache_key(request, "pdd-dea/explorador"),
+        payload,
+        request.headers.get("if-none-match"),
     )
 
 
 @router.get(
     "/triada/pdd-dea/resumen-ejecutivo", summary="Resumen ejecutivo del laboratorio PDD DEA"
 )
-async def pdd_dea_resumen(request: Request, session: SessionDependency):
-    payload = await PddDeaService(session).resumen_ejecutivo()
-    return pre_serialized_response("pdd-dea/resumen", payload, request.headers.get("if-none-match"))
+async def pdd_dea_resumen(request: Request):
+    payload = await _pdd_payload(request, ("pdd-dea", "resumen"), "resumen_ejecutivo")
+    return pre_serialized_response(
+        _pdd_http_cache_key(request, "pdd-dea/resumen"),
+        payload,
+        request.headers.get("if-none-match"),
+    )
 
 
 @router.get(
     "/triada/pdd-dea/laboratorio-prescriptivo",
     summary="Laboratorio prescriptivo PDD con Network DEA, escenarios y trazabilidad",
 )
-async def pdd_dea_laboratorio_prescriptivo(request: Request, session: SessionDependency):
-    payload = await PddDeaService(session).laboratorio_prescriptivo_pdd()
+async def pdd_dea_laboratorio_prescriptivo(request: Request):
+    payload = await _pdd_payload(
+        request,
+        ("pdd-dea", "laboratorio-prescriptivo"),
+        "laboratorio_prescriptivo_pdd",
+    )
     return pre_serialized_response(
-        "pdd-dea/laboratorio-prescriptivo", payload, request.headers.get("if-none-match")
+        _pdd_http_cache_key(request, "pdd-dea/laboratorio-prescriptivo"),
+        payload,
+        request.headers.get("if-none-match"),
     )

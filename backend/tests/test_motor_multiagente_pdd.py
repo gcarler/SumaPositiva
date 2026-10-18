@@ -60,6 +60,60 @@ def test_rutas_multiagente_publican_estado_y_cruce(monkeypatch):
     assert cross_response.json()["matriz_trazabilidad_pa_bpim"]
 
 
+def test_comparativo_http_es_compacto_por_defecto_y_detalle_optativo(monkeypatch):
+    from fastapi.testclient import TestClient
+
+    from app.core.config import Settings
+    from app.main import create_app
+    from app.modules.compromisos import pdd_dea_service
+    from app.modules.compromisos import router as router_module
+
+    async def fake_comparativo(self, *, incluir_detalle=True):
+        plan = {
+            "nodos_total": 4,
+            "metas_pdd_unicas": 7,
+            "nodos_por_frontalidad": {"A": 1, "B": 1, "C": 1, "N": 1},
+            "porcentaje_a_b_sobre_ppi": 51.5,
+        }
+        payload = {"planes_pdd": [plan.copy()], "anexo_pdl": []}
+        if incluir_detalle:
+            payload["nodos"] = [{"id": "node"}]
+            payload["metas"] = [{"id": "goal"}]
+            payload["planes_pdd"][0].update({"nodos": payload["nodos"], "metas": payload["metas"]})
+        return payload
+
+    monkeypatch.setattr(
+        router_module.PddDeaService,
+        "comparativo_seguridad_humana_pdd_only",
+        fake_comparativo,
+    )
+    pdd_dea_service._RAW_JSON_BYTES.clear()
+    monkeypatch.setattr(router_module, "_cached", lambda _key: None)
+
+    with TestClient(create_app(Settings(_env_file=None, environment="test"))) as client:
+        compact = client.get("/api/v1/compromisos/triada/pdd-dea/seguridad-humana-comparativo")
+        detailed = client.get(
+            "/api/v1/compromisos/triada/pdd-dea/seguridad-humana-comparativo?incluir_detalle=true"
+        )
+
+    assert compact.status_code == 200
+    assert len(compact.content) < 300_000
+    summary = compact.json()
+    assert "nodos" not in summary
+    assert "metas" not in summary
+    assert summary["planes_pdd"]
+    for plan in summary["planes_pdd"]:
+        assert "nodos" not in plan
+        assert "metas" not in plan
+        assert "nodos_total" in plan
+        assert "metas_pdd_unicas" in plan
+        assert set(plan["nodos_por_frontalidad"]) == {"A", "B", "C", "N"}
+        assert "porcentaje_a_b_sobre_ppi" in plan
+    assert detailed.status_code == 200
+    assert isinstance(detailed.json().get("nodos"), list)
+    assert isinstance(detailed.json().get("metas"), list)
+
+
 def test_page_chunks_recupera_paginas_ocr_y_delimitadores_de_conversion():
     source = """--- PAGINA 1 ---\ntexto uno\n
 ## Página 2 (OCR Oficial Acuerdo 006 de 2016)\ntexto dos\n

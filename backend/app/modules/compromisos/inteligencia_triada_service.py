@@ -3,11 +3,16 @@
 from __future__ import annotations
 
 import asyncio
+import hashlib
+import json
+import os
 import re
+import tempfile
 import time
 import unicodedata
 from collections import Counter, defaultdict
 from functools import wraps
+from pathlib import Path
 from typing import Any
 
 from sqlalchemy import func, select
@@ -23,6 +28,18 @@ _NON_WORD = re.compile(r"[^a-z0-9]+")
 _CACHE: dict[str, tuple[float, list[dict[str, Any]], list[dict[str, Any]]]] = {}
 _LOCKS: dict[str, asyncio.Lock] = {}
 _RESULTS: dict[tuple[Any, ...], tuple[float, Any]] = {}
+BASE_DIR = Path(__file__).resolve().parents[4] / "data" / "planes_desarrollo"
+CACHE_INTELIGENCIA = BASE_DIR / "cache_inteligencia_triada_6m.json"
+_DISK_RESULTS: dict[str, Any] | None = None
+_DISK_RESULT_LOCK = asyncio.Lock()
+_PERSISTED_METHODS = {
+    "patologias_dnp",
+    "continuidad_gobiernos",
+    "radar_transparencia",
+    "alineacion_territorial",
+    "simulador_cierre",
+    "resumen_ejecutivo",
+}
 _CLON_JSON = ArchivoPlanIngerido.metadatos["alerta_calidad"].astext
 _CAMPOS = (
     "id",
@@ -228,11 +245,85 @@ def _cache_result(method):
         cached = _RESULTS.get(key)
         if cached and time.monotonic() - cached[0] < _TTL:
             return cached[1]
+        persistent_key = None
+        if method.__name__ in _PERSISTED_METHODS and _uses_default_arguments(
+            method, self, args, kwargs
+        ):
+            persistent_key = "/".join(
+                (
+                    hashlib.sha256(self._cache_key.encode()).hexdigest(),
+                    method.__name__,
+                )
+            )
+            value = await _read_persisted_result(persistent_key)
+            if value is not None:
+                _RESULTS[key] = (time.monotonic(), value)
+                return value
         value = await method(self, *args, **kwargs)
         _RESULTS[key] = (time.monotonic(), value)
+        if persistent_key:
+            await _store_persisted_result(persistent_key, value)
         return value
 
     return wrapped
+
+
+def _uses_default_arguments(method, self, args, kwargs) -> bool:
+    import inspect
+
+    signature = inspect.signature(method)
+    bound = signature.bind(self, *args, **kwargs)
+    bound.apply_defaults()
+    return all(
+        value == signature.parameters[name].default
+        for name, value in bound.arguments.items()
+        if name != "self" and signature.parameters[name].default is not inspect.Parameter.empty
+    )
+
+
+async def _read_persisted_result(key: str) -> Any:
+    global _DISK_RESULTS
+    async with _DISK_RESULT_LOCK:
+        if _DISK_RESULTS is None:
+            try:
+                content = json.loads(CACHE_INTELIGENCIA.read_text(encoding="utf-8"))
+                _DISK_RESULTS = content.get("entries", {}) if content.get("version") == 1 else {}
+            except (OSError, ValueError, TypeError):
+                _DISK_RESULTS = {}
+        entry = _DISK_RESULTS.get(key)
+        return entry.get("payload") if entry else None
+
+
+async def _store_persisted_result(key: str, value: Any) -> None:
+    global _DISK_RESULTS
+    async with _DISK_RESULT_LOCK:
+        if _DISK_RESULTS is None:
+            try:
+                content = json.loads(CACHE_INTELIGENCIA.read_text(encoding="utf-8"))
+                _DISK_RESULTS = content.get("entries", {}) if content.get("version") == 1 else {}
+            except (OSError, ValueError, TypeError):
+                _DISK_RESULTS = {}
+        _DISK_RESULTS[key] = {"payload": value, "stored_at": time.time()}
+        try:
+            CACHE_INTELIGENCIA.parent.mkdir(parents=True, exist_ok=True)
+            fd, temporary = tempfile.mkstemp(
+                prefix="polis-inteligencia-", dir=str(CACHE_INTELIGENCIA.parent)
+            )
+            try:
+                with os.fdopen(fd, "w", encoding="utf-8") as target:
+                    json.dump(
+                        {"version": 1, "entries": _DISK_RESULTS},
+                        target,
+                        ensure_ascii=False,
+                        separators=(",", ":"),
+                        default=str,
+                    )
+                os.replace(temporary, CACHE_INTELIGENCIA)
+            finally:
+                if os.path.exists(temporary):
+                    os.unlink(temporary)
+        except OSError:
+            return
 
 
 def _visible(

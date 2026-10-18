@@ -96,3 +96,4 @@ backend/.secrets/
 geodatos_cartagena/*.zip
 .archify/
 data/planes_accion/drive_sector_seguridad/archivos_pdf/
+data/planes_desarrollo/cache_pdd_dea_v11.json

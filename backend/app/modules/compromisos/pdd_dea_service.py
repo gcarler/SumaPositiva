@@ -11,7 +11,7 @@ import os
 import re
 import tempfile
 import time
-from collections import defaultdict
+from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any
 
@@ -50,7 +50,8 @@ DIMENSIONES_SH = (
     "Seguridad Ambiental",
     "Seguridad Política",
 )
-CACHE_V11 = Path("/tmp/polis_pdd_dea_cache_v11.json")
+_LEGACY_CACHE_V11 = Path("/tmp/polis_pdd_dea_cache_v11.json")
+CACHE_V11 = BASE_DIR / "cache_pdd_dea_v11.json"
 # Backwards-compatible alias used by older tests and local operators.
 CACHE_V10 = CACHE_V11
 _DISK_CACHE: dict[str, dict[str, Any]] | None = None
@@ -216,7 +217,8 @@ _LOCKS: dict[str, asyncio.Lock] = {}
 
 
 def _disk_key(key: tuple[Any, ...]) -> str:
-    return "/".join(str(part) for part in key[1:])
+    scope = hashlib.sha256(str(key[0]).encode()).hexdigest() if key else "global"
+    return "/".join((scope, *(str(part) for part in key[1:])))
 
 
 def _json_safe(value: Any) -> Any:
@@ -248,7 +250,8 @@ def _read_disk_cache() -> dict[str, dict[str, Any]]:
     global _DISK_CACHE
     if _DISK_CACHE is None:
         try:
-            payload = json.loads(CACHE_V11.read_text(encoding="utf-8"))
+            cache_path = CACHE_V11 if CACHE_V11.is_file() else _LEGACY_CACHE_V11
+            payload = json.loads(cache_path.read_text(encoding="utf-8"))
             if payload.get("version") == 11:
                 _DISK_CACHE = payload.get("payloads", {})
                 for key, item in payload.get("raw_json", {}).items():
@@ -264,17 +267,25 @@ def _read_disk_cache() -> dict[str, dict[str, Any]]:
 
 
 def _write_disk_cache() -> None:
-    CACHE_V11.parent.mkdir(parents=True, exist_ok=True)
     raw_json = {
         key: {"body_b64": base64.b64encode(raw).decode("ascii"), "etag": etag}
         for key, (raw, etag) in _RAW_JSON_BYTES.items()
     }
     payload = {"version": 11, "payloads": _DISK_CACHE or {}, "raw_json": raw_json}
-    fd, temporary = tempfile.mkstemp(prefix="polis-pdd-dea-v11-", dir=str(CACHE_V11.parent))
+    cache_path = CACHE_V11
+    try:
+        cache_path.parent.mkdir(parents=True, exist_ok=True)
+        _atomic_write_cache(cache_path, payload)
+    except OSError:
+        _atomic_write_cache(_LEGACY_CACHE_V11, payload)
+
+
+def _atomic_write_cache(cache_path: Path, payload: dict[str, Any]) -> None:
+    fd, temporary = tempfile.mkstemp(prefix="polis-pdd-dea-v11-", dir=str(cache_path.parent))
     try:
         with os.fdopen(fd, "w", encoding="utf-8") as target:
             json.dump(payload, target, ensure_ascii=False, separators=(",", ":"), default=str)
-        os.replace(temporary, CACHE_V11)
+        os.replace(temporary, cache_path)
     finally:
         if os.path.exists(temporary):
             os.unlink(temporary)
@@ -1112,8 +1123,14 @@ class PddDeaService:
             },
         )
 
-    async def comparativo_seguridad_humana_pdd_only(self) -> dict[str, Any]:
+    async def comparativo_seguridad_humana_pdd_only(
+        self, *, incluir_detalle: bool = True
+    ) -> dict[str, Any]:
         """Read the reconstructed catalog for the PDD-only report and export."""
+        summary_key = (self.bind_key, "pdd-dea", "comparativo-sh", "resumen")
+        if not incluir_detalle:
+            if cached := _cached(summary_key):
+                return cached
         plans_rows = (
             (
                 await self.session.execute(
@@ -1309,20 +1326,15 @@ class PddDeaService:
                         seven_d[dimension] += constant * float(weights.get(dimension, 0))
             assigned_current = sum(value[0] for value in allocations.values())
             assigned_constant = sum(value[1] for value in allocations.values())
-            residual_constant = max(
-                0.0, plan["ppi_total_constante_2025_cop"] - assigned_constant
-            )
-            residual_current = max(
-                0.0, plan["ppi_total_corriente_cop"] - assigned_current
-            )
+            residual_constant = max(0.0, plan["ppi_total_constante_2025_cop"] - assigned_constant)
+            residual_current = max(0.0, plan["ppi_total_corriente_cop"] - assigned_current)
             budget["N_NO_ASOCIADO_FUNCIONAMIENTO"] += residual_constant
             assignable = assigned_constant + residual_constant
             unique_goals = [goal for goal in plan["metas"] if goal["unica"]]
             plan["metas"] = unique_goals
             plan["metas_unicas"] = len(unique_goals)
             plan["metas_resultado"] = sum(
-                goal["tipo_meta"] in {"RESULTADO", "BIENESTAR"}
-                for goal in unique_goals
+                goal["tipo_meta"] in {"RESULTADO", "BIENESTAR"} for goal in unique_goals
             )
             plan["metas_producto"] = sum(goal["tipo_meta"] == "PRODUCTO" for goal in unique_goals)
             plan["metas_objetivo_estructural"] = sum(
@@ -1342,6 +1354,29 @@ class PddDeaService:
                 dimension: sum(float(goal["pesos_7d"].get(dimension, 0)) for goal in unique_goals)
                 for dimension in DIMENSIONES_SH
             }
+            grade_counts = Counter(
+                str(node["grado_frontalidad_sh"])[0]
+                for node in plan["nodos"]
+                if str(node["grado_frontalidad_sh"])[0] in {"A", "B", "C", "N"}
+            )
+            plan["total_nodos"] = plan["nodos_total"]
+            plan["metas_pdd"] = len(unique_goals)
+            plan["total_metas"] = len(unique_goals)
+            plan["metas_pdd_unicas"] = len(unique_goals)
+            plan["nodos_por_frontalidad"] = {
+                grade: grade_counts.get(grade, 0) for grade in ("A", "B", "C", "N")
+            }
+            ppi_total = plan["ppi_total_constante_2025_cop"]
+            plan["porcentaje_a_b_sobre_ppi"] = (
+                round(
+                    100
+                    * sum(budget[grade] for grade in ("A_NUCLEO_FRONTAL", "B_DETERMINANTE_DIRECTO"))
+                    / ppi_total,
+                    2,
+                )
+                if ppi_total
+                else 0.0
+            )
         pdd = sorted(
             (plan for code, plan in plans.items() if code.startswith("PDD_")),
             key=lambda item: item["codigo_plan"],
@@ -1350,7 +1385,7 @@ class PddDeaService:
             (plan for code, plan in plans.items() if code.startswith("PDL_")),
             key=lambda item: item["codigo_plan"],
         )
-        return {
+        payload = {
             "alcance": (
                 "PDD-Only; planes de acción y resultados de mesas fuera del conjunto analítico"
             ),
@@ -1359,6 +1394,7 @@ class PddDeaService:
             "planes_pdd": pdd,
             "anexo_pdl": pdl,
             "nodos": [node for plan in plans.values() for node in plan["nodos"]],
+            "metas": [goal for plan in plans.values() for goal in plan["metas"]],
             "conciliacion": {
                 code: {
                     "ppi_plan_corriente_cop": plan["ppi_total_corriente_cop"],
@@ -1371,6 +1407,14 @@ class PddDeaService:
                 for code, plan in plans.items()
             },
         }
+        if incluir_detalle:
+            return payload
+        for plan in (*payload["planes_pdd"], *payload["anexo_pdl"]):
+            plan.pop("nodos", None)
+            plan.pop("metas", None)
+        payload.pop("nodos", None)
+        payload.pop("metas", None)
+        return _store(summary_key, payload)
 
     @staticmethod
     def _plan_ppi_nominal(plan: str) -> float | None:

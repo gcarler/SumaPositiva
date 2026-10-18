@@ -969,3 +969,18 @@ Los tres PDL se mantienen fuera del denominador PDD; los importes de inversión 
 - La consulta en vivo respondió HTTP 200. La BD produjo 1.573 nodos únicos (A/B/C/N: 137/186/1.209/41), 4.236 metas PDD y 401 PDL, 181 actividades, 35 entidades y registros trazables. Estas cifras son conteos reales del snapshot consultado, no una certificación de los valores esperados en la orden.
 - `ruff check` en los tres archivos Python modificados: PASS. Suite solicitada (`test_motor_multiagente_pdd.py`, `test_pdd_seguridad_humana_16.py`, `test_access_policy.py`): completó al 100% con PostgreSQL local. Se agregó cobertura HTTP de ambos endpoints y paridad de matriz.
 - `polis-backend.service` se reinició y quedó activo; los GET de estado y cruce fueron comprobados en `127.0.0.1:8000`. No se hizo `git push`.
+
+## Entrega [OPTIMIZACION-MOTORES-PDD-19A] — 18/10/2026
+
+### Cachés durables y optimización
+
+- `PddDeaService` persiste los resultados por defecto de sus siete motores en `data/planes_desarrollo/cache_pdd_dea_v11.json`, con escritura atómica, lectura del formato legado y fallback a `/tmp` si falla la escritura durable. Las claves incluyen un hash del ámbito de base de datos para evitar mezclar entornos o guardar credenciales. El archivo precalentado tiene ~54 MB e incluye JSON serializado para respuestas rápidas.
+- `InteligenciaTriadaService` persiste los seis resultados por defecto en `data/planes_desarrollo/cache_inteligencia_triada_6m.json` (~236 KB), con carga por worker y actualización atómica. Se ejecutó el precalentamiento contra la BD configurada.
+- El comparativo de Seguridad Humana usa respuesta compacta por defecto en HTTP, con detalle optativo mediante `?incluir_detalle=true`. La llamada directa Python conserva `incluir_detalle=True`. El payload compacto verificado pesa 15.454 bytes; cada plan expone los conteos resumidos solicitados.
+
+### Verificación
+
+- `ruff check` sobre los cinco archivos Python modificados: **PASS**.
+- Suite focalizada (`test_motor_multiagente_pdd.py`, `test_pdd_seguridad_humana_16.py`, `test_pdd_dea_triada.py`, `test_access_policy.py`): **147 passed**.
+- `polis-backend.service` se reinició y quedó `active`. Después del reinicio, los siete endpoints PDD, el comparativo compacto y el resumen de Inteligencia respondieron HTTP 200. Tiempos observados: cumplimiento 7,9 ms; econometría 5,2 ms; explorador 21,5 ms; resumen PDD 28,0 ms; laboratorio 9,9 ms; comparativo compacto 5,7 ms; resumen Inteligencia 12,6 ms. Las primeras peticiones atendidas por cada worker midieron ~521 ms y ~518 ms durante la inicialización del worker; las peticiones siguientes quedaron por debajo de 100 ms. El cache de resultados se cargó antes de aceptar tráfico, pero ese costo de arranque HTTP por worker sigue visible en la primera petición.
+- No se modificó `src/**`. La orden de entrada `bridge/01_tarea_codex.md` permanece fuera del commit. Commit local en `main`; sin push.

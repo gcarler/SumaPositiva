@@ -1,64 +1,55 @@
-# ORDEN DE EJECUCIÓN: `[SISTEMA-MULTIAGENTE-CRUCE-PA-BPIM-18A]`
+# ORDEN DE EJECUCIÓN: `[OPTIMIZACION-MOTORES-PDD-19A]`
 
 **Agente Asignado:** `codex` (`=codex:0.0`)
-**Rol:** Arquitecto Backend del Sistema Multi-Agente PDD/PDL, Planes de Acción y Articulación BPIM/MGA
+**Rol:** Arquitecto Backend de Rendimiento y Motores de Planeación PDD/PDL
 **Coordinador y Auditor Forense EAF:** `agy` (`=agy:0.0`)
 **Rama:** `main` (Única rama autorizada. Política **Zero-Push**: commit local únicamente).
-**Ámbito Exclusivo:** `backend/**`, `data/planes_desarrollo/estado_sistema_multiagente_pdd.json`, `docs/permisos-api.md` y `bridge/02_entrega_codex.md`.
-**Aislamiento Estricto:** **PROHIBIDO tocar `src/**` o `bridge/01_tarea_activa.md` / `bridge/02_resultado_agy2.md`** (ámbito exclusivo de `agy2`).
+**Ámbito Exclusivo:** `backend/app/modules/compromisos/**`, `backend/tests/**`, `data/planes_desarrollo/**` y `bridge/02_entrega_codex.md`.
+**Aislamiento Estricto:** **PROHIBIDO tocar `src/**`**.
 
 ---
 
-## 1. Contexto y Hallazgo Forense Inicial
+## 1. Diagnóstico de Rendimiento Detectado en Vivo
 
-1. En la entrega `[17]` construiste `backend/app/modules/compromisos/motor_multiagente_pdd.py`, persistiendo en `bd_csh` **2.732+ evidencias**, **1.524 nodos**, **2.228 metas PDD (`2012–2027`)** y **401 metas PDL (`2024–2027`)** con clasificación `A/B/C/N` y `7 Dimensiones de Seguridad Humana`.
-2. **Hallazgo crítico tras reinicio del servidor:** `STATE_PATH` fue definido en `/tmp/polis_pdd_multiagente_17_state.json` (línea 26 de `motor_multiagente_pdd.py`). Al reiniciarse el sistema operativo, `/tmp` se limpió y el endpoint `GET /api/v1/compromisos/triada/pdd-dea/estado-sistema-multiagente` empezó a responder `{"estado":"SIN_EJECUCIONES","run_id":null,"auditoria_agentes":[]}` a pesar de que toda la data está persistida en PostgreSQL (`bd_csh`).
-3. **Objetivo de la Fase 18A:**
-   - Garantizar **persistencia durable e hidratación automática desde `bd_csh`** del estado del sistema multiagente.
-   - Incorporar el **6.º Agente (`AgenteArticulacionPlanAccionBPIM`)** y su endpoint REST para cruzar de extremo a extremo el catálogo multiagente PDD/PDL (`2.228` metas PDD + `401` metas PDL, grados `A` y `B`) con el **Motor Operativo de Planes de Acción (29 entidades distritales)** y la estructuración **BPIM / Catálogo de Productos MGA-DNP**.
+Al perfilar en vivo los **7 motores de análisis de Planes de Desarrollo** en `http://127.0.0.1:8000`, encontramos 3 cuellos de botella tras el crecimiento de la BD a `4.236` metas PDD, `1.573` nodos y `7.640+` registros de la tríada:
+
+1. **`PddDeaService._state()` y `CACHE_V11` en `/tmp` (`pdd_dea_service.py` línea 53):**
+   - `CACHE_V11 = Path("/tmp/polis_pdd_dea_cache_v11.json")` se borra en cada reinicio del servidor.
+   - En frío, `PddDeaService._state()` tarda **`30.68 s`**, provocando que la primera llamada a `GET /api/v1/compromisos/triada/pdd-dea/resumen-ejecutivo` sufra timeout (`> 30 s`). Una vez en caché, tarda `0.00 s`.
+2. **`InteligenciaTriadaService._snapshot()` y `resumen_ejecutivo()` sin caché en disco (`inteligencia_triada_service.py`):**
+   - `_CACHE` y `_RESULTS` viven solo en RAM por worker. En frío tras reiniciar `uvicorn`, `_snapshot()` tarda `13.38 s` y la suma de `patologias_dnp` (`1.43 s`) + `continuidad_gobiernos` (`4.20 s`) + `radar_transparencia` (`1.91 s`) + `alineacion_territorial` (`5.30 s`) + `simulador_cierre` (`0.38 s`) lleva `GET /api/v1/compromisos/triada/inteligencia/resumen-ejecutivo` a **`26.60 s`** por worker.
+3. **Payload de `14,77 MB` en `GET /api/v1/compromisos/triada/pdd-dea/seguridad-humana-comparativo` (`pdd_dea_service.py` línea 1115):**
+   - `comparativo_seguridad_humana_pdd_only()` devuelve en cada petición HTTP los arreglos completos `nodos` (`1.573` objetos completos) y `metas` (`4.637` objetos completos) tanto en la raíz como dentro de cada plan, generando un JSON de **`14,77 MB`** (`1.13 s` de serialización en cada llamada, sin usar `_cached`/`_store`), y además en cada elemento de `planes_pdd` no incluye el conteo directo `metas_pdd_unicas` ni `nodos_por_frontalidad`.
 
 ---
 
 ## 2. Entregables Técnicos Obligatorios
 
-### Entregable 1 — Estado Durable e Hidratación Automática desde PostgreSQL (`motor_multiagente_pdd.py`)
-1. Cambiar `STATE_PATH` de `/tmp/polis_pdd_multiagente_17_state.json` a una ruta durable en el repositorio:
-   `DATA_DIR / "estado_sistema_multiagente_pdd.json"` (`/root/polis/data/planes_desarrollo/estado_sistema_multiagente_pdd.json`).
-2. Hacer que `obtener_estado_sistema_multiagente_pdd()` soporte reconstrucción/hidratación automática desde `bd_csh` cuando el archivo de estado no exista o tenga `"estado": "SIN_EJECUCIONES"` (sin disparar llamadas externas lentas a Google Workspace ni re-OCRizar PDFs, sino leyendo la evidencia ya persistida en `seguimiento.pdd_evidencia_paginas`, `seguimiento.pdd_nodos`, `seguimiento.pdd_metas`, `seguimiento.actividades_plan_accion` via `_auditar_bd()`), poblando:
-   - `estado: "COMPLETADO"`
-   - `catalogo`: conteos reales de páginas persistidas, nodos (`1.524`), metas PDD (`2.228`), metas PDL (`401`) y cobertura por archivo PDF.
-   - `puertas`: `A_ABSORCION_DOCUMENTAL`, `B_RECONSTRUCCION_MGA`, `C_CLASIFICACION_SH`, `D_CONCILIACION_PPI`, `E_ESTRATEGIA_PUBLICACION` y la nueva `F_CRUCE_PA_BPIM`, todas con su dictamen y métricas reales verificadas en BD.
-   - `auditoria_agentes`: bitácora completa de los 6 agentes especializados.
-3. Generar y dejar persistido `/root/polis/data/planes_desarrollo/estado_sistema_multiagente_pdd.json` y verificar que `GET /api/v1/compromisos/triada/pdd-dea/estado-sistema-multiagente` devuelva HTTP 200 con `estado == "COMPLETADO"` y todas las puertas aprobadas.
+### Entregable 1 — Caché Durable de `PddDeaService` fuera de `/tmp` (`pdd_dea_service.py`)
+1. Mover `CACHE_V11` de `/tmp/polis_pdd_dea_cache_v11.json` a una ruta durable en el proyecto:
+   `BASE_DIR / "cache_pdd_dea_v11.json"` (con fallback seguro a `/tmp` solo si ocurriera `OSError`).
+2. Asegurar que todos los endpoints de `pdd-dea` (`catalogo_y_conciliacion_ppi`, `cumplimiento_metas`, `frontera_dea_pdd`, `econometria_comparada_pdd`, `explorador_programas_y_seguridad_humana`, `laboratorio_prescriptivo_pdd` y `resumen_ejecutivo`) queden pre-calculados y almacenados en `BASE_DIR / "cache_pdd_dea_v11.json"`, de modo que tras cualquier reinicio de `polis-backend.service`, la primera petición a cualquiera de ellos responda en **`< 100 ms`**.
 
-### Entregable 2 — `AgenteArticulacionPlanAccionBPIM` y Endpoint `GET /api/v1/compromisos/triada/pdd-dea/cruce-multiagente-pa-bpim`
-1. Implementar en `backend/app/modules/compromisos/motor_multiagente_pdd.py` (y exponer en `router.py`) el **6.º Agente: `AgenteArticulacionPlanAccionBPIM`** junto con la puerta `F_CRUCE_PA_BPIM`.
-2. Este agente y el nuevo endpoint `GET /api/v1/compromisos/triada/pdd-dea/cruce-multiagente-pa-bpim` deben realizar el cruce determinístico entre:
-   - Los nodos y metas de los **5 PDD (`2012–2027`) y 3 PDL (`2024–2027`)** —con énfasis en el PDD vigente `2024–2027` y grados de frontalidad `A` (Núcleo Frontal) y `B` (Determinante Multidimensional)—.
-   - Las actividades operativas del **Motor de Planes de Acción (`seguimiento.actividades_plan_accion`)** y los registros normalizados de las **29 entidades distritales** (`seguimiento.registros_triada_normalizados`).
-   - La cadena de valor **MGA-DNP / código BPIM** (vinculación con programas/subprogramas, productos MGA, dependencia responsable y ponderación en las 7 dimensiones de Seguridad Humana).
-3. El payload de `GET /api/v1/compromisos/triada/pdd-dea/cruce-multiagente-pa-bpim` debe incluir:
-   - `resumen_ejecutivo`:
-     - `total_nodos_pdd_pdl`: conteo total (`1.524`), desglosado por `A`, `B`, `C`, `N`.
-     - `total_metas_pdd`: `2.228`, `total_metas_pdl`: `401`.
-     - `total_actividades_pa`: conteo en `seguimiento.actividades_plan_accion` y entidades activas (`29`).
-     - `cobertura_articulacion_vigente_2024_2027`: metas y programas `A` y `B` del PDD 2024–2027 articulados con Planes de Acción vs. brechas operativas pendientes de articulación.
-   - `articulacion_por_dimension_sh`: arreglo con las **7 Dimensiones de Seguridad Humana** (`Personal`, `Comunitaria`, `Económica`, `Alimentaria`, `Salud`, `Ambiental`, `Política`), mostrando para cada una: nodos `A+B`, presupuesto PPI constante asignado, número de actividades de Plan de Acción vinculadas, avance físico promedio y entidades líderes.
-   - `articulacion_por_entidad`: resumen de las entidades distritales con su carga de actividades PA, metas PDD asociadas, productos MGA/BPIM y grado de frontalidad predominante (`A` o `B`).
-   - `matriz_trazabilidad_pa_bpim`: lista estructurada de registros trazables (`codigo_plan`, `codigo_nodo`, `nombre_programa`, `grado_frontalidad`, `dimension_sh_principal`, `meta_pdd`, `actividad_pa_id`, `descripcion_actividad_pa`, `dependencia_responsable`, `codigo_bpim_sugerido`, `producto_mga_dnp`, `avance_fisico_pct`, `estado_articulacion`).
-   - `puerta_f`: estado de validación `APROBADA` con invariantes verificados.
-4. Registrar la nueva ruta `GET /api/v1/compromisos/triada/pdd-dea/cruce-multiagente-pa-bpim` en `docs/permisos-api.md` para mantener la paridad estricta en `test_access_policy.py`.
+### Entregable 2 — Caché Durable en Disco para `InteligenciaTriadaService` (`inteligencia_triada_service.py`)
+1. Añadir persistencia en disco en `BASE_DIR / "cache_inteligencia_triada_6m.json"` para las respuestas por defecto de `InteligenciaTriadaService` (`patologias_dnp`, `continuidad_gobiernos`, `radar_transparencia`, `alineacion_territorial`, `simulador_cierre` y `resumen_ejecutivo`), cargándola automáticamente en memoria al iniciar o al primer acceso de cada worker de `uvicorn`.
+2. Pre-calentar y guardar `BASE_DIR / "cache_inteligencia_triada_6m.json"` para que `GET /api/v1/compromisos/triada/inteligencia/resumen-ejecutivo` responda en **`< 100 ms`** incluso recién reiniciado `polis-backend.service`.
 
-### Entregable 3 — Pruebas Automatizadas, Reinicio Limpio y Protocolo de Notificación
-1. Añadir pruebas en `backend/tests/test_motor_multiagente_pdd.py` que validen:
-   - Que `GET /api/v1/compromisos/triada/pdd-dea/estado-sistema-multiagente` retorna `estado == "COMPLETADO"` con las 6 puertas (`A` a `F`) y nunca `SIN_EJECUCIONES` cuando la BD está poblada.
-   - Que `GET /api/v1/compromisos/triada/pdd-dea/cruce-multiagente-pa-bpim` retorna HTTP 200 con las 7 dimensiones de Seguridad Humana, las entidades distritales y la matriz de trazabilidad PA/BPIM.
+### Entregable 3 — Optimización y Compactación de `seguridad-humana-comparativo` (`pdd_dea_service.py` y `router.py`)
+1. En `comparativo_seguridad_humana_pdd_only(self, *, incluir_detalle: bool = True)` y en la ruta HTTP `GET /api/v1/compromisos/triada/pdd-dea/seguridad-humana-comparativo`:
+   - Agregar en la ruta HTTP el query param `incluir_detalle: bool = Query(False, description="Incluir arreglos crudos de nodos y metas")` (nota: en el método Python `comparativo_seguridad_humana_pdd_only(self, *, incluir_detalle: bool = True)` mantén el default `True` cuando se llama directamente desde Python/tests/GoogleWorkspaceSyncService para preservar 100% compatibilidad hacia atrás con `test_pdd_seguridad_humana_16.py`, pero desde el endpoint HTTP en `router.py` pasa `incluir_detalle=incluir_detalle` cuyo default de Query sea `False`).
+   - En cada plan de `planes_pdd`, incluir siempre los conteos resumidos explícitos: `nodos_total`, `total_nodos`, `metas_pdd`, `total_metas`, `metas_pdd_unicas`, `nodos_por_frontalidad` (`{"A": ..., "B": ..., "C": ..., "N": ...}`) y `porcentaje_a_b_sobre_ppi`.
+   - Cuando `incluir_detalle=False`, omitir los arreglos pesados `nodos` y `metas` (tanto en el nivel raíz como dentro de cada plan de `planes_pdd` y `anexo_pdl`) y cachear la respuesta con `_cached`/`_store` + `pre_serialized_response`, reduciendo el tamaño HTTP por defecto de `14,77 MB` a **`< 150 KB`** y la latencia a **`< 50 ms`**.
+   - Cuando `incluir_detalle=True`, devolver el payload completo con `nodos` y `metas`.
+
+### Entregable 4 — Pruebas, Precalentamiento y Notificación
+1. Añadir pruebas en `backend/tests/test_motor_multiagente_pdd.py` verificando:
+   - Que `GET /api/v1/compromisos/triada/pdd-dea/seguridad-humana-comparativo` (default `incluir_detalle=false`) responde HTTP 200, pesa `< 300 KB` y cada plan en `planes_pdd` trae `nodos_total`, `metas_pdd_unicas`, `nodos_por_frontalidad` y `porcentaje_a_b_sobre_ppi`.
+   - Que `GET /api/v1/compromisos/triada/pdd-dea/seguridad-humana-comparativo?incluir_detalle=true` incluye las listas completas `nodos` y `metas`.
 2. Ejecutar y aprobar:
    - `/root/polis/backend/.venv/bin/ruff check` sobre los archivos modificados.
-   - `/root/polis/backend/.venv/bin/pytest backend/tests/test_motor_multiagente_pdd.py backend/tests/test_pdd_seguridad_humana_16.py backend/tests/test_access_policy.py`
-3. Reiniciar o verificar `polis-backend.service` para que los endpoints queden respondiendo en vivo en `http://127.0.0.1:8000`.
-4. Documentar el reporte de entrega en `/root/polis/bridge/02_entrega_codex.md` (sección `## Entrega [SISTEMA-MULTIAGENTE-CRUCE-PA-BPIM-18A] — 17/10/2026`).
-5. **Notificación obligatoria a `agy`:** Al terminar tu entrega y tu commit local en `main` (sin `git push`), envía un mensaje directo a la sesión `agy` en `tmux` ejecutando:
+   - `/root/polis/backend/.venv/bin/pytest backend/tests/test_motor_multiagente_pdd.py backend/tests/test_pdd_seguridad_humana_16.py backend/tests/test_pdd_dea_triada.py backend/tests/test_access_policy.py`
+3. Generar/actualizar los archivos de caché durables en `data/planes_desarrollo/`, reiniciar `polis-backend.service` y comprobar con `curl` que los **7 endpoints** responden HTTP 200 en **`< 0.25 s`** cada uno.
+4. Registrar la entrega en `bridge/02_entrega_codex.md`, hacer commit local en `main` (sin `git push`) y notificar por `tmux` a `=agy:0.0`:
    ```bash
-   tmux send-keys -t =agy:0.0 "CODEX LISTO [18A]: Estado durable multiagente + Agente 6 Cruce PDD/PDL-PA-BPIM completado y probado. Solicito auditoria EAF." Enter
+   tmux send-keys -t =agy:0.0 "CODEX LISTO [19A]: Optimizacion y cache durable de los 7 motores PDD completada (<200ms). Solicito auditoria EAF." Enter
    ```
