@@ -5,6 +5,7 @@ seguimiento.pdt_ai_checkpoints_hitl) y del endpoint /historial-auditoria [Fase 2
 from __future__ import annotations
 
 import asyncio
+import uuid
 from typing import Any
 
 from fastapi import FastAPI
@@ -18,8 +19,10 @@ from app.core.database import get_session
 from app.modules.compromisos.pdt_persistencia_pg import (
     asegurar_tablas_pdt_ai_pg,
     guardar_evaluacion_pdt_pg,
+    listar_dictamenes_hallazgos_pdt_pg,
     obtener_historial_auditoria_pdt_pg,
     registrar_checkpoint_hitl_pdt_pg,
+    registrar_dictamen_hallazgo_pdt_pg,
     sincronizar_cache_y_checkpoints_a_pg,
 )
 from app.modules.compromisos.router import router as compromisos_router
@@ -31,6 +34,20 @@ def _bd_csh_url() -> str:
         .set(database="bd_csh")
         .render_as_string(hide_password=False)
     )
+
+
+async def _delete_hallazgo_for_test(hallazgo_id: str) -> None:
+    engine = create_async_engine(_bd_csh_url(), pool_pre_ping=True)
+    sessions = async_sessionmaker(engine, expire_on_commit=False)
+    try:
+        async with sessions() as session:
+            await session.execute(
+                text("DELETE FROM seguimiento.pdt_ai_hallazgos_revision WHERE id_hallazgo=:id"),
+                {"id": hallazgo_id},
+            )
+            await session.commit()
+    finally:
+        await engine.dispose()
 
 
 def test_tablas_y_sincronizacion_inicial_en_bd_csh() -> None:
@@ -196,6 +213,96 @@ def test_endpoint_get_historial_auditoria_pdt_ai_evaluator() -> None:
     assert len(body["checkpoints_hitl"][0]["sha256_checkpoint"]) == 64
 
 
+def test_registrar_y_listar_dictamen_hallazgo_sha256():
+    hallazgo_id = f"TEST-{uuid.uuid4()}"
+
+    async def _run():
+        engine = create_async_engine(_bd_csh_url(), pool_pre_ping=True)
+        sessions = async_sessionmaker(engine, expire_on_commit=False)
+        try:
+            async with sessions() as session:
+                saved = await registrar_dictamen_hallazgo_pdt_pg(
+                    id_hallazgo=hallazgo_id,
+                    codigo_meta="M-TEST-29A",
+                    estado_revision="EN_SUBSANACION_PDCA",
+                    responsable="Secretaría de Planeación",
+                    accion_correctiva_pdca="Planificar, ejecutar, verificar y ajustar la meta.",
+                    auditor="Auditor EAF",
+                    dependencia="Planeación",
+                    evidencia_subsanacion="Acta de revisión",
+                    db=session,
+                )
+                await session.commit()
+                listed = await listar_dictamenes_hallazgos_pdt_pg(
+                    db=session,
+                    codigo_plan="PDD_2024_2027",
+                    codigo_meta="M-TEST-29A",
+                    estado_revision="EN_SUBSANACION_PDCA",
+                )
+                history = await obtener_historial_auditoria_pdt_pg(session, limit=200)
+                await session.execute(
+                    text("DELETE FROM seguimiento.pdt_ai_hallazgos_revision WHERE id_hallazgo=:id"),
+                    {"id": hallazgo_id},
+                )
+                await session.commit()
+                return saved, listed, history
+        finally:
+            await engine.dispose()
+
+    saved, listed, history = asyncio.run(_run())
+    assert saved["id_hallazgo"] == hallazgo_id
+    assert saved["estado_revision"] == "EN_SUBSANACION_PDCA"
+    assert len(saved["sha256_dictamen"]) == 64
+    assert listed["total_dictamenes"] >= 1
+    assert listed["dictamenes_hallazgos"][0]["id_hallazgo"] == hallazgo_id
+    assert history["total_dictamenes_hallazgos"] >= 1
+    assert any(row["id_hallazgo"] == hallazgo_id for row in history["dictamenes_hallazgos"])
+
+
+def test_endpoints_dictaminar_y_listar_hallazgo():
+    hallazgo_id = f"HTTP-{uuid.uuid4()}"
+    app = FastAPI()
+    app.include_router(compromisos_router, prefix="/api/v1")
+
+    async def _override_db():
+        engine = create_async_engine(_bd_csh_url(), pool_pre_ping=True)
+        sessions = async_sessionmaker(engine, expire_on_commit=False)
+        try:
+            async with sessions() as session:
+                yield session
+        finally:
+            await engine.dispose()
+
+    app.dependency_overrides[get_session] = _override_db
+    client = TestClient(app)
+    base = "/api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/revision-por-meta"
+    response = client.post(
+        f"{base}/dictaminar-hallazgo",
+        json={
+            "id_hallazgo": hallazgo_id,
+            "codigo_plan": "PDD_2024_2027",
+            "codigo_meta": "M-HTTP-29A",
+            "estado_revision": "VERIFICADO",
+            "responsable": "Secretaría de Salud",
+            "accion_correctiva_pdca": "Verificar evidencia y cerrar ciclo PDCA.",
+            "auditor": "Auditor EAF",
+        },
+    )
+    assert response.status_code == 200, response.text
+    body = response.json()
+    assert body["id_hallazgo"] == hallazgo_id
+    assert len(body["sha256_dictamen"]) == 64
+
+    listed = client.get(
+        f"{base}/dictamenes-hallazgos",
+        params={"codigo_meta": "M-HTTP-29A", "estado_revision": "VERIFICADO"},
+    )
+    assert listed.status_code == 200, listed.text
+    assert listed.json()["total_dictamenes"] >= 1
+    assert listed.json()["dictamenes_hallazgos"][0]["id_hallazgo"] == hallazgo_id
+    asyncio.run(_delete_hallazgo_for_test(hallazgo_id))
+
+
 def test_construir_resumen_ejecutivo_h11_h1_hoshin_y_revision_10d() -> None:
     """Verifica que _construir_resumen_ejecutivo calcula determinísticamente H11, H1,
     Hoshin Kanri FAIR y Revisión 10D.
@@ -325,4 +432,3 @@ def test_persistencia_pg_resumen_enriquecido_hoshin_fair_y_10d() -> None:
     assert resumen["total_indicadores_isri_sin_atribucion"] == 1
     assert resumen["hoshin_kanri_fair"]["fair_global_index"] > 0.0
     assert resumen["revision_10d_resumen"]["total_metas_plan"] == 1246
-

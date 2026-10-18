@@ -408,3 +408,31 @@ def test_filtro_pdt_exige_plan_y_termino_tematico():
     assert matches("PDD_2024_2027 Secretaría de Salud", ["salud"], "PDD_2024_2027")
     assert not matches("PDD_2024_2027 Secretaría de Infraestructura", ["salud"], "PDD_2024_2027")
     assert not matches("PDD_2020_2023 Secretaría de Salud", ["salud"], "PDD_2024_2027")
+
+
+def test_consejo_multiagente_incluye_resumen_dea_cartagena(monkeypatch):
+    from app.modules.compromisos import pdd_dea_service
+
+    async def levels(**_kwargs):
+        return {
+            "estado": "OK",
+            "niveles": {
+                f"nivel_{number}": {"total_dmus": 2, "eficientes": 1, "ineficientes": 1}
+                for number in range(1, 5)
+            },
+        }
+
+    async def dashboard(**_kwargs):
+        return {
+            "total_alertas_falso_cumplimiento_nominal": 1,
+            "alertas_falso_cumplimiento_nominal": [{"dmu": "SED"}],
+            "benchmarks_armonizacion_presupuestal": [{"dmu": "DADIS", "theta_bcc": 1.0}],
+        }
+
+    monkeypatch.setattr(pdd_dea_service, "obtener_dea_cartagena_4_niveles", levels)
+    monkeypatch.setattr(pdd_dea_service, "obtener_tablero_dea_cartagena", dashboard)
+    result = asyncio.run(agents_module._resumen_dea_4_niveles_cartagena(FakeSession()))
+    assert result["estado"] == "OK"
+    assert len(result["niveles"]) == 4
+    assert result["total_alertas_tablero_alcalde"] == 1
+    assert result["benchmarks_armonizacion_presupuestal"][0]["theta_bcc"] == 1.0

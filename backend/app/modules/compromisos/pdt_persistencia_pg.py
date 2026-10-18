@@ -25,6 +25,13 @@ ROOT = Path(__file__).resolve().parents[4]
 DATA_DIR = ROOT / "data" / "planes_desarrollo"
 CACHE_PATH = DATA_DIR / "cache_pdt_ai_evaluator.json"
 CHECKPOINT_PATH = DATA_DIR / "checkpoints_pdt_ai_evaluator.json"
+ESTADOS_REVISION_HALLAZGO = {
+    "PENDIENTE_REVISION_HUMANA",
+    "VERIFICADO",
+    "EN_SUBSANACION_PDCA",
+    "SUBSANADO",
+    "DESESTIMADO_CON_EVIDENCIA",
+}
 
 
 def _plain_json(value: Any) -> Any:
@@ -104,10 +111,10 @@ def _obtener_resumen_hoshin_fair(run_data: dict[str, Any]) -> dict[str, Any]:
     try:
         from app.modules.compromisos.pdt_hoshin_kanri import (
             SEMAFORO_ROJO,
-            construir_matriz_x_hoshin_kanri_pdt,
+            _construir_matriz_x_hoshin_kanri_pdt_core,
         )
 
-        hoshin = construir_matriz_x_hoshin_kanri_pdt(diagnostico=run_data)
+        hoshin = _construir_matriz_x_hoshin_kanri_pdt_core(diagnostico=run_data)
         fair = hoshin.get("evaluacion_fair") or {}
         bowling = hoshin.get("bowling_charts") or []
         catchball = hoshin.get("catchball_sesiones") or []
@@ -192,11 +199,7 @@ def _construir_resumen_ejecutivo(run_data: dict[str, Any]) -> dict[str, Any]:
         for item in (forecast.get("series") or [])
         if (item.get("ISRI") or 0.0) > 0.40
     ]
-    fuentes = (
-        run_data.get("trazabilidad_fuentes")
-        or run_data.get("source_counts")
-        or {}
-    )
+    fuentes = run_data.get("trazabilidad_fuentes") or run_data.get("source_counts") or {}
     version_metodologica = str(
         run_data.get("version_metodologica") or "PDT-AI-EVALUATOR-2026.10-EAF"
     )
@@ -312,6 +315,34 @@ async def asegurar_tablas_pdt_ai_pg(db: AsyncSession | None = None) -> None:
                     sha256_checkpoint VARCHAR(64) NOT NULL,
                     registrado_en TIMESTAMPTZ NOT NULL DEFAULT NOW()
                 )
+                """
+            )
+        )
+        await session.execute(
+            text(
+                """
+                CREATE TABLE IF NOT EXISTS seguimiento.pdt_ai_hallazgos_revision (
+                    id UUID PRIMARY KEY,
+                    id_hallazgo VARCHAR(160) NOT NULL,
+                    codigo_plan VARCHAR(64) NOT NULL DEFAULT 'PDD_2024_2027',
+                    codigo_meta VARCHAR(128) NOT NULL,
+                    dependencia VARCHAR(255),
+                    estado_revision VARCHAR(64) NOT NULL,
+                    responsable VARCHAR(255) NOT NULL,
+                    accion_correctiva_pdca TEXT NOT NULL,
+                    evidencia_subsanacion TEXT,
+                    auditor VARCHAR(160) NOT NULL,
+                    sha256_dictamen VARCHAR(64) NOT NULL,
+                    creado_en TIMESTAMPTZ NOT NULL DEFAULT NOW()
+                )
+                """
+            )
+        )
+        await session.execute(
+            text(
+                """
+                CREATE INDEX IF NOT EXISTS idx_pdt_ai_hallazgos_revision_plan_meta
+                ON seguimiento.pdt_ai_hallazgos_revision (codigo_plan,codigo_meta,creado_en DESC)
                 """
             )
         )
@@ -621,6 +652,23 @@ async def obtener_historial_auditoria_pdt_pg(
                 {"thread_id": clean_thread, "limit": safe_limit},
             )
         ).fetchall()
+        hallazgo_rows = (
+            await session.execute(
+                text(
+                    """SELECT id,id_hallazgo,codigo_plan,codigo_meta,dependencia,estado_revision,
+                              responsable,accion_correctiva_pdca,evidencia_subsanacion,auditor,
+                              sha256_dictamen,creado_en
+                       FROM seguimiento.pdt_ai_hallazgos_revision
+                       ORDER BY creado_en DESC LIMIT :limit"""
+                ),
+                {"limit": safe_limit},
+            )
+        ).fetchall()
+        hallazgo_count = (
+            await session.execute(
+                text("SELECT count(*)::int FROM seguimiento.pdt_ai_hallazgos_revision")
+            )
+        ).scalar_one()
 
         evaluaciones = []
         for r in eval_rows:
@@ -647,9 +695,7 @@ async def obtener_historial_auditoria_pdt_pg(
                     "payload_resumen": parsed_resumen,
                     "resumen_ejecutivo": parsed_resumen,
                     "creado_en": r.creado_en.isoformat() if r.creado_en else None,
-                    "actualizado_en": (
-                        r.actualizado_en.isoformat() if r.actualizado_en else None
-                    ),
+                    "actualizado_en": (r.actualizado_en.isoformat() if r.actualizado_en else None),
                 }
             )
 
@@ -676,6 +722,7 @@ async def obtener_historial_auditoria_pdt_pg(
             }
             for r in ckpt_rows
         ]
+        hallazgos = [_dictamen_hallazgo_dict(row) for row in hallazgo_rows]
 
         return {
             "motor": "PDT-AI-EVALUATOR",
@@ -688,9 +735,153 @@ async def obtener_historial_auditoria_pdt_pg(
             "limite": safe_limit,
             "total_evaluaciones": len(evaluaciones),
             "total_checkpoints_hitl": len(checkpoints),
+            "total_dictamenes_hallazgos": int(hallazgo_count or 0),
             "evaluaciones": evaluaciones,
             "checkpoints_hitl": checkpoints,
+            "dictamenes_hallazgos": hallazgos,
             "consultado_en": datetime.now(UTC).isoformat(),
+        }
+
+    return await _run_with_session(db, _op)
+
+
+def _dictamen_hallazgo_dict(row) -> dict[str, Any]:
+    return {
+        "id": str(row.id),
+        "id_hallazgo": str(row.id_hallazgo),
+        "codigo_plan": str(row.codigo_plan),
+        "codigo_meta": str(row.codigo_meta),
+        "dependencia": row.dependencia,
+        "estado_revision": str(row.estado_revision),
+        "responsable": str(row.responsable),
+        "accion_correctiva_pdca": str(row.accion_correctiva_pdca),
+        "evidencia_subsanacion": row.evidencia_subsanacion,
+        "auditor": str(row.auditor),
+        "sha256_dictamen": str(row.sha256_dictamen),
+        "creado_en": row.creado_en.isoformat() if row.creado_en else None,
+    }
+
+
+async def registrar_dictamen_hallazgo_pdt_pg(
+    id_hallazgo: str,
+    codigo_meta: str,
+    estado_revision: str,
+    responsable: str,
+    accion_correctiva_pdca: str,
+    auditor: str,
+    codigo_plan: str = "PDD_2024_2027",
+    dependencia: str | None = None,
+    evidencia_subsanacion: str | None = None,
+    db: AsyncSession | None = None,
+) -> dict[str, Any]:
+    """Registra un dictamen trazable para un hallazgo individual de revisión."""
+    clean = {
+        "id_hallazgo": str(id_hallazgo or "").strip()[:160],
+        "codigo_plan": str(codigo_plan or "PDD_2024_2027").strip()[:64],
+        "codigo_meta": str(codigo_meta or "").strip()[:128],
+        "dependencia": str(dependencia).strip()[:255] if dependencia else None,
+        "estado_revision": str(estado_revision or "").strip(),
+        "responsable": str(responsable or "").strip()[:255],
+        "accion_correctiva_pdca": str(accion_correctiva_pdca or "").strip(),
+        "evidencia_subsanacion": str(evidencia_subsanacion).strip()
+        if evidencia_subsanacion
+        else None,
+        "auditor": str(auditor or "").strip()[:160],
+    }
+    for required in (
+        "id_hallazgo",
+        "codigo_meta",
+        "responsable",
+        "accion_correctiva_pdca",
+        "auditor",
+    ):
+        if not clean[required]:
+            raise ValueError(f"{required} es obligatorio")
+    if clean["estado_revision"] not in ESTADOS_REVISION_HALLAZGO:
+        raise ValueError("estado_revision no pertenece al catálogo permitido")
+    sha256 = _canonical_sha256(clean)
+    record_id = uuid.uuid4()
+
+    async def _op(session: AsyncSession, owns_session: bool) -> dict[str, Any]:
+        await asegurar_tablas_pdt_ai_pg(session)
+        row = (
+            await session.execute(
+                text(
+                    """INSERT INTO seguimiento.pdt_ai_hallazgos_revision (
+                           id,id_hallazgo,codigo_plan,codigo_meta,dependencia,estado_revision,
+                           responsable,accion_correctiva_pdca,evidencia_subsanacion,auditor,
+                           sha256_dictamen,creado_en
+                       ) VALUES (
+                           :id,:id_hallazgo,:codigo_plan,:codigo_meta,:dependencia,:estado_revision,
+                           :responsable,:accion_correctiva_pdca,:evidencia_subsanacion,:auditor,
+                           :sha256_dictamen,NOW()
+                       ) RETURNING id,id_hallazgo,codigo_plan,codigo_meta,dependencia,
+                           estado_revision,
+                           responsable,accion_correctiva_pdca,evidencia_subsanacion,auditor,
+                           sha256_dictamen,creado_en"""
+                ),
+                {"id": record_id, **clean, "sha256_dictamen": sha256},
+            )
+        ).fetchone()
+        if owns_session:
+            await session.commit()
+        else:
+            await session.flush()
+        return (
+            _dictamen_hallazgo_dict(row)
+            if row
+            else {"id": str(record_id), **clean, "sha256_dictamen": sha256, "creado_en": None}
+        )
+
+    return await _run_with_session(db, _op)
+
+
+async def listar_dictamenes_hallazgos_pdt_pg(
+    db: AsyncSession | None = None,
+    codigo_plan: str | None = None,
+    codigo_meta: str | None = None,
+    estado_revision: str | None = None,
+    limit: int = 100,
+) -> dict[str, Any]:
+    """Lista dictámenes de hallazgos con filtros opcionales y límite acotado."""
+    safe_limit = max(1, min(int(limit or 100), 500))
+    filters = {
+        "codigo_plan": codigo_plan.strip() if codigo_plan else None,
+        "codigo_meta": codigo_meta.strip() if codigo_meta else None,
+        "estado_revision": estado_revision.strip() if estado_revision else None,
+    }
+
+    async def _op(session: AsyncSession, _owns_session: bool) -> dict[str, Any]:
+        await asegurar_tablas_pdt_ai_pg(session)
+        where = """WHERE (CAST(:codigo_plan AS varchar) IS NULL OR codigo_plan=:codigo_plan)
+                    AND (CAST(:codigo_meta AS varchar) IS NULL OR codigo_meta=:codigo_meta)
+                    AND (CAST(:estado_revision AS varchar) IS NULL
+                         OR estado_revision=:estado_revision)"""
+        params = {**filters, "limit": safe_limit}
+        total = (
+            await session.execute(
+                text(f"SELECT count(*)::int FROM seguimiento.pdt_ai_hallazgos_revision {where}"),
+                filters,
+            )
+        ).scalar_one()
+        rows = (
+            await session.execute(
+                text(
+                    f"""SELECT id,id_hallazgo,codigo_plan,codigo_meta,dependencia,estado_revision,
+                               responsable,accion_correctiva_pdca,evidencia_subsanacion,auditor,
+                               sha256_dictamen,creado_en
+                        FROM seguimiento.pdt_ai_hallazgos_revision {where}
+                        ORDER BY creado_en DESC LIMIT :limit"""
+                ),
+                params,
+            )
+        ).fetchall()
+        registros = [_dictamen_hallazgo_dict(row) for row in rows]
+        return {
+            "total_dictamenes": int(total or 0),
+            "limite": safe_limit,
+            "filtros_aplicados": filters,
+            "dictamenes_hallazgos": registros,
         }
 
     return await _run_with_session(db, _op)

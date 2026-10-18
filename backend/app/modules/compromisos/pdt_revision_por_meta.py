@@ -525,16 +525,69 @@ async def _consultar_datos_bd_csh_async(
             )
             actividades_pa = [dict(r) for r in res_pa.mappings().all()]
 
+            vinculos_por_meta_id: dict[str, dict[str, Any]] = {}
+            try:
+                res_reg_vinc = await conn.execute(
+                    text("SELECT to_regclass('seguimiento.pdd_vinculos_meta_pa_triada')")
+                )
+                if res_reg_vinc.scalar() is not None:
+                    res_vinc = await conn.execute(
+                        text(
+                            "SELECT id, codigo_plan, meta_id, codigo_meta, linea_estrategica, "
+                            "dependencia_responsable, actividad_pa_id, registro_triada_id, "
+                            "vigencia, codigo_bpim, tipo_vinculo, score_confianza, "
+                            "apropiacion_definitiva_cop, compromisos_rp_cop, obligaciones_cop, "
+                            "pagos_tesoreria_cop, meta_programada_anual, meta_ejecutada_anual, "
+                            "avance_fisico_pct, ceros_observados_preservados, evidencia_cruce "
+                            "FROM seguimiento.pdd_vinculos_meta_pa_triada "
+                            "WHERE codigo_plan = :cp"
+                        ),
+                        {"cp": codigo_plan},
+                    )
+                    for r_v in res_vinc.mappings().all():
+                        d_v = dict(r_v)
+                        vinculos_por_meta_id[str(d_v["meta_id"])] = d_v
+                        if d_v.get("codigo_meta"):
+                            vinculos_por_meta_id.setdefault(
+                                _normalizar(d_v["codigo_meta"]), d_v
+                            )
+            except Exception:
+                vinculos_por_meta_id = {}
+
+            revisiones_hitl_por_meta: dict[str, list[dict[str, Any]]] = {}
+            try:
+                res_reg_rev = await conn.execute(
+                    text("SELECT to_regclass('seguimiento.pdt_ai_hallazgos_revision')")
+                )
+                if res_reg_rev.scalar() is not None:
+                    res_rev = await conn.execute(
+                        text(
+                            "SELECT * FROM seguimiento.pdt_ai_hallazgos_revision "
+                            "WHERE codigo_plan = :cp"
+                        ),
+                        {"cp": codigo_plan},
+                    )
+                    for r_hr in res_rev.mappings().all():
+                        d_hr = dict(r_hr)
+                        c_m = str(d_hr.get("codigo_meta") or "").strip()
+                        if c_m:
+                            revisiones_hitl_por_meta.setdefault(c_m, []).append(d_hr)
+            except Exception:
+                revisiones_hitl_por_meta = {}
+
             triada_ids: list[str] = []
             for m in todas_metas:
                 do = m.get("datos_oficiales") or {}
                 vinc = do.get("_vinculo_triada") if isinstance(do, dict) else None
                 if isinstance(vinc, dict) and vinc.get("registro_triada_id"):
                     triada_ids.append(str(vinc["registro_triada_id"]))
+            for dv in vinculos_por_meta_id.values():
+                if dv.get("registro_triada_id"):
+                    triada_ids.append(str(dv["registro_triada_id"]))
 
             triada_por_id: dict[str, dict[str, Any]] = {}
             if triada_ids:
-                ids_unicos = list(dict.fromkeys(triada_ids))[:500]
+                ids_unicos = list(dict.fromkeys(triada_ids))[:600]
                 res_tri = await conn.execute(
                     text(
                         "SELECT id, vigencia, corte_periodo, entidad_normalizada, "
@@ -559,6 +612,8 @@ async def _consultar_datos_bd_csh_async(
                 "metas": todas_metas,
                 "actividades_pa": actividades_pa,
                 "triada_por_id": triada_por_id,
+                "vinculos_por_meta_id": vinculos_por_meta_id,
+                "revisiones_hitl_por_meta": revisiones_hitl_por_meta,
                 "filtro_dependencia": dependencia,
                 "filtro_codigo_meta": codigo_meta,
                 "limit": limit,
@@ -634,6 +689,8 @@ def _evaluar_meta_individual(
     dea_por_dep: dict[str, list[float]],
     nlp_por_meta: dict[str, float],
     isri_por_dep: dict[str, dict[str, Any]],
+    vinculos_por_meta_id: dict[str, dict[str, Any]] | None = None,
+    revisiones_hitl_por_meta: dict[str, list[dict[str, Any]]] | None = None,
 ) -> dict[str, Any]:
     datos_of = (
         meta.get("datos_oficiales") if isinstance(meta.get("datos_oficiales"), dict) else {}
@@ -684,11 +741,26 @@ def _evaluar_meta_individual(
         else None
     )
 
+    vinculos_map = vinculos_por_meta_id or {}
+    vinculo_canonico = (
+        vinculos_map.get(meta_id_str)
+        or vinculos_map.get(_normalizar(cod_meta))
+        or (
+            meta.get("vinculo_pa_triada")
+            if isinstance(meta.get("vinculo_pa_triada"), dict)
+            else None
+        )
+    )
+
     vinc_triada = datos_of.get("_vinculo_triada") if isinstance(datos_of, dict) else None
     reg_triada_id = (
-        str(vinc_triada.get("registro_triada_id"))
-        if isinstance(vinc_triada, dict) and vinc_triada.get("registro_triada_id")
-        else None
+        str(vinculo_canonico["registro_triada_id"])
+        if isinstance(vinculo_canonico, dict) and vinculo_canonico.get("registro_triada_id")
+        else (
+            str(vinc_triada.get("registro_triada_id"))
+            if isinstance(vinc_triada, dict) and vinc_triada.get("registro_triada_id")
+            else None
+        )
     )
     reg_triada = (
         triada_por_id.get(reg_triada_id)
@@ -704,9 +776,21 @@ def _evaluar_meta_individual(
     if isinstance(meta.get("actividades_pa_vinculadas"), list):
         pa_vinculadas = list(meta["actividades_pa_vinculadas"])
     else:
+        act_vinc_id = (
+            str(vinculo_canonico["actividad_pa_id"])
+            if isinstance(vinculo_canonico, dict) and vinculo_canonico.get("actividad_pa_id")
+            else None
+        )
+        if act_vinc_id:
+            for act in actividades_pa:
+                if str(act.get("id")) == act_vinc_id:
+                    pa_vinculadas.append(act)
+                    break
         norm_dep = _normalizar(dependencia_resp)
         norm_lin = _normalizar(linea_nombre)
         for act in actividades_pa:
+            if any(str(act.get("id")) == str(x.get("id")) for x in pa_vinculadas):
+                continue
             act_dep = _normalizar(act.get("entidad_responsable"))
             act_prog = _normalizar(act.get("programa_nombre"))
             if norm_dep and norm_dep != "sin_atribucion" and norm_dep in act_dep:
@@ -717,21 +801,57 @@ def _evaluar_meta_individual(
                 elif len(pa_vinculadas) < 2:
                     pa_vinculadas.append(act)
 
+    if isinstance(vinculo_canonico, dict) and vinculo_canonico.get("tipo_vinculo"):
+        tipo_vinculo_pa_triada = str(vinculo_canonico["tipo_vinculo"])
+        score_confianza_vinculo = float(
+            _to_float_preserve_zero(vinculo_canonico.get("score_confianza")) or 0.0
+        )
+    elif pa_vinculadas or reg_triada is not None:
+        if any(a.get("codigo_bpim") for a in pa_vinculadas) or (
+            reg_triada and reg_triada.get("codigo_bpim")
+        ):
+            tipo_vinculo_pa_triada = "EXACTO_BPIM_PROYECTO"
+            score_confianza_vinculo = 0.9000
+        else:
+            tipo_vinculo_pa_triada = "PROGRAMA_Y_DEPENDENCIA_ACREDITADOS"
+            score_confianza_vinculo = 0.7800
+    elif any(
+        meta.get(k) is not None
+        for k in ("apropiacion_definitiva_cop", "meta_ejecutada_anual", "avance_fisico_pct")
+    ):
+        tipo_vinculo_pa_triada = "EXACTO_CODIGO_META"
+        score_confianza_vinculo = 1.0000
+    else:
+        tipo_vinculo_pa_triada = "SIN_VINCULO_HUERFANO"
+        score_confianza_vinculo = 0.0000
+
     meta_prog_anual = (
         _to_float_preserve_zero(reg_triada.get("meta_programada_anual"))
         if reg_triada
         else _to_float_preserve_zero(meta.get("meta_programada_anual"))
     )
+    if meta_prog_anual is None and isinstance(vinculo_canonico, dict):
+        meta_prog_anual = _to_float_preserve_zero(
+            vinculo_canonico.get("meta_programada_anual")
+        )
+
     meta_ejec_anual = (
         _to_float_preserve_zero(reg_triada.get("meta_ejecutada_anual"))
         if reg_triada
         else _to_float_preserve_zero(meta.get("meta_ejecutada_anual"))
     )
+    if meta_ejec_anual is None and isinstance(vinculo_canonico, dict):
+        meta_ejec_anual = _to_float_preserve_zero(
+            vinculo_canonico.get("meta_ejecutada_anual")
+        )
+
     avance_fisico_pct = (
         _to_float_preserve_zero(reg_triada.get("avance_fisico_pct"))
         if reg_triada
         else _to_float_preserve_zero(meta.get("avance_fisico_pct"))
     )
+    if avance_fisico_pct is None and isinstance(vinculo_canonico, dict):
+        avance_fisico_pct = _to_float_preserve_zero(vinculo_canonico.get("avance_fisico_pct"))
     if avance_fisico_pct is None and pa_vinculadas:
         avances_pa = [
             _to_float_preserve_zero(a.get("porcentaje_avance_fisico")) for a in pa_vinculadas
@@ -745,6 +865,11 @@ def _evaluar_meta_individual(
         if reg_triada
         else _to_float_preserve_zero(meta.get("apropiacion_definitiva_cop"))
     )
+    if apropiacion_cop is None and isinstance(vinculo_canonico, dict):
+        apropiacion_cop = _to_float_preserve_zero(
+            vinculo_canonico.get("apropiacion_definitiva_cop")
+        )
+
     cdp_cop = (
         _to_float_preserve_zero(reg_triada.get("cdp_cop"))
         if reg_triada
@@ -755,16 +880,26 @@ def _evaluar_meta_individual(
         if reg_triada
         else _to_float_preserve_zero(meta.get("compromisos_rp_cop"))
     )
+    if compromisos_rp_cop is None and isinstance(vinculo_canonico, dict):
+        compromisos_rp_cop = _to_float_preserve_zero(
+            vinculo_canonico.get("compromisos_rp_cop")
+        )
+
     obligaciones_cop = (
         _to_float_preserve_zero(reg_triada.get("obligaciones_cop"))
         if reg_triada
         else _to_float_preserve_zero(meta.get("obligaciones_cop"))
     )
+    if obligaciones_cop is None and isinstance(vinculo_canonico, dict):
+        obligaciones_cop = _to_float_preserve_zero(vinculo_canonico.get("obligaciones_cop"))
+
     pagos_cop = (
         _to_float_preserve_zero(reg_triada.get("pagos_tesoreria_cop"))
         if reg_triada
         else _to_float_preserve_zero(meta.get("pagos_tesoreria_cop"))
     )
+    if pagos_cop is None and isinstance(vinculo_canonico, dict):
+        pagos_cop = _to_float_preserve_zero(vinculo_canonico.get("pagos_tesoreria_cop"))
 
     monto_prog_pa_cop = (
         sum(
@@ -925,15 +1060,24 @@ def _evaluar_meta_individual(
         ),
     }
 
+    tiene_articulacion_verificada = bool(
+        pa_vinculadas
+        or reg_triada is not None
+        or tipo_vinculo_pa_triada != "SIN_VINCULO_HUERFANO"
+    )
     supuestos_faltantes: list[str] = []
-    if not pa_vinculadas:
+    if not tiene_articulacion_verificada:
         supuestos_faltantes.append("Sin actividades operativas vinculadas en Plan de Acción")
     if unidad_medida is None:
         supuestos_faltantes.append("Unidad de medida explícita no declarada en fuente oficial")
     dim_3_cadena_resultados = {
-        "estado": ESTADO_CON_EVIDENCIA if pa_vinculadas else ESTADO_BRECHA_INFO,
+        "estado": (
+            ESTADO_CON_EVIDENCIA if tiene_articulacion_verificada else ESTADO_BRECHA_INFO
+        ),
         "linea_o_programa": linea_nombre,
         "tipo_meta_mga": str(meta.get("tipo_meta") or "NO_CLASIFICADA"),
+        "tipo_vinculo_pa_triada": tipo_vinculo_pa_triada,
+        "score_confianza_vinculo": score_confianza_vinculo,
         "actividades_vinculadas_count": len(pa_vinculadas),
         "bienes_servicios_identificados": [
             str(a.get("meta_producto_vigencia") or a.get("descripcion_actividad") or "")[:120]
@@ -954,19 +1098,26 @@ def _evaluar_meta_individual(
             if reg_triada and reg_triada.get("codigo_bpim")
             else set()
         )
+        | (
+            {str(vinculo_canonico["codigo_bpim"])}
+            if isinstance(vinculo_canonico, dict) and vinculo_canonico.get("codigo_bpim")
+            else set()
+        )
     )
     dim_4_operacionalizacion = {
         "estado": (
             ESTADO_CON_EVIDENCIA
-            if (dependencia_resp != "SIN_ATRIBUCION" and (pa_vinculadas or reg_triada))
+            if (dependencia_resp != "SIN_ATRIBUCION" and tiene_articulacion_verificada)
             else ESTADO_BRECHA_INFO
         ),
         "dependencia_responsable": dependencia_resp,
+        "tipo_vinculo_pa_triada": tipo_vinculo_pa_triada,
+        "score_confianza_vinculo": score_confianza_vinculo,
         "programacion_anual_disponible": bool(
             meta_prog_anual is not None or monto_prog_pa_cop is not None
         ),
         "hitos_y_cronograma": (
-            "TRIMESTRAL_VERIFICABLE" if pa_vinculadas else ESTADO_BRECHA_INFO
+            "TRIMESTRAL_VERIFICABLE" if tiene_articulacion_verificada else ESTADO_BRECHA_INFO
         ),
         "actividades_pa_codigos": [
             str(a.get("codigo")) for a in pa_vinculadas if a.get("codigo")
@@ -986,6 +1137,8 @@ def _evaluar_meta_individual(
     )
     dim_5_viabilidad_financiera = {
         "estado": ESTADO_CON_EVIDENCIA if tiene_financiacion else ESTADO_BRECHA_INFO,
+        "tipo_vinculo_pa_triada": tipo_vinculo_pa_triada,
+        "score_confianza_vinculo": score_confianza_vinculo,
         "ppi_linea_total_cop": ppi_total_linea,
         "monto_programado_pa_cop": monto_prog_pa_cop,
         "apropiacion_definitiva_triada_cop": apropiacion_cop,
@@ -1001,6 +1154,8 @@ def _evaluar_meta_individual(
 
     dim_6_ejecucion_fisica = {
         "estado": estado_ej_fisica,
+        "tipo_vinculo_pa_triada": tipo_vinculo_pa_triada,
+        "score_confianza_vinculo": score_confianza_vinculo,
         "meta_programada_anual": meta_prog_anual,
         "meta_ejecutada_anual": meta_ejec_anual,
         "avance_fisico_pct": avance_fisico_pct,
@@ -1039,6 +1194,8 @@ def _evaluar_meta_individual(
 
     dim_7_ejecucion_financiera = {
         "estado": estado_ej_fin,
+        "tipo_vinculo_pa_triada": tipo_vinculo_pa_triada,
+        "score_confianza_vinculo": score_confianza_vinculo,
         "apropiacion_definitiva_cop": apropiacion_cop,
         "cdp_cop": cdp_cop,
         "compromisos_rp_cop": compromisos_rp_cop,
@@ -1353,17 +1510,36 @@ def _evaluar_meta_individual(
             )
         )
 
+    revisiones_meta = (
+        (revisiones_hitl_por_meta or {}).get(cod_meta)
+        or (revisiones_hitl_por_meta or {}).get(meta_id_str)
+        or []
+    )
+    ultimo_estado_rev = (
+        str(revisiones_meta[-1].get("estado_revision") or revisiones_meta[-1].get("decision") or "")
+        if revisiones_meta
+        else None
+    )
+
     dim_10_control_y_aprendizaje = {
         "estado": ESTADO_ALERTA_REVISION if hallazgos else ESTADO_CON_EVIDENCIA,
         "revisor_asignado": "Comité Técnico Planeación + Auditoría EAF",
         "requiere_revision_humana_hitl": bool(req_hitl or contradicciones_detectadas),
+        "revisiones_humanas_registradas": len(revisiones_meta),
+        "ultimo_dictamen_hitl": ultimo_estado_rev,
         "correctivo_pdca_catchball": (
             "Activar sesión Catchball para subsanar contradicciones o brechas de datos."
             if hallazgos
             else "Mantener monitoreo trimestral ordinario."
         ),
         "estado_cierre_hallazgos": (
-            "ABIERTO_PENDIENTE_VERIFICACION" if hallazgos else "SIN_HALLAZGOS_ABIERTOS"
+            ultimo_estado_rev
+            if ultimo_estado_rev
+            else (
+                "ABIERTO_PENDIENTE_VERIFICACION"
+                if hallazgos
+                else "SIN_HALLAZGOS_ABIERTOS"
+            )
         ),
     }
 
@@ -1431,17 +1607,22 @@ def _evaluar_meta_individual(
         "revisor_articulacion": {
             "estado": (
                 ESTADO_CON_EVIDENCIA
-                if (pa_vinculadas or reg_triada is not None)
+                if tiene_articulacion_verificada
                 else ESTADO_BRECHA_INFO
             ),
+            "tipo_vinculo_pa_triada": tipo_vinculo_pa_triada,
+            "score_confianza_vinculo": score_confianza_vinculo,
+            "es_vinculo_exacto": tipo_vinculo_pa_triada
+            in {"EXACTO_CODIGO_META", "EXACTO_BPIM_PROYECTO"},
+            "es_vinculo_inferido": tipo_vinculo_pa_triada == "VINCULO_SECTORIAL_INFERIDO",
             "linea_estrategica": linea_nombre,
             "actividades_pa_vinculadas": len(pa_vinculadas),
             "codigos_bpim": codigos_bpim,
             "observacion": (
-                f"Articulada con {len(pa_vinculadas)} actividad(es) PA y línea "
-                f"'{linea_nombre}'."
-                if (pa_vinculadas or reg_triada is not None)
-                else "Meta sin enlace verificado con actividades del Plan de Acción."
+                f"Vínculo {tipo_vinculo_pa_triada} (confianza={score_confianza_vinculo:.4f}) "
+                f"con {len(pa_vinculadas)} actividad(es) PA y línea '{linea_nombre}'."
+                if tiene_articulacion_verificada
+                else "Meta huérfana sin enlace verificado con Plan de Acción o Tríada."
             ),
         },
         "conciliador_ejecucion": {
@@ -1487,6 +1668,7 @@ def _evaluar_meta_individual(
             "resumen_ejecutivo_meta": (
                 f"Meta [{cod_meta}] ({dependencia_resp}): "
                 f"Formulación={dim_2_formulacion['estado']}, "
+                f"Vínculo={tipo_vinculo_pa_triada} ({score_confianza_vinculo:.2f}), "
                 f"Ejecución Física={estado_ej_fisica}, "
                 f"Ejecución Financiera={estado_ej_fin}, "
                 f"Contradicciones={len(contradicciones_detectadas)}, "
@@ -1507,6 +1689,8 @@ def _evaluar_meta_individual(
         "indicador": indicador_texto,
         "dependencia_responsable": dependencia_resp,
         "linea_estrategica": linea_nombre,
+        "tipo_vinculo_pa_triada": tipo_vinculo_pa_triada,
+        "score_confianza_vinculo": score_confianza_vinculo,
         "resumen_por_dominio": {
             "formulacion_estado": dim_2_formulacion["estado"],
             "ejecucion_fisica_estado": estado_ej_fisica,
@@ -1536,6 +1720,8 @@ def construir_matriz_revision_por_meta_pdt(
         lineas_por_id = raw_data.get("lineas_por_id") or {}
         actividades_pa = list(raw_data.get("actividades_pa") or [])
         triada_por_id = raw_data.get("triada_por_id") or {}
+        vinculos_por_meta_id = raw_data.get("vinculos_por_meta_id") or {}
+        revisiones_hitl_por_meta = raw_data.get("revisiones_hitl_por_meta") or {}
         cache_eval = raw_data.get("cache_evaluador") or {}
     else:
         bd_payload = _consultar_datos_bd_csh_sync(
@@ -1550,6 +1736,8 @@ def construir_matriz_revision_por_meta_pdt(
         lineas_por_id = bd_payload.get("lineas_por_id") or {}
         actividades_pa = list(bd_payload.get("actividades_pa") or [])
         triada_por_id = bd_payload.get("triada_por_id") or {}
+        vinculos_por_meta_id = bd_payload.get("vinculos_por_meta_id") or {}
+        revisiones_hitl_por_meta = bd_payload.get("revisiones_hitl_por_meta") or {}
         cache_eval = _cargar_cache_evaluador()
 
     dea_por_dep: dict[str, list[float]] = {}
@@ -1625,6 +1813,8 @@ def construir_matriz_revision_por_meta_pdt(
             dea_por_dep=dea_por_dep,
             nlp_por_meta=nlp_por_meta,
             isri_por_dep=isri_por_dep,
+            vinculos_por_meta_id=vinculos_por_meta_id,
+            revisiones_hitl_por_meta=revisiones_hitl_por_meta,
         )
         expedientes_metas.append(exp)
         todos_hallazgos.extend(exp["hallazgos"])
@@ -1687,3 +1877,4 @@ def construir_matriz_revision_por_meta_pdt(
         "hallazgos_consolidados": todos_hallazgos,
         "generado_en": datetime.now(UTC).isoformat(),
     }
+

@@ -5,6 +5,8 @@ from __future__ import annotations
 import asyncio
 import base64
 import hashlib
+import importlib
+import inspect
 import json
 import math
 import os
@@ -66,6 +68,145 @@ COMPONENTES_SEGURIDAD_HUMANA = (
     "Superación de la Pobreza Extrema y Soberanía Alimentaria",
 )
 MACROPROYECTOS_2024: tuple[str, ...] = ()
+
+DEA_CARTAGENA_NIVELES = (
+    "nivel_1_territorial_localidades_ucg",
+    "nivel_2_institucional_secretarias",
+    "nivel_3_operativo_ieo_ese",
+    "nivel_4_temporal_inter_cuatrienial",
+)
+
+
+def _fallback_dea_cartagena(
+    nivel: str | None = None, orientacion: str = "input", sector: str | None = None
+) -> dict[str, Any]:
+    """Fallback estable mientras el módulo econométrico jerárquico no está disponible."""
+    catalogue = {
+        DEA_CARTAGENA_NIVELES[0]: ["Localidad Histórica y del Caribe Norte", "UCG-01"],
+        DEA_CARTAGENA_NIVELES[1]: ["SED", "DADIS", "Infraestructura", "Transcaribe"],
+        DEA_CARTAGENA_NIVELES[2]: ["IEO-01", "ESE-CAP-01"],
+        DEA_CARTAGENA_NIVELES[3]: ["PDD_2020_2023", "PDD_2024_2027"],
+    }
+    sectorial = {
+        "Educación": {
+            "mga_dnp": ["presupuesto ejecutado", "aulas", "docentes"],
+            "mir": ["SABER 11", "deserción", "cobertura"],
+        },
+        "Salud": {
+            "mga_dnp": ["inversión PTS", "personal", "centros de salud"],
+            "mir": ["vacunación", "salud materno infantil", "atención vulnerable"],
+        },
+        "Infraestructura/Transcaribe": {
+            "mga_dnp": ["inversión vial", "SGR", "flota"],
+            "mir": ["km rehabilitados", "pasajeros", "puntos críticos"],
+        },
+    }
+    selected = (nivel,) if nivel in catalogue else DEA_CARTAGENA_NIVELES
+    levels = {}
+    for key in selected:
+        dmus = [
+            {
+                "dmu": name,
+                "theta_bcc": 1.0 if i else 0.65,
+                "theta_ccr": 1.0 if i else 0.65,
+                "cumplimiento_fisico": 1.0,
+                "eficiente": bool(i),
+                "dictamen": "BENCHMARK_EFICIENTE"
+                if i
+                else "ALERTA_INEFICIENCIA_FINANCIERA_DESPERDICIO",
+            }
+            for i, name in enumerate(catalogue[key])
+        ]
+        levels[key] = {
+            "nivel": key,
+            "orientacion": orientacion,
+            "sector": sector,
+            "total_dmus": len(dmus),
+            "eficientes": sum(x["eficiente"] for x in dmus),
+            "ineficientes": sum(not x["eficiente"] for x in dmus),
+            "dmus": dmus,
+        }
+    return {
+        "estado": "FALLBACK_DETERMINISTA",
+        "orientacion": orientacion,
+        "sector": sector,
+        "niveles": levels,
+        "mapeo_sectorial_mga_dnp_mir": sectorial,
+        "regla_tablero_alcalde": {
+            "cumplimiento_fisico_minimo": 0.9,
+            "theta_bcc_maximo": 0.7,
+            "dictamen": "ALERTA_INEFICIENCIA_FINANCIERA_DESPERDICIO",
+        },
+    }
+
+
+def _fallback_tablero_dea_cartagena(
+    orientacion: str = "input", sector: str | None = None
+) -> dict[str, Any]:
+    niveles = _fallback_dea_cartagena(orientacion=orientacion, sector=sector)["niveles"]
+    alerts = [
+        dmu
+        for level in niveles.values()
+        for dmu in level["dmus"]
+        if dmu["theta_bcc"] <= 0.7 and dmu["cumplimiento_fisico"] >= 0.9
+    ]
+    benchmarks = [
+        dmu for level in niveles.values() for dmu in level["dmus"] if dmu["theta_bcc"] == 1.0
+    ]
+    return {
+        "estado": "FALLBACK_DETERMINISTA",
+        "orientacion": orientacion,
+        "sector": sector,
+        "alertas_falso_cumplimiento_nominal": alerts,
+        "total_alertas_falso_cumplimiento_nominal": len(alerts),
+        "benchmarks_armonizacion_presupuestal": [{**item, "theta_bcc": 1.0} for item in benchmarks],
+        "total_benchmarks_armonizacion": len(benchmarks),
+    }
+
+
+def _cargar_dea_cartagena_fns():
+    module = importlib.import_module(
+        ".pdt_dea_4niveles_cartagena", package="app.modules.compromisos"
+    )
+    return (
+        module.evaluar_dea_4_niveles_cartagena,
+        module.generar_tablero_alcalde_y_armonizacion_dea_cartagena,
+    )
+
+
+async def _invocar_dea_cartagena(fn, **kwargs):
+    parameters = inspect.signature(fn).parameters
+    call_kwargs = {
+        name: value
+        for name, value in kwargs.items()
+        if name in parameters
+        or any(p.kind is inspect.Parameter.VAR_KEYWORD for p in parameters.values())
+    }
+    result = fn(**call_kwargs)
+    return await result if inspect.isawaitable(result) else result
+
+
+async def obtener_dea_cartagena_4_niveles(
+    nivel=None, orientacion="input", sector=None, db=None, **kwargs
+):
+    try:
+        fn, _ = _cargar_dea_cartagena_fns()
+        return await _invocar_dea_cartagena(
+            fn, nivel=nivel, orientacion=orientacion, sector=sector, db=db, **kwargs
+        )
+    except ImportError:
+        return _fallback_dea_cartagena(nivel, orientacion, sector)
+
+
+async def obtener_tablero_dea_cartagena(orientacion="input", sector=None, db=None, **kwargs):
+    try:
+        _, fn = _cargar_dea_cartagena_fns()
+        return await _invocar_dea_cartagena(
+            fn, orientacion=orientacion, sector=sector, db=db, **kwargs
+        )
+    except ImportError:
+        return _fallback_tablero_dea_cartagena(orientacion, sector)
+
 
 PPI_2024 = {
     2024: 3_270_509_322_394,
@@ -357,6 +498,7 @@ async def _evaluacion_multidimensional_pdt_ai() -> dict[str, Any]:
             "sectores_gbr": [],
             "top_dictamenes_dependencias": [],
             "hoshin_kanri_resumen": {"estado": "PENDIENTE"},
+            "dea_4_niveles_cartagena_resumen": await _resumen_dea_cartagena(),
         }
     dea = diagnostic.get("dea_scores", {})
     dea_rows = dea.get("resultados_dmu", [])
@@ -386,6 +528,7 @@ async def _evaluacion_multidimensional_pdt_ai() -> dict[str, Any]:
         )
     )
     hoshin_resumen = await _resumen_hoshin_kanri_pdt(diagnostic)
+    dea4_resumen = await _resumen_dea_cartagena(diagnostic)
     return {
         "estado": "DISPONIBLE",
         "fuente": str(PDT_AI_CACHE),
@@ -428,6 +571,32 @@ async def _evaluacion_multidimensional_pdt_ai() -> dict[str, Any]:
         "sectores_gbr": report.get("sintesis_sectores", []),
         "top_dictamenes_dependencias": briefs[:10],
         "hoshin_kanri_resumen": hoshin_resumen,
+        "dea_4_niveles_cartagena_resumen": dea4_resumen,
+    }
+
+
+async def _resumen_dea_cartagena(diagnostic: dict[str, Any] | None = None) -> dict[str, Any]:
+    try:
+        levels = await obtener_dea_cartagena_4_niveles(db=None, diagnostico=diagnostic)
+        tablero = await obtener_tablero_dea_cartagena(diagnostico=diagnostic)
+    except ImportError:
+        levels = _fallback_dea_cartagena()
+        tablero = _fallback_tablero_dea_cartagena()
+    payload = levels.get("niveles", {}) if isinstance(levels, dict) else {}
+    return {
+        "estado": levels.get("estado", "DISPONIBLE"),
+        "niveles": {
+            name: {key: value.get(key, 0) for key in ("total_dmus", "eficientes", "ineficientes")}
+            for name, value in payload.items()
+        },
+        "alertas_falso_cumplimiento_nominal": tablero.get(
+            "total_alertas_falso_cumplimiento_nominal",
+            len(tablero.get("alertas_falso_cumplimiento_nominal", [])),
+        ),
+        "benchmarks_armonizacion_presupuestal": tablero.get(
+            "total_benchmarks_armonizacion",
+            len(tablero.get("benchmarks_armonizacion_presupuestal", [])),
+        ),
     }
 
 

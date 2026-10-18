@@ -161,6 +161,7 @@ async def _evaluacion_pdt_gbr(
             "dictamenes_dependencias": [],
             "hoshin_kanri_fair": {"estado": "PENDIENTE"},
             "revision_10d_resumen": {"estado": "PENDIENTE"},
+            "dea_4_niveles_cartagena": await _resumen_dea_4_niveles_cartagena(session),
         }
     terms = _terms(consulta.pregunta)
     dea = diagnostic.get("dea_scores", {})
@@ -224,6 +225,7 @@ async def _evaluacion_pdt_gbr(
     ]
     hoshin_summary = await _resumen_hoshin_kanri(diagnostic, consulta)
     revision_summary = await _resumen_revision_10d(session, diagnostic, consulta)
+    dea4_summary = await _resumen_dea_4_niveles_cartagena(session)
     return {
         "estado": diagnostic.get("estado_checkpointer", "DISPONIBLE"),
         "fuente": source,
@@ -259,7 +261,37 @@ async def _evaluacion_pdt_gbr(
         "dictamenes_dependencias": briefs,
         "hoshin_kanri_fair": hoshin_summary,
         "revision_10d_resumen": revision_summary,
+        "dea_4_niveles_cartagena": dea4_summary,
     }
+
+
+async def _resumen_dea_4_niveles_cartagena(session: AsyncSession) -> dict[str, Any]:
+    try:
+        from app.modules.compromisos.pdd_dea_service import (
+            obtener_dea_cartagena_4_niveles,
+            obtener_tablero_dea_cartagena,
+        )
+
+        levels = await obtener_dea_cartagena_4_niveles(db=session)
+        tablero = await obtener_tablero_dea_cartagena(db=session)
+        return {
+            "estado": levels.get("estado", "DISPONIBLE"),
+            "niveles": {
+                name: {
+                    key: value.get(key, 0) for key in ("total_dmus", "eficientes", "ineficientes")
+                }
+                for name, value in (levels.get("niveles") or {}).items()
+            },
+            "alertas_tablero_alcalde": tablero.get("alertas_falso_cumplimiento_nominal", []),
+            "total_alertas_tablero_alcalde": tablero.get(
+                "total_alertas_falso_cumplimiento_nominal", 0
+            ),
+            "benchmarks_armonizacion_presupuestal": tablero.get(
+                "benchmarks_armonizacion_presupuestal", []
+            ),
+        }
+    except Exception as exc:
+        return {"estado": "NO_DISPONIBLE", "detalle": type(exc).__name__}
 
 
 async def _resumen_hoshin_kanri(

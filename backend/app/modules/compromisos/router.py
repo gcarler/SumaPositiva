@@ -44,10 +44,16 @@ from app.modules.compromisos.pdd_dea_service import (
     PddDeaService,
     _cached,
     _read_disk_cache,
+    obtener_dea_cartagena_4_niveles,
+    obtener_tablero_dea_cartagena,
     pre_serialized_response,
 )
 from app.modules.compromisos.pdt_dictamen_ejecutivo import generar_dictamen_ejecutivo_pdt
-from app.modules.compromisos.pdt_persistencia_pg import obtener_historial_auditoria_pdt_pg
+from app.modules.compromisos.pdt_persistencia_pg import (
+    listar_dictamenes_hallazgos_pdt_pg,
+    obtener_historial_auditoria_pdt_pg,
+    registrar_dictamen_hallazgo_pdt_pg,
+)
 from app.modules.compromisos.repository import CompromisosRepository
 from app.modules.compromisos.schemas import (
     ActividadPlanAccionActualizarSeguimiento,
@@ -67,9 +73,14 @@ from app.modules.compromisos.schemas import (
     MatrizPlanAccionRespuesta,
     PdtAiEvaluatorEjecutarRequest,
     PdtAiEvaluatorValidarCheckpointRequest,
+    PdtDea4NivelesCartagenaRespuesta,
     PdtDictamenEjecutivoRespuesta,
+    PdtDictamenesHallazgosRespuesta,
+    PdtDictaminarHallazgoRequest,
+    PdtDictaminarHallazgoRespuesta,
     PdtHistorialAuditoriaRespuesta,
     PdtRevisionPorMetaRespuesta,
+    PdtTableroAlcaldeArmonizacionDeaRespuesta,
     ProcesarLotePlanAccionRespuesta,
     ProcesarLotePlanAccionSolicitud,
     ResumenTriadaRespuesta,
@@ -1129,6 +1140,44 @@ async def pdt_ai_evaluator_historial_auditoria(
     return await obtener_historial_auditoria_pdt_pg(db, thread_id=thread_id, limit=limit)
 
 
+@router.post(
+    "/triada/pdd-dea/pdt-ai-evaluator/revision-por-meta/dictaminar-hallazgo",
+    response_model=PdtDictaminarHallazgoRespuesta,
+    summary="Registrar dictamen y acción PDCA para un hallazgo de meta",
+)
+async def pdt_ai_evaluator_dictaminar_hallazgo(
+    payload: PdtDictaminarHallazgoRequest,
+    db: SessionDependency,
+):
+    try:
+        result = await registrar_dictamen_hallazgo_pdt_pg(**payload.model_dump(), db=db)
+        await db.commit()
+        return result
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+
+@router.get(
+    "/triada/pdd-dea/pdt-ai-evaluator/revision-por-meta/dictamenes-hallazgos",
+    response_model=PdtDictamenesHallazgosRespuesta,
+    summary="Consultar dictámenes de revisión por hallazgo",
+)
+async def pdt_ai_evaluator_listar_dictamenes_hallazgos(
+    db: SessionDependency,
+    codigo_plan: str | None = Query(default=None),
+    codigo_meta: str | None = Query(default=None),
+    estado_revision: str | None = Query(default=None),
+    limit: int = Query(default=100, ge=1, le=500),
+):
+    return await listar_dictamenes_hallazgos_pdt_pg(
+        db=db,
+        codigo_plan=codigo_plan,
+        codigo_meta=codigo_meta,
+        estado_revision=estado_revision,
+        limit=limit,
+    )
+
+
 def _cargar_hoshin_kanri_fns():
     import importlib
 
@@ -1137,6 +1186,35 @@ def _cargar_hoshin_kanri_fns():
         module.obtener_especificacion_hoshin_kanri_pdt,
         module.construir_matriz_x_hoshin_kanri_pdt,
     )
+
+
+@router.get(
+    "/triada/pdd-dea/pdt-ai-evaluator/dea-cartagena/4-niveles",
+    response_model=PdtDea4NivelesCartagenaRespuesta,
+    summary="Evaluación DEA jerárquica de cuatro niveles para Cartagena",
+)
+async def pdt_dea_cartagena_4_niveles(
+    db: SessionDependency,
+    nivel: str | None = Query(default=None),
+    orientacion: str = Query(default="input"),
+    sector: str | None = Query(default=None),
+):
+    return await obtener_dea_cartagena_4_niveles(
+        nivel=nivel, orientacion=orientacion, sector=sector, db=db
+    )
+
+
+@router.get(
+    "/triada/pdd-dea/pdt-ai-evaluator/dea-cartagena/tablero-alcalde-armonizacion",
+    response_model=PdtTableroAlcaldeArmonizacionDeaRespuesta,
+    summary="Alertas de eficiencia y benchmarks para el Tablero Alcalde",
+)
+async def pdt_dea_cartagena_tablero_alcalde(
+    db: SessionDependency,
+    orientacion: str = Query(default="input"),
+    sector: str | None = Query(default=None),
+):
+    return await obtener_tablero_dea_cartagena(orientacion=orientacion, sector=sector, db=db)
 
 
 async def _invocar_hoshin(fn, **kwargs):

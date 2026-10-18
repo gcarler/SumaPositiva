@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 from typing import Any
 
 from app.modules.compromisos.pdt_hoshin_kanri import (
@@ -276,7 +277,7 @@ def test_semaforo_bowling_charts_pdca() -> None:
 
 def test_construir_matriz_x_con_payload_sintetico() -> None:
     diag = _payload_sintetico_hoshin()
-    resultado = construir_matriz_x_hoshin_kanri_pdt(diagnostico=diag)
+    resultado = asyncio.run(construir_matriz_x_hoshin_kanri_pdt(diagnostico=diag))
 
     # Evaluación FAIR
     fair = resultado["evaluacion_fair"]
@@ -325,7 +326,7 @@ def test_construir_matriz_x_con_payload_sintetico() -> None:
 
 
 def test_construir_matriz_x_desde_cache_real_cartagena() -> None:
-    resultado = construir_matriz_x_hoshin_kanri_pdt(diagnostico=None)
+    resultado = asyncio.run(construir_matriz_x_hoshin_kanri_pdt(diagnostico=None))
 
     assert "Cartagena" in resultado["jurisdiction"]
     assert resultado["evaluacion_fair"]["fair_global_index"] > 0.0
@@ -353,11 +354,13 @@ def test_construir_matriz_x_desde_cache_real_cartagena() -> None:
 
 
 def test_filtros_por_dependencia_y_sector_cache_real() -> None:
-    filtrado = construir_matriz_x_hoshin_kanri_pdt(
-        diagnostico=None,
-        codigo_plan="PDD_2012_2015",
-        sector="Educación Pública",
-        dependencia="Secretaría de Educación",
+    filtrado = asyncio.run(
+        construir_matriz_x_hoshin_kanri_pdt(
+            diagnostico=None,
+            codigo_plan="PDD_2012_2015",
+            sector="Educación Pública",
+            dependencia="Secretaría de Educación",
+        )
     )
 
     assert filtrado["filtros_aplicados"]["sector"] == "Educación Pública"
@@ -377,3 +380,88 @@ def test_filtros_por_dependencia_y_sector_cache_real() -> None:
     assert deps_este == ["Secretaría de Educación"]
     assert len(filtrado["catchball_sesiones"]) == 1
     assert filtrado["catchball_sesiones"][0]["dependencia"] == "Secretaría de Educación"
+
+
+def test_articulacion_local_pdl_consulta_planes_metas_y_ucgs():
+    class Result:
+        def __init__(self, rows):
+            self.rows = rows
+
+        def mappings(self):
+            return self
+
+        def all(self):
+            return self.rows
+
+    class Db:
+        async def execute(self, statement, params=None):
+            sql = str(statement)
+            if "planes_desarrollo_distrital" in sql:
+                return Result(
+                    [
+                        {
+                            "codigo_plan": f"PDL_{i}_2024_2027",
+                            "nombre_oficial": f"PDL {i}",
+                            "ppi_total_corriente_cop": i * 1000,
+                            "total_lineas": i * 2,
+                            "total_metas": [100, 150, 151][i - 1],
+                        }
+                        for i in range(1, 4)
+                    ]
+                )
+            if "SELECT codigo_plan,codigo,nombre,indicador,linea_nombre" in sql:
+                return Result(
+                    [
+                        {
+                            "codigo_plan": f"PDL_{i}_2024_2027",
+                            "codigo": f"M{i}",
+                            "nombre": f"Meta local {i}",
+                            "indicador": "Cobertura",
+                            "linea_nombre": "Salud",
+                        }
+                        for i in range(1, 4)
+                    ]
+                )
+            if "WHERE codigo_plan='PDD_2024_2027'" in sql:
+                return Result(
+                    [
+                        {
+                            "nombre": "Meta local salud",
+                            "indicador": "Cobertura",
+                            "linea_nombre": "Salud",
+                        }
+                    ]
+                )
+            return Result(
+                [
+                    {
+                        "codigo": f"UCG-{i:02d}",
+                        "nombre": f"UCG {i}",
+                        "tipo_territorio": "UCG",
+                        "metadatos": {},
+                    }
+                    for i in range(1, 16)
+                ]
+            )
+
+    diag = _payload_sintetico_hoshin()
+    diag["spatial_lisa"]["coldspots"] = ["UCG-06"]
+    result = asyncio.run(construir_matriz_x_hoshin_kanri_pdt(diagnostico=diag, db=Db()))
+    articulation = result["articulacion_distrital_local_pdl"]
+    assert articulation["estado"] == "DISPONIBLE"
+    assert articulation["total_planes_locales"] == 3
+    assert articulation["total_metas_pdl"] == 401
+    assert articulation["ppi_total_locales_cop"] == 6000
+    assert len(articulation["localidades"]) == 3
+    assert [len(row["ucgs_territoriales"]) for row in articulation["localidades"]] == [5, 5, 5]
+    assert articulation["localidades"][1]["coldspots_lisa_en_localidad"] == 1
+    assert (
+        len(
+            [
+                row
+                for row in result["catchball_sesiones"]
+                if row.get("tipo") == "DISTRITAL_LOCAL_PDL"
+            ]
+        )
+        == 3
+    )

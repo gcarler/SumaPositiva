@@ -87,6 +87,50 @@ def test_revision_por_meta_route_normalizes_legacy_builder(monkeypatch):
     assert result["matriz_metas"][0]["codigo_meta"] == "M1"
 
 
+def test_dea_cartagena_routes_delegate_orientations_and_tablero(monkeypatch):
+    calls = []
+
+    async def levels(**kwargs):
+        calls.append(("levels", kwargs))
+        return {
+            "estado": "OK",
+            "orientacion": kwargs["orientacion"],
+            "niveles": {"nivel_1_territorial_localidades_ucg": {"total_dmus": 3}},
+        }
+
+    async def dashboard(**kwargs):
+        calls.append(("dashboard", kwargs))
+        return {
+            "estado": "OK",
+            "total_alertas_falso_cumplimiento_nominal": 1,
+            "benchmarks_armonizacion_presupuestal": [{"theta_bcc": 1.0}],
+        }
+
+    monkeypatch.setattr(router, "obtener_dea_cartagena_4_niveles", levels)
+    monkeypatch.setattr(router, "obtener_tablero_dea_cartagena", dashboard)
+    assert (
+        asyncio.run(router.pdt_dea_cartagena_4_niveles(object(), None, "input", None))[
+            "orientacion"
+        ]
+        == "input"
+    )
+    assert (
+        asyncio.run(router.pdt_dea_cartagena_4_niveles(object(), None, "output", None))[
+            "orientacion"
+        ]
+        == "output"
+    )
+    result = asyncio.run(router.pdt_dea_cartagena_tablero_alcalde(object(), "input", None))
+    assert result["total_alertas_falso_cumplimiento_nominal"] == 1
+    assert len(calls) == 3
+    paths = {route.path for route in router.router.routes}
+    assert "/compromisos/triada/pdd-dea/pdt-ai-evaluator/dea-cartagena/4-niveles" in paths
+    assert (
+        "/compromisos/triada/pdd-dea/pdt-ai-evaluator/dea-cartagena/tablero-alcalde-armonizacion"
+        in paths
+    )
+
+
 def test_system_prompt_matches_knowledge_specification():
     from pathlib import Path
 

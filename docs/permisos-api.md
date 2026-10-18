@@ -130,6 +130,8 @@ La última columna explica la excepción pública o la condición adicional.
 | GET | /api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/especificacion | publico | Especificación arquitectónica y metodológica GBR, cadena de valor pública, grafo LangGraph, ecuaciones LaTeX, matriz de 5 sectores y SYSTEM_INSTRUCTIONS_PDT_AI_EVALUATOR. |
 | GET | /api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/hoshin-kanri/especificacion | publico | Especificación de Hoshin Kanri y reglas de construcción de la Matriz X para PDT. |
 | GET | /api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/hoshin-kanri/matriz-x | publico | Matriz X Hoshin Kanri filtrable por plan, sector y dependencia; permite forzar actualización de caché. |
+| GET | /api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/dea-cartagena/4-niveles | publico | Evaluación DEA jerárquica por niveles territoriales, institucionales, operativos y temporales; admite nivel, orientación y sector. |
+| GET | /api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/dea-cartagena/tablero-alcalde-armonizacion | publico | Alertas de cumplimiento físico con baja eficiencia y benchmarks DEA para armonización presupuestal. |
 | GET | /api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/diagnostico | publico | Diagnóstico multidimensional PDT-AI-EVALUATOR (DEA CCR/BCC/Malmquist/Bootstrap, NLP BERTopic/c-TF-IDF/Coseno, LISA/Moran, ARIMA/Chow/ISRI y Checkpointer). |
 | GET | /api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/dictamen-ejecutivo | publico | Dictamen pericial ejecutivo por dependencia y sector GBR, con trazabilidad DEA, Malmquist, coherencia NLP, alertas territoriales e indicadores críticos. |
 | POST | /api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/ejecutar | publico | Ejecución parametrizada del grafo de estados LangGraph PDT-AI-EVALUATOR sobre el corpus de Planes de Desarrollo. |
@@ -408,3 +410,5 @@ El listado público existente sigue mostrando líneas activas. No se conceden nu
 | Método | Ruta | Control | Motivo o condición |
 | --- | --- | --- | --- |
 | GET | /api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/revision-por-meta | publico | Dictamen de metas del PDD con revisión de diez dimensiones y siete roles revisores. |
+| POST | /api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/revision-por-meta/dictaminar-hallazgo | publico | Registro auditable por hallazgo, con acción correctiva PDCA, responsable y hash SHA-256. |
+| GET | /api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/revision-por-meta/dictamenes-hallazgos | publico | Consulta de dictámenes individuales de hallazgos con filtros por plan, meta y estado. |

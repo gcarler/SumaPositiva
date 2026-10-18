@@ -1,47 +1,46 @@
-# Resultado de Ejecución AGY2 — Fase `[28B]` (`PDT-CONSISTENCIA-SERIE-T1-T4-SENTIDO-META-REGRESIVA-28B`)
+# Reporte de Ejecucion AGY2 — Fase `[30B]` (`100% Backend`)
 
-- **Fecha / Hora UTC:** 2026-10-18T19:14:25Z
-- **Agente:** `agy2` (Backend Python: Motor Plan de Acción DNP + Revisión 10D por Meta + Cierre Documental)
-- **Estado:** **COMPLETADO AL 100% (`0` errores `ruff`, `15 passed` en `pytest`)**
-
----
-
-## 1. Archivos Modificados Exclusivamente dentro del Alcance `[28B]`
-
-1. `backend/app/modules/compromisos/service.py`
-   - Se implementó la función determinista pública `auditar_consistencia_serie_y_sentido_indicador(registro: dict[str, Any]) -> dict[str, Any]` (expuesta también como `CompromisosService.auditar_consistencia_serie_y_sentido_indicador`) e integrada de forma 100% retrocompatible en `procesar_lote_plan_accion`:
-     - **`sentido_indicador`**: Clasifica en `"ASCENDENTE"`, `"DESCENDENTE"` o `"MANTENIMIENTO"` a partir del texto del indicador, meta o actividad.
-     - **`consistencia_trimestral_t1_t4`**: Extrae `avance_t1..avance_t4`, `meta_valor_vigencia` y `porcentaje_avance_fisico` preservando estrictamente `0.0` observado (`is not None`) separado de `None`. Calcula `trimestres_reportados_count`, `trimestres_en_cero_observado_count`, `suma_trimestral` y `max_trimestral`, y detecta `inconsistencia_aritmetica_trimestral` y `detalle_inconsistencia_trimestral`.
-     - **`evaluacion_linea_base_vs_meta`**: Evalúa `linea_base` frente a `meta_cuatrienio` / `meta_valor_vigencia` según `sentido_indicador`, detectando `meta_regresiva: True` cuando un indicador `ASCENDENTE` tiene `meta < linea_base` o cuando un indicador `DESCENDENTE` tiene `meta > linea_base`.
-     - **`formula_documental_explicita`**: Verifica si un indicador expresado en porcentaje/tasa/índice explicita numerador/denominador o referencia metodológica.
-
-2. `backend/app/modules/compromisos/pdt_revision_por_meta.py`
-   - Se importó e invocó `auditar_consistencia_serie_y_sentido_indicador` dentro de `_evaluar_meta_individual` para enriquecer:
-     - `dim_2_formulacion`: incluye `sentido_indicador_detectado`, `meta_regresiva`, `formula_documental_explicita` y `evaluacion_linea_base_vs_meta`.
-     - `dim_6_ejecucion_fisica`: incluye `consistencia_trimestral_t1_t4` consolidada sobre las actividades del Plan de Acción vinculadas a la meta y/o el registro de seguimiento.
-     - `revisor_formulacion` y `conciliador_ejecucion`: enriquecidos con `meta_regresiva`, `sentido_indicador_detectado`, `formula_documental_explicita`, `inconsistencia_aritmetica_trimestral` y generación de hallazgos canónicos (`REGLA_META_REGRESIVA_VS_LINEA_BASE` y `REGLA_INCONSISTENCIA_ARITMETICA_TRIMESTRAL_T1_T4`).
-
-3. `revision_motores_18_10_2026.md`
-   - Se añadió al final la **Sección 9: Estado de Implementación y Verificación EAF (`Fases [25A]–[28B]`)**, documentando la matriz de cierre técnico de los hallazgos `H1–H12`, la Matriz Auditable de 10 Dimensiones y 7 Revisores (`pdt_revision_por_meta.py`), el Modelo Hoshin Kanri (`pdt_hoshin_kanri.py`), la auditoría trimestral `T1–T4` y sentido de indicador (`service.py`), y la persistencia enriquecida en PostgreSQL (`pdt_persistencia_pg.py`).
-
-4. `backend/tests/test_motor_plan_accion_dnp.py` y `backend/tests/test_pdt_revision_por_meta.py`
-   - Se añadieron las pruebas `test_auditar_consistencia_serie_y_sentido_indicador_casos_dnp` y `test_revision_por_meta_integra_consistencia_trimestral_y_meta_regresiva`, completando **15 pruebas aprobadas**.
+**Fecha:** 2026-10-18  
+**Agente:** `agy2` (Subagente Backend Especialista)  
+**Estado:** **COMPLETADO AL 100%** (`ruff check` limpio, `6 passed in 4.28s` en `pytest`)
 
 ---
 
-## 2. Evidencia de Verificación (`ruff` + `pytest`)
+## 1. Archivos Creados / Modificados (Exclusivamente Backend y Knowledge Base)
+
+1. **`backend/app/modules/compromisos/pdt_dea_4niveles_cartagena.py` (NUEVO):**
+   - **Motor Econometrico `PuLP` en Dos Etapas (`HiGHS`/`CBC`):**
+     - `calcular_dea_bcc_input(df_dmus, inputs_cols, outputs_cols)`
+     - `calcular_dea_bcc_output(df_dmus, inputs_cols, outputs_cols)`
+     - `calcular_dea_ccr_y_escala(df_dmus, inputs_cols, outputs_cols, orientacion="input")`
+     - `calcular_malmquist_panel(df_t0, df_t1, inputs_cols, outputs_cols)`
+     - Calcula puntajes radiales (`theta_ccr`, `theta_bcc`, `phi_bcc`, `theta_output`), eficiencia de escala (`eficiencia_escala_se = theta_ccr / theta_bcc`), clasificacion de rendimientos a escala (`CRS_OPTIMO`, `IRS_SUBINVERSION`, `DRS_SATURACION_PRESUPUESTAL`), holguras de insumos `holguras_insumos_s_minus` ($S^-$ en COP y unidades fisicas), holguras de productos `holguras_productos_s_plus` ($S^+$ deficit de producto/resultado), pesos `pesos_lambda` y `benchmarks_referencia` ($\theta_{\text{BCC}} = 1.0, \lambda_j > 0$).
+   - **Las 4 Fronteras DEA Homogeneas e Independientes de Cartagena (`evaluar_dea_4_niveles_cartagena`):**
+     - **Nivel 1 (`nivel_1_territorial_localidades_ucg`):** Frontera A (`localidades_distritales`: las 3 Localidades Distritales con `PDL_1..3_2024_2027`) y Frontera B (`unidades_comuneras_gobierno_ucg`: las 15 UCGs `UCG-01`..`UCG-15` desde `geodatos.territorios` e `indicadores_territorio` en `bd_csh`).
+     - **Nivel 2 (`nivel_2_institucional_secretarias`):** Secretarias y Entes Descentralizados de Cartagena (`SED`, `DADIS`, `Secretaría de Infraestructura Distrital`, `Transcaribe S.A.`, `PES Pedro Romero`, `Gerencia de Espacio Público y Movilidad`, `EPA Cartagena`, `Secretaría de Participación`, `Secretaría del Interior`).
+     - **Nivel 3 (`nivel_3_operativo_ieo_ese`):** Frontera A (`instituciones_educativas_oficiales_ieo`, universo `105 IEO` con presupuesto SGR/PAE `"Me Quedo Porque Me Quedo"`, planta docente y logro `SABER 11`) y Frontera B (`centros_salud_ese_cartagena`, Hospitales Locales y CAP de la `ESE Hospital Local Cartagena de Indias`).
+     - **Nivel 4 (`nivel_4_temporal_inter_cuatrienial`):** Vigencias anuales `2020–2027`, comparativa inter-cuatrienial `PDD 2012–2015`, `PDD 2016–2019`, `PDD 2020–2023 ($6.02B)` vs `PDD 2024–2027 ($12.80B)` y descomposicion dinamica de **Malmquist (`MPI = Catch_up * Frontier_shift`)**.
+     - Incluye `mapeo_cadena_valor_mga_mir_sectorial` (`Educación Pública`, `Salud Pública`, `Infraestructura Vial y Movilidad`).
+   - **Gobernanza del Seguimiento Institucional (`generar_tablero_alcalde_y_armonizacion_dea_cartagena` y `recalificar_unidad_tablero_alcalde`):**
+     - `retroalimentacion_matriz_resultados_spd`: Filas con $\theta_{\text{CCR}}$, $\theta_{\text{BCC}}$, $SE_o$, holgura presupuestal $S^-$ (COP), deficit de producto $S^+$ y `benchmarks`.
+     - `tablero_alcalde_y_programas`: Recalifica vinculantemente cualquier unidad con alto avance fisico nominal ($\ge 85\%$ o $100\%$) pero $\theta_{\text{BCC}} \le 0.70$ (ej. `Secretaría de Infraestructura Distrital` con `100%` fisico y $\theta_{\text{BCC}} = 0.65$) de `"MUY_ALTO_SOBRESALIENTE"` a **`"ALERTA_INEFICIENCIA_FINANCIERA_DESPERDICIO"`**, cuantificando el exceso presupuestal $S^-$ en COP.
+     - `armonizacion_presupuestal_plurianual`: Empareja cada unidad ineficiente ($\theta_{\text{BCC}} < 1.0$) con sus **Benchmarks Oficiales ($\theta_{\text{BCC}} = 1.0$)** y cuantifica el presupuesto total reasignable.
+
+2. **`backend/tests/test_pdt_dea_4niveles_cartagena.py` (NUEVO):**
+   - 6 pruebas integrales verificando solver `PuLP` Input/Output y holguras $S^-/S^+$, separacion estricta de las 4 fronteras homogeneas (`interseccion_dmus_entre_fronteras == 0`), mapeo MGA-DNP/MIR sectorial, disparo de `"ALERTA_INEFICIENCIA_FINANCIERA_DESPERDICIO"` con `100%` de avance y $\theta_{\text{BCC}} = 0.65$, Armonizacion Presupuestal con `benchmarks` ($\theta = 1.0$) e Indice de Malmquist en el Nivel 4.
+
+3. **`knowledge-base/00_INDICE_MAESTRO.md` (ACTUALIZADO):**
+   - Registrado el Modulo **15** (`15_ARQUITECTURA_DEA_4_NIVELES_DMU_GOBERNANZA_CARTAGENA.md`) y el Principio Rector #8.
+
+---
+
+## 2. Verificacion de Calidad (`ruff` y `pytest`)
 
 ```text
-$ /root/polis/backend/.venv/bin/ruff check backend/app/modules/compromisos/service.py backend/app/modules/compromisos/pdt_revision_por_meta.py backend/tests/test_motor_plan_accion_dnp.py backend/tests/test_pdt_revision_por_meta.py
+$ /root/polis/backend/.venv/bin/ruff check backend/app/modules/compromisos/pdt_dea_4niveles_cartagena.py backend/tests/test_pdt_dea_4niveles_cartagena.py
 All checks passed!
 
-$ /root/polis/backend/.venv/bin/pytest backend/tests/test_motor_plan_accion_dnp.py backend/tests/test_pdt_revision_por_meta.py -q
-...............                                                          [100%]
-15 passed, 1 warning in 13.07s
+$ /root/polis/backend/.venv/bin/pytest backend/tests/test_pdt_dea_4niveles_cartagena.py -q
+......                                                                   [100%]
+6 passed in 4.28s
 ```
-
----
-
-## 3. Cumplimiento de Restricciones de Frontera
-- **Cero modificaciones** en `src/**` (Frontend).
-- **Cero modificaciones** en `agentes_inteligentes_pdd.py`, `pdd_dea_service.py`, `test_agentes_inteligentes_pdd.py` o `test_pdd_dea_triada.py`.

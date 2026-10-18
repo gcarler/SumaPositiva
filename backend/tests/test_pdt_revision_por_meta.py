@@ -393,3 +393,75 @@ def test_revision_por_meta_integra_consistencia_trimestral_y_meta_regresiva() ->
     assert "REGLA_META_REGRESIVA_VS_LINEA_BASE" in reglas
     assert "REGLA_INCONSISTENCIA_ARITMETICA_TRIMESTRAL_T1_T4" in reglas
 
+
+def test_conciliar_y_poblar_vinculos_meta_pa_triada_bd_csh() -> None:
+    from app.modules.compromisos.pdt_conciliador_vinculos_pa_triada import (
+        TIPOS_VINCULO_CANONICOS,
+        conciliar_y_poblar_vinculos_meta_pa_triada,
+    )
+
+    res = conciliar_y_poblar_vinculos_meta_pa_triada(codigo_plan=None)
+    assert res["tabla"] == "seguimiento.pdd_vinculos_meta_pa_triada"
+    assert res["metas_conciliadas"] >= 1647
+    assert res["total_filas_en_bd"] >= 1647
+    dist_plan = res["distribucion_por_plan"]
+    assert dist_plan["PDD_2024_2027"] == 1246
+    assert (
+        dist_plan["PDL_1_2024_2027"]
+        + dist_plan["PDL_2_2024_2027"]
+        + dist_plan["PDL_3_2024_2027"]
+        == 401
+    )
+    dist_tipo = res["distribucion_por_tipo_vinculo"]
+    assert set(dist_tipo.keys()).issubset(set(TIPOS_VINCULO_CANONICOS.keys()))
+    assert res["ceros_observados_preservados_count"] > 0
+
+
+def test_matriz_revision_por_meta_expone_tipo_vinculo_y_confianza() -> None:
+    from app.modules.compromisos.pdt_conciliador_vinculos_pa_triada import (
+        TIPOS_VINCULO_CANONICOS,
+    )
+
+    resultado = construir_matriz_revision_por_meta_pdt(
+        codigo_plan="PDD_2024_2027",
+        limit=25,
+        datos_entrada=None,
+    )
+    assert len(resultado["metas_auditadas"]) == 25
+    for m in resultado["metas_auditadas"]:
+        tv = m["tipo_vinculo_pa_triada"]
+        sc = m["score_confianza_vinculo"]
+        assert tv in TIPOS_VINCULO_CANONICOS
+        assert 0.0 <= sc <= 1.0
+        dims = m["evaluacion_10_dimensiones"]
+        for d_key in (
+            "cadena_resultados",
+            "operacionalizacion",
+            "viabilidad_financiera",
+            "ejecucion_fisica",
+            "ejecucion_financiera",
+        ):
+            assert dims[d_key]["tipo_vinculo_pa_triada"] == tv
+            assert dims[d_key]["score_confianza_vinculo"] == sc
+        rev_art = m["dictamen_7_revisores"]["revisor_articulacion"]
+        assert rev_art["tipo_vinculo_pa_triada"] == tv
+        assert rev_art["score_confianza_vinculo"] == sc
+        assert isinstance(rev_art["es_vinculo_exacto"], bool)
+        assert isinstance(rev_art["es_vinculo_inferido"], bool)
+
+
+def test_matriz_revision_por_meta_plan_desarrollo_local_pdl_1() -> None:
+    resultado = construir_matriz_revision_por_meta_pdt(
+        codigo_plan="PDL_1_2024_2027",
+        limit=20,
+        datos_entrada=None,
+    )
+    assert resultado["codigo_plan"] == "PDL_1_2024_2027"
+    assert resultado["total_metas_plan"] == 110
+    assert resultado["metas_devueltas"] == 20
+    primera = resultado["metas_auditadas"][0]
+    assert primera["codigo_plan"] == "PDL_1_2024_2027"
+    assert "tipo_vinculo_pa_triada" in primera
+    assert "score_confianza_vinculo" in primera
+
+

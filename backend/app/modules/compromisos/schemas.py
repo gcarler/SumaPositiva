@@ -462,6 +462,14 @@ class HoshinKanriMatrizXRespuesta(BaseModel):
     model_config = ConfigDict(extra="allow")
 
 
+class PdtDea4NivelesCartagenaRespuesta(BaseModel):
+    model_config = ConfigDict(extra="allow")
+
+
+class PdtTableroAlcaldeArmonizacionDeaRespuesta(BaseModel):
+    model_config = ConfigDict(extra="allow")
+
+
 class PdtRevisionPorMetaRespuesta(BaseModel):
     model_config = ConfigDict(extra="allow")
 
@@ -484,6 +492,54 @@ class PdtHistorialAuditoriaRespuesta(BaseModel):
     limite: int = 50
     total_evaluaciones: int = 0
     total_checkpoints_hitl: int = 0
+    total_dictamenes_hallazgos: int = 0
     evaluaciones: list[dict[str, Any]] = Field(default_factory=list)
     checkpoints_hitl: list[dict[str, Any]] = Field(default_factory=list)
+    dictamenes_hallazgos: list[dict[str, Any]] = Field(default_factory=list)
     consultado_en: str
+
+
+class PdtDictaminarHallazgoRequest(BaseModel):
+    model_config = ConfigDict(extra="allow")
+
+    id_hallazgo: str = Field(min_length=1, max_length=160)
+    codigo_plan: str = Field(default="PDD_2024_2027", min_length=1, max_length=64)
+    codigo_meta: str = Field(min_length=1, max_length=128)
+    dependencia: str | None = Field(default=None, max_length=255)
+    estado_revision: Literal[
+        "PENDIENTE_REVISION_HUMANA",
+        "VERIFICADO",
+        "EN_SUBSANACION_PDCA",
+        "SUBSANADO",
+        "DESESTIMADO_CON_EVIDENCIA",
+    ]
+    responsable: str = Field(min_length=1, max_length=255)
+    accion_correctiva_pdca: str = Field(min_length=1)
+    evidencia_subsanacion: str | None = None
+    auditor: str = Field(min_length=1, max_length=160)
+
+
+class PdtDictaminarHallazgoRespuesta(BaseModel):
+    model_config = ConfigDict(extra="allow")
+
+    id: str
+    id_hallazgo: str
+    codigo_plan: str
+    codigo_meta: str
+    dependencia: str | None = None
+    estado_revision: str
+    responsable: str
+    accion_correctiva_pdca: str
+    evidencia_subsanacion: str | None = None
+    auditor: str
+    sha256_dictamen: str
+    creado_en: str | None = None
+
+
+class PdtDictamenesHallazgosRespuesta(BaseModel):
+    model_config = ConfigDict(extra="allow")
+
+    total_dictamenes: int = 0
+    limite: int = 100
+    filtros_aplicados: dict[str, Any] = Field(default_factory=dict)
+    dictamenes_hallazgos: list[dict[str, Any]] = Field(default_factory=list)

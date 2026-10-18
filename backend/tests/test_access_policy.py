@@ -105,7 +105,14 @@ def test_matriz_cubre_todas_las_rutas_y_sus_controles():
                     ("POST", "/api/v1/compromisos/triada/pdd-dea/consultar-agentes-pdd"),
                     ("POST", "/api/v1/compromisos/triada/pdd-dea/interpretar-fragmento-pdd"),
                     ("POST", "/api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/ejecutar"),
-                    ("POST", "/api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/checkpoint/validar"),
+                    (
+                        "POST",
+                        "/api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/checkpoint/validar",
+                    ),
+                    (
+                        "POST",
+                        "/api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/revision-por-meta/dictaminar-hallazgo",
+                    ),
                     ("GET", "/api/v1/compromisos/triada/lotes"),
                     ("GET", "/api/v1/compromisos/triada/comparativa-interanual"),
                 }, "Una escritura pública nueva requiere decisión explícita y pruebas"

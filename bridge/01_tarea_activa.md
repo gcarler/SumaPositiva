@@ -1,45 +1,73 @@
-# Orden de Trabajo EAF (`=agy:0.0`) para `agy2` (`=agy2:0.0`) — Fase `[28B]` (100% BACKEND)
+# Orden de Trabajo EAF (`=agy:0.0`) para `agy2` (`=agy2:0.0`) — Fase `[30B]` (100% BACKEND)
 
-**Estado de `[27B]`:** **APROBADO** en `/root/polis/bridge/03_dictamen_revision.md`.
+**Estado de `[29B]`:** **APROBADO** en `/root/polis/bridge/03_dictamen_revision.md` (`10 passed`, `1,647` filas en `seguimiento.pdd_vinculos_meta_pa_triada`, `ruff` limpio).
+**Doctrina de Referencia:** `/root/polis/knowledge-base/15_ARQUITECTURA_DEA_4_NIVELES_DMU_GOBERNANZA_CARTAGENA.md` y `/root/polis/bridge/00_plan_dea_4niveles_cartagena_30.md`.
 
 **RESTRICCIÓN ABSOLUTA DE ALCANCE:**
-- **100% BACKEND (`backend/app/modules/compromisos/service.py`, `backend/app/modules/compromisos/pdt_revision_por_meta.py`, `backend/tests/test_motor_plan_accion_dnp.py`, `backend/tests/test_pdt_revision_por_meta.py`, `revision_motores_18_10_2026.md`).**
+- **100% BACKEND (`backend/app/modules/compromisos/pdt_dea_4niveles_cartagena.py`, `backend/tests/test_pdt_dea_4niveles_cartagena.py`, `knowledge-base/00_INDICE_MAESTRO.md`).**
 - **PROHIBIDO TOCAR `src/**` (Frontend) bajo ninguna circunstancia.**
-- **PROHIBIDO TOCAR `agentes_inteligentes_pdd.py`, `pdd_dea_service.py`, `test_agentes_inteligentes_pdd.py` o `test_pdd_dea_triada.py`** (esos archivos están asignados en paralelo a `codex` en la Fase `[28A]`).
+- **PROHIBIDO TOCAR `router.py`, `schemas.py`, `pdd_dea_service.py`, `agentes_inteligentes_pdd.py`, `docs/permisos-api.md`, `test_pdt_ai_evaluator.py` o `test_agentes_inteligentes_pdd.py`** (esos archivos pertenecen a `codex` en `[30A]`).
 
 ---
 
-## Objetivo de la Fase `[28B]` (`agy2`)
-Implementar las mejoras estructurales de la **Sección 4.2** y el cierre documental de `/root/polis/revision_motores_18_10_2026.md`:
+## Objetivo de la Fase `[30B]` (`agy2`)
+Implementar el motor econométrico completo `backend/app/modules/compromisos/pdt_dea_4niveles_cartagena.py` y su suite de pruebas `backend/tests/test_pdt_dea_4niveles_cartagena.py` conforme a `/root/polis/knowledge-base/15_ARQUITECTURA_DEA_4_NIVELES_DMU_GOBERNANZA_CARTAGENA.md`:
 
-### 1. Validación Aritmética Trimestral (`T1–T4`), Sentido del Indicador y Línea Base vs. Meta en `service.py` (Sección 4.2)
-- En `backend/app/modules/compromisos/service.py` (donde residen las funciones del motor de validación DNP/MGA/CREMA de Planes de Acción, probadas en `backend/tests/test_motor_plan_accion_dnp.py`):
-  1. Crea una función pública determinista `auditar_consistencia_serie_y_sentido_indicador(registro: dict[str, Any]) -> dict[str, Any]` (e intégrala de forma 100% retrocompatible en el flujo de validación / procesamiento de Plan de Acción en `service.py`) que audite:
-     - **`sentido_indicador`**: Clasifica en `"ASCENDENTE"`, `"DESCENDENTE"` o `"MANTENIMIENTO"` a partir del texto del indicador, meta o actividad (`reducir`, `disminuir`, `mortalidad`, `deserción`, `pobreza`, `homicidios`, `embarazo adolescente`, `deforestación` -> `DESCENDENTE`; `mantener`, `conservar`, `sostener` -> `MANTENIMIENTO`; por defecto `ASCENDENTE`).
-     - **`consistencia_trimestral_t1_t4`**:
-       - Extrae `avance_t1`, `avance_t2`, `avance_t3`, `avance_t4`, `meta_valor_vigencia` y `porcentaje_avance_fisico` preservando estrictamente `0.0` observado (`is not None`) separado de `None`.
-       - Calcula `trimestres_reportados_count`, `trimestres_en_cero_observado_count`, `suma_trimestral` y `max_trimestral`.
-       - Detecta y marca `inconsistencia_aritmetica_trimestral: bool` y `detalle_inconsistencia_trimestral` cuando:
-         - Todos los trimestres reportados son `0.0` pero `porcentaje_avance_fisico > 0.0` (avance porcentual sin respaldo en cortes trimestrales), o
-         - `suma_trimestral > 0` y `meta_valor_vigencia > 0`, pero `porcentaje_avance_fisico == 0.0`, o
-         - `porcentaje_avance_fisico > 100.0` sin nota de sobrecumplimiento.
-     - **`evaluacion_linea_base_vs_meta`**:
-       - Si existen `linea_base` y `meta_cuatrienio` (o `meta_valor_vigencia`), evalúa si la meta es consistente con el `sentido_indicador`:
-         - Marca `meta_regresiva: True` cuando `sentido_indicador == "ASCENDENTE"` y `meta < linea_base` (en indicadores acumulativos/de nivel) o cuando `sentido_indicador == "DESCENDENTE"` y `meta > linea_base`.
-     - **`formula_documental_explicita`**:
-       - Verifica si un indicador expresado en porcentaje/tasa/índice explicita numerador/denominador o referencia metodológica.
+### 1. Motor Econométrico `PuLP` en Dos Etapas (`pdt_dea_4niveles_cartagena.py`)
+1. Implementa el solver lineal no paramétrico con `PuLP` (`CBC`/`HiGHS`) soportando **ambas orientaciones**:
+   - `calcular_dea_bcc_input(df_dmus, inputs_cols, outputs_cols)` y `calcular_dea_bcc_output(df_dmus, inputs_cols, outputs_cols)` + `calcular_dea_ccr_y_escala(...)`:
+     - **Orientación a Insumos (`input`):** $\min \theta - \varepsilon(\sum s_i^- + \sum s_r^+)$ s.a. $\sum \lambda_j X_{ij} + s_i^- = \theta X_{io}$, $\sum \lambda_j Y_{rj} - s_r^+ = Y_{ro}$, $\sum \lambda_j = 1$ (BCC) o libre (CCR).
+     - **Orientación a Productos (`output`):** $\max \phi + \varepsilon(\sum s_i^- + \sum s_r^+)$ s.a. $\sum \lambda_j X_{ij} + s_i^- = X_{io}$, $\sum \lambda_j Y_{rj} - s_r^+ = \phi Y_{ro}$, $\sum \lambda_j = 1$, reportando $\phi \ge 1.0$ y $\theta_{\text{out}} = 1.0 / \phi \in (0, 1]$.
+     - Devuelve para cada DMU: `theta_ccr`, `theta_bcc`, `eficiencia_escala_se` ($SE_o = \theta^{\text{CCR}} / \theta^{\text{BCC}}$), `rendimientos_escala` (`CRS_OPTIMO`, `IRS_SUBINVERSION`, `DRS_SATURACION_PRESUPUESTAL`), `holguras_insumos_s_minus` (en COP y unidades físicas), `holguras_productos_s_plus` (déficit de producto/resultado), `pesos_lambda` y `benchmarks_referencia` (DMUs eficientes con $\theta_{\text{BCC}} = 1.0$ y $\lambda_j > 0$).
 
-### 2. Integración en `pdt_revision_por_meta.py`
-- Importa e invoca `auditar_consistencia_serie_y_sentido_indicador` dentro de `backend/app/modules/compromisos/pdt_revision_por_meta.py` para enriquecer:
-  - `dim_2_formulacion` (incluyendo `sentido_indicador_detectado`, `meta_regresiva`, `formula_documental_explicita`),
-  - `dim_6_ejecucion_fisica` (incluyendo `consistencia_trimestral_t1_t4` sobre las actividades del Plan de Acción vinculadas a la meta), y
-  - `revisor_formulacion` / `conciliador_ejecucion` (generando hallazgo canónico si se detecta `inconsistencia_aritmetica_trimestral` o `meta_regresiva`).
+2. **Las 4 Fronteras DEA Homogéneas e Independientes de Cartagena (`evaluar_dea_4_niveles_cartagena`):**
+   Firma requerida (compatible con `router.py` de `[30A]`):
+   ```python
+   def evaluar_dea_4_niveles_cartagena(
+       nivel: str | None = None,
+       orientacion: str = "input",
+       sector: str | None = None,
+       db: Any = None,
+       **kwargs: Any,
+   ) -> dict[str, Any]
+   ```
+   Construye y evalúa por separado (alimentándose de `bd_csh`: `planes_desarrollo_distrital`, `pdd_vinculos_meta_pa_triada`, `registros_triada_normalizados`, `geodatos.territorios`, `geodatos.indicadores_territorio` y microdatos sectoriales oficiales de Cartagena):
+   - **Nivel 1 (`nivel_1_territorial_localidades_ucg`):**
+     - Frontera A (`localidades_distritales`): Las 3 Localidades (`Localidad 1: Histórica y del Caribe Norte` con `PDL_1_2024_2027`, `Localidad 2: De la Virgen y Turística` con `PDL_2_2024_2027`, `Localidad 3: Industrial y de la Bahía` con `PDL_3_2024_2027`).
+     - Frontera B (`unidades_comuneras_gobierno_ucg`): Las 15 UCGs (`UCG-01`..`UCG-15`).
+   - **Nivel 2 (`nivel_2_institucional_secretarias`):**
+     - Secretarías y Entes Descentralizados de Cartagena (`SED` Educación, `DADIS` Salud, `Secretaría de Infraestructura`, `Transcaribe S.A.`, `PES Pedro Romero`, `Gerencia de Espacio Público`, `EPA Cartagena`, y demás dependencias ejecutoras en `bd_csh`).
+   - **Nivel 3 (`nivel_3_operativo_ieo_ese`):**
+     - Frontera A (`instituciones_educativas_oficiales_ieo`): Panel representativo y auditable de las Instituciones Educativas Oficiales (`IEO`) de las 3 Localidades de Cartagena (evaluando presupuesto/aulas/docentes vs. sedes dotadas, PAE `"Me Quedo Porque Me Quedo"`, cupos y logro `SABER 11` / retención escolar).
+     - Frontera B (`centros_salud_ese_cartagena`): Centros de Salud / Hospitales Locales de la `ESE Hospital Local Cartagena de Indias` (evaluando presupuesto/personal médico vs. población vulnerable atendida, valoraciones de discapacidad, vacunación y salud materno-infantil).
+   - **Nivel 4 (`nivel_4_temporal_inter_cuatrienial`):**
+     - Vigencias fiscales `2020–2027` y comparativa inter-cuatrienial entre `PDD 2020–2023 ("Salvemos Juntos a Cartagena", $6.02B)` y `PDD 2024–2027 ("Cartagena, Ciudad de Derechos", $12.80B)` + serie `2012–2027`, incluyendo descomposición dinámica de **Malmquist (`MPI = Catch_up * Frontier_shift`)**.
+   - Incluye el bloque `mapeo_cadena_valor_mga_mir_sectorial` con los 3 sectores canónicos (`Educación Pública`, `Salud Pública`, `Infraestructura Vial y Movilidad`).
 
-### 3. Cierre Documental en `revision_motores_18_10_2026.md`
-- Añade al final de `/root/polis/revision_motores_18_10_2026.md` la **Sección 9: Estado de Implementación y Verificación EAF (`Fases [25A]–[28B]`)**, documentando con precisión técnica cómo quedaron implementados y probados los hallazgos `H1–H12`, la Matriz de 10 Dimensiones y 7 Revisores (`pdt_revision_por_meta.py`), el Modelo Hoshin Kanri (`pdt_hoshin_kanri.py`), y las mejoras estructurales de las Secciones 4.1, 4.2 y 4.4.
+3. **Gobernanza del Seguimiento Institucional (`generar_tablero_alcalde_y_armonizacion_dea_cartagena`):**
+   Firma requerida:
+   ```python
+   def generar_tablero_alcalde_y_armonizacion_dea_cartagena(
+       orientacion: str = "input",
+       sector: str | None = None,
+       db: Any = None,
+       **kwargs: Any,
+   ) -> dict[str, Any]
+   ```
+   Expone:
+   - **`retroalimentacion_matriz_resultados_spd`**: Filas listas para la Matriz de Resultados de la Secretaría de Planeación Distrital con $\theta_{\text{BCC}}$, $SE_o$, holgura presupuestal $S^-$ (COP), déficit de producto $S^+$ y `benchmarks`.
+   - **`tablero_alcalde_y_programas`**: Aplica la regla de gobernanza vinculante: cualquier dependencia/programa con **alto avance físico nominal ($\ge 85\%$ o $100\%$) pero con $\theta_{\text{BCC}} \le 0.70$** (ej. $\theta = 0.65$) se recalifica de `"MUY_ALTO_SOBRESALIENTE"` a **`"ALERTA_INEFICIENCIA_FINANCIERA_DESPERDICIO"`**, cuantificando el exceso presupuestal $S^-$ en COP.
+   - **`armonizacion_presupuestal_plurianual`**: Empareja cada Unidad Ejecutora ineficiente ($\theta_{\text{BCC}} < 1.0$) con sus **Benchmarks de Frontera ($\theta_{\text{BCC}} = 1.0$)** y calcula la reasignación potencial para el ejercicio anual de Armonización Presupuestal.
 
-### 4. Pruebas y Reporte (`ruff` + `pytest`)
-- Añade pruebas unitarias en `backend/tests/test_motor_plan_accion_dnp.py` y `backend/tests/test_pdt_revision_por_meta.py` validando `auditar_consistencia_serie_y_sentido_indicador` (casos `ASCENDENTE`, `DESCENDENTE`, `meta_regresiva`, e `inconsistencia_aritmetica_trimestral` con `0.0` preservado).
-- Pasa `ruff check` y `pytest` sobre ambos archivos.
+### 2. Índice Maestro y Pruebas (`ruff` + `pytest`)
+- Añade `15_ARQUITECTURA_DEA_4_NIVELES_DMU_GOBERNANZA_CARTAGENA.md` en `/root/polis/knowledge-base/00_INDICE_MAESTRO.md`.
+- Crea `backend/tests/test_pdt_dea_4niveles_cartagena.py` con al menos 6 pruebas verificando:
+  1. `calcular_dea_bcc_input` y `calcular_dea_bcc_output` con cálculo exacto de holguras $S^-, S^+$ y `benchmarks`.
+  2. Separación estricta de las 4 fronteras homogéneas (`Nivel 1`, `Nivel 2`, `Nivel 3`, `Nivel 4`) sin mezclar Localidades con IEOs en una misma frontera.
+  3. Mapeo sectorial MGA-DNP/MIR de Cartagena (`Educación`, `Salud`, `Infraestructura Vial y Movilidad`).
+  4. Disparo de `"ALERTA_INEFICIENCIA_FINANCIERA_DESPERDICIO"` en el Tablero Alcalde cuando una DMU tiene `100%` de avance físico pero $\theta_{\text{BCC}} = 0.65$.
+  5. Recomendaciones de Armonización Presupuestal con pares `benchmarks` ($\theta = 1.0$).
+  6. Descomposición Malmquist (`Catch-up` y `Frontier-shift`) en el Nivel 4 (`PDD 2020-2023` vs `PDD 2024-2027`).
+- Pasa `ruff check` y `pytest backend/tests/test_pdt_dea_4niveles_cartagena.py -q`.
 - Escribe el reporte en `/root/polis/bridge/02_resultado_agy2.md` y notifica a `=agy:0.0`:
-  `tmux send-keys -t =agy:0.0 "AGY2 LISTO [28B]: Auditoria aritmetica T1-T4, sentido de indicador y meta regresiva en service.py + pdt_revision_por_meta.py + Seccion 9 de revision_motores_18_10_2026.md completados y probados. Solicito auditoria EAF." Enter`
+  `tmux send-keys -t =agy:0.0 "AGY2 LISTO [30B]: Motor pdt_dea_4niveles_cartagena.py (4 niveles DMU homogeneos + Input/Output BCC/CCR + Slacks + Tablero Alcalde + Armonizacion Presupuestal) completado y probado. Solicito auditoria EAF." Enter`
