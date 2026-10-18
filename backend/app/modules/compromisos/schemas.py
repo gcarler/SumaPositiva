@@ -470,6 +470,18 @@ class PdtTableroAlcaldeArmonizacionDeaRespuesta(BaseModel):
     model_config = ConfigDict(extra="allow")
 
 
+class PdtAiInformeIntegralSpdResponse(BaseModel):
+    model_config = ConfigDict(extra="allow")
+
+    encabezado_institucional: dict[str, Any]
+    sintesis_hoshin_kanri_y_pdl: dict[str, Any]
+    sintesis_revision_10d_y_vinculos_pa: dict[str, Any]
+    sintesis_dea_4_niveles_y_fuentes: dict[str, Any]
+    tablero_alcalde_alertas_desperdicio: dict[str, Any]
+    tabla_armonizacion_presupuestal_spd: list[dict[str, Any]]
+    exportables_auditables: dict[str, str] = Field(default_factory=dict)
+
+
 class PdtRevisionPorMetaRespuesta(BaseModel):
     model_config = ConfigDict(extra="allow")
 

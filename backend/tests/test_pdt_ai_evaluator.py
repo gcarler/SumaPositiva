@@ -4,6 +4,8 @@ import asyncio
 import re
 
 import pytest
+from fastapi import FastAPI
+from fastapi.testclient import TestClient
 
 from app.modules.compromisos import pdt_ai_evaluator_graph as evaluator
 from app.modules.compromisos import router
@@ -129,6 +131,53 @@ def test_dea_cartagena_routes_delegate_orientations_and_tablero(monkeypatch):
         "/compromisos/triada/pdd-dea/pdt-ai-evaluator/dea-cartagena/tablero-alcalde-armonizacion"
         in paths
     )
+
+
+def test_pdt_ai_evaluator_informe_integral_spd_endpoint(monkeypatch):
+    from app.modules.compromisos import pdt_informe_integral_spd as report_module
+
+    async def fake_report(**kwargs):
+        assert kwargs["orientacion_dea"] == "input"
+        assert kwargs["incluir_exportables"] is True
+        return {
+            "encabezado_institucional": {
+                "fingerprint_corte_sha256": "a" * 64,
+            },
+            "sintesis_hoshin_kanri_y_pdl": {},
+            "sintesis_revision_10d_y_vinculos_pa": {},
+            "sintesis_dea_4_niveles_y_fuentes": {},
+            "tablero_alcalde_alertas_desperdicio": {},
+            "tabla_armonizacion_presupuestal_spd": [],
+            "exportables_auditables": {
+                "markdown_ejecutivo": "# Informe",
+                "csv_armonizacion_y_alertas": "nivel,dmu\\n",
+            },
+        }
+
+    monkeypatch.setattr(report_module, "generar_informe_integral_spd_cartagena", fake_report)
+    app = FastAPI()
+    app.include_router(router.router, prefix="/api/v1")
+    with TestClient(app) as client:
+        response = client.get(
+            "/api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/informe-integral-spd",
+            params={"orientacion_dea": "input", "incluir_exportables": "true"},
+        )
+
+    assert response.status_code == 200
+    payload = response.json()
+    fingerprint = payload["encabezado_institucional"]["fingerprint_corte_sha256"]
+    assert len(fingerprint) == 64
+    assert set(fingerprint) <= set("0123456789abcdef")
+    for key in (
+        "sintesis_hoshin_kanri_y_pdl",
+        "sintesis_revision_10d_y_vinculos_pa",
+        "sintesis_dea_4_niveles_y_fuentes",
+        "tablero_alcalde_alertas_desperdicio",
+        "tabla_armonizacion_presupuestal_spd",
+    ):
+        assert key in payload
+    assert payload["exportables_auditables"]["markdown_ejecutivo"]
+    assert payload["exportables_auditables"]["csv_armonizacion_y_alertas"]
 
 
 def test_system_prompt_matches_knowledge_specification():

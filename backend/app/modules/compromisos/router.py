@@ -73,6 +73,7 @@ from app.modules.compromisos.schemas import (
     MatrizPlanAccionRespuesta,
     PdtAiEvaluatorEjecutarRequest,
     PdtAiEvaluatorValidarCheckpointRequest,
+    PdtAiInformeIntegralSpdResponse,
     PdtDea4NivelesCartagenaRespuesta,
     PdtDictamenEjecutivoRespuesta,
     PdtDictamenesHallazgosRespuesta,
@@ -1215,6 +1216,27 @@ async def pdt_dea_cartagena_tablero_alcalde(
     sector: str | None = Query(default=None),
 ):
     return await obtener_tablero_dea_cartagena(orientacion=orientacion, sector=sector, db=db)
+
+
+@router.get(
+    "/triada/pdd-dea/pdt-ai-evaluator/informe-integral-spd",
+    response_model=PdtAiInformeIntegralSpdResponse,
+    summary="Informe integral auditable del PDT-AI-EVALUATOR para la SPD",
+)
+async def pdt_ai_evaluator_informe_integral_spd(
+    plan_codigo: str = Query(default="PDD_2024_2027"),
+    orientacion_dea: str = Query(default="input"),
+    incluir_exportables: bool = Query(default=True),
+):
+    from app.modules.compromisos.pdt_informe_integral_spd import (
+        generar_informe_integral_spd_cartagena,
+    )
+
+    return await generar_informe_integral_spd_cartagena(
+        plan_codigo=plan_codigo,
+        orientacion_dea=orientacion_dea,
+        incluir_exportables=incluir_exportables,
+    )
 
 
 async def _invocar_hoshin(fn, **kwargs):

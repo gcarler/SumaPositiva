@@ -212,3 +212,73 @@ def test_nivel_4_malmquist_inter_cuatrienial_pdd_2020_2023_vs_2024_2027() -> Non
             row["catch_up_pech"] * row["frontier_shift_techch"],
             rel=1e-4,
         )
+
+
+def test_nivel_3_padron_censal_105_ieo_y_43_ese_en_bd_csh() -> None:
+    """Verifica que el Nivel 3 evalúe el padrón censal de 105 IEO oficiales y 43 ESE en bd_csh."""
+    res = evaluar_dea_4_niveles_cartagena(
+        nivel="nivel_3_operativo_ieo_ese",
+        orientacion="input",
+    )
+    n3 = res["nivel_3_operativo_ieo_ese"]
+    padron = n3["padron_censal_bd_csh"]
+
+    assert padron["ieo_evaluadas_en_frontera"] == 105
+    assert padron["centros_ese_evaluados_en_frontera"] == 43
+    assert "seguimiento.pdd_dmu_ieo_oficiales" in padron["fuente_datos"]
+    assert "seguimiento.pdd_dmu_ese_centros_salud" in padron["fuente_datos"]
+
+    ieo_frontera = n3["fronteras_independientes"]["instituciones_educativas_oficiales_ieo"]
+    ese_frontera = n3["fronteras_independientes"]["centros_salud_ese_cartagena"]
+
+    assert ieo_frontera["total_dmus"] == 105
+    assert len(ieo_frontera["dmus"]) == 105
+    assert ieo_frontera["eficientes"] >= 1
+    assert ieo_frontera["ineficientes"] >= 1
+
+    assert ese_frontera["total_dmus"] == 43
+    assert len(ese_frontera["dmus"]) == 43
+    assert ese_frontera["eficientes"] >= 1
+    assert ese_frontera["ineficientes"] >= 1
+    assert n3["total_dmus"] == 148
+
+
+def test_desagregacion_fuentes_financiacion_sgr_credito_y_holguras_por_fuente() -> None:
+    """Verifica desagregación de fuentes (SGR, Crédito, SGP, ICLD) y holguras S^- por fuente."""
+    res = evaluar_dea_4_niveles_cartagena(orientacion="input")
+    fuentes_keys = (
+        "sgr_regalias_cop",
+        "credito_publico_cop",
+        "sgp_transferencias_cop",
+        "icld_recursos_propios_cop",
+        "cofinanciacion_nacion_cop",
+    )
+
+    n1 = res["nivel_1_territorial_localidades_ucg"]
+    n2 = res["nivel_2_institucional_secretarias"]
+    assert len(n1["dmus"]) == 18
+    assert len(n2["dmus"]) == 9
+
+    for dmu_row in [*n1["dmus"], *n2["dmus"]]:
+        des = dmu_row["desagregacion_fuentes_financiacion"]
+        hol_f = dmu_row["holgura_s_minus_por_fuente_cop"]
+        for k in fuentes_keys:
+            assert k in des
+            assert k in hol_f
+            assert des[k] >= 0.0
+            assert hol_f[k] >= 0.0
+
+        suma_fuentes = sum(des[k] for k in fuentes_keys)
+        assert des["total_fuentes_cop"] == pytest.approx(suma_fuentes, abs=1.0)
+
+        suma_holgura_fuentes = sum(hol_f[k] for k in fuentes_keys)
+        assert suma_holgura_fuentes == pytest.approx(
+            dmu_row["holgura_presupuestal_s_minus_cop"],
+            abs=1.0,
+        )
+
+    resumen_global = res["resumen_fuentes_financiacion_y_holguras"]
+    assert resumen_global["total_dmus_con_fuentes"] == 27
+    assert resumen_global["presupuesto_por_fuente_cop"]["sgr_regalias_cop"] > 0.0
+    assert resumen_global["presupuesto_por_fuente_cop"]["credito_publico_cop"] > 0.0
+    assert resumen_global["holgura_s_minus_por_fuente_cop"]["total_holgura_s_minus_cop"] > 0.0

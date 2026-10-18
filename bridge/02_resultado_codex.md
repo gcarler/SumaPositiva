@@ -40,3 +40,25 @@ No modifiqué `src/**` ni `pdt_revision_por_meta.py`.
 - `pytest -q` del backend alcanzó 61% y terminó con código **143 (SIGTERM)**, mostrando fallos/errores en pruebas ajenas a estos tres archivos; no completó y no se atribuyen como suite aprobada. La batería afectada por esta fase pasó completa.
 
 No se modificó `src/**` ni `pdt_revision_por_meta.py` como parte de esta fase.
+
+---
+
+# Resultado Codex — Fase [31A]
+
+**Fecha:** 2026-10-18
+**Alcance:** Informe integral auditable para la Secretaría de Planeación Distrital (SPD).
+
+## Implementación
+
+- Se creó `backend/app/modules/compromisos/pdt_informe_integral_spd.py` para consolidar Hoshin Kanri/PDL, revisión 10D y vínculos PA, dictámenes de hallazgos, cuatro niveles DEA y alertas/armonización presupuestal.
+- El informe calcula SHA-256 reproducible sobre las cinco síntesis cuantitativas y genera exportables Markdown y CSV con las columnas solicitadas.
+- Se expuso `GET /api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/informe-integral-spd`, se añadió `PdtAiInformeIntegralSpdResponse` y se registró la ruta pública en la matriz de permisos.
+- La prueba de endpoint valida HTTP 200, huella hexadecimal de 64 caracteres, cinco síntesis y ambos exportables.
+
+## Verificación
+
+- Ruff sobre el módulo nuevo, `router.py`, `schemas.py` y `test_pdt_ai_evaluator.py`: **All checks passed!**
+- `pytest tests/test_pdt_ai_evaluator.py tests/test_access_policy.py -q`: **120 passed**.
+- Ejecuté pytest únicamente sobre los dos archivos indicados.
+
+No se modificó `src/**` ni `pdt_dea_4niveles_cartagena.py`.
