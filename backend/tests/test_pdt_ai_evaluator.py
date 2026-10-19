@@ -264,6 +264,10 @@ def test_diagnostico_pshc_google_doc_endpoint_entrega_seis_capitulos():
     assert payload["markdown_ejecutivo"]
     assert payload["csv_embudo_y_7_dimensiones"].startswith("tipo_fila,codigo,periodo")
     assert len(payload["huella_verificacion_sha256"]) == 64
+    assert len(payload["markdown_ejecutivo"]) >= 340_000
+    assert len(payload["html_google_doc"]) >= 460_000
+    for section in ("4.1.1", "4.2.10", "4.3.1", "4.4.10", "4.5.1", "4.6.10", "4.7.10"):
+        assert section in payload["markdown_ejecutivo"]
 
 
 def test_informe_integral_incluye_cobertura_historica_en_markdown(monkeypatch):

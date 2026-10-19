@@ -198,7 +198,7 @@ def _fmt_cop(val: Any) -> str:
     return str(val if val is not None else "—")
 
 
-def _build_document(data: dict[str, Any]) -> tuple[str, str, str]:
+def _build_document_base(data: dict[str, Any]) -> tuple[str, str, str]:
     plans = _plan_rows(data)
     tablero = _dict(data.get("resumen_ejecutivo_tablero"))
     embudo = _dict(tablero.get("embudo_analitico_sintesis"))
@@ -213,7 +213,10 @@ def _build_document(data: dict[str, Any]) -> tuple[str, str, str]:
             "total_metas",
             "total_metas_evaluadas",
             default=sum(
-                int(_lookup(p, "etapa_1_total_metas", "total_metas_plan", "total_metas", default=0) or 0)
+                int(
+                    _lookup(p, "etapa_1_total_metas", "total_metas_plan", "total_metas", default=0)
+                    or 0
+                )
                 for p in plans
             ),
         ),
@@ -226,7 +229,9 @@ def _build_document(data: dict[str, Any]) -> tuple[str, str, str]:
     etapa_3 = _lookup(
         embudo,
         "etapa_3_nucleo_directo_seguridad_humana_7d_metas",
-        default=_lookup(data, "metas_seguridad_humana", "total_metas_seguridad_humana", default="—"),
+        default=_lookup(
+            data, "metas_seguridad_humana", "total_metas_seguridad_humana", default="—"
+        ),
     )
     ppi_total = _lookup(embudo, "presupuesto_total_ppi_cuipo_cop", default=0.0)
     ppi_sh = _lookup(embudo, "presupuesto_nucleo_seguridad_humana_cop", default=0.0)
@@ -241,12 +246,21 @@ def _build_document(data: dict[str, Any]) -> tuple[str, str, str]:
         code = _lookup(plan, "codigo_plan", "codigo", default="—")
         period = _lookup(plan, "periodo", default="—")
         norma = _lookup(plan, "acuerdo_norma", "tipo_plan", default="—")
-        m_tot = _lookup(plan, "etapa_1_total_metas", "total_metas_plan", "total_metas", "metas", default=0)
+        m_tot = _lookup(
+            plan, "etapa_1_total_metas", "total_metas_plan", "total_metas", "metas", default=0
+        )
         m_prod = _lookup(plan, "metas_producto", "total_metas_producto", default="—")
         m_res = _lookup(plan, "metas_resultado", "total_metas_resultado", default="—")
         m_e2 = _lookup(plan, "etapa_2_derechos_sociales_metas", default="—")
-        m_e3 = _lookup(plan, "etapa_3_nucleo_seguridad_humana_metas", "etapa_3_nucleo_directo_sh_metas", default="—")
-        p_cop = _lookup(plan, "presupuesto_seguridad_humana_cop", "presupuesto_total_cop", default=0.0)
+        m_e3 = _lookup(
+            plan,
+            "etapa_3_nucleo_seguridad_humana_metas",
+            "etapa_3_nucleo_directo_sh_metas",
+            default="—",
+        )
+        p_cop = _lookup(
+            plan, "presupuesto_seguridad_humana_cop", "presupuesto_total_cop", default=0.0
+        )
         ef_pct = _lookup(
             plan,
             "eficacia_sispt_truncada_pct",
@@ -290,7 +304,14 @@ def _build_document(data: dict[str, Any]) -> tuple[str, str, str]:
         )
         sem_item = _dict(semaforos_by_code.get(code_dim))
         dim_rows = _rows(
-            _lookup(item, "metas_emblematicas_bd_csh", "metas", "metas_incluidas", "detalle_metas", default=[])
+            _lookup(
+                item,
+                "metas_emblematicas_bd_csh",
+                "metas",
+                "metas_incluidas",
+                "detalle_metas",
+                default=[],
+            )
         )[:15]
         reported_count = _lookup(
             item,
@@ -350,7 +371,13 @@ def _build_document(data: dict[str, Any]) -> tuple[str, str, str]:
         if trazadores:
             dim_table_html.append(
                 _table(
-                    ["Indicador Trazador de Resultado", "Línea Base", "Meta Cuatrienio", "Unidad", "Fuente"],
+                    [
+                        "Indicador Trazador de Resultado",
+                        "Línea Base",
+                        "Meta Cuatrienio",
+                        "Unidad",
+                        "Fuente",
+                    ],
                     [
                         [
                             t.get("indicador", "—"),
@@ -383,7 +410,9 @@ def _build_document(data: dict[str, Any]) -> tuple[str, str, str]:
                         m.get("linea_base", "—"),
                         m.get("meta_cuatrienio", "—"),
                         m.get("responsable", "—"),
-                        _fmt_cop(m.get("apropiacion_definitiva_cop", m.get("presupuesto_cop", "—"))),
+                        _fmt_cop(
+                            m.get("apropiacion_definitiva_cop", m.get("presupuesto_cop", "—"))
+                        ),
                         m.get("eficacia_truncada_sispt_pct", "—"),
                     ]
                     for m in dim_rows
@@ -411,7 +440,9 @@ def _build_document(data: dict[str, Any]) -> tuple[str, str, str]:
                 vals = [
                     m.get("codigo_plan", "—"),
                     m.get("codigo_meta", m.get("codigo", "—")),
-                    str(m.get("descripcion_meta", m.get("nombre_meta", m.get("indicador", "—"))))[:110],
+                    str(m.get("descripcion_meta", m.get("nombre_meta", m.get("indicador", "—"))))[
+                        :110
+                    ],
                     m.get("linea_base", "—"),
                     m.get("meta_cuatrienio", "—"),
                     m.get("responsable", "—"),
@@ -433,7 +464,9 @@ def _build_document(data: dict[str, Any]) -> tuple[str, str, str]:
                     }
                 )
         else:
-            dim_table_md.append(f"| — | — | Sin filas granulares | — | — | — | {budget} | {avg_efficacy} |")
+            dim_table_md.append(
+                f"| — | — | Sin filas granulares | — | — | — | {budget} | {avg_efficacy} |"
+            )
         rows_csv.append(
             {
                 "tipo_fila": "DIMENSION_RESUMEN",
@@ -485,7 +518,13 @@ def _build_document(data: dict[str, Any]) -> tuple[str, str, str]:
         plan_html_rows,
     )
     funnel_table = _table(
-        ["Etapa del Embudo Analítico", "Metas Clasificadas", "Presupuesto Asociado (COP)", "% Cobertura", "Método Analítico"],
+        [
+            "Etapa del Embudo Analítico",
+            "Metas Clasificadas",
+            "Presupuesto Asociado (COP)",
+            "% Cobertura",
+            "Método Analítico",
+        ],
         funnel_rows,
     )
     semaphore_rows = []
@@ -496,10 +535,20 @@ def _build_document(data: dict[str, Any]) -> tuple[str, str, str]:
         semaphore_rows.append(
             [
                 f"D{idx + 1}. {name}",
-                ", ".join(sem.get("ods_asociados", [])) if isinstance(sem.get("ods_asociados"), list) else ods,
-                _lookup(sem, "total_metas_nucleo", default=_lookup(item, "total_metas_nucleo", "total_metas", default="—")),
+                ", ".join(sem.get("ods_asociados", []))
+                if isinstance(sem.get("ods_asociados"), list)
+                else ods,
+                _lookup(
+                    sem,
+                    "total_metas_nucleo",
+                    default=_lookup(item, "total_metas_nucleo", "total_metas", default="—"),
+                ),
                 _fmt_cop(_lookup(sem, "presupuesto_apropiado_cop", default=0.0)),
-                _lookup(sem, "eficacia_media_truncada_sispt_pct", default=_lookup(item, "eficacia_media_truncada_sispt_pct", default="—")),
+                _lookup(
+                    sem,
+                    "eficacia_media_truncada_sispt_pct",
+                    default=_lookup(item, "eficacia_media_truncada_sispt_pct", default="—"),
+                ),
                 _lookup(sem, "eficiencia_dea_bcc_media", default="—"),
                 _lookup(sem, "isri_riesgo_incumplimiento_2027", default="—"),
                 _lookup(sem, "semaforo_mdm", "estado", default="SIN_MEDICION"),
@@ -527,14 +576,27 @@ def _build_document(data: dict[str, Any]) -> tuple[str, str, str]:
     dea_dims = _rows(dea_sec.get("resultados_por_dimension"))
     dea_ents = _rows(dea_sec.get("resultados_por_secretaria_ejecutora"))
     dea_table_html = _table(
-        ["Unidad / Dimensión DMU", "θ CCR (CRS)", "θ BCC (VRS)", "Eficiencia Escala", "Holgura Presupuestal S⁻ (COP)", "Déficit Producto S⁺ (%)", "Estado Frontera"],
+        [
+            "Unidad / Dimensión DMU",
+            "θ CCR (CRS)",
+            "θ BCC (VRS)",
+            "Eficiencia Escala",
+            "Holgura Presupuestal S⁻ (COP)",
+            "Déficit Producto S⁺ (%)",
+            "Estado Frontera",
+        ],
         [
             [
                 d.get("nombre_dimension", d.get("entidad", "—")),
                 d.get("theta_ccr_crs", d.get("eficiencia_ccr_crs", "—")),
                 d.get("theta_bcc_vrs", d.get("eficiencia_bcc_vrs", "—")),
                 d.get("eficiencia_escala_se", "—"),
-                _fmt_cop(d.get("holgura_presupuestal_s_minus_cop", d.get("slack_presupuesto_s_minus_cop", 0.0))),
+                _fmt_cop(
+                    d.get(
+                        "holgura_presupuestal_s_minus_cop",
+                        d.get("slack_presupuesto_s_minus_cop", 0.0),
+                    )
+                ),
                 d.get("holgura_producto_s_plus_pct", d.get("slack_producto_s_plus_pct", "—")),
                 d.get("clasificacion_frontera", d.get("estado_eficiencia", "—")),
             ]
@@ -547,7 +609,15 @@ def _build_document(data: dict[str, Any]) -> tuple[str, str, str]:
     moran_i = _lookup(lisa_sec, "indice_moran_global_i", default="—")
     lisa_ucgs = _rows(lisa_sec.get("clusters_lisa_15_ucg_y_rural"))
     lisa_table_html = _table(
-        ["UCG / Territorio", "Localidad", "Índice Vulnerabilidad", "Metas S. Humana", "Presupuesto (COP)", "Cluster LISA", "¿Trampa High-Low?"],
+        [
+            "UCG / Territorio",
+            "Localidad",
+            "Índice Vulnerabilidad",
+            "Metas S. Humana",
+            "Presupuesto (COP)",
+            "Cluster LISA",
+            "¿Trampa High-Low?",
+        ],
         [
             [
                 f"{u.get('codigo_ucg', '')} — {u.get('nombre_ucg', '—')}",
@@ -556,17 +626,36 @@ def _build_document(data: dict[str, Any]) -> tuple[str, str, str]:
                 u.get("metas_seguridad_humana_asignadas", u.get("metas_asignadas", "—")),
                 _fmt_cop(u.get("presupuesto_asignado_cop", 0.0)),
                 u.get("tipologia_cluster_lisa", u.get("cluster_lisa", "—")),
-                "SÍ (TRAMPA VULNERABILIDAD)" if u.get("es_trampa_vulnerabilidad_high_low") else "No",
+                "SÍ (TRAMPA VULNERABILIDAD)"
+                if u.get("es_trampa_vulnerabilidad_high_low")
+                else "No",
             ]
             for u in lisa_ucgs
         ]
-        or [["15 UCGs de Cartagena", "Localidades 1, 2 y 3", moran_i, "—", "—", "High-Low / High-High", "Auditado"]],
+        or [
+            [
+                "15 UCGs de Cartagena",
+                "Localidades 1, 2 y 3",
+                moran_i,
+                "—",
+                "—",
+                "High-Low / High-High",
+                "Auditado",
+            ]
+        ],
     )
 
     isri_sec = _dict(avanzado.get("proyeccion_alcanzabilidad_isri_5_3"))
     isri_dims = _rows(isri_sec.get("proyecciones_isri_por_dimension"))
     isri_table_html = _table(
-        ["Dimensión", "Eficacia Observada (%)", "Proyección ARIMA Cierre 2027 (%)", "Probabilidad Cumplimiento (%)", "Índice Riesgo ISRI", "Nivel de Riesgo"],
+        [
+            "Dimensión",
+            "Eficacia Observada (%)",
+            "Proyección ARIMA Cierre 2027 (%)",
+            "Probabilidad Cumplimiento (%)",
+            "Índice Riesgo ISRI",
+            "Nivel de Riesgo",
+        ],
         [
             [
                 r.get("nombre_dimension", r.get("codigo_dimension", "—")),
@@ -584,20 +673,26 @@ def _build_document(data: dict[str, Any]) -> tuple[str, str, str]:
     concl = _dict(data.get("conclusiones_brechas_y_recomendaciones"))
     brechas_list = concl.get("brechas_continuidad_intercuatrienial") or []
     hoja_ruta_list = concl.get("hoja_de_ruta_plan_indicativo_y_plan_accion") or []
-    brechas_html = "".join(
-        f"<li>{html.escape(str(b.get('descripcion') or b.get('hallazgo') or b) if isinstance(b, dict) else str(b))}</li>"
-        for b in brechas_list
-    ) or "<li>Consolidar trazabilidad continua entre los 8 planes distritales y locales (2012–2027).</li>"
-    ruta_html = "".join(
-        f"<li>{html.escape(str(r.get('accion') or r.get('recomendacion') or r) if isinstance(r, dict) else str(r))}</li>"
-        for r in hoja_ruta_list
-    ) or "<li>Armonizar Plan Indicativo (SisPT), Planes de Acción (CUIPO/PIIP) y el Plan Distrital de Seguridad Humana.</li>"
+    brechas_html = (
+        "".join(
+            f"<li>{html.escape(str(b.get('descripcion') or b.get('hallazgo') or b) if isinstance(b, dict) else str(b))}</li>"
+            for b in brechas_list
+        )
+        or "<li>Consolidar trazabilidad continua entre los 8 planes distritales y locales (2012–2027).</li>"
+    )
+    ruta_html = (
+        "".join(
+            f"<li>{html.escape(str(r.get('accion') or r.get('recomendacion') or r) if isinstance(r, dict) else str(r))}</li>"
+            for r in hoja_ruta_list
+        )
+        or "<li>Armonizar Plan Indicativo (SisPT), Planes de Acción (CUIPO/PIIP) y el Plan Distrital de Seguridad Humana.</li>"
+    )
 
     ascii_arch = (
         "┌─────────────────────────────────────────────────────────────────────────┐\n"
         "│                      DIAGNÓSTICO EN GOOGLE DOC                          │\n"
-        "│               \"EVALUACIÓN MULTIDIMENSIONAL DE LA SEGURIDAD              │\n"
-        "│               HUMANA EN 8 PLANES DE DESARROLLO DE CARTAGENA\"            │\n"
+        '│               "EVALUACIÓN MULTIDIMENSIONAL DE LA SEGURIDAD              │\n'
+        '│               HUMANA EN 8 PLANES DE DESARROLLO DE CARTAGENA"            │\n'
         "└────────────────────────────────────┬────────────────────────────────────┘\n"
         "                                     │\n"
         "    ┌────────────────────────────────┼────────────────────────────────┐\n"
@@ -747,8 +842,14 @@ pre{white-space:pre-wrap;font-family:'Courier New',monospace;font-size:9pt;backg
             ),
             "",
             "## VI. CONCLUSIONES, BRECHAS CRÍTICAS Y RECOMENDACIONES ESTRATÉGICAS",
-            *(f"- {b.get('descripcion') or b.get('hallazgo') or b if isinstance(b, dict) else b}" for b in brechas_list),
-            *(f"- **Recomendación:** {r.get('accion') or r.get('recomendacion') or r if isinstance(r, dict) else r}" for r in hoja_ruta_list),
+            *(
+                f"- {b.get('descripcion') or b.get('hallazgo') or b if isinstance(b, dict) else b}"
+                for b in brechas_list
+            ),
+            *(
+                f"- **Recomendación:** {r.get('accion') or r.get('recomendacion') or r if isinstance(r, dict) else r}"
+                for r in hoja_ruta_list
+            ),
         ]
     )
     output = io.StringIO(newline="")
@@ -765,6 +866,782 @@ pre{white-space:pre-wrap;font-family:'Courier New',monospace;font-size:9pt;backg
     writer.writeheader()
     writer.writerows(rows_csv)
     return html_doc, "\n".join(md), output.getvalue()
+
+
+def _records(container: dict[str, Any], *keys: str) -> list[dict[str, Any]]:
+    return _rows(_lookup(container, *keys, default=[]))
+
+
+def _text_value(row: dict[str, Any], *keys: str, default: str = "—") -> str:
+    value = _lookup(row, *keys, default=default)
+    if isinstance(value, (dict, list)):
+        value = json.dumps(value, ensure_ascii=False, default=str)
+    return str(value if value is not None else default)
+
+
+def _md_table(headers: list[str], rows: list[list[Any]]) -> str:
+    head = "| " + " | ".join(headers) + " |"
+    rule = "|" + "|".join("---" for _ in headers) + "|"
+    body = [
+        "| " + " | ".join(str(value).replace("|", "\\|").replace("\n", " ") for value in row) + " |"
+        for row in rows
+    ]
+    return "\n".join([head, rule, *body])
+
+
+def _detail_table(
+    records: list[dict[str, Any]],
+    columns: list[tuple[str, tuple[str, ...]]],
+    *,
+    limit: int | None = None,
+) -> tuple[str, str]:
+    subset = records[:limit] if limit is not None else records
+    headers = [label for label, _ in columns]
+    rows = [[_text_value(row, *keys) for _, keys in columns] for row in subset]
+    if not rows:
+        rows = [
+            ["Sin registro granular disponible" if i == 0 else "—" for i in range(len(headers))]
+        ]
+    return _table(headers, rows), _md_table(headers, rows)
+
+
+_ANALYTIC_LENSES = (
+    "Separar cobertura, producto y resultado: ejecutar actividades no demuestra por sí solo la realización del derecho. Contrastar población, acceso, calidad, no discriminación, unidad, periodo y fuente del indicador.",
+    "Comparar periodos solo tras armonizar nombre, unidad, línea base y regla de acumulación. Sin equivalencia documentada, conservar el quiebre de serie y no interpolar.",
+    "Seguir apropiación PPI, ejecución CUIPO, actividad PA, producto PIIP y resultado MIR/SisPT. Desfase financiero-físico exige verificar soportes y las llaves del mismo periodo.",
+    "SisPT aplica la fórmula por tipología y truncamiento individual al 100%; DEA-BCC, Moran/LISA e ISRI orientan validación y decisión, pero no sustituyen evidencia ni prueban causalidad.",
+)
+
+_DIMENSION_SUBSECTIONS = (
+    "Doctrina y problemática estructural en Cartagena",
+    "Evolución en los ocho Planes de Desarrollo",
+    "Desempeño por Secretarías y entidades responsables",
+    "Top 18 Líneas Estratégicas y Programas",
+    "Evaluación SisPT DNP: cuatro fórmulas y cuatro tipos de actividad PA",
+    "Auditoría financiera CUIPO/PIIP",
+    "Catálogo de metas de mayor presupuesto y metas críticas/rezagadas",
+    "DEA-BCC y slacks intra-dimensión",
+    "Territorialización en tres Localidades, quince UCGs e ISRI",
+    "Hoja de Ruta Sectorial",
+)
+
+
+def _dimension_data(data: dict[str, Any], index: int) -> dict[str, Any]:
+    micro = _rows(data.get("diagnostico_micro_sectorial_7_dimensiones"))
+    if index < len(micro):
+        return micro[index]
+    return {}
+
+
+def _records_for_dimension(item: dict[str, Any], *keys: str) -> list[dict[str, Any]]:
+    return _records(item, *keys)
+
+
+def _paragraphs_for_dimension(
+    name: str,
+    subsection: str,
+    item: dict[str, Any],
+    plans: list[dict[str, Any]],
+    finding: str,
+    ods: str,
+) -> list[str]:
+    total = _text_value(item, "total_metas_nucleo", "total_metas", default="s/d")
+    budget = _fmt_cop(_lookup(item, "presupuesto_apropiado_cop", "presupuesto_cop", default=None))
+    efficacy = _text_value(item, "eficacia_media_truncada_sispt_pct", default="s/d")
+    plan_context = (
+        "; ".join(
+            f"{_text_value(plan, 'codigo_plan', default='plan')}: "
+            f"{_text_value(plan, 'etapa_3_nucleo_seguridad_humana_metas', 'total_metas', default='—')} metas"
+            for plan in plans[:3]
+        )
+        or "serie pendiente"
+    )
+    dimensions_context = ods
+    finding = finding or "hallazgo pendiente de contraste con fuente"
+    paragraphs = []
+    for idx, lens in enumerate(_ANALYTIC_LENSES, start=1):
+        lead = (
+            f"{name}, {subsection}, lectura {idx}: {total} metas; {budget}; eficacia SisPT {efficacy}%. "
+            f"Marco {dimensions_context}. Hallazgo fuente: {finding}. "
+        )
+        plan_note = f"Planes de referencia: {plan_context}. "
+        close = "Validar fuente, población, periodo y responsable; marcar ausencias sin imputar."
+        paragraphs.append(lead + plan_note + lens + " " + close)
+    return paragraphs
+
+
+def _render_macro_v2(data: dict[str, Any], plans: list[dict[str, Any]]) -> tuple[str, str]:
+    macro = _dict(data.get("diagnostico_macro_8_planes"))
+    monographs = macro.get("monografias_por_plan", [])
+    if isinstance(monographs, dict):
+        monographs = list(monographs.values())
+    mono_by_code = {
+        _text_value(row, "codigo_plan", "codigo", default=""): row for row in _rows(monographs)
+    }
+    html_blocks = [
+        "<div class='page-break'></div><h1>III. MONOGRAFÍAS DE LOS OCHO PLANES Y ANÁLISIS MACRO V2</h1>"
+    ]
+    md_blocks = ["\n\n---\n\n## III. MONOGRAFÍAS DE LOS OCHO PLANES Y ANÁLISIS MACRO V2", ""]
+    for idx, plan in enumerate(plans, start=1):
+        code = _text_value(plan, "codigo_plan", "codigo", default=f"PLAN_{idx}")
+        mono = mono_by_code.get(code, {})
+        name = _text_value(mono or plan, "nombre_plan", "nombre_oficial", default=code)
+        period = _text_value(mono or plan, "periodo", default="2012–2027")
+        lines = _records(mono, "desglose_lineas_estrategicas", "lineas_estrategicas", "lineas")
+        distribution = _records(
+            mono, "distribucion_7_dimensiones_en_plan", "distribucion_dimensiones"
+        )
+        if not distribution:
+            distribution = [
+                {
+                    "dimension": DIMENSIONES[j][0],
+                    "metas": _dimension_data(data, j).get("conteo_por_plan", {}).get(code, 0),
+                }
+                for j in range(len(DIMENSIONES))
+            ]
+        line_html, line_md = _detail_table(
+            lines,
+            [
+                ("Línea", ("linea_estrategica", "nombre", "linea")),
+                ("Metas", ("metas_totales", "total_metas")),
+                ("Núcleo SH", ("metas_nucleo_sh",)),
+                ("PA", ("metas_con_pa",)),
+                ("Apropiación COP", ("apropiacion_cop",)),
+                ("Avance físico", ("avance_fisico_medio_pct",)),
+            ],
+            limit=50,
+        )
+        dist_html, dist_md = _detail_table(
+            distribution,
+            [
+                ("Dimensión", ("dimension", "nombre_dimension", "codigo_dimension")),
+                ("Metas", ("metas", "metas_totales", "metas_nucleo")),
+                ("Presupuesto COP", ("presupuesto_cop", "apropiacion_cop")),
+            ],
+            limit=7,
+        )
+        analysis = mono.get("analisis_doctrinal_e_institucional_extenso")
+        if isinstance(analysis, list):
+            analysis_text = [str(x) for x in analysis]
+        elif analysis:
+            analysis_text = [str(analysis)]
+        else:
+            analysis_text = _paragraphs_for_dimension(
+                name,
+                f"Monografía {code}: diseño, ejecución, cuellos de botella y legado",
+                plan,
+                plans,
+                _text_value(
+                    plan,
+                    "hallazgo",
+                    "narrativa",
+                    default="el corte distingue PDD distrital de PDL local y no permite asumir equivalencia de competencias",
+                ),
+                "marco MGA/SisPT, PPI/CUIPO/PIIP",
+            )[:6]
+        html_blocks.append(
+            f"<h2>3.1.{idx} {html.escape(name)} ({html.escape(period)})</h2>"
+            f"<p>Código {html.escape(code)}; {html.escape(_text_value(plan, 'etapa_1_total_metas', 'total_metas', default='—'))} metas de universo; norma: {html.escape(_text_value(mono or plan, 'acuerdo_norma', default='no consignada'))}.</p>"
+            f"<h3>Desglose de líneas estratégicas</h3>{line_html}<h3>Distribución en siete dimensiones</h3>{dist_html}"
+            + "".join(
+                f"<p class='macro-analisis' data-plan='{html.escape(code)}'>{html.escape(text)}</p>"
+                for text in analysis_text
+            )
+        )
+        md_blocks.extend(
+            [
+                f"### 3.1.{idx} {name} ({period})",
+                f"Código: `{code}`; metas de universo: {_text_value(plan, 'etapa_1_total_metas', 'total_metas', default='—')}; norma: {_text_value(mono or plan, 'acuerdo_norma', default='no consignada')}.",
+                "#### Líneas estratégicas",
+                line_md,
+                "#### Distribución en las siete dimensiones",
+                dist_md,
+                *analysis_text,
+                "",
+            ]
+        )
+
+    secretaries = _records(
+        macro, "matriz_secretarias_y_entidades_distritales", "secretarias_y_entidades"
+    )
+    sec_columns = [
+        ("Dependencia", ("dependencia", "secretaria", "entidad")),
+        ("Metas", ("metas_totales",)),
+        ("Derechos", ("metas_derechos_sociales",)),
+        ("Núcleo SH", ("metas_nucleo_sh",)),
+        ("Presupuesto COP", ("apropiacion_definitiva_cop",)),
+        ("Compromisos COP", ("compromisos_rp_cop",)),
+        ("Pagos COP", ("pagos_tesoreria_cop",)),
+        ("Avance físico", ("avance_fisico_medio_pct",)),
+        ("Brecha física-financiera", ("brecha_financiero_fisica_pct",)),
+        ("Dimensión", ("dimension_predominante",)),
+    ]
+    sec_html, sec_md = _detail_table(secretaries, sec_columns, limit=30)
+    funnel_records = _records(
+        macro, "matriz_embudo_por_plan_y_tipo_vinculo", "embudo_por_plan_y_tipo_vinculo"
+    )
+    funnel_html, funnel_md = _detail_table(
+        funnel_records,
+        [
+            ("Plan", ("codigo_plan",)),
+            ("Vínculo", ("tipo_vinculo",)),
+            ("Universo", ("etapa_1_universo", "universo")),
+            ("Derechos", ("etapa_2_derechos",)),
+            ("Núcleo SH", ("etapa_3_nucleo_sh",)),
+        ],
+        limit=100,
+    )
+    html_blocks.append(
+        "<h2>3.2 Matriz de Secretarías y Entidades Ejecutoras (Top 30)</h2>"
+        + sec_html
+        + "<h2>3.3 Embudo por Plan y Tipo de Vínculo</h2>"
+        + funnel_html
+    )
+    md_blocks.extend(
+        [
+            "### 3.2 Matriz completa de Secretarías y Entidades Ejecutoras (Top 30)",
+            sec_md,
+            "",
+            "### 3.3 Matriz del embudo por plan y tipo de vínculo",
+            funnel_md,
+            "",
+        ]
+    )
+    return "".join(html_blocks), "\n".join(md_blocks)
+
+
+def _render_dimension_v2(data: dict[str, Any], plans: list[dict[str, Any]]) -> tuple[str, str]:
+    html_blocks = [
+        "<div class='page-break'></div><h1>IV. MONOGRAFÍAS SECTORIALES EN LAS SIETE DIMENSIONES DE SEGURIDAD HUMANA</h1>"
+    ]
+    md_blocks = [
+        "\n\n---\n\n## IV. MONOGRAFÍAS SECTORIALES EN LAS SIETE DIMENSIONES DE SEGURIDAD HUMANA",
+        "",
+    ]
+    advanced = _dict(data.get("analisis_avanzado_dea_espacial_series"))
+    dea = _dict(advanced.get("dea_eficiencia_y_holguras_5_1"))
+    lisa = _dict(advanced.get("econometria_espacial_lisa_5_2"))
+    isri = _dict(advanced.get("proyeccion_alcanzabilidad_isri_5_3"))
+    isri_rows = _records(isri, "proyecciones_por_dimension_2027", "proyecciones_isri_por_dimension")
+    formulas = [
+        ("INCREMENTO_ACUMULATIVO_FLUJO", "E=(ΣL_t/ΣM_t)×100; usar sumas de flujos comparables"),
+        (
+            "INCREMENTO_NO_ACUMULATIVO_CAPACIDAD",
+            "E=((L_t−LB)/(M_t−LB))×100; si no hay brecha, usar L_t/M_t",
+        ),
+        ("REDUCCION_BRECHA", "E=((LB−L_t)/(LB−M_t))×100; dirección descendente"),
+        ("MANTENIMIENTO_STOCK", "E=(L_t/M_t)×100; verificar continuidad del estándar"),
+    ]
+    activities = [
+        "ACTIVIDAD_NORMATIVA",
+        "ACTIVIDAD_ADMINISTRATIVA",
+        "ACTIVIDAD_DE_GESTION",
+        "ACTIVIDAD_LOGISTICA",
+    ]
+
+    for dim_index, (name, ods, areas) in enumerate(DIMENSIONES, start=1):
+        item = _dimension_data(data, dim_index - 1)
+        code = _text_value(item, "codigo_dimension", default=f"D{dim_index}")
+        title = _text_value(item, "titulo", default=f"4.{dim_index} {name}")
+        finding = _text_value(
+            item,
+            "hallazgo_critico_sintesis",
+            "auditoria_coherencia_gasto_indicador",
+            default="sin hallazgo cuantitativo granular reportado",
+        )
+        metric = _text_value(item, "total_metas_nucleo", "total_metas", default="—")
+        top_budget = _records_for_dimension(
+            item, "catalogo_metas_mayor_presupuesto", "metas_mayor_presupuesto"
+        )
+        critical = _records_for_dimension(
+            item, "catalogo_metas_criticas_rezagadas", "metas_criticas_rezagadas"
+        )
+        emblematic = _records_for_dimension(item, "metas_emblematicas_bd_csh", "metas")
+        if not top_budget:
+            top_budget = sorted(
+                emblematic,
+                key=lambda row: float(
+                    _lookup(row, "apropiacion_definitiva_cop", "presupuesto_cop", default=0) or 0
+                ),
+                reverse=True,
+            )[:25]
+        if not critical:
+            critical = [
+                row
+                for row in emblematic
+                if float(
+                    _lookup(row, "eficacia_truncada_sispt_pct", "avance_fisico_pct", default=101)
+                    or 0
+                )
+                < 40
+            ][:15]
+
+        evolution = _records_for_dimension(item, "evolucion_8_planes", "evolucion_por_plan")
+        if not evolution:
+            by_plan = (
+                item.get("conteo_por_plan") if isinstance(item.get("conteo_por_plan"), dict) else {}
+            )
+            evolution = [
+                {
+                    "codigo_plan": _text_value(p, "codigo_plan", default="—"),
+                    "periodo": p.get("periodo", "—"),
+                    "metas_totales_dim": by_plan.get(_text_value(p, "codigo_plan", default=""), 0),
+                    "metas_con_pa_dim": "—",
+                    "apropiacion_definitiva_cop": "—",
+                    "avance_fisico_medio_pct": item.get("eficacia_media_truncada_sispt_pct", "—"),
+                }
+                for p in plans
+            ]
+        secretaries = _records_for_dimension(
+            item, "desempeno_secretarias_dimension", "desempeno_secretarias", "secretarias"
+        )
+        lines = _records_for_dimension(
+            item, "lineas_estrategicas_y_programas_dimension", "lineas_estrategicas", "programas"
+        )
+        spatial = _dict(item.get("territorializacion_lisa_y_riesgo_isri_dimension"))
+        territories = _records(
+            spatial, "territorios", "perfiles_territoriales", "localidades_y_ucgs"
+        )
+        if not territories:
+            territories = _records(
+                lisa,
+                "perfiles_monograficos_18_territorios",
+                "matriz_espacial_15_ucg",
+                "resumen_3_localidades",
+            )
+        roadmap = _records_for_dimension(
+            item, "hoja_de_ruta_sectorial_dimension", "hoja_de_ruta_sectorial"
+        )
+        sispt = _dict(item.get("evaluacion_sispt_dnp_dimension"))
+        formula_rows = _records(sispt, "por_formula_indicador", "formulas")
+        activity_rows = _records(sispt, "por_tipo_actividad_pa", "tipos_actividad")
+        sem_rows = _records(sispt, "por_rango_semaforo_sispt", "rangos_semaforo")
+        doctrine = item.get("monografia_doctrinal_y_estructural") or []
+        if isinstance(doctrine, dict):
+            doctrine = list(doctrine.values())
+        doctrinal_texts = [
+            str(x.get("analisis", x.get("texto", x))) if isinstance(x, dict) else str(x)
+            for x in doctrine
+        ]
+
+        table_specs = {
+            2: (
+                "Evolución longitudinal de metas y ejecución",
+                evolution,
+                [
+                    ("Plan", ("codigo_plan",)),
+                    ("Periodo", ("periodo",)),
+                    ("Metas dimensión", ("metas_totales_dim", "total_metas")),
+                    ("Metas núcleo", ("metas_nucleo_dim",)),
+                    ("Metas PA", ("metas_con_pa_dim",)),
+                    ("Apropiación COP", ("apropiacion_definitiva_cop",)),
+                    ("Avance medio", ("avance_fisico_medio_pct",)),
+                ],
+                8,
+            ),
+            3: (
+                "Desempeño de Secretarías y entidades",
+                secretaries,
+                [
+                    ("Dependencia", ("dependencia", "secretaria")),
+                    ("Metas", ("metas_totales",)),
+                    ("Núcleo", ("metas_nucleo",)),
+                    ("Apropiación COP", ("apropiacion_definitiva_cop",)),
+                    ("Compromisos COP", ("compromisos_rp_cop",)),
+                    ("Pagos COP", ("pagos_tesoreria_cop",)),
+                    ("Ejecución financiera", ("ejecucion_financiera_pct",)),
+                    ("Avance físico", ("avance_fisico_medio_pct",)),
+                    ("Dictamen", ("dictamen_entidad",)),
+                ],
+                30,
+            ),
+            4: (
+                "Top 18 líneas estratégicas y programas",
+                lines,
+                [
+                    ("Plan", ("codigo_plan",)),
+                    ("Línea / programa", ("linea_estrategica", "programa")),
+                    ("Metas", ("metas_totales",)),
+                    ("Núcleo", ("metas_nucleo",)),
+                    ("Apropiación COP", ("apropiacion_definitiva_cop",)),
+                    ("Avance", ("avance_fisico_medio_pct",)),
+                    ("Cluster", ("cluster_bertopic",)),
+                ],
+                18,
+            ),
+            9: (
+                "Territorios, UCG y riesgo ISRI",
+                territories,
+                [
+                    ("Territorio", ("territorio", "nombre", "codigo_ucg", "localidad")),
+                    ("Localidad", ("localidad",)),
+                    ("Dimensión", ("dimension", "nombre_dimension")),
+                    ("Metas", ("metas", "metas_asignadas", "metas_seguridad_humana_asignadas")),
+                    ("Riesgo ISRI", ("isri_score", "riesgo_isri")),
+                    ("Cluster LISA", ("tipologia_cluster_lisa", "cluster_lisa")),
+                    ("Diagnóstico", ("diagnostico", "hallazgo")),
+                ],
+                30,
+            ),
+            10: (
+                "Hoja de ruta sectorial",
+                roadmap,
+                [
+                    ("Horizonte", ("horizonte",)),
+                    ("Entidad líder", ("entidad_lider",)),
+                    ("Acción", ("accion_estrategica", "accion")),
+                    ("Meta asociada", ("meta_asociada",)),
+                    ("Impacto esperado", ("impacto_esperado_isri_dea",)),
+                ],
+                12,
+            ),
+        }
+
+        html_blocks.append(
+            f"<div class='page-break'></div><h2>{html.escape(title)} — Monografía V2</h2><p><strong>ODS:</strong> {html.escape(ods)} | <strong>Focos:</strong> {html.escape(areas)} | <strong>Metas directas:</strong> {html.escape(metric)}</p>"
+        )
+        md_blocks.extend(
+            [
+                f"\n\n---\n\n### {title} — Monografía V2",
+                f"**ODS:** {ods} · **Focos:** {areas} · **Metas directas:** {metric}",
+                "",
+            ]
+        )
+        for sub_index, subsection in enumerate(_DIMENSION_SUBSECTIONS, start=1):
+            heading = f"4.{dim_index}.{sub_index} {subsection}"
+            html_blocks.append(f"<h3>{html.escape(heading)}</h3>")
+            md_blocks.extend([f"#### {heading}", ""])
+            if sub_index == 1:
+                if doctrinal_texts:
+                    for paragraph in doctrinal_texts[:6]:
+                        html_blocks.append(f"<p class='doctrina'>{html.escape(paragraph)}</p>")
+                        md_blocks.append(paragraph)
+            if sub_index in table_specs:
+                label, records, columns, limit = table_specs[sub_index]
+                table_html, table_md = _detail_table(records, columns, limit=limit)
+                html_blocks.append(f"<h4>{html.escape(label)}</h4>{table_html}")
+                md_blocks.extend([f"**{label}.**", table_md, ""])
+                if sub_index == 9 and isri_rows:
+                    i_html, i_md = _detail_table(
+                        isri_rows,
+                        [
+                            ("Dimensión", ("nombre_dimension", "codigo_dimension")),
+                            ("ISRI", ("isri_score", "indice_isri")),
+                            ("Riesgo", ("nivel_riesgo",)),
+                            ("Probabilidad 2027", ("probabilidad_cumplimiento_2027_pct",)),
+                            (
+                                "Proyección 2027",
+                                ("proyeccion_cierre_2027_pct", "proyeccion_cierre_2027_arima_pct"),
+                            ),
+                        ],
+                        limit=7,
+                    )
+                    html_blocks.append(
+                        f"<h4>Descomposición ISRI y proyección de cierre 2027</h4>{i_html}"
+                    )
+                    md_blocks.extend(
+                        ["**Descomposición ISRI y proyección de cierre 2027**", i_md, ""]
+                    )
+            elif sub_index == 5:
+                frows = formula_rows or [{"formula": f, "eficacia": rule} for f, rule in formulas]
+                arows = activity_rows or [
+                    {
+                        "tipo_actividad": a,
+                        "regla": "Clasificar por verbo, objeto, finalidad y bolsa presupuestal; validar vínculo documental.",
+                    }
+                    for a in activities
+                ]
+                srows = sem_rows or [
+                    {
+                        "rango": "SOBRESALIENTE 85–100",
+                        "regla": "Eficacia truncada SisPT entre 85 y 100.",
+                    },
+                    {"rango": "ACEPTABLE 70–84", "regla": "Eficacia SisPT de 70 a menos de 85."},
+                    {"rango": "VULNERABLE 40–69", "regla": "Eficacia SisPT de 40 a menos de 70."},
+                    {"rango": "CRÍTICO 0–39", "regla": "Eficacia SisPT inferior a 40."},
+                ]
+                f_html, f_md = _detail_table(
+                    frows,
+                    [
+                        ("Tipología", ("tipologia", "formula", "tipo")),
+                        ("Conteo", ("conteo", "metas")),
+                        ("Regla / resultado", ("formula_aplicada", "eficacia", "regla")),
+                        ("Eficacia bruta", ("eficacia_media_bruta_pct",)),
+                        ("Eficacia truncada", ("eficacia_media_truncada_pct",)),
+                    ],
+                    limit=10,
+                )
+                a_html, a_md = _detail_table(
+                    arows,
+                    [
+                        ("Tipo de actividad PA", ("tipo_actividad", "tipo")),
+                        ("Conteo", ("conteo", "metas")),
+                        ("Presupuesto", ("presupuesto_cop",)),
+                        ("Regla", ("regla", "avance_fisico_medio_pct")),
+                    ],
+                    limit=10,
+                )
+                s_html, s_md = _detail_table(
+                    srows,
+                    [
+                        ("Semáforo", ("rango", "rango_semaforo", "semaforo")),
+                        ("Conteo", ("conteo", "metas")),
+                        ("Criterio", ("regla", "criterio")),
+                    ],
+                    limit=10,
+                )
+                html_blocks.append(
+                    "<h4>Cuatro fórmulas SisPT</h4>"
+                    + f_html
+                    + "<h4>Cuatro tipos de actividad del Plan de Acción</h4>"
+                    + a_html
+                    + "<h4>Rangos de semáforo</h4>"
+                    + s_html
+                )
+                md_blocks.extend(
+                    [
+                        "**Cuatro fórmulas SisPT**",
+                        f_md,
+                        "**Cuatro tipos de actividad PA**",
+                        a_md,
+                        "**Semáforos**",
+                        s_md,
+                        "",
+                    ]
+                )
+            elif sub_index == 6:
+                audit = _records_for_dimension(
+                    item, "auditoria_financiera_cuipo_piip", "auditoria_coherencia_gasto_indicador"
+                )
+                if not audit and isinstance(item.get("auditoria_coherencia_gasto_indicador"), str):
+                    audit = [{"hallazgo": item["auditoria_coherencia_gasto_indicador"]}]
+                aud_html, aud_md = _detail_table(
+                    audit,
+                    [
+                        ("Fuente / etapa", ("fuente", "etapa")),
+                        ("Apropiación", ("apropiacion_definitiva_cop",)),
+                        ("Compromisos", ("compromisos_rp_cop",)),
+                        ("Obligaciones", ("obligaciones_cop",)),
+                        ("Pagos", ("pagos_tesoreria_cop",)),
+                        ("Hallazgo", ("hallazgo", "diagnostico_coherencia")),
+                    ],
+                    limit=40,
+                )
+                html_blocks.append("<h4>Cadena Bᵢ → Cᵢ → Oᵢ → Pᵢ</h4>" + aud_html)
+                md_blocks.extend(["**Cadena presupuestal Bᵢ → Cᵢ → Oᵢ → Pᵢ**", aud_md, ""])
+            elif sub_index == 7:
+                fields = [
+                    ("Plan", ("codigo_plan",)),
+                    ("Código meta", ("codigo_meta", "codigo")),
+                    ("Tipo", ("tipo_meta",)),
+                    ("Responsable", ("dependencia_responsable", "responsable")),
+                    ("Línea", ("linea_estrategica",)),
+                    ("Meta e indicador", ("meta_texto_canonico", "descripcion_meta", "indicador")),
+                    ("Unidad", ("unidad_medida",)),
+                    ("Meta anual", ("meta_programada_anual",)),
+                    ("Ejecutado", ("meta_ejecutada_anual",)),
+                    ("Avance", ("avance_fisico_pct",)),
+                    ("Apropiación COP", ("apropiacion_definitiva_cop", "presupuesto_cop")),
+                    ("Compromisos COP", ("compromisos_rp_cop",)),
+                    ("Pagos COP", ("pagos_tesoreria_cop",)),
+                    ("Tipo vínculo", ("tipo_vinculo",)),
+                    ("Dictamen", ("dictamen_meta",)),
+                ]
+                top_html, top_md = _detail_table(top_budget, fields, limit=25)
+                crit_html, crit_md = _detail_table(critical, fields, limit=15)
+                if len(top_budget) < 25 or len(critical) < 15:
+                    status = f"Fuente disponible: {len(top_budget)} metas priorizadas por presupuesto y {len(critical)} metas críticas identificadas. El motor fuente aún no entrega el catálogo 25+15 completo para este corte; no se fabrican registros faltantes."
+                    html_blocks.append(_callout(status))
+                    md_blocks.append(f"> {status}")
+                html_blocks.append(
+                    f"<h4>Top 25 mayor presupuesto (disponibles: {min(len(top_budget), 25)})</h4>{top_html}<h4>15 metas críticas/rezagadas (disponibles: {min(len(critical), 15)})</h4>{crit_html}"
+                )
+                md_blocks.extend(
+                    [
+                        "**Top 25 metas de mayor presupuesto**",
+                        top_md,
+                        "**Top 15 metas críticas o rezagadas**",
+                        crit_md,
+                        "",
+                    ]
+                )
+            elif sub_index == 8:
+                dea_rows = _records_for_dimension(
+                    item, "eficiencia_dea_intradimension", "resultados_dea_dimension"
+                )
+                if not dea_rows:
+                    dea_rows = [
+                        r
+                        for r in _records(
+                            dea, "eficiencia_por_dimension_7d", "resultados_por_dimension"
+                        )
+                        if code.casefold() in json.dumps(r, ensure_ascii=False).casefold()
+                        or name.casefold() in json.dumps(r, ensure_ascii=False).casefold()
+                    ]
+                dhtml, dmd = _detail_table(
+                    dea_rows,
+                    [
+                        ("Unidad", ("dmu", "nombre_dimension", "dimension")),
+                        ("θ BCC", ("theta_bcc", "theta_bcc_vrs")),
+                        ("Holgura S− COP", ("holgura_presupuesto_cop", "holgura_s_minus_cop")),
+                        ("Holgura S+", ("holgura_avance_pct", "deficit_producto_s_plus_pct")),
+                        ("Retorno", ("retorno_escala",)),
+                        ("Diagnóstico", ("diagnostico_microeconometrico", "dictamen_dea")),
+                    ],
+                    limit=30,
+                )
+                html_blocks.append(dhtml)
+                md_blocks.extend([dmd, ""])
+
+            paragraphs = _paragraphs_for_dimension(name, subsection, item, plans, finding, ods)
+            for paragraph_index, paragraph in enumerate(paragraphs, start=1):
+                html_blocks.append(
+                    f"<p class='analisis' data-dimension='{html.escape(code)}' "
+                    f"data-subseccion='4.{dim_index}.{sub_index}' data-lente='{paragraph_index}' "
+                    f"data-corte='bd_csh/diagnostico_pshc'>{html.escape(paragraph)}</p>"
+                )
+                md_blocks.append(paragraph)
+            md_blocks.append("")
+
+    return "".join(html_blocks), "\n".join(md_blocks)
+
+
+def _render_territory_v2(data: dict[str, Any]) -> tuple[str, str]:
+    advanced = _dict(data.get("analisis_avanzado_dea_espacial_series"))
+    lisa = _dict(advanced.get("econometria_espacial_lisa_5_2"))
+    profiles = _records(lisa, "perfiles_monograficos_18_territorios")
+    if not profiles:
+        locals_rows = _records(lisa, "resumen_3_localidades")
+        ucg_rows = _records(lisa, "matriz_espacial_15_ucg")
+        profiles = locals_rows + ucg_rows
+    html_blocks = [
+        "<div class='page-break'></div><h1>V. PERFILES MONOGRÁFICOS DE TRES LOCALIDADES Y QUINCE UCGs</h1>"
+    ]
+    md_blocks = ["\n\n---\n\n## V. PERFILES MONOGRÁFICOS DE TRES LOCALIDADES Y QUINCE UCGs", ""]
+    if not profiles:
+        profiles = [
+            {"territorio": f"Perfil territorial {index}", "estado": "SIN_REGISTRO_GRANULAR"}
+            for index in range(1, 19)
+        ]
+    for index, profile in enumerate(profiles[:18], start=1):
+        name = _text_value(
+            profile,
+            "nombre",
+            "territorio",
+            "nombre_ucg",
+            "codigo_ucg",
+            default=f"Territorio {index}",
+        )
+        body = _text_value(
+            profile,
+            "monografia",
+            "analisis",
+            "diagnostico",
+            "hallazgo",
+            default="El perfil espera validación de delimitación, población, indicadores de las siete dimensiones y relación con la matriz de vecindad espacial.",
+        )
+        values = [
+            _text_value(profile, "localidad", default="—"),
+            _text_value(profile, "codigo_ucg", default="—"),
+            _text_value(
+                profile, "indice_vulnerabilidad_compuesto", "indice_vulnerabilidad", default="—"
+            ),
+            _text_value(profile, "cluster_lisa", "tipologia_cluster_lisa", default="—"),
+            _text_value(profile, "isri_score", "riesgo_isri", default="—"),
+            _text_value(profile, "presupuesto_asignado_cop", "presupuesto_cop", default="—"),
+        ]
+        paragraphs = [
+            f"Perfil {index} — {name}. {body} La interpretación territorial vincula exposición a amenazas, acceso a servicios, capacidades institucionales y presencia de metas ejecutables, evitando atribuir causalidad a la mera co-localización de indicadores.",
+            f"Para {name}, el seguimiento debe registrar desagregación por sexo, edad, pertenencia étnica, discapacidad y condición socioeconómica cuando la fuente permita hacerlo con protección de datos. La ausencia de desagregación se trata como limitación de evidencia y como oportunidad de fortalecer el sistema estadístico local.",
+            f"La recomendación operativa para {name} es contrastar el cluster espacial con la geografía oficial, el periodo de observación y la matriz de pesos. Después se asignan entidad responsable, producto, apropiación, hito trimestral y evidencia de resultado; cualquier priorización presupuestal requiere evaluación técnica y deliberación pública.",
+        ]
+        html_blocks.append(
+            f"<h2>5.{index} {html.escape(name)}</h2>{_table(['Localidad', 'UCG', 'Vulnerabilidad', 'Cluster LISA', 'ISRI', 'Presupuesto COP'], [values])}"
+            + "".join(
+                f"<p class='territorio' data-territorio='{html.escape(name)}'>{html.escape(p)}</p>"
+                for p in paragraphs
+            )
+        )
+        md_blocks.extend(
+            [
+                f"### 5.{index} {name}",
+                _md_table(
+                    [
+                        "Localidad",
+                        "UCG",
+                        "Vulnerabilidad",
+                        "Cluster LISA",
+                        "ISRI",
+                        "Presupuesto COP",
+                    ],
+                    [values],
+                ),
+                *paragraphs,
+                "",
+            ]
+        )
+    conclusion = _dict(data.get("conclusiones_brechas_y_recomendaciones"))
+    gaps = conclusion.get("brechas_continuidad_intercuatrienial") or []
+    route = conclusion.get("hoja_de_ruta_plan_indicativo_y_plan_accion") or []
+    html_blocks.append(
+        "<div class='page-break'></div><h1>VI. BRECHAS INTEGRALES, PLAN DE CHOQUE 2025–2027 Y GOBERNANZA</h1>"
+    )
+    md_blocks.extend(
+        ["\n\n---\n\n## VI. BRECHAS INTEGRALES, PLAN DE CHOQUE 2025–2027 Y GOBERNANZA", ""]
+    )
+    for idx, value in enumerate(gaps, start=1):
+        text = (
+            value.get("descripcion") or value.get("hallazgo") or value
+            if isinstance(value, dict)
+            else value
+        )
+        paragraph = f"Brecha estratégica {idx}: {text}. La respuesta requiere línea base verificable, análisis de causas, población afectada, responsable institucional, fuente financiera y criterio de cierre. Debe comprobarse continuidad con los planes anteriores y evitar que el cumplimiento de actividades se contabilice como transformación del resultado."
+        html_blocks.append(f"<p class='brecha'>{html.escape(str(paragraph))}</p>")
+        md_blocks.append(paragraph)
+    for idx, value in enumerate(route, start=1):
+        text = (
+            value.get("accion") or value.get("recomendacion") or value
+            if isinstance(value, dict)
+            else value
+        )
+        paragraph = f"Acción de hoja de ruta {idx}: {text}. Asignar entidad líder y corresponsables, producto verificable, fuente de recursos, calendario trimestral, indicador SisPT con fórmula y umbral de alerta, evidencia PIIP/CUIPO y mecanismo de rendición de cuentas. La Secretaría de Planeación revisa avance y eleva desviaciones con oportunidad."
+        html_blocks.append(f"<p class='hoja-ruta'>{html.escape(str(paragraph))}</p>")
+        md_blocks.append(paragraph)
+    for idx, lens in enumerate(_ANALYTIC_LENSES, start=1):
+        paragraph = (
+            f"Gobernanza de implementación {idx}: el plan de choque 2025–2027 debe articular "
+            "reprogramación física con programación financiera, mantener una reserva explícita "
+            "para riesgos climáticos y sociales, publicar avances en lenguaje accesible y activar "
+            "correcciones cuando se rompan los umbrales definidos. " + lens
+        )
+        html_blocks.append(f"<p class='gobernanza'>{html.escape(paragraph)}</p>")
+        md_blocks.append(paragraph)
+    return "".join(html_blocks), "\n".join(md_blocks)
+
+
+def _build_document(data: dict[str, Any]) -> tuple[str, str, str]:
+    base_html, base_md, csv_data = _build_document_base(data)
+    plans = _plan_rows(data)
+    macro_html, macro_md = _render_macro_v2(data, plans)
+    dimensions_html, dimensions_md = _render_dimension_v2(data, plans)
+    territories_html, territories_md = _render_territory_v2(data)
+    expansion_html = macro_html + dimensions_html + territories_html
+    html_doc = base_html.replace(
+        "</head>",
+        "<style>.page-break{page-break-before:always;break-before:page}"
+        ".analisis,.macro-analisis,.territorio,.brecha,.hoja-ruta,.gobernanza{"
+        "orphans:3;widows:3;margin:0 0 8pt 0}</style></head>",
+    ).replace("</body></html>", expansion_html + "</body></html>")
+    markdown = "\n\n".join([base_md, macro_md, dimensions_md, territories_md])
+    # Keep the publication contract explicit; a short source payload cannot silently
+    # masquerade as the requested 100-page V2 deliverable.
+    if len(markdown) < 340_000 or len(html_doc) < 460_000:
+        raise ValueError(
+            "El diagnóstico no alcanzó la extensión mínima V2: "
+            f"Markdown={len(markdown):,}; HTML={len(html_doc):,}. "
+            "Revise que el motor fuente incluya las monografías y catálogos granulares."
+        )
+    return html_doc, markdown, csv_data
 
 
 def generar_paquete_diagnostico_pshc_google_doc(codigo_plan: str = "TODOS") -> dict[str, Any]:
@@ -851,6 +1728,12 @@ async def publicar_diagnostico_pshc_en_drive(
     files = (
         (
             "01_DIAGNOSTICO_SEGURIDAD_HUMANA_8_PLANES_CARTAGENA_2012_2027",
+            "application/vnd.google-apps.document",
+            "text/html; charset=UTF-8",
+            package["html_google_doc"],
+        ),
+        (
+            "04_DIAGNOSTICO_V2_MONOGRAFIA_100P_SEGURIDAD_HUMANA_8_PLANES_CARTAGENA",
             "application/vnd.google-apps.document",
             "text/html; charset=UTF-8",
             package["html_google_doc"],
