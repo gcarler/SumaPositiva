@@ -493,6 +493,21 @@ class PdtSisptDnpSeguimientoResponse(BaseModel):
     resumen_sispt_dnp: dict[str, Any] = Field(default_factory=dict)
 
 
+class PdtDiagnosticoSeguridadHumana8PlanesResponse(BaseModel):
+    model_config = ConfigDict(extra="allow")
+
+    titulo: str
+    codigo_plan: str = "TODOS"
+    estado_diagnostico: str = "DISPONIBLE"
+    capitulos: list[str] = Field(default_factory=list)
+    diagnostico: dict[str, Any] = Field(default_factory=dict)
+    html_google_doc: str
+    markdown_ejecutivo: str
+    csv_embudo_y_7_dimensiones: str
+    huella_verificacion_sha256: str
+    publicacion_google_drive: dict[str, Any] | None = None
+
+
 class PdtRevisionPorMetaRespuesta(BaseModel):
     model_config = ConfigDict(extra="allow")
 

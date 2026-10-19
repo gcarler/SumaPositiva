@@ -128,6 +128,18 @@ def test_endpoint_sispt_esta_registrado_como_lectura_publica():
     }
 
 
+def test_endpoint_diagnostico_pshc_esta_registrado_como_lectura_publica():
+    from app.core.security.access_policy import es_ruta_analitica_publica
+
+    path = (
+        "/api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/diagnostico-seguridad-humana-8planes"
+    )
+    assert es_ruta_analitica_publica(path)
+    assert ("GET", path, "publico") in {
+        (method, route, control) for method, route, control, _ in leer_matriz()
+    }
+
+
 GESTION = [
     (method, path)
     for method, path, control, _ in leer_matriz()

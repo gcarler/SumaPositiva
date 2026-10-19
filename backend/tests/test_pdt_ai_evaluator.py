@@ -244,6 +244,28 @@ def test_informe_integral_sintetiza_sispt_en_huella_y_markdown(monkeypatch):
     assert "SisPT truncada al 100%" in result["exportables_auditables"]["markdown_ejecutivo"]
 
 
+def test_diagnostico_pshc_google_doc_endpoint_entrega_seis_capitulos():
+    app = FastAPI()
+    app.include_router(router.router, prefix="/api/v1")
+    with TestClient(app) as client:
+        response = client.get(
+            "/api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/diagnostico-seguridad-humana-8planes"
+        )
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["capitulos"] == ["I", "II", "III", "IV", "V", "VI"]
+    assert all(
+        f"{chapter}." in payload["html_google_doc"]
+        for chapter in ("I", "II", "III", "IV", "V", "VI")
+    )
+    for color in ("#0B2545", "#134074", "#8DA9C4", "#F4F6F8", "#FAFAFA"):
+        assert color in payload["html_google_doc"]
+    assert payload["markdown_ejecutivo"]
+    assert payload["csv_embudo_y_7_dimensiones"].startswith("tipo_fila,codigo,periodo")
+    assert len(payload["huella_verificacion_sha256"]) == 64
+
+
 def test_informe_integral_incluye_cobertura_historica_en_markdown(monkeypatch):
     from app.modules.compromisos import pdt_informe_integral_spd as report_module
 

@@ -75,6 +75,7 @@ from app.modules.compromisos.schemas import (
     PdtAiEvaluatorValidarCheckpointRequest,
     PdtAiInformeIntegralSpdResponse,
     PdtDea4NivelesCartagenaRespuesta,
+    PdtDiagnosticoSeguridadHumana8PlanesResponse,
     PdtDictamenEjecutivoRespuesta,
     PdtDictamenesHallazgosRespuesta,
     PdtDictaminarHallazgoRequest,
@@ -1308,6 +1309,30 @@ async def pdt_ai_evaluator_sispt_dnp_seguimiento(
                 "cobertura_referencia": {"planes": 8, "metas": 4637},
             },
         }
+
+
+@router.get(
+    "/triada/pdd-dea/pdt-ai-evaluator/diagnostico-seguridad-humana-8planes",
+    response_model=PdtDiagnosticoSeguridadHumana8PlanesResponse,
+    summary="Diagnóstico multidimensional de seguridad humana en ocho planes",
+)
+async def pdt_ai_evaluator_diagnostico_seguridad_humana_8planes(
+    codigo_plan: str = Query(default="TODOS"),
+    publicar_drive: bool = Query(default=False),
+    folder_id: str = Query(default="1g3wXPujYCZfJVB77_iZOrdfBZNfTkVVS"),
+):
+    from app.modules.compromisos.pdt_generador_google_doc_pshc import (
+        generar_paquete_diagnostico_pshc_google_doc,
+        publicar_diagnostico_pshc_en_drive,
+    )
+
+    paquete = generar_paquete_diagnostico_pshc_google_doc(codigo_plan=codigo_plan)
+    if publicar_drive:
+        result = publicar_diagnostico_pshc_en_drive(folder_id=folder_id, paquete=paquete)
+        if hasattr(result, "__await__"):
+            result = await result
+        paquete["publicacion_google_drive"] = result
+    return paquete
 
 
 async def _invocar_hoshin(fn, **kwargs):
