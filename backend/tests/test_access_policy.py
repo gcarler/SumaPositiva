@@ -118,6 +118,16 @@ def test_matriz_cubre_todas_las_rutas_y_sus_controles():
                 }, "Una escritura pública nueva requiere decisión explícita y pruebas"
 
 
+def test_endpoint_sispt_esta_registrado_como_lectura_publica():
+    from app.core.security.access_policy import es_ruta_analitica_publica
+
+    path = "/api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/sispt-dnp-seguimiento"
+    assert es_ruta_analitica_publica(path)
+    assert ("GET", path, "publico") in {
+        (method, route, control) for method, route, control, _ in leer_matriz()
+    }
+
+
 GESTION = [
     (method, path)
     for method, path, control, _ in leer_matriz()

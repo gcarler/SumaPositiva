@@ -479,7 +479,18 @@ class PdtAiInformeIntegralSpdResponse(BaseModel):
     sintesis_dea_4_niveles_y_fuentes: dict[str, Any]
     tablero_alcalde_alertas_desperdicio: dict[str, Any]
     tabla_armonizacion_presupuestal_spd: list[dict[str, Any]]
+    sintesis_sispt_dnp_cuipo_piip: dict[str, Any] = Field(default_factory=dict)
     exportables_auditables: dict[str, str] = Field(default_factory=dict)
+
+
+class PdtSisptDnpSeguimientoResponse(BaseModel):
+    model_config = ConfigDict(extra="allow")
+
+    codigo_plan: str = "TODOS"
+    estado: str = "DISPONIBLE"
+    total_planes: int = 0
+    total_metas: int = 0
+    resumen_sispt_dnp: dict[str, Any] = Field(default_factory=dict)
 
 
 class PdtRevisionPorMetaRespuesta(BaseModel):

@@ -1,25 +1,23 @@
-# Resultado de Ejecución — Fase `[32B]` (`agy2`, 100% Backend)
+# Resultado de Ejecución — Fase `[33B]` (`agy2`, 100% Backend)
 
 ## 1. Resumen Ejecutivo
-Se ejecutó íntegramente la **Fase `[32B]` (`100% Backend`)**:
-1. **Normalizador Canónico OCR de las `4,637` Metas Oficiales (8 Planes `2012–2027`) — `backend/app/modules/compromisos/pdt_normalizador_canonico_metas.py`:**
-   - Implementa `extraer_valor_numerico_meta`, `extraer_valor_numerico_linea_base`, `normalizar_meta_oficial_ocr`, `normalizar_y_actualizar_metas_oficiales_async` y `normalizar_y_actualizar_metas_oficiales`.
-   - Rescata y estandariza llaves fragmentadas por OCR y columnas posicionales (`"Responsabl e"`, `"META DEL CUATRENI O"`, `"columna_2"`, `"columna_4"`, `"columna_9": "LHCN"`, `"Concurrencia"`, `"Línea Base Año 2023"`), extrayendo cifras en paréntesis (`"cuatro (4)" -> 4.0`, `"cien (100)" -> 100.0`), decimales con coma (`"0,4" -> 0.4`), miles con punto (`"25.265" -> 25265.0`), ceros con fuente (`"0 Fuente: Secretaría de Hacienda 2023" -> 0.0`) y palabras numéricas en español.
-   - Actualizó las **`4,637` filas** de `seguimiento.pdd_metas_oficiales` en `bd_csh` (`PDD_2012_2015: 469`, `PDD_2013_2015: 676`, `PDD_2016_2019: 898`, `PDD_2020_2023: 947`, `PDD_2024_2027: 1246`, `PDL_1_2024_2027: 110`, `PDL_2_2024_2027: 89`, `PDL_3_2024_2027: 202`) con `0` filas sin `codigo`, `0` filas sin `unidad_medida` y `4,637` filas con `datos_oficiales->'_canonico_normalizado'` (`3,670` con valor numérico de meta cuatrienal y `2,670` con línea base numérica).
-2. **Expansión de `seguimiento.pdd_vinculos_meta_pa_triada` a las `4,637` Metas (8 Planes) y Cruce Hermano de los 3 Motores (`225,380` filas) — `backend/app/modules/compromisos/pdt_conciliador_vinculos_pa_triada.py` y `backend/scripts/poblar_vinculos_meta_pa_triada.py`:**
-   - Concilió y pobló en `seguimiento.pdd_vinculos_meta_pa_triada` las **`4,637` filas** correspondientes a los 8 planes (`2012–2027`).
-   - Implementó `_resolver_cruce_hermano_motores` para cruzar los 3 motores hermanos (`PLAN_DESARROLLO`, `PLAN_ACCION`, `INVERSION_PRESUPUESTAL`) de `seguimiento.registros_triada_normalizados` por `periodo_gobierno` (`ANTES_2020`, `2020_2023`, `2024_2027`) y `entidad_normalizada`:
-     - `cruces_hermanos_3_motores_aplicados`: **`3,078` metas enriquecidas**.
-     - `metas_con_apropiacion_cop`: **`3,522` metas** (de `4,637`).
-     - `metas_con_avance_fisico_pct`: **`4,190` metas** (de `4,637`).
-     - `ceros_observados_preservados_count`: **`1,647` metas** con preservación estricta de `0.0` observado frente a `None`.
-3. **Suite de Pruebas (`backend/tests/test_pdt_normalizador_y_vinculos_8planes.py`):**
-   - 5 pruebas integrales contra las funciones del normalizador y la base de datos `bd_csh`.
+Se ejecutó íntegramente la **Fase `[33B]` (`100% Backend`)**:
+1. **Motor Canónico `SisPT-DNP` y Plan de Acción Territorial (`backend/app/modules/compromisos/pdt_sispt_dnp_evaluador.py`):**
+   - `determinar_tipologia_indicador_sispt`: clasifica cada meta/indicador en las **4 tipologías oficiales de `https://sispt.dnp.gov.co/`**:
+     - `INCREMENTO_ACUMULATIVO_FLUJO` ($E = (L_t / M_t) \times 100$)
+     - `INCREMENTO_NO_ACUMULATIVO_CAPACIDAD` ($E = ((L_t - LB) / (M_t - LB)) \times 100$, o $(L_t / M_t) \times 100$)
+     - `REDUCCION_BRECHA` ($E = ((LB - L_t) / (LB - M_t)) \times 100$)
+     - `MANTENIMIENTO_STOCK` ($E = (L_t / M_t) \times 100$)
+   - `calcular_eficacia_indicador_sispt`: aplica la fórmula exacta `SisPT`, la **Regla `SISPT-R2` de truncamiento anti-compensación al `100%`** ($E_{\text{SisPT}} = \min(\max(E_{\text{bruta}}, 0), 100)$), cuantifica `sobrecumplimiento_exceso_pct` y `alerta_subestimacion_meta_sispt` (`> 120%`), preserva estrictamente los ceros observados (`0.0` frente a `None`) y clasifica en los **5 rangos oficiales del semáforo `MDM`** (`SOBRESALIENTE` `>=85%`, `SATISFACTORIO` `70-<85%`, `MEDIO` `60-<70%`, `BAJO` `40-<60%`, `CRITICO` `<40%`).
+   - `clasificar_meta_y_actividad_plan_accion_dnp`: clasifica en las **3 clases de metas del Plan de Acción DNP** (`META_DE_PRODUCTO`, `META_DE_GESTION`, `META_ADMINISTRATIVA`), las **4 tipologías oficiales de actividades** (`ACTIVIDAD_NORMATIVA`, `ACTIVIDAD_ADMINISTRATIVA`, `ACTIVIDAD_DE_GESTION`, `ACTIVIDAD_LOGISTICA`) y las **3 bolsas de financiación** (`INVERSION`, `FUNCIONAMIENTO`, `RECURSOS_DE_GESTION`).
+   - `evaluar_interoperabilidad_sispt_cuipo_piip_meta`: audita las reglas `SISPT-R1` a `SISPT-R5` (`Plan Indicativo ↔ Plan de Acción ↔ CUIPO ↔ PIIP`), detectando `DESFASE_CUIPO_SIN_AVANCE_PIIP` (`CUIPO >= 75%` y `SisPT < 40%`), `AVANCE_FISICO_SIN_SOPORTE_CUIPO` (`SisPT >= 80%` en `META_DE_PRODUCTO` sin soporte presupuestal `CUIPO`) y `COHERENTE_SISPT_CUIPO_PIIP`.
+   - `evaluar_universo_sispt_dnp_bd_csh`: evalúa contra PostgreSQL `bd_csh` las **`4,637` metas oficiales** de los 8 planes (`2012–2027`: `PDD_2012_2015`, `PDD_2013_2015`, `PDD_2016_2019`, `PDD_2020_2023`, `PDD_2024_2027`, `PDL_1_2024_2027`, `PDL_2_2024_2027`, `PDL_3_2024_2027`).
+2. **Suite de Pruebas (`backend/tests/test_pdt_sispt_dnp_evaluador.py`):**
+   - 6 pruebas unitarias y de integración real con `bd_csh` verificando las 4 fórmulas `SisPT`, el truncamiento al `100%`, el semáforo `MDM`, la clasificación del Plan de Acción, las alertas `CUIPO`/`PIIP` y el universo completo de `4,637` metas en los 8 planes.
 
-## 2. Verificación Técnica (`bd_csh`, `ruff` y `pytest`)
-- `python scripts/poblar_vinculos_meta_pa_triada.py` -> `total_metas_normalizadas = 4637`, `total_filas_en_bd = 4637`.
-- `ruff check app/modules/compromisos/pdt_normalizador_canonico_metas.py app/modules/compromisos/pdt_conciliador_vinculos_pa_triada.py scripts/poblar_vinculos_meta_pa_triada.py tests/test_pdt_normalizador_y_vinculos_8planes.py` -> `All checks passed!`
-- `pytest tests/test_pdt_normalizador_y_vinculos_8planes.py -q` -> `5 passed in 0.89s`.
+## 2. Verificación Técnica (`ruff` y `pytest`)
+- `ruff check app/modules/compromisos/pdt_sispt_dnp_evaluador.py tests/test_pdt_sispt_dnp_evaluador.py` -> `All checks passed!`
+- `pytest tests/test_pdt_sispt_dnp_evaluador.py -q` -> `6 passed in 1.74s`
 
 ## 3. Cumplimiento de Restricciones de Alcance
-- No se tocó `src/**`, `pdt_revision_por_meta.py`, `pdt_informe_integral_spd.py`, `test_pdt_revision_por_meta.py` ni `test_pdt_ai_evaluator.py`.
+- No se tocó `src/**`, `pdt_revision_por_meta.py`, `pdt_informe_integral_spd.py`, `router.py`, `schemas.py` ni `access_policy.py`.

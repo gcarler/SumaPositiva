@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import asyncio
 import concurrent.futures
+import inspect
 import json
 import re
 import unicodedata
@@ -25,6 +26,272 @@ from sqlalchemy import text
 from sqlalchemy.ext.asyncio import create_async_engine
 
 from app.modules.compromisos.service import auditar_consistencia_serie_y_sentido_indicador
+
+try:
+    from app.modules.compromisos.pdt_sispt_dnp_evaluador import (
+        calcular_eficacia_indicador_sispt,
+        clasificar_meta_y_actividad_plan_accion_dnp,
+        determinar_tipologia_indicador_sispt,
+        evaluar_interoperabilidad_sispt_cuipo_piip_meta,
+    )
+except ImportError:  # El evaluador especializado puede desplegarse de forma independiente.
+    calcular_eficacia_indicador_sispt = None
+    clasificar_meta_y_actividad_plan_accion_dnp = None
+    determinar_tipologia_indicador_sispt = None
+    evaluar_interoperabilidad_sispt_cuipo_piip_meta = None
+
+
+_SISPT_TIPOLOGIAS = (
+    "INCREMENTO_ACUMULATIVO_FLUJO",
+    "INCREMENTO_NO_ACUMULATIVO_CAPACIDAD",
+    "REDUCCION_BRECHA",
+    "MANTENIMIENTO_STOCK",
+)
+_SISPT_ACTIVIDADES = (
+    "ACTIVIDAD_NORMATIVA",
+    "ACTIVIDAD_ADMINISTRATIVA",
+    "ACTIVIDAD_DE_GESTION",
+    "ACTIVIDAD_LOGISTICA",
+)
+
+
+def _sispt_fallback(meta: dict[str, Any]) -> dict[str, Any]:
+    """Deterministic local SisPT evaluation used until the dedicated evaluator is available."""
+    official = meta.get("datos_oficiales") if isinstance(meta.get("datos_oficiales"), dict) else {}
+    activities = meta.get("actividades_pa_vinculadas") or []
+
+    def invoke(fn, **kwargs):
+        params = inspect.signature(fn).parameters
+        accepts_kwargs = any(p.kind is inspect.Parameter.VAR_KEYWORD for p in params.values())
+        values = {key: value for key, value in kwargs.items() if accepts_kwargs or key in params}
+        return fn(**values)
+
+    indicator = _normalizar(meta.get("indicador") or official.get("indicador") or "")
+    type_hint = str(
+        meta.get("tipologia_indicador_sispt") or official.get("tipologia_indicador_sispt") or ""
+    ).upper()
+    if callable(determinar_tipologia_indicador_sispt):
+        try:
+            detected = invoke(
+                determinar_tipologia_indicador_sispt,
+                sentido_indicador=meta.get("sentido_indicador")
+                or official.get("sentido_indicador"),
+                tipo_agregacion=meta.get("tipo_agregacion") or official.get("tipo_agregacion"),
+                unidad_medida=meta.get("unidad_medida") or official.get("unidad_medida"),
+                texto_meta_o_indicador=(
+                    meta.get("indicador") or official.get("indicador") or meta.get("nombre") or ""
+                ),
+                indicador=meta.get("indicador") or official.get("indicador") or "",
+                nombre_indicador=meta.get("indicador") or official.get("indicador") or "",
+                meta=meta,
+                datos_oficiales=official,
+            )
+            if isinstance(detected, dict):
+                detected = detected.get("tipologia_indicador_sispt") or detected.get("tipologia")
+            if str(detected or "").upper() in _SISPT_TIPOLOGIAS:
+                type_hint = str(detected).upper()
+        except (TypeError, ValueError, KeyError):
+            pass
+    if type_hint not in _SISPT_TIPOLOGIAS:
+        if any(word in indicator for word in ("reduc", "dismin", "tasa de homicidio", "desercion")):
+            type_hint = "REDUCCION_BRECHA"
+        elif any(word in indicator for word in ("mantener", "sostener", "conservar")):
+            type_hint = "MANTENIMIENTO_STOCK"
+        elif any(word in indicator for word in ("cobertura", "porcentaje", "tasa", "%")):
+            type_hint = "INCREMENTO_NO_ACUMULATIVO_CAPACIDAD"
+        else:
+            type_hint = "INCREMENTO_ACUMULATIVO_FLUJO"
+    base = _numero_ocr(
+        meta.get("linea_base") or official.get("linea_base") or official.get("linea_base_texto")
+    )
+    target = _numero_ocr(
+        meta.get("meta_programada_anual")
+        or meta.get("meta_cuatrienio")
+        or official.get("meta_cuatrienio")
+    )
+    actual = _numero_ocr(meta.get("meta_ejecutada_anual"))
+    raw = None
+    evaluated = None
+    if callable(calcular_eficacia_indicador_sispt):
+        try:
+            evaluated = invoke(
+                calcular_eficacia_indicador_sispt,
+                tipologia_sispt=type_hint,
+                tipologia=type_hint,
+                tipologia_indicador_sispt=type_hint,
+                linea_base=base,
+                meta_programada=target,
+                logro_ejecutado=actual,
+                avance_fisico_observado_pct=meta.get("avance_fisico_pct"),
+                valor_actual=actual,
+                valor_ejecutado=actual,
+            )
+            if isinstance(evaluated, dict):
+                raw = evaluated.get("eficacia_bruta_pct", evaluated.get("eficacia_pct"))
+            elif isinstance(evaluated, (int, float)):
+                raw = float(evaluated)
+        except (TypeError, ValueError, KeyError):
+            evaluated = None
+    if actual is not None and target is not None:
+        if raw is None and type_hint == "REDUCCION_BRECHA" and base is not None and base != target:
+            raw = (base - actual) / (base - target) * 100
+        elif (
+            raw is None
+            and type_hint == "INCREMENTO_NO_ACUMULATIVO_CAPACIDAD"
+            and base is not None
+            and target > base
+        ):
+            raw = (actual - base) / (target - base) * 100
+        elif raw is None and target != 0:
+            raw = actual / target * 100
+    clamped = min(100.0, max(0.0, raw)) if raw is not None else None
+    if clamped is None:
+        mdm = "SIN_MEDICION"
+    elif clamped >= 85:
+        mdm = "SOBRESALIENTE"
+    elif clamped >= 70:
+        mdm = "SATISFACTORIO"
+    elif clamped >= 60:
+        mdm = "MEDIO"
+    elif clamped >= 40:
+        mdm = "BAJO"
+    else:
+        mdm = "CRITICO"
+    counts = dict.fromkeys(_SISPT_ACTIVIDADES, 0)
+    for activity in activities:
+        name = _normalizar(activity.get("descripcion_actividad") or activity.get("nombre") or "")
+        kind = (
+            "ACTIVIDAD_NORMATIVA"
+            if any(v in name for v in ("expedir", "adoptar", "reglamentar"))
+            else "ACTIVIDAD_ADMINISTRATIVA"
+            if any(v in name for v in ("contratar", "suscribir", "ajustar"))
+            else "ACTIVIDAD_LOGISTICA"
+            if any(v in name for v in ("suministrar", "instalar", "notificar"))
+            else "ACTIVIDAD_DE_GESTION"
+        )
+        counts[kind] += 1
+    cls = str(meta.get("clase_meta_pa_dnp") or official.get("clase_meta_pa_dnp") or "").upper()
+    classified = None
+    if callable(clasificar_meta_y_actividad_plan_accion_dnp):
+        try:
+            classified = invoke(
+                clasificar_meta_y_actividad_plan_accion_dnp,
+                meta=meta,
+                actividades=activities,
+                actividades_pa=activities,
+                texto_meta_o_indicador=meta.get("nombre") or meta.get("indicador") or "",
+                apropiacion_definitiva_cop=meta.get("apropiacion_definitiva_cop"),
+                codigo_bpin=meta.get("codigo_bpim") or meta.get("codigo_bpin"),
+            )
+            if isinstance(classified, dict):
+                cls = str(classified.get("clase_meta_pa_dnp") or cls).upper()
+                counts.update(classified.get("conteo_actividades_por_tipo_dnp") or {})
+        except (TypeError, ValueError, KeyError):
+            classified = None
+    if cls not in {"META_DE_PRODUCTO", "META_DE_GESTION", "META_ADMINISTRATIVA"}:
+        cls = (
+            "META_DE_PRODUCTO"
+            if meta.get("codigo_bpim") or meta.get("codigo_bpin")
+            else "META_DE_GESTION"
+        )
+    budget = _numero_ocr(meta.get("apropiacion_definitiva_cop"))
+    bucket = (
+        "INVERSION"
+        if meta.get("codigo_bpim") or meta.get("codigo_bpin")
+        else ("FUNCIONAMIENTO" if cls == "META_ADMINISTRATIVA" else "RECURSOS_DE_GESTION")
+    )
+    if isinstance(classified, dict) and classified.get("bolsa_financiacion_pa_dnp") in {
+        "INVERSION",
+        "FUNCIONAMIENTO",
+        "RECURSOS_DE_GESTION",
+    }:
+        bucket = classified["bolsa_financiacion_pa_dnp"]
+    financial = _numero_ocr(meta.get("ejecucion_financiera_pct"))
+    if financial is None and budget and budget > 0:
+        spent = _numero_ocr(meta.get("pagos_tesoreria_cop")) or 0.0
+        financial = spent / budget * 100
+    coherence = "SIN_MEDICION_OBSERVADA"
+    interoperable = None
+    if callable(evaluar_interoperabilidad_sispt_cuipo_piip_meta):
+        try:
+            interoperable = invoke(
+                evaluar_interoperabilidad_sispt_cuipo_piip_meta,
+                meta=meta,
+                eficacia_sispt_pct=clamped,
+                eficacia_truncada_sispt_pct=clamped,
+                clase_meta_pa_dnp=cls,
+                apropiacion_definitiva_cop=budget,
+                compromisos_rp_cop=meta.get("compromisos_rp_cop"),
+                obligaciones_cop=meta.get("obligaciones_cop"),
+                pagos_cop=meta.get("pagos_tesoreria_cop"),
+                codigo_bpin=meta.get("codigo_bpim") or meta.get("codigo_bpin"),
+                total_actividades_pa=len(activities),
+                ejecucion_financiera_pct=financial,
+            )
+            if isinstance(interoperable, dict):
+                coherence = str(interoperable.get("estado_coherencia_cuipo_piip") or coherence)
+            elif isinstance(interoperable, str):
+                coherence = interoperable
+        except (TypeError, ValueError, KeyError):
+            interoperable = None
+    if interoperable is None and raw is not None and financial is not None:
+        if financial >= 75 and clamped is not None and clamped < 40:
+            coherence = "DESFASE_CUIPO_SIN_AVANCE_PIIP"
+        elif clamped is not None and clamped >= 80 and cls == "META_DE_PRODUCTO" and not budget:
+            coherence = "AVANCE_FISICO_SIN_SOPORTE_CUIPO"
+        else:
+            coherence = "COHERENTE_SISPT_CUIPO_PIIP"
+    return {
+        "tipologia_indicador_sispt": type_hint,
+        "eficacia_bruta_pct": raw,
+        "eficacia_truncada_sispt_pct": clamped,
+        "sobrecumplimiento_exceso_pct": max(0.0, raw - 100.0) if raw is not None else 0.0,
+        "rango_desempeno_sispt_mdm": mdm,
+        "clase_meta_pa_dnp": cls,
+        "bolsa_financiacion_pa_dnp": bucket,
+        "conteo_actividades_por_tipo_dnp": counts,
+        "estado_coherencia_cuipo_piip": coherence,
+    }
+
+
+def _resumen_sispt(metas: list[dict[str, Any]]) -> dict[str, Any]:
+    evaluations = [
+        m["evaluacion_sispt_dnp"] for m in metas if isinstance(m.get("evaluacion_sispt_dnp"), dict)
+    ]
+
+    def counts(key, universe):
+        return {value: sum(e.get(key) == value for e in evaluations) for value in universe}
+
+    raw = [e["eficacia_bruta_pct"] for e in evaluations if e.get("eficacia_bruta_pct") is not None]
+    clipped = [
+        e["eficacia_truncada_sispt_pct"]
+        for e in evaluations
+        if e.get("eficacia_truncada_sispt_pct") is not None
+    ]
+    coherence = counts(
+        "estado_coherencia_cuipo_piip",
+        (
+            "COHERENTE_SISPT_CUIPO_PIIP",
+            "DESFASE_CUIPO_SIN_AVANCE_PIIP",
+            "AVANCE_FISICO_SIN_SOPORTE_CUIPO",
+            "SIN_MEDICION_OBSERVADA",
+        ),
+    )
+    return {
+        "total_metas_evaluadas": len(evaluations),
+        "conteo_por_tipologia": counts("tipologia_indicador_sispt", _SISPT_TIPOLOGIAS),
+        "eficacia_media_bruta_pct": sum(raw) / len(raw) if raw else None,
+        "eficacia_media_truncada_sispt_pct": sum(clipped) / len(clipped) if clipped else None,
+        "distribucion_rango_mdm": counts(
+            "rango_desempeno_sispt_mdm",
+            ("SOBRESALIENTE", "SATISFACTORIO", "MEDIO", "BAJO", "CRITICO", "SIN_MEDICION"),
+        ),
+        "distribucion_clase_meta_pa_dnp": counts(
+            "clase_meta_pa_dnp", ("META_DE_PRODUCTO", "META_DE_GESTION", "META_ADMINISTRATIVA")
+        ),
+        "alertas_cuipo_piip": coherence,
+    }
+
 
 ESTADO_BRECHA_INFO = "BRECHA_DE_INFORMACION"
 ESTADO_CERO_OBSERVADO = "CERO_OBSERVADO_VERIFICADO"
@@ -2019,6 +2286,7 @@ def construir_matriz_revision_por_meta_pdt(
             vinculos_por_meta_id=vinculos_por_meta_id,
             revisiones_hitl_por_meta=revisiones_hitl_por_meta,
         )
+        exp["evaluacion_sispt_dnp"] = _sispt_fallback(meta_row)
         expedientes_metas.append(exp)
         todos_hallazgos.extend(exp["hallazgos"])
 
@@ -2074,6 +2342,7 @@ def construir_matriz_revision_por_meta_pdt(
                 "Formulación, Ejecución y Resultados conforme a revision_motores_18_10_2026.md."
             ),
         },
+        "resumen_sispt_dnp": _resumen_sispt(expedientes_metas),
         "metas_auditadas": expedientes_metas,
         "hallazgos_consolidados": todos_hallazgos,
         "generado_en": datetime.now(UTC).isoformat(),

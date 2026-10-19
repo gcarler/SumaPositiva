@@ -411,5 +411,6 @@ El listado público existente sigue mostrando líneas activas. No se conceden nu
 | Método | Ruta | Control | Motivo o condición |
 | --- | --- | --- | --- |
 | GET | /api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/revision-por-meta | publico | Dictamen de metas del PDD con revisión de diez dimensiones y siete roles revisores. |
+| GET | /api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/sispt-dnp-seguimiento | publico | Seguimiento de eficacia SisPT DNP, tipologías, metas del Plan de Acción y coherencia CUIPO/PIIP. |
 | POST | /api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/revision-por-meta/dictaminar-hallazgo | publico | Registro auditable por hallazgo, con acción correctiva PDCA, responsable y hash SHA-256. |
 | GET | /api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/revision-por-meta/dictamenes-hallazgos | publico | Consulta de dictámenes individuales de hallazgos con filtros por plan, meta y estado. |

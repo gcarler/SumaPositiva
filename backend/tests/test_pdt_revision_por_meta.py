@@ -195,6 +195,8 @@ def test_preservacion_ceros_observados_vs_nulos_brecha_informacion() -> None:
         datos_entrada=_datos_sinteticos_revision(),
     )
     por_codigo = {m["codigo_meta"]: m for m in resultado["metas_auditadas"]}
+    assert "resumen_sispt_dnp" in resultado
+    assert "evaluacion_sispt_dnp" in next(iter(por_codigo.values()))
 
     # Meta con 0.0 observado: debe preservar exactamente 0.0 y estado CERO_OBSERVADO_VERIFICADO
     meta_cero = por_codigo["M-CERO-01"]

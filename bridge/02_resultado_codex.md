@@ -85,3 +85,27 @@ No se modificó `src/**` ni `pdt_dea_4niveles_cartagena.py`.
 - No ejecuté pytest sobre el repositorio completo.
 
 No modifiqué `src/**`, `pdt_conciliador_vinculos_pa_triada.py` ni `poblar_vinculos_meta_pa_triada.py`.
+
+---
+
+# Resultado Codex — Fase [33A]
+
+**Fecha:** 2026-10-19
+**Alcance:** Integración de seguimiento SisPT DNP, Plan de Acción y conciliación CUIPO/PIIP.
+
+## Implementación
+
+- `pdt_revision_por_meta.py` incorpora una evaluación SisPT en cada meta: tipología, eficacia bruta y truncada al 100%, exceso, rango MDM, clasificación de meta/actividad y estado de coherencia CUIPO/PIIP. Importa las funciones de `pdt_sispt_dnp_evaluador` de forma resiliente y conserva cálculo determinista local si no está disponible.
+- El resultado de revisión incluye `resumen_sispt_dnp`, con distribución de tipologías y clases, medias de eficacia, semáforo MDM y conteo de alertas de interoperabilidad.
+- Se expuso `GET /api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/sispt-dnp-seguimiento`, con `codigo_plan=TODOS` por defecto. El endpoint entrega los totales y distribuciones del evaluador; cuando el módulo aún no está instalado, devuelve el esquema de respaldo para los ocho planes y las 4,637 metas.
+- Se añadió el esquema de respuesta y se registró la ruta pública en `docs/permisos-api.md` y `backend/app/core/security/access_policy.py`.
+- El informe SPD incorpora `sintesis_sispt_dnp_cuipo_piip`; la síntesis participa en la huella SHA-256 y aparece en la sección SisPT del Markdown exportable.
+- Se añadieron pruebas de revisión por meta, respuesta HTTP 200 del endpoint, presencia de la síntesis del informe y política pública.
+
+## Verificación
+
+- Ruff sobre los ocho archivos de la fase: **All checks passed!**
+- `pytest tests/test_pdt_revision_por_meta.py tests/test_pdt_ai_evaluator.py tests/test_access_policy.py -q`: **136 passed**.
+- No ejecuté pytest sobre el repositorio completo.
+
+No modifiqué `src/**` ni `pdt_sispt_dnp_evaluador.py` / `test_pdt_sispt_dnp_evaluador.py`.

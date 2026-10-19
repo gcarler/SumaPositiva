@@ -193,6 +193,57 @@ def test_pdt_ai_evaluator_informe_integral_spd_endpoint(monkeypatch):
     assert payload["exportables_auditables"]["csv_armonizacion_y_alertas"]
 
 
+def test_sispt_dnp_seguimiento_endpoint_uses_fallback_when_module_missing(monkeypatch):
+    import sys
+
+    sys.modules.pop("app.modules.compromisos.pdt_sispt_dnp_evaluador", None)
+    app = FastAPI()
+    app.include_router(router.router, prefix="/api/v1")
+    with TestClient(app) as client:
+        response = client.get(
+            "/api/v1/compromisos/triada/pdd-dea/pdt-ai-evaluator/sispt-dnp-seguimiento"
+        )
+    assert response.status_code == 200
+    result = response.json()
+    assert result["total_planes"] == 8
+    assert result["total_metas"] == 4637
+    assert result["resumen_sispt_dnp"]["conteo_por_tipologia"]
+
+
+def test_informe_integral_sintetiza_sispt_en_huella_y_markdown(monkeypatch):
+    from app.modules.compromisos import pdt_informe_integral_spd as report
+
+    async def sources(*_args):
+        return (
+            {},
+            {
+                "resumen_sispt_dnp": {
+                    "total_metas_evaluadas": 2,
+                    "eficacia_media_bruta_pct": 120.0,
+                    "eficacia_media_truncada_sispt_pct": 90.0,
+                    "conteo_por_tipologia": {"REDUCCION_BRECHA": 2},
+                    "alertas_cuipo_piip": {"COHERENTE_SISPT_CUIPO_PIIP": 2},
+                }
+            },
+            {},
+            ({"niveles": {}}, {}),
+        )
+
+    async def coverage(_db=None):
+        return {
+            "estado": "TEST",
+            "total_planes_oficiales": 8,
+            "total_metas_historicas_y_locales": 4637,
+            "planes": [],
+        }
+
+    monkeypatch.setattr(report, "_gather_sources", sources)
+    monkeypatch.setattr(report, "_cobertura_historica_8_planes", coverage)
+    result = asyncio.run(report.generar_informe_integral_spd_cartagena())
+    assert result["sintesis_sispt_dnp_cuipo_piip"]["eficacia_media_truncada_sispt_pct"] == 90.0
+    assert "SisPT truncada al 100%" in result["exportables_auditables"]["markdown_ejecutivo"]
+
+
 def test_informe_integral_incluye_cobertura_historica_en_markdown(monkeypatch):
     from app.modules.compromisos import pdt_informe_integral_spd as report_module
 

@@ -204,6 +204,7 @@ async def _load_revision(plan_codigo: str) -> dict[str, Any]:
             "resumen_vinculos_pa_triada": triada,
             "hallazgos_por_revisor": reviewers,
             "hallazgos": _rows(payload.get("hallazgos")),
+            "resumen_sispt_dnp": _as_dict(payload.get("resumen_sispt_dnp")),
         }
     except Exception as exc:
         return {
@@ -213,7 +214,22 @@ async def _load_revision(plan_codigo: str) -> dict[str, Any]:
             "resumen_dimensiones": {},
             "resumen_vinculos_pa_triada": {},
             "hallazgos_por_revisor": {},
+            "resumen_sispt_dnp": {},
         }
+
+
+def _sintesis_sispt_dnp_cuipo_piip(revision: dict[str, Any]) -> dict[str, Any]:
+    summary = _as_dict(revision.get("resumen_sispt_dnp"))
+    return {
+        "estado": "DISPONIBLE" if summary else "SIN_MEDICION_OBSERVADA",
+        "eficacia_media_bruta_pct": summary.get("eficacia_media_bruta_pct"),
+        "eficacia_media_truncada_sispt_pct": summary.get("eficacia_media_truncada_sispt_pct"),
+        "conteo_por_tipologia": summary.get("conteo_por_tipologia", {}),
+        "distribucion_rango_mdm": summary.get("distribucion_rango_mdm", {}),
+        "alertas_cuipo_piip": summary.get("alertas_cuipo_piip", {}),
+        "total_metas_evaluadas": summary.get("total_metas_evaluadas", 0),
+        "regla_truncamiento": "eficacia SisPT acotada al intervalo [0, 100] por meta",
+    }
 
 
 async def _load_dictamens(db, plan_codigo: str) -> dict[str, Any]:
@@ -421,6 +437,7 @@ def _exports(sections: dict[str, Any], fingerprint: str) -> dict[str, str]:
     alerts = sections["tablero_alcalde_alertas_desperdicio"]
     harmonization = sections["tabla_armonizacion_presupuestal_spd"]
     history = sections["cobertura_historica_8_planes_2012_2027"]
+    sispt = sections["sintesis_sispt_dnp_cuipo_piip"]
     md = [
         "# Informe Integral SPD — PDT-AI-EVALUATOR",
         "",
@@ -446,6 +463,15 @@ def _exports(sections: dict[str, Any], fingerprint: str) -> dict[str, str]:
             "",
             "## Revisión 10D y vínculos PA",
             f"Metas evaluadas: {revision.get('total_metas_evaluadas', 0)}",
+            "",
+            "## Seguimiento SisPT DNP, CUIPO y PIIP",
+            f"Eficacia media bruta: {sispt.get('eficacia_media_bruta_pct')}",
+            "Eficacia media SisPT truncada al 100%: "
+            f"{sispt.get('eficacia_media_truncada_sispt_pct')}",
+            "Tipologías: `"
+            f"{json.dumps(sispt.get('conteo_por_tipologia', {}), ensure_ascii=False)}`",
+            "Coherencia CUIPO/PIIP: `"
+            f"{json.dumps(sispt.get('alertas_cuipo_piip', {}), ensure_ascii=False)}`",
             "",
             "## Fronteras DEA",
             "| Nivel | DMUs | Eficientes | Ineficientes |",
@@ -578,10 +604,12 @@ async def generar_informe_integral_spd_cartagena(
             _rows(dictamens.get("dictamenes_hallazgos")), "estado_revision"
         ),
     }
+    sispt_synthesis = _sintesis_sispt_dnp_cuipo_piip(revision)
     sections = {
         "cobertura_historica_8_planes_2012_2027": historical_coverage,
         "sintesis_hoshin_kanri_y_pdl": hoshin,
         "sintesis_revision_10d_y_vinculos_pa": revision,
+        "sintesis_sispt_dnp_cuipo_piip": sispt_synthesis,
         "sintesis_dea_4_niveles_y_fuentes": dea,
         "tablero_alcalde_alertas_desperdicio": alerts,
         "tabla_armonizacion_presupuestal_spd": harmonization,
