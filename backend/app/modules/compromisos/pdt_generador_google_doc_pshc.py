@@ -22,6 +22,14 @@ import jwt
 
 TITULO = "EVALUACIÓN MULTIDIMENSIONAL DE LA SEGURIDAD HUMANA EN 8 PLANES DE DESARROLLO DE CARTAGENA"
 FOLDER_DEFAULT = "1g3wXPujYCZfJVB77_iZOrdfBZNfTkVVS"
+AVISO_CAP_V = (
+    "CIFRAS ILUSTRATIVAS, NO CALCULADAS. Los valores de este capítulo (θ de DEA, Moran I, "
+    "clusters LISA, ISRI y datos por UCG) son parámetros predefinidos en el código del "
+    "generador; no provienen de cálculos sobre los datos de bd_csh. No se ejecutaron DEA, "
+    "análisis espacial (PySAL) ni ARIMA, y la base no tiene datos territoriales por UCG. "
+    "No deben citarse como resultados. Para un análisis calculado con datos reales véase el "
+    "documento «Análisis y estudio de los planes de desarrollo»."
+)
 PLANES = (
     ("PDD_2012_2015", "2012–2015", "PDD", 469),
     ("PDD_2013_2015", "2013–2015", "PDD", 676),
@@ -735,6 +743,7 @@ def _build_document_base(data: dict[str, Any]) -> tuple[str, str, str]:
         "<h1>IV. DIAGNÓSTICO MICRO-SECTORIAL: ANÁLISIS DE LAS METAS EN LAS 7 DIMENSIONES DE LA SEGURIDAD HUMANA</h1>"
         + "".join(dim_table_html),
         f"<h1>V. ANÁLISIS AVANZADO DE EFICIENCIA, ESPACIO Y TENDENCIAS (ECONOMETRÍA &amp; AI)</h1>"
+        f"{_callout(AVISO_CAP_V)}"
         f"<h2>5.1 Evaluación de Eficiencia Financiera mediante DEA (Data Envelopment Analysis — BCC VRS y Slacks)</h2>"
         f"{_callout('Fórmula DEA-BCC (VRS) en dos etapas (PuLP + HiGHS): minimiza θ − ε(∑ S⁻ + ∑ S⁺) sujeto a ∑ λ_j X_j + S⁻ = θ X_o, ∑ λ_j Y_j − S⁺ = Y_o, ∑ λ_j = 1. Cuantifica el exceso presupuestal (S⁻ en COP) y el déficit de producto (S⁺) por Dimensión y Secretaría.')}"
         f"{dea_table_html}"
@@ -817,6 +826,8 @@ pre{white-space:pre-wrap;font-family:'Courier New',monospace;font-size:9pt;backg
             *dim_table_md,
             "",
             "## V. ANÁLISIS AVANZADO DE EFICIENCIA, ESPACIO Y TENDENCIAS (ECONOMETRÍA & AI)",
+            f"> **AVISO:** {AVISO_CAP_V}",
+            "",
             "### 5.1 DEA-BCC VRS y Holguras (Slacks)",
             "| Unidad / Dimensión | θ CCR | θ BCC | Escala | Holgura Presupuestal S⁻ (COP) | Déficit Producto S⁺ (%) | Estado |",
             "|---|---:|---:|---:|---:|---:|---|",
