@@ -24,6 +24,7 @@ from app.core.config import Settings  # noqa: E402
 
 CATALOG = ROOT / "data/planes_accion/drive_sector_seguridad/catalogo_drive_1383.json"
 PDF_CACHE = ROOT / "data/planes_accion/drive_sector_seguridad/archivos_pdf"
+ANYDOC_MD_CACHE = ROOT / "data/planes_accion/drive_sector_seguridad/anydoc_md"
 SERVICE_ACCOUNT = ROOT / "backend/.secrets/gdrive-service-account.json"
 VERBOS_COMUNES = (
     "adecuar",
@@ -198,13 +199,29 @@ async def _download_pdfs(rows: list[dict[str, Any]]) -> dict[str, Path]:
 
 
 def _extract_text(path: Path) -> str:
+    ANYDOC_MD_CACHE.mkdir(parents=True, exist_ok=True)
+    md_path = ANYDOC_MD_CACHE / f"{path.stem}.md"
+    if md_path.is_file() and md_path.stat().st_size > 0:
+        return md_path.read_text(encoding="utf-8", errors="replace")
+    anydoc_bin = Path("/usr/local/bin/anydoc")
+    if anydoc_bin.is_file():
+        res = subprocess.run(
+            [str(anydoc_bin), str(path), "-o", str(md_path)],
+            check=False,
+            capture_output=True,
+            timeout=180,
+        )
+        if res.returncode == 0 and md_path.is_file() and md_path.stat().st_size > 0:
+            return md_path.read_text(encoding="utf-8", errors="replace")
     result = subprocess.run(
         ["pdftotext", "-layout", str(path), "-"],
         check=True,
         capture_output=True,
         timeout=180,
     )
-    return result.stdout.decode("utf-8", errors="replace")
+    txt = result.stdout.decode("utf-8", errors="replace")
+    md_path.write_text(txt, encoding="utf-8")
+    return txt
 
 
 def _entity(name: str) -> str | None:

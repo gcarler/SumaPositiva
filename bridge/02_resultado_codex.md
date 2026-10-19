@@ -62,3 +62,26 @@ No se modificó `src/**` ni `pdt_revision_por_meta.py` como parte de esta fase.
 - Ejecuté pytest únicamente sobre los dos archivos indicados.
 
 No se modificó `src/**` ni `pdt_dea_4niveles_cartagena.py`.
+
+---
+
+# Resultado Codex — Fase [32A]
+
+**Fecha:** 2026-10-19
+**Alcance:** Normalización OCR de metas y cobertura histórica de los ocho planes PDD/PDL.
+
+## Implementación
+
+- `pdt_revision_por_meta.py` ahora normaliza llaves OCR ignorando acentos, mayúsculas y espacios internos; prioriza los campos canónicos, resuelve columnas posicionales PDL, recupera responsables desde vínculos y aplica inferencias documentadas para las tres Alcaldías Locales.
+- Añadí extracción numérica que preserva el cero observado, reconoce números parentéticos y palabras numéricas, interpreta coma decimal y puntos de miles, y conserva `ND` como `ND (Sin línea base histórica)`. La unidad se normaliza o infiere por el indicador y la meta.
+- La revisión acepta los ocho códigos oficiales y `TODOS`. En `TODOS` carga y evalúa el universo completo; se optimizó la lectura para consultar las actividades de Plan de Acción una sola vez.
+- El informe SPD incluye `cobertura_historica_8_planes_2012_2027`, su tabla en Markdown y esos datos en la huella de corte. Se consulta `bd_csh` y se conserva un fallback determinista.
+- La consulta de solo lectura a `bd_csh` confirmó **4,637 metas** y **4,637 vínculos**: PDD 2012–2015 (469), PDD 2013–2015 (676), PDD 2016–2019 (898), PDD 2020–2023 (947), PDD 2024–2027 (1,246), PDL 1 (110), PDL 2 (89), PDL 3 (202).
+
+## Verificación
+
+- Ruff sobre los cuatro archivos de esta fase: **All checks passed!**
+- `pytest tests/test_pdt_revision_por_meta.py tests/test_pdt_ai_evaluator.py -q`: **26 passed**.
+- No ejecuté pytest sobre el repositorio completo.
+
+No modifiqué `src/**`, `pdt_conciliador_vinculos_pa_triada.py` ni `poblar_vinculos_meta_pa_triada.py`.

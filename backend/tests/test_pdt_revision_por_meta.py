@@ -206,9 +206,7 @@ def test_preservacion_ceros_observados_vs_nulos_brecha_informacion() -> None:
     assert ej_fin_cero["apropiacion_definitiva_cop"] == 0.0
     assert ej_fin_cero["estado"] == ESTADO_CERO_OBSERVADO
     assert (
-        meta_cero["dictamen_7_revisores"]["conciliador_ejecucion"][
-            "ceros_observados_preservados"
-        ]
+        meta_cero["dictamen_7_revisores"]["conciliador_ejecucion"]["ceros_observados_preservados"]
         is True
     )
     # Sentido descendente detectado para mortalidad
@@ -266,9 +264,7 @@ def test_no_atribucion_espurea_sin_entidad_y_separacion_dominios() -> None:
     meta_nulo = por_codigo["M-NULO-02"]
     assert meta_nulo["dependencia_responsable"] == "SIN_ATRIBUCION"
     assert (
-        meta_nulo["evaluacion_10_dimensiones"]["resultados_y_equidad"][
-            "riesgo_isri_atribuido"
-        ]
+        meta_nulo["evaluacion_10_dimensiones"]["resultados_y_equidad"]["riesgo_isri_atribuido"]
         is None
     )
 
@@ -407,9 +403,7 @@ def test_conciliar_y_poblar_vinculos_meta_pa_triada_bd_csh() -> None:
     dist_plan = res["distribucion_por_plan"]
     assert dist_plan["PDD_2024_2027"] == 1246
     assert (
-        dist_plan["PDL_1_2024_2027"]
-        + dist_plan["PDL_2_2024_2027"]
-        + dist_plan["PDL_3_2024_2027"]
+        dist_plan["PDL_1_2024_2027"] + dist_plan["PDL_2_2024_2027"] + dist_plan["PDL_3_2024_2027"]
         == 401
     )
     dist_tipo = res["distribucion_por_tipo_vinculo"]
@@ -465,3 +459,130 @@ def test_matriz_revision_por_meta_plan_desarrollo_local_pdl_1() -> None:
     assert "score_confianza_vinculo" in primera
 
 
+def test_normaliza_llaves_ocr_en_planes_distritales_y_locales() -> None:
+    casos = [
+        (
+            "PDD_2024_2027",
+            {
+                "Responsabl e": "Secretaría de Educación",
+                "Meta del cuatrienio": "Implementar cuatro (4) estrategias",
+                "Línea Base Año 2023": "0 Fuente: Secretaría de Hacienda 2023",
+                "Indicador": "Número de estrategias educativas",
+            },
+            4.0,
+            0.0,
+            "Secretaría de Educación",
+        ),
+        (
+            "PDL_1_2024_2027",
+            {
+                "columna_9": "LHCN",
+                "columna_4": "Reducir uno (1) los eventos de seguridad",
+                "columna_2": "0.78 homicidios por cada 100 mil habitantes",
+            },
+            1.0,
+            0.78,
+            "Alcaldía Local 1 — Histórica y del Caribe Norte (LHCN)",
+        ),
+        (
+            "PDL_2_2024_2027",
+            {
+                "Concurrencia": "Concurrencia",
+                "Meta Cuatrienio": "0,4",
+                "Línea Base": "1183 casos reportados",
+                "Indicador": "Tasa de casos atendidos",
+            },
+            0.4,
+            1183.0,
+            "Alcaldía Local 2 — De la Virgen y Turística",
+        ),
+        (
+            "PDL_3_2024_2027",
+            {
+                "RESPONSABLE": "Industrial y de la",
+                "META DEL CUATRENI O": "tres",
+                "LINEA BASE": "N/D",
+                "Indicador": "Porcentaje de hogares atendidos",
+            },
+            3.0,
+            None,
+            "Alcaldía Local 3 — Industrial y de la Bahía",
+        ),
+        (
+            "PDD_2020_2023",
+            {
+                "Responsable": "Departamento Administrativo Distrital de Salud",
+                "META DEL": "25.265",
+                "LINEA BASE": "ND",
+                "Unidad de medida": "Número / Unidades",
+            },
+            25265.0,
+            None,
+            "Departamento Administrativo Distrital de Salud",
+        ),
+    ]
+    for index, (plan, official, target, baseline, responsible) in enumerate(casos):
+        payload = {
+            "total_metas_plan": 1,
+            "plan_info": {"codigo_plan": plan, "periodo": "2024–2027"},
+            "metas": [
+                {
+                    "id": f"ocr-{index}",
+                    "codigo_plan": plan,
+                    "codigo": f"OCR-{index}",
+                    "nombre": "Meta oficial de prueba",
+                    "indicador": official.get("Indicador", "Tasa de producto entregado"),
+                    "fuente": "prueba_documental.md",
+                    "dependencia": None,
+                    "datos_oficiales": official,
+                }
+            ],
+        }
+        result = construir_matriz_revision_por_meta_pdt(codigo_plan=plan, datos_entrada=payload)
+        evaluated = result["metas_auditadas"][0]
+        formulation = evaluated["evaluacion_10_dimensiones"]["formulacion"]
+        diagnosis = evaluated["evaluacion_10_dimensiones"]["diagnostico"]
+        assert formulation["meta_cuatrienio_numerica"] == target, plan
+        assert diagnosis["linea_base_numerica"] == baseline, plan
+        if baseline is None:
+            assert diagnosis["linea_base_documental"] == "ND (Sin línea base histórica)"
+        else:
+            assert diagnosis["linea_base_documental"] is not None
+        assert evaluated["dependencia_responsable"] == responsible, plan
+        assert formulation["unidad_medida"] != "BRECHA_DE_INFORMACION", plan
+
+
+def test_codigo_plan_todos_revisa_universo_multiplan() -> None:
+    metas = []
+    for index, plan in enumerate(
+        (
+            "PDD_2012_2015",
+            "PDD_2013_2015",
+            "PDD_2016_2019",
+            "PDD_2020_2023",
+            "PDD_2024_2027",
+            "PDL_1_2024_2027",
+            "PDL_2_2024_2027",
+            "PDL_3_2024_2027",
+        )
+    ):
+        metas.append(
+            {
+                "id": f"todos-{index}",
+                "codigo_plan": plan,
+                "codigo": f"TODOS-{index}",
+                "nombre": "Meta local",
+                "indicador": "Número de servicios entregados",
+                "datos_oficiales": {"Meta Cuatrienio": "uno"},
+            }
+        )
+    result = construir_matriz_revision_por_meta_pdt(
+        codigo_plan="TODOS",
+        limit=1,
+        datos_entrada={"total_metas_plan": 4637, "metas": metas},
+    )
+    assert result["total_metas_plan"] == 4637
+    assert result["metas_devueltas"] == 8
+    assert {row["codigo_plan"] for row in result["metas_auditadas"]} == set(
+        meta["codigo_plan"] for meta in metas
+    )

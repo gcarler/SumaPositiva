@@ -146,10 +146,18 @@ def test_pdt_ai_evaluator_informe_integral_spd_endpoint(monkeypatch):
             "sintesis_hoshin_kanri_y_pdl": {},
             "sintesis_revision_10d_y_vinculos_pa": {},
             "sintesis_dea_4_niveles_y_fuentes": {},
+            "cobertura_historica_8_planes_2012_2027": {
+                "total_planes_oficiales": 8,
+                "total_metas_historicas_y_locales": 4637,
+                "planes": [
+                    {"codigo_plan": f"PLAN_{index}", "periodo": "2012–2027", "tipo_plan": "PDD"}
+                    for index in range(8)
+                ],
+            },
             "tablero_alcalde_alertas_desperdicio": {},
             "tabla_armonizacion_presupuestal_spd": [],
             "exportables_auditables": {
-                "markdown_ejecutivo": "# Informe",
+                "markdown_ejecutivo": "# Informe\n## Cobertura histórica de los ocho planes",
                 "csv_armonizacion_y_alertas": "nivel,dmu\\n",
             },
         }
@@ -177,7 +185,49 @@ def test_pdt_ai_evaluator_informe_integral_spd_endpoint(monkeypatch):
     ):
         assert key in payload
     assert payload["exportables_auditables"]["markdown_ejecutivo"]
+    historical = payload["cobertura_historica_8_planes_2012_2027"]
+    assert historical["total_planes_oficiales"] == 8
+    assert historical["total_metas_historicas_y_locales"] >= 4637
+    assert len(historical["planes"]) == 8
+    assert "Cobertura histórica" in payload["exportables_auditables"]["markdown_ejecutivo"]
     assert payload["exportables_auditables"]["csv_armonizacion_y_alertas"]
+
+
+def test_informe_integral_incluye_cobertura_historica_en_markdown(monkeypatch):
+    from app.modules.compromisos import pdt_informe_integral_spd as report_module
+
+    async def sources(*_args):
+        return {}, {}, {}, ({"niveles": {}}, {})
+
+    async def coverage(_db=None):
+        plans = [
+            {
+                "codigo_plan": f"PLAN_{index}",
+                "periodo": "2012–2027",
+                "tipo_plan": "PDD" if index < 5 else "PDL",
+                "total_metas": 580,
+                "total_vinculos_pa_triada": 580,
+                "ppi_total_corriente_cop": 1,
+            }
+            for index in range(8)
+        ]
+        return {
+            "estado": "TEST",
+            "total_planes_oficiales": 8,
+            "total_metas_historicas_y_locales": 4640,
+            "planes": plans,
+        }
+
+    monkeypatch.setattr(report_module, "_gather_sources", sources)
+    monkeypatch.setattr(report_module, "_cobertura_historica_8_planes", coverage)
+    result = asyncio.run(report_module.generar_informe_integral_spd_cartagena())
+    history = result["cobertura_historica_8_planes_2012_2027"]
+    assert history["total_planes_oficiales"] == 8
+    assert history["total_metas_historicas_y_locales"] >= 4637
+    assert len(history["planes"]) == 8
+    markdown = result["exportables_auditables"]["markdown_ejecutivo"]
+    assert "Cobertura histórica de los ocho planes" in markdown
+    assert "PLAN_7" in markdown
 
 
 def test_system_prompt_matches_knowledge_specification():

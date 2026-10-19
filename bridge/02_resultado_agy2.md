@@ -1,36 +1,25 @@
-# Resultado de Ejecución — Fase `[31B]` (`agy2`, 100% Backend)
+# Resultado de Ejecución — Fase `[32B]` (`agy2`, 100% Backend)
 
 ## 1. Resumen Ejecutivo
-Se ejecutó íntegramente la **Fase `[31B]` (`100% Backend`)**:
-1. **Poblamiento censal en PostgreSQL (`bd_csh`, esquema `seguimiento`)**:
-   - Se creó y ejecutó el script idempotente `backend/scripts/poblar_padron_dmu_nivel3_y_fuentes_cartagena.py`.
-   - `seguimiento.pdd_dmu_ieo_oficiales`: **`105` filas** (`IEO-001` a `IEO-105`), cubriendo el universo completo de Instituciones Educativas Oficiales de Cartagena distribuidas en `LOC-1..3` y `UCG-01..15`.
-   - `seguimiento.pdd_dmu_ese_centros_salud`: **`43` filas** (`ESE-001` a `ESE-043`), cubriendo la red pública completa de la `ESE Hospital Local Cartagena de Indias` (`HOSPITAL_LOCAL`, `CAP_24H`, `CAP_12H`, `PUESTO_SALUD_RURAL_INSULAR`).
-   - `seguimiento.pdd_fuentes_financiacion_dmu`: **`27` filas** (`3 Localidades` + `15 UCGs` + `9 Secretarías/Entes Descentralizados`), con la desagregación auditada de insumos presupuestales ($X$) en `sgr_regalias_cop`, `credito_publico_cop`, `sgp_transferencias_cop`, `icld_recursos_propios_cop`, `cofinanciacion_nacion_cop` y `total_fuentes_cop`.
-2. **Conexión en `backend/app/modules/compromisos/pdt_dea_4niveles_cartagena.py`**:
-   - `_consultar_insumos_bd_csh` (y alias `_extraer_insumos_bd_cartagena`) extrae desde `bd_csh` los `105` registros de `seguimiento.pdd_dmu_ieo_oficiales`, los `43` registros de `seguimiento.pdd_dmu_ese_centros_salud` y los `27` registros de `seguimiento.pdd_fuentes_financiacion_dmu` (con fallback determinista si la BD no está disponible).
-   - `_construir_nivel_3_operativo` ejecuta el solver DEA en dos etapas (`PuLP` + `HiGHS`) sobre las **`105` IEO oficiales** en la Subfrontera A (`instituciones_educativas_oficiales_ieo`) y sobre los **`43` Centros/Hospitales ESE** en la Subfrontera B (`centros_salud_ese_cartagena`), exponiendo `padron_censal_bd_csh` (`ieo_evaluadas_en_frontera = 105`, `centros_ese_evaluados_en_frontera = 43`).
-   - `_construir_nivel_1_territorial` y `_construir_nivel_2_institucional` inyectan en cada DMU `desagregacion_fuentes_financiacion` y `holgura_s_minus_por_fuente_cop` (con suma exacta igual a `holgura_presupuestal_s_minus_cop`), además del consolidado `resumen_fuentes_financiacion_y_holguras` en Nivel 1, Nivel 2 y la raíz de `evaluar_dea_4_niveles_cartagena`.
-3. **Suite de Pruebas (`backend/tests/test_pdt_dea_4niveles_cartagena.py`)**:
-   - Ampliada a **8 tests** incorporando `test_nivel_3_padron_censal_105_ieo_y_43_ese_en_bd_csh` y `test_desagregacion_fuentes_financiacion_sgr_credito_y_holguras_por_fuente`.
+Se ejecutó íntegramente la **Fase `[32B]` (`100% Backend`)**:
+1. **Normalizador Canónico OCR de las `4,637` Metas Oficiales (8 Planes `2012–2027`) — `backend/app/modules/compromisos/pdt_normalizador_canonico_metas.py`:**
+   - Implementa `extraer_valor_numerico_meta`, `extraer_valor_numerico_linea_base`, `normalizar_meta_oficial_ocr`, `normalizar_y_actualizar_metas_oficiales_async` y `normalizar_y_actualizar_metas_oficiales`.
+   - Rescata y estandariza llaves fragmentadas por OCR y columnas posicionales (`"Responsabl e"`, `"META DEL CUATRENI O"`, `"columna_2"`, `"columna_4"`, `"columna_9": "LHCN"`, `"Concurrencia"`, `"Línea Base Año 2023"`), extrayendo cifras en paréntesis (`"cuatro (4)" -> 4.0`, `"cien (100)" -> 100.0`), decimales con coma (`"0,4" -> 0.4`), miles con punto (`"25.265" -> 25265.0`), ceros con fuente (`"0 Fuente: Secretaría de Hacienda 2023" -> 0.0`) y palabras numéricas en español.
+   - Actualizó las **`4,637` filas** de `seguimiento.pdd_metas_oficiales` en `bd_csh` (`PDD_2012_2015: 469`, `PDD_2013_2015: 676`, `PDD_2016_2019: 898`, `PDD_2020_2023: 947`, `PDD_2024_2027: 1246`, `PDL_1_2024_2027: 110`, `PDL_2_2024_2027: 89`, `PDL_3_2024_2027: 202`) con `0` filas sin `codigo`, `0` filas sin `unidad_medida` y `4,637` filas con `datos_oficiales->'_canonico_normalizado'` (`3,670` con valor numérico de meta cuatrienal y `2,670` con línea base numérica).
+2. **Expansión de `seguimiento.pdd_vinculos_meta_pa_triada` a las `4,637` Metas (8 Planes) y Cruce Hermano de los 3 Motores (`225,380` filas) — `backend/app/modules/compromisos/pdt_conciliador_vinculos_pa_triada.py` y `backend/scripts/poblar_vinculos_meta_pa_triada.py`:**
+   - Concilió y pobló en `seguimiento.pdd_vinculos_meta_pa_triada` las **`4,637` filas** correspondientes a los 8 planes (`2012–2027`).
+   - Implementó `_resolver_cruce_hermano_motores` para cruzar los 3 motores hermanos (`PLAN_DESARROLLO`, `PLAN_ACCION`, `INVERSION_PRESUPUESTAL`) de `seguimiento.registros_triada_normalizados` por `periodo_gobierno` (`ANTES_2020`, `2020_2023`, `2024_2027`) y `entidad_normalizada`:
+     - `cruces_hermanos_3_motores_aplicados`: **`3,078` metas enriquecidas**.
+     - `metas_con_apropiacion_cop`: **`3,522` metas** (de `4,637`).
+     - `metas_con_avance_fisico_pct`: **`4,190` metas** (de `4,637`).
+     - `ceros_observados_preservados_count`: **`1,647` metas** con preservación estricta de `0.0` observado frente a `None`.
+3. **Suite de Pruebas (`backend/tests/test_pdt_normalizador_y_vinculos_8planes.py`):**
+   - 5 pruebas integrales contra las funciones del normalizador y la base de datos `bd_csh`.
 
 ## 2. Verificación Técnica (`bd_csh`, `ruff` y `pytest`)
-- **Poblamiento en `bd_csh`**:
-  ```json
-  {
-    "base_datos": "bd_csh",
-    "esquema": "seguimiento",
-    "tablas_pobladas": {
-      "seguimiento.pdd_dmu_ieo_oficiales": 105,
-      "seguimiento.pdd_dmu_ese_centros_salud": 43,
-      "seguimiento.pdd_fuentes_financiacion_dmu": 27
-    }
-  }
-  ```
-- **Ruff**:
-  `ruff check app/modules/compromisos/pdt_dea_4niveles_cartagena.py scripts/poblar_padron_dmu_nivel3_y_fuentes_cartagena.py tests/test_pdt_dea_4niveles_cartagena.py` -> `All checks passed!`
-- **Pytest**:
-  `pytest tests/test_pdt_dea_4niveles_cartagena.py -q` -> `8 passed in 6.98s`
+- `python scripts/poblar_vinculos_meta_pa_triada.py` -> `total_metas_normalizadas = 4637`, `total_filas_en_bd = 4637`.
+- `ruff check app/modules/compromisos/pdt_normalizador_canonico_metas.py app/modules/compromisos/pdt_conciliador_vinculos_pa_triada.py scripts/poblar_vinculos_meta_pa_triada.py tests/test_pdt_normalizador_y_vinculos_8planes.py` -> `All checks passed!`
+- `pytest tests/test_pdt_normalizador_y_vinculos_8planes.py -q` -> `5 passed in 0.89s`.
 
 ## 3. Cumplimiento de Restricciones de Alcance
-- No se tocó `src/**`, `router.py`, `schemas.py`, `pdt_informe_integral_spd.py` ni `test_pdt_ai_evaluator.py`.
+- No se tocó `src/**`, `pdt_revision_por_meta.py`, `pdt_informe_integral_spd.py`, `test_pdt_revision_por_meta.py` ni `test_pdt_ai_evaluator.py`.
