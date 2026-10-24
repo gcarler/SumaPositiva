@@ -217,11 +217,7 @@ def _sentido_indicador(name: Any) -> str:
         "rezago",
     )
     normalized = _normalize_text(str(name or ""))
-    return (
-        "DESCENDENTE_FAVORABLE"
-        if any(term in normalized for term in terms)
-        else "ASCENDENTE_FAVORABLE"
-    )
+    return "DESCENDENTE_FAVORABLE" if any(term in normalized for term in terms) else "ASCENDENTE_FAVORABLE"
 
 
 def _tokenize(text_val: str) -> set[str]:
@@ -341,9 +337,7 @@ def _should_enrich_cartagena(records: list[dict[str, Any]]) -> bool:
         if len(valid_units) < 15 and ("cartagena" in joined or "localidad" in joined):
             return True
         return False
-    joined_all = " ".join(
-        _normalize_text(str(r.get("nombre") or r.get("codigo") or "")) for r in records
-    )
+    joined_all = " ".join(_normalize_text(str(r.get("nombre") or r.get("codigo") or "")) for r in records)
     return "cartagena" in joined_all or "localidad" in joined_all or "13001" in joined_all
 
 
@@ -426,9 +420,7 @@ def _build_spatial_geodataframe(
             ).to_crs("EPSG:3116")
             for pos, orig_idx in enumerate(valid_indices):
                 proj_geom = poly_series.iloc[pos]
-                projected_real_polys[orig_idx] = (
-                    make_valid(proj_geom) if not proj_geom.is_valid else proj_geom
-                )
+                projected_real_polys[orig_idx] = make_valid(proj_geom) if not proj_geom.is_valid else proj_geom
         except Exception:
             for orig_idx in valid_indices:
                 projected_real_polys[orig_idx] = raw_polygons_wgs84[orig_idx]
@@ -467,9 +459,7 @@ def _build_spatial_geodataframe(
         fallback_polygons = [pt.buffer(1500.0) for pt in points_list]
 
     final_polygons = [
-        projected_real_polys[idx]
-        if projected_real_polys[idx] is not None
-        else fallback_polygons[idx]
+        projected_real_polys[idx] if projected_real_polys[idx] is not None else fallback_polygons[idx]
         for idx in range(n_pts)
     ]
     gdf_projected["poligono_territorial"] = final_polygons
@@ -493,11 +483,7 @@ def _build_knn_weights_from_gdf(
     weights: list[dict[int, float]] = []
     all_nn_dists: list[float] = []
     for idx, pt in enumerate(coords):
-        dists = [
-            (math.dist(pt, other), other_idx)
-            for other_idx, other in enumerate(coords)
-            if other_idx != idx
-        ]
+        dists = [(math.dist(pt, other), other_idx) for other_idx, other in enumerate(coords) if other_idx != idx]
         dists.sort(key=lambda item: item[0])
         chosen = dists[:k_eff]
         if chosen:
@@ -552,9 +538,7 @@ def _global_moran_from_weights(
     s0 = float(sum(sum(row.values()) for row in weights))
     if denom <= 1e-12 or s0 <= 1e-12:
         return 0.0
-    numerator = sum(
-        z[i] * sum(w_ij * z[j] for j, w_ij in row.items()) for i, row in enumerate(weights)
-    )
+    numerator = sum(z[i] * sum(w_ij * z[j] for j, w_ij in row.items()) for i, row in enumerate(weights))
     return float((n / s0) * (numerator / denom))
 
 
@@ -572,9 +556,7 @@ def _bivariate_moran_xy(
     denom = float(np.sum(zx**2))
     if s0 <= 1e-12 or denom <= 1e-12:
         return 0.0
-    numerator = sum(
-        zx[i] * sum(w_ij * zy[j] for j, w_ij in row.items()) for i, row in enumerate(weights)
-    )
+    numerator = sum(zx[i] * sum(w_ij * zy[j] for j, w_ij in row.items()) for i, row in enumerate(weights))
     return float((len(x_values) / s0) * (numerator / denom))
 
 
@@ -607,9 +589,7 @@ def ejecutar_econometria_espacial_pdt(
     for record in working_records:
         if not record.get("naturaleza_dato"):
             source_name = str(record.get("fuente_datos") or "").casefold()
-            record["naturaleza_dato"] = (
-                "ESTIMADO_EVIDENCIA_PDD" if "pdd" in source_name else "OBSERVADO_BD"
-            )
+            record["naturaleza_dato"] = "ESTIMADO_EVIDENCIA_PDD" if "pdd" in source_name else "OBSERVADO_BD"
         record.setdefault(
             "sentido_indicador",
             _sentido_indicador(record.get("nombre_indicador") or record.get("codigo_indicador")),
@@ -661,9 +641,7 @@ def ejecutar_econometria_espacial_pdt(
                         else "OBSERVADO_BD"
                     ),
                     "sentido_indicador": record.get("sentido_indicador")
-                    or _sentido_indicador(
-                        record.get("nombre_indicador") or "Indicador Territorial"
-                    ),
+                    or _sentido_indicador(record.get("nombre_indicador") or "Indicador Territorial"),
                 }
             )
 
@@ -686,13 +664,9 @@ def ejecutar_econometria_espacial_pdt(
                 "outliers_espaciales": [],
                 "unidades_dea_ineficientes_en_coldspots": [],
                 "trampas_territoriales_gestion_publica": [],
-                "observacion": (
-                    "La BD no ofrece al menos cinco territorios con geometría y un indicador "
-                    "comparable."
-                ),
+                "observacion": ("La BD no ofrece al menos cinco territorios con geometría y un indicador comparable."),
                 "geometrias": (
-                    "ST_MultiPolygon / ST_X/ST_Y PostGIS, EPSG:4326 -> EPSG:3116; "
-                    "no se fabrican geometrías faltantes"
+                    "ST_MultiPolygon / ST_X/ST_Y PostGIS, EPSG:4326 -> EPSG:3116; no se fabrican geometrías faltantes"
                 ),
             }
         )
@@ -724,9 +698,7 @@ def ejecutar_econometria_espacial_pdt(
                     "valor": val,
                     "inversion_x": float(inv_x),
                     "fuente": ind.get("fuente"),
-                    "naturaleza_dato": ind.get(
-                        "naturaleza_dato", territory.get("naturaleza_dato", "OBSERVADO_BD")
-                    ),
+                    "naturaleza_dato": ind.get("naturaleza_dato", territory.get("naturaleza_dato", "OBSERVADO_BD")),
                     "sentido_indicador": ind.get(
                         "sentido_indicador",
                         territory.get("sentido_indicador", "ASCENDENTE_FAVORABLE"),
@@ -766,9 +738,7 @@ def ejecutar_econometria_espacial_pdt(
                 "outliers_espaciales": [],
                 "unidades_dea_ineficientes_en_coldspots": [],
                 "trampas_territoriales_gestion_publica": [],
-                "geometrias": (
-                    "GeoPandas GeoDataFrame EPSG:4326 -> EPSG:3116; muestra insuficiente (n < 5)"
-                ),
+                "geometrias": ("GeoPandas GeoDataFrame EPSG:4326 -> EPSG:3116; muestra insuficiente (n < 5)"),
             }
         )
 
@@ -828,9 +798,7 @@ def ejecutar_econometria_espacial_pdt(
                     )
                     if any(row.get("naturaleza_dato") == value for row in rows_ind)
                 },
-                "sentido_indicador": rows_ind[0].get(
-                    "sentido_indicador", _sentido_indicador(ind_name)
-                ),
+                "sentido_indicador": rows_ind[0].get("sentido_indicador", _sentido_indicador(ind_name)),
                 "n_territorios": len(arr_ind),
                 "media": round(float(np.mean(arr_ind)), 4),
                 "desviacion_estandar": round(float(np.std(arr_ind)), 4),
@@ -844,10 +812,7 @@ def ejecutar_econometria_espacial_pdt(
     expected_i = -1.0 / (count - 1)
     rng = np.random.default_rng(20261018)
     sim_is = np.asarray(
-        [
-            _global_moran_from_weights(rng.permutation(numbers), primary_weights)
-            for _ in range(permutations)
-        ],
+        [_global_moran_from_weights(rng.permutation(numbers), primary_weights) for _ in range(permutations)],
         dtype=float,
     )
     extreme = int(np.sum(np.abs(sim_is) >= abs(observed_primary)))
@@ -869,14 +834,8 @@ def ejecutar_econometria_espacial_pdt(
         null_values = []
         for _ in range(local_perms):
             permuted = local_rng.permutation(centered)
-            null_values.append(
-                float(
-                    permuted[idx] * sum(w_ij * permuted[j] for j, w_ij in row_weights.items()) / m2
-                )
-            )
-        local_p = (sum(abs(val) >= abs(local_i) for val in null_values) + 1) / (
-            len(null_values) + 1
-        )
+            null_values.append(float(permuted[idx] * sum(w_ij * permuted[j] for j, w_ij in row_weights.items()) / m2))
+        local_p = (sum(abs(val) >= abs(local_i) for val in null_values) + 1) / (len(null_values) + 1)
         if z_scores[idx] >= 0 and lag >= 0:
             cuadrante = "Alto-Alto (Hotspots)"
         elif z_scores[idx] < 0 and lag < 0:
@@ -893,9 +852,7 @@ def ejecutar_econometria_espacial_pdt(
                 "codigo": codes[idx],
                 "unidad": names[idx],
                 "naturaleza_dato": selected_rows[idx].get("naturaleza_dato", "OBSERVADO_BD"),
-                "sentido_indicador": selected_rows[idx].get(
-                    "sentido_indicador", _sentido_indicador(most_covered)
-                ),
+                "sentido_indicador": selected_rows[idx].get("sentido_indicador", _sentido_indicador(most_covered)),
                 "valor": round(float(numbers[idx]), 4),
                 "Ii": round(local_i, 8),
                 "p_valor_permutacion": round(float(local_p), 6),
@@ -914,15 +871,12 @@ def ejecutar_econometria_espacial_pdt(
         {
             item["unidad"]
             for item in local_rows
-            if "Alto-Alto" in item["cluster"]
-            or (p_value < 0.05 and "Alto-Alto" in item["cuadrante_moran"])
+            if "Alto-Alto" in item["cluster"] or (p_value < 0.05 and "Alto-Alto" in item["cuadrante_moran"])
         }
     )
     coldspots_sig = {item["unidad"] for item in local_rows if "Bajo-Bajo" in item["cluster"]}
     coldspots_quad = {
-        item["unidad"]
-        for item in local_rows
-        if "Bajo-Bajo" in item["cuadrante_moran"] and item["z_score"] <= -0.35
+        item["unidad"] for item in local_rows if "Bajo-Bajo" in item["cuadrante_moran"] and item["z_score"] <= -0.35
     }
     coldspots = sorted(coldspots_sig)
     coldspots_exploratorios = sorted(coldspots_quad - coldspots_sig)
@@ -934,11 +888,7 @@ def ejecutar_econometria_espacial_pdt(
     trap_hypotheses: list[dict[str, Any]] = []
     for unit in sorted(set(inefficient_units)):
         matched_coldspot = next(
-            (
-                cs
-                for cs in coldspots
-                if cs.casefold() in unit.casefold() or unit.casefold() in cs.casefold()
-            ),
+            (cs for cs in coldspots if cs.casefold() in unit.casefold() or unit.casefold() in cs.casefold()),
             None,
         )
         if matched_coldspot is not None:
@@ -950,8 +900,7 @@ def ejecutar_econometria_espacial_pdt(
                     "coldspot_asociado": matched_coldspot,
                     "alerta": "Trampa Territorial de Gestión Pública",
                     "diagnostico": (
-                        f"DMU ineficiente ({unit}) opera sobre territorio en rezago espacial "
-                        f"({matched_coldspot})."
+                        f"DMU ineficiente ({unit}) opera sobre territorio en rezago espacial ({matched_coldspot})."
                     ),
                 }
             )
@@ -978,17 +927,13 @@ def ejecutar_econometria_espacial_pdt(
             continue
         normalized_unit = _normalize_text(unit)
         generic_terms = ("educacion", "salud", "infraestructura", "social", "localidad")
-        if any(token in normalized_unit for token in generic_terms) and (
-            coldspots or coldspots_exploratorios
-        ):
+        if any(token in normalized_unit for token in generic_terms) and (coldspots or coldspots_exploratorios):
             trap_hypotheses.append(
                 {
                     "unidad_dmu": unit,
                     "estado_vinculo": "HIPOTESIS_PENDIENTE_REVISION",
                     "coldspots_candidatos": sorted(set(coldspots + coldspots_exploratorios)),
-                    "senal_generica": [
-                        token for token in generic_terms if token in normalized_unit
-                    ],
+                    "senal_generica": [token for token in generic_terms if token in normalized_unit],
                     "requiere_soporte_proyecto_territorio": True,
                 }
             )
@@ -1087,9 +1032,7 @@ def _chow_test_statsmodels(
             "p_valor": None,
             "ruptura_estructural_significativa": False,
         }
-    f_stat = max(0.0, (rss_restricted - rss_unrestricted) / k_params) / (
-        rss_unrestricted / denom_df
-    )
+    f_stat = max(0.0, (rss_restricted - rss_unrestricted) / k_params) / (rss_unrestricted / denom_df)
     p_val = float(f_distribution.sf(f_stat, k_params, denom_df))
     return {
         "estado": "ESTIMADO_STATSMODELS_OLS",
@@ -1230,9 +1173,7 @@ def _estimate_macro_var(
     for sector_name in sorted(sector_year_vals):
         s_map = sector_year_vals[sector_name]
         series_vals = [float(np.mean(s_map[yr])) if yr in s_map else np.nan for yr in all_years]
-        s_pd = pd.Series(series_vals, index=all_years, dtype=float).interpolate(
-            method="linear", limit_direction="both"
-        )
+        s_pd = pd.Series(series_vals, index=all_years, dtype=float).interpolate(method="linear", limit_direction="both")
         if s_pd.std() > 1e-6:
             df_dict[sector_name] = s_pd.tolist()
 
@@ -1246,12 +1187,7 @@ def _estimate_macro_var(
 
     df_var = pd.DataFrame(df_dict, index=all_years)
     # Seleccionar hasta 3 sectores con mayor varianza para VAR(1)
-    top_cols = (
-        df_var.var()
-        .sort_values(ascending=False)
-        .head(min(3, max(2, len(all_years) - 2)))
-        .index.tolist()
-    )
+    top_cols = df_var.var().sort_values(ascending=False).head(min(3, max(2, len(all_years) - 2))).index.tolist()
     df_sub = df_var[top_cols]
     steps = max(1, int(final_year - all_years[-1]))
     try:
@@ -1318,11 +1254,7 @@ def ejecutar_analitica_predictiva_pdt(
             grouped[indicator][int(year)].append(float(value))
             percentage_target = record.get("meta_cuatrienio_pct")
             annual_target = record.get("meta_programada_anual")
-            if (
-                percentage_target is None
-                and annual_target is not None
-                and 0 < float(annual_target) <= 100
-            ):
+            if percentage_target is None and annual_target is not None and 0 < float(annual_target) <= 100:
                 percentage_target = annual_target
             if percentage_target is not None and 0 < float(percentage_target) <= 100:
                 targets[indicator].append(float(percentage_target))
@@ -1353,9 +1285,7 @@ def ejecutar_analitica_predictiva_pdt(
             )
             continue
 
-        use_arima = (
-            len(years) >= 6 or indicator.startswith("Entidad Ejecutora:") or len(grouped) <= 30
-        )
+        use_arima = len(years) >= 6 or indicator.startswith("Entidad Ejecutora:") or len(grouped) <= 30
         fit_info = _fit_arima_or_ols_series(years, values, final_year, use_arima=use_arima)
         forecast = float(fit_info["forecast"])
         sigma = float(fit_info["sigma"])
@@ -1367,11 +1297,7 @@ def ejecutar_analitica_predictiva_pdt(
             if is_percentage
             else max(targets[indicator], default=0.0)
         )
-        direction = (
-            "REDUCCION"
-            if any(term in _normalize_text(indicator) for term in reduction_terms)
-            else "INCREMENTO"
-        )
+        direction = "REDUCCION" if any(term in _normalize_text(indicator) for term in reduction_terms) else "INCREMENTO"
         if sigma > 1e-9:
             z_score = (target - forecast) / sigma
             probability_meet = float(norm.cdf(z_score if direction == "REDUCCION" else -z_score))
@@ -1388,9 +1314,7 @@ def ejecutar_analitica_predictiva_pdt(
             actual = float(values[-1])
             naive = float(train[-1])
             # One-step linear trend forecast on the training window, held out by year.
-            model_holdout = float(
-                np.polyval(np.polyfit(np.arange(len(train)), train, 1), len(train))
-            )
+            model_holdout = float(np.polyval(np.polyfit(np.arange(len(train)), train, 1), len(train)))
             holdout = {
                 "vigencia_holdout": years[-1],
                 "valor_observado": round(actual, 6),
@@ -1407,10 +1331,7 @@ def ejecutar_analitica_predictiva_pdt(
                 "sentido_indicador": direction,
                 "estado": fit_info["estado"],
                 "n_observaciones": len(years),
-                "serie": [
-                    {"vigencia": year, "valor": round(val, 6)}
-                    for year, val in zip(years, values, strict=True)
-                ],
+                "serie": [{"vigencia": year, "valor": round(val, 6)} for year, val in zip(years, values, strict=True)],
                 "modelo_solicitado": "ARIMA/VAR (statsmodels)",
                 "modelo_aplicado": fit_info["modelo_aplicado"],
                 "aic": fit_info["aic"],
@@ -1451,8 +1372,7 @@ def ejecutar_analitica_predictiva_pdt(
             "series_evaluadas": len(series_results),
             "series_estimadas": sum(item.get("ISRI") is not None for item in series_results),
             "rupturas_estructurales_detectadas": sum(
-                bool(item.get("chow", {}).get("ruptura_estructural_significativa"))
-                for item in series_results
+                bool(item.get("chow", {}).get("ruptura_estructural_significativa")) for item in series_results
             ),
             "estado": "ESTIMADO" if series_results else "PENDIENTE_DATOS_MULTIANUALES",
         }
@@ -1481,8 +1401,7 @@ def evaluar_matriz_multisectorial_gbr(
     forecast_data = time_series_forecast or {}
 
     goal_tokens = [
-        _tokenize(" ".join(str(g.get(k) or "") for k in ("nombre", "indicador", "linea_nombre")))
-        for g in goals
+        _tokenize(" ".join(str(g.get(k) or "") for k in ("nombre", "indicador", "linea_nombre"))) for g in goals
     ]
     act_tokens = [
         _tokenize(
@@ -1518,16 +1437,12 @@ def evaluar_matriz_multisectorial_gbr(
 
     dmu_scores = dea_data.get("dmus", [])
     global_dea_mean = (
-        float(
-            np.mean([float(d["theta_bcc"]) for d in dmu_scores if d.get("theta_bcc") is not None])
-        )
+        float(np.mean([float(d["theta_bcc"]) for d in dmu_scores if d.get("theta_bcc") is not None]))
         if dmu_scores
         else None
     )
     nlp_pairs = nlp_data.get("pares_evaluados", [])
-    global_cos_mean = float(
-        nlp_data.get("resumen_coherencia", {}).get("similaridad_promedio") or 0.0
-    )
+    global_cos_mean = float(nlp_data.get("resumen_coherencia", {}).get("similaridad_promedio") or 0.0)
     series_list = forecast_data.get("series", [])
 
     matrix_rows: list[dict[str, Any]] = []
@@ -1566,14 +1481,9 @@ def evaluar_matriz_multisectorial_gbr(
             float(p["similaridad_coseno_lexica"])
             for p in nlp_pairs
             if p.get("similaridad_coseno_lexica") is not None
-            and (
-                kw_set
-                & _tokenize(f"{p.get('meta_estrategica', '')} {p.get('actividad_operativa', '')}")
-            )
+            and (kw_set & _tokenize(f"{p.get('meta_estrategica', '')} {p.get('actividad_operativa', '')}"))
         ]
-        cos_mean = (
-            round(float(np.mean(sector_pairs)), 4) if sector_pairs else round(global_cos_mean, 4)
-        )
+        cos_mean = round(float(np.mean(sector_pairs)), 4) if sector_pairs else round(global_cos_mean, 4)
 
         sector_isri = [
             float(s["ISRI"])
@@ -1585,11 +1495,7 @@ def evaluar_matriz_multisectorial_gbr(
             if sector_isri
             else (
                 round(
-                    float(
-                        np.mean(
-                            [float(s["ISRI"]) for s in series_list if s.get("ISRI") is not None]
-                        )
-                    ),
+                    float(np.mean([float(s["ISRI"]) for s in series_list if s.get("ISRI") is not None])),
                     4,
                 )
                 if any(s.get("ISRI") is not None for s in series_list)

@@ -12,6 +12,8 @@ Verifica:
 
 from __future__ import annotations
 
+import os
+
 import pytest
 
 from app.modules.compromisos.pdt_nodos_espacial_predictivo import (
@@ -135,12 +137,9 @@ def test_econometria_espacial_geopandas_queen_knn_moran_lisa_y_trampas() -> None
     )
     assert all("naturaleza_dato" in row and "sentido_indicador" in row for row in result["lisa"])
     assert result["trampas_territoriales_gestion_publica"] == [] or all(
-        row["estado_vinculo"] == "VINCULO_ACREDITADO"
-        for row in result["trampas_territoriales_gestion_publica"]
+        row["estado_vinculo"] == "VINCULO_ACREDITADO" for row in result["trampas_territoriales_gestion_publica"]
     )
-    assert (
-        result["hipotesis_trampas_territoriales"] or result["trampas_territoriales_gestion_publica"]
-    )
+    assert result["hipotesis_trampas_territoriales"] or result["trampas_territoriales_gestion_publica"]
 
 
 def test_econometria_espacial_desagregacion_cartagena_ucg_barrios() -> None:
@@ -189,13 +188,9 @@ def test_econometria_espacial_desagregacion_cartagena_ucg_barrios() -> None:
     assert result["moran_global_i"] is not None
     assert len(result["lisa"]) == result["n"]
     assert any(
-        item["naturaleza_dato"] == "DERIVADO_HEURISTICO"
-        for item in result["indicadores_evaluados_multidimensional"]
+        item["naturaleza_dato"] == "DERIVADO_HEURISTICO" for item in result["indicadores_evaluados_multidimensional"]
     )
-    assert all(
-        row["estado_vinculo"] == "VINCULO_ACREDITADO"
-        for row in result["trampas_territoriales_gestion_publica"]
-    )
+    assert all(row["estado_vinculo"] == "VINCULO_ACREDITADO" for row in result["trampas_territoriales_gestion_publica"])
 
 
 def test_econometria_espacial_sin_datos_retorna_pendiente() -> None:
@@ -494,7 +489,7 @@ def test_econometria_espacial_geojson_geom_poligonal_queen_exacta() -> None:
     assert result["moran_bivariado_xy"] != 0.0
 
 
-def test_postgis_bd_csh_29_territorios_multipolygon_y_116_indicadores() -> None:
+def test_postgis_bd_csh_29_territorios_multipolygon_y_116_indicadores(corpus_analitica) -> None:
     """Verifica contra bd_csh que geodatos.territorios tenga >= 29 territorios sub-distritales
     con ST_MultiPolygon (incluyendo las 15 UCGs) y >= 116 indicadores en
     geodatos.indicadores_territorio, y que ejecutar_econometria_espacial_pdt procese los
@@ -506,18 +501,20 @@ def test_postgis_bd_csh_29_territorios_multipolygon_y_116_indicadores() -> None:
     from sqlalchemy.engine import make_url
     from sqlalchemy.ext.asyncio import create_async_engine
 
-    from app.core.config import Settings
     from scripts.poblar_geodatos_territorios_pdt import (
         poblar_geodatos_territorios_e_indicadores,
     )
 
     async def _fetch_from_postgis() -> list[dict[str, object]]:
-        bd_csh_url = (
-            make_url(Settings().async_database_url)
-            .set(database="bd_csh")
-            .render_as_string(hide_password=False)
-        )
-        engine = create_async_engine(bd_csh_url, pool_pre_ping=True)
+        """Base de análisis para pruebas: SIEMPRE polis_test* cuando POLIS_TEST_DATABASE_URL
+        esté definida (plan de remediación T6; nunca bd_csh en pruebas). Sin base de
+        pruebas se omite con causa explícita (hallazgo HALL-03)."""
+        url_pruebas = os.getenv("POLIS_TEST_DATABASE_URL")
+        if not url_pruebas:
+            pytest.skip("Configura POLIS_TEST_DATABASE_URL con una base exclusiva polis_test*")
+        if not (make_url(url_pruebas).database or "").startswith("polis_test"):
+            raise RuntimeError("POLIS_TEST_DATABASE_URL debe apuntar a una base exclusiva polis_test*")
+        engine = create_async_engine(url_pruebas, pool_pre_ping=True)
         try:
             summary = await poblar_geodatos_territorios_e_indicadores(engine)
             assert summary["territorios_sub_distritales"] >= 29
@@ -589,9 +586,7 @@ def test_postgis_bd_csh_29_territorios_multipolygon_y_116_indicadores() -> None:
     assert spatial_res["n"] >= 29
     assert spatial_res["poligonos_reales_postgis"] >= 29
     assert len(spatial_res["indicadores_evaluados_multidimensional"]) == 4
-    codigos_eval = {
-        item["codigo_indicador"] for item in spatial_res["indicadores_evaluados_multidimensional"]
-    }
+    codigos_eval = {item["codigo_indicador"] for item in spatial_res["indicadores_evaluados_multidimensional"]}
     assert codigos_eval == {
         "IND_DENSIDAD_PROGRAMATICA_PDT",
         "IND_INVERSION_PER_CAPITA_PDT_COP",
