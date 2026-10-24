@@ -16,6 +16,7 @@ from typing import Any
 
 from shapely import box, voronoi_polygons, wkt
 from shapely.geometry import MultiPoint, MultiPolygon, Point, Polygon
+from shapely.ops import nearest_points
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine
 
@@ -61,10 +62,15 @@ FALLBACK_POPULATION_BY_CODE: dict[str, tuple[int, int]] = {
 
 
 def _ensure_multipolygon(geom: Any) -> MultiPolygon:
-    """Convierte cualquier geometría poligonal de Shapely a MultiPolygon válido."""
-    if isinstance(geom, MultiPolygon):
+    """Convierte cualquier geometría poligonal de Shapely a MultiPolygon válido.
+
+    Un Polygon vacío genera un ST_MultiPolygon EMPTY con centroide POINT EMPTY
+    (observable en UCG-06/07/10/14/15): se rechaza para nunca persistir
+    geometrías fantasma en silencio.
+    """
+    if isinstance(geom, MultiPolygon) and not geom.is_empty:
         return geom
-    if isinstance(geom, Polygon):
+    if isinstance(geom, Polygon) and not geom.is_empty:
         return MultiPolygon([geom])
     if hasattr(geom, "geoms"):
         polys = [g for g in geom.geoms if isinstance(g, Polygon) and not g.is_empty]
@@ -126,11 +132,7 @@ async def poblar_geodatos_territorios_e_indicadores(
     try:
         async with engine.begin() as conn:
             # 1. Asegurar que la restricción chk_tipo_territorio acepte 'ucg'
-            await conn.execute(
-                text(
-                    "ALTER TABLE geodatos.territorios DROP CONSTRAINT IF EXISTS chk_tipo_territorio"
-                )
-            )
+            await conn.execute(text("ALTER TABLE geodatos.territorios DROP CONSTRAINT IF EXISTS chk_tipo_territorio"))
             await conn.execute(
                 text(
                     """
@@ -152,17 +154,8 @@ async def poblar_geodatos_territorios_e_indicadores(
                 )
             )
 
-            # 2. Asegurar índice único idempotente en geodatos.indicadores_territorio
-            await conn.execute(
-                text(
-                    """
-                    CREATE UNIQUE INDEX IF NOT EXISTS ux_indicadores_territorio_terr_cod_anio
-                    ON geodatos.indicadores_territorio (
-                        territorio_id, codigo_indicador, anio_corte
-                    );
-                    """
-                )
-            )
+            # El índice único ux_indicadores_territorio_terr_cod_anio pertenece al
+            # lineage Alembic (revisión 0069); el sembrador no ejecuta DDL.
 
             # 3. Cargar polígonos e IDs de las 3 Localidades padre (LOC-1, LOC-2, LOC-3)
             loc_rows = (
@@ -194,9 +187,7 @@ async def poblar_geodatos_territorios_e_indicadores(
                 parent = loc_info[loc_code]
                 loc_poly = parent["geom"]
                 ucg_pts = [
-                    (ucg_k, Point(lon, lat))
-                    for ucg_k, (lon, lat, lc) in UCG_SEED_COORDS.items()
-                    if lc == loc_code
+                    (ucg_k, Point(lon, lat)) for ucg_k, (lon, lat, lc) in UCG_SEED_COORDS.items() if lc == loc_code
                 ]
                 mp = MultiPoint([pt for _, pt in ucg_pts])
                 minx, miny, maxx, maxy = loc_poly.bounds
@@ -213,6 +204,13 @@ async def poblar_geodatos_territorios_e_indicadores(
                     clipped = cell.intersection(loc_poly)
                     if clipped.is_empty:
                         clipped = pt.buffer(0.008).intersection(loc_poly)
+                    if clipped.is_empty:
+                        # Semillas a hasta ~5,8 km fuera del polígono de la
+                        # localidad (UCG-06/07/10/14/15, LOC-2/3): se ancla al
+                        # punto más cercano dentro del polígono padre con un
+                        # disco pequeño, determinista y siempre no vacío.
+                        ancla = nearest_points(loc_poly, pt)[0]
+                        clipped = Point(ancla).buffer(0.0025).intersection(loc_poly)
                     mp_geom = _ensure_multipolygon(clipped)
                     ucg_wkt_by_key[ucg_k] = mp_geom.wkt
 
@@ -232,11 +230,7 @@ async def poblar_geodatos_territorios_e_indicadores(
                 loc_short = parent["nombre"].split(":")[-1].strip()
                 nombre_ucg = f"UCG {ucg_num} — {loc_short} ({sample_label})"
 
-                estratos_num = [
-                    e
-                    for b in items
-                    if (e := _parse_estrato_int(str(b.get("estrato") or ""))) is not None
-                ]
+                estratos_num = [e for b in items if (e := _parse_estrato_int(str(b.get("estrato") or ""))) is not None]
                 estrato_mode = Counter(estratos_num).most_common(1)[0][0] if estratos_num else 2
                 share = max(1, len(items)) / max(1, barrios_count_by_loc[loc_code])
                 poblacion_ucg = max(12500, int(round(parent["poblacion"] * share)))
@@ -246,9 +240,7 @@ async def poblar_geodatos_territorios_e_indicadores(
                         "localidad_codigo": loc_code,
                         "total_barrios": len(items),
                         "barrios_muestra": barrio_names[:8],
-                        "fuente_cartografica": (
-                            "knowledge-base/barrios_cartagena.json + ST_Intersection(LOC)"
-                        ),
+                        "fuente_cartografica": ("knowledge-base/barrios_cartagena.json + ST_Intersection(LOC)"),
                     },
                     ensure_ascii=False,
                 )
@@ -329,9 +321,7 @@ async def poblar_geodatos_territorios_e_indicadores(
 
             # 7. Consultar métricas globales de BD para parametrizar los 4 indicadores
             dim_rows = (
-                await conn.execute(
-                    text("SELECT codigo, id FROM motor_politicas.dimensiones_seguridad_humana")
-                )
+                await conn.execute(text("SELECT codigo, id FROM motor_politicas.dimensiones_seguridad_humana"))
             ).fetchall()
             dim_map = {str(r.codigo): r.id for r in dim_rows}
 
@@ -382,10 +372,7 @@ async def poblar_geodatos_territorios_e_indicadores(
             # Conteo de menciones documentales en seguimiento.pdd_evidencia_paginas
             ev_pages = (
                 await conn.execute(
-                    text(
-                        "SELECT contenido FROM seguimiento.pdd_evidencia_paginas "
-                        "WHERE contenido IS NOT NULL"
-                    )
+                    text("SELECT contenido FROM seguimiento.pdd_evidencia_paginas WHERE contenido IS NOT NULL")
                 )
             ).fetchall()
             corpus_lower = [str(r.contenido).lower() for r in ev_pages]
@@ -405,9 +392,7 @@ async def poblar_geodatos_territorios_e_indicadores(
                 search_token = name.split("—")[0].split(":")[0].split("(")[0].strip().lower()
                 if code.startswith("UCG-"):
                     ucg_n = int(code.split("-")[1])
-                    ucg_barrios = [
-                        str(b.get("barrio") or "").lower() for b in by_ucg.get(str(ucg_n), [])[:5]
-                    ]
+                    ucg_barrios = [str(b.get("barrio") or "").lower() for b in by_ucg.get(str(ucg_n), [])[:5]]
                     doc_hits = sum(
                         1
                         for page in corpus_lower
@@ -416,9 +401,7 @@ async def poblar_geodatos_territorios_e_indicadores(
                         or any(bn and bn in page for bn in ucg_barrios)
                     )
                 else:
-                    doc_hits = sum(
-                        1 for page in corpus_lower if search_token and search_token in page
-                    )
+                    doc_hits = sum(1 for page in corpus_lower if search_token and search_token in page)
 
                 # Indicador 1: IND_DENSIDAD_PROGRAMATICA_PDT
                 densidad_val = round(
@@ -448,9 +431,7 @@ async def poblar_geodatos_territorios_e_indicadores(
 
                 # Indicador 3: IND_AVANCE_FISICO_TERRITORIAL_PCT
                 dispersion_penalty = (
-                    8.5
-                    if t_type in {"corregimiento", "zona_insular"}
-                    else (4.2 if estrato == 1 else 0.0)
+                    8.5 if t_type in {"corregimiento", "zona_insular"} else (4.2 if estrato == 1 else 0.0)
                 )
                 avance_territorial_val = round(
                     max(
@@ -497,8 +478,7 @@ async def poblar_geodatos_territorios_e_indicadores(
                         "nivel_riesgo": "medio" if densidad_val >= 35.0 else "alto",
                         "dimension_id": dim_map.get("comunitaria"),
                         "fuente_datos": (
-                            "seguimiento.pdd_evidencia_paginas + mesas_trabajo.mesas + "
-                            "geodatos.territorios"
+                            "seguimiento.pdd_evidencia_paginas + mesas_trabajo.mesas + geodatos.territorios"
                         ),
                     },
                     {
@@ -508,9 +488,7 @@ async def poblar_geodatos_territorios_e_indicadores(
                         "unidad_medida": "COP_per_capita",
                         "nivel_riesgo": "bajo" if inversion_pc_val >= 1650000.0 else "medio",
                         "dimension_id": dim_map.get("economica"),
-                        "fuente_datos": (
-                            "seguimiento.registros_triada_normalizados + geodatos.territorios"
-                        ),
+                        "fuente_datos": ("seguimiento.registros_triada_normalizados + geodatos.territorios"),
                     },
                     {
                         "codigo_indicador": "IND_AVANCE_FISICO_TERRITORIAL_PCT",
@@ -524,22 +502,17 @@ async def poblar_geodatos_territorios_e_indicadores(
                         ),
                         "dimension_id": dim_map.get("personal"),
                         "fuente_datos": (
-                            "seguimiento.registros_triada_normalizados + "
-                            "seguimiento.actividades_plan_accion"
+                            "seguimiento.registros_triada_normalizados + seguimiento.actividades_plan_accion"
                         ),
                     },
                     {
                         "codigo_indicador": "IND_REZAGO_ESTRUCTURAL_IPM",
-                        "nombre_indicador": (
-                            "Índice de Rezago Estructural y Presión Social Territorial"
-                        ),
+                        "nombre_indicador": ("Índice de Rezago Estructural y Presión Social Territorial"),
                         "valor": ipm_rezago_val,
                         "unidad_medida": "indice_0_100",
                         "nivel_riesgo": nivel_riesgo_ipm,
                         "dimension_id": dim_map.get("salud"),
-                        "fuente_datos": (
-                            "knowledge-base/barrios_cartagena.json + geodatos.territorios"
-                        ),
+                        "fuente_datos": ("knowledge-base/barrios_cartagena.json + geodatos.territorios"),
                     },
                 ]
 
