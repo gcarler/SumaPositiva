@@ -30,11 +30,12 @@ import type {CapasConfig} from "../components/geovisor-controles";
 import type {MesaGeovisor} from "../services/mesas-geovisor-api";
 import {buscarTerritorioPorCoordenada} from "../services/geovisor-api";
 import {obtenerPoligonosHurtosGeojson} from "../services/hurtos-api";
+import type {IndicadorMultifuente} from "../models/geovisor";
 
 export interface HoverInfo {
   id: string;
   nombre: string;
-  tipo: "localidad" | "corregimiento" | "isla" | "barrio" | "mesa" | "hurto";
+  tipo: "localidad" | "corregimiento" | "isla" | "barrio" | "mesa" | "hurto" | "multifuente";
   ish?: number;
   poblacion?: number;
   aportes?: number;
@@ -68,6 +69,20 @@ export interface HoverInfo {
     top_armas: Array<{ arma?: string; categoria?: string; cantidad: number; porcentaje: number }>;
     top_sitios: Array<{ sitio?: string; categoria?: string; cantidad: number; porcentaje: number }>;
   };
+  multifuenteDetalle?: {
+    id: string;
+    nombre_indicador: string;
+    codigo_indicador: string;
+    valor: number | string;
+    unidad_medida: string;
+    nivel_riesgo: string;
+    anio_corte: number;
+    fuente_datos: string;
+    territorio: string;
+    dimension: string;
+    url_fuente?: string;
+    nota?: string;
+  };
 }
 
 export interface UseMapaOptions {
@@ -86,6 +101,7 @@ export interface UseMapaOptions {
   delitoHurto?: string | null;
   onSelectHurto?: (poligonoId: number) => void;
   capaPersonalizada?: { geojson: unknown; nombre?: string; color?: string } | null;
+  indicadorMultifuente?: IndicadorMultifuente | null;
 }
 
 /**
@@ -204,6 +220,7 @@ export function useMapa({
   delitoHurto = null,
   onSelectHurto,
   capaPersonalizada = null,
+  indicadorMultifuente = null,
 }: UseMapaOptions) {
   const mapaRef = useRef<Map | null>(null);
   const [cargando, setCargando] = useState(true);
@@ -219,6 +236,7 @@ export function useMapa({
   const fuentePuntosRef = useRef<VectorSource<Feature> | null>(null);
   const fuenteMesasRef = useRef<VectorSource<Feature> | null>(null);
   const fuentePersonalizadaRef = useRef<VectorSource<Feature> | null>(null);
+  const fuenteMultifuenteRef = useRef<VectorSource<Feature> | null>(null);
   const mesasRef = useRef(mesas);
   const mesaSeleccionadaRef = useRef(mesaSeleccionadaId);
   const onSelectHurtoRef = useRef(onSelectHurto);
@@ -659,24 +677,32 @@ export function useMapa({
         }
 
         const esUrbano = zona === "URBANA";
+        const esRural = !esUrbano || feature.get("codigo") === "CARTAGENA_RURAL";
         const opacidad = hovered ? "88" : esUrbano ? "55" : "28";
         const strokeColor = hovered ? "#1a1a2e" : baseColor;
         const strokeWidth = hovered ? 3.5 : esUrbano ? 2.5 : 2;
         const lineDash = (!hovered && !esUrbano) ? [6, 4] : undefined;
 
-        return new Style({
+        const estiloBase = new Style({
           fill: new Fill({ color: `${baseColor}${opacidad}` }),
           stroke: new Stroke({ color: strokeColor, width: strokeWidth, lineDash }),
-          text: capasRef.current.etiquetas
-            ? new Text({
-                text: `${nombre}\n${total.toLocaleString("es-CO")} hurtos (${porcentaje}%)`,
-                font: "700 11.5px Geist, sans-serif",
-                fill: new Fill({ color: "#111827" }),
-                stroke: new Stroke({ color: "#ffffff", width: 3.5 }),
-                overflow: true,
-              })
-            : undefined,
         });
+
+        if (!capasRef.current.etiquetas) return estiloBase;
+
+        const estiloTexto = new Style({
+          // Si es rural o insular, proyectar la etiqueta en las coordenadas reales insulares [-75.64, 10.22]
+          geometry: esRural ? new Point(fromLonLat([-75.64, 10.22])) : undefined,
+          text: new Text({
+            text: `${nombre}\n${total.toLocaleString("es-CO")} hurtos (${porcentaje}%)`,
+            font: "700 11.5px Geist, sans-serif",
+            fill: new Fill({ color: "#111827" }),
+            stroke: new Stroke({ color: "#ffffff", width: 3.5 }),
+            overflow: true,
+          }),
+        });
+
+        return [estiloBase, estiloTexto];
       },
     });
 
@@ -700,12 +726,47 @@ export function useMapa({
       },
     });
 
+    /* 6. Capa Vectorial de Indicadores Multifuente */
+    const fuenteMultifuente = new VectorSource<Feature>();
+    fuenteMultifuenteRef.current = fuenteMultifuente;
+    const capaMultifuenteLayer = new VectorLayer({
+      source: fuenteMultifuente,
+      zIndex: 14,
+      style: (feature) => {
+        const hovered = feature.get("hovered") === true;
+        const color = (feature.get("color") as string) || "#ea580c";
+        const indNombre = String(feature.get("nombre_indicador") ?? "");
+        const valor = String(feature.get("valor") ?? "");
+        const unidad = String(feature.get("unidad_medida") ?? "");
+        const nivelRiesgo = String(feature.get("nivel_riesgo") ?? "").toUpperCase();
+
+        const opacidad = hovered ? "90" : "55";
+        const strokeColor = hovered ? "#0f172a" : color;
+        const strokeWidth = hovered ? 3.5 : 2;
+
+        return new Style({
+          fill: new Fill({ color: `${color}${opacidad}` }),
+          stroke: new Stroke({ color: strokeColor, width: strokeWidth }),
+          text: capasRef.current.etiquetas
+            ? new Text({
+                text: `${indNombre}\n${valor} ${unidad} [${nivelRiesgo}]`,
+                font: "700 11.5px Geist, sans-serif",
+                fill: new Fill({ color: "#0f172a" }),
+                stroke: new Stroke({ color: "#ffffff", width: 3.5 }),
+                overflow: true,
+              })
+            : undefined,
+        });
+      },
+    });
+
     const mapa = new Map({
       target,
       layers: [
         new TileLayer({ source: new OSM() }),
         capaTerritorios,
         capaHurtos,
+        capaMultifuenteLayer,
         capaBarrios,
         capaPuntos,
         capaMesas,
@@ -823,7 +884,14 @@ export function useMapa({
       const feature = featureAtPixel(pixel);
       target.style.cursor = feature ? "pointer" : "grab";
 
-      const todasLasCapas = [capaTerritorios, capaHurtos, capaBarrios, capaPuntos, capaMesas];
+      const todasLasCapas = [
+        capaTerritorios,
+        capaHurtos,
+        capaMultifuenteLayer,
+        capaBarrios,
+        capaPuntos,
+        capaMesas,
+      ];
       todasLasCapas.forEach((capa) => {
         capa.getSource()?.getFeatures().forEach((elemento) => {
           const hovered = elemento === feature;
@@ -836,6 +904,32 @@ export function useMapa({
 
       if (!feature) {
         onHoverInfo(null);
+        return;
+      }
+
+      if (feature.get("tipo") === "multifuente") {
+        onHoverInfo({
+          id: String(feature.get("id") ?? "multifuente"),
+          nombre: String(feature.get("nombre_indicador") ?? "Indicador Multifuente"),
+          tipo: "multifuente",
+          pixel,
+          multifuenteDetalle: {
+            id: String(feature.get("id") ?? ""),
+            nombre_indicador: String(feature.get("nombre_indicador") ?? ""),
+            codigo_indicador: String(feature.get("codigo_indicador") ?? ""),
+            valor: feature.get("valor") ?? "",
+            unidad_medida: String(feature.get("unidad_medida") ?? ""),
+            nivel_riesgo: String(feature.get("nivel_riesgo") ?? ""),
+            anio_corte: Number(feature.get("anio_corte") ?? 0),
+            fuente_datos: String(feature.get("fuente_datos") ?? ""),
+            territorio: String(
+              feature.get("nombre_territorio") ?? "Cartagena (Perímetro Urbano y Rural)",
+            ),
+            dimension: String(feature.get("nombre_dimension") ?? "Seguridad Humana"),
+            url_fuente: (feature.get("url_fuente") as string | undefined) ?? undefined,
+            nota: (feature.get("nota") as string | undefined) ?? undefined,
+          },
+        });
         return;
       }
 
@@ -948,8 +1042,99 @@ export function useMapa({
       fuentePuntosRef.current = null;
       fuenteHurtosRef.current = null;
       fuentePersonalizadaRef.current = null;
+      fuenteMultifuenteRef.current = null;
     };
   }, [target, onSelectTerritorio, onSelectBarrio, onHoverInfo, onSelectMesa]);
+
+  // Carga reactiva de capa multifuente en el mapa OpenLayers
+  useEffect(() => {
+    if (!fuenteMultifuenteRef.current || !mapaRef.current) return;
+    fuenteMultifuenteRef.current.clear(true);
+    if (!indicadorMultifuente) return;
+
+    try {
+      const format = new GeoJSON();
+      // Asignar color semántico según nivel de riesgo
+      const riesgo = String(indicadorMultifuente.nivel_riesgo || "").toLowerCase();
+      let colorRiesgo = "#2563eb"; // default azul institucional POLIS
+      if (riesgo === "critico") colorRiesgo = "#dc2626";
+      else if (riesgo === "alto") colorRiesgo = "#ea580c";
+      else if (riesgo === "medio") colorRiesgo = "#eab308";
+      else if (riesgo === "bajo") colorRiesgo = "#10b981";
+
+      const codTerr = indicadorMultifuente.codigo_territorio;
+      const esDesagregado =
+        Boolean(codTerr) &&
+        codTerr !== "DISTRITO-CTG" &&
+        codTerr !== "todos" &&
+        codTerr !== "distrito";
+
+      let featuresAUsar: Feature[] = [];
+
+      if (esDesagregado && codTerr) {
+        const idBuscado = codTerr.toLowerCase();
+        const featuresFiltradas = GEOJSON_TERRITORIOS.features.filter((f) => {
+          const propId = String(f.properties?.id ?? "").toLowerCase();
+          return propId === idBuscado || propId.includes(idBuscado);
+        });
+
+        if (featuresFiltradas.length > 0) {
+          featuresAUsar = format.readFeatures(
+            { type: "FeatureCollection", features: featuresFiltradas },
+            { dataProjection: "EPSG:4326", featureProjection: "EPSG:3857" },
+          );
+        }
+      }
+
+      // Si no tiene nivel desagregado (o no se encontró feature específica):
+      // "si no tiene nivel desagregado que se pinte toda la ciudad - perimetro urbano y rural-"
+      if (featuresAUsar.length === 0) {
+        featuresAUsar = format.readFeatures(GEOJSON_TERRITORIOS, {
+          dataProjection: "EPSG:4326",
+          featureProjection: "EPSG:3857",
+        });
+      }
+
+      featuresAUsar.forEach((f) => {
+        f.set("tipo", "multifuente");
+        f.set("id", indicadorMultifuente.id);
+        f.set("color", colorRiesgo);
+        f.set("nombre_indicador", indicadorMultifuente.nombre_indicador);
+        f.set("codigo_indicador", indicadorMultifuente.codigo_indicador);
+        f.set("valor", indicadorMultifuente.valor);
+        f.set("unidad_medida", indicadorMultifuente.unidad_medida);
+        f.set("nivel_riesgo", indicadorMultifuente.nivel_riesgo);
+        f.set("anio_corte", indicadorMultifuente.anio_corte);
+        f.set("fuente_datos", indicadorMultifuente.fuente_datos);
+        f.set(
+          "nombre_territorio",
+          indicadorMultifuente.nombre_territorio ||
+            (esDesagregado ? f.get("nombre") : "Toda la ciudad (Perímetro Urbano y Rural)"),
+        );
+        f.set(
+          "nombre_dimension",
+          indicadorMultifuente.nombre_dimension ?? indicadorMultifuente.codigo_dimension ?? "Seguridad Humana",
+        );
+        const meta = indicadorMultifuente.metadatos ?? {};
+        f.set("url_fuente", typeof meta.url_fuente === "string" ? meta.url_fuente : undefined);
+        f.set("nota", typeof meta.nota_origen === "string" ? meta.nota_origen : undefined);
+      });
+
+      fuenteMultifuenteRef.current.addFeatures(featuresAUsar);
+      mapaRef.current.renderSync();
+
+      const extent = fuenteMultifuenteRef.current.getExtent();
+      if (extent && !extent.some((v) => !isFinite(v))) {
+        mapaRef.current.getView().fit(extent, {
+          duration: 700,
+          padding: [60, 60, 60, 60],
+          maxZoom: 14,
+        });
+      }
+    } catch (err) {
+      console.warn("Fallo al proyectar capa multifuente en OpenLayers:", err);
+    }
+  }, [indicadorMultifuente]);
 
   // Carga reactiva de capa GeoJSON personalizada importada en el frontend
   useEffect(() => {

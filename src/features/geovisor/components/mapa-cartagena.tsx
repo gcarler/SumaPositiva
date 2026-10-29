@@ -2,9 +2,20 @@
 
 import "ol/ol.css";
 import {useCallback, useMemo, useState, useImperativeHandle, forwardRef} from "react";
-import {MapPin, Search, Plus, Minus, Compass, Loader2, ShieldAlert} from "lucide-react";
+import {
+  MapPin,
+  Search,
+  Plus,
+  Minus,
+  Compass,
+  Loader2,
+  ShieldAlert,
+  Database,
+  X,
+} from "lucide-react";
 import {Button} from "@/shared/ui/button";
 import {Input} from "@/shared/ui/input";
+import {Badge} from "@/shared/ui/badge";
 import {
   Select,
   SelectContent,
@@ -101,6 +112,9 @@ const MapaCartagena = forwardRef<MapaCartagenaHandle, MapaCartagenaProps>(functi
   const [hoverInfo, setHoverInfo] = useState<HoverInfo | null>(null);
   const [localidadInterna, setLocalidadInterna] = useState<string>(selectedTerritorioId || "todas");
 
+  const indicadorMultifuenteActivo = useGeovisorLayoutStore((s) => s.indicadorMultifuenteActivo);
+  const setIndicadorMultifuenteActivo = useGeovisorLayoutStore((s) => s.setIndicadorMultifuenteActivo);
+
   const localidadActiva =
     selectedTerritorioId && selectedTerritorioId !== "todas"
       ? selectedTerritorioId
@@ -127,6 +141,7 @@ const MapaCartagena = forwardRef<MapaCartagenaHandle, MapaCartagenaProps>(functi
     delitoHurto,
     onSelectHurto,
     capaPersonalizada,
+    indicadorMultifuente: indicadorMultifuenteActivo,
   });
 
   useImperativeHandle(ref, () => ({
@@ -341,6 +356,38 @@ const MapaCartagena = forwardRef<MapaCartagenaHandle, MapaCartagenaProps>(functi
         )}
       </div>
 
+      {/* Chip flotante de Capa Multifuente activa */}
+      {indicadorMultifuenteActivo && (
+        <div
+          role="status"
+          aria-live="polite"
+          className="absolute top-14 right-4 z-20 flex max-w-sm items-center gap-2 rounded-xl border border-[var(--primary)]/30 bg-[var(--surface-1)]/95 p-2 shadow-raised backdrop-blur text-xs"
+        >
+          <Database className="size-4 text-[var(--primary)] shrink-0" aria-hidden="true" />
+          <div className="flex min-w-0 flex-1 flex-col">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--primary)]">
+              Capa en mapa
+            </span>
+            <span className="truncate font-semibold text-[var(--text-primary)]" title={indicadorMultifuenteActivo.nombre_indicador}>
+              {indicadorMultifuenteActivo.nombre_indicador}
+            </span>
+          </div>
+          <Badge variant="outline" className="text-[10px] uppercase font-mono shrink-0">
+            {indicadorMultifuenteActivo.territorio_id?.toLowerCase().startsWith("loc") ? "Localidades" : "Toda la ciudad"}
+          </Badge>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-6 w-6 p-0 rounded-full text-[var(--text-tertiary)] hover:text-[var(--text-primary)] shrink-0"
+            onClick={() => setIndicadorMultifuenteActivo(null)}
+            aria-label="Quitar capa del mapa"
+            title="Quitar capa del mapa"
+          >
+            <X className="size-3.5" />
+          </Button>
+        </div>
+      )}
+
       {/* Botonera de Control de Navegación del Mapa */}
       <div className="absolute bottom-28 right-4 z-20 flex flex-col gap-1.5 rounded-xl border border-[var(--border)] bg-[var(--surface-1)]/95 p-1 shadow-raised backdrop-blur">
         <Button
@@ -417,7 +464,76 @@ const MapaCartagena = forwardRef<MapaCartagenaHandle, MapaCartagenaProps>(functi
           }}
           className="pointer-events-auto absolute z-30 w-72 rounded-xl border border-[var(--border-strong)] bg-[var(--surface-1)]/95 p-3.5 shadow-panel backdrop-blur transition-all duration-75 animate-in fade-in zoom-in-95"
         >
-          {hoverInfo.tipo === "mesa" ? (
+          {hoverInfo.tipo === "multifuente" && hoverInfo.multifuenteDetalle ? (
+            <div className="space-y-2 text-xs">
+              <div className="flex items-center justify-between border-b border-[var(--border)] pb-2">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-tertiary)] flex items-center gap-1">
+                  <Database className="size-3 text-[var(--primary)]" />
+                  Capa Multifuente
+                </span>
+                {hoverInfo.multifuenteDetalle.nivel_riesgo && (
+                  <Badge
+                    variant="outline"
+                    className={`text-[10px] font-bold uppercase ${
+                      hoverInfo.multifuenteDetalle.nivel_riesgo === "critico"
+                        ? "border-[var(--destructive)] text-[var(--destructive)]"
+                        : hoverInfo.multifuenteDetalle.nivel_riesgo === "alto"
+                          ? "border-[var(--warning)] text-[var(--warning)]"
+                          : hoverInfo.multifuenteDetalle.nivel_riesgo === "medio"
+                            ? "border-[var(--ember)] text-[var(--ember)]"
+                            : "border-[var(--success)] text-[var(--success)]"
+                    }`}
+                  >
+                    {hoverInfo.multifuenteDetalle.nivel_riesgo}
+                  </Badge>
+                )}
+              </div>
+
+              <div>
+                <p className="font-bold text-xs text-[var(--text-primary)] leading-snug">
+                  {hoverInfo.multifuenteDetalle.nombre_indicador}
+                </p>
+                <p className="text-[11px] text-[var(--text-secondary)] mt-0.5">
+                  Territorio: <strong className="text-[var(--text-primary)]">{hoverInfo.multifuenteDetalle.territorio}</strong>
+                </p>
+              </div>
+
+              <div className="rounded-lg bg-[var(--surface-2)] p-2 space-y-1">
+                <div className="flex justify-between items-baseline">
+                  <span className="text-[11px] text-[var(--text-secondary)]">Valor:</span>
+                  <span className="font-bold font-mono text-sm text-[var(--text-primary)]">
+                    {hoverInfo.multifuenteDetalle.valor !== null && hoverInfo.multifuenteDetalle.valor !== undefined
+                      ? typeof hoverInfo.multifuenteDetalle.valor === "number"
+                        ? hoverInfo.multifuenteDetalle.valor.toLocaleString("es-CO")
+                        : hoverInfo.multifuenteDetalle.valor
+                      : "S/D"}
+                    <span className="text-[10px] font-normal text-[var(--text-secondary)] ml-1">
+                      {hoverInfo.multifuenteDetalle.unidad_medida}
+                    </span>
+                  </span>
+                </div>
+                <div className="flex justify-between text-[10px] text-[var(--text-tertiary)]">
+                  <span>Año: {hoverInfo.multifuenteDetalle.anio_corte}</span>
+                  <span className="truncate max-w-[140px]" title={hoverInfo.multifuenteDetalle.fuente_datos}>
+                    Fuente: {hoverInfo.multifuenteDetalle.fuente_datos}
+                  </span>
+                </div>
+              </div>
+
+              <div className="border-t border-[var(--border)] pt-2">
+                <Button
+                  variant="ember"
+                  size="sm"
+                  className="w-full text-xs font-semibold h-7 shadow-sm"
+                  onClick={() => {
+                    useGeovisorLayoutStore.getState().openView("fuentes");
+                  }}
+                >
+                  Ver Ficha en Banco Multifuente →
+                </Button>
+              </div>
+            </div>
+          ) : hoverInfo.tipo === "mesa" ? (
             <div className="space-y-2 text-xs">
               {/* Semáforo badge */}
               <div className="flex items-center justify-between border-b border-[var(--border)] pb-2">

@@ -2,6 +2,7 @@
 
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
+import type { IndicadorMultifuente } from "../models/geovisor";
 
 export type DockPanelId = "top" | "left" | "right" | "bottom";
 
@@ -78,6 +79,9 @@ export interface GeovisorLayoutState extends DockPanelVisibility {
   tabs: DockTabs;
   /** Pestaña activa de cada panel. */
   activeTab: DockActiveTab;
+  /** Indicador del banco multifuente actualmente proyectado en el lienzo cartográfico. */
+  indicadorMultifuenteActivo: IndicadorMultifuente | null;
+  setIndicadorMultifuenteActivo: (indicador: IndicadorMultifuente | null) => void;
   /** Panel expandido a su tamaño máximo (como "maximizar panel" de VS Code). */
   expandedDock: DockPanelId | null;
   togglePanel: (panelId: DockPanelId) => void;
@@ -170,6 +174,8 @@ export const useGeovisorLayoutStore = create<GeovisorLayoutState>()(
       tabs: cloneTabs(DEFAULT_DOCK_TABS),
       activeTab: { ...DEFAULT_DOCK_ACTIVE },
       expandedDock: null,
+      indicadorMultifuenteActivo: null,
+      setIndicadorMultifuenteActivo: (indicador) => set({ indicadorMultifuenteActivo: indicador }),
 
       togglePanel: (panelId: DockPanelId) => {
         const key = `${panelId}Open` as const;
@@ -243,6 +249,7 @@ export const useGeovisorLayoutStore = create<GeovisorLayoutState>()(
           tabs: cloneTabs(DEFAULT_DOCK_TABS),
           activeTab: { ...DEFAULT_DOCK_ACTIVE },
           expandedDock: null,
+          indicadorMultifuenteActivo: null,
         });
       },
 

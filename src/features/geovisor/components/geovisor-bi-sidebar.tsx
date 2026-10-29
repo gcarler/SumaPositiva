@@ -87,8 +87,10 @@ export function GeovisorBiSidebar({
 
   // Top 5 barrios del territorio activo
   const topBarrios = useMemo(() => {
-    const targetLocId = territorioActivo.id === "rural-insular" ? "loc-1" : territorioActivo.id;
-    const barrios = BARRIOS_CARTAGENA.filter((b) => b.localidadId === targetLocId);
+    const barrios =
+      territorioActivo.id === "rural-insular"
+        ? BARRIOS_CARTAGENA.filter((b) => b.ucg === "R")
+        : BARRIOS_CARTAGENA.filter((b) => b.localidadId === territorioActivo.id);
     return barrios.slice(0, 5);
   }, [territorioActivo]);
 

@@ -18,6 +18,8 @@ import {
   AlertCircle,
   Building2,
   RefreshCw,
+  Layers,
+  Check,
 } from "lucide-react";
 import { Input } from "@/shared/ui/input";
 import { Button } from "@/shared/ui/button";
@@ -31,6 +33,7 @@ import {
   SelectValue,
 } from "@/shared/ui/select";
 import { useIndicadoresGeovisor } from "../services/use-geovisor-queries";
+import { useGeovisorLayoutStore } from "../state/geovisor-layout-store";
 import type { IndicadorMultifuente } from "../models/geovisor";
 
 const DIMENSIONES = [
@@ -86,6 +89,9 @@ export function GeovisorMultifuentePanel({
   const [busqueda, setBusqueda] = useState<string>("");
   const [pagina, setPagina] = useState<number>(0);
   const limite = 30;
+
+  const indicadorMultifuenteActivo = useGeovisorLayoutStore((s) => s.indicadorMultifuenteActivo);
+  const setIndicadorMultifuenteActivo = useGeovisorLayoutStore((s) => s.setIndicadorMultifuenteActivo);
 
   const filtros = useMemo(() => {
     return {
@@ -371,6 +377,39 @@ export function GeovisorMultifuentePanel({
                         )}
                       </div>
                     )}
+
+                    <div className="pt-2 flex items-center justify-end">
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant={indicadorMultifuenteActivo?.id === ind.id ? "ember" : "outline"}
+                        onClick={() => {
+                          if (indicadorMultifuenteActivo?.id === ind.id) {
+                            setIndicadorMultifuenteActivo(null);
+                          } else {
+                            setIndicadorMultifuenteActivo(ind);
+                          }
+                        }}
+                        className="h-7 px-2.5 text-2xs gap-1.5 transition-colors"
+                        title={
+                          indicadorMultifuenteActivo?.id === ind.id
+                            ? "Quitar esta capa del mapa"
+                            : "Pintar datos de esta capa en el mapa"
+                        }
+                      >
+                        {indicadorMultifuenteActivo?.id === ind.id ? (
+                          <>
+                            <Check className="size-3" aria-hidden="true" />
+                            <span>Pintado en mapa</span>
+                          </>
+                        ) : (
+                          <>
+                            <Layers className="size-3" aria-hidden="true" />
+                            <span>Pintar en mapa</span>
+                          </>
+                        )}
+                      </Button>
+                    </div>
                   </div>
                 </article>
               );
