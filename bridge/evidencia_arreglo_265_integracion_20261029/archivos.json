@@ -1,0 +1,18 @@
+{
+  "base_commit": "c9b1adf",
+  "archivos_modificados": [
+    "docs/permisos-api.md",
+    "backend/app/modules/proyectos/service.py"
+  ],
+  "archivos_nuevos_evidencia": [
+    "bridge/evidencia_arreglo_265_integracion_20261029/cambios.patch",
+    "bridge/evidencia_arreglo_265_integracion_20261029/resumen.json",
+    "bridge/evidencia_arreglo_265_integracion_20261029/checks.json",
+    "bridge/evidencia_arreglo_265_integracion_20261029/archivos.json"
+  ],
+  "arbol_limpio_excepto": "Se verificó con git status --porcelain que solo los 2 archivos listados tienen modificación local; sin archivos sin seguimiento adicionales de esta tarea.",
+  "resumen_ubicaciones": [
+    "Clasificación de rutas: docs/permisos-api.md, sección 'Vista agregada de Proyectos', subsección 'Anexos de actividades — decisión de producto encargo 265 (2026-10-29)'.",
+    "Compensación de archivo: backend/app/modules/proyectos/service.py, método guardar_anexo (bloque try/except alrededor del límite transaccional con unlink del fichero físico al revertir)."
+  ]
+}

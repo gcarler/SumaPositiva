@@ -7,10 +7,12 @@ from fastapi.testclient import TestClient
 
 
 @pytest.fixture
-def clients(database_url, cabeceras_gestion):
+def clients(database_url, cabeceras_gestion, tmp_path, monkeypatch):
     from app.core.config import Settings
     from app.main import create_app
+    from app.modules.proyectos import service as proyectos_service
 
+    monkeypatch.setattr(proyectos_service, "DIRECTORIO_ANEXOS", tmp_path / "anexos")
     settings = Settings(_env_file=None, environment="test", database_url=database_url)
     with TestClient(create_app(settings), headers=cabeceras_gestion) as gestor:
         with TestClient(create_app(settings)) as publico:

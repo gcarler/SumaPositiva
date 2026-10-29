@@ -1,0 +1,36 @@
+{
+  "fecha": "2026-10-29T03:41:18Z",
+  "checks": [
+    {
+      "comando": "bun run backend:check (ruff check + ruff format --check + pytest backend, base de pruebas omitida por ausencia de POLIS_TEST_DATABASE_URL)",
+      "exit_code": 0,
+      "resultado": "1149 passed, 520 skipped, 2 warnings",
+      "nota": "Antes del arreglo fallaba test_access_policy.py::test_matriz_cubre_todas_las_rutas_y_sus_controles por las 4 rutas de anexos sin clasificar."
+    },
+    {
+      "comando": "cd backend && .venv/bin/python -m ruff check app/modules/proyectos/ tests/test_access_policy.py",
+      "exit_code": 0,
+      "resultado": "All checks passed!"
+    },
+    {
+      "comando": "cd backend && .venv/bin/python -m ruff check app/modules/proyectos/ && .venv/bin/python -m pytest tests/test_access_policy.py -q (después de la clasificación en la matriz)",
+      "exit_code": 0,
+      "resultado": "120 passed, 1 skipped"
+    },
+    {
+      "comando": "bun run check (ui:check + typecheck + lint)",
+      "exit_code": 0,
+      "resultado": "UI Policy, tokens, capas, inventario, historias y política a11y correctos; tsc --noEmit y eslint sin errores."
+    },
+    {
+      "comando": "bun test src/features/proyectos/",
+      "exit_code": 0,
+      "resultado": "5 pass, 0 fail (34 expect), 2 archivos"
+    },
+    {
+      "comando": "bun run build",
+      "exit_code": null,
+      "resultado": "NO EJECUTADO por congelación de despliegue concurrente: se ordenó no reconstruir .next (contiene el frontend activo de producción). El frontend no fue tocado en este arreglo."
+    }
+  ]
+}

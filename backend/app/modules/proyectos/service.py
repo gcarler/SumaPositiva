@@ -74,6 +74,41 @@ def _sanitizar_nombre_archivo(nombre: str) -> str:
     return nombre_limpio or "anexo"
 
 
+TAMANO_BLOQUE_LECTURA = 1024 * 1024  # 1 MiB
+
+
+async def _transmitir_archivo_a_disco(archivo: UploadFile, ruta_disco: Path) -> tuple[int, str]:
+    """Escribe el archivo en disco por bloques sin buferarlo completo en memoria.
+
+    Retorna (tamano_bytes, hash_sha256). Aborta con 413 apenas el tamaño supera
+    el límite; el buffer de la petición se consume por bloques y la escritura en
+    disco queda acotada al mismo tamaño de bloque.
+    """
+    hasher = hashlib.sha256()
+    recibido = 0
+    creado = False
+    try:
+        with ruta_disco.open("xb") as destino:
+            creado = True
+            while True:
+                bloque = await archivo.read(TAMANO_BLOQUE_LECTURA)
+                if not bloque:
+                    break
+                recibido += len(bloque)
+                if recibido > MAX_BYTES_ANEXO:
+                    raise HTTPException(
+                        status_code=status.HTTP_413_CONTENT_TOO_LARGE,
+                        detail=f"El archivo excede el tamaño máximo permitido de 25 MB ({recibido} bytes recibidos).",
+                    )
+                hasher.update(bloque)
+                destino.write(bloque)
+    except BaseException:
+        if creado:
+            ruta_disco.unlink(missing_ok=True)
+        raise
+    return recibido, hasher.hexdigest()
+
+
 class ProyectosService:
     def __init__(self, session: AsyncSession):
         self.session = session
@@ -173,36 +208,32 @@ class ProyectosService:
                     )
 
                 tipo_mime = archivo.content_type or "application/octet-stream"
-                contenido = await archivo.read()
-
-                if len(contenido) == 0:
-                    raise HTTPException(
-                        status_code=status.HTTP_400_BAD_REQUEST,
-                        detail="El archivo proporcionado está vacío.",
-                    )
-
-                if len(contenido) > MAX_BYTES_ANEXO:
-                    raise HTTPException(
-                        status_code=status.HTTP_413_CONTENT_TOO_LARGE,
-                        detail=(
-                            f"El archivo excede el tamaño máximo permitido de 25 MB ({len(contenido)} bytes recibidos)."
-                        ),
-                    )
-
-                hash_sha256 = hashlib.sha256(contenido).hexdigest()
                 id_anexo = uuid.uuid4()
                 nombre_seguro = f"{id_anexo.hex}_{nombre_sanitizado}"
-                ruta_disco = DIRECTORIO_ANEXOS / nombre_seguro
+                ruta_nueva = DIRECTORIO_ANEXOS / nombre_seguro
 
-                # Escribir archivo físico
+                # Escribir archivo físico por bloques: memoria acotada, 413 temprano
+                # y hash SHA-256 incremental sobre el contenido real recibido.
                 try:
-                    ruta_disco.write_bytes(contenido)
+                    tamano_bytes, hash_sha256 = await _transmitir_archivo_a_disco(archivo, ruta_nueva)
+                except HTTPException:
+                    # La transmisión elimina su fragmento si excede el límite.
+                    raise
                 except Exception as e:
                     logger.exception("Error al escribir archivo de anexo en disco")
                     raise HTTPException(
                         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                         detail="No se pudo almacenar el archivo en disco.",
                     ) from e
+
+                # Solo compensar un fichero cuya creación exclusiva ya terminó.
+                # Si open("xb") falló, el fichero previo pertenece a otra operación.
+                ruta_disco = ruta_nueva
+                if tamano_bytes == 0:
+                    raise HTTPException(
+                        status_code=status.HTTP_400_BAD_REQUEST,
+                        detail="El archivo proporcionado está vacío.",
+                    )
 
                 # Obtener nombre legible del usuario si está disponible
                 subido_por_nombre = sujeto.rol
@@ -226,7 +257,7 @@ class ProyectosService:
                     nombre_archivo_seguro=nombre_seguro,
                     ruta_almacenamiento=str(ruta_disco),
                     tipo_mime=tipo_mime,
-                    tamano_bytes=len(contenido),
+                    tamano_bytes=tamano_bytes,
                     hash_sha256=hash_sha256,
                     descripcion=descripcion.strip() if descripcion else None,
                     subido_por_sujeto_id=subido_por_id,

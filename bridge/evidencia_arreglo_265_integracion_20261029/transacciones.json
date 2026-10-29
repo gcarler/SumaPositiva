@@ -1,0 +1,25 @@
+{
+  "prueba": "Suite de transacciones y anexos con base exclusiva polis_test*",
+  "fecha": "2026-10-29T03:41:18Z",
+  "base_pruebas": "polis_test_txn_20261029",
+  "servidor_local": "PostgreSQL 18.6 (Ubuntu) en 127.0.0.1:5432; extensiones postgis, ltree, pgcrypto y pg_trgm preinstaladas por el superusuario.",
+  "rol_pruebas": "polis_test_runner (creado solo para esta ejecución; contraseña en /tmp/polis_test_runner.pw, permisos 600; no se usa la cuenta de producción).",
+  "migraciones": {
+    "comando": "cd backend && POLIS_DATABASE_URL=<DSN polis_test_runner@... polis_test_txn_20261029> .venv/bin/python -m alembic upgrade head",
+    "resultado": "instalación en base vacía hasta 0090_anexos_actividades; tabla participacion_ciudadana.actividades_anexos con 3 índices (2 parciales WHERE eliminado_en IS NULL).",
+    "nota_prevencion": "Una primera ejecución tomó Settings().async_database_url por env no exportada; la única escritura previa al error fue no-op sobre bd_csh (ya en head 0090). El upgrade real se ejecutó con POLIS_DATABASE_URL explícita sobre la base de pruebas."
+  },
+  "comando_suite": "cd backend && POLIS_TEST_DATABASE_URL=<DSN polis_test* .venv/bin/python -m pytest tests/test_transactions_integration.py tests/test_proyectos_anexos.py -q",
+  "resultado": "24 passed, 0 failed en 11,79 s",
+  "cobertura_verificada": [
+    "Commit único por caso de uso, rollback ante fallo posterior al primer flush, cancelación y sesiones exclusivas (limites de app.core.transactions).",
+    "Repos de proyectos solo flush/refresh; sin commit/rollback en repositorios.",
+    "Compensación de archivo huérfano en guardar_anexo (rollback tras escribir el fichero físico).",
+    "Ciclo completo de anexos: subir (201), listar, descargar (200 con nombre original), eliminar (204 soft-delete) y 404 posterior.",
+    "Control de acceso 401/403 de las rutas de anexos y validación 404/415 (actividad inexistente y extensión .exe)."
+  ],
+  "limitaciones": [
+    "La ejecución se limitó a la suite de transacciones y anexos según lo solicitado; no se corrió backend:check completo contra la base (las otras 500+ pruebas de integración siguen omitidas en el entorno).",
+    "La base polis_test_txn_20261029 queda preservada para re-verificación forense; contiene únicamente datos de prueba."
+  ]
+}

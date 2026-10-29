@@ -1,0 +1,43 @@
+{
+  "prueba": "Streaming de subida de anexos y job de limpieza de ficheros de anexos eliminados",
+  "fecha": "2026-10-29T03:41:18Z",
+  "base_pruebas": "polis_test_txn_20261029 (PostgreSQL 18.6 local 127.0.0.1:5432, creado e iniciado especialmente para esta ejecución)",
+  "archivos_nuevos": [
+    {
+      "ruta": "backend/app/modules/proyectos/service.py",
+      "cambio": "guardar_anexo ahora transmite el archivo por bloques de 1 MiB (_transmitir_archivo_a_disco): memoria acotada, aborta con 413 apenas supera 25 MB (antes consumía el archivo completo en RAM antes de validar), hash SHA-256 incremental y compensación de archivo huérfano conservada (unlink del fichero si el caso de uso revierte tras escribir).",
+      "motivo": "Hallazgo de la revisión 265: la subida buferaba hasta 25 MB completos en memoria antes de validar límites."
+    },
+    {
+      "ruta": "backend/scripts/limpiar_anexos_eliminados.py (nuevo)",
+      "cambio": "Job de limpieza programable: elimina del volumen media/actividades_anexos los ficheros de anexos con eliminado_en anterior a la retención (30 días de mínima; el borrado lógico queda auditable y no se muta la base). Modo --incluidos-huerfanos para ficheros sin fila registrada. Confinado al directorio de anexos: rutas externas (p. ej. /etc/passwd alteradas) se reportan como error y no se borran. Requiere POLIS_TEST_DATABASE_URL (base polis_test*) o --produccion; imprime manifiesto JSON y sale 1 si hubo errores. Pensado para cron/systemd timer.",
+      "motivo": "Hallazgo de la revisión 265: el soft-delete conservaba ficheros físicos sin plan de purga."
+    },
+    {
+      "ruta": "backend/tests/test_transmision_y_purga_anexos.py (nuevo)",
+      "cambio": "8 pruebas: transmisión completa con hash correcto, 413 con fragmento parcial (la compensación lo elimina), archivo vacío (0 bytes), confinamiento de rutas (_resolver_segura), purga de ficheros de anexos eliminados, conservación de anexos retirados recientes, huérfanos solo dentro del directorio y reporte de ruta externa sin borrado."
+    }
+  ],
+  "comandos_verificacion": [
+    {
+      "comando": "bun run backend:check",
+      "exit_code": 0,
+      "resultado": "1153 passed, 524 skipped, 0 failed (ruff check, ruff format, pytest unidad; integración omitida por ausencia de POLIS_TEST_DATABASE_URL en ese modo)"
+    },
+    {
+      "comando": "POLIS_TEST_DATABASE_URL=<DSN polis_test_txn_20261029> pytest tests/test_transactions_integration.py tests/test_proyectos_anexos.py tests/test_transmision_y_purga_anexos.py -q",
+      "exit_code": 0,
+      "resultado": "32 passed, 0 failed en 16,68 s"
+    },
+    {
+      "comando": "pytest tests/test_transmision_y_purga_anexos.py -q (solo, misma base)",
+      "exit_code": 0,
+      "resultado": "8 passed"
+    }
+  ],
+  "limitaciones": [
+    "El job de limpieza no se ejecutó contra bd_csh (producción); solo fue probado con base polis_test* y directorios temporales, sin tocar el volumen real de anexos.",
+    "Sin commits/push propios: la integración al despliegue quedó pendiente de la coordinación con Codex (aviso enviado por tmux).",
+    "Revisión preventiva EDD: quien implementa no firma dictamen EAF independiente."
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "titulo": "Evidencia de revisión y arreglo integrado al módulo de proyectos (encargo 265)",
+  "fecha_snapshot": "2026-10-29T03:41:18Z",
+  "base_git": {
+    "rama": "main",
+    "commit_cabeza": "c9b1adf",
+    "estado_arbol": "Solo 2 archivos modificados locales (listados en archivos.json); sin commits ni push propios."
+  },
+  "alcance": [
+    "Revisión integral del módulo de proyectos (backend proyección + anexos, frontend FichaActividadPanel).",
+    "Corrección de la causa del fallo de backend:check.",
+    "Compensación de archivo huérfano en el caso de uso guardar_anexo."
+  ],
+  "archivos_modificados": [
+    {
+      "ruta": "docs/permisos-api.md",
+      "cambio": "Se clasifican las 4 rutas de anexos (GET listado, POST subida, GET descarga, DELETE soft-delete) en la matriz de control de acceso, con decisión de producto encargo 265 documentada. GET usan permiso:proyectos:leer@declarada; POST/DELETE se clasifican 'sujeto' con guarda institucional explícita (rol administrador_identidades/autoridad_distrital/facilitador_mesa o permisos proyectos:escribir/comunicaciones:gestionar/mesas:abrir/formularios:gestionar).",
+      "motivo": "test_access_policy.py::test_matriz_cubre_todas_las_rutas_y_sus_controles exigía clasificación de toda ruta (AGENTS.md: toda ruta debe tener clasificación)."
+    },
+    {
+      "ruta": "backend/app/modules/proyectos/service.py",
+      "cambio": "guardar_anexo ahora compensa el archivo físico: si el caso de uso revierte (validación, fallo de persistencia o de commit) después de escribir el fichero en media/actividades_anexos, se elimina el huérfano con unlink. Sin cambios de semántica API ni de transacciones (una sola confirmación por caso de uso, repos con flush/refresh).",
+      "motivo": "Contrato de transacciones de POLIS: compensaciones de archivos del uso de escritura; evita ficheros huérfanos en el volumen."
+    }
+  ],
+  "limitaciones": [
+    "POLIS_TEST_DATABASE_URL no está presente en este entorno: las pruebas de integración de anexos (test_proyectos_anexos.py, test_transactions_integration) y las verificaciones contra base polis_test* corrieron omitidas (520 skipped en backend:check), igual que en la entrega original.",
+    "No se ejecutó bun run build ni se reconstruyó .next por congelación de despliegue concurrente ordenada por el usuario.",
+    "Revisión preventiva: quien corrige no firma dictamen EAF independiente; los checks aprobados son evidencia técnica, no autorización de despliegue."
+  ]
+}
