@@ -26,6 +26,8 @@ Fecha: 2026-10-29. Origen: entrega de Freebuff en
 | Ruta y referencia activa | Una ruta alterada dentro del volumen podía señalar un fichero distinto o todavía activo. | Coincidencia de ruta con nombre seguro, rechazo de enlaces simbólicos y protección de nombres con referencia activa. |
 
 El manifiesto consulta PostgreSQL mediante `READ ONLY` y `REPEATABLE READ`.
+La guarda de destino rechaza igualmente una base `polis_test*` pasada por la
+variable operativa con `--produccion`.
 La API y sus permisos permanecen sin cambios; la cabeza Alembic es
 `0090_anexos_actividades`. La entrega no instala un cron ni ejecuta una purga
 física sobre el volumen operativo.

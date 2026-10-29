@@ -8,7 +8,7 @@
     },
     {
       "path": "backend/scripts/limpiar_anexos_eliminados.py",
-      "sha256": "7182e1b797bd439bc3665f47eb1673ef29566b8d0084b65fe6d01dc34cc54bb4"
+      "sha256": "664179c28c54cf923bf7de7e54a94b0b2a1ec4ed5ebeea890a1f71b610368559"
     },
     {
       "path": "backend/tests/test_transmision_y_purga_anexos.py",
@@ -16,11 +16,11 @@
     },
     {
       "path": "docs/proyectos-anexos-operacion.md",
-      "sha256": "bd0f7f067e435a3a426af4065c700508f00124e03925784d2cf32feb554f7ad0"
+      "sha256": "4e88810e79efbf0adc89366627949fdc77c5e7958784dc9f8f621d62dc869640"
     },
     {
       "path": "bridge/265_revision_codex_streaming_purga_20261029.md",
-      "sha256": "5df89b4b5f2a69c9f0a9e315b12f1203047f86077e40407051affad1afa7b8be"
+      "sha256": "54602ee6665c5aa43be730bf013569e2fcb2633b64e6357727696b1b4b644055"
     },
     {
       "path": "backend/tests/test_proyectos_anexos.py",

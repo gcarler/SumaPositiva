@@ -57,7 +57,8 @@ su entorno y retención en la operación del servicio.
 Con `POLIS_TEST_DATABASE_URL` explícita sobre una base `polis_test*`, es
 obligatorio indicar `--directorio` con una carpeta aislada existente. Se rechaza
 un directorio que contenga el volumen operativo o esté dentro de él. Los modos
-de pruebas y `--produccion` son excluyentes.
+de pruebas y `--produccion` son excluyentes. También se rechaza una base
+`polis_test*` recibida por `POLIS_DATABASE_URL` con `--produccion`.
 
 La consulta del manifiesto usa una transacción `READ ONLY` y
 `REPEATABLE READ`. El comando no modifica tablas ni instala migraciones.

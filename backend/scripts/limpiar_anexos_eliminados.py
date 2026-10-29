@@ -211,6 +211,8 @@ def main() -> None:
         url = os.environ.get("POLIS_DATABASE_URL")
         if not url:
             raise RuntimeError("POLIS_DATABASE_URL no está disponible")
+        if (make_url(url).database or "").startswith("polis_test"):
+            parser.error("Una base polis_test* requiere el destino de pruebas y un directorio aislado.")
         directorio = DIRECTORIO_ANEXOS.resolve()
         if args.directorio is not None and args.directorio.resolve() != directorio:
             parser.error("En producción solo se admite el volumen operativo de anexos.")
